@@ -1,0 +1,31 @@
+; xdb_odbc.def : Declares the debug module parameters for the DLL.
+
+LIBRARY      "xdb_odbc"
+DESCRIPTION  'xdb_odbc Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	db_parse_dsn
+	db_open_dsn
+	db_open
+	db_close
+	db_select
+	db_schema
+	db_fetch
+	db_update
+	db_exec
+	db_error
+	db_call_argv
+	db_call_func
+	db_call_json
+	db_rows
+	db_export
+	db_import
+	db_batch
+	db_read_blob
+	db_write_blob
+	db_read_clob
+	db_write_clob
+	db_read_xdoc
+	db_write_xdoc
+	db_datetime
+	db_trace

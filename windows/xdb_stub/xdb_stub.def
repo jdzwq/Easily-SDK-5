@@ -1,0 +1,29 @@
+; xdb_stub.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "xdb_stub"
+DESCRIPTION  'xdb_stub Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	db_parse_dsn
+	db_open_dsn
+	db_open
+	db_close
+	db_select
+	db_schema
+	db_fetch
+	db_update
+	db_batch
+	db_exec
+	db_error
+	db_call_func
+	db_call_json
+	db_rows
+	db_export
+	db_import
+	db_write_blob
+	db_read_blob
+	db_write_clob
+	db_read_clob
+	db_write_xdoc
+	db_read_xdoc
+	db_datetime

@@ -1,0 +1,321 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B434EC12171CA2400AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC02171CA2400AC4CAA /* libxdl.dylib */; };
+		9B5699772168823900A9A2E7 /* xdsdef.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699682168823900A9A2E7 /* xdsdef.h */; };
+		9B5699782168823900A9A2E7 /* xdshttp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699692168823900A9A2E7 /* xdshttp.c */; };
+		9B5699792168823900A9A2E7 /* xdshttp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B56996A2168823900A9A2E7 /* xdshttp.h */; };
+		9B56997A2168823900A9A2E7 /* xdspnp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B56996B2168823900A9A2E7 /* xdspnp.c */; };
+		9B56997B2168823900A9A2E7 /* xdspnp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B56996C2168823900A9A2E7 /* xdspnp.h */; };
+		9B56997C2168823900A9A2E7 /* xdsslot.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B56996D2168823900A9A2E7 /* xdsslot.c */; };
+		9B56997D2168823900A9A2E7 /* xdsslot.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B56996E2168823900A9A2E7 /* xdsslot.h */; };
+		9B56997E2168823900A9A2E7 /* xdsssl.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B56996F2168823900A9A2E7 /* xdsssl.c */; };
+		9B56997F2168823900A9A2E7 /* xdsssl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699702168823900A9A2E7 /* xdsssl.h */; };
+		9B5699802168823900A9A2E7 /* xdstcp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699712168823900A9A2E7 /* xdstcp.c */; };
+		9B5699812168823900A9A2E7 /* xdstcp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699722168823900A9A2E7 /* xdstcp.h */; };
+		9B5699822168823900A9A2E7 /* xdstls.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699732168823900A9A2E7 /* xdstls.c */; };
+		9B5699832168823900A9A2E7 /* xdstls.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699742168823900A9A2E7 /* xdstls.h */; };
+		9B5699842168823900A9A2E7 /* xdsudp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699752168823900A9A2E7 /* xdsudp.c */; };
+		9B5699852168823900A9A2E7 /* xdsudp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699762168823900A9A2E7 /* xdsudp.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9B434EC02171CA2400AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9B569961216881FE00A9A2E7 /* libxds.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxds.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B5699682168823900A9A2E7 /* xdsdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsdef.h; path = ../../xds/xdsdef.h; sourceTree = "<group>"; };
+		9B5699692168823900A9A2E7 /* xdshttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdshttp.c; path = ../../xds/xdshttp.c; sourceTree = "<group>"; };
+		9B56996A2168823900A9A2E7 /* xdshttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdshttp.h; path = ../../xds/xdshttp.h; sourceTree = "<group>"; };
+		9B56996B2168823900A9A2E7 /* xdspnp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdspnp.c; path = ../../xds/xdspnp.c; sourceTree = "<group>"; };
+		9B56996C2168823900A9A2E7 /* xdspnp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdspnp.h; path = ../../xds/xdspnp.h; sourceTree = "<group>"; };
+		9B56996D2168823900A9A2E7 /* xdsslot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdsslot.c; path = ../../xds/xdsslot.c; sourceTree = "<group>"; };
+		9B56996E2168823900A9A2E7 /* xdsslot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsslot.h; path = ../../xds/xdsslot.h; sourceTree = "<group>"; };
+		9B56996F2168823900A9A2E7 /* xdsssl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdsssl.c; path = ../../xds/xdsssl.c; sourceTree = "<group>"; };
+		9B5699702168823900A9A2E7 /* xdsssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsssl.h; path = ../../xds/xdsssl.h; sourceTree = "<group>"; };
+		9B5699712168823900A9A2E7 /* xdstcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdstcp.c; path = ../../xds/xdstcp.c; sourceTree = "<group>"; };
+		9B5699722168823900A9A2E7 /* xdstcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdstcp.h; path = ../../xds/xdstcp.h; sourceTree = "<group>"; };
+		9B5699732168823900A9A2E7 /* xdstls.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdstls.c; path = ../../xds/xdstls.c; sourceTree = "<group>"; };
+		9B5699742168823900A9A2E7 /* xdstls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdstls.h; path = ../../xds/xdstls.h; sourceTree = "<group>"; };
+		9B5699752168823900A9A2E7 /* xdsudp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdsudp.c; path = ../../xds/xdsudp.c; sourceTree = "<group>"; };
+		9B5699762168823900A9A2E7 /* xdsudp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsudp.h; path = ../../xds/xdsudp.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B56995E216881FE00A9A2E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B434EC12171CA2400AC4CAA /* libxdl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B569958216881FE00A9A2E7 = {
+			isa = PBXGroup;
+			children = (
+				9B434EC02171CA2400AC4CAA /* libxdl.dylib */,
+				9B5699682168823900A9A2E7 /* xdsdef.h */,
+				9B5699692168823900A9A2E7 /* xdshttp.c */,
+				9B56996A2168823900A9A2E7 /* xdshttp.h */,
+				9B56996B2168823900A9A2E7 /* xdspnp.c */,
+				9B56996C2168823900A9A2E7 /* xdspnp.h */,
+				9B56996D2168823900A9A2E7 /* xdsslot.c */,
+				9B56996E2168823900A9A2E7 /* xdsslot.h */,
+				9B56996F2168823900A9A2E7 /* xdsssl.c */,
+				9B5699702168823900A9A2E7 /* xdsssl.h */,
+				9B5699712168823900A9A2E7 /* xdstcp.c */,
+				9B5699722168823900A9A2E7 /* xdstcp.h */,
+				9B5699732168823900A9A2E7 /* xdstls.c */,
+				9B5699742168823900A9A2E7 /* xdstls.h */,
+				9B5699752168823900A9A2E7 /* xdsudp.c */,
+				9B5699762168823900A9A2E7 /* xdsudp.h */,
+				9B569962216881FE00A9A2E7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9B569962216881FE00A9A2E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B569961216881FE00A9A2E7 /* libxds.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9B56995F216881FE00A9A2E7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B56997D2168823900A9A2E7 /* xdsslot.h in Headers */,
+				9B5699832168823900A9A2E7 /* xdstls.h in Headers */,
+				9B5699792168823900A9A2E7 /* xdshttp.h in Headers */,
+				9B5699812168823900A9A2E7 /* xdstcp.h in Headers */,
+				9B56997B2168823900A9A2E7 /* xdspnp.h in Headers */,
+				9B5699772168823900A9A2E7 /* xdsdef.h in Headers */,
+				9B5699852168823900A9A2E7 /* xdsudp.h in Headers */,
+				9B56997F2168823900A9A2E7 /* xdsssl.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		9B569960216881FE00A9A2E7 /* xds */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B569965216881FE00A9A2E7 /* Build configuration list for PBXNativeTarget "xds" */;
+			buildPhases = (
+				9B56995D216881FE00A9A2E7 /* Sources */,
+				9B56995E216881FE00A9A2E7 /* Frameworks */,
+				9B56995F216881FE00A9A2E7 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xds;
+			productName = xds;
+			productReference = 9B569961216881FE00A9A2E7 /* libxds.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B569959216881FE00A9A2E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "张文权";
+				TargetAttributes = {
+					9B569960216881FE00A9A2E7 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9B56995C216881FE00A9A2E7 /* Build configuration list for PBXProject "xds" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9B569958216881FE00A9A2E7;
+			productRefGroup = 9B569962216881FE00A9A2E7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B569960216881FE00A9A2E7 /* xds */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B56995D216881FE00A9A2E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B5699802168823900A9A2E7 /* xdstcp.c in Sources */,
+				9B5699822168823900A9A2E7 /* xdstls.c in Sources */,
+				9B5699842168823900A9A2E7 /* xdsudp.c in Sources */,
+				9B56997A2168823900A9A2E7 /* xdspnp.c in Sources */,
+				9B5699782168823900A9A2E7 /* xdshttp.c in Sources */,
+				9B56997E2168823900A9A2E7 /* xdsssl.c in Sources */,
+				9B56997C2168823900A9A2E7 /* xdsslot.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9B569963216881FE00A9A2E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9B569964216881FE00A9A2E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9B569966216881FE00A9A2E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					"/Users/zwq/工程/Easily-sdk-5/include",
+					"/Users/zwq/工程/Easily-sdk-5/xds",
+				);
+				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxds.dylib";
+				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-sdk-5/macos/lib";
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+			};
+			name = Debug;
+		};
+		9B569967216881FE00A9A2E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					"/Users/zwq/工程/Easily-sdk-5/include",
+					"/Users/zwq/工程/Easily-sdk-5/xds",
+				);
+				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxds.dylib";
+				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-sdk-5/macos/lib";
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B56995C216881FE00A9A2E7 /* Build configuration list for PBXProject "xds" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B569963216881FE00A9A2E7 /* Debug */,
+				9B569964216881FE00A9A2E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B569965216881FE00A9A2E7 /* Build configuration list for PBXNativeTarget "xds" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B569966216881FE00A9A2E7 /* Debug */,
+				9B569967216881FE00A9A2E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B569959216881FE00A9A2E7 /* Project object */;
+}

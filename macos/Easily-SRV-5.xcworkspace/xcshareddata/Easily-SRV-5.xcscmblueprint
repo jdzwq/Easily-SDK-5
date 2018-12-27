@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "585BE21BA03409DCA1D877842928BB20849CC057",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "585BE21BA03409DCA1D877842928BB20849CC057" : 0,
+    "B8DFD475B39C82DCE1F25CF818A21D5299FD342B" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "AD5B21F8-F019-40C7-A265-EB3C45104457",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "585BE21BA03409DCA1D877842928BB20849CC057" : "Easily-sdk-5\/",
+    "B8DFD475B39C82DCE1F25CF818A21D5299FD342B" : "Easily-app-5\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Easily-SRV-5",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "macos\/Easily-SRV-5.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/jdzwq\/Easily-SDK-5.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "585BE21BA03409DCA1D877842928BB20849CC057"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/jdzwq\/Easily-APP-5.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B8DFD475B39C82DCE1F25CF818A21D5299FD342B"
+    }
+  ]
+}

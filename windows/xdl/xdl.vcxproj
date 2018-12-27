@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3EC4F913-91BD-4891-9EE3-3A2C3A0E2CE5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>xdl</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
+    <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
+    <SourcePath>$(VC_SourcePath);</SourcePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
+    <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
+    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)55</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
+    <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)64</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XDL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;XDL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <ImportLibrary>..\lib\x64\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XDL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\lib\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;XDL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\lib\x64\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xdl\actable.h" />
+    <ClInclude Include="..\..\xdl\annodoc.h" />
+    <ClInclude Include="..\..\xdl\annoview.h" />
+    <ClInclude Include="..\..\xdl\archdoc.h" />
+    <ClInclude Include="..\..\xdl\binatree.h" />
+    <ClInclude Include="..\..\xdl\boxview.h" />
+    <ClInclude Include="..\..\xdl\bplustree.h" />
+    <ClInclude Include="..\..\xdl\buffer.h" />
+    <ClInclude Include="..\..\xdl\bufferopera.h" />
+    <ClInclude Include="..\..\xdl\chartdoc.h" />
+    <ClInclude Include="..\..\xdl\chartgdi.h" />
+    <ClInclude Include="..\..\xdl\chartview.h" />
+    <ClInclude Include="..\..\xdl\cssattr.h" />
+    <ClInclude Include="..\..\xdl\dblink.h" />
+    <ClInclude Include="..\..\xdl\dialogdoc.h" />
+    <ClInclude Include="..\..\xdl\dialogview.h" />
+    <ClInclude Include="..\..\xdl\dicttable.h" />
+    <ClInclude Include="..\..\xdl\docattr.h" />
+    <ClInclude Include="..\..\xdl\docbag.h" />
+    <ClInclude Include="..\..\xdl\domdoc.h" />
+    <ClInclude Include="..\..\xdl\filebag.h" />
+    <ClInclude Include="..\..\xdl\filetable.h" />
+    <ClInclude Include="..\..\xdl\formdoc.h" />
+    <ClInclude Include="..\..\xdl\formview.h" />
+    <ClInclude Include="..\..\xdl\funcdoc.h" />
+    <ClInclude Include="..\..\xdl\gdicanv.h" />
+    <ClInclude Include="..\..\xdl\gdiinf.h" />
+    <ClInclude Include="..\..\xdl\graphdoc.h" />
+    <ClInclude Include="..\..\xdl\graphview.h" />
+    <ClInclude Include="..\..\xdl\gridbag.h" />
+    <ClInclude Include="..\..\xdl\griddoc.h" />
+    <ClInclude Include="..\..\xdl\gridsql.h" />
+    <ClInclude Include="..\..\xdl\gridview.h" />
+    <ClInclude Include="..\..\xdl\hashtable.h" />
+    <ClInclude Include="..\..\xdl\httpattr.h" />
+    <ClInclude Include="..\..\xdl\imagesbag.h" />
+    <ClInclude Include="..\..\xdl\imagesdoc.h" />
+    <ClInclude Include="..\..\xdl\imagesview.h" />
+    <ClInclude Include="..\..\xdl\impassert.h" />
+    <ClInclude Include="..\..\xdl\impbitmap.h" />
+    <ClInclude Include="..\..\xdl\impblock.h" />
+    <ClInclude Include="..\..\xdl\impcache.h" />
+    <ClInclude Include="..\..\xdl\impclip.h" />
+    <ClInclude Include="..\..\xdl\impcomm.h" />
+    <ClInclude Include="..\..\xdl\impcons.h" />
+    <ClInclude Include="..\..\xdl\impcontext.h" />
+    <ClInclude Include="..\..\xdl\impdate.h" />
+    <ClInclude Include="..\..\xdl\imperr.h" />
+    <ClInclude Include="..\..\xdl\impgdi.h" />
+    <ClInclude Include="..\..\xdl\impicon.h" />
+    <ClInclude Include="..\..\xdl\impjmp.h" />
+    <ClInclude Include="..\..\xdl\impmbcs.h" />
+    <ClInclude Include="..\..\xdl\impmem.h" />
+    <ClInclude Include="..\..\xdl\imppipe.h" />
+    <ClInclude Include="..\..\xdl\impproc.h" />
+    <ClInclude Include="..\..\xdl\impshare.h" />
+    <ClInclude Include="..\..\xdl\impshell.h" />
+    <ClInclude Include="..\..\xdl\impsock.h" />
+    <ClInclude Include="..\..\xdl\impthr.h" />
+    <ClInclude Include="..\..\xdl\imptimer.h" />
+    <ClInclude Include="..\..\xdl\impunc.h" />
+    <ClInclude Include="..\..\xdl\impwin.h" />
+    <ClInclude Include="..\..\xdl\jsonbio.h" />
+    <ClInclude Include="..\..\xdl\jsondoc.h" />
+    <ClInclude Include="..\..\xdl\jsonparser.h" />
+    <ClInclude Include="..\..\xdl\labeldoc.h" />
+    <ClInclude Include="..\..\xdl\labelview.h" />
+    <ClInclude Include="..\..\xdl\lang\_xdl_ansi.h" />
+    <ClInclude Include="..\..\xdl\linebuf.h" />
+    <ClInclude Include="..\..\xdl\listdoc.h" />
+    <ClInclude Include="..\..\xdl\listview.h" />
+    <ClInclude Include="..\..\xdl\map.h" />
+    <ClInclude Include="..\..\xdl\matrix.h" />
+    <ClInclude Include="..\..\xdl\memodoc.h" />
+    <ClInclude Include="..\..\xdl\memoopera.h" />
+    <ClInclude Include="..\..\xdl\memoview.h" />
+    <ClInclude Include="..\..\xdl\menudoc.h" />
+    <ClInclude Include="..\..\xdl\menuview.h" />
+    <ClInclude Include="..\..\xdl\metadoc.h" />
+    <ClInclude Include="..\..\xdl\multitree.h" />
+    <ClInclude Include="..\..\xdl\nethttp.h" />
+    <ClInclude Include="..\..\xdl\netoss.h" />
+    <ClInclude Include="..\..\xdl\netpdu.h" />
+    <ClInclude Include="..\..\xdl\netpnp.h" />
+    <ClInclude Include="..\..\xdl\netsoap.h" />
+    <ClInclude Include="..\..\xdl\netssl.h" />
+    <ClInclude Include="..\..\xdl\nettcp.h" />
+    <ClInclude Include="..\..\xdl\nettftp.h" />
+    <ClInclude Include="..\..\xdl\netxsl.h" />
+    <ClInclude Include="..\..\xdl\notesdoc.h" />
+    <ClInclude Include="..\..\xdl\oauthattr.h" />
+    <ClInclude Include="..\..\xdl\object.h" />
+    <ClInclude Include="..\..\xdl\oemacp.h" />
+    <ClInclude Include="..\..\xdl\oemaes.h" />
+    <ClInclude Include="..\..\xdl\oemarc.h" />
+    <ClInclude Include="..\..\xdl\oemasn.h" />
+    <ClInclude Include="..\..\xdl\oemb64.h" />
+    <ClInclude Include="..\..\xdl\oembas.h" />
+    <ClInclude Include="..\..\xdl\oembmp.h" />
+    <ClInclude Include="..\..\xdl\oembrc.h" />
+    <ClInclude Include="..\..\xdl\oemcert.h" />
+    <ClInclude Include="..\..\xdl\oemconv.h" />
+    <ClInclude Include="..\..\xdl\oemcrc.h" />
+    <ClInclude Include="..\..\xdl\oemdes.h" />
+    <ClInclude Include="..\..\xdl\oemdhm.h" />
+    <ClInclude Include="..\..\xdl\oemgeo.h" />
+    <ClInclude Include="..\..\xdl\oemhave.h" />
+    <ClInclude Include="..\..\xdl\oemhll.h" />
+    <ClInclude Include="..\..\xdl\oemjpg.h" />
+    <ClInclude Include="..\..\xdl\oemlock.h" />
+    <ClInclude Include="..\..\xdl\oemlzf.h" />
+    <ClInclude Include="..\..\xdl\oemmd2.h" />
+    <ClInclude Include="..\..\xdl\oemmd4.h" />
+    <ClInclude Include="..\..\xdl\oemmd5.h" />
+    <ClInclude Include="..\..\xdl\oemmpi.h" />
+    <ClInclude Include="..\..\xdl\oemmur.h" />
+    <ClInclude Include="..\..\xdl\oempdg.h" />
+    <ClInclude Include="..\..\xdl\oempng.h" />
+    <ClInclude Include="..\..\xdl\oemqrc.h" />
+    <ClInclude Include="..\..\xdl\oemrand.h" />
+    <ClInclude Include="..\..\xdl\oemrsa.h" />
+    <ClInclude Include="..\..\xdl\oemsha1.h" />
+    <ClInclude Include="..\..\xdl\oemsha2.h" />
+    <ClInclude Include="..\..\xdl\oemsha4.h" />
+    <ClInclude Include="..\..\xdl\oemsip.h" />
+    <ClInclude Include="..\..\xdl\oemzip.h" />
+    <ClInclude Include="..\..\xdl\optparser.h" />
+    <ClInclude Include="..\..\xdl\pathdoc.h" />
+    <ClInclude Include="..\..\xdl\printbag.h" />
+    <ClInclude Include="..\..\xdl\properdoc.h" />
+    <ClInclude Include="..\..\xdl\propertybag.h" />
+    <ClInclude Include="..\..\xdl\properview.h" />
+    <ClInclude Include="..\..\xdl\richdoc.h" />
+    <ClInclude Include="..\..\xdl\richview.h" />
+    <ClInclude Include="..\..\xdl\scanner.h" />
+    <ClInclude Include="..\..\xdl\schemabag.h" />
+    <ClInclude Include="..\..\xdl\schemadoc.h" />
+    <ClInclude Include="..\..\xdl\set.h" />
+    <ClInclude Include="..\..\xdl\soapdoc.h" />
+    <ClInclude Include="..\..\xdl\splitdoc.h" />
+    <ClInclude Include="..\..\xdl\splitview.h" />
+    <ClInclude Include="..\..\xdl\stacktable.h" />
+    <ClInclude Include="..\..\xdl\statusdoc.h" />
+    <ClInclude Include="..\..\xdl\statusview.h" />
+    <ClInclude Include="..\..\xdl\streamopera.h" />
+    <ClInclude Include="..\..\xdl\stringopera.h" />
+    <ClInclude Include="..\..\xdl\stringtable.h" />
+    <ClInclude Include="..\..\xdl\svgattr.h" />
+    <ClInclude Include="..\..\xdl\svgcanv.h" />
+    <ClInclude Include="..\..\xdl\svgdoc.h" />
+    <ClInclude Include="..\..\xdl\svggdi.h" />
+    <ClInclude Include="..\..\xdl\svginf.h" />
+    <ClInclude Include="..\..\xdl\tableview.h" />
+    <ClInclude Include="..\..\xdl\tagdoc.h" />
+    <ClInclude Include="..\..\xdl\tagview.h" />
+    <ClInclude Include="..\..\xdl\taskdoc.h" />
+    <ClInclude Include="..\..\xdl\textview.h" />
+    <ClInclude Include="..\..\xdl\titledoc.h" />
+    <ClInclude Include="..\..\xdl\titleview.h" />
+    <ClInclude Include="..\..\xdl\tooldoc.h" />
+    <ClInclude Include="..\..\xdl\toolview.h" />
+    <ClInclude Include="..\..\xdl\topogdoc.h" />
+    <ClInclude Include="..\..\xdl\topogview.h" />
+    <ClInclude Include="..\..\xdl\treedoc.h" />
+    <ClInclude Include="..\..\xdl\treeview.h" />
+    <ClInclude Include="..\..\xdl\trietree.h" />
+    <ClInclude Include="..\..\xdl\ubbparser.h" />
+    <ClInclude Include="..\..\xdl\nuid.h" />
+    <ClInclude Include="..\..\xdl\varstr.h" />
+    <ClInclude Include="..\..\xdl\variant.h" />
+    <ClInclude Include="..\..\xdl\vector.h" />
+    <ClInclude Include="..\..\xdl\windows\_cfg_win32.h" />
+    <ClInclude Include="..\..\xdl\wordstable.h" />
+    <ClInclude Include="..\..\xdl\wsdldoc.h" />
+    <ClInclude Include="..\..\xdl\xdldef.h" />
+    <ClInclude Include="..\..\xdl\xdldoc.h" />
+    <ClInclude Include="..\..\xdl\xdlesc.h" />
+    <ClInclude Include="..\..\xdl\xdlexpr.h" />
+    <ClInclude Include="..\..\xdl\xdlfile.h" />
+    <ClInclude Include="..\..\xdl\xdlimp.h" />
+    <ClInclude Include="..\..\xdl\xdlinet.h" />
+    <ClInclude Include="..\..\xdl\xdlinf.h" />
+    <ClInclude Include="..\..\xdl\xdlinit.h" />
+    <ClInclude Include="..\..\xdl\xdlmacro.h" />
+    <ClInclude Include="..\..\xdl\xdlnet.h" />
+    <ClInclude Include="..\..\xdl\xdloem.h" />
+    <ClInclude Include="..\..\xdl\xdlprim.h" />
+    <ClInclude Include="..\..\xdl\xdlsort.h" />
+    <ClInclude Include="..\..\xdl\xdlstd.h" />
+    <ClInclude Include="..\..\xdl\xdlstm.h" />
+    <ClInclude Include="..\..\xdl\xdlstr.h" />
+    <ClInclude Include="..\..\xdl\xdlutil.h" />
+    <ClInclude Include="..\..\xdl\xdlview.h" />
+    <ClInclude Include="..\..\xdl\xdlprn.h" />
+    <ClInclude Include="..\..\xdl\xmlattr.h" />
+    <ClInclude Include="..\..\xdl\xmlbio.h" />
+    <ClInclude Include="..\..\xdl\xmldoc.h" />
+    <ClInclude Include="..\..\xdl\xmlopera.h" />
+    <ClInclude Include="..\..\xdl\xmlparser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\xdl\actable.c" />
+    <ClCompile Include="..\..\xdl\annodoc.c" />
+    <ClCompile Include="..\..\xdl\annoview.c" />
+    <ClCompile Include="..\..\xdl\archdoc.c" />
+    <ClCompile Include="..\..\xdl\binatree.c" />
+    <ClCompile Include="..\..\xdl\boxview.c" />
+    <ClCompile Include="..\..\xdl\bplustree.c" />
+    <ClCompile Include="..\..\xdl\buffer.c" />
+    <ClCompile Include="..\..\xdl\bufferopera.c" />
+    <ClCompile Include="..\..\xdl\chartdoc.c" />
+    <ClCompile Include="..\..\xdl\chartgdi.c" />
+    <ClCompile Include="..\..\xdl\chartview.c" />
+    <ClCompile Include="..\..\xdl\dblink.c" />
+    <ClCompile Include="..\..\xdl\dialogdoc.c" />
+    <ClCompile Include="..\..\xdl\dialogview.c" />
+    <ClCompile Include="..\..\xdl\dicttable.c" />
+    <ClCompile Include="..\..\xdl\docbag.c" />
+    <ClCompile Include="..\..\xdl\domdoc.c" />
+    <ClCompile Include="..\..\xdl\filebag.c" />
+    <ClCompile Include="..\..\xdl\filetable.c" />
+    <ClCompile Include="..\..\xdl\formdoc.c" />
+    <ClCompile Include="..\..\xdl\formview.c" />
+    <ClCompile Include="..\..\xdl\funcdoc.c" />
+    <ClCompile Include="..\..\xdl\gdicanv.c" />
+    <ClCompile Include="..\..\xdl\gdiinf.c" />
+    <ClCompile Include="..\..\xdl\graphdoc.c" />
+    <ClCompile Include="..\..\xdl\graphview.c" />
+    <ClCompile Include="..\..\xdl\gridbag.c" />
+    <ClCompile Include="..\..\xdl\griddoc.c" />
+    <ClCompile Include="..\..\xdl\gridsql.c" />
+    <ClCompile Include="..\..\xdl\gridview.c" />
+    <ClCompile Include="..\..\xdl\hashtable.c" />
+    <ClCompile Include="..\..\xdl\imagesbag.c" />
+    <ClCompile Include="..\..\xdl\imagesdoc.c" />
+    <ClCompile Include="..\..\xdl\imagesview.c" />
+    <ClCompile Include="..\..\xdl\impassert.c" />
+    <ClCompile Include="..\..\xdl\impbitmap.c" />
+    <ClCompile Include="..\..\xdl\impblock.c" />
+    <ClCompile Include="..\..\xdl\impcache.c" />
+    <ClCompile Include="..\..\xdl\impclip.c" />
+    <ClCompile Include="..\..\xdl\impcomm.c" />
+    <ClCompile Include="..\..\xdl\impcons.c" />
+    <ClCompile Include="..\..\xdl\impcontext.c" />
+    <ClCompile Include="..\..\xdl\impdate.c" />
+    <ClCompile Include="..\..\xdl\imperr.c" />
+    <ClCompile Include="..\..\xdl\impgdi.c" />
+    <ClCompile Include="..\..\xdl\impicon.c" />
+    <ClCompile Include="..\..\xdl\impjmp.c" />
+    <ClCompile Include="..\..\xdl\impmbcs.c" />
+    <ClCompile Include="..\..\xdl\impmem.c" />
+    <ClCompile Include="..\..\xdl\imppipe.c" />
+    <ClCompile Include="..\..\xdl\impproc.c" />
+    <ClCompile Include="..\..\xdl\impshare.c" />
+    <ClCompile Include="..\..\xdl\impshell.c" />
+    <ClCompile Include="..\..\xdl\impsock.c" />
+    <ClCompile Include="..\..\xdl\impthr.c" />
+    <ClCompile Include="..\..\xdl\imptimer.c" />
+    <ClCompile Include="..\..\xdl\impunc.c" />
+    <ClCompile Include="..\..\xdl\impwin.c" />
+    <ClCompile Include="..\..\xdl\jsonbio.c" />
+    <ClCompile Include="..\..\xdl\jsondoc.c" />
+    <ClCompile Include="..\..\xdl\jsonparser.c" />
+    <ClCompile Include="..\..\xdl\labeldoc.c" />
+    <ClCompile Include="..\..\xdl\labelview.c" />
+    <ClCompile Include="..\..\xdl\linebuf.c" />
+    <ClCompile Include="..\..\xdl\listdoc.c" />
+    <ClCompile Include="..\..\xdl\listview.c" />
+    <ClCompile Include="..\..\xdl\map.c" />
+    <ClCompile Include="..\..\xdl\matrix.c" />
+    <ClCompile Include="..\..\xdl\memodoc.c" />
+    <ClCompile Include="..\..\xdl\memoopera.c" />
+    <ClCompile Include="..\..\xdl\memoview.c" />
+    <ClCompile Include="..\..\xdl\menudoc.c" />
+    <ClCompile Include="..\..\xdl\menuview.c" />
+    <ClCompile Include="..\..\xdl\metadoc.c" />
+    <ClCompile Include="..\..\xdl\multitree.c" />
+    <ClCompile Include="..\..\xdl\nethttp.c" />
+    <ClCompile Include="..\..\xdl\netoss.c" />
+    <ClCompile Include="..\..\xdl\netpdu.c" />
+    <ClCompile Include="..\..\xdl\netpnp.c" />
+    <ClCompile Include="..\..\xdl\netsoap.c" />
+    <ClCompile Include="..\..\xdl\netssl.c" />
+    <ClCompile Include="..\..\xdl\nettcp.c" />
+    <ClCompile Include="..\..\xdl\nettftp.c" />
+    <ClCompile Include="..\..\xdl\netxsl.c" />
+    <ClCompile Include="..\..\xdl\notesdoc.c" />
+    <ClCompile Include="..\..\xdl\object.c" />
+    <ClCompile Include="..\..\xdl\oemacp.c" />
+    <ClCompile Include="..\..\xdl\oemaes.c" />
+    <ClCompile Include="..\..\xdl\oemarc.c" />
+    <ClCompile Include="..\..\xdl\oemasn.c" />
+    <ClCompile Include="..\..\xdl\oemb64.c" />
+    <ClCompile Include="..\..\xdl\oembas.c" />
+    <ClCompile Include="..\..\xdl\oembmp.c" />
+    <ClCompile Include="..\..\xdl\oembrc.c" />
+    <ClCompile Include="..\..\xdl\oemcert.c" />
+    <ClCompile Include="..\..\xdl\oemconv.c" />
+    <ClCompile Include="..\..\xdl\oemcrc.c" />
+    <ClCompile Include="..\..\xdl\oemdes.c" />
+    <ClCompile Include="..\..\xdl\oemdhm.c" />
+    <ClCompile Include="..\..\xdl\oemgeo.c" />
+    <ClCompile Include="..\..\xdl\oemhave.c" />
+    <ClCompile Include="..\..\xdl\oemhll.c" />
+    <ClCompile Include="..\..\xdl\oemjpg.c" />
+    <ClCompile Include="..\..\xdl\oemlock.c" />
+    <ClCompile Include="..\..\xdl\oemlzf.c" />
+    <ClCompile Include="..\..\xdl\oemmd2.c" />
+    <ClCompile Include="..\..\xdl\oemmd4.c" />
+    <ClCompile Include="..\..\xdl\oemmd5.c" />
+    <ClCompile Include="..\..\xdl\oemmpi.c" />
+    <ClCompile Include="..\..\xdl\oemmur.c" />
+    <ClCompile Include="..\..\xdl\oempdg.c" />
+    <ClCompile Include="..\..\xdl\oempng.c" />
+    <ClCompile Include="..\..\xdl\oemqrc.c" />
+    <ClCompile Include="..\..\xdl\oemrand.c" />
+    <ClCompile Include="..\..\xdl\oemrsa.c" />
+    <ClCompile Include="..\..\xdl\oemsha1.c" />
+    <ClCompile Include="..\..\xdl\oemsha2.c" />
+    <ClCompile Include="..\..\xdl\oemsha4.c" />
+    <ClCompile Include="..\..\xdl\oemsip.c" />
+    <ClCompile Include="..\..\xdl\oemzip.c" />
+    <ClCompile Include="..\..\xdl\optparser.c" />
+    <ClCompile Include="..\..\xdl\pathdoc.c" />
+    <ClCompile Include="..\..\xdl\printbag.c" />
+    <ClCompile Include="..\..\xdl\properdoc.c" />
+    <ClCompile Include="..\..\xdl\propertybag.c" />
+    <ClCompile Include="..\..\xdl\properview.c" />
+    <ClCompile Include="..\..\xdl\richdoc.c" />
+    <ClCompile Include="..\..\xdl\richview.c" />
+    <ClCompile Include="..\..\xdl\scanner.c" />
+    <ClCompile Include="..\..\xdl\schemabag.c" />
+    <ClCompile Include="..\..\xdl\schemadoc.c" />
+    <ClCompile Include="..\..\xdl\set.c" />
+    <ClCompile Include="..\..\xdl\soapdoc.c" />
+    <ClCompile Include="..\..\xdl\splitdoc.c" />
+    <ClCompile Include="..\..\xdl\splitview.c" />
+    <ClCompile Include="..\..\xdl\stacktable.c" />
+    <ClCompile Include="..\..\xdl\statusdoc.c" />
+    <ClCompile Include="..\..\xdl\statusview.c" />
+    <ClCompile Include="..\..\xdl\streamopera.c" />
+    <ClCompile Include="..\..\xdl\stringopera.c" />
+    <ClCompile Include="..\..\xdl\stringtable.c" />
+    <ClCompile Include="..\..\xdl\svgcanv.c" />
+    <ClCompile Include="..\..\xdl\svgdoc.c" />
+    <ClCompile Include="..\..\xdl\svggdi.c" />
+    <ClCompile Include="..\..\xdl\svginf.c" />
+    <ClCompile Include="..\..\xdl\tableview.c" />
+    <ClCompile Include="..\..\xdl\tagdoc.c" />
+    <ClCompile Include="..\..\xdl\tagview.c" />
+    <ClCompile Include="..\..\xdl\taskdoc.c" />
+    <ClCompile Include="..\..\xdl\textview.c" />
+    <ClCompile Include="..\..\xdl\titledoc.c" />
+    <ClCompile Include="..\..\xdl\titleview.c" />
+    <ClCompile Include="..\..\xdl\tooldoc.c" />
+    <ClCompile Include="..\..\xdl\toolview.c" />
+    <ClCompile Include="..\..\xdl\topogdoc.c" />
+    <ClCompile Include="..\..\xdl\topogview.c" />
+    <ClCompile Include="..\..\xdl\treedoc.c" />
+    <ClCompile Include="..\..\xdl\treeview.c" />
+    <ClCompile Include="..\..\xdl\trietree.c" />
+    <ClCompile Include="..\..\xdl\ubbparser.c" />
+    <ClCompile Include="..\..\xdl\nuid.c" />
+    <ClCompile Include="..\..\xdl\varstr.c" />
+    <ClCompile Include="..\..\xdl\variant.c" />
+    <ClCompile Include="..\..\xdl\vector.c" />
+    <ClCompile Include="..\..\xdl\wordstable.c" />
+    <ClCompile Include="..\..\xdl\wsdldoc.c" />
+    <ClCompile Include="..\..\xdl\xdlesc.c" />
+    <ClCompile Include="..\..\xdl\xdlexpr.c" />
+    <ClCompile Include="..\..\xdl\xdlfile.c" />
+    <ClCompile Include="..\..\xdl\xdlinet.c" />
+    <ClCompile Include="..\..\xdl\xdlinit.c" />
+    <ClCompile Include="..\..\xdl\xdlmacro.c" />
+    <ClCompile Include="..\..\xdl\xdlprim.c" />
+    <ClCompile Include="..\..\xdl\xdlsort.c" />
+    <ClCompile Include="..\..\xdl\xdlstm.c" />
+    <ClCompile Include="..\..\xdl\xdlstr.c" />
+    <ClCompile Include="..\..\xdl\xdlutil.c" />
+    <ClCompile Include="..\..\xdl\xmlbio.c" />
+    <ClCompile Include="..\..\xdl\xmldoc.c" />
+    <ClCompile Include="..\..\xdl\xmlopera.c" />
+    <ClCompile Include="..\..\xdl\xmlparser.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

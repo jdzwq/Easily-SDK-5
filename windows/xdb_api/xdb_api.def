@@ -1,0 +1,7 @@
+; xdb_api.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "xdb_api"
+DESCRIPTION  'xdb_api Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	https_invoke

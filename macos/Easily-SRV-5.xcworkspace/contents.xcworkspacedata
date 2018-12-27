@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:xdb_api/xdb_api.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdb_mysql/xdb_mysql.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xhttps/xhttps.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xportm/xportm.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xportd/xportd.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xds/xds.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdl/xdl.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdk/xdk.xcodeproj">
+   </FileRef>
+</Workspace>

@@ -1,0 +1,269 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B434EC32171CAFD00AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC22171CAFD00AC4CAA /* libxdl.dylib */; };
+		9B434EE92172089900AC4CAA /* xportmMain.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EE82172089900AC4CAA /* xportmMain.cc */; };
+		9B502779216D18D200169646 /* xportm.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B502777216D18D200169646 /* xportm.cc */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9B50276B216D184B00169646 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9B434EC22171CAFD00AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9B434EE82172089900AC4CAA /* xportmMain.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xportmMain.cc; sourceTree = "<group>"; };
+		9B50276D216D184B00169646 /* xportm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xportm; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B502777216D18D200169646 /* xportm.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xportm.cc; path = ../../api/net_srv/xportm.cc; sourceTree = "<group>"; };
+		9B502778216D18D200169646 /* xportm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xportm.h; path = ../../api/net_srv/xportm.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B50276A216D184B00169646 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B434EC32171CAFD00AC4CAA /* libxdl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B502764216D184B00169646 = {
+			isa = PBXGroup;
+			children = (
+				9B434EE82172089900AC4CAA /* xportmMain.cc */,
+				9B434EC22171CAFD00AC4CAA /* libxdl.dylib */,
+				9B502777216D18D200169646 /* xportm.cc */,
+				9B502778216D18D200169646 /* xportm.h */,
+				9B50276E216D184B00169646 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9B50276E216D184B00169646 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B50276D216D184B00169646 /* xportm */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B50276C216D184B00169646 /* xportm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B502774216D184B00169646 /* Build configuration list for PBXNativeTarget "xportm" */;
+			buildPhases = (
+				9B502769216D184B00169646 /* Sources */,
+				9B50276A216D184B00169646 /* Frameworks */,
+				9B50276B216D184B00169646 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xportm;
+			productName = xportm;
+			productReference = 9B50276D216D184B00169646 /* xportm */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B502765216D184B00169646 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "张文权";
+				TargetAttributes = {
+					9B50276C216D184B00169646 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9B502768216D184B00169646 /* Build configuration list for PBXProject "xportm" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9B502764216D184B00169646;
+			productRefGroup = 9B50276E216D184B00169646 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B50276C216D184B00169646 /* xportm */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B502769216D184B00169646 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B434EE92172089900AC4CAA /* xportmMain.cc in Sources */,
+				9B502779216D18D200169646 /* xportm.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9B502772216D184B00169646 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9B502773216D184B00169646 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9B502775216D184B00169646 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				HEADER_SEARCH_PATHS = (
+					"../..//include",
+					../../api/net_srv,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+			};
+			name = Debug;
+		};
+		9B502776216D184B00169646 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				HEADER_SEARCH_PATHS = (
+					"../..//include",
+					../../api/net_srv,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B502768216D184B00169646 /* Build configuration list for PBXProject "xportm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B502772216D184B00169646 /* Debug */,
+				9B502773216D184B00169646 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B502774216D184B00169646 /* Build configuration list for PBXNativeTarget "xportm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B502775216D184B00169646 /* Debug */,
+				9B502776216D184B00169646 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B502765216D184B00169646 /* Project object */;
+}

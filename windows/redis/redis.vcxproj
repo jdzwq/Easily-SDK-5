@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6A83EE44-960C-43DE-9F86-CF68963C6215}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>redis</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\lib\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\lib\x64\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\lib\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\lib\x64\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\redis\adlist.c" />
+    <ClCompile Include="..\..\redis\ae.c" />
+    <ClCompile Include="..\..\redis\ae_epoll.c" />
+    <ClCompile Include="..\..\redis\ae_evport.c" />
+    <ClCompile Include="..\..\redis\ae_kqueue.c" />
+    <ClCompile Include="..\..\redis\ae_select.c" />
+    <ClCompile Include="..\..\redis\anet.c" />
+    <ClCompile Include="..\..\redis\aof.c" />
+    <ClCompile Include="..\..\redis\bio.c" />
+    <ClCompile Include="..\..\redis\bitops.c" />
+    <ClCompile Include="..\..\redis\blocked.c" />
+    <ClCompile Include="..\..\redis\childinfo.c" />
+    <ClCompile Include="..\..\redis\cluster.c" />
+    <ClCompile Include="..\..\redis\config.c" />
+    <ClCompile Include="..\..\redis\db.c" />
+    <ClCompile Include="..\..\redis\debug.c" />
+    <ClCompile Include="..\..\redis\defrag.c" />
+    <ClCompile Include="..\..\redis\dict.c" />
+    <ClCompile Include="..\..\redis\endianconv.c" />
+    <ClCompile Include="..\..\redis\evict.c" />
+    <ClCompile Include="..\..\redis\expire.c" />
+    <ClCompile Include="..\..\redis\geo.c" />
+    <ClCompile Include="..\..\redis\hyperloglog.c" />
+    <ClCompile Include="..\..\redis\intset.c" />
+    <ClCompile Include="..\..\redis\latency.c" />
+    <ClCompile Include="..\..\redis\lazyfree.c" />
+    <ClCompile Include="..\..\redis\memtest.c" />
+    <ClCompile Include="..\..\redis\module.c" />
+    <ClCompile Include="..\..\redis\multi.c" />
+    <ClCompile Include="..\..\redis\networking.c" />
+    <ClCompile Include="..\..\redis\notify.c" />
+    <ClCompile Include="..\..\redis\object.c" />
+    <ClCompile Include="..\..\redis\pqsort.c" />
+    <ClCompile Include="..\..\redis\pubsub.c" />
+    <ClCompile Include="..\..\redis\quicklist.c" />
+    <ClCompile Include="..\..\redis\rdb.c" />
+    <ClCompile Include="..\..\redis\redis-check-aof.c" />
+    <ClCompile Include="..\..\redis\redis-check-rdb.c" />
+    <ClCompile Include="..\..\redis\redis-cli.c" />
+    <ClCompile Include="..\..\redis\release.c" />
+    <ClCompile Include="..\..\redis\replication.c" />
+    <ClCompile Include="..\..\redis\rio.c" />
+    <ClCompile Include="..\..\redis\scripting.c" />
+    <ClCompile Include="..\..\redis\sds.c" />
+    <ClCompile Include="..\..\redis\sentinel.c" />
+    <ClCompile Include="..\..\redis\server.c" />
+    <ClCompile Include="..\..\redis\setproctitle.c" />
+    <ClCompile Include="..\..\redis\sha1.c" />
+    <ClCompile Include="..\..\redis\siphash.c" />
+    <ClCompile Include="..\..\redis\slowlog.c" />
+    <ClCompile Include="..\..\redis\sort.c" />
+    <ClCompile Include="..\..\redis\sparkline.c" />
+    <ClCompile Include="..\..\redis\syncio.c" />
+    <ClCompile Include="..\..\redis\t_hash.c" />
+    <ClCompile Include="..\..\redis\t_list.c" />
+    <ClCompile Include="..\..\redis\t_set.c" />
+    <ClCompile Include="..\..\redis\t_string.c" />
+    <ClCompile Include="..\..\redis\t_zset.c" />
+    <ClCompile Include="..\..\redis\util.c" />
+    <ClCompile Include="..\..\redis\utilstr.c" />
+    <ClCompile Include="..\..\redis\utilwin.c" />
+    <ClCompile Include="..\..\redis\ziplist.c" />
+    <ClCompile Include="..\..\redis\zipmap.c" />
+    <ClCompile Include="..\..\redis\zmalloc.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\redis\adlist.h" />
+    <ClInclude Include="..\..\redis\ae.h" />
+    <ClInclude Include="..\..\redis\anet.h" />
+    <ClInclude Include="..\..\redis\atomicvar.h" />
+    <ClInclude Include="..\..\redis\bio.h" />
+    <ClInclude Include="..\..\redis\byteorder.h" />
+    <ClInclude Include="..\..\redis\cluster.h" />
+    <ClInclude Include="..\..\redis\config.h" />
+    <ClInclude Include="..\..\redis\debugmacro.h" />
+    <ClInclude Include="..\..\redis\dict.h" />
+    <ClInclude Include="..\..\redis\endianconv.h" />
+    <ClInclude Include="..\..\redis\fmacros.h" />
+    <ClInclude Include="..\..\redis\geo.h" />
+    <ClInclude Include="..\..\redis\intset.h" />
+    <ClInclude Include="..\..\redis\latency.h" />
+    <ClInclude Include="..\..\redis\pqsort.h" />
+    <ClInclude Include="..\..\redis\quicklist.h" />
+    <ClInclude Include="..\..\redis\rdb.h" />
+    <ClInclude Include="..\..\redis\redisassert.h" />
+    <ClInclude Include="..\..\redis\redisdef.h" />
+    <ClInclude Include="..\..\redis\redismodule.h" />
+    <ClInclude Include="..\..\redis\rio.h" />
+    <ClInclude Include="..\..\redis\sds.h" />
+    <ClInclude Include="..\..\redis\sdsalloc.h" />
+    <ClInclude Include="..\..\redis\server.h" />
+    <ClInclude Include="..\..\redis\sha1.h" />
+    <ClInclude Include="..\..\redis\slowlog.h" />
+    <ClInclude Include="..\..\redis\solarisfixes.h" />
+    <ClInclude Include="..\..\redis\sparkline.h" />
+    <ClInclude Include="..\..\redis\util.h" />
+    <ClInclude Include="..\..\redis\utildef.h" />
+    <ClInclude Include="..\..\redis\utilstr.h" />
+    <ClInclude Include="..\..\redis\utilwin.h" />
+    <ClInclude Include="..\..\redis\version.h" />
+    <ClInclude Include="..\..\redis\ziplist.h" />
+    <ClInclude Include="..\..\redis\zipmap.h" />
+    <ClInclude Include="..\..\redis\zmalloc.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "_text_mm_size:_if_context_x11.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char*)pattern">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_get_device_caps:_if_context_x11.c">
+      </ContextState>
+      <ContextState
+         contextName = "set_system_error:imperr.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char*)errtext">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "load_proper_doc_from_ini_file:docbag.c">
+      </ContextState>
+      <ContextState
+         contextName = "db_exec:xdb_mysql.c">
+      </ContextState>
+      <ContextState
+         contextName = "default_xfont:xdkutil.c">
+      </ContextState>
+      <ContextState
+         contextName = "raise_user_error:impjmp.c">
+      </ContextState>
+      <ContextState
+         contextName = "xdl_process_init:xdlinit.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_xdl_mou">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_create_display_context:_if_context_x11.c">
+      </ContextState>
+      <ContextState
+         contextName = "_file_info:_if_file_macos.c">
+      </ContextState>
+      <ContextState
+         contextName = "_db_fetch_row:xdb_mysql.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "pnull[i]">
+            </PersistentString>
+            <PersistentString
+               value = "plen[i]">
+            </PersistentString>
+            <PersistentString
+               value = "pbuf[i]">
+            </PersistentString>
+            <PersistentString
+               value = "(char*)d_str">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "db_select:xdb_mysql.c">
+      </ContextState>
+      <ContextState
+         contextName = "_context_startup:_if_context_x11.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_display">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "xdl_thread_init:xdlinit.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_xdl_mou">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "a_ltoxs:xdlstr.c">
+      </ContextState>
+      <ContextState
+         contextName = "db_datetime:xdb_mysql.c">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

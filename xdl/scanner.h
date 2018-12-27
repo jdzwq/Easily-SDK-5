@@ -1,0 +1,98 @@
+﻿/***********************************************************************
+	Easily xdl v5.5
+
+	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
+
+	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
+
+	@doc text scanner document
+
+	@module	scanner.h | text scaner interface file
+
+	@devnote 张文权 2005.01 - 2007.12	v3.0
+	@devnote 张文权 2008.01 - 2009.12	v3.5
+	@devnote 张文权 2012.01 - 2015.12	v4.0
+	@devnote 张文权 2016.01 - 2016.12	v4.5
+	@devnote 张文权 2017.01 - 2017.12	v5.0
+	@devnote 张文权 2018.01 - 2018.12	v5.5
+***********************************************************************/
+
+/**********************************************************************
+This program is free software : you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+LICENSE.GPL3 for more details.
+***********************************************************************/
+
+#ifndef _SCANNER_H
+#define _SCANNER_H
+
+#include "xdldef.h"
+
+#ifdef XDL_SUPPORT_VIEW
+
+typedef enum{
+	_SCANNER_OPERA_STOP = 0,
+	_SCANNER_OPERA_NEXT = 1,
+	_SCANNER_OPERA_DEL = 2,
+	_SCANNER_OPERA_INS = 3,
+	_SCANNER_OPERA_PAGED = 4,
+}SCANNER_OPERA;
+
+typedef enum{
+	_SCANNER_STATE_BEGIN = 0,
+	_SCANNER_STATE_CATOR = 1,
+	_SCANNER_STATE_WORDS = 2,
+	_SCANNER_STATE_LINEBREAK = 3,
+	_SCANNER_STATE_PAGEBREAK = 4,
+	_SCANNER_STATE_NEWLINE = 5,
+	_SCANNER_STATE_NEWPAGE = 6,
+	_SCANNER_STATE_END = -1,
+}SCANNER_STATE;
+
+typedef struct _WORDPLACE
+{
+	long char_w, char_h, line_h;
+	long cur_x, cur_y, cur_w, cur_h;
+	long min_x, min_y, max_x, max_y;
+}WORDPLACE;
+
+typedef int(*PF_SCAN_TEXTOR_CALLBACK)(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_word, int cur_count, tchar_t* ret_word, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp);
+
+typedef bool_t(*PF_SCAN_IS_PAGING)(void* param);
+typedef bool_t(*PF_SCAN_BREAK_PAGE)(void* param);
+typedef int(*PF_SCAN_NEXT_PAGE)(void* param);
+typedef int(*PF_SCAN_NEXT_WORD)(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom);
+typedef int(*PF_SCAN_INSERT_WORD)(void* param, tchar_t* pch);
+typedef int(*PF_SCAN_DELETE_WORD)(void* param);
+typedef void(*PF_SCAN_CUR_OBJECT)(void* param, void** pobj);
+
+typedef struct _if_wordscan_t{
+	PF_SCAN_IS_PAGING	pf_is_paging;
+	PF_SCAN_BREAK_PAGE	pf_break_page;
+	PF_SCAN_NEXT_PAGE	pf_next_page;
+	PF_SCAN_NEXT_WORD	pf_next_word;
+	PF_SCAN_INSERT_WORD	pf_insert_word;
+	PF_SCAN_DELETE_WORD	pf_delete_word;
+	PF_SCAN_CUR_OBJECT	pf_cur_object;
+	void* param;
+}if_wordscan_t;
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+XDL_API void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+
+#ifdef	__cplusplus
+}
+#endif
+
+#endif
+
+#endif /*SCANNER_H*/

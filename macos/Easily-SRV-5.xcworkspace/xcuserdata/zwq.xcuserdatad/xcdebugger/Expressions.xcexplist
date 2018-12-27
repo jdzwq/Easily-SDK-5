@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "insert_link_after:dblink.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "root">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "stream_read_chunk_size:xdlstm.c">
+      </ContextState>
+      <ContextState
+         contextName = "_stream_end_read:xdlstm.c">
+      </ContextState>
+      <ContextState
+         contextName = "set_system_error:imperr.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char*)errtext">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "set_network_error:impsock.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char*)err">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_socket_accept:_if_socket_macos.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "pb">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_stream_read_chunk_head:xdlstm.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "bsize">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

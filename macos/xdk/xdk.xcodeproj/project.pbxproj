@@ -1,0 +1,391 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B053698216487C200B1DD42 /* xdkinf.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B053696216487C200B1DD42 /* xdkinf.c */; };
+		9B053699216487C200B1DD42 /* xdkutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B053697216487C200B1DD42 /* xdkutil.c */; };
+		9B077CAF214ED2AF00C647DD /* xdkattr.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CA8214ED2AF00C647DD /* xdkattr.h */; };
+		9B077CB0214ED2AF00C647DD /* xdkdef.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CA9214ED2AF00C647DD /* xdkdef.h */; };
+		9B077CB1214ED2AF00C647DD /* xdkiml.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CAA214ED2AF00C647DD /* xdkiml.h */; };
+		9B077CB3214ED2AF00C647DD /* xdkinf.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CAC214ED2AF00C647DD /* xdkinf.h */; };
+		9B077CB5214ED2AF00C647DD /* xdkutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CAE214ED2AF00C647DD /* xdkutil.h */; };
+		9B0953492184D7D50013F6AE /* _if_bitmap_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B0953482184D7D50013F6AE /* _if_bitmap_X11.c */; };
+		9B09534B2185EB7C0013F6AE /* _if_gdi_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B09534A2185EB7C0013F6AE /* _if_gdi_X11.c */; };
+		9B09534D218621A90013F6AE /* _if_region_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B09534C218621A90013F6AE /* _if_region_X11.c */; };
+		9B09534F218623F90013F6AE /* _if_widget_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B09534E218623F90013F6AE /* _if_widget_X11.c */; };
+		9B15EEAF216B9819005E9489 /* _if_comm_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B15EEAE216B9819005E9489 /* _if_comm_macos.c */; };
+		9B3165342183374D0063E38B /* _if_context_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B3165332183374D0063E38B /* _if_context_X11.c */; };
+		9BED61F12165F59300024C7F /* _if_block_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E12165F59300024C7F /* _if_block_macos.c */; };
+		9BED61F32165F59300024C7F /* _if_cons_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E32165F59300024C7F /* _if_cons_macos.c */; };
+		9BED61F42165F59300024C7F /* _if_date_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E42165F59300024C7F /* _if_date_macos.c */; };
+		9BED61F52165F59300024C7F /* _if_error_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E52165F59300024C7F /* _if_error_macos.c */; };
+		9BED61F62165F59300024C7F /* _if_file_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E62165F59300024C7F /* _if_file_macos.c */; };
+		9BED61F72165F59300024C7F /* _if_mbcs_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E72165F59300024C7F /* _if_mbcs_macos.c */; };
+		9BED61F82165F59300024C7F /* _if_memo_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E82165F59300024C7F /* _if_memo_macos.c */; };
+		9BED61F92165F59300024C7F /* _if_pipe_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E92165F59300024C7F /* _if_pipe_macos.c */; };
+		9BED61FA2165F59300024C7F /* _if_process_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EA2165F59300024C7F /* _if_process_macos.c */; };
+		9BED61FB2165F59300024C7F /* _if_share_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EB2165F59300024C7F /* _if_share_macos.c */; };
+		9BED61FC2165F59300024C7F /* _if_shell_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EC2165F59300024C7F /* _if_shell_macos.c */; };
+		9BED61FD2165F59300024C7F /* _if_socket_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61ED2165F59300024C7F /* _if_socket_macos.c */; };
+		9BED61FE2165F59300024C7F /* _if_thread_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EE2165F59300024C7F /* _if_thread_macos.c */; };
+		9BED61FF2165F59300024C7F /* _if_timer_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EF2165F59300024C7F /* _if_timer_macos.c */; };
+		9BED62002165F59300024C7F /* _xdk_macos.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BED61F02165F59300024C7F /* _xdk_macos.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9B053696216487C200B1DD42 /* xdkinf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdkinf.c; path = ../../xdk/xdkinf.c; sourceTree = "<group>"; };
+		9B053697216487C200B1DD42 /* xdkutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdkutil.c; path = ../../xdk/xdkutil.c; sourceTree = "<group>"; };
+		9B077CA1214ED28800C647DD /* libxdk.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxdk.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B077CA8214ED2AF00C647DD /* xdkattr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkattr.h; path = ../../xdk/xdkattr.h; sourceTree = "<group>"; };
+		9B077CA9214ED2AF00C647DD /* xdkdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkdef.h; path = ../../xdk/xdkdef.h; sourceTree = "<group>"; };
+		9B077CAA214ED2AF00C647DD /* xdkiml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkiml.h; path = ../../xdk/xdkiml.h; sourceTree = "<group>"; };
+		9B077CAC214ED2AF00C647DD /* xdkinf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkinf.h; path = ../../xdk/xdkinf.h; sourceTree = "<group>"; };
+		9B077CAE214ED2AF00C647DD /* xdkutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkutil.h; path = ../../xdk/xdkutil.h; sourceTree = "<group>"; };
+		9B0953482184D7D50013F6AE /* _if_bitmap_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_bitmap_X11.c; path = ../../xdk/macos/_if_bitmap_X11.c; sourceTree = "<group>"; };
+		9B09534A2185EB7C0013F6AE /* _if_gdi_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_gdi_X11.c; path = ../../xdk/macos/_if_gdi_X11.c; sourceTree = "<group>"; };
+		9B09534C218621A90013F6AE /* _if_region_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_region_X11.c; path = ../../xdk/macos/_if_region_X11.c; sourceTree = "<group>"; };
+		9B09534E218623F90013F6AE /* _if_widget_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_widget_X11.c; path = ../../xdk/macos/_if_widget_X11.c; sourceTree = "<group>"; };
+		9B15EEAE216B9819005E9489 /* _if_comm_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_comm_macos.c; path = ../../xdk/macos/_if_comm_macos.c; sourceTree = "<group>"; };
+		9B3165332183374D0063E38B /* _if_context_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_context_X11.c; path = ../../xdk/macos/_if_context_X11.c; sourceTree = "<group>"; };
+		9BED61E12165F59300024C7F /* _if_block_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_block_macos.c; path = ../../xdk/macos/_if_block_macos.c; sourceTree = "<group>"; };
+		9BED61E32165F59300024C7F /* _if_cons_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_cons_macos.c; path = ../../xdk/macos/_if_cons_macos.c; sourceTree = "<group>"; };
+		9BED61E42165F59300024C7F /* _if_date_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_date_macos.c; path = ../../xdk/macos/_if_date_macos.c; sourceTree = "<group>"; };
+		9BED61E52165F59300024C7F /* _if_error_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_error_macos.c; path = ../../xdk/macos/_if_error_macos.c; sourceTree = "<group>"; };
+		9BED61E62165F59300024C7F /* _if_file_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_file_macos.c; path = ../../xdk/macos/_if_file_macos.c; sourceTree = "<group>"; };
+		9BED61E72165F59300024C7F /* _if_mbcs_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_mbcs_macos.c; path = ../../xdk/macos/_if_mbcs_macos.c; sourceTree = "<group>"; };
+		9BED61E82165F59300024C7F /* _if_memo_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_memo_macos.c; path = ../../xdk/macos/_if_memo_macos.c; sourceTree = "<group>"; };
+		9BED61E92165F59300024C7F /* _if_pipe_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_pipe_macos.c; path = ../../xdk/macos/_if_pipe_macos.c; sourceTree = "<group>"; };
+		9BED61EA2165F59300024C7F /* _if_process_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_process_macos.c; path = ../../xdk/macos/_if_process_macos.c; sourceTree = "<group>"; };
+		9BED61EB2165F59300024C7F /* _if_share_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_share_macos.c; path = ../../xdk/macos/_if_share_macos.c; sourceTree = "<group>"; };
+		9BED61EC2165F59300024C7F /* _if_shell_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_shell_macos.c; path = ../../xdk/macos/_if_shell_macos.c; sourceTree = "<group>"; };
+		9BED61ED2165F59300024C7F /* _if_socket_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_socket_macos.c; path = ../../xdk/macos/_if_socket_macos.c; sourceTree = "<group>"; };
+		9BED61EE2165F59300024C7F /* _if_thread_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_thread_macos.c; path = ../../xdk/macos/_if_thread_macos.c; sourceTree = "<group>"; };
+		9BED61EF2165F59300024C7F /* _if_timer_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_timer_macos.c; path = ../../xdk/macos/_if_timer_macos.c; sourceTree = "<group>"; };
+		9BED61F02165F59300024C7F /* _xdk_macos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _xdk_macos.h; path = ../../xdk/macos/_xdk_macos.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B077C9E214ED28800C647DD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B077C98214ED28800C647DD = {
+			isa = PBXGroup;
+			children = (
+				9BED61E02165F57800024C7F /* macos */,
+				9B077CA2214ED28800C647DD /* Products */,
+				9B077CA8214ED2AF00C647DD /* xdkattr.h */,
+				9B077CA9214ED2AF00C647DD /* xdkdef.h */,
+				9B077CAA214ED2AF00C647DD /* xdkiml.h */,
+				9B053696216487C200B1DD42 /* xdkinf.c */,
+				9B077CAC214ED2AF00C647DD /* xdkinf.h */,
+				9B053697216487C200B1DD42 /* xdkutil.c */,
+				9B077CAE214ED2AF00C647DD /* xdkutil.h */,
+			);
+			sourceTree = "<group>";
+		};
+		9B077CA2214ED28800C647DD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B077CA1214ED28800C647DD /* libxdk.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9BED61E02165F57800024C7F /* macos */ = {
+			isa = PBXGroup;
+			children = (
+				9B09534E218623F90013F6AE /* _if_widget_X11.c */,
+				9B09534C218621A90013F6AE /* _if_region_X11.c */,
+				9B09534A2185EB7C0013F6AE /* _if_gdi_X11.c */,
+				9B0953482184D7D50013F6AE /* _if_bitmap_X11.c */,
+				9B3165332183374D0063E38B /* _if_context_X11.c */,
+				9B15EEAE216B9819005E9489 /* _if_comm_macos.c */,
+				9BED61E12165F59300024C7F /* _if_block_macos.c */,
+				9BED61E32165F59300024C7F /* _if_cons_macos.c */,
+				9BED61E42165F59300024C7F /* _if_date_macos.c */,
+				9BED61E52165F59300024C7F /* _if_error_macos.c */,
+				9BED61E62165F59300024C7F /* _if_file_macos.c */,
+				9BED61E72165F59300024C7F /* _if_mbcs_macos.c */,
+				9BED61E82165F59300024C7F /* _if_memo_macos.c */,
+				9BED61E92165F59300024C7F /* _if_pipe_macos.c */,
+				9BED61EA2165F59300024C7F /* _if_process_macos.c */,
+				9BED61EB2165F59300024C7F /* _if_share_macos.c */,
+				9BED61EC2165F59300024C7F /* _if_shell_macos.c */,
+				9BED61ED2165F59300024C7F /* _if_socket_macos.c */,
+				9BED61EE2165F59300024C7F /* _if_thread_macos.c */,
+				9BED61EF2165F59300024C7F /* _if_timer_macos.c */,
+				9BED61F02165F59300024C7F /* _xdk_macos.h */,
+			);
+			name = macos;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9B077C9F214ED28800C647DD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B077CB0214ED2AF00C647DD /* xdkdef.h in Headers */,
+				9BED62002165F59300024C7F /* _xdk_macos.h in Headers */,
+				9B077CB1214ED2AF00C647DD /* xdkiml.h in Headers */,
+				9B077CB3214ED2AF00C647DD /* xdkinf.h in Headers */,
+				9B077CB5214ED2AF00C647DD /* xdkutil.h in Headers */,
+				9B077CAF214ED2AF00C647DD /* xdkattr.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		9B077CA0214ED28800C647DD /* xdk */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B077CA5214ED28800C647DD /* Build configuration list for PBXNativeTarget "xdk" */;
+			buildPhases = (
+				9B077C9D214ED28800C647DD /* Sources */,
+				9B077C9E214ED28800C647DD /* Frameworks */,
+				9B077C9F214ED28800C647DD /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xdk;
+			productName = xdk;
+			productReference = 9B077CA1214ED28800C647DD /* libxdk.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B077C99214ED28800C647DD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "张文权";
+				TargetAttributes = {
+					9B077CA0214ED28800C647DD = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9B077C9C214ED28800C647DD /* Build configuration list for PBXProject "xdk" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9B077C98214ED28800C647DD;
+			productRefGroup = 9B077CA2214ED28800C647DD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B077CA0214ED28800C647DD /* xdk */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B077C9D214ED28800C647DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BED61F52165F59300024C7F /* _if_error_macos.c in Sources */,
+				9B0953492184D7D50013F6AE /* _if_bitmap_X11.c in Sources */,
+				9BED61FF2165F59300024C7F /* _if_timer_macos.c in Sources */,
+				9BED61FC2165F59300024C7F /* _if_shell_macos.c in Sources */,
+				9BED61F32165F59300024C7F /* _if_cons_macos.c in Sources */,
+				9BED61F72165F59300024C7F /* _if_mbcs_macos.c in Sources */,
+				9BED61F42165F59300024C7F /* _if_date_macos.c in Sources */,
+				9BED61F82165F59300024C7F /* _if_memo_macos.c in Sources */,
+				9BED61FA2165F59300024C7F /* _if_process_macos.c in Sources */,
+				9B053699216487C200B1DD42 /* xdkutil.c in Sources */,
+				9BED61FD2165F59300024C7F /* _if_socket_macos.c in Sources */,
+				9BED61FE2165F59300024C7F /* _if_thread_macos.c in Sources */,
+				9B09534B2185EB7C0013F6AE /* _if_gdi_X11.c in Sources */,
+				9B09534D218621A90013F6AE /* _if_region_X11.c in Sources */,
+				9BED61F12165F59300024C7F /* _if_block_macos.c in Sources */,
+				9BED61FB2165F59300024C7F /* _if_share_macos.c in Sources */,
+				9B3165342183374D0063E38B /* _if_context_X11.c in Sources */,
+				9B15EEAF216B9819005E9489 /* _if_comm_macos.c in Sources */,
+				9BED61F62165F59300024C7F /* _if_file_macos.c in Sources */,
+				9BED61F92165F59300024C7F /* _if_pipe_macos.c in Sources */,
+				9B053698216487C200B1DD42 /* xdkinf.c in Sources */,
+				9B09534F218623F90013F6AE /* _if_widget_X11.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9B077CA3214ED28800C647DD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9B077CA4214ED28800C647DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9B077CA6214ED28800C647DD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
+				);
+				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdk.dylib";
+				LIBRARY_SEARCH_PATHS = /opt/X11/lib;
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				OTHER_LDFLAGS = (
+					"-lpthread",
+					"-lX11",
+					"-lXft",
+					"-lfontconfig",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+			};
+			name = Debug;
+		};
+		9B077CA7214ED28800C647DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
+				);
+				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdk.dylib";
+				LIBRARY_SEARCH_PATHS = /opt/X11/lib;
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				OTHER_LDFLAGS = (
+					"-lpthread",
+					"-lX11",
+					"-lXft",
+					"-lfontconfig",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B077C9C214ED28800C647DD /* Build configuration list for PBXProject "xdk" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B077CA3214ED28800C647DD /* Debug */,
+				9B077CA4214ED28800C647DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B077CA5214ED28800C647DD /* Build configuration list for PBXNativeTarget "xdk" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B077CA6214ED28800C647DD /* Debug */,
+				9B077CA7214ED28800C647DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B077C99214ED28800C647DD /* Project object */;
+}

@@ -1,0 +1,279 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9BE68F85217FBACA003AC3C0 /* xdb_api.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9BE68F83217FBACA003AC3C0 /* xdb_api.cc */; };
+		9BE68F86217FBACA003AC3C0 /* xdb_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BE68F84217FBACA003AC3C0 /* xdb_api.h */; };
+		9BE68F89217FBAF1003AC3C0 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE68F87217FBAF1003AC3C0 /* libxdl.dylib */; };
+		9BE68F8A217FBAF1003AC3C0 /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE68F88217FBAF1003AC3C0 /* libxds.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9BE68F7C217FBA8C003AC3C0 /* libxdb_api.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxdb_api.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BE68F83217FBACA003AC3C0 /* xdb_api.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xdb_api.cc; path = ../../api/xdb_api/xdb_api.cc; sourceTree = "<group>"; };
+		9BE68F84217FBACA003AC3C0 /* xdb_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdb_api.h; path = ../../api/xdb_api/xdb_api.h; sourceTree = "<group>"; };
+		9BE68F87217FBAF1003AC3C0 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9BE68F88217FBAF1003AC3C0 /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxds.dylib"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9BE68F79217FBA8C003AC3C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BE68F8A217FBAF1003AC3C0 /* libxds.dylib in Frameworks */,
+				9BE68F89217FBAF1003AC3C0 /* libxdl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9BE68F73217FBA8C003AC3C0 = {
+			isa = PBXGroup;
+			children = (
+				9BE68F87217FBAF1003AC3C0 /* libxdl.dylib */,
+				9BE68F88217FBAF1003AC3C0 /* libxds.dylib */,
+				9BE68F83217FBACA003AC3C0 /* xdb_api.cc */,
+				9BE68F84217FBACA003AC3C0 /* xdb_api.h */,
+				9BE68F7D217FBA8C003AC3C0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9BE68F7D217FBA8C003AC3C0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9BE68F7C217FBA8C003AC3C0 /* libxdb_api.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9BE68F7A217FBA8C003AC3C0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BE68F86217FBACA003AC3C0 /* xdb_api.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		9BE68F7B217FBA8C003AC3C0 /* xdb_api */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BE68F80217FBA8C003AC3C0 /* Build configuration list for PBXNativeTarget "xdb_api" */;
+			buildPhases = (
+				9BE68F78217FBA8C003AC3C0 /* Sources */,
+				9BE68F79217FBA8C003AC3C0 /* Frameworks */,
+				9BE68F7A217FBA8C003AC3C0 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xdb_api;
+			productName = xdb_api;
+			productReference = 9BE68F7C217FBA8C003AC3C0 /* libxdb_api.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9BE68F74217FBA8C003AC3C0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "张文权";
+				TargetAttributes = {
+					9BE68F7B217FBA8C003AC3C0 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9BE68F77217FBA8C003AC3C0 /* Build configuration list for PBXProject "xdb_api" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9BE68F73217FBA8C003AC3C0;
+			productRefGroup = 9BE68F7D217FBA8C003AC3C0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9BE68F7B217FBA8C003AC3C0 /* xdb_api */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9BE68F78217FBA8C003AC3C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BE68F85217FBACA003AC3C0 /* xdb_api.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9BE68F7E217FBA8C003AC3C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9BE68F7F217FBA8C003AC3C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9BE68F81217FBA8C003AC3C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../api/xdb_api,
+				);
+				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_api.dylib";
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+			};
+			name = Debug;
+		};
+		9BE68F82217FBA8C003AC3C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../api/xdb_api,
+				);
+				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_api.dylib";
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9BE68F77217FBA8C003AC3C0 /* Build configuration list for PBXProject "xdb_api" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BE68F7E217FBA8C003AC3C0 /* Debug */,
+				9BE68F7F217FBA8C003AC3C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BE68F80217FBA8C003AC3C0 /* Build configuration list for PBXNativeTarget "xdb_api" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BE68F81217FBA8C003AC3C0 /* Debug */,
+				9BE68F82217FBA8C003AC3C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9BE68F74217FBA8C003AC3C0 /* Project object */;
+}

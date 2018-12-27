@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B434EC62171CFFB00AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC42171CFFB00AC4CAA /* libxdl.dylib */; };
+		9B434EC72171CFFB00AC4CAA /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC52171CFFB00AC4CAA /* libxds.dylib */; };
+		9B434EEB217208A900AC4CAA /* xportdMain.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EEA217208A900AC4CAA /* xportdMain.cc */; };
+		9B5699A621688EB300A9A2E7 /* srvlog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B56999C21688EB300A9A2E7 /* srvlog.cc */; };
+		9B5699A821688EB300A9A2E7 /* xhttps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699A021688EB300A9A2E7 /* xhttps.cc */; };
+		9B5699A921688EB300A9A2E7 /* xpnps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699A221688EB300A9A2E7 /* xpnps.cc */; };
+		9B5699AA21688EB300A9A2E7 /* xslots.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699A421688EB300A9A2E7 /* xslots.cc */; };
+		9B5699B12168A31100A9A2E7 /* xportd.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699AF2168A31100A9A2E7 /* xportd.cc */; };
+		9B6FD3E5217CBF3000FF6FDC /* srvcert.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B6FD3E3217CBF3000FF6FDC /* srvcert.cc */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9B56998F21688DE500A9A2E7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9B434EC42171CFFB00AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9B434EC52171CFFB00AC4CAA /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxds.dylib"; sourceTree = "<group>"; };
+		9B434EEA217208A900AC4CAA /* xportdMain.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xportdMain.cc; sourceTree = "<group>"; };
+		9B56999121688DE500A9A2E7 /* xportd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xportd; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B56999B21688EB300A9A2E7 /* srvdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvdef.h; path = ../../api/net_srv/srvdef.h; sourceTree = "<group>"; };
+		9B56999C21688EB300A9A2E7 /* srvlog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvlog.cc; path = ../../api/net_srv/srvlog.cc; sourceTree = "<group>"; };
+		9B56999D21688EB300A9A2E7 /* srvlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvlog.h; path = ../../api/net_srv/srvlog.h; sourceTree = "<group>"; };
+		9B5699A021688EB300A9A2E7 /* xhttps.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xhttps.cc; path = ../../api/net_srv/xhttps.cc; sourceTree = "<group>"; };
+		9B5699A121688EB300A9A2E7 /* xhttps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xhttps.h; path = ../../api/net_srv/xhttps.h; sourceTree = "<group>"; };
+		9B5699A221688EB300A9A2E7 /* xpnps.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xpnps.cc; path = ../../api/net_srv/xpnps.cc; sourceTree = "<group>"; };
+		9B5699A321688EB300A9A2E7 /* xpnps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xpnps.h; path = ../../api/net_srv/xpnps.h; sourceTree = "<group>"; };
+		9B5699A421688EB300A9A2E7 /* xslots.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xslots.cc; path = ../../api/net_srv/xslots.cc; sourceTree = "<group>"; };
+		9B5699A521688EB300A9A2E7 /* xslots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xslots.h; path = ../../api/net_srv/xslots.h; sourceTree = "<group>"; };
+		9B5699AF2168A31100A9A2E7 /* xportd.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xportd.cc; path = ../../api/net_srv/xportd.cc; sourceTree = "<group>"; };
+		9B5699B02168A31100A9A2E7 /* xportd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xportd.h; path = ../../api/net_srv/xportd.h; sourceTree = "<group>"; };
+		9B6FD3E3217CBF3000FF6FDC /* srvcert.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvcert.cc; path = ../../api/net_srv/srvcert.cc; sourceTree = "<group>"; };
+		9B6FD3E4217CBF3000FF6FDC /* srvcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvcert.h; path = ../../api/net_srv/srvcert.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B56998E21688DE500A9A2E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B434EC72171CFFB00AC4CAA /* libxds.dylib in Frameworks */,
+				9B434EC62171CFFB00AC4CAA /* libxdl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B56998821688DE500A9A2E7 = {
+			isa = PBXGroup;
+			children = (
+				9B6FD3E3217CBF3000FF6FDC /* srvcert.cc */,
+				9B6FD3E4217CBF3000FF6FDC /* srvcert.h */,
+				9B434EEA217208A900AC4CAA /* xportdMain.cc */,
+				9B434EC42171CFFB00AC4CAA /* libxdl.dylib */,
+				9B434EC52171CFFB00AC4CAA /* libxds.dylib */,
+				9B56999C21688EB300A9A2E7 /* srvlog.cc */,
+				9B5699A021688EB300A9A2E7 /* xhttps.cc */,
+				9B5699A221688EB300A9A2E7 /* xpnps.cc */,
+				9B5699AF2168A31100A9A2E7 /* xportd.cc */,
+				9B5699A421688EB300A9A2E7 /* xslots.cc */,
+				9B56999B21688EB300A9A2E7 /* srvdef.h */,
+				9B56999D21688EB300A9A2E7 /* srvlog.h */,
+				9B5699A121688EB300A9A2E7 /* xhttps.h */,
+				9B5699A321688EB300A9A2E7 /* xpnps.h */,
+				9B5699B02168A31100A9A2E7 /* xportd.h */,
+				9B5699A521688EB300A9A2E7 /* xslots.h */,
+				9B56999221688DE500A9A2E7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9B56999221688DE500A9A2E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B56999121688DE500A9A2E7 /* xportd */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B56999021688DE500A9A2E7 /* xportd */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B56999821688DE500A9A2E7 /* Build configuration list for PBXNativeTarget "xportd" */;
+			buildPhases = (
+				9B56998D21688DE500A9A2E7 /* Sources */,
+				9B56998E21688DE500A9A2E7 /* Frameworks */,
+				9B56998F21688DE500A9A2E7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xportd;
+			productName = xportd;
+			productReference = 9B56999121688DE500A9A2E7 /* xportd */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B56998921688DE500A9A2E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "张文权";
+				TargetAttributes = {
+					9B56999021688DE500A9A2E7 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9B56998C21688DE500A9A2E7 /* Build configuration list for PBXProject "xportd" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9B56998821688DE500A9A2E7;
+			productRefGroup = 9B56999221688DE500A9A2E7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B56999021688DE500A9A2E7 /* xportd */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B56998D21688DE500A9A2E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B5699A621688EB300A9A2E7 /* srvlog.cc in Sources */,
+				9B6FD3E5217CBF3000FF6FDC /* srvcert.cc in Sources */,
+				9B5699A921688EB300A9A2E7 /* xpnps.cc in Sources */,
+				9B5699B12168A31100A9A2E7 /* xportd.cc in Sources */,
+				9B5699AA21688EB300A9A2E7 /* xslots.cc in Sources */,
+				9B5699A821688EB300A9A2E7 /* xhttps.cc in Sources */,
+				9B434EEB217208A900AC4CAA /* xportdMain.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9B56999621688DE500A9A2E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9B56999721688DE500A9A2E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9B56999921688DE500A9A2E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../api/net_srv,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+			};
+			name = Debug;
+		};
+		9B56999A21688DE500A9A2E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../api/net_srv,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B56998C21688DE500A9A2E7 /* Build configuration list for PBXProject "xportd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B56999621688DE500A9A2E7 /* Debug */,
+				9B56999721688DE500A9A2E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B56999821688DE500A9A2E7 /* Build configuration list for PBXNativeTarget "xportd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B56999921688DE500A9A2E7 /* Debug */,
+				9B56999A21688DE500A9A2E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B56998921688DE500A9A2E7 /* Project object */;
+}

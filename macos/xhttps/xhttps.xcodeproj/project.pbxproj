@@ -1,0 +1,287 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B434EDC2172065700AC4CAA /* xhttpsMain.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EDB2172065700AC4CAA /* xhttpsMain.cc */; };
+		9B434EE22172068C00AC4CAA /* srvlog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EDE2172068C00AC4CAA /* srvlog.cc */; };
+		9B434EE32172068C00AC4CAA /* xhttps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EE02172068C00AC4CAA /* xhttps.cc */; };
+		9B434EE6217207CC00AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EE4217207CC00AC4CAA /* libxdl.dylib */; };
+		9B434EE7217207CC00AC4CAA /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EE5217207CC00AC4CAA /* libxds.dylib */; };
+		9B6FD3E2217CBF0000FF6FDC /* srvcert.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B6FD3E0217CBF0000FF6FDC /* srvcert.cc */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9B434ECF2172058400AC4CAA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9B434ED12172058400AC4CAA /* xhttps */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xhttps; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B434EDB2172065700AC4CAA /* xhttpsMain.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhttpsMain.cc; sourceTree = "<group>"; };
+		9B434EDD2172068C00AC4CAA /* srvdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvdef.h; path = ../../api/net_srv/srvdef.h; sourceTree = "<group>"; };
+		9B434EDE2172068C00AC4CAA /* srvlog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvlog.cc; path = ../../api/net_srv/srvlog.cc; sourceTree = "<group>"; };
+		9B434EDF2172068C00AC4CAA /* srvlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvlog.h; path = ../../api/net_srv/srvlog.h; sourceTree = "<group>"; };
+		9B434EE02172068C00AC4CAA /* xhttps.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xhttps.cc; path = ../../api/net_srv/xhttps.cc; sourceTree = "<group>"; };
+		9B434EE12172068C00AC4CAA /* xhttps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xhttps.h; path = ../../api/net_srv/xhttps.h; sourceTree = "<group>"; };
+		9B434EE4217207CC00AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9B434EE5217207CC00AC4CAA /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxds.dylib"; sourceTree = "<group>"; };
+		9B6FD3E0217CBF0000FF6FDC /* srvcert.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvcert.cc; path = ../../api/net_srv/srvcert.cc; sourceTree = "<group>"; };
+		9B6FD3E1217CBF0000FF6FDC /* srvcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvcert.h; path = ../../api/net_srv/srvcert.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B434ECE2172058400AC4CAA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B434EE7217207CC00AC4CAA /* libxds.dylib in Frameworks */,
+				9B434EE6217207CC00AC4CAA /* libxdl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B434EC82172058400AC4CAA = {
+			isa = PBXGroup;
+			children = (
+				9B6FD3E0217CBF0000FF6FDC /* srvcert.cc */,
+				9B6FD3E1217CBF0000FF6FDC /* srvcert.h */,
+				9B434EE4217207CC00AC4CAA /* libxdl.dylib */,
+				9B434EE5217207CC00AC4CAA /* libxds.dylib */,
+				9B434EDD2172068C00AC4CAA /* srvdef.h */,
+				9B434EDE2172068C00AC4CAA /* srvlog.cc */,
+				9B434EDF2172068C00AC4CAA /* srvlog.h */,
+				9B434EE02172068C00AC4CAA /* xhttps.cc */,
+				9B434EE12172068C00AC4CAA /* xhttps.h */,
+				9B434EDB2172065700AC4CAA /* xhttpsMain.cc */,
+				9B434ED22172058400AC4CAA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9B434ED22172058400AC4CAA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B434ED12172058400AC4CAA /* xhttps */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B434ED02172058400AC4CAA /* xhttps */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B434ED82172058400AC4CAA /* Build configuration list for PBXNativeTarget "xhttps" */;
+			buildPhases = (
+				9B434ECD2172058400AC4CAA /* Sources */,
+				9B434ECE2172058400AC4CAA /* Frameworks */,
+				9B434ECF2172058400AC4CAA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xhttps;
+			productName = xhttps;
+			productReference = 9B434ED12172058400AC4CAA /* xhttps */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B434EC92172058400AC4CAA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "张文权";
+				TargetAttributes = {
+					9B434ED02172058400AC4CAA = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9B434ECC2172058400AC4CAA /* Build configuration list for PBXProject "xhttps" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9B434EC82172058400AC4CAA;
+			productRefGroup = 9B434ED22172058400AC4CAA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B434ED02172058400AC4CAA /* xhttps */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B434ECD2172058400AC4CAA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B434EE22172068C00AC4CAA /* srvlog.cc in Sources */,
+				9B434EDC2172065700AC4CAA /* xhttpsMain.cc in Sources */,
+				9B434EE32172068C00AC4CAA /* xhttps.cc in Sources */,
+				9B6FD3E2217CBF0000FF6FDC /* srvcert.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9B434ED62172058400AC4CAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9B434ED72172058400AC4CAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9B434ED92172058400AC4CAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../api/net_srv,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+			};
+			name = Debug;
+		};
+		9B434EDA2172058400AC4CAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../api/net_srv,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../lib,
+					"$(BUILD_DIR)/api",
+				);
+				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B434ECC2172058400AC4CAA /* Build configuration list for PBXProject "xhttps" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B434ED62172058400AC4CAA /* Debug */,
+				9B434ED72172058400AC4CAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B434ED82172058400AC4CAA /* Build configuration list for PBXNativeTarget "xhttps" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B434ED92172058400AC4CAA /* Debug */,
+				9B434EDA2172058400AC4CAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B434EC92172058400AC4CAA /* Project object */;
+}

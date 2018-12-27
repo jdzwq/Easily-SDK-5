@@ -1,0 +1,10 @@
+﻿生成启动时间为 2018/3/17 0:11:57。
+     1>项目“D:\Easily-sdk-5\windows\rc\rc.vcxproj”在节点 2 上(ClCompile 个目标)。
+     1>ClCompile:
+         C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\rc\rc4.c
+         rc4.c
+     1>已完成生成项目“D:\Easily-sdk-5\windows\rc\rc.vcxproj”(ClCompile 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.79

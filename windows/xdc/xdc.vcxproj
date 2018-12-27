@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\xdc\annodlg.c" />
+    <ClCompile Include="..\..\xdc\chartctrl.c" />
+    <ClCompile Include="..\..\xdc\checkbox.c" />
+    <ClCompile Include="..\..\xdc\datebox.c" />
+    <ClCompile Include="..\..\xdc\dialogctrl.c" />
+    <ClCompile Include="..\..\xdc\docker.c" />
+    <ClCompile Include="..\..\xdc\dropbox.c" />
+    <ClCompile Include="..\..\xdc\editbox.c" />
+    <ClCompile Include="..\..\xdc\firecheck.c" />
+    <ClCompile Include="..\..\xdc\firedate.c" />
+    <ClCompile Include="..\..\xdc\fireedit.c" />
+    <ClCompile Include="..\..\xdc\firegrid.c" />
+    <ClCompile Include="..\..\xdc\firelist.c" />
+    <ClCompile Include="..\..\xdc\firenum.c" />
+    <ClCompile Include="..\..\xdc\firetime.c" />
+    <ClCompile Include="..\..\xdc\firewords.c" />
+    <ClCompile Include="..\..\xdc\formctrl.c" />
+    <ClCompile Include="..\..\xdc\graphctrl.c" />
+    <ClCompile Include="..\..\xdc\gridctrl.c" />
+    <ClCompile Include="..\..\xdc\griddlg.c" />
+    <ClCompile Include="..\..\xdc\handler.c" />
+    <ClCompile Include="..\..\xdc\iconbox.c" />
+    <ClCompile Include="..\..\xdc\imagesctrl.c" />
+    <ClCompile Include="..\..\xdc\inputdlg.c" />
+    <ClCompile Include="..\..\xdc\keybox.c" />
+    <ClCompile Include="..\..\xdc\labelctrl.c" />
+    <ClCompile Include="..\..\xdc\listbox.c" />
+    <ClCompile Include="..\..\xdc\listctrl.c" />
+    <ClCompile Include="..\..\xdc\listdlg.c" />
+    <ClCompile Include="..\..\xdc\memoctrl.c" />
+    <ClCompile Include="..\..\xdc\menubox.c" />
+    <ClCompile Include="..\..\xdc\msgdlg.c" />
+    <ClCompile Include="..\..\xdc\navibox.c" />
+    <ClCompile Include="..\..\xdc\notesctrl.c" />
+    <ClCompile Include="..\..\xdc\numbox.c" />
+    <ClCompile Include="..\..\xdc\photoctrl.c" />
+    <ClCompile Include="..\..\xdc\previewdlg.c" />
+    <ClCompile Include="..\..\xdc\properctrl.c" />
+    <ClCompile Include="..\..\xdc\properdlg.c" />
+    <ClCompile Include="..\..\xdc\pushbox.c" />
+    <ClCompile Include="..\..\xdc\radiobox.c" />
+    <ClCompile Include="..\..\xdc\richctrl.c" />
+    <ClCompile Include="..\..\xdc\shapebox.c" />
+    <ClCompile Include="..\..\xdc\slidebox.c" />
+    <ClCompile Include="..\..\xdc\spinbox.c" />
+    <ClCompile Include="..\..\xdc\splitor.c" />
+    <ClCompile Include="..\..\xdc\staticbox.c" />
+    <ClCompile Include="..\..\xdc\statusctrl.c" />
+    <ClCompile Include="..\..\xdc\svgctrl.c" />
+    <ClCompile Include="..\..\xdc\tablectrl.c" />
+    <ClCompile Include="..\..\xdc\tabledlg.c" />
+    <ClCompile Include="..\..\xdc\tagctrl.c" />
+    <ClCompile Include="..\..\xdc\textdlg.c" />
+    <ClCompile Include="..\..\xdc\textor.c" />
+    <ClCompile Include="..\..\xdc\timebox.c" />
+    <ClCompile Include="..\..\xdc\tipbox.c" />
+    <ClCompile Include="..\..\xdc\titlectrl.c" />
+    <ClCompile Include="..\..\xdc\toolctrl.c" />
+    <ClCompile Include="..\..\xdc\topogctrl.c" />
+    <ClCompile Include="..\..\xdc\treectrl.c" />
+    <ClCompile Include="..\..\xdc\winnc.c" />
+    <ClCompile Include="..\..\xdc\wordsbox.c" />
+    <ClCompile Include="..\..\xdc\xdcdlg.c" />
+    <ClCompile Include="..\..\xdc\xdcmenu.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xdc\docker.h" />
+    <ClInclude Include="..\..\xdc\handler.h" />
+    <ClInclude Include="..\..\xdc\lang\_xdc_ansi.h" />
+    <ClInclude Include="..\..\xdc\splitor.h" />
+    <ClInclude Include="..\..\xdc\textor.h" />
+    <ClInclude Include="..\..\xdc\winnc.h" />
+    <ClInclude Include="..\..\xdc\xdcbox.h" />
+    <ClInclude Include="..\..\xdc\xdcctrl.h" />
+    <ClInclude Include="..\..\xdc\xdcdef.h" />
+    <ClInclude Include="..\..\xdc\xdcdlg.h" />
+    <ClInclude Include="..\..\xdc\xdcfire.h" />
+    <ClInclude Include="..\..\xdc\xdcmenu.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{673B8A85-F707-4327-A4F4-3FB3FA1E3C04}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>xdc</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)55</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>$(ProjectName)64</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
+    <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XDC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XDC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\lib\x64\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XDC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ImportLibrary>..\lib\$(ProjectName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XDC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ImportLibrary>..\lib\x64\$(ProjectName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

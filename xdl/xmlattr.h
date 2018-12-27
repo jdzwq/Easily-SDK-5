@@ -1,0 +1,106 @@
+﻿#ifndef XMLATTR_H
+#define XMLATTR_H
+
+
+#define XMLNS_XSI_INSTANCE		_T("http://www.w3.org/2001/XMLSchema-instance")
+#define XMLNS_XSD_INSTANCE		_T("http://www.w3.org/2001/XMLSchema")
+#define XMLNS_SOAP_INSTANCE		_T("http://schemas.xmlsoap.org/soap/envelope/")
+#define XMLNS_WSDL_INSTANCE		_T("http://schemas.xmlsoap.org/wsdl/")
+#define XMLNS_WSDL_HTTP			_T("http://schemas.xmlsoap.org/wsdl/http/")
+#define XMLNS_WSDL_SOAP			_T("http://schemas.xmlsoap.org/wsdl/soap/")
+#define XMLNS_XDL_INSTANCE		_T("http://www.easily.com.cn/xdl/")
+#define XMLNS_XDL40_INSTANCE	_T("http://www.easily.com.cn/xdl40/")
+#define XMLNS_ENCODINGSTYLE_INSTANCE	_T("http://schemas.xmlsoap.org/soap/encoding/")
+
+#define XMLNS_SVG_INSTANCE		_T("http://www.w3.org/2000/svg")
+#define XMLNS_STREAM_INSTANCE	_T("http://etherx.jabber.org/streams")
+
+#define SOAP_TRANSPORT_HTTP		_T("http://schemas.xmlsoap.org/soap/http")
+
+#define XMLNS			_T("xmlns")
+#define XMLNS_SOAP		_T("xmlns:soap")
+#define XMLNS_WSDL		_T("xmlns:wsdl")
+#define XMLNS_HTTP		_T("xmlns:http")
+#define XMLNS_XSI		_T("xmlns:xsi")
+#define XMLNS_XSD		_T("xmlns:xsd")
+#define XMLNS_XDL		_T("xmlns:xdl")
+#define XMLNS_STREAM	_T("xmlns:stream")
+#define XMLNS_TNS		_T("xmlns:tns")
+
+#define NSSOAP			_T("soap")
+#define NSWSDL			_T("wsdl")
+#define NSXSI			_T("xsi")
+#define NSXSD			_T("xsd")
+#define NSXDL			_T("xdl")
+#define NSTNS			_T("tns")
+
+/*********************************************************SOAP ATTRIBUTES**************************************************/
+#define SOAP_ATTR_ENCODINGSTYLE		_T("soap:encodingStyle")
+
+#define SOAP_ATTR_DATATYPE			_T("xsi:type")
+#define SOAP_ATTR_DATATYPE_BOOLEAN	_T("xsd:boolean")
+#define SOAP_ATTR_DATATYPE_INTEGER	_T("xsd:integer")
+#define SOAP_ATTR_DATATYPE_DECIMAL	_T("xsd:decimal")
+#define SOAP_ATTR_DATATYPE_DATE		_T("xsd:date")
+#define SOAP_ATTR_DATATYPE_TIME		_T("xsd:time")
+#define SOAP_ATTR_DATATYPE_STRING	_T("xsd:string")
+#define SOAP_ATTR_DATATYPE_ARRAY	_T("soap:Array")
+
+#define SOAP_ATTR_ARRAYTYPE			_T("soap:arrayType")
+/*********************************************************WSDL attributes***************************************************/
+#define WSDL_NODE_SCHEMA			_T("schema")
+#define WSDL_NODE_IMPORT			_T("import")
+#define WSDL_NODE_PART				_T("part")
+#define WSDL_NODE_OPERATION			_T("operation")
+#define WSDL_NODE_INPUT				_T("input")
+#define WSDL_NODE_OUTPUT			_T("output")
+#define WSDL_NODE_FAULT				_T("fault")
+#define WSDL_NODE_PORT				_T("port")
+#define WSDL_NODE_ADDRESS			_T("address")
+#define WSDL_NODE_SOAP				_T("soap")
+
+#define WSDL_ATTR_TARGETNAMESPACE	_T("targetNamespace")
+#define WSDL_ATTR_SERVICENAME		_T("name")
+#define WSDL_ATTR_SCHEMALOCATION	_T("schemaLocation")
+#define WSDL_ATTR_NAMESPACE         _T("namespace")
+#define WSDL_ATTR_NAME				_T("name")
+#define WSDL_ATTR_TYPE				_T("type")
+#define WSDL_ATTR_ELEMENT			_T("element")
+#define WSDL_ATTR_ELEMENT_PARAMETERS		_T("parameters")
+#define WSDL_ATTR_ELEMENT_RETURN			_T("return")
+#define WSDL_ATTR_PARAMETERORDER	_T("parameterOrder")
+#define WSDL_ATTR_ACTION			_T("Action")
+#define WSDL_ATTR_MESSAGE			_T("message")
+#define WSDL_ATTR_BINDING			_T("binding")
+#define WSDL_ATTR_LOCATION			_T("location")
+#define WSDL_ATTR_SOAPACTION		_T("soapAction")
+#define WSDL_ATTR_TRANSPORT			_T("transport")
+#define WSDL_ATTR_STYLE				_T("style")
+#define WSDL_ATTR_STYLE_DOCUMENT	_T("document")
+#define WSDL_ATTR_STYLE_RPC			_T("rpc")
+/*********************************************************SCHEMA attributes*****************************************************/
+#define SCHEMA_ATTR_NAME			_T("name")
+#define SCHEMA_ATTR_ID				_T("id")
+#define SCHEMA_ATTR_TYPE			_T("type")
+#define SCHEMA_ATTR_MININCLUSIVE	_T("minInclusive")
+#define SCHEMA_ATTR_MAXINCLUSIVE	_T("maxInclusive")
+#define SCHEMA_ATTR_REF				_T("ref")
+#define SCHEMA_ATTR_MINOCCURS		_T("minOccurs")
+#define SCHEMA_ATTR_MAXOCCURS		_T("maxOccurs")
+#define SCHEMA_ATTR_MAXOCCURSOR_UNNOUNDED	_T("unbounded")
+#define SCHEMA_ATTR_PRECISION		_T("precision")
+#define SCHEMA_ATTR_SCALE			_T("scale")
+
+#define SCHEMA_ATTR_TYPE_STRING		_T("string")
+#define SCHEMA_ATTR_TYPE_BOOLEAN	_T("boolean")
+#define SCHEMA_ATTR_TYPE_FLOAT		_T("float")
+#define SCHEMA_ATTR_TYPE_DOUBLE		_T("double")
+#define SCHEMA_ATTR_TYPE_DECIMAL	_T("decimal")
+#define SCHEMA_ATTR_TYPE_INTEGER	_T("integer")
+#define SCHEMA_ATTR_TYPE_DATETIME	_T("dateTime")
+#define SCHEMA_ATTR_TYPE_DATE		_T("date")
+#define SCHEMA_ATTR_TYPE_COMPLEXTYPE		_T("complexType")
+/**********************************************************************************************/
+
+#endif
+

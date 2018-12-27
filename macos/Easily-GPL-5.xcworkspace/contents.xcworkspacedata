@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:zip/zip.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:qrcode/qrcode.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:png/png.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:jpg/jpg.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:bmp/bmp.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:acp/acp.xcodeproj">
+   </FileRef>
+</Workspace>

@@ -1,0 +1,7 @@
+; hl7_pub.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "hl7_pub"
+DESCRIPTION  'hl7_pub Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	slots_invoke

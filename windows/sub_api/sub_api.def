@@ -1,0 +1,7 @@
+; sub_api.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "sub_api"
+DESCRIPTION  'sub_api Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	slots_invoke

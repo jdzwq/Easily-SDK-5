@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:test/xdb_mysql_test/xdb_mysql_test.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdb_mysql/xdb_mysql.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:test/xdk_child_test/xdk_child_test.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:test/xdl_util_test/xdl_util_test.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdl/xdl.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdk/xdk.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:test/xdk_lib_test/xdk_lib_test.xcodeproj">
+   </FileRef>
+</Workspace>

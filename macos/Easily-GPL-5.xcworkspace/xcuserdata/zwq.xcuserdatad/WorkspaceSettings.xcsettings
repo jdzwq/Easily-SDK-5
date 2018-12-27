@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildLocationStyle</key>
+	<string>CustomLocation</string>
+	<key>CustomBuildIntermediatesPath</key>
+	<string>/Users/zwq/工程/Easily-tmp/macos</string>
+	<key>CustomBuildLocationType</key>
+	<string>Absolute</string>
+	<key>CustomBuildProductsPath</key>
+	<string>/Users/zwq/工程/Easily-sdk-5/macos/lib</string>
+	<key>DerivedDataLocationStyle</key>
+	<string>Default</string>
+	<key>IssueFilterStyle</key>
+	<string>ShowAll</string>
+	<key>LiveSourceIssuesEnabled</key>
+	<true/>
+</dict>
+</plist>
