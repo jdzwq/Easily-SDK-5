@@ -178,8 +178,8 @@ static bool_t _photoctrl_copy(res_win_t widget)
 	len = format_dom_doc_to_bytes(dom, NULL, MAX_LONG, DEF_MBS);
 #endif
 
-	gb = system_alloc(len + sizeof(tchar_t));
-	buf = (byte_t*)system_lock(gb);
+	gb = gmem_alloc(len + sizeof(tchar_t));
+	buf = (byte_t*)gmem_lock(gb);
 
 #ifdef _UNICODE
 	format_dom_doc_to_bytes(dom, buf, len, DEF_UCS);
@@ -187,11 +187,11 @@ static bool_t _photoctrl_copy(res_win_t widget)
 	format_dom_doc_to_bytes(dom, buf, len, DEF_MBS);
 #endif
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		destroy_anno_doc(dom);
@@ -252,8 +252,8 @@ static bool_t _photoctrl_paste(res_win_t widget)
 		return 0;
 	}
 
-	len = system_size(gb);
-	buf = (byte_t*)system_lock(gb);
+	len = gmem_size(gb);
+	buf = (byte_t*)gmem_lock(gb);
 
 	dom = create_dom_doc();
 #ifdef _UNICODE
@@ -262,7 +262,7 @@ static bool_t _photoctrl_paste(res_win_t widget)
 	if (!parse_dom_doc_from_bytes(dom, buf, len, DEF_MBS))
 #endif
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -271,7 +271,7 @@ static bool_t _photoctrl_paste(res_win_t widget)
 
 	if (!is_anno_doc(dom))
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -284,7 +284,7 @@ static bool_t _photoctrl_paste(res_win_t widget)
 		attach_dom_node(get_anno_spotset(ptd->anno), LINK_LAST, nlk);
 	}
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	clipboard_clean();
 	clipboard_close();
 
@@ -460,7 +460,7 @@ void noti_photo_spot_drop(res_win_t widget, long x, long y)
 
 	pt_merge_rect(&xr_org, &xr);
 	pt_expand_rect(&xr_org, 100, 100);
-	widget_invalid(widget, &xr_org, 0);
+	widget_update(widget, &xr_org, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -526,7 +526,7 @@ void noti_photo_spot_sized(res_win_t widget, long x, long y)
 
 	pt_merge_rect(&xr_org, &xr);
 	pt_expand_rect(&xr_org, 100, 100);
-	widget_invalid(widget, &xr_org, 0);
+	widget_update(widget, &xr_org, 0);
 
 	noti_photo_owner(widget, NC_PHOTOANNOSIZED, ptd->spot, (void*)&xr, NULL);
 }
@@ -547,7 +547,7 @@ bool_t noti_photo_spot_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, 100, 100);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -565,7 +565,7 @@ void noti_photo_spot_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, 100, 100);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_photo_owner(widget, NC_PHOTOANNOCHANGED, ptd->spot, NULL, NULL);
 }
@@ -635,7 +635,7 @@ void noti_photo_commit_edit(res_win_t widget)
 
 	pt_expand_rect(&xr, 100, 100);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	widget_set_focus(widget);
 }
@@ -1017,7 +1017,7 @@ void hand_photo_size(res_win_t widget, int code, const xsize_t* prs)
 
 	_photoctrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_photo_erase(res_win_t widget, res_ctx_t dc)
@@ -1182,7 +1182,7 @@ void photoctrl_set_bitmap(res_win_t widget, const byte_t* data, dword_t size)
 
 	_photoctrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 dword_t photoctrl_get_bitmap(res_win_t widget, byte_t* buf, dword_t max)
@@ -1217,7 +1217,7 @@ void photoctrl_redraw(res_win_t widget)
 
 	noti_photo_reset_editor(widget, 0);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void photoctrl_set_lock(res_win_t widget,bool_t bLock)

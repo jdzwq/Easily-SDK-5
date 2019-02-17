@@ -57,7 +57,7 @@ void spinbox_on_plus(res_win_t widget)
 
 	ptd->cur++;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_spinbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -68,7 +68,7 @@ void spinbox_on_minus(res_win_t widget)
 
 	ptd->cur--;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_spinbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -138,7 +138,7 @@ void hand_spinbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	spinbox_delta_t* ptd = GETSPINBOXDELTA(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_spinbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -240,7 +240,7 @@ void spinbox_set_spin(res_win_t widget, int cur)
 
 	ptd->cur = cur;
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 int spinbox_get_spin(res_win_t widget)

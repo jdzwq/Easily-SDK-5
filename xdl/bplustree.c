@@ -194,7 +194,7 @@ static bplus_index_t* _alloc_bplus_index(bplus_tree_t* pbt)
 
 	pbi = _new_bplus_index();
 
-	pbi->guider = (byte_t*)page_alloc(PAGE_SIZE);
+	pbi->guider = (byte_t*)pmem_alloc(PAGE_SIZE);
 	PUT_SWORD_LOC(pbi->guider, 0, BPLUS_ENTITY_INDEX);
 	PUT_SWORD_LOC(pbi->guider, 2, 0);
 
@@ -240,7 +240,7 @@ static bplus_data_t* _alloc_bplus_data(bplus_tree_t* pbt)
 
 	pbn = _new_bplus_data();
 
-	pbn->guider = (byte_t*)page_alloc(PAGE_SIZE);
+	pbn->guider = (byte_t*)pmem_alloc(PAGE_SIZE);
 	PUT_SWORD_LOC(pbn->guider, 0, BPLUS_ENTITY_DATA);
 	PUT_SWORD_LOC(pbn->guider, 2, 0);
 	pbn->dataset = (bplus_data_entity*)(pbn->guider + BPLUS_PAGE_HEADER);
@@ -328,11 +328,11 @@ static bool_t _attach_bplus_index(bplus_tree_t* pbt, bplus_index_t* pbi)
 
 	XDL_ASSERT(pbt->index_table != NULL);
 
-	pbi->guider = (byte_t*)page_alloc(PAGE_SIZE);
+	pbi->guider = (byte_t*)pmem_alloc(PAGE_SIZE);
 
 	if (!_update_bplus_index(pbt,pbi, 0))
 	{
-		page_free(pbi->guider);
+		pmem_free(pbi->guider);
 		pbi->guider = NULL;
 		pbi->indices = NULL;
 		pbi->count = 0;
@@ -386,7 +386,7 @@ static bool_t _detach_bplus_index(bplus_tree_t* pbt, bplus_index_t* pbi)
 
 	XDL_ASSERT(pbt->index_table != NULL);
 
-	page_free(pbi->guider);
+	pmem_free(pbi->guider);
 	pbi->guider = NULL;
 	pbi->indices = NULL;
 	pbi->count = 0;
@@ -401,11 +401,11 @@ static bool_t _attach_bplus_data(bplus_tree_t* pbt, bplus_data_t* pbn)
 
 	XDL_ASSERT(pbt->index_table != NULL);
 
-	pbn->guider = (byte_t*)page_alloc(PAGE_SIZE);
+	pbn->guider = (byte_t*)pmem_alloc(PAGE_SIZE);
 
 	if (!_update_bplus_data(pbt, pbn, 0))
 	{
-		page_free(pbn->guider);
+		pmem_free(pbn->guider);
 		pbn->guider = NULL;
 		pbn->dataset = NULL;
 		pbn->count = 0;
@@ -424,7 +424,7 @@ static void _free_bplus_index(bplus_tree_t* pbt, bplus_index_t* pbi)
 		free_file_table_block(pbt->index_table, pbi->index, PAGE_SIZE);
 	}
 	
-	page_free(pbi->guider);
+	pmem_free(pbi->guider);
 	xmem_free(pbi);
 }
 
@@ -437,7 +437,7 @@ static void _free_bplus_data(bplus_tree_t* pbt, bplus_data_t* pbd)
 		free_file_table_block(pbt->index_table, pbd->index, PAGE_SIZE);
 	}
 	
-	page_free(pbd->guider);
+	pmem_free(pbd->guider);
 	xmem_free(pbd);
 }
 
@@ -1537,7 +1537,7 @@ void clear_bplus_tree(link_t_ptr ptr)
 				_key_zero(&(pbi->indices[pbi->count].key));
 			}
 
-			page_free(pbi->guider);
+			pmem_free(pbi->guider);
 			xmem_free(pbi);
 		}
 		else if (ilk->tag == lkBplusData)
@@ -1558,7 +1558,7 @@ void clear_bplus_tree(link_t_ptr ptr)
 				_key_zero(&(pbd->dataset[pbd->count].key));
 			}
 
-			page_free(pbd->guider);
+			pmem_free(pbd->guider);
 			xmem_free(pbd);
 		}
 		else

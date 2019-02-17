@@ -63,7 +63,7 @@ void datebox_on_prev_month(res_win_t widget)
 		ptd->dt.mon = 12;
 	}
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void datebox_on_next_month(res_win_t widget)
@@ -78,7 +78,7 @@ void datebox_on_next_month(res_win_t widget)
 		ptd->dt.mon = 1;
 	}
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void datebox_on_select_day(res_win_t widget, int day)
@@ -87,7 +87,7 @@ void datebox_on_select_day(res_win_t widget, int day)
 
 	ptd->dt.day = day;
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 
 	noti_datebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -164,7 +164,7 @@ void hand_datebox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	datebox_delta_t* ptd = GETDATEBOXDELTA(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_datebox_erase(res_win_t widget, res_ctx_t rdc)
@@ -271,7 +271,7 @@ void datebox_set_date(res_win_t widget, const xdate_t* pxd)
 	else
 		get_loc_date(&ptd->dt);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void datebox_get_date(res_win_t widget, xdate_t* pxd)

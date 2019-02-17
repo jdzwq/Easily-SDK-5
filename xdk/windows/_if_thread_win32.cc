@@ -255,17 +255,17 @@ void _semap_unlock(res_sema_t sem)
 
 /**********************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-res_hand_t _queue_create(res_hand_t ep, res_file_t fd, int max)
+res_queue_t _queue_create(res_queue_t ep, res_file_t fd, int max)
 {
 	return (res_hand_t)CreateIoCompletionPort(((fd == INVALID_FILE)? INVALID_HANDLE_VALUE : (HANDLE)fd), ep, (ULONG_PTR)fd, (DWORD)max);
 }
 
-void _queue_destroy(res_hand_t ep)
+void _queue_destroy(res_queue_t ep)
 {
 	CloseHandle(ep);
 }
 
-wait_t _queue_wait(res_hand_t ep, int ms)
+wait_t _queue_wait(res_queue_t ep, int ms)
 {
 	DWORD dw = 0;
 	ULONG_PTR up = NULL;

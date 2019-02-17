@@ -129,7 +129,7 @@ void hand_numbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		}
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_numbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
@@ -157,7 +157,7 @@ void hand_numbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	ptd->index = -1;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	if (!ch)
 		return;
@@ -177,7 +177,7 @@ void hand_numbox_size(res_win_t widget, int code, const xsize_t* prs)
 
 	widget_get_client_rect(widget, &xr);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_numbox_erase(res_win_t widget, res_ctx_t dc)

@@ -159,6 +159,12 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 			widget_update_client(ctrl);
 		}
 		return 1;
+	case COMMAND_COMMIT:
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		return 1;
+	case COMMAND_ROLLBACK:
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		return 1;
 	}
 
 	return 0;

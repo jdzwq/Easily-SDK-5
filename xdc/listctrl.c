@@ -222,7 +222,7 @@ void noti_list_reset_check(res_win_t widget)
 	if (!count)
 		return;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 bool_t noti_list_item_changing(res_win_t widget)
@@ -241,7 +241,7 @@ bool_t noti_list_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -259,7 +259,7 @@ void noti_list_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_list_owner(widget, NC_LISTITEMCHANGED, ptd->list, ptd->item, NULL);
 }
@@ -321,7 +321,7 @@ void noti_list_item_check(res_win_t widget, link_t_ptr plk)
 	_listctrl_item_rect(widget, plk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_list_item_collapse(res_win_t widget)
@@ -1054,7 +1054,7 @@ void listctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void listctrl_tabskip(res_win_t widget, int nSkip)
@@ -1128,7 +1128,7 @@ void listctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 	
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t listctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

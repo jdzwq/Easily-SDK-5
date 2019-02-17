@@ -137,7 +137,7 @@ bool_t noti_label_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -155,7 +155,7 @@ void noti_label_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_label_owner(widget, NC_LABELITEMCHANGED, ptd->label, ptd->item, NULL);
 }
@@ -669,7 +669,7 @@ void labelctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void labelctrl_tabskip(res_win_t widget, int nSkip)
@@ -739,7 +739,7 @@ void labelctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t labelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -821,7 +821,7 @@ void labelctrl_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -842,7 +842,7 @@ void labelctrl_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -867,7 +867,7 @@ void labelctrl_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -892,7 +892,7 @@ void labelctrl_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -917,7 +917,7 @@ void labelctrl_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 

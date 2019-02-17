@@ -48,7 +48,7 @@ void navibox_on_home(res_win_t widget)
 
 	widget_post_key(ptd->target, VK_HOME);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void navibox_on_end(res_win_t widget)
@@ -57,7 +57,7 @@ void navibox_on_end(res_win_t widget)
 
 	widget_post_key(ptd->target, KEY_END);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void navibox_on_prev(res_win_t widget)
@@ -66,7 +66,7 @@ void navibox_on_prev(res_win_t widget)
 
 	widget_post_key(ptd->target, KEY_PAGEUP);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void navibox_on_next(res_win_t widget)
@@ -75,7 +75,7 @@ void navibox_on_next(res_win_t widget)
 
 	widget_post_key(ptd->target, KEY_PAGEDOWN);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void navibox_on_keyboard(res_win_t widget)
@@ -90,7 +90,7 @@ void navibox_on_keyboard(res_win_t widget)
 		widget_destroy(ptd->keybox);
 		ptd->keybox = NULL;
 
-		widget_invalid(widget, NULL, 1);
+		widget_update(widget, NULL, 1);
 		return;
 	}
 
@@ -129,7 +129,7 @@ void navibox_on_keyboard(res_win_t widget)
 	widget_take(ptd->keybox, (int)WD_ZORDER_TOPMOST);
 	widget_show(ptd->keybox, WD_SHOW_NORMAL);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 /*********************************************************************************/
@@ -203,7 +203,7 @@ void hand_navibox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_navibox_erase(res_win_t widget, res_ctx_t rdc)

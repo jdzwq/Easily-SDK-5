@@ -142,7 +142,7 @@ bool_t noti_tool_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -159,7 +159,7 @@ void noti_tool_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 /*******************************************************************************/
@@ -282,7 +282,7 @@ void hand_tool_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->hover)
 	{
 		_toolctrl_item_rect(widget, ptd->hover, &xr);
-		widget_invalid(widget, &xr, 0);
+		widget_update(widget, &xr, 0);
 	}
 }
 
@@ -305,7 +305,7 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->hover)
 	{
 		_toolctrl_item_rect(widget, ptd->hover, &xr);
-		widget_invalid(widget, &xr, 0);
+		widget_update(widget, &xr, 0);
 	}
 
 	widget_get_canv_rect(widget, &cb);
@@ -580,7 +580,7 @@ void toolctrl_redraw(res_win_t widget)
 
 	_toolctrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void toolctrl_redraw_item(res_win_t widget, link_t_ptr plk)
@@ -610,7 +610,7 @@ void toolctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 		widget_get_client_rect(widget, &xr);
 	}
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void toolctrl_tabskip(res_win_t widget, int nSkip)

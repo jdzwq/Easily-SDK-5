@@ -122,7 +122,7 @@ void wordsbox_on_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
@@ -136,7 +136,7 @@ void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
 
 	_wordsbox_item_rect(widget, ptd->item, &xr);
 	
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_wordsbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -431,7 +431,7 @@ void wordsbox_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 bool_t wordsbox_set_focus_item(res_win_t widget, link_t_ptr ent)
@@ -570,7 +570,7 @@ void wordsbox_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -595,7 +595,7 @@ void wordsbox_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -616,7 +616,7 @@ void wordsbox_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -641,7 +641,7 @@ void wordsbox_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -666,7 +666,7 @@ void wordsbox_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 

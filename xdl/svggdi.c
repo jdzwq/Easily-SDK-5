@@ -193,6 +193,11 @@ void svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
 	
 }
 
+void svg_alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opacity)
+{
+
+}
+
 void svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
 	link_t_ptr g, nlk;
@@ -251,7 +256,12 @@ void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 	write_pie_to_svg_node(nlk, pxp, pxb, &xr, fang, tang);
 }
 
-void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, int alen, double arc)
+void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, double fang, double tang)
+{
+
+}
+
+void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
 {
 	
 }
@@ -1034,14 +1044,14 @@ static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 	return _SCANNER_OPERA_NEXT;
 }
 
-void svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t data, int page)
+void svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var)
 {
 	VARTEXT_DRAW tt = { 0 };
 	if_measure_t it = { 0 };
 	xrect_t xr;
 
 	tt.canv = canv;
-	tt.page = page;
+	tt.page = 0;
 	tt.vs = varstr_alloc();
 
 	it.ctx = (void*)canv;
@@ -1054,7 +1064,7 @@ void svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 	xr.fh = pxr->fh;
 	svg_rect_tm_to_pt(canv, &xr);
 
-	scan_var_text(data, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 0, _var_text_calc_draw, (void*)&tt);
+	scan_var_text(var, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 0, _var_text_calc_draw, (void*)&tt);
 
 	varstr_free(tt.vs);
 }

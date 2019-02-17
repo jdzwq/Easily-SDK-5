@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily xdl v5.5
+	Easily xdk v5.5
 
 	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc xdl block document
+	@doc async system call document
 
-	@module	impblock.h | xdl block interface file
+	@module	_if_async.c | async system call windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,35 +29,36 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _IMPBLOCK_H
-#define _IMPBLOCK_H
+#include "xdkiml.h"
 
-#include "xdldef.h"
+#ifdef XDK_SUPPORT_ASYNC
 
-#ifdef XDK_SUPPORT_FILE_BLOCK
+void _async_alloc_lapp(async_t* pas)
+{
+	LPOVERLAPPED lp;
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+	lp = (LPOVERLAPPED)LocalAlloc(LPTR, sizeof(OVERLAPPED));
 
-XDL_API xhand_t xblock_open(const tchar_t* fname, dword_t fmode);
-
-XDL_API void xblock_close(xhand_t block);
-
-XDL_API bool_t xblock_size(xhand_t block, dword_t* ph, dword_t* pl);
-
-XDL_API res_file_t xblock_handle(xhand_t block);
-
-XDL_API bool_t xblock_write(xhand_t block, dword_t hoff, dword_t loff, const byte_t* data, dword_t size);
-
-XDL_API bool_t xblock_read(xhand_t block, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
-
-XDL_API bool_t xblock_truncate(xhand_t block, dword_t hoff, dword_t loff);
-
-#ifdef	__cplusplus
+	lp->hEvent = CreateEvent(NULL, 1, 0, NULL);
+	pas->lapp = (void*)lp;
+	pas->type = ASYNC_EVENT;
 }
-#endif
 
-#endif /*XDK_SUPPORT_FILE_BLOCK*/
+void _async_release_lapp(async_t* pas)
+{
+	LPOVERLAPPED lp;
 
-#endif /*_IMPBLOCK_H*/
+	if (!pas->lapp)
+		return;
+
+	lp = (LPOVERLAPPED)pas->lapp;
+
+	if (lp->hEvent)
+		CloseHandle(lp->hEvent);
+
+	LocalFree(pas->lapp);
+	pas->lapp = NULL;
+}
+
+#endif //XDK_SUPPORT_ASYNC
+

@@ -213,9 +213,8 @@
     <ClInclude Include="..\..\xdl\imagesdoc.h" />
     <ClInclude Include="..\..\xdl\imagesview.h" />
     <ClInclude Include="..\..\xdl\impassert.h" />
+    <ClInclude Include="..\..\xdl\impasync.h" />
     <ClInclude Include="..\..\xdl\impbitmap.h" />
-    <ClInclude Include="..\..\xdl\impblock.h" />
-    <ClInclude Include="..\..\xdl\impcache.h" />
     <ClInclude Include="..\..\xdl\impclip.h" />
     <ClInclude Include="..\..\xdl\impcomm.h" />
     <ClInclude Include="..\..\xdl\impcons.h" />
@@ -234,7 +233,7 @@
     <ClInclude Include="..\..\xdl\impsock.h" />
     <ClInclude Include="..\..\xdl\impthr.h" />
     <ClInclude Include="..\..\xdl\imptimer.h" />
-    <ClInclude Include="..\..\xdl\impunc.h" />
+    <ClInclude Include="..\..\xdl\impuncf.h" />
     <ClInclude Include="..\..\xdl\impwin.h" />
     <ClInclude Include="..\..\xdl\jsonbio.h" />
     <ClInclude Include="..\..\xdl\jsondoc.h" />
@@ -411,9 +410,8 @@
     <ClCompile Include="..\..\xdl\imagesdoc.c" />
     <ClCompile Include="..\..\xdl\imagesview.c" />
     <ClCompile Include="..\..\xdl\impassert.c" />
+    <ClCompile Include="..\..\xdl\impasync.c" />
     <ClCompile Include="..\..\xdl\impbitmap.c" />
-    <ClCompile Include="..\..\xdl\impblock.c" />
-    <ClCompile Include="..\..\xdl\impcache.c" />
     <ClCompile Include="..\..\xdl\impclip.c" />
     <ClCompile Include="..\..\xdl\impcomm.c" />
     <ClCompile Include="..\..\xdl\impcons.c" />
@@ -432,7 +430,7 @@
     <ClCompile Include="..\..\xdl\impsock.c" />
     <ClCompile Include="..\..\xdl\impthr.c" />
     <ClCompile Include="..\..\xdl\imptimer.c" />
-    <ClCompile Include="..\..\xdl\impunc.c" />
+    <ClCompile Include="..\..\xdl\impuncf.c" />
     <ClCompile Include="..\..\xdl\impwin.c" />
     <ClCompile Include="..\..\xdl\jsonbio.c" />
     <ClCompile Include="..\..\xdl\jsondoc.c" />

@@ -40,19 +40,71 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION shell_get_curpath: get current path.
+@OUTPUT tchar_t* pathbuf: the buffer for returning path.
+@INPUT int pathlen: length of the buffer in characters, not include terminated character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_curpath(tchar_t* pathbuf, int pathlen);
 
+/*
+@FUNCTION shell_get_runpath: get module runing path.
+@OUTPUT tchar_t* pathbuf: the buffer for returning path.
+@INPUT int pathlen: length of the buffer in characters, not include terminated character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_runpath(tchar_t* pathbuf, int pathlen);
 
+/*
+@FUNCTION shell_get_docpath: get default system document path.
+@OUTPUT tchar_t* pathbuf: the buffer for returning path.
+@INPUT int pathlen: length of the buffer in characters, not include terminated character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_docpath(tchar_t* pathbuf, int pathlen);
 
+/*
+@FUNCTION shell_get_apppath: get default system application path.
+@OUTPUT tchar_t* pathbuf: the buffer for returning path.
+@INPUT int pathlen: length of the buffer in characters, not include terminated character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_apppath(tchar_t* pathbuf, int pathlen);
 
+/*
+@FUNCTION shell_get_tmppath: get default system template path.
+@OUTPUT tchar_t* pathbuf: the buffer for returning path.
+@INPUT int pathlen: length of the buffer in characters, not include terminated character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_tmppath(tchar_t* pathbuf, int pathlen);
 
 #ifdef XDK_SUPPORT_SHELL_DIALOG
+/*
+@FUNCTION shell_get_filename: use system file explorer to select single or multiple file name.
+@INPUT res_win_t owner: the file explorer dialog owner window.
+@INPUT const tchar_t* defpath: the default path opened by file explorer.
+@INPUT const tchar_t* filter: the files filter list, eg: "JPG File(*.jpg)\0*.jpg\0PNG File(*.png)\0*.png\0Bitmap File(*.bmp)\0*.bmp\0".
+@INPUT const tchar_t* defext: the file name default extension.
+@INPUT saveit: if nonzero indicate select a filename for saving, zero indicate select some file name for opening.
+@OUTPUT tchar_t* pathbuf: string buffer for return path name.
+@INPUT pathlen: the path buffer length in characters, not include terminate character.
+@OUTPUT tchar_t* filebuf: string buffer for return file name, if multiple file name returned, every file name seperated by '\0', the duplicate '\0\0' indicate end.
+@INPUT filelen: the path buffer length in characters, not include terminate character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_filename(res_win_t owner, const tchar_t* defpath, const tchar_t* filter, const tchar_t* defext, bool_t saveit, tchar_t* pathbuf, int pathlen, tchar_t* filebuf, int filelen);
 
+/*
+@FUNCTION shell_get_pathname: use system file explorer to select a path name.
+@INPUT res_win_t owner: the file explorer dialog owner window.
+@INPUT const tchar_t* defpath: the default path opened by file explorer.
+@INPUT createit: if nonzero indicate select a pathame for creating, zero indicate select one path name exists.
+@OUTPUT tchar_t* pathbuf: string buffer for return path name.
+@INPUT pathlen: the path buffer length in characters, not include terminate character.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t createit, tchar_t* pathbuf, int pathlen);
 #endif
 

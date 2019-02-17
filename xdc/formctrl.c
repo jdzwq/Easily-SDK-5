@@ -184,8 +184,8 @@ static bool_t _formctrl_copy(res_win_t widget)
 	len = format_dom_doc_to_bytes(dom, NULL, MAX_LONG, DEF_MBS);
 #endif
 
-	gb = system_alloc(len + sizeof(tchar_t));
-	buf = (byte_t*)system_lock(gb);
+	gb = gmem_alloc(len + sizeof(tchar_t));
+	buf = (byte_t*)gmem_lock(gb);
 
 #ifdef _UNICODE
 	format_dom_doc_to_bytes(dom, buf, len, DEF_UCS);
@@ -193,11 +193,11 @@ static bool_t _formctrl_copy(res_win_t widget)
 	format_dom_doc_to_bytes(dom, buf, len, DEF_MBS);
 #endif
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		destroy_form_doc(dom);
@@ -264,8 +264,8 @@ static bool_t _formctrl_paste(res_win_t widget)
 		return 0;
 	}
 
-	len = system_size(gb);
-	buf = (byte_t*)system_lock(gb);
+	len = gmem_size(gb);
+	buf = (byte_t*)gmem_lock(gb);
 
 	dom = create_dom_doc();
 #ifdef _UNICODE
@@ -274,7 +274,7 @@ static bool_t _formctrl_paste(res_win_t widget)
 	if (!parse_dom_doc_from_bytes(dom, buf, len, DEF_MBS))
 #endif
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -283,7 +283,7 @@ static bool_t _formctrl_paste(res_win_t widget)
 
 	if (!is_form_doc(dom))
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -303,7 +303,7 @@ static bool_t _formctrl_paste(res_win_t widget)
 		set_field_name(nlk, sz_name);
 	}
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	clipboard_clean();
 	clipboard_close();
 
@@ -424,7 +424,7 @@ void noti_form_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -447,7 +447,7 @@ void noti_form_field_selected(res_win_t widget, link_t_ptr flk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t noti_form_field_changing(res_win_t widget)
@@ -471,7 +471,7 @@ bool_t noti_form_field_changing(res_win_t widget)
 
 	ptd->field = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -493,7 +493,7 @@ void noti_form_field_changed(res_win_t widget, link_t_ptr flk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_form_owner(widget, NC_FIELDCHANGED, ptd->form, flk, NULL);
 }
@@ -634,7 +634,7 @@ void noti_form_field_drop(res_win_t widget, long x, long y)
 		flk = get_next_field(ptd->form, flk);
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -714,7 +714,7 @@ void noti_form_field_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	fw = get_field_width(ptd->field);
 	fh = get_field_height(ptd->field);
@@ -749,7 +749,7 @@ void noti_form_field_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_form_owner(widget, NC_FIELDSIZED, ptd->form, ptd->field, NULL);
 }
@@ -804,7 +804,7 @@ void noti_form_end_group(res_win_t widget, long x, long y)
 		flk = get_next_field(ptd->form, flk);
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void noti_form_calc(res_win_t widget)
@@ -1845,7 +1845,7 @@ void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		{
 			ptd->cur_x = pxp->x;
 			ptd->cur_y = pxp->y;
-			widget_invalid(widget, NULL, 0);
+			widget_update(widget, NULL, 0);
 			return;
 		}
 	}
@@ -2163,7 +2163,7 @@ void hand_form_keydown(res_win_t widget, int nKey)
 				flk = get_next_field(ptd->form, flk);
 			}
 
-			widget_invalid(widget, NULL, 0);
+			widget_update(widget, NULL, 0);
 
 			if (ks)
 				noti_form_owner(widget, NC_FIELDSIZED, ptd->form, ptd->field, NULL);
@@ -2487,7 +2487,7 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 				_formctrl_field_rect(widget, flk, &xr);
 				pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
-				alpha_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+				alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 			}
 			flk = get_next_field(ptd->form, flk);
 		}
@@ -2629,7 +2629,7 @@ link_t_ptr formctrl_detach(res_win_t widget)
 	ptd->field = NULL;
 	ptd->cur_page = 0;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	return data;
 }
@@ -2735,7 +2735,7 @@ void formctrl_redraw(res_win_t widget, bool_t bCalc)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
@@ -2763,7 +2763,7 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 	_formctrl_field_rect(widget, flk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void formctrl_tabskip(res_win_t widget, int nSkip)
@@ -2869,7 +2869,7 @@ void formctrl_move_first_page(res_win_t widget)
 
 		ptd->cur_page = 1;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2887,7 +2887,7 @@ void formctrl_move_last_page(res_win_t widget)
 		noti_form_reset_editor(widget, (bool_t)1);
 
 		ptd->cur_page = ptd->max_page;
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2906,7 +2906,7 @@ void formctrl_move_next_page(res_win_t widget)
 
 		ptd->cur_page++;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2925,7 +2925,7 @@ void formctrl_move_prev_page(res_win_t widget)
 
 		ptd->cur_page--;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2969,7 +2969,7 @@ void formctrl_move_to_page(res_win_t widget, int page)
 
 	ptd->cur_page = page;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* szText)
@@ -3002,7 +3002,7 @@ bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* 
 
 			formctrl_get_field_rect(widget, flk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_invalid(widget, &xr, 0);
+			widget_update(widget, &xr, 0);
 
 			return 1;
 		}

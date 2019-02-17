@@ -7,7 +7,7 @@
 
 	@doc canvas interface document
 
-	@module	xdlinf.h | canvas interface file
+	@module	gdiinf.h | canvas interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -40,9 +40,19 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API if_canvas_t* create_canvas_interface(canvas_t canv);
+/*
+@FUNCTION create_canvas_interface: create canvas interface.
+@INPUT canvas_t canv: the canvas object.
+@RETURN if_canvas_t*: if succeeds return canvas interface struct, fails return NULL.
+*/
+XDL_API if_canvas_t* create_canvas_interface(canvas_t canv);
 
-	XDL_API void	destroy_canvas_interface(if_canvas_t* pic);
+/*
+@FUNCTION destroy_canvas_interface: destroy canvas interface.
+@INPUT if_canvas_t*: the canvas interface struct.
+@RETURN void: none.
+*/
+XDL_API void	destroy_canvas_interface(if_canvas_t* pic);
 
 #ifdef	__cplusplus
 }

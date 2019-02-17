@@ -109,14 +109,14 @@ void hand_radiobox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (hint == RADIOBOX_HINT_ON)
 	{
 		ptd->on = 1;
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 
 		noti_radiobox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 	}
 	else if (hint == RADIOBOX_HINT_OFF)
 	{
 		ptd->on = 0;
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 
 		noti_radiobox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 	}
@@ -126,7 +126,7 @@ void hand_radiobox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_radiobox_erase(res_win_t widget, res_ctx_t rdc)
@@ -228,7 +228,7 @@ void radiobox_set_state(res_win_t widget, bool_t cur)
 
 	ptd->on = cur;
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 bool_t radiobox_get_state(res_win_t widget)

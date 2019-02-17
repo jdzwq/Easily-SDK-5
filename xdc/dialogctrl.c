@@ -174,8 +174,8 @@ static bool_t _dialogctrl_copy(res_win_t widget)
 	len = format_dom_doc_to_bytes(dom, NULL, MAX_LONG, DEF_MBS);
 #endif
 
-	gb = system_alloc(len + sizeof(tchar_t));
-	buf = (byte_t*)system_lock(gb);
+	gb = gmem_alloc(len + sizeof(tchar_t));
+	buf = (byte_t*)gmem_lock(gb);
 
 #ifdef _UNICODE
 	format_dom_doc_to_bytes(dom, buf, len, DEF_UCS);
@@ -183,11 +183,11 @@ static bool_t _dialogctrl_copy(res_win_t widget)
 	format_dom_doc_to_bytes(dom, buf, len, DEF_MBS);
 #endif
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		destroy_dialog_doc(dom);
@@ -251,8 +251,8 @@ static bool_t _dialogctrl_paste(res_win_t widget)
 		return 0;
 	}
 
-	len = system_size(gb);
-	buf = (byte_t*)system_lock(gb);
+	len = gmem_size(gb);
+	buf = (byte_t*)gmem_lock(gb);
 
 	dom = create_dom_doc();
 #ifdef _UNICODE
@@ -261,7 +261,7 @@ static bool_t _dialogctrl_paste(res_win_t widget)
 	if (!parse_dom_doc_from_bytes(dom, buf, len, DEF_MBS))
 #endif
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -270,7 +270,7 @@ static bool_t _dialogctrl_paste(res_win_t widget)
 
 	if (!is_dialog_doc(dom))
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -290,7 +290,7 @@ static bool_t _dialogctrl_paste(res_win_t widget)
 		set_dialog_item_name(nlk, sz_name);
 	}
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	clipboard_clean();
 	clipboard_close();
 
@@ -395,7 +395,7 @@ void noti_dialog_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -418,7 +418,7 @@ void noti_dialog_item_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t noti_dialog_item_changing(res_win_t widget)
@@ -437,7 +437,7 @@ bool_t noti_dialog_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -456,7 +456,7 @@ void noti_dialog_item_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_dialog_owner(widget, NC_DIALOGITEMCHANGED, ptd->dialog, ilk, NULL);
 }
@@ -565,7 +565,7 @@ void noti_dialog_item_drop(res_win_t widget, long x, long y)
 	set_dialog_item_x(ptd->item, pt.fx);
 	set_dialog_item_y(ptd->item, pt.fy);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -646,7 +646,7 @@ void noti_dialog_item_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	fw = get_dialog_item_width(ptd->item);
 	fh = get_dialog_item_height(ptd->item);
@@ -683,7 +683,7 @@ void noti_dialog_item_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	_dialogctrl_item_rect(widget, ptd->item, &xr);
 
@@ -762,7 +762,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	{
 		ptd->cur_x = pxp->x;
 		ptd->cur_y = pxp->y;
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 		return;
 	}
 
@@ -1050,7 +1050,7 @@ void hand_dialog_keydown(res_win_t widget, int nKey)
 			ilk = get_dialog_next_item(ptd->dialog, ilk);
 		}
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 
 		if (ks)
 			noti_dialog_owner(widget, NC_DIALOGITEMSIZED, ptd->dialog, ptd->item, NULL);
@@ -1213,7 +1213,7 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		if (get_dialog_item_selected(ilk))
 		{
 			_dialogctrl_item_rect(widget, ilk, &xr);
-			alpha_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+			alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 		}
 		ilk = get_dialog_next_item(ptd->dialog, ilk);
 	}
@@ -1326,7 +1326,7 @@ link_t_ptr dialogctrl_detach(res_win_t widget)
 	ptd->dialog = NULL;
 	ptd->item = NULL;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	return data;
 }
@@ -1375,7 +1375,7 @@ void dialogctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
@@ -1398,7 +1398,7 @@ void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 	_dialogctrl_item_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void dialogctrl_tabskip(res_win_t widget, int nSkip)

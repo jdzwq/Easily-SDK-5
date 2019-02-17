@@ -40,15 +40,49 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API res_queue_t create_timer_queue(void);
+/*
+@FUNCTION xtimer_create_queue: create timer queue, every queue can manage multiple timer.
+@RETURN res_hand_t: if succeeds return queue resource handle, fails return NULL.
+*/
+XDL_API res_hand_t xtimer_create_queue(void);
 
-XDL_API void destroy_timer_queue(res_queue_t rq);
+/*
+@FUNCTION xtimer_destroy_queue: destroy timer queue and free all timer in queue.
+@INPUT res_hand_t rq: the timer queue resource handle.
+@RETURN void: none.
+*/
+XDL_API void xtimer_destroy_queue(res_hand_t rq);
 
-XDL_API res_timer_t create_timer(res_queue_t rq, dword_t duetime, dword_t period, timerd_t* pdp);
+/*
+@FUNCTION xtimer_create: create timer and add into queue.
+@INPUT res_hand_t rq: the timer queue resource handle.
+@INPUT dword_t duetime: amount of time to elapse before the timer is signed for the first time in milliseconds.
+@INPUT dword_t period: period of the timer, in milliseconds. 
+if zero, the timer is signed once. the timer is periodic by the period value.
+@INPUT PF_TIMERFUNC pf: the worker timer function.
+@INPUT void* pa: the worker function parameter.
+@RETURN res_timer_t: if succeeds return timer resource hanle, fails return NULL.
+*/
+XDL_API res_timer_t xtimer_create(res_hand_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa);
 
-XDL_API void destroy_timer(res_queue_t rq, res_timer_t rt, res_even_t ev);
+/*
+@FUNCTION xtimer_destroy: destroy timer and remove from queue.
+@INPUT res_hand_t rq: the timer queue resource handle.
+@INPUT res_timer_t rt: the timer resource handle.
+@RETURN void: none.
+*/
+XDL_API void xtimer_destroy(res_hand_t rq, res_timer_t rt);
 
-XDL_API bool_t alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period);
+/*
+@FUNCTION xtimer_alter: change timer time setting.
+@INPUT res_hand_t rq: the timer queue resource handle.
+@INPUT res_timer_t rt: the timer resource handle.
+@INPUT dword_t duetime: amount of time to elapse before the timer is signed for the first time in milliseconds.
+@INPUT dword_t period: period of the timer, in milliseconds.
+if zero, the timer is signed once. the timer is periodic by the period value.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t xtimer_alter(res_hand_t rq, res_timer_t rt, dword_t duetime, dword_t period);
 
 #ifdef	__cplusplus
 }

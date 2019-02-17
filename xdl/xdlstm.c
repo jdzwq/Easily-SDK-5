@@ -400,15 +400,15 @@ stream_t stream_alloc(xhand_t io)
 #endif
 #ifdef XDK_SUPPORT_MEMO_CACHE
 	case _HANDLE_CACHE:
-		pxt->inf.pf_read = xcache_read;
-		pxt->inf.pf_write = xcache_write;
+		pxt->inf.pf_read = vmem_read;
+		pxt->inf.pf_write = vmem_write;
 		break;
 #endif
 	case _HANDLE_UNC:
 #ifdef XDK_SUPPORT_FILE
-		pxt->inf.pf_read = xunc_read_file;
-		pxt->inf.pf_write = xunc_write_file;
-		pxt->inf.pf_flush = xunc_flush_file;
+		pxt->inf.pf_read = xuncf_read_file;
+		pxt->inf.pf_write = xuncf_write_file;
+		pxt->inf.pf_flush = xuncf_flush_file;
 #endif
 		break;
 	case _HANDLE_INET:

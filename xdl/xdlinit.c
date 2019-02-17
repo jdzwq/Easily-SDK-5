@@ -266,6 +266,10 @@ void xdl_process_init(dword_t opt)
 	xdk_impl_mbcs(&g_xdl_mou.if_mbcs);
 #endif
 
+#ifdef XDK_SUPPORT_ASYNC
+	xdk_impl_async(&g_xdl_mou.if_async);
+#endif
+
 #ifdef XDK_SUPPORT_THREAD
 	xdk_impl_thread(&g_xdl_mou.if_thread);
 
@@ -297,10 +301,6 @@ void xdl_process_init(dword_t opt)
 
 #ifdef XDK_SUPPORT_FILE_FIND
 	xdk_impl_file_find(&g_xdl_mou.if_file);
-#endif
-
-#ifdef XDK_SUPPORT_FILE_BLOCK
-	xdk_impl_file_block(&g_xdl_mou.if_file);
 #endif
 
 #ifdef XDK_SUPPORT_SHARE

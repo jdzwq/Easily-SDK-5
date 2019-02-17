@@ -458,7 +458,7 @@ void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 	DeleteDC(hComDC);
 }
 
-void _gdi_alpha_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
+void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
 {
 	HDC hDC = (HDC)rdc;
 	xbrush_t xb;

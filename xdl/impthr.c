@@ -365,7 +365,7 @@ void xsemap_unlock(res_sema_t mx)
 #endif
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-res_hand_t xqueue_create(res_hand_t ep, res_file_t fd, int max)
+res_queue_t xqueue_create(res_queue_t ep, res_file_t fd, int max)
 {
 	if_thread_t* pit;
 
@@ -376,7 +376,7 @@ res_hand_t xqueue_create(res_hand_t ep, res_file_t fd, int max)
 	return (*pit->pf_queue_create)(ep, fd, max);
 }
 
-void xqueue_destroy(res_hand_t ep)
+void xqueue_destroy(res_queue_t ep)
 {
 	if_thread_t* pit;
 
@@ -387,7 +387,7 @@ void xqueue_destroy(res_hand_t ep)
 	(*pit->pf_queue_destroy)(ep);
 }
 
-wait_t queue_wait(res_hand_t ep, int ms)
+wait_t xqueue_wait(res_queue_t ep, int ms)
 {
 	if_thread_t* pit;
 

@@ -79,7 +79,7 @@ bool_t mak_utc_date(xdate_t* pxd)
 	return (*pif->pf_mak_utc_date)(pxd);
 }
 
-lword_t get_times()
+dword_t get_times()
 {
 	if_date_t* pif;
 
@@ -90,7 +90,7 @@ lword_t get_times()
 	return (*pif->pf_get_times)();
 }
 
-lword_t get_ticks()
+dword_t get_ticks()
 {
 	if_date_t* pif;
 
@@ -112,7 +112,7 @@ lword_t get_timestamp()
 	return (*pif->pf_get_timestamp)();
 }
 
-void utc_date_from_times(xdate_t* pxd, lword_t ts)
+void utc_date_from_times(xdate_t* pxd, dword_t ts)
 {
 	if_date_t* pif;
 
@@ -123,7 +123,7 @@ void utc_date_from_times(xdate_t* pxd, lword_t ts)
 	(*pif->pf_utc_date_from_times)(pxd, ts);
 }
 
-void utc_date_from_ticks(xdate_t* pxd, lword_t ts)
+void utc_date_from_ticks(xdate_t* pxd, dword_t ts)
 {
 	if_date_t* pif;
 

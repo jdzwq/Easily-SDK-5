@@ -305,7 +305,7 @@ void hand_keybox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 			ptd->ca = _HCA;
 		}
 
-		widget_invalid(widget, NULL, 1);
+		widget_update(widget, NULL, 1);
 	}
 	else if (ch == 0x1)
 	{
@@ -348,7 +348,7 @@ void hand_keybox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_post_char(NULL, ch);
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_keybox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
@@ -368,14 +368,14 @@ void hand_keybox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	}
 
 	ptd->index = -1;
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_keybox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_keybox_erase(res_win_t widget, res_ctx_t dc)

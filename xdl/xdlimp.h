@@ -16,6 +16,10 @@
 #include "impdate.h"
 #endif
 
+#ifdef XDK_SUPPORT_ASYNC
+#include "impasync.h"
+#endif
+
 #ifdef XDK_SUPPORT_THREAD
 #include "impthr.h"
 #endif
@@ -25,7 +29,7 @@
 #endif
 
 #ifdef XDK_SUPPORT_FILE
-#include "impunc.h"
+#include "impuncf.h"
 #endif
 
 #ifdef XDK_SUPPORT_SOCK
@@ -34,14 +38,6 @@
 
 #ifdef XDK_SUPPORT_SHARE
 #include "impshare.h"
-#endif
-
-#ifdef XDK_SUPPORT_FILE_BLOCK
-#include "impblock.h"
-#endif
-
-#ifdef XDK_SUPPORT_MEMO_CACHE
-#include "impcache.h"
 #endif
 
 #ifdef XDK_SUPPORT_PROCESS

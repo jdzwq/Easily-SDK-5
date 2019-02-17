@@ -180,8 +180,8 @@ static bool_t _graphctrl_copy(res_win_t widget)
 	len = format_dom_doc_to_bytes(dom, NULL, MAX_LONG, DEF_MBS);
 #endif
 
-	gb = system_alloc(len + sizeof(tchar_t));
-	buf = (byte_t*)system_lock(gb);
+	gb = gmem_alloc(len + sizeof(tchar_t));
+	buf = (byte_t*)gmem_lock(gb);
 
 #ifdef _UNICODE
 	format_dom_doc_to_bytes(dom, buf, len, DEF_UCS);
@@ -189,11 +189,11 @@ static bool_t _graphctrl_copy(res_win_t widget)
 	format_dom_doc_to_bytes(dom, buf, len, DEF_MBS);
 #endif
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		destroy_graph_doc(dom);
@@ -259,8 +259,8 @@ static bool_t _graphctrl_paste(res_win_t widget)
 		return 0;
 	}
 
-	len = system_size(gb);
-	buf = (byte_t*)system_lock(gb);
+	len = gmem_size(gb);
+	buf = (byte_t*)gmem_lock(gb);
 
 	dom = create_dom_doc();
 #ifdef _UNICODE
@@ -269,7 +269,7 @@ static bool_t _graphctrl_paste(res_win_t widget)
 	if (!parse_dom_doc_from_bytes(dom, buf, len, DEF_MBS))
 #endif
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -278,7 +278,7 @@ static bool_t _graphctrl_paste(res_win_t widget)
 
 	if (!is_graph_doc(dom))
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -298,7 +298,7 @@ static bool_t _graphctrl_paste(res_win_t widget)
 
 	}
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	clipboard_clean();
 	clipboard_close();
 
@@ -433,7 +433,7 @@ void _graphctrl_ensure_visible(res_win_t widget)
 	if (page != ptd->cur_page)
 	{
 		ptd->cur_page = page;
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 
 	_graphctrl_coor_rect(widget, ptd->xax, ptd->yax, &xr);
@@ -483,7 +483,7 @@ void noti_graph_reset_select(res_win_t widget)
 	}
 
 	if (count)
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 }
 
 void noti_graph_reset_check(res_win_t widget)
@@ -509,7 +509,7 @@ void noti_graph_reset_check(res_win_t widget)
 	}
 
 	if (count)
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 }
 
 void noti_graph_xax_sizing(res_win_t widget, long x, long y)
@@ -550,7 +550,7 @@ void noti_graph_xax_sized(res_win_t widget, long x, long y)
 
 	set_graph_xaxbar_width(ptd->graph, mw);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_graph_owner(widget, NC_XAXSIZED, ptd->graph, ptd->xax, NULL, NULL, NULL);
 }
@@ -599,7 +599,7 @@ void noti_graph_yax_sized(res_win_t widget, long x, long y)
 
 	set_graph_yaxbar_height(ptd->graph, mh);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_graph_owner(widget, NC_YAXSIZED, ptd->graph, NULL, ptd->yax, NULL, NULL);
 }
@@ -673,7 +673,7 @@ void noti_graph_yax_drop(res_win_t widget, long x, long y)
 		}
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -749,7 +749,7 @@ void noti_graph_xax_drop(res_win_t widget, long x, long y)
 		}
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -773,7 +773,7 @@ void noti_graph_yax_selected(res_win_t widget, link_t_ptr ylk)
 	_graphctrl_yax_rect(widget, ylk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t noti_graph_xax_insert(res_win_t widget, link_t_ptr xlk)
@@ -815,7 +815,7 @@ bool_t noti_graph_xax_changing(res_win_t widget)
 
 	ptd->xax = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -832,7 +832,7 @@ void noti_graph_xax_changed(res_win_t widget, link_t_ptr xlk)
 
 	ptd->xax = xlk;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_graph_owner(widget, NC_XAXCHANGED, ptd->graph, ptd->xax, NULL, NULL, NULL);
 }
@@ -851,7 +851,7 @@ void noti_graph_xax_checked(res_win_t widget, link_t_ptr xlk)
 	_graphctrl_xax_rect(widget, xlk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_graph_gax_changing(res_win_t widget)
@@ -868,7 +868,7 @@ void noti_graph_gax_changing(res_win_t widget)
 
 	ptd->gax = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_graph_gax_changed(res_win_t widget, link_t_ptr glk)
@@ -883,7 +883,7 @@ void noti_graph_gax_changed(res_win_t widget, link_t_ptr glk)
 
 	ptd->gax = glk;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_graph_owner(widget, NC_GAXCHANGED, ptd->graph, NULL, NULL, ptd->gax, NULL);
 }
@@ -902,7 +902,7 @@ void noti_graph_yax_changing(res_win_t widget)
 
 	ptd->yax = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_graph_yax_changed(res_win_t widget, link_t_ptr ylk)
@@ -917,7 +917,7 @@ void noti_graph_yax_changed(res_win_t widget, link_t_ptr ylk)
 
 	ptd->yax = ylk;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_graph_owner(widget, NC_YAXCHANGED, ptd->graph, NULL, ptd->yax, NULL, NULL);
 }
@@ -1268,7 +1268,7 @@ void hand_graph_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 		if (get_yax_sortable(ptd->yax))
 		{
 			//sort_graph_yax(ptd->graph,ptd->yax);
-			//widget_invalid(widget, 0, 0, 0, 0);
+			//widget_update(widget, 0, 0, 0, 0);
 		}
 	}
 
@@ -1755,7 +1755,7 @@ link_t_ptr graphctrl_detach(res_win_t widget)
 
 	ptd->cur_page = 0;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	return data;
 }
@@ -1892,7 +1892,7 @@ void graphctrl_redraw(res_win_t widget, bool_t bCalc)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void graphctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc)
@@ -1917,7 +1917,7 @@ void graphctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void graphctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc)
@@ -1942,7 +1942,7 @@ void graphctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void graphctrl_tabskip(res_win_t widget, int dir)
@@ -2122,7 +2122,7 @@ bool_t graphctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk,
 
 			graphctrl_get_coor_rect(widget, xlk, ylk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_invalid(widget, &xr, 1);
+			widget_update(widget, &xr, 1);
 
 			return 1;
 		}
@@ -2139,7 +2139,7 @@ bool_t graphctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk,
 
 			_graphctrl_xaxbar_rect(widget, xlk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_invalid(widget, &xr, 1);
+			widget_update(widget, &xr, 1);
 
 			return 1;
 		}
@@ -2269,7 +2269,7 @@ void graphctrl_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2292,7 +2292,7 @@ void graphctrl_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2319,7 +2319,7 @@ void graphctrl_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2346,7 +2346,7 @@ void graphctrl_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -2373,7 +2373,7 @@ void graphctrl_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->cur_page = nCurPage;
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 

@@ -58,8 +58,6 @@ typedef bool_t (*PF_GLOB_UNLOCK)(res_glob_t);
 typedef void* (*PF_LOCAL_ALLOC)(size_t);
 typedef void* (*PF_LOCAL_REALLOC)(void*, size_t);
 typedef void(*PF_LOCAL_FREE)(void*);
-typedef void(*PF_ASYNC_ALLOC_LAPP)(async_t*);
-typedef void(*PF_ASYNC_FREE_LAPP)(async_t*);
 #endif
 #ifdef XDK_SUPPORT_MEMO_PAGE
 typedef void* (*PF_PAGE_ALLOC)(size_t);
@@ -68,7 +66,7 @@ typedef void(*PF_PAGE_FREE)(void*);
 typedef size_t(*PF_PAGE_SIZE)(void*);
 typedef void* (*PF_PAGE_LOCK)(void*);
 typedef void(*PF_PAGE_UNLOCK)(void*);
-typedef bool_t(*PF_PAGE_PROTECT)(void*);
+typedef bool_t(*PF_PAGE_PROTECT)(void*, bool_t);
 #endif
 #ifdef XDK_SUPPORT_MEMO_CACHE
 typedef void*(*PF_CACHE_OPEN)(void);
@@ -100,8 +98,6 @@ typedef struct _if_memo_t{
 	PF_LOCAL_ALLOC		pf_local_alloc;
 	PF_LOCAL_REALLOC	pf_local_realloc;
 	PF_LOCAL_FREE		pf_local_free;
-	PF_ASYNC_ALLOC_LAPP	pf_async_alloc_lapp;
-	PF_ASYNC_FREE_LAPP	pf_async_free_lapp;
 #endif
 #ifdef XDK_SUPPORT_MEMO_PAGE
 	PF_PAGE_ALLOC		pf_page_alloc;
@@ -156,6 +152,16 @@ typedef struct _if_mbcs_t{
 }if_mbcs_t;
 #endif
 
+#ifdef XDK_SUPPORT_ASYNC
+typedef void(*PF_ASYNC_ALLOC_LAPP)(async_t*);
+typedef void(*PF_ASYNC_RELEASE_LAPP)(async_t*);
+
+typedef struct _if_async_t{
+	PF_ASYNC_ALLOC_LAPP		pf_async_alloc_lapp;
+	PF_ASYNC_RELEASE_LAPP	pf_async_release_lapp;
+}if_async_t;
+#endif
+
 #ifdef XDK_SUPPORT_THREAD
 /*thread interface*/
 typedef void (*PF_THREAD_BEGIN)(res_hand_t*, PF_THREADFUNC, void*);
@@ -195,9 +201,9 @@ typedef wait_t(*PF_SEMAP_LOCK)(res_sema_t, int);
 typedef void(*PF_SEMAP_UNLOCK)(res_sema_t);
 #endif
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-typedef res_hand_t(*PF_QUEUE_CREATE)(res_hand_t, res_file_t, int);
-typedef void(*PF_QUEUE_DESTROY)(res_hand_t);
-typedef wait_t(*PF_QUEUE_WAIT)(res_hand_t, int);
+typedef res_queue_t(*PF_QUEUE_CREATE)(res_queue_t, res_file_t, int);
+typedef void(*PF_QUEUE_DESTROY)(res_queue_t);
+typedef wait_t(*PF_QUEUE_WAIT)(res_queue_t, int);
 #endif
 typedef struct _if_thread_t{
 	PF_THREAD_BEGIN		pf_thread_begin;
@@ -246,11 +252,11 @@ typedef struct _if_thread_t{
 
 #ifdef XDK_SUPPORT_TIMER
 /*timer interface*/
-typedef res_queue_t(*PF_CREATE_TIMER_QUEUE)(void);
-typedef void(*PF_DESTROY_TIMER_QUEUE)(res_queue_t);
-typedef res_timer_t(*PF_CREATE_TIMER)(res_queue_t, clock_t, clock_t, timerd_t*);
-typedef void(*PF_DESTROY_TIMER)(res_queue_t, res_timer_t, res_even_t);
-typedef bool_t(*PF_ALTER_TIMER)(res_queue_t, res_timer_t, clock_t, clock_t);
+typedef res_hand_t(*PF_CREATE_TIMER_QUEUE)(void);
+typedef void(*PF_DESTROY_TIMER_QUEUE)(res_hand_t);
+typedef res_timer_t(*PF_CREATE_TIMER)(res_hand_t, clock_t, clock_t, PF_TIMERFUNC, void*);
+typedef void(*PF_DESTROY_TIMER)(res_hand_t, res_timer_t);
+typedef bool_t(*PF_ALTER_TIMER)(res_hand_t, res_timer_t, clock_t, clock_t);
 
 typedef struct _if_timer_t{
 	PF_CREATE_TIMER_QUEUE		pf_create_timer_queue;
@@ -277,8 +283,8 @@ typedef bool_t(*PF_SOCKET_SENDTO)(res_file_t, res_addr_t, int, void*, size_t, as
 typedef bool_t(*PF_SOCKET_RECVFROM)(res_file_t, res_addr_t, int*, void*, size_t, async_t*);
 typedef bool_t(*PF_SOCKET_SEND)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_SOCKET_RECV)(res_file_t, void*, size_t, async_t*);
-typedef bool_t (*PF_SOCKET_SETOPT)(res_file_t, int, int, const char*, int);
-typedef bool_t (*PF_SOCKET_GETOPT)(res_file_t, int, int, char*, int*);
+typedef bool_t (*PF_SOCKET_SETOPT)(res_file_t, int, const char*, int);
+typedef bool_t (*PF_SOCKET_GETOPT)(res_file_t, int, char*, int*);
 typedef bool_t (*PF_SOCKET_SET_LINGER)(res_file_t, bool_t, int);
 typedef bool_t (*PF_SOCKET_SET_SNDBUF)(res_file_t, int);
 typedef bool_t (*PF_SOCKET_SET_RCVBUF)(res_file_t, int);
@@ -342,8 +348,9 @@ typedef bool_t(*PF_FILE_SIZE)(res_file_t, u32_t*, u32_t*);
 typedef bool_t(*PF_FILE_WRITE)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_FILE_FLUSH)(res_file_t);
 typedef bool_t(*PF_FILE_READ)(res_file_t, void*, size_t, async_t*);
-typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, u32_t, u32_t, void*, size_t, size_t*);
-typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, u32_t, u32_t, void*, size_t, size_t*);
+typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, u32_t, u32_t, void*, size_t);
+typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, u32_t, u32_t, void*, size_t);
+typedef bool_t(*PF_FILE_TRUNCATE)(res_file_t, u32_t, u32_t);
 typedef bool_t (*PF_FILE_DELETE)(const tchar_t*);
 typedef bool_t(*PF_FILE_RENAME)(const tchar_t*, const tchar_t*);
 typedef bool_t (*PF_FILE_INFO)(const tchar_t*, file_info_t*);
@@ -356,16 +363,8 @@ typedef bool_t(*PF_DIRECTORY_REMOVE)(const tchar_t*);
 #ifdef XDK_SUPPORT_FILE_FIND
 typedef res_find_t(*PF_FILE_FIND_FIRST)(const tchar_t*, file_info_t*);
 typedef bool_t(*PF_FILE_FIND_NEXT)(res_find_t, file_info_t*);
+typedef void (*PF_FILE_FIND_CLOSE)(res_find_t);
 #endif
-
-#ifdef XDK_SUPPORT_FILE_BLOCK
-typedef res_file_t(*PF_BLOCK_OPEN)(const tchar_t*, u32_t);
-typedef void(*PF_BLOCK_CLOSE)(res_file_t);
-typedef bool_t(*PF_BLOCK_SIZE)(res_file_t, u32_t*, u32_t*);
-typedef bool_t(*PF_BLOCK_WRITE)(res_file_t, u32_t, u32_t, void*, size_t, size_t*);
-typedef bool_t(*PF_BLOCK_READ)(res_file_t, u32_t, u32_t, void*, size_t, size_t*);
-typedef bool_t(*PF_BLOCK_TRUNCATE)(res_file_t, u32_t, u32_t);
-#endif 
 
 typedef struct _if_file_t{
 	PF_FILE_OPEN		pf_file_open;
@@ -376,6 +375,7 @@ typedef struct _if_file_t{
 	PF_FILE_READ		pf_file_read;
 	PF_FILE_READ_RANGE	pf_file_read_range;
 	PF_FILE_WRITE_RANGE	pf_file_write_range;
+	PF_FILE_TRUNCATE	pf_file_truncate;
 	PF_FILE_DELETE		pf_file_delete;
 	PF_FILE_RENAME		pf_file_rename;
 	PF_FILE_INFO		pf_file_info;
@@ -388,15 +388,7 @@ typedef struct _if_file_t{
 #ifdef XDK_SUPPORT_FILE_FIND
 	PF_FILE_FIND_FIRST	pf_file_find_first;
 	PF_FILE_FIND_NEXT	pf_file_find_next;
-#endif
-
-#ifdef XDK_SUPPORT_FILE_BLOCK
-	PF_BLOCK_OPEN		pf_block_open;
-	PF_BLOCK_CLOSE		pf_block_close;
-	PF_BLOCK_SIZE		pf_block_size;
-	PF_BLOCK_WRITE		pf_block_write;
-	PF_BLOCK_READ		pf_block_read;
-	PF_BLOCK_TRUNCATE	pf_block_truncate;
+	PF_FILE_FIND_CLOSE	pf_file_find_close;
 #endif
 
 }if_file_t;
@@ -454,7 +446,7 @@ typedef bool_t(*PF_GET_COMM_MODE)(res_file_t, dev_com_t*);
 typedef bool_t(*PF_SET_COMM_MODE)(res_file_t, const dev_com_t*);
 typedef res_file_t(*PF_COMM_OPEN)(const tchar_t*, u32_t);
 typedef void(*PF_COMM_CLOSE)(res_file_t);
-typedef u32_t(*PF_COMM_LISTEN)(res_file_t, async_t*);
+typedef u32_t(*PF_COMM_WAIT)(res_file_t, async_t*);
 typedef bool_t(*PF_COMM_READ)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_COMM_WRITE)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_COMM_FLUSH)(res_file_t);
@@ -463,7 +455,7 @@ typedef struct _if_comm_t{
 	PF_DEFAULT_COMM_MODE	pf_default_comm_mode;
 	PF_GET_COMM_MODE		pf_get_comm_mode;
 	PF_SET_COMM_MODE		pf_set_comm_mode;
-	PF_COMM_LISTEN		pf_comm_listen;
+	PF_COMM_WAIT		pf_comm_wait;
 	PF_COMM_OPEN		pf_comm_open;
 	PF_COMM_CLOSE		pf_comm_close;
 	PF_COMM_READ		pf_comm_read;
@@ -504,8 +496,8 @@ typedef bool_t(*PF_MAK_UTC_DATE)(xdate_t*);
 typedef clock_t(*PF_GET_TIMES)(void);
 typedef clock_t(*PF_GET_TICKS)(void);
 typedef stamp_t(*PF_GET_TIMESTAMP)(void);
-typedef void(*PF_UTC_DATE_FROM_TIMES)(xdate_t*, stamp_t);
-typedef void(*PF_UTC_DATE_FROM_TICKS)(xdate_t*, stamp_t);
+typedef void(*PF_UTC_DATE_FROM_TIMES)(xdate_t*, clock_t);
+typedef void(*PF_UTC_DATE_FROM_TICKS)(xdate_t*, clock_t);
 typedef void(*PF_UTC_DATE_FROM_TIMESTAMP)(xdate_t*, stamp_t);
 
 typedef struct _if_date_t{
@@ -644,7 +636,7 @@ typedef void(*PF_GDI_DRAW_POLYLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, i
 typedef void(*PF_GDI_DRAW_POLYGON)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
 typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
-typedef void(*PF_GDI_ALPHA_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
+typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, double, double);
@@ -730,7 +722,7 @@ typedef struct _if_context_t{
 	PF_GDI_DRAW_3DRECT		pf_gdi_draw_3drect;
 	PF_GDI_DRAW_RECT		pf_gdi_draw_rect;
 	PF_GDI_GRADIENT_RECT	pf_gdi_gradinet_rect;
-	PF_GDI_ALPHA_RECT		pf_gdi_alpha_rect;
+	PF_GDI_ALPHABLEND_RECT	pf_gdi_alphablend_rect;
 	PF_GDI_DRAW_ROUND		pf_gdi_draw_round;
 	PF_GDI_DRAW_ELLIPSE		pf_gdi_draw_ellipse;
 	PF_GDI_DRAW_PIE			pf_gdi_draw_pie;
@@ -947,7 +939,6 @@ typedef struct _if_widget_t{
 	PF_WIDGET_SHOW				pf_widget_show;
 	PF_WIDGET_UPDATE_CLIENT		pf_widget_update_client;
 	PF_WIDGET_UPDATE_WINDOW		pf_widget_update_window;
-	PF_WIDGET_INVALID			pf_widget_invalid;
 	PF_WIDGET_UPDATE			pf_widget_update;
 	PF_WIDGET_ENABLE			pf_widget_enable;
 	PF_WIDGET_CREATE_CARET		pf_widget_create_caret;
@@ -1032,6 +1023,10 @@ extern "C" {
 	XDK_API void xdk_impl_mbcs(if_mbcs_t* pif);
 #endif
 
+#ifdef XDK_SUPPORT_ASYNC
+	XDK_API void xdk_impl_async(if_async_t* pif);
+#endif
+
 #ifdef XDK_SUPPORT_THREAD
 	XDK_API void xdk_impl_thread(if_thread_t* pif);
 #ifdef XDK_SUPPORT_THREAD_EVENT
@@ -1059,9 +1054,6 @@ extern "C" {
 	XDK_API void xdk_impl_file(if_file_t* pif);
 #ifdef XDK_SUPPORT_FILE_FIND
 	XDK_API void xdk_impl_file_find(if_file_t* pif);
-#endif
-#ifdef XDK_SUPPORT_FILE_BLOCK
-	XDK_API void xdk_impl_file_block(if_file_t* pif);
 #endif
 #endif /*XDK_SUPPORT_FILE*/
 

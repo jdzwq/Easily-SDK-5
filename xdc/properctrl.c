@@ -207,7 +207,7 @@ void noti_proper_end_size(res_win_t widget, long x, long y)
 
 	set_proper_item_span(ptd->proper, ew);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 bool_t noti_proper_entity_changing(res_win_t widget)
@@ -226,7 +226,7 @@ bool_t noti_proper_entity_changing(res_win_t widget)
 
 	ptd->entity = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -244,7 +244,7 @@ void noti_proper_entity_changed(res_win_t widget, link_t_ptr elk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_proper_owner(widget, NC_ENTITYCHANGED, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL);
 }
@@ -308,7 +308,7 @@ void noti_proper_section_expand(res_win_t widget, link_t_ptr slk)
 	widget_get_client_rect(widget, &xr);
 
 	pt_inter_rect(&xr, &xr_sec);
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_proper_begin_edit(res_win_t widget)
@@ -1013,7 +1013,7 @@ void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
-		alpha_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 	}
 
 	end_canvas_paint(pif->canvas, dc, pxr);
@@ -1088,7 +1088,7 @@ link_t_ptr properctrl_detach(res_win_t widget)
 	data = ptd->proper;
 	ptd->proper = NULL;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	return data;
 }
@@ -1159,7 +1159,7 @@ void properctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void properctrl_redraw_entity(res_win_t widget, link_t_ptr elk)
@@ -1182,7 +1182,7 @@ void properctrl_redraw_entity(res_win_t widget, link_t_ptr elk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void properctrl_redraw_section(res_win_t widget, link_t_ptr slk)
@@ -1213,7 +1213,7 @@ void properctrl_redraw_section(res_win_t widget, link_t_ptr slk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t properctrl_set_focus_entity(res_win_t widget, link_t_ptr elk)

@@ -24,9 +24,6 @@
     <ClCompile Include="..\..\xdk\windows\_if_bitmap_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_block_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_clipboard_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
       <Filter>源文件\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_region_win32.cc">
+      <Filter>源文件\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdk\windows\_if_async_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
   </ItemGroup>

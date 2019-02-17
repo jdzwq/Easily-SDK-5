@@ -1629,7 +1629,6 @@ void MainFrame_ResBar_OnCommit(res_win_t widget, NOTICE_TREE* pnt)
 		return;
 	}
 
-	const tchar_t* title = get_tree_item_title_ptr(plk);
 	const tchar_t* token = (const tchar_t*)pnt->data;
 
 	if (compare_text(token, -1, get_tree_item_title_ptr(pnt->item), -1, 1) == 0)
@@ -1638,18 +1637,17 @@ void MainFrame_ResBar_OnCommit(res_win_t widget, NOTICE_TREE* pnt)
 		return;
 	}
 
-	const tchar_t* str = xsstr(token, title);
+	tchar_t sz_title[RES_LEN] = { 0 };
+	xscpy(sz_title, _T(".")); 
+	xscat(sz_title, get_tree_item_title_ptr(plk));
+
+	const tchar_t* str = xsstr(token, sz_title);
 	if (!str)
 	{
 		pnt->ret = 1;
 		return;
 	}
-	else if (*(str - 1) != _T('.'))
-	{
-		pnt->ret = 1;
-		return;
-	}
-
+	
 	if (!MainFrame_RenameFile(widget, token))
 	{
 		pnt->ret = 1;
@@ -2889,7 +2887,7 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 		plk = get_title_next_item(ptrTitle, plk);
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void MainFrame_OnMove(res_win_t widget, const xpoint_t* ppt)

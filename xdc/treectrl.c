@@ -246,7 +246,7 @@ bool_t noti_tree_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -263,7 +263,7 @@ void noti_tree_item_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_tree_owner(widget, NC_TREEITEMCHANGED, ptd->tree, ptd->item, NULL);
 }
@@ -300,7 +300,7 @@ void noti_tree_item_checked(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_tree_item_expand(res_win_t widget, link_t_ptr ilk)
@@ -779,7 +779,7 @@ void hand_tree_scroll(res_win_t widget, bool_t bHorz, long nLine)
 
 	widget_hand_scroll(widget, bHorz, nLine);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_tree_child_command(res_win_t widget, int code, var_long data)
@@ -852,7 +852,7 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		_treectrl_item_rect(widget, ptd->item, &xr);
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
-		alpha_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 	}
 
 	end_canvas_paint(pif->canvas, dc, pxr);
@@ -927,7 +927,7 @@ link_t_ptr treectrl_detach(res_win_t widget)
 	ptr = ptd->tree;
 	ptd->tree = NULL;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 	return ptr;
 }
 
@@ -997,7 +997,7 @@ void treectrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void treectrl_redraw_item(res_win_t widget, link_t_ptr ilk)
@@ -1021,7 +1021,7 @@ void treectrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 	_treectrl_item_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t treectrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

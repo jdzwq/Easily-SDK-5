@@ -69,16 +69,16 @@ static bool_t _imagesctrl_copy(res_win_t widget)
 
 	len = xslen(get_images_item_src_ptr(ptd->item));
 
-	gb = system_alloc((len + 1) * sizeof(tchar_t));
-	buf = (tchar_t*)system_lock(gb);
+	gb = gmem_alloc((len + 1) * sizeof(tchar_t));
+	buf = (tchar_t*)gmem_lock(gb);
 
 	xsncpy(buf, get_images_item_src_ptr(ptd->item), len);
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		return 0;
@@ -133,11 +133,11 @@ static bool_t _imagesctrl_paste(res_win_t widget)
 		return 0;
 	}
 
-	buf = (tchar_t*)system_lock(gb);
+	buf = (tchar_t*)gmem_lock(gb);
 
 	if (compare_text(buf, xslen(GDI_ATTR_IMAGE_HEAD), GDI_ATTR_IMAGE_HEAD, -1, 1) != 0)
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 		return 0;
 	}
@@ -148,7 +148,7 @@ static bool_t _imagesctrl_paste(res_win_t widget)
 	xsprintf(sz_name, _T("image%d"), get_images_item_count(ptd->images));
 	set_images_item_alt(ilk, sz_name);
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	clipboard_clean();
 	clipboard_close();
 
@@ -294,7 +294,7 @@ void noti_images_reset_check(res_win_t widget)
 	if (!count)
 		return;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 bool_t noti_images_item_changing(res_win_t widget)
@@ -313,7 +313,7 @@ bool_t noti_images_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -331,7 +331,7 @@ void noti_images_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_images_owner(widget, NC_IMAGEITEMCHANGED, ptd->images, ptd->item, NULL);
 }
@@ -394,7 +394,7 @@ void noti_images_item_check(res_win_t widget, link_t_ptr plk)
 	_imagesctrl_item_rect(widget, plk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_images_item_drag(res_win_t widget, long x, long y)
@@ -1121,7 +1121,7 @@ void imagesctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void imagesctrl_tabskip(res_win_t widget, int nSkip)
@@ -1185,7 +1185,7 @@ void imagesctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 	
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t imagesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

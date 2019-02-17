@@ -33,40 +33,32 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_TIMER
 
-res_queue_t _create_timer_queue()
+res_hand_t _create_timer_queue()
 {
 	return CreateTimerQueue();
 }
 
-void _destroy_timer_queue(res_queue_t rq)
+void _destroy_timer_queue(res_hand_t rq)
 {
 	DeleteTimerQueue(rq);
 }
 
-static void __stdcall _timer_dispatch(void* param, unsigned char wait)
-{
-	timerd_t* pdisp = (timerd_t*)param;
-	res_hand_t th;
-
-	_thread_begin(&th, (PF_THREADFUNC)pdisp->pf, pdisp->pa);
-}
-
-res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, timerd_t* pdisp)
+res_timer_t _create_timer(res_hand_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa)
 {
 	res_timer_t hTimer = NULL;
 
-	if (CreateTimerQueueTimer(&hTimer, rq, (WAITORTIMERCALLBACK)_timer_dispatch, (void*)pdisp, duetime, period, 0))
+	if (CreateTimerQueueTimer(&hTimer, rq, (WAITORTIMERCALLBACK)pf, (void*)pa, duetime, period, 0))
 		return hTimer;
 	else
 		return NULL;
 }
 
-void _destroy_timer(res_queue_t rq, res_timer_t rt, res_even_t ev)
+void _destroy_timer(res_hand_t rq, res_timer_t rt)
 {
-	DeleteTimerQueueTimer(rq, rt, ev);
+	DeleteTimerQueueTimer(rq, rt, INVALID_HANDLE_VALUE);
 }
 
-bool_t _alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period)
+bool_t _alter_timer(res_hand_t rq, res_timer_t rt, clock_t duetime, clock_t period)
 {
 	return (bool_t)ChangeTimerQueueTimer(rq, rt, duetime, period);
 }

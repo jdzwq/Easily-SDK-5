@@ -40,47 +40,185 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION select_compatible_bitmap: select a bitmap object into memory context.
+@INPUT res_ctx_t rdc: memory context resource handle.
+@INPUT res_bmp_t obj: bitmap resource handle.
+@RETURN res_bmp_t: if succeeds return original bitmap object in memory context, fails return NULL.
+*/
 XDL_API res_bmp_t select_compatible_bitmap(res_ctx_t rdc, res_bmp_t obj);
 
+/*
+@FUNCTION create_compatible_bitmap: create a memory context.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT long cx: bitmap width in points.
+@INPUT long cy: bitmap height in points.
+@RETURN res_bmp_t: if succeeds return memory context resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_compatible_bitmap(res_ctx_t rdc, long cx, long cy);
 
+/*
+@FUNCTION destroy_bitmap: destroy bitmap object.
+@INPUT res_bmp_t bmp: device context resource handle.
+@RETURN void: none.
+*/
 XDL_API void destroy_bitmap(res_bmp_t bmp);
 
-XDL_API void get_bitmap_size(res_bmp_t rdc, long* pw, long* ph);
+/*
+@FUNCTION get_bitmap_size: get bitmap size in points.
+@INPUT res_bmp_t bmp: bitmap resource handle.
+@OUTPUT long* pw: long value for returning width.
+@OUTPUT long* ph: long value for returning height.
+@RETURN void: none.
+*/
+XDL_API void get_bitmap_size(res_bmp_t bmp, long* pw, long* ph);
 
+/*
+@FUNCTION create_color_bitmap: create a color based bitmap.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const xcolor_t* pxc: the color struct.
+@INPUT long w: the bitmap width in points.
+@INPUT long h: the bitmap height in points.
+@RETURN res_bmp_t: if succeeds return bitmap resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h);
 
+/*
+@FUNCTION create_pattern_bitmap: create a pattern bitmap.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const xcolor_t* pxc_front: the color struct for front drawing.
+@INPUT const xcolor_t* pxc_back: the color struct for background drawing.
+@INPUT long w: the bitmap width in points.
+@INPUT long h: the bitmap height in points.
+@INPUT const tchar_t* lay: the layout mode, it can be GDI_ATTR_LAYOUT_HORZ, GDI_ATTR_LAYOUT_VERT, GDI_ATTR_LAYOUT_CROSS.
+@RETURN res_bmp_t: if succeeds return bitmap resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, long w, long h, const tchar_t* lay);
 
+/*
+@FUNCTION create_gradient_bitmap: create a gradient bitmap.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const xcolor_t* pxc_near: the color struct for nearest drawing.
+@INPUT const xcolor_t* pxc_center: the color struct for center drawing.
+@INPUT long w: the bitmap width in points.
+@INPUT long h: the bitmap height in points.
+@INPUT const tchar_t* lay: the layout mode, it can be GDI_ATTR_LAYOUT_HORZ, GDI_ATTR_LAYOUT_VERT, GDI_ATTR_LAYOUT_CROSS.
+@RETURN res_bmp_t: if succeeds return bitmap resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, long w, long h, const tchar_t* lay);
 
+/*
+@FUNCTION load_bitmap_from_bytes: create bitmap from dib data buffer.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const byte_t* pb: the dib data buffer.
+@INPUT dword_t len: the dib bytes
+@RETURN res_bmp_t: if succeeds return bitmap resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t load_bitmap_from_bytes(res_ctx_t rdc, const byte_t* pb, dword_t len);
 
+/*
+@FUNCTION save_bitmap_to_bytes: save bitmap as dib data.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT res_bmp_t rb: bitmap resource handle.
+@OUTPUT byte_t* pb: the buffer for returning dib data.
+@INPUT dword_t max: the buffer size in bytes
+@RETURN res_bmp_t: if succeeds return bitmap resource handle, fails return NULL.
+*/
 XDL_API dword_t	save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, byte_t* pb, dword_t max);
 
-XDL_API dword_t	get_bitmap_bytes(res_bmp_t rdc);
+/*
+@FUNCTION get_bitmap_bytes: get bitmap dib bytes.
+@INPUT res_bmp_t bmp: memory resource handle.
+@RETURN dword_t: if succeeds return dib bytes, fails return zero.
+*/
+XDL_API dword_t	get_bitmap_bytes(res_bmp_t bmp);
 
 #ifdef XDK_SUPPORT_SHELL
+/*
+@FUNCTION load_bitmap_from_thumb: create thumb bitmap from file.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const tchar_t* fname: the file path name for loading thumb bitmap.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* fname);
 
+/*
+@FUNCTION load_bitmap_from_thumb: create thumb bitmap from icon.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const tchar_t* iname: the icon name.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname);
 #endif
 
 #ifdef XDL_SUPPORT_BAR
+/*
+@FUNCTION create_code128_bitmap: create code128 bar bitmap.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT long w: the bitmap width in points.
+@INPUT long w: the bitmap height in points.
+@INPUT const tchar_t* text: the string data.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_code128_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* text);
 
+/*
+@FUNCTION create_pdf417_bitmap: create pdf417 bar bitmap.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT long w: the bitmap width in points.
+@INPUT long w: the bitmap height in points.
+@INPUT const tchar_t* text: the string data.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* text);
 
+/*
+@FUNCTION create_qrcode_bitmap: create qrcode bar bitmap.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT long w: the bitmap width in points.
+@INPUT long w: the bitmap height in points.
+@INPUT const tchar_t* text: the string data.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* text);
 #endif
 
+/*
+@FUNCTION load_bitmap_from_file: create bitmap from image file.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const tchar_t* fname: the image file name.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
 XDL_API res_bmp_t load_bitmap_from_file(res_ctx_t rdc, const tchar_t* fname);
 
+/*
+@FUNCTION save_bitmap_to_file: save bitmap to image file.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT res_bmp_t rb: bitmap resource handle.
+@INPUT const tchar_t* type: the image type, it can be GDI_ATTR_IMAGE_TYPE_JPG, GDI_ATTR_IMAGE_TYPE_PNG, GDI_ATTR_IMAGE_TYPE_BMP.
+@INPUT const tchar_t* fname: the image file name.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t save_bitmap_to_file(res_ctx_t rdc, res_bmp_t rb, const tchar_t* type, const tchar_t* fname);
 
-XDL_API res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, ximage_t* p, long cx, long cy);
+/*
+@FUNCTION load_bitmap_from_ximage: create bitmap from ximage struct.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT const ximage_t* p: the image struct.
+@INPUT long cx: the bitmap width in points.
+@INPUT long cy: the bitmap height in points.
+@RETURN res_bmp_t: if succeeds return memory resource handle, fails return NULL.
+*/
+XDL_API res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* p, long cx, long cy);
 
-XDL_API bool_t save_bitmap_to_ximage(res_ctx_t rdc, ximage_t* pmi, res_bmp_t bmp);
+/*
+@FUNCTION save_bitmap_to_ximage: save bitmap to ximage struct.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT res_bmp_t bmp: bitmap resource handle.
+@INPUT ximage_t* pmi: the ximage struct for saving data.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t save_bitmap_to_ximage(res_ctx_t rdc, res_bmp_t bmp, ximage_t* pmi);
 
 #ifdef	__cplusplus
 }

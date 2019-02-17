@@ -192,7 +192,7 @@ void dropbox_on_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 1);
+	widget_update(widget, &xr, 1);
 }
 
 void dropbox_on_item_changed(res_win_t widget, link_t_ptr ent)
@@ -208,7 +208,7 @@ void dropbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 1);
+	widget_update(widget, &xr, 1);
 
 	noti_dropbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -391,7 +391,7 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		_dropbox_item_rect(widget, ptd->entity, &xr);
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
-		alpha_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
 	}
 
 	end_canvas_paint(canv, dc, pxr);
@@ -476,7 +476,7 @@ void dropbox_redraw(res_win_t widget)
 	ptd->entity = ent;
 	_dropbox_reset_page(widget);
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 void dropbox_tabskip(res_win_t widget, int nSkip)

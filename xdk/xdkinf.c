@@ -64,9 +64,6 @@ void xdk_impl_memo_local(if_memo_t* pif)
 	pif->pf_local_alloc = _local_alloc;
 	pif->pf_local_realloc = _local_realloc;
 	pif->pf_local_free = _local_free;
-
-	pif->pf_async_alloc_lapp = _async_alloc_lapp;
-	pif->pf_async_free_lapp = _async_free_lapp;
 }
 #endif
 
@@ -110,6 +107,14 @@ void xdk_impl_mbcs(if_mbcs_t* pif)
 	pif->pf_ucs_to_gbk = _ucs_to_gbk;
 	pif->pf_utf8_to_ucs = _utf8_to_ucs;
 	pif->pf_ucs_to_utf8 = _ucs_to_utf8;
+}
+#endif
+
+#ifdef XDK_SUPPORT_ASYNC
+void xdk_impl_async(if_async_t* pif)
+{
+	pif->pf_async_alloc_lapp = _async_alloc_lapp;
+	pif->pf_async_release_lapp = _async_release_lapp;
 }
 #endif
 
@@ -197,6 +202,7 @@ void xdk_impl_file(if_file_t* pif)
 	pif->pf_file_write_range = _file_write_range;
 	pif->pf_file_write = _file_write;
 	pif->pf_file_flush = _file_flush;
+	pif->pf_file_truncate = _file_truncate;
 	pif->pf_file_delete = _file_delete;
 	pif->pf_file_rename = _file_rename;
 	pif->pf_file_info = _file_info;
@@ -209,20 +215,10 @@ void xdk_impl_file_find(if_file_t* pif)
 {
 	pif->pf_file_find_first = _file_find_first;
 	pif->pf_file_find_next = _file_find_next;
+	pif->pf_file_find_close = _file_find_close;
 }
 #endif
 
-#ifdef XDK_SUPPORT_FILE_BLOCK
-void xdk_impl_file_block(if_file_t* pif)
-{
-	pif->pf_block_open = _block_open;
-	pif->pf_block_close = _block_close;
-	pif->pf_block_size = _block_size;
-	pif->pf_block_write = _block_write;
-	pif->pf_block_read = _block_read;
-	pif->pf_block_truncate = _block_truncate;
-}
-#endif
 #endif /*XDK_SUPPORT_FILE*/
 
 #ifdef XDK_SUPPORT_SHARE
@@ -259,7 +255,7 @@ void xdk_impl_comm(if_comm_t* pif)
 	pif->pf_default_comm_mode = _default_comm_mode;
 	pif->pf_set_comm_mode = _set_comm_mode;
 	pif->pf_get_comm_mode = _get_comm_mode;
-	pif->pf_comm_listen = _comm_listen;
+	pif->pf_comm_wait = _comm_wait;
 	pif->pf_comm_open = _comm_open;
 	pif->pf_comm_close = _comm_close;
 	pif->pf_comm_read = _comm_read;
@@ -473,7 +469,7 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_text_size = _gdiplus_text_size;
 	pif->pf_gdi_text_metric = _gdiplus_text_metric;
 	pif->pf_gdi_gradinet_rect = _gdiplus_gradient_rect;
-	pif->pf_gdi_alpha_rect = _gdiplus_alpha_rect;
+	pif->pf_gdi_alphablend_rect = _gdiplus_alphablend_rect;
 	pif->pf_gdi_exclip_rect = _gdiplus_exclip_rect;
 	pif->pf_gdi_inclip_rect = _gdiplus_inclip_rect;
 	pif->pf_gdi_draw_bitmap = _gdiplus_draw_bitmap;
@@ -494,7 +490,7 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_text_size = _gdi_text_size;
 	pif->pf_gdi_text_metric = _gdi_text_metric;
 	pif->pf_gdi_gradinet_rect = _gdi_gradient_rect;
-	pif->pf_gdi_alpha_rect = _gdi_alpha_rect;
+	pif->pf_gdi_alphablend_rect = _gdi_alphablend_rect;
 	pif->pf_gdi_exclip_rect = _gdi_exclip_rect;
 	pif->pf_gdi_inclip_rect = _gdi_inclip_rect;
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
@@ -570,7 +566,6 @@ void xdk_impl_widget(if_widget_t* pif)
 	pif->pf_widget_show = _widget_show;
 	pif->pf_widget_update_client = _widget_update_client;
 	pif->pf_widget_update_window = _widget_update_window;
-	pif->pf_widget_invalid = _widget_invalid;
 	pif->pf_widget_update = _widget_update;
 	pif->pf_widget_post_char = _widget_post_char;
 	pif->pf_widget_post_key = _widget_post_key;

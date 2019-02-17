@@ -72,7 +72,7 @@ void checkbox_on_switch(res_win_t widget)
 	else
 		ptd->on = 1;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_checkbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -136,7 +136,7 @@ void hand_checkbox_size(res_win_t widget, int code, const xsize_t* prs)
 	
 	_checkbox_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_checkbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -240,7 +240,7 @@ void checkbox_set_state(res_win_t widget, bool_t cur)
 
 	ptd->on = cur;
 
-	widget_invalid(widget, NULL, 1);
+	widget_update(widget, NULL, 1);
 }
 
 bool_t checkbox_get_state(res_win_t widget)

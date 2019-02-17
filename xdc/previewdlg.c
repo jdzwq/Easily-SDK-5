@@ -791,7 +791,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_size(pushbox, RECTSIZE(&xr));
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, var_long data)

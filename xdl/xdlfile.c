@@ -60,7 +60,7 @@ file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 	if (IS_INET_FILE(proto))
 		pfn->bio = inet_open_file(psd, file, mode);
 	else
-		pfn->bio = xunc_open_file(psd, file, mode);
+		pfn->bio = xuncf_open_file(psd, file, mode);
 
 	if (!pfn->bio)
 	{
@@ -81,13 +81,13 @@ file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 	}
 	else
 	{
-		pfn->pf_close = xunc_close_file;
-		pfn->pf_read = xunc_read_file;
-		pfn->pf_read_range = xunc_read_file_range;
-		pfn->pf_write = xunc_write_file;
-		pfn->pf_write_range = xunc_write_file_range;
-		pfn->pf_flush = xunc_flush_file;
-		pfn->pf_set_time = xunc_set_filetime;
+		pfn->pf_close = xuncf_close_file;
+		pfn->pf_read = xuncf_read_file;
+		pfn->pf_read_range = xuncf_read_file_range;
+		pfn->pf_write = xuncf_write_file;
+		pfn->pf_write_range = xuncf_write_file_range;
+		pfn->pf_flush = xuncf_flush_file;
+		pfn->pf_set_time = xuncf_set_filetime;
 		pfn->pf_set_since = NULL;
 	}
 
@@ -117,43 +117,13 @@ bool_t	xfile_read(file_t fh, byte_t* buf, dword_t size)
 	return rt;
 }
 
-bool_t xfile_read_range(file_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
-{
-	if_bio_t* pfn = (if_bio_t*)fh;
-	dword_t nbys, npos = 0;
-	bool_t rt = 1;
-
-	long long ll;
-
-	XDL_ASSERT(fh && pfn->pf_read_range);
-
-	while (npos < size)
-	{
-		nbys = size - npos;
-
-		rt = (*pfn->pf_read_range)(pfn->bio, hoff, loff, (buf + npos), &nbys);
-
-		if (!rt || !nbys)
-			break;
-
-		npos += nbys;
-
-		ll = MAKELONGLONG(loff, hoff);
-		ll += nbys;
-		hoff = GETHDWORD(ll);
-		loff = GETLDWORD(ll);
-	}
-
-	return rt;
-}
-
 bool_t xfile_write(file_t fh, const byte_t* buf, dword_t size)
 {
 	if_bio_t* pfn = (if_bio_t*)fh;
 	dword_t nbys, npos = 0;
 	bool_t rt = 1;
 
-	XDL_ASSERT(fh);
+	XDL_ASSERT(fh && pfn->pf_write);
 
 	while (npos < size)
 	{
@@ -170,34 +140,22 @@ bool_t xfile_write(file_t fh, const byte_t* buf, dword_t size)
 	return rt;
 }
 
+bool_t xfile_read_range(file_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
+{
+	if_bio_t* pfn = (if_bio_t*)fh;
+
+	XDL_ASSERT(fh && pfn->pf_read_range);
+
+	return (*pfn->pf_read_range)(pfn->bio, hoff, loff, buf, size);
+}
+
 bool_t	xfile_write_range(file_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
 	if_bio_t* pfn = (if_bio_t*)fh;
-	dword_t nbys, npos = 0;
-	bool_t rt = 1;
 
-	long long ll;
+	XDL_ASSERT(fh && pfn->pf_write_range);
 
-	XDL_ASSERT(fh);
-
-	while (npos < size)
-	{
-		nbys = size - npos;
-
-		rt = (*pfn->pf_write_range)(pfn->bio, hoff, loff, (buf + npos), &nbys);
-
-		if (!rt || !nbys)
-			break;
-
-		npos += nbys;
-
-		ll = MAKELONGLONG(loff, hoff);
-		ll += nbys;
-		hoff = GETHDWORD(ll);
-		loff = GETLDWORD(ll);
-	}
-
-	return rt;
+	return (*pfn->pf_write_range)(pfn->bio, hoff, loff, buf, size);
 }
 
 bool_t xfile_flush(file_t fh)
@@ -274,7 +232,7 @@ bool_t xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, 
 	if (!IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_FILE)
-		return xunc_file_info(psd, fname, ftime, fsize, fetag, fencode);
+		return xuncf_file_info(psd, fname, ftime, fsize, fetag, fencode);
 #else
 		return 0;
 #endif
@@ -303,7 +261,7 @@ bool_t xfile_delete(const secu_desc_t* psd, const tchar_t* fname)
 	if (!IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_FILE)
-		return xunc_delete_file(psd, fname);
+		return xuncf_delete_file(psd, fname);
 #else
 		return 0;
 #endif
@@ -328,7 +286,7 @@ bool_t	xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const tchar_t*
 	if (!IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_FILE)
-		return xunc_rename_file(psd, fname, nname);
+		return xuncf_rename_file(psd, fname, nname);
 #else
 		return 0;
 #endif
@@ -353,7 +311,7 @@ XDL_API bool_t xfile_mkdir(const secu_desc_t* psd, const tchar_t* path)
 	if (!IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_FILE)
-		return xunc_create_directory(psd, path);
+		return xuncf_create_directory(psd, path);
 #endif
 	}
 	return 0;
@@ -373,7 +331,7 @@ XDL_API bool_t xfile_rmdir(const secu_desc_t* psd, const tchar_t* path)
 
 #if defined(XDK_SUPPORT_FILE)
 	if (!IS_INET_FILE(proto))
-		return xunc_remove_directory(psd, path);
+		return xuncf_remove_directory(psd, path);
 	else
 		return 0;
 #endif

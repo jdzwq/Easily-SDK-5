@@ -199,7 +199,7 @@ void hand_inputdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update_client(ptd->editor);
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_inputdlg_erase(res_win_t widget, res_ctx_t dc)

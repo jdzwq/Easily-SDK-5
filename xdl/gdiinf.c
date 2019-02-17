@@ -63,13 +63,16 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 	pic->pf_draw_shape = draw_shape;
 	pic->pf_multi_line = multi_line;
 	pic->pf_gradient_rect = gradient_rect;
+	pic->pf_alphablend_rect = alphablend_rect;
 	pic->pf_draw_text = draw_text;
 	pic->pf_text_out = text_out;
 	pic->pf_color_out = color_out;
 	pic->pf_draw_password = draw_password;
 	pic->pf_draw_data = draw_data;
 	pic->pf_draw_var_text = draw_var_text;
+
 	pic->pf_draw_tag_text = draw_tag_text;
+	pic->pf_calc_tag_pages = calc_tag_pages;
 	pic->pf_draw_memo_text = draw_memo_text;
 	pic->pf_calc_memo_pages = calc_memo_pages;
 	pic->pf_draw_rich_text = draw_rich_text;

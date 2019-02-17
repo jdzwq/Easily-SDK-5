@@ -40,33 +40,114 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API canvas_t create_svg_canvas(link_t_ptr svg);
+/*
+@FUNCTION create_svg_canvas: create a svg canvas.
+@INPUT link_t_ptr svg: the svg document.
+@RETURN canvas_t: if succeeds return canvas object, fails return NULL.
+*/
+XDL_API canvas_t create_svg_canvas(link_t_ptr svg);
 
-	XDL_API void destroy_svg_canvas(canvas_t canv);
+/*
+@FUNCTION destroy_svg_canvas: destroy the svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@RETURN void: none.
+*/
+XDL_API void destroy_svg_canvas(canvas_t canv);
 
-	XDL_API res_ctx_t svg_get_canvas_ctx(canvas_t canv);
+/*
+@FUNCTION svg_get_canvas_ctx: get the svg canvas context resource handle.
+@INPUT canvas_t canv: the svg canvas object.
+@RETURN res_ctx_t: return the context resource handle if exists, otherwise return NULL.
+*/
+XDL_API res_ctx_t svg_get_canvas_ctx(canvas_t canv);
 
-	XDL_API link_t_ptr svg_get_canvas_doc(canvas_t canv);
+/*
+@FUNCTION svg_get_canvas_doc: get the svg canvas document.
+@INPUT canvas_t canv: the svg canvas object.
+@RETURN link_t_ptr: return the svg document if exists, otherwise return NULL.
+*/
+XDL_API link_t_ptr svg_get_canvas_doc(canvas_t canv);
 
-	XDL_API int svg_get_canvas_type(canvas_t canv);
+/*
+@FUNCTION svg_get_canvas_type: get the canvas type, it can be _CANV_PRINTER.
+@INPUT canvas_t canv: the canvas object.
+@RETURN int: return the canvas type.
+*/
+XDL_API int svg_get_canvas_type(canvas_t canv);
 
-	XDL_API float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz);
+/*
+@FUNCTION svg_pt_to_tm: mapping points to millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT long pt: the points value.
+@INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
+@RETURN float: return the value in millimeter.
+*/
+XDL_API float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz);
 
-	XDL_API long svg_tm_to_pt(canvas_t canv, float tm, bool_t horz);
+/*
+@FUNCTION svg_tm_to_pt: mapping millimeter to points in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT float tm: the millimeter value.
+@INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
+@RETURN float: return the value in points.
+*/
+XDL_API long svg_tm_to_pt(canvas_t canv, float tm, bool_t horz);
 
-	XDL_API void svg_rect_tm_to_pt(canvas_t canv, xrect_t* pxr);
+/*
+@FUNCTION svg_rect_tm_to_pt: mapping rectangle points to millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INOUTPUT xrect_t* pxr: the rect struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+XDL_API void svg_rect_tm_to_pt(canvas_t canv, xrect_t* pxr);
 
-	XDL_API void svg_rect_pt_to_tm(canvas_t canv, xrect_t* pxr);
+/*
+@FUNCTION svg_rect_pt_to_tm: mapping rectangle millimeter to points in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INOUTPUT xrect_t* pxr: the rect struct for inputing float member and outputing integer member.
+@RETURN void: none.
+*/
+XDL_API void svg_rect_pt_to_tm(canvas_t canv, xrect_t* pxr);
 
-	XDL_API void svg_size_tm_to_pt(canvas_t canv, xsize_t* pxs);
+/*
+@FUNCTION svg_size_tm_to_pt: mapping size points to millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INOUTPUT xsize_t* pxs: the size struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+XDL_API void svg_size_tm_to_pt(canvas_t canv, xsize_t* pxs);
 
-	XDL_API void svg_size_pt_to_tm(canvas_t canv, xsize_t* pxs);
+/*
+@FUNCTION svg_size_pt_to_tm: mapping size points to millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INOUTPUT xsize_t* pxs: the size struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+XDL_API void svg_size_pt_to_tm(canvas_t canv, xsize_t* pxs);
 
-	XDL_API void svg_point_tm_to_pt(canvas_t canv, xpoint_t* ppt);
+/*
+@FUNCTION svg_point_tm_to_pt: mapping point points to millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INOUTPUT xpoint_t* ppt: the point struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+XDL_API void svg_point_tm_to_pt(canvas_t canv, xpoint_t* ppt);
 
-	XDL_API void svg_point_pt_to_tm(canvas_t canv, xpoint_t* ppt);
+/*
+@FUNCTION svg_point_pt_to_tm: mapping point points to millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INOUTPUT xpoint_t* ppt: the point struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+XDL_API void svg_point_pt_to_tm(canvas_t canv, xpoint_t* ppt);
 
-	XDL_API void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif);
+/*
+@FUNCTION svg_get_canvas_measure: fill the svg canvas measure functions.
+@INPUT canvas_t canv: the svg canvas object.
+@OUTPUT if_measure_t pif: the measure struct for returning inner function.
+@RETURN void: none.
+*/
+XDL_API void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif);
 
 #ifdef	__cplusplus
 }

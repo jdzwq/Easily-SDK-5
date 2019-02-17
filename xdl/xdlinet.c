@@ -514,28 +514,6 @@ static bool_t http_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 	return _http_read_file(pfn, buf, pb, NULL);
 }
 
-static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t* pb)
-{
-	inet_t* pfn = (inet_t*)inet;
-
-	tchar_t sz_range[RES_LEN + 1] = { 0 };
-	tchar_t sz_from[NUM_LEN + 1] = { 0 };
-	tchar_t sz_to[NUM_LEN + 1] = { 0 };
-	long long ll = 0;
-
-	format_longlong(hoff, loff, sz_from);
-
-	ll = MAKELONGLONG(loff, hoff) + *pb - 1;
-	hoff = GETHDWORD(ll);
-	loff = GETLDWORD(ll);
-
-	format_longlong(hoff, loff, sz_to);
-
-	xsprintf(sz_range, _T("bytes=%s-%s"), sz_from, sz_to);
-
-	return _http_read_file(pfn, buf, pb, sz_range);
-}
-
 static bool_t http_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
 	inet_t* pfn = (inet_t*)inet;
@@ -545,7 +523,30 @@ static bool_t http_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 	return _http_write_file(pfn, buf, pb, NULL);
 }
 
-static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t* pb)
+static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
+{
+	inet_t* pfn = (inet_t*)inet;
+
+	tchar_t sz_range[RES_LEN + 1] = { 0 };
+	tchar_t sz_from[NUM_LEN + 1] = { 0 };
+	tchar_t sz_to[NUM_LEN + 1] = { 0 };
+	long long ll = 0;
+	dword_t dw = size;
+
+	format_longlong(hoff, loff, sz_from);
+
+	ll = MAKELONGLONG(loff, hoff) + size - 1;
+	hoff = GETHDWORD(ll);
+	loff = GETLDWORD(ll);
+
+	format_longlong(hoff, loff, sz_to);
+
+	xsprintf(sz_range, _T("bytes=%s-%s"), sz_from, sz_to);
+
+	return _http_read_file(pfn, buf, &dw, sz_range);
+}
+
+static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
 	inet_t* pfn = (inet_t*)inet;
 
@@ -554,16 +555,17 @@ static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, co
 	tchar_t sz_to[NUM_LEN + 1] = { 0 };
 	tchar_t sz_total[NUM_LEN + 1] = { 0 };
 	long long ll = 0;
+	dword_t dw = size;
 
-	if (!(*pb))
+	if (!size)
 	{
-		return _http_write_file(pfn, buf, pb, NULL);
+		return _http_write_file(pfn, buf, &dw, NULL);
 	}
 	else
 	{
 		format_longlong(hoff, loff, sz_from);
 
-		ll = MAKELONGLONG(loff, hoff) + *pb - 1;
+		ll = MAKELONGLONG(loff, hoff) + size - 1;
 		hoff = GETHDWORD(ll);
 		loff = GETLDWORD(ll);
 		format_longlong(hoff, loff, sz_to);
@@ -576,7 +578,7 @@ static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, co
 
 		xsprintf(sz_range, _T("%s-%s/%s"), sz_from, sz_to, sz_total);
 
-		return _http_write_file(pfn, buf, pb, sz_range);
+		return _http_write_file(pfn, buf, &dw, sz_range);
 	}
 }
 
@@ -1618,26 +1620,26 @@ bool_t inet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 		return 0;
 }
 
-bool_t inet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t* pb)
+bool_t inet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
 	inet_t* pfn = (inet_t*)inet;
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	if (pfn->proto == _PROTO_HTTP)
-		return http_read_file_range(inet, hoff, loff, buf, pb);
+		return http_read_file_range(inet, hoff, loff, buf, size);
 	else
 		return 0;
 }
 
-bool_t inet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t* pb)
+bool_t inet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
 	inet_t* pfn = (inet_t*)inet;
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	if (pfn->proto == _PROTO_HTTP)
-		return http_write_file_range(inet, hoff, loff, buf, pb);
+		return http_write_file_range(inet, hoff, loff, buf, size);
 	else
 		return 0;
 }

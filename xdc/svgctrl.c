@@ -131,7 +131,7 @@ void hand_svg_size(res_win_t widget, int code, const xsize_t* pxs)
 
 	_svgctrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_svg_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -316,7 +316,7 @@ link_t_ptr svgctrl_detach(res_win_t widget)
 	ptr = ptd->svg;
 	ptd->svg = NULL;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 	return ptr;
 }
 
@@ -342,5 +342,5 @@ void svgctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }

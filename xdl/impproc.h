@@ -40,38 +40,147 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION load_library: load dynamic library.
+@INPUT const tchar_t* lname: the library file path and name.
+@RETURN res_modu_t: if succeeds return dynamic library system resource handle, fails return NULL.
+*/
 XDL_API res_modu_t load_library(const tchar_t* lname);
 
+/*
+@FUNCTION free_library: free dynamic library.
+@INPUT res_modu_t lib: the library system resource handle.
+@RETURN void: none.
+*/
 XDL_API void free_library(res_modu_t lib);
 
+/*
+@FUNCTION get_address: get dynamic library exported function address.
+@INPUT res_modu_t lib: the library system resource handle.
+@INPUT const schar_t* fname: the function name.
+@RETURN void*: if succeeds return function address, falis return NULL.
+*/
 XDL_API void* get_address(res_modu_t lib, const schar_t* fname);
 
+/*
+@FUNCTION get_runpath: get the module running path.
+@INPUT res_modu_t ins: the module system resource handle.
+@OUTPUT tchar_t* buf: the string buffer for return path.
+@INPUT int max: the buffer max length in characters, not include the string terminate character space.
+@RETURN void: none.
+*/
 XDL_API void get_runpath(res_modu_t ins, tchar_t* buf, int max);
 
+/*
+@FUNCTION create_process: create child process with command line and share mode, if child process created with share mode, 
+it can use pipe or socket handle returned in proc_info_t struct write data to or read data from child process.
+@INPUT const tchar_t* exename: the module path and name.
+@INPUT const tchar_t* cmdline: the string parameter translated to child process.
+@INPUT int share: the interactive mode between parent and child process, can be SHARE_NONE, SHARE_PIPE, SHARE_SOCK.
+@OUTPUT proc_info_t* ppi: the process information struct for returning.
+@RETURN bool_t: if succeeds fill the ppi struct and return 1, fails return 0.
+*/
 XDL_API bool_t create_process(const tchar_t* exename, const tchar_t* cmdline, int share, proc_info_t* ppi);
 
+/*
+@FUNCTION release_process: release system resource handle stored in proc_info_t struct.
+@INPUT proc_info_t ppi: the process information struct.
+@RETURN void: none.
+*/
 XDL_API void release_process(proc_info_t* ppi);
 
+/*
+@FUNCTION process_waitrun: pause process executing till the system resource handle released.
+@INPUT res_hand_t ph: some system resource handle.
+@RETURN void: none.
+*/
 XDL_API void process_waitrun(res_hand_t ph);
 
+/*
+@FUNCTION process_dupli: duplicate a system resource handle to target process.
+@INPUT res_hand_t ph: current process handle.
+@INPUT res_hand_t vh: current process system resource handle.
+@RETURN res_hand_t: if succeeds return target process resource handle, fails return NULL.
+*/
 XDL_API res_hand_t process_dupli(res_hand_t ph, res_hand_t vh);
 
+/*
+@FUNCTION process_alloc: alloc memory address from target process heap.
+@INPUT res_hand_t ph: current process handle.
+@INPUT dword_t dw: the memory size request.
+@RETURN void*: if succeeds return memory pointer in target process heap, fails return NULL.
+*/
 XDL_API void* process_alloc(res_hand_t ph, dword_t dw);
 
+/*
+@FUNCTION process_free: free memory in target process heap.
+@INPUT res_hand_t ph: current process handle.
+@INPUT void* p: the memory pointer from target process heap.
+@RETURN void: none.
+*/
 XDL_API void process_free(res_hand_t ph, void* p);
 
+/*
+@FUNCTION process_write: write date into target process memory.
+@INPUT res_hand_t ph: current process handle.
+@INPUT void* p: the memory pointer from target process heap.
+@INPUT void* data: the data buffer pointer.
+@INPUT dword_t dw: size in bytes of data.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t process_write(res_hand_t ph, void* p, void* data, dword_t dw);
 
+/*
+@FUNCTION process_read: read date from target process memory.
+@INPUT res_hand_t ph: current process handle.
+@INPUT void* p: the memory pointer from target process heap.
+@INPUT void* data: the data buffer pointer.
+@OUTPUT dword_t dw: the max size in bytes of buffer.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t process_read(res_hand_t ph, void* p, void* data, dword_t dw);
 
+/*
+@FUNCTION release_handle: release system resource handle.
+@INPUT res_hand_t hh: some syste resource handle.
+@RETURN void: none.
+*/
 XDL_API void release_handle(res_hand_t hh);
 
+/*
+@FUNCTION inherit_handle: make system resource can be or not be inherited by child process.
+@INPUT res_hand_t hh: some syste resource handle.
+@INPUT bool_t b: if nonzero the resource handle can be inherited, otherwise can not be.
+@RETURN bool_t: none.
+*/
 XDL_API bool_t inherit_handle(res_hand_t hh, bool_t b);
 
+/*
+@FUNCTION read_profile: read some runtime config value from profile.
+@INPUT const tchar_t* fname: profile file name.
+@INPUT const tchar_t*sec: profile section name.
+@INPUT const tchar_t* key: profile key name.
+@OUTPUT tchar_t* buf: string buffer for returning key value.
+@INPUT intmax: string buffer max length, not include terminated character space.
+@RETURN void: none.
+*/
 XDL_API void read_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, tchar_t* buf, int max);
 
+/*
+@FUNCTION write_profile: write some runtime config value into profile.
+@INPUT const tchar_t* fname: profile file name.
+@INPUT const tchar_t* sec: profile section name.
+@INPUT const tchar_t* key: profile key name.
+@INPUT const tchar_t* val: profile key value.
+@RETURN void: none.
+*/
 XDL_API void write_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, const tchar_t* val);
 
+/*
+@FUNCTION system_info: get system some environment value.
+@OUTPUT sys_info_t* psi: system information struct pointer for returning.
+@RETURN void: none.
+*/
 XDL_API void system_info(sys_info_t* psi);
 
 #ifdef	__cplusplus

@@ -117,7 +117,7 @@ void noti_editbox_command(res_win_t widget, int code, var_long data)
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
 
 	if (widget_has_subproc(widget))
-		widget_post_command(widget, code, IDC_SELF, data);
+		widget_send_command(widget, code, IDC_SELF, data);
 	else
 		widget_post_command(widget_get_owner(widget), code, widget_get_user_id(widget), data);
 }

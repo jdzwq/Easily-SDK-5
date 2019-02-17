@@ -246,7 +246,7 @@ int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid
 	{
 		widget_enum_child(widget, _widget_set_child_point, (var_long)0);
 
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 
 		return 1;
 	}

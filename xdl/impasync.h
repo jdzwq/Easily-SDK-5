@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc xdl cache document
+	@doc async document
 
-	@module	impcache.h | xdl cache interface file
+	@module	impasync.h | async interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,31 +29,37 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _IMPCACHE_H
-#define _IMPCACHE_H
+#ifndef _IMPASYNC_H
+#define	_IMPASYNC_H
 
 #include "xdldef.h"
 
-#ifdef XDK_SUPPORT_MEMO_CACHE
+#ifdef XDK_SUPPORT_ASYNC
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-XDL_API xhand_t xcache_open(void);
+/*
+@FUNCTION async_alloc_lapp: alloc async operation resource.
+@INOUTPUT async_t* pas: the async struct for allocing background resource.
+@RETURN void: none.
+*/
+XDL_API void async_alloc_lapp(async_t* pas);
 
-XDL_API void xcache_close(xhand_t cache);
+/*
+@FUNCTION async_release_lapp: release async operation resource.
+@INPUT async_t* pas: the async struct for releasing background resource.
+@RETURN void: none.
+*/
+XDL_API void async_release_lapp(async_t* pas);
 
-XDL_API void* xcache_handle(xhand_t cache);
-
-XDL_API bool_t xcache_write(xhand_t cache, const byte_t* data, dword_t* pb);
-
-XDL_API bool_t xcache_read(xhand_t cache, byte_t* buf, dword_t* pb);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /*XDK_SUPPORT_MEMO_CACHE*/
+#endif /*XDK_SUPPORT_ASYNC*/
 
-#endif /*_IMPCACHE_H*/
+#endif	/*_IMPASYNC_H*/
+

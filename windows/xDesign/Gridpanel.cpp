@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #include "_Frame.h"
 
 #include "SQLViewDialog.h"
-
+#include "SQLFetchDialog.h"
 
 
 #define IDC_GRIDPANEL_GRID		201
@@ -893,7 +893,7 @@ void GridPanel_OnFreshRows(res_win_t widget)
 	if (!ptr_prj)
 		return;
 
-	LINKPTR ptrProper = create_proper_doc();
+	/*LINKPTR ptrProper = create_proper_doc();
 
 	tchar_t sz_pkey[RES_LEN+1] = { 0 };
 	tchar_t sz_pval[KEY_LEN+1] = { 0 };
@@ -935,13 +935,30 @@ void GridPanel_OnFreshRows(res_win_t widget)
 		}
 	}
 
-	destroy_proper_doc(ptrProper);
+	destroy_proper_doc(ptrProper);*/
 
 	tchar_t sz_conn[PATH_LEN] = { 0 };
 
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
+
+
+	SQLFETCHDLG_PARAM pd = { 0 };
+
+	pd.ptrGrid = ptrGrid;
+	xscpy(pd.sz_conn, sz_conn);
+
+	res_win_t hSqlDlg = SQLFetchDlg_Create(_T("¼ìË÷Êý¾Ý"), &pd);
+
+	widget_show(hSqlDlg, WD_SHOW_NORMAL);
+
+	int nRet = (int)widget_do_modal(hSqlDlg);
+
+	if (!nRet)
+	{
+		return;
+	}
 	
-	DBCTX* pct = DBOpen(sz_conn);
+	/*DBCTX* pct = DBOpen(sz_conn);
 
 	if (!pct)
 		return;
@@ -953,7 +970,7 @@ void GridPanel_OnFreshRows(res_win_t widget)
 		return;
 	}
 
-	DBClose(pct);
+	DBClose(pct);*/
 
 	gridctrl_redraw(pdt->hGrid, 1);
 }

@@ -105,9 +105,6 @@ LICENSE.GPL3 for more details.
 #define DEF_OUTER_FEED		(long)1
 #define DEF_FOCUS_SPAN		(long)5
 
-#define ALPHA_SOLID			250
-#define ALPHA_SOFT			128
-#define ALPHA_TRANS			64
 
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;
 #define EVENT_ON_NCPAINT(proc)			pev->pf_on_nc_paint = proc;

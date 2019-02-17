@@ -41,6 +41,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_ERROR
 #define XDK_SUPPORT_DATE
 #define XDK_SUPPORT_MBCS
+#define XDK_SUPPORT_ASYNC
 #define XDK_SUPPORT_THREAD_EVENT
 #define XDK_SUPPORT_THREAD_CRITI
 #define XDK_SUPPORT_THREAD_MUTEX
@@ -48,7 +49,6 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_THREAD_QUEUE
 #define XDK_SUPPORT_THREAD
 #define XDK_SUPPORT_PROCESS
-#define XDK_SUPPORT_FILE_BLOCK
 #define XDK_SUPPORT_FILE_FIND
 #define XDK_SUPPORT_FILE
 #define XDK_SUPPORT_SHARE
@@ -65,9 +65,9 @@ LICENSE.GPL3 for more details.
 #endif
 
 #define XDK_SUPPORT_CONTEXT_BITMAP
-#define XDK_SUPPORT_CONTEXT_REGION
 #define XDK_SUPPORT_CONTEXT_PRINTER
 #define XDK_SUPPORT_CONTEXT_GRAPHIC
+#define XDK_SUPPORT_CONTEXT_REGION
 #define XDK_SUPPORT_CONTEXT
 
 #define XDK_SUPPORT_WIDGET_NC
@@ -185,6 +185,9 @@ typedef CRITICAL_SECTION* res_crit_t;
 #ifdef XDK_SUPPORT_THREAD_SEMAP
 typedef HANDLE		res_sema_t;
 #endif
+#ifdef XDK_SUPPORT_THREAD_QUEUE
+typedef HANDLE		res_queue_t;
+#endif
 
 typedef unsigned int(__stdcall *WIN_THREAD_PROC)(void* param);
 #endif
@@ -194,8 +197,8 @@ typedef HMODULE		res_modu_t;
 #endif
 
 #ifdef XDK_SUPPORT_TIMER
-typedef HANDLE		res_queue_t;
 typedef HANDLE		res_timer_t;
+typedef void(__stdcall *WIN_TIMER_PROC)(void* param, unsigned char wait);
 #endif
 
 typedef HANDLE		res_hand_t;

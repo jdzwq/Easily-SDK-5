@@ -166,8 +166,8 @@ static bool_t _topogctrl_copy(res_win_t widget)
 	len = format_dom_doc_to_bytes(dom, NULL, MAX_LONG, DEF_MBS);
 #endif
 
-	gb = system_alloc(len + sizeof(tchar_t));
-	buf = (byte_t*)system_lock(gb);
+	gb = gmem_alloc(len + sizeof(tchar_t));
+	buf = (byte_t*)gmem_lock(gb);
 
 #ifdef _UNICODE
 	format_dom_doc_to_bytes(dom, buf, len, DEF_UCS);
@@ -175,11 +175,11 @@ static bool_t _topogctrl_copy(res_win_t widget)
 	format_dom_doc_to_bytes(dom, buf, len, DEF_MBS);
 #endif
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		destroy_topog_doc(dom);
@@ -243,8 +243,8 @@ static bool_t _topogctrl_paste(res_win_t widget)
 		return 0;
 	}
 
-	len = system_size(gb);
-	buf = (byte_t*)system_lock(gb);
+	len = gmem_size(gb);
+	buf = (byte_t*)gmem_lock(gb);
 
 	dom = create_dom_doc();
 #ifdef _UNICODE
@@ -253,7 +253,7 @@ static bool_t _topogctrl_paste(res_win_t widget)
 	if (!parse_dom_doc_from_bytes(dom, buf, len, DEF_MBS))
 #endif
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -262,7 +262,7 @@ static bool_t _topogctrl_paste(res_win_t widget)
 
 	if (!is_topog_doc(dom))
 	{
-		system_unlock(gb);
+		gmem_unlock(gb);
 		clipboard_close();
 
 		destroy_dom_doc(dom);
@@ -284,7 +284,7 @@ static bool_t _topogctrl_paste(res_win_t widget)
 		set_topog_spot_row(nlk, row);
 	}
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	clipboard_clean();
 	clipboard_close();
 
@@ -354,7 +354,7 @@ static void _topogctrl_reset_matrix(res_win_t widget, int row, int col)
 	set_topog_matrix(ptd->topog, buf, len);
 	xsfree(buf);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 static void _topogctrl_reset_page(res_win_t widget)
@@ -431,7 +431,7 @@ void noti_topog_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_invalid(widget, NULL, 0);
+		widget_update(widget, NULL, 0);
 	}
 }
 
@@ -454,7 +454,7 @@ void noti_topog_spot_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t noti_topog_spot_changing(res_win_t widget)
@@ -475,7 +475,7 @@ bool_t noti_topog_spot_changing(res_win_t widget)
 	ptd->row = -1;
 	ptd->col = -1;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -496,7 +496,7 @@ void noti_topog_spot_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	noti_topog_owner(widget, NC_TOPOGSPOTCHANGED, ptd->topog, ptd->spot, ptd->row, ptd->col, NULL);
 }
@@ -614,7 +614,7 @@ void noti_topog_spot_drop(res_win_t widget, long x, long y)
 	ptd->row = cy;
 	ptd->col = cx;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -932,7 +932,7 @@ void hand_topogctrl_keydown(res_win_t widget, int nKey)
 				slk = get_topog_next_spot(ptd->spot, slk);
 			}
 
-			widget_invalid(widget, NULL, 0);
+			widget_update(widget, NULL, 0);
 
 			noti_topog_owner(widget, NC_TOPOGSPOTDROP, ptd->topog, ptd->spot, ptd->row, ptd->col, NULL);
 		}
@@ -1029,7 +1029,7 @@ void hand_topogctrl_size(res_win_t widget, int code, const xsize_t* prs)
 
 	_topogctrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_topogctrl_erase(res_win_t widget, res_ctx_t dc)
@@ -1094,7 +1094,7 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			if (get_topog_spot_selected(ptd->spot))
 			{
 				parse_xcolor(&xc, DEF_FOCUS_BRUSH);
-				alpha_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+				alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 			}
 			else
 			{
@@ -1178,7 +1178,7 @@ link_t_ptr topogctrl_detach(res_win_t widget)
 	ptd->row = -1;
 	ptd->col = -1;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	return data;
 }
@@ -1230,7 +1230,7 @@ void topogctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void topogctrl_tabskip(res_win_t widget, int nSkip)
@@ -1288,7 +1288,7 @@ void topogctrl_redraw_spot(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t topogctrl_set_focus_spot(res_win_t widget, link_t_ptr ilk)
@@ -1412,7 +1412,7 @@ bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp)
 	xmem_zero((void*)&ptd->img, sizeof(ximage_t));
 
 	if (bmp)
-		rt = save_bitmap_to_ximage(rdc, &ptd->img, bmp);
+		rt = save_bitmap_to_ximage(rdc, bmp, &ptd->img);
 	else
 		rt = 1;
 

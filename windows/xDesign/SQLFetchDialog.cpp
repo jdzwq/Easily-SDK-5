@@ -147,6 +147,11 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_user_id(pdt->hEdit, IDC_SQLFETCHDLG_EDIT);
 	widget_set_owner(pdt->hEdit, widget);
 
+	xface_t xa = { 0 };
+	widget_get_xface(pdt->hEdit, &xa);
+	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_LINEBREAK);
+	widget_set_xface(pdt->hEdit, &xa);
+
 	LINKPTR ptr_grid = pdt->pSel->ptrGrid;
 
 	int len = format_grid_select_sql(ptr_grid, NULL, MAX_LONG);
@@ -262,7 +267,7 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
 	widget_update_client(pdt->hPushOK);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void SQLFetchDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
@@ -342,6 +347,8 @@ res_win_t SQLFetchDlg_Create(const TCHAR* title, SQLFETCHDLG_PARAM* ppd)
 	EVENT_ON_PAINT(SQLFetchDlg_OnPaint)
 
 	EVENT_ON_MENU_COMMAND(SQLFetchDlg_OnMenuCommand)
+
+	EVENT_ON_NC_IMPLEMENT
 
 	EVENT_END_DISPATH
 

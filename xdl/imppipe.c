@@ -228,7 +228,7 @@ void xpipe_free(xhand_t pip)
             (*pif->pf_pipe_close)(NULL, ppi->pipe);
 	}
 
-	async_free_lapp(&ppi->over);
+	async_release_lapp(&ppi->over);
 
 	xsfree(ppi->pname);
 	xmem_free(ppi);

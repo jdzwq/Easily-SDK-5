@@ -169,8 +169,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\xdk\windows\_if_async_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_bitmap_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_block_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_clipboard_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_comm_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_cons_win32.cc" />

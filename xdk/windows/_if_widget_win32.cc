@@ -2175,24 +2175,6 @@ void _widget_show(res_win_t wt, u32_t sw)
 	}
 }
 
-void _widget_invalid(res_win_t wt, const xrect_t* prt, bool_t b_erase)
-{
-	RECT rt;
-
-	if (prt)
-	{
-		rt.left = prt->x;
-		rt.top = prt->y;
-		rt.right = prt->x + prt->w;
-		rt.bottom = prt->y + prt->h;
-		InvalidateRect(wt, &rt, (BOOL)b_erase);
-	}
-	else
-	{
-		InvalidateRect(wt, NULL, (BOOL)b_erase);
-	}
-}
-
 void _widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)
 {
 	RECT rt;
@@ -2209,8 +2191,6 @@ void _widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)
 	{
 		InvalidateRect(wt, NULL, (BOOL)b_erase);
 	}
-
-	UpdateWindow(wt);
 }
 
 void _widget_update_window(res_win_t wt)
@@ -2622,6 +2602,6 @@ unsigned char _widget_get_alpha(res_win_t wt)
 
 	return (unsigned char)b;
 }
-#endif /*XDK_SUPPORT_EX*/
+#endif /*XDK_SUPPORT_WIDGET_EX*/
 
 #endif //XDK_SUPPORT_WIDGET

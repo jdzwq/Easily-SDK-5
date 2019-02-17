@@ -98,7 +98,7 @@ void noti_title_item_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	if (widget_is_hotvoer(widget))
 	{
@@ -115,7 +115,7 @@ void noti_title_item_enter(res_win_t widget, link_t_ptr plk)
 
 	ptd->hover = plk;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	if (widget_is_hotvoer(widget))
 	{
@@ -146,7 +146,7 @@ bool_t noti_title_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	return 1;
 }
@@ -160,7 +160,7 @@ void noti_title_item_changed(res_win_t widget, link_t_ptr plk)
 
 	ptd->item = plk;
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_title_owner(widget, NC_TITLEITEMCHANGED, ptd->title, ptd->item, NULL);
 }
@@ -595,7 +595,7 @@ void titlectrl_redraw(res_win_t widget)
 
 	_titlectrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void titlectrl_redraw_item(res_win_t widget, link_t_ptr plk)
@@ -625,7 +625,7 @@ void titlectrl_redraw_item(res_win_t widget, link_t_ptr plk)
 		widget_get_client_rect(widget, &xr);
 	}
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos)

@@ -298,7 +298,7 @@ res_bmp_t load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
 
 /***********************************************************************************************/
 
-bool_t save_bitmap_to_ximage(res_ctx_t rdc, ximage_t* pmi, res_bmp_t bmp)
+bool_t save_bitmap_to_ximage(res_ctx_t rdc, res_bmp_t bmp, ximage_t* pmi)
 {
 	byte_t* bmp_buf = NULL;
 	dword_t bmp_len = 0;
@@ -329,7 +329,7 @@ bool_t save_bitmap_to_ximage(res_ctx_t rdc, ximage_t* pmi, res_bmp_t bmp)
 	return 1;
 }
 
-res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, ximage_t* pmi, long cx, long cy)
+res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, long cx, long cy)
 {
 	res_bmp_t ih = NULL;
 	int len, len_bmp, len_zip;

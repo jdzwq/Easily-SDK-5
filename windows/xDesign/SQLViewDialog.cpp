@@ -320,7 +320,7 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_move(pdt->hPushExec, RECTPOINT(&xr_push));
 	widget_update_client(pdt->hPushExec);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
@@ -422,6 +422,7 @@ res_win_t SQLViewDlg_Create(const TCHAR* title, SQLVIEWDLG_PARAM* ppd)
 	EVENT_ON_NOTICE(SQLViewDlg_OnNotice)
 	EVENT_ON_MENU_COMMAND(SQLViewDlg_OnMenuCommand)
 
+	EVENT_ON_NC_IMPLEMENT
 	EVENT_END_DISPATH
 
 	xrect_t xr = { 0 };

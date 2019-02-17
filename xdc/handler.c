@@ -803,7 +803,7 @@ void widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll)
 	}
 
 	if (b_vert || b_horz)
-		widget_invalid(wt, NULL, 0);
+		widget_update(wt, NULL, 0);
 }
 
 void widget_rect_to_pt(res_win_t wt, xrect_t* pxr)
@@ -994,7 +994,7 @@ void widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
 		pwt->vb.y = nCur;
 	}
 
-	widget_invalid(wt, NULL, 0);
+	widget_update(wt, NULL, 0);
 
 	widget_reset_scroll(wt, bHorz);
 }

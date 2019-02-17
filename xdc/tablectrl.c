@@ -215,7 +215,7 @@ void noti_tablectrl_end_size(res_win_t widget, long x, long y)
 
 	ptd->ratio = (float)(xs.fx / cb.fw);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 bool_t noti_tablectrl_item_insert(res_win_t widget, link_t_ptr ilk)
@@ -257,7 +257,7 @@ bool_t noti_tablectrl_item_changing(res_win_t widget)
 	ptd->item = NULL;
 	ptd->onkey = 0;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -274,7 +274,7 @@ void noti_tablectrl_item_changed(res_win_t widget, link_t_ptr elk, bool_t onkey)
 
 	_tablectrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_tablectrl_begin_edit(res_win_t widget)
@@ -737,7 +737,7 @@ void hand_tablectrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
 		parse_xcolor(&xc, DEF_FOCUS_COLOR);
-		alpha_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 	}
 
 	end_canvas_paint(canv, dc, pxr);
@@ -859,7 +859,7 @@ void tablectrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void tablectrl_redraw_item(res_win_t widget, link_t_ptr ent)
@@ -884,7 +884,7 @@ void tablectrl_redraw_item(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t tablectrl_set_focus_item(res_win_t widget, link_t_ptr ent)
@@ -1048,7 +1048,7 @@ void tablectrl_set_item_key_text(res_win_t widget, link_t_ptr elk, const tchar_t
 
 	tablectrl_get_item_rect(widget, elk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void tablectrl_set_item_val_text(res_win_t widget, link_t_ptr elk, const tchar_t* token)
@@ -1075,7 +1075,7 @@ void tablectrl_set_item_val_text(res_win_t widget, link_t_ptr elk, const tchar_t
 
 	tablectrl_get_item_rect(widget, elk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void tablectrl_accept(res_win_t widget, bool_t bAccept)

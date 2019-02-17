@@ -99,7 +99,7 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 		return NULL;
 	}
 	zo = 1;
-	xsocket_setopt(ppnp->so, SOL_SOCKET, SO_REUSEADDR, (const char*)&zo, sizeof(int));
+	xsocket_setopt(ppnp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 	fill_addr(&sin, ppnp->bind, NULL);
 	if (!xsocket_bind(ppnp->so, (res_addr_t)&sin, sizeof(sin)))
@@ -149,7 +149,7 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 		return NULL;
 	}
 	zo = 1;
-	xsocket_setopt(ppnp->so, SOL_SOCKET, SO_REUSEADDR, (const char*)&zo, sizeof(int));
+	xsocket_setopt(ppnp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 	fill_addr(&sin, ppnp->bind, NULL);
 	if (!xsocket_bind(ppnp->so, (res_addr_t)&sin, sizeof(sin)))
@@ -200,7 +200,7 @@ void  xpnp_close(xhand_t pnp)
 		xsocket_close(ppnp->so);
 	}
 
-	async_free_lapp(&ppnp->ov);
+	async_release_lapp(&ppnp->ov);
 
 	xmem_free(ppnp);
 }

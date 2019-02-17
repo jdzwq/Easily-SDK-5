@@ -1273,7 +1273,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_dot.w = DEF_FOCUS_SPAN;
 			xr_dot.h = DEF_FOCUS_SPAN;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alpha_rect_raw(ptt->rdc, &xc, &xr_dot, ALPHA_SOLID);
+			alphablend_rect_raw(ptt->rdc, &xc, &xr_dot, ALPHA_SOLID);
 		}
 
 		if (ptt->done && ptt->to_row == cur_row && ptt->to_col == cur_col)
@@ -1286,14 +1286,14 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_reg.w = ptt->to_pt.x - ptt->from_pt.x;
 			xr_reg.h = ptt->to_pt.y - ptt->from_pt.y;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alpha_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
+			alphablend_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
 			
 			xr_dot.x = ptt->to_pt.x - DEF_FOCUS_SPAN;
 			xr_dot.y = ptt->to_pt.y;
 			xr_dot.w = DEF_FOCUS_SPAN;
 			xr_dot.h = DEF_FOCUS_SPAN;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alpha_rect_raw(ptt->rdc, &xc, &xr_dot, ALPHA_SOLID);
+			alphablend_rect_raw(ptt->rdc, &xc, &xr_dot, ALPHA_SOLID);
 			return _SCANNER_OPERA_STOP;
 		}
 
@@ -1309,7 +1309,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_reg.w = ptt->to_pt.x - ptt->from_pt.x;
 			xr_reg.h = ptt->to_pt.y - ptt->from_pt.y;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alpha_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
+			alphablend_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
 
 			ptt->from_pt.x = ptm->min_x + ptm->char_w;
 			ptt->from_pt.y = ptm->cur_y + ptm->cur_h + ptm->line_h;
@@ -1326,7 +1326,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_reg.w = ptt->to_pt.x - ptt->from_pt.x;
 			xr_reg.h = ptt->to_pt.y - ptt->from_pt.y;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alpha_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
+			alphablend_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
 
 			ptt->from_pt.x = ptm->min_x + ptm->char_w;
 			ptt->from_pt.y = ptm->cur_y + ptm->cur_h + ptm->line_h;
@@ -1718,7 +1718,7 @@ int hand_textor_word(textor_t* ptd, tchar_t* pch)
 	ptd->atom = atom;
 
 	_textor_reset_page(ptd, 1);
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row,ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -1758,7 +1758,7 @@ void hand_textor_lbutton_down(textor_t* ptd, const xpoint_t* pxp)
 		}
 
 		ptd->b_select = 0;
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 	}
 
 	_textor_calc_hint(ptd, pxp->x, pxp->y, &row, &col, &object, &atom);
@@ -1782,7 +1782,7 @@ void hand_textor_lbutton_up(textor_t* ptd, const xpoint_t* pxp)
 	if (ptd->n_drag)
 	{
 		ptd->n_drag = 0;
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 		return;
 	}
 }
@@ -1804,7 +1804,7 @@ void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt)
 		ptd->sel_row = row;
 		ptd->sel_col = col;
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		_textor_ensure_visible(ptd, ptd->sel_row, ptd->sel_col);
 	}
@@ -1819,7 +1819,7 @@ void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt)
 		ptd->object = object;
 		ptd->atom = atom;
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	}
@@ -1853,7 +1853,7 @@ void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs)
 
 	_textor_reset_page(ptd, 0);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 }
 
 void hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine)
@@ -1944,7 +1944,7 @@ void hand_textor_selectall(textor_t* ptd)
 
 	_textor_reset_caret(ptd);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 }
 
 void hand_textor_selectline(textor_t* ptd)
@@ -1976,7 +1976,7 @@ void hand_textor_selectline(textor_t* ptd)
 
 	_textor_reset_caret(ptd);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 }
 
 void hand_textor_selectcur(textor_t* ptd)
@@ -1985,7 +1985,7 @@ void hand_textor_selectcur(textor_t* ptd)
 
 	ptd->b_select = 1;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 }
 
 void hand_textor_selectobj(textor_t* ptd)
@@ -2008,7 +2008,7 @@ void hand_textor_selectobj(textor_t* ptd)
 
 	_textor_reset_caret(ptd);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 }
 
 void hand_textor_findobj(textor_t* ptd, void* obj)
@@ -2029,7 +2029,7 @@ void hand_textor_findobj(textor_t* ptd, void* obj)
 
 	_textor_reset_caret(ptd);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 }
 
 void hand_textor_redraw(textor_t* ptd)
@@ -2046,7 +2046,7 @@ void hand_textor_redraw(textor_t* ptd)
 	ptd->cur_col = ptd->sel_col = col;
 	ptd->b_select = 0;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2103,7 +2103,7 @@ int hand_textor_back(textor_t* ptd)
 	ptd->b_select = 0;
 
 	_textor_reset_page(ptd, 1);
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2151,7 +2151,7 @@ int hand_textor_delete(textor_t* ptd)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2166,7 +2166,7 @@ int hand_textor_escape(textor_t* ptd)
 	if (ptd->b_select)
 	{
 		ptd->b_select = 0;
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		return _TEXTOR_PRESS_HANDLE;
 	}
@@ -2195,7 +2195,7 @@ int hand_textor_left(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2246,7 +2246,7 @@ int hand_textor_left(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2274,7 +2274,7 @@ int hand_textor_right(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2285,7 +2285,7 @@ int hand_textor_right(textor_t* ptd)
 	{
 		ptd->b_select = 1;
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		return _TEXTOR_PRESS_HANDLE;
 	}
@@ -2334,7 +2334,7 @@ int hand_textor_right(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2362,7 +2362,7 @@ int hand_textor_up(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2413,7 +2413,7 @@ int hand_textor_up(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2441,7 +2441,7 @@ int hand_textor_down(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2452,7 +2452,7 @@ int hand_textor_down(textor_t* ptd)
 	{
 		ptd->b_select = 1;
 
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 		return _TEXTOR_PRESS_HANDLE;
 	}
@@ -2501,7 +2501,7 @@ int hand_textor_down(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_invalid(ptd->widget, NULL, 0);
+		widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2563,7 +2563,7 @@ int hand_textor_move_to_page(textor_t* ptd, int page)
 
 	ptd->b_select = 0;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2588,7 +2588,7 @@ int hand_textor_move_first_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2613,7 +2613,7 @@ int hand_textor_move_prev_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
@@ -2640,7 +2640,7 @@ int hand_textor_move_next_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2665,7 +2665,7 @@ int hand_textor_move_last_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2697,7 +2697,7 @@ int hand_textor_undo(textor_t* ptd)
 	xmem_free(ptd->ptu);
 	ptd->ptu = next;
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2723,15 +2723,15 @@ int hand_textor_copy(textor_t* ptd)
 	if (!clipboard_open())
 		return _TEXTOR_PRESS_IGNORE;
 
-	gb = system_alloc((len + 1)* sizeof(tchar_t));
-	buf = (tchar_t*)system_lock(gb);
+	gb = gmem_alloc((len + 1)* sizeof(tchar_t));
+	buf = (tchar_t*)gmem_lock(gb);
 
 	_textor_exec_select(ptd, ptd->sel_row, ptd->sel_col, ptd->cur_row, ptd->cur_col, (tchar_t*)buf, len);
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 	if (!clipboard_put(DEF_CB_FORMAT, gb))
 	{
-		system_free(gb);
+		gmem_free(gb);
 		clipboard_close();
 
 		return _TEXTOR_PRESS_IGNORE;
@@ -2770,7 +2770,7 @@ int hand_textor_cut(textor_t* ptd)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2796,7 +2796,7 @@ int hand_textor_paste(textor_t* ptd)
 		return _TEXTOR_PRESS_IGNORE;
 	}
 
-	buf = (tchar_t*)system_lock(gb);
+	buf = (tchar_t*)gmem_lock(gb);
 	len = xslen(buf);
 	if (!len)
 	{
@@ -2840,7 +2840,7 @@ int hand_textor_paste(textor_t* ptd)
 	ptd->object = object;
 	ptd->atom = atom;
 
-	system_unlock(gb);
+	gmem_unlock(gb);
 
 	clipboard_close();
 
@@ -2848,7 +2848,7 @@ int hand_textor_paste(textor_t* ptd)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2926,7 +2926,7 @@ int hand_textor_replace_text(textor_t* ptd, const tchar_t* token, int len)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_invalid(ptd->widget, NULL, 0);
+	widget_update(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);

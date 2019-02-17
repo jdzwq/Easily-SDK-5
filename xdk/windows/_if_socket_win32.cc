@@ -556,14 +556,14 @@ int _socket_type(res_file_t so)
 	return type;
 }
 
-bool_t	_socket_setopt(res_file_t so, int level, int optname, const char* optval, int optlen)
+bool_t	_socket_setopt(res_file_t so, int optname, const char* optval, int optlen)
 {
-	return (setsockopt((SOCKET)so, level, optname, optval, optlen) == SOCKET_ERROR) ? 0 : 1;
+	return (setsockopt((SOCKET)so, SOL_SOCKET, optname, optval, optlen) == SOCKET_ERROR) ? 0 : 1;
 }
 
-bool_t	_socket_getopt(res_file_t so, int level, int optname, char* pval, int* plen)
+bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen)
 {
-	return (getsockopt((SOCKET)so, level, optname, pval, plen) == SOCKET_ERROR) ? 0 : 1;
+	return (getsockopt((SOCKET)so, SOL_SOCKET, optname, pval, plen) == SOCKET_ERROR) ? 0 : 1;
 }
 
 bool_t _socket_set_sndbuf(res_file_t so, int size)

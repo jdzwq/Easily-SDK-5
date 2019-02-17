@@ -163,7 +163,7 @@ void _comm_close(res_file_t fh)
 	CloseHandle(fh);
 }
 
-u32_t _comm_listen(res_file_t fh, async_t* pb)
+u32_t _comm_wait(res_file_t fh, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
 	size_t* pcb = (pb) ? &(pb->size) : NULL;

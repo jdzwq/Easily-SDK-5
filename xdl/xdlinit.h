@@ -93,6 +93,10 @@ extern "C" {
 		if_mbcs_t if_mbcs;
 #endif 
 
+#ifdef XDK_SUPPORT_ASYNC
+		if_async_t if_async;
+#endif 
+
 #if defined(GPL_SUPPORT_ACP) && !defined(XDK_SUPPORT_MBCS)
 		acp_t cp_gbk;
 		acp_t cp_ucs;
@@ -198,6 +202,10 @@ extern "C" {
 
 #ifdef XDK_SUPPORT_MBCS
 #define PROCESS_MBCS_INTERFACE		((g_xdl_mou.if_ok)? (if_mbcs_t*)(&g_xdl_mou.if_mbcs): NULL)
+#endif
+
+#ifdef XDK_SUPPORT_ASYNC
+#define PROCESS_ASYNC_INTERFACE		((g_xdl_mou.if_ok)? (if_async_t*)(&g_xdl_mou.if_async): NULL)
 #endif
 
 #ifdef XDK_SUPPORT_PROCESS

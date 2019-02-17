@@ -335,35 +335,10 @@ dword_t	xmem_size(void* p)
 
 #endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef XDK_SUPPORT_MEMO_LOCAL
-void async_alloc_lapp(async_t* pas)
-{
-	if_memo_t *pif;
-
-	pif = PROCESS_MEMO_INTERFACE;
-
-	XDL_ASSERT(pif != NULL);
-
-	(*pif->pf_async_alloc_lapp)(pas);
-}
-
-void async_free_lapp(async_t* pas)
-{
-	if_memo_t *pif;
-
-	pif = PROCESS_MEMO_INTERFACE;
-
-	XDL_ASSERT(pif != NULL);
-
-	(*pif->pf_async_free_lapp)(pas);
-}
-
-#endif
 //////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef XDK_SUPPORT_MEMO_GLOB
 
-res_glob_t	system_alloc(dword_t size)
+res_glob_t	gmem_alloc(dword_t size)
 {
 	if_memo_t *pif;
 	res_glob_t gb;
@@ -379,7 +354,7 @@ res_glob_t	system_alloc(dword_t size)
 	return gb;
 }
 
-res_glob_t	system_realloc(res_glob_t glob, dword_t size)
+res_glob_t	gmem_realloc(res_glob_t glob, dword_t size)
 {
 	if_memo_t *pif;
 	res_glob_t gb;
@@ -395,7 +370,7 @@ res_glob_t	system_realloc(res_glob_t glob, dword_t size)
 	return gb;
 }
 
-void system_free(res_glob_t glob)
+void gmem_free(res_glob_t glob)
 {
 	if_memo_t *pif;
 
@@ -406,7 +381,7 @@ void system_free(res_glob_t glob)
 	(*pif->pf_glob_free)(glob);
 }
 
-dword_t system_size(res_glob_t glob)
+dword_t gmem_size(res_glob_t glob)
 {
 	if_memo_t *pif;
 
@@ -417,7 +392,7 @@ dword_t system_size(res_glob_t glob)
 	return (dword_t)(*pif->pf_glob_size)(glob);
 }
 
-void* system_lock(res_glob_t glob)
+void* gmem_lock(res_glob_t glob)
 {
 	if_memo_t *pif;
 
@@ -428,7 +403,7 @@ void* system_lock(res_glob_t glob)
 	return (*pif->pf_glob_lock)(glob);
 }
 
-bool_t system_unlock(res_glob_t glob)
+bool_t gmem_unlock(res_glob_t glob)
 {
 	if_memo_t *pif;
 
@@ -441,9 +416,10 @@ bool_t system_unlock(res_glob_t glob)
 
 #endif 
 
+//////////////////////////////////////////////////////////////////////////////////////////
 #ifdef XDK_SUPPORT_MEMO_PAGE
 
-void* page_alloc(dword_t size)
+void* pmem_alloc(dword_t size)
 {
 	if_memo_t *pif;
 	void* p;
@@ -459,7 +435,7 @@ void* page_alloc(dword_t size)
 	return p;
 }
 
-void* page_realloc(void* p, dword_t size)
+void* pmem_realloc(void* p, dword_t size)
 {
 	if_memo_t *pif;
 
@@ -474,7 +450,7 @@ void* page_realloc(void* p, dword_t size)
 	return p;
 }
 
-void page_free(void* p)
+void pmem_free(void* p)
 {
 	if_memo_t *pif;
 
@@ -485,7 +461,7 @@ void page_free(void* p)
 	(*pif->pf_page_free)(p);
 }
 
-dword_t	page_size(void* p)
+dword_t	pmem_size(void* p)
 {
 	if_memo_t *pif;
 
@@ -496,7 +472,7 @@ dword_t	page_size(void* p)
 	return (dword_t)(*pif->pf_page_size)(p);
 }
 
-void* page_lock(void* p)
+void* pmem_lock(void* p)
 {
 	if_memo_t *pif;
 
@@ -507,7 +483,7 @@ void* page_lock(void* p)
 	return (*pif->pf_page_lock)(p);
 }
 
-void page_unlock(void* p)
+void pmem_unlock(void* p)
 {
 	if_memo_t *pif;
 
@@ -518,7 +494,7 @@ void page_unlock(void* p)
 	(*pif->pf_page_unlock)(p);
 }
 
-bool_t	page_protect(void* p)
+bool_t	pmem_protect(void* p, bool_t b)
 {
 	if_memo_t *pif;
 
@@ -526,7 +502,131 @@ bool_t	page_protect(void* p)
 
 	XDL_ASSERT(pif != NULL);
 
-	return (*pif->pf_page_protect)(p);
+	return (*pif->pf_page_protect)(p, b);
 }
 
 #endif
+
+/////////////////////////////////////////////////////////////////////////////////////////
+#ifdef XDK_SUPPORT_MEMO_CACHE
+
+typedef struct _cache_t{
+	xhand_head head;		//reserved for xhand_t
+
+	void* cache;
+	dword_t write_bytes;
+	dword_t read_bytes;
+}cache_t;
+
+
+xhand_t vmem_open()
+{
+	cache_t* ppi;
+	if_memo_t* pif;
+	void* bh;
+
+	pif = PROCESS_MEMO_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	bh = (*pif->pf_cache_open)();
+
+	if (!bh)
+	{
+		set_system_error(_T("pf_cache_open"));
+		return NULL;
+	}
+
+	ppi = (cache_t*)xmem_alloc(sizeof(cache_t));
+	ppi->head.tag = _HANDLE_CACHE;
+	ppi->cache = bh;
+	ppi->read_bytes = 0;
+	ppi->write_bytes = 0;
+
+	return (xhand_t)ppi;
+}
+
+void* vmem_handle(xhand_t cache)
+{
+	cache_t* ppi = (cache_t*)cache;
+
+	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
+
+	return ppi->cache;
+}
+
+void vmem_close(xhand_t cache)
+{
+	cache_t* ppi = (cache_t*)cache;
+	if_memo_t* pif;
+
+	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
+
+	pif = PROCESS_MEMO_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	(*pif->pf_cache_close)(ppi->cache);
+
+	xmem_free(ppi);
+}
+
+bool_t vmem_read(xhand_t cache, byte_t* buf, dword_t* pb)
+{
+	cache_t* ppt = (cache_t*)cache;
+	if_memo_t* pif;
+	size_t size;
+	bool_t rt;
+
+	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
+
+	pif = PROCESS_MEMO_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	size = *pb;
+	rt = (*pif->pf_cache_read)(ppt->cache, ppt->read_bytes, buf, size, &size);
+	if (rt)
+	{
+		ppt->read_bytes += (dword_t)size;
+		*pb = (dword_t)size;
+	}
+	else
+	{
+		set_system_error(_T("pf_cache_read"));
+		*pb = 0;
+	}
+
+	return rt;
+}
+
+bool_t vmem_write(xhand_t cache, const byte_t* buf, dword_t* pb)
+{
+	cache_t* ppt = (cache_t*)cache;
+	if_memo_t* pif;
+	size_t size;
+	bool_t rt;
+
+	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
+
+	pif = PROCESS_MEMO_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	size = *pb;
+	rt = (*pif->pf_cache_write)(ppt->cache, ppt->write_bytes, (void*)buf, size, &size);
+	if (rt)
+	{
+		ppt->write_bytes += (dword_t)size;
+		*pb = (dword_t)size;
+	}
+	else
+	{
+		set_system_error(_T("pf_cache_write"));
+		*pb = 0;
+	}
+
+	return rt;
+}
+
+#endif //XDK_SUPPORT_MEMO_CACHE

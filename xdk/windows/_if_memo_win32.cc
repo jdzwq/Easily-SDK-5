@@ -137,32 +137,6 @@ void _local_free(void* p)
 	b = HeapFree(GetProcessHeap(), 0, p);
 }
 
-void _async_alloc_lapp(async_t* pas)
-{
-	LPOVERLAPPED lp;
-
-	lp = (LPOVERLAPPED)_local_alloc(sizeof(OVERLAPPED));
-
-	lp->hEvent = CreateEvent(NULL, 1, 0, NULL);
-	pas->lapp = (void*)lp;
-	pas->type = ASYNC_EVENT;
-}
-
-void _async_free_lapp(async_t* pas)
-{
-	LPOVERLAPPED lp;
-
-	if (!pas->lapp)
-		return;
-
-	lp = (LPOVERLAPPED)pas->lapp;
-
-	if (lp->hEvent)
-		CloseHandle(lp->hEvent);
-
-	_local_free(pas->lapp);
-	pas->lapp = NULL;
-}
 #endif
 /******************************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_GLOB
@@ -333,7 +307,7 @@ void _paged_unlock(void* p)
 	}
 }
 
-bool_t _paged_protect(void* p)
+bool_t _paged_protect(void* p, bool_t b)
 {
 	MEMORY_BASIC_INFORMATION mbi = { 0 };
 	DWORD dw = 0;
@@ -351,11 +325,11 @@ bool_t _paged_protect(void* p)
 	{
 		VirtualAlloc(p, mbi.RegionSize, MEM_COMMIT, PAGE_READWRITE);
 		ZeroMemory(p, mbi.RegionSize);
-		return (bool_t)VirtualProtect(p, mbi.RegionSize, PAGE_READONLY, &dw);
+		return (bool_t)VirtualProtect(p, mbi.RegionSize, ((b) ? PAGE_READONLY : PAGE_READWRITE), &dw);
 	}
 	else if (mbi.State == MEM_COMMIT)
 	{
-		return (bool_t)VirtualProtect(p, mbi.RegionSize, PAGE_READONLY, &dw);
+		return (bool_t)VirtualProtect(p, mbi.RegionSize, ((b) ? PAGE_READONLY : PAGE_READWRITE), &dw);
 	}
 
 	return 0;

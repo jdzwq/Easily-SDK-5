@@ -128,8 +128,8 @@ typedef xhand_t(*PF_BIO_OPEN)(const secu_desc_t*, const tchar_t*, dword_t);
 typedef bool_t(*PF_BIO_READ)(xhand_t, byte_t*, dword_t*);
 typedef bool_t(*PF_BIO_WRITE)(xhand_t, const byte_t*, dword_t*);
 typedef bool_t(*PF_BIO_FLUSH)(xhand_t);
-typedef bool_t(*PF_BIO_READ_RANGE)(xhand_t, dword_t, dword_t, byte_t*, dword_t*);
-typedef bool_t(*PF_BIO_WRITE_RANGE)(xhand_t, dword_t, dword_t, const byte_t*, dword_t*);
+typedef bool_t(*PF_BIO_READ_RANGE)(xhand_t, dword_t, dword_t, byte_t*, dword_t);
+typedef bool_t(*PF_BIO_WRITE_RANGE)(xhand_t, dword_t, dword_t, const byte_t*, dword_t);
 typedef void(*PF_BIO_CLOSE)(xhand_t);
 typedef void(*PF_BIO_SET_TIME)(xhand_t, const tchar_t*);
 typedef void(*PF_BIO_SET_SINCE)(xhand_t, int);
@@ -185,11 +185,12 @@ typedef void(*PF_DRAW_POLYLINE)(canvas_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_POLYGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_RECT)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GRADIENT_RECT)(canvas_t, const xgradi_t*, const xrect_t*);
+typedef void(*PF_ALPHABLEND_RECT)(canvas_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_DRAW_ROUND)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_ELLIPSE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_PIE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, double, double);
 typedef void(*PF_DRAW_ARC)(canvas_t, const xpen_t*, const xrect_t*, double, double);
-typedef void(*PF_DRAW_ARROW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, int, double);
+typedef void(*PF_DRAW_ARROW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, float, double);
 typedef void(*PF_DRAW_SHAPE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
 typedef void(*PF_MULTI_LINE)(canvas_t, const xfont_t*, const xface_t*, const xpen_t*, const xrect_t*);
 typedef void(*PF_DRAW_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
@@ -199,9 +200,10 @@ typedef void(*PF_COLOR_OUT)(canvas_t, const xrect_t*, bool_t horz, const tchar_t
 typedef void(*PF_DRAW_DATA)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int, int, const tchar_t*, const tchar_t*, bool_t, bool_t);
 typedef void(*PF_DRAW_IMAGE)(canvas_t, const ximage_t*, const xrect_t*);
 typedef void(*PF_DRAW_ICON)(canvas_t, const xcolor_t*, const xrect_t*, const tchar_t* iname);
+typedef void(*PF_DRAW_VAR_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, string_t);
 
-typedef void(*PF_DRAW_VAR_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, string_t, int);
 typedef void(*PF_DRAW_TAG_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr, int);
+typedef int(*PF_CALC_TAG_PAGES)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr);
 typedef void(*PF_DRAW_RICH_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr, int);
 typedef int(*PF_CALC_RICH_PAGES)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr);
 typedef void(*PF_DRAW_MEMO_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr, int);
@@ -223,6 +225,7 @@ typedef struct _if_canvas_t{
 	PF_DRAW_3DRECT		pf_draw_3drect;
 	PF_DRAW_RECT		pf_draw_rect;
 	PF_GRADIENT_RECT	pf_gradient_rect;
+	PF_ALPHABLEND_RECT	pf_alphablend_rect;
 	PF_DRAW_ROUND		pf_draw_round;
 	PF_DRAW_ELLIPSE		pf_draw_ellipse;
 	PF_DRAW_PIE			pf_draw_pie;
@@ -236,7 +239,9 @@ typedef struct _if_canvas_t{
 	PF_DRAW_PASSWORD	pf_draw_password;
 	PF_DRAW_DATA		pf_draw_data;
 	PF_DRAW_VAR_TEXT	pf_draw_var_text;
+
 	PF_DRAW_TAG_TEXT	pf_draw_tag_text;
+	PF_CALC_TAG_PAGES	pf_calc_tag_pages;
 	PF_DRAW_RICH_TEXT	pf_draw_rich_text;
 	PF_CALC_RICH_PAGES	pf_calc_rich_pages;
 	PF_DRAW_MEMO_TEXT	pf_draw_memo_text;

@@ -61,6 +61,8 @@ res_file_t _file_open(const tchar_t* fname, u32_t fmode)
 
 	if (fmode & FILE_OPEN_OVERLAP)
 		dwFlag = FILE_FLAG_OVERLAPPED;
+	else if (fmode & FILE_OPEN_RANDOM)
+		dwFlag = FILE_FLAG_NO_BUFFERING;
 	else
 		dwFlag = FILE_ATTRIBUTE_NORMAL;
 
@@ -193,7 +195,7 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
 	return 1;
 }
 
-bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pcb)
+bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
 {
 	HANDLE mh;
 	void* pBase = NULL;
@@ -212,8 +214,6 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
 	mh = CreateFileMapping(fh, NULL, PAGE_READONLY, dwh, dwl, NULL);
 	if (!mh)
 	{
-		if (pcb) *pcb = 0;
-
 		return 0;
 	}
 
@@ -221,9 +221,6 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
 	if (!pBase)
 	{
 		CloseHandle(mh);
-
-		if (pcb) *pcb = 0;
-
 		return 0;
 	}
 
@@ -232,12 +229,10 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
 	UnmapViewOfFile(pBase);
 	CloseHandle(mh);
 
-	if (pcb) *pcb = size;
-
 	return 1;
 }
 
-bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pcb)
+bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
 {
 	HANDLE mh;
 	void* pBase = NULL;
@@ -256,8 +251,6 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
 	mh = CreateFileMapping(fh, NULL, PAGE_READWRITE, dwh, dwl, NULL);
 	if (!mh)
 	{
-		if (pcb) *pcb = 0;
-
 		return 0;
 	}
 
@@ -265,9 +258,6 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
 	if (!pBase)
 	{
 		CloseHandle(mh);
-
-		if (pcb) *pcb = 0;
-
 		return 0;
 	}
 
@@ -278,7 +268,20 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
 	UnmapViewOfFile(pBase);
 	CloseHandle(mh);
 
-	if (pcb) *pcb = size;
+	return 1;
+}
+
+bool_t _file_truncate(res_file_t fh, u32_t hoff, u32_t loff)
+{
+	HANDLE hMap = NULL;
+
+	hMap = CreateFileMapping(fh, NULL, PAGE_READWRITE, hoff, loff, NULL);
+	if (!hMap)
+	{
+		return 0;
+	}
+
+	CloseHandle(hMap);
 
 	return 1;
 }
@@ -512,7 +515,6 @@ bool_t _file_find_next(res_find_t ff, file_info_t* pfi)
 
 	if (!FindNextFile(ff, &wfd))
 	{
-		FindClose(ff);
 		return 0;
 	}
 
@@ -533,6 +535,11 @@ bool_t _file_find_next(res_find_t ff, file_info_t* pfi)
 	_tstrncpy(pfi->file_name, wfd.cFileName, META_LEN);
 
 	return 1;
+}
+
+void _file_find_close(res_find_t ff)
+{
+	FindClose(ff);
 }
 #endif /*XDK_SUPPORT_FILE_FIND*/
 

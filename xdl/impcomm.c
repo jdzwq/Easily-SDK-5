@@ -117,12 +117,12 @@ void xcomm_close(xhand_t com)
 
 	(*pif->pf_comm_close)(pst->comm);
 
-	async_free_lapp(&pst->over);
+	async_release_lapp(&pst->over);
 
 	xmem_free(pst);
 }
 
-dword_t xcomm_listen(xhand_t com, dword_t* pcb)
+dword_t xcomm_wait(xhand_t com, dword_t* pcb)
 {
 	comport_t* pst = (comport_t*)com;
 	if_comm_t* pif;
@@ -132,7 +132,7 @@ dword_t xcomm_listen(xhand_t com, dword_t* pcb)
 
 	XDL_ASSERT(pif != NULL);
 
-	even = (*pif->pf_comm_listen)(pst->comm, &pst->over);
+	even = (*pif->pf_comm_wait)(pst->comm, &pst->over);
 
 	if (pcb) *pcb = (dword_t)pst->over.size;
 

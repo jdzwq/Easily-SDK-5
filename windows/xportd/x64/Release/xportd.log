@@ -1,5 +1,5 @@
-﻿生成启动时间为 2018/12/5 2:53:35。
-     1>项目“D:\Easily-sdk-5\windows\xportd\xportd.vcxproj”在节点 2 上(Build 个目标)。
+﻿生成启动时间为 2019/2/17 21:44:21。
+     1>项目“D:\Easily-sdk-5\windows\xportd\xportd.vcxproj”在节点 2 上(Rebuild 个目标)。
      1>ClCompile:
          C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USING_V110_SDK71_ /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt ..\..\api\net_srv\srvcert.cc ..\..\api\net_srv\srvlog.cc ..\..\api\net_srv\xhttps.cc ..\..\api\net_srv\xpnps.cc ..\..\api\net_srv\xportd.cc ..\..\api\net_srv\xslots.cc xportdMain.cc
          srvcert.cc
@@ -10,6 +10,8 @@
          xslots.cc
          xportdMain.cc
      1>xportdMain.cc(146): warning C4244: “return”: 从“WPARAM”转换到“int”，可能丢失数据
+       ResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.1A\bin\rc.exe /D _USING_V110_SDK71_ /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"x64\Release\xportd.res" xportd.rc 
        Link:
          C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Easily-sdk-5\windows\Easily-SRV-5\x64\Release\xportd.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Easily-sdk-5\windows\Easily-SRV-5\x64\Release\xportd.pdb" /SUBSYSTEM:WINDOWS,"5.02" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Easily-sdk-5\windows\Easily-SRV-5\x64\Release\xportd.lib" /MACHINE:X64 x64\Release\xportd.res
          x64\Release\srvcert.obj
@@ -22,8 +24,8 @@
          正在生成代码
          已完成代码的生成
          xportd.vcxproj -> D:\Easily-sdk-5\windows\Easily-SRV-5\x64\Release\xportd.exe
-     1>已完成生成项目“D:\Easily-sdk-5\windows\xportd\xportd.vcxproj”(Build 个目标)的操作。
+     1>已完成生成项目“D:\Easily-sdk-5\windows\xportd\xportd.vcxproj”(Rebuild 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:18.93
+已用时间 00:00:21.82

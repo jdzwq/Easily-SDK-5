@@ -447,7 +447,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update_client(pushbox);
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_msgdlg_keydown(res_win_t widget, int key)

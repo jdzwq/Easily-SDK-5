@@ -135,12 +135,6 @@
     <ClInclude Include="..\..\xdl\impbitmap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\impblock.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\impcache.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\impclip.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -187,9 +181,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\imptimer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\impunc.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\impwin.h">
@@ -618,6 +609,12 @@
     <ClInclude Include="..\..\xdl\chartgdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\impuncf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\impasync.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -719,12 +716,6 @@
     <ClCompile Include="..\..\xdl\impbitmap.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\impblock.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\impcache.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\impclip.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -771,9 +762,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\imptimer.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\impunc.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\impwin.c">
@@ -1164,6 +1152,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\chartgdi.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\impuncf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\impasync.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

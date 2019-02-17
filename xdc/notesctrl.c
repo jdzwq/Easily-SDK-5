@@ -377,7 +377,7 @@ bool_t noti_notes_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -393,7 +393,7 @@ void noti_notes_item_changed(res_win_t widget, link_t_ptr elk)
 
 	_notesctrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t noti_notes_item_delete(res_win_t widget, link_t_ptr ilk)
@@ -967,7 +967,7 @@ void notesctrl_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
@@ -986,7 +986,7 @@ void notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t notesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

@@ -384,8 +384,8 @@ typedef enum{
 #define IS_CONTROL_CHAR(ch)		(((int)ch >= 0 && (int)ch <= 31) || (int)ch == 127)
 
 typedef struct _secu_desc_t {
-	tchar_t scr_uid[KEY_LEN];
-	tchar_t scr_key[KEY_LEN];
+	tchar_t scr_uid[KEY_LEN];	/*user id or public key*/
+	tchar_t scr_key[KEY_LEN];	/*user key or private key*/
 }secu_desc_t;
 
 typedef enum {

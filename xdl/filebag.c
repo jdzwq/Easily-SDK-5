@@ -71,7 +71,7 @@ bool_t xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr)
 	if (!IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_FILE)
-		return xunc_list_file(psd, path, _list_file, (void*)ptr);
+		return xuncf_list_file(psd, path, _list_file, (void*)ptr);
 #else
 		return 0;
 #endif
@@ -157,7 +157,7 @@ bool_t xfile_fetch(const secu_desc_t* psd, const tchar_t* path, stream_t stm)
 		if (!IS_INET_FILE(proto))
 		{
 #if defined(XDK_SUPPORT_FILE)
-			b = xunc_list_file(psd, path, _fetch_file, (void*)stm);
+			b = xuncf_list_file(psd, path, _fetch_file, (void*)stm);
 #endif
 		}
 	}

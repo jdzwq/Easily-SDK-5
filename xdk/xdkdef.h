@@ -322,6 +322,7 @@ typedef long long		stamp_t;
 #define FILE_OPEN_CREATE	0x00000002
 #define FILE_OPEN_APPEND	0x00000004
 #define FILE_OPEN_OVERLAP	0x00001000
+#define FILE_OPEN_RANDOM	0x00002000
 
 /*thread function*/
 #if defined(_OS_WINDOWS)
@@ -341,17 +342,22 @@ typedef long long		stamp_t;
 #define PF_SIGHANDLER	GNU_SIGNAL_HANDLER
 #endif
 
-typedef struct _timerd_t{
-	PF_THREADFUNC pf;
-	void*	pa;
-}timerd_t;
+/*timer function*/
+#if defined(_OS_WINDOWS)
+#define PF_TIMERFUNC	WIN_TIMER_PROC
+#elif defined(_OS_MACOS)
+#define PF_TIMERFUNC	MAC_TIMER_PROC
+#elif defined(_OS_LINUX)
+#define PF_TIMERFUNC	GNU_TIMER_PROC
+#endif
 
 typedef struct async_t{
-	int type;
-    u32_t msec;
-	size_t size;
-	res_hand_t port;
-	void* lapp;
+	int type;		/*the async type, can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE*/
+	u32_t msec;		/*the timeout value in millisecond*/
+	size_t size;	/*async operation data bytes*/
+
+	res_hand_t port;	/*inner port resource handle*/
+	void* lapp;		/*inner overlapped struct*/
 }async_t;
 
 /*async type*/
@@ -398,6 +404,11 @@ typedef struct async_t{
 #define XDKOWNER		_T("XDKOWNER")
 #define XDKUSER			_T("XDKUSER")
 #define XDKRESULT		_T("XDKRESULT")
+
+/*widget alphablend level*/
+#define ALPHA_SOLID			250
+#define ALPHA_SOFT			128
+#define ALPHA_TRANS			64
 
 #define WM_NOTICE			(WM_EASYMSG_MIN + 1)
 #define WM_SCROLL			(WM_EASYMSG_MIN + 2)
@@ -612,11 +623,11 @@ typedef struct _dev_prn_t{
 }dev_prn_t;
 
 typedef struct _dev_com_t{
-	short baud_rate;
-	short parity;
-	short byte_size;
-	short stop_bits;
-	short timeout;
+	short baud_rate;	/*the device baud rate, eg:9600, 14400, 19200...*/
+	short parity;		/*parity checking, eg: 1-ODDPARITY, 2-EVENPARITY*/
+	short byte_size;	/*numbers of bits in a byte, eg: 8*/
+	short stop_bits;	/*numbers of stop bits used, eg: 0-ONESTOPBIT, 1-ONE5STOPBIT, 2-TWOSTOPBIT*/
+	short timeout;		/*timeout value*/
 	tchar_t devname[INT_LEN];
 }dev_com_t;
 

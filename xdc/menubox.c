@@ -112,7 +112,7 @@ void noti_menu_item_changing(res_win_t widget)
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
 	ptd->item = NULL;
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void noti_menu_item_changed(res_win_t widget, link_t_ptr plk)
@@ -127,7 +127,7 @@ void noti_menu_item_changed(res_win_t widget, link_t_ptr plk)
 	_menubox_item_rect(widget, ptd->item, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 /**************************************************************************************/
@@ -423,7 +423,7 @@ void menubox_redraw(res_win_t widget)
 
 	widget_update_window(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void menubox_tabskip(res_win_t widget, int nSkip)

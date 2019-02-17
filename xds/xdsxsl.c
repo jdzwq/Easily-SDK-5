@@ -219,7 +219,7 @@ static unsigned int STDCALL wait_accept(void* param)
 		xmem_zero((void*)&xa, sizeof(xsl_accept_t));
 	}
 
-	async_free_lapp(&over);
+	async_release_lapp(&over);
 
 	xdl_thread_uninit(0);
 

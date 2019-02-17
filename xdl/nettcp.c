@@ -87,7 +87,7 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 		raise_user_error(NULL, NULL);
 	}
 
-	xsocket_setopt(so, SOL_SOCKET, SO_LINGER, (const char*)&li, sizeof(struct linger));
+	xsocket_setopt(so, SO_LINGER, (const char*)&li, sizeof(struct linger));
 
 	pso = (tcp_t*)xmem_alloc(sizeof(tcp_t));
 	pso->head.tag = _HANDLE_TCP;
@@ -133,9 +133,9 @@ xhand_t xtcp_srv(res_file_t so)
 
 	async_alloc_lapp(&pso->ov);
 
-	xsocket_setopt(pso->so, SOL_SOCKET, SO_LINGER, (const char*)&li, sizeof(struct linger));
-	xsocket_setopt(pso->so, SOL_SOCKET, SO_SNDBUF, (const char*)&zo, sizeof(int));
-	xsocket_setopt(pso->so, SOL_SOCKET, SO_RCVBUF, (const char*)&zo, sizeof(int));
+	xsocket_setopt(pso->so, SO_LINGER, (const char*)&li, sizeof(struct linger));
+	xsocket_setopt(pso->so, SO_SNDBUF, (const char*)&zo, sizeof(int));
+	xsocket_setopt(pso->so, SO_RCVBUF, (const char*)&zo, sizeof(int));
 
 	END_CATCH;
 
@@ -143,7 +143,7 @@ xhand_t xtcp_srv(res_file_t so)
 ONERROR:
 
 	if (pso)
-		async_free_lapp(&pso->ov);
+		async_release_lapp(&pso->ov);
 
 	if (pso)
 		xmem_free(pso);
@@ -183,7 +183,7 @@ void  xtcp_close(xhand_t tcp)
 		xsocket_close(pso->so);
 	}
 
-	async_free_lapp(&pso->ov);
+	async_release_lapp(&pso->ov);
 
 	xmem_free(pso);
 }

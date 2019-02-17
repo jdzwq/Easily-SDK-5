@@ -50,6 +50,7 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 	pic->pf_draw_3dline = svg_draw_3dline;
 	pic->pf_draw_3drect = svg_draw_3drect;
 	pic->pf_gradient_rect = svg_gradient_rect;
+	pic->pf_alphablend_rect = svg_alphablend_rect;
 	pic->pf_draw_arrow = svg_draw_arrow;
 	pic->pf_draw_image = svg_draw_image;
 	pic->pf_draw_pie = svg_draw_pie;
@@ -66,6 +67,7 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 	pic->pf_draw_password = svg_draw_password;
 	pic->pf_draw_data = svg_draw_data;
 	pic->pf_draw_var_text = svg_draw_var_text;
+
 	pic->pf_draw_tag_text = svg_draw_tag_text;
 	pic->pf_draw_rich_text = svg_draw_rich_text;
 	pic->pf_draw_memo_text = svg_draw_memo_text;

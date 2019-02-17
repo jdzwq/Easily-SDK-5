@@ -111,13 +111,13 @@ void gradient_rect_raw(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* pxr)
 	(*pif->pf_gdi_gradinet_rect)(rdc, pxg, pxr);
 }
 
-void alpha_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, int opacity)
+void alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, int opacity)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_alpha_rect)(rdc, pxc, pxr, opacity);
+	(*pif->pf_gdi_alphablend_rect)(rdc, pxc, pxr, opacity);
 }
 
 void draw_ellipse_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr)
@@ -698,13 +698,13 @@ static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 	return _SCANNER_OPERA_NEXT;
 }
 
-void draw_var_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t data, int page)
+void draw_var_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t data)
 {
 	VARTEXT_DRAW tt = { 0 };
 	if_measure_t it = { 0 };
 
 	tt.rdc = rdc;
-	tt.page = page;
+	tt.page = 0;
 
 	it.ctx = (void*)rdc;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
@@ -723,6 +723,11 @@ static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 	TAGTEXT_DRAW* ptt = (TAGTEXT_DRAW*)pp;
 	xpoint_t pt;
 
+	if (page < ptt->page)
+		return _SCANNER_OPERA_PAGED;
+	else if (page > ptt->page)
+		return _SCANNER_OPERA_STOP;
+
 	switch (scan)
 	{
 	case _SCANNER_STATE_WORDS:
@@ -731,6 +736,7 @@ static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 
 		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
 		break;
+	case _SCANNER_STATE_NEWPAGE:
 	case _SCANNER_STATE_END:
 		return _SCANNER_OPERA_STOP;
 	}
@@ -751,6 +757,40 @@ void draw_tag_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, co
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
 	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_draw, (void*)&tt);
+}
+
+typedef struct _TAGTEXT_PAGE{
+	int pages;
+}TAGTEXT_PAGE;
+
+static int _tag_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	TAGTEXT_PAGE* ptt = (TAGTEXT_PAGE*)pp;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_END:
+		ptt->pages = page;
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+int calc_tag_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
+{
+	TAGTEXT_PAGE tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.pages = 1;
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_pages, (void*)&tt);
+
+	return tt.pages;
 }
 
 typedef struct _MEMOTEXT_DRAW{
@@ -1045,7 +1085,7 @@ void gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
 	(*pif->pf_gdi_gradinet_rect)(rdc, pxg, &xr);
 }
 
-void alpha_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int opa)
+void alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int opa)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1057,7 +1097,7 @@ void alpha_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int opa)
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_alpha_rect)(rdc, pxc, &xr, opa);
+	(*pif->pf_gdi_alphablend_rect)(rdc, pxc, &xr, opa);
 }
 
 void draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
@@ -1125,10 +1165,11 @@ void draw_arc(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, double fang,
 	(*pif->pf_gdi_draw_arc)(rdc, pxp, &xr, fang, tang);
 }
 
-void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, int alen, double arc)
+void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
+	xsize_t xs;
 
 	if_context_t *pif;
 
@@ -1137,7 +1178,11 @@ void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xre
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, &xr, alen, arc);
+	xs.fx = alen;
+	xs.fy = alen;
+	size_tm_to_pt(canv, &xs);
+
+	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, &xr, xs.cx, arc);
 }
 
 void draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
@@ -1465,7 +1510,7 @@ void color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rg
 	color_out_raw(rdc, &xr, horz, rgbstr, len);
 }
 
-void draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var, int page)
+void draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1473,7 +1518,7 @@ void draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	draw_var_text_raw(rdc, pxf, pxa, &xr, var, page);
+	draw_var_text_raw(rdc, pxf, pxa, &xr, var);
 }
 
 void draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr tag, int page)
@@ -1485,6 +1530,17 @@ void draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	rect_tm_to_pt(canv, &xr);
 
 	draw_tag_text_raw(rdc, pxf, pxa, &xr, tag, page);
+}
+
+int calc_tag_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr tag)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	return calc_tag_pages_raw(rdc, pxf, pxa, &xr, tag);
 }
 
 void draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich, int page)

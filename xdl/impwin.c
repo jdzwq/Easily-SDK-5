@@ -631,7 +631,7 @@ bool_t	widget_can_paging(res_win_t wt)
 	return (dw & WD_STYLE_PAGING) ? 1 : 0;
 }
 
-bool_t widget_can_close(res_win_t wt)
+bool_t widget_has_close(res_win_t wt)
 {
 	if_widget_t* pif;
 	dword_t dw;
@@ -643,7 +643,7 @@ bool_t widget_can_close(res_win_t wt)
 	return (dw & WD_STYLE_CLOSEBOX) ? 1 : 0;
 }
 
-bool_t widget_can_size(res_win_t wt)
+bool_t widget_has_size(res_win_t wt)
 {
 	if_widget_t* pif;
 	dword_t dw;
@@ -782,15 +782,6 @@ void widget_update_window(res_win_t wt)
 	pif = PROCESS_WIDGET_INTERFACE;
 
 	(*pif->pf_widget_update_window)(wt);
-}
-
-void widget_invalid(res_win_t wt, const xrect_t* prt, bool_t b_erase)
-{
-	if_widget_t* pif;
-
-	pif = PROCESS_WIDGET_INTERFACE;
-
-	(*pif->pf_widget_invalid)(wt, prt, b_erase);
 }
 
 void widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)

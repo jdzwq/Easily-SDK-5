@@ -339,7 +339,7 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 			vs_text = varstr_alloc();
 			varstr_cpy(vs_text, get_label_item_text_ptr(nlk), -1);
 
-			(*pif->pf_draw_var_text)(pif->canvas, &xf, &xa, &xr_text, vs_text, 1);
+			(*pif->pf_draw_var_text)(pif->canvas, &xf, &xa, &xr_text, vs_text);
 
 			varstr_free(vs_text);
 		}

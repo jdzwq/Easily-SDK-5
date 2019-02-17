@@ -256,7 +256,7 @@ static unsigned int STDCALL wait_accept(void* param)
 		}
 	}
 
-	async_free_lapp(&over);
+	async_release_lapp(&over);
 
 	xdl_thread_uninit(0);
 

@@ -40,22 +40,77 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION xcomm_default_mode: fill default comm port config.
+@OUTPUT dev_com_t* pmod: dev_com_t struct used to fill config value.
+@RETURN void: none.
+*/
 XDL_API void xcomm_default_mode(dev_com_t* pmod);
 
+/*
+@FUNCTION xcomm_set_mode: set comm port config.
+@INPUT xhand_t com: comm io handle.
+@INPUT const dev_com_t* pmod: dev_com_t struct used to set config value.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xcomm_set_mode(xhand_t com, const dev_com_t* pmod);
 
+/*
+@FUNCTION xcomm_get_mode: get comm port config.
+@INPUT xhand_t com: comm io handle.
+@OUTPUT dev_com_t* pmod: dev_com_t struct used to return config value.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xcomm_get_mode(xhand_t com, dev_com_t* pmod);
 
+/*
+@FUNCTION xcomm_open: open comm port.
+@INPUT const tchar_t* fname: comm port name, eg: "COM1", "COM2"....
+@INPUT dword_t fmode: file open mode, can be combined, eg: FILE_OPEN_WRITE, FILE_OPEN_READ.
+@RETURN xhand_t: if succeeds return file handle, fails return NULL.
+*/
 XDL_API xhand_t xcomm_open(const tchar_t* fname, dword_t fmode);
 
+/*
+@FUNCTION xcomm_close: close comm port.
+@INPUT xhand_t com: comm io handle.
+@RETURN void: none.
+*/
 XDL_API void xcomm_close(xhand_t com);
 
-XDL_API dword_t xcomm_listen(xhand_t com, dword_t* pcb);
+/*
+@FUNCTION xcomm_wait: wait comm event coming.
+@INPUT xhand_t com: comm io handle.
+@OUTPUT dword_t* pcb: integer variable for return error code, line state, data queue bytes.
+@RETURN dword_t: event mask. if EV_ERR, EV_BAREK returned, pcb indicate the error code.
+if EV_RING, EV_RLSD, EV_CTS, EV_DSR returned, pcb indicate the line state.
+if EV_RXCHAR, EV_TXTEMPTY returned, pcb indicate data queue bytes.
+*/
+XDL_API dword_t xcomm_wait(xhand_t com, dword_t* pcb);
 
+/*
+@FUNCTION xcomm_write: write data to comm port.
+@INPUT xhand_t com: comm io handle.
+@INPUT const byte_t* buf: data buffer pointer.
+@INOUTPUT dword_t* pb: integer variable indicate total bytes to write, and return actually bytes writed.
+@RETURN bool_t: if succeeds return nonezero, fails return zero.
+*/
 XDL_API bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pb);
 
+/*
+@FUNCTION xcomm_flush: flush comm port, ensure data writing come to end.
+@INPUT xhand_t com: comm io handle.
+@RETURN bool_t: if succeeds return nonezero, fails return zero.
+*/
 XDL_API bool_t xcomm_flush(xhand_t com);
 
+/*
+@FUNCTION xcomm_read: read data from comm port.
+@INPUT xhand_t com: comm io handle.
+@OUTPUT byte_t* buf: data buffer pointer.
+@INOUTPUT dword_t* pb: integer variable indicate total bytes to read, and return actually bytes readed.
+@RETURN bool_t: if succeeds return nonezero, fails return zero.
+*/
 XDL_API bool_t xcomm_read(xhand_t com, byte_t* buf, dword_t* pb);
 
 #ifdef	__cplusplus

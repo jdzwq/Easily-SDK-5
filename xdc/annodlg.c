@@ -534,7 +534,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_size(ctrl, RECTSIZE(&xr));
 	}
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long data)

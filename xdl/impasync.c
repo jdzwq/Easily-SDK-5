@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc svg interface document
+	@doc async document
 
-	@module	svginf.h | svg interface interface file
+	@module	impasync.c | async implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,35 +29,35 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _SVGINF_H
-#define _SVGINF_H
+#include "impasync.h"
+#include "imperr.h"
+#include "impassert.h"
+#include "xdlinit.h"
 
-#include "xdldef.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#ifdef XDK_SUPPORT_ASYNC
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+void async_alloc_lapp(async_t* pas)
+{
+	if_async_t *pif;
 
-/*
-@FUNCTION create_svg_interface: create svg canvas interface.
-@INPUT canvas_t canv: the svg canvas object.
-@RETURN if_canvas_t*: if succeeds return svg canvas interface struct, fails return NULL.
-*/
-XDL_API if_canvas_t* create_svg_interface(canvas_t canv);
+	pif = PROCESS_ASYNC_INTERFACE;
 
-/*
-@FUNCTION destroy_svg_interface: destroy svg canvas interface.
-@INPUT if_canvas_t*: the svg canvas interface struct.
-@RETURN void: none.
-*/
-XDL_API void destroy_svg_interface(if_canvas_t* pic);
+	XDL_ASSERT(pif != NULL);
 
-#ifdef	__cplusplus
+	(*pif->pf_async_alloc_lapp)(pas);
 }
-#endif
 
-#endif /*XDK_SUPPORT_CONTEXT*/
+void async_release_lapp(async_t* pas)
+{
+	if_async_t *pif;
 
-#endif /*SVGINF_H*/
+	pif = PROCESS_ASYNC_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	(*pif->pf_async_release_lapp)(pas);
+}
+
+
+#endif //XDK_SUPPORT_ASYNC

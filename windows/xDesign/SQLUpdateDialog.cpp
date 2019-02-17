@@ -229,7 +229,7 @@ void SQLUpdateDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
 	widget_update_client(pdt->hPushOK);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void SQLUpdateDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
@@ -310,6 +310,7 @@ res_win_t SQLUpdateDlg_Create(const TCHAR* title, SQLUPDATEDLG_PARAM* ppd)
 
 	EVENT_ON_MENU_COMMAND(SQLUpdateDlg_OnMenuCommand)
 
+	EVENT_ON_NC_IMPLEMENT
 	EVENT_END_DISPATH
 
 	xrect_t xr = { 0 };

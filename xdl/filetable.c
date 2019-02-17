@@ -99,11 +99,11 @@ static bool_t _flush_file_head(file_table_t* ppt, bool_t b_save)
 		PUT_SWORD_LOC(head, 14, ppt->map_bits);
 		PUT_SWORD_LOC(head, 16, ppt->map_count);
 
-		return xblock_write(ppt->block, 0, 0, head, ppt->page_size - ppt->map_size);
+		return xuncf_write_file_range(ppt->block, 0, 0, head, ppt->page_size - ppt->map_size);
 	}
 	else
 	{
-		if (!xblock_read(ppt->block, 0, 0, head, PAGE_SIZE))
+		if (!xuncf_read_file_range(ppt->block, 0, 0, head, PAGE_SIZE))
 			return 0;
 
 		ppt->file_guid = GET_DWORD_LOC(head, 0);
@@ -136,11 +136,11 @@ static bool_t _flush_file_map(file_table_t* ppt, int i, bool_t b_save)
 	{
 		xmem_copy((void*)(head + ppt->page_size - ppt->map_size), (void*)(ppt->map_table[i].map->data), ppt->map_size);
 
-		return xblock_write(ppt->block, hoff, loff, (head + ppt->page_size - ppt->map_size), ppt->map_size);
+		return xuncf_write_file_range(ppt->block, hoff, loff, (head + ppt->page_size - ppt->map_size), ppt->map_size);
 	}
 	else
 	{
-		if (!xblock_read(ppt->block, hoff, loff, (head + ppt->page_size - ppt->map_size), ppt->map_size))
+		if (!xuncf_read_file_range(ppt->block, hoff, loff, (head + ppt->page_size - ppt->map_size), ppt->map_size))
 			return 0;
 
 		xmem_copy((void*)(ppt->map_table[i].map->data), (void*)(head + ppt->page_size - ppt->map_size), ppt->map_size);
@@ -161,13 +161,13 @@ link_t_ptr create_file_table(const tchar_t* fname)
 	ppt = (file_table_t*)xmem_alloc(sizeof(file_table_t));
 	ppt->lk.tag = lkFileTable;
 
-	ppt->block = xblock_open(fname, FILE_OPEN_APPEND);
+	ppt->block = xuncf_open_file(NULL, fname, FILE_OPEN_APPEND | FILE_OPEN_RANDOM);
 	if (!ppt->block)
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xblock_size(ppt->block, &dwh, &dwl);
+	xuncf_file_size(ppt->block, &dwh, &dwl);
 
 	if (dwl && dwl < PAGE_SIZE)
 	{
@@ -225,7 +225,7 @@ link_t_ptr create_file_table(const tchar_t* fname)
 ONERROR:
 
 	if (ppt->block)
-		xblock_close(ppt->block);
+		xuncf_close_file(ppt->block);
 
 	if (ppt->map_table)
 	{
@@ -246,7 +246,7 @@ void destroy_file_table(link_t_ptr pt)
 
 	XDL_ASSERT(pt && pt->tag == lkFileTable);
 
-	xblock_close(ppt->block);
+	xuncf_close_file(ppt->block);
 
 	for (i = 0; i < ppt->map_count; i++)
 	{
@@ -433,7 +433,7 @@ bool_t read_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size)
 	hoff = GETHDWORD(ll);
 	loff = GETLDWORD(ll);
 
-	return xblock_read(ppt->block, hoff, loff, buf, size);
+	return xuncf_read_file_range(ppt->block, hoff, loff, buf, size);
 }
 
 bool_t write_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size)
@@ -456,7 +456,7 @@ bool_t write_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size)
 	hoff = GETHDWORD(ll);
 	loff = GETLDWORD(ll);
 
-	return xblock_write(ppt->block, hoff, loff, buf, size);
+	return xuncf_write_file_range(ppt->block, hoff, loff, buf, size);
 }
 
 #if defined(_DEBUG) || defined(DEBUG)

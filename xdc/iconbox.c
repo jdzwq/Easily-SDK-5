@@ -112,7 +112,7 @@ void iconbox_on_click_item(res_win_t widget, link_t_ptr ent)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 
 	noti_iconbox_command(widget, xstol(get_string_entity_key_ptr(ent)), (var_long)NULL);
 }
@@ -193,7 +193,7 @@ void hand_iconbox_size(res_win_t widget, int code, const xsize_t* prs)
 	
 	_iconbox_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_iconbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -274,7 +274,7 @@ void iconbox_set_options(res_win_t widget, const tchar_t* opt, int len)
 
 	string_table_parse_options(ptd->string, opt, len, OPT_ITEMFEED, OPT_LINEFEED);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void iconbox_set_layer(res_win_t widget, const tchar_t* layer)

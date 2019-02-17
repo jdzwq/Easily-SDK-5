@@ -197,7 +197,7 @@ res_file_t xsocket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* p
 	return sd;
 }
 
-bool_t xsocket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dword_t size, async_t* pov)
+bool_t xsocket_sendto(res_file_t so, res_addr_t saddr, int alen, const byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
 
@@ -213,7 +213,7 @@ bool_t xsocket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
 	return 1;
 }
 
-bool_t xsocket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, void* buf, dword_t size, async_t* pov)
+bool_t xsocket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
 
@@ -319,14 +319,14 @@ int	xsocket_read(void* pso, unsigned char* buf, int len)
 	return C_OK;
 }
 
-bool_t	xsocket_setopt(res_file_t so, int level, int optname, const char* optval, int optlen)
+bool_t	xsocket_setopt(res_file_t so, int optname, const char* optval, int optlen)
 {
 	if_socket_t* pif_so;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
-	if (!(*pif_so->pf_socket_setopt)(so, level, optname, optval, optlen))
+	if (!(*pif_so->pf_socket_setopt)(so, optname, optval, optlen))
 	{
 		set_network_error(_T("xsocket_setopt"));
 		return 0;
@@ -335,14 +335,14 @@ bool_t	xsocket_setopt(res_file_t so, int level, int optname, const char* optval,
 	return 1;
 }
 
-bool_t	xsocket_getopt(res_file_t so, int level, int optname, char* pval, int* plen)
+bool_t	xsocket_getopt(res_file_t so, int optname, char* pval, int* plen)
 {
 	if_socket_t* pif_so;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
-	if (!(*pif_so->pf_socket_getopt)(so, level, optname, pval, plen))
+	if (!(*pif_so->pf_socket_getopt)(so, optname, pval, plen))
 	{
 		set_network_error(_T("xsocket_getopt"));
 		return 0;
@@ -461,7 +461,7 @@ bool_t host_addr(const tchar_t* host, tchar_t* addr)
 	return 1;
 }
 
-void fill_addr(net_addr_t* paddr, short port, const tchar_t* addr)
+void fill_addr(net_addr_t* paddr, unsigned short port, const tchar_t* addr)
 {
 	if_socket_t* pif_so;
 	schar_t saddr[ADDR_LEN] = { 0 };
@@ -478,7 +478,7 @@ void fill_addr(net_addr_t* paddr, short port, const tchar_t* addr)
 	(*pif_so->pf_fill_addr)(paddr, port, saddr);
 }
 
-void conv_addr(net_addr_t* paddr, short* port, tchar_t* addr)
+void conv_addr(net_addr_t* paddr, unsigned short* port, tchar_t* addr)
 {
 	if_socket_t* pif_so;
 	schar_t saddr[ADDR_LEN + 1] = { 0 };

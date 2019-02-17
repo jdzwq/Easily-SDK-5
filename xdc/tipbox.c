@@ -97,7 +97,7 @@ void hand_tipbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
 	
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void hand_tipbox_timer(res_win_t widget, var_long tid)

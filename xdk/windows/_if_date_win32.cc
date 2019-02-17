@@ -171,10 +171,11 @@ stamp_t _get_timestamp()
 	return (stamp_t)MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
 }
 
-void _utc_date_from_times(xdate_t* pxd, stamp_t ts)
+void _utc_date_from_times(xdate_t* pxd, clock_t ts)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
+	size_t ss;
 
 	st.wYear = 1970;
 	st.wMonth = 1;
@@ -186,10 +187,9 @@ void _utc_date_from_times(xdate_t* pxd, stamp_t ts)
 
 	SystemTimeToFileTime(&st, &ft);
 
-	ts *= 10000;
-	ts += (stamp_t)MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
-	ft.dwLowDateTime = GETSIZEL(ts);
-	ft.dwHighDateTime = GETSIZEH(ts);
+	ss = (ts * 10000) + MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	ft.dwLowDateTime = GETSIZEL(ss);
+	ft.dwHighDateTime = GETSIZEH(ss);
 
 	FileTimeToSystemTime(&ft, &st);
 
@@ -204,9 +204,37 @@ void _utc_date_from_times(xdate_t* pxd, stamp_t ts)
 	pxd->wday = st.wDayOfWeek;
 }
 
-void _utc_date_from_ticks(xdate_t* pxd, stamp_t ts)
+void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 {
-	return _utc_date_from_times(pxd, ts / 10000);
+	SYSTEMTIME st = { 0 };
+	FILETIME ft = { 0 };
+	size_t ss;
+
+	st.wYear = 1970;
+	st.wMonth = 1;
+	st.wDay = 1;
+	st.wHour = 0;
+	st.wMinute = 0;
+	st.wSecond = 0;
+	st.wMilliseconds = 0;
+
+	SystemTimeToFileTime(&st, &ft);
+
+	ss = ts + MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	ft.dwLowDateTime = GETSIZEL(ss);
+	ft.dwHighDateTime = GETSIZEH(ss);
+
+	FileTimeToSystemTime(&ft, &st);
+
+	pxd->year = st.wYear;
+	pxd->mon = st.wMonth;
+	pxd->day = st.wDay;
+	pxd->hour = st.wHour;
+	pxd->min = st.wMinute;
+	pxd->sec = st.wSecond;
+	pxd->millsec = st.wMilliseconds;
+
+	pxd->wday = st.wDayOfWeek;
 }
 
 void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)

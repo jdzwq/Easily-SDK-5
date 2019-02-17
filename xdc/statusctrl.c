@@ -155,7 +155,7 @@ bool_t noti_status_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 
 	return 1;
 }
@@ -173,7 +173,7 @@ void noti_status_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 /****************************************************************************************/
@@ -561,7 +561,7 @@ void statusctrl_redraw(res_win_t widget)
 
 	_statusctrl_reset_page(widget);
 
-	widget_invalid(widget, NULL, 0);
+	widget_update(widget, NULL, 0);
 }
 
 void statusctrl_tabskip(res_win_t widget, int nSkip)
@@ -625,7 +625,7 @@ void statusctrl_redraw_title(res_win_t widget)
 
 	_statusctrl_title_rect(widget, &xr);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 void statusctrl_redraw_item(res_win_t widget, link_t_ptr plk)
@@ -646,7 +646,7 @@ void statusctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 
 	_statusctrl_item_rect(widget, plk, &xr);
 
-	widget_invalid(widget, &xr, 0);
+	widget_update(widget, &xr, 0);
 }
 
 bool_t statusctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

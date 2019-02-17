@@ -115,7 +115,7 @@ void _acp_protect(codepage_t* pxt)
 		pg = (pageguid_t*)(pxt->page_array + i);
 
 		if (pg->page_base)
-			(*pif->pf_page_protect)(pg->page_base);
+			(*pif->pf_page_protect)(pg->page_base, 1);
 	}
 }
 

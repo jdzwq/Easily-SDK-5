@@ -66,8 +66,6 @@ bool_t	_globo_unlock(res_glob_t glob);
 void*	_local_alloc(size_t size);
 void*	_local_realloc(void* p, size_t size);
 void	_local_free(void* p);
-void	_async_alloc_lapp(async_t* pas);
-void	_async_free_lapp(async_t* pas);
 #endif
 
 #ifdef XDK_SUPPORT_MEMO_PAGE
@@ -78,7 +76,7 @@ void	_paged_free(void* p);
 size_t	_paged_size(void* p);
 void*	_paged_lock(void* p);
 void	_paged_unlock(void* p);
-bool_t	_paged_protect(void* p);
+bool_t	_paged_protect(void* p, bool_t b);
 #endif
 
 #ifdef XDK_SUPPORT_MEMO_CACHE
@@ -110,12 +108,17 @@ void	_get_loc_date(xdate_t* pxd);
 bool_t	_mak_loc_date(xdate_t* pxd);
 void	_get_utc_date(xdate_t* pxd);
 bool_t	_mak_utc_date(xdate_t* pxd);
-clock_t _get_times(void);
+clock_t	_get_times(void);
 clock_t _get_ticks(void);
 stamp_t _get_timestamp(void);
-void	_utc_date_from_times(xdate_t* pxd, stamp_t ts);
-void	_utc_date_from_ticks(xdate_t* pxd, stamp_t ts);
+void	_utc_date_from_times(xdate_t* pxd, clock_t ts);
+void	_utc_date_from_ticks(xdate_t* pxd, clock_t ts);
 void	_utc_date_from_timestamp(xdate_t* pxd, stamp_t ts);
+#endif
+
+#ifdef XDK_SUPPORT_ASYNC
+void	_async_alloc_lapp(async_t* pas);
+void	_async_release_lapp(async_t* pas);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
@@ -162,19 +165,19 @@ void		_semap_unlock(res_sema_t sem);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-res_hand_t	_queue_create(res_hand_t ep, res_file_t fd, int max);
-void		_queue_destroy(res_hand_t ep);
-wait_t		_queue_wait(res_hand_t ep, int ms);
+res_queue_t	_queue_create(res_queue_t ep, res_file_t fd, int max);
+void		_queue_destroy(res_queue_t ep);
+wait_t		_queue_wait(res_queue_t ep, int ms);
 #endif
 
 #endif /*XDK_SUPPORT_THREAD*/
 
 #ifdef XDK_SUPPORT_TIMER
-res_queue_t _create_timer_queue(void);
-void		_destroy_timer_queue(res_queue_t rq);
-res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, timerd_t* pdisp);
-void		_destroy_timer(res_queue_t rq, res_timer_t rt, res_even_t ev);
-bool_t		_alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period);
+res_hand_t _create_timer_queue(void);
+void		_destroy_timer_queue(res_hand_t rq);
+res_timer_t _create_timer(res_hand_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa);
+void		_destroy_timer(res_hand_t rq, res_timer_t rt);
+bool_t		_alter_timer(res_hand_t rq, res_timer_t rt, clock_t duetime, clock_t period);
 #endif
 
 #ifdef XDK_SUPPORT_SOCK
@@ -196,8 +199,8 @@ bool_t	_socket_send(res_file_t so, void* buf, size_t len, async_t* pb);
 bool_t	_socket_recv(res_file_t so, void* buf, size_t len, async_t* pb);
 int		_socket_write(void* pso, unsigned char* buf, int len);
 int		_socket_read(void* pso, unsigned char* buf, int len);
-bool_t	_socket_setopt(res_file_t so, int level, int optname, const char* optval, int optlen);
-bool_t	_socket_getopt(res_file_t so, int level, int optname, char* pval, int* plen);
+bool_t	_socket_setopt(res_file_t so, int optname, const char* optval, int optlen);
+bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen);
 bool_t	_socket_set_linger(res_file_t so, bool_t wait, int sec);
 bool_t	_socket_set_sndbuf(res_file_t so, int size);
 bool_t	_socket_set_rcvbuf(res_file_t so, int size);
@@ -220,8 +223,9 @@ bool_t	_file_size(res_file_t fh, u32_t* ph, u32_t* pl);
 bool_t	_file_write(res_file_t fl, void* buf, size_t size, async_t* pb);
 bool_t	_file_flush(res_file_t fl);
 bool_t	_file_read(res_file_t fl, void* buf, size_t size, async_t* pb);
-bool_t	_file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pb);
-bool_t	_file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pb);
+bool_t	_file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size);
+bool_t	_file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size);
+bool_t	_file_truncate(res_file_t fh, u32_t hoff, u32_t loff);
 bool_t	_file_delete(const tchar_t* fname);
 bool_t	_file_rename(const tchar_t* fname, const tchar_t* nname);
 bool_t	_file_info(const tchar_t* fname, file_info_t* pxf);
@@ -233,14 +237,7 @@ bool_t	_directory_remove(const tchar_t* path);
 #ifdef XDK_SUPPORT_FILE_FIND
 res_find_t	_file_find_first(const tchar_t* fpath, file_info_t* pfi);
 bool_t	_file_find_next(res_find_t ff, file_info_t* pfi);
-#endif
-#ifdef XDK_SUPPORT_FILE_BLOCK
-res_file_t _block_open(const tchar_t* fname, u32_t fmode);
-void	_block_close(res_file_t fh);
-bool_t	_block_size(res_file_t fh, u32_t* ph, u32_t* pl);
-bool_t	_block_write(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pb);
-bool_t	_block_read(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pb);
-bool_t	_block_truncate(res_file_t fh, u32_t hoff, u32_t loff);
+void _file_find_close(res_find_t ff);
 #endif
 #endif
 
@@ -286,7 +283,7 @@ void	_comm_close(res_file_t fh);
 bool_t	_comm_read(res_file_t fh, void* buf, size_t size, async_t* pb);
 bool_t	_comm_write(res_file_t fh, void* buf, size_t size, async_t* pb);
 bool_t	_comm_flush(res_file_t fh);
-u32_t	_comm_listen(res_file_t fh, async_t* pb);
+u32_t	_comm_wait(res_file_t fh, async_t* pb);
 #endif
 
 
@@ -386,7 +383,7 @@ void _gdi_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, i
 void _gdi_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
 void _gdi_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
-void _gdi_alpha_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
 void _gdi_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdi_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, double fang, double tang);
@@ -417,7 +414,7 @@ void _gdiplus_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* pp
 void _gdiplus_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
 void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
-void _gdiplus_alpha_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
 void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, double fang, double tang);
@@ -505,7 +502,6 @@ void	_widget_take(res_win_t wt, int zor);
 void	_widget_show(res_win_t wt, u32_t sw);
 void	_widget_update_window(res_win_t wt);
 void	_widget_update_client(res_win_t wt);
-void	_widget_invalid(res_win_t wt, const xrect_t* prt, bool_t b_erase);
 void	_widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase);
 void	_widget_enable(res_win_t wt, bool_t b);
 
