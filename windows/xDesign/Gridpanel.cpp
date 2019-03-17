@@ -850,13 +850,13 @@ void GridPanel_OnSelectCols(res_win_t widget)
 
 	Project_GetConfig(ptr_prj, _T("RDS"), pd.sz_conn, PATH_LEN);
 
-	pd.vs_sql = varstr_alloc();
+	pd.vs_sql = string_alloc();
 
 	res_win_t hSQLDlg = SQLViewDlg_Create(_T("检索数据列"), &pd);
 
 	if (!widget_do_modal(hSQLDlg))
 	{
-		varstr_free(pd.vs_sql);
+		string_free(pd.vs_sql);
 		return;
 	}
 
@@ -874,11 +874,11 @@ void GridPanel_OnSelectCols(res_win_t widget)
 
 	gridctrl_set_dirty(pdt->hGrid, 1);
 
-	DBSchema(pct, ptrGrid, varstr_ptr(pd.vs_sql));
+	DBSchema(pct, ptrGrid, string_ptr(pd.vs_sql));
 
 	DBClose(pct);
 
-	varstr_free(pd.vs_sql);
+	string_free(pd.vs_sql);
 
 	gridctrl_redraw(pdt->hGrid, 1);
 }
@@ -1014,17 +1014,17 @@ void GridPanel_OnFillCode(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	string_t vs = varstr_alloc();
+	string_t vs = string_alloc();
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 
 	LINKPTR clk = get_next_visible_col(ptrGrid, LINK_FIRST);
 	while (clk)
 	{
-		varstr_cat(vs, get_col_name_ptr(clk), -1);
-		varstr_cat(vs, _T("~"), 1);
-		varstr_cat(vs, get_col_title_ptr(clk), -1);
-		varstr_cat(vs, _T(";"), 1);
+		string_cat(vs, get_col_name_ptr(clk), -1);
+		string_cat(vs, _T("~"), 1);
+		string_cat(vs, get_col_title_ptr(clk), -1);
+		string_cat(vs, _T(";"), 1);
 
 		clk = get_next_visible_col(ptrGrid, clk);
 	}
@@ -1034,7 +1034,7 @@ void GridPanel_OnFillCode(res_win_t widget)
 	LINKPTR ent = write_proper(ptrProper, _T("生成参数"), -1, _T("代码列"), -1, NULL, 0);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-	set_entity_options(ent, varstr_ptr(vs), -1);
+	set_entity_options(ent, string_ptr(vs), -1);
 
 	ent = write_proper(ptrProper, _T("生成参数"), -1, _T("代码长度"), -1, NULL, 0);
 	set_entity_editable(ent, 1);
@@ -1048,7 +1048,7 @@ void GridPanel_OnFillCode(res_win_t widget)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	varstr_free(vs);
+	string_free(vs);
 
 	res_win_t hProperDlg = properdlg_create(_T("生成代码"), ptrProper, g_hMain);
 
@@ -1102,15 +1102,15 @@ void GridPanel_OnFillHelp(res_win_t widget)
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 
-	string_t vs = varstr_alloc();
+	string_t vs = string_alloc();
 
 	LINKPTR clk = get_next_visible_col(ptrGrid, LINK_FIRST);
 	while (clk)
 	{
-		varstr_cat(vs, get_col_name_ptr(clk), -1);
-		varstr_cat(vs, _T("~"), 1);
-		varstr_cat(vs, get_col_title_ptr(clk), -1);
-		varstr_cat(vs, _T(";"), 1);
+		string_cat(vs, get_col_name_ptr(clk), -1);
+		string_cat(vs, _T("~"), 1);
+		string_cat(vs, get_col_title_ptr(clk), -1);
+		string_cat(vs, _T(";"), 1);
 
 		clk = get_next_visible_col(ptrGrid, clk);
 	}
@@ -1120,18 +1120,18 @@ void GridPanel_OnFillHelp(res_win_t widget)
 	LINKPTR ent = write_proper(ptrProper, _T("生成参数"), -1, _T("文本列"), -1, NULL, 0);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-	set_entity_options(ent, varstr_ptr(vs), -1);
+	set_entity_options(ent, string_ptr(vs), -1);
 
 	ent = write_proper(ptrProper, _T("生成参数"), -1, _T("拼音列"), -1, NULL, 0);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-	set_entity_options(ent, varstr_ptr(vs), -1);
+	set_entity_options(ent, string_ptr(vs), -1);
 
 	ent = write_proper(ptrProper, _T("生成参数"), -1, _T("拼音长度"), -1, _T("6"), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	varstr_free(vs);
+	string_free(vs);
 
 	res_win_t hProperDlg = properdlg_create(_T("生成拼音"), ptrProper, g_hMain);
 

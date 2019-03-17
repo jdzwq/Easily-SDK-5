@@ -80,7 +80,7 @@ void annodlg_on_ok(res_win_t widget)
 	buf_bmp = (byte_t*)xmem_alloc(len_bmp);
 	photoctrl_get_bitmap(ptd->photo, buf_bmp, len_bmp);
 
-	if (xsnicmp(GDI_ATTR_IMAGE_TYPE_JPG, varstr_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_JPG)) == 0)
+	if (xsnicmp(GDI_ATTR_IMAGE_TYPE_JPG, string_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_JPG)) == 0)
 	{
 		len_zip = len_bmp;
 		buf_zip = (byte_t*)xmem_alloc(len_bmp);
@@ -95,11 +95,11 @@ void annodlg_on_ok(res_win_t widget)
 
 		xmem_free(buf_zip);
 
-		varstr_cpy(ptd->varimg, buf_bas, tlen + len_bas);
+		string_cpy(ptd->varimg, buf_bas, tlen + len_bas);
 
 		xmem_free(buf_bas);
 	}
-	if (xsnicmp(GDI_ATTR_IMAGE_TYPE_PNG, varstr_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_PNG)) == 0)
+	if (xsnicmp(GDI_ATTR_IMAGE_TYPE_PNG, string_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_PNG)) == 0)
 	{
 		len_zip = len_bmp;
 		buf_zip = (byte_t*)xmem_alloc(len_bmp);
@@ -114,11 +114,11 @@ void annodlg_on_ok(res_win_t widget)
 
 		xmem_free(buf_zip);
 
-		varstr_cpy(ptd->varimg, buf_bas, tlen + len_bas);
+		string_cpy(ptd->varimg, buf_bas, tlen + len_bas);
 
 		xmem_free(buf_bas);
 	}
-	if (xsnicmp(GDI_ATTR_IMAGE_TYPE_BMP, varstr_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_BMP)) == 0)
+	if (xsnicmp(GDI_ATTR_IMAGE_TYPE_BMP, string_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_BMP)) == 0)
 	{
 		len_bas = xbas_encode(buf_bmp, len_bmp, NULL, MAX_LONG);
 		tlen = xslen(GDI_ATTR_IMAGE_TYPE_BMP);
@@ -127,7 +127,7 @@ void annodlg_on_ok(res_win_t widget)
 		xscpy(buf_bas, GDI_ATTR_IMAGE_TYPE_BMP);
 		xbas_encode(buf_bmp, len_bmp, buf_bas + tlen, len_bas);
 
-		varstr_cpy(ptd->varimg, buf_bas, tlen + len_bas);
+		string_cpy(ptd->varimg, buf_bas, tlen + len_bas);
 
 		xmem_free(buf_bas);
 	}
@@ -149,7 +149,7 @@ void annodlg_on_show_color(res_win_t widget, const xrect_t* pxr)
 	annodlg_delta_t* ptd = GETANNODLGDELTA(widget);
 	xpoint_t pt;
 
-	if(!photoctrl_get_focus_spot(ptd->photo))
+	if(!photoctrl_get_focus_arti(ptd->photo))
 		return;
 
 	pt.x = pxr->x;
@@ -165,17 +165,17 @@ void annodlg_on_select_color(res_win_t widget, const tchar_t* mid)
 	tchar_t* new_style;
 	int len;
 
-	ilk = photoctrl_get_focus_spot(ptd->photo);
+	ilk = photoctrl_get_focus_arti(ptd->photo);
 	if (!ilk)
 		return;
 
-	org_style = get_anno_spot_style_ptr(ilk);
+	org_style = get_anno_arti_style_ptr(ilk);
 
 	len = write_style_attr(org_style, -1, GDI_ATTR_FONT_COLOR, -1, mid, -1, NULL, MAX_LONG);
 	new_style = xsalloc(len + 1);
 	write_style_attr(org_style, -1, GDI_ATTR_FONT_COLOR, -1, mid, -1, new_style, len);
 
-	set_anno_spot_style(ilk, new_style);
+	set_anno_arti_style(ilk, new_style);
 
 	xsfree(new_style);
 
@@ -187,7 +187,7 @@ void annodlg_on_show_font(res_win_t widget, const xrect_t* pxr)
 	annodlg_delta_t* ptd = GETANNODLGDELTA(widget);
 	xpoint_t pt;
 
-	if (!photoctrl_get_focus_spot(ptd->photo))
+	if (!photoctrl_get_focus_arti(ptd->photo))
 		return;
 
 	pt.x = pxr->x;
@@ -203,17 +203,17 @@ void annodlg_on_select_font(res_win_t widget, const tchar_t* mid)
 	tchar_t* new_style;
 	int len;
 
-	ilk = photoctrl_get_focus_spot(ptd->photo);
+	ilk = photoctrl_get_focus_arti(ptd->photo);
 	if (!ilk)
 		return;
 
-	org_style = get_anno_spot_style_ptr(ilk);
+	org_style = get_anno_arti_style_ptr(ilk);
 
 	len = write_style_attr(org_style, -1, GDI_ATTR_FONT_SIZE, -1, mid, -1, NULL, MAX_LONG);
 	new_style = xsalloc(len + 1);
 	write_style_attr(org_style, -1, GDI_ATTR_FONT_SIZE, -1, mid, -1, new_style, len);
 
-	set_anno_spot_style(ilk, new_style);
+	set_anno_arti_style(ilk, new_style);
 
 	xsfree(new_style);
 
@@ -232,9 +232,9 @@ void annodlg_on_append_item(res_win_t widget, const tchar_t* mid)
 	pt[2].y = 20;
 
 	ptr = photoctrl_fetch(ptd->photo);
-	ilk = insert_anno_spot(ptr, LINK_LAST);
-	set_anno_spot_type(ilk, mid);
-	set_anno_spot_xpoint(ilk, pt, 2);
+	ilk = insert_anno_arti(ptr, LINK_LAST);
+	set_anno_arti_type(ilk, mid);
+	set_anno_arti_xpoint(ilk, pt, 2);
 
 	photoctrl_redraw(ptd->photo);
 }
@@ -297,11 +297,11 @@ int hand_annodlg_create(res_win_t widget, void* data)
 
 	if (ptd->varimg)
 	{
-		if (xsnicmp(GDI_ATTR_IMAGE_TYPE_JPG, varstr_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_JPG)) == 0)
+		if (xsnicmp(GDI_ATTR_IMAGE_TYPE_JPG, string_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_JPG)) == 0)
 		{
-			len_zip = xbas_decode(varstr_ptr(ptd->varimg), varstr_len(ptd->varimg), NULL, MAX_LONG);
+			len_zip = xbas_decode(string_ptr(ptd->varimg), string_len(ptd->varimg), NULL, MAX_LONG);
 			buf_zip = (byte_t*)xmem_alloc(len_zip);
-			xbas_decode(varstr_ptr(ptd->varimg), varstr_len(ptd->varimg), buf_zip, len_zip);
+			xbas_decode(string_ptr(ptd->varimg), string_len(ptd->varimg), buf_zip, len_zip);
 
 			len_bmp = xjpg_decompress(buf_zip, len_zip, NULL, MAX_LONG);
 			buf_bmp = (byte_t*)xmem_alloc(len_bmp);
@@ -313,11 +313,11 @@ int hand_annodlg_create(res_win_t widget, void* data)
 
 			xmem_free(buf_bmp);
 		}
-		if (xsnicmp(GDI_ATTR_IMAGE_TYPE_PNG, varstr_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_PNG)) == 0)
+		if (xsnicmp(GDI_ATTR_IMAGE_TYPE_PNG, string_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_PNG)) == 0)
 		{
-			len_zip = xbas_decode(varstr_ptr(ptd->varimg), varstr_len(ptd->varimg), NULL, MAX_LONG);
+			len_zip = xbas_decode(string_ptr(ptd->varimg), string_len(ptd->varimg), NULL, MAX_LONG);
 			buf_zip = (byte_t*)xmem_alloc(len_zip);
-			xbas_decode(varstr_ptr(ptd->varimg), varstr_len(ptd->varimg), buf_zip, len_zip);
+			xbas_decode(string_ptr(ptd->varimg), string_len(ptd->varimg), buf_zip, len_zip);
 
 			len_bmp = xpng_decompress(buf_zip, len_zip, NULL, MAX_LONG);
 			buf_bmp = (byte_t*)xmem_alloc(len_bmp);
@@ -329,11 +329,11 @@ int hand_annodlg_create(res_win_t widget, void* data)
 
 			xmem_free(buf_bmp);
 		}
-		if (xsnicmp(GDI_ATTR_IMAGE_TYPE_BMP, varstr_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_BMP)) == 0)
+		if (xsnicmp(GDI_ATTR_IMAGE_TYPE_BMP, string_ptr(ptd->varimg), xslen(GDI_ATTR_IMAGE_TYPE_BMP)) == 0)
 		{
-			len_bmp = xbas_decode(varstr_ptr(ptd->varimg), varstr_len(ptd->varimg), NULL, MAX_LONG);
+			len_bmp = xbas_decode(string_ptr(ptd->varimg), string_len(ptd->varimg), NULL, MAX_LONG);
 			buf_bmp = (byte_t*)xmem_alloc(len_bmp);
-			xbas_decode(varstr_ptr(ptd->varimg), varstr_len(ptd->varimg), buf_bmp, len_bmp);
+			xbas_decode(string_ptr(ptd->varimg), string_len(ptd->varimg), buf_bmp, len_bmp);
 
 			photoctrl_set_bitmap(ptd->photo, buf_bmp, len_bmp);
 

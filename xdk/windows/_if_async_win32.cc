@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_ASYNC
 
-void _async_alloc_lapp(async_t* pas)
+void _async_alloc_lapp(async_t* pas, int ms)
 {
 	LPOVERLAPPED lp;
 
@@ -42,6 +42,7 @@ void _async_alloc_lapp(async_t* pas)
 	lp->hEvent = CreateEvent(NULL, 1, 0, NULL);
 	pas->lapp = (void*)lp;
 	pas->type = ASYNC_EVENT;
+	pas->timo = (ms < 0) ? INFINITE : ms;
 }
 
 void _async_release_lapp(async_t* pas)

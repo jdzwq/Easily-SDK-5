@@ -156,7 +156,7 @@ void hand_datebox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		datebox_on_select_day(widget, day);
 
-		noti_datebox_command(widget, COMMAND_SELECT, (var_long)NULL);
+		noti_datebox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 	}
 }
 

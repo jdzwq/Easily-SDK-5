@@ -225,7 +225,7 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 
 	if (fmode & FILE_OPEN_OVERLAP)
 	{
-		async_alloc_lapp(&pcf->over);
+		async_alloc_lapp(&pcf->over, FILE_BASE_TIMO);
 	}
 
 	return (xhand_t)pcf;

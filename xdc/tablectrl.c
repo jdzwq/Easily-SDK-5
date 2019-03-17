@@ -1192,7 +1192,7 @@ link_t_ptr tablectrl_insert_item(res_win_t widget, link_t_ptr pre)
 	return ilk;
 }
 
-bool_t tablectrl_is_dirty(res_win_t widget)
+bool_t tablectrl_is_update(res_win_t widget)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 

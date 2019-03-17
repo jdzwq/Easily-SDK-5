@@ -157,19 +157,6 @@ void _local_free(void* p)
     free(p);
 }
 
-void _async_alloc_lapp(async_t* pas)
-{
-    pas->type = ASYNC_EVENT;
-    pas->lapp = (void*)_local_alloc(sizeof(OVERLAPPED));
-}
-
-void _async_free_lapp(async_t* pas)
-{
-    if(pas->lapp)
-        _local_free(pas->lapp);
-    
-    pas->lapp = NULL;
-}
 #endif
 /******************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_PAGE
@@ -244,7 +231,7 @@ void _paged_unlock(void* p)
     munlock(p, n);
 }
 
-bool_t _paged_protect(void* p)
+bool_t _paged_protect(void* p, bool_t b)
 {
     size_t n;
     

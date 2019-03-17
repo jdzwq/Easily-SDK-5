@@ -29,28 +29,28 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "buffer.h"
+#include "varbuf.h"
 #include "xdlimp.h"
 
-byte_t** buffer_alloc()
+byte_t** varbuf_alloc()
 {
 	return (byte_t**)xmem_alloc(sizeof(byte_t*));
 }
 
-void buffer_free(byte_t** pp)
+void varbuf_free(byte_t** pp)
 {
 	xmem_free(*pp);
 	xmem_free(pp);
 }
 
-byte_t* buffer_realloc(byte_t** pp, dword_t size)
+byte_t* varbuf_realloc(byte_t** pp, dword_t size)
 {
 	*pp = xmem_realloc(*pp, size);
 
 	return *pp;
 }
 
-byte_t** buffer_attach(byte_t* p)
+byte_t** varbuf_attach(byte_t* p)
 {
 	byte_t** pp;
 
@@ -60,7 +60,7 @@ byte_t** buffer_attach(byte_t* p)
 	return (byte_t**)pp;
 }
 
-byte_t* buffer_detach(byte_t** pp)
+byte_t* varbuf_detach(byte_t** pp)
 {
 	byte_t* p;
 

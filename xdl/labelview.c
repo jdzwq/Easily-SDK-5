@@ -336,12 +336,12 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 			xr_text.fw = xr.fw - 2 * SHAPE_FEED;
 			xr_text.fh = xr.fh - 2 * SHAPE_FEED - eh;
 
-			vs_text = varstr_alloc();
-			varstr_cpy(vs_text, get_label_item_text_ptr(nlk), -1);
+			vs_text = string_alloc();
+			string_cpy(vs_text, get_label_item_text_ptr(nlk), -1);
 
 			(*pif->pf_draw_var_text)(pif->canvas, &xf, &xa, &xr_text, vs_text);
 
-			varstr_free(vs_text);
+			string_free(vs_text);
 		}
 		else if (compare_text(type, -1, ATTR_TEXT_TYPE_IMAGE, -1, 0) == 0)
 		{

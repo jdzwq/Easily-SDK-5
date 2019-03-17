@@ -939,8 +939,6 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		phttp->inf.pf_flush = xssl_flush;
 		phttp->inf.pf_read = xssl_read;
 		phttp->inf.pf_set_linger = xssl_set_linger;
-		phttp->inf.pf_set_rcvtmo = xssl_set_recv_timeout;
-		phttp->inf.pf_set_sndtmo = xssl_set_send_timeout;
 		phttp->inf.pf_close = xssl_close;
 		phttp->inf.pf_peer_port = xssl_peer_port;
 		break;
@@ -952,8 +950,6 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		phttp->inf.pf_set_linger = xxsl_set_linger;
 		phttp->inf.pf_set_rcvbuf = xxsl_set_recv_buff;
 		phttp->inf.pf_set_sndbuf = xxsl_set_send_buff;
-		phttp->inf.pf_set_rcvtmo = xxsl_set_recv_timeout;
-		phttp->inf.pf_set_sndtmo = xxsl_set_send_timeout;
 		phttp->inf.pf_close = xxsl_close;
 		phttp->inf.pf_peer_port = xxsl_peer_port;
 		break;
@@ -966,8 +962,6 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		phttp->inf.pf_set_linger = xtcp_set_linger;
 		phttp->inf.pf_set_rcvbuf = xtcp_set_recv_buff;
 		phttp->inf.pf_set_sndbuf = xtcp_set_send_buff;
-		phttp->inf.pf_set_rcvtmo = xtcp_set_recv_timeout;
-		phttp->inf.pf_set_sndtmo = xtcp_set_send_timeout;
 		phttp->inf.pf_close = xtcp_close;
 		phttp->inf.pf_peer_port = xtcp_peer_port;
 		break;
@@ -1035,8 +1029,6 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_flush = xssl_flush;
 		phttp->inf.pf_read = xssl_read;
 		phttp->inf.pf_set_linger = xssl_set_linger;
-		phttp->inf.pf_set_rcvtmo = xssl_set_recv_timeout;
-		phttp->inf.pf_set_sndtmo = xssl_set_send_timeout;
 		phttp->inf.pf_peer_port = xssl_peer_port;
 
 		xsocket_peer(xssl_socket(bio), &na);
@@ -1047,8 +1039,6 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_set_linger = xxsl_set_linger;
 		phttp->inf.pf_set_rcvbuf = xxsl_set_recv_buff;
 		phttp->inf.pf_set_sndbuf = xxsl_set_send_buff;
-		phttp->inf.pf_set_rcvtmo = xxsl_set_recv_timeout;
-		phttp->inf.pf_set_sndtmo = xxsl_set_send_timeout;
 		phttp->inf.pf_peer_port = xxsl_peer_port;
 
 		xsocket_peer(xxsl_socket(bio), &na);
@@ -1060,8 +1050,6 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_set_linger = xtcp_set_linger;
 		phttp->inf.pf_set_rcvbuf = xtcp_set_recv_buff;
 		phttp->inf.pf_set_sndbuf = xtcp_set_send_buff;
-		phttp->inf.pf_set_rcvtmo = xtcp_set_recv_timeout;
-		phttp->inf.pf_set_sndtmo = xtcp_set_send_timeout;
 		phttp->inf.pf_peer_port = xtcp_peer_port;
 
 		xsocket_peer(xtcp_socket(bio), &na);
@@ -2003,12 +1991,12 @@ int xhttp_request_signature(xhand_t xhttp, const tchar_t* skey, tchar_t* buf, in
 }
 #endif
 
-int xhttp_format_error(const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
+dword_t xhttp_format_error(const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
 {
 	link_t_ptr ptr_xml, ptr_dom;
 	link_t_ptr nlk;
 
-	int nlen = 0;
+	dword_t nlen = 0;
 	byte_t* sz_buf = NULL;
 
 	ptr_xml = create_xml_doc();
@@ -2250,10 +2238,6 @@ bool_t xhttp_send_response(xhand_t xhttp)
 				stream_opera_reset(phttp->send_stream);
 				if (phttp->inf.pf_set_sndbuf)
 					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, TCP_MAX_BUFF);
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_sndtmo)
-					(*phttp->inf.pf_set_sndtmo)(phttp->inf.bio, TCP_BASE_TIMO);
-#endif
 			}
 			else
 			{
@@ -2261,10 +2245,6 @@ bool_t xhttp_send_response(xhand_t xhttp)
 				stream_set_size(phttp->send_stream, len_response);
 				if (phttp->inf.pf_set_sndbuf)
 					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, ((len_response) ? len_response : TCP_MAX_BUFF));
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_sndtmo)
-					(*phttp->inf.pf_set_sndtmo)(phttp->inf.bio, (len_response / TCP_MAX_BUFF + 1) * TCP_BASE_TIMO);
-#endif
 			}
 		}
 
@@ -2353,10 +2333,6 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 				stream_opera_reset(phttp->recv_stream);
 				if (phttp->inf.pf_set_rcvbuf)
 					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, TCP_MAX_BUFF);
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_rcvtmo)
-					(*phttp->inf.pf_set_rcvtmo)(phttp->inf.bio, TCP_BASE_TIMO);
-#endif
 			}
 			else
 			{
@@ -2364,10 +2340,6 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 				stream_set_size(phttp->recv_stream, len_one);
 				if (phttp->inf.pf_set_rcvbuf)
 					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, ((len_one) ? len_one : TCP_MAX_BUFF));
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_rcvtmo)
-					(*phttp->inf.pf_set_rcvtmo)(phttp->inf.bio, (len_one / TCP_MAX_BUFF + 1) * TCP_BASE_TIMO);
-#endif
 			}
 		}
 
@@ -2444,10 +2416,6 @@ bool_t xhttp_send_request(xhand_t xhttp)
 				stream_opera_reset(phttp->send_stream);
 				if (phttp->inf.pf_set_sndbuf)
 					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, TCP_MAX_BUFF);
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_sndtmo)
-					(*phttp->inf.pf_set_sndtmo)(phttp->inf.bio, TCP_BASE_TIMO);
-#endif
 			}
 			else
 			{
@@ -2455,10 +2423,6 @@ bool_t xhttp_send_request(xhand_t xhttp)
 				stream_set_size(phttp->send_stream, len_request);
 				if (phttp->inf.pf_set_sndbuf)
 					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, ((len_request) ? len_request : TCP_MAX_BUFF));
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_sndtmo)
-					(*phttp->inf.pf_set_sndtmo)(phttp->inf.bio, (len_request / TCP_MAX_BUFF + 1) * TCP_BASE_TIMO);
-#endif
 			}
 		}
 
@@ -2547,10 +2511,6 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 				stream_opera_reset(phttp->recv_stream);
 				if (phttp->inf.pf_set_rcvbuf)
 					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, TCP_MAX_BUFF);
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_rcvtmo)
-					(*phttp->inf.pf_set_rcvtmo)(phttp->inf.bio, TCP_BASE_TIMO);
-#endif
 			}
 			else
 			{
@@ -2558,10 +2518,6 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 				stream_set_size(phttp->recv_stream, len_one);
 				if (phttp->inf.pf_set_rcvbuf)
 					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, ((len_one) ? len_one : TCP_MAX_BUFF));
-#ifndef _DEBUG
-				if (phttp->inf.pf_set_rcvtmo)
-					(*phttp->inf.pf_set_rcvtmo)(phttp->inf.bio, (len_one / TCP_MAX_BUFF + 1) * TCP_BASE_TIMO);
-#endif
 			}
 		}
 
@@ -2643,7 +2599,7 @@ bool_t xhttp_is_zipped_recv(xhand_t xhttp)
 	else
 		xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTENCODING, -1, token, RES_LEN);
 
-	return (compare_text(token, -1, HTTP_HEADER_ENCODING_DEFLATE, -1, 1) == 0 || compare_text(token, -1, HTTP_HEADER_ENCODING_GZIP, -1, 1) == 0) ? 1 : 0;
+	return (compare_text(token, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0 || compare_text(token, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1, 1) == 0) ? 1 : 0;
 }
 
 bool_t xhttp_is_zipped_send(xhand_t xhttp)
@@ -2665,7 +2621,7 @@ bool_t xhttp_is_zipped_send(xhand_t xhttp)
 	else
 		xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTENCODING, -1, token, RES_LEN);
 
-	return (compare_text(token, -1, HTTP_HEADER_ENCODING_DEFLATE, -1, 1) == 0 || compare_text(token, -1, HTTP_HEADER_ENCODING_GZIP, -1, 1) == 0) ? 1 : 0;
+	return (compare_text(token, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0 || compare_text(token, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1, 1) == 0) ? 1 : 0;
 }
 
 bool_t xhttp_need_expect(xhand_t xhttp)
@@ -2836,7 +2792,7 @@ bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 				break;
 
 			nlen += nbys;
-			buffer_realloc(pbuf, nlen);
+			varbuf_realloc(pbuf, nlen);
 
 			if (!stream_read_bytes(phttp->recv_stream, *pbuf + npos, &nbys))
 				break;
@@ -2854,11 +2810,11 @@ bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 		else
 			nlen = xhttp_get_request_content_length(xhttp);
 
-		buffer_realloc(pbuf, nlen);
+		varbuf_realloc(pbuf, nlen);
 
 		if (!stream_read_bytes(phttp->recv_stream, *pbuf, &nlen))
 		{
-			buffer_realloc(pbuf, 0);
+			varbuf_realloc(pbuf, 0);
 			*plen = 0;
 			return 0;
 		}
@@ -2940,7 +2896,7 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 		xhttp_get_response_message(xhttp, http_info, META_LEN);
 	}
 
-	pbuf = buffer_alloc();
+	pbuf = varbuf_alloc();
 
 	b_rt = xhttp_recv_full(xhttp, pbuf, &nlen);
 
@@ -2949,7 +2905,7 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 		b_rt = xhttp_parse_error(*pbuf, nlen, errcode, errtext, max);
 	}
 
-	buffer_free(pbuf);
+	varbuf_free(pbuf);
 	pbuf = NULL;
 
 	return b_rt;
@@ -3065,7 +3021,7 @@ bool_t xhttp_recv_json(xhand_t xhttp, link_t_ptr json)
 	return parse_json_doc_from_stream(json, phttp->recv_stream);
 }
 
-bool_t xhttp_send_var(xhand_t xhttp, string_t var)
+bool_t xhttp_send_string(xhand_t xhttp, string_t var)
 {
 	xhttp_t* phttp = (xhttp_t*)xhttp;
 
@@ -3092,7 +3048,7 @@ bool_t xhttp_send_var(xhand_t xhttp, string_t var)
 	return stream_write_line(phttp->send_stream, var, NULL);
 }
 
-bool_t xhttp_recv_var(xhand_t xhttp, string_t var)
+bool_t xhttp_recv_string(xhand_t xhttp, string_t var)
 {
 	xhttp_t* phttp = (xhttp_t*)xhttp;
 

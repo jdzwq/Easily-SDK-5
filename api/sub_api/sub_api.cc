@@ -85,22 +85,17 @@ void _invoke_subcribe(const slots_block_t* pb, const mqtt_block_t* pd)
 	while (len)
 	{
 		msg_len = GET_DWORD_LOC(buf, total);
-		msg_buf = buf + total + 4;
+		pd->mqtt->packet_qos = (byte_t)GET_SWORD_LOC(buf, total + 4);
+		pd->mqtt->packet_pid = GET_SWORD_LOC(buf, total + 6);
+		msg_buf = buf + total + 8;
 
-		if (!mqtt_push_message(pd->mqtt, msg_buf, msg_len))
+		if (!mqtt_push_message(pd->mqtt, msg_buf, msg_len - 4))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
 		total += (4 + msg_len);
 		len -= (4 + msg_len);
-
-		object_set_bytes(val, encode, buf + total, len);
-
-		if (!radhex_set(pd->radhex, key, val))
-		{
-			raise_user_error(NULL, NULL);
-		}
 	}
 
 	xmem_free(buf);
@@ -219,10 +214,10 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		raise_user_error(NULL, NULL);
 	}
 
-	if (pd->mqtt->topic_qos == MQTT_QOS_NONE)
-		_invoke_unsubcribe(pb, pd);
-	else
+	if (pd->mqtt->packet_qos)
 		_invoke_subcribe(pb, pd);
+	else
+		_invoke_unsubcribe(pb, pd);
 
 	radhex_close(pd->radhex);
 	pd->radhex = NULL;

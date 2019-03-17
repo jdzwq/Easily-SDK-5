@@ -151,12 +151,21 @@ void _gdi_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
     
 }
 
+void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+{
+    
+}
+
+void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int len)
+{
+}
+
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 {
 	
 }
 
-void _gdi_alpha_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
+void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
 {
 	
 }

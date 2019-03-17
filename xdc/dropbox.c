@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "winnc.h"
 
 typedef struct _dropbox_delta_t{
-	link_t_ptr hash;
+	link_t_ptr table;
 	link_t_ptr entity;
 }dropbox_delta_t;
 
@@ -55,7 +55,7 @@ static void _dropbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 
 	widget_get_xfont(widget, &xf);
 
-	calc_dropbox_item_rect(&im, &xf, ptd->hash, plk, pxr);
+	calc_dropbox_item_rect(&im, &xf, ptd->table, plk, pxr);
 	widget_rect_to_pt(widget, pxr);
 
 	widget_get_client_rect(widget, &xr);
@@ -82,7 +82,7 @@ static void _dropbox_reset_page(res_win_t widget)
 	lw = xs.cx;
 	lh = xs.cy;
 
-	calc_dropbox_size(&im, &xf, ptd->hash, &xs);
+	calc_dropbox_size(&im, &xf, ptd->table, &xs);
 	widget_size_to_pt(widget, &xs);
 	vw = xs.cx;
 	vh = xs.cy;
@@ -110,19 +110,16 @@ static link_t_ptr _dropbox_get_next_entity(res_win_t widget, link_t_ptr pos)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 
 	if (pos == LINK_LAST)
 		return NULL;
 
-	he.hash = ptd->hash;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptd->table, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptd->table, ent);
 			continue;
 		}
 
@@ -131,7 +128,7 @@ static link_t_ptr _dropbox_get_next_entity(res_win_t widget, link_t_ptr pos)
 		else if (pos == ent)
 			pos = LINK_FIRST;
 
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptd->table, ent);
 	}
 
 	return NULL;
@@ -141,19 +138,16 @@ static link_t_ptr _dropbox_get_prev_entity(res_win_t widget, link_t_ptr pos)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 
 	if (pos == LINK_LAST)
 		return NULL;
 
-	he.hash = ptd->hash;
-	he.entity = LINK_LAST;
-	ent = get_hash_prev_entity(&he);
+	ent = get_string_prev_entity(ptd->table, LINK_LAST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_prev_entity(&he);
+			ent = get_string_prev_entity(ptd->table, ent);
 			continue;
 		}
 
@@ -162,7 +156,7 @@ static link_t_ptr _dropbox_get_prev_entity(res_win_t widget, link_t_ptr pos)
 		else if (pos == ent)
 			pos = LINK_LAST;
 
-		ent = get_hash_prev_entity(&he);
+		ent = get_string_prev_entity(ptd->table, ent);
 	}
 
 	return NULL;
@@ -222,7 +216,7 @@ int hand_dropbox_create(res_win_t widget, void* data)
 
 	ptd = (dropbox_delta_t*)xmem_alloc(sizeof(dropbox_delta_t));
 
-	ptd->hash = NULL;
+	ptd->table = NULL;
 	ptd->entity = NULL;
 
 	SETDROPBOXDELTA(widget, ptd);
@@ -247,16 +241,16 @@ void hand_dropbox_keydown(res_win_t widget, int key)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	switch (key)
 	{
 	case KEY_ENTER:
-		noti_dropbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+		noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 		break;
 	case KEY_SPACE:
-		noti_dropbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+		noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 		break;
 	case KEY_LEFT:
 		dropbox_tabskip(widget,WD_TAB_LEFT);
@@ -291,7 +285,7 @@ void hand_dropbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	int hint;
 	xpoint_t pt;
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	im.ctx = widget_get_canvas(widget);
@@ -304,7 +298,7 @@ void hand_dropbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	hint = calc_dropbox_hint(&im, &xf, &pt, ptd->hash, &ilk);
+	hint = calc_dropbox_hint(&im, &xf, &pt, ptd->table, &ilk);
 
 	if (ilk != ptd->entity)
 	{
@@ -315,14 +309,14 @@ void hand_dropbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			dropbox_on_item_changed(widget, ilk);
 	}
 
-	noti_dropbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+	noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 }
 
 void hand_dropbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	dropbox_redraw(widget);
@@ -332,7 +326,7 @@ void hand_dropbox_scroll(res_win_t widget, bool_t bHorz, long nLine)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	widget_hand_scroll(widget, bHorz, nLine);
@@ -342,7 +336,7 @@ void hand_dropbox_erase(res_win_t widget, res_ctx_t rdc)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 	
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 }
 
@@ -360,7 +354,7 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xpen_t xp;
 	xcolor_t xc;
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	widget_get_xfont(widget, &xf);
@@ -383,7 +377,7 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	widget_get_canv_rect(widget, &cb);
 
-	draw_dropbox(pif, &cb, &xf, ptd->hash);
+	draw_dropbox(pif, &cb, &xf, ptd->table);
 
 	//draw focus
 	if (ptd->entity)
@@ -432,7 +426,7 @@ void dropbox_set_data(res_win_t widget, link_t_ptr ptr)
 
 	XDL_ASSERT(ptd != NULL);
 
-	ptd->hash = ptr;
+	ptd->table = ptr;
 	dropbox_redraw(widget);
 }
 
@@ -442,35 +436,32 @@ link_t_ptr dropbox_get_data(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
-	return ptd->hash;
+	return ptd->table;
 }
 
 void dropbox_redraw(res_win_t widget)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 
 	XDL_ASSERT(ptd != NULL);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
-	he.hash = ptd->hash;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptd->table, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptd->table, ent);
 			continue;
 		}
 
 		if (ent == ptd->entity)
 			break;
 
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptd->table, ent);
 	}
 
 	ptd->entity = ent;
@@ -486,7 +477,7 @@ void dropbox_tabskip(res_win_t widget, int nSkip)
 
 	XDL_ASSERT(ptd != NULL);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	ilk = ptd->entity;
@@ -515,7 +506,7 @@ void dropbox_set_focus_item(res_win_t widget, link_t_ptr ilk)
 
 	XDL_ASSERT(ptd != NULL);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return;
 
 	if (ilk != ptd->entity)
@@ -536,7 +527,7 @@ link_t_ptr dropbox_get_focus_item(res_win_t widget)
 	
 	XDL_ASSERT(ptd != NULL);
 
-	if (!ptd->hash)
+	if (!ptd->table)
 		return NULL;
 
 	return ptd->entity;
@@ -554,7 +545,7 @@ void dropbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	widget_get_xfont(widget, &xf);
 
-	calc_dropbox_size(&im, &xf, ptd->hash, pxs);
+	calc_dropbox_size(&im, &xf, ptd->table, pxs);
 
 	if (pxs->fy > 7 * DEF_TOUCH_SPAN)
 		pxs->fy = 7 * DEF_TOUCH_SPAN;
@@ -569,7 +560,6 @@ void dropbox_find(res_win_t widget, const tchar_t* token)
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 	int tlen;
 
 	if (is_null(token))
@@ -580,21 +570,19 @@ void dropbox_find(res_win_t widget, const tchar_t* token)
 
 	tlen = xslen(token);
 
-	he.hash = ptd->hash;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptd->table, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptd->table, ent);
 			continue;
 		}
 
-		if (xsnicmp(get_hash_entity_key_ptr(ent), token, tlen) == 0)
+		if (xsnicmp(get_string_entity_key_ptr(ent), token, tlen) == 0)
 			break;
 
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptd->table, ent);
 	}
 
 	dropbox_set_focus_item(widget, ent);
@@ -605,22 +593,19 @@ void dropbox_filter(res_win_t widget, const tchar_t* token)
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 	int tlen;
 
 	tlen = xslen(token);
 	
-	he.hash = ptd->hash;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptd->table, LINK_FIRST);
 	while (ent)
 	{
-		if (xsnicmp(get_hash_entity_key_ptr(ent), token, tlen) == 0)
-			set_hash_entity_delta(ent, 0);
+		if (xsnicmp(get_string_entity_key_ptr(ent), token, tlen) == 0)
+			set_string_entity_delta(ent, 0);
 		else
-			set_hash_entity_delta(ent, 1);
+			set_string_entity_delta(ent, 1);
 
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptd->table, ent);
 	}
 
 	ptd->entity = NULL;

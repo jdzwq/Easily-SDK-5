@@ -79,10 +79,10 @@ void parse_colset_from_line(link_t_ptr ptr, string_t vs)
 	int pos;
 	link_t_ptr clk;
 	
-	if (!varstr_len(vs))
+	if (!string_len(vs))
 		return;
 
-	token = varstr_ptr(vs);
+	token = string_ptr(vs);
 
 	while (*token != TXT_LINEFEED && *token != _T('\0'))
 	{
@@ -119,12 +119,12 @@ void parse_rowset_from_line(link_t_ptr ptr, string_t vs)
 	tchar_t* sz_esc = NULL;
 	int esc_len = 0;
 
-	if (!varstr_len(vs))
+	if (!string_len(vs))
 		return;
 
 	rlk = insert_row(ptr, LINK_LAST);
 
-	token = varstr_ptr(vs);
+	token = string_ptr(vs);
 	
 	clk = get_next_col(ptr, LINK_FIRST);
 
@@ -546,7 +546,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	if (!stream_read_line(stream, vs, &size))
 	{
@@ -556,7 +556,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 	}
 
 	parse_colset_from_line(grid, vs);
-	varstr_empty(vs);
+	string_empty(vs);
 
 	while (1)
 	{
@@ -573,10 +573,10 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 		parse_rowset_from_line(grid, vs);
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTRANGE, -1, frange, META_LEN);
@@ -597,7 +597,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 ONERROR:
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (xhttp)
 		xhttp_close(xhttp);
@@ -683,7 +683,7 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	tmp_grid = create_grid_doc();
 
@@ -695,7 +695,7 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 	}
 
 	parse_colset_from_line(tmp_grid, vs);
-	varstr_empty(vs);
+	string_empty(vs);
 
 	copy_grid_colsch(tmp_grid, grid);
 
@@ -714,10 +714,10 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 
 		parse_rowset_from_line(tmp_grid, vs);
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	merge_grid_rowset(grid, tmp_grid);
@@ -750,7 +750,7 @@ ONERROR:
 		xmem_free(sqlstr);
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (tmp_grid)
 		destroy_grid_doc(tmp_grid);
@@ -976,7 +976,7 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 
 		stream_write_utfbom(stream, NULL);
 
-		var = varstr_alloc();
+		var = string_alloc();
 
 		rlk = get_next_row(grid, LINK_FIRST);
 		while (rlk)
@@ -986,19 +986,19 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 			if (rs == dsDelete)
 			{
 				sqllen = format_row_delete_sql(grid, rlk, NULL, MAX_LONG);
-				sqlstr = varstr_ensure_buf(var, sqllen);
+				sqlstr = string_ensure_buf(var, sqllen);
 				sqllen = format_row_delete_sql(grid, rlk, sqlstr, sqllen);
 			}
 			else if (rs == dsNewDirty)
 			{
 				sqllen = format_row_insert_sql(grid, rlk, NULL, MAX_LONG);
-				sqlstr = varstr_ensure_buf(var, sqllen);
+				sqlstr = string_ensure_buf(var, sqllen);
 				sqllen = format_row_insert_sql(grid, rlk, sqlstr, sqllen);
 			}
 			else if (rs == dsDirty)
 			{
 				sqllen = format_row_update_sql(grid, rlk, NULL, MAX_LONG);
-				sqlstr = varstr_ensure_buf(var, sqllen);
+				sqlstr = string_ensure_buf(var, sqllen);
 				sqllen = format_row_update_sql(grid, rlk, sqlstr, sqllen);
 			}
 			else
@@ -1009,15 +1009,15 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 
 			stream_write_line(stream, var, &len);
 
-			varstr_empty(var);
+			string_empty(var);
 
 			rlk = get_next_row(grid, rlk);
 		}
 
-		varstr_empty(var);
+		string_empty(var);
 		stream_write_line(stream, var, &len);
 
-		varstr_free(var);
+		string_free(var);
 		var = NULL;
 	}
 
@@ -1052,7 +1052,7 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 
 ONERROR:
 	if (var)
-		varstr_free(var);
+		string_free(var);
 
 	if (xhttp)
 		xhttp_close(xhttp);
@@ -1878,7 +1878,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 
 	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN_UTF8, -1);
 
-	n_size = varstr_encode(varstr, _UTF8, NULL, MAX_LONG) + n_bom;
+	n_size = string_encode(varstr, _UTF8, NULL, MAX_LONG) + n_bom;
 	xsprintf(fsize, _T("%d"), n_size);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 
@@ -1985,7 +1985,7 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 
 	TRY_CATCH;
 
-	varstr_empty(varstr);
+	string_empty(varstr);
 
 	xsprintf(sz_url, _T("%s/%s.dsn"), pdb->sz_srv, pdb->sz_dbn);
 

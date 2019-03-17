@@ -67,7 +67,7 @@ void clear_list_doc(link_t_ptr ptr)
 	delete_dom_child_nodes(ptr);
 }
 
-int get_list_item_count(link_t_ptr ilk)
+int get_list_child_item_count(link_t_ptr ilk)
 {
 	return get_dom_child_node_count(ilk);
 }

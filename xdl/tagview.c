@@ -89,7 +89,7 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 
 	if (pscan->ind == TAGWORD_INDICATOR_NEXT_NODE)
 	{
-		pscan->nlk = (pscan->nlk) ? get_tag_next_node(pscan->tag, pscan->nlk) : get_tag_next_node(pscan->tag, LINK_FIRST);
+		pscan->nlk = (pscan->nlk) ? get_tag_next_joint(pscan->tag, pscan->nlk) : get_tag_next_joint(pscan->tag, LINK_FIRST);
 		if (!pscan->nlk)
 		{
 			*pins = 1;
@@ -100,7 +100,7 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 			return 0;
 		}
 
-		pscan->text = get_tag_node_text_ptr(pscan->nlk);
+		pscan->text = get_tag_joint_text_ptr(pscan->nlk);
 		pscan->len = xslen(pscan->text);
 		pscan->pos = 0;
 		pscan->point = 0;
@@ -140,7 +140,7 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 	*pins = 1;
 	*pdel = 1;
 	*psel = 1;
-	*patom = (is_tag_text_node(pscan->nlk))? 0 : 1;
+	*patom = (is_tag_text_joint(pscan->nlk))? 0 : 1;
 
 	return n;
 }
@@ -153,10 +153,10 @@ int call_tag_insert_words(void* param, tchar_t* pch)
 
 	if (!pscan->nlk)
 	{
-		pscan->nlk = get_tag_prev_node(pscan->tag, LINK_LAST);
-		if (!(pscan->nlk && is_tag_text_node(pscan->nlk)))
+		pscan->nlk = get_tag_prev_joint(pscan->tag, LINK_LAST);
+		if (!(pscan->nlk && is_tag_text_joint(pscan->nlk)))
 		{
-			pscan->nlk = insert_tag_node(pscan->tag, LINK_LAST);
+			pscan->nlk = insert_tag_joint(pscan->tag, LINK_LAST);
 			pscan->text = NULL;
 			pscan->len = 0;
 			pscan->pos = 0;
@@ -165,7 +165,7 @@ int call_tag_insert_words(void* param, tchar_t* pch)
 		}
 		else
 		{
-			pscan->text = get_tag_node_text_ptr(pscan->nlk);
+			pscan->text = get_tag_joint_text_ptr(pscan->nlk);
 			pscan->len = xslen(pscan->text);
 			pscan->pos = pscan->len;
 
@@ -179,7 +179,7 @@ int call_tag_insert_words(void* param, tchar_t* pch)
 	case TAGWORD_INDICATOR_NEXT_NODE:
 	case TAGWORD_INDICATOR_NEXT_WORD:
 		n = xschs(pch);
-		pscan->text = tag_node_text_ins_chars(pscan->nlk, pscan->pos, pch, n);
+		pscan->text = tag_joint_text_ins_chars(pscan->nlk, pscan->pos, pch, n);
 		pscan->len += n;
 
 		if (n == 1 && IS_CONTROL_CHAR(pch[0]))
@@ -211,7 +211,7 @@ int call_tag_delete_words(void* param)
 	case TAGWORD_INDICATOR_NEXT_NODE:
 	case TAGWORD_INDICATOR_NEXT_WORD:
 		n = xschs(pscan->text + pscan->pos);
-		pscan->text = tag_node_text_del_chars(pscan->nlk, pscan->pos, n);
+		pscan->text = tag_joint_text_del_chars(pscan->nlk, pscan->pos, n);
 		pscan->len -= n;
 
 		xszero(pscan->pch, CHS_LEN + 1);
@@ -221,12 +221,12 @@ int call_tag_delete_words(void* param)
 		if (!pscan->len)
 		{
 			nlk = pscan->nlk;
-			pscan->nlk = get_tag_prev_node(pscan->tag, nlk);
-			delete_tag_node(nlk);
+			pscan->nlk = get_tag_prev_joint(pscan->tag, nlk);
+			delete_tag_joint(nlk);
 
 			if (pscan->nlk)
 			{
-				pscan->text = get_tag_node_text_ptr(pscan->nlk);
+				pscan->text = get_tag_joint_text_ptr(pscan->nlk);
 				pscan->len = xslen(pscan->text);
 				pscan->pos = pscan->len;
 				pscan->point = get_dom_node_line_cator_count(pscan->nlk);

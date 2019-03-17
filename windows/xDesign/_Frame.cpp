@@ -1210,17 +1210,17 @@ void MainFrame_FreshObject(res_win_t widget)
 	}
 	else if (compare_text(qo.szDoc, -1, DOC_RICH, -1, 0) == 0)
 	{
-		LINKPTR nlk = get_rich_next_node(qo.ptrDoc, LINK_FIRST);
+		LINKPTR nlk = get_rich_next_anch(qo.ptrDoc, LINK_FIRST);
 		while (nlk)
 		{
 			LINKPTR tlk = insert_tree_item(ptr_tree, LINK_LAST);
 
-			xsprintf(token, _T("%s [%s]"), get_rich_node_title_ptr(nlk), get_rich_node_name_ptr(nlk));
+			xsprintf(token, _T("%s [%s]"), get_rich_anch_title_ptr(nlk), get_rich_anch_name_ptr(nlk));
 
-			set_tree_item_name(tlk, get_rich_node_name_ptr(nlk));
+			set_tree_item_name(tlk, get_rich_anch_name_ptr(nlk));
 			set_tree_item_title(tlk, token);
 
-			nlk = get_rich_next_node(qo.ptrDoc, nlk);
+			nlk = get_rich_next_anch(qo.ptrDoc, nlk);
 		}
 	}
 	else if (compare_text(qo.szDoc, -1, DOC_TOPOG, -1, 0) == 0)

@@ -29,6 +29,8 @@ typedef struct _mqtt_block_t{
 
 	tchar_t topic_name[PATH_LEN];
 
+	byte_t msg_qos;
+	sword_t msg_pid;
 	dword_t msg_len;
 	byte_t* msg_buf;
 
@@ -60,6 +62,7 @@ void _invoke_publish(const slots_block_t* pb, const mqtt_block_t* pd)
 
 	byte_t* buf = NULL;
 	dword_t len;
+	sword_t sw = 0;
 
 	TRY_CATCH;
 
@@ -75,12 +78,16 @@ void _invoke_publish(const slots_block_t* pb, const mqtt_block_t* pd)
 
 	len = object_get_bytes(val, NULL, MAX_LONG);
 
-	buf = (byte_t*)xmem_alloc(len + 4 + pd->msg_len);
+	buf = (byte_t*)xmem_alloc(len + 8 + pd->msg_len);
 	object_get_bytes(val, buf, len);
 
-	PUT_DWORD_LOC(buf, len, pd->msg_len);
-	xmem_copy((void*)(buf + len + 4), pd->msg_buf, pd->msg_len);
-	len += (4 + pd->msg_len);
+	sw = 0;
+	sw |= pd->msg_qos;
+	PUT_DWORD_LOC(buf, len, pd->msg_len + 4);
+	PUT_SWORD_LOC(buf, len + 4, sw);
+	PUT_SWORD_LOC(buf, len + 6, pd->msg_pid);
+	xmem_copy((void*)(buf + len + 8), pd->msg_buf, pd->msg_len);
+	len += (8 + pd->msg_len);
 
 	object_set_bytes(val, _UTF8, buf, len);
 
@@ -186,6 +193,8 @@ int STDCALL slots_invoke(slots_block_t* pb)
 			continue;
 		
 		mqtt_poll_subscribe(pd->mqtt, pd->topic_name, PATH_LEN);
+		pd->msg_qos = pd->mqtt->packet_qos;
+		pd->msg_pid = pd->mqtt->packet_pid;
 
 		_invoke_publish(pb, pd);
 	}

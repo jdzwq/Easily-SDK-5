@@ -120,7 +120,7 @@ void svg_draw_3drect(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr)
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	write_rect_to_svg_node(nlk, pxp, NULL, &xr, 0);
+	write_rect_to_svg_node(nlk, pxp, NULL, &xr);
 }
 
 void svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
@@ -169,6 +169,32 @@ void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 	xmem_free(pa);
 }
 
+void svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+{
+	link_t_ptr g, nlk;
+	xpoint_t pt[4];
+
+	g = svg_get_canvas_doc(canv);
+
+	nlk = insert_svg_node(g);
+
+	pt[0].fx = ppt1->fx;
+	pt[0].fy = ppt1->fy;
+	pt[1].fx = ppt2->fx;
+	pt[1].fy = ppt2->fy;
+	pt[2].fx = ppt3->fx;
+	pt[2].fy = ppt3->fy;
+	pt[3].fx = ppt4->fx;
+	pt[3].fy = ppt4->fy;
+
+	svg_point_tm_to_pt(canv, &pt[0]);
+	svg_point_tm_to_pt(canv, &pt[1]);
+	svg_point_tm_to_pt(canv, &pt[2]);
+	svg_point_tm_to_pt(canv, &pt[3]);
+
+	write_bezier_to_svg_node(nlk, pxp, &pt[0], &pt[1], &pt[2], &pt[3]);
+}
+
 void svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
 	link_t_ptr g, nlk;
@@ -185,7 +211,7 @@ void svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const 
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	write_rect_to_svg_node(nlk, pxp, pxb, &xr, 0);
+	write_rect_to_svg_node(nlk, pxp, pxb, &xr);
 }
 
 void svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
@@ -214,7 +240,7 @@ void svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	write_rect_to_svg_node(nlk, pxp, pxb, &xr, 1);
+	write_round_to_svg_node(nlk, pxp, pxb, &xr, xr.w / 10, xr.h / 10);
 }
 
 void svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
@@ -963,7 +989,7 @@ static int _fix_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 	switch (scan)
 	{
 	case _SCANNER_STATE_WORDS:
-		varstr_cat(ptt->vs, cur_char, -1);
+		string_cat(ptt->vs, cur_char, -1);
 		break;
 	case _SCANNER_STATE_NEWLINE:
 	case _SCANNER_STATE_END:
@@ -974,8 +1000,8 @@ static int _fix_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 
 		svg_rect_pt_to_tm(ptt->canv, &xr);
 
-		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, varstr_ptr(ptt->vs), varstr_len(ptt->vs));
-		varstr_empty(ptt->vs);
+		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
+		string_empty(ptt->vs);
 		break;
 	}
 
@@ -989,7 +1015,7 @@ void svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 	xrect_t xr;
 
 	tt.canv = canv;
-	tt.vs = varstr_alloc();
+	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
@@ -1008,7 +1034,7 @@ void svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 
 	scan_fix_text((tchar_t*)text, len, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 0, _fix_text_calc_draw, (void*)&tt);
 
-	varstr_free(tt.vs);
+	string_free(tt.vs);
 }
 
 typedef struct _VARTEXT_DRAW{
@@ -1025,7 +1051,7 @@ static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 	switch (scan)
 	{
 	case _SCANNER_STATE_WORDS:
-		varstr_cat(ptt->vs, cur_char, -1);
+		string_cat(ptt->vs, cur_char, -1);
 		break;
 	case _SCANNER_STATE_NEWLINE:
 	case _SCANNER_STATE_END:
@@ -1036,8 +1062,8 @@ static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 
 		svg_rect_pt_to_tm(ptt->canv, &xr);
 
-		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, varstr_ptr(ptt->vs), varstr_len(ptt->vs));
-		varstr_empty(ptt->vs);
+		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
+		string_empty(ptt->vs);
 		break;
 	}
 
@@ -1052,7 +1078,7 @@ void svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 
 	tt.canv = canv;
 	tt.page = 0;
-	tt.vs = varstr_alloc();
+	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
@@ -1066,7 +1092,7 @@ void svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 
 	scan_var_text(var, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 0, _var_text_calc_draw, (void*)&tt);
 
-	varstr_free(tt.vs);
+	string_free(tt.vs);
 }
 
 typedef struct _TAGTEXT_DRAW{
@@ -1083,7 +1109,7 @@ static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 	switch (scan)
 	{
 	case _SCANNER_STATE_WORDS:
-		varstr_cat(ptt->vs, cur_char, -1);
+		string_cat(ptt->vs, cur_char, -1);
 		break;
 	case _SCANNER_STATE_NEWLINE:
 	case _SCANNER_STATE_END:
@@ -1094,8 +1120,8 @@ static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_i
 
 		svg_rect_pt_to_tm(ptt->canv, &xr);
 
-		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, varstr_ptr(ptt->vs), varstr_len(ptt->vs));
-		varstr_empty(ptt->vs);
+		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
+		string_empty(ptt->vs);
 		break;
 	}
 
@@ -1110,7 +1136,7 @@ void svg_draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 
 	tt.canv = canv;
 	tt.page = page;
-	tt.vs = varstr_alloc();
+	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
@@ -1124,7 +1150,7 @@ void svg_draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, co
 
 	scan_tag_text(data, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 1, _tag_text_calc_draw, (void*)&tt);
 
-	varstr_free(tt.vs);
+	string_free(tt.vs);
 }
 
 typedef struct _MEMOTEXT_DRAW{
@@ -1146,7 +1172,7 @@ static int _memo_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_
 	switch (scan)
 	{
 	case _SCANNER_STATE_WORDS:
-		varstr_cat(ptt->vs, cur_char, -1);
+		string_cat(ptt->vs, cur_char, -1);
 		break;
 	case _SCANNER_STATE_LINEBREAK:
 	case _SCANNER_STATE_PAGEBREAK:
@@ -1160,8 +1186,8 @@ static int _memo_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_
 
 		svg_rect_pt_to_tm(ptt->canv, &xr);
 
-		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, varstr_ptr(ptt->vs), varstr_len(ptt->vs));
-		varstr_empty(ptt->vs);
+		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
+		string_empty(ptt->vs);
 		break;
 	}
 
@@ -1176,7 +1202,7 @@ void svg_draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 
 	tt.canv = canv;
 	tt.page = page;
-	tt.vs = varstr_alloc();
+	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
@@ -1190,7 +1216,7 @@ void svg_draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 
 	scan_memo_text(data, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 1, _memo_text_calc_draw, (void*)&tt);
 
-	varstr_free(tt.vs);
+	string_free(tt.vs);
 }
 
 typedef struct _RICHTEXT_DRAW{
@@ -1212,7 +1238,7 @@ static int _rich_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_
 	switch (scan)
 	{
 	case _SCANNER_STATE_WORDS:
-		varstr_cat(ptt->vs, cur_char, -1);
+		string_cat(ptt->vs, cur_char, -1);
 		break;
 	case _SCANNER_STATE_LINEBREAK:
 	case _SCANNER_STATE_PAGEBREAK:
@@ -1226,8 +1252,8 @@ static int _rich_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_
 
 		svg_rect_pt_to_tm(ptt->canv, &xr);
 
-		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, varstr_ptr(ptt->vs), varstr_len(ptt->vs));
-		varstr_empty(ptt->vs);
+		_svg_draw_single_text(ptt->canv, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
+		string_empty(ptt->vs);
 		break;
 	}
 
@@ -1242,7 +1268,7 @@ void svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 
 	tt.canv = canv;
 	tt.page = page;
-	tt.vs = varstr_alloc();
+	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
@@ -1256,7 +1282,7 @@ void svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 
 	scan_rich_text(data, &it, pxf, pxa, xr.x, xr.y, xr.w, xr.h, 1, _rich_text_calc_draw, (void*)&tt);
 
-	varstr_free(tt.vs);
+	string_free(tt.vs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

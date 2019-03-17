@@ -79,11 +79,11 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
     if (pb->type == ASYNC_QUEUE)
     {
         pov->tp.tv_sec = 0;
-        pov->tp.tv_nsec = pb->msec * 1000 * 1000;
+        pov->tp.tv_nsec = pb->timo * 1000 * 1000;
         
         EV_SET(&(pov->ev[0]), pip, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         
-        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, ((pb->msec)? &(pov->tp) : NULL));
+        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, ((pb->timo)? &(pov->tp) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;
@@ -98,9 +98,9 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
         FD_SET(pip, &(pov->fd[0]));
         
         pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->msec * 1000);
+        pov->tv.tv_usec = (int)(pb->timo * 1000);
         
-        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, ((pb->msec)? &(pov->tv) : NULL));
+        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;

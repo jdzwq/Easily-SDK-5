@@ -105,8 +105,8 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 
 	clear_json_doc(ptr);
 
-	vs_name = varstr_alloc();
-	vs_val = varstr_alloc();
+	vs_name = string_alloc();
+	vs_val = string_alloc();
 
 	st = create_stack_table();
 	
@@ -276,10 +276,10 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_name);
+				string_empty(vs_name);
 				break;
 			case NEXT:
-				varstr_ins_chars(vs_name, -1, &ma.cur[0], 1);
+				string_ins_chars(vs_name, -1, &ma.cur[0], 1);
 				break;
 			}
 		}else if(ma.ms == JSON_NAME_END)
@@ -287,7 +287,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				set_json_item_name(nlk, varstr_ptr(vs_name));
+				set_json_item_name(nlk, string_ptr(vs_name));
 				break;
 			case NEXT:
 				break;
@@ -298,7 +298,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			switch (ma.ma)
 			{
 			case PAUSE:
-				set_json_item_name(nlk, varstr_ptr(vs_name));
+				set_json_item_name(nlk, string_ptr(vs_name));
 				break;
 			case NEXT:
 				break;
@@ -312,10 +312,10 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_val);
+				string_empty(vs_val);
 				break;
 			case NEXT:
-				varstr_ins_chars(vs_val, -1, &ma.cur[0], 1);
+				string_ins_chars(vs_val, -1, &ma.cur[0], 1);
 				break;
 			}
 		}else if(ma.ms == JSON_VALUE_END)
@@ -323,7 +323,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				set_json_item_value(nlk, varstr_ptr(vs_val));
+				set_json_item_value(nlk, string_ptr(vs_val));
 				break;
 			case NEXT:
 				break;
@@ -354,15 +354,15 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 
 			b_ret = get_json_item_array(nlk);
 
-			varstr_cpy(vs_name, get_json_item_name_ptr(nlk), -1);
+			string_cpy(vs_name, get_json_item_name_ptr(nlk), -1);
 		}
 
 	}
 
 	destroy_stack_table(st);
 
-	varstr_free(vs_name);
-	varstr_free(vs_val);
+	string_free(vs_name);
+	string_free(vs_val);
 
 	//自动机的最终状态
 	return (ma.ms == JSON_SUCCEED)? 1 : 0;

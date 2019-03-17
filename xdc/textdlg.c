@@ -60,7 +60,7 @@ void textdlg_on_ok(res_win_t widget)
 	{
 		int len = editbox_get_text(ctrl, NULL, MAX_LONG);
 
-		editbox_get_text(ctrl, varstr_ensure_buf(ptd->var, len), len);
+		editbox_get_text(ctrl, string_ensure_buf(ptd->var, len), len);
 	}
 
 	widget_close(widget, 1);
@@ -93,7 +93,7 @@ int hand_textdlg_create(res_win_t widget, void* data)
 
 	if (ptd->var)
 	{
-		editbox_set_text(editbox, varstr_ptr(ptd->var));
+		editbox_set_text(editbox, string_ptr(ptd->var));
 	}
 
 	widget_show(editbox, WD_SHOW_NORMAL);

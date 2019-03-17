@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "object.h"
+#include "varobj.h"
 #include "xdlimp.h"
 #include "xdloem.h"
 #include "xdlstd.h"
@@ -78,7 +78,7 @@ static void _object_compress(byte_t** pobj)
 		break;
 	}
 
-	buffer_realloc(pobj, 12 + n);
+	varbuf_realloc(pobj, 12 + n);
 	xmem_copy((*pobj) + 12, buf, n);
 	xmem_free(buf);
 
@@ -116,7 +116,7 @@ static void _object_decompress(byte_t** pobj)
 	buf = (byte_t*)xmem_alloc(n);
 	xmem_copy(buf, (*pobj) + 12, n);
 
-	buffer_realloc(pobj, 8 + dw);
+	varbuf_realloc(pobj, 8 + dw);
 
 	switch (type)
 	{
@@ -144,8 +144,8 @@ object_t object_alloc(int encode)
 	byte_t** pobj;
 	byte_t* buf;
 
-	pobj = buffer_alloc();
-	buf = buffer_realloc(pobj, 8);
+	pobj = varbuf_alloc();
+	buf = varbuf_realloc(pobj, 8);
 
 	//type & compress
 	PUT_BYTE(buf, 0, 0);
@@ -163,7 +163,7 @@ void object_free(object_t obj)
 
 	XDL_ASSERT(obj != NULL);
 
-	buffer_free(pobj);
+	varbuf_free(pobj);
 }
 
 void object_empty(object_t obj)
@@ -176,7 +176,7 @@ void object_empty(object_t obj)
 
 	encode = GET_ENCODE((*pobj), 1);
 
-	buf = buffer_realloc(pobj, 8);
+	buf = varbuf_realloc(pobj, 8);
 
 	//type & compress
 	PUT_BYTE(buf, 0, 0);
@@ -207,9 +207,9 @@ object_t object_clone(object_t obj)
 		n = GET_DWORD_LOC((*psrc), 4);
 
 	if (b)
-		buffer_realloc(pdst, 12 + n);
+		varbuf_realloc(pdst, 12 + n);
 	else
-		buffer_realloc(pdst, 8 + n);
+		varbuf_realloc(pdst, 8 + n);
 
 	if (b)
 	{
@@ -242,9 +242,9 @@ void object_copy(object_t dst, object_t src)
 		n = GET_DWORD_LOC((*psrc), 4);
 
 	if (b)
-		buffer_realloc(pdst, 12 + n);
+		varbuf_realloc(pdst, 12 + n);
 	else
-		buffer_realloc(pdst, 8 + n);
+		varbuf_realloc(pdst, 8 + n);
 
 	if (b)
 	{
@@ -351,7 +351,7 @@ void object_set_string(object_t obj, const tchar_t* str, int len)
 		break;
 	}
 
-	buf = buffer_realloc(pobj, 8 + dw);
+	buf = varbuf_realloc(pobj, 8 + dw);
 
 	switch (encode)
 	{
@@ -508,7 +508,7 @@ void object_set_variant(object_t obj, variant_t val)
 
 	dw = variant_encode(&val, NULL, MAX_LONG);
 
-	buf = buffer_realloc(pobj, 8 + dw);
+	buf = varbuf_realloc(pobj, 8 + dw);
 	variant_encode(&val, buf + 8, dw);
 
 	type = _OBJECT_VARIANT & 0x7F;
@@ -538,7 +538,7 @@ void object_set_domdoc(object_t obj, link_t_ptr dom)
 
 	dw = format_dom_doc_to_bytes(dom, NULL, MAX_LONG, encode);
 
-	buf = buffer_realloc(pobj, 8 + dw);
+	buf = varbuf_realloc(pobj, 8 + dw);
 	format_dom_doc_to_bytes(dom, buf + 8, dw, encode);
 
 	type = _OBJECT_DOMDOC & 0x7F;
@@ -592,7 +592,7 @@ void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len)
 
 	object_empty(obj);
 
-	p = buffer_realloc(pobj, 8 + len);
+	p = varbuf_realloc(pobj, 8 + len);
 
 	xmem_copy((void*)(p + 8), (void*)buf, len);
 
@@ -653,7 +653,7 @@ dword_t object_decode(object_t obj, const byte_t* data)
 
 	dw = GET_DWORD_LOC(data, 4) + 8;
 
-	buf = buffer_realloc(pobj, dw);
+	buf = varbuf_realloc(pobj, dw);
 	xmem_copy((void*)buf, (void*)data, dw);
 
 	return dw;

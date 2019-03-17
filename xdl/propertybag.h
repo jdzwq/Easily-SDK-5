@@ -96,9 +96,9 @@ XDL_API void propertybag_write_rich_attributes(link_t_ptr ptr, link_t_ptr rich);
 
 XDL_API void propertybag_read_rich_attributes(link_t_ptr ptr, link_t_ptr rich);
 
-XDL_API void propertybag_write_rich_node_attributes(link_t_ptr ptr, link_t_ptr ilk);
+XDL_API void propertybag_write_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void propertybag_read_rich_node_attributes(link_t_ptr ptr, link_t_ptr ilk);
+XDL_API void propertybag_read_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
 XDL_API void propertybag_write_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog);
 

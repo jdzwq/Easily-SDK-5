@@ -98,12 +98,12 @@ void RichPanel_OnDelete(res_win_t widget)
 	LINKPTR ptrRich = richctrl_fetch(pdt->hRich);
 	XDL_ASSERT(ptrRich);
 
-	LINKPTR ptrNode = richctrl_get_focus_node(pdt->hRich);
+	LINKPTR ptrNode = richctrl_get_focus_anch(pdt->hRich);
 
 	if (!ptrNode)
 		return;
 
-	richctrl_delete_node(pdt->hRich, ptrNode);
+	richctrl_delete_anch(pdt->hRich, ptrNode);
 }
 
 void RichPanel_OnInsert(res_win_t widget)
@@ -111,21 +111,21 @@ void RichPanel_OnInsert(res_win_t widget)
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
 	LINKPTR ptrRich = richctrl_fetch(pdt->hRich);
-	LINKPTR ptrPos = richctrl_get_focus_node(pdt->hRich);
+	LINKPTR ptrPos = richctrl_get_focus_anch(pdt->hRich);
 
-	ptrPos = (ptrPos) ? get_rich_prev_node(ptrRich, ptrPos) : LINK_LAST;
+	ptrPos = (ptrPos) ? get_rich_prev_anch(ptrRich, ptrPos) : LINK_LAST;
 
-	LINKPTR ilk = richctrl_insert_node(pdt->hRich, ptrPos);
+	LINKPTR ilk = richctrl_insert_anch(pdt->hRich, ptrPos);
 	if (!ilk)
 		return;
 
 	tchar_t token[INT_LEN + 1] = { 0 };
 
-	xsprintf(token, _T("node%d"), get_rich_node_count(ptrRich));
-	set_rich_node_name(ilk, token);
+	xsprintf(token, _T("anch%d"), get_rich_anch_count(ptrRich));
+	set_rich_anch_name(ilk, token);
 
-	xsprintf(token, _T("标题%d"), get_rich_node_count(ptrRich));
-	set_rich_node_title(ilk, token);
+	xsprintf(token, _T("标题%d"), get_rich_anch_count(ptrRich));
+	set_rich_anch_title(ilk, token);
 
 	richctrl_redraw(pdt->hRich);
 }
@@ -171,9 +171,9 @@ void RichPanel_Rich_OnNodeChange(res_win_t widget, NOTICE_RICH* pnf)
 	LINKPTR ptrProper = properctrl_fetch(pdt->hProper);
 	clear_proper_doc(ptrProper);
 
-	if (pnf->node)
+	if (pnf->anch)
 	{
-		propertybag_write_rich_node_attributes(ptrProper, pnf->node);
+		propertybag_write_rich_anch_attributes(ptrProper, pnf->anch);
 	}
 	else
 	{
@@ -188,10 +188,10 @@ void RichPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
 	LINKPTR ptrRich = richctrl_fetch(pdt->hRich);
-	LINKPTR ptrNode = richctrl_get_focus_node(pdt->hRich);
+	LINKPTR ptrNode = richctrl_get_focus_anch(pdt->hRich);
 
 	if (ptrNode)
-		propertybag_read_rich_node_attributes(pnp->proper, ptrNode);
+		propertybag_read_rich_anch_attributes(pnp->proper, ptrNode);
 	else
 		propertybag_read_rich_attributes(pnp->proper, ptrRich);
 
@@ -662,15 +662,15 @@ void RichPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
 	LINKPTR ptr_rich = richctrl_fetch(pdt->hRich);
-	LINKPTR ilk = get_rich_next_node(ptr_rich, LINK_FIRST);
+	LINKPTR ilk = get_rich_next_anch(ptr_rich, LINK_FIRST);
 	while (ilk)
 	{
-		if (compare_text(pfd->sub_str, -1, get_rich_node_name_ptr(ilk), -1, 1) == 0)
+		if (compare_text(pfd->sub_str, -1, get_rich_anch_name_ptr(ilk), -1, 1) == 0)
 		{
-			richctrl_set_focus_node(pdt->hRich, ilk);
+			richctrl_set_focus_anch(pdt->hRich, ilk);
 			break;
 		}
-		ilk = get_rich_next_node(ptr_rich, ilk);
+		ilk = get_rich_next_anch(ptr_rich, ilk);
 	}
 }
 
@@ -761,7 +761,7 @@ void RichPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
 			break;
 		case NC_RICHLBCLK:
 			break;
-		case NC_RICHNODECHANGED:
+		case NC_RICHANCHCHANGED:
 			RichPanel_Rich_OnNodeChange(widget, pnf);
 			break;
 		}

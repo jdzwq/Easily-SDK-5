@@ -329,7 +329,7 @@ void hand_timebox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		timebox_on_second_zero(widget);
 	else
 	{
-		noti_timebox_command(widget, COMMAND_SELECT, (var_long)NULL);
+		noti_timebox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 	}
 }
 

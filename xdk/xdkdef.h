@@ -353,7 +353,7 @@ typedef long long		stamp_t;
 
 typedef struct async_t{
 	int type;		/*the async type, can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE*/
-	u32_t msec;		/*the timeout value in millisecond*/
+	u32_t timo;		/*the timeout value in millisecond*/
 	size_t size;	/*async operation data bytes*/
 
 	res_hand_t port;	/*inner port resource handle*/
@@ -432,7 +432,6 @@ typedef struct async_t{
 #define	COMMAND_ROLLBACK	27
 #define COMMAND_UPDATE		11
 #define COMMAND_CHANGE		12
-#define COMMAND_SELECT		32
 #define COMMAND_COPY		20
 #define COMMAND_CUT			21
 #define COMMAND_PASTE		22

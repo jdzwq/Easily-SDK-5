@@ -149,7 +149,7 @@ static unsigned int STDCALL process_dispatch(void* param)
 
 #if defined(_DEBUG) || defined(DEBUG)
 		//wait process run
-		xthread_sleep(10);
+		xthread_sleep(THREAD_BASE_TMO);
 #endif
         release_process(&pi);
 
@@ -182,7 +182,7 @@ static unsigned int STDCALL wait_accept(void* param)
 
 	xdl_thread_init();
 
-	async_alloc_lapp(&over);
+	async_alloc_lapp(&over, TCP_BASE_TIMO);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 	over.type = ASYNC_QUEUE;
@@ -219,7 +219,7 @@ static unsigned int STDCALL wait_accept(void* param)
 			xthread_begin(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
 		}
 
-		if (!xevent_wait(xa.ev, THREAD_BASE_TMO))
+		if (!xevent_wait(xa.ev, TCP_BASE_TIMO))
 		{
 			xsocket_close(xa.so);
 		}

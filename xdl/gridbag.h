@@ -36,22 +36,64 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-/**************************************sql function*********************************************************/
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API void save_form_to_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
+/*
+@FUNCTION save_form_to_grid_row: save form content to a grid row.
+@INPUT link_t_ptr form: the form link component.
+@INPUT link_t_ptr grid: the grid link component.
+@INPUT link_t_ptr row: the row link component.
+@RETURN void: none.
+*/
+XDL_API void save_form_to_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
 
-	XDL_API void load_form_from_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
+/*
+@FUNCTION load_form_from_grid_row: load form content from a grid row.
+@INPUT link_t_ptr form: the form link component.
+@INPUT link_t_ptr grid: the grid link component.
+@INPUT link_t_ptr row: the row link component.
+@RETURN void: none.
+*/
+XDL_API void load_form_from_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
 
-	XDL_API void save_graph_to_grid(link_t_ptr ptr, link_t_ptr grid);
+/*
+@FUNCTION save_graph_to_grid: save graphic content to a grid row.
+@INPUT link_t_ptr graph: the graph link component.
+@INPUT link_t_ptr grid: the grid link component.
+@INPUT link_t_ptr row: the row link component.
+@RETURN void: none.
+*/
+XDL_API void save_graph_to_grid(link_t_ptr graph, link_t_ptr grid);
 
-	XDL_API void load_graph_from_grid(link_t_ptr ptr, link_t_ptr grid);
+/*
+@FUNCTION load_graph_from_grid: load graph content from a grid row.
+@INPUT link_t_ptr graph: the graph link component.
+@INPUT link_t_ptr grid: the grid link component.
+@INPUT link_t_ptr row: the row link component.
+@RETURN void: none.
+*/
+XDL_API void load_graph_from_grid(link_t_ptr graph, link_t_ptr grid);
 
-	XDL_API void load_rich_from_grid_row(link_t_ptr ptr, link_t_ptr grid, link_t_ptr rlk);
+/*
+@FUNCTION load_rich_from_grid_row: load rich content from a grid row.
+@INPUT link_t_ptr rich: the rich link component.
+@INPUT link_t_ptr grid: the grid link component.
+@INPUT link_t_ptr row: the row link component.
+@RETURN void: none.
+*/
+XDL_API void load_rich_from_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_ptr rlk);
 
-	XDL_API void save_rich_to_grid_row(link_t_ptr ptr, link_t_ptr grid, link_t_ptr rlk);
+/*
+@FUNCTION save_rich_to_grid_row: save rich content to a grid row.
+@INPUT link_t_ptr rich: the rich link component.
+@INPUT link_t_ptr grid: the grid link component.
+@INPUT link_t_ptr row: the row link component.
+@RETURN void: none.
+*/
+XDL_API void save_rich_to_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_ptr rlk);
 
 #ifdef	__cplusplus
 }

@@ -217,7 +217,7 @@ bool_t noti_proper_entity_changing(res_win_t widget)
 
 	XDL_ASSERT(ptd->entity);
 
-	if (noti_proper_owner(widget, NC_ENTITYCHANGING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL))
+	if (noti_proper_owner(widget, NC_ENTITYCHANGING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL))
 		return 0;
 
 	_properctrl_entity_rect(widget, ptd->entity, &xr);
@@ -246,7 +246,7 @@ void noti_proper_entity_changed(res_win_t widget, link_t_ptr elk)
 
 	widget_update(widget, &xr, 0);
 
-	noti_proper_owner(widget, NC_ENTITYCHANGED, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL);
+	noti_proper_owner(widget, NC_ENTITYCHANGED, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL);
 }
 
 void noti_proper_entity_enter(res_win_t widget, link_t_ptr plk)
@@ -344,7 +344,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 	if (compare_text(editor, -1, ATTR_EDITOR_FIREEDIT, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL))
 			return;
 
 		ptd->editor = fireedit_create(widget, &xr);
@@ -371,7 +371,7 @@ void noti_proper_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRENUM, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL))
 			return;
 
 		ptd->editor = firenum_create(widget, &xr);
@@ -398,7 +398,7 @@ void noti_proper_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREDATE, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL))
 			return;
 
 		ptd->editor = firedate_create(widget, &xr);
@@ -417,7 +417,7 @@ void noti_proper_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRETIME, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL))
 			return;
 
 		ptd->editor = firetime_create(widget, &xr);
@@ -436,7 +436,7 @@ void noti_proper_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRELIST, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL))
 			return;
 
 		data = get_entity_options_table(ptd->entity);
@@ -459,7 +459,7 @@ void noti_proper_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREWORDS, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)&fd))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)&fd))
 			return;
 
 		data = (link_t_ptr)fd.data;
@@ -479,7 +479,7 @@ void noti_proper_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREGRID, -1, 0) == 0)
 	{
-		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)&fd))
+		if (noti_proper_owner(widget, NC_ENTITYEDITING, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)&fd))
 			return;
 
 		data = (link_t_ptr)fd.data;
@@ -519,7 +519,7 @@ void noti_proper_commit_edit(res_win_t widget)
 	{
 		text = (const tchar_t*)editbox_get_text_ptr(ptd->editor);
 
-		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)text))
+		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)text))
 		{
 			properctrl_set_entity_value(widget, ptd->entity, text);
 		}
@@ -528,7 +528,7 @@ void noti_proper_commit_edit(res_win_t widget)
 	{
 		text = (const tchar_t*)editbox_get_text_ptr(ptd->editor);
 		
-		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)text))
+		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)text))
 		{
 			properctrl_set_entity_value(widget, ptd->entity, text);
 		}
@@ -537,7 +537,7 @@ void noti_proper_commit_edit(res_win_t widget)
 	{
 		text = (const tchar_t*)editbox_get_text_ptr(ptd->editor);
 
-		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)text))
+		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)text))
 		{
 			properctrl_set_entity_value(widget, ptd->entity, text);
 		}
@@ -546,7 +546,7 @@ void noti_proper_commit_edit(res_win_t widget)
 	{
 		text = (const tchar_t*)editbox_get_text_ptr(ptd->editor);
 
-		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)text))
+		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)text))
 		{
 			properctrl_set_entity_value(widget, ptd->entity, text);
 		}
@@ -555,7 +555,7 @@ void noti_proper_commit_edit(res_win_t widget)
 	{
 		text = editbox_get_text_ptr(ptd->editor);
 
-		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)text))
+		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)text))
 		{
 			properctrl_set_entity_value(widget, ptd->entity, text);
 		}
@@ -571,7 +571,7 @@ void noti_proper_commit_edit(res_win_t widget)
 
 		fd.text = editbox_get_text_ptr(ptd->editor);
 
-		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)&fd))
+		if (!noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)&fd))
 		{
 			properctrl_set_entity_value(widget, ptd->entity, fd.text);
 		}
@@ -580,7 +580,7 @@ void noti_proper_commit_edit(res_win_t widget)
 	{
 		fd.data = firegrid_get_data(ptd->editor);
 		fd.item = (link_t_ptr)firegrid_get_item(ptd->editor);
-		noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)&fd);
+		noti_proper_owner(widget, NC_ENTITYCOMMIT, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)&fd);
 	}
 
 	editctrl = ptd->editor;
@@ -609,17 +609,17 @@ void noti_proper_rollback_edit(res_win_t widget)
 	{
 		fd.data = firewords_get_data(ptd->editor);
 		fd.text = NULL;
-		noti_proper_owner(widget, NC_ENTITYROLLBACK, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)&fd);
+		noti_proper_owner(widget, NC_ENTITYROLLBACK, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)&fd);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREGRID, -1, 0) == 0)
 	{
 		fd.data = firegrid_get_data(ptd->editor);
 		fd.item = NULL;
-		noti_proper_owner(widget, NC_ENTITYROLLBACK, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, (void*)&fd);
+		noti_proper_owner(widget, NC_ENTITYROLLBACK, ptd->proper, section_from_entity(ptd->entity), ptd->entity, (void*)&fd);
 	}
 	else
 	{
-		noti_proper_owner(widget, NC_ENTITYROLLBACK, ptd->proper, get_section_from_entity(ptd->entity), ptd->entity, NULL);
+		noti_proper_owner(widget, NC_ENTITYROLLBACK, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL);
 	}
 
 	editctrl = ptd->editor;
@@ -777,7 +777,7 @@ void hand_proper_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->proper)
 		return;
 
-	noti_proper_owner(widget, NC_PROPERDBCLK, ptd->proper, ((ptd->entity) ? get_section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
+	noti_proper_owner(widget, NC_PROPERDBCLK, ptd->proper, ((ptd->entity) ? section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
 }
 
 void hand_proper_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -859,7 +859,7 @@ void hand_proper_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		noti_proper_entity_changed(widget, elk);
 	}
 
-	noti_proper_owner(widget, NC_PROPERLBCLK, ptd->proper, ((ptd->entity)? get_section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
+	noti_proper_owner(widget, NC_PROPERLBCLK, ptd->proper, ((ptd->entity)? section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
 }
 
 void hand_proper_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -879,7 +879,7 @@ void hand_proper_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->proper)
 		return;
 
-	noti_proper_owner(widget, NC_PROPERRBCLK, ptd->proper, ((ptd->editor)? get_section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
+	noti_proper_owner(widget, NC_PROPERRBCLK, ptd->proper, ((ptd->editor)? section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
 }
 
 void hand_proper_keydown(res_win_t widget, int nKey)
@@ -1176,7 +1176,7 @@ void properctrl_redraw_entity(res_win_t widget, link_t_ptr elk)
 	XDL_ASSERT(is_proper_entity(ptd->proper, elk));
 #endif
 
-	noti_proper_owner(widget, NC_ENTITYCALCED, ptd->proper, get_section_from_entity(elk), elk, NULL);
+	noti_proper_owner(widget, NC_ENTITYCALCED, ptd->proper, section_from_entity(elk), elk, NULL);
 
 	_properctrl_entity_rect(widget, ptd->entity, &xr);
 
@@ -1282,7 +1282,7 @@ void properctrl_tabskip(res_win_t widget, int dir)
 	case WD_TAB_RIGHT:
 		if (ptd->entity)
 		{
-			slk = get_section_from_entity(ptd->entity);
+			slk = section_from_entity(ptd->entity);
 			elk = get_next_entity(slk, ptd->entity);
 			if (!elk)
 			{
@@ -1321,7 +1321,7 @@ void properctrl_tabskip(res_win_t widget, int dir)
 	case WD_TAB_LEFT:
 		if (ptd->entity)
 		{
-			slk = get_section_from_entity(ptd->entity);
+			slk = section_from_entity(ptd->entity);
 			elk = get_prev_entity(slk, ptd->entity);
 			if (!elk)
 			{
@@ -1377,7 +1377,7 @@ bool_t	properctrl_set_entity_value(res_win_t widget, link_t_ptr elk, const tchar
 
 	set_entity_value(elk, token, -1);
 
-	noti_proper_owner(widget, NC_ENTITYUPDATE, ptd->proper, get_section_from_entity(elk), elk, NULL);
+	noti_proper_owner(widget, NC_ENTITYUPDATE, ptd->proper, section_from_entity(elk), elk, NULL);
 
 	properctrl_redraw_entity(widget, elk);
 

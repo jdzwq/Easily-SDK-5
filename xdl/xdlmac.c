@@ -7,7 +7,7 @@
 
 	@doc macro function document
 
-	@module	xdlmacro.c | macro function implement file
+	@module	macro.c | macro function implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -41,7 +41,7 @@ stringtoken --> '"' + {a | b... | 1 | 2 ...} + '"'
 numerictoken --> {1 | 2 | ...}
 *************************************************************/
 
-#include "xdlmacro.h"
+#include "xdlmac.h"
 #include "xdlimp.h"
 #include "xdloem.h"
 #include "xdlstd.h"

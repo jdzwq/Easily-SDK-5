@@ -2483,24 +2483,6 @@ void xxsl_set_recv_buff(xhand_t xsl, dword_t dw)
 	xtcp_set_recv_buff(pso->tcp, dw);
 }
 
-void xxsl_set_send_timeout(xhand_t xsl, int s)
-{
-	xsl_t* pso = (xsl_t*)xsl;
-
-	XDL_ASSERT(xsl && xsl->tag == _HANDLE_XSL);
-
-	xtcp_set_send_timeout(pso->tcp, s);
-}
-
-void xxsl_set_recv_timeout(xhand_t xsl, int s)
-{
-	xsl_t* pso = (xsl_t*)xsl;
-
-	XDL_ASSERT(xsl && xsl->tag == _HANDLE_XSL);
-
-	xtcp_set_recv_timeout(pso->tcp, s);
-}
-
 void xxsl_set_linger(xhand_t xsl, bool_t b_wait, int n_sec)
 {
 	xsl_t* pso = (xsl_t*)xsl;

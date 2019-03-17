@@ -802,7 +802,6 @@ void draw_listbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 void calc_dropbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
 {
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 	xsize_t xs;
 	float mx, my;
 
@@ -814,25 +813,23 @@ void calc_dropbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr p
 	pxs->fy = 0;
 	pxs->fx = 0;
 
-	he.hash = ptr;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptr, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptr, ent);
 			continue;
 		}
 
-		(*pim->pf_text_size)(pim->ctx, pxf, get_hash_entity_val_ptr(ent), -1, &xs);
+		(*pim->pf_text_size)(pim->ctx, pxf, get_string_entity_val_ptr(ent), -1, &xs);
 
 		if (pxs->fx < xs.fx)
 			pxs->fx = xs.fx;
 
 		pxs->fy += my;
 
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptr, ent);
 	}
 
 	pxs->fx += mx;
@@ -841,7 +838,6 @@ void calc_dropbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr p
 int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 {
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 	xrect_t xr;
 	xsize_t xs;
 	float mx, my;
@@ -856,18 +852,16 @@ int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	xr.fw = mx;
 	xr.fh = my;
 
-	he.hash = ptr;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptr, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptr, ent);
 			continue;
 		}
 
-		(*pim->pf_text_size)(pim->ctx, pxf, get_hash_entity_val_ptr(ent), -1, &xs);
+		(*pim->pf_text_size)(pim->ctx, pxf, get_string_entity_val_ptr(ent), -1, &xs);
 
 		if (xr.fw < xs.fx)
 			xr.fw = xs.fx;
@@ -881,7 +875,7 @@ int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 		}
 
 		xr.fy += my;
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptr, ent);
 	}
 
 	return DROPBOX_HINT_NONE;
@@ -890,7 +884,6 @@ int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 	xrect_t xr;
 	xsize_t xs;
 	float mx, my;
@@ -905,18 +898,16 @@ void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 	xr.fw = mx;
 	xr.fh = my;
 
-	he.hash = ptr;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptr, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptr, ent);
 			continue;
 		}
 
-		(*pim->pf_text_size)(pim->ctx, pxf, get_hash_entity_val_ptr(ent), -1, &xs);
+		(*pim->pf_text_size)(pim->ctx, pxf, get_string_entity_val_ptr(ent), -1, &xs);
 
 		if (xr.fw < xs.fx)
 			xr.fw = xs.fx;
@@ -928,7 +919,7 @@ void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 		}
 
 		xr.fy += my;
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptr, ent);
 	}
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
@@ -937,7 +928,6 @@ void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 void draw_dropbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* pxf, link_t_ptr ptr)
 {
 	link_t_ptr ent;
-	hash_enum_t he = { 0 };
 	xface_t xa;
 	xfont_t xf;
 	xrect_t xr;
@@ -968,21 +958,19 @@ void draw_dropbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = pbox->fw;
 	xr.fh = my;
 
-	he.hash = ptr;
-	he.entity = LINK_FIRST;
-	ent = get_hash_next_entity(&he);
+	ent = get_string_next_entity(ptr, LINK_FIRST);
 	while (ent)
 	{
-		if (get_hash_entity_delta(ent))
+		if (get_string_entity_delta(ent))
 		{
-			ent = get_hash_next_entity(&he);
+			ent = get_string_next_entity(ptr, ent);
 			continue;
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_hash_entity_val_ptr(ent), -1);
+		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_string_entity_val_ptr(ent), -1);
 
 		xr.fy += my;
-		ent = get_hash_next_entity(&he);
+		ent = get_string_next_entity(ptr, ent);
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

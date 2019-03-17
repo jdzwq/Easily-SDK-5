@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc expression document
+	@doc sorting document
 
-	@module	xdlexpr.h | expression interface file
+	@module	sorting.c | xdl sorting implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,32 +29,35 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _XDLEXPR_H
-#define _XDLEXPR_H
+#include "sorting.h"
+#include "xdlutil.h"
+#include "xdlstr.h"
+#include "impmem.h"
 
-#include "xdldef.h"
+void bubble_xsort(xsort_t* pxs, int count)
+{
+	int i,tag = 1;
+	xsort_t x = { 0 };
 
-/*data compare callback function*/
-typedef int (*expr_compare_ptr)(const tchar_t* key,const tchar_t* sin,const tchar_t* val,void* parm);
+	while (tag)
+	{
+		tag = 0;
+		count--;
+		for (i = 0; i < count; i++)
+		{
+			if (pxs[i].fact > pxs[i + 1].fact)
+			{
+				x.fact = pxs[i + 1].fact;
+				x.data = pxs[i + 1].data;
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+				pxs[i + 1].fact = pxs[i].fact;
+				pxs[i + 1].data = pxs[i].data;
 
-/*parse expression token*/
-XDL_API bool_t expr_parse(link_t_ptr ptr,const tchar_t* str);
+				pxs[i].fact = x.fact;
+				pxs[i].data = x.data;
 
-/*format expression token size*/
-XDL_API int expr_format_length(link_t_ptr ptr);
-
-/*format expression token*/
-XDL_API int expr_format(link_t_ptr ptr,tchar_t* buf,int max);
-
-/*execute expression and return result*/
-XDL_API int expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm);
-
-#ifdef	__cplusplus
+				tag = 1;
+			}
+		}
+	}
 }
-#endif
-
-#endif /*XDLEXPR_H*/

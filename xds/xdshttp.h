@@ -55,11 +55,32 @@ typedef struct _http_listen_t{
 extern "C" {
 #endif
 
-	XDS_API http_listen_t*	xhttp_start_thread(int secu, unsigned short port, PF_HTTPS_DISPATCH pf_dispatch, void* pf_param);
+/*
+@FUNCTION xhttp_start_thread: create http thread service routing.
+@INPUT int secu: the security type, it can be _SECU_TCP, _SECU_SSL.
+@INPUT unsigned short port: the service port.
+@INPUT PF_HTTPS_DISPATCH pf_dispatch: the callback service dispatch function.
+@INPUT void* param: the user parameter transback into dispath function.
+@RETURN http_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API http_listen_t*	xhttp_start_thread(int secu, unsigned short port, PF_HTTPS_DISPATCH pf_dispatch, void* pf_param);
 
-	XDS_API http_listen_t*	xhttp_start_process(int secu, unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
+/*
+@FUNCTION xhttp_start_process: create http process service routing.
+@INPUT int secu: the security type, it can be _SECU_TCP, _SECU_SSL.
+@INPUT unsigned short port: the service port.
+@INPUT const tchar_t* sz_moudle: the process service moudle name.
+@INPUT const tchar_t* sz_cmdline: the process execute command line.
+@RETURN pnp_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API http_listen_t*	xhttp_start_process(int secu, unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
 
-	XDS_API void xhttp_stop(http_listen_t* plis);
+/*
+@FUNCTION xhttp_stop: stop the http service routing.
+@INPUT http_listen_t* plis: the service listen struct.
+@RETURN void: none.
+*/
+XDS_API void xhttp_stop(http_listen_t* plis);
 
 #ifdef	__cplusplus
 }

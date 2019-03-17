@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 typedef enum{
 	ANNO_HINT_NONE,
-	ANNO_HINT_SPOT,
+	ANNO_HINT_ARTI,
 	ANNO_HINT_SIZE
 }ANNO_HINT_CODE;
 
@@ -46,7 +46,7 @@ typedef enum{
 extern "C" {
 #endif
 
-XDL_API void calc_anno_spot_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+XDL_API void calc_anno_arti_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
 XDL_API int calc_anno_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* pind);
 

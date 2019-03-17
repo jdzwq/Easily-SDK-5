@@ -7,7 +7,7 @@
 
 	@doc xdl escape document
 
-	@module	xdlesc.h | xdl escape interface file
+	@module	escape.h | xdl escape interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -166,4 +166,4 @@ XDL_API int mbs_encode_escape(tchar_t ch, schar_t* dest, int max);
 }
 #endif
 
-#endif /*XDLESC_H*/
+#endif /*ESCAPE_H*/

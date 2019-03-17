@@ -2965,24 +2965,6 @@ unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr)
 	return xtcp_peer_port(pso->tcp, addr);
 }
 
-void xssl_set_send_timeout(xhand_t ssl, int s)
-{
-	ssl_t* pso = (ssl_t*)ssl;
-
-	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
-
-	xtcp_set_send_timeout(pso->tcp, s);
-}
-
-void xssl_set_recv_timeout(xhand_t ssl, int s)
-{
-	ssl_t* pso = (ssl_t*)ssl;
-
-	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
-
-	xtcp_set_recv_timeout(pso->tcp, s);
-}
-
 void xssl_set_linger(xhand_t ssl, bool_t b_wait, int n_sec)
 {
 	ssl_t* pso = (ssl_t*)ssl;

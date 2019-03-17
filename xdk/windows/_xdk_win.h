@@ -372,6 +372,7 @@ typedef LRESULT		result_t;
 #define _tstrlen	wcslen
 #define _tstrtol	_wtol
 #define _tstrtof	_wtof
+#define _tsscanf	swscanf
 #define _tstrnull(s)		(s == NULL || s[0] == L'\0')
 #else
 #define _tstrcmp	strcmp
@@ -385,6 +386,7 @@ typedef LRESULT		result_t;
 #define _tstrlen	strlen
 #define _tstrtol	atol
 #define _tstrtof	atof
+#define _tsscanf	sscanf
 #define _tstrnull(s)		(s == NULL || s[0] == '\0')
 #endif
 

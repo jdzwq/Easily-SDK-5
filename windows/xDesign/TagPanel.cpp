@@ -97,12 +97,12 @@ void TagPanel_OnDelete(res_win_t widget)
 	LINKPTR ptrTag = tagctrl_fetch(pdt->hTag);
 	XDL_ASSERT(ptrTag);
 
-	LINKPTR ptrNode = tagctrl_get_focus_node(pdt->hTag);
+	LINKPTR ptrNode = tagctrl_get_focus_joint(pdt->hTag);
 
 	if (!ptrNode)
 		return;
 
-	tagctrl_delete_node(pdt->hTag, ptrNode);
+	tagctrl_delete_joint(pdt->hTag, ptrNode);
 }
 
 void TagPanel_OnInsert(res_win_t widget)
@@ -110,21 +110,21 @@ void TagPanel_OnInsert(res_win_t widget)
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
 	LINKPTR ptrTag = tagctrl_fetch(pdt->hTag);
-	LINKPTR ptrPos = tagctrl_get_focus_node(pdt->hTag);
+	LINKPTR ptrPos = tagctrl_get_focus_joint(pdt->hTag);
 
-	ptrPos = (ptrPos) ? get_tag_prev_node(ptrTag, ptrPos) : LINK_LAST;
+	ptrPos = (ptrPos) ? get_tag_prev_joint(ptrTag, ptrPos) : LINK_LAST;
 
-	LINKPTR ilk = insert_tag_node(ptrTag, ptrPos);
+	LINKPTR ilk = insert_tag_joint(ptrTag, ptrPos);
 	if (!ilk)
 		return;
 
 	tchar_t token[INT_LEN + 1] = { 0 };
 
-	xsprintf(token, _T("tag%d"), get_tag_node_count(ptrTag));
-	set_tag_node_name(ilk, token);
+	xsprintf(token, _T("tag%d"), get_tag_joint_count(ptrTag));
+	set_tag_joint_name(ilk, token);
 
-	xsprintf(token, _T("±êÇ©%d"), get_tag_node_count(ptrTag));
-	set_tag_node_text(ilk, token, -1);
+	xsprintf(token, _T("±êÇ©%d"), get_tag_joint_count(ptrTag));
+	set_tag_joint_text(ilk, token, -1);
 
 	tagctrl_redraw(pdt->hTag);
 }
@@ -170,12 +170,12 @@ void TagPanel_Tag_OnNodeChange(res_win_t widget, NOTICE_TAG* pnf)
 	LINKPTR ptrProper = properctrl_fetch(pdt->hProper);
 	clear_proper_doc(ptrProper);
 
-	if (pnf->node)
+	if (pnf->joint)
 	{
-		LINKPTR ent = write_proper(ptrProper, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_tag_node_name_ptr(pnf->node), -1);
+		LINKPTR ent = write_proper(ptrProper, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_tag_joint_name_ptr(pnf->joint), -1);
 		set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-		if (is_tag_text_node(pnf->node))
+		if (is_tag_text_joint(pnf->joint))
 			set_entity_editable(ent, 0);
 		else
 			set_entity_editable(ent, 1);
@@ -193,13 +193,13 @@ void TagPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
 	LINKPTR ptrTag = tagctrl_fetch(pdt->hTag);
-	LINKPTR ptrNode = tagctrl_get_focus_node(pdt->hTag);
+	LINKPTR ptrNode = tagctrl_get_focus_joint(pdt->hTag);
 
 	LINKPTR ptrProper = properctrl_fetch(pdt->hProper);
 
-	if (ptrNode && !is_tag_text_node(ptrNode))
+	if (ptrNode && !is_tag_text_joint(ptrNode))
 	{
-		set_tag_node_name(ptrNode, get_proper_ptr(ptrProper, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
+		set_tag_joint_name(ptrNode, get_proper_ptr(ptrProper, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 	}
 	
 	tagctrl_redraw(pdt->hTag);
@@ -535,15 +535,15 @@ void TagPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
 	LINKPTR ptr_tag = tagctrl_fetch(pdt->hTag);
-	LINKPTR ilk = get_tag_next_node(ptr_tag, LINK_FIRST);
+	LINKPTR ilk = get_tag_next_joint(ptr_tag, LINK_FIRST);
 	while (ilk)
 	{
-		if (compare_text(pfd->sub_str, -1, get_tag_node_name_ptr(ilk), -1, 1) == 0)
+		if (compare_text(pfd->sub_str, -1, get_tag_joint_name_ptr(ilk), -1, 1) == 0)
 		{
-			tagctrl_set_focus_node(pdt->hTag, ilk);
+			tagctrl_set_focus_joint(pdt->hTag, ilk);
 			break;
 		}
-		ilk = get_tag_next_node(ptr_tag, ilk);
+		ilk = get_tag_next_joint(ptr_tag, ilk);
 	}
 }
 
@@ -625,7 +625,7 @@ void TagPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
 			break;
 		case NC_TAGLBCLK:
 			break;
-		case NC_TAGNODECHANGED:
+		case NC_TAGJOINTCHANGED:
 			TagPanel_Tag_OnNodeChange(widget, pnf);
 			break;
 		}

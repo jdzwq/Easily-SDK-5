@@ -84,7 +84,7 @@ void clear_images_doc(link_t_ptr ptr)
 	delete_dom_child_nodes(ptr);
 }
 
-void sort_images_doc(link_t_ptr ptr,int desc)
+void sort_images_doc(link_t_ptr ptr,bool_t desc)
 {
 	ptr = get_images_itemset(ptr);
 

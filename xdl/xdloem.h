@@ -84,4 +84,6 @@
 #include "oemlzf.h"
 #endif
 
+#include "oemprim.h"
+
 #endif //_XDLOEM_H

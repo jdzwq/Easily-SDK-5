@@ -36,86 +36,232 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-/*******************************************serial enable attributes********************************************/
+/************************************************Properties***************************************************************************/
+
+/*
+@PROPER name: string.
+@GET get_status_name_ptr: get the status name.
+*/
 #define get_status_name_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_NAME,-1)
-
+/*
+@PROPER name: string.
+@SET set_status_name: set the status name.
+*/
 #define set_status_name(ptr,token)						set_dom_node_attr(ptr,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER title: string.
+@SET set_status_title: set the status title.
+*/
 #define set_status_title(ptr,token)						set_dom_node_attr(ptr,ATTR_TITLE,-1,token,-1)
-
+/*
+@PROPER title: string.
+@GET get_status_title_ptr: get the status title.
+*/
 #define get_status_title_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_TITLE,-1)
-
+/*
+@PROPER style: string.
+@SET set_status_style: set the status style.
+*/
 #define set_status_style(ptr,lay)						set_dom_node_attr(ptr,ATTR_STYLE,-1,lay,-1)
-
+/*
+@PROPER style: string.
+@GET get_status_style_ptr: get the status style.
+*/
 #define get_status_style_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
-
+/*
+@PROPER iconSpan: numeric.
+@SET set_status_icon_span: set the status icon span.
+*/
 #define set_status_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
-
+/*
+@PROPER iconSpan: numeric.
+@GET get_status_icon_span: get the status icon span.
+*/
 #define get_status_icon_span(ptr)						get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
-
+/*
+@PROPER alignment: string.
+@GET get_status_alignment_ptr: get the status alignment.
+*/
 #define get_status_alignment_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_ALIGNMENT,-1)
-
+/*
+@PROPER alignment: string.
+@SET set_status_alignment: set the status alignment.
+*/
 #define set_status_alignment(ptr,token)					set_dom_node_attr(ptr,ATTR_ALIGNMENT,-1,token,-1)
-
+/*
+@PROPER delta: var long.
+@SET set_status_item_delta: set the status item extract data.
+*/
 #define set_status_item_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
-
+/*
+@PROPER alignment: var long.
+@GET get_status_item_delta: get the status item extract data.
+*/
 #define get_status_item_delta(ilk)						get_dom_node_delta(ilk)
-
+/*
+@PROPER name: string.
+@SET set_status_item_name: set the status item name.
+*/
 #define set_status_item_name(ilk,token)					set_dom_node_attr(ilk,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER name: string.
+@GET get_status_item_name_ptr: get the status item name.
+*/
 #define get_status_item_name_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_NAME,-1)
-
+/*
+@PROPER title: string.
+@SET set_status_item_title: set the status item title.
+*/
 #define set_status_item_title(ilk,token)				set_dom_node_attr(ilk,ATTR_TITLE,-1,token,-1)
-
+/*
+@PROPER title: string.
+@GET get_status_item_title_ptr: get the status item title.
+*/
 #define get_status_item_title_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_TITLE,-1)
-
+/*
+@PROPER id: string.
+@SET set_status_item_id: set the status item identifier.
+*/
 #define set_status_item_id(ilk,token)					set_dom_node_attr(ilk,ATTR_ID,-1,token,-1)
-
+/*
+@PROPER id: string.
+@GET get_status_item_id_ptr: get the status item identifier.
+*/
 #define get_status_item_id_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ID,-1)
-
+/*
+@PROPER image: string.
+@GET get_status_item_image_ptr: get the status item image.
+*/
 #define get_status_item_image_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
-
+/*
+@PROPER image: string.
+@SET set_status_item_image: set the status item image.
+*/
 #define set_status_item_image(ilk,token)				set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-
+/*
+@PROPER imagePosition: string.
+@GET get_status_item_image_position_ptr: get the status item image position.
+*/
 #define get_status_item_image_position_ptr(ilk)			get_dom_node_attr_ptr(ilk,ATTR_IMAGE_POSITION,-1)
-
+/*
+@PROPER imagePosition: string.
+@SET set_status_item_image_position: set the status item image position.
+*/
 #define set_status_item_image_position(ilk,token)		set_dom_node_attr(ilk,ATTR_IMAGE_POSITION,-1,token,-1)
-
+/*
+@PROPER width: numeric.
+@SET set_status_item_width: set the status item width.
+*/
 #define set_status_item_width(ilk,n)					set_dom_node_attr_float(ilk,ATTR_ITEM_WIDTH,n)
-
+/*
+@PROPER width: numeric.
+@GET get_status_item_width: get the status item width.
+*/
 #define get_status_item_width(ilk)						get_dom_node_attr_float(ilk,ATTR_ITEM_WIDTH)
 
-/***************************************************runtime attributes************************************/
+/*
+@PROPER images: document.
+@SET set_status_images: set the status images document.
+*/
 #define set_status_images(ptr,images)					set_dom_node_images(ptr,images)
-
+/*
+@PROPER images: document.
+@GET get_status_images: get the status images document.
+*/
 #define get_status_images(ptr)							get_dom_node_images(ptr)
-/*********************************************************************************************************/
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
+/************************************************Functions***************************************************************************/
+
+/*
+@FUNCTION create_status_doc: create a status document.
+@RETURN link_t_ptr: return the status document link component.
+*/
 XDL_API link_t_ptr create_status_doc(void);
 
+/*
+@FUNCTION destroy_status_doc: destroy a status document.
+@INPUT link_t_ptr ptr: the status link component.
+@RETURN void: none.
+*/
 XDL_API void destroy_status_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION get_status_itemset: get the status item set.
+@INPUT link_t_ptr ptr: the status link component.
+@RETURN link_t_ptr: return the status item set link component.
+*/
 XDL_API link_t_ptr get_status_itemset(link_t_ptr ptr);
 
+/*
+@FUNCTION is_status_doc: test is status document.
+@INPUT link_t_ptr ptr: the status link component.
+@RETURN bool_t: return nonzero for being a status document, otherwise return zero.
+*/
 XDL_API bool_t is_status_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION is_status_item: test is status item node.
+@INPUT link_t_ptr ptr: the status link component.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN bool_t: return nonzero for being a group node, otherwise return zero.
+*/
 XDL_API bool_t is_status_item(link_t_ptr ptr, link_t_ptr ilk);
 
+/*
+@FUNCTION clear_status_doc: clear the status document.
+@INPUT link_t_ptr ptr: the status link component.
+@RETURN void: none.
+*/
 XDL_API void clear_status_doc(link_t_ptr ptr);
 
-XDL_API link_t_ptr insert_status_item(link_t_ptr ptr,link_t_ptr pos);
+/*
+@FUNCTION insert_status_item: add a new item to status document.
+@INPUT link_t_ptr ptr: the status link component.
+@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the new item link component.
+*/
+XDL_API link_t_ptr insert_status_item(link_t_ptr ptr, link_t_ptr pos);
 
+/*
+@FUNCTION get_status_next_item: get the next item.
+@INPUT link_t_ptr ptr: the status link component.
+@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_status_next_item(link_t_ptr ptr,link_t_ptr pos);
 
+/*
+@FUNCTION get_status_prev_item: get the previous item.
+@INPUT link_t_ptr ptr: the status link component.
+@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_status_prev_item(link_t_ptr ptr,link_t_ptr pos);
 
+/*
+@FUNCTION get_status_item: find the status item by name.
+@INPUT link_t_ptr ptr: the status link component.
+@INPUT const tchar_t* sz_name: the item name token.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_status_item(link_t_ptr ptr, const tchar_t* szName);
 
+/*
+@FUNCTION get_status_item_count: counting the items in status document.
+@INPUT link_t_ptr ptr: the status link component.
+@RETURN int: return the number of items.
+*/
 XDL_API int get_status_item_count(link_t_ptr ptr);
 
+/*
+@FUNCTION delete_status_item: delete the status item.
+@INPUT link_t_ptr ptr: the item link component.
+@RETURN void: none.
+*/
 XDL_API void delete_status_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus

@@ -105,44 +105,152 @@ typedef enum
 extern "C" {
 #endif
 
+/*
+@FUNCTION xssl_cli: create a SSL client.
+@INPUT unsigned short port: the network port to connect.
+@INPUT const tchar_t* addr: the network address to connect.
+@RETURN xhand_t: if succeeds return SSL client handle, fails return NULL.
+*/
 XDL_API xhand_t xssl_cli(unsigned short port, const tchar_t* addr);
 
+/*
+@FUNCTION xssl_srv: create a SSL server.
+@INPUT res_file_t so: the network io resource handle, it must be a socket resource handle.
+@RETURN xhand_t: if succeeds return SSL server handle, fails return NULL.
+*/
 XDL_API xhand_t xssl_srv(res_file_t so);
 
+/*
+@FUNCTION xssl_socket: get socket resource handle.
+@INPUT xhand_t ssl: the SSL handle.
+@RETURN res_file_t: return the socket resource handle.
+*/
 XDL_API res_file_t xssl_socket(xhand_t ssl);
 
+/*
+@FUNCTION xssl_type: get socket type, it can be _XSSL_TYPE_CLI, _XSSL_TYPE_SRV.
+@INPUT xhand_t ssl: the SSL handle.
+@RETURN int: return the socket type.
+*/
 XDL_API int  xssl_type(xhand_t ssl);
 
+/*
+@FUNCTION xssl_close: close SSL handle.
+@INPUT xhand_t ssl: the SSL handle.
+@RETURN void: none.
+*/
 XDL_API void  xssl_close(xhand_t ssl);
 
+/*
+@FUNCTION xssl_addr_port: get SSL local address and port.
+@INPUT xhand_t ssl: the SSL handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the local port.
+*/
 XDL_API unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr);
 
+/*
+@FUNCTION xssl_peer_port: get SSL remote address and port.
+@INPUT xhand_t ssl: the SSL handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the remote port.
+*/
 XDL_API unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr);
 
-XDL_API void xssl_set_send_timeout(xhand_t ssl, int s);
-
-XDL_API void xssl_set_recv_timeout(xhand_t ssl, int s);
-
+/*
+@FUNCTION xssl_set_linger: set socket linger on close action.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT bool_t b_wait: nonzero for waiting unsent data to compelete, zero for immediately closing.
+@INPUT int n_sec: the wait time in second.
+@RETURN void: none.
+*/
 XDL_API void xssl_set_linger(xhand_t ssl, bool_t b_wait, int n_sec);
 
+/*
+@FUNCTION xssl_write: write SSL data.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const byte_t* data: the data buffer.
+@INOUTPUT dword_t* pb: indicate the bytes to write and return the bytes writed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_write(xhand_t ssl, const byte_t* data, dword_t* pb);
 
+/*
+@FUNCTION xssl_flush: ensure write SSL data compeleted.
+@INPUT xhand_t ssl: the SSL handle.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_flush(xhand_t ssl);
 
+/*
+@FUNCTION xssl_read: read SSL data.
+@INPUT xhand_t ssl: the SSL handle.
+@OUTPUT byte_t* data: the data buffer.
+@INOUTPUT dword_t* pb: indicate the bytes to read and return the bytes readed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_read(xhand_t ssl, byte_t* data, dword_t* pb);
 
+/*
+@FUNCTION xssl_set_host: set SSL host name.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const tchar_t* host_cn: the host name.
+@RETURN void: none.
+*/
 XDL_API void xssl_set_host(xhand_t ssl, const tchar_t* host_cn);
 
+/*
+@FUNCTION xssl_set_peer: set SSL peer name.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const tchar_t* host_cn: the peer name.
+@RETURN void: none.
+*/
 XDL_API void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn);
 
+/*
+@FUNCTION xssl_set_auth: set SSL authorization mode.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT int authmode: the authorization mode, it can be SSL_VERIFY_NONE, SSL_VERIFY_OPTIONAL, SSL_VERIFY_REQUIRED.
+@RETURN void: none.
+*/
 XDL_API void xssl_set_auth(xhand_t ssl, int authmode);
 
+/*
+@FUNCTION xssl_set_ca: set SSL root certificate.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const byte_t* sz_cert: the cerificate bytes buffer.
+@INPUT dword_t clen: the data size in bytes.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 
+/*
+@FUNCTION xssl_set_cert: set SSL owner certificate.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const byte_t* sz_cert: the cerificate bytes buffer.
+@INPUT dword_t clen: the data size in bytes.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 
+/*
+@FUNCTION xssl_set_rsa: set SSL private rsa key.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const byte_t* sz_rsa: the rsa key bytes buffer.
+@INPUT dword_t rlen: the rsa data size in bytes.
+@INPUT const byte_t* sz_pwd: the password key bytes buffer.
+@INPUT dword_t plen: the password data size in bytes.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const byte_t* sz_pwd, dword_t plen);
 
+/*
+@FUNCTION xssl_set_dhm: set SSL dhm key.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const byte_t* dhm_P: the dhm P value bytes buffer.
+@INPUT const byte_t* dhm_G: the dhm G value bytes buffer.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_P, const byte_t *dhm_G);
 
 #ifdef	__cplusplus

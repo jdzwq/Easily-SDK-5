@@ -47,15 +47,15 @@ typedef struct _splitor_t{
 extern "C" {
 #endif
 
-	XDC_API bool_t hand_splitor_mouse_move(splitor_t* ptd, dword_t dw, const xpoint_t* pxp);
+XDC_API bool_t hand_splitor_mouse_move(splitor_t* ptd, dword_t dw, const xpoint_t* pxp);
 
-	XDC_API bool_t hand_splitor_lbutton_down(splitor_t* ptd, const xpoint_t* pxp);
+XDC_API bool_t hand_splitor_lbutton_down(splitor_t* ptd, const xpoint_t* pxp);
 
-	XDC_API bool_t hand_splitor_lbutton_up(splitor_t* ptd, const xpoint_t* pxp);
+XDC_API bool_t hand_splitor_lbutton_up(splitor_t* ptd, const xpoint_t* pxp);
 
-	XDC_API void hand_splitor_size(splitor_t* ptd, const xrect_t* pxr);
+XDC_API void hand_splitor_size(splitor_t* ptd, const xrect_t* pxr);
 
-	XDC_API void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc);
+XDC_API void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc);
 
 #ifdef	__cplusplus
 }

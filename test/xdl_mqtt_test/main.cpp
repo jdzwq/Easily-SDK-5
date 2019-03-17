@@ -7,14 +7,14 @@
 #include <conio.h>
 #endif
 
-#define ADDR_SUB		_T("47.97.167.225")
+//#define ADDR_SUB		_T("47.97.167.225")
 //#define ADDR_SUB		_T("172.16.190.190")
-//#define ADDR_SUB		_T("127.0.0.1")
+#define ADDR_SUB		_T("127.0.0.1")
 #define PORT_SUB		8880
 
-#define ADDR_PUB		_T("47.97.167.225")
+//#define ADDR_PUB		_T("47.97.167.225")
 //#define ADDR_PUB		_T("172.16.190.190")
-//#define ADDR_PUB		_T("127.0.0.1")
+#define ADDR_PUB		_T("127.0.0.1")
 #define PORT_PUB		8881
 
 void test_mqtt_pub()
@@ -31,7 +31,9 @@ void test_mqtt_pub()
 	int n = 100;
 	for (int i = 0; i < n; i++)
 	{
-		mqtt_publish(mqtt, _T("my"), -1);
+		mqtt->packet_qos = i % 3;
+		mqtt->packet_pid = i + 1;
+		mqtt_publish(mqtt, _T("test"), -1);
 
 		len = a_xsprintf(msg, "msg%d", i);
 
@@ -60,7 +62,7 @@ void test_mqtt_sub()
 	byte_t* buf = NULL;
 	dword_t n;
 
-	mqtt_subcribe(mqtt, _T("outTopic"), -1);
+	mqtt_subcribe(mqtt, _T("test"), -1);
 
 	while (mqtt_status(mqtt) != _MQTT_STATUS_RELEASE)
 	{
@@ -108,7 +110,7 @@ void test_mqtt_unsub()
 	byte_t* buf = NULL;
 	dword_t n;
 
-	mqtt_unsubcribe(mqtt, _T("my"), -1);
+	mqtt_unsubcribe(mqtt, _T("test"), -1);
 
 	mqtt_close(mqtt);
 

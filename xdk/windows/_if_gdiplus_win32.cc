@@ -413,6 +413,146 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 	}
 }
 
+#define IS_LETTER(ch)	((ch >= _T('A') && ch <= _T('Z')) || (ch >= _T('a') && ch <= _T('z')))
+
+void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int len)
+{
+	HDC hDC = (HDC)rdc;
+
+	GraphicsPath path;
+
+	POINT pt[10] = { 0 };
+	POINT ps = { 0 };
+
+	tchar_t ch = 0;
+	const tchar_t* token = str;
+	int total = 0;
+
+	if (_tstrnull(str))
+		return;
+
+	if (len < 0)
+		len = _tcslen(str);
+
+	while (total < len)
+	{
+		while (!IS_LETTER(*token) && *token && total < len)
+		{
+			token++;
+			total++;
+		}
+		
+		if (*token == _T('\0') || total == len)
+			break;
+
+		ch = *token;
+
+		token++;
+		total++;
+
+		switch (ch)
+		{
+		case _T('M'):
+			_tsscanf(token, _T("%d %d"), &(pt[0].x), &(pt[0].y));
+
+			DPtoLP(hDC, &(pt[0]), 1);
+			ps.x = pt[0].x;
+			ps.y = pt[0].y;
+			break;
+		case _T('L'):
+			_tsscanf(token, _T("%d %d"), &(pt[1].x), &(pt[1].y));
+
+			DPtoLP(hDC, &(pt[1]), 1);
+
+			path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+
+			pt[0].x = pt[1].x;
+			pt[0].y = pt[1].y;
+			break;
+		case _T('H'):
+			_tsscanf(token, _T("%d"), &(pt[1].x));
+
+			DPtoLP(hDC, &(pt[1]), 1);
+
+			pt[1].y = pt[0].y;
+			path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+
+			pt[0].x = pt[1].x;
+			pt[0].y = pt[1].y;
+			break;
+		case _T('V'):
+			_tsscanf(token, _T("%d"), &(pt[1].y));
+
+			DPtoLP(hDC, &(pt[1]), 1);
+
+			pt[1].x = pt[0].x;
+			path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+
+			pt[0].x = pt[1].x;
+			pt[0].y = pt[1].y;
+			break;
+		case _T('C'):
+			_tsscanf(token, _T("%d %d %d %d %d %d"), &(pt[1].x), &(pt[1].y), &(pt[2].x), &(pt[2].y), &(pt[3].x), &(pt[3].y));
+
+			DPtoLP(hDC, &(pt[1]), 1);
+			DPtoLP(hDC, &(pt[2]), 1);
+			DPtoLP(hDC, &(pt[3]), 1);
+
+			path.AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+
+			pt[0].x = pt[3].x;
+			pt[0].y = pt[3].y;
+			break;
+		case _T('A'):
+			
+			break;
+		case _T('Z'):
+			pt[1].x = ps.x;
+			pt[1].y = ps.y;
+
+			path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+			break;
+		}
+	}
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
+	
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+
+		gh.DrawPath(pp, &path);
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+{
+	HDC hDC = (HDC)rdc;
+
+	POINT pt[4];
+	pt[0].x = ppt1->x;
+	pt[0].y = ppt1->y;
+	pt[1].x = ppt2->x;
+	pt[1].y = ppt2->y;
+	pt[2].x = ppt3->x;
+	pt[2].y = ppt3->y;
+	pt[4].x = ppt4->x;
+	pt[4].y = ppt4->y;
+
+	DPtoLP(hDC, pt, 4);
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
+
+	Pen* pp = (Pen*)create_pen(pxp);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+	gh.DrawBezier(pp, pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+
+	delete pp;
+}
+
 void _gdiplus_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
 	HDC hDC = (HDC)rdc;

@@ -57,6 +57,7 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 	pic->pf_draw_arc = draw_arc;
 	pic->pf_draw_polygon = draw_polygon;
 	pic->pf_draw_polyline = draw_polyline;
+	pic->pf_draw_bezier = draw_bezier;
 	pic->pf_draw_rect = draw_rect;
 	pic->pf_draw_round = draw_round;
 	pic->pf_draw_ellipse = draw_ellipse;

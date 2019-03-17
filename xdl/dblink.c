@@ -186,9 +186,17 @@ link_t_ptr get_link_at(link_t_ptr root,int index)
 {
 	link_t_ptr cur;
 
-	XDL_ASSERT(root && root->tag == lkRoot && index >= 0);
+	XDL_ASSERT(root && root->tag == lkRoot);
 
-	cur = root->next;
+	if (index < 0)
+	{
+		cur = root->prev;
+		index = 0;
+	}
+	else
+	{
+		cur = root->next;
+	}
 
 	while(cur->tag != lkRoot && index--)
 		cur = cur->next;
@@ -308,7 +316,7 @@ link_t_ptr get_root_link(link_t_ptr plk)
 	return plk;
 }
 
-void move_link(link_t_ptr root, link_t_ptr root_src)
+void merge_link(link_t_ptr root, link_t_ptr root_src)
 {
 	XDL_ASSERT(root && root->tag == lkRoot);
 	XDL_ASSERT(root_src && root_src->tag == lkRoot);
@@ -481,7 +489,7 @@ link_t_ptr peek_link(link_t_ptr root)
 	return get_first_link(root);
 }
 
-void bubble_sort_link(link_t_ptr root,CALLBACK_SORTLINK pf,int desc,void* parm)
+void bubble_sort_link(link_t_ptr root, CALLBACK_SORTLINK pf, bool_t desc, void* parm)
 {
 	link_t_ptr prev,next;
 	int tag = 1;
@@ -526,7 +534,7 @@ int _div_link(link_t_ptr root1,link_t_ptr root2)
 	return tag;
 }
 
-void _mrg_link(link_t_ptr root1,link_t_ptr root2,CALLBACK_SORTLINK pf,int desc,void* parm)
+void _mrg_link(link_t_ptr root1, link_t_ptr root2, CALLBACK_SORTLINK pf, bool_t desc, void* parm)
 {
 	link_t_ptr next1,next2;
 	link_t_ptr plk;
@@ -558,7 +566,7 @@ void _mrg_link(link_t_ptr root1,link_t_ptr root2,CALLBACK_SORTLINK pf,int desc,v
 	
 }
 
-void merge_sort_link(link_t_ptr root,CALLBACK_SORTLINK pf,int desc,void* parm)
+void merge_sort_link(link_t_ptr root, CALLBACK_SORTLINK pf, bool_t desc, void* parm)
 {
 	link_t lk;
 	
@@ -600,7 +608,7 @@ void _adjust_delete(link_t_ptr* pa,int n,CALLBACK_SORTLINK pf,void* parm)
 	pa[i/2] = pa[0];
 }
 
-void heap_sort_link(link_t_ptr root,CALLBACK_SORTLINK pf,int desc,void* parm)
+void heap_sort_link(link_t_ptr root, CALLBACK_SORTLINK pf, bool_t desc, void* parm)
 {
 	link_t_ptr* pa;
 	int count,i;
@@ -677,7 +685,7 @@ void _quick_sort_link(link_t_ptr* pa, int i, int j, CALLBACK_SORTLINK pf, void* 
 		_quick_sort_link(pa,n+1,j,pf,parm);
 }
 
-void quick_sort_link(link_t_ptr root, CALLBACK_SORTLINK pf, int desc, void* parm)
+void quick_sort_link(link_t_ptr root, CALLBACK_SORTLINK pf, bool_t desc, void* parm)
 {
 	link_t_ptr* pa;
 	int count,i;

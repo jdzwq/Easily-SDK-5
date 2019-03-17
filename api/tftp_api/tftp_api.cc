@@ -58,7 +58,7 @@ static bool_t _invoke_head(const pnps_block_t* pb, tftp_block_t* ptb)
 		(*pb->pf_log_error)(pb->log, _T(""), sz_object, -1);
 	}
 
-	fd = xunc_find_first(&ptb->sd, sz_object, &fi);
+	fd = xuncf_find_first(&ptb->sd, sz_object, &fi);
 	if (!fd)
 	{
 		xtftp_abort(ptb->tftp, TFTP_CODE_NOTFIND);
@@ -79,7 +79,9 @@ static bool_t _invoke_head(const pnps_block_t* pb, tftp_block_t* ptb)
 			}
 
 			xtftp_head(ptb->tftp);
-		} while (xunc_find_next(fd, &fi));
+		} while (xuncf_find_next(fd, &fi));
+
+		xuncf_find_close(fd);
 	}
 
 	END_CATCH;

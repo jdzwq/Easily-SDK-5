@@ -121,7 +121,7 @@ bool_t is_string_entity(link_t_ptr ptr, link_t_ptr ilk)
 	return 0;
 }
 
-void sort_string_table(link_t_ptr ptr, int desc)
+void sort_string_table(link_t_ptr ptr, bool_t desc)
 {
 	string_table_t* pht;
 
@@ -420,7 +420,7 @@ var_long get_string_entity_delta(link_t_ptr elk)
 	return phe->data;
 }
 
-void set_string_entity_mask(link_t_ptr elk, unsigned long mask)
+void set_string_entity_mask(link_t_ptr elk, dword_t mask)
 {
 	string_entity_t* phe;
 
@@ -430,7 +430,7 @@ void set_string_entity_mask(link_t_ptr elk, unsigned long mask)
 	phe->mask = mask;
 }
 
-unsigned long get_string_entity_mask(link_t_ptr elk)
+dword_t get_string_entity_mask(link_t_ptr elk)
 {
 	string_entity_t* phe;
 

@@ -300,8 +300,6 @@ void xdk_impl_socket(if_socket_t* pif)
 	pif->pf_socket_set_linger = _socket_set_linger;
 	pif->pf_socket_set_sndbuf = _socket_set_sndbuf;
 	pif->pf_socket_set_rcvbuf = _socket_set_rcvbuf;
-	pif->pf_socket_set_sndtmo = _socket_set_sndtmo;
-	pif->pf_socket_set_rcvtmo = _socket_set_rcvtmo;
 	pif->pf_fill_addr = _fill_addr;
 	pif->pf_conv_addr = _conv_addr;
 	pif->pf_host_addr = _host_addr;
@@ -461,6 +459,8 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_pie = _gdiplus_draw_pie;
 	pif->pf_gdi_draw_polygon = _gdiplus_draw_polygon;
 	pif->pf_gdi_draw_polyline = _gdiplus_draw_polyline;
+	pif->pf_gdi_draw_bezier = _gdiplus_draw_bezier;
+	pif->pf_gdi_draw_path = _gdiplus_draw_path;
 	pif->pf_gdi_draw_rect = _gdiplus_draw_rect;
 	pif->pf_gdi_draw_round = _gdiplus_draw_round;
 	pif->pf_gdi_draw_text = _gdiplus_draw_text;
@@ -468,7 +468,7 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_text_out = _gdiplus_text_out;
 	pif->pf_gdi_text_size = _gdiplus_text_size;
 	pif->pf_gdi_text_metric = _gdiplus_text_metric;
-	pif->pf_gdi_gradinet_rect = _gdiplus_gradient_rect;
+	pif->pf_gdi_gradient_rect = _gdiplus_gradient_rect;
 	pif->pf_gdi_alphablend_rect = _gdiplus_alphablend_rect;
 	pif->pf_gdi_exclip_rect = _gdiplus_exclip_rect;
 	pif->pf_gdi_inclip_rect = _gdiplus_inclip_rect;
@@ -483,13 +483,15 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_pie = _gdi_draw_pie;
 	pif->pf_gdi_draw_polygon = _gdi_draw_polygon;
 	pif->pf_gdi_draw_polyline = _gdi_draw_polyline;
+	pif->pf_gdi_draw_bezier = _gdi_draw_bezier;
+	pif->pf_gdi_draw_path = _gdi_draw_path;
 	pif->pf_gdi_draw_rect = _gdi_draw_rect;
 	pif->pf_gdi_draw_round = _gdi_draw_round;
 	pif->pf_gdi_draw_text = _gdi_draw_text;
 	pif->pf_gdi_text_out = _gdi_text_out;
 	pif->pf_gdi_text_size = _gdi_text_size;
 	pif->pf_gdi_text_metric = _gdi_text_metric;
-	pif->pf_gdi_gradinet_rect = _gdi_gradient_rect;
+	pif->pf_gdi_gradient_rect = _gdi_gradient_rect;
 	pif->pf_gdi_alphablend_rect = _gdi_alphablend_rect;
 	pif->pf_gdi_exclip_rect = _gdi_exclip_rect;
 	pif->pf_gdi_inclip_rect = _gdi_inclip_rect;

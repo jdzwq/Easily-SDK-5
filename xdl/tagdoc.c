@@ -52,7 +52,7 @@ void destroy_tag_doc(link_t_ptr ptr)
 	destroy_dom_doc(ptr);
 }
 
-link_t_ptr get_tag_nodeset(link_t_ptr ptr)
+link_t_ptr get_tag_jointset(link_t_ptr ptr)
 {
 	return ptr;
 }
@@ -62,30 +62,30 @@ bool_t is_tag_doc(link_t_ptr ptr)
 	return (compare_text(get_dom_node_name_ptr(ptr), -1, DOC_TAG, -1, 0) == 0) ? 1 : 0;
 }
 
-bool_t is_tag_node(link_t_ptr ptr, link_t_ptr nlk)
+bool_t is_tag_joint(link_t_ptr ptr, link_t_ptr nlk)
 {
 	return is_dom_child_node(ptr, nlk);
 }
 
 void clear_tag_doc(link_t_ptr ptr)
 {
-	ptr = get_tag_nodeset(ptr);
+	ptr = get_tag_jointset(ptr);
 
 	delete_dom_child_nodes(ptr);
 }
 
-int get_tag_node_count(link_t_ptr ptr)
+int get_tag_joint_count(link_t_ptr ptr)
 {
-	ptr = get_tag_nodeset(ptr);
+	ptr = get_tag_jointset(ptr);
 
 	return get_dom_child_node_count(ptr);
 }
 
-link_t_ptr insert_tag_node(link_t_ptr ptr, link_t_ptr pos)
+link_t_ptr insert_tag_joint(link_t_ptr ptr, link_t_ptr pos)
 {
 	link_t_ptr nlk;
 
-	ptr = get_tag_nodeset(ptr);
+	ptr = get_tag_jointset(ptr);
 
 	nlk = insert_dom_node(ptr, pos);
 
@@ -94,12 +94,12 @@ link_t_ptr insert_tag_node(link_t_ptr ptr, link_t_ptr pos)
 	return nlk;
 }
 
-void delete_tag_node(link_t_ptr elk)
+void delete_tag_joint(link_t_ptr elk)
 {
 	delete_dom_node(elk);
 }
 
-link_t_ptr merge_tag_node(link_t_ptr nlk)
+link_t_ptr merge_tag_joint(link_t_ptr nlk)
 {
 	link_t_ptr pre;
 	int n;
@@ -109,41 +109,41 @@ link_t_ptr merge_tag_node(link_t_ptr nlk)
 	if (!pre)
 		return NULL;
 
-	n = xslen(get_tag_node_text_ptr(pre)) + xslen(get_tag_node_text_ptr(nlk));
+	n = xslen(get_tag_joint_text_ptr(pre)) + xslen(get_tag_joint_text_ptr(nlk));
 
 	if (n)
 	{
 		buf = detach_dom_node_text(pre);
 		buf = xsrealloc(buf, n + 1);
-		xscat(buf, get_tag_node_text_ptr(nlk));
+		xscat(buf, get_tag_joint_text_ptr(nlk));
 
 		attach_dom_node_text(pre, buf);
 	}
 
-	delete_tag_node(nlk);
+	delete_tag_joint(nlk);
 
 	return pre;
 }
 
-link_t_ptr get_tag_node(link_t_ptr ptr, const tchar_t* nname)
+link_t_ptr get_tag_joint(link_t_ptr ptr, const tchar_t* nname)
 {
 	link_t_ptr nlk;
 
-	nlk = get_tag_next_node(ptr, LINK_FIRST);
+	nlk = get_tag_next_joint(ptr, LINK_FIRST);
 	while (nlk)
 	{
-		if (compare_text(get_tag_node_name_ptr(nlk), -1, nname, -1, 0) == 0)
+		if (compare_text(get_tag_joint_name_ptr(nlk), -1, nname, -1, 0) == 0)
 			return nlk;
 
-		nlk = get_tag_next_node(ptr, nlk);
+		nlk = get_tag_next_joint(ptr, nlk);
 	}
 
 	return NULL;
 }
 
-link_t_ptr get_tag_next_node(link_t_ptr ptr,link_t_ptr pos)
+link_t_ptr get_tag_next_joint(link_t_ptr ptr,link_t_ptr pos)
 {
-	ptr = get_tag_nodeset(ptr);
+	ptr = get_tag_jointset(ptr);
 
 	if (pos == LINK_FIRST)
 		return get_dom_first_child_node(ptr);
@@ -153,9 +153,9 @@ link_t_ptr get_tag_next_node(link_t_ptr ptr,link_t_ptr pos)
 		return get_dom_next_sibling_node(pos);
 }
 
-link_t_ptr get_tag_prev_node(link_t_ptr ptr,link_t_ptr pos)
+link_t_ptr get_tag_prev_joint(link_t_ptr ptr,link_t_ptr pos)
 {
-	ptr = get_tag_nodeset(ptr);
+	ptr = get_tag_jointset(ptr);
 
 	if (pos == LINK_FIRST)
 		return NULL;
@@ -165,9 +165,9 @@ link_t_ptr get_tag_prev_node(link_t_ptr ptr,link_t_ptr pos)
 		return get_dom_prev_sibling_node(pos);
 }
 
-void clear_tag_node_tag(link_t_ptr elk)
+void clear_tag_joint_tag(link_t_ptr elk)
 {
-	set_tag_node_name(elk, DOC_TAG_TEXT);
+	set_tag_joint_name(elk, DOC_TAG_TEXT);
 }
 
 
@@ -177,10 +177,10 @@ int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max)
 	int len, total = 0;
 	const tchar_t *sz_name, *sz_text;
 
-	ilk = get_tag_next_node(ptr, LINK_FIRST);
+	ilk = get_tag_next_joint(ptr, LINK_FIRST);
 	while (ilk)
 	{
-		if (!is_tag_text_node(ilk))
+		if (!is_tag_text_joint(ilk))
 		{
 			if (total + 1 > max)
 				return total;
@@ -191,7 +191,7 @@ int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max)
 			}
 			total++;
 
-			sz_name = get_tag_node_name_ptr(ilk);
+			sz_name = get_tag_joint_name_ptr(ilk);
 			len = xslen(sz_name);
 			if (len + total > max)
 				return total;
@@ -212,7 +212,7 @@ int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max)
 			total++;
 		}
 
-		sz_text = get_tag_node_text_ptr(ilk);
+		sz_text = get_tag_joint_text_ptr(ilk);
 		len = xslen(sz_text);
 		if (len + total > max)
 			return total;
@@ -223,7 +223,7 @@ int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max)
 		}
 		total += len;
 
-		if (!is_tag_text_node(ilk))
+		if (!is_tag_text_joint(ilk))
 		{
 			if (total + 1 > max)
 				return total;
@@ -235,7 +235,7 @@ int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max)
 			total++;
 		}
 
-		ilk = get_tag_next_node(ptr, ilk);
+		ilk = get_tag_next_joint(ptr, ilk);
 	}
 
 	return total;
@@ -294,7 +294,7 @@ bool_t parse_tag_doc(link_t_ptr ptr, const tchar_t* buf, int len)
 
 		if (len_name || len_text)
 		{
-			ilk = insert_tag_node(ptr, LINK_LAST);
+			ilk = insert_tag_joint(ptr, LINK_LAST);
 
 			if (len_name)
 				set_dom_node_name(ilk, tk_name, len_name);

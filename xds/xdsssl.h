@@ -59,11 +59,30 @@ typedef struct _ssl_listen_t{
 extern "C" {
 #endif
 
-	XDS_API ssl_listen_t*  xssl_start_thread(unsigned short port, PF_SSLS_DISPATCH pf_dispatch, void* param);
+/*
+@FUNCTION xssl_start_thread: create ssl thread service routing.
+@INPUT unsigned short port: the service port.
+@INPUT PF_SSLS_DISPATCH pf_dispatch: the callback service dispatch function.
+@INPUT void* param: the user parameter transback into dispath function.
+@RETURN ssl_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API ssl_listen_t*  xssl_start_thread(unsigned short port, PF_SSLS_DISPATCH pf_dispatch, void* param);
 
-	XDS_API ssl_listen_t*  xssl_start_process(unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
+/*
+@FUNCTION xssl_start_process: create ssl process service routing.
+@INPUT unsigned short port: the service port.
+@INPUT const tchar_t* sz_moudle: the process service moudle name.
+@INPUT const tchar_t* sz_cmdline: the process execute command line.
+@RETURN ssl_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API ssl_listen_t*  xssl_start_process(unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
 
-	XDS_API void  xssl_stop(ssl_listen_t* plis);
+/*
+@FUNCTION xssl_stop: stop the ssl service routing.
+@INPUT ssl_listen_t* plis: the service listen struct.
+@RETURN void: none.
+*/
+XDS_API void  xssl_stop(ssl_listen_t* plis);
 
 #ifdef	__cplusplus
 }

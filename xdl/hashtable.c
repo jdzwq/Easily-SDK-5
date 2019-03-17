@@ -703,17 +703,6 @@ int get_hash_entity_val(link_t_ptr elk,tchar_t* buf,int max)
 	return len;
 }
 
-int get_hash_entity_val_len(link_t_ptr elk)
-{
-	hash_entity_t* phe;
-
-	XDL_ASSERT(elk && elk->tag == lkHashEntity);
-
-	phe = HashEntityFromLink(elk);
-
-	return (phe->vlen) ? (phe->vlen / sizeof(tchar_t) - 1) : 0;
-}
-
 void attach_hash_entity_val(link_t_ptr elk, tchar_t* val)
 {
 	hash_entity_t* phe;

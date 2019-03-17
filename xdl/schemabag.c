@@ -1144,13 +1144,13 @@ void export_rich_schema(link_t_ptr ptr, link_t_ptr sch)
 	set_schema_element_id(nlk_row, DOC_GRID_ROW);
 	set_schema_element_type(nlk_row, SCHEMA_ATTR_TYPE_COMPLEXTYPE);
 
-	plk = get_rich_next_node(ptr, LINK_FIRST);
+	plk = get_rich_next_anch(ptr, LINK_FIRST);
 	while (plk)
 	{
-		cname = get_rich_node_name_ptr(plk);
+		cname = get_rich_anch_name_ptr(plk);
 		if (is_null(cname))
 		{
-			plk = get_rich_next_node(ptr, plk);
+			plk = get_rich_next_anch(ptr, plk);
 			continue;
 		}
 
@@ -1159,7 +1159,7 @@ void export_rich_schema(link_t_ptr ptr, link_t_ptr sch)
 		set_schema_element_id(nlk, cname);
 		set_schema_element_type(nlk, SCHEMA_ATTR_TYPE_STRING);
 		
-		plk = get_rich_next_node(ptr, plk);
+		plk = get_rich_next_anch(ptr, plk);
 	}
 
 	nlk_rowset = insert_schema_element(sch, LINK_LAST);
@@ -1250,22 +1250,22 @@ void export_rich_data(link_t_ptr rich, link_t_ptr sch, link_t_ptr dom)
 				nlk = insert_dom_node(nlk_row, LINK_LAST);
 				set_dom_node_name(nlk, get_schema_element_name_ptr(slk), -1);
 
-				plk = get_rich_node(rich, get_schema_element_id_ptr(slk));
+				plk = get_rich_anch(rich, get_schema_element_id_ptr(slk));
 
 				if (plk)
 				{
-					set_dom_node_text(nlk, get_rich_node_text_ptr(plk), -1);
-					set_dom_node_attr(nlk, ATTR_TITLE, -1, get_rich_node_title_ptr(plk), -1);
+					set_dom_node_text(nlk, get_rich_anch_text_ptr(plk), -1);
+					set_dom_node_attr(nlk, ATTR_TITLE, -1, get_rich_anch_title_ptr(plk), -1);
 				}
 			}
 			else if (is_schema_attribute(slk))
 			{
-				plk = get_rich_node(rich, get_schema_element_id_ptr(slk));
+				plk = get_rich_anch(rich, get_schema_element_id_ptr(slk));
 
 				if (plk)
 				{
-					set_dom_node_attr(nlk_row, get_schema_element_name_ptr(slk), -1, get_rich_node_text_ptr(plk), -1);
-					set_dom_node_attr(nlk_row, ATTR_TITLE, -1, get_rich_node_title_ptr(plk), -1);
+					set_dom_node_attr(nlk_row, get_schema_element_name_ptr(slk), -1, get_rich_anch_text_ptr(plk), -1);
+					set_dom_node_attr(nlk_row, ATTR_TITLE, -1, get_rich_anch_title_ptr(plk), -1);
 				}
 				else
 				{
@@ -1280,25 +1280,25 @@ void export_rich_data(link_t_ptr rich, link_t_ptr sch, link_t_ptr dom)
 	{
 		set_dom_node_name(nlk_row, DOC_GRID_ROW, -1);
 
-		plk = get_rich_next_node(rich, LINK_FIRST);
+		plk = get_rich_next_anch(rich, LINK_FIRST);
 		while (plk)
 		{
-			if (is_null(get_rich_node_name_ptr(plk)))
+			if (is_null(get_rich_anch_name_ptr(plk)))
 			{
-				plk = get_rich_next_node(rich, plk);
+				plk = get_rich_next_anch(rich, plk);
 				continue;
 			}
 
-			nlk = find_dom_node_by_name(nlk_row, 0, get_rich_node_name_ptr(plk), -1);
+			nlk = find_dom_node_by_name(nlk_row, 0, get_rich_anch_name_ptr(plk), -1);
 			if (!nlk)
 			{
 				nlk = insert_dom_node(nlk_row, LINK_LAST);
-				set_dom_node_name(nlk, get_rich_node_name_ptr(plk), -1);
+				set_dom_node_name(nlk, get_rich_anch_name_ptr(plk), -1);
 			}
-			set_dom_node_text(nlk, get_rich_node_text_ptr(plk), -1);
-			set_dom_node_attr(nlk, ATTR_TITLE, -1, get_rich_node_title_ptr(plk), -1);
+			set_dom_node_text(nlk, get_rich_anch_text_ptr(plk), -1);
+			set_dom_node_attr(nlk, ATTR_TITLE, -1, get_rich_anch_title_ptr(plk), -1);
 
-			plk = get_rich_next_node(rich, plk);
+			plk = get_rich_next_anch(rich, plk);
 		}
 	}
 }
@@ -1378,7 +1378,7 @@ void import_rich_data(link_t_ptr rich, link_t_ptr sch, link_t_ptr dom)
 			slk = get_schema_next_element(slk_row, LINK_FIRST);
 			while (slk)
 			{
-				plk = get_rich_node(rich, get_schema_element_id_ptr(slk));
+				plk = get_rich_anch(rich, get_schema_element_id_ptr(slk));
 				if (!plk)
 				{
 					slk = get_schema_next_element(slk_row, slk);
@@ -1390,19 +1390,19 @@ void import_rich_data(link_t_ptr rich, link_t_ptr sch, link_t_ptr dom)
 					nlk = find_dom_node_by_name(nlk_row, 0, get_schema_element_name_ptr(slk), -1);
 					if (nlk)
 					{
-						set_rich_node_text(plk, get_dom_node_text_ptr(nlk), -1);
-						if (!get_rich_node_fixed(plk))
+						set_rich_anch_text(plk, get_dom_node_text_ptr(nlk), -1);
+						if (!get_rich_anch_fixed(plk))
 						{
-							set_rich_node_title(plk, get_dom_node_attr_ptr(nlk, ATTR_TITLE, -1));
+							set_rich_anch_title(plk, get_dom_node_attr_ptr(nlk, ATTR_TITLE, -1));
 						}
 					}
 				}
 				else if (is_schema_attribute(slk))
 				{
-					set_rich_node_text(plk, get_dom_node_attr_ptr(nlk_row, get_schema_element_name_ptr(slk), -1), -1);
-					if (!get_rich_node_fixed(plk))
+					set_rich_anch_text(plk, get_dom_node_attr_ptr(nlk_row, get_schema_element_name_ptr(slk), -1), -1);
+					if (!get_rich_anch_fixed(plk))
 					{
-						set_rich_node_title(plk, get_dom_node_attr_ptr(nlk_row, ATTR_TITLE, -1));
+						set_rich_anch_title(plk, get_dom_node_attr_ptr(nlk_row, ATTR_TITLE, -1));
 					}
 				}
 
@@ -1420,11 +1420,11 @@ void import_rich_data(link_t_ptr rich, link_t_ptr sch, link_t_ptr dom)
 			nlk = get_dom_first_child_node(nlk_row);
 			while (nlk)
 			{
-				plk = get_rich_node(rich, get_dom_node_name_ptr(nlk));
+				plk = get_rich_anch(rich, get_dom_node_name_ptr(nlk));
 				if (!plk && b_dyn)
 				{
-					plk = insert_rich_node(rich, LINK_LAST);
-					set_rich_node_name(plk, get_dom_node_name_ptr(nlk));
+					plk = insert_rich_anch(rich, LINK_LAST);
+					set_rich_anch_name(plk, get_dom_node_name_ptr(nlk));
 				}
 				else
 				{
@@ -1433,10 +1433,10 @@ void import_rich_data(link_t_ptr rich, link_t_ptr sch, link_t_ptr dom)
 
 				if (plk)
 				{
-					set_rich_node_text(plk, get_dom_node_text_ptr(nlk), -1);
-					if (!get_rich_node_fixed(plk))
+					set_rich_anch_text(plk, get_dom_node_text_ptr(nlk), -1);
+					if (!get_rich_anch_fixed(plk))
 					{
-						set_rich_node_title(plk, get_dom_node_attr_ptr(nlk, ATTR_TITLE, -1));
+						set_rich_anch_title(plk, get_dom_node_attr_ptr(nlk, ATTR_TITLE, -1));
 					}
 				}
 

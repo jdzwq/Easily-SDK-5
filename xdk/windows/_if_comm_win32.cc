@@ -198,14 +198,14 @@ u32_t _comm_wait(res_file_t fh, async_t* pb)
 
 			if (pb->type == ASYNC_QUEUE)
 			{
-				if (GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->msec)? pb->msec : INFINITE)))
+				if (GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
 				{
 					ResetEvent(pov->hEvent);
 				}
 			}
 			else
 			{
-				if (WaitForSingleObject(pov->hEvent, ((pb->msec)? pb->msec : INFINITE)) == WAIT_OBJECT_0)
+				if (WaitForSingleObject(pov->hEvent, ((pb->timo)? pb->timo : INFINITE)) == WAIT_OBJECT_0)
 				{
 					ResetEvent(pov->hEvent);
 				}

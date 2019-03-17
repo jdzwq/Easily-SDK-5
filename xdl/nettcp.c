@@ -131,11 +131,11 @@ xhand_t xtcp_srv(res_file_t so)
 	pso->so = so;
 	pso->type = _XTCP_TYPE_SRV;
 
-	async_alloc_lapp(&pso->ov);
-
 	xsocket_setopt(pso->so, SO_LINGER, (const char*)&li, sizeof(struct linger));
 	xsocket_setopt(pso->so, SO_SNDBUF, (const char*)&zo, sizeof(int));
 	xsocket_setopt(pso->so, SO_RCVBUF, (const char*)&zo, sizeof(int));
+
+	async_alloc_lapp(&pso->ov, TCP_BASE_TIMO);
 
 	END_CATCH;
 
@@ -266,24 +266,6 @@ void xtcp_set_recv_buff(xhand_t tcp, dword_t dw)
 	}
 
 	xsocket_set_rcvbuf(pso->so, zero);
-}
-
-void xtcp_set_recv_timeout(xhand_t tcp, int sec)
-{
-	tcp_t* pso = (tcp_t*)tcp;
-
-	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
-
-	xsocket_set_rcvtmo(pso->so, sec);
-}
-
-void xtcp_set_send_timeout(xhand_t tcp, int sec)
-{
-	tcp_t* pso = (tcp_t*)tcp;
-
-	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
-
-	xsocket_set_sndtmo(pso->so, sec);
 }
 
 void xtcp_set_linger(xhand_t tcp, bool_t b_wait, int n_sec)

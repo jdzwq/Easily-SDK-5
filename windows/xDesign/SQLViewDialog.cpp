@@ -65,7 +65,7 @@ void SQLViewDlg_OnOK(res_win_t widget)
 	int len = editbox_get_text(pdt->hEdit, NULL, MAX_LONG);
 	if (vs && len)
 	{
-		editbox_get_text(pdt->hEdit, varstr_ensure_buf(vs, len), len);
+		editbox_get_text(pdt->hEdit, string_ensure_buf(vs, len), len);
 	}
 
 	widget_close(widget, 1);

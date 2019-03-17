@@ -82,7 +82,6 @@ XDK_API void lighten_xfont(xfont_t* pxf, int n);
 
 XDK_API void lighten_xgradi(xgradi_t* pxg, int n);
 
-
 #ifdef	__cplusplus
 }
 #endif

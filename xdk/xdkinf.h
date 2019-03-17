@@ -153,7 +153,7 @@ typedef struct _if_mbcs_t{
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-typedef void(*PF_ASYNC_ALLOC_LAPP)(async_t*);
+typedef void(*PF_ASYNC_ALLOC_LAPP)(async_t*, int ms);
 typedef void(*PF_ASYNC_RELEASE_LAPP)(async_t*);
 
 typedef struct _if_async_t{
@@ -288,8 +288,6 @@ typedef bool_t (*PF_SOCKET_GETOPT)(res_file_t, int, char*, int*);
 typedef bool_t (*PF_SOCKET_SET_LINGER)(res_file_t, bool_t, int);
 typedef bool_t (*PF_SOCKET_SET_SNDBUF)(res_file_t, int);
 typedef bool_t (*PF_SOCKET_SET_RCVBUF)(res_file_t, int);
-typedef bool_t (*PF_SOCKET_SET_SNDTMO)(res_file_t, int);
-typedef bool_t (*PF_SOCKET_SET_RCVTMO)(res_file_t, int);
 typedef bool_t (*PF_HOST_ADDR)(const schar_t*, schar_t*);
 typedef void (*PF_FILL_ADDR)(net_addr_t*, unsigned short, const schar_t*);
 typedef void(*PF_CONV_ADDR)(net_addr_t*, unsigned short*, schar_t*);
@@ -323,8 +321,6 @@ typedef struct _if_socket_t{
 	PF_SOCKET_SET_LINGER	pf_socket_set_linger;
 	PF_SOCKET_SET_SNDBUF	pf_socket_set_sndbuf;
 	PF_SOCKET_SET_RCVBUF	pf_socket_set_rcvbuf;
-	PF_SOCKET_SET_SNDTMO	pf_socket_set_sndtmo;
-	PF_SOCKET_SET_RCVTMO	pf_socket_set_rcvtmo;
 	PF_HOST_ADDR			pf_host_addr;
 	PF_FILL_ADDR			pf_fill_addr;
 	PF_CONV_ADDR			pf_conv_addr;
@@ -634,6 +630,8 @@ typedef void(*PF_GDI_DRAW_3DLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, con
 typedef void(*PF_GDI_DRAW_3DRECT)(res_ctx_t, const xpen_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_POLYLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_GDI_DRAW_POLYGON)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_BEZIER)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_PATH)(res_ctx_t, const xpen_t*, const tchar_t*, int);
 typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
 typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
@@ -719,9 +717,11 @@ typedef struct _if_context_t{
 	PF_GDI_DRAW_3DLINE		pf_gdi_draw_3dline;
 	PF_GDI_DRAW_POLYLINE	pf_gdi_draw_polyline;
 	PF_GDI_DRAW_POLYGON		pf_gdi_draw_polygon;
+	PF_GDI_DRAW_BEZIER		pf_gdi_draw_bezier;
+	PF_GDI_DRAW_PATH		pf_gdi_draw_path;
 	PF_GDI_DRAW_3DRECT		pf_gdi_draw_3drect;
 	PF_GDI_DRAW_RECT		pf_gdi_draw_rect;
-	PF_GDI_GRADIENT_RECT	pf_gdi_gradinet_rect;
+	PF_GDI_GRADIENT_RECT	pf_gdi_gradient_rect;
 	PF_GDI_ALPHABLEND_RECT	pf_gdi_alphablend_rect;
 	PF_GDI_DRAW_ROUND		pf_gdi_draw_round;
 	PF_GDI_DRAW_ELLIPSE		pf_gdi_draw_ellipse;

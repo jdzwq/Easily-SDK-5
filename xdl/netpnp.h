@@ -43,7 +43,11 @@ typedef enum{
 	_XPNP_TYPE_SRV = 2
 }XPNP_TYPE;
 
-#define PNP_BASE_TIMO		15000
+#if defined(DEBUG) || defined(_DEBUG)
+#define PNP_BASE_TIMO		(-1)
+#else
+#define PNP_BASE_TIMO		(30000)
+#endif
 #define PNP_BASE_BUFF		65535
 #define PNP_MIN_PORT		49152
 #define PNP_MAX_PORT		65535
@@ -56,23 +60,62 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API xhand_t xpnp_cli(unsigned short port, const tchar_t* addr);
+/*
+@FUNCTION xpnp_cli: create a PNP client.
+@INPUT unsigned short port: the network port to connect.
+@INPUT const tchar_t* addr: the network address to connect.
+@RETURN xhand_t: if succeeds return PNP client handle, fails return NULL.
+*/
+XDL_API xhand_t xpnp_cli(unsigned short port, const tchar_t* addr);
 
-	XDL_API xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
+/*
+@FUNCTION xpnp_srv: create a PNP server.
+@INPUT unsigned short port: the network port from client.
+@INPUT const tchar_t* addr: the network address from client.
+@INPUT const byte_t* pack: the network package from client.
+@INPUT dword_t size: the network package size in bytes.
+@RETURN xhand_t: if succeeds return PNP server handle, fails return NULL.
+*/
+XDL_API xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
 
-	XDL_API void xpnp_close(xhand_t pnp);
+/*
+@FUNCTION xpnp_close: close a PNP client or server handle.
+@INPUT xhand_t pnp: the PNP xhandle.
+@RETURN void: none.
+*/
+XDL_API void xpnp_close(xhand_t pnp);
 
-	XDL_API int xpnp_type(xhand_t pnp);;
+/*
+@FUNCTION xpnp_type: get PNP type, it can be _XPNP_TYPE_CLI, _XPNP_TYPE_SRV.
+@INPUT xhand_t pnp: the PNP xhandle.
+@RETURN int: the PNP type.
+*/
+XDL_API int xpnp_type(xhand_t pnp);;
 
-	XDL_API void xpnp_set_send_timeout(xhand_t pnp, int ms);
+/*
+@FUNCTION xpnp_write: write PNP data.
+@INPUT xhand_t pnp: the PNP xhandle.
+@INPUT const byte_t* data: the data bytes buffer.
+@INOUTPUT dword_t* pb: input the size for writing, and return the bytes writed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t xpnp_write(xhand_t pnp, const byte_t* data, dword_t* pb);
 
-	XDL_API void xpnp_set_recv_timeout(xhand_t pnp, int ms);
+/*
+@FUNCTION xpnp_flush: ensure PNP data writed.
+@INPUT xhand_t pnp: the PNP xhandle.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t xpnp_flush(xhand_t pnp);
 
-	XDL_API bool_t xpnp_write(xhand_t pnp, const byte_t* data, dword_t* pb);
-
-	XDL_API bool_t xpnp_flush(xhand_t pnp);
-
-	XDL_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
+/*
+@FUNCTION xpnp_read: read PNP data.
+@INPUT xhand_t pnp: the PNP xhandle.
+@OUTPUT byte_t* data: the bytes buffer for reading.
+@INOUTPUT dword_t* pb: input the size for reading, and return the bytes readed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
 
 #ifdef	__cplusplus
 }

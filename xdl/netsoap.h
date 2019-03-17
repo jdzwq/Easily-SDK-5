@@ -40,8 +40,21 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION xhttp_invoke_soap: call soap action.
+@INPUT xhand_t xhttp: the http handle.
+@INPUT link_t_ptr send_soap: the input soap document.
+@OUTPUT link_t_ptr recv_soap: the output soap document.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xhttp_invoke_soap(xhand_t xhttp, link_t_ptr send_soap, link_t_ptr recv_soap);
 
+/*
+@FUNCTION xhttp_invoke_wsdl: get soap wsdl.
+@INPUT const tchar_t* sz_url: the soap service url.
+@OUTPUT link_t_ptr wsdl: the output wsdl document.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t xhttp_invoke_wsdl(const tchar_t* sz_url, link_t_ptr wsdl);
 
 XDL_API bool_t get_wsdl_soap_info(link_t_ptr wsdl, const tchar_t* sz_srv, const tchar_t* sz_rpc, tchar_t* sz_loc, tchar_t* sz_act, tchar_t* sz_tns, link_t_ptr req_sch, link_t_ptr res_sch);

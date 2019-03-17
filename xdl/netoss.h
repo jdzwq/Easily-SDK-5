@@ -40,6 +40,22 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION oss_ioctl: the oss file io control.
+@INPUT const tchar_t* io_op: the operation code, it can be "GET", "PUT", "DELETE".
+@INPUT const tchar_t* url: the restful object url.
+@INPUT const tchar_t* acc_id: the security id.
+@INPUT const tchar_t* acc_key: the security key.
+@INPUT const byte_t* in_data: the input data bytes buffer.
+@INPUT dword_t in_size: the data size in bytes.
+@OUTPUT tchar_t* out_code: the string buffer for outputing code.
+@OUTPUT tchar_t* out_msg: the string buffer for outputing message.
+@OUTPUT tchar_t* out_type: the string buffer for outputing http content type.
+@OUTPUT tchar_t* out_size: the string buffer for outputing http content length.
+@OUTPUT byte_t** out_buffer: the buffer for outputing data, it must be alloced by varbuf_alloc.
+@OUTPUT dword_t* out_bytes: the data size in bytes outputed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 XDL_API bool_t oss_ioctl(
 	const tchar_t* io_op,
 	const tchar_t* url,

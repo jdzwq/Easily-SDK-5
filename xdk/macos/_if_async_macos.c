@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily xdl v5.5
+	Easily xdk v5.5
 
 	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc sorting document
+	@doc async system call document
 
-	@module	xdlsort.c | xdl sorting implement file
+	@module	_if_async.c | async system call windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,35 +29,25 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "xdlsort.h"
-#include "xdlutil.h"
-#include "xdlstr.h"
-#include "impmem.h"
+#include "xdkiml.h"
 
-void bubble_xsort(xsort_t* pxs, int count)
+#ifdef XDK_SUPPORT_ASYNC
+
+void _async_alloc_lapp(async_t* pas, int ms)
 {
-	int i,tag = 1;
-	xsort_t x = { 0 };
-
-	while (tag)
-	{
-		tag = 0;
-		count--;
-		for (i = 0; i < count; i++)
-		{
-			if (pxs[i].fact > pxs[i + 1].fact)
-			{
-				x.fact = pxs[i + 1].fact;
-				x.data = pxs[i + 1].data;
-
-				pxs[i + 1].fact = pxs[i].fact;
-				pxs[i + 1].data = pxs[i].data;
-
-				pxs[i].fact = x.fact;
-				pxs[i].data = x.data;
-
-				tag = 1;
-			}
-		}
-	}
+    pas->type = ASYNC_EVENT;
+    pas->lapp = (void*)_local_alloc(sizeof(OVERLAPPED));
+    
+    pas->timo = (ms < 0)? 0 : ms;
 }
+
+void _async_release_lapp(async_t* pas)
+{
+    if(pas->lapp)
+        _local_free(pas->lapp);
+    
+    pas->lapp = NULL;
+}
+
+#endif //XDK_SUPPORT_ASYNC
+

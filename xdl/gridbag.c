@@ -218,21 +218,21 @@ void save_rich_to_grid_row(link_t_ptr ptr, link_t_ptr grid, link_t_ptr rlk)
 	link_t_ptr nlk;
 	link_t_ptr clk;
 
-	nlk = get_rich_next_node(ptr, LINK_FIRST);
+	nlk = get_rich_next_anch(ptr, LINK_FIRST);
 	while (nlk)
 	{
-		clk = get_col(grid, get_rich_node_name_ptr(nlk));
+		clk = get_col(grid, get_rich_anch_name_ptr(nlk));
 		if (!clk)
 		{
-			nlk = get_rich_next_node(ptr, nlk);
+			nlk = get_rich_next_anch(ptr, nlk);
 			continue;
 		}
 
-		set_cell_text(rlk, clk, get_rich_node_text_ptr(nlk), -1);
+		set_cell_text(rlk, clk, get_rich_anch_text_ptr(nlk), -1);
 		set_cell_dirty(rlk, clk, 1);
 		set_row_dirty(rlk);
 
-		nlk = get_rich_next_node(ptr, nlk);
+		nlk = get_rich_next_anch(ptr, nlk);
 	}
 }
 
@@ -246,19 +246,19 @@ void load_rich_from_grid_row(link_t_ptr ptr, link_t_ptr grid, link_t_ptr rlk)
 	if (rs == dsNewClean || rs == dsDelete || rs == dsNewDelete)
 		return;
 
-	nlk = get_rich_next_node(ptr, LINK_FIRST);
+	nlk = get_rich_next_anch(ptr, LINK_FIRST);
 	while (nlk)
 	{
-		clk = get_col(grid, get_rich_node_name_ptr(nlk));
+		clk = get_col(grid, get_rich_anch_name_ptr(nlk));
 		if (!clk)
 		{
-			nlk = get_rich_next_node(ptr, nlk);
+			nlk = get_rich_next_anch(ptr, nlk);
 			continue;
 		}
 
-		set_rich_node_text(nlk, get_cell_text_ptr(rlk, clk), -1);
+		set_rich_anch_text(nlk, get_cell_text_ptr(rlk, clk), -1);
 
-		nlk = get_rich_next_node(ptr, nlk);
+		nlk = get_rich_next_anch(ptr, nlk);
 	}
 }
 

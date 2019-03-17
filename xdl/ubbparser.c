@@ -106,10 +106,10 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 	if (len < 0)
 		len = xslen(str);
 
-	vs_name = varstr_alloc();
-	vs_key = varstr_alloc();
-	vs_val = varstr_alloc();
-	vs_text = varstr_alloc();
+	vs_name = string_alloc();
+	vs_key = string_alloc();
+	vs_val = string_alloc();
+	vs_text = string_alloc();
 	
 	//自动机初始化
 	ma.ma = NEXT;
@@ -225,10 +225,10 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_name);
+				string_empty(vs_name);
 				break;
 			case NEXT:
-				varstr_ins_chars(vs_name, -1, &ma.ch, 1);
+				string_ins_chars(vs_name, -1, &ma.ch, 1);
 				break;
 			}
 		}else if(ma.ms == UBB_NS_NAME_END)
@@ -236,7 +236,7 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				set_dom_node_name(nlk, varstr_ptr(vs_name), -1);
+				set_dom_node_name(nlk, string_ptr(vs_name), -1);
 				break;
 			case NEXT:
 				break;
@@ -246,10 +246,10 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_key);
+				string_empty(vs_key);
 				break;
 			case NEXT:
-				varstr_ins_chars(vs_key, -1, &ma.ch, 1);
+				string_ins_chars(vs_key, -1, &ma.ch, 1);
 				break;
 			}
 		}else if(ma.ma == UBB_NS_KEY_END)
@@ -263,10 +263,10 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_val);
+				string_empty(vs_val);
 				break;
 			case NEXT:
-				varstr_ins_chars(vs_val, -1, &ma.ch, 1);
+				string_ins_chars(vs_val, -1, &ma.ch, 1);
 				break;
 			}
 		}else if(ma.ms == UBB_NS_VAL_END)
@@ -274,7 +274,7 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				set_dom_node_attr(nlk, varstr_ptr(vs_key), -1, varstr_ptr(vs_val), -1);
+				set_dom_node_attr(nlk, string_ptr(vs_key), -1, string_ptr(vs_val), -1);
 				break;
 			case NEXT:
 				break;
@@ -284,10 +284,10 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_text);
+				string_empty(vs_text);
 				break;
 			case NEXT:
-				varstr_ins_chars(vs_text, -1, &ma.ch, 1);
+				string_ins_chars(vs_text, -1, &ma.ch, 1);
 				break;
 			}
 		}else if(ma.ms == UBB_NS_TEXT_END)
@@ -295,7 +295,7 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				set_dom_node_text(nlk, varstr_ptr(vs_text),-1);
+				set_dom_node_text(nlk, string_ptr(vs_text),-1);
 				break;
 			case NEXT:
 				break;
@@ -337,18 +337,18 @@ bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len)
 			nlk = insert_dom_node(dom, LINK_LAST);
 			set_dom_node_name(nlk, UBB_TAG_TEXT,-1);
 
-			varstr_empty(vs_name);
-			varstr_empty(vs_key);
-			varstr_empty(vs_val);
-			varstr_empty(vs_text);
+			string_empty(vs_name);
+			string_empty(vs_key);
+			string_empty(vs_val);
+			string_empty(vs_text);
 		}
 
 	}
 
-	varstr_free(vs_name);
-	varstr_free(vs_key);
-	varstr_free(vs_val);
-	varstr_free(vs_text);
+	string_free(vs_name);
+	string_free(vs_key);
+	string_free(vs_val);
+	string_free(vs_text);
 
 	//自动机的最终状态
 	return (ma.ms == UBB_SUCCEED)? 1 : 0;

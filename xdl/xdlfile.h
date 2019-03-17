@@ -7,7 +7,7 @@
 
 	@doc xdl file document
 
-	@module	xdlfile.h | xdl file interface file
+	@module	file.h | xdl file interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,8 +29,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _XDLFILE_H
-#define _XDLFILE_H
+#ifndef _FILE_H
+#define _FILE_H
 
 #include "xdldef.h"
 
@@ -192,9 +192,36 @@ XDL_API bool_t		xfile_mkdir(const secu_desc_t* psd, const tchar_t* path);
 */
 XDL_API bool_t		xfile_rmdir(const secu_desc_t* psd, const tchar_t* path);
 
+/*
+@FUNCTION xfile_list: list a directory child items.
+@INPUT const secu_desc_t* psd: the security struct for writing destination file.
+@INPUT const tchar_t* path: the path name.
+@INPUT link_t_ptr ptr: the list document link component.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t		xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+
+/*
+@FUNCTION xfile_dump: dump a directory child items.
+@INPUT const secu_desc_t* psd: the security struct for writing destination file.
+@INPUT const tchar_t* path: the path name.
+@INPUT stream_t stm: the stream object.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t		xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t stm);
+
+/*
+@FUNCTION xfile_tree: list a directory child and all sub child items.
+@INPUT const secu_desc_t* psd: the security struct for writing destination file.
+@INPUT const tchar_t* path: the path name.
+@INPUT link_t_ptr ptr: the list document link component.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API void		xfile_tree(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+
 #ifdef	__cplusplus
 }
 #endif
 
 
-#endif /*XDLFILE_H*/
+#endif /*FILE_H*/

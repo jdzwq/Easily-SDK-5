@@ -116,7 +116,7 @@ void delete_section(link_t_ptr slk)
 	delete_dom_node(slk);
 }
 
-link_t_ptr get_proper_from_section(link_t_ptr slk)
+link_t_ptr proper_doc_from_section(link_t_ptr slk)
 {
 	return get_dom_parent_node(slk);
 }
@@ -176,7 +176,7 @@ void delete_entity(link_t_ptr elk)
 	delete_dom_node(elk);
 }
 
-link_t_ptr get_section_from_entity(link_t_ptr elk)
+link_t_ptr section_from_entity(link_t_ptr elk)
 {
 	return get_dom_parent_node(elk);
 }

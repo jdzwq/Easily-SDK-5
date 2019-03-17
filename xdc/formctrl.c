@@ -1465,7 +1465,7 @@ void noti_form_commit_edit(res_win_t widget)
 		fd.menu = widget_detach_menu(ptd->editor);
 
 		tablectrl_accept(ptd->editor, 1);
-		dirty = (get_field_editable(ptd->field)) ? tablectrl_is_dirty(ptd->editor) : 0;
+		dirty = (get_field_editable(ptd->field)) ? tablectrl_is_update(ptd->editor) : 0;
 
 		data = tablectrl_detach(ptd->editor);
 

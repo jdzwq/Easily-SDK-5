@@ -49,4 +49,9 @@ void _error_debug(const tchar_t* str)
     if(str) printf("%s\n", str);
 }
 
+void _error_print(const char* str)
+{
+    if(str) printf("%s\n", str);
+}
+
 #endif //XDK_SUPPORT_ERROR

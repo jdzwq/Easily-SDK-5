@@ -7,7 +7,7 @@
 
 	@doc expression document
 
-	@module	xdlexpr.c | expression implement file
+	@module	expr.c | expression implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "xdlexpr.h"
+#include "xdlexp.h"
 #include "xdlimp.h"
 #include "xdloem.h"
 #include "xdlstd.h"

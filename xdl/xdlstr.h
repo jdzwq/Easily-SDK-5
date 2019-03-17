@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc string document
+	@doc xdlstr document
 
-	@module	xdlstr.h | string interface file
+	@module	xdlstr.h | str library interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -437,4 +437,4 @@ XDL_API const wchar_t* w_xscanf_arg(const wchar_t* str, const wchar_t* fmt, va_l
 #endif /*UNICODE*/
 
 
-#endif /*_XDLSTR_H*/
+#endif /*_STRLIB_H*/

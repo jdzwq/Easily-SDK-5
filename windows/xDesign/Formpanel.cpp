@@ -781,9 +781,9 @@ void FormPanel_OnEditEx(res_win_t widget)
 
 	if (compare_text(get_field_class_ptr(flk), -1, DOC_FORM_PHOTO, -1, 0) == 0)
 	{
-		string_t vs_img = varstr_alloc();
+		string_t vs_img = string_alloc();
 
-		varstr_cpy(vs_img, get_field_text_ptr(flk), -1);
+		string_cpy(vs_img, get_field_text_ptr(flk), -1);
 
 		res_win_t hAnnoDlg = annodlg_create(_T("±ê×¢Í¼Ïñ"), vs_img, g_hMain);
 
@@ -791,13 +791,13 @@ void FormPanel_OnEditEx(res_win_t widget)
 
 		if (!widget_do_modal(hAnnoDlg))
 		{
-			varstr_free(vs_img);
+			string_free(vs_img);
 			return;
 		}
 
-		set_field_text(flk, varstr_ptr(vs_img), varstr_len(vs_img));
+		set_field_text(flk, string_ptr(vs_img), string_len(vs_img));
 
-		varstr_free(vs_img);
+		string_free(vs_img);
 	}
 
 	formctrl_redraw_field(pdt->hForm, flk, 1);

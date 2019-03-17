@@ -7,7 +7,7 @@
 
 	@doc stream document
 
-	@module	xdlstm.c | stream implement file
+	@module	stream.c | xdl stream implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -413,8 +413,8 @@ stream_t stream_alloc(xhand_t io)
 		break;
 	case _HANDLE_INET:
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
-		pxt->inf.pf_read = inet_read_file;
-		pxt->inf.pf_write = inet_write_file;
+		pxt->inf.pf_read = xinet_read_file;
+		pxt->inf.pf_write = xinet_write_file;
 #endif
 		break;
 	}
@@ -1394,7 +1394,7 @@ bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
 
 			if (rt)
 			{
-				varstr_decode(vs, encode, buf, dw);
+				string_decode(vs, encode, buf, dw);
 			}
 
 			xmem_free(buf);
@@ -1421,7 +1421,7 @@ bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
 			if (!dw)
 				break;
 
-			varstr_cat(vs, sch, -1);
+			string_cat(vs, sch, -1);
 
 			if (sch[0] == _T('\'') || sch[0] == _T('\"'))
 			{
@@ -1445,7 +1445,7 @@ bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
 
 			if (rt)
 			{
-				varstr_decode(vs, encode, buf, dw);
+				string_decode(vs, encode, buf, dw);
 			}
 
 			xmem_free(buf);
@@ -1474,13 +1474,13 @@ bool_t stream_write_line(stream_t xs, string_t vs, dword_t* pb)
 	encode = stream_get_encode(xs);
 	mode = stream_get_mode(xs);
 
-	size = (vs)? varstr_encode(vs, encode, NULL, MAX_LONG) : 0;
+	size = (vs)? string_encode(vs, encode, NULL, MAX_LONG) : 0;
 
 	if (size)
 	{
 		buf = (byte_t*)xmem_alloc(size);
 
-		varstr_encode(vs, encode, buf, size);
+		string_encode(vs, encode, buf, size);
 	}
 
 	if (mode == CHUNK_OPERA)
@@ -1542,23 +1542,23 @@ bool_t _stream_copy_chars(stream_t xs_src, stream_t xs_dst)
 {
 	stream_t vs = NULL;
 	
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	while (stream_read_line(xs_src, vs, NULL))
 	{
 		if (!stream_write_line(xs_dst, vs, NULL))
 		{
-			varstr_free(vs);
+			string_free(vs);
 			return 0;
 		}
 
-		if (varstr_len(vs) == 0)
+		if (string_len(vs) == 0)
 			break;
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 
 	return stream_flush(xs_dst);
 }

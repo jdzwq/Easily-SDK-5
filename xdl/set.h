@@ -54,27 +54,92 @@ typedef struct _set_t{
 extern "C" {
 #endif
 
-	XDL_API set_t* set_alloc(void);
+/*
+@FUNCTION set_alloc: alloc a set.
+@RETURN set_t*: return the set struct
+*/
+XDL_API set_t* set_alloc(void);
 
-	XDL_API void set_free(set_t* pset);
+/*
+@FUNCTION set_free: free a set.
+@INPUT set_t* pset: the set struct
+@RETURN void: none.
+*/
+XDL_API void set_free(set_t* pset);
 
-	XDL_API void set_copy(set_t* pset, const set_t* psrc);
+/*
+@FUNCTION set_copy: copy source set elements to destination.
+@OUTPUT set_t* pdst: the destination set struct.
+@INPUT const set_t* psrc: the source set struct.
+@RETURN void: none.
+*/
+XDL_API void set_copy(set_t* pdst, const set_t* psrc);
 
-	XDL_API int set_comp(const set_t* p1, const set_t* p2);
+/*
+@FUNCTION set_comp: compare two set.
+@INPUT const set_t* p1: the set struct.
+@INPUT const set_t* p2: the set struct.
+@RETURN int: if p1 equla to p2 return zero, else if p1 less than p2 return -1, else return 1.
+*/
+XDL_API int set_comp(const set_t* p1, const set_t* p2);
 
-	XDL_API void set_empty(set_t* pset);
+/*
+@FUNCTION set_empty: set the set elements to zero.
+@OUTPUT set_t* pset: the set struct.
+@RETURN void: none.
+*/
+XDL_API void set_empty(set_t* pset);
 
-	XDL_API void set_add(set_t* pset, const set_t* pv);
+/*
+@FUNCTION set_add: append set to a set as its sub element.
+@INOUTPUT set_t* pset: the set struct.
+@INPUT const set_t* psub: the sub set struct.
+@RETURN void: none.
+*/
+XDL_API void set_add(set_t* pset, const set_t* psub);
 
-	XDL_API void set_del(set_t* pset, const set_t* pv);
+/*
+@FUNCTION set_del: delete sub set from a set.
+@INOUTPUT set_t* pset: the set struct.
+@INPUT const set_t* psub: the sub set struct.
+@RETURN void: none.
+*/
+XDL_API void set_del(set_t* pset, const set_t* psub);
 
-	XDL_API bool_t set_in(set_t* pset, const set_t* pv);
+/*
+@FUNCTION set_in: test a sub set is in the set.
+@INPUT set_t* pset: the set struct.
+@INPUT const set_t* psub: the sub set struct.
+@RETURN bool_t: return nonzero if exists, otherwise return zero.
+*/
+XDL_API bool_t set_in(set_t* pset, const set_t* psub);
 
-	XDL_API void set_get(set_t* pset, int idex, set_t* pv);
+/*
+@FUNCTION set_get: get a sub from the set by position.
+@INPUT set_t* pset: the set struct.
+@INPUT int index: the zero based position.
+@OUTPUT set_t* psub: the sub set struct.
+@RETURN bool_t: return nonzero if exists, otherwise return zero.
+*/
+XDL_API void set_get(set_t* pset, int index, set_t* psub);
 
-	XDL_API void set_parse(set_t* pset, const tchar_t* token, int len);
+/*
+@FUNCTION set_parse: parse set element value from string.
+@INOUTPUT set_t* pset: the set struct.
+@INPUT const tchar_t* str: string token, eg: "{a, b, {c, d}}".
+@INPUT int len: length of string token.
+@RETURN void: none.
+*/
+XDL_API void set_parse(set_t* pset, const tchar_t* token, int len);
 
-	XDL_API int set_format(const set_t* pset, tchar_t* buf, int max);
+/*
+@FUNCTION set_format: format set element to string.
+@INPUT const set_t* pset: the set struct.
+@OUTPUT tchar_t* buf: buffer for formating, eg: "{1, 2, {3, 4}}".
+@INPUT int max: the buffer size in characters, not include terminate character.
+@RETURN int: return the formated string token length.
+*/
+XDL_API int set_format(const set_t* pset, tchar_t* buf, int max);
 
 #if defined(_DEBUG) || defined(DEBUG)
 	XDL_API void test_set(void);

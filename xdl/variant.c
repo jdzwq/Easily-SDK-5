@@ -734,7 +734,7 @@ dword_t variant_encode(variant_t* pv, byte_t* buf, dword_t max)
 #ifdef _UNICODE
 		n = ucs_to_utf8(str, len, ((buf) ? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
 #else
-		n = mbs_to_utf8(str, len, ((buf)? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE));
+		n = mbs_to_utf8(str, len, ((buf)? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
 #endif
 		break;
 	case _UTF16_LIT:

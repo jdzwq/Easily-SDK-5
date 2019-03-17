@@ -317,7 +317,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	{
 		xhttp_get_request_header(pb->http, HTTP_HEADER_ACCEPTENCODING, -1, fencode, INT_LEN);
 
-		if (compare_text(fencode, -1, HTTP_HEADER_ENCODING_DEFLATE, -1, 1) == 0)
+		if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0)
 		{
 			sz_zip = (byte_t*)xmem_alloc(n_size);
 
@@ -335,10 +335,10 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 			{
 				xsprintf(fsize, _T("%d"), n_zip);
 				xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-				xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, HTTP_HEADER_ENCODING_DEFLATE, -1);
+				xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1);
 				b_zip = 1;
 			}
-		}else if (compare_text(fencode, -1, HTTP_HEADER_ENCODING_GZIP, -1, 1) == 0)
+		}else if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1, 1) == 0)
 		{
 			sz_zip = (byte_t*)xmem_alloc(n_size);
 
@@ -356,7 +356,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 			{
 				xsprintf(fsize, _T("%d"), n_zip);
 				xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-				xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, HTTP_HEADER_ENCODING_GZIP, -1);
+				xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1);
 				b_zip = 1;
 			}
 		}
@@ -538,7 +538,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 		parse_long_range(frange, &n_hoff, &n_loff, &n_bys, &n_all);
 	}
 
-	if (compare_text(fencode, -1, HTTP_HEADER_ENCODING_DEFLATE, -1, 1) == 0)
+	if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0)
 	{
 		sz_zip = (byte_t*)xmem_alloc(n_bys);
 		n_zip = n_bys;
@@ -548,7 +548,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 		}
 		b_zip = 1;
 	}
-	else if (compare_text(fencode, -1, HTTP_HEADER_ENCODING_GZIP, -1, 1) == 0)
+	else if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1, 1) == 0)
 	{
 		sz_zip = (byte_t*)xmem_alloc(n_bys);
 		n_zip = n_bys;

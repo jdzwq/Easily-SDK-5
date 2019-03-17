@@ -1279,7 +1279,7 @@ void _test_bina_tree(int level)
 		count_0 += n0;
 		count_1 += n1;
 
-		Sleep(100);
+		//Sleep(100);
 	}
 
 	_tprintf(_T("nm total step %d, count node %d, max step %.2f, aveage step %.4f\n"), sum_0, count_0, max_0, (float)sum_0 / count_0);

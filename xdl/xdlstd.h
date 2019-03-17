@@ -9,8 +9,6 @@
 #include "matrix.h"
 #include "map.h"
 #include "nuid.h"
-#include "object.h"
-#include "buffer.h"
 
 #include "dblink.h"
 #include "hashtable.h"
@@ -19,6 +17,8 @@
 #include "stringtable.h"
 #include "wordstable.h"
 #include "actable.h"
+#include "varobj.h"
+#include "varbuf.h"
 #include "variant.h"
 #include "varstr.h"
 #include "linebuf.h"
@@ -27,22 +27,19 @@
 #include "binatree.h"
 #include "trietree.h"
 #include "filetable.h"
+#include "optparser.h"
 
-#include "xdlprim.h"
-#include "xdlsort.h"
+#include "sorting.h"
 #include "xdlstr.h"
 #include "xdlesc.h"
-#include "xdlutil.h"
-
-#include "xdlmacro.h"
-#include "xdlexpr.h"
+#include "xdlmac.h"
+#include "xdlexp.h"
 
 #include "xdlinet.h"
 #include "xdlfile.h"
 #include "xdlstm.h"
 
-#include "filebag.h"
-#include "optparser.h"
+#include "xdlutil.h"
 
 
 #endif //_XDLSTD_H

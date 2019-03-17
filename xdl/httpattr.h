@@ -25,9 +25,6 @@
 
 #define HTTP_HEADER_TYPE_ENTITY_CHARSET		_T("charset")
 
-#define HTTP_HEADER_ENCODING_GZIP			_T("gzip")
-#define HTTP_HEADER_ENCODING_DEFLATE		_T("deflate")
-
 #define HTTP_HEADER_AUTHORIZATION			_T("Authorization")
 #define HTTP_HEADER_ACCEPT					_T("Accept")
 #define HTTP_HEADER_ACCEPTENCODING			_T("Accept-Encoding")
@@ -38,6 +35,8 @@
 #define HTTP_HEADER_EXPECT					_T("Expect")
 #define HTTP_HEADER_EXPECT_CONTINUE		_T("100-continue")
 #define HTTP_HEADER_CONTENTENCODING		_T("Content-Encoding")
+#define HTTP_HEADER_CONTENTENCODING_GZIP		_T("gzip")
+#define HTTP_HEADER_CONTENTENCODING_DEFLATE		_T("deflate")
 #define HTTP_HEADER_CONTENTLENGTH			_T("Content-Length")
 #define HTTP_HEADER_CONTENTTYPE			_T("Content-Type")
 #define HTTP_HEADER_CONTENTRANGE			_T("Content-Range")

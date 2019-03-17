@@ -22,7 +22,6 @@
 #include "richdoc.h"
 #include "tagdoc.h"
 #include "svgdoc.h"
-#include "pathdoc.h"
 #include "annodoc.h"
 #include "tooldoc.h"
 #include "titledoc.h"

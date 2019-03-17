@@ -316,14 +316,6 @@ static dword_t _mqtt_format_subcribe(mqtt_t* mqtt, byte_t* pdv_data, dword_t pdv
 	}
 	total += n;
 
-	n = 1;
-	if (total + n > pdv_size) return total;
-	if (pdv_data)
-	{
-		PUT_BYTE(pdv_data, total, mqtt->topic_qos);
-	}
-	total += n;
-
 	return total;
 }
 
@@ -338,8 +330,6 @@ static bool_t _mqtt_parse_subcribe(mqtt_t* mqtt, const byte_t* pdv_data, dword_t
 
 	xmem_copy((void*)mqtt->topic_name, (void*)(pdv_data + total), mqtt->topic_size);
 	total += mqtt->topic_size;
-
-	mqtt->topic_qos = GET_BYTE(pdv_data, total);
 
 	return 1;
 }
@@ -515,7 +505,7 @@ static bool_t _mqtt_write_pdu(mqtt_t* mqtt, byte_t pdu_type, dword_t pdv_size)
 		if (mqtt->packet_dup)
 			flags |= MQTT_MSK_DUPFLAG;
 		if (mqtt->packet_qos)
-			flags |= (mqtt->packet_qos < 1);
+			flags |= (mqtt->packet_qos << 1);
 		if (mqtt->packet_ret)
 			flags |= MQTT_MSK_RETFLAG;
 		c = (pdu_type << 4 | flags);
@@ -524,7 +514,7 @@ static bool_t _mqtt_write_pdu(mqtt_t* mqtt, byte_t pdu_type, dword_t pdv_size)
 		total += n;
 
 		//remain length: 
-		var_size = sizeof(short) + mqtt->topic_size + sizeof(short);
+		var_size = sizeof(short) + mqtt->topic_size + ((mqtt->packet_qos)? sizeof(short) : 0);
 		pdu_size = var_size + pdv_size;
 		if (pdu_size > MQTT_PDU_SIZE_MAXINUM)
 		{
@@ -554,11 +544,14 @@ static bool_t _mqtt_write_pdu(mqtt_t* mqtt, byte_t pdu_type, dword_t pdv_size)
 		var_size += n;
 		total += n;
 
-		//Packet Identifier:MSB LSB
-		n = sizeof(short);
-		PUT_SWORD_NET(buf, var_size, mqtt->packet_pid);
-		var_size += n;
-		total += n;
+		if (mqtt->packet_qos)
+		{
+			//Packet Identifier:MSB LSB
+			n = sizeof(short);
+			PUT_SWORD_NET(buf, var_size, mqtt->packet_pid);
+			var_size += n;
+			total += n;
+		}
 
 		if (!stream_write_bytes(stm, buf, var_size))
 		{
@@ -1100,35 +1093,27 @@ static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 			raise_user_error(_T("CONNECT"), _T("Invalid control flags"));
 		}
 
-		//remain length: 
-		var_size = sizeof(sword_t) + MQTT_PROTOCOL_SIZE + 1 + 1 + sizeof(short);
-		if (pdu_size < var_size)
-		{
-			raise_user_error(_T("CONNECT"), _T("Invalid pakcet size"));
-		}
-
 		//proto length:MSB LSB
 		n = sizeof(short);
 		if (!stream_read_bytes(stm, buf, &n))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		if (MQTT_PROTOCOL_SIZE != GET_SWORD_NET(buf, 0))
+		pdu_size -= n;
+
+		//remain length: 
+		n = GET_SWORD_NET(buf, 0);
+		var_size = sizeof(short) + n + 1 + 1 + sizeof(short);
+		var_size -= sizeof(short);
+		if (pdu_size < var_size)
 		{
 			raise_user_error(_T("CONNECT"), _T("Invalid pakcet size"));
 		}
-		pdu_size -= n;
-		var_size -= n;
 
 		//proto name
-		n = MQTT_PROTOCOL_SIZE;
 		if (!stream_read_bytes(stm, buf, &n))
 		{
 			raise_user_error(NULL, NULL);
-		}
-		if (a_xsncmp(buf, MQTT_PROTO_NAME, MQTT_PROTOCOL_SIZE) != 0)
-		{
-			raise_user_error(_T("CONNECT"), _T("Invalid protocol name"));
 		}
 		pdu_size -= n;
 		var_size -= n;
@@ -1138,10 +1123,6 @@ static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 		if (!stream_read_bytes(stm, buf, &n))
 		{
 			raise_user_error(NULL, NULL);
-		}
-		if (buf[0] != MQTT_PROTO_LEVEL)
-		{
-			raise_user_error(_T("CONNECT"), _T("Invalid protocol level"));
 		}
 		pdu_size -= n;
 		var_size -= n;
@@ -1227,7 +1208,7 @@ static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 		}
 		mqtt->topic_size = GET_SWORD_NET(buf, 0);
 		//variable length: 
-		var_size = sizeof(short) + mqtt->topic_size + sizeof(short);
+		var_size = sizeof(short) + mqtt->topic_size + ((mqtt->packet_qos)? sizeof(short) : 0);
 		if (pdu_size < var_size)
 		{
 			raise_user_error(_T("PUBLISH"), _T("Invalid pakcet size"));
@@ -1245,15 +1226,18 @@ static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 		pdu_size -= n;
 		var_size -= n;
 
-		//Packet Identifier:MSB LSB
-		n = sizeof(short);
-		if (!stream_read_bytes(stm, buf, &n))
+		if (mqtt->packet_qos)
 		{
-			raise_user_error(NULL, NULL);
+			//Packet Identifier:MSB LSB
+			n = sizeof(short);
+			if (!stream_read_bytes(stm, buf, &n))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			mqtt->packet_pid = GET_SWORD_NET(buf, 0);
+			pdu_size -= n;
+			var_size -= n;
 		}
-		mqtt->packet_pid = GET_SWORD_NET(buf, 0);
-		pdu_size -= n;
-		var_size -= n;
 
 		XDL_ASSERT(!var_size);
 		break;
@@ -1665,6 +1649,7 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 			{
 				raise_user_error(_T("mqtt_recv"), _T("subcribe or unscbscribe must has payload"));
 			}
+			mqtt->packet_qos = (pdu_type == MQTT_PDU_SUBSCRIBE) ? MQTT_QOS_ONEMORE : MQTT_QOS_NONE;
 			mqtt->packet = pdu_type;
 			//continue read SUBCRIBE payload
 			break;
@@ -1672,7 +1657,7 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 			raise_user_error(_T("mqtt_recv"), _T("invalid server status"));
 			break;
 		case _MQTT_STATUS_PENDING:
-			//read PUBLISH ACK
+			//read PUBLISH ACK or REC
 			if (!_mqtt_read_pdu(mqtt, &pdu_type, &pdv_size))
 			{
 				raise_user_error(NULL, NULL);
@@ -1682,7 +1667,29 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 				mqtt->status = _MQTT_STATUS_RELEASE;
 				break;
 			}
-			if (pdu_type != MQTT_PDU_PUBACK)
+			if (pdu_type != MQTT_PDU_PUBACK && pdu_type != MQTT_PDU_PUBREC)
+			{
+				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
+			}
+			mqtt->packet = pdu_type;
+			//continue to publish
+			mqtt->status = (pdu_type == MQTT_PDU_PUBACK) ? _MQTT_STATUS_WAITING : _MQTT_STATUS_RETAINED;
+			break;
+		case _MQTT_STATUS_RETAINED:
+			raise_user_error(_T("mqtt_recv"), _T("invalid server status"));
+			break;
+		case _MQTT_STATUS_COMPELETE:
+			//read PUBLISH COMP
+			if (!_mqtt_read_pdu(mqtt, &pdu_type, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			if (pdu_type == MQTT_PDU_DISCONNECT)
+			{
+				mqtt->status = _MQTT_STATUS_RELEASE;
+				break;
+			}
+			if (pdu_type != MQTT_PDU_PUBCOMP)
 			{
 				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
 			}
@@ -1738,9 +1745,32 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 			}
 			mqtt->packet = pdu_type;
 			//continue read PUBLISH payload
-			mqtt->status = _MQTT_STATUS_PENDING;
+			mqtt->status = (mqtt->packet_qos == MQTT_QOS_NONE) ? _MQTT_STATUS_WAITING : _MQTT_STATUS_PENDING;
 			break;
 		case _MQTT_STATUS_PENDING:
+			raise_user_error(_T("mqtt_recv"), _T("invalid server status"));
+			break;
+		case _MQTT_STATUS_RETAINED:
+			//read PUBLISH PDU
+			if (!_mqtt_read_pdu(mqtt, &pdu_type, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			if (pdu_type == MQTT_PDU_DISCONNECT)
+			{
+				mqtt->packet = pdu_type;
+				mqtt->status = _MQTT_STATUS_RELEASE;
+				break;
+			}
+			if (pdu_type != MQTT_PDU_PUBREL)
+			{
+				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
+			}
+			mqtt->packet = pdu_type;
+			//continue write PUBLISH COMP
+			mqtt->status = _MQTT_STATUS_COMPELETE;
+			break;
+		case _MQTT_STATUS_COMPELETE:
 			raise_user_error(_T("mqtt_recv"), _T("invalid server status"));
 			break;
 		case _MQTT_STATUS_RELEASE:
@@ -1806,7 +1836,27 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 			}
 			mqtt->packet = pdu_type;
 			// continue to read PUBLISH payload
-			mqtt->status = _MQTT_STATUS_PENDING;
+			mqtt->status = (mqtt->packet_qos == MQTT_QOS_NONE) ? _MQTT_STATUS_WAITING : _MQTT_STATUS_PENDING;
+			break;
+		case _MQTT_STATUS_PENDING:
+			raise_user_error(_T("mqtt_recv"), _T("client released"));
+			break;
+		case _MQTT_STATUS_RETAINED:
+			//read PUBLISH REL
+			if (!_mqtt_read_pdu(mqtt, &pdu_type, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			if (pdu_type != MQTT_PDU_PUBREL)
+			{
+				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
+			}
+
+			mqtt->packet = pdu_type;
+			mqtt->status = _MQTT_STATUS_COMPELETE;
+			break;
+		case _MQTT_STATUS_COMPELETE:
+			raise_user_error(_T("mqtt_recv"), _T("client released"));
 			break;
 		case _MQTT_STATUS_RELEASE:
 			raise_user_error(_T("mqtt_recv"), _T("client released"));
@@ -1839,12 +1889,12 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 			raise_user_error(_T("mqtt_recv"), _T("invalid client status"));
 			break;
 		case _MQTT_STATUS_PENDING:
-			//read PUBLISH ACK
+			//read PUBLISH ACK or REC
 			if (!_mqtt_read_pdu(mqtt, &pdu_type, &pdv_size))
 			{
 				raise_user_error(NULL, NULL);
 			}
-			if (pdu_type != MQTT_PDU_PUBACK)
+			if (pdu_type != MQTT_PDU_PUBACK && pdu_type != MQTT_PDU_PUBREC)
 			{
 				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
 			}
@@ -1852,6 +1902,26 @@ bool_t mqtt_recv(mqtt_t* mqtt, dword_t* size)
 			{
 				raise_user_error(_T("mqtt_recv"), _T("PUBACK has no payload"));
 			}
+			mqtt->packet = pdu_type;
+			if (mqtt->packet_qos == MQTT_QOS_ONCE)
+				mqtt->status = _MQTT_STATUS_RETAINED;
+			else
+				mqtt->status = _MQTT_STATUS_WAITING;
+			break;
+		case _MQTT_STATUS_RETAINED:
+			raise_user_error(_T("mqtt_recv"), _T("invalid client status"));
+			break;
+		case _MQTT_STATUS_COMPELETE:
+			//read PUBLISH COMP
+			if (!_mqtt_read_pdu(mqtt, &pdu_type, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			if (pdu_type != MQTT_PDU_PUBCOMP)
+			{
+				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
+			}
+			
 			mqtt->packet = pdu_type;
 			mqtt->status = _MQTT_STATUS_WAITING;
 			break;
@@ -1908,6 +1978,7 @@ bool_t mqtt_send(mqtt_t* mqtt, dword_t pdv_size)
 				mqtt->packet = MQTT_PDU_SUBACK;
 			else
 				mqtt->packet = MQTT_PDU_UNSUBACK;
+
 			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
 			{
 				raise_user_error(NULL, NULL);
@@ -1926,9 +1997,22 @@ bool_t mqtt_send(mqtt_t* mqtt, dword_t pdv_size)
 				raise_user_error(NULL, NULL);
 			}
 			//continue to send publish payload
-			mqtt->status = _MQTT_STATUS_PENDING;
+			mqtt->status = (mqtt->packet_qos) ? _MQTT_STATUS_PENDING : _MQTT_STATUS_WAITING;
 			break;
 		case _MQTT_STATUS_PENDING:
+			raise_user_error(_T("mqtt_recv"), _T("invalid server status"));
+			break;
+		case _MQTT_STATUS_RETAINED:
+			//write PUBLISH REL
+			mqtt->packet = MQTT_PDU_PUBREL;
+			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			//continue to read publish comp
+			mqtt->status = _MQTT_STATUS_COMPELETE;
+			break;
+		case _MQTT_STATUS_COMPELETE:
 			raise_user_error(_T("mqtt_recv"), _T("invalid server status"));
 			break;
 		case _MQTT_STATUS_RELEASE:
@@ -1961,12 +2045,39 @@ bool_t mqtt_send(mqtt_t* mqtt, dword_t pdv_size)
 			{
 				raise_user_error(_T("mqtt_send"), _T("PUBACK has no payload"));
 			}
-			//write PUBLISH ACK
-			mqtt->packet = MQTT_PDU_PUBACK;
+			//write PUBLISH ACK or REC
+			if (mqtt->packet_qos == MQTT_QOS_ONCE)
+				mqtt->packet = MQTT_PDU_PUBREC;
+			else
+				mqtt->packet = MQTT_PDU_PUBACK;
+			
 			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
 			{
 				raise_user_error(NULL, NULL);
 			}
+
+			if (mqtt->packet_qos == MQTT_QOS_ONCE)
+			{
+				//waiting to read publish rel
+				mqtt->status = _MQTT_STATUS_RETAINED;
+			}
+			else
+			{
+				//continue to read publish
+				mqtt->status = _MQTT_STATUS_WAITING;
+			}
+			break;
+		case _MQTT_STATUS_RETAINED:
+			raise_user_error(_T("mqtt_send"), _T("invalid server status"));
+			break;
+		case _MQTT_STATUS_COMPELETE:
+			mqtt->packet = MQTT_PDU_PUBCOMP;
+
+			if (!_mqtt_write_pdu(mqtt, mqtt->packet, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
+
 			//continue to read publish
 			mqtt->status = _MQTT_STATUS_WAITING;
 			break;
@@ -1995,10 +2106,10 @@ bool_t mqtt_send(mqtt_t* mqtt, dword_t pdv_size)
 		case _MQTT_STATUS_SLEEPING:
 			if (!pdv_size)
 			{
-				raise_user_error(_T("mqtt_send"), _T("SUBSCRIBE or UNSUBSCRIBE must has payload"));
+				raise_user_error(_T("mqtt_send"), _T("SUBSCRIBE must has payload"));
 			}
-			//write SUBSCRIBE or UNSUBSCRIBE PDU
-			mqtt->packet = (mqtt->topic_qos == MQTT_QOS_NONE) ? MQTT_PDU_UNSUBSCRIBE : MQTT_PDU_SUBSCRIBE;
+			//write SUBSCRIBE PDU or UNSUBSCRIBE
+			mqtt->packet = (mqtt->packet_qos) ? MQTT_PDU_SUBSCRIBE : MQTT_PDU_UNSUBSCRIBE;
 			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
 			{
 				raise_user_error(NULL, NULL);
@@ -2013,8 +2124,20 @@ bool_t mqtt_send(mqtt_t* mqtt, dword_t pdv_size)
 			{
 				raise_user_error(_T("mqtt_send"), _T("PUBACK has no payload"));
 			}
-			//write PUBLISH ACK
-			mqtt->packet = MQTT_PDU_PUBACK;
+			//write PUBLISH ACK or REC
+			mqtt->packet = (mqtt->packet_qos == MQTT_QOS_ONCE) ? MQTT_PDU_PUBREC : MQTT_PDU_PUBACK;
+			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			mqtt->status = (mqtt->packet_qos == MQTT_QOS_ONCE) ? _MQTT_STATUS_RETAINED :  _MQTT_STATUS_WAITING;
+			break;
+		case _MQTT_STATUS_RETAINED:
+			raise_user_error(_T("mqtt_send"), _T("invalid client status"));
+			break;
+		case _MQTT_STATUS_COMPELETE:
+			//write PUBLISH COMP
+			mqtt->packet = MQTT_PDU_PUBCOMP;
 			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
 			{
 				raise_user_error(NULL, NULL);
@@ -2064,9 +2187,22 @@ bool_t mqtt_send(mqtt_t* mqtt, dword_t pdv_size)
 				raise_user_error(NULL, NULL);
 			}
 			//continue to send payload
-			mqtt->status = _MQTT_STATUS_PENDING;
+			mqtt->status = (mqtt->packet_qos) ? _MQTT_STATUS_PENDING : _MQTT_STATUS_WAITING;
 			break;
 		case _MQTT_STATUS_PENDING:
+			raise_user_error(_T("mqtt_send"), _T("invalid client status"));
+			break;
+		case _MQTT_STATUS_RETAINED:
+			//write PUBLISH REL
+			mqtt->packet = MQTT_PDU_PUBREL;
+			if (!_mqtt_write_pdu(mqtt, mqtt->packet, pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			//continue to read publish comp
+			mqtt->status = _MQTT_STATUS_COMPELETE;
+			break;
+		case _MQTT_STATUS_COMPELETE:
 			raise_user_error(_T("mqtt_send"), _T("invalid client status"));
 			break;
 		case _MQTT_STATUS_RELEASE:
@@ -2236,13 +2372,14 @@ bool_t mqtt_subcribe(mqtt_t* mqtt, const tchar_t* topic, int len)
 	mqtt->topic_size = mbs_to_utf8(topic, len, mqtt->topic_name, mqtt->topic_size);
 #endif
 
-	mqtt->topic_qos = MQTT_QOS_ONEMORE;
-
 	stm = stream_alloc(mqtt->bio);
 
 	pdv_size = _mqtt_format_subcribe(mqtt, NULL, MAX_LONG);
 	pdv_buf = (byte_t*)xmem_alloc(pdv_size);
 	_mqtt_format_subcribe(mqtt, pdv_buf, pdv_size);
+
+	//ensure send SUBSCRIBE
+	mqtt->packet_qos = 1;
 
 	//write SUBSCRIBE PDU
 	if (!mqtt_send(mqtt, pdv_size))
@@ -2305,13 +2442,14 @@ bool_t mqtt_unsubcribe(mqtt_t* mqtt, const tchar_t* topic, int len)
 	mqtt->topic_size = mbs_to_utf8(topic, len, mqtt->topic_name, mqtt->topic_size);
 #endif
 
-	mqtt->topic_qos = MQTT_QOS_NONE;
-
 	stm = stream_alloc(mqtt->bio);
 
 	pdv_size = _mqtt_format_subcribe(mqtt, NULL, MAX_LONG);
 	pdv_buf = (byte_t*)xmem_alloc(pdv_size);
 	_mqtt_format_subcribe(mqtt, pdv_buf, pdv_size);
+
+	//ensure send unsubcribe
+	mqtt->packet_qos = 0;
 
 	//write UNSUBSCRIBE PDU
 	if (!mqtt_send(mqtt, pdv_size))
@@ -2431,6 +2569,7 @@ ONERROR:
 bool_t mqtt_poll_message(mqtt_t* mqtt, byte_t** pbuf, dword_t* plen)
 {
 	stream_t stm = NULL;
+	dword_t n;
 
 	XDL_ASSERT(mqtt != NULL && (mqtt->type == _MQTT_TYPE_SCU_SUB || mqtt->type == _MQTT_TYPE_SCP_PUB));
 
@@ -2457,10 +2596,28 @@ bool_t mqtt_poll_message(mqtt_t* mqtt, byte_t** pbuf, dword_t* plen)
 			raise_user_error(NULL, NULL);
 		}
 
-		//write PUBLISH ACK
-		if (!mqtt_send(mqtt, 0))
+		if (mqtt->packet_qos)
 		{
-			raise_user_error(NULL, NULL);
+			//write PUBLISH ACK
+			if (!mqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
+		}
+
+		if (mqtt->packet_qos == MQTT_QOS_ONCE)
+		{
+			//read PUBLISH REL
+			if (!mqtt_recv(mqtt, &n))
+			{
+				raise_user_error(NULL, NULL);
+			}
+
+			//write PUBLISH COMP
+			if (!mqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
 		}
 	}
 	else if (mqtt->type == _MQTT_TYPE_SCP_PUB)
@@ -2471,18 +2628,39 @@ bool_t mqtt_poll_message(mqtt_t* mqtt, byte_t** pbuf, dword_t* plen)
 			raise_user_error(NULL, NULL);
 		}
 
-		mqtt->message_data = (byte_t*)xmem_realloc(mqtt->message_data, mqtt->message_size);
-
-		//read PUBLISH payload
-		if (!stream_read_bytes(stm, mqtt->message_data, &(mqtt->message_size)))
+		if (mqtt->status != _MQTT_STATUS_RELEASE)
 		{
-			raise_user_error(NULL, NULL);
-		}
+			mqtt->message_data = (byte_t*)xmem_realloc(mqtt->message_data, mqtt->message_size);
 
-		//write PUBLISH ACK
-		if (!mqtt_send(mqtt, 0))
-		{
-			raise_user_error(NULL, NULL);
+			//read PUBLISH payload
+			if (!stream_read_bytes(stm, mqtt->message_data, &(mqtt->message_size)))
+			{
+				raise_user_error(NULL, NULL);
+			}
+
+			if (mqtt->packet_qos)
+			{
+				//write PUBLISH ACK
+				if (!mqtt_send(mqtt, 0))
+				{
+					raise_user_error(NULL, NULL);
+				}
+			}
+
+			if (mqtt->packet_qos == MQTT_QOS_ONCE)
+			{
+				//read PUBLISH REL
+				if (!mqtt_recv(mqtt, &n))
+				{
+					raise_user_error(NULL, NULL);
+				}
+
+				//write PUBLISH COMP
+				if (!mqtt_send(mqtt, 0))
+				{
+					raise_user_error(NULL, NULL);
+				}
+			}
 		}
 	}
 
@@ -2521,8 +2699,6 @@ bool_t mqtt_publish(mqtt_t* mqtt, const tchar_t* topic, int len)
 	topic_size = mbs_to_utf8(topic, len, mqtt->topic_name, mqtt->topic_size);
 #endif
 
-	mqtt->topic_qos = MQTT_QOS_ONEMORE;
-
 	return 1;
 }
 
@@ -2552,10 +2728,27 @@ bool_t mqtt_push_message(mqtt_t* mqtt, const byte_t* buf, dword_t len)
 			raise_user_error(NULL, NULL);
 		}
 
-		//read PUBLISH ACK
-		if (!mqtt_recv(mqtt, &pdv_size))
+		if (mqtt->packet_qos)
 		{
-			raise_user_error(NULL, NULL);
+			//read PUBLISH ACK
+			if (!mqtt_recv(mqtt, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+		}
+
+		if (mqtt->packet_qos == MQTT_QOS_ONCE)
+		{
+			//write PUBLISH REL
+			if (!mqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			//read PUBLISH COMP
+			if (!mqtt_recv(mqtt, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
 		}
 	}
 	else if (mqtt->type == _MQTT_TYPE_SCP_SUB)
@@ -2572,10 +2765,27 @@ bool_t mqtt_push_message(mqtt_t* mqtt, const byte_t* buf, dword_t len)
 			raise_user_error(NULL, NULL);
 		}
 
-		//read PUBLISH ACK
-		if (!mqtt_recv(mqtt, &pdv_size))
+		if (mqtt->packet_qos)
 		{
-			raise_user_error(NULL, NULL);
+			//read PUBLISH ACK
+			if (!mqtt_recv(mqtt, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+		}
+
+		if (mqtt->packet_qos == MQTT_QOS_ONCE)
+		{
+			//write PUBLISH REL
+			if (!mqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
+			//read PUBLISH COMP
+			if (!mqtt_recv(mqtt, &pdv_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
 		}
 	}
 	

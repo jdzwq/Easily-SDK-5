@@ -109,12 +109,10 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 		return NULL;
 	}
 
-	xsocket_set_rcvtmo(ppnp->so, PNP_BASE_TIMO);
-	xsocket_set_sndtmo(ppnp->so, PNP_BASE_TIMO / 2);
 	xsocket_set_rcvbuf(ppnp->so, PNP_BASE_BUFF);
 	xsocket_set_sndbuf(ppnp->so, PNP_BASE_BUFF / 2);
 
-	async_alloc_lapp(&ppnp->ov);
+	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
 	ppnp->snd_pdu = pdu_alloc(PDU_TYPE_UDP);
 	ppnp->snd_bys = 0;
@@ -159,12 +157,10 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 		return NULL;
 	}
 
-	xsocket_set_rcvtmo(ppnp->so, PNP_BASE_TIMO);
-	xsocket_set_sndtmo(ppnp->so, PNP_BASE_TIMO / 2);
 	xsocket_set_rcvbuf(ppnp->so, PNP_BASE_BUFF);
 	xsocket_set_sndbuf(ppnp->so, PNP_BASE_BUFF / 2);
 
-	async_alloc_lapp(&ppnp->ov);
+	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
 	ppnp->snd_pdu = pdu_alloc(PDU_TYPE_UDP);
 	ppnp->snd_bys = 0;
@@ -203,24 +199,6 @@ void  xpnp_close(xhand_t pnp)
 	async_release_lapp(&ppnp->ov);
 
 	xmem_free(ppnp);
-}
-
-void xpnp_set_recv_timeout(xhand_t pnp, int ms)
-{
-	pnp_t* ppnp = (pnp_t*)pnp;
-
-	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
-
-	xsocket_set_rcvtmo(ppnp->so, ms);
-}
-
-void xpnp_set_send_timeout(xhand_t pnp, int ms)
-{
-	pnp_t* ppnp = (pnp_t*)pnp;
-
-	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
-
-	xsocket_set_sndtmo(ppnp->so, ms);
 }
 
 int xpnp_type(xhand_t pnp)

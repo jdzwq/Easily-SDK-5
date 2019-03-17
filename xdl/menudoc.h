@@ -36,81 +36,221 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-/********************************************serial enable attributes*****************************************/
+/************************************************Properties***************************************************************************/
+
+/*
+@PROPER name: string.
+@GET get_menu_name_ptr: get the munu name.
+*/
 #define get_menu_name_ptr(ptr)								get_dom_node_attr_ptr(ptr,ATTR_NAME,-1)
-
+/*
+@PROPER name: string.
+@SET set_menu_name: set the menu name.
+*/
 #define set_menu_name(ptr,token)							set_dom_node_attr(ptr,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER style: string.
+@GET get_menu_style_ptr: get the menu style.
+*/
 #define get_menu_style_ptr(ptr)								get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
-
+/*
+@PROPER style: string.
+@SET set_menu_style: set the menu style.
+*/
 #define set_menu_style(ptr,token)							set_dom_node_attr(ptr,ATTR_STYLE,-1,token,-1)
-
+/*
+@PROPER show: string.
+@GET get_menu_show_ptr: get the menu show type.
+*/
 #define get_menu_show_ptr(ptr)								get_dom_node_attr_ptr(ptr,ATTR_SHOW,-1)
-
+/*
+@PROPER show: string.
+@SET set_menu_show: set the menu show type.
+*/
 #define set_menu_show(ptr,token)							set_dom_node_attr(ptr,ATTR_SHOW,-1,token,-1)
-
+/*
+@PROPER layer: string.
+@SET set_menu_layer: set the menu layer.
+*/
 #define set_menu_layer(ptr,lay)								set_dom_node_attr(ptr,ATTR_LAYER,-1,lay,-1)
-
+/*
+@PROPER layer: string.
+@GET get_menu_layer_ptr: get the menu layer.
+*/
 #define get_menu_layer_ptr(ptr)								get_dom_node_attr_ptr(ptr,ATTR_LAYER,-1)
-
+/*
+@PROPER iconSpan: numeric.
+@SET set_menu_icon_span: set the menu icon span.
+*/
 #define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
-
+/*
+@PROPER iconSpan: numeric.
+@GET get_menu_icon_span: get the menu icon span.
+*/
 #define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
-
+/*
+@PROPER name: string.
+@GET get_menu_item_name_ptr: get the menu name.
+*/
 #define get_menu_item_name_ptr(ilk)							get_dom_node_attr_ptr(ilk,ATTR_NAME,-1)
-
+/*
+@PROPER name: string.
+@SET set_menu_item_name: set the menu name.
+*/
 #define set_menu_item_name(ilk,token)						set_dom_node_attr(ilk,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER iid: string.
+@GET get_menu_item_iid: get the menu iid.
+*/
 #define get_menu_item_iid(ilk)								get_dom_node_attr_integer(ilk,ATTR_ID)
-
+/*
+@PROPER iid: string.
+@SET set_menu_item_iid: set the menu iid.
+*/
 #define set_menu_item_iid(ilk,n)							set_dom_node_attr_integer(ilk,ATTR_ID,n)
-
+/*
+@PROPER title: string.
+@SET set_menu_item_title: set the menu title.
+*/
 #define set_menu_item_title(ilk,token)						set_dom_node_attr(ilk,ATTR_TITLE,-1,token,-1)
-
+/*
+@PROPER title: string.
+@GET get_menu_item_title_ptr: get the menu title.
+*/
 #define get_menu_item_title_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_TITLE,-1)
-
+/*
+@PROPER image: string.
+@GET get_menu_item_image_ptr: get the menu image.
+*/
 #define get_menu_item_image_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
-
+/*
+@PROPER image: string.
+@SET set_menu_item_image: set the menu image.
+*/
 #define set_menu_item_image(ilk,token)						set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
 
-/********************************************runtime enable attributes******************************************/
+/*
+@PROPER images: document.
+@SET set_menu_images: set the menu images document.
+*/
 #define set_menu_images(ptr,images)							set_dom_node_images(ptr,images)
-
+/*
+@PROPER image: document.
+@GET get_menu_images: get the menu images document.
+*/
 #define get_menu_images(ptr)								get_dom_node_images(ptr)
-
+/*
+@PROPER checked: boolean.
+@SET set_menu_item_checked: set the menu item is checked.
+*/
 #define set_menu_item_checked(ilk,n)						set_dom_node_mask_check(ilk,MSK_CHECKED,n)
-
+/*
+@PROPER checked: boolean.
+@GET get_menu_item_checked: get the menu item is checked.
+*/
 #define get_menu_item_checked(ilk)							get_dom_node_mask_check(ilk,MSK_CHECKED)
-/*******************************************runtime functin*****************************************************/
+
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
+/************************************************Functions***************************************************************************/
+
+/*
+@FUNCTION create_menu_doc: create a menu document.
+@RETURN link_t_ptr: return the menu document link component.
+*/
 XDL_API link_t_ptr create_menu_doc(void);
 
+/*
+@FUNCTION destroy_menu_doc: destroy a menu document.
+@INPUT link_t_ptr ptr: the menu link component.
+@RETURN void: none.
+*/
 XDL_API void destroy_menu_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION get_menu_itemset: get menu item set.
+@INPUT link_t_ptr ptr: the menu link component.
+@RETURN link_t_ptr: the item set link component.
+*/
 XDL_API link_t_ptr get_menu_itemset(link_t_ptr ptr);
 
+/*
+@FUNCTION clear_menu_doc: clear the menu document.
+@INPUT link_t_ptr ptr: the menu link component.
+@RETURN void: none.
+*/
 XDL_API void clear_menu_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION is_menu_doc: test is menu document.
+@INPUT link_t_ptr ptr: the menu link component.
+@RETURN bool_t: return nonzero for being a menu document, otherwise return zero.
+*/
 XDL_API bool_t is_menu_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION is_menu_item: test is menu item node.
+@INPUT link_t_ptr ptr: the menu link component.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN bool_t: return nonzero for being a item, otherwise return zero.
+*/
 XDL_API bool_t is_menu_item(link_t_ptr ptr, link_t_ptr ilk);
 
+/*
+@FUNCTION get_menu_item_count: counting the items in menu document.
+@INPUT link_t_ptr ptr: the menu link component.
+@RETURN int: return the number of items.
+*/
 XDL_API int get_menu_item_count(link_t_ptr ptr);
 
+/*
+@FUNCTION get_menu_next_item: get the next menu item.
+@INPUT link_t_ptr ptr: the menu link component.
+@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_menu_next_item(link_t_ptr ptr, link_t_ptr pos);
 
+/*
+@FUNCTION get_menu_prev_item: get the previous menu item.
+@INPUT link_t_ptr ptr: the menu link component.
+@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_menu_prev_item(link_t_ptr ptr, link_t_ptr pos);
 
+/*
+@FUNCTION get_menu_item: find the item by name.
+@INPUT link_t_ptr ptr: the menu link component.
+@INPUT const tchar_t* sz_name: the menu item name.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_menu_item(link_t_ptr ptr, const tchar_t* sz_name);
 
-XDL_API link_t_ptr get_menu_item_by_iid(link_t_ptr ptr, int iid);
+/*
+@FUNCTION get_menu_item_by_iid: find the item by iid.
+@INPUT link_t_ptr ptr: the menu link component.
+@INPUT const tchar_t* sz_iid: the menu item iid.
+@RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
+*/
+XDL_API link_t_ptr get_menu_item_by_iid(link_t_ptr ptr, int sz_iid);
 
+/*
+@FUNCTION insert_menu_item: add a new item to menu document.
+@INPUT link_t_ptr ptr: the menu link component.
+@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the new item link component.
+*/
 XDL_API link_t_ptr insert_menu_item(link_t_ptr ptr,link_t_ptr pos);
 
+/*
+@FUNCTION delete_menu_item: delete the menu item.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN void: none.
+*/
 XDL_API void delete_menu_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus

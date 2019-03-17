@@ -117,7 +117,7 @@ void	_utc_date_from_timestamp(xdate_t* pxd, stamp_t ts);
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-void	_async_alloc_lapp(async_t* pas);
+void	_async_alloc_lapp(async_t* pas, int ms);
 void	_async_release_lapp(async_t* pas);
 #endif
 
@@ -204,8 +204,6 @@ bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen);
 bool_t	_socket_set_linger(res_file_t so, bool_t wait, int sec);
 bool_t	_socket_set_sndbuf(res_file_t so, int size);
 bool_t	_socket_set_rcvbuf(res_file_t so, int size);
-bool_t	_socket_set_sndtmo(res_file_t so, int tmo);
-bool_t	_socket_set_rcvtmo(res_file_t so, int tmo);
 bool_t	_host_addr(const char* host, char* addr);
 void	_fill_addr(net_addr_t* paddr, unsigned short port, const char* saddr);
 void	_conv_addr(net_addr_t* paddr, unsigned short* port, char* addr);
@@ -381,6 +379,8 @@ void _gdi_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, co
 void _gdi_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt);
 void _gdi_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
 void _gdi_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
+void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int len);
 void _gdi_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
 void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
@@ -412,6 +412,8 @@ void _gdiplus_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1
 void _gdiplus_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt);
 void _gdiplus_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
 void _gdiplus_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
+void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int len);
 void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
 void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);

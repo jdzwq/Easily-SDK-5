@@ -986,7 +986,7 @@ ONERROR:
 	return 0;
 }
 
-void xtftp_flush(xhand_t tftp)
+bool_t xtftp_flush(xhand_t tftp)
 {
 	xtftp_t* pftp = (xtftp_t*)tftp;
 	sword_t pdu_type = 0;
@@ -995,7 +995,9 @@ void xtftp_flush(xhand_t tftp)
 
 	if (pftp->status == _TFTP_STATUS_PENDING)
 	{
-		xpnp_flush(pftp->bio);
+		if (!xpnp_flush(pftp->bio))
+			return 0;
+
 #if defined(DEBUG) || defined(_DEBUG)
 		xdl_trace(_T("ACK"), _T("<=="));
 #endif
@@ -1004,6 +1006,8 @@ void xtftp_flush(xhand_t tftp)
 
 	pftp->pdv_limit = pftp->pdv_count;
 	pftp->status = _TFTP_STATUS_EOF;
+
+	return 1;
 }
 
 bool_t xtftp_head(xhand_t tftp)

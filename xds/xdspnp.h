@@ -62,11 +62,30 @@ typedef struct _pnp_listen_t{
 extern "C" {
 #endif
 
-	XDS_API pnp_listen_t*  xpnp_start_thread(unsigned short port, PF_PNPS_DISPATCH pf_dispatch, void* param);
+/*
+@FUNCTION xpnp_start_thread: create pnp thread service routing.
+@INPUT unsigned short port: the service port.
+@INPUT PF_PNPS_DISPATCH pf_dispatch: the callback service dispatch function.
+@INPUT void* param: the user parameter transback into dispath function.
+@RETURN pnp_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API pnp_listen_t*  xpnp_start_thread(unsigned short port, PF_PNPS_DISPATCH pf_dispatch, void* param);
 
-	XDS_API pnp_listen_t*  xpnp_start_process(unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
+/*
+@FUNCTION xpnp_start_process: create pnp process service routing.
+@INPUT unsigned short port: the service port.
+@INPUT const tchar_t* sz_moudle: the process service moudle name.
+@INPUT const tchar_t* sz_cmdline: the process execute command line.
+@RETURN pnp_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API pnp_listen_t*  xpnp_start_process(unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
 
-	XDS_API void  xpnp_stop(pnp_listen_t* plis);
+/*
+@FUNCTION xpnp_stop: stop the pnp service routing.
+@INPUT pnp_listen_t* plis: the service listen struct.
+@RETURN void: none.
+*/
+XDS_API void  xpnp_stop(pnp_listen_t* plis);
 
 #ifdef	__cplusplus
 }

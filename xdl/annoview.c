@@ -39,17 +39,17 @@ LICENSE.GPL3 for more details.
 
 #define DEF_ANNO_SPAN		6
 
-void calc_anno_spot_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_anno_arti_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	const tchar_t* type;
 	xpoint_t* ppt;
 	int n;
 
-	n = get_anno_spot_xpoint(ilk, NULL, MAX_LONG);
+	n = get_anno_arti_xpoint(ilk, NULL, MAX_LONG);
 	ppt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * n);
-	get_anno_spot_xpoint(ilk, ppt, n);
+	get_anno_arti_xpoint(ilk, ppt, n);
 
-	type = get_anno_spot_type_ptr(ilk);
+	type = get_anno_arti_type_ptr(ilk);
 
 	if (compare_text(type, -1, ATTR_ANNO_TYPE_TEXT, -1, 0) == 0)
 	{
@@ -132,18 +132,18 @@ int calc_anno_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	*pplk = NULL;
 	*pind = -1;
 
-	ilk = get_anno_next_spot(ptr, LINK_FIRST);
+	ilk = get_anno_next_arti(ptr, LINK_FIRST);
 	while (ilk)
 	{
-		calc_anno_spot_rect(pbox, ptr, ilk, &xr);
+		calc_anno_arti_rect(pbox, ptr, ilk, &xr);
 
 		if (ft_in_rect(ppt, &xr))
 		{
 			*pplk = ilk;
 
-			count = get_anno_spot_xpoint(ilk, NULL, MAX_LONG);
+			count = get_anno_arti_xpoint(ilk, NULL, MAX_LONG);
 			lpt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * count);
-			get_anno_spot_xpoint(ilk, lpt, count);
+			get_anno_arti_xpoint(ilk, lpt, count);
 
 			for (j = 0; j < count; j++)
 			{
@@ -156,10 +156,10 @@ int calc_anno_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 			}
 
 			xmem_free(lpt);
-			return ANNO_HINT_SPOT;
+			return ANNO_HINT_ARTI;
 		}
 
-		ilk = get_anno_next_spot(ptr, ilk);
+		ilk = get_anno_next_arti(ptr, ilk);
 	}
 
 	return ANNO_HINT_NONE;
@@ -183,15 +183,15 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t* type;
 	tchar_t token[RES_LEN];
 
-	ilk = get_anno_next_spot(ptr, LINK_FIRST);
+	ilk = get_anno_next_arti(ptr, LINK_FIRST);
 	while (ilk)
 	{
-		type = get_anno_spot_type_ptr(ilk);
-		style = get_anno_spot_style_ptr(ilk);
+		type = get_anno_arti_type_ptr(ilk);
+		style = get_anno_arti_style_ptr(ilk);
 
-		n = get_anno_spot_xpoint(ilk, NULL, MAX_LONG);
+		n = get_anno_arti_xpoint(ilk, NULL, MAX_LONG);
 		ppt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)*n);
-		get_anno_spot_xpoint(ilk, ppt, n);
+		get_anno_arti_xpoint(ilk, ppt, n);
 
 		for (i = 0; i < n; i++)
 		{
@@ -211,7 +211,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr.fw = ppt[1].fx - ppt[0].fx;
 			xr.fh = ppt[1].fy - ppt[0].fy;
 
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_anno_spot_text_ptr(ilk), -1);
+			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_anno_arti_text_ptr(ilk), -1);
 		}
 		else if (compare_text(type, -1, ATTR_ANNO_TYPE_ICON, -1, 0) == 0)
 		{
@@ -224,7 +224,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr.fw = ppt[1].fx - ppt[0].fx;
 			xr.fh = ppt[1].fy - ppt[0].fy;
 
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, get_anno_spot_text_ptr(ilk));
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, get_anno_arti_text_ptr(ilk));
 		}
 		else if (compare_text(type, -1, ATTR_ANNO_TYPE_CIRCLE, -1, 0) == 0)
 		{
@@ -291,7 +291,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			a1 = (ppt[1].fx - ppt[0].fx);// *pdt->dblX;
 			a2 = (ppt[1].fy - ppt[0].fy);// *pdt->dblY;
 
-			calc_anno_spot_rect(pbox, ptr, ilk, &xr);
+			calc_anno_arti_rect(pbox, ptr, ilk, &xr);
 			ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
 			//pt1.fx = xr.fx + xr.fw / 2;
@@ -371,7 +371,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 				a1 = 0 - a1;
 			xsprintf(token, _T("%.1f°"), a1);
 
-			calc_anno_spot_rect(pbox, ptr, ilk, &xr);
+			calc_anno_arti_rect(pbox, ptr, ilk, &xr);
 			ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
 			pt1.fx = xr.fx + xr.fw / 2;
@@ -381,7 +381,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	
 		xmem_free(ppt);
 
-		ilk = get_anno_next_spot(ptr, ilk);
+		ilk = get_anno_next_arti(ptr, ilk);
 	}
 }
 

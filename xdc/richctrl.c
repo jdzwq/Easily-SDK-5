@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _richctrl_delta_t{
 	textor_t textor;
-	link_t_ptr node;
+	link_t_ptr anch;
 
 	bool_t b_lock;
 
@@ -101,7 +101,7 @@ int noti_richctrl_owner(res_win_t widget, unsigned long code, link_t_ptr ptr, li
 	nf.ret = 0;
 
 	nf.rich = ptr;
-	nf.node = nlk;
+	nf.anch = nlk;
 
 	widget_send_notice(widget_get_owner(widget), (LPNOTICE)&nf);
 
@@ -207,9 +207,9 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 		{
 			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-			if (ptd->node != (link_t_ptr)ptd->textor.object)
+			if (ptd->anch != (link_t_ptr)ptd->textor.object)
 			{
-				ptd->node = (link_t_ptr)ptd->textor.object;
+				ptd->anch = (link_t_ptr)ptd->textor.object;
 				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 			}
 		}
@@ -222,9 +222,9 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 		{
 			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-			if (ptd->node != (link_t_ptr)ptd->textor.object)
+			if (ptd->anch != (link_t_ptr)ptd->textor.object)
 			{
-				ptd->node = (link_t_ptr)ptd->textor.object;
+				ptd->anch = (link_t_ptr)ptd->textor.object;
 				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 			}
 		}
@@ -242,37 +242,37 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 	case KEY_LEFT:
 		hand_textor_left(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+			ptd->anch = (link_t_ptr)ptd->textor.object;
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_RIGHT:
 		hand_textor_right(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+			ptd->anch = (link_t_ptr)ptd->textor.object;
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_UP:
 		hand_textor_up(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+			ptd->anch = (link_t_ptr)ptd->textor.object;
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_DOWN:
 		hand_textor_down(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+			ptd->anch = (link_t_ptr)ptd->textor.object;
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_PAGEDOWN:
@@ -396,9 +396,9 @@ void hand_richctrl_cut(res_win_t widget)
 
 	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->anch = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -421,9 +421,9 @@ void hand_richctrl_paste(res_win_t widget)
 
 	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->anch = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -446,9 +446,9 @@ void hand_richctrl_undo(res_win_t widget)
 
 	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->anch = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -478,10 +478,10 @@ void hand_richctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	hand_textor_lbutton_up(&ptd->textor, pxp);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+		ptd->anch = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -582,11 +582,11 @@ void hand_richctrl_self_command(res_win_t widget, int code, var_long data)
 
 	if (code == COMMAND_UPDATE)
 	{
-		noti_richctrl_owner(widget, NC_RICHNODEUPDATE, (link_t_ptr)ptd->textor.data, (link_t_ptr)ptd->node, NULL);
+		noti_richctrl_owner(widget, NC_RICHANCHUPDATE, (link_t_ptr)ptd->textor.data, (link_t_ptr)ptd->anch, NULL);
 	}
 	else if (code == COMMAND_CHANGE)
 	{
-		noti_richctrl_owner(widget, NC_RICHNODECHANGED, (link_t_ptr)ptd->textor.data, (link_t_ptr)ptd->node, NULL);
+		noti_richctrl_owner(widget, NC_RICHANCHCHANGED, (link_t_ptr)ptd->textor.data, (link_t_ptr)ptd->anch, NULL);
 	}
 }
 
@@ -706,7 +706,7 @@ void richctrl_attach(res_win_t widget, link_t_ptr data)
 	ptd->textor.object = NULL;
 	ptd->textor.page = 1;
 
-	ptd->node = NULL;
+	ptd->anch = NULL;
 	richctrl_redraw(widget);
 
 	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
@@ -733,12 +733,12 @@ link_t_ptr richctrl_detach(res_win_t widget)
 	ptd->textor.object = NULL;
 	ptd->textor.page = 0;
 
-	ptd->node = NULL;
+	ptd->anch = NULL;
 
 	return ptr;
 }
 
-link_t_ptr richctrl_get_focus_node(res_win_t widget)
+link_t_ptr richctrl_get_focus_anch(res_win_t widget)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 	link_t_ptr nlk = NULL;
@@ -748,10 +748,10 @@ link_t_ptr richctrl_get_focus_node(res_win_t widget)
 	if (!ptd->textor.data)
 		return NULL;
 
-	return ptd->node;
+	return ptd->anch;
 }
 
-void richctrl_set_focus_node(res_win_t widget, link_t_ptr nlk)
+void richctrl_set_focus_anch(res_win_t widget, link_t_ptr nlk)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 
@@ -762,14 +762,14 @@ void richctrl_set_focus_node(res_win_t widget, link_t_ptr nlk)
 
 	hand_textor_findobj(&ptd->textor, nlk);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+		ptd->anch = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
-void richctrl_delete_node(res_win_t widget, link_t_ptr nlk)
+void richctrl_delete_anch(res_win_t widget, link_t_ptr nlk)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 
@@ -783,12 +783,12 @@ void richctrl_delete_node(res_win_t widget, link_t_ptr nlk)
 
 	hand_textor_done(&ptd->textor);
 
-	delete_rich_node(nlk);
+	delete_rich_anch(nlk);
 	
 	richctrl_redraw(widget);
 }
 
-link_t_ptr richctrl_insert_node(res_win_t widget, link_t_ptr pos)
+link_t_ptr richctrl_insert_anch(res_win_t widget, link_t_ptr pos)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 	link_t_ptr nlk;
@@ -803,14 +803,14 @@ link_t_ptr richctrl_insert_node(res_win_t widget, link_t_ptr pos)
 
 	hand_textor_done(&ptd->textor);
 
-	nlk = insert_rich_node((link_t_ptr)ptd->textor.data, pos);
+	nlk = insert_rich_anch((link_t_ptr)ptd->textor.data, pos);
 
 	richctrl_redraw(widget);
 
 	return nlk;
 }
 
-void richctrl_set_node_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token)
+void richctrl_set_anch_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 
@@ -824,12 +824,12 @@ void richctrl_set_node_text(res_win_t widget, link_t_ptr nlk, const tchar_t* tok
 
 	hand_textor_done(&ptd->textor);
 
-	set_rich_node_text(nlk, token, -1);
+	set_rich_anch_text(nlk, token, -1);
 
 	richctrl_redraw(widget);
 }
 
-void richctrl_get_node_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr)
+void richctrl_get_anch_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 
@@ -852,10 +852,10 @@ void richctrl_redraw(res_win_t widget)
 
 	hand_textor_redraw(&ptd->textor);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+		ptd->anch = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -870,10 +870,10 @@ void richctrl_select_cur(res_win_t widget)
 
 	hand_textor_selectobj(&ptd->textor);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+		ptd->anch = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -888,10 +888,10 @@ void richctrl_select_all(res_win_t widget)
 
 	hand_textor_selectall(&ptd->textor);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->node);
+		ptd->anch = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 

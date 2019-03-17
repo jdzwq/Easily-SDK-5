@@ -1706,7 +1706,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		raise_user_error(NULL, NULL);
 	}
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	pdg = (bindguid_t*)xmem_alloc(cols * sizeof(bindguid_t));
 
@@ -1766,17 +1766,17 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 		OCIDefineByPos(pdb->stm, &(pdg[i].def), pdb->err, i + 1, (ub1*)(pdg[i].buf), (pdg[i].len), SQLT_STR, &(pdg[i].ind), 0, 0, OCI_DEFAULT);
 		
-		varstr_cat(vs, colname, -1);
-		varstr_cat(vs, feed, 1);
+		string_cat(vs, colname, -1);
+		string_cat(vs, feed, 1);
 	}
-	varstr_cat(vs, feed + 1, 2);
+	string_cat(vs, feed + 1, 2);
 
 	if (!stream_write_line(stream, vs, &pos))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_empty(vs);
+	string_empty(vs);
 
 	rows = 0;
 	
@@ -1802,35 +1802,35 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 					sz_esc = xsalloc(len_esc + 1);
 					encode_escape(oci_esc, pdg[i].buf, len_buf, sz_esc, len_esc);
 
-					varstr_cat(vs, sz_esc, len_esc);
+					string_cat(vs, sz_esc, len_esc);
 					xsfree(sz_esc);
 				}
 				else
 				{
-					varstr_cat(vs, (tchar_t*)(pdg[i].buf), len_buf);
+					string_cat(vs, (tchar_t*)(pdg[i].buf), len_buf);
 				}
 			}
-			varstr_cat(vs, feed, 1);
+			string_cat(vs, feed, 1);
 		}
 
-		varstr_cat(vs, feed + 1, 2);
+		string_cat(vs, feed + 1, 2);
 
 		if (!stream_write_line(stream, vs, &pos))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 	
-	varstr_empty(vs);
+	string_empty(vs);
 
 	if (!stream_write_line(stream, vs, &pos))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	if (!stream_flush(stream))
@@ -1873,7 +1873,7 @@ ONERROR:
 
 	if (vs)
 	{
-		varstr_free(vs);
+		string_free(vs);
 	}
 
 	if (pdg)
@@ -1932,7 +1932,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	dw = 0;
 	if (!stream_read_line(stream, vs, &dw))
@@ -1940,12 +1940,12 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("read stream failed"));
 	}
 
-	vs_sql = varstr_alloc();
+	vs_sql = string_alloc();
 
-	varstr_printf(vs_sql, _T("insert into %s ("), table);
+	string_printf(vs_sql, _T("insert into %s ("), table);
 
 	cols = 0;
-	token = varstr_ptr(vs);
+	token = string_ptr(vs);
 	while (*token != TXT_LINEFEED && *token != _T('\0'))
 	{
 		tklen = 0;
@@ -1955,8 +1955,8 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			tklen++;
 		}
 
-		varstr_cat(vs_sql, token - tklen, tklen);
-		varstr_cat(vs_sql, _T(","), 1);
+		string_cat(vs_sql, token - tklen, tklen);
+		string_cat(vs_sql, _T(","), 1);
 
 		if (*token == TXT_ITEMFEED)
 			token++;
@@ -1969,31 +1969,31 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("empty sql statement"));
 	}
 
-	tklen = varstr_len(vs_sql);
-	varstr_set_char(vs_sql, tklen - 1, _T(')'));
+	tklen = string_len(vs_sql);
+	string_set_char(vs_sql, tklen - 1, _T(')'));
 
-	varstr_cat(vs_sql, _T(" values ("), -1);
+	string_cat(vs_sql, _T(" values ("), -1);
 
 	for (i = 0; i < cols; i++)
 	{
-		varstr_append(vs_sql, _T(":v%d,"), i + 1);
+		string_append(vs_sql, _T(":v%d,"), i + 1);
 	}
 
-	tklen = varstr_len(vs_sql);
-	varstr_set_char(vs_sql, tklen - 1, _T(')'));
+	tklen = string_len(vs_sql);
+	string_set_char(vs_sql, tklen - 1, _T(')'));
 
-	if (OCI_ERROR == OCIStmtPrepare(stm, pdb->err, (text*)varstr_ptr(vs_sql), varstr_len(vs_sql) * sizeof(tchar_t), OCI_NTV_SYNTAX, 0))
+	if (OCI_ERROR == OCIStmtPrepare(stm, pdb->err, (text*)string_ptr(vs_sql), string_len(vs_sql) * sizeof(tchar_t), OCI_NTV_SYNTAX, 0))
 	{
 		_raise_oci_error(pdb->err);
 	}
 
-	varstr_free(vs_sql);
+	string_free(vs_sql);
 	vs_sql = NULL;
 
 	pdg = (bindguid_t*)xmem_alloc(cols * sizeof(bindguid_t));
 
 	rows = 0;
-	varstr_empty(vs);
+	string_empty(vs);
 
 	while (1)
 	{
@@ -2007,7 +2007,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			break;
 
 		i = 0;
-		token = varstr_ptr(vs);
+		token = string_ptr(vs);
 		while (*token != TXT_LINEFEED && *token != _T('\0'))
 		{
 			tklen = 0;
@@ -2064,7 +2064,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 				break;
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 
 		for (i = 0; i < cols; i++)
 		{
@@ -2107,7 +2107,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	xmem_free(pdg);
 	pdg = NULL;
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	pdb->rows = rows;
@@ -2129,10 +2129,10 @@ ONERROR:
 	get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
 
 	if (vs_sql)
-		varstr_free(vs_sql);
+		string_free(vs_sql);
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (pdg)
 	{
@@ -2182,7 +2182,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	while (1)
 	{
@@ -2195,8 +2195,8 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 		if (!dw)
 			break;
 
-		sqlstr = varstr_ptr(vs);
-		sqllen = varstr_len(vs);
+		sqlstr = string_ptr(vs);
+		sqllen = string_len(vs);
 
 		tkcur = sqlstr;
 		while (sqllen)
@@ -2245,10 +2245,10 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 			pdb->rows += (int)ne;
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	_db_commit(pdb);
@@ -2263,7 +2263,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 ONERROR:
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (stm)
 	{

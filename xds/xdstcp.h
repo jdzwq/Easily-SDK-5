@@ -60,11 +60,30 @@ typedef struct _tcp_listen_t{
 extern "C" {
 #endif
 
-	XDS_API tcp_listen_t*  xtcp_start_thread(unsigned short port, PF_TCPS_DISPATCH pf_dispatch, void* param);
+/*
+@FUNCTION xtcp_start_thread: create tcp thread service routing.
+@INPUT unsigned short port: the service port.
+@INPUT PF_TCPS_DISPATCH pf_dispatch: the callback service dispatch function.
+@INPUT void* param: the user parameter transback into dispath function.
+@RETURN tcp_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API tcp_listen_t*  xtcp_start_thread(unsigned short port, PF_TCPS_DISPATCH pf_dispatch, void* param);
 
-	XDS_API tcp_listen_t*  xtcp_start_process(unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
+/*
+@FUNCTION xtcp_start_process: create tcp process service routing.
+@INPUT unsigned short port: the service port.
+@INPUT const tchar_t* sz_moudle: the process service moudle name.
+@INPUT const tchar_t* sz_cmdline: the process execute command line.
+@RETURN tcp_listen_t*: if succeeds return listen struct, fails return NULL.
+*/
+XDS_API tcp_listen_t*  xtcp_start_process(unsigned short port, const tchar_t* sz_module, tchar_t* sz_cmdline);
 
-	XDS_API void  xtcp_stop(tcp_listen_t* plis);
+/*
+@FUNCTION xtcp_stop: stop the tcp service routing.
+@INPUT tcp_listen_t* plis: the service listen struct.
+@RETURN void: none.
+*/
+XDS_API void  xtcp_stop(tcp_listen_t* plis);
 
 #ifdef	__cplusplus
 }

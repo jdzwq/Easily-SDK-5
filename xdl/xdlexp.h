@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc file utility document
+	@doc expression document
 
-	@module	filebag.h | file utility interface file
+	@module	expr.h | expression interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,27 +29,32 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _FILEBAG_H
-#define _FILEBAG_H
+#ifndef _XDLEXP_H
+#define _XDLEXP_H
 
 #include "xdldef.h"
 
-#ifdef XDL_SUPPORT_DOC
+/*data compare callback function*/
+typedef int (*expr_compare_ptr)(const tchar_t* key,const tchar_t* sin,const tchar_t* val,void* parm);
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API bool_t		xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+/*parse expression token*/
+XDL_API bool_t expr_parse(link_t_ptr ptr,const tchar_t* str);
 
-	XDL_API bool_t		xfile_fetch(const secu_desc_t* psd, const tchar_t* path, stream_t stm);
+/*format expression token size*/
+XDL_API int expr_format_length(link_t_ptr ptr);
 
-	XDL_API void		xfile_tree(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+/*format expression token*/
+XDL_API int expr_format(link_t_ptr ptr,tchar_t* buf,int max);
+
+/*execute expression and return result*/
+XDL_API int expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /*XDL_SUPPORT_DOC*/
-
-#endif /*XDLFILE_H*/
+#endif /*EXPR_H*/

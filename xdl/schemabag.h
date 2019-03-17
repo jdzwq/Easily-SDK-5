@@ -40,30 +40,116 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API void export_grid_schema(link_t_ptr ptr,link_t_ptr sch);
+/*
+@FUNCTION export_grid_schema: export grid col set defination to a schema document.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr sch: the schema link component.
+@RETURN void: none.
+*/
+XDL_API void export_grid_schema(link_t_ptr ptr, link_t_ptr sch);
 
+/*
+@FUNCTION import_grid_schema: import grid col set defination from a schema document.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr sch: the schema link component.
+@RETURN void: none.
+*/
 XDL_API void import_grid_schema(link_t_ptr ptr, link_t_ptr sch);
 
+/*
+@FUNCTION export_grid_data: export grid row set to dom document using schema defination.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void export_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION import_grid_data: import grid row set from dom document using schema defination.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void import_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION export_graph_schema: export graph yax set defination to a schema document.
+@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr sch: the schema link component.
+@RETURN void: none.
+*/
 XDL_API void export_graph_schema(link_t_ptr ptr, link_t_ptr sch);
 
+/*
+@FUNCTION export_graph_data: export graph xax set to dom document using schema defination.
+@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void export_graph_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION import_graph_data: import graph xax set from dom document using schema defination.
+@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void import_graph_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION export_form_schema: export form field set defination to a schema document.
+@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr sch: the schema link component.
+@RETURN void: none.
+*/
 XDL_API void export_form_schema(link_t_ptr ptr, link_t_ptr sch);
 
+/*
+@FUNCTION export_form_data: export form field data to dom document using schema defination.
+@INPUT link_t_ptr ptr: the form link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void export_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION import_form_data: import form field data from dom document using schema defination.
+@INPUT link_t_ptr ptr: the form link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void import_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION export_rich_schema: export rich anchor set defination to a schema document.
+@INPUT link_t_ptr ptr: the rich link component.
+@INPUT link_t_ptr sch: the schema link component.
+@RETURN void: none.
+*/
 XDL_API void export_rich_schema(link_t_ptr ptr, link_t_ptr sch);
 
+/*
+@FUNCTION export_rich_data: export rich anchor set to dom document using schema defination.
+@INPUT link_t_ptr ptr: the rich link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void export_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
+/*
+@FUNCTION import_rich_data: import rich anchor set from dom document using schema defination.
+@INPUT link_t_ptr ptr: the rich link component.
+@INPUT link_t_ptr sch: the schema link component.
+@OUTPUT link_t_ptr dom: the dom link component.
+@RETURN void: none.
+*/
 XDL_API void import_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 //XDL_API void export_dom_node(link_t_ptr node, link_t_ptr sch, link_t_ptr dom);

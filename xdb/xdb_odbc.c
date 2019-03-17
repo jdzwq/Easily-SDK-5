@@ -2007,7 +2007,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		raise_user_error(NULL, NULL);
 	}
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	pbind = (bindguid_t*)xmem_alloc(cols * sizeof(bindguid_t));
 
@@ -2050,17 +2050,17 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 		SQLBindCol(pdb->stm, i + 1, SQL_C_TCHAR, pbind[i].buf, pbind[i].len, &pbind[i].ind);
 
-		varstr_cat(vs, colname, -1);
-		varstr_cat(vs, feed, 1);
+		string_cat(vs, colname, -1);
+		string_cat(vs, feed, 1);
 	}
-	varstr_cat(vs, feed + 1, 2);
+	string_cat(vs, feed + 1, 2);
 
 	if (!stream_write_line(stream, vs, &pos))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_empty(vs);
+	string_empty(vs);
 
 	while (rt == SQL_SUCCESS || rt == SQL_SUCCESS_WITH_INFO)
 	{
@@ -2081,35 +2081,35 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 					sz_esc = xsalloc(len_esc + 1);
 					encode_escape(odbc_esc, pbind[i].buf, len_buf, sz_esc, len_esc);
 
-					varstr_cat(vs, sz_esc, len_esc);
+					string_cat(vs, sz_esc, len_esc);
 					xsfree(sz_esc);
 				}
 				else
 				{
-					varstr_cat(vs, (tchar_t*)(pbind[i].buf), len_buf);
+					string_cat(vs, (tchar_t*)(pbind[i].buf), len_buf);
 				}
 			}
-			varstr_cat(vs, feed, 1);
+			string_cat(vs, feed, 1);
 		}
 
-		varstr_cat(vs, feed + 1, 2);
+		string_cat(vs, feed + 1, 2);
 
 		if (!stream_write_line(stream, vs, &pos))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_empty(vs);
+	string_empty(vs);
 
 	if (!stream_write_line(stream, vs, &pos))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	if (!stream_flush(stream))
@@ -2154,7 +2154,7 @@ ONERROR:
 
 	if (vs)
 	{
-		varstr_free(vs);
+		string_free(vs);
 	}
 
 	if (pbind)
@@ -2208,7 +2208,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	if (!stream_read_line(stream, vs, &dw))
 	{
@@ -2220,12 +2220,12 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("empty table define"));
 	}
 
-	vs_sql = varstr_alloc();
+	vs_sql = string_alloc();
 
-	varstr_printf(vs_sql, _T("insert into %s ("), table);
+	string_printf(vs_sql, _T("insert into %s ("), table);
 
 	cols = 0;
-	token = varstr_ptr(vs);
+	token = string_ptr(vs);
 	while (*token != TXT_LINEFEED && *token != _T('\0'))
 	{
 		tklen = 0;
@@ -2235,8 +2235,8 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			tklen++;
 		}
 
-		varstr_cat(vs_sql, token - tklen, tklen);
-		varstr_cat(vs_sql, _T(","), 1);
+		string_cat(vs_sql, token - tklen, tklen);
+		string_cat(vs_sql, _T(","), 1);
 
 		if (*token == TXT_ITEMFEED)
 			token++;
@@ -2249,31 +2249,31 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("empty sql statement"));
 	}
 
-	tklen = varstr_len(vs_sql);
-	varstr_set_char(vs_sql, tklen - 1, _T(')'));
+	tklen = string_len(vs_sql);
+	string_set_char(vs_sql, tklen - 1, _T(')'));
 
-	varstr_cat(vs_sql, _T(" values ("), -1);
+	string_cat(vs_sql, _T(" values ("), -1);
 
 	for (i = 0; i < cols; i++)
 	{
-		varstr_cat(vs_sql, _T("?,"), 2);
+		string_cat(vs_sql, _T("?,"), 2);
 	}
 
-	tklen = varstr_len(vs_sql);
-	varstr_set_char(vs_sql, tklen - 1, _T(')'));
+	tklen = string_len(vs_sql);
+	string_set_char(vs_sql, tklen - 1, _T(')'));
 
-	rt = SQLPrepare(pdb->stm, (SQLTCHAR*)varstr_ptr(vs_sql), SQL_NTS);
+	rt = SQLPrepare(pdb->stm, (SQLTCHAR*)string_ptr(vs_sql), SQL_NTS);
 	if (rt != SQL_SUCCESS && rt != SQL_SUCCESS_WITH_INFO)
 	{
 		_raise_stmt_error(pdb->stm);
 	}
 
-	varstr_free(vs_sql);
+	string_free(vs_sql);
 	vs_sql = NULL;
 
 	pbind = (bindguid_t*)xmem_alloc(cols * sizeof(bindguid_t));
 
-	varstr_empty(vs);
+	string_empty(vs);
 
 	while (1)
 	{
@@ -2287,7 +2287,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			break;
 
 		i = 0;
-		token = varstr_ptr(vs);
+		token = string_ptr(vs);
 		while (*token != TXT_LINEFEED && *token != _T('\0'))
 		{
 			tklen = 0;
@@ -2341,7 +2341,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 				break;
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 
 		for (i = 0; i < cols; i++)
 		{
@@ -2378,7 +2378,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	xmem_free(pbind);
 	pbind = NULL;
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	END_CATCH;
@@ -2397,10 +2397,10 @@ ONERROR:
 	get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
 
 	if (vs_sql)
-		varstr_free(vs_sql);
+		string_free(vs_sql);
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (pbind)
 	{
@@ -2448,7 +2448,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	while (1)
 	{
@@ -2461,24 +2461,24 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 		if (!dw)
 			break;
 
-		if (compare_text(varstr_ptr(vs), xslen(SQL_BREAK), SQL_BREAK, -1, 1) == 0)
+		if (compare_text(string_ptr(vs), xslen(SQL_BREAK), SQL_BREAK, -1, 1) == 0)
 		{
 			_db_commit(pdb);
 
 			if (pdb->log)
 			{
-				stream_write(pdb->log, varstr_ptr(vs), varstr_len(vs), NULL);
+				stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
 			}
 
-			varstr_empty(vs);
+			string_empty(vs);
 
 			_db_tran(pdb);
 
 			continue;
 		}
 
-		sqlstr = varstr_ptr(vs);
-		sqllen = varstr_len(vs);
+		sqlstr = string_ptr(vs);
+		sqllen = string_len(vs);
 
 		tkcur = sqlstr;
 		while (sqllen)
@@ -2510,7 +2510,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 			{
 				if (pdb->log)
 				{
-					stream_write(pdb->log, varstr_ptr(vs), varstr_len(vs), NULL);
+					stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
 				}
 
 				_raise_stmt_error(pdb->stm);
@@ -2523,7 +2523,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 			{
 				if (pdb->log)
 				{
-					stream_write(pdb->log, varstr_ptr(vs), varstr_len(vs), NULL);
+					stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
 				}
 
 				raise_user_error(_T("-1"), ERR_TEXT_ROWCANCEL);
@@ -2532,7 +2532,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 			{
 				if (pdb->log)
 				{
-					stream_write(pdb->log, varstr_ptr(vs), varstr_len(vs), NULL);
+					stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
 				}
 
 				raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
@@ -2542,10 +2542,10 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 			SQLFreeStmt(pdb->stm, SQL_CLOSE);
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	_db_commit(pdb);
@@ -2560,7 +2560,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 ONERROR:
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (pdb->stm)
 	{
@@ -3100,9 +3100,9 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 			}
 		}
 
-		varstr_empty(varstr);
+		string_empty(varstr);
 
-		buf = varstr_ensure_buf(varstr, size);
+		buf = string_ensure_buf(varstr, size);
 
 		rt = SQLGetData(pdb->stm, 1, SQL_C_TCHAR, (SQLPOINTER)buf, (size + 1) * sizeof(tchar_t), &dlen);
 		if (rt == SQL_ERROR)
@@ -3110,7 +3110,7 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 			_raise_stmt_error(pdb->stm);
 		}
 
-		varstr_resize(varstr, -1);
+		string_resize(varstr, -1);
 	}
 
 	SQLRowCount(pdb->stm, &rows);
@@ -3168,7 +3168,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 		_raise_stmt_error(pdb->stm);
 	}
 
-	size = varstr_len(varstr) * sizeof(tchar_t);
+	size = string_len(varstr) * sizeof(tchar_t);
 	ne = SQL_LEN_DATA_AT_EXEC(0);
 	SQLBindParameter(pdb->stm, 1, SQL_PARAM_INPUT, SQL_C_TCHAR, SQL_LONGVARCHAR, size, 0, (SQLPOINTER)1, 0, &ne);
 
@@ -3185,7 +3185,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 	{
 		if ((int)pid == 1)
 		{
-			rt = SQLPutData(pdb->stm, (SQLPOINTER)varstr_ptr(varstr), size);
+			rt = SQLPutData(pdb->stm, (SQLPOINTER)string_ptr(varstr), size);
 
 			if (rt != SQL_SUCCESS && rt != SQL_SUCCESS_WITH_INFO)
 			{

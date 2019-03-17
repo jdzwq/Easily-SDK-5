@@ -36,114 +36,314 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-/****************************************serial enable attributes******************************************/
+/************************************************Properties***************************************************************************/
+
+/*
+@PROPER name: string.
+@GET get_topog_name_ptr: get the topog name.
+*/
 #define get_topog_name_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_NAME,-1)
-
+/*
+@PROPER name: string.
+@SET set_topog_name: set the topog name.
+*/
 #define set_topog_name(ptr,token)						set_dom_node_attr(ptr,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER id: string.
+@GET get_topog_id_ptr: get the topog identifier.
+*/
 #define get_topog_id_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_NAME,-1)
-
+/*
+@PROPER id: string.
+@SET set_topog_id: set the topog identifier.
+*/
 #define set_topog_id(ptr,token)							set_dom_node_attr(ptr,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER style: string.
+@SET set_topog_style: set the topog drawing style.
+*/
 #define set_topog_style(ptr,token)						set_dom_node_attr(ptr,ATTR_STYLE,-1,token,-1)
-
+/*
+@PROPER style: string.
+@GET get_topog_id_ptr: get the topog drawing style.
+*/
 #define get_topog_style_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
-
+/*
+@PROPER rows: integer.
+@GET get_topog_rows: get the topog rows.
+*/
 #define get_topog_rows(ptr)								get_dom_node_attr_integer(ptr,ATTR_ROWS)
-
+/*
+@PROPER rows: integer.
+@SET set_topog_rows: set the topog rows.
+*/
 #define set_topog_rows(ptr,n)							set_dom_node_attr_integer(ptr,ATTR_ROWS,n)
-
+/*
+@PROPER cols: integer.
+@GET get_topog_cols: get the topog cols.
+*/
 #define get_topog_cols(ptr)								get_dom_node_attr_integer(ptr,ATTR_COLS)
-
+/*
+@PROPER cols: integer.
+@SET set_topog_cols: set the topog cols.
+*/
 #define set_topog_cols(ptr,n)							set_dom_node_attr_integer(ptr,ATTR_COLS,n)
-
-#define set_topog_matrix(ptr,token,len)					set_dom_node_attr(ptr,ATTR_MATRIX,-1,token,len)
-
-#define get_topog_matrix_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_MATRIX,-1)
-
+/*
+@PROPER rx: float.
+@GET get_topog_rx: get the topog rx.
+*/
 #define get_topog_rx(ptr)								get_dom_node_attr_float(ptr,ATTR_RX)
-
+/*
+@PROPER rx: float.
+@SET set_topog_rx: set the topog rx.
+*/
 #define set_topog_rx(ptr,n)								set_dom_node_attr_float(ptr,ATTR_RX,n)
-
+/*
+@PROPER ry: float.
+@GET get_topog_ry: get the topog ry.
+*/
 #define get_topog_ry(ptr)								get_dom_node_attr_float(ptr,ATTR_RY)
-
+/*
+@PROPER ry: float.
+@SET set_topog_ry: set the topog ry.
+*/
 #define set_topog_ry(ptr,n)								set_dom_node_attr_float(ptr,ATTR_RY,n)
-
+/*
+@PROPER matrix: string.
+@SET set_topog_matrix: set the topog matrix.
+*/
+#define set_topog_matrix(ptr,token,len)					set_dom_node_attr(ptr,ATTR_MATRIX,-1,token,len)
+/*
+@PROPER matrix: string.
+@GET get_topog_matrix_ptr: get the topog matrix.
+*/
+#define get_topog_matrix_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_MATRIX,-1)
+/*
+@PROPER name: string.
+@GET get_topog_spot_name_ptr: get the spot name.
+*/
 #define get_topog_spot_name_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_NAME,-1)
-
+/*
+@PROPER name: string.
+@SET set_topog_spot_name: set the spot name.
+*/
 #define set_topog_spot_name(ilk,token)					set_dom_node_attr(ilk,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER id: string.
+@GET get_topog_spot_id_ptr: get the spot identifier.
+*/
 #define get_topog_spot_id_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_NAME,-1)
-
+/*
+@PROPER id: string.
+@SET set_topog_spot_id: set the spot identifier.
+*/
 #define set_topog_spot_id(ilk,token)					set_dom_node_attr(ilk,ATTR_NAME,-1,token,-1)
-
+/*
+@PROPER type: string.
+@GET get_topog_spot_type_ptr: get the spot type.
+*/
 #define get_topog_spot_type_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_TYPE,-1)
-
+/*
+@PROPER type: string.
+@SET set_topog_spot_type: set the spot type.
+*/
 #define set_topog_spot_type(ilk,token)					set_dom_node_attr(ilk,ATTR_TYPE,-1,token,-1)
-
+/*
+@PROPER title: string.
+@GET get_topog_spot_title_ptr: get the spot title.
+*/
 #define get_topog_spot_title_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_TITLE,-1)
-
+/*
+@PROPER title: string.
+@SET set_topog_spot_title: set the spot title.
+*/
 #define set_topog_spot_title(ilk,token)					set_dom_node_attr(ilk,ATTR_TITLE,-1,token,-1)
-
+/*
+@PROPER style: string.
+@SET set_topog_spot_style: set the spot style.
+*/
 #define set_topog_spot_style(ilk,token)					set_dom_node_attr(ilk,ATTR_STYLE,-1,token,-1)
-
+/*
+@PROPER style: string.
+@GET get_topog_spot_style_ptr: get the spot style.
+*/
 #define get_topog_spot_style_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_STYLE,-1)
-
+/*
+@PROPER col: integer.
+@GET get_topog_spot_col: get the spot col.
+*/
 #define get_topog_spot_col(ilk)							get_dom_node_attr_integer(ilk,ATTR_COL)
-
+/*
+@PROPER col: integer.
+@SET set_topog_spot_col: set the spot col.
+*/
 #define set_topog_spot_col(ilk,col)						set_dom_node_attr_integer(ilk,ATTR_COL,col)
-
+/*
+@PROPER row: integer.
+@GET get_topog_spot_row: get the spot row.
+*/
 #define get_topog_spot_row(ilk)							get_dom_node_attr_integer(ilk,ATTR_ROW)
-
+/*
+@PROPER row: integer.
+@SET set_topog_spot_row: set the spot row.
+*/
 #define set_topog_spot_row(ilk,row)						set_dom_node_attr_integer(ilk,ATTR_ROW,row)
 
-/***********************************************runtime attributes*********************************************/
+/*
+@PROPER design: boolean.
+@SET set_topog_design: set the topog is designing mode.
+*/
 #define set_topog_design(ptr,b)							set_dom_node_mask_check(ptr,MSK_DESIGN,b)
-
+/*
+@PROPER design: boolean.
+@GET topog_is_design: get the topog is designing mode.
+*/
 #define topog_is_design(ptr)							get_dom_node_mask_check(ptr,MSK_DESIGN)
-
+/*
+@PROPER selected: boolean.
+@SET set_topog_spot_selected: set the spot is selected.
+*/
 #define set_topog_spot_selected(ilk,b)					set_dom_node_mask_check(ilk,MSK_CHECKED,b)
-
+/*
+@PROPER selected: boolean.
+@GET get_topog_spot_selected: get the spot is selected.
+*/
 #define get_topog_spot_selected(ilk)					get_dom_node_mask_check(ilk,MSK_CHECKED) 
 
-/**********************************************runtime function*************************************************/
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_topog_doc();
+/************************************************Functions***************************************************************************/
 
+/*
+@FUNCTION create_topog_doc: create a topog document.
+@RETURN link_t_ptr: return the topog document link component.
+*/
+XDL_API link_t_ptr create_topog_doc(void);
+
+/*
+@FUNCTION destroy_topog_doc: destroy a topog document.
+@INPUT link_t_ptr ptr: the topog link component.
+@RETURN void: none.
+*/
 XDL_API void destroy_topog_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION get_topog_spotset: get topog spot set.
+@INPUT link_t_ptr ptr: the topog link component.
+@RETURN link_t_ptr: the spot set link component.
+*/
 XDL_API link_t_ptr get_topog_spotset(link_t_ptr ptr);
 
+/*
+@FUNCTION clear_topog_doc: clear the topog document.
+@INPUT link_t_ptr ptr: the topog link component.
+@RETURN void: none.
+*/
 XDL_API void clear_topog_doc(link_t_ptr ptr);
 
+/*
+@FUNCTION is_topog_doc: test is topog document.
+@INPUT link_t_ptr ptr: the topog link component.
+@RETURN bool_t: return nonzero for being a topog document, otherwise return zero.
+*/
 XDL_API bool_t is_topog_doc(link_t_ptr ptr);
 
-XDL_API bool_t is_topog_spot(link_t_ptr ptr, link_t_ptr plk);
+/*
+@FUNCTION is_topog_spot: test is topog spot node.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT link_t_ptr ilk: the sopt link component.
+@RETURN bool_t: return nonzero for being a spot node, otherwise return zero.
+*/
+XDL_API bool_t is_topog_spot(link_t_ptr ptr, link_t_ptr ilk);
 
+/*
+@FUNCTION topog_doc_from_spot: trackback spot node to topog document.
+@INPUT link_t_ptr ilk: the sopt link component.
+@RETURN link_t_ptr: return topog link component.
+*/
 XDL_API link_t_ptr topog_doc_from_spot(link_t_ptr ilk);
 
-XDL_API link_t_ptr insert_topog_spot(link_t_ptr ptr,link_t_ptr pos);
+/*
+@FUNCTION insert_topog_spot: add a new spot node to topog document.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT link_t_ptr pos: the sopt link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the new spot link component.
+*/
+XDL_API link_t_ptr insert_topog_spot(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API link_t_ptr get_topog_next_spot(link_t_ptr ptr,link_t_ptr pos);
+/*
+@FUNCTION get_topog_next_spot: get the next spot node.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT link_t_ptr pos: the sopt link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
+*/
+XDL_API link_t_ptr get_topog_next_spot(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API link_t_ptr get_topog_prev_spot(link_t_ptr ptr,link_t_ptr pos);
+/*
+@FUNCTION get_topog_prev_spot: get the previous spot node.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT link_t_ptr pos: the sopt link component or link indicator: LINK_FIRST, LINK_LAST.
+@RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
+*/
+XDL_API link_t_ptr get_topog_prev_spot(link_t_ptr ptr, link_t_ptr pos);
 
+/*
+@FUNCTION get_topog_spot: find the spot node by name.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT const tchar_t* sname: the sopt name token.
+@RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_topog_spot(link_t_ptr ptr, const tchar_t* sname);
 
+/*
+@FUNCTION get_topog_spot_at: find the spot node at position.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT int index: the zero based position.
+@RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
+*/
 XDL_API link_t_ptr get_topog_spot_at(link_t_ptr ptr,int index);
 
+/*
+@FUNCTION delete_topog_spot: delete the spot node.
+@INPUT link_t_ptr ilk: the spot link component.
+@RETURN void: none.
+*/
 XDL_API void delete_topog_spot(link_t_ptr ilk);
 
+/*
+@FUNCTION get_topog_spot_count: counting the spot nodes in topog document.
+@INPUT link_t_ptr ptr: the topog link component.
+@RETURN int: return the number of spot nodes.
+*/
 XDL_API int get_topog_spot_count(link_t_ptr ptr);
 
+/*
+@FUNCTION get_topog_spot_selected_count: counting the selected spot nodes in topog document.
+@INPUT link_t_ptr ptr: the topog link component.
+@RETURN int: return the number of spot nodes.
+*/
 XDL_API int get_topog_spot_selected_count(link_t_ptr ptr);
 
+/*
+@FUNCTION set_topog_matrix_value: set the topog matrix value at row and col.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT int row: the zero based row position.
+@INPUT int col: the zero based col position.
+@INPUT double v: the value.
+@RETURN bool_t: return nonzero if the row and col is valid, otherwise return zero.
+*/
 XDL_API bool_t set_topog_matrix_value(link_t_ptr ptr, int row, int col, double v);
 
+/*
+@FUNCTION get_topog_matrix_value: get the topog matrix value at row and col.
+@INPUT link_t_ptr ptr: the topog link component.
+@INPUT int row: the zero based row position.
+@INPUT int col: the zero based col position.
+@RETURN double: return the value if the row and col is valid, otherwise return zero.
+*/
 XDL_API double get_topog_matrix_value(link_t_ptr ptr, int row, int col);
 
 #ifdef	__cplusplus

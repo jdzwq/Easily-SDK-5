@@ -51,10 +51,10 @@ int call_string_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pc
 {
 	STRINGOBJECT* ptt = (STRINGOBJECT*)p_obj;
 
-	if (varstr_len(ptt->var) == ptt->pos)
+	if (string_len(ptt->var) == ptt->pos)
 		return 0;
 
-	varstr_get_chars(ptt->var, ptt->pos, pch, 1);
+	string_get_chars(ptt->var, ptt->pos, pch, 1);
 	ptt->pos = ptt->pos + 1;
 
 	return 1;
@@ -76,7 +76,7 @@ int call_string_write_char(void* p_obj, int max, int pos, int encode, const tcha
 {
 	STRINGOBJECT* ptt = (STRINGOBJECT*)p_obj;
 
-	varstr_ins_chars(ptt->var, ptt->pos, pch, 1);
+	string_ins_chars(ptt->var, ptt->pos, pch, 1);
 
 	ptt->pos = ptt->pos + 1;
 

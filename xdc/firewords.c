@@ -229,7 +229,7 @@ static int sub_wordsbox_self_command(res_win_t widget, int code, var_long data, 
 	{
 	case COMMAND_UPDATE:
 		return 1;
-	case COMMAND_SELECT:
+	case COMMAND_CHANGE:
 		if (widget_is_valid(editbox))
 		{
 			widget_post_key(editbox, KEY_ENTER);

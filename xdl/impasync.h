@@ -43,9 +43,10 @@ extern "C" {
 /*
 @FUNCTION async_alloc_lapp: alloc async operation resource.
 @INOUTPUT async_t* pas: the async struct for allocing background resource.
+@INPUT ms: timeout in millisecond.
 @RETURN void: none.
 */
-XDL_API void async_alloc_lapp(async_t* pas);
+XDL_API void async_alloc_lapp(async_t* pas, int ms);
 
 /*
 @FUNCTION async_release_lapp: release async operation resource.

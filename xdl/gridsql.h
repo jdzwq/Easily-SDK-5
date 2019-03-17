@@ -36,30 +36,106 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-/**************************************sql function*********************************************************/
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
+/*
+@FUNCTION get_grid_next_param: fetch next sql parameter in where clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@OUTPUT tchar_t* pname: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN bool_t: return nonzero if exists, otherwise return zero.
+*/
 XDL_API bool_t get_grid_next_param(link_t_ptr ptr, tchar_t* pname, int max);
 
+/*
+@FUNCTION set_grid_sql_param: set sql parameter value in where clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT const tchar_t* parmname: the sql parameter name token.
+@INPUT const tchar_t*: parmval: the sql parameter value token.
+@RETURN void: none.
+*/
 XDL_API void set_grid_sql_param(link_t_ptr ptr, const tchar_t* paramname, const tchar_t* paramval);
 
+/*
+@FUNCTION get_grid_sql_param_ptr: get sql parameter value in where clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT const tchar_t* paramname: the parameter name token.
+@INPUT int len: the parameter name length in characters.
+@RETURN const tchar_t*: return the parameter value if exists, otherwise return NULL.
+*/
 XDL_API const tchar_t* get_grid_sql_param_ptr(link_t_ptr ptr, const tchar_t* paramname, int len);
 
+/*
+@FUNCTION format_grid_param_clause: format sql where clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INTPUT conat tchar_t* clause: the where clause format string token.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return the characters formated.
+*/
 XDL_API int format_grid_param_clause(link_t_ptr ptr, const tchar_t* clause, tchar_t* buf, int max);
 
-XDL_API int format_row_update_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max);
+/*
+@FUNCTION format_row_update_sql: format sql update clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr rlk: the row link component.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return the characters formated.
+*/
+XDL_API int format_row_update_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
 
-XDL_API int format_row_insert_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max);
+/*
+@FUNCTION format_row_insert_sql: format sql insert clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr rlk: the row link component.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return the characters formated.
+*/
+XDL_API int format_row_insert_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
 
-XDL_API int format_row_delete_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max);
+/*
+@FUNCTION format_row_delete_sql: format sql delete clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr rlk: the row link component.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return the characters formated.
+*/
+XDL_API int format_row_delete_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
 
-XDL_API int format_grid_select_sql(link_t_ptr ptr,tchar_t* buf,int max);
+/*
+@FUNCTION format_grid_select_sql: format sql select clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr rlk: the row link component.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return the characters formated.
+*/
+XDL_API int format_grid_select_sql(link_t_ptr ptr, tchar_t* buf, int max);
 
+/*
+@FUNCTION format_grid_exec_sql: format sql execute clause.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr rlk: the row link component.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return the characters formated.
+*/
 XDL_API int format_grid_exec_sql(link_t_ptr ptr, tchar_t* buf, int max);
 
-XDL_API int format_grid_exec_varstr(link_t_ptr ptr, string_t vs);
+/*
+@FUNCTION format_grid_exec_string: format sql execute clause to string object.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr rlk: the row link component.
+@OUTPUT string_t vs: the string object.
+@RETURN int: return the characters formated.
+*/
+XDL_API int format_grid_exec_string(link_t_ptr ptr, string_t vs);
 
 #ifdef	__cplusplus
 }

@@ -303,9 +303,14 @@ bool_t _socket_bind(res_file_t so, res_addr_t saddr, int slen)
 	return (bind((SOCKET)so, saddr, slen) == 0) ? 1 : 0;
 }
 
-bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
+/*bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
 {
 	return (connect((SOCKET)so, saddr, slen) == 0) ? 1 : 0;
+}*/
+
+bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
+{
+	return (WSAConnect((SOCKET)so, saddr, slen, NULL, NULL, NULL, NULL) == 0) ? 1 : 0;
 }
 
 bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size_t size, async_t* pb)
@@ -319,10 +324,6 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 	int rt;
 	WSABUF wb;
 	DWORD fd, dw = 0, fg = 0;
-	int tlen, tmo = 0;
-
-	tlen = sizeof(int);
-	getsockopt((SOCKET)so, SOL_SOCKET, SO_SNDTIMEO, (char*)&tmo, &tlen);
 
 	wb.buf = (char*)buf;
 	wb.len = (ULONG)size;
@@ -344,15 +345,21 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((tmo) ? tmo : INFINITE)))
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo) ? pb->timo : INFINITE)))
 			{
 				if (pcb) *pcb = 0;
+				return 0;
+			}
+			if ((res_file_t)up != so)
+			{
+				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 		}
 		else if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, ((tmo) ? tmo : INFINITE));
+			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
 
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
@@ -380,13 +387,9 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 	int rt, alen = 0;
 	WSABUF wb;
 	DWORD fd, dw = 0, fg = 0;
-	int tlen, tmo = 0;
 
 	wb.buf = (char*)buf;
 	wb.len = (ULONG)size;
-
-	tlen = sizeof(int);
-	getsockopt((SOCKET)so, SOL_SOCKET, SO_RCVTIMEO, (char*)&tmo, &tlen);
 
 	rt = WSARecvFrom((SOCKET)so, &wb, 1, &dw, &fg, (SOCKADDR*)saddr, plen, (LPWSAOVERLAPPED)pov, NULL);
 	if (rt == SOCKET_ERROR)
@@ -405,7 +408,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((tmo)? tmo : INFINITE)))
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
 			{
 				if (pcb) *pcb = 0;
 				return 0;
@@ -419,7 +422,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 		}
 		else if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, ((tmo) ? tmo : INFINITE));
+			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
 
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
@@ -473,10 +476,18 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 				if (pcb) *pcb = 0;
 				return 0;
 			}
+			if ((res_file_t)up != so)
+			{
+				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
+				return 0;
+			}
 		}
 		else if (pb->type == ASYNC_EVENT)
 		{
-			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, TRUE, &fd))
+			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
+
+			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				if (pcb) *pcb = 0;
 				return 0;
@@ -528,10 +539,18 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 				if (pcb) *pcb = 0;
 				return 0;
 			}
+			if ((res_file_t)up != so)
+			{
+				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
+				return 0;
+			}
 		}
 		else if (pb->type == ASYNC_EVENT)
 		{
-			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, TRUE, &fd))
+			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
+
+			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				if (pcb) *pcb = 0;
 				return 0;
@@ -546,68 +565,13 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 	return 1;
 }
 
-int _socket_type(res_file_t so)
-{
-	int type = 0;
-	int len = sizeof(int);
-
-	getsockopt((SOCKET)so, SOL_SOCKET, SO_TYPE, (char*)&type, &len);
-
-	return type;
-}
-
-bool_t	_socket_setopt(res_file_t so, int optname, const char* optval, int optlen)
-{
-	return (setsockopt((SOCKET)so, SOL_SOCKET, optname, optval, optlen) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen)
-{
-	return (getsockopt((SOCKET)so, SOL_SOCKET, optname, pval, plen) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t _socket_set_sndbuf(res_file_t so, int size)
-{
-	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_SNDBUF, (const char*)&size, sizeof(int)) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t _socket_set_rcvbuf(res_file_t so, int size)
-{
-	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_RCVBUF, (const char*)&size, sizeof(int)) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t _socket_set_sndtmo(res_file_t so, int ms)
-{
-	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_SNDTIMEO, (const char*)&ms, sizeof(int)) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t _socket_set_rcvtmo(res_file_t so, int ms)
-{
-	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_RCVTIMEO, (const char*)&ms, sizeof(int)) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t _socket_set_linger(res_file_t so, bool_t wait, int sec)
-{
-	struct linger li;
-
-	li.l_onoff = (wait) ? 1 : 0;
-	li.l_linger = (unsigned short)sec;
-
-	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_LINGER, (const char*)&li, sizeof(struct linger)) == SOCKET_ERROR) ? 0 : 1;
-}
-
-bool_t _socket_listen(res_file_t so, int max)
-{
-	return (listen((SOCKET)so, max) == 0) ? 1 : 0;
-}
-
 /*res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *plen)
 {
-	SOCKET po;
+SOCKET po;
 
-	po = accept((SOCKET)so, saddr, plen);
+po = accept((SOCKET)so, saddr, plen);
 
-	return (po == INVALID_SOCKET) ? INVALID_FILE : (res_file_t)po;
+return (po == INVALID_SOCKET) ? INVALID_FILE : (res_file_t)po;
 }*/
 
 res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* pb)
@@ -622,7 +586,7 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 	LPFN_GETACCEPTEXSOCKADDRS pf_acceptex_addr = NULL;
 	GUID id_acceptex_addr = WSAID_GETACCEPTEXSOCKADDRS;
 
-	DWORD dw;
+	DWORD fd, dw;
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
 
@@ -673,10 +637,21 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 				*plen = 0;
 				return INVALID_FILE;
 			}
+			if ((res_file_t)up != ls)
+			{
+				closesocket((SOCKET)so);
+
+				if (pov) WSAResetEvent(pov->hEvent);
+
+				*plen = 0;
+				return INVALID_FILE;
+			}
 		}
-		else
+		else if (pb->type == ASYNC_EVENT)
 		{
-			if (!GetOverlappedResult((HANDLE)ls, (LPOVERLAPPED)pov, &dw, TRUE))
+			WaitForSingleObject(pov->hEvent, INFINITE);
+
+			if (!WSAGetOverlappedResult((SOCKET)ls, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				closesocket((SOCKET)so);
 
@@ -702,6 +677,51 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 	//ioctlsocket((SOCKET)so, FIONBIO, (unsigned long*)&dw);
 
 	return so;
+}
+
+int _socket_type(res_file_t so)
+{
+	int type = 0;
+	int len = sizeof(int);
+
+	getsockopt((SOCKET)so, SOL_SOCKET, SO_TYPE, (char*)&type, &len);
+
+	return type;
+}
+
+bool_t	_socket_setopt(res_file_t so, int optname, const char* optval, int optlen)
+{
+	return (setsockopt((SOCKET)so, SOL_SOCKET, optname, optval, optlen) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen)
+{
+	return (getsockopt((SOCKET)so, SOL_SOCKET, optname, pval, plen) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t _socket_set_sndbuf(res_file_t so, int size)
+{
+	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_SNDBUF, (const char*)&size, sizeof(int)) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t _socket_set_rcvbuf(res_file_t so, int size)
+{
+	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_RCVBUF, (const char*)&size, sizeof(int)) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t _socket_set_linger(res_file_t so, bool_t wait, int sec)
+{
+	struct linger li;
+
+	li.l_onoff = (wait) ? 1 : 0;
+	li.l_linger = (unsigned short)sec;
+
+	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_LINGER, (const char*)&li, sizeof(struct linger)) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t _socket_listen(res_file_t so, int max)
+{
+	return (listen((SOCKET)so, max) == 0) ? 1 : 0;
 }
 
 int _socket_write(void* pso, unsigned char* buf, int len)

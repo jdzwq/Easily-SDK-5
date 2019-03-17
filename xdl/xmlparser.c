@@ -159,19 +159,19 @@ typedef struct _MATA{
 
 
 /************************************************************************************************************************/
-void _varstr_clean_head_tail(string_t vs)
+void _string_clean_head_tail(string_t vs)
 {
 	int len;
 	
-	while (_IsSkipChar(varstr_get_char(vs,0)))
+	while (_IsSkipChar(string_get_char(vs,0)))
 	{
-		varstr_del_chars(vs, 0, 1);
+		string_del_chars(vs, 0, 1);
 	}
 
-	len = varstr_len(vs);
-	while (len && _IsSkipChar(varstr_get_char(vs, len - 1)))
+	len = string_len(vs);
+	while (len && _IsSkipChar(string_get_char(vs, len - 1)))
 	{
-		varstr_del_chars(vs, len - 1, 1);
+		string_del_chars(vs, len - 1, 1);
 		len--;
 	}
 }
@@ -196,10 +196,10 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 		return 0;
 	}
 
-	vs_name = varstr_alloc();
-	vs_key = varstr_alloc();
-	vs_val = varstr_alloc();
-	vs_text = varstr_alloc();
+	vs_name = string_alloc();
+	vs_key = string_alloc();
+	vs_val = string_alloc();
+	vs_text = string_alloc();
 
 	if (pxp->pf_write_begin)
 	{
@@ -532,11 +532,11 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_name);
+				string_empty(vs_name);
 				break;
 			case NEXT:
 				if (!_IsSkipChar(ma.org[0]))
-					varstr_cat(vs_name, ma.org, -1);
+					string_cat(vs_name, ma.org, -1);
 				break;
 			}
 		}else if(ma.ms == IS_NAME_END)
@@ -547,11 +547,11 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_key);
+				string_empty(vs_key);
 				break;
 			case NEXT:
 				if (!_IsSkipChar(ma.org[0]))
-					varstr_cat(vs_key, ma.org, -1);
+					string_cat(vs_key, ma.org, -1);
 				break;
 			}
 		}else if(ma.ms == IS_KEY_END)
@@ -565,10 +565,10 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_val);
+				string_empty(vs_val);
 				break;
 			case NEXT:
-				varstr_cat(vs_val, ma.org, -1);
+				string_cat(vs_val, ma.org, -1);
 				break;
 			}
 		}else if(ma.ms == IS_VAL_END)
@@ -576,16 +576,16 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				if(!pbo->isdom && xsicmp(DOC_XML,varstr_ptr(vs_name)) == 0)
+				if(!pbo->isdom && xsicmp(DOC_XML,string_ptr(vs_name)) == 0)
 				{
-					if(xsicmp(XML_ATTR_ENCODING,varstr_ptr(vs_key)) == 0)
+					if(xsicmp(XML_ATTR_ENCODING,string_ptr(vs_key)) == 0)
 					{
 						if (pxp->pf_head_write_attr)
 						{
-							ret = (*pxp->pf_head_write_attr)(pxp->obj, varstr_ptr(vs_key), varstr_len(vs_key), varstr_ptr(vs_val), varstr_len(vs_val));
+							ret = (*pxp->pf_head_write_attr)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 						}
 
-						if (xsicmp(CHARSET_UTF8, varstr_ptr(vs_val)) == 0)
+						if (xsicmp(CHARSET_UTF8, string_ptr(vs_val)) == 0)
 						{
 							ma.enc = _UTF8;
 							if (pbo->pf_set_encode)
@@ -593,7 +593,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 								(*pbo->pf_set_encode)(pbo->obj, ma.enc);
 							}
 						}
-						else if (xsicmp(CHARSET_GB2312, varstr_ptr(vs_val)) == 0)
+						else if (xsicmp(CHARSET_GB2312, string_ptr(vs_val)) == 0)
 						{
 							ma.enc = _GB2312;
 							if (pbo->pf_set_encode)
@@ -602,11 +602,11 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 							}
 						}
 					}
-					else if (xsicmp(XML_ATTR_VERSION, varstr_ptr(vs_key)) == 0)
+					else if (xsicmp(XML_ATTR_VERSION, string_ptr(vs_key)) == 0)
 					{
 						if (pxp->pf_head_write_attr)
 						{
-							ret = (*pxp->pf_head_write_attr)(pxp->obj, varstr_ptr(vs_key), varstr_len(vs_key), varstr_ptr(vs_val), varstr_len(vs_val));
+							ret = (*pxp->pf_head_write_attr)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 						}
 					}
 				}
@@ -627,11 +627,11 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_name);
+				string_empty(vs_name);
 				break;
 			case NEXT:
 				if (!_IsSkipChar(ma.org[0]))
-					varstr_cat(vs_name, ma.org, -1);
+					string_cat(vs_name, ma.org, -1);
 				break;
 			}
 		}else if(ma.ms == NS_NAME_END)
@@ -639,7 +639,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				nsstr = (tchar_t*)varstr_ptr(vs_name);
+				nsstr = (tchar_t*)string_ptr(vs_name);
 				if (split_xmlns(nsstr, &nsat, &nslen, &vsat, &vslen))
 				{
 					if (pxp->pf_node_write_name)
@@ -651,7 +651,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 				{
 					if (pxp->pf_node_write_name)
 					{
-						ret = (*pxp->pf_node_write_name)(pxp->obj, NULL, 0, varstr_ptr(vs_name), varstr_len(vs_name));
+						ret = (*pxp->pf_node_write_name)(pxp->obj, NULL, 0, string_ptr(vs_name), string_len(vs_name));
 					}
 				}
 				break;
@@ -663,11 +663,11 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_key);
+				string_empty(vs_key);
 				break;
 			case NEXT:
 				if (!_IsSkipChar(ma.org[0]))
-					varstr_cat(vs_key, ma.org, -1);
+					string_cat(vs_key, ma.org, -1);
 				break;
 			}
 		}else if(ma.ma == NS_KEY_END)
@@ -681,10 +681,10 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_val);
+				string_empty(vs_val);
 				break;
 			case NEXT:
-				varstr_cat(vs_val, ma.org, -1);
+				string_cat(vs_val, ma.org, -1);
 				break;
 			}
 		}else if(ma.ms == NS_VAL_END)
@@ -692,18 +692,18 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				if (xsnicmp(XMLNS, varstr_ptr(vs_key), XMLNS_LEN) == 0)
+				if (xsnicmp(XMLNS, string_ptr(vs_key), XMLNS_LEN) == 0)
 				{
 					if (pxp->pf_node_write_xmlns)
 					{
-						ret = (*pxp->pf_node_write_xmlns)(pxp->obj, varstr_ptr(vs_key), varstr_len(vs_key), varstr_ptr(vs_val), varstr_len(vs_val));
+						ret = (*pxp->pf_node_write_xmlns)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 					}
 				}
 				else
 				{
 					if (pxp->pf_node_write_attr)
 					{
-						ret = (*pxp->pf_node_write_attr)(pxp->obj, varstr_ptr(vs_key), varstr_len(vs_key), varstr_ptr(vs_val), varstr_len(vs_val));
+						ret = (*pxp->pf_node_write_attr)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 					}
 				}
 				break;
@@ -715,10 +715,10 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_text);
+				string_empty(vs_text);
 				break;
 			case NEXT:
-				varstr_cat(vs_text, ma.org, -1);
+				string_cat(vs_text, ma.org, -1);
 				break;
 			}
 		}else if(ma.ms == NS_TEXT_END)
@@ -728,7 +728,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			case PAUSE:
 				if (pxp->pf_node_write_text)
 				{
-					ret = (*pxp->pf_node_write_text)(pxp->obj, 0, varstr_ptr(vs_text), varstr_len(vs_text));
+					ret = (*pxp->pf_node_write_text)(pxp->obj, 0, string_ptr(vs_text), string_len(vs_text));
 				}
 				break;
 			case NEXT:
@@ -740,10 +740,10 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch (ma.ma)
 			{
 			case PAUSE:
-				varstr_empty(vs_text);
+				string_empty(vs_text);
 				break;
 			case NEXT:
-				varstr_cat(vs_text, ma.org, -1);
+				string_cat(vs_text, ma.org, -1);
 				break;
 			}
 		}
@@ -754,7 +754,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			case PAUSE:
 				break;
 			case NEXT:
-				varstr_cat(vs_text, ma.org, -1);
+				string_cat(vs_text, ma.org, -1);
 				break;
 			}
 		}
@@ -766,11 +766,11 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 				if (!(*pxp->pf_has_node)(pxp->obj))
 					break;
 
-				varstr_del_chars(vs_text, varstr_len(vs_text)-1, 1);
+				string_del_chars(vs_text, string_len(vs_text)-1, 1);
 
 				if (pxp->pf_node_write_text)
 				{
-					ret = (*pxp->pf_node_write_text)(pxp->obj, 1, varstr_ptr(vs_text), varstr_len(vs_text));
+					ret = (*pxp->pf_node_write_text)(pxp->obj, 1, string_ptr(vs_text), string_len(vs_text));
 				}
 				break;
 			case NEXT:
@@ -854,10 +854,10 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 		(*pxp->pf_write_end)(pxp->obj, ma.ms);
 	}
 
-	varstr_free(vs_name);
-	varstr_free(vs_key);
-	varstr_free(vs_val);
-	varstr_free(vs_text);
+	string_free(vs_name);
+	string_free(vs_key);
+	string_free(vs_val);
+	string_free(vs_text);
 
 	if (ma.ms != NIL_SUCCEED)
 	{

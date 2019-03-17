@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _tagctrl_delta_t{
 	textor_t textor;
-	link_t_ptr node;
+	link_t_ptr joint;
 	
 	bool_t b_lock;
 
@@ -87,7 +87,7 @@ int noti_tagctrl_owner(res_win_t widget, unsigned long code, link_t_ptr tag, lin
 	nf.ret = 0;
 
 	nf.tag = tag;
-	nf.node = nlk;
+	nf.joint = nlk;
 
 	widget_send_notice(widget_get_owner(widget), (LPNOTICE)&nf);
 
@@ -191,9 +191,9 @@ void hand_tagctrl_keydown(res_win_t widget, int key)
 		{
 			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-			if (ptd->node != (link_t_ptr)ptd->textor.object)
+			if (ptd->joint != (link_t_ptr)ptd->textor.object)
 			{
-				ptd->node = (link_t_ptr)ptd->textor.object;
+				ptd->joint = (link_t_ptr)ptd->textor.object;
 				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 			}
 		}
@@ -206,9 +206,9 @@ void hand_tagctrl_keydown(res_win_t widget, int key)
 		{
 			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-			if (ptd->node != (link_t_ptr)ptd->textor.object)
+			if (ptd->joint != (link_t_ptr)ptd->textor.object)
 			{
-				ptd->node = (link_t_ptr)ptd->textor.object;
+				ptd->joint = (link_t_ptr)ptd->textor.object;
 				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 			}
 		}
@@ -224,36 +224,36 @@ void hand_tagctrl_keydown(res_win_t widget, int key)
 	case KEY_LEFT:
 		hand_textor_left(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
+			ptd->joint = (link_t_ptr)ptd->textor.object;
 			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 		}
 		break;
 	case KEY_RIGHT:
 		hand_textor_right(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
+			ptd->joint = (link_t_ptr)ptd->textor.object;
 			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 		}
 		break;
 	case KEY_UP:
 		hand_textor_up(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
+			ptd->joint = (link_t_ptr)ptd->textor.object;
 			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 		}
 		break;
 	case KEY_DOWN:
 		hand_textor_down(&ptd->textor);
 
-		if (ptd->node != (link_t_ptr)ptd->textor.object)
+		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
-			ptd->node = (link_t_ptr)ptd->textor.object;
+			ptd->joint = (link_t_ptr)ptd->textor.object;
 			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 		}
 		break;
@@ -366,9 +366,9 @@ void hand_tagctrl_cut(res_win_t widget)
 
 	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -391,9 +391,9 @@ void hand_tagctrl_paste(res_win_t widget)
 
 	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -416,9 +416,9 @@ void hand_tagctrl_undo(res_win_t widget)
 
 	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -448,9 +448,9 @@ void hand_tagctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	hand_textor_lbutton_up(&ptd->textor, pxp);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -549,11 +549,11 @@ void hand_tagctrl_self_command(res_win_t widget, int code, var_long data)
 
 	if (code == COMMAND_UPDATE)
 	{
-		noti_tagctrl_owner(widget, NC_TAGNODEUPDATE, (link_t_ptr)ptd->textor.data, ptd->node, NULL);
+		noti_tagctrl_owner(widget, NC_TAGJOINTUPDATE, (link_t_ptr)ptd->textor.data, ptd->joint, NULL);
 	}
 	else if (code == COMMAND_CHANGE)
 	{
-		noti_tagctrl_owner(widget, NC_TAGNODECHANGED, (link_t_ptr)ptd->textor.data, ptd->node, NULL);
+		noti_tagctrl_owner(widget, NC_TAGJOINTCHANGED, (link_t_ptr)ptd->textor.data, ptd->joint, NULL);
 	}
 }
 
@@ -661,9 +661,9 @@ void tagctrl_redraw(res_win_t widget)
 
 	hand_textor_redraw(&ptd->textor);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -679,9 +679,9 @@ void tagctrl_select_all(res_win_t widget)
 
 	hand_textor_selectall(&ptd->textor);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -697,9 +697,9 @@ void tagctrl_select_cur(res_win_t widget)
 
 	hand_textor_selectcur(&ptd->textor);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
@@ -775,13 +775,13 @@ void tagctrl_clean_tag(res_win_t widget)
 	if (!ptd->textor.object)
 		return;
 
-	if (is_tag_text_node((link_t_ptr)ptd->textor.object))
+	if (is_tag_text_joint((link_t_ptr)ptd->textor.object))
 		return;
 
-	len = xslen(get_tag_node_text_ptr((link_t_ptr)ptd->textor.object));
+	len = xslen(get_tag_joint_text_ptr((link_t_ptr)ptd->textor.object));
 
 	buf = xsalloc(len + 1);
-	xsncpy(buf, get_tag_node_text_ptr((link_t_ptr)ptd->textor.object),len);
+	xsncpy(buf, get_tag_joint_text_ptr((link_t_ptr)ptd->textor.object),len);
 
 	if (_TEXTOR_PRESS_ACCEPT != hand_textor_replace_text(&ptd->textor, buf, -1))
 	{
@@ -813,7 +813,7 @@ void tagctrl_attach(res_win_t widget, link_t_ptr data)
 	ptd->textor.object = NULL;
 	ptd->textor.page = 1;
 	
-	ptd->node = NULL;
+	ptd->joint = NULL;
 
 	tagctrl_redraw(widget);
 
@@ -841,12 +841,12 @@ link_t_ptr tagctrl_detach(res_win_t widget)
 	ptd->textor.object = NULL;
 	ptd->textor.page = 0;
 
-	ptd->node = NULL;
+	ptd->joint = NULL;
 
 	return ptr;
 }
 
-link_t_ptr tagctrl_get_focus_node(res_win_t widget)
+link_t_ptr tagctrl_get_focus_joint(res_win_t widget)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 	link_t_ptr nlk = NULL;
@@ -856,10 +856,10 @@ link_t_ptr tagctrl_get_focus_node(res_win_t widget)
 	if (!ptd->textor.data)
 		return NULL;
 
-	return ptd->node;
+	return ptd->joint;
 }
 
-void tagctrl_set_focus_node(res_win_t widget, link_t_ptr nlk)
+void tagctrl_set_focus_joint(res_win_t widget, link_t_ptr nlk)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
@@ -870,14 +870,14 @@ void tagctrl_set_focus_node(res_win_t widget, link_t_ptr nlk)
 
 	hand_textor_findobj(&ptd->textor, nlk);
 
-	if (ptd->node != (link_t_ptr)ptd->textor.object)
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
-		ptd->node = (link_t_ptr)ptd->textor.object;
+		ptd->joint = (link_t_ptr)ptd->textor.object;
 		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
 
-void tagctrl_delete_node(res_win_t widget, link_t_ptr nlk)
+void tagctrl_delete_joint(res_win_t widget, link_t_ptr nlk)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
@@ -888,12 +888,12 @@ void tagctrl_delete_node(res_win_t widget, link_t_ptr nlk)
 
 	hand_textor_done(&ptd->textor);
 
-	delete_tag_node(nlk);
+	delete_tag_joint(nlk);
 
 	tagctrl_redraw(widget);
 }
 
-link_t_ptr tagctrl_insert_node(res_win_t widget, link_t_ptr pos)
+link_t_ptr tagctrl_insert_joint(res_win_t widget, link_t_ptr pos)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 	link_t_ptr nlk;
@@ -905,16 +905,16 @@ link_t_ptr tagctrl_insert_node(res_win_t widget, link_t_ptr pos)
 
 	hand_textor_done(&ptd->textor);
 
-	nlk = insert_tag_node((link_t_ptr)ptd->textor.data, pos);
-	set_tag_node_name(nlk, _T("TAG"));
-	set_tag_node_text(nlk, _T("TEXT"), -1);
+	nlk = insert_tag_joint((link_t_ptr)ptd->textor.data, pos);
+	set_tag_joint_name(nlk, _T("TAG"));
+	set_tag_joint_text(nlk, _T("TEXT"), -1);
 
 	tagctrl_redraw(widget);
 
 	return nlk;
 }
 
-void tagctrl_set_node_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token)
+void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
@@ -928,13 +928,13 @@ void tagctrl_set_node_text(res_win_t widget, link_t_ptr nlk, const tchar_t* toke
 
 	hand_textor_done(&ptd->textor);
 
-	set_tag_node_text(nlk, token, -1);
+	set_tag_joint_text(nlk, token, -1);
 
 	tagctrl_redraw(widget);
 }
 
 
-void tagctrl_get_node_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr)
+void tagctrl_get_joint_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 

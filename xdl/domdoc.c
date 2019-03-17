@@ -50,9 +50,9 @@ typedef struct _dom_node_t{
 	tchar_t* text;			// node text
 
 	link_t_ptr attr;		// hash table for node to properties 
-	link_t_ptr table;		// string table for namespace list
+	link_t_ptr xmlns;		// string table for namespace list
 	
-	link_t_ptr opti;		// runtime hash table for options	
+	link_t_ptr opti;		// runtime string table for options	
 	link_t_ptr images;		// runtime imageilst for drawing
 
 	int pages;				// runtime page guid
@@ -96,10 +96,10 @@ dom_node_t* _alloc_dom_node()
 void _free_dom_node(dom_node_t* ptt)
 {
 	if (ptt->opti)
-		destroy_hash_table(ptt->opti);
+		destroy_string_table(ptt->opti);
 
-	if (ptt->table)
-		destroy_string_table(ptt->table);
+	if (ptt->xmlns)
+		destroy_string_table(ptt->xmlns);
 
 	if (ptt->ns)
 		xmem_free(ptt->ns);
@@ -753,15 +753,15 @@ void set_dom_node_nsurl(link_t_ptr ilk, const tchar_t* sz_url, int len)
 
 	pti = DomItemFromLink(ilk);
 
-	if (!pti->table)
-		pti->table = create_string_table();
+	if (!pti->xmlns)
+		pti->xmlns = create_string_table();
 
 	if (is_null(pti->ns))
 		xsprintf(nkey, _T("%s"), XMLNS);
 	else
 		xsprintf(nkey, _T("%s:%s"), XMLNS, pti->ns);
 
-	write_string_entity(pti->table, nkey, -1, sz_url, len);
+	write_string_entity(pti->xmlns, nkey, -1, sz_url, len);
 }
 
 const tchar_t* get_dom_node_nsurl_ptr(link_t_ptr ilk)
@@ -773,7 +773,7 @@ const tchar_t* get_dom_node_nsurl_ptr(link_t_ptr ilk)
 
 	pti = DomItemFromLink(ilk);
 
-	if (!pti->table)
+	if (!pti->xmlns)
 		return NULL;
 
 	if (is_null(pti->ns))
@@ -781,7 +781,7 @@ const tchar_t* get_dom_node_nsurl_ptr(link_t_ptr ilk)
 	else
 		xsprintf(nkey, _T("%s:%s"), XMLNS, pti->ns);
 
-	return get_string_entity_ptr(pti->table, nkey, -1);
+	return get_string_entity_ptr(pti->xmlns, nkey, -1);
 }
 
 link_t_ptr get_dom_node_name_table(link_t_ptr ilk)
@@ -792,7 +792,7 @@ link_t_ptr get_dom_node_name_table(link_t_ptr ilk)
 
 	pti = DomItemFromLink(ilk);
 
-	return pti->table;
+	return pti->xmlns;
 }
 
 void set_dom_node_xmlns(link_t_ptr ilk, const tchar_t* nsname, int klen, const tchar_t* nsurl, int vlen)
@@ -813,25 +813,25 @@ void set_dom_node_xmlns(link_t_ptr ilk, const tchar_t* nsname, int klen, const t
 	if (vlen < 0)
 		vlen = xslen(nsurl);
 
-	slk = (pti->table)? get_string_entity(pti->table, nsname, klen) : NULL;
+	slk = (pti->xmlns)? get_string_entity(pti->xmlns, nsname, klen) : NULL;
 	if (slk && !vlen)
 	{
-		delete_string_entity(pti->table, slk);
+		delete_string_entity(pti->xmlns, slk);
 
-		if (get_string_entity_count(pti->table) == 0)
+		if (get_string_entity_count(pti->xmlns) == 0)
 		{
-			destroy_string_table(pti->table);
-			pti->table = NULL;
+			destroy_string_table(pti->xmlns);
+			pti->xmlns = NULL;
 		}
 		return;
 	}
 
 	if (vlen)
 	{
-		if (!pti->table)
-			pti->table = create_string_table();
+		if (!pti->xmlns)
+			pti->xmlns = create_string_table();
 
-		write_string_entity(pti->table, nsname, klen, nsurl, vlen);
+		write_string_entity(pti->xmlns, nsname, klen, nsurl, vlen);
 	}
 }
 
@@ -842,10 +842,10 @@ int get_dom_node_xmlns(link_t_ptr ilk, const tchar_t* nsname, int len, tchar_t* 
 	XDL_ASSERT(ilk && ilk->tag == lkNode);
 
 	pti = DomItemFromLink(ilk);
-	if (!pti->table)
+	if (!pti->xmlns)
 		return 0;
 
-	return read_string_entity(pti->table, nsname, len, buf, max);
+	return read_string_entity(pti->xmlns, nsname, len, buf, max);
 }
 
 
@@ -978,15 +978,15 @@ void set_dom_node_options(link_t_ptr ilk,const tchar_t* token,int len)
 	ptt = DomItemFromLink(ilk);
 	if(ptt->opti)
 	{
-		destroy_hash_table(ptt->opti);
+		destroy_string_table(ptt->opti);
 		ptt->opti = NULL;
 	}
 
 	if(is_null(token) || !len)
 		return;
 
-	ptt->opti = create_hash_table();
-	hash_table_parse_options(ptt->opti, token, len, OPT_ITEMFEED, OPT_LINEFEED);
+	ptt->opti = create_string_table();
+	string_table_parse_options(ptt->opti, token, len, OPT_ITEMFEED, OPT_LINEFEED);
 }
 
 int get_dom_node_options_len(link_t_ptr ilk)
@@ -999,7 +999,7 @@ int get_dom_node_options_len(link_t_ptr ilk)
 	if(!ptt->opti)
 		return 0;
 
-	return hash_table_format_options(ptt->opti,NULL,MAX_LONG, OPT_ITEMFEED, OPT_LINEFEED);
+	return string_table_format_options(ptt->opti,NULL,MAX_LONG, OPT_ITEMFEED, OPT_LINEFEED);
 }
 
 int get_dom_node_options(link_t_ptr ilk,tchar_t* buf,int max)
@@ -1014,7 +1014,7 @@ int get_dom_node_options(link_t_ptr ilk,tchar_t* buf,int max)
 		return 0;
 	}
 
-	return hash_table_format_options(ptt->opti,buf,max, OPT_ITEMFEED, OPT_LINEFEED);
+	return string_table_format_options(ptt->opti,buf,max, OPT_ITEMFEED, OPT_LINEFEED);
 }
 
 link_t_ptr get_dom_node_options_table(link_t_ptr ilk)
@@ -1042,9 +1042,9 @@ const tchar_t* get_dom_node_options_text_ptr(link_t_ptr ilk,const tchar_t* szKey
 	if (!ptt->opti)
 		return NULL;
 
-	ent = get_hash_entity(ptt->opti,szKey,klen);
+	ent = get_string_entity(ptt->opti,szKey,klen);
 	
-	return (ent) ? get_hash_entity_val_ptr(ent) : NULL;
+	return (ent) ? get_string_entity_val_ptr(ent) : NULL;
 }
 
 void set_dom_node_options_text(link_t_ptr ilk,const tchar_t* szKey,int klen,const tchar_t* szVal,int vlen)
@@ -1060,10 +1060,10 @@ void set_dom_node_options_text(link_t_ptr ilk,const tchar_t* szKey,int klen,cons
 
 	if(!ptt->opti)
 	{
-		ptt->opti = create_hash_table();
+		ptt->opti = create_string_table();
 	}
 
-	write_hash_attr(ptt->opti,szKey,klen,szVal,vlen);
+	write_string_entity(ptt->opti,szKey,klen,szVal,vlen);
 }
 
 int get_dom_child_node_count(link_t_ptr ilk)

@@ -75,7 +75,7 @@ float calc_list_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
 	
 	ih = get_list_item_height(ptr);
 
-	count = get_list_item_count(plk) + 1;
+	count = get_list_child_item_count(plk) + 1;
 	per = calc_list_items_per_row(ptr, pbox->fw);
 
 	re = count % per;
@@ -94,7 +94,7 @@ float calc_list_width(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
 
 	iw = get_list_item_width(ptr);
 
-	count = get_list_item_count(plk) + 1;
+	count = get_list_child_item_count(plk) + 1;
 	per = calc_list_items_per_col(ptr, pbox->fh);
 
 	re = count % per;

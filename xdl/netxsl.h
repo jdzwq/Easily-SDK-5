@@ -109,10 +109,6 @@ XDL_API void xxsl_set_send_buff(xhand_t xsl, dword_t dw);
 
 XDL_API void xxsl_set_recv_buff(xhand_t xsl, dword_t dw);
 
-XDL_API void xxsl_set_send_timeout(xhand_t xsl, int s);
-
-XDL_API void xxsl_set_recv_timeout(xhand_t xsl, int s);
-
 XDL_API void xxsl_set_linger(xhand_t xsl, bool_t b_wait, int n_sec);
 
 XDL_API bool_t xxsl_write(xhand_t xsl, const byte_t* data, dword_t* pb);

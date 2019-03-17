@@ -157,7 +157,7 @@ int sub_timebox_self_command(res_win_t widget, int code, var_long data, uid_t su
 			editbox_set_text(editbox, token);
 		}
 		return 1;
-	case COMMAND_SELECT:
+	case COMMAND_CHANGE:
 		if (widget_is_valid(editbox))
 		{
 			widget_post_key(editbox, KEY_ENTER);

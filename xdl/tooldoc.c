@@ -98,13 +98,13 @@ void clear_tool_doc(link_t_ptr ptr)
 	delete_dom_child_nodes(ptr);
 }
 
-void merge_tool_doc(link_t_ptr ptr1, link_t_ptr ptr2)
+void merge_tool_doc(link_t_ptr ptr_dst, link_t_ptr ptr_src)
 {
 	link_t_ptr glk;
 
-	while (glk = detach_dom_node(ptr2, LINK_FIRST))
+	while (glk = detach_dom_node(ptr_src, LINK_FIRST))
 	{
-		attach_dom_node(ptr1, LINK_LAST, glk);
+		attach_dom_node(ptr_dst, LINK_LAST, glk);
 	}
 }
 

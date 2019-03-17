@@ -100,7 +100,7 @@ xhand_t xcomm_open(const tchar_t* pname, dword_t fmode)
 
 	if (fmode & FILE_OPEN_OVERLAP)
 	{
-		async_alloc_lapp(&pst->over);
+		async_alloc_lapp(&pst->over, COMM_BASE_TIMO);
 	}
 
 	return (xhand_t)pst;

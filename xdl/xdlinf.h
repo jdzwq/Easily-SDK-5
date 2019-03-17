@@ -139,8 +139,6 @@ typedef void(*PF_BIO_DECRYPT)(byte_t* buf, dword_t size, void* pa);
 
 typedef void(*PF_BIO_SET_SNDBUF)(xhand_t, dword_t);
 typedef void(*PF_BIO_SET_RDVBUF)(xhand_t, dword_t);
-typedef void(*PF_BIO_SET_SNDTMO)(xhand_t, int);
-typedef void(*PF_BIO_SET_RCVTMO)(xhand_t, int);
 typedef void(*PF_BIO_SET_LINGER)(xhand_t, bool_t, int);
 typedef unsigned short(*PF_BIO_PEER_PORT)(xhand_t, tchar_t*);
 
@@ -154,8 +152,6 @@ typedef struct _if_socket_bio{
 
 	PF_BIO_SET_SNDBUF	pf_set_sndbuf;
 	PF_BIO_SET_RDVBUF	pf_set_rcvbuf;
-	PF_BIO_SET_SNDTMO	pf_set_sndtmo;
-	PF_BIO_SET_RCVTMO	pf_set_rcvtmo;
 	PF_BIO_SET_LINGER	pf_set_linger;
 
 	PF_BIO_READ_RANGE	pf_read_range;
@@ -183,6 +179,7 @@ typedef void(*PF_DRAW_3DLINE)(canvas_t, const xpen_t*, const xpoint_t*, const xp
 typedef void(*PF_DRAW_3DRECT)(canvas_t, const xpen_t*, const xrect_t*);
 typedef void(*PF_DRAW_POLYLINE)(canvas_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_POLYGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
+typedef void(*PF_DRAW_BEZIER)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
 typedef void(*PF_DRAW_RECT)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GRADIENT_RECT)(canvas_t, const xgradi_t*, const xrect_t*);
 typedef void(*PF_ALPHABLEND_RECT)(canvas_t, const xcolor_t*, const xrect_t*, int);
@@ -222,6 +219,7 @@ typedef struct _if_canvas_t{
 	PF_DRAW_3DLINE		pf_draw_3dline;
 	PF_DRAW_POLYLINE	pf_draw_polyline;
 	PF_DRAW_POLYGON		pf_draw_polygon;
+	PF_DRAW_BEZIER		pf_draw_bezier;
 	PF_DRAW_3DRECT		pf_draw_3drect;
 	PF_DRAW_RECT		pf_draw_rect;
 	PF_GRADIENT_RECT	pf_gradient_rect;

@@ -47,22 +47,22 @@ typedef struct _VARSTRWORDOPERATOR{
 	const xfont_t* pxf;
 }VARSTRWORDOPERATOR;
 
-bool_t call_varstr_is_paging(void* param)
+bool_t call_string_is_paging(void* param)
 {
 	return 0;
 }
 
-bool_t call_varstr_break_page(void* param)
+bool_t call_string_break_page(void* param)
 {
 	return 0;
 }
 
-int call_varstr_next_page(void* param)
+int call_string_next_page(void* param)
 {
 	return 1;
 }
 
-int call_varstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom)
+int call_string_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom)
 {
 	VARSTRWORDOPERATOR* pscan = (VARSTRWORDOPERATOR*)param;
 	int n;
@@ -70,12 +70,12 @@ int call_varstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 	n = xschs(pscan->pch);
 	pscan->pos += n;
 
-	varstr_get_chars(pscan->vs, pscan->pos, pscan->pch, 1);
+	string_get_chars(pscan->vs, pscan->pos, pscan->pch, 1);
 	
 	n = xschs(pscan->pch);
 	if (n > 1)
 	{
-		varstr_get_chars(pscan->vs, pscan->pos + 1, pscan->pch + 1, n - 1);
+		string_get_chars(pscan->vs, pscan->pos + 1, pscan->pch + 1, n - 1);
 	}
 
 	if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
@@ -93,7 +93,7 @@ int call_varstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 	return n;
 }
 
-int call_varstr_insert_words(void* param, tchar_t* pch)
+int call_string_insert_words(void* param, tchar_t* pch)
 {
 	VARSTRWORDOPERATOR* pscan = (VARSTRWORDOPERATOR*)param;
 	int n;
@@ -101,26 +101,26 @@ int call_varstr_insert_words(void* param, tchar_t* pch)
 	xszero(pscan->pch, CHS_LEN + 1);
 
 	n = xschs(pch);
-	varstr_ins_chars(pscan->vs, pscan->pos, pch, n);
+	string_ins_chars(pscan->vs, pscan->pos, pch, n);
 
 	return n;
 }
 
-int call_varstr_delete_words(void* param)
+int call_string_delete_words(void* param)
 {
 	VARSTRWORDOPERATOR* pscan = (VARSTRWORDOPERATOR*)param;
 	int n;
 
-	pscan->pch[0] = varstr_get_char(pscan->vs, pscan->pos);
+	pscan->pch[0] = string_get_char(pscan->vs, pscan->pos);
 	n = xschs(pscan->pch);
-	varstr_del_chars(pscan->vs, pscan->pos, n);
+	string_del_chars(pscan->vs, pscan->pos, n);
 
 	xszero(pscan->pch, CHS_LEN + 1);
 
 	return n;
 }
 
-void call_varstr_cur_object(void* param, void** pobj)
+void call_string_cur_object(void* param, void** pobj)
 {
 	VARSTRWORDOPERATOR* pscan = (VARSTRWORDOPERATOR*)param;
 
@@ -138,16 +138,16 @@ void scan_var_text(string_t vs, if_measure_t* pif, const xfont_t* pxf, const xfa
 	ro.pxf = pxf;
 
 	it.param = (void*)&ro;
-	it.pf_is_paging = call_varstr_is_paging;
-	it.pf_cur_object = call_varstr_cur_object;
-	it.pf_delete_word = call_varstr_delete_words;
-	it.pf_insert_word = call_varstr_insert_words;
-	it.pf_next_word = call_varstr_next_words;
+	it.pf_is_paging = call_string_is_paging;
+	it.pf_cur_object = call_string_cur_object;
+	it.pf_delete_word = call_string_delete_words;
+	it.pf_insert_word = call_string_insert_words;
+	it.pf_next_word = call_string_next_words;
 
 	if (paged)
 	{
-		it.pf_next_page = call_varstr_next_page;
-		it.pf_break_page = call_varstr_break_page;
+		it.pf_next_page = call_string_next_page;
+		it.pf_break_page = call_string_break_page;
 	}
 
 	scan_object_text(pif, pxf, pxa, bx, by, bw, bh, &it, pf, pp);

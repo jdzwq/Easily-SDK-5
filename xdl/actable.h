@@ -40,17 +40,53 @@ typedef bool_t(*PF_ENUM_AC_TABLE)(const tchar_t* key, int len, var_long delta, v
 extern "C" {
 #endif
 
-	XDL_API link_t_ptr create_ac_table();
+/*
+@FUNCTION create_ac_table: create a ac table.
+@RETURN link_t_ptr: return the ac table link component.
+*/
+XDL_API link_t_ptr create_ac_table(void);
 
-	XDL_API void destroy_ac_table(link_t_ptr tt);
+/*
+@FUNCTION destroy_ac_table: destroy a ac table.
+@INPUT link_t_ptr ptr: the ac table link component.
+@RETURN void: none.
+*/
+XDL_API void destroy_ac_table(link_t_ptr ptr);
 
-	XDL_API void insert_ac_table(link_t_ptr tt, const tchar_t* key, int len, var_long delta);
+/*
+@FUNCTION insert_ac_table: insert a key and value into ac table.
+@INPUT link_t_ptr ptr: the ac table link component.
+@INPUT const tchar_t* key: the key string token.
+@INPUT int len: the key string token length in characters.
+@INPUT var_long val: the long val.
+@RETURN void: none.
+*/
+XDL_API void insert_ac_table(link_t_ptr ptr, const tchar_t* key, int len, var_long val);
 
-	XDL_API void build_ac_table(link_t_ptr tt);
+/*
+@FUNCTION build_ac_table: build failure transfer table of the ac table .
+@INPUT link_t_ptr ptr: the ac table link component.
+@RETURN void: none.
+*/
+XDL_API void build_ac_table(link_t_ptr ptr);
 
-	XDL_API var_long find_ac_table(link_t_ptr tt, const tchar_t* key, int len);
+/*
+@FUNCTION find_ac_table: find and return data in ac table by the key.
+@INPUT link_t_ptr ptr: the ac table link component.
+@INPUT const tchar_t* key: the key string token.
+@INPUT int len: the key string token length in characters.
+@RETURN var_long: return the data if finded, otherwise return zero.
+*/
+XDL_API var_long find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
 
-	XDL_API void enum_ac_table(link_t_ptr tt, PF_ENUM_AC_TABLE pf, void* pa);
+/*
+@FUNCTION enum_ac_table: enum ac table key and value.
+@INPUT link_t_ptr ptr: the ac table link component.
+@INPUT PF_ENUM_AC_TABLE pf: the enum callback function.
+@INPUT void* pa: the parameter tanslate to callback function.
+@RETURN void: none.
+*/
+XDL_API void enum_ac_table(link_t_ptr ptr, PF_ENUM_AC_TABLE pf, void* pa);
 
 #if defined(_DEBUG) || defined(DEBUG)
 	XDL_API void test_ac_table();

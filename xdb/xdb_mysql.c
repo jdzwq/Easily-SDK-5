@@ -2004,7 +2004,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		raise_user_error(NULL, NULL);
 	}
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
     bind = (MYSQL_BIND*)xmem_alloc((cols) * sizeof(MYSQL_BIND));
     pnull = (my_bool*)xmem_alloc((cols) * sizeof(my_bool));
@@ -2054,17 +2054,17 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
         bind[i].is_null= &pnull[i];
         bind[i].error= &perr[i];
 		
-		varstr_cat(vs, colname, -1);
-		varstr_cat(vs, feed, 1);
+		string_cat(vs, colname, -1);
+		string_cat(vs, feed, 1);
 	}
-	varstr_cat(vs, feed + 1, 2);
+	string_cat(vs, feed + 1, 2);
 
 	if (!stream_write_line(stream, vs, &pos))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_empty(vs);
+	string_empty(vs);
 
     if (C_OK != mysql_stmt_bind_result(pdb->stm, bind))
     {
@@ -2101,38 +2101,38 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 					sz_esc = xsalloc(len_esc + 1);
 					encode_escape(sql_esc, d_str, d_len, sz_esc, len_esc);
 
-					varstr_cat(vs, sz_esc, len_esc);
+					string_cat(vs, sz_esc, len_esc);
 					xsfree(sz_esc);
 				}
 				else
 				{
-					varstr_cat(vs, d_str, d_len);
+					string_cat(vs, d_str, d_len);
 				}
                 
                 xsfree(d_str);
                 d_str = NULL;
 			}
-			varstr_cat(vs, feed, 1);
+			string_cat(vs, feed, 1);
 		}
 
-		varstr_cat(vs, feed + 1, 2);
+		string_cat(vs, feed + 1, 2);
 
 		if (!stream_write_line(stream, vs, &pos))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 	
-	varstr_empty(vs);
+	string_empty(vs);
 
 	if (!stream_write_line(stream, vs, &pos))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	if (!stream_flush(stream))
@@ -2168,7 +2168,7 @@ ONERROR:
         xsfree(d_str);
     
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
     if(pbuf)
     {
@@ -2246,7 +2246,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	dw = 0;
 	if (!stream_read_line(stream, vs, &dw))
@@ -2254,12 +2254,12 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("read stream failed"));
 	}
 
-	vs_sql = varstr_alloc();
+	vs_sql = string_alloc();
 
-	varstr_printf(vs_sql, _T("insert into %s ("), table);
+	string_printf(vs_sql, _T("insert into %s ("), table);
 
 	cols = 0;
-	token = varstr_ptr(vs);
+	token = string_ptr(vs);
 	while (*token != TXT_LINEFEED && *token != _T('\0'))
 	{
 		tklen = 0;
@@ -2269,8 +2269,8 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			tklen++;
 		}
 
-		varstr_cat(vs_sql, token - tklen, tklen);
-		varstr_cat(vs_sql, _T(","), 1);
+		string_cat(vs_sql, token - tklen, tklen);
+		string_cat(vs_sql, _T(","), 1);
 
 		if (*token == TXT_ITEMFEED)
 			token++;
@@ -2283,32 +2283,32 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("empty sql statement"));
 	}
     
-	tklen = varstr_len(vs_sql);
-	varstr_set_char(vs_sql, tklen - 1, _T(')'));
+	tklen = string_len(vs_sql);
+	string_set_char(vs_sql, tklen - 1, _T(')'));
 
-	varstr_cat(vs_sql, _T(" values ("), -1);
+	string_cat(vs_sql, _T(" values ("), -1);
 
 	for (i = 0; i < cols; i++)
 	{
-		varstr_cat(vs_sql, _T("?,"), 2);
+		string_cat(vs_sql, _T("?,"), 2);
 	}
 
-	tklen = varstr_len(vs_sql);
-	varstr_set_char(vs_sql, tklen - 1, _T(')'));
+	tklen = string_len(vs_sql);
+	string_set_char(vs_sql, tklen - 1, _T(')'));
 
 #ifdef _UNICODE
-    d_len = ucs_to_utf8(varstr_ptr(vs_sql),varstr_len(vs_sql),NULL, MAX_LONG);
+    d_len = ucs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),NULL, MAX_LONG);
 #else
-    d_len = mbs_to_utf8(varstr_ptr(vs_sql),varstr_len(vs_sql),NULL, MAX_LONG);
+    d_len = mbs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),NULL, MAX_LONG);
 #endif
     d_sql = (char*)xmem_alloc(d_len + 1);
 #ifdef _UNICODE
-    d_len = ucs_to_utf8(varstr_ptr(vs_sql),varstr_len(vs_sql),d_sql, d_len);
+    d_len = ucs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),d_sql, d_len);
 #else
-    d_len = mbs_to_utf8(varstr_ptr(vs_sql),varstr_len(vs_sql),d_sql, d_len);
+    d_len = mbs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),d_sql, d_len);
 #endif
     
-    varstr_free(vs_sql);
+    string_free(vs_sql);
     vs_sql = NULL;
     
     if(C_OK != mysql_stmt_prepare(stm, d_sql, d_len))
@@ -2329,7 +2329,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
     pinout = (int*)xmem_alloc((cols) * sizeof(int));
 
 	rows = 0;
-	varstr_empty(vs);
+	string_empty(vs);
 
 	while (1)
 	{
@@ -2343,7 +2343,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			break;
 
 		i = 0;
-		token = varstr_ptr(vs);
+		token = string_ptr(vs);
 		while (*token != TXT_LINEFEED && *token != _T('\0'))
 		{
 			tklen = 0;
@@ -2434,7 +2434,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 				break;
 		}
 
-		varstr_empty(vs);
+		string_empty(vs);
         
         if (C_OK != mysql_stmt_bind_param(stm, bind))
         {
@@ -2476,7 +2476,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
     
     xmem_free(bind);
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	pdb->rows = rows;
@@ -2500,10 +2500,10 @@ ONERROR:
         xmem_free(d_sql);
     
 	if (vs_sql)
-		varstr_free(vs_sql);
+		string_free(vs_sql);
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
     if(pbuf)
     {
@@ -2564,7 +2564,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 
 	stream_read_utfbom(stream, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	while (1)
 	{
@@ -2577,19 +2577,19 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 		if (!dw)
 			break;
 
-        if (compare_text(varstr_ptr(vs), xslen(SQL_BREAK), SQL_BREAK, -1, 1) == 0)
+        if (compare_text(string_ptr(vs), xslen(SQL_BREAK), SQL_BREAK, -1, 1) == 0)
         {
             _db_commit(pdb);
             
-            varstr_empty(vs);
+            string_empty(vs);
             
             _db_tran(pdb);
             
             continue;
         }
         
-        sqlstr = varstr_ptr(vs);
-        sqllen = varstr_len(vs);
+        sqlstr = string_ptr(vs);
+        sqllen = string_len(vs);
         
         tkcur = sqlstr;
         while (sqllen)
@@ -2656,10 +2656,10 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
             mysql_stmt_reset(stm);
         }
 
-		varstr_empty(vs);
+		string_empty(vs);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	_db_commit(pdb);
@@ -2677,7 +2677,7 @@ ONERROR:
          xmem_free(d_sql);
     
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (stm)
 	{

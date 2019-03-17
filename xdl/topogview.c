@@ -176,7 +176,7 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	matrix_free(mt);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	ilk = get_topog_next_spot(ptr, LINK_FIRST);
 	while (ilk)
@@ -214,14 +214,14 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		}
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_TEXT, -1, 0) == 0)
 		{
-			varstr_cpy(vs, get_topog_spot_title_ptr(ilk), -1);
+			string_cpy(vs, get_topog_spot_title_ptr(ilk), -1);
 			(*pif->pf_draw_var_text)(pif->canvas, &xf, &xa, &xr, vs);
 		}
 
 		ilk = get_topog_next_spot(ptr, ilk);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 }
 
 

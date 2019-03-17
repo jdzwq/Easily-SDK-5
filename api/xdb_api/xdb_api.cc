@@ -740,7 +740,7 @@ bool_t _invoke_write_clob(const https_block_t* pb, xdb_block_t* pxb)
 
 	stream_read_utfbom(stm, NULL);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 	
 	if(!stream_read_line(stm, vs, NULL))
 	{
@@ -756,7 +756,7 @@ bool_t _invoke_write_clob(const https_block_t* pb, xdb_block_t* pxb)
 	xsfree(d_sql);
 	d_sql = NULL;
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	n_rows = (*pxb->pf_db_rows)(pxb->xdb);
@@ -794,7 +794,7 @@ ONERROR:
 		xsfree(d_sql);
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
 
@@ -838,7 +838,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 	d_sql = xsalloc(n_sql + 1);
 	xhttp_get_query_entity(pb->http, XDB_API_DBREADCLOB, -1, d_sql, n_sql);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	if(!(*pxb->pf_db_read_clob)(pxb->xdb, vs, d_sql))
 	{
@@ -865,7 +865,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
 	xhttp_set_response_content_type_charset(pb->http, fcode, -1);
 
-	n_size = varstr_encode(vs, encode, NULL, MAX_LONG);
+	n_size = string_encode(vs, encode, NULL, MAX_LONG);
 	n_bom = format_utfbom(encode, sz_bom);
 
 	xsprintf(fsize, _T("%d"), n_size + n_bom);
@@ -888,7 +888,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 		raise_user_error(NULL, NULL);
 	}
 
-	varstr_free(vs);
+	string_free(vs);
 	vs = NULL;
 
 	if (pb->log)
@@ -911,7 +911,7 @@ ONERROR:
 		xsfree(d_sql);
 
 	if (vs)
-		varstr_free(vs);
+		string_free(vs);
 
 	if (!xhttp_is_responsed(pb->http))
 	{

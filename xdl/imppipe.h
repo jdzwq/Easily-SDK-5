@@ -36,6 +36,12 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_PIPE
 
+#if defined(DEBUG) || defined(_DEBUG)
+#define PIPE_BASE_TIMO	(-1)
+#else
+#define PIPE_BASE_TIMO	(3000)
+#endif
+
 #ifdef	__cplusplus
 extern "C" {
 #endif

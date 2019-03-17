@@ -7,7 +7,7 @@
 
 	@doc prime document
 
-	@module	xdlprim.c | xdl prime implement file
+	@module	oemprim.c | xdl prime implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,10 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "xdlprim.h"
-#include "xdlimp.h"
-#include "xdloem.h"
-#include "xdlstd.h"
+#include "oemprim.h"
 
 #define PRIM_TABLE_SIZE		5134
 
@@ -618,7 +615,8 @@ void test_prim(void)
 		printf("%d\n", prim);
 		if (i < PRIM_TABLE_SIZE - 1)
 		{
-			XDL_ASSERT(prim == PRIM_TABLE[i]);
+			if (prim != PRIM_TABLE[i])
+				printf("not match");
 		}
 	}
 }

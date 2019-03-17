@@ -218,22 +218,6 @@ XDL_API bool_t	xsocket_set_sndbuf(res_file_t so, int size);
 XDL_API bool_t	xsocket_set_rcvbuf(res_file_t so, int size);
 
 /*
-@FUNCTION xsocket_set_sndtmo: set the socket inner send timeout value.
-@INPUT res_file_t so: socket resource handle.
-@INPUT int ms: the request timeout value.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-XDL_API bool_t	xsocket_set_sndtmo(res_file_t so, int ms);
-
-/*
-@FUNCTION xsocket_set_rcvtmo: set the socket inner recv timeout value.
-@INPUT res_file_t so: socket resource handle.
-@INPUT int size: the request timeout value.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-XDL_API bool_t	xsocket_set_rcvtmo(res_file_t so, int ms);
-
-/*
 @FUNCTION host_addr: peer the host name to a ip address.
 @INPUT const tchar_t* host: host name.
 @OUTPUT tchar_t*: string buffer for returning address.

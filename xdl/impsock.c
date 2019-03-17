@@ -399,38 +399,6 @@ bool_t	xsocket_set_rcvbuf(res_file_t so, int size)
 	return 1;
 }
 
-bool_t	xsocket_set_sndtmo(res_file_t so, int ms)
-{
-	if_socket_t* pif_so;
-
-	pif_so = PROCESS_SOCKET_INTERFACE;
-	XDL_ASSERT(pif_so != NULL);
-
-	if (!(*pif_so->pf_socket_set_sndtmo)(so, ms))
-	{
-		set_network_error(_T("xsocket_set_sndtmo"));
-		return 0;
-	}
-
-	return 1;
-}
-
-bool_t	xsocket_set_rcvtmo(res_file_t so, int ms)
-{
-	if_socket_t* pif_so;
-
-	pif_so = PROCESS_SOCKET_INTERFACE;
-	XDL_ASSERT(pif_so != NULL);
-
-	if (!(*pif_so->pf_socket_set_rcvtmo)(so, ms))
-	{
-		set_network_error(_T("xsocket_set_rcvtmo"));
-		return 0;
-	}
-
-	return 1;
-}
-
 bool_t host_addr(const tchar_t* host, tchar_t* addr)
 {
 	if_socket_t* pif_so;

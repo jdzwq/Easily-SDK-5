@@ -213,7 +213,7 @@ static unsigned int STDCALL wait_accept(void* param)
 
 	xdl_thread_init();
 
-	async_alloc_lapp(&over);
+	async_alloc_lapp(&over, TCP_BASE_TIMO);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 	over.type = ASYNC_QUEUE;

@@ -7,7 +7,7 @@
 
 	@doc variant string document
 
-	@module	varstr.c | varstr implement file
+	@module	string.c | xdl string implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -42,7 +42,7 @@ typedef struct _redstr_t{
 	tchar_t* vbuf;
 }redstr_t;
 
-string_t varstr_alloc()
+string_t string_alloc()
 {
 	redstr_t* pvs;
 
@@ -55,7 +55,7 @@ string_t varstr_alloc()
 	return (string_t)pvs;
 }
 
-void varstr_free(string_t vs)
+void string_free(string_t vs)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -65,7 +65,7 @@ void varstr_free(string_t vs)
 	xmem_free(pvs);
 }
 
-void varstr_incre(string_t vs,int len)
+void string_incre(string_t vs,int len)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 	int org_size;
@@ -81,20 +81,20 @@ void varstr_incre(string_t vs,int len)
 	}
 }
 
-tchar_t* varstr_ensure_buf(string_t vs, int len)
+tchar_t* string_ensure_buf(string_t vs, int len)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
 	pvs->count = 0;
 
-	varstr_incre(pvs, len);
+	string_incre(pvs, len);
 
 	pvs->count = len;
 
 	return pvs->vbuf;
 }
 
-void varstr_attach_buf(string_t vs, tchar_t* buf, int size)
+void string_attach_buf(string_t vs, tchar_t* buf, int size)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -113,7 +113,7 @@ void varstr_attach_buf(string_t vs, tchar_t* buf, int size)
 	pvs->count = len;
 }
 
-tchar_t* varstr_detach_buf(string_t vs)
+tchar_t* string_detach_buf(string_t vs)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -128,7 +128,7 @@ tchar_t* varstr_detach_buf(string_t vs)
 	return buf;
 }
 
-int varstr_resize(string_t vs, int len)
+int string_resize(string_t vs, int len)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -149,7 +149,7 @@ int varstr_resize(string_t vs, int len)
 	else
 	{
 		if (pvs->count < len)
-			varstr_incre(pvs, len - pvs->count);
+			string_incre(pvs, len - pvs->count);
 
 		while (pvs->count < len)
 		{
@@ -167,7 +167,7 @@ int varstr_resize(string_t vs, int len)
 	return pvs->count;
 }
 
-int	varstr_cat(string_t vs, const tchar_t* str, int len)
+int	string_cat(string_t vs, const tchar_t* str, int len)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -183,7 +183,7 @@ int	varstr_cat(string_t vs, const tchar_t* str, int len)
 
 	if (dlen + pvs->count + 1 > pvs->size)
 	{
-		varstr_incre(pvs, dlen);
+		string_incre(pvs, dlen);
 	}
 
 	if (pvs->vbuf)
@@ -196,7 +196,7 @@ int	varstr_cat(string_t vs, const tchar_t* str, int len)
 	return pvs->count;
 }
 
-int	varstr_cpy(string_t vs, const tchar_t* str, int len)
+int	string_cpy(string_t vs, const tchar_t* str, int len)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -207,7 +207,7 @@ int	varstr_cpy(string_t vs, const tchar_t* str, int len)
 
 	if (!len)
 	{
-		varstr_empty(pvs);
+		string_empty(pvs);
 		return pvs->count;
 	}
 
@@ -215,13 +215,13 @@ int	varstr_cpy(string_t vs, const tchar_t* str, int len)
 
 	if (!dlen)
 	{
-		varstr_empty(pvs);
+		string_empty(pvs);
 		return pvs->count;
 	}
 
 	if (dlen + 1 > pvs->size)
 	{
-		varstr_incre(pvs, dlen);
+		string_incre(pvs, dlen);
 	}
 
 	if (pvs->vbuf)
@@ -234,7 +234,7 @@ int	varstr_cpy(string_t vs, const tchar_t* str, int len)
 	return pvs->count;
 }
 
-tchar_t varstr_get_char(string_t vs, int pos)
+tchar_t string_get_char(string_t vs, int pos)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -244,7 +244,7 @@ tchar_t varstr_get_char(string_t vs, int pos)
 	return pvs->vbuf[pos];
 }
 
-bool_t varstr_set_char(string_t vs, int pos, tchar_t ch)
+bool_t string_set_char(string_t vs, int pos, tchar_t ch)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -256,7 +256,7 @@ bool_t varstr_set_char(string_t vs, int pos, tchar_t ch)
 	return 1;
 }
 
-int varstr_get_chars(string_t vs, int pos, tchar_t* pch, int n)
+int string_get_chars(string_t vs, int pos, tchar_t* pch, int n)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -278,7 +278,7 @@ int varstr_get_chars(string_t vs, int pos, tchar_t* pch, int n)
 	return n;
 }
 
-void varstr_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
+void string_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -292,14 +292,14 @@ void varstr_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
 		n = xslen(pch);
 
 	if (pos + n + 1 > pvs->size)
-		varstr_incre(pvs, pos + n - pvs->size);
+		string_incre(pvs, pos + n - pvs->size);
 
 	xsnset(pvs->vbuf, pos, pch, n);
 
 	pvs->count = (pvs->count > pos + n) ? pvs->count : (pos + n);
 }
 
-void varstr_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
+void string_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -313,7 +313,7 @@ void varstr_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 		n = xslen(pch);
 
 	if(pvs->count + n + 1 > pvs->size)
-		varstr_incre(pvs,n);
+		string_incre(pvs,n);
 
 	if (n)
 	{
@@ -322,7 +322,7 @@ void varstr_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 	}
 }
 
-void varstr_del_chars(string_t vs,int pos,int n)
+void string_del_chars(string_t vs,int pos,int n)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -334,21 +334,21 @@ void varstr_del_chars(string_t vs,int pos,int n)
 	pvs->count = (pvs->count > pos + n) ? (pvs->count - n) : pos;
 }
 
-const tchar_t* varstr_ptr(string_t vs)
+const tchar_t* string_ptr(string_t vs)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
 	return pvs->vbuf;
 }
 
-int varstr_len(string_t vs)
+int string_len(string_t vs)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
 	return pvs->count;
 }
 
-void varstr_empty(string_t vs)
+void string_empty(string_t vs)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -367,7 +367,17 @@ void varstr_empty(string_t vs)
 	}
 }
 
-int varstr_append(string_t vs, const tchar_t* fmt, ...)
+bool_t string_is_empty(string_t vs)
+{
+	redstr_t* pvs = (redstr_t*)vs;
+
+	if (!pvs->vbuf)
+		return 1;
+	else
+		return (pvs->count) ? 0 : 1;
+}
+
+int string_append(string_t vs, const tchar_t* fmt, ...)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -382,7 +392,7 @@ int varstr_append(string_t vs, const tchar_t* fmt, ...)
 		return pvs->count;
 
 	if (pvs->count + len + 1 > pvs->size)
-		varstr_incre(pvs, len);
+		string_incre(pvs, len);
 
 	va_start(arg, fmt);
 	xsprintf_arg(pvs->vbuf + pvs->count, fmt, &arg);
@@ -393,14 +403,14 @@ int varstr_append(string_t vs, const tchar_t* fmt, ...)
 	return pvs->count;
 }
 
-int varstr_printf(string_t vs,const tchar_t* fmt,...)
+int string_printf(string_t vs,const tchar_t* fmt,...)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
 	va_list arg;
 	int len;
 
-	varstr_empty(pvs);
+	string_empty(pvs);
 
 	va_start(arg,fmt);
 	len = xsprintf_arg(NULL,fmt,&arg);
@@ -410,7 +420,7 @@ int varstr_printf(string_t vs,const tchar_t* fmt,...)
 		return pvs->count;
 
 	if(pvs->count + len + 1 > pvs->size)
-		varstr_incre(pvs,len);
+		string_incre(pvs,len);
 
 	va_start(arg,fmt);
 	xsprintf_arg(pvs->vbuf + pvs->count, fmt, &arg);
@@ -421,19 +431,19 @@ int varstr_printf(string_t vs,const tchar_t* fmt,...)
 	return pvs->count;
 }
 
-string_t varstr_clone(string_t vs)
+string_t string_clone(string_t vs)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
 	redstr_t* pvs_new;
 
-	pvs_new = varstr_alloc();
-	varstr_cpy(pvs_new, pvs->vbuf, pvs->count);
+	pvs_new = string_alloc();
+	string_cpy(pvs_new, pvs->vbuf, pvs->count);
 
 	return (string_t)pvs_new;
 }
 
-int varstr_encode(string_t vs, int encode, byte_t* buf, dword_t max)
+dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -443,44 +453,44 @@ int varstr_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 	if (encode == _UTF8)
 	{
 #ifdef _UNICODE
-		return ucs_to_utf8(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return ucs_to_utf8(string_ptr(pvs), string_len(pvs), buf, max);
 #else
-		return mbs_to_utf8(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return mbs_to_utf8(string_ptr(pvs), string_len(pvs), buf, max);
 #endif
 	}
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (encode == _GB2312)
 	{
 #ifdef _UNICODE
-		return ucs_to_gb2312(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return ucs_to_gb2312(string_ptr(pvs), string_len(pvs), buf, max);
 #else
-		return mbs_to_gb2312(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return mbs_to_gb2312(string_ptr(pvs), string_len(pvs), buf, max);
 #endif
 	}
 #endif
 	else if (encode == _UTF16_LIT)
 	{
 #ifdef _UNICODE
-		return ucs_to_utf16lit(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return ucs_to_utf16lit(string_ptr(pvs), string_len(pvs), buf, max);
 #else
-		return mbs_to_utf16lit(varstr_ptr(vs), varstr_len(vs), buf, max);
+		return mbs_to_utf16lit(string_ptr(vs), string_len(vs), buf, max);
 #endif
 	}
 	else if (encode == _UTF16_BIG)
 	{
 #ifdef _UNICODE
-		return ucs_to_utf16big(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return ucs_to_utf16big(string_ptr(pvs), string_len(pvs), buf, max);
 #else
-		return mbs_to_utf16big(varstr_ptr(pvs), varstr_len(pvs), buf, max);
+		return mbs_to_utf16big(string_ptr(pvs), string_len(pvs), buf, max);
 #endif
 	}
 	else
 	{
 #ifdef _UNICODE
-		max = (max < varstr_len(pvs) * sizeof(wchar_t)) ? max : (varstr_len(pvs) * sizeof(wchar_t));
+		max = (max < string_len(pvs) * sizeof(wchar_t)) ? max : (string_len(pvs) * sizeof(wchar_t));
 		if (buf)
 		{
-			str = varstr_ptr(pvs);
+			str = string_ptr(pvs);
 			for (i = 0; i < max / 2; i++)
 			{
 				buf[i * 2] = GETLBYTE(str[i]);
@@ -489,10 +499,10 @@ int varstr_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 		}
 		return max;
 #else
-		max = (max < varstr_len(vs)) ? max : varstr_len(pvs);
+		max = (max < string_len(vs)) ? max : string_len(pvs);
 		if (buf)
 		{
-			str = varstr_ptr(pvs);
+			str = string_ptr(pvs);
 			xmem_copy((void*)buf, (void*)str, max);
 		}
 		return max;
@@ -500,7 +510,7 @@ int varstr_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 	}
 }
 
-int varstr_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
+int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 {
 	redstr_t* pvs = (redstr_t*)vs;
 
@@ -550,7 +560,7 @@ int varstr_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 #endif
 	}
 
-	str = varstr_ensure_buf(pvs, len);
+	str = string_ensure_buf(pvs, len);
 
 	if (encode == _UTF8)
 	{

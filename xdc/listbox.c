@@ -250,10 +250,10 @@ void hand_listbox_keydown(res_win_t widget, int key)
 	switch (key)
 	{
 	case KEY_ENTER:
-		noti_listbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 		break;
 	case KEY_SPACE:
-		noti_listbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 		break;
 	case KEY_LEFT:
 		listbox_tabskip(widget,WD_TAB_LEFT);
@@ -312,7 +312,7 @@ void hand_listbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			listbox_on_item_changed(widget, ilk);
 	}
 
-	noti_listbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+	noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 }
 
 void hand_listbox_size(res_win_t widget, int code, const xsize_t* prs)

@@ -91,6 +91,18 @@ XDL_API void	svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t*
 XDL_API void	svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
 
 /*
+@FUNCTION svg_draw_bezier: draw bezier in svg canvas using millimeter coordinate
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt1: the start point using float member.
+@INPUT const xpoint_t* ppt2: the control point using float member.
+@INPUT const xpoint_t* ppt3: the control point using float member.
+@INPUT const xpoint_t* ppt4: the end point using float member.
+@RETURN void: none.
+*/
+XDL_API void	svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+
+/*
 @FUNCTION draw_rect: draw svg_draw_rect in svg canvas using milimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -101,7 +113,7 @@ XDL_API void	svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* 
 XDL_API void	svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
 
 /*
-@FUNCTION svg_gradient_rect: gradinet a rect in svg canvas using milimeter coordinate.
+@FUNCTION svg_gradient_rect: gradient a rect in svg canvas using milimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT const xgradi_t* pxg the gradient struct.
 @INPUT const xrect_t* pxr: the rect struct using float member.

@@ -196,11 +196,11 @@ static int sub_dropbox_self_command(res_win_t widget, int code, var_long data, u
 		{
 			if (widget_is_valid(editbox))
 			{
-				editbox_set_text(editbox, get_hash_entity_key_ptr(ent));
+				editbox_set_text(editbox, get_string_entity_key_ptr(ent));
 			}
 		}
 		return 1;
-	case COMMAND_SELECT:
+	case COMMAND_CHANGE:
 		if (widget_is_valid(editbox))
 		{
 			widget_post_key(editbox, KEY_ENTER);

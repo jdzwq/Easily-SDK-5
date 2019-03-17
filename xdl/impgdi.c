@@ -102,13 +102,22 @@ void draw_round_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const
 	(*pif->pf_gdi_draw_round)(rdc, pxp, pxb, pxr);
 }
 
+void draw_bezier_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_bezier)(rdc, pxp, ppt1, ppt2, ppt3, ppt4);
+}
+
 void gradient_rect_raw(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* pxr)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_gradinet_rect)(rdc, pxg, pxr);
+	(*pif->pf_gdi_gradient_rect)(rdc, pxg, pxr);
 }
 
 void alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, int opacity)
@@ -1055,6 +1064,43 @@ void draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 	xmem_free(lpt);
 }
 
+void draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+{
+	res_ctx_t rdc;
+	xpoint_t pt1, pt2, pt3, pt4;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	rdc = get_canvas_ctx(canv);
+
+	xmem_copy((void*)&pt1, (void*)ppt1, sizeof(xpoint_t));
+	xmem_copy((void*)&pt2, (void*)ppt2, sizeof(xpoint_t));
+	xmem_copy((void*)&pt3, (void*)ppt3, sizeof(xpoint_t));
+	xmem_copy((void*)&pt4, (void*)ppt4, sizeof(xpoint_t));
+
+	point_tm_to_pt(canv, &pt1);
+	point_tm_to_pt(canv, &pt2);
+	point_tm_to_pt(canv, &pt3);
+	point_tm_to_pt(canv, &pt4);
+
+	(*pif->pf_gdi_draw_bezier)(rdc, pxp, &pt1, &pt2, &pt3, &pt4);
+}
+
+void draw_path(canvas_t canv, const xpen_t* pxp, const tchar_t* str, int len)
+{
+	res_ctx_t rdc;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	rdc = get_canvas_ctx(canv);
+
+	(*pif->pf_gdi_draw_path)(rdc, pxp, str, len);
+}
+
 void draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1082,7 +1128,7 @@ void gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_gradinet_rect)(rdc, pxg, &xr);
+	(*pif->pf_gdi_gradient_rect)(rdc, pxg, &xr);
 }
 
 void alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int opa)
@@ -2088,13 +2134,14 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 	xpoint_t* ppt;
 	int i;
 	bool_t b_round;
+	long rx, ry;
 	canvas_t svgcanv;
 
 	link_t_ptr st = NULL;
 
 	svgcanv = create_svg_canvas(ptr);
 
-	ilk = get_svg_child_node(ptr);
+	ilk = get_svg_first_child_node(ptr);
 	while (ilk)
 	{
 		sz_name = get_svg_node_name_ptr(ilk);
@@ -2116,7 +2163,12 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 		{
 			default_xpen(&xp);
 			default_xbrush(&xb);
-			b_round = read_rect_from_svg_node(ilk, &xp, &xb, &xr);
+			b_round = svg_node_is_round(ilk);
+			if (b_round)
+				read_round_from_svg_node(ilk, &xp, &xb, &xr, &rx, &ry);
+			else
+				read_rect_from_svg_node(ilk, &xp, &xb, &xr);
+
 			svg_rect_pt_to_tm(svgcanv, &xr);
 
 			xr.fx += pbox->fx;
@@ -2225,14 +2277,14 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 			draw_image(canv, &xi, &xr);
 		}
 
-		if (get_svg_child_node(ilk))
+		if (get_svg_first_child_node(ilk))
 		{
 			if (!st)
 				st = create_stack_table();
 
 			push_stack_node(st, (void*)ilk);
 
-			ilk = get_svg_child_node(ilk);
+			ilk = get_svg_first_child_node(ilk);
 			continue;
 
 		}

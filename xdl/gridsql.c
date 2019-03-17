@@ -862,7 +862,7 @@ int format_grid_exec_sql(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-int format_grid_exec_varstr(link_t_ptr ptr, string_t vs)
+int format_grid_exec_string(link_t_ptr ptr, string_t vs)
 {
 	link_t_ptr rlk;
 	int rs, len, total = 0;
@@ -898,7 +898,7 @@ int format_grid_exec_varstr(link_t_ptr ptr, string_t vs)
 		}
 
 		if (len)
-			varstr_cat(vs, buf, len);
+			string_cat(vs, buf, len);
 
 		if (buf)
 			xsfree(buf);

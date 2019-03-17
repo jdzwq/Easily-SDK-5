@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc xdl prime document
+	@doc xdl sorting document
 
-	@module	xdlprim.h | xdl prime interface file
+	@module	sorting.h | xdl sortint interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,26 +29,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _XDLPRIM_H
-#define _XDLPRIM_H
+#ifndef _SORTING_H
+#define _SORTING_H
 
 #include "xdldef.h"
-
-#define MIN_PRIM		2
-#define MAX_PRIM		2147483647
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API dword_t next_prim(dword_t prim);
-
-#if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_prim(void);
-#endif
+XDL_API void bubble_xsort(xsort_t* pxs, int count);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /*XDLPRIM_H*/
+#endif /*SORTING_H*/

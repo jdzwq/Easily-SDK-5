@@ -1369,44 +1369,44 @@ void propertybag_read_rich_attributes(link_t_ptr ptr, link_t_ptr rich)
 	set_rich_height(rich, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
 }
 
-void propertybag_write_rich_node_attributes(link_t_ptr ptr, link_t_ptr ilk)
+void propertybag_write_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk)
 {
 	link_t_ptr ent;
 
 	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, _T("rich-node"), -1);
 	set_entity_editable(ent, 0);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_rich_node_name_ptr(ilk), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_rich_anch_name_ptr(ilk), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_TITLE, -1, get_rich_node_title_ptr(ilk), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_TITLE, -1, get_rich_anch_title_ptr(ilk), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_FIXED, get_rich_node_fixed(ilk));
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_FIXED, get_rich_anch_fixed(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
 
-	ent = set_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_LINED, get_rich_node_lined(ilk));
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_LINED, get_rich_anch_lined(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
 }
 
-void propertybag_read_rich_node_attributes(link_t_ptr ptr, link_t_ptr ilk)
+void propertybag_read_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk)
 {
 	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, _T("rich-node"), -1, 0) != 0)
 		return;
 
-	set_rich_node_name(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
+	set_rich_anch_name(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 
-	set_rich_node_title(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_TITLE));
+	set_rich_anch_title(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_TITLE));
 
-	set_rich_node_fixed(ilk, get_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_FIXED));
+	set_rich_anch_fixed(ilk, get_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_FIXED));
 
-	set_rich_node_lined(ilk, get_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_LINED));
+	set_rich_anch_lined(ilk, get_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_LINED));
 }
 
 void propertybag_write_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog)

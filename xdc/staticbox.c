@@ -91,7 +91,7 @@ void hand_staticbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	
 	widget_send_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
-	widget_post_command(widget, COMMAND_SELECT, IDC_SELF, (var_long)NULL);
+	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 }
 
 void hand_staticbox_size(res_win_t widget, int code, const xsize_t* prs)

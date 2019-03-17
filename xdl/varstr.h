@@ -7,7 +7,7 @@
 
 	@doc variant string document
 
-	@module	varstr.h | xdl variant memory interface file
+	@module	string.h | xdl variant memory interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -38,54 +38,209 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API string_t varstr_alloc(void);
+/*
+@FUNCTION string_alloc: alloc a string object.
+@RETURN string_t: return the string object
+*/
+XDL_API string_t string_alloc(void);
 
-	XDL_API void varstr_free(string_t vs);
+/*
+@FUNCTION string_free: free a string object.
+@INPUT string_t vs: the string object.
+@RETURN void: none.
+*/
+XDL_API void string_free(string_t vs);
 
-	XDL_API void varstr_incre(string_t vs, int len);
+/*
+@FUNCTION string_incre: increase string object buffer size.
+@INPUT string_t vs: the string object.
+@INPUT int len: length in characters to increased.
+@RETURN void: none.
+*/
+XDL_API void string_incre(string_t vs, int len);
 
-	XDL_API int	varstr_cat(string_t vs, const tchar_t* str, int len);
+/*
+@FUNCTION string_cat: cat a string token to string object.
+@INPUT string_t vs: the string object.
+@INPUT const tchar_t* str: the string token.
+@INPUT int len: length in characters of string token.
+@RETURN int: return total string length in characters in string object.
+*/
+XDL_API int	string_cat(string_t vs, const tchar_t* str, int len);
 
-	XDL_API int	varstr_cpy(string_t vs, const tchar_t* str, int len);
+/*
+@FUNCTION string_cpy: copy a string token to string object.
+@INPUT string_t vs: the string object.
+@INPUT const tchar_t* str: the string token.
+@INPUT int len: length in characters of string token.
+@RETURN int: return total string length in characters in the string object.
+*/
+XDL_API int	string_cpy(string_t vs, const tchar_t* str, int len);
 
-	XDL_API int varstr_printf(string_t vs, const tchar_t* fmt, ...);
+/*
+@FUNCTION string_printf: fill string object using printf.
+@INPUT string_t vs: the string object.
+@INPUT const tchar_t* fmt: the format token.
+@INPUT ...: variable parameters.
+@RETURN int: return total string length in characters in the string object.
+*/
+XDL_API int string_printf(string_t vs, const tchar_t* fmt, ...);
 
-	XDL_API int varstr_append(string_t vs, const tchar_t* fmt, ...);
+/*
+@FUNCTION string_append: append string object using printf.
+@INPUT string_t vs: the string object.
+@INPUT const tchar_t* fmt: the format token.
+@INPUT ...: variable parameters.
+@RETURN int: return total string length in characters in the string object.
+*/
+XDL_API int string_append(string_t vs, const tchar_t* fmt, ...);
 
-	XDL_API const tchar_t* varstr_ptr(string_t vs);
+/*
+@FUNCTION string_ptr: get string object buffer pointer.
+@INPUT string_t vs: the string object.
+@RETURN const tchar_t*: return the buffer pointer.
+*/
+XDL_API const tchar_t* string_ptr(string_t vs);
 
-	XDL_API int varstr_len(string_t vs);
+/*
+@FUNCTION string_len: get string token length of the string object.
+@INPUT string_t vs: the string object.
+@RETURN int*: return the string token length in characters.
+*/
+XDL_API int string_len(string_t vs);
 
-	XDL_API void varstr_empty(string_t vs);
+/*
+@FUNCTION string_empty: empty string buffer of the string object.
+@INPUT string_t vs: the string object.
+@RETURN void: none.
+*/
+XDL_API void string_empty(string_t vs);
 
-	XDL_API string_t varstr_clone(string_t vs);
+/*
+@FUNCTION string_is_empty: test string buffer is empty.
+@INPUT string_t vs: the string object.
+@RETURN bool_t: nonezero for the buffer of string object is empty, otherwise return zero.
+*/
+XDL_API bool_t string_is_empty(string_t vs);
 
-	XDL_API int varstr_resize(string_t vs, int len);
+/*
+@FUNCTION string_clone: clone a new string object.
+@INPUT string_t vs: the string object.
+@RETURN string_t: the new string object.
+*/
+XDL_API string_t string_clone(string_t vs);
 
-	XDL_API int varstr_encode(string_t vs, int encode, byte_t* buf, dword_t max);
+/*
+@FUNCTION string_resize: resize string buffer size of the string object.
+@INPUT string_t vs: the string object.
+@INPUT len: the new size in characters, not include terminate character.
+@RETURN int: the new size.
+*/
+XDL_API int string_resize(string_t vs, int len);
 
-	XDL_API int varstr_decode(string_t vs, int encode, const byte_t* buf, dword_t size);
+/*
+@FUNCTION string_encode: encode the string object and output to buffer.
+@INPUT string_t vs: the string object.
+@INPUT int encode: the code type, it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
+@OUTPUT buf: the bytes buffer for outputing.
+@INPUT dword_t max: the buffer size.
+@RETURN dword_t: return the outputed byte size.
+*/
+XDL_API dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max);
 
-	XDL_API tchar_t* varstr_ensure_buf(string_t vs, int len);
+/*
+@FUNCTION string_decode: decode buffer into the string object.
+@INPUT string_t vs: the string object.
+@INPUT int encode: the code type, it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
+@INPUT const buf: the bytes buffer to decoding.
+@INPUT dword_t size: the buffer content size.
+@RETURN int: return string token length in characters in string object.
+*/
+XDL_API int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size);
 
-	XDL_API void varstr_attach_buf(string_t vs, tchar_t* buf, int size);
+/*
+@FUNCTION string_ensure_buf: expand buffer size of the string object 
+@INPUT string_t vs: the string object.
+@INPUT int len: the string buffer size in characters, not include terminate character.
+@RETURN tchar_t: return string buffer pointer.
+*/
+XDL_API tchar_t* string_ensure_buf(string_t vs, int len);
 
-	XDL_API tchar_t* varstr_detach_buf(string_t vs);
+/*
+@FUNCTION string_attach_buf: repleace buffer of the string object
+@INPUT string_t vs: the string object.
+@INPUT tchar_t* buf: the buffer pointer.
+@INPUT int size: the buffer size, not include terminate character.
+@RETURN void: none.
+*/
+XDL_API void string_attach_buf(string_t vs, tchar_t* buf, int size);
 
-	XDL_API tchar_t varstr_get_char(string_t vs, int pos);
+/*
+@FUNCTION string_detach_buf: detach buffer of the string object, then the string object is empty.
+@INPUT string_t vs: the string object.
+@RETURN tchar_t*: the buffer pointer if exists, otherwise return NULL.
+*/
+XDL_API tchar_t* string_detach_buf(string_t vs);
 
-	XDL_API bool_t varstr_set_char(string_t vs, int pos, tchar_t ch);
+/*
+@FUNCTION string_get_char: get a character at position of the string object.
+@INPUT string_t vs: the string object.
+@INPUT int pos: the zero based position.
+@RETURN tchar_t: return the character if exists, otherwise return zero.
+*/
+XDL_API tchar_t string_get_char(string_t vs, int pos);
 
-	XDL_API int varstr_get_chars(string_t vs, int pos, tchar_t* pch, int n);
+/*
+@FUNCTION string_set_char: set a character at position of the string object.
+@INPUT string_t vs: the string object.
+@INPUT int pos: the zero based position.
+@INPUT tchar_t ch: the character.
+@RETURN bool_t: if position in the buffer size range return nonzero, otherwise return zero.
+*/
+XDL_API bool_t string_set_char(string_t vs, int pos, tchar_t ch);
 
-	XDL_API void varstr_set_chars(string_t vs, int pos, const tchar_t* pch, int n);
+/*
+@FUNCTION string_get_chars: get some characters from the position in string object.
+@INPUT string_t vs: the string object.
+@INPUT int pos: the zero based start position.
+@OUTPUT tchar_t* pch: the characters buffer.
+@INPUT int n: the characters count want to get.
+@RETURN int: return the characters count copyed.
+*/
+XDL_API int string_get_chars(string_t vs, int pos, tchar_t* pch, int n);
 
-	XDL_API void varstr_ins_chars(string_t vs, int pos, const tchar_t* pch, int n);
+/*
+@FUNCTION string_set_chars: set some characters from the position in string object.
+@INPUT string_t vs: the string object.
+@INPUT int pos: the zero based start position.
+@INPUT cont tchar_t* pch: the characters buffer.
+@INPUT int n: the characters count want to set.
+@RETURN void: none.
+*/
+XDL_API void string_set_chars(string_t vs, int pos, const tchar_t* pch, int n);
 
-	XDL_API void varstr_del_chars(string_t vs, int pos, int n);
+/*
+@FUNCTION string_ins_chars: insert some characters from the position in string object.
+@INPUT string_t vs: the string object.
+@INPUT int pos: the zero based start position.
+@INPUT cont tchar_t* pch: the characters buffer.
+@INPUT int n: the characters count want to set.
+@RETURN void: none.
+*/
+XDL_API void string_ins_chars(string_t vs, int pos, const tchar_t* pch, int n);
+
+/*
+@FUNCTION string_del_chars: delete some characters from the position in string object.
+@INPUT string_t vs: the string object.
+@INPUT int pos: the zero based start position.
+@INPUT cont tchar_t* pch: the characters buffer.
+@INPUT int n: the characters count want to delete.
+@RETURN void: none.
+*/
+XDL_API void string_del_chars(string_t vs, int pos, int n);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /*VARSTR_H*/
+#endif /*STRING_H*/

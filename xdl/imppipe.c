@@ -73,7 +73,7 @@ xhand_t xpipe_srv(const tchar_t* pname, dword_t fmode)
 
 	if (fmode & FILE_OPEN_OVERLAP)
 	{
-		async_alloc_lapp(&ppi->over);
+		async_alloc_lapp(&ppi->over, PIPE_BASE_TIMO);
 	}
 
 	return (xhand_t)ppi;
@@ -88,7 +88,7 @@ bool_t xpipe_listen(xhand_t pip, int ms)
 
 	XDL_ASSERT(pif != NULL);
 
-    ppi->over.msec = ms;
+    ppi->over.timo = ms;
     
 	return (*pif->pf_pipe_listen)(ppi->pipe, &ppi->over);
 }
@@ -131,7 +131,7 @@ xhand_t xpipe_cli(const tchar_t* pname, dword_t fmode)
 
 	if (fmode & FILE_OPEN_OVERLAP)
 	{
-		async_alloc_lapp(&ppi->over);
+		async_alloc_lapp(&ppi->over, PIPE_BASE_TIMO);
 	}
 
 	return (xhand_t)ppi;

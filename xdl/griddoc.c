@@ -1229,12 +1229,12 @@ void filter_grid_rowset(link_t_ptr ptr,const tchar_t* szFilter)
 	destroy_multi_tree(maco);
 }
 
-bool_t verify_grid_cell(link_t_ptr rlk,link_t_ptr clk)
+int verify_grid_cell(link_t_ptr rlk,link_t_ptr clk)
 {
 	return verify_text(get_cell_text_ptr(rlk, clk), get_col_data_type_ptr(clk),get_col_nullable(clk), get_col_data_len(clk), get_col_data_min_ptr(clk), get_col_data_max_ptr(clk));
 }
 
-bool_t verify_grid_doc(link_t_ptr ptr,link_t_ptr* prlk,link_t_ptr* pclk)
+int verify_grid_doc(link_t_ptr ptr,link_t_ptr* prlk,link_t_ptr* pclk)
 {
 	link_t_ptr rlk,clk;
 	int rs, rt;
@@ -1466,7 +1466,7 @@ void update_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 	const tchar_t* cname;
 	string_t vs = NULL;
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	st = create_string_table();
 
@@ -1491,27 +1491,27 @@ void update_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 	rlk_src = get_next_row(ptr_src, LINK_FIRST);
 	while (rlk_src)
 	{
-		varstr_empty(vs);
+		string_empty(vs);
 
 		elk = get_string_next_entity(st, LINK_FIRST);
 		while (elk)
 		{
 			clk = get_col(ptr_src, get_string_entity_key_ptr(elk));
 
-			varstr_cat(vs, get_string_entity_key_ptr(elk), -1);
-			varstr_cat(vs, _T(" == "), -1);
+			string_cat(vs, get_string_entity_key_ptr(elk), -1);
+			string_cat(vs, _T(" == "), -1);
 
-			varstr_cat(vs, get_cell_text_ptr(rlk_src, clk), -1);
+			string_cat(vs, get_cell_text_ptr(rlk_src, clk), -1);
 			
 			if (!is_last_link(elk))
 			{
-				varstr_cat(vs, _T(" AND "), -1);
+				string_cat(vs, _T(" AND "), -1);
 			}
 
 			elk = get_string_next_entity(st, elk);
 		}
 
-		rlk_dest = find_grid_row(ptr_dest, varstr_ptr(vs), LINK_FIRST, 1);
+		rlk_dest = find_grid_row(ptr_dest, string_ptr(vs), LINK_FIRST, 1);
 		if (!rlk_dest)
 		{
 			rlk_dest = insert_row(ptr_dest, LINK_LAST);
@@ -1524,7 +1524,7 @@ void update_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 	}
 
 	destroy_string_table(st);
-	varstr_free(vs);
+	string_free(vs);
 }
 
 void copy_grid_colsch(link_t_ptr ptr_dest, link_t_ptr ptr_src)
@@ -1575,14 +1575,14 @@ link_t_ptr create_group_grid(link_t_ptr ptr, const tchar_t* scol, const tchar_t*
 	clk_fix = insert_col(grid, LINK_LAST);
 	set_col_name(clk_fix, scol);
 
-	vs = varstr_alloc();
+	vs = string_alloc();
 
 	rlk = get_next_visible_row(ptr, LINK_FIRST);
 	while (rlk)
 	{
-		varstr_printf(vs, _T("%s == %s"), scol, get_cell_text_ptr(rlk, sclk));
+		string_printf(vs, _T("%s == %s"), scol, get_cell_text_ptr(rlk, sclk));
 
-		rlk_new = find_grid_row(grid, varstr_ptr(vs), LINK_FIRST, 1);
+		rlk_new = find_grid_row(grid, string_ptr(vs), LINK_FIRST, 1);
 		if (!rlk_new)
 		{
 			rlk_new = insert_row(grid, LINK_LAST);
@@ -1603,6 +1603,8 @@ link_t_ptr create_group_grid(link_t_ptr ptr, const tchar_t* scol, const tchar_t*
 
 		rlk = get_next_visible_row(ptr, rlk);
 	}
+
+	string_free(vs);
 
 	return grid;
 }

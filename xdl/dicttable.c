@@ -471,7 +471,7 @@ link_t_ptr	write_dict_item(link_t_ptr ptr, variant_t key, object_t val)
 	return &(phe->lk);
 }
 
-bool_t read_dict_item(link_t_ptr ptr, variant_t key, variant_t* pval)
+bool_t read_dict_item(link_t_ptr ptr, variant_t key, object_t val)
 {
 	link_t_ptr ent;
 
@@ -479,7 +479,7 @@ bool_t read_dict_item(link_t_ptr ptr, variant_t key, variant_t* pval)
 	if (!ent)
 		return 0;
 
-	get_dict_entity_val(ent, pval);
+	get_dict_entity_val(ent, val);
 	return 1;
 }
 

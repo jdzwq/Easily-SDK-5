@@ -1273,7 +1273,7 @@ void listctrl_popup_size(res_win_t widget, xsize_t* pse)
 	ih = get_list_item_height(ptd->list);
 	iw = get_list_item_width(ptd->list);
 
-	count = get_list_item_count(ptd->list);
+	count = get_list_child_item_count(ptd->list);
 	if (count % 3)
 		count = count / 3 + 1;
 	else

@@ -105,7 +105,6 @@ void default_check_field_attr(link_t_ptr flk)
 	set_field_printable(flk, 1);
 }
 
-
 void default_tag_field_attr(link_t_ptr flk)
 {
 	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-barek;"));

@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc xdl buffer document
+	@doc xdl prime document
 
-	@module	buffer.h | xdl buffer interface file
+	@module	oemprim.h | xdl prime interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,28 +29,26 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _BUFFER_H
-#define _BUFFER_H
+#ifndef _OEMPRIM_H
+#define _OEMPRIM_H
 
 #include "xdldef.h"
+
+#define MIN_PRIM		2
+#define MAX_PRIM		2147483647
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API byte_t** buffer_alloc(void);
+	XDL_API dword_t next_prim(dword_t prim);
 
-	XDL_API void	buffer_free(byte_t** pp);
-
-	XDL_API byte_t*	buffer_realloc(byte_t** pp, dword_t size);
-
-	XDL_API byte_t** buffer_attach(byte_t* p);
-
-	XDL_API byte_t* buffer_detach(byte_t** pp);
-
+#if defined(_DEBUG) || defined(DEBUG)
+	XDL_API void test_prim(void);
+#endif
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /*_BUFFER_H*/
+#endif /*OEMPRIM_H*/

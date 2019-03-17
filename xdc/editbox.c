@@ -53,11 +53,11 @@ int _editbox_get_text(void* data, tchar_t* buf, int max)
 	string_t vs = (string_t)data;
 	int len;
 
-	len = varstr_len(vs);
+	len = string_len(vs);
 	len = (len < max) ? len : max;
 
 	if (buf)
-		xsncpy(buf, varstr_ptr(vs), len);
+		xsncpy(buf, string_ptr(vs), len);
 
 	return len;
 }
@@ -66,7 +66,7 @@ void _editbox_set_text(void* data, const tchar_t* buf, int len)
 {
 	string_t vs = (string_t)data;
 
-	varstr_cpy(vs, buf, len);
+	string_cpy(vs, buf, len);
 }
 
 static bool_t _editbox_get_paging(res_win_t widget, xsize_t* pse)
@@ -100,7 +100,7 @@ void _editbox_auto_resize(res_win_t widget)
 
 	text_metric_raw(ptd->textor.dc, pxf, &xs);
 	cx = xs.cx;
-	text_size_raw(ptd->textor.dc, pxf, varstr_ptr(vs), varstr_len(vs), &xs);
+	text_size_raw(ptd->textor.dc, pxf, string_ptr(vs), string_len(vs), &xs);
 
 	if (xs.cx + cx > xr.w)
 	{
@@ -134,7 +134,7 @@ int hand_editbox_create(res_win_t widget, void* data)
 
 	ptd->textor.widget = widget;
 	ptd->textor.dc = widget_client_ctx(widget);
-	ptd->textor.data = (void*)varstr_alloc();
+	ptd->textor.data = (void*)string_alloc();
 	ptd->textor.pf_scan_text = (PF_SCAN_TEXT)scan_var_text;
 	ptd->textor.pf_get_text = _editbox_get_text;
 	ptd->textor.pf_set_text = _editbox_set_text;
@@ -157,7 +157,7 @@ void hand_editbox_destroy(res_win_t widget)
 	hand_textor_clean(&ptd->textor);
 
 	widget_release_ctx(widget, ptd->textor.dc);
-	varstr_free((string_t)ptd->textor.data);
+	string_free((string_t)ptd->textor.data);
 
 	xmem_free(ptd);
 
@@ -566,7 +566,7 @@ void editbox_set_text(res_win_t widget, const tchar_t* text)
 
 	XDL_ASSERT(ptd != NULL);
 
-	varstr_cpy((string_t)ptd->textor.data, text, -1);
+	string_cpy((string_t)ptd->textor.data, text, -1);
 
 	if (ptd->b_auto)
 	{
@@ -592,11 +592,11 @@ int editbox_get_text(res_win_t widget, tchar_t* buf, int max)
 
 	vs = (string_t)ptd->textor.data;
 
-	len = varstr_len(vs);
+	len = string_len(vs);
 	if (buf)
 	{
 		len = (len < max) ? len : max;
-		xsncpy(buf, varstr_ptr(vs), len);
+		xsncpy(buf, string_ptr(vs), len);
 	}
 
 	return len;
@@ -611,7 +611,7 @@ const tchar_t* editbox_get_text_ptr(res_win_t widget)
 
 	vs = (string_t)ptd->textor.data;
 
-	return varstr_ptr(vs);
+	return string_ptr(vs);
 }
 
 bool_t editbox_is_select(res_win_t widget)

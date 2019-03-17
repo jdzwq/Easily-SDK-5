@@ -264,7 +264,7 @@ void hand_words_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			wordsbox_on_item_changed(widget, ilk);
 	}
 
-	noti_wordsbox_command(widget, COMMAND_SELECT, (var_long)NULL);
+	noti_wordsbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 }
 
 void hand_words_size(res_win_t widget, int code, const xsize_t* prs)

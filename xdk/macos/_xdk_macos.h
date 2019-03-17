@@ -41,6 +41,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_ERROR
 #define XDK_SUPPORT_DATE
 #define XDK_SUPPORT_MBCS
+#define XDK_SUPPORT_ASYNC
 #define XDK_SUPPORT_THREAD_EVENT
 #define XDK_SUPPORT_THREAD_CRITI
 #define XDK_SUPPORT_THREAD_MUTEX
@@ -48,7 +49,6 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_THREAD_QUEUE
 #define XDK_SUPPORT_THREAD
 #define XDK_SUPPORT_PROCESS
-#define XDK_SUPPORT_FILE_BLOCK
 #define XDK_SUPPORT_FILE_FIND
 #define XDK_SUPPORT_FILE
 #define XDK_SUPPORT_SHARE
@@ -64,7 +64,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_CONTEXT_BITMAP
 #define XDK_SUPPORT_CONTEXT_GRAPHIC
 
-#define XDK_SUPPORT_WIDGET
+//#define XDK_SUPPORT_WIDGET
 
 #include <stdio.h>
 #include <wchar.h>
@@ -167,6 +167,9 @@ typedef void*       res_crit_t;
 #ifdef XDK_SUPPORT_THREAD_SEMAP
 typedef void*       res_sema_t;
 #endif
+#ifdef XDK_SUPPORT_THREAD_QUEUE
+typedef void*		res_queue_t;
+#endif
 typedef void*(*MAC_THREAD_PROC)(void* param);
 #endif
 
@@ -175,8 +178,8 @@ typedef void*		res_modu_t;
 #endif
 
 #ifdef XDK_SUPPORT_TIMER
-typedef void*		res_queue_t;
 typedef void*		res_timer_t;
+typedef void(*MAC_TIMER_PROC)(void* param, unsigned char wait);
 #endif
 
 typedef void*       res_hand_t;

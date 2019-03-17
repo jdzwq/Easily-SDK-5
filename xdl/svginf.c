@@ -56,6 +56,7 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 	pic->pf_draw_pie = svg_draw_pie;
 	pic->pf_draw_polygon = svg_draw_polygon;
 	pic->pf_draw_polyline = svg_draw_polyline;
+	pic->pf_draw_bezier = svg_draw_bezier;
 	pic->pf_draw_rect = svg_draw_rect;
 	pic->pf_draw_round = svg_draw_round;
 	pic->pf_draw_ellipse = svg_draw_ellipse;

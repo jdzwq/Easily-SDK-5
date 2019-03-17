@@ -86,11 +86,11 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
     if (pb->type == ASYNC_QUEUE)
     {
         pov->tp.tv_sec = 0;
-        pov->tp.tv_nsec = pb->msec * 1000 * 1000;
+        pov->tp.tv_nsec = pb->timo * 1000 * 1000;
         
         EV_SET(&(pov->ev[1]), fh, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
         
-        rs = kevent(pb->port, &(pov->ev[1]), 1, &kv, 1, ((pb->msec)? &(pov->tp) : NULL));
+        rs = kevent(pb->port, &(pov->ev[1]), 1, &kv, 1, ((pb->timo)? &(pov->tp) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;
@@ -106,9 +106,9 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
         FD_SET(fh, &(pov->fd[1]));
         
         pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->msec * 1000);
+        pov->tv.tv_usec = (int)(pb->timo * 1000);
         
-        rs = select(fh + 1, NULL, &(pov->fd[1]), NULL, ((pb->msec)? &(pov->tv) : NULL));
+        rs = select(fh + 1, NULL, &(pov->fd[1]), NULL, ((pb->timo)? &(pov->tv) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;
@@ -157,11 +157,11 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
     if (pb->type == ASYNC_QUEUE)
     {
         pov->tp.tv_sec = 0;
-        pov->tp.tv_nsec = pb->msec * 1000 * 1000;
+        pov->tp.tv_nsec = pb->timo * 1000 * 1000;
         
         EV_SET(&(pov->ev[0]), fh, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         
-        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, ((pb->msec)? &(pov->tp) : NULL));
+        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, ((pb->timo)? &(pov->tp) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;
@@ -177,9 +177,9 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
         FD_SET(fh, &(pov->fd[0]));
         
         pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->msec * 1000);
+        pov->tv.tv_usec = (int)(pb->timo * 1000);
         
-        rs = select(fh + 1, &(pov->fd[0]), NULL, NULL, ((pb->msec)? &(pov->tv) : NULL));
+        rs = select(fh + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;
@@ -215,7 +215,7 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
     return 1;
 }
 
-bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pcb)
+bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
 {
     void* pBase = NULL;
     u32_t poff;
@@ -228,7 +228,6 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
     pBase = mmap(NULL, dlen, PROT_WRITE | PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
     if(pBase == MAP_FAILED)
     {
-        if(pcb) *pcb = 0;
         return 0;
     }
     
@@ -236,12 +235,10 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
     
     munmap(pBase, dlen);
     
-    if(pcb) *pcb = size;
-    
     return 1;
 }
 
-bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size, size_t* pcb)
+bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
 {
     void* pBase = NULL;
     u32_t dwh, dwl, poff;
@@ -255,7 +252,6 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
     {
         if(ftruncate(fh, flen) < 0)
         {
-            if(pcb) *pcb = 0;
             return 0;
         }
     }
@@ -267,7 +263,6 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
     pBase = mmap(NULL, dlen, PROT_WRITE | PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
     if(pBase == MAP_FAILED)
     {
-        if(pcb) *pcb = 0;
         return 0;
     }
     
@@ -276,12 +271,22 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
     msync(pBase, dlen, MS_SYNC);
     
     munmap(pBase, dlen);
-    
-    if(pcb) *pcb = size;
 
     return 1;
 }
 
+bool_t _file_truncate(res_file_t fh, u32_t hoff, u32_t loff)
+{
+    size_t len;
+    
+    len = MAKESIZE(loff, hoff);
+    
+    if (ftruncate(fh, len) < 0)
+        return 0;
+    
+    lseek(fh, len, SEEK_SET);
+    return 1;
+}
 
 bool_t _file_gettime(res_file_t fh, xdate_t* pdt)
 {
@@ -410,13 +415,19 @@ bool_t _file_find_next(res_find_t ff, file_info_t* pfi)
     dp = readdir(pdr);
     if(!dp)
     {
-        closedir(pdr);
         return 0;
     }
 
     _file_info(dp->d_name, pfi);
     
 	return 1;
+}
+
+void _file_find_close(res_find_t ff)
+{
+    DIR *pdr = (DIR*)ff;
+    
+    closedir(pdr);
 }
 
 bool_t _directory_create(const tchar_t* pname)

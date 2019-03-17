@@ -43,19 +43,61 @@ typedef struct _vector_t{
 extern "C" {
 #endif
 
-	XDL_API vector_t* vector_alloc(sword_t size);
+/*
+@FUNCTION vector_alloc: alloc vector.
+@INPUT sword_t size: the vector size.
+@RETURN vector_t*: return vector struct.
+*/
+XDL_API vector_t* vector_alloc(sword_t size);
 
-	XDL_API void vector_free(vector_t* pvt);
+/*
+@FUNCTION vector_free: free vector.
+@INPUT vector_t*: the vector struct.
+@RETURN void: none.
+*/
+XDL_API void vector_free(vector_t* pvt);
 
-	XDL_API void vector_zero(vector_t* pvt);
+/*
+@FUNCTION vector_zero: set vector elements value to zero.
+@INPUT vector_t*: the vector struct.
+@RETURN void: none.
+*/
+XDL_API void vector_zero(vector_t* pvt);
 
-	XDL_API void vector_set_value(vector_t* pvt, sword_t i, double db);
+/*
+@FUNCTION vector_set_value: set vector element value.
+@INPUT vector_t*: the vector struct.
+@INPUT sword_t i: the vector element zero based index.
+@INPUT double db: the value to set.
+@RETURN void: none.
+*/
+XDL_API void vector_set_value(vector_t* pvt, sword_t i, double db);
 
-	XDL_API double vector_get_value(vector_t* pvt, sword_t i);
+/*
+@FUNCTION vector_get_value: get vector element value.
+@INPUT vector_t*: the vector struct.
+@INPUT sword_t i: the vector element zero based index.
+@RETURN double: return the element value if exists, otherwise return zero.
+*/
+XDL_API double vector_get_value(vector_t* pvt, sword_t i);
 
-	XDL_API void vector_parse(vector_t* pvt, const tchar_t* str, int len);
+/*
+@FUNCTION vector_parse: parse vector element value from string.
+@INPUT vector_t* pvt: the vector struct.
+@INPUT const tchar_t* str: string token, number separated by space.
+@INPUT int len: length of string token.
+@RETURN void: none.
+*/
+XDL_API void vector_parse(vector_t* pvt, const tchar_t* str, int len);
 
-	XDL_API int vector_format(vector_t* pvt, tchar_t* buf, int max);
+/*
+@FUNCTION vector_format: format vector element to string.
+@INPUT vector_t* pvt: the vector struct.
+@OUTPUT tchar_t* buf: buffer for formating.
+@INPUT int max: the buffer size in characters, not include terminate character.
+@RETURN int: return the formated string token length.
+*/
+XDL_API int vector_format(vector_t* pvt, tchar_t* buf, int max);
 
 #if defined(_DEBUG) || defined(DEBUG)
 	XDL_API void test_vector(void);

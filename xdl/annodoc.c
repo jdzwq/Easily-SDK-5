@@ -57,51 +57,51 @@ void clear_anno_doc(link_t_ptr ptr)
 	delete_dom_child_nodes(ptr);
 }
 
-link_t_ptr get_anno_spotset(link_t_ptr ptr)
+link_t_ptr get_anno_artiset(link_t_ptr ptr)
 {
 	return ptr;
 }
 
-int get_anno_spot_count(link_t_ptr ptr)
+int get_anno_arti_count(link_t_ptr ptr)
 {
-	return get_dom_child_node_count(get_anno_spotset(ptr));
+	return get_dom_child_node_count(get_anno_artiset(ptr));
 }
 
-int get_anno_spot_selected_count(link_t_ptr ptr)
+int get_anno_arti_selected_count(link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	int count = 0;
 
-	ilk = get_anno_next_spot(ptr, LINK_FIRST);
+	ilk = get_anno_next_arti(ptr, LINK_FIRST);
 	while (ilk)
 	{
-		if (get_anno_spot_selected(ilk))
+		if (get_anno_arti_selected(ilk))
 			count++;
-		ilk = get_anno_next_spot(ptr, ilk);
+		ilk = get_anno_next_arti(ptr, ilk);
 	}
 
 	return count;
 }
 
-link_t_ptr insert_anno_spot(link_t_ptr ptr,link_t_ptr pos)
+link_t_ptr insert_anno_arti(link_t_ptr ptr,link_t_ptr pos)
 {
 	link_t_ptr blk;
 
-	ptr = get_anno_spotset(ptr);
+	ptr = get_anno_artiset(ptr);
 	blk = insert_dom_node(ptr, pos);
 	set_dom_node_name(blk, DOC_ANNO_SPOT, -1);
 
 	return blk;
 }
 
-void delete_anno_spot(link_t_ptr ilk)
+void delete_anno_arti(link_t_ptr ilk)
 {
 	delete_dom_node(ilk);
 }
 
-link_t_ptr get_anno_next_spot(link_t_ptr ptr,link_t_ptr pos)
+link_t_ptr get_anno_next_arti(link_t_ptr ptr,link_t_ptr pos)
 {
-	ptr = get_anno_spotset(ptr);
+	ptr = get_anno_artiset(ptr);
 
 	if (pos == LINK_FIRST)
 		return get_dom_first_child_node(ptr);
@@ -111,9 +111,9 @@ link_t_ptr get_anno_next_spot(link_t_ptr ptr,link_t_ptr pos)
 		return get_dom_next_sibling_node(pos);
 }
 
-link_t_ptr get_anno_prev_spot(link_t_ptr ptr, link_t_ptr pos)
+link_t_ptr get_anno_prev_arti(link_t_ptr ptr, link_t_ptr pos)
 {
-	ptr = get_anno_spotset(ptr);
+	ptr = get_anno_artiset(ptr);
 
 	if (pos == LINK_FIRST)
 		return NULL;
@@ -123,9 +123,9 @@ link_t_ptr get_anno_prev_spot(link_t_ptr ptr, link_t_ptr pos)
 		return get_dom_prev_sibling_node(pos);
 }
 
-link_t_ptr get_anno_spot_at(link_t_ptr ptr,int index)
+link_t_ptr get_anno_arti_at(link_t_ptr ptr,int index)
 {
-	ptr = get_anno_spotset(ptr);
+	ptr = get_anno_artiset(ptr);
 
 	return get_dom_child_node_at(ptr,index);
 }
@@ -135,14 +135,14 @@ bool_t is_anno_doc(link_t_ptr ptr)
 	return (compare_text(get_dom_node_name_ptr(ptr),-1,DOC_ANNO,-1,0) == 0)? 1 : 0;
 }
 
-bool_t is_anno_spot(link_t_ptr ptr,link_t_ptr plk)
+bool_t is_anno_arti(link_t_ptr ptr,link_t_ptr plk)
 {
-	ptr = get_anno_spotset(ptr);
+	ptr = get_anno_artiset(ptr);
 
 	return is_dom_child_node(ptr, plk);
 }
 
-link_t_ptr anno_doc_from_spot(link_t_ptr ilk)
+link_t_ptr anno_doc_from_arti(link_t_ptr ilk)
 {
 	link_t_ptr ptr;
 
@@ -156,12 +156,12 @@ link_t_ptr anno_doc_from_spot(link_t_ptr ilk)
 	return ptr;
 }
 
-int get_anno_spot_xpoint(link_t_ptr ilk, xpoint_t* ppt, int max)
+int get_anno_arti_xpoint(link_t_ptr ilk, xpoint_t* ppt, int max)
 {
-	return ft_parse_points_from_token(ppt, max, get_anno_spot_points_ptr(ilk), -1);
+	return ft_parse_points_from_token(ppt, max, get_anno_arti_points_ptr(ilk), -1);
 }
 
-void set_anno_spot_xpoint(link_t_ptr ilk, const xpoint_t* ppt, int n)
+void set_anno_arti_xpoint(link_t_ptr ilk, const xpoint_t* ppt, int n)
 {
 	tchar_t* buf = NULL;
 	int len;
@@ -170,7 +170,7 @@ void set_anno_spot_xpoint(link_t_ptr ilk, const xpoint_t* ppt, int n)
 	buf = xsalloc(len + 1);
 	ft_format_points_to_token(ppt, n, buf, len);
 
-	set_anno_spot_points(ilk, buf);
+	set_anno_arti_points(ilk, buf);
 	xsfree(buf);
 }
 
