@@ -211,12 +211,12 @@ static void _invoke_error(xhand_t http)
 
 	if (!xhttp_need_expect(http) && (compare_text(sz_method, -1, HTTP_METHOD_PUT, -1, 1) == 0 || compare_text(sz_method, -1, HTTP_METHOD_POST, -1, 1) == 0))
 	{
-		d_recv = buffer_alloc();
+		d_recv = bytes_alloc();
 		n_size = 0;
 
 		xhttp_recv_full(http, d_recv, &n_size);
 
-		buffer_free(d_recv);
+		bytes_free(d_recv);
 		d_recv = NULL;
 	}
 

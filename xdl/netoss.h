@@ -52,7 +52,7 @@ extern "C" {
 @OUTPUT tchar_t* out_msg: the string buffer for outputing message.
 @OUTPUT tchar_t* out_type: the string buffer for outputing http content type.
 @OUTPUT tchar_t* out_size: the string buffer for outputing http content length.
-@OUTPUT byte_t** out_buffer: the buffer for outputing data, it must be alloced by varbuf_alloc.
+@OUTPUT byte_t** out_buffer: the buffer for outputing data, it must be alloced by bytes_alloc.
 @OUTPUT dword_t* out_bytes: the data size in bytes outputed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */

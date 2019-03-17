@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc buffer document
+	@doc xdl sorting document
 
-	@module	buffer.c | buffer implement file
+	@module	xdlsort.h | xdl sorting interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -18,7 +18,7 @@
 ***********************************************************************/
 
 /**********************************************************************
-This program is free software : you can radistribute it and/or modify
+This program is free software : you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
@@ -29,44 +29,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "varbuf.h"
-#include "xdlimp.h"
+#ifndef _XDLSORT_H
+#define _XDLSORT_H
 
-byte_t** varbuf_alloc()
-{
-	return (byte_t**)xmem_alloc(sizeof(byte_t*));
+#include "xdldef.h"
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+XDL_API void bubble_xsort(xsort_t* pxs, int count);
+
+#ifdef	__cplusplus
 }
+#endif
 
-void varbuf_free(byte_t** pp)
-{
-	xmem_free(*pp);
-	xmem_free(pp);
-}
-
-byte_t* varbuf_realloc(byte_t** pp, dword_t size)
-{
-	*pp = xmem_realloc(*pp, size);
-
-	return *pp;
-}
-
-byte_t** varbuf_attach(byte_t* p)
-{
-	byte_t** pp;
-
-	pp = xmem_alloc(sizeof(byte_t*));
-	*pp = p;
-
-	return (byte_t**)pp;
-}
-
-byte_t* varbuf_detach(byte_t** pp)
-{
-	byte_t* p;
-
-	p = *pp;
-
-	xmem_free(pp);
-
-	return p;
-}
+#endif /*SORTING_H*/

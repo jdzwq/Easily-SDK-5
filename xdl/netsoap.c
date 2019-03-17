@@ -128,11 +128,11 @@ bool_t xhttp_invoke_wsdl(const tchar_t* sz_url, link_t_ptr wsdl)
 		return 0;
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	if (!xhttp_recv_full(xhttp, pbuf, &n_size))
 	{
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		xhttp_close(xhttp);
 
@@ -146,7 +146,7 @@ bool_t xhttp_invoke_wsdl(const tchar_t* sz_url, link_t_ptr wsdl)
 
 	rt = parse_xml_doc_from_bytes(ptr_xml, *pbuf, n_size);
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 	pbuf = NULL;
 
 	wsdl = downcast_xml_to_dom(ptr_xml);

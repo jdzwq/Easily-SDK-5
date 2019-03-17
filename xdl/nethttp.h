@@ -505,7 +505,7 @@ XDL_API bool_t		xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len);
 /*
 @FUNCTION xhttp_recv_full: recv http full data.
 @INPUT xhand_t xhttp: the http handle.
-@OUTPUT byte_t** pbuf: the bytes buffer, it must be alloced by varbuf_alloc.
+@OUTPUT byte_t** pbuf: the bytes buffer, it must be alloced by bytes_alloc.
 @OUTPUT dword_t* plen: for return bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */

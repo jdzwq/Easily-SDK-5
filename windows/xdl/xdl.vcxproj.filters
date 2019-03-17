@@ -573,13 +573,7 @@
     <ClInclude Include="..\..\xdl\impasync.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\sorting.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\oemprim.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\varbuf.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\xdlesc.h">
@@ -607,6 +601,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\xdlstm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\varbytes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\xdlsort.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1112,13 +1112,7 @@
     <ClCompile Include="..\..\xdl\impasync.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\sorting.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\oemprim.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\varbuf.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\xdlesc.c">
@@ -1146,6 +1140,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\xdlinet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\varbytes.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\xdlsort.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

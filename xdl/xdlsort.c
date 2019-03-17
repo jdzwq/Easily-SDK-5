@@ -7,7 +7,7 @@
 
 	@doc sorting document
 
-	@module	sorting.c | xdl sorting implement file
+	@module	xdlsort.c | xdl sorting implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "sorting.h"
+#include "xdlsort.h"
 #include "xdlutil.h"
 #include "xdlstr.h"
 #include "impmem.h"

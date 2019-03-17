@@ -49,7 +49,7 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 		ptr_list = create_list_doc();
 		xfile_list(NULL, sz_file, ptr_list);
 
-		pcrt->ca_count = get_list_item_count(ptr_list) + 1;
+		pcrt->ca_count = get_list_child_item_count(ptr_list) + 1;
 		pcrt->ca_chain = (xhand_t*)xmem_alloc(pcrt->ca_count * sizeof(xhand_t));
 
 		i = 0;
@@ -95,7 +95,7 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 		ptr_list = create_list_doc();
 		xfile_list(NULL, sz_file, ptr_list);
 
-		pcrt->ca_count = get_list_item_count(ptr_list) + 1;
+		pcrt->ca_count = get_list_child_item_count(ptr_list) + 1;
 		pcrt->ca_chain = (xhand_t*)xmem_alloc(pcrt->ca_count * sizeof(xhand_t));
 
 		i = 0;

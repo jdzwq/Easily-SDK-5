@@ -460,7 +460,7 @@ bool_t _invoke_put(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	pbuf = buffer_alloc();
+	pbuf = bytes_alloc();
 	n_size = 0;
 
 	b_rt = xhttp_recv_full(pb->http, pbuf, &n_size);
@@ -604,7 +604,7 @@ bool_t _invoke_put(const https_block_t* pb, oss_block_t* pos)
 		sz_zip = NULL;
 	}
 
-	buffer_free(pbuf);
+	bytes_free(pbuf);
 	pbuf = NULL;
 
 	if (!b_rt)
@@ -636,7 +636,7 @@ ONERROR:
 		xmem_free(sz_zip);
 
 	if (pbuf)
-		buffer_free(pbuf);
+		bytes_free(pbuf);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
@@ -807,11 +807,11 @@ void _invoke_error(const https_block_t* pb, oss_block_t* pos)
 
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
-	d_recv = buffer_alloc();
+	d_recv = bytes_alloc();
 
 	xhttp_recv_full(pb->http, d_recv, &n_size);
 
-	buffer_free(d_recv);
+	bytes_free(d_recv);
 	d_recv = NULL;
 
 	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);

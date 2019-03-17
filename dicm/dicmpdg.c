@@ -180,7 +180,7 @@ static bool_t _on_parse_data(void* pp, dword_t tag, const byte_t* vr, const byte
 		pa->df.fsize = pa->di.width * pa->di.height * pa->di.psize;
 		pa->df.offset = sizeof(pdg_file_t) + sizeof(pdg_info_t);
 		
-		*(pa->pp) = buffer_realloc(pa->pp, pa->df.fsize);
+		*(pa->pp) = bytes_realloc(pa->pp, pa->df.fsize);
 
 		*(pa->pn) = dicm_fill_pdg(*(pa->pp), pa->df.fsize, &pa->df, &pa->di, &pa->bo, vf, vl);
 		

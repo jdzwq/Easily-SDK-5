@@ -2792,7 +2792,7 @@ bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 				break;
 
 			nlen += nbys;
-			varbuf_realloc(pbuf, nlen);
+			bytes_realloc(pbuf, nlen);
 
 			if (!stream_read_bytes(phttp->recv_stream, *pbuf + npos, &nbys))
 				break;
@@ -2810,11 +2810,11 @@ bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 		else
 			nlen = xhttp_get_request_content_length(xhttp);
 
-		varbuf_realloc(pbuf, nlen);
+		bytes_realloc(pbuf, nlen);
 
 		if (!stream_read_bytes(phttp->recv_stream, *pbuf, &nlen))
 		{
-			varbuf_realloc(pbuf, 0);
+			bytes_realloc(pbuf, 0);
 			*plen = 0;
 			return 0;
 		}
@@ -2896,7 +2896,7 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 		xhttp_get_response_message(xhttp, http_info, META_LEN);
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	b_rt = xhttp_recv_full(xhttp, pbuf, &nlen);
 
@@ -2905,7 +2905,7 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 		b_rt = xhttp_parse_error(*pbuf, nlen, errcode, errtext, max);
 	}
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 	pbuf = NULL;
 
 	return b_rt;

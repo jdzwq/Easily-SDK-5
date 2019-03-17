@@ -181,7 +181,7 @@
     <ClInclude Include="..\..\xdl\binatree.h" />
     <ClInclude Include="..\..\xdl\boxview.h" />
     <ClInclude Include="..\..\xdl\bplustree.h" />
-    <ClInclude Include="..\..\xdl\varbuf.h" />
+    <ClInclude Include="..\..\xdl\varbytes.h" />
     <ClInclude Include="..\..\xdl\bufferopera.h" />
     <ClInclude Include="..\..\xdl\chartdoc.h" />
     <ClInclude Include="..\..\xdl\chartgdi.h" />
@@ -358,7 +358,7 @@
     <ClInclude Include="..\..\xdl\xdlnet.h" />
     <ClInclude Include="..\..\xdl\xdloem.h" />
     <ClInclude Include="..\..\xdl\oemprim.h" />
-    <ClInclude Include="..\..\xdl\sorting.h" />
+    <ClInclude Include="..\..\xdl\xdlsort.h" />
     <ClInclude Include="..\..\xdl\xdlstd.h" />
     <ClInclude Include="..\..\xdl\xdlstm.h" />
     <ClInclude Include="..\..\xdl\xdlstr.h" />
@@ -379,7 +379,7 @@
     <ClCompile Include="..\..\xdl\binatree.c" />
     <ClCompile Include="..\..\xdl\boxview.c" />
     <ClCompile Include="..\..\xdl\bplustree.c" />
-    <ClCompile Include="..\..\xdl\varbuf.c" />
+    <ClCompile Include="..\..\xdl\varbytes.c" />
     <ClCompile Include="..\..\xdl\bufferopera.c" />
     <ClCompile Include="..\..\xdl\chartdoc.c" />
     <ClCompile Include="..\..\xdl\chartgdi.c" />
@@ -543,7 +543,7 @@
     <ClCompile Include="..\..\xdl\xdlinit.c" />
     <ClCompile Include="..\..\xdl\xdlmac.c" />
     <ClCompile Include="..\..\xdl\oemprim.c" />
-    <ClCompile Include="..\..\xdl\sorting.c" />
+    <ClCompile Include="..\..\xdl\xdlsort.c" />
     <ClCompile Include="..\..\xdl\xdlstm.c" />
     <ClCompile Include="..\..\xdl\xdlstr.c" />
     <ClCompile Include="..\..\xdl\xdlutil.c" />

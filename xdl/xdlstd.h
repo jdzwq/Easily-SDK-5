@@ -18,7 +18,7 @@
 #include "wordstable.h"
 #include "actable.h"
 #include "varobj.h"
-#include "varbuf.h"
+#include "varbytes.h"
 #include "variant.h"
 #include "varstr.h"
 #include "linebuf.h"
@@ -29,7 +29,6 @@
 #include "filetable.h"
 #include "optparser.h"
 
-#include "sorting.h"
 #include "xdlstr.h"
 #include "xdlesc.h"
 #include "xdlmac.h"
@@ -39,6 +38,7 @@
 #include "xdlfile.h"
 #include "xdlstm.h"
 
+#include "xdlsort.h"
 #include "xdlutil.h"
 
 

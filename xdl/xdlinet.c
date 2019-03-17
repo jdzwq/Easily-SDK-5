@@ -1040,11 +1040,11 @@ static bool_t xoss_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 		xsncat(sz_url, fileat, filelen);
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	if (!oss_ioctl(_T("GET"), sz_url, pfn->fsecu.scr_uid, pfn->fsecu.scr_key, NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
 	{
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 		return 0;
@@ -1056,7 +1056,7 @@ static bool_t xoss_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 		{
 			_parse_oss_error(*pbuf, size, sz_code, sz_err);
 		}
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 
@@ -1067,7 +1067,7 @@ static bool_t xoss_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 	xmem_copy((void*)buf, (void*)*pbuf, size);
 	*pb = size;
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 
 	return 1;
 }
@@ -1118,11 +1118,11 @@ static bool_t xoss_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 		xsncat(sz_url, fileat, filelen);
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	if (!oss_ioctl(_T("PUT"), sz_url, pfn->fsecu.scr_uid, pfn->fsecu.scr_key, buf, *pb, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
 	{
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 		return 0;
@@ -1134,14 +1134,14 @@ static bool_t xoss_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 		{
 			_parse_oss_error(*pbuf, size, sz_code, sz_err);
 		}
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 
 		return 0;
 	}
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 
 	return 1;
 }
@@ -1197,11 +1197,11 @@ static bool_t xoss_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 		xsncat(sz_url, fileat, filelen);
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	if (!oss_ioctl(_T("DELETE"), sz_url, ((psd)? psd->scr_uid : NULL), ((psd)? psd->scr_key : NULL), NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
 	{
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 		return 0;
@@ -1213,14 +1213,14 @@ static bool_t xoss_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 		{
 			_parse_oss_error(*pbuf, size, sz_code, sz_err);
 		}
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 
 		return 0;
 	}
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 
 	return 1;
 }
@@ -1275,11 +1275,11 @@ static bool_t xoss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 		xsncat(sz_url, fileat, filelen);
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	if (!oss_ioctl(_T("GET"), sz_url, ((psd)? psd->scr_uid : NULL), ((psd)? psd->scr_key : NULL), NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
 	{
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 		return 0;
@@ -1291,7 +1291,7 @@ static bool_t xoss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 		{
 			_parse_oss_error(*pbuf, size, sz_code, sz_err);
 		}
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 
@@ -1300,7 +1300,7 @@ static bool_t xoss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 
 	rt = _parse_oss_result(*pbuf, size, _oss_file_info, (void*)&fi);
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 
 	if (ftime)
 		format_gmttime(&fi.write_time, ftime);
@@ -1368,11 +1368,11 @@ static bool_t xoss_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 		}
 	}
 
-	pbuf = varbuf_alloc();
+	pbuf = bytes_alloc();
 
 	if (!oss_ioctl(_T("GET"), sz_url, ((psd)? psd->scr_uid : NULL), ((psd)? psd->scr_key : NULL), NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
 	{
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 		return 0;
@@ -1384,7 +1384,7 @@ static bool_t xoss_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 		{
 			_parse_oss_error(*pbuf, size, sz_code, sz_err);
 		}
-		varbuf_free(pbuf);
+		bytes_free(pbuf);
 
 		set_last_error(sz_code, sz_err, -1);
 
@@ -1393,7 +1393,7 @@ static bool_t xoss_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 
 	rt = _parse_oss_result(*pbuf, size, pf, pa);
 
-	varbuf_free(pbuf);
+	bytes_free(pbuf);
 
 	return rt;
 }

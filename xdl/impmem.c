@@ -151,9 +151,6 @@ void* xmem_realloc(void* p, dword_t size)
 
 void xmem_free(void* p)
 {
-	if (!p)
-		return;
-
 #ifdef XDK_SUPPORT_MEMO_HEAP
 
 	if_zone_t* pif;
@@ -163,6 +160,8 @@ void xmem_free(void* p)
 	piv = PROCESS_MEMO_INTERFACE;
 
 	XDL_ASSERT(pif != NULL && piv != NULL);
+
+	if (!p) return;
 
 #ifdef XDL_SUPPORT_MEMO_DUMP
 	p = (void*)((byte_t*)p - sizeof(dword_t) - sizeof(link_t));
@@ -181,9 +180,13 @@ void xmem_free(void* p)
 
 	XDL_ASSERT(piv != NULL);
 
+	if (!p) return;
+
 	(*piv->pf_local_free)(p);
 
 #else
+
+	if (!p) return;
 
 	free(p);
 #endif //XDK_SUPPORT_MEMO_LOCAL
