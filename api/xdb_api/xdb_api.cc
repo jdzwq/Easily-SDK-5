@@ -227,7 +227,7 @@ bool_t _invoke_schema(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
 
 	xhttp_send_xml(pb->http, ptr_xml);
@@ -323,7 +323,7 @@ bool_t _invoke_export(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
@@ -862,7 +862,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_response_content_type_charset(pb->http, fcode, -1);
 
 	n_size = string_encode(vs, encode, NULL, MAX_LONG);
@@ -1086,7 +1086,7 @@ bool_t _invoke_read_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
 
 	if (!xhttp_send_xml(pb->http, ptr_xml))
@@ -1200,7 +1200,7 @@ bool_t _invoke_call_func(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, _T("rows"), -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, sz_range, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
 
 	xhttp_send_xml(pb->http, d_xml);
@@ -1301,7 +1301,7 @@ bool_t _invoke_call_json(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, _T("rows"), -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, sz_range, -1);
 
-	xhttp_set_response_content_type(pb->http, HTTP_HEADER_TYPE_APPJSON, -1);
+	xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPJSON, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
 
 	len = format_json_doc_to_bytes(ptr_json, NULL, MAX_LONG, encode);
@@ -1406,7 +1406,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	pxb = (xdb_block_t*)xmem_alloc(sizeof(xdb_block_t));
 
-	if (xsnicmp(DSN_TYPE_OCI, pb->file + 1, xslen(DSN_TYPE_OCI)) == 0)
+	if (xsnicmp(DSN_TYPE_OCI, pb->object + 1, xslen(DSN_TYPE_OCI)) == 0)
 	{
 #if defined(_OS_WINDOWS)
 		xdb_lib = load_library(_T("xdb_oci.dll"));
@@ -1417,7 +1417,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 #endif
 		len += xslen(DSN_TYPE_OCI);
 	}
-	else if (xsnicmp(DSN_TYPE_MYSQL, pb->file + 1, xslen(DSN_TYPE_MYSQL)) == 0)
+	else if (xsnicmp(DSN_TYPE_MYSQL, pb->object + 1, xslen(DSN_TYPE_MYSQL)) == 0)
 	{
 #if defined(_OS_WINDOWS)
 		xdb_lib = load_library(_T("xdb_mysql.dll"));
@@ -1428,7 +1428,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 #endif
 		len += xslen(DSN_TYPE_MYSQL);
 	}
-	else if (xsnicmp(DSN_TYPE_ODBC, pb->file + 1, xslen(DSN_TYPE_ODBC)) == 0)
+	else if (xsnicmp(DSN_TYPE_ODBC, pb->object + 1, xslen(DSN_TYPE_ODBC)) == 0)
 	{
 #if defined(_OS_WINDOWS)
 		xdb_lib = load_library(_T("xdb_odbc.dll"));
@@ -1476,7 +1476,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		raise_user_error(_T("xdb_api"), _T("get open/close functon falied"));
 	}
 
-	xsprintf(token, _T("%s%s"), pb->path, pb->file);
+	xsprintf(token, _T("%s%s"), pb->path, pb->object);
 
 	if (!(*pf_db_parse_dsn)(token, srv, PATH_LEN, dbn, RES_LEN, uid, KEY_LEN, pwd, KEY_LEN))
 	{

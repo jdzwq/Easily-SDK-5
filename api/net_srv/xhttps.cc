@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #include "xhttps.h"
 #include "srvlog.h"
 
-static void _xhttps_get_config(const tchar_t* root, const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc, tchar_t* sz_auth)
+static void _xhttps_get_config(const tchar_t* root, const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
 {
 	tchar_t sz_file[PATH_LEN] = { 0 };
 
@@ -70,10 +70,7 @@ static void _xhttps_get_config(const tchar_t* root, const tchar_t* site, tchar_t
 				{
 					get_dom_node_text(nlk, sz_level, INT_LEN);
 				}
-				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("auth"), -1, 1) == 0 && sz_auth)
-				{
-					get_dom_node_text(nlk, sz_auth, INT_LEN);
-				}
+		
 				nlk = get_dom_next_sibling_node(nlk);
 			}
 		}
@@ -133,6 +130,7 @@ static void _xhttps_log_response(xhand_t http)
 
 static bool_t _xhttps_licence(xhand_t http, const tchar_t* path, const tchar_t* site, tchar_t* hmac)
 {
+	tchar_t sz_auth[INT_LEN + 1] = { 0 };
 	tchar_t sz_sid[RES_LEN + 1] = { 0 };
 	tchar_t sz_key[MD5_LEN + 1] = { 0 };
 	tchar_t sz_sign[KEY_LEN + 1] = { 0 };
@@ -142,7 +140,7 @@ static bool_t _xhttps_licence(xhand_t http, const tchar_t* path, const tchar_t* 
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	link_t_ptr nlk_root,nlk_lic, nlk_node, ptr_xml = NULL;
 
-	xhttp_get_authorization(http, sz_sid, RES_LEN, sz_sign, KEY_LEN);
+	xhttp_get_authorization(http, sz_auth, sz_sid, RES_LEN, sz_sign, KEY_LEN);
 
 	xsprintf(sz_file, _T("%s/lic/%s/%s.lic"), path, site, sz_sid);
 
@@ -164,7 +162,7 @@ static bool_t _xhttps_licence(xhand_t http, const tchar_t* path, const tchar_t* 
 			{
 				get_dom_node_text(nlk_node, sz_key, MD5_LEN);
 
-				xhttp_request_signature(http, sz_key, sz_hmac, KEY_LEN);
+				xhttp_request_signature(http, sz_auth, sz_key, sz_hmac, KEY_LEN);
 
 				if (xscmp(sz_sign, sz_hmac) == 0)
 				{
@@ -308,7 +306,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	xhttp_split_object(sz_object, sz_site, sz_res);
 
-	_xhttps_get_config(pxp->sz_root, sz_site + 1, sz_space, sz_virtual, sz_track, sz_level, sz_proc, sz_cert);
+	_xhttps_get_config(pxp->sz_root, sz_site + 1, sz_space, sz_virtual, sz_track, sz_level, sz_proc);
 
 	if (is_null(sz_virtual))
 	{
@@ -326,7 +324,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		raise_user_error(_T("_https_invoke"), _T("website not define service module\n"));
 	}
 
-	if (compare_text(sz_cert,-1,_T("true"),-1,1) == 0)
+	if (compare_text(pxp->sz_auth,-1,HTTP_HEADER_AUTHORIZATION_XDS,-1,1) == 0)
 	{
 		if (!_xhttps_licence(http, pxp->sz_root, sz_site + 1, sz_hmac))
 		{
@@ -351,9 +349,10 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	pb->pf_log_error = _write_log_error;
 	pb->pf_log_data = _write_log_data;
 	pb->pf_log_xml = _write_log_xml;
+	pb->pf_log_json = _write_log_json;
 
 	xsncpy(pb->site, sz_site + 1, RES_LEN);
-	xsncpy(pb->file, sz_res, PATH_LEN);
+	xsncpy(pb->object, sz_res, PATH_LEN);
 	xsncpy(pb->space, sz_space, PATH_LEN);
     printf_path(pb->path, sz_virtual, pxp->sz_root);
 
@@ -455,6 +454,7 @@ void _xhttps_start(xhttps_param_t* pxp)
 	}
 
 	get_param_item(pxp->sz_param, _T("CERT"), sz_file, RES_LEN);
+	get_param_item(pxp->sz_param, _T("AUTH"), pxp->sz_auth, INT_LEN);
 
 	if (compare_text(sz_file, 3, _T("SSL"), 3, 1) == 0)
 		pxp->n_secu = _SECU_SSL;

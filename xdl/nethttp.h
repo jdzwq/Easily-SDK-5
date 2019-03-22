@@ -351,27 +351,30 @@ XDL_API unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr);
 /*
 @FUNCTION xhttp_get_authorization: get http authorization key and sign.
 @INPUT xhand_t xhttp: the http handle.
+@OUTPUT tchar_t* sz_auth: the string buffer for returning authorization mode, it may be "Basic", "XDS", "OSS".
 @OUTPUT tchar_t* sz_sid: the string buffer for returning authorization key.
 @INPUT int slen: the key string buffer size in characters.
 @OUTPUT tchar_t* sz_sign: the string buffer for returning authorization sign.
 @INPUT int nlen: the sign string buffer size in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int nlen);
+XDL_API void		xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_auth, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int nlen);
 
 /*
 @FUNCTION xhttp_set_authorization: set http authorization key and sign.
 @INPUT xhand_t xhttp: the http handle.
-@INPUT const tchar_t* sz_sid: the string buffer for returning authorization key.
+@INPUT tchar_t* sz_auth: the authorization mode, it can be "Basic", "XDS", "OSS".
+@INPUT const tchar_t* sz_sid: the authorization key.
 @INPUT int slen: the key string token length in characters.
-@INPUT const tchar_t* sz_sign: the string buffer for returning authorization sign.
+@INPUT const tchar_t* sz_sign: the authorization sign.
 @INPUT int nlen: the sign string token length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_sid, int slen, const tchar_t* sz_sign, int nlen);
+XDL_API void		xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_auth, const tchar_t* sz_sid, int slen, const tchar_t* sz_sign, int nlen);
 
 /*
 @FUNCTION xhttp_format_error: format http error information into bytes buffer.
+@INPUT bool_t b_json: nonzero for formating json error, zero for formating xml error.
 @INPUT const tchar_t* encoding: the xml document encode, it can be "utf-8", "gb2312".
 @INPUT const tchar_t* errcode: the error code.
 @INPUT const tchar_t* errtext: the error text.
@@ -380,10 +383,12 @@ XDL_API void		xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_sid, int 
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the formated bytes.
 */
-XDL_API dword_t		xhttp_format_error(const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int len, byte_t* buf, dword_t max);
+XDL_API dword_t		xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int len, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION xhttp_parse_error: parse http error information from bytes buffer.
+@INPUT bool_t b_json: nonzero for parsing json error, zero for parsing xml error.
+@INPUT const tchar_t* encoding: the xml document encode, it can be "utf-8", "gb2312".
 @INPUT const byte_t* buf: the bytes buffer.
 @INPUT dword_t len: the buffer data size in bytes.
 @OUTPUT tchar_t* errcode: the string buffer for returning error code.
@@ -391,18 +396,19 @@ XDL_API dword_t		xhttp_format_error(const tchar_t* encoding, const tchar_t* errc
 @INPUT int max: the error string buffer size in characters.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_parse_error(const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max);
+XDL_API bool_t		xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max);
 
 #ifdef XDL_SUPPORT_CRYPT
 /*
 @FUNCTION xhttp_request_signature: calc http request header signature.
 @INPUT xhand_t xhttp: the http handle.
+@INPUT const tchar_t* auth: the authorization mode token, it can be "Basic", "XDS", "OSS".
 @INPUT const tchar_t* skey: the signature key token.
 @OUTPUT tchar_t* buf: the string buffer for returning signature.
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the signature length in characters.
 */
-XDL_API int			xhttp_request_signature(xhand_t xhttp, const tchar_t* skey, tchar_t* buf, int max);
+XDL_API int			xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* skey, tchar_t* buf, int max);
 #endif
 
 /*

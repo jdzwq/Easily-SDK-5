@@ -161,7 +161,7 @@ bool_t _invoke_auth_access(const https_block_t* pb, oau_block_t* pos)
 	n = Lrand48();
 	xsprintf(sz_token, _T("%d"), n % 100000);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_APPJSON_UTF8, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CACHECONTROL, -1, HTTP_HEADER_CACHECONTROL_NOSTORE, -1);
 
 	ptr_json = create_json_doc();
@@ -253,7 +253,7 @@ bool_t _invoke_auth_refresh(const https_block_t* pb, oau_block_t* pos)
 	n = Lrand48();
 	xsprintf(sz_token, _T("%d"), n % 100000);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_APPJSON_UTF8, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CACHECONTROL, -1, HTTP_HEADER_CACHECONTROL_NOSTORE, -1);
 
 	ptr_json = create_json_doc();
@@ -367,11 +367,11 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;*/
 
-	if (compare_text(pb->file, -1, _T("/auth_request"), -1, 1) == 0)
+	if (compare_text(pb->object, -1, _T("/auth_request"), -1, 1) == 0)
 		rt = _invoke_auth_request(pb, pos);
-	else if (compare_text(pb->file, -1, _T("/auth_access"), -1, 1) == 0)
+	else if (compare_text(pb->object, -1, _T("/auth_access"), -1, 1) == 0)
 		rt = _invoke_auth_access(pb, pos);
-	else if (compare_text(pb->file, -1, _T("/auth_refresh"), -1, 1) == 0)
+	else if (compare_text(pb->object, -1, _T("/auth_refresh"), -1, 1) == 0)
 		rt = _invoke_auth_refresh(pb, pos);
 	else
 	{

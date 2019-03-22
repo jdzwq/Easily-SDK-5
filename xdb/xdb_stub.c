@@ -284,8 +284,8 @@ bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_date)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -368,11 +368,11 @@ bool_t STDCALL db_schema(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 	xhttp_set_request_accept_charset(xhttp, CHARSET_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -513,11 +513,11 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_request_accept_charset(xhttp, CHARSET_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -650,11 +650,11 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_request_accept_charset(xhttp, CHARSET_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -810,10 +810,10 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN_UTF8, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 #ifdef _UNICODE
@@ -941,10 +941,10 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN_UTF8, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -1098,15 +1098,15 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	format_charset(stream_get_encode(stream), sz_enc);
 	if (!is_null(sz_enc))
 	{
 		xhttp_set_request_content_type_charset(xhttp, sz_enc, -1);
 	}
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -1219,15 +1219,15 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	format_charset(stream_get_encode(stream), sz_enc);
 	if (!is_null(sz_enc))
 	{
 		xhttp_set_request_content_type_charset(xhttp, sz_enc, -1);
 	}
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -1337,15 +1337,15 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	format_charset(stream_get_encode(stream), sz_enc);
 	if (!is_null(sz_enc))
 	{
 		xhttp_set_request_accept_charset(xhttp, sz_enc, -1);
 	}
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -1435,11 +1435,11 @@ bool_t STDCALL db_call_func(xdb_t db, link_t_ptr func)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_APPXML, -1);
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	ptr_xml = upcast_dom_to_xml(func);
@@ -1552,13 +1552,13 @@ bool_t STDCALL db_call_json(xdb_t db, const tchar_t* procname, link_t_ptr json)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_APPJSON_UTF8, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_APPJSON, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPJSON, -1);
 	xhttp_set_request_accept_charset(xhttp, CHARSET_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	len = format_json_doc_to_bytes(json, NULL, MAX_LONG, _UTF8);
@@ -1668,8 +1668,8 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -1776,8 +1776,8 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -1876,14 +1876,14 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN_UTF8, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN_UTF8, -1);
 
 	n_size = string_encode(varstr, _UTF8, NULL, MAX_LONG) + n_bom;
 	xsprintf(fsize, _T("%d"), n_size);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -2001,11 +2001,11 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_request_accept_charset(xhttp, CHARSET_UTF8, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -2104,10 +2104,10 @@ bool_t _stdcall db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
 	xhttp_set_request_default_header(xhttp);
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
-	xhttp_set_request_content_type(xhttp, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);
@@ -2221,10 +2221,10 @@ bool_t _stdcall db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
 
 	xhttp_set_request_default_header(xhttp);
 
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-	xhttp_request_signature(xhttp, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("XDS %s:%s"), pdb->sz_uid, sz_hmac);
+	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	rt = xhttp_send_request(xhttp);

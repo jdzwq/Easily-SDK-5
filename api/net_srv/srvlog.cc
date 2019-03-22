@@ -68,11 +68,11 @@ void _write_log_error(file_t log, const tchar_t* sz_code, const tchar_t* sz_erro
     
 	format_charset(DEF_MBS, token);
 
-	n_log = xhttp_format_error(token, sz_code, sz_error, len, NULL, MAX_LONG);
+	n_log = xhttp_format_error(0, token, sz_code, sz_error, len, NULL, MAX_LONG);
 
 	sz_log = (byte_t*)xmem_alloc(n_log + 1);
 
-	n_log = xhttp_format_error(token, sz_code, sz_error, len, sz_log, n_log);
+	n_log = xhttp_format_error(0, token, sz_code, sz_error, len, sz_log, n_log);
 
 	xfile_write(log, sz_log, n_log);
 
@@ -104,6 +104,23 @@ void _write_log_xml(file_t log, link_t_ptr ptr_xml)
 	dw = format_xml_doc_to_bytes(ptr_xml, NULL, MAX_LONG);
 	sz_log = (byte_t*)xmem_alloc(dw + 1);
 	format_xml_doc_to_bytes(ptr_xml, sz_log, dw);
+
+	xfile_write(log, sz_log, dw);
+	xmem_free(sz_log);
+
+	dw = 2;
+	xfile_write(log, ba, dw);
+}
+
+void _write_log_json(file_t log, link_t_ptr ptr_json)
+{
+	dword_t dw;
+	byte_t ba[2] = { '\r', '\n' };
+	byte_t* sz_log = NULL;
+
+	dw = format_json_doc_to_bytes(ptr_json, NULL, MAX_LONG, DEF_MBS);
+	sz_log = (byte_t*)xmem_alloc(dw + 1);
+	format_json_doc_to_bytes(ptr_json, sz_log, dw, DEF_MBS);
 
 	xfile_write(log, sz_log, dw);
 	xmem_free(sz_log);

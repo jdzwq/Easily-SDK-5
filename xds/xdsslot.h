@@ -96,7 +96,6 @@ typedef struct _slots_block_t{
 	PF_LOG_TITLE	pf_log_title;
 	PF_LOG_ERROR	pf_log_error;
 	PF_LOG_DATA		pf_log_data;
-	PF_LOG_XML		pf_log_xml;
 
 	tchar_t method[NUM_LEN];
 	tchar_t site[RES_LEN];

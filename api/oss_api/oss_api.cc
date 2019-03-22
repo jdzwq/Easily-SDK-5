@@ -83,7 +83,7 @@ bool_t _invoke_head(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
 	if (!xfile_info(NULL, sz_object, ftime, fsize, fetag, fencode))
 	{
@@ -101,7 +101,7 @@ bool_t _invoke_head(const https_block_t* pb, oss_block_t* pos)
 	xhttp_set_response_header(pb->http, HTTP_HEADER_ETAG, -1, fetag, -1);
 	if (!is_null(fencode))
 	{
-		xhttp_set_response_content_type(pb->http, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 		xhttp_set_response_content_type_charset(pb->http, fencode, -1);
 	}
 
@@ -137,7 +137,7 @@ bool_t _invoke_list(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
 	ptr_list = create_list_doc();
 
@@ -154,7 +154,7 @@ bool_t _invoke_list(const https_block_t* pb, oss_block_t* pos)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_APPXML, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
 	xhttp_send_xml(pb->http, ptr_xml);
 
@@ -220,7 +220,7 @@ bool_t _invoke_get(const https_block_t* pb, oss_block_t* pos)
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMATCH, -1, yes_etag, ETAG_LEN);
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFNONEMATCH, -1, not_etag, ETAG_LEN);
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
 	if (!xfile_info(NULL, sz_object, ftime, fsize, fetag, NULL))
 	{
@@ -469,7 +469,7 @@ bool_t _invoke_put(const https_block_t* pb, oss_block_t* pos)
 		raise_user_error(NULL, NULL);
 	}
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMODIFIEDSINCE, -1, fsince, DATE_LEN);
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMATCH, -1, yes_etag, ETAG_LEN);
@@ -617,7 +617,7 @@ bool_t _invoke_put(const https_block_t* pb, oss_block_t* pos)
 
 	xhttp_send_error(pb->http, HTTP_CODE_201, HTTP_CODE_201_TEXT, _T("0"), _T("xhttp write file succeeded\n"), -1);
 
-	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->file);
+	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
 
 	xfile_copy(&pos->sd, sz_object, sz_ossurl, 0);
 
@@ -661,7 +661,7 @@ bool_t _invoke_delete(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
 	if (!xfile_info(NULL, sz_object, ftime, NULL, NULL, NULL))
 	{
@@ -681,7 +681,7 @@ bool_t _invoke_delete(const https_block_t* pb, oss_block_t* pos)
 
 	xhttp_send_error(pb->http, HTTP_CODE_202, HTTP_CODE_202_TEXT, _T("0"), _T("xhttp delete file succeeded\n"), -1);
 
-	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->file);
+	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
 
 	xfile_delete(&pos->sd, sz_ossurl);
 
@@ -721,14 +721,14 @@ bool_t _invoke_sync(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
 	if (!xfile_info(NULL, sz_object, loc_time, NULL, NULL, NULL))
 	{
 		oss_op = _OSS_DELETE;
 	}
 
-	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->file);
+	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
 
 	if (!xfile_info(&pos->sd, sz_ossurl, oss_time, NULL, NULL, NULL))
 	{

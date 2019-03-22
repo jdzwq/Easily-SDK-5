@@ -42,7 +42,7 @@ typedef struct _xhttps_param_t{
 
 	int			n_secu;
 	cert_t*		p_certs;
-
+	tchar_t		sz_auth[INT_LEN];
 	tchar_t		sz_mode[INT_LEN];
 	tchar_t		sz_port[INT_LEN];
 	tchar_t		sz_root[PATH_LEN];

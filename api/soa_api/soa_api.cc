@@ -45,7 +45,7 @@ void _invoke_soap_fault(xhand_t xh, const tchar_t* sz_code, const tchar_t* sz_er
 	xhttp_set_response_code(xh, HTTP_CODE_200);
 	xhttp_set_response_message(xh, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(xh, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_TEXTXML, -1);
+	xhttp_set_response_header(xh, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_TEXTXML, -1);
 
 	n_size = format_xml_doc_to_bytes(ptr_xml, NULL, MAX_LONG);
 	xsprintf(sz_size, _T("%d"), n_size);
@@ -211,7 +211,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_TEXTXML, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_TEXTXML, -1);
 	xhttp_set_response_content_type_charset(pb->http, token, -1);
 
 	n_size = format_xml_doc_to_bytes(ptr_xml, NULL, MAX_LONG);

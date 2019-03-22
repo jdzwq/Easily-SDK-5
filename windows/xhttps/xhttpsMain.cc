@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
 	}
 
 	get_param_item(xp.sz_param, _T("CERT"), sz_cert, RES_LEN);
+	get_param_item(xp.sz_param, _T("AUTH"), xp.sz_auth, INT_LEN);
 
 	if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
 		xp.n_secu = _SECU_SSL;

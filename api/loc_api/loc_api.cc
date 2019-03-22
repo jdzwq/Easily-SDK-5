@@ -44,7 +44,7 @@ bool_t _invoke_head(const https_block_t* pb, loc_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pos->local, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pos->local, pb->object);
 
 	if (pb->log)
 	{
@@ -69,7 +69,7 @@ bool_t _invoke_head(const https_block_t* pb, loc_block_t* pos)
 	xhttp_set_response_header(pb->http, HTTP_HEADER_ETAG, -1, fetag, -1);
 	if (!is_null(fencode))
 	{
-		xhttp_set_response_content_type(pb->http, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 		xhttp_set_response_content_type_charset(pb->http, fencode, -1);
 	}
 
@@ -109,7 +109,7 @@ bool_t _invoke_list(const https_block_t* pb, loc_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pos->local, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pos->local, pb->object);
 
 	if (pb->log)
 	{
@@ -129,7 +129,7 @@ bool_t _invoke_list(const https_block_t* pb, loc_block_t* pos)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_TYPE_TEXTPLAIN, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
@@ -201,7 +201,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMATCH, -1, yes_etag, ETAG_LEN);
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFNONEMATCH, -1, not_etag, ETAG_LEN);
 
-	xsprintf(sz_object, _T("%s%s"), pos->local, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pos->local, pb->object);
 
 	if (pb->log)
 	{
@@ -460,7 +460,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 		raise_user_error(NULL, NULL);
 	}
 
-	xsprintf(sz_object, _T("%s%s"), pos->local, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pos->local, pb->object);
 
 	if (pb->log)
 	{
@@ -656,7 +656,7 @@ bool_t _invoke_delete(const https_block_t* pb, loc_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pos->local, pb->file);
+	xsprintf(sz_object, _T("%s%s"), pos->local, pb->object);
 
 	if (pb->log)
 	{

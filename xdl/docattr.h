@@ -22,7 +22,7 @@
 
 #define DOC_NOTES				_T("notes")
 
-#define DOC_JSON				_T("json")
+#define DOC_JSON				_T("rowset")
 
 #define DOC_XML					_T("xml")
 #define XML_ATTR_VERSION		_T("version")

@@ -45,7 +45,7 @@ typedef void(*PF_LOG_TITLE)(file_t, const tchar_t*, int);
 typedef void(*PF_LOG_ERROR)(file_t, const tchar_t*, const tchar_t*, int);
 typedef void(*PF_LOG_DATA)(file_t, const byte_t*, dword_t);
 typedef void(*PF_LOG_XML)(file_t, link_t_ptr);
-
+typedef void(*PF_LOG_JSON)(file_t, link_t_ptr);
 
 
 #endif	/* _XDSDEF_H */

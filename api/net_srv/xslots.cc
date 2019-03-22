@@ -213,7 +213,6 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	pb->pf_log_title = _write_log_title;
 	pb->pf_log_error = _write_log_error;
 	pb->pf_log_data = _write_log_data;
-	pb->pf_log_xml = _write_log_xml;
 
 	xsncpy(pb->site, sz_site, RES_LEN);
 	xsncpy(pb->path, sz_virtual, PATH_LEN);

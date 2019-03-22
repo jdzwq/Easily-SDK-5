@@ -120,7 +120,7 @@ bool_t xhttp_invoke_wsdl(const tchar_t* sz_url, link_t_ptr wsdl)
 		return 0;
 
 	xhttp_set_request_default_header(xhttp);
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_TYPE_TEXTXML, -1);
+	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTXML, -1);
 
 	if (!xhttp_send_request(xhttp))
 	{

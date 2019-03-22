@@ -37,6 +37,8 @@ void _write_log_data(file_t log, const byte_t* data, dword_t size);
 
 void _write_log_xml(file_t log, link_t_ptr ptr_xml);
 
+void _write_log_json(file_t log, link_t_ptr ptr_json);
+
 /**********************************************************************************************/
 void xportm_log_info(const tchar_t* str, int len);
 

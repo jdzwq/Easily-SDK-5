@@ -1545,7 +1545,7 @@ int xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* buf, int max
 	if (is_null(str))
 		return 0;
 
-	str = xsistr(str, HTTP_HEADER_TYPE_ENTITY_CHARSET);
+	str = xsistr(str, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 	if (is_null(str))
 		return 0;
 
@@ -1581,10 +1581,10 @@ void xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token
 	}
 	else
 	{
-		xscpy(ctype, HTTP_HEADER_TYPE_APPXML);
+		xscpy(ctype, HTTP_HEADER_CONTENTTYPE_APPXML);
 	}
 
-	str = (tchar_t*)xsistr(ctype, HTTP_HEADER_TYPE_ENTITY_CHARSET);
+	str = (tchar_t*)xsistr(ctype, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 	if (str)
 	{
 		*str = _T('\0');
@@ -1602,7 +1602,7 @@ void xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token
 	if (len)
 	{
 		xscat(ctype, _T("; "));
-		xscat(ctype, HTTP_HEADER_TYPE_ENTITY_CHARSET);
+		xscat(ctype, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 		xscat(ctype, _T("="));
 		xsncat(ctype, token, len);
 	}
@@ -1633,7 +1633,7 @@ int xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf, int max)
 	if (is_null(str))
 		return 0;
 
-	str = xsistr(str, HTTP_HEADER_TYPE_ENTITY_CHARSET);
+	str = xsistr(str, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 	if (is_null(str))
 		return 0;
 
@@ -1669,10 +1669,10 @@ void xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token,
 	}
 	else
 	{
-		xscpy(ctype, HTTP_HEADER_TYPE_APPXML);
+		xscpy(ctype, HTTP_HEADER_CONTENTTYPE_APPXML);
 	}
 
-	str = (tchar_t*)xsistr(ctype, HTTP_HEADER_TYPE_ENTITY_CHARSET);
+	str = (tchar_t*)xsistr(ctype, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 	if (str)
 	{
 		*str = _T('\0');
@@ -1690,7 +1690,7 @@ void xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token,
 	if (len)
 	{
 		xscat(ctype, _T("; "));
-		xscat(ctype, HTTP_HEADER_TYPE_ENTITY_CHARSET);
+		xscat(ctype, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 		xscat(ctype, _T("="));
 		xsncat(ctype, token, len);
 	}
@@ -1824,7 +1824,7 @@ unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
 		return 0;
 }
 
-void xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int max)
+void xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_mode, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int max)
 {
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	int len;
@@ -1869,7 +1869,7 @@ void xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_sid, int slen, tchar_t* 
 	}
 }
 
-void xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_sid, int slen, const tchar_t* sz_sign, int max)
+void xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_mode, const tchar_t* sz_sid, int slen, const tchar_t* sz_sign, int max)
 {
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 
@@ -1897,7 +1897,7 @@ void xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_sid, int slen, con
 }
 
 #ifdef XDL_SUPPORT_CRYPT
-int xhttp_request_signature(xhand_t xhttp, const tchar_t* skey, tchar_t* buf, int max)
+int xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* skey, tchar_t* buf, int max)
 {
 	tchar_t sz_verb[RES_LEN + 1] = { 0 };
 	tchar_t sz_type[RES_LEN + 1] = { 0 };
@@ -1991,7 +1991,7 @@ int xhttp_request_signature(xhand_t xhttp, const tchar_t* skey, tchar_t* buf, in
 }
 #endif
 
-dword_t xhttp_format_error(const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
+dword_t xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
 {
 	link_t_ptr ptr_xml, ptr_dom;
 	link_t_ptr nlk;
@@ -1999,13 +1999,20 @@ dword_t xhttp_format_error(const tchar_t* encoding, const tchar_t* errcode, cons
 	dword_t nlen = 0;
 	byte_t* sz_buf = NULL;
 
-	ptr_xml = create_xml_doc();
+	if (b_json)
+	{
+		ptr_dom = create_json_doc();
+	}
+	else
+	{
+		ptr_xml = create_xml_doc();
 
-	if (!is_null(encoding))
-		set_xml_encoding(ptr_xml, encoding, -1);
+		if (!is_null(encoding))
+			set_xml_encoding(ptr_xml, encoding, -1);
 
-	ptr_dom = get_xml_dom_node(ptr_xml);
-	set_dom_node_name(ptr_dom, HTTP_FAULT, -1);
+		ptr_dom = get_xml_dom_node(ptr_xml);
+		set_dom_node_name(ptr_dom, HTTP_FAULT, -1);
+	}
 
 	nlk = insert_dom_node(ptr_dom, LINK_LAST);
 	set_dom_node_name(nlk, HTTP_FAULT_CODE, -1);
@@ -2015,31 +2022,53 @@ dword_t xhttp_format_error(const tchar_t* encoding, const tchar_t* errcode, cons
 	set_dom_node_name(nlk, HTTP_FAULT_STRING, -1);
 	set_dom_node_text(nlk, errtext, slen);
 
-	nlen = format_xml_doc_to_bytes(ptr_xml, buf, max);
+	if (b_json)
+	{
+		nlen = format_json_doc_to_bytes(ptr_dom, buf, max, parse_charset(encoding));
 
-	destroy_xml_doc(ptr_xml);
+		destroy_json_doc(ptr_dom);
+	}
+	else
+	{
+		nlen = format_xml_doc_to_bytes(ptr_xml, buf, max);
+
+		destroy_xml_doc(ptr_xml);
+	}
 
 	return nlen;
 }
 
-bool_t xhttp_parse_error(const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max)
+bool_t xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max)
 {
 	link_t_ptr nlk,ptr_dom,ptr_xml;
 	bool_t b_rt;
 
-	ptr_xml = create_xml_doc();
-	b_rt = parse_xml_doc_from_bytes(ptr_xml, buf, len);
-	if (!b_rt)
+	if (b_json)
 	{
-		destroy_xml_doc(ptr_xml);
-		return 0;
+		ptr_dom = create_json_doc();
+		b_rt = parse_json_doc_from_bytes(ptr_dom, buf, len, parse_charset(encoding));
+		if (!b_rt)
+		{
+			destroy_json_doc(ptr_dom);
+			return 0;
+		}
 	}
-
-	ptr_dom = get_xml_dom_node(ptr_xml);
-	if (compare_text(get_dom_node_name_ptr(ptr_dom), -1, HTTP_FAULT, -1, 1) != 0)
+	else
 	{
-		destroy_xml_doc(ptr_xml);
-		return 0;
+		ptr_xml = create_xml_doc();
+		b_rt = parse_xml_doc_from_bytes(ptr_xml, buf, len);
+		if (!b_rt)
+		{
+			destroy_xml_doc(ptr_xml);
+			return 0;
+		}
+
+		ptr_dom = get_xml_dom_node(ptr_xml);
+		if (compare_text(get_dom_node_name_ptr(ptr_dom), -1, HTTP_FAULT, -1, 1) != 0)
+		{
+			destroy_xml_doc(ptr_xml);
+			return 0;
+		}
 	}
 
 	nlk = get_dom_first_child_node(ptr_dom);
@@ -2062,7 +2091,10 @@ bool_t xhttp_parse_error(const byte_t* buf, dword_t len, tchar_t* errcode, tchar
 		nlk = get_dom_next_sibling_node(nlk);
 	}
 
-	destroy_xml_doc(ptr_xml);
+	if (b_json)
+		destroy_json_doc(ptr_dom);
+	else
+		destroy_xml_doc(ptr_xml);
 
 	return 1;
 }
@@ -2833,10 +2865,15 @@ bool_t xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* 
 	tchar_t encoding[RES_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	int encode = 0;
+	bool_t b_json = 0;
 
 	type = xhttp_type(xhttp);
 
 	XDL_ASSERT(type == _XHTTP_TYPE_SRV);
+
+	xhttp_get_request_content_type(xhttp, encoding, RES_LEN);
+
+	b_json = (compare_text(encoding, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0) ? 1 : 0;
 
 	xhttp_get_request_accept_charset(xhttp, encoding, RES_LEN);
 	if (is_null(encoding))
@@ -2854,13 +2891,16 @@ bool_t xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* 
 		xscpy(encoding, CHARSET_UTF8);
 	}
 
-	nlen = xhttp_format_error(encoding, errcode, errtext, slen, NULL, MAX_LONG);
+	nlen = xhttp_format_error(b_json, encoding, errcode, errtext, slen, NULL, MAX_LONG);
 	sz_buf = (byte_t*)xmem_alloc(nlen + 1);
-	nlen = xhttp_format_error(encoding, errcode, errtext, slen, sz_buf, nlen);
+	nlen = xhttp_format_error(b_json, encoding, errcode, errtext, slen, sz_buf, nlen);
 
 	xsprintf(fsize, _T("%d"), nlen);
 	xhttp_set_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-	xhttp_set_response_content_type(xhttp, HTTP_HEADER_TYPE_APPXML,-1);
+	if (b_json)
+		xhttp_set_response_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPJSON, -1);
+	else
+		xhttp_set_response_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML,-1);
 	xhttp_set_response_content_type_charset(xhttp, encoding,-1);
 
 	if (!is_null(http_code))
@@ -2880,12 +2920,24 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 {
 	int type;
 	byte_t** pbuf = NULL;
+	tchar_t encoding[RES_LEN + 1] = { 0 };
 	dword_t nlen = 0;
 	bool_t b_rt;
+	bool_t b_json = 0;
 
 	type = xhttp_type(xhttp);
 
 	XDL_ASSERT(type == _XHTTP_TYPE_CLI);
+
+	xhttp_get_response_content_type(xhttp, encoding, RES_LEN);
+
+	b_json = (compare_text(encoding, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0) ? 1 : 0;
+
+	xhttp_get_response_content_type_charset(xhttp, encoding, RES_LEN);
+	if (is_null(encoding))
+	{
+		xscpy(encoding, CHARSET_UTF8);
+	}
 
 	if (http_code)
 	{
@@ -2902,7 +2954,7 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 
 	if (b_rt)
 	{
-		b_rt = xhttp_parse_error(*pbuf, nlen, errcode, errtext, max);
+		b_rt = xhttp_parse_error(b_json, encoding, *pbuf, nlen, errcode, errtext, max);
 	}
 
 	bytes_free(pbuf);

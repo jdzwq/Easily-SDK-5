@@ -97,11 +97,12 @@ typedef struct _https_block_t{
 	PF_LOG_ERROR	pf_log_error;
 	PF_LOG_DATA		pf_log_data;
 	PF_LOG_XML		pf_log_xml;
+	PF_LOG_JSON		pf_log_json;
 
 	tchar_t site[RES_LEN];
+	tchar_t object[PATH_LEN];
 	tchar_t space[PATH_LEN];
 	tchar_t path[PATH_LEN];
-	tchar_t file[PATH_LEN];
 
 #ifdef _OS_64
 	unsigned long long	wrecv;
