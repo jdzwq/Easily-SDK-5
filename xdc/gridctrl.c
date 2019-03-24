@@ -1108,6 +1108,7 @@ void noti_grid_commit_edit(res_win_t widget)
 	tchar_t* text;
 	res_win_t editctrl;
 	link_t_ptr ilk,rlk_new;
+	bool_t b_accept = 0;
 
 	EDITDELTA fd = { 0 };
 
@@ -1121,8 +1122,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	if (compare_text(editor, -1, ATTR_EDITOR_FIREEDIT, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text))
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1130,8 +1131,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRENUM, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text))
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1139,8 +1140,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREDATE, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text))
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1148,8 +1149,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRETIME, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text))
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1157,8 +1158,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRELIST, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text))
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1173,8 +1174,8 @@ void noti_grid_commit_edit(res_win_t widget)
 		}
 
 		fd.text = editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd))
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, fd.text);
 		}
@@ -1183,7 +1184,7 @@ void noti_grid_commit_edit(res_win_t widget)
 	{
 		fd.data = firegrid_get_data(ptd->editor);
 		fd.item = firegrid_get_item(ptd->editor);
-		noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd);
+		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd) == 0) ? 1 : 0;
 	}
 
 	editctrl = ptd->editor;
@@ -1191,6 +1192,9 @@ void noti_grid_commit_edit(res_win_t widget)
 
 	widget_destroy(editctrl);
 	widget_set_focus(widget);
+
+	if (!b_accept)
+		return;
 
 	if (ptd->b_auto && (ptd->row == get_prev_visible_row(ptd->grid, LINK_LAST)) && (ptd->col == ptd->fix || ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST)))
 	{

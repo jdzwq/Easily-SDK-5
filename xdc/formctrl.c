@@ -1368,6 +1368,7 @@ void noti_form_commit_edit(res_win_t widget)
 	int len;
 	link_t_ptr item, data;
 	bool_t dirty;
+	bool_t b_accept = 0;
 
 	EDITDELTA fd = { 0 };
 
@@ -1383,8 +1384,8 @@ void noti_form_commit_edit(res_win_t widget)
 	if (uid == IDC_FIREEDIT)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, text);
 		}
@@ -1395,8 +1396,8 @@ void noti_form_commit_edit(res_win_t widget)
 			xscpy(ba, _T("1"));
 		else
 			xscpy(ba, _T("0"));
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)ba))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)ba) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, ba);
 		}
@@ -1404,8 +1405,8 @@ void noti_form_commit_edit(res_win_t widget)
 	else if (uid == IDC_FIRELIST)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, text);
 		}
@@ -1413,8 +1414,8 @@ void noti_form_commit_edit(res_win_t widget)
 	else if (uid == IDC_FIRENUM)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, text);
 		}
@@ -1422,8 +1423,8 @@ void noti_form_commit_edit(res_win_t widget)
 	else if (uid == IDC_FIREDATE)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, text);
 		}
@@ -1431,8 +1432,8 @@ void noti_form_commit_edit(res_win_t widget)
 	else if (uid == IDC_FIRETIME)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, text);
 		}
@@ -1447,8 +1448,8 @@ void noti_form_commit_edit(res_win_t widget)
 		}
 
 		fd.text = editbox_get_text_ptr(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, fd.text);
 		}
@@ -1458,7 +1459,7 @@ void noti_form_commit_edit(res_win_t widget)
 		fd.data = firegrid_get_data(ptd->editor);
 		fd.item = firegrid_get_item(ptd->editor);
 
-		noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd);
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
 	}
 	else if (uid == IDC_TABLEBOX)
 	{
@@ -1468,8 +1469,8 @@ void noti_form_commit_edit(res_win_t widget)
 		dirty = (get_field_editable(ptd->field)) ? tablectrl_is_update(ptd->editor) : 0;
 
 		data = tablectrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1498,8 +1499,8 @@ void noti_form_commit_edit(res_win_t widget)
 		ptd->cur_page = gridctrl_get_cur_page(ptd->editor);
 
 		data = gridctrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1518,8 +1519,8 @@ void noti_form_commit_edit(res_win_t widget)
 		ptd->cur_page = graphctrl_get_cur_page(ptd->editor);
 
 		data = graphctrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1536,8 +1537,8 @@ void noti_form_commit_edit(res_win_t widget)
 		dirty = (get_field_editable(ptd->field)) ? formctrl_is_update(ptd->editor) : 0;
 
 		data = formctrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1553,8 +1554,8 @@ void noti_form_commit_edit(res_win_t widget)
 		dirty = (get_field_editable(ptd->field)) ? tagctrl_get_dirty(ptd->editor) : 0;
 
 		data = tagctrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1582,8 +1583,8 @@ void noti_form_commit_edit(res_win_t widget)
 		ptd->cur_page = memoctrl_get_cur_page(ptd->editor);
 
 		data = memoctrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1611,8 +1612,8 @@ void noti_form_commit_edit(res_win_t widget)
 		ptd->cur_page = richctrl_get_cur_page(ptd->editor);
 
 		data = richctrl_detach(ptd->editor);
-
-		if (!noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd))
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
+		if (b_accept)
 		{
 			if (dirty)
 			{
@@ -1628,6 +1629,9 @@ void noti_form_commit_edit(res_win_t widget)
 
 	widget_destroy(editctrl);
 	widget_set_focus(widget);
+
+	if (!b_accept)
+		return;
 
 	if (IS_DATA_FIELD(get_field_class_ptr(ptd->field)))
 	{

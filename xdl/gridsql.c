@@ -82,7 +82,7 @@ void set_grid_sql_param(link_t_ptr ptr, const tchar_t* paramname, const tchar_t*
 
 const tchar_t* get_grid_sql_param_ptr(link_t_ptr ptr, const tchar_t* paramname, int len)
 {
-	link_t_ptr ht;
+	link_t_ptr st;
 
 	if (len < 0)
 		len = xslen(paramname);
@@ -90,11 +90,11 @@ const tchar_t* get_grid_sql_param_ptr(link_t_ptr ptr, const tchar_t* paramname, 
 	if (!len)
 		return NULL;
 
-	ht = get_dom_node_options_table(ptr);
-	if (!ht)
+	st = get_dom_node_options_table(ptr);
+	if (!st)
 		return NULL;
 
-	return get_hash_attr_ptr(ht, paramname, len);
+	return get_string_entity_ptr(st, paramname, len);
 }
 
 int format_row_update_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max)

@@ -1027,6 +1027,7 @@ void noti_graph_commit_edit(res_win_t widget)
 	const tchar_t* text;
 	res_win_t editctrl;
 	link_t_ptr xlk_new;
+	bool_t b_accept = 0;
 
 	if (!widget_is_valid(ptd->editor))
 		return;
@@ -1034,8 +1035,8 @@ void noti_graph_commit_edit(res_win_t widget)
 	XDL_ASSERT(ptd->xax);
 
 	text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-
-	if (!noti_graph_owner(widget, NC_COORCOMMIT, ptd->graph, ptd->xax, ptd->yax, NULL, (void*)text))
+	b_accept = (noti_graph_owner(widget, NC_COORCOMMIT, ptd->graph, ptd->xax, ptd->yax, NULL, (void*)text) == 0) ? 1 : 0;
+	if (b_accept)
 	{
 		graphctrl_set_coor_text(widget, ptd->xax, ptd->yax, text);
 	}
@@ -1045,6 +1046,9 @@ void noti_graph_commit_edit(res_win_t widget)
 
 	widget_destroy(editctrl);
 	widget_set_focus(widget);
+
+	if (!b_accept)
+		return;
 
 	if (ptd->b_auto && (ptd->xax == get_prev_xax(ptd->graph, LINK_LAST)) && (ptd->yax == get_prev_yax(ptd->graph, LINK_LAST)))
 	{
