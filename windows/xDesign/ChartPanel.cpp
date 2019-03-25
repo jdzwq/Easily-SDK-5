@@ -1531,11 +1531,26 @@ void ChartPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	ChartPanelDelta* pdt = GETCHARTPANELDELTA(widget);
 
-	if (code == COMMAND_REQUEST)
+	if (code == COMMAND_QUERYINFO)
 	{
 		QUERYOBJECT* pqo = (QUERYOBJECT*)data;
 		xscpy(pqo->szDoc, DOC_CHART);
 		pqo->ptrDoc = chartctrl_fetch(pdt->hChart);
+	}
+	else if (code == COMMAND_RENAME)
+	{
+		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		const tchar_t* nname = (const tchar_t*)data;
+
+		if (!is_null(pdt->szFile) && !is_null(nname))
+		{
+			split_path(pdt->szFile, szPath, NULL, szExt);
+			xsprintf(pdt->szFile, _T("%s\\%s.%s"), szPath, nname, szExt);
+		}
+	}
+	else if (code == COMMAND_REMOVE)
+	{
+		chartctrl_set_dirty(pdt->hChart, 0);
 	}
 }
 

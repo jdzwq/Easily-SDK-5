@@ -598,6 +598,8 @@ void hand_tablectrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	onkey = (hint == TABLE_HINT_KEY) ? 1 : 0;
 
+	noti_tablectrl_owner(widget, NC_TABLELBCLK, ptd->table, ilk, onkey, (void*)pxp);
+
 	if (ptd->item && ilk == ptd->item && onkey == ptd->onkey)
 	{
 		widget_post_key(widget, KEY_ENTER);
@@ -612,8 +614,6 @@ void hand_tablectrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		if (ilk)
 			noti_tablectrl_item_changed(widget, ilk, onkey);
 	}
-
-	noti_tablectrl_owner(widget, NC_TABLELBCLK, ptd->table, ptd->item, ptd->onkey, (void*)pxp);
 }
 
 void hand_tablectrl_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

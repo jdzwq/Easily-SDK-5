@@ -744,6 +744,8 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
+	noti_images_owner(widget, NC_IMAGESLBCLK, ptd->images, plk, (void*)pxp);
+
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (bRe && ptd->item)
@@ -755,7 +757,7 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->item && !bRe)
 	{
 		if (!noti_images_item_changing(widget))
-			bRe = 1;
+			return;
 	}
 
 	if (plk && !bRe)
@@ -764,8 +766,6 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 		_imagesctrl_ensure_visible(widget);
 	}
-
-	noti_images_owner(widget, NC_IMAGESLBCLK, ptd->images, ptd->item, (void*)pxp);
 }
 
 void hand_images_rbutton_down(res_win_t widget, const xpoint_t* pxp)

@@ -132,6 +132,7 @@ bool_t Project_GetResource(LINKPTR ptr_prj, LINKPTR ptr_tree)
 		return 0;
 
 	LINKPTR tlk_parent = NULL;
+	tchar_t fname[RES_LEN] = { 0 };
 
 	LINKPTR nlk = get_dom_first_child_node(nlk_resource);
 	while (nlk)
@@ -150,7 +151,8 @@ bool_t Project_GetResource(LINKPTR ptr_prj, LINKPTR ptr_tree)
 		{
 			tlk_child = insert_tree_item(tlk_parent, LINK_LAST);
 			set_tree_item_name(tlk_child, get_dom_node_text_ptr(nlk));
-			set_tree_item_title(tlk_child, get_dom_node_text_ptr(nlk));
+			split_path(get_dom_node_text_ptr(nlk), NULL, fname, NULL);
+			set_tree_item_title(tlk_child, fname);
 			set_tree_item_image(tlk_child, BMP_SCHEMA);
 		}
 

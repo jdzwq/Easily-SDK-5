@@ -382,6 +382,51 @@ static void _formctrl_ensure_visible(res_win_t widget)
 
 	widget_ensure_visible(widget, &xr, 1);
 }
+
+static void _formctrl_reset_group(res_win_t widget)
+{
+	form_delta_t* ptd = GETFORMDELTA(widget);
+	LINKPTR flk;
+	long gid;
+
+	XDL_ASSERT(ptd->field);
+
+	gid = get_field_group(ptd->field);
+	if (!gid)
+		return;
+
+	if (is_null(get_field_text_ptr(ptd->field)))
+		return;
+
+	flk = get_next_visible_field(ptd->form, LINK_FIRST);
+	while (flk)
+	{
+		if (flk == ptd->field)
+		{
+			flk = get_next_visible_field(ptd->form, flk);
+			continue;
+		}
+
+		if (compare_text(get_field_class_ptr(flk), -1, DOC_FORM_CHECK, -1, 0) != 0)
+		{
+			flk = get_next_visible_field(ptd->form, flk);
+			continue;
+		}
+
+		if (get_field_group(flk) != gid)
+		{
+			flk = get_next_visible_field(ptd->form, flk);
+			continue;
+		}
+
+		if (!is_null(get_field_text_ptr(flk)))
+		{
+			formctrl_set_field_text(widget, flk, NULL);
+		}
+
+		flk = get_next_visible_field(ptd->form, flk);
+	}
+}
 /*********************************************************************************************************/
 int noti_form_owner(res_win_t widget, unsigned long code, link_t_ptr form, link_t_ptr flk, void* data)
 {
@@ -807,11 +852,6 @@ void noti_form_end_group(res_win_t widget, long x, long y)
 	widget_update(widget, NULL, 0);
 }
 
-void noti_form_calc(res_win_t widget)
-{
-	form_delta_t* ptd = GETFORMDELTA(widget);
-}
-
 void noti_form_begin_edit(res_win_t widget)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
@@ -937,10 +977,10 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_color_mode(ptd->editor, &ob);
 
 		text = get_field_text_ptr(ptd->field);
-		if (xstol(text))
-			checkbox_set_state(ptd->editor, 0);
-		else
+		if (is_null(text))
 			checkbox_set_state(ptd->editor, 1);
+		else
+			checkbox_set_state(ptd->editor, 0);
 
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
@@ -1364,7 +1404,6 @@ void noti_form_commit_edit(res_win_t widget)
 	res_win_t editctrl;
 	dword_t uid;
 	tchar_t* text;
-	tchar_t ba[2] = { 0 };
 	int len;
 	link_t_ptr item, data;
 	bool_t dirty;
@@ -1393,13 +1432,15 @@ void noti_form_commit_edit(res_win_t widget)
 	else if (uid == IDC_FIRECHECK)
 	{
 		if (checkbox_get_state(ptd->editor))
-			xscpy(ba, _T("1"));
+			text = get_field_value_ptr(ptd->field);
 		else
-			xscpy(ba, _T("0"));
-		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)ba) == 0) ? 1 : 0;
+			text = NULL;
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
 		if (b_accept)
 		{
-			formctrl_set_field_text(widget, ptd->field, ba);
+			formctrl_set_field_text(widget, ptd->field, text);
+
+			_formctrl_reset_group(widget);
 		}
 	}
 	else if (uid == IDC_FIRELIST)
@@ -2034,7 +2075,15 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	flk = NULL;
 	nHint = calc_form_hint(&cb, &pt, ptd->form, &flk);
 
+	noti_form_owner(widget, NC_FORMLBCLK, ptd->form, flk, (void*)pxp);
+
 	bRe = (flk == ptd->field) ? 1 : 0;
+
+	if (!b_design && bRe && flk)
+	{
+		widget_post_key(widget, KEY_ENTER);
+		return;
+	}
 
 	if (ptd->field && !bRe)
 	{
@@ -2049,13 +2098,6 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_form_field_changed(widget, flk);
 	}
-
-	if (!b_design && bRe && flk)
-	{
-		widget_post_key(widget, KEY_ENTER);
-	}
-
-	noti_form_owner(widget, NC_FORMLBCLK, ptd->form, ptd->field, (void*)pxp);
 }
 
 void hand_form_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -3007,6 +3049,14 @@ bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* 
 			formctrl_get_field_rect(widget, flk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 			widget_update(widget, &xr, 0);
+
+			if (get_field_fireable(flk))
+			{
+				if (calc_form_doc(ptd->form))
+				{
+					widget_update(widget, NULL, 0);
+				}
+			}
 
 			return 1;
 		}

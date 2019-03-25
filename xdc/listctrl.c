@@ -736,9 +736,11 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	plk = NULL;
 	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
 
+	noti_list_owner(widget, NC_LISTLBCLK, ptd->list, plk, (void*)pxp);
+
 	bRe = (plk == ptd->item) ? 1 : 0;
 
-	if (ptd->item && bRe)
+	if (bRe && ptd->item)
 	{
 		widget_post_key(widget, KEY_ENTER);
 		return;
@@ -747,7 +749,7 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->item && !bRe)
 	{
 		if (!noti_list_item_changing(widget))
-			bRe = 1;
+			return;
 	}
 
 	if (plk && !bRe)
@@ -759,8 +761,6 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		_listctrl_ensure_visible(widget);
 	}
-
-	noti_list_owner(widget, NC_LISTLBCLK, ptd->list, ptd->item, (void*)pxp);
 }
 
 void hand_list_rbutton_down(res_win_t widget, const xpoint_t* pxp)

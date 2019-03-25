@@ -438,9 +438,11 @@ typedef struct async_t{
 #define COMMAND_UNDO		23
 #define COMMAND_QURYDRAG	40
 #define COMMAND_QUERYDROP	41
-#define COMMAND_REQUEST		42
+#define COMMAND_QUERYINFO	42
 #define COMMAND_FIND		43
 #define COMMAND_REPLACE		44
+#define COMMAND_RENAME		45
+#define COMMAND_REMOVE		46
 
 /*widget style*/
 #define WD_STYLE_CHILD		0x00000001

@@ -406,6 +406,8 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	plk = NULL;
 	nHint = calc_label_hint(&cb, &pt, ptd->label, ptd->cur_page, &plk);
 
+	noti_label_owner(widget, NC_LABELLBCLK, ptd->label, plk, (void*)pxp);
+
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (ptd->item && bRe)
@@ -417,7 +419,7 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->item && !bRe)
 	{
 		if (!noti_label_item_changing(widget))
-			bRe = 1;
+			return;
 	}
 
 	if (plk && !bRe)
@@ -426,8 +428,6 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 		_labelctrl_ensure_visible(widget);
 	}
-
-	noti_label_owner(widget, NC_LABELLBCLK, ptd->label, ptd->item,(void*)pxp);
 }
 
 void hand_label_rbutton_down(res_win_t widget, const xpoint_t* pxp)

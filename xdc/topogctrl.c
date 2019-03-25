@@ -802,6 +802,8 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	row = col = -1;
 	nHint = calc_topog_hint(&cb, &pt, ptd->topog, &ilk, &row, &col);
 
+	noti_topog_owner(widget, NC_TOPOGLBCLK, ptd->topog, ilk, row, col, (void*)pxp);
+
 	bRe = (ilk == ptd->spot) ? 1 : 0;
 
 	if (ptd->spot && !bRe)
@@ -827,8 +829,6 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	ptd->row = row;
 	ptd->col = col;
-
-	noti_topog_owner(widget, NC_TOPOGLBCLK, ptd->topog, ptd->spot, ptd->row, ptd->col, (void*)pxp);
 }
 
 void hand_topogctrl_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

@@ -874,10 +874,7 @@ void set_field_text(link_t_ptr flk,const tchar_t* sz_text, int len)
 	}
 	else if (compare_text(cls, -1, DOC_FORM_CHECK, -1, 0) == 0)
 	{
-		if (xsntol(sz_text,len))
-			set_field_boolean(flk, 1);
-		else
-			set_field_boolean(flk, 0);
+		set_dom_node_text(flk, sz_text, len);
 	}
 	else if (compare_text(cls, -1, DOC_FORM_LABEL, -1, 0) == 0)
 	{

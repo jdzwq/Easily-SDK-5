@@ -843,20 +843,20 @@ void hand_photo_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	hint = calc_anno_hint(&cb, &pt, ptd->anno, &ilk, &ind);
 
+	noti_photo_owner(widget, NC_PHOTOLBCLK, ilk, (void*)pxp, NULL);
+
 	bRe = (ilk == ptd->arti) ? 1 : 0;
 
 	if (ptd->arti && !bRe)
 	{
 		if (!noti_photo_arti_changing(widget))
-			bRe = 1;
+			return;
 	}
 	
 	if (ilk && !bRe)
 	{
 		noti_photo_arti_changed(widget, ilk);
 	}
-
-	noti_photo_owner(widget, NC_PHOTOLBCLK, ptd->arti, (void*)pxp, NULL);
 }
 
 void hand_photo_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

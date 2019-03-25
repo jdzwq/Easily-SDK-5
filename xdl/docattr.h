@@ -481,6 +481,8 @@
 #define ATTR_CASE_LOWER				_T("lower")
 #define ATTR_CASE_UPPER				_T("upper")
 
+#define ATTR_VALUE					_T("value")
+
 #define TF_OPTIONS					_T("1~True;0~False;")
 #define TF_TRUE						_T("1")
 #define TF_FALSE					_T("0")

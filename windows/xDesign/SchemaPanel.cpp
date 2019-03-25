@@ -533,6 +533,27 @@ void SchemaPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long dat
 	}
 }
 
+void SchemaPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+{
+	SchemaPanelDelta* pdt = GETSCHEMAPANELDELTA(widget);
+
+	if (code == COMMAND_RENAME)
+	{
+		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		const tchar_t* nname = (const tchar_t*)data;
+
+		if (!is_null(pdt->szFile) && !is_null(nname))
+		{
+			split_path(pdt->szFile, szPath, NULL, szExt);
+			xsprintf(pdt->szFile, _T("%s\\%s.%s"), szPath, nname, szExt);
+		}
+	}
+	else if (code == COMMAND_REMOVE)
+	{
+		memoctrl_set_dirty(pdt->hMemo, 0);
+	}
+}
+
 void SchemaPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
 {
 	SchemaPanelDelta* pdt = GETSCHEMAPANELDELTA(widget);
@@ -572,6 +593,7 @@ res_win_t SchemaPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t
 
 	EVENT_ON_NOTICE(SchemaPanel_OnNotice)
 	EVENT_ON_MENU_COMMAND(SchemaPanel_OnMenuCommand)
+	EVENT_ON_PARENT_COMMAND(SchemaPanel_OnParentCommand)
 
 	EVENT_END_DISPATH
 

@@ -591,6 +591,8 @@ void hand_notes_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		}
 	}
 
+	noti_notes_owner(widget, NC_NOTESLBCLK, ptd->arch, ilk, (void*)pxp);
+
 	if (ilk != ptd->item)
 	{
 		if (ptd->item)
@@ -599,8 +601,6 @@ void hand_notes_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		if (ilk)
 			noti_notes_item_changed(widget, ilk);
 	}
-
-	noti_notes_owner(widget, NC_NOTESLBCLK, ptd->arch, ptd->item, (void*)pxp);
 }
 
 void hand_notes_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

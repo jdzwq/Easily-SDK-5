@@ -113,6 +113,7 @@ typedef struct tagMainFrameDelta{
 
 res_win_t	_MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath);
 bool_t		_MainFrame_FindPanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath);
+void		_MainFrame_RenamePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* wname, const tchar_t* nname);
 /***********************************************************************************************/
 void MainFrame_Switch(res_win_t widget)
 {
@@ -337,6 +338,38 @@ void MainFrame_OpenProject(res_win_t widget)
 	widget_set_title(widget, token);
 }
 
+static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
+{
+	LINKPTR ptrDom = create_dom_doc();
+
+	if (!load_dom_doc_from_file(ptrDom, NULL, szPath))
+	{
+		destroy_dom_doc(ptrDom);
+		return;
+	}
+
+	if (is_form_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_FORM);
+	else if (is_grid_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_GRID);
+	else if (is_graph_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_GRAPH);
+	else if (is_rich_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_RICH);
+	else if (is_schema_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_SCHEMA);
+	else if (is_topog_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_TOPOG);
+	else if (is_images_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_IMAGE);
+	else if (is_dialog_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_DIALOG);
+	else if (is_chart_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_CHART);
+
+	destroy_dom_doc(ptrDom);
+}
+
 void MainFrame_CreateFile(res_win_t widget)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
@@ -480,36 +513,8 @@ void MainFrame_OpenFile(res_win_t widget)
 
 	if (IS_META_FILE(szClass))
 	{
-		LINKPTR ptrXML = create_xml_doc();
-		if (!load_xml_doc_from_file(ptrXML, NULL, szPath))
-		{
-			destroy_xml_doc(ptrXML);
-			ShowMsg(MSGICO_ERR, _T("解析XML文档错误"));
-			return;
-		}
-
-		LINKPTR root = get_xml_dom_node(ptrXML);
-
-		if (is_form_doc(root))
-			xscpy(szClass, PANEL_CLASS_FORM);
-		else if (is_grid_doc(root))
-			xscpy(szClass, PANEL_CLASS_GRID);
-		else if (is_graph_doc(root))
-			xscpy(szClass, PANEL_CLASS_GRAPH);
-		else if (is_rich_doc(root))
-			xscpy(szClass, PANEL_CLASS_RICH);
-		else if (is_schema_doc(root))
-			xscpy(szClass, PANEL_CLASS_SCHEMA);
-		else if (is_topog_doc(root))
-			xscpy(szClass, PANEL_CLASS_TOPOG);
-		else if (is_images_doc(root))
-			xscpy(szClass, PANEL_CLASS_IMAGE);
-		else if (is_dialog_doc(root))
-			xscpy(szClass, PANEL_CLASS_DIALOG);
-		else if (is_chart_doc(root))
-			xscpy(szClass, PANEL_CLASS_CHART);
-
-		destroy_xml_doc(ptrXML);
+		xszero(szClass, RES_LEN);
+		_MainFrame_FileClass(szPath, szClass);
 	}
 	else
 	{
@@ -573,12 +578,13 @@ void MainFrame_AppendFile(res_win_t widget)
 	LINKPTR ptr_tree = treectrl_fetch(pdt->hResBar);
 	LINKPTR tlk_parent = NULL;
 
-	tchar_t szName[PATH_LEN], szType[RES_LEN];
+	tchar_t szName[PATH_LEN], szTitle[PATH_LEN], szType[RES_LEN];
 
 	tchar_t* szToken = szFile;
 	while (*szToken)
 	{
-		split_path(szToken, NULL, szName, szType);
+		split_path(szToken, NULL, szTitle, szType);
+		xscpy(szName, szTitle);
 		xscat(szName, _T("."));
 		xscat(szName, szType);
 
@@ -598,7 +604,7 @@ void MainFrame_AppendFile(res_win_t widget)
 		{
 			tlk_child = insert_tree_item(tlk_parent, LINK_LAST);
 			set_tree_item_name(tlk_child, szName);
-			set_tree_item_title(tlk_child, szName);
+			set_tree_item_title(tlk_child, szTitle);
 			set_tree_item_image(tlk_child, BMP_SCHEMA);
 
 			pdt->bDirty = TRUE;
@@ -616,22 +622,38 @@ bool_t MainFrame_RenameFile(res_win_t widget, const tchar_t* nname)
 
 	LINKPTR tlk = treectrl_get_focus_item(pdt->hResBar);
 
-	tchar_t szNew[PATH_LEN], szOrg[PATH_LEN];
+	tchar_t szNew[PATH_LEN], szOrg[PATH_LEN], szExt[INT_LEN];
+	tchar_t szClass[RES_LEN] = { 0 };
 
 	split_path(pdt->szFile, szOrg, NULL, NULL);
 	xscat(szOrg, _T("\\"));
-	xscat(szOrg, get_tree_item_title_ptr(tlk));
+	xscat(szOrg, get_tree_item_name_ptr(tlk));
+
+	_MainFrame_FileClass(szOrg, szClass);
+
+	split_path(get_tree_item_name_ptr(tlk), NULL, NULL, szExt);
 
 	split_path(pdt->szFile, szNew, NULL, NULL);
 	xscat(szNew, _T("\\"));
 	xscat(szNew, nname);
+	xscat(szNew, _T("."));
+	xscat(szNew, szExt);
 
 	if (!xfile_rename(NULL, szOrg, szNew))
 	{
 		return 0;
 	}
 
-	set_tree_item_name(tlk, nname);
+	xscpy(szOrg, get_tree_title_ptr(tlk));
+
+	xscpy(szNew, nname);
+	xscat(szNew, _T("."));
+	xscat(szNew, szExt);
+	set_tree_item_name(tlk, szNew);
+
+	xscpy(szNew, nname);
+
+	_MainFrame_RenamePanel(widget, szClass, szOrg, szNew);
 
 	return 1;
 }
@@ -666,43 +688,15 @@ void MainFrame_ShowFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szClass[RES_LEN] = { 0 };
 
-	xscpy(szFile, get_tree_item_title_ptr(tlk));
+	xscpy(szFile, get_tree_item_name_ptr(tlk));
 
 	split_path(pdt->szFile, szPath, NULL, NULL);
 	xscat(szPath, _T("\\"));
 	xscat(szPath, szFile);
 
-	LINKPTR ptrDom = create_dom_doc();
-	if (!load_dom_doc_from_file(ptrDom, NULL, szPath))
-	{
-		destroy_dom_doc(ptrDom);
-		ShowMsg(MSGICO_ERR, _T("导入XML文档错误"));
-		return;
-	}
-
-	tchar_t szClass[RES_LEN + 1] = { 0 };
-
-	if (is_form_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_FORM);
-	else if (is_grid_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_GRID);
-	else if (is_graph_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_GRAPH);
-	else if (is_rich_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_RICH);
-	else if (is_schema_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_SCHEMA);
-	else if (is_topog_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_TOPOG);
-	else if (is_images_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_IMAGE);
-	else if (is_dialog_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_DIALOG);
-	else if (is_chart_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_CHART);
-
-	destroy_dom_doc(ptrDom);
+	_MainFrame_FileClass(szPath, szClass);
 
 	if (is_null(szClass))
 	{
@@ -781,11 +775,11 @@ void MainFrame_SyncFile(res_win_t widget)
 		{
 			split_path(pdt->szFile, szLoc, NULL, NULL);
 			xscat(szLoc, _T("\\"));
-			xscat(szLoc, get_tree_item_title_ptr(tlk_file));
+			xscat(szLoc, get_tree_item_name_ptr(tlk_file));
 
 			xscpy(szSrv, szSYN);
 			xscat(szSrv, _T("/"));
-			xscat(szSrv, get_tree_item_title_ptr(tlk_file));
+			xscat(szSrv, get_tree_item_name_ptr(tlk_file));
 
 			if (xfile_info(NULL, szLoc, locTime, NULL, NULL, NULL))
 			{
@@ -1158,7 +1152,7 @@ void MainFrame_FreshObject(res_win_t widget)
 
 	QUERYOBJECT qo = { 0 };
 
-	widget_send_command(hPanel, COMMAND_REQUEST, IDC_PARENT, (var_long)&qo);
+	widget_send_command(hPanel, COMMAND_QUERYINFO, IDC_PARENT, (var_long)&qo);
 
 	tchar_t token[1024];
 
@@ -1545,13 +1539,13 @@ void MainFrame_ResBar_OnLBClick(res_win_t widget, NOTICE_TREE* pnt)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
+	widget_post_command(widget, 0, IDA_FILE_SHOW, NULL);
 }
 
 void MainFrame_ResBar_OnDBClick(res_win_t widget, NOTICE_TREE* pnt)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_post_command(widget, 0, IDA_FILE_SHOW, NULL);
 }
 
 void MainFrame_ResBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
@@ -1632,17 +1626,6 @@ void MainFrame_ResBar_OnCommit(res_win_t widget, NOTICE_TREE* pnt)
 	const tchar_t* token = (const tchar_t*)pnt->data;
 
 	if (compare_text(token, -1, get_tree_item_title_ptr(pnt->item), -1, 1) == 0)
-	{
-		pnt->ret = 1;
-		return;
-	}
-
-	tchar_t sz_title[RES_LEN] = { 0 };
-	xscpy(sz_title, _T(".")); 
-	xscat(sz_title, get_tree_item_title_ptr(plk));
-
-	const tchar_t* str = xsstr(token, sz_title);
-	if (!str)
 	{
 		pnt->ret = 1;
 		return;
@@ -1766,13 +1749,13 @@ void MainFrame_ObjBar_OnLBClick(res_win_t widget, NOTICE_TREE* pnt)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
+	widget_post_command(widget, 0, IDA_OBJECT_CHECK, NULL);
 }
 
 void MainFrame_ObjBar_OnDBClick(res_win_t widget, NOTICE_TREE* pnt)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_post_command(widget, 0, IDA_OBJECT_CHECK, NULL);
 }
 
 void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
@@ -2365,6 +2348,32 @@ bool_t _MainFrame_FindPanel(res_win_t widget, const tchar_t* wclass, const tchar
 	return 0;
 }
 
+void _MainFrame_RenamePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* wname, const tchar_t* nname)
+{
+	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
+
+	LINKPTR ptrTitle = titlectrl_fetch(pdt->hTitleBar);
+
+	LINKPTR ilk = get_title_next_item(ptrTitle, LINK_FIRST);
+	while (ilk)
+	{
+		if (compare_text(wclass, -1, get_title_item_name_ptr(ilk), -1, 0) == 0 && compare_text(wname, -1, get_title_item_title_ptr(ilk), -1, 1) == 0)
+		{
+			set_title_item_title(ilk, nname);
+			titlectrl_redraw_item(pdt->hTitleBar, ilk);
+
+			res_win_t hPanel = (res_win_t)get_title_item_delta(ilk);
+			if (widget_is_valid(hPanel))
+			{
+				widget_send_command(hPanel, COMMAND_RENAME, IDC_PARENT, (var_long)nname);
+			}
+			return;
+		}
+
+		ilk = get_title_next_item(ptrTitle, ilk);
+	}
+}
+
 void _MainFrame_DestroyToolBar(res_win_t widget)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
@@ -2673,8 +2682,10 @@ void MainFrame_OnSysColor(res_win_t widget, const xpoint_t* ppt)
 	menubox_set_data(hMenu, ptrMenu);
 
 	xpoint_t xp;
-	xp.x = ppt->x;
-	xp.y = ppt->y;
+	xp.x = 0;
+	xp.y = 0;
+
+	widget_client_to_screen(widget, &xp);
 
 	menubox_layout(hMenu, &xp, WD_LAYOUT_RIGHTBOTTOM);
 

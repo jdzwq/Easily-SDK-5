@@ -239,6 +239,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_field_taborder(flk,n)							set_dom_node_attr_integer(flk,ATTR_TABORDER,n)
 /*
+@PROPER value: string.
+@SET set_field_value: set the field checked value.
+*/
+#define set_field_value(flk,val)							set_dom_node_attr(flk,ATTR_VALUE,-1,val,-1)
+/*
+@PROPER value: string.
+@GET get_field_value_ptr: get the field checked value.
+*/
+#define get_field_value_ptr(flk)							get_dom_node_attr_ptr(flk,ATTR_VALUE,-1)
+/*
 @PROPER group: integer.
 @GET get_field_group: get the field group identifier.
 */

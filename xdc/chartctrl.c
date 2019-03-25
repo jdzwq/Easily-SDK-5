@@ -931,6 +931,8 @@ void hand_chart_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	ilk = NULL;
 	nHint = calc_chart_hint(ptd->chart, &pt, &ilk);
 
+	noti_chart_owner(widget, NC_CHARTLBCLK, ptd->chart, ilk, (void*)pxp);
+
 	bRe = (ilk == ptd->table) ? 1 : 0;
 
 	if (ptd->table && !bRe)
@@ -943,8 +945,6 @@ void hand_chart_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_chart_table_changed(widget, ilk);
 	}
-
-	noti_chart_owner(widget, NC_CHARTLBCLK, ptd->chart, ptd->table, (void*)pxp);
 }
 
 void hand_chart_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

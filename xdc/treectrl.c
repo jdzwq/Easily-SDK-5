@@ -385,9 +385,7 @@ void noti_tree_begin_edit(res_win_t widget)
 		return;
 
 	if (get_tree_item_locked(ptd->item))
-	{
 		return;
-	}
 
 	widget_get_xfont(widget, &xf);
 	parse_xfont_from_style(&xf, get_tree_style_ptr(ptd->tree));
@@ -595,9 +593,11 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
+	noti_tree_owner(widget, NC_TREELBCLK, ptd->tree, tlk, (void*)pxp);
+
 	bRe = (tlk == ptd->item) ? 1 : 0;
 
-	if (ptd->item && bRe)
+	if (bRe && ptd->item)
 	{
 		widget_post_key(widget, KEY_ENTER);
 		return;
@@ -606,7 +606,7 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!bRe && ptd->item)
 	{
 		if (!noti_tree_item_changing(widget))
-			bRe = 1;
+			return;
 	}
 
 	if (!bRe && tlk)
@@ -618,8 +618,6 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		_treectrl_ensure_visible(widget);
 	}
-
-	noti_tree_owner(widget, NC_TREELBCLK, ptd->tree, ptd->item, (void*)pxp);
 }
 
 void hand_tree_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

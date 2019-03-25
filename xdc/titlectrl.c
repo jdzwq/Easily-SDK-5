@@ -299,21 +299,21 @@ void hand_title_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	plk = NULL;
 	nHint = calc_title_hint(&cb, &pt, ptd->title, ptd->item, &plk);
-	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (nHint == TITLE_HINT_CLOSE)
 	{
 		titlectrl_delete_item(widget, plk);
-
 		return;
 	}
+
+	noti_title_owner(widget, NC_TITLELBCLK, ptd->title, plk, (void*)pxp);
+
+	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (!bRe && plk)
 	{
 		titlectrl_set_focus_item(widget, plk);
 	}
-
-	noti_title_owner(widget, NC_TITLELBCLK, ptd->title, ptd->item, (void*)pxp);
 }
 
 void hand_title_rbutton_down(res_win_t widget, const xpoint_t* pxp)

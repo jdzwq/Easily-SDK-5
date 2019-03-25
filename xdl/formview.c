@@ -310,7 +310,9 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_CHECK, -1, 0) == 0)
 		{
-			if (get_field_boolean(flk))
+			sz_text = get_field_text_ptr(flk);
+
+			if (!is_null(sz_text))
 			{
 				parse_xfont_from_style(&xf, style);
 				if (!b_print)

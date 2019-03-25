@@ -931,6 +931,8 @@ void hand_dialog_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	ilk = NULL;
 	nHint = calc_dialog_hint(ptd->dialog, &pt, &ilk);
 
+	noti_dialog_owner(widget, NC_DIALOGLBCLK, ptd->dialog, ilk, (void*)pxp);
+
 	bRe = (ilk == ptd->item) ? 1 : 0;
 
 	if (ptd->item && !bRe)
@@ -943,8 +945,6 @@ void hand_dialog_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_dialog_item_changed(widget, ilk);
 	}
-
-	noti_dialog_owner(widget, NC_DIALOGLBCLK, ptd->dialog, ptd->item, (void*)pxp);
 }
 
 void hand_dialog_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

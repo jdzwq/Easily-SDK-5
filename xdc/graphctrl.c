@@ -1376,6 +1376,8 @@ void hand_graph_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	nHint = calc_graph_hint(&cb, &pt, ptd->graph, ptd->cur_page, &xlk, &ylk, &glk);
 
+	noti_graph_owner(widget, NC_GRAPHLBCLK, ptd->graph, xlk, ylk, glk, (void*)pxp);
+
 	bReXax = (xlk == ptd->xax) ? 1 : 0;
 	bReYax = (ylk == ptd->yax) ? 1 : 0;
 	bReGax = (glk == ptd->gax) ? 1 : 0;
@@ -1422,8 +1424,6 @@ void hand_graph_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			noti_graph_owner(widget, NC_COORSETFOCUS, ptd->graph, ptd->xax, ptd->yax, NULL, NULL);
 		}
 	}
-
-	noti_graph_owner(widget, NC_GRAPHLBCLK, ptd->graph, ptd->xax, ptd->yax, ptd->gax, (void*)pxp);
 }
 
 void hand_graph_rbutton_down(res_win_t widget, const xpoint_t* pxp)

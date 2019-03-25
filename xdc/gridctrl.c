@@ -1559,6 +1559,8 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 
+	noti_grid_owner(widget, NC_GRIDLBCLK, ptd->grid, rlk, clk, (void*)pxp);
+
 	if (nHint == GRID_HINT_NULBAR || nHint == GRID_HINT_ROWBAR)
 	{
 		return;
@@ -1601,8 +1603,6 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			noti_grid_owner(widget, NC_CELLSETFOCUS, ptd->grid, ptd->row, ptd->col, NULL);
 		}
 	}
-
-	noti_grid_owner(widget, NC_GRIDLBCLK, ptd->grid, ptd->row, ptd->col, (void*)pxp);
 }
 
 void hand_grid_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -2199,6 +2199,14 @@ bool_t gridctrl_set_cell_text(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, 
 			set_row_dirty(rlk);
 
 			noti_grid_owner(widget, NC_CELLUPDATE, ptd->grid, rlk, clk, NULL);
+
+			if (get_col_fireable(clk))
+			{
+				if (calc_grid_row(ptd->grid, rlk))
+				{
+					widget_update(widget, NULL, 0);
+				}
+			}
 
 			_gridctrl_row_rect(widget, rlk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);

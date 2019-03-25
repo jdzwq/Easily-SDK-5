@@ -316,6 +316,9 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	plk = NULL;
 	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
+
+	noti_tool_owner(widget, NC_TOOLLBCLK, ptd->tool, plk, (void*)pxp);
+
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (ptd->item && !bRe)
@@ -328,8 +331,6 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_tool_item_changed(widget, plk);
 	}
-
-	noti_tool_owner(widget, NC_TOOLLBCLK, ptd->tool, ptd->item, (void*)pxp);
 }
 
 void hand_tool_rbutton_down(res_win_t widget, const xpoint_t* pxp)

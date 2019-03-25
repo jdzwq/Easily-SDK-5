@@ -798,7 +798,27 @@ void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data
 		}
 		break;
 	}
-	
+}
+
+void ImagePanel_OnParentCommand(res_win_t widget, int code, var_long data)
+{
+	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
+
+	if (code == COMMAND_RENAME)
+	{
+		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		const tchar_t* nname = (const tchar_t*)data;
+
+		if (!is_null(pdt->szFile) && !is_null(nname))
+		{
+			split_path(pdt->szFile, szPath, NULL, szExt);
+			xsprintf(pdt->szFile, _T("%s\\%s.%s"), szPath, nname, szExt);
+		}
+	}
+	else if (code == COMMAND_REMOVE)
+	{
+		pdt->bDirty = 0;
+	}
 }
 
 void ImagePanel_OnNotice(res_win_t widget, LPNOTICE phdr)
@@ -872,6 +892,7 @@ res_win_t ImagePanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 
 	EVENT_ON_NOTICE(ImagePanel_OnNotice)
 	EVENT_ON_MENU_COMMAND(ImagePanel_OnMenuCommand)
+	EVENT_ON_PARENT_COMMAND(ImagePanel_OnParentCommand)
 
 	EVENT_ON_SPLITOR_IMPLEMENT
 	EVENT_END_DISPATH

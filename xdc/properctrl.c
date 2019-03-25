@@ -840,6 +840,9 @@ void hand_proper_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	slk = elk = NULL;
 	nHint = calc_proper_hint(&cb, &pt, ptd->proper, &slk, &elk);
+
+	noti_proper_owner(widget, NC_PROPERLBCLK, ptd->proper, ((elk) ? section_from_entity(elk) : NULL), elk, (void*)pxp);
+
 	bRe = (elk == ptd->entity) ? 1 : 0;
 
 	if (bRe && ptd->entity)
@@ -858,8 +861,6 @@ void hand_proper_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_proper_entity_changed(widget, elk);
 	}
-
-	noti_proper_owner(widget, NC_PROPERLBCLK, ptd->proper, ((ptd->entity)? section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
 }
 
 void hand_proper_rbutton_down(res_win_t widget, const xpoint_t* pxp)

@@ -451,9 +451,16 @@ void propertybag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 		set_entity_options(ent, TF_OPTIONS, -1);
 	}
 
-	ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_GROUP, get_field_group(flk));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+	if (compare_text(sz_class, -1, DOC_FORM_CHECK, -1, 1) == 0)
+	{
+		ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, ATTR_VALUE, -1, get_field_value_ptr(flk), -1);
+		set_entity_editable(ent, 1);
+		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+		ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_GROUP, get_field_group(flk));
+		set_entity_editable(ent, 1);
+		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+	}
 
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0)
 	{
@@ -583,7 +590,12 @@ void propertybag_read_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 		set_field_transparent(flk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_TRANSPARENT));
 	}
 
-	set_field_group(flk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_GROUP));
+	if (compare_text(sz_class, -1, DOC_FORM_CHECK, -1, 1) == 0)
+	{
+		set_field_value(flk, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, ATTR_VALUE));
+
+		set_field_group(flk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_GROUP));
+	}
 
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0)
 	{

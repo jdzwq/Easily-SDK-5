@@ -2269,11 +2269,26 @@ void FormPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 		else
 			FormPanel_DropDomain(widget, (DROPDOMAIN*)data);
 	}
-	else if (code == COMMAND_REQUEST)
+	else if (code == COMMAND_QUERYINFO)
 	{
 		QUERYOBJECT* pqo = (QUERYOBJECT*)data;
 		xscpy(pqo->szDoc, DOC_FORM);
 		pqo->ptrDoc = formctrl_fetch(pdt->hForm);
+	}
+	else if (code == COMMAND_RENAME)
+	{
+		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		const tchar_t* nname = (const tchar_t*)data;
+
+		if (!is_null(pdt->szFile) && !is_null(nname))
+		{
+			split_path(pdt->szFile, szPath, NULL, szExt);
+			xsprintf(pdt->szFile, _T("%s\\%s.%s"), szPath, nname, szExt);
+		}
+	}
+	else if (code == COMMAND_REMOVE)
+	{
+		formctrl_set_dirty(pdt->hForm, 0);
 	}
 }
 
