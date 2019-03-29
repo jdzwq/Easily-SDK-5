@@ -343,6 +343,13 @@ XDL_API void	widget_center_window(res_win_t wt, res_win_t owner);
 XDL_API void	widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase);
 
 /*
+@FUNCTION widget_update_window: redraw whole widndow immediately.
+@INPUT res_win_t wt: the widget resource handle.
+@RETURN void: none.
+*/
+XDL_API void	widget_paint(res_win_t wt);
+
+/*
 @FUNCTION widget_update_window: redraw whole widndow.
 @INPUT res_win_t wt: the widget resource handle.
 @RETURN void: none.

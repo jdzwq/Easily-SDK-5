@@ -136,16 +136,6 @@ void hand_listdlg_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_listdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
-{
-	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
-
-	if (cid == IDC_LISTDLG_PUSHBOX_OK)
-	{
-		listdlg_on_ok(widget);
-	}
-}
-
 void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
@@ -240,6 +230,31 @@ void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	end_canvas_paint(canv, dc, pxr);
 }
 
+void hand_listdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+{
+	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
+
+	if (cid == IDC_LISTDLG_PUSHBOX_OK)
+	{
+		listdlg_on_ok(widget);
+	}
+}
+
+void hand_listdlg_notice(res_win_t widget, NOTICE* pnt)
+{
+	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
+
+	if (pnt->id == IDC_LISTDLG_LIST)
+	{
+		NOTICE_LIST* pnl = (NOTICE_LIST*)pnt;
+		switch (pnl->code)
+		{
+		case NC_LISTDBCLK:
+			widget_post_command(widget, 0, IDC_LISTDLG_PUSHBOX_OK, 0);
+			break;
+		}
+	}
+}
 /***************************************************************************************/
 res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner)
 {
@@ -261,6 +276,7 @@ res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner)
 		EVENT_ON_SIZE(hand_listdlg_size)
 
 		EVENT_ON_MENU_COMMAND(hand_listdlg_menu_command)
+		EVENT_ON_NOTICE(hand_listdlg_notice)
 
 		EVENT_ON_NC_IMPLEMENT
 

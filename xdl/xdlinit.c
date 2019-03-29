@@ -156,7 +156,10 @@ void xdl_thread_uninit(int error)
 #ifdef XDL_SUPPORT_MEMO_DUMP
 	(*pit->pf_criti_enter)(g_xdl_mou.dump_crit);
 
-	xmem_dump();
+	if (!error)
+	{
+		xmem_dump();
+	}
 
 	delete_link(&g_xdl_mou.dump_link, &pzn->if_trak);
 

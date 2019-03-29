@@ -69,7 +69,10 @@ void xdl_assert(const char* _Expr, const char* _File, unsigned int _Line)
 		else
 		{//the working thread
 			xdl_thread_uninit(-1);
-			(*pit->pf_thread_end)();
+			if (pit)
+			{
+				(*pit->pf_thread_end)();
+			}
 		}
 	}
 #else

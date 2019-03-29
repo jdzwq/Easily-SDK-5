@@ -2193,6 +2193,11 @@ void _widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)
 	}
 }
 
+void _widget_paint(res_win_t wt)
+{
+	UpdateWindow((HWND)wt);
+}
+
 void _widget_update_window(res_win_t wt)
 {
 	SetWindowPos(wt, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);

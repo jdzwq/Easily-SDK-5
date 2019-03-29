@@ -176,24 +176,6 @@ void hand_griddlg_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long data)
-{
-	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
-
-	switch (cid)
-	{
-	case IDC_GRIDDLG_PUSHBOX_OK:
-		griddlg_on_ok(widget);
-		break;
-	case IDC_GRIDDLG_EDITBOX:
-		if (code == COMMAND_UPDATE)
-		{
-			griddlg_on_filter(widget);
-		}
-		break;
-	}
-}
-
 void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
@@ -288,6 +270,40 @@ void hand_griddlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	end_canvas_paint(canv, dc, pxr);
 }
 
+void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+{
+	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
+
+	switch (cid)
+	{
+	case IDC_GRIDDLG_PUSHBOX_OK:
+		griddlg_on_ok(widget);
+		break;
+	case IDC_GRIDDLG_EDITBOX:
+		if (code == COMMAND_UPDATE)
+		{
+			griddlg_on_filter(widget);
+		}
+		break;
+	}
+}
+
+void hand_griddlg_notice(res_win_t widget, NOTICE* pnt)
+{
+	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
+
+	if (pnt->id == IDC_GRIDDLG_GRID)
+	{
+		NOTICE_GRID* png = (NOTICE_GRID*)pnt;
+		switch (png->code)
+		{
+		case NC_GRIDDBCLK:
+			widget_post_command(widget, 0, IDC_GRIDDLG_PUSHBOX_OK, 0);
+			break;
+		}
+	}
+}
+
 /***************************************************************************************/
 res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_ptr* prow, res_win_t owner)
 {
@@ -310,6 +326,7 @@ res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_ptr* prow,
 		EVENT_ON_SIZE(hand_griddlg_size)
 
 		EVENT_ON_MENU_COMMAND(hand_griddlg_menu_command)
+		EVENT_ON_NOTICE(hand_griddlg_notice)
 
 		EVENT_ON_NC_IMPLEMENT
 
@@ -356,6 +373,9 @@ void griddlg_popup_size(res_win_t widget, xsize_t* pxs)
 	xs.cx = xr.w;
 	xs.cy += xr.h;
 
-	widget_adjust_size(widget_get_style(widget), pxs);
+	widget_adjust_size(widget_get_style(widget), &xs);
+
+	pxs->cx = xs.cx;
+	pxs->cy = xs.cy;
 }
 

@@ -306,14 +306,20 @@ void hand_title_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	noti_title_owner(widget, NC_TITLELBCLK, ptd->title, plk, (void*)pxp);
-
 	bRe = (plk == ptd->item) ? 1 : 0;
+
+	if (ptd->item && !bRe)
+	{
+		if (!noti_title_item_changing(widget))
+			bRe = 1;
+	}
 
 	if (!bRe && plk)
 	{
-		titlectrl_set_focus_item(widget, plk);
+		noti_title_item_changed(widget, plk);
 	}
+
+	noti_title_owner(widget, NC_TITLELBCLK, ptd->title, ptd->item, (void*)pxp);
 }
 
 void hand_title_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -717,12 +723,10 @@ bool_t titlectrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
 	if (!ptd->title)
 		return 0;
 
-	if (ilk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_title_item(ptd->title, ilk));
-#endif
-	}
+	if (ilk == LINK_FIRST)
+		ilk = get_title_next_item(ptd->title, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_title_prev_item(ptd->title, LINK_LAST);
 
 	bRe = (ilk == ptd->item) ? 1 : 0;
 	if (bRe)

@@ -263,7 +263,6 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	link_t_ptr glk, ilk;
 	xrect_t xrGroup, xrTitle, xrItem, xrClip;
 	xrect_t xr = { 0 };
-	xpoint_t pt[2];
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xfont_t xf = { 0 };
@@ -337,17 +336,13 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			calc_tool_group_title_rect(pbox, ptr, glk, &xrTitle);
 			ft_offset_rect(&xrTitle, px, py);
 			ft_expand_rect(&xrTitle, -DEF_SPLIT_FEED, -DEF_SPLIT_FEED);
+			xrTitle.fy -= DEF_SPLIT_FEED;
+			xrTitle.fh += DEF_SPLIT_FEED;
 
 			xmem_copy((void*)&xrClip, (void*)&xrGroup, sizeof(xrect_t));
 			ft_clip_rect(&xrClip, &xrTitle);
 
 			(*pif->pf_draw_rect)(pif->canvas, &xp, &xb, &xrClip);
-
-			pt[0].fx = xrTitle.fx;
-			pt[0].fy = xrTitle.fy;
-			pt[1].fx = xrTitle.fx + xrTitle.fw;
-			pt[1].fy = xrTitle.fy;
-			(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
 
 			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrTitle, get_tool_group_title_ptr(glk), -1);
 		}

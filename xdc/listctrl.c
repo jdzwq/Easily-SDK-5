@@ -418,7 +418,9 @@ void noti_list_begin_edit(res_win_t widget)
 	clr_mod_t ob = { 0 };
 
 	XDL_ASSERT(ptd->item);
-	XDL_ASSERT(!ptd->editor);
+	
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (ptd->b_lock)
 		return;
@@ -736,8 +738,6 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	plk = NULL;
 	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
 
-	noti_list_owner(widget, NC_LISTLBCLK, ptd->list, plk, (void*)pxp);
-
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (bRe && ptd->item)
@@ -749,7 +749,7 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->item && !bRe)
 	{
 		if (!noti_list_item_changing(widget))
-			return;
+			bRe = 1;
 	}
 
 	if (plk && !bRe)
@@ -761,6 +761,8 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		_listctrl_ensure_visible(widget);
 	}
+
+	noti_list_owner(widget, NC_LISTLBCLK, ptd->list, ptd->item, (void*)pxp);
 }
 
 void hand_list_rbutton_down(res_win_t widget, const xpoint_t* pxp)

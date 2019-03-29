@@ -659,12 +659,10 @@ bool_t statusctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
 	if (!ptd->status)
 		return 0;
 
-	if (ilk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_status_item(ptd->status, ilk));
-#endif
-	}
+	if (ilk == LINK_FIRST)
+		ilk = get_status_next_item(ptd->status, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_status_prev_item(ptd->status, LINK_LAST);
 
 	bRe = (ilk == ptd->item) ? 1 : 0;
 	if (bRe)
@@ -715,7 +713,6 @@ void statusctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 void statusctrl_show_step(res_win_t widget, bool_t b_show)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
-	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -726,14 +723,13 @@ void statusctrl_show_step(res_win_t widget, bool_t b_show)
 	ptd->n_step = 0;
 	set_status_title(ptd->status, NULL);
 	
-	_statusctrl_title_rect(widget, &xr);
-	widget_update(widget, &xr, 0);
+	widget_update(widget, NULL, 0);
+	widget_paint(widget);
 }
 
 void statusctrl_step_it(res_win_t widget, int steps, const tchar_t* sz_step)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
-	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -746,6 +742,6 @@ void statusctrl_step_it(res_win_t widget, int steps, const tchar_t* sz_step)
 	ptd->n_step += steps;
 	set_status_title(ptd->status, sz_step);
 
-	_statusctrl_title_rect(widget, &xr);
-	widget_update(widget, &xr, 0);
+	widget_update(widget, NULL, 0);
+	widget_paint(widget);
 }

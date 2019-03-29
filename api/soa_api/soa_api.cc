@@ -162,7 +162,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		set_soap_default_xmlns(psb->soap_response);
 	}
 
-	split_path(pb->file, NULL, token, NULL);
+	split_path(pb->object, NULL, token, NULL);
 	if (b_wsdl)
 		xsprintf(pwb->soap_path, _T("%s/%s"), pb->path, token);
 	else

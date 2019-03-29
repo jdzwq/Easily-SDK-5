@@ -802,21 +802,6 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	row = col = -1;
 	nHint = calc_topog_hint(&cb, &pt, ptd->topog, &ilk, &row, &col);
 
-	noti_topog_owner(widget, NC_TOPOGLBCLK, ptd->topog, ilk, row, col, (void*)pxp);
-
-	bRe = (ilk == ptd->spot) ? 1 : 0;
-
-	if (ptd->spot && !bRe)
-	{
-		if (!noti_topog_spot_changing(widget))
-			return;
-	}
-
-	if (ilk && !bRe)
-	{
-		noti_topog_spot_changed(widget, ilk);
-	}
-
 	if (topog_is_design(ptd->topog))
 	{
 		bRe = (row == ptd->row && ptd->col == col) ? 1 : 0;
@@ -824,11 +809,27 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
 			_topogctrl_reset_matrix(widget, row, col);
+			return;
 		}
+	}
+
+	bRe = (ilk == ptd->spot) ? 1 : 0;
+
+	if (ptd->spot && !bRe)
+	{
+		if (!noti_topog_spot_changing(widget))
+			bRe = 1;
+	}
+
+	if (ilk && !bRe)
+	{
+		noti_topog_spot_changed(widget, ilk);
 	}
 
 	ptd->row = row;
 	ptd->col = col;
+
+	noti_topog_owner(widget, NC_TOPOGLBCLK, ptd->topog, ptd->spot, ptd->row, ptd->col, (void*)pxp);
 }
 
 void hand_topogctrl_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -1301,12 +1302,10 @@ bool_t topogctrl_set_focus_spot(res_win_t widget, link_t_ptr ilk)
 	if (!ptd->topog)
 		return 0;
 
-	if (ilk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_topog_spot(ptd->topog, ilk));
-#endif
-	}
+	if (ilk == LINK_FIRST)
+		ilk = get_topog_next_spot(ptd->topog, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_topog_prev_spot(ptd->topog, LINK_LAST);
 
 	bRe = (ilk == ptd->spot) ? 1 : 0;
 	if (bRe)

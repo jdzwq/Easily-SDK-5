@@ -286,8 +286,10 @@ void noti_tablectrl_begin_edit(res_win_t widget)
 	clr_mod_t ob = { 0 };
 	xfont_t xf = { 0 };
 
-	XDL_ASSERT(!ptd->editor);
 	XDL_ASSERT(ptd->item);
+
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (ptd->b_lock)
 		return;
@@ -598,8 +600,6 @@ void hand_tablectrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	onkey = (hint == TABLE_HINT_KEY) ? 1 : 0;
 
-	noti_tablectrl_owner(widget, NC_TABLELBCLK, ptd->table, ilk, onkey, (void*)pxp);
-
 	if (ptd->item && ilk == ptd->item && onkey == ptd->onkey)
 	{
 		widget_post_key(widget, KEY_ENTER);
@@ -614,6 +614,8 @@ void hand_tablectrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		if (ilk)
 			noti_tablectrl_item_changed(widget, ilk, onkey);
 	}
+
+	noti_tablectrl_owner(widget, NC_TABLELBCLK, ptd->table, ptd->item, ptd->onkey, (void*)pxp);
 }
 
 void hand_tablectrl_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -897,12 +899,10 @@ bool_t tablectrl_set_focus_item(res_win_t widget, link_t_ptr ent)
 	if (!ptd->table)
 		return 0;
 
-	if (ent)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_string_entity(ptd->table, ent));
-#endif
-	}
+	if (ent == LINK_FIRST)
+		ent = get_string_next_entity(ptd->table, LINK_FIRST);
+	else if (ent == LINK_LAST)
+		ent = get_string_prev_entity(ptd->table, LINK_LAST);
 
 	bRe = (ent == ptd->item) ? 1 : 0;
 

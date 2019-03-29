@@ -574,6 +574,7 @@ void hand_notes_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	link_t_ptr ilk = NULL;
 	int hint;
+	bool_t bRe;
 
 	if (!ptd->arch)
 		return;
@@ -591,16 +592,20 @@ void hand_notes_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		}
 	}
 
-	noti_notes_owner(widget, NC_NOTESLBCLK, ptd->arch, ilk, (void*)pxp);
+	bRe = (ilk == ptd->item) ? 1 : 0;
 
-	if (ilk != ptd->item)
+	if (!bRe && ptd->item)
 	{
-		if (ptd->item)
-			noti_notes_item_changing(widget);
-
-		if (ilk)
-			noti_notes_item_changed(widget, ilk);
+		if (!noti_notes_item_changing(widget))
+			bRe = 1;
 	}
+
+	if (ilk && !bRe)
+	{
+		noti_notes_item_changed(widget, ilk);
+	}
+
+	noti_notes_owner(widget, NC_NOTESLBCLK, ptd->arch, ptd->item, (void*)pxp);
 }
 
 void hand_notes_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -998,6 +1003,13 @@ bool_t notesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
 
 	if (!ptd->arch)
 		return 0;
+
+	if (ilk)
+	{
+#ifdef _DEBUG
+		XDL_ASSERT(is_arch_document(ptd->arch, ilk) || is_arch_catalog(ptd->arch, ilk));
+#endif
+	}
 
 	bRe = (ilk == ptd->item) ? 1 : 0;
 

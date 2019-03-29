@@ -453,7 +453,7 @@ void noti_form_reset_select(res_win_t widget)
 	link_t_ptr flk;
 	int count = 0;
 
-	flk = get_next_visible_field(ptd->form, LINK_FIRST);
+	flk = get_next_field(ptd->form, LINK_FIRST);
 	while (flk)
 	{
 		if (get_field_selected(flk))
@@ -464,7 +464,7 @@ void noti_form_reset_select(res_win_t widget)
 			count++;
 		}
 
-		flk = get_next_visible_field(ptd->form, flk);
+		flk = get_next_field(ptd->form, flk);
 	}
 
 	if (count)
@@ -869,7 +869,9 @@ void noti_form_begin_edit(res_win_t widget)
 	xface_t xa = { 0 };
 
 	XDL_ASSERT(ptd->field);
-	XDL_ASSERT(ptd->editor == NULL);
+
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (form_is_design(ptd->form) || !get_field_focusable(ptd->field))
 	{
@@ -2075,8 +2077,6 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	flk = NULL;
 	nHint = calc_form_hint(&cb, &pt, ptd->form, &flk);
 
-	noti_form_owner(widget, NC_FORMLBCLK, ptd->form, flk, (void*)pxp);
-
 	bRe = (flk == ptd->field) ? 1 : 0;
 
 	if (!b_design && bRe && flk)
@@ -2088,7 +2088,7 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->field && !bRe)
 	{
 		if (!noti_form_field_changing(widget))
-			return;
+			bRe = 1;
 	}
 
 	if (!b_design && flk && !get_field_focusable(flk))
@@ -2098,6 +2098,8 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_form_field_changed(widget, flk);
 	}
+
+	noti_form_owner(widget, NC_FORMLBCLK, ptd->form, ptd->field, (void*)pxp);
 }
 
 void hand_form_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -2861,12 +2863,10 @@ bool_t formctrl_set_focus_field(res_win_t widget, link_t_ptr flk)
 	if (!ptd->form)
 		return 0;
 
-	if (flk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_form_field(ptd->form, flk));
-#endif
-	}
+	if (flk == LINK_FIRST)
+		flk = get_next_focusable_field(ptd->form, LINK_FIRST);
+	else if (flk == LINK_LAST)
+		flk = get_prev_focusable_field(ptd->form, LINK_LAST);
 
 	bRe = (flk == ptd->field) ? (bool_t)1 : (bool_t)0;
 	if (bRe)

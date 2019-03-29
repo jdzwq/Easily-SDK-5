@@ -766,6 +766,15 @@ void widget_show(res_win_t wt, dword_t sw)
 	(*pif->pf_widget_show)(wt, sw);
 }
 
+void widget_paint(res_win_t wt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	(*pif->pf_widget_paint)(wt);
+}
+
 void widget_update_client(res_win_t wt)
 {
 	if_widget_t* pif;

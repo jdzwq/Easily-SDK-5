@@ -543,6 +543,8 @@ void noti_grid_col_sized(res_win_t widget, long x, long y)
 
 	_gridctrl_done(widget);
 
+	mw = (float)(long)mw;
+
 	if (ptd->col)
 	{
 		set_col_width(ptd->col, mw);
@@ -609,6 +611,7 @@ void noti_grid_row_sized(res_win_t widget, long x, long y)
 
 	_gridctrl_done(widget);
 
+	mh = (float)(long)mh;
 	set_grid_rowbar_height(ptd->grid, mh);
 
 	widget_update(widget, NULL, 0);
@@ -926,7 +929,9 @@ void noti_grid_begin_edit(res_win_t widget)
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd->row && ptd->col);
-	XDL_ASSERT(ptd->editor == NULL);
+	
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (ptd->b_lock)
 		return;
@@ -1559,8 +1564,6 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 
-	noti_grid_owner(widget, NC_GRIDLBCLK, ptd->grid, rlk, clk, (void*)pxp);
-
 	if (nHint == GRID_HINT_NULBAR || nHint == GRID_HINT_ROWBAR)
 	{
 		return;
@@ -1581,7 +1584,7 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!bReRow && ptd->row)
 	{
 		if (!noti_grid_row_changing(widget))
-			return;
+			bReRow = 1;
 	}
 
 	if (!bReCol && ptd->col)
@@ -1603,6 +1606,8 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			noti_grid_owner(widget, NC_CELLSETFOCUS, ptd->grid, ptd->row, ptd->col, NULL);
 		}
 	}
+
+	noti_grid_owner(widget, NC_GRIDLBCLK, ptd->grid, ptd->row, ptd->col, (void*)pxp);
 }
 
 void hand_grid_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -2418,19 +2423,15 @@ bool_t gridctrl_set_focus_cell(res_win_t widget, link_t_ptr rlk, link_t_ptr clk)
 	if (!ptd->grid)
 		return 0;
 
-	if (rlk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_grid_row(ptd->grid, rlk));
-#endif
-	}
+	if (rlk == LINK_FIRST)
+		rlk = get_next_row(ptd->grid, LINK_FIRST);
+	else if (rlk == LINK_LAST)
+		rlk = get_prev_row(ptd->grid, LINK_LAST);
 
-	if (clk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_grid_col(ptd->grid, clk));
-#endif
-	}
+	if (clk == LINK_FIRST)
+		clk = get_next_col(ptd->grid, LINK_FIRST);
+	else if (clk == LINK_LAST)
+		clk = get_prev_col(ptd->grid, LINK_LAST);
 
 	bReRow = (rlk == ptd->row) ? 1 : 0;
 	bReCol = (clk == ptd->col) ? 1 : 0;

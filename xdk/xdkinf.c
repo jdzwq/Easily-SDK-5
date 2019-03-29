@@ -568,6 +568,7 @@ void xdk_impl_widget(if_widget_t* pif)
 	pif->pf_widget_show = _widget_show;
 	pif->pf_widget_update_client = _widget_update_client;
 	pif->pf_widget_update_window = _widget_update_window;
+	pif->pf_widget_paint = _widget_paint;
 	pif->pf_widget_update = _widget_update;
 	pif->pf_widget_post_char = _widget_post_char;
 	pif->pf_widget_post_key = _widget_post_key;

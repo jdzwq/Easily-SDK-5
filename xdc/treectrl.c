@@ -379,7 +379,9 @@ void noti_tree_begin_edit(res_win_t widget)
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd->item);
-	XDL_ASSERT(!ptd->editor);
+
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (ptd->b_lock)
 		return;
@@ -393,6 +395,7 @@ void noti_tree_begin_edit(res_win_t widget)
 	widget_get_color_mode(widget, &ob);
 
 	_treectrl_item_text_rect(widget, ptd->item, &xr);
+	pt_expand_rect(&xr, 0, DEF_INNER_FEED);
 
 	if (noti_tree_owner(widget, NC_TREEITEMEDITING, ptd->tree, ptd->item, NULL))
 		return;
@@ -593,8 +596,6 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	noti_tree_owner(widget, NC_TREELBCLK, ptd->tree, tlk, (void*)pxp);
-
 	bRe = (tlk == ptd->item) ? 1 : 0;
 
 	if (bRe && ptd->item)
@@ -606,7 +607,7 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!bRe && ptd->item)
 	{
 		if (!noti_tree_item_changing(widget))
-			return;
+			bRe = 1;
 	}
 
 	if (!bRe && tlk)
@@ -618,6 +619,8 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		_treectrl_ensure_visible(widget);
 	}
+
+	noti_tree_owner(widget, NC_TREELBCLK, ptd->tree, ptd->item, (void*)pxp);
 }
 
 void hand_tree_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -845,12 +848,12 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	//draw focus
 	if (ptd->item)
 	{
-		parse_xcolor(&xc, DEF_ALPHA_COLOR);
+		parse_xcolor(&xc, DEF_FOCUS_COLOR);
 
 		_treectrl_item_rect(widget, ptd->item, &xr);
-		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
+		pt_expand_rect(&xr, DEF_INNER_FEED, 0);
 
-		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+		draw_select_raw(rdc, &xc, &xr, ALPHA_SOFT);
 	}
 
 	end_canvas_paint(pif->canvas, dc, pxr);

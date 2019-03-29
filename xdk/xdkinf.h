@@ -827,7 +827,7 @@ typedef void(*PF_WIDGET_TAKE)(res_win_t, int);
 typedef void(*PF_WIDGET_SHOW)(res_win_t, u32_t);
 typedef void(*PF_WIDGET_UPDATE_CLIENT)(res_win_t);
 typedef void(*PF_WIDGET_UPDATE_WINDOW)(res_win_t);
-typedef void(*PF_WIDGET_INVALID)(res_win_t, const xrect_t*, bool_t);
+typedef void(*PF_WIDGET_PAINT)(res_win_t);
 typedef void(*PF_WIDGET_UPDATE)(res_win_t, const xrect_t*, bool_t);
 typedef void(*PF_WIDGET_ENABLE)(res_win_t, bool_t);
 typedef void(*PF_WIDGET_CREATE_CARET)(res_win_t, int, int);
@@ -939,6 +939,7 @@ typedef struct _if_widget_t{
 	PF_WIDGET_SHOW				pf_widget_show;
 	PF_WIDGET_UPDATE_CLIENT		pf_widget_update_client;
 	PF_WIDGET_UPDATE_WINDOW		pf_widget_update_window;
+	PF_WIDGET_PAINT				pf_widget_paint;
 	PF_WIDGET_UPDATE			pf_widget_update;
 	PF_WIDGET_ENABLE			pf_widget_enable;
 	PF_WIDGET_CREATE_CARET		pf_widget_create_caret;

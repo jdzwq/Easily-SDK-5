@@ -1448,12 +1448,10 @@ bool_t chartctrl_set_focus_table(res_win_t widget, link_t_ptr ilk)
 	if (!ptd->chart)
 		return 0;
 
-	if (ilk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_chart_table(ptd->chart, ilk));
-#endif
-	}
+	if (ilk == LINK_FIRST)
+		ilk = get_chart_next_table(ptd->chart, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_chart_prev_table(ptd->chart, LINK_LAST);
 
 	bRe = (ilk == ptd->table) ? (bool_t)1 : (bool_t)0;
 	if (bRe)

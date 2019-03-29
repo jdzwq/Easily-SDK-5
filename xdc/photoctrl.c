@@ -843,20 +843,20 @@ void hand_photo_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	hint = calc_anno_hint(&cb, &pt, ptd->anno, &ilk, &ind);
 
-	noti_photo_owner(widget, NC_PHOTOLBCLK, ilk, (void*)pxp, NULL);
-
 	bRe = (ilk == ptd->arti) ? 1 : 0;
 
 	if (ptd->arti && !bRe)
 	{
 		if (!noti_photo_arti_changing(widget))
-			return;
+			bRe = 1;
 	}
 	
 	if (ilk && !bRe)
 	{
 		noti_photo_arti_changed(widget, ilk);
 	}
+
+	noti_photo_owner(widget, NC_PHOTOLBCLK, ptd->arti, (void*)pxp, NULL);
 }
 
 void hand_photo_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
@@ -1247,6 +1247,11 @@ bool_t photoctrl_set_focus_arti(res_win_t widget, link_t_ptr ilk)
 
 	if (!ptd->arti)
 		return 0;
+
+	if (ilk == LINK_FIRST)
+		ilk = get_anno_next_arti(ptd->anno, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_anno_prev_arti(ptd->anno, LINK_LAST);
 
 	bRe = (ilk == ptd->arti) ? 1 : 0;
 

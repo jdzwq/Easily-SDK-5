@@ -447,7 +447,9 @@ void noti_images_begin_edit(res_win_t widget)
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd->item);
-	XDL_ASSERT(!ptd->editor);
+	
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (ptd->b_lock)
 		return;
@@ -744,8 +746,6 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	noti_images_owner(widget, NC_IMAGESLBCLK, ptd->images, plk, (void*)pxp);
-
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (bRe && ptd->item)
@@ -757,7 +757,7 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->item && !bRe)
 	{
 		if (!noti_images_item_changing(widget))
-			return;
+			bRe = 1;
 	}
 
 	if (plk && !bRe)
@@ -766,6 +766,8 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 		_imagesctrl_ensure_visible(widget);
 	}
+
+	noti_images_owner(widget, NC_IMAGESLBCLK, ptd->images, ptd->item, (void*)pxp);
 }
 
 void hand_images_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -1200,12 +1202,10 @@ bool_t imagesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
 
 	noti_images_reset_editor(widget, 0);
 
-	if (ilk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_images_item(ptd->images, ilk));
-#endif
-	}
+	if (ilk == LINK_FIRST)
+		ilk = get_images_next_item(ptd->images, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_images_prev_item(ptd->images, LINK_LAST);
 
 	bRe = (ilk == ptd->item) ? 1 : 0;
 	if (bRe)

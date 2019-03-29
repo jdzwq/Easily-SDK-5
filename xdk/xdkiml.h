@@ -502,6 +502,7 @@ void	_widget_size(res_win_t wt, const xsize_t* pxs);
 void	_widget_move(res_win_t wt, const xpoint_t* ppt);
 void	_widget_take(res_win_t wt, int zor);
 void	_widget_show(res_win_t wt, u32_t sw);
+void	_widget_paint(res_win_t wt);
 void	_widget_update_window(res_win_t wt);
 void	_widget_update_client(res_win_t wt);
 void	_widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase);

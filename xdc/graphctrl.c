@@ -548,6 +548,7 @@ void noti_graph_xax_sized(res_win_t widget, long x, long y)
 
 	_graphctrl_done(widget);
 
+	mw = (float)(long)mw;
 	set_graph_xaxbar_width(ptd->graph, mw);
 
 	widget_update(widget, NULL, 0);
@@ -597,6 +598,7 @@ void noti_graph_yax_sized(res_win_t widget, long x, long y)
 
 	_graphctrl_done(widget);
 
+	mh = (float)(long)mh;
 	set_graph_yaxbar_height(ptd->graph, mh);
 
 	widget_update(widget, NULL, 0);
@@ -967,7 +969,9 @@ void noti_graph_begin_edit(res_win_t widget)
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd->xax);
-	XDL_ASSERT(!ptd->editor);
+	
+	if (widget_is_valid(ptd->editor))
+		return;
 
 	if (ptd->b_lock)
 		return;
@@ -1376,8 +1380,6 @@ void hand_graph_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	nHint = calc_graph_hint(&cb, &pt, ptd->graph, ptd->cur_page, &xlk, &ylk, &glk);
 
-	noti_graph_owner(widget, NC_GRAPHLBCLK, ptd->graph, xlk, ylk, glk, (void*)pxp);
-
 	bReXax = (xlk == ptd->xax) ? 1 : 0;
 	bReYax = (ylk == ptd->yax) ? 1 : 0;
 	bReGax = (glk == ptd->gax) ? 1 : 0;
@@ -1394,7 +1396,7 @@ void hand_graph_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!bReXax && ptd->xax)
 	{
 		if (!noti_graph_xax_changing(widget))
-			return;
+			bReXax = 1;
 	}
 
 	if (!bReGax && ptd->gax)
@@ -1424,6 +1426,8 @@ void hand_graph_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			noti_graph_owner(widget, NC_COORSETFOCUS, ptd->graph, ptd->xax, ptd->yax, NULL, NULL);
 		}
 	}
+
+	noti_graph_owner(widget, NC_GRAPHLBCLK, ptd->graph, ptd->xax, ptd->yax, ptd->gax, (void*)pxp);
 }
 
 void hand_graph_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -2162,19 +2166,15 @@ bool_t graphctrl_set_focus_coor(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk
 	if (!ptd->graph)
 		return 0;
 
-	if (xlk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_graph_xax(ptd->graph, xlk));
-#endif
-	}
+	if (xlk == LINK_FIRST)
+		xlk = get_next_xax(ptd->graph, LINK_FIRST);
+	else if (xlk == LINK_LAST)
+		xlk = get_prev_xax(ptd->graph, LINK_LAST);
 
-	if (ylk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_graph_yax(ptd->graph, ylk));
-#endif
-	}
+	if (ylk == LINK_FIRST)
+		ylk = get_next_yax(ptd->graph, LINK_FIRST);
+	else if (ylk == LINK_LAST)
+		ylk = get_prev_yax(ptd->graph, LINK_LAST);
 
 	bReXax = (xlk == ptd->xax) ? 1 : 0;
 	bReYax = (ylk == ptd->yax) ? 1 : 0;

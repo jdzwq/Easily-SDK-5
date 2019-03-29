@@ -406,8 +406,6 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	plk = NULL;
 	nHint = calc_label_hint(&cb, &pt, ptd->label, ptd->cur_page, &plk);
 
-	noti_label_owner(widget, NC_LABELLBCLK, ptd->label, plk, (void*)pxp);
-
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (ptd->item && bRe)
@@ -419,7 +417,7 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->item && !bRe)
 	{
 		if (!noti_label_item_changing(widget))
-			return;
+			bRe = 1;
 	}
 
 	if (plk && !bRe)
@@ -428,6 +426,8 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 		_labelctrl_ensure_visible(widget);
 	}
+
+	noti_label_owner(widget, NC_LABELLBCLK, ptd->label, ptd->item, (void*)pxp);
 }
 
 void hand_label_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -752,12 +752,10 @@ bool_t labelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
 	if (!ptd->label)
 		return 0;
 
-	if (ilk)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_label_item(ptd->label, ilk));
-#endif
-	}
+	if (ilk == LINK_FIRST)
+		ilk = get_label_next_item(ptd->label, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_label_prev_item(ptd->label, LINK_LAST);
 
 	bRe = (ilk == ptd->item) ? 1 : 0;
 	if (bRe)
