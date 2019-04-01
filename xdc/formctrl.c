@@ -2079,7 +2079,7 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	bRe = (flk == ptd->field) ? 1 : 0;
 
-	if (!b_design && bRe && flk)
+	if (!b_design && !ptd->b_lock && bRe && flk && get_field_editable(flk))
 	{
 		widget_post_key(widget, KEY_ENTER);
 		return;

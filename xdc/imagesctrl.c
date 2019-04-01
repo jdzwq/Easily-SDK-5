@@ -748,7 +748,7 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	bRe = (plk == ptd->item) ? 1 : 0;
 
-	if (bRe && ptd->item)
+	if (bRe && ptd->item && !ptd->b_lock)
 	{
 		widget_post_key(widget, KEY_ENTER);
 		return;

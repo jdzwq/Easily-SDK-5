@@ -408,12 +408,6 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	bRe = (plk == ptd->item) ? 1 : 0;
 
-	if (ptd->item && bRe)
-	{
-		widget_post_key(widget, KEY_ENTER);
-		return;
-	}
-
 	if (ptd->item && !bRe)
 	{
 		if (!noti_label_item_changing(widget))

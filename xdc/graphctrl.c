@@ -1386,7 +1386,7 @@ void hand_graph_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	if (bReXax && bReYax && bReGax)
 	{
-		if (ptd->xax)
+		if (ptd->xax && !ptd->b_lock && !get_xax_locked(ptd->xax))
 		{
 			widget_post_key(widget, KEY_ENTER);
 		}

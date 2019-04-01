@@ -1574,7 +1574,7 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	if (bReRow && bReCol)
 	{
-		if (ptd->row && ptd->col && !grid_is_design(ptd->grid))
+		if (ptd->row && ptd->col && !ptd->b_lock && !grid_is_design(ptd->grid) && get_col_editable(ptd->col) && !get_row_locked(ptd->row))
 		{
 			widget_post_key(widget, KEY_ENTER);
 		}

@@ -845,7 +845,7 @@ void hand_proper_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	bRe = (elk == ptd->entity) ? 1 : 0;
 
-	if (bRe && ptd->entity)
+	if (bRe && !ptd->b_lock && ptd->entity && get_entity_editable(ptd->entity))
 	{
 		widget_post_key(widget, KEY_ENTER);
 		return;

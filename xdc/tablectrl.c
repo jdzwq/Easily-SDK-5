@@ -600,7 +600,7 @@ void hand_tablectrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	onkey = (hint == TABLE_HINT_KEY) ? 1 : 0;
 
-	if (ptd->item && ilk == ptd->item && onkey == ptd->onkey)
+	if (ptd->item && ilk == ptd->item && onkey == ptd->onkey && !ptd->b_lock)
 	{
 		widget_post_key(widget, KEY_ENTER);
 		return;
