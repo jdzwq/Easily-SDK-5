@@ -66,6 +66,7 @@ int call_string_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 {
 	VARSTRWORDOPERATOR* pscan = (VARSTRWORDOPERATOR*)param;
 	int n;
+	xsize_t xs;
 
 	n = xschs(pscan->pch);
 	pscan->pos += n;
@@ -79,9 +80,19 @@ int call_string_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 	}
 
 	if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
-		pse->cx = pse->cy = 0;
+	{
+		pse->cx *= 1;
+		pse->cy *= 1;
+	}
 	else
-		(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, pse);
+	{
+		(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
+
+		if (xs.cx)
+			pse->cx = xs.cx;
+		if (xs.cy)
+			pse->cy = xs.cy;
+	}
 
 	*ppch = pscan->pch;
 
@@ -93,7 +104,7 @@ int call_string_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 	return n;
 }
 
-int call_string_insert_words(void* param, tchar_t* pch)
+int call_string_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 {
 	VARSTRWORDOPERATOR* pscan = (VARSTRWORDOPERATOR*)param;
 	int n;
@@ -187,6 +198,7 @@ int call_fixstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 {
 	FIXSTRWORDOPERATOR* pscan = (FIXSTRWORDOPERATOR*)param;
 	int n;
+	xsize_t xs;
 
 	n = xschs(pscan->pch);
 	pscan->pos += n;
@@ -198,6 +210,8 @@ int call_fixstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 		*psel = 0;
 		*patom = 0;
 
+		pse->cx = 0;
+
 		return 0;
 	}
 
@@ -205,9 +219,19 @@ int call_fixstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 	xsncpy(pscan->pch, pscan->buf + pscan->pos, n);
 
 	if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
-		pse->cx = pse->cy = 0;
+	{
+		pse->cx *= 1;
+		pse->cy *= 1;
+	}
 	else
-		(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, pse);
+	{
+		(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
+
+		if (xs.cx)
+			pse->cx = xs.cx;
+		if (xs.cy)
+			pse->cy = xs.cy;
+	}
 
 	*ppch = pscan->pch;
 
@@ -219,7 +243,7 @@ int call_fixstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 	return n;
 }
 
-int call_fixstr_insert_words(void* param, tchar_t* pch)
+int call_fixstr_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 {
 	FIXSTRWORDOPERATOR* pscan = (FIXSTRWORDOPERATOR*)param;
 	int n;

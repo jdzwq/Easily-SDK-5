@@ -1342,6 +1342,33 @@ void hand_grid_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_grid_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	grid_delta_t* ptd = GETGRIDDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->grid)
+		return;
+
+	noti_grid_reset_editor(widget, 1);
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_grid_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
@@ -1945,6 +1972,7 @@ res_win_t gridctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_SIZE(hand_grid_size)
 
 		EVENT_ON_SCROLL(hand_grid_scroll)
+		EVENT_ON_WHEEL(hand_grid_wheel)
 
 		EVENT_ON_KEYDOWN(hand_grid_keydown)
 		EVENT_ON_CHAR(hand_grid_char)

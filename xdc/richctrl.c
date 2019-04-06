@@ -570,6 +570,34 @@ void hand_richctrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	hand_textor_scroll(&ptd->textor, bHorz, nLine);
 }
 
+void hand_richctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (hand_textor_scroll(&ptd->textor, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_richctrl_self_command(res_win_t widget, int code, var_long data)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
@@ -657,6 +685,7 @@ res_win_t richctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 
 		EVENT_ON_SIZE(hand_richctrl_size)
 		EVENT_ON_SCROLL(hand_richctrl_scroll)
+		EVENT_ON_WHEEL(hand_richctrl_wheel)
 
 		EVENT_ON_KEYDOWN(hand_richctrl_keydown)
 		EVENT_ON_CHAR(hand_richctrl_char)

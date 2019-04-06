@@ -405,6 +405,13 @@ typedef struct async_t{
 #define XDKUSER			_T("XDKUSER")
 #define XDKRESULT		_T("XDKRESULT")
 
+#define WIDGET_TITLE_SPAN		(float)10	//mm
+#define WIDGET_MENU_SPAN		(float)7.5	//mm
+#define WIDGET_SCROLL_SPAN		(float)5	//mm
+#define WIDGET_ICON_SPAN		(float)3	//mm
+#define WIDGET_FRAME_EDGE		(float)1.5	//mm
+#define WIDGET_CHILD_EDGE		(float)0.5	//mm
+
 /*widget alphablend level*/
 #define ALPHA_SOLID			250
 #define ALPHA_SOFT			128

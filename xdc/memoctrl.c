@@ -568,6 +568,34 @@ void hand_memoctrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	hand_textor_scroll(&ptd->textor, bHorz, nLine);
 }
 
+void hand_memoctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (hand_textor_scroll(&ptd->textor, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_memoctrl_self_command(res_win_t widget, int code, var_long data)
 {
 	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
@@ -655,6 +683,7 @@ res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 
 		EVENT_ON_SIZE(hand_memoctrl_size)
 		EVENT_ON_SCROLL(hand_memoctrl_scroll)
+		EVENT_ON_WHEEL(hand_memoctrl_wheel)
 
 		EVENT_ON_KEYDOWN(hand_memoctrl_keydown)
 		EVENT_ON_CHAR(hand_memoctrl_char)

@@ -47,7 +47,9 @@ typedef struct _TEXTOR_CALC{
 
 	void *from_obj,*to_obj;
 	bool_t from_atom, to_atom;
-	
+
+	long client;
+
 	long x, y;
 	long width, height;
 	xpoint_t from_pt, to_pt;
@@ -119,6 +121,7 @@ void _textor_calc_paging(textor_t* ptd, long pw, long ph, int* max_page, int* ma
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -206,6 +209,7 @@ void _textor_calc_maxing(textor_t* ptd, long pw, long ph, long* max_width, long*
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -295,6 +299,7 @@ void _textor_calc_line(textor_t* ptd, long pw, long ph, long* max_width, long* m
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -375,6 +380,7 @@ void _textor_calc_object(textor_t* ptd, void* object, int* from_row, int* from_c
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -451,6 +457,7 @@ void _textor_calc_texting(textor_t* ptd, void* object, int* from_row, int* from_
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -521,6 +528,7 @@ void _textor_calc_rect(textor_t* ptd, void* object, xrect_t* pxr)
 	pxa = widget_get_xface_ptr(ptd->widget);
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -632,6 +640,7 @@ void _textor_calc_hint(textor_t* ptd, long x, long y, int* row_at, int* col_at, 
 	tt.y = y;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -706,6 +715,7 @@ void _textor_calc_point(textor_t* ptd, int row, int col, xpoint_t* ppt1, xpoint_
 	tt.from_col = col;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -838,6 +848,7 @@ void _textor_calc_rowcol(textor_t* ptd, int row, int col, int* prow, int* pcol, 
 	tt.from_col = col;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -916,6 +927,7 @@ int _textor_exec_select(textor_t* ptd, int from_row, int from_col, int to_row, i
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -985,6 +997,7 @@ int _textor_calc_count(textor_t* ptd, int from_row, int from_col, int to_row, in
 	tt.page = ptd->page;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -1099,6 +1112,7 @@ bool_t _textor_exec_delete(textor_t* ptd, int from_row, int from_col, int to_row
 		return 0;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -1223,6 +1237,7 @@ bool_t _textor_exec_insert(textor_t* ptd, int* ppage, int* prow, int* pcol, void
 	tt.pos = 0;
 
 	it.ctx = (void*)ptd->dc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -1359,6 +1374,7 @@ void _textor_draw_focus(textor_t* ptd, res_ctx_t rdc)
 	tt.page = ptd->page;
 
 	it.ctx = (void*)rdc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -1385,13 +1401,16 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 
 		break;
 	case _SCANNER_STATE_WORDS:
-		pt1.x = ptm->cur_x;
-		pt1.y = ptm->cur_y;
+		if (ptm->cur_y > 0 && ptm->cur_y < ptt->client)
+		{
+			pt1.x = ptm->cur_x;
+			pt1.y = ptm->cur_y;
 
-		if (cur_char && *cur_char == _T('\0'))
-			text_out_raw(ptt->rdc, pxf, &pt1, _T("."), 1);
-		else
-			text_out_raw(ptt->rdc, pxf, &pt1, cur_char, cur_count);
+			if (cur_char && *cur_char == _T('\0'))
+				text_out_raw(ptt->rdc, pxf, &pt1, _T("."), 1);
+			else
+				text_out_raw(ptt->rdc, pxf, &pt1, cur_char, cur_count);
+		}
 		break;
 	case _SCANNER_STATE_LINEBREAK:
 		default_xpen(&xp);
@@ -1404,7 +1423,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr.y = ptm->cur_y + ptm->cur_h - 3;
 			xr.w = 3;
 			xr.h = 3;
-			draw_rect_raw(ptt->rdc, &xp, &xb, &xr);
+			draw_rect_raw(ptt->rdc, &xp, NULL, &xr);
 		}
 		else
 		{
@@ -1434,7 +1453,20 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 		draw_rect_raw(ptt->rdc, &xp, &xb, &xr);
 		break;
 	case _SCANNER_STATE_NEWPAGE:
+		return _SCANNER_OPERA_STOP;
 	case _SCANNER_STATE_END:
+		if (!b_ins)
+		{
+			default_xbrush(&xb);
+			xscpy(xb.color, pxf->color);
+			lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
+
+			xr.x = ptm->cur_x + ptm->cur_w - 3;
+			xr.y = ptm->cur_y + ptm->cur_h - 3;
+			xr.w = 3;
+			xr.h = 3;
+			draw_rect_raw(ptt->rdc, NULL, &xb, &xr);
+		}
 		return _SCANNER_OPERA_STOP;
 	}
 
@@ -1447,10 +1479,13 @@ void _textor_draw_text(textor_t* ptd, res_ctx_t rdc)
 	if_measure_t it = { 0 };
 	const xfont_t* pxf;
 	const xface_t* pxa;
+	xrect_t xr;
 
 	pxf = widget_get_xfont_ptr(ptd->widget);
 	pxa = widget_get_xface_ptr(ptd->widget);
 
+	widget_get_client_rect(ptd->widget, &xr);
+	tt.client = xr.h;
 	tt.from_row = ptd->sel_row;
 	tt.from_col = ptd->sel_col;
 	tt.to_row = ptd->cur_row;
@@ -1461,6 +1496,7 @@ void _textor_draw_text(textor_t* ptd, res_ctx_t rdc)
 	tt.page = ptd->page;
 
 	it.ctx = (void*)rdc;
+	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -1856,15 +1892,18 @@ void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs)
 	widget_update(ptd->widget, NULL, 0);
 }
 
-void hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine)
+bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine)
 {
 	XDL_ASSERT(ptd && ptd->widget);
 
-	widget_hand_scroll(ptd->widget, bHorz, nLine);
+	if (!widget_hand_scroll(ptd->widget, bHorz, nLine))
+		return 0;
 
 	widget_get_view_rect(ptd->widget, &ptd->vb);
 
 	_textor_reset_caret(ptd);
+
+	return 1;
 }
 
 void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
@@ -1998,6 +2037,11 @@ void hand_textor_selectobj(textor_t* ptd)
 		return;
 
 	_textor_calc_texting(ptd, ptd->object, &from_row, &from_col, &to_row, &to_col);
+
+	if (from_row == to_row && from_col == to_col)
+	{
+		return;
+	}
 
 	ptd->sel_row = from_row;
 	ptd->sel_col = from_col;

@@ -271,6 +271,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 	xmem_copy((void*)&xf_focus, (void*)&xf, sizeof(xfont_t));
 	xscpy(xf_focus.style, GDI_ATTR_FONT_STYLE_UNDERLINE);
+	xscpy(xf_focus.weight, GDI_ATTR_FONT_WEIGHT_BOLD);
 
 	parse_xcolor(&xc, xp.color);
 

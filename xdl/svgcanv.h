@@ -76,6 +76,14 @@ XDL_API link_t_ptr svg_get_canvas_doc(canvas_t canv);
 XDL_API int svg_get_canvas_type(canvas_t canv);
 
 /*
+@FUNCTION svg_pt_per_mm: get points per millimeter in svg canvas.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
+@RETURN float: return the value in millimeter.
+*/
+XDL_API float svg_pt_per_mm(canvas_t canv, bool_t horz);
+
+/*
 @FUNCTION svg_pt_to_tm: mapping points to millimeter in svg canvas.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT long pt: the points value.

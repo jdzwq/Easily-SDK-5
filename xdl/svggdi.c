@@ -1271,6 +1271,7 @@ void svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
+	it.pf_mm_points = (PF_PT_PER_MM)svg_pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
 

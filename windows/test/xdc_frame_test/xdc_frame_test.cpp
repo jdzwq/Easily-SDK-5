@@ -93,7 +93,7 @@ typedef struct tagMainFrameDelta{
 }MainFrameDelta;
 
 #define GETMAINFRAMEDELTA(widget) 			(MainFrameDelta*)widget_get_user_delta(widget)
-#define SETMAINFRAMEDELTA(widget,ptd)		widget_set_user_delta(widget,(void*)ptd)
+#define SETMAINFRAMEDELTA(widget,ptd)		widget_set_user_delta(widget,(var_long)ptd)
 
 int MainFrame_OnCreate(res_win_t widget, void* data)
 {
@@ -123,7 +123,7 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 	widget_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
-	SETMAINFRAMEDELTA(widget, (void*)pdt);
+	SETMAINFRAMEDELTA(widget, pdt);
 
 	xrect_t xr;
 	widget_get_client_rect(widget, &xr);

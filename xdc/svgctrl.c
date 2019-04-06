@@ -196,6 +196,31 @@ void hand_svg_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_svg_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	svg_delta_t* ptd = GETSVGDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->svg)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_svg_erase(res_win_t widget, res_ctx_t dc)
 {
 	svg_delta_t* ptd = GETSVGDELTA(widget);
@@ -279,6 +304,7 @@ res_win_t svgctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 		EVENT_ON_SIZE(hand_svg_size)
 
 		EVENT_ON_SCROLL(hand_svg_scroll)
+		EVENT_ON_WHEEL(hand_svg_wheel)
 
 		EVENT_ON_LBUTTON_DBCLICK(hand_svg_lbutton_dbclick)
 		EVENT_ON_LBUTTON_DOWN(hand_svg_lbutton_down)

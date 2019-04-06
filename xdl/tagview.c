@@ -86,6 +86,7 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 {
 	TAGWORDOPERATOR* pscan = (TAGWORDOPERATOR*)param;
 	int n;
+	xsize_t xs;
 
 	if (pscan->ind == TAGWORD_INDICATOR_NEXT_NODE)
 	{
@@ -96,6 +97,8 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 			*pdel = 0;
 			*psel = 0;
 			*patom = 0;
+
+			pse->cx = 0;
 
 			return 0;
 		}
@@ -121,10 +124,23 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 
 		if (!get_dom_node_line_cator(pscan->nlk, pscan->point, &pse->cx, &pse->cy))
 		{
-			if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
-				pse->cx = pse->cy = 1;
+			if (n == 1 && pscan->pch[0] == _T('\t'))
+			{
+				pse->cx *= 4;
+			}
+			else if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
+			{
+				pse->cx *= 1;
+			}
 			else
-				(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, pse);
+			{
+				(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
+
+				if (xs.cx)
+					pse->cx = xs.cx;
+				if (xs.cy)
+					pse->cy = xs.cy;
+			}
 
 			ins_dom_node_line_cator(pscan->nlk, pscan->point, pse->cx, pse->cy);
 		}
@@ -140,12 +156,12 @@ int call_tag_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins,
 	*pins = 1;
 	*pdel = 1;
 	*psel = 1;
-	*patom = (is_tag_text_joint(pscan->nlk))? 0 : 1;
+	*patom = (is_tag_text_joint(pscan->nlk))? 0 : 2;
 
 	return n;
 }
 
-int call_tag_insert_words(void* param, tchar_t* pch)
+int call_tag_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 {
 	TAGWORDOPERATOR* pscan = (TAGWORDOPERATOR*)param;
 	int n = 0;
@@ -182,10 +198,25 @@ int call_tag_insert_words(void* param, tchar_t* pch)
 		pscan->text = tag_joint_text_ins_chars(pscan->nlk, pscan->pos, pch, n);
 		pscan->len += n;
 
-		if (n == 1 && IS_CONTROL_CHAR(pch[0]))
-			xs.cx = xs.cy = 1;
+		if (n == 1 && pscan->pch[0] == _T('\t'))
+		{
+			xs.cx = pse->cx * 4;
+			xs.cy = pse->cy;
+		}
+		else if (n == 1 && IS_CONTROL_CHAR(pch[0]))
+		{
+			xs.cx = pse->cx;
+			xs.cy = pse->cy;
+		}
 		else
+		{
 			(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pch, n, &xs);
+
+			if (!xs.cx)
+				xs.cx = pse->cx;
+			if (!xs.cy)
+				xs.cy = pse->cy;
+		}
 
 		ins_dom_node_line_cator(pscan->nlk, pscan->point, xs.cx, xs.cy);
 

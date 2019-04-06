@@ -39,12 +39,6 @@ LICENSE.GPL3 for more details.
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "Msimg32.lib")
 
-#define WIDGET_TITLE_SPAN		(float)10	//mm
-#define WIDGET_MENU_SPAN		(float)7.5	//mm
-#define WIDGET_SCROLL_SPAN		(float)5	//mm
-#define WIDGET_ICON_SPAN		(float)3	//mm
-#define WIDGET_FRAME_EDGE		(float)1.5	//mm
-#define WIDGET_CHILD_EDGE		(float)0.5	//mm
 
 #define GETXDKDISPATCH(hWnd)		(if_event_t*)GetProp(hWnd, XDKDISPATCH)
 #define SETXDKDISPATCH(hWnd, ev)	SetProp(hWnd, XDKDISPATCH, (HANDLE)ev)

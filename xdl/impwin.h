@@ -540,6 +540,15 @@ XDL_API void	widget_set_scroll(res_win_t wt, bool_t horz, const scroll_t* psc);
 XDL_API void	widget_reset_scroll(res_win_t wt, bool_t horz);
 
 /*
+@FUNCTION widget_scroll: scroll the widget.
+@INPUT res_win_t wt: the widget resource handle.
+@INPUT bool_t horz: nonzero for horizon scroll, zero for vertical scroll.
+@INPUT long line: the line to be scrolled
+@RETURN void: none.
+*/
+XDL_API void	widget_scroll(res_win_t wt, bool_t horz, long line);
+
+/*
 @FUNCTION widget_post_char: post a char input message into windows message queue.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT tchar_t ch: the character.

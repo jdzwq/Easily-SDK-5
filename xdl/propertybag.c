@@ -1396,12 +1396,20 @@ void propertybag_write_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_FIXED, get_rich_anch_fixed(ilk));
+	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_TEXT_INDENT, get_rich_anch_text_indent(ilk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_TEXT_PLACE, get_rich_anch_text_place(ilk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_FIXED, get_rich_anch_fixed(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
 
-	ent = set_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_LINED, get_rich_anch_lined(ilk));
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_LINED, get_rich_anch_lined(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
@@ -1416,9 +1424,13 @@ void propertybag_read_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk)
 
 	set_rich_anch_title(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_TITLE));
 
-	set_rich_anch_fixed(ilk, get_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_FIXED));
+	set_rich_anch_text_indent(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_TEXT_INDENT));
 
-	set_rich_anch_lined(ilk, get_proper_boolean(ptr, PROPERTY_BAG_IDENTIFY, ATTR_LINED));
+	set_rich_anch_text_place(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_TEXT_PLACE));
+
+	set_rich_anch_fixed(ilk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_FIXED));
+
+	set_rich_anch_lined(ilk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_LINED));
 }
 
 void propertybag_write_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog)

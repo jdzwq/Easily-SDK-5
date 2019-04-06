@@ -668,6 +668,31 @@ void hand_tablectrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->table)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_tablectrl_child_command(res_win_t widget, int code, var_long data)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
@@ -762,6 +787,7 @@ res_win_t tablectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_SIZE(hand_tablectrl_size)
 
 		EVENT_ON_SCROLL(hand_tablectrl_scroll)
+		EVENT_ON_WHEEL(hand_tablectrl_wheel)
 
 		EVENT_ON_KEYDOWN(hand_tablectrl_keydown)
 

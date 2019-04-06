@@ -365,14 +365,6 @@ void hand_tool_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_tool_owner(widget, NC_TOOLRBCLK, ptd->tool, plk, (void*)pxp);
 }
 
-void hand_tool_mouse_wheel(res_win_t widget, dword_t dw, short delta)
-{
-	tool_delta_t* ptd = GETTOOLDELTA(widget);
-
-	if (!ptd->tool)
-		return;
-}
-
 void hand_tool_keydown(res_win_t widget, int nKey)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);

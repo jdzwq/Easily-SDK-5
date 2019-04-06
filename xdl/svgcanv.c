@@ -100,6 +100,23 @@ int svg_get_canvas_type(canvas_t canv)
 	return pcanv->dev;
 }
 
+float svg_pt_per_mm(canvas_t canv, bool_t horz)
+{
+	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	xrect_t vb;
+
+	get_svg_viewbox(pcanv->g, &vb);
+
+	if (horz)
+	{
+		return (float)((float)vb.w / get_svg_width(pcanv->g));
+	}
+	else
+	{
+		return (float)((float)vb.h / get_svg_height(pcanv->g));
+	}
+}
+
 float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz)
 {
 	svg_canvas_t* pcanv = (svg_canvas_t*)canv;

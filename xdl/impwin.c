@@ -685,6 +685,15 @@ void widget_set_scroll(res_win_t wt, bool_t horz, const scroll_t* psc)
 	(*pif->pf_widget_set_scroll_info)(wt, horz, psc);
 }
 
+void widget_scroll(res_win_t wt, bool_t horz, long line)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	(*pif->pf_widget_post_message)(wt, WM_SCROLL, (var_long)horz, (var_long)line);
+}
+
 void widget_post_char(res_win_t wt, tchar_t ch)
 {
 	if_widget_t* pif;

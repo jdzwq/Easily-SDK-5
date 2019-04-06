@@ -537,6 +537,34 @@ void hand_tagctrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	hand_textor_scroll(&ptd->textor, bHorz, nLine);
 }
 
+void hand_tagctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (hand_textor_scroll(&ptd->textor, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_tagctrl_self_command(res_win_t widget, int code, var_long data)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
@@ -623,10 +651,12 @@ res_win_t tagctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 		EVENT_ON_SIZE(hand_tagctrl_size)
 
 		EVENT_ON_SCROLL(hand_tagctrl_scroll)
+		EVENT_ON_WHEEL(hand_tagctrl_wheel)
 
 		EVENT_ON_KEYDOWN(hand_tagctrl_keydown)
 		EVENT_ON_CHAR(hand_tagctrl_char)
 
+		EVENT_ON_MOUSE_MOVE(hand_tagctrl_mousemove)
 		EVENT_ON_LBUTTON_DBCLICK(hand_tagctrl_lbutton_dbclick)
 		EVENT_ON_LBUTTON_DOWN(hand_tagctrl_lbutton_down)
 		EVENT_ON_LBUTTON_UP(hand_tagctrl_lbutton_up)
@@ -732,16 +762,16 @@ void tagctrl_setup_tag(res_win_t widget, const tchar_t* tname)
 
 	len = hand_textor_selected_text(&ptd->textor, NULL, MAX_LONG);
 	
-	len += (xslen(_T("[][/]")) + 2 * xslen(tname));
+	len += (xslen(_T("[~]")) + 2 * xslen(tname));
 
 	buf = xsalloc(len + 1);
-	xsprintf(buf, _T("[%s]"), tname);
+	xsprintf(buf, _T("[%s~"), tname);
 	len = xslen(buf);
 
 	hand_textor_selected_text(&ptd->textor, buf + len, MAX_LONG);
 	len = xslen(buf);
 
-	xsprintf(buf + len, _T("[/%s]"), tname);
+	xscat(buf, _T("]"));
 
 	if (_TEXTOR_PRESS_ACCEPT != hand_textor_replace_text(&ptd->textor, buf, -1))
 	{

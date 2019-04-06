@@ -111,7 +111,7 @@ XDC_API void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* pp
 
 XDC_API void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs);
 
-XDC_API void hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine);
+XDC_API bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine);
 
 XDC_API void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr);
 

@@ -861,6 +861,7 @@ void noti_form_begin_edit(res_win_t widget)
 	link_t_ptr data;
 
 	xrect_t xr;
+	xsize_t xs;
 
 	EDITDELTA fd = { 0 };
 
@@ -929,6 +930,11 @@ void noti_form_begin_edit(res_win_t widget)
 
 	_formctrl_field_rect(widget, ptd->field, &xr);
 	pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
+
+	xs.fx = WIDGET_SCROLL_SPAN;
+	xs.fy = WIDGET_SCROLL_SPAN;
+
+	widget_size_to_pt(widget, &xs);
 
 	if (compare_text(editor, -1, ATTR_EDITOR_FIREEDIT, -1, 0) == 0)
 	{
@@ -1135,10 +1141,17 @@ void noti_form_begin_edit(res_win_t widget)
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
 
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.h += xs.cy;
+
 		if (fd.menu)
+		{
 			ptd->editor = tablectrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
+		}
 		else
+		{
 			ptd->editor = tablectrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
+		}
 
 		XDL_ASSERT(ptd->editor);
 		widget_set_user_id(ptd->editor, IDC_TABLEBOX);
@@ -1176,10 +1189,18 @@ void noti_form_begin_edit(res_win_t widget)
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
 
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.w += xs.cx;
+		xr.h += xs.cy;
+
 		if (fd.menu)
+		{
 			ptd->editor = gridctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
+		}
 		else
+		{
 			ptd->editor = gridctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, widget);
+		}
 
 		XDL_ASSERT(ptd->editor);
 		widget_set_user_id(ptd->editor, IDC_GRIDBOX);
@@ -1213,6 +1234,10 @@ void noti_form_begin_edit(res_win_t widget)
 
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
+
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.w += xs.cx;
+		xr.h += xs.cy;
 
 		if (fd.menu)
 			ptd->editor = graphctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
@@ -1252,6 +1277,10 @@ void noti_form_begin_edit(res_win_t widget)
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
 
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.w += xs.cx;
+		xr.h += xs.cy;
+
 		if (fd.menu)
 			ptd->editor = formctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
 		else
@@ -1284,6 +1313,10 @@ void noti_form_begin_edit(res_win_t widget)
 	{
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
+
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.w += xs.cx;
+		xr.h += xs.cy;
 
 		if (fd.menu)
 			ptd->editor = tagctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
@@ -1320,6 +1353,10 @@ void noti_form_begin_edit(res_win_t widget)
 	{
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
+
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.w += xs.cx;
+		xr.h += xs.cy;
 
 		if (fd.menu)
 			ptd->editor = memoctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
@@ -1362,6 +1399,10 @@ void noti_form_begin_edit(res_win_t widget)
 
 		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, &fd))
 			return;
+
+		pt_expand_rect(&xr, -DEF_INNER_FEED, -DEF_INNER_FEED);
+		xr.w += xs.cx;
+		xr.h += xs.cy;
 
 		if (fd.menu)
 			ptd->editor = richctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
@@ -1861,7 +1902,8 @@ void hand_form_scroll(res_win_t widget, bool_t bHorz, long nLine)
 		}
 	}
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	if (!widget_hand_scroll(widget, bHorz, nLine))
+		return;
 
 	if (widget_is_valid(ptd->editor))
 	{
@@ -2038,7 +2080,7 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	int nHint;
 	link_t_ptr flk;
-	bool_t b_design, bRe;
+	bool_t b_design, bRe, bAuto = 0;
 	xpoint_t pt;
 	canvbox_t cb;
 
@@ -2097,9 +2139,17 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (flk && !bRe)
 	{
 		noti_form_field_changed(widget, flk);
+
+		if (IS_PAGED_FIELD(get_field_class_ptr(flk)))
+			bAuto = 1;
 	}
 
 	noti_form_owner(widget, NC_FORMLBCLK, ptd->form, ptd->field, (void*)pxp);
+
+	if (!b_design && !ptd->b_lock && bAuto && flk && get_field_editable(flk))
+	{
+		widget_post_key(widget, KEY_ENTER);
+	}
 }
 
 void hand_form_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)

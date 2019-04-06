@@ -48,15 +48,19 @@ typedef struct _RICHWORDOPERATOR{
 	int len, pos;
 	int ind;
 	tchar_t pch[CHS_LEN + 1];
-
 	long point;
+
+	float permm;
+	float indent;
+	long place;
 
 	PF_TEXT_SIZE pf_text_size;
 	void* ctx;
 	const xfont_t* pxf;
 }RICHWORDOPERATOR;
 
-#define RICHWORD_INDICATOR_NEXT_NODE	-3
+#define RICHWORD_INDICATOR_NEXT_NODE	-4
+#define RICHWORD_INDICATOR_NEXT_INDENT	-3
 #define RICHWORD_INDICATOR_NEXT_ATOM	-2
 #define RICHWORD_INDICATOR_NEXT_BREAK	-1
 #define RICHWORD_INDICATOR_NEXT_WORD	0
@@ -79,7 +83,6 @@ bool_t call_rich_break_page(void* param)
 	if (is_last_link(pscan->nlk) && pscan->ind == RICHWORD_INDICATOR_NEXT_NODE)
 	{
 		return 0;
-
 	}
 
 	done = 0;
@@ -138,19 +141,29 @@ int call_rich_next_page(void* param)
 	{
 		pscan->nlk = get_rich_next_anch(pscan->rich, LINK_FIRST);
 
-		if (!pscan->nlk)
+		if (pscan->nlk)
 		{
-			pscan->page = 1;
-			pscan->ind = RICHWORD_INDICATOR_NEXT_NODE;
-			return 0;
+			pscan->indent = get_rich_anch_text_indent(pscan->nlk);
+			pscan->text = NULL;
+			pscan->len = (pscan->indent > 0) ? 1 : 0;
+			pscan->pos = -1;
+			xscpy(pscan->pch, _T("\t"));
+
+			pscan->point = -1;
+
+			pscan->ind = RICHWORD_INDICATOR_NEXT_INDENT;
 		}
+		else
+		{
+			pscan->text = NULL;
+			pscan->len = 0;
+			pscan->pos = 0;
+			xszero(pscan->pch, CHS_LEN + 1);
 
-		pscan->text = get_rich_anch_title_ptr(pscan->nlk);
-		pscan->len = xslen(pscan->text);
-		pscan->pos = 0;
-		pscan->point = -1;
+			pscan->point = 0;
 
-		pscan->ind = RICHWORD_INDICATOR_NEXT_ATOM;
+			pscan->ind = RICHWORD_INDICATOR_NEXT_NODE;
+		}
 	}
 	else
 	{
@@ -179,7 +192,13 @@ int call_rich_next_page(void* param)
 		xscpy(pscan->pch, cat.pch);
 		pscan->point = cat.point;
 
-		if (pscan->ind == RICHWORD_INDICATOR_NEXT_ATOM || pscan->ind == RICHWORD_INDICATOR_NEXT_BREAK)
+		if (pscan->ind == RICHWORD_INDICATOR_NEXT_INDENT)
+		{
+			pscan->indent = get_rich_anch_text_indent(pscan->nlk);
+			pscan->text = NULL;
+			pscan->len = (pscan->indent > 0) ? 1 : 0;
+		}
+		else if (pscan->ind == RICHWORD_INDICATOR_NEXT_ATOM || pscan->ind == RICHWORD_INDICATOR_NEXT_BREAK)
 		{
 			pscan->text = get_rich_anch_title_ptr(pscan->nlk);
 			pscan->len = xslen(pscan->text);
@@ -200,6 +219,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 {
 	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
 	int n;
+	xsize_t xs = { 0 };
 
 	if (pscan->ind == RICHWORD_INDICATOR_NEXT_NODE)
 	{
@@ -211,17 +231,51 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 			*psel = 0;
 			*patom = 0;
 
+			pse->cx = 0;
+
 			return 0;
 		}
 
-		xszero(pscan->pch, CHS_LEN + 1);
+		pscan->indent = get_rich_anch_text_indent(pscan->nlk);
+		pscan->text = NULL;
+		pscan->len = (pscan->indent > 0) ? 1 : 0;
+		pscan->pos = -1;
+		xscpy(pscan->pch, _T("\t"));
 
-		pscan->text = get_rich_anch_title_ptr(pscan->nlk);
-		pscan->len = xslen(pscan->text);
-		pscan->pos = 0;
 		pscan->point = -1;
 
-		pscan->ind = RICHWORD_INDICATOR_NEXT_ATOM;
+		pscan->ind = RICHWORD_INDICATOR_NEXT_INDENT;
+	}
+
+	if (pscan->ind == RICHWORD_INDICATOR_NEXT_INDENT)
+	{
+		if (pscan->pos < 0)
+		{
+			pscan->place = (long)(get_rich_anch_text_place(pscan->nlk) * pscan->permm);
+		}
+
+		n = xslen(pscan->pch);
+		pscan->pos += n;
+
+		if (pscan->pos == pscan->len)
+		{
+			xszero(pscan->pch, CHS_LEN + 1);
+
+			pscan->text = get_rich_anch_title_ptr(pscan->nlk);
+			pscan->len = xslen(pscan->text);
+			pscan->pos = 0;
+			pscan->point = -1;
+
+			pscan->ind = RICHWORD_INDICATOR_NEXT_ATOM;
+		}
+		else
+		{
+			xscpy(pscan->pch, _T("\t"));
+			*ppch = pscan->pch;
+			n = 1;
+
+			pse->cx = (long)(pscan->indent * pscan->permm);
+		}
 	}
 
 	if (pscan->ind == RICHWORD_INDICATOR_NEXT_ATOM)
@@ -241,10 +295,28 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 
 			*ppch = pscan->pch;
 
-			if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
-				pse->cx = pse->cy = 1;
+			if (n == 1 && pscan->pch[0] == _T('\t'))
+			{
+				pse->cx *= 4;
+			}
+			else if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
+			{
+				pse->cx *= 1;
+			}
 			else
-				(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, pse);
+			{
+				(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
+
+				if (xs.cx)
+					pse->cx = xs.cx;
+				if (xs.cy)
+					pse->cy = xs.cy;
+			}
+
+			if (pscan->place)
+			{
+				pscan->place -= pse->cx;
+			}
 		}
 	}
 
@@ -269,7 +341,11 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 			n = 1;
 
 			*ppch = pscan->pch;
-			pse->cx = pse->cy = 0;
+
+			if (pscan->place)
+			{
+				pscan->place -= pse->cx;
+			}
 		}
 	}
 
@@ -289,7 +365,13 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 
 			n = 1;
 			*ppch = pscan->pch;
-			pse->cx = pse->cy = 0;
+
+			if (pscan->place > 0)
+			{
+				pse->cx = pscan->place;
+			}
+
+			pscan->place = 0;
 
 			pscan->ind = RICHWORD_INDICATOR_NEXT_NODE;
 		}
@@ -301,12 +383,31 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 
 			if (!get_dom_node_line_cator(pscan->nlk, pscan->point, &pse->cx, &pse->cy))
 			{
-				if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
-					pse->cx = pse->cy = 1;
+				if (n == 1 && pscan->pch[0] == _T('\t'))
+				{
+					pse->cx *= 4;
+				}
+				else if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
+				{
+					pse->cx *= 1;
+					pse->cy *= 1;
+				}
 				else
-					(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, pse);
+				{
+					(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
+
+					if (xs.cx)
+						pse->cx = xs.cx;
+					if (xs.cy)
+						pse->cy = xs.cy;
+				}
 
 				ins_dom_node_line_cator(pscan->nlk, pscan->point, pse->cx, pse->cy);
+			}
+
+			if (pscan->place)
+			{
+				pscan->place -= pse->cx;
 			}
 		}
 	}
@@ -315,6 +416,12 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 	{
 	case RICHWORD_INDICATOR_NEXT_NODE:
 		*pins = 1;
+		*pdel = 0;
+		*psel = 0;
+		*patom = 0;
+		break;
+	case RICHWORD_INDICATOR_NEXT_INDENT:
+		*pins = 0;
 		*pdel = 0;
 		*psel = 0;
 		*patom = 0;
@@ -348,10 +455,10 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 	return n;
 }
 
-int call_rich_insert_words(void* param, tchar_t* pch)
+int call_rich_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 {
 	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
-	int n;
+	int n = 0;
 	xsize_t xs = { 0 };
 
 	if (!pscan->nlk)
@@ -359,6 +466,8 @@ int call_rich_insert_words(void* param, tchar_t* pch)
 
 	switch (pscan->ind)
 	{
+	case RICHWORD_INDICATOR_NEXT_INDENT:
+		break;
 	case RICHWORD_INDICATOR_NEXT_ATOM:
 	case RICHWORD_INDICATOR_NEXT_BREAK:
 		n = xschs(pch);
@@ -373,10 +482,25 @@ int call_rich_insert_words(void* param, tchar_t* pch)
 		pscan->text = rich_anch_text_ins_chars(pscan->nlk, pscan->pos, pch, n);
 		pscan->len += n;
 
-		if (n == 1 && IS_CONTROL_CHAR(pch[0]))
-			xs.cx = xs.cy = 1;
+		if (n == 1 && pch[0] == _T('\t'))
+		{
+			xs.cx = pse->cx * 4;
+			xs.cy = pse->cy;
+		}
+		else if (n == 1 && IS_CONTROL_CHAR(pch[0]))
+		{
+			xs.cx = pse->cx;
+			xs.cy = pse->cy;
+		}
 		else
+		{
 			(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pch, n, &xs);
+
+			if (!xs.cx)
+				xs.cx = pse->cx;
+			if (!xs.cy)
+				xs.cy = pse->cy;
+		}
 
 		ins_dom_node_line_cator(pscan->nlk, pscan->point, xs.cx, xs.cy);
 
@@ -391,7 +515,7 @@ int call_rich_insert_words(void* param, tchar_t* pch)
 int call_rich_delete_words(void* param)
 {
 	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
-	int n;
+	int n = 0;
 
 	if (!pscan->nlk)
 		return 0;
@@ -399,7 +523,8 @@ int call_rich_delete_words(void* param)
 	switch (pscan->ind)
 	{
 	case RICHWORD_INDICATOR_NEXT_NODE:
-		n = 0;
+		break;
+	case RICHWORD_INDICATOR_NEXT_INDENT:
 		break;
 	case RICHWORD_INDICATOR_NEXT_ATOM:
 	case RICHWORD_INDICATOR_NEXT_BREAK:
@@ -439,6 +564,7 @@ void scan_rich_text(link_t_ptr ptr, if_measure_t* pif, const xfont_t* pxf, const
 	ro.pf_text_size = pif->pf_text_size;
 	ro.ctx = pif->ctx;
 	ro.pxf = pxf;
+	ro.permm = (*pif->pf_mm_points)(pif->ctx, 1);
 
 	it.param = (void*)&ro;
 	it.pf_is_paging = call_rich_is_paging;

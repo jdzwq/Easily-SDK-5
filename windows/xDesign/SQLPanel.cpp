@@ -438,7 +438,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	LINKPTR ptrSplit = create_split_doc();
 
 	split_item(ptrSplit, 1);
-	set_split_item_ratio(ptrSplit, _T("50%"));
+	set_split_item_ratio(ptrSplit, _T("70%"));
 
 	LINKPTR ilkMemo = get_split_first_child_item(ptrSplit);
 	LINKPTR ilkGrid = get_split_last_child_item(ptrSplit);

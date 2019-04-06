@@ -74,6 +74,8 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	if (!bd.hscroll)
 		return;
 
+	widget_get_scroll(wt, 1, &sl);
+
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
@@ -86,9 +88,13 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	rtScr.h = bd.hscroll;
 
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
+
 	draw_rect_raw(dc, NULL, &xb, &rtScr);
 
-	lighten_xbrush(&xb, DEF_MIDD_DARKEN);
+	if (sl.max + sl.page / 2 <= sl.min)
+		return;
+
+	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 	xscpy(xp.color, xb.color);
 
 	rtScr.x = rtWnd.x + bd.edge;
@@ -106,11 +112,6 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	pt_expand_rect(&rtScr, -3, -3);
 
 	draw_round_raw(dc, &xp, &xb, &rtScr);
-
-	widget_get_scroll(wt, 1, &sl);
-
-	if (!sl.max)
-		return;
 
 	if (!sl.pos)
 	{
@@ -156,6 +157,8 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	if (!bd.vscroll)
 		return;
 
+	widget_get_scroll(wt, 0, &sl);
+
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
@@ -168,9 +171,10 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	rtScr.h = rtWnd.h - bd.title - bd.menu - 2 * bd.edge;
 
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
+
 	draw_rect_raw(dc, NULL, &xb, &rtScr);
 
-	lighten_xbrush(&xb, DEF_MIDD_DARKEN);
+	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 	xscpy(xp.color, xb.color);
 
 	//up page button
@@ -181,6 +185,18 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	pt_expand_rect(&rtScr, -4, -6);
 
 	draw_shape_raw(dc, &xp, &xb, &rtScr, ATTR_SHAPE_TOPTRIANGLE);
+
+	//down page button
+	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
+	rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.vscroll;
+	rtScr.w = bd.vscroll;
+	rtScr.h = bd.vscroll;
+	pt_expand_rect(&rtScr, -4, -6);
+
+	draw_shape_raw(dc, &xp, &xb, &rtScr, ATTR_SHAPE_BOTTOMTRIANGLE);
+
+	if (sl.max + sl.page / 2 <= sl.min)
+		return;
 
 	//up line button
 	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
@@ -199,20 +215,6 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	pt_expand_rect(&rtScr, -3, -3);
 
 	draw_round_raw(dc, &xp, &xb, &rtScr);
-
-	//down page button
-	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
-	rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.vscroll;
-	rtScr.w = bd.vscroll;
-	rtScr.h = bd.vscroll;
-	pt_expand_rect(&rtScr, -4, -6);
-
-	draw_shape_raw(dc, &xp, &xb, &rtScr, ATTR_SHAPE_BOTTOMTRIANGLE);
-
-	widget_get_scroll(wt, 0, &sl);
-
-	if (!sl.max)
-		return;
 
 	if (!sl.pos)
 	{

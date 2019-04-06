@@ -68,7 +68,7 @@ typedef bool_t(*PF_SCAN_IS_PAGING)(void* param);
 typedef bool_t(*PF_SCAN_BREAK_PAGE)(void* param);
 typedef int(*PF_SCAN_NEXT_PAGE)(void* param);
 typedef int(*PF_SCAN_NEXT_WORD)(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom);
-typedef int(*PF_SCAN_INSERT_WORD)(void* param, tchar_t* pch);
+typedef int(*PF_SCAN_INSERT_WORD)(void* param, tchar_t* pch, xsize_t* pse);
 typedef int(*PF_SCAN_DELETE_WORD)(void* param);
 typedef void(*PF_SCAN_CUR_OBJECT)(void* param, void** pobj);
 

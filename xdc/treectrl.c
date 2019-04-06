@@ -779,8 +779,33 @@ void hand_tree_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	noti_tree_reset_editor(widget, 1);
 
 	widget_hand_scroll(widget, bHorz, nLine);
+}
 
-	widget_update(widget, NULL, 0);
+void hand_tree_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	tree_delta_t* ptd = GETTREEDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->tree)
+		return;
+
+	noti_tree_reset_editor(widget, 1);
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
 }
 
 void hand_tree_child_command(res_win_t widget, int code, var_long data)
@@ -877,6 +902,7 @@ res_win_t treectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_SIZE(hand_tree_size)
 
 		EVENT_ON_SCROLL(hand_tree_scroll)
+		EVENT_ON_WHEEL(hand_tree_wheel)
 
 		EVENT_ON_KEYDOWN(hand_tree_keydown)
 		EVENT_ON_CHAR(hand_tree_char)

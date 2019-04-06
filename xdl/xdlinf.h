@@ -162,12 +162,15 @@ typedef struct _if_socket_bio{
 	PF_BIO_PEER_PORT	pf_peer_port;
 }if_bio_t;
 
+typedef float(*PF_MM_POINTS)(void*, bool_t);
 typedef void(*PF_IMAGE_SIZE)(void*, const ximage_t*, xsize_t* pxs);
 typedef void(*PF_TEXT_SIZE)(void*, const xfont_t*, const tchar_t*, int, xsize_t* pxs);
 typedef void(*PF_TEXT_METRIC)(void*, const xfont_t*, xsize_t* pxs);
 
 typedef struct _if_measure_t{
 	void*	ctx;
+
+	PF_MM_POINTS	pf_mm_points;
 	PF_TEXT_SIZE	pf_text_size;
 	PF_TEXT_METRIC	pf_text_metric;
 	PF_IMAGE_SIZE	pf_image_size;

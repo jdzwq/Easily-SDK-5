@@ -107,7 +107,7 @@ void default_check_field_attr(link_t_ptr flk)
 
 void default_tag_field_attr(link_t_ptr flk)
 {
-	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-barek;"));
+	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-break;"));
 
 	set_field_shape(flk, ATTR_SHAPE_RECT);
 	set_field_x(flk, 0);
@@ -122,7 +122,7 @@ void default_tag_field_attr(link_t_ptr flk)
 
 void default_memo_field_attr(link_t_ptr flk)
 {
-	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-barek;"));
+	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-break;"));
 
 	set_field_shape(flk, ATTR_SHAPE_RECT);
 	set_field_x(flk, 0);
@@ -176,7 +176,7 @@ void default_shape_field_attr(link_t_ptr flk)
 
 void default_rich_field_attr(link_t_ptr flk)
 {
-	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-barek;"));
+	set_field_style(flk, _T("font-size:12;text-align:near;line-align:near;text-wrap:word-break;"));
 
 	set_field_shape(flk, ATTR_SHAPE_MULTILINE);
 	set_field_x(flk, 0);

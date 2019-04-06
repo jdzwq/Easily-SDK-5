@@ -864,10 +864,35 @@ void hand_topogctrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 
-	if (!ptd)
+	if (!ptd->topog)
 		return;
 
 	widget_hand_scroll(widget, bHorz, nLine);
+}
+
+void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	topog_delta_t* ptd = GETTOPOGDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->topog)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
 }
 
 void hand_topogctrl_keydown(res_win_t widget, int nKey)
@@ -1125,6 +1150,7 @@ res_win_t topogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_SIZE(hand_topogctrl_size)
 
 		EVENT_ON_SCROLL(hand_topogctrl_scroll)
+		EVENT_ON_WHEEL(hand_topogctrl_wheel)
 
 		EVENT_ON_KEYDOWN(hand_topogctrl_keydown)
 

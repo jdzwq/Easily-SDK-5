@@ -2743,14 +2743,6 @@ XDC_API link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos);
 */
 XDC_API bool_t	titlectrl_delete_item(res_win_t widget, link_t_ptr ilk);
 
-/*
-@FUNCTION titlectrl_auto_focus: set the title item get focused is automatic.
-@INPUT res_win_t widget: the title widget.
-@INPUT bool_t b: nonzero for focusing automatic.
-@RETURN void: none.
-*/
-XDC_API void	titlectrl_auto_focus(res_win_t widget, bool_t b);
-
 /*************************************title control******************************************************/
 typedef struct _NOTICE_TOOL{
 	res_win_t widget;

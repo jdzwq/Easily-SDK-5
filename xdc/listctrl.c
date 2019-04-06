@@ -562,6 +562,33 @@ void hand_list_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_list_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	list_delta_t* ptd = GETLISTDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->list)
+		return;
+
+	noti_list_reset_editor(widget, 1);
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_list_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
@@ -938,6 +965,7 @@ res_win_t listctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_SIZE(hand_list_size)
 
 		EVENT_ON_SCROLL(hand_list_scroll)
+		EVENT_ON_WHEEL(hand_list_wheel)
 
 		EVENT_ON_KEYDOWN(hand_list_keydown)
 		EVENT_ON_CHAR(hand_list_char)

@@ -2038,7 +2038,6 @@ void _MainFrame_CreateTitleBar(res_win_t widget)
 	pdt->hTitleBar = titlectrl_create(_T("TitleBar"), WD_STYLE_CONTROL | WD_STYLE_HOTOVER, &xr, widget);
 	widget_set_user_id(pdt->hTitleBar, IDC_MAINFRAME_TITLEBAR);
 	widget_set_owner(pdt->hTitleBar, widget);
-	titlectrl_auto_focus(pdt->hTitleBar, 1);
 
 	LINKPTR ptrTitle = create_title_doc();
 	set_title_images(ptrTitle, g_imagelist);

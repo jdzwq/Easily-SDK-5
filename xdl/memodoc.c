@@ -303,14 +303,9 @@ bool_t parse_memo_doc(link_t_ptr ptr, const tchar_t* buf, int len)
 
 		tk_line = buf + total;
 		len_line = 0;
-		while (*(tk_line + len_line) != _T('\n') && *(tk_line + len_line) != _T('\0'))
+		while (*(tk_line + len_line) != _T('\r') && *(tk_line + len_line) != _T('\n') && *(tk_line + len_line) != _T('\0') && total < len)
 		{
 			len_line++;
-		}
-		total += len_line;
-
-		if (*(tk_line + len_line) == _T('\n'))
-		{
 			total++;
 		}
 
@@ -320,6 +315,12 @@ bool_t parse_memo_doc(link_t_ptr ptr, const tchar_t* buf, int len)
 			set_memo_line_indent(ilk, len_inde);
 		}
 		set_memo_line_text(ilk, tk_line, len_line);
+
+		while (*(tk_line + len_line) == _T('\r') || *(tk_line + len_line) == _T('\n'))
+		{
+			len_line++;
+			total++;
+		}
 
 		if (*(buf + total) == _T('\0'))
 			break;

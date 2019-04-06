@@ -129,6 +129,26 @@ LICENSE.GPL3 for more details.
 */
 #define get_rich_anch_text_ptr(nlk)					get_dom_node_text_ptr(nlk)
 /*
+@PROPER indent: numeric.
+@SET set_rich_anch_indent: set the line indent.
+*/
+#define set_rich_anch_text_indent(ilk,n)			set_dom_node_attr_float(ilk,ATTR_TEXT_INDENT,n)
+/*
+@PROPER indent: numeric.
+@GET get_rich_anch_indent: get the line indent.
+*/
+#define get_rich_anch_text_indent(ilk)				get_dom_node_attr_float(ilk,ATTR_TEXT_INDENT)
+/*
+@PROPER place: numeric.
+@SET set_rich_anch_place: set the text tabed place.
+*/
+#define set_rich_anch_text_place(ilk,n)				set_dom_node_attr_float(ilk,ATTR_TEXT_PLACE,n)
+/*
+@PROPER place: numeric.
+@GET get_rich_anch_place: get the text tabed place.
+*/
+#define get_rich_anch_text_place(ilk)				get_dom_node_attr_float(ilk,ATTR_TEXT_PLACE)
+/*
 @PROPER fixed: boolean.
 @SET set_rich_anch_fixed: set the rich anchor is fixed.
 */

@@ -42,7 +42,8 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 	float line_rati;
 	bool_t b_wordbreak = 0;
 	xsize_t xs = { 0 };
-	xfont_t xf_atom = { 0 };
+	xfont_t xf_bold = { 0 };
+	xfont_t xf_under = { 0 };
 
 	tchar_t sch[4] = { 0 };
 	tchar_t* pch = NULL;
@@ -68,8 +69,12 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 
 	b_wordbreak = (compare_text(pxa->text_wrap, -1, GDI_ATTR_TEXT_WRAP_WORDBREAK, -1, 0) == 0) ? 1 : 0;
 
-	xmem_copy((void*)&xf_atom, (void*)pxf, sizeof(xfont_t));
-	xscpy(xf_atom.weight, GDI_ATTR_FONT_WEIGHT_BOLD);
+	xmem_copy((void*)&xf_bold, (void*)pxf, sizeof(xfont_t));
+	xscpy(xf_bold.weight, GDI_ATTR_FONT_WEIGHT_BOLD);
+
+	xmem_copy((void*)&xf_under, (void*)pxf, sizeof(xfont_t));
+	xscpy(xf_under.weight, GDI_ATTR_FONT_WEIGHT_BOLD);
+	xscpy(xf_under.style, GDI_ATTR_FONT_STYLE_UNDERLINE);
 
 	if (is_null(pxa->line_height))
 		line_rati = xstof(DEF_GDI_TEXT_LINE_HEIGHT);
@@ -136,6 +141,8 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 
 			obj = NULL;
 			pch = NULL;
+			xs.cx = tm.char_w;
+			xs.cy = tm.char_h;
 			chs = (*pit->pf_next_word)(pit->param, &pch, &xs, &b_ins, &b_del, &b_sel, &b_atom);
 			if (!chs)
 			{
@@ -152,7 +159,9 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 
 			break;
 		case _SCANNER_OPERA_INS:
-			if ((*pit->pf_insert_word)(pit->param, sch))
+			xs.cx = tm.char_w;
+			xs.cy = tm.char_h;
+			if ((*pit->pf_insert_word)(pit->param, sch, &xs))
 			{
 				to = _SCANNER_OPERA_NEXT;
 			}
@@ -197,8 +206,8 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 		}
 		else if (pch && *pch == _T('\n'))
 		{
-			tm.cur_w = tm.char_w * 2;
-			tm.cur_h = tm.char_h;
+			tm.cur_w = xs.cx; //tm.char_w * 2;
+			tm.cur_h = xs.cy; // tm.char_h;
 
 			chs = 1;
 			xsncpy(sch, _T("\n"), chs);
@@ -207,8 +216,8 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 		}
 		else if (pch && *pch == _T('\f'))
 		{
-			tm.cur_w = tm.char_w * 2;
-			tm.cur_h = tm.char_h;
+			tm.cur_w = xs.cx; // tm.char_w * 2;
+			tm.cur_h = xs.cy; // tm.char_h;
 
 			if (b_paging)
 			{
@@ -229,19 +238,19 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 		{
 			if (!b_atom && pch && *pch == _T('\t'))
 			{
-				tm.cur_w = tm.char_w * 4;
-				tm.cur_h = tm.char_h;
+				tm.cur_w = xs.cx; // tm.char_w * 4;
+				tm.cur_h = xs.cy; // tm.char_h;
 			}else if (!b_atom && pch && *pch == _T('\0'))
 			{
-				tm.cur_w = tm.char_w;
-				tm.cur_h = tm.char_h;
+				tm.cur_w = xs.cx; // tm.char_w;
+				tm.cur_h = xs.cy; // tm.char_h;
 			}
 			else
 			{
 				if (!chs)
 				{
-					tm.cur_w = tm.char_w;
-					tm.cur_h = tm.char_h;
+					tm.cur_w = xs.cx; // tm.char_w;
+					tm.cur_h = xs.cy; // tm.char_h;
 				}
 				else
 				{
@@ -251,7 +260,7 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 					//	(*pif->pf_text_size)(pif->ctx, pxf, pch, chs, &xs);
 
 					tm.cur_w = xs.cx;
-					tm.cur_h = tm.char_h;
+					tm.cur_h = xs.cy; // tm.char_h;
 				}
 			}
 
@@ -265,8 +274,10 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 		case _SCANNER_STATE_WORDS:
 		case _SCANNER_STATE_LINEBREAK:
 		case _SCANNER_STATE_PAGEBREAK:
-			if (b_atom)
-				to = (*pf)(ts, obj, b_atom, b_ins, b_del, b_sel, pch, chs, sch, page, row_at, col_at, &tm, &xf_atom, pxa, pp);
+			if (b_atom == 1)
+				to = (*pf)(ts, obj, b_atom, b_ins, b_del, b_sel, pch, chs, sch, page, row_at, col_at, &tm, &xf_bold, pxa, pp);
+			else if (b_atom == 2)
+				to = (*pf)(ts, obj, b_atom, b_ins, b_del, b_sel, pch, chs, sch, page, row_at, col_at, &tm, &xf_under, pxa, pp);
 			else
 				to = (*pf)(ts, obj, b_atom, b_ins, b_del, b_sel, pch, chs, sch, page, row_at, col_at, &tm, pxf, pxa, pp);
 			break;

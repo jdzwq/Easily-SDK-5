@@ -656,6 +656,31 @@ void hand_notes_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_notes_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	notes_delta_t* ptd = GETNOTESDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->arch)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_notes_erase(res_win_t widget, res_ctx_t rdc)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
@@ -870,6 +895,7 @@ res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_SIZE(hand_notes_size)
 
 		EVENT_ON_SCROLL(hand_notes_scroll)
+		EVENT_ON_WHEEL(hand_notes_wheel)
 
 		EVENT_ON_KEYDOWN(hand_notes_keydown)
 

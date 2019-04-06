@@ -1172,6 +1172,33 @@ void hand_graph_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_graph_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	graph_delta_t* ptd = GETGRAPHDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->graph)
+		return;
+
+	noti_graph_reset_editor(widget, 1);
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_graph_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
 	graph_delta_t* ptd = GETGRAPHDELTA(widget);
@@ -1698,6 +1725,7 @@ res_win_t graphctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_SIZE(hand_graph_size)
 
 		EVENT_ON_SCROLL(hand_graph_scroll)
+		EVENT_ON_WHEEL(hand_graph_wheel)
 
 		EVENT_ON_KEYDOWN(hand_graph_keydown)
 		EVENT_ON_CHAR(hand_graph_char)

@@ -84,12 +84,12 @@ LICENSE.GPL3 for more details.
 @PROPER indent: integer.
 @SET set_memo_line_indent: set the line indent.
 */
-#define set_memo_line_indent(ilk,n)				set_dom_node_attr_integer(ilk,ATTR_ITEM_SPAN,n)
+#define set_memo_line_indent(ilk,n)				set_dom_node_attr_integer(ilk,ATTR_TEXT_INDENT,n)
 /*
 @PROPER indent: integer.
 @GET get_memo_line_indent: get the line indent.
 */
-#define get_memo_line_indent(ilk)				get_dom_node_attr_integer(ilk,ATTR_ITEM_SPAN)
+#define get_memo_line_indent(ilk)				get_dom_node_attr_integer(ilk,ATTR_TEXT_INDENT)
 
 #define memo_line_text_set_chars(ilk,pos,pch,n)		dom_node_text_set_chars(ilk, pos, pch, n)
 

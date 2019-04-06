@@ -37,8 +37,6 @@ typedef struct title_delta_t{
 	link_t_ptr title;
 	link_t_ptr item;
 	link_t_ptr hover;
-
-	bool_t en_focus;
 }title_delta_t;
 
 #define GETTITLEDELTA(ph) 	(title_delta_t*)widget_get_user_delta(ph)
@@ -306,7 +304,7 @@ void hand_title_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	bRe = (plk == ptd->item) ? 1 : 0;
+	bRe = (!plk || plk == ptd->item) ? 1 : 0;
 
 	if (ptd->item && !bRe)
 	{
@@ -465,15 +463,6 @@ res_win_t titlectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 	return widget_create(wname, wstyle, pxr, wparent, &ev);
 }
 
-void titlectrl_auto_focus(res_win_t widget, bool_t b)
-{
-	title_delta_t* ptd = GETTITLEDELTA(widget);
-
-	XDL_ASSERT(ptd != NULL);
-
-	ptd->en_focus = b;
-}
-
 void titlectrl_attach(res_win_t widget, link_t_ptr ptr)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
@@ -487,10 +476,7 @@ void titlectrl_attach(res_win_t widget, link_t_ptr ptr)
 
 	titlectrl_redraw(widget);
 
-	if (ptd->en_focus)
-	{
-		titlectrl_set_focus_item(widget, get_title_next_item(ptd->title, LINK_FIRST));
-	}
+	titlectrl_set_focus_item(widget, get_title_next_item(ptd->title, LINK_FIRST));
 }
 
 link_t_ptr titlectrl_detach(res_win_t widget)
@@ -661,8 +647,7 @@ link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos)
 
 	titlectrl_redraw(widget);
 
-	if (ptd->en_focus)
-		titlectrl_set_focus_item(widget, ilk);
+	titlectrl_set_focus_item(widget, ilk);
 
 	return ilk;
 }
@@ -692,16 +677,9 @@ bool_t titlectrl_delete_item(res_win_t widget, link_t_ptr plk)
 		noti_title_item_changing(widget);
 	}
 
-	if (!ptd->item && ptd->en_focus)
-	{
-		nlk = get_title_prev_item(ptd->title, plk);
-		if (!nlk)
-			nlk = get_title_next_item(ptd->title, plk);
-	}
-	else
-	{
-		nlk = NULL;
-	}
+	nlk = get_title_prev_item(ptd->title, plk);
+	if (!nlk)
+		nlk = get_title_next_item(ptd->title, plk);
 
 	delete_title_item(plk);
 

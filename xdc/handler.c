@@ -942,7 +942,7 @@ void widget_hand_destroy(res_win_t wt)
 	SETWIDGSTRUCT(wt, 0);
 }
 
-void widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
+bool_t widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
 {
 	int nCur, nMax;
 	win_struct_t* pwt;
@@ -958,10 +958,10 @@ void widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
 			nMax = 0;
 
 		if (nLine < 0 && pwt->vb.x == 0)
-			return;
+			return 0;
 
 		if (nLine > 0 && pwt->vb.x == nMax)
-			return;
+			return 0;
 
 		nCur = (pwt->vb.x + nLine);
 
@@ -979,10 +979,10 @@ void widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
 			nMax = 0;
 
 		if (nLine < 0 && pwt->vb.y == 0)
-			return;
+			return 0;
 
 		if (nLine > 0 && pwt->vb.y == nMax)
-			return;
+			return 0;
 
 		nCur = (pwt->vb.y + nLine);
 
@@ -997,6 +997,8 @@ void widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
 	widget_update(wt, NULL, 0);
 
 	widget_reset_scroll(wt, bHorz);
+
+	return 1;
 }
 
 /************************************default widget splitting dispatch**************************************************/

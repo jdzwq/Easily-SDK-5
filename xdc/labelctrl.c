@@ -289,6 +289,31 @@ void hand_label_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_label_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	label_delta_t* ptd = GETLABELDELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd->label)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_label_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
@@ -554,6 +579,7 @@ res_win_t labelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_SIZE(hand_label_size)
 
 		EVENT_ON_SCROLL(hand_label_scroll)
+		EVENT_ON_WHEEL(hand_label_wheel)
 
 		EVENT_ON_KEYDOWN(hand_label_keydown)
 

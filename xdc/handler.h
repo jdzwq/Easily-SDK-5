@@ -414,9 +414,9 @@ XDC_API void	widget_hand_destroy(res_win_t wt);
 @INPUT res_win_t wt: windowd resource handle.
 @INPUT bool_t b_horz: nonzero for horizon scrolling, zero for vertical scrolling.
 @INPUT long pos: the current position of scroller.
-@RETURN void: none.
+@RETURN bool_t: if widget scrolled return nonzero.
 */
-XDC_API void	widget_hand_scroll(res_win_t wt, bool_t b_horz, long pos);
+XDC_API bool_t	widget_hand_scroll(res_win_t wt, bool_t b_horz, long pos);
 
 
 /******************************widget splitor implement*****************************************************/

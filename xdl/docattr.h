@@ -275,6 +275,7 @@
 #define ATTR_ITEM_SPAN				_T("item-span")
 #define ATTR_ICON_SPAN				_T("icon-span")
 #define ATTR_TEXT_INDENT			_T("text-indent")
+#define ATTR_TEXT_PLACE				_T("text-place")
 #define ATTR_ENTITY_HEIGHT			_T("entity-height")
 #define ATTR_ENTITY_WIDTH			_T("entity-width")
 #define ATTR_RATIO					_T("ratio")

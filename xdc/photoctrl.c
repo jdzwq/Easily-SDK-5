@@ -897,6 +897,33 @@ void hand_photo_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
+void hand_photo_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	photo_delta_t* ptd = GETPHOTODELTA(widget);
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	if (!ptd)
+		return;
+
+	noti_photo_reset_editor(widget, 1);
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+		return;
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
+	}
+}
+
 void hand_photo_keydown(res_win_t widget, int key)
 {
 	photo_delta_t* ptd = GETPHOTODELTA(widget);
@@ -1096,6 +1123,7 @@ res_win_t photoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_SIZE(hand_photo_size)
 
 		EVENT_ON_SCROLL(hand_photo_scroll)
+		EVENT_ON_WHEEL(hand_photo_wheel)
 
 		EVENT_ON_KEYDOWN(hand_photo_keydown)
 

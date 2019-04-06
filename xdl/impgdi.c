@@ -925,6 +925,7 @@ void draw_rich_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 	tt.page = page;
 
 	it.ctx = (void*)rdc;
+	it.pf_mm_points = (PF_PT_PER_MM)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 
@@ -957,6 +958,7 @@ int calc_rich_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 	tt.pages = 1;
 
 	it.ctx = (void*)rdc;
+	it.pf_mm_points = (PF_PT_PER_MM)pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
 

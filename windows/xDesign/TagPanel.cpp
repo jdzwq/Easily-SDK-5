@@ -102,7 +102,7 @@ void TagPanel_OnDelete(res_win_t widget)
 	if (!ptrNode)
 		return;
 
-	tagctrl_delete_joint(pdt->hTag, ptrNode);
+	tagctrl_clean_tag(pdt->hTag);
 }
 
 void TagPanel_OnInsert(res_win_t widget)
@@ -112,21 +112,11 @@ void TagPanel_OnInsert(res_win_t widget)
 	LINKPTR ptrTag = tagctrl_fetch(pdt->hTag);
 	LINKPTR ptrPos = tagctrl_get_focus_joint(pdt->hTag);
 
-	ptrPos = (ptrPos) ? get_tag_prev_joint(ptrTag, ptrPos) : LINK_LAST;
-
-	LINKPTR ilk = insert_tag_joint(ptrTag, ptrPos);
-	if (!ilk)
-		return;
-
 	tchar_t token[INT_LEN + 1] = { 0 };
 
 	xsprintf(token, _T("tag%d"), get_tag_joint_count(ptrTag));
-	set_tag_joint_name(ilk, token);
 
-	xsprintf(token, _T("±êÇ©%d"), get_tag_joint_count(ptrTag));
-	set_tag_joint_text(ilk, token, -1);
-
-	tagctrl_redraw(pdt->hTag);
+	tagctrl_setup_tag(pdt->hTag, token);
 }
 
 void TagPanel_OnCopy(res_win_t widget)
@@ -369,6 +359,11 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 
 	widget_set_user_id(pdt->hTag, IDC_TAGPANEL_TAG);
 	widget_set_owner(pdt->hTag, widget);
+
+	xface_t xa;
+	widget_get_xface(pdt->hTag, &xa);
+	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
+	widget_set_xface(pdt->hTag, &xa);
 
 	LINKPTR ptrTag = create_tag_doc();
 	tagctrl_attach(pdt->hTag, ptrTag);
