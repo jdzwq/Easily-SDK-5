@@ -1896,7 +1896,7 @@ void hand_form_scroll(res_win_t widget, bool_t bHorz, long nLine)
 
 	if (widget_is_valid(ptd->editor))
 	{
-		if (!IS_PAGED_FIELD(get_field_class_ptr(ptd->field)))
+		if (!IS_AUTO_FIELD(get_field_class_ptr(ptd->field)))
 		{
 			noti_form_reset_editor(widget, 1);
 		}
@@ -1934,6 +1934,7 @@ void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		{
 			ptd->cur_x = pxp->x;
 			ptd->cur_y = pxp->y;
+
 			widget_update(widget, NULL, 0);
 			return;
 		}
@@ -1990,7 +1991,11 @@ void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		}
 		else if (nHint == FORM_HINT_NONE)
 		{
-			widget_set_cursor(widget, CURSOR_ARROW);
+			if (dw & MS_WITH_LBUTTON)
+			{
+				noti_form_begin_group(widget, pxp->x, pxp->y);
+				return;
+			}
 		}
 	}
 }
@@ -2062,12 +2067,8 @@ void hand_form_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		}
 		break;
 	case FORM_HINT_NONE:
-		if (widget_key_state(widget, KEY_CONTROL))
-		{
-			noti_form_begin_group(widget, pxp->x, pxp->y);
-		}
-		else
-		{
+		if (!widget_key_state(widget, KEY_CONTROL))
+		{		
 			noti_form_reset_select(widget);
 		}
 		break;
@@ -2140,7 +2141,7 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		noti_form_field_changed(widget, flk);
 
-		if (IS_PAGED_FIELD(get_field_class_ptr(flk)))
+		if (IS_AUTO_FIELD(get_field_class_ptr(flk)))
 			bAuto = 1;
 	}
 

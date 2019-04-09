@@ -41,6 +41,7 @@ LICENSE.GPL3 for more details.
 
 #define GRIDDLG_BUTTON_HEIGHT		(float)8 //tm
 #define GRIDDLG_BUTTON_WIDTH		(float)12 //tm
+#define GRIDDLG_EDITBOX_WIDTH		(float)20 //tm
 
 typedef struct _griddlg_delta_t{
 	link_t_ptr grid;
@@ -62,7 +63,7 @@ void griddlg_on_ok(res_win_t widget)
 	widget_close(widget, 1);
 }
 
-void griddlg_on_filter(res_win_t widget)
+void griddlg_on_find(res_win_t widget)
 {
 	res_win_t ctrl;
 	tchar_t token[RES_LEN];
@@ -71,7 +72,7 @@ void griddlg_on_filter(res_win_t widget)
 	editbox_get_text(ctrl, token, RES_LEN);
 
 	ctrl = widget_get_child(widget, IDC_GRIDDLG_GRID);
-	gridctrl_find(ctrl, LINK_FIRST, token);
+	gridctrl_find(ctrl, token);
 }
 /**********************************************************************************/
 int hand_griddlg_create(res_win_t widget, void* data)
@@ -104,6 +105,10 @@ int hand_griddlg_create(res_win_t widget, void* data)
 
 	widget_show(gridctrl, WD_SHOW_NORMAL);
 
+	xs.fx = GRIDDLG_EDITBOX_WIDTH;
+	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	widget_size_to_pt(widget, &xs);
+
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
 	xr.h = xs.cy;
@@ -116,7 +121,7 @@ int hand_griddlg_create(res_win_t widget, void* data)
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
 
-	editbox = editbox_create(widget, WD_STYLE_CONTROL, &xr);
+	editbox = editbox_create(widget, WD_STYLE_CONTROL | WD_STYLE_EDITOR, &xr);
 	widget_set_user_id(editbox, IDC_GRIDDLG_EDITBOX);
 	widget_set_owner(editbox, widget);
 	widget_show(editbox, WD_SHOW_NORMAL);
@@ -196,6 +201,33 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
 	}
+
+	xs.fx = GRIDDLG_EDITBOX_WIDTH;
+	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	widget_size_to_pt(widget, &xs);
+
+	widget_get_client_rect(widget, &xr);
+	xr.y = xr.y + xr.h - xs.cy;
+	xr.h = xs.cy;
+	xr.x = xr.x;
+	xr.w = xs.cx;
+
+	xs.fx = DEF_SPLIT_FEED;
+	xs.fy = DEF_SPLIT_FEED;
+	widget_size_to_pt(widget, &xs);
+
+	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+
+	ctrl = widget_get_child(widget, IDC_GRIDDLG_EDITBOX);
+	if (widget_is_valid(ctrl))
+	{
+		widget_move(ctrl, RECTPOINT(&xr));
+		widget_size(ctrl, RECTSIZE(&xr));
+	}
+
+	xs.fx = GRIDDLG_BUTTON_WIDTH;
+	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -282,7 +314,11 @@ void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long dat
 	case IDC_GRIDDLG_EDITBOX:
 		if (code == COMMAND_UPDATE)
 		{
-			griddlg_on_filter(widget);
+			griddlg_on_find(widget);
+		}
+		else if (code == COMMAND_COMMIT)
+		{
+			widget_post_command(widget, 0, IDC_GRIDDLG_PUSHBOX_OK, 0);
 		}
 		break;
 	}

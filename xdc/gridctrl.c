@@ -422,7 +422,7 @@ void _gridctrl_ensure_visible(res_win_t widget)
 		widget_get_canv_rect(widget, &cb);
 
 		page = calc_grid_row_page( &cb, ptd->grid,ptd->row);
-		if (page != ptd->cur_page)
+		if (page && page != ptd->cur_page)
 		{
 			ptd->cur_page = page;
 			widget_update(widget, NULL, 0);
@@ -2772,7 +2772,7 @@ int gridctrl_get_cur_page(res_win_t widget)
 	return ptd->cur_page;
 }
 
-void gridctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
+void gridctrl_find(res_win_t widget, const tchar_t* token)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 
@@ -2786,34 +2786,30 @@ void gridctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 
 	noti_grid_reset_editor(widget, 1);
 
+	clk = get_next_visible_col(ptd->grid, LINK_FIRST);
+	if (!clk)
+		return;
+
 	tlen = xslen(token);
 
-	if (pos == LINK_FIRST)
-		rlk = get_next_visible_row(ptd->grid, LINK_FIRST);
-	else if (pos == LINK_LAST)
-		rlk = NULL;
+	
+	if (tlen)
+		rlk = (ptd->row) ? get_next_visible_row(ptd->grid, ptd->row) : get_next_visible_row(ptd->grid, LINK_FIRST);
 	else
-		rlk = get_next_visible_row(ptd->grid, pos);
-
+		rlk = NULL;
+	
 	while (rlk)
 	{
-		clk = get_next_visible_col(ptd->grid, LINK_FIRST);
-		while (clk)
-		{
-			if (xsnicmp(get_cell_text_ptr(rlk, clk), token, tlen) == 0)
-				break;
-
-			clk = get_next_visible_col(ptd->grid, clk);
-		}
-
-		if (clk)
+		if (xsnicmp(get_cell_text_ptr(rlk, clk), token, tlen) == 0)
 			break;
 
 		rlk = get_next_visible_row(ptd->grid, rlk);
 	}
 
-	if (rlk && clk)
+	if (rlk)
 		gridctrl_set_focus_cell(widget, rlk, clk);
+	else
+		gridctrl_set_focus_cell(widget, NULL, NULL);
 }
 
 void gridctrl_filter(res_win_t widget, const tchar_t* token)

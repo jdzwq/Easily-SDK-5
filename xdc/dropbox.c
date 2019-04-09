@@ -480,7 +480,7 @@ void dropbox_tabskip(res_win_t widget, int nSkip)
 	if (!ptd->table)
 		return;
 
-	ilk = ptd->entity;
+	ilk = (ptd->entity)? ptd->entity : LINK_FIRST;
 
 	switch (nSkip)
 	{

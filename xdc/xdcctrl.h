@@ -674,11 +674,10 @@ XDC_API link_t_ptr gridctrl_insert_row(res_win_t widget, link_t_ptr pos);
 /*
 @FUNCTION gridctrl_find: find a matched row from position.
 @INPUT res_win_t widget: the grid widget.
-@INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @INPUT const tchar_t* token: the pattern token, eg: "col = val".
 @RETURN void: none.
 */
-XDC_API void	gridctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token);
+XDC_API void	gridctrl_find(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION gridctrl_filter: filter a matched rows.
@@ -2213,11 +2212,10 @@ XDC_API bool_t listctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const t
 /*
 @FUNCTION listctrl_find: find the list item from position.
 @INPUT res_win_t widget: the list widget.
-@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @INPUT const tchar_t* token: the text token.
 @RETURN void: none.
 */
-XDC_API void	listctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token);
+XDC_API void	listctrl_find(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION listctrl_popup_size: calcing the list popup size according to client size.
@@ -3001,11 +2999,10 @@ XDC_API bool_t treectrl_set_item_title(res_win_t widget, link_t_ptr ilk, const t
 /*
 @FUNCTION treectrl_find: find a item from position.
 @INPUT res_win_t widget: the tree widget.
-@INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @INPUT const tchar_t* token: the matching token.
 @RETURN void: none.
 */
-XDC_API void	treectrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token);
+XDC_API void	treectrl_find(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION treectrl_popup_size: calcing the tree popup size according to client size.

@@ -521,7 +521,7 @@ void listbox_tabskip(res_win_t widget, int nSkip)
 	if (!ptd->string)
 		return;
 
-	ilk = ptd->entity;
+	ilk = (ptd->entity)? ptd->entity : NULL;
 
 	switch (nSkip)
 	{

@@ -496,6 +496,7 @@ LICENSE.GPL3 for more details.
 #define IS_PAGED_FIELD(token)	(compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRAPH,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0)
 #define IS_LARGE_FIELD(token)	(compare_text(token,-1,DOC_FORM_PHOTO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0)
 #define IS_EDITOR_FIELD(token)	(compare_text(token,-1,DOC_FORM_SHAPE,-1,0) != 0 && compare_text(token,-1,DOC_FORM_LABEL,-1,0) != 0 && compare_text(token,-1,DOC_FORM_HREF,-1,0) != 0 && compare_text(token,-1,DOC_FORM_PHOTO,-1,0) != 0 && compare_text(token,-1,DOC_FORM_IMAGES,-1,0) != 0)
+#define IS_AUTO_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRAPH,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_TAG,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CHECK,-1,0) == 0)
 
 #ifdef	__cplusplus
 extern "C" {

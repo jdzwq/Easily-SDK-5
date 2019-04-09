@@ -1224,7 +1224,7 @@ void treectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* prt)
 	_treectrl_item_rect(widget, ilk, prt);
 }
 
-void treectrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
+void treectrl_find(res_win_t widget, const tchar_t* token)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	link_t_ptr elk;
@@ -1240,35 +1240,40 @@ void treectrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 	noti_tree_reset_editor(widget, 1);
 
 	tlen = xslen(token);
-	help = xsalloc(tlen + 1);
 
-	if (pos == LINK_FIRST)
-		elk = get_tree_next_visible_item(ptd->tree, LINK_FIRST);
-	else if (pos == LINK_LAST)
-		elk = NULL;
-	else
-		elk = get_tree_next_visible_item(ptd->tree, pos);
-
-	while (elk)
+	if (tlen)
 	{
-		if (xsnicmp(get_tree_item_title_ptr(elk), token, tlen) == 0)
-			break;
+		help = xsalloc(tlen + 1);
 
-		hlen = xslen(get_tree_item_title_ptr(elk));
-		if (hlen)
+		elk = (ptd->item) ? get_tree_next_sibling_item(ptd->item) : get_tree_first_child_item(ptd->tree);
+
+		while (elk)
 		{
-			help_code(get_tree_item_title_ptr(elk), hlen, help, tlen);
-			if (xsnicmp(help, token, tlen) == 0)
+			if (xsnicmp(get_tree_item_title_ptr(elk), token, tlen) == 0)
 				break;
+
+			hlen = xslen(get_tree_item_title_ptr(elk));
+			if (hlen)
+			{
+				help_code(get_tree_item_title_ptr(elk), hlen, help, tlen);
+				if (xsnicmp(help, token, tlen) == 0)
+					break;
+			}
+
+			elk = get_tree_next_sibling_item(elk);
 		}
 
-		elk = get_tree_next_visible_item(ptd->tree, elk);
+		xsfree(help);
 	}
-
-	xsfree(help);
+	else
+	{
+		elk = NULL;
+	}
 
 	if (elk)
 		treectrl_set_focus_item(widget, elk);
+	else
+		treectrl_set_focus_item(widget, NULL);
 }
 
 void treectrl_popup_size(res_win_t widget, xsize_t* pse)

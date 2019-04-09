@@ -74,7 +74,7 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, long nLine, uid_t 
 		return 0;
 
 	if (bHorz)
-		return 0;
+		return 1;
 
 	dropbox = (res_win_t)delta;
 

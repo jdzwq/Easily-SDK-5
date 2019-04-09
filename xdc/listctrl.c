@@ -140,7 +140,7 @@ void _listctrl_ensure_visible(res_win_t widget)
 	widget_ensure_visible(widget, &xr, 1);
 }
 
-void _listctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
+void _listctrl_find(res_win_t widget, const tchar_t* token)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	link_t_ptr elk;
@@ -150,35 +150,42 @@ void _listctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 
 	tlen = xslen(token);
 
-	help = xsalloc(tlen + 1);
-
-	if (pos == LINK_FIRST || pos == ptd->parent)
-		elk = get_list_first_child_item(ptd->parent);
-	else if (pos == LINK_LAST)
-		elk = NULL;
-	else
-		elk = get_list_next_sibling_item(pos);
-
-	while (elk)
+	if (tlen)
 	{
-		if (xsnicmp(get_list_item_title_ptr(elk), token, tlen) == 0)
-			break;
+		help = xsalloc(tlen + 1);
 
-		hlen = xslen(get_list_item_title_ptr(elk));
-		if (hlen)
+		elk = (ptd->item) ? get_list_next_sibling_item(ptd->item) : NULL;
+
+		if (!elk)
+			elk = (ptd->parent) ? get_list_first_child_item(ptd->parent) : NULL;
+
+		while (elk)
 		{
-			tlen = help_code(get_list_item_title_ptr(elk), hlen, help, tlen);
-			if (xsnicmp(help, token, tlen) == 0)
+			if (xsnicmp(get_list_item_title_ptr(elk), token, tlen) == 0)
 				break;
+
+			hlen = xslen(get_list_item_title_ptr(elk));
+			if (hlen)
+			{
+				tlen = help_code(get_list_item_title_ptr(elk), hlen, help, tlen);
+				if (xsnicmp(help, token, tlen) == 0)
+					break;
+			}
+
+			elk = get_list_next_sibling_item(elk);
 		}
 
-		elk = get_list_next_sibling_item(elk);
+		xsfree(help);
 	}
-
-	xsfree(help);
+	else
+	{
+		elk = NULL;
+	}
 
 	if (elk)
 		listctrl_set_focus_item(widget, elk);
+	else
+		listctrl_set_focus_item(widget, NULL);
 }
 
 /************************************control event**********************************************/
@@ -865,7 +872,7 @@ void hand_list_char(res_win_t widget, tchar_t ch)
 		if (xslen(ptd->help) < MAX_HELP)
 		{
 			xsncat(ptd->help, &ch, 1);
-			_listctrl_find(widget, ptd->item, ptd->help);
+			_listctrl_find(widget, ptd->help);
 		}
 	}
 }
@@ -1275,7 +1282,7 @@ void listctrl_set_lock(res_win_t widget, bool_t bLock)
 	ptd->b_lock = bLock;
 }
 
-void listctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
+void listctrl_find(res_win_t widget, const tchar_t* token)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 
@@ -1286,7 +1293,7 @@ void listctrl_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 
 	noti_list_reset_editor(widget, 1);
 
-	_listctrl_find(widget, pos, token);
+	_listctrl_find(widget, token);
 }
 
 void listctrl_popup_size(res_win_t widget, xsize_t* pse)

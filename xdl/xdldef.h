@@ -205,10 +205,10 @@ typedef struct _link_t{
 }link_t;
 
 #ifdef _OS_64
-#define LINK_FIRST	((link_t_ptr)((unsigned long long)0))		
+#define LINK_FIRST	((link_t_ptr)((unsigned long long)1))		
 #define LINK_LAST	((link_t_ptr)((unsigned long long)-1))
 #else
-#define LINK_FIRST	((link_t_ptr)((unsigned long)0))		
+#define LINK_FIRST	((link_t_ptr)((unsigned long)1))		
 #define LINK_LAST	((link_t_ptr)((unsigned long)-1))
 #endif
 

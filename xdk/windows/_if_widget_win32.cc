@@ -1081,7 +1081,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		{
 			SCROLLINFO scr = { 0 };
 			scr.cbSize = sizeof(scr);
-			scr.fMask = SIF_POS;
+			scr.fMask = SIF_POS | SIF_RANGE;
 			GetScrollInfo(hWnd, SB_VERT, &scr);
 
 			if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
@@ -1106,7 +1106,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		{
 			SCROLLINFO scr = { 0 };
 			scr.cbSize = sizeof(scr);
-			scr.fMask = SIF_POS;
+			scr.fMask = SIF_POS | SIF_RANGE;
 			GetScrollInfo(hWnd, SB_VERT, &scr);
 
 			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
