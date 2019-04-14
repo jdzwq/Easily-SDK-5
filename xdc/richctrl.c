@@ -585,7 +585,10 @@ void hand_richctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 
 	widget_get_scroll(widget, bHorz, &scr);
 
-	nLine = (nDelta < 0) ? scr.min : -scr.min;
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (hand_textor_scroll(&ptd->textor, bHorz, nLine))
 		return;
@@ -831,6 +834,19 @@ link_t_ptr richctrl_insert_anch(res_win_t widget, link_t_ptr pos)
 		return NULL;
 
 	hand_textor_done(&ptd->textor);
+
+	if (pos == LINK_FIRST)
+		pos = get_rich_next_anch((link_t_ptr)ptd->textor.data, LINK_FIRST);
+	else if (pos == LINK_LAST)
+		pos = get_rich_prev_anch((link_t_ptr)ptd->textor.data, LINK_LAST);
+	else
+	{
+#ifdef _DEBUG
+		XDL_ASSERT(is_rich_anch((link_t_ptr)ptd->textor.data, pos));
+#endif
+	}
+
+	if (!pos) pos = LINK_FIRST;
 
 	nlk = insert_rich_anch((link_t_ptr)ptd->textor.data, pos);
 

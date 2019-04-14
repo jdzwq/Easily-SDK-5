@@ -551,7 +551,7 @@ void refresh_graph_xaxset(link_t_ptr ptr)
 		next = get_next_xax(ptr, xlk);
 
 		state = get_xax_state(xlk);
-		if (state == dsNewClean || state == dsNewDelete)
+		if (state == dsNewClean || state == dsDelete)
 		{
 			delete_xax(xlk);
 		}
@@ -680,18 +680,20 @@ void set_xax_clean(link_t_ptr xlk)
 		set_xax_state(xlk, dsClean);
 }
 
-void set_xax_delete(link_t_ptr xlk)
+link_t_ptr set_xax_delete(link_t_ptr xlk)
 {
 	switch (get_xax_state(xlk))
 	{
 	case dsNewClean:
 	case dsNewDirty:
-		set_xax_state(xlk, dsNewDelete);
-		break;
+		delete_xax(xlk);
+		return NULL;
 	case dsClean:
 	case dsDirty:
 		set_xax_state(xlk, dsDelete);
-		break;
+		return xlk;
+	default:
+		return xlk;
 	}
 }
 

@@ -137,7 +137,6 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	{
 		format_xcolor(&pif->clr_bkg, xb.color);
 	}
-	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;

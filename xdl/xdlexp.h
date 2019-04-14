@@ -51,7 +51,7 @@ XDL_API int expr_format_length(link_t_ptr ptr);
 XDL_API int expr_format(link_t_ptr ptr,tchar_t* buf,int max);
 
 /*execute expression and return result*/
-XDL_API int expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm);
+XDL_API bool_t expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm);
 
 #ifdef	__cplusplus
 }

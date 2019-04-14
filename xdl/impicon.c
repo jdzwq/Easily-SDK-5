@@ -98,12 +98,26 @@ void draw_delete_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 void draw_plus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
-	xrect_t xr;
+	xpoint_t pt[2];
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
 
-	xr.x = prt->x;
+	pt[0].x = prt->x;
+	pt[0].y = prt->y + prt->h / 2;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h / 2;
+
+	draw_3dline_raw(rdc, &xp, &(pt[0]), &(pt[1]));
+
+	pt[0].x = prt->x + prt->w / 2;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w / 2;
+	pt[1].y = prt->y + prt->h;
+
+	draw_3dline_raw(rdc, &xp, &(pt[0]), &(pt[1]));
+
+	/*xr.x = prt->x;
 	xr.y = prt->y;
 	xr.w = prt->w / 2;
 	xr.h = prt->h / 2;
@@ -135,19 +149,25 @@ void draw_plus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	else if (xr.w > xr.h)
 		xr.h = xr.w;
 
-	draw_rect_raw(rdc, &xp, NULL, prt);
+	draw_rect_raw(rdc, &xp, NULL, prt);*/
 }
 
 void draw_minus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
-	xrect_t xr;
-	xpoint_t pt1, pt2;
+	xpoint_t pt[2];
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
 
-	xr.x = prt->x;
+	pt[0].x = prt->x;
+	pt[0].y = prt->y + prt->h / 2;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h / 2;
+
+	draw_3dline_raw(rdc, &xp, &(pt[0]), &(pt[1]));
+
+	/*xr.x = prt->x;
 	xr.y = prt->y;
 	xr.w = prt->w;
 	xr.h = prt->h;
@@ -168,7 +188,7 @@ void draw_minus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	pt2.y = xr.y + xr.h / 2;
 	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
-	draw_rect_raw(rdc, &xp, NULL, &xr);
+	draw_rect_raw(rdc, &xp, NULL, &xr);*/
 }
 
 void draw_collapse_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)

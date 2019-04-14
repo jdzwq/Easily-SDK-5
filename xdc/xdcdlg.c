@@ -49,6 +49,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 	EVENT_END_DISPATH
 	
 	dlg = widget_create(get_dialog_name_ptr(ptr_dlg), WD_STYLE_DIALOG, &xr, owner, &ev);
+
 	XDL_ASSERT(dlg);
 
 	widget_set_owner(dlg, owner);
@@ -199,6 +200,8 @@ int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_
 	if_canvas_t* pif;
 
 	widget_get_xbrush(widget, &xb);
+
+	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
 	widget_get_client_rect(widget, &xr);
 

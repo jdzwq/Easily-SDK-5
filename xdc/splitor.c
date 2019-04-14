@@ -274,11 +274,11 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 
 			if (compare_text(get_split_item_layer_ptr(ilk), -1, ATTR_LAYER_HORZ, -1, 1) == 0)
 			{
-				gradient_rect_raw(rdc, &xg_vert, &xr);
+				gradient_rect_raw(rdc, &xg_horz, &xr);
 			}
 			else
 			{
-				gradient_rect_raw(rdc, &xg_horz, &xr);
+				gradient_rect_raw(rdc, &xg_vert, &xr);
 			}
 		}
 

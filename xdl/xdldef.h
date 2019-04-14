@@ -307,11 +307,10 @@ typedef enum{
 	dsDirty = 1, 
 	dsNewClean = 2, 
 	dsNewDirty = 4, 
-	dsDelete = 8, 
-	dsNewDelete = 16 
+	dsDelete = 8
 }_DATA_STATE;
 
-#define dsAll		(dsClean | dsNewClean | dsDirty | dsNewDirty | dsDelete | dsNewDelete)
+#define dsAll		(dsClean | dsNewClean | dsDirty | dsNewDirty | dsDelete)
 #define dsUpdate	(dsDirty | dsNewDirty | dsDelete)
 #define dsNone		0
 

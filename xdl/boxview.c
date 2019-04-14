@@ -1206,13 +1206,16 @@ void draw_checkbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
 	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
 
+	xr.fx = pbox->fx;
+	xr.fy = pbox->fy;
+	xr.fw = pbox->fw;
+	xr.fh = pbox->fh;
+	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
+
+	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+
 	if (b_on)
 	{
-		xr.fx = pbox->fx;
-		xr.fy = pbox->fy;
-		xr.fw = pbox->fw;
-		xr.fh = pbox->fh;
-		ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
 		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_CHECKED);
 	}
 }

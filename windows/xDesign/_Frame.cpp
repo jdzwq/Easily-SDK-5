@@ -2056,7 +2056,7 @@ void _MainFrame_CreateResBar(res_win_t widget)
 
 	_MainFrame_CalcResBar(widget, &xr);
 
-	pdt->hResBar = treectrl_create(_T("ResBar"), WD_STYLE_CONTROL, &xr, widget);
+	pdt->hResBar = treectrl_create(_T("ResBar"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
 	widget_set_user_id(pdt->hResBar, IDC_MAINFRAME_RESBAR);
 	widget_set_owner(pdt->hResBar, widget);
 

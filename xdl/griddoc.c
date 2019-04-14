@@ -80,7 +80,6 @@ void default_col_attr(link_t_ptr clk)
 	set_col_nullable(clk,1); 
 }
 
-
 tchar_t* col_calc_func(const tchar_t* token,void* parm)
 {
 	calc_param_t* pcp = (calc_param_t*)parm;
@@ -107,7 +106,7 @@ bool_t row_find_proc(const tchar_t* key,const tchar_t* sin,const tchar_t* val,vo
 {
 	link_t_ptr clk;
 	find_param_t* pfp;
-	bool_t matched;
+	bool_t matched = 0;
 	int vallen,rt;
 	const tchar_t* str;
 	const tchar_t* type;
@@ -640,18 +639,20 @@ void set_row_clean(link_t_ptr rlk)
 		set_row_state(rlk,dsClean);
 }
 
-void set_row_delete(link_t_ptr rlk)
+link_t_ptr set_row_delete(link_t_ptr rlk)
 {
 	switch(get_row_state(rlk))
 	{
 	case dsNewClean:
 	case dsNewDirty:
-		set_row_state(rlk, dsNewDelete);
-		break;
+		delete_row(rlk);
+		return NULL;
 	case dsClean:
 	case dsDirty:
 		set_row_state(rlk,dsDelete);
-		break;
+		return rlk;
+	default:
+		return rlk;
 	}
 }
 
@@ -1174,7 +1175,7 @@ void refresh_grid_rowset(link_t_ptr ptr)
 	{
 		next = get_next_row(ptr,rlk);
 		state = get_row_state(rlk);
-		if (state == dsNewClean || state == dsDelete || state == dsNewDelete)
+		if (state == dsNewClean || state == dsDelete)
 		{
 			delete_row(rlk);
 		}else
@@ -1200,7 +1201,7 @@ void filter_grid_rowset(link_t_ptr ptr,const tchar_t* szFilter)
 {
 	link_t_ptr rlk;
 	link_t_ptr maco;
-	int matched;
+	bool_t matched;
 	find_param_t fp = {0};
 
 	if(is_null(szFilter))	

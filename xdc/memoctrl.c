@@ -583,7 +583,10 @@ void hand_memoctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 
 	widget_get_scroll(widget, bHorz, &scr);
 
-	nLine = (nDelta < 0) ? scr.min : -scr.min;
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (hand_textor_scroll(&ptd->textor, bHorz, nLine))
 		return;

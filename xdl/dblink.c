@@ -108,7 +108,7 @@ void insert_link_before(link_t_ptr root,link_t_ptr plk,link_t_ptr pnew)
 		plk = root;	// will insert into last 
 	}
 
-	XDL_ASSERT(plk != pnew);
+	XDL_ASSERT(plk && plk != pnew);
 
 	XDL_ASSERT(pnew->next == NULL && pnew->prev == NULL);
 
@@ -134,7 +134,7 @@ void insert_link_after(link_t_ptr root,link_t_ptr plk,link_t_ptr pnew)
 		plk = root->prev;	// will insert into last 
 	}
 
-	XDL_ASSERT(plk != pnew);
+	XDL_ASSERT(plk && plk != pnew);
 
 	XDL_ASSERT(pnew->next == NULL && pnew->prev == NULL);
 

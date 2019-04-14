@@ -359,6 +359,10 @@ XDC_API void formctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 XDC_API bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* text);
 
 /***********************************grid control*******************************************************************/
+#define GRID_NOTICE_ACCEPT		0
+#define GRID_NOTICE_REJECT		1
+#define GRID_NOTICE_DELETE		-1
+
 typedef struct _NOTICE_GRID{
 	res_win_t widget;
 	unsigned long id;

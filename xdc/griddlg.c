@@ -316,10 +316,6 @@ void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long dat
 		{
 			griddlg_on_find(widget);
 		}
-		else if (code == COMMAND_COMMIT)
-		{
-			widget_post_command(widget, 0, IDC_GRIDDLG_PUSHBOX_OK, 0);
-		}
 		break;
 	}
 }

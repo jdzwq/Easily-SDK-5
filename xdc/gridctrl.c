@@ -1113,7 +1113,7 @@ void noti_grid_commit_edit(res_win_t widget)
 	tchar_t* text;
 	res_win_t editctrl;
 	link_t_ptr ilk,rlk_new;
-	bool_t b_accept = 0;
+	int n_ret = 0;
 
 	EDITDELTA fd = { 0 };
 
@@ -1127,8 +1127,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	if (compare_text(editor, -1, ATTR_EDITOR_FIREEDIT, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
-		if (b_accept)
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text);
+		if (n_ret == GRID_NOTICE_ACCEPT)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1136,8 +1136,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRENUM, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
-		if (b_accept)
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text);
+		if (n_ret == GRID_NOTICE_ACCEPT)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1145,8 +1145,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREDATE, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
-		if (b_accept)
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text);
+		if (n_ret == GRID_NOTICE_ACCEPT)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1154,8 +1154,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRETIME, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
-		if (b_accept)
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text);
+		if (n_ret == GRID_NOTICE_ACCEPT)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1163,8 +1163,8 @@ void noti_grid_commit_edit(res_win_t widget)
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRELIST, -1, 0) == 0)
 	{
 		text = (tchar_t*)editbox_get_text_ptr(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text) == 0) ? 1 : 0;
-		if (b_accept)
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)text);
+		if (n_ret == GRID_NOTICE_ACCEPT)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, text);
 		}
@@ -1179,8 +1179,8 @@ void noti_grid_commit_edit(res_win_t widget)
 		}
 
 		fd.text = editbox_get_text_ptr(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd) == 0) ? 1 : 0;
-		if (b_accept)
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd);
+		if (n_ret == GRID_NOTICE_ACCEPT)
 		{
 			gridctrl_set_cell_text(widget, ptd->row, ptd->col, fd.text);
 		}
@@ -1189,7 +1189,11 @@ void noti_grid_commit_edit(res_win_t widget)
 	{
 		fd.data = firegrid_get_data(ptd->editor);
 		fd.item = firegrid_get_item(ptd->editor);
-		b_accept = (noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd) == 0) ? 1 : 0;
+		n_ret = noti_grid_owner(widget, NC_CELLCOMMIT, ptd->grid, ptd->row, ptd->col, (void*)&fd);
+		if (n_ret == GRID_NOTICE_ACCEPT)
+		{
+			gridctrl_redraw_row(widget, ptd->row, 1);
+		}
 	}
 
 	editctrl = ptd->editor;
@@ -1198,40 +1202,46 @@ void noti_grid_commit_edit(res_win_t widget)
 	widget_destroy(editctrl);
 	widget_set_focus(widget);
 
-	if (!b_accept)
+	if (n_ret == GRID_NOTICE_REJECT)
 		return;
-
-	if (ptd->b_auto && (ptd->row == get_prev_visible_row(ptd->grid, LINK_LAST)) && (ptd->col == ptd->fix || ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST)))
+	else if (n_ret == GRID_NOTICE_DELETE)
 	{
-		rlk_new = insert_row(ptd->grid, LINK_LAST);
-		set_row_state(rlk_new, dsNewClean);
-
-		if (!noti_grid_row_insert(widget, rlk_new))
-		{
-			delete_row(rlk_new);
-			return;
-		}
-
-		gridctrl_redraw_row(widget, rlk_new, 1);
-		gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
+		gridctrl_delete_row(widget, ptd->row);
 	}
 	else
 	{
-		if (ptd->col == ptd->fix)
+		if (ptd->b_auto && (ptd->row == get_prev_visible_row(ptd->grid, LINK_LAST)) && (ptd->col == ptd->fix || ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST)))
 		{
-			gridctrl_tabskip(widget,WD_TAB_DOWN);
-		}
-		else if (ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST))
-		{
-			rlk_new = get_next_visible_row(ptd->grid, ptd->row);
-			if (rlk_new)
+			rlk_new = insert_row(ptd->grid, LINK_LAST);
+			set_row_state(rlk_new, dsNewClean);
+
+			if (!noti_grid_row_insert(widget, rlk_new))
 			{
-				gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
+				delete_row(rlk_new);
+				return;
 			}
+
+			gridctrl_redraw_row(widget, rlk_new, 1);
+			gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
 		}
 		else
 		{
-			gridctrl_tabskip(widget,WD_TAB_RIGHT);
+			if (ptd->col == ptd->fix)
+			{
+				gridctrl_tabskip(widget, WD_TAB_DOWN);
+			}
+			else if (ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST))
+			{
+				rlk_new = get_next_visible_row(ptd->grid, ptd->row);
+				if (rlk_new)
+				{
+					gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
+				}
+			}
+			else
+			{
+				gridctrl_tabskip(widget, WD_TAB_RIGHT);
+			}
 		}
 	}
 }
@@ -1356,7 +1366,10 @@ void hand_grid_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 
 	widget_get_scroll(widget, bHorz, &scr);
 
-	nLine = (nDelta < 0) ? scr.min : -scr.min;
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
 		return;
@@ -2319,6 +2332,8 @@ link_t_ptr gridctrl_insert_row(res_win_t widget, link_t_ptr pre)
 #endif
 	}
 
+	if (!pre) pre = LINK_FIRST;
+
 	rlk = insert_row(ptd->grid, pre);
 	set_row_state(rlk, dsNewClean);
 
@@ -2330,7 +2345,7 @@ link_t_ptr gridctrl_insert_row(res_win_t widget, link_t_ptr pre)
 
 	gridctrl_redraw_row(widget, rlk, 0);
 
-	gridctrl_set_focus_cell(widget, rlk, ptd->col);
+	gridctrl_set_focus_cell(widget, rlk, LINK_FIRST);
 
 	return rlk;
 }
@@ -2452,14 +2467,14 @@ bool_t gridctrl_set_focus_cell(res_win_t widget, link_t_ptr rlk, link_t_ptr clk)
 		return 0;
 
 	if (rlk == LINK_FIRST)
-		rlk = get_next_row(ptd->grid, LINK_FIRST);
+		rlk = get_next_visible_row(ptd->grid, LINK_FIRST);
 	else if (rlk == LINK_LAST)
-		rlk = get_prev_row(ptd->grid, LINK_LAST);
+		rlk = get_prev_visible_row(ptd->grid, LINK_LAST);
 
 	if (clk == LINK_FIRST)
-		clk = get_next_col(ptd->grid, LINK_FIRST);
+		clk = get_next_focusable_col(ptd->grid, LINK_FIRST);
 	else if (clk == LINK_LAST)
-		clk = get_prev_col(ptd->grid, LINK_LAST);
+		clk = get_prev_focusable_col(ptd->grid, LINK_LAST);
 
 	bReRow = (rlk == ptd->row) ? 1 : 0;
 	bReCol = (clk == ptd->col) ? 1 : 0;
@@ -2597,7 +2612,7 @@ void gridctrl_accept(res_win_t widget, bool_t bAccept)
 		nxt = get_next_row(ptd->grid, rlk);
 
 		rs = get_row_state(rlk);
-		if (rs == dsNewClean || rs == dsNewDelete)
+		if (rs == dsNewClean)
 			delete_row(rlk);
 
 		rlk = nxt;

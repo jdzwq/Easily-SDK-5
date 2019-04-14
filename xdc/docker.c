@@ -352,7 +352,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = span;
 				xr_bar.y = xr.y;
 				xr_bar.h = xr.h;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
@@ -374,7 +374,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = xr.w;
 				xr_bar.y = xr.y + xr.h;
 				xr_bar.h = span;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
+				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_VERT);
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
@@ -396,7 +396,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = span;
 				xr_bar.y = xr.y;
 				xr_bar.h = xr.h;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
@@ -418,7 +418,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = xr.w;
 				xr_bar.y = xr.y - span;
 				xr_bar.h = span;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
+				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_VERT);
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 

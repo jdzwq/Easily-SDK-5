@@ -882,7 +882,10 @@ void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 
 	widget_get_scroll(widget, bHorz, &scr);
 
-	nLine = (nDelta < 0) ? scr.min : -scr.min;
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
 		return;

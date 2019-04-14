@@ -1186,7 +1186,10 @@ void hand_graph_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 
 	widget_get_scroll(widget, bHorz, &scr);
 
-	nLine = (nDelta < 0) ? scr.min : -scr.min;
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
 		return;
@@ -1824,7 +1827,7 @@ void graphctrl_accept(res_win_t widget, bool_t bAccept)
 		nxt = get_next_xax(ptd->graph, xlk);
 
 		ds = get_xax_state(xlk);
-		if (ds == dsNewClean || ds == dsNewDelete)
+		if (ds == dsNewClean)
 			delete_xax(xlk);
 
 		xlk = nxt;
@@ -2114,6 +2117,8 @@ link_t_ptr graphctrl_insert_xax(res_win_t widget, link_t_ptr pre)
 #endif
 	}
 
+	if (!pre) pre = LINK_FIRST;
+
 	xlk = insert_xax(ptd->graph, pre);
 	set_xax_state(xlk, dsNewClean);
 
@@ -2125,7 +2130,7 @@ link_t_ptr graphctrl_insert_xax(res_win_t widget, link_t_ptr pre)
 
 	graphctrl_redraw(widget, 1);
 
-	graphctrl_set_focus_coor(widget, xlk, get_next_yax(ptd->graph, LINK_FIRST));
+	graphctrl_set_focus_coor(widget, xlk, LINK_FIRST);
 
 	return xlk;
 }

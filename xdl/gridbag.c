@@ -131,7 +131,7 @@ void save_graph_to_grid(link_t_ptr ptr, link_t_ptr grid)
 	while (xlk)
 	{
 		rs = get_xax_state(xlk);
-		if (rs == dsNewClean || rs == dsDelete || rs == dsNewDelete)
+		if (rs == dsNewClean || rs == dsDelete)
 		{
 			xlk = get_next_xax(ptr, xlk);
 			continue;
@@ -181,7 +181,7 @@ void load_graph_from_grid(link_t_ptr ptr, link_t_ptr grid)
 	{
 		rs = get_row_state(rlk);
 
-		if (rs == dsDelete || rs == dsNewClean || rs == dsNewDelete)
+		if (rs == dsDelete || rs == dsNewClean)
 		{
 			rlk = get_next_row(grid, rlk);
 			continue;
@@ -243,7 +243,7 @@ void load_rich_from_grid_row(link_t_ptr ptr, link_t_ptr grid, link_t_ptr rlk)
 	int rs;
 
 	rs = get_row_state(rlk);
-	if (rs == dsNewClean || rs == dsDelete || rs == dsNewDelete)
+	if (rs == dsNewClean || rs == dsDelete)
 		return;
 
 	nlk = get_rich_next_anch(ptr, LINK_FIRST);

@@ -207,6 +207,16 @@ LICENSE.GPL3 for more details.
 #define DEF_DISABLE_COLOR	_T("RGB(198,198,198)")
 #define DEF_ALPHA_COLOR		_T("RGB(152,185,158)")
 
+#define TEXT_STYLE_YELLOW	_T("text-color:RGB(160,82,45)")
+#define TEXT_STYLE_PURPLE	_T("text-color:RGB(139,0,139);")
+#define TEXT_STYLE_BLUE		_T("text-color:RGB(0,0,139);")
+#define TEXT_STYLE_GREEN	_T("text-color:RGB(34,139,34);")
+#define TEXT_STYLE_CYAN		_T("text-color:RGB(47,79,79);")
+#define TEXT_STYLE_RED		_T("text-color:RGB(128,0,0);")
+#define TEXT_STYLE_ORANGE	_T("text-color:RGB(250,127,0);")
+#define TEXT_STYLE_SLATE	_T("text-color:RGB(108,123,139);")
+#define TEXT_STYLE_GRAY		_T("text-color:RGB(128,128,128);")
+
 #define TEXTOR_MENU_UNDO			_T("Cancel")
 #define TEXTOR_MENU_CUT				_T("Cut")
 #define TEXTOR_MENU_PASTE			_T("Paste")

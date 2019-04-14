@@ -302,15 +302,15 @@ int expr_format(link_t_ptr ptr,tchar_t* buf,int max)
 	return total;
 }
 
-int expr_exec_node(link_t_ptr tlk,expr_compare_ptr pf,void* parm)
+bool_t _expr_exec_node(link_t_ptr tlk,expr_compare_ptr pf,void* parm)
 {
 	const tchar_t *tag,*key,*val,*sin,*op;
-	int valid;
+	bool_t valid = 0;
 
 	tag = get_multi_node_attr_ptr(tlk,EXPR_TAG,-1);
 	if(xscmp(tag,CT_SUB) == 0)
 	{
-		valid = expr_exec_node(get_multi_first_child_node(tlk),pf,parm);
+		valid = _expr_exec_node(get_multi_first_child_node(tlk),pf,parm);
 	}else
 	{
 		key = get_multi_node_attr_ptr(tlk,EXPR_KEY,-1);
@@ -327,7 +327,7 @@ int expr_exec_node(link_t_ptr tlk,expr_compare_ptr pf,void* parm)
 		if(tlk == NULL)
 			return valid;
 		else
-			return expr_exec_node(tlk,pf,parm);
+			return _expr_exec_node(tlk,pf,parm);
 	}else if(xsicmp(op,OP_OR) == 0)
 	{
 		if(valid == 1)
@@ -336,17 +336,17 @@ int expr_exec_node(link_t_ptr tlk,expr_compare_ptr pf,void* parm)
 		if(tlk == NULL)
 			return valid;
 		else
-			return expr_exec_node(tlk,pf,parm);
+			return _expr_exec_node(tlk,pf,parm);
 	}else
 		return valid;
 }
 
-int expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm)
+bool_t expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm)
 {
 	link_t_ptr tlk;
 	tlk = get_multi_first_child_node(ptr);
 	if(tlk == NULL)
 		return 0;
-	return expr_exec_node(tlk,pf,parm);
+	return _expr_exec_node(tlk,pf,parm);
 }
 

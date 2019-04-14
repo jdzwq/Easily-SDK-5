@@ -145,6 +145,8 @@ LICENSE.GPL3 for more details.
 //#define _T(x)      x
 //#endif
 
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+
 #ifdef XDK_SUPPORT_SOCK
 typedef struct sockaddr_in	net_addr_t;
 typedef struct in_addr		sin_addr_t;

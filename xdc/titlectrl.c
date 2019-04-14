@@ -641,6 +641,8 @@ link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos)
 #endif
 	}
 
+	if (!pos) pos = LINK_FIRST;
+
 	ilk = insert_title_item(ptd->title, pos);
 
 	noti_title_owner(widget, NC_TITLEITEMINSERT,ptd->title, ilk, NULL);

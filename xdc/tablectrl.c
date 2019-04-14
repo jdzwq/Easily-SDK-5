@@ -680,7 +680,10 @@ void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 
 	widget_get_scroll(widget, bHorz, &scr);
 
-	nLine = (nDelta < 0) ? scr.min : -scr.min;
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
 		return;
@@ -1200,6 +1203,8 @@ link_t_ptr tablectrl_insert_item(res_win_t widget, link_t_ptr pre)
 		XDL_ASSERT(is_string_entity(ptd->table, pre));
 #endif
 	}
+
+	if (!pre) pre = LINK_FIRST;
 
 	ilk = insert_string_entity(ptd->table, pre);
 	set_string_entity_dirty(ilk, 0);

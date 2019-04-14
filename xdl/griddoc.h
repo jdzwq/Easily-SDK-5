@@ -581,7 +581,7 @@ LICENSE.GPL3 for more details.
 @PROPER visible: boolean.
 @GET get_row_visible: get the row is visible.
 */
-#define get_row_visible(rlk)								((get_row_hidden(rlk) || get_row_state(rlk) == dsDelete || get_row_state(rlk) == dsNewDelete)? 0 : 1)
+#define get_row_visible(rlk)								((get_row_hidden(rlk) || get_row_state(rlk) == dsDelete)? 0 : 1)
 /*
 @PROPER image: string.
 @SET set_row_image: set the row image.
@@ -1238,9 +1238,9 @@ XDL_API void set_row_dirty(link_t_ptr rlk);
 /*
 @FUNCTION set_row_delete: set the row state to delete.
 @INPUT link_t_ptr rlk: the row link component.
-@RETURN void: none.
+@RETURN link_t_ptr: if set the deleted mask return self, otherwise return NULL for being deleted permanent.
 */
-XDL_API void set_row_delete(link_t_ptr rlk);
+XDL_API link_t_ptr set_row_delete(link_t_ptr rlk);
 
 /*
 @FUNCTION get_visible_row_count: counting the visible rows.
