@@ -43,9 +43,6 @@ LICENSE.GPL3 for more details.
 #define XDB_API_DBREADXDOC	_T("xdb_readxdoc")
 #define XDB_API_DBDATETIME	_T("xdb_datetime")
 
-#define XDB_DATE_TODAY		_T("today")
-#define XDB_DATE_YESTERDAY	_T("yesterday")
-#define XDB_DATE_TOMORROW	_T("tomorrow")
 
 //#define XDB_ITEMFEED	0xFF
 //#define XDB_LINEFEED	0xFE

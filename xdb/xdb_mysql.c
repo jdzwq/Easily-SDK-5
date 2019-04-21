@@ -373,7 +373,7 @@ void STDCALL db_close(xdb_t db)
 }
 
 
-bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_time)
+bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 {
 	db_t* pdb = (db_t*)db;
 
@@ -385,12 +385,10 @@ bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_time)
     char sqlstr[MID_SQL_LEN] = {0};
 	int n;
 
-    if(compare_text(sz_when, -1, XDB_DATE_YESTERDAY,-1, 1) == 0)
-        a_xscpy(sqlstr, "select date_format(date_add(now(),interval -1 day),'%Y-%m-%d %H:%i:%s') as DT");
-    else if(compare_text(sz_when, -1, XDB_DATE_TOMORROW,-1, 1) == 0)
-        a_xscpy(sqlstr, "select date_format(date_add(now(),interval 1 day),'%Y-%m-%d %H:%i:%s') as DT");
-    else
-        a_xscpy(sqlstr, "select date_format(now(),'%Y-%m-%d %H:%i:%s') as DT");
+	if (!diff)
+		a_xscpy(sqlstr, "select date_format(now(),'%Y-%m-%d %H:%i:%s') as DT");
+	else
+		a_xsprintf(sqlstr, "select date_format(date_add(now(),interval %d day),'%Y-%m-%d %H:%i:%s') as DT", diff);
 
 	XDL_ASSERT(pdb != NULL);
 

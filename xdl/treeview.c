@@ -364,8 +364,8 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xface_t xa = { 0 };
 	ximage_t xi = { 0 };
 	xgradi_t xg = { 0 };
-	xcolor_t xc_check = { 0 };
-	const tchar_t *style, *image;
+	xcolor_t xc_icon, xc_check = { 0 };
+	const tchar_t *style, *image, *icon;
 	bool_t b_print;
 	link_t_ptr imagelist;
 	float px, py, pw, ph;
@@ -414,6 +414,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	lighten_xbrush(&xb_bar, DEF_SOFT_DARKEN);
 
 	parse_xcolor(&xc_check, xp.color);
+	parse_xcolor(&xc_icon, GDI_ATTR_RGB_ORANGE);
 
 	th = get_tree_title_height(ptr);
 	ih = get_tree_item_height(ptr);
@@ -517,6 +518,17 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		}
 
 		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_tree_item_title_ptr(ilk), -1);
+
+		icon = get_tree_item_icon_ptr(ilk);
+		if (!is_null(icon))
+		{
+			xr_check.fx = xr_text.fx + xr_text.fw - DEF_SMALL_ICON - 0.5;
+			xr_check.fw = DEF_SMALL_ICON;
+			xr_check.fy = total_height + 0.5;
+			xr_check.fh = DEF_SMALL_ICON;
+
+			(*pif->pf_draw_icon)(pif->canvas, &xc_icon, &xr_check, icon);
+		}
 
 		total_height += ih;
 		if (get_tree_item_expanded(ilk) && get_tree_first_child_item(ilk))

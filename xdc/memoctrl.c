@@ -841,7 +841,7 @@ link_t_ptr memoctrl_insert_line(res_win_t widget, link_t_ptr pos)
 	return nlk;
 }
 
-void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token)
+void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len)
 {
 	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
 
@@ -855,9 +855,42 @@ void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* tok
 
 	hand_textor_done(&ptd->textor);
 
-	set_memo_line_text(nlk, token, -1);
+	set_memo_line_text(nlk, token, len);
 
 	memoctrl_redraw(widget);
+}
+
+void memoctrl_set_text(res_win_t widget, const tchar_t* token, int len)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	if (!ptd->textor.data)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	hand_textor_done(&ptd->textor);
+
+	clear_memo_doc(ptd->textor.data);
+
+	parse_memo_doc(ptd->textor.data, token, len);
+
+	memoctrl_redraw(widget);
+}
+
+int memoctrl_get_text(res_win_t widget, tchar_t* buf, int max)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	if (!ptd->textor.data)
+		return 0;
+
+	return format_memo_doc(ptd->textor.data, buf, max);
 }
 
 void memoctrl_get_line_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr)

@@ -148,7 +148,16 @@ LICENSE.GPL3 for more details.
 @SET set_tree_item_image: set the tree item image.
 */
 #define set_tree_item_image(ilk,token)					set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-
+/*
+@PROPER icon: string.
+@GET get_tree_item_icon_ptr: get the tree item icon.
+*/
+#define get_tree_item_icon_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
+/*
+@PROPER icon: string.
+@SET set_tree_item_icon: set the tree item icon.
+*/
+#define set_tree_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER images: document.
 @SET set_tree_images: set the tree images document.

@@ -148,7 +148,16 @@ LICENSE.GPL3 for more details.
 @SET set_title_item_image: set the item image.
 */
 #define set_title_item_image(ilk,token)					set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-
+/*
+@PROPER icon: string.
+@GET get_title_item_icon_ptr: get the item icon.
+*/
+#define get_title_item_icon_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
+/*
+@PROPER icon: string.
+@SET set_title_item_icon: set the item image.
+*/
+#define set_title_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER images: document.
 @SET set_title_images: set the title images document.

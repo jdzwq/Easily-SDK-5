@@ -1914,7 +1914,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		{
 			if (clk == ptd->col)
 			{
-				parse_xcolor(&xc, DEF_DISABLE_COLOR);
+				parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
 				_gridctrl_cell_rect(widget, NULL, ptd->col, &xr);
 

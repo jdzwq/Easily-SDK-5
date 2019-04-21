@@ -222,9 +222,9 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	xfont_t xf_focus, xf = { 0 };
 	xface_t xa = { 0 };
 	ximage_t xi = { 0 };
-	xcolor_t xc = { 0 };
+	xcolor_t xc_icon, xc = { 0 };
 	xpoint_t pt[6];
-	const tchar_t *style, *orita;
+	const tchar_t *style, *orita, *icon;
 	bool_t b_print;
 	link_t_ptr imagelist;
 	float px, py, pw, ph;
@@ -274,6 +274,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	xscpy(xf_focus.weight, GDI_ATTR_FONT_WEIGHT_BOLD);
 
 	parse_xcolor(&xc, xp.color);
+	parse_xcolor(&xc_icon, GDI_ATTR_RGB_ORANGE);
 
 	lay_vert = (compare_text(orita, -1, ATTR_ORITATION_LEFT, -1, 0) == 0 || compare_text(orita, -1, ATTR_ORITATION_RIGHT, -1, 0) == 0) ? 1 : 0;
 	
@@ -308,6 +309,8 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 		{
 			get_ximage(imagelist, get_title_item_image_ptr(plk), &xi);
 		}
+
+		icon = get_title_item_icon_ptr(plk);
 
 		if (plk == plk_focus)
 		{
@@ -549,6 +552,16 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					xr_text.fh = xr.fh - ic;
 
 					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+
+					if (!is_null(icon))
+					{
+						xr_image.fx = xr.fx + xr.fw - DEF_SMALL_ICON - 0.5;
+						xr_image.fy = xr.fy + xr.fh - DEF_SMALL_ICON - 0.5;
+						xr_image.fw = DEF_SMALL_ICON;
+						xr_image.fh = DEF_SMALL_ICON;
+
+						(*pif->pf_draw_icon)(pif->canvas, &xc_icon, &xr_image, icon);
+					}
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_RIGHT, -1, 0) == 0)
 				{
@@ -565,6 +578,16 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					xr_text.fh = xr.fh - ic;
 
 					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+
+					if (!is_null(icon))
+					{
+						xr_image.fx = xr.fx + 0.5;
+						xr_image.fy = xr.fy + xr.fh - DEF_SMALL_ICON - 0.5;
+						xr_image.fw = DEF_SMALL_ICON;
+						xr_image.fh = DEF_SMALL_ICON;
+
+						(*pif->pf_draw_icon)(pif->canvas, &xc_icon, &xr_image, icon);
+					}
 				}
 			}
 			else
@@ -584,6 +607,16 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					xr_text.fh = xr.fh - TITLE_EDGE_LIGHT;
 
 					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+
+					if (!is_null(icon))
+					{
+						xr_image.fx = xr.fx + xr.fw - DEF_SMALL_ICON - 0.5;
+						xr_image.fy = xr.fy + xr.fh - DEF_SMALL_ICON - 0.5;
+						xr_image.fw = DEF_SMALL_ICON;
+						xr_image.fh = DEF_SMALL_ICON;
+
+						(*pif->pf_draw_icon)(pif->canvas, &xc_icon, &xr_image, icon);
+					}
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
 				{
@@ -600,6 +633,16 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					xr_text.fh = xr.fh - TITLE_EDGE_LIGHT;
 
 					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+
+					if (!is_null(icon))
+					{
+						xr_image.fx = xr.fx + xr.fw - DEF_SMALL_ICON - 0.5;
+						xr_image.fy = xr.fy + 0.5;
+						xr_image.fw = DEF_SMALL_ICON;
+						xr_image.fh = DEF_SMALL_ICON;
+
+						(*pif->pf_draw_icon)(pif->canvas, &xc_icon, &xr_image, icon);
+					}
 				}
 			}
 		}

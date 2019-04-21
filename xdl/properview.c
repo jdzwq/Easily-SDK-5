@@ -303,7 +303,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	xscpy(xg.brim_color, xb.color);
 	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_HARD_DARKEN);
+	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
 
 	parse_xcolor(&xc, xp.color);
 

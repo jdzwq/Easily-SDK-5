@@ -110,6 +110,7 @@ int format_row_update_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max)
 	const tchar_t* data_type;
 	const tchar_t* field_type;
 	const tchar_t* field_cast;
+	const tchar_t* sz_exists;
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 	xdate_t dt = { 0 };
 	tchar_t bk[3] = { _T('\r'), _T('\n'), _T('\0') };
@@ -304,6 +305,41 @@ skiptwo:
 			buf[total - 1] = buf[total - 2] = buf[total - 3] = buf[total - 4] = _T(' ');
 	}
 
+	/*format exists clause*/
+	sz_exists = get_grid_exists_clause_ptr(ptr);
+
+	if (!is_null(sz_exists))
+	{
+		len = xslen(_T(" AND EXISTS ("));
+		if (total + len > max)
+			return total;
+
+		if (buf)
+		{
+			xsprintf(buf + total, _T("%s"), _T(" AND EXISTS ("));
+		}
+		total += len;
+
+		len = xslen(sz_exists); 
+		if (total + len > max)
+			return total;
+
+		if (buf)
+		{
+			xsncpy(buf + total, sz_exists, len);
+		}
+		total += len;
+
+		if (total + 1 > max) /*include ')'*/
+			return total;
+
+		if (buf)
+		{
+			xsncpy(buf + total, _T(")"), 1);
+		}
+		total += 1;
+	}
+
 	/*include last \r\n*/
 	if (total + 2 > max)
 		return total;
@@ -328,6 +364,7 @@ int format_row_insert_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max)
 	const tchar_t* field_name;
 	const tchar_t* table_name;
 	const tchar_t* field_cast;
+	const tchar_t* sz_exists;
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 	xdate_t dt = { 0 };
 	tchar_t bk[3] = { _T('\r'), _T('\n'), _T('\0') };
@@ -373,14 +410,29 @@ skipone:
 			buf[total - 1] = _T(')'); /*replace last ','*/
 	}
 
-	/*format where clause*/
-	len = xslen(_T(" VALUES ("));
-	if(total + len > max)
-		return total;
+	sz_exists = get_grid_exists_clause_ptr(ptr);
+
+	if (!is_null(sz_exists))
+	{
+		/*format select clause*/
+		len = xslen(_T(" SELECT "));
+		if (total + len > max)
+			return total;
+	}
+	else
+	{
+		/*format values clause*/
+		len = xslen(_T(" VALUES ("));
+		if (total + len > max)
+			return total;
+	}
 
 	if (buf)
 	{
-		xsprintf(buf + total, _T("%s"), _T(" VALUES ("));
+		if (!is_null(sz_exists))
+			xsprintf(buf + total, _T("%s"), _T(" SELECT "));
+		else
+			xsprintf(buf + total, _T("%s"), _T(" VALUES ("));
 	}
 	total += len;
 
@@ -458,8 +510,47 @@ skipone:
 		}
 skiptwo:
 		clk = get_next_col(ptr,clk);
-		if(clk == NULL && buf)
-			buf[total - 1] = _T(')'); /*replace last ','*/
+
+		if (clk == NULL && buf)
+		{
+			if (!is_null(sz_exists))
+				buf[total - 1] = _T(' '); /*replace last ','*/
+			else
+				buf[total - 1] = _T(')'); /*replace last ','*/
+		}
+	}
+
+	/*format exists clause*/
+	if (!is_null(sz_exists))
+	{
+		len = xslen(_T("WHERE EXISTS ("));
+		if (total + len > max)
+			return total;
+
+		if (buf)
+		{
+			xsprintf(buf + total, _T("%s"), _T("WHERE EXISTS ("));
+		}
+		total += len;
+
+		len = xslen(sz_exists);
+		if (total + len > max)
+			return total;
+
+		if (buf)
+		{
+			xsncpy(buf + total, sz_exists, len);
+		}
+		total += len;
+
+		if (total + 1 > max) /*include ')'*/
+			return total;
+
+		if (buf)
+		{
+			xsncpy(buf + total, _T(")"), 1);
+		}
+		total += 1;
 	}
 
 	/*include last \r\n*/
@@ -487,6 +578,7 @@ int format_row_delete_sql(link_t_ptr ptr,link_t_ptr rlk,tchar_t* buf,int max)
 	const tchar_t* field_name;
 	const tchar_t* table_name;
 	const tchar_t* field_cast;
+	const tchar_t* sz_exists;
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 	xdate_t dt = { 0 };
 	tchar_t bk[3] = { _T('\r'), _T('\n'), _T('\0') };
@@ -592,6 +684,41 @@ skip:
 
 		if(clk == NULL && buf && withand)//remove last AND
 			buf[total - 1] = buf[total - 2] = buf[total - 3] = buf[total - 4] = _T(' ');
+	}
+
+	/*format exists clause*/
+	sz_exists = get_grid_exists_clause_ptr(ptr);
+
+	if (!is_null(sz_exists))
+	{
+		len = xslen(_T(" AND EXISTS ("));
+		if (total + len > max)
+			return total;
+
+		if (buf)
+		{
+			xsprintf(buf + total, _T("%s"), _T(" AND EXISTS ("));
+		}
+		total += len;
+
+		len = xslen(sz_exists);
+		if (total + len > max)
+			return total;
+
+		if (buf)
+		{
+			xsncpy(buf + total, sz_exists, len);
+		}
+		total += len;
+
+		if (total + 1 > max) /*include ')'*/
+			return total;
+
+		if (buf)
+		{
+			xsncpy(buf + total, _T(")"), 1);
+		}
+		total += 1;
 	}
 
 	/*include last \r\n*/

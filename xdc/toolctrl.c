@@ -434,9 +434,9 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
 	default_xgradi(&xg);
-	xscpy(xg.core_color, xb.color);
-	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	xscpy(xg.brim_color, xb.color);
+	lighten_xbrush(&xb, DEF_HARD_DARKEN);
+	xscpy(xg.core_color, xb.color);
 
 	gradient_rect_raw(rdc, &xg, &xr);
 

@@ -116,11 +116,11 @@ extern bool_t STDCALL db_update(xdb_t db,LINKPTR grid);
 /*
 @FUNCTION db_datetime: get datetime from database.
 @INPUT xdb_t db: the xdb handle.
-@INPUT const tchar_t* sz_when: the day defination.
+@INPUT int diff: the diff day defination.
 @OUTPUT tchar_t* sz_date: the string buffer for returning date token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-extern bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_date);
+extern bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_date);
 
 /*
 @FUNCTION db_rows: get rows affected.
@@ -263,7 +263,7 @@ typedef bool_t(STDCALL *PF_DB_SELECT)(xdb_t, LINKPTR, const tchar_t*);
 typedef bool_t(STDCALL *PF_DB_SCHEMA)(xdb_t, LINKPTR, const tchar_t*);
 typedef bool_t(STDCALL *PF_DB_FETCH)(xdb_t, LINKPTR);
 typedef bool_t(STDCALL *PF_DB_UPDATE)(xdb_t, LINKPTR);
-typedef bool_t(STDCALL *PF_DB_DATETIME)(xdb_t, const tchar_t*, tchar_t*);
+typedef bool_t(STDCALL *PF_DB_DATETIME)(xdb_t, int, tchar_t*);
 typedef int(STDCALL *PF_DB_ROWS)(xdb_t);
 typedef int(STDCALL *PF_DB_ERROR)(xdb_t, tchar_t*, int);
 typedef void(STDCALL *PF_DB_TRACE)(xdb_t, stream_t);

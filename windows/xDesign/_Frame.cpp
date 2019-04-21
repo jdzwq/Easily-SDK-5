@@ -2550,6 +2550,8 @@ int MainFrame_OnClose(res_win_t widget)
 	if (pdt->bDirty)
 		return 1;
 
+	MainFrame_CloseProject(widget);
+
 	widget_destroy(widget);
 
 	PostQuitMessage(0);

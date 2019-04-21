@@ -414,7 +414,7 @@ bool_t _db_need_data_len(db_t* pdb)
 	return (token[0] == _T('y') || token[0] == _T('Y')) ? 1 : 0;
 }
 
-bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_time)
+bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 {
 	db_t* pdb = (db_t*)db;
 
@@ -422,12 +422,10 @@ bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_time)
 	SQLRETURN rt;
 	tchar_t sqlstr[1024] = { 0 };
 
-	if (compare_text(sz_when, -1, XDB_DATE_YESTERDAY, -1, 1) == 0)
-		xscpy(sqlstr, _T("SELECT CONVERT(varchar(24),DATEADD(day, -1, GETDATE()) ,120) as DT"));
-	else if (compare_text(sz_when, -1, XDB_DATE_TOMORROW, -1, 1) == 0)
-		xscpy(sqlstr, _T("SELECT CONVERT(varchar(24),DATEADD(day, 1, GETDATE()) ,120) as DT"));
-	else
+	if (!diff)
 		xscpy(sqlstr, _T("SELECT CONVERT(varchar(24),GETDATE(),120) as DT"));
+	else
+		xsprintf(sqlstr, _T("SELECT CONVERT(varchar(24),DATEADD(day, %d, GETDATE()) ,120) as DT"), diff);
 
 	XDL_ASSERT(db && db->dbt == _DB_ODBC);
 

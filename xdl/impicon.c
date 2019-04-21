@@ -1258,13 +1258,14 @@ void draw_numeric_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 
 	draw_ellipse_raw(rdc, &xp, &xb, prt);
 
-	fs = font_size(rdc, prt->h) - 1;
+	fs = font_size(rdc, prt->h) - 2;
+	if (fs < 8)
+		fs = 8;
 
 	default_xfont(&xf);
 	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
 	ltoxs(fs, xf.size, INT_LEN);
-	format_xcolor(pxc, xf.color);
-	lighten_xfont(&xf, DEF_HARD_LIGHTEN);
+	xscpy(xf.color, GDI_ATTR_RGB_WHITE);
 
 	default_xface(&xa);
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);

@@ -468,6 +468,7 @@
 #define ATTR_LIMIT_CLAUSE			_T("limit-clause")
 #define ATTR_FROM_CLAUSE			_T("from-clause")
 #define ATTR_WHERE_CLAUSE			_T("where-clause")
+#define ATTR_EXISTS_CLAUSE			_T("exists-clause")
 #define ATTR_GROUP_CLAUSE			_T("group-clause")
 #define ATTR_PRIMARY_KEY			_T("primary-key")
 

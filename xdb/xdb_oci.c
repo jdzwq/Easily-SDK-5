@@ -347,7 +347,7 @@ void STDCALL db_close(xdb_t db)
 }
 
 
-bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_time)
+bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 {
 	db_t* pdb = (db_t*)db;
 
@@ -361,12 +361,10 @@ bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_time)
 
 	TRY_CATCH;
 
-	if (compare_text(sz_when, -1, XDB_DATE_YESTERDAY,-1,1) == 0)
-		xscpy(sqlstr, _T("select to_char(sysdate - 1,'yyyy-mm-dd hh24:mi:ss') as DT from DUAL"));
-	else if (compare_text(sz_when, -1, XDB_DATE_TOMORROW, -1, 1) == 0)
-		xscpy(sqlstr, _T("select to_char(sysdate + 1,'yyyy-mm-dd hh24:mi:ss') as DT from DUAL"));
-	else
+	if (!diff)
 		xscpy(sqlstr, _T("select to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') as DT from DUAL"));
+	else
+		xsprintf(sqlstr, _T("select to_char(sysdate + (%d),'yyyy-mm-dd hh24:mi:ss') as DT from DUAL"), diff);
 
 	_db_reset(pdb);
 

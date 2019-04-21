@@ -614,7 +614,7 @@ typedef struct _variant_t{
 #define DEF_TABLE_HEIGHT		(float)20
 #define DEF_TABLE_WIDTH			(float)30
 
-#define DEF_SMALL_ICON		(float)2.6
+#define DEF_SMALL_ICON		(float)2.8
 #define DEF_MIDD_ICON		(float)5.8
 #define DEF_LARGE_ICON		(float)8.6
 

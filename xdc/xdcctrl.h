@@ -3418,9 +3418,10 @@ XDC_API void memoctrl_delete_line(res_win_t widget, link_t_ptr ilk);
 @INPUT res_win_t widget: the memo widget.
 @INPUT link_t_ptr ilk: the item link component.
 @INPUT const tchar_t* token: the text token.
+@INPUT int len: the length of text in characters.
 @RETURN void: none.
 */
-XDC_API void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token);
+XDC_API void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len);
 
 /*
 @FUNCTION memoctrl_selec_cur: select currnet line in widget.
@@ -3444,6 +3445,24 @@ XDC_API void memoctrl_select_all(res_win_t widget);
 @RETURN int: return characters copied.
 */
 XDC_API int memoctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
+
+/*
+@FUNCTION memoctrl_set_text: set the memo text.
+@INPUT res_win_t widget: the memo widget.
+@INPUT const tchar_t* token: the text token.
+@INPUT int len: the length of text in characters.
+@RETURN void: none.
+*/
+XDC_API void memoctrl_set_text(res_win_t widget, const tchar_t* text, int len);
+
+/*
+@FUNCTION memoctrl_get_text: copy the whole text in memo control.
+@INPUT res_win_t widget: the memo widget.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN int: return characters copied.
+*/
+XDC_API int memoctrl_get_text(res_win_t widget, tchar_t* buf, int max);
 
 /**************************************tag control**************************************************/
 typedef struct _NOTICE_TAG{
@@ -3629,9 +3648,10 @@ XDC_API void tagctrl_delete_joint(res_win_t widget, link_t_ptr nlk);
 @INPUT res_win_t widget: the tag widget.
 @INPUT link_t_ptr ilk: the joint link component.
 @INPUT const tchar_t* token: the text token.
+@INPUT int len: the token length in characters.
 @RETURN void: none.
 */
-XDC_API void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token);
+XDC_API void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len);
 
 /*
 @FUNCTION tagctrl_select_all: select all joint in widget.

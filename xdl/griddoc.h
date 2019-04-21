@@ -229,6 +229,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_grid_where_clause(ptr,token)					set_dom_node_attr(ptr,ATTR_WHERE_CLAUSE,-1,token,-1)
 /*
+@PROPER existsClause: string.
+@GET get_grid_exists_clause_ptr: get the grid sql where clause.
+*/
+#define get_grid_exists_clause_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_EXISTS_CLAUSE,-1)
+/*
+@PROPER existsClause: string.
+@SET set_grid_exists_clause: set the grid sql where clause.
+*/
+#define set_grid_exists_clause(ptr,token)					set_dom_node_attr(ptr,ATTR_EXISTS_CLAUSE,-1,token,-1)
+/*
 @PROPER groupClause: string.
 @GET get_grid_group_clause_ptr: get the grid sql group clause.
 */

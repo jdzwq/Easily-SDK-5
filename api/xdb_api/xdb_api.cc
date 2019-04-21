@@ -91,14 +91,14 @@ bool_t _invoke_datetime(const https_block_t* pb, xdb_block_t* pxb)
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
 	bool_t rt;
-	tchar_t sz_when[INT_LEN] = { 0 };
+	tchar_t sz_diff[INT_LEN] = { 0 };
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
-	xhttp_get_query_entity(pb->http, XDB_API_DBDATETIME, -1, sz_when, INT_LEN);
+	xhttp_get_query_entity(pb->http, XDB_API_DBDATETIME, -1, sz_diff, INT_LEN);
 
-	rt = (*pxb->pf_db_datetime)(pxb->xdb, sz_when, sz_date);
+	rt = (*pxb->pf_db_datetime)(pxb->xdb, xstol(sz_diff), sz_date);
 	if (!rt)
 	{
 		(*pxb->pf_db_error)(pxb->xdb, sz_error, ERR_LEN);

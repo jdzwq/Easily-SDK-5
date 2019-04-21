@@ -318,8 +318,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	}
 
 	xmem_copy((void*)&xb_group, (void*)&xb, sizeof(xbrush_t));
-	lighten_xbrush(&xb_group, DEF_MIDD_DARKEN);
-	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
+	lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
 
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 

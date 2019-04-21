@@ -251,7 +251,7 @@ void STDCALL db_close(xdb_t db)
 }
 
 
-bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_date)
+bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_date)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
@@ -262,6 +262,7 @@ bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_date)
 	tchar_t sz_url[PATH_LEN] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
+	tchar_t sz_diff[INT_LEN] = { 0 };
 
 	XDL_ASSERT(db && db->dbt == _DB_STUB);
 
@@ -277,10 +278,8 @@ bool_t STDCALL db_datetime(xdb_t db, const tchar_t* sz_when, tchar_t* sz_date)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	if (is_null(sz_when))
-		xhttp_set_query_entity(xhttp, XDB_API_DBDATETIME, -1, XDB_DATE_TODAY, -1);
-	else
-		xhttp_set_query_entity(xhttp, XDB_API_DBDATETIME, -1, sz_when, -1);
+	ltoxs(diff, sz_diff, INT_LEN);
+	xhttp_set_query_entity(xhttp, XDB_API_DBDATETIME, -1, sz_diff, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -647,6 +646,9 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 	format_grid_select_sql(grid,sqlstr,size);
 
 	xhttp_set_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
+
+	xsfree(sqlstr);
+	sqlstr = NULL;
 
 	xhttp_set_request_default_header(xhttp);
 

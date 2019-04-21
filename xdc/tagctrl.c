@@ -947,7 +947,7 @@ link_t_ptr tagctrl_insert_joint(res_win_t widget, link_t_ptr pos)
 	return nlk;
 }
 
-void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token)
+void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
@@ -961,11 +961,10 @@ void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* tok
 
 	hand_textor_done(&ptd->textor);
 
-	set_tag_joint_text(nlk, token, -1);
+	set_tag_joint_text(nlk, token, len);
 
 	tagctrl_redraw(widget);
 }
-
 
 void tagctrl_get_joint_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr)
 {
