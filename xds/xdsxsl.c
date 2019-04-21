@@ -97,6 +97,7 @@ static unsigned int STDCALL thread_dispatch(void* param)
 	xdl_thread_init();
 
 	so = pxa->so;
+	pxa->so = 0;
 	pf_dispatch = pxa->pf_dispatch;
 	pf_param = pxa->pf_param;
 
@@ -130,10 +131,9 @@ static unsigned int STDCALL process_dispatch(void* param)
 	xdl_thread_init();
 
 	so = pxa->so;
+	pxa->so = 0;
 	sz_module = pxa->sz_module;
 	pf_param = pxa->pf_param;
-
-	xevent_sign(pxa->ev, 1);
 
 	if (create_process(sz_module, (tchar_t*)pf_param, 1, &pi))
 	{
@@ -156,6 +156,8 @@ static unsigned int STDCALL process_dispatch(void* param)
 		xsocket_shutdown(so, 0);
 		xsocket_close(so);
 	}
+
+	xevent_sign(pxa->ev, 1);
 
 	xdl_thread_uninit(0);
 
@@ -204,17 +206,22 @@ static unsigned int STDCALL wait_accept(void* param)
 		xa.pf_param = plis->pf_param;
 		xa.ev = xevent_create();
 
-		if (plis->is_thread)
+		if (xa.ev)
 		{
-			xthread_begin(NULL, (PF_THREADFUNC)thread_dispatch, (void*)&xa);
-		}
-		else
-		{
-			xthread_begin(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
+			if (plis->is_thread)
+			{
+				xthread_begin(NULL, (PF_THREADFUNC)thread_dispatch, (void*)&xa);
+			}
+			else
+			{
+				xthread_begin(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
+			}
+
+			xevent_wait(xa.ev, TCP_BASE_TIMO);
+			xevent_destroy(xa.ev);
 		}
 
-		xevent_wait(xa.ev, -1);
-		xevent_destroy(xa.ev);
+		if (xa.so) xsocket_close(xa.so);
 
 		xmem_zero((void*)&xa, sizeof(xsl_accept_t));
 	}

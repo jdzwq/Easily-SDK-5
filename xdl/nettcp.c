@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 #ifdef XDK_SUPPORT_SOCK
 
 #define MAX_LISTEN		5
-#define TRY_MAX			5
+#define TRY_MAX			3
 
 typedef struct _tcp_t{
 	xhand_head head;		//reserved for xhand_t

@@ -148,8 +148,6 @@ static unsigned int STDCALL process_dispatch(void* param)
 	sz_module = pxa->sz_module;
 	pf_param = pxa->pf_param;
 
-	xevent_sign(pxa->ev, 1);
-
 	if (create_process(sz_module, (tchar_t*)pf_param, 1, &pi))
 	{
 		if (pi.pip_write)
@@ -193,6 +191,8 @@ static unsigned int STDCALL process_dispatch(void* param)
 #endif
 	}
 
+	xevent_sign(pxa->ev, 1);
+
 	xdl_thread_uninit(0);
 
 	xthread_end();
@@ -213,7 +213,7 @@ static unsigned int STDCALL wait_accept(void* param)
 
 	xdl_thread_init();
 
-	async_alloc_lapp(&over, TCP_BASE_TIMO);
+	async_alloc_lapp(&over, PNP_BASE_TIMO);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 	over.type = ASYNC_QUEUE;
@@ -240,17 +240,20 @@ static unsigned int STDCALL wait_accept(void* param)
 
 			xa.ev = xevent_create();
 
-			if (plis->is_thread)
+			if (xa.ev)
 			{
-				xthread_begin(NULL, (PF_THREADFUNC)thread_dispatch, (void*)&xa);
-			}
-			else
-			{
-				xthread_begin(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
-			}
+				if (plis->is_thread)
+				{
+					xthread_begin(NULL, (PF_THREADFUNC)thread_dispatch, (void*)&xa);
+				}
+				else
+				{
+					xthread_begin(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
+				}
 
-			xevent_wait(xa.ev, -1);
-			xevent_destroy(xa.ev);
+				xevent_wait(xa.ev, PNP_BASE_TIMO);
+				xevent_destroy(xa.ev);
+			}
 
 			xmem_zero((void*)&xa, sizeof(pnp_accept_t));
 		}

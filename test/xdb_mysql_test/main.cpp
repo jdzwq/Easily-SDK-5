@@ -27,15 +27,15 @@ PF_DB_EXPORT pf_db_export;
 PF_DB_CALL_FUNC pf_db_call_func;
 
 //#define odbcdsn _T("./demo_odbc.dsn")
-//#define odbcdsn _T("./demo_stub.dsn")
+#define odbcdsn _T("./demo_stub.dsn")
 //#define odbcdsn _T("./demo_mysql.dsn")
-#define odbcdsn _T("./demo_oci.dsn")
+//#define odbcdsn _T("./demo_oci.dsn")
 
 #if defined(_OS_WINDOWS)
 //#define xdblib	_T("xdb_mysql.dll")
-#define xdblib	_T("xdb_oci.dll")
+//#define xdblib	_T("xdb_oci.dll")
 //#define xdblib	_T("xdb_odbc.dll")
-//#define xdblib	_T("xdb_stub.dll")
+#define xdblib	_T("xdb_stub.dll")
 #elif defined(_OS_MACOS)
 //#define xdblib	_T("libxdb_mysql.dylib")
 #define xdblib	_T("libxdb_mysql.dylib")
@@ -66,7 +66,7 @@ unsigned int STDCALL odbc_db_datetime(void* param)
 		raise_user_error(_T("-1"), _T("open connection falied\n"));
 	}
 
-	rt = (*pf_db_datetime)(xdb, XDB_DATE_YESTERDAY, sz_date);
+	rt = (*pf_db_datetime)(xdb, -1, sz_date);
 	if (!rt)
 	{
 		(*pf_db_error)(xdb, errtext, ERR_LEN);
@@ -80,7 +80,7 @@ unsigned int STDCALL odbc_db_datetime(void* param)
     printf("%s\n", sz_date);
 #endif
 
-	rt = (*pf_db_datetime)(xdb, XDB_DATE_TODAY, sz_date);
+	rt = (*pf_db_datetime)(xdb, 0, sz_date);
 	if (!rt)
 	{
 		(*pf_db_error)(xdb, errtext, ERR_LEN);
@@ -94,7 +94,7 @@ unsigned int STDCALL odbc_db_datetime(void* param)
    printf("%s\n", sz_date);
 #endif
 
-	rt = (*pf_db_datetime)(xdb, XDB_DATE_TOMORROW, sz_date);
+	rt = (*pf_db_datetime)(xdb, 1, sz_date);
 	if (!rt)
 	{
 		(*pf_db_error)(xdb, errtext, ERR_LEN);
@@ -149,21 +149,21 @@ unsigned int STDCALL odbc_db_exec(void* param)
         raise_user_error(_T("-1"), _T("open connection falied\n"));
     }
     
-    vs = varstr_alloc();
+    vs = string_alloc();
     
-    varstr_append(vs, _T("insert into dogs (did,dname,dage,dprice) values ('%s','%s','%s','%s')\n"),
+    string_append(vs, _T("insert into dogs (did,dname,dage,dprice) values ('%s','%s','%s','%s')\n"),
                   _T("1"),
                   _T("旺\n财"),
                   _T("2014-01-01"),
                   _T("100.25"));
     
-    varstr_append(vs, _T("insert into dogs (did,dname,dage,dprice) values ('%s','%s','%s','%s')\n"),
+    string_append(vs, _T("insert into dogs (did,dname,dage,dprice) values ('%s','%s','%s','%s')\n"),
                   _T("2"),
                   _T("\r\n来福"),
                   _T("2015-01-01"),
                   _T("200.50"));
     
-    rt = (*pf_db_exec)(xdb, varstr_ptr(vs), varstr_len(vs));
+    rt = (*pf_db_exec)(xdb, string_ptr(vs), string_len(vs));
     if (!rt)
     {
         (*pf_db_error)(xdb, errtext, ERR_LEN);
@@ -171,7 +171,7 @@ unsigned int STDCALL odbc_db_exec(void* param)
         raise_user_error(_T("-1"), errtext);
     }
     
-    varstr_free(vs);
+    string_free(vs);
     vs = NULL;
     
     rows = (*pf_db_rows)(xdb);
@@ -200,7 +200,7 @@ ONERROR:
 #endif
     
     if (vs)
-        varstr_free(vs);
+        string_free(vs);
     
     if (xdb)
         (*pf_db_close)(xdb);
@@ -1013,8 +1013,8 @@ unsigned int STDCALL odbc_db_write_clob(void* param)
     xmem_free(file_buf);
     file_buf = NULL;
     
-    vs = varstr_alloc();
-    varstr_cat(vs, base_buf, base_size);
+    vs = string_alloc();
+    string_cat(vs, base_buf, base_size);
     
     xsfree(base_buf);
     base_buf = NULL;
@@ -1027,7 +1027,7 @@ unsigned int STDCALL odbc_db_write_clob(void* param)
         raise_user_error(_T("-1"), errtext);
     }
     
-    varstr_free(vs);
+    string_free(vs);
     vs = NULL;
     
     rows = (*pf_db_rows)(xdb);
@@ -1062,7 +1062,7 @@ ONERROR:
         xsfree(base_buf);
     
     if (vs)
-        varstr_free(vs);
+        string_free(vs);
     
     if (file)
         xfile_close(file);
@@ -1104,7 +1104,7 @@ unsigned int STDCALL odbc_db_read_clob(void* param)
         raise_user_error(_T("-1"), _T("open connection falied\n"));
     }
     
-    vs = varstr_alloc();
+    vs = string_alloc();
     
     rt = (*pf_db_read_clob)(xdb, vs, _T("select cdoc from cats where cid = '1'"));
     if (!rt)
@@ -1114,11 +1114,11 @@ unsigned int STDCALL odbc_db_read_clob(void* param)
         raise_user_error(_T("-1"), errtext);
     }
     
-    file_size = xbas_decode(varstr_ptr(vs), varstr_len(vs), NULL, MAX_LONG);
+    file_size = xbas_decode(string_ptr(vs), string_len(vs), NULL, MAX_LONG);
     file_buf = (byte_t*)xmem_alloc(file_size);
-    xbas_decode(varstr_ptr(vs), varstr_len(vs), file_buf, file_size);
+    xbas_decode(string_ptr(vs), string_len(vs), file_buf, file_size);
     
-    varstr_free(vs);
+    string_free(vs);
     vs = NULL;
     
     file = xfile_open(NULL, _T("cat2.jpg"), FILE_OPEN_CREATE);
@@ -1161,7 +1161,7 @@ ONERROR:
         xmem_free(file_buf);
     
     if (vs)
-        varstr_free(vs);
+        string_free(vs);
     
     if (file)
         xfile_close(file);
@@ -1347,7 +1347,7 @@ int main(int argc, char* argv[])
     
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-    int maxt = 1;
+    int maxt = 3000;
 
 	res_modu_t lib = load_library(xdblib);
 
@@ -1374,7 +1374,7 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < maxt; i++)
     {
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
+        xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
         
         //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_schema, (void*)0);
                       
@@ -1384,7 +1384,7 @@ int main(int argc, char* argv[])
         
         //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_batch, (void*)0);
         
-        xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_export, (void*)0);
+        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_export, (void*)0);
         
         //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_import, (void*)0);
         

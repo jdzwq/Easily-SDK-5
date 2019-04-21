@@ -340,6 +340,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
 			if (pcb) *pcb = 0;
+			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
 
@@ -364,6 +365,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 		}
@@ -403,6 +405,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
 			if (pcb) *pcb = 0;
+			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
 
@@ -411,6 +414,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 			if ((res_file_t)up != so)
@@ -427,6 +431,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 		}
@@ -466,6 +471,7 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
 			if (pcb) *pcb = 0;
+			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
 
@@ -474,6 +480,7 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 			if ((res_file_t)up != so)
@@ -490,6 +497,7 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 		}
@@ -529,6 +537,7 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
 			if (pcb) *pcb = 0;
+			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
 
@@ -537,6 +546,7 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 			if ((res_file_t)up != so)
@@ -553,6 +563,7 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				if (pcb) *pcb = 0;
+				if (pov) WSAResetEvent(pov->hEvent);
 				return 0;
 			}
 		}
@@ -624,6 +635,8 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 		{
 			closesocket((SOCKET)so);
 
+			if (pov) WSAResetEvent(pov->hEvent);
+
 			*plen = 0;
 			return INVALID_FILE;
 		}
@@ -633,6 +646,8 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
 			{
 				closesocket((SOCKET)so);
+
+				if (pov) WSAResetEvent(pov->hEvent);
 
 				*plen = 0;
 				return INVALID_FILE;
@@ -655,13 +670,15 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 			{
 				closesocket((SOCKET)so);
 
+				WSAResetEvent(pov->hEvent);
+
 				*plen = 0;
 				return INVALID_FILE;
 			}
 		}
-
-		ResetEvent(pov->hEvent);
 	}
+
+	if(pov) ResetEvent(pov->hEvent);
 
 	setsockopt((SOCKET)so, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, (char *)&ls, sizeof(SOCKET));
 
