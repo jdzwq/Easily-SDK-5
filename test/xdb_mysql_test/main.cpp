@@ -1347,7 +1347,7 @@ int main(int argc, char* argv[])
     
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-    int maxt = 3000;
+    int maxt = 5000;
 
 	res_modu_t lib = load_library(xdblib);
 

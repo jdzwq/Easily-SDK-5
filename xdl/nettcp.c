@@ -137,6 +137,11 @@ xhand_t xtcp_srv(res_file_t so)
 
 	async_alloc_lapp(&pso->ov, TCP_BASE_TIMO);
 
+	if (pso->ov.type == ASYNC_BLOCK)
+	{
+		xsocket_set_nonblk(pso->so, 0);
+	}
+
 	END_CATCH;
 
 	return (xhand_t)pso;

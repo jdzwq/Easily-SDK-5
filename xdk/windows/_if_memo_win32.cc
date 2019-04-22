@@ -43,7 +43,7 @@ res_heap_t _process_heapo(void)
 
 res_heap_t _heapo_create(void)
 {
-	return HeapCreate(HEAP_NO_SERIALIZE, 0, 0);
+	return HeapCreate(0, 0, 0);
 }
 
 void  _heapo_destroy(res_heap_t heap)
@@ -112,7 +112,7 @@ void _heapo_clean(res_heap_t heap)
 #ifdef WINCE
 	return;
 #else
-	s = HeapCompact(heap, HEAP_NO_SERIALIZE);
+	s = HeapCompact(heap, 0);
 #endif
 }
 #endif

@@ -300,6 +300,7 @@ void xdk_impl_socket(if_socket_t* pif)
 	pif->pf_socket_set_linger = _socket_set_linger;
 	pif->pf_socket_set_sndbuf = _socket_set_sndbuf;
 	pif->pf_socket_set_rcvbuf = _socket_set_rcvbuf;
+	pif->pf_socket_set_nonblk = _socket_set_nonblk;
 	pif->pf_fill_addr = _fill_addr;
 	pif->pf_conv_addr = _conv_addr;
 	pif->pf_host_addr = _host_addr;

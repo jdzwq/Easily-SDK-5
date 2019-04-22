@@ -181,8 +181,11 @@ static unsigned int STDCALL wait_accept(void* param)
 	async_alloc_lapp(&over, TCP_BASE_TIMO);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	over.type = ASYNC_QUEUE;
-	over.port = plis->epo;
+	if (plis->epo)
+	{
+		over.type = ASYNC_QUEUE;
+		over.port = plis->epo;
+	}
 #endif
 
 	xsocket_addr(plis->so, &locaddr);
@@ -249,7 +252,7 @@ ssl_listen_t* xssl_start_thread(unsigned short port, PF_SSLS_DISPATCH pf_dispatc
 	plis->pf_param = param;
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	plis->epo = xqueue_create((res_hand_t)NULL, plis->so, plis->res);
+	//plis->epo = xqueue_create((res_hand_t)NULL, plis->so, plis->res);
 #endif
 
 	for (i = 0; i < plis->res; i++)
@@ -277,7 +280,7 @@ ssl_listen_t* xssl_start_process(unsigned short port, const tchar_t* sz_module, 
 	plis->pf_param = (void*)sz_cmdline;
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	plis->epo = xqueue_create((res_hand_t)NULL, plis->so, plis->res);
+	//plis->epo = xqueue_create((res_hand_t)NULL, plis->so, plis->res);
 #endif
 
 	for (i = 0; i < plis->res; i++)

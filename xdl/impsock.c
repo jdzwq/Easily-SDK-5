@@ -399,6 +399,22 @@ bool_t	xsocket_set_rcvbuf(res_file_t so, int size)
 	return 1;
 }
 
+bool_t	xsocket_set_nonblk(res_file_t so, bool_t none)
+{
+	if_socket_t* pif_so;
+
+	pif_so = PROCESS_SOCKET_INTERFACE;
+	XDL_ASSERT(pif_so != NULL);
+
+	if (!(*pif_so->pf_socket_set_nonblk)(so, none))
+	{
+		set_network_error(_T("xsocket_set_nonblk"));
+		return 0;
+	}
+
+	return 1;
+}
+
 bool_t host_addr(const tchar_t* host, tchar_t* addr)
 {
 	if_socket_t* pif_so;

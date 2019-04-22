@@ -216,8 +216,11 @@ static unsigned int STDCALL wait_accept(void* param)
 	async_alloc_lapp(&over, PNP_BASE_TIMO);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	over.type = ASYNC_QUEUE;
-	over.port = plis->epo;
+	if (plis->epo)
+	{
+		over.type = ASYNC_QUEUE;
+		over.port = plis->epo;
+	}
 #endif
 
 	xsocket_addr(plis->so, &locaddr);

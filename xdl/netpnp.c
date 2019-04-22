@@ -114,6 +114,11 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 
 	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
+	if (ppnp->ov.type == ASYNC_BLOCK)
+	{
+		xsocket_set_nonblk(ppnp->so, 0);
+	}
+
 	ppnp->snd_pdu = pdu_alloc(PDU_TYPE_UDP);
 	ppnp->snd_bys = 0;
 	ppnp->rcv_pdu = pdu_alloc(PDU_TYPE_UDP);

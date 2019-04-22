@@ -689,10 +689,6 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 		CopyMemory((void*)saddr, (void*)rmt_addr, rmt_len);
 	}
 
-	//set socket to blocking mode
-	//dw = 0;
-	//ioctlsocket((SOCKET)so, FIONBIO, (unsigned long*)&dw);
-
 	return so;
 }
 
@@ -734,6 +730,14 @@ bool_t _socket_set_linger(res_file_t so, bool_t wait, int sec)
 	li.l_linger = (unsigned short)sec;
 
 	return (setsockopt((SOCKET)so, SOL_SOCKET, SO_LINGER, (const char*)&li, sizeof(struct linger)) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t _socket_set_nonblk(res_file_t so, bool_t none)
+{
+	//set socket to blocking or none blocking mode
+	unsigned long dw = (none)? 1 : 0;
+	
+	return (ioctlsocket((SOCKET)so, FIONBIO, (unsigned long*)&dw) == SOCKET_ERROR) ? 0 : 1;
 }
 
 bool_t _socket_listen(res_file_t so, int max)

@@ -288,6 +288,7 @@ typedef bool_t (*PF_SOCKET_GETOPT)(res_file_t, int, char*, int*);
 typedef bool_t (*PF_SOCKET_SET_LINGER)(res_file_t, bool_t, int);
 typedef bool_t (*PF_SOCKET_SET_SNDBUF)(res_file_t, int);
 typedef bool_t (*PF_SOCKET_SET_RCVBUF)(res_file_t, int);
+typedef bool_t (*PF_SOCKET_SET_NONBLK)(res_file_t, bool_t);
 typedef bool_t (*PF_HOST_ADDR)(const schar_t*, schar_t*);
 typedef void (*PF_FILL_ADDR)(net_addr_t*, unsigned short, const schar_t*);
 typedef void(*PF_CONV_ADDR)(net_addr_t*, unsigned short*, schar_t*);
@@ -321,6 +322,7 @@ typedef struct _if_socket_t{
 	PF_SOCKET_SET_LINGER	pf_socket_set_linger;
 	PF_SOCKET_SET_SNDBUF	pf_socket_set_sndbuf;
 	PF_SOCKET_SET_RCVBUF	pf_socket_set_rcvbuf;
+	PF_SOCKET_SET_NONBLK	pf_socket_set_nonblk;
 	PF_HOST_ADDR			pf_host_addr;
 	PF_FILL_ADDR			pf_fill_addr;
 	PF_CONV_ADDR			pf_conv_addr;

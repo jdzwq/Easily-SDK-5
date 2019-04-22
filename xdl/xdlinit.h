@@ -54,6 +54,7 @@ extern "C" {
 	typedef struct _if_zone_t{
 #ifdef XDK_SUPPORT_MEMO_HEAP
 		res_heap_t	if_heap;
+		bool_t		is_proc;
 #endif
 #ifdef XDL_SUPPORT_MEMO_DUMP
 		link_t		if_dump;

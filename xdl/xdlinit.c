@@ -64,6 +64,7 @@ void xdl_thread_init()
 	if_thread_t* pit;
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	void* heap = NULL;
+	bool_t proc = 0;
 #endif
     dword_t tid;
 
@@ -76,17 +77,31 @@ void xdl_thread_init()
 
 #ifdef XDK_SUPPORT_MEMO_HEAP  
 	if (g_xdl_mou.if_opt & XDL_APARTMENT_THREAD)
+	{
 		heap = (*piv->pf_heap_create)();
+		proc = 0;
+	}
 	else
+	{
 		heap = (*piv->pf_process_heap)();
+		proc = 1;
+	}
 	
+	if (!heap)
+	{
+		heap = (*piv->pf_process_heap)();
+		proc = 1;
+	}
+
 	XDL_ASSERT(heap != NULL);
 
 	pzn = (if_zone_t*)(*piv->pf_heap_alloc)(heap, sizeof(if_zone_t));
-	pzn->if_heap = heap;
 #else
 	pzn = (if_zone_t*)(*piv->pf_local_alloc)(sizeof(if_zone_t));
 #endif /*XDK_SUPPORT_MEMO_HEAP*/
+
+	pzn->if_heap = heap;
+	pzn->is_proc = proc;
 
 	XDL_ASSERT(g_xdl_mou.tls_thr_zone != 0);
 	(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_zone, (void*)pzn);
@@ -106,6 +121,7 @@ void xdl_thread_init()
 #else
 	pju = (if_jump_t*)(*piv->pf_local_alloc)(sizeof(if_jump_t));
 #endif
+
 	pju->if_buf = NULL;
 	pju->if_index = -1;
 	pju->if_size = 0;
@@ -122,6 +138,7 @@ void xdl_thread_uninit(int error)
 	if_thread_t* pit;
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	void* heap = NULL;
+	bool_t proc = 0;
 #endif
 
 	if (!error)
@@ -168,6 +185,7 @@ void xdl_thread_uninit(int error)
 
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	heap = pzn->if_heap;
+	proc = pzn->is_proc;
 
 	if (!error)
 	{
@@ -197,11 +215,14 @@ void xdl_thread_uninit(int error)
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	(*piv->pf_heap_free)(heap, (void*)pzn);
 
-	if (g_xdl_mou.if_opt & XDL_APARTMENT_THREAD)
-		(*piv->pf_heap_destroy)(heap);
-	else
+	if (proc)
 		(*piv->pf_heap_clean)(heap);
-#endif /*XDK_SUPPORT_MEMO_HEAP*/
+	else
+		(*piv->pf_heap_destroy)(heap);
+		
+#else /*XDK_SUPPORT_MEMO_HEAP*/
+	(*piv->pf_local_free)((void*)pzn);
+#endif
 
 	(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_zone, 0);
 }
@@ -286,6 +307,10 @@ void xdl_process_init(dword_t opt)
 
 #ifdef XDK_SUPPORT_THREAD_MUTEX
 	xdk_impl_thread_mutex(&g_xdl_mou.if_thread);
+#endif
+
+#ifdef XDK_SUPPORT_THREAD_SEMAP
+	xdk_impl_thread_semap(&g_xdl_mou.if_thread);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE

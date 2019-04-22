@@ -8,13 +8,13 @@
 #endif
 
 //#define ADDR_SUB		_T("47.97.167.225")
-//#define ADDR_SUB		_T("172.16.190.190")
-#define ADDR_SUB		_T("127.0.0.1")
+#define ADDR_SUB		_T("172.16.190.190")
+//#define ADDR_SUB		_T("127.0.0.1")
 #define PORT_SUB		8880
 
 //#define ADDR_PUB		_T("47.97.167.225")
-//#define ADDR_PUB		_T("172.16.190.190")
-#define ADDR_PUB		_T("127.0.0.1")
+#define ADDR_PUB		_T("172.16.190.190")
+//#define ADDR_PUB		_T("127.0.0.1")
 #define PORT_PUB		8881
 
 void test_mqtt_pub()

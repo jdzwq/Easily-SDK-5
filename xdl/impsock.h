@@ -218,6 +218,14 @@ XDL_API bool_t	xsocket_set_sndbuf(res_file_t so, int size);
 XDL_API bool_t	xsocket_set_rcvbuf(res_file_t so, int size);
 
 /*
+@FUNCTION xsocket_set_nonblk: set the socket none blocking mode.
+@INPUT res_file_t so: socket resource handle.
+@INPUT bool_t none: zero for blocking mode.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t	xsocket_set_nonblk(res_file_t so, bool_t none);
+
+/*
 @FUNCTION host_addr: peer the host name to a ip address.
 @INPUT const tchar_t* host: host name.
 @OUTPUT tchar_t*: string buffer for returning address.

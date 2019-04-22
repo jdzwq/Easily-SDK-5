@@ -18,9 +18,26 @@ void test_path()
 	xsfree(path);
 }
 
+void test_semap()
+{
+	res_sema_t sem = xsemap_create(NULL, 1);
+
+	xsemap_lock(sem, -1);
+
+	xsemap_lock(sem, 3000);
+
+	xsemap_unlock(sem);
+
+	xsemap_lock(sem, -1);
+
+	xsemap_destroy(NULL, sem);
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
+
+	test_semap();
 
 	//test_path();
 
@@ -38,7 +55,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//test_map();
 
-	test_variant();
+	//test_variant();
 
 	//test_object();
 

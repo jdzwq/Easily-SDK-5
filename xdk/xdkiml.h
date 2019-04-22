@@ -201,6 +201,7 @@ int		_socket_write(void* pso, unsigned char* buf, int len);
 int		_socket_read(void* pso, unsigned char* buf, int len);
 bool_t	_socket_setopt(res_file_t so, int optname, const char* optval, int optlen);
 bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen);
+bool_t	_socket_set_nonblk(res_file_t so, bool_t none);
 bool_t	_socket_set_linger(res_file_t so, bool_t wait, int sec);
 bool_t	_socket_set_sndbuf(res_file_t so, int size);
 bool_t	_socket_set_rcvbuf(res_file_t so, int size);

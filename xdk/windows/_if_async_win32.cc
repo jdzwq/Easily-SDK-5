@@ -37,7 +37,12 @@ void _async_alloc_lapp(async_t* pas, int ms)
 {
 	LPOVERLAPPED lp;
 
-	lp = (LPOVERLAPPED)LocalAlloc(LPTR, sizeof(OVERLAPPED));
+	lp = (LPOVERLAPPED)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(OVERLAPPED));
+	if (!lp)
+	{
+		pas->type = ASYNC_BLOCK;
+		return;
+	}
 
 	lp->hEvent = CreateEvent(NULL, 1, 0, NULL);
 	pas->lapp = (void*)lp;
@@ -57,7 +62,7 @@ void _async_release_lapp(async_t* pas)
 	if (lp->hEvent)
 		CloseHandle(lp->hEvent);
 
-	LocalFree(pas->lapp);
+	HeapFree(GetProcessHeap(), 0, pas->lapp);
 	pas->lapp = NULL;
 }
 
