@@ -355,16 +355,12 @@
 		9B809766223EAAED00649706 /* netxsl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809742223EAAED00649706 /* netxsl.h */; };
 		9B809767223EAAED00649706 /* oemprim.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809743223EAAED00649706 /* oemprim.c */; };
 		9B809768223EAAED00649706 /* oemprim.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809744223EAAED00649706 /* oemprim.h */; };
-		9B809769223EAAED00649706 /* sorting.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809745223EAAED00649706 /* sorting.c */; };
-		9B80976A223EAAED00649706 /* sorting.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809746223EAAED00649706 /* sorting.h */; };
 		9B809771223EAAED00649706 /* variant.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B80974D223EAAED00649706 /* variant.h */; };
 		9B809773223EAAED00649706 /* chartdoc.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B80974F223EAAED00649706 /* chartdoc.c */; };
 		9B809774223EAAED00649706 /* chartdoc.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809750223EAAED00649706 /* chartdoc.h */; };
 		9B809775223EAAED00649706 /* chartgdi.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809751223EAAED00649706 /* chartgdi.c */; };
 		9B809776223EAAED00649706 /* chartgdi.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809752223EAAED00649706 /* chartgdi.h */; };
 		9B809777223EAAED00649706 /* chartview.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809753223EAAED00649706 /* chartview.c */; };
-		9B80978C223EBC1900649706 /* varbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809778223EBC1900649706 /* varbuf.c */; };
-		9B80978D223EBC1900649706 /* varbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809779223EBC1900649706 /* varbuf.h */; };
 		9B80978E223EBC1900649706 /* varobj.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B80977A223EBC1900649706 /* varobj.c */; };
 		9B80978F223EBC1900649706 /* varobj.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B80977B223EBC1900649706 /* varobj.h */; };
 		9B809790223EBC1900649706 /* varstr.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B80977C223EBC1900649706 /* varstr.c */; };
@@ -383,6 +379,10 @@
 		9B80979D223EBC1900649706 /* xdlstm.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809789223EBC1900649706 /* xdlstm.h */; };
 		9B80979E223EBC1900649706 /* xdlstr.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B80978A223EBC1900649706 /* xdlstr.c */; };
 		9B80979F223EBC1900649706 /* xdlstr.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B80978B223EBC1900649706 /* xdlstr.h */; };
+		9BA21BDC2275414A00055E56 /* xdlsort.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BA21BDA2275414A00055E56 /* xdlsort.c */; };
+		9BA21BDD2275414A00055E56 /* xdlsort.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BA21BDB2275414A00055E56 /* xdlsort.h */; };
+		9BA21BE02275425D00055E56 /* varbytes.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BA21BDE2275425D00055E56 /* varbytes.c */; };
+		9BA21BE12275425D00055E56 /* varbytes.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BA21BDF2275425D00055E56 /* varbytes.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -735,16 +735,12 @@
 		9B809742223EAAED00649706 /* netxsl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netxsl.h; path = ../../xdl/netxsl.h; sourceTree = "<group>"; };
 		9B809743223EAAED00649706 /* oemprim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = oemprim.c; path = ../../xdl/oemprim.c; sourceTree = "<group>"; };
 		9B809744223EAAED00649706 /* oemprim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemprim.h; path = ../../xdl/oemprim.h; sourceTree = "<group>"; };
-		9B809745223EAAED00649706 /* sorting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sorting.c; path = ../../xdl/sorting.c; sourceTree = "<group>"; };
-		9B809746223EAAED00649706 /* sorting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sorting.h; path = ../../xdl/sorting.h; sourceTree = "<group>"; };
 		9B80974D223EAAED00649706 /* variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = variant.h; path = ../../xdl/variant.h; sourceTree = "<group>"; };
 		9B80974F223EAAED00649706 /* chartdoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chartdoc.c; path = ../../xdl/chartdoc.c; sourceTree = "<group>"; };
 		9B809750223EAAED00649706 /* chartdoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = chartdoc.h; path = ../../xdl/chartdoc.h; sourceTree = "<group>"; };
 		9B809751223EAAED00649706 /* chartgdi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chartgdi.c; path = ../../xdl/chartgdi.c; sourceTree = "<group>"; };
 		9B809752223EAAED00649706 /* chartgdi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = chartgdi.h; path = ../../xdl/chartgdi.h; sourceTree = "<group>"; };
 		9B809753223EAAED00649706 /* chartview.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chartview.c; path = ../../xdl/chartview.c; sourceTree = "<group>"; };
-		9B809778223EBC1900649706 /* varbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = varbuf.c; path = ../../xdl/varbuf.c; sourceTree = "<group>"; };
-		9B809779223EBC1900649706 /* varbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = varbuf.h; path = ../../xdl/varbuf.h; sourceTree = "<group>"; };
 		9B80977A223EBC1900649706 /* varobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = varobj.c; path = ../../xdl/varobj.c; sourceTree = "<group>"; };
 		9B80977B223EBC1900649706 /* varobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = varobj.h; path = ../../xdl/varobj.h; sourceTree = "<group>"; };
 		9B80977C223EBC1900649706 /* varstr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = varstr.c; path = ../../xdl/varstr.c; sourceTree = "<group>"; };
@@ -763,6 +759,10 @@
 		9B809789223EBC1900649706 /* xdlstm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdlstm.h; path = ../../xdl/xdlstm.h; sourceTree = "<group>"; };
 		9B80978A223EBC1900649706 /* xdlstr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdlstr.c; path = ../../xdl/xdlstr.c; sourceTree = "<group>"; };
 		9B80978B223EBC1900649706 /* xdlstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdlstr.h; path = ../../xdl/xdlstr.h; sourceTree = "<group>"; };
+		9BA21BDA2275414A00055E56 /* xdlsort.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdlsort.c; path = ../../xdl/xdlsort.c; sourceTree = "<group>"; };
+		9BA21BDB2275414A00055E56 /* xdlsort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdlsort.h; path = ../../xdl/xdlsort.h; sourceTree = "<group>"; };
+		9BA21BDE2275425D00055E56 /* varbytes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = varbytes.c; path = ../../xdl/varbytes.c; sourceTree = "<group>"; };
+		9BA21BDF2275425D00055E56 /* varbytes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = varbytes.h; path = ../../xdl/varbytes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -780,8 +780,10 @@
 		9B077E29214EDE3000C647DD = {
 			isa = PBXGroup;
 			children = (
-				9B809778223EBC1900649706 /* varbuf.c */,
-				9B809779223EBC1900649706 /* varbuf.h */,
+				9BA21BDE2275425D00055E56 /* varbytes.c */,
+				9BA21BDF2275425D00055E56 /* varbytes.h */,
+				9BA21BDA2275414A00055E56 /* xdlsort.c */,
+				9BA21BDB2275414A00055E56 /* xdlsort.h */,
 				9B80977A223EBC1900649706 /* varobj.c */,
 				9B80977B223EBC1900649706 /* varobj.h */,
 				9B80977C223EBC1900649706 /* varstr.c */,
@@ -810,8 +812,6 @@
 				9B809742223EAAED00649706 /* netxsl.h */,
 				9B809743223EAAED00649706 /* oemprim.c */,
 				9B809744223EAAED00649706 /* oemprim.h */,
-				9B809745223EAAED00649706 /* sorting.c */,
-				9B809746223EAAED00649706 /* sorting.h */,
 				9B80974D223EAAED00649706 /* variant.h */,
 				9B80974F223EAAED00649706 /* chartdoc.c */,
 				9B809750223EAAED00649706 /* chartdoc.h */,
@@ -1203,7 +1203,6 @@
 				9B56991F2167D4AB00A9A2E7 /* xdlnet.h in Headers */,
 				9B5697E52167D4AB00A9A2E7 /* formdoc.h in Headers */,
 				9B5698202167D4AB00A9A2E7 /* impmem.h in Headers */,
-				9B80978D223EBC1900649706 /* varbuf.h in Headers */,
 				9B5698102167D4AB00A9A2E7 /* impcons.h in Headers */,
 				9B5698DC2167D4AB00A9A2E7 /* svgattr.h in Headers */,
 				9B5699102167D4AB00A9A2E7 /* xdldoc.h in Headers */,
@@ -1272,6 +1271,7 @@
 				9B56992E2167D4AB00A9A2E7 /* xmlattr.h in Headers */,
 				9B56992C2167D4AB00A9A2E7 /* xdlutil.h in Headers */,
 				9B5698F22167D4AB00A9A2E7 /* titleview.h in Headers */,
+				9BA21BDD2275414A00055E56 /* xdlsort.h in Headers */,
 				9B56988B2167D4AB00A9A2E7 /* oemhave.h in Headers */,
 				9B5698E62167D4AB00A9A2E7 /* tableview.h in Headers */,
 				9B56992D2167D4AB00A9A2E7 /* xdlview.h in Headers */,
@@ -1283,6 +1283,7 @@
 				9B5697F52167D4AB00A9A2E7 /* griddoc.h in Headers */,
 				9B5698182167D4AB00A9A2E7 /* impgdi.h in Headers */,
 				9B56989F2167D4AB00A9A2E7 /* oempdg.h in Headers */,
+				9BA21BE12275425D00055E56 /* varbytes.h in Headers */,
 				9B80972E223EA9ED00649706 /* chartview.h in Headers */,
 				9B5698FC2167D4AB00A9A2E7 /* treedoc.h in Headers */,
 				9B56985E2167D4AB00A9A2E7 /* netsoap.h in Headers */,
@@ -1299,7 +1300,6 @@
 				9B5698602167D4AB00A9A2E7 /* netssl.h in Headers */,
 				9B5697ED2167D4AB00A9A2E7 /* gdiinf.h in Headers */,
 				9B5698DB2167D4AB00A9A2E7 /* stringtable.h in Headers */,
-				9B80976A223EAAED00649706 /* sorting.h in Headers */,
 				9B5698A52167D4AB00A9A2E7 /* oemrand.h in Headers */,
 				9B5698442167D4AB00A9A2E7 /* listview.h in Headers */,
 				9B56987D2167D4AB00A9A2E7 /* oembrc.h in Headers */,
@@ -1503,7 +1503,6 @@
 				9B5698432167D4AB00A9A2E7 /* listview.c in Sources */,
 				9B5698762167D4AB00A9A2E7 /* oemb64.c in Sources */,
 				9B5698592167D4AB00A9A2E7 /* netoss.c in Sources */,
-				9B80978C223EBC1900649706 /* varbuf.c in Sources */,
 				9B5698CE2167D4AB00A9A2E7 /* splitview.c in Sources */,
 				9B5698FD2167D4AB00A9A2E7 /* treeview.c in Sources */,
 				9B56992F2167D4AB00A9A2E7 /* xmlbio.c in Sources */,
@@ -1515,6 +1514,7 @@
 				9B80975D223EAAED00649706 /* impuncf.c in Sources */,
 				9B80978E223EBC1900649706 /* varobj.c in Sources */,
 				9B56980D2167D4AB00A9A2E7 /* impcomm.c in Sources */,
+				9BA21BDC2275414A00055E56 /* xdlsort.c in Sources */,
 				9B5698782167D4AB00A9A2E7 /* oembas.c in Sources */,
 				9B5698AE2167D4AB00A9A2E7 /* oemsip.c in Sources */,
 				9B5698B62167D4AB00A9A2E7 /* printbag.c in Sources */,
@@ -1524,6 +1524,7 @@
 				9B5698212167D4AB00A9A2E7 /* imppipe.c in Sources */,
 				9B5698A62167D4AB00A9A2E7 /* oemrsa.c in Sources */,
 				9B5698F32167D4AB00A9A2E7 /* tooldoc.c in Sources */,
+				9BA21BE02275425D00055E56 /* varbytes.c in Sources */,
 				9B56980F2167D4AB00A9A2E7 /* impcons.c in Sources */,
 				9B80979E223EBC1900649706 /* xdlstr.c in Sources */,
 				9B5698132167D4AB00A9A2E7 /* impdate.c in Sources */,
@@ -1558,7 +1559,6 @@
 				9B5697D32167D4AB00A9A2E7 /* dblink.c in Sources */,
 				9B5698822167D4AB00A9A2E7 /* oemcrc.c in Sources */,
 				9B5698EB2167D4AB00A9A2E7 /* taskdoc.c in Sources */,
-				9B809769223EAAED00649706 /* sorting.c in Sources */,
 				9B5697CE2167D4AB00A9A2E7 /* bplustree.c in Sources */,
 				9B5698802167D4AB00A9A2E7 /* oemconv.c in Sources */,
 				9B5697D52167D4AB00A9A2E7 /* dialogdoc.c in Sources */,

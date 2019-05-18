@@ -87,6 +87,11 @@ void delete_list_item(link_t_ptr ilk)
 	delete_dom_node(ilk);
 }
 
+int get_list_item_level(link_t_ptr ilk)
+{
+	return get_dom_node_level(ilk);
+}
+
 link_t_ptr get_list_parent_item(link_t_ptr ilk)
 {
 	return get_dom_parent_node(ilk);

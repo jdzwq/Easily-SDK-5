@@ -43,7 +43,7 @@ res_heap_t _process_heapo(void)
 
 res_heap_t _heapo_create(void)
 {
-	return HeapCreate(0, 0, 0);
+	return HeapCreate(HEAP_NO_SERIALIZE, 0, 0);
 }
 
 void  _heapo_destroy(res_heap_t heap)
@@ -80,7 +80,7 @@ void _heapo_zero(res_heap_t heap, void* p, size_t size)
 void _heapo_free(res_heap_t heap, void* p)
 {
 	BOOL b;
-	b = HeapFree(heap, 0, p);
+	b = HeapFree(heap, HEAP_NO_SERIALIZE, p);
 }
 
 void _heapo_clean(res_heap_t heap)

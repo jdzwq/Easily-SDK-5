@@ -791,6 +791,10 @@ void set_cell_text(link_t_ptr rlk, link_t_ptr clk, const tchar_t *sz, int len)
 		len = xslen(sz);
 
 	cname = get_col_name_ptr(clk);
+	if (is_null(cname))
+	{
+		return;
+	}
 
 	if(!len)
 	{
@@ -1469,7 +1473,7 @@ void update_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 
 	vs = string_alloc();
 
-	st = create_string_table();
+	st = create_string_table(0);
 
 	clk = get_next_col(ptr_dest, LINK_FIRST);
 	while (clk)

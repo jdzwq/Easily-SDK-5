@@ -241,6 +241,13 @@ XDL_API void destroy_list_doc(link_t_ptr ptr);
 XDL_API void clear_list_doc(link_t_ptr ptr);
 
 /*
+@FUNCTION get_list_item_level: get the item level.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN int: return the zero based level index.
+*/
+XDL_API int get_list_item_level(link_t_ptr ilk);
+
+/*
 @FUNCTION get_list_child_item_count: counting the list child items.
 @INPUT link_t_ptr ptr: the parent item link component.
 @RETURN int: return the number of items.

@@ -1682,7 +1682,7 @@ void hand_graph_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	{
 		_graphctrl_coor_rect(widget, ptd->xax, ptd->yax, &xr);
 
-		parse_xcolor(&xc, DEF_FOCUS_COLOR);
+		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOFT);
 	}
 	else if (ptd->yax)
@@ -1696,7 +1696,7 @@ void hand_graph_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	{
 		_graphctrl_xaxbar_rect(widget, ptd->xax, &xr);
 
-		parse_xcolor(&xc, DEF_FOCUS_COLOR);
+		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOFT);
 	}
 	else if (ptd->gax)

@@ -45,9 +45,10 @@ extern "C" {
 
 /*
 @FUNCTION create_string_table: create a string table.
+@INPUT int order: sort rule 1: ascend,-1: descend, 0: none.
 @RETURN link_t_ptr: return the string table link component.
 */
-XDL_API link_t_ptr create_string_table(void);
+XDL_API link_t_ptr create_string_table(int order);
 
 /*
 @FUNCTION destroy_string_table: destroy a string table.
@@ -62,14 +63,6 @@ XDL_API void destroy_string_table(link_t_ptr ptr);
 @RETURN void: none.
 */
 XDL_API void clear_string_table(link_t_ptr ptr);
-
-/*
-@FUNCTION sort_string_table: sort string entities by entity key.
-@INPUT link_t_ptr ptr: the string table link component.
-@INPUT bool_t desc: nonzero for descend sorting, zero for abscend sorting.
-@RETURN void: none.
-*/
-XDL_API void sort_string_table(link_t_ptr ptr, bool_t desc);
 
 /*
 @FUNCTION is_string_table: test is string table.

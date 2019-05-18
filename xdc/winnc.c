@@ -561,12 +561,28 @@ int widget_nc_on_hittest(res_win_t wt, const xpoint_t* pxp)
 	if (hscr)
 	{
 		rt.x = xr.x + edge;
-		rt.w = xr.w - 2 * edge - vscr;
+		rt.w = hscr;
+		rt.y = xr.y + xr.h - edge - hscr;
+		rt.h = hscr;
+
+		if (pt_in_rect(pxp, &rt))
+			return HINT_LINELEFT;
+
+		rt.x = xr.x + edge + hscr;
+		rt.w = xr.w - 2 * edge - vscr - 2 * hscr;
 		rt.y = xr.y + xr.h - edge - hscr;
 		rt.h = hscr;
 
 		if (pt_in_rect(pxp, &rt))
 			return HINT_HSCROLL;
+
+		rt.x = xr.x + xr.w - edge - vscr - hscr;
+		rt.w = hscr;
+		rt.y = xr.y + xr.h - edge - hscr;
+		rt.h = hscr;
+
+		if (pt_in_rect(pxp, &rt))
+			return HINT_LINERIGHT;
 	}
 
 	if (vscr)
@@ -581,11 +597,27 @@ int widget_nc_on_hittest(res_win_t wt, const xpoint_t* pxp)
 
 		rt.x = xr.x + xr.w - edge - vscr;
 		rt.w = vscr;
-		rt.y = xr.y + edge + title + menu;
-		rt.h = xr.h - 2 * edge - title - menu - vscr;
+		rt.y = xr.y + edge + title + menu + vscr;
+		rt.h = vscr;
+
+		if (pt_in_rect(pxp, &rt))
+			return HINT_LINEUP;
+
+		rt.x = xr.x + xr.w - edge - vscr;
+		rt.w = vscr;
+		rt.y = xr.y + edge + title + menu + 2 * vscr;
+		rt.h = xr.h - 2 * edge - title - menu - 4 * vscr;
 
 		if (pt_in_rect(pxp, &rt))
 			return HINT_VSCROLL;
+
+		rt.x = xr.x + xr.w - edge - vscr;
+		rt.w = vscr;
+		rt.y = xr.y + xr.h - edge - 2 * vscr;
+		rt.h = vscr;
+
+		if (pt_in_rect(pxp, &rt))
+			return HINT_LINEDOWN;
 
 		rt.x = xr.x + xr.w - edge - vscr;
 		rt.w = vscr;

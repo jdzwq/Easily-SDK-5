@@ -972,8 +972,8 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		raise_user_error(_T("xhttp_client"), _T("create bio failed"));
 	}
 
-	phttp->st_request = create_string_table();
-	phttp->st_response = create_string_table();
+	phttp->st_request = create_string_table(ORDER_ASCEND);
+	phttp->st_response = create_string_table(ORDER_ASCEND);
 
 	END_CATCH;
 
@@ -1060,8 +1060,8 @@ xhand_t xhttp_server(xhand_t bio)
 	xscpy(phttp->poto, _T("HTTP"));
 	xscpy(phttp->version, _T("1.1"));
 
-	phttp->st_request = create_string_table();
-	phttp->st_response = create_string_table();
+	phttp->st_request = create_string_table(ORDER_ASCEND);
+	phttp->st_response = create_string_table(ORDER_ASCEND);
 
 	END_CATCH;
 
@@ -1724,7 +1724,7 @@ void xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* 
 		return;
 	}
 
-	st = create_string_table();
+	st = create_string_table(0);
 
 	string_table_format_options(st, cookies, -1, _T('='), _T(';'));
 
@@ -1779,7 +1779,7 @@ int xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, in
 		get_string_entity_val(ent, cookies, PATH_LEN);
 	}
 
-	st = create_string_table();
+	st = create_string_table(0);
 
 	string_table_format_options(st, cookies, -1, _T('='), _T(';'));
 
@@ -2229,8 +2229,6 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 	if (!phttp->b_response)
 	{
-		sort_string_table(phttp->st_response, 0);
-
 		len_response = _xhttp_format_response(phttp, NULL, MAX_LONG);
 		buf_response = (byte_t*)xmem_alloc(len_response + 1);
 
@@ -2407,8 +2405,6 @@ bool_t xhttp_send_request(xhand_t xhttp)
 
 	if (!phttp->b_request)
 	{
-		sort_string_table(phttp->st_request, 0);
-
 		len_request = _xhttp_format_request(phttp, NULL, MAX_LONG);
 		buf_request = (byte_t*)xmem_alloc(len_request + 1);
 

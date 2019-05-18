@@ -50,7 +50,7 @@ typedef enum{
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_words_table(int scend);
+XDL_API link_t_ptr create_words_table(int order);
 
 XDL_API void destroy_words_table(link_t_ptr ptr);
 

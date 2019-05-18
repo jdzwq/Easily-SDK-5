@@ -392,7 +392,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				cb.fw = xr.fw;
 				cb.fh = xr.fh;
 
-				obj = create_string_table();
+				obj = create_string_table(0);
 				string_table_parse_options(obj, sz_text, -1, OPT_ITEMFEED, OPT_LINEFEED);
 				draw_table(pif, &xf, &xa, &xp, &xb, &cb, obj, get_field_ratio(flk));
 				destroy_string_table(obj);

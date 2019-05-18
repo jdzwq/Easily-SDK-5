@@ -47,7 +47,7 @@ int write_style_attr(const tchar_t* org_style, int slen, const tchar_t* sz_key, 
 	if (is_null(sz_key) || !klen)
 		return 0;
 
-	st = create_string_table();
+	st = create_string_table(0);
 	string_table_parse_options(st, org_style, slen, OPT_ITEMFEED, OPT_LINEFEED);
 
 	elk = get_string_entity(st, sz_key, klen);
@@ -81,7 +81,7 @@ int read_style_attr(const tchar_t* style, int len, const tchar_t* sz_key, int kl
 	if (is_null(sz_key) || !klen)
 		return 0;
 
-	st = create_string_table();
+	st = create_string_table(0);
 	string_table_parse_options(st, style, len, OPT_ITEMFEED, OPT_LINEFEED);
 
 	elk = get_string_entity(st, sz_key, klen);

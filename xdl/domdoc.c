@@ -754,7 +754,7 @@ void set_dom_node_nsurl(link_t_ptr ilk, const tchar_t* sz_url, int len)
 	pti = DomItemFromLink(ilk);
 
 	if (!pti->xmlns)
-		pti->xmlns = create_string_table();
+		pti->xmlns = create_string_table(0);
 
 	if (is_null(pti->ns))
 		xsprintf(nkey, _T("%s"), XMLNS);
@@ -829,7 +829,7 @@ void set_dom_node_xmlns(link_t_ptr ilk, const tchar_t* nsname, int klen, const t
 	if (vlen)
 	{
 		if (!pti->xmlns)
-			pti->xmlns = create_string_table();
+			pti->xmlns = create_string_table(0);
 
 		write_string_entity(pti->xmlns, nsname, klen, nsurl, vlen);
 	}
@@ -985,7 +985,7 @@ void set_dom_node_options(link_t_ptr ilk,const tchar_t* token,int len)
 	if(is_null(token) || !len)
 		return;
 
-	ptt->opti = create_string_table();
+	ptt->opti = create_string_table(ORDER_ASCEND);
 	string_table_parse_options(ptt->opti, token, len, OPT_ITEMFEED, OPT_LINEFEED);
 }
 
@@ -1060,7 +1060,7 @@ void set_dom_node_options_text(link_t_ptr ilk,const tchar_t* szKey,int klen,cons
 
 	if(!ptt->opti)
 	{
-		ptt->opti = create_string_table();
+		ptt->opti = create_string_table(ORDER_ASCEND);
 	}
 
 	write_string_entity(ptt->opti,szKey,klen,szVal,vlen);
@@ -1133,6 +1133,16 @@ link_t_ptr get_dom_prev_sibling_node(link_t_ptr ilk)
 	else
 		return get_prev_link(ilk);
 
+}
+
+int get_dom_node_level(link_t_ptr ilk)
+{
+	int level = 0;
+
+	while (ilk = get_dom_parent_node(ilk))
+		level++;
+
+	return level;
 }
 
 link_t_ptr get_dom_child_node_at(link_t_ptr ilk,int index)

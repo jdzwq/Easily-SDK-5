@@ -125,7 +125,7 @@ int hand_iconbox_create(res_win_t widget, void* data)
 	ptd = (iconbox_delta_t*)xmem_alloc(sizeof(iconbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(iconbox_delta_t));
 
-	ptd->string = create_string_table();
+	ptd->string = create_string_table(0);
 
 	SETICONBOXDELTA(widget, ptd);
 

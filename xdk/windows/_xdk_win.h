@@ -359,6 +359,10 @@ typedef LRESULT		result_t;
 #define HINT_VSCROLL	102
 #define HINT_PAGEUP		103
 #define HINT_PAGEDOWN	104
+#define HINT_LINEUP		105
+#define HINT_LINEDOWN	106
+#define HINT_LINELEFT	107
+#define HINT_LINERIGHT	108
 #endif
 #endif
 

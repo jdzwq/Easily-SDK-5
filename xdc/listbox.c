@@ -217,7 +217,7 @@ int hand_listbox_create(res_win_t widget, void* data)
 
 	ptd = (listbox_delta_t*)xmem_alloc(sizeof(listbox_delta_t));
 
-	ptd->string = create_string_table();
+	ptd->string = create_string_table(0);
 	ptd->entity = NULL;
 
 	SETLISTBOXDELTA(widget, ptd);

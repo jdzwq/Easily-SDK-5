@@ -215,12 +215,15 @@
 				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
 					/usr/local/mysql/include,
 					"/Users/zwq/工程/Easily-sdk-5/include",
 					"/Users/zwq/工程/Easily-sdk-5/xdb",
 				);
 				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_mysql.dylib";
 				LIBRARY_SEARCH_PATHS = (
+					/opt/X11/lib,
 					/usr/local/mysql/lib,
 					"/Users/zwq/工程/Easily-sdk-5/macos/lib",
 				);
@@ -241,12 +244,15 @@
 				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
 					/usr/local/mysql/include,
 					"/Users/zwq/工程/Easily-sdk-5/include",
 					"/Users/zwq/工程/Easily-sdk-5/xdb",
 				);
 				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_mysql.dylib";
 				LIBRARY_SEARCH_PATHS = (
+					/opt/X11/lib,
 					/usr/local/mysql/lib,
 					"/Users/zwq/工程/Easily-sdk-5/macos/lib",
 				);

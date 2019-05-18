@@ -1122,12 +1122,12 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 			if (get_topog_spot_selected(ptd->spot))
 			{
-				parse_xcolor(&xc, DEF_FOCUS_BRUSH);
+				parse_xcolor(&xc, DEF_ALPHA_COLOR);
 				alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
 			}
 			else
 			{
-				parse_xcolor(&xc, DEF_FOCUS_COLOR);
+				parse_xcolor(&xc, DEF_ENABLE_COLOR);
 				draw_focus_raw(rdc, &xc, &xr, ALPHA_TRANS);
 			}
 		}

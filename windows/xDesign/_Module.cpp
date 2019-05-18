@@ -465,7 +465,7 @@ VOID LoadResource()
 	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, BMP_COUNTER);
 	insert_images_item_from_file(g_imagelist, BMP_COUNTER, NULL, path);
 
-	LINKPTR ptr_string = create_string_table();
+	LINKPTR ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_RGB_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	LINKPTR ent = get_string_next_entity(ptr_string, LINK_FIRST);

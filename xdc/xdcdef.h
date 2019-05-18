@@ -198,12 +198,8 @@ LICENSE.GPL3 for more details.
 #define DEF_CTRL_FONT		_T("font-style:normal;font-size:9;font-family:Arial;font-weight:400;")
 #define DEF_CTRL_FACE		_T("text-color:RGB(10,10,10);text-align:near;line-align:center;text-wrap:line-barek;")
 
-#define DEF_FOCUS_PEN		_T("stroke-style:solid;stroke-color:RGB(0,128,128);stroke-width:1;stroke-opacity:250;")
-#define DEF_FOCUS_BRUSH		_T("fill-style:solid;fill-color:RGB(250,250,250);fill-opacity:250;")
-
-#define DEF_FOCUS_COLOR		_T("RGB(47,79,79)")
 #define DEF_ALARM_COLOR		_T("RGB(178,34,34)")
-#define DEF_ENABLE_COLOR	_T("RGB(47,79,79)")
+#define DEF_ENABLE_COLOR	_T("RGB(36,36,36)")
 #define DEF_DISABLE_COLOR	_T("RGB(198,198,198)")
 #define DEF_ALPHA_COLOR		_T("RGB(152,185,158)")
 
@@ -212,7 +208,7 @@ LICENSE.GPL3 for more details.
 #define TEXT_STYLE_BLUE		_T("text-color:RGB(0,0,139);")
 #define TEXT_STYLE_GREEN	_T("text-color:RGB(34,139,34);")
 #define TEXT_STYLE_CYAN		_T("text-color:RGB(47,79,79);")
-#define TEXT_STYLE_RED		_T("text-color:RGB(128,0,0);")
+#define TEXT_STYLE_RED		_T("text-color:RGB(248,0,0);")
 #define TEXT_STYLE_ORANGE	_T("text-color:RGB(250,127,0);")
 #define TEXT_STYLE_SLATE	_T("text-color:RGB(108,123,139);")
 #define TEXT_STYLE_GRAY		_T("text-color:RGB(128,128,128);")

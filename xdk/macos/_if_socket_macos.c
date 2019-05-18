@@ -555,6 +555,13 @@ bool_t _socket_set_linger(res_file_t so, bool_t wait, int sec)
     return (setsockopt(so, SOL_SOCKET, SO_LINGER, (const char*)&li, sizeof(li)) < 0) ? 0 : 1;
 }
 
+bool_t	_socket_set_nonblk(res_file_t so, bool_t none)
+{
+    unsigned long dw = (none)? 1 : 0;
+
+    return (ioctl(so, FIONBIO, ((none)? 1 : 0)) < 0)? 0 : 1;
+}
+
 bool_t _socket_listen(res_file_t so, int max)
 {
 	return (listen(so, max) == 0)? 1 : 0;

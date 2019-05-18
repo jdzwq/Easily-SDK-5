@@ -994,7 +994,7 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 	}
 
 	len = xslen(sz_num) - len;
-	if (!len)
+	if (!len) //###
 	{
 		*token = _T('0');
 		token++;
@@ -1002,7 +1002,7 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 		token++;
 		*token = _T('\0');
 	}
-	else if (len == 1)
+	else if (len == 1) //##.
 	{
 		*token = _T('0');
 		token++;
@@ -1010,7 +1010,7 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 		token++;
 		*token = _T('\0');
 	}
-	else if (len == 2)
+	else if (len == 2) //##.#
 	{
 		*token = *(token + 1);
 		token++;
@@ -1018,7 +1018,7 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 		token++;
 		*token = _T('\0');
 	}
-	else if (len == 3)
+	else if (len == 3) //##.##
 	{
 		*token = *(token + 1);
 		token++;
@@ -1030,6 +1030,7 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 	len = (int)(token - sz_num);
 	token = sz_num;
 
+	//truncate
 	while (len > CHSUNI_MAX)
 	{
 		token++;
@@ -1135,7 +1136,14 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 			}
 		}
 
-		switch (i)
+		if (i >= 13)
+			step = 15;
+		else if (i >= 9)
+			step = 13;
+		else
+			step = 9;
+		
+		/*switch (i)
 		{
 		case 5:
 			step = 9;
@@ -1146,7 +1154,7 @@ int format_money_chs(double dbl, int n_span, tchar_t* buf, int max)
 		case 13:
 			step = 15;
 			break;
-		}
+		}*/
 
 	}
 

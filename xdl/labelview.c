@@ -379,7 +379,7 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 		}
 		else if (compare_text(type, -1, ATTR_TEXT_TYPE_STRINGTABLE, -1, 0) == 0)
 		{ 
-			st_table = create_string_table();
+			st_table = create_string_table(0);
 			string_table_parse_options(st_table, get_label_item_text_ptr(nlk), -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 			xmem_copy((void*)&xa_title, (void*)&xa, sizeof(xface_t));

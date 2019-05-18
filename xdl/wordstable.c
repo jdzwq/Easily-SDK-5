@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 typedef struct _words_table{
 	link_t lk;			/* str table self link component*/
 	link_t lkItems;	/* str table master root link ptr array*/
-	int scend;		/*sort rule 1: ascend,-1: descend, 0: none*/
+	int order;		/*sort rule 1: aorder,-1: deorder, 0: none*/
 }words_table_t;
 
 typedef struct _words_item_t{
@@ -52,12 +52,12 @@ typedef struct _words_item_t{
 #define WordsItemFromLink(p) TypePtrFromLink(words_item_t,p)
 
 
-link_t_ptr create_words_table(int scend)
+link_t_ptr create_words_table(int order)
 {
 	words_table_t* pht;
 
 	pht = (words_table_t*)xmem_alloc(sizeof(words_table_t));
-	pht->scend = scend;
+	pht->order = order;
 	pht->lk.tag = lkWordsTable;
 	init_root_link(&pht->lkItems);
 
@@ -128,9 +128,9 @@ link_t_ptr insert_words_item(link_t_ptr ptr, const tchar_t* val, int len)
 
 	pht = WordsTableFromLink(ptr);
 
-	if (pht->scend == ORDER_ASCEND)
+	if (pht->order == ORDER_ASCEND)
 		plk = get_words_prev_item(ptr, LINK_LAST);
-	else if (pht->scend == ORDER_DESCEND)
+	else if (pht->order == ORDER_DESCEND)
 		plk = get_words_next_item(ptr, LINK_FIRST);
 	else
 		plk = get_words_next_item(ptr, LINK_FIRST);
@@ -142,12 +142,12 @@ link_t_ptr insert_words_item(link_t_ptr ptr, const tchar_t* val, int len)
 		rt = compare_text(phe->text, -1, val, -1, 1);
 		if (rt == 0)
 			return plk;
-		else if (rt < 0 && (pht->scend != ORDER_NONE))
+		else if (rt < 0 && (pht->order != ORDER_NONE))
 			break;
 
-		if (pht->scend == ORDER_ASCEND)
+		if (pht->order == ORDER_ASCEND)
 			plk = get_words_prev_item(ptr, plk);
-		else if (pht->scend == ORDER_DESCEND)
+		else if (pht->order == ORDER_DESCEND)
 			plk = get_words_next_item(ptr, plk);
 		else
 			plk = get_words_next_item(ptr, plk);
@@ -157,9 +157,9 @@ link_t_ptr insert_words_item(link_t_ptr ptr, const tchar_t* val, int len)
 	phe->lk.tag = lkWordsItem;
 	phe->text = xsnclone(val, len);
 
-	if (pht->scend == ORDER_ASCEND)
+	if (pht->order == ORDER_ASCEND)
 		insert_link_after(&pht->lkItems, ((plk)? plk : LINK_FIRST), &phe->lk);
-	else if (pht->scend == ORDER_DESCEND)
+	else if (pht->order == ORDER_DESCEND)
 		insert_link_before(&pht->lkItems, ((plk) ? plk : LINK_LAST), &phe->lk);
 	else
 		insert_link_after(&pht->lkItems, LINK_FIRST, &phe->lk);
@@ -178,9 +178,9 @@ link_t_ptr get_words_item(link_t_ptr ptr, const tchar_t* val, int len)
 
 	pht = WordsTableFromLink(ptr);
 
-	if (pht->scend == ORDER_ASCEND)
+	if (pht->order == ORDER_ASCEND)
 		plk = get_words_prev_item(ptr, LINK_LAST);
-	else if (pht->scend == ORDER_DESCEND)
+	else if (pht->order == ORDER_DESCEND)
 		plk = get_words_next_item(ptr, LINK_FIRST);
 	else
 		plk = get_words_next_item(ptr, LINK_FIRST);
@@ -192,12 +192,12 @@ link_t_ptr get_words_item(link_t_ptr ptr, const tchar_t* val, int len)
 		rt = compare_text(phe->text, -1, val, -1, 1);
 		if (rt == 0)
 			return plk;
-		else if (rt < 0 && (pht->scend != ORDER_NONE))
+		else if (rt < 0 && (pht->order != ORDER_NONE))
 			break;
 
-		if (pht->scend == ORDER_ASCEND)
+		if (pht->order == ORDER_ASCEND)
 			plk = get_words_prev_item(ptr, plk);
-		else if (pht->scend == ORDER_DESCEND)
+		else if (pht->order == ORDER_DESCEND)
 			plk = get_words_next_item(ptr, plk);
 		else
 			plk = get_words_next_item(ptr, plk);

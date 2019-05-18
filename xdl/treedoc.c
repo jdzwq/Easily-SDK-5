@@ -97,6 +97,11 @@ void delete_tree_child_items(link_t_ptr ilk)
 	delete_dom_child_nodes(ilk);
 }
 
+int get_tree_item_level(link_t_ptr ilk)
+{
+	return get_dom_node_level(ilk);
+}
+
 int get_tree_child_item_count(link_t_ptr ilk)
 {
 	return get_dom_child_node_count(ilk);

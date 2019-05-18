@@ -114,6 +114,7 @@ typedef struct tagMainFrameDelta{
 res_win_t	_MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath);
 bool_t		_MainFrame_FindPanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath);
 void		_MainFrame_RenamePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* wname, const tchar_t* nname);
+
 /***********************************************************************************************/
 void MainFrame_Switch(res_win_t widget)
 {
@@ -723,7 +724,7 @@ void MainFrame_SyncFile(res_win_t widget)
 
 	Project_GetConfig(pdt->ptrProject, _T("SYN"), szSYN, PATH_LEN);
 
-	LINKPTR ptr_str = create_string_table();
+	LINKPTR ptr_str = create_string_table(0);
 
 	string_table_parse_attrset(ptr_str, szSYN, -1);
 
@@ -765,6 +766,7 @@ void MainFrame_SyncFile(res_win_t widget)
 	tchar_t srvTime[DATE_LEN] = { 0 };
 
 	statusctrl_show_step(pdt->hStatusBar, 1);
+	widget_set_cursor(g_hMain, CURSOR_WAIT);
 
 	LINKPTR ptr_tree = treectrl_fetch(pdt->hResBar);
 	LINKPTR tlk_ext = get_tree_first_child_item(ptr_tree);
@@ -774,6 +776,7 @@ void MainFrame_SyncFile(res_win_t widget)
 		while (tlk_file)
 		{
 			split_path(pdt->szFile, szLoc, NULL, NULL);
+
 			xscat(szLoc, _T("\\"));
 			xscat(szLoc, get_tree_item_name_ptr(tlk_file));
 
@@ -786,6 +789,8 @@ void MainFrame_SyncFile(res_win_t widget)
 				xfile_copy(&sd, szLoc, szSrv, FILE_SINCE_TIME);
 			}
 
+			statusctrl_step_it(pdt->hStatusBar, 1, get_tree_item_name_ptr(tlk_file));
+
 			tlk_file = get_tree_next_sibling_item(tlk_file);
 		}
 
@@ -793,6 +798,7 @@ void MainFrame_SyncFile(res_win_t widget)
 	}
 
 	statusctrl_show_step(pdt->hStatusBar, 0);
+	widget_set_cursor(g_hMain, CURSOR_ARROW);
 
 	ShowMsg(MSGICO_TIP, _T("文件发布完成！"));
 }
@@ -1314,7 +1320,7 @@ void MainFrame_SetDataSource(res_win_t widget)
 
 	Project_GetConfig(pdt->ptrProject, _T("RDS"), szRDS, PATH_LEN);
 
-	LINKPTR ptr_str = create_string_table();
+	LINKPTR ptr_str = create_string_table(0);
 
 	if (is_null(szRDS))
 	{
@@ -1366,7 +1372,7 @@ void MainFrame_SetDocServer(res_win_t widget)
 
 	Project_GetConfig(pdt->ptrProject, _T("SYN"), szSYN, PATH_LEN);
 
-	LINKPTR ptr_str = create_string_table();
+	LINKPTR ptr_str = create_string_table(0);
 
 	if (is_null(szSYN))
 	{

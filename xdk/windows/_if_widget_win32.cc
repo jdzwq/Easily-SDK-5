@@ -349,6 +349,24 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			case HINT_ICON:
 				PostMessage(hWnd, WM_SYSCOMMAND, SC_CONTEXTHELP, MAKELPARAM(xp.x, xp.y));
 				break;
+			case HINT_LINELEFT:
+				if (pev->pf_on_nc_calcscroll)
+				{
+					scroll_t scr = { 0 };
+					_widget_get_scroll_info(hWnd, 1, &scr);
+
+					PostMessage(hWnd, WM_SCROLL, (WPARAM)1, (LPARAM)(- scr.min));
+				}
+				break;
+			case HINT_LINERIGHT:
+				if (pev->pf_on_nc_calcscroll)
+				{
+					scroll_t scr = { 0 };
+					_widget_get_scroll_info(hWnd, 1, &scr);
+
+					PostMessage(hWnd, WM_SCROLL, (WPARAM)1, (LPARAM)(scr.min));
+				}
+			break;
 			case HINT_HSCROLL:
 				if (pev->pf_on_nc_calcscroll)
 				{
@@ -364,6 +382,24 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 					{
 						PostMessage(hWnd, WM_SCROLL, (WPARAM)1, (LPARAM)(pos - scr.pos));
 					}
+				}
+				break;
+			case HINT_LINEUP:
+				if (pev->pf_on_nc_calcscroll)
+				{
+					scroll_t scr = { 0 };
+					_widget_get_scroll_info(hWnd, 1, &scr);
+
+					PostMessage(hWnd, WM_SCROLL, (WPARAM)0, (LPARAM)(-scr.min));
+				}
+				break;
+			case HINT_LINEDOWN:
+				if (pev->pf_on_nc_calcscroll)
+				{
+					scroll_t scr = { 0 };
+					_widget_get_scroll_info(hWnd, 1, &scr);
+
+					PostMessage(hWnd, WM_SCROLL, (WPARAM)0, (LPARAM)(scr.min));
 				}
 				break;
 			case HINT_VSCROLL:
@@ -1893,6 +1929,9 @@ void _widget_set_cursor(res_win_t wt, int curs)
 		break;
 	case CURSOR_IBEAM:
 		SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+		break;
+	case CURSOR_WAIT:
+		SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(IDC_WAIT)));
 		break;
 	default:
 		SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));

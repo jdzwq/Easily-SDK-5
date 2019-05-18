@@ -876,7 +876,7 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	//draw focus
 	if (ptd->item)
 	{
-		parse_xcolor(&xc, DEF_FOCUS_COLOR);
+		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
 		_treectrl_item_rect(widget, ptd->item, &xr);
 		pt_expand_rect(&xr, DEF_INNER_FEED, 0);

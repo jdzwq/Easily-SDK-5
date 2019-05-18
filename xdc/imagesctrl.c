@@ -1016,7 +1016,7 @@ void hand_images_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
-		parse_xcolor(&xc, DEF_FOCUS_COLOR);
+		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
 		draw_focus_raw(rdc, &xc, &xr, ALPHA_TRANS);
 	}

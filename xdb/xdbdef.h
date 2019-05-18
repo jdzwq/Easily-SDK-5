@@ -67,8 +67,8 @@ LICENSE.GPL3 for more details.
 #define MAX_SQL_TOKEN	128
 #define MAX_SQL_DATA	4000
 
-#define MIN_SQL_LEN		512
-#define MID_SQL_LEN		1024
+#define MIN_SQL_LEN		1024
+#define MID_SQL_LEN		2048
 #define MAX_SQL_LEN		4096
 
 #define XDB_PENDING		100

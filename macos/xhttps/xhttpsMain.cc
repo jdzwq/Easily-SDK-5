@@ -38,13 +38,14 @@ int main(int argc, char* argv[])
 	}
 
 	get_param_item(xp.sz_param, _T("CERT"), sz_cert, RES_LEN);
-
-	if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
-		xp.n_secu = _SECU_SSL;
-	else if (compare_text(sz_cert, -1, _T("TLS"), -1, 1) == 0)
-		xp.n_secu = _SECU_TLS;
-	else
-		xp.n_secu = _SECU_NONE;
+    get_param_item(xp.sz_param, _T("AUTH"), xp.sz_auth, INT_LEN);
+    
+    if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
+        xp.n_secu = _SECU_SSL;
+    else if (compare_text(sz_cert, -1, _T("XSL"), -1, 1) == 0)
+        xp.n_secu = _SECU_XSL;
+    else
+        xp.n_secu = _SECU_NONE;
 
 	pipe = xpipe_srv(NULL, 0);
 
@@ -62,12 +63,12 @@ int main(int argc, char* argv[])
 	xpipe_free(pipe);
 	pipe = NULL;
 
-	if (xp.n_secu == _SECU_SSL)
-		bio = xssl_srv(sok);
-	else if (xp.n_secu == _SECU_TLS)
-		bio = xtls_srv(sok);
-	else
-		bio = xtcp_srv(sok);
+    if (xp.n_secu == _SECU_SSL)
+        bio = xssl_srv(sok);
+    else if (xp.n_secu == _SECU_XSL)
+        bio = xxsl_srv(sok);
+    else
+        bio = xtcp_srv(sok);
 
 	if (!bio)
 	{
@@ -86,12 +87,12 @@ int main(int argc, char* argv[])
 	xhttp_close(http);
 	http = NULL;
 
-	if (xp.n_secu == _SECU_SSL)
-		xssl_close(bio);
-	else if (xp.n_secu == _SECU_TLS)
-		xtls_close(bio);
-	else
-		xtcp_close(bio);
+    if (xp.n_secu == _SECU_SSL)
+        xssl_close(bio);
+    else if (xp.n_secu == _SECU_XSL)
+        xxsl_close(bio);
+    else
+        xtcp_close(bio);
 
 	bio = NULL;
 
@@ -118,12 +119,12 @@ ONERROR:
 
     if (bio)
 	{
-		if (xp.n_secu == _SECU_SSL)
-			xssl_close(bio);
-		else if (xp.n_secu == _SECU_TLS)
-			xtls_close(bio);
-		else
-			xtcp_close(bio);
+        if (xp.n_secu == _SECU_SSL)
+            xssl_close(bio);
+        else if (xp.n_secu == _SECU_XSL)
+            xxsl_close(bio);
+        else
+            xtcp_close(bio);
 	}
 
 	if (http)

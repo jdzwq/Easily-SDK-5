@@ -98,7 +98,7 @@ void fontname_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	widget_get_color_mode(widget, &clr);
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_FAMILY_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ptr_menu = create_menu_doc();
@@ -140,7 +140,7 @@ void fontname_menu_item(int iid, tchar_t* buf, int max)
 {
 	link_t_ptr ent, ptr_string;
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_FAMILY_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ent = (iid)? get_string_next_entity(ptr_string, LINK_FIRST) : NULL;
@@ -169,7 +169,7 @@ void fontsize_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	widget_get_color_mode(widget, &clr);
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_SIZE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ptr_menu = create_menu_doc();
@@ -211,7 +211,7 @@ void fontsize_menu_item(int iid, tchar_t* buf, int max)
 {
 	link_t_ptr ent, ptr_string;
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_SIZE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ent = (iid) ? get_string_next_entity(ptr_string, LINK_FIRST) : NULL;
@@ -240,7 +240,7 @@ void fontstyle_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	widget_get_color_mode(widget, &clr);
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_STYLE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ptr_menu = create_menu_doc();
@@ -282,7 +282,7 @@ void fontstyle_menu_item(int iid, tchar_t* buf, int max)
 {
 	link_t_ptr ent, ptr_string;
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_STYLE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ent = (iid) ? get_string_next_entity(ptr_string, LINK_FIRST) : NULL;
@@ -311,7 +311,7 @@ void fontweight_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay
 
 	widget_get_color_mode(widget, &clr);
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_WEIGHT_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ptr_menu = create_menu_doc();
@@ -353,7 +353,7 @@ void fontweight_menu_item(int iid, tchar_t* buf, int max)
 {
 	link_t_ptr ent, ptr_string;
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_WEIGHT_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ent = (iid) ? get_string_next_entity(ptr_string, LINK_FIRST) : NULL;
@@ -382,7 +382,7 @@ void color_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	widget_get_color_mode(widget, &clr);
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_RGB_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ptr_menu = create_menu_doc();
@@ -424,7 +424,7 @@ void color_menu_item(int iid, tchar_t* buf, int max)
 {
 	link_t_ptr ent, ptr_string;
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_RGB_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ent = (iid) ? get_string_next_entity(ptr_string, LINK_FIRST) : NULL;
@@ -453,7 +453,7 @@ void shape_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	widget_get_color_mode(widget, &clr);
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, ATTR_SHAPE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ptr_menu = create_menu_doc();
@@ -509,7 +509,7 @@ void shape_menu_item(int iid, tchar_t* buf, int max)
 	else
 		iid--;
 
-	ptr_string = create_string_table();
+	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, ATTR_SHAPE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 	ent = (iid) ? get_string_next_entity(ptr_string, LINK_FIRST) : NULL;

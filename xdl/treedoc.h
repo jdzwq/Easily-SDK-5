@@ -274,6 +274,13 @@ XDL_API void delete_tree_item(link_t_ptr ilk);
 XDL_API void delete_tree_child_items(link_t_ptr ilk);
 
 /*
+@FUNCTION get_tree_item_level: get the item level.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN int: return the zero based level index.
+*/
+XDL_API int get_tree_item_level(link_t_ptr ilk);
+
+/*
 @FUNCTION get_tree_child_item_count: counting the tree child items.
 @INPUT link_t_ptr ptr: the parent item link component.
 @RETURN int: return the number of items.

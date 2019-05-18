@@ -222,7 +222,7 @@ void _DBShowError(DBCTX* pct, HWND hWnd)
 
 void _DBConfig(const tchar_t* conn, tchar_t* szRDS, tchar_t* szDBN, tchar_t* szSID, tchar_t* szKEY)
 {
-	LINKPTR ptr_str = create_string_table();
+	LINKPTR ptr_str = create_string_table(0);
 
 	string_table_parse_attrset(ptr_str, conn, -1);
 

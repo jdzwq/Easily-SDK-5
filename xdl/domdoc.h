@@ -262,6 +262,13 @@ XDL_API link_t_ptr get_dom_next_sibling_node(link_t_ptr ilk);
 XDL_API link_t_ptr get_dom_prev_sibling_node(link_t_ptr ilk);
 
 /*
+@FUNCTION get_dom_node_level: get the node level.
+@INPUT link_t_ptr ilk: the node link component.
+@RETURN int: return the zero based level index.
+*/
+XDL_API int get_dom_node_level(link_t_ptr ilk);
+
+/*
 @FUNCTION get_dom_child_node_at: find the node by position.
 @INPUT link_t_ptr ilk: the parent link component.
 @INPUT int index: the zero based position.
@@ -652,6 +659,7 @@ XDL_API int get_dom_child_node_mask_check_count(link_t_ptr ilk, dword_t ul);
 XDL_API int set_dom_child_node_mask_check(link_t_ptr ilk, dword_t ul, bool_t b);
 
 /************************************************runtime paging function************************************/
+
 XDL_API bool_t get_dom_node_page_cator(link_t_ptr ilk, int pos, page_cator_t* pca);
 
 XDL_API void set_dom_node_page_cator(link_t_ptr ilk, int pos, const page_cator_t* pca);

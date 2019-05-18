@@ -37,6 +37,7 @@ LICENSE.GPL3 for more details.
 typedef struct _string_table{
 	link_t lk;			/* str table self link component*/
 	link_t lkEntitys;	/* str table master root link ptr array*/
+	int order;		/*sort rule 1: ascend,-1: descend, 0: none*/
 }string_table_t;
 
 typedef struct _string_entity_t{
@@ -52,21 +53,13 @@ typedef struct _string_entity_t{
 /* restore str entity struct ptr from link ptr*/
 #define StringEntityFromLink(p) TypePtrFromLink(string_entity_t,p)
 
-int _compare_string_entity_proc(link_t_ptr plk1, link_t_ptr plk2, void* param)
-{
-	string_entity_t *pse1, *pse2;
 
-	pse1 = StringEntityFromLink(plk1);
-	pse2 = StringEntityFromLink(plk2);
-
-	return xsicmp(pse1->key, pse2->key);
-}
-
-link_t_ptr create_string_table()
+link_t_ptr create_string_table(int order)
 {
 	string_table_t* pht;
 
 	pht = (string_table_t*)xmem_alloc(sizeof(string_table_t));
+	pht->order = order;
 	pht->lk.tag = lkStringTable;
 	init_root_link(&pht->lkEntitys);
 
@@ -121,16 +114,6 @@ bool_t is_string_entity(link_t_ptr ptr, link_t_ptr ilk)
 	return 0;
 }
 
-void sort_string_table(link_t_ptr ptr, bool_t desc)
-{
-	string_table_t* pht;
-
-	XDL_ASSERT(ptr && ptr->tag == lkStringTable);
-
-	pht = StringTableFromLink(ptr);
-	bubble_sort_link(&pht->lkEntitys, (CALLBACK_SORTLINK)_compare_string_entity_proc, desc, NULL);
-}
-
 int get_string_entity_count(link_t_ptr ptr)
 {
 	string_table_t* pht;
@@ -146,6 +129,7 @@ link_t_ptr write_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen, c
 	string_table_t* pht;
 	string_entity_t* phe;
 	link_t_ptr plk;
+	int rt;
 
 	XDL_ASSERT(ptr && ptr->tag == lkStringTable);
 
@@ -153,47 +137,59 @@ link_t_ptr write_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen, c
 		return NULL;
 
 	pht = StringTableFromLink(ptr);
-	//first to find entity with the key
-	plk = get_string_entity(ptr, key, keylen);
-	if (plk != NULL)
+
+	if (pht->order == ORDER_ASCEND)
+		plk = get_string_prev_entity(ptr, LINK_LAST);
+	else if (pht->order == ORDER_DESCEND)
+		plk = get_string_next_entity(ptr, LINK_FIRST);
+	else
+		plk = get_string_next_entity(ptr, LINK_FIRST);
+
+	while (plk)
 	{
 		phe = StringEntityFromLink(plk);
 
-		if (!is_null(val) && vallen)
+		rt = compare_text(phe->key, -1, key, keylen, 0);
+		if (rt == 0)
 		{
-			if (vallen < 0)
-				vallen = xslen(val);
+			set_string_entity_val(plk, val, vallen);
+			return plk;
+		}
+		
+		if (rt < 0 && (pht->order != ORDER_NONE))
+			break;
 
-			phe->val = (tchar_t*)xmem_realloc(phe->val, (vallen + 1) * sizeof(tchar_t));
-			xsncpy(phe->val, val, vallen);
-		}
-		else if (phe->val != NULL)
-		{
-			xmem_free(phe->val);
-			phe->val = NULL;
-		}
+		if (pht->order == ORDER_ASCEND)
+			plk = get_string_prev_entity(ptr, plk);
+		else if (pht->order == ORDER_DESCEND)
+			plk = get_string_next_entity(ptr, plk);
+		else
+			plk = get_string_next_entity(ptr, plk);
 	}
-	else	//if not exist then to add new entity with key and value
+
+	phe = (string_entity_t*)xmem_alloc(sizeof(string_entity_t));
+	phe->lk.tag = lkStringEntity;
+
+	if (keylen < 0)
+		keylen = xslen(key);
+
+	phe->key = (tchar_t*)xmem_alloc((keylen + 1) * sizeof(tchar_t));
+	xsncpy(phe->key, key, keylen);
+
+	if (val && vallen)
 	{
-		phe = (string_entity_t*)xmem_alloc(sizeof(string_entity_t));
-		phe->lk.tag = lkStringEntity;
-
-		if (keylen < 0)
-			keylen = xslen(key);
-
-		phe->key = (tchar_t*)xmem_alloc((keylen + 1) * sizeof(tchar_t));
-		xsncpy(phe->key, key, keylen);
-
-		if (val && vallen)
-		{
-			if (vallen < 0)
-				vallen = xslen(val);
-			phe->val = (tchar_t*)xmem_alloc((vallen + 1) * sizeof(tchar_t));
-			xsncpy(phe->val, val, vallen);
-		}
-
-		insert_link_after(&pht->lkEntitys, LINK_LAST, &phe->lk);
+		if (vallen < 0)
+			vallen = xslen(val);
+		phe->val = (tchar_t*)xmem_alloc((vallen + 1) * sizeof(tchar_t));
+		xsncpy(phe->val, val, vallen);
 	}
+
+	if (pht->order == ORDER_ASCEND)
+		insert_link_after(&pht->lkEntitys, ((plk) ? plk : LINK_FIRST), &phe->lk);
+	else if (pht->order == ORDER_DESCEND)
+		insert_link_before(&pht->lkEntitys, ((plk) ? plk : LINK_LAST), &phe->lk);
+	else
+		insert_link_after(&pht->lkEntitys, LINK_FIRST, &phe->lk);
 
 	return &(phe->lk);
 }
@@ -237,6 +233,7 @@ link_t_ptr	get_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen)
 	string_entity_t* phe;
 	string_table_t* pht;
 	link_t_ptr plk;
+	int rt;
 
 	XDL_ASSERT(ptr && ptr->tag == lkStringTable);
 
@@ -245,16 +242,30 @@ link_t_ptr	get_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen)
 
 	pht = StringTableFromLink(ptr);
 
-	/*then to compare the entity key in the ordered list*/
-	plk = get_string_next_entity(ptr, LINK_FIRST);
+	if (pht->order == ORDER_ASCEND)
+		plk = get_string_prev_entity(ptr, LINK_LAST);
+	else if (pht->order == ORDER_DESCEND)
+		plk = get_string_next_entity(ptr, LINK_FIRST);
+	else
+		plk = get_string_next_entity(ptr, LINK_FIRST);
+
 	while (plk)
 	{
 		phe = StringEntityFromLink(plk);
 
-		if(compare_text(phe->key, -1, key, keylen, 1) == 0)
+		rt = compare_text(phe->key, -1, key, keylen, 0);
+		if (rt == 0)
 			return plk;
+		
+		if (rt < 0 && (pht->order != ORDER_NONE))
+			break;
 
-		plk = get_string_next_entity(ptr, plk);
+		if (pht->order == ORDER_ASCEND)
+			plk = get_string_prev_entity(ptr, plk);
+		else if (pht->order == ORDER_DESCEND)
+			plk = get_string_next_entity(ptr, plk);
+		else
+			plk = get_string_next_entity(ptr, plk);
 	}
 
 	return NULL;

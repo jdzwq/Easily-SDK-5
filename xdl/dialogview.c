@@ -277,7 +277,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			cb.fw = xr.fw;
 			cb.fh = xr.fh;
 
-			obj = create_string_table();
+			obj = create_string_table(0);
 			string_table_parse_options(obj, get_dialog_item_text_ptr(ilk), -1, OPT_ITEMFEED, OPT_LINEFEED);
 			draw_listbox(pif, &cb, &xf, obj);
 			destroy_string_table(obj);

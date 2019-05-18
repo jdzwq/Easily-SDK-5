@@ -18,63 +18,22 @@ void test_path()
 	xsfree(path);
 }
 
-void test_semap()
+void test_money()
 {
-	res_sema_t sem = xsemap_create(NULL, 1);
+	tchar_t token[NUM_LEN] = { 0 };
 
-	xsemap_lock(sem, -1);
-
-	xsemap_lock(sem, 3000);
-
-	xsemap_unlock(sem);
-
-	xsemap_lock(sem, -1);
-
-	xsemap_destroy(NULL, sem);
+	format_money_chs(10.01, 0, token, NUM_LEN);
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
-	test_semap();
-
 	//test_path();
 
-	//test_rand();
+	test_money();
 
-	//test_prim();
-
-	//test_set();
-
-	//test_vector();
-
-	//test_matrix();
-
-	//test_uuid();
-
-	//test_map();
-
-	//test_variant();
-
-	//test_object();
-
-	//test_dict_table();
-
-	//test_hash_table();
-
-	//test_ac_table();
-
-	//test_trie_tree();
-
-	//test_bina_tree();
-
-	//test_file_table(_T("filetable"));
-
-	//test_bplus_tree();
-
-	//test_bplus_tree_file_table(_T("indextable"), _T("datatable"));
-
+	
 	xdl_process_uninit();
 
 	getch();

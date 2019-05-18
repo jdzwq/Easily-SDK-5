@@ -215,11 +215,14 @@
 				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
 					../../include,
 					../../api/xdb_api,
 				);
 				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_api.dylib";
 				LIBRARY_SEARCH_PATHS = (
+					/opt/X11/lib,
 					../lib,
 					"$(BUILD_DIR)/api",
 				);
@@ -238,11 +241,14 @@
 				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
 					../../include,
 					../../api/xdb_api,
 				);
 				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_api.dylib";
 				LIBRARY_SEARCH_PATHS = (
+					/opt/X11/lib,
 					../lib,
 					"$(BUILD_DIR)/api",
 				);

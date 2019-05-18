@@ -1172,7 +1172,7 @@ void noti_form_begin_edit(res_win_t widget)
 		tablectrl_auto_insert(ptd->editor, 1);
 
 		text = get_field_text_ptr(ptd->field);
-		data = create_string_table();
+		data = create_string_table(0);
 		string_table_parse_options(data, text, -1, OPT_ITEMFEED, OPT_LINEFEED);
 
 		tablectrl_attach(ptd->editor, data);
@@ -2565,7 +2565,7 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			else
 			{
 				if (get_field_editable(ptd->field))
-					parse_xcolor(&xc, DEF_FOCUS_COLOR);
+					parse_xcolor(&xc, DEF_ENABLE_COLOR);
 				else
 					parse_xcolor(&xc, DEF_DISABLE_COLOR);
 			}

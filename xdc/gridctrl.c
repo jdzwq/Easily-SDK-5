@@ -1955,7 +1955,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 				else
 				{
 					if (get_col_editable(ptd->col))
-						parse_xcolor(&xc, DEF_FOCUS_COLOR);
+						parse_xcolor(&xc, DEF_ENABLE_COLOR);
 					else
 						parse_xcolor(&xc, DEF_DISABLE_COLOR);
 				}

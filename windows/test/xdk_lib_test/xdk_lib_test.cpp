@@ -150,6 +150,22 @@ void test_comm()
 	}
 }
 
+
+void test_semap()
+{
+	res_sema_t sem = xsemap_create(NULL, 1);
+
+	xsemap_lock(sem, -1);
+
+	xsemap_lock(sem, 3000);
+
+	xsemap_unlock(sem);
+
+	xsemap_lock(sem, -1);
+
+	xsemap_destroy(NULL, sem);
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	test_page();
