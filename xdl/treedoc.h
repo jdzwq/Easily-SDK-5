@@ -125,9 +125,19 @@ LICENSE.GPL3 for more details.
 #define set_tree_item_title(ilk,token)					set_dom_node_attr(ilk,ATTR_TITLE,-1,token,-1)
 /*
 @PROPER title: string.
-@GET get_tree_item_title_ptr: get the tree item title.
+@GET get_tree_item_id_ptr: get the tree item title.
 */
 #define get_tree_item_title_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_TITLE,-1)
+/*
+@PROPER id: string.
+@SET set_tree_item_id: set the tree item id.
+*/
+#define set_tree_item_id(ilk,token)						set_dom_node_attr(ilk,ATTR_ID,-1,token,-1)
+/*
+@PROPER id: string.
+@GET get_tree_item_id_ptr: get the tree item title.
+*/
+#define get_tree_item_id_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ID,-1)
 /*
 @PROPER showCheck: boolean.
 @GET get_tree_item_showcheck: get the tree item show check box.
