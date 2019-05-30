@@ -203,7 +203,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			cb.fw = xr.fw;
 			cb.fh = xr.fh;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb, &xr, get_dialog_item_text_ptr(ilk));
+			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, get_dialog_item_text_ptr(ilk));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_STATICBOX, -1, 1) == 0)
 		{

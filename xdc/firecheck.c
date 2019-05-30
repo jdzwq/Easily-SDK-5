@@ -56,7 +56,7 @@ static int sub_checkbox_keydown(res_win_t widget, int nKey, uid_t subid, var_lon
 	return 0;
 }
 
-static void sub_checkbox_destroy(res_win_t widget, uid_t subid, var_long delta)
+static void sub_checkbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	if (subid != IDS_CHECKBOX)
 		return ;
@@ -73,7 +73,7 @@ res_win_t firecheck_create(res_win_t widget, const xrect_t* pxr)
 	xface_t xa = { 0 };
 
 	ev.sub_on_keydown = sub_checkbox_keydown;
-	ev.sub_on_destroy = sub_checkbox_destroy;
+	ev.sub_on_unsubbing = sub_checkbox_unsubbing;
 
 	editor = checkbox_create(widget, WD_STYLE_CONTROL | WD_STYLE_EDITOR, pxr);
 	widget_set_user_id(editor, IDC_CHECKBOX);

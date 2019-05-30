@@ -45,14 +45,15 @@ LICENSE.GPL3 for more details.
 #define XDCKEYBOX			_T("XDCKEYBOX")
 
 /*reserved subproc id*/
-#define IDS_DATEBOX			(IDS_SUBCLASS_MIN + 1)
-#define IDS_TIMEBOX			(IDS_SUBCLASS_MIN + 2)
-#define IDS_KEYBOX			(IDS_SUBCLASS_MIN + 3)
-#define IDS_NUMBOX			(IDS_SUBCLASS_MIN + 4)
-#define IDS_EDITBOX			(IDS_SUBCLASS_MIN + 5)
-#define IDS_DROPBOX			(IDS_SUBCLASS_MIN + 6)
-#define IDS_WORDSBOX		(IDS_SUBCLASS_MIN + 7)
-#define IDS_CHECKBOX		(IDS_SUBCLASS_MIN + 8)
+#define IDS_DIALOG			(IDS_SUBCLASS_MIN + 1)
+#define IDS_DATEBOX			(IDS_SUBCLASS_MIN + 2)
+#define IDS_TIMEBOX			(IDS_SUBCLASS_MIN + 3)
+#define IDS_KEYBOX			(IDS_SUBCLASS_MIN + 4)
+#define IDS_NUMBOX			(IDS_SUBCLASS_MIN + 5)
+#define IDS_EDITBOX			(IDS_SUBCLASS_MIN + 6)
+#define IDS_DROPBOX			(IDS_SUBCLASS_MIN + 7)
+#define IDS_WORDSBOX		(IDS_SUBCLASS_MIN + 8)
+#define IDS_CHECKBOX		(IDS_SUBCLASS_MIN + 9)
 
 /*reserved control id*/
 #define IDC_FIREEDIT		(IDC_USERCTRL_MIN + 1)
@@ -154,8 +155,8 @@ LICENSE.GPL3 for more details.
 
 
 #define SUBPROC_BEGIN_DISPATH(pv)			{if_subproc_t* pev = pv;
-#define SUBPROC_ON_SUBING(proc)				pev->sub_on_subing = proc;
-#define SUBPROC_ON_DESTROY(proc)			pev->sub_on_destroy = proc;
+#define SUBPROC_ON_SUBBING(proc)			pev->sub_on_subbing = proc;
+#define SUBPROC_ON_UNSUBBING(proc)			pev->sub_on_unsubbing = proc;
 #define SUBPROC_ON_CLOSE(proc)				pev->sub_on_close = proc;
 #define SUBPROC_ON_LBUTTON_DOWN(proc)		pev->sub_on_lbutton_down = proc;
 #define SUBPROC_ON_LBUTTON_UP(proc)			pev->sub_on_lbutton_up = proc;

@@ -50,7 +50,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 	
 	dlg = widget_create(get_dialog_name_ptr(ptr_dlg), WD_STYLE_DIALOG, &xr, owner, &ev);
 
-	XDL_ASSERT(dlg);
+	XDL_ASSERT(dlg != NULL);
 
 	widget_set_owner(dlg, owner);
 	widget_set_user_id(dlg, xstol(get_dialog_id_ptr(ptr_dlg)));
@@ -189,6 +189,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 	return dlg;
 }
 
+
 int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_t sid, var_long delta)
 {
 	res_ctx_t rdc;
@@ -200,8 +201,6 @@ int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_
 	if_canvas_t* pif;
 
 	widget_get_xbrush(widget, &xb);
-
-	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
 	widget_get_client_rect(widget, &xr);
 

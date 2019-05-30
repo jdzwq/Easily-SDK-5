@@ -1349,9 +1349,9 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		}
 		break;
 	case WM_DESTROY:
-		if (pev && pev->sub_on_destroy)
+		if (pev && pev->sub_on_unsubbing)
 		{
-			(*pev->sub_on_destroy)(hWnd, (uid_t)uIdSubclass, pev->delta);
+			(*pev->sub_on_unsubbing)(hWnd, (uid_t)uIdSubclass, pev->delta);
 		}
 		break;
 	}
@@ -1471,9 +1471,9 @@ bool_t _widget_set_subproc(res_win_t wt, uid_t sid, if_subproc_t* sub)
 
 	SETXDKSUBPROC(wt, psub);
 
-	if (psub->sub_on_subing)
+	if (psub->sub_on_subbing)
 	{
-		(*psub->sub_on_subing)(wt, sid, psub->delta);
+		(*psub->sub_on_subbing)(wt, sid, psub->delta);
 	}
 
 	if (psub->sub_on_size)

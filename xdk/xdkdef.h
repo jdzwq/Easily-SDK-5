@@ -829,13 +829,12 @@ typedef int(*SUB_ON_SYSCLR_CLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_SYSLOG_CLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
 
 typedef int(*SUB_ON_CLOSE)(res_win_t, uid_t, var_long);
-typedef void(*SUB_ON_DESTROY)(res_win_t, uid_t, var_long);
-
-typedef void(*SUB_ON_SUBING)(res_win_t, uid_t, var_long);
+typedef void(*SUB_ON_SUBBING)(res_win_t, uid_t, var_long);
+typedef void(*SUB_ON_UNSUBBING)(res_win_t, uid_t, var_long);
 
 typedef struct _if_subproc_t{
-	SUB_ON_SUBING		sub_on_subing;
-	SUB_ON_DESTROY		sub_on_destroy;
+	SUB_ON_SUBBING		sub_on_subbing;
+	SUB_ON_UNSUBBING	sub_on_unsubbing;
 	SUB_ON_CLOSE		sub_on_close;
 
 	SUB_ON_LBUTTON_DOWN	sub_on_lbutton_down;

@@ -288,13 +288,35 @@ void DialogPanel_OnPreview(res_win_t widget)
 	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
 }
 
+static void demoDlg_OnSubbing(res_win_t widget, uid_t sid, var_long delta)
+{
+	widget_hand_create(widget);
+}
+
+static void demoDlg_OnUnSubbing(res_win_t widget, uid_t sid, var_long delta)
+{
+	widget_del_subproc(widget, sid);
+
+	widget_hand_destroy(widget);
+}
+
 void DialogPanel_OnExec(res_win_t widget)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
+	if_subproc_t sb = { 0 };
+
+	SUBPROC_BEGIN_DISPATH(&sb)
+		SUBPROC_ON_SUBBING(demoDlg_OnSubbing)
+		SUBPROC_ON_UNSUBBING(demoDlg_OnUnSubbing)
+		SUBPROC_ON_DIALOG_IMPLEMENT
+	SUBPROC_END_DISPATH
+
 	LINKPTR ptr_dlg = dialogctrl_fetch(pdt->hDialog);;
 
 	res_win_t dlg = create_dialog(ptr_dlg, widget);
+
+	widget_set_subproc(dlg, IDS_DIALOG, &sb);
 
 	clr_mod_t clr = { 0 };
 

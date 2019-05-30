@@ -104,22 +104,6 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 	return 0;
 }
 
-static void sub_editbox_destroy(res_win_t widget, uid_t subid, var_long delta)
-{
-	res_win_t datebox;
-
-	if (subid != IDS_EDITBOX)
-		return;
-
-	datebox = (res_win_t)delta;
-	if (widget_is_valid(datebox))
-	{
-		widget_destroy(datebox);
-	}
-
-	widget_del_subproc(widget, IDS_EDITBOX);
-}
-
 static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long delta)
 {
 	res_win_t datebox;
@@ -139,6 +123,23 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 
 	return 1;
 }
+
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+{
+	res_win_t datebox;
+
+	if (subid != IDS_EDITBOX)
+		return;
+
+	datebox = (res_win_t)delta;
+	if (widget_is_valid(datebox))
+	{
+		widget_destroy(datebox);
+	}
+
+	widget_del_subproc(widget, IDS_EDITBOX);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 static int sub_datebox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
 {
@@ -173,7 +174,7 @@ static int sub_datebox_self_command(res_win_t widget, int code, var_long data, u
 	return 0;
 }
 
-static void sub_datebox_destroy(res_win_t widget, uid_t subid, var_long delta)
+static void sub_datebox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	if (subid != IDS_DATEBOX)
 		return;
@@ -192,7 +193,7 @@ res_win_t firedate_create(res_win_t widget, const xrect_t* pxr)
 	xface_t xa = { 0 };
 
 	ev.sub_on_keydown = sub_editbox_keydown;
-	ev.sub_on_destroy = sub_editbox_destroy;
+	ev.sub_on_unsubbing = sub_editbox_unsubbing;
 	ev.sub_on_self_command = sub_editbox_self_command;
 	ev.sub_on_show = sub_editbox_show;
 
@@ -220,7 +221,7 @@ res_win_t firedate_create(res_win_t widget, const xrect_t* pxr)
 	xmem_zero((void*)&ev, sizeof(if_subproc_t));
 
 	ev.sub_on_self_command = sub_datebox_self_command;
-	ev.sub_on_destroy = sub_datebox_destroy;
+	ev.sub_on_unsubbing = sub_datebox_unsubbing;
 
 	widget_set_subproc(datebox, IDS_DATEBOX, &ev);
 	widget_set_subproc_delta(datebox, IDS_DATEBOX, (var_long)editor);

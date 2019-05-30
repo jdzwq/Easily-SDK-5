@@ -1285,5 +1285,3 @@ int widget_docker_sub_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt, uid
 
 	return 1;
 }
-
-

@@ -56,14 +56,6 @@ static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long
 	return 0;
 }
 
-static void sub_editbox_destroy(res_win_t widget, uid_t subid, var_long delta)
-{
-	if (subid != IDS_EDITBOX)
-		return ;
-
-	widget_del_subproc(widget, IDS_EDITBOX);
-}
-
 static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
 {
 	//res_win_t keybox;
@@ -112,6 +104,15 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 
 	return 1;
 }
+
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+{
+	if (subid != IDS_EDITBOX)
+		return;
+
+	widget_del_subproc(widget, IDS_EDITBOX);
+}
+
 /*************************************************************************************/
 
 res_win_t fireedit_create(res_win_t widget, const xrect_t* pxr)
@@ -136,7 +137,7 @@ res_win_t fireedit_create(res_win_t widget, const xrect_t* pxr)
 	widget_set_xface(editor, &xa);
 
 	ev.sub_on_keydown = sub_editbox_keydown;
-	ev.sub_on_destroy = sub_editbox_destroy;
+	ev.sub_on_unsubbing = sub_editbox_unsubbing;
 	ev.sub_on_self_command = sub_editbox_self_command;
 	ev.sub_on_show = sub_editbox_show;
 

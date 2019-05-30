@@ -459,6 +459,7 @@ XDC_API int widget_docker_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, u
 
 XDC_API int widget_docker_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
+
 #ifdef	__cplusplus
 }
 #endif

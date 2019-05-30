@@ -199,7 +199,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	return 1;
 }
 
-static void sub_editbox_destroy(res_win_t widget, uid_t subid, var_long delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	res_win_t ctrl;
 
@@ -240,7 +240,7 @@ static int sub_wordsbox_self_command(res_win_t widget, int code, var_long data, 
 	return 0;
 }
 
-static void sub_wordsbox_destroy(res_win_t widget, uid_t subid, var_long delta)
+static void sub_wordsbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	if (subid != IDS_WORDSBOX)
 		return;
@@ -262,7 +262,7 @@ res_win_t firewords_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data
 	ev.sub_on_keydown = sub_editbox_keydown;
 	ev.sub_on_char = sub_editbox_char;
 	ev.sub_on_self_command = sub_editbox_self_command;
-	ev.sub_on_destroy = sub_editbox_destroy;
+	ev.sub_on_unsubbing = sub_editbox_unsubbing;
 	ev.sub_on_show = sub_editbox_show;
 
 	/*if (widget_get_touch_mode(widget))
@@ -299,7 +299,7 @@ res_win_t firewords_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data
 		xmem_zero((void*)&ev, sizeof(if_subproc_t));
 
 		ev.sub_on_self_command = sub_wordsbox_self_command;
-		ev.sub_on_destroy = sub_wordsbox_destroy;
+		ev.sub_on_unsubbing = sub_wordsbox_unsubbing;
 
 		widget_set_subproc(ctrlbox, IDS_WORDSBOX, &ev);
 		widget_set_subproc_delta(ctrlbox, IDS_WORDSBOX, (var_long)editor);

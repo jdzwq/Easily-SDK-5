@@ -205,7 +205,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	return 1;
 }
 
-static void sub_editbox_destroy(res_win_t widget, uid_t subid, var_long delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	res_win_t ctrl;
 
@@ -235,7 +235,7 @@ res_win_t firegrid_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data)
 
 	ev.sub_on_scroll = sub_editbox_scroll;
 	ev.sub_on_keydown = sub_editbox_keydown;
-	ev.sub_on_destroy = sub_editbox_destroy;
+	ev.sub_on_unsubbing = sub_editbox_unsubbing;
 
 	ev.sub_on_self_command = sub_editbox_self_command;
 	ev.sub_on_notice = sub_editbox_notice;
