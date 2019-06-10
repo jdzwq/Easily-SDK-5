@@ -533,6 +533,7 @@
 #define ATTR_PRINTABLE				_T("printable")
 #define ATTR_NULLABLE				_T("nullable")
 #define ATTR_SORTABLE				_T("sortable")
+#define ATTR_GROUPABLE				_T("groupable")
 #define ATTR_FIREABLE				_T("fireable")
 #define ATTR_WRAPABLE				_T("wrapable")
 #define ATTR_ZERONULL				_T("zeronull")

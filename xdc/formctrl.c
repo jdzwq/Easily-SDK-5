@@ -2855,6 +2855,8 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 	if (bCalc)
 	{
 		calc_form_field(ptd->form, flk);
+
+		ptd->max_page = (short)calc_form_pages(widget_get_canvas(widget), ptd->form);
 	}
 	
 	noti_form_owner(widget, NC_FIELDCALCED, ptd->form, flk, NULL);

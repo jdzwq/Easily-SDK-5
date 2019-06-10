@@ -810,7 +810,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			xrCell.fy += xrCell.fh;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xrCell, shape);
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb_step, &xrCell, shape);
 
 			token = get_col_sum_text_ptr(clk);
 

@@ -449,6 +449,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_col_sortable(clk,b)								set_dom_node_attr_boolean(clk,ATTR_SORTABLE,b)
 /*
+@PROPER groupable: boolean.
+@GET get_col_groupable: get the col is sortable.
+*/
+#define get_col_groupable(clk)								get_dom_node_attr_boolean(clk,ATTR_GROUPABLE)
+/*
+@PROPER groupable: boolean.
+@SET set_col_groupable: set the col is sortable.
+*/
+#define set_col_groupable(clk,b)							set_dom_node_attr_boolean(clk,ATTR_GROUPABLE,b)
+/*
 @PROPER fireable: boolean.
 @GET get_col_fireable: get the col is fireable.
 */
@@ -1318,6 +1328,40 @@ XDL_API const tchar_t* get_col_sum_text_ptr(link_t_ptr clk);
 @RETURN void: none.
 */
 XDL_API void set_col_sum_text(link_t_ptr clk,const tchar_t* token);
+
+/*
+@FUNCTION group_grid_col: grouping the col.
+@INPUT link_t_ptr ptr: the grid link component.
+@INPUT link_t_ptr clk: the col link component.
+@INPUT link_t_ptr rlk_from: the row link component started.
+@INPUT link_t_ptr rlk_to: the row link component end.
+@RETURN link_t_ptr: return grouped end row, it may be LINK_LAST.
+*/
+XDL_API link_t_ptr group_grid_col(link_t_ptr ptr, link_t_ptr clk, link_t_ptr rlk_from, link_t_ptr rlk_to);
+
+/*
+@FUNCTION group_grid_colset: grouping all of cols in grid.
+@INPUT link_t_ptr ptr: the grid link component.
+@RETURN int: return the number of cols grouped.
+*/
+XDL_API int group_grid_colset(link_t_ptr ptr);
+
+/*
+@FUNCTION get_cell_grouped: set cell be grouped.
+@INPUT link_t_ptr rlk: the row link component.
+@INPUT link_t_ptr clk: the col link component.
+@INPUT bool_t b: the boolean value to set.
+@RETURN void: none.
+*/
+XDL_API void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b);
+
+/*
+@FUNCTION get_cell_grouped: get cell be grouped.
+@INPUT link_t_ptr rlk: the row link component.
+@INPUT link_t_ptr clk: the col link component.
+@RETURN bool_t: nonezero for grouped.
+*/
+XDL_API bool_t get_cell_grouped(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION verify_grid_cell: verify the cell data,

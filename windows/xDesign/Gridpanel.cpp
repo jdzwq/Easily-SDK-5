@@ -388,7 +388,7 @@ void GridPanel_OnExec(res_win_t widget)
 	screen_size_to_pt(RECTSIZE(&xr));
 	widget_adjust_size(WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL, RECTSIZE(&xr));
 
-	res_win_t win = gridctrl_create(NULL, WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL, &xr, widget);
+	res_win_t win = gridctrl_create(NULL, WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL | WD_STYLE_PAGING, &xr, widget);
 
 	gridctrl_auto_insert(win, 1);
 

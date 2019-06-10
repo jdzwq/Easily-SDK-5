@@ -1162,6 +1162,80 @@ const tchar_t* get_col_sum_text_ptr(link_t_ptr clk)
 	return get_dom_node_text_ptr(clk);
 }
 
+void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b)
+{
+
+}
+
+bool_t get_cell_grouped(link_t_ptr rlk, link_t_ptr clk)
+{
+
+}
+
+link_t_ptr group_grid_col(link_t_ptr ptr, link_t_ptr clk, link_t_ptr rlk_from, link_t_ptr rlk_to)
+{
+	link_t_ptr rlk;
+	const tchar_t* str = NULL;
+
+	if (!get_col_groupable(clk))
+		return LINK_LAST;
+	
+	if (rlk_from == LINK_FIRST)
+		rlk_from = get_next_visible_row(ptr, LINK_FIRST);
+
+	if (!rlk_from)
+		return LINK_LAST;
+
+	str = get_cell_text_ptr(rlk, clk);
+
+	rlk = get_next_visible_row(ptr, rlk_from);
+	while (rlk)
+	{
+		if (compare_text(str, -1, get_cell_text_ptr(rlk, clk), -1, 0) == 0)
+		{
+			set_cell_grouped(rlk, clk, 1);
+			if (rlk == rlk_to)
+				return rlk;
+		}
+		else
+		{
+			set_cell_grouped(rlk, clk, 0);
+			return rlk;
+		}
+		
+		rlk = get_next_visible_row(ptr, rlk);
+	}
+
+	return LINK_LAST;
+}
+
+int group_grid_colset(link_t_ptr ptr)
+{
+	link_t_ptr rlk, clk;
+	link_t_ptr rlk_from, rlk_to = LINK_LAST;
+	int count = 0;
+
+	rlk = get_next_visible_row(ptr, LINK_FIRST);
+	while (rlk)
+	{
+		clk = get_next_visible_col(ptr, LINK_FIRST);
+		while (clk)
+		{
+			if (!get_col_groupable(clk))
+				break;
+
+			rlk_from = rlk;
+			rlk_to = group_grid_col(ptr, clk, rlk_from, rlk_to);
+			count++;
+
+			clk = get_next_visible_col(ptr, clk);
+		}
+		rlk = (rlk_to == LINK_LAST)? NULL : rlk_to;
+	}
+	
+	return count;
+}
+
 void clear_col_datadef(link_t_ptr clk)
 {
 	set_col_data_type(clk, ATTR_DATA_TYPE_STRING);

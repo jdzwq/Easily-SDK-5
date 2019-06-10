@@ -815,6 +815,11 @@ void propertybag_write_col_attributes(link_t_ptr ptr, link_t_ptr clk)
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
 
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_GROUPABLE, get_col_groupable(clk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+	set_entity_options(ent, TF_OPTIONS, -1);
+
 	ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_EDITABLE, get_col_editable(clk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
@@ -930,6 +935,8 @@ void propertybag_read_col_attributes(link_t_ptr ptr, link_t_ptr clk)
 	set_col_fireable(clk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_FIREABLE));
 
 	set_col_sortable(clk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_SORTABLE));
+
+	set_col_groupable(clk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_GROUPABLE));
 
 	set_col_editable(clk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_EDITABLE));
 
