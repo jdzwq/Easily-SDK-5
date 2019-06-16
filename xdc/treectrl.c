@@ -1127,11 +1127,9 @@ bool_t treectrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* 
 		noti_tree_owner(widget, NC_TREEITEMUPDATE, ptd->tree, ilk, NULL);
 
 		treectrl_redraw_item(widget, ilk);
-
-		return 1;
 	}
 
-	return 0;
+	return 1;
 }
 
 void treectrl_tabskip(res_win_t widget, int nSkip)

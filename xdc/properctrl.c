@@ -41,7 +41,6 @@ typedef struct _proper_delta_t{
 	link_t_ptr hover;
 
 	res_win_t editor;
-	tchar_t pch[CHS_LEN + 1];
 
 	long org_x, org_y;
 
@@ -359,17 +358,9 @@ void noti_proper_begin_edit(res_win_t widget)
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
-		if (ptd->pch[0])
-		{
-			editbox_set_text(ptd->editor, ptd->pch);
-			ptd->pch[0] = _T('\0');
-		}
-		else
-		{
-			text = get_entity_value_ptr(ptd->entity);
-			editbox_set_text(ptd->editor, text);
-			editbox_selectall(ptd->editor);
-		}
+		text = get_entity_value_ptr(ptd->entity);
+		editbox_set_text(ptd->editor, text);
+		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRENUM, -1, 0) == 0)
 	{
@@ -386,17 +377,9 @@ void noti_proper_begin_edit(res_win_t widget)
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
-		if (ptd->pch[0])
-		{
-			editbox_set_text(ptd->editor, ptd->pch);
-			ptd->pch[0] = _T('\0');
-		}
-		else
-		{
-			text = get_entity_value_ptr(ptd->entity);
-			editbox_set_text(ptd->editor, text);
-			editbox_selectall(ptd->editor);
-		}
+		text = get_entity_value_ptr(ptd->entity);
+		editbox_set_text(ptd->editor, text);
+		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREDATE, -1, 0) == 0)
 	{
@@ -964,13 +947,12 @@ void hand_proper_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		ptd->pch[0] = nChar;
 		hand_proper_keydown(widget, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
 	{
-		//widget_post_char(NULL, nChar);
+		widget_post_char(ptd->editor, nChar);
 	}
 
 }
@@ -1405,7 +1387,7 @@ bool_t	properctrl_set_entity_value(res_win_t widget, link_t_ptr elk, const tchar
 #endif
 
 	if (compare_text(get_entity_value_ptr(elk), -1, token, -1, 0) == 0)
-		return 0;
+		return 1;
 
 	set_entity_value(elk, token, -1);
 

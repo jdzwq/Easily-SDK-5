@@ -124,7 +124,8 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, long nLine, uid_t 
 static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
 {
 	res_win_t ctrl;
-	
+	const tchar_t* text;
+
 	if (subid != IDS_EDITBOX)
 		return 0;
 
@@ -135,7 +136,13 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 	case COMMAND_UPDATE:
 		if (widget_is_valid(ctrl))
 		{
-			gridctrl_filter(ctrl, editbox_get_text_ptr(widget));
+			text = editbox_get_text_ptr(widget);
+			gridctrl_filter(ctrl, text);
+
+			if (!is_null(text))
+			{
+				gridctrl_set_focus_cell(ctrl, LINK_FIRST, LINK_FIRST);
+			}
 		}
 		return 1;
 	case COMMAND_COLOR:

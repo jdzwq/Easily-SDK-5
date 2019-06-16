@@ -51,7 +51,6 @@ typedef struct _form_delta_t{
 	short max_page;
 
 	res_win_t editor;
-	tchar_t pch[CHS_LEN + 1];
 
 	bool_t b_drag;
 	bool_t b_size;
@@ -949,27 +948,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
 
-		if (ptd->pch[0])
-		{
-			editbox_set_text(ptd->editor, ptd->pch);
-		}
-		else
-		{
-			text = get_field_text_ptr(ptd->field);
-			editbox_set_text(ptd->editor, text);
-		}
-
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
-		if (ptd->pch[0])
-		{
-			ptd->pch[0] = _T('\0');
-		}
-		else
-		{
-			editbox_selectall(ptd->editor);
-		}
+		text = get_field_text_ptr(ptd->field);
+		editbox_set_text(ptd->editor, text);
+		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRECHECK, -1, 0) == 0)
 	{
@@ -1006,27 +990,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
 
-		if (ptd->pch[0])
-		{
-			editbox_set_text(ptd->editor, ptd->pch);
-		}
-		else
-		{
-			text = get_field_text_ptr(ptd->field);
-			editbox_set_text(ptd->editor, text);
-		}
-
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
-
-		if (ptd->pch[0])
-		{
-			ptd->pch[0] = _T('\0');
-		}
-		else
-		{
-			editbox_selectall(ptd->editor);
-		}
+		
+		text = get_field_text_ptr(ptd->field);
+		editbox_set_text(ptd->editor, text);
+		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREDATE, -1, 0) == 0)
 	{
@@ -1041,12 +1010,11 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
 
-		text = get_field_text_ptr(ptd->field);
-		editbox_set_text(ptd->editor, text);
-
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
+		text = get_field_text_ptr(ptd->field);
+		editbox_set_text(ptd->editor, text);
 		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRETIME, -1, 0) == 0)
@@ -1062,12 +1030,11 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
 
-		text = get_field_text_ptr(ptd->field);
-		editbox_set_text(ptd->editor, text);
-
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
+		text = get_field_text_ptr(ptd->field);
+		editbox_set_text(ptd->editor, text);
 		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRELIST, -1, 0) == 0)
@@ -1087,12 +1054,11 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
 
-		text = get_field_text_ptr(ptd->field);
-		editbox_set_text(ptd->editor, text);
-
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
+		text = get_field_text_ptr(ptd->field);
+		editbox_set_text(ptd->editor, text);
 		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREWORDS, -1, 0) == 0)
@@ -2338,13 +2304,12 @@ void hand_form_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		ptd->pch[0] = nChar;
 		hand_form_keydown(widget, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
 	{
-		//widget_post_char(NULL, nChar);
+		widget_post_char(ptd->editor, nChar);
 	}
 }
 
@@ -3090,32 +3055,30 @@ bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* 
 		return 0;
 
 	text = get_field_text_ptr(flk);
-	if (compare_data(szText, text, get_field_data_type_ptr(flk)) != 0)
+	if (compare_data(szText, text, get_field_data_type_ptr(flk)) == 0)
+		return 1;
+
+	if (veValid != verify_text(szText, get_field_data_type_ptr(flk), get_field_nullable(flk), get_field_data_len(flk), get_field_data_min_ptr(flk), get_field_data_max_ptr(flk)))
+		return 0;
+
+	set_field_text(flk, szText, -1);
+	set_field_dirty(flk, 1);
+
+	noti_form_owner(widget, NC_FIELDUPDATE, ptd->form, flk, NULL);
+
+	formctrl_get_field_rect(widget, flk, &xr);
+	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
+	widget_update(widget, &xr, 0);
+
+	if (get_field_fireable(flk))
 	{
-		if (veValid == verify_text(szText, get_field_data_type_ptr(flk), get_field_nullable(flk), get_field_data_len(flk), get_field_data_min_ptr(flk), get_field_data_max_ptr(flk)))
+		if (calc_form_doc(ptd->form))
 		{
-			set_field_text(flk, szText, -1);
-			set_field_dirty(flk, 1);
-
-			noti_form_owner(widget, NC_FIELDUPDATE, ptd->form, flk, NULL);
-
-			formctrl_get_field_rect(widget, flk, &xr);
-			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_update(widget, &xr, 0);
-
-			if (get_field_fireable(flk))
-			{
-				if (calc_form_doc(ptd->form))
-				{
-					widget_update(widget, NULL, 0);
-				}
-			}
-
-			return 1;
+			widget_update(widget, NULL, 0);
 		}
 	}
 
-	return 0;
+	return 1;
 }
 
 bool_t formctrl_is_update(res_win_t widget)

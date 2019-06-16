@@ -361,7 +361,8 @@ XDC_API bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const t
 /***********************************grid control*******************************************************************/
 #define GRID_NOTICE_ACCEPT		0
 #define GRID_NOTICE_REJECT		1
-#define GRID_NOTICE_DELETE		-1
+#define GRID_NOTICE_SKIP		2
+#define GRID_NOTICE_DELETE		3
 
 typedef struct _NOTICE_GRID{
 	res_win_t widget;

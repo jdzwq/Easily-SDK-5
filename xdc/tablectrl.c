@@ -492,11 +492,10 @@ void hand_tablectrl_char(res_win_t widget, tchar_t nChar)
 		hand_tablectrl_keydown(widget, KEY_ENTER);
 	}
 
-	if (widget_is_valid(ptd->editor))
+	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
 	{
-		widget_post_char(NULL, nChar);
+		widget_post_char(ptd->editor, nChar);
 	}
-
 }
 
 void hand_tablectrl_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)

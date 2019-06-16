@@ -47,7 +47,6 @@ typedef struct _grid_delta_t{
 	short cur_page;
 
 	res_win_t editor;
-	tchar_t pch[CHS_LEN + 1];
 
 	bool_t b_drag_row, b_drag_col;
 	bool_t b_size_row, b_size_col;
@@ -965,17 +964,9 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
-		if (ptd->pch[0])
-		{
-			editbox_set_text(ptd->editor, ptd->pch);
-			ptd->pch[0] = _T('\0');
-		}
-		else
-		{
-			text = get_cell_text_ptr(ptd->row, ptd->col);
-			editbox_set_text(ptd->editor, text);
-			editbox_selectall(ptd->editor);
-		}
+		text = get_cell_text_ptr(ptd->row, ptd->col);
+		editbox_set_text(ptd->editor, text);
+		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRENUM, -1, 0) == 0)
 	{
@@ -992,17 +983,9 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
-		if (ptd->pch[0])
-		{
-			editbox_set_text(ptd->editor, ptd->pch);
-			ptd->pch[0] = _T('\0');
-		}
-		else
-		{
-			text = get_cell_text_ptr(ptd->row, ptd->col);
-			editbox_set_text(ptd->editor, text);
-			editbox_selectall(ptd->editor);
-		}
+		text = get_cell_text_ptr(ptd->row, ptd->col);
+		editbox_set_text(ptd->editor, text);
+		editbox_selectall(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIREDATE, -1, 0) == 0)
 	{
@@ -1203,45 +1186,46 @@ void noti_grid_commit_edit(res_win_t widget)
 	widget_set_focus(widget);
 
 	if (n_ret == GRID_NOTICE_REJECT)
+	{
 		return;
+	}
 	else if (n_ret == GRID_NOTICE_DELETE)
 	{
 		gridctrl_delete_row(widget, ptd->row);
+		return;
+	}
+
+	if (ptd->b_auto && (ptd->row == get_prev_visible_row(ptd->grid, LINK_LAST)) && (ptd->col == ptd->fix || ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST)))
+	{
+		rlk_new = insert_row(ptd->grid, LINK_LAST);
+		set_row_state(rlk_new, dsNewClean);
+
+		if (!noti_grid_row_insert(widget, rlk_new))
+		{
+			delete_row(rlk_new);
+			return;
+		}
+
+		gridctrl_redraw_row(widget, rlk_new, 1);
+		gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
 	}
 	else
 	{
-		if (ptd->b_auto && (ptd->row == get_prev_visible_row(ptd->grid, LINK_LAST)) && (ptd->col == ptd->fix || ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST)))
+		if (ptd->col == ptd->fix)
 		{
-			rlk_new = insert_row(ptd->grid, LINK_LAST);
-			set_row_state(rlk_new, dsNewClean);
-
-			if (!noti_grid_row_insert(widget, rlk_new))
+			gridctrl_tabskip(widget, WD_TAB_DOWN);
+		}
+		else if (ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST))
+		{
+			rlk_new = get_next_visible_row(ptd->grid, ptd->row);
+			if (rlk_new)
 			{
-				delete_row(rlk_new);
-				return;
+				gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
 			}
-
-			gridctrl_redraw_row(widget, rlk_new, 1);
-			gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
 		}
 		else
 		{
-			if (ptd->col == ptd->fix)
-			{
-				gridctrl_tabskip(widget, WD_TAB_DOWN);
-			}
-			else if (ptd->col == get_prev_focusable_col(ptd->grid, LINK_LAST))
-			{
-				rlk_new = get_next_visible_row(ptd->grid, ptd->row);
-				if (rlk_new)
-				{
-					gridctrl_set_focus_cell(widget, rlk_new, get_next_focusable_col(ptd->grid, LINK_FIRST));
-				}
-			}
-			else
-			{
-				gridctrl_tabskip(widget, WD_TAB_RIGHT);
-			}
+			gridctrl_tabskip(widget, WD_TAB_RIGHT);
 		}
 	}
 }
@@ -1752,13 +1736,12 @@ void hand_grid_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		ptd->pch[0] = nChar;
 		hand_grid_keydown(widget, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
 	{
-		//widget_post_char(NULL, nChar);
+		widget_post_char(ptd->editor, nChar);
 	}
 }
 
@@ -2236,33 +2219,31 @@ bool_t gridctrl_set_cell_text(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, 
 #endif
 
 	text = get_cell_text_ptr(rlk,clk);
-	if (compare_data(szText, text, get_col_data_type_ptr(clk)) != 0)
+	if (compare_data(szText, text, get_col_data_type_ptr(clk)) == 0)
+		return 1;
+
+	if (veValid != verify_text(szText, get_col_data_type_ptr(clk), get_col_nullable(clk), get_col_data_len(clk), get_col_data_min_ptr(clk), get_col_data_max_ptr(clk)))
+		return 0;
+
+	set_cell_text(rlk, clk, szText, -1);
+	set_cell_dirty(rlk, clk, 1);
+	set_row_dirty(rlk);
+
+	noti_grid_owner(widget, NC_CELLUPDATE, ptd->grid, rlk, clk, NULL);
+
+	if (get_col_fireable(clk))
 	{
-		if (veValid == verify_text(szText, get_col_data_type_ptr(clk), get_col_nullable(clk), get_col_data_len(clk), get_col_data_min_ptr(clk), get_col_data_max_ptr(clk)))
+		if (calc_grid_row(ptd->grid, rlk))
 		{
-			set_cell_text(rlk, clk, szText, -1);
-			set_cell_dirty(rlk, clk, 1);
-			set_row_dirty(rlk);
-
-			noti_grid_owner(widget, NC_CELLUPDATE, ptd->grid, rlk, clk, NULL);
-
-			if (get_col_fireable(clk))
-			{
-				if (calc_grid_row(ptd->grid, rlk))
-				{
-					widget_update(widget, NULL, 0);
-				}
-			}
-
-			_gridctrl_row_rect(widget, rlk, &xr);
-			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_update(widget, &xr, 0);
-
-			return 1;
+			widget_update(widget, NULL, 0);
 		}
 	}
 
-	return 0;
+	_gridctrl_row_rect(widget, rlk, &xr);
+	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
+	widget_update(widget, &xr, 0);
+
+	return 1;
 }
 
 bool_t gridctrl_delete_row(res_win_t widget, link_t_ptr rlk)

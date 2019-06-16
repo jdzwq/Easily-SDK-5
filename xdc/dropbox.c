@@ -509,6 +509,11 @@ void dropbox_set_focus_item(res_win_t widget, link_t_ptr ilk)
 	if (!ptd->table)
 		return;
 
+	if (ilk == LINK_FIRST)
+		ilk = get_string_next_entity(ptd->table, LINK_FIRST);
+	else if (ilk == LINK_LAST)
+		ilk = get_string_prev_entity(ptd->table, LINK_LAST);
+
 	if (ilk != ptd->entity)
 	{
 		if (ptd->entity)

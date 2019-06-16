@@ -47,7 +47,6 @@ typedef struct _graph_delta_t{
 	long cur_page;
 
 	res_win_t editor;
-	tchar_t pch[CHS_LEN + 1];
 
 	bool_t b_drag_xax, b_drag_yax;
 	bool_t b_size_xax, b_size_yax;
@@ -1008,21 +1007,13 @@ void noti_graph_begin_edit(res_win_t widget)
 	widget_show(ptd->editor, WD_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
-	if (ptd->pch[0])
-	{
-		editbox_set_text(ptd->editor, ptd->pch);
-		ptd->pch[0] = _T('\0');
-	}
+	if (ptd->yax)
+		text = get_coor_text_ptr(ptd->xax, ptd->yax);
 	else
-	{
-		if (ptd->yax)
-			text = get_coor_text_ptr(ptd->xax, ptd->yax);
-		else
-			text = get_xax_text_ptr(ptd->xax);
+		text = get_xax_text_ptr(ptd->xax);
 
-		editbox_set_text(ptd->editor, text);
-		editbox_selectall(ptd->editor);
-	}
+	editbox_set_text(ptd->editor, text);
+	editbox_selectall(ptd->editor);
 }
 
 void noti_graph_commit_edit(res_win_t widget)
@@ -1555,13 +1546,12 @@ void hand_graph_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		ptd->pch[0] = nChar;
 		hand_graph_keydown(widget, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
 	{
-		//widget_post_char(NULL, nChar);
+		widget_post_char(ptd->editor, nChar);
 	}
 }
 
@@ -2164,8 +2154,6 @@ bool_t graphctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk,
 			graphctrl_get_coor_rect(widget, xlk, ylk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 			widget_update(widget, &xr, 1);
-
-			return 1;
 		}
 	}
 	else
@@ -2181,12 +2169,10 @@ bool_t graphctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk,
 			_graphctrl_xaxbar_rect(widget, xlk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 			widget_update(widget, &xr, 1);
-
-			return 1;
 		}
 	}
 
-	return 0;
+	return 1;
 }
 
 bool_t graphctrl_set_focus_coor(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk)

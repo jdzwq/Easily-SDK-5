@@ -1244,11 +1244,9 @@ bool_t listctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* 
 		noti_list_owner(widget, NC_LISTITEMUPDATE, ptd->list, ilk, NULL);
 
 		listctrl_redraw_item(widget, ilk);
-
-		return 1;
 	}
 
-	return 0;
+	return 1;
 }
 
 void listctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)

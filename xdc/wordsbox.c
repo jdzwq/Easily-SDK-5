@@ -445,12 +445,10 @@ bool_t wordsbox_set_focus_item(res_win_t widget, link_t_ptr ent)
 	if (!ptd->words)
 		return 0;
 
-	if (ent)
-	{
-#ifdef _DEBUG
-		XDL_ASSERT(is_words_item(ptd->words, ent));
-#endif
-	}
+	if (ent == LINK_FIRST)
+		ent = get_words_next_visible_item(ptd->words, LINK_FIRST);
+	else if (ent == LINK_LAST)
+		ent = get_words_prev_visible_item(ptd->words, LINK_LAST);
 
 	bRe = (ent == ptd->item) ? 1 : 0;
 
