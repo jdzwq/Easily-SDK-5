@@ -218,7 +218,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	float iw, ih, ic, hw = 0;
 	xrect_t xr_image, xr_text, xr_rect, xr = { 0 };
 	xbrush_t xb = { 0 };
-	xpen_t xp = { 0 };
+	xpen_t xp_line, xp = { 0 };
 	xfont_t xf_focus, xf = { 0 };
 	xface_t xa = { 0 };
 	ximage_t xi = { 0 };
@@ -263,6 +263,10 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	{
 		format_xcolor(&pif->clr_bkg, xb.color);
 	}
+
+	default_xpen(&xp_line);
+	xscpy(xp_line.color, xb.color);
+	lighten_xpen(&xp_line, DEF_HARD_DARKEN);
 
 	if (!b_print)
 	{
@@ -345,7 +349,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pt[5].fx = xr.fx + TITLE_EDGE_LIGHT;
 					pt[5].fy = ph;
 
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 6);
+					(*pif->pf_draw_polyline)(pif->canvas, &xp_line, pt, 6);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 - TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -398,7 +402,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pt[5].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
 					pt[5].fy = ph;
 
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 6);
+					(*pif->pf_draw_polyline)(pif->canvas, &xp_line, pt, 6);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 + TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -454,7 +458,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pt[5].fx = pw;
 					pt[5].fy = xr.fy + TITLE_EDGE_LIGHT;
 
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 6);
+					(*pif->pf_draw_polyline)(pif->canvas, &xp_line, pt, 6);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 - TITLE_EDGE_DARK / 2;
@@ -507,7 +511,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pt[5].fx = pw;
 					pt[5].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 6);
+					(*pif->pf_draw_polyline)(pif->canvas, &xp_line, pt, 6);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 + TITLE_EDGE_DARK / 2;

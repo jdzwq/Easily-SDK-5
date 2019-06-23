@@ -1,7 +1,0 @@
-; dimse.def : Declares the release module parameters for the DLL.
-
-LIBRARY      "dimse"
-DESCRIPTION  'dimse Windows Dynamic Link Library'
-EXPORTS
-    ; Explicit exports can go here
-	slots_invoke
