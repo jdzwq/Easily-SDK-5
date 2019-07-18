@@ -1,0 +1,12 @@
+README
+setup.py
+oss/__init__.py
+oss/oss_api.py
+oss/oss_sample.py
+oss/oss_util.py
+oss/oss_xml_handler.py
+oss/pkg_info.py
+oss.egg-info/PKG-INFO
+oss.egg-info/SOURCES.txt
+oss.egg-info/dependency_links.txt
+oss.egg-info/top_level.txt
