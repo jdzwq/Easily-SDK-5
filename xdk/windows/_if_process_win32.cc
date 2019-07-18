@@ -176,12 +176,13 @@ void _release_process(proc_info_t* ppi)
 {
 	if (ppi->pip_read)
 		CloseHandle(ppi->pip_read);
+	if (ppi->pip_write)
+		CloseHandle(ppi->pip_write);
+
 	if (ppi->std_write)
 		CloseHandle(ppi->std_write);
 	if (ppi->std_read)
 		CloseHandle(ppi->std_read);
-	if (ppi->pip_write)
-		CloseHandle(ppi->pip_write);
 
 	if (ppi->thread_handle)
 		CloseHandle(ppi->thread_handle);

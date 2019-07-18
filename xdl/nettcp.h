@@ -86,31 +86,6 @@ XDL_API res_file_t xtcp_socket(xhand_t tcp);
 XDL_API int  xtcp_type(xhand_t tcp);
 
 /*
-@FUNCTION xtcp_set_send_buff: set socket send buffer size.
-@INPUT xhand_t tcp: the TCP handle.
-@INPUT dword_t dw: the size in bytes.
-@RETURN void: none.
-*/
-XDL_API void xtcp_set_send_buff(xhand_t tcp, dword_t dw);
-
-/*
-@FUNCTION xtcp_set_recv_buff: set socket recv buffer size.
-@INPUT xhand_t tcp: the TCP handle.
-@INPUT dword_t dw: the size in bytes.
-@RETURN void: none.
-*/
-XDL_API void xtcp_set_recv_buff(xhand_t tcp, dword_t dw);
-
-/*
-@FUNCTION xtcp_set_linger: set socket linger on close action.
-@INPUT xhand_t tcp: the TCP handle.
-@INPUT bool_t b_wait: nonzero for waiting unsent data to compelete, zero for immediately closing.
-@INPUT int n_sec: the wait time in second.
-@RETURN void: none.
-*/
-XDL_API void xtcp_set_linger(xhand_t tcp, bool_t b_wait, int n_sec);
-
-/*
 @FUNCTION xtcp_close: close TCP handle.
 @INPUT xhand_t tcp: the TCP handle.
 @RETURN void: none.
@@ -134,6 +109,16 @@ XDL_API bool_t  xtcp_write(xhand_t tcp, const byte_t* data, dword_t* pb);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t  xtcp_read(xhand_t tcp, byte_t* data, dword_t* pb);
+
+/*
+@FUNCTION xtcp_set_option: set the socket options.
+@INPUT xhand_t tcp: the TCP handle.
+@INPUT int oid: the option id, eg: SOCKET_OPTION_SNDBUF, SOCKET_OPTION_RCVBUF, SOCKET_OPTION_NONBLK.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len);
 
 /*
 @FUNCTION xtcp_addr_port: get TCP local address and port.

@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\api\net_srv\srvcert.cc">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\api\net_srv\xudps.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\xhttps.h">
@@ -60,6 +63,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\api\net_srv\srvcert.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\api\net_srv\xudps.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

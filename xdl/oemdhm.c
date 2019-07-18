@@ -140,6 +140,17 @@ cleanup:
 	return(0);
 }
 
+int dhm_make_params_size(dhm_context *ctx, int x_size)
+{
+	int n1, n2, n3;
+
+	n1 = 2 + x_size / sizeof(t_int);
+	n2 = 2 + mpi_size(&ctx->P);
+	n3 = 2 + mpi_size(&ctx->G);
+
+	return (n1 + n2 + n3);
+}
+
 /*
 * Import the peer's public value G^Y
 */
@@ -148,7 +159,7 @@ int dhm_read_public(dhm_context *ctx,
 {
 	int ret;
 
-	if (ctx == NULL || ilen < 1 || ilen > ctx->len)
+	if (ctx == NULL/* || ilen < 1 || ilen > ctx->len*/)
 		return(ERR_DHM_BAD_INPUT_DATA);
 
 	if ((ret = mpi_read_binary(&ctx->GY, input, ilen)) != 0)
@@ -161,13 +172,13 @@ int dhm_read_public(dhm_context *ctx,
 * Create own private value X and export G^X
 */
 int dhm_make_public(dhm_context *ctx, int x_size,
-	unsigned char *output, int olen,
+	unsigned char *output, int* olen,
 	int(*f_rng)(void *), void *p_rng)
 {
 	int ret, i, n;
 	unsigned char *p;
 
-	if (ctx == NULL || olen < 1 || olen > ctx->len)
+	if (ctx == NULL)
 		return(ERR_DHM_BAD_INPUT_DATA);
 
 	/*
@@ -188,7 +199,14 @@ int dhm_make_public(dhm_context *ctx, int x_size,
 	MPI_CHK(mpi_exp_mod(&ctx->GX, &ctx->G, &ctx->X,
 		&ctx->P, &ctx->RP));
 
-	MPI_CHK(mpi_write_binary(&ctx->GX, output, olen));
+	*olen = mpi_size(&ctx->GX);
+
+	//MPI_CHK(mpi_write_binary(&ctx->GX, output, *olen));
+
+	/* avoid a negative value */
+	MPI_CHK(mpi_write_binary(&ctx->GX, output + 1, *olen));
+	output[0] = '\0';
+	*olen = *olen + 1;
 
 cleanup:
 
@@ -196,6 +214,11 @@ cleanup:
 		return(ERR_DHM_MAKE_PUBLIC_FAILED | ret);
 
 	return(0);
+}
+
+int dhm_make_public_size(dhm_context *ctx, int x_size)
+{
+	return x_size / (sizeof(t_int));
 }
 
 /*

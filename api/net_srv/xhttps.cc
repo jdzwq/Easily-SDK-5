@@ -270,9 +270,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		else
 			xssl_set_auth(bio, SSL_VERIFY_NONE);
 	}
-	else if (pxp->n_secu == _SECU_XSL)
+	else if (pxp->n_secu == _SECU_SSH)
 	{
-		set_certs(_SECU_XSL, bio);
+		set_certs(_SECU_SSH, bio);
 	}
 	
 	if (!xhttp_recv_request(http))
@@ -460,8 +460,8 @@ void _xhttps_start(xhttps_param_t* pxp)
 
 	if (compare_text(sz_file, 3, _T("SSL"), 3, 1) == 0)
 		pxp->n_secu = _SECU_SSL;
-	else if (compare_text(sz_file, 3, _T("XSL"), 3, 1) == 0)
-		pxp->n_secu = _SECU_XSL;
+	else if (compare_text(sz_file, 3, _T("SSH"), 3, 1) == 0)
+		pxp->n_secu = _SECU_SSH;
 	else
 		pxp->n_secu = _SECU_NONE;
 
@@ -478,8 +478,8 @@ void _xhttps_start(xhttps_param_t* pxp)
 	{
 		if (pxp->n_secu == _SECU_SSL)
 			xsprintf(sz_file, _T("HTTP/SSL service started at port: %s  mode: %s root: %s ...failed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
-		else if (pxp->n_secu == _SECU_XSL)
-			xsprintf(sz_file, _T("HTTP/XSL service started at port: %s  mode: %s root: %s ...failed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+		else if (pxp->n_secu == _SECU_SSH)
+			xsprintf(sz_file, _T("HTTP/SSH service started at port: %s  mode: %s root: %s ...failed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 		else
 			xsprintf(sz_file, _T("HTTP service started at port: %s  mode: %s root: %s ...failed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 
@@ -491,8 +491,8 @@ void _xhttps_start(xhttps_param_t* pxp)
 	{
 		if (pxp->n_secu == _SECU_SSL)
 			xsprintf(sz_file, _T("HTTP/SSL service started at port: %s  mode: %s root: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
-		else if (pxp->n_secu == _SECU_XSL)
-			xsprintf(sz_file, _T("HTTP/XSL service started at port: %s  mode: %s root: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+		else if (pxp->n_secu == _SECU_SSH)
+			xsprintf(sz_file, _T("HTTP/SSH service started at port: %s  mode: %s root: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 		else
 			xsprintf(sz_file, _T("HTTP service started at port: %s  mode: %s root: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 
@@ -511,8 +511,8 @@ void _xhttps_stop(xhttps_param_t* pxp)
 
 		if (pxp->n_secu == _SECU_SSL)
 			xsprintf(sz_file, _T("HTTP/SSL service at port: %s ...stoped!\r\n"), pxp->sz_port);
-		else if (pxp->n_secu == _SECU_XSL)
-			xsprintf(sz_file, _T("HTTP/XSL service at port: %s ...stoped!\r\n"), pxp->sz_port);
+		else if (pxp->n_secu == _SECU_SSH)
+			xsprintf(sz_file, _T("HTTP/SSH service at port: %s ...stoped!\r\n"), pxp->sz_port);
 		else
 			xsprintf(sz_file, _T("HTTP service at port: %s ...stoped!\r\n"), pxp->sz_port);
 

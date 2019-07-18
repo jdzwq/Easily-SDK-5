@@ -1515,6 +1515,10 @@ static bool_t tftp_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 			fi.low_size = xtftp_get_filesize(xh);
 		}
 		
+		//NULL FILE
+		if (!fi.is_dir && !fi.low_size && is_null(fi.file_name))
+			break;
+
 		(*pf)(&fi, pa);
 	}
 
@@ -1712,5 +1716,17 @@ bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 		return 0;
 }
 
+void xinet_setopt(xhand_t inet, int oid, void* opt, int len)
+{
+	switch (oid)
+	{
+	case FILE_OPTION_SINCE:
+		xinet_set_filesince(inet, *(int*)(opt));
+		break;
+	case FILE_OPTION_TIME:
+		xinet_set_filetime(inet, (tchar_t*)opt);
+		break;
+	}
+}
 
 #endif /*XDK_SUPPORT_SOCK*/

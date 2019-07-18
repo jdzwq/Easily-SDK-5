@@ -48,7 +48,6 @@ typedef enum{
 #else
 #define PNP_BASE_TIMO		(30000)
 #endif
-#define PNP_BASE_BUFF		65535
 #define PNP_MIN_PORT		49152
 #define PNP_MAX_PORT		65535
 
@@ -116,6 +115,22 @@ XDL_API bool_t xpnp_flush(xhand_t pnp);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
+
+/*
+@FUNCTION xpnp_addr_port: get PNP local address and port.
+@INPUT xhand_t pnp: the PNP handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the local port.
+*/
+XDL_API unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr);
+
+/*
+@FUNCTION xpnp_peer_port: get PNP remote address and port.
+@INPUT xhand_t pnp: the PNP handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the remote port.
+*/
+XDL_API unsigned short xpnp_peer_port(xhand_t pnp, tchar_t* addr);
 
 #ifdef	__cplusplus
 }

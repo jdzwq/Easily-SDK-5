@@ -30,10 +30,13 @@
     <ClInclude Include="..\..\xds\xdstcp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdsxsl.h">
+    <ClInclude Include="..\..\xds\xdspnp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdspnp.h">
+    <ClInclude Include="..\..\xds\xdsssh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\xdsudp.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,10 +53,13 @@
     <ClCompile Include="..\..\xds\xdstcp.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xds\xdsxsl.c">
+    <ClCompile Include="..\..\xds\xdspnp.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xds\xdspnp.c">
+    <ClCompile Include="..\..\xds\xdsssh.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xds\xdsudp.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

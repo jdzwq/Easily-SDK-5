@@ -121,6 +121,11 @@ extern "C" {
 	* \return         0 if successful, or an ERR_RSA_XXX error code
 	*/
 	XDL_API int rsa_gen_key(rsa_context *ctx, int nbits, int exponent);
+	XDL_API int rsa_size(rsa_context* ctx);
+
+	XDL_API int rsa_import_pubkey(rsa_context *ctx, const unsigned char *data, int len, int ne);
+	XDL_API int rsa_export_pubkey(rsa_context *ctx, unsigned char *data, int* olen, int ne);
+	XDL_API int rsa_pubkey_size(rsa_context* ctx);
 
 	/**
 	* \brief          Check a public RSA key

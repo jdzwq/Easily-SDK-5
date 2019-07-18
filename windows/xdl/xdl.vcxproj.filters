@@ -240,9 +240,6 @@
     <ClInclude Include="..\..\xdl\netoss.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\netpdu.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\netsoap.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -549,9 +546,6 @@
     <ClInclude Include="..\..\xdl\impcontext.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\netxsl.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\netpnp.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -607,6 +601,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\xdlsort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\netudp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\netssh.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -813,9 +813,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\netoss.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\netpdu.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\netsoap.c">
@@ -1088,9 +1085,6 @@
     <ClCompile Include="..\..\xdl\impcontext.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\netxsl.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\netpnp.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1146,6 +1140,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\xdlsort.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\netudp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\netssh.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

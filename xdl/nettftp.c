@@ -44,6 +44,8 @@ typedef struct _xtftp_t{
 	int type;
 	xhand_t bio;
 
+	havege_state havs;
+
 	int status;
 	sword_t block;
 
@@ -63,11 +65,26 @@ typedef struct _xtftp_t{
 }xtftp_t;
 
 /***********************************************************************************************/
+
+static unsigned short _dynet_port(xtftp_t* pftp)
+{
+	unsigned short port;
+
+	port = (unsigned short)havege_rand(&pftp->havs);
+
+	while (port < UDP_MIN_PORT)
+	{
+		port = (unsigned short)havege_rand(&pftp->havs);
+	}
+
+	return port;
+}
+
 static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 {
 	byte_t buf[TFTP_PKG_SIZE + 1] = { 0 };
 	dword_t dw, total = 0;
-	int len;
+	int n,len;
 
 	TRY_CATCH;
 
@@ -75,7 +92,7 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 	pftp->pdv_count = 0;
 
 	dw = TFTP_HDR_SIZE;
-	if (!xpnp_read(pftp->bio, buf, &dw))
+	if (!xudp_read(pftp->bio, buf, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -86,7 +103,7 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 	{
 	case TFTP_PDU_HEAD:
 		dw = TFTP_PDU_SIZE;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -102,10 +119,11 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 			raise_user_error(_T("TFTP HEAD"), _T("invalid file head"));
 		}
 #ifdef _UNICODE
-		mbs_to_ucs((schar_t*)(buf + total), len, pftp->ftime, DATE_LEN);
+		n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->ftime, DATE_LEN);
 #else
-		mbs_to_mbs((schar_t*)(buf + total), len, pftp->ftime, DATE_LEN);
+		n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->ftime, DATE_LEN);
 #endif
+		pftp->ftime[n] = _T('\0');
 		total += (len + 1);
 
 		len = a_xslen((schar_t*)(buf + total));
@@ -114,16 +132,17 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 			raise_user_error(_T("TFTP HEAD"), _T("invalid file name"));
 		}
 #ifdef _UNICODE
-		mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #else
-		mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #endif
+		pftp->file[n] = _T('\0');
 		total += (len + 1);
 
 		break;
 	case TFTP_PDU_DEL:
 		dw = TFTP_PDU_SIZE;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -133,16 +152,17 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 			raise_user_error(_T("TFTP DEL"), _T("invalid file name"));
 		}
 #ifdef _UNICODE
-		mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #else
-		mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #endif
+		pftp->file[n] = _T('\0');
 		total += (len + 1);
 
 		break;
 	case TFTP_PDU_RRQ:
 		dw = TFTP_PDU_SIZE;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -152,26 +172,29 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 			raise_user_error(_T("TFTP RRQ"), _T("invalid file name"));
 		}
 #ifdef _UNICODE
-		mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #else
-		mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #endif
+		pftp->file[n] = _T('\0');
 		total += (len + 1);
+
 		if (total < TFTP_PDU_SIZE)
 		{
 			len = a_xslen((schar_t*)(buf + total));
 #ifdef _UNICODE
-			mbs_to_ucs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
+			n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
 #else
-			mbs_to_mbs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
+			n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
 #endif
+			pftp->mode[n] = _T('\0');
 			total += (len + 1);
 		}
 
 		break;
 	case TFTP_PDU_WRQ:
 		dw = TFTP_PDU_SIZE;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -181,26 +204,29 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 			raise_user_error(_T("TFTP WRQ"), _T("invalid file name"));
 		}
 #ifdef _UNICODE
-		mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #else
-		mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
+		n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->file, PATH_LEN);
 #endif
+		pftp->file[n] = _T('\0');
 		total += (len + 1);
+
 		if (total < TFTP_PDU_SIZE)
 		{
 			len = a_xslen((schar_t*)(buf + total));
 #ifdef _UNICODE
-			mbs_to_ucs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
+			n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
 #else
-			mbs_to_mbs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
+			n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->mode, NUM_LEN);
 #endif
+			pftp->mode[n] = _T('\0');
 			total += (len + 1);
 		}
 
 		break;
 	case TFTP_PDU_DATA:
 		dw = 2;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -216,7 +242,7 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 		break;
 	case TFTP_PDU_ACK:
 		dw = 2;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -229,7 +255,7 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 		break;
 	case TFTP_PDU_ERR:
 		dw = TFTP_PDU_SIZE;
-		if (!xpnp_read(pftp->bio, buf + total, &dw))
+		if (!xudp_read(pftp->bio, buf + total, &dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -238,10 +264,11 @@ static bool_t _xtftp_read_pdu(xtftp_t* pftp, sword_t* pdu_type)
 
 		len = a_xslen((schar_t*)(buf + total));
 #ifdef _UNICODE
-		mbs_to_ucs((schar_t*)(buf + total), len, pftp->errtext, ERR_LEN);
+		n = mbs_to_ucs((schar_t*)(buf + total), len, pftp->errtext, ERR_LEN);
 #else
-		mbs_to_mbs((schar_t*)(buf + total), len, pftp->errtext, ERR_LEN);
+		n = mbs_to_mbs((schar_t*)(buf + total), len, pftp->errtext, ERR_LEN);
 #endif
+		pftp->errtext[n] = _T('\0');
 		total += (len + 1);
 
 		break;
@@ -306,11 +333,11 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		buf[total] = '\0';
 		total++;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		xpnp_flush(pftp->bio);
+		xudp_flush(pftp->bio);
 
 		break;
 	case TFTP_PDU_DEL:
@@ -328,11 +355,11 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		buf[total] = '\0';
 		total++;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		xpnp_flush(pftp->bio);
+		xudp_flush(pftp->bio);
 
 		break;
 	case TFTP_PDU_RRQ:
@@ -364,11 +391,11 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		buf[total] = '\0';
 		total++;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		xpnp_flush(pftp->bio);
+		xudp_flush(pftp->bio);
 
 		break;
 	case TFTP_PDU_WRQ:
@@ -400,11 +427,11 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		buf[total] = '\0';
 		total++;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		xpnp_flush(pftp->bio);
+		xudp_flush(pftp->bio);
 
 		break;
 	case TFTP_PDU_DATA:
@@ -414,7 +441,7 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		PUT_SWORD_LIT(buf, total, pftp->block);
 		total += dw;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -427,11 +454,11 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		PUT_SWORD_LIT(buf, total, pftp->block);
 		total += dw;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		xpnp_flush(pftp->bio);
+		xudp_flush(pftp->bio);
 
 		break;
 	case TFTP_PDU_ERR:
@@ -453,11 +480,11 @@ static bool_t _xtftp_write_pdu(xtftp_t* pftp, sword_t pdu_type)
 		buf[total] = '\0';
 		total++;
 
-		if (!xpnp_write(pftp->bio, buf, &total))
+		if (!xudp_write(pftp->bio, buf, &total))
 		{
 			raise_user_error(NULL, NULL);
 		}
-		xpnp_flush(pftp->bio);
+		xudp_flush(pftp->bio);
 		break;
 	}
 
@@ -474,7 +501,7 @@ static bool_t _xtftp_read_pdv(xtftp_t* pftp, byte_t* buf, dword_t* pch)
 	dword_t org = *pch;
 
 	*pch = (*pch < pftp->pdv_limit - pftp->pdv_count) ? *pch : (pftp->pdv_limit - pftp->pdv_count);
-	if (!xpnp_read(pftp->bio, buf, pch))
+	if (!xudp_read(pftp->bio, buf, pch))
 	{
 		return 0;
 	}
@@ -491,7 +518,7 @@ static bool_t _xtftp_read_pdv(xtftp_t* pftp, byte_t* buf, dword_t* pch)
 static bool_t _xtftp_write_pdv(xtftp_t* pftp, const byte_t* buf, dword_t *pch)
 {
 	*pch = (*pch < pftp->pdv_limit - pftp->pdv_count) ? *pch : (pftp->pdv_limit - pftp->pdv_count);
-	if (!xpnp_write(pftp->bio, buf, pch))
+	if (!xudp_write(pftp->bio, buf, pch))
 	{
 		return 0;
 	}
@@ -509,7 +536,7 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 
 	tchar_t host[META_LEN] = { 0 };
 	tchar_t addr[ADDR_LEN] = { 0 };
-	unsigned short port;
+	unsigned short port, bind;
 
 	sword_t pdu_type = 0;
 
@@ -517,6 +544,9 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 
 	pftp = (xtftp_t*)xmem_alloc(sizeof(xtftp_t));
 	pftp->head.tag = _HANDLE_TFTP;
+
+	havege_init(&pftp->havs);
+	bind = _dynet_port(pftp);
 
 	pftp->type = _XTFTP_TYPE_CLI;
 
@@ -536,11 +566,18 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 	if (!port)
 		port = DEF_TFTP_PORT;
 
-	pftp->bio = xpnp_cli(port, addr);
+	pftp->bio = xudp_cli(port, addr);
 	if (!pftp->bio)
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	if (!xudp_bind(pftp->bio, bind))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	xudp_set_package(pftp->bio, TFTP_PKG_SIZE);
 
 	pftp->block = 0;
 
@@ -639,7 +676,7 @@ ONERROR:
 	if (pftp)
 	{
 		if (pftp->bio)
-			xpnp_close(pftp->bio);
+			xudp_close(pftp->bio);
 
 		xmem_free(pftp);
 	}
@@ -653,6 +690,7 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 {
 	xtftp_t* pftp = NULL;
 	sword_t pdu_type;
+	unsigned short bind;
 
 	TRY_CATCH;
 
@@ -661,11 +699,21 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	pftp->type = _XTFTP_TYPE_SRV;
 
-	pftp->bio = xpnp_srv(port, addr, pack, size);
+	havege_init(&pftp->havs);
+	bind = _dynet_port(pftp);
+
+	pftp->bio = xudp_srv(port, addr, pack, size);
 	if (!pftp->bio)
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	if (!xudp_bind(pftp->bio, bind))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	xudp_set_package(pftp->bio, TFTP_PKG_SIZE);
 
 	pftp->block = 0;
 
@@ -706,7 +754,7 @@ ONERROR:
 	if (pftp)
 	{
 		if (pftp->bio)
-			xpnp_close(pftp->bio);
+			xudp_close(pftp->bio);
 
 		xmem_free(pftp);
 	}
@@ -723,7 +771,7 @@ void xtftp_close(xhand_t tftp)
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
 	if (pftp->bio)
-		xpnp_close(pftp->bio);
+		xudp_close(pftp->bio);
 
 	xmem_free(pftp);
 }
@@ -995,7 +1043,7 @@ bool_t xtftp_flush(xhand_t tftp)
 
 	if (pftp->status == _TFTP_STATUS_PENDING)
 	{
-		if (!xpnp_flush(pftp->bio))
+		if (!xudp_flush(pftp->bio))
 			return 0;
 
 #if defined(DEBUG) || defined(_DEBUG)

@@ -123,6 +123,12 @@ typedef struct _xml_reader_t{
 	void* obj;
 }xml_reader_t;
 
+#define SOCKET_OPTION_SNDBUF	1
+#define SOCKET_OPTION_RCVBUF	2
+#define SOCKET_OPTION_NONBLK	3
+
+#define FILE_OPTION_TIME		10
+#define FILE_OPTION_SINCE		11
 
 typedef xhand_t(*PF_BIO_OPEN)(const secu_desc_t*, const tchar_t*, dword_t);
 typedef bool_t(*PF_BIO_READ)(xhand_t, byte_t*, dword_t*);
@@ -131,35 +137,18 @@ typedef bool_t(*PF_BIO_FLUSH)(xhand_t);
 typedef bool_t(*PF_BIO_READ_RANGE)(xhand_t, dword_t, dword_t, byte_t*, dword_t);
 typedef bool_t(*PF_BIO_WRITE_RANGE)(xhand_t, dword_t, dword_t, const byte_t*, dword_t);
 typedef void(*PF_BIO_CLOSE)(xhand_t);
-typedef void(*PF_BIO_SET_TIME)(xhand_t, const tchar_t*);
-typedef void(*PF_BIO_SET_SINCE)(xhand_t, int);
 
-typedef void(*PF_BIO_ENCRYPT)(byte_t* buf, dword_t size, void* pa);
-typedef void(*PF_BIO_DECRYPT)(byte_t* buf, dword_t size, void* pa);
+typedef void(*PF_BIO_SETOPT)(xhand_t, int, void*, int);
 
-typedef void(*PF_BIO_SET_SNDBUF)(xhand_t, dword_t);
-typedef void(*PF_BIO_SET_RDVBUF)(xhand_t, dword_t);
-typedef void(*PF_BIO_SET_LINGER)(xhand_t, bool_t, int);
-typedef unsigned short(*PF_BIO_PEER_PORT)(xhand_t, tchar_t*);
-
-typedef struct _if_socket_bio{
+typedef struct _if_bio_t{
 	xhand_t		bio;
 	PF_BIO_WRITE	pf_write;
 	PF_BIO_FLUSH	pf_flush;
 	PF_BIO_READ		pf_read;
-	PF_BIO_ENCRYPT	pf_encrypt;
-	PF_BIO_DECRYPT	pf_decrypt;
-
-	PF_BIO_SET_SNDBUF	pf_set_sndbuf;
-	PF_BIO_SET_RDVBUF	pf_set_rcvbuf;
-	PF_BIO_SET_LINGER	pf_set_linger;
-
 	PF_BIO_READ_RANGE	pf_read_range;
 	PF_BIO_WRITE_RANGE	pf_write_range;
 	PF_BIO_CLOSE		pf_close;
-	PF_BIO_SET_TIME		pf_set_time;
-	PF_BIO_SET_SINCE	pf_set_since;
-	PF_BIO_PEER_PORT	pf_peer_port;
+	PF_BIO_SETOPT	pf_setopt;
 }if_bio_t;
 
 typedef float(*PF_MM_POINTS)(void*, bool_t);

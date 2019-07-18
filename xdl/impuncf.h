@@ -149,6 +149,16 @@ XDL_API bool_t xuncf_read_file_range(xhand_t fh, dword_t hoff, dword_t loff, byt
 XDL_API bool_t xuncf_write_file_range(xhand_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
 
 /*
+@FUNCTION xuncf_setopt: set the file options.
+@INPUT xhand_t fh: the file handle.
+@INPUT int oid: the option id, eg: FILE_OPTION_TIME, FILE_OPTION_SINCE.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API void xuncf_setopt(xhand_t fh, int oid, void* opt, int len);
+
+/*
 @FUNCTION xuncf_truncate: truncate file content at the position.
 @INPUT xhand_t fh: the file handle.
 @INPUT dword_t hoff: the high value of 64bits position.

@@ -29,7 +29,7 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 #include <xds.h>
 
-extern int STDCALL pnps_invoke(const pnps_block_t* pb);
+extern int STDCALL udps_invoke(const udps_block_t* pb);
 
 
 #endif

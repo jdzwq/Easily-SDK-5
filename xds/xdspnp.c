@@ -171,16 +171,16 @@ static unsigned int STDCALL process_dispatch(void* param)
 					stream_write_bytes(stm, pack, size);
 
 					stream_write_chunk_size(stm, 0);
+
+					stream_flush(stm);
+
+					stream_free(stm);
+					stm = NULL;
 				}
 
-				stream_free(stm);
-				stm = NULL;
+				xpipe_detach(pipe);
+				pipe = NULL;
 			}
-
-			xpipe_flush(pipe);
-
-			xpipe_free(pipe);
-			pipe = NULL;
 		}
 
 		release_process(&pi);

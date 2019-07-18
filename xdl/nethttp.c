@@ -871,9 +871,9 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		{
 			phttp->secu = _SECU_SSL;
 		}
-		else if (compare_text(phttp->poto, -1, _T("SHTTP"), -1, 0) == 0)
+		else if (compare_text(phttp->poto, -1, _T("SSH"), -1, 0) == 0)
 		{
-			phttp->secu = _SECU_XSL;
+			phttp->secu = _SECU_SSH;
 		}
 	}
 
@@ -909,8 +909,8 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		case _SECU_SSL:
 			phttp->port = DEF_HTTPS_PORT;
 			break;
-		case _SECU_XSL:
-			phttp->port = DEF_SHTTP_PORT;
+		case _SECU_SSH:
+			phttp->port = DEF_SSH_PORT;
 			break;
 		default:
 			phttp->port = DEF_HTTP_PORT;
@@ -938,20 +938,17 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		phttp->inf.pf_write = xssl_write;
 		phttp->inf.pf_flush = xssl_flush;
 		phttp->inf.pf_read = xssl_read;
-		phttp->inf.pf_set_linger = xssl_set_linger;
 		phttp->inf.pf_close = xssl_close;
-		phttp->inf.pf_peer_port = xssl_peer_port;
+		phttp->inf.pf_setopt = xssl_setopt;
 		break;
-	case _SECU_XSL:
-		phttp->inf.bio = xxsl_cli(phttp->port, phttp->addr);
+	case _SECU_SSH:
+		phttp->inf.bio = xssh_cli(phttp->port, phttp->addr);
 
-		phttp->inf.pf_write = xxsl_write;
-		phttp->inf.pf_read = xxsl_read;
-		phttp->inf.pf_set_linger = xxsl_set_linger;
-		phttp->inf.pf_set_rcvbuf = xxsl_set_recv_buff;
-		phttp->inf.pf_set_sndbuf = xxsl_set_send_buff;
-		phttp->inf.pf_close = xxsl_close;
-		phttp->inf.pf_peer_port = xxsl_peer_port;
+		phttp->inf.pf_write = xssh_write;
+		phttp->inf.pf_read = xssh_read;
+		phttp->inf.pf_flush = xssh_flush;
+		phttp->inf.pf_close = xssh_close;
+		phttp->inf.pf_setopt = xssh_setopt;
 		break;
 #endif
 	default:
@@ -959,11 +956,8 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 
 		phttp->inf.pf_write = xtcp_write;
 		phttp->inf.pf_read = xtcp_read;
-		phttp->inf.pf_set_linger = xtcp_set_linger;
-		phttp->inf.pf_set_rcvbuf = xtcp_set_recv_buff;
-		phttp->inf.pf_set_sndbuf = xtcp_set_send_buff;
 		phttp->inf.pf_close = xtcp_close;
-		phttp->inf.pf_peer_port = xtcp_peer_port;
+		phttp->inf.pf_setopt = xtcp_set_option;
 		break;
 	}
 	
@@ -1013,8 +1007,8 @@ xhand_t xhttp_server(xhand_t bio)
 	case _HANDLE_SSL:
 		phttp->secu = _SECU_SSL;
 		break;
-	case _HANDLE_XSL:
-		phttp->secu = _SECU_XSL;
+	case _HANDLE_SSH:
+		phttp->secu = _SECU_SSH;
 		break;
 	default:
 		phttp->secu = 0;
@@ -1028,29 +1022,23 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_write = xssl_write;
 		phttp->inf.pf_flush = xssl_flush;
 		phttp->inf.pf_read = xssl_read;
-		phttp->inf.pf_set_linger = xssl_set_linger;
-		phttp->inf.pf_peer_port = xssl_peer_port;
+		phttp->inf.pf_setopt = xssl_setopt;
 
 		xsocket_peer(xssl_socket(bio), &na);
 		break;
-	case _SECU_XSL:
-		phttp->inf.pf_write = xxsl_write;
-		phttp->inf.pf_read = xxsl_read;
-		phttp->inf.pf_set_linger = xxsl_set_linger;
-		phttp->inf.pf_set_rcvbuf = xxsl_set_recv_buff;
-		phttp->inf.pf_set_sndbuf = xxsl_set_send_buff;
-		phttp->inf.pf_peer_port = xxsl_peer_port;
+	case _SECU_SSH:
+		phttp->inf.pf_write = xssh_write;
+		phttp->inf.pf_read = xssh_read;
+		phttp->inf.pf_flush = xssh_flush;
+		phttp->inf.pf_setopt = xssh_setopt;
 
-		xsocket_peer(xxsl_socket(bio), &na);
+		xsocket_peer(xssh_socket(bio), &na);
 		break;
 #endif
 	default:
 		phttp->inf.pf_write = xtcp_write;
 		phttp->inf.pf_read = xtcp_read;
-		phttp->inf.pf_set_linger = xtcp_set_linger;
-		phttp->inf.pf_set_rcvbuf = xtcp_set_recv_buff;
-		phttp->inf.pf_set_sndbuf = xtcp_set_send_buff;
-		phttp->inf.pf_peer_port = xtcp_peer_port;
+		phttp->inf.pf_setopt = xtcp_set_option;
 
 		xsocket_peer(xtcp_socket(bio), &na);
 		break;
@@ -1112,6 +1100,100 @@ void xhttp_close(xhand_t xhttp)
 	}
 
 	xmem_free(phttp);
+}
+
+
+int xhttp_type(xhand_t xhttp)
+{
+	xhttp_t* phttp = (xhttp_t*)xhttp;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	return phttp->type;
+}
+
+int xhttp_secu(xhand_t xhttp)
+{
+	xhttp_t* phttp = (xhttp_t*)xhttp;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	return phttp->secu;
+}
+
+xhand_t xhttp_bio(xhand_t xhttp)
+{
+	xhttp_t* phttp = (xhttp_t*)xhttp;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	return phttp->inf.bio;
+}
+
+unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
+{
+	xhttp_t* phttp = (xhttp_t*)xhttp;
+	res_file_t so;
+	net_addr_t na = { 0 };
+	unsigned short port = 0;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	switch (phttp->secu)
+	{
+#ifdef XDL_SUPPORT_CRYPT
+	case _SECU_SSL:
+		so = xssl_socket(phttp->inf.bio);
+		break;
+	case _SECU_SSH:
+		so = xssh_socket(phttp->inf.bio);
+		break;
+#endif
+	default:
+		so = xtcp_socket(phttp->inf.bio);
+		break;
+	}
+
+	if (so == INVALID_FILE)
+		return 0;
+
+	xsocket_addr(so, &na);
+	conv_addr(&na, &port, addr);
+
+	return port;
+}
+
+unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
+{
+	xhttp_t* phttp = (xhttp_t*)xhttp;
+	res_file_t so;
+	net_addr_t na = { 0 };
+	unsigned short port = 0;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	switch (phttp->secu)
+	{
+#ifdef XDL_SUPPORT_CRYPT
+	case _SECU_SSL:
+		so = xssl_socket(phttp->inf.bio);
+		break;
+	case _SECU_SSH:
+		so = xssh_socket(phttp->inf.bio);
+		break;
+#endif
+	default:
+		so = xtcp_socket(phttp->inf.bio);
+		break;
+	}
+
+	if (so == INVALID_FILE)
+		return 0;
+
+	xsocket_peer(so, &na);
+	conv_addr(&na, &port, addr);
+
+	return port;
 }
 
 dword_t xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max)
@@ -1237,33 +1319,6 @@ stream_t xhttp_get_recv_stream(xhand_t xhttp)
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
 	return phttp->recv_stream;
-}
-
-int xhttp_type(xhand_t xhttp)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	return phttp->type;
-}
-
-int xhttp_secu(xhand_t xhttp)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	return phttp->secu;
-}
-
-xhand_t xhttp_bio(xhand_t xhttp)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	return phttp->inf.bio;
 }
 
 int	xhttp_get_url_method(xhand_t xhttp, tchar_t* buf, int max)
@@ -1801,29 +1856,6 @@ int xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, in
 	return n;
 }
 
-unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	xsncpy(addr, phttp->addr, ADDR_LEN);
-
-	return phttp->port;
-}
-
-unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	if (phttp->inf.pf_peer_port)
-		return (*phttp->inf.pf_peer_port)(phttp->inf.bio, addr);
-	else
-		return 0;
-}
-
 void xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_mode, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int max)
 {
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
@@ -2166,6 +2198,7 @@ void xhttp_send_continue(xhand_t xhttp)
 
 	byte_t *buf_response = NULL;
 	dword_t len_response = 0;
+	int n;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_SRV);
@@ -2177,9 +2210,10 @@ void xhttp_send_continue(xhand_t xhttp)
 
 	len_response = _xhttp_format_continue(phttp, buf_response, len_response);
 
-	if (phttp->inf.pf_set_sndbuf)
+	if (phttp->inf.pf_setopt)
 	{
-		(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, 0);
+		n = 0;
+		(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &n, sizeof(n));
 	}
 
 	if (phttp->inf.pf_write)
@@ -2221,6 +2255,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t *buf_response = NULL;
 	dword_t len_response = 0;
+	int opt = 0;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_SRV);
@@ -2234,8 +2269,11 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 		len_response = _xhttp_format_response(phttp, buf_response, len_response);
 
-		if (phttp->inf.pf_set_sndbuf)
-			(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, 0);
+		if (phttp->inf.pf_setopt)
+		{
+			opt = 0;
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+		}
 
 		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_response, &len_response))
 		{
@@ -2266,15 +2304,21 @@ bool_t xhttp_send_response(xhand_t xhttp)
 			{
 				stream_set_mode(phttp->send_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->send_stream);
-				if (phttp->inf.pf_set_sndbuf)
-					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, TCP_MAX_BUFF);
+				if (phttp->inf.pf_setopt)
+				{
+					opt = TCP_MAX_BUFF;
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+				}
 			}
 			else
 			{
 				len_response = xhttp_get_response_content_length(xhttp);
 				stream_set_size(phttp->send_stream, len_response);
-				if (phttp->inf.pf_set_sndbuf)
-					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, ((len_response) ? len_response : TCP_MAX_BUFF));
+				if (phttp->inf.pf_setopt)
+				{
+					opt = ((len_response) ? len_response : TCP_MAX_BUFF);
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+				}
 			}
 		}
 
@@ -2301,6 +2345,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 	dword_t len_header, len_response,len_one;
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t* buf_response = NULL;
+	int opt;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_CLI);
@@ -2309,8 +2354,11 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 
 	if (!phttp->b_response)
 	{
-		if (phttp->inf.pf_set_rcvbuf)
-			(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, 0);
+		if (phttp->inf.pf_setopt)
+		{
+			opt = 0;
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+		}
 
 		len_header = XHTTP_HEADER_SIZE;
 		buf_response = (byte_t*)xmem_alloc(len_header + 1);
@@ -2361,15 +2409,21 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 			{
 				stream_set_mode(phttp->recv_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->recv_stream);
-				if (phttp->inf.pf_set_rcvbuf)
-					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, TCP_MAX_BUFF);
+				if (phttp->inf.pf_setopt)
+				{
+					opt = TCP_MAX_BUFF;
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+				}
 			}
 			else
 			{
 				len_one = xhttp_get_response_content_length(xhttp);
 				stream_set_size(phttp->recv_stream, len_one);
-				if (phttp->inf.pf_set_rcvbuf)
-					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, ((len_one) ? len_one : TCP_MAX_BUFF));
+				if (phttp->inf.pf_setopt)
+				{
+					opt = ((len_one) ? len_one : TCP_MAX_BUFF);
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+				}
 			}
 		}
 
@@ -2397,6 +2451,7 @@ bool_t xhttp_send_request(xhand_t xhttp)
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t *buf_request = NULL;
 	dword_t len_request = 0;
+	int opt;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_CLI);
@@ -2410,8 +2465,11 @@ bool_t xhttp_send_request(xhand_t xhttp)
 
 		len_request = _xhttp_format_request(phttp, buf_request, len_request);
 
-		if (phttp->inf.pf_set_sndbuf)
-			(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, 0);
+		if (phttp->inf.pf_setopt)
+		{
+			opt = 0;
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+		}
 
 		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_request, &len_request))
 		{
@@ -2442,15 +2500,21 @@ bool_t xhttp_send_request(xhand_t xhttp)
 			{
 				stream_set_mode(phttp->send_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->send_stream);
-				if (phttp->inf.pf_set_sndbuf)
-					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, TCP_MAX_BUFF);
+				if (phttp->inf.pf_setopt)
+				{
+					opt = TCP_MAX_BUFF;
+					(*phttp->inf.pf_setopt)(phttp->inf.bio,SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+				}
 			}
 			else
 			{
 				len_request = xhttp_get_request_content_length(xhttp);
 				stream_set_size(phttp->send_stream, len_request);
-				if (phttp->inf.pf_set_sndbuf)
-					(*phttp->inf.pf_set_sndbuf)(phttp->inf.bio, ((len_request) ? len_request : TCP_MAX_BUFF));
+				if (phttp->inf.pf_setopt)
+				{
+					opt = ((len_request) ? len_request : TCP_MAX_BUFF);
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+				}
 			}
 		}
 
@@ -2477,6 +2541,7 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 	dword_t len_header, len_request,len_one;
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t* buf_request = NULL;
+	int opt;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_SRV);
@@ -2485,8 +2550,11 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 
 	if (!phttp->b_request)
 	{
-		if (phttp->inf.pf_set_rcvbuf)
-			(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, 0);
+		if (phttp->inf.pf_setopt)
+		{
+			opt = 0;
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+		}
 
 		len_header = XHTTP_HEADER_SIZE;
 		buf_request = (byte_t*)xmem_alloc(len_header + 1);
@@ -2537,15 +2605,21 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 			{
 				stream_set_mode(phttp->recv_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->recv_stream);
-				if (phttp->inf.pf_set_rcvbuf)
-					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, TCP_MAX_BUFF);
+				if (phttp->inf.pf_setopt)
+				{
+					opt = TCP_MAX_BUFF;
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+				}
 			}
 			else
 			{
 				len_one = xhttp_get_request_content_length(xhttp);
 				stream_set_size(phttp->recv_stream, len_one);
-				if (phttp->inf.pf_set_rcvbuf)
-					(*phttp->inf.pf_set_rcvbuf)(phttp->inf.bio, ((len_one) ? len_one : TCP_MAX_BUFF));
+				if (phttp->inf.pf_setopt)
+				{
+					opt = ((len_one) ? len_one : TCP_MAX_BUFF);
+					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+				}
 			}
 		}
 

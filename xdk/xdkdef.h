@@ -95,8 +95,12 @@ LICENSE.GPL3 for more details.
 #endif
 
 
-#if defined(_OS_WINDOWS) && defined(_USRDLL)
+#if defined(_USRDLL)
+#if defined(_OS_WINDOWS)
 #define XDK_API __declspec(dllexport)
+#else
+#define XDK_API __attribute__((visibility("default")))
+#endif
 #else
 #define XDK_API extern
 #endif
@@ -290,6 +294,7 @@ typedef long long		stamp_t;
 #define CLR_LEN			24
 #define RES_LEN			64
 #define KEY_LEN			128
+#define BLK_LEN			32
 #define META_LEN		256
 #define UUID_LEN		36
 #define PATH_LEN		1024
@@ -300,7 +305,6 @@ typedef long long		stamp_t;
 #define ETAG_LEN		64
 #define ADDR_LEN		16
 #define ERR_LEN			512
-#define BLK_LEN			(64 * 1024 * 1024)
 
 #define XPI			3.1415926535
 //#define INCHPERTM	0.003937

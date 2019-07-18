@@ -29,6 +29,7 @@ LICENSE.GPL3 for more details.
 #include "xhttps.h"
 #include "xslots.h"
 #include "xpnps.h"
+#include "xudps.h"
 
 LINKPTR g_stack = NULL;
 
@@ -110,6 +111,34 @@ void xportd_start()
 			phttpd->param = (void*)pslots;
 			phttpd->pf_start = (PF_PORT_START)_xslots_start;
 			phttpd->pf_stop = (PF_PORT_STOP)_xslots_stop;
+
+			push_stack_node(g_stack, (void*)phttpd);
+		}
+		else if (compare_text(get_dom_node_attr_ptr(nlk_port, _T("type"), -1), -1, XPORTD_PORT_TYPE_UDP, -1, 1) == 0)
+		{
+			xudps_param_t* pudps = (xudps_param_t*)xmem_alloc(sizeof(xudps_param_t));
+
+			get_dom_node_attr(nlk_port, _T("bind"), -1, pudps->sz_port, INT_LEN);
+
+			LINKPTR nlk_child = get_dom_first_child_node(nlk_port);
+			while (nlk_child)
+			{
+				if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("mode"), -1, 1) == 0)
+					get_dom_node_text(nlk_child, pudps->sz_mode, INT_LEN);
+				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("root"), -1, 1) == 0)
+					get_dom_node_text(nlk_child, pudps->sz_root, PATH_LEN);
+				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("module"), -1, 1) == 0)
+					get_dom_node_text(nlk_child, pudps->sz_module, PATH_LEN);
+				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("param"), -1, 1) == 0)
+					get_dom_node_text(nlk_child, pudps->sz_param, PATH_LEN);
+
+				nlk_child = get_dom_next_sibling_node(nlk_child);
+			}
+
+			xportd_param_t* phttpd = (xportd_param_t*)xmem_alloc(sizeof(xportd_param_t));
+			phttpd->param = (void*)pudps;
+			phttpd->pf_start = (PF_PORT_START)_xudps_start;
+			phttpd->pf_stop = (PF_PORT_STOP)_xudps_stop;
 
 			push_stack_node(g_stack, (void*)phttpd);
 		}

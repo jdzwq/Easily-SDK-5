@@ -67,8 +67,8 @@ http_listen_t* xhttp_start_thread(int secu, unsigned short port, PF_HTTPS_DISPAT
 	case _SECU_SSL:
 		plis->lis_ssl = xssl_start_thread(port, _http_bio_dispatch, (void*)plis);
 		break;
-	case _SECU_XSL:
-		plis->lis_xsl = xxsl_start_thread(port, _http_bio_dispatch, (void*)plis);
+	case _SECU_SSH:
+		plis->lis_ssh = xssh_start_thread(port, _http_bio_dispatch, (void*)plis);
 		break;
 	default:
 		plis->lis_tcp = xtcp_start_thread(port, _http_bio_dispatch, (void*)plis);
@@ -97,8 +97,8 @@ http_listen_t* xhttp_start_process(int secu, unsigned short port, const tchar_t*
 	case _SECU_SSL:
 		plis->lis_ssl = xssl_start_process(port, sz_module, sz_cmdline);
 		break;
-	case _SECU_XSL:
-		plis->lis_xsl = xxsl_start_process(port, sz_module, sz_cmdline);
+	case _SECU_SSH:
+		plis->lis_ssh = xssh_start_process(port, sz_module, sz_cmdline);
 		break;
 	default:
 		plis->lis_tcp = xtcp_start_process(port, sz_module, sz_cmdline);
@@ -122,9 +122,9 @@ void xhttp_stop(http_listen_t* plis)
 		if (plis->lis_ssl)
 			xssl_stop(plis->lis_ssl);
 		break;
-	case _SECU_XSL:
-		if (plis->lis_xsl)
-			xxsl_stop(plis->lis_xsl);
+	case _SECU_SSH:
+		if (plis->lis_ssh)
+			xssh_stop(plis->lis_ssh);
 		break;
 	default:
 		if (plis->lis_tcp)

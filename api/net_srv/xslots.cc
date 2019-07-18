@@ -89,8 +89,8 @@ static void _xslots_log_request(xhand_t slot)
 	case _HANDLE_SSL:
 		xssl_peer_port(slot, token + len);
 		break;
-	case _HANDLE_XSL:
-		xxsl_peer_port(slot, token + len);
+	case _HANDLE_SSH:
+		xssh_peer_port(slot, token + len);
 		break;
 	case _HANDLE_TCP:
 		xtcp_peer_port(slot, token + len);
@@ -116,8 +116,8 @@ static void _xslots_log_response(xhand_t slot)
 	case _HANDLE_SSL:
 		xssl_peer_port(slot, token + len);
 		break;
-	case _HANDLE_XSL:
-		xxsl_peer_port(slot, token + len);
+	case _HANDLE_SSH:
+		xssh_peer_port(slot, token + len);
 		break;
 	case _HANDLE_TCP:
 		xtcp_peer_port(slot, token + len);
@@ -200,9 +200,9 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		else
 			xssl_set_auth(slot, SSL_VERIFY_NONE);
 	}
-	else if (pxp->n_secu == _SECU_XSL)
+	else if (pxp->n_secu == _SECU_SSH)
 	{
-		set_certs(_SECU_XSL, slot);
+		set_certs(_SECU_SSH, slot);
 	}
 
 	pb = (slots_block_t*)xmem_alloc(sizeof(slots_block_t));
@@ -241,7 +241,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		if (pb->log)
 		{
 			xscpy(sz_trace, _T("["));
-			//xslot_get_addr(slot, sz_trace + 1);
+			//xslots_get_addr(slot, sz_trace + 1);
 			xscat(sz_trace, _T("]"));
 
 			(*pb->pf_log_title)(pb->log, sz_trace, -1);
@@ -311,8 +311,8 @@ void _xslots_start(xslots_param_t* pxp)
 
 	if (compare_text(sz_token, 3, _T("SSL"), 3, 1) == 0)
 		pxp->n_secu = _SECU_SSL;
-	else if (compare_text(sz_token, 3, _T("XSL"), 3, 1) == 0)
-		pxp->n_secu = _SECU_XSL;
+	else if (compare_text(sz_token, 3, _T("SSH"), 3, 1) == 0)
+		pxp->n_secu = _SECU_SSH;
 	else
 		pxp->n_secu = _SECU_NONE;
 
@@ -331,8 +331,8 @@ void _xslots_start(xslots_param_t* pxp)
 	{
 		if (pxp->n_secu == _SECU_SSL)
 			xsprintf(sz_file, _T("SLOT/SSL %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
-		else if (pxp->n_secu == _SECU_XSL)
-			xsprintf(sz_file, _T("SLOT/XSL %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+		else if (pxp->n_secu == _SECU_SSH)
+			xsprintf(sz_file, _T("SLOT/SSH %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 		else
 			xsprintf(sz_file, _T("SLOT %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 
@@ -344,8 +344,8 @@ void _xslots_start(xslots_param_t* pxp)
 	{
 		if (pxp->n_secu == _SECU_SSL)
 			xsprintf(sz_file, _T("SLOT/SSL %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
-		else if (pxp->n_secu == _SECU_XSL)
-			xsprintf(sz_file, _T("SLOT/XSL %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+		else if (pxp->n_secu == _SECU_SSH)
+			xsprintf(sz_file, _T("SLOT/SSH %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 		else
 			xsprintf(sz_file, _T("SLOT %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
 
@@ -367,8 +367,8 @@ void _xslots_stop(xslots_param_t* pxp)
 
 		if (pxp->n_secu == _SECU_SSL)
 			xsprintf(sz_file, _T("SLOT/SSL %s service at port: %s ...stoped!\r\n"), sz_token, pxp->sz_port);
-		else if (pxp->n_secu == _SECU_XSL)
-			xsprintf(sz_file, _T("SLOT/XSL %s service at port: %s ...stoped!\r\n"), sz_token, pxp->sz_port);
+		else if (pxp->n_secu == _SECU_SSH)
+			xsprintf(sz_file, _T("SLOT/SSH %s service at port: %s ...stoped!\r\n"), sz_token, pxp->sz_port);
 		else
 			xsprintf(sz_file, _T("SLOT %s service at port: %s ...stoped!\r\n"), sz_token, pxp->sz_port);
 

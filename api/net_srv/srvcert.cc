@@ -81,17 +81,17 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 
 		return pcrt;
 	}
-	else if (secu == _SECU_XSL)
+	else if (secu == _SECU_SSH)
 	{
 		pcrt = (cert_t*)xmem_alloc(sizeof(cert_t));
 
-		xsprintf(sz_file, _T("%s/xsl/xslsrv.crt"), sz_path);
-		pcrt->srv_crt = xshare_srv(XSL_XSLSRV_CRT, sz_file, X509_CERT_SIZE);
+		xsprintf(sz_file, _T("%s/ssh/sshsrv.crt"), sz_path);
+		pcrt->srv_crt = xshare_srv(SSH_SSHSRV_CRT, sz_file, X509_CERT_SIZE);
 
-		xsprintf(sz_file, _T("%s/xsl/xslsrv.key"), sz_path);
-		pcrt->srv_key = xshare_srv(XSL_XSLSRV_KEY, sz_file, RSA_KEY_SIZE);
+		xsprintf(sz_file, _T("%s/ssh/sshsrv.key"), sz_path);
+		pcrt->srv_key = xshare_srv(SSH_SSHSRV_KEY, sz_file, RSA_KEY_SIZE);
 
-		xsprintf(sz_file, _T("%s/xsl/ca/*.crt"), sz_path);
+		xsprintf(sz_file, _T("%s/ssh/ca/*.crt"), sz_path);
 		ptr_list = create_list_doc();
 		xfile_list(NULL, sz_file, ptr_list);
 
@@ -99,8 +99,8 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 		pcrt->ca_chain = (xhand_t*)xmem_alloc(pcrt->ca_count * sizeof(xhand_t));
 
 		i = 0;
-		xsprintf(sz_file, _T("%s/xsl/xslca.crt"), sz_path);
-		xsprintf(sz_token, _T("%s%d"), XSL_XSLCA_CRT, i);
+		xsprintf(sz_file, _T("%s/ssh/sshca.crt"), sz_path);
+		xsprintf(sz_token, _T("%s%d"), SSH_SSHCA_CRT, i);
 		pcrt->ca_chain[i] = xshare_srv(sz_token, sz_file, X509_CERT_SIZE);
 		if (pcrt->ca_chain[i])
 		{
@@ -112,8 +112,8 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 		{
 			if (is_list_file_item(ilk))
 			{
-				xsprintf(sz_file, _T("%s/xsl/ca/%s"), sz_path, get_list_item_file_name_ptr(ilk));
-				xsprintf(sz_token, _T("%s%d"), XSL_XSLCA_CRT, i);
+				xsprintf(sz_file, _T("%s/ssh/ca/%s"), sz_path, get_list_item_file_name_ptr(ilk));
+				xsprintf(sz_token, _T("%s%d"), SSH_SSHCA_CRT, i);
 				pcrt->ca_chain[i] = xshare_srv(sz_token, sz_file, X509_CERT_SIZE);
 				if (pcrt->ca_chain[i])
 				{
@@ -227,25 +227,9 @@ void set_certs(int secu, xhand_t bio)
 				break;
 		} while (++i);
 	}
-	else if (secu == _SECU_XSL)
+	else if (secu == _SECU_SSH)
 	{
-		bh = xshare_cli(XSL_XSLSRV_CRT, X509_CERT_SIZE);
-		if (bh)
-		{
-			buf = (byte_t*)xshare_lock(bh, 0, X509_CERT_SIZE);
-			if (buf)
-			{
-				len = a_xslen((schar_t*)buf);
-				if (len)
-				{
-					xxsl_set_cert(bio, buf, len);
-				}
-				xshare_unlock(bh, 0, X509_CERT_SIZE, buf);
-			}
-			xshare_close(bh);
-		}
-
-		bh = xshare_cli(XSL_XSLSRV_KEY, RSA_KEY_SIZE);
+		bh = xshare_cli(SSH_SSHSRV_KEY, RSA_KEY_SIZE);
 		if (bh)
 		{
 			buf = (byte_t*)xshare_lock(bh, 0, RSA_KEY_SIZE);
@@ -254,36 +238,11 @@ void set_certs(int secu, xhand_t bio)
 				len = a_xslen((schar_t*)buf);
 				if (len)
 				{
-					xxsl_set_rsa(bio, buf, len, NULL, 0);
+					//xssh_set_rsa(bio, buf, len, NULL, 0);
 				}
 				xshare_unlock(bh, 0, RSA_KEY_SIZE, buf);
 			}
 			xshare_close(bh);
 		}
-
-		i = 0;
-		do
-		{
-			xsprintf(sz_cert, _T("%s%d"), XSL_XSLCA_CRT, i);
-			bh = xshare_cli(sz_cert, X509_CERT_SIZE);
-			if (!bh)
-				break;
-
-			buf = (byte_t*)xshare_lock(bh, 0, X509_CERT_SIZE);
-			if (buf)
-			{
-				len = a_xslen((schar_t*)buf);
-				if (len)
-				{
-					if (!xxsl_set_ca(bio, buf, len))
-						len = 0;
-				}
-				xshare_unlock(bh, 0, X509_CERT_SIZE, buf);
-			}
-			xshare_close(bh);
-
-			if (!buf || !len)
-				break;
-		} while (++i);
 	}
 }

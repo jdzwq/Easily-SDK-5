@@ -119,6 +119,123 @@ cleanup:
 
 #endif
 
+int rsa_size(rsa_context* ctx)
+{
+	return ctx->len;
+}
+
+int rsa_import_pubkey(rsa_context *ctx, const unsigned char *data, int len, int ne)
+{
+	const unsigned char *p = data;
+	int i, bys;
+
+	if (len < 4)
+		return (ERR_RSA_BAD_INPUT_DATA);
+
+	/*
+	* ne=0 means E then N (the keys sent by the server).
+	* ne=1 means N then E (the keys stored in a keyfile).
+	*/
+
+	if (!ne) {
+		bys = 0;
+		for (i = 0; i < 4; i++)
+		{
+			bys = (bys << 8) + *p;
+			p++;
+		}
+		len -= 4;
+
+		if (0 != mpi_read_binary(&(ctx->E), p, bys))
+			return (ERR_RSA_KEY_GEN_FAILED);
+		
+		p += bys;
+		len -= bys;
+	}
+
+	bys = 0;
+	for (i = 0; i < 4; i++)
+	{
+		bys = (bys << 8) + *p;
+		p++;
+	}
+	len -= 4;
+
+	if (0 != mpi_read_binary(&(ctx->N), p, bys))
+		return (ERR_RSA_KEY_GEN_FAILED);
+
+	ctx->len = (mpi_msb(&ctx->N) + 7) >> 3;
+
+	p += bys;
+	len -= bys;
+
+	if (ne) {
+		bys = 0;
+		for (i = 0; i < 4; i++)
+		{
+			bys = (bys << 8) + *p;
+			p++;
+		}
+		len -= 4;
+
+		if (0 != mpi_read_binary(&(ctx->E), p, bys))
+			return (ERR_RSA_KEY_GEN_FAILED);
+
+		p += bys;
+		len -= bys;
+	}
+
+	return (0);
+}
+
+int rsa_pubkey_size(rsa_context* ctx)
+{
+	return 4 + mpi_size(&ctx->N) + 4 + mpi_size(&ctx->E);
+}
+
+int rsa_export_pubkey(rsa_context *ctx, unsigned char *data, int* olen, int ne)
+{
+	unsigned char* p = data;
+	int bys;
+
+	if (!ne)
+	{
+		bys = mpi_size(&ctx->E);
+		*p++ = (unsigned char)((bys >> 24) & 0xFF);
+		*p++ = (unsigned char)((bys >> 16) & 0xFF);
+		*p++ = (unsigned char)((bys >> 8) & 0xFF);
+		*p++ = (unsigned char)((bys) & 0xFF);
+
+		mpi_write_binary(&ctx->E, p, bys);
+		p += bys;
+	}
+
+	bys = mpi_size(&ctx->N);
+	*p++ = (unsigned char)((bys >> 24) & 0xFF);
+	*p++ = (unsigned char)((bys >> 16) & 0xFF);
+	*p++ = (unsigned char)((bys >> 8) & 0xFF);
+	*p++ = (unsigned char)((bys)& 0xFF);
+
+	mpi_write_binary(&ctx->N, p, bys);
+	p += bys;
+
+	if (ne)
+	{
+		bys = mpi_size(&ctx->E);
+		*p++ = (unsigned char)((bys >> 24) & 0xFF);
+		*p++ = (unsigned char)((bys >> 16) & 0xFF);
+		*p++ = (unsigned char)((bys >> 8) & 0xFF);
+		*p++ = (unsigned char)((bys)& 0xFF);
+
+		mpi_write_binary(&ctx->E, p, bys);
+		p += bys;
+	}
+
+	*olen = (p - data);
+
+	return (0);
+}
+
 /*
 * Check a public RSA key
 */
@@ -527,8 +644,10 @@ int rsa_pkcs1_verify(rsa_context *ctx,
 
 	if (len == 35 && hash_id == RSA_SHA1)
 	{
-		if (memcmp(p, ASN1_HASH_SHA1, 15) == 0 &&
-			memcmp(p + 15, hash, 20) == 0)
+		if (memcmp(p, ASN1_HASH_SHA1, 15) != 0)
+			return(ERR_RSA_VERIFY_FAILED);
+
+		if (memcmp(p + 15, hash, 20) == 0)
 			return(0);
 		else
 			return(ERR_RSA_VERIFY_FAILED);

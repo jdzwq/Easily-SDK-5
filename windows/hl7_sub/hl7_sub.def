@@ -1,0 +1,7 @@
+; hl7_sub.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "hl7_sub"
+DESCRIPTION  'hl7_sub Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	slots_invoke

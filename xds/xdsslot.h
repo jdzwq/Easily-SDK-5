@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "xdsdef.h"
 #include "xdstcp.h"
 #include "xdsssl.h"
-#include "xdsxsl.h"
+#include "xdsssh.h"
 
 typedef void(*PF_SLOTS_DISPATCH)(xhand_t slot, void* param);
 
@@ -44,7 +44,7 @@ typedef struct _slot_listen_t{
 	union{
 		tcp_listen_t* lis_tcp;
 		ssl_listen_t* lis_ssl;
-		xsl_listen_t* lis_xsl;
+		ssh_listen_t* lis_ssh;
 	};
 	
 	void *pf_param;

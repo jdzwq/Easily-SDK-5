@@ -518,14 +518,12 @@ bool_t get_col_integrity(link_t_ptr clk)
 	bool_t updateable;
 	const tchar_t* fieldtype;
 	const tchar_t* fieldname;
-	const tchar_t* tablename;
 	
 	updateable = get_col_updateable(clk);
 	fieldtype = get_col_field_type_ptr(clk);
 	fieldname = get_col_field_name_ptr(clk);
-	tablename = get_col_table_name_ptr(clk);
 
-	if (updateable == 0 || is_null(tablename) || is_null(fieldname) || is_null(fieldtype) || compare_text(fieldtype, -1, ATTR_FIELD_TYPE_CALC, -1, 0) == 0)
+	if(updateable == 0  || is_null(fieldname) || is_null(fieldtype) || compare_text(fieldtype,-1,ATTR_FIELD_TYPE_CALC,-1,0) == 0)
 		return 0;
 	else
 		return 1;
@@ -1171,7 +1169,7 @@ void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b)
 
 bool_t get_cell_grouped(link_t_ptr rlk, link_t_ptr clk)
 {
-	return 0;
+
 }
 
 link_t_ptr group_grid_col(link_t_ptr ptr, link_t_ptr clk, link_t_ptr rlk_from, link_t_ptr rlk_to)

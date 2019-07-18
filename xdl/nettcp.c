@@ -322,6 +322,22 @@ bool_t xtcp_read(xhand_t tcp, byte_t* buf, dword_t* pcb)
 	return 1;
 }
 
+void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len)
+{
+	switch (oid)
+	{
+	case SOCKET_OPTION_SNDBUF:
+		xsocket_set_sndbuf(xtcp_socket(tcp), *(int*)opt);
+		break;
+	case SOCKET_OPTION_RCVBUF:
+		xsocket_set_rcvbuf(xtcp_socket(tcp), *(int*)opt);
+		break;
+	case SOCKET_OPTION_NONBLK:
+		xsocket_set_nonblk(xtcp_socket(tcp), *(bool_t*)opt);
+		break;
+	}
+}
+
 unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr)
 {
 	tcp_t* pso = (tcp_t*)tcp;

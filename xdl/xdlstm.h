@@ -82,16 +82,6 @@ XDL_API xhand_t stream_fetch(stream_t xs);
 XDL_API xhand_t stream_detach(stream_t xs);
 
 /*
-@FUNCTION stream_set_crypt: set the stream object encrypt and decrypt function.
-@INPUT stream_t xs: the stream object.
-@INPUT PF_BIO_ENCRYPT pf_encrypt: the encrypt call back function.
-@INPUT PF_BIO_DECRYPT pf_decrypt: the decrypt call back function.
-@INPUT void* pa: the parameter tanslate back into encrypt and decrypt function.
-@RETURN void: none.
-*/
-XDL_API void stream_set_crypt(stream_t xs, PF_BIO_ENCRYPT pf_encrypt, PF_BIO_DECRYPT pf_decrypt, void* pa);
-
-/*
 @FUNCTION stream_set_encode: set the stream object encode.
 @INPUT stream_t xs: the stream object.
 @INPUT int encode: the encode, it can be _UTF8, _UTF16_BIG, _UTF16_LIT.

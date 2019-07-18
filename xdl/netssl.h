@@ -101,6 +101,20 @@ typedef enum
 #define SSL_TYPE_SERVER		1
 #define SSL_TYPE_LISTEN		2
 
+#define SSL_CTR_SIZE		8	//control byte size
+#define SSL_HDR_SIZE		5	//message header size
+#define SSL_HSH_SIZE		4	//handshake header size
+#define SSL_RND_SIZE		32	//radom byte size
+#define SSL_MST_SIZE		48	//master scret byte size
+#define SSL_MAC_SIZE		20	//mac byte size
+#define SSL_IVC_SIZE		16	//iv code size
+#define SSL_SES_SIZE		32	//session id size
+#define SSL_CTX_SIZE		128	//encrypt/decrypt context size
+#define SSL_BLK_SIZE		256	//key block size
+
+#define SSL_PKG_SIZE		16384
+#define SSL_MAX_SIZE		(SSL_PKG_SIZE + 512)
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -142,31 +156,6 @@ XDL_API int  xssl_type(xhand_t ssl);
 XDL_API void  xssl_close(xhand_t ssl);
 
 /*
-@FUNCTION xssl_addr_port: get SSL local address and port.
-@INPUT xhand_t ssl: the SSL handle.
-@OUTPUT tchar_t* addr: the string buffer.
-@RETURN unsigned short: return the local port.
-*/
-XDL_API unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr);
-
-/*
-@FUNCTION xssl_peer_port: get SSL remote address and port.
-@INPUT xhand_t ssl: the SSL handle.
-@OUTPUT tchar_t* addr: the string buffer.
-@RETURN unsigned short: return the remote port.
-*/
-XDL_API unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr);
-
-/*
-@FUNCTION xssl_set_linger: set socket linger on close action.
-@INPUT xhand_t ssl: the SSL handle.
-@INPUT bool_t b_wait: nonzero for waiting unsent data to compelete, zero for immediately closing.
-@INPUT int n_sec: the wait time in second.
-@RETURN void: none.
-*/
-XDL_API void xssl_set_linger(xhand_t ssl, bool_t b_wait, int n_sec);
-
-/*
 @FUNCTION xssl_write: write SSL data.
 @INPUT xhand_t ssl: the SSL handle.
 @INPUT const byte_t* data: the data buffer.
@@ -190,6 +179,32 @@ XDL_API bool_t xssl_flush(xhand_t ssl);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t xssl_read(xhand_t ssl, byte_t* data, dword_t* pb);
+
+/*
+@FUNCTION xssl_setopt: set the socket options.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT int oid: the option id, eg: SOCKET_OPTION_SNDBUF, SOCKET_OPTION_RCVBUF, SOCKET_OPTION_NONBLK.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API void xssl_setopt(xhand_t ssl, int oid, void* opt, int len);
+
+/*
+@FUNCTION xssl_addr_port: get SSL local address and port.
+@INPUT xhand_t ssl: the SSL handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the local port.
+*/
+XDL_API unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr);
+
+/*
+@FUNCTION xssl_peer_port: get SSL remote address and port.
+@INPUT xhand_t ssl: the SSL handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the remote port.
+*/
+XDL_API unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr);
 
 /*
 @FUNCTION xssl_set_host: set SSL host name.

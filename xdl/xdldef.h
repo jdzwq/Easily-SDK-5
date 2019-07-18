@@ -48,8 +48,12 @@ LICENSE.GPL3 for more details.
 #endif
 
 
-#if defined(_OS_WINDOWS) && defined(_USRDLL)
+#if defined(_USRDLL)
+#if defined(_OS_WINDOWS)
 #define XDL_API __declspec(dllexport)
+#else
+#define XDL_API __attribute__((visibility("default")))
+#endif
 #else
 #define XDL_API extern
 #endif
@@ -387,6 +391,7 @@ typedef struct _secu_desc_t {
 	tchar_t scr_key[KEY_LEN];	/*user key or private key*/
 }secu_desc_t;
 
+
 typedef enum {
 	FILE_SINCE_NONE = 0,
 	FILE_SINCE_TIME = 1,
@@ -409,13 +414,38 @@ typedef enum{
 typedef enum{
 	_SECU_NONE = 0,
 	_SECU_SSL = 1,
-	_SECU_XSL = 2
+	_SECU_SSH = 2
 }SOCKET_SECU;
 
-/*default net port*/
+/* default net package size */
+#define MTU_MAX_SIZE		1500
+#define MTU_MID_SIZE		576
+#define MTU_MIN_SIZE		46
+
+#define ETH_HDR_SIZE		14
+#define ETH_TAL_SIZE		4
+#define ETH_PKG_SIZE		(ETH_HDR_SIZE + MTU_MAX_SIZE + ETH_TAL_SIZE)
+#define ETH_PDU_SIZE		(ETH_PKG_SIZE - ETH_HDR_SIZE - ETH_TAL_SIZE)
+
+#define MAX_ETH_SIZE		(ETH_HDR_SIZE + MTU_MAX_SIZE + ETH_TAL_SIZE)
+#define MID_ETH_SIZE		(ETH_HDR_SIZE + MTU_MID_SIZE + ETH_TAL_SIZE)
+
+#define IP_HDR_SIZE			20
+#define IP_PKG_SIZE			ETH_PDU_SIZE
+#define IP_PDU_SIZE			(IP_PKG_SIZE - IP_HDR_SIZE)
+
+#define TCP_HDR_SIZE		20
+#define TCP_PKG_SIZE		IP_PDU_SIZE
+#define TCP_PDU_SIZE		(TCP_PKG_SIZE - TCP_HDR_SIZE)
+
+#define UDP_HDR_SIZE		8
+#define UDP_PKG_SIZE		(MTU_MID_SIZE - IP_HDR_SIZE)
+#define UDP_PDU_SIZE		(UDP_PKG_SIZE - UDP_HDR_SIZE)
+
+/* default net port */
 #define DEF_HTTP_PORT		80
 #define DEF_HTTPS_PORT		443
-#define DEF_SHTTP_PORT		450
+#define DEF_SSH_PORT		22
 #define DEF_TFTP_PORT		69
 
 typedef struct _datadef_t{
@@ -479,11 +509,12 @@ typedef enum{
 	_HANDLE_SHARE = 6,
 	_HANDLE_CACHE = 7,
 	_HANDLE_UNC = 8,
-	_HANDLE_PNP = 9,
+	_HANDLE_UDP = 9,
 	_HANDLE_TCP = 10,
 	_HANDLE_SSL = 11,
-	_HANDLE_XSL = 12,
-	_HANDLE_TFTP = 13
+	_HANDLE_SSH = 12,
+	_HANDLE_PNP = 13,
+	_HANDLE_TFTP = 14
 }_HANDLE_TYPE;
 
 #define MIN_HANDLE_TYPE		50

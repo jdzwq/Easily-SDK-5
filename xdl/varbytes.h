@@ -60,11 +60,12 @@ XDL_API void	bytes_free(byte_t** pp);
 XDL_API byte_t*	bytes_realloc(byte_t** pp, dword_t size);
 
 /*
-@FUNCTION bytes_attach: alloc a buffer address and attach a buffer body.
+@FUNCTION bytes_attach: alloc a buffer address and attach a buffer body, the original buffer body will be freed.
+@INPUT byte_t** pp: the buffer address.
 @INPUT byte_t* p: the buffer body will be attached.
-@RETURN byte_t**: if succeeds return buffer address, fails return NULL.
+@RETURN void: none.
 */
-XDL_API byte_t** bytes_attach(byte_t* p);
+XDL_API void bytes_attach(byte_t** pp, byte_t* p);
 
 /*
 @FUNCTION bytes_detach: detach buffer body and free buffer address.

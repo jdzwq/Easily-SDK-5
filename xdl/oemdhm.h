@@ -68,6 +68,9 @@ extern "C" {
 		unsigned char *output, int *olen,
 		int(*f_rng)(void *), void *p_rng);
 
+
+	XDL_API int dhm_make_params_size(dhm_context *ctx, int x_size);
+
 	/**
 	* \brief          Import the peer's public value G^Y
 	*
@@ -93,8 +96,10 @@ extern "C" {
 	* \return         0 if successful, or an ERR_DHM_XXX error code
 	*/
 	XDL_API int dhm_make_public(dhm_context *ctx, int s_size,
-		unsigned char *output, int olen,
+		unsigned char *output, int* olen,
 		int(*f_rng)(void *), void *p_rng);
+
+	XDL_API int dhm_make_public_size(dhm_context *ctx, int x_size);
 
 	/**
 	* \brief          Derive and export the shared secret (G^Y)^X mod P

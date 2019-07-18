@@ -36,8 +36,12 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 
 
-#if defined(_OS_WINDOWS) && defined(_USRDLL)
+#if defined(_USRDLL)
+#if defined(_OS_WINDOWS)
 #define XDC_API __declspec(dllexport)
+#else
+#define XDC_API __attribute__((visibility("default")))
+#endif
 #else
 #define XDC_API extern
 #endif

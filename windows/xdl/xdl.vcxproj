@@ -181,6 +181,8 @@
     <ClInclude Include="..\..\xdl\binatree.h" />
     <ClInclude Include="..\..\xdl\boxview.h" />
     <ClInclude Include="..\..\xdl\bplustree.h" />
+    <ClInclude Include="..\..\xdl\netssh.h" />
+    <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\varbytes.h" />
     <ClInclude Include="..\..\xdl\bufferopera.h" />
     <ClInclude Include="..\..\xdl\chartdoc.h" />
@@ -254,13 +256,11 @@
     <ClInclude Include="..\..\xdl\multitree.h" />
     <ClInclude Include="..\..\xdl\nethttp.h" />
     <ClInclude Include="..\..\xdl\netoss.h" />
-    <ClInclude Include="..\..\xdl\netpdu.h" />
     <ClInclude Include="..\..\xdl\netpnp.h" />
     <ClInclude Include="..\..\xdl\netsoap.h" />
     <ClInclude Include="..\..\xdl\netssl.h" />
     <ClInclude Include="..\..\xdl\nettcp.h" />
     <ClInclude Include="..\..\xdl\nettftp.h" />
-    <ClInclude Include="..\..\xdl\netxsl.h" />
     <ClInclude Include="..\..\xdl\notesdoc.h" />
     <ClInclude Include="..\..\xdl\oauthattr.h" />
     <ClInclude Include="..\..\xdl\varobj.h" />
@@ -379,6 +379,8 @@
     <ClCompile Include="..\..\xdl\binatree.c" />
     <ClCompile Include="..\..\xdl\boxview.c" />
     <ClCompile Include="..\..\xdl\bplustree.c" />
+    <ClCompile Include="..\..\xdl\netssh.c" />
+    <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\varbytes.c" />
     <ClCompile Include="..\..\xdl\bufferopera.c" />
     <ClCompile Include="..\..\xdl\chartdoc.c" />
@@ -448,13 +450,11 @@
     <ClCompile Include="..\..\xdl\multitree.c" />
     <ClCompile Include="..\..\xdl\nethttp.c" />
     <ClCompile Include="..\..\xdl\netoss.c" />
-    <ClCompile Include="..\..\xdl\netpdu.c" />
     <ClCompile Include="..\..\xdl\netpnp.c" />
     <ClCompile Include="..\..\xdl\netsoap.c" />
     <ClCompile Include="..\..\xdl\netssl.c" />
     <ClCompile Include="..\..\xdl\nettcp.c" />
     <ClCompile Include="..\..\xdl\nettftp.c" />
-    <ClCompile Include="..\..\xdl\netxsl.c" />
     <ClCompile Include="..\..\xdl\notesdoc.c" />
     <ClCompile Include="..\..\xdl\varobj.c" />
     <ClCompile Include="..\..\xdl\oemacp.c" />

@@ -50,14 +50,11 @@ byte_t* bytes_realloc(byte_t** pp, dword_t size)
 	return *pp;
 }
 
-byte_t** bytes_attach(byte_t* p)
+void bytes_attach(byte_t** pp, byte_t* p)
 {
-	byte_t** pp;
+	xmem_free(*pp);
 
-	pp = xmem_alloc(sizeof(byte_t*));
 	*pp = p;
-
-	return (byte_t**)pp;
 }
 
 byte_t* bytes_detach(byte_t** pp)
@@ -66,7 +63,7 @@ byte_t* bytes_detach(byte_t** pp)
 
 	p = *pp;
 
-	xmem_free(pp);
+	*pp = NULL;
 
 	return p;
 }

@@ -44,12 +44,12 @@ int main(int argc, char* argv[])
 
 	if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
 		xp.n_secu = _SECU_SSL;
-	else if (compare_text(sz_cert, -1, _T("XSL"), -1, 1) == 0)
-		xp.n_secu = _SECU_XSL;
+	else if (compare_text(sz_cert, -1, _T("SSH"), -1, 1) == 0)
+		xp.n_secu = _SECU_SSH;
 	else
 		xp.n_secu = _SECU_NONE;
 
-	pipe = xpipe_srv(NULL, 0);
+	pipe = xpipe_srv(NULL, FILE_OPEN_READ);
 	if (!pipe)
 	{
 		raise_user_error(_T("-1"), _T("child process create std pipe failed"));
@@ -67,8 +67,8 @@ int main(int argc, char* argv[])
 
 	if (xp.n_secu == _SECU_SSL)
 		bio = xssl_srv(sok);
-	else if (xp.n_secu == _SECU_XSL)
-		bio = xxsl_srv(sok);
+	else if (xp.n_secu == _SECU_SSH)
+		bio = xssh_srv(sok);
 	else
 		bio = xtcp_srv(sok);
 
@@ -91,8 +91,8 @@ int main(int argc, char* argv[])
 
 	if (xp.n_secu == _SECU_SSL)
 		xssl_close(bio);
-	else if (xp.n_secu == _SECU_XSL)
-		xxsl_close(bio);
+	else if (xp.n_secu == _SECU_SSH)
+		xssh_close(bio);
 	else
 		xtcp_close(bio);
 
@@ -121,8 +121,8 @@ ONERROR:
 	{
 		if (xp.n_secu == _SECU_SSL)
 			xssl_close(bio);
-		else if (xp.n_secu == _SECU_XSL)
-			xxsl_close(bio);
+		else if (xp.n_secu == _SECU_SSH)
+			xssh_close(bio);
 		else
 			xtcp_close(bio);
 	}

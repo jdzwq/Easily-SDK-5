@@ -76,8 +76,7 @@ file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 		pfn->pf_write = xinet_write_file;
 		pfn->pf_write_range = xinet_write_file_range;
 		pfn->pf_flush = NULL;
-		pfn->pf_set_time = xinet_set_filetime;
-		pfn->pf_set_since = xinet_set_filesince;
+		pfn->pf_setopt = xinet_setopt;
 	}
 	else
 	{
@@ -87,8 +86,7 @@ file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 		pfn->pf_write = xuncf_write_file;
 		pfn->pf_write_range = xuncf_write_file_range;
 		pfn->pf_flush = xuncf_flush_file;
-		pfn->pf_set_time = xuncf_set_filetime;
-		pfn->pf_set_since = NULL;
+		pfn->pf_setopt = xuncf_setopt;
 	}
 
 	return (file_t)pfn;
@@ -180,9 +178,9 @@ void xfile_set_since(file_t fh, int fs)
 
 	XDL_ASSERT(fh);
 
-	if (pfn->pf_set_since)
+	if (pfn->pf_setopt)
 	{
-		(*pfn->pf_set_since)(pfn->bio, fs);
+		(*pfn->pf_setopt)(pfn->bio, FILE_OPTION_SINCE, (void*)&fs, sizeof(fs));
 	}
 }
 
@@ -192,9 +190,9 @@ void xfile_settime(file_t fh, const tchar_t* ftime)
 
 	XDL_ASSERT(fh);
 
-	if (pfn->pf_set_time)
+	if (pfn->pf_setopt)
 	{
-		(*pfn->pf_set_time)(pfn->bio, ftime);
+		(*pfn->pf_setopt)(pfn->bio, FILE_OPTION_TIME, (void*)ftime, 0);
 	}
 }
 

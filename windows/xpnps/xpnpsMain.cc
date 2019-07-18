@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	unsigned short port = 0;
 	byte_t addr[ADDR_LEN] = { 0 };
 	dword_t alen = 0;
-	byte_t pack[PNP_PKG_SIZE] = { 0 };
+	byte_t pack[PNP_PDU_SIZE] = { 0 };
 	dword_t size = 0;
 	dword_t dw;
 	byte_t num[2] = { 0 };
@@ -62,33 +62,39 @@ int main(int argc, char* argv[])
 
 	if (!stream_read_chunk_size(stm, &dw))
 	{
-		raise_user_error(_T("-1"), _T("child process read bind failed"));
-	}
-
-	if (!stream_read_chunk_size(stm, &dw))
-	{
 		raise_user_error(_T("-1"), _T("child process read port failed"));
 	}
-
-	if (stream_read_bytes(stm, num, &dw))
+	if (dw != 2)
 	{
-		port = GET_SWORD_NET(num, 0);
+		raise_user_error(_T("-1"), _T("invalid port size"));
 	}
+	stream_read_bytes(stm, num, &dw);
+	port = GET_SWORD_NET(num, 0);
 
 	if (!stream_read_chunk_size(stm, &dw))
 	{
 		raise_user_error(_T("-1"), _T("child process read addr failed"));
 	}
-
+	if (dw > ADDR_LEN)
+	{
+		raise_user_error(_T("-1"), _T("invalid addr size"));
+	}
 	stream_read_bytes(stm, addr, &dw);
+	alen = a_xslen((schar_t*)addr);
 
 	if (!stream_read_chunk_size(stm, &dw))
 	{
 		raise_user_error(_T("-1"), _T("child process read pack failed"));
 	}
-
+	if (dw > UDP_PDU_SIZE)
+	{
+		raise_user_error(_T("-1"), _T("invalid pack size"));
+	}
 	stream_read_bytes(stm, pack, &dw);
 	size = dw;
+
+	//terminated
+	stream_read_chunk_size(stm, &dw);
 
 	stream_free(stm);
 	stm = NULL;

@@ -99,6 +99,16 @@ XDL_API bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, 
 XDL_API bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
 
 /*
+@FUNCTION xinet_setopt: set the file options.
+@INPUT xhand_t inet: the file handle.
+@INPUT int oid: the option id, eg: FILE_OPTION_TIME, FILE_OPTION_SINCE.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API void xinet_setopt(xhand_t inet, int oid, void* opt, int len);
+
+/*
 @FUNCTION xinet_set_filetime: set the file write time.
 @INPUT xhand_t inet: the file handle.
 @INPUT const tchar_t* ftime: string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"

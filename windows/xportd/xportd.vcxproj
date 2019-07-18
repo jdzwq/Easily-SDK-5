@@ -165,6 +165,7 @@
     <ClInclude Include="..\..\api\net_srv\xpnps.h" />
     <ClInclude Include="..\..\api\net_srv\xportd.h" />
     <ClInclude Include="..\..\api\net_srv\xslots.h" />
+    <ClInclude Include="..\..\api\net_srv\xudps.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClCompile Include="..\..\api\net_srv\xpnps.cc" />
     <ClCompile Include="..\..\api\net_srv\xportd.cc" />
     <ClCompile Include="..\..\api\net_srv\xslots.cc" />
+    <ClCompile Include="..\..\api\net_srv\xudps.cc" />
     <ClCompile Include="xportdMain.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

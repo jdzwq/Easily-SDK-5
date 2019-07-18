@@ -269,10 +269,6 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 		{
 			break;
 		}
-		if (pxt->inf.pf_decrypt)
-		{
-			(*pxt->inf.pf_decrypt)(buf + pos, dw, pxt->pa);
-		}
 
 		_stream_end_read(pxt, dw);
 
@@ -306,10 +302,6 @@ bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		_stream_begin_write(pxt, &dw);
 
-		if (pxt->inf.pf_encrypt)
-		{
-			(*pxt->inf.pf_encrypt)(buf + pos, dw, pxt->pa);
-		}
 		if(!(*pxt->inf.pf_write)(pxt->inf.bio, buf + pos, &dw))
 		{
 			break;
@@ -365,10 +357,10 @@ stream_t stream_alloc(xhand_t io)
 		pxt->inf.pf_flush = xssl_flush;
 #endif
 		break;
-	case _HANDLE_XSL:
+	case _HANDLE_SSH:
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
-		pxt->inf.pf_read = xxsl_read;
-		pxt->inf.pf_write = xxsl_write;
+		pxt->inf.pf_read = xssh_read;
+		pxt->inf.pf_write = xssh_write;
 #endif
 		break;
 #ifdef XDK_SUPPORT_PIPE
@@ -479,15 +471,6 @@ xhand_t stream_detach(stream_t xs)
 	pxt->inf.pf_write = NULL;
 
 	return io_org;
-}
-
-void stream_set_crypt(stream_t xs, PF_BIO_ENCRYPT pf_encrypt, PF_BIO_DECRYPT pf_decrypt, void* pa)
-{
-	radstm_t* pxt = (radstm_t*)xs;
-
-	pxt->inf.pf_encrypt = pf_encrypt;
-	pxt->inf.pf_decrypt = pf_decrypt;
-	pxt->pa = pa;
 }
 
 void stream_set_encode(stream_t xs, int encode)

@@ -33,7 +33,7 @@ typedef struct _tftp_block_t{
 }tftp_block_t;
 
 /*********************************************************************************/
-static bool_t _invoke_head(const pnps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* ptb)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -79,9 +79,18 @@ static bool_t _invoke_head(const pnps_block_t* pb, tftp_block_t* ptb)
 			}
 
 			xtftp_head(ptb->tftp);
+
 		} while (xuncf_find_next(fd, &fi));
 
 		xuncf_find_close(fd);
+
+		//NULL FILE
+		xtftp_set_isdir(ptb->tftp, 0);
+		xtftp_set_filename(ptb->tftp, NULL);
+		xtftp_set_filesize(ptb->tftp, 0);
+		xtftp_set_filetime(ptb->tftp, NULL);
+
+		xtftp_head(ptb->tftp);
 	}
 
 	END_CATCH;
@@ -102,7 +111,7 @@ ONERROR:
 	return 0;
 }
 
-static bool_t _invoke_get(const pnps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* ptb)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -199,7 +208,7 @@ ONERROR:
 	return 0;
 }
 
-static bool_t _invoke_put(const pnps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* ptb)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -277,7 +286,7 @@ ONERROR:
 	return 0;
 }
 
-static bool_t _invoke_delete(const pnps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* ptb)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -326,7 +335,7 @@ ONERROR:
 }
 /****************************************************************************************************/
 
-int STDCALL pnps_invoke(const pnps_block_t* pb)
+int STDCALL udps_invoke(const udps_block_t* pb)
 {
 	tftp_block_t* ptb = NULL;
 
@@ -385,7 +394,7 @@ int STDCALL pnps_invoke(const pnps_block_t* pb)
 
 	END_CATCH;
 
-	return (rt) ? PNPS_INVOKE_SUCCEED : PNPS_INVOKE_WITHINFO;
+	return (rt) ? UDPS_INVOKE_SUCCEED : UDPS_INVOKE_WITHINFO;
 
 ONERROR:
 
@@ -409,5 +418,5 @@ ONERROR:
 		xmem_free(ptb);
 	}
 
-	return PNPS_INVOKE_WITHINFO;
+	return UDPS_INVOKE_WITHINFO;
 }

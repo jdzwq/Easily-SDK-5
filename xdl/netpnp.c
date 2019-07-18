@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_RAND)
 
 typedef struct _pnp_t{
-	xhand_head head;		//head for xhand_t
+	xhand_head head;
 
 	int type;
 	res_file_t so;
@@ -51,10 +51,10 @@ typedef struct _pnp_t{
 	unsigned short port;
 	tchar_t addr[ADDR_LEN];
 
-	PDU* snd_pdu;
+	byte_t* snd_pkg;
 	dword_t snd_bys;
 
-	PDU* rcv_pdu;
+	byte_t* rcv_pkg;
 	dword_t rcv_bys;
 	dword_t rcv_ret;
 }pnp_t;
@@ -75,6 +75,7 @@ static unsigned short _dynet_port(pnp_t* ppnp)
 }
 
 /*********************************************************************************************/
+
 xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 {
 	pnp_t* ppnp = NULL;
@@ -109,8 +110,8 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 		return NULL;
 	}
 
-	xsocket_set_rcvbuf(ppnp->so, PNP_BASE_BUFF);
-	xsocket_set_sndbuf(ppnp->so, PNP_BASE_BUFF / 2);
+	xsocket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
+	xsocket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
 
 	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
@@ -119,9 +120,10 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 		xsocket_set_nonblk(ppnp->so, 0);
 	}
 
-	ppnp->snd_pdu = pdu_alloc(PDU_TYPE_UDP);
+	ppnp->snd_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
 	ppnp->snd_bys = 0;
-	ppnp->rcv_pdu = pdu_alloc(PDU_TYPE_UDP);
+
+	ppnp->rcv_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
 	ppnp->rcv_bys = 0;
 	ppnp->rcv_ret = 0;
 
@@ -133,6 +135,12 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	pnp_t* ppnp = NULL;
 	int zo;
 	net_addr_t sin = { 0 };
+
+	if (size > PNP_PKG_SIZE)
+	{
+		set_last_error(_T("xpnp_srv"), _T("too large package size"), -1);
+		return NULL;
+	}
 
 	ppnp = (pnp_t*)xmem_alloc(sizeof(pnp_t));
 	ppnp->head.tag = _HANDLE_PNP;
@@ -162,20 +170,21 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 		return NULL;
 	}
 
-	xsocket_set_rcvbuf(ppnp->so, PNP_BASE_BUFF);
-	xsocket_set_sndbuf(ppnp->so, PNP_BASE_BUFF / 2);
+	xsocket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
+	xsocket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
 
 	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
-	ppnp->snd_pdu = pdu_alloc(PDU_TYPE_UDP);
+	ppnp->snd_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
 	ppnp->snd_bys = 0;
-	ppnp->rcv_pdu = pdu_alloc(PDU_TYPE_UDP);
+
+	ppnp->rcv_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
 	ppnp->rcv_bys = 0;
 	ppnp->rcv_ret = 0;
 
 	if (size)
 	{
-		xmem_copy((void*)(ppnp->rcv_pdu->pdu), (void*)pack, size);
+		xmem_copy((void*)(ppnp->rcv_pkg), (void*)pack, size);
 		ppnp->rcv_bys = size;
 		ppnp->rcv_ret = 0;
 	}
@@ -189,11 +198,11 @@ void  xpnp_close(xhand_t pnp)
 
 	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
 
-	if (ppnp->rcv_pdu)
-		pdu_free(ppnp->rcv_pdu);
+	if (ppnp->rcv_pkg)
+		xmem_free(ppnp->rcv_pkg);
 
-	if (ppnp->snd_pdu)
-		pdu_free(ppnp->snd_pdu);
+	if (ppnp->snd_pkg)
+		xmem_free(ppnp->snd_pkg);
 
 	if (ppnp->so)
 	{
@@ -230,7 +239,7 @@ bool_t xpnp_write(xhand_t pnp, const byte_t* buf, dword_t* pb)
 	while (dw)
 	{
 		bys = (ppnp->snd_bys + dw > PNP_PDU_SIZE) ? (PNP_PDU_SIZE - ppnp->snd_bys) : dw;
-		xmem_copy((void*)(ppnp->snd_pdu->pdu + ppnp->snd_bys), (void*)buf, bys);
+		xmem_copy((void*)(ppnp->snd_pkg + ppnp->snd_bys), (void*)buf, bys);
 		ppnp->snd_bys += bys;
 		dw -= bys;
 
@@ -240,7 +249,7 @@ bool_t xpnp_write(xhand_t pnp, const byte_t* buf, dword_t* pb)
 			addr_len = sizeof(net_addr_t);
 
 			bys = ppnp->snd_bys;
-			if (!xsocket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pdu->pdu), bys, &ppnp->ov))
+			if (!xsocket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pkg), bys, &ppnp->ov))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -248,7 +257,7 @@ bool_t xpnp_write(xhand_t pnp, const byte_t* buf, dword_t* pb)
 			ppnp->snd_bys = bys - (dword_t)ppnp->ov.size;
 			if (ppnp->snd_bys)
 			{
-				xmem_copy((void*)(ppnp->snd_pdu->pdu), (void*)(ppnp->snd_pdu->pdu + PNP_PDU_SIZE - ppnp->snd_bys), ppnp->snd_bys);
+				xmem_copy((void*)(ppnp->snd_pkg), (void*)(ppnp->snd_pkg + PNP_PDU_SIZE - ppnp->snd_bys), ppnp->snd_bys);
 			}
 		}
 	}
@@ -280,7 +289,7 @@ bool_t xpnp_flush(xhand_t pnp)
 		addr_len = sizeof(net_addr_t);
 
 		dw = ppnp->snd_bys;
-		if (!xsocket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pdu->pdu), dw, &ppnp->ov))
+		if (!xsocket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pkg), dw, &ppnp->ov))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -318,7 +327,7 @@ bool_t xpnp_read(xhand_t pnp, byte_t* buf, dword_t* pb)
 		{
 			bys = PNP_PDU_SIZE;
 			addr_len = sizeof(net_addr_t);
-			if (!xsocket_recvfrom(ppnp->so, (res_addr_t)&na, &addr_len, (void*)(ppnp->rcv_pdu->pdu), bys, &ppnp->ov))
+			if (!xsocket_recvfrom(ppnp->so, (res_addr_t)&na, &addr_len, (void*)(ppnp->rcv_pkg), bys, &ppnp->ov))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -338,7 +347,7 @@ bool_t xpnp_read(xhand_t pnp, byte_t* buf, dword_t* pb)
 		}
 
 		bys = (ppnp->rcv_bys < dw) ? ppnp->rcv_bys : dw;
-		xmem_copy((void*)(buf + *pb), (void*)(ppnp->rcv_pdu->pdu + ppnp->rcv_ret), bys);
+		xmem_copy((void*)(buf + *pb), (void*)(ppnp->rcv_pkg + ppnp->rcv_ret), bys);
 
 		ppnp->rcv_ret += bys;
 		ppnp->rcv_bys -= bys;
@@ -354,6 +363,35 @@ ONERROR:
 	*pb = 0;
 
 	return 0;
+}
+
+
+unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr)
+{
+	pnp_t* pso = (pnp_t*)pnp;
+	net_addr_t na = { 0 };
+	unsigned short port;
+
+	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
+
+	xsocket_addr(pso->so, &na);
+	conv_addr(&na, &port, addr);
+
+	return port;
+}
+
+unsigned short xpnp_peer_port(xhand_t pnp, tchar_t* addr)
+{
+	pnp_t* pso = (pnp_t*)pnp;
+	net_addr_t na = { 0 };
+	unsigned short port;
+
+	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
+
+	xsocket_peer(pso->so, &na);
+	conv_addr(&na, &port, addr);
+
+	return port;
 }
 
 #endif /*XDK_SUPPORT_SOCK*/

@@ -24,16 +24,18 @@
     <ClInclude Include="..\..\xds\xdsslot.h" />
     <ClInclude Include="..\..\xds\xdsssl.h" />
     <ClInclude Include="..\..\xds\xdstcp.h" />
-    <ClInclude Include="..\..\xds\xdsxsl.h" />
+    <ClInclude Include="..\..\xds\xdsssh.h" />
     <ClInclude Include="..\..\xds\xdspnp.h" />
+    <ClInclude Include="..\..\xds\xdsudp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xds\xdshttp.c" />
     <ClCompile Include="..\..\xds\xdsslot.c" />
     <ClCompile Include="..\..\xds\xdsssl.c" />
     <ClCompile Include="..\..\xds\xdstcp.c" />
-    <ClCompile Include="..\..\xds\xdsxsl.c" />
+    <ClCompile Include="..\..\xds\xdsssh.c" />
     <ClCompile Include="..\..\xds\xdspnp.c" />
+    <ClCompile Include="..\..\xds\xdsudp.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F544109D-3314-4D14-9F64-29CDB2C9EBAB}</ProjectGuid>

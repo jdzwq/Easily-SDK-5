@@ -50,52 +50,52 @@ void test_block_read()
 {
 	DWORD dw = 8192;
 
-	XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_READ);
+	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_READ);
 
 	BYTE buf[20480] = { 0 };
 
-	xblock_read(gb, 0, 0, buf, 20480);
+	//xblock_read(gb, 0, 0, buf, 20480);
 
-	xblock_close(gb);
+	//xblock_close(gb);
 }
 
 void test_block_write()
 {
 	DWORD dw = 8192;
 
-	XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_CREATE);
+	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_CREATE);
 
 	BYTE buf[20480] = { 0 };
 
-	xblock_write(gb, 0, 0, buf, 20480);
+	//xblock_write(gb, 0, 0, buf, 20480);
 
-	xblock_close(gb);
+	//xblock_close(gb);
 }
 
 void test_block_append()
 {
-	XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_READ);
+	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_READ);
 
 	BYTE buf[1024] = { 0 };
 
-	xblock_read(gb, 0, 0, buf, 1024);
+	//xblock_read(gb, 0, 0, buf, 1024);
 
-	xblock_close(gb);
+	//xblock_close(gb);
 
-	gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_APPEND);
+	//gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_APPEND);
 
-	xblock_write(gb, 0, 0, buf, 1024);
+	//xblock_write(gb, 0, 0, buf, 1024);
 
-	xblock_close(gb);
+	//xblock_close(gb);
 }
 
 void test_block_truncate()
 {
-	XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_CREATE);
+	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_CREATE);
 
-	xblock_truncate(gb, 0, 1024);
+	//xblock_truncate(gb, 0, 1024);
 
-	xblock_close(gb);
+	//xblock_close(gb);
 }
 
 void test_tftp_write()
@@ -112,7 +112,7 @@ void test_tftp_write()
 
 	xfile_close(f_loc);
 
-	file_t f_rmt = xfile_open(NULL, _T("tftp://172.16.190.190/body.bmp"), FILE_OPEN_CREATE);
+	file_t f_rmt = xfile_open(NULL, _T("tftp://127.0.0.1/body.bmp"), FILE_OPEN_CREATE);
 
 	xfile_write(f_rmt, buf, dw);
 
@@ -159,6 +159,8 @@ void test_tftp_list()
 	destroy_list_doc(ptr);
 }
 
+
+
 int main()
 {
 	xdl_process_init(XDL_APARTMENT_THREAD);
@@ -169,9 +171,9 @@ int main()
 
 	//test_tftp_write();
 
-	test_tftp_read();
+	//test_tftp_read();
 
-	//test_tftp_delete();
+	test_tftp_delete();
 
 	//test_tftp_list();
 

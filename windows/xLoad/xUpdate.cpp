@@ -549,6 +549,7 @@ unsigned __stdcall UpdateFile(void* param)
 	char szType[50] = { 0 };
 	char szTody[60] = { 0 };
 	char szDate[60] = { 0 };
+	char szAction[20] = { 0 };
 	char szToken[1024] = { 0 };
 
 	unsigned char szSignature[80] = { 0 };
@@ -579,6 +580,8 @@ unsigned __stdcall UpdateFile(void* param)
 	strcat(szToken, szType);
 	strcat(szToken, "\n");
 	strcat(szToken, szTody);
+	strcat(szToken, "\n");
+	strcat(szToken, szAction);
 	strcat(szToken, "\n");
 	strcat(szToken, szPath);
 	if (strlen(pfq->path_name))
@@ -809,6 +812,7 @@ BOOL UpdateList(const char* szDestDir, const char* szDestFile)
 
 	char szType[50] = { 0 };
 	char szTody[60] = { 0 };
+	char szAction[20] = { 0 };
 	char szToken[1024] = { 0 };
 
 	unsigned char szSignature[80] = { 0 };
@@ -826,6 +830,8 @@ BOOL UpdateList(const char* szDestDir, const char* szDestFile)
 	strcat(szToken, szType);
 	strcat(szToken, "\n");
 	strcat(szToken, szTody);
+	strcat(szToken, "\n");
+	strcat(szToken, szAction);
 	strcat(szToken, "\n");
 	strcat(szToken, szPath);
 	strcat(szToken, "/");

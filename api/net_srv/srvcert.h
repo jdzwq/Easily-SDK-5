@@ -36,12 +36,12 @@ LICENSE.GPL3 for more details.
 #define SSL_SSLCLI_CRT		_T("sslcli-crt")
 #define SSL_SSLCLI_KEY		_T("sslcli-key")
 
-#define XSL_XSLCA_CRT		_T("xslca-crt")
-#define XSL_XSLCA_KEY		_T("xslca-key")
-#define XSL_XSLSRV_CRT		_T("xslsrv-crt")
-#define XSL_XSLSRV_KEY		_T("xslsrv-key")
-#define XSL_XSLCLI_CRT		_T("xslcli-crt")
-#define XSL_XSLCLI_KEY		_T("xslcli-key")
+#define SSH_SSHCA_CRT		_T("sshca-crt")
+#define SSH_SSHCA_KEY		_T("sshca-key")
+#define SSH_SSHSRV_CRT		_T("sshsrv-crt")
+#define SSH_SSHSRV_KEY		_T("sshsrv-key")
+#define SSH_SSHCLI_CRT		_T("sshcli-crt")
+#define SSH_SSHCLI_KEY		_T("sshcli-key")
 
 typedef struct _cert_t{
 	xhand_t		srv_crt;

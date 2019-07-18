@@ -541,6 +541,14 @@ bool_t xuncf_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LIS
 	return 1;
 }
 
-
+void xuncf_setopt(xhand_t inet, int oid, void* opt, int len)
+{
+	switch (oid)
+	{
+	case FILE_OPTION_TIME:
+		xuncf_set_filetime(inet, (tchar_t*)opt);
+		break;
+	}
+}
 
 #endif //XDK_SUPPORT_FILE
