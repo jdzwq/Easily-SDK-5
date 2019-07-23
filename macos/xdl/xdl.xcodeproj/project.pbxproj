@@ -11,6 +11,10 @@
 		9B26E3322180A5250072AD24 /* nuid.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B26E3302180A5250072AD24 /* nuid.c */; };
 		9B26E3332180A5250072AD24 /* nuid.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B26E3312180A5250072AD24 /* nuid.h */; };
 		9B434EBF2171C8D300AC4CAA /* libxdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EBE2171C8D300AC4CAA /* libxdk.dylib */; };
+		9B4D704A22E618D1002E905C /* netssh.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D704622E618D1002E905C /* netssh.c */; };
+		9B4D704B22E618D1002E905C /* netssh.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B4D704722E618D1002E905C /* netssh.h */; };
+		9B4D704C22E618D1002E905C /* netudp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D704822E618D1002E905C /* netudp.c */; };
+		9B4D704D22E618D1002E905C /* netudp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B4D704922E618D1002E905C /* netudp.h */; };
 		9B5697C22167D4AB00A9A2E7 /* actable.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B56964D2167D4AA00A9A2E7 /* actable.c */; };
 		9B5697C32167D4AB00A9A2E7 /* actable.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B56964E2167D4AA00A9A2E7 /* actable.h */; };
 		9B5697C42167D4AB00A9A2E7 /* annodoc.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B56964F2167D4AA00A9A2E7 /* annodoc.c */; };
@@ -153,8 +157,6 @@
 		9B5698582167D4AB00A9A2E7 /* nethttp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5696E32167D4AB00A9A2E7 /* nethttp.h */; };
 		9B5698592167D4AB00A9A2E7 /* netoss.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696E42167D4AB00A9A2E7 /* netoss.c */; };
 		9B56985A2167D4AB00A9A2E7 /* netoss.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5696E52167D4AB00A9A2E7 /* netoss.h */; };
-		9B56985B2167D4AB00A9A2E7 /* netpdu.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696E62167D4AB00A9A2E7 /* netpdu.c */; };
-		9B56985C2167D4AB00A9A2E7 /* netpdu.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5696E72167D4AB00A9A2E7 /* netpdu.h */; };
 		9B56985D2167D4AB00A9A2E7 /* netsoap.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696E82167D4AB00A9A2E7 /* netsoap.c */; };
 		9B56985E2167D4AB00A9A2E7 /* netsoap.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5696E92167D4AB00A9A2E7 /* netsoap.h */; };
 		9B56985F2167D4AB00A9A2E7 /* netssl.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5696EA2167D4AB00A9A2E7 /* netssl.c */; };
@@ -351,8 +353,6 @@
 		9B80975E223EAAED00649706 /* impuncf.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B80973A223EAAED00649706 /* impuncf.h */; };
 		9B809763223EAAED00649706 /* netpnp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B80973F223EAAED00649706 /* netpnp.c */; };
 		9B809764223EAAED00649706 /* netpnp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809740223EAAED00649706 /* netpnp.h */; };
-		9B809765223EAAED00649706 /* netxsl.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809741223EAAED00649706 /* netxsl.c */; };
-		9B809766223EAAED00649706 /* netxsl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809742223EAAED00649706 /* netxsl.h */; };
 		9B809767223EAAED00649706 /* oemprim.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B809743223EAAED00649706 /* oemprim.c */; };
 		9B809768223EAAED00649706 /* oemprim.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B809744223EAAED00649706 /* oemprim.h */; };
 		9B809771223EAAED00649706 /* variant.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B80974D223EAAED00649706 /* variant.h */; };
@@ -391,6 +391,10 @@
 		9B26E3302180A5250072AD24 /* nuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nuid.c; path = ../../xdl/nuid.c; sourceTree = "<group>"; };
 		9B26E3312180A5250072AD24 /* nuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nuid.h; path = ../../xdl/nuid.h; sourceTree = "<group>"; };
 		9B434EBE2171C8D300AC4CAA /* libxdk.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdk.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdk.dylib"; sourceTree = "<group>"; };
+		9B4D704622E618D1002E905C /* netssh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netssh.c; path = ../../xdl/netssh.c; sourceTree = "<group>"; };
+		9B4D704722E618D1002E905C /* netssh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netssh.h; path = ../../xdl/netssh.h; sourceTree = "<group>"; };
+		9B4D704822E618D1002E905C /* netudp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netudp.c; path = ../../xdl/netudp.c; sourceTree = "<group>"; };
+		9B4D704922E618D1002E905C /* netudp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netudp.h; path = ../../xdl/netudp.h; sourceTree = "<group>"; };
 		9B56964D2167D4AA00A9A2E7 /* actable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = actable.c; path = ../../xdl/actable.c; sourceTree = "<group>"; };
 		9B56964E2167D4AA00A9A2E7 /* actable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = actable.h; path = ../../xdl/actable.h; sourceTree = "<group>"; };
 		9B56964F2167D4AA00A9A2E7 /* annodoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = annodoc.c; path = ../../xdl/annodoc.c; sourceTree = "<group>"; };
@@ -533,8 +537,6 @@
 		9B5696E32167D4AB00A9A2E7 /* nethttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nethttp.h; path = ../../xdl/nethttp.h; sourceTree = "<group>"; };
 		9B5696E42167D4AB00A9A2E7 /* netoss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netoss.c; path = ../../xdl/netoss.c; sourceTree = "<group>"; };
 		9B5696E52167D4AB00A9A2E7 /* netoss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netoss.h; path = ../../xdl/netoss.h; sourceTree = "<group>"; };
-		9B5696E62167D4AB00A9A2E7 /* netpdu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netpdu.c; path = ../../xdl/netpdu.c; sourceTree = "<group>"; };
-		9B5696E72167D4AB00A9A2E7 /* netpdu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netpdu.h; path = ../../xdl/netpdu.h; sourceTree = "<group>"; };
 		9B5696E82167D4AB00A9A2E7 /* netsoap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netsoap.c; path = ../../xdl/netsoap.c; sourceTree = "<group>"; };
 		9B5696E92167D4AB00A9A2E7 /* netsoap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netsoap.h; path = ../../xdl/netsoap.h; sourceTree = "<group>"; };
 		9B5696EA2167D4AB00A9A2E7 /* netssl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netssl.c; path = ../../xdl/netssl.c; sourceTree = "<group>"; };
@@ -731,8 +733,6 @@
 		9B80973A223EAAED00649706 /* impuncf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = impuncf.h; path = ../../xdl/impuncf.h; sourceTree = "<group>"; };
 		9B80973F223EAAED00649706 /* netpnp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netpnp.c; path = ../../xdl/netpnp.c; sourceTree = "<group>"; };
 		9B809740223EAAED00649706 /* netpnp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netpnp.h; path = ../../xdl/netpnp.h; sourceTree = "<group>"; };
-		9B809741223EAAED00649706 /* netxsl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = netxsl.c; path = ../../xdl/netxsl.c; sourceTree = "<group>"; };
-		9B809742223EAAED00649706 /* netxsl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = netxsl.h; path = ../../xdl/netxsl.h; sourceTree = "<group>"; };
 		9B809743223EAAED00649706 /* oemprim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = oemprim.c; path = ../../xdl/oemprim.c; sourceTree = "<group>"; };
 		9B809744223EAAED00649706 /* oemprim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemprim.h; path = ../../xdl/oemprim.h; sourceTree = "<group>"; };
 		9B80974D223EAAED00649706 /* variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = variant.h; path = ../../xdl/variant.h; sourceTree = "<group>"; };
@@ -780,6 +780,10 @@
 		9B077E29214EDE3000C647DD = {
 			isa = PBXGroup;
 			children = (
+				9B4D704622E618D1002E905C /* netssh.c */,
+				9B4D704722E618D1002E905C /* netssh.h */,
+				9B4D704822E618D1002E905C /* netudp.c */,
+				9B4D704922E618D1002E905C /* netudp.h */,
 				9BA21BDE2275425D00055E56 /* varbytes.c */,
 				9BA21BDF2275425D00055E56 /* varbytes.h */,
 				9BA21BDA2275414A00055E56 /* xdlsort.c */,
@@ -808,8 +812,6 @@
 				9B80973A223EAAED00649706 /* impuncf.h */,
 				9B80973F223EAAED00649706 /* netpnp.c */,
 				9B809740223EAAED00649706 /* netpnp.h */,
-				9B809741223EAAED00649706 /* netxsl.c */,
-				9B809742223EAAED00649706 /* netxsl.h */,
 				9B809743223EAAED00649706 /* oemprim.c */,
 				9B809744223EAAED00649706 /* oemprim.h */,
 				9B80974D223EAAED00649706 /* variant.h */,
@@ -892,7 +894,6 @@
 				9B5696E02167D4AB00A9A2E7 /* multitree.c */,
 				9B5696E22167D4AB00A9A2E7 /* nethttp.c */,
 				9B5696E42167D4AB00A9A2E7 /* netoss.c */,
-				9B5696E62167D4AB00A9A2E7 /* netpdu.c */,
 				9B5696E82167D4AB00A9A2E7 /* netsoap.c */,
 				9B5696EA2167D4AB00A9A2E7 /* netssl.c */,
 				9B5696EC2167D4AB00A9A2E7 /* nettcp.c */,
@@ -1054,7 +1055,6 @@
 				9B5696E12167D4AB00A9A2E7 /* multitree.h */,
 				9B5696E32167D4AB00A9A2E7 /* nethttp.h */,
 				9B5696E52167D4AB00A9A2E7 /* netoss.h */,
-				9B5696E72167D4AB00A9A2E7 /* netpdu.h */,
 				9B5696E92167D4AB00A9A2E7 /* netsoap.h */,
 				9B5696EB2167D4AB00A9A2E7 /* netssl.h */,
 				9B5696ED2167D4AB00A9A2E7 /* nettcp.h */,
@@ -1193,6 +1193,7 @@
 			files = (
 				9B5698482167D4AB00A9A2E7 /* matrix.h in Headers */,
 				9B5697DA2167D4AB00A9A2E7 /* dicttable.h in Headers */,
+				9B4D704B22E618D1002E905C /* netssh.h in Headers */,
 				9B5698B12167D4AB00A9A2E7 /* oemzip.h in Headers */,
 				9B5698462167D4AB00A9A2E7 /* map.h in Headers */,
 				9B5698022167D4AB00A9A2E7 /* imagesview.h in Headers */,
@@ -1317,13 +1318,11 @@
 				9B56981C2167D4AB00A9A2E7 /* impjmp.h in Headers */,
 				9B5698992167D4AB00A9A2E7 /* oemmd5.h in Headers */,
 				9B56989B2167D4AB00A9A2E7 /* oemmpi.h in Headers */,
-				9B56985C2167D4AB00A9A2E7 /* netpdu.h in Headers */,
 				9B5698242167D4AB00A9A2E7 /* impproc.h in Headers */,
 				9B5698F82167D4AB00A9A2E7 /* topogdoc.h in Headers */,
 				9B5698142167D4AB00A9A2E7 /* impdate.h in Headers */,
 				9B56991A2167D4AB00A9A2E7 /* xdlinf.h in Headers */,
 				9B5698A92167D4AB00A9A2E7 /* oemsha1.h in Headers */,
-				9B809766223EAAED00649706 /* netxsl.h in Headers */,
 				9B5698D32167D4AB00A9A2E7 /* statusdoc.h in Headers */,
 				9B5698162167D4AB00A9A2E7 /* imperr.h in Headers */,
 				9B5698852167D4AB00A9A2E7 /* oemdes.h in Headers */,
@@ -1358,6 +1357,7 @@
 				9B5698792167D4AB00A9A2E7 /* oembas.h in Headers */,
 				9B56987B2167D4AB00A9A2E7 /* oembmp.h in Headers */,
 				9B809795223EBC1900649706 /* xdlexp.h in Headers */,
+				9B4D704D22E618D1002E905C /* netudp.h in Headers */,
 				9B5698F42167D4AB00A9A2E7 /* tooldoc.h in Headers */,
 				9B809771223EAAED00649706 /* variant.h in Headers */,
 				9B5697C92167D4AB00A9A2E7 /* archdoc.h in Headers */,
@@ -1464,6 +1464,7 @@
 				9B5697FD2167D4AB00A9A2E7 /* imagesbag.c in Sources */,
 				9B80975B223EAAED00649706 /* impasync.c in Sources */,
 				9B809767223EAAED00649706 /* oemprim.c in Sources */,
+				9B4D704A22E618D1002E905C /* netssh.c in Sources */,
 				9B5698332167D4AB00A9A2E7 /* impwin.c in Sources */,
 				9B5697E82167D4AB00A9A2E7 /* funcdoc.c in Sources */,
 				9B809792223EBC1900649706 /* xdlesc.c in Sources */,
@@ -1494,7 +1495,6 @@
 				9B5698862167D4AB00A9A2E7 /* oemdhm.c in Sources */,
 				9B5698EF2167D4AB00A9A2E7 /* titledoc.c in Sources */,
 				9B5697E22167D4AB00A9A2E7 /* filetable.c in Sources */,
-				9B56985B2167D4AB00A9A2E7 /* netpdu.c in Sources */,
 				9B5698D22167D4AB00A9A2E7 /* statusdoc.c in Sources */,
 				9B5698F92167D4AB00A9A2E7 /* topogview.c in Sources */,
 				9B56982F2167D4AB00A9A2E7 /* imptimer.c in Sources */,
@@ -1545,7 +1545,6 @@
 				9B5698D42167D4AB00A9A2E7 /* statusview.c in Sources */,
 				9B56988A2167D4AB00A9A2E7 /* oemhave.c in Sources */,
 				9B5698412167D4AB00A9A2E7 /* listdoc.c in Sources */,
-				9B809765223EAAED00649706 /* netxsl.c in Sources */,
 				9B56991B2167D4AB00A9A2E7 /* xdlinit.c in Sources */,
 				9B56989E2167D4AB00A9A2E7 /* oempdg.c in Sources */,
 				9B5698CA2167D4AB00A9A2E7 /* soapdoc.c in Sources */,
@@ -1625,6 +1624,7 @@
 				9B5698CC2167D4AB00A9A2E7 /* splitdoc.c in Sources */,
 				9B5698152167D4AB00A9A2E7 /* imperr.c in Sources */,
 				9B5698B22167D4AB00A9A2E7 /* optparser.c in Sources */,
+				9B4D704C22E618D1002E905C /* netudp.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

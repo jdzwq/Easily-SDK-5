@@ -261,5 +261,5 @@ void draw_counter_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, c
 	}
 }
 
-#endif /*XDL_SUPPORT_VIEW*/
+#endif /*XDK_SUPPORT_CONTEXT*/
 

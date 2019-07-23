@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		9B434EC12171CA2400AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC02171CA2400AC4CAA /* libxdl.dylib */; };
+		9B4D705222E61ABA002E905C /* xdsssh.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D704E22E61ABA002E905C /* xdsssh.c */; };
+		9B4D705322E61ABA002E905C /* xdsssh.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B4D704F22E61ABA002E905C /* xdsssh.h */; };
+		9B4D705422E61ABA002E905C /* xdsudp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D705022E61ABA002E905C /* xdsudp.c */; };
+		9B4D705522E61ABA002E905C /* xdsudp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B4D705122E61ABA002E905C /* xdsudp.h */; };
 		9B5699772168823900A9A2E7 /* xdsdef.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699682168823900A9A2E7 /* xdsdef.h */; };
 		9B5699782168823900A9A2E7 /* xdshttp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699692168823900A9A2E7 /* xdshttp.c */; };
 		9B5699792168823900A9A2E7 /* xdshttp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B56996A2168823900A9A2E7 /* xdshttp.h */; };
@@ -19,12 +23,14 @@
 		9B56997F2168823900A9A2E7 /* xdsssl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699702168823900A9A2E7 /* xdsssl.h */; };
 		9B5699802168823900A9A2E7 /* xdstcp.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699712168823900A9A2E7 /* xdstcp.c */; };
 		9B5699812168823900A9A2E7 /* xdstcp.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B5699722168823900A9A2E7 /* xdstcp.h */; };
-		9BA21BE4227542C500055E56 /* xdsxsl.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BA21BE2227542C500055E56 /* xdsxsl.c */; };
-		9BA21BE5227542C500055E56 /* xdsxsl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BA21BE3227542C500055E56 /* xdsxsl.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9B434EC02171CA2400AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9B4D704E22E61ABA002E905C /* xdsssh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdsssh.c; path = ../../xds/xdsssh.c; sourceTree = "<group>"; };
+		9B4D704F22E61ABA002E905C /* xdsssh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsssh.h; path = ../../xds/xdsssh.h; sourceTree = "<group>"; };
+		9B4D705022E61ABA002E905C /* xdsudp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdsudp.c; path = ../../xds/xdsudp.c; sourceTree = "<group>"; };
+		9B4D705122E61ABA002E905C /* xdsudp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsudp.h; path = ../../xds/xdsudp.h; sourceTree = "<group>"; };
 		9B569961216881FE00A9A2E7 /* libxds.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxds.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B5699682168823900A9A2E7 /* xdsdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsdef.h; path = ../../xds/xdsdef.h; sourceTree = "<group>"; };
 		9B5699692168823900A9A2E7 /* xdshttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdshttp.c; path = ../../xds/xdshttp.c; sourceTree = "<group>"; };
@@ -37,8 +43,6 @@
 		9B5699702168823900A9A2E7 /* xdsssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsssl.h; path = ../../xds/xdsssl.h; sourceTree = "<group>"; };
 		9B5699712168823900A9A2E7 /* xdstcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdstcp.c; path = ../../xds/xdstcp.c; sourceTree = "<group>"; };
 		9B5699722168823900A9A2E7 /* xdstcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdstcp.h; path = ../../xds/xdstcp.h; sourceTree = "<group>"; };
-		9BA21BE2227542C500055E56 /* xdsxsl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdsxsl.c; path = ../../xds/xdsxsl.c; sourceTree = "<group>"; };
-		9BA21BE3227542C500055E56 /* xdsxsl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdsxsl.h; path = ../../xds/xdsxsl.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,8 +60,10 @@
 		9B569958216881FE00A9A2E7 = {
 			isa = PBXGroup;
 			children = (
-				9BA21BE2227542C500055E56 /* xdsxsl.c */,
-				9BA21BE3227542C500055E56 /* xdsxsl.h */,
+				9B4D704E22E61ABA002E905C /* xdsssh.c */,
+				9B4D704F22E61ABA002E905C /* xdsssh.h */,
+				9B4D705022E61ABA002E905C /* xdsudp.c */,
+				9B4D705122E61ABA002E905C /* xdsudp.h */,
 				9B434EC02171CA2400AC4CAA /* libxdl.dylib */,
 				9B5699682168823900A9A2E7 /* xdsdef.h */,
 				9B5699692168823900A9A2E7 /* xdshttp.c */,
@@ -90,11 +96,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B56997D2168823900A9A2E7 /* xdsslot.h in Headers */,
+				9B4D705322E61ABA002E905C /* xdsssh.h in Headers */,
 				9B5699792168823900A9A2E7 /* xdshttp.h in Headers */,
 				9B5699812168823900A9A2E7 /* xdstcp.h in Headers */,
-				9BA21BE5227542C500055E56 /* xdsxsl.h in Headers */,
 				9B56997B2168823900A9A2E7 /* xdspnp.h in Headers */,
 				9B5699772168823900A9A2E7 /* xdsdef.h in Headers */,
+				9B4D705522E61ABA002E905C /* xdsudp.h in Headers */,
 				9B56997F2168823900A9A2E7 /* xdsssl.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,9 +164,10 @@
 			files = (
 				9B5699802168823900A9A2E7 /* xdstcp.c in Sources */,
 				9B56997A2168823900A9A2E7 /* xdspnp.c in Sources */,
+				9B4D705422E61ABA002E905C /* xdsudp.c in Sources */,
 				9B5699782168823900A9A2E7 /* xdshttp.c in Sources */,
-				9BA21BE4227542C500055E56 /* xdsxsl.c in Sources */,
 				9B56997E2168823900A9A2E7 /* xdsssl.c in Sources */,
+				9B4D705222E61ABA002E905C /* xdsssh.c in Sources */,
 				9B56997C2168823900A9A2E7 /* xdsslot.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -326,21 +326,21 @@ void _semap_unlock(res_sema_t sem)
 
 /**********************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-res_hand_t _queue_create(res_hand_t ep, res_file_t fd, int max)
+res_queue_t _queue_create(res_queue_t ep, res_file_t fd, int max)
 {
     int kq;
     
     kq = kqueue();
     
-    return (kq < 0)? 0 : (res_hand_t)kq;
+    return (kq < 0)? 0 : (res_queue_t)kq;
 }
 
-void _queue_destroy(res_hand_t ep)
+void _queue_destroy(res_queue_t ep)
 {
     close(ep);
 }
 
-wait_t _queue_wait(res_hand_t ep, int ms)
+wait_t _queue_wait(res_queue_t ep, int ms)
 {
     struct kevent src[2];
     struct kevent dst[2];

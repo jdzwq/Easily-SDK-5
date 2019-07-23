@@ -1169,7 +1169,7 @@ void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b)
 
 bool_t get_cell_grouped(link_t_ptr rlk, link_t_ptr clk)
 {
-
+    return 0;
 }
 
 link_t_ptr group_grid_col(link_t_ptr ptr, link_t_ptr clk, link_t_ptr rlk_from, link_t_ptr rlk_to)

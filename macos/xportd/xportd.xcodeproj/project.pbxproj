@@ -10,6 +10,7 @@
 		9B434EC62171CFFB00AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC42171CFFB00AC4CAA /* libxdl.dylib */; };
 		9B434EC72171CFFB00AC4CAA /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC52171CFFB00AC4CAA /* libxds.dylib */; };
 		9B434EEB217208A900AC4CAA /* xportdMain.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EEA217208A900AC4CAA /* xportdMain.cc */; };
+		9B4D705822E61FB8002E905C /* xudps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D705622E61FB8002E905C /* xudps.cc */; };
 		9B5699A621688EB300A9A2E7 /* srvlog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B56999C21688EB300A9A2E7 /* srvlog.cc */; };
 		9B5699A821688EB300A9A2E7 /* xhttps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699A021688EB300A9A2E7 /* xhttps.cc */; };
 		9B5699A921688EB300A9A2E7 /* xpnps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B5699A221688EB300A9A2E7 /* xpnps.cc */; };
@@ -34,6 +35,8 @@
 		9B434EC42171CFFB00AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
 		9B434EC52171CFFB00AC4CAA /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxds.dylib"; sourceTree = "<group>"; };
 		9B434EEA217208A900AC4CAA /* xportdMain.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xportdMain.cc; sourceTree = "<group>"; };
+		9B4D705622E61FB8002E905C /* xudps.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xudps.cc; path = ../../api/net_srv/xudps.cc; sourceTree = "<group>"; };
+		9B4D705722E61FB8002E905C /* xudps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xudps.h; path = ../../api/net_srv/xudps.h; sourceTree = "<group>"; };
 		9B56999121688DE500A9A2E7 /* xportd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xportd; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B56999B21688EB300A9A2E7 /* srvdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvdef.h; path = ../../api/net_srv/srvdef.h; sourceTree = "<group>"; };
 		9B56999C21688EB300A9A2E7 /* srvlog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvlog.cc; path = ../../api/net_srv/srvlog.cc; sourceTree = "<group>"; };
@@ -66,6 +69,8 @@
 		9B56998821688DE500A9A2E7 = {
 			isa = PBXGroup;
 			children = (
+				9B4D705622E61FB8002E905C /* xudps.cc */,
+				9B4D705722E61FB8002E905C /* xudps.h */,
 				9B6FD3E3217CBF3000FF6FDC /* srvcert.cc */,
 				9B6FD3E4217CBF3000FF6FDC /* srvcert.h */,
 				9B434EEA217208A900AC4CAA /* xportdMain.cc */,
@@ -150,6 +155,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B4D705822E61FB8002E905C /* xudps.cc in Sources */,
 				9B5699A621688EB300A9A2E7 /* srvlog.cc in Sources */,
 				9B6FD3E5217CBF3000FF6FDC /* srvcert.cc in Sources */,
 				9B5699A921688EB300A9A2E7 /* xpnps.cc in Sources */,

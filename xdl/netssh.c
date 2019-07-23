@@ -531,7 +531,7 @@ static int _ssh_ciph_blk_size(const schar_t* ciph_name)
 static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 {
 	dword_t block_len, packet_len, padding_len, payload_len, hmac_len;
-	byte num_buf[8], rng_buf[32], mac_buf[128];
+	byte_t num_buf[8], rng_buf[32], mac_buf[128];
 	dword_t i, n;
 
 	const schar_t* hmac_name;
@@ -747,7 +747,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 {
 	dword_t packet_len, padding_len, payload_len, hmac_len;
-	byte num_buf[8], rng_buf[256], mac_buf[128], rcv_mac[128];
+	byte_t num_buf[8], rng_buf[256], mac_buf[128], rcv_mac[128];
 	dword_t n;
 	byte_t* payload = NULL;
 
@@ -1288,6 +1288,7 @@ static int _ssh_recv_banner(ssh_t* pssh)
 {
 	dword_t n;
 	byte_t* buf;
+	int i;
 
 	if (pssh->type == SSH_TYPE_SERVER)
 	{
@@ -1298,7 +1299,7 @@ static int _ssh_recv_banner(ssh_t* pssh)
 		buf = pssh->kex_VS;
 	}
 
-	for (int i = 0; i < SSH_BANNER_SIZE; i++)
+	for (i = 0; i < SSH_BANNER_SIZE; i++)
 	{
 		n = 1;
 		if (!xtcp_read(pssh->tcp, (byte_t*)(buf + i), &n))
@@ -1321,6 +1322,7 @@ static dword_t _ssh_format_kexinit(ssh_t* pssh, byte_t* buf, dword_t max)
 {
 	dword_t n, total = 0;
 	schar_t** nametable;
+	int i;
 
 	if (pssh->type == SSH_TYPE_SERVER)
 		nametable = ssh_algo_server;
@@ -1341,7 +1343,7 @@ static dword_t _ssh_format_kexinit(ssh_t* pssh, byte_t* buf, dword_t max)
 		return total;
 	if (buf)
 	{
-		for (int i = 0; i < SSH_COOKIE_SIZE; i++)
+		for (i = 0; i < SSH_COOKIE_SIZE; i++)
 		{
 			buf[total + i] = (byte_t)havege_rand(&pssh->rng);
 		}
@@ -1349,7 +1351,7 @@ static dword_t _ssh_format_kexinit(ssh_t* pssh, byte_t* buf, dword_t max)
 	total += SSH_COOKIE_SIZE;
 
 	//17~n: kex namelist
-	for (int i = 0; i < SSH_ALGO_NAMETABLE_SIZE; i++)
+	for (i = 0; i < SSH_ALGO_NAMETABLE_SIZE; i++)
 	{
 		n = a_xslen(nametable[i]);
 
@@ -1398,7 +1400,7 @@ static bool_t _ssh_parse_kexinit(ssh_t* pssh, const byte_t* buf, dword_t len)
 	schar_t algo[1024];
 	const schar_t* srv_token;
 	const schar_t* cli_token;
-	int srv_len, cli_len;
+	int i, srv_len, cli_len;
 	bool_t matched;
 	byte_t cookie[SSH_COOKIE_SIZE] = { 0 };
 	byte_t fllow = 0;
@@ -1429,7 +1431,7 @@ static bool_t _ssh_parse_kexinit(ssh_t* pssh, const byte_t* buf, dword_t len)
 	total += SSH_COOKIE_SIZE;
 
 	//17~n: kex namelist
-	for (int i = 0; i < SSH_ALGO_NAMETABLE_SIZE; i++)
+	for (i = 0; i < SSH_ALGO_NAMETABLE_SIZE; i++)
 	{
 		if (total + 4 > len)
 		{

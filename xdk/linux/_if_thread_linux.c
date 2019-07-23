@@ -65,7 +65,7 @@ pid_t _thread_get_id(void)
     return (tid < 0)? getpid() : (pid_t)tid;
 }
 
-void _thread_begin(PF_THREADFUNC pf_func, void* param)
+void _thread_begin(res_hand_t* ph_hand, PF_THREADFUNC pf_func, void* param)
 {
     pthread_t tt = {0};
     sigset_t sig;
@@ -92,6 +92,10 @@ void _thread_sleep(int ms)
     select(0, NULL, NULL, NULL, ((ms < 0)? NULL : &dl));
 }
 
+void _thread_join(res_hand_t th)
+{
+    pthread_join((pthread_t)th, NULL);
+}
 /**********************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_EVENT
 typedef struct _pthread_event_t{

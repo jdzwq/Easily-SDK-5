@@ -1,20 +1,20 @@
 ﻿/***********************************************************************
 	Easily xdk v5.5
 
-	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
+	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc timer system call document
+	@doc async system call document
 
-	@module	_if_timer.c | timer system call macos implement file
+	@module	_if_async.c | async system call windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
 	@devnote 张文权 2012.01 - 2015.12	v4.0
 	@devnote 张文权 2016.01 - 2016.12	v4.5
 	@devnote 张文权 2017.01 - 2017.12	v5.0
- 	@devnote 张文权 2018.01 - 2018.12	v5.5
+	@devnote 张文权 2018.01 - 2018.12	v5.5
 ***********************************************************************/
 
 /**********************************************************************
@@ -31,31 +31,23 @@ LICENSE.GPL3 for more details.
 
 #include "xdkiml.h"
 
-#ifdef XDK_SUPPORT_TIMER
+#ifdef XDK_SUPPORT_ASYNC
 
-res_hand_t _create_timer_queue()
+void _async_alloc_lapp(async_t* pas, int ms)
 {
-	return (res_hand_t)0;
+    pas->type = ASYNC_EVENT;
+    pas->lapp = (void*)_local_alloc(sizeof(OVERLAPPED));
+    
+    pas->timo = (ms < 0)? 0 : ms;
 }
 
-void _destroy_timer_queue(res_hand_t rq)
+void _async_release_lapp(async_t* pas)
 {
-	return;
+    if(pas->lapp)
+        _local_free(pas->lapp);
+    
+    pas->lapp = NULL;
 }
 
-res_timer_t _create_timer(res_hand_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa)
-{
-    return NULL;
-}
+#endif //XDK_SUPPORT_ASYNC
 
-void _destroy_timer(res_hand_t rq, res_timer_t rt)
-{
-    return;
-}
-
-bool_t _alter_timer(res_hand_t rq, res_timer_t rt, clock_t duetime, clock_t period)
-{
-    return 0;
-}
-
-#endif //XDK_SUPPORT_TIMER

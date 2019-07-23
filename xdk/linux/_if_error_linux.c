@@ -46,7 +46,11 @@ void _error_exit(void)
 
 void _error_debug(const tchar_t* str)
 {
-	perror(str);
+	if(str) perror(str);
 }
 
+void _error_print(const char* str)
+{
+    if(str) perror(str);
+}
 #endif //XDK_SUPPORT_ERROR

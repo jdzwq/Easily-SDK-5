@@ -176,7 +176,7 @@ void _comm_close(res_file_t fh)
     close(fh);
 }
 
-u32_t _comm_listen(res_file_t fd, async_t* pb)
+u32_t _comm_wait(res_file_t fd, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     LPSIZE pcb = (pb) ? &(pb->size) : NULL;
@@ -192,7 +192,7 @@ u32_t _comm_listen(res_file_t fd, async_t* pb)
         return 0;
     
     pov->tv.tv_sec = 0;
-    pov->tv.tv_usec = (int)(pb->msec * 1000);
+    pov->tv.tv_usec = (int)(pb->timo * 1000);
     
     *pcb = 0;
     
@@ -203,7 +203,7 @@ u32_t _comm_listen(res_file_t fd, async_t* pb)
         
         if(FD_ISSET(fd, &(pov->fd[0])))
         {
-            rt = select(fd+1, &(pov->fd[0]), NULL, NULL, ((pb->msec)? &(pov->tv) : NULL));
+            rt = select(fd+1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
             if(rt < 0)
             {
                 dwEvent = COMM_EVNET_ERROR;

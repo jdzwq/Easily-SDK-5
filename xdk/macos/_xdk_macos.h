@@ -168,7 +168,7 @@ typedef void*       res_crit_t;
 typedef void*       res_sema_t;
 #endif
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-typedef void*		res_queue_t;
+typedef int         res_queue_t;
 #endif
 typedef void*(*MAC_THREAD_PROC)(void* param);
 #endif

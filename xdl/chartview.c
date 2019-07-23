@@ -180,7 +180,7 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 				pmt = matrix_alloc(rows, cols);
 				matrix_parse(pmt, get_chart_table_text_ptr(ilk), -1);
 
-				draw_map_table(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
+				//draw_map_table(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
 
 				matrix_free(pmt);
 			}
@@ -198,14 +198,14 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 				pmt = matrix_alloc(rows, cols);
 				matrix_parse(pmt, get_chart_table_text_ptr(ilk), -1);
 
-				draw_dot_table(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
+				//draw_dot_table(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
 
 				matrix_free(pmt);
 			}
 		}
 		else if (compare_text(table, -1, DOC_CHART_COUNTER, -1, 0) == 0)
 		{
-			draw_counter_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_counter_table_layer_ptr(ilk), get_chart_table_text_ptr(ilk), get_chart_counter_table_size(ilk));
+			//draw_counter_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_counter_table_layer_ptr(ilk), get_chart_table_text_ptr(ilk), get_chart_counter_table_size(ilk));
 		}
 		else if (compare_text(table, -1, DOC_CHART_LINE, -1, 0) == 0)
 		{
@@ -213,7 +213,7 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			pvt = vector_alloc(n);
 			if (n)
 			{
-				draw_line_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_line_table_base(ilk), get_chart_line_table_span(ilk), pvt);
+				//draw_line_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_line_table_base(ilk), get_chart_line_table_span(ilk), pvt);
 			}
 			vector_free(pvt);
 		}
@@ -223,7 +223,7 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			pvt = vector_alloc(n);
 			if (n)
 			{
-				draw_bar_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_bar_table_base(ilk), get_chart_bar_table_span(ilk), pvt);
+				//draw_bar_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_bar_table_base(ilk), get_chart_bar_table_span(ilk), pvt);
 			}
 			vector_free(pvt);
 		}

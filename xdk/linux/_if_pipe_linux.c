@@ -82,7 +82,7 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
         pov->ev.data.fd = pip; 
         epoll_ctl(pb->port, EPOLL_CTL_MOD, pip, &(pov->ev)); 
         
-        rs = epoll_wait(pb->port, &ev, 1, ((pb->msec)? pb->msec : -1));
+        rs = epoll_wait(pb->port, &ev, 1, ((pb->timo)? pb->timo : -1));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;
@@ -98,9 +98,9 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
         FD_SET(pip, &(pov->fd[0]));
         
         pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->msec * 1000);
+        pov->tv.tv_usec = (int)(pb->timo * 1000);
         
-        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, ((pb->msec)? &(pov->tv) : NULL));
+        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
         if(rs <= 0)
         {
             if (pcb)  *pcb = 0;

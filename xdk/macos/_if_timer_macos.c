@@ -33,12 +33,12 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_TIMER
 
-res_queue_t _create_timer_queue()
+res_hand_t _create_timer_queue()
 {
 	return NULL;
 }
 
-void _destroy_timer_queue(res_queue_t rq)
+void _destroy_timer_queue(res_hand_t rq)
 {
 	return;
 }

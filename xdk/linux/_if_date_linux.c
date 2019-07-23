@@ -152,19 +152,19 @@ stamp_t _get_timestamp()
     return (stamp_t)(t.tv_sec * 1000 + t.tv_usec);
 }
 
-void _utc_date_from_times(xdate_t* pxd, stamp_t ts)
+void _utc_date_from_times(xdate_t* pxd, clock_t ts)
 {
-	
+    return;
 }
 
-void _utc_date_from_ticks(xdate_t* pxd, stamp_t ts)
+void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 {
-
+    return;
 }
 
 void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 {
-	
+    return;
 }
 
 #endif //XDK_SUPPORT_DATE

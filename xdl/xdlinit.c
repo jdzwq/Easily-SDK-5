@@ -91,7 +91,9 @@ void xdl_thread_init()
 	pzn = (if_zone_t*)(*piv->pf_local_alloc)(sizeof(if_zone_t));
 #endif /*XDK_SUPPORT_MEMO_HEAP*/
 
+#ifdef XDK_SUPPORT_MEMO_HEAP 
 	pzn->if_heap = heap;
+#endif
 
 	XDL_ASSERT(g_xdl_mou.tls_thr_zone != 0);
 	(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_zone, (void*)pzn);
