@@ -69,9 +69,6 @@
     <ClInclude Include="..\..\xdl\docattr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\docbag.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\domdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -369,9 +366,6 @@
     <ClInclude Include="..\..\xdl\properdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\propertybag.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\properview.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -609,6 +603,24 @@
     <ClInclude Include="..\..\xdl\netssh.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\gridbio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\properbio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\properbag.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\textbio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\formbio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\docmeta.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -645,9 +657,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\dicttable.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\docbag.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\domdoc.c">
@@ -941,9 +950,6 @@
     <ClCompile Include="..\..\xdl\properdoc.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\propertybag.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\properview.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1146,6 +1152,24 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\netssh.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\gridbio.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\properbio.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\properbag.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\textbio.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\formbio.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\docmeta.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

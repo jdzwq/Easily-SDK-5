@@ -240,9 +240,9 @@ void ImagePanel_OnAttributes(res_win_t widget)
 	LINKPTR ptrItem = imagesctrl_get_focus_item(pdt->hImage);
 
 	if (ptrItem)
-		propertybag_write_images_item_attributes(ptrProper, ptrItem);
+		properbag_write_images_item_attributes(ptrProper, ptrItem);
 	else
-		propertybag_write_images_attributes(ptrProper, ptrImages);
+		properbag_write_images_attributes(ptrProper, ptrImages);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -351,7 +351,7 @@ void ImagePanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_images_item_attributes(pnp->proper, ptrItem);
+			properbag_read_images_item_attributes(pnp->proper, ptrItem);
 		}
 		imagesctrl_redraw_item(pdt->hImage, ptrItem);
 	}
@@ -359,7 +359,7 @@ void ImagePanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_images_attributes(pnp->proper, ptrImages);
+			properbag_read_images_attributes(pnp->proper, ptrImages);
 		}
 		imagesctrl_redraw(pdt->hImage);
 	}

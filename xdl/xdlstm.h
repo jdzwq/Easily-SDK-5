@@ -7,7 +7,7 @@
 
 	@doc sream document
 
-	@module	stream.h | xdl stream interface file
+	@module	stream.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

@@ -49,38 +49,11 @@ static void _CenterRect(XRectangle* pRect, int src_width, int src_height)
 	}
 }
 
-res_bmp_t _select_compatible_bitmap(res_ctx_t rdc, res_bmp_t bmp)
-{
-    return NULL;
-}
-
-res_bmp_t _create_compatible_bitmap(res_ctx_t rdc, long cx, long cy)
-{
-    X11_suface_t* ctx = (X11_suface_t*)rdc;
-    int clr_bk;
-    Pixmap pmp;
-    XImage* pim;
-    
-    clr_bk = BlackPixel(g_display, DefaultScreen(g_display));
-    
-    XSetForeground(g_display, ctx->device, clr_bk);
-    
-	pmp = XCreatePixmap (g_display, ctx->device, cx, cy, 24);
-    
-    XFillRectangle(g_display, pmp, rdc, 0, 0, cx, cy);
-    
-    XFlush(g_display);
-    
-    pim = XGetImage(g_display, pmp, 0, 0, cx, cy, AllPlanes, ZPixmap);
-    
-    XFreePixmap(g_display, pmp);
-    
-    return pim;
-}
-
 void _destroy_bitmap(res_bmp_t bmp)
 {
-	XDestroyImage(bmp);
+    XImage* pim = (XImage*)bmp;
+    
+	XDestroyImage(pim);
 }
 
 void _get_bitmap_size(res_bmp_t rb, long* pw, long* ph)

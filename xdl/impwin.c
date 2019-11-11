@@ -7,7 +7,7 @@
 
 	@doc widget document
 
-	@module	impwin.c | widget implement file
+	@module	impwin.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -36,6 +36,52 @@ LICENSE.GPL3 for more details.
 #include "xdlinit.h"
 
 #ifdef XDK_SUPPORT_WIDGET
+
+bool_t fetch_message(msg_t* pmsg, res_win_t wt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_fetch_message)(pmsg, wt);
+}
+
+bool_t peek_message(msg_t* pmsg, res_win_t wt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_peek_message)(pmsg, wt);
+}
+
+
+bool_t	translate_message(const msg_t* pmsg)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_translate_message)(pmsg);
+}
+
+result_t dispatch_message(const msg_t* pmsg)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_translate_message)(pmsg);
+}
+
+int	translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_translate_accelerator)(pmsg, acl, pmsg);
+}
 
 #ifdef XDK_SUPPORT_WIDGET_EX
 

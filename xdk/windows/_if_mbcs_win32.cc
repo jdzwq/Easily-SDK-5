@@ -7,7 +7,7 @@
 
 	@doc system mbcs call document
 
-	@module	_if_mbcs_win.c | mbcs call windows implement file
+	@module	_if_mbcs_win.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

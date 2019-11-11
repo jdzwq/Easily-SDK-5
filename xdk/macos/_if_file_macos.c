@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_FILE
 
-res_file_t _file_open(const tchar_t* fname, u32_t fmode)
+res_file_t _file_open(const tchar_t* fname, dword_t fmode)
 {
 	int fd = 0;
     int flag = 0;
@@ -62,7 +62,7 @@ void _file_close(res_file_t fh)
 	close(fh);
 }
 
-bool_t _file_size(res_file_t fh, u32_t* ph, u32_t* pl)
+bool_t _file_size(res_file_t fh, dword_t* ph, dword_t* pl)
 {
     struct stat st = {0};
     
@@ -215,10 +215,10 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
     return 1;
 }
 
-bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
+bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
 {
     void* pBase = NULL;
-    u32_t poff;
+    dword_t poff;
     size_t dlen;
     
     poff = (loff % PAGE_GRAN);
@@ -238,10 +238,10 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
     return 1;
 }
 
-bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
+bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
 {
     void* pBase = NULL;
-    u32_t dwh, dwl, poff;
+    dword_t dwh, dwl, poff;
     size_t dlen, flen;
     
     _file_size(fh, &dwh, &dwl);
@@ -275,7 +275,7 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
     return 1;
 }
 
-bool_t _file_truncate(res_file_t fh, u32_t hoff, u32_t loff)
+bool_t _file_truncate(res_file_t fh, dword_t hoff, dword_t loff)
 {
     size_t len;
     
@@ -440,7 +440,7 @@ bool_t _directory_remove(const tchar_t* pname)
     return (rmdir(pname) < 0)? 0 : 1;
 }
 
-bool_t	_directory_open(const tchar_t* path, u32_t mode)
+bool_t	_directory_open(const tchar_t* path, dword_t mode)
 {
     tchar_t cur_path[PATH_LEN];
     tchar_t* token = (tchar_t*)path;

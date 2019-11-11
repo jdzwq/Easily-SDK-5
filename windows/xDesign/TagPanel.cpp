@@ -201,7 +201,7 @@ bool_t TagPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 
 	LINKPTR ptrTag = tagctrl_fetch(pdt->hTag);
 
-	if (!load_tag_doc_from_file(ptrTag, NULL, szFile))
+	if (!load_tag_from_text_file(ptrTag, NULL, szFile))
 	{
 		ShowMsg(MSGICO_ERR, _T("µ¼ÈëÎÄµµÊ§°Ü£¡"));
 
@@ -221,7 +221,7 @@ bool_t TagPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
 
 	LINKPTR ptrTag = tagctrl_fetch(pdt->hTag);
 
-	bool_t rt = save_tag_doc_to_file(ptrTag, NULL, szFile);
+	bool_t rt = save_tag_to_text_file(ptrTag, NULL, szFile);
 
 	if (!rt)
 	{

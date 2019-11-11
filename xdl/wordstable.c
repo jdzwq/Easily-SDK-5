@@ -7,7 +7,7 @@
 
 	@doc wordstable document
 
-	@module	wordstable.c | wordstable implement file
+	@module	wordstable.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -162,7 +162,7 @@ link_t_ptr insert_words_item(link_t_ptr ptr, const tchar_t* val, int len)
 	else if (pht->order == ORDER_DESCEND)
 		insert_link_before(&pht->lkItems, ((plk) ? plk : LINK_LAST), &phe->lk);
 	else
-		insert_link_after(&pht->lkItems, LINK_FIRST, &phe->lk);
+		insert_link_after(&pht->lkItems, LINK_LAST, &phe->lk);
 
 	return &(phe->lk);
 }

@@ -7,7 +7,7 @@
 
 	@doc global/heap/virtual memory system call document
 
-	@module	_if_memo.c | memory system call windows implement file
+	@module	_if_memo.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

@@ -7,7 +7,7 @@
 
 	@doc file document
 
-	@module	file.c | xdl file implement file
+	@module	file.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -396,7 +396,7 @@ bool_t xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const tchar_t*
 		hoff = loff = 0;
 		while (l_total)
 		{
-			if ((long long)MAKELONGLONG(max, 0) > l_total)
+			if ((long long)MAKELWORD(max, 0) > l_total)
 				len = (dword_t)l_total;
 			else
 				len = max;
@@ -418,7 +418,7 @@ bool_t xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const tchar_t*
 			if (!rt)
 				break;
 
-			l_bytes = (long long)MAKELONGLONG(loff, hoff) + len;
+			l_bytes = (long long)MAKELWORD(loff, hoff) + len;
 			hoff = GETHDWORD(l_bytes);
 			loff = GETLDWORD(l_bytes);
 

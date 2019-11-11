@@ -173,11 +173,11 @@ void RichPanel_Rich_OnNodeChange(res_win_t widget, NOTICE_RICH* pnf)
 
 	if (pnf->anch)
 	{
-		propertybag_write_rich_anch_attributes(ptrProper, pnf->anch);
+		properbag_write_rich_anch_attributes(ptrProper, pnf->anch);
 	}
 	else
 	{
-		propertybag_write_rich_attributes(ptrProper, pnf->rich);
+		properbag_write_rich_attributes(ptrProper, pnf->rich);
 	}
 
 	properctrl_redraw(pdt->hProper);
@@ -191,9 +191,9 @@ void RichPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	LINKPTR ptrNode = richctrl_get_focus_anch(pdt->hRich);
 
 	if (ptrNode)
-		propertybag_read_rich_anch_attributes(pnp->proper, ptrNode);
+		properbag_read_rich_anch_attributes(pnp->proper, ptrNode);
 	else
-		propertybag_read_rich_attributes(pnp->proper, ptrRich);
+		properbag_read_rich_attributes(pnp->proper, ptrRich);
 
 	richctrl_redraw(pdt->hRich);
 }

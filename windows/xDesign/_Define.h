@@ -168,6 +168,7 @@ LICENSE.GPL3 for more details.
 #define PANEL_CLASS_CHART		_T("ChartPanel")
 #define PANEL_CLASS_SQL			_T("SQLPanel")
 #define PANEL_CLASS_TAG			_T("TagPanel")
+#define PANEL_CLASS_WEB			_T("WEBPanel")
 
 
 #define MAINFRAME_TOOLGROUP_PROJECT		_T("group_project")

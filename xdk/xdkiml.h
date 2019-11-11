@@ -7,7 +7,7 @@
 
 	@doc xdk system call interface document
 
-	@module	xdkiml.h | xdk implement interface file
+	@module	xdkiml.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -183,12 +183,12 @@ bool_t		_alter_timer(res_hand_t rq, res_timer_t rt, clock_t duetime, clock_t per
 #ifdef XDK_SUPPORT_SOCK
 bool_t		_socket_startup(void);
 void		_socket_cleanup(void);
-res_file_t	_socket_tcp(int ver, u32_t flag);
-res_file_t	_socket_udp(int ver, u32_t flag);
-res_file_t	_socket_icmp(int ver, u32_t flag);
+res_file_t	_socket_tcp(int ver, dword_t flag);
+res_file_t	_socket_udp(int ver, dword_t flag);
+res_file_t	_socket_icmp(int ver, dword_t flag);
 void	_socket_shutdown(res_file_t so, int how);
 void	_socket_close(res_file_t so);
-u32_t	_socket_wait(res_file_t so, u32_t msk, int ms);
+dword_t	_socket_wait(res_file_t so, dword_t msk, int ms);
 bool_t	_socket_bind(res_file_t so, res_addr_t saddr, int slen);
 bool_t	_socket_listen(res_file_t so, int max);
 bool_t	_socket_connect(res_file_t so, res_addr_t saddr, int slen);
@@ -211,26 +211,26 @@ void	_conv_addr(net_addr_t* paddr, unsigned short* port, char* addr);
 void	_socket_addr(res_file_t so, net_addr_t* paddr);
 void	_socket_peer(res_file_t so, net_addr_t* paddr);
 bool_t	_socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, size_t size);
-res_file_t _socket_dupli(res_file_t procfd, u32_t flag, void* data, size_t* pcb);
+res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pcb);
 int		_socket_error(tchar_t* buf, int max);
 #endif
 
 #ifdef XDK_SUPPORT_FILE
-res_file_t	_file_open(const tchar_t* fname, u32_t fmode);
+res_file_t	_file_open(const tchar_t* fname, dword_t fmode);
 void	_file_close(res_file_t fl);
-bool_t	_file_size(res_file_t fh, u32_t* ph, u32_t* pl);
+bool_t	_file_size(res_file_t fh, dword_t* ph, dword_t* pl);
 bool_t	_file_write(res_file_t fl, void* buf, size_t size, async_t* pb);
 bool_t	_file_flush(res_file_t fl);
 bool_t	_file_read(res_file_t fl, void* buf, size_t size, async_t* pb);
-bool_t	_file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size);
-bool_t	_file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size);
-bool_t	_file_truncate(res_file_t fh, u32_t hoff, u32_t loff);
+bool_t	_file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size);
+bool_t	_file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size);
+bool_t	_file_truncate(res_file_t fh, dword_t hoff, dword_t loff);
 bool_t	_file_delete(const tchar_t* fname);
 bool_t	_file_rename(const tchar_t* fname, const tchar_t* nname);
 bool_t	_file_info(const tchar_t* fname, file_info_t* pxf);
 bool_t	_file_settime(res_file_t fh, const xdate_t* pdt);
 bool_t	_file_gettime(res_file_t fh, xdate_t* pdt);
-bool_t	_directory_open(const tchar_t* path, u32_t mode);
+bool_t	_directory_open(const tchar_t* path, dword_t mode);
 bool_t	_directory_create(const tchar_t* path);
 bool_t	_directory_remove(const tchar_t* path);
 #ifdef XDK_SUPPORT_FILE_FIND
@@ -251,10 +251,10 @@ void	_share_unlock(res_file_t fh, size_t off, size_t size, void* p);
 #endif
 
 #ifdef XDK_SUPPORT_PIPE
-res_file_t _pipe_srv(const tchar_t* pname, u32_t fmode);
+res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode);
 bool_t	_pipe_listen(res_file_t pip, async_t* pb);
 void	_pipe_stop(res_file_t pip);
-res_file_t _pipe_cli(const tchar_t* pname, u32_t fmode);
+res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode);
 void	_pipe_close(const tchar_t* pname, res_file_t pip);
 wait_t	_pipe_wait(const tchar_t* pname, int milsec);
 bool_t	_pipe_write(res_file_t pipe, void* buf, size_t len, async_t* pb);
@@ -277,12 +277,12 @@ res_file_t _cons_stdin(res_file_t ch);
 void	_default_comm_mode(dev_com_t* pmod);
 bool_t	_get_comm_mode(res_file_t fh, dev_com_t* pmod);
 bool_t	_set_comm_mode(res_file_t fh, const dev_com_t* pmod);
-res_file_t _comm_open(const tchar_t* pname, u32_t fmode);
+res_file_t _comm_open(const tchar_t* pname, dword_t fmode);
 void	_comm_close(res_file_t fh);
 bool_t	_comm_read(res_file_t fh, void* buf, size_t size, async_t* pb);
 bool_t	_comm_write(res_file_t fh, void* buf, size_t size, async_t* pb);
 bool_t	_comm_flush(res_file_t fh);
-u32_t	_comm_wait(res_file_t fh, async_t* pb);
+dword_t	_comm_wait(res_file_t fh, async_t* pb);
 #endif
 
 
@@ -326,6 +326,9 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc);
 void	_destroy_context(res_ctx_t rdc);
 void	_get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
 void	_render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth);
+res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp);
+res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, long cx, long cy);
+void	_destroy_pixmap(res_pmp_t pmp);
 
 float	_pt_per_mm(res_ctx_t rdc, bool_t horz);
 void	_text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy);
@@ -341,11 +344,6 @@ void	_delete_region(res_rgn_t rgn);
 bool_t	_pt_in_region(res_rgn_t rgn, const xpoint_t* ppt);
 #endif
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
-res_bmp_t _select_compatible_bitmap(res_ctx_t rdc, res_bmp_t bmp);
-res_bmp_t _create_compatible_bitmap(res_ctx_t rdc, long cx, long cy);
-void	_destroy_bitmap(res_bmp_t bmp);
-void	_get_bitmap_size(res_bmp_t rb, long* pw, long* ph);
-
 res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h);
 res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, long w, long h, const tchar_t* lay);
 res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, long w, long h, const tchar_t* lay);
@@ -356,6 +354,8 @@ res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename);
 res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t len);
 size_t	_save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* pb, size_t max);
 size_t	_get_bitmap_bytes(res_bmp_t rdc);
+void	_get_bitmap_size(res_bmp_t rb, long* pw, long* ph);
+void	_destroy_bitmap(res_bmp_t bmp);
 #ifdef XDK_SUPPORT_SHELL
 res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname);
 res_bmp_t _load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* fname);
@@ -447,9 +447,15 @@ res_glob_t _clipboard_get(int fmt);
 #endif
 
 #ifdef XDK_SUPPORT_WIDGET
+bool_t	_fetch_message(msg_t* pmsg, res_win_t wt);
+bool_t	_peek_message(msg_t* pmsg, res_win_t wt);
+bool_t	_translate_message(const msg_t* pmsg);
+result_t _dispatch_message(const msg_t* pmsg);
+int		_translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg);
+
 void	_widget_startup(int ver);
 void	_widget_cleanup(void);
-res_win_t _widget_create(const tchar_t* wname, u32_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev);
+res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev);
 void	_widget_destroy(res_win_t wt);
 void	_widget_close(res_win_t wt, int ret);
 if_event_t* _widget_get_dispatch(res_win_t wt);
@@ -464,8 +470,8 @@ var_long	_widget_get_user_prop(res_win_t wt, const tchar_t* pname);
 var_long	_widget_del_user_prop(res_win_t wt, const tchar_t* pname);
 void	_widget_set_user_result(res_win_t wt, int code);
 int		_widget_get_user_result(res_win_t wt);
-void	_widget_set_style(res_win_t wt, u32_t ws);
-u32_t	_widget_get_style(res_win_t wt);
+void	_widget_set_style(res_win_t wt, dword_t ws);
+dword_t	_widget_get_style(res_win_t wt);
 void	_widget_set_accel(res_win_t wt, res_acl_t acl);
 res_acl_t _widget_get_accel(res_win_t wt);
 void	_widget_set_owner(res_win_t wt, res_win_t win);
@@ -502,7 +508,7 @@ void	_widget_post_key(res_win_t wt, int key);
 void	_widget_size(res_win_t wt, const xsize_t* pxs);
 void	_widget_move(res_win_t wt, const xpoint_t* ppt);
 void	_widget_take(res_win_t wt, int zor);
-void	_widget_show(res_win_t wt, u32_t sw);
+void	_widget_show(res_win_t wt, dword_t sw);
 void	_widget_paint(res_win_t wt);
 void	_widget_update_window(res_win_t wt);
 void	_widget_update_client(res_win_t wt);
@@ -511,8 +517,8 @@ void	_widget_enable(res_win_t wt, bool_t b);
 
 void	_widget_set_title(res_win_t wt, const tchar_t* token);
 int		_widget_get_title(res_win_t wt, tchar_t* buf, int max);
-void	_widget_calc_border(u32_t ws, border_t* pbd);
-void	_widget_adjust_size(u32_t ws, xsize_t* pxs);
+void	_widget_calc_border(dword_t ws, border_t* pbd);
+void	_widget_adjust_size(dword_t ws, xsize_t* pxs);
 bool_t	_widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv);
 
 bool_t	_widget_is_maximized(res_win_t wt);
@@ -553,7 +559,7 @@ res_acl_t _create_accel_table(const accel_t* pac, int n);
 void	_destroy_accel_table(res_acl_t hac);
 
 #ifdef XDK_SUPPORT_WIDGET_EX
-void	_widget_track_mouse(res_win_t wt, u32_t mask);
+void	_widget_track_mouse(res_win_t wt, dword_t mask);
 void	_widget_set_alpha(res_win_t, unsigned char a);
 unsigned char _widget_get_alpha(res_win_t wt);
 void	_widget_set_region(res_win_t wt, res_rgn_t rgn);

@@ -7,7 +7,7 @@
 
 	@doc xdl display context document
 
-	@module	impbitmap.h | display context interface file
+	@module	impbitmap.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -39,23 +39,6 @@ LICENSE.GPL3 for more details.
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-/*
-@FUNCTION select_compatible_bitmap: select a bitmap object into memory context.
-@INPUT res_ctx_t rdc: memory context resource handle.
-@INPUT res_bmp_t obj: bitmap resource handle.
-@RETURN res_bmp_t: if succeeds return original bitmap object in memory context, fails return NULL.
-*/
-XDL_API res_bmp_t select_compatible_bitmap(res_ctx_t rdc, res_bmp_t obj);
-
-/*
-@FUNCTION create_compatible_bitmap: create a memory context.
-@INPUT res_ctx_t rdc: device context resource handle.
-@INPUT long cx: bitmap width in points.
-@INPUT long cy: bitmap height in points.
-@RETURN res_bmp_t: if succeeds return memory context resource handle, fails return NULL.
-*/
-XDL_API res_bmp_t create_compatible_bitmap(res_ctx_t rdc, long cx, long cy);
 
 /*
 @FUNCTION destroy_bitmap: destroy bitmap object.

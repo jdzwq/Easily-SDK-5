@@ -7,7 +7,7 @@
 
 	@doc xdc language document
 
-	@module	_xdc_ansi.h | xdc language interface file
+	@module	_xdc_ansi.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

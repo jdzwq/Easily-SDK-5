@@ -132,7 +132,7 @@ bool_t SQLPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 
 	LINKPTR ptrMemo = memoctrl_fetch(pdt->hMemo);
 
-	if (!load_memo_doc_from_file(ptrMemo, NULL, szFile))
+	if (!load_memo_from_text_file(ptrMemo, NULL, szFile))
 	{
 		ShowMsg(MSGICO_ERR, _T("导入文件失败！"));
 
@@ -152,7 +152,7 @@ bool_t SQLPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
 
 	LINKPTR ptrMemo = memoctrl_fetch(pdt->hMemo);
 
-	bool_t rt = save_memo_doc_to_file(ptrMemo, NULL, szFile);
+	bool_t rt = save_memo_to_text_file(ptrMemo, NULL, szFile);
 
 	if (!rt)
 	{
@@ -220,7 +220,7 @@ void SQLPanel_OnSaveAs(res_win_t widget)
 
 	LINKPTR ptrMemo = memoctrl_fetch(pdt->hMemo);
 
-	bool_t rt = save_memo_doc_to_file(ptrMemo, NULL, szFile);
+	bool_t rt = save_memo_to_text_file(ptrMemo, NULL, szFile);
 
 	if (!rt)
 	{
@@ -282,7 +282,7 @@ void SQLPanel_OnExport(res_win_t widget)
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 
-	if(!save_grid_doc_to_csv_file(ptrGrid, 1, NULL, szFile))
+	if(!save_grid_to_csv_file(ptrGrid, 1, NULL, szFile))
 	{
 		ShowMsg(MSGICO_ERR, _T("保存网格数据失败！"));
 		return;

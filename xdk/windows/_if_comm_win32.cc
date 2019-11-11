@@ -7,7 +7,7 @@
 
 	@doc file system call document
 
-	@module	_if_comm.c | com port system call windows implement file
+	@module	_if_comm.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -110,7 +110,7 @@ bool_t _set_comm_mode(res_file_t fh, const dev_com_t* pmod)
 	return (bool_t)rt;
 }
 
-res_file_t _comm_open(const tchar_t* devname, u32_t fmode)
+res_file_t _comm_open(const tchar_t* devname, dword_t fmode)
 {
 	HANDLE hFile = 0;
 	DWORD dwAccess, dwShare, dwCreate, dwFlag;
@@ -163,7 +163,7 @@ void _comm_close(res_file_t fh)
 	CloseHandle(fh);
 }
 
-u32_t _comm_wait(res_file_t fh, async_t* pb)
+dword_t _comm_wait(res_file_t fh, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
 	size_t* pcb = (pb) ? &(pb->size) : NULL;

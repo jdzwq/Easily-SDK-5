@@ -7,7 +7,7 @@
 
 	@doc fire date control document
 
-	@module	firedate.c | fire date control implement file
+	@module	firedate.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

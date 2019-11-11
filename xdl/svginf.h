@@ -7,7 +7,7 @@
 
 	@doc svg interface document
 
-	@module	svginf.h | svg interface interface file
+	@module	svginf.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

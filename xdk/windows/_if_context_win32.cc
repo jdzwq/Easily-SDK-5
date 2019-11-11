@@ -7,7 +7,7 @@
 
 	@doc device context document
 
-	@module	if_context_win.c | device context windows implement file
+	@module	if_context_win.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -127,6 +127,21 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc)
 void _destroy_context(res_ctx_t rdc)
 {
 	DeleteDC(rdc);
+}
+
+res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t obj)
+{
+	return (res_pmp_t)SelectObject(rdc, (HGDIOBJ)obj);
+}
+
+res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, long cx, long cy)
+{
+	return (res_pmp_t)CreateCompatibleBitmap(rdc, cx, cy);
+}
+
+void _destroy_pixmap(res_pmp_t pmp)
+{
+	DeleteObject(pmp);
 }
 
 void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)

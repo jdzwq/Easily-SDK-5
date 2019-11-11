@@ -7,7 +7,7 @@
 
 	@doc image image_list view document
 
-	@module	imageview.c | image_list document implement file
+	@module	imageview.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

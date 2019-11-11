@@ -7,7 +7,7 @@
 
 	@doc label document
 
-	@module	labeldoc.h | label document interface file
+	@module	labeldoc.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

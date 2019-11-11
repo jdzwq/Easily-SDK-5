@@ -7,7 +7,7 @@
 
 	@doc label control document
 
-	@module	labelctrl.c | label control implement file
+	@module	labelctrl.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -242,6 +242,7 @@ void noti_label_item_drop(res_win_t widget, const xpoint_t* pxp)
 }
 
 /******************************************************************************/
+
 int hand_label_create(res_win_t widget, void* data)
 {
 	label_delta_t* ptd;

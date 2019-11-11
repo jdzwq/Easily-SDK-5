@@ -7,7 +7,7 @@
 
 	@doc printer context document
 
-	@module	impctx.c | printer context implement file
+	@module	impctx.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -167,6 +167,33 @@ void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
 	pif = PROCESS_CONTEXT_INTERFACE;
 
 	(*pif->pf_get_device_caps)(rdc, pcap);
+}
+
+res_pmp_t select_pixmap(res_ctx_t rdc, res_pmp_t obj)
+{
+	if_context_t* pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	return (*pif->pf_select_pixmap)(rdc, obj);
+}
+
+res_pmp_t create_compatible_pixmap(res_ctx_t rdc, long cx, long cy)
+{
+	if_context_t* pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	return (*pif->pf_create_compatible_pixmap)(rdc, cx, cy);
+}
+
+void destroy_pixmap(res_pmp_t pmp)
+{
+	if_context_t* pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_destroy_pixmap)(pmp);
 }
 
 #ifdef XDK_SUPPORT_CONTEXT_REGION

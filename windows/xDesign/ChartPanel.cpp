@@ -113,7 +113,7 @@ bool_t ChartPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 {
 	ChartPanelDelta* pdt = GETCHARTPANELDELTA(widget);
 
-	LINKPTR newChart = create_chart_doc_from_file(NULL, szFile);
+	LINKPTR newChart = create_chart_from_meta_file(NULL, szFile);
 	if (!newChart)
 	{
 		ShowMsg(MSGICO_ERR, _T("导入表单失败！"));
@@ -410,9 +410,9 @@ void ChartPanel_OnCSSProper(res_win_t widget)
 	LINKPTR flk = chartctrl_get_focus_table(pdt->hChart);
 
 	if (flk)
-		propertybag_parse_stylesheet(ptrProper, get_chart_table_style_ptr(flk));
+		properbag_parse_stylesheet(ptrProper, get_chart_table_style_ptr(flk));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_chart_style_ptr(ptr));
+		properbag_parse_stylesheet(ptrProper, get_chart_style_ptr(ptr));
 
 	res_win_t hProperDlg = properdlg_create(_T("绘制样式"), ptrProper, g_hMain);
 
@@ -423,7 +423,7 @@ void ChartPanel_OnCSSProper(res_win_t widget)
 	if (nRet)
 	{
 		tchar_t sz_style[CSS_LEN] = { 0 };
-		propertybag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
+		properbag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
 
 		if (flk)
 		{
@@ -954,9 +954,9 @@ void ChartPanel_OnAttributes(res_win_t widget)
 	LINKPTR ptrItem = chartctrl_get_focus_table(pdt->hChart);
 
 	if (ptrItem)
-		propertybag_write_chart_table_attributes(ptrProper, ptrItem);
+		properbag_write_chart_table_attributes(ptrProper, ptrItem);
 	else
-		propertybag_write_chart_attributes(ptrProper, ptrChart);
+		properbag_write_chart_attributes(ptrProper, ptrChart);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -975,9 +975,9 @@ void ChartPanel_OnStyleSheet(res_win_t widget)
 	LINKPTR ptrItem = chartctrl_get_focus_table(pdt->hChart);
 
 	if (ptrItem)
-		propertybag_parse_stylesheet(ptrProper, get_chart_table_style_ptr(ptrItem));
+		properbag_parse_stylesheet(ptrProper, get_chart_table_style_ptr(ptrItem));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_chart_style_ptr(ptrChart));
+		properbag_parse_stylesheet(ptrProper, get_chart_style_ptr(ptrChart));
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1001,11 +1001,11 @@ void ChartPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_chart_table_attributes(pnp->proper, ptrItem);
+			properbag_read_chart_table_attributes(pnp->proper, ptrItem);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_chart_table_style(ptrItem, sz_style);
 		}
 		chartctrl_redraw_table(pdt->hChart, ptrItem);
@@ -1014,11 +1014,11 @@ void ChartPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_chart_attributes(pnp->proper, ptrChart);
+			properbag_read_chart_attributes(pnp->proper, ptrChart);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_chart_style(ptrChart, sz_style);
 		}
 		chartctrl_redraw(pdt->hChart);

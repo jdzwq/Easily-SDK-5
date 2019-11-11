@@ -578,9 +578,9 @@ void GridPanel_OnCSSProper(res_win_t widget)
 	LINKPTR clk = gridctrl_get_focus_col(pdt->hGrid);
 
 	if (clk)
-		propertybag_parse_stylesheet(ptrProper, get_col_style_ptr(clk));
+		properbag_parse_stylesheet(ptrProper, get_col_style_ptr(clk));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_grid_style_ptr(ptr));
+		properbag_parse_stylesheet(ptrProper, get_grid_style_ptr(ptr));
 
 	res_win_t hProperDlg = properdlg_create(_T("»æÖÆÑùÊ½"), ptrProper, g_hMain);
 
@@ -591,7 +591,7 @@ void GridPanel_OnCSSProper(res_win_t widget)
 	if (nRet)
 	{
 		tchar_t sz_style[CSS_LEN] = { 0 };
-		propertybag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
+		properbag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
 
 		if (clk)
 		{
@@ -1190,9 +1190,9 @@ void GridPanel_OnAttributes(res_win_t widget)
 	LINKPTR ptrCol = gridctrl_get_focus_col(pdt->hGrid);
 
 	if (ptrCol)
-		propertybag_write_col_attributes(ptrProper, ptrCol);
+		properbag_write_col_attributes(ptrProper, ptrCol);
 	else
-		propertybag_write_grid_attributes(ptrProper, ptrGrid);
+		properbag_write_grid_attributes(ptrProper, ptrGrid);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1211,9 +1211,9 @@ void GridPanel_OnStyleSheet(res_win_t widget)
 	LINKPTR ptrCol = gridctrl_get_focus_col(pdt->hGrid);
 
 	if (ptrCol)
-		propertybag_parse_stylesheet(ptrProper, get_col_style_ptr(ptrCol));
+		properbag_parse_stylesheet(ptrProper, get_col_style_ptr(ptrCol));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_grid_style_ptr(ptrGrid));
+		properbag_parse_stylesheet(ptrProper, get_grid_style_ptr(ptrGrid));
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1287,11 +1287,11 @@ void GridPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_col_attributes(pnp->proper, ptrCol);
+			properbag_read_col_attributes(pnp->proper, ptrCol);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_col_style(ptrCol, sz_style);
 		}
 		gridctrl_redraw(pdt->hGrid, 1);
@@ -1300,11 +1300,11 @@ void GridPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_grid_attributes(pnp->proper, ptrGrid);
+			properbag_read_grid_attributes(pnp->proper, ptrGrid);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_grid_style(ptrGrid, sz_style);
 		}
 		gridctrl_redraw(pdt->hGrid, 1);

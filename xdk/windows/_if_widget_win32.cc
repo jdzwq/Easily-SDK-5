@@ -7,7 +7,7 @@
 
 	@doc widget document
 
-	@module	_if_widget_win.c | widget widnows implement file
+	@module	_if_widget_win.c | widnows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -52,17 +52,17 @@ LICENSE.GPL3 for more details.
 #define GETXDKUSERDELTA(hWnd)		(var_long)GetProp(hWnd, XDKUSERDELTA)
 #define SETXDKUSERDELTA(hWnd, lp)	SetProp(hWnd, XDKUSERDELTA, (HANDLE)lp)
 
-#define GETXDKSTYLE(hWnd)			(DWORD)GetProp(hWnd, XDKSTYLE)
-#define SETXDKSTYLE(hWnd, dw)		SetProp(hWnd, XDKSTYLE, (HANDLE)dw)
-
 #define GETXDKACCEL(hWnd)			(res_acl_t)GetProp(hWnd, XDKACCEL)
 #define SETXDKACCEL(hWnd, acl)		SetProp(hWnd, XDKACCEL, (HANDLE)acl)
 
 #define GETXDKOWNER(hWnd)			(res_win_t)GetProp(hWnd, XDKOWNER)
 #define SETXDKOWNER(hWnd, win)		SetProp(hWnd, XDKOWNER, (HANDLE)win)
 
-#define GETXDKUSER(hWnd)			(DWORD)GetProp(hWnd, XDKUSER)
-#define SETXDKUSER(hWnd, dw)		SetProp(hWnd, XDKUSER, (HANDLE)dw)
+#define GETXDKSTYLE(hWnd)			(DWORD)GetProp(hWnd, XDKSTYLE)
+#define SETXDKSTYLE(hWnd, dw)		SetProp(hWnd, XDKSTYLE, (HANDLE)dw)
+
+#define GETXDKUSERID(hWnd)			(DWORD)GetProp(hWnd, XDKUSERID)
+#define SETXDKUSERID(hWnd, dw)		SetProp(hWnd, XDKUSERID, (HANDLE)dw)
 
 #define GETXDKRESULT(hWnd)			(DWORD)GetProp(hWnd, XDKRESULT)
 #define SETXDKRESULT(hWnd, dw)		SetProp(hWnd, XDKRESULT, (HANDLE)dw)
@@ -136,7 +136,7 @@ static void _CenterRect(RECT* prt, long cx, long cy)
 	}
 }
 
-static DWORD _WindowStyle(u32_t wstyle)
+static DWORD _WindowStyle(dword_t wstyle)
 {
 	DWORD dw = 0;
 
@@ -191,6 +191,31 @@ static DWORD _WindowStyle(u32_t wstyle)
 }
 
 /*******************************************************************************************/
+
+bool_t	_fetch_message(msg_t* pmsg, res_win_t wt)
+{
+	return (GetMessage(pmsg, wt, 0, 0)) ? 1 : 0;
+}
+
+bool_t	_peek_message(msg_t* pmsg, res_win_t wt)
+{
+	return (PeekMessage(pmsg, wt, 0, 0, PM_NOREMOVE)) ? 1 : 0;
+}
+
+bool_t	_translate_message(const msg_t* pmsg)
+{
+	return (TranslateMessage(pmsg)) ? 1 : 0;
+}
+
+result_t _dispatch_message(const msg_t* pmsg)
+{
+	return DispatchMessage(pmsg);
+}
+
+int	_translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
+{
+	return TranslateAccelerator(wt, acl, pmsg);
+}
 
 ATOM RegisterXdcWidgetClass(HINSTANCE hInstance)
 {
@@ -555,7 +580,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			xp.x = (long)(short)LOWORD(lParam);
 			xp.y = (long)(short)HIWORD(lParam);
 
-			(*pev->pf_on_mouse_move)(hWnd, (u32_t)wParam, &xp);
+			(*pev->pf_on_mouse_move)(hWnd, (dword_t)wParam, &xp);
 		}
 		break;
 	case WM_MOUSEHOVER:
@@ -566,7 +591,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			xp.x = (long)(short)LOWORD(lParam);
 			xp.y = (long)(short)HIWORD(lParam);
 
-			(*pev->pf_on_mouse_hover)(hWnd, (u32_t)wParam, &xp);
+			(*pev->pf_on_mouse_hover)(hWnd, (dword_t)wParam, &xp);
 		}
 		break;
 	case WM_MOUSELEAVE:
@@ -577,7 +602,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			xp.x = (long)(short)LOWORD(lParam);
 			xp.y = (long)(short)HIWORD(lParam);
 
-			(*pev->pf_on_mouse_leave)(hWnd, (u32_t)wParam, &xp);
+			(*pev->pf_on_mouse_leave)(hWnd, (dword_t)wParam, &xp);
 		}
 		break;
 	case WM_MOVE:
@@ -1043,7 +1068,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			xp.x = (long)(short)LOWORD(lParam);
 			xp.y = (long)(short)HIWORD(lParam);
 
-			if ((*pev->sub_on_mouse_move)(hWnd, (u32_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_mouse_move)(hWnd, (dword_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -1054,7 +1079,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			xp.x = (long)(short)LOWORD(lParam);
 			xp.y = (long)(short)HIWORD(lParam);
 
-			if ((*pev->sub_on_mouse_hover)(hWnd, (u32_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_mouse_hover)(hWnd, (dword_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -1065,7 +1090,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			xp.x = (long)(short)LOWORD(lParam);
 			xp.y = (long)(short)HIWORD(lParam);
 
-			if ((*pev->sub_on_mouse_leave)(hWnd, (u32_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_mouse_leave)(hWnd, (dword_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -1381,7 +1406,7 @@ void _widget_cleanup()
 }
 
 
-res_win_t _widget_create(const tchar_t* wname, u32_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev)
+res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev)
 {
 	HWND hWnd = CreateWindow(XDKWIDGET, wname, _WindowStyle(wstyle), pxr->x, pxr->y, pxr->w, pxr->h, wparent, NULL, NULL, (void*)pev);
 
@@ -1529,12 +1554,12 @@ bool_t _widget_has_subproc(res_win_t wt)
 	return (GETXDKSUBPROC(wt) == NULL) ? 0 : 1;
 }
 
-void _widget_set_style(res_win_t wt, u32_t ws)
+void _widget_set_style(res_win_t wt, dword_t ws)
 {
 	SETXDKSTYLE(wt, ws);
 }
 
-u32_t _widget_get_style(res_win_t wt)
+dword_t _widget_get_style(res_win_t wt)
 {
 	return GETXDKSTYLE(wt);
 }
@@ -1590,7 +1615,7 @@ void _widget_set_user_id(res_win_t wt, uid_t uid)
 	if (GetWindowLongPtr(wt, GWL_STYLE) & WS_CHILD)
 		SetWindowLongPtr(wt, GWLP_ID, (LONG_PTR)uid);
 	else
-		SETXDKUSER(wt, uid);
+		SETXDKUSERID(wt, uid);
 #endif
 }
 
@@ -1605,7 +1630,7 @@ uid_t _widget_get_user_id(res_win_t wt)
 	if (GetWindowLongPtr(wt, GWL_STYLE) & WS_CHILD)
 		return (uid_t)GetWindowLongPtr(wt, GWLP_ID);
 	else
-		return GETXDKUSER(wt);
+		return GETXDKUSERID(wt);
 #endif
 }
 
@@ -1649,7 +1674,7 @@ if_event_t* _widget_get_dispatch(res_win_t wt)
 	return GETXDKDISPATCH(wt);
 }
 
-void _widget_calc_border(u32_t ws, border_t* pbd)
+void _widget_calc_border(dword_t ws, border_t* pbd)
 {
 	xsize_t xs;
 
@@ -1709,7 +1734,7 @@ void _widget_calc_border(u32_t ws, border_t* pbd)
 	pbd->icon = xs.cy;
 }
 
-void _widget_adjust_size(u32_t ws, xsize_t* pxs)
+void _widget_adjust_size(dword_t ws, xsize_t* pxs)
 {
 #ifdef WINCE
 	RECT rt = { 0 };
@@ -2154,7 +2179,7 @@ void _widget_take(res_win_t wt, int zor)
 #endif
 }
 
-void _widget_show(res_win_t wt, u32_t sw)
+void _widget_show(res_win_t wt, dword_t sw)
 {
 	RECT rt;
 	DWORD dw = GETXDKSTYLE(wt);
@@ -2426,7 +2451,7 @@ int _widget_do_modal(res_win_t hWnd)
 				break;
 			}
 
-			if (msg.message == WM_KEYDOWN)
+			if (msg.hwnd == hWnd && msg.message == WM_KEYDOWN)
 			{
 				hAcl = _widget_get_accel(hWnd);
 
@@ -2481,7 +2506,7 @@ void _widget_do_trace(res_win_t hWnd)
 	do{
 		while (PeekMessage(&msg, NULL, NULL, NULL, PM_NOREMOVE))
 		{
-			if (msg.message == WM_KEYDOWN && msg.wParam == KEY_ESC)
+			if (msg.hwnd == hWnd && msg.message == WM_KEYDOWN && msg.wParam == KEY_ESC)
 			{
 				GetMessage(&msg, NULL, NULL, NULL);//remove esc
 
@@ -2591,7 +2616,7 @@ void _destroy_accel_table(res_acl_t hac)
 }
 
 #ifdef XDK_SUPPORT_WIDGET_EX
-void _widget_track_mouse(res_win_t wt, u32_t mask)
+void _widget_track_mouse(res_win_t wt, dword_t mask)
 {
 	TRACKMOUSEEVENT te = { 0 };
 

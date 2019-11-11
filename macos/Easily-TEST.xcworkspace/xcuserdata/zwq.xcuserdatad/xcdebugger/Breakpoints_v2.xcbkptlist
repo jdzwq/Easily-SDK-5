@@ -552,11 +552,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../test/xdk_lib_test/main.cpp"
-            timestampString = "562283405.125672"
+            timestampString = "585593668.305993"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "519"
-            endingLineNumber = "519"
+            startingLineNumber = "490"
+            endingLineNumber = "490"
             landmarkName = "test_context()"
             landmarkType = "7">
          </BreakpointContent>
@@ -568,12 +568,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../test/xdk_lib_test/main.cpp"
-            timestampString = "562351835.955916"
+            timestampString = "585934334.76724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "539"
             endingLineNumber = "539"
-            landmarkName = "test_context()"
+            landmarkName = "test_bitmap()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -584,12 +584,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../test/xdk_lib_test/main.cpp"
-            timestampString = "562418956.098107"
+            timestampString = "586168584.416901"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "560"
-            endingLineNumber = "560"
-            landmarkName = "test_bitmap()"
+            startingLineNumber = "575"
+            endingLineNumber = "575"
+            landmarkName = "test_widget()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -7,7 +7,7 @@
 
 	@doc socket document
 
-	@module	impsock.c | socket implement file
+	@module	impsock.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -517,7 +517,7 @@ bool_t xsocket_share(dword_t procid, res_file_t procfd, res_file_t so, const byt
 	return rt;
 }
 
-res_file_t xsocket_dupli(res_file_t procfd, u32_t flag, byte_t* data, dword_t* pb)
+res_file_t xsocket_dupli(res_file_t procfd, dword_t flag, byte_t* data, dword_t* pb)
 {
 	if_socket_t* pif_so;
 	res_file_t sd;

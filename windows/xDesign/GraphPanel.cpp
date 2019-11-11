@@ -719,11 +719,11 @@ void GraphPanel_OnAttributes(res_win_t widget)
 	LINKPTR ptrYax = graphctrl_get_focus_yax(pdt->hGraph);
 
 	if (ptrGax)
-		propertybag_write_gax_attributes(ptrProper, ptrGax);
+		properbag_write_gax_attributes(ptrProper, ptrGax);
 	else if (ptrYax)
-		propertybag_write_yax_attributes(ptrProper, ptrYax);
+		properbag_write_yax_attributes(ptrProper, ptrYax);
 	else
-		propertybag_write_graph_attributes(ptrProper, ptrGraph);
+		properbag_write_graph_attributes(ptrProper, ptrGraph);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -741,7 +741,7 @@ void GraphPanel_OnStyleSheet(res_win_t widget)
 	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
 
 	
-	propertybag_parse_stylesheet(ptrProper, get_graph_style_ptr(ptrGraph));
+	properbag_parse_stylesheet(ptrProper, get_graph_style_ptr(ptrGraph));
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -816,7 +816,7 @@ void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_gax_attributes(pnp->proper, ptrGax);
+			properbag_read_gax_attributes(pnp->proper, ptrGax);
 		}
 
 		graphctrl_redraw(pdt->hGraph, 1);
@@ -825,7 +825,7 @@ void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_yax_attributes(pnp->proper, ptrYax);
+			properbag_read_yax_attributes(pnp->proper, ptrYax);
 		}
 		
 		graphctrl_redraw(pdt->hGraph, 1);
@@ -834,11 +834,11 @@ void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_graph_attributes(pnp->proper, ptrGraph);
+			properbag_read_graph_attributes(pnp->proper, ptrGraph);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_graph_style(ptrGraph, sz_style);
 		}
 		graphctrl_redraw(pdt->hGraph, 1);

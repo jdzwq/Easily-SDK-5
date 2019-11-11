@@ -7,7 +7,7 @@
 
 	@doc widget document
 
-	@module	impwin.h | widget interface file
+	@module	impwin.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -40,6 +40,16 @@ LICENSE.GPL3 for more details.
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
+XDL_API bool_t fetch_message(msg_t* pmsg, res_win_t wt);
+
+XDL_API bool_t peek_message(msg_t* pmsg, res_win_t wt);
+
+XDL_API bool_t	translate_message(const msg_t* pmsg);
+
+XDL_API result_t dispatch_message(const msg_t* pmsg);
+
+XDL_API int		translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg);
 
 /*
 @FUNCTION widget_create: create frame, popup, child widget or dialog window.

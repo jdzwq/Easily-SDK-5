@@ -7,7 +7,7 @@
 
 	@doc proper view
 
-	@module	properview.h | proper view interface file
+	@module	properview.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

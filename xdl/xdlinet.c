@@ -7,7 +7,7 @@
 
 	@doc xdl internet document
 
-	@module	internet.c | xdl internet implement file
+	@module	internet.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -535,7 +535,7 @@ static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byt
 
 	format_longlong(hoff, loff, sz_from);
 
-	ll = MAKELONGLONG(loff, hoff) + size - 1;
+	ll = MAKELWORD(loff, hoff) + size - 1;
 	hoff = GETHDWORD(ll);
 	loff = GETLDWORD(ll);
 
@@ -565,7 +565,7 @@ static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, co
 	{
 		format_longlong(hoff, loff, sz_from);
 
-		ll = MAKELONGLONG(loff, hoff) + size - 1;
+		ll = MAKELWORD(loff, hoff) + size - 1;
 		hoff = GETHDWORD(ll);
 		loff = GETLDWORD(ll);
 		format_longlong(hoff, loff, sz_to);

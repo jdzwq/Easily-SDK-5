@@ -7,7 +7,7 @@
 
 	@doc dialog document
 
-	@module	dialogdoc.h | dialog document interface file
+	@module	dialogdoc.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

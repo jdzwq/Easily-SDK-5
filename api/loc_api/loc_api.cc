@@ -563,7 +563,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 		b_zip = 0;
 	}
 
-	if (MAKELONGLONG(n_loff, n_hoff) == 0 && MAKELONGLONG(n_bys, 0) == n_all)
+	if (MAKELWORD(n_loff, n_hoff) == 0 && MAKELWORD(n_bys, 0) == n_all)
 		xf = xfile_open(&pos->sd, sz_object, FILE_OPEN_CREATE);
 	else
 		xf = xfile_open(&pos->sd, sz_object, FILE_OPEN_APPEND);
@@ -581,7 +581,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 		xfile_settime(xf, ftime);
 	}
 
-	if (MAKELONGLONG(n_loff, n_hoff) == 0 && MAKELONGLONG(n_bys, 0) == n_all)
+	if (MAKELWORD(n_loff, n_hoff) == 0 && MAKELWORD(n_bys, 0) == n_all)
 	{
 		if (b_zip)
 			b_rt = xfile_write(xf, sz_zip, n_zip);
@@ -753,7 +753,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	xsprintf(token, _T("%s/loc.ini"), pb->path);
 
-	if (!load_proper_doc_from_ini_file(ptr_prop, NULL, token))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
 	{
 		raise_user_error(_T("-1"), _T("load loc config falied\n"));
 	}

@@ -7,7 +7,7 @@
 
 	@doc push control document
 
-	@module	pushbox.c | push control widnows implement file
+	@module	pushbox.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

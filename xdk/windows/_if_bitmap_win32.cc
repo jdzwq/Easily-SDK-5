@@ -7,7 +7,7 @@
 
 	@doc bitmap document
 
-	@module	if_bitmap_win.c | bitmap windows implement file
+	@module	if_bitmap_win.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -57,16 +57,6 @@ static void _CenterRect(RECT* pRect, int src_width, int src_height)
 		pRect->top = pRect->top + (pRect->bottom - pRect->top - src_height) / 2;
 		pRect->bottom = pRect->top + src_height;
 	}
-}
-
-res_bmp_t _select_compatible_bitmap(res_ctx_t rdc, res_bmp_t obj)
-{
-	return (HBITMAP)SelectObject(rdc, (HGDIOBJ)obj);
-}
-
-res_bmp_t _create_compatible_bitmap(res_ctx_t rdc, long cx, long cy)
-{
-	return CreateCompatibleBitmap(rdc, cx, cy);
 }
 
 void _destroy_bitmap(res_bmp_t bmp)

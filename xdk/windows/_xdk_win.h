@@ -7,7 +7,7 @@
 
 	@doc xdl windows definition document
 
-	@module	_xdl_win.h | windows definition interface file
+	@module	_xdl_win.h | windows interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -272,6 +272,7 @@ typedef unsigned int	uid_t;
 typedef HDC			res_ctx_t;
 typedef COLORREF	res_clr_t;
 typedef HFONT		res_font_t;
+typedef HBITMAP		res_pmp_t;
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
 typedef HBITMAP		res_bmp_t;
 #endif
@@ -281,6 +282,7 @@ typedef HRGN		res_rgn_t;
 #endif
 
 #ifdef XDK_SUPPORT_WIDGET
+typedef MSG			msg_t;
 typedef HACCEL		res_acl_t;
 typedef HWND		res_win_t;
 typedef WPARAM		uparam_t;

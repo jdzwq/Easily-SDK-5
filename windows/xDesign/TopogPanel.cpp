@@ -268,9 +268,9 @@ void TopogPanel_OnAttributes(res_win_t widget)
 	topogctrl_get_focus_dot(pdt->hTopog, &row, &col);
 
 	if (ptrSpot)
-		propertybag_write_topog_spot_attributes(ptrProper, ptrSpot);
+		properbag_write_topog_spot_attributes(ptrProper, ptrSpot);
 	else
-		propertybag_write_topog_attributes(ptrProper, ptrTopog, row, col);
+		properbag_write_topog_attributes(ptrProper, ptrTopog, row, col);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -289,9 +289,9 @@ void TopogPanel_OnStyleSheet(res_win_t widget)
 	LINKPTR ptrSpot = topogctrl_get_focus_spot(pdt->hTopog);
 
 	if (ptrSpot)
-		propertybag_parse_stylesheet(ptrProper, get_topog_spot_style_ptr(ptrSpot));
+		properbag_parse_stylesheet(ptrProper, get_topog_spot_style_ptr(ptrSpot));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_topog_style_ptr(ptrTopog));
+		properbag_parse_stylesheet(ptrProper, get_topog_style_ptr(ptrTopog));
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -421,11 +421,11 @@ void TopogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_topog_spot_attributes(pnp->proper, ptrSpot);
+			properbag_read_topog_spot_attributes(pnp->proper, ptrSpot);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_topog_spot_style(ptrSpot, sz_style);
 		}
 		topogctrl_redraw(pdt->hTopog);
@@ -434,11 +434,11 @@ void TopogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_topog_attributes(pnp->proper, ptrTopog);
+			properbag_read_topog_attributes(pnp->proper, ptrTopog);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_topog_style(ptrTopog, sz_style);
 		}
 		topogctrl_redraw(pdt->hTopog);

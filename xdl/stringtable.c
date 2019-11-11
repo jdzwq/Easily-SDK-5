@@ -7,7 +7,7 @@
 
 	@doc stringtable document
 
-	@module	stringtable.c | stringtable implement file
+	@module	stringtable.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -189,7 +189,7 @@ link_t_ptr write_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen, c
 	else if (pht->order == ORDER_DESCEND)
 		insert_link_before(&pht->lkEntitys, ((plk) ? plk : LINK_LAST), &phe->lk);
 	else
-		insert_link_after(&pht->lkEntitys, LINK_FIRST, &phe->lk);
+		insert_link_after(&pht->lkEntitys, LINK_LAST, &phe->lk);
 
 	return &(phe->lk);
 }

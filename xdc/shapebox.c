@@ -7,7 +7,7 @@
 
 	@doc shape control document
 
-	@module	shapebox.c | shape control widnows implement file
+	@module	shapebox.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

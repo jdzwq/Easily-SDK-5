@@ -44,10 +44,14 @@
 
 #include "gridsql.h"
 #include "gridbag.h"
-#include "propertybag.h"
+#include "gridbio.h"
+#include "properbag.h"
+#include "properbio.h"
+#include "textbio.h"
+#include "formbio.h"
 #include "schemabag.h"
-#include "docbag.h"
 #include "imagesbag.h"
+#include "docmeta.h"
 
 #include "memoopera.h"
 #include "bufferopera.h"

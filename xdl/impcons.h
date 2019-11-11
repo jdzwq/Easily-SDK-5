@@ -7,7 +7,7 @@
 
 	@doc xdl console document
 
-	@module	impcons.h | xdl console interface file
+	@module	impcons.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

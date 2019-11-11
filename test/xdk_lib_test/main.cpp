@@ -292,35 +292,6 @@ void test_cache()
     (*if_memo.pf_cache_close)(p);
 }
 
-void test_block()
-{
-    if_file_t if_file = { 0 };
-    
-    xdk_impl_file_block(&if_file);
-    
-    res_file_t fh = (*if_file.pf_block_open)("./demo.txt", FILE_OPEN_CREATE);
-    if(!fh)
-        printf("parent error : %s\n", strerror(errno));
-    
-    char buf[4096] = {0};
-    size_t dw = 0;
-    
-    strcpy(buf, "hello word!");
-
-    if(!(*if_file.pf_block_write)(fh, 0, 0, buf, 4096, &dw))
-        printf("parent error : %s\n", strerror(errno));
-    
-    memset((void*)buf,0,4096);
-    dw = 0;
-    if(!(*if_file.pf_block_read)(fh, 0, 0, buf, 4096, &dw))
-        printf("parent error : %s\n", strerror(errno));
-    
-    if(!(*if_file.pf_block_truncate)(fh, 0, 2))
-        printf("parent error : %s\n", strerror(errno));
-    
-    (*if_file.pf_block_close)(fh);
-}
-
 void test_share()
 {
     if_share_t if_share = { 0 };
@@ -436,7 +407,7 @@ void test_comm()
     size_t dw;
     int idle = 0;
     
-    while (msk = (*if_comm.pf_comm_listen)(com, &over))
+    while (msk = (*if_comm.pf_comm_wait)(com, &over))
     {
         if (msk == COMM_EVNET_ERROR)
         {
@@ -526,9 +497,16 @@ void test_context()
     
     res_ctx_t xdc = (*if_context.pf_create_compatible_context)(rdc);
     
+    res_pmp_t pmp = (*if_context.pf_create_compatible_pixmap)(xdc, 32, 32);
+    
+    res_pmp_t org = (*if_context.pf_select_pixmap)(xdc, pmp);
+    
+    (*if_context.pf_destroy_pixmap)(org);
+    
+     (*if_context.pf_destroy_context)(xdc);
+    
     xfont_t xf;
     default_xfont(&xf);
-    //_tstrcpy(xf.family, "Roman");
     
     float fw, fh;
     
@@ -555,7 +533,10 @@ void test_bitmap()
     
     res_ctx_t rdc = (*if_context.pf_create_display_context)();
     
-    res_bmp_t bmp = (*if_context.pf_create_compatible_bitmap)(rdc, 32, 32);
+    xcolor_t clr;
+    parse_xcolor(&clr, GDI_ATTR_RGB_AZURE);
+
+    res_bmp_t bmp = (*if_context.pf_create_color_bitmap)(rdc, &clr, 32, 32);
     
     int n = (*if_context.pf_save_bitmap_to_bytes)(rdc, bmp, NULL, MAX_LONG);
     
@@ -566,16 +547,59 @@ void test_bitmap()
     free(buf);
     
     (*if_context.pf_destroy_bitmap)(bmp);
-    
-    xcolor_t clr;
-    parse_xcolor(&clr, GDI_ATTR_RGB_AZURE);
-
-    bmp = (*if_context.pf_create_color_bitmap)(rdc, &clr, 32, 32);
-    
-    (*if_context.pf_destroy_bitmap)(bmp);
 
     (*if_context.pf_destroy_context)(rdc);
 
+    (*if_context.pf_context_cleanup)();
+}
+
+void test_widget()
+{
+    if_context_t if_context = { 0 };
+    
+    xdk_impl_context(&if_context);
+    
+    (*if_context.pf_context_startup)();
+
+    
+    if_widget_t if_widget = {0};
+    
+    xdk_impl_widget(&if_widget);
+    
+    xrect_t xr ;
+    xr.x = 100;
+    xr.y = 100;
+    xr.w = 300;
+    xr.h = 400;
+    
+    res_win_t win = (*if_widget.pf_widget_create)("demo",0,&xr,NULL,NULL);
+    
+    s8_t s[] = "hello world";
+    
+    bool_t b = (*if_widget.pf_widget_set_proper)(win, "string_proper", (u8_t*)s, _tstrlen(s));
+    
+    s8_t buf[20] = {0};
+    
+    b = (*if_widget.pf_widget_get_proper)(win, "string_proper", (u8_t*)buf, 20);
+    
+    char* s_ptr = (char*)calloc(1, 1);
+    
+    u8_t sa[8] = {0};
+    
+    PUT_VOID_NET(sa, s_ptr);
+    
+    b = (*if_widget.pf_widget_set_proper)(win, "pointer_proper", (u8_t*)sa, 8);
+    
+    b = (*if_widget.pf_widget_get_proper)(win, "pointer_proper", (u8_t*)sa, 8);
+    
+    s_ptr = (char*)GET_VOID_NET(sa);
+    
+    free(s_ptr);
+    
+    (*if_widget.pf_widget_show)(win, 0);
+        
+    (*if_widget.pf_widget_destroy)(win);
+    
     (*if_context.pf_context_cleanup)();
 }
 
@@ -620,7 +644,9 @@ int main(int argc, const char * argv[]) {
     
     //test_context();
     
-    test_bitmap();
+    //test_bitmap();
+    
+    test_widget();
     
     return 0;
 }

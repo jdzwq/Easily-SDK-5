@@ -7,7 +7,7 @@
 
 	@doc defination document
 
-	@module	xdldef.h | definition interface file
+	@module	xdldef.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -58,103 +58,6 @@ LICENSE.GPL3 for more details.
 #define XDL_API extern
 #endif
 
-#ifndef byte_t
-typedef unsigned char	byte_t;
-#endif
-
-#ifndef sword_t
-typedef unsigned short	sword_t;
-#endif
-
-#ifndef dword_t
-typedef unsigned long	dword_t;
-#endif
-
-#ifndef lword_t
-typedef unsigned long long lword_t;
-#endif
-
-#define SWAPSWORD(n)			(((sword_t)(n) & 0x00FF) << 8) | ((sword_t)(n) & 0xFF00) >> 8))
-#define SWAPDWORD(n)			(((dword_t)(n) & 0x0000FFFF) << 16) | ((dword_t)(n) & 0xFFFF0000) >> 16))
-
-#define LIT_MAKESWORD(lc,hc)	((((sword_t)(hc) << 8) & 0xFF00) | ((sword_t)(lc) & 0x00FF))
-#define LIT_GETHBYTE(sw)		(byte_t)(((sword_t)(sw) >> 8) & 0x00FF)
-#define LIT_GETLBYTE(sw)		(byte_t)((sword_t)(sw) & 0x00FF)
-
-#define BIG_MAKESWORD(lc,hc)	((((sword_t)(lc) << 8) & 0xFF00) | ((sword_t)(hc) & 0x00FF))
-#define BIG_GETHBYTE(sw)		(byte_t)((sword_t)(sw) & 0x00FF)
-#define BIG_GETLBYTE(sw)		(byte_t)(((sword_t)(sw) >> 8) & 0x00FF) 
-
-#define LIT_MAKEDWORD(ls,hs)	((((dword_t)(hs) << 16) & 0xFFFF0000) | ((dword_t)(ls) & 0x0000FFFF))
-#define LIT_GETHSWORD(dw)		(sword_t)(((dword_t)(dw) >> 16) & 0x0000FFFF)
-#define LIT_GETLSWORD(dw)		(sword_t)((dword_t)(dw) & 0x0000FFFF)
-
-#define BIG_MAKEDWORD(ls,hs)	((((dword_t)(ls) << 16) & 0xFFFF0000) | ((dword_t)(hs) & 0x0000FFFF))
-#define BIG_GETHSWORD(dw)		(sword_t)((dword_t)(dw) & 0x0000FFFF)
-#define BIG_GETLSWORD(dw)		(sword_t)(((dword_t)(dw) >> 16) & 0x0000FFFF)
-
-#define LIT_MAKELONGLONG(lw,hw)	((((lword_t)(hw) << 32) & 0xFFFFFFFF00000000) | ((lword_t)(lw) & 0x00000000FFFFFFFF))
-#define LIT_GETHDWORD(ll)		(dword_t)(((lword_t)(ll) >> 32) & 0x00000000FFFFFFFF)
-#define LIT_GETLDWORD(ll)		(dword_t)((lword_t)(ll) & 0x00000000FFFFFFFF)
-
-#define BIG_MAKELONGLONG(lw,hw)	((((lword_t)(lw) << 32) & 0xFFFFFFFF00000000) | (lword_t)(hw) & 0x00000000FFFFFFFF))
-#define BIG_GETHDWORD(ll)		(dword_t)((lword_t)(ll) & 0x00000000FFFFFFFF)
-#define BIG_GETLDWORD(ll)		(dword_t)(((lword_t)(ll) >> 32) & 0x00000000FFFFFFFF)
-
-#if BYTE_ORDER == BIG_ENDIAN
-#define MAKELONGLONG		BIG_MAKELONGLONG
-#define GETLDWORD			BIG_GETLDWORD
-#define GETHDWORD			BIG_GETHDWORD
-
-#define MAKEDWORD			BIG_MAKEDWORD
-#define GETLSWORD			BIG_GETLSWORD
-#define GETHSWORD			BIG_GETHSWORD
-
-#define MAKESWORD			BIG_MAKESWORD
-#define GETLBYTE			BIG_GETLBYTE
-#define GETHBYTE			BIG_GETHBYTE
-#else
-#define MAKELONGLONG		LIT_MAKELONGLONG
-#define GETLDWORD			LIT_GETLDWORD
-#define GETHDWORD			LIT_GETHDWORD
-
-#define MAKEDWORD			LIT_MAKEDWORD
-#define GETLSWORD			LIT_GETLSWORD
-#define GETHSWORD			LIT_GETHSWORD
-
-#define MAKESWORD			LIT_MAKESWORD
-#define GETLBYTE			LIT_GETLBYTE
-#define GETHBYTE			LIT_GETHBYTE
-#endif
-
-#define PUT_BYTE(buf,off,n)			(buf[off] = (unsigned char)((n) & 0xFF))
-#define PUT_SWORD_LIT(buf,off,n)	(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF))
-#define PUT_DWORD_LIT(buf,off,n)	(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+3] = (unsigned char) (((n) >> 24) & 0xFF))
-#define PUT_SWORD_BIG(buf,off,n)	(buf[off] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+1] = (unsigned char) ((n) & 0xFF))
-#define PUT_DWORD_BIG(buf,off,n)	(buf[off] = (unsigned char) (((n) >> 24) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+3] = (unsigned char) ((n) & 0xFF))
-
-#define GET_BYTE(buf,off)			((unsigned char)(buf[off] & 0xFF))
-#define GET_SWORD_LIT(buf,off)		((((unsigned short)(buf[off + 1]) << 8) & 0xFF00) | ((unsigned short)(buf[off]) & 0x00FF))
-#define GET_DWORD_LIT(buf,off)		((((unsigned long)(buf[off + 3]) << 24) & 0xFF000000) | (((unsigned long)(buf[off + 2]) << 16) & 0x00FF0000)  | (((unsigned long)(buf[off + 1]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off]) & 0x000000FF))
-#define GET_SWORD_BIG(buf,off)		((((unsigned short)(buf[off]) << 8) & 0xFF00) | ((unsigned short)(buf[off+1]) & 0x00FF))
-#define GET_DWORD_BIG(buf,off)		((((unsigned long)(buf[off]) << 24) & 0xFF000000)  | (((unsigned long)(buf[off + 1]) << 16) & 0x00FF0000) | (((unsigned long)(buf[off + 2]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off + 3]) & 0x000000FF))
-
-#define PUT_SWORD_NET		PUT_SWORD_BIG
-#define GET_SWORD_NET		GET_SWORD_BIG
-#define PUT_DWORD_NET		PUT_DWORD_BIG
-#define GET_DWORD_NET		GET_DWORD_BIG
-
-#if BYTE_ORDER == BIG_ENDIAN
-#define PUT_SWORD_LOC		PUT_SWORD_BIG
-#define GET_SWORD_LOC		GET_SWORD_BIG
-#define PUT_DWORD_LOC		PUT_DWORD_BIG
-#define GET_DWORD_LOC		GET_DWORD_BIG
-#else
-#define PUT_SWORD_LOC		PUT_SWORD_LIT
-#define GET_SWORD_LOC		GET_SWORD_LIT
-#define PUT_DWORD_LOC		PUT_DWORD_LIT
-#define GET_DWORD_LOC		GET_DWORD_LIT
-#endif
 
 #define MD5_SIZE		16
 #define SHA1_SIZE		20
@@ -404,11 +307,12 @@ typedef enum{
 	_PROTO_LOC = 1,
 	_PROTO_NFS = 2,
 	_PROTO_HTTP = 4,
+	_PROTO_SSH = 6,
 	_PROTO_TFTP = 8,
 	_PROTO_OSS = 9
 }FILE_PROTO;
 
-#define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_TFTP || n == _PROTO_OSS)
+#define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_SSH || n == _PROTO_TFTP || n == _PROTO_OSS)
 #define IS_ILOC_FILE(n)	(n == _PROTO_CUR || n == _PROTO_LOC || n == _PROTO_NFS)
 
 typedef enum{

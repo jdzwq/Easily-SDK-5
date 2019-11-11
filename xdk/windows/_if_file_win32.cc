@@ -7,7 +7,7 @@
 
 	@doc file system call document
 
-	@module	_if_file.c | file system call windows implement file
+	@module	_if_file.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_FILE
 
-res_file_t _file_open(const tchar_t* fname, u32_t fmode)
+res_file_t _file_open(const tchar_t* fname, dword_t fmode)
 {
 	HANDLE hFile = 0;
 	DWORD dwAccess, dwCreate, dwFlag;
@@ -83,7 +83,7 @@ void _file_close(res_file_t fh)
 	CloseHandle(fh);
 }
 
-bool_t _file_size(res_file_t fh, u32_t* ph, u32_t* pl)
+bool_t _file_size(res_file_t fh, dword_t* ph, dword_t* pl)
 {
 	bool_t rt;
 
@@ -195,7 +195,7 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
 	return 1;
 }
 
-bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
+bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
 {
 	HANDLE mh;
 	void* pBase = NULL;
@@ -207,9 +207,9 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
 	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	flen = MAKEINT64(loff, hoff) + dlen;
-	dwh = GETINTH(flen);
-	dwl = GETINTL(flen);
+	flen = MAKELWORD(loff, hoff) + dlen;
+	dwh = GETHDWORD(flen);
+	dwl = GETLDWORD(flen);
 
 	mh = CreateFileMapping(fh, NULL, PAGE_READONLY, dwh, dwl, NULL);
 	if (!mh)
@@ -232,7 +232,7 @@ bool_t _file_read_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t
 	return 1;
 }
 
-bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_t size)
+bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
 {
 	HANDLE mh;
 	void* pBase = NULL;
@@ -244,9 +244,9 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
 	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	flen = MAKEINT64(loff, hoff) + dlen;
-	dwh = GETINTH(flen);
-	dwl = GETINTL(flen);
+	flen = MAKELWORD(loff, hoff) + dlen;
+	dwh = GETHDWORD(flen);
+	dwl = GETLDWORD(flen);
 
 	mh = CreateFileMapping(fh, NULL, PAGE_READWRITE, dwh, dwl, NULL);
 	if (!mh)
@@ -271,7 +271,7 @@ bool_t _file_write_range(res_file_t fh, u32_t hoff, u32_t loff, void* buf, size_
 	return 1;
 }
 
-bool_t _file_truncate(res_file_t fh, u32_t hoff, u32_t loff)
+bool_t _file_truncate(res_file_t fh, dword_t hoff, dword_t loff)
 {
 	HANDLE hMap = NULL;
 
@@ -396,7 +396,7 @@ bool_t _directory_remove(const tchar_t* pname)
 	return RemoveDirectory(pname);
 }
 
-bool_t	_directory_open(const tchar_t* path, u32_t mode)
+bool_t	_directory_open(const tchar_t* path, dword_t mode)
 {
 	WIN32_FIND_DATA wfd;
 	HANDLE hFind;

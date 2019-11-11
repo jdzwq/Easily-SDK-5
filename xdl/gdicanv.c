@@ -7,7 +7,7 @@
 
 	@doc canvas document
 
-	@module	gdicanv.c | canvas implement file
+	@module	gdicanv.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 typedef struct _rdc_canvas_t{
 	res_ctx_t dc;		// memory draw context 
 	int dev;			// canvas type 
-	res_bmp_t bmp;		// memory view
+	res_pmp_t pixmap;		// memory view
 
 	float htpermm, vtpermm;
 	float scale;
@@ -296,16 +296,16 @@ int get_canvas_type(canvas_t canv)
 res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, long width, long height)
 {
 	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
-	res_bmp_t bmp;
+	res_pmp_t pmp;
 	dev_cap_t dev = { 0 };
 
-	bmp = create_compatible_bitmap(rdc, width, height);
-	XDL_ASSERT(bmp != NULL);
+	pmp = create_compatible_pixmap(rdc, width, height);
+	XDL_ASSERT(pmp != NULL);
 
 	pcanv->dc = create_compatible_context(rdc);
 	XDL_ASSERT(pcanv->dc != NULL);
 
-	pcanv->bmp = (res_bmp_t)select_compatible_bitmap(pcanv->dc, bmp);
+	pcanv->pixmap = (res_bmp_t)select_pixmap(pcanv->dc, pmp);
 
 	return pcanv->dc;
 }
@@ -313,12 +313,12 @@ res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, long width, long heig
 void end_canvas_paint(canvas_t canv, res_ctx_t rdc, const xrect_t* pxr)
 {
 	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
-	res_bmp_t bmp;
+	res_pmp_t pmp;
 
 	render_context(pcanv->dc, pxr->x, pxr->y, rdc, pxr->x, pxr->y, pxr->w, pxr->h);
 
-	bmp = (res_bmp_t)select_compatible_bitmap(pcanv->dc, pcanv->bmp);
-	destroy_bitmap(bmp);
+	pmp = (res_pmp_t)select_pixmap(pcanv->dc, pcanv->pixmap);
+	destroy_pixmap(pmp);
 
 	destroy_context(pcanv->dc);
 	pcanv->dc = NULL;

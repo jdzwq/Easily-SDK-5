@@ -112,7 +112,7 @@ bool_t DialogPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	LINKPTR newDialog = create_dialog_doc_from_file(NULL, szFile);
+	LINKPTR newDialog = create_dialog_from_meta_file(NULL, szFile);
 	if (!newDialog)
 	{
 		ShowMsg(MSGICO_ERR, _T("导入表单失败！"));
@@ -432,9 +432,9 @@ void DialogPanel_OnCSSProper(res_win_t widget)
 	LINKPTR flk = dialogctrl_get_focus_item(pdt->hDialog);
 
 	if (flk)
-		propertybag_parse_stylesheet(ptrProper, get_dialog_item_style_ptr(flk));
+		properbag_parse_stylesheet(ptrProper, get_dialog_item_style_ptr(flk));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_dialog_style_ptr(ptr));
+		properbag_parse_stylesheet(ptrProper, get_dialog_style_ptr(ptr));
 
 	res_win_t hProperDlg = properdlg_create(_T("绘制样式"), ptrProper, g_hMain);
 
@@ -445,7 +445,7 @@ void DialogPanel_OnCSSProper(res_win_t widget)
 	if (nRet)
 	{
 		tchar_t sz_style[CSS_LEN] = { 0 };
-		propertybag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
+		properbag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
 
 		if (flk)
 		{
@@ -1154,9 +1154,9 @@ void DialogPanel_OnAttributes(res_win_t widget)
 	LINKPTR ptrItem = dialogctrl_get_focus_item(pdt->hDialog);
 
 	if (ptrItem)
-		propertybag_write_dialog_item_attributes(ptrProper, ptrItem);
+		properbag_write_dialog_item_attributes(ptrProper, ptrItem);
 	else
-		propertybag_write_dialog_attributes(ptrProper, ptrDialog);
+		properbag_write_dialog_attributes(ptrProper, ptrDialog);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1175,9 +1175,9 @@ void DialogPanel_OnStyleSheet(res_win_t widget)
 	LINKPTR ptrItem = dialogctrl_get_focus_item(pdt->hDialog);
 
 	if (ptrItem)
-		propertybag_parse_stylesheet(ptrProper, get_dialog_item_style_ptr(ptrItem));
+		properbag_parse_stylesheet(ptrProper, get_dialog_item_style_ptr(ptrItem));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_dialog_style_ptr(ptrDialog));
+		properbag_parse_stylesheet(ptrProper, get_dialog_style_ptr(ptrDialog));
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1201,11 +1201,11 @@ void DialogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_dialog_item_attributes(pnp->proper, ptrItem);
+			properbag_read_dialog_item_attributes(pnp->proper, ptrItem);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_dialog_item_style(ptrItem, sz_style);
 		}
 		dialogctrl_redraw_item(pdt->hDialog, ptrItem);
@@ -1214,11 +1214,11 @@ void DialogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_dialog_attributes(pnp->proper, ptrDialog);
+			properbag_read_dialog_attributes(pnp->proper, ptrDialog);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_dialog_style(ptrDialog, sz_style);
 		}
 		dialogctrl_redraw(pdt->hDialog);

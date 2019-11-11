@@ -7,7 +7,7 @@
 
 	@doc xdl oss document
 
-	@module	netoss.h | xdl oss interface file
+	@module	netoss.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

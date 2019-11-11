@@ -184,6 +184,7 @@
     <ClInclude Include="TagPanel.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TopogPanel.h" />
+    <ClInclude Include="WEBPanel.h" />
     <ClInclude Include="_Database.h" />
     <ClInclude Include="_Define.h" />
     <ClInclude Include="_Frame.h" />
@@ -192,9 +193,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DialogPanel.cpp" />
-    <ClCompile Include="Formpanel.cpp" />
+    <ClCompile Include="FormPanel.cpp" />
     <ClCompile Include="GraphPanel.cpp" />
-    <ClCompile Include="Gridpanel.cpp" />
+    <ClCompile Include="GridPanel.cpp" />
     <ClCompile Include="ImagePanel.cpp" />
     <ClCompile Include="RichPanel.cpp" />
     <ClCompile Include="SchemaPanel.cpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="ChartPanel.cpp" />
     <ClCompile Include="TagPanel.cpp" />
     <ClCompile Include="TopogPanel.cpp" />
+    <ClCompile Include="WEBPanel.cpp" />
     <ClCompile Include="_Database.cpp" />
     <ClCompile Include="_Frame.cpp" />
     <ClCompile Include="_Module.cpp" />

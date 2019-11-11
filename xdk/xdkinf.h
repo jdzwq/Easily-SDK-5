@@ -7,7 +7,7 @@
 
 	@doc xdk interface document
 
-	@module	xdkinf.h | xdk interface file
+	@module	xdkinf.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -271,12 +271,12 @@ typedef struct _if_timer_t{
 /*socket interface*/
 typedef bool_t (*PF_SOCKET_STARTUP)(void);
 typedef void (*PF_SOCKET_CLEANUP)(void);
-typedef res_file_t (*PF_SOCKET_TCP)(int, u32_t);
-typedef res_file_t(*PF_SOCKET_UDP)(int, u32_t);
-typedef res_file_t(*PF_SOCKET_ICMP)(int, u32_t);
+typedef res_file_t (*PF_SOCKET_TCP)(int, dword_t);
+typedef res_file_t(*PF_SOCKET_UDP)(int, dword_t);
+typedef res_file_t(*PF_SOCKET_ICMP)(int, dword_t);
 typedef void (*PF_SOCKET_SHUTDOWN)(res_file_t, int);
 typedef void (*PF_SOCKET_CLOSE)(res_file_t);
-typedef u32_t(*PF_SOCKET_WAIT)(res_file_t, u32_t, int);
+typedef dword_t(*PF_SOCKET_WAIT)(res_file_t, dword_t, int);
 typedef bool_t (*PF_SOCKET_BIND)(res_file_t, res_addr_t, int);
 typedef bool_t (*PF_SOCKET_CONNECT)(res_file_t, res_addr_t, int);
 typedef bool_t(*PF_SOCKET_SENDTO)(res_file_t, res_addr_t, int, void*, size_t, async_t*);
@@ -300,7 +300,7 @@ typedef int(*PF_SOCKET_WRITE)(void* pso, unsigned char* buf, int len);
 typedef int(*PF_SOCKET_READ)(void* pso, unsigned char* buf, int len);
 typedef int(*PF_SOCKET_ERROR)(tchar_t*, int);
 typedef bool_t(*PF_SOCKET_SHARE)(pid_t, res_file_t, res_file_t, void*, size_t);
-typedef res_file_t(*PF_SOCKET_DUPLI)(res_file_t, u32_t, void*, size_t*);
+typedef res_file_t(*PF_SOCKET_DUPLI)(res_file_t, dword_t, void*, size_t*);
 
 typedef struct _if_socket_t{
 	PF_SOCKET_STARTUP		pf_socket_startup;
@@ -340,21 +340,21 @@ typedef struct _if_socket_t{
 
 #ifdef XDK_SUPPORT_FILE
 /*file interface*/
-typedef res_file_t (*PF_FILE_OPEN)(const tchar_t*, u32_t);
+typedef res_file_t (*PF_FILE_OPEN)(const tchar_t*, dword_t);
 typedef void (*PF_FILE_CLOSE)(res_file_t);
-typedef bool_t(*PF_FILE_SIZE)(res_file_t, u32_t*, u32_t*);
+typedef bool_t(*PF_FILE_SIZE)(res_file_t, dword_t*, dword_t*);
 typedef bool_t(*PF_FILE_WRITE)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_FILE_FLUSH)(res_file_t);
 typedef bool_t(*PF_FILE_READ)(res_file_t, void*, size_t, async_t*);
-typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, u32_t, u32_t, void*, size_t);
-typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, u32_t, u32_t, void*, size_t);
-typedef bool_t(*PF_FILE_TRUNCATE)(res_file_t, u32_t, u32_t);
+typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, dword_t, dword_t, void*, size_t);
+typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, dword_t, dword_t, void*, size_t);
+typedef bool_t(*PF_FILE_TRUNCATE)(res_file_t, dword_t, dword_t);
 typedef bool_t (*PF_FILE_DELETE)(const tchar_t*);
 typedef bool_t(*PF_FILE_RENAME)(const tchar_t*, const tchar_t*);
 typedef bool_t (*PF_FILE_INFO)(const tchar_t*, file_info_t*);
 typedef bool_t (*PF_FILE_SETTIME)(res_file_t fh, const xdate_t* pdt);
 typedef bool_t(*PF_FILE_GETTIME)(res_file_t fh, xdate_t* pdt);
-typedef bool_t(*PF_DIRECTORY_OPEN)(const tchar_t*, u32_t);
+typedef bool_t(*PF_DIRECTORY_OPEN)(const tchar_t*, dword_t);
 typedef bool_t(*PF_DIRECTORY_CREATE)(const tchar_t*);
 typedef bool_t(*PF_DIRECTORY_REMOVE)(const tchar_t*);
 
@@ -415,10 +415,10 @@ typedef struct _if_share_t{
 
 #ifdef XDK_SUPPORT_PIPE
 /*pipe interface*/
-typedef res_file_t (*PF_PIPE_SRV)(const tchar_t*, u32_t);
+typedef res_file_t (*PF_PIPE_SRV)(const tchar_t*, dword_t);
 typedef bool_t(*PF_PIPE_LISTEN)(res_file_t, async_t*);
 typedef void(*PF_PIPE_STOP)(res_file_t);
-typedef res_file_t (*PF_PIPE_CLI)(const tchar_t*, u32_t);
+typedef res_file_t (*PF_PIPE_CLI)(const tchar_t*, dword_t);
 typedef void(*PF_PIPE_CLOSE)(const tchar_t*, res_file_t);
 typedef bool_t(*PF_PIPE_WRITE)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_PIPE_FLUSH)(res_file_t);
@@ -442,9 +442,9 @@ typedef struct _if_pipe_t{
 typedef void(*PF_DEFAULT_COMM_MODE)(dev_com_t*);
 typedef bool_t(*PF_GET_COMM_MODE)(res_file_t, dev_com_t*);
 typedef bool_t(*PF_SET_COMM_MODE)(res_file_t, const dev_com_t*);
-typedef res_file_t(*PF_COMM_OPEN)(const tchar_t*, u32_t);
+typedef res_file_t(*PF_COMM_OPEN)(const tchar_t*, dword_t);
 typedef void(*PF_COMM_CLOSE)(res_file_t);
-typedef u32_t(*PF_COMM_WAIT)(res_file_t, async_t*);
+typedef dword_t(*PF_COMM_WAIT)(res_file_t, async_t*);
 typedef bool_t(*PF_COMM_READ)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_COMM_WRITE)(res_file_t, void*, size_t, async_t*);
 typedef bool_t(*PF_COMM_FLUSH)(res_file_t);
@@ -588,6 +588,9 @@ typedef res_ctx_t(*PF_CREATE_COMPATIBLE_CONTEXT)(res_ctx_t);
 typedef void(*PF_DESTROY_CONTEXT)(res_ctx_t);
 typedef void(*PF_GET_DEVICE_CAPS)(res_ctx_t, dev_cap_t*);
 typedef void(*PF_RENDER_CONTEXT)(res_ctx_t, long, long, res_ctx_t, long, long, long, long);
+typedef res_pmp_t(*PF_SELECT_PIXMAP)(res_ctx_t, res_pmp_t);
+typedef res_pmp_t(*PF_CREATE_COMPATIBLE_PIXMAP)(res_ctx_t, long, long);
+typedef void(*PF_DESTROY_PIXMAP)(res_pmp_t);
 
 typedef float(*PF_PT_PER_MM)(res_ctx_t, bool_t);
 typedef void(*PF_TEXT_MM_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, float*, float*);
@@ -606,8 +609,6 @@ typedef bool_t(*PF_PT_IN_REGION)(res_rgn_t, const xpoint_t*);
 
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
 /*bitmap interface*/
-typedef res_bmp_t(*PF_SELECT_COMPATIBLE_BITMAP)(res_ctx_t, res_bmp_t);
-typedef res_bmp_t(*PF_CREATE_COMPATIBLE_BITMAP)(res_ctx_t, long, long);
 typedef void(*PF_DESTROY_BITMAP)(res_bmp_t);
 typedef void(*PF_GET_BITMAP_SIZE)(res_bmp_t, long*, long*);
 
@@ -678,6 +679,10 @@ typedef struct _if_context_t{
 	PF_GET_DEVICE_CAPS			pf_get_device_caps;
 	PF_RENDER_CONTEXT			pf_render_context;
 
+	PF_SELECT_PIXMAP	pf_select_pixmap;
+	PF_CREATE_COMPATIBLE_PIXMAP	pf_create_compatible_pixmap;
+	PF_DESTROY_PIXMAP	pf_destroy_pixmap;
+
 	PF_TEXT_MM_SIZE		pf_text_mm_size;
 	PF_TEXT_PT_SIZE		pf_text_pt_size;
 	PF_TEXT_MM_METRIC	pf_text_mm_metric;
@@ -694,8 +699,6 @@ typedef struct _if_context_t{
 #endif
 
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
-	PF_SELECT_COMPATIBLE_BITMAP	pf_select_compatible_bitmap;
-	PF_CREATE_COMPATIBLE_BITMAP	pf_create_compatible_bitmap;
 	PF_DESTROY_BITMAP			pf_destroy_bitmap;
 	PF_GET_BITMAP_SIZE			pf_get_bitmap_size;
 
@@ -775,14 +778,20 @@ typedef struct _if_clipboard_t{
 
 #ifdef XDK_SUPPORT_WIDGET
 /*widget interface*/
+typedef bool_t(*PF_FETCH_MESSAGE)(msg_t*, res_win_t);
+typedef bool_t(*PF_PEEK_MESSAGE)(msg_t*, res_win_t);
+typedef bool_t(*PF_TRANSLATE_MESSAGE)(const msg_t*);
+typedef result_t(*PF_DISPATCH_MESSAGE)(const msg_t*);
+typedef int(*PF_TRANSLATE_ACCELERATOR)(res_win_t, res_acl_t, msg_t*);
+
 typedef void(*PF_WIDGET_STARTUP)(int);
 typedef void(*PF_WIDGET_CLEANUP)(void);
-typedef res_win_t(*PF_WIDGET_CREATE)(const tchar_t* wname, u32_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev);
+typedef res_win_t(*PF_WIDGET_CREATE)(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev);
 typedef void(*PF_WIDGET_DESTROY)(res_win_t);
 typedef void(*PF_WIDGET_CLOSE)(res_win_t, int);
 typedef if_event_t* (*PF_WIDGET_GET_DISPATCH)(res_win_t);
-typedef void(*PF_WIDGET_SET_STYLE)(res_win_t, u32_t);
-typedef u32_t(*PF_WIDGET_GET_STYLE)(res_win_t);
+typedef void(*PF_WIDGET_SET_STYLE)(res_win_t, dword_t);
+typedef dword_t(*PF_WIDGET_GET_STYLE)(res_win_t);
 typedef void(*PF_WIDGET_SET_ACCEL)(res_win_t, res_acl_t);
 typedef res_acl_t(*PF_WIDGET_GET_ACCEL)(res_win_t);
 typedef void(*PF_WIDGET_SET_OWNER)(res_win_t, res_win_t);
@@ -826,7 +835,7 @@ typedef void(*PF_WIDGET_POST_QUIT)(res_win_t);
 typedef void(*PF_WIDGET_SIZE)(res_win_t, const xsize_t*);
 typedef void(*PF_WIDGET_MOVE)(res_win_t, const xpoint_t*);
 typedef void(*PF_WIDGET_TAKE)(res_win_t, int);
-typedef void(*PF_WIDGET_SHOW)(res_win_t, u32_t);
+typedef void(*PF_WIDGET_SHOW)(res_win_t, dword_t);
 typedef void(*PF_WIDGET_UPDATE_CLIENT)(res_win_t);
 typedef void(*PF_WIDGET_UPDATE_WINDOW)(res_win_t);
 typedef void(*PF_WIDGET_PAINT)(res_win_t);
@@ -838,8 +847,8 @@ typedef void(*PF_WIDGET_SHOW_CARET)(res_win_t, int, int, bool_t);
 
 typedef void(*PF_WIDGET_SET_TITLE)(res_win_t, const tchar_t*);
 typedef int(*PF_WIDGET_GET_TITLE)(res_win_t, tchar_t*, int);
-typedef void(*PF_WIDGET_CALC_BORDER)(u32_t, border_t*);
-typedef void(*PF_WIDGET_ADJUST_SIZE)(u32_t, xsize_t*);
+typedef void(*PF_WIDGET_CALC_BORDER)(dword_t, border_t*);
+typedef void(*PF_WIDGET_ADJUST_SIZE)(dword_t, xsize_t*);
 typedef bool_t(*PF_WIDGET_ENUM_CHILD)(res_win_t, PF_ENUM_WINDOW_PROC, var_long);
 typedef void(*PF_WIDGET_MENU_ITEM_RECT)(res_win_t, int, xrect_t*);
 typedef bool_t(*PF_WIDGET_IS_MAXIMIZED)(res_win_t);
@@ -879,13 +888,19 @@ typedef res_acl_t(*PF_CREATE_ACCEL_TABLE)(const accel_t*, int);
 typedef void(*PF_DESTROY_ACCEL_TABLE)(res_acl_t);
 
 #ifdef XDK_SUPPORT_WIDGET_EX
-typedef void(*PF_WIDGET_TRACK_MOUSE)(res_win_t, u32_t);
+typedef void(*PF_WIDGET_TRACK_MOUSE)(res_win_t, dword_t);
 typedef void(*PF_WIDGET_SET_REGION)(res_win_t, res_rgn_t);
 typedef void(*PF_WIDGET_SET_ALPHA)(res_win_t, unsigned char);
 typedef unsigned char(*PF_WIDGET_GET_ALPHA)(res_win_t);
 #endif
 
 typedef struct _if_widget_t{
+	PF_FETCH_MESSAGE		pf_fetch_message;
+    PF_PEEK_MESSAGE         pf_peek_message;
+	PF_TRANSLATE_MESSAGE	pf_translate_message;
+	PF_DISPATCH_MESSAGE		pf_dispatch_message;
+	PF_TRANSLATE_ACCELERATOR	pf_translate_accelerator;
+
 	PF_WIDGET_STARTUP		pf_widget_startup;
 	PF_WIDGET_CLEANUP		pf_widget_cleanup;
 

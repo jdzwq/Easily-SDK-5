@@ -7,7 +7,7 @@
 
 	@doc JSON parse document
 
-	@module	jsonparser.c | json parse implement file
+	@module	jsonparser.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -355,6 +355,12 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			b_ret = get_json_item_array(nlk);
 
 			string_cpy(vs_name, get_json_item_name_ptr(nlk), -1);
+
+			if (peek_stack_node(st, 0) == NULL && ma.cur[0] == _T('}'))
+			{
+				ma.ma = STOP;
+				ma.ms = JSON_SUCCEED;
+			}
 		}
 
 	}

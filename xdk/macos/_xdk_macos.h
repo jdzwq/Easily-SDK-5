@@ -64,7 +64,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_CONTEXT_BITMAP
 #define XDK_SUPPORT_CONTEXT_GRAPHIC
 
-//#define XDK_SUPPORT_WIDGET
+#define XDK_SUPPORT_WIDGET
 
 #include <stdio.h>
 #include <wchar.h>
@@ -105,14 +105,15 @@ LICENSE.GPL3 for more details.
 #include <mach-o/dyld.h>
 
 #ifdef XDK_SUPPORT_CONTEXT
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
+#include <X11/XKBlib.h>
 #include <X11/Xcursor/Xcursor.h>
 #include <X11/extensions/Xrandr.h>
-#include <X11/XKBlib.h>
 #include <X11/extensions/Xinerama.h>
 #include <X11/extensions/xf86vmode.h>
 #include <X11/Xft/Xft.h>
@@ -256,7 +257,9 @@ typedef struct _X11_suface_t{
 }X11_suface_t;
 
 extern Display*     g_display;
+
 typedef X11_suface_t* res_ctx_t;
+typedef Pixmap      res_pmp_t;
 typedef Colormap    res_clr_t;
 typedef Font		res_font_t;
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
@@ -268,28 +271,12 @@ typedef Region		res_rgn_t;
 #endif
 
 #ifdef XDK_SUPPORT_WIDGET
-
+typedef XEvent      msg_t;
 typedef unsigned long	res_acl_t;
 typedef unsigned long	wparam_t;
 typedef void*       lparam_t;
 typedef int         result_t;
-
-typedef struct _X11_widget_t{
-    Window  window;
-    
-    uid_t uid;
-    res_hand_t ptr_if_event;
-    res_hand_t ptr_if_subproc;
-    res_hand_t delta;
-    unsigned long style;
-    res_acl_t accel;
-    res_hand_t parent;
-    res_hand_t owner;
-    res_hand_t pdata;
-    result_t result;
-}X11_widget_t;
-
-typedef X11_widget_t*	res_win_t;
+typedef Window      res_win_t;
 
 typedef struct _X11_create_struct_t{
     void*      param;

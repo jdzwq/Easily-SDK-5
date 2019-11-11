@@ -7,7 +7,7 @@
 
 	@doc defination document
 
-	@module	xdkdef.h | definition interface file
+	@module	xdkdef.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -127,45 +127,21 @@ typedef unsigned long	bool_t;
 typedef unsigned short	bool_t;
 #endif
 
-#ifndef s8_t
-typedef char	s8_t;
+#ifndef byte_t
+typedef unsigned char	byte_t;
 #endif
 
-#ifndef u8_t
-typedef unsigned char	u8_t;
+#ifndef sword_t
+typedef unsigned short	sword_t;
 #endif
 
-#ifndef s16_t
-typedef short	s16_t;
+#ifndef dword_t
+typedef unsigned long	dword_t;
 #endif
 
-#ifndef u16_t
-typedef unsigned short	u16_t;
+#ifndef lword_t
+typedef unsigned long long lword_t;
 #endif
-
-#ifndef s32_t
-typedef long	s32_t;
-#endif
-
-#ifndef u32_t
-typedef unsigned long	u32_t;
-#endif
-
-#ifndef s64_t
-typedef long long	s64_t;
-#endif
-
-#ifndef u64_t
-typedef unsigned long long	u64_t;
-#endif
-
-#ifndef wait_t
-typedef int				wait_t;
-#endif
-
-#define WAIT_ERR		((wait_t)-1)
-#define WAIT_TMO		((wait_t)0)
-#define WAIT_RET		((wait_t)1)
 
 #ifdef _OS_64
 typedef long long		var_long;
@@ -177,6 +153,150 @@ typedef long			var_long;
 typedef long long		stamp_t;
 #endif
 
+#ifndef wait_t
+typedef int				wait_t;
+#endif
+
+#define WAIT_ERR		((wait_t)-1)
+#define WAIT_TMO		((wait_t)0)
+#define WAIT_RET		((wait_t)1)
+
+#define SWAPSWORD(n)			(((sword_t)(n) & 0x00FF) << 8) | ((sword_t)(n) & 0xFF00) >> 8))
+#define SWAPDWORD(n)			(((dword_t)(n) & 0x0000FFFF) << 16) | ((dword_t)(n) & 0xFFFF0000) >> 16))
+
+#define LIT_MAKESWORD(lc,hc)	((((sword_t)(hc) << 8) & 0xFF00) | ((sword_t)(lc) & 0x00FF))
+#define LIT_GETHBYTE(sw)		(byte_t)(((sword_t)(sw) >> 8) & 0x00FF)
+#define LIT_GETLBYTE(sw)		(byte_t)((sword_t)(sw) & 0x00FF)
+
+#define BIG_MAKESWORD(lc,hc)	((((sword_t)(lc) << 8) & 0xFF00) | ((sword_t)(hc) & 0x00FF))
+#define BIG_GETHBYTE(sw)		(byte_t)((sword_t)(sw) & 0x00FF)
+#define BIG_GETLBYTE(sw)		(byte_t)(((sword_t)(sw) >> 8) & 0x00FF) 
+
+#define LIT_MAKEDWORD(ls,hs)	((((dword_t)(hs) << 16) & 0xFFFF0000) | ((dword_t)(ls) & 0x0000FFFF))
+#define LIT_GETHSWORD(dw)		(sword_t)(((dword_t)(dw) >> 16) & 0x0000FFFF)
+#define LIT_GETLSWORD(dw)		(sword_t)((dword_t)(dw) & 0x0000FFFF)
+
+#define BIG_MAKEDWORD(ls,hs)	((((dword_t)(ls) << 16) & 0xFFFF0000) | ((dword_t)(hs) & 0x0000FFFF))
+#define BIG_GETHSWORD(dw)		(sword_t)((dword_t)(dw) & 0x0000FFFF)
+#define BIG_GETLSWORD(dw)		(sword_t)(((dword_t)(dw) >> 16) & 0x0000FFFF)
+
+#define LIT_MAKELWORD(lw,hw)	((((lword_t)(hw) << 32) & 0xFFFFFFFF00000000) | ((lword_t)(lw) & 0x00000000FFFFFFFF))
+#define LIT_GETHDWORD(ll)		(dword_t)(((lword_t)(ll) >> 32) & 0x00000000FFFFFFFF)
+#define LIT_GETLDWORD(ll)		(dword_t)((lword_t)(ll) & 0x00000000FFFFFFFF)
+
+#define BIG_MAKELWORD(lw,hw)	((((lword_t)(lw) << 32) & 0xFFFFFFFF00000000) | (lword_t)(hw) & 0x00000000FFFFFFFF))
+#define BIG_GETHDWORD(ll)		(dword_t)((lword_t)(ll) & 0x00000000FFFFFFFF)
+#define BIG_GETLDWORD(ll)		(dword_t)(((lword_t)(ll) >> 32) & 0x00000000FFFFFFFF)
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define MAKELWORD			BIG_MAKELWORD
+#define GETLDWORD			BIG_GETLDWORD
+#define GETHDWORD			BIG_GETHDWORD
+
+#define MAKEDWORD			BIG_MAKEDWORD
+#define GETLSWORD			BIG_GETLSWORD
+#define GETHSWORD			BIG_GETHSWORD
+
+#define MAKESWORD			BIG_MAKESWORD
+#define GETLBYTE			BIG_GETLBYTE
+#define GETHBYTE			BIG_GETHBYTE
+#else
+#define MAKELWORD			LIT_MAKELWORD
+#define GETLDWORD			LIT_GETLDWORD
+#define GETHDWORD			LIT_GETHDWORD
+
+#define MAKEDWORD			LIT_MAKEDWORD
+#define GETLSWORD			LIT_GETLSWORD
+#define GETHSWORD			LIT_GETHSWORD
+
+#define MAKESWORD			LIT_MAKESWORD
+#define GETLBYTE			LIT_GETLBYTE
+#define GETHBYTE			LIT_GETHBYTE
+#endif
+
+#define PUT_BYTE(buf,off,n)			(buf[off] = (unsigned char)((n) & 0xFF))
+#define PUT_SWORD_LIT(buf,off,n)	(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF))
+#define PUT_DWORD_LIT(buf,off,n)	(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+3] = (unsigned char) (((n) >> 24) & 0xFF))
+#define PUT_LWORD_LIT(buf,off,n)    (PUT_DWORD_LIT(buf,off,LIT_GETLDWORD(n)),PUT_DWORD_LIT(buf,(off+4),LIT_GETHDWORD(n)))
+#define PUT_SWORD_BIG(buf,off,n)	(buf[off] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+1] = (unsigned char) ((n) & 0xFF))
+#define PUT_DWORD_BIG(buf,off,n)	(buf[off] = (unsigned char) (((n) >> 24) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+3] = (unsigned char) ((n) & 0xFF))
+#define PUT_LWORD_BIG(buf,off,n)    (PUT_DWORD_BIG(buf,off,BIG_GETLDWORD(n)),PUT_DWORD_BIG(buf,(off+4),BIG_GETHDWORD(n)))
+
+#define GET_BYTE(buf,off)			((unsigned char)(buf[off] & 0xFF))
+#define GET_SWORD_LIT(buf,off)		((((unsigned short)(buf[off + 1]) << 8) & 0xFF00) | ((unsigned short)(buf[off]) & 0x00FF))
+#define GET_DWORD_LIT(buf,off)		((((unsigned long)(buf[off + 3]) << 24) & 0xFF000000) | (((unsigned long)(buf[off + 2]) << 16) & 0x00FF0000)  | (((unsigned long)(buf[off + 1]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off]) & 0x000000FF))
+#define GET_LWORD_LIT(buf,off)      LIT_MAKELWORD(GET_DWORD_LIT(buf,off),GET_DWORD_LIT(buf,(off + 4)))
+#define GET_SWORD_BIG(buf,off)		((((unsigned short)(buf[off]) << 8) & 0xFF00) | ((unsigned short)(buf[off+1]) & 0x00FF))
+#define GET_DWORD_BIG(buf,off)		((((unsigned long)(buf[off]) << 24) & 0xFF000000)  | (((unsigned long)(buf[off + 1]) << 16) & 0x00FF0000) | (((unsigned long)(buf[off + 2]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off + 3]) & 0x000000FF))
+#define GET_LWORD_BIG(buf,off)      BIG_MAKELWORD(GET_DWORD_BIG(buf,off),GET_DWORD_BIG(buf,(off + 4)))
+
+#define PUT_SWORD_NET		PUT_SWORD_BIG
+#define GET_SWORD_NET		GET_SWORD_BIG
+#define PUT_DWORD_NET		PUT_DWORD_BIG
+#define GET_DWORD_NET		GET_DWORD_BIG
+#define PUT_LWORD_NET		PUT_LWORD_BIG
+#define GET_LWORD_NET		GET_LWORD_BIG
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define PUT_SWORD_LOC		PUT_SWORD_BIG
+#define GET_SWORD_LOC		GET_SWORD_BIG
+#define PUT_DWORD_LOC		PUT_DWORD_BIG
+#define GET_DWORD_LOC		GET_DWORD_BIG
+#define PUT_LWORD_LOC		PUT_LWORD_BIG
+#define GET_LWORD_LOC		GET_LWORD_BIG
+#else
+#define PUT_SWORD_LOC		PUT_SWORD_LIT
+#define GET_SWORD_LOC		GET_SWORD_LIT
+#define PUT_DWORD_LOC		PUT_DWORD_LIT
+#define GET_DWORD_LOC		GET_DWORD_LIT
+#define PUT_LWORD_LOC		PUT_LWORD_LIT
+#define GET_LWORD_LOC		GET_LWORD_LIT
+#endif
+
+#ifdef _OS_64
+#define LIT_MAKESIZE(lw,hw)		((((size_t)(hw) << 32) & 0xFFFFFFFF00000000) | ((size_t)(lw) & 0x00000000FFFFFFFF))
+#define LIT_GETSIZEH(ll)		(unsigned long)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
+#define LIT_GETSIZEL(ll)		(unsigned long)((size_t)(ll) & 0x00000000FFFFFFFF)
+
+#define BIG_MAKESIZE(lw,hw)		((((size_t)(lw) << 32) & 0xFFFFFFFF00000000) | (size_t)(hw) & 0x00000000FFFFFFFF))
+#define BIG_GETSIZEH(ll)		(unsigned long)((size_t)(ll) & 0x00000000FFFFFFFF)
+#define BIG_GETSIZEL(ll)		(unsigned long)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define MAKESIZE			BIG_MAKESIZE
+#define GETSIZEH			BIG_GETSIZEH
+#define GETSIZEL			BIG_GETSIZEL
+#else
+#define MAKESIZE			LIT_MAKESIZE
+#define GETSIZEH			LIT_GETSIZEH
+#define GETSIZEL			LIT_GETSIZEL
+#endif
+
+#else
+#define MAKESIZE(l,h)		((size_t)l)
+#define GETSIZEH(ll)		((unsigned long)0)
+#define GETSIZEL(ll)		((unsigned long)(ll))
+#endif /*_OS_64*/
+
+#ifdef _OS_64
+#define PUT_VAR_LONG_NET(buf,p)     PUT_LWORD_NET(buf,0,(var_long)p)
+#define GET_VAR_LONG_NET(buf)       (var_long)GET_LWORD_NET(buf,0)
+#else
+#define PUT_VAR_LONG_NET(buf,p)     PUT_DWORD_NET(buf,0,(var_long)p)
+#define GET_VAR_LONG_NET(buf)       (var_long)GET_DWORD_NET(buf,0)
+#endif
+
+#ifdef _OS_64
+#define VOID_SIZE       8
+#define MAX_SIZE		0x7FFFFFFFFFF
+#else
+#define VOID_SIZE       4
+#define MAX_SIZE		0x7FFFFFFF
+#endif
+
+#ifndef INVALID_SIZE
+#define INVALID_SIZE	((size_t)-1)
+#endif
 
 #ifdef _OS_64
 #define PAGE_INDI		8
@@ -215,59 +335,6 @@ typedef long long		stamp_t;
 #define PAGE_GRAN       (64 * 1024)
 #endif
 
-#define LIT_MAKEINT64(lw,hw)	((((unsigned long long)(hw) << 32) & 0xFFFFFFFF00000000) | ((unsigned long long)(lw) & 0x00000000FFFFFFFF))
-#define LIT_GETINTH(ll)		(unsigned int)(((unsigned long long)(ll) >> 32) & 0x00000000FFFFFFFF)
-#define LIT_GETINTL(ll)		(unsigned int)((unsigned long long)(ll) & 0x00000000FFFFFFFF)
-
-#define BIG_MAKEINT64(lw,hw)	((((unsigned long long)(lw) << 32) & 0xFFFFFFFF00000000) | (unsigned long long)(hw) & 0x00000000FFFFFFFF))
-#define BIG_GETINTH(ll)		(unsigned int)((unsigned long long)(ll) & 0x00000000FFFFFFFF)
-#define BIG_GETINTL(ll)		(unsigned int)(((unsigned long long)(ll) >> 32) & 0x00000000FFFFFFFF)
-
-#if BYTE_ORDER == BIG_ENDIAN
-#define MAKEINT64			BIG_MAKEINT64
-#define GETINTH				BIG_GETINTH
-#define GETINTL				BIG_GETINTL
-#else
-#define MAKEINT64			LIT_MAKEINT64
-#define GETINTH				LIT_GETINTH
-#define GETINTL				LIT_GETINTL
-#endif
-
-#ifdef _OS_64
-#define LIT_MAKESIZE(lw,hw)		((((size_t)(hw) << 32) & 0xFFFFFFFF00000000) | ((size_t)(lw) & 0x00000000FFFFFFFF))
-#define LIT_GETSIZEH(ll)		(unsigned long)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
-#define LIT_GETSIZEL(ll)		(unsigned long)((size_t)(ll) & 0x00000000FFFFFFFF)
-
-#define BIG_MAKESIZE(lw,hw)		((((size_t)(lw) << 32) & 0xFFFFFFFF00000000) | (size_t)(hw) & 0x00000000FFFFFFFF))
-#define BIG_GETSIZEH(ll)		(unsigned long)((size_t)(ll) & 0x00000000FFFFFFFF)
-#define BIG_GETSIZEL(ll)		(unsigned long)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
-
-#if BYTE_ORDER == BIG_ENDIAN
-#define MAKESIZE			BIG_MAKESIZE
-#define GETSIZEH			BIG_GETSIZEH
-#define GETSIZEL			BIG_GETSIZEL
-#else
-#define MAKESIZE			LIT_MAKESIZE
-#define GETSIZEH			LIT_GETSIZEH
-#define GETSIZEL			LIT_GETSIZEL
-#endif
-
-#else
-#define MAKESIZE(l,h)		((size_t)l)
-#define GETSIZEH(ll)		((unsigned long)0)
-#define GETSIZEL(ll)		((unsigned long)(ll))
-#endif /*_OS_64*/
-
-
-#ifndef INVALID_SIZE
-#define INVALID_SIZE	((size_t)-1)
-#endif
-
-#ifdef _OS_64
-#define MAX_SIZE		0x7FFFFFFFFFF
-#else
-#define MAX_SIZE		0x7FFFFFFF
-#endif
 
 #define SDK_UNSUPPORT_ERROR     assert(0)
 
@@ -357,7 +424,7 @@ typedef long long		stamp_t;
 
 typedef struct async_t{
 	int type;		/*the async type, can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE*/
-	u32_t timo;		/*the timeout value in millisecond*/
+	dword_t timo;		/*the timeout value in millisecond*/
 	size_t size;	/*async operation data bytes*/
 
 	res_hand_t port;	/*inner port resource handle*/
@@ -406,7 +473,7 @@ typedef struct async_t{
 #define XDKSTYLE		_T("XDKSTYLE")
 #define XDKACCEL		_T("XDKACCEL")
 #define XDKOWNER		_T("XDKOWNER")
-#define XDKUSER			_T("XDKUSER")
+#define XDKUSERID		_T("XDKUSERID")
 #define XDKRESULT		_T("XDKRESULT")
 
 #define WIDGET_TITLE_SPAN		(float)10	//mm
@@ -601,10 +668,10 @@ typedef struct _file_info_t {
 
 	union{
 		struct{
-			u32_t low_size;
-			u32_t high_size;
+			dword_t low_size;
+			dword_t high_size;
 		};
-		u64_t file_size;
+		lword_t file_size;
 	};
 
 	xdate_t create_time;
@@ -896,9 +963,9 @@ typedef void(*PF_ON_LBUTTON_UP)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_LBUTTON_DBCLICK)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_RBUTTON_DOWN)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_RBUTTON_UP)(res_win_t, const xpoint_t*);
-typedef void(*PF_ON_MOUSE_MOVE)(res_win_t, u32_t, const xpoint_t*);
-typedef void(*PF_ON_MOUSE_HOVER)(res_win_t, u32_t, const xpoint_t*);
-typedef void(*PF_ON_MOUSE_LEAVE)(res_win_t, u32_t, const xpoint_t*);
+typedef void(*PF_ON_MOUSE_MOVE)(res_win_t, dword_t, const xpoint_t*);
+typedef void(*PF_ON_MOUSE_HOVER)(res_win_t, dword_t, const xpoint_t*);
+typedef void(*PF_ON_MOUSE_LEAVE)(res_win_t, dword_t, const xpoint_t*);
 typedef void(*PF_ON_WHEEL)(res_win_t, bool_t, long);
 typedef void(*PF_ON_SCROLL)(res_win_t, bool_t, long);
 typedef void(*PF_ON_KEYDOWN)(res_win_t, int);

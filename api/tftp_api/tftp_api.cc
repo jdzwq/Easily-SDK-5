@@ -356,7 +356,7 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 
 	xsprintf(file, _T("%s/tftp.ini"), pb->path);
 
-	if (!load_proper_doc_from_ini_file(ptr_prop, NULL, file))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
 	{
 		raise_user_error(_T("-1"), _T("load tftp config falied\n"));
 	}

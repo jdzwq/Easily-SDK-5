@@ -7,7 +7,7 @@
 
 	@doc ssl document
 
-	@module	netssl.c | ssl implement file
+	@module	netssl.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -1392,12 +1392,13 @@ static handshake_states _ssl_write_client_certificate(ssl_t *pssl)
 
 static int _ssl_write_client_key_exchange(ssl_t *pssl)
 {
-	int n, msglen = SSL_HSH_SIZE;
+	int pos, n, msglen = SSL_HSH_SIZE;
 	
 	if (pssl->ses_ciph == SSL_EDH_RSA_DES_168_SHA || pssl->ses_ciph == SSL_EDH_RSA_AES_256_SHA)
 	{
 		n = pssl->dhm_ow->len;
 
+		pos = msglen;
 		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)n);
 		msglen += 2;
 
@@ -1406,6 +1407,9 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 			return SSL_HANDSHAKE_ERROR;
 		}
 		msglen += n;
+
+		//if n changed, reset key len
+		PUT_SWORD_NET(pssl->snd_msg, pos, (unsigned short)n);
 
 		pssl->pmslen = pssl->dhm_ow->len;
 
@@ -2316,7 +2320,8 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 		n = GET_SWORD_NET(pssl->rcv_msg, msglen);
 		msglen += 2;
 
-		if (n < 1 || n > pssl->dhm_ow->len || n + 2 != haslen)
+		//if (n < 1 || n > pssl->dhm_ow->len || n + 2 != haslen) //key size maybe changed
+		if (n < 1 || n + 2 != haslen)
 		{
 			set_last_error(_T("0"), _T("invalid client key exchange length"), -1);
 			return SSL_HANDSHAKE_ERROR;

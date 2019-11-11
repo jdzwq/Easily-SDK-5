@@ -7,7 +7,7 @@
 
 	@doc printer context document
 
-	@module	impbitmap.c | printer context implement file
+	@module	impbitmap.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -37,24 +37,6 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
-
-res_bmp_t select_compatible_bitmap(res_ctx_t rdc, res_bmp_t obj)
-{
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	return (*pif->pf_select_compatible_bitmap)(rdc, obj);
-}
-
-res_bmp_t create_compatible_bitmap(res_ctx_t rdc, long cx, long cy)
-{
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	return (*pif->pf_create_compatible_bitmap)(rdc, cx, cy);
-}
 
 void destroy_bitmap(res_bmp_t bmp)
 {

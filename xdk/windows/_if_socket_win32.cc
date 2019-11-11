@@ -7,7 +7,7 @@
 
 	@doc socket document
 
-	@module	if_socket_win.c | socket windows implement file
+	@module	if_socket_win.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -184,7 +184,7 @@ int _socket_error(tchar_t* buf, int max)
 	return dwLen;
 }
 
-res_file_t _socket_tcp(int ver, u32_t flag)
+res_file_t _socket_tcp(int ver, dword_t flag)
 {
 	SOCKET so;
 	DWORD dw = 0;
@@ -197,7 +197,7 @@ res_file_t _socket_tcp(int ver, u32_t flag)
 	return (so == INVALID_SOCKET) ? INVALID_FILE : (res_file_t)so;
 }
 
-res_file_t _socket_udp(int ver, u32_t flag)
+res_file_t _socket_udp(int ver, dword_t flag)
 {
 	SOCKET so;
 	DWORD dw = 0;
@@ -210,7 +210,7 @@ res_file_t _socket_udp(int ver, u32_t flag)
 	return (so == INVALID_SOCKET) ? INVALID_FILE : (res_file_t)so;
 }
 
-res_file_t _socket_icmp(int ver, u32_t flag)
+res_file_t _socket_icmp(int ver, dword_t flag)
 {
 	SOCKET so;
 	DWORD dw = 0;
@@ -223,7 +223,7 @@ res_file_t _socket_icmp(int ver, u32_t flag)
 	return (so == INVALID_SOCKET) ? INVALID_FILE : (res_file_t)so;
 }
 
-res_file_t _socket_open(int af, int type, int protocol, u32_t flag)
+res_file_t _socket_open(int af, int type, int protocol, dword_t flag)
 {
 	SOCKET so;
 	DWORD dw = 0;
@@ -263,7 +263,7 @@ void _socket_close(res_file_t so)
 	return (FD_ISSET(so, &fr)) ? WAIT_RET : WAIT_ERR;
 }*/
 
-u32_t _socket_wait(res_file_t so, u32_t msk, int ms)
+dword_t _socket_wait(res_file_t so, dword_t msk, int ms)
 {
 	HANDLE ev;
 	WSANETWORKEVENTS  ns = { 0 };
@@ -814,7 +814,7 @@ bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data,
 	return 1;
 }
 
-res_file_t _socket_dupli(res_file_t procfd, u32_t flag, void* data, size_t* pcb)
+res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pcb)
 {
 	WSAPROTOCOL_INFO wi = { 0 };
 	DWORD dw;

@@ -7,7 +7,7 @@
 
 	@doc xdl display context document
 
-	@module	impctx.h | display context interface file
+	@module	impctx.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -73,6 +73,30 @@ XDL_API void destroy_context(res_ctx_t rdc);
 @RETURN void: none.
 */
 XDL_API void render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth);
+
+/*
+@FUNCTION select_pixmap: select a pixmap object into memory context.
+@INPUT res_ctx_t rdc: memory context resource handle.
+@INPUT res_pmp_t obj: pixmap resource handle.
+@RETURN res_pmp_t: if succeeds return original pixmap object in memory context, fails return NULL.
+*/
+XDL_API res_pmp_t select_pixmap(res_ctx_t rdc, res_pmp_t obj);
+
+/*
+@FUNCTION create_compatible_pixmap: create a memory context.
+@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT long cx: pixmap width in points.
+@INPUT long cy: pixmap height in points.
+@RETURN res_pmp_t: if succeeds return memory context resource handle, fails return NULL.
+*/
+XDL_API res_pmp_t create_compatible_pixmap(res_ctx_t rdc, long cx, long cy);
+
+/*
+@FUNCTION destroy_pixmap: destroy pixmap object.
+@INPUT res_pmp_t pmp: device context resource handle.
+@RETURN void: none.
+*/
+XDL_API void destroy_pixmap(res_pmp_t pmp);
 
 /*
 @FUNCTION get_device_caps: get device context capabilities.

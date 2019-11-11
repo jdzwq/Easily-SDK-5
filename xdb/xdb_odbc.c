@@ -181,7 +181,7 @@ bool_t STDCALL db_parse_dsn(const tchar_t* dsnfile, tchar_t* srv_buf, int srv_le
 	TRY_CATCH;
 
 	d_ptr = create_proper_doc();
-	if (!load_proper_doc_from_ini_file(d_ptr, NULL, dsnfile))
+	if (!load_proper_from_ini_file(d_ptr, NULL, dsnfile))
 	{
 		raise_user_error(_T("-1"), _T("parse dsn file failed"));
 	}
@@ -233,7 +233,7 @@ xdb_t STDCALL db_open_dsn(const tchar_t* dsnfile)
 	//CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	d_ptr = create_proper_doc();
-	if (!load_proper_doc_from_ini_file(d_ptr, NULL, dsnfile))
+	if (!load_proper_from_ini_file(d_ptr, NULL, dsnfile))
 	{
 		raise_user_error(_T("-1"), _T("parse dsn file failed"));
 	}

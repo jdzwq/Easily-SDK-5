@@ -813,9 +813,9 @@ void FormPanel_OnCSSProper(res_win_t widget)
 	LINKPTR flk = formctrl_get_focus_field(pdt->hForm);
 
 	if (flk)
-		propertybag_parse_stylesheet(ptr_proper, get_field_style_ptr(flk));
+		properbag_parse_stylesheet(ptr_proper, get_field_style_ptr(flk));
 	else
-		propertybag_parse_stylesheet(ptr_proper, get_form_style_ptr(ptr));
+		properbag_parse_stylesheet(ptr_proper, get_form_style_ptr(ptr));
 
 	res_win_t hProperDlg = properdlg_create(_T("»æÖÆÑùÊ½"), ptr_proper, g_hMain);
 	
@@ -826,7 +826,7 @@ void FormPanel_OnCSSProper(res_win_t widget)
 	if (nRet)
 	{
 		tchar_t sz_style[CSS_LEN] = { 0 };
-		propertybag_format_stylesheet(ptr_proper, sz_style, CSS_LEN);
+		properbag_format_stylesheet(ptr_proper, sz_style, CSS_LEN);
 
 		if (flk)
 		{
@@ -1598,9 +1598,9 @@ void FormPanel_OnAttributes(res_win_t widget)
 	LINKPTR ptrField = formctrl_get_focus_field(pdt->hForm);
 
 	if (ptrField)
-		propertybag_write_field_attributes(ptrProper, ptrField);
+		properbag_write_field_attributes(ptrProper, ptrField);
 	else
-		propertybag_write_form_attributes(ptrProper, ptrForm);
+		properbag_write_form_attributes(ptrProper, ptrForm);
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1619,9 +1619,9 @@ void FormPanel_OnStyleSheet(res_win_t widget)
 	LINKPTR ptrField = formctrl_get_focus_field(pdt->hForm);
 
 	if (ptrField)
-		propertybag_parse_stylesheet(ptrProper, get_field_style_ptr(ptrField));
+		properbag_parse_stylesheet(ptrProper, get_field_style_ptr(ptrField));
 	else
-		propertybag_parse_stylesheet(ptrProper, get_form_style_ptr(ptrForm));
+		properbag_parse_stylesheet(ptrProper, get_form_style_ptr(ptrForm));
 
 	properctrl_redraw(pdt->hProper);
 }
@@ -1645,11 +1645,11 @@ void FormPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_field_attributes(pnp->proper, ptrField);
+			properbag_read_field_attributes(pnp->proper, ptrField);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_field_style(ptrField, sz_style);
 		}
 		formctrl_redraw_field(pdt->hForm, ptrField, 1);
@@ -1658,11 +1658,11 @@ void FormPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			propertybag_read_form_attributes(pnp->proper, ptrForm);
+			properbag_read_form_attributes(pnp->proper, ptrForm);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
-			propertybag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
+			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
 			set_form_style(ptrForm, sz_style);
 		}
 		formctrl_redraw(pdt->hForm, 1);

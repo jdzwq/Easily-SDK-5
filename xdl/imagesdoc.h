@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc xdl imagesdoc document
+	@doc imagesdoc document
 
-	@module	imagesdoc.h | xdl images interface file
+	@module	imagesdoc.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

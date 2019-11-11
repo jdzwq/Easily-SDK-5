@@ -7,7 +7,7 @@
 
 	@doc utility document
 
-	@module	xdlutil.c | xdl utility implement file
+	@module	xdlutil.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -381,9 +381,9 @@ void format_long_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t si
 	tchar_t sz_to[NUM_LEN + 1] = { 0 };
 	tchar_t sz_total[NUM_LEN + 1] = { 0 };
 
-	long long ll = 0;
+	unsigned long long ll = 0;
 
-	ll = MAKELONGLONG(loff, hoff);
+	ll = MAKELWORD(loff, hoff);
 	lltoxs(ll, sz_from, NUM_LEN);
 
 	ll += (size - 1);
@@ -396,10 +396,10 @@ void format_long_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t si
 
 int format_longlong(unsigned long hl, unsigned long ll, tchar_t* buf)
 {
-	long long li;
+	unsigned long long li;
 	int len = 0;
 	
-	li = (((long long)hl) << 32) | (long long)ll;
+	li = (((unsigned long long)hl) << 32) | (unsigned long long)ll;
 	do
 	{
 		if (buf)
@@ -422,7 +422,7 @@ int format_longlong(unsigned long hl, unsigned long ll, tchar_t* buf)
 
 void parse_longlong(unsigned long* phl, unsigned long* pll, const tchar_t* str)
 {
-	long long li = 0;
+	unsigned long long li = 0;
 	int len = 0;
 
 	if (phl)
@@ -2777,7 +2777,16 @@ int parse_proto(const tchar_t* file)
 	if(xsnicmp(file,_T("http:"),xslen(_T("http:"))) == 0)
 	{
 		return _PROTO_HTTP;
-	}else if(xsnicmp(file,_T("tftp:"),xslen(_T("tftp:"))) == 0)
+	}
+	else if (xsnicmp(file, _T("https:"), xslen(_T("https:"))) == 0)
+	{
+		return _PROTO_HTTP;
+	}
+	else if (xsnicmp(file, _T("ssh:"), xslen(_T("ssh:"))) == 0)
+	{
+		return _PROTO_SSH;
+	}
+	else if (xsnicmp(file, _T("tftp:"), xslen(_T("tftp:"))) == 0)
 	{
 		return _PROTO_TFTP;
 	}

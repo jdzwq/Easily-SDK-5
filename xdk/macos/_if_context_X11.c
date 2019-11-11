@@ -71,10 +71,15 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc)
 {
     X11_suface_t* ctx = (X11_suface_t*)rdc;
     XGCValues gv = {0};
+    Window r;
+    int x,y;
+    unsigned int w,h,b,d;
+    
+    XGetGeometry(g_display, ctx->device, &r, &x, &y, &w, &h, &b, &d);
     
     ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
-    
-    ctx->device = XCreatePixmap (g_display, DefaultRootWindow(g_display), 1, 1, 0);
+
+    ctx->device = XCreatePixmap (g_display, r, w, h, d);
     ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
     ctx->memo = 1;
     
@@ -115,22 +120,80 @@ void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
 void _render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth)
 {
     XCopyArea(g_display, src, dst, src, srcx, srcy, dstw, dsth, dstx, dsty);
+}
+
+res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp)
+{
+    X11_suface_t* ctx = (X11_suface_t*)rdc;
+    Pixmap org;
     
-    /*cairo_surface_t *surface;
-    Pixmap pixmap;
+    org = (Pixmap)ctx->device;
+    ctx->device = pmp;
     
-    pixmap = XCreatePixmap (GDK_WINDOW_XDISPLAY (window),
-                            GDK_WINDOW_XID (window),
-                            width, height,
-                            gdk_visual_get_depth (visual));
-    surface = cairo_xlib_surface_create (GDK_WINDOW_XDISPLAY (window),
-                                         pixmap,
-                                         GDK_VISUAL_XVISUAL (visual),
-                                         width, height);
-    attach_free_pixmap_handler (surface, GDK_WINDOW_DISPLAY (window), pixmap);*/
+    return org;
+}
+
+res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, long cx, long cy)
+{
+    X11_suface_t* ctx = (X11_suface_t*)rdc;
+    
+    Pixmap pmp;
+    Window r;
+    int x,y;
+    unsigned int w,h,b,d;
+    
+    XGetGeometry(g_display, ctx->device, &r, &x, &y, &w, &h, &b, &d);
+    
+    pmp = XCreatePixmap (g_display, ctx->device, cx, cy, d);
+    
+    return (res_pmp_t)pmp;
+}
+
+void _destroy_pixmap(res_pmp_t pmp)
+{
+    XFreePixmap(g_display, pmp);
 }
 
 /*******************************************************************************************************************/
+
+static tchar_t *x11_font_name[] = {_T("*")};
+static tchar_t *x11_font_weight[] = {_T("regular"), _T("medium"), _T("bold")};
+static tchar_t *x11_font_style[]  = {_T("r"), _T("i"), _T("o")};
+static tchar_t x11_pattern[] = {_T("-*-%s-%s-%s-*--%d-*-*-*-*-*-*")};
+    
+static void _format_font_pattern(const xfont_t* pxf, tchar_t* buf)
+{
+    const tchar_t* fs_name = NULL;
+    const tchar_t* fs_style = NULL;
+    const tchar_t* fs_weight = NULL;
+    int fs_size = 10;
+    
+    if(_tstrnull((pxf->family)))
+        fs_name = x11_font_name[0];
+    else
+        fs_name = pxf->family;
+       
+    if(_tstrtol(pxf->weight) < 400)
+        fs_weight = x11_font_weight[0];
+    else if(_tstrtol(pxf->weight) < 700)
+        fs_weight = x11_font_weight[1];
+    else
+        fs_weight = x11_font_weight[2];
+    
+    if(_tstrcmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
+        fs_style = x11_font_style[1];
+    else if(_tstrcmp(pxf->style,GDI_ATTR_FONT_STYLE_OBLIQUE) == 0)
+        fs_style = x11_font_style[2];
+    else
+        fs_style = x11_font_style[0];
+    
+     if(_tstrnull((pxf->size)))
+         fs_size = 10;
+    else
+        fs_size = _tstrtol(pxf->size);
+    
+    _tsprintf(buf, x11_pattern, fs_name, fs_weight, fs_style, fs_size);
+}
 
 float _pt_per_mm(res_ctx_t rdc, bool_t horz)
 {
@@ -159,11 +222,11 @@ int _font_size(res_ctx_t rdc, long height)
 void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, long* pcx, long* pcy)
 {
     XFontStruct* pfs = NULL;
-    tchar_t pattern[1024] = {0};
+    tchar_t pattern[256] = {0};
     
     if(len < 0) len = _tstrlen(txt);
     
-    _tsprintf(pattern, _T("*-%s?-*-%s-*-%s?-*-%d-*"), pxf->family, pxf->weight, pxf->style, _tstrtol(pxf->size));
+    _format_font_pattern(pxf, pattern);
     
     pfs = XLoadQueryFont(g_display, pattern);
     if(!pfs)
@@ -190,9 +253,9 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, long* pcx, long* pcy)
 {
     XFontStruct* pfs = NULL;
-    tchar_t pattern[1024] = {0};
+    tchar_t pattern[256] = {0};
     
-    _tsprintf(pattern, _T("*-%d"), _tstrtol(pxf->size));
+    _format_font_pattern(pxf, pattern);
     
     pfs = XLoadQueryFont(g_display, pattern);
     if(!pfs)

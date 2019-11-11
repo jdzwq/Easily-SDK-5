@@ -124,7 +124,7 @@ res_file_t _socket_open(int af, int type, int protocol)
     return (so < 0) ? INVALID_FILE : so;
 }
 
-res_file_t _socket_tcp(int ver, u32_t flag)
+res_file_t _socket_tcp(int ver, dword_t flag)
 {
     res_file_t so;
     
@@ -140,7 +140,7 @@ res_file_t _socket_tcp(int ver, u32_t flag)
     return so;
 }
 
-res_file_t _socket_udp(int ver, u32_t flag)
+res_file_t _socket_udp(int ver, dword_t flag)
 {
     res_file_t so;
     
@@ -157,7 +157,7 @@ res_file_t _socket_udp(int ver, u32_t flag)
     return so;
 }
 
-res_file_t _socket_icmp(int ver, u32_t flag)
+res_file_t _socket_icmp(int ver, dword_t flag)
 {
     res_file_t so;
     
@@ -184,11 +184,11 @@ void _socket_close(res_file_t so)
 	close(so);
 }
 
-u32_t _socket_wait(res_file_t so, u32_t msk, int ms)
+dword_t _socket_wait(res_file_t so, dword_t msk, int ms)
 {
     struct fd_set fr, fw;
     struct timeval tv = { 0 };
-    u32_t ev = 0;
+    dword_t ev = 0;
     
     FD_ZERO(&fr);
     FD_SET(so, &fr);
@@ -675,7 +675,7 @@ bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data,
     return (sendmsg(procfd, &msg, 0) > 0)? 1 : 0;
 }
 
-res_file_t _socket_dupli(res_file_t procfd, u32_t flag, void* data, size_t* pcb)
+res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pcb)
 {
     struct msghdr msg;
     struct cmsghdr* pcms;

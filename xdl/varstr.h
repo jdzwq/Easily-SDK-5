@@ -7,7 +7,7 @@
 
 	@doc variant string document
 
-	@module	string.h | xdl variant memory interface file
+	@module	string.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

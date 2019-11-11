@@ -7,7 +7,7 @@
 
 	@doc words control document
 
-	@module	wordsbox.c | words control widnows implement file
+	@module	wordsbox.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

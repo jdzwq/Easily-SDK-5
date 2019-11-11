@@ -143,7 +143,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	xsprintf(file, _T("%s/pub.ini"), pb->path);
 
-	if (!load_proper_doc_from_ini_file(ptr_prop, NULL, file))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
 	{
 		raise_user_error(NULL, NULL);
 	}

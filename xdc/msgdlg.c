@@ -7,7 +7,7 @@
 
 	@doc msgdlg control document
 
-	@module	msgdlg.c | message control widnows implement file
+	@module	msgdlg.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -94,23 +94,25 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	xr.y = xr.y + xr.h - xs.cy;
 	xr.h = xs.cy;
 
+	if (!(ptd->btn & 0x0000FFFF))
+	{
+		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
+		xs.fy = MSGDLG_BUTTON_HEIGHT;
+		widget_size_to_pt(widget, &xs);
 
-	xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
-	xs.fy = MSGDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+		xr_btn.x = xr.x + xr.w - xs.cx;
+		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
+		xr_btn.w = xs.cx;
+		xr_btn.h = xs.cy;
 
-	xr_btn.x = xr.x + xr.w - xs.cx;
-	xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
-	xr_btn.w = xs.cx;
-	xr_btn.h = xs.cy;
+		pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr_btn);
+		widget_set_user_id(pushbox, IDC_PUSHBOX_CLOSE);
+		widget_set_owner(pushbox, widget);
+		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_CLOSE, -1);
+		widget_show(pushbox, WD_SHOW_NORMAL);
 
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr_btn);
-	widget_set_user_id(pushbox, IDC_PUSHBOX_CLOSE);
-	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, MSGDLG_PUSHBOX_CLOSE, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
-
-	xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
+		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
+	}
 
 	if (ptd->btn & MSGBTN_NO)
 	{
@@ -334,30 +336,29 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	xs.fy = MSGDLG_TITLE_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
-	xs.fx = MSGDLG_TITLE_WIDTH;
-	xs.fy = MSGDLG_TITLE_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-
 	widget_get_client_rect(widget, &xr);
 	xr.x += MSGDLG_EDGE_FEED;
 	xr.w -= 2 * MSGDLG_EDGE_FEED;
 	xr.y = xr.y + xr.h - xs.cy;
 	xr.h = xs.cy;
 
-	xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
-	xs.fy = MSGDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	if (!(ptd->btn & 0x0000FFFF))
+	{
+		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
+		xs.fy = MSGDLG_BUTTON_HEIGHT;
+		widget_size_to_pt(widget, &xs);
 
-	xr_btn.x = xr.x + xr.w - xs.cx;
-	xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
-	xr_btn.w = xs.cx;
-	xr_btn.h = xs.cy;
+		xr_btn.x = xr.x + xr.w - xs.cx;
+		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
+		xr_btn.w = xs.cx;
+		xr_btn.h = xs.cy;
 
-	pushbox = widget_get_child(widget, IDC_PUSHBOX_CLOSE);
-	widget_move(pushbox, RECTPOINT(&xr_btn));
-	widget_update_client(pushbox);
+		pushbox = widget_get_child(widget, IDC_PUSHBOX_CLOSE);
+		widget_move(pushbox, RECTPOINT(&xr_btn));
+		widget_update_client(pushbox);
 
-	xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
+		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
+	}
 
 	if (ptd->btn & MSGBTN_NO)
 	{

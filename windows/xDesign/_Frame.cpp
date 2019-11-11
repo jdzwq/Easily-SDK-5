@@ -39,6 +39,7 @@ LICENSE.GPL3 for more details.
 #include "DialogPanel.h"
 #include "ChartPanel.h"
 #include "SQLPanel.h"
+#include "WEBPanel.h"
 
 #define MAINFRAME_TOOLBAR_HEIGHT	(float)25
 #define MAINFRAME_TREEBAR_WIDTH		(float)50
@@ -77,6 +78,7 @@ LICENSE.GPL3 for more details.
 #define IDC_MAINFRAME_TAGPANEL		118
 #define IDC_MAINFRAME_SQLPANEL		119
 #define IDC_MAINFRAME_CHARTPANEL	120
+#define IDC_MAINFRAME_WEBPANEL		121
 
 #define MAINFRAME_ACCEL_COUNT		4
 
@@ -443,8 +445,14 @@ void MainFrame_CreateFile(res_win_t widget)
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SQLPANEL);
 	set_list_item_id(llk, szID);
-	set_list_item_title(llk, _T("数据库"));
+	set_list_item_title(llk, _T("数据服务"));
 	set_list_item_image(llk, BMP_SQL);
+
+	llk = insert_list_item(ptrList, LINK_LAST);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_WEBPANEL);
+	set_list_item_id(llk, szID);
+	set_list_item_title(llk, _T("WEB服务"));
+	set_list_item_image(llk, BMP_HERF);
 
 	res_win_t hNewFileDlg = listdlg_create(_T("选择文档类型"), ptrList, widget);
 	
@@ -488,6 +496,9 @@ void MainFrame_CreateFile(res_win_t widget)
 		break;
 	case IDC_MAINFRAME_SQLPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_SQL, NULL);
+		break;
+	case IDC_MAINFRAME_WEBPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_WEB, NULL);
 		break;
 	}
 }
@@ -1020,7 +1031,7 @@ void MainFrame_ImportElement(res_win_t widget)
 	LINKPTR clk_category = insert_col(ptr_grid, LINK_LAST);
 	set_col_name(clk_category, ATTR_CATEGORY);
 
-	if (!load_grid_doc_from_csv_file(ptr_grid,0, NULL, szFile))
+	if (!load_grid_from_csv_file(ptr_grid,0, NULL, szFile))
 	{
 		ShowMsg(MSGICO_TIP, _T("导入文件失败！"));
 		return;
@@ -1134,7 +1145,7 @@ void MainFrame_ExportElement(res_win_t widget)
 	if (!shell_get_filename(widget, szPath, szFilter, _T("csv"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
-	if (!save_grid_doc_to_csv_file(ptr_grid, 0, NULL, szFile))
+	if (!save_grid_to_csv_file(ptr_grid, 0, NULL, szFile))
 	{
 		ShowMsg(MSGICO_TIP, _T("保存文件失败！"));
 		return;
@@ -2306,6 +2317,15 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 		hPanel = SQLPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
 			widget_set_user_id(hPanel, IDC_MAINFRAME_SQLPANEL);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_WEB, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewWeb"));
+
+		hPanel = WEBPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		if (hPanel)
+			widget_set_user_id(hPanel, IDC_MAINFRAME_WEBPANEL);
 	}
 
 	if (!hPanel)

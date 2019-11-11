@@ -7,7 +7,7 @@
 
 	@doc xdk document
 
-	@module	xdkinf.c | xdk interface implement file
+	@module	xdkinf.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -390,6 +390,10 @@ void xdk_impl_context(if_context_t* pif)
 	pif->pf_get_device_caps = _get_device_caps;
 	pif->pf_render_context = _render_context;
 
+	pif->pf_select_pixmap = _select_pixmap;
+	pif->pf_create_compatible_pixmap = _create_compatible_pixmap;
+	pif->pf_destroy_pixmap = _destroy_pixmap;
+
 	pif->pf_pt_per_mm = _pt_per_mm;;
 	pif->pf_text_mm_metric = _text_mm_metric;
 	pif->pf_text_pt_metric = _text_pt_metric;
@@ -403,8 +407,6 @@ void xdk_impl_context(if_context_t* pif)
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
 void xdk_impl_context_bitmap(if_context_t* pif)
 {
-	pif->pf_select_compatible_bitmap = _select_compatible_bitmap;
-	pif->pf_create_compatible_bitmap = _create_compatible_bitmap;
 	pif->pf_destroy_bitmap = _destroy_bitmap;
 	pif->pf_get_bitmap_size = _get_bitmap_size;
 
@@ -523,6 +525,12 @@ void xdk_impl_clipboard(if_clipboard_t* pif)
 #ifdef XDK_SUPPORT_WIDGET
 void xdk_impl_widget(if_widget_t* pif)
 {
+	pif->pf_fetch_message = _fetch_message;
+    pif->pf_peek_message = _peek_message;
+	pif->pf_translate_message = _translate_message;
+	pif->pf_dispatch_message = _dispatch_message;
+	pif->pf_translate_accelerator = _translate_accelerator;
+
 	pif->pf_widget_startup = _widget_startup;
 	pif->pf_widget_cleanup = _widget_cleanup;
 	pif->pf_widget_create = _widget_create;

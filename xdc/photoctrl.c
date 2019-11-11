@@ -7,7 +7,7 @@
 
 	@doc image editor document
 
-	@module	photoctrl.c | image editor widnows implement file
+	@module	photoctrl.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -310,7 +310,7 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 	photo_delta_t* ptd = GETPHOTODELTA(widget);
 
 	res_ctx_t rdc, memdc;
-	res_bmp_t org, membm;
+	res_pmp_t org, membm;
 	xcolor_t xc = { 0 };
 	xbrush_t xb = { 0 };
 	xrect_t xr = { 0 };
@@ -323,10 +323,10 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 	rdc = widget_client_ctx(widget);
 
 	get_bitmap_size(ptd->bmp, &xs.cx, &xs.cy);
-	membm = create_compatible_bitmap(rdc, xs.cx, xs.cy);
+	membm = create_compatible_pixmap(rdc, xs.cx, xs.cy);
 
 	memdc = create_compatible_context(rdc);
-	org = (res_bmp_t)select_compatible_bitmap(memdc, membm);
+	org = (res_pmp_t)select_pixmap(memdc, membm);
 
 	xr.x = 0;
 	xr.h = 0;
@@ -346,7 +346,7 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 		//noti_photo_owner(widget, NC_PHOTOANNODRAW, ilk, (void*)&xr, memdc);
 	}
 
-	membm = (res_bmp_t)select_compatible_bitmap(memdc, org);
+	membm = (res_pmp_t)select_pixmap(memdc, org);
 
 	destroy_context(memdc);
 

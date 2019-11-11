@@ -7,7 +7,7 @@
 
 	@doc tip control document
 
-	@module	tipbox.c | tip control widnows implement file
+	@module	tipbox.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5

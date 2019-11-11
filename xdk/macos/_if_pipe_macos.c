@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 
 #define PIPE_HEAD		_T("/tmp/")
 
-res_file_t _pipe_srv(const tchar_t* pname, u32_t fmode)
+res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 {
     int flag, rt;
     char ppath[1024] = {0};
@@ -137,7 +137,7 @@ void _pipe_close(const tchar_t* pname, res_file_t pip)
         unlink(ppath);
 }
 
-res_file_t _pipe_cli(const tchar_t* pname, u32_t fmode)
+res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 {
     int flag, rt;
     char ppath[1024] = {0};

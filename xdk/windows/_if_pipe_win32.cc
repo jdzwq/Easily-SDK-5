@@ -7,7 +7,7 @@
 
 	@doc pipe system call document
 
-	@module	_if_pipe.c | pipe system call windows implement file
+	@module	_if_pipe.c | windows implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 
 #define PIPE_HEAD		_T("\\\\.\\pipe\\")
 
-res_file_t _pipe_srv(const tchar_t* pname, u32_t fmode)
+res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 {
 	tchar_t path[PATH_LEN] = { 0 };
 	HANDLE hp = NULL;
@@ -95,7 +95,7 @@ void _pipe_close(const tchar_t* pname, res_file_t pip)
 	CloseHandle(pip);
 }
 
-res_file_t _pipe_cli(const tchar_t* pname, u32_t fmode)
+res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 {
 	tchar_t path[PATH_LEN] = { 0 };
 	HANDLE hp = NULL;
