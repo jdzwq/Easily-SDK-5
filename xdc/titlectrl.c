@@ -422,7 +422,7 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xscpy(xg.core_color, xb.color);
 	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
 
-	if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0 || compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
+	if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0 || compare_text(orita, -1, ATTR_ORITATION_TOP, -1, 0) == 0)
 		xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
 	else
 		xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);

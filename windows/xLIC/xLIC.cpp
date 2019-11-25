@@ -133,35 +133,35 @@ void generate_license(const tchar_t* organ_code, const tchar_t* organ_name, cons
 	_md5_private(organ_code, organ_name, expired_date, vender_code, vender_name, expired_date, md5_private);
 
 	LINKPTR ptr_xml = create_xml_doc();
-	LINKPTR nlk_root, nlk;
+	LINKPTR nlk_root, nlk_lic, nlk;
 
 	tchar_t sz_token[1024] = { 0 };
 
 	nlk_root = get_xml_dom_node(ptr_xml);
 	set_dom_node_name(nlk_root, _T("config"), -1);
 
-	nlk = insert_dom_node(nlk_root, LINK_LAST);
-	set_dom_node_name(nlk, _T("licence"), -1);
+	nlk_lic = insert_dom_node(nlk_root, LINK_LAST);
+	set_dom_node_name(nlk_lic, _T("licence"), -1);
 
-	nlk = insert_dom_node(nlk_root, LINK_LAST);
+	nlk = insert_dom_node(nlk_lic, LINK_LAST);
 	set_dom_node_name(nlk, _T("ORGAINIZATION"), -1);
 	xsprintf(sz_token, _T("[%s]%s"), organ_code, organ_name);
 	set_dom_node_text(nlk, sz_token, -1);
 
-	nlk = insert_dom_node(nlk_root, LINK_LAST);
+	nlk = insert_dom_node(nlk_lic, LINK_LAST);
 	set_dom_node_name(nlk, _T("VENDORS"), -1);
 	xsprintf(sz_token, _T("[%s]%s"), vender_code, vender_name);
 	set_dom_node_text(nlk, sz_token, -1);
 
-	nlk = insert_dom_node(nlk_root, LINK_LAST);
+	nlk = insert_dom_node(nlk_lic, LINK_LAST);
 	set_dom_node_name(nlk, _T("EXIPRED"), -1);
 	set_dom_node_text(nlk, expired_date, -1);
 
-	nlk = insert_dom_node(nlk_root, LINK_LAST);
+	nlk = insert_dom_node(nlk_lic, LINK_LAST);
 	set_dom_node_name(nlk, _T("PUBLIC-KEY"), -1);
 	set_dom_node_text(nlk, md5_public, -1);
 
-	nlk = insert_dom_node(nlk_root, LINK_LAST);
+	nlk = insert_dom_node(nlk_lic, LINK_LAST);
 	set_dom_node_name(nlk, _T("PRIVATE-KEY"), -1);
 	set_dom_node_text(nlk, md5_private, -1);
 
@@ -187,6 +187,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	tchar_t sz_expired_date[DATE_LEN] = { 0 };
 
 	tchar_t sz_file[PATH_LEN] = { 0 };
+
+	schar_t sz_temp[RES_LEN] = { 0 };
 
 	int step;
 
@@ -239,13 +241,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (step != WAIT_EXIT)
 	{
-		xscpy(sz_verb, _T(""));
+		xmem_zero((void*)sz_verb, RES_LEN * sizeof(tchar_t));
+		xmem_zero((void*)sz_temp, RES_LEN * sizeof(schar_t));
 
 		switch (step)
 		{
 		case WAIT_ORGANIZATION_CODE:
 			_tprintf(_T("xLIC need organization code: "));
-			_tscanf(_T("%s"), sz_verb);
+			//_tscanf(_T("%s"), sz_verb);
+			scanf("%s", sz_temp);
+#ifdef _UNICODE
+			mbs_to_ucs(sz_temp, -1, sz_verb, RES_LEN);
+#else
+			xscpy(sz_verb, sz_temp);
+#endif
 
 			if (compare_text(sz_verb, -1, _T("exit"), -1, 1) == 0)
 			{
@@ -259,7 +268,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 		case WAIT_ORGANIZATION_NAME:
 			_tprintf(_T("xLIC need organization name: "));
-			_tscanf(_T("%s"), sz_verb);
+			//_tscanf(_T("%s"), sz_verb);
+			scanf("%s", sz_temp);
+#ifdef _UNICODE
+			mbs_to_ucs(sz_temp, -1, sz_verb, RES_LEN);
+#else
+			xscpy(sz_verb, sz_temp);
+#endif
 
 			if (compare_text(sz_verb, -1, _T("exit"), -1, 1) == 0)
 			{
@@ -273,7 +288,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 		case WAIT_VENDER_CODE:
 			_tprintf(_T("xLIC need vender code: "));
-			_tscanf(_T("%s"), sz_verb);
+			//_tscanf(_T("%s"), sz_verb);
+			scanf("%s", sz_temp);
+#ifdef _UNICODE
+			mbs_to_ucs(sz_temp, -1, sz_verb, RES_LEN);
+#else
+			xscpy(sz_verb, sz_temp);
+#endif
 
 			if (compare_text(sz_verb, -1, _T("exit"), -1, 1) == 0)
 			{
@@ -287,7 +308,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 		case WAIT_VENDER_NAME:
 			_tprintf(_T("xLIC need vender name: "));
-			_tscanf(_T("%s"), sz_verb);
+			//_tscanf(_T("%s"), sz_verb);
+			scanf("%s", sz_temp);
+#ifdef _UNICODE
+			mbs_to_ucs(sz_temp, -1, sz_verb, RES_LEN);
+#else
+			xscpy(sz_verb, sz_temp);
+#endif
 
 			if (compare_text(sz_verb, -1, _T("exit"), -1, 1) == 0)
 			{
@@ -301,7 +328,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 		case WAIT_EXPIRED_DATE:
 			_tprintf(_T("xLIC need expired date: "));
-			_tscanf(_T("%s"), sz_verb);
+			//_tscanf(_T("%s"), sz_verb);
+			scanf("%s", sz_temp);
+#ifdef _UNICODE
+			mbs_to_ucs(sz_temp, -1, sz_verb, RES_LEN);
+#else
+			xscpy(sz_verb, sz_temp);
+#endif
 
 			if (compare_text(sz_verb, -1, _T("exit"), -1, 1) == 0)
 			{

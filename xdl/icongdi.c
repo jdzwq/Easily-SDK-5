@@ -1657,7 +1657,7 @@ void draw_guider_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	int feed;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1687,6 +1687,8 @@ void draw_guider_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 		rt.h = 16;
 	}
 
+	ps = xstol(xp.size);
+
 	prt = &rt;
 
 	xr.x = prt->x;
@@ -1694,24 +1696,20 @@ void draw_guider_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xr.w = prt->w;
 	xr.h = prt->h;
 
-	feed = xr.w / 3;
-	if (feed < 4)
-		feed = 4;
-
 	pt[0].x = xr.x;
-	pt[0].y = xr.y;
+	pt[0].y = xr.y + xr.h / 4;
 
-	pt[1].x = xr.x + xr.w - feed;
-	pt[1].y = xr.y;
+	pt[1].x = xr.x + xr.w / 2;
+	pt[1].y = xr.y + xr.h / 4;
 
-	pt[2].x = xr.x + xr.w;
+	pt[2].x = xr.x + xr.w / 4 * 3;
 	pt[2].y = xr.y + xr.h / 2;
 
-	pt[3].x = xr.x + xr.w - feed;
-	pt[3].y = xr.y + xr.h;
+	pt[3].x = xr.x + xr.w / 2;
+	pt[3].y = xr.y + xr.h / 4 * 3;
 
 	pt[4].x = xr.x;
-	pt[4].y = xr.y + xr.h;
+	pt[4].y = xr.y + xr.h / 4 * 3;
 
 	draw_polygon_raw(rdc, &xp, &xb, pt, 5);
 }
@@ -1721,6 +1719,7 @@ void draw_fixed_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt1, pt2;
+	long ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1747,29 +1746,26 @@ void draw_fixed_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 		rt.h = 16;
 	}
 
+	ps = xstol(xp.size);
+
 	prt = &rt;
 
-	xr.x = prt->x;
-	xr.y = prt->y;
-	xr.w = prt->w;
-	xr.h = prt->h;
-
-	pt1.x = xr.x;
-	pt1.y = xr.y + xr.h / 2;
-	pt2.x = xr.x + 2;
-	pt2.y = xr.y + xr.h / 2;
+	pt1.x = prt->x + 2 * ps;
+	pt1.y = prt->y + prt->h / 2;
+	pt2.x = prt->x + 4 * ps;
+	pt2.y = prt->y + prt->h / 2;
 	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
-	pt1.x = xr.x + 2;
-	pt1.y = xr.y;
-	pt2.x = xr.x + 2;
-	pt2.y = xr.y + xr.h;
+	pt1.x = prt->x + 4 * ps;
+	pt1.y = prt->y + prt->h / 4;
+	pt2.x = prt->x + 4 * ps;
+	pt2.y = prt->y + prt->h / 4 * 3;
 	draw_line_raw(rdc, &xp, &pt1, &pt2);
 	
-	xr.x += 2;
-	xr.w -= 2;
-	xr.y += 2;
-	xr.h -= 4;
+	xr.x = prt->x + 4 * ps;
+	xr.y = prt->y + prt->h / 2 - ps;
+	xr.w = prt->w - 6 * ps;
+	xr.h = 2 * ps;
 
 	draw_rect_raw(rdc, &xp, NULL, &xr);
 }
