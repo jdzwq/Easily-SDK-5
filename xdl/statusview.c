@@ -222,7 +222,6 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xcolor_t xc = { 0 };
 	const tchar_t *style;
 	bool_t b_print;
-	link_t_ptr imagelist;
 	float px, py, pw, ph;
 
 	px = pbox->fx;
@@ -231,8 +230,6 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	ph = pbox->fh;
 
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
-
-	imagelist = get_status_images(ptr);
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -264,7 +261,14 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		format_xcolor(&pif->clr_msk, xi.color);
 	}
 
-	parse_xcolor(&xc, GDI_ATTR_RGB_RED);
+	if (!b_print)
+	{
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+	}
+	else
+	{
+		parse_xcolor(&xc, xp.color);
+	}
 
 	ali_far = (compare_text(get_status_alignment_ptr(ptr), -1, ATTR_ALIGNMENT_FAR, -1, 0) == 0) ? 1 : 0;
 	
@@ -308,11 +312,9 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		xr_image.fw = ic;
 		xr_image.fh = ic;
 
-		if (imagelist)
-		{
-			get_ximage(imagelist, get_status_item_image_ptr(plk), &xi);
-			(*pif->pf_draw_image)(pif->canvas, &xi, &xr_image);
-		}
+		ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
+
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_status_item_icon_ptr(plk));
 
 		xr_text.fx = xr.fx + ic;
 		xr_text.fy = xr.fy;

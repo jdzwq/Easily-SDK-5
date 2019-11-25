@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc graph document
+	@doc statis document
 
-	@module	graphview.c | implement file
+	@module	statisview.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "graphview.h"
+#include "statisview.h"
 #include "xdldoc.h"
 #include "xdlimp.h"
 #include "xdloem.h"
@@ -37,17 +37,17 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-#define GRAPH_MINFEED  (float)1.0
+#define STATIS_MINFEED  (float)1.0
 
-float calc_graph_page_width(const canvbox_t* pbox, link_t_ptr ptr, int page)
+float calc_statis_page_width(const canvbox_t* pbox, link_t_ptr ptr, int page)
 {
 	link_t_ptr xlk, xlk_first, xlk_last;
 	float yw, xw;
 
-	yw = get_graph_yaxbar_width(ptr);
-	xw = get_graph_xaxbar_width(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	xw = get_statis_xaxbar_width(ptr);
 
-	calc_graph_xax_scope(pbox, ptr, page, &xlk_first, &xlk_last);
+	calc_statis_xax_scope(pbox, ptr, page, &xlk_first, &xlk_last);
 	xlk = xlk_first;
 	while (xlk)
 	{
@@ -60,7 +60,7 @@ float calc_graph_page_width(const canvbox_t* pbox, link_t_ptr ptr, int page)
 	return yw;
 }
 
-int calc_graph_pages(const canvbox_t* pbox, link_t_ptr ptr)
+int calc_statis_pages(const canvbox_t* pbox, link_t_ptr ptr)
 {
 	int xaxsperpage, xaxs;
 	float pw,ph, yw, xw;
@@ -68,8 +68,8 @@ int calc_graph_pages(const canvbox_t* pbox, link_t_ptr ptr)
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	yw = get_graph_yaxbar_width(ptr);
-	xw = get_graph_xaxbar_width(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	xw = get_statis_xaxbar_width(ptr);
 
 	xaxsperpage = (int)((pw - yw) / xw);
 	if (xaxsperpage <= 0)
@@ -84,7 +84,7 @@ int calc_graph_pages(const canvbox_t* pbox, link_t_ptr ptr)
 		return xaxs / xaxsperpage + 1;
 }
 
-void calc_graph_xax_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* firstxax, link_t_ptr* lastxax)
+void calc_statis_xax_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* firstxax, link_t_ptr* lastxax)
 {
 	int xaxsperpage, pageindex;
 	float pw,ph,yw, xw;
@@ -93,8 +93,8 @@ void calc_graph_xax_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_
 	pageindex = page;
 	pw = pbox->fw;
 	ph = pbox->fh;
-	yw = get_graph_yaxbar_width(ptr);
-	xw = get_graph_xaxbar_width(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	xw = get_statis_xaxbar_width(ptr);
 
 	xaxsperpage = (int)((pw - yw) / xw);
 	if (xaxsperpage <= 0)
@@ -119,7 +119,7 @@ void calc_graph_xax_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_
 	}
 }
 
-int calc_graph_xax_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr xlk)
+int calc_statis_xax_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr xlk)
 {
 	int xaxsperpage, page, count;
 	float pw,ph, yw, xw;
@@ -130,8 +130,8 @@ int calc_graph_xax_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr xlk)
 
 	pw = pbox->fw;
 	ph = pbox->fh;
-	yw = get_graph_yaxbar_width(ptr);
-	xw = get_graph_xaxbar_width(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	xw = get_statis_xaxbar_width(ptr);
 
 	xaxsperpage = (int)((pw - yw) / xw);
 	if (xaxsperpage <= 0)
@@ -153,16 +153,16 @@ int calc_graph_xax_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr xlk)
 	return page;
 }
 
-void calc_graph_yax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ylk, xrect_t* pxr)
+void calc_statis_yax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ylk, xrect_t* pxr)
 {
 	link_t_ptr plk;
 	float yh, xh;
 
-	xh = get_graph_xaxbar_height(ptr);
-	yh = get_graph_yaxbar_height(ptr);
+	xh = get_statis_xaxbar_height(ptr);
+	yh = get_statis_yaxbar_height(ptr);
 
 	pxr->fx = 0;
-	pxr->fy = get_graph_title_height(ptr) + xh;
+	pxr->fy = get_statis_title_height(ptr) + xh;
 	
 	plk = get_next_yax(ptr, LINK_FIRST);
 	while (plk)
@@ -176,7 +176,7 @@ void calc_graph_yax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ylk, 
 
 	if (plk)
 	{
-		pxr->fw = get_graph_yaxbar_width(ptr);
+		pxr->fw = get_statis_yaxbar_width(ptr);
 		pxr->fh = yh;
 	}
 	else
@@ -186,7 +186,7 @@ void calc_graph_yax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ylk, 
 	}
 }
 
-void calc_graph_gax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr)
+void calc_statis_gax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr)
 {
 	link_t_ptr plk;
 	float th, yw, yh, xh, gw;
@@ -196,10 +196,10 @@ void calc_graph_gax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, 
 	if (!gn)
 		return;
 
-	th = get_graph_title_height(ptr);
-	xh = get_graph_xaxbar_height(ptr);
-	yw = get_graph_yaxbar_width(ptr);
-	yh = get_graph_yaxbar_height(ptr);
+	th = get_statis_title_height(ptr);
+	xh = get_statis_xaxbar_height(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	yh = get_statis_yaxbar_height(ptr);
 
 	gw = (yw - yh) / gn;
 	if (gw < 1)
@@ -230,18 +230,18 @@ void calc_graph_gax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, 
 	}
 }
 
-int calc_graph_coor_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr)
+int calc_statis_coor_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr)
 {
 	link_t_ptr xax, yax, xlk_first, xlk_last;
 	float th, xw, xh, yw, yh, xm, ym;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
-	th = get_graph_title_height(ptr);
-	xw = get_graph_xaxbar_width(ptr);
-	xh = get_graph_xaxbar_height(ptr);
-	yw = get_graph_yaxbar_width(ptr);
-	yh = get_graph_yaxbar_height(ptr);
+	th = get_statis_title_height(ptr);
+	xw = get_statis_xaxbar_width(ptr);
+	xh = get_statis_xaxbar_height(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	yh = get_statis_yaxbar_height(ptr);
 
 	ym = th;
 	xm = 0;
@@ -283,7 +283,7 @@ int calc_graph_coor_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t
 		return 1;
 	}
 
-	calc_graph_xax_scope(pbox, ptr, page, &xlk_first, &xlk_last);
+	calc_statis_xax_scope(pbox, ptr, page, &xlk_first, &xlk_last);
 
 	xm += yw;
 
@@ -308,15 +308,15 @@ int calc_graph_coor_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t
 	return 0;
 }
 
-void calc_graph_xax_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr xlk, xrect_t* pxr)
+void calc_statis_xax_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr xlk, xrect_t* pxr)
 {
-	calc_graph_coor_rect(pbox, ptr, page, xlk, NULL, pxr);
+	calc_statis_coor_rect(pbox, ptr, page, xlk, NULL, pxr);
 
-	pxr->fy = get_graph_title_height(ptr);
-	pxr->fh = get_graph_xaxbar_height(ptr) + get_yax_count(ptr) * get_graph_yaxbar_height(ptr);
+	pxr->fy = get_statis_title_height(ptr);
+	pxr->fh = get_statis_xaxbar_height(ptr) + get_yax_count(ptr) * get_statis_yaxbar_height(ptr);
 }
 
-int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pxlk, link_t_ptr* pylk, link_t_ptr* pglk)
+int calc_statis_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pxlk, link_t_ptr* pylk, link_t_ptr* pglk)
 {
 	link_t_ptr glk, ylk, xlk, firstxlk, lastxlk;
 	float pw, ph, th, yw, yh, xw, xh, yt, gw, h, w, mx, my, by;
@@ -325,17 +325,17 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	th = get_graph_title_height(ptr);
-	xw = get_graph_xaxbar_width(ptr);
-	xh = get_graph_xaxbar_height(ptr);
-	yw = get_graph_yaxbar_width(ptr);
-	yh = get_graph_yaxbar_height(ptr);
+	th = get_statis_title_height(ptr);
+	xw = get_statis_xaxbar_width(ptr);
+	xh = get_statis_xaxbar_height(ptr);
+	yw = get_statis_yaxbar_width(ptr);
+	yh = get_statis_yaxbar_height(ptr);
 
 	yt = xh + get_yax_count(ptr) * yh;
 	gn = get_gax_count(ptr);
 	gw = (gn) ? (float)((yw - yh) / gn) : 0;
 
-	hint = GRAPH_HINT_NONE;
+	hint = STATIS_HINT_NONE;
 	*pxlk = NULL;
 	*pylk = NULL;
 	*pglk = NULL;
@@ -348,19 +348,19 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 
 	if (mx < yw && my < th)
 	{
-		hint = GRAPH_HINT_MENU;
+		hint = STATIS_HINT_MENU;
 		return hint;
 	}
 
 	if (mx >= yw && my < th)
 	{
-		hint = GRAPH_HINT_TITLE;
+		hint = STATIS_HINT_TITLE;
 		return hint;
 	}
 
 	if (mx < yw - DEF_SPLIT_FEED && my < th + xh - DEF_SPLIT_FEED)
 	{
-		hint = GRAPH_HINT_NULBAR;
+		hint = STATIS_HINT_NULBAR;
 		return hint;
 	}
 
@@ -368,7 +368,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 
 	if (mx > yw && my > by - DEF_SPLIT_FEED &&  my < by + DEF_SPLIT_FEED)
 	{
-		hint = GRAPH_HINT_MIDD_SPLIT;
+		hint = STATIS_HINT_MIDD_SPLIT;
 		return hint;
 	}
 
@@ -380,7 +380,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 		if (mx > w && mx < w + gw && my > h && my < h + yh)
 		{
 			*pglk = glk;
-			hint = GRAPH_HINT_GAXBAR;
+			hint = STATIS_HINT_GAXBAR;
 			return hint;
 		}
 		w += gw;
@@ -397,7 +397,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 			*pylk = ylk;
 			if (mx < yw - DEF_SPLIT_FEED)
 			{
-				hint = GRAPH_HINT_YAXBAR;
+				hint = STATIS_HINT_YAXBAR;
 				return hint;
 			}
 		}
@@ -406,7 +406,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 			*pylk = ylk;
 			if (mx < yw - DEF_SPLIT_FEED)
 			{
-				hint = GRAPH_HINT_HORZ_SPLIT;
+				hint = STATIS_HINT_HORZ_SPLIT;
 				return hint;
 			}
 		}
@@ -415,7 +415,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 		ylk = get_next_yax(ptr, ylk);
 	}
 
-	calc_graph_xax_scope(pbox, ptr, page, &firstxlk, &lastxlk);
+	calc_statis_xax_scope(pbox, ptr, page, &firstxlk, &lastxlk);
 
 	w = yw;
 
@@ -427,16 +427,16 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 			*pxlk = xlk;
 
 			if (my < th + xh - DEF_SPLIT_FEED && my > th - DEF_SPLIT_FEED)
-				hint = GRAPH_HINT_XAXBAR;
+				hint = STATIS_HINT_XAXBAR;
 			else if (my < h)
-				hint = GRAPH_HINT_COOR;
+				hint = STATIS_HINT_COOR;
 
 			break;
 		}
 		else if (mx >= w + xw - DEF_SPLIT_FEED && mx <= w + xw + DEF_SPLIT_FEED && my < th + xh - DEF_SPLIT_FEED && my > th - DEF_SPLIT_FEED)
 		{
 			*pxlk = xlk;
-			hint = GRAPH_HINT_VERT_SPLIT;
+			hint = STATIS_HINT_VERT_SPLIT;
 
 			break;
 		}
@@ -449,7 +449,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 		xlk = get_next_xax(ptr, xlk);
 	}
 
-	if (hint == GRAPH_HINT_NONE)
+	if (hint == STATIS_HINT_NONE)
 	{
 		*pxlk = *pylk = NULL;
 	}
@@ -457,7 +457,7 @@ int calc_graph_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 	return hint;
 }
 
-void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, int page)
+void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, int page)
 {
 	link_t_ptr xlk_first, xlk_last, ylk, xlk, xlk_pre, glk;
 	float px, py, pw, ph;
@@ -483,24 +483,24 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	xrect_t xr_bar, xr = { 0 };
 	xpoint_t pt[2];
 
-	b_design = graph_is_design(ptr);
+	b_design = statis_is_design(ptr);
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER)? 1 : 0;
 
 	default_xfont(&xf);
 	default_xface(&xa);
 
-	style = get_graph_style_ptr(ptr);
+	style = get_statis_style_ptr(ptr);
 
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	th = get_graph_title_height(ptr);
-	xh = get_graph_xaxbar_height(ptr);
-	xw = get_graph_xaxbar_width(ptr);
-	yh = get_graph_yaxbar_height(ptr);
-	yw = get_graph_yaxbar_width(ptr);
+	th = get_statis_title_height(ptr);
+	xh = get_statis_xaxbar_height(ptr);
+	xw = get_statis_xaxbar_width(ptr);
+	yh = get_statis_yaxbar_height(ptr);
+	yw = get_statis_yaxbar_width(ptr);
 
 	yt = xh + yh * get_yax_count(ptr);
 	gn = get_gax_count(ptr);
@@ -533,10 +533,10 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		format_xcolor(&pif->clr_msk, xi.color);
 	}
 
-	b_sum = get_graph_showsum(ptr);
-	xaxtype = get_graph_xaxdt_ptr(ptr);
-	xaxfmt = get_graph_xaxfmt_ptr(ptr);
-	xaxwrp = get_graph_xaxwrp(ptr);
+	b_sum = get_statis_showsum(ptr);
+	xaxtype = get_statis_xaxdt_ptr(ptr);
+	xaxfmt = get_statis_xaxfmt_ptr(ptr);
+	xaxwrp = get_statis_xaxwrp(ptr);
 
 	//draw title
 	xr.fx = px;
@@ -545,7 +545,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	xr.fh = th;
 
 	xscpy(xa.text_align, ATTR_ALIGNMENT_NEAR);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_graph_title_ptr(ptr), -1);
+	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_statis_title_ptr(ptr), -1);
 
 	//draw frame
 	//top line
@@ -606,17 +606,17 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		ft_center_rect(&xr_bar, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
 		if (compare_text(lcap, -1, ATTR_LINE_CAP_RECT, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ATTR_ICON_RECT);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_RECT);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_ELLIPSE, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ATTR_ICON_ELLIPSE);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_ELLIPSE);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_CROSS, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ATTR_ICON_CROSS);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_CROSS);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_STAR, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ATTR_ICON_STAR);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_STAR);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_DIAMOND, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ATTR_ICON_DIAMOND);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_DIAMOND);
 		else
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ATTR_ICON_RECT);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_RECT);
 
 		xr_bar.fx = xr.fx + yh;
 		xr_bar.fy = xr.fy;
@@ -639,11 +639,11 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
 		parse_xcolor(&xc, xf.color);
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_SUM);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_SUM);
 	}
 
 	//draw xax bar and coor
-	calc_graph_xax_scope(pbox, ptr, page, &xlk_first, &xlk_last);
+	calc_statis_xax_scope(pbox, ptr, page, &xlk_first, &xlk_last);
 
 	x1 = x2 = yw + px;
 	xlk = xlk_first;
@@ -680,9 +680,9 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 			y1 = y2;
 			y2 = y1 + yh;
 
-			xr.fx = x1 + GRAPH_MINFEED;
+			xr.fx = x1 + STATIS_MINFEED;
 			xr.fy = y1;
-			xr.fw = x2 - x1 - 2 * GRAPH_MINFEED;
+			xr.fw = x2 - x1 - 2 * STATIS_MINFEED;
 			xr.fh = y2 - y1;
 
 			coornum = get_coor_numeric(xlk, ylk);
@@ -713,9 +713,9 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 			y1 = y2;
 			y2 = y1 + yh;
 
-			xr.fx = x1 + GRAPH_MINFEED;
+			xr.fx = x1 + STATIS_MINFEED;
 			xr.fy = y1;
-			xr.fw = x2 - x1 - 2 * GRAPH_MINFEED;
+			xr.fw = x2 - x1 - 2 * STATIS_MINFEED;
 			xr.fh = y2 - y1;
 
 			if (zeronull && is_zero_numeric(total, maxdig))
@@ -755,7 +755,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		//gax title
 		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_gax_title_ptr(glk), -1);
 
-		gtype = get_gax_graph_type_ptr(glk);
+		gtype = get_gax_statis_type_ptr(glk);
 
 		stepnum = get_gax_step(glk);
 		middnum = get_gax_midd(glk);
@@ -776,7 +776,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_bar, token, -1);
 
 		//midd line
-		if (compare_text(gtype, -1, ATTR_GRAPH_TYPE_PIE, -1, 0) != 0)
+		if (compare_text(gtype, -1, ATTR_STATIS_TYPE_PIE, -1, 0) != 0)
 		{
 			memcpy((void*)&xp_shape, (void*)&xp, sizeof(xpen_t));
 			xscpy(xp_shape.style, GDI_ATTR_STROKE_STYLE_DASHED);
@@ -799,7 +799,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_bar, token, -1);
 
-			pt[0].fx = yw - 2 * GRAPH_MINFEED + px;
+			pt[0].fx = yw - 2 * STATIS_MINFEED + px;
 			pt[0].fy = midy - incy * i;
 			pt[1].fx = yw + px;
 			pt[1].fy = midy - incy * i;;
@@ -814,7 +814,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_bar, token, -1);
 
-			pt[0].fx = yw - 2 * GRAPH_MINFEED + px;
+			pt[0].fx = yw - 2 * STATIS_MINFEED + px;
 			pt[0].fy = midy + incy * i;
 			pt[1].fx = yw + px;
 			pt[1].fy = midy + incy * i;;
@@ -825,7 +825,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		glk = get_next_gax(ptr, glk);
 	}
 
-	//draw graph
+	//draw statis
 	x1 = x2 = yw + px;
 	xlk = xlk_first;
 	while (xlk)
@@ -834,7 +834,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		x2 += xw;
 
 		rsteps = get_yax_count(ptr);
-		tmpx = (rsteps)? ((xw - 2 * GRAPH_MINFEED) / rsteps) : 0;
+		tmpx = (rsteps)? ((xw - 2 * STATIS_MINFEED) / rsteps) : 0;
 
 		total = 0;
 		ylk = get_next_yax(ptr, LINK_FIRST);
@@ -842,7 +842,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		{
 			glk = get_yax_gax(ptr, ylk);
 
-			if (glk && compare_text(get_gax_graph_type_ptr(glk), -1, ATTR_GRAPH_TYPE_PIE, -1, 0) == 0)
+			if (glk && compare_text(get_gax_statis_type_ptr(glk), -1, ATTR_STATIS_TYPE_PIE, -1, 0) == 0)
 			{
 				coornum = get_coor_numeric(xlk, ylk);
 
@@ -865,7 +865,7 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 				continue;
 			}
 
-			gtype = get_gax_graph_type_ptr(glk);
+			gtype = get_gax_statis_type_ptr(glk);
 			stepnum = get_gax_step(glk);
 			middnum = get_gax_midd(glk);
 
@@ -882,12 +882,12 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 			coornum = get_coor_numeric(xlk, ylk);
 
-			if (compare_text(gtype, -1, ATTR_GRAPH_TYPE_PIE, -1, 0) == 0)
+			if (compare_text(gtype, -1, ATTR_STATIS_TYPE_PIE, -1, 0) == 0)
 				cury = th + yt + yh + xw + py;
 			else
 				cury = midy - (long)(((coornum - (float)middnum) / stepnum * (float)incy / 10));
 
-			if (compare_text(gtype, -1, ATTR_GRAPH_TYPE_LINE, -1, 0) == 0)
+			if (compare_text(gtype, -1, ATTR_STATIS_TYPE_LINE, -1, 0) == 0)
 			{
 				xr.fx = (x1 + x2) / 2 - DEF_SMALL_ICON / 2;
 				xr.fy = cury - DEF_SMALL_ICON / 2;
@@ -895,17 +895,17 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 				xr.fh = DEF_SMALL_ICON;
 
 				if (compare_text(lcap, -1, ATTR_LINE_CAP_RECT, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_RECT);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_RECT);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_ELLIPSE, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_ELLIPSE);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_ELLIPSE);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_CROSS, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_CROSS);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_CROSS);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_STAR, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_STAR);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_STAR);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_DIAMOND, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DIAMOND);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DIAMOND);
 				else
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_ELLIPSE);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_ELLIPSE);
 
 				if (xlk != xlk_first)
 				{
@@ -919,11 +919,11 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 					(*pif->pf_draw_line)(pif->canvas, &xp_shape, &pt[0], &pt[1]);
 				}
 			}
-			else if (compare_text(gtype, -1, ATTR_GRAPH_TYPE_RECT, -1, 0) == 0)
+			else if (compare_text(gtype, -1, ATTR_STATIS_TYPE_RECT, -1, 0) == 0)
 			{
 				//xr.fy = cury;
 				//xr.fh = ph - th - (cury - py);
-				xr.fx = x1 + rsteps * tmpx + GRAPH_MINFEED;
+				xr.fx = x1 + rsteps * tmpx + STATIS_MINFEED;
 				xr.fw = tmpx;
 				if (cury > midy)
 				{
@@ -950,14 +950,14 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 				rsteps++;
 			}
-			else if (compare_text(gtype, -1, ATTR_GRAPH_TYPE_PIE, -1, 0) == 0)
+			else if (compare_text(gtype, -1, ATTR_STATIS_TYPE_PIE, -1, 0) == 0)
 			{
 				if (ylk == get_prev_yax(ptr, LINK_LAST))
 				{
-					xr.fx = x1 + GRAPH_MINFEED;
-					xr.fw = xw - 2 * GRAPH_MINFEED;
-					xr.fy = cury - xw + GRAPH_MINFEED;
-					xr.fh = xw - 2 * GRAPH_MINFEED;
+					xr.fx = x1 + STATIS_MINFEED;
+					xr.fw = xw - 2 * STATIS_MINFEED;
+					xr.fy = cury - xw + STATIS_MINFEED;
+					xr.fh = xw - 2 * STATIS_MINFEED;
 
 					(*pif->pf_draw_ellipse)(pif->canvas, &xp, NULL, &xr);
 				}
@@ -972,10 +972,10 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 				nxtd = pred + (float)(2 * XPI *  dby);
 				if (pred != nxtd)
 				{
-					xr.fx = x1 + GRAPH_MINFEED;
-					xr.fw = xw - 2 * GRAPH_MINFEED;
-					xr.fy = cury - xw + GRAPH_MINFEED;
-					xr.fh = xw - 2 * GRAPH_MINFEED;
+					xr.fx = x1 + STATIS_MINFEED;
+					xr.fw = xw - 2 * STATIS_MINFEED;
+					xr.fy = cury - xw + STATIS_MINFEED;
+					xr.fh = xw - 2 * STATIS_MINFEED;
 
 					(*pif->pf_draw_pie)(pif->canvas, &xp_shape, &xb_shape, &xr, pred, nxtd);
 				}
@@ -990,14 +990,14 @@ void draw_graph_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 					(*pif->pf_draw_ellipse)(pif->canvas, &xp, &xb, &xr);
 				}
 
-				xr.fx = x1 + GRAPH_MINFEED;
-				xr.fw = 2 * GRAPH_MINFEED;
+				xr.fx = x1 + STATIS_MINFEED;
+				xr.fw = 2 * STATIS_MINFEED;
 				xr.fy = cury + psteps * yh;
 				xr.fh = yh;
 				(*pif->pf_draw_rect)(pif->canvas, NULL, &xb_shape, &xr);
 
-				xr.fx = x1 + 2 * GRAPH_MINFEED;
-				xr.fw = xw - 2 * GRAPH_MINFEED;
+				xr.fx = x1 + 2 * STATIS_MINFEED;
+				xr.fw = xw - 2 * STATIS_MINFEED;
 				xr.fy = cury + psteps * yh;
 				xr.fh = yh;
 				xsprintf(token, _T("%.2f%c"), dby * 100, _T('%'));

@@ -32,11 +32,15 @@ LICENSE.GPL3 for more details.
 #include "xdcctrl.h"
 #include "handler.h"
 #include "winnc.h"
+#include "xdcbox.h"
 
 typedef struct _topog_delta_t{
 	link_t_ptr topog;
 	link_t_ptr spot;
 	link_t_ptr hover;
+
+	res_win_t hsc;
+	res_win_t vsc;
 
 	bool_t b_drag;
 	long org_x, org_y;
@@ -354,7 +358,7 @@ static void _topogctrl_reset_matrix(res_win_t widget, int row, int col)
 	set_topog_matrix(ptd->topog, buf, len);
 	xsfree(buf);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 static void _topogctrl_reset_page(res_win_t widget)
@@ -431,7 +435,7 @@ void noti_topog_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -454,7 +458,7 @@ void noti_topog_spot_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t noti_topog_spot_changing(res_win_t widget)
@@ -475,7 +479,7 @@ bool_t noti_topog_spot_changing(res_win_t widget)
 	ptd->row = -1;
 	ptd->col = -1;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -496,7 +500,7 @@ void noti_topog_spot_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_topog_owner(widget, NC_TOPOGSPOTCHANGED, ptd->topog, ptd->spot, ptd->row, ptd->col, NULL);
 }
@@ -614,7 +618,7 @@ void noti_topog_spot_drop(res_win_t widget, long x, long y)
 	ptd->row = cy;
 	ptd->col = cx;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -644,6 +648,12 @@ void hand_topogctrl_destroy(res_win_t widget)
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
+
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
 
 	_topogctrl_clean(widget);
 	destroy_stack_table(ptd->stack);
@@ -888,7 +898,25 @@ void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -961,7 +989,7 @@ void hand_topogctrl_keydown(res_win_t widget, int nKey)
 				slk = get_topog_next_spot(ptd->spot, slk);
 			}
 
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 
 			noti_topog_owner(widget, NC_TOPOGSPOTDROP, ptd->topog, ptd->spot, ptd->row, ptd->col, NULL);
 		}
@@ -1058,7 +1086,7 @@ void hand_topogctrl_size(res_win_t widget, int code, const xsize_t* prs)
 
 	_topogctrl_reset_page(widget);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_topogctrl_erase(res_win_t widget, res_ctx_t dc)
@@ -1093,7 +1121,8 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1208,7 +1237,7 @@ link_t_ptr topogctrl_detach(res_win_t widget)
 	ptd->row = -1;
 	ptd->col = -1;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	return data;
 }
@@ -1258,9 +1287,7 @@ void topogctrl_redraw(res_win_t widget)
 
 	_topogctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void topogctrl_tabskip(res_win_t widget, int nSkip)
@@ -1318,7 +1345,7 @@ void topogctrl_redraw_spot(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t topogctrl_set_focus_spot(res_win_t widget, link_t_ptr ilk)

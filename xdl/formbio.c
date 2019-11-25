@@ -58,13 +58,13 @@ bool_t load_field_object_from_file(link_t_ptr flk, const secu_desc_t* psd, const
 
 		return 1;
 	}
-	else if (compare_text(fclass, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+	else if (compare_text(fclass, -1, DOC_FORM_STATIS, -1, 0) == 0)
 	{
-		doc = create_graph_from_meta_file(psd, fname);
+		doc = create_statis_from_meta_file(psd, fname);
 		if (!doc)
 			return 0;
 
-		set_field_embed_graph(flk, doc);
+		set_field_embed_statis(flk, doc);
 
 		return 1;
 	}

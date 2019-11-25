@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_title_icon_span: set the title icon span.
 */
-#define set_title_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_title_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_title_icon_span: get the title icon span.
 */
-#define get_title_icon_span(ptr)						get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_title_icon_span(ptr)						get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER itemHeight: numeric.
 @SET set_title_item_height: set the title item height.
@@ -139,15 +139,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_title_item_id_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ID,-1)
 /*
-@PROPER image: string.
-@GET get_title_item_image_ptr: get the item image.
+@PROPER icon: string.
+@GET get_title_item_icon_ptr: get the item icon.
 */
-#define get_title_item_image_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
+#define get_title_item_icon_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_title_item_image: set the item image.
+@PROPER icon: string.
+@SET set_title_item_icon: set the item icon.
 */
-#define set_title_item_image(ilk,token)					set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
+#define set_title_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER icon: string.
 @GET get_title_item_icon_ptr: get the item icon.
@@ -158,16 +158,6 @@ LICENSE.GPL3 for more details.
 @SET set_title_item_icon: set the item image.
 */
 #define set_title_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
-/*
-@PROPER images: document.
-@SET set_title_images: set the title images document.
-*/
-#define set_title_images(ptr,images)					set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_title_images: get the title images document.
-*/
-#define get_title_images(ptr)							get_dom_node_images(ptr)
 /*
 @PROPER delta: var long.
 @SET set_title_item_delta: set the item extract data.

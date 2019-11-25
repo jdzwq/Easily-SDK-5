@@ -83,8 +83,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		if (widget_is_valid(timebox))
 		{
 			widget_set_color_mode(timebox, (clr_mod_t*)data);
-			widget_update_window(timebox);
-			widget_update_client(timebox);
+			widget_update(timebox);
 		}
 		return 1;
 	case COMMAND_COMMIT:
@@ -239,6 +238,7 @@ res_win_t firetime_create(res_win_t widget, const xrect_t* pxr)
 
 	widget_move(timebox, RECTPOINT(&xr));
 	widget_size(timebox, RECTSIZE(&xr));
+	widget_update(timebox);
 
 	return editor;
 }

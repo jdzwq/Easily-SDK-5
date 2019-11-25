@@ -54,6 +54,6 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path);
 
 void free_certs(cert_t* pcrt);
 
-void set_certs(int secu, xhand_t bio);
+void set_certs(int secu, const tchar_t* pass, xhand_t bio);
 
 #endif //_SRVCERT_H

@@ -130,8 +130,8 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 				box = formctrl_create(get_dialog_item_name_ptr(ilk), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, dlg);
 			else if (compare_text(get_dialog_item_text_ptr(ilk), -1, ATTR_CONTROL_GRIDCTRL, -1, 1) == 0)
 				box = gridctrl_create(get_dialog_item_name_ptr(ilk), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, dlg);
-			else if (compare_text(get_dialog_item_text_ptr(ilk), -1, ATTR_CONTROL_GRAPHCTRL, -1, 1) == 0)
-				box = graphctrl_create(get_dialog_item_name_ptr(ilk), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, dlg);
+			else if (compare_text(get_dialog_item_text_ptr(ilk), -1, ATTR_CONTROL_STATISCTRL, -1, 1) == 0)
+				box = statisctrl_create(get_dialog_item_name_ptr(ilk), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, dlg);
 			else if (compare_text(get_dialog_item_text_ptr(ilk), -1, ATTR_CONTROL_TREECTRL, -1, 1) == 0)
 				box = treectrl_create(get_dialog_item_name_ptr(ilk), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, dlg);
 			else if (compare_text(get_dialog_item_text_ptr(ilk), -1, ATTR_CONTROL_LISTCTRL, -1, 1) == 0)
@@ -184,6 +184,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 
 	widget_adjust_size(WD_STYLE_DIALOG, RECTSIZE(&xr));
 	widget_size(dlg, RECTSIZE(&xr));
+	widget_update(dlg);
 	widget_center_window(dlg, owner);
 
 	return dlg;
@@ -248,7 +249,7 @@ int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid
 	{
 		widget_enum_child(widget, _widget_set_child_point, (var_long)0);
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 
 		return 1;
 	}

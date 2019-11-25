@@ -246,7 +246,7 @@ void properbag_write_images_attributes(link_t_ptr ptr, link_t_ptr imagelist)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_ICON_SPAN, get_images_icon_span(imagelist));
+	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ICON_SPAN, get_images_icon_span(imagelist));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 }
@@ -262,7 +262,7 @@ void properbag_read_images_attributes(link_t_ptr ptr, link_t_ptr imagelist)
 
 	set_images_item_height(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_HEIGHT));
 
-	set_images_icon_span(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_ICON_SPAN));
+	set_images_icon_span(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ICON_SPAN));
 }
 
 void properbag_write_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem)
@@ -977,118 +977,118 @@ void properbag_read_col_attributes(link_t_ptr ptr, link_t_ptr clk)
 	set_col_updateable(clk, get_proper_boolean(ptr, PROPERTY_BAG_SOURCE, ATTR_UPDATEABLE));
 }
 
-void properbag_write_graph_attributes(link_t_ptr ptr, link_t_ptr graph)
+void properbag_write_statis_attributes(link_t_ptr ptr, link_t_ptr statis)
 {
 	link_t_ptr ent;
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_GRAPH, -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_STATIS, -1);
 	set_entity_editable(ent, 0);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_graph_name_ptr(graph), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_statis_name_ptr(statis), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_graph_id_ptr(graph), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_statis_id_ptr(statis), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_TITLE, -1, get_graph_title_ptr(graph), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_TITLE, -1, get_statis_title_ptr(statis), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_graph_width(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_statis_width(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_graph_height(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_statis_height(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT, get_graph_title_height(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT, get_statis_title_height(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_WIDTH, get_graph_xaxbar_width(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_WIDTH, get_statis_xaxbar_width(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_HEIGHT, get_graph_xaxbar_height(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_HEIGHT, get_statis_xaxbar_height(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_WIDTH, get_graph_yaxbar_width(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_WIDTH, get_statis_yaxbar_width(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_HEIGHT, get_graph_yaxbar_height(graph));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_HEIGHT, get_statis_yaxbar_height(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_boolean(ptr, PROPERTY_BAG_POSITION, ATTR_SHOWSUM, get_graph_showsum(graph));
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_POSITION, ATTR_SHOWSUM, get_statis_showsum(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
 
-	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, ATTR_XAXIS, -1, get_graph_xaxis_ptr(graph), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, ATTR_XAXIS, -1, get_statis_xaxis_ptr(statis), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, ATTR_XAXDT, -1, get_graph_xaxdt_ptr(graph), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, ATTR_XAXDT, -1, get_statis_xaxdt_ptr(statis), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, ATTR_DATA_TYPE_OPTIONS, -1);
 
-	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, ATTR_XAXFMT, -1, get_graph_xaxfmt_ptr(graph), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, ATTR_XAXFMT, -1, get_statis_xaxfmt_ptr(statis), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_boolean(ptr, PROPERTY_BAG_DATA, ATTR_XAXWRP, get_graph_xaxwrp(graph));
+	ent = set_proper_boolean(ptr, PROPERTY_BAG_DATA, ATTR_XAXWRP, get_statis_xaxwrp(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, TF_OPTIONS, -1);
 }
 
-void properbag_read_graph_attributes(link_t_ptr ptr, link_t_ptr graph)
+void properbag_read_statis_attributes(link_t_ptr ptr, link_t_ptr statis)
 {
-	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_GRAPH, -1, 0) != 0)
+	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_STATIS, -1, 0) != 0)
 		return;
 
-	set_graph_name(graph, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
+	set_statis_name(statis, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 
-	set_graph_id(graph, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
+	set_statis_id(statis, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
 
-	set_graph_title(graph, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_TITLE));
+	set_statis_title(statis, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_TITLE));
 
-	set_graph_width(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
+	set_statis_width(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
-	set_graph_height(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+	set_statis_height(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
 
-	set_graph_title_height(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT));
+	set_statis_title_height(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT));
 
-	set_graph_yaxbar_width(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_WIDTH));
+	set_statis_yaxbar_width(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_WIDTH));
 
-	set_graph_yaxbar_height(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_HEIGHT));
+	set_statis_yaxbar_height(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_YAXBAR_HEIGHT));
 
-	set_graph_xaxbar_width(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_WIDTH));
+	set_statis_xaxbar_width(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_WIDTH));
 
-	set_graph_xaxbar_height(graph, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_HEIGHT));
+	set_statis_xaxbar_height(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_XAXBAR_HEIGHT));
 
-	set_graph_showsum(graph, get_proper_boolean(ptr, PROPERTY_BAG_POSITION, ATTR_SHOWSUM));
+	set_statis_showsum(statis, get_proper_boolean(ptr, PROPERTY_BAG_POSITION, ATTR_SHOWSUM));
 
-	set_graph_xaxis(graph, get_proper_ptr(ptr, PROPERTY_BAG_DATA, ATTR_XAXIS));
+	set_statis_xaxis(statis, get_proper_ptr(ptr, PROPERTY_BAG_DATA, ATTR_XAXIS));
 
-	set_graph_xaxdt(graph, get_proper_ptr(ptr, PROPERTY_BAG_DATA, ATTR_XAXDT));
+	set_statis_xaxdt(statis, get_proper_ptr(ptr, PROPERTY_BAG_DATA, ATTR_XAXDT));
 
-	set_graph_xaxfmt(graph, get_proper_ptr(ptr, PROPERTY_BAG_DATA, ATTR_XAXFMT));
+	set_statis_xaxfmt(statis, get_proper_ptr(ptr, PROPERTY_BAG_DATA, ATTR_XAXFMT));
 
-	set_graph_xaxwrp(graph, get_proper_boolean(ptr, PROPERTY_BAG_DATA, ATTR_XAXWRP));
+	set_statis_xaxwrp(statis, get_proper_boolean(ptr, PROPERTY_BAG_DATA, ATTR_XAXWRP));
 }
 
 void properbag_write_gax_attributes(link_t_ptr ptr, link_t_ptr glk)
 {
 	link_t_ptr ent;
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_GRAPH_GAX, -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_STATIS_GAX, -1);
 	set_entity_editable(ent, 0);
 
 	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_gax_name_ptr(glk), -1);
@@ -1099,10 +1099,10 @@ void properbag_write_gax_attributes(link_t_ptr ptr, link_t_ptr glk)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, ATTR_GRAPH_TYPE, -1, get_gax_graph_type_ptr(glk), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, ATTR_STATIS_TYPE, -1, get_gax_statis_type_ptr(glk), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-	set_entity_options(ent, ATTR_GRAPH_TYPE_OPTIONS, -1);
+	set_entity_options(ent, ATTR_STATIS_TYPE_OPTIONS, -1);
 
 	ent = set_proper_numeric(ptr, PROPERTY_BAG_BEHAVE, ATTR_GAX_STEP, get_gax_step(glk));
 	set_entity_editable(ent, 1);
@@ -1115,14 +1115,14 @@ void properbag_write_gax_attributes(link_t_ptr ptr, link_t_ptr glk)
 
 void properbag_read_gax_attributes(link_t_ptr ptr, link_t_ptr glk)
 {
-	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_GRAPH_GAX, -1, 0) != 0)
+	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_STATIS_GAX, -1, 0) != 0)
 		return;
 
 	set_gax_name(glk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 
 	set_gax_title(glk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_TITLE));
 
-	set_gax_graph_type(glk, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, ATTR_GRAPH_TYPE));
+	set_gax_statis_type(glk, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, ATTR_STATIS_TYPE));
 
 	set_gax_step(glk, get_proper_numeric(ptr, PROPERTY_BAG_BEHAVE, ATTR_GAX_STEP));
 
@@ -1133,7 +1133,7 @@ void properbag_write_yax_attributes(link_t_ptr ptr, link_t_ptr ylk)
 {
 	link_t_ptr ent;
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_GRAPH_YAX, -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_STATIS_YAX, -1);
 	set_entity_editable(ent, 0);
 
 	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_yax_name_ptr(ylk), -1);
@@ -1182,7 +1182,7 @@ void properbag_write_yax_attributes(link_t_ptr ptr, link_t_ptr ylk)
 
 void properbag_read_yax_attributes(link_t_ptr ptr, link_t_ptr ylk)
 {
-	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_GRAPH_YAX, -1, 0) != 0)
+	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_STATIS_YAX, -1, 0) != 0)
 		return;
 
 	set_yax_name(ylk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
@@ -1555,239 +1555,196 @@ void properbag_read_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk)
 	set_dialog_item_height(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
 }
 
-void properbag_write_chart_attributes(link_t_ptr ptr, link_t_ptr chart)
+void properbag_write_panorama_attributes(link_t_ptr ptr, link_t_ptr panorama)
 {
 	link_t_ptr ent;
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_CHART, -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_PANORAMA, -1);
 	set_entity_editable(ent, 0);
 
 	//Attributes
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_chart_name_ptr(chart), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_panorama_name_ptr(panorama), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_chart_id_ptr(chart), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_panorama_id_ptr(panorama), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_chart_width(chart));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_panorama_width(panorama));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_chart_height(chart));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_panorama_height(panorama));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 }
 
-void properbag_read_chart_attributes(link_t_ptr ptr, link_t_ptr chart)
+void properbag_read_panorama_attributes(link_t_ptr ptr, link_t_ptr panorama)
 {
-	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_CHART, -1, 0) != 0)
+	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_PANORAMA, -1, 0) != 0)
 		return;
 
-	set_chart_name(chart, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
+	set_panorama_name(panorama, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 
-	set_chart_id(chart, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
+	set_panorama_id(panorama, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
 
-	set_chart_width(chart, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
+	set_panorama_width(panorama, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
-	set_chart_height(chart, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+	set_panorama_height(panorama, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
 }
 
-void properbag_write_chart_table_attributes(link_t_ptr ptr, link_t_ptr ilk)
+void properbag_write_panorama_plot_attributes(link_t_ptr ptr, link_t_ptr ilk)
 {
 	link_t_ptr ent;
 	const tchar_t* sz_class;
 
-	sz_class = get_chart_table_class_ptr(ilk);
+	sz_class = get_panorama_plot_class_ptr(ilk);
 
 	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, sz_class, -1);
 	set_entity_editable(ent, 0);
 
 	//Attributes
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_chart_table_name_ptr(ilk), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_panorama_plot_name_ptr(ilk), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_chart_table_id_ptr(ilk), -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_panorama_plot_id_ptr(ilk), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X, get_chart_table_x(ilk));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X, get_panorama_plot_x(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y, get_chart_table_y(ilk));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y, get_panorama_plot_y(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_chart_table_width(ilk));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_panorama_plot_width(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_chart_table_height(ilk));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_panorama_plot_height(ilk));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-	if (compare_text(sz_class, -1, DOC_CHART_MAP, -1, 0) == 0)
-	{
-		ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_ROWS, get_chart_map_table_rows(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_COLS, get_chart_map_table_cols(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RX, get_chart_map_table_rx(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RY, get_chart_map_table_ry(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-	}
-
-	if (compare_text(sz_class, -1, DOC_CHART_DOT, -1, 0) == 0)
-	{
-		ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_ROWS, get_chart_dot_table_rows(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_COLS, get_chart_dot_table_cols(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RX, get_chart_dot_table_rx(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RY, get_chart_dot_table_ry(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-	}
-
-	if (compare_text(sz_class, -1, DOC_CHART_COUNTER, -1, 0) == 0)
-	{
-		ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, ATTR_LAYER, -1, get_chart_counter_table_layer_ptr(ilk), -1);
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-		set_entity_options(ent, ATTR_LAYER_OPTIONS, -1);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE, get_chart_counter_table_size(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-	}
-
-	if (compare_text(sz_class, -1, DOC_CHART_LINE, -1, 0) == 0)
-	{
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE, get_chart_line_table_size(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_BASE, get_chart_line_table_base(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SPAN, get_chart_line_table_span(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-	}
-
-	if (compare_text(sz_class, -1, DOC_CHART_BAR, -1, 0) == 0)
-	{
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE, get_chart_bar_table_size(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_BASE, get_chart_bar_table_base(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SPAN, get_chart_bar_table_span(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-	}
-
-	if (compare_text(sz_class, -1, DOC_CHART_PIE, -1, 0) == 0)
-	{
-		ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE, get_chart_bar_table_size(ilk));
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-	}
 }
 
-void properbag_read_chart_table_attributes(link_t_ptr ptr, link_t_ptr ilk)
+void properbag_read_panorama_plot_attributes(link_t_ptr ptr, link_t_ptr ilk)
 {
 	const tchar_t* sz_class;
 
-	sz_class = get_chart_table_class_ptr(ilk);
+	sz_class = get_panorama_plot_class_ptr(ilk);
 
-	set_chart_table_name(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
+	set_panorama_plot_name(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 
-	set_chart_table_id(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
+	set_panorama_plot_id(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
 
-	set_chart_table_text(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_DATA), -1);
+	set_panorama_plot_text(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_DATA), -1);
 
-	set_chart_table_x(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X));
+	set_panorama_plot_x(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X));
 
-	set_chart_table_y(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y));
+	set_panorama_plot_y(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y));
 
-	set_chart_table_width(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
+	set_panorama_plot_width(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
-	set_chart_table_height(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+	set_panorama_plot_height(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+}
 
-	if (compare_text(sz_class, -1, DOC_CHART_MAP, -1, 0) == 0)
-	{
-		set_chart_map_table_rows(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_ROWS));
+void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
+{
+	link_t_ptr ent;
 
-		set_chart_map_table_cols(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_COLS));
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_PANORAMA, -1);
+	set_entity_editable(ent, 0);
 
-		set_chart_map_table_rx(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RX));
+	//Attributes
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_diagram_name_ptr(diagram), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-		set_chart_map_table_ry(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RY));
-	}
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_diagram_id_ptr(diagram), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	if (compare_text(sz_class, -1, DOC_CHART_DOT, -1, 0) == 0)
-	{
-		set_chart_dot_table_rows(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_ROWS));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_diagram_width(diagram));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-		set_chart_dot_table_cols(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_COLS));
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_diagram_height(diagram));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+}
 
-		set_chart_dot_table_rx(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RX));
+void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
+{
+	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_PANORAMA, -1, 0) != 0)
+		return;
 
-		set_chart_dot_table_ry(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_RY));
-	}
+	set_diagram_name(diagram, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
 
-	if (compare_text(sz_class, -1, DOC_CHART_COUNTER, -1, 0) == 0)
-	{
-		set_chart_counter_table_layer(ilk, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, ATTR_LAYER));
+	set_diagram_id(diagram, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
 
-		set_chart_counter_table_size(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE));
-	}
+	set_diagram_width(diagram, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
-	if (compare_text(sz_class, -1, DOC_CHART_LINE, -1, 0) == 0)
-	{
-		set_chart_line_table_size(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE));
+	set_diagram_height(diagram, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+}
 
-		set_chart_line_table_base(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_BASE));
+void properbag_write_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk)
+{
+	link_t_ptr ent;
+	const tchar_t* sz_class;
 
-		set_chart_line_table_span(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SPAN));
-	}
+	sz_class = get_diagram_entity_class_ptr(ilk);
 
-	if (compare_text(sz_class, -1, DOC_CHART_BAR, -1, 0) == 0)
-	{
-		set_chart_bar_table_size(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE));
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, sz_class, -1);
+	set_entity_editable(ent, 0);
 
-		set_chart_bar_table_base(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_BASE));
+	//Attributes
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_diagram_entity_name_ptr(ilk), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-		set_chart_bar_table_span(ilk, get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_SPAN));
-	}
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_diagram_entity_id_ptr(ilk), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	if (compare_text(sz_class, -1, DOC_CHART_PIE, -1, 0) == 0)
-	{
-		set_chart_bar_table_size(ilk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_SIZE));
-	}
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X, get_diagram_entity_x(ilk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y, get_diagram_entity_y(ilk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_diagram_entity_width(ilk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_diagram_entity_height(ilk));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+}
+
+void properbag_read_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk)
+{
+	const tchar_t* sz_class;
+
+	sz_class = get_diagram_entity_class_ptr(ilk);
+
+	set_diagram_entity_name(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
+
+	set_diagram_entity_id(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
+
+	set_diagram_entity_text(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_DATA), -1);
+
+	set_diagram_entity_x(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X));
+
+	set_diagram_entity_y(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y));
+
+	set_diagram_entity_width(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
+
+	set_diagram_entity_height(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
 }
 
 #endif //XDLDOC

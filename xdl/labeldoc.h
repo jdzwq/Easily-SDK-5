@@ -119,15 +119,15 @@ LICENSE.GPL3 for more details.
 */
 #define set_label_item_type(ilk,token)						set_dom_node_attr(ilk,ATTR_TEXT_TYPE,-1,token,-1)
 /*
-@PROPER image: string.
-@GET get_label_item_image_ptr: get the label item image.
+@PROPER icon: string.
+@GET get_label_item_icon_ptr: get the label item icon.
 */
-#define get_label_item_image_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
+#define get_label_item_icon_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_label_item_image: set the label item image.
+@PROPER icon: string.
+@SET set_label_item_icon: set the label item icon.
 */
-#define set_label_item_image(ilk,token)						set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
+#define set_label_item_icon(ilk,token)						set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER image: string.
 @GET get_label_item_title_ptr: get the label item title.
@@ -148,17 +148,6 @@ LICENSE.GPL3 for more details.
 @SET set_label_item_text: set the label item text.
 */
 #define set_label_item_text(ilk,token,len)					set_dom_node_text(ilk,token,len)
-
-/*
-@PROPER images: document.
-@SET set_label_images: set the label item images reference.
-*/
-#define set_label_images(ptr,images)						set_dom_node_images(ptr,images)
-/*
-@PROPER text: document.
-@GET get_label_images: get the label item images reference.
-*/
-#define get_label_images(ptr)								get_dom_node_images(ptr)
 
 
 #ifdef	__cplusplus

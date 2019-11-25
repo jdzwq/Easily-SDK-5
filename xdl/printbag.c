@@ -75,9 +75,9 @@ int calc_form_pages(canvas_t canv, link_t_ptr form)
 				max = (max > pages) ? max : pages;
 			}
 		}
-		else if (compare_text(cls, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+		else if (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0)
 		{
-			obj = get_field_embed_graph(flk);
+			obj = get_field_embed_statis(flk);
 			if (obj)
 			{
 				cb.fx = 0;
@@ -85,7 +85,7 @@ int calc_form_pages(canvas_t canv, link_t_ptr form)
 				cb.fw = get_field_width(flk);
 				cb.fh = get_field_height(flk);
 
-				pages = calc_graph_pages(&cb, obj);
+				pages = calc_statis_pages(&cb, obj);
 
 				max = (max > pages) ? max : pages;
 			}
@@ -230,7 +230,7 @@ void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 	destroy_printer_context(rdc);
 }
 
-void print_graph(const dev_prn_t* pdev, link_t_ptr graph)
+void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 {
 	res_ctx_t rdc;
 	canvas_t canv;
@@ -251,15 +251,15 @@ void print_graph(const dev_prn_t* pdev, link_t_ptr graph)
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
 
-	pages = calc_graph_pages(&cb, graph);
+	pages = calc_statis_pages(&cb, statis);
 
-	begin_doc(rdc, _T("GRAPH"));
+	begin_doc(rdc, _T("STATIS"));
 
 	for (i = 0; i < pages; i++)
 	{
 		begin_page(rdc);
 
-		draw_graph_page(pic, &cb, graph, i + 1);
+		draw_statis_page(pic, &cb, statis, i + 1);
 
 		end_page(rdc);
 	}
@@ -341,7 +341,7 @@ void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog)
 	destroy_printer_context(rdc);
 }
 
-void print_chart(const dev_prn_t* pdev, link_t_ptr chart)
+void print_panorama(const dev_prn_t* pdev, link_t_ptr panorama)
 {
 	res_ctx_t rdc;
 	canvas_t canv;
@@ -361,11 +361,46 @@ void print_chart(const dev_prn_t* pdev, link_t_ptr chart)
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
 
-	begin_doc(rdc, _T("CHART"));
+	begin_doc(rdc, _T("PANORAMA"));
 
 	begin_page(rdc);
 
-	draw_chart(pic, &cb, chart);
+	draw_panorama(pic, &cb, panorama);
+
+	end_page(rdc);
+
+	end_doc(rdc);
+
+	destroy_canvas_interface(pic);
+	destroy_printer_canvas(canv);
+	destroy_printer_context(rdc);
+}
+
+void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
+{
+	res_ctx_t rdc;
+	canvas_t canv;
+	if_canvas_t* pic;
+	canvbox_t cb = { 0 };
+
+	rdc = create_printer_context(pdev);
+	if (!rdc)
+		return;
+
+	canv = create_printer_canvas(rdc);
+	XDL_ASSERT(canv != NULL);
+
+	cb.fw = get_canvas_horz_size(canv);
+	cb.fh = get_canvas_vert_size(canv);
+
+	pic = create_canvas_interface(canv);
+	XDL_ASSERT(pic != NULL);
+
+	begin_doc(rdc, _T("DIAGRAM"));
+
+	begin_page(rdc);
+
+	draw_diagram(pic, &cb, diagram);
 
 	end_page(rdc);
 
@@ -527,7 +562,7 @@ void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page)
 	destroy_svg_interface(pif);
 }
 
-void svg_print_graph(link_t_ptr svg, link_t_ptr graph, int page)
+void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page)
 {
 	canvas_t canv;
 	if_canvas_t* pif;
@@ -540,7 +575,7 @@ void svg_print_graph(link_t_ptr svg, link_t_ptr graph, int page)
 	cb.fw = get_svg_width(svg);
 	cb.fh = get_svg_height(svg);
 
-	draw_graph_page(pif, &cb, graph, page);
+	draw_statis_page(pif, &cb, statis, page);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_interface(pif);
@@ -584,7 +619,7 @@ void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog)
 	destroy_svg_interface(pif);
 }
 
-void svg_print_chart(link_t_ptr svg, link_t_ptr chart)
+void svg_print_panorama(link_t_ptr svg, link_t_ptr panorama)
 {
 	canvas_t canv;
 	if_canvas_t* pif;
@@ -597,7 +632,26 @@ void svg_print_chart(link_t_ptr svg, link_t_ptr chart)
 	cb.fw = get_svg_width(svg);
 	cb.fh = get_svg_height(svg);
 
-	draw_chart(pif, &cb, chart);
+	draw_panorama(pif, &cb, panorama);
+
+	destroy_svg_canvas(canv);
+	destroy_svg_interface(pif);
+}
+
+void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram)
+{
+	canvas_t canv;
+	if_canvas_t* pif;
+	canvbox_t cb = { 0 };
+
+	canv = create_svg_canvas(svg);
+
+	pif = create_svg_interface(canv);
+
+	cb.fw = get_svg_width(svg);
+	cb.fh = get_svg_height(svg);
+
+	draw_diagram(pif, &cb, diagram);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_interface(pif);

@@ -187,7 +187,7 @@ void listbox_on_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 1);
+	widget_redraw(widget, &xr, 1);
 }
 
 void listbox_on_item_changed(res_win_t widget, link_t_ptr ent)
@@ -203,7 +203,7 @@ void listbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 1);
+	widget_redraw(widget, &xr, 1);
 
 	noti_listbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -370,7 +370,8 @@ void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -487,7 +488,7 @@ void listbox_redraw(res_win_t widget)
 	ptd->entity = ent;
 	_listbox_reset_page(widget);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 void listbox_set_focus_item(res_win_t widget, link_t_ptr ilk)

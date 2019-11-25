@@ -424,6 +424,9 @@ void xdl_process_init(dword_t opt)
 #ifdef XDK_SUPPORT_CONTEXT_PRINTER
 		xdk_impl_context_printer(&g_xdl_mou.if_context);
 #endif
+#ifdef XDK_SUPPORT_CONTEXT_REGION
+		xdk_impl_context_region(&g_xdl_mou.if_context);
+#endif
 
 #endif //XDK_SUPPORT_CONTEXT
 
@@ -437,7 +440,6 @@ void xdl_process_init(dword_t opt)
 		xdk_impl_shell_dialog(&g_xdl_mou.if_shell);
 #endif
 #endif //XDK_SUPPORT_SHELL
-
 
 #ifdef XDK_SUPPORT_WIDGET
 		xdk_impl_widget(&g_xdl_mou.if_widget);

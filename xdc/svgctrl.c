@@ -32,11 +32,15 @@ LICENSE.GPL3 for more details.
 #include "xdcctrl.h"
 #include "handler.h"
 #include "winnc.h"
+#include "xdcbox.h"
 
 #define SVG_LINE_FEED		(long)100
 
 typedef struct _svg_delta_t{
 	link_t_ptr svg;
+
+	res_win_t hsc;
+	res_win_t vsc;
 }svg_delta_t;
 
 #define GETSVGDELTA(ph) 		(svg_delta_t*)widget_get_user_delta(ph)
@@ -115,6 +119,12 @@ void hand_svg_destroy(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
+
 	xmem_free(ptd);
 
 	SETSVGDELTA(widget, 0);
@@ -131,7 +141,7 @@ void hand_svg_size(res_win_t widget, int code, const xsize_t* pxs)
 
 	_svgctrl_reset_page(widget);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_svg_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -214,7 +224,25 @@ void hand_svg_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -259,7 +287,8 @@ void hand_svg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -345,7 +374,7 @@ link_t_ptr svgctrl_detach(res_win_t widget)
 	ptr = ptd->svg;
 	ptd->svg = NULL;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 	return ptr;
 }
 
@@ -369,7 +398,5 @@ void svgctrl_redraw(res_win_t widget)
 
 	_svgctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }

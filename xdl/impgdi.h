@@ -103,6 +103,16 @@ XDL_API void	draw_polygon_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* 
 XDL_API void	draw_bezier_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
 
 /*
+@FUNCTION draw_curve_raw: draw curve in memory or device context using points array
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt: the point array.
+@INPUT int n: the point array size.
+@RETURN void: none.
+*/
+XDL_API void	draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+
+/*
 @FUNCTION draw_rect_raw: draw rect in memory or device context using points coordinate
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -196,6 +206,17 @@ XDL_API void	draw_arrow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* px
 @RETURN void: none.
 */
 XDL_API void	draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
+
+/*
+@FUNCTION draw_shadow_raw: draw shadow in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const tchar_t* shadow: the shadow name, eg: ATTR_SHAPE_*.
+@RETURN void: none.
+*/
+void draw_shadow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const xsize_t* poff, const tchar_t* shape);
 
 /*
 @FUNCTION multi_line_raw: draw multiple base line in memory or device context using points coordinate, the line separated by line height of font and face.
@@ -521,6 +542,16 @@ XDL_API void	draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, co
 XDL_API void	draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
 
 /*
+@FUNCTION draw_curve: draw curve in canvas using millimeter coordinate
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt: the point array.
+@INPUT int n: the point array size.
+@RETURN void: none.
+*/
+XDL_API void	draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
+
+/*
 @FUNCTION gradient_rect: gradient a rect in canvas using milimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xgradi_t* pxg the gradient struct.
@@ -604,6 +635,17 @@ XDL_API void	draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, c
 @RETURN void: none.
 */
 XDL_API void	draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
+
+/*
+@FUNCTION draw_shadow: draw shadow in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* shadow: the shadow name, eg: ATTR_SHAPE_*.
+@RETURN void: none.
+*/
+XDL_API void	draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shadow);
 
 /*
 @FUNCTION multi_line: draw multiple base line in canvas using millimeter coordinate, the line separated by line height of font and face.
@@ -902,15 +944,6 @@ XDL_API void	draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt);
 @RETURN void: none.
 */
 XDL_API void	draw_corner(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt);
-
-/*
-@FUNCTION draw_shadow: draw the shadow in canvas using millimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT cont xcolor_t* pxc: the color struct.
-@INPUT const xrect_t* prt: the rect struct using float member.
-@RETURN void: none.
-*/
-XDL_API void	draw_shadow(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt);
 
 /*
 @FUNCTION draw_svg: draw the svg document in canvas using millimeter coordinate.

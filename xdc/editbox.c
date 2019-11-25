@@ -108,6 +108,7 @@ void _editbox_auto_resize(res_win_t widget)
 		xs.cy = xr.h;
 
 		widget_size(widget, &xs);
+		widget_update(widget);
 	}
 }
 
@@ -681,6 +682,7 @@ res_win_t editbox_create_keybox(res_win_t widget, dword_t style, const xrect_t* 
 
 	widget_size(keybox, RECTSIZE(&xr));
 	widget_take(keybox, (int)WD_ZORDER_TOP);
+	widget_update(keybox);
 	widget_show(keybox, WD_SHOW_NORMAL);
 
 	widget_set_user_prop(editbox, XDCKEYBOX, (var_long)keybox);

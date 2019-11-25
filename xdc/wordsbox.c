@@ -122,7 +122,7 @@ void wordsbox_on_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
@@ -136,7 +136,7 @@ void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
 
 	_wordsbox_item_rect(widget, ptd->item, &xr);
 	
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_wordsbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -320,7 +320,8 @@ void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -429,9 +430,7 @@ void wordsbox_redraw(res_win_t widget)
 
 	_wordsbox_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 bool_t wordsbox_set_focus_item(res_win_t widget, link_t_ptr ent)
@@ -568,7 +567,7 @@ void wordsbox_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -593,7 +592,7 @@ void wordsbox_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -614,7 +613,7 @@ void wordsbox_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -639,7 +638,7 @@ void wordsbox_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -664,7 +663,7 @@ void wordsbox_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 

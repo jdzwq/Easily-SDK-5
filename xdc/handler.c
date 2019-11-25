@@ -54,7 +54,8 @@ typedef struct _win_struct_t{
 	xface_t xa;
 	xbrush_t xb;
 	xpen_t xp;
-	xcolor_t xc;
+	xcolor_t msk;
+	xcolor_t ico;
 }win_struct_t;
 
 #define GETWIDGSTRUCT(wt)			(win_struct_t*)widget_get_core_delta(wt)
@@ -203,7 +204,7 @@ const xpen_t*  widget_get_xpen_ptr(res_win_t wt)
 	return &pwt->xp;
 }
 
-void  widget_set_xcolor(res_win_t wt, const xcolor_t* pxc)
+void  widget_set_mask(res_win_t wt, const xcolor_t* pxc)
 {
 	win_struct_t* pwt;
 
@@ -211,10 +212,10 @@ void  widget_set_xcolor(res_win_t wt, const xcolor_t* pxc)
 
 	XDL_ASSERT(pwt != NULL);
 
-	xmem_copy((void*)&pwt->xc, (void*)pxc, sizeof(xcolor_t));
+	xmem_copy((void*)&pwt->msk, (void*)pxc, sizeof(xcolor_t));
 }
 
-void  widget_get_xcolor(res_win_t wt, xcolor_t* pxc)
+void  widget_get_mask(res_win_t wt, xcolor_t* pxc)
 {
 	win_struct_t* pwt;
 
@@ -222,10 +223,10 @@ void  widget_get_xcolor(res_win_t wt, xcolor_t* pxc)
 
 	XDL_ASSERT(pwt != NULL);
 
-	xmem_copy((void*)pxc, (void*)&pwt->xc, sizeof(xcolor_t));
+	xmem_copy((void*)pxc, (void*)&pwt->msk, sizeof(xcolor_t));
 }
 
-const xcolor_t*  widget_get_xcolor_ptr(res_win_t wt)
+const xcolor_t*  widget_get_mask_ptr(res_win_t wt)
 {
 	win_struct_t* pwt;
 
@@ -233,7 +234,40 @@ const xcolor_t*  widget_get_xcolor_ptr(res_win_t wt)
 
 	XDL_ASSERT(pwt != NULL);
 
-	return &pwt->xc;
+	return &pwt->msk;
+}
+
+void  widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
+{
+	win_struct_t* pwt;
+
+	pwt = GETWIDGSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	xmem_copy((void*)&pwt->ico, (void*)pxc, sizeof(xcolor_t));
+}
+
+void  widget_get_iconic(res_win_t wt, xcolor_t* pxc)
+{
+	win_struct_t* pwt;
+
+	pwt = GETWIDGSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	xmem_copy((void*)pxc, (void*)&pwt->ico, sizeof(xcolor_t));
+}
+
+const xcolor_t*  widget_get_iconic_ptr(res_win_t wt)
+{
+	win_struct_t* pwt;
+
+	pwt = GETWIDGSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	return &pwt->ico;
 }
 
 void  widget_set_point(res_win_t wt, const xpoint_t* ppt)
@@ -522,7 +556,9 @@ void widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 	format_xcolor(&pclr->clr_txt, pwt->xf.color);
 
-	xmem_copy((void*)&pwt->xc, (void*)&pclr->clr_msk, sizeof(xcolor_t));
+	xmem_copy((void*)&pwt->msk, (void*)&pclr->clr_msk, sizeof(xcolor_t));
+
+	xmem_copy((void*)&pwt->ico, (void*)&pclr->clr_ico, sizeof(xcolor_t));
 
 	if (widget_has_subproc(wt))
 	{
@@ -551,7 +587,9 @@ void widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 
 	parse_xcolor(&pclr->clr_txt, pwt->xf.color);
 
-	xmem_copy((void*)&pclr->clr_msk, (void*)&pwt->xc, sizeof(xcolor_t));
+	xmem_copy((void*)&pclr->clr_msk, (void*)&pwt->msk, sizeof(xcolor_t));
+
+	xmem_copy((void*)&pclr->clr_ico, (void*)&pwt->ico, sizeof(xcolor_t));
 }
 
 void widget_get_scroll(res_win_t wt, bool_t bHorz, scroll_t* psl)
@@ -803,7 +841,7 @@ void widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll)
 	}
 
 	if (b_vert || b_horz)
-		widget_update(wt, NULL, 0);
+		widget_redraw(wt, NULL, 0);
 }
 
 void widget_rect_to_pt(res_win_t wt, xrect_t* pxr)
@@ -917,7 +955,8 @@ void widget_hand_create(res_win_t wt)
 	default_xface(&pwt->xa);
 	default_xpen(&pwt->xp);
 	default_xbrush(&pwt->xb);
-	parse_xcolor(&pwt->xc, GDI_ATTR_RGB_WHITE);
+	parse_xcolor(&pwt->msk, GDI_ATTR_RGB_WHITE);
+	parse_xcolor(&pwt->ico, GDI_ATTR_RGB_GRAY);
 
 	rdc = widget_client_ctx(wt);
 	pwt->canv = create_display_canvas(rdc);
@@ -994,7 +1033,7 @@ bool_t widget_hand_scroll(res_win_t wt, bool_t bHorz, long nLine)
 		pwt->vb.y = nCur;
 	}
 
-	widget_update(wt, NULL, 0);
+	widget_redraw(wt, NULL, 0);
 
 	widget_reset_scroll(wt, bHorz);
 

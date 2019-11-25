@@ -540,23 +540,23 @@ typedef struct _variant_t{
 #define DEF_PAPER_HEIGHT		PAPER_A4_HEIGHT
 
 #define DEF_SPLIT_SPAN			(float)1.5
-#define DEF_TOUCH_SPAN			(float)8
-#define DEF_ICON_SPAN			(float)6.6
+#define DEF_TOUCH_SPAN			(float)7
+#define DEF_ICON_SPAN			(float)6.8
 #define DEF_TEXT_HEIGHT			(float)8
 #define DEF_TEXT_WIDTH			(float)20
 #define DEF_ITEM_HEIGHT			(float)7
 #define DEF_ITEM_WIDTH			(float)15
-#define DEF_TABLE_HEIGHT		(float)20
-#define DEF_TABLE_WIDTH			(float)30
+#define DEF_PLOT_HEIGHT			(float)20
+#define DEF_PLOT_WIDTH			(float)30
 
-#define DEF_SMALL_ICON		(float)2.8
+#define DEF_SMALL_ICON		(float)3.8
 #define DEF_MIDD_ICON		(float)5.8
 #define DEF_LARGE_ICON		(float)8.6
 
 #define DEF_PAGE_FEED		(float)10
 #define DEF_CORNER_FEED		(float)3
 #define DEF_SPLIT_FEED		(float)1
-
+#define DEF_SHADOW_FEED		(float)2
 
 
 #define WARNING_OPTIONS		_T("1~Red;2~Orange;3~Yellow;4~Blue;")

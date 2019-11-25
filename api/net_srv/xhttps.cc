@@ -237,6 +237,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	tchar_t sz_space[PATH_LEN] = { 0 };
 	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_cert[RES_LEN] = { 0 };
+	tchar_t sz_pass[NUM_LEN] = { 0 };
 	int n_state = 0;
 
 	xhttps_param_t* pxp = (xhttps_param_t*)p;
@@ -259,7 +260,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	if (pxp->n_secu == _SECU_SSL)
 	{
-		set_certs(_SECU_SSL, bio);
+		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
+
+		set_certs(_SECU_SSL, sz_pass, bio);
 
 		get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
 
@@ -272,7 +275,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{
-		set_certs(_SECU_SSH, bio);
+		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
+
+		set_certs(_SECU_SSH, sz_pass, bio);
 	}
 	
 	if (!xhttp_recv_request(http))

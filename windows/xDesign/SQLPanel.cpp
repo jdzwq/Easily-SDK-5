@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #define IDC_SQLPANEL_MEMO			201
 #define IDC_SQLPANEL_GRID			202
 
-#define SQLPANEL_GROUPITEM_WIDTH		(float)7
+#define SQLPANEL_GROUPITEM_WIDTH		(float)8
 #define SQLPANEL_GROUPITEM_HEIGHT		(float)7
 
 typedef struct tagSQLPanelDelta{
@@ -444,7 +444,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	LINKPTR ilkGrid = get_split_last_child_item(ptrSplit);
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hMemo = memoctrl_create(_T("SQLMemo"), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hMemo = memoctrl_create(_T("SQLMemo"), WD_STYLE_CONTROL, &xr, widget);
 
 	widget_set_user_id(pdt->hMemo, IDC_SQLPANEL_MEMO);
 	widget_set_owner(pdt->hMemo, widget);
@@ -457,7 +457,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	widget_show(pdt->hMemo, WD_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hGrid = gridctrl_create(_T("SQLGrid"), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hGrid = gridctrl_create(_T("SQLGrid"), WD_STYLE_CONTROL, &xr, widget);
 	widget_set_user_id(pdt->hGrid, IDC_SQLPANEL_GRID);
 	widget_set_owner(pdt->hGrid, widget);
 
@@ -561,49 +561,49 @@ void SQLPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("È«Ñ¡"));
-		set_tool_item_image(ilk, BMP_SELECTALL);
+		set_tool_item_icon(ilk, ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("É¾³ý"));
-		set_tool_item_image(ilk, BMP_DELETE);
+		set_tool_item_icon(ilk, ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¿½±´"));
-		set_tool_item_image(ilk, BMP_COPY);
+		set_tool_item_icon(ilk, ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¼ôÇÐ"));
-		set_tool_item_image(ilk, BMP_CUT);
+		set_tool_item_icon(ilk, ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Õ³Ìù"));
-		set_tool_item_image(ilk, BMP_PASTE);
+		set_tool_item_icon(ilk, ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("³·Ïú"));
-		set_tool_item_image(ilk, BMP_UNDO);
+		set_tool_item_icon(ilk, ICON_UNDO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DATABASE_EXECUTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("²éÑ¯"));
-		set_tool_item_image(ilk, BMP_EXEC);
+		set_tool_item_icon(ilk, ICON_EXECUTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DATABASE_SCHEMA);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Ä£Ê½"));
-		set_tool_item_image(ilk, BMP_SQL);
+		set_tool_item_icon(ilk, ICON_SCHEMA);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

@@ -3063,18 +3063,30 @@ bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen)
 	return 1;
 }
 
-bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const byte_t* sz_pwd, dword_t plen)
+bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int len)
 {
 	ssl_t* pso = (ssl_t*)ssl;
+	byte_t buf_pwd[RES_LEN] = { 0 };
+	dword_t dw;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
 	XDL_ASSERT(pso->type == SSL_TYPE_CLIENT || pso->type == SSL_TYPE_SERVER);
 
+	if (len < 0)
+		len = xslen(sz_pwd);
+
+#ifdef _UNICODE
+	dw = ucs_to_utf8(sz_pwd, len, buf_pwd, RES_LEN);
+#else
+	dw = (len < RES_LEN)? len : RES_LEN;
+	a_xsncpy((schar_t*)buf_pwd, sz_pwd, dw);
+#endif
+
 	if (!pso->rsa_ow)
 		pso->rsa_ow = (rsa_context*)xmem_alloc(sizeof(rsa_context));
 
-	if (C_OK != x509parse_key(pso->rsa_ow, sz_rsa, rlen, sz_pwd, plen))
+	if (C_OK != x509parse_key(pso->rsa_ow, sz_rsa, rlen, buf_pwd, dw))
 	{
 		return 0;
 	}

@@ -310,7 +310,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 	pt_center_rect(&rtScr, 16, 16);
 	parse_xcolor(&xc_center, xp.color);
-	draw_icon_raw(dc, &xc_center, &rtScr, ATTR_ICON_FOLDER);
+	draw_icon_raw(dc, &xc_center, &rtScr, ICON_LOGO);
 
 	/*caption*/
 	len = widget_get_title(wt, txt, RES_LEN);
@@ -393,10 +393,9 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 	xpen_t xp = { 0 };
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
-	ximage_t xi = { 0 };
+	xcolor_t xc = { 0 };
 
 	link_t_ptr ptr, ilk;
-	link_t_ptr imagelist;
 	const tchar_t* text;
 
 	ws = widget_get_style(wt);
@@ -419,6 +418,7 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 	widget_get_xpen(wt, &xp);
 	widget_get_xfont(wt, &xf);
 	widget_get_xface(wt, &xa);
+	widget_get_iconic(wt, &xc);
 
 	if (!is_null(xf.size))
 	{
@@ -435,7 +435,6 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 	draw_rect_raw(dc, NULL, &xb, &rtMenu);
 
 	ptr = widget_get_menu(wt);
-	imagelist = (ptr)? get_menu_images(ptr) : NULL;
 
 	rtImage.x = rtWnd.x + edge;
 	rtImage.w = 0;
@@ -448,13 +447,9 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 		rtImage.x += rtImage.w;
 		rtImage.w = menu;
 
-		if (imagelist)
-		{
-			if (get_ximage(imagelist, get_menu_item_image_ptr(ilk), &xi));
-			{
-				draw_image_raw(dc, &xi, &rtImage);
-			}
-		}
+		pt_center_rect(&rtImage, 16, 16);
+
+		draw_icon_raw(dc, &xc, &rtImage, get_menu_item_icon_ptr(ilk));
 		
 		text = get_menu_item_title_ptr(ilk);
 		if (!is_null(text))

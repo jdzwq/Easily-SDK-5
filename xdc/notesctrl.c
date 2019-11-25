@@ -32,12 +32,15 @@ LICENSE.GPL3 for more details.
 #include "xdcctrl.h"
 #include "handler.h"
 #include "winnc.h"
+#include "xdcbox.h"
 
 typedef struct _notes_delta_t{
 	link_t_ptr arch;
 	link_t_ptr item;
 	link_t_ptr hover;
 	long tw, th;
+
+	res_win_t vsc;
 
 	bool_t b_delete;
 }notes_delta_t;
@@ -377,7 +380,7 @@ bool_t noti_notes_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -393,7 +396,7 @@ void noti_notes_item_changed(res_win_t widget, link_t_ptr elk)
 
 	_notesctrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t noti_notes_item_delete(res_win_t widget, link_t_ptr ilk)
@@ -477,6 +480,9 @@ void hand_notes_destroy(res_win_t widget)
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
 
 	xmem_free(ptd);
 
@@ -674,7 +680,17 @@ void hand_notes_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -773,12 +789,12 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		if (ilk == ptd->item)
 		{
 			pt_center_rect(&xr_btn, 12, 8);
-			draw_icon_raw(rdc, &xc, &xr_btn, ATTR_ICON_GUIDER);
+			draw_icon_raw(rdc, &xc, &xr_btn, ICON_GUIDER);
 		}
 		else
 		{
 			pt_center_rect(&xr_btn, 8, 8);
-			draw_icon_raw(rdc, &xc, &xr_btn, ATTR_ICON_RADIOED);
+			draw_icon_raw(rdc, &xc, &xr_btn, ICON_RADIOED);
 		}
 
 		if (!is_null(get_notes_time_ptr(doc)))
@@ -825,7 +841,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			xr_btn.h = NOTESCTRL_SPAN_PLUS * ptd->tw;
 
 			pt_center_rect(&xr_btn, 8, 8);
-			draw_icon_raw(rdc, &xc, &xr_btn, ATTR_ICON_FIXED);
+			draw_icon_raw(rdc, &xc, &xr_btn, ICON_FIXED);
 		}
 
 		pt_cur.x = xr.x + ptd->th / 2;
@@ -844,7 +860,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			xr_btn.h = ptd->th;
 
 			pt_center_rect(&xr_btn, 8, 8);
-			draw_icon_raw(rdc, &xc, &xr_btn, ATTR_ICON_CLOSE);
+			draw_icon_raw(rdc, &xc, &xr_btn, ICON_CLOSE);
 		}
 
 		if (compare_text(get_notes_type_ptr(doc), -1, ATTR_NOTES_TEXT, -1, 0) == 0)
@@ -883,7 +899,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 }
 
 /************************************************************************************************/
-res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparilk)
+res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent)
 {
 	if_event_t ev = { 0 };
 
@@ -916,7 +932,7 @@ res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 
 	EVENT_END_DISPATH
 
-	return widget_create(wname, wstyle, pxr, wparilk, &ev);
+	return widget_create(wname, wstyle, pxr, wparent, &ev);
 }
 
 void notesctrl_attach(res_win_t widget, link_t_ptr ptr)
@@ -999,9 +1015,7 @@ void notesctrl_redraw(res_win_t widget)
 
 	_notesctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
@@ -1020,7 +1034,7 @@ void notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t notesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

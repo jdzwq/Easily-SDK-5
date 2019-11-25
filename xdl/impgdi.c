@@ -111,6 +111,15 @@ void draw_bezier_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, con
 	(*pif->pf_gdi_draw_bezier)(rdc, pxp, ppt1, ppt2, ppt3, ppt4);
 }
 
+void draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_curve)(rdc, pxp, ppt, n);
+}
+
 void gradient_rect_raw(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* pxr)
 {
 	if_context_t *pif;
@@ -305,130 +314,14 @@ void text_metric_raw(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	(*pif->pf_gdi_text_metric)(rdc, pxf, pxs);
 }
 
-
 void draw_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
 {
-	if (compare_text(iname, -1, ATTR_ICON_LOGO, -1, 0) == 0)
-		draw_logo_icon_raw(rdc, pxc, pxr); 
-	else if (compare_text(iname, -1, ATTR_ICON_COLLAPSE, -1, 0) == 0)
-		draw_collapse_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_EXPAND, -1, 0) == 0)
-		draw_expand_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_INSERT, -1, 0) == 0)
-		draw_insert_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_DELETE, -1, 0) == 0)
-		draw_delete_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_PLUS, -1, 0) == 0)
-		draw_plus_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_MINUS, -1, 0) == 0)
-		draw_minus_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_HOME, -1, 0) == 0)
-		draw_home_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_UP, -1, 0) == 0)
-		draw_up_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_DOWN, -1, 0) == 0)
-		draw_down_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_END, -1, 0) == 0)
-		draw_end_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_FIRST, -1, 0) == 0)
-		draw_first_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_PREV, -1, 0) == 0)
-		draw_prev_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_NEXT, -1, 0) == 0)
-		draw_next_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_LAST, -1, 0) == 0)
-		draw_last_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_ZOOMIN, -1, 0) == 0)
-		draw_zoomin_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_ZOOMOUT, -1, 0) == 0)
-		draw_zoomout_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_KEYBOX, -1, 0) == 0)
-		draw_keybox_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_KEYBOXED, -1, 0) == 0)
-		draw_keyboxed_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_TOUCH, -1, 0) == 0)
-		draw_touch_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_TOUCHED, -1, 0) == 0)
-		draw_touched_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_GUIDER, -1, 0) == 0)
-		draw_guider_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_FOLDER, -1, 0) == 0)
-		draw_folder_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CHECKBOX, -1, 0) == 0)
-		draw_checkbox_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CHECKED, -1, 0) == 0)
-		draw_checked_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RADIOBOX, -1, 0) == 0)
-		draw_radiobox_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RADIOED, -1, 0) == 0)
-		draw_radioed_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_SELECTED, -1, 0) == 0)
-		draw_selected_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_SUM, -1, 0) == 0)
-		draw_sum_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CLOSE, -1, 0) == 0)
-		draw_close_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_MINIMIZE, -1, 0) == 0)
-		draw_minimize_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_MAXIMIZE, -1, 0) == 0)
-		draw_maximize_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RESTORE, -1, 0) == 0)
-		draw_restore_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_FIXED, -1, 0) == 0)
-		draw_fixed_icon_raw(rdc, pxc, pxr);
+	PF_ICON_MAKE pf;
 
-	else if (compare_text(iname, -1, ATTR_ICON_POINT, -1, 0) == 0)
-		draw_point_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CROSS, -1, 0) == 0)
-		draw_cross_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RECT, -1, 0) == 0)
-		draw_rect_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_ELLIPSE, -1, 0) == 0)
-		draw_ellipse_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_STAR, -1, 0) == 0)
-		draw_star_icon_raw(rdc, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_DIAMOND, -1, 0) == 0)
-		draw_diamond_icon_raw(rdc, pxc, pxr);
-
-	else if (compare_text(iname, -1, ATTR_ICON_NO1, -1, 0) == 0)
+	pf = find_icon_maker(iname);
+	if (pf)
 	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("1"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO2, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("2"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO3, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("3"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO4, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("4"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO5, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("5"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO6, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("6"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO7, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("7"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO8, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("8"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NO9, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("9"));
-	}
-	else if (compare_text(iname, -1, ATTR_ICON_NON, -1, 0) == 0)
-	{
-		draw_numeric_icon_raw(rdc, pxc, pxr, _T("..."));
+		(*pf)(rdc, pxc, pxr);
 	}
 }
 
@@ -550,6 +443,142 @@ void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const
 	else if (compare_text(shape, -1, ATTR_SHAPE_RECT, -1, 0) == 0)
 	{
 		draw_rect_raw(rdc, pxp, pxb, prt);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_ELLIPSE, -1, 0) == 0)
+	{
+		draw_ellipse_raw(rdc, pxp, pxb, prt);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_ROUND, -1, 0) == 0)
+	{
+		draw_round_raw(rdc, pxp, pxb, prt);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_LEFTTRIANGLE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x + 1;
+		pt[0].y = prt->y + prt->h / 2;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y;;
+		pt[2].x = prt->x + prt->w;
+		pt[2].y = prt->y + prt->h;
+
+		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_RIGHTTRIANGLE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x + prt->w - 1;
+		pt[0].y = prt->y + prt->h / 2;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y;
+		pt[2].x = prt->x;
+		pt[2].y = prt->y + prt->h;
+
+		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_TOPTRIANGLE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x + prt->w / 2;
+		pt[0].y = prt->y + 1;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y + prt->h;
+		pt[2].x = prt->x + prt->w;
+		pt[2].y = prt->y + prt->h;
+
+		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_BOTTOMTRIANGLE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x + prt->w / 2;
+		pt[0].y = prt->y + prt->h - 1;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y;
+		pt[2].x = prt->x + prt->w;
+		pt[2].y = prt->y;
+
+		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	}
+}
+
+void draw_shadow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const xsize_t* poff, const tchar_t* shape)
+{
+	xpoint_t pt[4];
+	xrect_t xr;
+	xpen_t xp;
+	xbrush_t xb;
+
+	xmem_copy((void*)&xp, pxp, sizeof(xpen_t));
+	xmem_copy((void*)&xb, pxb, sizeof(xbrush_t));
+
+	lighten_xbrush(&xb, DEF_MIDD_DARKEN);
+	lighten_xpen(&xp, DEF_MIDD_DARKEN);
+
+	if (compare_text(shape, -1, ATTR_SHAPE_LEFTLINE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x;
+		pt[0].y = prt->y;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y + prt->h;
+
+		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_RIGHTLINE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x + prt->w;
+		pt[0].y = prt->y;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y + prt->h;
+
+		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_TOPLINE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x;
+		pt[0].y = prt->y;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y;
+
+		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_BOTTOMLINE, -1, 0) == 0)
+	{
+		pt[0].x = prt->x;
+		pt[0].y = prt->y + prt->h;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y + prt->h;
+
+		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_FORWARDSLASH, -1, 0) == 0)
+	{
+		pt[0].x = prt->x + prt->w;
+		pt[0].y = prt->y;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y + prt->h;
+
+		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_BACKSLASH, -1, 0) == 0)
+	{
+		pt[0].x = prt->x;
+		pt[0].y = prt->y;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y + prt->h;
+
+		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+	}
+	else if (compare_text(shape, -1, ATTR_SHAPE_RECT, -1, 0) == 0)
+	{
+		xr.x = prt->x + poff->cx;
+		xr.y = prt->y + poff->cy;
+		xr.w = prt->w;
+		xr.h = prt->h;
+		pt_inter_rect(&xr, prt);
+		exclip_rect_raw(rdc, &xr);
+
+		xr.x = prt->x + poff->cx;
+		xr.y = prt->y + poff->cy;
+		xr.w = prt->w;
+		xr.h = prt->h;
+		draw_rect_raw(rdc, NULL, &xb, &xr);
 	}
 	else if (compare_text(shape, -1, ATTR_SHAPE_ELLIPSE, -1, 0) == 0)
 	{
@@ -1090,9 +1119,11 @@ void draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const x
 	(*pif->pf_gdi_draw_bezier)(rdc, pxp, &pt1, &pt2, &pt3, &pt4);
 }
 
-void draw_path(canvas_t canv, const xpen_t* pxp, const tchar_t* str, int len)
+void draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
 	res_ctx_t rdc;
+	xpoint_t* pa;
+	int i;
 
 	if_context_t *pif;
 
@@ -1100,7 +1131,16 @@ void draw_path(canvas_t canv, const xpen_t* pxp, const tchar_t* str, int len)
 
 	rdc = get_canvas_ctx(canv);
 
-	(*pif->pf_gdi_draw_path)(rdc, pxp, str, len);
+	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
+	for (i = 0; i < n; i++)
+	{
+		xmem_copy((void*)&pa[i], (void*)&ppt[i], sizeof(xpoint_t));
+		point_tm_to_pt(canv, &pa[i]);
+	}
+
+	(*pif->pf_gdi_draw_curve)(rdc, pxp, pa, n);
+
+	xmem_free(pa);
 }
 
 void draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
@@ -1525,6 +1565,22 @@ void draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xre
 	draw_shape_raw(rdc, pxp, pxb, &xr, shape);
 }
 
+void draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shape)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+	xsize_t xs;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	xmem_copy((void*)&xs, (void*)poff, sizeof(xsize_t));
+	size_tm_to_pt(canv, &xs);
+
+	draw_shadow_raw(rdc, pxp, pxb, &xr, &xs, shape);
+}
+
+
 void multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1727,25 +1783,6 @@ void draw_progress(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int s
 		else
 			draw_rect(canv, &xp, NULL, &xr);
 	}
-}
-
-void draw_shadow(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr = { 0 };
-	xpen_t xp = { 0 };
-
-	xr.fx = pxr->fx - DEF_PAGE_FEED / 2;
-	xr.fw = pxr->fw + DEF_PAGE_FEED;
-	xr.fy = pxr->fy - DEF_PAGE_FEED / 2;
-	xr.fh = pxr->fh + DEF_PAGE_FEED;
-
-	rect_tm_to_pt(canv, &xr);
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	draw_3drect_raw(rdc, &xp, &xr);
 }
 
 void draw_corner(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr)

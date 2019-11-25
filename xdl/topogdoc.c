@@ -51,7 +51,7 @@ void default_topog_spot_attr(link_t_ptr ilk)
 	set_topog_spot_style(ilk, _T("font-size:10.5;font-weight:500;text-wrap:line-break;"));
 
 	set_topog_spot_type(ilk, ATTR_SPOT_TYPE_ICON);
-	set_topog_spot_title(ilk, ATTR_ICON_STAR);
+	//set_topog_spot_title(ilk, ICON_STAR);
 }
 
 link_t_ptr create_topog_doc()

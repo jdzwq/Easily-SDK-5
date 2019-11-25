@@ -48,7 +48,7 @@
 /* Interleave lower bits of x and y, so the bits of x
 * are in the even positions and bits from y in the odd;
 * x and y must initially be less than 2**32 (65536).
-* From:  https://graphics.stanford.edu/~seander/bithacks.html#InterleaveBMN
+* From:  https://statisics.stanford.edu/~seander/bithacks.html#InterleaveBMN
 */
 
 #ifdef XDL_SUPPORT_GEO

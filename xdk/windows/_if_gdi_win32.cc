@@ -461,9 +461,37 @@ void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, co
 	LocalFree(pt);
 }
 
-void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int len)
+void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
 	HDC hDC = (HDC)rdc;
+
+	POINT* pt = (POINT*)LocalAlloc(LPTR, n * sizeof(POINT));
+
+	for (int i = 0; i < n; i++)
+	{
+		pt[i].x = ppt[i].x;
+		pt[i].y = ppt[i].y;
+	}
+
+	DPtoLP(hDC, pt, n);
+
+	HPEN hPen, orgPen;
+
+	if (!is_null_xpen(pxp))
+	{
+		hPen = create_pen(pxp);
+		orgPen = (HPEN)SelectObject(hDC, hPen);
+	}
+
+	PolyBezier(hDC, pt, n);
+
+	if (!is_null_xpen(pxp))
+	{
+		hPen = (HPEN)SelectObject(hDC, orgPen);
+		DeleteObject(hPen);
+	}
+
+	LocalFree(pt);
 }
 
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)

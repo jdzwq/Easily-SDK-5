@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc chart gdi document
+	@doc plot gdi document
 
-	@module	chartgdi.c | implement file
+	@module	plotgdi.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "chartgdi.h"
+#include "plotgdi.h"
 #include "xdlimp.h"
 #include "xdloem.h"
 #include "xdlstd.h"
@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_CONTEXT)
 
-void draw_map_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, float rx, float ry, const matrix_t* pma)
+void plot_map(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, float rx, float ry, const matrix_t* pma)
 {
 	int i,j;
 	int dark;
@@ -67,7 +67,7 @@ void draw_map_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	}
 }
 
-void draw_dot_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, float rx, float ry, const matrix_t* pma)
+void plot_dot(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, float rx, float ry, const matrix_t* pma)
 {
 	int i, j;
 	int dark;
@@ -96,7 +96,7 @@ void draw_dot_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	}
 }
 
-void draw_line_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, double base, double span, const vector_t* pvc)
+void plot_line(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, double base, double span, const vector_t* pvc)
 {
 	int i, j;
 	int dark;
@@ -151,7 +151,7 @@ void draw_line_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, cons
 	}
 }
 
-void draw_bar_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, double base, double span, const vector_t* pvc)
+void plot_bar(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, double base, double span, const vector_t* pvc)
 {
 	int i, j;
 	int dark;
@@ -188,7 +188,7 @@ void draw_bar_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	}
 }
 
-void draw_pie_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt,  const vector_t* pvc)
+void plot_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt,  const vector_t* pvc)
 {
 	int i, j;
 	xrect_t xr;
@@ -230,7 +230,7 @@ void draw_pie_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	}
 }
 
-void draw_counter_table(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* layer, const tchar_t* num, int max)
+void plot_num(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* layer, const tchar_t* num, int max)
 {
 	int j;
 	int cols;

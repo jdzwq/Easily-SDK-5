@@ -51,6 +51,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdl_ssh_test", "..\test\xdl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdl_json_test", "..\test\xdl_json_test\xdl_json_test.vcxproj", "{C342BD8C-10F3-4EAD-9911-553813493C78}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdc_userctrl_test", "..\test\xdc_userctrl_test\xdc_userctrl_test.vcxproj", "{559EA3E3-8019-4F90-A239-1BD97924D714}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -221,6 +223,12 @@ Global
 		{C342BD8C-10F3-4EAD-9911-553813493C78}.Release|Win32.ActiveCfg = Release|Win32
 		{C342BD8C-10F3-4EAD-9911-553813493C78}.Release|Win32.Build.0 = Release|Win32
 		{C342BD8C-10F3-4EAD-9911-553813493C78}.Release|x64.ActiveCfg = Release|Win32
+		{559EA3E3-8019-4F90-A239-1BD97924D714}.Debug|Win32.ActiveCfg = Debug|Win32
+		{559EA3E3-8019-4F90-A239-1BD97924D714}.Debug|Win32.Build.0 = Debug|Win32
+		{559EA3E3-8019-4F90-A239-1BD97924D714}.Debug|x64.ActiveCfg = Debug|Win32
+		{559EA3E3-8019-4F90-A239-1BD97924D714}.Release|Win32.ActiveCfg = Release|Win32
+		{559EA3E3-8019-4F90-A239-1BD97924D714}.Release|Win32.Build.0 = Release|Win32
+		{559EA3E3-8019-4F90-A239-1BD97924D714}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

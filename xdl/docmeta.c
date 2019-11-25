@@ -319,7 +319,7 @@ bool_t save_grid_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tcha
 	return rt;
 }
 
-link_t_ptr	create_graph_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
+link_t_ptr	create_statis_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
 {
 	link_t_ptr meta, ptr;
 
@@ -330,7 +330,7 @@ link_t_ptr	create_graph_from_meta_file(const secu_desc_t* psd, const tchar_t* fn
 		return NULL;
 	}
 
-	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_GRAPH, -1, 1) != 0)
+	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_STATIS, -1, 1) != 0)
 	{
 		destroy_meta_doc(meta);
 		return NULL;
@@ -342,7 +342,7 @@ link_t_ptr	create_graph_from_meta_file(const secu_desc_t* psd, const tchar_t* fn
 	return ptr;
 }
 
-bool_t save_graph_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
+bool_t save_statis_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
 {
 	link_t_ptr meta;
 	bool_t rt;
@@ -399,7 +399,7 @@ bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tc
 	return rt;
 }
 
-link_t_ptr	create_chart_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
+link_t_ptr	create_panorama_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
 {
 	link_t_ptr meta, ptr;
 
@@ -410,7 +410,7 @@ link_t_ptr	create_chart_from_meta_file(const secu_desc_t* psd, const tchar_t* fn
 		return NULL;
 	}
 
-	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_CHART, -1, 1) != 0)
+	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_PANORAMA, -1, 1) != 0)
 	{
 		destroy_meta_doc(meta);
 		return NULL;
@@ -422,7 +422,47 @@ link_t_ptr	create_chart_from_meta_file(const secu_desc_t* psd, const tchar_t* fn
 	return ptr;
 }
 
-bool_t save_chart_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
+bool_t save_panorama_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
+{
+	link_t_ptr meta;
+	bool_t rt;
+
+	meta = create_meta_doc();
+
+	attach_meta_body_node(meta, ptr);
+
+	rt = save_dom_doc_to_file(meta, psd, fname);
+
+	ptr = detach_meta_body_node(meta);
+	destroy_meta_doc(meta);
+
+	return rt;
+}
+
+link_t_ptr	create_diagram_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
+{
+	link_t_ptr meta, ptr;
+
+	meta = create_meta_doc();
+	if (!load_dom_doc_from_file(meta, psd, fname))
+	{
+		destroy_meta_doc(meta);
+		return NULL;
+	}
+
+	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_DIAGRAM, -1, 1) != 0)
+	{
+		destroy_meta_doc(meta);
+		return NULL;
+	}
+
+	ptr = detach_meta_body_node(meta);
+	destroy_meta_doc(meta);
+
+	return ptr;
+}
+
+bool_t save_diagram_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
 {
 	link_t_ptr meta;
 	bool_t rt;

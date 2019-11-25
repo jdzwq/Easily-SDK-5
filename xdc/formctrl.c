@@ -51,6 +51,8 @@ typedef struct _form_delta_t{
 	short max_page;
 
 	res_win_t editor;
+	res_win_t hsc;
+	res_win_t vsc;
 
 	bool_t b_drag;
 	bool_t b_size;
@@ -468,7 +470,7 @@ void noti_form_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -491,7 +493,7 @@ void noti_form_field_selected(res_win_t widget, link_t_ptr flk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t noti_form_field_changing(res_win_t widget)
@@ -515,7 +517,7 @@ bool_t noti_form_field_changing(res_win_t widget)
 
 	ptd->field = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -537,7 +539,7 @@ void noti_form_field_changed(res_win_t widget, link_t_ptr flk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_form_owner(widget, NC_FIELDCHANGED, ptd->form, flk, NULL);
 }
@@ -678,7 +680,7 @@ void noti_form_field_drop(res_win_t widget, long x, long y)
 		flk = get_next_field(ptd->form, flk);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -758,7 +760,7 @@ void noti_form_field_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	fw = get_field_width(ptd->field);
 	fh = get_field_height(ptd->field);
@@ -793,7 +795,7 @@ void noti_form_field_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_form_owner(widget, NC_FIELDSIZED, ptd->form, ptd->field, NULL);
 }
@@ -848,7 +850,7 @@ void noti_form_end_group(res_win_t widget, long x, long y)
 		flk = get_next_field(ptd->form, flk);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void noti_form_begin_edit(res_win_t widget)
@@ -908,9 +910,9 @@ void noti_form_begin_edit(res_win_t widget)
 	{
 		editor = ATTR_EDITOR_GRIDBOX;
 	}
-	else if (compare_text(fclass, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+	else if (compare_text(fclass, -1, DOC_FORM_STATIS, -1, 0) == 0)
 	{
-		editor = ATTR_EDITOR_GRAPHBOX;
+		editor = ATTR_EDITOR_STATISBOX;
 	}
 	else if (compare_text(fclass, -1, DOC_FORM_FORM, -1, 0) == 0)
 	{
@@ -1126,12 +1128,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_xface(ptd->editor, &xa);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
 		tablectrl_set_lock(ptd->editor, 0);
@@ -1173,12 +1175,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_owner(ptd->editor, widget);
 
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
 		set_grid_width(data, get_field_width(ptd->field));
@@ -1192,9 +1194,9 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 	}
-	else if (compare_text(editor, -1, ATTR_EDITOR_GRAPHBOX, -1, 0) == 0)
+	else if (compare_text(editor, -1, ATTR_EDITOR_STATISBOX, -1, 0) == 0)
 	{
-		data = get_field_embed_graph(ptd->field);
+		data = get_field_embed_statis(ptd->field);
 		if (!data)
 			return;
 
@@ -1206,30 +1208,30 @@ void noti_form_begin_edit(res_win_t widget)
 		xr.h += xs.cy;
 
 		if (fd.menu)
-			ptd->editor = graphctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
+			ptd->editor = statisctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_MENUBAR, &xr, widget);
 		else
-			ptd->editor = graphctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, widget);
+			ptd->editor = statisctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, widget);
 
 		XDL_ASSERT(ptd->editor);
-		widget_set_user_id(ptd->editor, IDC_GRAPHBOX);
+		widget_set_user_id(ptd->editor, IDC_STATISBOX);
 		widget_set_owner(ptd->editor, widget);
 
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
-		graphctrl_set_lock(ptd->editor, 0);
-		graphctrl_auto_insert(ptd->editor, 1);
+		statisctrl_set_lock(ptd->editor, 0);
+		statisctrl_auto_insert(ptd->editor, 1);
 
-		set_graph_width(data, get_field_width(ptd->field));
-		set_graph_height(data, get_field_height(ptd->field));
+		set_statis_width(data, get_field_width(ptd->field));
+		set_statis_height(data, get_field_height(ptd->field));
 
-		graphctrl_attach(ptd->editor, data);
+		statisctrl_attach(ptd->editor, data);
 
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
@@ -1257,12 +1259,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_owner(ptd->editor, widget);
 
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
 		formctrl_set_lock(ptd->editor, 0);
@@ -1296,12 +1298,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_xface(ptd->editor, &xa);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
 		tagctrl_set_lock(ptd->editor, 0);
@@ -1336,12 +1338,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_xface(ptd->editor, &xa);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
 		memoctrl_set_lock(ptd->editor, 0);
@@ -1382,12 +1384,12 @@ void noti_form_begin_edit(res_win_t widget)
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_xface(ptd->editor, &xa);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_update_window(ptd->editor);
+		widget_update(ptd->editor);
 
 		if (fd.menu)
 		{
 			widget_attach_menu(ptd->editor, fd.menu);
-			widget_update_window(ptd->editor);
+			widget_update(ptd->editor);
 		}
 
 		richctrl_set_lock(ptd->editor, 0);
@@ -1559,16 +1561,16 @@ void noti_form_commit_edit(res_win_t widget)
 			}
 		}
 	}
-	else if (uid == IDC_GRAPHBOX)
+	else if (uid == IDC_STATISBOX)
 	{
 		fd.menu = widget_detach_menu(ptd->editor);
 
-		graphctrl_accept(ptd->editor, 1);
-		dirty = (get_field_editable(ptd->field)) ? graphctrl_is_update(ptd->editor) : 0;
+		statisctrl_accept(ptd->editor, 1);
+		dirty = (get_field_editable(ptd->field)) ? statisctrl_is_update(ptd->editor) : 0;
 
-		ptd->cur_page = graphctrl_get_cur_page(ptd->editor);
+		ptd->cur_page = statisctrl_get_cur_page(ptd->editor);
 
-		data = graphctrl_detach(ptd->editor);
+		data = statisctrl_detach(ptd->editor);
 		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)&fd) == 0) ? 1 : 0;
 		if (b_accept)
 		{
@@ -1739,12 +1741,12 @@ void noti_form_rollback_edit(res_win_t widget)
 		ptd->cur_page = gridctrl_get_cur_page(ptd->editor);
 		noti_form_owner(widget, NC_FIELDROLLBACK, ptd->form, ptd->field, (void*)&fd);
 	}
-	else if (uid == IDC_GRAPHBOX)
+	else if (uid == IDC_STATISBOX)
 	{
 		fd.menu = widget_detach_menu(ptd->editor);
 
-		graphctrl_accept(ptd->editor, 0);
-		ptd->cur_page = graphctrl_get_cur_page(ptd->editor);
+		statisctrl_accept(ptd->editor, 0);
+		ptd->cur_page = statisctrl_get_cur_page(ptd->editor);
 		noti_form_owner(widget, NC_FIELDROLLBACK, ptd->form, ptd->field, (void*)&fd);
 	}
 	else if (uid == IDC_FORMBOX)
@@ -1832,6 +1834,12 @@ void hand_form_destroy(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
+
 	_formctrl_clean(widget);
 	destroy_stack_table(ptd->stack);
 
@@ -1875,8 +1883,56 @@ void hand_form_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	{
 		_formctrl_field_rect(widget, ptd->field, &xr);
 		widget_move(ptd->editor, RECTPOINT(&xr));
-		widget_update_window(ptd->editor);
-		widget_update_client(ptd->editor);
+		widget_update(ptd->editor);
+	}
+}
+
+void hand_form_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+{
+	form_delta_t* ptd = GETFORMDELTA(widget);
+
+	scroll_t scr = { 0 };
+	long nLine;
+	res_win_t win;
+
+	XDL_ASSERT(ptd != NULL);
+
+	if (!ptd->form)
+		return;
+
+	widget_get_scroll(widget, bHorz, &scr);
+
+	if (bHorz)
+		nLine = (nDelta > 0) ? scr.min : -scr.min;
+	else
+		nLine = (nDelta < 0) ? scr.min : -scr.min;
+
+	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
+		return;
+	}
+
+	win = widget_get_parent(widget);
+
+	if (widget_is_valid(win))
+	{
+		widget_scroll(win, bHorz, nLine);
 	}
 }
 
@@ -1901,7 +1957,7 @@ void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 			ptd->cur_x = pxp->x;
 			ptd->cur_y = pxp->y;
 
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 			return;
 		}
 	}
@@ -2228,7 +2284,7 @@ void hand_form_keydown(res_win_t widget, int nKey)
 				flk = get_next_field(ptd->form, flk);
 			}
 
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 
 			if (ks)
 				noti_form_owner(widget, NC_FIELDSIZED, ptd->form, ptd->field, NULL);
@@ -2402,9 +2458,9 @@ void hand_form_notice(res_win_t widget, NOTICE* pnt)
 	{
 		noti_form_owner(widget, NC_FIELDGRID, ptd->form, ptd->field, (void*)pnt);
 	}
-	else if (pnt->id == IDC_GRAPHBOX)
+	else if (pnt->id == IDC_STATISBOX)
 	{
-		noti_form_owner(widget, NC_FIELDGRAPH, ptd->form, ptd->field, (void*)pnt);
+		noti_form_owner(widget, NC_FIELDSTATIS, ptd->form, ptd->field, (void*)pnt);
 	}
 	else if (pnt->id == IDC_IMAGESBOX)
 	{
@@ -2449,6 +2505,7 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	bool_t b_design;
 	xrect_t xr = { 0 };
+	xsize_t xs = { 0 };
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -2475,7 +2532,8 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -2493,9 +2551,13 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	{
 		if (!b_design)
 		{
-			parse_xcolor(&xc, xb.color);
-			lighten_xcolor(&xc, DEF_SOFT_DARKEN);
-			draw_shadow(pif->canvas, &xc, (const xrect_t*)&cb);
+			
+			xs.fx = DEF_SHADOW_FEED + 1;
+			xs.fy = DEF_SHADOW_FEED + 1;
+
+			draw_shadow(canv, &xp, &xb, (const xrect_t*)&cb, &xs, ATTR_SHAPE_RECT);
+
+			draw_shape(canv, &xp, NULL, (const xrect_t*)&cb, ATTR_SHAPE_RECT);
 		}
 
 		parse_xcolor(&xc, xb.color);
@@ -2632,6 +2694,7 @@ res_win_t formctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_SIZE(hand_form_size)
 
 		EVENT_ON_SCROLL(hand_form_scroll)
+		EVENT_ON_WHEEL(hand_form_wheel)
 
 		EVENT_ON_KEYDOWN(hand_form_keydown)
 		EVENT_ON_CHAR(hand_form_char)
@@ -2693,7 +2756,7 @@ link_t_ptr formctrl_detach(res_win_t widget)
 	ptd->field = NULL;
 	ptd->cur_page = 0;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	return data;
 }
@@ -2797,9 +2860,7 @@ void formctrl_redraw(res_win_t widget, bool_t bCalc)
 		ptd->max_page = calc_form_pages(widget_get_canvas(widget), ptd->form);
 	}
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
@@ -2829,7 +2890,7 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 	_formctrl_field_rect(widget, flk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void formctrl_tabskip(res_win_t widget, int nSkip)
@@ -2933,7 +2994,7 @@ void formctrl_move_first_page(res_win_t widget)
 
 		ptd->cur_page = 1;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2951,7 +3012,7 @@ void formctrl_move_last_page(res_win_t widget)
 		noti_form_reset_editor(widget, (bool_t)1);
 
 		ptd->cur_page = ptd->max_page;
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2970,7 +3031,7 @@ void formctrl_move_next_page(res_win_t widget)
 
 		ptd->cur_page++;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2989,7 +3050,7 @@ void formctrl_move_prev_page(res_win_t widget)
 
 		ptd->cur_page--;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -3033,7 +3094,7 @@ void formctrl_move_to_page(res_win_t widget, int page)
 
 	ptd->cur_page = page;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* szText)
@@ -3068,13 +3129,13 @@ bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* 
 
 	formctrl_get_field_rect(widget, flk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	if (get_field_fireable(flk))
 	{
 		if (calc_form_doc(ptd->form))
 		{
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 		}
 	}
 

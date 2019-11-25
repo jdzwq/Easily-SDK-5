@@ -181,6 +181,8 @@
     <ClInclude Include="..\..\xdl\binatree.h" />
     <ClInclude Include="..\..\xdl\boxview.h" />
     <ClInclude Include="..\..\xdl\bplustree.h" />
+    <ClInclude Include="..\..\xdl\diagramdoc.h" />
+    <ClInclude Include="..\..\xdl\diagramview.h" />
     <ClInclude Include="..\..\xdl\formbio.h" />
     <ClInclude Include="..\..\xdl\gridbio.h" />
     <ClInclude Include="..\..\xdl\netssh.h" />
@@ -189,9 +191,9 @@
     <ClInclude Include="..\..\xdl\textbio.h" />
     <ClInclude Include="..\..\xdl\varbytes.h" />
     <ClInclude Include="..\..\xdl\bufferopera.h" />
-    <ClInclude Include="..\..\xdl\chartdoc.h" />
-    <ClInclude Include="..\..\xdl\chartgdi.h" />
-    <ClInclude Include="..\..\xdl\chartview.h" />
+    <ClInclude Include="..\..\xdl\panoramadoc.h" />
+    <ClInclude Include="..\..\xdl\plotgdi.h" />
+    <ClInclude Include="..\..\xdl\panoramaview.h" />
     <ClInclude Include="..\..\xdl\cssattr.h" />
     <ClInclude Include="..\..\xdl\dblink.h" />
     <ClInclude Include="..\..\xdl\dialogdoc.h" />
@@ -206,8 +208,8 @@
     <ClInclude Include="..\..\xdl\funcdoc.h" />
     <ClInclude Include="..\..\xdl\gdicanv.h" />
     <ClInclude Include="..\..\xdl\gdiinf.h" />
-    <ClInclude Include="..\..\xdl\graphdoc.h" />
-    <ClInclude Include="..\..\xdl\graphview.h" />
+    <ClInclude Include="..\..\xdl\statisdoc.h" />
+    <ClInclude Include="..\..\xdl\statisview.h" />
     <ClInclude Include="..\..\xdl\gridbag.h" />
     <ClInclude Include="..\..\xdl\griddoc.h" />
     <ClInclude Include="..\..\xdl\gridsql.h" />
@@ -227,7 +229,7 @@
     <ClInclude Include="..\..\xdl\impdate.h" />
     <ClInclude Include="..\..\xdl\imperr.h" />
     <ClInclude Include="..\..\xdl\impgdi.h" />
-    <ClInclude Include="..\..\xdl\impicon.h" />
+    <ClInclude Include="..\..\xdl\icongdi.h" />
     <ClInclude Include="..\..\xdl\impjmp.h" />
     <ClInclude Include="..\..\xdl\impmbcs.h" />
     <ClInclude Include="..\..\xdl\impmem.h" />
@@ -383,6 +385,8 @@
     <ClCompile Include="..\..\xdl\binatree.c" />
     <ClCompile Include="..\..\xdl\boxview.c" />
     <ClCompile Include="..\..\xdl\bplustree.c" />
+    <ClCompile Include="..\..\xdl\diagramdoc.c" />
+    <ClCompile Include="..\..\xdl\diagramview.c" />
     <ClCompile Include="..\..\xdl\formbio.c" />
     <ClCompile Include="..\..\xdl\gridbio.c" />
     <ClCompile Include="..\..\xdl\netssh.c" />
@@ -391,9 +395,9 @@
     <ClCompile Include="..\..\xdl\textbio.c" />
     <ClCompile Include="..\..\xdl\varbytes.c" />
     <ClCompile Include="..\..\xdl\bufferopera.c" />
-    <ClCompile Include="..\..\xdl\chartdoc.c" />
-    <ClCompile Include="..\..\xdl\chartgdi.c" />
-    <ClCompile Include="..\..\xdl\chartview.c" />
+    <ClCompile Include="..\..\xdl\panoramadoc.c" />
+    <ClCompile Include="..\..\xdl\plotgdi.c" />
+    <ClCompile Include="..\..\xdl\panoramaview.c" />
     <ClCompile Include="..\..\xdl\dblink.c" />
     <ClCompile Include="..\..\xdl\dialogdoc.c" />
     <ClCompile Include="..\..\xdl\dialogview.c" />
@@ -406,8 +410,8 @@
     <ClCompile Include="..\..\xdl\funcdoc.c" />
     <ClCompile Include="..\..\xdl\gdicanv.c" />
     <ClCompile Include="..\..\xdl\gdiinf.c" />
-    <ClCompile Include="..\..\xdl\graphdoc.c" />
-    <ClCompile Include="..\..\xdl\graphview.c" />
+    <ClCompile Include="..\..\xdl\statisdoc.c" />
+    <ClCompile Include="..\..\xdl\statisview.c" />
     <ClCompile Include="..\..\xdl\gridbag.c" />
     <ClCompile Include="..\..\xdl\griddoc.c" />
     <ClCompile Include="..\..\xdl\gridsql.c" />
@@ -426,7 +430,7 @@
     <ClCompile Include="..\..\xdl\impdate.c" />
     <ClCompile Include="..\..\xdl\imperr.c" />
     <ClCompile Include="..\..\xdl\impgdi.c" />
-    <ClCompile Include="..\..\xdl\impicon.c" />
+    <ClCompile Include="..\..\xdl\icongdi.c" />
     <ClCompile Include="..\..\xdl\impjmp.c" />
     <ClCompile Include="..\..\xdl\impmbcs.c" />
     <ClCompile Include="..\..\xdl\impmem.c" />

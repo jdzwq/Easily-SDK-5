@@ -302,7 +302,7 @@ void hand_docker_lbutton_up(docker_t* ptd, const xpoint_t* pxp)
 		ptd->y = pxp->y;
 		ptd->ind = -1;
 
-		widget_update_client(ptd->widget);
+		widget_resize(ptd->widget);
 	}
 }
 

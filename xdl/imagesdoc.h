@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_images_icon_span: set the images icon span.
 */
-#define set_images_icon_span(ptr,n)					set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_images_icon_span(ptr,n)					set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_images_icon_span: get the images icon span.
 */
-#define get_images_icon_span(ptr)					get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_images_icon_span(ptr)					get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER src: string.
 @SET set_images_item_src: set the images item source.
@@ -223,20 +223,6 @@ XDL_API link_t_ptr get_images_prev_item(link_t_ptr ptr, link_t_ptr pos);
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_images_item(link_t_ptr ptr, const tchar_t* alt, int altlen);
-
-/*
-@FUNCTION cache_images_doc: create a images items cache.
-@INPUT link_t_ptr ptr: the images link component.
-@RETURN void: none.
-*/
-XDL_API void cache_images_doc(link_t_ptr ptr);
-
-/*
-@FUNCTION uncache_images_doc: clear the images items cache.
-@INPUT link_t_ptr ptr: the images link component.
-@RETURN void: none.
-*/
-XDL_API void uncache_images_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_ximage: get the ximage content by key.

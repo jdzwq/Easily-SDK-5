@@ -53,7 +53,6 @@ typedef struct _dom_node_t{
 	link_t_ptr xmlns;		// string table for namespace list
 	
 	link_t_ptr opti;		// runtime string table for options	
-	link_t_ptr images;		// runtime imageilst for drawing
 
 	int pages;				// runtime page guid
 	page_cator_t* pcator;
@@ -238,26 +237,6 @@ bool_t is_dom_doc_node(link_t_ptr ptr)
 	pti = DomItemFromLink(ptr);
 
 	return (bool_t)(pti->lkSibling.next == NULL && pti->lkSibling.prev == NULL);
-}
-
-link_t_ptr get_dom_node_images(link_t_ptr ptr)
-{
-	dom_node_t* pti;
-
-	XDL_ASSERT(ptr && ptr->tag == lkNode);
-
-	pti = DomItemFromLink(ptr);
-	return pti->images;
-}
-
-void set_dom_node_images(link_t_ptr ptr, link_t_ptr il)
-{
-	dom_node_t* pti;
-
-	XDL_ASSERT(ptr && ptr->tag == lkNode);
-
-	pti = DomItemFromLink(ptr);
-	pti->images = il;
 }
 
 static bool_t _compare_dom_node_proc(link_t_ptr plk, void* pv)

@@ -26,4 +26,4 @@ LICENSE.GPL3 for more details.
 #pragma once
 
 
-res_win_t WEBPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, const tchar_t* fpath);
+res_win_t JsonPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, const tchar_t* fpath);

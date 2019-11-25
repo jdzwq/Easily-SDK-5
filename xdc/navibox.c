@@ -48,7 +48,7 @@ void navibox_on_home(res_win_t widget)
 
 	widget_post_key(ptd->target, VK_HOME);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 void navibox_on_end(res_win_t widget)
@@ -57,7 +57,7 @@ void navibox_on_end(res_win_t widget)
 
 	widget_post_key(ptd->target, KEY_END);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 void navibox_on_prev(res_win_t widget)
@@ -66,7 +66,7 @@ void navibox_on_prev(res_win_t widget)
 
 	widget_post_key(ptd->target, KEY_PAGEUP);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 void navibox_on_next(res_win_t widget)
@@ -75,7 +75,7 @@ void navibox_on_next(res_win_t widget)
 
 	widget_post_key(ptd->target, KEY_PAGEDOWN);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 void navibox_on_keyboard(res_win_t widget)
@@ -90,7 +90,7 @@ void navibox_on_keyboard(res_win_t widget)
 		widget_destroy(ptd->keybox);
 		ptd->keybox = NULL;
 
-		widget_update(widget, NULL, 1);
+		widget_redraw(widget, NULL, 1);
 		return;
 	}
 
@@ -127,9 +127,10 @@ void navibox_on_keyboard(res_win_t widget)
 	widget_move(ptd->keybox, RECTPOINT(&xr));
 	widget_size(ptd->keybox, RECTSIZE(&xr));
 	widget_take(ptd->keybox, (int)WD_ZORDER_TOPMOST);
+	widget_update(ptd->keybox);
 	widget_show(ptd->keybox, WD_SHOW_NORMAL);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 /*********************************************************************************/
@@ -203,7 +204,7 @@ void hand_navibox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
 	
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_navibox_erase(res_win_t widget, res_ctx_t rdc)
@@ -237,7 +238,8 @@ void hand_navibox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 

@@ -60,22 +60,22 @@ XDL_API void save_form_to_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr 
 XDL_API void load_form_from_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
 
 /*
-@FUNCTION save_graph_to_grid: save graphic content to a grid row.
-@INPUT link_t_ptr graph: the graph link component.
+@FUNCTION save_statis_to_grid: save statisic content to a grid row.
+@INPUT link_t_ptr statis: the statis link component.
 @INPUT link_t_ptr grid: the grid link component.
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void save_graph_to_grid(link_t_ptr graph, link_t_ptr grid);
+XDL_API void save_statis_to_grid(link_t_ptr statis, link_t_ptr grid);
 
 /*
-@FUNCTION load_graph_from_grid: load graph content from a grid row.
-@INPUT link_t_ptr graph: the graph link component.
+@FUNCTION load_statis_from_grid: load statis content from a grid row.
+@INPUT link_t_ptr statis: the statis link component.
 @INPUT link_t_ptr grid: the grid link component.
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void load_graph_from_grid(link_t_ptr graph, link_t_ptr grid);
+XDL_API void load_statis_from_grid(link_t_ptr statis, link_t_ptr grid);
 
 /*
 @FUNCTION load_rich_from_grid_row: load rich content from a grid row.

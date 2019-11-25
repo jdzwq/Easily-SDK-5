@@ -56,8 +56,8 @@ LICENSE.GPL3 for more details.
 #define PREVIEWDLG_STATUS_HEIGHT	(float)8
 #define PREVIEWDLG_TREE_WIDTH		(float)50
 
-#define PREVIEWDLG_BUTTON_HEIGHT	(float)6 //tm
-#define PREVIEWDLG_BUTTON_WIDTH		(float)20 //tm
+#define PREVIEWDLG_BUTTON_HEIGHT	(float)7 //tm
+#define PREVIEWDLG_BUTTON_WIDTH		(float)8 //tm
 
 typedef struct _previewdlg_delta_t{
 	link_t_ptr arch;
@@ -415,6 +415,7 @@ void _previewdlg_create_toolbar(res_win_t widget)
 	xs.fy = PREVIEWDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
+
 	xr.y += (xr.h - xs.cy) / 2;
 	xr.h = xs.cy;
 	xr.x = xr.x + xr.w - xs.cx;
@@ -427,59 +428,59 @@ void _previewdlg_create_toolbar(res_win_t widget)
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
 
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_CLOSE);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_CLOSE, -1);
+	pushbox_set_text(pushbox, ICON_CLOSE, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_PRINT_CUR);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_PRINTCUR, -1);
+	pushbox_set_text(pushbox, ICON_PRINT, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_PRINT_SEL);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_PRINTSEL, -1);
+	pushbox_set_text(pushbox, ICON_PRINT, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_PRINT_ALL);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_PRINTALL, -1);
+	pushbox_set_text(pushbox, ICON_PRINT, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_SETUP);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_SETUP, -1);
+	pushbox_set_text(pushbox, ICON_STYLE, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_SAVEAS);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_SAVEAS, -1);
+	pushbox_set_text(pushbox, ICON_SAVEAS, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_SAVE);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_SAVE, -1);
+	pushbox_set_text(pushbox, ICON_SAVE, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
-	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
+	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_OPEN);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, PREVIEWDLG_PUSHBOX_OPEN, -1);
+	pushbox_set_text(pushbox, ICON_OPEN, -1);
 	widget_show(pushbox, WD_SHOW_NORMAL);
 }
 
@@ -685,6 +686,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ptd->treectrl, RECTPOINT(&xr));
 		widget_size(ptd->treectrl, RECTSIZE(&xr));
+		widget_update(ptd->treectrl);
 	}
 
 	_previewdlg_calc_statusbar(widget, &xr);
@@ -693,6 +695,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ptd->statusctrl, RECTPOINT(&xr));
 		widget_size(ptd->statusctrl, RECTSIZE(&xr));
+		widget_update(ptd->statusctrl);
 
 		status = statusctrl_fetch(ptd->statusctrl);
 		ilk = get_status_item(status, IDN_PREVIEWDLG_STATUS_NAVI);
@@ -700,6 +703,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		widget_move(ptd->navibox, RECTPOINT(&xr));
 		widget_size(ptd->navibox, RECTSIZE(&xr));
+		widget_update(ptd->navibox);
 	}
 
 	_previewdlg_calc_svgbar(widget, &xr);
@@ -708,6 +712,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ptd->svgctrl, RECTPOINT(&xr));
 		widget_size(ptd->svgctrl, RECTSIZE(&xr));
+		widget_update(ptd->svgctrl);
 	}
 
 	_previewdlg_calc_toolbar(widget, &xr);
@@ -733,6 +738,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -741,6 +747,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -749,6 +756,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -757,6 +765,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -765,6 +774,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -773,6 +783,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -781,6 +792,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -789,9 +801,10 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(pushbox, RECTPOINT(&xr));
 		widget_size(pushbox, RECTSIZE(&xr));
+		widget_update(pushbox);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, var_long data)

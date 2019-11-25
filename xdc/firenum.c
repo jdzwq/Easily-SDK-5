@@ -77,8 +77,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		if (widget_is_valid(numbox))
 		{
 			widget_set_color_mode(numbox, (clr_mod_t*)data);
-			widget_update_window(numbox);
-			widget_update_client(numbox);
+			widget_update(numbox);
 		}
 		return 1;
 	case COMMAND_COMMIT:
@@ -182,6 +181,7 @@ res_win_t firenum_create(res_win_t widget, const xrect_t* pxr)
 
 	widget_move(numbox, RECTPOINT(&xr));
 	widget_size(numbox, RECTSIZE(&xr));
+	widget_update(numbox);
 
 	return editor;
 }

@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc graph document
+	@doc statis document
 
-	@module	graphdoc.c | implement file
+	@module	statisdoc.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "graphdoc.h"
+#include "statisdoc.h"
 #include "xdlimp.h"
 #include "xdloem.h"
 #include "xdlstd.h"
@@ -37,26 +37,26 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-void default_graph_attr(link_t_ptr ptr) 
+void default_statis_attr(link_t_ptr ptr) 
 {
-	set_graph_style(ptr, _T("font-size:10.5;text-align:center;line-align:center;"));
+	set_statis_style(ptr, _T("font-size:10.5;text-align:center;line-align:center;"));
 
-	set_graph_width(ptr, DEF_PAPER_WIDTH);
-	set_graph_height(ptr, DEF_PAPER_HEIGHT);
+	set_statis_width(ptr, DEF_PAPER_WIDTH);
+	set_statis_height(ptr, DEF_PAPER_HEIGHT);
 
-	set_graph_title_height(ptr,DEF_TEXT_HEIGHT); 
+	set_statis_title_height(ptr,DEF_TEXT_HEIGHT); 
 
-	set_graph_xaxbar_width(ptr,25); 
-	set_graph_xaxbar_height(ptr, 8);
-	set_graph_yaxbar_height(ptr, DEF_ITEM_HEIGHT);
-	set_graph_yaxbar_width(ptr, 25);
+	set_statis_xaxbar_width(ptr,25); 
+	set_statis_xaxbar_height(ptr, 8);
+	set_statis_yaxbar_height(ptr, DEF_ITEM_HEIGHT);
+	set_statis_yaxbar_width(ptr, 25);
 }
 
 void default_gax_attr(link_t_ptr glk)
 {
 	set_gax_midd(glk, 0);
 	set_gax_step(glk, 1);
-	set_gax_graph_type(glk, ATTR_GRAPH_TYPE_LINE);
+	set_gax_statis_type(glk, ATTR_STATIS_TYPE_LINE);
 }
 
 void default_yax_attr(link_t_ptr ylk) 
@@ -64,14 +64,14 @@ void default_yax_attr(link_t_ptr ylk)
 	set_yax_color(ylk, GDI_ATTR_RGB_SOFTWHITE);
 }
 
-link_t_ptr get_graph_xaxset(link_t_ptr ptr)
+link_t_ptr get_statis_xaxset(link_t_ptr ptr)
 {
 	link_t_ptr plk;
 
 	plk = get_dom_first_child_node(ptr);
 	while(plk)
 	{
-		if(0 == xscmp(get_dom_node_name_ptr(plk),DOC_GRAPH_XAXSET))
+		if(0 == xscmp(get_dom_node_name_ptr(plk),DOC_STATIS_XAXSET))
 			return plk;
 
 		plk = get_dom_next_sibling_node(plk);
@@ -80,14 +80,14 @@ link_t_ptr get_graph_xaxset(link_t_ptr ptr)
 	return NULL;
 }
 
-link_t_ptr get_graph_yaxset(link_t_ptr ptr)
+link_t_ptr get_statis_yaxset(link_t_ptr ptr)
 {
 	link_t_ptr plk;
 
 	plk = get_dom_first_child_node(ptr);
 	while(plk)
 	{
-		if(0 == xscmp(get_dom_node_name_ptr(plk),DOC_GRAPH_YAXSET))
+		if(0 == xscmp(get_dom_node_name_ptr(plk),DOC_STATIS_YAXSET))
 			return plk;
 
 		plk = get_dom_next_sibling_node(plk);
@@ -96,14 +96,14 @@ link_t_ptr get_graph_yaxset(link_t_ptr ptr)
 	return NULL;
 }
 
-link_t_ptr get_graph_gaxset(link_t_ptr ptr)
+link_t_ptr get_statis_gaxset(link_t_ptr ptr)
 {
 	link_t_ptr plk;
 
 	plk = get_dom_first_child_node(ptr);
 	while (plk)
 	{
-		if (0 == xscmp(get_dom_node_name_ptr(plk), DOC_GRAPH_GAXSET))
+		if (0 == xscmp(get_dom_node_name_ptr(plk), DOC_STATIS_GAXSET))
 			return plk;
 
 		plk = get_dom_next_sibling_node(plk);
@@ -112,94 +112,94 @@ link_t_ptr get_graph_gaxset(link_t_ptr ptr)
 	return NULL;
 }
 
-link_t_ptr create_graph_doc()
+link_t_ptr create_statis_doc()
 {
 	link_t_ptr ptr, glk_set,ylk_set,xlk_set;
 
 	ptr = create_dom_doc();
 
-	set_dom_node_name(ptr,DOC_GRAPH,-1);
-	default_graph_attr(ptr);
+	set_dom_node_name(ptr,DOC_STATIS,-1);
+	default_statis_attr(ptr);
 
 	glk_set = insert_dom_node(ptr, LINK_LAST);
-	set_dom_node_name(glk_set, DOC_GRAPH_GAXSET, -1);
+	set_dom_node_name(glk_set, DOC_STATIS_GAXSET, -1);
 
 	ylk_set = insert_dom_node(ptr,LINK_LAST);
-	set_dom_node_name(ylk_set,DOC_GRAPH_YAXSET,-1);
+	set_dom_node_name(ylk_set,DOC_STATIS_YAXSET,-1);
 
 	xlk_set = insert_dom_node(ptr,LINK_LAST);
-	set_dom_node_name(xlk_set,DOC_GRAPH_XAXSET,-1);
+	set_dom_node_name(xlk_set,DOC_STATIS_XAXSET,-1);
 
 	return ptr;
 }
 
-void destroy_graph_doc(link_t_ptr ptr)
+void destroy_statis_doc(link_t_ptr ptr)
 {
 	destroy_dom_doc(ptr);
 }
 
-void clear_graph_doc(link_t_ptr ptr)
+void clear_statis_doc(link_t_ptr ptr)
 {
-	clear_graph_gaxset(ptr);
-	clear_graph_yaxset(ptr);
-	clear_graph_xaxset(ptr);
+	clear_statis_gaxset(ptr);
+	clear_statis_yaxset(ptr);
+	clear_statis_xaxset(ptr);
 }
 
-void clear_graph_gaxset(link_t_ptr ptr)
+void clear_statis_gaxset(link_t_ptr ptr)
 {
-	delete_dom_child_nodes(get_graph_gaxset(ptr));
+	delete_dom_child_nodes(get_statis_gaxset(ptr));
 }
 
-void clear_graph_yaxset(link_t_ptr ptr)
+void clear_statis_yaxset(link_t_ptr ptr)
 {
-	delete_dom_child_nodes(get_graph_yaxset(ptr));
+	delete_dom_child_nodes(get_statis_yaxset(ptr));
 }
 
-void clear_graph_xaxset(link_t_ptr ptr)
+void clear_statis_xaxset(link_t_ptr ptr)
 {
-	delete_dom_child_nodes(get_graph_xaxset(ptr));
+	delete_dom_child_nodes(get_statis_xaxset(ptr));
 }
 
-void merge_graph_yaxset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
+void merge_statis_yaxset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 {
 	link_t_ptr yaxs_dest, yaxs_src;
 
-	XDL_ASSERT(is_graph_doc(ptr_dest) && is_graph_doc(ptr_src));
+	XDL_ASSERT(is_statis_doc(ptr_dest) && is_statis_doc(ptr_src));
 
-	yaxs_dest = get_graph_yaxset(ptr_dest);
-	yaxs_src = get_graph_yaxset(ptr_src);
+	yaxs_dest = get_statis_yaxset(ptr_dest);
+	yaxs_src = get_statis_yaxset(ptr_src);
 
 	merge_dom_child_nodes(yaxs_dest, yaxs_src);
 }
 
-void merge_graph_xaxset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
+void merge_statis_xaxset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 {
 	link_t_ptr xaxs_dest, xaxs_src;
 
-	XDL_ASSERT(is_graph_doc(ptr_dest) && is_graph_doc(ptr_src));
+	XDL_ASSERT(is_statis_doc(ptr_dest) && is_statis_doc(ptr_src));
 
-	xaxs_dest = get_graph_xaxset(ptr_dest);
-	xaxs_src = get_graph_xaxset(ptr_src);
+	xaxs_dest = get_statis_xaxset(ptr_dest);
+	xaxs_src = get_statis_xaxset(ptr_src);
 
 	merge_dom_child_nodes(xaxs_dest, xaxs_src);
 }
 
-bool_t is_graph_doc(link_t_ptr ptr)
+bool_t is_statis_doc(link_t_ptr ptr)
 {
-	return (compare_text(get_dom_node_name_ptr(ptr),-1,DOC_GRAPH,-1,0) == 0)? 1 : 0;
+	return (compare_text(get_dom_node_name_ptr(ptr),-1,DOC_STATIS,-1,0) == 0)? 1 : 0;
 }
 
-bool_t is_graph_gax(link_t_ptr ptr, link_t_ptr glk)
+bool_t is_statis_gax(link_t_ptr ptr, link_t_ptr glk)
 {
 	return is_dom_child_node(ptr, glk);
 }
 
-bool_t is_graph_xax(link_t_ptr ptr,link_t_ptr xlk)
+bool_t is_statis_xax(link_t_ptr ptr,link_t_ptr xlk)
 {
 	return is_dom_child_node(ptr,xlk);
 }
 
-bool_t is_graph_yax(link_t_ptr ptr,link_t_ptr ylk)
+bool_t is_statis_yax(link_t_ptr ptr,link_t_ptr ylk)
 {
 	return is_dom_child_node(ptr,ylk);
 }
@@ -208,12 +208,12 @@ link_t_ptr insert_gax(link_t_ptr ptr, link_t_ptr pos)
 {
 	link_t_ptr slk, glk;
 
-	slk = get_graph_gaxset(ptr);
+	slk = get_statis_gaxset(ptr);
 	if (!slk)
 		return NULL;
 
 	glk = insert_dom_node(slk, pos);
-	set_dom_node_name(glk, DOC_GRAPH_GAX, -1);
+	set_dom_node_name(glk, DOC_STATIS_GAX, -1);
 	default_gax_attr(glk);
 
 	return glk;
@@ -228,7 +228,7 @@ int get_gax_count(link_t_ptr ptr)
 {
 	link_t_ptr slk;
 
-	slk = get_graph_gaxset(ptr);
+	slk = get_statis_gaxset(ptr);
 	if (!slk)
 		return 0;
 
@@ -241,7 +241,7 @@ link_t_ptr get_next_gax(link_t_ptr ptr, link_t_ptr pos)
 
 	if (pos == LINK_FIRST)
 	{
-		slk = get_graph_gaxset(ptr);
+		slk = get_statis_gaxset(ptr);
 		return (slk) ? get_dom_first_child_node(slk) : NULL;
 	}
 	else if (pos == LINK_LAST)
@@ -256,7 +256,7 @@ link_t_ptr get_prev_gax(link_t_ptr ptr, link_t_ptr pos)
 
 	if (pos == LINK_LAST)
 	{
-		slk = get_graph_gaxset(ptr);
+		slk = get_statis_gaxset(ptr);
 		return (slk) ? get_dom_last_child_node(slk) : NULL;
 	}
 	else if (pos == LINK_FIRST)
@@ -287,12 +287,12 @@ link_t_ptr insert_yax(link_t_ptr ptr,link_t_ptr pos)
 {
 	link_t_ptr slk,ylk;
 
-	slk = get_graph_yaxset(ptr);
+	slk = get_statis_yaxset(ptr);
 	if(!slk)
 		return NULL;
 
 	ylk = insert_dom_node(slk,pos);
-	set_dom_node_name(ylk,DOC_GRAPH_YAX,-1);
+	set_dom_node_name(ylk,DOC_STATIS_YAX,-1);
 	default_yax_attr(ylk);
 
 	return ylk;
@@ -307,7 +307,7 @@ int get_yax_count(link_t_ptr ptr)
 {
 	link_t_ptr slk;
 
-	slk = get_graph_yaxset(ptr);
+	slk = get_statis_yaxset(ptr);
 	if(!slk)
 		return 0;
 
@@ -337,7 +337,7 @@ link_t_ptr get_prev_yax(link_t_ptr ptr, link_t_ptr pos)
 
 	if (pos == LINK_LAST)
 	{
-		slk = get_graph_yaxset(ptr);
+		slk = get_statis_yaxset(ptr);
 		return (slk) ? get_dom_last_child_node(slk) : NULL;
 	}
 	else if (pos == LINK_FIRST)
@@ -352,7 +352,7 @@ link_t_ptr get_next_yax(link_t_ptr ptr, link_t_ptr pos)
 
 	if (pos == LINK_FIRST)
 	{
-		slk = get_graph_yaxset(ptr);
+		slk = get_statis_yaxset(ptr);
 		return (slk) ? get_dom_first_child_node(slk) : NULL;
 	}
 	else if (pos == LINK_LAST)
@@ -423,12 +423,12 @@ link_t_ptr insert_xax(link_t_ptr ptr, link_t_ptr pos)
 {
 	link_t_ptr slk, xlk;
 
-	slk = get_graph_xaxset(ptr);
+	slk = get_statis_xaxset(ptr);
 	if (!slk)
 		return NULL;
 
 	xlk = insert_dom_node(slk, pos);
-	set_dom_node_name(xlk, DOC_GRAPH_XAX, -1);
+	set_dom_node_name(xlk, DOC_STATIS_XAX, -1);
 
 	return xlk;
 }
@@ -445,7 +445,7 @@ link_t_ptr get_next_xax(link_t_ptr ptr, link_t_ptr pos)
 
 	if (pos == LINK_FIRST)
 	{
-		slk = get_graph_xaxset(ptr);
+		slk = get_statis_xaxset(ptr);
 		return (slk) ? get_dom_first_child_node(slk) : NULL;
 	}
 	else if (pos == LINK_LAST)
@@ -460,7 +460,7 @@ link_t_ptr get_prev_xax(link_t_ptr ptr, link_t_ptr pos)
 
 	if (pos == LINK_LAST)
 	{
-		slk = get_graph_xaxset(ptr);
+		slk = get_statis_xaxset(ptr);
 		return (slk) ? get_dom_last_child_node(slk) : NULL;
 	}
 	else if (pos == LINK_FIRST)
@@ -473,7 +473,7 @@ int get_xax_count(link_t_ptr ptr)
 {
 	link_t_ptr slk;
 
-	slk = get_graph_xaxset(ptr);
+	slk = get_statis_xaxset(ptr);
 	if (!slk)
 		return 0;
 
@@ -540,7 +540,7 @@ int get_update_xax_count(link_t_ptr ptr)
 	return count;
 }
 
-void refresh_graph_xaxset(link_t_ptr ptr)
+void refresh_statis_xaxset(link_t_ptr ptr)
 {
 	link_t_ptr ylk, xlk, next;
 	int state;
@@ -740,7 +740,7 @@ bool_t get_coor_dirty(link_t_ptr xlk, link_t_ptr ylk)
 }
 
 
-void calc_graph_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* pstep)
+void calc_statis_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* pstep)
 {
 	double f_min, f_max;
 	link_t_ptr xlk, ylk;

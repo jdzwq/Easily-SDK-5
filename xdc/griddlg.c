@@ -200,6 +200,7 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	xs.fx = GRIDDLG_EDITBOX_WIDTH;
@@ -223,6 +224,7 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	xs.fx = GRIDDLG_BUTTON_WIDTH;
@@ -246,9 +248,10 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_griddlg_erase(res_win_t widget, res_ctx_t dc)
@@ -371,6 +374,7 @@ res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_ptr* prow,
 
 	griddlg_popup_size(dlg, RECTSIZE(&xr));
 	widget_size(dlg, RECTSIZE(&xr));
+	widget_update(dlg);
 	widget_center_window(dlg, owner);
 
 	if (widget_is_valid(owner))

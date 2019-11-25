@@ -84,6 +84,64 @@ XDC_API void navibox_set_target(res_win_t widget, res_win_t target);
 */
 XDC_API void navibox_popup_size(res_win_t widget, xsize_t* pxs);
 
+/******************************vert box*****************************************************/
+
+/*
+@FUNCTION vertbox_create: create a vertbox widget.
+@INPUT res_win_t widget: the owner widget.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t vertbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
+
+/*
+@FUNCTION vertbox_set_target: binding a vertbox to target widget.
+@INPUT res_win_t widget: the vertbox widget.
+@INPUT res_win_t target: the target widget.
+@RETURN void: none.
+*/
+XDC_API void vertbox_set_target(res_win_t widget, res_win_t target);
+
+/*
+@FUNCTION vertbox_popup_size: calcing the vertbox popup size according to client size.
+@INPUT res_win_t widget: the vertbox widget.
+@INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
+@RETURN void: none.
+*/
+XDC_API void vertbox_popup_size(res_win_t widget, xsize_t* pxs);
+
+XDL_API res_win_t show_vertbox(res_win_t owner);
+
+/******************************horz box*****************************************************/
+
+/*
+@FUNCTION horzbox_create: create a horzbox widget.
+@INPUT res_win_t widget: the owner widget.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t horzbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
+
+/*
+@FUNCTION horzbox_set_target: binding a horzbox to target widget.
+@INPUT res_win_t widget: the horzbox widget.
+@INPUT res_win_t target: the target widget.
+@RETURN void: none.
+*/
+XDC_API void horzbox_set_target(res_win_t widget, res_win_t target);
+
+/*
+@FUNCTION horzbox_popup_size: calcing the horzbox popup size according to client size.
+@INPUT res_win_t widget: the horzbox widget.
+@INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
+@RETURN void: none.
+*/
+XDC_API void horzbox_popup_size(res_win_t widget, xsize_t* pxs);
+
+XDL_API res_win_t show_horzbox(res_win_t owner);
+
 /******************************tip box*****************************************************/
 
 /*

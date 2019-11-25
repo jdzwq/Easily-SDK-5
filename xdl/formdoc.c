@@ -214,7 +214,7 @@ void default_grid_field_attr(link_t_ptr flk)
 	set_field_editable(flk, 1);
 }
 
-void default_graph_field_attr(link_t_ptr flk)
+void default_statis_field_attr(link_t_ptr flk)
 {
 	set_field_shape(flk, ATTR_SHAPE_RECT);
 	set_field_x(flk, 0);
@@ -364,12 +364,12 @@ void reset_form_doc(link_t_ptr ptr)
 				clear_grid_rowset(sub);
 			}
 		}
-		else if (compare_text(cls, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+		else if (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0)
 		{
-			sub = get_field_embed_graph(flk);
+			sub = get_field_embed_statis(flk);
 			if (sub)
 			{
-				clear_graph_xaxset(sub);
+				clear_statis_xaxset(sub);
 			}
 		}
 		else if (compare_text(cls, -1, DOC_FORM_IMAGES, -1, 0) == 0)
@@ -425,12 +425,12 @@ void refresh_form_doc(link_t_ptr ptr)
 			}
 			set_field_dirty(flk, 0);
 		}
-		else if (compare_text(cls, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+		else if (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0)
 		{
-			sub = get_field_embed_graph(flk);
+			sub = get_field_embed_statis(flk);
 			if (sub)
 			{
-				refresh_graph_xaxset(sub);
+				refresh_statis_xaxset(sub);
 			}
 			set_field_dirty(flk, 0);
 		}
@@ -613,13 +613,13 @@ link_t_ptr insert_field(link_t_ptr ptr,const tchar_t* sz_class)
 		doc = create_grid_doc();
 		attach_dom_node(flk, LINK_LAST, doc);
 	}
-	else if (compare_text(sz_class, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+	else if (compare_text(sz_class, -1, DOC_FORM_STATIS, -1, 0) == 0)
 	{
 		flk = insert_dom_node(get_form_fieldset(ptr), LINK_LAST);
 		set_dom_node_name(flk, sz_class, -1);
-		default_graph_field_attr(flk);
+		default_statis_field_attr(flk);
 
-		doc = create_graph_doc();
+		doc = create_statis_doc();
 		attach_dom_node(flk, LINK_LAST, doc);
 	}
 	else if (compare_text(sz_class, -1, DOC_FORM_IMAGES, -1, 0) == 0)
@@ -1018,23 +1018,23 @@ void set_field_embed_grid(link_t_ptr flk, link_t_ptr doc)
 	}
 }
 
-link_t_ptr get_field_embed_graph(link_t_ptr flk)
+link_t_ptr get_field_embed_statis(link_t_ptr flk)
 {
 	const tchar_t *cls;
 
 	cls = get_field_class_ptr(flk);
 
-	return (compare_text(cls, -1, DOC_FORM_GRAPH, -1, 0) == 0) ? get_dom_first_child_node(flk) : NULL;
+	return (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0) ? get_dom_first_child_node(flk) : NULL;
 }
 
-void set_field_embed_graph(link_t_ptr flk, link_t_ptr doc)
+void set_field_embed_statis(link_t_ptr flk, link_t_ptr doc)
 {
 	const tchar_t *cls;
 	link_t_ptr plk;
 
 	cls = get_field_class_ptr(flk);
 
-	if (compare_text(cls, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+	if (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0)
 	{
 		plk = detach_dom_node(flk, LINK_FIRST);
 		if (plk)
@@ -1113,13 +1113,13 @@ void clear_field_embed(link_t_ptr flk)
 			attach_dom_node(flk, LINK_FIRST, plk);
 		}
 	}
-	else if (compare_text(cls, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+	else if (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0)
 	{
 		plk = detach_dom_node(flk, LINK_FIRST);
 		if (plk)
 		{
-			clear_graph_xaxset(plk);
-			clear_graph_yaxset(plk);
+			clear_statis_xaxset(plk);
+			clear_statis_yaxset(plk);
 			attach_dom_node(flk, LINK_FIRST, plk);
 		}
 	}

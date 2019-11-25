@@ -45,7 +45,7 @@ LICENSE.GPL3 for more details.
 #define IDC_GRIDPANEL_PAINTCOLOR	213
 #define IDC_GRIDPANEL_DRAWCOLOR	214
 
-#define GRIDPANEL_GROUPITEM_WIDTH		(float)7
+#define GRIDPANEL_GROUPITEM_WIDTH		(float)8
 #define GRIDPANEL_GROUPITEM_HEIGHT		(float)7
 #define GRIDPANEL_TITLEITEM_WIDTH		(float)15
 #define GRIDPANEL_TITLEITEM_HEIGHT		(float)10
@@ -386,9 +386,9 @@ void GridPanel_OnExec(res_win_t widget)
 	xr.fh = get_grid_height(ptr_grid) / 2;
 
 	screen_size_to_pt(RECTSIZE(&xr));
-	widget_adjust_size(WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL, RECTSIZE(&xr));
+	widget_adjust_size(WD_STYLE_DIALOG, RECTSIZE(&xr));
 
-	res_win_t win = gridctrl_create(NULL, WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL | WD_STYLE_PAGING, &xr, widget);
+	res_win_t win = gridctrl_create(NULL, WD_STYLE_DIALOG | WD_STYLE_PAGING, &xr, widget);
 
 	gridctrl_auto_insert(win, 1);
 
@@ -398,6 +398,7 @@ void GridPanel_OnExec(res_win_t widget)
 	parse_xcolor(&clr.clr_frg, g_face[g_indFace].frg);
 	parse_xcolor(&clr.clr_txt, g_face[g_indFace].txt);
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
+	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
 	widget_set_color_mode(win, &clr);
 
@@ -1346,7 +1347,7 @@ int GridPanel_OnCreate(res_win_t widget, void* data)
 	xrect_t xr;
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hGrid = gridctrl_create(_T("GridPanel"), WD_STYLE_CONTROL | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL | WD_STYLE_PAGING, &xr, widget);
+	pdt->hGrid = gridctrl_create(_T("GridPanel"), WD_STYLE_CONTROL | WD_STYLE_PAGING, &xr, widget);
 	XDL_ASSERT(pdt->hGrid);
 	widget_set_user_id(pdt->hGrid, IDC_GRIDPANEL_GRID);
 	widget_set_owner(pdt->hGrid, widget);
@@ -1361,7 +1362,7 @@ int GridPanel_OnCreate(res_win_t widget, void* data)
 
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hProper = properctrl_create(_T("GridProper"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hProper = properctrl_create(_T("GridProper"), WD_STYLE_CONTROL, &xr, widget);
 	XDL_ASSERT(pdt->hProper);
 	widget_set_user_id(pdt->hProper, IDC_GRIDPANEL_PROPER);
 	widget_set_owner(pdt->hProper, widget);
@@ -1381,14 +1382,13 @@ int GridPanel_OnCreate(res_win_t widget, void* data)
 	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
-	set_title_images(ptrTitle, g_imagelist);
 
 	LINKPTR tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("属性"));
 	xsprintf(token, _T("%d"), IDA_ATTRIBUTES);
 	set_title_item_id(tlk, token);
 	set_title_item_width(tlk, GRIDPANEL_TITLEITEM_WIDTH);
-	set_title_item_image(tlk, BMP_PROPER);
+	set_title_item_icon(tlk, ICON_PROPER);
 	set_title_item_locked(tlk, 1);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
@@ -1396,7 +1396,7 @@ int GridPanel_OnCreate(res_win_t widget, void* data)
 	xsprintf(token, _T("%d"), IDA_STYLESHEET);
 	set_title_item_id(tlk, token);
 	set_title_item_width(tlk, GRIDPANEL_TITLEITEM_WIDTH);
-	set_title_item_image(tlk, BMP_DRAW);
+	set_title_item_icon(tlk, ICON_STYLE);
 	set_title_item_locked(tlk, 1);
 
 	titlectrl_attach(pdt->hTitle, ptrTitle);
@@ -1500,37 +1500,37 @@ void GridPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("全选"));
-		set_tool_item_image(ilk, BMP_SELECTALL);
+		set_tool_item_icon(ilk, ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除"));
-		set_tool_item_image(ilk, BMP_DELETE);
+		set_tool_item_icon(ilk, ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("拷贝"));
-		set_tool_item_image(ilk, BMP_COPY);
+		set_tool_item_icon(ilk, ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("剪切"));
-		set_tool_item_image(ilk, BMP_CUT);
+		set_tool_item_icon(ilk, ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("粘贴"));
-		set_tool_item_image(ilk, BMP_PASTE);
+		set_tool_item_icon(ilk, ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("撤销"));
-		set_tool_item_image(ilk, BMP_UNDO);
+		set_tool_item_icon(ilk, ICON_UNDO);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_STYLE);
@@ -1543,61 +1543,61 @@ void GridPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_NAME);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体名称"));
-		set_tool_item_image(ilk, BMP_FONTNAME);
+		set_tool_item_icon(ilk, ICON_FONTNAME);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_SIZE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字号大小"));
-		set_tool_item_image(ilk, BMP_FONTSIZE);
+		set_tool_item_icon(ilk, ICON_FONTSIZE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_WEIGHT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体加黑"));
-		set_tool_item_image(ilk, BMP_FONTBOLD);
+		set_tool_item_icon(ilk, ICON_FONTWEIGHT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体颜色"));
-		set_tool_item_image(ilk, BMP_FONTCOLOR);
+		set_tool_item_icon(ilk, ICON_FONTCOLOR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("文本居左"));
-		set_tool_item_image(ilk, BMP_TEXTNEAR);
+		set_tool_item_icon(ilk, ICON_ALIGNNEAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("文本居中"));
-		set_tool_item_image(ilk, BMP_TEXTCENTER);
+		set_tool_item_icon(ilk, ICON_ALIGNCENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("文本居右"));
-		set_tool_item_image(ilk, BMP_TEXTFAR);
+		set_tool_item_icon(ilk, ICON_ALIGNFAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_image(ilk, BMP_ALIGNLEFT);
+		set_tool_item_icon(ilk, ICON_ARRANGELEFT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_image(ilk, BMP_ALIGNCENTER);
+		set_tool_item_icon(ilk, ICON_ARRANGECENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_image(ilk, BMP_ALIGNRIGHT);
+		set_tool_item_icon(ilk, ICON_ARRANGERIGHT);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_ELEMENT);
@@ -1610,49 +1610,49 @@ void GridPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_INSERT_COL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增列"));
-		set_tool_item_image(ilk, BMP_INSERT);
+		set_tool_item_icon(ilk, ICON_PLUS);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_ROW);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增行"));
-		set_tool_item_image(ilk, BMP_PLUS);
+		set_tool_item_icon(ilk, ICON_APPEND);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DELETE_ROW);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除行"));
-		set_tool_item_image(ilk, BMP_MINUS);
+		set_tool_item_icon(ilk, ICON_REMOVE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_ERASE_ROWS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("清除行集"));
-		set_tool_item_image(ilk, BMP_ERASE);
+		set_tool_item_icon(ilk, ICON_CLEAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_FRESH_ROWS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("刷新行集"));
-		set_tool_item_image(ilk, BMP_FETCH);
+		set_tool_item_icon(ilk, ICON_FETCH);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_UPDATE_ROWS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("更新行集"));
-		set_tool_item_image(ilk, BMP_COMMIT);
+		set_tool_item_icon(ilk, ICON_UPDATE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_FILL_CODE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("生成序列码"));
-		set_tool_item_image(ilk, BMP_HELPC);
+		set_tool_item_icon(ilk, ICON_HELPC);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_FILL_HELP);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("生成助记符"));
-		set_tool_item_image(ilk, BMP_HELPH);
+		set_tool_item_icon(ilk, ICON_HELPP);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

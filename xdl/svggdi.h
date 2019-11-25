@@ -103,6 +103,16 @@ XDL_API void	svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* 
 XDL_API void	svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
 
 /*
+@FUNCTION svg_draw_curve: draw curve in svg canvas using millimeter coordinate
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt: the point array.
+@INPUT int n: the point array size.
+@RETURN void: none.
+*/
+XDL_API void	svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
+
+/*
 @FUNCTION draw_rect: draw svg_draw_rect in svg canvas using milimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -196,6 +206,17 @@ XDL_API void	svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* px
 @RETURN void: none.
 */
 XDL_API void	svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
+
+/*
+@FUNCTION svg_draw_shadow: draw shadow in svg canvas using millimeter coordinate.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* shadow: the shadow name, eg: ATTR_SHAPE_*.
+@RETURN void: none.
+*/
+XDL_API void	svg_draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shadow);
 
 /*
 @FUNCTION svg_multi_line: draw multiple base line in svg canvas using millimeter coordinate, the line separated by line height of font and face.

@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_proper_icon_span: set the proper icon span.
 */
-#define set_proper_icon_span(ptr,n)					set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_proper_icon_span(ptr,n)					set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_proper_icon_span: get the proper icon span.
 */
-#define get_proper_icon_span(ptr)					get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_proper_icon_span(ptr)					get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER itemSpan: numeric.
 @SET set_proper_item_span: set the proper item span.
@@ -129,15 +129,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_section_id_ptr(elk)						get_dom_node_attr_ptr(elk,ATTR_ID,-1)
 /*
-@PROPER image: string.
-@GET get_section_image_ptr: get the section image name.
+@PROPER icon: string.
+@GET get_section_icon_ptr: get the section icon name.
 */
-#define get_section_image_ptr(slk)					get_dom_node_attr_ptr(slk,ATTR_IMAGE,-1)
+#define get_section_icon_ptr(slk)					get_dom_node_attr_ptr(slk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_section_image: set the section image name.
+@PROPER icon: string.
+@SET set_section_icon: set the section icon name.
 */
-#define set_section_image(slk,token)				set_dom_node_attr(slk,ATTR_IMAGE,-1,token,-1)
+#define set_section_icon(slk,token)				set_dom_node_attr(slk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER id: string.
 @SET set_entity_id: set the entity identifier.
@@ -203,26 +203,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_entity_editor_ptr(ent)					get_dom_node_attr_ptr(ent,ATTR_EDITOR,-1)
 /*
-@PROPER image: string.
-@GET get_entity_image_ptr: get the entity image.
+@PROPER icon: string.
+@GET get_entity_icon_ptr: get the entity icon.
 */
-#define get_entity_image_ptr(elk)					get_dom_node_attr_ptr(elk,ATTR_IMAGE,-1)
+#define get_entity_icon_ptr(elk)					get_dom_node_attr_ptr(elk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_entity_image: set the entity image.
+@PROPER icon: string.
+@SET set_entity_icon: set the entity icon.
 */
-#define set_entity_image(elk,token)					set_dom_node_attr(elk,ATTR_IMAGE,-1,token,-1)
-
-/*
-@PROPER images: document.
-@SET set_proper_images: set the proper images document.
-*/
-#define set_proper_images(ptr,images)				set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_proper_images: get the proper images document.
-*/
-#define get_proper_images(ptr)						get_dom_node_images(ptr)
+#define set_entity_icon(elk,token)					set_dom_node_attr(elk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER expanded: boolean.
 @SET set_section_expanded: set the section is expanded.

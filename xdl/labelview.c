@@ -221,7 +221,6 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 	const tchar_t* style;
 	const tchar_t* type;
 	bool_t b_print;
-	link_t_ptr imagelist;
 	float SHAPE_FEED = 1.0;
 	float px, py, pw, ph;
 
@@ -237,8 +236,6 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 	ph = pbox->fh;
 
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
-
-	imagelist = get_label_images(ptr);
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -271,7 +268,14 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 		format_xcolor(&pif->clr_msk, xi_ico.color);
 	}
 
-	parse_xcolor(&xc, xf.color);
+	if (!b_print)
+	{
+		xmem_copy((void*)&xc, &pif->clr_ico, sizeof(xcolor_t));
+	}
+	else
+	{
+		parse_xcolor(&xc, xp.color);
+	}
 
 	xmem_copy((void*)&xa_title, (void*)&xa, sizeof(xface_t));
 
@@ -313,12 +317,9 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 		xr_text.fw = eh;
 		xr_text.fh = eh;
 
-		if (imagelist)
-		{
-			get_ximage(imagelist, get_label_item_image_ptr(nlk), &xi_ico);
-			(*pif->pf_draw_image)(pif->canvas, &xi_ico, &xr_text);
-		}
-
+		ft_center_rect(&xr_text, DEF_SMALL_ICON, DEF_SMALL_ICON);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_text, get_label_item_icon_ptr(nlk));
+		
 		xr_shape.fx = xr.fx + SHAPE_FEED;
 		xr_shape.fy = xr.fy + SHAPE_FEED;
 		xr_shape.fw = xr.fw - 2 * SHAPE_FEED;

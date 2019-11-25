@@ -51,6 +51,8 @@ XDL_API result_t dispatch_message(const msg_t* pmsg);
 
 XDL_API int		translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg);
 
+XDL_API void	message_position(xpoint_t* ppt);
+
 /*
 @FUNCTION widget_create: create frame, popup, child widget or dialog window.
 @INPUT const tchar_t* wname: widget name.
@@ -344,13 +346,20 @@ XDL_API void	widget_show(res_win_t wt, dword_t sw);
 XDL_API void	widget_center_window(res_win_t wt, res_win_t owner);
 
 /*
-@FUNCTION widget_invalid: redraw rect in widget client.
+@FUNCTION widget_resize: resize whole widndow.
+@INPUT res_win_t wt: the widget resource handle.
+@RETURN void: none.
+*/
+XDL_API void	widget_resize(res_win_t wt);
+
+/*
+@FUNCTION widget_redraw: redraw rect in widget client.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT const xrect_t* prt: the rect need to redraw.
 @INPUT bool_t b_erase: if nonzero the background need to redraw.
 @RETURN void: none.
 */
-XDL_API void	widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase);
+XDL_API void	widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase);
 
 /*
 @FUNCTION widget_update_window: redraw whole widndow immediately.
@@ -360,18 +369,11 @@ XDL_API void	widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase);
 XDL_API void	widget_paint(res_win_t wt);
 
 /*
-@FUNCTION widget_update_window: redraw whole widndow.
+@FUNCTION widget_update: redraw whole widndow.
 @INPUT res_win_t wt: the widget resource handle.
 @RETURN void: none.
 */
-XDL_API void	widget_update_window(res_win_t wt);
-
-/*
-@FUNCTION widget_update_client: redraw whole widndow client.
-@INPUT res_win_t wt: the widget resource handle.
-@RETURN void: none.
-*/
-XDL_API void	widget_update_client(res_win_t wt);
+XDL_API void	widget_update(res_win_t wt);
 
 /*
 @FUNCTION widget_enable: enable or disable window, the window disabled can not get focus for inputing.

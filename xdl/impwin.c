@@ -74,6 +74,15 @@ result_t dispatch_message(const msg_t* pmsg)
 	return (*pif->pf_translate_message)(pmsg);
 }
 
+void message_position(xpoint_t* ppt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	(*pif->pf_message_position)(ppt);
+}
+
 int	translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
 {
 	if_widget_t* pif;
@@ -821,6 +830,15 @@ void widget_show(res_win_t wt, dword_t sw)
 	(*pif->pf_widget_show)(wt, sw);
 }
 
+void widget_resize(res_win_t wt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	(*pif->pf_widget_resize)(wt);
+}
+
 void widget_paint(res_win_t wt)
 {
 	if_widget_t* pif;
@@ -830,31 +848,22 @@ void widget_paint(res_win_t wt)
 	(*pif->pf_widget_paint)(wt);
 }
 
-void widget_update_client(res_win_t wt)
+void widget_update(res_win_t wt)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_update_client)(wt);
+	(*pif->pf_widget_update)(wt);
 }
 
-void widget_update_window(res_win_t wt)
+void widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_update_window)(wt);
-}
-
-void widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)
-{
-	if_widget_t* pif;
-
-	pif = PROCESS_WIDGET_INTERFACE;
-
-	(*pif->pf_widget_update)(wt, prt, b_erase);
+	(*pif->pf_widget_redraw)(wt, prt, b_erase);
 }
 
 void widget_enable(res_win_t wt, bool_t b)

@@ -96,7 +96,7 @@ void noti_title_item_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	if (widget_is_hotvoer(widget))
 	{
@@ -113,7 +113,7 @@ void noti_title_item_enter(res_win_t widget, link_t_ptr plk)
 
 	ptd->hover = plk;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	if (widget_is_hotvoer(widget))
 	{
@@ -144,7 +144,7 @@ bool_t noti_title_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	return 1;
 }
@@ -158,7 +158,7 @@ void noti_title_item_changed(res_win_t widget, link_t_ptr plk)
 
 	ptd->item = plk;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	noti_title_owner(widget, NC_TITLEITEMCHANGED, ptd->title, ptd->item, NULL);
 }
@@ -389,6 +389,7 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xpen_t xp = { 0 };
 	xgradi_t xg = { 0 };
 	xrect_t xr = { 0 };
+	const tchar_t* orita;
 
 	canvas_t canv;
 	if_canvas_t* pif;
@@ -407,7 +408,10 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
+
+	orita = get_title_oritation_ptr(ptd->title);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -417,6 +421,11 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xscpy(xg.brim_color, xb.color);
 	xscpy(xg.core_color, xb.color);
 	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
+
+	if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0 || compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
+		xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+	else
+		xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
 
 	gradient_rect_raw(rdc, &xg, &xr);
 
@@ -587,7 +596,7 @@ void titlectrl_redraw(res_win_t widget)
 
 	_titlectrl_reset_page(widget);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void titlectrl_redraw_item(res_win_t widget, link_t_ptr plk)
@@ -617,7 +626,7 @@ void titlectrl_redraw_item(res_win_t widget, link_t_ptr plk)
 		widget_get_client_rect(widget, &xr);
 	}
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos)

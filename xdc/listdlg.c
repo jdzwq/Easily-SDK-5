@@ -155,6 +155,7 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	widget_get_client_rect(widget, &xr);
@@ -174,9 +175,10 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_listdlg_erase(res_win_t widget, res_ctx_t dc)
@@ -289,6 +291,7 @@ res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner)
 
 	listdlg_popup_size(dlg, RECTSIZE(&xr));
 	widget_size(dlg, RECTSIZE(&xr));
+	widget_update(dlg);
 	widget_center_window(dlg, owner);
 
 	if (widget_is_valid(owner))

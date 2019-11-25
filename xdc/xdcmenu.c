@@ -543,7 +543,7 @@ void track_popup_menu(res_win_t widget, dword_t idc, link_t_ptr menu, const xpoi
 	clr_mod_t clr;
 	widget_get_color_mode(widget, &clr);
 	widget_set_color_mode(hMenu, &clr);
-	widget_update_window(hMenu);
+	widget_update(hMenu);
 	widget_show(hMenu, WD_SHOW_NORMAL);
 
 	widget_do_trace(hMenu);

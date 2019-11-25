@@ -58,16 +58,17 @@ LICENSE.GPL3 for more details.
 @GET get_tool_style_ptr: get the tool style.
 */
 #define get_tool_style_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
+
 /*
 @PROPER iconSpan: numeric.
 @SET set_tool_icon_span: set the tool icon span.
 */
-#define set_tool_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_tool_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_tool_icon_span: get the tool icon span.
 */
-#define get_tool_icon_span(ptr)							get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_tool_icon_span(ptr)							get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER titleHeight: numeric.
 @GET get_tool_title_height: get the tool title height.
@@ -98,16 +99,6 @@ LICENSE.GPL3 for more details.
 @SET set_tool_group_title: set the tool group title.
 */
 #define set_tool_group_title(glk,token)					set_dom_node_attr(glk,ATTR_TITLE,-1,token,-1)
-/*
-@PROPER groupImage: string.
-@GET get_tool_group_image_ptr: get the tool group image.
-*/
-#define get_tool_group_image_ptr(glk)					get_dom_node_attr_ptr(glk,ATTR_IMAGE,-1)
-/*
-@PROPER groupImage: string.
-@SET set_tool_group_image: set the tool group image.
-*/
-#define set_tool_group_image(glk,token)					set_dom_node_attr(glk,ATTR_IMAGE,-1,token,-1)
 /*
 @PROPER groupShow: string.
 @SET set_tool_group_show: set the tool group show style.
@@ -169,26 +160,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_tool_item_title_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_TITLE,-1)
 /*
-@PROPER image: string.
-@GET get_tool_item_image_ptr: get the tool item image.
+@PROPER icon: string.
+@GET get_tool_item_icon_ptr: get the tool item icon.
 */
-#define get_tool_item_image_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
+#define get_tool_item_icon_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_tool_item_image: set the tool item image.
+@PROPER icon: string.
+@SET set_tool_item_icon: set the tool item icon.
 */
-#define set_tool_item_image(ilk,token)					set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-
-/*
-@PROPER images: document.
-@SET set_tool_images: set the tool images document.
-*/
-#define set_tool_images(ptr,images)						set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_tool_images: get the tool images document.
-*/
-#define get_tool_images(ptr)							get_dom_node_images(ptr)
+#define set_tool_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER delta: var long.
 @SET set_tool_item_delta: set the tool item extract data.

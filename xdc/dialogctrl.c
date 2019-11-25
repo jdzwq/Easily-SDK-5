@@ -395,7 +395,7 @@ void noti_dialog_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -418,7 +418,7 @@ void noti_dialog_item_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t noti_dialog_item_changing(res_win_t widget)
@@ -437,7 +437,7 @@ bool_t noti_dialog_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return (bool_t)1;
 }
@@ -456,7 +456,7 @@ void noti_dialog_item_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_dialog_owner(widget, NC_DIALOGITEMCHANGED, ptd->dialog, ilk, NULL);
 }
@@ -565,7 +565,7 @@ void noti_dialog_item_drop(res_win_t widget, long x, long y)
 	set_dialog_item_x(ptd->item, pt.fx);
 	set_dialog_item_y(ptd->item, pt.fy);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -646,7 +646,7 @@ void noti_dialog_item_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	fw = get_dialog_item_width(ptd->item);
 	fh = get_dialog_item_height(ptd->item);
@@ -683,7 +683,7 @@ void noti_dialog_item_sized(res_win_t widget, long x, long y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	_dialogctrl_item_rect(widget, ptd->item, &xr);
 
@@ -762,7 +762,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	{
 		ptd->cur_x = pxp->x;
 		ptd->cur_y = pxp->y;
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 		return;
 	}
 
@@ -1050,7 +1050,7 @@ void hand_dialog_keydown(res_win_t widget, int nKey)
 			ilk = get_dialog_next_item(ptd->dialog, ilk);
 		}
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 
 		if (ks)
 			noti_dialog_owner(widget, NC_DIALOGITEMSIZED, ptd->dialog, ptd->item, NULL);
@@ -1178,7 +1178,8 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1326,7 +1327,7 @@ link_t_ptr dialogctrl_detach(res_win_t widget)
 	ptd->dialog = NULL;
 	ptd->item = NULL;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	return data;
 }
@@ -1373,9 +1374,7 @@ void dialogctrl_redraw(res_win_t widget)
 
 	_dialogctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
@@ -1398,7 +1397,7 @@ void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 	_dialogctrl_item_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void dialogctrl_tabskip(res_win_t widget, int nSkip)

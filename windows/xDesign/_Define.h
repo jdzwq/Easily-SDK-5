@@ -108,7 +108,7 @@ LICENSE.GPL3 for more details.
 #define IDA_APPEND_PAGENUM		5210
 #define IDA_APPEND_TABLE		5211
 #define IDA_APPEND_EMBED_GRID		5212
-#define IDA_APPEND_EMBED_GRAPH		5213
+#define IDA_APPEND_EMBED_STATIS		5213
 #define IDA_APPEND_EMBED_IMAGES		5214
 #define IDA_APPEND_EMBED_FORM		5215
 
@@ -150,25 +150,33 @@ LICENSE.GPL3 for more details.
 #define IDA_APPEND_PUSHBOX		5321
 #define IDA_APPEND_USERBOX		5322
 
-#define IDA_APPEND_MAPTABLE		5330
-#define IDA_APPEND_LINETABLE	5331
-#define IDA_APPEND_BARTABLE		5332
-#define IDA_APPEND_PIETABLE		5333
-#define IDA_APPEND_DOTTABLE		5334
-#define IDA_APPEND_COUNTERTABLE		5335
+#define IDA_APPEND_GEOMAP		5330
+#define IDA_APPEND_TRENDS		5331
+#define IDA_APPEND_SCATTER		5332
+#define IDA_APPEND_PANTO		5333
+#define IDA_APPEND_DENSITY		5334
+#define IDA_APPEND_COUNTER		5335
+
+#define IDA_APPEND_PROCESS		5340
+#define IDA_APPEND_JUDGE		5341
+#define IDA_APPEND_DOCUMENT		5342
+#define IDA_APPEND_SHEET		5343
+#define IDA_APPEND_JOINT		5344
 
 #define PANEL_CLASS_FORM		_T("FormPanel")
 #define PANEL_CLASS_GRID		_T("GridPanel")
-#define PANEL_CLASS_GRAPH		_T("GraphPanel")
+#define PANEL_CLASS_STATIS		_T("StatisPanel")
 #define PANEL_CLASS_RICH		_T("RichPanel")
 #define PANEL_CLASS_SCHEMA		_T("SchemaPanel")
 #define PANEL_CLASS_TOPOG		_T("TopogPanel")
 #define PANEL_CLASS_IMAGE		_T("ImagePanel")
 #define PANEL_CLASS_DIALOG		_T("DialogPanel")
-#define PANEL_CLASS_CHART		_T("ChartPanel")
-#define PANEL_CLASS_SQL			_T("SQLPanel")
+#define PANEL_CLASS_PANORAMA	_T("PanoramaPanel")
+#define PANEL_CLASS_DIAGRAM		_T("DiagramPanel")
 #define PANEL_CLASS_TAG			_T("TagPanel")
-#define PANEL_CLASS_WEB			_T("WEBPanel")
+#define PANEL_CLASS_SQL			_T("SQLPanel")
+#define PANEL_CLASS_XML			_T("XMLPanel")
+#define PANEL_CLASS_JSON		_T("JsonPanel")
 
 
 #define MAINFRAME_TOOLGROUP_PROJECT		_T("group_project")
@@ -179,112 +187,3 @@ LICENSE.GPL3 for more details.
 #define MAINFRAME_TOOLGROUP_STYLE		_T("group-style")
 #define MAINFRAME_TOOLGROUP_ELEMENT		_T("group-element")
 
-
-#define BMP_NEW				_T("new")
-#define BMP_OPEN			_T("open")
-#define BMP_SAVE			_T("save")
-#define BMP_SAVEAS			_T("saveas")
-#define BMP_SAVEALL			_T("saveall")
-#define BMP_SCHEMA			_T("schema")
-#define BMP_PRINT			_T("print")
-#define BMP_PREVIEW			_T("preview")
-#define BMP_CLOSE			_T("close")
-
-#define BMP_SELECTALL		_T("selectall")
-#define BMP_DELETE			_T("delete")
-#define BMP_COPY			_T("copy")
-#define BMP_CUT				_T("cut")
-#define BMP_UNDO			_T("undo")
-#define BMP_PASTE			_T("paste")
-#define BMP_FONTNAME		_T("fontname")
-#define BMP_FONTSIZE		_T("fontsize")
-#define BMP_FONTCOLOR		_T("fontcolor")
-#define BMP_FONTBOLD		_T("fontbold")
-#define BMP_TEXTNEAR		_T("textnear")
-#define BMP_TEXTCENTER		_T("textcenter")
-#define BMP_TEXTFAR			_T("textfar")
-#define BMP_ALIGNLEFT		_T("alignleft")
-#define BMP_ALIGNRIGHT		_T("alignright")
-#define BMP_ALIGNTOP		_T("aligntop")
-#define BMP_ALIGNBOTTOM		_T("alignbottom")
-#define BMP_ALIGNCENTER		_T("aligncenter")
-#define BMP_SIZEWIDTH		_T("sizewidth")
-#define BMP_SIZEHEIGHT		_T("sizeheight")
-#define BMP_SIZEALL			_T("sizeall")
-#define BMP_SIZEHORZ		_T("sizehorz")
-#define BMP_SIZEVERT		_T("sizevert")
-#define BMP_PAINT			_T("paint")
-#define BMP_PREVIEW			_T("preview")
-#define BMP_DRAW			_T("draw")
-#define BMP_GROUP			_T("group")
-#define BMP_SENDBACK		_T("sendback")
-#define BMP_PROPER			_T("proper")
-#define BMP_MACRO			_T("macro")
-#define BMP_BORDER			_T("border")
-#define BMP_FRESH			_T("fresh")
-#define BMP_EXEC			_T("exec")
-#define BMP_STOP			_T("stop")
-#define BMP_UP				_T("up")
-#define BMP_DOWN			_T("down")
-#define BMP_KEYBORD			_T("keybord")
-#define BMP_SUM				_T("sum")
-
-#define BMP_SHAPE			_T("shape")
-#define BMP_LABEL			_T("label")
-#define BMP_TEXT			_T("text")
-#define BMP_MEMO			_T("memo")
-#define BMP_GRID			_T("grid")
-#define BMP_GRAPH			_T("graph")
-#define BMP_IMAGE			_T("image")
-#define BMP_PHOTO			_T("photo")
-#define BMP_CHECK			_T("check")
-#define BMP_EDIT			_T("edit")
-#define BMP_RICH			_T("rich")
-#define BMP_HERF			_T("herf")
-#define BMP_FORM			_T("new")
-
-#define BMP_STATICBOX		_T("staticbox")
-#define BMP_EDITBOX			_T("editbox")
-#define BMP_LISTBOX			_T("listbox")
-#define BMP_NAVIBOX			_T("navibox")
-#define BMP_SPINBOX			_T("spinbox")
-#define BMP_SLIDEBOX		_T("slidebox")
-#define BMP_RADIOBOX		_T("radiobox")
-#define BMP_DATEBOX			_T("datebox")
-#define BMP_TIMEBOX			_T("timebox")
-#define BMP_PUSHBOX			_T("pushbox")
-#define BMP_GROUPBOX		_T("groupbox")
-#define BMP_USERBOX			_T("userbox")
-#define BMP_CHECKBOX		_T("checkbox")
-#define BMP_DIALOG			_T("dialog")
-#define BMP_ADDRBOX			_T("addrbox")
-#define BMP_CHART			_T("chart")
-#define BMP_MAPCHART		_T("mapchart")
-#define BMP_LINECHART		_T("linechart")
-#define BMP_BARCHART		_T("barchart")
-#define BMP_PIECHART		_T("piechart")
-#define BMP_DOTCHART		_T("dotchart")
-#define BMP_COUNTER			_T("counter")
-
-#define BMP_BOOK			_T("book")
-#define BMP_INSERT			_T("insert")
-#define BMP_PLUS			_T("plus")
-#define BMP_MINUS			_T("minus")
-#define BMP_ERASE			_T("erase")
-#define BMP_IMPORT			_T("import")
-#define BMP_EXPORT			_T("export")
-#define BMP_INPUT			_T("input")
-#define BMP_OUTPUT			_T("output")
-#define BMP_HELPC			_T("helpc")
-#define BMP_HELPH			_T("helph")
-#define BMP_SQL				_T("sql")
-#define BMP_FETCH			_T("fetch")
-#define BMP_COMMIT			_T("commit")
-
-#define BMP_FIRST			_T("first")
-#define BMP_LAST			_T("last")
-#define BMP_PREV			_T("prev")
-#define BMP_NEXT			_T("next")
-#define BMP_PRINTER			_T("printer")
-
-#define BMP_LOGIN			_T("login")

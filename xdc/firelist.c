@@ -107,16 +107,14 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		if (widget_is_valid(dropbox))
 		{
 			widget_set_color_mode(dropbox, (clr_mod_t*)data);
-			widget_update_window(dropbox);
-			widget_update_client(dropbox);
+			widget_update(dropbox);
 		}
 
 		/*keybox = editbox_get_keybox(widget);
 		if (widget_is_valid(keybox))
 		{
 			widget_set_color_mode(keybox, (clr_mod_t*)data);
-			widget_update_window(keybox);
-			widget_update_client(keybox);
+			widget_update(keybox);
 		}*/
 		return 1;
 	case COMMAND_COMMIT:
@@ -283,6 +281,7 @@ res_win_t firelist_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data)
 
 	widget_move(dropbox, RECTPOINT(&xr));
 	widget_size(dropbox, RECTSIZE(&xr));
+	widget_update(dropbox);
 
 	return editor;
 }

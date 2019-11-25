@@ -63,9 +63,6 @@
     <ClCompile Include="..\..\xdc\formctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\graphctrl.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\gridctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -207,7 +204,22 @@
     <ClCompile Include="..\..\xdc\winnc.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\chartctrl.c">
+    <ClCompile Include="..\..\xdc\staticctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\panoramactrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\diagramctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\userctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\vertbox.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\horzbox.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -195,6 +195,29 @@ void svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, con
 	write_bezier_to_svg_node(nlk, pxp, &pt[0], &pt[1], &pt[2], &pt[3]);
 }
 
+void svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	link_t_ptr g, nlk;
+	xpoint_t* pa;
+	int i;
+
+	g = svg_get_canvas_doc(canv);
+
+	nlk = insert_svg_node(g);
+
+	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
+	
+	for (i = 0; i < n; i++)
+	{
+		xmem_copy((void*)&pa[i], (void*)&ppt[i], sizeof(xpoint_t));
+		svg_point_tm_to_pt(canv, &pa[i]);
+	}
+
+	write_curve_to_svg_node(nlk, pxp, pa, n);
+
+	xmem_free(pa);
+}
+
 void svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
 	link_t_ptr g, nlk;
@@ -309,6 +332,11 @@ void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	svg_rect_tm_to_pt(canv, &xr);
 
 	write_shape_to_svg_node(nlk, pxp, pxb, &xr, shape);
+}
+
+void svg_draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shape)
+{
+	
 }
 
 void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
@@ -1886,171 +1914,64 @@ void _svg_draw_fixed_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt
 	svg_draw_rect(canv, &xp, NULL, &xr);
 }
 
-void _svg_draw_point_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xfont_t xf;
-	xface_t xa;
-
-	default_xfont(&xf);
-	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
-	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-
-	_svg_draw_single_text(canv, &xf, &xa, prt, ICON_TEXT_POINT, -1);
-}
-
-void _svg_draw_cross_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xfont_t xf;
-	xface_t xa;
-
-	default_xfont(&xf);
-	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
-	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	_svg_draw_single_text(canv, &xf, &xa, prt, ICON_TEXT_CROSS, -1);
-}
-
-void _svg_draw_rect_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xfont_t xf;
-	xface_t xa;
-
-	default_xfont(&xf);
-	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
-	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-
-	_svg_draw_single_text(canv, &xf, &xa, prt, ICON_TEXT_RECT, -1);
-}
-
-void _svg_draw_ellipse_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xfont_t xf;
-	xface_t xa;
-
-	default_xfont(&xf);
-	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
-	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-
-	_svg_draw_single_text(canv, &xf, &xa, prt, ICON_TEXT_ELLIPSE, -1);
-}
-
-void _svg_draw_star_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xfont_t xf;
-	xface_t xa;
-
-	default_xfont(&xf);
-	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
-	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-
-	_svg_draw_single_text(canv, &xf, &xa, prt, ICON_TEXT_STAR, -1);
-}
-
-void _svg_draw_diamond_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xfont_t xf;
-	xface_t xa;
-
-	default_xfont(&xf);
-	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
-	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-
-	_svg_draw_single_text(canv, &xf, &xa, prt, ICON_TEXT_DIAMOND, -1);
-}
-
 void svg_draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
 {
-	if (compare_text(iname, -1, ATTR_ICON_LOGO, -1, 0) == 0)
+	if (compare_text(iname, -1, ICON_LOGO, -1, 0) == 0)
 		_svg_draw_logo_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_COLLAPSE, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_COLLAPSE, -1, 0) == 0)
 		_svg_draw_collapse_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_EXPAND, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_EXPAND, -1, 0) == 0)
 		_svg_draw_expand_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_INSERT, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_INSERT, -1, 0) == 0)
 		_svg_draw_insert_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_DELETE, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_DELETE, -1, 0) == 0)
 		_svg_draw_delete_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_PLUS, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_PLUS, -1, 0) == 0)
 		_svg_draw_plus_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_MINUS, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_MINUS, -1, 0) == 0)
 		_svg_draw_minus_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_HOME, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_HOME, -1, 0) == 0)
 		_svg_draw_home_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_UP, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_UP, -1, 0) == 0)
 		_svg_draw_up_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_DOWN, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_DOWN, -1, 0) == 0)
 		_svg_draw_down_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_END, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_END, -1, 0) == 0)
 		_svg_draw_end_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_FIRST, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_FIRST, -1, 0) == 0)
 		_svg_draw_first_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_PREV, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_PREV, -1, 0) == 0)
 		_svg_draw_prev_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_NEXT, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_NEXT, -1, 0) == 0)
 		_svg_draw_next_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_LAST, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_LAST, -1, 0) == 0)
 		_svg_draw_last_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_GUIDER, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_GUIDER, -1, 0) == 0)
 		_svg_draw_guider_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_FOLDER, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_FOLDER, -1, 0) == 0)
 		_svg_draw_folder_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CHECKBOX, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_CHECKBOX, -1, 0) == 0)
 		_svg_draw_checkbox_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CHECKED, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_CHECKED, -1, 0) == 0)
 		_svg_draw_checked_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RADIOBOX, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_RADIOBOX, -1, 0) == 0)
 		_svg_draw_radiobox_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RADIOED, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_RADIOED, -1, 0) == 0)
 		_svg_draw_radioed_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_SELECTED, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_SELECTED, -1, 0) == 0)
 		_svg_draw_selected_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_SUM, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_SUM, -1, 0) == 0)
 		_svg_draw_sum_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CLOSE, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_CLOSE, -1, 0) == 0)
 		_svg_draw_close_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_MINIMIZE, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_MINIMIZE, -1, 0) == 0)
 		_svg_draw_minimize_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_MAXIMIZE, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_MAXIMIZE, -1, 0) == 0)
 		_svg_draw_maximize_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RESTORE, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_RESTORE, -1, 0) == 0)
 		_svg_draw_restore_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_FIXED, -1, 0) == 0)
+	else if (compare_text(iname, -1, ICON_FIXED, -1, 0) == 0)
 		_svg_draw_fixed_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_POINT, -1, 0) == 0)
-		_svg_draw_point_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_RECT, -1, 0) == 0)
-		_svg_draw_rect_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_ELLIPSE, -1, 0) == 0)
-		_svg_draw_ellipse_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_CROSS, -1, 0) == 0)
-		_svg_draw_cross_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_STAR, -1, 0) == 0)
-		_svg_draw_star_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ATTR_ICON_DIAMOND, -1, 0) == 0)
-		_svg_draw_diamond_icon(canv, pxc, pxr);
 }
 
 #endif /*XDL_SUPPORT_VIEW*/

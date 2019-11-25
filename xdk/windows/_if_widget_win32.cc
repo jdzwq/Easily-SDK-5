@@ -217,6 +217,14 @@ int	_translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
 	return TranslateAccelerator(wt, acl, pmsg);
 }
 
+void _message_position(xpoint_t* ppt)
+{
+	DWORD dw = GetMessagePos();
+
+	ppt->x = GET_X_LPARAM(dw);
+	ppt->y = GET_Y_LPARAM(dw);
+}
+
 ATOM RegisterXdcWidgetClass(HINSTANCE hInstance)
 {
 	WNDCLASS wcex = { 0 };
@@ -1417,7 +1425,8 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 
 	if ((wstyle & WD_STYLE_VSCROLL) || (wstyle & WD_STYLE_VSCROLL) || (wstyle & WD_STYLE_HSCROLL) || (wstyle & WD_STYLE_MENUBAR))
 	{
-		_widget_update_window(hWnd);
+		SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		PostMessage(hWnd, WM_NCPAINT, 1, 0);
 	}
 
 	return (res_win_t)hWnd;
@@ -2233,7 +2242,7 @@ void _widget_show(res_win_t wt, dword_t sw)
 	}
 }
 
-void _widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)
+void _widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
 {
 	RECT rt;
 
@@ -2256,19 +2265,15 @@ void _widget_paint(res_win_t wt)
 	UpdateWindow((HWND)wt);
 }
 
-void _widget_update_window(res_win_t wt)
+void _widget_resize(res_win_t wt)
+{
+	PostMessage(wt, WM_SIZE, WD_SIZE_LAYOUT, 0);
+}
+
+void _widget_update(res_win_t wt)
 {
 	SetWindowPos(wt, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 	PostMessage(wt, WM_NCPAINT, 1, 0);
-}
-
-void _widget_update_client(res_win_t wt)
-{
-	RECT rt;
-
-	GetClientRect(wt, &rt);
-
-	SendMessage(wt, WM_SIZE, 0, MAKELPARAM(rt.right - rt.left, rt.bottom - rt.top));
 }
 
 void _widget_enable(res_win_t wt, bool_t b)

@@ -203,6 +203,34 @@ XDL_API int calc_wordsbox_hint(const if_measure_t* pim, const xfont_t* pxf, cons
 
 XDL_API void draw_wordsbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* pxf, link_t_ptr ptr, int page);
 
+typedef enum{
+	VERTBOX_HINT_NONE = 0,
+	VERTBOX_HINT_PAGEUP = 1,
+	VERTBOX_HINT_LINEUP = 2,
+	VERTBOX_HINT_LINEDOWN = 3,
+	VERTBOX_HINT_PAGEDOWN = 4,
+}VERTBOX_HINT_CODE;
+
+XDL_API void calc_vertbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+
+XDL_API int	calc_vertbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+
+XDL_API void draw_vertbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* pxf);
+
+typedef enum{
+	HORZBOX_HINT_NONE = 0,
+	HORZBOX_HINT_PAGELEFT = 1,
+	HORZBOX_HINT_LINELEFT = 2,
+	HORZBOX_HINT_LINERIGHT = 3,
+	HORZBOX_HINT_PAGERIGHT = 4,
+}HORZBOX_HINT_CODE;
+
+XDL_API void calc_horzbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+
+XDL_API int	calc_horzbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+
+XDL_API void draw_horzbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* pxf);
+
 #ifdef	__cplusplus
 }
 #endif

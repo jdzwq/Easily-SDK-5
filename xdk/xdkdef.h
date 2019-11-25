@@ -157,6 +157,9 @@ typedef long long		stamp_t;
 typedef int				wait_t;
 #endif
 
+#define BOOL_TRUE		((bool_t)1)
+#define BOOL_FALSE		((bool_t)0)
+
 #define WAIT_ERR		((wait_t)-1)
 #define WAIT_TMO		((wait_t)0)
 #define WAIT_RET		((wait_t)1)
@@ -728,6 +731,7 @@ typedef struct _clr_mod_t{
 	xcolor_t clr_frg;
 	xcolor_t clr_txt;
 	xcolor_t clr_msk;
+	xcolor_t clr_ico;
 }clr_mod_t;
 
 

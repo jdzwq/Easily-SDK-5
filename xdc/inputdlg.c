@@ -108,7 +108,7 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	ptd->button = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(ptd->button, IDC_INPUTDLG_PUSHBOX_CLOSE);
 	widget_set_owner(ptd->button, widget);
-	pushbox_set_text(ptd->button, ATTR_ICON_CLOSE, -1);
+	pushbox_set_text(ptd->button, ICON_CLOSE, -1);
 	widget_show(ptd->button, WD_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
@@ -188,7 +188,7 @@ void hand_inputdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		xr.w = xr.h;
 		widget_move(ptd->button, RECTPOINT(&xr));
 		widget_size(ptd->button, RECTSIZE(&xr));
-		widget_update_client(ptd->button);
+		widget_update(ptd->button);
 	}
 
 	if (ptd->editor)
@@ -196,10 +196,10 @@ void hand_inputdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_get_client_rect(widget, &xr);
 		xr.w -= xr.h;
 		widget_size(ptd->editor, RECTSIZE(&xr));
-		widget_update_client(ptd->editor);
+		widget_update(ptd->editor);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_inputdlg_erase(res_win_t widget, res_ctx_t dc)
@@ -274,6 +274,7 @@ res_win_t inputdlg_create(const tchar_t* title, tchar_t* buf, int max, res_win_t
 
 	inputdlg_popup_size(dlg, RECTSIZE(&xr));
 	widget_size(dlg, RECTSIZE(&xr));
+	widget_update(dlg);
 
 	widget_center_window(dlg, owner);
 

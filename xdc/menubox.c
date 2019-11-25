@@ -112,7 +112,7 @@ void noti_menu_item_changing(res_win_t widget)
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
 	ptd->item = NULL;
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_menu_item_changed(res_win_t widget, link_t_ptr plk)
@@ -127,7 +127,7 @@ void noti_menu_item_changed(res_win_t widget, link_t_ptr plk)
 	_menubox_item_rect(widget, ptd->item, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 /**************************************************************************************/
@@ -311,7 +311,8 @@ void hand_menu_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -421,9 +422,7 @@ void menubox_redraw(res_win_t widget)
 
 	_menubox_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void menubox_tabskip(res_win_t widget, int nSkip)
@@ -602,6 +601,7 @@ void menubox_layout(res_win_t widget, const xpoint_t* ppt, int lay)
 	
 	widget_size(widget, RECTSIZE(&xr));
 	widget_move(widget, RECTPOINT(&xr));
+	widget_update(widget);
 
 	widget_show(widget, WD_SHOW_NORMAL);
 }

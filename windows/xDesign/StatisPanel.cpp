@@ -24,40 +24,40 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "stdafx.h"
-#include "GraphPanel.h"
+#include "StatisPanel.h"
 
 #include "_Define.h"
 #include "_Module.h"
 #include "_Frame.h"
 
-#define IDC_GRAPHPANEL_GRAPH		201
-#define IDC_GRAPHPANEL_PROPER		202
-#define IDC_GRAPHPANEL_TITLE		203
-#define IDC_GRAPHPANEL_FONTNAME		210
-#define IDC_GRAPHPANEL_FONTSIZE		211
-#define IDC_GRAPHPANEL_FONTCOLOR	212
-#define IDC_GRAPHPANEL_PAINTCOLOR	213
-#define IDC_GRAPHPANEL_DRAWCOLOR	214
+#define IDC_STATISPANEL_STATIS		201
+#define IDC_STATISPANEL_PROPER		202
+#define IDC_STATISPANEL_TITLE		203
+#define IDC_STATISPANEL_FONTNAME		210
+#define IDC_STATISPANEL_FONTSIZE		211
+#define IDC_STATISPANEL_FONTCOLOR	212
+#define IDC_STATISPANEL_PAINTCOLOR	213
+#define IDC_STATISPANEL_DRAWCOLOR	214
 
-#define GRAPHPANEL_GROUPITEM_WIDTH		(float)7
-#define GRAPHPANEL_GROUPITEM_HEIGHT		(float)7
-#define GRAPHPANEL_TITLEITEM_WIDTH		(float)15
-#define GRAPHPANEL_TITLEITEM_HEIGHT		(float)10
+#define STATISPANEL_GROUPITEM_WIDTH		(float)7
+#define STATISPANEL_GROUPITEM_HEIGHT		(float)7
+#define STATISPANEL_TITLEITEM_WIDTH		(float)15
+#define STATISPANEL_TITLEITEM_HEIGHT		(float)10
 
-typedef struct tagGraphPanelDelta{
+typedef struct tagStatisPanelDelta{
 	res_win_t hProper;
 	res_win_t hTitle;
-	res_win_t hGraph;
+	res_win_t hStatis;
 
 	tchar_t szFile[PATH_LEN];
 	METADATA meta;
-}GraphPanelDelta;
+}StatisPanelDelta;
 
-#define GETGRAPHPANELDELTA(ph) 		(GraphPanelDelta*)widget_get_user_delta(ph)
-#define SETGRAPHPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define GETSTATISPANELDELTA(ph) 		(StatisPanelDelta*)widget_get_user_delta(ph)
+#define SETSTATISPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
-#define GRAPHPANEL_ACCEL_COUNT	5
-accel_t	GRAPHPANEL_ACCEL[GRAPHPANEL_ACCEL_COUNT] = {
+#define STATISPANEL_ACCEL_COUNT	5
+accel_t	STATISPANEL_ACCEL[STATISPANEL_ACCEL_COUNT] = {
 	FVIRTKEY | FCONTROL, _T('C'), IDA_EDIT_COPY,
 	FVIRTKEY | FCONTROL, _T('X'), IDA_EDIT_CUT,
 	FVIRTKEY | FCONTROL, _T('V'), IDA_EDIT_PASTE,
@@ -65,18 +65,18 @@ accel_t	GRAPHPANEL_ACCEL[GRAPHPANEL_ACCEL_COUNT] = {
 	FVIRTKEY | FCONTROL, _T('Z'), IDA_EDIT_UNDO,
 };
 
-void	GraphPanel_Switch(res_win_t widget);
+void	StatisPanel_Switch(res_win_t widget);
 
-bool_t	GraphPanel_SaveFile(res_win_t widget, const tchar_t* szFile);
-bool_t	GraphPanel_OpenFile(res_win_t widget, const tchar_t* szFile);
+bool_t	StatisPanel_SaveFile(res_win_t widget, const tchar_t* szFile);
+bool_t	StatisPanel_OpenFile(res_win_t widget, const tchar_t* szFile);
 
 /*****************************************************************************************************/
 
-void GraphPanel_Switch(res_win_t widget)
+void StatisPanel_Switch(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	if (!graphctrl_get_dirty(pdt->hGraph))
+	if (!statisctrl_get_dirty(pdt->hStatis))
 		return;
 
 	dword_t rt = ShowMsg(MSGBTN_YES | MSGBTN_NO | MSGICO_TIP, _T("文件尚未保存，是否保存文件？"));
@@ -87,14 +87,14 @@ void GraphPanel_Switch(res_win_t widget)
 		widget_send_command(widget, 0, IDA_FILE_SAVE, NULL);
 		break;
 	case MSGBTN_NO:
-		graphctrl_set_dirty(pdt->hGraph, 0);
+		statisctrl_set_dirty(pdt->hStatis, 0);
 		break;
 	}
 }
 
-bool_t GraphPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
+bool_t StatisPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	LINKPTR ptrMeta = create_meta_doc();
 	if (!load_dom_doc_from_file(ptrMeta, NULL, szFile))
@@ -105,7 +105,7 @@ bool_t GraphPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 		return 0;
 	}
 
-	if (compare_text(get_meta_doc_name_ptr(ptrMeta), -1, DOC_GRAPH, -1, 1) != 0)
+	if (compare_text(get_meta_doc_name_ptr(ptrMeta), -1, DOC_STATIS, -1, 1) != 0)
 	{
 		destroy_meta_doc(ptrMeta);
 		ShowMsg(MSGICO_ERR, _T("非表单文档！"));
@@ -116,36 +116,36 @@ bool_t GraphPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 	get_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, RES_LEN);
 	get_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, RES_LEN);
 
-	LINKPTR newGraph = detach_meta_body_node(ptrMeta);
+	LINKPTR newStatis = detach_meta_body_node(ptrMeta);
 	destroy_meta_doc(ptrMeta);
 
-	LINKPTR orgGraph = graphctrl_detach(pdt->hGraph);
-	destroy_graph_doc(orgGraph);
+	LINKPTR orgStatis = statisctrl_detach(pdt->hStatis);
+	destroy_statis_doc(orgStatis);
 
-	set_graph_design(newGraph, 1);
-	graphctrl_attach(pdt->hGraph, newGraph);
+	set_statis_design(newStatis, 1);
+	statisctrl_attach(pdt->hStatis, newStatis);
 
 	xscpy(pdt->szFile, szFile);
 
 	return 1;
 }
 
-bool_t GraphPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
+bool_t StatisPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
 	LINKPTR ptrMeta = create_meta_doc();
 
 	set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
 	set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
 
-	attach_meta_body_node(ptrMeta, ptrGraph);
+	attach_meta_body_node(ptrMeta, ptrStatis);
 
 	bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
 
-	ptrGraph = detach_meta_body_node(ptrMeta);
+	ptrStatis = detach_meta_body_node(ptrMeta);
 	destroy_meta_doc(ptrMeta);
 
 	if (!rt)
@@ -155,7 +155,7 @@ bool_t GraphPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
 		return 0;
 	}
 
-	graphctrl_set_dirty(pdt->hGraph, 0);
+	statisctrl_set_dirty(pdt->hStatis, 0);
 
 	xscpy(pdt->szFile, szFile);
 
@@ -170,9 +170,9 @@ bool_t GraphPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
 
 /***************************************************************************************************************/
 
-void GraphPanel_OnSave(res_win_t widget)
+void StatisPanel_OnSave(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	tchar_t szFile[PATH_LEN] = { 0 };
 
@@ -194,15 +194,15 @@ void GraphPanel_OnSave(res_win_t widget)
 		xscpy(szFile, pdt->szFile);
 	}
 
-	if (GraphPanel_SaveFile(widget, szFile))
+	if (StatisPanel_SaveFile(widget, szFile))
 	{
-		graphctrl_set_dirty(pdt->hGraph, 0);
+		statisctrl_set_dirty(pdt->hStatis, 0);
 	}
 }
 
-void GraphPanel_OnSaveAs(res_win_t widget)
+void StatisPanel_OnSaveAs(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	tchar_t szFile[PATH_LEN] = { 0 };
 	tchar_t szPath[PATH_LEN] = { 0 };
@@ -216,48 +216,48 @@ void GraphPanel_OnSaveAs(res_win_t widget)
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
 	LINKPTR ptrMeta = create_meta_doc();
 
 	set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
 	set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
 
-	attach_meta_body_node(ptrMeta, ptrGraph);
+	attach_meta_body_node(ptrMeta, ptrStatis);
 
 	bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
 
-	ptrGraph = detach_meta_body_node(ptrMeta);
+	ptrStatis = detach_meta_body_node(ptrMeta);
 	destroy_meta_doc(ptrMeta);
 
 	if (!rt)
 		ShowMsg(MSGICO_ERR, _T("保存文件错误！"));
 }
 
-void GraphPanel_OnPrint(res_win_t widget)
+void StatisPanel_OnPrint(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 }
 
-void GraphPanel_OnPreview(res_win_t widget)
+void StatisPanel_OnPreview(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	int page = graphctrl_get_cur_page(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	int page = statisctrl_get_cur_page(pdt->hStatis);
 
 	res_win_t hPreviewDlg = previewdlg_create(_T("打印预览"), g_hMain);
 
 	LINKPTR svg = create_svg_doc();
 
-	svg_print_graph(svg, ptrGraph, page);
+	svg_print_statis(svg, ptrStatis, page);
 
 	LINKPTR ptr_arch = previewdlg_get_arch(hPreviewDlg);
 
 	LINKPTR ilk = insert_arch_document(ptr_arch, LINK_LAST, svg);
 
 	tchar_t token[1024] = { 0 };
-	xsprintf(token, _T("%s 第%d页"), get_graph_title_ptr(ptrGraph), page);
+	xsprintf(token, _T("%s 第%d页"), get_statis_title_ptr(ptrStatis), page);
 	set_arch_item_title(ilk, token);
 
 	previewdlg_redraw(hPreviewDlg);
@@ -265,9 +265,9 @@ void GraphPanel_OnPreview(res_win_t widget)
 	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
 }
 
-void GraphPanel_OnSchema(res_win_t widget)
+void StatisPanel_OnSchema(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
@@ -281,10 +281,10 @@ void GraphPanel_OnSchema(res_win_t widget)
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 	LINKPTR ptrSch = create_schema_doc();
 
-	export_graph_schema(ptrGraph, ptrSch);
+	export_statis_schema(ptrStatis, ptrSch);
 
 	if (!save_dom_doc_to_file(ptrSch, NULL, szFile))
 	{
@@ -294,9 +294,9 @@ void GraphPanel_OnSchema(res_win_t widget)
 	destroy_schema_doc(ptrSch);
 }
 
-void GraphPanel_OnExport(res_win_t widget)
+void StatisPanel_OnExport(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
@@ -310,11 +310,11 @@ void GraphPanel_OnExport(res_win_t widget)
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
 	LINKPTR ptrDom = create_dom_doc();
 
-	export_graph_data(ptrGraph, NULL, ptrDom);
+	export_statis_data(ptrStatis, NULL, ptrDom);
 
 	if (!save_dom_doc_to_file(ptrDom, NULL, szFile))
 	{
@@ -327,9 +327,9 @@ void GraphPanel_OnExport(res_win_t widget)
 	destroy_dom_doc(ptrDom);
 }
 
-void GraphPanel_OnImport(res_win_t widget)
+void StatisPanel_OnImport(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
@@ -343,7 +343,7 @@ void GraphPanel_OnImport(res_win_t widget)
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
 	LINKPTR ptrDom = create_dom_doc();
 
@@ -355,29 +355,29 @@ void GraphPanel_OnImport(res_win_t widget)
 		return;
 	}
 
-	import_graph_data(ptrGraph, NULL, ptrDom);
+	import_statis_data(ptrStatis, NULL, ptrDom);
 
 	destroy_dom_doc(ptrDom);
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnExec(res_win_t widget)
+void StatisPanel_OnExec(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptr_graph = graphctrl_fetch(pdt->hGraph);;
+	LINKPTR ptr_statis = statisctrl_fetch(pdt->hStatis);;
 
 	xrect_t xr = { 0 };
-	xr.fw = get_graph_width(ptr_graph);
-	xr.fh = get_graph_height(ptr_graph) / 2;
+	xr.fw = get_statis_width(ptr_statis);
+	xr.fh = get_statis_height(ptr_statis) / 2;
 
 	screen_size_to_pt(RECTSIZE(&xr));
-	widget_adjust_size(WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL, RECTSIZE(&xr));
+	widget_adjust_size(WD_STYLE_DIALOG, RECTSIZE(&xr));
 
-	res_win_t win = graphctrl_create(NULL, WD_STYLE_DIALOG | WD_STYLE_VSCROLL | WD_STYLE_HSCROLL | WD_STYLE_PAGING, &xr, widget);
+	res_win_t win = statisctrl_create(NULL, WD_STYLE_DIALOG | WD_STYLE_PAGING, &xr, widget);
 
-	graphctrl_auto_insert(win, 1);
+	statisctrl_auto_insert(win, 1);
 
 	clr_mod_t clr = { 0 };
 
@@ -385,60 +385,61 @@ void GraphPanel_OnExec(res_win_t widget)
 	parse_xcolor(&clr.clr_frg, g_face[g_indFace].frg);
 	parse_xcolor(&clr.clr_txt, g_face[g_indFace].txt);
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
+	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
 	widget_set_color_mode(win, &clr);
 
-	set_graph_design(ptr_graph, 0);
-	graphctrl_attach(win, ptr_graph);
+	set_statis_design(ptr_statis, 0);
+	statisctrl_attach(win, ptr_statis);
 
 	widget_center_window(win, widget);
 	widget_show(win, WD_SHOW_NORMAL);
 
 	widget_do_modal(win);
 
-	set_graph_design(ptr_graph, 1);
+	set_statis_design(ptr_statis, 1);
 }
 
-void GraphPanel_OnSelectAll(res_win_t widget)
+void StatisPanel_OnSelectAll(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	XDL_ASSERT(ptrGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	XDL_ASSERT(ptrStatis);
 
-	LINKPTR ylk = get_next_yax(ptrGraph, LINK_FIRST);
+	LINKPTR ylk = get_next_yax(ptrStatis, LINK_FIRST);
 	while (ylk)
 	{
 		set_yax_selected(ylk, 1);
 
-		ylk = get_next_yax(ptrGraph, ylk);
+		ylk = get_next_yax(ptrStatis, ylk);
 	}
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnDelete(res_win_t widget)
+void StatisPanel_OnDelete(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	XDL_ASSERT(ptrGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	XDL_ASSERT(ptrStatis);
 
-	LINKPTR ptrGax = graphctrl_get_focus_gax(pdt->hGraph);
+	LINKPTR ptrGax = statisctrl_get_focus_gax(pdt->hStatis);
 	if (ptrGax)
 	{
 		delete_gax(ptrGax);
-		graphctrl_redraw(pdt->hGraph, 1);
+		statisctrl_redraw(pdt->hStatis, 1);
 		return;
 	}
 
-	graphctrl_set_focus_coor(pdt->hGraph, NULL, NULL);
+	statisctrl_set_focus_coor(pdt->hStatis, NULL, NULL);
 
 	bool_t bRedraw = 0;
-	LINKPTR nlk,ylk = get_next_yax(ptrGraph, LINK_FIRST);
+	LINKPTR nlk,ylk = get_next_yax(ptrStatis, LINK_FIRST);
 	while (ylk)
 	{
-		nlk = get_next_yax(ptrGraph, ylk);
+		nlk = get_next_yax(ptrStatis, ylk);
 		if (get_yax_selected(ylk))
 		{
 			delete_yax(ylk);
@@ -452,55 +453,55 @@ void GraphPanel_OnDelete(res_win_t widget)
 	}
 
 	if (bRedraw)
-		graphctrl_redraw(pdt->hGraph, 1);
+		statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnCopy(res_win_t widget)
+void StatisPanel_OnCopy(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	widget_copy(pdt->hGraph);
+	widget_copy(pdt->hStatis);
 }
 
-void GraphPanel_OnCut(res_win_t widget)
+void StatisPanel_OnCut(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	widget_cut(pdt->hGraph);
+	widget_cut(pdt->hStatis);
 }
 
-void GraphPanel_OnPaste(res_win_t widget)
+void StatisPanel_OnPaste(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	widget_paste(pdt->hGraph);
+	widget_paste(pdt->hStatis);
 }
 
-void GraphPanel_OnRedo(res_win_t widget)
+void StatisPanel_OnRedo(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 }
 
-void GraphPanel_OnUndo(res_win_t widget)
+void StatisPanel_OnUndo(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	widget_undo(pdt->hGraph);
+	widget_undo(pdt->hStatis);
 }
 
-void GraphPanel_OnSelectAttr(res_win_t widget, const tchar_t* attr_name, const tchar_t* attr_val)
+void StatisPanel_OnSelectAttr(res_win_t widget, const tchar_t* attr_name, const tchar_t* attr_val)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	LINKPTR ptrYax = graphctrl_get_focus_yax(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	LINKPTR ptrYax = statisctrl_get_focus_yax(pdt->hStatis);
 
-	graphctrl_set_dirty(pdt->hGraph, 1);
+	statisctrl_set_dirty(pdt->hStatis, 1);
 
 	tchar_t style[CSS_LEN] = { 0 };
 
-	LINKPTR ylk = get_next_yax(ptrGraph, LINK_FIRST);
+	LINKPTR ylk = get_next_yax(ptrStatis, LINK_FIRST);
 	while (ylk)
 	{
 		if (ylk == ptrYax || get_yax_selected(ylk))
@@ -509,115 +510,115 @@ void GraphPanel_OnSelectAttr(res_win_t widget, const tchar_t* attr_name, const t
 			//set_yax_style(ylk, style);
 		}
 
-		ylk = get_next_yax(ptrGraph, ylk);
+		ylk = get_next_yax(ptrStatis, ylk);
 	}
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnFontName(res_win_t widget, void* pv)
+void StatisPanel_OnFontName(res_win_t widget, void* pv)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	fontname_menu(widget, IDC_GRAPHPANEL_FONTNAME, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontname_menu(widget, IDC_STATISPANEL_FONTNAME, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
 }
 
-void GraphPanel_OnFontSize(res_win_t widget, void* pv)
+void StatisPanel_OnFontSize(res_win_t widget, void* pv)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	fontsize_menu(widget, IDC_GRAPHPANEL_FONTSIZE, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontsize_menu(widget, IDC_STATISPANEL_FONTSIZE, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
 }
 
-void GraphPanel_OnTextColor(res_win_t widget, void* pv)
+void StatisPanel_OnTextColor(res_win_t widget, void* pv)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	color_menu(widget, IDC_GRAPHPANEL_FONTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_STATISPANEL_FONTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
 }
 
-void GraphPanel_OnPaintColor(res_win_t widget, void* pv)
+void StatisPanel_OnPaintColor(res_win_t widget, void* pv)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	color_menu(widget, IDC_GRAPHPANEL_PAINTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_STATISPANEL_PAINTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
 }
 
-void GraphPanel_OnDrawColor(res_win_t widget, void* pv)
+void StatisPanel_OnDrawColor(res_win_t widget, void* pv)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	color_menu(widget, IDC_GRAPHPANEL_DRAWCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_STATISPANEL_DRAWCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
 }
 
 
-void GraphPanel_OnTextNear(res_win_t widget)
+void StatisPanel_OnTextNear(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	if (!get_yax_selected_count(ptrGraph))
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	if (!get_yax_selected_count(ptrStatis))
 		return;
 
-	GraphPanel_OnSelectAttr(widget, GDI_ATTR_TEXT_ALIGN, GDI_ATTR_TEXT_ALIGN_NEAR);
+	StatisPanel_OnSelectAttr(widget, GDI_ATTR_TEXT_ALIGN, GDI_ATTR_TEXT_ALIGN_NEAR);
 }
 
-void GraphPanel_OnTextBold(res_win_t widget)
+void StatisPanel_OnTextBold(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	if (!get_yax_selected_count(ptrGraph))
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	if (!get_yax_selected_count(ptrStatis))
 		return;
 
-	GraphPanel_OnSelectAttr(widget, GDI_ATTR_FONT_WEIGHT, GDI_ATTR_FONT_WEIGHT_BOLD);
+	StatisPanel_OnSelectAttr(widget, GDI_ATTR_FONT_WEIGHT, GDI_ATTR_FONT_WEIGHT_BOLD);
 }
 
-void GraphPanel_OnTextCenter(res_win_t widget)
+void StatisPanel_OnTextCenter(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	if (!get_yax_selected_count(ptrGraph))
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	if (!get_yax_selected_count(ptrStatis))
 		return;
 
-	GraphPanel_OnSelectAttr(widget, GDI_ATTR_TEXT_ALIGN, GDI_ATTR_TEXT_ALIGN_CENTER);
+	StatisPanel_OnSelectAttr(widget, GDI_ATTR_TEXT_ALIGN, GDI_ATTR_TEXT_ALIGN_CENTER);
 }
 
-void GraphPanel_OnTextFar(res_win_t widget)
+void StatisPanel_OnTextFar(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	GraphPanel_OnSelectAttr(widget, GDI_ATTR_TEXT_ALIGN, GDI_ATTR_TEXT_ALIGN_FAR);
+	StatisPanel_OnSelectAttr(widget, GDI_ATTR_TEXT_ALIGN, GDI_ATTR_TEXT_ALIGN_FAR);
 }
 
-void GraphPanel_OnInsertGax(res_win_t widget)
+void StatisPanel_OnInsertGax(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
-	graphctrl_set_dirty(pdt->hGraph, 1);
+	statisctrl_set_dirty(pdt->hStatis, 1);
 
-	LINKPTR glk = insert_gax(ptrGraph, LINK_LAST);
+	LINKPTR glk = insert_gax(ptrStatis, LINK_LAST);
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnInsertYax(res_win_t widget)
+void StatisPanel_OnInsertYax(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	LINKPTR ptrPos = graphctrl_get_focus_yax(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	LINKPTR ptrPos = statisctrl_get_focus_yax(pdt->hStatis);
 
-	graphctrl_set_dirty(pdt->hGraph, 1);
+	statisctrl_set_dirty(pdt->hStatis, 1);
 
-	ptrPos = (ptrPos)? get_prev_yax(ptrGraph, ptrPos) : LINK_LAST;
+	ptrPos = (ptrPos)? get_prev_yax(ptrStatis, ptrPos) : LINK_LAST;
 	
-	LINKPTR ylk = insert_yax(ptrGraph,ptrPos);
+	LINKPTR ylk = insert_yax(ptrStatis,ptrPos);
 
-	int count = get_yax_count(ptrGraph);
+	int count = get_yax_count(ptrStatis);
 
 	tchar_t token[RES_LEN + 1];
 	xsprintf(token, _T("Y%d"), count);
@@ -628,18 +629,18 @@ void GraphPanel_OnInsertYax(res_win_t widget)
 	if (count < COLOR_TABLE_SIZE)
 		set_yax_color(ylk, COLOR_TABLE[count]);
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnInsertXax(res_win_t widget)
+void StatisPanel_OnInsertXax(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
-	LINKPTR xlk = insert_xax(ptrGraph, LINK_LAST);
+	LINKPTR xlk = insert_xax(ptrStatis, LINK_LAST);
 
-	int count = get_xax_count(ptrGraph);
+	int count = get_xax_count(ptrStatis);
 
 	tchar_t token[RES_LEN + 1];
 	xsprintf(token, _T("X%d"), count);
@@ -647,66 +648,66 @@ void GraphPanel_OnInsertXax(res_win_t widget)
 	set_xax_name(xlk, token);
 	set_xax_text(xlk, token);
 
-	/*double f_num = get_graph_yaxbar_step(ptrGraph) * 10;
-	double f_xax = get_graph_yaxbar_step(ptrGraph) * get_xax_count(ptrGraph) * 10;
+	/*double f_num = get_statis_yaxbar_step(ptrStatis) * 10;
+	double f_xax = get_statis_yaxbar_step(ptrStatis) * get_xax_count(ptrStatis) * 10;
 	count = 0;
-	LINKPTR ylk = get_next_yax(ptrGraph, LINK_FIRST);
+	LINKPTR ylk = get_next_yax(ptrStatis, LINK_FIRST);
 	while (ylk)
 	{
 		set_coor_numeric(xlk, ylk, (++count) * f_num + f_xax);
-		ylk = get_next_yax(ptrGraph, ylk);
+		ylk = get_next_yax(ptrStatis, ylk);
 	}
 
 	float midd = 0;
 	float step = 0;
 
-	calc_graph_baseline(ptrGraph, &midd, &step);
+	calc_statis_baseline(ptrStatis, &midd, &step);
 
-	set_graph_yaxbar_midd(ptrGraph, midd);
-	set_graph_yaxbar_step(ptrGraph, step);*/
+	set_statis_yaxbar_midd(ptrStatis, midd);
+	set_statis_yaxbar_step(ptrStatis, step);*/
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnDeleteXax(res_win_t widget)
+void StatisPanel_OnDeleteXax(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrXax = graphctrl_get_focus_xax(pdt->hGraph);
+	LINKPTR ptrXax = statisctrl_get_focus_xax(pdt->hStatis);
 	if (ptrXax)
-		graphctrl_redraw(pdt->hGraph, 1);
+		statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnEraseXaxs(res_win_t widget)
+void StatisPanel_OnEraseXaxs(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	clear_graph_xaxset(ptrGraph);
-	graphctrl_redraw(pdt->hGraph, 1);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	clear_statis_xaxset(ptrStatis);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnImportXaxs(res_win_t widget)
+void StatisPanel_OnImportXaxs(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnUpdateXaxs(res_win_t widget)
+void StatisPanel_OnUpdateXaxs(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
-	graphctrl_redraw(pdt->hGraph, 1);
+	statisctrl_redraw(pdt->hStatis, 1);
 }
 
-void GraphPanel_OnAttributes(res_win_t widget)
+void StatisPanel_OnAttributes(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	properctrl_accept(pdt->hProper, 0);
 
@@ -714,23 +715,23 @@ void GraphPanel_OnAttributes(res_win_t widget)
 	clear_proper_doc(ptrProper);
 	properctrl_redraw(pdt->hProper);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	LINKPTR ptrGax = graphctrl_get_focus_gax(pdt->hGraph);
-	LINKPTR ptrYax = graphctrl_get_focus_yax(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	LINKPTR ptrGax = statisctrl_get_focus_gax(pdt->hStatis);
+	LINKPTR ptrYax = statisctrl_get_focus_yax(pdt->hStatis);
 
 	if (ptrGax)
 		properbag_write_gax_attributes(ptrProper, ptrGax);
 	else if (ptrYax)
 		properbag_write_yax_attributes(ptrProper, ptrYax);
 	else
-		properbag_write_graph_attributes(ptrProper, ptrGraph);
+		properbag_write_statis_attributes(ptrProper, ptrStatis);
 
 	properctrl_redraw(pdt->hProper);
 }
 
-void GraphPanel_OnStyleSheet(res_win_t widget)
+void StatisPanel_OnStyleSheet(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	properctrl_accept(pdt->hProper, 0);
 
@@ -738,17 +739,17 @@ void GraphPanel_OnStyleSheet(res_win_t widget)
 	clear_proper_doc(ptrProper);
 	properctrl_redraw(pdt->hProper);
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
 	
-	properbag_parse_stylesheet(ptrProper, get_graph_style_ptr(ptrGraph));
+	properbag_parse_stylesheet(ptrProper, get_statis_style_ptr(ptrStatis));
 
 	properctrl_redraw(pdt->hProper);
 }
 
-void GraphPanel_Title_OnItemChanging(res_win_t widget, NOTICE_TITLE* pnt)
+void StatisPanel_Title_OnItemChanging(res_win_t widget, NOTICE_TITLE* pnt)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	properctrl_accept(pdt->hProper, 0);
 
@@ -757,18 +758,18 @@ void GraphPanel_Title_OnItemChanging(res_win_t widget, NOTICE_TITLE* pnt)
 	properctrl_redraw(pdt->hProper);
 }
 
-void GraphPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
+void StatisPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	long n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
-void GraphPanel_Graph_OnLBClick(res_win_t widget, NOTICE_GRAPH* pnf)
+void StatisPanel_Statis_OnLBClick(res_win_t widget, NOTICE_STATIS* pnf)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	LINKPTR ptrItem = titlectrl_get_focus_item(pdt->hTitle);
 	if (!ptrItem)
@@ -778,9 +779,9 @@ void GraphPanel_Graph_OnLBClick(res_win_t widget, NOTICE_GRAPH* pnf)
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
-void GraphPanel_Graph_OnYaxSize(res_win_t widget, NOTICE_GRAPH* pnf)
+void StatisPanel_Statis_OnYaxSize(res_win_t widget, NOTICE_STATIS* pnf)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	LINKPTR ptrItem = titlectrl_get_focus_item(pdt->hTitle);
 	if (!ptrItem)
@@ -790,15 +791,15 @@ void GraphPanel_Graph_OnYaxSize(res_win_t widget, NOTICE_GRAPH* pnf)
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
-void GraphPanel_Graph_OnYaxMove(res_win_t widget, NOTICE_GRAPH* pnf)
+void StatisPanel_Statis_OnYaxMove(res_win_t widget, NOTICE_STATIS* pnf)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 }
 
-void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
+void StatisPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	LINKPTR ptrItem = titlectrl_get_focus_item(pdt->hTitle);
 	if (!ptrItem)
@@ -806,9 +807,9 @@ void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 
 	long n_id = xstol(get_title_item_id_ptr(ptrItem));
 
-	LINKPTR ptrGraph = graphctrl_fetch(pdt->hGraph);
-	LINKPTR ptrYax = graphctrl_get_focus_yax(pdt->hGraph);
-	LINKPTR ptrGax = graphctrl_get_focus_gax(pdt->hGraph);
+	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
+	LINKPTR ptrYax = statisctrl_get_focus_yax(pdt->hStatis);
+	LINKPTR ptrGax = statisctrl_get_focus_gax(pdt->hStatis);
 
 	tchar_t sz_style[CSS_LEN] = { 0 };
 
@@ -819,7 +820,7 @@ void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 			properbag_read_gax_attributes(pnp->proper, ptrGax);
 		}
 
-		graphctrl_redraw(pdt->hGraph, 1);
+		statisctrl_redraw(pdt->hStatis, 1);
 	}
 	else if (ptrYax)
 	{
@@ -828,35 +829,35 @@ void GraphPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 			properbag_read_yax_attributes(pnp->proper, ptrYax);
 		}
 		
-		graphctrl_redraw(pdt->hGraph, 1);
+		statisctrl_redraw(pdt->hStatis, 1);
 	}
 	else
 	{
 		if (n_id == IDA_ATTRIBUTES)
 		{
-			properbag_read_graph_attributes(pnp->proper, ptrGraph);
+			properbag_read_statis_attributes(pnp->proper, ptrStatis);
 		}
 		else if (n_id == IDA_STYLESHEET)
 		{
 			properbag_format_stylesheet(pnp->proper, sz_style, CSS_LEN);
-			set_graph_style(ptrGraph, sz_style);
+			set_statis_style(ptrStatis, sz_style);
 		}
-		graphctrl_redraw(pdt->hGraph, 1);
+		statisctrl_redraw(pdt->hStatis, 1);
 	}
 }
 
 /***********************************************************************************************/
 
-int GraphPanel_OnCreate(res_win_t widget, void* data)
+int StatisPanel_OnCreate(res_win_t widget, void* data)
 {
-	GraphPanelDelta* pdt = (GraphPanelDelta*)xmem_alloc(sizeof(GraphPanelDelta));
+	StatisPanelDelta* pdt = (StatisPanelDelta*)xmem_alloc(sizeof(StatisPanelDelta));
 	xrect_t xr;
 
 	widget_hand_create(widget);
 
-	SETGRAPHPANELDELTA(widget, pdt);
+	SETSTATISPANELDELTA(widget, pdt);
 
-	res_acl_t hac = create_accel_table(GRAPHPANEL_ACCEL, GRAPHPANEL_ACCEL_COUNT);
+	res_acl_t hac = create_accel_table(STATISPANEL_ACCEL, STATISPANEL_ACCEL_COUNT);
 	widget_attach_accel(widget, hac);
 
 	LINKPTR ptrSplit = create_split_doc();
@@ -864,11 +865,11 @@ int GraphPanel_OnCreate(res_win_t widget, void* data)
 	split_item(ptrSplit, 0);
 	set_split_item_ratio(ptrSplit, _T("80%"));
 
-	LINKPTR ilkGraph = get_split_first_child_item(ptrSplit);
+	LINKPTR ilkStatis = get_split_first_child_item(ptrSplit);
 	LINKPTR ilkRight = get_split_last_child_item(ptrSplit);
 
 	tchar_t token[INT_LEN + 1];
-	xsprintf(token, _T("%fmm"), -GRAPHPANEL_TITLEITEM_HEIGHT);
+	xsprintf(token, _T("%fmm"), -STATISPANEL_TITLEITEM_HEIGHT);
 
 	split_item(ilkRight, 1);
 	set_split_item_ratio(ilkRight, token);
@@ -877,22 +878,22 @@ int GraphPanel_OnCreate(res_win_t widget, void* data)
 	LINKPTR ilkTitle = get_split_last_child_item(ilkRight);
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hGraph = graphctrl_create(_T("GraphPanel"), WD_STYLE_CONTROL | WD_STYLE_PAGING | WD_STYLE_HSCROLL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hStatis = statisctrl_create(_T("StatisPanel"), WD_STYLE_CONTROL | WD_STYLE_PAGING, &xr, widget);
 
-	widget_set_user_id(pdt->hGraph, IDC_GRAPHPANEL_GRAPH);
-	widget_set_owner(pdt->hGraph, widget);
+	widget_set_user_id(pdt->hStatis, IDC_STATISPANEL_STATIS);
+	widget_set_owner(pdt->hStatis, widget);
 
-	set_split_item_delta(ilkGraph, pdt->hGraph);
-	widget_show(pdt->hGraph, WD_SHOW_NORMAL);
+	set_split_item_delta(ilkStatis, pdt->hStatis);
+	widget_show(pdt->hStatis, WD_SHOW_NORMAL);
 
-	LINKPTR ptrGraph = create_graph_doc();
-	set_graph_design(ptrGraph, 1);
-	graphctrl_attach(pdt->hGraph, ptrGraph);
-	graphctrl_set_lock(pdt->hGraph, 0);
+	LINKPTR ptrStatis = create_statis_doc();
+	set_statis_design(ptrStatis, 1);
+	statisctrl_attach(pdt->hStatis, ptrStatis);
+	statisctrl_set_lock(pdt->hStatis, 0);
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hProper = properctrl_create(_T("GraphProper"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
-	widget_set_user_id(pdt->hProper, IDC_GRAPHPANEL_PROPER);
+	pdt->hProper = properctrl_create(_T("StatisProper"), WD_STYLE_CONTROL, &xr, widget);
+	widget_set_user_id(pdt->hProper, IDC_STATISPANEL_PROPER);
 	widget_set_owner(pdt->hProper, widget);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
@@ -902,30 +903,29 @@ int GraphPanel_OnCreate(res_win_t widget, void* data)
 	properctrl_attach(pdt->hProper, ptrProper);
 
 	widget_get_client_rect(widget, &xr);
-	pdt->hTitle = titlectrl_create(_T("GraphTitle"), WD_STYLE_CONTROL, &xr, widget);
-	widget_set_user_id(pdt->hTitle, IDC_GRAPHPANEL_TITLE);
+	pdt->hTitle = titlectrl_create(_T("StatisTitle"), WD_STYLE_CONTROL, &xr, widget);
+	widget_set_user_id(pdt->hTitle, IDC_STATISPANEL_TITLE);
 	widget_set_owner(pdt->hTitle, widget);
 
 	set_split_item_delta(ilkTitle, pdt->hTitle);
 	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
-	set_title_images(ptrTitle, g_imagelist);
 
 	LINKPTR tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("属性"));
 	xsprintf(token, _T("%d"), IDA_ATTRIBUTES);
 	set_title_item_id(tlk, token);
-	set_title_item_width(tlk, GRAPHPANEL_TITLEITEM_WIDTH);
-	set_title_item_image(tlk, BMP_PROPER);
+	set_title_item_width(tlk, STATISPANEL_TITLEITEM_WIDTH);
+	set_title_item_icon(tlk, ICON_PROPER);
 	set_title_item_locked(tlk, 1);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("风格"));
 	xsprintf(token, _T("%d"), IDA_STYLESHEET);
 	set_title_item_id(tlk, token);
-	set_title_item_width(tlk, GRAPHPANEL_TITLEITEM_WIDTH);
-	set_title_item_image(tlk, BMP_DRAW);
+	set_title_item_width(tlk, STATISPANEL_TITLEITEM_WIDTH);
+	set_title_item_icon(tlk, ICON_STYLE);
 	set_title_item_locked(tlk, 1);
 
 	titlectrl_attach(pdt->hTitle, ptrTitle);
@@ -937,15 +937,15 @@ int GraphPanel_OnCreate(res_win_t widget, void* data)
 
 	if (!is_null(szParam))
 	{
-		GraphPanel_OpenFile(widget, szParam);
+		StatisPanel_OpenFile(widget, szParam);
 	}
 
 	return 0;
 }
 
-void GraphPanel_OnDestroy(res_win_t widget)
+void StatisPanel_OnDestroy(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	res_acl_t hac = widget_detach_accel(widget);
 	if (hac)
@@ -955,13 +955,13 @@ void GraphPanel_OnDestroy(res_win_t widget)
 	if (split)
 		destroy_split_doc(split);
 
-	if (widget_is_valid(pdt->hGraph))
+	if (widget_is_valid(pdt->hStatis))
 	{
-		LINKPTR ptrGraph = graphctrl_detach(pdt->hGraph);
-		if (ptrGraph)
-			destroy_graph_doc(ptrGraph);
+		LINKPTR ptrStatis = statisctrl_detach(pdt->hStatis);
+		if (ptrStatis)
+			destroy_statis_doc(ptrStatis);
 
-		widget_destroy(pdt->hGraph);
+		widget_destroy(pdt->hStatis);
 	}
 
 	if (widget_is_valid(pdt->hProper))
@@ -987,31 +987,31 @@ void GraphPanel_OnDestroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-int GraphPanel_OnClose(res_win_t widget)
+int StatisPanel_OnClose(res_win_t widget)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	GraphPanel_Switch(widget);
+	StatisPanel_Switch(widget);
 
-	return (graphctrl_get_dirty(pdt->hGraph)) ? 1 : 0;
+	return (statisctrl_get_dirty(pdt->hStatis)) ? 1 : 0;
 }
 
-void GraphPanel_OnSetFocus(res_win_t widget, res_win_t hOrg)
+void StatisPanel_OnSetFocus(res_win_t widget, res_win_t hOrg)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	if (!pdt)
 		return;
 
-	if (widget_is_valid(pdt->hGraph))
+	if (widget_is_valid(pdt->hStatis))
 	{
-		widget_set_focus(pdt->hGraph);
+		widget_set_focus(pdt->hStatis);
 	}
 }
 
-void GraphPanel_OnShow(res_win_t widget, bool_t bShow)
+void StatisPanel_OnShow(res_win_t widget, bool_t bShow)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	if (bShow)
 	{
@@ -1023,179 +1023,179 @@ void GraphPanel_OnShow(res_win_t widget, bool_t bShow)
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_EDIT);
 		set_tool_group_title(glk, _T("编辑"));
-		set_tool_group_item_width(glk, GRAPHPANEL_GROUPITEM_WIDTH);
-		set_tool_group_item_height(glk, GRAPHPANEL_GROUPITEM_HEIGHT);
+		set_tool_group_item_width(glk, STATISPANEL_GROUPITEM_WIDTH);
+		set_tool_group_item_height(glk, STATISPANEL_GROUPITEM_HEIGHT);
 		set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("全选"));
-		set_tool_item_image(ilk, BMP_SELECTALL);
+		set_tool_item_icon(ilk, ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除"));
-		set_tool_item_image(ilk, BMP_DELETE);
+		set_tool_item_icon(ilk, ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("拷贝"));
-		set_tool_item_image(ilk, BMP_COPY);
+		set_tool_item_icon(ilk, ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("剪切"));
-		set_tool_item_image(ilk, BMP_CUT);
+		set_tool_item_icon(ilk, ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("粘贴"));
-		set_tool_item_image(ilk, BMP_PASTE);
+		set_tool_item_icon(ilk, ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("撤销"));
-		set_tool_item_image(ilk, BMP_UNDO);
+		set_tool_item_icon(ilk, ICON_UNDO);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_STYLE);
 		set_tool_group_title(glk, _T("样式"));
-		set_tool_group_item_width(glk, GRAPHPANEL_GROUPITEM_WIDTH);
-		set_tool_group_item_height(glk, GRAPHPANEL_GROUPITEM_HEIGHT);
+		set_tool_group_item_width(glk, STATISPANEL_GROUPITEM_WIDTH);
+		set_tool_group_item_height(glk, STATISPANEL_GROUPITEM_HEIGHT);
 		set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_NAME);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体名称"));
-		set_tool_item_image(ilk, BMP_FONTNAME);
+		set_tool_item_icon(ilk, ICON_FONTNAME);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_SIZE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字号大小"));
-		set_tool_item_image(ilk, BMP_FONTSIZE);
+		set_tool_item_icon(ilk, ICON_FONTSIZE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_WEIGHT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体加黑"));
-		set_tool_item_image(ilk, BMP_FONTBOLD);
+		set_tool_item_icon(ilk, ICON_FONTWEIGHT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体颜色"));
-		set_tool_item_image(ilk, BMP_FONTCOLOR);
+		set_tool_item_icon(ilk, ICON_FONTCOLOR);
 
 		/*ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_PAint_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("背景"));
-		set_tool_item_image(ilk, BMP_PAint);
+		set_tool_item_icon(ilk, BMP_PAint);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_DRAW_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("前景"));
-		set_tool_item_image(ilk, BMP_DRAW);*/
+		set_tool_item_icon(ilk, ICON_STYLE);*/
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_PROPER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("CSS属性"));
-		set_tool_item_image(ilk, BMP_PROPER);
+		set_tool_item_icon(ilk, ICON_PROPER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_image(ilk, BMP_TEXTNEAR);
+		set_tool_item_icon(ilk, ICON_ALIGNNEAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_image(ilk, BMP_TEXTCENTER);
+		set_tool_item_icon(ilk, ICON_ALIGNCENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_image(ilk, BMP_TEXTFAR);
+		set_tool_item_icon(ilk, ICON_ALIGNFAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_image(ilk, BMP_ALIGNLEFT);
+		set_tool_item_icon(ilk, ICON_ARRANGELEFT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_image(ilk, BMP_ALIGNCENTER);
+		set_tool_item_icon(ilk, ICON_ARRANGECENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_image(ilk, BMP_ALIGNRIGHT);
+		set_tool_item_icon(ilk, ICON_ARRANGERIGHT);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_ELEMENT);
 		set_tool_group_title(glk, _T("图形"));
-		set_tool_group_item_width(glk, GRAPHPANEL_GROUPITEM_WIDTH);
-		set_tool_group_item_height(glk, GRAPHPANEL_GROUPITEM_HEIGHT);
+		set_tool_group_item_width(glk, STATISPANEL_GROUPITEM_WIDTH);
+		set_tool_group_item_height(glk, STATISPANEL_GROUPITEM_HEIGHT);
 		set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_GAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增坐标"));
-		set_tool_item_image(ilk, BMP_GRAPH);
+		set_tool_item_icon(ilk, ICON_GRAPH);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_YAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增Y轴"));
-		set_tool_item_image(ilk, BMP_INSERT);
+		set_tool_item_icon(ilk, ICON_INSERT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_XAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增X轴"));
-		set_tool_item_image(ilk, BMP_PLUS);
+		set_tool_item_icon(ilk, ICON_PLUS);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DELETE_XAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除X轴"));
-		set_tool_item_image(ilk, BMP_MINUS);
+		set_tool_item_icon(ilk, ICON_MINUS);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_ERASE_XAXS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("清除数据集"));
-		set_tool_item_image(ilk, BMP_ERASE);
+		set_tool_item_icon(ilk, ICON_REMOVE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_IMPORT_XAXS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("导入数据集"));
-		set_tool_item_image(ilk, BMP_INPUT);
+		set_tool_item_icon(ilk, ICON_INPUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_UPDATE_XAXS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("更新数据集"));
-		set_tool_item_image(ilk, BMP_OUTPUT);
+		set_tool_item_icon(ilk, ICON_OUTPUT);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 
@@ -1207,32 +1207,32 @@ void GraphPanel_OnShow(res_win_t widget, bool_t bShow)
 	}
 }
 
-void GraphPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
+void StatisPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	LINKPTR ptr_graph = graphctrl_fetch(pdt->hGraph);
-	LINKPTR ylk = get_next_yax(ptr_graph, LINK_FIRST);
+	LINKPTR ptr_statis = statisctrl_fetch(pdt->hStatis);
+	LINKPTR ylk = get_next_yax(ptr_statis, LINK_FIRST);
 	while (ylk)
 	{
 		if (compare_text(pfd->sub_str, -1, get_yax_name_ptr(ylk), -1, 1) == 0)
 		{
-			graphctrl_set_focus_coor(pdt->hGraph, NULL, ylk);
+			statisctrl_set_focus_coor(pdt->hStatis, NULL, ylk);
 			break;
 		}
-		ylk = get_next_yax(ptr_graph, ylk);
+		ylk = get_next_yax(ptr_statis, ylk);
 	}
 }
 
-void GraphPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void StatisPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	if (code == COMMAND_QUERYINFO)
 	{
 		QUERYOBJECT* pqo = (QUERYOBJECT*)data;
-		xscpy(pqo->szDoc, DOC_GRAPH);
-		pqo->ptrDoc = graphctrl_fetch(pdt->hGraph);
+		xscpy(pqo->szDoc, DOC_STATIS);
+		pqo->ptrDoc = statisctrl_fetch(pdt->hStatis);
 	}
 	else if (code == COMMAND_RENAME)
 	{
@@ -1247,184 +1247,184 @@ void GraphPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_REMOVE)
 	{
-		graphctrl_set_dirty(pdt->hGraph, 0);
+		statisctrl_set_dirty(pdt->hStatis, 0);
 	}
 }
 
-void GraphPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void StatisPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
 	tchar_t token[RES_LEN];
 
 	switch (cid)
 	{
 	case IDA_FILE_SAVE:
-		GraphPanel_OnSave(widget);
+		StatisPanel_OnSave(widget);
 		break;
 	case IDA_FILE_SAVEAS:
-		GraphPanel_OnSaveAs(widget);
+		StatisPanel_OnSaveAs(widget);
 		break;
 	case IDA_FILE_PRINT:
-		GraphPanel_OnPrint(widget);
+		StatisPanel_OnPrint(widget);
 		break;
 	case IDA_FILE_PREVIEW:
-		GraphPanel_OnPreview(widget);
+		StatisPanel_OnPreview(widget);
 		break;
 	case IDA_FILE_SCHEMA:
-		GraphPanel_OnSchema(widget);
+		StatisPanel_OnSchema(widget);
 		break;
 	case IDA_FILE_EXPORT:
-		GraphPanel_OnExport(widget);
+		StatisPanel_OnExport(widget);
 		break;
 	case IDA_FILE_IMPORT:
-		GraphPanel_OnImport(widget);
+		StatisPanel_OnImport(widget);
 		break;
 	case IDA_FILE_EXEC:
-		GraphPanel_OnExec(widget);
+		StatisPanel_OnExec(widget);
 		break;
 
 	case IDA_EDIT_SELECTALL:
-		GraphPanel_OnSelectAll(widget);
+		StatisPanel_OnSelectAll(widget);
 		break;
 	case IDA_EDIT_DELETE:
-		GraphPanel_OnDelete(widget);
+		StatisPanel_OnDelete(widget);
 		break;
 	case IDA_EDIT_COPY:
-		GraphPanel_OnCopy(widget);
+		StatisPanel_OnCopy(widget);
 		break;
 	case IDA_EDIT_CUT:
-		GraphPanel_OnCut(widget);
+		StatisPanel_OnCut(widget);
 		break;
 	case IDA_EDIT_PASTE:
-		GraphPanel_OnPaste(widget);
+		StatisPanel_OnPaste(widget);
 		break;
 	case IDA_EDIT_UNDO:
-		GraphPanel_OnUndo(widget);
+		StatisPanel_OnUndo(widget);
 		break;
 	case IDA_STYLE_FONT_NAME:
-		GraphPanel_OnFontName(widget, (void*)data);
+		StatisPanel_OnFontName(widget, (void*)data);
 		break;
 	case IDA_STYLE_FONT_SIZE:
-		GraphPanel_OnFontSize(widget, (void*)data);
+		StatisPanel_OnFontSize(widget, (void*)data);
 		break;
 	case IDA_STYLE_FONT_WEIGHT:
-		GraphPanel_OnTextBold(widget);
+		StatisPanel_OnTextBold(widget);
 		break;
 	case IDA_STYLE_TEXT_COLOR:
-		GraphPanel_OnTextColor(widget, (void*)data);
+		StatisPanel_OnTextColor(widget, (void*)data);
 		break;
 	case IDA_STYLE_PAINT_COLOR:
-		GraphPanel_OnPaintColor(widget, (void*)data);
+		StatisPanel_OnPaintColor(widget, (void*)data);
 		break;
 	case IDA_STYLE_DRAW_COLOR:
-		GraphPanel_OnDrawColor(widget, (void*)data);
+		StatisPanel_OnDrawColor(widget, (void*)data);
 		break;
 	case IDA_STYLE_TEXT_NEAR:
-		GraphPanel_OnTextNear(widget);
+		StatisPanel_OnTextNear(widget);
 		break;
 	case IDA_STYLE_TEXT_CENTER:
-		GraphPanel_OnTextCenter(widget);
+		StatisPanel_OnTextCenter(widget);
 		break;
 	case IDA_STYLE_TEXT_FAR:
-		GraphPanel_OnTextFar(widget);
+		StatisPanel_OnTextFar(widget);
 		break;
 	case IDA_INSERT_GAX:
-		GraphPanel_OnInsertGax(widget);
+		StatisPanel_OnInsertGax(widget);
 		break;
 	case IDA_INSERT_YAX:
-		GraphPanel_OnInsertYax(widget);
+		StatisPanel_OnInsertYax(widget);
 		break;
 	case IDA_INSERT_XAX:
-		GraphPanel_OnInsertXax(widget);
+		StatisPanel_OnInsertXax(widget);
 		break;
 	case IDA_DELETE_XAX:
-		GraphPanel_OnDeleteXax(widget);
+		StatisPanel_OnDeleteXax(widget);
 		break;
 	case IDA_ERASE_XAXS:
-		GraphPanel_OnEraseXaxs(widget);
+		StatisPanel_OnEraseXaxs(widget);
 		break;
 	case IDA_IMPORT_XAXS:
-		GraphPanel_OnImportXaxs(widget);
+		StatisPanel_OnImportXaxs(widget);
 		break;
 	case IDA_UPDATE_XAXS:
-		GraphPanel_OnUpdateXaxs(widget);
+		StatisPanel_OnUpdateXaxs(widget);
 		break;
 
 	case IDA_ATTRIBUTES:
-		GraphPanel_OnAttributes(widget);
+		StatisPanel_OnAttributes(widget);
 		break;
 	case IDA_STYLESHEET:
-		GraphPanel_OnStyleSheet(widget);
+		StatisPanel_OnStyleSheet(widget);
 		break;
 
-	case IDC_GRAPHPANEL_FONTNAME:
+	case IDC_STATISPANEL_FONTNAME:
 		widget_destroy((res_win_t)data);
 		if (code)
 		{
 			fontname_menu_item(code, token, RES_LEN);
-			GraphPanel_OnSelectAttr(widget, GDI_ATTR_FONT_FAMILY, token);
+			StatisPanel_OnSelectAttr(widget, GDI_ATTR_FONT_FAMILY, token);
 		}
 		break;
-	case IDC_GRAPHPANEL_FONTSIZE:
+	case IDC_STATISPANEL_FONTSIZE:
 		widget_destroy((res_win_t)data);
 		if (code)
 		{
 			fontsize_menu_item(code, token, RES_LEN);
-			GraphPanel_OnSelectAttr(widget, GDI_ATTR_FONT_SIZE, token);
+			StatisPanel_OnSelectAttr(widget, GDI_ATTR_FONT_SIZE, token);
 		}
 		break;
-	case IDC_GRAPHPANEL_FONTCOLOR:
+	case IDC_STATISPANEL_FONTCOLOR:
 		widget_destroy((res_win_t)data);
 		if (code)
 		{
 			color_menu_item(code, token, RES_LEN);
-			GraphPanel_OnSelectAttr(widget, GDI_ATTR_FONT_COLOR, token);
+			StatisPanel_OnSelectAttr(widget, GDI_ATTR_FONT_COLOR, token);
 		}
 		break;
-	case IDC_GRAPHPANEL_PAINTCOLOR:
+	case IDC_STATISPANEL_PAINTCOLOR:
 		widget_destroy((res_win_t)data);
 		if (code)
 		{
 			color_menu_item(code, token, RES_LEN);
-			GraphPanel_OnSelectAttr(widget, GDI_ATTR_FILL_COLOR, token);
+			StatisPanel_OnSelectAttr(widget, GDI_ATTR_FILL_COLOR, token);
 		}
 		break;
-	case IDC_GRAPHPANEL_DRAWCOLOR:
+	case IDC_STATISPANEL_DRAWCOLOR:
 		widget_destroy((res_win_t)data);
 		if (code)
 		{
 			color_menu_item(code, token, RES_LEN);
-			GraphPanel_OnSelectAttr(widget, GDI_ATTR_STROKE_COLOR, token);
+			StatisPanel_OnSelectAttr(widget, GDI_ATTR_STROKE_COLOR, token);
 		}
 		break;
 	}
 }
 
-void GraphPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
+void StatisPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
 {
-	GraphPanelDelta* pdt = GETGRAPHPANELDELTA(widget);
+	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	if (phdr->id == IDC_GRAPHPANEL_GRAPH)
+	if (phdr->id == IDC_STATISPANEL_STATIS)
 	{
-		NOTICE_GRAPH* pnf = (NOTICE_GRAPH*)phdr;
+		NOTICE_STATIS* pnf = (NOTICE_STATIS*)phdr;
 		switch (pnf->code)
 		{
-		case NC_GRAPHCALCED:
+		case NC_STATISCALCED:
 			break;
 		case NC_YAXCALCED:
 			break;
 		case NC_XAXCALCED:
 			break;
-		case NC_GRAPHLBCLK:
-			GraphPanel_Graph_OnLBClick(widget, pnf);
+		case NC_STATISLBCLK:
+			StatisPanel_Statis_OnLBClick(widget, pnf);
 			break;
 		case NC_YAXDRAG:
-			GraphPanel_Graph_OnYaxMove(widget, pnf);
+			StatisPanel_Statis_OnYaxMove(widget, pnf);
 			break;
 		}
 	}
-	else if (phdr->id == IDC_GRAPHPANEL_PROPER)
+	else if (phdr->id == IDC_STATISPANEL_PROPER)
 	{
 		NOTICE_PROPER* pnp = (NOTICE_PROPER*)phdr;
 		switch (pnp->code)
@@ -1432,15 +1432,15 @@ void GraphPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
 		case NC_PROPERCALCED:
 			break;
 		case NC_ENTITYCOMMIT:
-			graphctrl_set_dirty(pdt->hGraph, 1);
+			statisctrl_set_dirty(pdt->hStatis, 1);
 			break;
 		case NC_ENTITYUPDATE:
-			GraphPanel_Proper_OnEntityUpdate(widget, pnp);
+			StatisPanel_Proper_OnEntityUpdate(widget, pnp);
 			break;
 
 		}
 	}
-	else if (phdr->id == IDC_GRAPHPANEL_TITLE)
+	else if (phdr->id == IDC_STATISPANEL_TITLE)
 	{
 		NOTICE_TITLE* pnt = (NOTICE_TITLE*)phdr;
 		switch (pnt->code)
@@ -1448,17 +1448,17 @@ void GraphPanel_OnNotice(res_win_t widget, LPNOTICE phdr)
 		case NC_TITLECALCED:
 			break;
 		case NC_TITLEITEMCHANGING:
-			GraphPanel_Title_OnItemChanging(widget, pnt);
+			StatisPanel_Title_OnItemChanging(widget, pnt);
 			break;
 		case NC_TITLEITEMCHANGED:
-			GraphPanel_Title_OnItemChanged(widget, pnt);
+			StatisPanel_Title_OnItemChanged(widget, pnt);
 			break;
 		}
 	}
 }
 
 /*********************************************************************************************************/
-res_win_t GraphPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, const tchar_t* fpath)
+res_win_t StatisPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, const tchar_t* fpath)
 {
 	if_event_t ev = { 0 };
 
@@ -1466,16 +1466,16 @@ res_win_t GraphPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 
 	EVENT_BEGIN_DISPATH(&ev)
 
-	EVENT_ON_CREATE(GraphPanel_OnCreate)
-	EVENT_ON_DESTROY(GraphPanel_OnDestroy)
-	EVENT_ON_CLOSE(GraphPanel_OnClose)
-	EVENT_ON_SHOW(GraphPanel_OnShow)
+	EVENT_ON_CREATE(StatisPanel_OnCreate)
+	EVENT_ON_DESTROY(StatisPanel_OnDestroy)
+	EVENT_ON_CLOSE(StatisPanel_OnClose)
+	EVENT_ON_SHOW(StatisPanel_OnShow)
 
-	EVENT_ON_NOTICE(GraphPanel_OnNotice)
+	EVENT_ON_NOTICE(StatisPanel_OnNotice)
 
-	EVENT_ON_MENU_COMMAND(GraphPanel_OnMenuCommand)
-	EVENT_ON_COMMAND_FIND(GraphPanel_OnCommandFind)
-	EVENT_ON_PARENT_COMMAND(GraphPanel_OnParentCommand)
+	EVENT_ON_MENU_COMMAND(StatisPanel_OnMenuCommand)
+	EVENT_ON_COMMAND_FIND(StatisPanel_OnCommandFind)
+	EVENT_ON_PARENT_COMMAND(StatisPanel_OnParentCommand)
 
 	EVENT_ON_SPLITOR_IMPLEMENT
 

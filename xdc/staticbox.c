@@ -98,7 +98,7 @@ void hand_staticbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	staticbox_delta_t* ptd = GETSTATICBOXDELTA(widget);
 	
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_staticbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -188,5 +188,5 @@ void staticbox_set_text(res_win_t widget, const tchar_t* text)
 	ptd->text = xsalloc(len + 1);
 	xsncpy(ptd->text, text, len);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }

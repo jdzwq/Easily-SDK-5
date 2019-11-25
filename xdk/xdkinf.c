@@ -460,10 +460,11 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_ellipse = _gdiplus_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdiplus_draw_line;
 	pif->pf_gdi_draw_pie = _gdiplus_draw_pie;
+	pif->pf_gdi_draw_arc = _gdiplus_draw_arc;
 	pif->pf_gdi_draw_polygon = _gdiplus_draw_polygon;
 	pif->pf_gdi_draw_polyline = _gdiplus_draw_polyline;
 	pif->pf_gdi_draw_bezier = _gdiplus_draw_bezier;
-	pif->pf_gdi_draw_path = _gdiplus_draw_path;
+	pif->pf_gdi_draw_curve = _gdiplus_draw_curve;
 	pif->pf_gdi_draw_rect = _gdiplus_draw_rect;
 	pif->pf_gdi_draw_round = _gdiplus_draw_round;
 	pif->pf_gdi_draw_text = _gdiplus_draw_text;
@@ -487,7 +488,7 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_polygon = _gdi_draw_polygon;
 	pif->pf_gdi_draw_polyline = _gdi_draw_polyline;
 	pif->pf_gdi_draw_bezier = _gdi_draw_bezier;
-	pif->pf_gdi_draw_path = _gdi_draw_path;
+	pif->pf_gdi_draw_curve = _gdi_draw_curve;
 	pif->pf_gdi_draw_rect = _gdi_draw_rect;
 	pif->pf_gdi_draw_round = _gdi_draw_round;
 	pif->pf_gdi_draw_text = _gdi_draw_text;
@@ -530,6 +531,7 @@ void xdk_impl_widget(if_widget_t* pif)
 	pif->pf_translate_message = _translate_message;
 	pif->pf_dispatch_message = _dispatch_message;
 	pif->pf_translate_accelerator = _translate_accelerator;
+	pif->pf_message_position = _message_position;
 
 	pif->pf_widget_startup = _widget_startup;
 	pif->pf_widget_cleanup = _widget_cleanup;
@@ -575,10 +577,10 @@ void xdk_impl_widget(if_widget_t* pif)
 	pif->pf_widget_move = _widget_move;
 	pif->pf_widget_take = _widget_take;
 	pif->pf_widget_show = _widget_show;
-	pif->pf_widget_update_client = _widget_update_client;
-	pif->pf_widget_update_window = _widget_update_window;
-	pif->pf_widget_paint = _widget_paint;
 	pif->pf_widget_update = _widget_update;
+	pif->pf_widget_resize = _widget_resize;
+	pif->pf_widget_paint = _widget_paint;
+	pif->pf_widget_redraw = _widget_redraw;
 	pif->pf_widget_post_char = _widget_post_char;
 	pif->pf_widget_post_key = _widget_post_key;
 	pif->pf_widget_set_capture = _widget_set_capture;

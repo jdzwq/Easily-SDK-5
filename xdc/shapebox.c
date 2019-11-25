@@ -84,7 +84,7 @@ void hand_shapebox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	shapebox_delta_t* ptd = GETSHAPEBOXDELTA(widget);
 	
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_shapebox_erase(res_win_t widget, res_ctx_t rdc)
@@ -156,7 +156,7 @@ void shapebox_set_shape(res_win_t widget, const tchar_t* shape)
 
 	xsncpy(ptd->shape, shape, INT_LEN);
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 int shapebox_get_shape(res_win_t widget, tchar_t* buf)

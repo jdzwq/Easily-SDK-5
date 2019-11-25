@@ -119,13 +119,13 @@ void load_form_from_grid_row(link_t_ptr ptrForm, link_t_ptr ptrGrid, link_t_ptr 
 	}
 }
 
-void save_graph_to_grid(link_t_ptr ptr, link_t_ptr grid)
+void save_statis_to_grid(link_t_ptr ptr, link_t_ptr grid)
 {
 	link_t_ptr xlk, ylk;
 	int rs;
 	link_t_ptr clk_xax, clk, rlk_new;
 
-	clk_xax = get_col(grid, get_graph_xaxis_ptr(ptr));
+	clk_xax = get_col(grid, get_statis_xaxis_ptr(ptr));
 
 	xlk = get_next_xax(ptr, LINK_FIRST);
 	while (xlk)
@@ -168,13 +168,13 @@ void save_graph_to_grid(link_t_ptr ptr, link_t_ptr grid)
 	}
 }
 
-void load_graph_from_grid(link_t_ptr ptr, link_t_ptr grid)
+void load_statis_from_grid(link_t_ptr ptr, link_t_ptr grid)
 {
 	link_t_ptr rlk, clk, clk_xax;
 	int rs;
 	link_t_ptr ylk, xlk_new;
 
-	clk_xax = get_col(grid, get_graph_xaxis_ptr(ptr));
+	clk_xax = get_col(grid, get_statis_xaxis_ptr(ptr));
 
 	rlk = get_next_row(grid, LINK_FIRST);
 	while (rlk)

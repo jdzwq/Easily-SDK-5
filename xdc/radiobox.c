@@ -109,14 +109,14 @@ void hand_radiobox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (hint == RADIOBOX_HINT_ON)
 	{
 		ptd->on = 1;
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 
 		noti_radiobox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 	}
 	else if (hint == RADIOBOX_HINT_OFF)
 	{
 		ptd->on = 0;
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 
 		noti_radiobox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 	}
@@ -126,7 +126,7 @@ void hand_radiobox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
 	
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_radiobox_erase(res_win_t widget, res_ctx_t rdc)
@@ -158,7 +158,8 @@ void hand_radiobox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -228,7 +229,7 @@ void radiobox_set_state(res_win_t widget, bool_t cur)
 
 	ptd->on = cur;
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 bool_t radiobox_get_state(res_win_t widget)

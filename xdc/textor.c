@@ -1397,7 +1397,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 	case _SCANNER_STATE_LINEBREAK:
 		default_xpen(&xp);
 		xscpy(xp.color, pxf->color);
-		lighten_xpen(&xp, DEF_SOFT_LIGHTEN);
+		lighten_xpen(&xp, DEF_HARD_LIGHTEN);
 
 		if (cur_char && *cur_char == _T('\f'))
 		{
@@ -1423,7 +1423,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 	case _SCANNER_STATE_PAGEBREAK:
 		default_xpen(&xp);
 		xscpy(xp.color, pxf->color);
-		lighten_xpen(&xp, DEF_SOFT_LIGHTEN);
+		lighten_xpen(&xp, DEF_HARD_LIGHTEN);
 
 		default_xbrush(&xb);
 		xscpy(xb.color, pxf->color);
@@ -1441,7 +1441,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 		{
 			default_xbrush(&xb);
 			xscpy(xb.color, pxf->color);
-			lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
+			lighten_xbrush(&xb, DEF_HARD_LIGHTEN);
 
 			xr.x = ptm->cur_x + ptm->cur_w - 3;
 			xr.y = ptm->cur_y + ptm->cur_h - 3;
@@ -1736,7 +1736,7 @@ int hand_textor_word(textor_t* ptd, tchar_t* pch)
 	ptd->atom = atom;
 
 	_textor_reset_page(ptd, 1);
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row,ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -1776,7 +1776,7 @@ void hand_textor_lbutton_down(textor_t* ptd, const xpoint_t* pxp)
 		}
 
 		ptd->b_select = 0;
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 	}
 
 	_textor_calc_hint(ptd, ptd->vb.px, ptd->vb.py, ptd->vb.pw, ptd->vb.ph, ptd->paged, pxp->x, pxp->y, &row, &col, &object, &atom);
@@ -1800,7 +1800,7 @@ void hand_textor_lbutton_up(textor_t* ptd, const xpoint_t* pxp)
 	if (ptd->n_drag)
 	{
 		ptd->n_drag = 0;
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 		return;
 	}
 }
@@ -1822,7 +1822,7 @@ void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt)
 		ptd->sel_row = row;
 		ptd->sel_col = col;
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		_textor_ensure_visible(ptd, ptd->sel_row, ptd->sel_col);
 	}
@@ -1837,7 +1837,7 @@ void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt)
 		ptd->object = object;
 		ptd->atom = atom;
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	}
@@ -1871,7 +1871,7 @@ void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs)
 
 	_textor_reset_page(ptd, 0);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 }
 
 bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine)
@@ -1919,10 +1919,6 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, xb.color);
 		lighten_xcolor(&xc, DEF_SOFT_DARKEN);
-		draw_shadow(canv, &xc, (const xrect_t*)&cb);
-
-		parse_xcolor(&xc, xb.color);
-		lighten_xcolor(&xc, DEF_SOFT_DARKEN);
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
 	}
 
@@ -1965,7 +1961,7 @@ void hand_textor_selectall(textor_t* ptd)
 
 	_textor_reset_caret(ptd);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 }
 
 void hand_textor_selectline(textor_t* ptd)
@@ -1997,7 +1993,7 @@ void hand_textor_selectline(textor_t* ptd)
 
 	_textor_reset_caret(ptd);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 }
 
 void hand_textor_selectcur(textor_t* ptd)
@@ -2006,7 +2002,7 @@ void hand_textor_selectcur(textor_t* ptd)
 
 	ptd->b_select = 1;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 }
 
 void hand_textor_selectobj(textor_t* ptd)
@@ -2034,7 +2030,7 @@ void hand_textor_selectobj(textor_t* ptd)
 
 	_textor_reset_caret(ptd);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 }
 
 void hand_textor_findobj(textor_t* ptd, void* obj)
@@ -2055,7 +2051,7 @@ void hand_textor_findobj(textor_t* ptd, void* obj)
 
 	_textor_reset_caret(ptd);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 }
 
 void hand_textor_redraw(textor_t* ptd)
@@ -2072,7 +2068,7 @@ void hand_textor_redraw(textor_t* ptd)
 	ptd->cur_col = ptd->sel_col = col;
 	ptd->b_select = 0;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2129,7 +2125,7 @@ int hand_textor_back(textor_t* ptd)
 	ptd->b_select = 0;
 
 	_textor_reset_page(ptd, 1);
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2177,7 +2173,7 @@ int hand_textor_delete(textor_t* ptd)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2192,7 +2188,7 @@ int hand_textor_escape(textor_t* ptd)
 	if (ptd->b_select)
 	{
 		ptd->b_select = 0;
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		return _TEXTOR_PRESS_HANDLE;
 	}
@@ -2221,7 +2217,7 @@ int hand_textor_left(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2272,7 +2268,7 @@ int hand_textor_left(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2300,7 +2296,7 @@ int hand_textor_right(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2311,7 +2307,7 @@ int hand_textor_right(textor_t* ptd)
 	{
 		ptd->b_select = 1;
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		return _TEXTOR_PRESS_HANDLE;
 	}
@@ -2360,7 +2356,7 @@ int hand_textor_right(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2388,7 +2384,7 @@ int hand_textor_up(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2439,7 +2435,7 @@ int hand_textor_up(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2467,7 +2463,7 @@ int hand_textor_down(textor_t* ptd)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		_textor_reset_caret(ptd);
 
@@ -2478,7 +2474,7 @@ int hand_textor_down(textor_t* ptd)
 	{
 		ptd->b_select = 1;
 
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 		return _TEXTOR_PRESS_HANDLE;
 	}
@@ -2527,7 +2523,7 @@ int hand_textor_down(textor_t* ptd)
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
 	if (redraw)
-		widget_update(ptd->widget, NULL, 0);
+		widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2589,7 +2585,7 @@ int hand_textor_move_to_page(textor_t* ptd, int page)
 
 	ptd->b_select = 0;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2614,7 +2610,7 @@ int hand_textor_move_first_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2639,7 +2635,7 @@ int hand_textor_move_prev_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 
@@ -2666,7 +2662,7 @@ int hand_textor_move_next_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2691,7 +2687,7 @@ int hand_textor_move_last_page(textor_t* ptd)
 
 	ptd->b_select = 0;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2723,7 +2719,7 @@ int hand_textor_undo(textor_t* ptd)
 	xmem_free(ptd->ptu);
 	ptd->ptu = next;
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2796,7 +2792,7 @@ int hand_textor_cut(textor_t* ptd)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_reset_caret(ptd);
 
@@ -2874,7 +2870,7 @@ int hand_textor_paste(textor_t* ptd)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);
@@ -2952,7 +2948,7 @@ int hand_textor_replace_text(textor_t* ptd, const tchar_t* token, int len)
 
 	_textor_reset_page(ptd, 1);
 
-	widget_update(ptd->widget, NULL, 0);
+	widget_redraw(ptd->widget, NULL, 0);
 
 	_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	_textor_reset_caret(ptd);

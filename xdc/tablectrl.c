@@ -43,6 +43,7 @@ typedef struct _tablectrl_delta_t{
 	bool_t onkey;
 
 	res_win_t editor;
+	res_win_t vsc;
 
 	long org_x, org_y;
 	bool_t b_size;
@@ -215,7 +216,7 @@ void noti_tablectrl_end_size(res_win_t widget, long x, long y)
 
 	ptd->ratio = (float)(xs.fx / cb.fw);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 bool_t noti_tablectrl_item_insert(res_win_t widget, link_t_ptr ilk)
@@ -257,7 +258,7 @@ bool_t noti_tablectrl_item_changing(res_win_t widget)
 	ptd->item = NULL;
 	ptd->onkey = 0;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -274,7 +275,7 @@ void noti_tablectrl_item_changed(res_win_t widget, link_t_ptr elk, bool_t onkey)
 
 	_tablectrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_tablectrl_begin_edit(res_win_t widget)
@@ -434,6 +435,9 @@ void hand_tablectrl_destroy(res_win_t widget)
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
 
 	xmem_free(ptd);
 
@@ -685,7 +689,17 @@ void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -887,9 +901,7 @@ void tablectrl_redraw(res_win_t widget)
 
 	_tablectrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void tablectrl_redraw_item(res_win_t widget, link_t_ptr ent)
@@ -914,7 +926,7 @@ void tablectrl_redraw_item(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t tablectrl_set_focus_item(res_win_t widget, link_t_ptr ent)
@@ -1076,7 +1088,7 @@ void tablectrl_set_item_key_text(res_win_t widget, link_t_ptr elk, const tchar_t
 
 	tablectrl_get_item_rect(widget, elk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void tablectrl_set_item_val_text(res_win_t widget, link_t_ptr elk, const tchar_t* token)
@@ -1103,7 +1115,7 @@ void tablectrl_set_item_val_text(res_win_t widget, link_t_ptr elk, const tchar_t
 
 	tablectrl_get_item_rect(widget, elk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void tablectrl_accept(res_win_t widget, bool_t bAccept)

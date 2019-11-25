@@ -41,6 +41,8 @@ typedef struct _images_delta_t{
 	link_t_ptr hover;
 
 	res_win_t editor;
+	res_win_t hsc;
+	res_win_t vsc;
 
 	int opera;
 	bool_t b_drag;
@@ -294,7 +296,7 @@ void noti_images_reset_check(res_win_t widget)
 	if (!count)
 		return;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 bool_t noti_images_item_changing(res_win_t widget)
@@ -313,7 +315,7 @@ bool_t noti_images_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -331,7 +333,7 @@ void noti_images_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_images_owner(widget, NC_IMAGEITEMCHANGED, ptd->images, ptd->item, NULL);
 }
@@ -394,7 +396,7 @@ void noti_images_item_check(res_win_t widget, link_t_ptr plk)
 	_imagesctrl_item_rect(widget, plk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_images_item_drag(res_win_t widget, long x, long y)
@@ -562,6 +564,12 @@ void hand_images_destroy(res_win_t widget)
 
 	noti_images_reset_editor(widget, 0);
 
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
+
 	xmem_free(ptd);
 
 	SETIMAGESDELTA(widget, 0);
@@ -597,6 +605,7 @@ void hand_images_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	scroll_t scr = { 0 };
 	long nLine;
 	res_win_t win;
+	bool_t b_horz;
 
 	if (!ptd->images)
 		return;
@@ -611,7 +620,27 @@ void hand_images_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		b_horz = (compare_text(get_images_layer_ptr(ptd->images), -1, ATTR_LAYER_HORZ, -1, 0) == 0) ? 1 : 0;
+
+		if (!b_horz && !bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (b_horz && bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -998,7 +1027,8 @@ void hand_images_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1152,9 +1182,7 @@ void imagesctrl_redraw(res_win_t widget)
 
 	_imagesctrl_reset_page(widget);
 
-	widget_update_window(widget);
-	
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void imagesctrl_tabskip(res_win_t widget, int nSkip)
@@ -1218,7 +1246,7 @@ void imagesctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 	
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t imagesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

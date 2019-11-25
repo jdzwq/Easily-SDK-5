@@ -75,34 +75,34 @@ XDL_API void export_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 XDL_API void import_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
-@FUNCTION export_graph_schema: export graph yax set defination to a schema document.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION export_statis_schema: export statis yax set defination to a schema document.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */
-XDL_API void export_graph_schema(link_t_ptr ptr, link_t_ptr sch);
+XDL_API void export_statis_schema(link_t_ptr ptr, link_t_ptr sch);
 
 /*
-@FUNCTION export_graph_data: export graph xax set to dom document using schema defination.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION export_statis_data: export statis xax set to dom document using schema defination.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr sch: the schema link component.
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void export_graph_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+XDL_API void export_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
-@FUNCTION import_graph_data: import graph xax set from dom document using schema defination.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION import_statis_data: import statis xax set from dom document using schema defination.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr sch: the schema link component.
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void import_graph_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+XDL_API void import_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION export_form_schema: export form field set defination to a schema document.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */

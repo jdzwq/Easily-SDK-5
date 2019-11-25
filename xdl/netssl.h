@@ -257,7 +257,7 @@ XDL_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 @INPUT dword_t plen: the password data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const byte_t* sz_pwd, dword_t plen);
+XDL_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int plen);
 
 /*
 @FUNCTION xssl_set_dhm: set SSL dhm key.

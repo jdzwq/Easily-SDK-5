@@ -404,3 +404,107 @@ void lighten_xgradi(xgradi_t* pxg, int n)
 	format_xcolor(&xc, pxg->core_color);
 }
 
+#define IS_LETTER(ch)	((ch >= _T('A') && ch <= _T('Z')) || (ch >= _T('a') && ch <= _T('z')))
+#define IS_NUMERIC(ch)	((ch >= _T('1') && ch <= _T('9')) || (ch == _T(' ') || ch == _T(',')))
+
+tchar_t* next_draw_path(const tchar_t* script, int len, tchar_t* pname, xpoint_t* ppt, int* pn)
+{
+	tchar_t* token = (tchar_t*)script;
+	int total = 0;
+	tchar_t ch;
+
+	if (_tstrnull(script))
+		return NULL;
+
+	if (len < 0)
+		len = _tcslen(script);
+
+	while (!IS_LETTER(*token) && *token && total < len)
+	{
+		token++;
+		total++;
+	}
+
+	if (*token == _T('\0') || total == len)
+		return NULL;
+
+	ch = *token;
+
+	token++;
+	total++;
+
+	switch (ch)
+	{
+	case _T('M'):
+	case _T('m'):
+		_tsscanf(token, _T("%d %d"), &(ppt[0].x), &(ppt[0].y));
+
+		*pname = ch;
+		*pn = 1;
+		break;
+	case _T('L'):
+	case _T('l'):
+		_tsscanf(token, _T("%d %d"), &(ppt[0].x), &(ppt[0].y));
+
+		*pname = ch;
+		*pn = 1;
+		break;
+	case _T('H'):
+	case _T('h'):
+		_tsscanf(token, _T("%d"), &(ppt[0].x));
+		ppt[0].y = 0;
+
+		*pname = ch;
+		*pn = 1;
+		break;
+	case _T('V'):
+	case _T('v'):
+		ppt[0].x = 0;
+		_tsscanf(token, _T("%d"), &(ppt[0].y));
+
+		*pname = ch;
+		*pn = 1;
+		break;
+	case _T('Q'):
+	case _T('q'):
+		_tsscanf(token, _T("%d %d, %d %d"), &(ppt[0].x), &(ppt[0].y), &(ppt[1].x), &(ppt[1].y));
+
+		*pname = ch;
+		*pn = 2;
+		break;
+	case _T('T'):
+	case _T('t'):
+		_tsscanf(token, _T("%d %d"), &(ppt[0].x), &(ppt[0].y));
+
+		*pname = ch;
+		*pn = 1;
+		break;
+	case _T('C'):
+	case _T('c'):
+		_tsscanf(token, _T("%d %d, %d %d, %d %d"), &(ppt[0].x), &(ppt[0].y), &(ppt[1].x), &(ppt[1].y), &(ppt[2].x), &(ppt[2].y));
+
+		*pname = ch;
+		*pn = 3;
+		break;
+	case _T('S'):
+	case _T('s'):
+		_tsscanf(token, _T("%d %d, %d %d"), &(ppt[0].x), &(ppt[0].y), &(ppt[1].x), &(ppt[1].y));
+
+		*pname = ch;
+		*pn = 2;
+		break;
+	case _T('Z'):
+	case _T('z'):
+		*pname = ch;
+		*pn = 0;
+		break;
+	}
+
+	while (IS_NUMERIC(*token) && total < len)
+	{
+		token++;
+		total++;
+	}
+
+	return token;
+}

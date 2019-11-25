@@ -157,13 +157,10 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	const tchar_t *sz_class,*sz_text, *sz_shape, *style, *type, *fldfmt;
 	bool_t zeronull, wrapable;
 
-	link_t_ptr imagelist;
 	tchar_t sz_token[PATH_LEN];
 
 	b_design = form_is_design(ptr);
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER)? 1 : 0;
-
-	imagelist = get_form_images(ptr);
 
 	if (b_design)
 		flk = get_next_field(ptr, LINK_FIRST);
@@ -238,12 +235,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 			if (compare_text(get_field_codebar_ptr(flk),-1,ATTR_CODEBAR_IMAGE,-1,0) == 0)
 			{
-				if (imagelist)
-				{
-					get_ximage(imagelist, get_field_text_ptr(flk), &xi);
-
-					(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
-				}
+				
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_CODE128, -1, 0) == 0)
 			{
@@ -322,7 +314,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 				parse_xcolor(&xc, xf.color);
 				ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_SELECTED);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_CHECKED);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 0) == 0)
@@ -477,9 +469,9 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				draw_grid_page(pif, &cb, obj, page);
 			}
 		}
-		else if (compare_text(sz_class, -1, DOC_FORM_GRAPH, -1, 0) == 0)
+		else if (compare_text(sz_class, -1, DOC_FORM_STATIS, -1, 0) == 0)
 		{
-			obj = get_field_embed_graph(flk);
+			obj = get_field_embed_statis(flk);
 			if (obj)
 			{
 				cb.fx = xr.fx;
@@ -487,7 +479,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				cb.fw = xr.fw;
 				cb.fh = xr.fh;
 
-				draw_graph_page(pif, &cb, obj, page);
+				draw_statis_page(pif, &cb, obj, page);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_IMAGES, -1, 0) == 0)

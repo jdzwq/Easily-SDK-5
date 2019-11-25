@@ -41,6 +41,7 @@ typedef struct _tree_delta_t{
 	link_t_ptr hover;
 
 	res_win_t editor;
+	res_win_t vsc;
 
 	long org_x, org_y, cur_x, cur_y;
 
@@ -246,7 +247,7 @@ bool_t noti_tree_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -263,7 +264,7 @@ void noti_tree_item_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_tree_owner(widget, NC_TREEITEMCHANGED, ptd->tree, ptd->item, NULL);
 }
@@ -300,7 +301,7 @@ void noti_tree_item_checked(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_tree_item_expand(res_win_t widget, link_t_ptr ilk)
@@ -500,6 +501,9 @@ void hand_tree_destroy(res_win_t widget)
 	XDL_ASSERT(ptd != NULL);
 
 	noti_tree_reset_editor(widget, 0);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
 
 	xmem_free(ptd);
 
@@ -801,7 +805,17 @@ void hand_tree_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -861,7 +875,8 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -957,7 +972,7 @@ link_t_ptr treectrl_detach(res_win_t widget)
 	ptr = ptd->tree;
 	ptd->tree = NULL;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 	return ptr;
 }
 
@@ -1025,9 +1040,7 @@ void treectrl_redraw(res_win_t widget)
 
 	_treectrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void treectrl_redraw_item(res_win_t widget, link_t_ptr ilk)
@@ -1051,7 +1064,7 @@ void treectrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 	_treectrl_item_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t treectrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

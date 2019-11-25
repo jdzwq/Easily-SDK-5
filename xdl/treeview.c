@@ -364,10 +364,9 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xface_t xa = { 0 };
 	ximage_t xi = { 0 };
 	xgradi_t xg = { 0 };
-	xcolor_t xc_icon, xc_check = { 0 };
-	const tchar_t *style, *image, *icon;
+	xcolor_t xc, xc_check = { 0 };
+	const tchar_t *style, *icon;
 	bool_t b_print;
-	link_t_ptr imagelist;
 	float px, py, pw, ph;
 
 	px = pbox->fx;
@@ -376,8 +375,6 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	ph = pbox->fh;
 
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
-
-	imagelist = get_tree_images(ptr);
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -410,11 +407,19 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		format_xcolor(&pif->clr_msk, xi.color);
 	}
 
+	if (!b_print)
+	{
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+	}
+	else
+	{
+		parse_xcolor(&xc, xp.color);
+	}
+
 	xmem_copy((void*)&xb_bar, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_bar, DEF_SOFT_DARKEN);
 
 	parse_xcolor(&xc_check, xp.color);
-	parse_xcolor(&xc_icon, GDI_ATTR_RGB_ORANGE);
 
 	th = get_tree_title_height(ptr);
 	ih = get_tree_item_height(ptr);
@@ -439,13 +444,8 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr_image.fy = total_height;
 	xr_image.fh = th;
 
-	image = get_tree_title_image_ptr(ptr);
-
-	if (imagelist && !is_null(image))
-	{
-		get_ximage(imagelist, image, &xi);
-		(*pif->pf_draw_image)(pif->canvas, &xi, &xr_image);
-	}
+	ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_tree_title_icon_ptr(ptr));
 
 	xr_text.fx = total_indent + ic;
 	xr_text.fw = pw - ic;
@@ -464,11 +464,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		xr_image.fy = total_height;
 		xr_image.fh = ih;
 
-		image = get_tree_item_image_ptr(ilk);
-		if (imagelist && !is_null(image))
+		icon = get_tree_item_icon_ptr(ilk);
+		if ( !is_null(icon))
 		{
-			get_ximage(imagelist, image, &xi);
-			(*pif->pf_draw_image)(pif->canvas, &xi, &xr_image);
+			ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_tree_item_icon_ptr(ilk));
 		}
 		else
 		{
@@ -476,11 +476,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (get_tree_item_expanded(ilk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_image, ATTR_ICON_MINUS);
+				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_image, ICON_MINUS);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_image, ATTR_ICON_PLUS);
+				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_image, ICON_PLUS);
 			}
 		}
 
@@ -497,11 +497,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			
 			if (get_tree_item_checked(ilk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_check, ATTR_ICON_CHECKED);
+				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_check, ICON_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_check, ATTR_ICON_CHECKBOX);
+				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_check, ICON_CHECKBOX);
 			}
 
 			xr_text.fx = total_indent + ic * 2;
@@ -518,17 +518,6 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		}
 
 		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_tree_item_title_ptr(ilk), -1);
-
-		icon = get_tree_item_icon_ptr(ilk);
-		if (!is_null(icon))
-		{
-			xr_check.fx = xr_text.fx + xr_text.fw - DEF_SMALL_ICON - 0.5;
-			xr_check.fw = DEF_SMALL_ICON;
-			xr_check.fy = total_height + 0.5;
-			xr_check.fh = DEF_SMALL_ICON;
-
-			(*pif->pf_draw_icon)(pif->canvas, &xc_icon, &xr_check, icon);
-		}
 
 		total_height += ih;
 		if (get_tree_item_expanded(ilk) && get_tree_first_child_item(ilk))

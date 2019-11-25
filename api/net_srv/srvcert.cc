@@ -45,7 +45,7 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 		xsprintf(sz_file, _T("%s/ssl/sslsrv.key"), sz_path);
 		pcrt->srv_key = xshare_srv(SSL_SSLSRV_KEY, sz_file, RSA_KEY_SIZE);
 
-		xsprintf(sz_file, _T("%s/ssl/ca/*.crt"), sz_path);
+		/*xsprintf(sz_file, _T("%s/ssl/ca/*.crt"), sz_path);
 		ptr_list = create_list_doc();
 		xfile_list(NULL, sz_file, ptr_list);
 
@@ -77,7 +77,8 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 
 			ilk = get_list_next_sibling_item(ilk);
 		}
-		destroy_list_doc(ptr_list);
+
+		destroy_list_doc(ptr_list);*/
 
 		return pcrt;
 	}
@@ -91,7 +92,7 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 		xsprintf(sz_file, _T("%s/ssh/sshsrv.key"), sz_path);
 		pcrt->srv_key = xshare_srv(SSH_SSHSRV_KEY, sz_file, RSA_KEY_SIZE);
 
-		xsprintf(sz_file, _T("%s/ssh/ca/*.crt"), sz_path);
+		/*xsprintf(sz_file, _T("%s/ssh/ca/*.crt"), sz_path);
 		ptr_list = create_list_doc();
 		xfile_list(NULL, sz_file, ptr_list);
 
@@ -123,7 +124,8 @@ cert_t* alloc_certs(int secu, const tchar_t* sz_path)
 
 			ilk = get_list_next_sibling_item(ilk);
 		}
-		destroy_list_doc(ptr_list);
+
+		destroy_list_doc(ptr_list);*/
 
 		return pcrt;
 	}
@@ -161,7 +163,7 @@ void free_certs(cert_t* pcrt)
 	pcrt->ca_count = 0;
 }
 
-void set_certs(int secu, xhand_t bio)
+void set_certs(int secu, const tchar_t* pass, xhand_t bio)
 {
 	xhand_t bh;
 	byte_t* buf;
@@ -195,14 +197,14 @@ void set_certs(int secu, xhand_t bio)
 				len = a_xslen((schar_t*)buf);
 				if (len)
 				{
-					xssl_set_rsa(bio, buf, len, NULL, 0);
+					xssl_set_rsa(bio, buf, len, pass, -1);
 				}
 				xshare_unlock(bh, 0, RSA_KEY_SIZE, buf);
 			}
 			xshare_close(bh);
 		}
 
-		i = 0;
+		/*i = 0;
 		do
 		{
 			xsprintf(sz_cert, _T("%s%d"), SSL_SSLCA_CRT, i);
@@ -225,7 +227,7 @@ void set_certs(int secu, xhand_t bio)
 
 			if (!buf || !len)
 				break;
-		} while (++i);
+		} while (++i);*/
 	}
 	else if (secu == _SECU_SSH)
 	{

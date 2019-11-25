@@ -83,13 +83,15 @@ LICENSE.GPL3 for more details.
 #define IDC_PHOTOBOX		(IDC_USERCTRL_MIN + 22)
 #define IDC_IMAGESBOX		(IDC_USERCTRL_MIN + 23)
 #define IDC_GRIDBOX			(IDC_USERCTRL_MIN + 24)
-#define IDC_GRAPHBOX		(IDC_USERCTRL_MIN + 25)
+#define IDC_STATISBOX		(IDC_USERCTRL_MIN + 25)
 #define IDC_TABLEBOX		(IDC_USERCTRL_MIN + 26)
 #define IDC_FORMBOX			(IDC_USERCTRL_MIN + 27)
 #define IDC_MENUBOX			(IDC_USERCTRL_MIN + 28)
 
 #define IDC_EDITMENU		(IDC_USERCTRL_MIN + 29)
 #define IDC_TOOLTIP			(IDC_USERCTRL_MIN + 30)
+#define IDC_VERTBOX			(IDC_USERCTRL_MIN + 31)
+#define IDC_HORZBOX			(IDC_USERCTRL_MIN + 32)
 
 #define IDC_MSGDLG			(IDC_USERCTRL_MIN + 40)
 #define IDC_PROEPRDLG		(IDC_USERCTRL_MIN + 41)
@@ -105,10 +107,20 @@ LICENSE.GPL3 for more details.
 #define IS_VISIBLE_CHAR(ch) (((nChar >= _T('0') && nChar <= _T('9')) || (nChar >= _T('A') && nChar <= _T('Z')) || (nChar >= _T('a') && nChar <= _T('z')) || (nChar == _T('-')) || (nChar == _T('.')))? 1 : 0)
 #define IS_ASCII_CHAR(ch) ((ch >= 32 && ch < 127)? 1 : 0)
 
+#define DEF_TIPTIME		1500
 
 #define DEF_INNER_FEED		(long)-1
 #define DEF_OUTER_FEED		(long)1
 #define DEF_FOCUS_SPAN		(long)5
+
+typedef struct _PAGE_CALC{
+	long total_width;
+	long total_height;
+	long page_width;
+	long page_height;
+	long line_width;
+	long line_height;
+}PAGE_CALC;
 
 
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;

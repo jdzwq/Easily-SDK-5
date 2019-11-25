@@ -80,6 +80,14 @@
 #include "impwin.h"
 #endif
 
-#include "impicon.h"
+
+#include "icongdi.h"
+#include "plotgdi.h"
+#include "gdicanv.h"
+#include "gdiinf.h"
+
+#include "svgcanv.h"
+#include "svggdi.h"
+#include "svginf.h"
 
 #endif //_XDLIMP_H

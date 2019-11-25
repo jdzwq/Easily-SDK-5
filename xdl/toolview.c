@@ -272,7 +272,6 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xbrush_t xb_group;
 	const tchar_t *style;
 	bool_t b_print;
-	link_t_ptr imagelist;
 	float px, py, pw, ph;
 	const tchar_t* show;
 
@@ -284,8 +283,6 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	ph = pbox->fh;
 
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
-
-	imagelist = get_tool_images(ptr);
 
 	style = get_tool_style_ptr(ptr);
 
@@ -315,6 +312,15 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_msk, xi.color);
+	}
+
+	if (!b_print)
+	{
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+	}
+	else
+	{
+		parse_xcolor(&xc, xp.color);
 	}
 
 	xmem_copy((void*)&xb_group, (void*)&xb, sizeof(xbrush_t));
@@ -359,11 +365,8 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (compare_text(show, -1, ATTR_SHOW_IMAGEONLY, -1, 0) == 0)
 			{
-				if (imagelist)
-				{
-					get_ximage(imagelist, get_tool_item_image_ptr(ilk), &xi);
-					(*pif->pf_draw_image)(pif->canvas, &xi, &xrItem);
-				}
+				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
 			}
 			else if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) == 0)
 			{
@@ -371,15 +374,13 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			}
 			else
 			{
-				if (imagelist)
-				{
-					get_ximage(imagelist, get_tool_item_image_ptr(ilk), &xi);
-
-					xrItem.fh /= 2;
-					(*pif->pf_draw_image)(pif->canvas, &xi, &xrItem);
-					xrItem.fy += xrItem.fh;
-				}
+				xrItem.fh /= 2;
+				xrItem.fy += xrItem.fh;
 				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrItem, get_tool_item_title_ptr(ilk), -1);
+
+				xrItem.fy -= xrItem.fh;
+				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
 			}
 
 			ilk = get_tool_group_next_item(glk, ilk);

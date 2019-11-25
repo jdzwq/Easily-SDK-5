@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc chart document
+	@doc diagram document
 
-	@module	chartview.h | interface file
+	@module	diagramview.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,30 +29,30 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _CHARTVIEW_H
-#define _CHARTVIEW_H
+#ifndef _DIAGRAMVIEW_H
+#define _DIAGRAMVIEW_H
 
 #include "xdldef.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
 typedef enum{
-	CHART_HINT_NONE,
-	CHART_HINT_TABLE,
-	CHART_HINT_VERT_SPLIT,
-	CHART_HINT_HORZ_SPLIT,
-	CHART_HINT_CROSS_SPLIT,
-}CHART_HINT_CODE;
+	DIAGRAM_HINT_NONE,
+	DIAGRAM_HINT_ENTITY,
+	DIAGRAM_HINT_VERT_SPLIT,
+	DIAGRAM_HINT_HORZ_SPLIT,
+	DIAGRAM_HINT_CROSS_SPLIT,
+}DIAGRAM_HINT_CODE;
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API void calc_chart_table_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	XDL_API void calc_diagram_entity_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API int calc_chart_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
+	XDL_API int calc_diagram_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
 
-	XDL_API void draw_chart(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+	XDL_API void draw_diagram(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

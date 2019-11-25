@@ -11,6 +11,7 @@
 #define DES_ENCRYPT     1
 #define DES_DECRYPT     0
 
+#define DES_C
 
 /**
 * \brief          DES context structure

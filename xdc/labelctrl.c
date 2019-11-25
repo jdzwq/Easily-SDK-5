@@ -32,6 +32,7 @@ LICENSE.GPL3 for more details.
 #include "xdcctrl.h"
 #include "handler.h"
 #include "winnc.h"
+#include "xdcbox.h"
 
 typedef struct label_delta_t{
 	link_t_ptr label;
@@ -40,6 +41,10 @@ typedef struct label_delta_t{
 
 	int cur_page;
 	bool_t b_drag;
+
+	res_win_t hsc;
+	res_win_t vsc;
+
 }label_delta_t;
 
 #define GETLABELDELTA(ph) 	(label_delta_t*)widget_get_user_delta(ph)
@@ -137,7 +142,7 @@ bool_t noti_label_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -155,7 +160,7 @@ void noti_label_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_label_owner(widget, NC_LABELITEMCHANGED, ptd->label, ptd->item, NULL);
 }
@@ -261,7 +266,13 @@ void hand_label_destroy(res_win_t widget)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 
-	XDL_ASSERT(ptd);
+	XDL_ASSERT(ptd != NULL);
+
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
 
 	xmem_free(ptd);
 
@@ -308,7 +319,25 @@ void hand_label_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -542,7 +571,8 @@ void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -691,9 +721,7 @@ void labelctrl_redraw(res_win_t widget)
 
 	_labelctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void labelctrl_tabskip(res_win_t widget, int nSkip)
@@ -763,7 +791,7 @@ void labelctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t labelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -843,7 +871,7 @@ void labelctrl_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -864,7 +892,7 @@ void labelctrl_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -889,7 +917,7 @@ void labelctrl_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -914,7 +942,7 @@ void labelctrl_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -939,7 +967,7 @@ void labelctrl_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 

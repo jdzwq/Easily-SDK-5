@@ -510,21 +510,6 @@ XDL_API const tchar_t* dom_node_attr_ins_chars(link_t_ptr ilk, const tchar_t* at
 XDL_API const tchar_t* dom_node_attr_del_chars(link_t_ptr ilk, const tchar_t* attr, int pos, int n);
 
 /*
-@FUNCTION get_dom_node_images: get dom node images document refrenced.
-@INPUT link_t_ptr ilk: the node link component.
-@RETURN link_t_ptr: return the images document link component if exists, otherwise return NULL.
-*/
-XDL_API link_t_ptr get_dom_node_images(link_t_ptr ilk);
-
-/*
-@FUNCTION set_dom_node_images: set a refrenced images document to dom node.
-@INPUT link_t_ptr ilk: the node link component.
-@INPUT link_t_ptr il: the images document link component.
-@RETURN void: none.
-*/
-XDL_API void set_dom_node_images(link_t_ptr ilk, link_t_ptr il);
-
-/*
 @FUNCTION copy_dom_node: copy source dom node and its child nodes to destination node.
 @INPUT link_t_ptr dst: the destination node link component.
 @INPUT link_t_ptr src: the source node link component.

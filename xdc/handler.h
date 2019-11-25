@@ -138,27 +138,50 @@ XDC_API void	widget_get_xpen(res_win_t wt, xpen_t* pxp);
 XDC_API const xpen_t*	widget_get_xpen_ptr(res_win_t wt);
 
 /*
-@FUNCTION widget_set_xcolor: set the widget color.
+@FUNCTION widget_set_mask: set the widget mask color.
 @INPUT res_win_t wt: windowd resource handle.
 @INPUT const xcolor_t* pxc: the color struct.
 @RETURN void: none.
 */
-XDC_API void	widget_set_xcolor(res_win_t wt, const xcolor_t* pxc);
+XDC_API void	widget_set_mask(res_win_t wt, const xcolor_t* pxc);
 
 /*
-@FUNCTION widget_get_xcolor: copy the widget color.
+@FUNCTION widget_get_mask: copy the widget mask color.
 @INPUT res_win_t wt: windowd resource handle.
 @OUTPUT xcolor_t* pxc: the color struct.
 @RETURN void: none.
 */
-XDC_API void	widget_get_xcolor(res_win_t wt, xcolor_t* pxc);
+XDC_API void	widget_get_mask(res_win_t wt, xcolor_t* pxc);
 
 /*
-@FUNCTION widget_get_xcolor_ptr: get the widget color.
+@FUNCTION widget_get_mask_ptr: get the widget mask color.
 @INPUT res_win_t wt: windowd resource handle.
 @RETURN const xcolor_t*: return the widget color struct if exists, otherwise return NULL.
 */
-XDC_API const xcolor_t*	widget_get_xcolor_ptr(res_win_t wt);
+XDC_API const xcolor_t*	widget_get_mask_ptr(res_win_t wt);
+
+/*
+@FUNCTION widget_set_iconic: set the widget icon color.
+@INPUT res_win_t wt: windowd resource handle.
+@INPUT const xcolor_t* pxc: the color struct.
+@RETURN void: none.
+*/
+XDC_API void	widget_set_iconic(res_win_t wt, const xcolor_t* pxc);
+
+/*
+@FUNCTION widget_get_iconic: copy the widget icon color.
+@INPUT res_win_t wt: windowd resource handle.
+@OUTPUT xcolor_t* pxc: the color struct.
+@RETURN void: none.
+*/
+XDC_API void	widget_get_iconic(res_win_t wt, xcolor_t* pxc);
+
+/*
+@FUNCTION widget_get_iconic_ptr: get the widget mask color.
+@INPUT res_win_t wt: windowd resource handle.
+@RETURN const xcolor_t*: return the widget color struct if exists, otherwise return NULL.
+*/
+XDC_API const xcolor_t*	widget_get_iconic_ptr(res_win_t wt);
 
 /*
 @FUNCTION widget_set_point: set the child widget position in client coordinate.
@@ -417,7 +440,6 @@ XDC_API void	widget_hand_destroy(res_win_t wt);
 @RETURN bool_t: if widget scrolled return nonzero.
 */
 XDC_API bool_t	widget_hand_scroll(res_win_t wt, bool_t b_horz, long pos);
-
 
 /******************************widget splitor implement*****************************************************/
 

@@ -30,16 +30,18 @@ LICENSE.GPL3 for more details.
 
 #include "FormPanel.h"
 #include "GridPanel.h"
-#include "GraphPanel.h"
+#include "StatisPanel.h"
 #include "SchemaPanel.h"
 #include "TopogPanel.h"
 #include "ImagePanel.h"
 #include "RichPanel.h"
 #include "TagPanel.h"
 #include "DialogPanel.h"
-#include "ChartPanel.h"
+#include "PanoramaPanel.h"
+#include "DiagramPanel.h"
 #include "SQLPanel.h"
-#include "WEBPanel.h"
+#include "XMLPanel.h"
+#include "JsonPanel.h"
 
 #define MAINFRAME_TOOLBAR_HEIGHT	(float)25
 #define MAINFRAME_TREEBAR_WIDTH		(float)50
@@ -49,7 +51,7 @@ LICENSE.GPL3 for more details.
 
 #define MAINFRAME_GROUPITEM_HEIGHT		(float)7
 #define MAINFRAME_GROUPITEM_MAXWIDTH	(float)18
-#define MAINFRAME_GROUPITEM_MINWIDTH	(float)7
+#define MAINFRAME_GROUPITEM_MINWIDTH	(float)8
 #define MAINFRAME_TITLEITEM_WIDTH		(float)15
 #define MAINFRAME_STATUSITEM_WIDTH		(float)20
 
@@ -69,16 +71,18 @@ LICENSE.GPL3 for more details.
 
 #define IDC_MAINFRAME_FORMPANEL		110
 #define IDC_MAINFRAME_GRIDPANEL		111
-#define IDC_MAINFRAME_GRAPHPANEL	112
+#define IDC_MAINFRAME_STATISPANEL	112
 #define IDC_MAINFRAME_SCHEMAPANEL	113
 #define IDC_MAINFRAME_TOPOGPANEL	114
 #define IDC_MAINFRAME_IMAGESPANEL	115
 #define IDC_MAINFRAME_RICHPANEL		116
 #define IDC_MAINFRAME_DIALOGPANEL	117
 #define IDC_MAINFRAME_TAGPANEL		118
-#define IDC_MAINFRAME_SQLPANEL		119
-#define IDC_MAINFRAME_CHARTPANEL	120
-#define IDC_MAINFRAME_WEBPANEL		121
+#define IDC_MAINFRAME_PANORAMAPANEL	119
+#define IDC_MAINFRAME_DIAGRAMPANEL	120
+#define IDC_MAINFRAME_SQLPANEL		121
+#define IDC_MAINFRAME_XMLPANEL		122
+#define IDC_MAINFRAME_JSONPANEL		123
 
 #define MAINFRAME_ACCEL_COUNT		4
 
@@ -355,8 +359,8 @@ static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
 		xscpy(szClass, PANEL_CLASS_FORM);
 	else if (is_grid_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_GRID);
-	else if (is_graph_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_GRAPH);
+	else if (is_statis_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_STATIS);
 	else if (is_rich_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_RICH);
 	else if (is_schema_doc(ptrDom))
@@ -367,8 +371,10 @@ static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
 		xscpy(szClass, PANEL_CLASS_IMAGE);
 	else if (is_dialog_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_DIALOG);
-	else if (is_chart_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_CHART);
+	else if (is_panorama_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_PANORAMA);
+	else if (is_diagram_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_DIAGRAM);
 
 	destroy_dom_doc(ptrDom);
 }
@@ -378,7 +384,6 @@ void MainFrame_CreateFile(res_win_t widget)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
 	LINKPTR ptrList = create_list_doc();
-	set_list_images(ptrList, g_imagelist);
 
 	tchar_t szID[NUM_LEN + 1];
 
@@ -386,73 +391,85 @@ void MainFrame_CreateFile(res_win_t widget)
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_FORMPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白表单"));
-	set_list_item_image(llk, BMP_MEMO);
+	set_list_item_icon(llk, ICON_MEMO);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_GRIDPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白网格"));
-	set_list_item_image(llk, BMP_GRID);
+	set_list_item_icon(llk, ICON_GRID);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_TAGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白标记文本"));
-	set_list_item_image(llk, BMP_NEW);
+	set_list_item_icon(llk, ICON_NEW);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_RICHPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白富文本"));
-	set_list_item_image(llk, BMP_RICH);
+	set_list_item_icon(llk, ICON_RICH);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
-	xsprintf(szID, _T("%d"), IDC_MAINFRAME_GRAPHPANEL);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_STATISPANEL);
 	set_list_item_id(llk, szID);
-	set_list_item_title(llk, _T("空白图形"));
-	set_list_item_image(llk, BMP_GRAPH);
+	set_list_item_title(llk, _T("空白图表"));
+	set_list_item_icon(llk, ICON_GRAPH);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SCHEMAPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白模式"));
-	set_list_item_image(llk, BMP_EDIT);
+	set_list_item_icon(llk, ICON_SCHEMA);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_TOPOGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白地形"));
-	set_list_item_image(llk, BMP_GROUP);
+	set_list_item_icon(llk, ICON_GROUP);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_IMAGESPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("图像列表"));
-	set_list_item_image(llk, BMP_IMAGE);
+	set_list_item_icon(llk, ICON_IMAGES);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIALOGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("对话框"));
-	set_list_item_image(llk, BMP_DIALOG);
+	set_list_item_icon(llk, ICON_DIALOG);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
-	xsprintf(szID, _T("%d"), IDC_MAINFRAME_CHARTPANEL);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_PANORAMAPANEL);
 	set_list_item_id(llk, szID);
-	set_list_item_title(llk, _T("图表框"));
-	set_list_item_image(llk, BMP_CHART);
+	set_list_item_title(llk, _T("全景图"));
+	set_list_item_icon(llk, ICON_PANORAMA);
+
+	llk = insert_list_item(ptrList, LINK_LAST);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIAGRAMPANEL);
+	set_list_item_id(llk, szID);
+	set_list_item_title(llk, _T("流程图"));
+	set_list_item_icon(llk, ICON_DIAGRAM);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SQLPANEL);
 	set_list_item_id(llk, szID);
-	set_list_item_title(llk, _T("数据服务"));
-	set_list_item_image(llk, BMP_SQL);
+	set_list_item_title(llk, _T("SQL"));
+	set_list_item_icon(llk, ICON_EDIT);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
-	xsprintf(szID, _T("%d"), IDC_MAINFRAME_WEBPANEL);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_XMLPANEL);
 	set_list_item_id(llk, szID);
-	set_list_item_title(llk, _T("WEB服务"));
-	set_list_item_image(llk, BMP_HERF);
+	set_list_item_title(llk, _T("XML"));
+	set_list_item_icon(llk, ICON_EDIT);
+
+	llk = insert_list_item(ptrList, LINK_LAST);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_JSONPANEL);
+	set_list_item_id(llk, szID);
+	set_list_item_title(llk, _T("JSON"));
+	set_list_item_icon(llk, ICON_EDIT);
 
 	res_win_t hNewFileDlg = listdlg_create(_T("选择文档类型"), ptrList, widget);
 	
@@ -470,8 +487,8 @@ void MainFrame_CreateFile(res_win_t widget)
 	case IDC_MAINFRAME_GRIDPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_GRID, NULL);
 		break;
-	case IDC_MAINFRAME_GRAPHPANEL:
-		_MainFrame_CreatePanel(widget, PANEL_CLASS_GRAPH, NULL);
+	case IDC_MAINFRAME_STATISPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_STATIS, NULL);
 		break;
 	case IDC_MAINFRAME_TAGPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_TAG, NULL);
@@ -491,14 +508,20 @@ void MainFrame_CreateFile(res_win_t widget)
 	case IDC_MAINFRAME_DIALOGPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_DIALOG, NULL);
 		break;
-	case IDC_MAINFRAME_CHARTPANEL:
-		_MainFrame_CreatePanel(widget, PANEL_CLASS_CHART, NULL);
+	case IDC_MAINFRAME_PANORAMAPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_PANORAMA, NULL);
+		break;
+	case IDC_MAINFRAME_DIAGRAMPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_DIAGRAM, NULL);
 		break;
 	case IDC_MAINFRAME_SQLPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_SQL, NULL);
 		break;
-	case IDC_MAINFRAME_WEBPANEL:
-		_MainFrame_CreatePanel(widget, PANEL_CLASS_WEB, NULL);
+	case IDC_MAINFRAME_XMLPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_XML, NULL);
+		break;
+	case IDC_MAINFRAME_JSONPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_JSON, NULL);
 		break;
 	}
 }
@@ -509,7 +532,7 @@ void MainFrame_OpenFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Chart File(*.chart)\0*.chart\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0Xml File(*.xml)\0*.xml\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\0JSON File(*.json)\0*.json\0");
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -530,12 +553,14 @@ void MainFrame_OpenFile(res_win_t widget)
 	}
 	else
 	{
-		if (compare_text(szClass, -1, _T("xml"), -1, 1) == 0)
-			xscpy(szClass, PANEL_CLASS_SCHEMA);
-		else if (compare_text(szClass, -1, _T("txt"), -1, 1) == 0)
+		if (compare_text(szClass, -1, _T("txt"), -1, 1) == 0)
 			xscpy(szClass, PANEL_CLASS_TAG);
 		else if (compare_text(szClass, -1, _T("sql"), -1, 1) == 0)
 			xscpy(szClass, PANEL_CLASS_SQL);
+		else if (compare_text(szClass, -1, _T("xml"), -1, 1) == 0)
+			xscpy(szClass, PANEL_CLASS_XML);
+		else if (compare_text(szClass, -1, _T("json"), -1, 1) == 0)
+			xscpy(szClass, PANEL_CLASS_JSON);
 	}
 
 	if (is_null(szClass))
@@ -580,7 +605,7 @@ void MainFrame_AppendFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN * 10] = { 0 };
 	tchar_t szFile[PATH_LEN * 10] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Chart File(*.chart)\0*.chart\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0");
 
 	split_path(pdt->szFile, szPath, NULL, NULL);
 
@@ -606,7 +631,7 @@ void MainFrame_AppendFile(res_win_t widget)
 			tlk_parent = insert_tree_item(ptr_tree, LINK_LAST);
 			set_tree_item_name(tlk_parent, szType);
 			set_tree_item_title(tlk_parent, szType);
-			set_tree_item_image(tlk_parent, BMP_MACRO);
+			set_tree_item_icon(tlk_parent, ICON_NOTE);
 
 			pdt->bDirty = TRUE;
 		}
@@ -617,7 +642,7 @@ void MainFrame_AppendFile(res_win_t widget)
 			tlk_child = insert_tree_item(tlk_parent, LINK_LAST);
 			set_tree_item_name(tlk_child, szName);
 			set_tree_item_title(tlk_child, szTitle);
-			set_tree_item_image(tlk_child, BMP_SCHEMA);
+			set_tree_item_icon(tlk_child, ICON_SCHEMA);
 
 			pdt->bDirty = TRUE;
 		}
@@ -898,7 +923,7 @@ void MainFrame_InsertElement(res_win_t widget)
 		set_dom_node_attr(tlk, ATTR_DATA_DIG, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_DIG), -1);
 		set_dom_node_attr(tlk, ATTR_CATEGORY, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_CATEGORY), -1);
 		set_dom_node_attr(tlk, ATTR_TITLE, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_TITLE), -1);
-		set_tree_item_image(tlk, BMP_GROUP);
+		set_tree_item_icon(tlk, ICON_GROUP);
 
 		pdt->bDirty = TRUE;
 
@@ -1184,7 +1209,7 @@ void MainFrame_FreshObject(res_win_t widget)
 
 			set_tree_item_name(tlk, get_field_name_ptr(flk));
 			set_tree_item_title(tlk, token);
-			set_tree_item_image(tlk, BMP_MACRO);
+			set_tree_item_icon(tlk, ICON_NOTE);
 
 			flk = get_next_field(qo.ptrDoc, flk);
 		}
@@ -1204,7 +1229,7 @@ void MainFrame_FreshObject(res_win_t widget)
 			clk = get_next_col(qo.ptrDoc, clk);
 		}
 	}
-	else if (compare_text(qo.szDoc, -1, DOC_GRAPH, -1, 0) == 0)
+	else if (compare_text(qo.szDoc, -1, DOC_STATIS, -1, 0) == 0)
 	{
 		LINKPTR ylk = get_next_yax(qo.ptrDoc, LINK_FIRST);
 		while (ylk)
@@ -1279,19 +1304,34 @@ void MainFrame_FreshObject(res_win_t widget)
 			ilk = get_dialog_next_item(qo.ptrDoc, ilk);
 		}
 	}
-	else if (compare_text(qo.szDoc, -1, DOC_CHART, -1, 0) == 0)
+	else if (compare_text(qo.szDoc, -1, DOC_PANORAMA, -1, 0) == 0)
 	{
-		LINKPTR ilk = get_chart_next_table(qo.ptrDoc, LINK_FIRST);
+		LINKPTR ilk = get_panorama_next_plot(qo.ptrDoc, LINK_FIRST);
 		while (ilk)
 		{
 			LINKPTR tlk = insert_tree_item(ptr_tree, LINK_LAST);
 
-			xsprintf(token, _T("%s [%s]"), get_chart_table_name_ptr(ilk), get_chart_table_id_ptr(ilk));
+			xsprintf(token, _T("%s [%s]"), get_panorama_plot_name_ptr(ilk), get_panorama_plot_id_ptr(ilk));
 
-			set_tree_item_name(tlk, get_chart_table_name_ptr(ilk));
+			set_tree_item_name(tlk, get_panorama_plot_name_ptr(ilk));
 			set_tree_item_title(tlk, token);
 
-			ilk = get_chart_next_table(qo.ptrDoc, ilk);
+			ilk = get_panorama_next_plot(qo.ptrDoc, ilk);
+		}
+	}
+	else if (compare_text(qo.szDoc, -1, DOC_DIAGRAM, -1, 0) == 0)
+	{
+		LINKPTR ilk = get_diagram_next_entity(qo.ptrDoc, LINK_FIRST);
+		while (ilk)
+		{
+			LINKPTR tlk = insert_tree_item(ptr_tree, LINK_LAST);
+
+			xsprintf(token, _T("%s [%s]"), get_diagram_entity_name_ptr(ilk), get_diagram_entity_id_ptr(ilk));
+
+			set_tree_item_name(tlk, get_diagram_entity_name_ptr(ilk));
+			set_tree_item_title(tlk, token);
+
+			ilk = get_diagram_next_entity(qo.ptrDoc, ilk);
 		}
 	}
 
@@ -1432,11 +1472,11 @@ void MainFrame_ChangeFace(res_win_t widget, int ind)
 	parse_xcolor(&clr.clr_frg, g_face[g_indFace].frg);
 	parse_xcolor(&clr.clr_txt, g_face[g_indFace].txt);
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
+	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
 	widget_set_color_mode(widget, &clr);
 
-	widget_update_window(widget);
-	widget_update_client(widget);
+	widget_update(widget);
 }
 /************************************************************************************/
 void MainFrame_ToolBar_OnLBClick(res_win_t widget, NOTICE_TOOL* pnt)
@@ -1584,17 +1624,16 @@ void MainFrame_ResBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
-	set_menu_images(ptrMenu, g_imagelist);
 
 	LINKPTR mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_APPEND);
 	set_menu_item_title(mlk, _T("添加文件"));
-	set_menu_item_image(mlk, BMP_PLUS);
+	set_menu_item_icon(mlk, ICON_PLUS);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_REMOVE);
 	set_menu_item_title(mlk, _T("移除文件"));
-	set_menu_item_image(mlk, BMP_MINUS);
+	set_menu_item_icon(mlk, ICON_MINUS);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_SHOW);
@@ -1687,32 +1726,31 @@ void MainFrame_DomBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
-	set_menu_images(ptrMenu, g_imagelist);
 
 	LINKPTR mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_ELEMENT_INSERT);
 	set_menu_item_title(mlk, _T("添加元件"));
-	set_menu_item_image(mlk, BMP_INSERT);
+	set_menu_item_icon(mlk, ICON_INSERT);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_ELEMENT_REMOVE);
 	set_menu_item_title(mlk, _T("移除元件"));
-	set_menu_item_image(mlk, BMP_DELETE);
+	set_menu_item_icon(mlk, ICON_DELETE);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_ELEMENT_EDIT);
 	set_menu_item_title(mlk, _T("编辑元件"));
-	set_menu_item_image(mlk, BMP_EDIT);
+	set_menu_item_icon(mlk, ICON_EDIT);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_ELEMENT_IMPORT);
 	set_menu_item_title(mlk, _T("导入元件"));
-	set_menu_item_image(mlk, BMP_INPUT);
+	set_menu_item_icon(mlk, ICON_INPUT);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_ELEMENT_EXPORT);
 	set_menu_item_title(mlk, _T("导出元件"));
-	set_menu_item_image(mlk, BMP_OUTPUT);
+	set_menu_item_icon(mlk, ICON_OUTPUT);
 
 	menubox_set_data(hMenu, ptrMenu);
 
@@ -1794,19 +1832,18 @@ void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
-	set_menu_images(ptrMenu, g_imagelist);
 
 	LINKPTR mlk;
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_OBJECT_FRESH);
 	set_menu_item_title(mlk, _T("刷新对象"));
-	set_menu_item_image(mlk, BMP_FRESH);
+	set_menu_item_icon(mlk, ICON_FRESH);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_OBJECT_CHECK);
 	set_menu_item_title(mlk, _T("选中对象"));
-	set_menu_item_image(mlk, BMP_CHECK);
+	set_menu_item_icon(mlk, ICON_CHECK);
 
 	menubox_set_data(hMenu, ptrMenu);
 
@@ -1930,7 +1967,6 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	widget_set_owner(pdt->hToolBar, widget);
 
 	LINKPTR ptrTool = create_tool_doc();
-	set_tool_images(ptrTool, g_imagelist);
 
 	LINKPTR glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_name(glk, MAINFRAME_TOOLGROUP_PROJECT);
@@ -1965,13 +2001,13 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_CONFIG_RDS);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("数据服务"));
-	set_tool_item_image(ilk, BMP_IMPORT);
+	set_tool_item_icon(ilk, ICON_IMPORT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CONFIG_DOC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("文档服务"));
-	set_tool_item_image(ilk, BMP_IMPORT);
+	set_tool_item_icon(ilk, ICON_IMPORT);
 
 	glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
@@ -1984,61 +2020,61 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_FILE_CREATE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("新建文件"));
-	set_tool_item_image(ilk, BMP_NEW);
+	set_tool_item_icon(ilk, ICON_NEW);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_OPEN);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("打开文件"));
-	set_tool_item_image(ilk, BMP_OPEN);
+	set_tool_item_icon(ilk, ICON_OPEN);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SAVE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("保存文件"));
-	set_tool_item_image(ilk, BMP_SAVE);
+	set_tool_item_icon(ilk, ICON_SAVE);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SAVEAS);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("另存文件"));
-	set_tool_item_image(ilk, BMP_SAVEAS);
+	set_tool_item_icon(ilk, ICON_SAVEAS);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SCHEMA);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导出模式"));
-	set_tool_item_image(ilk, BMP_SCHEMA);
+	set_tool_item_icon(ilk, ICON_SCHEMA);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_EXPORT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导出数据"));
-	set_tool_item_image(ilk, BMP_OUTPUT);
+	set_tool_item_icon(ilk, ICON_OUTPUT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_IMPORT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导入数据"));
-	set_tool_item_image(ilk, BMP_INPUT);
+	set_tool_item_icon(ilk, ICON_INPUT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_PRINT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("打印文件"));
-	set_tool_item_image(ilk, BMP_PRINT);
+	set_tool_item_icon(ilk, ICON_PRINT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_PREVIEW);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("预览文件"));
-	set_tool_item_image(ilk, BMP_PREVIEW);
+	set_tool_item_icon(ilk, ICON_SCREEN);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_EXEC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("测试运行"));
-	set_tool_item_image(ilk, BMP_EXEC);
+	set_tool_item_icon(ilk, ICON_EXECUTE);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
 	widget_show(pdt->hToolBar, WD_SHOW_NORMAL);
@@ -2057,7 +2093,7 @@ void _MainFrame_CreateTitleBar(res_win_t widget)
 	widget_set_owner(pdt->hTitleBar, widget);
 
 	LINKPTR ptrTitle = create_title_doc();
-	set_title_images(ptrTitle, g_imagelist);
+
 	set_title_oritation(ptrTitle, ATTR_ORITATION_BOTTOM);
 
 	titlectrl_attach(pdt->hTitleBar, ptrTitle);
@@ -2073,14 +2109,14 @@ void _MainFrame_CreateResBar(res_win_t widget)
 
 	_MainFrame_CalcResBar(widget, &xr);
 
-	pdt->hResBar = treectrl_create(_T("ResBar"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hResBar = treectrl_create(_T("ResBar"), WD_STYLE_CONTROL, &xr, widget);
 	widget_set_user_id(pdt->hResBar, IDC_MAINFRAME_RESBAR);
 	widget_set_owner(pdt->hResBar, widget);
 
 	LINKPTR ptrTree = create_tree_doc();
-	set_tree_images(ptrTree, g_imagelist);
+
 	set_tree_title(ptrTree, _T("资源列表"));
-	set_tree_title_image(ptrTree, _T("proper"));
+	set_tree_title_icon(ptrTree, ICON_PROPER);
 	treectrl_attach(pdt->hResBar, ptrTree);
 	treectrl_set_lock(pdt->hResBar, 0);
 
@@ -2095,12 +2131,12 @@ void _MainFrame_CreateDomBar(res_win_t widget)
 
 	_MainFrame_CalcDomBar(widget, &xr);
 
-	pdt->hDomBar = treectrl_create(_T("DomBar"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hDomBar = treectrl_create(_T("DomBar"), WD_STYLE_CONTROL, &xr, widget);
 	widget_set_user_id(pdt->hDomBar, IDC_MAINFRAME_DOMBAR);
 	widget_set_owner(pdt->hDomBar, widget);
 
 	LINKPTR ptrTree = create_tree_doc();
-	set_tree_images(ptrTree, g_imagelist);
+
 	treectrl_attach(pdt->hDomBar, ptrTree);
 	treectrl_set_lock(pdt->hDomBar, 1);
 
@@ -2115,12 +2151,12 @@ void _MainFrame_CreateObjBar(res_win_t widget)
 
 	_MainFrame_CalcObjBar(widget, &xr);
 
-	pdt->hObjBar = treectrl_create(_T("ObjBar"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hObjBar = treectrl_create(_T("ObjBar"), WD_STYLE_CONTROL, &xr, widget);
 	widget_set_user_id(pdt->hObjBar, IDC_MAINFRAME_OBJBAR);
 	widget_set_owner(pdt->hObjBar, widget);
 
 	LINKPTR ptrTree = create_tree_doc();
-	set_tree_images(ptrTree, g_imagelist);
+
 	treectrl_attach(pdt->hObjBar, ptrTree);
 	treectrl_set_lock(pdt->hObjBar, 1);
 
@@ -2140,7 +2176,7 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 	widget_set_owner(pdt->hCateBar, widget);
 
 	LINKPTR ptrTitle = create_title_doc();
-	set_title_images(ptrTitle, g_imagelist);
+
 	set_title_oritation(ptrTitle, ATTR_ORITATION_TOP);
 	set_title_item_width(ptrTitle, MAINFRAME_TITLEITEM_WIDTH);
 
@@ -2148,19 +2184,19 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 	set_title_item_title(tlk, _T("文件"));
 	set_title_item_name(tlk, MAINFRAME_TREE_RESOURCE);
 	set_title_item_locked(tlk, 1);
-	set_title_item_image(tlk, BMP_NEW);
+	set_title_item_icon(tlk, ICON_NEW);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("元件"));
 	set_title_item_name(tlk, MAINFRAME_TREE_DOMAIN);
 	set_title_item_locked(tlk, 1);
-	set_title_item_image(tlk, BMP_MACRO);
+	set_title_item_icon(tlk, ICON_NOTE);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("对象"));
 	set_title_item_name(tlk, MAINFRAME_TREE_OBJECT);
 	set_title_item_locked(tlk, 1);
-	set_title_item_image(tlk, BMP_HERF);
+	set_title_item_icon(tlk, ICON_HERF);
 
 	titlectrl_attach(pdt->hCateBar, ptrTitle);
 
@@ -2182,7 +2218,7 @@ void _MainFrame_CreateStatusBar(res_win_t widget)
 	widget_set_owner(pdt->hStatusBar, widget);
 
 	LINKPTR ptrStatus = create_status_doc();
-	set_status_images(ptrStatus, g_imagelist);
+
 	set_status_alignment(ptrStatus, ATTR_ALIGNMENT_FAR);
 
 	LINKPTR ilk;
@@ -2237,14 +2273,14 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 		if (hPanel)
 			widget_set_user_id(hPanel, IDC_MAINFRAME_GRIDPANEL);
 	}
-	else if (compare_text(wclass, -1, PANEL_CLASS_GRAPH, -1, 0) == 0)
+	else if (compare_text(wclass, -1, PANEL_CLASS_STATIS, -1, 0) == 0)
 	{
 		if (is_null(wname))
-			xscpy(wname, _T("NewGraph"));
+			xscpy(wname, _T("NewStatis"));
 
-		hPanel = GraphPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		hPanel = StatisPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
-			widget_set_user_id(hPanel, IDC_MAINFRAME_GRAPHPANEL);
+			widget_set_user_id(hPanel, IDC_MAINFRAME_STATISPANEL);
 	}
 	else if (compare_text(wclass, -1, PANEL_CLASS_TAG, -1, 0) == 0)
 	{
@@ -2276,7 +2312,7 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 	else if (compare_text(wclass, -1, PANEL_CLASS_TOPOG, -1, 0) == 0)
 	{
 		if (is_null(wname))
-			xscpy(wname, _T("NewMask"));
+			xscpy(wname, _T("NewTopog"));
 
 		hPanel = TopogPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
@@ -2300,14 +2336,23 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 		if (hPanel)
 			widget_set_user_id(hPanel, IDC_MAINFRAME_DIALOGPANEL);
 	}
-	else if (compare_text(wclass, -1, PANEL_CLASS_CHART, -1, 0) == 0)
+	else if (compare_text(wclass, -1, PANEL_CLASS_PANORAMA, -1, 0) == 0)
 	{
 		if (is_null(wname))
-			xscpy(wname, _T("NewChart"));
+			xscpy(wname, _T("NewPanorama"));
 
-		hPanel = ChartPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		hPanel = PanoramaPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
-			widget_set_user_id(hPanel, IDC_MAINFRAME_CHARTPANEL);
+			widget_set_user_id(hPanel, IDC_MAINFRAME_PANORAMAPANEL);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_DIAGRAM, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewDiagram"));
+
+		hPanel = DiagramPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		if (hPanel)
+			widget_set_user_id(hPanel, IDC_MAINFRAME_DIAGRAMPANEL);
 	}
 	else if (compare_text(wclass, -1, PANEL_CLASS_SQL, -1, 0) == 0)
 	{
@@ -2318,14 +2363,23 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 		if (hPanel)
 			widget_set_user_id(hPanel, IDC_MAINFRAME_SQLPANEL);
 	}
-	else if (compare_text(wclass, -1, PANEL_CLASS_WEB, -1, 0) == 0)
+	else if (compare_text(wclass, -1, PANEL_CLASS_XML, -1, 0) == 0)
 	{
 		if (is_null(wname))
-			xscpy(wname, _T("NewWeb"));
+			xscpy(wname, _T("NewXML"));
 
-		hPanel = WEBPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		hPanel = XMLPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
-			widget_set_user_id(hPanel, IDC_MAINFRAME_WEBPANEL);
+			widget_set_user_id(hPanel, IDC_MAINFRAME_XMLPANEL);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_JSON, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewJson"));
+
+		hPanel = JsonPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		if (hPanel)
+			widget_set_user_id(hPanel, IDC_MAINFRAME_JSONPANEL);
 	}
 
 	if (!hPanel)
@@ -2883,30 +2937,37 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	_MainFrame_CalcToolBar(widget, &xr);
 	widget_move(pdt->hToolBar, RECTPOINT(&xr));
 	widget_size(pdt->hToolBar, RECTSIZE(&xr));
+	widget_update(pdt->hToolBar);
 
 	_MainFrame_CalcStatusBar(widget, &xr);
 	widget_move(pdt->hStatusBar, RECTPOINT(&xr));
 	widget_size(pdt->hStatusBar, RECTSIZE(&xr));
+	widget_update(pdt->hStatusBar);
 
 	_MainFrame_CalcResBar(widget, &xr);
 	widget_move(pdt->hResBar, RECTPOINT(&xr));
 	widget_size(pdt->hResBar, RECTSIZE(&xr));
+	widget_update(pdt->hResBar);
 
 	_MainFrame_CalcDomBar(widget, &xr);
 	widget_move(pdt->hDomBar, RECTPOINT(&xr));
 	widget_size(pdt->hDomBar, RECTSIZE(&xr));
+	widget_update(pdt->hDomBar);
 
 	_MainFrame_CalcObjBar(widget, &xr);
 	widget_move(pdt->hObjBar, RECTPOINT(&xr));
 	widget_size(pdt->hObjBar, RECTSIZE(&xr));
+	widget_update(pdt->hObjBar);
 
 	_MainFrame_CalcCateBar(widget, &xr);
 	widget_move(pdt->hCateBar, RECTPOINT(&xr));
 	widget_size(pdt->hCateBar, RECTSIZE(&xr));
+	widget_update(pdt->hCateBar);
 
 	_MainFrame_CalcTitleBar(widget, &xr);
 	widget_move(pdt->hTitleBar, RECTPOINT(&xr));
 	widget_size(pdt->hTitleBar, RECTSIZE(&xr));
+	widget_update(pdt->hTitleBar);
 
 	_MainFrame_CalcPanelBar(widget, &xr);
 
@@ -2925,7 +2986,7 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 		plk = get_title_next_item(ptrTitle, plk);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void MainFrame_OnMove(res_win_t widget, const xpoint_t* ppt)
@@ -3013,12 +3074,13 @@ res_win_t MainFrame_Create(const tchar_t* mname)
 	parse_xcolor(&clr.clr_frg, g_face[g_indFace].frg);
 	parse_xcolor(&clr.clr_txt, g_face[g_indFace].txt);
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
+	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
 	widget_set_color_mode(widget, &clr);
 
+	widget_update(widget);
+
 	widget_show(widget, WD_SHOW_NORMAL);
-	widget_update_window(widget);
-	widget_update_client(widget);
 
 	return widget;
 }

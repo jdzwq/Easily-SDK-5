@@ -54,7 +54,7 @@ LICENSE.GPL3 for more details.
 #define ANNODLG_BUTTON_HEIGHT		(float)8 //tm
 #define ANNODLG_BUTTON_WIDTH		(float)12 //tm
 
-#define IS_ANNO_ICON(token) ((compare_text(token,-1,ATTR_ICON_RECT,-1,1) == 0 || compare_text(token,-1,ATTR_ICON_ELLIPSE,-1,1) == 0 || compare_text(token,-1,ATTR_ICON_CROSS,-1,1) == 0 || compare_text(token,-1,ATTR_ICON_STAR,-1,1) == 0 ||compare_text(token,-1,ATTR_ICON_DIAMOND,-1,1) == 0)? 1 : 0)
+#define IS_ANNO_ICON(token) ((compare_text(token,-1,ICON_RECT,-1,1) == 0 || compare_text(token,-1,ICON_ELLIPSE,-1,1) == 0 || compare_text(token,-1,ICON_CROSS,-1,1) == 0 || compare_text(token,-1,ICON_STAR,-1,1) == 0 ||compare_text(token,-1,ICON_DIAMOND,-1,1) == 0)? 1 : 0)
 
 typedef struct _annodlg_delta_t{
 	res_win_t photo;
@@ -274,11 +274,11 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(iconbox, IDC_ANNODLG_ICONBOX);
 
 	xsprintf(icons, _T("%d~%s;%d~%s;%d~%s;%d~%s;%d~%s;"),
-		IDA_ANNODLG_ICON_RECT, ATTR_ICON_RECT,
-		IDA_ANNODLG_ICON_ELLIPSE, ATTR_ICON_ELLIPSE,
-		IDA_ANNODLG_ICON_CROSS, ATTR_ICON_CROSS,
-		IDA_ANNODLG_ICON_STAR, ATTR_ICON_STAR,
-		IDA_ANNODLG_ICON_DIAMOND, ATTR_ICON_DIAMOND);
+		IDA_ANNODLG_ICON_RECT, ICON_RECT,
+		IDA_ANNODLG_ICON_ELLIPSE, ICON_ELLIPSE,
+		IDA_ANNODLG_ICON_CROSS, ICON_CROSS,
+		IDA_ANNODLG_ICON_STAR, ICON_STAR,
+		IDA_ANNODLG_ICON_DIAMOND, ICON_DIAMOND);
 
 	iconbox_set_options(iconbox, icons, -1);
 	widget_show(iconbox, WD_SHOW_NORMAL);
@@ -461,6 +461,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
@@ -476,6 +477,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	widget_get_client_rect(widget, &xr);
@@ -496,6 +498,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	xr.x -= (xr.w + nSplit);
@@ -505,6 +508,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
@@ -523,6 +527,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
 	xr.x += (xr.w + nSplit);
@@ -532,9 +537,10 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		widget_move(ctrl, RECTPOINT(&xr));
 		widget_size(ctrl, RECTSIZE(&xr));
+		widget_update(ctrl);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long data)
@@ -571,19 +577,19 @@ void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long dat
 		switch (code)
 		{
 		case IDA_ANNODLG_ICON_CROSS:
-			annodlg_on_append_item(widget, ATTR_ICON_CROSS);
+			annodlg_on_append_item(widget, ICON_CROSS);
 			break;
 		case IDA_ANNODLG_ICON_DIAMOND:
-			annodlg_on_append_item(widget, ATTR_ICON_DIAMOND);
+			annodlg_on_append_item(widget, ICON_DIAMOND);
 			break;
 		case IDA_ANNODLG_ICON_ELLIPSE:
-			annodlg_on_append_item(widget, ATTR_ICON_ELLIPSE);
+			annodlg_on_append_item(widget, ICON_ELLIPSE);
 			break;
 		case IDA_ANNODLG_ICON_RECT:
-			annodlg_on_append_item(widget, ATTR_ICON_RECT);
+			annodlg_on_append_item(widget, ICON_RECT);
 			break;
 		case IDA_ANNODLG_ICON_STAR:
-			annodlg_on_append_item(widget, ATTR_ICON_STAR);
+			annodlg_on_append_item(widget, ICON_STAR);
 			break;
 		}
 	}else if (cid == IDC_ANNODLG_MENU_COLOR)
@@ -716,6 +722,8 @@ res_win_t annodlg_create(const tchar_t* title, string_t var, res_win_t owner)
 	widget_adjust_size(WD_STYLE_DIALOG, &xs);
 
 	widget_size(dlg, &xs);
+	widget_update(dlg);
+
 	widget_center_window(dlg, owner);
 
 	if (widget_is_valid(owner))

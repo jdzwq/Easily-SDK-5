@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_list_icon_span: set the list icon span.
 */
-#define set_list_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_list_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_list_icon_span: get the list icon span.
 */
-#define get_list_icon_span(ptr)								get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_list_icon_span(ptr)								get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER itemWidth: numeric.
 @SET set_list_item_width: set the list item width.
@@ -139,26 +139,15 @@ LICENSE.GPL3 for more details.
 */
 #define set_list_item_title(ilk,token)						set_dom_node_attr(ilk,ATTR_TITLE,-1,token,-1)
 /*
-@PROPER image: string.
-@GET get_list_item_image_ptr: get the list item image.
+@PROPER icon: string.
+@GET get_list_item_icon_ptr: get the list item icon.
 */
-#define get_list_item_image_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
+#define get_list_item_icon_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_list_item_image: set the list item image
+@PROPER icon: string.
+@SET set_list_item_icon: set the list item icon
 */
-#define set_list_item_image(ilk,token)						set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-
-/*
-@PROPER images: document.
-@SET set_list_images: set the list images document.
-*/
-#define set_list_images(ptr,images)							set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_list_images: get the list images document.
-*/
-#define get_list_images(ptr)								get_dom_node_images(ptr)
+#define set_list_item_icon(ilk,token)						set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER locked: boolean.
 @SET set_list_item_locked: set the list item is locked.

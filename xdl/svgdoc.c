@@ -625,6 +625,19 @@ void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t*
 	write_xpen_to_svg_node(glk, pxp);
 }
 
+void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	tchar_t token[2 * 4 * NUM_LEN + 1] = { 0 };
+
+	set_dom_node_name(glk, SVG_NODE_PATH, -1);
+
+	//xsprintf(token, _T("M%d,%d C%d,%d %d,%d %d,%d"), ppt1->x, ppt1->y, ppt2->x, ppt2->y, ppt3->x, ppt3->y, ppt4->x, ppt4->y);
+
+	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
+
+	write_xpen_to_svg_node(glk, pxp);
+}
+
 void write_ellipse_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	tchar_t token[NUM_LEN + 1];

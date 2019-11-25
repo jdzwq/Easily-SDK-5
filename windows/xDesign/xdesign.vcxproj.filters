@@ -30,9 +30,6 @@
     <ClInclude Include="FormPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GraphPanel.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="GridPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -81,18 +78,24 @@
     <ClInclude Include="SQLPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ChartPanel.h">
+    <ClInclude Include="JsonPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WEBPanel.h">
+    <ClInclude Include="XMLPanel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StatisPanel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PanoramaPanel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DiagramPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SchemaPanel.cpp">
@@ -137,16 +140,25 @@
     <ClCompile Include="SQLPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ChartPanel.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="FormPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GridPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WEBPanel.cpp">
+    <ClCompile Include="JsonPanel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLPanel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StatisPanel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PanoramaPanel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DiagramPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

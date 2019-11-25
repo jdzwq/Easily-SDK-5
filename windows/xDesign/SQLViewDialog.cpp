@@ -130,7 +130,6 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hGrid, widget);
 
 	LINKPTR ptrGrid = create_grid_doc();
-	set_grid_images(ptrGrid, g_imagelist);
 
 	gridctrl_attach(pdt->hGrid, ptrGrid);
 	widget_show(pdt->hGrid, WD_SHOW_NORMAL);
@@ -308,19 +307,19 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	xr_push.h = xs.cy - 2 * nSplit;
 
 	widget_move(pdt->hPushCancel, RECTPOINT(&xr_push));
-	widget_update_client(pdt->hPushCancel);
+	widget_update(pdt->hPushCancel);
 
 	xr_push.x -= (xs.cx + nSplit);
 
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
-	widget_update_client(pdt->hPushOK);
+	widget_update(pdt->hPushOK);
 
 	xr_push.x -= (xs.cx + nSplit);
 
 	widget_move(pdt->hPushExec, RECTPOINT(&xr_push));
-	widget_update_client(pdt->hPushExec);
+	widget_update(pdt->hPushExec);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
@@ -444,13 +443,13 @@ res_win_t SQLViewDlg_Create(const TCHAR* title, SQLVIEWDLG_PARAM* ppd)
 	parse_xcolor(&clr.clr_frg, g_face[g_indFace].frg);
 	parse_xcolor(&clr.clr_txt, g_face[g_indFace].txt);
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
+	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
 	widget_set_color_mode(widget, &clr);
 
 	widget_center_window(widget, g_hMain);
+	widget_update(widget);
 	widget_show(widget, WD_SHOW_NORMAL);
-	widget_update_window(widget);
-	widget_update_client(widget);
 
 	return widget;
 }

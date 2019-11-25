@@ -47,6 +47,8 @@ typedef struct _grid_delta_t{
 	short cur_page;
 
 	res_win_t editor;
+	res_win_t hsc;
+	res_win_t vsc;
 
 	bool_t b_drag_row, b_drag_col;
 	bool_t b_size_row, b_size_col;
@@ -424,7 +426,7 @@ void _gridctrl_ensure_visible(res_win_t widget)
 		if (page && page != ptd->cur_page)
 		{
 			ptd->cur_page = page;
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 		}
 	}
 
@@ -470,7 +472,7 @@ void noti_grid_reset_check(res_win_t widget)
 		rlk = get_next_row(ptd->grid, rlk);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void noti_grid_reset_select(res_win_t widget)
@@ -495,7 +497,7 @@ void noti_grid_reset_select(res_win_t widget)
 	if (!count)
 		return;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void noti_grid_col_sizing(res_win_t widget, long x, long y)
@@ -561,7 +563,7 @@ void noti_grid_col_sized(res_win_t widget, long x, long y)
 		widget_get_client_rect(widget, &xrCli);
 	}
 
-	widget_update(widget, &xrCli, 0);
+	widget_redraw(widget, &xrCli, 0);
 
 	ptd->b_size_col = 0;
 	noti_grid_owner(widget, NC_COLSIZED, ptd->grid, NULL, ptd->col, NULL);
@@ -613,7 +615,7 @@ void noti_grid_row_sized(res_win_t widget, long x, long y)
 	mh = (float)(long)mh;
 	set_grid_rowbar_height(ptd->grid, mh);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	ptd->b_size_row = 0;
 	noti_grid_owner(widget, NC_ROWSIZED, ptd->grid, ptd->row, NULL, NULL);
@@ -685,7 +687,7 @@ void noti_grid_col_drop(res_win_t widget, long x, long y)
 		}
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -734,7 +736,7 @@ void noti_grid_row_drop(res_win_t widget, long x, long y)
 	widget_get_client_rect(widget, &xrCli);
 	ft_inter_rect(&xrCli, &xrRow);
 
-	widget_update(widget, &xrCli, 0);
+	widget_redraw(widget, &xrCli, 0);
 
 	pt.x = x;
 	pt.y = y;
@@ -758,7 +760,7 @@ void noti_grid_row_checked(res_win_t widget, link_t_ptr rlk)
 	_gridctrl_row_rect(widget, rlk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_grid_col_selected(res_win_t widget, link_t_ptr clk)
@@ -778,7 +780,7 @@ void noti_grid_col_selected(res_win_t widget, link_t_ptr clk)
 	_gridctrl_col_rect(widget, ptd->row, clk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t noti_grid_row_insert(res_win_t widget, link_t_ptr rlk)
@@ -820,7 +822,7 @@ bool_t noti_grid_row_changing(res_win_t widget)
 
 	ptd->row = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -837,7 +839,7 @@ void noti_grid_row_changed(res_win_t widget, link_t_ptr rlk)
 
 	ptd->row = rlk;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_grid_owner(widget, NC_ROWCHANGED, ptd->grid, ptd->row, NULL, NULL);
 }
@@ -856,7 +858,7 @@ void noti_grid_col_changing(res_win_t widget)
 
 	ptd->col = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_grid_col_changed(res_win_t widget, link_t_ptr clk)
@@ -871,7 +873,7 @@ void noti_grid_col_changed(res_win_t widget, link_t_ptr clk)
 
 	ptd->col = clk;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_grid_owner(widget, NC_COLCHANGED, ptd->grid, NULL, ptd->col, NULL);
 }
@@ -1304,6 +1306,12 @@ void hand_grid_destroy(res_win_t widget)
 
 	noti_grid_reset_editor(widget, 0);
 
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
+
 	_gridctrl_clean(widget);
 	destroy_stack_table(ptd->stack);
 
@@ -1356,7 +1364,25 @@ void hand_grid_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -1471,7 +1497,7 @@ void hand_grid_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 		{
 			sort_grid_col(ptd->grid, ptd->col);
 
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 		}
 	}
 
@@ -1831,6 +1857,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	res_ctx_t rdc;
 	xrect_t xr;
+	xsize_t xs;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -1855,7 +1882,8 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1869,13 +1897,6 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	if (widget_can_paging(widget))
 	{
-		if (!b_design)
-		{
-			parse_xcolor(&xc, xb.color);
-			lighten_xcolor(&xc, DEF_SOFT_DARKEN);
-			draw_shadow(pif->canvas, &xc, (const xrect_t*)&cb);
-		}
-
 		parse_xcolor(&xc, xb.color);
 		lighten_xcolor(&xc, DEF_SOFT_DARKEN);
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
@@ -2034,7 +2055,7 @@ link_t_ptr gridctrl_detach(res_win_t widget)
 
 	ptd->cur_page = 0;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	return data;
 }
@@ -2121,9 +2142,7 @@ void gridctrl_redraw(res_win_t widget, bool_t bCalc)
 
 	_gridctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void gridctrl_tabskip(res_win_t widget, int dir)
@@ -2235,13 +2254,13 @@ bool_t gridctrl_set_cell_text(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, 
 	{
 		if (calc_grid_row(ptd->grid, rlk))
 		{
-			widget_update(widget, NULL, 0);
+			widget_redraw(widget, NULL, 0);
 		}
 	}
 
 	_gridctrl_row_rect(widget, rlk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -2403,7 +2422,7 @@ void gridctrl_redraw_row(res_win_t widget, link_t_ptr rlk, bool_t bCalc)
 	xrCli.y = xr.y;
 	xrCli.h -= xr.y;
 
-	widget_update(widget, &xrCli, 0);
+	widget_redraw(widget, &xrCli, 0);
 }
 
 void gridctrl_redraw_col(res_win_t widget, link_t_ptr clk, bool_t bCalc)
@@ -2434,7 +2453,7 @@ void gridctrl_redraw_col(res_win_t widget, link_t_ptr clk, bool_t bCalc)
 	xrCli.x = xr.x;
 	xrCli.w -= xr.x;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t gridctrl_set_focus_cell(res_win_t widget, link_t_ptr rlk, link_t_ptr clk)
@@ -2633,7 +2652,7 @@ void gridctrl_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2656,7 +2675,7 @@ void gridctrl_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2683,7 +2702,7 @@ void gridctrl_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2710,7 +2729,7 @@ void gridctrl_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -2737,7 +2756,7 @@ void gridctrl_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->cur_page = nCurPage;
 
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 

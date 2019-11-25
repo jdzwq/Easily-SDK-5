@@ -243,7 +243,7 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	widget_move(pdt->hEdit, RECTPOINT(&xr_reg));
 	widget_size(pdt->hEdit, RECTSIZE(&xr_reg));
-	widget_update_client(pdt->hEdit);
+	widget_update(pdt->hEdit);
 
 	xr.y = xr.y + xr.h - xs.cy;
 	xr.h = xs.cy;
@@ -260,14 +260,14 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	xr_push.h = xr.h - 2 * xs.cy;
 
 	widget_move(pdt->hPushCancel, RECTPOINT(&xr_push));
-	widget_update_client(pdt->hPushCancel);
+	widget_update(pdt->hPushCancel);
 
 	xr_push.x -= (xs.cx + xs.cy);
 
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
-	widget_update_client(pdt->hPushOK);
+	widget_update(pdt->hPushOK);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void SQLFetchDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
@@ -371,13 +371,13 @@ res_win_t SQLFetchDlg_Create(const TCHAR* title, SQLFETCHDLG_PARAM* ppd)
 	parse_xcolor(&clr.clr_frg, g_face[g_indFace].frg);
 	parse_xcolor(&clr.clr_txt, g_face[g_indFace].txt);
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
+	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
 	widget_set_color_mode(widget, &clr);
 
 	widget_center_window(widget, g_hMain);
+	widget_update(widget);
 	widget_show(widget, WD_SHOW_NORMAL);
-	widget_update_window(widget);
-	widget_update_client(widget);
 
 	return widget;
 }

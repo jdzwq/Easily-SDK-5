@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_status_icon_span: set the status icon span.
 */
-#define set_status_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_status_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_status_icon_span: get the status icon span.
 */
-#define get_status_icon_span(ptr)						get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_status_icon_span(ptr)						get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER alignment: string.
 @GET get_status_alignment_ptr: get the status alignment.
@@ -129,15 +129,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_status_item_id_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ID,-1)
 /*
-@PROPER image: string.
-@GET get_status_item_image_ptr: get the status item image.
+@PROPER icon: string.
+@GET get_status_item_icon_ptr: get the status item icon.
 */
-#define get_status_item_image_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
+#define get_status_item_icon_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_status_item_image: set the status item image.
+@PROPER icon: string.
+@SET set_status_item_icon: set the status item icon.
 */
-#define set_status_item_image(ilk,token)				set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
+#define set_status_item_icon(ilk,token)				set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER imagePosition: string.
 @GET get_status_item_image_position_ptr: get the status item image position.
@@ -158,17 +158,6 @@ LICENSE.GPL3 for more details.
 @GET get_status_item_width: get the status item width.
 */
 #define get_status_item_width(ilk)						get_dom_node_attr_float(ilk,ATTR_ITEM_WIDTH)
-
-/*
-@PROPER images: document.
-@SET set_status_images: set the status images document.
-*/
-#define set_status_images(ptr,images)					set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_status_images: get the status images document.
-*/
-#define get_status_images(ptr)							get_dom_node_images(ptr)
 
 #ifdef	__cplusplus
 extern "C" {

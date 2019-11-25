@@ -100,7 +100,7 @@ void hand_pushbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	if (!(ws & WD_PUSHBOX_CHECK))
 	{
 		ptd->b_check = 1;
-		widget_update(widget, NULL, 0);
+		widget_redraw(widget, NULL, 0);
 	}
 }
 
@@ -128,7 +128,7 @@ void hand_pushbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		ptd->b_check = 0;
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	widget_post_command(widget_get_owner(widget), ptd->b_check, widget_get_user_id(widget), (var_long)widget);
 }
@@ -139,7 +139,7 @@ void hand_pushbox_size(res_win_t widget, int code, const xsize_t* prs)
 	
 	_pushbox_reset_page(widget);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_pushbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -171,7 +171,7 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_xface(widget, &xa);
 	widget_get_xbrush(widget, &xb);
 	widget_get_xpen(widget, &xp);
-	widget_get_xcolor(widget, &xc);
+	widget_get_iconic(widget, &xc);
 
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
@@ -197,9 +197,9 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		ft_center_rect(&xr_box, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
 		if (ptd->b_check)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, ATTR_ICON_CHECKED);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, ICON_CHECKED);
 		else
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, ATTR_ICON_CHECKBOX);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, ICON_CHECKBOX);
 
 		xr_box.fx = cb.fx + DEF_SMALL_ICON;
 		xr_box.fy = cb.fy;
@@ -347,7 +347,7 @@ void pushbox_set_text(res_win_t widget, const tchar_t* text, int len)
 	ptd->sz_text = xsalloc(len + 1);
 	xsncpy(ptd->sz_text, text, len);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void pushbox_popup_size(res_win_t widget, xsize_t* pxs)

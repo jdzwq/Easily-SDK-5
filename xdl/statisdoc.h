@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc graph document
+	@doc statis document
 
-	@module	graphdoc.h | interface file
+	@module	statisdoc.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,8 +29,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _GRAPHDOC_H
-#define _GRAPHDOC_H
+#ifndef _STATISDOC_H
+#define _STATISDOC_H
 
 #include "xdldef.h"
 
@@ -40,174 +40,174 @@ LICENSE.GPL3 for more details.
 
 /*
 @PROPER name: string.
-@GET get_graph_name: get the graph name.
+@GET get_statis_name: get the statis name.
 */
-#define get_graph_name_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_NAME,-1)
+#define get_statis_name_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_NAME,-1)
 /*
 @PROPER name: string.
-@SET set_graph_name_ptr: set the graph name.
+@SET set_statis_name_ptr: set the statis name.
 */
-#define set_graph_name(ptr,token)						set_dom_node_attr(ptr,ATTR_NAME,-1,token,-1)
+#define set_statis_name(ptr,token)						set_dom_node_attr(ptr,ATTR_NAME,-1,token,-1)
 /*
 @PROPER id: string.
-@GET set_graph_name: get the graph identifier.
+@GET set_statis_name: get the statis identifier.
 */
-#define get_graph_id_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_ID,-1)
+#define get_statis_id_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_ID,-1)
 /*
 @PROPER id: string.
-@SET get_graph_name_ptr: set the graph identifier.
+@SET get_statis_name_ptr: set the statis identifier.
 */
-#define set_graph_id(ptr,token)							set_dom_node_attr(ptr,ATTR_ID,-1,token,-1)
+#define set_statis_id(ptr,token)							set_dom_node_attr(ptr,ATTR_ID,-1,token,-1)
 /*
 @PROPER title: string.
-@GET get_graph_title_ptr: get the graph title.
+@GET get_statis_title_ptr: get the statis title.
 */
-#define get_graph_title_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_TITLE,-1)
+#define get_statis_title_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_TITLE,-1)
 /*
 @PROPER title: string.
-@SET set_graph_title: set the graph title.
+@SET set_statis_title: set the statis title.
 */
-#define set_graph_title(ptr,token)						set_dom_node_attr(ptr,ATTR_TITLE,-1,token,-1)
+#define set_statis_title(ptr,token)						set_dom_node_attr(ptr,ATTR_TITLE,-1,token,-1)
 /*
 @PROPER style: string.
-@GET get_graph_style_ptr: get the graph style.
+@GET get_statis_style_ptr: get the statis style.
 */
-#define get_graph_style_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
+#define get_statis_style_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
 /*
 @PROPER style: string.
-@SET set_graph_style: set the graph style.
+@SET set_statis_style: set the statis style.
 */
-#define set_graph_style(ptr,token)						set_dom_node_attr(ptr,ATTR_STYLE,-1,token,-1)
+#define set_statis_style(ptr,token)						set_dom_node_attr(ptr,ATTR_STYLE,-1,token,-1)
 /*
 @PROPER width: float.
-@GET get_graph_width: get the graph width.
+@GET get_statis_width: get the statis width.
 */
-#define get_graph_width(ptr)							get_dom_node_attr_float(ptr,ATTR_WIDTH)
+#define get_statis_width(ptr)							get_dom_node_attr_float(ptr,ATTR_WIDTH)
 /*
 @PROPER width: float.
-@SET set_graph_width: set the graph width.
+@SET set_statis_width: set the statis width.
 */
-#define set_graph_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+#define set_statis_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
 /*
 @PROPER height: float.
-@GET get_graph_height: get the graph height.
+@GET get_statis_height: get the statis height.
 */
-#define get_graph_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+#define get_statis_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
 /*
 @PROPER height: float.
-@SET set_graph_height: set the graph height.
+@SET set_statis_height: set the statis height.
 */
-#define set_graph_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+#define set_statis_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
 /*
 @PROPER height: float.
-@GET get_graph_title_height: get the graph title height.
+@GET get_statis_title_height: get the statis title height.
 */
-#define get_graph_title_height(ptr)						get_dom_node_attr_float(ptr,ATTR_TITLE_HEIGHT)
+#define get_statis_title_height(ptr)						get_dom_node_attr_float(ptr,ATTR_TITLE_HEIGHT)
 /*
 @PROPER height: float.
-@SET set_graph_title_height: set the graph title height.
+@SET set_statis_title_height: set the statis title height.
 */
-#define set_graph_title_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_TITLE_HEIGHT,n)
+#define set_statis_title_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_TITLE_HEIGHT,n)
 /*
 @PROPER yaxHeight: float.
-@GET get_graph_yaxbar_height: get the graph yax bar height.
+@GET get_statis_yaxbar_height: get the statis yax bar height.
 */
-#define get_graph_yaxbar_height(ptr)					get_dom_node_attr_float(ptr,ATTR_YAXBAR_HEIGHT)
+#define get_statis_yaxbar_height(ptr)					get_dom_node_attr_float(ptr,ATTR_YAXBAR_HEIGHT)
 /*
 @PROPER yaxHeight: float.
-@SET set_graph_yaxbar_height: set the graph yax bar height.
+@SET set_statis_yaxbar_height: set the statis yax bar height.
 */
-#define set_graph_yaxbar_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_YAXBAR_HEIGHT,n)
+#define set_statis_yaxbar_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_YAXBAR_HEIGHT,n)
 /*
 @PROPER yaxWidth: float.
-@GET get_graph_yaxbar_width: get the graph yax bar width.
+@GET get_statis_yaxbar_width: get the statis yax bar width.
 */
-#define get_graph_yaxbar_width(ptr)						get_dom_node_attr_float(ptr,ATTR_YAXBAR_WIDTH)
+#define get_statis_yaxbar_width(ptr)						get_dom_node_attr_float(ptr,ATTR_YAXBAR_WIDTH)
 /*
 @PROPER yaxWidth: float.
-@SET set_graph_yaxbar_width: set the graph yax bar width.
+@SET set_statis_yaxbar_width: set the statis yax bar width.
 */
-#define set_graph_yaxbar_width(ptr,n)					set_dom_node_attr_float(ptr,ATTR_YAXBAR_WIDTH,n)
+#define set_statis_yaxbar_width(ptr,n)					set_dom_node_attr_float(ptr,ATTR_YAXBAR_WIDTH,n)
 /*
 @PROPER xaxWidth: float.
-@GET get_graph_xaxbar_width: get the graph xax bar width.
+@GET get_statis_xaxbar_width: get the statis xax bar width.
 */
-#define get_graph_xaxbar_width(ptr)						get_dom_node_attr_float(ptr,ATTR_XAXBAR_WIDTH)
+#define get_statis_xaxbar_width(ptr)						get_dom_node_attr_float(ptr,ATTR_XAXBAR_WIDTH)
 /*
 @PROPER xaxWidth: float.
-@SET set_graph_xaxbar_width: set the graph xax bar width.
+@SET set_statis_xaxbar_width: set the statis xax bar width.
 */
-#define set_graph_xaxbar_width(ptr,n)					set_dom_node_attr_float(ptr,ATTR_XAXBAR_WIDTH,n)
+#define set_statis_xaxbar_width(ptr,n)					set_dom_node_attr_float(ptr,ATTR_XAXBAR_WIDTH,n)
 /*
 @PROPER xaxHeight: float.
-@GET get_graph_xaxbar_height: get the graph xax bar height.
+@GET get_statis_xaxbar_height: get the statis xax bar height.
 */
-#define get_graph_xaxbar_height(ptr)					get_dom_node_attr_float(ptr,ATTR_XAXBAR_HEIGHT)
+#define get_statis_xaxbar_height(ptr)					get_dom_node_attr_float(ptr,ATTR_XAXBAR_HEIGHT)
 /*
 @PROPER xaxHeight: float.
-@SET set_graph_xaxbar_height: set the graph xax bar height.
+@SET set_statis_xaxbar_height: set the statis xax bar height.
 */
-#define set_graph_xaxbar_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_XAXBAR_HEIGHT,n)
+#define set_statis_xaxbar_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_XAXBAR_HEIGHT,n)
 /*
 @PROPER showCheck: boolean.
-@GET get_graph_showcheck: get the graph show check box.
+@GET get_statis_showcheck: get the statis show check box.
 */
-#define get_graph_showcheck(ptr)						get_dom_node_attr_boolean(ptr,ATTR_SHOWCHECK)
+#define get_statis_showcheck(ptr)						get_dom_node_attr_boolean(ptr,ATTR_SHOWCHECK)
 /*
 @PROPER showCheck: boolean.
-@SET set_graph_showcheck: set the graph show check box.
+@SET set_statis_showcheck: set the statis show check box.
 */
-#define set_graph_showcheck(ptr,b)						set_dom_node_attr_boolean(ptr,ATTR_SHOWCHECK,b)
+#define set_statis_showcheck(ptr,b)						set_dom_node_attr_boolean(ptr,ATTR_SHOWCHECK,b)
 /*
 @PROPER showSummary: boolean.
-@GET get_graph_showsum: get the graph show summary bar.
+@GET get_statis_showsum: get the statis show summary bar.
 */
-#define get_graph_showsum(ptr)							get_dom_node_attr_boolean(ptr,ATTR_SHOWSUM)
+#define get_statis_showsum(ptr)							get_dom_node_attr_boolean(ptr,ATTR_SHOWSUM)
 /*
 @PROPER showSummary: boolean.
-@SET set_graph_showsum: set the graph show summary bar.
+@SET set_statis_showsum: set the statis show summary bar.
 */
-#define set_graph_showsum(ptr,b)						set_dom_node_attr_boolean(ptr,ATTR_SHOWSUM,b)
+#define set_statis_showsum(ptr,b)						set_dom_node_attr_boolean(ptr,ATTR_SHOWSUM,b)
 /*
 @PROPER xaxIs: boolean.
-@GET get_graph_xaxis_ptr: get the graph xax is.
+@GET get_statis_xaxis_ptr: get the statis xax is.
 */
-#define get_graph_xaxis_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_XAXIS,-1)
+#define get_statis_xaxis_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_XAXIS,-1)
 /*
 @PROPER xaxIs: boolean.
-@SET set_graph_xaxis: set the graph xax is.
+@SET set_statis_xaxis: set the statis xax is.
 */
-#define set_graph_xaxis(ptr,token)						set_dom_node_attr(ptr,ATTR_XAXIS,-1,token,-1)
+#define set_statis_xaxis(ptr,token)						set_dom_node_attr(ptr,ATTR_XAXIS,-1,token,-1)
 /*
 @PROPER xaxDataType: boolean.
-@GET get_graph_xaxdt_ptr: get the graph xax data type.
+@GET get_statis_xaxdt_ptr: get the statis xax data type.
 */
-#define get_graph_xaxdt_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_XAXDT,-1)
+#define get_statis_xaxdt_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_XAXDT,-1)
 /*
 @PROPER xaxDataType: boolean.
-@SET set_graph_xaxdt: set the graph xax data type.
+@SET set_statis_xaxdt: set the statis xax data type.
 */
-#define set_graph_xaxdt(ptr,token)						set_dom_node_attr(ptr,ATTR_XAXDT,-1,token,-1)
+#define set_statis_xaxdt(ptr,token)						set_dom_node_attr(ptr,ATTR_XAXDT,-1,token,-1)
 /*
 @PROPER xaxFormat: boolean.
-@GET get_graph_xaxfmt_ptr: get the graph xax format.
+@GET get_statis_xaxfmt_ptr: get the statis xax format.
 */
-#define get_graph_xaxfmt_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_XAXFMT,-1)
+#define get_statis_xaxfmt_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_XAXFMT,-1)
 /*
 @PROPER xaxFormat: boolean.
-@SET set_graph_xaxfmt: set the graph xax format.
+@SET set_statis_xaxfmt: set the statis xax format.
 */
-#define set_graph_xaxfmt(ptr,token)						set_dom_node_attr(ptr,ATTR_XAXFMT,-1,token,-1)
+#define set_statis_xaxfmt(ptr,token)						set_dom_node_attr(ptr,ATTR_XAXFMT,-1,token,-1)
 /*
 @PROPER xaxWrap: boolean.
-@GET get_graph_xaxwrp: get the graph xax wrap drawing.
+@GET get_statis_xaxwrp: get the statis xax wrap drawing.
 */
-#define get_graph_xaxwrp(ptr)							get_dom_node_attr_boolean(ptr,ATTR_XAXWRP)
+#define get_statis_xaxwrp(ptr)							get_dom_node_attr_boolean(ptr,ATTR_XAXWRP)
 /*
 @PROPER xaxWrap: boolean.
-@SET set_graph_xaxwrp: set the graph xax wrap drawing.
+@SET set_statis_xaxwrp: set the statis xax wrap drawing.
 */
-#define set_graph_xaxwrp(ptr,b)							set_dom_node_attr_boolean(ptr,ATTR_XAXWRP,b)
+#define set_statis_xaxwrp(ptr,b)							set_dom_node_attr_boolean(ptr,ATTR_XAXWRP,b)
 /*
 @PROPER name: string.
 @SET set_gax_name: set the gax name.
@@ -229,15 +229,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_gax_title_ptr(glk)							get_dom_node_attr_ptr(glk,ATTR_TITLE,-1)
 /*
-@PROPER graphType: string.
-@GET get_gax_graph_type_ptr: get the gax graph type.
+@PROPER statisType: string.
+@GET get_gax_statis_type_ptr: get the gax statis type.
 */
-#define get_gax_graph_type_ptr(glk)						get_dom_node_attr_ptr(glk,ATTR_GRAPH_TYPE,-1)
+#define get_gax_statis_type_ptr(glk)						get_dom_node_attr_ptr(glk,ATTR_STATIS_TYPE,-1)
 /*
-@PROPER graphType: string.
-@SET set_gax_graph_type: set the gax graph type.
+@PROPER statisType: string.
+@SET set_gax_statis_type: set the gax statis type.
 */
-#define set_gax_graph_type(glk,token)					set_dom_node_attr(glk,ATTR_GRAPH_TYPE,-1,token,-1)
+#define set_gax_statis_type(glk,token)					set_dom_node_attr(glk,ATTR_STATIS_TYPE,-1,token,-1)
 /*
 @PROPER step: numeric.
 @GET get_gax_step: get the gax step.
@@ -393,24 +393,24 @@ LICENSE.GPL3 for more details.
 
 /*
 @PROPER images: document.
-@SET set_graph_images: set the graph images reference.
+@SET set_statis_images: set the statis images reference.
 */
-#define set_graph_images(ptr,images)					set_dom_node_images(ptr,images)
+#define set_statis_images(ptr,images)					set_dom_node_images(ptr,images)
 /*
 @PROPER images: document.
-@GET get_graph_images: get the graph image reference.
+@GET get_statis_images: get the statis image reference.
 */
-#define get_graph_images(ptr)							get_dom_node_images(ptr)
+#define get_statis_images(ptr)							get_dom_node_images(ptr)
 /*
 @PROPER design: boolean.
-@SET set_graph_design: set the graph is design mode.
+@SET set_statis_design: set the statis is design mode.
 */
-#define set_graph_design(ptr,b)							set_dom_node_mask_check(ptr,MSK_DESIGN,b) 
+#define set_statis_design(ptr,b)							set_dom_node_mask_check(ptr,MSK_DESIGN,b) 
 /*
 @PROPER design: boolean.
-@GET graph_is_design: get the graph is design mode.
+@GET statis_is_design: get the statis is design mode.
 */
-#define graph_is_design(ptr)							get_dom_node_mask_check(ptr,MSK_DESIGN)
+#define statis_is_design(ptr)							get_dom_node_mask_check(ptr,MSK_DESIGN)
 /*
 @PROPER checked: boolean.
 @SET set_xax_checked: set the xax is checked.
@@ -460,96 +460,96 @@ extern "C" {
 /************************************************Functions***************************************************************************/
 
 /*
-@FUNCTION create_graph_doc: create a graph document.
-@RETURN link_t_ptr: return the graph document link component.
+@FUNCTION create_statis_doc: create a statis document.
+@RETURN link_t_ptr: return the statis document link component.
 */
-XDL_API link_t_ptr create_graph_doc(void);
+XDL_API link_t_ptr create_statis_doc(void);
 
 /*
-@FUNCTION destroy_graph_doc: destroy a graph document.
-@INPUT link_t_ptr ptr: the graph document link component.
+@FUNCTION destroy_statis_doc: destroy a statis document.
+@INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_graph_doc(link_t_ptr ptr);
+XDL_API void destroy_statis_doc(link_t_ptr ptr);
 
 /*
-@FUNCTION clear_graph_doc: clear a graph document.
-@INPUT link_t_ptr ptr: the graph document link component.
+@FUNCTION clear_statis_doc: clear a statis document.
+@INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_graph_doc(link_t_ptr ptr);
+XDL_API void clear_statis_doc(link_t_ptr ptr);
 
 /*
-@FUNCTION clear_graph_xaxset: clear the graph xax set.
-@INPUT link_t_ptr ptr: the graph document link component.
+@FUNCTION clear_statis_xaxset: clear the statis xax set.
+@INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_graph_xaxset(link_t_ptr ptr);
+XDL_API void clear_statis_xaxset(link_t_ptr ptr);
 
 /*
-@FUNCTION clear_graph_gaxset: clear the graph gax set.
-@INPUT link_t_ptr ptr: the graph document link component.
+@FUNCTION clear_statis_gaxset: clear the statis gax set.
+@INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_graph_gaxset(link_t_ptr ptr);
+XDL_API void clear_statis_gaxset(link_t_ptr ptr);
 
 /*
-@FUNCTION clear_graph_yaxset: clear the graph yax set.
-@INPUT link_t_ptr ptr: the graph document link component.
+@FUNCTION clear_statis_yaxset: clear the statis yax set.
+@INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_graph_yaxset(link_t_ptr ptr);
+XDL_API void clear_statis_yaxset(link_t_ptr ptr);
 
 /*
-@FUNCTION merge_graph_yaxset: merge source yax set to destination yax set.
+@FUNCTION merge_statis_yaxset: merge source yax set to destination yax set.
 @INPUT link_t_ptr ptr_dst: the destination yax link component.
 @INPUT link_t_ptr ptr_src: the source yax link component.
 @RETURN void: none.
 */
-XDL_API void merge_graph_yaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+XDL_API void merge_statis_yaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
-@FUNCTION merge_graph_xaxset: merge source xax set to destination xax set.
+@FUNCTION merge_statis_xaxset: merge source xax set to destination xax set.
 @INPUT link_t_ptr ptr_dst: the destination xax link component.
 @INPUT link_t_ptr ptr_src: the source xax link component.
 @RETURN void: none.
 */
-XDL_API void merge_graph_xaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+XDL_API void merge_statis_xaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
-@FUNCTION is_graph_doc: test is graph document.
-@INPUT link_t_ptr ptr: the graph link component.
-@RETURN bool_t: return nonzero for being a graph document, otherwise return zero.
+@FUNCTION is_statis_doc: test is statis document.
+@INPUT link_t_ptr ptr: the statis link component.
+@RETURN bool_t: return nonzero for being a statis document, otherwise return zero.
 */
-XDL_API bool_t is_graph_doc(link_t_ptr ptr);
+XDL_API bool_t is_statis_doc(link_t_ptr ptr);
 
 /*
-@FUNCTION is_graph_xax: test is graph xax.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION is_statis_xax: test is statis xax.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr xlk: the xax link component.
-@RETURN bool_t: return nonzero for being a xax of graph, otherwise return zero.
+@RETURN bool_t: return nonzero for being a xax of statis, otherwise return zero.
 */
-XDL_API bool_t is_graph_xax(link_t_ptr ptr,link_t_ptr xlk);
+XDL_API bool_t is_statis_xax(link_t_ptr ptr,link_t_ptr xlk);
 
 /*
-@FUNCTION is_graph_yax: test is graph yax.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION is_statis_yax: test is statis yax.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr ylk: the yax link component.
-@RETURN bool_t: return nonzero for being a yax of graph, otherwise return zero.
+@RETURN bool_t: return nonzero for being a yax of statis, otherwise return zero.
 */
-XDL_API bool_t is_graph_yax(link_t_ptr ptr,link_t_ptr ylk);
+XDL_API bool_t is_statis_yax(link_t_ptr ptr,link_t_ptr ylk);
 
 /*
-@FUNCTION is_graph_gax: test is graph gax.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION is_statis_gax: test is statis gax.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr glk: the gax link component.
-@RETURN bool_t: return nonzero for being a gax of graph, otherwise return zero.
+@RETURN bool_t: return nonzero for being a gax of statis, otherwise return zero.
 */
-XDL_API bool_t is_graph_gax(link_t_ptr ptr, link_t_ptr glk);
+XDL_API bool_t is_statis_gax(link_t_ptr ptr, link_t_ptr glk);
 
 /*
-@FUNCTION insert_gax: add a new gax into graph.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION insert_gax: add a new gax into statis.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the gax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new gax link component.
 */
@@ -563,15 +563,15 @@ XDL_API link_t_ptr insert_gax(link_t_ptr ptr, link_t_ptr pos);
 XDL_API void delete_gax(link_t_ptr glk);
 
 /*
-@FUNCTION get_graph_gaxset: get the graph gax set.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_statis_gaxset: get the statis gax set.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN link_t_ptr: return the gax set link component.
 */
-XDL_API link_t_ptr get_graph_gaxset(link_t_ptr ptr);
+XDL_API link_t_ptr get_statis_gaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION get_next_gax: get the next gax.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the gax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the gax link component if exists, otherwise return NULL.
 */
@@ -579,7 +579,7 @@ XDL_API link_t_ptr get_next_gax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_gax: get the previous gax.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the gax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the gax link component if exists, otherwise return NULL.
 */
@@ -587,22 +587,22 @@ XDL_API link_t_ptr get_prev_gax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_gax: find the gax by name.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT const tchar_t* gname: the gax name token.
 @RETURN link_t_ptr: return the gax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_gax(link_t_ptr ptr, const tchar_t* gname);
 
 /*
-@FUNCTION get_gax_count: counting the gaxs in graph.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_gax_count: counting the gaxs in statis.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of gaxs.
 */
 XDL_API int get_gax_count(link_t_ptr ptr);
 
 /*
-@FUNCTION insert_yax: add a new yax into graph.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION insert_yax: add a new yax into statis.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the yax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new yax link component.
 */
@@ -616,61 +616,61 @@ XDL_API link_t_ptr insert_yax(link_t_ptr ptr, link_t_ptr pos);
 XDL_API void delete_yax(link_t_ptr ylk);
 
 /*
-@FUNCTION get_graph_yaxset: get graph yax set.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_statis_yaxset: get statis yax set.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN link_t_ptr: return yax set link component.
 */
-XDL_API link_t_ptr get_graph_yaxset(link_t_ptr ptr);
+XDL_API link_t_ptr get_statis_yaxset(link_t_ptr ptr);
 
 /*
-@FUNCTION get_yax_count: counting yaxs in graph
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_yax_count: counting yaxs in statis
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of yaxs.
 */
 XDL_API int get_yax_count(link_t_ptr ptr);
 
 /*
-@FUNCTION get_yax_selected_count: counting selected yaxs in graph
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_yax_selected_count: counting selected yaxs in statis
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of yaxs.
 */
 XDL_API int get_yax_selected_count(link_t_ptr ptr);
 
 /*
-@FUNCTION get_next_yax: get the next graph yax.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_next_yax: get the next statis yax.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the yax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_next_yax(link_t_ptr ptr,link_t_ptr pos);
 
 /*
-@FUNCTION get_prev_yax: get the previous graph yax.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_prev_yax: get the previous statis yax.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the yax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_prev_yax(link_t_ptr ptr,link_t_ptr pos);
 
 /*
-@FUNCTION get_yax_at: get the graph yax at position.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_yax_at: get the statis yax at position.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_yax_at(link_t_ptr ptr, int index);
 
 /*
-@FUNCTION get_yax: find graph yax by name.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_yax: find statis yax by name.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT const tchar_t* yname: the yax name token.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_yax(link_t_ptr ptr, const tchar_t* yname);
 
 /*
-@FUNCTION get_xax: find graph xax by name.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_xax: find statis xax by name.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT const tchar_t* xname: the xax name token.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
@@ -678,44 +678,44 @@ XDL_API link_t_ptr get_yax_by_id(link_t_ptr ptr, const tchar_t* cid);
 
 /*
 @FUNCTION get_yax_gax: get gax bind to the yax.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN link_t_ptr: return gax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_yax_gax(link_t_ptr ptr, link_t_ptr ylk);
 
 /*
-@FUNCTION get_graph_xaxset: get xax set.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_statis_xaxset: get xax set.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN link_t_ptr: return gax set link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_graph_xaxset(link_t_ptr ptr);
+XDL_API link_t_ptr get_statis_xaxset(link_t_ptr ptr);
 
 /*
-@FUNCTION insert_xax: add a xax to graph.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION insert_xax: add a xax to statis.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr pos: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new xax link component.
 */
 XDL_API link_t_ptr insert_xax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
-@FUNCTION get_xax_count: counting the xaxs in graph.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_xax_count: counting the xaxs in statis.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of xaxs.
 */
 XDL_API int get_xax_count(link_t_ptr ptr);
 
 /*
-@FUNCTION get_xax_checked_count: counting the checked xaxs in graph.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_xax_checked_count: counting the checked xaxs in statis.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of xaxs.
 */
 XDL_API int get_xax_checked_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_xax_at: get the xax at position.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT int pos: the zero based position.
 @RETURN link_t_ptr: return the xax link component if exists, otherwise return NULL.
 */
@@ -730,7 +730,7 @@ XDL_API void delete_xax(link_t_ptr xlk);
 
 /*
 @FUNCTION get_next_xax: get the next xax.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr xlk: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
@@ -738,15 +738,15 @@ XDL_API link_t_ptr get_next_xax(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_xax: get the previous xax.
-@INPUT link_t_ptr ptr: the graph link component.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr xlk: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr get_prev_xax(link_t_ptr ptr, link_t_ptr xlk);
 
 /*
-@FUNCTION get_xax: find graph xax by name.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION get_xax: find statis xax by name.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT const tchar_t* xname: the xax name token.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
@@ -777,11 +777,11 @@ XDL_API void set_xax_storage(link_t_ptr xlk, const tchar_t* key, const tchar_t* 
 XDL_API int get_update_xax_count(link_t_ptr ptr);
 
 /*
-@FUNCTION refresh_graph_xaxset: clear the xax set state.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION refresh_statis_xaxset: clear the xax set state.
+@INPUT link_t_ptr ptr: the statis link component.
 @RETURN void: none.
 */
-XDL_API void refresh_graph_xaxset(link_t_ptr ptr);
+XDL_API void refresh_statis_xaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION set_coor_numeric: set the coor numeric.
@@ -879,14 +879,14 @@ XDL_API void set_xax_clean(link_t_ptr rlk);
 XDL_API void set_xax_dirty(link_t_ptr rlk);
 
 /*
-@FUNCTION calc_graph_gax_base: calcing the graph gax base line.
-@INPUT link_t_ptr ptr: the graph link component.
+@FUNCTION calc_statis_gax_base: calcing the statis gax base line.
+@INPUT link_t_ptr ptr: the statis link component.
 @INPUT link_t_ptr glk: the gax link component.
 @OUTPUT float* pmidd: for return middle line value.
 @OUTPUT float* pstep: for return step value.
 @RETURN void: none.
 */
-XDL_API void calc_graph_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* pstep);
+XDL_API void calc_statis_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* pstep);
 
 #ifdef	__cplusplus
 }
@@ -894,4 +894,4 @@ XDL_API void calc_graph_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, f
 
 #endif //XDLVIEW
 
-#endif //GRAPHDOC_H
+#endif //STATISDOC_H

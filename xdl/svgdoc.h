@@ -275,6 +275,16 @@ XDL_API int read_polygon_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* px
 XDL_API void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
 
 /*
+@FUNCTION write_curve_to_svg_node: write curve attributes to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt: the point array.
+@INPUT int n: the array size.
+@RETURN void: none.
+*/
+XDL_API void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n);
+
+/*
 @FUNCTION write_rect_to_svg_node: write rect attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.

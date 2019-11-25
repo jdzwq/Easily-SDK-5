@@ -3606,10 +3606,19 @@ void ft_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub)
 		pxr->fx = pxr_sub->fx;
 		pxr->fw -= (pxr_sub->fx - pxr->fx);
 	}
-	if (pxr->fy > pxr_sub->fy)
+	else
+	{
+		pxr->fw += (pxr_sub->fx - pxr->fx);
+	}
+
+	if (pxr->fy < pxr_sub->fy)
 	{
 		pxr->fy = pxr_sub->fy;
-		pxr->fh += (pxr->fy - pxr_sub->fy);
+		pxr->fh -= (pxr_sub->fy - pxr->fy);
+	}
+	else
+	{
+		pxr->fh += (pxr_sub->fy - pxr->fy);
 	}
 }
 
@@ -3620,10 +3629,19 @@ void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub)
 		pxr->x = pxr_sub->x;
 		pxr->w -= (pxr_sub->x - pxr->x);
 	}
-	if (pxr->y > pxr_sub->y)
+	else
+	{
+		pxr->w += (pxr_sub->x - pxr->x);
+	}
+
+	if (pxr->y < pxr_sub->y)
 	{
 		pxr->y = pxr_sub->y;
-		pxr->h += (pxr->y - pxr_sub->y);
+		pxr->h -= (pxr_sub->y - pxr->y);
+	}
+	else
+	{
+		pxr->h += (pxr_sub->y - pxr->y);
 	}
 }
 

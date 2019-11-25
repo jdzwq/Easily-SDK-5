@@ -57,10 +57,12 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 	pic->pf_draw_polygon = svg_draw_polygon;
 	pic->pf_draw_polyline = svg_draw_polyline;
 	pic->pf_draw_bezier = svg_draw_bezier;
+	pic->pf_draw_curve = svg_draw_curve;
 	pic->pf_draw_rect = svg_draw_rect;
 	pic->pf_draw_round = svg_draw_round;
 	pic->pf_draw_ellipse = svg_draw_ellipse;
 	pic->pf_draw_shape = svg_draw_shape;
+	pic->pf_draw_shadow = svg_draw_shadow;
 	pic->pf_multi_line = svg_multi_line;
 	pic->pf_draw_text = svg_draw_text;
 	pic->pf_text_out = svg_text_out;

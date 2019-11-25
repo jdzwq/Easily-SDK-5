@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #define IDC_TAGPANEL_PROPER		202
 #define IDC_TAGPANEL_MENU			203
 
-#define TAGPANEL_GROUPITEM_WIDTH		(float)7
+#define TAGPANEL_GROUPITEM_WIDTH		(float)8
 #define TAGPANEL_GROUPITEM_HEIGHT		(float)7
 
 typedef struct tagTagPanelDelta{
@@ -477,43 +477,43 @@ void TagPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("È«Ñ¡"));
-		set_tool_item_image(ilk, BMP_SELECTALL);
+		set_tool_item_icon(ilk, ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("É¾³ý"));
-		set_tool_item_image(ilk, BMP_DELETE);
+		set_tool_item_icon(ilk, ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¿½±´"));
-		set_tool_item_image(ilk, BMP_COPY);
+		set_tool_item_icon(ilk, ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¼ôÇÐ"));
-		set_tool_item_image(ilk, BMP_CUT);
+		set_tool_item_icon(ilk, ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Õ³Ìù"));
-		set_tool_item_image(ilk, BMP_PASTE);
+		set_tool_item_icon(ilk, ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("³·Ïú"));
-		set_tool_item_image(ilk, BMP_UNDO);
+		set_tool_item_icon(ilk, ICON_UNDO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_INSERT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("ÐÂÔö"));
-		set_tool_item_image(ilk, BMP_PLUS);
+		set_tool_item_icon(ilk, ICON_PLUS);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

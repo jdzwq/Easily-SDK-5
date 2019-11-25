@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_menu_icon_span: set the menu icon span.
 */
-#define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_menu_icon_span: get the menu icon span.
 */
-#define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER name: string.
 @GET get_menu_item_name_ptr: get the menu name.
@@ -119,26 +119,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_menu_item_title_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_TITLE,-1)
 /*
-@PROPER image: string.
-@GET get_menu_item_image_ptr: get the menu image.
+@PROPER icon: string.
+@GET get_menu_item_icon_ptr: get the menu icon.
 */
-#define get_menu_item_image_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
+#define get_menu_item_icon_ptr(ilk)						get_dom_node_attr_ptr(ilk,ATTR_ICON,-1)
 /*
-@PROPER image: string.
-@SET set_menu_item_image: set the menu image.
+@PROPER icon: string.
+@SET set_menu_item_icon: set the menu icon.
 */
-#define set_menu_item_image(ilk,token)						set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-
-/*
-@PROPER images: document.
-@SET set_menu_images: set the menu images document.
-*/
-#define set_menu_images(ptr,images)							set_dom_node_images(ptr,images)
-/*
-@PROPER image: document.
-@GET get_menu_images: get the menu images document.
-*/
-#define get_menu_images(ptr)								get_dom_node_images(ptr)
+#define set_menu_item_icon(ilk,token)						set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
 @PROPER checked: boolean.
 @SET set_menu_item_checked: set the menu item is checked.

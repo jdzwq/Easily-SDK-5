@@ -103,6 +103,8 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 	link_t_ptr st = NULL;
 	link_t_ptr nlk;
 
+	tchar_t errtext[ERR_LEN + 1] = { 0 };
+
 	clear_json_doc(ptr);
 
 	vs_name = string_alloc();
@@ -149,6 +151,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			if (ma.cur[0] == _T('{')){ ma.mo = PUSH; ma.ms = JSON_OPEN; ma.ma = NEXT; } //遇到标记
 			else if (_IsSkipChar(ma.cur[0])){ ma.mo = NOP; ma.ms = JSON_OPEN; ma.ma = NEXT; } //忽略空格
 			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_ITEM_BEGIN; ma.ma = PAUSE; } //元素名括号
+			else if (ma.cur[0] == _T('}')){ ma.mo = NOP; ma.ms = JSON_CLOSE; ma.ma = PAUSE; } //元素关闭
 			else { ma.mo = NOP; ma.ms = JSON_FAILED; ma.ma = STOP; } //无效字符
 			break;
 		case JSON_ITEM_BEGIN: //元素命名开始
@@ -369,6 +372,13 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 
 	string_free(vs_name);
 	string_free(vs_val);
+
+	if (ma.ms != JSON_SUCCEED)
+	{
+		xsprintf(errtext, _T("json parse break at bytes: %d, the last byte is %s\n"), ma.bytes, ma.org);
+
+		set_last_error(_T("-1"), errtext, -1);
+	}
 
 	//自动机的最终状态
 	return (ma.ms == JSON_SUCCEED)? 1 : 0;

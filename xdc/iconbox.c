@@ -112,7 +112,7 @@ void iconbox_on_click_item(res_win_t widget, link_t_ptr ent)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	noti_iconbox_command(widget, xstol(get_string_entity_key_ptr(ent)), (var_long)NULL);
 }
@@ -193,7 +193,7 @@ void hand_iconbox_size(res_win_t widget, int code, const xsize_t* prs)
 	
 	_iconbox_reset_page(widget);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_iconbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -225,7 +225,8 @@ void hand_iconbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -274,7 +275,7 @@ void iconbox_set_options(res_win_t widget, const tchar_t* opt, int len)
 
 	string_table_parse_options(ptd->string, opt, len, OPT_ITEMFEED, OPT_LINEFEED);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void iconbox_set_layer(res_win_t widget, const tchar_t* layer)

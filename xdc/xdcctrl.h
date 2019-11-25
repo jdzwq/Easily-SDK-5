@@ -149,7 +149,7 @@ typedef enum{
 	NC_FIELDSIZED,
 
 	NC_FIELDGRID,
-	NC_FIELDGRAPH,
+	NC_FIELDSTATIS,
 	NC_FIELDFORM,
 	NC_FIELDPHOTO,
 	NC_FIELDIMAGES,
@@ -700,26 +700,26 @@ XDC_API void	gridctrl_filter(res_win_t widget, const tchar_t* token);
 */
 XDC_API void	gridctrl_popup_size(res_win_t widget, xsize_t* pse);
 
-/**********************************graph control*******************************************************************/
+/**********************************statis control*******************************************************************/
 
-typedef struct _NOTICE_GRAPH{
+typedef struct _NOTICE_STATIS{
 	res_win_t widget;
 	unsigned long id;
 	unsigned long code;
 
-	link_t_ptr graph;
+	link_t_ptr statis;
 	link_t_ptr xax;
 	link_t_ptr yax;
 	link_t_ptr gax;
 	void* data;
 
 	int ret;
-}NOTICE_GRAPH;
+}NOTICE_STATIS;
 
 typedef enum{
-	NC_GRAPHLBCLK,
-	NC_GRAPHRBCLK,
-	NC_GRAPHDBCLK,
+	NC_STATISLBCLK,
+	NC_STATISRBCLK,
+	NC_STATISDBCLK,
 
 	NC_GAXCHANGING,
 	NC_GAXCHANGED,
@@ -753,57 +753,57 @@ typedef enum{
 	NC_YAXDRAG,
 	NC_YAXDROP,
 
-	NC_GRAPHCALCED,
+	NC_STATISCALCED,
 	NC_YAXCALCED,
 	NC_XAXCALCED
-}GRAPH_NOTICE_CODE;
+}STATIS_NOTICE_CODE;
 
 /*
-@FUNCTION graphctrl_create: create a graph widget.
+@FUNCTION statisctrl_create: create a statis widget.
 @INPUT const tchar_t* wname: the widget title.
 @INPUT dword_t style: the widget style.
 @INPUT const xrect_t* pxr: the widget rect.
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t graphctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+XDC_API res_win_t statisctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
-@FUNCTION graphctrl_attach: attach a graph document to widget.
-@INPUT res_win_t widget: the graph widget.
-@INPUT link_t_ptr ptr: the graph document.
+@FUNCTION statisctrl_attach: attach a statis document to widget.
+@INPUT res_win_t widget: the statis widget.
+@INPUT link_t_ptr ptr: the statis document.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_attach(res_win_t widget, link_t_ptr ptr);
+XDC_API void	statisctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
-@FUNCTION graphctrl_detach: detach the graph document from widget.
-@INPUT res_win_t widget: the graph widget.
-@RETURN link_t_ptr: the graph link component if exist, otherwise return NULL.
+@FUNCTION statisctrl_detach: detach the statis document from widget.
+@INPUT res_win_t widget: the statis widget.
+@RETURN link_t_ptr: the statis link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr graphctrl_detach(res_win_t widget);
+XDC_API link_t_ptr statisctrl_detach(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_fetch: get the graph document from widget.
-@INPUT res_win_t widget: the graph widget.
-@RETURN link_t_ptr: the graph link component if exist, otherwise return NULL.
+@FUNCTION statisctrl_fetch: get the statis document from widget.
+@INPUT res_win_t widget: the statis widget.
+@RETURN link_t_ptr: the statis link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr graphctrl_fetch(res_win_t widget);
+XDC_API link_t_ptr statisctrl_fetch(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_accept: accept or discard current editor value in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_accept: accept or discard current editor value in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_accept(res_win_t widget, bool_t b_accept);
+XDC_API void	statisctrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
-@FUNCTION graphctrl_is_update: test graph xaxs is updated.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_is_update: test statis xaxs is updated.
+@INPUT res_win_t widget: the statis widget.
 @RETURN bool_t: return nonzero if some xaxs content is updated.
 */
-XDC_API bool_t	graphctrl_is_update(res_win_t widget);
+XDC_API bool_t	statisctrl_is_update(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_redraw: redraw grid widget.
@@ -811,25 +811,25 @@ XDC_API bool_t	graphctrl_is_update(res_win_t widget);
 @INPUT bool_t b_calc: nonzero for recalcing rows value.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_redraw(res_win_t widget, bool_t b_calc);
+XDC_API void	statisctrl_redraw(res_win_t widget, bool_t b_calc);
 
 /*
-@FUNCTION graphctrl_redraw_xax: redraw the xax in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_redraw_xax: redraw the xax in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr clk: the xax link component.
 @INPUT bool_t b_calc: nonzero for recalcing coors value of the xax.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc);
+XDC_API void	statisctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc);
 
 /*
-@FUNCTION graphctrl_redraw_yax: redraw the yax in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_redraw_yax: redraw the yax in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr clk: the yax link component.
 @INPUT bool_t b_calc: nonzero for recalcing coors value of the yax.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc);
+XDC_API void	statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc);
 
 /*
 @FUNCTION gridctrl_tabskip: tab focus to next cell.
@@ -837,161 +837,161 @@ XDC_API void	graphctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc
 @INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_tabskip(res_win_t widget, int skip);
+XDC_API void	statisctrl_tabskip(res_win_t widget, int skip);
 
 /*
-@FUNCTION graphctrl_set_focus_coor: set focus to the coor.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_set_focus_coor: set focus to the coor.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr xlk: the xax link component.
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN bool_t: return nonzero for being the coor focused, otherwise return zero.
 */
-XDC_API bool_t	graphctrl_set_focus_coor(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk);
+XDC_API bool_t	statisctrl_set_focus_coor(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk);
 
 /*
-@FUNCTION graphctrl_get_focus_xax: get focus xax in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_focus_xax: get focus xax in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: return the focused xax link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr graphctrl_get_focus_xax(res_win_t widget);
+XDC_API link_t_ptr statisctrl_get_focus_xax(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_get_focus_yax: get focus yax in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_focus_yax: get focus yax in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: return the focused yax link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr graphctrl_get_focus_yax(res_win_t widget);
+XDC_API link_t_ptr statisctrl_get_focus_yax(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_get_focus_gax: get focus gax in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_focus_gax: get focus gax in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: return the focused gax link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr graphctrl_get_focus_gax(res_win_t widget);
+XDC_API link_t_ptr statisctrl_get_focus_gax(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_get_coor_rect: get coor rect int graph widget client.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_coor_rect: get coor rect int statis widget client.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr xlk: the xax link component.
 @INPUT link_t_ptr ylk: the yax link component.
 @OUTPUT xrect_t* pxr: the rect struct using long member.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_get_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
+XDC_API void	statisctrl_get_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
 
 /*
-@FUNCTION graphctrl_get_lock: get the graph widget is locked.
-@INPUT res_win_t widget: the graph widget.
-@RETURN bool_t: return nonzero for being graph locked, otherwise return zero.
+@FUNCTION statisctrl_get_lock: get the statis widget is locked.
+@INPUT res_win_t widget: the statis widget.
+@RETURN bool_t: return nonzero for being statis locked, otherwise return zero.
 */
-XDC_API bool_t	graphctrl_get_lock(res_win_t widget);
+XDC_API bool_t	statisctrl_get_lock(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_set_lock: set the graph widget is locked.
-@INPUT res_win_t widget: the graph widget.
-@INPUT bool_t b_lock: nonzero for locking the graph, zero for unlocking.
+@FUNCTION statisctrl_set_lock: set the statis widget is locked.
+@INPUT res_win_t widget: the statis widget.
+@INPUT bool_t b_lock: nonzero for locking the statis, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_set_lock(res_win_t widget, bool_t b_lock);
+XDC_API void	statisctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
-@FUNCTION graphctrl_move_to_page: move to the page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_move_to_page: move to the page.
+@INPUT res_win_t widget: the statis widget.
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_move_to_page(res_win_t widget, int page);
+XDC_API void	statisctrl_move_to_page(res_win_t widget, int page);
 
 /*
-@FUNCTION graphctrl_move_first_page: move to the first page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_move_first_page: move to the first page.
+@INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_move_first_page(res_win_t widget);
+XDC_API void	statisctrl_move_first_page(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_move_prev_page: move to the previous page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_move_prev_page: move to the previous page.
+@INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_move_prev_page(res_win_t widget);
+XDC_API void	statisctrl_move_prev_page(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_move_next_page: move to the next page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_move_next_page: move to the next page.
+@INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_move_next_page(res_win_t widget);
+XDC_API void	statisctrl_move_next_page(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_move_last_page: move to the last page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_move_last_page: move to the last page.
+@INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_move_last_page(res_win_t widget);
+XDC_API void	statisctrl_move_last_page(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_get_cur_page: get current page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_cur_page: get current page.
+@INPUT res_win_t widget: the statis widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int		graphctrl_get_cur_page(res_win_t widget);
+XDC_API int		statisctrl_get_cur_page(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_get_max_page: get maximized page.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_max_page: get maximized page.
+@INPUT res_win_t widget: the statis widget.
 @RETURN int: return the tital pages.
 */
-XDC_API int		graphctrl_get_max_page(res_win_t widget);
+XDC_API int		statisctrl_get_max_page(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_get_dirty: get graph is dirty in design mode.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_get_dirty: get statis is dirty in design mode.
+@INPUT res_win_t widget: the statis widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t	graphctrl_get_dirty(res_win_t widget);
+XDC_API bool_t	statisctrl_get_dirty(res_win_t widget);
 
 /*
-@FUNCTION graphctrl_set_dirty: set graph is dirty in design mode.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_set_dirty: set statis is dirty in design mode.
+@INPUT res_win_t widget: the statis widget.
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+XDC_API void	statisctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /*
-@FUNCTION graphctrl_auto_insert: set insert new xax automatic.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_auto_insert: set insert new xax automatic.
+@INPUT res_win_t widget: the statis widget.
 @INPUT bool_t b_auto: nonzero for automatic.
 @RETURN void: none.
 */
-XDC_API void	graphctrl_auto_insert(res_win_t widget, bool_t b_auto);
+XDC_API void	statisctrl_auto_insert(res_win_t widget, bool_t b_auto);
 
 /*
-@FUNCTION graphctrl_delete_xax: delete the xax in graph widget.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_delete_xax: delete the xax in statis widget.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	graphctrl_delete_xax(res_win_t widget, link_t_ptr xlk);
+XDC_API bool_t	statisctrl_delete_xax(res_win_t widget, link_t_ptr xlk);
 
 /*
-@FUNCTION graphctrl_insert_xax: add a new xax into grid.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_insert_xax: add a new xax into grid.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr pos: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: if succeeds return the new xax link component, fails return NULL.
 */
-XDC_API link_t_ptr graphctrl_insert_xax(res_win_t widget, link_t_ptr pre);
+XDC_API link_t_ptr statisctrl_insert_xax(res_win_t widget, link_t_ptr pre);
 
 /*
-@FUNCTION graphctrl_set_coor_text: Set coor text.
-@INPUT res_win_t widget: the graph widget.
+@FUNCTION statisctrl_set_coor_text: Set coor text.
+@INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr xlk: the xax link component.
 @INPUT link_t_ptr ylk: the yax link component.
 @INPUT const tchar_t* sz_text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	graphctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, const tchar_t* sz_text);
+XDC_API bool_t	statisctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, const tchar_t* sz_text);
 
 /***********************************dialog control*******************************************************************/
 typedef struct _NOTICE_DIALOG{
@@ -1122,133 +1122,261 @@ XDC_API bool_t dialogctrl_get_dirty(res_win_t widget);
 */
 XDC_API void dialogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
-/***********************************chart control*******************************************************************/
-typedef struct _NOTICE_CHART{
+/***********************************panorama control*******************************************************************/
+typedef struct _NOTICE_PANORAMA{
 	res_win_t widget;
 	unsigned long id;
 	unsigned long code;
 
-	link_t_ptr chart;
-	link_t_ptr table;
+	link_t_ptr panorama;
+	link_t_ptr plot;
 	void* data;
 
 	int ret;
-}NOTICE_CHART;
+}NOTICE_PANORAMA;
 
 typedef enum{
 
-	NC_CHARTLBCLK,
-	NC_CHARTRBCLK,
-	NC_CHARTDBCLK,
+	NC_PANORAMALBCLK,
+	NC_PANORAMARBCLK,
+	NC_PANORAMADBCLK,
 
-	NC_CHARTTABLEHOVER,
+	NC_PANORAMAPLOTHOVER,
 
-	NC_CHARTTABLECHANGING,
-	NC_CHARTTABLECHANGED,
-	NC_CHARTTABLESELECTED,
+	NC_PANORAMAPLOTCHANGING,
+	NC_PANORAMAPLOTCHANGED,
+	NC_PANORAMAPLOTSELECTED,
 
-	NC_CHARTTABLECALCED,
-	NC_CHARTCALCED,
+	NC_PANORAMAPLOTCALCED,
+	NC_PANORAMACALCED,
 
-	NC_CHARTTABLEDRAG,
-	NC_CHARTTABLEDROP,
-	NC_CHARTTABLESIZING,
-	NC_CHARTTABLESIZED,
-}CHART_NOTICE_CODE;
+	NC_PANORAMAPLOTDRAG,
+	NC_PANORAMAPLOTDROP,
+	NC_PANORAMAPLOTSIZING,
+	NC_PANORAMAPLOTSIZED,
+}PANORAMA_NOTICE_CODE;
 
 /*
-@FUNCTION chartctrl_create: create a chart widget.
+@FUNCTION panoramactrl_create: create a panorama widget.
 @INPUT const tchar_t* wname: the widget title.
 @INPUT dword_t style: the widget style.
 @INPUT const xrect_t* pxr: the widget rect.
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t chartctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+XDC_API res_win_t panoramactrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
-@FUNCTION chartctrl_attach: attach a chart document to widget.
-@INPUT res_win_t widget: the chart widget.
-@INPUT link_t_ptr ptr: the chart document.
+@FUNCTION panoramactrl_attach: attach a panorama document to widget.
+@INPUT res_win_t widget: the panorama widget.
+@INPUT link_t_ptr ptr: the panorama document.
 @RETURN void: none.
 */
-XDC_API void chartctrl_attach(res_win_t widget, link_t_ptr ptr);
+XDC_API void panoramactrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
-@FUNCTION chartctrl_detach: detach the chart document from widget.
-@INPUT res_win_t widget: the chart widget.
-@RETURN link_t_ptr: the chart link component if exist, otherwise return NULL.
+@FUNCTION panoramactrl_detach: detach the panorama document from widget.
+@INPUT res_win_t widget: the panorama widget.
+@RETURN link_t_ptr: the panorama link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr chartctrl_detach(res_win_t widget);
+XDC_API link_t_ptr panoramactrl_detach(res_win_t widget);
 
 /*
-@FUNCTION chartctrl_fetch: get the chart document from widget.
-@INPUT res_win_t widget: the chart widget.
-@RETURN link_t_ptr: the chart link component if exist, otherwise return NULL.
+@FUNCTION panoramactrl_fetch: get the panorama document from widget.
+@INPUT res_win_t widget: the panorama widget.
+@RETURN link_t_ptr: the panorama link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr chartctrl_fetch(res_win_t widget);
+XDC_API link_t_ptr panoramactrl_fetch(res_win_t widget);
 
 /*
-@FUNCTION chartctrl_redraw: redraw chart widget.
-@INPUT res_win_t widget: the chart widget.
+@FUNCTION panoramactrl_redraw: redraw panorama widget.
+@INPUT res_win_t widget: the panorama widget.
 @RETURN void: none.
 */
-XDC_API void chartctrl_redraw(res_win_t widget);
+XDC_API void panoramactrl_redraw(res_win_t widget);
 
 /*
-@FUNCTION dialogctrl_redraw_item: redraw the table in chart widget.
-@INPUT res_win_t widget: the chart widget.
-@INPUT link_t_ptr ilk: the table link component.
+@FUNCTION dialogctrl_redraw_item: redraw the plot in panorama widget.
+@INPUT res_win_t widget: the panorama widget.
+@INPUT link_t_ptr ilk: the plot link component.
 @RETURN void: none.
 */
-XDC_API void chartctrl_redraw_table(res_win_t widget, link_t_ptr ilk);
+XDC_API void panoramactrl_redraw_plot(res_win_t widget, link_t_ptr ilk);
 
 /*
-@FUNCTION chartctrl_tabskip: tab focus to next table.
-@INPUT res_win_t widget: the chart widget.
+@FUNCTION panoramactrl_tabskip: tab focus to next plot.
+@INPUT res_win_t widget: the panorama widget.
 @INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
 @RETURN void: none.
 */
-XDC_API void chartctrl_tabskip(res_win_t widget, int skip);
+XDC_API void panoramactrl_tabskip(res_win_t widget, int skip);
 
 /*
-@FUNCTION chartctrl_set_focus_table: set focus to the table.
-@INPUT res_win_t widget: the chart widget.
-@INPUT link_t_ptr flk: the table link component.
-@RETURN bool_t: return nonzero for being the table focused, otherwise return zero.
+@FUNCTION panoramactrl_set_focus_plot: set focus to the plot.
+@INPUT res_win_t widget: the panorama widget.
+@INPUT link_t_ptr flk: the plot link component.
+@RETURN bool_t: return nonzero for being the plot focused, otherwise return zero.
 */
-XDC_API bool_t chartctrl_set_focus_table(res_win_t widget, link_t_ptr flk);
+XDC_API bool_t panoramactrl_set_focus_plot(res_win_t widget, link_t_ptr flk);
 
 /*
-@FUNCTION chartctrl_get_focus_table: get focus table in chart widget.
-@INPUT res_win_t widget: the chart widget.
+@FUNCTION panoramactrl_get_focus_plot: get focus plot in panorama widget.
+@INPUT res_win_t widget: the panorama widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr chartctrl_get_focus_table(res_win_t widget);
+XDC_API link_t_ptr panoramactrl_get_focus_plot(res_win_t widget);
 
 /*
-@FUNCTION chartctrl_get_table_rect: get table rect int chart widget client.
-@INPUT res_win_t widget: the chart widget.
-@INPUT link_t_ptr flk: the table link component.
+@FUNCTION panoramactrl_get_plot_rect: get plot rect int panorama widget client.
+@INPUT res_win_t widget: the panorama widget.
+@INPUT link_t_ptr flk: the plot link component.
 @OUTPUT xrect_t* pxr: the rect struct using long member.
 @RETURN void: none.
 */
-XDC_API void chartctrl_get_table_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
+XDC_API void panoramactrl_get_plot_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
 
 /*
-@FUNCTION chartctrl_get_dirty: get chart is dirty in design mode.
-@INPUT res_win_t widget: the chart widget.
+@FUNCTION panoramactrl_get_dirty: get panorama is dirty in design mode.
+@INPUT res_win_t widget: the panorama widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t chartctrl_get_dirty(res_win_t widget);
+XDC_API bool_t panoramactrl_get_dirty(res_win_t widget);
 
 /*
-@FUNCTION chartctrl_set_dirty: set chart is dirty in design mode.
-@INPUT res_win_t widget: the chart widget.
+@FUNCTION panoramactrl_set_dirty: set panorama is dirty in design mode.
+@INPUT res_win_t widget: the panorama widget.
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void chartctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+XDC_API void panoramactrl_set_dirty(res_win_t widget, bool_t b_dirty);
+
+/***********************************diagram control*******************************************************************/
+typedef struct _NOTICE_DIAGRAM{
+	res_win_t widget;
+	unsigned long id;
+	unsigned long code;
+
+	link_t_ptr diagram;
+	link_t_ptr entity;
+	void* data;
+
+	int ret;
+}NOTICE_DIAGRAM;
+
+typedef enum{
+
+	NC_DIAGRAMLBCLK,
+	NC_DIAGRAMRBCLK,
+	NC_DIAGRAMDBCLK,
+
+	NC_DIAGRAMENTITYHOVER,
+
+	NC_DIAGRAMENTITYCHANGING,
+	NC_DIAGRAMENTITYCHANGED,
+	NC_DIAGRAMENTITYSELECTED,
+
+	NC_DIAGRAMENTITYCALCED,
+	NC_DIAGRAMCALCED,
+
+	NC_DIAGRAMENTITYDRAG,
+	NC_DIAGRAMENTITYDROP,
+	NC_DIAGRAMENTITYSIZING,
+	NC_DIAGRAMENTITYSIZED,
+}DIAGRAM_NOTICE_CODE;
+
+/*
+@FUNCTION diagramctrl_create: create a diagram widget.
+@INPUT const tchar_t* wname: the widget title.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@INPUT res_win_t owner: the owner widget.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t diagramctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+
+/*
+@FUNCTION diagramctrl_attach: attach a diagram document to widget.
+@INPUT res_win_t widget: the diagram widget.
+@INPUT link_t_ptr ptr: the diagram document.
+@RETURN void: none.
+*/
+XDC_API void diagramctrl_attach(res_win_t widget, link_t_ptr ptr);
+
+/*
+@FUNCTION diagramctrl_detach: detach the diagram document from widget.
+@INPUT res_win_t widget: the diagram widget.
+@RETURN link_t_ptr: the diagram link component if exist, otherwise return NULL.
+*/
+XDC_API link_t_ptr diagramctrl_detach(res_win_t widget);
+
+/*
+@FUNCTION diagramctrl_fetch: get the diagram document from widget.
+@INPUT res_win_t widget: the diagram widget.
+@RETURN link_t_ptr: the diagram link component if exist, otherwise return NULL.
+*/
+XDC_API link_t_ptr diagramctrl_fetch(res_win_t widget);
+
+/*
+@FUNCTION diagramctrl_redraw: redraw diagram widget.
+@INPUT res_win_t widget: the diagram widget.
+@RETURN void: none.
+*/
+XDC_API void diagramctrl_redraw(res_win_t widget);
+
+/*
+@FUNCTION dialogctrl_redraw_item: redraw the entity in diagram widget.
+@INPUT res_win_t widget: the diagram widget.
+@INPUT link_t_ptr ilk: the entity link component.
+@RETURN void: none.
+*/
+XDC_API void diagramctrl_redraw_entity(res_win_t widget, link_t_ptr ilk);
+
+/*
+@FUNCTION diagramctrl_tabskip: tab focus to next entity.
+@INPUT res_win_t widget: the diagram widget.
+@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@RETURN void: none.
+*/
+XDC_API void diagramctrl_tabskip(res_win_t widget, int skip);
+
+/*
+@FUNCTION diagramctrl_set_focus_entity: set focus to the entity.
+@INPUT res_win_t widget: the diagram widget.
+@INPUT link_t_ptr flk: the entity link component.
+@RETURN bool_t: return nonzero for being the entity focused, otherwise return zero.
+*/
+XDC_API bool_t diagramctrl_set_focus_entity(res_win_t widget, link_t_ptr flk);
+
+/*
+@FUNCTION diagramctrl_get_focus_entity: get focus entity in diagram widget.
+@INPUT res_win_t widget: the diagram widget.
+@RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
+*/
+XDC_API link_t_ptr diagramctrl_get_focus_entity(res_win_t widget);
+
+/*
+@FUNCTION diagramctrl_get_entity_rect: get entity rect int diagram widget client.
+@INPUT res_win_t widget: the diagram widget.
+@INPUT link_t_ptr flk: the entity link component.
+@OUTPUT xrect_t* pxr: the rect struct using long member.
+@RETURN void: none.
+*/
+XDC_API void diagramctrl_get_entity_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
+
+/*
+@FUNCTION diagramctrl_get_dirty: get diagram is dirty in design mode.
+@INPUT res_win_t widget: the diagram widget.
+@RETURN bool_t: return nonzero for beging dirty.
+*/
+XDC_API bool_t diagramctrl_get_dirty(res_win_t widget);
+
+/*
+@FUNCTION diagramctrl_set_dirty: set diagram is dirty in design mode.
+@INPUT res_win_t widget: the diagram widget.
+@INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
+@RETURN void: none.
+*/
+XDC_API void diagramctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /********************************image list control************************************************************/
 typedef struct _NOTICE_IMAGES{
@@ -2618,6 +2746,48 @@ XDC_API link_t_ptr notesctrl_get_focus_item(res_win_t widget);
 @RETURN void: none.
 */
 XDC_API void	notesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+
+/*******************************user control************************************************************/
+typedef struct _NOTICE_USER{
+	res_win_t widget;
+	unsigned long id;
+	unsigned long code;
+
+	void* data;
+
+	int ret;
+}NOTICE_USER;
+
+typedef enum{
+	NC_USERLBCLK,
+	NC_USERRBCLK,
+	NC_USERDBCLK,
+	NC_USERKEY,
+	NC_USERMOVE,
+	NC_USERCALC,
+	NC_USERDRAW
+}USER_NOTICE_CODE;
+
+/*
+@FUNCTION userctrl_create: create a user widget.
+@INPUT const tchar_t* wname: the widget title.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@INPUT res_win_t owner: the owner widget.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t userctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+
+/*
+@FUNCTION userctrl_redraw: redraw user widget.
+@INPUT res_win_t widget: the user widget.
+@RETURN void: none.
+*/
+XDC_API void	userctrl_redraw(res_win_t widget);
+
+XDC_API void userctrl_set_delta(res_win_t widget, var_long var);
+
+XDC_API var_long userctrl_get_delta(res_win_t widget);
 
 /*************************************title control***********************************************************/
 

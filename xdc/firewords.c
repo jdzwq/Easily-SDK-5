@@ -162,8 +162,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		if (widget_is_valid(ctrl))
 		{
 			widget_set_color_mode(ctrl, (clr_mod_t*)data);
-			widget_update_window(ctrl);
-			widget_update_client(ctrl);
+			widget_update(ctrl);
 		}
 		return 1;
 	case COMMAND_COMMIT:
@@ -329,6 +328,7 @@ res_win_t firewords_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data
 
 		widget_move(ctrlbox, RECTPOINT(&xr));
 		widget_size(ctrlbox, RECTSIZE(&xr));
+		widget_update(ctrlbox);
 	}
 
 	return editor;

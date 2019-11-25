@@ -27,4 +27,4 @@ LICENSE.GPL3 for more details.
 
 
 
-res_win_t GraphPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, const tchar_t* fpath);
+res_win_t StatisPanel_Create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, const tchar_t* fpath);

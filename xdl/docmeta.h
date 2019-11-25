@@ -128,21 +128,21 @@ XDL_API link_t_ptr	create_grid_from_meta_file(const secu_desc_t* psd, const tcha
 XDL_API bool_t save_grid_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION create_graph_from_meta_file: create a graphic document and load content from meta file.
+@FUNCTION create_statis_from_meta_file: create a statisic document and load content from meta file.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the destination file path name.
-@RETURN link_t_ptr: if succeeds return the graphic link component, fails return NULL.
+@RETURN link_t_ptr: if succeeds return the statisic link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_graph_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+XDL_API link_t_ptr	create_statis_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION save_graph_to_meta_file: save a graphic document to meta file.
-@INPUT link_t_ptr ptr: the graphic document.
+@FUNCTION save_statis_to_meta_file: save a statisic document to meta file.
+@INPUT link_t_ptr ptr: the statisic document.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_graph_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+XDL_API bool_t save_statis_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_dialog_from_meta_file: create a dialog document and load content from meta file.
@@ -162,21 +162,38 @@ XDL_API link_t_ptr	create_dialog_from_meta_file(const secu_desc_t* psd, const tc
 XDL_API bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION create_chart_from_meta_file: create a chart document and load content from meta file.
+@FUNCTION create_panorama_from_meta_file: create a panorama document and load content from meta file.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the destination file path name.
-@RETURN link_t_ptr: if succeeds return the chart link component, fails return NULL.
+@RETURN link_t_ptr: if succeeds return the panorama link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_chart_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+XDL_API link_t_ptr	create_panorama_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION save_chart_to_meta_file: save a chart document to meta file.
-@INPUT link_t_ptr ptr: the chart document.
+@FUNCTION save_panorama_to_meta_file: save a panorama document to meta file.
+@INPUT link_t_ptr ptr: the panorama document.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_chart_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+XDL_API bool_t save_panorama_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+
+/*
+@FUNCTION create_diagram_from_meta_file: create a diagram document and load content from meta file.
+@INPUT const secu_desc_t* psd: the file security struct.
+@INPUT const tchar_t* fname: the destination file path name.
+@RETURN link_t_ptr: if succeeds return the diagram link component, fails return NULL.
+*/
+XDL_API link_t_ptr	create_diagram_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+
+/*
+@FUNCTION save_diagram_to_meta_file: save a diagram document to meta file.
+@INPUT link_t_ptr ptr: the diagram document.
+@INPUT const secu_desc_t* psd: the file security struct.
+@INPUT const tchar_t* fname: the destination file path name.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+XDL_API bool_t save_diagram_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_topog_from_meta_file: create a topog document and load content from meta file.

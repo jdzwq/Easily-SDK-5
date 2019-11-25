@@ -82,6 +82,8 @@ XDK_API void lighten_xfont(xfont_t* pxf, int n);
 
 XDK_API void lighten_xgradi(xgradi_t* pxg, int n);
 
+XDK_API tchar_t* next_draw_path(const tchar_t* script, int len, tchar_t* pname, xpoint_t* ppt, int* pn);
+
 #ifdef	__cplusplus
 }
 #endif

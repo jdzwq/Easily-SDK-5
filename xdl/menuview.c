@@ -374,11 +374,8 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t* style;
 	bool_t b_horz;
 	const tchar_t* show;
-	link_t_ptr imagelist;
 
 	b_horz = (compare_text(get_menu_layer_ptr(ptr), -1, ATTR_LAYER_HORZ, -1, 0) == 0) ? 1 : 0;
-
-	imagelist = get_menu_images(ptr);
 
 	show = get_menu_show_ptr(ptr);
 
@@ -395,9 +392,9 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	parse_xpen_from_style(&xp, style);
 	format_xcolor(&pif->clr_frg, xp.color);
 
-	parse_xcolor(&xc, xp.color);
-
 	format_xcolor(&pif->clr_msk, xi.color);
+
+	xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
 
 	ic = get_menu_icon_span(ptr);
 	
@@ -476,19 +473,15 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr_image.fy = xr.fy;
 			xr_image.fh = xr.fh;
 
+			ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
+
 			if (get_menu_item_checked(ilk))
 			{
-				ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
-
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, ATTR_ICON_RADIOED);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, ICON_CHECKED);
 			}
 			else
 			{
-				if (imagelist)
-				{
-					get_ximage(imagelist, get_menu_item_image_ptr(ilk), &xi);
-					(*pif->pf_draw_image)(pif->canvas, &xi, &xr_image);
-				}
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_menu_item_icon_ptr(ilk));
 			}
 		}
 		

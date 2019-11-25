@@ -252,14 +252,11 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	float ic, iw, ih;
 	const tchar_t *style, *shape;
 	bool_t b_print;
-	link_t_ptr imagelist;
 	float px, py, pw, ph;
 
 	XDL_ASSERT(pif);
 
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
-
-	imagelist = get_proper_images(ptr);
 
 	ih = get_proper_item_height(ptr);
 	iw = get_proper_item_span(ptr);
@@ -301,11 +298,18 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		format_xcolor(&pif->clr_msk, xi.color);
 	}
 
+	if (!b_print)
+	{
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+	}
+	else
+	{
+		parse_xcolor(&xc, xp.color);
+	}
+
 	xscpy(xg.brim_color, xb.color);
 	xscpy(xg.core_color, xb.color);
 	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
-
-	parse_xcolor(&xc, xp.color);
 
 	shape = get_proper_shape_ptr(ptr);
 
@@ -338,11 +342,9 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		xr_draw.fy = xr.fy;
 		xr_draw.fh = ih;
 
-		if (imagelist)
-		{
-			get_ximage(imagelist, get_section_image_ptr(sec), &xi);
-			(*pif->pf_draw_image)(pif->canvas, &xi, &xr_draw);
-		}
+		ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
+
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, get_section_icon_ptr(sec));
 
 		xr_draw.fx = xr.fx + xr.fw - ic;
 		xr_draw.fw = ic;
@@ -352,11 +354,11 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		if (get_section_expanded(sec))
 		{
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, ATTR_ICON_EXPAND);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, ICON_EXPAND);
 		}
 		else
 		{
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, ATTR_ICON_COLLAPSE);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, ICON_COLLAPSE);
 		}
 
 		xr_draw.fx = xr.fx + ic;
@@ -405,11 +407,9 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr_draw.fy = xr.fy;
 			xr_draw.fh = ih;
 
-			if (imagelist)
-			{
-				get_ximage(imagelist, get_entity_image_ptr(ent), &xi);
-				(*pif->pf_draw_image)(pif->canvas, &xi, &xr_draw);
-			}
+			ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
+
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, get_entity_icon_ptr(ent));
 
 			//key text
 			xr_draw.fx = xr.fx + ic;

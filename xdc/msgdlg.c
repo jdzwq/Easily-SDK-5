@@ -355,7 +355,6 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		pushbox = widget_get_child(widget, IDC_PUSHBOX_CLOSE);
 		widget_move(pushbox, RECTPOINT(&xr_btn));
-		widget_update_client(pushbox);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -373,7 +372,6 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		pushbox = widget_get_child(widget, IDC_PUSHBOX_NO);
 		widget_move(pushbox, RECTPOINT(&xr_btn));
-		widget_update_client(pushbox);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -391,7 +389,6 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		pushbox = widget_get_child(widget, IDC_PUSHBOX_YES);
 		widget_move(pushbox, RECTPOINT(&xr_btn));
-		widget_update_client(pushbox);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -409,7 +406,6 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		pushbox = widget_get_child(widget, IDC_PUSHBOX_CANCEL);
 		widget_move(pushbox, RECTPOINT(&xr_btn));
-		widget_update_client(pushbox);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -427,7 +423,6 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		pushbox = widget_get_child(widget, IDC_PUSHBOX_OK);
 		widget_move(pushbox, RECTPOINT(&xr_btn));
-		widget_update_client(pushbox);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -445,10 +440,9 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 		pushbox = widget_get_child(widget, IDC_PUSHBOX_KNOWN);
 		widget_move(pushbox, RECTPOINT(&xr_btn));
-		widget_update_client(pushbox);
 	}
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_msgdlg_keydown(res_win_t widget, int key)
@@ -584,6 +578,7 @@ res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t owner)
 
 	msgdlg_popup_size(dlg, RECTSIZE(&xr));
 	widget_size(dlg, RECTSIZE(&xr));
+	widget_update(dlg);
 	widget_center_window(dlg, owner);
 
 	if (widget_is_valid(owner))

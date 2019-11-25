@@ -58,10 +58,12 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 	pic->pf_draw_polygon = draw_polygon;
 	pic->pf_draw_polyline = draw_polyline;
 	pic->pf_draw_bezier = draw_bezier;
+	pic->pf_draw_curve = draw_curve;
 	pic->pf_draw_rect = draw_rect;
 	pic->pf_draw_round = draw_round;
 	pic->pf_draw_ellipse = draw_ellipse;
 	pic->pf_draw_shape = draw_shape;
+	pic->pf_draw_shadow = draw_shadow;
 	pic->pf_multi_line = multi_line;
 	pic->pf_gradient_rect = gradient_rect;
 	pic->pf_alphablend_rect = alphablend_rect;

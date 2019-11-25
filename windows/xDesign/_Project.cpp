@@ -143,7 +143,7 @@ bool_t Project_GetResource(LINKPTR ptr_prj, LINKPTR ptr_tree)
 			tlk_parent = insert_tree_item(ptr_tree, LINK_LAST);
 			set_tree_item_name(tlk_parent, get_dom_node_name_ptr(nlk));
 			set_tree_item_title(tlk_parent, get_dom_node_name_ptr(nlk));
-			set_tree_item_image(tlk_parent, BMP_MACRO);
+			set_tree_item_icon(tlk_parent, ICON_NOTE);
 		}
 
 		LINKPTR tlk_child = find_tree_item_by_name(tlk_parent, get_dom_node_text_ptr(nlk));
@@ -153,7 +153,7 @@ bool_t Project_GetResource(LINKPTR ptr_prj, LINKPTR ptr_tree)
 			set_tree_item_name(tlk_child, get_dom_node_text_ptr(nlk));
 			split_path(get_dom_node_text_ptr(nlk), NULL, fname, NULL);
 			set_tree_item_title(tlk_child, fname);
-			set_tree_item_image(tlk_child, BMP_SCHEMA);
+			set_tree_item_icon(tlk_child, ICON_SCHEMA);
 		}
 
 		nlk = get_dom_next_sibling_node(nlk);

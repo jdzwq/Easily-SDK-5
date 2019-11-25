@@ -56,6 +56,7 @@ static bool_t _splitor_item_resize(link_t_ptr ilk, void* pv)
 	{
 		widget_move(win, RECTPOINT(&xr));
 		widget_size(win, RECTSIZE(&xr));
+		widget_update(win);
 	}
 
 	return 1;
@@ -126,7 +127,7 @@ void noti_splitor_item_sized(splitor_t* ptd, const xpoint_t* pxp)
 
 	enum_split_item(ilk, (CALLBACK_ENUMLINK)_splitor_item_resize, ptd->widget);
 
-	widget_update(ptd->widget, &xr, 0);
+	widget_redraw(ptd->widget, &xr, 0);
 }
 
 /*************************************************************************************************/
@@ -228,7 +229,7 @@ void hand_splitor_size(splitor_t* ptd, const xrect_t* pxr)
 	resize_split_item(ptd->split);
 	enum_split_item(ptd->split, (CALLBACK_ENUMLINK)_splitor_item_resize, ptd->widget);
 
-	widget_update(ptd->widget, pxr, 0);
+	widget_redraw(ptd->widget, pxr, 0);
 }
 
 void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)

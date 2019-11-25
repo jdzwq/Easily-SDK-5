@@ -80,24 +80,24 @@ LICENSE.GPL3 for more details.
 #define set_tree_title_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_TITLE_HEIGHT,n)
 /*
 @PROPER titleImage: string.
-@GET get_tree_title_image_ptr: get the tree title image.
+@GET get_tree_title_icon_ptr: get the tree title icon.
 */
-#define get_tree_title_image_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_IMAGE,-1)
+#define get_tree_title_icon_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_ICON,-1)
 /*
 @PROPER titleImage: string.
-@SET set_tree_title_image: set the tree title image.
+@SET set_tree_title_icon: set the tree title icon.
 */
-#define set_tree_title_image(ptr,token)					set_dom_node_attr(ptr,ATTR_IMAGE,-1,token,-1)
+#define set_tree_title_icon(ptr,token)					set_dom_node_attr(ptr,ATTR_ICON,-1,token,-1)
 /*
 @PROPER iconSpan: numeric.
 @SET set_tree_icon_span: set the tree icon span.
 */
-#define set_tree_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
+#define set_tree_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_tree_icon_span: get the tree icon span.
 */
-#define get_tree_icon_span(ptr)							get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
+#define get_tree_icon_span(ptr)							get_dom_node_attr_float(ptr,ICON_SPAN)
 /*
 @PROPER itemHeight: numeric.
 @GET get_tree_item_height: get the tree item height.
@@ -149,16 +149,6 @@ LICENSE.GPL3 for more details.
 */
 #define set_tree_item_showcheck(ilk,b)					set_dom_node_attr_boolean(ilk,ATTR_SHOWCHECK,b)
 /*
-@PROPER image: string.
-@GET get_tree_item_image_ptr: get the tree item image.
-*/
-#define get_tree_item_image_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_IMAGE,-1)
-/*
-@PROPER image: string.
-@SET set_tree_item_image: set the tree item image.
-*/
-#define set_tree_item_image(ilk,token)					set_dom_node_attr(ilk,ATTR_IMAGE,-1,token,-1)
-/*
 @PROPER icon: string.
 @GET get_tree_item_icon_ptr: get the tree item icon.
 */
@@ -168,16 +158,6 @@ LICENSE.GPL3 for more details.
 @SET set_tree_item_icon: set the tree item icon.
 */
 #define set_tree_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
-/*
-@PROPER images: document.
-@SET set_tree_images: set the tree images document.
-*/
-#define set_tree_images(ptr,images)						set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_tree_item_image_ptr: get the tree images document.
-*/
-#define get_tree_images(ptr)							get_dom_node_images(ptr)
 /*
 @PROPER locked: boolean.
 @SET set_tree_item_locked: set the tree item locked.

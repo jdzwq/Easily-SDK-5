@@ -10,7 +10,7 @@
 #include "labelview.h"
 #include "treeview.h"
 #include "menuview.h"
-#include "graphview.h"
+#include "statisview.h"
 #include "formview.h"
 #include "topogview.h"
 #include "imagesview.h"
@@ -18,7 +18,8 @@
 #include "statusview.h"
 #include "tableview.h"
 #include "dialogview.h"
-#include "chartview.h"
+#include "panoramaview.h"
+#include "diagramview.h"
 #include "boxview.h"
 #include "annoview.h"
 
@@ -28,12 +29,6 @@
 #include "tagview.h"
 #include "textview.h"
 
-#include "chartgdi.h"
-#include "gdicanv.h"
-#include "gdiinf.h"
 
-#include "svgcanv.h"
-#include "svggdi.h"
-#include "svginf.h"
 
 #endif //XDLVIEW_H

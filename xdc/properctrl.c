@@ -41,6 +41,7 @@ typedef struct _proper_delta_t{
 	link_t_ptr hover;
 
 	res_win_t editor;
+	res_win_t vsc;
 
 	long org_x, org_y;
 
@@ -206,7 +207,7 @@ void noti_proper_end_size(res_win_t widget, long x, long y)
 
 	set_proper_item_span(ptd->proper, ew);
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 bool_t noti_proper_entity_changing(res_win_t widget)
@@ -225,7 +226,7 @@ bool_t noti_proper_entity_changing(res_win_t widget)
 
 	ptd->entity = NULL;
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	return 1;
 }
@@ -243,7 +244,7 @@ void noti_proper_entity_changed(res_win_t widget, link_t_ptr elk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 
 	noti_proper_owner(widget, NC_ENTITYCHANGED, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL);
 }
@@ -307,7 +308,7 @@ void noti_proper_section_expand(res_win_t widget, link_t_ptr slk)
 	widget_get_client_rect(widget, &xr);
 
 	pt_inter_rect(&xr, &xr_sec);
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void noti_proper_begin_edit(res_win_t widget)
@@ -647,6 +648,9 @@ void hand_proper_destroy(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
+
 	xmem_free(ptd);
 
 	SETPROPERDELTA(widget, 0);
@@ -700,7 +704,17 @@ void hand_proper_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (widget_hand_scroll(widget, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 
@@ -1007,7 +1021,8 @@ void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1102,7 +1117,7 @@ link_t_ptr properctrl_detach(res_win_t widget)
 	data = ptd->proper;
 	ptd->proper = NULL;
 
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 
 	return data;
 }
@@ -1171,9 +1186,7 @@ void properctrl_redraw(res_win_t widget)
 
 	_properctrl_reset_page(widget);
 
-	widget_update_window(widget);
-
-	widget_update(widget, NULL, 0);
+	widget_update(widget);
 }
 
 void properctrl_redraw_entity(res_win_t widget, link_t_ptr elk)
@@ -1196,7 +1209,7 @@ void properctrl_redraw_entity(res_win_t widget, link_t_ptr elk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 void properctrl_redraw_section(res_win_t widget, link_t_ptr slk)
@@ -1227,7 +1240,7 @@ void properctrl_redraw_section(res_win_t widget, link_t_ptr slk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_update(widget, &xr, 0);
+	widget_redraw(widget, &xr, 0);
 }
 
 bool_t properctrl_set_focus_entity(res_win_t widget, link_t_ptr elk)

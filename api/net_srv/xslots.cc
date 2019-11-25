@@ -154,6 +154,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_site[RES_LEN] = { 0 };
 	tchar_t sz_cert[RES_LEN] = { 0 };
+	tchar_t sz_pass[NUM_LEN] = { 0 };
 
 	int n_state = 0;
 
@@ -189,7 +190,9 @@ void _xslots_dispatch(xhand_t slot, void* p)
 
 	if (pxp->n_secu == _SECU_SSL)
 	{
-		set_certs(_SECU_SSL, slot);
+		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
+
+		set_certs(_SECU_SSL, sz_pass, slot);
 
 		get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
 
@@ -202,7 +205,9 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{
-		set_certs(_SECU_SSH, slot);
+		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
+
+		set_certs(_SECU_SSH, sz_pass, slot);
 	}
 
 	pb = (slots_block_t*)xmem_alloc(sizeof(slots_block_t));

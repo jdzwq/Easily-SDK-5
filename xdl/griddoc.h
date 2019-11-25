@@ -632,17 +632,6 @@ LICENSE.GPL3 for more details.
 @GET get_row_text_ptr: get the row text.
 */
 #define get_row_text_ptr(rlk)								get_dom_node_text_ptr(rlk)
-
-/*
-@PROPER images: document.
-@SET set_grid_images: set the grid images reference.
-*/
-#define set_grid_images(ptr,images)							set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_grid_images: get the grid image reference.
-*/
-#define get_grid_images(ptr)								get_dom_node_images(ptr)
 /*
 @PROPER design: boolean.
 @SET set_grid_images: set the grid is designing mode.

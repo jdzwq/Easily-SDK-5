@@ -524,28 +524,28 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my / 2);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my * 1.5);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my * 2);
@@ -559,28 +559,28 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my / 2);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my * 1.5);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my * 2);
@@ -594,28 +594,28 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my / 2);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my * 1.5);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my * 2);
@@ -1216,7 +1216,7 @@ void draw_checkbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 
 	if (b_on)
 	{
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_CHECKED);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_CHECKED);
 	}
 }
 
@@ -1360,7 +1360,7 @@ void draw_slidebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 	xr.fy = pbox->fy + my / 2;
 	xr.fw = mx / 2;
 	xr.fh = my / 2;
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1458,14 +1458,14 @@ void draw_spinbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = mx / 2;
 	xr.fh = my / 2;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_UP);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
 
 	xr.fx = pbox->fx + mx;
 	xr.fy = pbox->fy + my / 2;
 	xr.fw = mx / 2;
 	xr.fh = my / 2;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_DOWN);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1574,28 +1574,28 @@ void draw_navibox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_FIRST);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_FIRST);
 
 	xr.fx = pbox->fx + mx;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_PREV);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_PREV);
 
 	xr.fx = pbox->fx + mx * 2;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_NEXT);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_NEXT);
 
 	xr.fx = pbox->fx + mx * 3;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_LAST);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_LAST);
 
 	xr.fx = pbox->fx + mx * 4;
 	xr.fy = pbox->fy;
@@ -1603,9 +1603,253 @@ void draw_navibox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
 	if (pns && pns->keyboxed)
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_KEYBOXED);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_KEYBOXED);
 	else
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ATTR_ICON_KEYBOX);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_KEYBOX);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void calc_vertbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+{
+	xsize_t xs;
+	float mx, my;
+
+	(*pim->pf_text_metric)(pim->ctx, pxf, &xs);
+
+	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
+	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
+
+	pxs->fx = mx;
+	pxs->fy = my * 4;
+}
+
+int calc_vertbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+{
+	xsize_t xs = { 0 };
+	xrect_t xr = { 0 };
+	float mx = 0;
+	float my = 0;
+
+	(*pim->pf_text_metric)(pim->ctx, pxf, &xs);
+
+	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
+	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
+
+	xr.fx = 0;
+	xr.fy = 0;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return VERTBOX_HINT_PAGEUP;
+
+	xr.fx = 0;
+	xr.fy = my;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return VERTBOX_HINT_LINEUP;
+
+	xr.fx = 0;
+	xr.fy = 2 * my;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return VERTBOX_HINT_LINEDOWN;
+
+	xr.fx = 0;
+	xr.fy = 3 * my;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return VERTBOX_HINT_PAGEDOWN;
+
+	return VERTBOX_HINT_NONE;
+}
+
+void draw_vertbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* pxf)
+{
+	xfont_t xf;
+	xpen_t xp;
+	xcolor_t xc;
+	xrect_t xr;
+	bool_t b_print;
+
+	xsize_t xs;
+	float mx, my;
+
+	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
+
+	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	if (!b_print)
+	{
+		format_xcolor(&pif->clr_txt, xf.color);
+	}
+
+	default_xpen(&xp);
+	if (!b_print)
+	{
+		format_xcolor(&pif->clr_frg, xp.color);
+	}
+	parse_xcolor(&xc, xp.color);
+
+	(*pif->pf_measure_metric)(pif->canvas, &xf, &xs);
+
+	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
+	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
+
+	xr.fx = pbox->fx;
+	xr.fy = pbox->fy;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_BEGIN);
+
+	xr.fx = pbox->fx;
+	xr.fy = pbox->fy + my;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_UP);
+
+	xr.fx = pbox->fx;
+	xr.fy = pbox->fy + my * 2;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DOWN);
+
+	xr.fx = pbox->fx;
+	xr.fy = pbox->fy + my * 3;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_END);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void calc_horzbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+{
+	xsize_t xs;
+	float mx, my;
+
+	(*pim->pf_text_metric)(pim->ctx, pxf, &xs);
+
+	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
+	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
+
+	pxs->fx = mx * 4;
+	pxs->fy = my;
+}
+
+int calc_horzbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+{
+	xsize_t xs = { 0 };
+	xrect_t xr = { 0 };
+	float mx = 0;
+	float my = 0;
+
+	(*pim->pf_text_metric)(pim->ctx, pxf, &xs);
+
+	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
+	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
+
+	xr.fx = 0;
+	xr.fy = 0;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return HORZBOX_HINT_PAGELEFT;
+
+	xr.fx = mx;
+	xr.fy = 0;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return HORZBOX_HINT_LINELEFT;
+
+	xr.fx = 2 * mx;
+	xr.fy = 0;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return HORZBOX_HINT_LINERIGHT;
+
+	xr.fx = 0;
+	xr.fy = 3 * my;
+	xr.fw = mx;
+	xr.fh = my;
+
+	if (ft_in_rect(ppt, &xr))
+		return HORZBOX_HINT_PAGERIGHT;
+
+	return HORZBOX_HINT_NONE;
+}
+
+void draw_horzbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* pxf)
+{
+	xfont_t xf;
+	xpen_t xp;
+	xcolor_t xc;
+	xrect_t xr;
+	bool_t b_print;
+
+	xsize_t xs;
+	float mx, my;
+
+	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
+
+	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	if (!b_print)
+	{
+		format_xcolor(&pif->clr_txt, xf.color);
+	}
+
+	default_xpen(&xp);
+	if (!b_print)
+	{
+		format_xcolor(&pif->clr_frg, xp.color);
+	}
+	parse_xcolor(&xc, xp.color);
+
+	(*pif->pf_measure_metric)(pif->canvas, &xf, &xs);
+
+	mx = (xs.fx > DEF_TOUCH_SPAN) ? xs.fx : DEF_TOUCH_SPAN;
+	my = (xs.fy > DEF_TOUCH_SPAN) ? xs.fy : DEF_TOUCH_SPAN;
+
+	xr.fx = pbox->fx;
+	xr.fy = pbox->fy;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_FIRST);
+
+	xr.fx = pbox->fx + mx;
+	xr.fy = pbox->fy;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_PREV);
+
+	xr.fx = pbox->fx + mx * 2;
+	xr.fy = pbox->fy;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_NEXT);
+
+	xr.fx = pbox->fx+ mx * 3;
+	xr.fy = pbox->fy;
+	xr.fw = mx;
+	xr.fh = my;
+	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_LAST);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

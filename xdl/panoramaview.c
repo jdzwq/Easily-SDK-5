@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc chart document
+	@doc panorama document
 
-	@module	chartview.c | implement file
+	@module	panoramaview.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -28,7 +28,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
-#include "chartview.h"
+#include "panoramaview.h"
 #include "xdlview.h"
 #include "xdldoc.h"
 #include "xdlimp.h"
@@ -37,17 +37,17 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-#define CHART_TITLE_HEIGHT		(float)10
+#define PANORAMA_TITLE_HEIGHT		(float)10
 
-void calc_chart_table_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_panorama_plot_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
-	pxr->fx = get_chart_table_x(ilk);
-	pxr->fy = get_chart_table_y(ilk);
-	pxr->fw = get_chart_table_width(ilk);
-	pxr->fh = get_chart_table_height(ilk);
+	pxr->fx = get_panorama_plot_x(ilk);
+	pxr->fy = get_panorama_plot_y(ilk);
+	pxr->fw = get_panorama_plot_width(ilk);
+	pxr->fh = get_panorama_plot_height(ilk);
 }
 
-int calc_chart_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
+int calc_panorama_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 {
 	link_t_ptr ilk;
 	int nHit;
@@ -57,13 +57,13 @@ int calc_chart_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	xm = ppt->fx;
 	ym = ppt->fy;
 
-	nHit = CHART_HINT_NONE;
+	nHit = PANORAMA_HINT_NONE;
 	*pilk = NULL;
 
-	ilk = get_chart_prev_table(ptr, LINK_LAST);
+	ilk = get_panorama_prev_plot(ptr, LINK_LAST);
 	while (ilk)
 	{
-		calc_chart_table_rect(ptr, ilk, &di);
+		calc_panorama_plot_rect(ptr, ilk, &di);
 
 		if (ft_inside(xm, ym, di.fx, di.fy, di.fx + di.fw, di.fy + di.fh))
 		{
@@ -71,30 +71,30 @@ int calc_chart_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 
 			if (ft_inside(xm, ym, di.fx + di.fw - DEF_SPLIT_FEED, di.fy + di.fh / 2 - DEF_SPLIT_FEED, di.fx + di.fw + DEF_SPLIT_FEED, di.fy + di.fh / 2 + DEF_SPLIT_FEED))
 			{
-				nHit = CHART_HINT_VERT_SPLIT;
+				nHit = PANORAMA_HINT_VERT_SPLIT;
 				break;
 			}
 			else if (ft_inside(xm, ym, di.fx + di.fw / 2 - DEF_SPLIT_FEED, di.fy + di.fh - DEF_SPLIT_FEED, di.fx + di.fw / 2 + DEF_SPLIT_FEED, di.fy + di.fh + DEF_SPLIT_FEED))
 			{
-				nHit = CHART_HINT_HORZ_SPLIT;
+				nHit = PANORAMA_HINT_HORZ_SPLIT;
 				break;
 			}
 			else if (ft_inside(xm, ym, di.fx + di.fw - DEF_SPLIT_FEED, di.fy + di.fh - DEF_SPLIT_FEED, di.fx + di.fw + DEF_SPLIT_FEED, di.fy + di.fh + DEF_SPLIT_FEED))
 			{
-				nHit = CHART_HINT_CROSS_SPLIT;
+				nHit = PANORAMA_HINT_CROSS_SPLIT;
 				break;
 			}
 
-			nHit = CHART_HINT_TABLE;
+			nHit = PANORAMA_HINT_PLOT;
 			break;
 		}
-		ilk = get_chart_prev_table(ptr, ilk);
+		ilk = get_panorama_prev_plot(ptr, ilk);
 	}
 
 	return nHit;
 }
 
-void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_panorama(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 {
 	link_t_ptr obj,ilk;
 	xrect_t xr;
@@ -106,7 +106,7 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	canvbox_t cb = { 0 };
 
 	const tchar_t* style;
-	const tchar_t* table;
+	const tchar_t* plot;
 	bool_t b_print;
 
 	int rows, cols, n;
@@ -122,7 +122,7 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	default_xpen(&xp);
 	default_xbrush(&xb);
 
-	style = get_chart_style_ptr(ptr);
+	style = get_panorama_style_ptr(ptr);
 
 	parse_xfont_from_style(&xf, style);
 	parse_xface_from_style(&xa, style);
@@ -145,18 +145,18 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
 
-	ilk = get_chart_next_table(ptr, LINK_FIRST);
+	ilk = get_panorama_next_plot(ptr, LINK_FIRST);
 	while (ilk)
 	{
 		default_xfont(&xf);
 		default_xface(&xa);
 		
-		style = get_chart_table_style_ptr(ilk);
+		style = get_panorama_plot_style_ptr(ilk);
 
-		calc_chart_table_rect(ptr, ilk, &xr);
+		calc_panorama_plot_rect(ptr, ilk, &xr);
 		ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
-		//(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
+		(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
 
 		parse_xfont_from_style(&xf, style);
 		parse_xface_from_style(&xa, style);
@@ -165,70 +165,70 @@ void draw_chart(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			format_xcolor(&pif->clr_txt, xf.color);
 		}
 
-		table = get_chart_table_class_ptr(ilk);
+		plot = get_panorama_plot_class_ptr(ilk);
 
-		if (compare_text(table, -1, DOC_CHART_MAP, -1, 0) == 0)
+		/*if (compare_text(plot, -1, DOC_PANORAMA_MAP, -1, 0) == 0)
 		{
-			rows = get_chart_map_table_rows(ilk);
-			cols = get_chart_map_table_cols(ilk);
+			rows = get_panorama_map_plot_rows(ilk);
+			cols = get_panorama_map_plot_cols(ilk);
 
-			rx = get_chart_map_table_rx(ilk);
-			ry = get_chart_map_table_ry(ilk);
+			rx = get_panorama_map_plot_rx(ilk);
+			ry = get_panorama_map_plot_ry(ilk);
 
 			if (rows && cols)
 			{
 				pmt = matrix_alloc(rows, cols);
-				matrix_parse(pmt, get_chart_table_text_ptr(ilk), -1);
+				matrix_parse(pmt, get_panorama_plot_text_ptr(ilk), -1);
 
-				//draw_map_table(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
+				//draw_map_plot(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
 
 				matrix_free(pmt);
 			}
 		}
-		else if (compare_text(table, -1, DOC_CHART_DOT, -1, 0) == 0)
+		else if (compare_text(plot, -1, DOC_PANORAMA_DOT, -1, 0) == 0)
 		{
-			rows = get_chart_dot_table_rows(ilk);
-			cols = get_chart_dot_table_cols(ilk);
+			rows = get_panorama_dot_plot_rows(ilk);
+			cols = get_panorama_dot_plot_cols(ilk);
 
-			rx = get_chart_dot_table_rx(ilk);
-			ry = get_chart_dot_table_ry(ilk);
+			rx = get_panorama_dot_plot_rx(ilk);
+			ry = get_panorama_dot_plot_ry(ilk);
 
 			if (rows && cols)
 			{
 				pmt = matrix_alloc(rows, cols);
-				matrix_parse(pmt, get_chart_table_text_ptr(ilk), -1);
+				matrix_parse(pmt, get_panorama_plot_text_ptr(ilk), -1);
 
-				//draw_dot_table(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
+				//draw_dot_plot(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
 
 				matrix_free(pmt);
 			}
 		}
-		else if (compare_text(table, -1, DOC_CHART_COUNTER, -1, 0) == 0)
+		else if (compare_text(plot, -1, DOC_PANORAMA_COUNTER, -1, 0) == 0)
 		{
-			//draw_counter_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_counter_table_layer_ptr(ilk), get_chart_table_text_ptr(ilk), get_chart_counter_table_size(ilk));
+			//draw_counter_plot(pif->canvas, &xp, &xb, &xf, &xr, get_panorama_counter_plot_layer_ptr(ilk), get_panorama_plot_text_ptr(ilk), get_panorama_counter_plot_size(ilk));
 		}
-		else if (compare_text(table, -1, DOC_CHART_LINE, -1, 0) == 0)
+		else if (compare_text(plot, -1, DOC_PANORAMA_LINE, -1, 0) == 0)
 		{
-			n = get_chart_line_table_size(ilk);
+			n = get_panorama_line_plot_size(ilk);
 			pvt = vector_alloc(n);
 			if (n)
 			{
-				//draw_line_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_line_table_base(ilk), get_chart_line_table_span(ilk), pvt);
+				//draw_line_plot(pif->canvas, &xp, &xb, &xf, &xr, get_panorama_line_plot_base(ilk), get_panorama_line_plot_span(ilk), pvt);
 			}
 			vector_free(pvt);
 		}
-		else if (compare_text(table, -1, DOC_CHART_BAR, -1, 0) == 0)
+		else if (compare_text(plot, -1, DOC_PANORAMA_BAR, -1, 0) == 0)
 		{
-			n = get_chart_bar_table_size(ilk);
+			n = get_panorama_bar_plot_size(ilk);
 			pvt = vector_alloc(n);
 			if (n)
 			{
-				//draw_bar_table(pif->canvas, &xp, &xb, &xf, &xr, get_chart_bar_table_base(ilk), get_chart_bar_table_span(ilk), pvt);
+				//draw_bar_plot(pif->canvas, &xp, &xb, &xf, &xr, get_panorama_bar_plot_base(ilk), get_panorama_bar_plot_span(ilk), pvt);
 			}
 			vector_free(pvt);
-		}
+		}*/
 
-		ilk = get_chart_next_table(ptr, ilk);
+		ilk = get_panorama_next_plot(ptr, ilk);
 	}
 }
 

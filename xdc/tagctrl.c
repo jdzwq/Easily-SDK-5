@@ -34,11 +34,15 @@ LICENSE.GPL3 for more details.
 #include "winnc.h"
 #include "xdcmenu.h"
 #include "textor.h"
+#include "xdcbox.h"
 
 typedef struct _tagctrl_delta_t{
 	textor_t textor;
 	link_t_ptr joint;
 	
+	res_win_t hsc;
+	res_win_t vsc;
+
 	bool_t b_lock;
 
 	int chs;
@@ -125,6 +129,12 @@ void hand_tagctrl_destroy(res_win_t widget)
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
+
+	if (widget_is_valid(ptd->hsc))
+		widget_destroy(ptd->hsc);
+
+	if (widget_is_valid(ptd->vsc))
+		widget_destroy(ptd->vsc);
 
 	hand_textor_clean(&ptd->textor);
 
@@ -558,7 +568,25 @@ void hand_tagctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
 	if (hand_textor_scroll(&ptd->textor, bHorz, nLine))
+	{
+		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
+		{
+			if (!widget_is_valid(ptd->vsc))
+			{
+				ptd->vsc = show_vertbox(widget);
+			}
+		}
+
+		if (bHorz && !(widget_get_style(widget) & WD_STYLE_HSCROLL))
+		{
+			if (!widget_is_valid(ptd->hsc))
+			{
+				ptd->hsc = show_horzbox(widget);
+			}
+		}
+
 		return;
+	}
 
 	win = widget_get_parent(widget);
 

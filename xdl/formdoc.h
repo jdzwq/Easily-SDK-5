@@ -427,17 +427,6 @@ LICENSE.GPL3 for more details.
 @SET set_field_style: set the field drawing style.
 */
 #define set_field_style(flk,token)							set_dom_node_attr(flk,ATTR_STYLE,-1,token,-1)
-
-/*
-@PROPER images: document.
-@SET set_form_images: set the field reference images.
-*/
-#define set_form_images(ptr,images)							set_dom_node_images(ptr,images)
-/*
-@PROPER images: document.
-@GET get_form_images: get the field reference images.
-*/
-#define get_form_images(ptr)								get_dom_node_images(ptr)
 /*
 @PROPER design: boolean.
 @SET set_form_design: set the form is in designing mode.
@@ -492,11 +481,11 @@ LICENSE.GPL3 for more details.
 
 #define IS_STATIC_FIELD(token)	(compare_text(token,-1,DOC_FORM_SHAPE,-1,0) == 0 || compare_text(token,-1,DOC_FORM_LABEL,-1,0) == 0)
 #define IS_DATA_FIELD(token)	(compare_text(token,-1,DOC_FORM_TEXT,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CHECK,-1,0) == 0  ||  compare_text(token,-1,DOC_FORM_TAG,-1,0) == 0 || compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_PHOTO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_HREF,-1,0) == 0 || compare_text(token,-1,DOC_FORM_TABLE,-1,0) == 0)
-#define IS_EMBED_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRAPH,-1,0) == 0  ||  compare_text(token,-1,DOC_FORM_IMAGES,-1,0) == 0 || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 )
-#define IS_PAGED_FIELD(token)	(compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRAPH,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0)
+#define IS_EMBED_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_STATIS,-1,0) == 0  ||  compare_text(token,-1,DOC_FORM_IMAGES,-1,0) == 0 || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 )
+#define IS_PAGED_FIELD(token)	(compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_STATIS,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0)
 #define IS_LARGE_FIELD(token)	(compare_text(token,-1,DOC_FORM_PHOTO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0)
 #define IS_EDITOR_FIELD(token)	(compare_text(token,-1,DOC_FORM_SHAPE,-1,0) != 0 && compare_text(token,-1,DOC_FORM_LABEL,-1,0) != 0 && compare_text(token,-1,DOC_FORM_HREF,-1,0) != 0 && compare_text(token,-1,DOC_FORM_PHOTO,-1,0) != 0 && compare_text(token,-1,DOC_FORM_IMAGES,-1,0) != 0)
-#define IS_AUTO_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRAPH,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_TAG,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CHECK,-1,0) == 0)
+#define IS_AUTO_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_STATIS,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_TAG,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CHECK,-1,0) == 0)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -844,19 +833,19 @@ XDL_API link_t_ptr get_field_embed_grid(link_t_ptr flk);
 XDL_API void set_field_embed_grid(link_t_ptr flk, link_t_ptr doc);
 
 /*
-@FUNCTION get_field_embed_graph: get the field embed graph document.
+@FUNCTION get_field_embed_statis: get the field embed statis document.
 @INPUT link_t_ptr flk: the field link component.
-@RETURN link_t_ptr: return the graph link component if exists, otherwise return NULL.
+@RETURN link_t_ptr: return the statis link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_embed_graph(link_t_ptr flk);
+XDL_API link_t_ptr get_field_embed_statis(link_t_ptr flk);
 
 /*
-@FUNCTION set_field_embed_graph: set the field embed graph document.
+@FUNCTION set_field_embed_statis: set the field embed statis document.
 @INPUT link_t_ptr flk: the field link component.
-@INPUT link_t_ptr doc: the graph link componet.
+@INPUT link_t_ptr doc: the statis link componet.
 @RETURN void: none.
 */
-XDL_API void set_field_embed_graph(link_t_ptr flk, link_t_ptr doc);
+XDL_API void set_field_embed_statis(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION get_field_embed_images: get the field embed images document.

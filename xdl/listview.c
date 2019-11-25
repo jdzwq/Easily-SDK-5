@@ -277,7 +277,6 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	const tchar_t* style;
 	const tchar_t* layer;
 	bool_t b_print;
-	link_t_ptr imagelist;
 	float px, py, pw, ph;
 
 	XDL_ASSERT( pif != NULL);
@@ -288,8 +287,6 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	ph = pbox->fh;
 
 	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
-
-	imagelist = get_list_images(ptr);
 
 	b_showcheck = get_list_showcheck(ptr);
 
@@ -334,6 +331,15 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		format_xcolor(&pif->clr_msk, xi.color);
 	}
 
+	if (!b_print)
+	{
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+	}
+	else
+	{
+		parse_xcolor(&xc, xp.color);
+	}
+
 	xr.fx = px;
 	xr.fy = py;
 	xr.fw = iw;
@@ -344,14 +350,15 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	xr_img.fw = xr.fw;
 	xr_img.fh = xr.fh - ic;
 	ft_center_rect(&xr_img, DEF_LARGE_ICON, DEF_LARGE_ICON);
-	parse_xcolor(&xc, xp.color);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, ATTR_ICON_FOLDER);
+
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, ICON_FOLDER);
 
 	xr_text.fx = xr.fx;
 	xr_text.fy = xr.fy + xr.fh - ic;
 	xr_text.fw = xr.fw;
 	xr_text.fh = ic;
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
+
 	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, _T(". ."), -1);
 
 	count = 1;
@@ -379,22 +386,19 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		xr_img.fh = xr.fh - ic;
 		ft_center_rect(&xr_img, DEF_LARGE_ICON, DEF_LARGE_ICON);
 
-		parse_xcolor(&xc, xp.color);
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, ATTR_ICON_FOLDER);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, ICON_FOLDER);
 
-		if (imagelist)
-		{
-			xr_img.fx = xr.fx;
-			xr_img.fy = xr.fy;
-			xr_img.fw = xr.fw;
-			xr_img.fh = xr.fh - ic;
+		xr_img.fx = xr.fx;
+		xr_img.fy = xr.fy;
+		xr_img.fw = xr.fw;
+		xr_img.fh = xr.fh - ic;
 
-			xr_img.fy += xr_img.fh / 4;
-			xr_img.fh -= xr_img.fh / 4;
+		xr_img.fy += xr_img.fh / 4;
+		xr_img.fh -= xr_img.fh / 4;
 
-			get_ximage(imagelist, get_list_item_image_ptr(nlk), &xi);
-			(*pif->pf_draw_image)(pif->canvas, &xi, &xr_img);
-		}
+		ft_center_rect(&xr_img, DEF_SMALL_ICON, DEF_SMALL_ICON);
+
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, get_list_item_icon_ptr(nlk));
 
 		if (b_showcheck)
 		{
@@ -407,11 +411,11 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 			if (get_list_item_checked(nlk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, ATTR_ICON_CHECKED);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, ICON_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, ATTR_ICON_CHECKBOX);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, ICON_CHECKBOX);
 			}
 
 			xr_text.fx = xr.fx + ic;

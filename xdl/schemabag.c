@@ -467,7 +467,7 @@ void import_grid_data(link_t_ptr grid, link_t_ptr sch, link_t_ptr dom)
 }
 
 /****************************************************************************************************************/
-void export_graph_schema(link_t_ptr ptr, link_t_ptr sch)
+void export_statis_schema(link_t_ptr ptr, link_t_ptr sch)
 {
 	link_t_ptr ylk, nlk_rowset, nlk_row, nlk;
 	const tchar_t *cname,*cid;
@@ -480,7 +480,7 @@ void export_graph_schema(link_t_ptr ptr, link_t_ptr sch)
 	set_schema_element_id(nlk_row, DOC_GRID_ROW);
 	set_schema_element_type(nlk_row, SCHEMA_ATTR_TYPE_COMPLEXTYPE);
 
-	cname = get_graph_xaxis_ptr(ptr);
+	cname = get_statis_xaxis_ptr(ptr);
 	if (!is_null(cname))
 	{
 		nlk = insert_schema_element(nlk_row, LINK_LAST);
@@ -529,7 +529,7 @@ void export_graph_schema(link_t_ptr ptr, link_t_ptr sch)
 	set_schema_element_ref(nlk_row, DOC_GRID_ROW);
 }
 
-void export_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
+void export_statis_data(link_t_ptr statis, link_t_ptr sch, link_t_ptr dom)
 {
 	link_t_ptr slk_rowset, slk_row, slk_ref, slk;
 	link_t_ptr nlk_rowset, nlk_row, nlk;
@@ -588,7 +588,7 @@ void export_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 			return;
 	}
 
-	xlk = get_next_xax(graph, LINK_FIRST);
+	xlk = get_next_xax(statis, LINK_FIRST);
 	while (xlk)
 	{
 		nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
@@ -608,7 +608,7 @@ void export_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 					nlk = insert_dom_node(nlk_row, LINK_LAST);
 					set_dom_node_name(nlk, get_schema_element_name_ptr(slk), -1);
 
-					ylk = get_yax(graph, get_schema_element_id_ptr(slk));
+					ylk = get_yax(statis, get_schema_element_id_ptr(slk));
 					if (ylk)
 					{
 						set_dom_node_text(nlk, get_coor_text_ptr(xlk, ylk), -1);
@@ -616,7 +616,7 @@ void export_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 				}
 				else if (is_schema_attribute(slk))
 				{
-					ylk = get_yax(graph, get_schema_element_id_ptr(slk));
+					ylk = get_yax(statis, get_schema_element_id_ptr(slk));
 					if (ylk)
 					{
 						set_dom_node_attr(nlk_row, get_schema_element_name_ptr(slk), -1, get_coor_text_ptr(xlk, ylk), -1);
@@ -632,7 +632,7 @@ void export_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 		}
 		else
 		{
-			ylk = get_next_yax(graph, LINK_FIRST);
+			ylk = get_next_yax(statis, LINK_FIRST);
 			while (ylk)
 			{
 				if (!is_null(get_yax_id_ptr(ylk)))
@@ -642,15 +642,15 @@ void export_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 					set_dom_node_text(nlk, get_coor_text_ptr(xlk, ylk), -1);
 				}
 
-				ylk = get_next_yax(graph, ylk);
+				ylk = get_next_yax(statis, ylk);
 			}
 		}
 
-		xlk = get_next_xax(graph, xlk);
+		xlk = get_next_xax(statis, xlk);
 	}
 }
 
-void import_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
+void import_statis_data(link_t_ptr statis, link_t_ptr sch, link_t_ptr dom)
 {
 	link_t_ptr slk_rowset, slk_row, slk_ref, slk;
 	link_t_ptr nlk_rowset, nlk_row, nlk;
@@ -729,14 +729,14 @@ void import_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 			}
 		}
 
-		xlk = insert_xax(graph, LINK_LAST);
+		xlk = insert_xax(statis, LINK_LAST);
 
 		if(b_sch)
 		{
 			slk = get_schema_next_element(slk_row, LINK_FIRST);
 			while (slk)
 			{
-				ylk = get_yax(graph, get_schema_element_id_ptr(slk));
+				ylk = get_yax(statis, get_schema_element_id_ptr(slk));
 				if (!ylk)
 				{
 					slk = get_schema_next_element(slk_row, slk);
@@ -764,7 +764,7 @@ void import_graph_data(link_t_ptr graph, link_t_ptr sch, link_t_ptr dom)
 			nlk = get_dom_first_child_node(nlk_row);
 			while (nlk)
 			{
-				ylk = get_yax_by_id(graph, get_dom_node_name_ptr(nlk));
+				ylk = get_yax_by_id(statis, get_dom_node_name_ptr(nlk));
 				if (!ylk)
 				{
 					nlk = get_dom_next_sibling_node(nlk);

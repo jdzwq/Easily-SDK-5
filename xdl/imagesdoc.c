@@ -54,8 +54,6 @@ link_t_ptr create_images_doc()
 
 void destroy_images_doc(link_t_ptr ptr)
 {
-	uncache_images_doc(ptr);
-
 	destroy_dom_doc(ptr);
 }
 
@@ -146,58 +144,13 @@ link_t_ptr get_images_prev_item(link_t_ptr ptr, link_t_ptr pos)
 		return get_dom_prev_sibling_node(pos);
 }
 
-void cache_images_doc(link_t_ptr ptr)
-{
-	link_t_ptr plk;
-	link_t_ptr elk, images;
-
-	images = get_dom_node_images(ptr);
-	if (images)
-		clear_hash_table(images);
-	else
-		images = create_hash_table();
-
-	plk = get_images_next_item(ptr, LINK_FIRST);
-	while (plk)
-	{
-		elk = write_hash_attr(images, get_images_item_alt_ptr(plk), -1, NULL, 0);
-		set_hash_entity_delta(elk, (var_long)plk);
-
-		plk = get_images_next_item(ptr, plk);
-	}
-
-	set_dom_node_images(ptr, images);
-}
-
-void uncache_images_doc(link_t_ptr ptr)
-{
-	link_t_ptr images;
-
-	images = get_dom_node_images(ptr);
-	if (images)
-		destroy_hash_table(images);
-
-	set_dom_node_images(ptr, NULL);
-}
-
 bool_t get_ximage(link_t_ptr ptr, const tchar_t* alt, ximage_t* pxi)
 {
-	link_t_ptr images, ent;
 	link_t_ptr plk;
 	const tchar_t* src;
 	const tchar_t* token;
 
-	images = get_dom_node_images(ptr);
-	if (images)
-	{
-		ent = get_hash_entity(images, alt, -1);
-		plk = (ent) ? (link_t_ptr)get_hash_entity_delta(ent) : NULL;
-	}
-	else
-	{
-		plk = get_images_item(ptr, alt, -1);
-	}
-	
+	plk = get_images_item(ptr, alt, -1);
 	if (!plk)
 	{
 		xscpy(pxi->type, _T(""));

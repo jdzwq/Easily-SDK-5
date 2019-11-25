@@ -50,13 +50,15 @@ XDL_API void print_form(const dev_prn_t* pdev, link_t_ptr form);
 
 XDL_API void print_grid(const dev_prn_t* pdev, link_t_ptr grid);
 
-XDL_API void print_graph(const dev_prn_t* pdev, link_t_ptr graph);
+XDL_API void print_statis(const dev_prn_t* pdev, link_t_ptr statis);
 
 XDL_API void print_topog(const dev_prn_t* pdev, link_t_ptr topog);
 
 XDL_API void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog);
 
-XDL_API void print_chart(const dev_prn_t* pdev, link_t_ptr chart);
+XDL_API void print_panorama(const dev_prn_t* pdev, link_t_ptr panorama);
+
+XDL_API void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram);
 
 XDL_API void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo);
 
@@ -68,13 +70,15 @@ XDL_API void svg_print_form(link_t_ptr svg, link_t_ptr form, int page);
 
 XDL_API void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page);
 
-XDL_API void svg_print_graph(link_t_ptr svg, link_t_ptr graph, int page);
+XDL_API void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page);
 
 XDL_API void svg_print_topog(link_t_ptr svg, link_t_ptr topog);
 
 XDL_API void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog);
 
-XDL_API void svg_print_chart(link_t_ptr svg, link_t_ptr chart);
+XDL_API void svg_print_panorama(link_t_ptr svg, link_t_ptr panorama);
+
+XDL_API void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram);
 
 XDL_API void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo, int page);
 

@@ -167,9 +167,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DiagramPanel.h" />
     <ClInclude Include="DialogPanel.h" />
     <ClInclude Include="FormPanel.h" />
-    <ClInclude Include="GraphPanel.h" />
+    <ClInclude Include="StatisPanel.h" />
     <ClInclude Include="GridPanel.h" />
     <ClInclude Include="ImagePanel.h" />
     <ClInclude Include="Resource.h" />
@@ -180,11 +181,12 @@
     <ClInclude Include="SQLUpdateDialog.h" />
     <ClInclude Include="SQLViewDialog.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="ChartPanel.h" />
+    <ClInclude Include="PanoramaPanel.h" />
     <ClInclude Include="TagPanel.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TopogPanel.h" />
-    <ClInclude Include="WEBPanel.h" />
+    <ClInclude Include="JsonPanel.h" />
+    <ClInclude Include="XMLPanel.h" />
     <ClInclude Include="_Database.h" />
     <ClInclude Include="_Define.h" />
     <ClInclude Include="_Frame.h" />
@@ -192,9 +194,10 @@
     <ClInclude Include="_Project.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DiagramPanel.cpp" />
     <ClCompile Include="DialogPanel.cpp" />
     <ClCompile Include="FormPanel.cpp" />
-    <ClCompile Include="GraphPanel.cpp" />
+    <ClCompile Include="StatisPanel.cpp" />
     <ClCompile Include="GridPanel.cpp" />
     <ClCompile Include="ImagePanel.cpp" />
     <ClCompile Include="RichPanel.cpp" />
@@ -209,10 +212,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ChartPanel.cpp" />
+    <ClCompile Include="PanoramaPanel.cpp" />
     <ClCompile Include="TagPanel.cpp" />
     <ClCompile Include="TopogPanel.cpp" />
-    <ClCompile Include="WEBPanel.cpp" />
+    <ClCompile Include="JsonPanel.cpp" />
+    <ClCompile Include="XMLPanel.cpp" />
     <ClCompile Include="_Database.cpp" />
     <ClCompile Include="_Frame.cpp" />
     <ClCompile Include="_Module.cpp" />

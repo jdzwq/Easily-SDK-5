@@ -97,7 +97,7 @@ void slidebox_on_moved(res_win_t widget, const xpoint_t* pxp)
 
 	ptd->n_pos = hint;
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 
 	noti_slidebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -147,7 +147,7 @@ void hand_slidebox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	slidebox_delta_t* ptd = GETSLIDEBOXDELTA(widget);
 	
-	widget_update(widget, NULL, 0);
+	widget_redraw(widget, NULL, 0);
 }
 
 void hand_slidebox_erase(res_win_t widget, res_ctx_t rdc)
@@ -179,7 +179,8 @@ void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_xcolor(widget, &pif->clr_msk);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -249,7 +250,7 @@ void slidebox_set_slide(res_win_t widget, int pos)
 
 	ptd->n_pos = pos;
 
-	widget_update(widget, NULL, 1);
+	widget_redraw(widget, NULL, 1);
 }
 
 int slidebox_get_slide(res_win_t widget)

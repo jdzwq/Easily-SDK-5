@@ -89,8 +89,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		if (widget_is_valid(datebox))
 		{
 			widget_set_color_mode(datebox, (clr_mod_t*)data);
-			widget_update_window(datebox);
-			widget_update_client(datebox);
+			widget_update(datebox);
 		}
 		return 1;
 	case COMMAND_COMMIT:
@@ -243,6 +242,7 @@ res_win_t firedate_create(res_win_t widget, const xrect_t* pxr)
 
 	widget_move(datebox, RECTPOINT(&xr));
 	widget_size(datebox, RECTSIZE(&xr));
+	widget_update(datebox);
 
 	return editor;
 }
