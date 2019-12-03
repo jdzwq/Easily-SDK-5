@@ -38,6 +38,25 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/******************************plot box*****************************************************/
+
+/*
+@FUNCTION plotbox_create: create a plotbox widget.
+@INPUT res_win_t widget: the owner widget.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t plotbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
+
+/*
+@FUNCTION plotbox_popup_size: calcing the plotbox popup size according to client size.
+@INPUT res_win_t widget: the plotbox widget.
+@INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
+@RETURN void: none.
+*/
+XDC_API void plotbox_popup_size(res_win_t widget, xsize_t* pxs);
+
 /******************************numeric box*****************************************************/
 
 /*

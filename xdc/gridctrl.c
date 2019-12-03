@@ -1897,8 +1897,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	if (widget_can_paging(widget))
 	{
-		parse_xcolor(&xc, xb.color);
-		lighten_xcolor(&xc, DEF_SOFT_DARKEN);
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
 
 		if (b_design)

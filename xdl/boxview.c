@@ -1005,7 +1005,9 @@ void draw_pushbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = pbox->fw;
 	xr.fh = pbox->fh;
 
-	(*pif->pf_draw_3drect)(pif->canvas, &xp, &xr);
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
+	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
 
 	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, text, -1);
 }

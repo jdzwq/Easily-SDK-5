@@ -265,6 +265,15 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	tchar_t txt[RES_LEN + 1] = { 0 };
 	int len;
 
+	xbrush_t xb_shadow = { 0 };
+	xpen_t xp_shadow = { 0 };
+	tchar_t aa[8] = { 0 };
+	xpoint_t pa[12] = { 0 };
+
+	int i = 0;
+	int n = 0;
+	int feed = 5;
+
 	ws = widget_get_style(wt);
 
 	widget_calc_border(ws, &bd);
@@ -282,26 +291,98 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
+	rtScr.x = rtWnd.x + edge;
+	rtScr.y = rtWnd.y + edge;
+	rtScr.w = rtWnd.w - 2 * edge;
+	rtScr.h = title;
+
 	widget_get_xbrush(wt, &xb);
-	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	widget_get_xpen(wt, &xp);
 	widget_get_xfont(wt, &xf);
 	widget_get_xface(wt, &xa);
 
+	/*lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	parse_xcolor(&xc_near, xb.color);
 	parse_xcolor(&xc_center, xb.color);
 	lighten_xcolor(&xc_near, DEF_HARD_DARKEN);
 	default_xgradi(&xg);
 	format_xcolor(&xc_near, xg.brim_color);
 	format_xcolor(&xc_center, xg.core_color);
-	xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+	xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);*/
+
+	//gradient_rect_raw(dc, &xg, &rtScr);
 
 	rtScr.x = rtWnd.x + edge;
 	rtScr.y = rtWnd.y + edge;
 	rtScr.w = rtWnd.w - 2 * edge;
-	rtScr.h = title;
+	rtScr.h = title - feed;
 
-	gradient_rect_raw(dc, &xg, &rtScr);
+	aa[i] = _T('M');
+	pa[n].x = rtScr.x;
+	pa[n].y = rtScr.y;
+	i++;
+	n++;
+
+	aa[i] = _T('L');
+	pa[n].x = rtScr.x + rtScr.w;
+	pa[n].y = rtScr.y;
+	i++;
+	n++;
+
+	aa[i] = _T('L');
+	pa[n].x = rtScr.x + rtScr.w;
+	pa[n].y = rtScr.y + rtScr.h - 2 * feed;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = feed;
+	pa[n].y = feed;
+	pa[n + 1].x = rtScr.x + rtScr.w - feed;
+	pa[n + 1].y = rtScr.y + rtScr.h - feed;
+	i++;
+	n += 2;
+
+	aa[i] = _T('C');
+	pa[n].x = rtScr.x + rtScr.w / 8 * 7;
+	pa[n].y = rtScr.y + rtScr.h - 2 * feed;
+	pa[n + 1].x = rtScr.x + rtScr.w / 4 * 3;
+	pa[n + 1].y = rtScr.y + rtScr.h - feed;
+	pa[n + 2].x = rtScr.x + rtScr.w / 2;
+	pa[n + 2].y = rtScr.y + rtScr.h;
+	i++;
+	n += 3;
+
+	aa[i] = _T('S');
+	pa[n].x = rtScr.x + rtScr.w / 4;
+	pa[n].y = rtScr.y + rtScr.h;
+	pa[n + 1].x = rtScr.x + feed;
+	pa[n + 1].y = rtScr.y + rtScr.h;
+	i++;
+	n += 2;
+
+	aa[i] = _T('A');
+	pa[n].x = feed;
+	pa[n].y = feed;
+	pa[n + 1].x = rtScr.x;
+	pa[n + 1].y = rtScr.y + rtScr.h - feed;
+	i++;
+	n += 2;
+
+	aa[i] = _T('Z');
+	i++;
+
+	xmem_copy((void*)&xb_shadow, (void*)&xb, sizeof(xbrush_t));
+	lighten_xbrush(&xb_shadow, DEF_SOFT_DARKEN);
+	xmem_copy((void*)&xp_shadow, (void*)&xp, sizeof(xpen_t));
+	xscpy(xp_shadow.color, xb_shadow.color);
+
+	//xb_shadow.shadow.offx = feed;
+	//xb_shadow.shadow.offy = feed;
+	xp_shadow.adorn.feed = 2;
+	xp_shadow.adorn.size = 2;
+
+	draw_path_raw(dc, &xp_shadow, &xb_shadow, aa, pa, n);
 
 	rtScr.x = rtWnd.x + edge;
 	rtScr.y = rtWnd.y + edge;

@@ -38,9 +38,9 @@
 #include "topogdoc.h"
 #include "statusdoc.h"
 #include "dialogdoc.h"
-#include "panoramadoc.h"
 #include "diagramdoc.h"
 #include "archdoc.h"
+#include "calendardoc.h"
 #include "taskdoc.h"
 
 #include "gridsql.h"

@@ -218,7 +218,9 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		if (ptd->b_check)
 		{
-			(*pif->pf_draw_3drect)(pif->canvas, &xp, &xr_box);
+			xp.adorn.feed = 2;
+			xp.adorn.size = 2;
+			(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr_box);
 		}
 		else
 		{
@@ -243,7 +245,9 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		if (ptd->b_check)
 		{
-			(*pif->pf_draw_3drect)(pif->canvas, &xp, &xr_box);
+			xp.adorn.feed = 2;
+			xp.adorn.size = 2;
+			(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr_box);
 		}
 		else
 		{
@@ -268,7 +272,9 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		if (ptd->b_check)
 		{
-			(*pif->pf_draw_3drect)(pif->canvas, &xp, &xr_box);
+			xp.adorn.feed = 2;
+			xp.adorn.size = 2;
+			(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr_box);
 		}
 		else
 		{

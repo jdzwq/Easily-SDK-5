@@ -136,11 +136,11 @@ static long _notesctrl_calc_height(res_win_t widget)
 		{
 			xr.x = xr.y = 0;
 			xr.w = pw;
-			xr.h = ptd->tw;
+			xr.h = ptd->th;
 			text_rect_raw(rdc, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
 
-			n = xr.h / ptd->tw;
-			if (xr.h % ptd->tw)
+			n = xr.h / ptd->th;
+			if (xr.h % ptd->th)
 				n++;
 		}
 		else
@@ -148,7 +148,7 @@ static long _notesctrl_calc_height(res_win_t widget)
 			n = NOTESCTRL_SPAN_PLUS;
 		}
 
-		ph += (ptd->th + n * ptd->tw);
+		ph += (ptd->th + n * ptd->th);
 
 		ilk = get_arch_next_sibling_item(ilk);
 	}
@@ -226,11 +226,11 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 		{
 			xr.x = xr.y = 0;
 			xr.w = vb.pw - ptd->tw;
-			xr.h = ptd->tw;
+			xr.h = ptd->th;
 			text_rect_raw(rdc, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
 
-			n = xr.h / ptd->tw;
-			if (xr.h % ptd->tw)
+			n = xr.h / ptd->th;
+			if (xr.h % ptd->th)
 				n++;
 		}
 		else
@@ -241,7 +241,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 		xr.x = vb.px + ptd->tw;
 		xr.y = vb.py + total + ptd->th;
 		xr.w = vb.pw - ptd->tw;
-		xr.h = n * ptd->tw;
+		xr.h = n * ptd->th;
 		if (pt_in_rect(ppt, &xr))
 		{
 			*pplk = ilk;
@@ -249,7 +249,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 			break;
 		}
 
-		total += (ptd->th + n * ptd->tw);
+		total += (ptd->th + n * ptd->th);
 
 		ilk = get_arch_next_sibling_item(ilk);
 	}
@@ -292,11 +292,11 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 		{
 			xr.x = xr.y = 0;
 			xr.w = vb.pw - ptd->tw;
-			xr.h = ptd->tw;
+			xr.h = ptd->th;
 			text_rect_raw(rdc, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
 
-			n = xr.h / ptd->tw;
-			if (xr.h % ptd->tw)
+			n = xr.h / ptd->th;
+			if (xr.h % ptd->th)
 				n++;
 		}
 		else
@@ -309,11 +309,11 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 			pxr->x = vb.px;
 			pxr->y = vb.py + total;
 			pxr->w = vb.pw;
-			pxr->h = ptd->th + n * ptd->tw;
+			pxr->h = ptd->th + n * ptd->th;
 			break;
 		}
 
-		total += (ptd->th + n * ptd->tw);
+		total += (ptd->th + n * ptd->th);
 
 		ilk = get_arch_next_sibling_item(ilk);
 	}
@@ -331,7 +331,7 @@ static void _notesctrl_reset_page(res_win_t widget)
 
 	widget_get_client_rect(widget, &xr);
 
-	widget_reset_paging(widget, xr.w, xr.h, xr.w, mh, ptd->th, ptd->th);
+	widget_reset_paging(widget, xr.w, xr.h, xr.w, mh, ptd->tw, ptd->th);
 }
 
 static void _notesctrl_ensure_visible(res_win_t widget)
@@ -738,6 +738,8 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_xbrush(widget, &xb);
 	widget_get_xpen(widget, &xp);
 
+	xscpy(xp.size, _T("2"));
+	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DOTTED);
 	parse_xcolor(&xc, xp.color);
 
 	memcpy((void*)&xf_top, (void*)&xf, sizeof(xfont_t));
@@ -788,12 +790,12 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		if (ilk == ptd->item)
 		{
-			pt_center_rect(&xr_btn, 12, 8);
+			pt_center_rect(&xr_btn, 16, 16);
 			draw_icon_raw(rdc, &xc, &xr_btn, ICON_GUIDER);
 		}
 		else
 		{
-			pt_center_rect(&xr_btn, 8, 8);
+			pt_center_rect(&xr_btn, 16, 16);
 			draw_icon_raw(rdc, &xc, &xr_btn, ICON_RADIOED);
 		}
 
@@ -882,15 +884,15 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		xr_txt.x = xr.x + ptd->tw;
 		xr_txt.y = xr.y + ptd->th;
-		xr_txt.w = vb.pw - ptd->tw;
-		xr_txt.h = n * ptd->tw;
+		xr_txt.w = vb.pw - ptd->th;
+		xr_txt.h = n * ptd->th;
 
 		draw_text_raw(rdc, &xf, &xa, &xr_txt, get_notes_text_ptr(doc), -1);
 
 		pt_org.x = pt_cur.x;
 		pt_org.y = pt_cur.y;
 
-		xr.y += (ptd->th + n * ptd->tw);
+		xr.y += (ptd->th + n * ptd->th);
 
 		ilk = get_arch_next_sibling_item(ilk);
 	}

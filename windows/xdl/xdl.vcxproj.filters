@@ -612,12 +612,6 @@
     <ClInclude Include="..\..\xdl\diagramdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\panoramadoc.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\panoramaview.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\plotgdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -625,6 +619,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\icongdi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\calendarview.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\calendardoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1169,12 +1169,6 @@
     <ClCompile Include="..\..\xdl\diagramdoc.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\panoramadoc.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\panoramaview.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\plotgdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1182,6 +1176,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\icongdi.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\calendardoc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\calendarview.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

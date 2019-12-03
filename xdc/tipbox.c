@@ -142,8 +142,9 @@ void hand_tipbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
-	draw_3drect_raw(rdc, &xp, &xr);
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
+	draw_rect_raw(rdc, &xp, &xb, &xr);
 
 	token = ptd->sz_text;
 

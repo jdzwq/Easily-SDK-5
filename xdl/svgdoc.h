@@ -367,12 +367,14 @@ XDL_API bool_t svg_node_is_pie(link_t_ptr glk);
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
+@INPUT const xpoint* prt: the rect struct using long member.
+@INPUT long rx: the x-radius
+@INPUT long ry: the y-radius
 @INPUT double fang: the start angle.
 @INPUT double tang: the end angle.
 @RETURN void: none.
 */
-XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, double fang, double tang);
+XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
 
 /*
 @FUNCTION read_ellipse_from_svg_node: read pie attributes from the svg node.
@@ -380,11 +382,13 @@ XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbru
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
 @OUTPUT xrect_t* prt: the rect struct for returning in long member.
+@INPUT long* prx: the x-radius for returning
+@INPUT long* pry: the y-radius for returning
 @OUTPUT double* pfang: for returning start angle.
 @OUTPUT double* ptang: for returning end angle.
 @RETURN void: none
 */
-XDL_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* pxr, double* pfang, double* ptang);
+XDL_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, long* prx, long* pry, double* pfang, double* ptang);
 
 /*
 @FUNCTION write_text_to_svg_node: write text to the svg node.

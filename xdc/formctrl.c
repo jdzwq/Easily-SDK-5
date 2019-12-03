@@ -2560,8 +2560,7 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			draw_shape(canv, &xp, NULL, (const xrect_t*)&cb, ATTR_SHAPE_RECT);
 		}
 
-		parse_xcolor(&xc, xb.color);
-		lighten_xcolor(&xc, DEF_SOFT_DARKEN);
+		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
 
 		if (b_design)

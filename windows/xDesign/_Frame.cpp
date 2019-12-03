@@ -37,7 +37,6 @@ LICENSE.GPL3 for more details.
 #include "RichPanel.h"
 #include "TagPanel.h"
 #include "DialogPanel.h"
-#include "PanoramaPanel.h"
 #include "DiagramPanel.h"
 #include "SQLPanel.h"
 #include "XMLPanel.h"
@@ -371,8 +370,6 @@ static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
 		xscpy(szClass, PANEL_CLASS_IMAGE);
 	else if (is_dialog_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_DIALOG);
-	else if (is_panorama_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_PANORAMA);
 	else if (is_diagram_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_DIAGRAM);
 
@@ -440,12 +437,6 @@ void MainFrame_CreateFile(res_win_t widget)
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("对话框"));
 	set_list_item_icon(llk, ICON_DIALOG);
-
-	llk = insert_list_item(ptrList, LINK_LAST);
-	xsprintf(szID, _T("%d"), IDC_MAINFRAME_PANORAMAPANEL);
-	set_list_item_id(llk, szID);
-	set_list_item_title(llk, _T("全景图"));
-	set_list_item_icon(llk, ICON_PANORAMA);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIAGRAMPANEL);
@@ -1302,21 +1293,6 @@ void MainFrame_FreshObject(res_win_t widget)
 			set_tree_item_title(tlk, token);
 
 			ilk = get_dialog_next_item(qo.ptrDoc, ilk);
-		}
-	}
-	else if (compare_text(qo.szDoc, -1, DOC_PANORAMA, -1, 0) == 0)
-	{
-		LINKPTR ilk = get_panorama_next_plot(qo.ptrDoc, LINK_FIRST);
-		while (ilk)
-		{
-			LINKPTR tlk = insert_tree_item(ptr_tree, LINK_LAST);
-
-			xsprintf(token, _T("%s [%s]"), get_panorama_plot_name_ptr(ilk), get_panorama_plot_id_ptr(ilk));
-
-			set_tree_item_name(tlk, get_panorama_plot_name_ptr(ilk));
-			set_tree_item_title(tlk, token);
-
-			ilk = get_panorama_next_plot(qo.ptrDoc, ilk);
 		}
 	}
 	else if (compare_text(qo.szDoc, -1, DOC_DIAGRAM, -1, 0) == 0)
@@ -2335,15 +2311,6 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 		hPanel = DialogPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
 			widget_set_user_id(hPanel, IDC_MAINFRAME_DIALOGPANEL);
-	}
-	else if (compare_text(wclass, -1, PANEL_CLASS_PANORAMA, -1, 0) == 0)
-	{
-		if (is_null(wname))
-			xscpy(wname, _T("NewPanorama"));
-
-		hPanel = PanoramaPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
-		if (hPanel)
-			widget_set_user_id(hPanel, IDC_MAINFRAME_PANORAMAPANEL);
 	}
 	else if (compare_text(wclass, -1, PANEL_CLASS_DIAGRAM, -1, 0) == 0)
 	{

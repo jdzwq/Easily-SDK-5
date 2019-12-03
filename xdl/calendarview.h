@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc panorama document
+	@doc calendar document
 
-	@module	panoramaview.h | interface file
+	@module	calendarview.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,30 +29,34 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _PANORAMAVIEW_H
-#define _PANORAMAVIEW_H
+#ifndef _CALENDARVIEW_H
+#define _CALENDARVIEW_H
 
 #include "xdldef.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
 typedef enum{
-	PANORAMA_HINT_NONE,
-	PANORAMA_HINT_PLOT,
-	PANORAMA_HINT_VERT_SPLIT,
-	PANORAMA_HINT_HORZ_SPLIT,
-	PANORAMA_HINT_CROSS_SPLIT,
-}PANORAMA_HINT_CODE;
+	CALENDAR_HINT_NONE,
+	CALENDAR_HINT_YEARBTN,
+	CALENDAR_HINT_MONTHBTN,
+	CALENDAR_HINT_WEEKBTN,
+	CALENDAR_HINT_DAYBTN,
+	CALENDAR_HINT_PREVBTN,
+	CALENDAR_HINT_NEXTBTN,
+	CALENDAR_HINT_TODAYBTN,
+	CALENDAR_HINT_DAILY
+}CALENDAR_HINT_CODE;
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API void calc_panorama_plot_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	XDL_API void calc_calendar_daily_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API int calc_panorama_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
+	XDL_API int calc_calendar_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
 
-	XDL_API void draw_panorama(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+	XDL_API void draw_calendar(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

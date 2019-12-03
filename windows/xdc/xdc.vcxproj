@@ -20,9 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdc\annodlg.c" />
+    <ClCompile Include="..\..\xdc\curvectrl.c" />
     <ClCompile Include="..\..\xdc\diagramctrl.c" />
     <ClCompile Include="..\..\xdc\horzbox.c" />
-    <ClCompile Include="..\..\xdc\panoramactrl.c" />
+    <ClCompile Include="..\..\xdc\calendarctrl.c" />
     <ClCompile Include="..\..\xdc\checkbox.c" />
     <ClCompile Include="..\..\xdc\datebox.c" />
     <ClCompile Include="..\..\xdc\dialogctrl.c" />
@@ -38,6 +39,9 @@
     <ClCompile Include="..\..\xdc\firetime.c" />
     <ClCompile Include="..\..\xdc\firewords.c" />
     <ClCompile Include="..\..\xdc\formctrl.c" />
+    <ClCompile Include="..\..\xdc\modelctrl.c" />
+    <ClCompile Include="..\..\xdc\panelctrl.c" />
+    <ClCompile Include="..\..\xdc\plotbox.c" />
     <ClCompile Include="..\..\xdc\staticctrl.c" />
     <ClCompile Include="..\..\xdc\gridctrl.c" />
     <ClCompile Include="..\..\xdc\griddlg.c" />
@@ -81,7 +85,7 @@
     <ClCompile Include="..\..\xdc\toolctrl.c" />
     <ClCompile Include="..\..\xdc\topogctrl.c" />
     <ClCompile Include="..\..\xdc\treectrl.c" />
-    <ClCompile Include="..\..\xdc\userctrl.c" />
+    <ClCompile Include="..\..\xdc\ownerctrl.c" />
     <ClCompile Include="..\..\xdc\vertbox.c" />
     <ClCompile Include="..\..\xdc\winnc.c" />
     <ClCompile Include="..\..\xdc\wordsbox.c" />

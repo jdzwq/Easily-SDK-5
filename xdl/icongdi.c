@@ -130,19 +130,22 @@ void draw_plus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 
 	prt = &rt;
 
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+
 	pt[0].x = prt->x;
 	pt[0].y = prt->y + prt->h / 2;
 	pt[1].x = prt->x + prt->w;
 	pt[1].y = prt->y + prt->h / 2;
 
-	draw_3dline_raw(rdc, &xp, &(pt[0]), &(pt[1]));
+	draw_line_raw(rdc, &xp, &(pt[0]), &(pt[1]));
 
 	pt[0].x = prt->x + prt->w / 2;
 	pt[0].y = prt->y;
 	pt[1].x = prt->x + prt->w / 2;
 	pt[1].y = prt->y + prt->h;
 
-	draw_3dline_raw(rdc, &xp, &(pt[0]), &(pt[1]));
+	draw_line_raw(rdc, &xp, &(pt[0]), &(pt[1]));
 }
 
 void draw_minus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -183,7 +186,9 @@ void draw_minus_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	pt[1].x = prt->x + prt->w;
 	pt[1].y = prt->y + prt->h / 2;
 
-	draw_3dline_raw(rdc, &xp, &(pt[0]), &(pt[1]));
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	draw_line_raw(rdc, &xp, &(pt[0]), &(pt[1]));
 }
 
 void draw_collapse_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -1128,13 +1133,17 @@ void draw_close_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	pt1.y = xr.y + ps;
 	pt2.x = xr.x + xr.w - ps;
 	pt2.y = xr.y + xr.h - ps;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	pt1.x = xr.x + ps;
 	pt1.y = xr.y + xr.h - ps;
 	pt2.x = xr.x + xr.w - ps;
 	pt2.y = xr.y + ps;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 }
 
 void draw_minimize_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -5877,12 +5886,12 @@ void draw_update_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
 
-	xr.x = prt->x + prt->w / 4;
-	xr.y = prt->y + prt->h / 4;
-	xr.w = prt->w / 2;
-	xr.h = prt->h / 2;
+	xr.x = prt->x + prt->w / 2;
+	xr.y = prt->y + prt->h / 2;
+	xr.w = prt->w / 4;
+	xr.h = prt->h / 4;
 
-	draw_arc_raw(rdc, &xp, &xr, XPI / 2, 2 * XPI);
+	draw_arc_raw(rdc, &xp, RECTPOINT(&xr), xr.w, xr.h, XPI / 2, 2 * XPI);
 
 	pt[0].x = prt->x + prt->w / 2;
 	pt[0].y = prt->y + prt->h / 4 - 1 * ps;
@@ -5934,12 +5943,12 @@ void draw_fetch_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
 
-	xr.x = prt->x + prt->w / 4;
-	xr.y = prt->y + prt->h / 4;
-	xr.w = prt->w / 2;
-	xr.h = prt->h / 2;
+	xr.x = prt->x + prt->w / 2;
+	xr.y = prt->y + prt->h / 2;
+	xr.w = prt->w / 4;
+	xr.h = prt->h / 4;
 
-	draw_arc_raw(rdc, &xp, &xr, XPI, - XPI / 2);
+	draw_arc_raw(rdc, &xp, RECTPOINT(&xr), xr.w, xr.h, XPI, - XPI / 2);
 
 	pt[0].x = prt->x + prt->w / 2;
 	pt[0].y = prt->y + prt->h / 4 * 3 - 1 * ps;
@@ -6405,12 +6414,12 @@ void draw_proper_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 
 	ps = xstol(xp.size);
 
-	xr.x = prt->x + prt->w / 4;
-	xr.y = prt->y;
-	xr.w = prt->w / 2;
-	xr.h = prt->h / 2;
+	xr.x = prt->x + prt->w / 2;
+	xr.y = prt->y + prt->h / 4;
+	xr.w = prt->w / 4;
+	xr.h = prt->h / 4;
 
-	draw_arc_raw(rdc, &xp, &xr, 0, XPI);
+	draw_arc_raw(rdc, &xp, RECTPOINT(&xr), xr.w, xr.h, 0, XPI);
 
 	xr.x = prt->x;
 	xr.y = prt->y + prt->h / 4;
@@ -6837,7 +6846,7 @@ void draw_dialog_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	draw_rect_raw(rdc, &xp, &xb, &xr);
 }
 
-void draw_panorama_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
+void draw_calendar_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
 	xrect_t rt, xr;
@@ -7265,14 +7274,16 @@ void draw_slide_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	pt[1].x = prt->x + prt->w - ps;
 	pt[1].y = prt->y + prt->h / 2;
 
-	draw_3dline_raw(rdc, &xp, &pt[0], &pt[1]);
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x + prt->w / 4 + ps;
 	pt[0].y = prt->y + prt->h / 2 - 2 * ps;
 	pt[1].x = prt->x + prt->w / 4 + ps;
 	pt[1].y = prt->y + prt->h / 2 + 2 * ps;
 
-	draw_3dline_raw(rdc, &xp, &pt[0], &pt[1]);
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 }
 
 void draw_radio_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -7503,7 +7514,9 @@ void draw_push_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xr.w = prt->w / 2;
 	xr.h = 4 * ps;
 
-	draw_3drect_raw(rdc, &xp, &xr);
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
+	draw_rect_raw(rdc, &xp, NULL, &xr);
 }
 
 void draw_user_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -7549,12 +7562,12 @@ void draw_user_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 
 	draw_ellipse_raw(rdc, &xp, NULL, &xr);
 
-	xr.x = prt->x;
-	xr.y = prt->y + prt->h / 2;
-	xr.w = prt->w;
-	xr.h = prt->h;
+	xr.x = prt->x + prt->w / 2;
+	xr.y = prt->y + prt->h;
+	xr.w = prt->w / 2;
+	xr.h = prt->h / 2;
 
-	draw_arc_raw(rdc, &xp, &xr, 0, XPI);
+	draw_arc_raw(rdc, &xp, RECTPOINT(&xr), xr.w, xr.h, 0, XPI);
 
 	pt[0].x = prt->x;
 	pt[0].y = prt->y + prt->h;
@@ -7604,12 +7617,12 @@ void draw_location_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 
 	ps = xstol(xp.size);
 
-	xr.x = prt->x + prt->w / 4;
-	xr.y = prt->y;
-	xr.w = prt->w / 2;
-	xr.h = prt->h / 2;
+	xr.x = prt->x + prt->w / 2;
+	xr.y = prt->y + prt->h / 4;
+	xr.w = prt->w / 4;
+	xr.h = prt->h / 4;
 
-	draw_arc_raw(rdc, &xp, &xr, 0, XPI);
+	draw_arc_raw(rdc, &xp, RECTPOINT(&xr),xr.w, xr.h, 0, XPI);
 
 	pt[0].x = prt->x + prt->w / 4;
 	pt[0].y = prt->y + prt->h / 4;
@@ -7728,11 +7741,16 @@ void draw_panto_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 
 	draw_ellipse_raw(rdc, &xp, NULL, &xr);
 
-	draw_pie_raw(rdc, &xp, &xb, &xr, 0, XPI / 2);
+	xr.x = prt->x + prt->w / 2;
+	xr.y = prt->y + prt->h / 2;
+	xr.w = prt->w / 2;
+	xr.h = prt->h / 2;
+
+	draw_pie_raw(rdc, &xp, &xb, RECTPOINT(&xr), xr.w, xr.h, 0, XPI / 2);
 
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
-	draw_pie_raw(rdc, &xp, &xb, &xr, XPI, XPI / 2 * 3);
+	draw_pie_raw(rdc, &xp, &xb, RECTPOINT(&xr), xr.w, xr.h, XPI, XPI / 2 * 3);
 }
 
 void draw_scatter_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -8262,6 +8280,7 @@ ICON_DRAW_TABLE g_icon_table[] = {
 	{ ICON_BEGIN, draw_begin_icon_raw },
 	{ ICON_BOOK, draw_book_icon_raw },
 	{ ICON_BORDER, draw_border_icon_raw },
+	{ ICON_CALENDAR, draw_calendar_icon_raw },
 	{ ICON_CHECK, draw_check_icon_raw },
 	{ ICON_CHECKBOX, draw_checkbox_icon_raw },
 	{ ICON_CHECKED, draw_checked_icon_raw },
@@ -8329,7 +8348,6 @@ ICON_DRAW_TABLE g_icon_table[] = {
 	{ ICON_OPEN, draw_open_icon_raw },
 	{ ICON_ORDER, draw_order_icon_raw },
 	{ ICON_OUTPUT, draw_output_icon_raw },
-	{ ICON_PANORAMA, draw_panorama_icon_raw },
 	{ ICON_PANTO, draw_panto_icon_raw },
 	{ ICON_PASTE, draw_paste_icon_raw },
 	{ ICON_PAUSE, draw_pause_icon_raw },

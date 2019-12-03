@@ -207,19 +207,31 @@
     <ClCompile Include="..\..\xdc\staticctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\panoramactrl.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\diagramctrl.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdc\userctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\vertbox.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\horzbox.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\plotbox.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\calendarctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\modelctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\ownerctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\curvectrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\panelctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

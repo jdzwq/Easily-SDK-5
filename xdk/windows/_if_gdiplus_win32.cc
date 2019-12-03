@@ -220,6 +220,347 @@ static StringFormat* create_face(const xface_t* pxa)
 	return psf;
 }
 
+static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
+{
+	POINT pt_m = { 0 };
+	POINT pt_p = { 0 };
+	POINT pt_i = { 0 };
+	POINT pt[4] = { 0 };
+	long rx, ry;
+	long sflag, lflag;
+	RECT rt;
+	long arcf, arct;
+	int n = 0;
+
+	if (!aa)
+		return NULL;
+
+	GraphicsPath* path = new GraphicsPath;
+
+	while (*aa)
+	{
+		if (*aa == _T('M') || *aa == _T('m'))
+		{
+			pt_m.x = pa[0].x;
+			pt_m.y = pa[0].y;
+
+			pt_p.x = pt_m.x;
+			pt_p.y = pt_m.y;
+
+			n = 1;
+		}
+		else if (*aa == _T('L'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pa[0].x;
+			pt[1].y = pa[0].y;
+
+			pt_p.x = pt[1].x;
+			pt_p.y = pt[1].y;
+			pt_i.x = 2 * pt[1].x - pt[0].x;
+			pt_i.y = 2 * pt[1].y - pt[0].y;
+
+			DPtoLP(hDC, pt, 2);
+			path->AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+			n = 1;
+		}
+		else if (*aa == _T('l'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_p.x + pa[0].x;
+			pt[1].y = pt_p.y + pa[0].y;
+
+			pt_p.x = pt[1].x;
+			pt_p.y = pt[1].y;
+			pt_i.x = 2 * pt[1].x - pt[0].x;
+			pt_i.y = 2 * pt[1].y - pt[0].y;
+
+			DPtoLP(hDC, pt, 2);
+			path->AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+			n = 1;
+		}
+		else if (*aa == _T('Q'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pa[0].x;
+			pt[1].y = pa[0].y;
+			pt[2].x = pa[1].x;
+			pt[2].y = pa[1].y;
+
+			pt_p.x = pt[2].x;
+			pt_p.y = pt[2].y;
+			pt_i.x = 2 * pt[2].x - pt[1].x;
+			pt_i.y = 2 * pt[2].y - pt[1].y;
+
+			DPtoLP(hDC, pt, 3);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y);
+			n = 2;
+		}
+		else if (*aa == _T('q'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_m.x + pa[0].x;
+			pt[1].y = pt_m.y + pa[0].y;
+			pt[2].x = pt_m.x + pa[1].x;
+			pt[2].y = pt_m.y + pa[1].y;
+
+			pt_p.x = pt[2].x;
+			pt_p.y = pt[2].y;
+			pt_i.x = 2 * pt[2].x - pt[1].x;
+			pt_i.y = 2 * pt[2].y - pt[1].y;
+
+			DPtoLP(hDC, pt, 3);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y);
+			n = 2;
+		}
+		else if (*aa == _T('T'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_i.x;
+			pt[1].y = pt_i.y;
+			pt[2].x = pa[0].x;
+			pt[2].y = pa[0].y;
+
+			pt_p.x = pt[2].x;
+			pt_p.y = pt[2].y;
+			pt_i.x = 2 * pt[2].x - pt[1].x;
+			pt_i.y = 2 * pt[2].y - pt[1].y;
+
+			DPtoLP(hDC, pt, 3);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y);
+			n = 1;
+		}
+		else if (*aa == _T('t'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_i.x;
+			pt[1].y = pt_i.y;
+			pt[2].x = pt_p.x + pa[0].x;
+			pt[2].y = pt_p.y + pa[0].y;
+
+			pt_p.x = pt[2].x;
+			pt_p.y = pt[2].y;
+			pt_i.x = 2 * pt[2].x - pt[1].x;
+			pt_i.y = 2 * pt[2].y - pt[1].y;
+
+			DPtoLP(hDC, pt, 3);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y);
+			n = 1;
+		}
+		else if (*aa == _T('C'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pa[0].x;
+			pt[1].y = pa[0].y;
+			pt[2].x = pa[1].x;
+			pt[2].y = pa[1].y;
+			pt[3].x = pa[2].x;
+			pt[3].y = pa[2].y;
+
+			pt_p.x = pt[3].x;
+			pt_p.y = pt[3].y;
+			pt_i.x = 2 * pt[3].x - pt[2].x;
+			pt_i.y = 2 * pt[3].y - pt[2].y;
+
+			DPtoLP(hDC, pt, 4);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+			n = 3;
+		}
+		else if (*aa == _T('c'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_p.x + pa[0].x;
+			pt[1].y = pt_p.y + pa[0].y;
+			pt[2].x = pt_p.x + pa[1].x;
+			pt[2].y = pt_p.y + pa[1].y;
+			pt[3].x = pt_p.x + pa[2].x;
+			pt[3].y = pt_p.y + pa[2].y;
+
+			pt_p.x = pt[3].x;
+			pt_p.y = pt[3].y;
+			pt_i.x = 2 * pt[3].x - pt[2].x;
+			pt_i.y = 2 * pt[3].y - pt[2].y;
+
+			DPtoLP(hDC, pt, 4);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+			n = 3;
+		}
+		else if (*aa == _T('S'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_i.x;
+			pt[1].y = pt_i.y;
+			pt[2].x = pa[0].x;
+			pt[2].y = pa[0].y;
+			pt[3].x = pa[1].x;
+			pt[3].y = pa[1].y;
+
+			pt_p.x = pt[2].x;
+			pt_p.y = pt[2].y;
+			pt_i.x = 2 * pt[2].x - pt[1].x;
+			pt_i.y = 2 * pt[2].y - pt[1].y;
+
+			DPtoLP(hDC, pt, 4);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+			n = 2;
+		}
+		else if (*aa == _T('s'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_i.x;
+			pt[1].y = pt_i.y;
+			pt[2].x = pt_p.x + pa[0].x;
+			pt[2].y = pt_p.y + pa[0].y;
+			pt[3].x = pt_p.x + pa[1].x;
+			pt[3].y = pt_p.y + pa[1].y;
+
+			pt_p.x = pt[2].x;
+			pt_p.y = pt[2].y;
+			pt_i.x = 2 * pt[2].x - pt[1].x;
+			pt_i.y = 2 * pt[2].y - pt[1].y;
+
+			DPtoLP(hDC, pt, 4);
+			path->AddBezier(pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+			n = 2;
+		}
+		else if (*aa == _T('A'))
+		{
+			rx = pa[0].x;
+			ry = pa[0].y;
+			sflag = 1;
+
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pa[1].x;
+			pt[1].y = pa[1].y;
+
+			pt_p.x = pt[1].x;
+			pt_p.y = pt[1].y;
+			pt_i.x = 2 * pt[1].x - pt[0].x;
+			pt_i.y = 2 * pt[1].y - pt[0].y;
+
+			if (sflag)
+			{
+				if (pt[0].x < pt[1].x && pt[0].y < pt[1].y)
+				{
+					rt.left = pt[0].x - rx;
+					rt.right = pt[1].x;
+					rt.top = pt[0].y;
+					rt.bottom = pt[1].y + ry;
+
+					arcf = 270;
+					arct = 90;
+				}
+				else if (pt[0].x < pt[1].x && pt[0].y > pt[1].y)
+				{
+					rt.left = pt[0].x;
+					rt.right = pt[1].x + rx;
+					rt.top = pt[1].y;
+					rt.bottom = pt[0].y + ry;
+
+					arcf = 180;
+					arct = 90;
+				}
+				else if (pt[0].x > pt[1].x && pt[0].y > pt[1].y)
+				{
+					rt.left = pt[1].x;
+					rt.right = pt[0].x + rx;
+					rt.top = pt[1].y - ry;
+					rt.bottom = pt[0].y;
+
+					arcf = 90;
+					arct = 90;
+				}
+				else if (pt[0].x > pt[1].x && pt[0].y < pt[1].y)
+				{
+					rt.left = pt[1].x - rx;
+					rt.right = pt[0].x;
+					rt.top = pt[0].y - ry;
+					rt.bottom = pt[1].y;
+
+					arcf = 0;
+					arct = 90;
+				}
+			}
+			else
+			{
+				if (pt[0].x > pt[1].x && pt[0].y > pt[1].y)
+				{
+					rt.left = pt[1].x - rx;
+					rt.right = pt[0].x;
+					rt.top = pt[1].y;
+					rt.bottom = pt[0].y + ry;
+
+					arcf = 270;
+					arct = 90;
+				}
+				else if (pt[0].x > pt[1].x && pt[0].y < pt[1].y)
+				{
+					rt.left = pt[1].x;
+					rt.right = pt[0].x + rx;
+					rt.top = pt[0].y;
+					rt.bottom = pt[1].y + ry;
+
+					arcf = 180;
+					arct = 90;
+				}
+				else if (pt[0].x < pt[1].x && pt[0].y < pt[1].y)
+				{
+					rt.left = pt[0].x;
+					rt.right = pt[1].x + rx;
+					rt.top = pt[0].y - ry;
+					rt.bottom = pt[1].y;
+
+					arcf = 90;
+					arct = 90;
+				}
+				else if (pt[0].x < pt[1].x && pt[0].y > pt[1].y)
+				{
+					rt.left = pt[0].x - rx;
+					rt.right = pt[1].x;
+					rt.top = pt[1].y - ry;
+					rt.bottom = pt[0].y;
+
+					arcf = 0;
+					arct = 90;
+				}
+			}
+
+			DPtoLP(hDC, (LPPOINT)&rt, 2);
+			path->AddArc(rt.left, rt.top, 2 * rx, 2 * ry, arcf, arct);
+			n = 2;
+		}
+		else if (*aa == _T('Z') || *aa == _T('z'))
+		{
+			pt[0].x = pt_p.x;
+			pt[0].y = pt_p.y;
+			pt[1].x = pt_m.x;
+			pt[1].y = pt_m.y;
+
+			DPtoLP(hDC, pt, 2);
+			path->AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+
+			break;
+		}
+
+		aa++;
+		pa += n;
+	}
+
+	return path;
+}
+
+
 void _gdiplus_init(int osv)
 {
 	NONCLIENTMETRICS ncm = { 0 };
@@ -262,45 +603,25 @@ void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, co
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
 
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-	gh.DrawLine(pp,pt[0].x,pt[0].y,pt[1].x,pt[1].y);
-	delete pp;
-}
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		xcolor_t xc_gray;
 
-void _gdiplus_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t*ppt1, const xpoint_t* ppt2)
-{
-	HDC hDC = (HDC)rdc;
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
 
-	POINT pt[2];
-	pt[0].x = ppt1->x;
-	pt[0].y = ppt1->y;
-	pt[1].x = ppt2->x;
-	pt[1].y = ppt2->y;
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
-	DPtoLP(hDC,pt,2);
-
-	xpen_t xp2;
-	CopyMemory((void*)&xp2,(void*)pxp,sizeof(xpen_t));
-	lighten_xpen(&xp2, -5);
-	_tsprintf(xp2.size,_T("%d"),_tstrtol(xp2.size) + 1);
-
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-
-	Pen* pp = (Pen*)create_pen(&xp2);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-	gh.DrawLine(pp,pt[0].x,pt[0].y,pt[1].x,pt[1].y);
-	delete pp;
-
-	pp = (Pen*)create_pen(pxp);
+		gh.SetSmoothingMode(SmoothingModeAntiAlias);
+		gh.DrawLine(&pen, pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x + pxp->adorn.feed, pt[1].y + pxp->adorn.feed);
+	}
 
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 	gh.DrawLine(pp,pt[0].x,pt[0].y,pt[1].x,pt[1].y);
 	delete pp;
 }
 
-
-void _gdiplus_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	HDC hDC = (HDC)rdc;
 
@@ -315,20 +636,449 @@ void _gdiplus_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
 
-	xpen_t xp2;
-	CopyMemory((void*)&xp2, (void*)pxp, sizeof(xpen_t));
-	lighten_xpen(&xp2, -5);
-	_tsprintf(xp2.size, _T("%d"), _tstrtol(xp2.size) + 1);
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		Region region(Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+		gh.ExcludeClip(&region);
 
-	Pen* pp = (Pen*)create_pen(&xp2);
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+
+		gh.FillRectangle(&brush, Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+
+		gh.ResetClip();
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		Region region(Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+		gh.ExcludeClip(&region);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.SetSmoothingMode(SmoothingModeAntiAlias);
+		gh.DrawRectangle(&pen, Rect(pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+
+		gh.ResetClip();
+	}
+
+	if (!is_null_xbrush(pxb))
+	{
+		Brush* pb = (Brush*)create_brush(pxb);
+		gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+
+		delete pb;
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = (Pen*)create_pen(pxp);
+		gh.SetSmoothingMode(SmoothingModeAntiAlias);
+		gh.DrawRectangle(pp, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+{
+	HDC hDC = (HDC)rdc;
+	int r;
+
+	r = (prt->w) / 10;
+	if (r < 1)
+		r = 1;
+	else if (r > 10)
+		r = 10;
+
+	POINT pt[2];
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	DPtoLP(hDC, pt, 2);
+
+	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+
+	GraphicsPath path;
+
+	//path.AddLine(rf.X,rf.Y + r,rf.X + r,rf.Y);
+	path.AddArc(rf.X, rf.Y, 2 * r, 2 * r, 180, 90);
+	path.AddLine(rf.X + r, rf.Y, rf.X + rf.Width - r, rf.Y);
+	//path.AddLine(rf.X + rf.Width - r,rf.Y,rf.X + rf.Width,rf.Y + r);
+	path.AddArc(rf.X + rf.Width - 2 * r, rf.Y, 2 * r, 2 * r, 270, 90);
+	path.AddLine(rf.X + rf.Width, rf.Y + r, rf.X + rf.Width, rf.Y + rf.Height - r);
+	//path.AddLine(rf.X + rf.Width,rf.Y + rf.Height - r,rf.X + rf.Width - r,rf.Y + rf.Height);
+	path.AddArc(rf.X + rf.Width - 2 * r, rf.Y + rf.Height - 2 * r, 2 * r, 2 * r, 0, 90);
+	path.AddLine(rf.X + rf.Width - r, rf.Y + rf.Height, rf.X + r, rf.Y + rf.Height);
+	//path.AddLine(rf.X,rf.Y + rf.Height - r,rf.X,rf.Y + r);
+	path.AddArc(rf.X, rf.Y + rf.Height - 2 * r, 2 * r, 2 * r, 90, 90);
+	path.AddLine(rf.X, rf.Y + rf.Height - r, rf.X, rf.Y + r);
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeHighQuality);
+
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		GraphicsPath* shadow = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxb->shadow.offx, pxb->shadow.offy);
+
+		shadow->Transform(&M);
+
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+
+		gh.FillPath(&brush, shadow);
+
+		gh.ResetClip();
+
+		delete shadow;
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		GraphicsPath* adron = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
+
+		adron->Transform(&M);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.SetSmoothingMode(SmoothingModeAntiAlias);
+		gh.DrawPath(&pen, adron);
+
+		gh.ResetClip();
+
+		delete adron;
+	}
+
+	if (!is_null_xbrush(pxb))
+	{
+		Brush* pb = create_brush(pxb);
+		gh.FillPath(pb, &path);
+
+		delete pb;
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+		gh.DrawPath(pp, &path);
+
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+{
+	HDC hDC = (HDC)rdc;
+
+	POINT pt[2];
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	DPtoLP(hDC, pt, 2);
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-	gh.DrawRectangle(pp, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
-	pp = (Pen*)create_pen(pxp);
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+
+		gh.FillEllipse(&brush, Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.DrawEllipse(&pen, Rect(pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+	}
+
+
+	if (!is_null_xbrush(pxb))
+	{
+		Brush* pb = (Brush*)create_brush(pxb);
+		gh.FillEllipse(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+
+		delete pb;
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = (Pen*)create_pen(pxp);
+		gh.DrawEllipse(pp, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
+{
+	HDC hDC = (HDC)rdc;
+
+	POINT pt[2];
+	pt[0].x = ppt->x - rx;
+	pt[0].y = ppt->y - ry;
+	pt[1].x = ppt->x + rx;
+	pt[1].y = ppt->y + ry;
+
+	DPtoLP(hDC, pt, 2);
+
+	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeHighQuality);
+
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+
+		gh.FillPie(&brush, Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+		gh.DrawPie(&pen, Rect(pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x - pt[0].x, pt[1].y - pt[0].y), -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+	}
+
+	if (!is_null_xbrush(pxb))
+	{
+		Brush* pb = create_brush(pxb);
+
+		gh.FillPie(pb, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+
+		delete pb;
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+
+		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+		gh.DrawPie(pp, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, long rx, long ry, double fang, double tang)
+{
+	HDC hDC = (HDC)rdc;
+
+	POINT pt[2];
+	pt[0].x = ppt->x - rx;
+	pt[0].y = ppt->y - ry;
+	pt[1].x = ppt->x + rx;
+	pt[1].y = ppt->y + ry;
+
+	DPtoLP(hDC, pt, 2);
+
+	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeHighQuality);
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+		gh.DrawArc(&pen, Rect(pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x - pt[0].x, pt[1].y - pt[0].y), -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+
+		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+		gh.DrawArc(pp, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int alen, double arc)
+{
+	HDC hDC = (HDC)rdc;
+	double a1;
+	int x_line0, y_line0, x_line1, y_line1, x_line2, y_line2;
+	long x1, x2, y1, y2;
+	POINT pt[4];
+
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	DPtoLP(hDC, pt, 2);
+
+	x1 = pt[0].x;
+	y1 = pt[0].y;
+	x2 = pt[1].x;
+	y2 = pt[1].y;
+
+	pt[0].x = x2;
+	pt[0].y = y2;
+
+	a1 = atan2((float)(y2 - y1), (float)(x2 - x1));
+	x_line0 = (int)((float)x2 - (float)alen * cos(a1));
+	y_line0 = (int)((float)y2 - (float)alen * sin(a1));
+
+	x_line1 = x2 + (int)((float)(x_line0 - x2) * cos(arc) - (float)(y_line0 - y2) * sin(arc));
+	y_line1 = y2 + (int)((float)(x_line0 - x2) * sin(arc) + (float)(y_line0 - y2) * cos(arc));
+	pt[1].x = x_line1;
+	pt[1].y = y_line1;
+
+	x_line2 = x2 + (int)((float)(x_line0 - x2) * cos(-arc) - (float)(y_line0 - y2) * sin(-arc));
+	y_line2 = y2 + (int)((float)(x_line0 - x2) * sin(-arc) + (float)(y_line0 - y2) * cos(-arc));
+	pt[2].x = x_line2;
+	pt[2].y = y_line2;
+
+	pt[3].x = x2;
+	pt[3].y = y2;
+
+	GraphicsPath path;
+
+	path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+	path.AddLine(pt[1].x, pt[1].y, pt[2].x, pt[2].y);
+	path.AddLine(pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-	gh.DrawRectangle(pp, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
-	delete pp;
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		GraphicsPath* shadow = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxb->shadow.offx, pxb->shadow.offy);
+
+		shadow->Transform(&M);
+
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeVertical);
+
+		gh.FillPath(&brush, shadow);
+
+		gh.ResetClip();
+
+		delete shadow;
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		GraphicsPath* adron = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
+
+		adron->Transform(&M);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.DrawPath(&pen, adron);
+
+		gh.ResetClip();
+
+		delete adron;
+	}
+
+	if (!is_null_xbrush(pxb))
+	{
+		Brush* pb = create_brush(pxb);
+		gh.FillPath(pb, &path);
+
+		delete pb;
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+		gh.DrawPath(pp, &path);
+
+		delete pp;
+	}
 }
 
 void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
@@ -354,6 +1104,33 @@ void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,
 
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		GraphicsPath* adron = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
+
+		adron->Transform(&M);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.DrawPath(&pen, adron);
+
+		gh.ResetClip();
+
+		delete adron;
+	}
 
 	gh.DrawPath(pp,&path);
 
@@ -393,6 +1170,62 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		GraphicsPath* shadow = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxb->shadow.offx, pxb->shadow.offy);
+
+		shadow->Transform(&M);
+
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		PathGradientBrush brush(shadow);
+		Color clr[3] = { Color(0, 0, 0, 0), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b) };
+		REAL pos[3] = { 0.0F, 0.1F, 1.0F };
+		brush.SetInterpolationColors(clr, pos, 3);
+
+		gh.FillPath(&brush, shadow);
+
+		gh.ResetClip();
+
+		delete shadow;
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		GraphicsPath* adron = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
+
+		adron->Transform(&M);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.DrawPath(&pen, adron);
+
+		gh.ResetClip();
+
+		delete adron;
+	}
 
 	if (!is_null_xbrush(pxb))
 	{
@@ -405,8 +1238,8 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 	if (!is_null_xpen(pxp))
 	{
 		Pen* pp = create_pen(pxp);
-
 		gh.DrawPath(pp, &path);
+
 		delete pp;
 	}
 }
@@ -429,9 +1262,10 @@ void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1
 
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
 	Pen* pp = (Pen*)create_pen(pxp);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+	gh.SetCompositingQuality(CompositingQualityGammaCorrected);
 	gh.DrawBezier(pp, pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
 
 	delete pp;
@@ -457,9 +1291,10 @@ void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, 
 
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
 	Pen* pp = (Pen*)create_pen(pxp);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+	gh.SetCompositingQuality(CompositingQualityGammaCorrected);
 	gh.DrawCurve(pp, pa, n);
 
 	delete []pa;
@@ -467,9 +1302,97 @@ void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, 
 	delete pp;
 }
 
-void _gdiplus_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
+void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa)
 {
 	HDC hDC = (HDC)rdc;
+
+	GraphicsPath* path = create_path(rdc, aa, pa);
+
+	if (!path)
+		return;
+
+	Graphics gh(hDC);
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+
+	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
+	{
+		GraphicsPath* shadow = path->Clone();
+
+		Region region(path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxb->shadow.offx, pxb->shadow.offy);
+
+		shadow->Transform(&M);
+
+		xcolor_t xc_near, xc_far;
+		parse_xcolor(&xc_near, pxb->color);
+		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
+		lighten_xcolor(&xc_far, -20);
+
+		PathGradientBrush brush(shadow);
+		Color clr[3] = { Color(0, 0, 0, 0), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b) };
+		REAL pos[3] = { 0.0F, 0.1F, 1.0F };
+		brush.SetInterpolationColors(clr, pos, 3);
+
+		gh.FillPath(&brush, shadow);
+
+		gh.ResetClip();
+
+		delete shadow;
+	}
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		GraphicsPath* adron = path->Clone();
+
+		Region region(path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
+
+		adron->Transform(&M);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -20);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.DrawPath(&pen, adron);
+
+		gh.ResetClip();
+
+		delete adron;
+	}
+
+	if (!is_null_xbrush(pxb))
+	{
+		Brush* pb = create_brush(pxb);
+		gh.FillPath(pb, path);
+
+		delete pb;
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+		gh.DrawPath(pp, path);
+
+		delete pp;
+	}
+
+	delete path;
+}
+
+void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
+{
+	HDC hDC = (HDC)rdc;
+	xbrush_t xb;
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -477,27 +1400,19 @@ void _gdiplus_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,cons
 	pt[1].x = prt->x + prt->w;
 	pt[1].y = prt->y + prt->h;
 
-	DPtoLP(hDC,pt,2);
+	DPtoLP(hDC, pt, 2);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	_tsprintf(xb.opacity, _T("%d"), opacity);
 
 	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
 
-	if (!is_null_xbrush(pxb))
-	{
-		Brush* pb = (Brush*)create_brush(pxb);
-		gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
+	Brush* pb = (Brush*)create_brush(&xb);
+	gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
-		delete pb;
-	}
-
-	if (!is_null_xpen(pxp))
-	{
-		Pen* pp = (Pen*)create_pen(pxp);
-		gh.SetSmoothingMode(SmoothingModeAntiAlias);
-		gh.DrawRectangle(pp, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
-
-		delete pp;
-	}
+	delete pb;
 }
 
 void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
@@ -529,255 +1444,6 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* p
 	gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
 	delete pb;
-}
-
-void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
-{
-	HDC hDC = (HDC)rdc;
-	xbrush_t xb;
-
-	POINT pt[2];
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC, pt, 2);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-	_tsprintf(xb.opacity, _T("%d"), opacity);
-
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-
-	Brush* pb = (Brush*)create_brush(&xb);
-	gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
-
-	delete pb;
-}
-
-void _gdiplus_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
-{
-	HDC hDC = (HDC)rdc;
-	int r;
-
-	r = (prt->w) / 10;
-	if (r < 1)
-		r = 1;
-	else if (r > 10)
-		r = 10;
-
-	POINT pt[2];
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC,pt,2);
-
-	Rect rf(pt[0].x,pt[0].y,pt[1].x - pt[0].x,pt[1].y - pt[0].y);
-
-	GraphicsPath path;
-
-	//path.AddLine(rf.X,rf.Y + r,rf.X + r,rf.Y);
-	path.AddArc(rf.X, rf.Y, 2 * r, 2 * r, 180, 90);
-	path.AddLine(rf.X + r,rf.Y,rf.X + rf.Width - r,rf.Y);
-	//path.AddLine(rf.X + rf.Width - r,rf.Y,rf.X + rf.Width,rf.Y + r);
-	path.AddArc(rf.X + rf.Width - 2 * r, rf.Y, 2 * r, 2 * r, 270, 90);
-	path.AddLine(rf.X + rf.Width,rf.Y + r,rf.X + rf.Width,rf.Y + rf.Height - r);
-	//path.AddLine(rf.X + rf.Width,rf.Y + rf.Height - r,rf.X + rf.Width - r,rf.Y + rf.Height);
-	path.AddArc(rf.X + rf.Width - 2 * r, rf.Y + rf.Height - 2 * r, 2 * r, 2 * r, 0, 90);
-	path.AddLine(rf.X + rf.Width - r,rf.Y + rf.Height,rf.X + r,rf.Y + rf.Height);
-	//path.AddLine(rf.X,rf.Y + rf.Height - r,rf.X,rf.Y + r);
-	path.AddArc(rf.X, rf.Y + rf.Height - 2 * r, 2 * r, 2 * r, 90, 90);
-	path.AddLine(rf.X, rf.Y + rf.Height - r, rf.X, rf.Y + r);
-	
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-	gh.SetSmoothingMode(SmoothingModeHighQuality);
-
-	if (!is_null_xbrush(pxb))
-	{
-		Brush* pb = create_brush(pxb);
-		gh.FillPath(pb, &path);
-		delete pb;
-	}
-
-	if (!is_null_xpen(pxp))
-	{
-		Pen* pp = create_pen(pxp);
-		gh.DrawPath(pp, &path);
-
-		delete pp;
-	}
-}
-
-void _gdiplus_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
-{
-	HDC hDC = (HDC)rdc;
-
-	POINT pt[2];
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC,pt,2);
-
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-
-	if(!is_null_xbrush(pxb))
-	{
-		Brush* pb = (Brush*)create_brush(pxb);
-		gh.FillEllipse(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
-
-		delete pb;
-	}
-
-	if(!is_null_xpen(pxp))
-	{
-		Pen* pp = (Pen*)create_pen(pxp);
-		gh.SetSmoothingMode(SmoothingModeHighQuality);
-		gh.DrawEllipse(pp, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
-
-		delete pp;
-	}
-}
-
-void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, double fang, double tang)
-{
-	HDC hDC = (HDC)rdc;
-
-	POINT pt[2];
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC, pt, 2);
-
-	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
-
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-
-	if(!is_null_xbrush(pxb))
-	{
-		Brush* pb = create_brush(pxb);
-
-		gh.FillPie(pb, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
-
-		delete pb;
-	}
-
-	if(!is_null_xpen(pxp))
-	{
-		Pen* pp = create_pen(pxp);
-
-		gh.SetSmoothingMode(SmoothingModeHighQuality);
-		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
-		gh.DrawPie(pp, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
-
-		delete pp;
-	}
-}
-
-void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt, double fang, double tang)
-{
-	HDC hDC = (HDC)rdc;
-
-	POINT pt[2];
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC, pt, 2);
-
-	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
-
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-
-	if (!is_null_xpen(pxp))
-	{
-		Pen* pp = create_pen(pxp);
-
-		gh.SetSmoothingMode(SmoothingModeHighQuality);
-		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
-		gh.DrawArc(pp, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
-
-		delete pp;
-	}
-}
-
-void _gdiplus_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt,int alen,double arc)
-{
-	HDC hDC = (HDC)rdc;
-	double a1;
-	int x_line0,y_line0,x_line1,y_line1,x_line2,y_line2;
-	long x1, x2, y1, y2;
-	POINT pt[4];
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC,pt,2);
-
-	x1 = pt[0].x;
-	y1 = pt[0].y;
-	x2 = pt[1].x;
-	y2 = pt[1].y;
-
-	pt[0].x = x2;
-	pt[0].y = y2;
-
-	a1 = atan2((float)(y2 - y1),(float)(x2 - x1));
-	x_line0 = (int)((float)x2 - (float)alen * cos(a1));
-	y_line0 = (int)((float)y2 - (float)alen * sin(a1));
-
-	x_line1 = x2 + (int)((float)(x_line0 - x2) * cos(arc) - (float)(y_line0 - y2) * sin(arc));
-	y_line1 = y2 + (int)((float)(x_line0 - x2) * sin(arc) + (float)(y_line0 - y2) * cos(arc));
-	pt[1].x = x_line1;
-	pt[1].y = y_line1;
-
-	x_line2 = x2 + (int)((float)(x_line0 - x2) * cos(-arc) - (float)(y_line0 - y2) * sin(-arc));
-	y_line2 = y2 + (int)((float)(x_line0 - x2) * sin(-arc) + (float)(y_line0 - y2) * cos(-arc));
-	pt[2].x = x_line2;
-	pt[2].y = y_line2;
-
-	pt[3].x = x2;
-	pt[3].y = y2;
-
-	GraphicsPath path;
-
-	path.AddLine(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
-	path.AddLine(pt[1].x,pt[1].y,pt[2].x,pt[2].y);
-	path.AddLine(pt[2].x,pt[2].y,pt[3].x,pt[3].y);
-
-	Graphics gh(hDC);
-	gh.SetPageUnit(UnitPixel);
-
-	if(!is_null_xbrush(pxb))
-	{
-		Brush* pb = create_brush(pxb);
-		gh.FillPath(pb, &path);
-
-		delete pb;
-	}
-
-	if(!is_null_xpen(pxp))
-	{
-		Pen* pp = create_pen(pxp);
-		gh.SetSmoothingMode(SmoothingModeAntiAlias);
-		gh.DrawPath(pp, &path);
-
-		delete pp;
-	}
 }
 
 void _gdiplus_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)

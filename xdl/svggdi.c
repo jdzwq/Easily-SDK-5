@@ -285,7 +285,7 @@ void svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 	write_ellipse_to_svg_node(nlk, pxp, pxb, &xr);
 }
 
-void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, double fang, double tang)
+void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
 {
 	link_t_ptr g, nlk;
 	xrect_t xr;
@@ -295,17 +295,17 @@ void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 
 	nlk = insert_svg_node(g);
 
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = rx;
+	xr.fh = ry;
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	write_pie_to_svg_node(nlk, pxp, pxb, &xr, fang, tang);
+	write_pie_to_svg_node(nlk, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
 }
 
-void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, double fang, double tang)
+void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
 {
 
 }

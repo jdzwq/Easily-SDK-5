@@ -465,6 +465,7 @@ typedef struct async_t{
 #define KEY_INSERT		45	//0x2D
 #define KEY_DELETE		46	//0x2E
 
+
 /*widget class*/
 #define XDKWIDGET		_T("XDKWIDGET")
 /*widget store property*/
@@ -779,6 +780,16 @@ typedef struct _xsize_t{
 #define RECTPOINT(pxr)	((xpoint_t*)pxr)
 #define RECTSIZE(pxr)	((xsize_t*)pxr + 1)
 
+typedef struct _shadow_t{
+	long offx;
+	long offy;
+}shadow_t;
+
+typedef struct _adorn_t{
+	long feed;
+	long size;
+}adorn_t;
+
 typedef struct _xgradi_t{
 	tchar_t type[RES_LEN];
 	tchar_t opacity[CLR_LEN];
@@ -790,6 +801,7 @@ typedef struct _xbrush_t{
 	tchar_t style[RES_LEN];
 	tchar_t opacity[CLR_LEN];
 	tchar_t color[CLR_LEN];
+	shadow_t shadow;
 }xbrush_t;
 
 typedef struct _xpen_t{
@@ -797,6 +809,7 @@ typedef struct _xpen_t{
 	tchar_t size[INT_LEN];
 	tchar_t opacity[CLR_LEN];
 	tchar_t color[CLR_LEN];
+	adorn_t adorn;
 }xpen_t;
 
 typedef struct _xfont_t{
@@ -821,6 +834,7 @@ typedef struct _ximage_t{
 
 	const tchar_t* source;
 }ximage_t;
+
 
 typedef struct _border_t{
 	long title;

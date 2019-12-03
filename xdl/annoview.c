@@ -360,7 +360,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			if (ppt[0].fy < ppt[2].fy && ppt[2].fx < ppt[0].fx)
 				a2 = -XPI + a2;
 
-			(*pif->pf_draw_arc)(pif->canvas, &xp, &xr, a1, a2);
+			(*pif->pf_draw_arc)(pif->canvas, &xp, &ppt[0], 2, 2, a1, a2);
 
 			default_xfont(&xf);
 			parse_xfont_from_style(&xf, style);

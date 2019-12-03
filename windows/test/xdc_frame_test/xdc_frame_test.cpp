@@ -66,17 +66,31 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #define IDC_MAINFRAME_TITLEBAR		3001
 #define IDC_MAINFRAME_STATUSBAR		3002
 #define IDC_MAINFRAME_TREEBAR		3003
-#define IDC_MAINFRAME_USERPANEL		3004
+#define IDC_MAINFRAME_OWNERPANEL	3004
+#define IDC_MAINFRAME_CALENDARPANEL	3005
+#define IDC_MAINFRAME_NOTESPANEL	3006
+#define IDC_MAINFRAME_PANELPANEL	3007
+#define IDC_MAINFRAME_CURVEPANEL	3008
+#define IDC_MAINFRAME_MODELPANEL	3009
 
+#define IDA_OWNER			2002
+#define IDA_CALENDAR		2003
+#define IDA_NOTES			2004
+#define IDA_PANEL			2005
+#define IDA_CURVE			2006
+#define IDA_MODEL			2007
 
-#define IDA_USER			2002
-
-#define PANEL_CLASS_USER		_T("USER")
+#define PANEL_CLASS_OWNER		_T("OWNER")
+#define PANEL_CLASS_CALENDAR	_T("CALENDAR")
+#define PANEL_CLASS_NOTES		_T("NOTES")
+#define PANEL_CLASS_PANEL		_T("PANEL")
+#define PANEL_CLASS_CURVE		_T("CURVE")
+#define PANEL_CLASS_MODEL		_T("MODEL")
 
 #define MAINFRAME_ACCEL_COUNT		1
 
 accel_t	MAINFRAME_ACCEL[MAINFRAME_ACCEL_COUNT] = {
-	FVIRTKEY | FCONTROL, _T('O'), IDA_USER,
+	FVIRTKEY | FCONTROL, _T('O'), IDA_OWNER,
 };
 
 typedef struct tagMainFrameDelta{
@@ -168,7 +182,7 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	tchar_t token[NUM_LEN + 1] = { 0 };
 
 	LINKPTR ilk = insert_tool_group_item(glk, LINK_LAST);
-	xsprintf(token, _T("%d"), IDA_USER);
+	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("简单文本"));
 
@@ -180,7 +194,7 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	set_tool_group_item_height(glk, 7);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
-	xsprintf(token, _T("%d"), IDA_USER);
+	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("简单图标"));
 	set_tool_item_icon(ilk, ICON_USER);
@@ -192,9 +206,39 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	set_tool_group_item_height(glk, 7);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
-	xsprintf(token, _T("%d"), IDA_USER);
+	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("图标文本"));
+	set_tool_item_title(ilk, _T("自绘"));
+	set_tool_item_icon(ilk, ICON_USER);
+
+	ilk = insert_tool_group_item(glk, LINK_LAST);
+	xsprintf(token, _T("%d"), IDA_CALENDAR);
+	set_tool_item_id(ilk, token);
+	set_tool_item_title(ilk, _T("日历"));
+	set_tool_item_icon(ilk, ICON_USER);
+
+	ilk = insert_tool_group_item(glk, LINK_LAST);
+	xsprintf(token, _T("%d"), IDA_NOTES);
+	set_tool_item_id(ilk, token);
+	set_tool_item_title(ilk, _T("消息"));
+	set_tool_item_icon(ilk, ICON_USER);
+
+	ilk = insert_tool_group_item(glk, LINK_LAST);
+	xsprintf(token, _T("%d"), IDA_PANEL);
+	set_tool_item_id(ilk, token);
+	set_tool_item_title(ilk, _T("面板"));
+	set_tool_item_icon(ilk, ICON_USER);
+
+	ilk = insert_tool_group_item(glk, LINK_LAST);
+	xsprintf(token, _T("%d"), IDA_CURVE);
+	set_tool_item_id(ilk, token);
+	set_tool_item_title(ilk, _T("波形"));
+	set_tool_item_icon(ilk, ICON_USER);
+
+	ilk = insert_tool_group_item(glk, LINK_LAST);
+	xsprintf(token, _T("%d"), IDA_MODEL);
+	set_tool_item_id(ilk, token);
+	set_tool_item_title(ilk, _T("模型"));
 	set_tool_item_icon(ilk, ICON_USER);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
@@ -332,17 +376,119 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 	tchar_t wname[RES_LEN + 1] = { 0 };
 
-	if (compare_text(wclass, -1, PANEL_CLASS_USER, -1, 0) == 0)
+	if (compare_text(wclass, -1, PANEL_CLASS_OWNER, -1, 0) == 0)
 	{
 		if (is_null(wname))
 			xscpy(wname, _T("NewUser"));
 
-		hPanel = userctrl_create(_T("UserPanel"), WD_STYLE_CONTROL, &xr, widget);
-		widget_set_user_id(hPanel, IDC_MAINFRAME_USERPANEL);
+		hPanel = ownerctrl_create(_T("OwnerPanel"), WD_STYLE_CONTROL, &xr, widget);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_OWNERPANEL);
 		widget_set_owner(hPanel, widget);
-		userctrl_redraw(hPanel);
+		ownerctrl_redraw(hPanel);
 	}
-	
+	else if (compare_text(wclass, -1, PANEL_CLASS_CALENDAR, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewCalendar"));
+
+		hPanel = calendarctrl_create(_T("CalendarPanel"), WD_STYLE_CONTROL, &xr, widget);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_CALENDARPANEL);
+		widget_set_owner(hPanel, widget);
+
+		LINKPTR ptr_calendar = create_calendar_doc();
+
+		xdate_t dt;
+		get_loc_date(&dt);
+		tchar_t sz_date[DATE_LEN];
+		format_date(&dt, sz_date);
+		set_calendar_today(ptr_calendar, sz_date);
+
+		calendarctrl_attach(hPanel, ptr_calendar);
+		calendarctrl_redraw(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_NOTES, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewCalendar"));
+
+		hPanel = notesctrl_create(_T("NotesPanel"), WD_STYLE_CONTROL, &xr, widget);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_NOTESPANEL);
+		widget_set_owner(hPanel, widget);
+
+		LINKPTR ptr_arch = create_arch_doc();
+
+		LINKPTR ptr_notes = create_notes_doc();
+		set_notes_time(ptr_notes, _T("2019-11-25 10:00:00"));
+		set_notes_text(ptr_notes, _T("测试消息1"), -1);
+		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
+
+		ptr_notes = create_notes_doc();
+		set_notes_time(ptr_notes, _T("2019-11-26 10:00:00"));
+		set_notes_text(ptr_notes, _T("测试消息2"), -1);
+		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
+
+		ptr_notes = create_notes_doc();
+		set_notes_time(ptr_notes, _T("2019-11-27 10:00:00"));
+		set_notes_text(ptr_notes, _T("测试消息3"), -1);
+		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
+
+		notesctrl_attach(hPanel, ptr_arch);
+		notesctrl_redraw(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PANEL, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewPanel"));
+
+		hPanel = panelctrl_create(_T("PanelPanel"), WD_STYLE_CONTROL, &xr, widget);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_PANELPANEL);
+		widget_set_owner(hPanel, widget);
+
+		LINKPTR ptr_arch = create_arch_doc();
+
+		LINKPTR ptr_notes = create_notes_doc();
+		set_notes_time(ptr_notes, _T("2019-11-25 10:00:00"));
+		set_notes_text(ptr_notes, _T("测试消息1"), -1);
+		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
+
+		ptr_notes = create_notes_doc();
+		set_notes_time(ptr_notes, _T("2019-11-26 10:00:00"));
+		set_notes_text(ptr_notes, _T("测试消息2"), -1);
+		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
+
+		ptr_notes = create_notes_doc();
+		set_notes_time(ptr_notes, _T("2019-11-27 10:00:00"));
+		set_notes_text(ptr_notes, _T("测试消息3"), -1);
+		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
+
+		notesctrl_attach(hPanel, ptr_arch);
+		notesctrl_redraw(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_CURVE, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewCurve"));
+
+		hPanel = curvectrl_create(_T("CurvePanel"), WD_STYLE_CONTROL, &xr, widget);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_CURVEPANEL);
+		widget_set_owner(hPanel, widget);
+		curvectrl_redraw(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_MODEL, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewModel"));
+
+		hPanel = modelctrl_create(_T("ModelPanel"), WD_STYLE_CONTROL, &xr, widget);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_MODELPANEL);
+		widget_set_owner(hPanel, widget);
+
+		LINKPTR ptr_anno = create_anno_doc();
+
+		modelctrl_attach(hPanel, ptr_anno);
+		modelctrl_redraw(hPanel);
+	}
+
 	if (!hPanel)
 		return NULL;
 
@@ -425,12 +571,49 @@ void MainFrame_TitleBar_OnItemDelete(res_win_t widget, NOTICE_TITLE* pnt)
 	if (!widget_is_valid(hPanel))
 		return;
 
+	const tchar_t* wclass = get_title_item_name_ptr(pnt->item);
+	LINKPTR ptrDoc = NULL;
+
+	if (compare_text(wclass, -1, PANEL_CLASS_CALENDAR, -1, 0) == 0)
+	{
+		ptrDoc = calendarctrl_fetch(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_NOTES, -1, 0) == 0)
+	{
+		ptrDoc = notesctrl_fetch(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PANEL, -1, 0) == 0)
+	{
+		ptrDoc = panelctrl_fetch(hPanel);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_MODEL, -1, 0) == 0)
+	{
+		ptrDoc = modelctrl_fetch(hPanel);
+	}
+
 	widget_close(hPanel, 0);
 
 	if (widget_is_valid(hPanel))
 	{
 		pnt->ret = 1;
 		return;
+	}
+
+	if (compare_text(wclass, -1, PANEL_CLASS_CALENDAR, -1, 0) == 0)
+	{
+		destroy_calendar_doc(ptrDoc);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_NOTES, -1, 0) == 0)
+	{
+		destroy_arch_doc(ptrDoc);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PANEL, -1, 0) == 0)
+	{
+		destroy_arch_doc(ptrDoc);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_MODEL, -1, 0) == 0)
+	{
+		destroy_anno_doc(ptrDoc);
 	}
 }
 
@@ -483,7 +666,7 @@ void MainFrame_TitleBar_OnItemHover(res_win_t widget, NOTICE_TITLE* pnt)
 
 VOID MainFrame_UserPanel_OnCalc(res_win_t win, PAGE_CALC* ppc)
 {
-	ppc->total_height = 4096;
+	ppc->total_height = 8096;
 	ppc->total_width = 4096;
 	ppc->line_height = 10;
 	ppc->line_width = 10;
@@ -496,9 +679,184 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 
 	widget_get_view_rect(win, &vb);
 
-	parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
+	//parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
 
-	test_icon_draw(hDC, &xc, (xrect_t*)&vb);
+	//test_icon_draw(hDC, &xc, (xrect_t*)&vb);
+
+	tchar_t aa[10] = { 0 };
+	xpoint_t pa[20] = { 0 };
+
+	int i = 0;
+	int n = 0;
+	int feed = 10;
+
+	xpen_t xp;
+	widget_get_xpen(win, &xp);
+	xbrush_t xb;
+	widget_get_xbrush(win, &xb);
+	lighten_xbrush(&xb, DEF_HARD_DARKEN);
+
+	xrect_t xr;
+	widget_get_client_rect(win, &xr);
+
+	xr.w -= 10;
+	xr.h = 50;
+
+	aa[i] = _T('M');
+	pa[n].x = xr.x;
+	pa[n].y = xr.y + feed;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = feed;
+	pa[n].y = feed;
+	pa[n+1].x = xr.x + feed;
+	pa[n+1].y = xr.y;
+	i++;
+	n+=2;
+
+	aa[i] = _T('L');
+	pa[n].x = xr.x + xr.w - feed;
+	pa[n].y = xr.y;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = feed;
+	pa[n].y = feed;
+	pa[n + 1].x = xr.x + xr.w;
+	pa[n + 1].y = xr.y + feed;
+	i++;
+	n += 2;
+
+	aa[i] = _T('L');
+	pa[n].x = xr.x + xr.w;
+	pa[n].y = xr.y + xr.h - feed;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = feed;
+	pa[n].y = feed;
+	pa[n + 1].x = xr.x + xr.w - feed;
+	pa[n + 1].y = xr.y + xr.h;
+	i++;
+	n += 2;
+
+	aa[i] = _T('C');
+	pa[n].x = xr.x + xr.w / 8 * 7;
+	pa[n].y = xr.y + xr.h - 10;
+	pa[n + 1].x = xr.x + xr.w / 4 * 3;
+	pa[n + 1].y = xr.y + xr.h - 10;
+	pa[n + 2].x = xr.x + xr.w / 2;
+	pa[n + 2].y = xr.y + xr.h;
+	i++;
+	n += 3;
+
+	aa[i] = _T('S');
+	pa[n].x = xr.x + xr.w / 4;
+	pa[n].y = xr.y + xr.h;
+	pa[n + 1].x = xr.x + feed;
+	pa[n + 1].y = xr.y + xr.h;
+	i++;
+	n += 2;
+	
+	aa[i] = _T('A');
+	pa[n].x = feed;
+	pa[n].y = feed;
+	pa[n + 1].x = xr.x;
+	pa[n + 1].y = xr.y + xr.h - feed;
+	i++;
+	n += 2;
+
+	aa[i] = _T('Z');
+	i++;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 10;
+	xb.shadow.offy = 10;
+
+	draw_path_raw(hDC, &xp, &xb, aa, pa, n);
+
+	xr.y = 60;
+	xr.x = 10;
+	xr.w = 50;
+	xr.h = 50;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 5;
+	xb.shadow.offy = 5;
+	draw_rect_raw(hDC, &xp, &xb, &xr);
+
+	xr.y = 60;
+	xr.x = 80;
+	xr.w = 50;
+	xr.h = 50;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 5;
+	xb.shadow.offy = 5;
+	draw_round_raw(hDC, &xp, &xb, &xr);
+
+	xr.y = 60;
+	xr.x = 150;
+	xr.w = 50;
+	xr.h = 50;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 5;
+	xb.shadow.offy = 5;
+	draw_ellipse_raw(hDC, &xp, &xb, &xr);
+
+	xr.y = 60;
+	xr.x = 220;
+	xr.w = 50;
+	xr.h = 50;
+
+	xpoint_t pt;
+	pt.x = xr.x + xr.w / 2;
+	pt.y = xr.y + xr.h / 2;
+	long rx = xr.w / 2;
+	long ry = xr.h / 2;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 5;
+	xb.shadow.offy = 5;
+	draw_pie_raw(hDC, &xp, &xb, &pt, rx, ry, 0, XPI);
+
+	xr.y = 60;
+	xr.x = 280;
+	xr.w = 50;
+	xr.h = 50;
+
+	pt.x = xr.x + xr.w / 2;
+	pt.y = xr.y + xr.h / 2;
+	rx = xr.w / 2;
+	ry = xr.h / 2;
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	xb.shadow.offx = 0;
+	xb.shadow.offy = 0;
+	draw_arc_raw(hDC, &xp, &pt, rx, ry, 0, XPI);
+
+	xr.y = 60;
+	xr.x = 340;
+	xr.w = 50;
+	xr.h = 50;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 5;
+	xb.shadow.offy = 5;
+	draw_arrow_raw(hDC, &xp,&xb, &xr, 20, XPI / 3);
+
 }
 
 /******************************************************************************************************/
@@ -662,8 +1020,20 @@ void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 
 	switch (cid)
 	{
-	case IDA_USER:
-		_MainFrame_CreatePanel(widget, PANEL_CLASS_USER);
+	case IDA_OWNER:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_OWNER);
+		break;
+	case IDA_CALENDAR:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_CALENDAR);
+		break;
+	case IDA_NOTES:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_NOTES);
+		break;
+	case IDA_PANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_PANEL);
+		break;
+	case IDA_CURVE:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_CURVE);
 		break;
 	}
 }
@@ -735,15 +1105,15 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 			break;
 		}
 	}
-	else if (phdr->id == IDC_MAINFRAME_USERPANEL)
+	else if (phdr->id == IDC_MAINFRAME_OWNERPANEL)
 	{
-		NOTICE_USER* pnu = (NOTICE_USER*)phdr;
+		NOTICE_OWNER* pnu = (NOTICE_OWNER*)phdr;
 		switch (pnu->code)
 		{
-		case NC_USERCALC:
+		case NC_OWNERCALC:
 			MainFrame_UserPanel_OnCalc(pnu->widget, (PAGE_CALC*)pnu->data);
 			break;
-		case NC_USERDRAW:
+		case NC_OWNERDRAW:
 			MainFrame_UserPanel_OnDraw(pnu->widget, (HDC)pnu->data);
 			break;
 		}

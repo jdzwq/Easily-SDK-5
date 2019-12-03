@@ -341,41 +341,6 @@ void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog)
 	destroy_printer_context(rdc);
 }
 
-void print_panorama(const dev_prn_t* pdev, link_t_ptr panorama)
-{
-	res_ctx_t rdc;
-	canvas_t canv;
-	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
-
-	rdc = create_printer_context(pdev);
-	if (!rdc)
-		return;
-
-	canv = create_printer_canvas(rdc);
-	XDL_ASSERT(canv != NULL);
-
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
-	pic = create_canvas_interface(canv);
-	XDL_ASSERT(pic != NULL);
-
-	begin_doc(rdc, _T("PANORAMA"));
-
-	begin_page(rdc);
-
-	draw_panorama(pic, &cb, panorama);
-
-	end_page(rdc);
-
-	end_doc(rdc);
-
-	destroy_canvas_interface(pic);
-	destroy_printer_canvas(canv);
-	destroy_printer_context(rdc);
-}
-
 void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
 {
 	res_ctx_t rdc;
@@ -614,25 +579,6 @@ void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog)
 	cb.fh = get_svg_height(svg);
 
 	draw_dialog(pif, &cb, dialog);
-
-	destroy_svg_canvas(canv);
-	destroy_svg_interface(pif);
-}
-
-void svg_print_panorama(link_t_ptr svg, link_t_ptr panorama)
-{
-	canvas_t canv;
-	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
-
-	canv = create_svg_canvas(svg);
-
-	pif = create_svg_interface(canv);
-
-	cb.fw = get_svg_width(svg);
-	cb.fh = get_svg_height(svg);
-
-	draw_panorama(pif, &cb, panorama);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_interface(pif);

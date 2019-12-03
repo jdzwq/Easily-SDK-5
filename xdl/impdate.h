@@ -110,13 +110,6 @@ XDL_API void utc_date_from_ticks(xdate_t* pxd, dword_t ts);
 */
 XDL_API void utc_date_from_timestamp(xdate_t* pxd, lword_t ts);
 
-/*
-@FUNCTION fill_calendar: fill clendar struct using datetime struct member.
-@OUTPUT calendar_t* pca: calendar struct.
-@INPUT const xdate_t* pxd: datetime struct.
-@RETURN void: none.
-*/
-XDL_API void fill_calendar(calendar_t* pca, const xdate_t* pdt);
 
 #ifdef	__cplusplus
 }

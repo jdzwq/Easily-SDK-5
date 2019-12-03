@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc user control documilk
+	@doc owner control documilk
 
-	@module	userctrl.c | implement file
+	@module	ownerctrl.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -34,23 +34,23 @@ LICENSE.GPL3 for more details.
 #include "winnc.h"
 #include "xdcbox.h"
 
-typedef struct _user_delta_t{
+typedef struct _owner_delta_t{
 	var_long var;
 
 	res_win_t hsc;
 	res_win_t vsc;
-}user_delta_t;
+}owner_delta_t;
 
-#define GETUSERDELTA(ph) 	(user_delta_t*)widget_get_user_delta(ph)
-#define SETUSERDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define GETOWNERDELTA(ph) 	(owner_delta_t*)widget_get_user_delta(ph)
+#define SETOWNERDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /***************************************************************************************/
 
-static int noti_user_owner(res_win_t widget, unsigned long code, void* data)
+static int noti_owner_owner(res_win_t widget, unsigned long code, void* data)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
-	NOTICE_USER nf = { 0 };
+	NOTICE_OWNER nf = { 0 };
 
 	nf.widget = widget;
 	nf.id = widget_get_user_id(widget);
@@ -62,14 +62,14 @@ static int noti_user_owner(res_win_t widget, unsigned long code, void* data)
 	return nf.ret;
 }
 
-static void _userctrl_reset_page(res_win_t widget)
+static void _ownerctrl_reset_page(res_win_t widget)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	xrect_t xr;
 	PAGE_CALC pc = { 0 };
 
-	noti_user_owner(widget, NC_USERCALC, (void*)&pc);
+	noti_owner_owner(widget, NC_OWNERCALC, (void*)&pc);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -77,22 +77,22 @@ static void _userctrl_reset_page(res_win_t widget)
 }
 
 /********************************************************************************************/
-int hand_user_create(res_win_t widget, void* data)
+int hand_owner_create(res_win_t widget, void* data)
 {
-	user_delta_t* ptd;
+	owner_delta_t* ptd;
 
 	widget_hand_create(widget);
 
-	ptd = (user_delta_t*)xmem_alloc(sizeof(user_delta_t));
+	ptd = (owner_delta_t*)xmem_alloc(sizeof(owner_delta_t));
 
-	SETUSERDELTA(widget, ptd);
+	SETOWNERDELTA(widget, ptd);
 
 	return 0;
 }
 
-void hand_user_destroy(res_win_t widget)
+void hand_owner_destroy(res_win_t widget)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -102,35 +102,37 @@ void hand_user_destroy(res_win_t widget)
 	if (widget_is_valid(ptd->vsc))
 		widget_destroy(ptd->vsc);
 
-	SETUSERDELTA(widget, 0);
+	xmem_free(ptd);
+
+	SETOWNERDELTA(widget, 0);
 
 	widget_hand_destroy(widget);
 }
 
-void hand_user_keydown(res_win_t widget, int key)
+void hand_owner_keydown(res_win_t widget, int key)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 	int ch;
 
 	XDL_ASSERT(ptd != NULL);
 
 	ch = key;
 
-	noti_user_owner(widget, NC_USERKEY, (void*)&ch);
+	noti_owner_owner(widget, NC_OWNERKEY, (void*)&ch);
 }
 
-void hand_user_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
+void hand_owner_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
-	noti_user_owner(widget, NC_USERMOVE, (void*)pxp);
+	noti_owner_owner(widget, NC_OWNERMOVE, (void*)pxp);
 }
 
-void hand_user_lbutton_down(res_win_t widget, const xpoint_t* pxp)
+void hand_owner_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -140,61 +142,61 @@ void hand_user_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	}
 }
 
-void hand_user_lbutton_up(res_win_t widget, const xpoint_t* pxp)
+void hand_owner_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
-	noti_user_owner(widget, NC_USERLBCLK, (void*)pxp);
+	noti_owner_owner(widget, NC_OWNERLBCLK, (void*)pxp);
 }
 
-void hand_user_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
+void hand_owner_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
-	noti_user_owner(widget, NC_USERDBCLK, (void*)pxp);
+	noti_owner_owner(widget, NC_OWNERDBCLK, (void*)pxp);
 }
 
-void hand_user_rbutton_down(res_win_t widget, const xpoint_t* pxp)
+void hand_owner_rbutton_down(res_win_t widget, const xpoint_t* pxp)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 }
 
-void hand_user_rbutton_up(res_win_t widget, const xpoint_t* pxp)
+void hand_owner_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
-	noti_user_owner(widget, NC_USERRBCLK, (void*)pxp);
+	noti_owner_owner(widget, NC_OWNERRBCLK, (void*)pxp);
 }
 
-void hand_user_size(res_win_t widget, int code, const xsize_t* prs)
+void hand_owner_size(res_win_t widget, int code, const xsize_t* prs)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
-	userctrl_redraw(widget);
+	ownerctrl_redraw(widget);
 }
 
-void hand_user_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_owner_scroll(res_win_t widget, bool_t bHorz, long nLine)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_user_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_owner_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	scroll_t scr = { 0 };
 	long nLine;
@@ -238,16 +240,16 @@ void hand_user_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	}
 }
 
-void hand_user_erase(res_win_t widget, res_ctx_t rdc)
+void hand_owner_erase(res_win_t widget, res_ctx_t rdc)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 }
 
-void hand_user_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_owner_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	res_ctx_t rdc;
 	canvas_t canv;
@@ -269,38 +271,38 @@ void hand_user_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	widget_get_view_rect(widget, &vb);
 
-	noti_user_owner(widget, NC_USERDRAW, (void*)rdc);
+	noti_owner_owner(widget, NC_OWNERDRAW, (void*)rdc);
 
 	end_canvas_paint(canv, dc, pxr);
 }
 
 /************************************************************************************************/
-res_win_t userctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent)
+res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent)
 {
 	if_event_t ev = { 0 };
 
 	EVENT_BEGIN_DISPATH(&ev)
 
-		EVENT_ON_CREATE(hand_user_create)
-		EVENT_ON_DESTROY(hand_user_destroy)
+		EVENT_ON_CREATE(hand_owner_create)
+		EVENT_ON_DESTROY(hand_owner_destroy)
 
-		EVENT_ON_ERASE(hand_user_erase)
-		EVENT_ON_PAINT(hand_user_paint)
+		EVENT_ON_ERASE(hand_owner_erase)
+		EVENT_ON_PAINT(hand_owner_paint)
 
-		EVENT_ON_SIZE(hand_user_size)
+		EVENT_ON_SIZE(hand_owner_size)
 
-		EVENT_ON_SCROLL(hand_user_scroll)
-		EVENT_ON_WHEEL(hand_user_wheel)
+		EVENT_ON_SCROLL(hand_owner_scroll)
+		EVENT_ON_WHEEL(hand_owner_wheel)
 
-		EVENT_ON_KEYDOWN(hand_user_keydown)
+		EVENT_ON_KEYDOWN(hand_owner_keydown)
 
-		EVENT_ON_MOUSE_MOVE(hand_user_mouse_move)
+		EVENT_ON_MOUSE_MOVE(hand_owner_mouse_move)
 
-		EVENT_ON_LBUTTON_DOWN(hand_user_lbutton_down)
-		EVENT_ON_LBUTTON_UP(hand_user_lbutton_up)
-		EVENT_ON_LBUTTON_DBCLICK(hand_user_lbutton_dbclick)
-		EVENT_ON_RBUTTON_DOWN(hand_user_rbutton_down)
-		EVENT_ON_RBUTTON_UP(hand_user_rbutton_up)
+		EVENT_ON_LBUTTON_DOWN(hand_owner_lbutton_down)
+		EVENT_ON_LBUTTON_UP(hand_owner_lbutton_up)
+		EVENT_ON_LBUTTON_DBCLICK(hand_owner_lbutton_dbclick)
+		EVENT_ON_RBUTTON_DOWN(hand_owner_rbutton_down)
+		EVENT_ON_RBUTTON_UP(hand_owner_rbutton_up)
 
 		EVENT_ON_NC_IMPLEMENT
 
@@ -309,31 +311,31 @@ res_win_t userctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 	return widget_create(wname, wstyle, pxr, wparent, &ev);
 }
 
-void userctrl_redraw(res_win_t widget)
+void ownerctrl_redraw(res_win_t widget)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
-	_userctrl_reset_page(widget);
+	_ownerctrl_reset_page(widget);
 
 	widget_update(widget);
 
 	widget_redraw(widget, NULL, 0);
 }
 
-void userctrl_set_delta(res_win_t widget, var_long var)
+void ownerctrl_set_delta(res_win_t widget, var_long var)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
 	ptd->var = var;
 }
 
-var_long userctrl_get_delta(res_win_t widget)
+var_long ownerctrl_get_delta(res_win_t widget)
 {
-	user_delta_t* ptd = GETUSERDELTA(widget);
+	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	XDL_ASSERT(ptd != NULL);
 

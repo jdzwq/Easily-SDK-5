@@ -521,6 +521,9 @@ typedef struct _variant_t{
 #define DEF_MIDD_LIGHTEN	6
 #define DEF_HARD_LIGHTEN	10
 
+#define DEF_MIN_SHADOW		5
+#define DEF_MAX_SHADOW		10
+
 #define PAPER_A4_WIDTH			(float)210
 #define PAPER_A4_HEIGHT			(float)297
 

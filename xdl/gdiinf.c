@@ -47,8 +47,6 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 
 	pic->pf_canvas_type = get_canvas_type;
 
-	pic->pf_draw_3dline = draw_3dline;
-	pic->pf_draw_3drect = draw_3drect;
 	pic->pf_draw_arrow = draw_arrow;
 	pic->pf_draw_image = draw_image;
 	pic->pf_draw_icon = draw_icon;
@@ -60,6 +58,7 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 	pic->pf_draw_bezier = draw_bezier;
 	pic->pf_draw_curve = draw_curve;
 	pic->pf_draw_rect = draw_rect;
+	pic->pf_draw_path = draw_path;
 	pic->pf_draw_round = draw_round;
 	pic->pf_draw_ellipse = draw_ellipse;
 	pic->pf_draw_shape = draw_shape;

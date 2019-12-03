@@ -18,10 +18,10 @@
 #include "statusview.h"
 #include "tableview.h"
 #include "dialogview.h"
-#include "panoramaview.h"
 #include "diagramview.h"
 #include "boxview.h"
 #include "annoview.h"
+#include "calendarview.h"
 
 #include "scanner.h"
 #include "memoview.h"

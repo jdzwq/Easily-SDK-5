@@ -1122,133 +1122,133 @@ XDC_API bool_t dialogctrl_get_dirty(res_win_t widget);
 */
 XDC_API void dialogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
-/***********************************panorama control*******************************************************************/
-typedef struct _NOTICE_PANORAMA{
+/***********************************calendar control*******************************************************************/
+typedef struct _NOTICE_CALENDAR{
 	res_win_t widget;
 	unsigned long id;
 	unsigned long code;
 
-	link_t_ptr panorama;
-	link_t_ptr plot;
+	link_t_ptr calendar;
+	link_t_ptr daily;
 	void* data;
 
 	int ret;
-}NOTICE_PANORAMA;
+}NOTICE_CALENDAR;
 
 typedef enum{
 
-	NC_PANORAMALBCLK,
-	NC_PANORAMARBCLK,
-	NC_PANORAMADBCLK,
+	NC_CALENDARLBCLK,
+	NC_CALENDARRBCLK,
+	NC_CALENDARDBCLK,
 
-	NC_PANORAMAPLOTHOVER,
+	NC_CALENDARDAILYHOVER,
 
-	NC_PANORAMAPLOTCHANGING,
-	NC_PANORAMAPLOTCHANGED,
-	NC_PANORAMAPLOTSELECTED,
+	NC_CALENDARDAILYCHANGING,
+	NC_CALENDARDAILYCHANGED,
+	NC_CALENDARDAILYSELECTED,
 
-	NC_PANORAMAPLOTCALCED,
-	NC_PANORAMACALCED,
+	NC_CALENDARDAILYCALCED,
+	NC_CALENDARCALCED,
 
-	NC_PANORAMAPLOTDRAG,
-	NC_PANORAMAPLOTDROP,
-	NC_PANORAMAPLOTSIZING,
-	NC_PANORAMAPLOTSIZED,
-}PANORAMA_NOTICE_CODE;
+	NC_CALENDARDAILYDRAG,
+	NC_CALENDARDAILYDROP,
+	NC_CALENDARDAILYSIZING,
+	NC_CALENDARDAILYSIZED,
+}CALENDAR_NOTICE_CODE;
 
 /*
-@FUNCTION panoramactrl_create: create a panorama widget.
+@FUNCTION calendarctrl_create: create a calendar widget.
 @INPUT const tchar_t* wname: the widget title.
 @INPUT dword_t style: the widget style.
 @INPUT const xrect_t* pxr: the widget rect.
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t panoramactrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+XDC_API res_win_t calendarctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
-@FUNCTION panoramactrl_attach: attach a panorama document to widget.
-@INPUT res_win_t widget: the panorama widget.
-@INPUT link_t_ptr ptr: the panorama document.
+@FUNCTION calendarctrl_attach: attach a calendar document to widget.
+@INPUT res_win_t widget: the calendar widget.
+@INPUT link_t_ptr ptr: the calendar document.
 @RETURN void: none.
 */
-XDC_API void panoramactrl_attach(res_win_t widget, link_t_ptr ptr);
+XDC_API void calendarctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
-@FUNCTION panoramactrl_detach: detach the panorama document from widget.
-@INPUT res_win_t widget: the panorama widget.
-@RETURN link_t_ptr: the panorama link component if exist, otherwise return NULL.
+@FUNCTION calendarctrl_detach: detach the calendar document from widget.
+@INPUT res_win_t widget: the calendar widget.
+@RETURN link_t_ptr: the calendar link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr panoramactrl_detach(res_win_t widget);
+XDC_API link_t_ptr calendarctrl_detach(res_win_t widget);
 
 /*
-@FUNCTION panoramactrl_fetch: get the panorama document from widget.
-@INPUT res_win_t widget: the panorama widget.
-@RETURN link_t_ptr: the panorama link component if exist, otherwise return NULL.
+@FUNCTION calendarctrl_fetch: get the calendar document from widget.
+@INPUT res_win_t widget: the calendar widget.
+@RETURN link_t_ptr: the calendar link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr panoramactrl_fetch(res_win_t widget);
+XDC_API link_t_ptr calendarctrl_fetch(res_win_t widget);
 
 /*
-@FUNCTION panoramactrl_redraw: redraw panorama widget.
-@INPUT res_win_t widget: the panorama widget.
+@FUNCTION calendarctrl_redraw: redraw calendar widget.
+@INPUT res_win_t widget: the calendar widget.
 @RETURN void: none.
 */
-XDC_API void panoramactrl_redraw(res_win_t widget);
+XDC_API void calendarctrl_redraw(res_win_t widget);
 
 /*
-@FUNCTION dialogctrl_redraw_item: redraw the plot in panorama widget.
-@INPUT res_win_t widget: the panorama widget.
-@INPUT link_t_ptr ilk: the plot link component.
+@FUNCTION dialogctrl_redraw_item: redraw the daily in calendar widget.
+@INPUT res_win_t widget: the calendar widget.
+@INPUT link_t_ptr ilk: the daily link component.
 @RETURN void: none.
 */
-XDC_API void panoramactrl_redraw_plot(res_win_t widget, link_t_ptr ilk);
+XDC_API void calendarctrl_redraw_daily(res_win_t widget, link_t_ptr ilk);
 
 /*
-@FUNCTION panoramactrl_tabskip: tab focus to next plot.
-@INPUT res_win_t widget: the panorama widget.
+@FUNCTION calendarctrl_tabskip: tab focus to next daily.
+@INPUT res_win_t widget: the calendar widget.
 @INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
 @RETURN void: none.
 */
-XDC_API void panoramactrl_tabskip(res_win_t widget, int skip);
+XDC_API void calendarctrl_tabskip(res_win_t widget, int skip);
 
 /*
-@FUNCTION panoramactrl_set_focus_plot: set focus to the plot.
-@INPUT res_win_t widget: the panorama widget.
-@INPUT link_t_ptr flk: the plot link component.
-@RETURN bool_t: return nonzero for being the plot focused, otherwise return zero.
+@FUNCTION calendarctrl_set_focus_daily: set focus to the daily.
+@INPUT res_win_t widget: the calendar widget.
+@INPUT link_t_ptr flk: the daily link component.
+@RETURN bool_t: return nonzero for being the daily focused, otherwise return zero.
 */
-XDC_API bool_t panoramactrl_set_focus_plot(res_win_t widget, link_t_ptr flk);
+XDC_API bool_t calendarctrl_set_focus_daily(res_win_t widget, link_t_ptr flk);
 
 /*
-@FUNCTION panoramactrl_get_focus_plot: get focus plot in panorama widget.
-@INPUT res_win_t widget: the panorama widget.
+@FUNCTION calendarctrl_get_focus_daily: get focus daily in calendar widget.
+@INPUT res_win_t widget: the calendar widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr panoramactrl_get_focus_plot(res_win_t widget);
+XDC_API link_t_ptr calendarctrl_get_focus_daily(res_win_t widget);
 
 /*
-@FUNCTION panoramactrl_get_plot_rect: get plot rect int panorama widget client.
-@INPUT res_win_t widget: the panorama widget.
-@INPUT link_t_ptr flk: the plot link component.
+@FUNCTION calendarctrl_get_daily_rect: get daily rect int calendar widget client.
+@INPUT res_win_t widget: the calendar widget.
+@INPUT link_t_ptr flk: the daily link component.
 @OUTPUT xrect_t* pxr: the rect struct using long member.
 @RETURN void: none.
 */
-XDC_API void panoramactrl_get_plot_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
+XDC_API void calendarctrl_get_daily_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
 
 /*
-@FUNCTION panoramactrl_get_dirty: get panorama is dirty in design mode.
-@INPUT res_win_t widget: the panorama widget.
+@FUNCTION calendarctrl_get_dirty: get calendar is dirty in design mode.
+@INPUT res_win_t widget: the calendar widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t panoramactrl_get_dirty(res_win_t widget);
+XDC_API bool_t calendarctrl_get_dirty(res_win_t widget);
 
 /*
-@FUNCTION panoramactrl_set_dirty: set panorama is dirty in design mode.
-@INPUT res_win_t widget: the panorama widget.
+@FUNCTION calendarctrl_set_dirty: set calendar is dirty in design mode.
+@INPUT res_win_t widget: the calendar widget.
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void panoramactrl_set_dirty(res_win_t widget, bool_t b_dirty);
+XDC_API void calendarctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /***********************************diagram control*******************************************************************/
 typedef struct _NOTICE_DIAGRAM{
@@ -1686,7 +1686,7 @@ XDC_API void topogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 */
 XDC_API bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp);
 
-/********************************bitmap control***************************************************************/
+/********************************photo control***************************************************************/
 typedef struct _NOTICE_PHOTO{
 	res_win_t widget;
 	unsigned long id;
@@ -1829,6 +1829,143 @@ XDC_API dword_t photoctrl_get_bitmap(res_win_t widget, byte_t* buf, dword_t max)
 @RETURN void: none.
 */
 XDC_API void photoctrl_commit(res_win_t widget);
+
+/********************************bitmap control***************************************************************/
+typedef struct _NOTICE_MODEL{
+	res_win_t widget;
+	unsigned long id;
+	unsigned long code;
+
+	link_t_ptr anno;
+	link_t_ptr arti;
+
+	res_ctx_t rdc;
+	void* data;
+
+	int ret;
+}NOTICE_MODEL;
+
+typedef enum{
+	NC_MODELLBCLK,
+	NC_MODELRBCLK,
+	NC_MODELDBCLK,
+
+	NC_MODELANNOCHANGING,
+	NC_MODELANNOCHANGED,
+	NC_MODELANNOSIZING,
+	NC_MODELANNOSIZED,
+	NC_MODELANNODRAG,
+	NC_MODELANNODROP,
+
+	NC_MODELANNOEDITING,
+	NC_MODELANNOUPDATE,
+	NC_MODELANNOCOMMIT,
+	NC_MODELANNOROLLBACK,
+
+	NC_MODELFACEDRAW
+}MODEL_NOTICE_CODE;
+
+/*
+@FUNCTION modelctrl_create: create a model widget.
+@INPUT const tchar_t* wname: the widget title.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@INPUT res_win_t owner: the owner widget.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t modelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+
+/*
+@FUNCTION modelctrl_attach: attach a model document to widget.
+@INPUT res_win_t widget: the model widget.
+@INPUT link_t_ptr ptr: the model document.
+@RETURN void: none.
+*/
+XDC_API void	modelctrl_attach(res_win_t widget, link_t_ptr ptr);
+
+/*
+@FUNCTION modelctrl_detach: detach the model document from widget.
+@INPUT res_win_t widget: the model widget.
+@RETURN link_t_ptr: the model link component if exist, otherwise return NULL.
+*/
+XDC_API link_t_ptr modelctrl_detach(res_win_t widget);
+
+/*
+@FUNCTION modelctrl_fetch: get the model document from widget.
+@INPUT res_win_t widget: the model widget.
+@RETURN link_t_ptr: the model link component if exist, otherwise return NULL.
+*/
+XDC_API link_t_ptr modelctrl_fetch(res_win_t widget);
+
+/*
+@FUNCTION modelctrl_redraw: redraw model widget.
+@INPUT res_win_t widget: the model widget.
+@RETURN void: none.
+*/
+XDC_API void modelctrl_redraw(res_win_t widget);
+
+/*
+@FUNCTION modelctrl_set_focus_arti: set focus to the arti.
+@INPUT res_win_t widget: the model widget.
+@INPUT link_t_ptr ilk: the arti link component.
+@RETURN bool_t: return nonzero for being the arti focused, otherwise return zero.
+*/
+XDC_API bool_t modelctrl_set_focus_arti(res_win_t widget, link_t_ptr ilk);
+
+/*
+@FUNCTION modelctrl_get_focus_arti: get focus arti in model widget.
+@INPUT res_win_t widget: the model widget.
+@RETURN link_t_ptr: return the focused arti link component if exists, otherwise return NULL.
+*/
+XDC_API link_t_ptr modelctrl_get_focus_arti(res_win_t widget);
+
+/*
+@FUNCTION modelctrl_get_lock: get the model widget is locked.
+@INPUT res_win_t widget: the model widget.
+@RETURN bool_t: return nonzero for being model locked, otherwise return zero.
+*/
+XDC_API bool_t modelctrl_get_lock(res_win_t widget);
+
+/*
+@FUNCTION modelctrl_set_lock: set the model widget is locked.
+@INPUT res_win_t widget: the model widget.
+@INPUT bool_t b_lock: nonzero for locking the model, zero for unlocking.
+@RETURN void: none.
+*/
+XDC_API void modelctrl_set_lock(res_win_t widget, bool_t b_lock);
+
+/*
+@FUNCTION modelctrl_get_dirty: get model is dirty.
+@INPUT res_win_t widget: the model widget.
+@RETURN bool_t: return nonzero for beging dirty.
+*/
+XDC_API bool_t modelctrl_get_dirty(res_win_t widget);
+
+/*
+@FUNCTION modelctrl_set_dirty: set model is dirty in design mode.
+@INPUT res_win_t widget: the model widget.
+@INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
+@RETURN void: none.
+*/
+XDC_API void modelctrl_set_dirty(res_win_t widget, bool_t bDirty);
+
+/*
+@FUNCTION modelctrl_set_object: set a object bytes data to model widget.
+@INPUT res_win_t widget: the model widget.
+@INPUT const byte_t* data: the object bytes data.
+@INPUT dword_t size: the bytes of object data.
+@RETURN void: none.
+*/
+XDC_API void modelctrl_set_object(res_win_t widget, const byte_t* data, dword_t size);
+
+/*
+@FUNCTION modelctrl_get_object: copy the object bytes data from model widget.
+@INPUT res_win_t widget: the model widget.
+@OUTPUT byte_t* buf: the bytes buffer.
+@INPUT dword_t max: the buffer size in bytes.
+@RETURN dword_t: return the bytes copyed.
+*/
+XDC_API dword_t modelctrl_get_object(res_win_t widget, byte_t* buf, dword_t max);
 
 /***********************************table control*******************************************************************/
 typedef struct _NOTICE_TABLE{
@@ -2747,8 +2884,116 @@ XDC_API link_t_ptr notesctrl_get_focus_item(res_win_t widget);
 */
 XDC_API void	notesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
-/*******************************user control************************************************************/
-typedef struct _NOTICE_USER{
+/*******************************message control************************************************************/
+typedef struct _NOTICE_PANEL{
+	res_win_t widget;
+	unsigned long id;
+	unsigned long code;
+
+	link_t_ptr arch;
+	link_t_ptr item;
+	void* data;
+
+	int ret;
+}NOTICE_PANEL;
+
+typedef enum{
+	NC_PANELLBCLK,
+	NC_PANELRBCLK,
+	NC_PANELDBCLK,
+
+	NC_PANELITEMHOVER,
+
+	NC_PANELITEMCHANGING,
+	NC_PANELITEMCHANGED,
+	NC_PANELITEMDDRAW,
+
+	NC_PANELCALCED,
+	NC_PANELITEMCALCED
+}PANEL_NOTICE_CODE;
+
+/*
+@FUNCTION panelctrl_create: create a panel widget.
+@INPUT const tchar_t* wname: the widget title.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@INPUT res_win_t owner: the owner widget.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t panelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+
+/*
+@FUNCTION panelctrl_attach: attach a panel document to widget.
+@INPUT res_win_t widget: the panel widget.
+@INPUT link_t_ptr ptr: the panel document.
+@RETURN void: none.
+*/
+XDC_API void	panelctrl_attach(res_win_t widget, link_t_ptr ptr);
+
+/*
+@FUNCTION panelctrl_detach: detach the panel document from widget.
+@INPUT res_win_t widget: the panel widget.
+@RETURN link_t_ptr: the panel link component if exist, otherwise return NULL.
+*/
+XDC_API link_t_ptr panelctrl_detach(res_win_t widget);
+
+/*
+@FUNCTION panelctrl_fetch: get the panel document from widget.
+@INPUT res_win_t widget: the panel widget.
+@RETURN link_t_ptr: the panel link component if exist, otherwise return NULL.
+*/
+XDC_API link_t_ptr panelctrl_fetch(res_win_t widget);
+
+/*
+@FUNCTION panelctrl_redraw: redraw panel widget.
+@INPUT res_win_t widget: the panel widget.
+@RETURN void: none.
+*/
+XDC_API void	panelctrl_redraw(res_win_t widget);
+
+/*
+@FUNCTION panelctrl_redraw_item: redraw the item in panel widget.
+@INPUT res_win_t widget: the panel widget.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN void: none.
+*/
+XDC_API void	panelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+
+/*
+@FUNCTION panelctrl_tabskip: tab focus to next item.
+@INPUT res_win_t widget: the panel widget.
+@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@RETURN void: none.
+*/
+XDC_API void	panelctrl_tabskip(res_win_t widget, int skip);
+
+/*
+@FUNCTION panelctrl_set_focus_item: set focus to the item.
+@INPUT res_win_t widget: the panel widget.
+@INPUT link_t_ptr ilk: the item link component.
+@RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
+*/
+XDC_API bool_t	panelctrl_set_focus_item(res_win_t widget, link_t_ptr ent);
+
+/*
+@FUNCTION panelctrl_get_focus_item: get focus item in panel widget.
+@INPUT res_win_t widget: the panel widget.
+@RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
+*/
+XDC_API link_t_ptr panelctrl_get_focus_item(res_win_t widget);
+
+/*
+@FUNCTION panelctrl_get_item_rect: get item rect in panel widget client.
+@INPUT res_win_t widget: the panel widget.
+@INPUT link_t_ptr ilk: the item link component.
+@OUTPUT xrect_t* pxr: the rect struct using long member.
+@RETURN void: none.
+*/
+XDC_API void	panelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+
+
+/*******************************owner control************************************************************/
+typedef struct _NOTICE_OWNER{
 	res_win_t widget;
 	unsigned long id;
 	unsigned long code;
@@ -2756,38 +3001,80 @@ typedef struct _NOTICE_USER{
 	void* data;
 
 	int ret;
-}NOTICE_USER;
+}NOTICE_OWNER;
 
 typedef enum{
-	NC_USERLBCLK,
-	NC_USERRBCLK,
-	NC_USERDBCLK,
-	NC_USERKEY,
-	NC_USERMOVE,
-	NC_USERCALC,
-	NC_USERDRAW
-}USER_NOTICE_CODE;
+	NC_OWNERLBCLK,
+	NC_OWNERRBCLK,
+	NC_OWNERDBCLK,
+	NC_OWNERKEY,
+	NC_OWNERMOVE,
+	NC_OWNERCALC,
+	NC_OWNERDRAW
+}OWNER_NOTICE_CODE;
 
 /*
-@FUNCTION userctrl_create: create a user widget.
+@FUNCTION ownerctrl_create: create a owner draw widget.
 @INPUT const tchar_t* wname: the widget title.
 @INPUT dword_t style: the widget style.
 @INPUT const xrect_t* pxr: the widget rect.
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t userctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+XDC_API res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
-@FUNCTION userctrl_redraw: redraw user widget.
-@INPUT res_win_t widget: the user widget.
+@FUNCTION ownerctrl_redraw: redraw owner widget.
+@INPUT res_win_t widget: the owner widget.
 @RETURN void: none.
 */
-XDC_API void	userctrl_redraw(res_win_t widget);
+XDC_API void	ownerctrl_redraw(res_win_t widget);
 
-XDC_API void userctrl_set_delta(res_win_t widget, var_long var);
+XDC_API void ownerctrl_set_delta(res_win_t widget, var_long var);
 
-XDC_API var_long userctrl_get_delta(res_win_t widget);
+XDC_API var_long ownerctrl_get_delta(res_win_t widget);
+
+/*******************************curve control************************************************************/
+typedef struct _NOTICE_CURVE{
+	res_win_t widget;
+	unsigned long id;
+	unsigned long code;
+
+	void* data;
+
+	int ret;
+}NOTICE_CURVE;
+
+typedef enum{
+	NC_CURVELBCLK,
+	NC_CURVERBCLK,
+	NC_CURVEDBCLK,
+
+	NC_CURVESTART,
+	NC_CURVESTOP,
+	NC_CURVECLEAR
+}CURVE_NOTICE_CODE;
+
+/*
+@FUNCTION curvectrl_create: create a curve widget.
+@INPUT const tchar_t* wname: the widget title.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@INPUT res_win_t owner: the owner widget.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+XDC_API res_win_t curvectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+
+/*
+@FUNCTION curvectrl_redraw: redraw curve widget.
+@INPUT res_win_t widget: the curve widget.
+@RETURN void: none.
+*/
+XDC_API void curvectrl_redraw(res_win_t widget);
+
+XDC_API void curvectrl_set_vector(res_win_t widget, vector_t vt);
+
+XDC_API void curvectrl_get_vector(res_win_t widget, vector_t* pvt);
 
 /*************************************title control***********************************************************/
 

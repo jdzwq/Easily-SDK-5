@@ -108,14 +108,6 @@ XDL_API void properbag_write_dialog_item_attributes(link_t_ptr ptr, link_t_ptr i
 
 XDL_API void properbag_read_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_write_panorama_attributes(link_t_ptr ptr, link_t_ptr panorama);
-
-XDL_API void properbag_read_panorama_attributes(link_t_ptr ptr, link_t_ptr panorama);
-
-XDL_API void properbag_write_panorama_plot_attributes(link_t_ptr ptr, link_t_ptr ilk);
-
-XDL_API void properbag_read_panorama_plot_attributes(link_t_ptr ptr, link_t_ptr ilk);
-
 XDL_API void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram);
 
 XDL_API void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram);

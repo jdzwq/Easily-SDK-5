@@ -515,7 +515,10 @@ void hand_msgdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	pt1.y = xr.y + xr.h - xs.cy;
 	pt2.x = xr.x + xr.w - MSGDLG_EDGE_FEED;
 	pt2.y = xr.y + xr.h - xs.cy;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	xr_txt.x = xr.x + xs.cx;
 	xr_txt.y = xr.y;

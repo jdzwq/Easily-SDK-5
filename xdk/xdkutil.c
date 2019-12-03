@@ -267,6 +267,8 @@ bool_t is_null_xface(const xface_t* pxa)
 
 void default_xpen(xpen_t* pxp)
 {
+	memset((void*)pxp, 0, sizeof(xpen_t));
+
 	_tstrcpy(pxp->style, GDI_ATTR_STROKE_STYLE_SOLID);
 	_tstrcpy(pxp->color, GDI_ATTR_RGB_LIGHTGRAY);
 	_tstrcpy(pxp->size, _T("1"));
@@ -275,6 +277,8 @@ void default_xpen(xpen_t* pxp)
 
 void default_xbrush(xbrush_t* pxb)
 {
+	memset((void*)pxb, 0, sizeof(xbrush_t));
+
 	_tstrcpy(pxb->style, GDI_ATTR_FILL_STYLE_SOLID);
 	_tstrcpy(pxb->color, GDI_ATTR_RGB_WHITE);
 	_tstrcpy(pxb->opacity, GDI_ATTR_OPACITY_SOFT);
@@ -282,6 +286,8 @@ void default_xbrush(xbrush_t* pxb)
 
 void default_xfont(xfont_t* pxf)
 {
+	memset((void*)pxf, 0, sizeof(xfont_t));
+
 	_tstrcpy(pxf->style, GDI_ATTR_FONT_STYLE_NORMAL);
 	_tstrcpy(pxf->size, GDI_ATTR_FONT_SIZE_SYSTEM);
 	_tstrcpy(pxf->weight, GDI_ATTR_FONT_WEIGHT_NORMAL);
@@ -291,6 +297,8 @@ void default_xfont(xfont_t* pxf)
 
 void default_xface(xface_t* pxa)
 {
+	memset((void*)pxa, 0, sizeof(xface_t));
+
 	_tstrcpy(pxa->text_align, GDI_ATTR_TEXT_ALIGN_NEAR);
 	_tstrcpy(pxa->line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	_tstrcpy(pxa->line_height, DEF_GDI_TEXT_LINE_HEIGHT);
@@ -299,6 +307,8 @@ void default_xface(xface_t* pxa)
 
 void default_xgradi(xgradi_t* pxg)
 {
+	memset((void*)pxg, 0, sizeof(xgradi_t));
+
 	_tstrcpy(pxg->type, GDI_ATTR_GRADIENT_TYPE_VERT);
 	_tstrcpy(pxg->opacity, _T("250"));
 	_tstrcpy(pxg->brim_color, GDI_ATTR_RGB_SOFTWHITE);

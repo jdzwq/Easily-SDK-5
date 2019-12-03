@@ -629,19 +629,18 @@ typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_ICON)(res_ctx_t, const tchar_t*);
 #ifdef XDK_SUPPORT_CONTEXT_GRAPHIC
 /*graphic interface*/
 typedef void(*PF_GDI_DRAW_LINE)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_3DLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_3DRECT)(res_ctx_t, const xpen_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_POLYLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_GDI_DRAW_POLYGON)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
 typedef void(*PF_GDI_DRAW_BEZIER)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
 typedef void(*PF_GDI_DRAW_CURVE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_PATH)(res_ctx_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*);
 typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
 typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, double, double);
-typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xrect_t*, double, double);
+typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, long, long, double, double);
+typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xpoint_t*, long, long, double, double);
 typedef void(*PF_GDI_DRAW_ARROW)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, int, double);
 typedef void(*PF_GDI_DRAW_TEXT)(res_ctx_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
 typedef void(*PF_GDI_TEXT_OUT)(res_ctx_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
@@ -719,13 +718,12 @@ typedef struct _if_context_t{
 
 #ifdef XDK_SUPPORT_CONTEXT_GRAPHIC
 	PF_GDI_DRAW_LINE		pf_gdi_draw_line;
-	PF_GDI_DRAW_3DLINE		pf_gdi_draw_3dline;
 	PF_GDI_DRAW_POLYLINE	pf_gdi_draw_polyline;
 	PF_GDI_DRAW_POLYGON		pf_gdi_draw_polygon;
 	PF_GDI_DRAW_BEZIER		pf_gdi_draw_bezier;
 	PF_GDI_DRAW_CURVE		pf_gdi_draw_curve;
-	PF_GDI_DRAW_3DRECT		pf_gdi_draw_3drect;
 	PF_GDI_DRAW_RECT		pf_gdi_draw_rect;
+	PF_GDI_DRAW_PATH		pf_gdi_draw_path;
 	PF_GDI_GRADIENT_RECT	pf_gdi_gradient_rect;
 	PF_GDI_ALPHABLEND_RECT	pf_gdi_alphablend_rect;
 	PF_GDI_DRAW_ROUND		pf_gdi_draw_round;

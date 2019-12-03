@@ -87,9 +87,6 @@
     <ClInclude Include="StatisPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PanoramaPanel.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DiagramPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -153,9 +150,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="StatisPanel.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PanoramaPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DiagramPanel.cpp">

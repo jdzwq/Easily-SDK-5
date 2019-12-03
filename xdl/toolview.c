@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-#define TOOLGROUP_SPLIT		(float)1
+#define TOOLGROUP_SPLIT		((float)0.8)
 
 /***************************************************************************************************/
 int _calc_tool_group_cols(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
@@ -337,6 +337,8 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			ft_offset_rect(&xrGroup, px, py);
 			ft_expand_rect(&xrGroup, -DEF_SPLIT_FEED, -DEF_SPLIT_FEED);
 
+			xb_group.shadow.offx = DEF_MIN_SHADOW;
+			xb_group.shadow.offy = DEF_MIN_SHADOW;
 			(*pif->pf_draw_round)(pif->canvas, &xp, &xb_group, &xrGroup);
 
 			calc_tool_group_title_rect(pbox, ptr, glk, &xrTitle);

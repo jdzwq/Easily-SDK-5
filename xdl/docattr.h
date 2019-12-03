@@ -108,14 +108,6 @@
 #define DOC_DIAGRAM_JUDGE		_T("judge")
 #define DOC_DIAGRAM_JOINT		_T("joint")
 
-#define DOC_PANORAMA			_T("panorama")
-#define DOC_PANORAMA_GEOMAP		_T("geomap")
-#define DOC_PANORAMA_TRENDS		_T("trends")
-#define DOC_PANORAMA_SCATTER	_T("scatter")
-#define DOC_PANORAMA_PANTO		_T("panto")
-#define DOC_PANORAMA_DENSITY	_T("density")
-#define DOC_PANORAMA_COUNTER	_T("counter")
-
 #define DOC_GRID				_T("grid")
 #define DOC_GRID_COLSET			_T("colset")
 #define DOC_GRID_ROWSET			_T("rowset")
@@ -156,7 +148,7 @@
 #define DOC_ANNO				_T("annotation")
 #define DOC_ANNO_SPOT			_T("spot")
 
-#define DOC_TOPOG				_T("topostatis")
+#define DOC_TOPOG				_T("topograph")
 #define DOC_TOPOG_SPOT			_T("spot")
 
 #define DOC_STATIS				_T("statis")
@@ -180,6 +172,7 @@
 #define DOC_TAG					_T("tag")
 #define DOC_TAG_TEXT			_T("text")
 
+#define DOC_CALENDAR			_T("calendar")
 
 #define DOC_DIALOG				_T("dialog")
 #define DOC_DIALOG_STATICBOX	_T("StaticBox")
@@ -259,6 +252,14 @@
 #define ATTR_LEVEL					_T("level")
 #define ATTR_CHECK					_T("check")
 
+#define ATTR_TODAY					_T("today")
+#define ATTR_EARLIEST				_T("earliest")
+#define ATTR_LATEST					_T("latest")
+#define ATTR_DAILY					_T("daily")
+#define ATTR_DAILY_YEAR				_T("daily-year")
+#define ATTR_DAILY_MONTH			_T("daily-month")
+#define ATTR_DAILY_DAY				_T("daily-day")
+
 #define ATTR_SHOWSUM				_T("show-sum")
 #define ATTR_SHOWCHECK				_T("show-check")
 #define ATTR_CLOCKWISE				_T("clockwise")
@@ -280,7 +281,7 @@
 #define ATTR_ITEM_WIDTH				_T("item-width")
 #define ATTR_ITEM_HEIGHT			_T("item-height")
 #define ATTR_ITEM_SPAN				_T("item-span")
-#define ICON_SPAN				_T("icon-span")
+#define ICON_SPAN					_T("icon-span")
 #define ATTR_TEXT_INDENT			_T("text-indent")
 #define ATTR_TEXT_PLACE				_T("text-place")
 #define ATTR_ENTITY_HEIGHT			_T("entity-height")
@@ -367,6 +368,14 @@
 #define ATTR_SPOT_TYPE_ICON			_T("icon")
 #define ATTR_SPOT_TYPE_COLORBAR		_T("color-bar")
 #define ATTR_SPOT_TYPE_IMAGE		_T("image")
+
+#define ATTR_PLOT_TYPE				_T("plot-type")
+#define ATTR_PLOT_TYPE_GEOMAP		_T("geomap")
+#define ATTR_PLOT_TYPE_TRENDS		_T("trends")
+#define ATTR_PLOT_TYPE_SCATTER		_T("scatter")
+#define ATTR_PLOT_TYPE_PANTO		_T("panto")
+#define ATTR_PLOT_TYPE_DENSITY		_T("density")
+#define ATTR_PLOT_TYPE_COUNTER		_T("counter")
 
 #define ATTR_TEXT_TYPE					_T("text-type")
 #define ATTR_TEXT_TYPE_TEXT				_T("text")
@@ -479,7 +488,7 @@
 #define ATTR_CONTROL_TITLECTRL		_T("title-ctrl")
 #define ATTR_CONTROL_TABLECTRL		_T("table-ctrl")
 #define ATTR_CONTROL_NOTESCTRL		_T("notes-ctrl")
-#define ATTR_CONTROL_OPTIONS		_T("rich-ctrl~RichCtrl;memo-ctrl~MemoCtrl;tag-ctrl~TagCtrl;grid-ctrl~GridCtrl;statis-ctrl~GraphCtrl;photo-ctrl~PhotoCtrl;images-ctrl~ImagesCtrl;topog-ctrl~TopogCtrl;form-ctrl~FormCtrl;tree-ctrl~TreeCtrl;list-ctrl~ListCtrl;label-ctrl~LabelCtrl;proper-ctrl~ProperCtrl;status-ctrl~StatusCtrl;tool-ctrl~ToolCtrl;title-ctrl~TitleCtrl;table-ctrl~TableCtrl;notes-ctrl~NotesCtrl;")
+#define ATTR_CONTROL_OPTIONS		_T("rich-ctrl~RichCtrl;memo-ctrl~MemoCtrl;tag-ctrl~TagCtrl;grid-ctrl~GridCtrl;statis-ctrl~StatisCtrl;photo-ctrl~PhotoCtrl;images-ctrl~ImagesCtrl;topog-ctrl~TopogCtrl;form-ctrl~FormCtrl;tree-ctrl~TreeCtrl;list-ctrl~ListCtrl;label-ctrl~LabelCtrl;proper-ctrl~ProperCtrl;status-ctrl~StatusCtrl;tool-ctrl~ToolCtrl;title-ctrl~TitleCtrl;table-ctrl~TableCtrl;notes-ctrl~NotesCtrl;")
 
 #define ATTR_EDITABLE				_T("editable")
 #define ATTR_VISIBLE				_T("visible")

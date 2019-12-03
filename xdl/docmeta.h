@@ -162,21 +162,21 @@ XDL_API link_t_ptr	create_dialog_from_meta_file(const secu_desc_t* psd, const tc
 XDL_API bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION create_panorama_from_meta_file: create a panorama document and load content from meta file.
+@FUNCTION create_calendar_from_meta_file: create a calendar document and load content from meta file.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the destination file path name.
-@RETURN link_t_ptr: if succeeds return the panorama link component, fails return NULL.
+@RETURN link_t_ptr: if succeeds return the calendar link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_panorama_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+XDL_API link_t_ptr	create_calendar_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION save_panorama_to_meta_file: save a panorama document to meta file.
-@INPUT link_t_ptr ptr: the panorama document.
+@FUNCTION save_calendar_to_meta_file: save a calendar document to meta file.
+@INPUT link_t_ptr ptr: the calendar document.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_panorama_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+XDL_API bool_t save_calendar_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_diagram_from_meta_file: create a diagram document and load content from meta file.

@@ -454,8 +454,6 @@ void xdk_impl_context_printer(if_context_t* pif)
 void xdk_impl_context_graphic(if_context_t* pif)
 {
 #if defined(UNICODE) || defined(_UNICODE)
-	pif->pf_gdi_draw_3dline = _gdiplus_draw_3dline;
-	pif->pf_gdi_draw_3drect = _gdiplus_draw_3drect;
 	pif->pf_gdi_draw_arrow = _gdiplus_draw_arrow;
 	pif->pf_gdi_draw_ellipse = _gdiplus_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdiplus_draw_line;
@@ -466,6 +464,7 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_bezier = _gdiplus_draw_bezier;
 	pif->pf_gdi_draw_curve = _gdiplus_draw_curve;
 	pif->pf_gdi_draw_rect = _gdiplus_draw_rect;
+	pif->pf_gdi_draw_path = _gdiplus_draw_path;
 	pif->pf_gdi_draw_round = _gdiplus_draw_round;
 	pif->pf_gdi_draw_text = _gdiplus_draw_text;
 	pif->pf_gdi_fill_region = _gdiplus_fill_region;
@@ -479,8 +478,6 @@ void xdk_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_bitmap = _gdiplus_draw_bitmap;
 	pif->pf_gdi_draw_image = _gdiplus_draw_image;
 #else
-	pif->pf_gdi_draw_3dline = _gdi_draw_3dline;
-	pif->pf_gdi_draw_3drect = _gdi_draw_3drect;
 	pif->pf_gdi_draw_arrow = _gdi_draw_arrow;
 	pif->pf_gdi_draw_ellipse = _gdi_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdi_draw_line;

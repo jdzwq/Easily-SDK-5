@@ -225,7 +225,7 @@ void plot_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont
 		nxtd = pred + (float)(2 * XPI *  dby);
 		if (pred != nxtd)
 		{
-			draw_pie(canv, pxp, pxb, prt, pred, nxtd);
+			//draw_pie(canv, pxp, pxb, prt, pred, nxtd);
 		}
 	}
 }

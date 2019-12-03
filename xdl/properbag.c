@@ -1555,107 +1555,11 @@ void properbag_read_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk)
 	set_dialog_item_height(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
 }
 
-void properbag_write_panorama_attributes(link_t_ptr ptr, link_t_ptr panorama)
-{
-	link_t_ptr ent;
-
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_PANORAMA, -1);
-	set_entity_editable(ent, 0);
-
-	//Attributes
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_panorama_name_ptr(panorama), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_panorama_id_ptr(panorama), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_panorama_width(panorama));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_panorama_height(panorama));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-}
-
-void properbag_read_panorama_attributes(link_t_ptr ptr, link_t_ptr panorama)
-{
-	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_PANORAMA, -1, 0) != 0)
-		return;
-
-	set_panorama_name(panorama, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
-
-	set_panorama_id(panorama, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
-
-	set_panorama_width(panorama, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
-
-	set_panorama_height(panorama, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
-}
-
-void properbag_write_panorama_plot_attributes(link_t_ptr ptr, link_t_ptr ilk)
-{
-	link_t_ptr ent;
-	const tchar_t* sz_class;
-
-	sz_class = get_panorama_plot_class_ptr(ilk);
-
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, sz_class, -1);
-	set_entity_editable(ent, 0);
-
-	//Attributes
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_NAME, -1, get_panorama_plot_name_ptr(ilk), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_ID, -1, get_panorama_plot_id_ptr(ilk), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X, get_panorama_plot_x(ilk));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y, get_panorama_plot_y(ilk));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH, get_panorama_plot_width(ilk));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-
-	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_panorama_plot_height(ilk));
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
-}
-
-void properbag_read_panorama_plot_attributes(link_t_ptr ptr, link_t_ptr ilk)
-{
-	const tchar_t* sz_class;
-
-	sz_class = get_panorama_plot_class_ptr(ilk);
-
-	set_panorama_plot_name(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));
-
-	set_panorama_plot_id(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_ID));
-
-	set_panorama_plot_text(ilk, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_DATA), -1);
-
-	set_panorama_plot_x(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_X));
-
-	set_panorama_plot_y(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_Y));
-
-	set_panorama_plot_width(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
-
-	set_panorama_plot_height(ilk, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
-}
-
 void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
 {
 	link_t_ptr ent;
 
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_PANORAMA, -1);
+	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_DIAGRAM, -1);
 	set_entity_editable(ent, 0);
 
 	//Attributes
@@ -1678,7 +1582,7 @@ void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
 
 void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
 {
-	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_PANORAMA, -1, 0) != 0)
+	if (compare_text(get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_CLASS), -1, DOC_DIAGRAM, -1, 0) != 0)
 		return;
 
 	set_diagram_name(diagram, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, ATTR_NAME));

@@ -59,6 +59,19 @@ LICENSE.GPL3 for more details.
 */
 #define set_arch_item_title(ilk,token)					set_dom_node_attr(ilk,ATTR_TITLE,-1,token,-1)
 
+/**********************************************************************************************************/
+
+/*@PROPER expanded : boolean.
+@SET set_arch_item_expanded: set the arch item expanded.
+*/
+#define set_arch_item_expanded(ilk,expand)				set_dom_node_mask_check(ilk,MSK_EXPANDED,expand)
+/*
+@PROPER expanded: document.
+@GET get_arch_item_expanded: get the tree item expanded.
+*/
+#define get_arch_item_expanded(ilk)						get_dom_node_mask_check(ilk,MSK_EXPANDED)
+
+/**********************************************************************************************************/
 
 #ifdef	__cplusplus
 extern "C" {

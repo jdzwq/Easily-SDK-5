@@ -167,19 +167,18 @@ typedef struct _if_measure_t{
 
 typedef int(*PF_CANVAS_TYPE)(canvas_t);
 typedef void(*PF_DRAW_LINE)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_DRAW_3DLINE)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_DRAW_3DRECT)(canvas_t, const xpen_t*, const xrect_t*);
 typedef void(*PF_DRAW_POLYLINE)(canvas_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_POLYGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_BEZIER)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
 typedef void(*PF_DRAW_CURVE)(canvas_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_RECT)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_DRAW_PATH)(canvas_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*, int n);
 typedef void(*PF_GRADIENT_RECT)(canvas_t, const xgradi_t*, const xrect_t*);
 typedef void(*PF_ALPHABLEND_RECT)(canvas_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_DRAW_ROUND)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_ELLIPSE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_DRAW_PIE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, double, double);
-typedef void(*PF_DRAW_ARC)(canvas_t, const xpen_t*, const xrect_t*, double, double);
+typedef void(*PF_DRAW_PIE)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, float, float, double, double);
+typedef void(*PF_DRAW_ARC)(canvas_t, const xpen_t*, const xpoint_t*, float, float, double, double);
 typedef void(*PF_DRAW_ARROW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, float, double);
 typedef void(*PF_DRAW_SHAPE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
 typedef void(*PF_DRAW_SHADOW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const xsize_t*, const tchar_t*);
@@ -210,13 +209,12 @@ typedef struct _if_canvas_t{
 	PF_CANVAS_TYPE		pf_canvas_type;
 
 	PF_DRAW_LINE		pf_draw_line;
-	PF_DRAW_3DLINE		pf_draw_3dline;
 	PF_DRAW_POLYLINE	pf_draw_polyline;
 	PF_DRAW_POLYGON		pf_draw_polygon;
 	PF_DRAW_BEZIER		pf_draw_bezier;
 	PF_DRAW_CURVE		pf_draw_curve;
-	PF_DRAW_3DRECT		pf_draw_3drect;
 	PF_DRAW_RECT		pf_draw_rect;
+	PF_DRAW_PATH		pf_draw_path;
 	PF_GRADIENT_RECT	pf_gradient_rect;
 	PF_ALPHABLEND_RECT	pf_alphablend_rect;
 	PF_DRAW_ROUND		pf_draw_round;

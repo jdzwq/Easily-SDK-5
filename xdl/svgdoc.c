@@ -1048,7 +1048,7 @@ bool_t svg_node_is_pie(link_t_ptr glk)
 		return 0;
 }
 
-void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, double fang, double tang)
+void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
 {
 	xpoint_t pt1, pt2;
 	tchar_t token[10 * INT_LEN];
@@ -1056,18 +1056,18 @@ void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
-	pt1.x = (long)((float)pxr->w / 2 * cos(fang)) + pxr->x + pxr->w / 2;
-	pt1.y = -(long)((float)pxr->h / 2 * sin(fang)) + pxr->y + pxr->h / 2;
+	pt1.x = (long)((float)rx * cos(fang)) + ppt->x;
+	pt1.y = -(long)((float)ry * sin(fang)) + ppt->y;
 
-	pt2.x = (long)((float)pxr->w / 2 * cos(tang)) + pxr->x + pxr->w / 2;
-	pt2.y = -(long)((float)pxr->h / 2 * sin(tang)) + pxr->y + pxr->h / 2;
+	pt2.x = (long)((float)rx * cos(tang)) + ppt->x;
+	pt2.y = -(long)((float)ry * sin(tang)) + ppt->y;
 
 	if (tang - fang > XPI)
 		larg = 1;
 	else
 		larg = 0;
 
-	xsprintf(token, _T("M%d %d L%d %d A%d %d 0 %d 0 %d %d Z"), pxr->x + pxr->w / 2, pxr->y + pxr->h / 2, pt1.x, pt1.y, pxr->w / 2, pxr->h / 2, larg, pt2.x, pt2.y);
+	xsprintf(token, _T("M%d %d L%d %d A%d %d 0 %d 0 %d %d Z"), ppt->x, ppt->y, pt1.x, pt1.y, rx, ry, larg, pt2.x, pt2.y);
 	
 	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
 
@@ -1076,7 +1076,7 @@ void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 	write_xbrush_to_svg_node(glk, pxb);
 }
 
-void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* pxr, double* pfang, double* ptang)
+void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, long* prx, long* pry, double* pfang, double* ptang)
 {
 	const tchar_t* token;
 	long x1, y1, x2, y2, x3, y3, rx, ry;
@@ -1091,10 +1091,10 @@ void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t*
 
 	xscanf(token, _T("M%d %d L%d %d A%d %d %d %d %d %d %d Z"), &x1, &y1, &x2, &y2, &rx, &ry, &tan, &lar, &ccw, &x3, &y3);
 
-	pxr->x = x1 - rx;
-	pxr->y = y1 - ry;
-	pxr->w = 2 * rx;
-	pxr->h = 2 * ry;
+	ppt->x = x1;
+	ppt->y = y1;
+	*prx = rx;
+	*pry = ry;
 
 	*pfang = acos((float)(x2 - x1) / (float)rx);
 	if (y1 < y2)

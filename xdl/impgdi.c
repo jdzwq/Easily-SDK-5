@@ -48,15 +48,6 @@ void draw_line_raw(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const 
 	(*pif->pf_gdi_draw_line)(rdc, pxp, ppt1, ppt2);
 }
 
-void draw_3dline_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_3dline)(rdc, pxp, ppt1, ppt2);
-}
-
 void draw_polyline_raw(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
 {
 	if_context_t *pif;
@@ -64,15 +55,6 @@ void draw_polyline_raw(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n
 	pif = PROCESS_CONTEXT_INTERFACE;
 	
 	(*pif->pf_gdi_draw_polyline)(rdc,pxp,ppt,n);
-}
-
-void draw_3drect_raw(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_3drect)(rdc, pxp, pxr);
 }
 
 void draw_polygon_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
@@ -91,6 +73,15 @@ void draw_rect_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xre
 	pif = PROCESS_CONTEXT_INTERFACE;
 
 	(*pif->pf_gdi_draw_rect)(rdc,pxp,pxb,pxr);
+}
+
+void draw_path_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_path)(rdc, pxp, pxb, aa, pa);
 }
 
 void draw_round_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
@@ -147,22 +138,22 @@ void draw_ellipse_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const 
 	(*pif->pf_gdi_draw_ellipse)(rdc,pxp,pxb,pxr);
 }
 
-void draw_pie_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr,double fang,double tang)
+void draw_pie_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt, long rx, long ry, double fang,double tang)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_draw_pie)(rdc,pxp,pxb,pxr,fang,tang);
+	(*pif->pf_gdi_draw_pie)(rdc,pxp,pxb,ppt,rx,ry,fang,tang);
 }
 
-void draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* pxr, double fang, double tang)
+void draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_draw_arc)(rdc, pxp, pxr, fang, tang);
+	(*pif->pf_gdi_draw_arc)(rdc, pxp, ppt, rx, ry, fang, tang);
 }
 
 void draw_arrow_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr,int alen,double arc)
@@ -356,30 +347,32 @@ void draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int d
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
 	xsprintf(xp.opacity, _T("%d"), deep);
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
 
 	pt[0].x = prt->x;
 	pt[0].y = prt->y;
 	pt[1].x = prt->x;
 	pt[1].y = prt->y + 5;
-	draw_3dline_raw(rdc, &xp, &pt[0], &pt[1]);
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x;
 	pt[0].y = prt->y;
 	pt[1].x = prt->x + 5;
 	pt[1].y = prt->y;
-	draw_3dline_raw(rdc, &xp, &pt[0], &pt[1]);
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x + prt->w;
 	pt[0].y = prt->y + prt->h;
 	pt[1].x = prt->x + prt->w - 5;
 	pt[1].y = prt->y + prt->h;
-	draw_3dline_raw(rdc, &xp, &pt[0], &pt[1]);
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x + prt->w;
 	pt[0].y = prt->y + prt->h;
 	pt[1].x = prt->x + prt->w;
 	pt[1].y = prt->y + prt->h - 5;
-	draw_3dline_raw(rdc, &xp, &pt[0], &pt[1]);
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 }
 
 void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape)
@@ -1018,39 +1011,6 @@ void draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpo
 	(*pif->pf_gdi_draw_line)(rdc, pxp, &pt1, &pt2);
 }
 
-void draw_3dline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xpoint_t pt1,pt2;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xmem_copy((void*)&pt1, (void*)ppt1, sizeof(xpoint_t));
-	xmem_copy((void*)&pt2, (void*)ppt2, sizeof(xpoint_t));
-
-	point_tm_to_pt(canv, &pt1);
-	point_tm_to_pt(canv, &pt2);
-
-	(*pif->pf_gdi_draw_3dline)(rdc, pxp, &pt1, &pt2);
-}
-
-void draw_3drect(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	(*pif->pf_gdi_draw_3drect)(rdc, pxp, &xr);
-}
-
 void draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1158,6 +1118,77 @@ void draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrec
 	(*pif->pf_gdi_draw_rect)(rdc, pxp, pxb, &xr);
 }
 
+void draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xpoint_t* ppt;
+	int i;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	if (is_null(aa))
+		return;
+
+	ppt = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
+	xmem_copy((void*)ppt, (void*)pa, n * sizeof(xpoint_t));
+
+	i = 0;
+	while (*aa)
+	{
+		if (*aa == _T('M') || *aa == _T('m'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			i += 1;
+		}
+		else if (*aa == _T('L') || *aa == _T('l'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			point_tm_to_pt(canv, &ppt[i+1]);
+			i += 2;
+		}
+		else if (*aa == _T('Q') || *aa == _T('q'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			point_tm_to_pt(canv, &ppt[i + 1]);
+			i += 2;
+		}
+		else if (*aa == _T('T') || *aa == _T('t'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			i += 1;
+		}
+		else if (*aa == _T('C') || *aa == _T('c'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			point_tm_to_pt(canv, &ppt[i + 1]);
+			point_tm_to_pt(canv, &ppt[i + 2]);
+			i += 3;
+		}
+		else if (*aa == _T('S') || *aa == _T('s'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			point_tm_to_pt(canv, &ppt[i + 1]);
+			i += 2;
+		}
+		else if (*aa == _T('A') || *aa == _T('a'))
+		{
+			point_tm_to_pt(canv, &ppt[i]);
+			point_tm_to_pt(canv, &ppt[i + 2]);
+			i += 3;
+		}
+		else if (*aa == _T('Z') || *aa == _T('z'))
+		{
+			break;
+		}
+	}
+
+	(*pif->pf_gdi_draw_path)(rdc, pxp, pxb, aa, ppt);
+
+	xmem_free(ppt);
+}
+
 void gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1223,7 +1254,7 @@ void draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 	(*pif->pf_gdi_draw_ellipse)(rdc, pxp, pxb, &xr);
 }
 
-void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, double fang, double tang)
+void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1232,13 +1263,16 @@ void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = rx;
+	xr.fh = ry;
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, &xr, fang, tang);
+	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
 }
 
-void draw_arc(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, double fang, double tang)
+void draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1247,10 +1281,13 @@ void draw_arc(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, double fang,
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = rx;
+	xr.fh = ry;
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_draw_arc)(rdc, pxp, &xr, fang, tang);
+	(*pif->pf_gdi_draw_arc)(rdc, pxp, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
 }
 
 void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
@@ -1722,30 +1759,32 @@ void draw_feed(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
 	xsprintf(xp.opacity, _T("%d"), deep);
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
 
 	pt[0].fx = prt->fx;
 	pt[0].fy = prt->fy;
 	pt[1].fx = prt->fx;
 	pt[1].fy = (float)(prt->fy + 1.0);
-	draw_3dline(canv, &xp, &pt[0], &pt[1]);
+	draw_line(canv, &xp, &pt[0], &pt[1]);
 
 	pt[0].fx = prt->fx;
 	pt[0].fy = prt->fy;
 	pt[1].fx = (float)(prt->fx + 1.0);
 	pt[1].fy = prt->fy;
-	draw_3dline(canv, &xp, &pt[0], &pt[1]);
+	draw_line(canv, &xp, &pt[0], &pt[1]);
 
 	pt[0].fx = prt->fx + prt->fw;
 	pt[0].fy = prt->fy + prt->fh;
 	pt[1].fx = (float)(prt->fx + prt->fw - 1.0);
 	pt[1].fy = prt->fy + prt->fh;
-	draw_3dline(canv, &xp, &pt[0], &pt[1]);
+	draw_line(canv, &xp, &pt[0], &pt[1]);
 
 	pt[0].fx = prt->fx + prt->fw;
 	pt[0].fy = prt->fy + prt->fh;
 	pt[1].fx = prt->fx + prt->fw;
 	pt[1].fy = (float)(prt->fy + prt->fh - 1.0);
-	draw_3dline(canv, &xp, &pt[0], &pt[1]);
+	draw_line(canv, &xp, &pt[0], &pt[1]);
 }
 
 void draw_progress(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int steps)
@@ -1806,57 +1845,59 @@ void draw_corner(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr)
 
 	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_SOLID);
 	xscpy(xp.size, _T("2"));
+	xp.adorn.feed = 2;
+	xp.adorn.size = 2;
 
 	pt1.x = xr.x;
 	pt1.y = xr.y;
 	pt2.x = xr.x;
 	pt2.y = xr.y - SPAN;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	pt1.x = xr.x;
 	pt1.y = xr.y;
 	pt2.x = xr.x - SPAN;
 	pt2.y = xr.y;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	//right,top
 	pt1.x = xr.x + xr.w;
 	pt1.y = xr.y;
 	pt2.x = xr.x + xr.w;
 	pt2.y = xr.y - SPAN;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	pt1.x = xr.x + xr.w;
 	pt1.y = xr.y;
 	pt2.x = xr.x + xr.w + SPAN;
 	pt2.y = xr.y;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	//left,bottom
 	pt1.x = xr.x;
 	pt1.y = xr.y + xr.h;
 	pt2.x = xr.x;
 	pt2.y = xr.y + xr.h + SPAN;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	pt1.x = xr.x;
 	pt1.y = xr.y + xr.h;
 	pt2.x = xr.x - SPAN;
 	pt2.y = xr.y + xr.h;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	//right,bottom
 	pt1.x = xr.x + xr.w;
 	pt1.y = xr.y + xr.h;
 	pt2.x = xr.x + xr.w;
 	pt2.y = xr.y + xr.h + SPAN;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 
 	pt1.x = xr.x + xr.w;
 	pt1.y = xr.y + xr.h;
 	pt2.x = xr.x + xr.w + SPAN;
 	pt2.y = xr.y + xr.h;
-	draw_3dline_raw(rdc, &xp, &pt1, &pt2);
+	draw_line_raw(rdc, &xp, &pt1, &pt2);
 }
 
 void draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
@@ -2296,13 +2337,13 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 		{
 			if (svg_node_is_pie(ilk))
 			{
-				read_pie_from_svg_node(ilk, &xp, &xb, &xr, &fang, &tang);
+				read_pie_from_svg_node(ilk, &xp, &xb, RECTPOINT(&xr),&xr.w, &xr.h, &fang, &tang);
 
 				svg_rect_pt_to_tm(svgcanv, &xr);
 				xr.fx += pbox->fx;
 				xr.fy += pbox->fy;
 
-				draw_pie(canv, &xp, &xb, &xr, fang, tang);
+				draw_pie(canv, &xp, &xb, RECTPOINT(&xr), xr.fw, xr.fh, fang, tang);
 			}
 		}
 		else if (compare_text(sz_name, -1, SVG_NODE_IMAGE, -1, 1) == 0)

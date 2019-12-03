@@ -51,25 +51,6 @@ extern "C" {
 XDL_API void	draw_line_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
 
 /*
-@FUNCTION draw_3dline_raw: draw 3d line in memory or device context using points coordinate
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* ppt1: the from point struct using integer member.
-@INPUT const xpoint_t* ppt2: the to point struct using integer member.
-@RETURN void: none.
-*/
-XDL_API void	draw_3dline_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
-
-/*
-@FUNCTION draw_3drect_raw: draw 3d rect in memory or device context using points coordinate
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct
-@INPUT const xrect_t* prt: the rect struct using integer member.
-@RETURN void: none.
-*/
-XDL_API void	draw_3drect_raw(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt);
-
-/*
 @FUNCTION draw_polyline_raw: draw polyline in memory or device context using points coordinate
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -123,6 +104,18 @@ XDL_API void	draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* pp
 XDL_API void	draw_rect_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
 
 /*
+@FUNCTION draw_path_raw: draw path in memory or device context using points coordinate
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const tchar_t* aa: the action stack.
+@INPUT const xpoint_t* pa: the points stack.
+@INPUT int n: the points stack size.
+@RETURN void: none.
+*/
+XDL_API void	draw_path_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n);
+
+/*
 @FUNCTION gradient_rect_raw: gradient a rect in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xgradi_t* pxg: the gradient struct.
@@ -166,23 +159,27 @@ XDL_API void	draw_ellipse_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* 
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const xpoint_t* pxr: the center point struct using integer member.
+@INPUT long rx: the x-radius
+@INPUT long ry: the y-radius
 @INPUT double fang: the from angle PI value. 
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	draw_pie_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, double fang, double tang);
+XDL_API void	draw_pie_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
 
 /*
 @FUNCTION draw_arc_raw: draw arc in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const xpoint_t* pxr: the center point struct using integer member.
+@INPUT long rx: the x-radius
+@INPUT long ry: the y-radius
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* pxr, double fang, double tang);
+XDL_API void	draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
 
 /*
 @FUNCTION draw_arrow_raw: draw arrrow in memory or device context using points coordinate.
@@ -480,25 +477,6 @@ XDL_API void	image_size_raw(res_ctx_t rdc, const ximage_t* pxi, xsize_t* pxs);
 XDL_API void	draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
 
 /*
-@FUNCTION draw_3dline: draw 3d line in canvas using milimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* ppt1: the from point struct using float member.
-@INPUT const xpoint_t* ppt2: the to point struct using float member.
-@RETURN void: none.
-*/
-XDL_API void	draw_3dline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
-
-/*
-@FUNCTION draw_3drect: draw 3d rect in canvas using milimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xrect_t* prt: the rect struct using float member.
-@RETURN void: none.
-*/
-XDL_API void	draw_3drect(canvas_t canv, const xpen_t* pxp, const xrect_t* prt);
-
-/*
 @FUNCTION draw_polyline: draw polyline in canvas using milimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -528,6 +506,18 @@ XDL_API void	draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb,
 @RETURN void: none.
 */
 XDL_API void	draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
+
+/*
+@FUNCTION draw_path: draw path in canvas using milimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const tchar_t* aa: the action stack.
+@INPUT const xpoint_t* pa: the points stack.
+@INPUT int n: the points stack size.
+@RETURN void: none.
+*/
+XDL_API void	draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n);
 
 /*
 @FUNCTION draw_bezier: draw bezier in canvas using millimeter coordinate
@@ -595,23 +585,27 @@ XDL_API void	draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb,
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const xpoint_t* pxr: the center point struct using float member.
+@INPUT long rx: the x-radius
+@INPUT long ry: the y-radius
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, double fang, double tang);
+XDL_API void	draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
 
 /*
 @FUNCTION draw_arc: draw arc in canvas using millimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const xpoint_t* pxr: the center point struct using float member.
+@INPUT long rx: the x-radius
+@INPUT long ry: the y-radius
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	draw_arc(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, double fang, double tang);
+XDL_API void	draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
 
 /*
 @FUNCTION draw_arrow: draw arrrow in canvas using millimeter coordinate.

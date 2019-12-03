@@ -399,7 +399,7 @@ bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tc
 	return rt;
 }
 
-link_t_ptr	create_panorama_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
+link_t_ptr	create_calendar_from_meta_file(const secu_desc_t* psd, const tchar_t* fname)
 {
 	link_t_ptr meta, ptr;
 
@@ -410,7 +410,7 @@ link_t_ptr	create_panorama_from_meta_file(const secu_desc_t* psd, const tchar_t*
 		return NULL;
 	}
 
-	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_PANORAMA, -1, 1) != 0)
+	if (compare_text(get_meta_doc_name_ptr(meta), -1, DOC_DIAGRAM, -1, 1) != 0)
 	{
 		destroy_meta_doc(meta);
 		return NULL;
@@ -422,7 +422,7 @@ link_t_ptr	create_panorama_from_meta_file(const secu_desc_t* psd, const tchar_t*
 	return ptr;
 }
 
-bool_t save_panorama_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
+bool_t save_calendar_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
 {
 	link_t_ptr meta;
 	bool_t rt;

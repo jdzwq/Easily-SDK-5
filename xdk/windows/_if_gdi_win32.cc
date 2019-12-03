@@ -746,7 +746,7 @@ void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const
 
 }
 
-void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, double fang, double tang)
+void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
 {
 #ifdef WINCE
 	return;
@@ -754,10 +754,10 @@ void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const x
 	HDC hDC = (HDC)rdc;
 
 	RECT rt;
-	rt.left = prt->x;
-	rt.top = prt->y;
-	rt.right = prt->x + prt->w;
-	rt.bottom = prt->y + prt->h;
+	rt.left = ppt->x - rx;
+	rt.top = ppt->y - ry;
+	rt.right = ppt->x + rx;
+	rt.bottom = ppt->y + ry;
 
 	DPtoLP(hDC, (LPPOINT)&rt, 2);
 

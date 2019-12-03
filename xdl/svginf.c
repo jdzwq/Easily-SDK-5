@@ -47,8 +47,6 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 
 	pic->pf_canvas_type = svg_get_canvas_type;
 	pic->pf_draw_line = svg_draw_line;
-	pic->pf_draw_3dline = svg_draw_3dline;
-	pic->pf_draw_3drect = svg_draw_3drect;
 	pic->pf_gradient_rect = svg_gradient_rect;
 	pic->pf_alphablend_rect = svg_alphablend_rect;
 	pic->pf_draw_arrow = svg_draw_arrow;

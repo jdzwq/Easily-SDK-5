@@ -1902,6 +1902,7 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 	widget_get_xbrush(ptd->widget, &xb);
 	widget_get_xpen(ptd->widget, &xp);
+	widget_get_iconic(ptd->widget, &xc);
 
 	canv = widget_get_canvas(ptd->widget);
 
@@ -1917,8 +1918,6 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 	{
 		widget_get_canv_rect(ptd->widget, &cb);
 
-		parse_xcolor(&xc, xb.color);
-		lighten_xcolor(&xc, DEF_SOFT_DARKEN);
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
 	}
 

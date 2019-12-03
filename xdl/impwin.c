@@ -89,7 +89,7 @@ int	translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_translate_accelerator)(pmsg, acl, pmsg);
+	return (*pif->pf_translate_accelerator)(wt, acl, pmsg);
 }
 
 #ifdef XDK_SUPPORT_WIDGET_EX

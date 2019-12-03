@@ -163,7 +163,7 @@ void draw_diagram(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		if (compare_text(entity, -1, DOC_DIAGRAM_PROCESS, -1, 0) == 0)
 		{
-			(*pif->pf_draw_3drect)(pif->canvas, &xp, &xr);
+			(*pif->pf_draw_rect)(pif->canvas, &xp,NULL, &xr);
 		}
 		else if (compare_text(entity, -1, DOC_DIAGRAM_JOINT, -1, 0) == 0)
 		{
