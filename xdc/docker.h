@@ -34,20 +34,6 @@ LICENSE.GPL3 for more details.
 
 #include "xdcdef.h"
 
-
-typedef struct _DOCKINFO{
-	dword_t style;
-	long cx, cy;
-}DOCKINFO;
-
-typedef struct _docker_t{
-	res_win_t widget;
-	DOCKINFO dock[4];
-	long x, y;
-	int ind;
-	bool_t drag;
-}docker_t;
-
 #ifdef	__cplusplus
 extern "C" {
 #endif

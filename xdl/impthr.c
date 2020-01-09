@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_THREAD
 
-void  xthread_begin(res_hand_t* ph_hand, PF_THREADFUNC pf_worker, void* param)
+void  thread_start(res_hand_t* ph_hand, PF_THREADFUNC pf_worker, void* param)
 {
 	if_thread_t* pit;
 
@@ -46,7 +46,7 @@ void  xthread_begin(res_hand_t* ph_hand, PF_THREADFUNC pf_worker, void* param)
 	(*pit->pf_thread_begin)(ph_hand, pf_worker,param);
 }
 
-void xthread_end(void)
+void thread_stop(void)
 {
 	if_thread_t* pit;
 
@@ -57,7 +57,7 @@ void xthread_end(void)
 	(*pit->pf_thread_end)();
 }
 
-void xthread_sleep(int ms)
+void thread_sleep(int ms)
 {
 	if_thread_t* pit;
 
@@ -68,7 +68,7 @@ void xthread_sleep(int ms)
 	(*pit->pf_thread_sleep)(ms);
 }
 
-dword_t xthread_get_id(void)
+dword_t thread_get_id(void)
 {
 	if_thread_t* pit;
 
@@ -79,7 +79,7 @@ dword_t xthread_get_id(void)
 	return (*pit->pf_thread_get_id)();
 }
 
-void xthread_join(res_hand_t th)
+void thread_join(res_hand_t th)
 {
 	if_thread_t* pit;
 
@@ -91,7 +91,7 @@ void xthread_join(res_hand_t th)
 }
 /////////////////////////////////////////////////////////////////////
 #ifdef XDK_SUPPORT_THREAD_EVENT
-res_even_t xevent_create()
+res_even_t event_create()
 {
 	res_even_t ev;
 	if_thread_t* pit;
@@ -110,7 +110,7 @@ res_even_t xevent_create()
 	return ev;
 }
 
-void xevent_destroy(res_even_t eh)
+void event_destroy(res_even_t eh)
 {
 	if_thread_t* pit;
 
@@ -121,7 +121,7 @@ void xevent_destroy(res_even_t eh)
 	(*pit->pf_event_destroy)(eh);
 }
 
-wait_t xevent_wait(res_even_t eh, int ms)
+wait_t event_wait(res_even_t eh, int ms)
 {
 	if_thread_t* pit;
 
@@ -132,7 +132,7 @@ wait_t xevent_wait(res_even_t eh, int ms)
 	return (*pit->pf_event_wait)(eh, ms);
 }
 
-void xevent_sign(res_even_t eh, bool_t b_sign)
+void event_sign(res_even_t eh, bool_t b_sign)
 {
 	if_thread_t* pit;
 
@@ -148,7 +148,7 @@ void xevent_sign(res_even_t eh, bool_t b_sign)
 ////////////////////////////////////////////////////////////////////////
 #ifdef XDK_SUPPORT_THREAD_CRITI
 
-res_crit_t xcriti_create()
+res_crit_t criti_create()
 {
 	if_thread_t* pit;
 	res_crit_t cr;
@@ -167,7 +167,7 @@ res_crit_t xcriti_create()
 	return cr;
 }
 
-void xcriti_destroy(res_crit_t cr)
+void criti_destroy(res_crit_t cr)
 {
 	if_thread_t* pit;
 
@@ -178,7 +178,7 @@ void xcriti_destroy(res_crit_t cr)
 	(*pit->pf_criti_destroy)(cr);
 }
 
-void xcriti_enter(res_crit_t cr)
+void criti_enter(res_crit_t cr)
 {
 	if_thread_t* pit;
 
@@ -189,7 +189,7 @@ void xcriti_enter(res_crit_t cr)
 	(*pit->pf_criti_enter)(cr);
 }
 
-void xcriti_leave(res_crit_t cr)
+void criti_leave(res_crit_t cr)
 {
 	if_thread_t* pit;
 
@@ -200,7 +200,7 @@ void xcriti_leave(res_crit_t cr)
 	(*pit->pf_criti_leave)(cr);
 }
 
-bool_t xcriti_query(res_crit_t cr)
+bool_t criti_query(res_crit_t cr)
 {
 	if_thread_t* pit;
 
@@ -216,7 +216,7 @@ bool_t xcriti_query(res_crit_t cr)
 /***********************************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_MUTEX
 
-res_mutx_t	xmutex_create(const tchar_t* mname)
+res_mutx_t	mutex_create(const tchar_t* mname)
 {
 	if_thread_t* pit;
 	res_mutx_t mx;
@@ -235,7 +235,7 @@ res_mutx_t	xmutex_create(const tchar_t* mname)
 	return mx;
 }
 
-void xmutex_destroy(const tchar_t* mname, res_mutx_t mx)
+void mutex_destroy(const tchar_t* mname, res_mutx_t mx)
 {
 	if_thread_t* pit;
 
@@ -246,7 +246,7 @@ void xmutex_destroy(const tchar_t* mname, res_mutx_t mx)
 	(*pit->pf_mutex_destroy)(mname, mx);
 }
 
-res_mutx_t	xmutex_open(const tchar_t* mname)
+res_mutx_t	mutex_open(const tchar_t* mname)
 {
 	if_thread_t* pit;
 	res_mutx_t mx;
@@ -265,7 +265,7 @@ res_mutx_t	xmutex_open(const tchar_t* mname)
 	return mx;
 }
 
-wait_t xmutex_lock(res_mutx_t mx, int ms)
+wait_t mutex_lock(res_mutx_t mx, int ms)
 {
 	if_thread_t* pit;
 
@@ -276,7 +276,7 @@ wait_t xmutex_lock(res_mutx_t mx, int ms)
 	return (*pit->pf_mutex_lock)(mx, ms);
 }
 
-void xmutex_unlock(res_mutx_t mx)
+void mutex_unlock(res_mutx_t mx)
 {
 	if_thread_t* pit;
 
@@ -291,7 +291,7 @@ void xmutex_unlock(res_mutx_t mx)
 ////////////////////////////////////////////////////////////////////////////////////
 #ifdef XDK_SUPPORT_THREAD_SEMAP
 
-res_sema_t	xsemap_create(const tchar_t* mname, int max)
+res_sema_t	semap_create(const tchar_t* mname, int max)
 {
 	if_thread_t* pit;
 	res_sema_t mx;
@@ -310,7 +310,7 @@ res_sema_t	xsemap_create(const tchar_t* mname, int max)
 	return mx;
 }
 
-void xsemap_destroy(const tchar_t* mname, res_sema_t mx)
+void semap_destroy(const tchar_t* mname, res_sema_t mx)
 {
 	if_thread_t* pit;
 
@@ -321,7 +321,7 @@ void xsemap_destroy(const tchar_t* mname, res_sema_t mx)
 	(*pit->pf_semap_destroy)(mname, mx);
 }
 
-res_sema_t	xsemap_open(const tchar_t* mname)
+res_sema_t	semap_open(const tchar_t* mname)
 {
 	if_thread_t* pit;
 	res_sema_t mx;
@@ -340,7 +340,7 @@ res_sema_t	xsemap_open(const tchar_t* mname)
 	return mx;
 }
 
-wait_t xsemap_lock(res_sema_t mx, int ms)
+wait_t semap_lock(res_sema_t mx, int ms)
 {
 	if_thread_t* pit;
 
@@ -351,7 +351,7 @@ wait_t xsemap_lock(res_sema_t mx, int ms)
 	return (*pit->pf_semap_lock)(mx, ms);
 }
 
-void xsemap_unlock(res_sema_t mx)
+void semap_unlock(res_sema_t mx)
 {
 	if_thread_t* pit;
 
@@ -365,7 +365,7 @@ void xsemap_unlock(res_sema_t mx)
 #endif
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-res_queue_t xqueue_create(res_queue_t ep, res_file_t fd, int max)
+res_queue_t queue_create(res_queue_t ep, res_file_t fd, int max)
 {
 	if_thread_t* pit;
 
@@ -376,7 +376,7 @@ res_queue_t xqueue_create(res_queue_t ep, res_file_t fd, int max)
 	return (*pit->pf_queue_create)(ep, fd, max);
 }
 
-void xqueue_destroy(res_queue_t ep)
+void queue_destroy(res_queue_t ep)
 {
 	if_thread_t* pit;
 
@@ -387,7 +387,7 @@ void xqueue_destroy(res_queue_t ep)
 	(*pit->pf_queue_destroy)(ep);
 }
 
-wait_t xqueue_wait(res_queue_t ep, int ms)
+wait_t queue_wait(res_queue_t ep, int ms)
 {
 	if_thread_t* pit;
 

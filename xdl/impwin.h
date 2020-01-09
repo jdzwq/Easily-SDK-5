@@ -834,6 +834,10 @@ XDL_API byte_t	widget_get_alpha(res_win_t wt);
 XDL_API void	widget_set_region(res_win_t wt, res_rgn_t rgn);
 #endif
 
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+XDL_API res_glc_t widget_get_glctx(res_win_t wt);
+#endif
+
 /*
 @FUNCTION widget_do_modal: run the widget in modal mode, usually used by dialog.
 @INPUT res_win_t wt: the widget resource handle.

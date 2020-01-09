@@ -205,17 +205,6 @@ XDL_API void	draw_arrow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* px
 XDL_API void	draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
 
 /*
-@FUNCTION draw_shadow_raw: draw shadow in memory or device context using points coordinate.
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
-@INPUT const tchar_t* shadow: the shadow name, eg: ATTR_SHAPE_*.
-@RETURN void: none.
-*/
-void draw_shadow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const xsize_t* poff, const tchar_t* shape);
-
-/*
 @FUNCTION multi_line_raw: draw multiple base line in memory or device context using points coordinate, the line separated by line height of font and face.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xfont_t* pxf: the font struct.
@@ -629,17 +618,6 @@ XDL_API void	draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, c
 @RETURN void: none.
 */
 XDL_API void	draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
-
-/*
-@FUNCTION draw_shadow: draw shadow in canvas using millimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT const tchar_t* shadow: the shadow name, eg: ATTR_SHAPE_*.
-@RETURN void: none.
-*/
-XDL_API void	draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shadow);
 
 /*
 @FUNCTION multi_line: draw multiple base line in canvas using millimeter coordinate, the line separated by line height of font and face.

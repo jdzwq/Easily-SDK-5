@@ -14,7 +14,7 @@ void* STDCALL wait_thread(void* param)
 	{
 		if(!xpipe_listen(pxm->pip, 500))
 		{
-			xthread_sleep(10);
+			thread_sleep(10);
 			continue;
 		}
 
@@ -38,14 +38,14 @@ void* STDCALL wait_thread(void* param)
 			{
 				if (pxm->cr)
 				{
-					xcriti_enter(pxm->cr);
+					criti_enter(pxm->cr);
 				}
 
 				stream_write_bytes(pxm->stm, buf, size);
 
 				if (pxm->cr)
 				{
-					xcriti_leave(pxm->cr);
+					criti_leave(pxm->cr);
 				}
 			}
 
@@ -59,11 +59,11 @@ void* STDCALL wait_thread(void* param)
 		xpipe_stop(pxm->pip);
 	}
 
-	xevent_sign(pxm->ev, 1);
+	event_sign(pxm->ev, 1);
 
 	xdl_thread_uninit(0);
 
-	xthread_end();
+	thread_stop();
 
 	return 0;
 }
@@ -99,11 +99,11 @@ void _xportm_start(xportm_param_t* pxm)
 		raise_user_error(_T("-1"), _T("service create pipe failed"));
 	}
 
-	pxm->ev = xevent_create();
-	pxm->cr = xcriti_create();
+	pxm->ev = event_create();
+	pxm->cr = criti_create();
 
 	pxm->act = 1;
-	xthread_begin(NULL, (PF_THREADFUNC)wait_thread, (void*)pxm);
+	thread_start(NULL, (PF_THREADFUNC)wait_thread, (void*)pxm);
 
 	if (pxm->stm)
 	{
@@ -118,15 +118,15 @@ ONERROR:
 
 	if (pxm->ev)
 	{
-		xevent_sign(pxm->ev, 1);
+		event_sign(pxm->ev, 1);
 	}
 
     if (pxm->ev)
-		xevent_destroy(pxm->ev);
+		event_destroy(pxm->ev);
 	pxm->ev = NULL;
 
 	if (pxm->cr)
-		xcriti_destroy(pxm->cr);
+		criti_destroy(pxm->cr);
 	pxm->ev = NULL;
 
 	if (pxm->pip)
@@ -149,14 +149,14 @@ void _xportm_stop(xportm_param_t* pxm)
 	{
 		if (pxm->cr)
 		{
-			xcriti_enter(pxm->cr);
+			criti_enter(pxm->cr);
 		}
 
 		stream_write(pxm->stm, _T("xportm try to stop...\n"), -1, NULL);
 
 		if (pxm->cr)
 		{
-			xcriti_leave(pxm->cr);
+			criti_leave(pxm->cr);
 		}
 	}
 
@@ -164,7 +164,7 @@ void _xportm_stop(xportm_param_t* pxm)
 
 	if (pxm->ev)
 	{
-		xevent_wait(pxm->ev, -1);
+		event_wait(pxm->ev, -1);
 	}
 
 	if (pxm->std)
@@ -176,11 +176,11 @@ void _xportm_stop(xportm_param_t* pxm)
 	pxm->stm = NULL;
 
 	if (pxm->ev)
-		xevent_destroy(pxm->ev);
+		event_destroy(pxm->ev);
 	pxm->ev = NULL;
 
 	if (pxm->cr)
-		xcriti_destroy(pxm->cr);
+		criti_destroy(pxm->cr);
 	pxm->cr = NULL;
 
 	if (pxm->pip)

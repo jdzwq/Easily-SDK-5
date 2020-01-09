@@ -33,8 +33,6 @@ int main(int argc, char* argv[])
 
 	TRY_CATCH;
 
-	get_runpath(NULL, xp.sz_root, PATH_LEN);
-
 	for (i = 1; i < argc; i++)
 	{
 		len = xslen(xp.sz_param);

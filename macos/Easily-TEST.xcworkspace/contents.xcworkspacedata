@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:xdk/xdk.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:test/xdb_mysql_test/xdb_mysql_test.xcodeproj">
    </FileRef>
    <FileRef

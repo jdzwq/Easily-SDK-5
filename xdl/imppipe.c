@@ -76,13 +76,15 @@ xhand_t xpipe_srv(const tchar_t* pname, dword_t fmode)
 		async_alloc_lapp(&ppi->over, PIPE_BASE_TIMO);
 	}
 
-	return (xhand_t)ppi;
+	return &ppi->head;
 }
 
 bool_t xpipe_listen(xhand_t pip, int ms)
 {
-	pipe_t* ppi = (pipe_t*)pip;
+	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 	if_pipe_t* pif;
+
+	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
 	pif = PROCESS_PIPE_INTERFACE;
 
@@ -95,8 +97,10 @@ bool_t xpipe_listen(xhand_t pip, int ms)
 
 void xpipe_stop(xhand_t pip)
 {
-	pipe_t* ppi = (pipe_t*)pip;
+	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 	if_pipe_t* pif;
+
+	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
 	pif = PROCESS_PIPE_INTERFACE;
 
@@ -134,7 +138,7 @@ xhand_t xpipe_cli(const tchar_t* pname, dword_t fmode)
 		async_alloc_lapp(&ppi->over, PIPE_BASE_TIMO);
 	}
 
-	return (xhand_t)ppi;
+	return &ppi->head;
 }
 
 xhand_t xpipe_attach(res_file_t hp)
@@ -150,12 +154,12 @@ xhand_t xpipe_attach(res_file_t hp)
 	ppi->head.tag = _HANDLE_PIPE;
 	ppi->pipe = hp;
 
-	return (xhand_t)ppi;
+	return &ppi->head;
 }
 
 res_file_t xpipe_detach(xhand_t pip)
 {
-	pipe_t* ppi = (pipe_t*)pip;
+	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 	res_file_t hp;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -169,7 +173,7 @@ res_file_t xpipe_detach(xhand_t pip)
 
 res_file_t xpipe_handle(xhand_t pip)
 {
-	pipe_t* ppi = (pipe_t*)pip;
+	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
@@ -189,7 +193,7 @@ bool_t xpipe_wait(const tchar_t* pname, int ms)
 
 bool_t xpipe_flush(xhand_t pip)
 {
-	pipe_t* ppi = (pipe_t*)pip;
+	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 	if_pipe_t* pif;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -206,7 +210,7 @@ bool_t xpipe_flush(xhand_t pip)
 
 void xpipe_free(xhand_t pip)
 {
-	pipe_t* ppi = (pipe_t*)pip;
+	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 	if_pipe_t* pif;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -240,6 +244,8 @@ bool_t xpipe_write(xhand_t pip, const byte_t* buf, dword_t* pcb)
 	if_pipe_t* pif;
 	size_t size;
 
+	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
+
 	pif = PROCESS_PIPE_INTERFACE;
 
 	XDL_ASSERT(pif != NULL);
@@ -263,6 +269,8 @@ bool_t xpipe_read(xhand_t pip, byte_t* buf, dword_t* pcb)
 	pipe_t* ppt = (pipe_t*)pip;
 	if_pipe_t* pif;
 	size_t size;
+
+	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
 	pif = PROCESS_PIPE_INTERFACE;
 

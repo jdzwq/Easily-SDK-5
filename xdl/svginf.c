@@ -45,7 +45,6 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 
 	pic->canvas = canv;
 
-	pic->pf_canvas_type = svg_get_canvas_type;
 	pic->pf_draw_line = svg_draw_line;
 	pic->pf_gradient_rect = svg_gradient_rect;
 	pic->pf_alphablend_rect = svg_alphablend_rect;
@@ -60,7 +59,6 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 	pic->pf_draw_round = svg_draw_round;
 	pic->pf_draw_ellipse = svg_draw_ellipse;
 	pic->pf_draw_shape = svg_draw_shape;
-	pic->pf_draw_shadow = svg_draw_shadow;
 	pic->pf_multi_line = svg_multi_line;
 	pic->pf_draw_text = svg_draw_text;
 	pic->pf_text_out = svg_text_out;

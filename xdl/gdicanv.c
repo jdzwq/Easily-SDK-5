@@ -38,9 +38,10 @@ LICENSE.GPL3 for more details.
 #if defined(XDK_SUPPORT_CONTEXT)
 
 typedef struct _rdc_canvas_t{
+	canvas_head head;
+
 	res_ctx_t dc;		// memory draw context 
-	int dev;			// canvas type 
-	res_pmp_t pixmap;		// memory view
+	res_pmp_t pixmap;	// memory view
 
 	float htpermm, vtpermm;
 	float scale;
@@ -51,7 +52,9 @@ typedef struct _rdc_canvas_t{
 /*******************************************************************************************************************/
 float pt_to_tm(canvas_t canv, long pt, bool_t horz)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t,canv);
+
+	XDL_ASSERT(canv);
 
 	if (horz)
 		return (float)((float)pt / (float)(pcanv->htpermm * pcanv->scale)) - pcanv->horz_feed;
@@ -61,7 +64,9 @@ float pt_to_tm(canvas_t canv, long pt, bool_t horz)
 
 long tm_to_pt(canvas_t canv, float tm, bool_t horz)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv);
 
 	if (horz)
 		return (long)(((float)tm * pcanv->scale + (float)pcanv->horz_feed) * pcanv->htpermm);
@@ -185,8 +190,6 @@ canvas_t create_display_canvas(res_ctx_t rdc)
 
 	pcanv = (rdc_canvas_t*)xmem_alloc(sizeof(rdc_canvas_t));
 
-	pcanv->dev = _CANV_DISPLAY;
-
 	if (rdc)
 		pcanv->dc = create_compatible_context(rdc);
 	else
@@ -205,19 +208,25 @@ canvas_t create_display_canvas(res_ctx_t rdc)
 	destroy_context(pcanv->dc);
 	pcanv->dc = NULL;
 
-	return (canvas_t)pcanv;
+	pcanv->head.tag = _CANVAS_DISPLAY;
+
+	return &pcanv->head;
 }
 
 void destroy_display_canvas(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	xmem_free(pcanv);
 }
 
 void set_canvas_ratio(canvas_t canv, float htpermm, float vtpermm)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	pcanv->htpermm = htpermm;
 	pcanv->vtpermm = vtpermm;
@@ -225,79 +234,93 @@ void set_canvas_ratio(canvas_t canv, float htpermm, float vtpermm)
 
 float get_canvas_horz_size(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	return pcanv->horz_size - 2 * pcanv->horz_feed;
 }
 
 float get_canvas_vert_size(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	return pcanv->vert_size - 2 * pcanv->vert_feed;
 }
 
 void set_canvas_horz_feed(canvas_t canv, float cx)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	pcanv->horz_feed = cx;
 }
 
 float get_canvas_horz_feed(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	return pcanv->horz_feed;
 }
 
 void set_canvas_vert_feed(canvas_t canv, float cx)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	pcanv->vert_feed = cx;
 }
 
 float get_canvas_vert_feed(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	return pcanv->vert_feed;
 }
 
 void set_canvas_scale(canvas_t canv, float sca)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	pcanv->scale = sca;
 }
 
 float get_canvas_scale(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	return pcanv->scale;
 }
 
 res_ctx_t get_canvas_ctx(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	return (res_ctx_t)pcanv->dc;
 }
 
-int get_canvas_type(canvas_t canv)
-{
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
-
-	return pcanv->dev;
-}
-
 res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, long width, long height)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
+
 	res_pmp_t pmp;
 	dev_cap_t dev = { 0 };
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	pmp = create_compatible_pixmap(rdc, width, height);
 	XDL_ASSERT(pmp != NULL);
@@ -312,8 +335,10 @@ res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, long width, long heig
 
 void end_canvas_paint(canvas_t canv, res_ctx_t rdc, const xrect_t* pxr)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 	res_pmp_t pmp;
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	render_context(pcanv->dc, pxr->x, pxr->y, rdc, pxr->x, pxr->y, pxr->w, pxr->h);
 
@@ -340,8 +365,6 @@ canvas_t create_printer_canvas(res_ctx_t rdc)
 
 	pcanv = (rdc_canvas_t*)xmem_alloc(sizeof(rdc_canvas_t));
 
-	pcanv->dev = _CANV_PRINTER;
-
 	get_device_caps(rdc, &cap);
 
 	pcanv->dc = rdc;
@@ -353,14 +376,16 @@ canvas_t create_printer_canvas(res_ctx_t rdc)
 	pcanv->horz_feed = (float)((float)cap.horz_feed / (float)cap.horz_pixels / INCHPERMM);
 	pcanv->vert_feed = (float)((float)cap.vert_feed / (float)cap.horz_pixels / INCHPERMM);
 
-	return (canvas_t)pcanv;
+	pcanv->head.tag = _CANVAS_PRINTER;
+
+	return &pcanv->head;
 }
 
 void  destroy_printer_canvas(canvas_t canv)
 {
-	rdc_canvas_t* pcanv = (rdc_canvas_t*)canv;
+	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(pcanv->dev == _CANV_PRINTER);
+	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	xmem_free(pcanv);
 }

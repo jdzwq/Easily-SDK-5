@@ -124,11 +124,11 @@ clock_t _get_times()
 	st.wMilliseconds = 0;
 
 	SystemTimeToFileTime(&st, &ft);
-	dif1 = MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	dif1 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 	
 	GetSystemTime(&st);
 	SystemTimeToFileTime(&st, &ft);
-	dif2 = MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	dif2 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	return (clock_t)((dif2 - dif1) / 10000);
 }
@@ -148,11 +148,11 @@ clock_t _get_ticks()
 	st.wMilliseconds = 0;
 
 	SystemTimeToFileTime(&st, &ft);
-	dif1 = MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	dif1 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	GetSystemTime(&st);
 	SystemTimeToFileTime(&st, &ft);
-	dif2 = MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	dif2 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	return (clock_t)(dif2 - dif1);
 }
@@ -168,7 +168,7 @@ stamp_t _get_timestamp()
 	GetSystemTime(&st);
 	SystemTimeToFileTime(&st, &ft);
 
-	return (stamp_t)MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
+	return (stamp_t)MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 }
 
 void _utc_date_from_times(xdate_t* pxd, clock_t ts)
@@ -187,9 +187,10 @@ void _utc_date_from_times(xdate_t* pxd, clock_t ts)
 
 	SystemTimeToFileTime(&st, &ft);
 
-	ss = (ts * 10000) + MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
-	ft.dwLowDateTime = GETSIZEL(ss);
-	ft.dwHighDateTime = GETSIZEH(ss);
+	ss = (ts * 10000) + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+
+	ft.dwLowDateTime = GETLDWORD(ss);
+	ft.dwHighDateTime = GETHDWORD(ss);
 
 	FileTimeToSystemTime(&ft, &st);
 
@@ -220,9 +221,10 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 
 	SystemTimeToFileTime(&st, &ft);
 
-	ss = ts + MAKESIZE(ft.dwLowDateTime, ft.dwHighDateTime);
-	ft.dwLowDateTime = GETSIZEL(ss);
-	ft.dwHighDateTime = GETSIZEH(ss);
+	ss = ts + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+
+	ft.dwLowDateTime = GETLDWORD(ss);
+	ft.dwHighDateTime = GETHDWORD(ss);
 
 	FileTimeToSystemTime(&ft, &st);
 
@@ -242,8 +244,8 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
 
-	ft.dwLowDateTime = GETSIZEL(ts);
-	ft.dwHighDateTime = GETSIZEH(ts);
+	ft.dwLowDateTime = GETLDWORD(ts);
+	ft.dwHighDateTime = GETHDWORD(ts);
 
 	FileTimeToSystemTime(&ft, &st);
 

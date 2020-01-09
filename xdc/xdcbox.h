@@ -40,22 +40,25 @@ extern "C" {
 
 /******************************plot box*****************************************************/
 
-/*
-@FUNCTION plotbox_create: create a plotbox widget.
-@INPUT res_win_t widget: the owner widget.
-@INPUT dword_t style: the widget style.
-@INPUT const xrect_t* pxr: the widget rect.
-@RETURN res_win_t: return the new widget resource handle.
-*/
 XDC_API res_win_t plotbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
 
-/*
-@FUNCTION plotbox_popup_size: calcing the plotbox popup size according to client size.
-@INPUT res_win_t widget: the plotbox widget.
-@INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
-@RETURN void: none.
-*/
-XDC_API void plotbox_popup_size(res_win_t widget, xsize_t* pxs);
+XDC_API void plotbox_set_type(res_win_t widget, const tchar_t* type);
+
+XDC_API void plotbox_get_type(res_win_t widget, tchar_t* type);
+
+XDC_API void plotbox_set_vetor(res_win_t widget, vector_t vt);
+
+XDC_API void plotbox_get_vetor(res_win_t widget, vector_t* pvt);
+
+XDC_API void plotbox_set_plot(res_win_t widget, const plot_t* plt);
+
+XDC_API void plotbox_get_plot(res_win_t widget, plot_t* plt);
+
+XDC_API void plotbox_calc_plot(res_win_t widget);
+
+XDC_API void plotbox_set_title(res_win_t widget, const tchar_t* title);
+
+XDC_API int plotbox_get_title(res_win_t widget, tchar_t* title, int max);
 
 /******************************numeric box*****************************************************/
 

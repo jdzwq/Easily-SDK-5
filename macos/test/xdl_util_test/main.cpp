@@ -81,7 +81,7 @@ ONERROR:
 
     xdl_thread_uninit(0);
     
-    xevent_sign(ev, 1);
+    event_sign(ev, 1);
     
     return NULL;
 }
@@ -95,12 +95,12 @@ void test_thread()
     
     TRY_CATCH;
     
-    ev = xevent_create();
+    ev = event_create();
     
-    xthread_begin(thr_fun,(void*)ev);
+    thread_start(NULL, thr_fun,(void*)ev);
     
-    xevent_wait(ev, -1);
-    xevent_destroy(ev);
+    event_wait(ev, -1);
+    event_destroy(ev);
     
     raise_user_error("-1", "process error");
     
@@ -145,18 +145,34 @@ void test_stream()
     xcons_free(cons);
 }
 
-
+void test_path()
+{
+    tchar_t pfmt[] = _T("$(XSERVICE_DATA)/api/%s");
+    tchar_t *path;
+    
+    int len = printf_path(NULL, pfmt, _T("libloc_api.dylib"));
+    path = xsalloc(len + 1);
+    printf_path(path, pfmt, _T("llibloc_api.dylib"));
+    
+    printf(path);
+    printf("\n");
+    
+    xsfree(path);
+    
+}
 
 int main(int argc, const char * argv[]) {
-    xdl_process_init(XDL_APARTMENT_THREAD);
+    xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
     //test_error();
+    
+    test_path();
     
     //test_thread();
     
     //test_stream();
     
-    test_conv();
+    //test_conv();
     
     xdl_process_uninit();
     

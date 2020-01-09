@@ -1,0 +1,12 @@
+; sms_aliyun.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "sms_aliyun"
+DESCRIPTION  'sms_aliyun Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	sms_open_isp
+	sms_close
+	sms_code
+	sms_message
+	sms_receipt
+	sms_error

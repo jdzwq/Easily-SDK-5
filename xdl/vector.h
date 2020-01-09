@@ -33,9 +33,11 @@ LICENSE.GPL3 for more details.
 #define _VECTOR_H
 
 #include "xdldef.h"
+#include "matrix.h"
 
 typedef struct _vector_t{
-	dword_t size;
+	int size;
+	int order;
 	double* data;
 }vector_t;
 
@@ -44,18 +46,33 @@ extern "C" {
 #endif
 
 /*
-@FUNCTION vector_alloc: alloc vector.
-@INPUT sword_t size: the vector size.
+@FUNCTION vector_alloc: alloc a vector.
+@INPUT int size: the vector size.
+@INPUT int order: the vector order, 1-order like: (x), 2-order like: (x,y), 3-order like (x,y,z).
 @RETURN vector_t*: return vector struct.
 */
-XDL_API vector_t* vector_alloc(sword_t size);
+XDL_API vector_t* vector_alloc(int size, int order);
 
 /*
-@FUNCTION vector_free: free vector.
+@FUNCTION vector_free: free the vector.
 @INPUT vector_t*: the vector struct.
 @RETURN void: none.
 */
 XDL_API void vector_free(vector_t* pvt);
+
+/*
+@FUNCTION vector_clone: clone a vector from souce.
+@INPUT const vector_t*: the source vector struct.
+@RETURN vector_t*: return vector struct.
+*/
+XDL_API vector_t* vector_clone(const vector_t* pvt);
+
+/*
+@FUNCTION vector_clear: clear vector elements.
+@INPUT vector_t*: the vector struct.
+@RETURN void: none.
+*/
+XDL_API void vector_empty(vector_t* pvt);
 
 /*
 @FUNCTION vector_zero: set vector elements value to zero.
@@ -65,21 +82,39 @@ XDL_API void vector_free(vector_t* pvt);
 XDL_API void vector_zero(vector_t* pvt);
 
 /*
-@FUNCTION vector_set_value: set vector element value.
+@FUNCTION vector_unit: set vector elements value to 1.
 @INPUT vector_t*: the vector struct.
-@INPUT sword_t i: the vector element zero based index.
-@INPUT double db: the value to set.
 @RETURN void: none.
 */
-XDL_API void vector_set_value(vector_t* pvt, sword_t i, double db);
+XDL_API void vector_unit(vector_t* pvt);
+
+/*
+@FUNCTION vector_copy: copy the vector.
+@INPUT vector_t*: the destent vector struct.
+@INPUT const vector_t*: the srource vector struct.
+@RETURN void: none.
+*/
+XDL_API void vector_copy(vector_t* dest, const vector_t* src);
+
+/*
+@FUNCTION vector_set_value: set vector element value.
+@INPUT vector_t*: the vector struct.
+@INPUT int i: the vector element zero based index.
+@INPUT double A: the A value to set.
+@INPUT ...: variant double value to set according to vector order.
+@RETURN void: none.
+*/
+XDL_API void vector_set_value(vector_t* pvt, int i, ...);
 
 /*
 @FUNCTION vector_get_value: get vector element value.
 @INPUT vector_t*: the vector struct.
-@INPUT sword_t i: the vector element zero based index.
-@RETURN double: return the element value if exists, otherwise return zero.
+@INPUT int i: the vector element zero based index.
+@INPUT double* pA: the buffer for return A value.
+@INPUT ...: variant double value buffer for return more, according to vector order.
+@RETURN void: none.
 */
-XDL_API double vector_get_value(vector_t* pvt, sword_t i);
+XDL_API void vector_get_value(vector_t* pvt, int i, ...);
 
 /*
 @FUNCTION vector_parse: parse vector element value from string.
@@ -98,6 +133,16 @@ XDL_API void vector_parse(vector_t* pvt, const tchar_t* str, int len);
 @RETURN int: return the formated string token length.
 */
 XDL_API int vector_format(vector_t* pvt, tchar_t* buf, int max);
+
+XDL_API vector_t* vector_shift(vector_t vt, ...);
+
+XDL_API vector_t* vector_rotate(vector_t vt, double ang);
+
+XDL_API vector_t* vector_scale(vector_t vt, ...);
+
+XDL_API vector_t* vector_shear(vector_t vt, double sx, double sy);
+
+XDL_API vector_t* vector_trans(vector_t vt, matrix_t mt);
 
 #if defined(_DEBUG) || defined(DEBUG)
 	XDL_API void test_vector(void);

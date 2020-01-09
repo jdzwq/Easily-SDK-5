@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcmenu.h"
 #include "textor.h"
 #include "xdcbox.h"
@@ -78,7 +79,7 @@ static bool_t _memoctrl_get_paging(res_win_t widget, xsize_t* pse)
 		pse->fx = get_memo_width((link_t_ptr)(ptd->textor.data));
 		pse->fy = get_memo_height((link_t_ptr)(ptd->textor.data));
 
-		widget_size_to_pt(widget, pse);
+		widgetex_size_to_pt(widget, pse);
 
 		return 1;
 	}else
@@ -117,7 +118,7 @@ int hand_memoctrl_create(res_win_t widget, void* data)
 {
 	memoctrl_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (memoctrl_delta_t*)xmem_alloc(sizeof(memoctrl_delta_t));
 	xmem_zero((void*)ptd, sizeof(memoctrl_delta_t));
@@ -158,7 +159,7 @@ void hand_memoctrl_destroy(res_win_t widget)
 
 	SETMEMOCTRLDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_memoctrl_set_focus(res_win_t widget, res_win_t wt)
@@ -206,7 +207,7 @@ void hand_memoctrl_keydown(res_win_t widget, int key)
 	if (!ptd->textor.data)
 		return;
 
-	widget_get_xface(widget, &xa);
+	widgetex_get_xface(widget, &xa);
 
 	switch (key)
 	{
@@ -745,9 +746,9 @@ res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 	if (!wt)
 		return NULL;
 
-	widget_get_xface(wt, &xa);
+	widgetex_get_xface(wt, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-	widget_set_xface(wt, &xa);
+	widgetex_set_xface(wt, &xa);
 
 	return wt;
 }

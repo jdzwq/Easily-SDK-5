@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcdlg.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcctrl.h"
 #include "xdcbox.h"
 
@@ -67,7 +68,7 @@ int hand_properdlg_create(res_win_t widget, void* data)
 	xsize_t xs;
 	res_win_t properctrl, pushbox;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (properdlg_delta_t*)xmem_alloc(sizeof(properdlg_delta_t));
 	xmem_zero((void*)ptd, sizeof(properdlg_delta_t));
@@ -75,7 +76,7 @@ int hand_properdlg_create(res_win_t widget, void* data)
 
 	xs.fx = PROPERDLG_BUTTON_WIDTH;
 	xs.fy = PROPERDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.h -= xs.cy;
@@ -97,7 +98,7 @@ int hand_properdlg_create(res_win_t widget, void* data)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = DEF_SPLIT_FEED;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
 
@@ -131,7 +132,7 @@ void hand_properdlg_destroy(res_win_t widget)
 
 	SETPROPERDLGDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_properdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
@@ -153,7 +154,7 @@ void hand_properdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = PROPERDLG_BUTTON_WIDTH;
 	xs.fy = PROPERDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.h -= xs.cy;
@@ -174,7 +175,7 @@ void hand_properdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = DEF_SPLIT_FEED;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
 
@@ -207,11 +208,11 @@ void hand_properdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xsize_t xs;
 	canvas_t canv;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -223,7 +224,7 @@ void hand_properdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	xs.fx = PROPERDLG_BUTTON_WIDTH;
 	xs.fy = PROPERDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -278,8 +279,8 @@ res_win_t properdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner
 
 	if (widget_is_valid(owner))
 	{
-		widget_get_color_mode(owner, &clr);
-		widget_set_color_mode(dlg, &clr);
+		widgetex_get_color_mode(owner, &clr);
+		widgetex_set_color_mode(dlg, &clr);
 	}
 
 	return dlg;
@@ -292,7 +293,7 @@ void properdlg_popup_size(res_win_t widget, xsize_t* pxs)
 
 	XDL_ASSERT(ptd->proper != NULL);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pxs->fx = calc_proper_width(&cb, ptd->proper) + PROPERDLG_BUTTON_WIDTH;
 	pxs->fy = calc_proper_height(&cb, ptd->proper) + PROPERDLG_BUTTON_HEIGHT;
@@ -302,7 +303,7 @@ void properdlg_popup_size(res_win_t widget, xsize_t* pxs)
 	else if (pxs->fy < get_proper_item_height(ptd->proper) * 7)
 		pxs->fy = get_proper_item_height(ptd->proper) * 7 + PROPERDLG_BUTTON_HEIGHT;
 
-	widget_size_to_pt(widget, pxs);
+	widgetex_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

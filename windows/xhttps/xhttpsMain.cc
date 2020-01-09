@@ -26,8 +26,6 @@ int main(int argc, char* argv[])
 
 	TRY_CATCH;
 
-	get_runpath(NULL, xp.sz_root, PATH_LEN);
-
 	for (i = 1; i < argc; i++)
 	{
 		len = xslen(xp.sz_param);
@@ -42,9 +40,9 @@ int main(int argc, char* argv[])
 	get_param_item(xp.sz_param, _T("CERT"), sz_cert, RES_LEN);
 	get_param_item(xp.sz_param, _T("AUTH"), xp.sz_auth, INT_LEN);
 
-	if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
+	if (compare_text(sz_cert, 3, _T("SSL"), 3, 1) == 0)
 		xp.n_secu = _SECU_SSL;
-	else if (compare_text(sz_cert, -1, _T("SSH"), -1, 1) == 0)
+	else if (compare_text(sz_cert, 3, _T("SSH"), 3, 1) == 0)
 		xp.n_secu = _SECU_SSH;
 	else
 		xp.n_secu = _SECU_NONE;
@@ -56,7 +54,7 @@ int main(int argc, char* argv[])
 	}
 
 	dw = 0;
-	sok = xsocket_dupli(xpipe_handle(pipe), FILE_OPEN_OVERLAP, NULL, &dw);
+	sok = socket_dupli(xpipe_handle(pipe), FILE_OPEN_OVERLAP, NULL, &dw);
 	if (sok == INVALID_FILE)
 	{
 		raise_user_error(_T("-1"), _T("child process create socket server failed"));
@@ -98,7 +96,7 @@ int main(int argc, char* argv[])
 
 	bio = NULL;
 
-	xsocket_close(sok);
+	socket_close(sok);
 	sok = INVALID_FILE;
 
 	END_CATCH;
@@ -112,7 +110,7 @@ ONERROR:
 	get_last_error(errcode, errtext, ERR_LEN);
 
 	if (sok != INVALID_FILE)
-		xsocket_close(sok);
+		socket_close(sok);
 
 	if (pipe)
 		xpipe_free(pipe);

@@ -24,8 +24,6 @@ int main(int argc, char* argv[])
 
 	TRY_CATCH;
 
-	get_runpath(NULL, xp.sz_root, PATH_LEN);
-
 	for (i = 1; i < argc; i++)
 	{
 		len = xslen(xp.sz_param);
@@ -42,8 +40,6 @@ int main(int argc, char* argv[])
     
     if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
         xp.n_secu = _SECU_SSL;
-    else if (compare_text(sz_cert, -1, _T("XSL"), -1, 1) == 0)
-        xp.n_secu = _SECU_XSL;
     else
         xp.n_secu = _SECU_NONE;
 
@@ -54,7 +50,7 @@ int main(int argc, char* argv[])
 		raise_user_error(_T("-1"), _T("child process create std pipe failed"));
 	}
 
-	sok = xsocket_dupli(xpipe_handle(pipe), FILE_OPEN_OVERLAP, NULL, &dw);
+	sok = socket_dupli(xpipe_handle(pipe), FILE_OPEN_OVERLAP, NULL, &dw);
 	if (sok == INVALID_FILE)
 	{
 		raise_user_error(_T("-1"), _T("child process create socket failed"));
@@ -65,8 +61,6 @@ int main(int argc, char* argv[])
 
     if (xp.n_secu == _SECU_SSL)
         bio = xssl_srv(sok);
-    else if (xp.n_secu == _SECU_XSL)
-        bio = xxsl_srv(sok);
     else
         bio = xtcp_srv(sok);
 
@@ -89,14 +83,12 @@ int main(int argc, char* argv[])
 
     if (xp.n_secu == _SECU_SSL)
         xssl_close(bio);
-    else if (xp.n_secu == _SECU_XSL)
-        xxsl_close(bio);
     else
         xtcp_close(bio);
 
 	bio = NULL;
 
-	xsocket_close(sok);
+	socket_close(sok);
 	sok = NULL;
 
 	END_CATCH;
@@ -112,7 +104,7 @@ ONERROR:
     XDL_TRACE_LAST;
     
     if (sok != INVALID_FILE)
-        xsocket_close(sok);
+        socket_close(sok);
     
 	if (pipe)
 		xpipe_free(pipe);
@@ -121,8 +113,6 @@ ONERROR:
 	{
         if (xp.n_secu == _SECU_SSL)
             xssl_close(bio);
-        else if (xp.n_secu == _SECU_XSL)
-            xxsl_close(bio);
         else
             xtcp_close(bio);
 	}

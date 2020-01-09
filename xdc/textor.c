@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "textor.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 #define MAX_UNDO		7
 
@@ -108,8 +109,8 @@ void _textor_calc_paging(textor_t* ptd, long px, long py, long pw, long ph, bool
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
@@ -190,8 +191,8 @@ void _textor_calc_maxing(textor_t* ptd, long px, long py, long pw, long ph, bool
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
@@ -274,8 +275,8 @@ void _textor_calc_line(textor_t* ptd, long px, long py, long pw, long ph, bool_t
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
@@ -354,8 +355,8 @@ void _textor_calc_object(textor_t* ptd, long px, long py, long pw, long ph, bool
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.from_obj = tt.to_obj = object;
 	tt.paged = ptd->paged;
@@ -431,8 +432,8 @@ void _textor_calc_texting(textor_t* ptd, long px, long py, long pw, long ph, boo
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.from_obj = tt.to_obj = object;
 	tt.paged = ptd->paged;
@@ -506,8 +507,8 @@ void _textor_calc_rect(textor_t* ptd, long px, long py, long pw, long ph, bool_t
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	it.ctx = (void*)ptd->dc;
 	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
@@ -615,8 +616,8 @@ void _textor_calc_hint(textor_t* ptd, long px, long py, long pw, long ph, bool_t
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.x = x;
 	tt.y = y;
@@ -690,8 +691,8 @@ void _textor_calc_point(textor_t* ptd, long px, long py, long pw, long ph, bool_
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.from_row = row;
 	tt.from_col = col;
@@ -799,8 +800,8 @@ void _textor_calc_rowcol(textor_t* ptd, long px, long py, long pw, long ph, bool
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	if (col < 0)
 	{
@@ -893,8 +894,8 @@ int _textor_exec_select(textor_t* ptd, long px, long py, long pw, long ph, bool_
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.buf = buf;
 	tt.max = max;
@@ -963,8 +964,8 @@ int _textor_calc_count(textor_t* ptd, long px, long py, long pw, long ph, bool_t
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.how = how;
 	tt.max = 0;
@@ -1079,8 +1080,8 @@ bool_t _textor_exec_delete(textor_t* ptd, long px, long py, long pw, long ph, bo
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
@@ -1201,8 +1202,8 @@ bool_t _textor_exec_insert(textor_t* ptd, long px, long py, long pw, long ph, bo
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	if (len < 0)
 		len = xslen(str);
@@ -1343,8 +1344,8 @@ void _textor_draw_focus(textor_t* ptd, long px, long py, long pw, long ph, bool_
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	tt.from_row = ptd->sel_row;
 	tt.from_col = ptd->sel_col;
@@ -1463,8 +1464,8 @@ void _textor_draw_text(textor_t* ptd, long px, long py, long pw, long ph, bool_t
 	const xface_t* pxa;
 	xrect_t xr;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	widget_get_client_rect(ptd->widget, &xr);
 	tt.client = xr.h;
@@ -1508,8 +1509,8 @@ void _textor_reset_page(textor_t* ptd, bool_t repage)
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	line_height = xstof(pxa->line_height);
 	if (!line_height)
@@ -1552,7 +1553,7 @@ void _textor_reset_page(textor_t* ptd, bool_t repage)
 
 	widget_get_client_rect(ptd->widget, &xr);
 
-	widget_reset_paging(ptd->widget, xr.w, xr.h, pw, ph, line_feed, line_feed);
+	widgetex_reset_paging(ptd->widget, xr.w, xr.h, pw, ph, line_feed, line_feed);
 
 	widget_reset_scroll(ptd->widget, 1);
 
@@ -1565,7 +1566,7 @@ void _textor_ensure_visible(textor_t* ptd, int row, int col)
 	xrect_t xr;
 	const xface_t* pxa;
 
-	pxa = widget_get_xface_ptr(ptd->widget);
+	pxa = widgetex_get_xface_ptr(ptd->widget);
 
 	_textor_calc_point(ptd, ptd->vb.px, ptd->vb.py, ptd->vb.pw, ptd->vb.ph, ptd->paged, row, col, &pt1, &pt2);
 
@@ -1575,11 +1576,11 @@ void _textor_ensure_visible(textor_t* ptd, int row, int col)
 	xr.h = pt2.y - pt1.y;
 
 	if (is_null(pxa->text_wrap))
-		widget_ensure_visible(ptd->widget, &xr, 0);
+		widgetex_ensure_visible(ptd->widget, &xr, 0);
 	else
-		widget_ensure_visible(ptd->widget, &xr, 1);
+		widgetex_ensure_visible(ptd->widget, &xr, 1);
 
-	widget_get_view_rect(ptd->widget, &ptd->vb);
+	widgetex_get_view_rect(ptd->widget, &ptd->vb);
 }
 
 void _textor_done(textor_t* ptd)
@@ -1665,7 +1666,7 @@ void hand_textor_set_focus(textor_t* ptd, res_win_t wt)
 	xsize_t xs;
 	const xfont_t* pxf;
 
-	pxf = widget_get_xfont_ptr(ptd->widget);
+	pxf = widgetex_get_xfont_ptr(ptd->widget);
 
 	XDL_ASSERT(ptd && ptd->widget);
 
@@ -1691,7 +1692,7 @@ int hand_textor_word(textor_t* ptd, tchar_t* pch)
 
 	XDL_ASSERT(ptd && ptd->widget);
 
-	widget_get_xface(ptd->widget, &xa);
+	widgetex_get_xface(ptd->widget, &xa);
 
 	if (*pch == KEY_ENTER)
 	{
@@ -1867,7 +1868,7 @@ void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs)
 {
 	XDL_ASSERT(ptd && ptd->widget);
 
-	widget_get_view_rect(ptd->widget, &ptd->vb);
+	widgetex_get_view_rect(ptd->widget, &ptd->vb);
 
 	_textor_reset_page(ptd, 0);
 
@@ -1878,10 +1879,10 @@ bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine)
 {
 	XDL_ASSERT(ptd && ptd->widget);
 
-	if (!widget_hand_scroll(ptd->widget, bHorz, nLine))
+	if (!widgetex_hand_scroll(ptd->widget, bHorz, nLine))
 		return 0;
 
-	widget_get_view_rect(ptd->widget, &ptd->vb);
+	widgetex_get_view_rect(ptd->widget, &ptd->vb);
 
 	_textor_reset_caret(ptd);
 
@@ -1900,9 +1901,8 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 	XDL_ASSERT(ptd && ptd->widget);
 
-	widget_get_xbrush(ptd->widget, &xb);
-	widget_get_xpen(ptd->widget, &xp);
-	widget_get_iconic(ptd->widget, &xc);
+	widgetex_get_xbrush(ptd->widget, &xb);
+	widgetex_get_xpen(ptd->widget, &xp);
 
 	canv = widget_get_canvas(ptd->widget);
 
@@ -1916,7 +1916,10 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 	if (widget_can_paging(ptd->widget))
 	{
-		widget_get_canv_rect(ptd->widget, &cb);
+		widgetex_get_canv_rect(ptd->widget, &cb);
+
+		parse_xcolor(&xc, xp.color);
+		lighten_xcolor(&xc, DEF_HARD_DARKEN);
 
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
 	}

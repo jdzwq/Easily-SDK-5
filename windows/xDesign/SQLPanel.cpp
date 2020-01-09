@@ -403,8 +403,8 @@ void SQLPanel_OnPreview(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	widget_get_xfont(pdt->hMemo, &xf);
-	widget_get_xface(pdt->hMemo, &xa);
+	widgetex_get_xfont(pdt->hMemo, &xf);
+	widgetex_get_xface(pdt->hMemo, &xa);
 
 	svg_print_memo(svg, &xf, &xa, ptrMemo, page);
 
@@ -428,7 +428,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	SQLPanelDelta* pdt = (SQLPanelDelta*)xmem_alloc(sizeof(SQLPanelDelta));
 	xrect_t xr;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETSQLPANELDELTA(widget, pdt);
 
@@ -467,7 +467,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	set_split_item_delta(ilkGrid, pdt->hGrid);
 	widget_show(pdt->hGrid, WD_SHOW_NORMAL);
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -490,7 +490,7 @@ void SQLPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -514,7 +514,7 @@ void SQLPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int SQLPanel_OnClose(res_win_t widget)

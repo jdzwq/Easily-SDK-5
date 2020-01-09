@@ -30,6 +30,9 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 #include <xds.h>
 
+#define XSERVICE_ROOT			_T("XSERVICE_ROOT")
+#define XSERVICE_DATA			_T("XSERVICE_DATA")
+
 #define MONITOR_PIPE_NAME		_T("xportm")
 
 

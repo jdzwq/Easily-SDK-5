@@ -36,33 +36,36 @@ LICENSE.GPL3 for more details.
 #include "xdlnet.h"
 #include "xdldoc.h"
 
+typedef struct _radfile_t{
+	file_head head;
+
+	if_bio_t inf;
+}radfile_t;
 
 xhand_t	xfile_bio(file_t fh)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
 	XDL_ASSERT(fh);
 
-	return pfn->bio;
+	return pfn->inf.bio;
 }
 
 file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 {
-	if_bio_t* pfn;
-	int proto;
+	radfile_t* pfn;
+	byte_t proto;
 
 	proto = parse_proto(file);
-	if (proto < 0)
-		return NULL;
-
-	pfn = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	
+	pfn = (radfile_t*)xmem_alloc(sizeof(radfile_t));
 
 	if (IS_INET_FILE(proto))
-		pfn->bio = xinet_open_file(psd, file, mode);
+		pfn->inf.bio = xinet_open_file(psd, file, mode);
 	else
-		pfn->bio = xuncf_open_file(psd, file, mode);
+		pfn->inf.bio = xuncf_open_file(psd, file, mode);
 
-	if (!pfn->bio)
+	if (!pfn->inf.bio)
 	{
 		xmem_free(pfn);
 		return NULL;
@@ -70,41 +73,44 @@ file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 
 	if (IS_INET_FILE(proto))
 	{
-		pfn->pf_close = xinet_close_file;
-		pfn->pf_read = xinet_read_file;
-		pfn->pf_read_range = xinet_read_file_range;
-		pfn->pf_write = xinet_write_file;
-		pfn->pf_write_range = xinet_write_file_range;
-		pfn->pf_flush = NULL;
-		pfn->pf_setopt = xinet_setopt;
+		pfn->inf.pf_close = xinet_close_file;
+		pfn->inf.pf_read = xinet_read_file;
+		pfn->inf.pf_read_range = xinet_read_file_range;
+		pfn->inf.pf_write = xinet_write_file;
+		pfn->inf.pf_write_range = xinet_write_file_range;
+		pfn->inf.pf_flush = NULL;
+		pfn->inf.pf_setopt = xinet_setopt;
 	}
 	else
 	{
-		pfn->pf_close = xuncf_close_file;
-		pfn->pf_read = xuncf_read_file;
-		pfn->pf_read_range = xuncf_read_file_range;
-		pfn->pf_write = xuncf_write_file;
-		pfn->pf_write_range = xuncf_write_file_range;
-		pfn->pf_flush = xuncf_flush_file;
-		pfn->pf_setopt = xuncf_setopt;
+		pfn->inf.pf_close = xuncf_close_file;
+		pfn->inf.pf_read = xuncf_read_file;
+		pfn->inf.pf_read_range = xuncf_read_file_range;
+		pfn->inf.pf_write = xuncf_write_file;
+		pfn->inf.pf_write_range = xuncf_write_file_range;
+		pfn->inf.pf_flush = xuncf_flush_file;
+		pfn->inf.pf_setopt = xuncf_setopt;
 	}
 
-	return (file_t)pfn;
+	pfn->head.tag = proto;
+
+	return &pfn->head;
 }
 
 bool_t	xfile_read(file_t fh, byte_t* buf, dword_t size)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
+
 	dword_t nbys, npos = 0;
 	bool_t rt = 1;
 
-	XDL_ASSERT(fh && pfn->pf_read);
+	XDL_ASSERT(fh && pfn->inf.pf_read);
 	
 	while (npos < size)
 	{
 		nbys = size - npos;
 
-		rt = (*pfn->pf_read)(pfn->bio, (void*)(buf + npos), &nbys);
+		rt = (*pfn->inf.pf_read)(pfn->inf.bio, (void*)(buf + npos), &nbys);
 
 		if (!rt || !nbys)
 			break;
@@ -117,17 +123,18 @@ bool_t	xfile_read(file_t fh, byte_t* buf, dword_t size)
 
 bool_t xfile_write(file_t fh, const byte_t* buf, dword_t size)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
+
 	dword_t nbys, npos = 0;
 	bool_t rt = 1;
 
-	XDL_ASSERT(fh && pfn->pf_write);
+	XDL_ASSERT(fh && pfn->inf.pf_write);
 
 	while (npos < size)
 	{
 		nbys = size - npos;
 
-		rt = (*pfn->pf_write)(pfn->bio, (void*)(buf + npos), &nbys);
+		rt = (*pfn->inf.pf_write)(pfn->inf.bio, (void*)(buf + npos), &nbys);
 
 		if (!rt || !nbys)
 			break;
@@ -140,31 +147,31 @@ bool_t xfile_write(file_t fh, const byte_t* buf, dword_t size)
 
 bool_t xfile_read_range(file_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
-	XDL_ASSERT(fh && pfn->pf_read_range);
+	XDL_ASSERT(fh && pfn->inf.pf_read_range);
 
-	return (*pfn->pf_read_range)(pfn->bio, hoff, loff, buf, size);
+	return (*pfn->inf.pf_read_range)(pfn->inf.bio, hoff, loff, buf, size);
 }
 
 bool_t	xfile_write_range(file_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
-	XDL_ASSERT(fh && pfn->pf_write_range);
+	XDL_ASSERT(fh && pfn->inf.pf_write_range);
 
-	return (*pfn->pf_write_range)(pfn->bio, hoff, loff, buf, size);
+	return (*pfn->inf.pf_write_range)(pfn->inf.bio, hoff, loff, buf, size);
 }
 
 bool_t xfile_flush(file_t fh)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
 	XDL_ASSERT(fh);
 
-	if (pfn->pf_flush)
+	if (pfn->inf.pf_flush)
 	{
-		return (*pfn->pf_flush)(pfn->bio);
+		return (*pfn->inf.pf_flush)(pfn->inf.bio);
 	}
 	else
 	{
@@ -174,37 +181,37 @@ bool_t xfile_flush(file_t fh)
 
 void xfile_set_since(file_t fh, int fs)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
 	XDL_ASSERT(fh);
 
-	if (pfn->pf_setopt)
+	if (pfn->inf.pf_setopt)
 	{
-		(*pfn->pf_setopt)(pfn->bio, FILE_OPTION_SINCE, (void*)&fs, sizeof(fs));
+		(*pfn->inf.pf_setopt)(pfn->inf.bio, FILE_OPTION_SINCE, (void*)&fs, sizeof(fs));
 	}
 }
 
 void xfile_settime(file_t fh, const tchar_t* ftime)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
 	XDL_ASSERT(fh);
 
-	if (pfn->pf_setopt)
+	if (pfn->inf.pf_setopt)
 	{
-		(*pfn->pf_setopt)(pfn->bio, FILE_OPTION_TIME, (void*)ftime, 0);
+		(*pfn->inf.pf_setopt)(pfn->inf.bio, FILE_OPTION_TIME, (void*)ftime, 0);
 	}
 }
 
 void xfile_close(file_t fh)
 {
-	if_bio_t* pfn = (if_bio_t*)fh;
+	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
-	XDL_ASSERT(fh && pfn->pf_close);
+	XDL_ASSERT(fh && pfn->inf.pf_close);
 
-	if (pfn->bio)
+	if (pfn->inf.bio)
 	{
-		(*pfn->pf_close)(pfn->bio);
+		(*pfn->inf.pf_close)(pfn->inf.bio);
 	}
 
 	xmem_free(pfn);
@@ -212,7 +219,7 @@ void xfile_close(file_t fh)
 
 bool_t xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode)
 {
-	int proto;
+	byte_t proto;
 
 	if(is_null(fname))
 		return 0;
@@ -241,7 +248,7 @@ bool_t xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, 
 
 bool_t xfile_delete(const secu_desc_t* psd, const tchar_t* fname)
 {
-	int proto;
+	byte_t proto;
 
 	if (is_null(fname))
 		return 0;
@@ -270,7 +277,7 @@ bool_t xfile_delete(const secu_desc_t* psd, const tchar_t* fname)
 
 bool_t	xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* nname)
 {
-	int proto;
+	byte_t proto;
 
 	if (is_null(fname))
 		return 0;
@@ -295,7 +302,7 @@ bool_t	xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const tchar_t*
 
 XDL_API bool_t xfile_mkdir(const secu_desc_t* psd, const tchar_t* path)
 {
-	int proto;
+	byte_t proto;
 
 	if (is_null(path))
 		return 0;
@@ -317,7 +324,7 @@ XDL_API bool_t xfile_mkdir(const secu_desc_t* psd, const tchar_t* path)
 
 XDL_API bool_t xfile_rmdir(const secu_desc_t* psd, const tchar_t* path)
 {
-	int proto;
+	byte_t proto;
 
 	if (is_null(path))
 		return 0;
@@ -472,7 +479,7 @@ static void _list_file(const file_info_t* pfi, void* pa)
 
 bool_t xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr)
 {
-	int proto;
+	byte_t proto;
 
 	if (is_null(path))
 		return 0;
@@ -560,7 +567,7 @@ static void _dump_file(const file_info_t* pfi, void* pa)
 
 bool_t xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t stm)
 {
-	int proto;
+	byte_t proto;
 	bool_t b = 0;
 
 	if (!is_null(path))

@@ -190,6 +190,7 @@
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\properbio.h" />
+    <ClInclude Include="..\..\xdl\strutil.h" />
     <ClInclude Include="..\..\xdl\textbio.h" />
     <ClInclude Include="..\..\xdl\varbytes.h" />
     <ClInclude Include="..\..\xdl\bufferopera.h" />
@@ -261,7 +262,6 @@
     <ClInclude Include="..\..\xdl\metadoc.h" />
     <ClInclude Include="..\..\xdl\multitree.h" />
     <ClInclude Include="..\..\xdl\nethttp.h" />
-    <ClInclude Include="..\..\xdl\netoss.h" />
     <ClInclude Include="..\..\xdl\netpnp.h" />
     <ClInclude Include="..\..\xdl\netsoap.h" />
     <ClInclude Include="..\..\xdl\netssl.h" />
@@ -394,6 +394,7 @@
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\properbio.c" />
+    <ClCompile Include="..\..\xdl\strutil.c" />
     <ClCompile Include="..\..\xdl\textbio.c" />
     <ClCompile Include="..\..\xdl\varbytes.c" />
     <ClCompile Include="..\..\xdl\bufferopera.c" />
@@ -461,7 +462,6 @@
     <ClCompile Include="..\..\xdl\metadoc.c" />
     <ClCompile Include="..\..\xdl\multitree.c" />
     <ClCompile Include="..\..\xdl\nethttp.c" />
-    <ClCompile Include="..\..\xdl\netoss.c" />
     <ClCompile Include="..\..\xdl\netpnp.c" />
     <ClCompile Include="..\..\xdl\netsoap.c" />
     <ClCompile Include="..\..\xdl\netssl.c" />

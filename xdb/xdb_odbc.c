@@ -32,8 +32,6 @@ LICENSE.GPL3 for more details.
 
 #define SQL_BREAK	_T("GO")
 
-static tchar_t odbc_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
-
 typedef struct _db_t{
 	xdb_head head;
 
@@ -2073,11 +2071,11 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 			if (pbind[i].ind != SQL_NULL_DATA && pbind[i].ind != SQL_NO_TOTAL)
 			{
 				len_buf = xslen((tchar_t*)pbind[i].buf);
-				len_esc = encode_escape(odbc_esc, pbind[i].buf, len_buf, NULL, MAX_LONG);
+				len_esc = csv_char_encode(pbind[i].buf, len_buf, NULL, MAX_LONG);
 				if (len_esc != len_buf)
 				{
 					sz_esc = xsalloc(len_esc + 1);
-					encode_escape(odbc_esc, pbind[i].buf, len_buf, sz_esc, len_esc);
+					csv_char_encode(pbind[i].buf, len_buf, sz_esc, len_esc);
 
 					string_cat(vs, sz_esc, len_esc);
 					xsfree(sz_esc);
@@ -2295,11 +2293,11 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 				tklen++;
 			}
 
-			len_esc = decode_escape(token - tklen, tklen, NULL, MAX_LONG);
+			len_esc = csv_char_decode(token - tklen, tklen, NULL, MAX_LONG);
 			if (len_esc != tklen)
 			{
 				sz_esc = xsalloc(len_esc + 1);
-				decode_escape(token - tklen, tklen, sz_esc, len_esc);
+				csv_char_decode(token - tklen, tklen, sz_esc, len_esc);
 
 				pbind[i].len = (len_esc + 1) * sizeof(tchar_t);
 				pbind[i].buf = (byte_t*)sz_esc;

@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcfire.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcbox.h"
 
 
@@ -88,7 +89,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 	case COMMAND_COLOR:
 		if (widget_is_valid(datebox))
 		{
-			widget_set_color_mode(datebox, (clr_mod_t*)data);
+			widgetex_set_color_mode(datebox, (clr_mod_t*)data);
 			widget_update(datebox);
 		}
 		return 1;
@@ -202,9 +203,9 @@ res_win_t firedate_create(res_win_t widget, const xrect_t* pxr)
 	widget_set_subproc(editor, IDS_EDITBOX, &ev);
 	widget_set_imm(editor, 0);
 
-	widget_get_xface(editor, &xa);
+	widgetex_get_xface(editor, &xa);
 	xscpy(xa.text_wrap, NULL);
-	widget_set_xface(editor, &xa);
+	widgetex_set_xface(editor, &xa);
 
 	widget_get_window_rect(editor, &xr_ed);
 

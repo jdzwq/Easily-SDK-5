@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcfire.h"
 #include "xdcbox.h"
 
@@ -314,11 +315,11 @@ static void _gridctrl_row_rect(res_win_t widget, link_t_ptr rlk, xrect_t* pxr)
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_grid_row_rect(&cb, ptd->grid, ptd->cur_page, rlk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _gridctrl_col_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
@@ -326,11 +327,11 @@ static void _gridctrl_col_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk,
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_grid_col_rect(&cb, ptd->grid, ptd->cur_page, rlk, clk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _gridctrl_cell_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
@@ -338,11 +339,11 @@ static void _gridctrl_cell_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_grid_cell_rect(&cb, ptd->grid, ptd->cur_page, rlk, clk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 float _gridctrl_page_width(res_win_t widget)
@@ -393,17 +394,17 @@ static void _gridctrl_reset_page(res_win_t widget)
 	}
 	xs.fy = get_grid_height(ptd->grid);
 
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = get_grid_rowbar_height(ptd->grid);
 	xs.fy = get_grid_rowbar_height(ptd->grid);
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -420,7 +421,7 @@ void _gridctrl_ensure_visible(res_win_t widget)
 
 	if (ptd->row)
 	{
-		widget_get_canv_rect(widget, &cb);
+		widgetex_get_canv_rect(widget, &cb);
 
 		page = calc_grid_row_page( &cb, ptd->grid,ptd->row);
 		if (page && page != ptd->cur_page)
@@ -431,7 +432,7 @@ void _gridctrl_ensure_visible(res_win_t widget)
 	}
 
 	_gridctrl_cell_rect(widget, ptd->row, ptd->col, &xr);
-	widget_ensure_visible(widget, &xr, 1);
+	widgetex_ensure_visible(widget, &xr, 1);
 }
 
 /*************************************************************************************************/
@@ -534,7 +535,7 @@ void noti_grid_col_sized(res_win_t widget, long x, long y)
 	if (!xs.cx)
 		return;
 
-	widget_size_to_tm(widget, &xs);
+	widgetex_size_to_tm(widget, &xs);
 
 	mw = get_col_width(ptd->col);
 	mw += xs.fx;
@@ -602,7 +603,7 @@ void noti_grid_row_sized(res_win_t widget, long x, long y)
 	if (!xs.cy)
 		return;
 
-	widget_size_to_tm(widget, &xs);
+	widgetex_size_to_tm(widget, &xs);
 
 	mh = get_grid_rowbar_height(ptd->grid);
 	mh += xs.fy;
@@ -661,11 +662,11 @@ void noti_grid_col_drop(res_win_t widget, long x, long y)
 
 	ptd->b_drag_col = 0;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = x;
 	pt.y = y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 	if (clk != ptd->col)
@@ -942,9 +943,9 @@ void noti_grid_begin_edit(res_win_t widget)
 		return;
 	}
 
-	widget_get_xfont(widget, &xf);
+	widgetex_get_xfont(widget, &xf);
 	parse_xfont_from_style(&xf, get_col_style_ptr(ptd->col));
-	widget_get_color_mode(widget, &ob);
+	widgetex_get_color_mode(widget, &ob);
 
 	_gridctrl_cell_rect(widget, ptd->row, ptd->col, &xr);
 	pt_expand_rect(&xr, -1, -1);
@@ -961,8 +962,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIREEDIT);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
@@ -980,8 +981,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIRENUM);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
@@ -999,8 +1000,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIREDATE);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
@@ -1018,8 +1019,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIRETIME);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
@@ -1041,8 +1042,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIRELIST);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
@@ -1061,8 +1062,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIREWORDS);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
@@ -1084,8 +1085,8 @@ void noti_grid_begin_edit(res_win_t widget)
 		widget_set_user_id(ptd->editor, IDC_FIREGRID);
 		widget_set_owner(ptd->editor, widget);
 
-		widget_set_xfont(ptd->editor, &xf);
-		widget_set_color_mode(ptd->editor, &ob);
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
 		widget_show(ptd->editor, WD_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 	}
@@ -1288,7 +1289,7 @@ int hand_grid_create(res_win_t widget, void* data)
 {
 	grid_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (grid_delta_t*)xmem_alloc(sizeof(grid_delta_t));
 	ptd->stack = create_stack_table();
@@ -1319,7 +1320,7 @@ void hand_grid_destroy(res_win_t widget)
 
 	SETGRIDDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_grid_size(res_win_t widget, int code, const xsize_t* prs)
@@ -1341,7 +1342,7 @@ void hand_grid_scroll(res_win_t widget, bool_t bHorz, long nLine)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_grid_wheel(res_win_t widget, bool_t bHorz, long nDelta)
@@ -1363,7 +1364,7 @@ void hand_grid_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widget_hand_scroll(widget, bHorz, nLine))
+	if (widgetex_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -1410,11 +1411,11 @@ void hand_grid_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &row, &col);
 
@@ -1523,11 +1524,11 @@ void hand_grid_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_set_focus(widget);
 	}
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 
@@ -1606,11 +1607,11 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 
@@ -1872,9 +1873,9 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->grid)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -1882,8 +1883,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1891,13 +1891,13 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	b_design = grid_is_design(ptd->grid);
 
 	if (widget_can_paging(widget))
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
 
 		if (b_design)
@@ -2135,7 +2135,7 @@ void gridctrl_redraw(res_win_t widget, bool_t bCalc)
 	if (!b)
 	{
 		widget_get_client_rect(widget, &xr);
-		widget_rect_to_tm(widget, &xr);
+		widgetex_rect_to_tm(widget, &xr);
 		set_grid_height(ptd->grid, xr.fh);
 	}
 
@@ -2691,7 +2691,7 @@ void gridctrl_move_next_page(res_win_t widget)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	nCurPage = ptd->cur_page;
 	nMaxPage = calc_grid_pages(&cb, ptd->grid);
@@ -2718,7 +2718,7 @@ void gridctrl_move_last_page(res_win_t widget)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	nCurPage = ptd->cur_page;
 	nMaxPage = calc_grid_pages(&cb, ptd->grid);
@@ -2745,7 +2745,7 @@ void gridctrl_move_to_page(res_win_t widget, int page)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	nCurPage = ptd->cur_page;
 	nMaxPage = calc_grid_pages(&cb, ptd->grid);
@@ -2769,7 +2769,7 @@ int gridctrl_get_max_page(res_win_t widget)
 	if (!ptd->grid)
 		return 0;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	return calc_grid_pages(&cb, ptd->grid);
 }
@@ -2899,7 +2899,7 @@ void gridctrl_popup_size(res_win_t widget, xsize_t* pse)
 	pse->fx = _gridctrl_page_width(widget);
 	pse->fy = get_grid_title_height(ptd->grid) + get_grid_rowbar_height(ptd->grid) * count;
 
-	widget_size_to_pt(widget, pse);
+	widgetex_size_to_pt(widget, pse);
 
 	widget_adjust_size(widget_get_style(widget), pse);
 }

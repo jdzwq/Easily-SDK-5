@@ -38,21 +38,30 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_CONTEXT)
 
+typedef struct _plot_t{
+	double x_step;
+	double y_step;
+	double y_base;
+
+	tchar_t y_unit[8];
+	tchar_t x_unit[8];
+
+	xcolor_t clr_argv[8];
+}plot_t;
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API void plot_map(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, float rx, float ry, const matrix_t* pmt);
+	XDL_API void plot_geogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDL_API void plot_dot(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, float rx, float ry, const matrix_t* pmt);
+	XDL_API void plot_trendgram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDL_API void plot_line(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, double base, double span, const vector_t* pvc);
+	XDL_API void plot_histogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDL_API void plot_bar(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, double base, double span, const vector_t* pvc);
+	XDL_API void plot_pantogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDL_API void plot_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const vector_t* pvc);
-
-	XDL_API void plot_num(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* layer, const tchar_t* num, int max);
+	XDL_API void plot_scattergram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
 #ifdef	__cplusplus
 }

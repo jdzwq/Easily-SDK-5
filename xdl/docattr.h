@@ -370,12 +370,11 @@
 #define ATTR_SPOT_TYPE_IMAGE		_T("image")
 
 #define ATTR_PLOT_TYPE				_T("plot-type")
-#define ATTR_PLOT_TYPE_GEOMAP		_T("geomap")
-#define ATTR_PLOT_TYPE_TRENDS		_T("trends")
-#define ATTR_PLOT_TYPE_SCATTER		_T("scatter")
-#define ATTR_PLOT_TYPE_PANTO		_T("panto")
-#define ATTR_PLOT_TYPE_DENSITY		_T("density")
-#define ATTR_PLOT_TYPE_COUNTER		_T("counter")
+#define ATTR_PLOT_TYPE_GEOGRAM		_T("geogram") //地理图
+#define ATTR_PLOT_TYPE_TRENDGRAM	_T("trendgram") //趋势图
+#define ATTR_PLOT_TYPE_SCATTERGRAM	_T("scattergram") //密度图
+#define ATTR_PLOT_TYPE_PANTOGRAM	_T("pantogram") //比例图
+#define ATTR_PLOT_TYPE_HISTOGRAM	_T("histogram") //直方图
 
 #define ATTR_TEXT_TYPE					_T("text-type")
 #define ATTR_TEXT_TYPE_TEXT				_T("text")

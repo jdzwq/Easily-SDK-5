@@ -53,6 +53,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rad_api", "..\rad_api\rad_a
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xudps", "..\xudps\xudps.vcxproj", "{635E9E02-96A9-4FA0-AA3D-2071CDC45B85}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sms_api", "..\sms_api\sms_api.vcxproj", "{D61B2561-8C4D-4905-88AF-71B679CB38E4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sms_aliyun", "..\sms_aliyun\sms_aliyun.vcxproj", "{0475EC42-CD4E-4097-9CAB-5544921D33F9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oss_aliyun", "..\oss_aliyun\oss_aliyun.vcxproj", "{487594F2-4ED8-4C58-9232-74F15C7E7909}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -363,6 +369,42 @@ Global
 		{635E9E02-96A9-4FA0-AA3D-2071CDC45B85}.Release|Win32.Build.0 = Release|Win32
 		{635E9E02-96A9-4FA0-AA3D-2071CDC45B85}.Release|x64.ActiveCfg = Release|x64
 		{635E9E02-96A9-4FA0-AA3D-2071CDC45B85}.Release|x64.Build.0 = Release|x64
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Debug|Win32.Build.0 = Debug|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Debug|x64.ActiveCfg = Debug|x64
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Debug|x64.Build.0 = Debug|x64
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Release|Win32.ActiveCfg = Release|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Release|Win32.Build.0 = Release|Win32
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Release|x64.ActiveCfg = Release|x64
+		{D61B2561-8C4D-4905-88AF-71B679CB38E4}.Release|x64.Build.0 = Release|x64
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Debug|Win32.Build.0 = Debug|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Debug|x64.ActiveCfg = Debug|x64
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Debug|x64.Build.0 = Debug|x64
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Release|Win32.ActiveCfg = Release|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Release|Win32.Build.0 = Release|Win32
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Release|x64.ActiveCfg = Release|x64
+		{0475EC42-CD4E-4097-9CAB-5544921D33F9}.Release|x64.Build.0 = Release|x64
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Debug|Win32.ActiveCfg = Debug|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Debug|Win32.Build.0 = Debug|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Debug|x64.ActiveCfg = Debug|x64
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Debug|x64.Build.0 = Debug|x64
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|Win32.ActiveCfg = Release|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|Win32.Build.0 = Release|Win32
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|x64.ActiveCfg = Release|x64
+		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

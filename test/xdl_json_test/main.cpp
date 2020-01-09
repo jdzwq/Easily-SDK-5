@@ -143,10 +143,10 @@ void _test_memo()
 
 	format_json_doc_to_memo(ptr, memo);
 
-	save_memo_doc_to_file(memo, NULL, _T("json.txt"));
+	save_memo_to_text_file(memo, NULL, _T("json.txt"));
 
 	clear_memo_doc(memo);
-	load_memo_doc_from_file(memo, NULL, _T("json.txt"));
+	load_memo_from_text_file(memo, NULL, _T("json.txt"));
 
 	parse_json_doc_from_memo(ptr, memo);
 

@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcfire.h"
 #include "xdcbox.h"
 
@@ -164,11 +165,11 @@ static void _imagesctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_images_item_rect(&cb, ptd->images, ilk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _imagesctrl_image_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -176,11 +177,11 @@ static void _imagesctrl_image_rect(res_win_t widget, link_t_ptr ilk, xrect_t* px
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_images_image_rect(&cb, ptd->images, ilk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _imagesctrl_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -188,11 +189,11 @@ static void _imagesctrl_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_images_text_rect(&cb, ptd->images, ilk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _imagesctrl_reset_page(res_win_t widget)
@@ -212,7 +213,7 @@ static void _imagesctrl_reset_page(res_win_t widget)
 
 	xs.cx = pw;
 	xs.cy = ph;
-	widget_size_to_tm(widget, &xs);
+	widgetex_size_to_tm(widget, &xs);
 
 	cb.fw = xs.fx;
 	cb.fh = xs.fy;
@@ -224,17 +225,17 @@ static void _imagesctrl_reset_page(res_win_t widget)
 	{
 		xs.fy = calc_images_height(&cb, ptd->images);
 	}
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = get_images_item_width(ptd->images);
 	xs.fy = get_images_item_height(ptd->images);
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	if (b_horz)
 		widget_reset_scroll(widget, 1);
@@ -252,7 +253,7 @@ void _imagesctrl_ensure_visible(res_win_t widget)
 
 	_imagesctrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_ensure_visible(widget, &xr, 1);
+	widgetex_ensure_visible(widget, &xr, 1);
 }
 
 /************************************control event**********************************************/
@@ -456,9 +457,9 @@ void noti_images_begin_edit(res_win_t widget)
 	if (ptd->b_lock)
 		return;
 
-	widget_get_xfont(widget, &xf);
+	widgetex_get_xfont(widget, &xf);
 
-	widget_get_color_mode(widget, &ob);
+	widgetex_get_color_mode(widget, &ob);
 
 	_imagesctrl_text_rect(widget, ptd->item, &xr);
 
@@ -470,8 +471,8 @@ void noti_images_begin_edit(res_win_t widget)
 	widget_set_user_id(ptd->editor, IDC_FIREEDIT);
 	widget_set_owner(ptd->editor, widget);
 
-	widget_set_xfont(ptd->editor, &xf);
-	widget_set_color_mode(ptd->editor, &ob);
+	widgetex_set_xfont(ptd->editor, &xf);
+	widgetex_set_color_mode(ptd->editor, &ob);
 
 	widget_show(ptd->editor, WD_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
@@ -544,7 +545,7 @@ int hand_images_create(res_win_t widget, void* data)
 {
 	images_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (images_delta_t*)xmem_alloc(sizeof(images_delta_t));
 	xmem_zero((void*)ptd, sizeof(images_delta_t));
@@ -574,7 +575,7 @@ void hand_images_destroy(res_win_t widget)
 
 	SETIMAGESDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_images_size(res_win_t widget, int code, const xsize_t* prs)
@@ -596,7 +597,7 @@ void hand_images_scroll(res_win_t widget, bool_t bHorz, long nLine)
 
 	noti_images_reset_editor(widget, 1);
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_images_wheel(res_win_t widget, bool_t bHorz, long nDelta)
@@ -619,7 +620,7 @@ void hand_images_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widget_hand_scroll(widget, bHorz, nLine))
+	if (widgetex_hand_scroll(widget, bHorz, nLine))
 	{
 		b_horz = (compare_text(get_images_layer_ptr(ptd->images), -1, ATTR_LAYER_HORZ, -1, 0) == 0) ? 1 : 0;
 
@@ -664,11 +665,11 @@ void hand_images_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (ptd->b_drag)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_images_hint(&cb, &pt, ptd->images, &plk);
@@ -750,11 +751,11 @@ void hand_images_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_set_focus(widget);
 	}
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_images_hint(&cb, &pt, ptd->images, &plk);
@@ -791,11 +792,11 @@ void hand_images_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_images_hint(&cb, &pt, ptd->images, &plk);
@@ -1017,9 +1018,9 @@ void hand_images_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->images)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -1027,8 +1028,8 @@ void hand_images_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1036,7 +1037,7 @@ void hand_images_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	draw_images(pif, &cb, ptd->images);
 
@@ -1395,7 +1396,7 @@ void imagesctrl_popup_size(res_win_t widget, xsize_t* pse)
 		pse->fy = ih * count;
 	}
 
-	widget_size_to_pt(widget, pse);
+	widgetex_size_to_pt(widget, pse);
 
 	widget_adjust_size(widget_get_style(widget), pse);
 }

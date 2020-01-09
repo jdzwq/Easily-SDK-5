@@ -34,8 +34,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-typedef struct _LINE_BUFFER* LINEBUFFERPTR;
-typedef struct _LINE_BUFFER{
+typedef struct _linear_t* linear_t_ptr;
+typedef struct _linear_t{
 	union{
 		struct{
 			sword_t readed;
@@ -49,31 +49,31 @@ typedef struct _LINE_BUFFER{
 		};
 	};
 	
-	LINEBUFFERPTR prev;
-	LINEBUFFERPTR next;
-}LINE_BUFFER;
+	linear_t_ptr prev;
+	linear_t_ptr next;
+}linear_t;
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	XDL_API void init_line_buffer(LINEBUFFERPTR root, sword_t frag);
+	XDL_API void linear_init(linear_t_ptr root, sword_t frag);
 
-	XDL_API LINEBUFFERPTR alloc_line_buffer(LINEBUFFERPTR root);
+	XDL_API linear_t_ptr linear_alloc(linear_t_ptr root);
 
-	XDL_API void free_line_buffer(LINEBUFFERPTR root, LINEBUFFERPTR link);
+	XDL_API void linear_free(linear_t_ptr root, linear_t_ptr link);
 
-	XDL_API LINEBUFFERPTR first_line_buffer(LINEBUFFERPTR root);
+	XDL_API linear_t_ptr linear_get_first(linear_t_ptr root);
 
-	XDL_API LINEBUFFERPTR last_line_buffer(LINEBUFFERPTR root);
+	XDL_API linear_t_ptr linear_get_last(linear_t_ptr root);
 
-	XDL_API LINEBUFFERPTR next_line_buffer(LINEBUFFERPTR link);
+	XDL_API linear_t_ptr linear_get_next(linear_t_ptr link);
 
-	XDL_API LINEBUFFERPTR prev_line_buffer(LINEBUFFERPTR link);
+	XDL_API linear_t_ptr linear_get_prev(linear_t_ptr link);
 
-	XDL_API dword_t read_line_buffer(LINEBUFFERPTR root, byte_t* buf, dword_t max);
+	XDL_API dword_t linear_read(linear_t_ptr root, byte_t* buf, dword_t max);
 
-	XDL_API dword_t write_line_buffer(LINEBUFFERPTR root, const byte_t* buf, dword_t len);
+	XDL_API dword_t linear_write(linear_t_ptr root, const byte_t* buf, dword_t len);
 
 #ifdef	__cplusplus
 }

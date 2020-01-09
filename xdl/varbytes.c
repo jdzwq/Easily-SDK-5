@@ -32,38 +32,150 @@ LICENSE.GPL3 for more details.
 #include "varbytes.h"
 #include "xdlimp.h"
 
+typedef struct _bytes_t{
+	byte_t* memo;
+	dword_t size;
+}bytes_t;
+
 byte_t** bytes_alloc()
 {
-	return (byte_t**)xmem_alloc(sizeof(byte_t*));
+	bytes_t* pb;
+
+	pb = (bytes_t*)xmem_alloc(sizeof(bytes_t));
+
+	return &(pb->memo);
 }
 
 void bytes_free(byte_t** pp)
 {
-	xmem_free(*pp);
+	bytes_t* pb;
+
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	xmem_free(pb->memo);
 	xmem_free(pp);
 }
 
 byte_t* bytes_realloc(byte_t** pp, dword_t size)
 {
-	*pp = xmem_realloc(*pp, size);
+	bytes_t* pb;
 
-	return *pp;
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	pb->memo = (byte_t*)xmem_realloc(pb->memo, size);
+	pb->size = size;
+
+	return pb->memo;
 }
 
-void bytes_attach(byte_t** pp, byte_t* p)
+void bytes_attach(byte_t** pp, byte_t* p, dword_t size)
 {
-	xmem_free(*pp);
+	bytes_t* pb;
 
-	*pp = p;
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	xmem_free(pb->memo);
+
+	pb->memo = p;
+	pb->size = size;
 }
 
 byte_t* bytes_detach(byte_t** pp)
 {
+	bytes_t* pb;
 	byte_t* p;
 
-	p = *pp;
+	XDL_ASSERT(pp != NULL);
 
-	*pp = NULL;
+	pb = (bytes_t*)(pp);
+
+	p = pb->memo;
+
+	pb->memo = NULL;
+	pb->size = 0;
 
 	return p;
+}
+
+dword_t bytes_size(byte_t** pp)
+{
+	bytes_t* pb;
+
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	return pb->size;
+}
+
+void bytes_insert(byte_t** pp, dword_t pos, const byte_t* sub, dword_t len)
+{
+	bytes_t* pb;
+	byte_t* p;
+
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	XDL_ASSERT(pos <= pb->size);
+
+	pb->memo = (byte_t*)xmem_realloc(pb->memo, pb->size + len);
+
+	p = pb->memo + pos;
+	xmem_move((void*)(p), pb->size - pos, len);
+	xmem_copy((void*)(p), (void*)sub, len);
+	pb->size += len;
+}
+
+void bytes_delete(byte_t** pp, dword_t pos, dword_t len)
+{
+	bytes_t* pb;
+	byte_t* p;
+
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	XDL_ASSERT(pos <= pb->size);
+
+	len = (len < pb->size - pos) ? len : pb->size - pos;
+	p = pb->memo + pos + len;
+	xmem_move((void*)(p), pb->size - pos, -(int)len);
+	p = pb->memo + pb->size - len;
+	xmem_set((void*)(p), 0, len);
+	pb->size -= len;
+}
+
+void bytes_replace(byte_t** pp, dword_t pos, dword_t num, const byte_t* sub, dword_t len)
+{
+	bytes_t* pb;
+	byte_t* p;
+
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	XDL_ASSERT(pos + num <= pb->size);
+
+	if (len > num)
+	{
+		pb->memo = (byte_t*)xmem_realloc(pb->memo, pb->size + len - num);
+	}
+
+	p = pb->memo + pos + num;
+	xmem_move((void*)(p), pb->size - (pos + num), (int)len - (int)num);
+	if (len < num)
+	{
+		p = pb->memo + pb->size - (num - len);
+		xmem_set((void*)(p), 0, num - len);
+	}
+	p = pb->memo + pos;
+	xmem_copy((void*)(p), (void*)sub, len);
+	pb->size += (len - num);
 }

@@ -31,10 +31,14 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _plotbox_delta_t{
-	bool_t on;
+	vector_t vec;
+	plot_t plt;
+	tchar_t* title;
+	tchar_t type[RES_LEN];
 }plotbox_delta_t;
 
 #define GETPLOTBOXDELTA(ph) 	(plotbox_delta_t*)widget_get_user_delta(ph)
@@ -55,12 +59,16 @@ int hand_plotbox_create(res_win_t widget, void* data)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (plotbox_delta_t*)xmem_alloc(sizeof(plotbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(plotbox_delta_t));
 
 	SETPLOTBOXDELTA(widget, ptd);
+
+	ptd->plt.y_base = 0.0;
+	ptd->plt.y_step = 1.0;
+	ptd->plt.x_step = 1.0;
 
 	return 0;
 }
@@ -71,11 +79,15 @@ void hand_plotbox_destroy(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
+	vector_empty(&ptd->vec);
+	if (ptd->title)
+		xsfree(ptd->title);
+
 	xmem_free(ptd);
 
 	SETPLOTBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_plotbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -88,29 +100,16 @@ void hand_plotbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
 	
-	if_measure_t im = { 0 };
-	xfont_t xf = { 0 };
-	xpoint_t pt;
-	int hint;
-
-	pt.x = pxp->x;
-	pt.y = pxp->y;
-
-	widget_point_to_tm(widget, &pt);
-
-	widget_get_xfont(widget, &xf);
-
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
-
-	
 }
 
 void hand_plotbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
-	
+	xrect_t xr;
+
+	widget_get_client_rect(widget, &xr);
+	widgetex_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 0, 0);
+
 	widget_redraw(widget, NULL, 0);
 }
 
@@ -123,6 +122,7 @@ void hand_plotbox_erase(res_win_t widget, res_ctx_t rdc)
 void hand_plotbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+
 	res_ctx_t rdc;
 	xrect_t xr;
 	canvas_t canv;
@@ -133,9 +133,9 @@ void hand_plotbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xbrush_t xb;
 	xpen_t xp;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -143,18 +143,27 @@ void hand_plotbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
-	
-	xscpy(xp.size, _T("2"));
-	draw_rect_raw(rdc, &xp, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	draw_rect_raw(rdc, NULL, &xb, &xr);
 
+	widgetex_get_canv_rect(widget, &cb);
+
+	if (compare_text(ptd->type,-1,ATTR_PLOT_TYPE_GEOGRAM,-1,0) == 0)
+		plot_geogram(canv, &xp, &xb, &xf, (xrect_t*)&cb, ptd->title, &ptd->plt, &ptd->vec);
+	else if (compare_text(ptd->type, -1, ATTR_PLOT_TYPE_TRENDGRAM, -1, 0) == 0)
+		plot_trendgram(canv, &xp, &xb, &xf, (xrect_t*)&cb, ptd->title, &ptd->plt, &ptd->vec);
+	else if (compare_text(ptd->type, -1, ATTR_PLOT_TYPE_SCATTERGRAM, -1, 0) == 0)
+		plot_scattergram(canv, &xp, &xb, &xf, (xrect_t*)&cb, ptd->title, &ptd->plt, &ptd->vec);
+	else if (compare_text(ptd->type, -1, ATTR_PLOT_TYPE_PANTOGRAM, -1, 0) == 0)
+		plot_pantogram(canv, &xp, &xb, &xf, (xrect_t*)&cb, ptd->title, &ptd->plt, &ptd->vec);
+	else if (compare_text(ptd->type, -1, ATTR_PLOT_TYPE_HISTOGRAM, -1, 0) == 0)
+		plot_histogram(canv, &xp, &xb, &xf, (xrect_t*)&cb, ptd->title, &ptd->plt, &ptd->vec);
 
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -185,23 +194,128 @@ res_win_t plotbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 	return widget_create(NULL, style, pxr, widget, &ev);
 }
 
-void plotbox_popup_size(res_win_t widget, xsize_t* pxs)
+void plotbox_set_type(res_win_t widget, const tchar_t* type)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
-	if_measure_t im = { 0 };
-	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_xfont(widget, &xf);
-
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
-
-	widget_size_to_pt(widget, pxs);
-
-	widget_adjust_size(widget_get_style(widget), pxs);
+	xscpy(ptd->type, type);
 }
 
+void plotbox_get_type(res_win_t widget, tchar_t* type)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
 
+	XDL_ASSERT(ptd != NULL);
+
+	xscpy(type, ptd->type);
+}
+
+void plotbox_set_vetor(res_win_t widget, vector_t vt)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	vector_copy(&ptd->vec, &vt);
+}
+
+void plotbox_get_vetor(res_win_t widget, vector_t* pvt)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	vector_copy(pvt, &ptd->vec);
+}
+
+void plotbox_set_plot(res_win_t widget, const plot_t* plt)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	xmem_copy((void*)&ptd->plt, (void*)plt, sizeof(plot_t));
+}
+
+void plotbox_get_plot(res_win_t widget, plot_t* plt)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	xmem_copy((void*)plt, (void*)&ptd->plt, sizeof(plot_t));
+}
+
+void plotbox_set_title(res_win_t widget, const tchar_t* title)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+
+	XDL_ASSERT(ptd != NULL);
+
+	if (ptd->title)
+		xsfree(ptd->title);
+
+	ptd->title = xsclone(title);
+}
+
+int plotbox_get_title(res_win_t widget, tchar_t* title, int max)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+	int len;
+
+	XDL_ASSERT(ptd != NULL);
+
+	len = xslen(ptd->title);
+	len = (len < max) ? len : max;
+
+	xsncpy(title, ptd->title, len);
+
+	return len;
+}
+
+void plotbox_calc_plot(res_win_t widget)
+{
+	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
+	double f_min, f_max;
+	int i;
+
+	XDL_ASSERT(ptd != NULL);
+
+	if (!ptd->vec.size)
+		return;
+
+	f_min = 0;
+	f_max = 0;
+
+	for (i = 0; i < ptd->vec.order * ptd->vec.size; i += ptd->vec.order)
+	{
+		if (f_min > ptd->vec.data[i])
+			f_min = ptd->vec.data[i];
+
+		if (f_max < ptd->vec.data[i])
+			f_max = ptd->vec.data[i];
+	}
+
+	ptd->plt.x_step = (f_max - f_min) / (ptd->vec.size + 1);
+	if (ptd->plt.x_step >(long)ptd->plt.x_step)
+		ptd->plt.x_step = (long)ptd->plt.x_step + 0.5;
+	
+	for (i = 0; i < ptd->vec.order * ptd->vec.size; i += ptd->vec.order)
+	{
+		if (f_min > ptd->vec.data[i+1])
+			f_min = ptd->vec.data[i+1];
+
+		if (f_max < ptd->vec.data[i+1])
+			f_max = ptd->vec.data[i+1];
+	}
+
+	ptd->plt.y_base = (f_max + f_min) / 2;
+	if (ptd->plt.y_base >(long)ptd->plt.y_base)
+		ptd->plt.y_base = (long)ptd->plt.y_base + 0.5;
+
+	ptd->plt.y_step = (f_max - f_min) / (ptd->vec.size + 1);
+	if (ptd->plt.y_step >(long)ptd->plt.y_step)
+		ptd->plt.y_step = ptd->plt.y_step + 0.5;
+}

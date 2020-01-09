@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:loc_api/loc_api.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdk/xdk.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:xdb_api/xdb_api.xcodeproj">
    </FileRef>
    <FileRef
@@ -21,8 +27,5 @@
    </FileRef>
    <FileRef
       location = "group:xdl/xdl.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:xdk/xdk.xcodeproj">
    </FileRef>
 </Workspace>

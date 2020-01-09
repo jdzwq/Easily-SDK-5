@@ -149,7 +149,7 @@ link_t_ptr write_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen, c
 	{
 		phe = StringEntityFromLink(plk);
 
-		rt = compare_text(phe->key, -1, key, keylen, 1);
+		rt = compare_text(phe->key, -1, key, keylen, 0);
 		if (rt == 0)
 		{
 			set_string_entity_val(plk, val, vallen);
@@ -253,7 +253,7 @@ link_t_ptr	get_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen)
 	{
 		phe = StringEntityFromLink(plk);
 
-		rt = compare_text(phe->key, -1, key, keylen, 1);
+		rt = compare_text(phe->key, -1, key, keylen, 0);
 		if (rt == 0)
 			return plk;
 		
@@ -266,6 +266,35 @@ link_t_ptr	get_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen)
 			plk = get_string_next_entity(ptr, plk);
 		else
 			plk = get_string_next_entity(ptr, plk);
+	}
+
+	return NULL;
+}
+
+link_t_ptr	find_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen)
+{
+	string_entity_t* phe;
+	string_table_t* pht;
+	link_t_ptr plk;
+	int rt;
+
+	XDL_ASSERT(ptr && ptr->tag == lkStringTable);
+
+	if (is_null(key) || !keylen)
+		return NULL;
+
+	pht = StringTableFromLink(ptr);
+
+	plk = get_string_next_entity(ptr, LINK_FIRST);
+	while (plk)
+	{
+		phe = StringEntityFromLink(plk);
+
+		rt = compare_text(phe->key, -1, key, keylen, 1);
+		if (rt == 0)
+			return plk;
+
+		plk = get_string_next_entity(ptr, plk);
 	}
 
 	return NULL;
@@ -745,7 +774,7 @@ static bool_t _on_format_token(void* fp, const tchar_t** pkey, int* pklen, const
 	*pkey = get_string_entity_key_ptr(ent);
 	*pklen = xslen(*pkey);
 
-	*pval = get_string_entity_key_ptr(ent);
+	*pval = get_string_entity_val_ptr(ent);
 	*pvlen = xslen(*pval);
 
 	return 1;

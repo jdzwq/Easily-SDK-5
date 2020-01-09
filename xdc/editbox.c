@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcmenu.h"
 #include "textor.h"
 
@@ -90,7 +91,7 @@ void _editbox_auto_resize(res_win_t widget)
 	long cx;
 	const xfont_t* pxf;
 
-	pxf = widget_get_xfont_ptr(widget);
+	pxf = widgetex_get_xfont_ptr(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -128,7 +129,7 @@ int hand_editbox_create(res_win_t widget, void* data)
 {
 	editbox_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (editbox_delta_t*)xmem_alloc(sizeof(editbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(editbox_delta_t));
@@ -164,7 +165,7 @@ void hand_editbox_destroy(res_win_t widget)
 
 	SETEDITBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 
 	keybox = (res_win_t)widget_get_user_prop(widget, XDCKEYBOX);
 
@@ -219,7 +220,7 @@ void hand_editbox_keydown(res_win_t widget, int key)
 	case KEY_ENTER:
 		if (widget_is_editor(widget))
 		{
-			pxa = widget_get_xface_ptr(widget);
+			pxa = widgetex_get_xface_ptr(widget);
 			if (is_null(pxa->text_wrap))
 			{
 				noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
@@ -536,9 +537,9 @@ res_win_t editbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 	if (!wt)
 		return NULL;
 
-	/*widget_get_xface(wt, &xa);
+	/*widgetex_get_xface(wt, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_LINEBREAK);
-	widget_set_xface(wt, &xa);*/
+	widgetex_set_xface(wt, &xa);*/
 
 	return wt;
 }
@@ -629,7 +630,7 @@ bool_t editbox_is_multiline(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_xface(widget, &xa);
+	widgetex_get_xface(widget, &xa);
 
 	return is_null(xa.text_wrap) ? 0 : 1;
 }

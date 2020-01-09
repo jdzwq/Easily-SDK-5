@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _numbox_delta_t{
 	int index;
@@ -73,7 +74,7 @@ int hand_numbox_create(res_win_t widget, void* data)
 	numbox_delta_t* ptd = GETNUMBOXDELTA(widget);
 	xsize_t xs;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (numbox_delta_t*)xmem_alloc(sizeof(numbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(numbox_delta_t));
@@ -81,7 +82,7 @@ int hand_numbox_create(res_win_t widget, void* data)
 	xs.fx = DEF_TOUCH_SPAN;
 	xs.fy = DEF_TOUCH_SPAN;
 
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	ptd->bw = xs.cx;
 	ptd->bh = xs.cy;
@@ -103,7 +104,7 @@ void hand_numbox_destroy(res_win_t widget)
 
 	SETNUMBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_numbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -198,15 +199,15 @@ void hand_numbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	int i;
 	tchar_t tk[2] = { 0 };
 
-	widget_get_xbrush(widget, &xb);
+	widgetex_get_xbrush(widget, &xb);
 	xmem_copy((void*)&xb_focus, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_focus, DEF_SOFT_LIGHTEN);
 
 	xmem_copy((void*)&xb_bark, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_bark, DEF_SOFT_DARKEN);
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 

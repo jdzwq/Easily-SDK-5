@@ -35,13 +35,6 @@ LICENSE.GPL3 for more details.
 #include "xdcdef.h"
 
 
-typedef struct _splitor_t{
-	res_win_t widget;
-	link_t_ptr split;
-	link_t_ptr item;
-	long x, y;
-}splitor_t;
-
 
 #ifdef	__cplusplus
 extern "C" {

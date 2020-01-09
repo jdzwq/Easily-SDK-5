@@ -58,8 +58,6 @@ typedef struct _bindguid_t{
 	void* buf;
 }bindguid_t;
 
-static tchar_t oci_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
-
 static void ocitodt(int type, tchar_t* dt)
 {
 	switch (type) {
@@ -1794,11 +1792,11 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 			if (pdg[i].ind >= 0)
 			{
 				len_buf = xslen((tchar_t*)pdg[i].buf);
-				len_esc = encode_escape(oci_esc, pdg[i].buf, len_buf, NULL, MAX_LONG);
+				len_esc = csv_char_encode(pdg[i].buf, len_buf, NULL, MAX_LONG);
 				if (len_esc != len_buf)
 				{
 					sz_esc = xsalloc(len_esc + 1);
-					encode_escape(oci_esc, pdg[i].buf, len_buf, sz_esc, len_esc);
+					csv_char_decode(pdg[i].buf, len_buf, sz_esc, len_esc);
 
 					string_cat(vs, sz_esc, len_esc);
 					xsfree(sz_esc);
@@ -2015,11 +2013,11 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 				tklen++;
 			}
 
-			len_esc = decode_escape(token - tklen, tklen, NULL, MAX_LONG);
+			len_esc = csv_char_decode(token - tklen, tklen, NULL, MAX_LONG);
 			if (len_esc != tklen)
 			{
 				sz_esc = xsalloc(len_esc + 1);
-				decode_escape(token - tklen, tklen, sz_esc, len_esc);
+				csv_char_decode(token - tklen, tklen, sz_esc, len_esc);
 
 				pdg[i].bin = NULL;
 				pdg[i].len = (len_esc + 1) * sizeof(tchar_t);

@@ -546,12 +546,12 @@ xhand_t vmem_open()
 	ppi->read_bytes = 0;
 	ppi->write_bytes = 0;
 
-	return (xhand_t)ppi;
+	return &ppi->head;
 }
 
 void* vmem_handle(xhand_t cache)
 {
-	cache_t* ppi = (cache_t*)cache;
+	cache_t* ppi = TypePtrFromHead(cache_t, cache);
 
 	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
 
@@ -560,7 +560,7 @@ void* vmem_handle(xhand_t cache)
 
 void vmem_close(xhand_t cache)
 {
-	cache_t* ppi = (cache_t*)cache;
+	cache_t* ppi = TypePtrFromHead(cache_t, cache);
 	if_memo_t* pif;
 
 	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
@@ -576,7 +576,7 @@ void vmem_close(xhand_t cache)
 
 bool_t vmem_read(xhand_t cache, byte_t* buf, dword_t* pb)
 {
-	cache_t* ppt = (cache_t*)cache;
+	cache_t* ppt = TypePtrFromHead(cache_t, cache);
 	if_memo_t* pif;
 	size_t size;
 	bool_t rt;
@@ -605,7 +605,7 @@ bool_t vmem_read(xhand_t cache, byte_t* buf, dword_t* pb)
 
 bool_t vmem_write(xhand_t cache, const byte_t* buf, dword_t* pb)
 {
-	cache_t* ppt = (cache_t*)cache;
+	cache_t* ppt = TypePtrFromHead(cache_t, cache);
 	if_memo_t* pif;
 	size_t size;
 	bool_t rt;

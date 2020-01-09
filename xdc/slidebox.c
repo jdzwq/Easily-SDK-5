@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _slidebox_delta_t{
 	int n_pos;
@@ -83,9 +84,9 @@ void slidebox_on_moved(res_win_t widget, const xpoint_t* pxp)
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
-	widget_get_xfont(widget, &xf);
+	widgetex_get_xfont(widget, &xf);
 
 	im.ctx = widget_get_canvas(widget);
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
@@ -106,7 +107,7 @@ int hand_slidebox_create(res_win_t widget, void* data)
 {
 	slidebox_delta_t* ptd ;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (slidebox_delta_t*)xmem_alloc(sizeof(slidebox_delta_t));
 	xmem_zero((void*)ptd, sizeof(slidebox_delta_t));
@@ -126,7 +127,7 @@ void hand_slidebox_destroy(res_win_t widget)
 
 	SETSLIDEBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_slidebox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -169,9 +170,9 @@ void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xbrush_t xb;
 	xpen_t xp;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -179,8 +180,8 @@ void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -188,7 +189,7 @@ void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	draw_slidebox(pif, &cb, &xf, ptd->n_pos);
 
@@ -229,7 +230,7 @@ void slidebox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_xfont(widget, &xf);
+	widgetex_get_xfont(widget, &xf);
 
 	im.ctx = widget_get_canvas(widget);
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
@@ -237,7 +238,7 @@ void slidebox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	calc_slidebox_size(&im, &xf, pxs);
 
-	widget_size_to_pt(widget, pxs);
+	widgetex_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

@@ -84,7 +84,7 @@ int SQLUpdateDlg_OnCreate(res_win_t widget, void* data)
 {
 	SQLUpdateDlgDelta* pdt;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	pdt = (SQLUpdateDlgDelta*)xmem_alloc(sizeof(SQLUpdateDlgDelta));
 	pdt->pSel = (SQLUPDATEDLG_PARAM*)data;
@@ -100,7 +100,7 @@ int SQLUpdateDlg_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = SQLUPDATEDLG_BAR_SPLIT;
 	xs.fy = SQLUPDATEDLG_BAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
 
@@ -130,7 +130,7 @@ int SQLUpdateDlg_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = SQLUPDATEDLG_BTN_WIDTH;
 	xs.fy = SQLUPDATEDLG_BAR_SPLIT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
@@ -177,7 +177,7 @@ void SQLUpdateDlg_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void SQLUpdateDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
@@ -194,7 +194,7 @@ void SQLUpdateDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	xs.fx = SQLUPDATEDLG_BAR_SPLIT;
 	xs.fy = SQLUPDATEDLG_BAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
 
@@ -212,7 +212,7 @@ void SQLUpdateDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	xs.fx = SQLUPDATEDLG_BTN_WIDTH;
 	xs.fy = SQLUPDATEDLG_BAR_SPLIT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
@@ -263,7 +263,7 @@ void SQLUpdateDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widget_get_xbrush(widget, &xb);
+	widgetex_get_xbrush(widget, &xb);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -274,7 +274,7 @@ void SQLUpdateDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xs.fx = SQLUPDATEDLG_BAR_SPLIT;
 	xs.fy = SQLUPDATEDLG_BAR_HEIGHT;
 
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -334,7 +334,7 @@ res_win_t SQLUpdateDlg_Create(const TCHAR* title, SQLUPDATEDLG_PARAM* ppd)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widget_set_color_mode(widget, &clr);
+	widgetex_set_color_mode(widget, &clr);
 
 	widget_center_window(widget, g_hMain);
 	widget_update(widget);

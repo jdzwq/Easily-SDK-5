@@ -361,10 +361,12 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 		raise_user_error(_T("-1"), _T("load tftp config falied\n"));
 	}
 
-	read_proper(ptr_prop, _T("TFTP"), -1, _T("LOCATION"), -1, ptb->local, PATH_LEN);
+	read_proper(ptr_prop, _T("TFTP"), -1, _T("LOCATION"), -1, file, PATH_LEN);
 	
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
+
+	printf_path(ptb->local, file);
 
 	ptb->tftp = xtftp_server(pb->port, pb->addr, pb->pack, pb->size);
 	if (!ptb->tftp)

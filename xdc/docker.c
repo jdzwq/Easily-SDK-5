@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "docker.h"
 #include "handler.h"
-
+#include "widgetex.h"
 
 #define DOCKER_SPLIT_SPAN		(long)10 //pt
 
@@ -317,7 +317,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 	xcolor_t xc = { 0 };
 	int i;
 
-	widget_get_xbrush(ptd->widget, &xb);
+	widgetex_get_xbrush(ptd->widget, &xb);
 	parse_xcolor(&xc, xb.color);
 
 	format_xcolor(&xc, gi.brim_color);

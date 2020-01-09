@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_TIMER
 
-res_hand_t xtimer_create_queue(void)
+res_hand_t timer_create_queue(void)
 {
 	if_timer_t* pif;
 
@@ -46,7 +46,7 @@ res_hand_t xtimer_create_queue(void)
 	return (*pif->pf_create_timer_queue)();
 }
 
-void xtimer_destroy_queue(res_hand_t rq)
+void timer_destroy_queue(res_hand_t rq)
 {
 	if_timer_t* pif;
 
@@ -57,7 +57,7 @@ void xtimer_destroy_queue(res_hand_t rq)
 	(*pif->pf_destroy_timer_queue)(rq);
 }
 
-res_timer_t xtimer_create(res_hand_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa)
+res_timer_t timer_create(res_hand_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa)
 {
 	if_timer_t* pif;
 
@@ -68,7 +68,7 @@ res_timer_t xtimer_create(res_hand_t rq, dword_t duetime, dword_t period, PF_TIM
 	return (*pif->pf_create_timer)(rq, duetime, period, pf, pa);
 }
 
-void xtimer_destroy(res_hand_t rq, res_timer_t rt)
+void timer_destroy(res_hand_t rq, res_timer_t rt)
 {
 	if_timer_t* pif;
 
@@ -79,7 +79,7 @@ void xtimer_destroy(res_hand_t rq, res_timer_t rt)
 	(*pif->pf_destroy_timer)(rq, rt);
 }
 
-bool_t xtimer_alter(res_hand_t rq, res_timer_t rt, dword_t duetime, dword_t period)
+bool_t timer_alter(res_hand_t rq, res_timer_t rt, dword_t duetime, dword_t period)
 {
 	if_timer_t* pif;
 

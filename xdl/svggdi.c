@@ -334,11 +334,6 @@ void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	write_shape_to_svg_node(nlk, pxp, pxb, &xr, shape);
 }
 
-void svg_draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shape)
-{
-	
-}
-
 void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
 {
 	const tchar_t *pre, *nxt;

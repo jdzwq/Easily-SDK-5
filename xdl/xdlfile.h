@@ -43,7 +43,7 @@ extern "C" {
 @INPUT const secu_desc_t* psd: the security struct pointer.
 @INPUT const tchar_t* fname: the file path name, eg:
 local file: "d:/somepath/somefile"
-network file: "127.0.0.1//share/somepath/somefile"
+network file: "//127.0.0.1/sharedir/somepath/somefile"
 http file: "http://127.0.0.1/virdir/somefile"
 tftp file: "tftp://127.0.0.1/virdir/somefile"
 oss file: "oss://127.0.0.1/virdir/somefile"

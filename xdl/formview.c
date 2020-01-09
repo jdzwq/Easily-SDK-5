@@ -160,7 +160,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	tchar_t sz_token[PATH_LEN];
 
 	b_design = form_is_design(ptr);
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER)? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER)? 1 : 0;
 
 	if (b_design)
 		flk = get_next_field(ptr, LINK_FIRST);

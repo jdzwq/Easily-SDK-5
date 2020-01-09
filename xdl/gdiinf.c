@@ -45,8 +45,6 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 
 	pic->canvas = (canvas_t)canv;
 
-	pic->pf_canvas_type = get_canvas_type;
-
 	pic->pf_draw_arrow = draw_arrow;
 	pic->pf_draw_image = draw_image;
 	pic->pf_draw_icon = draw_icon;
@@ -62,7 +60,6 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 	pic->pf_draw_round = draw_round;
 	pic->pf_draw_ellipse = draw_ellipse;
 	pic->pf_draw_shape = draw_shape;
-	pic->pf_draw_shadow = draw_shadow;
 	pic->pf_multi_line = multi_line;
 	pic->pf_gradient_rect = gradient_rect;
 	pic->pf_alphablend_rect = alphablend_rect;

@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _staticbox_delta_t{
 	tchar_t* text;
@@ -48,7 +49,7 @@ int hand_staticbox_create(res_win_t widget, void* data)
 	staticbox_delta_t* ptd = GETSTATICBOXDELTA(widget);
 	xsize_t xs;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (staticbox_delta_t*)xmem_alloc(sizeof(staticbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(staticbox_delta_t));
@@ -58,7 +59,7 @@ int hand_staticbox_create(res_win_t widget, void* data)
 	xs.fx = DEF_TOUCH_SPAN;
 	xs.fy = DEF_TOUCH_SPAN;
 
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	ptd->bw = xs.cx;
 	ptd->bh = xs.cy;
@@ -76,7 +77,7 @@ void hand_staticbox_destroy(res_win_t widget)
 
 	SETSTATICBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_staticbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -119,9 +120,9 @@ void hand_staticbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
-	widget_get_xbrush(widget, &xb);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
+	widgetex_get_xbrush(widget, &xb);
 
 	widget_get_client_rect(widget, &xr);
 

@@ -41,7 +41,7 @@ LICENSE.GPL3 for more details.
 typedef struct _xinet_t{
 	xhand_head head;		//reserved for xhand_t
 	
-	int proto;
+	byte_t proto;
 	int fmode, fsince;
 	tchar_t path[PATH_LEN];
 	tchar_t ftime[DATE_LEN];
@@ -51,7 +51,7 @@ typedef struct _xinet_t{
 /*************************************************************************************************/
 static void _xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -60,7 +60,7 @@ static void _xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
 
 static void _xinet_set_filesince(xhand_t inet, int since)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -493,12 +493,12 @@ static xhand_t http_open_file(const secu_desc_t* psd, const tchar_t* fname, dwor
 		xsncpy(pfn->fsecu.scr_key, psd->scr_key, KEY_LEN);
 	}
 
-	return (xhand_t)pfn;
+	return &pfn->head;
 }
 
 static void http_close_file(xhand_t inet)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -507,7 +507,7 @@ static void http_close_file(xhand_t inet)
 
 static bool_t http_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -516,7 +516,7 @@ static bool_t http_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 
 static bool_t http_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -525,7 +525,7 @@ static bool_t http_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 
 static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	tchar_t sz_range[RES_LEN + 1] = { 0 };
 	tchar_t sz_from[NUM_LEN + 1] = { 0 };
@@ -548,7 +548,7 @@ static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byt
 
 static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	tchar_t sz_range[RES_LEN + 1] = { 0 };
 	tchar_t sz_from[NUM_LEN + 1] = { 0 };
@@ -785,619 +785,6 @@ static bool_t http_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 	return 1;
 }
 
-/******************************************************************************************************/
-
-static void _split_oss_url(const tchar_t* obj, tchar_t** addrat, int* addrlen, tchar_t** buckat, int* bucklen, tchar_t** pathat, int* pathlen, tchar_t** fileat, int* filelen)
-{
-	tchar_t* token = (tchar_t*)obj;
-	int len;
-
-	*addrat = *buckat = *pathat = *fileat = NULL;
-	*addrlen = *bucklen = *pathlen = *filelen = 0;
-
-	while (*token != _T(':') && *token != _T('\0'))
-		token++;
-
-	if (*token == _T(':'))
-		token++;
-
-	while (*token == _T('/'))
-		token++;
-
-	len = 0;
-	*addrat = token;
-	while (*token != _T('/') && *token != _T('\0'))
-	{
-		token++;
-		len++;
-	}
-	*addrlen = len;
-
-	if (*token == _T('/'))
-		token++;
-
-	len = 0;
-	*buckat = token;
-	while (*token != _T('/') && *token != _T('\0'))
-	{
-		token++;
-		len++;
-	}
-	*bucklen = len;
-
-	if (*token == _T('/'))
-		token++;
-
-	len = 0;
-	*pathat = token;
-	while (*token != _T('\0'))
-	{
-		token++;
-		len++;
-	}
-	while (*token != _T('/') && token != *pathat)
-	{
-		token--;
-		len--;
-	}
-	*pathlen = len;
-
-	if (*token == _T('/'))
-		token++;
-
-	len = 0;
-	*fileat = token;
-	while (*token != _T('\0'))
-	{
-		token++;
-		len++;
-	}
-	*filelen = len;
-}
-
-//<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>InvalidBucketName</Code>\n  <Message>The specified bucket is not valid.</Message>\n  <BucketName>myfile.txt</BucketName>\n  <RequestId>547B4B4F44ABF...	
-
-static bool_t _parse_oss_error(byte_t* buf, dword_t size, tchar_t* errcode, tchar_t* errtext)
-{
-	link_t_ptr root, nlk, xml = NULL;
-
-	xml = create_xml_doc();
-
-	if (!parse_xml_doc_from_bytes(xml, buf, size))
-	{
-		destroy_xml_doc(xml);
-
-		get_last_error(errcode, errtext, ERR_LEN);
-		return 0;
-	}
-
-	root = get_xml_dom_node(xml);
-
-	nlk = get_dom_first_child_node(root);
-	while (nlk)
-	{
-		if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("Code"), -1, 1) == 0)
-		{
-			get_dom_node_text(nlk, errcode, NUM_LEN);
-		}
-		else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("Message"), -1, 1) == 0)
-		{
-			get_dom_node_text(nlk, errtext, ERR_LEN);
-		}
-
-		nlk = get_dom_next_sibling_node(nlk);
-	}
-
-	destroy_xml_doc(xml);
-
-	return 1;
-}
-
-static bool_t _parse_oss_result(byte_t* buf, int size, CALLBACK_LISTFILE pf, void* pa)
-{
-	link_t_ptr root, nlk, clk, xml = NULL;
-	file_info_t fi = { 0 };
-
-	xml = create_xml_doc();
-
-	if (!parse_xml_doc_from_bytes(xml, buf, size))
-	{
-		destroy_xml_doc(xml);
-		return 0;
-	}
-
-	root = get_xml_dom_node(xml);
-
-	nlk = get_dom_first_child_node(root);
-	while (nlk)
-	{
-		xmem_zero((void*)&fi, sizeof(file_info_t));
-
-		if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("Contents"), -1, 1) == 0)
-		{
-			clk = get_dom_first_child_node(nlk);
-			while (clk)
-			{
-				if (compare_text(get_dom_node_name_ptr(clk), -1, _T("Key"), -1, 1) == 0)
-				{
-					xsncpy(fi.file_name, get_dom_node_text_ptr(clk), META_LEN);
-				}
-				else if (compare_text(get_dom_node_name_ptr(clk), -1, _T("LastModified"), -1, 1) == 0)
-				{
-					parse_gmttime(&fi.write_time, get_dom_node_text_ptr(clk));
-				}
-				else if (compare_text(get_dom_node_name_ptr(clk), -1, _T("ETag"), -1, 1) == 0)
-				{
-					xsncpy(fi.file_etag, get_dom_node_text_ptr(clk), ETAG_LEN);
-				}
-				else if (compare_text(get_dom_node_name_ptr(clk), -1, _T("Size"), -1, 1) == 0)
-				{
-					parse_longlong(&fi.high_size, &fi.low_size, get_dom_node_text_ptr(clk));
-				}
-
-				clk = get_dom_next_sibling_node(clk);
-			}
-
-			fi.is_dir = 0;
-			if (pf)
-			{
-				(*pf)(&fi, pa);
-			}
-		}
-		else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("CommonPrefixes"), -1, 1) == 0)
-		{
-			clk = get_dom_first_child_node(nlk);
-			while (clk)
-			{
-				if (compare_text(get_dom_node_name_ptr(clk), -1, _T("Prefix"), -1, 1) == 0)
-				{
-					xsncpy(fi.file_name, get_dom_node_text_ptr(clk), META_LEN);
-				}
-
-				clk = get_dom_next_sibling_node(clk);
-			}
-
-			fi.is_dir = 1;
-			if (pf)
-			{
-				(*pf)(&fi, pa);
-			}
-		}
-
-		nlk = get_dom_next_sibling_node(nlk);
-	}
-
-	destroy_xml_doc(xml);
-
-	return 1;
-}
-
-static xhand_t xoss_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
-{
-	xinet_t* pfn;
-
-	if (is_null(fname))
-		return NULL;
-
-	pfn = (xinet_t*)xmem_alloc(sizeof(xinet_t));
-	pfn->head.tag = _HANDLE_INET;
-	pfn->proto = _PROTO_OSS;
-
-	pfn->fmode = mode;
-	xsncpy(pfn->path, fname, PATH_LEN);
-	if (psd)
-	{
-		xsncpy(pfn->fsecu.scr_uid, psd->scr_uid, META_LEN);
-		xsncpy(pfn->fsecu.scr_key, psd->scr_key, KEY_LEN);
-	}
-
-	return (xhand_t)pfn;
-}
-
-static bool_t xoss_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
-{
-	xinet_t* pfn = (xinet_t*)inet;
-
-	tchar_t sz_url[PATH_LEN + 1] = { 0 };
-	tchar_t *addrat, *buckat, *pathat, *fileat;
-	int addrlen, bucklen, pathlen, filelen;
-
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_err[ERR_LEN + 1] = { 0 };
-	tchar_t sz_type[RES_LEN + 1] = { 0 };
-	tchar_t sz_size[NUM_LEN + 1] = { 0 };
-
-	byte_t** pbuf = NULL;
-	dword_t size = 0;
-
-	bool_t rt = 0;
-
-	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
-
-	_split_oss_url(pfn->path, &addrat, &addrlen, &buckat, &bucklen, &pathat, &pathlen, &fileat, &filelen);
-
-	xscpy(sz_url, _T("http://"));
-
-	if (addrlen)
-	{
-		if (bucklen)
-		{
-			xsncat(sz_url, buckat, bucklen);
-			xsncat(sz_url, _T("."), 1);
-		}
-		xsncat(sz_url, addrat, addrlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (pathlen)
-	{
-		xsncat(sz_url, pathat, pathlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (filelen)
-	{
-		xsncat(sz_url, fileat, filelen);
-	}
-
-	pbuf = bytes_alloc();
-
-	if (!oss_ioctl(_T("GET"), sz_url, pfn->fsecu.scr_uid, pfn->fsecu.scr_key, NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
-	{
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-		return 0;
-	}
-
-	if (!IS_XHTTP_SUCCEED(sz_code))
-	{
-		if (size)
-		{
-			_parse_oss_error(*pbuf, size, sz_code, sz_err);
-		}
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-
-		return 0;
-	}
-
-	size = (size < *pb) ? size : *pb;
-	xmem_copy((void*)buf, (void*)*pbuf, size);
-	*pb = size;
-
-	bytes_free(pbuf);
-
-	return 1;
-}
-
-static bool_t xoss_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
-{
-	xinet_t* pfn = (xinet_t*)inet;
-
-	tchar_t sz_url[PATH_LEN + 1] = { 0 };
-	tchar_t *addrat, *buckat, *pathat, *fileat;
-	int addrlen, bucklen, pathlen, filelen;
-
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_err[ERR_LEN + 1] = { 0 };
-	tchar_t sz_type[RES_LEN + 1] = { 0 };
-	tchar_t sz_size[NUM_LEN + 1] = { 0 };
-
-	byte_t** pbuf = NULL;
-	dword_t size = 0;
-
-	bool_t rt = 0;
-
-	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
-
-	_split_oss_url(pfn->path, &addrat, &addrlen, &buckat, &bucklen, &pathat, &pathlen, &fileat, &filelen);
-
-	xscpy(sz_url, _T("http://"));
-
-	if (addrlen)
-	{
-		if (bucklen)
-		{
-			xsncat(sz_url, buckat, bucklen);
-			xsncat(sz_url, _T("."), 1);
-		}
-		xsncat(sz_url, addrat, addrlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (pathlen)
-	{
-		xsncat(sz_url, pathat, pathlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (filelen)
-	{
-		xsncat(sz_url, fileat, filelen);
-	}
-
-	pbuf = bytes_alloc();
-
-	if (!oss_ioctl(_T("PUT"), sz_url, pfn->fsecu.scr_uid, pfn->fsecu.scr_key, buf, *pb, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
-	{
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-		return 0;
-	}
-
-	if (!IS_XHTTP_SUCCEED(sz_code))
-	{
-		if (size)
-		{
-			_parse_oss_error(*pbuf, size, sz_code, sz_err);
-		}
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-
-		return 0;
-	}
-
-	bytes_free(pbuf);
-
-	return 1;
-}
-
-static void xoss_close_file(xhand_t inet)
-{
-	xinet_t* pfn = (xinet_t*)inet;
-
-	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
-
-	xmem_free(pfn);
-}
-
-static bool_t xoss_delete_file(const secu_desc_t* psd, const tchar_t* fname)
-{
-	tchar_t sz_url[PATH_LEN + 1] = { 0 };
-	tchar_t *addrat, *buckat, *pathat, *fileat;
-	int addrlen, bucklen, pathlen, filelen;
-
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_err[ERR_LEN + 1] = { 0 };
-	tchar_t sz_type[RES_LEN + 1] = { 0 };
-	tchar_t sz_size[NUM_LEN + 1] = { 0 };
-
-	byte_t** pbuf = NULL;
-	dword_t size = 0;
-
-	bool_t rt = 0;
-
-	_split_oss_url(fname, &addrat, &addrlen, &buckat, &bucklen, &pathat, &pathlen, &fileat, &filelen);
-
-	xscpy(sz_url, _T("http://"));
-
-	if (addrlen)
-	{
-		if (bucklen)
-		{
-			xsncat(sz_url, buckat, bucklen);
-			xsncat(sz_url, _T("."), 1);
-		}
-		xsncat(sz_url, addrat, addrlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (pathlen)
-	{
-		xsncat(sz_url, pathat, pathlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (filelen)
-	{
-		xsncat(sz_url, fileat, filelen);
-	}
-
-	pbuf = bytes_alloc();
-
-	if (!oss_ioctl(_T("DELETE"), sz_url, ((psd)? psd->scr_uid : NULL), ((psd)? psd->scr_key : NULL), NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
-	{
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-		return 0;
-	}
-
-	if (!IS_XHTTP_SUCCEED(sz_code))
-	{
-		if (size)
-		{
-			_parse_oss_error(*pbuf, size, sz_code, sz_err);
-		}
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-
-		return 0;
-	}
-
-	bytes_free(pbuf);
-
-	return 1;
-}
-
-static void _oss_file_info(const file_info_t* pfi, void* pa)
-{
-	xmem_copy(pa, (void*)pfi, sizeof(file_info_t));
-}
-
-static bool_t xoss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode)
-{
-	tchar_t sz_url[PATH_LEN + 1] = { 0 };
-	tchar_t *addrat, *buckat, *pathat, *fileat;
-	int addrlen, bucklen, pathlen, filelen;
-
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_err[ERR_LEN + 1] = { 0 };
-	tchar_t sz_type[RES_LEN + 1] = { 0 };
-	tchar_t sz_size[NUM_LEN + 1] = { 0 };
-
-	byte_t** pbuf = NULL;
-	dword_t size = 0;
-
-	file_info_t fi = { 0 };
-
-	bool_t rt = 0;
-
-	_split_oss_url(fname, &addrat, &addrlen, &buckat, &bucklen, &pathat, &pathlen, &fileat, &filelen);
-
-	xscpy(sz_url, _T("http://"));
-
-	if (addrlen)
-	{
-		if (bucklen)
-		{
-			xsncat(sz_url, buckat, bucklen);
-			xsncat(sz_url, _T("."), 1);
-		}
-		xsncat(sz_url, addrat, addrlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (pathlen)
-	{
-		xsncat(sz_url, pathat, pathlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (filelen)
-	{
-		xscat(sz_url, _T("?prefix="));
-		xsncat(sz_url, fileat, filelen);
-	}
-
-	pbuf = bytes_alloc();
-
-	if (!oss_ioctl(_T("GET"), sz_url, ((psd)? psd->scr_uid : NULL), ((psd)? psd->scr_key : NULL), NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
-	{
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-		return 0;
-	}
-
-	if (!IS_XHTTP_SUCCEED(sz_code))
-	{
-		if (size)
-		{
-			_parse_oss_error(*pbuf, size, sz_code, sz_err);
-		}
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-
-		return 0;
-	}
-
-	rt = _parse_oss_result(*pbuf, size, _oss_file_info, (void*)&fi);
-
-	bytes_free(pbuf);
-
-	if (ftime)
-		format_gmttime(&fi.write_time, ftime);
-	if (fsize)
-		format_longlong(fi.high_size, fi.low_size, fsize);
-	if (fetag)
-		xsncpy(fetag, fi.file_etag, ETAG_LEN);
-
-	return rt;
-}
-
-static bool_t xoss_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa)
-{
-	tchar_t sz_url[PATH_LEN + 1] = { 0 };
-	tchar_t *addrat, *buckat, *pathat, *fileat;
-	int addrlen, bucklen, pathlen, filelen;
-
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_err[ERR_LEN + 1] = { 0 };
-	tchar_t sz_type[RES_LEN + 1] = { 0 };
-	tchar_t sz_size[NUM_LEN + 1] = { 0 };
-
-	byte_t** pbuf = NULL;
-	dword_t size = 0;
-
-	bool_t rt = 0;
-
-	_split_oss_url(path, &addrat, &addrlen, &buckat, &bucklen, &pathat, &pathlen, &fileat, &filelen);
-
-	xscpy(sz_url, _T("http://"));
-
-	if (addrlen)
-	{
-		if (bucklen)
-		{
-			xsncat(sz_url, buckat, bucklen);
-			xsncat(sz_url, _T("."), 1);
-		}
-		xsncat(sz_url, addrat, addrlen);
-		xsncat(sz_url, _T("/"), 1);
-	}
-
-	if (filelen && is_suffix(fileat, _T(".*")))
-	{
-		if (pathlen)
-		{
-			xscat(sz_url, _T("?prefix="));
-			xsncat(sz_url, pathat, pathlen);
-			xsncat(sz_url, _T("/"), 1);
-			xscat(sz_url, _T("&delimiter=/"));
-		}
-	}
-	else
-	{
-		if (pathlen)
-		{
-			xsncat(sz_url, pathat, pathlen);
-			xsncat(sz_url, _T("/"), 1);
-		}
-
-		if (filelen)
-		{
-			xscat(sz_url, _T("?prefix="));
-			xsncat(sz_url, fileat, filelen);
-		}
-	}
-
-	pbuf = bytes_alloc();
-
-	if (!oss_ioctl(_T("GET"), sz_url, ((psd)? psd->scr_uid : NULL), ((psd)? psd->scr_key : NULL), NULL, 0, sz_code, sz_err, sz_type, sz_size, pbuf, &size))
-	{
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-		return 0;
-	}
-
-	if (!IS_XHTTP_SUCCEED(sz_code))
-	{
-		if (size)
-		{
-			_parse_oss_error(*pbuf, size, sz_code, sz_err);
-		}
-		bytes_free(pbuf);
-
-		set_last_error(sz_code, sz_err, -1);
-
-		return 0;
-	}
-
-	rt = _parse_oss_result(*pbuf, size, pf, pa);
-
-	bytes_free(pbuf);
-
-	return rt;
-}
-
 /***********************************************************************************************************************************/
 
 static xhand_t tftp_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
@@ -1419,12 +806,12 @@ static xhand_t tftp_open_file(const secu_desc_t* psd, const tchar_t* fname, dwor
 		xsncpy(pfn->fsecu.scr_key, psd->scr_key, KEY_LEN);
 	}
 
-	return (xhand_t)pfn;
+	return &pfn->head;
 }
 
 static bool_t tftp_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 	xhand_t xh;
 	bool_t rt = 0;
 	dword_t bys, size, pos = 0;
@@ -1457,7 +844,7 @@ static bool_t tftp_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 
 static bool_t tftp_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 	xhand_t xh;
 	bool_t rt;
 	dword_t bys, size, pos = 0;
@@ -1486,7 +873,7 @@ static bool_t tftp_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 
 static void tftp_close_file(xhand_t inet)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1564,7 +951,7 @@ static bool_t tftp_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 
 xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
 {
-	int proto;
+	byte_t proto;
 
 	proto = parse_proto(fname);
 
@@ -1572,15 +959,13 @@ xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mo
 		return http_open_file(psd, fname, mode);
 	else if (proto == _PROTO_TFTP)
 		return tftp_open_file(psd, fname, mode);
-	if (proto == _PROTO_OSS)
-		return xoss_open_file(psd, fname, mode);
 	else
 		return NULL;
 }
 
 void xinet_close_file(xhand_t inet)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1588,13 +973,11 @@ void xinet_close_file(xhand_t inet)
 		http_close_file(inet);
 	else if (pfn->proto == _PROTO_TFTP)
 		tftp_close_file(inet);
-	else if (pfn->proto == _PROTO_OSS)
-		xoss_close_file(inet);
 }
 
 bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1602,15 +985,13 @@ bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 		return http_read_file(inet, buf, pb);
 	else if (pfn->proto == _PROTO_TFTP)
 		return tftp_read_file(inet, buf, pb);
-	else if (pfn->proto == _PROTO_OSS)
-		return xoss_read_file(inet, buf, pb);
 	else
 		return 0;
 }
 
 bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1618,15 +999,13 @@ bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 		return http_write_file(inet, buf, pb);
 	else if (pfn->proto == _PROTO_TFTP)
 		return tftp_write_file(inet, buf, pb);
-	else if (pfn->proto == _PROTO_OSS)
-		return xoss_write_file(inet, buf, pb);
 	else
 		return 0;
 }
 
 bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1638,7 +1017,7 @@ bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* b
 
 bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1650,7 +1029,7 @@ bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const by
 
 void xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1660,7 +1039,7 @@ void xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
 
 void xinet_set_filesince(xhand_t inet, int since)
 {
-	xinet_t* pfn = (xinet_t*)inet;
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1670,14 +1049,12 @@ void xinet_set_filesince(xhand_t inet, int since)
 
 bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 {
-	int proto;
+	byte_t proto;
 
 	proto = parse_proto(fname);
 
 	if (proto == _PROTO_HTTP)
 		return http_delete_file(psd, fname);
-	else if (proto == _PROTO_OSS)
-		return xoss_delete_file(psd, fname);
 	else if (proto == _PROTO_TFTP)
 		return tftp_delete_file(psd, fname);
 	else
@@ -1686,14 +1063,12 @@ bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 
 bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa)
 {
-	int proto;
+	byte_t proto;
 
 	proto = parse_proto(path);
 
 	if (proto == _PROTO_HTTP)
 		return http_list_file(psd, path, pf, pa);
-	else if (proto == _PROTO_OSS)
-		return xoss_list_file(psd, path, pf, pa);
 	else if (proto == _PROTO_TFTP)
 		return tftp_list_file(psd, path, pf, pa);
 	else
@@ -1702,14 +1077,12 @@ bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LIS
 
 bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode)
 {
-	int proto;
+	byte_t proto;
 
 	proto = parse_proto(fname);
 
 	if (proto == _PROTO_HTTP)
 		return http_file_info(psd, fname, ftime, fsize, fetag, fencode);
-	else if (proto == _PROTO_OSS)
-		return xoss_file_info(psd, fname, ftime, fsize, fetag, fencode);
 	else if (proto == _PROTO_TFTP)
 		return tftp_file_info(psd, fname, ftime, fsize, fetag, fencode);
 	else

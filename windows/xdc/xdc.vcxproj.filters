@@ -201,9 +201,6 @@
     <ClCompile Include="..\..\xdc\splitor.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\winnc.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\staticctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -232,6 +229,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\panelctrl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\widgetex.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\widgetnc.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -266,11 +269,14 @@
     <ClInclude Include="..\..\xdc\splitor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdc\winnc.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdc\lang\_xdc_ansi.h">
       <Filter>头文件\lang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdc\widgetex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdc\widgetnc.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

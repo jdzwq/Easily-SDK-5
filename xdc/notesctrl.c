@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcbox.h"
 
 typedef struct _notes_delta_t{
@@ -70,8 +71,8 @@ static long _notesctrl_calc_width(res_win_t widget)
 	xsize_t xs;
 	long pw;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
 	rdc = widget_client_ctx(widget);
@@ -118,8 +119,8 @@ static long _notesctrl_calc_height(res_win_t widget)
 	widget_get_client_rect(widget, &xr);
 	pw = xr.w - ptd->tw;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
 	rdc = widget_client_ctx(widget);
@@ -171,11 +172,11 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 	xface_t xa;
 	viewbox_t vb;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
-	widget_get_view_rect(widget, &vb);
+	widgetex_get_view_rect(widget, &vb);
 
 	rdc = widget_client_ctx(widget);
 
@@ -273,11 +274,11 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
-	widget_get_view_rect(widget, &vb);
+	widgetex_get_view_rect(widget, &vb);
 
 	rdc = widget_client_ctx(widget);
 
@@ -331,7 +332,7 @@ static void _notesctrl_reset_page(res_win_t widget)
 
 	widget_get_client_rect(widget, &xr);
 
-	widget_reset_paging(widget, xr.w, xr.h, xr.w, mh, ptd->tw, ptd->th);
+	widgetex_reset_paging(widget, xr.w, xr.h, xr.w, mh, ptd->tw, ptd->th);
 }
 
 static void _notesctrl_ensure_visible(res_win_t widget)
@@ -344,7 +345,7 @@ static void _notesctrl_ensure_visible(res_win_t widget)
 
 	_notesctrl_item_rect(widget, ptd->item, &xr);
 
-	widget_ensure_visible(widget, &xr, 1);
+	widgetex_ensure_visible(widget, &xr, 1);
 }
 
 /*************************************************************************/
@@ -457,11 +458,11 @@ int hand_notes_create(res_win_t widget, void* data)
 	xfont_t xf = { 0 };
 	xsize_t xs;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (notes_delta_t*)xmem_alloc(sizeof(notes_delta_t));
 
-	widget_get_xfont(widget, &xf);
+	widgetex_get_xfont(widget, &xf);
 
 	rdc = widget_client_ctx(widget);
 	text_metric_raw(rdc, &xf, &xs);
@@ -488,7 +489,7 @@ void hand_notes_destroy(res_win_t widget)
 
 	SETNOTESDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_notes_keydown(res_win_t widget, int key)
@@ -659,7 +660,7 @@ void hand_notes_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	if (!ptd->arch)
 		return;
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_notes_wheel(res_win_t widget, bool_t bHorz, long nDelta)
@@ -679,7 +680,7 @@ void hand_notes_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widget_hand_scroll(widget, bHorz, nLine))
+	if (widgetex_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -733,10 +734,10 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->arch)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	xscpy(xp.size, _T("2"));
 	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DOTTED);
@@ -763,7 +764,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_view_rect(widget, &vb);
+	widgetex_get_view_rect(widget, &vb);
 
 	xr.x = vb.px;
 	xr.y = vb.py;

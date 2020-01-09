@@ -71,7 +71,7 @@ xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t size)
 	ppi->write_bytes = 0;
 	ppi->sname = xsclone(pname);
 
-	return (xhand_t)ppi;
+	return &ppi->head;
 }
 
 xhand_t xshare_cli(const tchar_t* pname, dword_t size)
@@ -99,12 +99,12 @@ xhand_t xshare_cli(const tchar_t* pname, dword_t size)
 	ppi->write_bytes = 0;
 	ppi->sname = xsclone(pname);
 
-	return (xhand_t)ppi;
+	return &ppi->head;
 }
 
 res_file_t xshare_handle(xhand_t block)
 {
-	share_t* ppi = (share_t*)block;
+	share_t* ppi = TypePtrFromHead(share_t, block);
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);
 
@@ -113,7 +113,7 @@ res_file_t xshare_handle(xhand_t block)
 
 void xshare_close(xhand_t block)
 {
-	share_t* ppi = (share_t*)block;
+	share_t* ppi = TypePtrFromHead(share_t, block);
 	if_share_t* pif;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);
@@ -131,7 +131,7 @@ void xshare_close(xhand_t block)
 
 bool_t xshare_read(xhand_t block, byte_t* buf, dword_t* pcb)
 {
-	share_t* ppt = (share_t*)block;
+	share_t* ppt = TypePtrFromHead(share_t, block);
 	if_share_t* pif;
 	size_t size;
 	bool_t rt;
@@ -160,7 +160,7 @@ bool_t xshare_read(xhand_t block, byte_t* buf, dword_t* pcb)
 
 bool_t xshare_write(xhand_t block, const byte_t* buf, dword_t* pcb)
 {
-	share_t* ppt = (share_t*)block;
+	share_t* ppt = TypePtrFromHead(share_t, block);
 	if_share_t* pif;
 	size_t size;
 	bool_t rt;
@@ -189,7 +189,7 @@ bool_t xshare_write(xhand_t block, const byte_t* buf, dword_t* pcb)
 
 void* xshare_lock(xhand_t block, dword_t offset, dword_t size)
 {
-	share_t* ppt = (share_t*)block;
+	share_t* ppt = TypePtrFromHead(share_t, block);
 	if_share_t* pif;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);
@@ -203,7 +203,7 @@ void* xshare_lock(xhand_t block, dword_t offset, dword_t size)
 
 void xshare_unlock(xhand_t block, dword_t offset, dword_t size, void* p)
 {
-	share_t* ppt = (share_t*)block;
+	share_t* ppt = TypePtrFromHead(share_t, block);
 	if_share_t* pif;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);

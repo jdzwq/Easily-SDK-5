@@ -258,6 +258,17 @@ void write_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key,
 	(*pif->pf_write_profile)(fname, sec, key, val);
 }
 
+int get_envvar(const tchar_t* ename, tchar_t* buf, int max)
+{
+	if_process_t* pif;
+
+	pif = PROCESS_PROCESS_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	return (*pif->pf_get_envvar)(ename, buf, max);
+}
+
 void system_info(sys_info_t* psi)
 {
 	if_process_t* pif;

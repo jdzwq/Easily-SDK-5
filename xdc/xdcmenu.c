@@ -31,9 +31,9 @@ LICENSE.GPL3 for more details.
 
 #include "xdcmenu.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcbox.h"
-#include "handler.h"
 
 void textor_menu(res_win_t widget, const xpoint_t* ppt, int lay)
 {
@@ -45,7 +45,7 @@ void textor_menu(res_win_t widget, const xpoint_t* ppt, int lay)
 
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_menu = create_menu_doc();
 	set_menu_layer(ptr_menu, ATTR_LAYER_HORZ);
@@ -72,7 +72,7 @@ void textor_menu(res_win_t widget, const xpoint_t* ppt, int lay)
 	widget_set_user_id(editmenu, IDC_EDITMENU);
 	widget_set_owner(editmenu, widget);
 
-	widget_set_color_mode(editmenu, &clr);
+	widgetex_set_color_mode(editmenu, &clr);
 	
 	menubox_set_data(editmenu, ptr_menu);
 
@@ -96,7 +96,7 @@ void fontname_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	int iid = 0;
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_FAMILY_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
@@ -123,7 +123,7 @@ void fontname_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	widget_set_user_id(menu, idc);
 	widget_set_owner(menu, widget);
 
-	widget_set_color_mode(menu, &clr);
+	widgetex_set_color_mode(menu, &clr);
 
 	menubox_set_data(menu, ptr_menu);
 
@@ -167,7 +167,7 @@ void fontsize_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	int iid = 0;
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_SIZE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
@@ -194,7 +194,7 @@ void fontsize_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	widget_set_user_id(menu, idc);
 	widget_set_owner(menu, widget);
 
-	widget_set_color_mode(menu, &clr);
+	widgetex_set_color_mode(menu, &clr);
 
 	menubox_set_data(menu, ptr_menu);
 
@@ -238,7 +238,7 @@ void fontstyle_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	int iid = 0;
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_STYLE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
@@ -265,7 +265,7 @@ void fontstyle_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	widget_set_user_id(menu, idc);
 	widget_set_owner(menu, widget);
 
-	widget_set_color_mode(menu, &clr);
+	widgetex_set_color_mode(menu, &clr);
 
 	menubox_set_data(menu, ptr_menu);
 
@@ -309,7 +309,7 @@ void fontweight_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay
 	int iid = 0;
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_FONT_WEIGHT_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
@@ -336,7 +336,7 @@ void fontweight_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay
 	widget_set_user_id(menu, idc);
 	widget_set_owner(menu, widget);
 
-	widget_set_color_mode(menu, &clr);
+	widgetex_set_color_mode(menu, &clr);
 
 	menubox_set_data(menu, ptr_menu);
 
@@ -380,7 +380,7 @@ void color_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	int iid = 0;
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, GDI_ATTR_RGB_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
@@ -407,7 +407,7 @@ void color_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	widget_set_user_id(menu, idc);
 	widget_set_owner(menu, widget);
 
-	widget_set_color_mode(menu, &clr);
+	widgetex_set_color_mode(menu, &clr);
 
 	menubox_set_data(menu, ptr_menu);
 
@@ -451,7 +451,7 @@ void shape_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	int iid = 0;
 	clr_mod_t clr;
 
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
 	ptr_string = create_string_table(0);
 	string_table_parse_options(ptr_string, ATTR_SHAPE_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
@@ -482,7 +482,7 @@ void shape_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 	widget_set_user_id(menu, idc);
 	widget_set_owner(menu, widget);
 
-	widget_set_color_mode(menu, &clr);
+	widgetex_set_color_mode(menu, &clr);
 
 	menubox_set_data(menu, ptr_menu);
 
@@ -541,8 +541,8 @@ void track_popup_menu(res_win_t widget, dword_t idc, link_t_ptr menu, const xpoi
 	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_get_color_mode(widget, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 	widget_update(hMenu);
 	widget_show(hMenu, WD_SHOW_NORMAL);
 

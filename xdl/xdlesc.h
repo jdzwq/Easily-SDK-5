@@ -125,42 +125,43 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API bool_t is_escape(const tchar_t* esc, tchar_t ch);
+XDL_API int csv_char_encode(const tchar_t* val, int len, tchar_t* buf, int max);
 
-XDL_API int encode_escape(const tchar_t* esc, const tchar_t* val, int len, tchar_t* buf, int max);
+XDL_API int csv_char_decode(const tchar_t* val, int len, tchar_t* buf, int max);
 
-XDL_API int decode_escape(const tchar_t* val, int len, tchar_t* buf, int max);
+XDL_API dword_t url_byte_encode(const byte_t* val, dword_t len, byte_t* buf, dword_t max);
 
-/**************************************************************************************/
+XDL_API dword_t url_byte_decode(const byte_t* val, dword_t len, byte_t* buf, dword_t max);
+
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
-XDL_API dword_t gb2312_decode_escape(const byte_t* src, tchar_t* dest);
+XDL_API dword_t xml_gb2312_decode(const byte_t* src, tchar_t* dest);
 
-XDL_API dword_t gb2312_encode_escape(tchar_t ch, byte_t* dest, dword_t max);
+XDL_API dword_t xml_gb2312_encode(tchar_t ch, byte_t* dest, dword_t max);
 #endif
 
-XDL_API dword_t utf8_decode_escape(const byte_t* src, tchar_t* dest);
+XDL_API dword_t xml_utf8_decode(const byte_t* src, tchar_t* dest);
 
-XDL_API dword_t utf8_encode_escape(tchar_t ch, byte_t* dest, dword_t max);
+XDL_API dword_t xml_utf8_encode(tchar_t ch, byte_t* dest, dword_t max);
 
-XDL_API dword_t utf16lit_decode_escape(const byte_t* src, tchar_t* dest);
+XDL_API dword_t xml_utf16lit_decode(const byte_t* src, tchar_t* dest);
 
-XDL_API dword_t utf16lit_encode_escape(tchar_t ch, byte_t* dest, dword_t max);
+XDL_API dword_t xml_utf16lit_encode(tchar_t ch, byte_t* dest, dword_t max);
 
-XDL_API dword_t utf16big_decode_escape(const byte_t* src, tchar_t* dest);
+XDL_API dword_t xml_utf16big_decode(const byte_t* src, tchar_t* dest);
 
-XDL_API dword_t utf16big_encode_escape(tchar_t ch, byte_t* dest, dword_t max);
+XDL_API dword_t xml_utf16big_encode(tchar_t ch, byte_t* dest, dword_t max);
 
-XDL_API dword_t unn_decode_escape(const byte_t* src, tchar_t* dest);
+XDL_API dword_t xml_unn_decode(const byte_t* src, tchar_t* dest);
 
-XDL_API dword_t unn_encode_escape(tchar_t ch, byte_t* dest, dword_t max);
+XDL_API dword_t xml_unn_encode(tchar_t ch, byte_t* dest, dword_t max);
 
-XDL_API int ucs_decode_escape(const wchar_t* src, tchar_t* dest);
+XDL_API int xml_ucs_decode(const wchar_t* src, tchar_t* dest);
 
-XDL_API int ucs_encode_escape(tchar_t ch, wchar_t* dest, int max);
+XDL_API int xml_ucs_encode(tchar_t ch, wchar_t* dest, int max);
 
-XDL_API int mbs_decode_escape(const schar_t* src, tchar_t* dest);
+XDL_API int xml_mbs_decode(const schar_t* src, tchar_t* dest);
 
-XDL_API int mbs_encode_escape(tchar_t ch, schar_t* dest, int max);
+XDL_API int xml_mbs_encode(tchar_t ch, schar_t* dest, int max);
 
 #ifdef	__cplusplus
 }

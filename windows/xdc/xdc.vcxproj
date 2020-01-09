@@ -87,7 +87,8 @@
     <ClCompile Include="..\..\xdc\treectrl.c" />
     <ClCompile Include="..\..\xdc\ownerctrl.c" />
     <ClCompile Include="..\..\xdc\vertbox.c" />
-    <ClCompile Include="..\..\xdc\winnc.c" />
+    <ClCompile Include="..\..\xdc\widgetex.c" />
+    <ClCompile Include="..\..\xdc\widgetnc.c" />
     <ClCompile Include="..\..\xdc\wordsbox.c" />
     <ClCompile Include="..\..\xdc\xdcdlg.c" />
     <ClCompile Include="..\..\xdc\xdcmenu.c" />
@@ -98,7 +99,8 @@
     <ClInclude Include="..\..\xdc\lang\_xdc_ansi.h" />
     <ClInclude Include="..\..\xdc\splitor.h" />
     <ClInclude Include="..\..\xdc\textor.h" />
-    <ClInclude Include="..\..\xdc\winnc.h" />
+    <ClInclude Include="..\..\xdc\widgetex.h" />
+    <ClInclude Include="..\..\xdc\widgetnc.h" />
     <ClInclude Include="..\..\xdc\xdcbox.h" />
     <ClInclude Include="..\..\xdc\xdcctrl.h" />
     <ClInclude Include="..\..\xdc\xdcdef.h" />

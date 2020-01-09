@@ -39,8 +39,9 @@ LICENSE.GPL3 for more details.
 #if defined(XDK_SUPPORT_CONTEXT)
 
 typedef struct _svg_canvas_t{
+	canvas_head head;
+
 	res_ctx_t rdc;
-	int dev;			// canvas type 
 	link_t_ptr g;		// svg document 
 }svg_canvas_t;
 
@@ -64,15 +65,17 @@ canvas_t create_svg_canvas(link_t_ptr svg)
 	vb.h = (long)(get_svg_height(svg) * vtpermm);
 	set_svg_viewbox(svg, &vb);
 
-	pcanv->dev = _CANV_PRINTER;
 	pcanv->g = svg;
+	pcanv->head.tag = _CANVAS_PRINTER;
 
-	return (canvas_t)pcanv;
+	return &pcanv->head;
 }
 
 void destroy_svg_canvas(canvas_t canv)
 {
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
 	destroy_context(pcanv->rdc);
 
@@ -81,29 +84,28 @@ void destroy_svg_canvas(canvas_t canv)
 
 res_ctx_t svg_get_canvas_ctx(canvas_t canv)
 {
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
 	return pcanv->rdc;
 }
 
 link_t_ptr svg_get_canvas_doc(canvas_t canv)
 {
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
 	return pcanv->g;
 }
 
-int svg_get_canvas_type(canvas_t canv)
-{
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
-
-	return pcanv->dev;
-}
-
 float svg_pt_per_mm(canvas_t canv, bool_t horz)
 {
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
 	xrect_t vb;
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
 	get_svg_viewbox(pcanv->g, &vb);
 
@@ -119,9 +121,12 @@ float svg_pt_per_mm(canvas_t canv, bool_t horz)
 
 float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz)
 {
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+
 	xrect_t vb;
 	float htpermm, vtpermm;
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
 	get_svg_viewbox(pcanv->g, &vb);
 
@@ -141,9 +146,12 @@ float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz)
 
 long svg_tm_to_pt(canvas_t canv, float tm, bool_t horz)
 {
-	svg_canvas_t* pcanv = (svg_canvas_t*)canv;
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+
 	xrect_t vb;
 	float htpermm, vtpermm;
+
+	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
 	get_svg_viewbox(pcanv->g, &vb);
 

@@ -39,8 +39,8 @@ LICENSE.GPL3 for more details.
 
 typedef struct _xuncf_t{
 	xhand_head head;		//reserved for xhand_t
-	res_file_t file;
 
+	res_file_t file;
 	async_t over;
 }xuncf_t;
 
@@ -228,12 +228,12 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 		async_alloc_lapp(&pcf->over, FILE_BASE_TIMO);
 	}
 
-	return (xhand_t)pcf;
+	return &pcf->head;
 }
 
 bool_t xuncf_file_size(xhand_t unc, dword_t* ph, dword_t* pl)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
@@ -247,7 +247,7 @@ bool_t xuncf_file_size(xhand_t unc, dword_t* ph, dword_t* pl)
 
 void xuncf_close_file(xhand_t unc)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
@@ -265,7 +265,7 @@ void xuncf_close_file(xhand_t unc)
 
 bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	size_t size;
 	if_file_t* pif;
 
@@ -291,7 +291,7 @@ bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 
 bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	size_t size;
 	if_file_t* pif;
 
@@ -317,7 +317,7 @@ bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 
 bool_t xuncf_flush_file(xhand_t unc)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
@@ -331,7 +331,7 @@ bool_t xuncf_flush_file(xhand_t unc)
 
 bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* buf, dword_t dw)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	size_t size;
 	long long ll = 0;
 	if_file_t* pif;
@@ -355,7 +355,7 @@ bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* bu
 
 bool_t xuncf_write_file_range(xhand_t unc, dword_t hoff, dword_t loff, const byte_t* buf, dword_t dw)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	size_t size;
 	long long ll = 0;
 	if_file_t* pif;
@@ -377,7 +377,7 @@ bool_t xuncf_write_file_range(xhand_t unc, dword_t hoff, dword_t loff, const byt
 
 bool_t xuncf_truncate(xhand_t unc, dword_t hoff, dword_t loff)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 
 	if_file_t* pif;
 
@@ -398,7 +398,7 @@ bool_t xuncf_truncate(xhand_t unc, dword_t hoff, dword_t loff)
 
 bool_t xuncf_set_filetime(xhand_t unc, const tchar_t* ftime)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 	xdate_t xd;
 
@@ -421,7 +421,7 @@ bool_t xuncf_set_filetime(xhand_t unc, const tchar_t* ftime)
 
 bool_t xuncf_get_filetime(xhand_t unc, tchar_t* ftime)
 {
-	xuncf_t* pcf = (xuncf_t*)unc;
+	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 	xdate_t xd;
 

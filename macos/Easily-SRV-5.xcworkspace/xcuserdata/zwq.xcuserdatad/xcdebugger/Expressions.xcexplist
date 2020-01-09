@@ -3,6 +3,30 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "_socket_accept:_if_socket_macos.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "pb">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_stream_read_chunk_head:xdlstm.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "bsize">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "xhttp_get_url_method:nethttp.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "xhttp">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "insert_link_after:dblink.c">
          <PersistentStrings>
             <PersistentString
@@ -11,10 +35,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "stream_read_chunk_size:xdlstm.c">
+         contextName = "xdl_process_init:xdlinit.c">
       </ContextState>
       <ContextState
-         contextName = "_stream_end_read:xdlstm.c">
+         contextName = "stream_read_chunk_size:xdlstm.c">
       </ContextState>
       <ContextState
          contextName = "set_system_error:imperr.c">
@@ -33,20 +57,15 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "_socket_accept:_if_socket_macos.c">
+         contextName = "get_stack_node_count:stacktable.c">
          <PersistentStrings>
             <PersistentString
-               value = "pb">
+               value = "st.tag">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "_stream_read_chunk_head:xdlstm.c">
-         <PersistentStrings>
-            <PersistentString
-               value = "bsize">
-            </PersistentString>
-         </PersistentStrings>
+         contextName = "_stream_end_read:xdlstm.c">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

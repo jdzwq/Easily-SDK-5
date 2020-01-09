@@ -589,6 +589,7 @@ typedef struct _X11_create_struct_t{
 #define _tstrtof	wcstof
 #define _tstrnull(s)		(s == NULL || s[0] == L'\0')
 #define _tprintf    wprintf
+#define _tsscanf	swscanf
 #else
 #define _tstrcmp	strcmp
 #define _tstrncmp	strncmp
@@ -605,6 +606,7 @@ typedef struct _X11_create_struct_t{
 #define _tstrtof	atof
 #define _tstrnull(s)		(s == NULL || s[0] == '\0')
 #define _tprintf    printf
+#define _tsscanf	sscanf
 #endif
 
 #ifndef min

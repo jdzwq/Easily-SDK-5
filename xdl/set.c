@@ -269,7 +269,7 @@ static const tchar_t* _set_parse(set_t** ppv, dword_t* psize, const tchar_t* tok
 			b = 1;
 			break;
 		case _T(' '):
-		case _T('\t'):
+		case _T(','):
 		case _T('}'):
 			index++;
 			pv = (set_t*)xmem_realloc(pv, sizeof(set_t) * index);
@@ -346,7 +346,7 @@ static int _set_format(const set_t* ppv, dword_t size, tchar_t* buf, int max)
 
 		if (buf)
 		{
-			buf[total] = _T(' ');
+			buf[total] = _T(',');
 		}
 		total += 1;
 	}
@@ -411,7 +411,7 @@ void test_set()
 
 	set_empty(pset);
 
-	set_parse(pset, _T("{1 2 3 {1 2} {1 2 3} {1 2 {1 2 3 4}}}"), -1);
+	set_parse(pset, _T("{1,2 ,3,{1,2},{1 2 3}, {1, 2, {1 2 3 4}}}"), -1);
 
 	len = set_format(pset, NULL, MAX_LONG);
 	buf = xsalloc(len + 1);

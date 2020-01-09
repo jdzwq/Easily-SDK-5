@@ -100,6 +100,8 @@ XDL_API void parse_date(xdate_t* pmd, const tchar_t* str);
 
 XDL_API void parse_datetime(xdate_t* pmd, const tchar_t* str);
 
+XDL_API int format_utctime(const xdate_t* pmd, tchar_t* buf);
+
 XDL_API int format_gmttime(const xdate_t* pmd, tchar_t* buf);
 
 XDL_API void parse_gmttime(xdate_t* pmd, const tchar_t* str);
@@ -160,31 +162,6 @@ XDL_API int compare_text(const tchar_t* src, int srclen, const tchar_t* dest, in
 
 XDL_API int verify_text(const tchar_t* str, const tchar_t* datatype, bool_t nullable, int len, const tchar_t* min, const tchar_t* max);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-XDL_API const tchar_t* parse_attrset_token(const tchar_t* attrset, int len, tchar_t** pkey, int* pkeylen, tchar_t** pval, int* pvallen);
-
-XDL_API int parse_attrset_token_count(const tchar_t* attrset, int len);
-
-XDL_API const tchar_t* parse_options_token(const tchar_t* options,int len, tchar_t itemfeed, tchar_t linefeed, tchar_t** pkey, int* pkeylen, tchar_t** pval, int* pvallen);
-
-XDL_API int parse_options_token_count(const tchar_t* options,int len,tchar_t itemfeed,tchar_t linefeed);
-
-XDL_API int get_options_value(const tchar_t* options, int len, tchar_t itemfeed, tchar_t linefeed, const tchar_t* key, tchar_t* buf, int max);
-
-XDL_API const tchar_t* parse_string_token(const tchar_t* tokens,int len, tchar_t itemfeed, tchar_t** pkey, int* pkeylen);
-
-XDL_API int parse_string_token_count(const tchar_t* tokens,int len,tchar_t itemfeed);
-
-XDL_API int parse_string_array_count(const tchar_t* tokens);
-
-XDL_API int parse_string_array(const tchar_t* tokens, tchar_t** sa, int n);
-
-XDL_API int format_string_array(const tchar_t** sa, int n, tchar_t* tokens, int max);
-
-XDL_API const tchar_t* parse_param_name(const tchar_t* param, int len, tchar_t itemdot, int* plen);
-
-XDL_API int parse_param_name_count(const tchar_t* param, int len, tchar_t itemdot);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 XDL_API int split_line(const tchar_t* token, int len);
@@ -197,7 +174,7 @@ XDL_API int trim_xmlns(tchar_t* str, int slen);
 
 XDL_API int compare_nons(const tchar_t* src, int srclen, const tchar_t* dest, int destlen);
 
-XDL_API int parse_proto(const tchar_t* file);
+XDL_API byte_t parse_proto(const tchar_t* file);
 
 XDL_API void parse_url(const tchar_t* url, tchar_t** proat, int* prolen, tchar_t** addrat, int* addrlen, tchar_t** portat, int* portlen, tchar_t** objat, int* objlen, tchar_t** qryat, int* qrylen);
 

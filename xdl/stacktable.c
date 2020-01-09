@@ -84,7 +84,7 @@ void clear_stack_table(link_t_ptr st)
 
 void push_stack_node(link_t_ptr st, void* data)
 {
-	stack_table_t* pst = (stack_table_t*)st;
+	stack_table_t* pst = StackTableFromLink(st);
 
 	XDL_ASSERT(st && st->tag == lkStackTable);
 
@@ -100,7 +100,7 @@ void push_stack_node(link_t_ptr st, void* data)
 
 void* pop_stack_node(link_t_ptr st)
 {
-	stack_table_t* pst = (stack_table_t*)st;
+	stack_table_t* pst = StackTableFromLink(st);
 	void* data;
 
 	XDL_ASSERT(st && st->tag == lkStackTable);
@@ -122,7 +122,7 @@ void* pop_stack_node(link_t_ptr st)
 
 void* pick_stack_node(link_t_ptr st)
 {
-	stack_table_t* pst = (stack_table_t*)st;
+	stack_table_t* pst = StackTableFromLink(st);
 	void* data;
 
 	XDL_ASSERT(st && st->tag == lkStackTable);
@@ -148,7 +148,7 @@ void* pick_stack_node(link_t_ptr st)
 
 void* peek_stack_node(link_t_ptr st, int index)
 {
-	stack_table_t* pst = (stack_table_t*)st;
+	stack_table_t* pst = StackTableFromLink(st);
 
 	XDL_ASSERT(st && st->tag == lkStackTable);
 
@@ -163,7 +163,7 @@ void* peek_stack_node(link_t_ptr st, int index)
 
 int get_stack_node_count(link_t_ptr st)
 {
-	stack_table_t* pst = (stack_table_t*)st;
+	stack_table_t* pst = StackTableFromLink(st);
 
 	XDL_ASSERT(st && st->tag == lkStackTable);
 

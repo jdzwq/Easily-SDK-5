@@ -177,6 +177,15 @@ XDL_API void read_profile(const tchar_t* fname, const tchar_t* sec, const tchar_
 XDL_API void write_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, const tchar_t* val);
 
 /*
+@FUNCTION get_envvar: get environment variable.
+@INPUT const tchar_t* ename: environment name.
+@OUTPUT tchar_t* buf: string buffer for returning variable value.
+@INPUT int max: string buffer max length, not include terminated character space.
+@RETURN int: return zero if not find, otherwise return bytes copyed.
+*/
+XDL_API int get_envvar(const tchar_t* ename, tchar_t* buf, int max);
+
+/*
 @FUNCTION system_info: get system some environment value.
 @OUTPUT sys_info_t* psi: system information struct pointer for returning.
 @RETURN void: none.

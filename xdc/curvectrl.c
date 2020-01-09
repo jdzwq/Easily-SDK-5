@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcbox.h"
 
 typedef struct _curve_delta_t{
@@ -71,7 +72,7 @@ static void _curvectrl_reset_page(res_win_t widget)
 
 	widget_get_client_rect(widget, &xr);
 
-	widget_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 10, 10);
+	widgetex_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 10, 10);
 }
 
 /********************************************************************************************/
@@ -79,7 +80,7 @@ int hand_curve_create(res_win_t widget, void* data)
 {
 	curve_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (curve_delta_t*)xmem_alloc(sizeof(curve_delta_t));
 
@@ -104,7 +105,7 @@ void hand_curve_destroy(res_win_t widget)
 
 	SETCURVEDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_curve_keydown(res_win_t widget, int key)
@@ -185,7 +186,7 @@ void hand_curve_scroll(res_win_t widget, bool_t bHorz, long nLine)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_curve_wheel(res_win_t widget, bool_t bHorz, long nDelta)
@@ -205,7 +206,7 @@ void hand_curve_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widget_hand_scroll(widget, bHorz, nLine))
+	if (widgetex_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -258,8 +259,8 @@ void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 

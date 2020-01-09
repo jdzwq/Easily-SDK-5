@@ -275,8 +275,8 @@ typedef bool_t(STDCALL *PF_DB_IMPORT)(xdb_t, stream_t, const tchar_t*);
 typedef bool_t(STDCALL *PF_DB_BATCH)(xdb_t, stream_t);
 typedef bool_t(STDCALL *PF_DB_WRITE_BLOB)(xdb_t, stream_t, const tchar_t*);
 typedef bool_t(STDCALL *PF_DB_READ_BLOB)(xdb_t, stream_t, const tchar_t*);
-typedef bool_t(STDCALL *PF_DB_WRITE_CLOB)(xdb_t, stream_t, const tchar_t*);
-typedef bool_t(STDCALL *PF_DB_READ_CLOB)(xdb_t, stream_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_WRITE_CLOB)(xdb_t, string_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_READ_CLOB)(xdb_t, string_t, const tchar_t*);
 typedef bool_t(STDCALL *PF_DB_WRITE_XDOC)(xdb_t, LINKPTR, const tchar_t*);
 typedef bool_t(STDCALL *PF_DB_READ_XDOC)(xdb_t, LINKPTR, const tchar_t*);
 

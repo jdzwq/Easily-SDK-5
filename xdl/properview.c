@@ -256,7 +256,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	XDL_ASSERT(pif);
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	ih = get_proper_item_height(ptr);
 	iw = get_proper_item_span(ptr);

@@ -68,20 +68,24 @@ xhand_t xcons_alloc()
 	pst->cons = fd;
 	pst->cname = xsclone(cname);
 
-	return (xhand_t)pst;
+	return &pst->head;
 }
 
 const tchar_t* xcons_name(xhand_t con)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
+
+	XDL_ASSERT(con && con->tag == _HANDLE_CONS);
 
 	return pst->cname;
 }
 
 res_file_t xcons_stdin(xhand_t con)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
+
+	XDL_ASSERT(con && con->tag == _HANDLE_CONS);
 
 	pif = PROCESS_CONS_INTERFACE;
 
@@ -92,8 +96,10 @@ res_file_t xcons_stdin(xhand_t con)
 
 res_file_t xcons_stdout(xhand_t con)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
+
+	XDL_ASSERT(con && con->tag == _HANDLE_CONS);
 
 	pif = PROCESS_CONS_INTERFACE;
 
@@ -104,7 +110,7 @@ res_file_t xcons_stdout(xhand_t con)
 
 void xcons_free(xhand_t con)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
 
 	pif = PROCESS_CONS_INTERFACE;
@@ -128,7 +134,7 @@ void xcons_free(xhand_t con)
 
 bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
 
 	pif = PROCESS_CONS_INTERFACE;
@@ -142,7 +148,7 @@ bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf)
 
 bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
 	size_t size;
 
@@ -169,7 +175,7 @@ bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb)
 
 bool_t xcons_flush(xhand_t con)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
 
 	pif = PROCESS_CONS_INTERFACE;
@@ -183,7 +189,7 @@ bool_t xcons_flush(xhand_t con)
 
 bool_t xcons_read(xhand_t con, byte_t* buf, dword_t* pb)
 {
-	console_t* pst = (console_t*)con;
+	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
 	size_t size;
 

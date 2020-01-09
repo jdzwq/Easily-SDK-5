@@ -303,6 +303,7 @@ void	_release_handle(res_hand_t hh);
 bool_t	_inherit_handle(res_hand_t hh, bool_t b);
 void	_read_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, tchar_t* buf, int max);
 void	_write_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, const tchar_t* val);
+int		_get_envvar(const tchar_t* ename, tchar_t* buf, int max);
 void	_system_info(sys_info_t* psi);
 #endif
 
@@ -557,6 +558,10 @@ void	_widget_track_mouse(res_win_t wt, dword_t mask);
 void	_widget_set_alpha(res_win_t, unsigned char a);
 unsigned char _widget_get_alpha(res_win_t wt);
 void	_widget_set_region(res_win_t wt, res_rgn_t rgn);
+#endif
+
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+res_glc_t	_widget_get_glctx(res_win_t wt);
 #endif
 
 #endif /*XDK_SUPPORT_WIDGET*/

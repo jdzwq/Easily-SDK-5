@@ -157,11 +157,11 @@ void parse_rowset_from_line(link_t_ptr ptr, string_t vs)
 			}
 			else
 			{
-				esc_len = decode_escape(token - pos, pos, NULL, MAX_LONG);
+				esc_len = csv_char_decode(token - pos, pos, NULL, MAX_LONG);
 				if (esc_len != pos)
 				{
 					sz_esc = xsalloc(esc_len + 1);
-					decode_escape(token - pos, pos, sz_esc, esc_len);
+					csv_char_decode(token - pos, pos, sz_esc, esc_len);
 
 					attach_cell_text(rlk, clk, sz_esc);
 				}
@@ -279,7 +279,7 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_date)
 	}
 
 	ltoxs(diff, sz_diff, INT_LEN);
-	xhttp_set_query_entity(xhttp, XDB_API_DBDATETIME, -1, sz_diff, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBDATETIME, -1, sz_diff, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -363,7 +363,7 @@ bool_t STDCALL db_schema(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -508,7 +508,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -645,7 +645,7 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 	sqlstr = xsalloc(size + 1);
 	format_grid_select_sql(grid,sqlstr,size);
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
 
 	xsfree(sqlstr);
 	sqlstr = NULL;
@@ -1215,7 +1215,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBIMPORT, -1, table, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBIMPORT, -1, table, -1);
 
 	xhttp_set_request_default_header(xhttp);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
@@ -1335,7 +1335,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -1550,7 +1550,7 @@ bool_t STDCALL db_call_json(xdb_t db, const tchar_t* procname, link_t_ptr json)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBCALLJSON, -1, procname, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBCALLJSON, -1, procname, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -1663,7 +1663,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBWRITEBLOB, -1, sqlfmt, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBWRITEBLOB, -1, sqlfmt, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -1774,7 +1774,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBREADBLOB, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBREADBLOB, -1, sqlstr, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -1870,7 +1870,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBWRITECLOB, -1, sqlfmt, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBWRITECLOB, -1, sqlfmt, -1);
 
 	n_bom = format_utfbom(_UTF8, sz_bom);
 
@@ -1999,7 +1999,7 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBREADCLOB, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBREADCLOB, -1, sqlstr, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -2101,7 +2101,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBWRITEXDOC, -1, sqlfmt, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBWRITEXDOC, -1, sqlfmt, -1);
 
 	xhttp_set_request_default_header(xhttp);
 
@@ -2219,7 +2219,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
 
-	xhttp_set_query_entity(xhttp, XDB_API_DBREADXDOC, -1, sqlstr, -1);
+	xhttp_set_url_query_entity(xhttp, XDB_API_DBREADXDOC, -1, sqlstr, -1);
 
 	xhttp_set_request_default_header(xhttp);
 

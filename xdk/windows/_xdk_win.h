@@ -68,6 +68,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_CONTEXT_PRINTER
 #define XDK_SUPPORT_CONTEXT_GRAPHIC
 #define XDK_SUPPORT_CONTEXT_REGION
+#define XDK_SUPPORT_CONTEXT_OPENGL
 #define XDK_SUPPORT_CONTEXT
 
 #define XDK_SUPPORT_WIDGET_NC
@@ -278,6 +279,9 @@ typedef HBITMAP		res_bmp_t;
 #endif
 #ifdef XDK_SUPPORT_CONTEXT_REGION
 typedef HRGN		res_rgn_t;
+#endif
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+typedef HGLRC		res_glc_t;
 #endif
 #endif
 

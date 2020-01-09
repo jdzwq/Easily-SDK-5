@@ -330,8 +330,8 @@ void TopogPanel_Topog_OnRBClick(res_win_t widget, NOTICE_TOPOG* pnf)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_get_color_mode(widget, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 	LINKPTR mlk;
@@ -617,7 +617,7 @@ void TopogPanel_OnPreview(res_win_t widget)
 
 int TopogPanel_OnCreate(res_win_t widget, void* data)
 {
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	TopogPanelDelta* pdt = (TopogPanelDelta*)xmem_alloc(sizeof(TopogPanelDelta));
 
@@ -698,7 +698,7 @@ int TopogPanel_OnCreate(res_win_t widget, void* data)
 	titlectrl_attach(pdt->hTitle, ptrTitle);
 	titlectrl_set_focus_item(pdt->hTitle, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -721,7 +721,7 @@ void TopogPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -754,7 +754,7 @@ void TopogPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int TopogPanel_OnClose(res_win_t widget)

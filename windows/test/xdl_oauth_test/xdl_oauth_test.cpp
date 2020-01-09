@@ -3,18 +3,18 @@
 
 #include "stdafx.h"
 
-#define AS_URL_AUTH_REQUEST		_T("http://172.16.190.1:8889/oau/auth_request?")
-#define AS_URL_AUTH_ACCESS		_T("http://172.16.190.1:8889/oau/auth_access?")
+#define AS_URL_AUTH_REQUEST		_T("http://172.16.190.190:8889/oau/auth_request?")
+#define AS_URL_AUTH_ACCESS		_T("http://172.16.190.190:8889/oau/auth_access?")
 #define AS_URL_AUTH_REFRESH		_T("http://127.0.0.1:8889/oau/auth_refresh?")
 
 void _test_implicit()
 {
 	xhand_t xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_REQUEST);
 
-	xhttp_set_query_entity(xh, OAUTH_RESPONSE_TYPE, -1, OAUTH_RESPONSE_TYPE_TOKEN, -1);
-	xhttp_set_query_entity(xh, OAUTH_CLIENT_ID, -1, _T("111"), -1);
-	xhttp_set_query_entity(xh, OAUTH_REDIRECT_URL, -1, _T("http://www.someone.com"), -1);
-	xhttp_set_query_entity(xh, OAUTH_STATE, -1, _T("123"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_RESPONSE_TYPE, -1, OAUTH_RESPONSE_TYPE_TOKEN, -1);
+	xhttp_set_url_query_entity(xh, OAUTH_CLIENT_ID, -1, _T("111"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_REDIRECT_URL, -1, _T("http://www.someone.com"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_STATE, -1, _T("123"), -1);
 
 	xhttp_send_request(xh);
 
@@ -37,10 +37,10 @@ void _test_explicit()
 {
 	xhand_t xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_REQUEST);
 
-	xhttp_set_query_entity(xh, OAUTH_RESPONSE_TYPE, -1, OAUTH_RESPONSE_TYPE_CODE, -1);
-	xhttp_set_query_entity(xh, OAUTH_CLIENT_ID, -1, _T("111"), -1);
-	xhttp_set_query_entity(xh, OAUTH_REDIRECT_URL, -1, _T("http://www.someone.com"), -1);
-	xhttp_set_query_entity(xh, OAUTH_STATE, -1, _T("123"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_RESPONSE_TYPE, -1, OAUTH_RESPONSE_TYPE_CODE, -1);
+	xhttp_set_url_query_entity(xh, OAUTH_CLIENT_ID, -1, _T("111"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_REDIRECT_URL, -1, _T("http://www.someone.com"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_STATE, -1, _T("123"), -1);
 
 	xhttp_send_request(xh);
 
@@ -85,10 +85,10 @@ void _test_explicit()
 
 	xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_ACCESS);
 
-	xhttp_set_query_entity(xh, OAUTH_GRANT_TYPE, -1, OAUTH_GRANT_TYPE_AUTH, -1);
-	xhttp_set_query_entity(xh, OAUTH_CODE, -1, oau_code,  -1);
-	xhttp_set_query_entity(xh, OAUTH_REDIRECT_URL, -1, _T("http://www.someone.com"), -1);
-	xhttp_set_query_entity(xh, OAUTH_CLIENT_ID, -1, _T("111"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_GRANT_TYPE, -1, OAUTH_GRANT_TYPE_AUTH, -1);
+	xhttp_set_url_query_entity(xh, OAUTH_CODE, -1, oau_code,  -1);
+	xhttp_set_url_query_entity(xh, OAUTH_REDIRECT_URL, -1, _T("http://www.someone.com"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_CLIENT_ID, -1, _T("111"), -1);
 
 	xhttp_send_request(xh);
 
@@ -112,9 +112,9 @@ void _test_refresh()
 {
 	XHANDLE xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_REFRESH);
 
-	xhttp_set_query_entity(xh, OAUTH_GRANT_TYPE, -1, OAUTH_GRANT_TYPE_AUTH, -1);
-	xhttp_set_query_entity(xh, OAUTH_REFRESH_TOKEN, -1, _T("1111"), -1);
-	xhttp_set_query_entity(xh, OAUTH_SCOPE, -1, _T(""), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_GRANT_TYPE, -1, OAUTH_GRANT_TYPE_AUTH, -1);
+	xhttp_set_url_query_entity(xh, OAUTH_REFRESH_TOKEN, -1, _T("1111"), -1);
+	xhttp_set_url_query_entity(xh, OAUTH_SCOPE, -1, _T(""), -1);
 
 	xhttp_send_request(xh);
 

@@ -195,7 +195,7 @@ dword_t _comm_wait(res_file_t fh, async_t* pb)
 			{
 				dwEvent = COMM_EVNET_ERROR;
 			}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 			if (pb->type == ASYNC_QUEUE)
 			{
 				if (GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
@@ -203,7 +203,8 @@ dword_t _comm_wait(res_file_t fh, async_t* pb)
 					ResetEvent(pov->hEvent);
 				}
 			}
-			else
+#endif
+			if (pb->type == ASYNC_EVENT)
 			{
 				if (WaitForSingleObject(pov->hEvent, ((pb->timo)? pb->timo : INFINITE)) == WAIT_OBJECT_0)
 				{

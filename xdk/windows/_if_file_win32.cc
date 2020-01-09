@@ -116,7 +116,7 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
 			if (pcb) *pcb = 0;
 			return 0;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
@@ -125,7 +125,8 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
 				return 0;
 			}
 		}
-		else if (pb->type == ASYNC_EVENT)
+#endif 
+		if (pb->type == ASYNC_EVENT)
 		{
 			if (!GetOverlappedResult(fh, pov, &dw, TRUE))
 			{
@@ -169,7 +170,7 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
 			if (pcb) *pcb = 0;
 			return 0;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
@@ -178,7 +179,8 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
 				return 0;
 			}
 		}
-		else
+#endif
+		if (pb->type == ASYNC_EVENT)
 		{
 			if (!GetOverlappedResult(fh, pov, &dw, TRUE))
 			{

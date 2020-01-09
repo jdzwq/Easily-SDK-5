@@ -55,11 +55,12 @@ void xcomm_default_mode(dev_com_t* pmod)
 
 bool_t xcomm_set_mode(xhand_t com, const dev_com_t* pmod)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
 
-	pif = PROCESS_COMM_INTERFACE;
+	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
+	pif = PROCESS_COMM_INTERFACE;
 	XDL_ASSERT(pif != NULL);
 
 	return (*pif->pf_set_comm_mode)(pst->comm, pmod);
@@ -67,11 +68,12 @@ bool_t xcomm_set_mode(xhand_t com, const dev_com_t* pmod)
 
 bool_t xcomm_get_mode(xhand_t com, dev_com_t* pmod)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
 
-	pif = PROCESS_COMM_INTERFACE;
+	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
+	pif = PROCESS_COMM_INTERFACE;
 	XDL_ASSERT(pif != NULL);
 
 	return (*pif->pf_get_comm_mode)(pst->comm, pmod);
@@ -103,13 +105,15 @@ xhand_t xcomm_open(const tchar_t* pname, dword_t fmode)
 		async_alloc_lapp(&pst->over, COMM_BASE_TIMO);
 	}
 
-	return (xhand_t)pst;
+	return &pst->head;
 }
 
 void xcomm_close(xhand_t com)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
+
+	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
 	pif = PROCESS_COMM_INTERFACE;
 
@@ -124,9 +128,11 @@ void xcomm_close(xhand_t com)
 
 dword_t xcomm_wait(xhand_t com, dword_t* pcb)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
 	dword_t even;
+
+	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
 	pif = PROCESS_COMM_INTERFACE;
 
@@ -141,15 +147,15 @@ dword_t xcomm_wait(xhand_t com, dword_t* pcb)
 
 bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pcb)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
 	dword_t len;
+
+	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
 	pif = PROCESS_COMM_INTERFACE;
 
 	XDL_ASSERT(pif != NULL);
-
-	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
 	len = *pcb;
 
@@ -168,7 +174,7 @@ bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pcb)
 
 bool_t xcomm_flush(xhand_t com)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
 
 	pif = PROCESS_COMM_INTERFACE;
@@ -182,7 +188,7 @@ bool_t xcomm_flush(xhand_t com)
 
 bool_t xcomm_read(xhand_t com, byte_t* buf, dword_t* pcb)
 {
-	comport_t* pst = (comport_t*)com;
+	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
 	dword_t len;
 

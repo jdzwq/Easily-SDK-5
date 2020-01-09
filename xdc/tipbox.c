@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _TIPBOX_DATA{
 	int type;
@@ -52,7 +53,7 @@ int hand_tipbox_create(res_win_t widget, void* data)
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
 	TIPBOX_DATA* ppd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (tipbox_delta_t*)xmem_alloc(sizeof(tipbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(tipbox_delta_t));
@@ -82,7 +83,7 @@ void hand_tipbox_destroy(res_win_t widget)
 
 	SETTIPBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_tipbox_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
@@ -130,10 +131,10 @@ void hand_tipbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	canvas_t canv;
 	if_canvas_t* pif;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -207,8 +208,8 @@ void tipbox_popup_size(res_win_t widget, xsize_t* pxs)
 	res_ctx_t rdc;
 	xrect_t xr = { 0 };
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
 
 	rdc = widget_client_ctx(widget);
 
@@ -248,10 +249,10 @@ res_win_t show_toolbox(const xpoint_t* ppt, const tchar_t* sz_text)
 		xr.y = xs.cy - xr.h;
 	}
 
-	widget_get_color_mode(wt, &clr);
+	widgetex_get_color_mode(wt, &clr);
 	parse_xcolor(&clr.clr_bkg, GDI_ATTR_RGB_SOFTWHITE);
 	parse_xcolor(&clr.clr_txt, GDI_ATTR_RGB_DARKCYAN);
-	widget_set_color_mode(wt, &clr);
+	widgetex_set_color_mode(wt, &clr);
 
 	widget_move(wt, RECTPOINT(&xr));
 	widget_size(wt, RECTSIZE(&xr));

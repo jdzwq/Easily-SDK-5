@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcfire.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcbox.h"
 
 
@@ -79,9 +80,9 @@ res_win_t firecheck_create(res_win_t widget, const xrect_t* pxr)
 	widget_set_user_id(editor, IDC_CHECKBOX);
 	widget_set_subproc(editor, IDS_CHECKBOX, &ev);
 
-	widget_get_xface(editor, &xa);
+	widgetex_get_xface(editor, &xa);
 	xscpy(xa.text_wrap, NULL);
-	widget_set_xface(editor, &xa);
+	widgetex_set_xface(editor, &xa);
 
 	return editor;
 }

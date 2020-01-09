@@ -55,10 +55,6 @@ typedef struct _db_t{
 	tchar_t err_text[ERR_LEN + 1];
 }db_t;
 
-
-static tchar_t sql_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
-
-
 static void sqltodt(int type, tchar_t* dt)
 {
 	switch (type) {
@@ -2093,11 +2089,11 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
                 d_len = utf8_to_mbs((byte_t*)pbuf[i],plen[i],d_str, d_len);
 #endif
 
-				len_esc = encode_escape(sql_esc, d_str, d_len, NULL, MAX_LONG);
+				len_esc = csv_char_encode(d_str, d_len, NULL, MAX_LONG);
 				if (len_esc != d_len)
 				{
 					sz_esc = xsalloc(len_esc + 1);
-					encode_escape(sql_esc, d_str, d_len, sz_esc, len_esc);
+					csv_char_encode(d_str, d_len, sz_esc, len_esc);
 
 					string_cat(vs, sz_esc, len_esc);
 					xsfree(sz_esc);
@@ -2354,11 +2350,11 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
             if(tklen)
             {
                 tkpre = token - tklen;
-                len_esc = decode_escape(tkpre, tklen, NULL, MAX_LONG);
+                len_esc = csv_char_decode(tkpre, tklen, NULL, MAX_LONG);
                 if (len_esc != tklen)
                 {
                     sz_esc = xsalloc(len_esc + 1);
-                    decode_escape(tkpre, tklen, sz_esc, len_esc);
+					csv_char_decode(tkpre, tklen, sz_esc, len_esc);
                     
 #ifdef _UNICODE
                     plen[i] = ucs_to_utf8(sz_esc, len_esc, NULL, MAX_LONG);

@@ -290,14 +290,14 @@ void DialogPanel_OnPreview(res_win_t widget)
 
 static void demoDlg_OnSubbing(res_win_t widget, uid_t sid, var_long delta)
 {
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 }
 
 static void demoDlg_OnUnSubbing(res_win_t widget, uid_t sid, var_long delta)
 {
 	widget_del_subproc(widget, sid);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void DialogPanel_OnExec(res_win_t widget)
@@ -326,7 +326,7 @@ void DialogPanel_OnExec(res_win_t widget)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widget_set_color_mode(dlg, &clr);
+	widgetex_set_color_mode(dlg, &clr);
 
 	widget_show(dlg, WD_SHOW_NORMAL);
 
@@ -1262,9 +1262,9 @@ void DialogPanel_Dialog_OnRBClick(res_win_t widget, NOTICE_DIALOG* pnf)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1343,7 +1343,7 @@ int DialogPanel_OnCreate(res_win_t widget, void* data)
 	xrect_t xr;
 	const tchar_t* szParam;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETDIALOGPANELDELTA(widget, pdt);
 
@@ -1422,7 +1422,7 @@ int DialogPanel_OnCreate(res_win_t widget, void* data)
 
 	titlectrl_set_focus_item(pdt->hTitle, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	if (!is_null(szParam))
 	{
@@ -1443,7 +1443,7 @@ void DialogPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -1476,7 +1476,7 @@ void DialogPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void DialogPanel_OnShow(res_win_t widget, bool_t bShow)

@@ -215,6 +215,24 @@ void _write_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key
 	return;
 }
 
+int	_get_envvar(const tchar_t* ename, tchar_t* buf, int max)
+{
+    char* str;
+    int len;
+    
+    str = getenv(ename);
+    if(!str)
+        return 0;
+    
+    len = _tstrlen(str);
+
+    len = (len < max)? len : max;
+    _tstrncpy(buf, str, len);
+    buf[len] = _T('\0');
+    
+    return len;
+}
+
 void _system_info(sys_info_t* psi)
 {
     int num = 0;

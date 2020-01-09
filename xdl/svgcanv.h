@@ -69,13 +69,6 @@ XDL_API res_ctx_t svg_get_canvas_ctx(canvas_t canv);
 XDL_API link_t_ptr svg_get_canvas_doc(canvas_t canv);
 
 /*
-@FUNCTION svg_get_canvas_type: get the canvas type, it can be _CANV_PRINTER.
-@INPUT canvas_t canv: the canvas object.
-@RETURN int: return the canvas type.
-*/
-XDL_API int svg_get_canvas_type(canvas_t canv);
-
-/*
 @FUNCTION svg_pt_per_mm: get points per millimeter in svg canvas.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.

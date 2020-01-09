@@ -39,12 +39,6 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
 
-
-static tchar_t url_asc[] = { _T(' '), _T('"'),_T('#'), _T('%'), _T('&'), _T('('), _T(')'), _T('+'), _T(','), _T('/'), _T(':'), _T(';'), _T('<'), _T('='), _T('>'), _T('?'), _T('@'), _T('\\'), _T('|'), _T('\0') };
-
-//#define ASC_LEN	16
-//static tchar_t url_asc[ASC_LEN] = { _T(' '), _T('"'), _T('#'), _T('%'), _T('('), _T(')'), _T('+'), _T(','), _T(':'), _T(';'), _T('<'), _T('>'), _T('?'), _T('@'), _T('\\'), _T('|'), _T('\0')  };
-
 typedef struct _xhttp_t{
 	xhand_head head;		//head for xhand_t
 	int type;
@@ -67,15 +61,17 @@ typedef struct _xhttp_t{
 	tchar_t version[NUM_LEN + 1];
 	tchar_t host[RES_LEN + 1];
 	tchar_t object[PATH_LEN + 1];
-	tchar_t *query;
+
+	byte_t *query;
+	dword_t len_query;
 
 	tchar_t code[NUM_LEN + 1];
 	tchar_t text[ERR_LEN + 1];
 }xhttp_t;
 
+#define IS_XHTTP_METHOD(token)		(a_xsnicmp(token,"GET",3) == 0 ||  a_xsnicmp(token,"PUT",3) == 0 || a_xsnicmp(token,"POST",4) == 0 || a_xsnicmp(token,"DELETE",6) == 0 || a_xsnicmp(token,"HEAD",4) == 0 || a_xsnicmp(token,"LIST",4) == 0 || a_xsnicmp(token,"GRANT",5) == 0) 
 
-/****************************************************************************************************/
-
+/***********************************************************************************************/
 static void _xhttp_parse_request(xhttp_t* phttp, byte_t* data, int len)
 {
 	byte_t *token = data;
@@ -135,19 +131,10 @@ static void _xhttp_parse_request(xhttp_t* phttp, byte_t* data, int len)
 			token++;
 			klen++;
 		}
-#ifdef _UNICODE
-		tlen = utf8_to_ucs(key, klen, NULL, MAX_LONG);
-#else
-		tlen = utf8_to_mbs(key, klen, NULL, MAX_LONG);
-#endif
 
-		phttp->query = xsalloc(tlen + 1);
-
-#ifdef _UNICODE
-		tlen = utf8_to_ucs(key, klen, phttp->query, tlen);
-#else
-		tlen = utf8_to_mbs(key, klen, phttp->query, tlen);
-#endif
+		phttp->len_query = klen;
+		phttp->query = (byte_t*)xmem_realloc(phttp->query, phttp->len_query + 1);
+		xmem_copy((void*)phttp->query, (void*)key, phttp->len_query);
 	}
 
 	//skip black
@@ -296,7 +283,7 @@ static dword_t _xhttp_format_request(xhttp_t* phttp, byte_t* buf, dword_t max)
 		return total;
 
 	//query
-	if (!is_null(phttp->query))
+	if (phttp->len_query)
 	{
 		if (buf)
 		{
@@ -306,11 +293,11 @@ static dword_t _xhttp_format_request(xhttp_t* phttp, byte_t* buf, dword_t max)
 		if (total >= max)
 			return total;
 
-#ifdef _UNICODE
-		total += ucs_to_utf8(phttp->query, -1, ((buf) ? buf + total : NULL), max - total);
-#else
-		total += mbs_to_utf8(phttp->query, -1, ((buf) ? buf + total : NULL), max - total);
-#endif
+		if (buf)
+		{
+			xmem_copy((void*)(buf + total), (void*)phttp->query, phttp->len_query);
+		}
+		total += phttp->len_query;
 		if (total >= max)
 			return total;
 	}
@@ -925,8 +912,9 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 
 	if(qrylen)
 	{
-		phttp->query = xsalloc(qrylen + 1);
-		xsncpy(phttp->query, qryat, qrylen);
+		phttp->len_query = xhttp_url_encoding(qryat, qrylen, NULL, MAX_LONG);
+		phttp->query = (byte_t*)xmem_alloc(phttp->len_query + 1);
+		xhttp_url_encoding(qryat, qrylen, phttp->query, phttp->len_query);
 	}
 
 	switch (phttp->secu)
@@ -971,13 +959,14 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 
 	END_CATCH;
 
-	return (xhand_t)phttp;
+	return &phttp->head;
 ONERROR:
+	XDL_TRACE_LAST;
 
 	if (phttp)
-		xmem_free(phttp);
-
-	XDL_TRACE_LAST;
+	{
+		xhttp_close(&phttp->head);
+	}
 
 	return NULL;
 }
@@ -1024,7 +1013,7 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_read = xssl_read;
 		phttp->inf.pf_setopt = xssl_setopt;
 
-		xsocket_peer(xssl_socket(bio), &na);
+		socket_peer(xssl_socket(bio), &na);
 		break;
 	case _SECU_SSH:
 		phttp->inf.pf_write = xssh_write;
@@ -1032,7 +1021,7 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_flush = xssh_flush;
 		phttp->inf.pf_setopt = xssh_setopt;
 
-		xsocket_peer(xssh_socket(bio), &na);
+		socket_peer(xssh_socket(bio), &na);
 		break;
 #endif
 	default:
@@ -1040,7 +1029,7 @@ xhand_t xhttp_server(xhand_t bio)
 		phttp->inf.pf_read = xtcp_read;
 		phttp->inf.pf_setopt = xtcp_set_option;
 
-		xsocket_peer(xtcp_socket(bio), &na);
+		socket_peer(xtcp_socket(bio), &na);
 		break;
 	}
 	
@@ -1053,20 +1042,21 @@ xhand_t xhttp_server(xhand_t bio)
 
 	END_CATCH;
 
-	return (xhand_t)phttp;
+	return &phttp->head;
 ONERROR:
+	XDL_TRACE_LAST;
 
 	if (phttp)
-		xmem_free(phttp);
-
-	XDL_TRACE_LAST;
+	{
+		xhttp_close(&phttp->head);
+	}
 
 	return NULL;
 }
 
 void xhttp_close(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_CLI || phttp->type == _XHTTP_TYPE_SRV);
@@ -1105,7 +1095,7 @@ void xhttp_close(xhand_t xhttp)
 
 int xhttp_type(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1114,7 +1104,7 @@ int xhttp_type(xhand_t xhttp)
 
 int xhttp_secu(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1123,7 +1113,7 @@ int xhttp_secu(xhand_t xhttp)
 
 xhand_t xhttp_bio(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1132,7 +1122,7 @@ xhand_t xhttp_bio(xhand_t xhttp)
 
 unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	res_file_t so;
 	net_addr_t na = { 0 };
 	unsigned short port = 0;
@@ -1157,7 +1147,7 @@ unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
 	if (so == INVALID_FILE)
 		return 0;
 
-	xsocket_addr(so, &na);
+	socket_addr(so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -1165,7 +1155,7 @@ unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
 
 unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	res_file_t so;
 	net_addr_t na = { 0 };
 	unsigned short port = 0;
@@ -1190,7 +1180,7 @@ unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
 	if (so == INVALID_FILE)
 		return 0;
 
-	xsocket_peer(so, &na);
+	socket_peer(so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -1198,114 +1188,16 @@ unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
 
 dword_t xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
 	return _xhttp_format_request(phttp, buf, max);
 }
 
-void xhttp_set_query(xhand_t xhttp, const tchar_t* query, int len)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	if (len < 0) len = xslen(query);
-
-	phttp->query = xsrealloc(phttp->query, len + 1);
-	xscpy(phttp->query, query);
-}
-
-const tchar_t* xhttp_get_query_ptr(xhand_t xhttp)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	return phttp->query;
-}
-
-void xhttp_set_query_entity(xhand_t xhttp, const tchar_t* key, int klen, const tchar_t* val, int vlen)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-	int len,tklen = 0;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-	XDL_ASSERT(phttp->type == _XHTTP_TYPE_CLI);
-
-	if (klen < 0)
-		klen = xslen(key);
-	if (!klen)
-		return;
-
-	if (vlen < 0)
-		vlen = xslen(val);
-
-	tklen += encode_escape(url_asc, key, klen, NULL, MAX_LONG);
-	tklen++; //=
-	tklen += encode_escape(url_asc, val, vlen, NULL, MAX_LONG);
-
-	len = xslen(phttp->query);
-	if (len)
-	{
-		phttp->query = xsrealloc(phttp->query, len + tklen + 2);
-		xsncpy(phttp->query + len, _T("&"), 1);
-		len++;
-	}
-	else
-	{
-		phttp->query = xsrealloc(phttp->query, tklen + 1);
-	}
-	
-	len += encode_escape(url_asc, key, klen, phttp->query + len, MAX_LONG);
-
-	xsncpy(phttp->query + len, _T("="), 1);
-	len++;
-
-	encode_escape(url_asc, val, vlen, phttp->query + len, MAX_LONG);
-}
-
-int xhttp_get_query_entity(xhand_t xhttp, const tchar_t* key, int len, tchar_t* buf, int max)
-{
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-	const tchar_t* token = NULL;
-	tchar_t *kstr, *vstr;
-	int klen, vlen;
-	tchar_t *tmp = NULL;
-	int tlen = 0;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	tlen = encode_escape(url_asc, key, len, NULL, MAX_LONG);
-	tmp = xsalloc(tlen + 1);
-	encode_escape(url_asc, key, len, tmp, tlen); 
-
-	token = phttp->query;
-	while (token)
-	{
-		token = parse_options_token(token, -1, _T('='), _T('&'), &kstr, &klen, &vstr, &vlen);
-		if (compare_text(tmp, tlen, kstr, klen, 1) == 0)
-		{
-			vlen = decode_escape(vstr, vlen, buf, max);
-			xsfree(tmp);
-			return vlen;
-		}
-	}
-
-	xsfree(tmp);
-
-	if (buf)
-	{
-		buf[0] = _T('\0');
-	}
-
-	return 0;
-}
-
 stream_t xhttp_get_send_stream(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1314,7 +1206,7 @@ stream_t xhttp_get_send_stream(xhand_t xhttp)
 
 stream_t xhttp_get_recv_stream(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1323,7 +1215,7 @@ stream_t xhttp_get_recv_stream(xhand_t xhttp)
 
 int	xhttp_get_url_method(xhand_t xhttp, tchar_t* buf, int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int len;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -1336,7 +1228,7 @@ int	xhttp_get_url_method(xhand_t xhttp, tchar_t* buf, int max)
 
 int	xhttp_get_url_host(xhand_t xhttp,tchar_t* buf,int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int len;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -1349,7 +1241,7 @@ int	xhttp_get_url_host(xhand_t xhttp,tchar_t* buf,int max)
 
 int	xhttp_get_url_port(xhand_t xhttp,tchar_t* buf,int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1358,7 +1250,7 @@ int	xhttp_get_url_port(xhand_t xhttp,tchar_t* buf,int max)
 
 int	xhttp_get_url_object(xhand_t xhttp,tchar_t* buf,int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int len;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -1369,31 +1261,418 @@ int	xhttp_get_url_object(xhand_t xhttp,tchar_t* buf,int max)
 	return len;
 }
 
-int	xhttp_get_url_query(xhand_t xhttp,tchar_t* buf,int max)
+dword_t xhttp_get_encoded_query(xhand_t xhttp, byte_t* buf, dword_t max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
-	int len;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	len = xslen(phttp->query);
-	len = (len < max) ? len : max;
-	xsncpy(buf, phttp->query, len);
-	return len;
+	max = (max < phttp->len_query) ? max : phttp->len_query;
+	if (buf)
+	{
+		xmem_copy((void*)buf, (void*)phttp->query, max);
+	}
+
+	return max;
 }
 
-const tchar_t* xhttp_get_url_query_ptr(xhand_t xhttp)
+void xhttp_set_encoded_query(xhand_t xhttp, const byte_t* query, dword_t len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	return phttp->query;
+	if (!query || !len)
+	{
+		xmem_free(phttp->query);
+		phttp->query = NULL;
+		phttp->len_query = 0;
+		return;
+	}
+
+	phttp->len_query = len;
+	phttp->query = (byte_t*)xmem_realloc(phttp->query, phttp->len_query + 1);
+	xmem_copy((void*)phttp->query, (void*)query, phttp->len_query);
+}
+
+dword_t xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max)
+{
+	dword_t total = 0;
+	tchar_t *pre, *token = (tchar_t*)url;
+	tchar_t *kstr, *vstr;
+	int klen, vlen;
+
+	byte_t* utf;
+	dword_t ulen;
+
+	byte_t* esc;
+	dword_t elen;
+
+	if (len < 0)
+		len = xslen(url);
+
+	while (token && len)
+	{
+		pre = token;
+		token = parse_options_token(token, len, _T('='), _T('&'), &kstr, &klen, &vstr, &vlen);
+		len -= (token - pre);
+
+		//encoding the key
+#ifdef _UNICODE
+		ulen = ucs_to_utf8(kstr, klen, NULL, MAX_LONG);
+		utf = (byte_t*)xmem_alloc(ulen);
+		ucs_to_utf8(kstr, klen, utf, ulen);
+#else
+		ulen = mbs_to_utf8(kstr, klen, NULL, MAX_LONG);
+		utf = (byte_t*)xmem_alloc(ulen);
+		mbs_to_utf8(kstr, klen, utf, ulen);
+#endif
+
+		elen = url_byte_encode(utf, ulen, NULL, MAX_LONG);
+		esc = (byte_t*)xmem_alloc(elen + 1);
+		url_byte_encode(utf, ulen, esc, elen);
+
+		xmem_free(utf);
+
+		if (total + elen > max)
+		{
+			xmem_free(esc);
+			return total;
+		}
+		if (buf)
+		{
+			xmem_copy((void*)(buf + total), (void*)esc, elen);
+		}
+		total += elen;
+
+		xmem_free(esc);
+
+		if (total + 1 > max)
+			return total;
+
+		if (buf)
+		{
+			buf[total] = ('=');
+		}
+		total++;
+
+		//encoding the value
+#ifdef _UNICODE
+		ulen = ucs_to_utf8(vstr, vlen, NULL, MAX_LONG);
+		utf = (byte_t*)xmem_alloc(ulen);
+		ucs_to_utf8(vstr, vlen, utf, ulen);
+#else
+		ulen = mbs_to_utf8(vstr, vlen, NULL, MAX_LONG);
+		utf = (byte_t*)xmem_alloc(ulen);
+		mbs_to_utf8(vstr, vlen, utf, ulen);
+#endif
+
+		elen = url_byte_encode(utf, ulen, NULL, MAX_LONG);
+		esc = (byte_t*)xmem_alloc(elen + 1);
+		url_byte_encode(utf, ulen, esc, elen);
+
+		xmem_free(utf);
+
+		if (total + elen > max)
+		{
+			xmem_free(esc);
+			return total;
+		}
+		if (buf)
+		{
+			xmem_copy((void*)(buf + total), (void*)esc, elen);
+		}
+		total += elen;
+
+		xmem_free(esc);
+
+		if (total + 1 > max)
+			return total;
+
+		if (buf)
+		{
+			buf[total] = ('&');
+		}
+		total++;
+	}
+
+	//remove last '&'
+	if (total)
+	{
+		total--;
+
+		if (buf)
+		{
+			buf[total] = ('\0');
+		}
+	}
+
+	return total;
+}
+
+int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
+{
+	int total = 0;
+	schar_t *pre, *token = (schar_t*)url;
+	schar_t *kstr, *vstr;
+	int klen, vlen;
+
+	wchar_t* ucs;
+	int ulen;
+
+	byte_t* esc;
+	dword_t elen;
+
+	while (token && len)
+	{
+		pre = token;
+		token = a_parse_options_token(token, len, ('='), ('&'), &kstr, &klen, &vstr, &vlen);
+		len -= (token - pre);
+
+		//decoding the key
+		elen = url_byte_decode((byte_t*)kstr, klen, NULL, MAX_LONG);
+		esc = (byte_t*)xmem_alloc(elen + 1);
+		url_byte_decode(kstr, klen, esc, elen);
+
+#ifdef _UNICODE
+		ulen = utf8_to_ucs(esc, elen, NULL, MAX_LONG);
+		ucs = xsalloc(ulen + 1);
+		utf8_to_ucs(esc, elen, ucs, ulen);
+#else
+		ulen = mbs_to_ucs(esc, elen, NULL, MAX_LONG);
+		ucs = xsalloc(ulen + 1);
+		mbs_to_ucs(esc, elen, ucs, ulen);
+#endif
+
+		xmem_free(esc);
+
+		if (total + ulen > max)
+		{
+			xmem_free(ucs);
+			return total;
+		}
+		if (buf)
+		{
+			xsncpy(buf + total, ucs, ulen);
+		}
+		total += ulen;
+
+		xmem_free(ucs);
+
+		if (total + 1 > max)
+			return total;
+
+		if (buf)
+		{
+			buf[total] = ('=');
+		}
+		total++;
+
+		//decoding the value
+		elen = url_byte_decode((byte_t*)vstr, vlen, NULL, MAX_LONG);
+		esc = (byte_t*)xmem_alloc(elen + 1);
+		url_byte_decode(vstr, vlen, esc, elen);
+
+#ifdef _UNICODE
+		ulen = utf8_to_ucs(esc, elen, NULL, MAX_LONG);
+		ucs = xsalloc(ulen + 1);
+		utf8_to_ucs(esc, elen, ucs, ulen);
+#else
+		ulen = mbs_to_ucs(esc, elen, NULL, MAX_LONG);
+		ucs = xsalloc(ulen + 1);
+		mbs_to_ucs(esc, elen, ucs, ulen);
+#endif
+
+		xmem_free(esc);
+
+		if (total + ulen > max)
+		{
+			xmem_free(ucs);
+			return total;
+		}
+		if (buf)
+		{
+			xsncpy(buf + total, ucs, ulen);
+		}
+		total += ulen;
+
+		xmem_free(ucs);
+
+		if (total + 1 > max)
+			return total;
+
+		if (buf)
+		{
+			buf[total] = ('&');
+		}
+		total++;
+	}
+
+	//remove last '&'
+	if (total)
+	{
+		total--;
+
+		if (buf)
+		{
+			buf[total] = ('\0');
+		}
+	}
+
+	return total;
+}
+
+void xhttp_set_url_query(xhand_t xhttp, const tchar_t* query, int len)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	if (len < 0) len = xslen(query);
+
+	phttp->len_query = xhttp_url_encoding(query, len, NULL, MAX_LONG);
+	phttp->query = (byte_t*)xmem_realloc(phttp->query, phttp->len_query + 1);
+	xhttp_url_encoding(query, len, phttp->query, phttp->len_query);
+}
+
+int xhttp_get_url_query(xhand_t xhttp, tchar_t* buf, int max)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	return xhttp_url_decoding(phttp->query, phttp->len_query, buf, max);
+}
+
+void xhttp_set_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, const tchar_t* val, int vlen)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+
+	byte_t *utf_key, *utf_val;
+	dword_t ulen_key, ulen_val;
+
+	byte_t *esc_key, *esc_val;
+	dword_t elen_key, elen_val;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+	XDL_ASSERT(phttp->type == _XHTTP_TYPE_CLI);
+
+	if (klen < 0) klen = xslen(key);
+
+	if (!klen)
+		return;
+
+	if (vlen < 0) vlen = xslen(val);
+
+	//encoding the key
+#ifdef _UNICODE
+	ulen_key = ucs_to_utf8(key, klen, NULL, MAX_LONG);
+	utf_key = (byte_t*)xmem_alloc(ulen_key);
+	ucs_to_utf8(key, klen, utf_key, ulen_key);
+#else
+	ulen_key = mbs_to_utf8(key, klen, NULL, MAX_LONG);
+	utf_key = (byte_t*)xmem_alloc(ulen_key);
+	mbs_to_utf8(key, klen, utf_key, ulen_key);
+#endif
+
+	elen_key = url_byte_encode(utf_key, ulen_key, NULL, MAX_LONG);
+	esc_key = (byte_t*)xmem_alloc(elen_key + 1);
+	url_byte_encode(utf_key, ulen_key, esc_key, elen_key);
+
+	xmem_free(utf_key);
+
+	//encoding the value
+#ifdef _UNICODE
+	ulen_val = ucs_to_utf8(val, vlen, NULL, MAX_LONG);
+	utf_val = (byte_t*)xmem_alloc(ulen_val);
+	ucs_to_utf8(val, vlen, utf_val, ulen_val);
+#else
+	ulen_val = mbs_to_utf8(val, vlen, NULL, MAX_LONG);
+	utf_val = (byte_t*)xmem_alloc(ulen_val);
+	mbs_to_utf8(val, vlen, utf_val, ulen_val);
+#endif
+
+	elen_val = url_byte_encode(utf_val, ulen_val, NULL, MAX_LONG);
+	esc_val = (byte_t*)xmem_alloc(elen_val + 1);
+	url_byte_encode(utf_val, ulen_val, esc_val, elen_val);
+
+	xmem_free(utf_val);
+
+	//append '&' key '=' val
+	phttp->query = (byte_t*)xmem_realloc(phttp->query, phttp->len_query + 1 + elen_key + 1 + elen_val + 1);
+
+	//if not the first entity
+	if (phttp->len_query)
+	{
+		phttp->query[phttp->len_query] = ('&');
+		phttp->len_query++;
+	}
+
+	xmem_copy((void*)(phttp->query + phttp->len_query), (void*)esc_key, elen_key);
+	phttp->len_query += elen_key;
+
+	phttp->query[phttp->len_query] = ('=');
+	phttp->len_query++;
+
+	xmem_copy((void*)(phttp->query + phttp->len_query), (void*)esc_val, elen_val);
+	phttp->len_query += elen_val;
+
+	xmem_free(esc_key);
+	xmem_free(esc_val);
+}
+
+int xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int len, tchar_t* buf, int max)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	tchar_t* url;
+	int url_len;
+
+	tchar_t* token;
+	tchar_t *kstr, *vstr;
+	int klen, vlen;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	if (!phttp->len_query)
+	{
+		if (buf) buf[0] = _T('\0');
+		return 0;
+	}
+
+	url_len = xhttp_url_decoding(phttp->query, phttp->len_query, NULL, MAX_LONG);
+	url = xsalloc(url_len + 1);
+	xhttp_url_decoding(phttp->query, phttp->len_query, url, url_len);
+
+	kstr = vstr = NULL;
+	klen = vlen = 0;
+
+	token = url;
+	while (token)
+	{
+		kstr = vstr = NULL;
+		klen = vlen = 0;
+		token = parse_options_token(token, -1, _T('='), _T('&'), &kstr, &klen, &vstr, &vlen);
+
+		if (compare_text(key, len, kstr, klen, 1) == 0)
+		{
+			break;
+		}
+	}
+
+	if (buf)
+	{
+		vlen = (vlen < max) ? vlen : max;
+		xsncpy(buf, vstr, vlen);
+	}
+
+	xsfree(url);
+
+	return vlen;
 }
 
 void xhttp_set_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, const tchar_t* hvalue, int vlen)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1402,16 +1681,26 @@ void xhttp_set_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, con
 
 int xhttp_get_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, tchar_t* hvalue, int hmax)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	link_t_ptr ent;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	return read_string_entity(phttp->st_request, hname, nlen, hvalue, hmax);
+	ent = find_string_entity(phttp->st_request, hname, nlen);
+	if (ent)
+	{
+		return get_string_entity_val(ent, hvalue, hmax);
+	}
+	else
+	{
+		if (hvalue) hvalue[0] = _T('\0');
+		return 0;
+	}
 }
 
 void xhttp_set_request_default_header(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t szHost[PATH_LEN + 1] = { 0 };
 	tchar_t szPort[NUM_LEN + 1] = { 0 };
@@ -1441,7 +1730,7 @@ void xhttp_set_request_default_header(xhand_t xhttp)
 
 dword_t xhttp_format_response(xhand_t xhttp, byte_t* buf, dword_t max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1450,7 +1739,7 @@ dword_t xhttp_format_response(xhand_t xhttp, byte_t* buf, dword_t max)
 
 void xhttp_get_response_code(xhand_t xhttp, tchar_t* buf)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1459,7 +1748,7 @@ void xhttp_get_response_code(xhand_t xhttp, tchar_t* buf)
 
 void xhttp_set_response_code(xhand_t xhttp, const tchar_t* code)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1468,7 +1757,7 @@ void xhttp_set_response_code(xhand_t xhttp, const tchar_t* code)
 
 int	xhttp_get_response_message(xhand_t xhttp, tchar_t* buf, int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int len;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -1483,7 +1772,7 @@ int	xhttp_get_response_message(xhand_t xhttp, tchar_t* buf, int max)
 
 void xhttp_set_response_message(xhand_t xhttp, const tchar_t* msg, int len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1495,16 +1784,26 @@ void xhttp_set_response_message(xhand_t xhttp, const tchar_t* msg, int len)
 
 int xhttp_get_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, tchar_t* hvalue, int vmax)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	link_t_ptr ent;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	return read_string_entity(phttp->st_response, hname, nlen, hvalue, vmax);
+	ent = find_string_entity(phttp->st_response, hname, nlen);
+	if (ent)
+	{
+		return get_string_entity_val(ent, hvalue, vmax);
+	}
+	else
+	{
+		if (hvalue) hvalue[0] = _T('\0');
+		return 0;
+	}
 }
 
 void xhttp_set_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, const tchar_t* hvalue, int vlen)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1513,7 +1812,7 @@ void xhttp_set_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, co
 
 void xhttp_set_response_default_header(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t szDate[DATE_LEN + 1] = { 0 };
 	xdate_t dt = { 0 };
@@ -1579,7 +1878,7 @@ dword_t xhttp_get_request_content_length(xhand_t xhttp)
 
 int xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* buf, int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	const tchar_t* str;
 	tchar_t *key, *val;
 	int klen, vlen;
@@ -1592,7 +1891,7 @@ int xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* buf, int max
 		xszero(buf, max);
 	}
 
-	ent = get_string_entity(phttp->st_response, HTTP_HEADER_CONTENTTYPE, -1);
+	ent = find_string_entity(phttp->st_response, HTTP_HEADER_CONTENTTYPE, -1);
 	if (!ent)
 		return 0;
 
@@ -1621,14 +1920,14 @@ int xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* buf, int max
 
 void xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token, int len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	tchar_t* str;
 	tchar_t ctype[META_LEN + 1] = { 0 };
 	link_t_ptr ent;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	ent = get_string_entity(phttp->st_response, HTTP_HEADER_CONTENTTYPE, -1);
+	ent = find_string_entity(phttp->st_response, HTTP_HEADER_CONTENTTYPE, -1);
 
 	if (ent)
 	{
@@ -1667,7 +1966,7 @@ void xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token
 
 int xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf, int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	const tchar_t* str;
 	tchar_t *key, *val;
 	int klen, vlen;
@@ -1680,7 +1979,7 @@ int xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf, int max)
 		xszero(buf, max);
 	}
 
-	ent = get_string_entity(phttp->st_request, HTTP_HEADER_CONTENTTYPE, -1);
+	ent = find_string_entity(phttp->st_request, HTTP_HEADER_CONTENTTYPE, -1);
 	if (!ent)
 		return 0;
 
@@ -1709,14 +2008,14 @@ int xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf, int max)
 
 void xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token, int len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	tchar_t* str;
 	tchar_t ctype[META_LEN + 1] = { 0 };
 	link_t_ptr ent;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	ent = get_string_entity(phttp->st_request, HTTP_HEADER_CONTENTTYPE, -1);
+	ent = find_string_entity(phttp->st_request, HTTP_HEADER_CONTENTTYPE, -1);
 
 	if (ent)
 	{
@@ -1755,7 +2054,7 @@ void xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token,
 
 void xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* val, int len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t cookies[PATH_LEN + 1] = { 0 };
 	link_t_ptr ent;
@@ -1764,7 +2063,7 @@ void xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* 
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	ent = get_string_entity(phttp->st_request, HTTP_HEADER_COOKIE, -1);
+	ent = find_string_entity(phttp->st_request, HTTP_HEADER_COOKIE, -1);
 
 	if (ent)
 	{
@@ -1818,7 +2117,7 @@ void xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* 
 
 int xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, int max)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t cookies[PATH_LEN + 1] = { 0 };
 	link_t_ptr ent;
@@ -1827,7 +2126,7 @@ int xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, in
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	ent = get_string_entity(phttp->st_request, HTTP_HEADER_COOKIE, -1);
+	ent = find_string_entity(phttp->st_request, HTTP_HEADER_COOKIE, -1);
 
 	if (ent)
 	{
@@ -2133,7 +2432,7 @@ bool_t xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* b
 
 bool_t	xhttp_is_requested(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -2142,7 +2441,7 @@ bool_t	xhttp_is_requested(xhand_t xhttp)
 
 bool_t	xhttp_is_responsed(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -2151,7 +2450,7 @@ bool_t	xhttp_is_responsed(xhand_t xhttp)
 
 void xhttp_reset_request(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -2171,7 +2470,7 @@ void xhttp_reset_request(xhand_t xhttp)
 
 void xhttp_reset_response(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -2194,7 +2493,7 @@ void xhttp_reset_response(xhand_t xhttp)
 
 void xhttp_send_continue(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	byte_t *buf_response = NULL;
 	dword_t len_response = 0;
@@ -2250,7 +2549,7 @@ ONERROR:
 
 bool_t xhttp_send_response(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t *buf_response = NULL;
@@ -2341,7 +2640,7 @@ ONERROR:
 
 bool_t xhttp_recv_response(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	dword_t len_header, len_response,len_one;
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t* buf_response = NULL;
@@ -2446,7 +2745,7 @@ ONERROR:
 
 bool_t xhttp_send_request(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t *buf_request = NULL;
@@ -2537,7 +2836,7 @@ ONERROR:
 
 bool_t xhttp_recv_request(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	dword_t len_header, len_request,len_one;
 	tchar_t charset[INT_LEN + 1] = { 0 };
 	byte_t* buf_request = NULL;
@@ -2573,13 +2872,26 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 
 			len_request++;
 
+			if (len_request > XHTTP_HEADER_MAX)
+			{
+				raise_user_error(_T("0"), _T("invalid http header size"));
+			}
+
 			if (len_request > len_header)
 			{
 				len_header += XHTTP_HEADER_SIZE;
 				buf_request = (byte_t*)xmem_realloc(buf_request, len_header + 1);
 			}
 
-			if (len_request >= 4)
+			if (len_request == 6)
+			{
+				if (!IS_XHTTP_METHOD((schar_t*)buf_request))
+				{
+					raise_user_error(_T("0"), _T("invalid http method"));
+				}
+			}
+
+			if (len_request > 6)
 			{
 				if (buf_request[len_request - 1] == '\n' && buf_request[len_request - 2] == '\r' && buf_request[len_request - 3] == '\n' && buf_request[len_request - 4] == '\r')
 				{
@@ -2642,7 +2954,7 @@ ONERROR:
 
 bool_t xhttp_is_chunked_recv(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	tchar_t token[RES_LEN + 1] = { 0 };
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -2663,7 +2975,7 @@ bool_t xhttp_is_chunked_recv(xhand_t xhttp)
 
 bool_t xhttp_is_chunked_send(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t token[RES_LEN + 1] = { 0 };
 
@@ -2685,7 +2997,7 @@ bool_t xhttp_is_chunked_send(xhand_t xhttp)
 
 bool_t xhttp_is_zipped_recv(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	tchar_t token[RES_LEN + 1] = { 0 };
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -2706,7 +3018,7 @@ bool_t xhttp_is_zipped_recv(xhand_t xhttp)
 
 bool_t xhttp_is_zipped_send(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t token[RES_LEN + 1] = { 0 };
 
@@ -2728,7 +3040,7 @@ bool_t xhttp_is_zipped_send(xhand_t xhttp)
 
 bool_t xhttp_need_expect(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	tchar_t token[RES_LEN + 1] = { 0 };
 
@@ -2741,7 +3053,7 @@ bool_t xhttp_need_expect(xhand_t xhttp)
 
 bool_t xhttp_send(xhand_t xhttp, const byte_t* data, dword_t len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->send_stream != NULL);
@@ -2775,7 +3087,7 @@ ONERROR:
 
 bool_t xhttp_fush(xhand_t xhttp)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->send_stream != NULL);
@@ -2785,7 +3097,7 @@ bool_t xhttp_fush(xhand_t xhttp)
 
 bool_t xhttp_recv(xhand_t xhttp,byte_t* buf,dword_t *pb)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->recv_stream != NULL);
@@ -2819,7 +3131,7 @@ ONERROR:
 
 bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	dword_t n_size = 0;
 
@@ -2863,7 +3175,7 @@ bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len)
 
 bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	dword_t nlen, npos, nbys;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -3035,7 +3347,7 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 
 bool_t xhttp_send_xml(xhand_t xhttp,link_t_ptr xml)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -3064,7 +3376,7 @@ bool_t xhttp_send_xml(xhand_t xhttp,link_t_ptr xml)
 
 bool_t xhttp_recv_xml(xhand_t xhttp,link_t_ptr xml)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -3090,7 +3402,7 @@ bool_t xhttp_recv_xml(xhand_t xhttp,link_t_ptr xml)
 
 bool_t xhttp_send_json(xhand_t xhttp, link_t_ptr json)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -3119,7 +3431,7 @@ bool_t xhttp_send_json(xhand_t xhttp, link_t_ptr json)
 
 bool_t xhttp_recv_json(xhand_t xhttp, link_t_ptr json)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -3145,7 +3457,7 @@ bool_t xhttp_recv_json(xhand_t xhttp, link_t_ptr json)
 
 bool_t xhttp_send_string(xhand_t xhttp, string_t var)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	int type;
 
@@ -3172,7 +3484,7 @@ bool_t xhttp_send_string(xhand_t xhttp, string_t var)
 
 bool_t xhttp_recv_string(xhand_t xhttp, string_t var)
 {
-	xhttp_t* phttp = (xhttp_t*)xhttp;
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
 	int type;
 

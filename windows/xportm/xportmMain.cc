@@ -18,7 +18,7 @@ BOOL WINAPI ConsoleHandler(DWORD ev)
 	case CTRL_SHUTDOWN_EVENT:
 		if (sign)
 		{
-			xevent_sign(sign, 1);
+			event_sign(sign, 1);
 			return FALSE;
 		}
 		break;
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
 	xscpy(xm.pname, _T("xportm"));
 
-	sign = xevent_create();
+	sign = event_create();
 
 	_xportm_start(&xm);
 
@@ -47,12 +47,12 @@ int main(int argc, char* argv[])
 
 	if (sign)
 	{
-		xevent_wait(sign, -1);
+		event_wait(sign, -1);
 	}
 
 	_xportm_stop(&xm);
 
-	xevent_destroy(sign);
+	event_destroy(sign);
 	sign = NULL;
 
 	END_CATCH;
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 ONERROR:
 
 	if (sign)
-		xevent_destroy(sign);
+		event_destroy(sign);
 
 	xdl_process_uninit();
 

@@ -346,9 +346,10 @@ void draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int d
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+
 	xsprintf(xp.opacity, _T("%d"), deep);
-	xp.adorn.feed = 2;
-	xp.adorn.size = 2;
+	//xp.adorn.feed = 2;
+	//xp.adorn.size = 2;
 
 	pt[0].x = prt->x;
 	pt[0].y = prt->y;
@@ -436,142 +437,6 @@ void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const
 	else if (compare_text(shape, -1, ATTR_SHAPE_RECT, -1, 0) == 0)
 	{
 		draw_rect_raw(rdc, pxp, pxb, prt);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_ELLIPSE, -1, 0) == 0)
-	{
-		draw_ellipse_raw(rdc, pxp, pxb, prt);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_ROUND, -1, 0) == 0)
-	{
-		draw_round_raw(rdc, pxp, pxb, prt);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_LEFTTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + 1;
-		pt[0].y = prt->y + prt->h / 2;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y;;
-		pt[2].x = prt->x + prt->w;
-		pt[2].y = prt->y + prt->h;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_RIGHTTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w - 1;
-		pt[0].y = prt->y + prt->h / 2;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y;
-		pt[2].x = prt->x;
-		pt[2].y = prt->y + prt->h;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_TOPTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w / 2;
-		pt[0].y = prt->y + 1;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y + prt->h;
-		pt[2].x = prt->x + prt->w;
-		pt[2].y = prt->y + prt->h;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_BOTTOMTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w / 2;
-		pt[0].y = prt->y + prt->h - 1;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y;
-		pt[2].x = prt->x + prt->w;
-		pt[2].y = prt->y;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-}
-
-void draw_shadow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const xsize_t* poff, const tchar_t* shape)
-{
-	xpoint_t pt[4];
-	xrect_t xr;
-	xpen_t xp;
-	xbrush_t xb;
-
-	xmem_copy((void*)&xp, pxp, sizeof(xpen_t));
-	xmem_copy((void*)&xb, pxb, sizeof(xbrush_t));
-
-	lighten_xbrush(&xb, DEF_MIDD_DARKEN);
-	lighten_xpen(&xp, DEF_MIDD_DARKEN);
-
-	if (compare_text(shape, -1, ATTR_SHAPE_LEFTLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_RIGHTLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_TOPLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_BOTTOMLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y + prt->h;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_FORWARDSLASH, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_BACKSLASH, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_RECT, -1, 0) == 0)
-	{
-		xr.x = prt->x + poff->cx;
-		xr.y = prt->y + poff->cy;
-		xr.w = prt->w;
-		xr.h = prt->h;
-		pt_inter_rect(&xr, prt);
-		exclip_rect_raw(rdc, &xr);
-
-		xr.x = prt->x + poff->cx;
-		xr.y = prt->y + poff->cy;
-		xr.w = prt->w;
-		xr.h = prt->h;
-		draw_rect_raw(rdc, NULL, &xb, &xr);
 	}
 	else if (compare_text(shape, -1, ATTR_SHAPE_ELLIPSE, -1, 0) == 0)
 	{
@@ -1601,22 +1466,6 @@ void draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xre
 
 	draw_shape_raw(rdc, pxp, pxb, &xr, shape);
 }
-
-void draw_shadow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xsize_t* poff, const tchar_t* shape)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-	xsize_t xs;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	xmem_copy((void*)&xs, (void*)poff, sizeof(xsize_t));
-	size_tm_to_pt(canv, &xs);
-
-	draw_shadow_raw(rdc, pxp, pxb, &xr, &xs, shape);
-}
-
 
 void multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {

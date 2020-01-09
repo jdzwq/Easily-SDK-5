@@ -47,6 +47,15 @@ LICENSE.GPL3 for more details.
 #include "linux/_cfg_linux.h"
 #endif
 
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+#include <gl/GL.h>
+#include <gl/GLU.h>
+#if defined(_OS_WINDOWS)
+#pragma comment(lib,"opengl32.lib")
+#pragma comment(lib, "GLU32.lib")
+#endif
+#endif
+
 
 #if defined(_USRDLL)
 #if defined(_OS_WINDOWS)
@@ -105,10 +114,10 @@ typedef struct{
 
 typedef struct _link_t* link_t_ptr ;
 typedef struct _link_t{
+	byte_t tag;
+	byte_t lru[3];
 	link_t_ptr prev;	/*previous component link*/
 	link_t_ptr next;	/*next component link*/
-	sword_t tag;		/*component link tag*/
-	sword_t lru;
 }link_t;
 
 #ifdef _OS_64
@@ -120,58 +129,58 @@ typedef struct _link_t{
 #endif
 
 #ifdef _OS_64
-#define TypePtrFromLink(type,p) ((type*)((long long)p - (long long)&(((type*)0)->lk))) 
-#define TypePtrFromChild(type,p) ((type*)((long long)p - (long long)&(((type*)0)->lkChild))) 
-#define TypePtrFromSibling(type,p) ((type*)((long long)p - (long long)&(((type*)0)->lkSibling))) 
+#define TypePtrFromLink(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->lk))) 
+#define TypePtrFromChild(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->lkChild))) 
+#define TypePtrFromSibling(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->lkSibling))) 
 #else
-#define TypePtrFromLink(type,p) ((type*)((long)p - (long)&(((type*)0)->lk))) 
-#define TypePtrFromChild(type,p) ((type*)((long)p - (long)&(((type*)0)->lkChild))) 
-#define TypePtrFromSibling(type,p) ((type*)((long)p - (long)&(((type*)0)->lkSibling))) 
+#define TypePtrFromLink(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->lk))) 
+#define TypePtrFromChild(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->lkChild))) 
+#define TypePtrFromSibling(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->lkSibling))) 
 #endif
 
 
 /*define root link tag*/
-#define lkRoot			0xFFFF
+#define lkRoot			0xFF
 /*define free link tag*/
-#define lkFree			0
+#define lkFree			0x00
 
-#define lkDebug			100
+#define lkDebug			0xFE
 
-#define lkDoc			1
-#define lkNode			2
+#define lkDoc			0x01
+#define lkNode			0x02
 
-#define lkHashTable		3
-#define lkHashEntity	4
+#define lkHashTable		0x03
+#define lkHashEntity	0x04
 
-#define lkListTable		5
-#define lkListNode		6
+#define lkListTable		0x05
+#define lkListNode		0x06
 
-#define lkStringTable	7
-#define lkStringEntity	8
+#define lkStringTable	0x07
+#define lkStringEntity	0x08
 
-#define lkDictTable		9
-#define lkDictEntity	10
+#define lkDictTable		0x09
+#define lkDictEntity	0x0A
 
-#define lkWordsTable	11
-#define lkWordsItem		12
+#define lkWordsTable	0x0B
+#define lkWordsItem		0x0C
 
-#define lkTrieNode		13
-#define lkTrieLeaf		14
+#define lkTrieNode		0x0D
+#define lkTrieLeaf		0x0E
 
-#define lkBinaTree		15
-#define lkBinaNode		16
+#define lkStackTable	0x0F
 
-#define lkBplusTree		21
-#define lkBplusIndex	22
-#define lkBplusData		23
+#define lkBinaTree		0x10
+#define lkBinaNode		0x11
 
-#define lkStackTable	24
+#define lkBplusTree		0x12
+#define lkBplusIndex	0x13
+#define lkBplusData		0x14
 
-#define lkACTable		25
+#define lkACTable		0x15
 
-#define lkMultiTree		26
+#define lkMultiTree		0x16
 
-#define lkFileTable		27
+#define lkFileTable		0x17
 
 #define IS_DOM_DOC(ptr)		((ptr->tag == lkNode)? 1 : 0)
 #define IS_XML_DOC(ptr)		((ptr->tag == lkDoc)? 1 : 0)
@@ -215,17 +224,11 @@ typedef enum{
 	dsNewClean = 2, 
 	dsNewDirty = 4, 
 	dsDelete = 8
-}_DATA_STATE;
+}DATA_STATE;
 
 #define dsAll		(dsClean | dsNewClean | dsDirty | dsNewDirty | dsDelete)
 #define dsUpdate	(dsDirty | dsNewDirty | dsDelete)
 #define dsNone		0
-
-/*code range*/
-#define MIN_GBK			0xa1a0
-#define MAX_GBK			0xfeff
-#define MIN_UCS			0x00a0
-#define MAX_UCS			0xffef
 
 /*define unicode prefix*/
 #ifndef GBKBOM
@@ -300,20 +303,6 @@ typedef enum {
 	FILE_SINCE_TIME = 1,
 	FILE_SINCE_ETAG = 2
 }FILE_SINCE;
-
-//define file proto type
-typedef enum{
-	_PROTO_CUR = 0,
-	_PROTO_LOC = 1,
-	_PROTO_NFS = 2,
-	_PROTO_HTTP = 4,
-	_PROTO_SSH = 6,
-	_PROTO_TFTP = 8,
-	_PROTO_OSS = 9
-}FILE_PROTO;
-
-#define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_SSH || n == _PROTO_TFTP || n == _PROTO_OSS)
-#define IS_ILOC_FILE(n)	(n == _PROTO_CUR || n == _PROTO_LOC || n == _PROTO_NFS)
 
 typedef enum{
 	_SECU_NONE = 0,
@@ -399,51 +388,92 @@ typedef enum{
 	veTruncate = 5, 
 	veCodeSystem = 6, 
 	veUserReject = 7 
-}_VERIFY_CODE;
+}VERIFY_CODE;
 
+#ifdef _OS_64
+#define TypePtrFromHead(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->head))) 
+#else
+#define TypePtrFromHead(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->head))) 
+#endif
 
 /*define handle type*/
-typedef enum{
-	_HANDLE_UNKNOWN = 0,
-	_HANDLE_BLOCK = 1,
-	_HANDLE_INET = 2,
-	_HANDLE_CONS = 3,
-	_HANDLE_COMM = 4,
-	_HANDLE_PIPE = 5,
-	_HANDLE_SHARE = 6,
-	_HANDLE_CACHE = 7,
-	_HANDLE_UNC = 8,
-	_HANDLE_UDP = 9,
-	_HANDLE_TCP = 10,
-	_HANDLE_SSL = 11,
-	_HANDLE_SSH = 12,
-	_HANDLE_PNP = 13,
-	_HANDLE_TFTP = 14
-}_HANDLE_TYPE;
-
-#define MIN_HANDLE_TYPE		50
+#define _HANDLE_UNKNOWN		0x00
+#define _HANDLE_BLOCK		0x01
+#define _HANDLE_INET		0x02
+#define _HANDLE_CONS		0x03
+#define _HANDLE_COMM		0x04
+#define _HANDLE_PIPE		0x05
+#define _HANDLE_SHARE		0x06
+#define _HANDLE_CACHE		0x07
+#define _HANDLE_UNC			0x08
+#define _HANDLE_UDP			0x09
+#define _HANDLE_TCP			0x0A
+#define _HANDLE_SSL			0x0B
+#define _HANDLE_SSH			0x0C
+#define _HANDLE_PNP			0x0D
+#define _HANDLE_TFTP		0x0E
 
 typedef struct _xhand_head{
-	sword_t tag;
-	sword_t lru;
+	byte_t tag;
+	byte_t lru[3];
 }xhand_head, *xhand_t;
 
 /*define object type*/
-typedef enum{
-	_OBJECT_UNKNOWN = 0,
-	_OBJECT_STRING = 1,
-	_OBJECT_VARIANT = 2,
-	_OBJECT_DOMDOC = 3,
-	_OBJECT_BINARY = 4
-}_OBJECT_TYPE;
+#define _OBJECT_UNKNOWN		0x00
+#define _OBJECT_STRING		0x01
+#define _OBJECT_VARIANT		0x02
+#define _OBJECT_DOMDOC		0x03
+#define _OBJECT_BINARY		0x04
 
+typedef struct _object_head{
+	byte_t tag;
+	byte_t lru[3];
+}object_head, *object_t;
 
-typedef void* acp_t;
-typedef void* string_t;
-typedef void* object_t;
-typedef void* stream_t;
-typedef void* canvas_t;
-typedef void* file_t;
+typedef struct _string_head{
+	byte_t tag;
+	byte_t lru[3];
+}string_head, *string_t;
+
+typedef struct _stream_head{
+	byte_t tag;
+	byte_t lru[3];
+}stream_head, *stream_t;
+
+/*canvas type*/
+#define _CANVAS_UNKNOWN		0x00
+#define _CANVAS_DISPLAY		0x01
+#define _CANVAS_PRINTER		0x02
+
+typedef struct _canvas_head{
+	byte_t tag;
+	byte_t lru[3];
+}canvas_head, *canvas_t;
+
+//define file proto type
+#define _PROTO_UNKNOWN		0x00
+#define _PROTO_LOC			0x01
+#define _PROTO_NFS			0x02
+#define _PROTO_HTTP			0x04
+#define _PROTO_SSH			0x06
+#define _PROTO_TFTP			0x08
+
+#define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_SSH || n == _PROTO_TFTP)
+
+typedef struct _file_head{
+	byte_t tag;
+	byte_t lru[3];
+}file_head, *file_t;
+
+/*code range*/
+#define _ACP_GBKMIN			0xa1a0
+#define _ACP_GBKMAX			0xfeff
+#define _ACP_UCSMIN			0x00a0
+#define _ACP_UCSMAX			0xffef
+
+typedef struct _acp_head{
+	sword_t base;
+}acp_head, *acp_t;
 
 #define VV_NULL			0x00
 #define VV_BOOL			0x01
@@ -582,12 +612,6 @@ typedef struct _viewbox_t{
 typedef struct _canvbox_t{
 	float fx, fy, fw, fh;
 }canvbox_t;
-
-/*canvas type*/
-typedef enum{
-	_CANV_DISPLAY = 0,
-	_CANV_PRINTER = 1
-}_CANVAS_TYPE;
 
 typedef struct _xsort_t{
 	int fact;

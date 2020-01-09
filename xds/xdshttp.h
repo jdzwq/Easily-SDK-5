@@ -100,17 +100,9 @@ typedef struct _https_block_t{
 	PF_LOG_JSON		pf_log_json;
 
 	tchar_t site[RES_LEN];
+	tchar_t space[RES_LEN];
 	tchar_t object[PATH_LEN];
-	tchar_t space[PATH_LEN];
 	tchar_t path[PATH_LEN];
-
-#ifdef _OS_64
-	unsigned long long	wrecv;
-#else
-	unsigned long		wrecv;
-#endif
-	void*	precv;
-
 }https_block_t;
 
 typedef enum{

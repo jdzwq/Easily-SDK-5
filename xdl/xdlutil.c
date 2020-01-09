@@ -51,7 +51,6 @@ static tchar_t calen_week[CALENDAR_COL][UTF_LEN + 1] = { _T("日"), _T("一"), _
 static tchar_t calen_week[CALENDAR_COL][UTF_LEN + 1] = { _T("Sun"), _T("Mon"), _T("Tue"), _T("Wed"), _T("Thu"), _T("Fri"), _T("Sat") };
 #endif
 
-#define IS_STRING_SPLIT(ch) (ch == _T(' ') || ch == _T('\t') || ch == _T('\n') || ch == _T(',') || ch == _T(';') || ch == _T('~') || ch == _T(':'))
 
 void bytes_turn(byte_t* ba, int n)
 {
@@ -1381,6 +1380,11 @@ void parse_datetime(xdate_t* pmd, const tchar_t* text)
 	pmd->sec = xstos(token);
 }
 
+int format_utctime(const xdate_t* pdt, tchar_t* buf)
+{
+	return xsprintf(buf, _T("%d-%02d-%02dT%02d:%02d:%02dZ"), pdt->year, pdt->mon, pdt->day, pdt->hour, pdt->min, pdt->sec);
+}
+
 int format_gmttime(const xdate_t* pdt, tchar_t* buf)
 {
 	return xsprintf(buf, _T("%s, %02d %s %04d %02d:%02d:%02d GMT"), week_day[pdt->wday], pdt->day, year_mon[pdt->mon-1], pdt->year, pdt->hour, pdt->min, pdt->sec);
@@ -1723,393 +1727,6 @@ int format_password(const tchar_t* sz, tchar_t* buf, int max)
 		buf[max] = _T('\0');
 
 	return max;
-}
-
-const tchar_t* parse_attrset_token(const tchar_t* attrset, int len, tchar_t** keyptr, int* keylen, tchar_t** valptr, int* vallen)
-{
-	const tchar_t* token;
-	int total = 0;
-
-	*keyptr = *valptr = NULL;
-	*keylen = *vallen = 0;
-
-	if (is_null(attrset) || !len)
-		return NULL;
-
-	if (len < 0)
-		len = xslen(attrset);
-
-	token = attrset;
-
-	*keyptr = (tchar_t*)token;
-	while (*token != _T(' ') && *token != _T('\t') && *token != _T('=') && total < len)
-	{
-		token++;
-		total++;
-	}
-	*keylen = (int)(token - *keyptr);
-
-	if (total == len)
-		return token;
-
-	//skip ' ','='
-	while (*token != _T('\'') && *token != _T('\"') && total < len)
-	{
-		token++;
-		total++;
-	}
-
-	if (total == len)
-		return token;
-
-	//skip '\'','\"'
-	token++;
-	total++;
-
-	*valptr = (tchar_t*)token;
-	while (*token != _T('\'') && *token != _T('\"') && total < len)
-	{
-		token++;
-		total++;
-	}
-	*vallen = (int)(token - *valptr);
-
-	//skip ' ','\'','\"'
-	while (*token == _T('\'') || *token == _T('\"') || *token == _T(' ') || *token == _T('\t'))
-	{
-		token++;
-		total++;
-	}
-
-	return token;
-}
-
-int parse_attrset_token_count(const tchar_t* attrset, int len)
-{
-	int count = 0;
-	tchar_t *key, *val;
-	const tchar_t* term;
-	int klen, vlen;
-
-	if (is_null(attrset) || !len)
-		return 0;
-
-	if (len < 0)
-		len = xslen(attrset);
-
-	term = attrset + len;
-	while (attrset = parse_attrset_token(attrset, (int)(term - attrset), &key, &klen, &val, &vlen))
-	{
-		count++;
-	}
-
-	return count;
-}
-
-const tchar_t* parse_options_token(const tchar_t* options, int len, tchar_t itemfeed, tchar_t linefeed, tchar_t** keyptr, int* keylen, tchar_t** valptr, int* vallen)
-{
-	const tchar_t* token;
-	int total = 0;
-
-	*keyptr = *valptr = NULL;
-	*keylen = *vallen = 0;
-
-	if (is_null(options) || !len)
-		return NULL;
-
-	if (len < 0)
-		len = xslen(options);
-
-	token = options;
-	/*skip blank*/
-	while ((*token == _T(' ') || *token == _T('\t')) && total < len)
-	{
-		token++;
-		total++;
-	}
-
-	*keyptr = (tchar_t*)token;
-	while (*token != itemfeed && *token != _T('\0') && total < len)
-	{
-		token++;
-		total++;
-	}
-	*keylen = (int)(token - *keyptr);
-
-	if (total == len)
-		return token;
-
-	if (*token == itemfeed)
-	{
-		token++; /*skip item feed*/
-		total++;
-	}
-
-	/*skip blank*/
-	while ((*token == _T(' ') || *token == _T('\t')) && total < len)
-	{
-		token++;
-		total++;
-	}
-
-	if (total == len)
-		return token;
-
-	*valptr = (tchar_t*)token;
-	while (*token != linefeed && *token != _T('\0') && total < len)
-	{
-		token++;
-		total++;
-	}
-	*vallen = (int)(token - *valptr);
-
-	while (*token == linefeed || *token == _T('\n'))
-	{
-		token++;
-		total++;
-	}
-
-	return token;
-}
-
-int parse_options_token_count(const tchar_t* options,int len,tchar_t itemfeed,tchar_t linefeed)
-{
-	int count = 0;
-	tchar_t *key,*val;
-	const tchar_t* term;
-	int klen,vlen;
-
-	if (is_null(options) || !len)
-		return 0;
-
-	if (len < 0)
-		len = xslen(options);
-
-	term = options + len;
-	while(options = parse_options_token(options,(int)(term - options),itemfeed,linefeed,&key,&klen,&val,&vlen))
-	{
-		count ++;
-	}
-
-	return count;
-}
-
-int get_options_value(const tchar_t* options, int len, tchar_t itemfeed, tchar_t linefeed, const tchar_t* pkey, tchar_t* buf, int max)
-{
-	int count = 0;
-	tchar_t *key, *val;
-	const tchar_t* term;
-	int klen, vlen;
-
-	if (is_null(options) || !len)
-		return 0;
-
-	if (len < 0)
-		len = xslen(options);
-
-	term = options + len;
-	while (options = parse_options_token(options, (int)(term - options), itemfeed, linefeed, &key, &klen, &val, &vlen))
-	{
-		if (compare_text(key, klen, pkey, -1, 0) == 0)
-		{
-			max = (max < vlen) ? max : vlen;
-			if (buf)
-			{
-				xsncpy(buf, val, max);
-			}
-			return max;
-		}
-	}
-
-	return 0;
-}
-
-const tchar_t* parse_string_token(const tchar_t* tokens,int len, tchar_t itemfeed, tchar_t** pkey, int* pkeylen)
-{
-	const tchar_t* token;
-	int total = 0;
-
-	*pkey = NULL;
-	*pkeylen = 0;
-
-	if(is_null(tokens) || !len)
-		return NULL;
-
-	if(len < 0)
-		len = xslen(tokens);
-
-	token = tokens;
-
-	*pkey = (tchar_t*)token;
-	while((itemfeed && *token != itemfeed) || (!itemfeed && IS_STRING_SPLIT(*token)))
-	{
-		token ++;
-		total++;
-
-		if (total >= len)
-			break;
-	}
-	*pkeylen = (int)(token - *pkey);
-
-	if(total == len)
-		return token;
-
-	token ++; //skip item feed
-	total++;
-
-	return token;
-}
-
-int parse_string_token_count(const tchar_t* tokens, int len, tchar_t itemfeed)
-{
-	int count = 0;
-	tchar_t *key;
-	int klen;
-	const tchar_t* term;
-
-	if (is_null(tokens) || !len)
-		return 0;
-
-	if (len < 0)
-		len = xslen(tokens);
-
-	term = tokens + len;
-	while(tokens = parse_string_token(tokens,(int)(term - tokens),itemfeed,&key,&klen))
-	{
-		count ++;
-	}
-
-	return count;
-}
-
-int parse_string_array_count(const tchar_t* tokens)
-{
-	int count = 0;
-	int len;
-
-	len = xslen(tokens);
-	while (len)
-	{
-		count++;
-		tokens += (len + 1);
-		len = xslen(tokens);
-	}
-
-	return count;
-}
-
-int parse_string_array(const tchar_t* tokens, tchar_t** sa, int n)
-{
-	int len, i = 0;
-
-	len = xslen(tokens);
-	while (len && i < n)
-	{
-		sa[i++] = xsclone(tokens);
-		tokens += (len + 1);
-		len = xslen(tokens);
-	}
-
-	return i;
-}
-
-int format_string_array(const tchar_t** sa, int n, tchar_t* tokens, int max)
-{
-	int len, i, total = 0;
-
-	for (i = 0; i < n; i++)
-	{
-		len = xslen(sa[i]);
-		if (total + len + 1 > max)
-			break;
-
-		if (tokens)
-		{
-			xsncpy(tokens, sa[i], len);
-			tokens[len] = _T('\0');
-			tokens += (len + 1);
-		}
-		total += (len + 1);
-	}
-
-	if (total + 1 > max)
-		return total;
-
-	if (tokens)
-	{
-		tokens[0] = _T('\0');
-	}
-	total++;
-
-	return total;
-}
-
-const tchar_t* parse_param_name(const tchar_t* param, int len, tchar_t itemdot, int* plen)
-{
-	const tchar_t* token;
-	int total = 0;
-	int tag = 0;
-
-	*plen = 0;
-
-	if (is_null(param) || !len)
-		return NULL;
-
-	if (len < 0)
-		len = xslen(param);
-
-	token = param;
-
-	while (total < len)
-	{
-		if (*token == _T('\'') || *token == _T('\"'))
-			tag = (tag == 0) ? 1 : 0;
-
-		if (tag == 0 && *token == itemdot)
-			break;
-
-		token++;
-		total++;
-	}
-
-	if (total == len)
-		return NULL;
-
-	if (*token == itemdot)
-	{//skip ':'
-		token++;
-		total++;
-	}
-
-	while (*(token + *plen) != _T(' ') && total < len)
-	{
-		total++;
-
-		*plen = *plen + 1;
-	}
-
-	return token;
-}
-
-int parse_param_name_count(const tchar_t* param, int len, tchar_t itemdot)
-{
-	int count = 0;
-	int plen;
-	const tchar_t* term;
-
-	if (is_null(param) || !len)
-		return 0;
-
-	if (len < 0)
-		len = xslen(param);
-
-	term = param + len;
-	while (param = parse_param_name(param, (int)(term - param), itemdot, &plen))
-	{
-		count++;
-	}
-
-	return count;
 }
 
 int max_mon_days(int year, int mon)
@@ -2769,7 +2386,7 @@ static int _next_book_mark(tchar_t* book_mark)
 	return 1;
 }
 
-int parse_proto(const tchar_t* file)
+byte_t parse_proto(const tchar_t* file)
 {
 	if(!file)
 		return -1;
@@ -2790,20 +2407,16 @@ int parse_proto(const tchar_t* file)
 	{
 		return _PROTO_TFTP;
 	}
-	else if (xsnicmp(file, _T("oss:"), xslen(_T("oss:"))) == 0)
-	{
-		return _PROTO_OSS;
-	}
-	else if (xsnicmp(file, _T("\\\\"), xslen(_T("\\\\"))) == 0)
+	else if (xsnicmp(file, _T("\\\\"), xslen(_T("\\\\"))) == 0 || xsnicmp(file, _T("//"), xslen(_T("//"))) == 0)
 	{
 		return _PROTO_NFS;
-	}else
-	{
-		if(xsstr(file,_T(":")))
-			return _PROTO_LOC;
-		else
-			return _PROTO_CUR;
 	}
+	else if ((file[0] == _T('/') && file[1] != _T('/')) || file[1] == _T(':'))
+	{
+		return _PROTO_LOC;
+	}
+
+	return _PROTO_UNKNOWN;
 }
 
 void parse_url(const tchar_t* url,tchar_t** proat,int* prolen,tchar_t** addrat,int* addrlen,tchar_t** portat,int* portlen,tchar_t** objat,int* objlen,tchar_t** qryat,int* qrylen)
@@ -2870,7 +2483,7 @@ void parse_url(const tchar_t* url,tchar_t** proat,int* prolen,tchar_t** addrat,i
 
 	/*get key=val...*/
 	*qryat = token;
-	while(*token != _T('\0'))
+	while (*token != _T('#') && *token != _T('\0'))
 	{
 		*qrylen = *qrylen + 1;
 		token ++;
@@ -2882,19 +2495,20 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 	tchar_t* tname;
 	int tlen, total = 0;
 	const tchar_t* tk;
-	tchar_t *str;
-	int slen;
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t ekey[RES_LEN];
+	tchar_t eval[PATH_LEN];
+	int elen;
 
 	va_list arg;
-
-	va_start(arg, strfmt);
 
 	tk = strfmt;
 	while (tk && *tk != _T('\0'))
 	{
 		if (*tk == _T('$') && *(tk + 1) == _T('('))
 		{
-			tk++;
+			tk += 2;
 			tname = tk;
 			tlen = 0;
 			while (*tk != _T(')'))
@@ -2902,15 +2516,15 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 				tk++;
 				tlen++;
 			}
+			xsncpy(ekey, tname, tlen);
+			ekey[tlen] = _T('\0');
 
-			str = va_arg(arg, tchar_t*);
-			slen = xslen(str);
+			xszero(eval, PATH_LEN);
+			elen = get_envvar(ekey, eval, PATH_LEN);
 
-			if (fpath)
-			{
-				xsncpy(fpath + total, str, slen);
-			}
-			total += slen;
+			xsncpy(path + total, eval, elen);
+			
+			total += elen;
 
 			if (*tk == _T(')'))
 			{
@@ -2919,20 +2533,19 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 		}
 		else
 		{
-			if (fpath)
-			{
-				fpath[total] = *tk;
-			}
+			path[total] = *tk;
+
 			total++;
 			
 			tk++;
 		}
 	}
 
-	if (fpath)
-	{
-		fpath[total] = _T('\0');
-	}
+	path[total] = _T('\0');
+	
+	va_start(arg, strfmt);
+
+	total = xsprintf_arg(fpath, path, &arg);
 
 	va_end(arg);
 

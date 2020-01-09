@@ -110,7 +110,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	xdate_t dt;
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xfont(&xf);
 	default_xface(&xa);

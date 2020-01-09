@@ -159,6 +159,44 @@ void test_tftp_list()
 	destroy_list_doc(ptr);
 }
 
+void test_load()
+{
+	tchar_t sz_file[PATH_LEN];
+	byte_t* file_buf;
+	dword_t size;
+	tchar_t* base_buf;
+	int tlen, len;
+	tchar_t sz_type[RES_LEN];
+
+	xsprintf(sz_file, _T("body.jpg"));
+
+	size = load_image_bytes_from_file(NULL, sz_file, NULL, NULL, MAX_LONG);
+	if (!size)
+		return;
+
+	file_buf = (byte_t*)xmem_alloc(size);
+
+	size = load_image_bytes_from_file(NULL, sz_file, sz_type, file_buf, size);
+	if (!size)
+	{
+		xmem_free(file_buf);
+		return;
+	}
+
+	len = size;
+	size = xbas_encode(file_buf, len, NULL, MAX_LONG);
+	tlen = xslen(GDI_ATTR_IMAGE_TYPE_JPG);
+
+	string_t file_data = string_alloc();
+
+	base_buf = string_ensure_buf(file_data, tlen + size);
+	xsncpy(base_buf, GDI_ATTR_IMAGE_TYPE_JPG, tlen);
+	xbas_encode(file_buf, len, base_buf + tlen, size);
+
+	xmem_free(file_buf);
+
+	string_free(file_data);
+}
 
 
 int main()
@@ -171,9 +209,9 @@ int main()
 
 	//test_tftp_write();
 
-	//test_tftp_read();
+	test_tftp_read();
 
-	test_tftp_delete();
+	//test_tftp_delete();
 
 	//test_tftp_list();
 
@@ -184,6 +222,8 @@ int main()
 	//test_block_append();
 
 	//test_block_truncate();
+
+	//test_load();
 
 	xdl_process_uninit();
 

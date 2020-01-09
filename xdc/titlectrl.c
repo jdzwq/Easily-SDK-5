@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct title_delta_t{
 	link_t_ptr title;
@@ -49,11 +50,11 @@ static void _titlectrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 	title_delta_t* ptd = GETTITLEDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_title_item_rect(&cb, ptd->title, ptd->item, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _titlectrl_reset_page(res_win_t widget)
@@ -66,7 +67,7 @@ static void _titlectrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	widget_reset_paging(widget, pw, ph, pw, ph, 0, 0);
+	widgetex_reset_paging(widget, pw, ph, pw, ph, 0, 0);
 }
 
 /*********************************************control event******************************************/
@@ -168,7 +169,7 @@ int hand_title_create(res_win_t widget, void* data)
 {
 	title_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (title_delta_t*)xmem_alloc(sizeof(title_delta_t));
 	xmem_zero((void*)ptd, sizeof(title_delta_t));
@@ -188,7 +189,7 @@ void hand_title_destroy(res_win_t widget)
 
 	SETTITLEDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_title_size(res_win_t widget, int code, const xsize_t* pxs)
@@ -213,11 +214,11 @@ void hand_title_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (!ptd->title)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_title_hint(&cb, &pt, ptd->title, ptd->item, &plk);
@@ -289,11 +290,11 @@ void hand_title_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->title)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_title_hint(&cb, &pt, ptd->title, ptd->item, &plk);
@@ -398,9 +399,9 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->title)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -408,8 +409,8 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	orita = get_title_oritation_ptr(ptd->title);
 
@@ -429,7 +430,7 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	gradient_rect_raw(rdc, &xg, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	draw_title(pif, &cb, ptd->title, ptd->item);
 

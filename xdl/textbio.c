@@ -302,8 +302,6 @@ bool_t load_json_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tc
 
 bool_t save_json_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname)
 {
-	tchar_t* buf;
-	int len;
 	bool_t rt;
 	string_t vs = NULL;
 

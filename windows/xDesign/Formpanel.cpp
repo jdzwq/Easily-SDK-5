@@ -240,7 +240,7 @@ void FormPanel_DropDomain(res_win_t widget, DROPDOMAIN* pdrop)
 	formctrl_set_dirty(pdt->hForm, 1);
 
 	widget_screen_to_client(pdt->hForm, &pdrop->xp);
-	widget_point_to_tm(pdt->hForm, &pdrop->xp);
+	widgetex_point_to_tm(pdt->hForm, &pdrop->xp);
 
 	tchar_t fname[RES_LEN + 1] = { 0 };
 	int len, n_count = 0;
@@ -554,7 +554,7 @@ void FormPanel_OnExec(res_win_t widget)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 	
-	widget_set_color_mode(win, &clr);
+	widgetex_set_color_mode(win, &clr);
 
 	set_form_design(ptr_form, 0);
 	formctrl_attach(win, ptr_form);
@@ -1707,9 +1707,9 @@ void FormPanel_Form_OnRBClick(res_win_t widget, NOTICE_FORM* pnf)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1808,7 +1808,7 @@ int FormPanel_OnCreate(res_win_t widget, void* data)
 	xrect_t xr;
 	const tchar_t* szParam;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETFORMPANELDELTA(widget, pdt);
 
@@ -1887,7 +1887,7 @@ int FormPanel_OnCreate(res_win_t widget, void* data)
 	titlectrl_attach(pdt->hTitle, ptrTitle);
 	titlectrl_set_focus_item(pdt->hTitle, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	if (!is_null(szParam))
 	{
@@ -1908,7 +1908,7 @@ void FormPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -1941,7 +1941,7 @@ void FormPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void FormPanel_OnShow(res_win_t widget, bool_t bShow)

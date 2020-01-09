@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _menu_delta_t{
 	link_t_ptr menu;
@@ -48,13 +49,13 @@ static void _menubox_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 	canvbox_t cb;
 	if_measure_t im = { 0 };
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	calc_menu_item_rect(&im, &cb, ptd->menu, ilk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _menubox_reset_page(res_win_t widget)
@@ -72,12 +73,12 @@ static void _menubox_reset_page(res_win_t widget)
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	xs.fx = calc_menu_width(&im, &cb, ptd->menu);
 	xs.fy = calc_menu_height(&im, &cb, ptd->menu);
 
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	if (compare_text(get_menu_layer_ptr(ptd->menu), -1, ATTR_LAYER_HORZ, -1, 0) == 0)
 	{
@@ -92,11 +93,11 @@ static void _menubox_reset_page(res_win_t widget)
 
 	xs.fx = get_menu_icon_span(ptd->menu);
 	xs.fy = get_menu_icon_span(ptd->menu);
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 }
 
 /************************************************************************************************/
@@ -135,7 +136,7 @@ int hand_menu_create(res_win_t widget, void* data)
 {
 	menu_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (menu_delta_t*)xmem_alloc(sizeof(menu_delta_t));
 	xmem_zero((void*)ptd, sizeof(menu_delta_t));
@@ -155,7 +156,7 @@ void hand_menu_destroy(res_win_t widget)
 
 	SETMENUDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_menu_size(res_win_t widget, int code, const xsize_t* prs)
@@ -194,9 +195,9 @@ void hand_menu_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
@@ -272,7 +273,7 @@ void hand_menu_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	if (!ptd->menu)
 		return;
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_menu_erase(res_win_t widget, res_ctx_t dc)
@@ -301,9 +302,9 @@ void hand_menu_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->menu)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -311,8 +312,8 @@ void hand_menu_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -321,7 +322,7 @@ void hand_menu_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	draw_menu(pif, &cb, ptd->menu);
 
@@ -545,12 +546,12 @@ void menubox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pxs->fx = calc_menu_width(&im, &cb, ptd->menu);
 	pxs->fy = calc_menu_height(&im, &cb, ptd->menu);
 
-	widget_size_to_pt(widget, pxs);
+	widgetex_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

@@ -39,6 +39,11 @@ LICENSE.GPL3 for more details.
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "Msimg32.lib")
 
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+#pragma comment(lib,"opengl32.lib")
+#pragma comment(lib, "GLU32.lib")
+#endif
+
 
 #define GETXDKDISPATCH(hWnd)		(if_event_t*)GetProp(hWnd, XDKDISPATCH)
 #define SETXDKDISPATCH(hWnd, ev)	SetProp(hWnd, XDKDISPATCH, (HANDLE)ev)
@@ -66,6 +71,9 @@ LICENSE.GPL3 for more details.
 
 #define GETXDKRESULT(hWnd)			(DWORD)GetProp(hWnd, XDKRESULT)
 #define SETXDKRESULT(hWnd, dw)		SetProp(hWnd, XDKRESULT, (HANDLE)dw)
+
+#define GETXDKGLRC(hWnd)			(res_glc_t)GetProp(hWnd, XDKGLRC)
+#define SETXDKGLRC(hWnd, dw)		SetProp(hWnd, XDKGLRC, (HANDLE)dw)
 
 LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -242,6 +250,69 @@ ATOM RegisterXdcWidgetClass(HINSTANCE hInstance)
 
 	return RegisterClass(&wcex);
 }
+
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+
+BOOL GL_BEGIN(HWND hWnd, HDC hDC)
+{
+	PIXELFORMATDESCRIPTOR info =
+	{
+		sizeof(PIXELFORMATDESCRIPTOR),  // size
+		1,                          // version
+		PFD_SUPPORT_OPENGL |        // OpenGL window
+		PFD_DRAW_TO_WINDOW |        // render to window
+		PFD_DOUBLEBUFFER,           // support double-buffering
+		PFD_TYPE_RGBA,              // color type
+		32,                         // prefered color depth
+		0, 0, 0, 0, 0, 0,           // color bits (ignored)
+		0,                          // no alpha buffer
+		0,                          // alpha bits (ignored)
+		0,                          // no accumulation buffer
+		0, 0, 0, 0,                 // accum bits (ignored)
+		16,                         // depth buffer
+		0,                          // no stencil buffer
+		0,                          // no auxiliary buffers
+		PFD_MAIN_PLANE,             // main layer
+		0,                          // reserved
+		0, 0, 0,                    // no layer, visible, damage masks
+	};
+
+	int pix = ChoosePixelFormat(hDC, &info);
+
+	SetPixelFormat(hDC, pix, &info);
+
+	HGLRC hRC = wglCreateContext(hDC);
+
+	if (!hRC)
+		return FALSE;
+
+	wglMakeCurrent(hDC, hRC);
+
+	SETXDKGLRC(hWnd, hRC);
+
+	return TRUE;
+}
+
+VOID GL_END(HWND hWnd, HDC hDC)
+{
+	HGLRC hRC = (HGLRC)GETXDKGLRC(hWnd);
+
+	if (hRC)
+	{
+		wglSwapLayerBuffers(hDC, WGL_SWAP_MAIN_PLANE);
+
+		wglMakeCurrent(hDC, NULL);
+
+		wglDeleteContext(hRC);
+	}
+}
+
+res_glc_t	_widget_get_glctx(res_win_t wt)
+{
+	return GETXDKGLRC(wt);
+}
+
+#endif
 
 LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -808,6 +879,14 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		break;
 	case WM_ERASEBKGND:
 		pev = GETXDKDISPATCH(hWnd);
+
+		ds = GETXDKSTYLE(hWnd);
+
+		if (ds & WD_STYLE_OPENGL)
+		{
+			return 0;
+		}
+
 		if (pev && pev->pf_on_erase)
 		{
 			(*pev->pf_on_erase)(hWnd, (res_ctx_t)wParam);
@@ -830,9 +909,21 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 				xrFront.w = rtFront.right - rtFront.left;
 				xrFront.h = rtFront.bottom - rtFront.top;
 
+				ds = GETXDKSTYLE(hWnd);
+
 				BeginPaint(hWnd, &ps);
 
+				if (ds & WD_STYLE_OPENGL)
+				{
+					GL_BEGIN(hWnd, ps.hdc);
+				}
+
 				(*pev->pf_on_paint)(hWnd, ps.hdc, &xrFront);
+
+				if (ds & WD_STYLE_OPENGL)
+				{
+					GL_END(hWnd, ps.hdc);
+				}
 
 				EndPaint(hWnd, &ps);
 			}
@@ -1004,6 +1095,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 #endif
 {
 	if_subproc_t* pev;
+	dword_t ds;
 
 	pev = GETXDKSUBPROC(hWnd);
 
@@ -1192,6 +1284,12 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		break;
 #endif 
 	case WM_ERASEBKGND:
+		ds = GETXDKSTYLE(hWnd);
+		if (ds & WD_STYLE_OPENGL)
+		{
+			return 0;
+		}
+
 		if (pev && pev->sub_on_erase)
 		{
 			if ((*pev->sub_on_erase)(hWnd, (res_ctx_t)wParam, (uid_t)uIdSubclass, pev->delta))
@@ -1213,9 +1311,21 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 				xrFront.w = rtFront.right - rtFront.left;
 				xrFront.h = rtFront.bottom - rtFront.top;
 
+				ds = GETXDKSTYLE(hWnd);
+				
 				BeginPaint(hWnd, &ps);
 
+				if (ds & WD_STYLE_OPENGL)
+				{
+					GL_BEGIN(hWnd, ps.hdc);
+				}
+
 				rt = (*pev->sub_on_paint)(hWnd, ps.hdc, &xrFront, (uid_t)uIdSubclass, pev->delta);
+
+				if (ds & WD_STYLE_OPENGL)
+				{
+					GL_END(hWnd, ps.hdc);
+				}
 
 				EndPaint(hWnd, &ps);
 

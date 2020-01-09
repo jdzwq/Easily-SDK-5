@@ -157,7 +157,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	LINKPTR ptr_prop = NULL;
 
-	tchar_t file[PATH_LEN + 1] = { 0 };
+	tchar_t token[PATH_LEN] = { 0 };
 
 	tchar_t addr[ADDR_LEN] = { 0 };
 	tchar_t port[INT_LEN] = { 0 };
@@ -171,9 +171,9 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	ptr_prop = create_proper_doc();
 
-	xsprintf(file, _T("%s/sub.ini"), pb->path);
+	xsprintf(token, _T("%s/sub.ini"), pb->path);
 
-	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
 	{
 		raise_user_error(NULL, NULL);
 	}

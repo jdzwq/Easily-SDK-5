@@ -51,11 +51,14 @@ static void _invoke_error()
 	xportm_log_error(sz_code, sz_error);
 }
 
-static void _xpnps_get_config(const tchar_t* root, const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_proc)
+static void _xpnps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
 {
+	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
 
-	xsprintf(sz_file, _T("%s/cfg/%s.config"), root, site);
+	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
+
+	xsprintf(sz_file, _T("%s/cfg/%s.config"), sz_root, site);
 
 	LINKPTR ptr_cfg = create_xml_doc();
 	if (!load_xml_doc_from_file(ptr_cfg, NULL, sz_file))
@@ -81,6 +84,10 @@ static void _xpnps_get_config(const tchar_t* root, const tchar_t* site, tchar_t*
 				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("proc"), -1, 1) == 0 && sz_proc)
 				{
 					get_dom_node_text(nlk, sz_proc, PATH_LEN);
+				}
+				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("level"), -1, 1) == 0 && sz_level)
+				{
+					get_dom_node_text(nlk, sz_level, INT_LEN);
 				}
 				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("trace"), -1, 1) == 0 && sz_trace)
 				{
@@ -113,18 +120,18 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	tchar_t sz_site[RES_LEN] = { 0 };
 	tchar_t sz_track[PATH_LEN] = { 0 };
+	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_proc[PATH_LEN] = { 0 };
 	tchar_t sz_path[PATH_LEN] = { 0 };
 	tchar_t sz_trace[RES_LEN] = { 0 };
 
 	TRY_CATCH;
 
-	pb = (pnps_block_t*)xmem_alloc(sizeof(pnps_block_t));
-	pb->cbs = sizeof(pnps_block_t);
+	_xpnps_log_request(port, addr);
 
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
 
-	_xpnps_get_config(pxp->sz_root, sz_site, sz_path, sz_track, sz_proc);
+	_xpnps_get_config(sz_site, sz_path, sz_track, sz_level, sz_proc);
 	
 	if (is_null(sz_path))
 	{
@@ -135,6 +142,9 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	{
 		raise_user_error(_T("_xpnps_invoke"), _T("website not define service module\n"));
 	}
+
+	pb = (pnps_block_t*)xmem_alloc(sizeof(pnps_block_t));
+	pb->cbs = sizeof(pnps_block_t);
 
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
 
@@ -149,10 +159,12 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	pb->pf_log_title = _write_log_title;
 	pb->pf_log_error = _write_log_error;
 	pb->pf_log_data = _write_log_data;
+	printf_path(pb->path, sz_path);
 
-	xsncpy(pb->path, sz_path, PATH_LEN);
+	xszero(sz_path, PATH_LEN);
+	printf_path(sz_path, sz_proc);
 
-	api = load_library(sz_proc);
+	api = load_library(sz_path);
 	if (!api)
 	{
 		raise_user_error(_T("_pnps_invoke"), _T("website load service module failed\n"));
@@ -165,16 +177,17 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	}
 
 	get_loc_date(&xdt);
-	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, xthread_get_id());
+	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, thread_get_id());
+
+	xszero(sz_path, PATH_LEN);
 
 	if (!is_null(sz_track))
 	{
-		xsappend(sz_track, _T("/%s.log"), sz_trace);
+		printf_path(sz_path, sz_track);
+		xsappend(sz_path, _T("/%s.log"), sz_trace);
 
-		pb->log = xfile_open(NULL, sz_track, FILE_OPEN_CREATE);
+		pb->log = xfile_open(NULL, sz_path, FILE_OPEN_CREATE);
 	}
-
-	_xpnps_log_request(port, addr);
 
 	n_state = (*pf_invoke)(pb);
 
@@ -183,9 +196,9 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		xfile_close(pb->log);
 		pb->log = NULL;
 
-		if (!n_state)
+		if (n_state < xstol(sz_level))
 		{
-			xfile_delete(NULL, sz_track);
+			xfile_delete(NULL, sz_path);
 		}
 	}
 
@@ -252,12 +265,12 @@ void _xpnps_start(xpnps_param_t* pxp)
 	{
 		_xpnps_stop(pxp);
 
-		xsprintf(sz_file, _T("PNP %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+		xsprintf(sz_file, _T("PNP %s service started at port: %s  mode: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 		xportm_log_info(sz_file, -1);
 	}
 	else
 	{
-		xsprintf(sz_file, _T("PNP %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+		xsprintf(sz_file, _T("PNP %s service started at port: %s  mode: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 		xportm_log_info(sz_file, -1);
 	}
 }
@@ -274,7 +287,7 @@ void _xpnps_stop(xpnps_param_t* pxp)
 		xpnp_stop(pxp->lis_pnp);
 		pxp->lis_pnp = NULL;
 
-		xsprintf(sz_file, _T("PNP %s service at port: %s stoped...\r\n"), sz_token, pxp->sz_port);
+		xsprintf(sz_file, _T("PNP %s service at port: %s site: %s stoped...\r\n"), sz_token, pxp->sz_port);
 
 		xportm_log_info(sz_file, -1);
 	}

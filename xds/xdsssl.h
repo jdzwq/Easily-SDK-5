@@ -43,7 +43,7 @@ typedef struct _ssl_listen_t{
 
 	int res;
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	res_hand_t epo;
+	res_queue_t epo;
 #endif
 
 	bool_t is_thread;

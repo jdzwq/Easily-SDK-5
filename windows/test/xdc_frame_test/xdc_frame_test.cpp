@@ -72,6 +72,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #define IDC_MAINFRAME_PANELPANEL	3007
 #define IDC_MAINFRAME_CURVEPANEL	3008
 #define IDC_MAINFRAME_MODELPANEL	3009
+#define IDC_MAINFRAME_PLOTPANEL		3010
 
 #define IDA_OWNER			2002
 #define IDA_CALENDAR		2003
@@ -79,6 +80,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #define IDA_PANEL			2005
 #define IDA_CURVE			2006
 #define IDA_MODEL			2007
+#define IDA_PLOT			2008
 
 #define PANEL_CLASS_OWNER		_T("OWNER")
 #define PANEL_CLASS_CALENDAR	_T("CALENDAR")
@@ -86,6 +88,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #define PANEL_CLASS_PANEL		_T("PANEL")
 #define PANEL_CLASS_CURVE		_T("CURVE")
 #define PANEL_CLASS_MODEL		_T("MODEL")
+#define PANEL_CLASS_PLOT		_T("PLOT")
 
 #define MAINFRAME_ACCEL_COUNT		1
 
@@ -114,21 +117,21 @@ void _MainFrame_CalcToolBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_TOP, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_TOP, pxr);
 }
 
 void _MainFrame_CalcStatusBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
 }
 
 void _MainFrame_CalcTreeBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 }
 
 void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
@@ -138,9 +141,9 @@ void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, 0, pxr);
+	widgetex_get_dock_rect(widget, 0, pxr);
 	pxr->h = xs.cy;
 }
 
@@ -151,9 +154,9 @@ void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, 0, pxr);
+	widgetex_get_dock_rect(widget, 0, pxr);
 	pxr->y += xs.cy;
 	pxr->h -= xs.cy;
 }
@@ -241,6 +244,12 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	set_tool_item_title(ilk, _T("模型"));
 	set_tool_item_icon(ilk, ICON_USER);
 
+	ilk = insert_tool_group_item(glk, LINK_LAST);
+	xsprintf(token, _T("%d"), IDA_PLOT);
+	set_tool_item_id(ilk, token);
+	set_tool_item_title(ilk, _T("图形"));
+	set_tool_item_icon(ilk, ICON_USER);
+
 	toolctrl_attach(pdt->hToolBar, ptrTool);
 	widget_show(pdt->hToolBar, WD_SHOW_NORMAL);
 }
@@ -274,7 +283,7 @@ void _MainFrame_CreateTreeBar(res_win_t widget)
 
 	_MainFrame_CalcTreeBar(widget, &xr);
 
-	pdt->hTreeBar = treectrl_create(_T("TreeBar"), WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
+	pdt->hTreeBar = treectrl_create(_T("TreeBar"), WD_STYLE_CONTROL, &xr, widget);
 	widget_set_user_id(pdt->hTreeBar, IDC_MAINFRAME_TREEBAR);
 	widget_set_owner(pdt->hTreeBar, widget);
 
@@ -488,6 +497,56 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		modelctrl_attach(hPanel, ptr_anno);
 		modelctrl_redraw(hPanel);
 	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PLOT, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewPlot"));
+
+		hPanel = plotbox_create(widget, WD_STYLE_CONTROL, &xr);
+		widget_set_user_id(hPanel, IDC_MAINFRAME_PLOTPANEL);
+		widget_set_owner(hPanel, widget);
+
+		xpen_t xp = { 0 };
+		widgetex_get_xpen(hPanel, &xp);
+		xp.adorn.feed = 2;
+		xp.adorn.size = 1;
+		//widgetex_set_xpen(hPanel, &xp);
+
+		xbrush_t xb = { 0 };
+		widgetex_get_xbrush(hPanel, &xb);
+		xb.shadow.offx = 3;
+		xb.shadow.offy = 3;
+		widgetex_set_xbrush(hPanel, &xb);
+
+		vector_t* pvt = vector_alloc(5, 2);
+		vector_parse(pvt, _T(" {(0,1) (2,3)(4, 5) (6, 7) (8,9)}"), -1);
+		plotbox_set_vetor(hPanel, *pvt);
+		vector_free(pvt);
+
+		plot_t plt = { 0 };
+		plt.y_base = 5;
+		plt.y_step = 1;
+		plt.x_step = 1;
+		parse_xcolor(&(plt.clr_argv[0]), GDI_ATTR_RGB_RED);
+		parse_xcolor(&(plt.clr_argv[1]), GDI_ATTR_RGB_GREEN);
+		parse_xcolor(&(plt.clr_argv[2]), GDI_ATTR_RGB_BLUE);
+		parse_xcolor(&(plt.clr_argv[3]), GDI_ATTR_RGB_GRAY);
+		parse_xcolor(&(plt.clr_argv[4]), GDI_ATTR_RGB_CYAN);
+
+		xscpy(plt.x_unit, _T("mmHg"));
+		xscpy(plt.y_unit, _T("天"));
+		plotbox_set_title(hPanel, _T("血压趋势图"));
+		plotbox_set_plot(hPanel, &plt);
+
+//#define ATTR_PLOT_TYPE_GEOGRAM		_T("geogram") //地理图
+//#define ATTR_PLOT_TYPE_TRENDGRAM	_T("trendgram") //趋势图
+//#define ATTR_PLOT_TYPE_SCATTERGRAM	_T("scattergram") //密度图
+//#define ATTR_PLOT_TYPE_PANTOGRAM	_T("pantogram") //比例图
+//#define ATTR_PLOT_TYPE_HISTOGRAM	_T("histogram") //直方图
+
+		plotbox_set_type(hPanel, ATTR_PLOT_TYPE_PANTOGRAM);
+		plotbox_calc_plot(hPanel);
+	}
 
 	if (!hPanel)
 		return NULL;
@@ -638,9 +697,9 @@ void MainFrame_TitleBar_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 	if (widget_is_valid(hPanel))
 	{
 		clr_mod_t clr;
-		widget_get_color_mode(widget, &clr);
+		widgetex_get_color_mode(widget, &clr);
 
-		widget_set_color_mode(hPanel, &clr);
+		widgetex_set_color_mode(hPanel, &clr);
 
 		widget_show(hPanel, WD_SHOW_NORMAL);
 	}
@@ -677,7 +736,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	viewbox_t vb;
 	xcolor_t xc;
 
-	widget_get_view_rect(win, &vb);
+	widgetex_get_view_rect(win, &vb);
 
 	//parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
 
@@ -691,9 +750,9 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	int feed = 10;
 
 	xpen_t xp;
-	widget_get_xpen(win, &xp);
+	widgetex_get_xpen(win, &xp);
 	xbrush_t xb;
-	widget_get_xbrush(win, &xb);
+	widgetex_get_xbrush(win, &xb);
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
 	xrect_t xr;
@@ -865,7 +924,7 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 {
 	MainFrameDelta* pdt;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	res_acl_t hac = create_accel_table(MAINFRAME_ACCEL, MAINFRAME_ACCEL_COUNT);
 
@@ -875,18 +934,18 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_TOP, 0, xs.cy);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_TOP, 0, xs.cy);
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
 
 	xs.fx = MAINFRAME_TREEBAR_WIDTH;
 	xs.fy = 0;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, pdt);
@@ -926,7 +985,7 @@ void MainFrame_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int MainFrame_OnClose(res_win_t widget)
@@ -1004,7 +1063,7 @@ void MainFrame_OnScroll(res_win_t widget, bool_t bHorz, long nLine)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
@@ -1034,6 +1093,9 @@ void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 		break;
 	case IDA_CURVE:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_CURVE);
+		break;
+	case IDA_PLOT:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_PLOT);
 		break;
 	}
 }

@@ -197,8 +197,8 @@ void SchemaPanel_Schema_OnRBClick(res_win_t widget, NOTICE_MEMO* pnf)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_get_color_mode(widget, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -326,8 +326,8 @@ void SchemaPanel_OnPreview(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	widget_get_xfont(pdt->hMemo, &xf);
-	widget_get_xface(pdt->hMemo, &xa);
+	widgetex_get_xfont(pdt->hMemo, &xf);
+	widgetex_get_xface(pdt->hMemo, &xa);
 
 	svg_print_memo(svg, &xf, &xa, ptrMemo, page);
 
@@ -350,7 +350,7 @@ int SchemaPanel_OnCreate(res_win_t widget, void* data)
 	xrect_t xr;
 	const tchar_t* szParam = (tchar_t*)data;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETSCHEMAPANELDELTA(widget, pdt);
 
@@ -397,7 +397,7 @@ void SchemaPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void SchemaPanel_OnShow(res_win_t widget, bool_t bShow)

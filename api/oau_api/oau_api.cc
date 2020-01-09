@@ -45,20 +45,30 @@ bool_t _invoke_auth_request(const https_block_t* pb, oau_block_t* pos)
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	dword_t n;
 
+	tchar_t* sz_qry = NULL;
+	int len;
+
 	TRY_CATCH;
 
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), xhttp_get_url_query_ptr(pb->http), -1);
+		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+		sz_qry = xsalloc(len + 1);
+		len = xhttp_get_url_query(pb->http, sz_qry, len);
+
+		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+		xsfree(sz_qry);
+		sz_qry = NULL;
 	}
 
-	xhttp_get_query_entity(pb->http, OAUTH_RESPONSE_TYPE, -1, sz_response_type, INT_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_REDIRECT_URL, -1, sz_redirect_uri, PATH_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_SCOPE, -1, sz_scope, PATH_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_CLIENT_ID, -1, sz_client_id, RES_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_STATE, -1, sz_state, NUM_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_RESPONSE_TYPE, -1, sz_response_type, INT_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_REDIRECT_URL, -1, sz_redirect_uri, PATH_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_SCOPE, -1, sz_scope, PATH_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_CLIENT_ID, -1, sz_client_id, RES_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_STATE, -1, sz_state, NUM_LEN);
 
 	xhttp_set_response_default_header(pb->http);
 	xhttp_set_response_code(pb->http, HTTP_CODE_302);
@@ -113,6 +123,9 @@ ONERROR:
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_num, sz_err, -1);
 
+	if (sz_qry)
+		xsfree(sz_qry);
+
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[OAUTH: ´íÎó]"), -1);
@@ -139,19 +152,29 @@ bool_t _invoke_auth_access(const https_block_t* pb, oau_block_t* pos)
 	link_t_ptr ptr_json = NULL;
 	link_t_ptr ilk;
 
+	tchar_t* sz_qry = NULL;
+	int len;
+
 	TRY_CATCH;
 
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), xhttp_get_url_query_ptr(pb->http), -1);
+		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+		sz_qry = xsalloc(len + 1);
+		len = xhttp_get_url_query(pb->http, sz_qry, len);
+
+		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+		xsfree(sz_qry);
+		sz_qry = NULL;
 	}
 
-	xhttp_get_query_entity(pb->http, OAUTH_GRANT_TYPE, -1, sz_grant_type, RES_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_REDIRECT_URL, -1, sz_redirect_uri, PATH_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_CODE, -1, sz_code, NUM_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_CLIENT_ID, -1, sz_client_id, RES_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_GRANT_TYPE, -1, sz_grant_type, RES_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_REDIRECT_URL, -1, sz_redirect_uri, PATH_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_CODE, -1, sz_code, NUM_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_CLIENT_ID, -1, sz_client_id, RES_LEN);
 
 	xhttp_set_response_default_header(pb->http);
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
@@ -207,6 +230,9 @@ ONERROR:
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_num, sz_err, -1);
 
+	if (sz_qry)
+		xsfree(sz_qry);
+
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[OAUTH: ´íÎó]"), -1);
@@ -232,18 +258,28 @@ bool_t _invoke_auth_refresh(const https_block_t* pb, oau_block_t* pos)
 	link_t_ptr ptr_json = NULL;
 	link_t_ptr ilk;
 
+	tchar_t* sz_qry = NULL;
+	int len;
+
 	TRY_CATCH;
 
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), xhttp_get_url_query_ptr(pb->http), -1);
+		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+		sz_qry = xsalloc(len + 1);
+		len = xhttp_get_url_query(pb->http, sz_qry, len);
+
+		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+		xsfree(sz_qry);
+		sz_qry = NULL;
 	}
 
-	xhttp_get_query_entity(pb->http, OAUTH_GRANT_TYPE, -1, sz_grant_type, RES_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_REFRESH_TOKEN, -1, sz_refresh_token, RES_LEN);
-	xhttp_get_query_entity(pb->http, OAUTH_SCOPE, -1, sz_scope, PATH_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_GRANT_TYPE, -1, sz_grant_type, RES_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_REFRESH_TOKEN, -1, sz_refresh_token, RES_LEN);
+	xhttp_get_url_query_entity(pb->http, OAUTH_SCOPE, -1, sz_scope, PATH_LEN);
 
 	xhttp_set_response_default_header(pb->http);
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
@@ -294,6 +330,9 @@ ONERROR:
 	get_last_error(sz_num, sz_err, ERR_LEN);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_num, sz_err, -1);
+
+	if (sz_qry)
+		xsfree(sz_qry);
 
 	if (pb->log)
 	{

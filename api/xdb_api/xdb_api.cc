@@ -96,7 +96,7 @@ bool_t _invoke_datetime(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	xhttp_get_query_entity(pb->http, XDB_API_DBDATETIME, -1, sz_diff, INT_LEN);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBDATETIME, -1, sz_diff, INT_LEN);
 
 	rt = (*pxb->pf_db_datetime)(pxb->xdb, xstol(sz_diff), sz_date);
 	if (!rt)
@@ -161,7 +161,7 @@ bool_t _invoke_schema(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBEXPORT, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBEXPORT, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -169,7 +169,7 @@ bool_t _invoke_schema(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBEXPORT, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBEXPORT, -1, d_sql, n_sql);
 
 	d_ptr_grid = create_grid_doc();
 
@@ -292,7 +292,7 @@ bool_t _invoke_export(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBEXPORT, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBEXPORT, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -300,7 +300,7 @@ bool_t _invoke_export(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBEXPORT, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBEXPORT, -1, d_sql, n_sql);
 
 	if (!(*pxb->pf_db_export)(pxb->xdb, NULL, d_sql))
 	{
@@ -394,7 +394,7 @@ bool_t _invoke_import(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBIMPORT, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBIMPORT, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -407,7 +407,7 @@ bool_t _invoke_import(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBIMPORT, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBIMPORT, -1, d_sql, n_sql);
 
 	stream = xhttp_get_recv_stream(pb->http);
 
@@ -553,7 +553,7 @@ bool_t _invoke_write_blob(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBWRITEBLOB, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBWRITEBLOB, -1, NULL, MAX_LONG);
 	if (!n_sql)
 	{
 		raise_user_error(_T("_invoke_write_blob"), _T("empty sql statement\n"));
@@ -565,7 +565,7 @@ bool_t _invoke_write_blob(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBWRITEBLOB, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBWRITEBLOB, -1, d_sql, n_sql);
 
 	stream = xhttp_get_recv_stream(pb->http);
 
@@ -636,14 +636,14 @@ bool_t _invoke_read_blob(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBREADBLOB, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBREADBLOB, -1, NULL, MAX_LONG);
 	if (!n_sql)
 	{
 		raise_user_error(_T("_invoke_read_blob"), _T("empty sql statement\n"));
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBREADBLOB, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBREADBLOB, -1, d_sql, n_sql);
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
@@ -721,7 +721,7 @@ bool_t _invoke_write_clob(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBWRITECLOB, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBWRITECLOB, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -734,7 +734,7 @@ bool_t _invoke_write_clob(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBWRITECLOB, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBWRITECLOB, -1, d_sql, n_sql);
 
 	stm = xhttp_get_recv_stream(pb->http);
 
@@ -828,7 +828,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBREADCLOB, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBREADCLOB, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -836,7 +836,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBREADCLOB, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBREADCLOB, -1, d_sql, n_sql);
 
 	vs = string_alloc();
 
@@ -946,7 +946,7 @@ bool_t _invoke_write_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBWRITEXDOC, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBWRITEXDOC, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -954,7 +954,7 @@ bool_t _invoke_write_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBWRITEXDOC, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBWRITEXDOC, -1, d_sql, n_sql);
 
 	if (xhttp_need_expect(pb->http))
 	{
@@ -1050,7 +1050,7 @@ bool_t _invoke_read_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 
 	TRY_CATCH;
 
-	n_sql = xhttp_get_query_entity(pb->http, XDB_API_DBREADXDOC, -1, NULL, MAX_LONG);
+	n_sql = xhttp_get_url_query_entity(pb->http, XDB_API_DBREADXDOC, -1, NULL, MAX_LONG);
 
 	if (!n_sql)
 	{
@@ -1058,7 +1058,7 @@ bool_t _invoke_read_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 	}
 
 	d_sql = xsalloc(n_sql + 1);
-	xhttp_get_query_entity(pb->http, XDB_API_DBREADXDOC, -1, d_sql, n_sql);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBREADXDOC, -1, d_sql, n_sql);
 
 	ptr_xml = create_xml_doc();
 
@@ -1267,7 +1267,7 @@ bool_t _invoke_call_json(const https_block_t* pb, xdb_block_t* pxb)
 		xhttp_send_continue(pb->http);
 	}
 
-	xhttp_get_query_entity(pb->http, XDB_API_DBCALLJSON, -1, sz_proc, MAX_SQL_NAME);
+	xhttp_get_url_query_entity(pb->http, XDB_API_DBCALLJSON, -1, sz_proc, MAX_SQL_NAME);
 
 	ptr_json = create_json_doc();
 
@@ -1384,7 +1384,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	xdb_block_t* pxb = NULL;
 	tchar_t token[PATH_LEN + 1] = { 0 };
-	const tchar_t* action;
+	tchar_t action[RES_LEN + 1] = { 0 };
 	int len;
 
 	tchar_t srv[PATH_LEN] = { 0 };
@@ -1496,7 +1496,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	}
 
 	xhttp_get_url_method(pb->http, token, INT_LEN);
-	action = xhttp_get_query_ptr(pb->http);
+	xhttp_get_url_query(pb->http, action, RES_LEN);
 
 	if (compare_text(action, xslen(XDB_API_DBEXPORT), XDB_API_DBEXPORT, -1, 1) == 0)
 	{
@@ -1516,14 +1516,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 			}
 			rt = _invoke_export(pb, pxb);
 		}
-	}
-	else if (compare_text(action, xslen(XDB_API_DBEXPORT), XDB_API_DBEXPORT, -1, 1) == 0)
-	{
-		if (pxb->pf_db_export == NULL || pxb->pf_db_error == NULL || pxb->pf_db_rows == NULL)
-		{
-			raise_user_error(_T("xdb_api"), _T("load xdb function falied\n"));
-		}
-		rt = _invoke_export(pb, pxb);
 	}
 	else if (compare_text(action, xslen(XDB_API_DBIMPORT), XDB_API_DBIMPORT, -1, 1) == 0)
 	{

@@ -90,6 +90,7 @@ int main(int argc, const char * argv[])
     }
 
     //child process begin...
+    
     xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_SERVER);
     
     TRY_CATCH;

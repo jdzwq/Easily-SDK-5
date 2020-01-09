@@ -17,18 +17,18 @@ int main(int argc, const char * argv[])
 
 	xscpy(xm.pname, _T("xportm"));
 
-	sign = xevent_create();
+	sign = event_create();
 
 	_xportm_start(&xm);
 
 	if (sign)
 	{
-		xevent_wait(sign, -1);
+		event_wait(sign, -1);
 	}
 
 	_xportm_stop(&xm);
 
-	xevent_destroy(sign);
+	event_destroy(sign);
 	sign = NULL;
 
 	END_CATCH;
@@ -40,7 +40,7 @@ int main(int argc, const char * argv[])
 ONERROR:
 
 	if (sign)
-		xevent_destroy(sign);
+		event_destroy(sign);
 
 	xdl_process_uninit();
 

@@ -354,6 +354,7 @@ void xdk_impl_process(if_process_t* pif)
 	pif->pf_inherit_handle = _inherit_handle;
 	pif->pf_read_profile = _read_profile;
 	pif->pf_write_profile = _write_profile;
+	pif->pf_get_envvar = _get_envvar;
 	pif->pf_system_info = _system_info;
 }
 #endif
@@ -631,6 +632,10 @@ void xdk_impl_widget(if_widget_t* pif)
 
 	pif->pf_create_accel_table = _create_accel_table;
 	pif->pf_destroy_accel_table = _destroy_accel_table;
+
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+	pif->pf_widget_get_glctx = _widget_get_glctx;
+#endif
 }
 
 #ifdef XDK_SUPPORT_WIDGET_EX
@@ -642,4 +647,5 @@ void xdk_impl_widget_ex(if_widget_t* pif)
 	pif->pf_widget_get_alpha = _widget_get_alpha;
 }
 #endif
+
 #endif /*XDK_SUPPORT_WIDGET*/

@@ -103,170 +103,170 @@ static bool_t _WindowDelProper(res_win_t wt, const tchar_t* pname)
 
 static if_event_t* GETXDKDISPATCH(res_win_t hWnd)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, XDKDISPATCH, bys, VOID_SIZE);
     
-    return (if_event_t*)GET_VOID_NET(bys);
+    return (if_event_t*)GET_LWORD_BIG(bys, 0);
 }
 
 static void SETXDKDISPATCH(res_win_t hWnd, if_event_t* p)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, p);
+    PUT_VAR_LONG_NET(bys, p);
     
     _WindowSetProper(hWnd, XDKDISPATCH, bys, VOID_SIZE);
 }
 
 static if_subproc_t* GETXDKSUBPROC(res_win_t hWnd)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, XDKSUBPROC, bys, VOID_SIZE);
     
-    return (if_subproc_t*)GET_VOID_NET(bys);
+    return (if_subproc_t*)GET_VAR_LONG_NET(bys);
 
 }
 
 static void SETXDKSUBPROC(res_win_t hWnd, if_subproc_t* p)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, p);
+    PUT_VAR_LONG_NET(bys, p);
     
     _WindowSetProper(hWnd, XDKSUBPROC, bys, VOID_SIZE);
 }
 
 static void* GETXDKCOREDELTA(res_win_t hWnd)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, XDKCOREDELTA, bys, VOID_SIZE);
     
-    return (void*)GET_VOID_NET(bys);
+    return (void*)GET_VAR_LONG_NET(bys);
     
 }
 
 static void SETXDKCOREDELTA(res_win_t hWnd, void* p)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, p);
+    PUT_VAR_LONG_NET(bys, p);
     
     _WindowSetProper(hWnd, XDKCOREDELTA, bys, VOID_SIZE);
 }
 
 static void* GETXDKUSERDELTA(res_win_t hWnd)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, XDKUSERDELTA, bys, VOID_SIZE);
     
-    return (void*)GET_VOID_NET(bys);
+    return (void*)GET_VAR_LONG_NET(bys);
     
 }
 
 static void SETXDKUSERDELTA(res_win_t hWnd, void* p)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, p);
+    PUT_VAR_LONG_NET(bys, p);
     
     _WindowSetProper(hWnd, XDKUSERDELTA, bys, VOID_SIZE);
 }
 
 static res_acl_t GETXDKACCEL(res_win_t hWnd)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, XDKACCEL, bys, VOID_SIZE);
     
-    return (res_acl_t)GET_VOID_NET(bys);
+    return (res_acl_t)GET_VAR_LONG_NET(bys);
     
 }
 
 static void SETXDKACCEL(res_win_t hWnd, res_acl_t p)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, p);
+    PUT_VAR_LONG_NET(bys, p);
     
     _WindowSetProper(hWnd, XDKACCEL, bys, VOID_SIZE);
 }
 
 static res_win_t GETXDKOWNER(res_win_t hWnd)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, XDKOWNER, bys, VOID_SIZE);
     
-    return (res_win_t)GET_VOID_NET(bys);
+    return (res_win_t)GET_VAR_LONG_NET(bys);
     
 }
 
 static void SETXDKOWNER(res_win_t hWnd, res_win_t p)
 {
-    dword_t bys[VOID_SIZE] = {0};
+    byte_t bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, p);
+    PUT_VAR_LONG_NET(bys, p);
     
     _WindowSetProper(hWnd, XDKOWNER, bys, VOID_SIZE);
 }
 
 static dword_t GETXDKSTYLE(res_win_t hWnd)
 {
-    dword_t bys[4] = {0};
+    byte_t bys[4] = {0};
     
     _WindowGetProper(hWnd, XDKSTYLE, bys, 4);
     
-    return GET_INT32_NET(bys, 0);
+    return GET_DWORD_NET(bys, 0);
     
 }
 
 static void SETXDKSTYLE(res_win_t hWnd, dword_t u)
 {
-    dword_t bys[4] = {0};
+    byte_t bys[4] = {0};
     
-    PUT_INT32_NET(bys, 0, u);
+    PUT_DWORD_NET(bys, 0, u);
     
     _WindowSetProper(hWnd, XDKSTYLE, bys, 4);
 }
 
 static dword_t GETXDKUSERID(res_win_t hWnd)
 {
-    dword_t bys[4] = {0};
+    byte_t bys[4] = {0};
     
     _WindowGetProper(hWnd, XDKUSERID, bys, 4);
     
-    return GET_INT32_NET(bys, 0);
+    return GET_DWORD_NET(bys, 0);
     
 }
 
 static void SETXDKUSERID(res_win_t hWnd, dword_t u)
 {
-    dword_t bys[4] = {0};
+    byte_t bys[4] = {0};
     
-    PUT_INT32_NET(bys, 0, u);
+    PUT_DWORD_NET(bys, 0, u);
     
     _WindowSetProper(hWnd, XDKUSERID, bys, 4);
 }
 
 static dword_t GETXDKRESULT(res_win_t hWnd)
 {
-    dword_t bys[4] = {0};
+    byte_t bys[4] = {0};
     
     _WindowGetProper(hWnd, XDKRESULT, bys, 4);
     
-    return GET_INT32_NET(bys, 0);
+    return GET_DWORD_NET(bys, 0);
     
 }
 
 static void SETXDKRESULT(res_win_t hWnd, dword_t u)
 {
-    dword_t bys[4] = {0};
+    byte_t bys[4] = {0};
     
-    PUT_INT32_NET(bys, 0, u);
+    PUT_DWORD_NET(bys, 0, u);
     
     _WindowSetProper(hWnd, XDKRESULT, bys, 4);
 }
@@ -301,9 +301,9 @@ static void _CenterRect(XRectangle* prt, long cx, long cy)
 
 bool_t _fetch_message(msg_t* pmsg, res_win_t wt)
 {
-    if(wt)
-        XWindowEvent(g_display, wt, WIDGET_EVENTS, pmsg);
-    else
+    //if(wt)
+       // XWindowEvent(g_display, wt, WIDGET_EVENTS, pmsg);
+    //else
         XNextEvent(g_display, pmsg);
     
     return 1;
@@ -311,9 +311,9 @@ bool_t _fetch_message(msg_t* pmsg, res_win_t wt)
 
 bool_t _peek_message(msg_t* pmsg, res_win_t wt)
 {
-    if(wt)
-        XCheckWindowEvent(g_display, wt, WIDGET_EVENTS, pmsg);
-    else
+    //if(wt)
+        //XCheckWindowEvent(g_display, wt, WIDGET_EVENTS, pmsg);
+    //else
         XPeekEvent(g_display, pmsg);
     
     return 1;
@@ -327,6 +327,11 @@ bool_t	_translate_message(const msg_t* pmsg)
 result_t _dispatch_message(const msg_t* pmsg)
 {
     return 0;
+}
+
+void _message_position(xpoint_t* ppt)
+{
+
 }
 
 int	_translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
@@ -1435,7 +1440,7 @@ void _widget_set_user_prop(res_win_t wt, const tchar_t* pname,var_long val)
 {
     unsigned char bys[VOID_SIZE] = {0};
     
-    PUT_VOID_NET(bys, val);
+    PUT_VAR_LONG_NET(bys, val);
     
     _WindowSetProper(wt, pname, bys, VOID_SIZE);
 }
@@ -1446,7 +1451,7 @@ var_long _widget_get_user_prop(res_win_t wt, const tchar_t* pname)
     
     _WindowGetProper(wt, pname, bys, VOID_SIZE);
     
-    return (var_long)GET_VOID_NET(bys);
+    return (var_long)GET_VAR_LONG_NET(bys);
 }
 
 var_long _widget_del_user_prop(res_win_t wt, const tchar_t* pname)
@@ -1763,24 +1768,24 @@ void _widget_show(res_win_t wt, dword_t sw)
     
 }
 
-void _widget_update(res_win_t wt, const xrect_t* prt, bool_t b_erase)
+void _widget_update(res_win_t wt)
 {
 
+}
+
+void _widget_resize(res_win_t wt)
+{
+   
+}
+
+void _widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
+{
+    
 }
 
 void _widget_paint(res_win_t wt)
 {
    
-}
-
-void _widget_update_window(res_win_t wt)
-{
-
-}
-
-void _widget_update_client(res_win_t wt)
-{
-
 }
 
 void _widget_enable(res_win_t wt, bool_t b)

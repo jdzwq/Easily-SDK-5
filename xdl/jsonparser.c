@@ -60,9 +60,10 @@ typedef enum{
 	JSON_ASIGN = 160,		//元素属性赋值
 	JSON_ARRAY_BEGIN = 170,	//元素属性数组开始
 	JSON_ARRAY_END = 171,	//元素属性数组开始
-	JSON_VALUE_QUOT = 180,	//元素属性值括号
-	JSON_VALUE_BEGIN = 181,	//元素属性值开始
-	JSON_VALUE_END = 182,	//元素属性值结束
+	JSON_QUOT_BEGIN = 180,	//元素属性值括号开始
+	JSON_QUOT_END = 181,	//元素属性值括号结束
+	JSON_VALUE_BEGIN = 182,	//元素属性值开始
+	JSON_VALUE_END = 183,	//元素属性值结束
 }JSONSTATUS;
 
 //以下定义读写头动作
@@ -85,9 +86,9 @@ typedef struct _MATA{
 	int mo;		//栈动作
 	int ms;		//当前状态
 
+	bool_t quot; //值是否有引号
 	tchar_t org[ESC_LEN + 1];//上一字
 	tchar_t cur[ESC_LEN + 1];//当前字
-
 	int bytes;	//扫描字节数
 }JSONMATA;
 
@@ -175,32 +176,34 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			if (_IsSkipChar(ma.cur[0])){ ma.mo = NOP; ma.ms = JSON_ASIGN; ma.ma = NEXT; } //忽略空格
 			else if (ma.cur[0] == _T('{')){ ma.mo = NOP; ma.ms = JSON_OPEN; ma.ma = PAUSE; } //数组开始
 			else if (ma.cur[0] == _T('[')){ ma.mo = NOP; ma.ms = JSON_ARRAY_BEGIN; ma.ma = PAUSE; } //数组开始
-			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_VALUE_QUOT; ma.ma = NEXT; } //过渡到属性值开始
+			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_QUOT_BEGIN; ma.ma = NEXT; } //过渡到属性值开始
 			else { ma.mo = NOP; ma.ms = JSON_VALUE_BEGIN; ma.ma = PAUSE; } //
 			break;
 		case JSON_ARRAY_BEGIN:
 			if (ma.cur[0] == _T('[')){ ma.mo = NOP; ma.ms = JSON_ARRAY_BEGIN; ma.ma = NEXT; } //数组开始
 			else if (_IsSkipChar(ma.cur[0])){ ma.mo = NOP; ma.ms = JSON_ARRAY_BEGIN; ma.ma = NEXT; } //忽略空格
 			else if (ma.cur[0] == _T('{')){ ma.mo = NOP; ma.ms = JSON_OPEN; ma.ma = PAUSE; } //对象开始
-			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_VALUE_QUOT; ma.ma = NEXT; } //过渡到属性值开始
-			else if (ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //
-			else if (ma.cur[0] == _T(']')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //
-			else if (ma.cur[0] == _T('}')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //
+			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_QUOT_BEGIN; ma.ma = NEXT; } //过渡到属性值开始
+			else if (ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
+			else if (ma.cur[0] == _T(']')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
+			else if (ma.cur[0] == _T('}')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
 			else { ma.mo = NOP; ma.ms = JSON_VALUE_BEGIN; ma.ma = PAUSE; } 
 			break;
-		case JSON_VALUE_QUOT: //元素属性括号
-			{ ma.mo = NOP; ma.ms = JSON_VALUE_BEGIN; ma.ma = PAUSE; } //过渡到元素值
+		case JSON_QUOT_BEGIN: //元素属性引号开始
+			{ ma.mo = NOP; ma.ms = JSON_VALUE_BEGIN; ma.ma = PAUSE; ma.quot = 1; } //过渡到属性值开始
 			break;
 		case JSON_VALUE_BEGIN: //元素属性值开始
-			if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
-			else if (ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //
-			else if (ma.cur[0] == _T(']')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //
-			else if (ma.cur[0] == _T('}')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //
+			if (ma.quot && ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_QUOT_END; ma.ma = NEXT; } //过渡到属性值结束
+			else if (!ma.quot && ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
+			else if (!ma.quot && ma.cur[0] == _T(']')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
+			else if (!ma.quot && ma.cur[0] == _T('}')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; } //过渡到属性值结束
 			else { ma.mo = NOP; ma.ms = JSON_VALUE_BEGIN; ma.ma = NEXT; } //继续属性值
 			break;
+		case JSON_QUOT_END: //元素属性引号结束
+			{ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = PAUSE; ma.quot = 0; } //过渡到属性值开始
+			break;
 		case JSON_VALUE_END: //元素属性值结束
-			if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = NEXT; } //属性值结束
-			else if (ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_ITEM_END; ma.ma = PAUSE; } //属性值结束
+			if (ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_ITEM_END; ma.ma = PAUSE; } //属性值结束
 			else if (ma.cur[0] == _T(']')){ ma.mo = NOP; ma.ms = JSON_ITEM_END; ma.ma = PAUSE; } //属性值结束
 			else if (ma.cur[0] == _T('}')){ ma.mo = NOP; ma.ms = JSON_ITEM_END; ma.ma = PAUSE; } //属性值结束
 			else if (_IsSkipChar(ma.cur[0])){ ma.mo = NOP; ma.ms = JSON_VALUE_END; ma.ma = NEXT; } //忽略空格
@@ -218,7 +221,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			if (ma.cur[0] == _T(',')){ ma.mo = NOP; ma.ms = JSON_ITEM_RET; ma.ma = NEXT; } //属性结束
 			else if (_IsSkipChar(ma.cur[0])){ ma.mo = NOP; ma.ms = JSON_ITEM_RET; ma.ma = NEXT; } //忽略空格
 			else if (ma.cur[0] == _T('{')){ ma.mo = NOP; ma.ms = JSON_OPEN; ma.ma = PAUSE; } //过渡到属性值开始
-			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_VALUE_QUOT; ma.ma = NEXT; } //过渡到属性值开始
+			else if (ma.cur[0] == _T('\"')){ ma.mo = NOP; ma.ms = JSON_QUOT_BEGIN; ma.ma = NEXT; } //过渡到属性值开始
 			else { ma.mo = NOP; ma.ms = JSON_VALUE_BEGIN; ma.ma = PAUSE; } //过渡到元素值
 			break;
 		case JSON_ARRAY_END:

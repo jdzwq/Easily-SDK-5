@@ -34,18 +34,19 @@ LICENSE.GPL3 for more details.
 #include "xdlstr.h"
 #include "oemconv.h"
 
-bool_t is_escape(const tchar_t* esc, tchar_t ch)
+
+static tchar_t csv_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
+
+bool_t _is_csvesc(tchar_t ch)
 {
-	if (!esc)
-		return 0;
+	int i = 0;
+	while (*(csv_esc + i) && *(csv_esc + i) != ch)
+		i++;
 
-	while (*esc && *esc != ch)
-		esc++;
-
-	return (*esc) ? 1 : 0;
+	return (*(csv_esc + i)) ? 1 : 0;
 }
 
-int encode_escape(const tchar_t* esc, const tchar_t* val, int len, tchar_t* buf, int max)
+int csv_char_encode(const tchar_t* val, int len, tchar_t* buf, int max)
 {
 	const tchar_t* token = val;
 	int pos, total = 0;
@@ -57,7 +58,7 @@ int encode_escape(const tchar_t* esc, const tchar_t* val, int len, tchar_t* buf,
 	pos = 0;
 	while (pos < len)
 	{
-		if (is_escape(esc, *token))
+		if (_is_csvesc(*token))
 		{
 			if (total + 3 > max)
 				return total;
@@ -88,7 +89,7 @@ int encode_escape(const tchar_t* esc, const tchar_t* val, int len, tchar_t* buf,
 	return total;
 }
 
-int decode_escape(const tchar_t* val, int len, tchar_t* buf, int max)
+int csv_char_decode(const tchar_t* val, int len, tchar_t* buf, int max)
 {
 	const tchar_t* token = val;
 	int pos, total = 0;
@@ -130,9 +131,112 @@ int decode_escape(const tchar_t* val, int len, tchar_t* buf, int max)
 
 	return total;
 }
+/***************************************************************************************/
+//static tchar_t url_esc[] = { _T(' '), _T('"'),_T('#'), _T('%'), _T('&'), _T('('), _T(')'), _T('+'), _T(','), _T('/'), _T(':'), _T(';'), _T('<'), _T('='), _T('>'), _T('?'), _T('@'), _T('\\'), _T('|'), _T('\0') };
+//#define ASC_LEN	16
+//static tchar_t url_esc[ASC_LEN] = { _T(' '), _T('"'), _T('#'), _T('%'), _T('('), _T(')'), _T('+'), _T(','), _T(':'), _T(';'), _T('<'), _T('>'), _T('?'), _T('@'), _T('\\'), _T('|'), _T('\0')  };
 
-/**********************************************************************************************/
-dword_t utf16lit_decode_escape(const byte_t* src, tchar_t* dest)
+static tchar_t url_asc[] = _T("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~");
+
+static bool_t _is_urlesc(byte_t ch)
+{
+	if (ch >= ('A') && ch <= ('Z'))
+		return 0;
+
+	if (ch >= ('a') && ch <= ('z'))
+		return 0;
+
+	if (ch >= ('0') && ch <= ('9'))
+		return 0;
+
+	if (ch == ('-') || ch == ('_') || ch == ('.') || ch == ('~'))
+		return 0;
+
+	return 1;
+}
+
+dword_t url_byte_encode(const byte_t* val, dword_t len, byte_t* buf, dword_t max)
+{
+	const byte_t* token = val;
+	dword_t pos, total = 0;
+	schar_t num[3] = { 0 };
+
+	pos = 0;
+	while (pos < len)
+	{
+		if (_is_urlesc(*token))
+		{
+			if (total + 3 > max)
+				return total;
+
+			if (buf)
+			{
+				buf[total] = ('%');
+				a_xsprintf((schar_t*)(buf + total + 1), ("%02X"), (long)(*token));
+			}
+			total += 3;
+		}
+		else
+		{
+			if (total + 1 > max)
+				return total;
+
+			if (buf)
+			{
+				buf[total] = *token;
+			}
+			total++;
+		}
+
+		token++;
+		pos++;
+	}
+
+	return total;
+}
+
+dword_t url_byte_decode(const byte_t* val, dword_t len, byte_t* buf, dword_t max)
+{
+	const byte_t* token = val;
+	dword_t pos, total = 0;
+	schar_t num[3] = { 0 };
+
+	pos = 0;
+	while (pos < len)
+	{
+		if (*token == ('%'))
+		{
+			if (total + 1 > max)
+				return total;
+
+			if (buf)
+			{
+				buf[total] = (int)a_hexntol((schar_t*)(token + 1), 2);
+			}
+			total++;
+			pos += 3;
+			token += 3;
+		}
+		else
+		{
+			if (total + 1 > max)
+				return total;
+
+			if (buf)
+			{
+				buf[total] = (int)(*token);
+			}
+			total++;
+			pos++;
+			token++;
+		}
+	}
+
+	return total;
+}
+
+/****************************************************************************************/
+dword_t xml_utf16lit_decode(const byte_t* src, tchar_t* dest)
 {
 	wchar_t pch[ESC_LEN + 1] = { 0 };
 	dword_t pos = 0;
@@ -204,7 +308,7 @@ dword_t utf16lit_decode_escape(const byte_t* src, tchar_t* dest)
 	return pos;
 }
 
-dword_t utf16big_decode_escape(const byte_t* src, tchar_t* dest)
+dword_t xml_utf16big_decode(const byte_t* src, tchar_t* dest)
 {
 	wchar_t pch[ESC_LEN + 1] = { 0 };
 	dword_t pos = 0;
@@ -276,7 +380,7 @@ dword_t utf16big_decode_escape(const byte_t* src, tchar_t* dest)
 	return pos;
 }
 
-dword_t utf8_decode_escape(const byte_t* src, tchar_t* dest)
+dword_t xml_utf8_decode(const byte_t* src, tchar_t* dest)
 {
 	wchar_t pch[ESC_LEN + 1] = { 0 };
 	dword_t pos = 0;
@@ -349,7 +453,7 @@ dword_t utf8_decode_escape(const byte_t* src, tchar_t* dest)
 }
 
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
-dword_t gb2312_decode_escape(const byte_t* src, tchar_t* dest)
+dword_t xml_gb2312_decode(const byte_t* src, tchar_t* dest)
 {
 	wchar_t pch[ESC_LEN + 1] = { 0 };
 	dword_t pos = 0;
@@ -422,7 +526,7 @@ dword_t gb2312_decode_escape(const byte_t* src, tchar_t* dest)
 }
 #endif
 
-dword_t unn_decode_escape(const byte_t* src, tchar_t* dest)
+dword_t xml_unn_decode(const byte_t* src, tchar_t* dest)
 {
 	wchar_t pch[ESC_LEN + 1] = { 0 };
 	dword_t pos = 0;
@@ -494,7 +598,7 @@ dword_t unn_decode_escape(const byte_t* src, tchar_t* dest)
 	return pos;
 }
 
-int ucs_decode_escape(const wchar_t* src, tchar_t* dest)
+int xml_ucs_decode(const wchar_t* src, tchar_t* dest)
 {
 	if (!w_xsncmp(src, W_LT, LT_LEN))
 	{
@@ -555,7 +659,7 @@ int ucs_decode_escape(const wchar_t* src, tchar_t* dest)
 #endif
 }
 
-int mbs_decode_escape(const schar_t* src, tchar_t* dest)
+int xml_mbs_decode(const schar_t* src, tchar_t* dest)
 {
 	if (!a_xsncmp(src, A_LT, LT_LEN))
 	{
@@ -617,7 +721,7 @@ int mbs_decode_escape(const schar_t* src, tchar_t* dest)
 }
 
 //将正常串转换为转义串
-dword_t utf16lit_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
+dword_t xml_utf16lit_encode(tchar_t ch, byte_t* dest, dword_t max)
 {
 	if (ch == _T('<'))
 	{
@@ -679,7 +783,7 @@ dword_t utf16lit_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
 	return 0;
 }
 
-dword_t utf16big_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
+dword_t xml_utf16big_encode(tchar_t ch, byte_t* dest, dword_t max)
 {
 	if (ch == _T('<'))
 	{
@@ -741,7 +845,7 @@ dword_t utf16big_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
 	return 0;
 }
 
-dword_t utf8_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
+dword_t xml_utf8_encode(tchar_t ch, byte_t* dest, dword_t max)
 {
 	if (ch == _T('<'))
 	{
@@ -804,7 +908,7 @@ dword_t utf8_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
 }
 
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
-dword_t gb2312_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
+dword_t xml_gb2312_encode(tchar_t ch, byte_t* dest, dword_t max)
 {
 	if (ch == _T('<'))
 	{
@@ -867,7 +971,7 @@ dword_t gb2312_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
 }
 #endif
 
-dword_t unn_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
+dword_t xml_unn_encode(tchar_t ch, byte_t* dest, dword_t max)
 {
 	if (ch == _T('<'))
 	{
@@ -929,7 +1033,7 @@ dword_t unn_encode_escape(tchar_t ch, byte_t* dest, dword_t max)
 	return 0;
 }
 
-int mbs_encode_escape(tchar_t ch, schar_t* dest, int max)
+int xml_mbs_encode(tchar_t ch, schar_t* dest, int max)
 {
 	if (ch == _T('<'))
 	{
@@ -977,7 +1081,7 @@ int mbs_encode_escape(tchar_t ch, schar_t* dest, int max)
 	return 0;
 }
 
-int ucs_encode_escape(tchar_t ch, wchar_t* dest, int max)
+int xml_ucs_encode(tchar_t ch, wchar_t* dest, int max)
 {
 	if (ch == _T('<'))
 	{

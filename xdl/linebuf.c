@@ -36,11 +36,11 @@ LICENSE.GPL3 for more details.
 
 #define BUFFERTAG_ROOT		0xFFFFFFFF
 
-static LINEBUFFERPTR _alloc_line_buffer(sword_t size)
+static linear_t_ptr _alloc_linear(sword_t size)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 
-	pbuf = (LINEBUFFERPTR)xmem_alloc(sizeof(LINE_BUFFER));
+	pbuf = (linear_t_ptr)xmem_alloc(sizeof(linear_t));
 	pbuf->data = (byte_t*)xmem_alloc(size);
 	pbuf->readed = 0;
 	pbuf->writed = 0;
@@ -48,7 +48,7 @@ static LINEBUFFERPTR _alloc_line_buffer(sword_t size)
 	return pbuf;
 }
 
-static void _free_line_buffer(LINEBUFFERPTR link)
+static void _free_linear(linear_t_ptr link)
 {
 	if (link->data)
 		xmem_free(link->data);
@@ -56,7 +56,7 @@ static void _free_line_buffer(LINEBUFFERPTR link)
 	xmem_free(link);
 }
 
-void init_line_buffer(LINEBUFFERPTR root, sword_t frag)
+void linear_init(linear_t_ptr root, sword_t frag)
 {
 	root->flag = BUFFERTAG_ROOT;
 	root->frag = frag;
@@ -64,13 +64,13 @@ void init_line_buffer(LINEBUFFERPTR root, sword_t frag)
 	root->prev = root;
 }
 
-LINEBUFFERPTR alloc_line_buffer(LINEBUFFERPTR root)
+linear_t_ptr linear_alloc(linear_t_ptr root)
 {
-	LINEBUFFERPTR link;
+	linear_t_ptr link;
 
 	XDL_ASSERT(root->flag == BUFFERTAG_ROOT);
 
-	link = _alloc_line_buffer(root->frag);
+	link = _alloc_linear(root->frag);
 
 	root->prev->next = link;
 	link->prev = root->prev;
@@ -80,7 +80,7 @@ LINEBUFFERPTR alloc_line_buffer(LINEBUFFERPTR root)
 	return link;
 }
 
-void free_line_buffer(LINEBUFFERPTR root, LINEBUFFERPTR link)
+void linear_free(linear_t_ptr root, linear_t_ptr link)
 {
 	XDL_ASSERT(root->flag == BUFFERTAG_ROOT);
 
@@ -88,52 +88,52 @@ void free_line_buffer(LINEBUFFERPTR root, LINEBUFFERPTR link)
 	link->next->prev = link->prev;
 
 	link->next = link->prev = NULL;
-	_free_line_buffer(link);
+	_free_linear(link);
 }
 
-LINEBUFFERPTR first_line_buffer(LINEBUFFERPTR root)
+linear_t_ptr linear_get_first(linear_t_ptr root)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 	XDL_ASSERT(root->flag == BUFFERTAG_ROOT);
 
 	pbuf = root->next;
 	return (pbuf->flag == BUFFERTAG_ROOT) ? NULL : pbuf;
 }
 
-LINEBUFFERPTR last_line_buffer(LINEBUFFERPTR root)
+linear_t_ptr linear_get_last(linear_t_ptr root)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 	XDL_ASSERT(root->flag == BUFFERTAG_ROOT);
 
 	pbuf = root->prev;
 	return (pbuf->flag == BUFFERTAG_ROOT) ? NULL : pbuf;
 }
 
-LINEBUFFERPTR next_line_buffer(LINEBUFFERPTR link)
+linear_t_ptr linear_get_next(linear_t_ptr link)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 	XDL_ASSERT(link->flag != BUFFERTAG_ROOT);
 
 	pbuf = link->next;
 	return (pbuf->flag == BUFFERTAG_ROOT) ? NULL : pbuf;
 }
 
-LINEBUFFERPTR prev_line_buffer(LINEBUFFERPTR link)
+linear_t_ptr linear_get_prev(linear_t_ptr link)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 	XDL_ASSERT(link->flag != BUFFERTAG_ROOT);
 
 	pbuf = link->prev;
 	return (pbuf->flag == BUFFERTAG_ROOT) ? NULL : pbuf;
 }
 
-dword_t read_line_buffer(LINEBUFFERPTR root, byte_t* buf, dword_t max)
+dword_t linear_read(linear_t_ptr root, byte_t* buf, dword_t max)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 	dword_t pos = 0;
 	sword_t blk;
 
-	pbuf = first_line_buffer(root);
+	pbuf = linear_get_first(root);
 	while (pbuf && pos < max)
 	{
 		blk = (pbuf->writed - pbuf->readed < max) ? (pbuf->writed - pbuf->readed) : max;
@@ -146,25 +146,25 @@ dword_t read_line_buffer(LINEBUFFERPTR root, byte_t* buf, dword_t max)
 
 		if (pbuf->writed == pbuf->readed)
 		{
-			pbuf = next_line_buffer(pbuf);
+			pbuf = linear_get_next(pbuf);
 		}
 	}
 
 	return pos;
 }
 
-dword_t write_line_buffer(LINEBUFFERPTR root, const byte_t* buf, dword_t len)
+dword_t linear_write(linear_t_ptr root, const byte_t* buf, dword_t len)
 {
-	LINEBUFFERPTR pbuf;
+	linear_t_ptr pbuf;
 	dword_t pos = 0;
 	sword_t blk;
 
-	pbuf = last_line_buffer(root);
+	pbuf = linear_get_last(root);
 	while (pos < len)
 	{
 		if (!pbuf)
 		{
-			pbuf = alloc_line_buffer(root);
+			pbuf = linear_alloc(root);
 		}
 
 		blk = (root->frag - pbuf->writed < len) ? (root->frag - pbuf->writed) : len;

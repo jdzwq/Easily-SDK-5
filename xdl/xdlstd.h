@@ -28,6 +28,7 @@
 #include "trietree.h"
 #include "filetable.h"
 #include "optparser.h"
+#include "strutil.h"
 
 #include "xdlstr.h"
 #include "xdlesc.h"

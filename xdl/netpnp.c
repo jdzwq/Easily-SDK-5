@@ -93,31 +93,31 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 	havege_init(&ppnp->havs);
 	ppnp->bind = _dynet_port(ppnp);
 
-	ppnp->so = xsocket_udp(0, FILE_OPEN_OVERLAP);
+	ppnp->so = socket_udp(0, FILE_OPEN_OVERLAP);
 	if (ppnp->so == INVALID_FILE)
 	{
 		xmem_free(ppnp);
 		return NULL;
 	}
 	zo = 1;
-	xsocket_setopt(ppnp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
+	socket_setopt(ppnp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 	fill_addr(&sin, ppnp->bind, NULL);
-	if (!xsocket_bind(ppnp->so, (res_addr_t)&sin, sizeof(sin)))
+	if (!socket_bind(ppnp->so, (res_addr_t)&sin, sizeof(sin)))
 	{
-		xsocket_close(ppnp->so);
+		socket_close(ppnp->so);
 		xmem_free(ppnp);
 		return NULL;
 	}
 
-	xsocket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
-	xsocket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
+	socket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
+	socket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
 
 	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
 	if (ppnp->ov.type == ASYNC_BLOCK)
 	{
-		xsocket_set_nonblk(ppnp->so, 0);
+		socket_set_nonblk(ppnp->so, 0);
 	}
 
 	ppnp->snd_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
@@ -127,7 +127,7 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 	ppnp->rcv_bys = 0;
 	ppnp->rcv_ret = 0;
 
-	return (xhand_t)&(ppnp->head);
+	return &(ppnp->head);
 }
 
 xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size)
@@ -153,25 +153,25 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	havege_init(&ppnp->havs);
 	ppnp->bind = _dynet_port(ppnp);
 
-	ppnp->so = xsocket_udp(0, FILE_OPEN_OVERLAP);
+	ppnp->so = socket_udp(0, FILE_OPEN_OVERLAP);
 	if (ppnp->so == INVALID_FILE)
 	{
 		xmem_free(ppnp);
 		return NULL;
 	}
 	zo = 1;
-	xsocket_setopt(ppnp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
+	socket_setopt(ppnp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 	fill_addr(&sin, ppnp->bind, NULL);
-	if (!xsocket_bind(ppnp->so, (res_addr_t)&sin, sizeof(sin)))
+	if (!socket_bind(ppnp->so, (res_addr_t)&sin, sizeof(sin)))
 	{
-		xsocket_close(ppnp->so);
+		socket_close(ppnp->so);
 		xmem_free(ppnp);
 		return NULL;
 	}
 
-	xsocket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
-	xsocket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
+	socket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
+	socket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
 
 	async_alloc_lapp(&ppnp->ov, PNP_BASE_TIMO);
 
@@ -189,12 +189,12 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 		ppnp->rcv_ret = 0;
 	}
 
-	return (xhand_t)&ppnp->head;
+	return &ppnp->head;
 }
 
 void  xpnp_close(xhand_t pnp)
 {
-	pnp_t* ppnp = (pnp_t*)pnp;
+	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
 
 	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
 
@@ -206,8 +206,8 @@ void  xpnp_close(xhand_t pnp)
 
 	if (ppnp->so)
 	{
-		xthread_sleep(THREAD_BASE_TMO);
-		xsocket_close(ppnp->so);
+		thread_sleep(THREAD_BASE_TMO);
+		socket_close(ppnp->so);
 	}
 
 	async_release_lapp(&ppnp->ov);
@@ -217,7 +217,7 @@ void  xpnp_close(xhand_t pnp)
 
 int xpnp_type(xhand_t pnp)
 {
-	pnp_t* ppnp = (pnp_t*)pnp;
+	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
 
 	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
 
@@ -226,7 +226,7 @@ int xpnp_type(xhand_t pnp)
 
 bool_t xpnp_write(xhand_t pnp, const byte_t* buf, dword_t* pb)
 {
-	pnp_t* ppnp = (pnp_t*)pnp;
+	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
 	dword_t bys, dw;
 	net_addr_t sin = { 0 };
 	int addr_len;
@@ -249,7 +249,7 @@ bool_t xpnp_write(xhand_t pnp, const byte_t* buf, dword_t* pb)
 			addr_len = sizeof(net_addr_t);
 
 			bys = ppnp->snd_bys;
-			if (!xsocket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pkg), bys, &ppnp->ov))
+			if (!socket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pkg), bys, &ppnp->ov))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -274,7 +274,7 @@ ONERROR:
 
 bool_t xpnp_flush(xhand_t pnp)
 {
-	pnp_t* ppnp = (pnp_t*)pnp;
+	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
 	dword_t dw;
 	net_addr_t sin = { 0 };
 	int addr_len;
@@ -289,7 +289,7 @@ bool_t xpnp_flush(xhand_t pnp)
 		addr_len = sizeof(net_addr_t);
 
 		dw = ppnp->snd_bys;
-		if (!xsocket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pkg), dw, &ppnp->ov))
+		if (!socket_sendto(ppnp->so, (res_addr_t)&sin, addr_len, (void*)(ppnp->snd_pkg), dw, &ppnp->ov))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -309,7 +309,7 @@ ONERROR:
 
 bool_t xpnp_read(xhand_t pnp, byte_t* buf, dword_t* pb)
 {
-	pnp_t* ppnp = (pnp_t*)pnp;
+	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
 	dword_t bys, dw;
 	net_addr_t na = { 0 };
 	int addr_len;
@@ -327,7 +327,7 @@ bool_t xpnp_read(xhand_t pnp, byte_t* buf, dword_t* pb)
 		{
 			bys = PNP_PDU_SIZE;
 			addr_len = sizeof(net_addr_t);
-			if (!xsocket_recvfrom(ppnp->so, (res_addr_t)&na, &addr_len, (void*)(ppnp->rcv_pkg), bys, &ppnp->ov))
+			if (!socket_recvfrom(ppnp->so, (res_addr_t)&na, &addr_len, (void*)(ppnp->rcv_pkg), bys, &ppnp->ov))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -368,13 +368,13 @@ ONERROR:
 
 unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr)
 {
-	pnp_t* pso = (pnp_t*)pnp;
+	pnp_t* pso = TypePtrFromHead(pnp_t, pnp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
 
-	xsocket_addr(pso->so, &na);
+	socket_addr(pso->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -382,13 +382,13 @@ unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr)
 
 unsigned short xpnp_peer_port(xhand_t pnp, tchar_t* addr)
 {
-	pnp_t* pso = (pnp_t*)pnp;
+	pnp_t* pso = TypePtrFromHead(pnp_t, pnp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
 
-	xsocket_peer(pso->so, &na);
+	socket_peer(pso->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;

@@ -97,17 +97,8 @@ typedef struct _slots_block_t{
 	PF_LOG_ERROR	pf_log_error;
 	PF_LOG_DATA		pf_log_data;
 
-	tchar_t method[NUM_LEN];
 	tchar_t site[RES_LEN];
 	tchar_t path[PATH_LEN];
-
-#ifdef _OS_64
-	unsigned long long	wrecv;
-#else
-	unsigned long		wrecv;
-#endif
-	void*	precv;
-
 }slots_block_t;
 
 typedef enum{

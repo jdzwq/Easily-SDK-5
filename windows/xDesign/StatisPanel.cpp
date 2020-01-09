@@ -387,7 +387,7 @@ void StatisPanel_OnExec(res_win_t widget)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widget_set_color_mode(win, &clr);
+	widgetex_set_color_mode(win, &clr);
 
 	set_statis_design(ptr_statis, 0);
 	statisctrl_attach(win, ptr_statis);
@@ -853,7 +853,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	StatisPanelDelta* pdt = (StatisPanelDelta*)xmem_alloc(sizeof(StatisPanelDelta));
 	xrect_t xr;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETSTATISPANELDELTA(widget, pdt);
 
@@ -931,7 +931,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	titlectrl_attach(pdt->hTitle, ptrTitle);
 	titlectrl_set_focus_item(pdt->hTitle, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (const tchar_t*)data;
 
@@ -951,7 +951,7 @@ void StatisPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -984,7 +984,7 @@ void StatisPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int StatisPanel_OnClose(res_win_t widget)

@@ -44,7 +44,7 @@ typedef struct _udp_listen_t{
 	int act;
 	int res;
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	res_hand_t epo;
+	res_queue_t epo;
 #endif
 
 	bool_t is_thread;
@@ -107,6 +107,7 @@ typedef struct _udps_block_t{
 	PF_LOG_ERROR	pf_log_error;
 	PF_LOG_DATA		pf_log_data;
 
+	tchar_t site[RES_LEN];
 	tchar_t path[PATH_LEN];
 }udps_block_t;
 

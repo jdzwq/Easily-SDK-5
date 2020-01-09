@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 typedef struct _status_delta_t{
 	link_t_ptr status;
@@ -51,11 +52,11 @@ static void _statusctrl_title_rect(res_win_t widget, xrect_t* pxr)
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_status_title_rect(&cb, ptd->status, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _statusctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -63,11 +64,11 @@ static void _statusctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
 	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	calc_status_item_rect(&cb, ptd->status, ilk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 void _statusctrl_reset_page(res_win_t widget)
@@ -80,7 +81,7 @@ void _statusctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	widget_reset_paging(widget, pw, ph, pw, ph, 0, 0);
+	widgetex_reset_paging(widget, pw, ph, pw, ph, 0, 0);
 }
 
 /**************************************************************************************************/
@@ -182,7 +183,7 @@ int hand_status_create(res_win_t widget, void* data)
 {
 	status_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (status_delta_t*)xmem_alloc(sizeof(status_delta_t));
 	xmem_zero((void*)ptd, sizeof(status_delta_t));
@@ -202,7 +203,7 @@ void hand_status_destroy(res_win_t widget)
 
 	SETSTATUSDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_status_size(res_win_t widget, int code, const xsize_t* prs)
@@ -226,11 +227,11 @@ void hand_status_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (!ptd->status)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_status_hint(&cb, &pt, ptd->status, &plk);
@@ -293,11 +294,11 @@ void hand_status_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->status)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_status_hint(&cb, &pt, ptd->status, &plk);
@@ -393,10 +394,10 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->status)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -404,8 +405,8 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -418,7 +419,7 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	gradient_rect_raw(rdc, &xg, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	draw_status(pif, &cb, ptd->status);
 

@@ -36,6 +36,7 @@ LICENSE.GPL3 for more details.
 #include "httpattr.h"
 
 #define XHTTP_HEADER_SIZE	1024
+#define XHTTP_HEADER_MAX	(64 * 1024)
 #define XHTTP_ZIPED_SIZE	(4 * 1024 * 1024)
 
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
@@ -46,10 +47,11 @@ typedef enum{
 	_XHTTP_TYPE_SRV = 2
 }XHTTP_TYPE;
 
-#define IS_XHTTP_METHOD(token)		(compare_text(token,-1,HTTP_METHOD_GET,-1,1) == 0 ||  compare_text(token,-1,HTTP_METHOD_PUT,-1,1) == 0 || compare_text(token,-1,HTTP_METHOD_POST,-1,1) == 0 || compare_text(token,-1,HTTP_METHOD_DELETE,-1,1) == 0 || compare_text(token,-1,HTTP_METHOD_HEAD,-1,1) == 0 || compare_text(token,-1,HTTP_METHOD_LIST,-1,1) == 0 || compare_text(token,-1,HTTP_METHOD_GRANT,-1,1) == 0) 
 #define IS_XHTTP_SUCCEED(code)		((compare_text(code,1,_T("2"),1,0) == 0 || compare_text(code,1,_T("3"),1,0) == 0)? 1 : 0)
 #define IS_XHTTP_CONTINUE(code)		((compare_text(code,-1,_T("100"),-1,0) == 0)? 1 : 0)
 #define IS_XHTTP_REDIRECT(code)		((compare_text(code,-1,_T("302"),-1,0) == 0)? 1 : 0)
+
+#define CONENTYPE_IS_JSON(token)	((compare_text(token, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0)? 1 : 0)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -122,44 +124,6 @@ XDL_API xhand_t		xhttp_bio(xhand_t xhttp);
 XDL_API dword_t		xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max);
 
 /*
-@FUNCTION xhttp_set_query: set http query token.
-@INPUT xhand_t xhttp: the http handle.
-@INPUT const tchar_t* query: the query string token.
-@INPUT int len: the query token length in characters.
-@RETURN void: none.
-*/
-XDL_API void		xhttp_set_query(xhand_t xhttp, const tchar_t* query, int len);
-
-/*
-@FUNCTION xhttp_get_query_ptr: get http query token string pointer.
-@INPUT xhand_t xhttp: the http handle.
-@RETURN const tchar_t*: return the string pointer if exists, otherwise return NULL.
-*/
-XDL_API const tchar_t* xhttp_get_query_ptr(xhand_t xhttp);
-
-/*
-@FUNCTION xhttp_set_query_entity: set http query entity key and value.
-@INPUT xhand_t xhttp: the http handle.
-@INPUT const tchar_t* key: the query entity key token.
-@INPUT int klen: the key length in characters.
-@INPUT const tchar_t* val: the query entity value token.
-@INPUT int vlen: the value length in characters.
-@RETURN void: none.
-*/
-XDL_API void		xhttp_set_query_entity(xhand_t xhttp, const tchar_t* key, int klen, const tchar_t* val, int vlen);
-
-/*
-@FUNCTION xhttp_get_query_entity: get http query entity value by key.
-@INPUT xhand_t xhttp: the http handle.
-@INPUT const tchar_t* key: the query entity key token.
-@INPUT int klen: the key length in characters.
-@OUTPUT tchar_t* val: the string buffer for returning value.
-@INPUT int max: the string buffer size in characters, not include terminate character.
-@RETURN int: return value token length in characters.
-*/
-XDL_API int			xhttp_get_query_entity(xhand_t xhttp, const tchar_t* key, int klen, tchar_t* buf, int max);
-
-/*
 @FUNCTION xhttp_split_object: split and copy http query url site and file token,
 if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then the site is "/mysite", the file is "/mydir/myfile".
 @INPUT const tchar_t* sz_url: the url token.
@@ -168,6 +132,44 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 @RETURN void: none.
 */
 XDL_API void		xhttp_split_object(const tchar_t* sz_url, tchar_t* sz_site, tchar_t* sz_file);
+
+/*
+@FUNCTION xhttp_url_encoding: encoding the url query token.
+@INPUT const tchar_t* url: the url token.
+@INPUT int len: the url token length in characters.
+@INPUT byte_t* buf: the buffer for holding query token.
+@INPUT int max: the buffer max size.
+@RETURN int: return bytes encoded.
+*/
+XDL_API dword_t		xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max);
+
+/*
+@FUNCTION xhttp_url_decoding: decoding the url query token.
+@INPUT const byte_t* url: the url encoded token.
+@INPUT dword_t len: the url encoded token size in bytes.
+@INPUT tchar_t* buf: the buffer for holding query token.
+@INPUT int max: the buffer max size.
+@RETURN int: return characters decoded.
+*/
+XDL_API int			xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max);
+
+/*
+@FUNCTION xhttp_get_encoded_query: get http query token.
+@INPUT xhand_t xhttp: the http handle.
+@INPUT byte_t* buf: the buffer for holding query token.
+@INPUT int max: the buffer max size.
+@RETURN int: return bytes copyed.
+*/
+XDL_API dword_t		xhttp_get_encoded_query(xhand_t xhttp, byte_t* buf, dword_t max);
+
+/*
+@FUNCTION xhttp_set_encoded_query: set http encoded query.
+@INPUT xhand_t xhttp: the http handle.
+@INPUT const byte_t* query: the query encoded token.
+@INPUT dword_t len: the encoded query token length in bytes.
+@RETURN void: none.
+*/
+XDL_API void		xhttp_set_encoded_query(xhand_t xhttp, const byte_t* query, dword_t len);
 
 /*
 @FUNCTION xhttp_get_url_method: get http method.
@@ -209,7 +211,7 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 XDL_API int			xhttp_get_url_object(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
-@FUNCTION xhttp_get_url_query: get http url query.
+@FUNCTION xhttp_get_url_query: get http url encoded query.
 if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then the query is "mykey=myval".
 @INPUT xhand_t xhttp: the http handle.
 @OUTPUT tchar_t* buf: the string buffer for returning value.
@@ -219,12 +221,35 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 XDL_API int			xhttp_get_url_query(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
-@FUNCTION xhttp_get_url_query_ptr: get http url query token pointer.
-if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then the query is "mykey=myval".
+@FUNCTION xhttp_set_query: set http query token.
 @INPUT xhand_t xhttp: the http handle.
-@RETURN const tchar_t*: return query token pointer if exists, otherwise return NULL.
+@INPUT const tchar_t* query: the query string token.
+@INPUT int len: the query token length in characters.
+@RETURN void: none.
 */
-XDL_API const tchar_t* xhttp_get_url_query_ptr(xhand_t http);
+XDL_API void		xhttp_set_url_query(xhand_t xhttp, const tchar_t* query, int len);
+
+/*
+@FUNCTION xhttp_set_url_query_entity: set http query entity key and value.
+@INPUT xhand_t xhttp: the http handle.
+@INPUT const tchar_t* key: the query entity key token.
+@INPUT int klen: the key length in characters.
+@INPUT const tchar_t* val: the query entity value token.
+@INPUT int vlen: the value length in characters.
+@RETURN void: none.
+*/
+XDL_API void		xhttp_set_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, const tchar_t* val, int vlen);
+
+/*
+@FUNCTION xhttp_get_url_query_entity: get http query entity value by key.
+@INPUT xhand_t xhttp: the http handle.
+@INPUT const tchar_t* key: the query entity key token.
+@INPUT int klen: the key length in characters.
+@OUTPUT tchar_t* val: the string buffer for returning value.
+@INPUT int max: the string buffer size in characters, not include terminate character.
+@RETURN int: return value token length in characters.
+*/
+XDL_API int			xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_request_header: get http request header value.

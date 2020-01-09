@@ -231,7 +231,7 @@ typedef int				wait_t;
 #define GET_LWORD_LIT(buf,off)      LIT_MAKELWORD(GET_DWORD_LIT(buf,off),GET_DWORD_LIT(buf,(off + 4)))
 #define GET_SWORD_BIG(buf,off)		((((unsigned short)(buf[off]) << 8) & 0xFF00) | ((unsigned short)(buf[off+1]) & 0x00FF))
 #define GET_DWORD_BIG(buf,off)		((((unsigned long)(buf[off]) << 24) & 0xFF000000)  | (((unsigned long)(buf[off + 1]) << 16) & 0x00FF0000) | (((unsigned long)(buf[off + 2]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off + 3]) & 0x000000FF))
-#define GET_LWORD_BIG(buf,off)      BIG_MAKELWORD(GET_DWORD_BIG(buf,off),GET_DWORD_BIG(buf,(off + 4)))
+#define GET_LWORD_BIG(buf,off)      (BIG_MAKELWORD(GET_DWORD_BIG(buf,off),GET_DWORD_BIG(buf,(off + 4)))
 
 #define PUT_SWORD_NET		PUT_SWORD_BIG
 #define GET_SWORD_NET		GET_SWORD_BIG
@@ -430,8 +430,10 @@ typedef struct async_t{
 	dword_t timo;		/*the timeout value in millisecond*/
 	size_t size;	/*async operation data bytes*/
 
-	res_hand_t port;	/*inner port resource handle*/
 	void* lapp;		/*inner overlapped struct*/
+#ifdef XDK_SUPPORT_THREAD_QUEUE
+	res_queue_t port;	/*inner port resource handle*/
+#endif
 }async_t;
 
 /*async type*/
@@ -479,6 +481,7 @@ typedef struct async_t{
 #define XDKOWNER		_T("XDKOWNER")
 #define XDKUSERID		_T("XDKUSERID")
 #define XDKRESULT		_T("XDKRESULT")
+#define XDKGLRC			_T("XDKGLRC")
 
 #define WIDGET_TITLE_SPAN		(float)10	//mm
 #define WIDGET_MENU_SPAN		(float)7.5	//mm
@@ -545,6 +548,7 @@ typedef struct async_t{
 #define WD_STYLE_PAGING		0x00001000
 #define WD_STYLE_NOACTIVE	0x00002000
 #define WD_STYLE_NOCHANGE	0x00004000
+#define WD_STYLE_OPENGL		0x00008000
 
 #define WD_STYLE_CONTROL	(WD_STYLE_CHILD | WD_STYLE_OWNERNC)
 #define WD_STYLE_POPUP		(WD_STYLE_OWNERNC)

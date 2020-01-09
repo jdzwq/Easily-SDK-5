@@ -83,9 +83,11 @@ bool_t _invoke_head(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
+	//xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 
-	if (!xfile_info(NULL, sz_object, ftime, fsize, fetag, fencode))
+	xsprintf(sz_object, _T("oss://%s%s"), pos->sz_oss, pb->object);
+
+	if (!oss_file_info(&pos->sd, sz_object, ftime, fsize, fetag, fencode))
 	{
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
@@ -137,11 +139,12 @@ bool_t _invoke_list(const https_block_t* pb, oss_block_t* pos)
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
+	//xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
+	xsprintf(sz_object, _T("oss://%s%s"), pos->sz_oss, pb->object);
 
 	ptr_list = create_list_doc();
 
-	if (!xfile_list(NULL, sz_object, ptr_list))
+	if (!oss_list(&pos->sd, sz_object, ptr_list))
 	{
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
@@ -220,9 +223,10 @@ bool_t _invoke_get(const https_block_t* pb, oss_block_t* pos)
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMATCH, -1, yes_etag, ETAG_LEN);
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFNONEMATCH, -1, not_etag, ETAG_LEN);
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
+	//xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
+	xsprintf(sz_object, _T("oss://%s%s"), pos->sz_oss, pb->object);
 
-	if (!xfile_info(NULL, sz_object, ftime, fsize, fetag, NULL))
+	if (!oss_file_info(&pos->sd, sz_object, ftime, fsize, fetag, NULL))
 	{
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
@@ -617,10 +621,6 @@ bool_t _invoke_put(const https_block_t* pb, oss_block_t* pos)
 
 	xhttp_send_error(pb->http, HTTP_CODE_201, HTTP_CODE_201_TEXT, _T("0"), _T("xhttp write file succeeded\n"), -1);
 
-	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
-
-	xfile_copy(&pos->sd, sz_object, sz_ossurl, 0);
-
 	END_CATCH;
 
 	return 1;
@@ -683,7 +683,7 @@ bool_t _invoke_delete(const https_block_t* pb, oss_block_t* pos)
 
 	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
 
-	xfile_delete(&pos->sd, sz_ossurl);
+	oss_delete_file(&pos->sd, sz_ossurl);
 
 	END_CATCH;
 
@@ -824,11 +824,12 @@ void _invoke_error(const https_block_t* pb, oss_block_t* pos)
 	}
 }
 
+/********************************************************************************************/
 int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	oss_block_t* pos = NULL;
 
-	tchar_t token[PATH_LEN + 1] = { 0 };
+	tchar_t token[PATH_LEN] = { 0 };
 
 	link_t_ptr ptr_prop = NULL;
 
@@ -852,12 +853,14 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		raise_user_error(_T("-1"), _T("load loc config falied\n"));
 	}
 
-	read_proper(ptr_prop, _T("OSS"), -1, _T("LOCATION"), -1, pos->sz_oss, PATH_LEN);
+	read_proper(ptr_prop, _T("OSS"), -1, _T("LOCATION"), -1, token, PATH_LEN);
 	read_proper(ptr_prop, _T("OSS"), -1, _T("PUBLICKEY"), -1, pos->sd.scr_uid, KEY_LEN);
 	read_proper(ptr_prop, _T("OSS"), -1, _T("PRIVATEKEY"), -1, pos->sd.scr_key, KEY_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
+
+	printf_path(pos->sz_oss, token);
 
 	if (compare_text(method, -1, _T("HEAD"), -1, 1) == 0)
 		rt = _invoke_head(pb, pos);

@@ -1450,7 +1450,7 @@ void MainFrame_ChangeFace(res_win_t widget, int ind)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widget_set_color_mode(widget, &clr);
+	widgetex_set_color_mode(widget, &clr);
 
 	widget_update(widget);
 }
@@ -1540,9 +1540,9 @@ void MainFrame_TitleBar_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 	if (widget_is_valid(hPanel))
 	{
 		clr_mod_t clr;
-		widget_get_color_mode(widget, &clr);
+		widgetex_get_color_mode(widget, &clr);
 
-		widget_set_color_mode(hPanel, &clr);
+		widgetex_set_color_mode(hPanel, &clr);
 
 		widget_show(hPanel, WD_SHOW_NORMAL);
 
@@ -1595,9 +1595,9 @@ void MainFrame_ResBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1697,9 +1697,9 @@ void MainFrame_DomBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1803,9 +1803,9 @@ void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1840,14 +1840,14 @@ void _MainFrame_CalcToolBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	
-	widget_get_dock_rect(widget, WD_DOCK_TOP, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_TOP, pxr);
 }
 
 void _MainFrame_CalcStatusBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
 }
 
 void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
@@ -1857,9 +1857,9 @@ void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1870,9 +1870,9 @@ void _MainFrame_CalcDomBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1883,9 +1883,9 @@ void _MainFrame_CalcObjBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1896,9 +1896,9 @@ void _MainFrame_CalcCateBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->y = pxr->y + pxr->h - xs.cy;
 	pxr->h = xs.cy;
 }
@@ -1910,9 +1910,9 @@ void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, 0, pxr);
+	widgetex_get_dock_rect(widget, 0, pxr);
 	pxr->h = xs.cy;
 }
 
@@ -1923,9 +1923,9 @@ void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, 0, pxr);
+	widgetex_get_dock_rect(widget, 0, pxr);
 	pxr->y += xs.cy;
 	pxr->h -= xs.cy;
 }
@@ -2496,7 +2496,7 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 {
 	MainFrameDelta* pdt;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	res_acl_t hac = create_accel_table(MAINFRAME_ACCEL, MAINFRAME_ACCEL_COUNT);
 
@@ -2506,18 +2506,18 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_TOP, 0, xs.cy);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_TOP, 0, xs.cy);
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
 
 	xs.fx = MAINFRAME_TREEBAR_WIDTH;
 	xs.fy = 0;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, (var_long)pdt);
@@ -2573,7 +2573,7 @@ void MainFrame_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int MainFrame_OnClose(res_win_t widget)
@@ -2712,9 +2712,9 @@ void MainFrame_OnSysColor(res_win_t widget, const xpoint_t* ppt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -3043,7 +3043,7 @@ res_win_t MainFrame_Create(const tchar_t* mname)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widget_set_color_mode(widget, &clr);
+	widgetex_set_color_mode(widget, &clr);
 
 	widget_update(widget);
 

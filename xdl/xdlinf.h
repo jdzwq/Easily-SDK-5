@@ -165,7 +165,6 @@ typedef struct _if_measure_t{
 	PF_IMAGE_SIZE	pf_image_size;
 }if_measure_t;
 
-typedef int(*PF_CANVAS_TYPE)(canvas_t);
 typedef void(*PF_DRAW_LINE)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
 typedef void(*PF_DRAW_POLYLINE)(canvas_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_POLYGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
@@ -181,7 +180,6 @@ typedef void(*PF_DRAW_PIE)(canvas_t, const xpen_t*, const xbrush_t*, const xpoin
 typedef void(*PF_DRAW_ARC)(canvas_t, const xpen_t*, const xpoint_t*, float, float, double, double);
 typedef void(*PF_DRAW_ARROW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, float, double);
 typedef void(*PF_DRAW_SHAPE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
-typedef void(*PF_DRAW_SHADOW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const xsize_t*, const tchar_t*);
 typedef void(*PF_MULTI_LINE)(canvas_t, const xfont_t*, const xface_t*, const xpen_t*, const xrect_t*);
 typedef void(*PF_DRAW_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
 typedef void(*PF_DRAW_PASSWORD)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
@@ -206,8 +204,6 @@ typedef void(*PF_MEASURE_METRIC)(canvas_t, const xfont_t*, xsize_t* pps);
 typedef struct _if_canvas_t{
 	canvas_t canvas;
 
-	PF_CANVAS_TYPE		pf_canvas_type;
-
 	PF_DRAW_LINE		pf_draw_line;
 	PF_DRAW_POLYLINE	pf_draw_polyline;
 	PF_DRAW_POLYGON		pf_draw_polygon;
@@ -223,7 +219,6 @@ typedef struct _if_canvas_t{
 	PF_DRAW_ARC			pf_draw_arc;
 	PF_DRAW_ARROW		pf_draw_arrow;
 	PF_DRAW_SHAPE		pf_draw_shape;
-	PF_DRAW_SHADOW		pf_draw_shadow;
 	PF_MULTI_LINE		pf_multi_line;
 	PF_DRAW_TEXT		pf_draw_text;
 	PF_TEXT_OUT			pf_text_out;
@@ -251,6 +246,7 @@ typedef struct _if_canvas_t{
 	xcolor_t clr_ico;
 	xcolor_t clr_msk;
 }if_canvas_t;
+
 
 
 #endif	/* _XDLINF_H */

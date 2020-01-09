@@ -30,8 +30,9 @@ LICENSE.GPL3 for more details.
 void _write_log_title(file_t log, const tchar_t* sz_title, int len)
 {
 	byte_t* sz_log = NULL;
-	dword_t n_br, n_log = 0;
+	dword_t n_br;
 	byte_t br[2] = { '\r', '\n' };
+    int n_log = 0;
 
 #ifdef _UNICODE
 	n_log = ucs_to_mbs(sz_title, -1, NULL, MAX_LONG);
@@ -133,7 +134,7 @@ void _write_log_json(file_t log, link_t_ptr ptr_json)
 void xportm_log_info(const tchar_t* str, int len)
 {
 	byte_t* sz_buf = NULL;
-	dword_t size = 0;
+	int size = 0;
 
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;

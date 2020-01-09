@@ -204,7 +204,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
-				HEADER_SEARCH_PATHS = "/Users/zwq/工程/Easily-sdk-5/include";
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
+					"/Users/zwq/工程/Easily-sdk-5/include",
+				);
 				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -216,7 +220,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
-				HEADER_SEARCH_PATHS = "/Users/zwq/工程/Easily-sdk-5/include";
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
+					"/Users/zwq/工程/Easily-sdk-5/include",
+				);
 				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";

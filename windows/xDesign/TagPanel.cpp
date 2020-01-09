@@ -314,8 +314,8 @@ void TagPanel_OnPreview(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	widget_get_xfont(pdt->hTag, &xf);
-	widget_get_xface(pdt->hTag, &xa);
+	widgetex_get_xfont(pdt->hTag, &xf);
+	widgetex_get_xface(pdt->hTag, &xa);
 
 	//svg_print_tag(svg, &xf, &xa, ptrTag, page);
 
@@ -339,7 +339,7 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	TagPanelDelta* pdt = (TagPanelDelta*)xmem_alloc(sizeof(TagPanelDelta));
 	xrect_t xr;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETTAGPANELDELTA(widget, pdt);
 
@@ -361,9 +361,9 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTag, widget);
 
 	xface_t xa;
-	widget_get_xface(pdt->hTag, &xa);
+	widgetex_get_xface(pdt->hTag, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-	widget_set_xface(pdt->hTag, &xa);
+	widgetex_set_xface(pdt->hTag, &xa);
 
 	LINKPTR ptrTag = create_tag_doc();
 	tagctrl_attach(pdt->hTag, ptrTag);
@@ -383,7 +383,7 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	set_split_item_delta(ilkProper, pdt->hProper);
 	widget_show(pdt->hProper, WD_SHOW_NORMAL);
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -406,7 +406,7 @@ void TagPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -430,7 +430,7 @@ void TagPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int TagPanel_OnClose(res_win_t widget)

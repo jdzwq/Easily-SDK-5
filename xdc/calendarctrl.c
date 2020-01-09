@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 #define CALENDAR_LINE_FEED		(float)50
 #define CALENDAR_DAILY_MIN_WIDTH	(float)10
@@ -59,7 +60,7 @@ static void _calendarctrl_daily_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 
 	calc_calendar_daily_rect(ptd->calendar, ilk, pxr);
 
-	widget_rect_to_pt(widget, pxr);
+	widgetex_rect_to_pt(widget, pxr);
 }
 
 static void _calendarctrl_reset_page(res_win_t widget)
@@ -77,17 +78,17 @@ static void _calendarctrl_reset_page(res_win_t widget)
 	xs.fx = get_calendar_width(ptd->calendar);
 	xs.fy = get_calendar_height(ptd->calendar);
 
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = (float)10;
 	xs.fy = (float)10;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -105,7 +106,7 @@ static void _calendarctrl_ensure_visible(res_win_t widget)
 
 	_calendarctrl_daily_rect(widget, ptd->daily, &xr);
 
-	widget_ensure_visible(widget, &xr, 1);
+	widgetex_ensure_visible(widget, &xr, 1);
 }
 /*********************************************************************************************************/
 int noti_calendar_owner(res_win_t widget, unsigned long code, link_t_ptr ptr, link_t_ptr ilk, void* data)
@@ -254,7 +255,7 @@ int hand_calendar_create(res_win_t widget, void* data)
 {
 	calendar_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (calendar_delta_t*)xmem_alloc(sizeof(calendar_delta_t));
 	xmem_zero((void*)ptd, sizeof(calendar_delta_t));
@@ -274,7 +275,7 @@ void hand_calendar_destroy(res_win_t widget)
 
 	SETCALENDARDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_calendar_size(res_win_t widget, int code, const xsize_t* prs)
@@ -294,7 +295,7 @@ void hand_calendar_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	if (!ptd->calendar)
 		return;
 
-	widget_hand_scroll(widget, bHorz, nLine);
+	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_calendar_wheel(res_win_t widget, bool_t bHorz, long nDelta)
@@ -314,7 +315,7 @@ void hand_calendar_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widget_hand_scroll(widget, bHorz, nLine))
+	if (widgetex_hand_scroll(widget, bHorz, nLine))
 		return;
 
 	win = widget_get_parent(widget);
@@ -337,7 +338,7 @@ void hand_calendar_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_calendar_hint(ptd->calendar, &pt, &ilk);
@@ -403,7 +404,7 @@ void hand_calendar_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_calendar_hint(ptd->calendar, &pt, &ilk);
@@ -437,7 +438,7 @@ void hand_calendar_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(widget, &pt);
+	widgetex_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_calendar_hint(ptd->calendar, &pt, &ilk);
@@ -541,9 +542,9 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->calendar)
 		return;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -551,20 +552,20 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	widgetex_get_mask(widget, &pif->clr_msk);
+	widgetex_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	widget_get_xbrush(widget, &xb);
+	widgetex_get_xbrush(widget, &xb);
 
-	widget_get_xpen(widget, &xp);
+	widgetex_get_xpen(widget, &xp);
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	draw_calendar(pif, &cb, ptd->calendar);
 

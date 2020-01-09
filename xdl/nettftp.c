@@ -669,7 +669,7 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 
 	END_CATCH;
 
-	return (xhand_t)pftp;
+	return &pftp->head;
 
 ONERROR:
 
@@ -748,7 +748,7 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	END_CATCH;
 
-	return (xhand_t)pftp;
+	return &pftp->head;
 ONERROR:
 
 	if (pftp)
@@ -766,7 +766,7 @@ ONERROR:
 
 void xtftp_close(xhand_t tftp)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -778,7 +778,7 @@ void xtftp_close(xhand_t tftp)
 
 bool_t xtftp_recv(xhand_t tftp, byte_t* buf, dword_t* pch)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	sword_t pdu_type = 0;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -911,7 +911,7 @@ ONERROR:
 
 bool_t xtftp_send(xhand_t tftp, const byte_t* buf, dword_t *pch)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	sword_t pdu_type;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -1036,7 +1036,7 @@ ONERROR:
 
 bool_t xtftp_flush(xhand_t tftp)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	sword_t pdu_type = 0;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -1060,7 +1060,7 @@ bool_t xtftp_flush(xhand_t tftp)
 
 bool_t xtftp_head(xhand_t tftp)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	sword_t pdu_type = 0;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -1095,7 +1095,7 @@ bool_t xtftp_head(xhand_t tftp)
 
 bool_t xtftp_fetch(xhand_t tftp)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	sword_t pdu_type = 0;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -1130,7 +1130,7 @@ bool_t xtftp_fetch(xhand_t tftp)
 
 void xtftp_abort(xhand_t tftp, int errcode)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1168,7 +1168,7 @@ void xtftp_abort(xhand_t tftp, int errcode)
 
 int xtftp_object(xhand_t tftp, tchar_t* buf, int max)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	int len;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -1186,7 +1186,7 @@ int xtftp_object(xhand_t tftp, tchar_t* buf, int max)
 
 int xtftp_method(xhand_t tftp, tchar_t* buf, int max)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 	int len;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -1204,7 +1204,7 @@ int xtftp_method(xhand_t tftp, tchar_t* buf, int max)
 
 void xtftp_set_isdir(xhand_t tftp, bool_t isdir)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1213,7 +1213,7 @@ void xtftp_set_isdir(xhand_t tftp, bool_t isdir)
 
 bool_t xtftp_get_isdir(xhand_t tftp)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1222,7 +1222,7 @@ bool_t xtftp_get_isdir(xhand_t tftp)
 
 void xtftp_set_filesize(xhand_t tftp, dword_t size)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1231,7 +1231,7 @@ void xtftp_set_filesize(xhand_t tftp, dword_t size)
 
 dword_t xtftp_get_filesize(xhand_t tftp)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1240,7 +1240,7 @@ dword_t xtftp_get_filesize(xhand_t tftp)
 
 void xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1249,7 +1249,7 @@ void xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime)
 
 void xtftp_get_filetime(xhand_t tftp, tchar_t* ftime)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1258,7 +1258,7 @@ void xtftp_get_filetime(xhand_t tftp, tchar_t* ftime)
 
 void xtftp_set_filename(xhand_t tftp, const tchar_t* fname)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -1267,7 +1267,7 @@ void xtftp_set_filename(xhand_t tftp, const tchar_t* fname)
 
 void xtftp_get_filename(xhand_t tftp, tchar_t* fname)
 {
-	xtftp_t* pftp = (xtftp_t*)tftp;
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 

@@ -53,10 +53,10 @@ typedef struct _pageguid_t{
 }pageguid_t;
 
 typedef struct _codepage_t{
-	sword_t			code_base;
-	int				page_size;
-	int				max_pages;
-	pageguid_t*		page_array;
+	acp_head	head;
+	int			page_size;
+	int			max_pages;
+	pageguid_t*	page_array;
 }codepage_t;
 
 codepage_t* _acp_alloc(wchar_t code_base)
@@ -70,12 +70,13 @@ codepage_t* _acp_alloc(wchar_t code_base)
 
 	pxt = (codepage_t*)(*pif->pf_page_alloc)(PAGE_SIZE);
 
-	pxt->code_base = code_base;
 	pxt->page_size = (*pif->pf_page_size)(pxt);
 	pxt->max_pages = (pxt->page_size - sizeof(codepage_t)) / sizeof(pageguid_t);
 	pxt->page_array = (pageguid_t*)(pxt + 1);
 
 	//(*pif->pf_page_lock)(pxt);
+
+	pxt->head.base = code_base;
 
 	return pxt;
 }
@@ -129,8 +130,8 @@ bool_t _acp_set_code(codepage_t* pxt, sword_t code, sword_t val)
 	XDL_ASSERT(pif != NULL);
 
 	ents = pxt->page_size / sizeof(codeguid_t);
-	index = (int)(code - pxt->code_base) / ents;
-	offset = (int)(code - pxt->code_base) % ents;
+	index = (int)(code - pxt->head.base) / ents;
+	offset = (int)(code - pxt->head.base) % ents;
 
 	if (index < 0 || index >= pxt->max_pages)
 		return 0;
@@ -148,7 +149,7 @@ bool_t _acp_set_code(codepage_t* pxt, sword_t code, sword_t val)
 
 bool_t acp_get_code(acp_t acp, sword_t code, sword_t* pval)
 {
-	codepage_t* pxt = (codepage_t*)acp;
+	codepage_t* pxt = TypePtrFromHead(codepage_t, acp);
 
 	if_memo_t* pif;
 	pageguid_t* pg;
@@ -159,8 +160,8 @@ bool_t acp_get_code(acp_t acp, sword_t code, sword_t* pval)
 	XDL_ASSERT(pif != NULL);
 
 	ents = pxt->page_size / sizeof(codeguid_t);
-	index = (int)(code - pxt->code_base) / ents;
-	offset = (int)(code - pxt->code_base) % ents;
+	index = (int)(code - pxt->head.base) / ents;
+	offset = (int)(code - pxt->head.base) % ents;
 	if (offset < 0)
 		return 0;
 
@@ -189,7 +190,7 @@ acp_t create_ucs_codepage()
 	unsigned short c, v;
 	codepage_t* pcp;
 
-	pcp = _acp_alloc(MIN_UCS);
+	pcp = _acp_alloc(_ACP_UCSMIN);
 	size = unicode_gb2312_size();
 	for (i = 0; i < size; i++)
 	{
@@ -200,7 +201,7 @@ acp_t create_ucs_codepage()
 
 	_acp_protect(pcp);
 
-	return (acp_t)pcp;
+	return &pcp->head;
 }
 
 acp_t create_gbk_codepage()
@@ -209,7 +210,7 @@ acp_t create_gbk_codepage()
 	unsigned short c, v;
 	codepage_t* pcp;
 
-	pcp = _acp_alloc(MIN_GBK);
+	pcp = _acp_alloc(_ACP_GBKMIN);
 	size = gb2312_unicode_size();
 	for (i = 0; i < size; i++)
 	{
@@ -219,12 +220,12 @@ acp_t create_gbk_codepage()
 	}
 	_acp_protect(pcp);
 
-	return (acp_t)pcp;
+	return &pcp->head;
 }
 
 void destroy_codepage(acp_t acp)
 {
-	codepage_t* pxt = (codepage_t*)acp;
+	codepage_t* pxt = TypePtrFromHead(codepage_t, acp);
 
 	_acp_free(pxt);
 }

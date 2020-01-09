@@ -1028,4 +1028,15 @@ void widget_do_trace(res_win_t wt)
 	(*pif->pf_widget_do_trace)(wt);
 }
 
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+res_glc_t widget_get_glctx(res_win_t wt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_widget_get_glctx)(wt);
+}
+#endif
+
 #endif /*XDK_SUPPORT_WIDGET*/

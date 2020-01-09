@@ -127,6 +127,15 @@ XDL_API const tchar_t* get_string_entity_ptr(link_t_ptr ptr, const tchar_t* key,
 XDL_API link_t_ptr get_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen);
 
 /*
+@FUNCTION find_string_entity: NOCASE find the string entity by key.
+@INPUT link_t_ptr ptr: the string table link component.
+@INPUT const tchar_t* key: the key stirng token.
+@INPUT int keylen: the key token length in characters.
+@RETURN link_t_ptr: return string entity link component if exists, otherwise return NULL.
+*/
+XDL_API link_t_ptr	find_string_entity(link_t_ptr ptr, const tchar_t* key, int keylen);
+
+/*
 @FUNCTION insert_string_entity: insert the string entity after the position.
 @INPUT link_t_ptr ptr: the string table link component.
 @INPUT link_t_ptr pos: the position link component or link indicator: LINK_FIRST, LINK_LAST.

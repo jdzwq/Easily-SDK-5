@@ -183,7 +183,7 @@ void draw_datebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -440,7 +440,7 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -767,7 +767,7 @@ void draw_listbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -943,7 +943,7 @@ void draw_dropbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -984,7 +984,7 @@ void draw_pushbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1071,7 +1071,7 @@ void draw_radiobox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1179,7 +1179,7 @@ void draw_checkbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1293,7 +1293,7 @@ void draw_slidebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 	default_xface(&xa);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1425,7 +1425,7 @@ void draw_spinbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1553,7 +1553,7 @@ void draw_navibox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1685,7 +1685,7 @@ void draw_vertbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -1807,7 +1807,7 @@ void draw_horzbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -2072,7 +2072,7 @@ void draw_iconbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);
@@ -2401,7 +2401,7 @@ void draw_wordsbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER) ? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
 		format_xcolor(&pif->clr_txt, xf.color);

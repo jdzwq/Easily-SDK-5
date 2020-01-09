@@ -427,7 +427,7 @@ tchar_t* next_draw_path(const tchar_t* script, int len, tchar_t* pname, xpoint_t
 		return NULL;
 
 	if (len < 0)
-		len = _tcslen(script);
+		len = _tstrlen(script);
 
 	while (!IS_LETTER(*token) && *token && total < len)
 	{

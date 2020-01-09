@@ -37,6 +37,8 @@ LICENSE.GPL3 for more details.
 #define VARSTR_INC	512
 
 typedef struct _redstr_t{
+	string_head head;
+
 	int size;
 	int count;
 	tchar_t* vbuf;
@@ -52,12 +54,14 @@ string_t string_alloc()
 	pvs->vbuf = NULL;
 	pvs->count = 0;
 
-	return (string_t)pvs;
+	return &pvs->head;
 }
 
 void string_free(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pvs->vbuf)
 		xmem_free(pvs->vbuf);
@@ -67,8 +71,10 @@ void string_free(string_t vs)
 
 void string_incre(string_t vs,int len)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 	int org_size;
+
+	XDL_ASSERT(vs);
 
 	org_size = pvs->size;
 	while(len + pvs->count + 1 > org_size)
@@ -83,11 +89,13 @@ void string_incre(string_t vs,int len)
 
 tchar_t* string_ensure_buf(string_t vs, int len)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	pvs->count = 0;
 
-	string_incre(pvs, len);
+	string_incre(vs, len);
 
 	pvs->count = len;
 
@@ -96,9 +104,11 @@ tchar_t* string_ensure_buf(string_t vs, int len)
 
 void string_attach_buf(string_t vs, tchar_t* buf, int size)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	int len;
+
+	XDL_ASSERT(vs);
 
 	if (pvs->vbuf)
 		xmem_free(pvs->vbuf);
@@ -115,9 +125,11 @@ void string_attach_buf(string_t vs, tchar_t* buf, int size)
 
 tchar_t* string_detach_buf(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	tchar_t* buf;
+
+	XDL_ASSERT(vs);
 
 	buf = pvs->vbuf;
 
@@ -130,7 +142,9 @@ tchar_t* string_detach_buf(string_t vs)
 
 int string_resize(string_t vs, int len)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (len < 0)
 	{
@@ -149,7 +163,7 @@ int string_resize(string_t vs, int len)
 	else
 	{
 		if (pvs->count < len)
-			string_incre(pvs, len - pvs->count);
+			string_incre(vs, len - pvs->count);
 
 		while (pvs->count < len)
 		{
@@ -169,9 +183,11 @@ int string_resize(string_t vs, int len)
 
 int	string_cat(string_t vs, const tchar_t* str, int len)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	int dlen;
+
+	XDL_ASSERT(vs);
 
 	if (is_null(str))
 		return pvs->count;
@@ -183,7 +199,7 @@ int	string_cat(string_t vs, const tchar_t* str, int len)
 
 	if (dlen + pvs->count + 1 > pvs->size)
 	{
-		string_incre(pvs, dlen);
+		string_incre(vs, dlen);
 	}
 
 	if (pvs->vbuf)
@@ -198,16 +214,18 @@ int	string_cat(string_t vs, const tchar_t* str, int len)
 
 int	string_cpy(string_t vs, const tchar_t* str, int len)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	int dlen;
+
+	XDL_ASSERT(vs);
 
 	if (len < 0)
 		len = xslen(str);
 
 	if (!len)
 	{
-		string_empty(pvs);
+		string_empty(vs);
 		return pvs->count;
 	}
 
@@ -215,13 +233,13 @@ int	string_cpy(string_t vs, const tchar_t* str, int len)
 
 	if (!dlen)
 	{
-		string_empty(pvs);
+		string_empty(vs);
 		return pvs->count;
 	}
 
 	if (dlen + 1 > pvs->size)
 	{
-		string_incre(pvs, dlen);
+		string_incre(vs, dlen);
 	}
 
 	if (pvs->vbuf)
@@ -236,7 +254,9 @@ int	string_cpy(string_t vs, const tchar_t* str, int len)
 
 tchar_t string_get_char(string_t vs, int pos)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pos < 0 || pos >= pvs->count)
 		return 0;
@@ -246,7 +266,9 @@ tchar_t string_get_char(string_t vs, int pos)
 
 bool_t string_set_char(string_t vs, int pos, tchar_t ch)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pos < 0 || pos >= pvs->count)
 		return 0;
@@ -258,7 +280,9 @@ bool_t string_set_char(string_t vs, int pos, tchar_t ch)
 
 int string_get_chars(string_t vs, int pos, tchar_t* pch, int n)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pch)
 	{
@@ -280,7 +304,9 @@ int string_get_chars(string_t vs, int pos, tchar_t* pch, int n)
 
 void string_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pos < 0)
 		pos = pvs->count;
@@ -292,7 +318,7 @@ void string_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
 		n = xslen(pch);
 
 	if (pos + n + 1 > pvs->size)
-		string_incre(pvs, pos + n - pvs->size);
+		string_incre(vs, pos + n - pvs->size);
 
 	xsnset(pvs->vbuf, pos, pch, n);
 
@@ -301,7 +327,9 @@ void string_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
 
 void string_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if(pos < 0)
 		pos = pvs->count;
@@ -313,7 +341,7 @@ void string_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 		n = xslen(pch);
 
 	if(pvs->count + n + 1 > pvs->size)
-		string_incre(pvs,n);
+		string_incre(vs,n);
 
 	if (n)
 	{
@@ -324,7 +352,9 @@ void string_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 
 void string_del_chars(string_t vs,int pos,int n)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pos < 0 || pos >= pvs->count)
 		return;
@@ -336,21 +366,27 @@ void string_del_chars(string_t vs,int pos,int n)
 
 const tchar_t* string_ptr(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	return pvs->vbuf;
 }
 
 int string_len(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	return pvs->count;
 }
 
 void string_empty(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (pvs->size > VARSTR_INC)
 	{
@@ -369,7 +405,9 @@ void string_empty(string_t vs)
 
 bool_t string_is_empty(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+
+	XDL_ASSERT(vs);
 
 	if (!pvs->vbuf)
 		return 1;
@@ -379,10 +417,12 @@ bool_t string_is_empty(string_t vs)
 
 int string_append(string_t vs, const tchar_t* fmt, ...)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	va_list arg;
 	int len;
+
+	XDL_ASSERT(vs);
 
 	va_start(arg, fmt);
 	len = xsprintf_arg(NULL, fmt, &arg);
@@ -392,7 +432,7 @@ int string_append(string_t vs, const tchar_t* fmt, ...)
 		return pvs->count;
 
 	if (pvs->count + len + 1 > pvs->size)
-		string_incre(pvs, len);
+		string_incre(vs, len);
 
 	va_start(arg, fmt);
 	xsprintf_arg(pvs->vbuf + pvs->count, fmt, &arg);
@@ -405,12 +445,14 @@ int string_append(string_t vs, const tchar_t* fmt, ...)
 
 int string_printf(string_t vs,const tchar_t* fmt,...)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	va_list arg;
 	int len;
 
-	string_empty(pvs);
+	XDL_ASSERT(vs);
+
+	string_empty(vs);
 
 	va_start(arg,fmt);
 	len = xsprintf_arg(NULL,fmt,&arg);
@@ -420,7 +462,7 @@ int string_printf(string_t vs,const tchar_t* fmt,...)
 		return pvs->count;
 
 	if(pvs->count + len + 1 > pvs->size)
-		string_incre(pvs,len);
+		string_incre(vs,len);
 
 	va_start(arg,fmt);
 	xsprintf_arg(pvs->vbuf + pvs->count, fmt, &arg);
@@ -433,45 +475,49 @@ int string_printf(string_t vs,const tchar_t* fmt,...)
 
 string_t string_clone(string_t vs)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
-	redstr_t* pvs_new;
+	string_t pvs_new;
+
+	XDL_ASSERT(vs);
 
 	pvs_new = string_alloc();
 	string_cpy(pvs_new, pvs->vbuf, pvs->count);
 
-	return (string_t)pvs_new;
+	return pvs_new;
 }
 
 dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	dword_t i;
 	const tchar_t* str;
 
+	XDL_ASSERT(vs);
+
 	if (encode == _UTF8)
 	{
 #ifdef _UNICODE
-		return ucs_to_utf8(string_ptr(pvs), string_len(pvs), buf, max);
+		return ucs_to_utf8(string_ptr(vs), string_len(vs), buf, max);
 #else
-		return mbs_to_utf8(string_ptr(pvs), string_len(pvs), buf, max);
+		return mbs_to_utf8(string_ptr(vs), string_len(vs), buf, max);
 #endif
 	}
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (encode == _GB2312)
 	{
 #ifdef _UNICODE
-		return ucs_to_gb2312(string_ptr(pvs), string_len(pvs), buf, max);
+		return ucs_to_gb2312(string_ptr(vs), string_len(vs), buf, max);
 #else
-		return mbs_to_gb2312(string_ptr(pvs), string_len(pvs), buf, max);
+		return mbs_to_gb2312(string_ptr(vs), string_len(vs), buf, max);
 #endif
 	}
 #endif
 	else if (encode == _UTF16_LIT)
 	{
 #ifdef _UNICODE
-		return ucs_to_utf16lit(string_ptr(pvs), string_len(pvs), buf, max);
+		return ucs_to_utf16lit(string_ptr(vs), string_len(vs), buf, max);
 #else
 		return mbs_to_utf16lit(string_ptr(vs), string_len(vs), buf, max);
 #endif
@@ -479,18 +525,18 @@ dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 	else if (encode == _UTF16_BIG)
 	{
 #ifdef _UNICODE
-		return ucs_to_utf16big(string_ptr(pvs), string_len(pvs), buf, max);
+		return ucs_to_utf16big(string_ptr(vs), string_len(vs), buf, max);
 #else
-		return mbs_to_utf16big(string_ptr(pvs), string_len(pvs), buf, max);
+		return mbs_to_utf16big(string_ptr(vs), string_len(vs), buf, max);
 #endif
 	}
 	else
 	{
 #ifdef _UNICODE
-		max = (max < string_len(pvs) * sizeof(wchar_t)) ? max : (string_len(pvs) * sizeof(wchar_t));
+		max = (max < string_len(vs) * sizeof(wchar_t)) ? max : (string_len(vs) * sizeof(wchar_t));
 		if (buf)
 		{
-			str = string_ptr(pvs);
+			str = string_ptr(vs);
 			for (i = 0; i < max / 2; i++)
 			{
 				buf[i * 2] = GETLBYTE(str[i]);
@@ -499,10 +545,10 @@ dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 		}
 		return max;
 #else
-		max = (max < string_len(vs)) ? max : string_len(pvs);
+		max = (max < string_len(vs)) ? max : string_len(vs);
 		if (buf)
 		{
-			str = string_ptr(pvs);
+			str = string_ptr(vs);
 			xmem_copy((void*)buf, (void*)str, max);
 		}
 		return max;
@@ -512,10 +558,12 @@ dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 
 int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 {
-	redstr_t* pvs = (redstr_t*)vs;
+	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
 
 	int i,len = 0;
 	tchar_t* str = NULL;
+
+	XDL_ASSERT(vs);
 
 	if (encode == _UTF8)
 	{
@@ -560,7 +608,7 @@ int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 #endif
 	}
 
-	str = string_ensure_buf(pvs, len);
+	str = string_ensure_buf(vs, len);
 
 	if (encode == _UTF8)
 	{

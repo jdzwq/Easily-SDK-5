@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "splitor.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 static bool_t _splitor_item_resize(link_t_ptr ilk, void* pv)
 {
@@ -48,7 +49,7 @@ static bool_t _splitor_item_resize(link_t_ptr ilk, void* pv)
 	xr.fy = get_split_item_y(ilk);
 	xr.fh = get_split_item_height(ilk);
 
-	widget_rect_to_pt(owner, &xr);
+	widgetex_rect_to_pt(owner, &xr);
 
 	win = (res_win_t)get_split_item_delta(ilk);
 
@@ -106,7 +107,7 @@ void noti_splitor_item_sized(splitor_t* ptd, const xpoint_t* pxp)
 
 		xs.cx = 0;
 		xs.cy = pt_cur.y - pt_org.y;
-		widget_size_to_tm(ptd->widget, &xs);
+		widgetex_size_to_tm(ptd->widget, &xs);
 
 		adjust_split_item(ilk, xs.fy);
 	}
@@ -117,13 +118,13 @@ void noti_splitor_item_sized(splitor_t* ptd, const xpoint_t* pxp)
 
 		xs.cx = pt_cur.x - pt_org.x;
 		xs.cy = 0;
-		widget_size_to_tm(ptd->widget, &xs);
+		widgetex_size_to_tm(ptd->widget, &xs);
 
 		adjust_split_item(ilk, xs.fx);
 	}
 
 	calc_split_item_rect(ptd->split, ilk, &xr);
-	widget_rect_to_pt(ptd->widget, &xr);
+	widgetex_rect_to_pt(ptd->widget, &xr);
 
 	enum_split_item(ilk, (CALLBACK_ENUMLINK)_splitor_item_resize, ptd->widget);
 
@@ -143,7 +144,7 @@ bool_t hand_splitor_mouse_move(splitor_t* ptd, dword_t dw, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(ptd->widget, &pt);
+	widgetex_point_to_tm(ptd->widget, &pt);
 
 	nHint = calc_split_hint(ptd->split, &pt, &plk);
 
@@ -179,7 +180,7 @@ bool_t hand_splitor_lbutton_down(splitor_t* ptd, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widget_point_to_tm(ptd->widget, &pt);
+	widgetex_point_to_tm(ptd->widget, &pt);
 
 	nHint = calc_split_hint(ptd->split, &pt, &ilk);
 
@@ -219,7 +220,7 @@ void hand_splitor_size(splitor_t* ptd, const xrect_t* pxr)
 	XDL_ASSERT(ptd->split != NULL);
 
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	widget_rect_to_tm(ptd->widget, &xr);
+	widgetex_rect_to_tm(ptd->widget, &xr);
 
 	set_split_item_x(ptd->split, xr.fx);
 	set_split_item_y(ptd->split, xr.fy);
@@ -243,7 +244,7 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_xbrush(ptd->widget, &xb);
+	widgetex_get_xbrush(ptd->widget, &xb);
 
 	default_xgradi(&xg_vert);
 	xscpy(xg_vert.brim_color, xb.color);
@@ -271,7 +272,7 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 		if (get_split_item_splited(ilk))
 		{
 			calc_split_span_rect(ptd->split, ilk, &xr);
-			widget_rect_to_pt(ptd->widget, &xr);
+			widgetex_rect_to_pt(ptd->widget, &xr);
 
 			if (compare_text(get_split_item_layer_ptr(ilk), -1, ATTR_LAYER_HORZ, -1, 1) == 0)
 			{

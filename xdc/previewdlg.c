@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcdlg.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcctrl.h"
 #include "xdcbox.h"
 
@@ -376,28 +377,28 @@ void _previewdlg_calc_toolbar(res_win_t widget, xrect_t* pxr)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_TOP, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_TOP, pxr);
 }
 
 void _previewdlg_calc_treebar(res_win_t widget, xrect_t* pxr)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 }
 
 void _previewdlg_calc_statusbar(res_win_t widget, xrect_t* pxr)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
+	widgetex_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
 }
 
 void _previewdlg_calc_svgbar(res_win_t widget, xrect_t* pxr)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 	
-	widget_get_dock_rect(widget, 0, pxr);
+	widgetex_get_dock_rect(widget, 0, pxr);
 }
 
 void _previewdlg_create_toolbar(res_win_t widget)
@@ -413,7 +414,7 @@ void _previewdlg_create_toolbar(res_win_t widget)
 
 	xs.fx = PREVIEWDLG_BUTTON_WIDTH;
 	xs.fy = PREVIEWDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 
 	xr.y += (xr.h - xs.cy) / 2;
@@ -423,7 +424,7 @@ void _previewdlg_create_toolbar(res_win_t widget)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = 0;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	nSplit = xs.cx;
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
@@ -565,7 +566,7 @@ int hand_previewdlg_create(res_win_t widget, void* data)
 	previewdlg_delta_t* ptd;
 	xsize_t xs;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (previewdlg_delta_t*)xmem_alloc(sizeof(previewdlg_delta_t));
 	xmem_zero((void*)ptd, sizeof(previewdlg_delta_t));
@@ -576,18 +577,18 @@ int hand_previewdlg_create(res_win_t widget, void* data)
 
 	xs.fx = 0;
 	xs.fy = PREVIEWDLG_TOOL_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_TOP, 0, xs.cy);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_TOP, 0, xs.cy);
 
 	xs.fx = 0;
 	xs.fy = PREVIEWDLG_STATUS_HEIGHT;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
 
 	xs.fx = PREVIEWDLG_TREE_WIDTH;
 	xs.fy = 0;
-	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
+	widgetex_size_to_pt(widget, &xs);
+	widgetex_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
 
 	_previewdlg_create_toolbar(widget);
 
@@ -668,7 +669,7 @@ void hand_previewdlg_destroy(res_win_t widget)
 
 	SETPREVIEWDLGDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
@@ -719,7 +720,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = PREVIEWDLG_BUTTON_WIDTH;
 	xs.fy = PREVIEWDLG_BUTTON_HEIGHT;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 
 	xr.y += (xr.h - xs.cy) / 2;
 	xr.h = xs.cy;
@@ -728,7 +729,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = 0;
-	widget_size_to_pt(widget, &xs);
+	widgetex_size_to_pt(widget, &xs);
 	nSplit = xs.cx;
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);

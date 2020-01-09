@@ -60,17 +60,17 @@ int call_buffer_read_escape(void* p_obj, int max, int pos, int encode, tchar_t* 
 	switch (encode)
 	{
 	case _UTF16_LIT:
-		return (int)utf16lit_decode_escape(buf, pch);
+		return (int)xml_utf16lit_decode(buf, pch);
 	case _UTF16_BIG:
-		return (int)utf16big_decode_escape(buf, pch);
+		return (int)xml_utf16big_decode(buf, pch);
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
-		return (int)gb2312_decode_escape(buf, pch);
+		return (int)xml_gb2312_decode(buf, pch);
 #endif
 	case _UTF8:
-		return (int)utf8_decode_escape(buf, pch);
+		return (int)xml_utf8_decode(buf, pch);
 	default:
-		return (int)unn_decode_escape(buf, pch);
+		return (int)xml_unn_decode(buf, pch);
 	}
 
 	return 0;
@@ -83,17 +83,17 @@ int call_buffer_write_escape(void* p_obj, int max, int pos, int encode, tchar_t 
 	switch (encode)
 	{
 	case _UTF16_LIT:
-		return (int)utf16lit_encode_escape(ch, buf, max - pos);
+		return (int)xml_utf16lit_encode(ch, buf, max - pos);
 	case _UTF16_BIG:
-		return (int)utf16big_encode_escape(ch, buf, max - pos);
+		return (int)xml_utf16big_encode(ch, buf, max - pos);
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
-		return (int)gb2312_encode_escape(ch, buf, max - pos);
+		return (int)xml_gb2312_encode(ch, buf, max - pos);
 #endif
 	case _UTF8:
-		return (int)utf8_encode_escape(ch, buf, max - pos);
+		return (int)xml_utf8_encode(ch, buf, max - pos);
 	default:
-		return (int)unn_encode_escape(ch, buf, max - pos);
+		return (int)xml_unn_encode(ch, buf, max - pos);
 	}
 
 	return 0;

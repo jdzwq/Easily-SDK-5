@@ -271,4 +271,9 @@ void _system_info(sys_info_t* psi)
 	psi->page_gran = si.dwAllocationGranularity;
 }
 
+int _get_envvar(const tchar_t* ename, tchar_t* buf, int max)
+{
+	return GetEnvironmentVariable(ename, buf, max);
+}
+
 #endif //XDK_SUPPORT_PROCESS

@@ -3329,7 +3329,7 @@ xhand_t xssh_cli(unsigned short port, const tchar_t* addr)
 
 	_ssh_init(pso);
 
-	return (xhand_t)pso;
+	return &pso->head;
 }
 
 xhand_t xssh_srv(res_file_t so)
@@ -3349,12 +3349,12 @@ xhand_t xssh_srv(res_file_t so)
 
 	_ssh_init(pso);
 
-	return (xhand_t)pso;
+	return &pso->head;
 }
 
 void  xssh_close(xhand_t ssh)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3369,7 +3369,7 @@ void  xssh_close(xhand_t ssh)
 
 res_file_t xssh_socket(xhand_t ssh)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3378,7 +3378,7 @@ res_file_t xssh_socket(xhand_t ssh)
 
 int xssh_type(xhand_t ssh)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3387,7 +3387,7 @@ int xssh_type(xhand_t ssh)
 
 bool_t xssh_write(xhand_t ssh, const byte_t* buf, dword_t* pb)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 	int bys, pos;
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
@@ -3420,7 +3420,7 @@ bool_t xssh_write(xhand_t ssh, const byte_t* buf, dword_t* pb)
 
 bool_t xssh_flush(xhand_t ssh)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3429,7 +3429,7 @@ bool_t xssh_flush(xhand_t ssh)
 
 bool_t xssh_read(xhand_t ssh, byte_t* buf, dword_t* pb)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 	int bys, pos;
 	bool_t rt = 1;
 
@@ -3469,26 +3469,26 @@ void xssh_setopt(xhand_t ssh, int oid, void* opt, int len)
 	switch (oid)
 	{
 	case SOCKET_OPTION_SNDBUF:
-		xsocket_set_sndbuf(xssh_socket(ssh), *(int*)opt);
+		socket_set_sndbuf(xssh_socket(ssh), *(int*)opt);
 		break;
 	case SOCKET_OPTION_RCVBUF:
-		xsocket_set_rcvbuf(xssh_socket(ssh), *(int*)opt);
+		socket_set_rcvbuf(xssh_socket(ssh), *(int*)opt);
 		break;
 	case SOCKET_OPTION_NONBLK:
-		xsocket_set_nonblk(xssh_socket(ssh), *(bool_t*)opt);
+		socket_set_nonblk(xssh_socket(ssh), *(bool_t*)opt);
 		break;
 	}
 }
 
 unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
-	xsocket_addr(xssh_socket(ssh), &na);
+	socket_addr(xssh_socket(ssh), &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -3496,13 +3496,13 @@ unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr)
 
 unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr)
 {
-	ssh_t* pso = (ssh_t*)ssh;
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
-	xsocket_peer(xssh_socket(ssh), &na);
+	socket_peer(xssh_socket(ssh), &na);
 	conv_addr(&na, &port, addr);
 
 	return port;

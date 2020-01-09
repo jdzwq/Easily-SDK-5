@@ -32,6 +32,7 @@ LICENSE.GPL3 for more details.
 #include "xdkiml.h"
 #include "xdkattr.h"
 
+
 #ifdef XDK_SUPPORT_CONTEXT
 Display*     g_display = NULL;
 

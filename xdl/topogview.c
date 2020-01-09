@@ -112,7 +112,7 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	string_t vs = NULL;
 
-	b_print = ((*pif->pf_canvas_type)(pif->canvas) == _CANV_PRINTER)? 1 : 0;
+	b_print = (pif->canvas->tag == _CANVAS_PRINTER)? 1 : 0;
 	b_design = topog_is_design(ptr);
 
 	style = get_topog_style_ptr(ptr);

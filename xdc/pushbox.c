@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcbox.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 
 #define PUSHBOX_ATTR_BUTTON_SPAN	(float)5 //TM
 
@@ -51,7 +52,7 @@ void _pushbox_reset_page(res_win_t widget)
 
 	widget_get_client_rect(widget, &xr);
 
-	widget_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 0, 0);
+	widgetex_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 0, 0);
 }
 
 /**********************************************************************************/
@@ -59,7 +60,7 @@ int hand_pushbox_create(res_win_t widget, void* data)
 {
 	pushbox_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (pushbox_delta_t*)xmem_alloc(sizeof(pushbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(pushbox_delta_t));
@@ -82,7 +83,7 @@ void hand_pushbox_destroy(res_win_t widget)
 
 	SETPUSHBOXDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_pushbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -167,11 +168,11 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if_canvas_t* pif;
 	canvbox_t cb;
 
-	widget_get_xfont(widget, &xf);
-	widget_get_xface(widget, &xa);
-	widget_get_xbrush(widget, &xb);
-	widget_get_xpen(widget, &xp);
-	widget_get_iconic(widget, &xc);
+	widgetex_get_xfont(widget, &xf);
+	widgetex_get_xface(widget, &xa);
+	widgetex_get_xbrush(widget, &xb);
+	widgetex_get_xpen(widget, &xp);
+	widgetex_get_iconic(widget, &xc);
 
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
@@ -184,7 +185,7 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	widgetex_get_canv_rect(widget, &cb);
 
 	ws = widget_get_style(widget);
 
@@ -364,13 +365,13 @@ void pushbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_xfont(widget, &xf);
+	widgetex_get_xfont(widget, &xf);
 
 	text_size(widget_get_canvas(widget), &xf, ptd->sz_text, -1, &xs);
 	if (xs.fx < xs.fy)
 		xs.fx = xs.fy;
 
-	widget_size_to_pt(widget, pxs);
+	widgetex_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

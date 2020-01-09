@@ -62,7 +62,7 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 
 	TRY_CATCH;
 
-	so = xsocket_tcp(0, 0);
+	so = socket_tcp(0, 0);
 	if (so == INVALID_FILE)
 	{
 		raise_user_error(NULL, NULL);
@@ -74,11 +74,11 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 	
 	n = TRY_MAX;
 	rt = 0;
-	while(n && !xsocket_connect(so,(res_addr_t)&sin,sizeof(sin)))
+	while(n && !socket_connect(so,(res_addr_t)&sin,sizeof(sin)))
 	{
 		n--;
 #if defined(_DEBUG) && defined(XDK_SUPPORT_THREAD)
-		xthread_sleep(10);
+		thread_sleep(10);
 #endif
 	}
 
@@ -87,7 +87,7 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 		raise_user_error(NULL, NULL);
 	}
 
-	xsocket_setopt(so, SO_LINGER, (const char*)&li, sizeof(struct linger));
+	socket_setopt(so, SO_LINGER, (const char*)&li, sizeof(struct linger));
 
 	pso = (tcp_t*)xmem_alloc(sizeof(tcp_t));
 	pso->head.tag = _HANDLE_TCP;
@@ -97,11 +97,11 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 
 	END_CATCH;
 
-	return (xhand_t)pso;
+	return &pso->head;
 ONERROR:
 
 	if (so)
-		xsocket_close(so);
+		socket_close(so);
 
 	if (pso)
 		xmem_free(pso);
@@ -131,20 +131,20 @@ xhand_t xtcp_srv(res_file_t so)
 	pso->so = so;
 	pso->type = _XTCP_TYPE_SRV;
 
-	xsocket_setopt(pso->so, SO_LINGER, (const char*)&li, sizeof(struct linger));
-	xsocket_setopt(pso->so, SO_SNDBUF, (const char*)&zo, sizeof(int));
-	xsocket_setopt(pso->so, SO_RCVBUF, (const char*)&zo, sizeof(int));
+	socket_setopt(pso->so, SO_LINGER, (const char*)&li, sizeof(struct linger));
+	socket_setopt(pso->so, SO_SNDBUF, (const char*)&zo, sizeof(int));
+	socket_setopt(pso->so, SO_RCVBUF, (const char*)&zo, sizeof(int));
 
 	async_alloc_lapp(&pso->ov, TCP_BASE_TIMO);
 
 	if (pso->ov.type == ASYNC_BLOCK)
 	{
-		xsocket_set_nonblk(pso->so, 0);
+		socket_set_nonblk(pso->so, 0);
 	}
 
 	END_CATCH;
 
-	return (xhand_t)pso;
+	return &pso->head;
 ONERROR:
 
 	if (pso)
@@ -160,7 +160,7 @@ ONERROR:
 
 void  xtcp_close(xhand_t tcp)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
@@ -169,23 +169,23 @@ void  xtcp_close(xhand_t tcp)
 	if (pso->type == _XTCP_TYPE_CLI)
 	{
 		//disable recive
-		xsocket_shutdown(pso->so, 0);
+		socket_shutdown(pso->so, 0);
 	}
 	else if (pso->type == _XTCP_TYPE_SRV)
 	{
 		//disable send
-		xsocket_shutdown(pso->so, 1);
-		xsocket_wait(pso->so, FD_READ, TCP_BASE_TIMO);
+		socket_shutdown(pso->so, 1);
+		socket_wait(pso->so, FD_READ, TCP_BASE_TIMO);
 	}
 
 #if defined(_DEBUG) && defined(XDK_SUPPORT_THREAD)
 	//wait data sended
-	xthread_sleep(THREAD_BASE_TMO);
+	thread_sleep(THREAD_BASE_TMO);
 #endif
 
 	if (pso->type == _XTCP_TYPE_CLI)
 	{
-		xsocket_close(pso->so);
+		socket_close(pso->so);
 	}
 
 	async_release_lapp(&pso->ov);
@@ -195,7 +195,7 @@ void  xtcp_close(xhand_t tcp)
 
 res_file_t xtcp_socket(xhand_t tcp)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
@@ -204,7 +204,7 @@ res_file_t xtcp_socket(xhand_t tcp)
 
 int xtcp_type(xhand_t tcp)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
@@ -213,7 +213,7 @@ int xtcp_type(xhand_t tcp)
 
 void xtcp_set_send_buff(xhand_t tcp, dword_t dw)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 
 	int zero = 0;
 	int size = sizeof(int);
@@ -239,12 +239,12 @@ void xtcp_set_send_buff(xhand_t tcp, dword_t dw)
 		zero = TCP_MAX_BUFF - 1;
 	}
 
-	xsocket_set_sndbuf(pso->so, zero);
+	socket_set_sndbuf(pso->so, zero);
 }
 
 void xtcp_set_recv_buff(xhand_t tcp, dword_t dw)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 
 	int zero = 0;
 	int size = sizeof(int);
@@ -270,28 +270,28 @@ void xtcp_set_recv_buff(xhand_t tcp, dword_t dw)
 		zero = TCP_MAX_BUFF - 1;
 	}
 
-	xsocket_set_rcvbuf(pso->so, zero);
+	socket_set_rcvbuf(pso->so, zero);
 }
 
 void xtcp_set_linger(xhand_t tcp, bool_t b_wait, int n_sec)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
-	xsocket_set_linger(pso->so, b_wait, n_sec);
+	socket_set_linger(pso->so, b_wait, n_sec);
 }
 
 bool_t xtcp_write(xhand_t tcp, const byte_t* buf, dword_t* pcb)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 	dword_t size;
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
 	size = *pcb;
 
-	if (!xsocket_send(pso->so, (void*)buf, size, &pso->ov))
+	if (!socket_send(pso->so, (void*)buf, size, &pso->ov))
 	{
 		*pcb = 0;
 		return 0;
@@ -304,14 +304,14 @@ bool_t xtcp_write(xhand_t tcp, const byte_t* buf, dword_t* pcb)
 
 bool_t xtcp_read(xhand_t tcp, byte_t* buf, dword_t* pcb)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 	dword_t size;
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
 	size = *pcb;
 
-	if (!xsocket_recv(pso->so, buf, size, &pso->ov))
+	if (!socket_recv(pso->so, buf, size, &pso->ov))
 	{
 		*pcb = 0;
 		return 0;
@@ -327,26 +327,26 @@ void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len)
 	switch (oid)
 	{
 	case SOCKET_OPTION_SNDBUF:
-		xsocket_set_sndbuf(xtcp_socket(tcp), *(int*)opt);
+		socket_set_sndbuf(xtcp_socket(tcp), *(int*)opt);
 		break;
 	case SOCKET_OPTION_RCVBUF:
-		xsocket_set_rcvbuf(xtcp_socket(tcp), *(int*)opt);
+		socket_set_rcvbuf(xtcp_socket(tcp), *(int*)opt);
 		break;
 	case SOCKET_OPTION_NONBLK:
-		xsocket_set_nonblk(xtcp_socket(tcp), *(bool_t*)opt);
+		socket_set_nonblk(xtcp_socket(tcp), *(bool_t*)opt);
 		break;
 	}
 }
 
 unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
-	xsocket_addr(pso->so, &na);
+	socket_addr(pso->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -354,13 +354,13 @@ unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr)
 
 unsigned short xtcp_peer_port(xhand_t tcp, tchar_t* addr)
 {
-	tcp_t* pso = (tcp_t*)tcp;
+	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
 
-	xsocket_peer(pso->so, &na);
+	socket_peer(pso->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;

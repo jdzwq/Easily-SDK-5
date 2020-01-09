@@ -75,20 +75,20 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 
 	pudp->pkg_size = UDP_PDU_SIZE;
 
-	pudp->so = xsocket_udp(0, FILE_OPEN_OVERLAP);
+	pudp->so = socket_udp(0, FILE_OPEN_OVERLAP);
 	if (pudp->so == INVALID_FILE)
 	{
 		xmem_free(pudp);
 		return NULL;
 	}
 	zo = 1;
-	xsocket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
+	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 	async_alloc_lapp(&pudp->ov, UDP_BASE_TIMO);
 
 	if (pudp->ov.type == ASYNC_BLOCK)
 	{
-		xsocket_set_nonblk(pudp->so, 0);
+		socket_set_nonblk(pudp->so, 0);
 	}
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
@@ -98,7 +98,7 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 	pudp->rcv_bys = 0;
 	pudp->rcv_ret = 0;
 
-	return (xhand_t)&(pudp->head);
+	return &(pudp->head);
 }
 
 xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size)
@@ -122,14 +122,14 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 
 	pudp->pkg_size = UDP_PDU_SIZE;
 
-	pudp->so = xsocket_udp(0, FILE_OPEN_OVERLAP);
+	pudp->so = socket_udp(0, FILE_OPEN_OVERLAP);
 	if (pudp->so == INVALID_FILE)
 	{
 		xmem_free(pudp);
 		return NULL;
 	}
 	zo = 1;
-	xsocket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
+	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 	async_alloc_lapp(&pudp->ov, UDP_BASE_TIMO);
 
@@ -147,24 +147,24 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 		pudp->rcv_ret = 0;
 	}
 
-	return (xhand_t)&pudp->head;
+	return &pudp->head;
 }
 
 bool_t  xudp_bind(xhand_t udp, unsigned short bind)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 	net_addr_t sin = { 0 };
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
 	fill_addr(&sin, bind, NULL);
 
-	return xsocket_bind(pudp->so, (res_addr_t)&sin, sizeof(sin));
+	return socket_bind(pudp->so, (res_addr_t)&sin, sizeof(sin));
 }
 
 void  xudp_close(xhand_t udp)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -176,8 +176,8 @@ void  xudp_close(xhand_t udp)
 
 	if (pudp->so)
 	{
-		xthread_sleep(THREAD_BASE_TMO);
-		xsocket_close(pudp->so);
+		thread_sleep(THREAD_BASE_TMO);
+		socket_close(pudp->so);
 	}
 
 	async_release_lapp(&pudp->ov);
@@ -187,7 +187,7 @@ void  xudp_close(xhand_t udp)
 
 int xudp_type(xhand_t udp)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -196,7 +196,7 @@ int xudp_type(xhand_t udp)
 
 void xudp_set_package(xhand_t udp, dword_t size)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -208,13 +208,13 @@ void xudp_set_package(xhand_t udp, dword_t size)
 
 	pudp->pkg_size = size;
 
-	xsocket_set_rcvbuf(pudp->so, pudp->pkg_size);
-	xsocket_set_sndbuf(pudp->so, pudp->pkg_size);
+	socket_set_rcvbuf(pudp->so, pudp->pkg_size);
+	socket_set_sndbuf(pudp->so, pudp->pkg_size);
 }
 
 dword_t xudp_get_package(xhand_t udp)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -223,7 +223,7 @@ dword_t xudp_get_package(xhand_t udp)
 
 bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 	dword_t bys, dw;
 	net_addr_t sin = { 0 };
 	int addr_len;
@@ -246,7 +246,7 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 			addr_len = sizeof(net_addr_t);
 
 			bys = pudp->snd_bys;
-			if (!xsocket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), bys, &pudp->ov))
+			if (!socket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), bys, &pudp->ov))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -271,7 +271,7 @@ ONERROR:
 
 bool_t xudp_flush(xhand_t udp)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 	dword_t dw;
 	net_addr_t sin = { 0 };
 	int addr_len;
@@ -286,7 +286,7 @@ bool_t xudp_flush(xhand_t udp)
 		addr_len = sizeof(net_addr_t);
 
 		dw = pudp->snd_bys;
-		if (!xsocket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), dw, &pudp->ov))
+		if (!socket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), dw, &pudp->ov))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -306,7 +306,7 @@ ONERROR:
 
 bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 {
-	udp_t* pudp = (udp_t*)udp;
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 	dword_t bys, dw;
 	net_addr_t na = { 0 };
 	int addr_len;
@@ -324,7 +324,7 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 		{
 			bys = pudp->pkg_size;
 			addr_len = sizeof(net_addr_t);
-			if (!xsocket_recvfrom(pudp->so, (res_addr_t)&na, &addr_len, (void*)(pudp->rcv_pdu), bys, &pudp->ov))
+			if (!socket_recvfrom(pudp->so, (res_addr_t)&na, &addr_len, (void*)(pudp->rcv_pdu), bys, &pudp->ov))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -364,13 +364,13 @@ ONERROR:
 
 unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)
 {
-	udp_t* pso = (udp_t*)udp;
+	udp_t* pso = TypePtrFromHead(udp_t, udp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	xsocket_addr(pso->so, &na);
+	socket_addr(pso->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -378,13 +378,13 @@ unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)
 
 unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr)
 {
-	udp_t* pso = (udp_t*)udp;
+	udp_t* pso = TypePtrFromHead(udp_t, udp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	xsocket_peer(pso->so, &na);
+	socket_peer(pso->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;

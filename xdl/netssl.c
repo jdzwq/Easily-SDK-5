@@ -768,7 +768,7 @@ int _ssl_read_rcv_msg(ssl_t *pssl)
 	pssl->rcv_msg_type = GET_BYTE(pssl->rcv_hdr, 0);
 	pssl->rcv_msg_len = GET_SWORD_NET(pssl->rcv_hdr, 3);
 
-	if (pssl->rcv_msg_len < 1 || pssl->rcv_msg_len > SSL_PKG_SIZE)
+	if (pssl->rcv_msg_len < 1 || pssl->rcv_msg_len > SSL_MAX_SIZE)
 	{
 		raise_user_error(_T("0"), _T("invalid message block length"));
 	}
@@ -2765,7 +2765,7 @@ xhand_t xssl_cli(unsigned short port, const tchar_t* addr)
 
 	_ssl_init(pso);
 
-	return (xhand_t)pso;
+	return &pso->head;
 }
 
 xhand_t xssl_srv(res_file_t so)
@@ -2785,12 +2785,12 @@ xhand_t xssl_srv(res_file_t so)
 
 	_ssl_init(pso);
 
-	return (xhand_t)pso;
+	return &pso->head;
 }
 
 void  xssl_close(xhand_t ssl)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -2812,7 +2812,7 @@ void  xssl_close(xhand_t ssl)
 
 res_file_t xssl_socket(xhand_t ssl)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -2821,7 +2821,7 @@ res_file_t xssl_socket(xhand_t ssl)
 
 int xssl_type(xhand_t ssl)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -2830,7 +2830,7 @@ int xssl_type(xhand_t ssl)
 
 bool_t xssl_write(xhand_t ssl, const byte_t* buf, dword_t* pb)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	int bys, pos;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -2881,7 +2881,7 @@ bool_t xssl_write(xhand_t ssl, const byte_t* buf, dword_t* pb)
 
 bool_t xssl_flush(xhand_t ssl)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -2890,7 +2890,7 @@ bool_t xssl_flush(xhand_t ssl)
 
 bool_t xssl_read(xhand_t ssl, byte_t* buf, dword_t* pb)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	int bys, pos;
 	bool_t rt = 1;
 
@@ -2948,26 +2948,26 @@ void xssl_setopt(xhand_t ssl, int oid, void* opt, int len)
 	switch (oid)
 	{
 	case SOCKET_OPTION_SNDBUF:
-		xsocket_set_sndbuf(xssl_socket(ssl), *(int*)opt);
+		socket_set_sndbuf(xssl_socket(ssl), *(int*)opt);
 		break;
 	case SOCKET_OPTION_RCVBUF:
-		xsocket_set_rcvbuf(xssl_socket(ssl), *(int*)opt);
+		socket_set_rcvbuf(xssl_socket(ssl), *(int*)opt);
 		break;
 	case SOCKET_OPTION_NONBLK:
-		xsocket_set_nonblk(xssl_socket(ssl), *(bool_t*)opt);
+		socket_set_nonblk(xssl_socket(ssl), *(bool_t*)opt);
 		break;
 	}
 }
 
 unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
-	xsocket_addr(xssl_socket(ssl), &na);
+	socket_addr(xssl_socket(ssl), &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -2975,13 +2975,13 @@ unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr)
 
 unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
-	xsocket_peer(xssl_socket(ssl), &na);
+	socket_peer(xssl_socket(ssl), &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -2989,7 +2989,7 @@ unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr)
 
 void xssl_set_host(xhand_t ssl, const tchar_t* host_cn)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	int len;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -3008,7 +3008,7 @@ void xssl_set_host(xhand_t ssl, const tchar_t* host_cn)
 
 void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	int len;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -3027,7 +3027,7 @@ void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn)
 
 bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -3046,7 +3046,7 @@ bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen)
 
 bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -3065,7 +3065,7 @@ bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen)
 
 bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int len)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 	byte_t buf_pwd[RES_LEN] = { 0 };
 	dword_t dw;
 
@@ -3096,7 +3096,7 @@ bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar
 
 bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_p, const byte_t *dhm_g)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -3112,7 +3112,7 @@ bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_p, const byte_t *dhm_g)
 
 void xssl_set_auth(xhand_t ssl, int authmode)
 {
-	ssl_t* pso = (ssl_t*)ssl;
+	ssl_t* pso = TypePtrFromHead(ssl_t, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 

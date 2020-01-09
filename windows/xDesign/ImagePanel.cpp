@@ -292,9 +292,9 @@ void ImagePanel_Image_OnRBClick(res_win_t widget, NOTICE_IMAGES* pnf)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widget_get_color_mode(widget, &clr);
+	widgetex_get_color_mode(widget, &clr);
 
-	widget_set_color_mode(hMenu, &clr);
+	widgetex_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 	LINKPTR mlk;
@@ -517,7 +517,7 @@ int ImagePanel_OnCreate(res_win_t widget, void* data)
 	ImagePanelDelta* pdt = (ImagePanelDelta*)xmem_alloc(sizeof(ImagePanelDelta));
 	xrect_t xr;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	SETIMAGEPANELDELTA(widget, pdt);
 
@@ -595,7 +595,7 @@ int ImagePanel_OnCreate(res_win_t widget, void* data)
 	titlectrl_attach(pdt->hTitle, ptrTitle);
 	titlectrl_set_focus_item(pdt->hTitle, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widget_attach_splitor(widget, ptrSplit);
+	widgetex_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -618,7 +618,7 @@ void ImagePanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widget_detach_splitor(widget);
+	link_t_ptr split = widgetex_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -651,7 +651,7 @@ void ImagePanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 int ImagePanel_OnClose(res_win_t widget)

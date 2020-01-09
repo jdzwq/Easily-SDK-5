@@ -343,7 +343,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo) ? pb->timo : INFINITE)))
@@ -358,7 +358,8 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 				return 0;
 			}
 		}
-		else if (pb->type == ASYNC_EVENT)
+#endif
+		if (pb->type == ASYNC_EVENT)
 		{
 			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
 
@@ -408,7 +409,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
@@ -424,7 +425,8 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 				return 0;
 			}
 		}
-		else if (pb->type == ASYNC_EVENT)
+#endif
+		if (pb->type == ASYNC_EVENT)
 		{
 			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
 
@@ -474,7 +476,7 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
@@ -490,7 +492,8 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 				return 0;
 			}
 		}
-		else if (pb->type == ASYNC_EVENT)
+#endif
+		if (pb->type == ASYNC_EVENT)
 		{
 			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
 
@@ -540,7 +543,7 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 			if (pov) WSAResetEvent(pov->hEvent);
 			return 0;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
@@ -556,7 +559,8 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 				return 0;
 			}
 		}
-		else if (pb->type == ASYNC_EVENT)
+#endif
+		if (pb->type == ASYNC_EVENT)
 		{
 			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
 
@@ -640,7 +644,7 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 			*plen = 0;
 			return INVALID_FILE;
 		}
-
+#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
 			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
@@ -662,7 +666,8 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 				return INVALID_FILE;
 			}
 		}
-		else if (pb->type == ASYNC_EVENT)
+#endif
+		if (pb->type == ASYNC_EVENT)
 		{
 			WaitForSingleObject(pov->hEvent, INFINITE);
 

@@ -431,7 +431,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	LINKPTR ptr_prop = NULL;
 
-	tchar_t file[PATH_LEN + 1] = { 0 };
+	tchar_t token[PATH_LEN] = { 0 };
 
 	hex_obj_t hdb = NULL;
 
@@ -445,19 +445,21 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	ptr_prop = create_proper_doc();
 
-	xsprintf(file, _T("%s/rad.ini"), pb->path);
+	xsprintf(token, _T("%s/rad.ini"), pb->path);
 
-	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	read_proper(ptr_prop, _T("RAD"), -1, _T("LOCATION"), -1, pd->local, PATH_LEN);
+	read_proper(ptr_prop, _T("RAD"), -1, _T("LOCATION"), -1, token, PATH_LEN);
 	read_proper(ptr_prop, _T("RAD"), -1, _T("PUBLICKEY"), -1, pd->sd.scr_uid, KEY_LEN);
 	read_proper(ptr_prop, _T("RAD"), -1, _T("PRIVATEKEY"), -1, pd->sd.scr_key, KEY_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
+
+	printf_path(pd->local, token);
 
 	pd->radhex = radhex_scp(pb->slot);
 	if (!pd->radhex)

@@ -346,7 +346,7 @@ bool_t load_grid_from_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* p
 	int encode = 0;
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
-	xhand_t xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 

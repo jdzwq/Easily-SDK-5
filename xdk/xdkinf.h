@@ -531,6 +531,7 @@ typedef void(*PF_RELEASE_HANDLE)(res_hand_t);
 typedef bool_t(*PF_INHERIT_HANDLE)(res_hand_t, bool_t);
 typedef void(*PF_WRITE_PROFILE)(const tchar_t*, const tchar_t*, const tchar_t*, const tchar_t*);
 typedef void(*PF_READ_PROFILE)(const tchar_t*, const tchar_t*, const tchar_t*, tchar_t*, int);
+typedef int(*PF_GET_ENVVAR)(const tchar_t*, tchar_t*, int);
 typedef void(*PF_SYSTEM_INFO)(sys_info_t*);
 
 typedef struct _if_process_t{
@@ -550,6 +551,7 @@ typedef struct _if_process_t{
 	PF_INHERIT_HANDLE	pf_inherit_handle;
 	PF_WRITE_PROFILE	pf_write_profile;
 	PF_READ_PROFILE		pf_read_profile;
+	PF_GET_ENVVAR		pf_get_envvar;
 	PF_SYSTEM_INFO		pf_system_info;
 }if_process_t;
 #endif /*XDK_SUPPORT_PROCESS*/
@@ -893,6 +895,10 @@ typedef void(*PF_WIDGET_SET_ALPHA)(res_win_t, unsigned char);
 typedef unsigned char(*PF_WIDGET_GET_ALPHA)(res_win_t);
 #endif
 
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+typedef res_glc_t(*PF_WIDGET_GET_GLCTX)(res_win_t);
+#endif
+
 typedef struct _if_widget_t{
 	PF_FETCH_MESSAGE		pf_fetch_message;
     PF_PEEK_MESSAGE         pf_peek_message;
@@ -1007,6 +1013,10 @@ typedef struct _if_widget_t{
 	PF_WIDGET_SET_ALPHA			pf_widget_set_alpha;
 	PF_WIDGET_GET_ALPHA			pf_widget_get_alpha;
 	PF_WIDGET_SET_REGION		pf_widget_set_region;
+#endif
+
+#ifdef XDK_SUPPORT_CONTEXT_OPENGL
+	PF_WIDGET_GET_GLCTX			pf_widget_get_glctx;
 #endif
 }if_widget_t;
 #endif /*XDK_SUPPORT_WIDGET*/

@@ -63,9 +63,10 @@ XDL_API byte_t*	bytes_realloc(byte_t** pp, dword_t size);
 @FUNCTION bytes_attach: alloc a buffer address and attach a buffer body, the original buffer body will be freed.
 @INPUT byte_t** pp: the buffer address.
 @INPUT byte_t* p: the buffer body will be attached.
+@INPUT dword_t size: the buffer size attached.
 @RETURN void: none.
 */
-XDL_API void bytes_attach(byte_t** pp, byte_t* p);
+XDL_API void bytes_attach(byte_t** pp, byte_t* p, dword_t size);
 
 /*
 @FUNCTION bytes_detach: detach buffer body and free buffer address.
@@ -74,6 +75,42 @@ XDL_API void bytes_attach(byte_t** pp, byte_t* p);
 */
 XDL_API byte_t* bytes_detach(byte_t** pp);
 
+/*
+@FUNCTION bytes_size: get buffer size.
+@INPUT byte_t** pp: the buffer address.
+@RETURN dword_t: return buffer size in bytes.
+*/
+XDL_API dword_t bytes_size(byte_t** pp);
+
+/*
+@FUNCTION bytes_insert: insert token into buffer.
+@INPUT byte_t** pp: the buffer address.
+@INPUT dword_t pos: the zero based position.
+@INPUT const byte_t* sub: the sub token to be inserted.
+@INPUT dword_t len: the sub token size in bytes.
+@RETURN void: none.
+*/
+XDL_API void bytes_insert(byte_t** pp, dword_t pos, const byte_t* sub, dword_t len);
+
+/*
+@FUNCTION bytes_delete: delete token from buffer.
+@INPUT byte_t** pp: the buffer address.
+@INPUT dword_t pos: the zero based position.
+@INPUT dword_t len: the sub token size in bytes.
+@RETURN void: none.
+*/
+XDL_API void bytes_delete(byte_t** pp, dword_t pos, dword_t len);
+
+/*
+@FUNCTION bytes_replace: replace token from buffer.
+@INPUT byte_t** pp: the buffer address.
+@INPUT dword_t pos: the zero based position.
+@INPUT dword_t num: the bytes of token to be replaced.
+@INPUT const byte_t* sub: the sub token to be inserted.
+@INPUT dword_t len: the sub token size in bytes.
+@RETURN void: none.
+*/
+XDL_API void bytes_replace(byte_t** pp, dword_t pos, dword_t num, const byte_t* sub, dword_t len);
 
 #ifdef	__cplusplus
 }

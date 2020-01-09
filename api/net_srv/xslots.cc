@@ -27,11 +27,14 @@ LICENSE.GPL3 for more details.
 #include "xslots.h"
 #include "srvlog.h"
 
-static void _xslots_get_config(const tchar_t* root, const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
+static void _xslots_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
 {
+	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
 
-	xsprintf(sz_file, _T("%s/cfg/%s.config"), root, site);
+	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
+
+	xsprintf(sz_file, _T("%s/cfg/%s.config"), sz_root, site);
 
 	LINKPTR ptr_cfg = create_xml_doc();
 	if (!load_xml_doc_from_file(ptr_cfg, NULL, sz_file))
@@ -98,7 +101,7 @@ static void _xslots_log_request(xhand_t slot)
 	}
 
 	len = xslen(token);
-	len += xsprintf(token + len, _T(": %d]\r\n"), xthread_get_id());
+	len += xsprintf(token + len, _T(": %d]\r\n"), thread_get_id());
 
 	xportm_log_info(token, len);
 }
@@ -125,7 +128,7 @@ static void _xslots_log_response(xhand_t slot)
 	}
 
 	len = xslen(token);
-	len += xsprintf(token + len, _T(": %d]\r\n"), xthread_get_id());
+	len += xsprintf(token + len, _T(": %d]\r\n"), thread_get_id());
 
 	xportm_log_info(token, len);
 }
@@ -147,7 +150,7 @@ static void _invoke_error(xhand_t slot)
 /**********************************************************************************************************************/
 void _xslots_dispatch(xhand_t slot, void* p)
 {
-	tchar_t sz_virtual[PATH_LEN] = { 0 };
+	tchar_t sz_path[PATH_LEN] = { 0 };
 	tchar_t sz_proc[PATH_LEN] = { 0 };
 	tchar_t sz_track[PATH_LEN] = { 0 };
 	tchar_t sz_trace[NUM_LEN] = { 0 };
@@ -176,9 +179,9 @@ void _xslots_dispatch(xhand_t slot, void* p)
 
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
 
-	_xslots_get_config(pxp->sz_root, sz_site, sz_virtual, sz_track, sz_level, sz_proc);
+	_xslots_get_config(sz_site, sz_path, sz_track, sz_level, sz_proc);
 
-	if (is_null(sz_virtual))
+	if (is_null(sz_path))
 	{
 		raise_user_error(_T("_slots_invoke"), _T("website not define service entry\n"));
 	}
@@ -218,11 +221,13 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	pb->pf_log_title = _write_log_title;
 	pb->pf_log_error = _write_log_error;
 	pb->pf_log_data = _write_log_data;
-
+	printf_path(pb->path, sz_path);
 	xsncpy(pb->site, sz_site, RES_LEN);
-	xsncpy(pb->path, sz_virtual, PATH_LEN);
+	
+	xszero(sz_path, PATH_LEN);
+	printf_path(sz_path, sz_proc);
 
-	api = load_library(sz_proc);
+	api = load_library(sz_path);
 	if (!api)
 	{
 		raise_user_error(_T("_slots_invoke"), _T("website load service module failed\n"));
@@ -235,22 +240,16 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	}
 
 	get_loc_date(&xdt);
-	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, xthread_get_id());
+	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, thread_get_id());
+
+	xszero(sz_path, PATH_LEN);
 
 	if (!is_null(sz_track))
 	{
-		xsappend(sz_track, _T("/%s.log"), sz_trace);
+		printf_path(sz_path, sz_track);
+		xsappend(sz_path, _T("/%s.log"), sz_trace);
 
 		pb->log = xfile_open(NULL, sz_track, FILE_OPEN_CREATE);
-
-		if (pb->log)
-		{
-			xscpy(sz_trace, _T("["));
-			//xslots_get_addr(slot, sz_trace + 1);
-			xscat(sz_trace, _T("]"));
-
-			(*pb->pf_log_title)(pb->log, sz_trace, -1);
-		}
 	}
 
 	n_state = (*pf_invoke)(pb);
@@ -262,7 +261,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 
 		if (n_state < xstol(sz_level))
 		{
-			xfile_delete(NULL, sz_track);
+			xfile_delete(NULL, sz_path);
 		}
 	}
 
@@ -303,6 +302,7 @@ ONERROR:
 
 void _xslots_start(xslots_param_t* pxp)
 {
+	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	tchar_t sz_token[RES_LEN] = { 0 };
 	unsigned short port;
@@ -321,7 +321,9 @@ void _xslots_start(xslots_param_t* pxp)
 	else
 		pxp->n_secu = _SECU_NONE;
 
-	pxp->p_certs = alloc_certs(pxp->n_secu, pxp->sz_root);
+	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
+
+	pxp->p_certs = alloc_certs(pxp->n_secu, sz_root);
 	port = xstous(pxp->sz_port);
 
 	if (IS_THREAD_MODE(pxp->sz_mode))
@@ -335,11 +337,11 @@ void _xslots_start(xslots_param_t* pxp)
 	if (!pxp->lis_slot)
 	{
 		if (pxp->n_secu == _SECU_SSL)
-			xsprintf(sz_file, _T("SLOT/SSL %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+			xsprintf(sz_file, _T("SLOT/SSL %s service started at port: %s  mode: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 		else if (pxp->n_secu == _SECU_SSH)
-			xsprintf(sz_file, _T("SLOT/SSH %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+			xsprintf(sz_file, _T("SLOT/SSH %s service started at port: %s  mode: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 		else
-			xsprintf(sz_file, _T("SLOT %s service started at port: %s  mode: %s root: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+			xsprintf(sz_file, _T("SLOT %s service started at port: %s  mode: %s ...failed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 
 		xportm_log_info(sz_file, -1);
 
@@ -348,11 +350,11 @@ void _xslots_start(xslots_param_t* pxp)
 	else
 	{
 		if (pxp->n_secu == _SECU_SSL)
-			xsprintf(sz_file, _T("SLOT/SSL %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+			xsprintf(sz_file, _T("SLOT/SSL %s service started at port: %s  mode: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 		else if (pxp->n_secu == _SECU_SSH)
-			xsprintf(sz_file, _T("SLOT/SSH %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+			xsprintf(sz_file, _T("SLOT/SSH %s service started at port: %s  mode: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 		else
-			xsprintf(sz_file, _T("SLOT %s service started at port: %s  mode: %s root: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode, pxp->sz_root);
+			xsprintf(sz_file, _T("SLOT %s service started at port: %s  mode: %s ...succeed!\r\n"), sz_token, pxp->sz_port, pxp->sz_mode);
 
 		xportm_log_info(sz_file, -1);
 	}

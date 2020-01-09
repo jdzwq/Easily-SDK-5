@@ -34,7 +34,6 @@ typedef struct _xudps_param_t{
 
 	tchar_t		sz_mode[INT_LEN];
 	tchar_t		sz_port[INT_LEN];
-	tchar_t		sz_root[PATH_LEN];
 	tchar_t		sz_module[PATH_LEN];
 	tchar_t		sz_param[PATH_LEN];
 }xudps_param_t;

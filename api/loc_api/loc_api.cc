@@ -734,7 +734,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	loc_block_t* pos = NULL;
 
-	tchar_t token[PATH_LEN + 1] = { 0 };
+	tchar_t sz_local[PATH_LEN] = { 0 };
 
 	bool_t rt = 1;
 
@@ -751,19 +751,21 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	ptr_prop = create_proper_doc();
 
-	xsprintf(token, _T("%s/loc.ini"), pb->path);
+	xsprintf(sz_local, _T("%s/loc.ini"), pb->path);
 
-	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, sz_local))
 	{
 		raise_user_error(_T("-1"), _T("load loc config falied\n"));
 	}
 
-	read_proper(ptr_prop, _T("LOC"), -1, _T("LOCATION"), -1, pos->local, PATH_LEN);
+	read_proper(ptr_prop, _T("LOC"), -1, _T("LOCATION"), -1, sz_local, PATH_LEN);
 	read_proper(ptr_prop, _T("LOC"), -1, _T("PUBLICKEY"), -1, pos->sd.scr_uid, KEY_LEN);
 	read_proper(ptr_prop, _T("LOC"), -1, _T("PRIVATEKEY"), -1, pos->sd.scr_key, KEY_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
+
+	printf_path(pos->local, sz_local);
 
 	if (compare_text(method, -1, _T("HEAD"), -1, 1) == 0)
 		rt = _invoke_head(pb, pos);

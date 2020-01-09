@@ -130,13 +130,6 @@ XDL_API float	get_canvas_scale(canvas_t canv);
 XDL_API res_ctx_t get_canvas_ctx(canvas_t canv);
 
 /*
-@FUNCTION get_canvas_type: get the canvas type, it can be _CANV_DISPLAY, _CANV_PRINTER.
-@INPUT canvas_t canv: the canvas object.
-@RETURN int: return the canvas type.
-*/
-XDL_API int get_canvas_type(canvas_t canv);
-
-/*
 @FUNCTION begin_canvas_paint: begin canvas painting and return a memory context for drawing buffer.
 @INPUT canvas_t canv: the canvas object.
 @INPUT res_ctx_t rdc: the display or printer context resource handle.

@@ -3,12 +3,7 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "_text_mm_size:_if_context_x11.c">
-         <PersistentStrings>
-            <PersistentString
-               value = "(char*)pattern">
-            </PersistentString>
-         </PersistentStrings>
+         contextName = "db_datetime:xdb_mysql.c">
       </ContextState>
       <ContextState
          contextName = "_get_device_caps:_if_context_x11.c">
@@ -26,6 +21,14 @@
       </ContextState>
       <ContextState
          contextName = "db_exec:xdb_mysql.c">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "default_xfont:xdkutil.c">
@@ -87,7 +90,12 @@
          contextName = "a_ltoxs:xdlstr.c">
       </ContextState>
       <ContextState
-         contextName = "db_datetime:xdb_mysql.c">
+         contextName = "_text_mm_size:_if_context_x11.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char*)pattern">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>

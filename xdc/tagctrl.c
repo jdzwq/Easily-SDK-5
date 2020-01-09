@@ -31,7 +31,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdcctrl.h"
 #include "handler.h"
-#include "winnc.h"
+#include "widgetnc.h"
+#include "widgetex.h"
 #include "xdcmenu.h"
 #include "textor.h"
 #include "xdcbox.h"
@@ -103,7 +104,7 @@ int hand_tagctrl_create(res_win_t widget, void* data)
 {
 	tagctrl_delta_t* ptd;
 
-	widget_hand_create(widget);
+	widgetex_hand_create(widget);
 
 	ptd = (tagctrl_delta_t*)xmem_alloc(sizeof(tagctrl_delta_t));
 	xmem_zero((void*)ptd, sizeof(tagctrl_delta_t));
@@ -144,7 +145,7 @@ void hand_tagctrl_destroy(res_win_t widget)
 
 	SETTAGCTRLDELTA(widget, 0);
 
-	widget_hand_destroy(widget);
+	widgetex_hand_destroy(widget);
 }
 
 void hand_tagctrl_set_focus(res_win_t widget, res_win_t wt)
