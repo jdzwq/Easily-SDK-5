@@ -1,0 +1,5 @@
+[OCI]
+SERVER=zwq
+DATABASE=demo
+UID=system
+PWD=admin

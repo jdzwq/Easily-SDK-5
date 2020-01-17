@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9B434EC32171CAFD00AC4CAA /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EC22171CAFD00AC4CAA /* libxdl.dylib */; };
+		9B3E8D5C23D1D64100786BE1 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D5B23D1D64100786BE1 /* libxdl.dylib */; };
 		9B434EE92172089900AC4CAA /* xportmMain.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EE82172089900AC4CAA /* xportmMain.cc */; };
 		9B502779216D18D200169646 /* xportm.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B502777216D18D200169646 /* xportm.cc */; };
 /* End PBXBuildFile section */
@@ -25,7 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9B434EC22171CAFD00AC4CAA /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
+		9B3E8D5B23D1D64100786BE1 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = ../sbin/api/libxdl.dylib; sourceTree = "<group>"; };
 		9B434EE82172089900AC4CAA /* xportmMain.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xportmMain.cc; sourceTree = "<group>"; };
 		9B50276D216D184B00169646 /* xportm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xportm; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B502777216D18D200169646 /* xportm.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xportm.cc; path = ../../api/net_srv/xportm.cc; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B434EC32171CAFD00AC4CAA /* libxdl.dylib in Frameworks */,
+				9B3E8D5C23D1D64100786BE1 /* libxdl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,8 +47,8 @@
 		9B502764216D184B00169646 = {
 			isa = PBXGroup;
 			children = (
+				9B3E8D5B23D1D64100786BE1 /* libxdl.dylib */,
 				9B434EE82172089900AC4CAA /* xportmMain.cc */,
-				9B434EC22171CAFD00AC4CAA /* libxdl.dylib */,
 				9B502777216D18D200169646 /* xportm.cc */,
 				9B502778216D18D200169646 /* xportm.h */,
 				9B50276E216D184B00169646 /* Products */,
@@ -223,7 +223,7 @@
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+				SYMROOT = ../sbin;
 			};
 			name = Debug;
 		};
@@ -244,7 +244,7 @@
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin";
+				SYMROOT = ../sbin;
 			};
 			name = Release;
 		};

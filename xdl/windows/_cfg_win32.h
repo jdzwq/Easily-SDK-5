@@ -57,7 +57,10 @@ LICENSE.GPL3 for more details.
 #define XDL_SUPPORT_SSL
 
 #define XDL_SUPPORT_DOC
+
+#if defined(XDK_SUPPORT_CONTEXT) && defined(XDK_SUPPORT_CONTEXT_GRAPHIC)
 #define XDL_SUPPORT_VIEW
+#endif
 
 #if defined(XDK_SUPPORT_FILE)
 #define XDL_SUPPORT_BIO

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9B3E8D7023D1D9EA00786BE1 /* libxdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D6F23D1D9EA00786BE1 /* libxdk.dylib */; };
 		9B434EED21721AE700AC4CAA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EEC21721AE700AC4CAA /* main.cpp */; };
-		9B434EEF21721AF800AC4CAA /* libxdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B434EEE21721AF800AC4CAA /* libxdk.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,9 +24,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9B3E8D6F23D1D9EA00786BE1 /* libxdk.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdk.dylib; path = ../../sbin/api/libxdk.dylib; sourceTree = "<group>"; };
 		9B41E19B216A3CAB00AAA333 /* xdk_child_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xdk_child_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B434EEC21721AE700AC4CAA /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		9B434EEE21721AF800AC4CAA /* libxdk.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdk.dylib; path = "../../../../Easily-app-5/macos/sbin/api/libxdk.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B434EEF21721AF800AC4CAA /* libxdk.dylib in Frameworks */,
+				9B3E8D7023D1D9EA00786BE1 /* libxdk.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +44,7 @@
 		9B41E192216A3CAB00AAA333 = {
 			isa = PBXGroup;
 			children = (
-				9B434EEE21721AF800AC4CAA /* libxdk.dylib */,
+				9B3E8D6F23D1D9EA00786BE1 /* libxdk.dylib */,
 				9B434EEC21721AE700AC4CAA /* main.cpp */,
 				9B41E19C216A3CAB00AAA333 /* Products */,
 			);
@@ -207,12 +207,12 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
-					"/Users/zwq/工程/Easily-sdk-5/include",
+					../../../include,
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				LIBRARY_SEARCH_PATHS = ../../sbin/api;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/bin";
+				SYMROOT = ../../bin;
 			};
 			name = Debug;
 		};
@@ -223,12 +223,12 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
-					"/Users/zwq/工程/Easily-sdk-5/include",
+					../../../include,
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				LIBRARY_SEARCH_PATHS = ../../sbin/api;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/bin";
+				SYMROOT = ../../bin;
 			};
 			name = Release;
 		};

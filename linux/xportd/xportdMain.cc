@@ -16,7 +16,12 @@ void _action_term(int sig)
 
 void _action_child(int sig)
 {
-    waitpid(-1, NULL, 0);
+    pid_t pid; 
+    int stat; 
+
+    while((pid = waitpid(-1, &stat, WNOHANG)) > 0);
+
+    return; 
 }
 
 int main(int argc, const char * argv[])

@@ -1,0 +1,3 @@
+did	dname	dage	dprice
+1	旺财		100.25
+2	来福	2015-01-01	

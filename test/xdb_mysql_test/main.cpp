@@ -1374,7 +1374,7 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < maxt; i++)
     {
-        xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
+        thread_start(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
         
         //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_schema, (void*)0);
                       
@@ -1388,12 +1388,12 @@ int main(int argc, char* argv[])
         
         //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_import, (void*)0);
         
-        xthread_sleep(10);
+        thread_sleep(10);
     }
     
 	for (int i = 0; i < maxt; i++)
 	{
-		xthread_join(pth[i]);
+		thread_join(pth[i]);
 	}
 
 	xmem_free(pth);

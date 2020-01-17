@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9BE68F70217F1657003AC3C0 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE68F6F217F1657003AC3C0 /* libxdl.dylib */; };
-		9BE68F72217F1BF9003AC3C0 /* libxdb_mysql.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE68F71217F1BF9003AC3C0 /* libxdb_mysql.dylib */; };
+		9B3E8D6D23D1D83500786BE1 /* libxdb_mysql.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D6B23D1D83500786BE1 /* libxdb_mysql.dylib */; };
+		9B3E8D6E23D1D83500786BE1 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D6C23D1D83500786BE1 /* libxdl.dylib */; };
 		9BE980D8217E7CF70087F314 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9BE980D7217E7CF70087F314 /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -25,8 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9BE68F6F217F1657003AC3C0 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
-		9BE68F71217F1BF9003AC3C0 /* libxdb_mysql.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdb_mysql.dylib; path = "../../../../Easily-app-5/macos/sbin/api/libxdb_mysql.dylib"; sourceTree = "<group>"; };
+		9B3E8D6B23D1D83500786BE1 /* libxdb_mysql.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdb_mysql.dylib; path = ../../sbin/api/libxdb_mysql.dylib; sourceTree = "<group>"; };
+		9B3E8D6C23D1D83500786BE1 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = ../../sbin/api/libxdl.dylib; sourceTree = "<group>"; };
 		9BE980CD217E7C9D0087F314 /* xdb_mysql_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xdb_mysql_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE980D7217E7CF70087F314 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../test/xdb_mysql_test/main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -36,8 +36,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BE68F72217F1BF9003AC3C0 /* libxdb_mysql.dylib in Frameworks */,
-				9BE68F70217F1657003AC3C0 /* libxdl.dylib in Frameworks */,
+				9B3E8D6D23D1D83500786BE1 /* libxdb_mysql.dylib in Frameworks */,
+				9B3E8D6E23D1D83500786BE1 /* libxdl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,8 +47,8 @@
 		9BE980C4217E7C9D0087F314 = {
 			isa = PBXGroup;
 			children = (
-				9BE68F71217F1BF9003AC3C0 /* libxdb_mysql.dylib */,
-				9BE68F6F217F1657003AC3C0 /* libxdl.dylib */,
+				9B3E8D6B23D1D83500786BE1 /* libxdb_mysql.dylib */,
+				9B3E8D6C23D1D83500786BE1 /* libxdl.dylib */,
 				9BE980D7217E7CF70087F314 /* main.cpp */,
 				9BE980CE217E7C9D0087F314 /* Products */,
 			);
@@ -208,11 +208,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
-				HEADER_SEARCH_PATHS = "/Users/zwq/工程/Easily-sdk-5/include";
-				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
+					../../../include,
+				);
+				LIBRARY_SEARCH_PATHS = ../../sbin/api;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/bin";
+				SYMROOT = ../../bin;
 			};
 			name = Debug;
 		};
@@ -220,11 +224,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
-				HEADER_SEARCH_PATHS = "/Users/zwq/工程/Easily-sdk-5/include";
-				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/include,
+					/opt/X11/include/freetype2,
+					../../../include,
+				);
+				LIBRARY_SEARCH_PATHS = ../../sbin/api;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/bin";
+				SYMROOT = ../../bin;
 			};
 			name = Release;
 		};

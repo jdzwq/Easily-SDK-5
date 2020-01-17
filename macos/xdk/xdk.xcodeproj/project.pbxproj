@@ -316,14 +316,14 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
 				);
-				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdk.dylib";
+				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxdk.dylib;
 				LIBRARY_SEARCH_PATHS = /opt/X11/lib;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = (
@@ -333,7 +333,7 @@
 					"-lfontconfig",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				SYMROOT = ../sbin/api;
 			};
 			name = Debug;
 		};
@@ -343,14 +343,14 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
 				);
-				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdk.dylib";
+				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxdk.dylib;
 				LIBRARY_SEARCH_PATHS = /opt/X11/lib;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = (
@@ -360,7 +360,7 @@
 					"-lfontconfig",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				SYMROOT = ../sbin/api;
 			};
 			name = Release;
 		};

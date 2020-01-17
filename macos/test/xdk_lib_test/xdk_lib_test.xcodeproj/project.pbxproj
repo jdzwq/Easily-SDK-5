@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9B3165362183BC990063E38B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B3165352183BC990063E38B /* main.cpp */; };
-		9B908FEB23CD804E00889926 /* libxdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B908FEA23CD804E00889926 /* libxdk.dylib */; };
+		9B3E8D7423D1DD3B00786BE1 /* libxdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D7323D1DD3B00786BE1 /* libxdk.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,7 +25,7 @@
 
 /* Begin PBXFileReference section */
 		9B3165352183BC990063E38B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../test/xdk_lib_test/main.cpp; sourceTree = "<group>"; };
-		9B908FEA23CD804E00889926 /* libxdk.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdk.dylib; path = "../../../../Easily-app-5/macos/sbin/api/libxdk.dylib"; sourceTree = "<group>"; };
+		9B3E8D7323D1DD3B00786BE1 /* libxdk.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdk.dylib; path = ../../sbin/api/libxdk.dylib; sourceTree = "<group>"; };
 		9BED61D22165DCCB00024C7F /* xdk_lib_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xdk_lib_test; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -34,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B908FEB23CD804E00889926 /* libxdk.dylib in Frameworks */,
+				9B3E8D7423D1DD3B00786BE1 /* libxdk.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +44,7 @@
 		9BED61C92165DCCB00024C7F = {
 			isa = PBXGroup;
 			children = (
-				9B908FEA23CD804E00889926 /* libxdk.dylib */,
+				9B3E8D7323D1DD3B00786BE1 /* libxdk.dylib */,
 				9B3165352183BC990063E38B /* main.cpp */,
 				9BED61D32165DCCB00024C7F /* Products */,
 			);
@@ -207,14 +207,14 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
-					"/Users/zwq/工程/Easily-sdk-5/include",
+					../../../include,
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				LIBRARY_SEARCH_PATHS = ../../sbin/api;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/bin";
+				SYMROOT = ../../bin;
 			};
 			name = Debug;
 		};
@@ -225,14 +225,14 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
-					"/Users/zwq/工程/Easily-sdk-5/include",
+					../../../include,
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				LIBRARY_SEARCH_PATHS = ../../sbin/api;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/bin";
+				SYMROOT = ../../bin;
 			};
 			name = Release;
 		};

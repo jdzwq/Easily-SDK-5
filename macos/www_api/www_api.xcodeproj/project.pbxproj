@@ -9,16 +9,16 @@
 /* Begin PBXBuildFile section */
 		9B0C3BD023CCA4DB0010C7F3 /* www_api.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B0C3BCE23CCA4DB0010C7F3 /* www_api.cc */; };
 		9B0C3BD123CCA4DB0010C7F3 /* www_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B0C3BCF23CCA4DB0010C7F3 /* www_api.h */; };
-		9B0C3BD423CCC4F40010C7F3 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B0C3BD223CCC4F40010C7F3 /* libxdl.dylib */; };
-		9B0C3BD523CCC4F40010C7F3 /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B0C3BD323CCC4F40010C7F3 /* libxds.dylib */; };
+		9B3E8D4F23D1D4D500786BE1 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D4D23D1D4D500786BE1 /* libxdl.dylib */; };
+		9B3E8D5023D1D4D500786BE1 /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D4E23D1D4D500786BE1 /* libxds.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9B0C3BC723CCA4AC0010C7F3 /* libwww_api.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwww_api.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B0C3BCE23CCA4DB0010C7F3 /* www_api.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = www_api.cc; path = ../../api/www_api/www_api.cc; sourceTree = "<group>"; };
 		9B0C3BCF23CCA4DB0010C7F3 /* www_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = www_api.h; path = ../../api/www_api/www_api.h; sourceTree = "<group>"; };
-		9B0C3BD223CCC4F40010C7F3 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
-		9B0C3BD323CCC4F40010C7F3 /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxds.dylib"; sourceTree = "<group>"; };
+		9B3E8D4D23D1D4D500786BE1 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = ../sbin/api/libxdl.dylib; sourceTree = "<group>"; };
+		9B3E8D4E23D1D4D500786BE1 /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = ../sbin/api/libxds.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,8 +26,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B0C3BD523CCC4F40010C7F3 /* libxds.dylib in Frameworks */,
-				9B0C3BD423CCC4F40010C7F3 /* libxdl.dylib in Frameworks */,
+				9B3E8D5023D1D4D500786BE1 /* libxds.dylib in Frameworks */,
+				9B3E8D4F23D1D4D500786BE1 /* libxdl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,8 +37,8 @@
 		9B0C3BBE23CCA4AC0010C7F3 = {
 			isa = PBXGroup;
 			children = (
-				9B0C3BD223CCC4F40010C7F3 /* libxdl.dylib */,
-				9B0C3BD323CCC4F40010C7F3 /* libxds.dylib */,
+				9B3E8D4D23D1D4D500786BE1 /* libxdl.dylib */,
+				9B3E8D4E23D1D4D500786BE1 /* libxds.dylib */,
 				9B0C3BCE23CCA4DB0010C7F3 /* www_api.cc */,
 				9B0C3BCF23CCA4DB0010C7F3 /* www_api.h */,
 				9B0C3BC823CCA4AC0010C7F3 /* Products */,
@@ -212,7 +212,7 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
@@ -220,7 +220,7 @@
 					../../include,
 					../../api/www_api,
 				);
-				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libwww_api.dylib";
+				LD_DYLIB_INSTALL_NAME = ../sbin/api/libwww_api.dylib;
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					../lib,
@@ -228,7 +228,7 @@
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				SYMROOT = ../sbin/api;
 			};
 			name = Debug;
 		};
@@ -238,7 +238,7 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
@@ -246,7 +246,7 @@
 					../../include,
 					../../api/www_api,
 				);
-				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libwww_api.dylib";
+				LD_DYLIB_INSTALL_NAME = ../sbin/api/libwww_api.dylib;
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					../lib,
@@ -254,7 +254,7 @@
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				SYMROOT = ../sbin/api;
 			};
 			name = Release;
 		};

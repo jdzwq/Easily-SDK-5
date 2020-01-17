@@ -1,0 +1,4 @@
+set Path = C:\Program Files\xService\api;%Path%
+sc create xService binPath= "C:\Program Files\xService\xService.exe" start= demand DisplayName= "Easily Ports Service"
+sc start xService
+sc delete xService

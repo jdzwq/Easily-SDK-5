@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9B3E8D6A23D1D79000786BE1 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D6923D1D79000786BE1 /* libxdl.dylib */; };
 		9BE980BF217D982E0087F314 /* xdb_mysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BE980BC217D982E0087F314 /* xdb_mysql.c */; };
 		9BE980C0217D982E0087F314 /* xdbdef.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BE980BD217D982E0087F314 /* xdbdef.h */; };
 		9BE980C1217D982E0087F314 /* xdbpro.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BE980BE217D982E0087F314 /* xdbpro.h */; };
-		9BE980C3217D989D0087F314 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE980C2217D989D0087F314 /* libxdl.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9B3E8D6923D1D79000786BE1 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = ../sbin/api/libxdl.dylib; sourceTree = "<group>"; };
 		9BE980B5217D98090087F314 /* libxdb_mysql.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxdb_mysql.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE980BC217D982E0087F314 /* xdb_mysql.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdb_mysql.c; path = ../../xdb/xdb_mysql.c; sourceTree = "<group>"; };
 		9BE980BD217D982E0087F314 /* xdbdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdbdef.h; path = ../../xdb/xdbdef.h; sourceTree = "<group>"; };
 		9BE980BE217D982E0087F314 /* xdbpro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdbpro.h; path = ../../xdb/xdbpro.h; sourceTree = "<group>"; };
-		9BE980C2217D989D0087F314 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = "../../../Easily-app-5/macos/sbin/api/libxdl.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,7 +26,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BE980C3217D989D0087F314 /* libxdl.dylib in Frameworks */,
+				9B3E8D6A23D1D79000786BE1 /* libxdl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -36,7 +36,7 @@
 		9BE980AC217D98090087F314 = {
 			isa = PBXGroup;
 			children = (
-				9BE980C2217D989D0087F314 /* libxdl.dylib */,
+				9B3E8D6923D1D79000786BE1 /* libxdl.dylib */,
 				9BE980BC217D982E0087F314 /* xdb_mysql.c */,
 				9BE980BD217D982E0087F314 /* xdbdef.h */,
 				9BE980BE217D982E0087F314 /* xdbpro.h */,
@@ -212,26 +212,26 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
 					/usr/local/mysql/include,
-					"/Users/zwq/工程/Easily-sdk-5/include",
-					"/Users/zwq/工程/Easily-sdk-5/xdb",
+					../../include,
+					../../xdb,
 				);
-				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_mysql.dylib";
+				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxdb_mysql.dylib;
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					/usr/local/mysql/lib,
-					"/Users/zwq/工程/Easily-sdk-5/macos/lib",
+					../lib,
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = "-lmysqlclient";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				SYMROOT = ../sbin/api;
 			};
 			name = Debug;
 		};
@@ -241,26 +241,26 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
 					/usr/local/mysql/include,
-					"/Users/zwq/工程/Easily-sdk-5/include",
-					"/Users/zwq/工程/Easily-sdk-5/xdb",
+					../../include,
+					../../xdb,
 				);
-				LD_DYLIB_INSTALL_NAME = "/Users/zwq/工程/Easily-app-5/macos/sbin/api/libxdb_mysql.dylib";
+				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxdb_mysql.dylib;
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					/usr/local/mysql/lib,
-					"/Users/zwq/工程/Easily-sdk-5/macos/lib",
+					../lib,
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = "-lmysqlclient";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "/Users/zwq/工程/Easily-app-5/macos/sbin/api";
+				SYMROOT = ../sbin/api;
 			};
 			name = Release;
 		};
