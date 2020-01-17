@@ -21,8 +21,8 @@ vi /etc/ld.so.conf
 ldconfig
 
 sudo systemctl enable xportd.service
-systemctl list-unit-files
 systemctl daemon-reload
+systemctl list-unit-files
 systemctl start xportd.service
 systemctl stop xportd.service
 systemctl reload xportd.service

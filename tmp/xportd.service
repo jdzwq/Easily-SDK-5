@@ -3,6 +3,8 @@ Description=xportd
 After=syslog.target network.target
 
 [Service]
+Type=forking
+PIDFile=/var/run/xportd.pid
 ExecStart=/usr/local/xService/xService.sh
 ExecStop=/usr/local/xService/xportd --shutdown
 ExecReload=/usr/local/xService/xportd

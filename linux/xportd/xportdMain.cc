@@ -58,7 +58,7 @@ int main(int argc, const char * argv[])
           waitpid(pid, NULL, 0);   
         }
 
-        //empty
+        //empty pid
         f_pid = fopen(PID_FILE, "w");
         if (f_pid)
         {
@@ -174,6 +174,14 @@ int main(int argc, const char * argv[])
         
         usleep(100000);
     }
+
+    //empty pid
+    f_pid = fopen(PID_FILE, "w");
+    if (f_pid)
+    {
+        fclose(f_pid);
+        f_pid = NULL;
+    }
     
     END_CATCH;
     
@@ -181,13 +189,23 @@ int main(int argc, const char * argv[])
     
     return 0;
 ONERROR:
-    
-    if(f_pid)
-        fclose(f_pid);
-    
     get_last_error(errnum, errtxt, ERR_LEN);
     
     syslog(LOG_INFO, "%s\n", errtxt);
+
+    if(f_pid)
+    {
+        fclose(f_pid);
+        f_pid = NULL;
+    }
+
+    //empty pid
+    f_pid = fopen(PID_FILE, "w");
+    if (f_pid)
+    {
+        fclose(f_pid);
+        f_pid = NULL;
+    }
     
     xdl_process_uninit();
     
