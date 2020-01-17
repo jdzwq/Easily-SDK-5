@@ -108,10 +108,10 @@ void	_get_loc_date(xdate_t* pxd);
 bool_t	_mak_loc_date(xdate_t* pxd);
 void	_get_utc_date(xdate_t* pxd);
 bool_t	_mak_utc_date(xdate_t* pxd);
-clock_t	_get_times(void);
+dword_t	_get_times(void);
 clock_t _get_ticks(void);
 stamp_t _get_timestamp(void);
-void	_utc_date_from_times(xdate_t* pxd, clock_t ts);
+void	_utc_date_from_times(xdate_t* pxd, dword_t ms);
 void	_utc_date_from_ticks(xdate_t* pxd, clock_t ts);
 void	_utc_date_from_timestamp(xdate_t* pxd, stamp_t ts);
 #endif

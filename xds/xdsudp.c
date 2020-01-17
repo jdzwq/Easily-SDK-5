@@ -294,9 +294,11 @@ udp_listen_t* xudp_start_thread(unsigned short port, PF_UDPS_DISPATCH pf_dispatc
 	plis->epo = queue_create((res_queue_t)NULL, plis->so, plis->res);
 #endif
 
+	plis->thr = (res_hand_t*)xmem_alloc(sizeof(res_hand_t) * plis->res);
+
 	for (i = 0; i < plis->res; i++)
 	{
-		thread_start(NULL, (PF_THREADFUNC)wait_accept, (void*)plis);
+		thread_start(&(plis->thr[i]), (PF_THREADFUNC)wait_accept, (void*)plis);
 #if defined(_DEBUG) || defined(DEBUG)
 		thread_sleep(10);
 #endif
@@ -322,9 +324,11 @@ udp_listen_t* xudp_start_process(unsigned short port, const tchar_t* sz_module, 
 	plis->epo = queue_create((res_queue_t)NULL, plis->so, plis->res);
 #endif
 
+	plis->thr = (res_hand_t*)xmem_alloc(sizeof(res_hand_t) * plis->res);
+
 	for (i = 0; i < plis->res; i++)
 	{
-		thread_start(NULL, (PF_THREADFUNC)wait_accept, (void*)plis);
+		thread_start(&(plis->thr[i]), (PF_THREADFUNC)wait_accept, (void*)plis);
 #if defined(_DEBUG) || defined(DEBUG)
 		thread_sleep(10);
 #endif
@@ -335,6 +339,8 @@ udp_listen_t* xudp_start_process(unsigned short port, const tchar_t* sz_module, 
 
 void  xudp_stop(udp_listen_t* plis)
 {
+	int i;
+
 	//indicate listen to be stoping
 	plis->act = 0;
 
@@ -345,6 +351,13 @@ void  xudp_stop(udp_listen_t* plis)
 	thread_sleep(THREAD_BASE_TMO);
 
 	socket_close(plis->so);
+
+	for (i = 0; i < plis->res; i++)
+	{
+		thread_join(plis->thr[i]);
+	}
+
+	xmem_free(plis->thr);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 	if (plis->epo)

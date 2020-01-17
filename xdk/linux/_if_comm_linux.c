@@ -145,7 +145,7 @@ bool_t _set_comm_mode(res_file_t fh, const dev_com_t* pmod)
     return (tcsetattr(fh, TCSANOW, &tcb) < 0)? 0 : 1;
 }
 
-res_file_t _comm_open(const tchar_t* devname, u32_t fmode)
+res_file_t _comm_open(const tchar_t* devname, dword_t fmode)
 {
     int flag, fd;
 	dev_com_t dev = { 0 };
@@ -176,12 +176,12 @@ void _comm_close(res_file_t fh)
     close(fh);
 }
 
-u32_t _comm_wait(res_file_t fd, async_t* pb)
+dword_t _comm_wait(res_file_t fd, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     LPSIZE pcb = (pb) ? &(pb->size) : NULL;
     
-    u32_t dwEvent = 0;
+    dword_t dwEvent = 0;
     int status;
     int rt;
     

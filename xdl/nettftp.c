@@ -1208,7 +1208,7 @@ void xtftp_set_isdir(xhand_t tftp, bool_t isdir)
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
-	pftp->isdir = isdir;
+	pftp->isdir = (sword_t)isdir;
 }
 
 bool_t xtftp_get_isdir(xhand_t tftp)

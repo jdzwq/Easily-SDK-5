@@ -224,7 +224,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					../lib,
-					"$(BUILD_DIR)/api",
+					"$(BUILD_DIR)",
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -250,7 +250,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					../lib,
-					"$(BUILD_DIR)/api",
+					"$(BUILD_DIR)",
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -277,6 +277,7 @@
 				9BD1B82123BB95E100F4BFC2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

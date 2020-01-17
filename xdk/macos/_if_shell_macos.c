@@ -33,6 +33,16 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_SHELL
 
+bool_t _shell_get_filename(res_win_t owner, const tchar_t* defpath, const tchar_t* filter, const tchar_t* defext, bool_t saveit, tchar_t* pathbuf, int pathlen, tchar_t* filebuf, int filelen)
+{
+	return 0;
+}
+
+bool_t _shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t createit, tchar_t* pathbuf, int pathlen)
+{
+	return 0;
+}
+
 bool_t _shell_get_curpath(tchar_t* pathbuf, int pathlen)
 {
 	return 0;

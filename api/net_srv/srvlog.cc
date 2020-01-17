@@ -131,6 +131,7 @@ void _write_log_json(file_t log, link_t_ptr ptr_json)
 }
 
 /***********************************************************************************/
+
 void xportm_log_info(const tchar_t* str, int len)
 {
 	byte_t* sz_buf = NULL;

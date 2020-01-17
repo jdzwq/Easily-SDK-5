@@ -154,12 +154,16 @@ void test_process()
     (*if_proc.pf_get_runpath)(NULL, path, PATH_LEN);
     printf("running path: %s\n", path);
     
-    typedef void (*PF_DEFAULT_XPEN)(xpen_t* pxp);
+    (*if_proc.pf_get_envvar)("XSERVICE_ROOT", path, PATH_LEN);
+    printf("service path: %s\n", path);
+
+    strcat(path,"/../sbin/api/libxdk_api.dylib");
     
-    res_modu_t dl = (*if_proc.pf_load_library)("./libxdk.dylib");
+    typedef void (*PF_DEFAULT_XPEN)(xpen_t* pxp);
+    res_modu_t dl = (*if_proc.pf_load_library)(path);
     PF_DEFAULT_XPEN pf = (PF_DEFAULT_XPEN)(*if_proc.pf_get_address)(dl, "default_xpen");
     xpen_t xp = {0};
-    //(*pf)(&xp);
+    (*pf)(&xp);
     (*if_proc.pf_free_library)(dl);
     
     proc_info_t pi = {0};
@@ -574,27 +578,6 @@ void test_widget()
     
     res_win_t win = (*if_widget.pf_widget_create)("demo",0,&xr,NULL,NULL);
     
-    s8_t s[] = "hello world";
-    
-    bool_t b = (*if_widget.pf_widget_set_proper)(win, "string_proper", (u8_t*)s, _tstrlen(s));
-    
-    s8_t buf[20] = {0};
-    
-    b = (*if_widget.pf_widget_get_proper)(win, "string_proper", (u8_t*)buf, 20);
-    
-    char* s_ptr = (char*)calloc(1, 1);
-    
-    u8_t sa[8] = {0};
-    
-    PUT_VOID_NET(sa, s_ptr);
-    
-    b = (*if_widget.pf_widget_set_proper)(win, "pointer_proper", (u8_t*)sa, 8);
-    
-    b = (*if_widget.pf_widget_get_proper)(win, "pointer_proper", (u8_t*)sa, 8);
-    
-    s_ptr = (char*)GET_VOID_NET(sa);
-    
-    free(s_ptr);
     
     (*if_widget.pf_widget_show)(win, 0);
         
@@ -620,7 +603,7 @@ int main(int argc, const char * argv[]) {
     
     //test_name_pipe();
     
-    //test_process();
+    test_process();
     
     //test_exec();
     
@@ -646,7 +629,7 @@ int main(int argc, const char * argv[]) {
     
     //test_bitmap();
     
-    test_widget();
+    //test_widget();
     
     return 0;
 }

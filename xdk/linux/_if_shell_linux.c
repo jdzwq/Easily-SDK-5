@@ -35,13 +35,37 @@ LICENSE.GPL3 for more details.
 
 bool_t _shell_get_curpath(tchar_t* pathbuf, int pathlen)
 {
-	return 0;
+	tchar_t* p;
+
+	p = realpath("./", pathbuf);
+	if(p == NULL)
+        return 0;
+
+	p = strrchr(pathbuf,  '/');
+    if(p != NULL)
+    {
+    	*p = '\0';
+	}
+
+	return 1;
 }
 
 bool_t _shell_get_runpath(tchar_t* pathbuf, int pathlen)
 {
-	
-	return 0;
+	size_t size;
+	tchar_t* p;
+
+	size = readlink("/proc/self/exe", pathbuf, pathlen);
+
+	pathbuf[size] = '\0';
+    
+    p = strrchr(pathbuf,  '/');
+    if(p != NULL)
+    {
+   	 *p = '\0';
+	}
+
+	return 1;
 }
 
 bool_t _shell_get_apppath(tchar_t* pathbuf, int pathlen)

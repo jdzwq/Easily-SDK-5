@@ -30,12 +30,8 @@ LICENSE.GPL3 for more details.
 #include "srvdef.h"
 #include "srvcert.h"
 
-#define XHTTPS_FILTER_SAP		_T(".sap")
-#define XHTTPS_FILTER_DLL		_T(".dll")
-#define XHTTPS_FILTER_SO		_T(".so")
-#define XHTTPS_FILTER_XDB		_T(".xdb")
-#define XHTTPS_FILTER_OSS		_T(".oss")
-#define XHTTPS_FILTER_DEV		_T(".dev")
+
+#define XHTTPS_DEFAULT_SITE		_T("www")
 
 typedef struct _xhttps_param_t{
 	http_listen_t* lis_http;

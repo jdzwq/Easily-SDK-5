@@ -491,10 +491,10 @@ typedef void (*PF_GET_LOC_DATE)(xdate_t*);
 typedef bool_t(*PF_MAK_LOC_DATE)(xdate_t*);
 typedef void (*PF_GET_UTC_DATE)(xdate_t*);
 typedef bool_t(*PF_MAK_UTC_DATE)(xdate_t*);
-typedef clock_t(*PF_GET_TIMES)(void);
+typedef dword_t(*PF_GET_TIMES)(void);
 typedef clock_t(*PF_GET_TICKS)(void);
 typedef stamp_t(*PF_GET_TIMESTAMP)(void);
-typedef void(*PF_UTC_DATE_FROM_TIMES)(xdate_t*, clock_t);
+typedef void(*PF_UTC_DATE_FROM_TIMES)(xdate_t*, dword_t);
 typedef void(*PF_UTC_DATE_FROM_TICKS)(xdate_t*, clock_t);
 typedef void(*PF_UTC_DATE_FROM_TIMESTAMP)(xdate_t*, stamp_t);
 

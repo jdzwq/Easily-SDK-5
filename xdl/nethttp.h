@@ -121,7 +121,9 @@ XDL_API xhand_t		xhttp_bio(xhand_t xhttp);
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the bytes formated.
 */
-XDL_API dword_t		xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max);
+XDL_API dword_t	xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max);
+
+XDL_API int xhttp_format_content_type(const tchar_t* filter, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_split_object: split and copy http query url site and file token,

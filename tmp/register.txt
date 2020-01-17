@@ -1,0 +1,29 @@
+
+-macos
+cd /Users/zwq/工程/Easily-app-5/macos/sbin
+vi ./.bash_profile
+export XSERVICE_ROOT="/Users/zwq/工程/Easily-app-5/macos/sbin"
+export XSERVICE_DATA="/Users/zwq/工程/Easily-app-5/macos/sbin/nfs"
+source ./.bash_profile
+
+-linux
+cd /usr/local/xService
+vi ./.bashrc
+export XSERVICE_ROOT="/usr/local/xService"
+export XSERVICE_DATA="/usr/local/xService/nfs"
+source ./.bashrc
+
+--linux
+vi /etc/ld.so.conf
+/usr/local/lib
+/usr/local/xService/api
+
+ldconfig
+
+sudo systemctl enable xportd.service
+systemctl list-unit-files
+systemctl daemon-reload
+systemctl start xportd.service
+systemctl stop xportd.service
+systemctl reload xportd.service
+systemctl status xportd.service

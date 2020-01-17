@@ -40,6 +40,7 @@ typedef struct _tcp_listen_t{
 	res_file_t so;
 
 	int act;
+	res_hand_t* thr;
 	
 	int res;
 #ifdef XDK_SUPPORT_THREAD_QUEUE

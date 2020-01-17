@@ -183,7 +183,7 @@ typedef void*		res_timer_t;
 typedef void(*MAC_TIMER_PROC)(void* param, unsigned char wait);
 #endif
 
-typedef void*       res_hand_t;
+typedef int       res_hand_t;
 
 
 #ifdef XDK_SUPPORT_COMM

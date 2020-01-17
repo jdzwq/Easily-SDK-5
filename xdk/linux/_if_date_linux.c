@@ -120,7 +120,7 @@ bool_t _mak_utc_date(xdate_t* pxd)
 	return 1;
 }
 
-clock_t _get_times()
+dword_t _get_times()
 {
 	struct tm t = { 0 };
 	time_t time1,time2;
@@ -135,12 +135,25 @@ clock_t _get_times()
 	time1 = mktime(&t);
 	time2 = time(NULL);
 
-	return (clock_t)difftime(time1, time2);
+	return (dword_t)(difftime(time1, time2) * 1000.0);
 }
 
 clock_t _get_ticks()
 {
-	return (clock_t)clock();
+	struct tm t = { 0 };
+	time_t time1,time2;
+
+	t.tm_year = 1970;
+	t.tm_mon = 0;
+	t.tm_mday = 1;
+	t.tm_hour = 0;
+	t.tm_min = 0;
+	t.tm_sec = 0;
+
+	time1 = mktime(&t);
+	time2 = time(NULL);
+
+	return (clock_t)(difftime(time1, time2) * CLOCKS_PER_SEC);
 }
 
 stamp_t _get_timestamp()
@@ -149,22 +162,88 @@ stamp_t _get_timestamp()
     
     gettimeofday (&t, NULL);
     
-    return (stamp_t)(t.tv_sec * 1000 + t.tv_usec);
+    return (stamp_t)(t.tv_sec * 1000 + t.tv_usec / 1000);
 }
 
-void _utc_date_from_times(xdate_t* pxd, clock_t ts)
+void _utc_date_from_times(xdate_t* pxd, dword_t ms)
 {
-    return;
+     struct tm t = { 0 };
+	time_t time1;
+	struct tm *p;
+
+	t.tm_year = 1970;
+	t.tm_mon = 0;
+	t.tm_mday = 1;
+	t.tm_hour = 0;
+	t.tm_min = 0;
+	t.tm_sec = 0;
+
+	time1 = mktime(&t) + ms / 1000;
+
+	p = gmtime(&time1);
+
+	pxd->year = 1900 + p->tm_year;
+	pxd->mon = 1 + p->tm_mon;
+	pxd->day = p->tm_mday;
+	pxd->hour = p->tm_hour;
+	pxd->min = p->tm_min;
+	pxd->sec = p->tm_sec;
+
+	pxd->wday = p->tm_wday;
 }
 
 void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 {
-    return;
+   struct tm t = { 0 };
+	time_t time1;
+	struct tm *p;
+
+	t.tm_year = 1970;
+	t.tm_mon = 0;
+	t.tm_mday = 1;
+	t.tm_hour = 0;
+	t.tm_min = 0;
+	t.tm_sec = 0;
+
+	time1 = mktime(&t) + ts / CLOCKS_PER_SEC;
+
+	p = gmtime(&time1);
+
+	pxd->year = 1900 + p->tm_year;
+	pxd->mon = 1 + p->tm_mon;
+	pxd->day = p->tm_mday;
+	pxd->hour = p->tm_hour;
+	pxd->min = p->tm_min;
+	pxd->sec = p->tm_sec;
+
+	pxd->wday = p->tm_wday;
 }
 
 void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 {
-    return;
+    struct tm t = { 0 };
+	time_t time1;
+	struct tm *p;
+
+	t.tm_year = 1970;
+	t.tm_mon = 0;
+	t.tm_mday = 1;
+	t.tm_hour = 0;
+	t.tm_min = 0;
+	t.tm_sec = 0;
+
+	time1 = mktime(&t) + (dword_t)(ts / 1000);
+
+	p = gmtime(&time1);
+
+	pxd->year = 1900 + p->tm_year;
+	pxd->mon = 1 + p->tm_mon;
+	pxd->day = p->tm_mday;
+	pxd->hour = p->tm_hour;
+	pxd->min = p->tm_min;
+	pxd->sec = p->tm_sec;
+
+	pxd->wday = p->tm_wday;
 }
 
 #endif //XDK_SUPPORT_DATE

@@ -292,8 +292,6 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		raise_user_error(NULL, NULL);
 	}
 
-	_xhttps_log_request(http);
-
 	xhttp_get_url_method(http, sz_method, RES_LEN);
 	xhttp_get_url_object(http, sz_object, PATH_LEN);
 
@@ -307,6 +305,16 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	xhttp_split_object(sz_object, sz_site, sz_res);
 
+	if (is_null(sz_site))
+	{
+		xscat(sz_site, _T("/"));
+		xscat(sz_site, XHTTPS_DEFAULT_SITE);
+	}
+	else if ((sz_site[0] == _T('/') || sz_site[0] == _T('\\')) && sz_site[1] == _T('\0'))
+	{
+		xscat(sz_site, XHTTPS_DEFAULT_SITE);
+	}
+
 	_xhttps_get_config(sz_site + 1, sz_space, sz_path, sz_track, sz_level, sz_proc);
 
 	if (is_null(sz_path))
@@ -314,7 +322,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		xhttp_set_response_code(http, HTTP_CODE_404);
 		xhttp_set_response_message(http, HTTP_CODE_404_TEXT, -1);
 
-		raise_user_error(_T("_https_invoke"), _T("website not define service entry\n"));
+		raise_user_error(sz_site, _T("website not define service entry\n"));
 	}
 
 	if (is_null(sz_proc))
@@ -322,7 +330,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		xhttp_set_response_code(http, HTTP_CODE_404);
 		xhttp_set_response_message(http, HTTP_CODE_404_TEXT, -1);
 
-		raise_user_error(_T("_https_invoke"), _T("website not define service module\n"));
+		raise_user_error(sz_site, _T("website not define service module\n"));
 	}
 
 	if (compare_text(pxp->sz_auth,-1,HTTP_HEADER_AUTHORIZATION_XDS,-1,1) == 0)
@@ -337,7 +345,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 			else
 				xsprintf(errtext, _T("request header signature is %s"), signature);
 
-			raise_user_error(_T("_https_invoke"), errtext);
+			raise_user_error(sz_site, errtext);
 		}
 	}
 
@@ -373,7 +381,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	{
 		xhttp_set_response_code(http, HTTP_CODE_404);
 		xhttp_set_response_message(http, HTTP_CODE_404_TEXT, -1);
-		raise_user_error(_T("_https_invoke"), _T("website load invoke function failed\n"));
+		raise_user_error(_T("_https_invoke"), _T("website load module function failed\n"));
 	}
 
 	xhttp_set_response_default_header(http);
@@ -420,6 +428,8 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	free_library(api);
 	api = NULL;
+
+	_xhttps_log_request(http);
 
 	_xhttps_log_response(http);
 

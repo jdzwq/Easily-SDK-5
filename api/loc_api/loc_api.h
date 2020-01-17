@@ -29,7 +29,14 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 #include <xds.h>
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+    
 extern int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb);
 
+#ifdef	__cplusplus
+}
+#endif
 
 #endif

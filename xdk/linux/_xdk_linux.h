@@ -60,6 +60,11 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_TIMER
 #define XDK_SUPPORT_SHELL
 
+#define XDK_SUPPORT_CONTEXT
+#define XDK_SUPPORT_CONTEXT_REGION
+#define XDK_SUPPORT_CONTEXT_BITMAP
+#define XDK_SUPPORT_CONTEXT_GRAPHIC
+
 #include <stdio.h>
 #include <wchar.h>
 #include <string.h>
@@ -91,6 +96,16 @@ LICENSE.GPL3 for more details.
 
 #include <termios.h>
 #include <pthread.h> 
+
+#ifdef XDK_SUPPORT_CONTEXT
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+#include <X11/keysym.h>
+#include <X11/Xatom.h>
+#include <X11/XKBlib.h>
+#endif
 
 //linux
 
@@ -225,6 +240,28 @@ typedef struct OVERLAPPED{
 typedef size_t*     LPSIZE;
 #endif
 
+
+#ifdef XDK_SUPPORT_CONTEXT
+typedef struct _X11_suface_t{
+    Drawable device;
+    GC context;
+    int memo;
+}X11_suface_t;
+
+extern Display*     g_display;
+
+typedef X11_suface_t* res_ctx_t;
+typedef Pixmap      res_pmp_t;
+typedef Colormap    res_clr_t;
+typedef Font		res_font_t;
+#ifdef XDK_SUPPORT_CONTEXT_BITMAP
+typedef XImage*		res_bmp_t;
+#endif
+#ifdef XDK_SUPPORT_CONTEXT_REGION
+typedef Region		res_rgn_t;
+#endif
+#endif
+
 #ifdef _UNICODE
 #define _tstrcmp	wcscmp
 #define _tstrncmp	wcsncmp
@@ -239,6 +276,7 @@ typedef size_t*     LPSIZE;
 #define _tstrtof	wcstof
 #define _tstrnull(s)		(s == NULL || s[0] == L'\0')
 #define _tprintf    wprintf
+#define _tsscanf	swscanf
 #else
 #define _tstrcmp	strcmp
 #define _tstrncmp	strncmp
@@ -255,6 +293,7 @@ typedef size_t*     LPSIZE;
 #define _tstrtof	atof
 #define _tstrnull(s)		(s == NULL || s[0] == '\0')
 #define _tprintf    printf
+#define _tsscanf	sscanf
 #endif
 
 #ifndef min

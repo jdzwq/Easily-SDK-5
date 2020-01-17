@@ -59,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sms_aliyun", "..\sms_aliyun
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oss_aliyun", "..\oss_aliyun\oss_aliyun.vcxproj", "{487594F2-4ED8-4C58-9232-74F15C7E7909}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "www_api", "..\www_api\www_api.vcxproj", "{C727C3FC-75D7-4471-A84C-EAA1424F2D38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -405,6 +407,18 @@ Global
 		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|Win32.Build.0 = Release|Win32
 		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|x64.ActiveCfg = Release|x64
 		{487594F2-4ED8-4C58-9232-74F15C7E7909}.Release|x64.Build.0 = Release|x64
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Debug|Win32.Build.0 = Debug|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Debug|x64.ActiveCfg = Debug|x64
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Debug|x64.Build.0 = Debug|x64
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Release|Win32.ActiveCfg = Release|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Release|Win32.Build.0 = Release|Win32
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Release|x64.ActiveCfg = Release|x64
+		{C727C3FC-75D7-4471-A84C-EAA1424F2D38}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

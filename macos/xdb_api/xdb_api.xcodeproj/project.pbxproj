@@ -224,7 +224,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					../lib,
-					"$(BUILD_DIR)/api",
+					"$(BUILD_DIR)",
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -250,7 +250,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
 					../lib,
-					"$(BUILD_DIR)/api",
+					"$(BUILD_DIR)",
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";

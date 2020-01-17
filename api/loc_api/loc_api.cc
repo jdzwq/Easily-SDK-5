@@ -87,7 +87,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[LOC: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[LOC: HEAD]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -159,7 +159,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[LOC: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[LOC: LIST]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -375,9 +375,12 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	}
 
 	xhttp_set_response_header(pb->http, HTTP_HEADER_LASTMODIFIED, -1, ftime, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, frange, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, HTTP_HEADER_ACCEPTRANGES_BYTES, -1);
-	
+	if (b_range)
+	{
+		xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, frange, -1);
+		xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, HTTP_HEADER_ACCEPTRANGES_BYTES, -1);
+	}
+
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
@@ -416,7 +419,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[LOC: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[LOC: GET]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -639,7 +642,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[LOC: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[LOC: PUT]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -695,7 +698,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[LOC: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[LOC: DELETE]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -724,7 +727,7 @@ void _invoke_error(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[LOC: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[LOC: ERROR]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}

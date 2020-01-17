@@ -109,11 +109,12 @@ bool_t _mak_utc_date(xdate_t* pxd)
 	return 1;
 }
 
-clock_t _get_times()
+dword_t _get_times()
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	size_t dif1, dif2;
+	lowrd_t dif1, dif2;
+	double dif;
 
 	st.wYear = 1970;
 	st.wMonth = 1;
@@ -130,14 +131,17 @@ clock_t _get_times()
 	SystemTimeToFileTime(&st, &ft);
 	dif2 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
-	return (clock_t)((dif2 - dif1) / 10000);
+	dif = (double)(dif2 - dif1) / 10000.0;
+
+	return (dword_t)(dif);
 }
 
 clock_t _get_ticks()
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	size_t dif1, dif2;
+	ldword_t dif1, dif2;
+	double dif;
 
 	st.wYear = 1970;
 	st.wMonth = 1;
@@ -154,7 +158,9 @@ clock_t _get_ticks()
 	SystemTimeToFileTime(&st, &ft);
 	dif2 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
-	return (clock_t)(dif2 - dif1);
+	dif = (double)(dif2 - dif1) / 10000000.0;
+
+	return (clock_t)(dif * CLOCKS_PER_SEC);
 }
 
 
@@ -168,14 +174,14 @@ stamp_t _get_timestamp()
 	GetSystemTime(&st);
 	SystemTimeToFileTime(&st, &ft);
 
-	return (stamp_t)MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	return (stamp_t)(MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime) / 10000);
 }
 
-void _utc_date_from_times(xdate_t* pxd, clock_t ts)
+void _utc_date_from_times(xdate_t* pxd, dword_t ms)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	size_t ss;
+	lword_t ss;
 
 	st.wYear = 1970;
 	st.wMonth = 1;
@@ -187,7 +193,7 @@ void _utc_date_from_times(xdate_t* pxd, clock_t ts)
 
 	SystemTimeToFileTime(&st, &ft);
 
-	ss = (ts * 10000) + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	ss = (ms * 10000) + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	ft.dwLowDateTime = GETLDWORD(ss);
 	ft.dwHighDateTime = GETHDWORD(ss);
@@ -209,7 +215,8 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	size_t ss;
+	double fs;
+	ldword_t ss;
 
 	st.wYear = 1970;
 	st.wMonth = 1;
@@ -221,7 +228,8 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 
 	SystemTimeToFileTime(&st, &ft);
 
-	ss = ts + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	fs = ((double)ts / (double)CLOCKS_PER_SEC) * 10000000.0;
+	ss = (ldword_t)fs + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	ft.dwLowDateTime = GETLDWORD(ss);
 	ft.dwHighDateTime = GETHDWORD(ss);
@@ -243,9 +251,11 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
+	ldword_t ss;
 
-	ft.dwLowDateTime = GETLDWORD(ts);
-	ft.dwHighDateTime = GETHDWORD(ts);
+	ss = ts * 10000;
+	ft.dwLowDateTime = GETLDWORD(ss);
+	ft.dwHighDateTime = GETHDWORD(ss);
 
 	FileTimeToSystemTime(&ft, &st);
 

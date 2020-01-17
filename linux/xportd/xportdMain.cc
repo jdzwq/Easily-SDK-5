@@ -9,7 +9,15 @@
 
 #define PID_FILE "/var/run/xportd.pid"
 
-void _action_term(int sig);
+void _action_term(int sig)
+{
+    xportd_stop();
+}
+
+void _action_child(int sig)
+{
+    waitpid(-1, NULL, 0);
+}
 
 int main(int argc, const char * argv[])
 {
@@ -24,6 +32,13 @@ int main(int argc, const char * argv[])
     
     char errnum[INT_LEN] = {0};
     char errtxt[ERR_LEN] = {0};
+
+    char param[RES_LEN] = {0};
+
+    if(argc > 1)
+    {
+        strcpy(param, argv[1]);
+    }
     
     f_pid = fopen(PID_FILE, "r");
     if (f_pid)
@@ -37,11 +52,27 @@ int main(int argc, const char * argv[])
         f_pid = NULL;
         
         //instance is running
-        if (pid && kill(pid, 0) == 0)
-            return 0;
-    
+        if (pid)
+        {
+          kill(pid, SIGTERM);
+          waitpid(pid, NULL, 0);   
+        }
+
+        //empty
+        f_pid = fopen(PID_FILE, "w");
+        if (f_pid)
+        {
+            fclose(f_pid);
+            f_pid = NULL;
+        }
+
         //unlink(PID_FILE);
-        //syslog(LOG_INFO, "remove a zombie pidfile");
+        syslog(LOG_INFO, "remove a zombie pidfile");
+    }
+
+    if(strstr(param, "shutdown") != NULL)
+    {
+        return 0;
     }
     
     umask(0);
@@ -127,6 +158,11 @@ int main(int argc, const char * argv[])
     ret = sigaction(SIGALRM, &sa, 0);
     ret = sigaction(SIGINT, &sa, 0);
     ret = sigaction(SIGTERM, &sa, 0);
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = _action_child;
+    sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
+    ret = sigaction(SIGCHLD, &sa, 0);
     
     sigemptyset(&sa.sa_mask);
     sa.sa_handler = SIG_IGN;
@@ -158,7 +194,3 @@ ONERROR:
     exit((int)xstol(errnum));
 }
 
-void _action_term(int sig)
-{
-    xportd_stop();
-}

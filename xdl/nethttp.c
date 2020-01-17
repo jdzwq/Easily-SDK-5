@@ -794,14 +794,14 @@ void xhttp_split_object(const tchar_t* sz_object, tchar_t* sz_site, tchar_t* sz_
 	{
 		if (sz_site)
 		{
-			xscpy(sz_site, sz_object);
-			if (sz_site[0] == _T('\\'))
-				sz_site[0] = _T('/');
+			xscpy(sz_site, _T("/"));
 		}
 
 		if (sz_file)
 		{
-			xscpy(sz_file, token);
+			xscpy(sz_file, sz_object);
+			if (sz_file[0] == _T('\\'))
+				sz_file[0] = _T('/');
 		}
 		return;
 	}
@@ -823,6 +823,102 @@ void xhttp_split_object(const tchar_t* sz_object, tchar_t* sz_site, tchar_t* sz_
 				*token = _T('/');
 			token++;
 		}
+	}
+}
+
+int xhttp_format_content_type(const tchar_t* filter, tchar_t* buf, int max)
+{
+	int len;
+
+	if (compare_text(filter, -1, _T("html"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_TEXTHTML);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_TEXTHTML, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("css"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_TEXTCSS);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_TEXTCSS, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("js"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_JAVASCRIPT);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_JAVASCRIPT, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("jpg"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_IMAGEJPG);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_IMAGEJPG, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("jpeg"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_IMAGEJPG);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_IMAGEJPG, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("png"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_IMAGEPNG);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_IMAGEPNG, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("gif"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_IMAGEGIF);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_IMAGEGIF, len);
+		}
+		return len;
+	}
+	else if (compare_text(filter, -1, _T("tiff"), -1, 1) == 0)
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_IMAGETIFF);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_IMAGETIFF, len);
+		}
+		return len;
+	}
+	else
+	{
+		len = xslen(HTTP_HEADER_CONTENTTYPE_TEXTPLAIN);
+		len = (len < max) ? len : max;
+		if (buf)
+		{
+			xsncpy(buf, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, len);
+		}
+		return len;
 	}
 }
 

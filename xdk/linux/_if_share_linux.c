@@ -135,7 +135,7 @@ bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* p
     size_t len;
     struct stat st = {0};
     
-    u32_t loff, hoff, poff;
+    dword_t loff, hoff, poff;
     size_t dlen;
     
     hoff = GETSIZEH(off);
@@ -183,7 +183,7 @@ bool_t _share_read(res_file_t fh, size_t off, void* buf, size_t size, size_t* pc
 {
     void* p = NULL;
     
-    u32_t loff, hoff, poff;
+    dword_t loff, hoff, poff;
     size_t dlen;
     
     hoff = GETSIZEH(off);
@@ -213,7 +213,7 @@ void* _share_lock(res_file_t fh, size_t off, size_t size)
 {
     void* p = NULL;
     
-    u32_t loff, hoff, poff;
+    dword_t loff, hoff, poff;
     size_t dlen;
     
     hoff = GETSIZEH(off);
@@ -232,7 +232,7 @@ void* _share_lock(res_file_t fh, size_t off, size_t size)
 
 void _share_unlock(res_file_t fh, size_t off, size_t size, void* p)
 {
-    u32_t loff, hoff, poff;
+    dword_t loff, hoff, poff;
     size_t dlen;
     
     hoff = GETSIZEH(off);

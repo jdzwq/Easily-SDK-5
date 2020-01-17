@@ -58,6 +58,9 @@ LICENSE.GPL3 for more details.
 #define XDL_SUPPORT_DOC
 #define XDL_SUPPORT_VIEW
 
+#if defined(XDK_SUPPORT_FILE)
+#define XDL_SUPPORT_BIO
+#endif
 
 /*CHINA LANGUAGE*/
 #define LANG_CN

@@ -1,0 +1,11 @@
+[Unit]
+Description=xService
+After=syslog.target network.target
+
+[Service]
+ExecStart=/usr/local/xService/xService.sh
+ExecStop=/usr/local/xService/xportd --shutdown
+ExecReload=/usr/local/xService/xportd
+
+[Install]
+WantedBy=multi-user.target

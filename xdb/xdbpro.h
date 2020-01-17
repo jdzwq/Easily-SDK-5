@@ -28,6 +28,10 @@ LICENSE.GPL3 for more details.
 
 #include "xdbdef.h"
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+    
 /*
 @FUNCTION db_parse_dsn: parse database connect parameter from dsn file.
 @INPUT const tchar_t*: the dsn file name.
@@ -252,6 +256,10 @@ extern bool_t STDCALL db_write_xdoc(xdb_t db, LINKPTR domdoc, const tchar_t* sql
 */
 extern void STDCALL db_trace(xdb_t db, stream_t stm);
 
+#ifdef	__cplusplus
+}
+#endif
+        
 /*********************************xdb export def***************************************************/
 
 typedef bool_t(STDCALL *PF_DB_PARSE_DSN)(const tchar_t*, tchar_t*, int, tchar_t*, int, tchar_t*, int, tchar_t*, int);
