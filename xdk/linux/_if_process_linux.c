@@ -126,6 +126,9 @@ bool_t _create_process(const tchar_t* exename, const tchar_t* cmdline, int share
         ppi->pip_read = 0;
         
         ppi->thread_id = ppi->process_id;
+
+        waitpid(ppi->process_id, NULL, 0);
+        
         return 1;
     }
     else //child process
