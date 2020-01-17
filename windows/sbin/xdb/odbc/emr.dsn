@@ -1,9 +1,0 @@
-[ODBC]
-DRIVER=SQL Server
-UID=sa
-PWD=123
-DATABASE=ihda
-WSID=WORKSTATION
-APP=Microsoft? Windows? Operating System
-SERVER=172.16.190.190\MSSQLSERVER,1433
-Description=ihda
