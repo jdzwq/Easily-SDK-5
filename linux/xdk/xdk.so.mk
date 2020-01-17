@@ -22,7 +22,7 @@ TARGET = $(OUT_PATH)/libxdk.so.1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lX11 -L $(LIB_PATH)
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:
