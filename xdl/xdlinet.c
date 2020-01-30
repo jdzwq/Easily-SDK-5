@@ -145,7 +145,7 @@ static void _parse_fileinfo_from_line(file_info_t* pfi, string_t vs)
 			pos++;
 		}
 		xsncpy(sz_size, token - pos, pos);
-		parse_longlong(&pfi->high_size, &pfi->low_size, sz_size);
+		parse_long(&pfi->high_size, &pfi->low_size, sz_size);
 
 		if (*token == TXT_ITEMFEED)
 			token++;
@@ -247,7 +247,7 @@ static bool_t _http_read_file(xinet_t* pfn, byte_t* buf, dword_t* pb, const tcha
 
 	if (!is_null(frange))
 	{
-		parse_long_range(frange, &hoff, &loff, &n_zip, &n_all);
+		parse_bytes_range(frange, &hoff, &loff, &n_zip, &n_all);
 	}
 	else
 	{
@@ -387,7 +387,7 @@ static bool_t _http_write_file(xinet_t* pfn, const byte_t* buf, dword_t* pb, con
 
 			if (is_null(range))
 			{
-				format_long_range(fsize, 0, 0, n_size, n_size);
+				format_bytes_range(fsize, 0, 0, n_size, n_size);
 				xhttp_set_request_header(xh, HTTP_HEADER_CONTENTRANGE, -1, fsize, -1);
 			}
 			else
@@ -533,13 +533,13 @@ static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byt
 	long long ll = 0;
 	dword_t dw = size;
 
-	format_longlong(hoff, loff, sz_from);
+	format_long(hoff, loff, sz_from);
 
 	ll = MAKELWORD(loff, hoff) + size - 1;
 	hoff = GETHDWORD(ll);
 	loff = GETLDWORD(ll);
 
-	format_longlong(hoff, loff, sz_to);
+	format_long(hoff, loff, sz_to);
 
 	xsprintf(sz_range, _T("bytes=%s-%s"), sz_from, sz_to);
 
@@ -563,18 +563,18 @@ static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, co
 	}
 	else
 	{
-		format_longlong(hoff, loff, sz_from);
+		format_long(hoff, loff, sz_from);
 
 		ll = MAKELWORD(loff, hoff) + size - 1;
 		hoff = GETHDWORD(ll);
 		loff = GETLDWORD(ll);
-		format_longlong(hoff, loff, sz_to);
+		format_long(hoff, loff, sz_to);
 
 		ll += 1;
 		hoff = GETHDWORD(ll);
 		loff = GETLDWORD(ll);
 
-		format_longlong(hoff, loff, sz_total);
+		format_long(hoff, loff, sz_total);
 
 		xsprintf(sz_range, _T("%s-%s/%s"), sz_from, sz_to, sz_total);
 

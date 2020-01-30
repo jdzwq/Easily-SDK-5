@@ -114,7 +114,7 @@ void xdk_impl_mbcs(if_mbcs_t* pif)
 void xdk_impl_async(if_async_t* pif)
 {
 	pif->pf_async_alloc_lapp = _async_alloc_lapp;
-	pif->pf_async_release_lapp = _async_release_lapp;
+	pif->pf_async_free_lapp = _async_free_lapp;
 }
 #endif
 
@@ -124,12 +124,14 @@ void xdk_impl_thread(if_thread_t* pif)
 	pif->pf_thread_begin = _thread_begin;
 	pif->pf_thread_end = _thread_end;
 	pif->pf_thread_sleep = _thread_sleep;
+	pif->pf_thread_yield = _thread_yield;
 	pif->pf_thread_get_id = _thread_get_id;
 	pif->pf_thread_create_tls = _thread_create_tls;
 	pif->pf_thread_destroy_tls = _thread_destroy_tls;
 	pif->pf_thread_get_tls = _thread_get_tls;
 	pif->pf_thread_set_tls = _thread_set_tls;
 	pif->pf_thread_join = _thread_join;
+    pif->pf_thread_safe = _thread_safe;
 }
 #ifdef XDK_SUPPORT_THREAD_EVENT
 void xdk_impl_thread_event(if_thread_t* pif)
@@ -255,7 +257,7 @@ void xdk_impl_comm(if_comm_t* pif)
 	pif->pf_default_comm_mode = _default_comm_mode;
 	pif->pf_set_comm_mode = _set_comm_mode;
 	pif->pf_get_comm_mode = _get_comm_mode;
-	pif->pf_comm_wait = _comm_wait;
+	pif->pf_comm_listen = _comm_listen;
 	pif->pf_comm_open = _comm_open;
 	pif->pf_comm_close = _comm_close;
 	pif->pf_comm_read = _comm_read;
@@ -301,6 +303,7 @@ void xdk_impl_socket(if_socket_t* pif)
 	pif->pf_socket_set_sndbuf = _socket_set_sndbuf;
 	pif->pf_socket_set_rcvbuf = _socket_set_rcvbuf;
 	pif->pf_socket_set_nonblk = _socket_set_nonblk;
+	pif->pf_socket_get_nonblk = _socket_get_nonblk;
 	pif->pf_fill_addr = _fill_addr;
 	pif->pf_conv_addr = _conv_addr;
 	pif->pf_host_addr = _host_addr;
@@ -345,6 +348,7 @@ void xdk_impl_process(if_process_t* pif)
 	pif->pf_create_process = _create_process;
 	pif->pf_release_process = _release_process;
 	pif->pf_process_waitrun = _process_waitrun;
+    pif->pf_process_safe = _process_safe;
 	pif->pf_process_dupli = _process_dupli;
 	pif->pf_process_alloc = _process_alloc;
 	pif->pf_process_free = _process_free;

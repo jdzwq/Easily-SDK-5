@@ -299,7 +299,7 @@ void draw_begin_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -356,7 +356,7 @@ void draw_up_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -406,7 +406,7 @@ void draw_down_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -456,7 +456,7 @@ void draw_end_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -513,7 +513,7 @@ void draw_first_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -570,7 +570,7 @@ void draw_prev_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -620,7 +620,7 @@ void draw_next_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -670,7 +670,7 @@ void draw_last_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -726,7 +726,7 @@ void draw_zoomin_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt1, pt2;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -784,7 +784,7 @@ void draw_zoomout_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt1, pt2;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -849,7 +849,7 @@ void draw_keybox_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1093,7 +1093,7 @@ void draw_close_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt1, pt2;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1286,7 +1286,7 @@ void draw_sum_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[5] = { 0 };
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1454,7 +1454,7 @@ void draw_radiobox_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1498,7 +1498,7 @@ void draw_radioed_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1602,7 +1602,7 @@ void draw_folder_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1728,7 +1728,7 @@ void draw_fixed_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt1, pt2;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1841,7 +1841,7 @@ void draw_doc_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt1, pt2;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1903,7 +1903,7 @@ void draw_new_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt[5];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1986,7 +1986,7 @@ void draw_open_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[5];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2046,7 +2046,7 @@ void draw_save_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[8];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2112,7 +2112,7 @@ void draw_saveas_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xpoint_t pt[9];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2191,7 +2191,7 @@ void draw_schema_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xpoint_t pt[5];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2266,7 +2266,7 @@ void draw_output_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xpoint_t pt[5];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2329,7 +2329,7 @@ void draw_input_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[7];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2396,7 +2396,7 @@ void draw_print_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2466,7 +2466,7 @@ void draw_preview_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2515,7 +2515,7 @@ void draw_screen_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2584,7 +2584,7 @@ void draw_execute_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xbrush_t xb;
 	xpoint_t pt[4];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2665,7 +2665,7 @@ void draw_selectall_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xbrush_t xb;
 	xpoint_t pt[4];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2736,7 +2736,7 @@ void draw_delete_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xpoint_t pt[2];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2788,7 +2788,7 @@ void draw_insert_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2866,7 +2866,7 @@ void draw_remove_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -2949,7 +2949,7 @@ void draw_clear_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3046,7 +3046,7 @@ void draw_append_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3129,7 +3129,7 @@ void draw_copy_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3199,7 +3199,7 @@ void draw_cut_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[5];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3270,7 +3270,7 @@ void draw_paste_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3332,7 +3332,7 @@ void draw_undo_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3407,7 +3407,7 @@ void draw_redo_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3481,7 +3481,7 @@ void draw_fontname_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -3546,7 +3546,7 @@ void draw_fontsize_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[3];
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -3621,7 +3621,7 @@ void draw_fontweight_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -3679,7 +3679,7 @@ void draw_fontcolor_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -3744,7 +3744,7 @@ void draw_fontstyle_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -3811,7 +3811,7 @@ void draw_foreground_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3875,7 +3875,7 @@ void draw_background_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3938,7 +3938,7 @@ void draw_alignnear_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xpen_t xp;
 	xpoint_t pt[2];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -3998,7 +3998,7 @@ void draw_aligncenter_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t
 	xpen_t xp;
 	xpoint_t pt[2];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4058,7 +4058,7 @@ void draw_alignfar_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xpen_t xp;
 	xpoint_t pt[2];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4118,7 +4118,7 @@ void draw_arrangeleft_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4185,7 +4185,7 @@ void draw_arrangecenter_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4252,7 +4252,7 @@ void draw_arrangeright_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4322,7 +4322,7 @@ void draw_sizehorz_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4398,7 +4398,7 @@ void draw_sizevert_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4474,7 +4474,7 @@ void draw_spacehorz_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4561,7 +4561,7 @@ void draw_spacevert_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4648,7 +4648,7 @@ void draw_edit_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4704,7 +4704,7 @@ void draw_group_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4768,7 +4768,7 @@ void draw_order_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4831,7 +4831,7 @@ void draw_border_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -4891,7 +4891,7 @@ void draw_shape_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5007,7 +5007,7 @@ void draw_check_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5062,7 +5062,7 @@ void draw_singletext_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5123,7 +5123,7 @@ void draw_multitext_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 	xpen_t xp;
 	xpoint_t pt1, pt2;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5184,7 +5184,7 @@ void draw_tag_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -5249,7 +5249,7 @@ void draw_memo_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt1, pt2;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5314,7 +5314,7 @@ void draw_photo_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[5];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5383,7 +5383,7 @@ void draw_herf_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5453,7 +5453,7 @@ void draw_table_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5546,7 +5546,7 @@ void draw_rich_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt[5];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5622,7 +5622,7 @@ void draw_grid_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5711,7 +5711,7 @@ void draw_graph_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt[5];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5771,7 +5771,7 @@ void draw_images_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xpoint_t pt[5];
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5852,7 +5852,7 @@ void draw_update_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5909,7 +5909,7 @@ void draw_fetch_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -5966,7 +5966,7 @@ void draw_fresh_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[8];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6033,7 +6033,7 @@ void draw_helpc_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -6092,7 +6092,7 @@ void draw_helpp_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xfont_t xf;
 	xface_t xa;
@@ -6153,7 +6153,7 @@ void draw_start_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6209,7 +6209,7 @@ void draw_stop_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6264,7 +6264,7 @@ void draw_pause_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6326,7 +6326,7 @@ void draw_find_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6380,7 +6380,7 @@ void draw_proper_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6435,7 +6435,7 @@ void draw_style_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6499,7 +6499,7 @@ void draw_note_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[7];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6557,7 +6557,7 @@ void draw_book_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[10];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6628,7 +6628,7 @@ void draw_import_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6708,7 +6708,7 @@ void draw_export_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[10];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6788,7 +6788,7 @@ void draw_dialog_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[10];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -6912,7 +6912,7 @@ void draw_diagram_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[5];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7016,7 +7016,7 @@ void draw_list_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7099,7 +7099,7 @@ void draw_navi_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xpoint_t pt[3];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7158,7 +7158,7 @@ void draw_spin_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[3];
-	long ps;
+	int ps;
 
 	xface_t xa;
 	xfont_t xf;
@@ -7238,7 +7238,7 @@ void draw_slide_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xpoint_t pt[3];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7291,7 +7291,7 @@ void draw_radio_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7345,7 +7345,7 @@ void draw_date_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xface_t xa;
 	xfont_t xf;
@@ -7426,7 +7426,7 @@ void draw_time_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[3];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7478,7 +7478,7 @@ void draw_push_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7524,7 +7524,7 @@ void draw_user_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[3];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7583,7 +7583,7 @@ void draw_location_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7649,7 +7649,7 @@ void draw_trends_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xbrush_t xb;
 	xpoint_t pt[4];
 	xrect_t rt;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7700,7 +7700,7 @@ void draw_panto_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -7897,7 +7897,7 @@ void draw_counter_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 {
 	xpen_t xp;
 	xrect_t rt, xr;
-	long ps;
+	int ps;
 
 	xface_t xa;
 	xfont_t xf;
@@ -7954,7 +7954,7 @@ void draw_process_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[2];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -8012,7 +8012,7 @@ void draw_judge_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	xface_t xa;
 	xfont_t xf;
@@ -8078,7 +8078,7 @@ void draw_lock_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -8145,7 +8145,7 @@ void draw_unlock_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	xpen_t xp;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -8206,7 +8206,7 @@ void draw_home_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xbrush_t xb;
 	xrect_t rt, xr;
 	xpoint_t pt[4];
-	long ps;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -8451,7 +8451,7 @@ void test_icon_draw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr)
 	xrect_t xr;
 
 	int i, k;
-	long feed = 5;
+	int feed = 5;
 
 	k = sizeof(g_icon_table) / sizeof(ICON_DRAW_TABLE);
 

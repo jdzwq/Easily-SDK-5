@@ -28,7 +28,6 @@ LICENSE.GPL3 for more details.
 #define _XHTTPS_H
 
 #include "srvdef.h"
-#include "srvcert.h"
 
 
 #define XHTTPS_DEFAULT_SITE		_T("www")
@@ -37,8 +36,7 @@ typedef struct _xhttps_param_t{
 	http_listen_t* lis_http;
 
 	int			n_secu;
-	cert_t*		p_certs;
-	tchar_t		sz_auth[INT_LEN];
+
 	tchar_t		sz_mode[INT_LEN];
 	tchar_t		sz_port[INT_LEN];
 	tchar_t		sz_module[PATH_LEN];

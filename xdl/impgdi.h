@@ -160,26 +160,26 @@ XDL_API void	draw_ellipse_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* 
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
 @INPUT const xpoint_t* pxr: the center point struct using integer member.
-@INPUT long rx: the x-radius
-@INPUT long ry: the y-radius
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
 @INPUT double fang: the from angle PI value. 
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	draw_pie_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
+XDL_API void	draw_pie_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 
 /*
 @FUNCTION draw_arc_raw: draw arc in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xpoint_t* pxr: the center point struct using integer member.
-@INPUT long rx: the x-radius
-@INPUT long ry: the y-radius
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
+XDL_API void	draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 
 /*
 @FUNCTION draw_arrow_raw: draw arrrow in memory or device context using points coordinate.
@@ -575,8 +575,8 @@ XDL_API void	draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb,
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
 @INPUT const xpoint_t* pxr: the center point struct using float member.
-@INPUT long rx: the x-radius
-@INPUT long ry: the y-radius
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
@@ -588,8 +588,8 @@ XDL_API void	draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xpoint_t* pxr: the center point struct using float member.
-@INPUT long rx: the x-radius
-@INPUT long ry: the y-radius
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.

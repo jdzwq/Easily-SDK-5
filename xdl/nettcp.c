@@ -45,7 +45,8 @@ typedef struct _tcp_t{
 
 	int type;
 	res_file_t so;
-	async_t ov;
+
+	async_t* pov;
 }tcp_t;
 
 /****************************************************************************************************/
@@ -53,12 +54,11 @@ typedef struct _tcp_t{
 xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 {
 	net_addr_t sin;
-	int n;
-	bool_t rt;
 	struct linger li = { 1,10 };
 
 	tcp_t* pso = NULL;
 	res_file_t so = 0;
+    int n;
 
 	TRY_CATCH;
 
@@ -72,20 +72,16 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 
 	fill_addr(&sin, port, addr);
 	
-	n = TRY_MAX;
-	rt = 0;
+    n = TRY_MAX;
 	while(n && !socket_connect(so,(res_addr_t)&sin,sizeof(sin)))
 	{
-		n--;
-#if defined(_DEBUG) && defined(XDK_SUPPORT_THREAD)
-		thread_sleep(10);
-#endif
+        n--;
 	}
-
-	if (!n)
-	{
-		raise_user_error(NULL, NULL);
-	}
+    
+    if(!n)
+    {
+        raise_user_error(NULL, NULL);
+    }
 
 	socket_setopt(so, SO_LINGER, (const char*)&li, sizeof(struct linger));
 
@@ -94,6 +90,8 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 
 	pso->so = so;
 	pso->type = _XTCP_TYPE_CLI;
+
+	pso->pov = async_alloc_lapp(ASYNC_BLOCK, TCP_BASE_TIMO, INVALID_FILE);
 
 	END_CATCH;
 
@@ -104,7 +102,12 @@ ONERROR:
 		socket_close(so);
 
 	if (pso)
+	{
+		if (pso->pov)
+			async_free_lapp(pso->pov);
+
 		xmem_free(pso);
+	}
 
 	XDL_TRACE_LAST;
 
@@ -135,12 +138,7 @@ xhand_t xtcp_srv(res_file_t so)
 	socket_setopt(pso->so, SO_SNDBUF, (const char*)&zo, sizeof(int));
 	socket_setopt(pso->so, SO_RCVBUF, (const char*)&zo, sizeof(int));
 
-	async_alloc_lapp(&pso->ov, TCP_BASE_TIMO);
-
-	if (pso->ov.type == ASYNC_BLOCK)
-	{
-		socket_set_nonblk(pso->so, 0);
-	}
+	pso->pov = async_alloc_lapp(ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
 
 	END_CATCH;
 
@@ -148,10 +146,12 @@ xhand_t xtcp_srv(res_file_t so)
 ONERROR:
 
 	if (pso)
-		async_release_lapp(&pso->ov);
+	{
+		if (pso->pov)
+			async_free_lapp(pso->pov);
 
-	if (pso)
 		xmem_free(pso);
+	}
 
 	XDL_TRACE_LAST;
 
@@ -175,20 +175,17 @@ void  xtcp_close(xhand_t tcp)
 	{
 		//disable send
 		socket_shutdown(pso->so, 1);
-		socket_wait(pso->so, FD_READ, TCP_BASE_TIMO);
 	}
-
-#if defined(_DEBUG) && defined(XDK_SUPPORT_THREAD)
-	//wait data sended
-	thread_sleep(THREAD_BASE_TMO);
-#endif
 
 	if (pso->type == _XTCP_TYPE_CLI)
 	{
 		socket_close(pso->so);
 	}
 
-	async_release_lapp(&pso->ov);
+	if (pso->pov)
+	{
+		async_free_lapp(pso->pov);
+	}
 
 	xmem_free(pso);
 }
@@ -291,13 +288,13 @@ bool_t xtcp_write(xhand_t tcp, const byte_t* buf, dword_t* pcb)
 
 	size = *pcb;
 
-	if (!socket_send(pso->so, (void*)buf, size, &pso->ov))
+	if (!socket_send(pso->so, (void*)buf, size, pso->pov))
 	{
 		*pcb = 0;
 		return 0;
 	}
 
-	*pcb = (dword_t)pso->ov.size;
+	*pcb = (dword_t)(pso->pov->size);
 
 	return 1;
 }
@@ -311,13 +308,13 @@ bool_t xtcp_read(xhand_t tcp, byte_t* buf, dword_t* pcb)
 
 	size = *pcb;
 
-	if (!socket_recv(pso->so, buf, size, &pso->ov))
+	if (!socket_recv(pso->so, buf, size, pso->pov))
 	{
 		*pcb = 0;
 		return 0;
 	}
 
-	*pcb = (dword_t)pso->ov.size;
+	*pcb = (dword_t)(pso->pov->size);
 
 	return 1;
 }
@@ -327,13 +324,13 @@ void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len)
 	switch (oid)
 	{
 	case SOCKET_OPTION_SNDBUF:
-		socket_set_sndbuf(xtcp_socket(tcp), *(int*)opt);
+		socket_set_sndbuf(xtcp_socket(tcp), *((int*)opt));
 		break;
 	case SOCKET_OPTION_RCVBUF:
-		socket_set_rcvbuf(xtcp_socket(tcp), *(int*)opt);
+		socket_set_rcvbuf(xtcp_socket(tcp), *((int*)opt));
 		break;
 	case SOCKET_OPTION_NONBLK:
-		socket_set_nonblk(xtcp_socket(tcp), *(bool_t*)opt);
+		socket_set_nonblk(xtcp_socket(tcp), *((bool_t*)opt));
 		break;
 	}
 }

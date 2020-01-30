@@ -382,9 +382,13 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 	int n;
 
 	if (!diff)
+    {
 		a_xscpy(sqlstr, "select date_format(now(),'%Y-%m-%d %H:%i:%s') as DT");
+    }
 	else
-		a_xsprintf(sqlstr, "select date_format(date_add(now(),interval %d day),'%Y-%m-%d %H:%i:%s') as DT", diff);
+    {
+		a_xsprintf(sqlstr, "select date_format(date_add(now(),interval %d day),%s) as DT", diff,"'%Y-%m-%d %H:%i:%s'");
+    }
 
 	XDL_ASSERT(pdb != NULL);
 
@@ -430,10 +434,6 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
         default:
             _raise_stm_error(stm);
     }
-
-	mysql_stmt_close(stm);
-	stm = NULL;
-    
     
 #ifdef _UNICODE
     n = utf8_to_ucs((byte_t*)bind[0].buffer, len, sz_time, DATE_LEN);
@@ -445,6 +445,9 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
     xmem_free(bind[0].buffer);
     
 	pdb->rows = 1;
+    
+    mysql_stmt_close(stm);
+    stm = NULL;
 
 	END_CATCH;
 
@@ -1256,13 +1259,13 @@ bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 #ifdef _UNICODE
 	d_len = ucs_to_utf8(sqlstr, sqllen, NULL, MAX_LONG);
 #else
-	d_len = ucs_to_mbs(sqlstr, sqllen, NULL, MAX_LONG);
+	d_len = mbs_to_utf8(sqlstr, sqllen, NULL, MAX_LONG);
 #endif
 	d_sql = (char*)xmem_alloc(d_len + 1);
 #ifdef _UNICODE
 	d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
 #else
-	d_len = ucs_to_mbs(sqlstr, sqllen, d_sql, d_len);
+	d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
 #endif
 
     if(C_OK != mysql_stmt_prepare(stm, d_sql, d_len))
@@ -1381,7 +1384,7 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
     
     tchar_t* token;
     tchar_t* ptr_str;
-    long* ptr_long;
+    int* ptr_int;
     double* ptr_double;
 
 	char* d_sql = NULL;
@@ -1513,13 +1516,13 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
                 bind[ind].buffer_type= MYSQL_TYPE_STRING;
                 break;
             case _T('d'):
-                ptr_long = va_arg(*parg, long*);
-                plen[ind] = sizeof(long);
+                ptr_int = va_arg(*parg, int*);
+                plen[ind] = sizeof(int);
                 pbuf[ind] = xmem_alloc(plen[ind]);
                 
                 if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
                 {
-                    xmem_copy(pbuf[ind], ptr_long, sizeof(long));
+                    xmem_copy(pbuf[ind], ptr_int, sizeof(int));
                 }
                 bind[ind].buffer_type= MYSQL_TYPE_LONG;
                 break;
@@ -1568,6 +1571,7 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
     xmem_free(pnull);
     xmem_free(perr);
     xmem_free(plen);
+    xmem_free(pinout);
     
     xmem_free(bind);
     
@@ -1598,6 +1602,8 @@ ONERROR:
         xmem_free(perr);
     if(plen)
         xmem_free(plen);
+    if(pinout)
+        xmem_free(pinout);
     
     if(bind)
         xmem_free(bind);
@@ -1687,11 +1693,11 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
         rt = 0;
         if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
         {
-            plen[ind] = sizeof(long);
+            plen[ind] = sizeof(int);
             pbuf[ind] = xmem_alloc(plen[ind]);
             if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
             {
-                *(long*)(pbuf[ind]) = get_func_param_integer(flk);
+                *(int*)(pbuf[ind]) = get_func_param_integer(flk);
             }
         }
         else if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
@@ -1795,7 +1801,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
         {
             if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
             {
-                set_func_param_integer(flk, *(long*)(pbuf[ind]));
+                set_func_param_integer(flk, *(int*)(pbuf[ind]));
             }
             else if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
             {
@@ -1891,13 +1897,15 @@ bool_t STDCALL _db_prepare(db_t* pdb, const tchar_t* sqlstr)
 #ifdef _UNICODE
 	d_len = ucs_to_utf8(sqlstr, sqllen, NULL, MAX_LONG);
 #else
-	d_len = ucs_to_mbs(sqlstr, sqllen, NULL, MAX_LONG);
+	d_len = mbs_to_utf8(sqlstr, sqllen, NULL, MAX_LONG);
 #endif
+    
 	d_sql = (char*)xmem_alloc(d_len + 1);
+    
 #ifdef _UNICODE
 	d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
 #else
-	d_len = ucs_to_mbs(sqlstr, sqllen, d_sql, d_len);
+	d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
 #endif
     
     if(C_OK != mysql_stmt_prepare(pdb->stm, d_sql, d_len))
@@ -1948,7 +1956,6 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
     my_bool* perr = NULL;
     unsigned long* plen = NULL;
     tchar_t** pbuf = NULL;
-    int* pinout = NULL;
     int rt;
 
     int i, len, cols;
@@ -2005,7 +2012,6 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
     perr = (my_bool*)xmem_alloc((cols) * sizeof(my_bool));
     plen = (unsigned long*)xmem_alloc((cols) * sizeof(unsigned long));
     pbuf = (tchar_t**)xmem_alloc((cols) * sizeof(tchar_t*));
-    pinout = (int*)xmem_alloc((cols) * sizeof(int));
 
 	for (i = 0; i < cols; i++)
 	{
@@ -2205,7 +2211,6 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
     my_bool* perr = NULL;
     unsigned long* plen = NULL;
     char** pbuf = NULL;
-    int* pinout = NULL;
     int i, cols;
 
 	string_t vs = NULL;
@@ -2320,7 +2325,6 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
     perr = (my_bool*)xmem_alloc((cols) * sizeof(my_bool));
     plen = (unsigned long*)xmem_alloc((cols) * sizeof(unsigned long));
     pbuf = (char**)xmem_alloc((cols) * sizeof(char*));
-    pinout = (int*)xmem_alloc((cols) * sizeof(int));
 
 	rows = 0;
 	string_empty(vs);
@@ -2526,7 +2530,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	db_t* pdb = (db_t*)db;
     
     MYSQL_STMT *stm = NULL;
-    unsigned long rows;
+    unsigned int rows;
     
 	string_t vs = NULL;
 	const tchar_t* sqlstr;

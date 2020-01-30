@@ -43,8 +43,8 @@ typedef struct _grid_delta_t{
 	link_t_ptr hover;
 	link_t_ptr fix;
 
-	long org_x, org_y;
-	long cur_x, cur_y;
+	int org_x, org_y;
+	int cur_x, cur_y;
 	short cur_page;
 
 	res_win_t editor;
@@ -62,7 +62,7 @@ typedef struct _grid_delta_t{
 }grid_delta_t;
 
 #define GETGRIDDELTA(ph) 	(grid_delta_t*)widget_get_user_delta(ph)
-#define SETGRIDDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETGRIDDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /**********************************************************************************************/
 static void _gridctrl_done(res_win_t widget)
@@ -378,7 +378,7 @@ float _gridctrl_page_width(res_win_t widget)
 static void _gridctrl_reset_page(res_win_t widget)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -436,7 +436,7 @@ void _gridctrl_ensure_visible(res_win_t widget)
 }
 
 /*************************************************************************************************/
-int noti_grid_owner(res_win_t widget, unsigned long code, link_t_ptr grid, link_t_ptr rlk, link_t_ptr clk, void* data)
+int noti_grid_owner(res_win_t widget, unsigned int code, link_t_ptr grid, link_t_ptr rlk, link_t_ptr clk, void* data)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	NOTICE_GRID nf = { 0 };
@@ -501,7 +501,7 @@ void noti_grid_reset_select(res_win_t widget)
 	widget_redraw(widget, NULL, 0);
 }
 
-void noti_grid_col_sizing(res_win_t widget, long x, long y)
+void noti_grid_col_sizing(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 
@@ -518,7 +518,7 @@ void noti_grid_col_sizing(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_COLSIZING, ptd->grid, NULL, ptd->col, NULL);
 }
 
-void noti_grid_col_sized(res_win_t widget, long x, long y)
+void noti_grid_col_sized(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	float mw;
@@ -539,13 +539,13 @@ void noti_grid_col_sized(res_win_t widget, long x, long y)
 
 	mw = get_col_width(ptd->col);
 	mw += xs.fx;
-	mw = (float)(long)mw;
+	mw = (float)(int)mw;
 	if (mw < 2 * DEF_SPLIT_FEED)
 		mw = 2 * DEF_SPLIT_FEED;
 
 	_gridctrl_done(widget);
 
-	mw = (float)(long)mw;
+	mw = (float)(int)mw;
 
 	if (ptd->col)
 	{
@@ -570,7 +570,7 @@ void noti_grid_col_sized(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_COLSIZED, ptd->grid, NULL, ptd->col, NULL);
 }
 
-void noti_grid_row_sizing(res_win_t widget, long x, long y)
+void noti_grid_row_sizing(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 
@@ -587,7 +587,7 @@ void noti_grid_row_sizing(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_ROWSIZING, ptd->grid, ptd->row, NULL, NULL);
 }
 
-void noti_grid_row_sized(res_win_t widget, long x, long y)
+void noti_grid_row_sized(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	float mh;
@@ -607,13 +607,13 @@ void noti_grid_row_sized(res_win_t widget, long x, long y)
 
 	mh = get_grid_rowbar_height(ptd->grid);
 	mh += xs.fy;
-	mh = (float)(long)mh;
+	mh = (float)(int)mh;
 	if (mh < 2 * DEF_SPLIT_FEED)
 		mh = 2 * DEF_SPLIT_FEED;
 
 	_gridctrl_done(widget);
 
-	mh = (float)(long)mh;
+	mh = (float)(int)mh;
 	set_grid_rowbar_height(ptd->grid, mh);
 
 	widget_redraw(widget, NULL, 0);
@@ -622,7 +622,7 @@ void noti_grid_row_sized(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_ROWSIZED, ptd->grid, ptd->row, NULL, NULL);
 }
 
-void noti_grid_col_drag(res_win_t widget, long x, long y)
+void noti_grid_col_drag(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	xpoint_t pt;
@@ -644,7 +644,7 @@ void noti_grid_col_drag(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_COLDRAG, ptd->grid, NULL, ptd->col, (void*)&pt);
 }
 
-void noti_grid_col_drop(res_win_t widget, long x, long y)
+void noti_grid_col_drop(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	int nHint;
@@ -695,7 +695,7 @@ void noti_grid_col_drop(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_COLDROP, ptd->grid, NULL, ptd->col, (void*)&pt);
 }
 
-void noti_grid_row_drag(res_win_t widget, long x, long y)
+void noti_grid_row_drag(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	xpoint_t pt;
@@ -717,7 +717,7 @@ void noti_grid_row_drag(res_win_t widget, long x, long y)
 	noti_grid_owner(widget, NC_ROWDRAG, ptd->grid, ptd->row, NULL, (void*)&pt);
 }
 
-void noti_grid_row_drop(res_win_t widget, long x, long y)
+void noti_grid_row_drop(res_win_t widget, int x, int y)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	xpoint_t pt;
@@ -1333,7 +1333,7 @@ void hand_grid_size(res_win_t widget, int code, const xsize_t* prs)
 	gridctrl_redraw(widget, 1);
 }
 
-void hand_grid_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_grid_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 
@@ -1345,11 +1345,11 @@ void hand_grid_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_grid_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_grid_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->grid)
@@ -1822,7 +1822,7 @@ void hand_grid_undo(res_win_t widget)
 	_gridctrl_undo(widget);
 }
 
-void hand_grid_child_command(res_win_t widget, int code, var_long data)
+void hand_grid_child_command(res_win_t widget, int code, var_int data)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 

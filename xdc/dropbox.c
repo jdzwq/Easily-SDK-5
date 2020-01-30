@@ -40,7 +40,7 @@ typedef struct _dropbox_delta_t{
 }dropbox_delta_t;
 
 #define GETDROPBOXDELTA(ph) 	(dropbox_delta_t*)widget_get_user_delta(ph)
-#define SETDROPBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETDROPBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /***************************************************************************************/
 static void _dropbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
@@ -66,7 +66,7 @@ static void _dropbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 static void _dropbox_reset_page(res_win_t widget)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
-	long vw, vh, lw, lh;
+	int vw, vh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	xfont_t xf;
@@ -164,7 +164,7 @@ static link_t_ptr _dropbox_get_prev_entity(res_win_t widget, link_t_ptr pos)
 }
 /*************************************************************************/
 
-void noti_dropbox_command(res_win_t widget, int code, var_long data)
+void noti_dropbox_command(res_win_t widget, int code, var_int data)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
@@ -205,7 +205,7 @@ void dropbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	widget_redraw(widget, &xr, 1);
 
-	noti_dropbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_dropbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
 }
 
 /********************************************************************************************/
@@ -248,10 +248,10 @@ void hand_dropbox_keydown(res_win_t widget, int key)
 	switch (key)
 	{
 	case KEY_ENTER:
-		noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_dropbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 		break;
 	case KEY_SPACE:
-		noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_dropbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 		break;
 	case KEY_LEFT:
 		dropbox_tabskip(widget,WD_TAB_LEFT);
@@ -310,7 +310,7 @@ void hand_dropbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			dropbox_on_item_changed(widget, ilk);
 	}
 
-	noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+	noti_dropbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 }
 
 void hand_dropbox_size(res_win_t widget, int code, const xsize_t* prs)
@@ -323,7 +323,7 @@ void hand_dropbox_size(res_win_t widget, int code, const xsize_t* prs)
 	dropbox_redraw(widget);
 }
 
-void hand_dropbox_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_dropbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 

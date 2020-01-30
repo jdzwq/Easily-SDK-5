@@ -39,9 +39,9 @@ LICENSE.GPL3 for more details.
 #endif
 
 #ifdef WINCE
-static long MulDiv(long a, long b, long c)
+static int MulDiv(int a, int b, int c)
 {
-	return (long)((float)a * (float)b / (float)c);
+	return (int)((float)a * (float)b / (float)c);
 }
 #endif
 
@@ -64,7 +64,7 @@ void _destroy_bitmap(res_bmp_t bmp)
 	DeleteObject(bmp);
 }
 
-void _get_bitmap_size(res_bmp_t rb, long* pw, long* ph)
+void _get_bitmap_size(res_bmp_t rb, int* pw, int* ph)
 {
 	BITMAP bmp;
 
@@ -74,7 +74,7 @@ void _get_bitmap_size(res_bmp_t rb, long* pw, long* ph)
 	*ph = bmp.bmHeight;
 }
 
-res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h)
+res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
 	HDC memDC;
 	HBRUSH hBrush;
@@ -99,7 +99,7 @@ res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long 
 	return (res_bmp_t)newBmp;
 }
 
-res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, long w, long h, const tchar_t* lay)
+res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
 {
 	HDC memDC;
 	HBRUSH hBrush;
@@ -150,7 +150,7 @@ res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const
 	return (res_bmp_t)newBmp;
 }
 
-res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, long w, long h, const tchar_t* type)
+res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* type)
 {
 	RECT rt;
 	HBITMAP newBmp, orgBmp;
@@ -158,7 +158,7 @@ res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const
 	COLORREF clr_brush, clr_linear;
 	TRIVERTEX tv[4];
 	GRADIENT_RECT gr[2];
-	unsigned long mode = 0;
+	unsigned int mode = 0;
 
 	rt.left = 0;
 	rt.top = 0;
@@ -250,7 +250,7 @@ res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const
 	return (res_bmp_t)newBmp;
 }
 
-res_bmp_t _create_code128_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, const tchar_t* text)
+res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text)
 {
 	HDC winDC,memDC;
 	HBRUSH wBrush, bBrush;
@@ -259,8 +259,8 @@ res_bmp_t _create_code128_bitmap(res_ctx_t rdc, long w, long h, const unsigned c
 	LOGFONT lf = { 0 };
 	RECT rt;
 	int unit;
-
-	int i,black,span;
+	DWORD i;
+	int black,span;
 	
 	winDC = GetDC(NULL);
 	unit = GetDeviceCaps(rdc, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
@@ -329,7 +329,7 @@ res_bmp_t _create_code128_bitmap(res_ctx_t rdc, long w, long h, const unsigned c
 	return newBmp;
 }
 
-res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, int rows, int cols)
+res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
 	HDC winDC, memDC;
 	HBRUSH wBrush, bBrush;
@@ -403,7 +403,7 @@ res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const unsigned ch
 	return newBmp;
 }
 
-res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, int rows, int cols)
+res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
 	HDC winDC, memDC;
 	HBRUSH wBrush, bBrush;
@@ -488,7 +488,7 @@ res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
 	IPicture* p = NULL;
 	IStream* s = NULL;
 	HGLOBAL hb = NULL;
-	size_t size = 0;
+	dword_t size = 0;
 	void* buf = NULL;
 	_file_info_t fi = { 0 };
 	res_file_t fh;
@@ -551,7 +551,7 @@ res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
 }
 /*******************************************************************************/
 
-size_t _get_bitmap_bytes(res_bmp_t rb)
+dword_t _get_bitmap_bytes(res_bmp_t rb)
 {
 	BITMAP bmp;
 	WORD cClrBits;
@@ -586,10 +586,10 @@ size_t _get_bitmap_bytes(res_bmp_t rb)
 
 	dwTotal = (DWORD)(sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwClrUsed * sizeof(RGBQUAD) + dwSizeImage);
 
-	return (size_t)dwTotal;
+	return dwTotal;
 }
 
-res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t bytes)
+res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_t bytes)
 {
 	PBITMAPINFO pbmi;
 	BITMAPFILEHEADER bfh;
@@ -618,7 +618,7 @@ res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t
 #endif
 }
 
-size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, size_t max)
+dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, dword_t max)
 {
 	BITMAP bmp;
 	PBITMAPINFO pbmi;
@@ -728,7 +728,7 @@ size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, si
 
 	LocalFree(pbmi);
 
-	return (size_t)dwTotal;
+	return dwTotal;
 }
 
 #ifdef XDK_SUPPORT_SHELL

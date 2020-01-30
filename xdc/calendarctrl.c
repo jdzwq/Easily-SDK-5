@@ -44,13 +44,13 @@ typedef struct _calendar_delta_t{
 	link_t_ptr hover;
 
 	int org_hint;
-	long org_x, org_y;
-	long cur_x, cur_y;
+	int org_x, org_y;
+	int cur_x, cur_y;
 
 }calendar_delta_t;
 
 #define GETCALENDARDELTA(ph) 	(calendar_delta_t*)widget_get_user_delta(ph)
-#define SETCALENDARDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETCALENDARDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /******************************************calendar event********************************************************/
 
@@ -67,7 +67,7 @@ static void _calendarctrl_reset_page(res_win_t widget)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -109,7 +109,7 @@ static void _calendarctrl_ensure_visible(res_win_t widget)
 	widgetex_ensure_visible(widget, &xr, 1);
 }
 /*********************************************************************************************************/
-int noti_calendar_owner(res_win_t widget, unsigned long code, link_t_ptr ptr, link_t_ptr ilk, void* data)
+int noti_calendar_owner(res_win_t widget, unsigned int code, link_t_ptr ptr, link_t_ptr ilk, void* data)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 	NOTICE_CALENDAR nf = { 0 };
@@ -238,7 +238,7 @@ void noti_calendar_daily_leave(res_win_t widget)
 	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
 }
 
-void noti_calendar_daily_hover(res_win_t widget, long x, long y)
+void noti_calendar_daily_hover(res_win_t widget, int x, int y)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 	xpoint_t pt;
@@ -288,7 +288,7 @@ void hand_calendar_size(res_win_t widget, int code, const xsize_t* prs)
 	calendarctrl_redraw(widget);
 }
 
-void hand_calendar_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_calendar_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 
@@ -298,11 +298,11 @@ void hand_calendar_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_calendar_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_calendar_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->calendar)

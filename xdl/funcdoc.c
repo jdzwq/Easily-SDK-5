@@ -161,7 +161,7 @@ bool_t get_func_param_boolean(link_t_ptr nlk)
 	return (compare_text(get_dom_node_text_ptr(nlk), -1, _T("1"), -1, 0) == 0) ? 1 : 0;
 }
 
-void set_func_param_integer(link_t_ptr nlk, long n)
+void set_func_param_integer(link_t_ptr nlk, int n)
 {
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
 
@@ -169,7 +169,7 @@ void set_func_param_integer(link_t_ptr nlk, long n)
 	set_dom_node_text(nlk, sz_num, -1);
 }
 
-long get_func_param_integer(link_t_ptr nlk)
+int get_func_param_integer(link_t_ptr nlk)
 {
 	return xstol(get_dom_node_text_ptr(nlk));
 }
@@ -234,9 +234,9 @@ void import_func_param(link_t_ptr ptr, const variant_t* pv, int n)
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_BOOLEAN);
 			set_func_param_boolean(nlk, pv->bool_one);
 			break;
-		case VV_LONG:
+		case VV_INT:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_INTEGER);
-			set_func_param_integer(nlk, pv->long_one);
+			set_func_param_integer(nlk, pv->int_one);
 			break;
 		case VV_FLOAT:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_NUMERIC);
@@ -301,8 +301,8 @@ int export_func_param(link_t_ptr ptr, variant_t* pv, int n)
 			}
 			else if (compare_text(data_type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
 			{
-				pv[count].long_one = get_func_param_integer(nlk);
-				pv[count].vv = VV_LONG;
+				pv[count].int_one = get_func_param_integer(nlk);
+				pv[count].vv = VV_INT;
 			}
 			else if (compare_text(data_type, -1, ATTR_DATA_TYPE_BOOLEAN, -1, 0) == 0)
 			{

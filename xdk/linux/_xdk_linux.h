@@ -102,6 +102,8 @@ LICENSE.GPL3 for more details.
 
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 
+typedef int		    res_queue_t;
+
 #ifdef XDK_SUPPORT_SOCK
 typedef struct sockaddr_in	net_addr_t;
 typedef struct in_addr		sin_addr_t;
@@ -129,7 +131,8 @@ typedef void(*GNU_SIGNAL_HANDLER)(int sig);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
-typedef unsigned long tls_key_t;
+typedef pthread_t   res_thread_t;
+typedef pthread_key_t tls_key_t;
 
 #ifdef XDK_SUPPORT_THREAD_EVENT
 typedef void*		res_even_t;
@@ -143,13 +146,11 @@ typedef void*       res_crit_t;
 #ifdef XDK_SUPPORT_THREAD_SEMAP
 typedef void*       res_sema_t;
 #endif
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-typedef int		    res_queue_t;
-#endif
 typedef void*(*GNU_THREAD_PROC)(void* param);
 #endif
 
 #ifdef XDK_SUPPORT_PROCESS
+typedef pid_t       res_proc_t;
 typedef void*		res_modu_t;
 #endif
 
@@ -157,8 +158,6 @@ typedef void*		res_modu_t;
 typedef void*		res_timer_t;
 typedef void(*GNU_TIMER_PROC)(void* param, unsigned char wait);
 #endif
-
-typedef int         res_hand_t;
 
 #define INVALID_FILE	((int)(-1))
 
@@ -208,6 +207,10 @@ typedef int         res_hand_t;
 #endif /*XDK_SUPPORT_SOCK*/
 
 #define MAX_EVENT  3
+
+#ifndef INFINITE
+#define INFINITE        0xFFFFFFFF
+#endif
 
 typedef struct OVERLAPPED{
     union{

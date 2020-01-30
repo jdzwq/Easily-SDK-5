@@ -187,7 +187,7 @@ XDL_API float get_svg_height(link_t_ptr ptr);
 /*
 @FUNCTION set_svg_viewbox: set svg view box.
 @INPUT link_t_ptr ptr: the svg link component.
-@INPUT const xrect_t* pbox: the rect struct, using long member.
+@INPUT const xrect_t* pbox: the rect struct, using int member.
 @RETURN void: none.
 */
 XDL_API void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox);
@@ -195,7 +195,7 @@ XDL_API void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox);
 /*
 @FUNCTION get_svg_viewbox: get svg view box.
 @INPUT link_t_ptr ptr: the svg link component.
-@OUTPUT xrect_t* pbox: the rect struct, using long member.
+@OUTPUT xrect_t* pbox: the rect struct, using int member.
 @RETURN void: none.
 */
 XDL_API void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox);
@@ -204,8 +204,8 @@ XDL_API void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox);
 @FUNCTION write_line_to_svg_node: write line attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* ppt1: the one point struct using long member.
-@INPUT const xpoint_t* ppt2: the two point struct using long member.
+@INPUT const xpoint_t* ppt1: the one point struct using int member.
+@INPUT const xpoint_t* ppt2: the two point struct using int member.
 @RETURN void: none.
 */
 XDL_API void write_line_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
@@ -214,8 +214,8 @@ XDL_API void write_line_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpo
 @FUNCTION read_line_from_svg_node: read line attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
-@OUTPUT xpoint_t* ppt1: the one point struct for returning in long member.
-@OUTPUT xpoint_t* ppt2: the two point struct for returning in long member.
+@OUTPUT xpoint_t* ppt1: the one point struct for returning in int member.
+@OUTPUT xpoint_t* ppt2: the two point struct for returning in int member.
 @RETURN void: none.
 */
 XDL_API void read_line_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt1, xpoint_t* ppt2);
@@ -234,7 +234,7 @@ XDL_API void write_polyline_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const
 @FUNCTION read_polyline_from_svg_node: read ployline attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
-@OUTPUT xpoint_t* ppt: the point struct array for returning in long member, you can let it NULL to test the number of points beforehand.
+@OUTPUT xpoint_t* ppt: the point struct array for returning in int member, you can let it NULL to test the number of points beforehand.
 @INPUT int n: the array size.
 @RETURN int: return the number of points.
 */
@@ -256,7 +256,7 @@ XDL_API void write_polygon_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const 
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
-@OUTPUT xpoint_t* ppt: the point struct array for returning in long member, you can let it NULL to test the number of points beforehand.
+@OUTPUT xpoint_t* ppt: the point struct array for returning in int member, you can let it NULL to test the number of points beforehand.
 @INPUT int n: the array size.
 @RETURN int: return the number of points.
 */
@@ -289,7 +289,7 @@ XDL_API void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xp
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
+@INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
 XDL_API void write_rect_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
@@ -299,7 +299,7 @@ XDL_API void write_rect_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbr
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in long member.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN void: none
 */
 XDL_API void read_rect_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt);
@@ -316,31 +316,31 @@ XDL_API bool_t svg_node_is_round(link_t_ptr glk);
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
-@INPUT long rx: the rx value.
-@INPUT long ry: the ry value.
+@INPUT const xrect_t* prt: the rect struct using int member.
+@INPUT int rx: the rx value.
+@INPUT int ry: the ry value.
 @RETURN void: none.
 */
-XDL_API void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, long rx, long ry);
+XDL_API void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int rx, int ry);
 
 /*
 @FUNCTION read_round_from_svg_node: read round attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in long member.
-@OUTPUT long* prx: for returning rx value.
-@OUTPUT long* pry: for returning ry value.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
+@OUTPUT int* prx: for returning rx value.
+@OUTPUT int* pry: for returning ry value.
 @RETURN void: none
 */
-XDL_API void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, long* prx, long* pry);
+XDL_API void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, int* prx, int* pry);
 
 /*
 @FUNCTION write_ellipse_to_svg_node: write ellipse attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
+@INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
 XDL_API void write_ellipse_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
@@ -350,7 +350,7 @@ XDL_API void write_ellipse_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const 
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in long member.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN void: none
 */
 XDL_API void read_ellipse_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt);
@@ -367,35 +367,35 @@ XDL_API bool_t svg_node_is_pie(link_t_ptr glk);
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xpoint* prt: the rect struct using long member.
-@INPUT long rx: the x-radius
-@INPUT long ry: the y-radius
+@INPUT const xpoint* prt: the rect struct using int member.
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
 @INPUT double fang: the start angle.
 @INPUT double tang: the end angle.
 @RETURN void: none.
 */
-XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
+XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 
 /*
 @FUNCTION read_ellipse_from_svg_node: read pie attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in long member.
-@INPUT long* prx: the x-radius for returning
-@INPUT long* pry: the y-radius for returning
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
+@INPUT int* prx: the x-radius for returning
+@INPUT int* pry: the y-radius for returning
 @OUTPUT double* pfang: for returning start angle.
 @OUTPUT double* ptang: for returning end angle.
 @RETURN void: none
 */
-XDL_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, long* prx, long* pry, double* pfang, double* ptang);
+XDL_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
 
 /*
 @FUNCTION write_text_to_svg_node: write text to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xfont_t* pxf: the font struct.
 @INPUT const xface_t* pxa: the face struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
+@INPUT const xrect_t* prt: the rect struct using int member.
 @INPUT const tchar_t* text: the text string token.
 @INPUT int len: the length of text token in characters.
 @RETURN void: none.
@@ -407,7 +407,7 @@ XDL_API void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xf
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xfont_t* pxf: the font struct for returning.
 @OUTPUT xface_t* pxa: the face struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in long member.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN const tchar_t*: return text token.
 */
 XDL_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xface_t* pxa, xrect_t* prt);
@@ -417,7 +417,7 @@ XDL_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xfa
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
+@INPUT const xrect_t* prt: the rect struct using int member.
 @INPUT const tchar_t* shape: the shape name.
 @RETURN void: none.
 */
@@ -427,7 +427,7 @@ XDL_API void write_shape_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xb
 @FUNCTION write_ximage_to_svg_node: write image attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const ximage_t* pxi: the image struct.
-@INPUT const xrect_t* prt: the rect struct using long member.
+@INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
 XDL_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t* prt);
@@ -436,7 +436,7 @@ XDL_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const
 @FUNCTION read_ximage_from_svg_node: read image attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT ximage_t* pxi: the image struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in long member.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN void: none.
 */
 XDL_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);

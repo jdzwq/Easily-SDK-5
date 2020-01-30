@@ -42,18 +42,19 @@ extern "C" {
 
 /*
 @FUNCTION async_alloc_lapp: alloc async operation resource.
-@INOUTPUT async_t* pas: the async struct for allocing background resource.
-@INPUT ms: timeout in millisecond.
-@RETURN void: none.
+@INOUTPUT int type: the async mode, it can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE.
+@INPUT int ms: timeout in millisecond, -1 indicate INFINITE
+@INPUT res_file_t fd: if type is ASYNC_QUEUE, this param is the input output handle for creating queue.
+@RETURN  async_t*: the async struct for allocing background resource.
 */
-XDL_API void async_alloc_lapp(async_t* pas, int ms);
+XDL_API async_t* async_alloc_lapp(int type, int ms, res_file_t fd);
 
 /*
-@FUNCTION async_release_lapp: release async operation resource.
+@FUNCTION async_free_lapp: free async operation resource.
 @INPUT async_t* pas: the async struct for releasing background resource.
 @RETURN void: none.
 */
-XDL_API void async_release_lapp(async_t* pas);
+XDL_API void async_free_lapp(async_t* pas);
 
 
 #ifdef	__cplusplus

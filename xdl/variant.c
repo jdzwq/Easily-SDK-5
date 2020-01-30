@@ -88,11 +88,14 @@ void variant_to_null(variant_t* pv)
 	case VV_BYTE_ARRAY:
 		xmem_free(pv->byte_ptr);
 		break;
+	case VV_SHORT_ARRAY:
+		xmem_free(pv->short_ptr);
+		break;
+	case VV_INT_ARRAY:
+		xmem_free(pv->int_ptr);
+		break;
 	case VV_LONG_ARRAY:
 		xmem_free(pv->long_ptr);
-		break;
-	case VV_LONGLONG_ARRAY:
-		xmem_free(pv->longlong_ptr);
 		break;
 	case VV_SCHAR_ARRAY:
 		xmem_free(pv->schar_ptr);
@@ -149,11 +152,14 @@ void variant_copy(variant_t* pv1, const variant_t* pv2)
 	case VV_BYTE_ARRAY:
 		pv1->byte_ptr = (byte_t*)xmem_clone((void*)pv2->byte_ptr, pv2->size * sizeof(byte_t));
 		break;
-	case VV_LONG_ARRAY:
-		pv1->long_ptr = (long*)xmem_clone((void*)pv2->long_ptr, pv2->size * sizeof(long));
+	case VV_SHORT_ARRAY:
+		pv1->short_ptr = (int*)xmem_clone((void*)pv2->short_ptr, pv2->size * sizeof(short));
 		break;
-	case VV_LONGLONG_ARRAY:
-		pv1->longlong_ptr = (long long*)xmem_clone((void*)pv2->longlong_ptr, pv2->size * sizeof(long long));
+	case VV_INT_ARRAY:
+		pv1->int_ptr = (int*)xmem_clone((void*)pv2->int_ptr, pv2->size * sizeof(int));
+		break;
+	case VV_LONG_ARRAY:
+		pv1->long_ptr = (long long*)xmem_clone((void*)pv2->long_ptr, pv2->size * sizeof(long long));
 		break;
 	case VV_SCHAR_ARRAY:
 		pv1->schar_ptr = (schar_t*)xmem_clone((void*)pv2->schar_ptr, pv2->size * sizeof(schar_t));
@@ -221,17 +227,24 @@ int variant_comp(const variant_t* pv1, const variant_t* pv2)
 			return -1;
 		else
 			return 0;
+	case VV_SHORT:
+		if (pv1->short_one > pv2->short_one)
+			return 1;
+		else if (pv1->short_one < pv2->short_one)
+			return -1;
+		else
+			return 0;
+	case VV_INT:
+		if (pv1->int_one > pv2->int_one)
+			return 1;
+		else if (pv1->int_one < pv2->int_one)
+			return -1;
+		else
+			return 0;
 	case VV_LONG:
 		if (pv1->long_one > pv2->long_one)
 			return 1;
 		else if (pv1->long_one < pv2->long_one)
-			return -1;
-		else
-			return 0;
-	case VV_LONGLONG:
-		if (pv1->longlong_one > pv2->longlong_one)
-			return 1;
-		else if (pv1->longlong_one < pv2->longlong_one)
 			return -1;
 		else
 			return 0;
@@ -287,13 +300,13 @@ int variant_comp(const variant_t* pv1, const variant_t* pv2)
 			return -1;
 		else
 			return 0;
-	case VV_LONG_ARRAY:
+	case VV_SHORT_ARRAY:
 		n1 = n2 = 0;
 		while (n1 < pv1->size && n2 < pv2->size)
 		{
-			if (pv1->long_ptr[n1] > pv2->long_ptr[n2])
+			if (pv1->short_ptr[n1] > pv2->short_ptr[n2])
 				return 1;
-			else if (pv1->long_ptr[n1] < pv2->long_ptr[n2])
+			else if (pv1->short_ptr[n1] < pv2->short_ptr[n2])
 				return -1;
 
 			n1++;
@@ -305,13 +318,31 @@ int variant_comp(const variant_t* pv1, const variant_t* pv2)
 			return -1;
 		else
 			return 0;
-	case VV_LONGLONG_ARRAY:
+	case VV_INT_ARRAY:
 		n1 = n2 = 0;
 		while (n1 < pv1->size && n2 < pv2->size)
 		{
-			if (pv1->longlong_ptr[n1] > pv2->longlong_ptr[n2])
+			if (pv1->int_ptr[n1] > pv2->int_ptr[n2])
 				return 1;
-			else if (pv1->longlong_ptr[n1] < pv2->longlong_ptr[n2])
+			else if (pv1->int_ptr[n1] < pv2->int_ptr[n2])
+				return -1;
+
+			n1++;
+			n2++;
+		}
+		if (n1 < pv1->size)
+			return 1;
+		else if (n2 < pv2->size)
+			return -1;
+		else
+			return 0;
+	case VV_LONG_ARRAY:
+		n1 = n2 = 0;
+		while (n1 < pv1->size && n2 < pv2->size)
+		{
+			if (pv1->long_ptr[n1] > pv2->long_ptr[n2])
+				return 1;
+			else if (pv1->long_ptr[n1] < pv2->long_ptr[n2])
 				return -1;
 
 			n1++;
@@ -444,10 +475,12 @@ int variant_to_string(variant_t* pv, tchar_t* buf, int max)
 			buf[0] = pv->wchar_one;
 		}
 		return 1;
+	case VV_SHORT:
+		return stoxs(pv->short_one, buf, max);
+	case VV_INT:
+		return ltoxs(pv->int_one, buf, max);
 	case VV_LONG:
-		return ltoxs(pv->long_one, buf, max);
-	case VV_LONGLONG:
-		return lltoxs(pv->longlong_one, buf, max);
+		return lltoxs(pv->long_one, buf, max);
 	case VV_FLOAT:
 		return ftoxs(pv->float_one, buf, max);
 	case VV_DOUBLE:
@@ -478,7 +511,7 @@ int variant_to_string(variant_t* pv, tchar_t* buf, int max)
 		len = 0;
 		for (i = 0; i < pv->size; i++)
 		{
-			n = format_hexnum((unsigned long)(pv->byte_ptr[i]), ((buf)? buf + len : NULL), 2);
+			n = format_hexnum((unsigned int)(pv->byte_ptr[i]), ((buf)? buf + len : NULL), 2);
 			if (buf)
 			{
 				buf[len + n] = _T(' ');
@@ -514,11 +547,11 @@ int variant_to_string(variant_t* pv, tchar_t* buf, int max)
 #else
 		return ucs_to_mbs(pv->wchar_ptr, len, buf, max);
 #endif
-	case VV_LONG_ARRAY:
+	case VV_SHORT_ARRAY:
 		len = 0;
 		for (i = 0; i < pv->size; i++)
 		{
-			n = ltoxs(pv->long_ptr[i], ((buf)? buf + len : NULL), NUM_LEN);
+			n = stoxs(pv->short_ptr[i], ((buf) ? buf + len : NULL), NUM_LEN);
 			if (buf)
 			{
 				buf[len + n] = _T(' ');
@@ -526,11 +559,23 @@ int variant_to_string(variant_t* pv, tchar_t* buf, int max)
 			len += (n + 1);
 		}
 		return len;
-	case VV_LONGLONG_ARRAY:
+	case VV_INT_ARRAY:
 		len = 0;
 		for (i = 0; i < pv->size; i++)
 		{
-			n = format_longlong(GETHDWORD(pv->longlong_ptr[i]), GETLDWORD(pv->longlong_ptr[i]), ((buf) ? buf + len : NULL));
+			n = ltoxs(pv->int_ptr[i], ((buf)? buf + len : NULL), NUM_LEN);
+			if (buf)
+			{
+				buf[len + n] = _T(' ');
+			}
+			len += (n + 1);
+		}
+		return len;
+	case VV_LONG_ARRAY:
+		len = 0;
+		for (i = 0; i < pv->size; i++)
+		{
+			n = format_long(GETHDWORD(pv->long_ptr[i]), GETLDWORD(pv->long_ptr[i]), ((buf) ? buf + len : NULL));
 			if (buf)
 			{
 				buf[len + n] = _T(' ');
@@ -584,7 +629,7 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->bool_one = (buf[0] == _T('1')) ? 1 : 0;
 		break;
 	case VV_BYTE:
-		pv->byte_one = (byte_t)buf[0];
+		pv->byte_one = (byte_t)(buf[0]);
 		break;
 	case VV_SCHAR:
 #ifdef _UNICODE
@@ -600,11 +645,14 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		mbs_byte_to_ucs(buf[0], &(pv->wchar_one));
 #endif
 		break;
-	case VV_LONG:
-		pv->long_one = xsntol(buf, len);
+	case VV_SHORT:
+		pv->short_one = xsntos(buf, len);
 		break;
-	case VV_LONGLONG:
-		pv->longlong_one = xsntoll(buf, len);
+	case VV_INT:
+		pv->int_one = xsntol(buf, len);
+		break;
+	case VV_LONG:
+		pv->long_one = xsntoll(buf, len);
 		break;
 	case VV_FLOAT:
 		pv->float_one = xsntof(buf, len);
@@ -659,24 +707,34 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		mbs_to_ucs(buf, len, pv->wchar_ptr, pv->size);
 #endif
 		break;
-	case VV_LONG_ARRAY:
+	case VV_SHORT_ARRAY:
 		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->long_ptr = (long*)xmem_alloc(pv->size * sizeof(long));
+		pv->short_ptr = (int*)xmem_alloc(pv->size * sizeof(short));
 		i = 0;
 		token = buf;
 		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
 		{
-			pv->long_ptr[i] = xsntol(key, n);
+			pv->short_ptr[i] = xsntos(key, n);
 		}
 		break;
-	case VV_LONGLONG_ARRAY:
+	case VV_INT_ARRAY:
 		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->longlong_ptr = (long long*)xmem_alloc(pv->size * sizeof(long long));
+		pv->int_ptr = (int*)xmem_alloc(pv->size * sizeof(int));
 		i = 0;
 		token = buf;
 		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
 		{
-			pv->longlong_ptr[i] = xsntoll(key, n);
+			pv->int_ptr[i] = xsntol(key, n);
+		}
+		break;
+	case VV_LONG_ARRAY:
+		pv->size = parse_string_token_count(buf, len, _T(' '));
+		pv->long_ptr = (long long*)xmem_alloc(pv->size * sizeof(long long));
+		i = 0;
+		token = buf;
+		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+		{
+			pv->long_ptr[i] = xsntoll(key, n);
 		}
 		break;
 	case VV_FLOAT_ARRAY:
@@ -882,11 +940,14 @@ void variant_hash32(variant_t* pv, key32_t* pkey)
 	case VV_WCHAR:
 		murhash32((byte_t*)&pv->wchar_one, sizeof(wchar_t), (byte_t*)pkey);
 		break;
-	case VV_LONG:
-		murhash32((byte_t*)&pv->long_one, sizeof(long), (byte_t*)pkey);
+	case VV_SHORT:
+		murhash32((byte_t*)&pv->short_one, sizeof(short), (byte_t*)pkey);
 		break;
-	case VV_LONGLONG:
-		murhash32((byte_t*)&pv->longlong_one, sizeof(long long), (byte_t*)pkey);
+	case VV_INT:
+		murhash32((byte_t*)&pv->int_one, sizeof(int), (byte_t*)pkey);
+		break;
+	case VV_LONG:
+		murhash32((byte_t*)&pv->long_one, sizeof(long long), (byte_t*)pkey);
 		break;
 	case VV_FLOAT:
 		murhash32((byte_t*)&pv->float_one, sizeof(float), (byte_t*)pkey);
@@ -903,11 +964,14 @@ void variant_hash32(variant_t* pv, key32_t* pkey)
 	case VV_BYTE_ARRAY:
 		murhash32((byte_t*)pv->byte_ptr, pv->size, (byte_t*)pkey);
 		break;
-	case VV_LONG_ARRAY:
-		murhash32((byte_t*)pv->long_ptr, pv->size * sizeof(long), (byte_t*)pkey);
+	case VV_SHORT_ARRAY:
+		murhash32((byte_t*)pv->short_ptr, pv->size * sizeof(short), (byte_t*)pkey);
 		break;
-	case VV_LONGLONG_ARRAY:
-		murhash32((byte_t*)pv->longlong_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
+	case VV_INT_ARRAY:
+		murhash32((byte_t*)pv->int_ptr, pv->size * sizeof(int), (byte_t*)pkey);
+		break;
+	case VV_LONG_ARRAY:
+		murhash32((byte_t*)pv->long_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
 		break;
 	case VV_SCHAR_ARRAY:
 		murhash32((byte_t*)pv->schar_ptr, pv->size * sizeof(schar_t), (byte_t*)pkey);
@@ -943,11 +1007,14 @@ void variant_hash64(variant_t* pv, key64_t* pkey)
 	case VV_WCHAR:
 		siphash64((byte_t*)&pv->wchar_one, sizeof(wchar_t), (byte_t*)pkey);
 		break;
-	case VV_LONG:
-		siphash64((byte_t*)&pv->long_one, sizeof(long), (byte_t*)pkey);
+	case VV_SHORT:
+		siphash64((byte_t*)&pv->short_one, sizeof(short), (byte_t*)pkey);
 		break;
-	case VV_LONGLONG:
-		siphash64((byte_t*)&pv->longlong_one, sizeof(long long), (byte_t*)pkey);
+	case VV_INT:
+		siphash64((byte_t*)&pv->int_one, sizeof(int), (byte_t*)pkey);
+		break;
+	case VV_LONG:
+		siphash64((byte_t*)&pv->long_one, sizeof(long long), (byte_t*)pkey);
 		break;
 	case VV_FLOAT:
 		siphash64((byte_t*)&pv->float_one, sizeof(float), (byte_t*)pkey);
@@ -964,11 +1031,11 @@ void variant_hash64(variant_t* pv, key64_t* pkey)
 	case VV_BYTE_ARRAY:
 		siphash64((byte_t*)pv->byte_ptr, pv->size, (byte_t*)pkey);
 		break;
-	case VV_LONG_ARRAY:
-		siphash64((byte_t*)pv->long_ptr, pv->size * sizeof(long), (byte_t*)pkey);
+	case VV_INT_ARRAY:
+		siphash64((byte_t*)pv->int_ptr, pv->size * sizeof(int), (byte_t*)pkey);
 		break;
-	case VV_LONGLONG_ARRAY:
-		siphash64((byte_t*)pv->longlong_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
+	case VV_LONG_ARRAY:
+		siphash64((byte_t*)pv->long_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
 		break;
 	case VV_SCHAR_ARRAY:
 		siphash64((byte_t*)pv->schar_ptr, pv->size * sizeof(schar_t), (byte_t*)pkey);
@@ -1004,11 +1071,14 @@ void variant_hash128(variant_t* pv, key128_t* pkey)
 	case VV_WCHAR:
 		murhash128((byte_t*)&pv->wchar_one, sizeof(wchar_t), (byte_t*)pkey);
 		break;
-	case VV_LONG:
-		murhash128((byte_t*)&pv->long_one, sizeof(long), (byte_t*)pkey);
+	case VV_SHORT:
+		murhash128((byte_t*)&pv->short_one, sizeof(short), (byte_t*)pkey);
 		break;
-	case VV_LONGLONG:
-		murhash128((byte_t*)&pv->longlong_one, sizeof(long long), (byte_t*)pkey);
+	case VV_INT:
+		murhash128((byte_t*)&pv->int_one, sizeof(int), (byte_t*)pkey);
+		break;
+	case VV_LONG:
+		murhash128((byte_t*)&pv->long_one, sizeof(long long), (byte_t*)pkey);
 		break;
 	case VV_FLOAT:
 		murhash128((byte_t*)&pv->float_one, sizeof(float), (byte_t*)pkey);
@@ -1025,11 +1095,11 @@ void variant_hash128(variant_t* pv, key128_t* pkey)
 	case VV_BYTE_ARRAY:
 		murhash128((byte_t*)pv->byte_ptr, pv->size, (byte_t*)pkey);
 		break;
-	case VV_LONG_ARRAY:
-		murhash128((byte_t*)pv->long_ptr, pv->size * sizeof(long), (byte_t*)pkey);
+	case VV_INT_ARRAY:
+		murhash128((byte_t*)pv->int_ptr, pv->size * sizeof(int), (byte_t*)pkey);
 		break;
-	case VV_LONGLONG_ARRAY:
-		murhash128((byte_t*)pv->longlong_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
+	case VV_LONG_ARRAY:
+		murhash128((byte_t*)pv->long_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
 		break;
 	case VV_SCHAR_ARRAY:
 		murhash128((byte_t*)pv->schar_ptr, pv->size * sizeof(schar_t), (byte_t*)pkey);
@@ -1066,13 +1136,13 @@ void test_variant(void)
 	variant_to_null(&v1);
 	variant_to_null(&v2);
 
-	v1.vv = VV_LONG;
+	v1.vv = VV_INT;
 	variant_from_string(&v1, _T("123456789"), -1);
 
 	tchar_t token[NUM_LEN];
 	variant_to_string(&v1, token, NUM_LEN);
 
-	v2.vv = VV_LONG;
+	v2.vv = VV_INT;
 	variant_from_string(&v2, token, -1);
 
 	XDL_ASSERT(variant_comp(&v1, &v2) == 0);

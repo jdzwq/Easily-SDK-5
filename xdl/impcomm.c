@@ -39,7 +39,8 @@ typedef struct _comport_t{
 	xhand_head head;		//reserved for xhand_t
 
 	res_file_t comm;
-	async_t over;
+
+	async_t* pov;
 }comport_t;
 
 void xcomm_default_mode(dev_com_t* pmod)
@@ -100,10 +101,7 @@ xhand_t xcomm_open(const tchar_t* pname, dword_t fmode)
 	pst->head.tag = _HANDLE_COMM;
 	pst->comm = fh;
 
-	if (fmode & FILE_OPEN_OVERLAP)
-	{
-		async_alloc_lapp(&pst->over, COMM_BASE_TIMO);
-	}
+	pst->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), COMM_BASE_TIMO, INVALID_FILE);
 
 	return &pst->head;
 }
@@ -121,12 +119,15 @@ void xcomm_close(xhand_t com)
 
 	(*pif->pf_comm_close)(pst->comm);
 
-	async_release_lapp(&pst->over);
+	if (pst->pov)
+	{
+		async_free_lapp(pst->pov);
+	}
 
 	xmem_free(pst);
 }
 
-dword_t xcomm_wait(xhand_t com, dword_t* pcb)
+dword_t xcomm_listen(xhand_t com, dword_t* pcb)
 {
 	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
@@ -138,9 +139,9 @@ dword_t xcomm_wait(xhand_t com, dword_t* pcb)
 
 	XDL_ASSERT(pif != NULL);
 
-	even = (*pif->pf_comm_wait)(pst->comm, &pst->over);
+	even = (*pif->pf_comm_listen)(pst->comm, pst->pov);
 
-	if (pcb) *pcb = (dword_t)pst->over.size;
+	if (pcb) *pcb = (dword_t)(pst->pov->size);
 
 	return even;
 }
@@ -149,7 +150,7 @@ bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pcb)
 {
 	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
-	dword_t len;
+	dword_t size, pos = 0;
 
 	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
@@ -157,18 +158,24 @@ bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pcb)
 
 	XDL_ASSERT(pif != NULL);
 
-	len = *pcb;
-
-	if (!(*pif->pf_comm_write)(pst->comm, (void*)buf, len, &pst->over))
+	size = *pcb;
+	while (pos < size)
 	{
-		set_system_error(_T("pf_comm_write"));
-		*pcb = 0;
+		pst->pov->size = 0;
+		if (!(*pif->pf_comm_write)(pst->comm, (void*)(buf + pos), size - pos, pst->pov))
+		{
+			set_system_error(_T("pf_comm_write"));
 
-		return 0;
+			*pcb = (dword_t)pos;
+			return 0;
+		}
+
+		if (!(pst->pov->size)) break;
+
+		pos += pst->pov->size;
 	}
 
-	if (pcb) *pcb = (dword_t)pst->over.size;
-
+	*pcb = (dword_t)pos;
 	return 1;
 }
 
@@ -190,7 +197,7 @@ bool_t xcomm_read(xhand_t com, byte_t* buf, dword_t* pcb)
 {
 	comport_t* pst = TypePtrFromHead(comport_t, com);
 	if_comm_t* pif;
-	dword_t len;
+	dword_t size, pos = 0;
 
 	pif = PROCESS_COMM_INTERFACE;
 
@@ -198,18 +205,24 @@ bool_t xcomm_read(xhand_t com, byte_t* buf, dword_t* pcb)
 
 	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
 
-	len = *pcb;
-
-	if (!(*pif->pf_comm_read)(pst->comm, buf, len, &pst->over))
+	size = *pcb;
+	while (pos < size)
 	{
-		set_system_error(_T("pf_comm_read"));
-		*pcb = 0;
+		pst->pov->size = 0;
+		if (!(*pif->pf_comm_read)(pst->comm, (void*)(buf + pos), size - pos, pst->pov))
+		{
+			set_system_error(_T("pf_comm_read"));
 
-		return 0;
+			*pcb = (dword_t)pos;
+			return 0;
+		}
+        
+        if (!(pst->pov->size)) break;
+        
+        pos += pst->pov->size;
 	}
 
-	if (pcb) *pcb = (dword_t)pst->over.size;
-
+	*pcb = (dword_t)pos;
 	return 1;
 }
 

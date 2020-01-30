@@ -194,7 +194,7 @@ link_t_ptr set_soap_request_param(link_t_ptr nlk, const tchar_t* pname, const tc
 	}
 	else if (compare_text(ptype, -1, ATTR_DATA_TYPE_INTEGER, -1, 1) == 0)
 	{
-		xsprintf(sz_num, _T("%d"), *(long*)pdata);
+		xsprintf(sz_num, _T("%d"), *(int*)pdata);
 		set_dom_node_text(nlk_param, sz_num, -1);
 	}
 	else if (compare_text(ptype, -1, ATTR_DATA_TYPE_NUMERIC, -1, 1) == 0)
@@ -246,7 +246,7 @@ link_t_ptr set_soap_request_param(link_t_ptr nlk, const tchar_t* pname, const tc
 			set_dom_node_name(nlk_item, DOC_SOAP_ARRAY_ITEM, -1);
 			set_dom_node_attr(nlk_item, SOAP_ATTR_DATATYPE, -1, SOAP_ATTR_DATATYPE_INTEGER, -1);
 
-			xsprintf(sz_num, _T("%d"), ((long*)pdata)[j]);
+			xsprintf(sz_num, _T("%d"), ((int*)pdata)[j]);
 			set_dom_node_text(nlk_item, sz_num, -1);
 		}
 	}
@@ -403,7 +403,7 @@ int get_soap_response_param(link_t_ptr nlk, const tchar_t* pname, const tchar_t*
 	{
 		sz_text = get_dom_node_text_ptr(nlk_param);
 		if (pdata)
-			*(long*)pdata = xstol(sz_text);
+			*(int*)pdata = xstol(sz_text);
 		return 1;
 	}
 	else if (compare_text(ptype, -1, ATTR_DATA_TYPE_NUMERIC, -1, 1) == 0)
@@ -457,7 +457,7 @@ int get_soap_response_param(link_t_ptr nlk, const tchar_t* pname, const tchar_t*
 			for (j = 0; j < n; j++)
 			{
 				sz_text = get_dom_node_text_ptr(nlk_item);
-				((long*)pdata)[j] = xstol(sz_text);
+				((int*)pdata)[j] = xstol(sz_text);
 		
 				nlk_item = get_dom_next_sibling_node(nlk_item);
 			}

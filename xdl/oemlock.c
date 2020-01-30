@@ -13,7 +13,7 @@
 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *  GNU General Public License for more details.
 *
-*  You should have received a copy of the GNU General Public License along
+*  You should have received a copy of the GNU General Public License aint
 *  with this program; if not, write to the Free Software Foundation, Inc.,
 *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
@@ -151,8 +151,8 @@ unsigned long hardclock(void)
 	intervals = ((unsigned long long)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
 	intervals -= 116444736000000000;
 
-	tv_cur.tv_sec = (long)(intervals / 10000000);
-	tv_cur.tv_usec = (long)((intervals % 10000000) / 10);
+	tv_cur.tv_sec = (int)(intervals / 10000000);
+	tv_cur.tv_usec = (int)((intervals % 10000000) / 10);
 
 	return((tv_cur.tv_sec - tv_init.tv_sec) * 1000000
 		+ (tv_cur.tv_usec - tv_init.tv_usec));

@@ -114,7 +114,7 @@ res_file_t _cons_stdout(res_file_t ch)
     return (res_file_t)STDOUT_FILENO;
 }
 
-bool_t _cons_write(res_file_t ch, void* buf, size_t len, size_t* pb)
+bool_t _cons_write(res_file_t ch, void* buf, dword_t len, dword_t* pb)
 {
     int ttym;
     
@@ -144,7 +144,7 @@ bool_t _cons_flush(res_file_t ch)
     return 1;
 }
 
-bool_t _cons_read(res_file_t ch, void* buf, size_t size, size_t* pb)
+bool_t _cons_read(res_file_t ch, void* buf, dword_t size, dword_t* pb)
 {
     int ttys;
     int rt;

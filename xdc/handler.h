@@ -42,7 +42,7 @@ XDC_API void	widgetex_hand_create(res_win_t wt);
 
 XDC_API void	widgetex_hand_destroy(res_win_t wt);
 
-XDC_API bool_t	widgetex_hand_scroll(res_win_t wt, bool_t b_horz, long pos);
+XDC_API bool_t	widgetex_hand_scroll(res_win_t wt, bool_t b_horz, int pos);
 
 /******************************widget splitor implement*****************************************************/
 
@@ -56,15 +56,15 @@ XDC_API void widgetex_splitor_on_size(res_win_t widget, int code, const xsize_t*
 
 XDC_API void widgetex_splitor_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
 
-XDC_API int widgetex_splitor_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
+XDC_API int widgetex_splitor_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_int delta);
 
-XDC_API int widgetex_splitor_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+XDC_API int widgetex_splitor_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_int delta);
 
-XDC_API int widgetex_splitor_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+XDC_API int widgetex_splitor_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_int delta);
 
-XDC_API int widgetex_splitor_sub_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
+XDC_API int widgetex_splitor_sub_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_int delta);
 
-XDC_API int widgetex_splitor_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+XDC_API int widgetex_splitor_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_int delta);
 
 /******************************widget docker implement*****************************************************/
 
@@ -76,13 +76,13 @@ XDC_API void widgetex_docker_on_lbuttonup(res_win_t widget, const xpoint_t* pxp)
 
 XDC_API void widgetex_docker_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
 
-XDC_API int widgetex_docker_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
+XDC_API int widgetex_docker_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_int delta);
 
-XDC_API int widgetex_docker_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+XDC_API int widgetex_docker_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_int delta);
 
-XDC_API int widgetex_docker_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+XDC_API int widgetex_docker_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_int delta);
 
-XDC_API int widgetex_docker_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+XDC_API int widgetex_docker_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_int delta);
 
 
 #ifdef	__cplusplus

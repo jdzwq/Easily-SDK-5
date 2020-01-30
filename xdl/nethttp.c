@@ -1946,7 +1946,7 @@ void xhttp_set_response_content_length(xhand_t xhttp, dword_t len)
 dword_t xhttp_get_response_content_length(xhand_t xhttp)
 {
 	tchar_t sz_size[NUM_LEN + 1] = { 0 };
-	long n_size;
+	int n_size;
 
 	xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, sz_size, NUM_LEN);
 
@@ -2768,7 +2768,9 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 			}
 
 			if (!len_one)
-				break;
+            {
+                raise_user_error(_T("0"), _T("recv response timeout"));
+            }
 
 			len_response++;
 
@@ -2964,7 +2966,9 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 			}
 
 			if (!len_one)
-				break;
+            {
+                raise_user_error(_T("0"), _T("recv request timeout"));
+            }
 
 			len_request++;
 

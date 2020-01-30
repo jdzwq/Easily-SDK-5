@@ -36,11 +36,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_PIPE
 
-#if defined(DEBUG) || defined(_DEBUG)
-#define PIPE_BASE_TIMO	(-1)
-#else
-#define PIPE_BASE_TIMO	(3000)
-#endif
+#define PIPE_BASE_TIMO	(3000) //millionsecond
 
 #ifdef	__cplusplus
 extern "C" {
@@ -65,10 +61,9 @@ XDL_API xhand_t xpipe_cli(const tchar_t* pname, dword_t fmode);
 /*
 @FUNCTION xpipe_listen: the pipe server used to wiat named pipe connecting.
 @INPUT xhand_t pip: server pipe handle.
-@INPUT int ms: millisecond for timeout, it can be negative, if so, the waiting will be infinity.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xpipe_listen(xhand_t pip, int ms);
+XDL_API bool_t xpipe_listen(xhand_t pip);
 
 /*
 @FUNCTION xpipe_stop: the pipe server used to stop listen.

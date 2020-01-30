@@ -75,6 +75,11 @@ void _get_runpath(res_modu_t ins, tchar_t* buf, int max)
 	*token = _T('\0');
 }
 
+void _process_safe()
+{
+	return;
+}
+
 bool_t _create_process(const tchar_t* exename, const tchar_t* cmdline, int share, proc_info_t* ppi)
 {
 	PROCESS_INFORMATION pi;
@@ -192,48 +197,48 @@ void _release_process(proc_info_t* ppi)
 	ZeroMemory((void*)ppi, sizeof(proc_info_t));
 }
 
-void _process_waitrun(res_hand_t ph)
+void _process_waitrun(res_proc_t ph)
 {
 	WaitForInputIdle(ph, 500);
 }
 
-res_hand_t _process_dupli(res_hand_t ph, res_hand_t vh)
+res_file_t _process_dupli(res_proc_t ph, res_file_t fh)
 {
 	HANDLE hh = NULL;
 
-	DuplicateHandle(GetCurrentProcess(), vh, ph, &hh, 0, FALSE, DUPLICATE_SAME_ACCESS);
+	DuplicateHandle(GetCurrentProcess(), fh, ph, &hh, 0, FALSE, DUPLICATE_SAME_ACCESS);
 
-	return hh;
+	return (hh)? hh : INVALID_FILE;
 }
 
-void* _process_alloc(res_hand_t ph, size_t dw)
+void* _process_alloc(res_proc_t ph, dword_t dw)
 {
-	return VirtualAllocEx(ph, NULL, dw, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+	return VirtualAllocEx(ph, NULL, (SIZE_T)dw, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 }
 
-void _process_free(res_hand_t ph, void* p)
+void _process_free(res_proc_t ph, void* p)
 {
 	VirtualFreeEx(ph, p, 0, MEM_RELEASE);
 }
 
-bool_t _process_write(res_hand_t ph, void* p, void* data, size_t dw)
+bool_t _process_write(res_proc_t ph, void* p, void* data, dword_t dw)
 {
-	return (bool_t)WriteProcessMemory(ph, p, data, dw, 0);
+	return (bool_t)WriteProcessMemory(ph, p, data, (SIZE_T)dw, 0);
 }
 
-bool_t _process_read(res_hand_t ph, void* p, void* data, size_t dw)
+bool_t _process_read(res_proc_t ph, void* p, void* data, dword_t dw)
 {
-	return ReadProcessMemory(ph, p, data, dw, NULL);
+	return ReadProcessMemory(ph, p, data, (SIZE_T)dw, NULL);
 }
 
-bool_t _inherit_handle(res_hand_t hh, bool_t b)
+bool_t _inherit_handle(res_file_t fh, bool_t b)
 {
-	return SetHandleInformation((HANDLE)hh, HANDLE_FLAG_INHERIT, ((b) ? HANDLE_FLAG_INHERIT : 0));
+	return SetHandleInformation((HANDLE)fh, HANDLE_FLAG_INHERIT, ((b) ? HANDLE_FLAG_INHERIT : 0));
 }
 
-void _release_handle(res_hand_t hh)
+void _release_handle(res_file_t fh)
 {
-	CloseHandle((HANDLE)hh);
+	CloseHandle((HANDLE)fh);
 }
 
 void _read_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, tchar_t* buf, int max)

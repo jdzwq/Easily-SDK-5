@@ -83,6 +83,11 @@ void xportd_start()
 				nlk_child = get_dom_next_sibling_node(nlk_child);
 			}
 
+			if (is_null(phttps->sz_mode))
+			{
+				xscpy(phttps->sz_mode, _T("process"));
+			}
+
 			if (!is_null(sz_file))
 			{
 				printf_path(phttps->sz_module, sz_file);
@@ -114,6 +119,11 @@ void xportd_start()
 					get_dom_node_text(nlk_child, pslots->sz_param, PATH_LEN);
 
 				nlk_child = get_dom_next_sibling_node(nlk_child);
+			}
+
+			if (is_null(pslots->sz_mode))
+			{
+				xscpy(pslots->sz_mode, _T("process"));
 			}
 
 			if (!is_null(sz_file))
@@ -149,6 +159,11 @@ void xportd_start()
 				nlk_child = get_dom_next_sibling_node(nlk_child);
 			}
 
+			if (is_null(pudps->sz_mode))
+			{
+				xscpy(pudps->sz_mode, _T("process"));
+			}
+
 			if (!is_null(sz_file))
 			{
 				printf_path(pudps->sz_module, sz_file);
@@ -180,6 +195,11 @@ void xportd_start()
 					get_dom_node_text(nlk_child, ppnps->sz_param, PATH_LEN);
 
 				nlk_child = get_dom_next_sibling_node(nlk_child);
+			}
+
+			if (is_null(ppnps->sz_mode))
+			{
+				xscpy(ppnps->sz_mode, _T("process"));
 			}
 
 			if (!is_null(sz_file))

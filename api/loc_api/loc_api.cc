@@ -230,7 +230,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	{
 		n_hoff = n_loff = n_size = 0;
 		n_total = 0;
-		parse_long_range(frange, &n_hoff, &n_loff, &n_size, &n_total);
+		parse_bytes_range(frange, &n_hoff, &n_loff, &n_size, &n_total);
 
 		if (!n_total)
 			n_total = xstoll(fsize);
@@ -248,7 +248,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	}
 
 	xscpy(frange, _T("bytes "));
-	format_long_range(frange + xslen(frange), n_hoff, n_loff, n_size, n_total);
+	format_bytes_range(frange + xslen(frange), n_hoff, n_loff, n_size, n_total);
 
 	if (!is_null(yes_etag))
 	{
@@ -538,7 +538,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 	{
 		n_hoff = n_loff = n_bys = 0;
 		n_all = 0;
-		parse_long_range(frange, &n_hoff, &n_loff, &n_bys, &n_all);
+		parse_bytes_range(frange, &n_hoff, &n_loff, &n_bys, &n_all);
 	}
 
 	if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0)

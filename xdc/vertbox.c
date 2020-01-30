@@ -39,7 +39,7 @@ typedef struct _vertbox_delta_t{
 }vertbox_delta_t;
 
 #define GETVERTBOXDELTA(ph) 	(vertbox_delta_t*)widget_get_user_delta(ph)
-#define SETVERTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETVERTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 
 /*********************************************************************************/
@@ -147,7 +147,7 @@ void hand_vertbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void hand_vertbox_timer(res_win_t widget, var_long tid)
+void hand_vertbox_timer(res_win_t widget, var_int tid)
 {
 	vertbox_delta_t* ptd = GETVERTBOXDELTA(widget);
 

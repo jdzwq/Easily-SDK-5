@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_CONTEXT
 
-int font_size(res_ctx_t rdc, long height)
+int font_size(res_ctx_t rdc, int height)
 {
 	if_context_t* pif;
 
@@ -56,7 +56,7 @@ float pt_per_mm(res_ctx_t rdc, bool_t horz)
 	return (*pif->pf_pt_per_mm)(rdc, horz);
 }
 
-float cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz)
+float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
 {
 	if_context_t* pif;
 
@@ -65,7 +65,7 @@ float cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz)
 	return (*pif->pf_cast_pt_to_mm)(rdc, pt, horz);
 }
 
-long cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
+int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 {
 	if_context_t* pif;
 
@@ -102,7 +102,7 @@ void text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
 	if_context_t* pif;
-	long cx, cy;
+	int cx, cy;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
@@ -114,7 +114,7 @@ void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
 	if_context_t* pif;
-	long cx, cy;
+	int cx, cy;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
@@ -151,7 +151,7 @@ void destroy_context(res_ctx_t rdc)
 	(*pif->pf_destroy_context)(rdc);
 }
 
-void render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth)
+void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
 {
 	if_context_t* pif;
 
@@ -178,7 +178,7 @@ res_pmp_t select_pixmap(res_ctx_t rdc, res_pmp_t obj)
 	return (*pif->pf_select_pixmap)(rdc, obj);
 }
 
-res_pmp_t create_compatible_pixmap(res_ctx_t rdc, long cx, long cy)
+res_pmp_t create_compatible_pixmap(res_ctx_t rdc, int cx, int cy)
 {
 	if_context_t* pif;
 

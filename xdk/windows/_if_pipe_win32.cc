@@ -44,7 +44,11 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 
 	if (_tstrnull(pname))
 	{
-		hp = GetStdHandle(STD_INPUT_HANDLE);
+		if (fmode & FILE_OPEN_WRITE)
+			hp = GetStdHandle(STD_OUTPUT_HANDLE);
+		else
+			hp = GetStdHandle(STD_INPUT_HANDLE);
+
 		return (hp) ? hp : INVALID_FILE;
 	}
 
@@ -81,6 +85,8 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
 			return 0;
 	}
 
+	if (pov) ResetEvent(pov->hEvent);
+
 	return 1;
 }
 
@@ -103,7 +109,10 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 
 	if (_tstrnull(pname))
 	{
-		hp = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (fmode & FILE_OPEN_WRITE)
+			hp = GetStdHandle(STD_OUTPUT_HANDLE);
+		else
+			hp = GetStdHandle(STD_INPUT_HANDLE);
 
 		return (hp) ? hp : INVALID_FILE;
 	}
@@ -134,6 +143,7 @@ wait_t _pipe_wait(const tchar_t* pname, int ms)
 	}
 
 	_tsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
+
 	if (ms < 0)
 		dw = NMPWAIT_WAIT_FOREVER;
 	else if (!ms)
@@ -144,7 +154,7 @@ wait_t _pipe_wait(const tchar_t* pname, int ms)
 	return (WaitNamedPipe(path, dw)) ? WAIT_RET : WAIT_TMO;
 }
 
-bool_t _pipe_write(res_file_t pipe, void* buf, size_t len, async_t* pb)
+bool_t _pipe_write(res_file_t pipe, void* buf, dword_t len, async_t* pb)
 {
 	return _file_write(pipe, buf, len, pb);
 }
@@ -154,7 +164,7 @@ bool_t _pipe_flush(res_file_t pipe)
 	return _file_flush(pipe);
 }
 
-bool_t _pipe_read(res_file_t pipe, void* buf, size_t size, async_t* pb)
+bool_t _pipe_read(res_file_t pipe, void* buf, dword_t size, async_t* pb)
 {
 	return _file_read(pipe, buf, size, pb);
 }

@@ -53,8 +53,8 @@ extern "C" {
 /*************************************svg control*******************************************************/
 typedef struct _NOTICE_SVG{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr svg;
 	void* data;
@@ -111,8 +111,8 @@ XDC_API void	svgctrl_redraw(res_win_t widget);
 
 typedef struct _NOTICE_FORM{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr form;
 	link_t_ptr field;
@@ -264,7 +264,7 @@ XDC_API link_t_ptr formctrl_get_focus_field(res_win_t widget);
 @FUNCTION formctrl_get_field_rect: get field rect int form widget client.
 @INPUT res_win_t widget: the form widget.
 @INPUT link_t_ptr flk: the field link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void formctrl_get_field_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
@@ -366,8 +366,8 @@ XDC_API bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const t
 
 typedef struct _NOTICE_GRID{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr grid;
 	link_t_ptr row;
@@ -533,7 +533,7 @@ XDC_API link_t_ptr gridctrl_get_focus_col(res_win_t widget);
 @INPUT res_win_t widget: the grid widget.
 @INPUT link_t_ptr rlk: the row link component.
 @INPUT link_t_ptr clk: the col link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	gridctrl_get_cell_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
@@ -704,8 +704,8 @@ XDC_API void	gridctrl_popup_size(res_win_t widget, xsize_t* pse);
 
 typedef struct _NOTICE_STATIS{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr statis;
 	link_t_ptr xax;
@@ -874,7 +874,7 @@ XDC_API link_t_ptr statisctrl_get_focus_gax(res_win_t widget);
 @INPUT res_win_t widget: the statis widget.
 @INPUT link_t_ptr xlk: the xax link component.
 @INPUT link_t_ptr ylk: the yax link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	statisctrl_get_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
@@ -996,8 +996,8 @@ XDC_API bool_t	statisctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t
 /***********************************dialog control*******************************************************************/
 typedef struct _NOTICE_DIALOG{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr dialog;
 	link_t_ptr item;
@@ -1102,7 +1102,7 @@ XDC_API link_t_ptr dialogctrl_get_focus_item(res_win_t widget);
 @FUNCTION dialogctrl_get_item_rect: get item rect int dialog widget client.
 @INPUT res_win_t widget: the dialog widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void dialogctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -1125,8 +1125,8 @@ XDC_API void dialogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 /***********************************calendar control*******************************************************************/
 typedef struct _NOTICE_CALENDAR{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr calendar;
 	link_t_ptr daily;
@@ -1230,7 +1230,7 @@ XDC_API link_t_ptr calendarctrl_get_focus_daily(res_win_t widget);
 @FUNCTION calendarctrl_get_daily_rect: get daily rect int calendar widget client.
 @INPUT res_win_t widget: the calendar widget.
 @INPUT link_t_ptr flk: the daily link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void calendarctrl_get_daily_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
@@ -1253,8 +1253,8 @@ XDC_API void calendarctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 /***********************************diagram control*******************************************************************/
 typedef struct _NOTICE_DIAGRAM{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr diagram;
 	link_t_ptr entity;
@@ -1358,7 +1358,7 @@ XDC_API link_t_ptr diagramctrl_get_focus_entity(res_win_t widget);
 @FUNCTION diagramctrl_get_entity_rect: get entity rect int diagram widget client.
 @INPUT res_win_t widget: the diagram widget.
 @INPUT link_t_ptr flk: the entity link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void diagramctrl_get_entity_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
@@ -1381,8 +1381,8 @@ XDC_API void diagramctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 /********************************image list control************************************************************/
 typedef struct _NOTICE_IMAGES{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr images;
 	link_t_ptr item;
@@ -1489,7 +1489,7 @@ XDC_API link_t_ptr	imagesctrl_get_focus_item(res_win_t widget);
 @FUNCTION imagesctrl_get_item_rect: get item rect int images widget client.
 @INPUT res_win_t widget: the images widget.
 @INPUT link_t_ptr flk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	imagesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -1530,8 +1530,8 @@ XDC_API void	imagesctrl_popup_size(res_win_t widget, xsize_t* pse);
 
 typedef struct _NOTICE_TOPOG{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr topog;
 	link_t_ptr spot;
@@ -1643,7 +1643,7 @@ XDC_API void topogctrl_get_focus_dot(res_win_t widget, int* prow, int* pcol);
 @FUNCTION topogctrl_get_spot_rect: get spot rect int topog widget client.
 @INPUT res_win_t widget: the topog widget.
 @INPUT link_t_ptr flk: the spot link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void topogctrl_get_spot_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -1689,8 +1689,8 @@ XDC_API bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp);
 /********************************photo control***************************************************************/
 typedef struct _NOTICE_PHOTO{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr anno;
 	link_t_ptr arti;
@@ -1833,8 +1833,8 @@ XDC_API void photoctrl_commit(res_win_t widget);
 /********************************bitmap control***************************************************************/
 typedef struct _NOTICE_MODEL{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr anno;
 	link_t_ptr arti;
@@ -1970,8 +1970,8 @@ XDC_API dword_t modelctrl_get_object(res_win_t widget, byte_t* buf, dword_t max)
 /***********************************table control*******************************************************************/
 typedef struct _NOTICE_TABLE{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr table;
 	link_t_ptr item;
@@ -2163,8 +2163,8 @@ XDC_API float	tablectrl_get_ratio(res_win_t widget);
 
 typedef struct _NOTICE_LABEL{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr label;
 	link_t_ptr item;
@@ -2266,7 +2266,7 @@ XDC_API link_t_ptr labelctrl_get_focus_item(res_win_t widget);
 @FUNCTION labelctrl_get_item_rect: get item rect in label widget client.
 @INPUT res_win_t widget: the label widget.
 @INPUT link_t_ptr flk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	labelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -2332,8 +2332,8 @@ XDC_API void	labelctrl_popup_size(res_win_t widget, xsize_t* pse);
 /********************************list control************************************************************/
 typedef struct _NOTICE_LIST{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr list;
 	link_t_ptr item;
@@ -2450,7 +2450,7 @@ XDC_API link_t_ptr	listctrl_get_focus_item(res_win_t widget);
 @FUNCTION listctrl_get_item_rect: get item rect in list widget client.
 @INPUT res_win_t widget: the list widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	listctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -2498,8 +2498,8 @@ XDC_API void	listctrl_popup_size(res_win_t widget, xsize_t* pse);
 /**************************proper control*************************************************************/
 typedef struct _NOTICE_PROPER{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr proper;
 	link_t_ptr section;
@@ -2620,7 +2620,7 @@ XDC_API link_t_ptr properctrl_get_focus_entity(res_win_t widget);
 @FUNCTION properctrl_get_entity_rect: get entity rect in proper widget client.
 @INPUT res_win_t widget: the proper widget.
 @INPUT link_t_ptr ilk: the entity link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	properctrl_get_entity_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -2652,8 +2652,8 @@ XDC_API bool_t	properctrl_set_entity_value(res_win_t widget, link_t_ptr elk, con
 /***************************************status control******************************************************************/
 typedef struct _NOTICE_STATUS{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr status;
 	link_t_ptr item;
@@ -2755,7 +2755,7 @@ XDC_API link_t_ptr statusctrl_get_focus_item(res_win_t widget);
 @FUNCTION statusctrl_get_item_rect: get item rect in status widget client.
 @INPUT res_win_t widget: the status widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	statusctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -2780,8 +2780,8 @@ XDC_API void	statusctrl_step_it(res_win_t widget, int steps, const tchar_t* sz_s
 /*******************************message control************************************************************/
 typedef struct _NOTICE_NOTES{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr arch;
 	link_t_ptr item;
@@ -2879,7 +2879,7 @@ XDC_API link_t_ptr notesctrl_get_focus_item(res_win_t widget);
 @FUNCTION notesctrl_get_item_rect: get item rect in notes widget client.
 @INPUT res_win_t widget: the notes widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	notesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -2887,8 +2887,8 @@ XDC_API void	notesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 /*******************************message control************************************************************/
 typedef struct _NOTICE_PANEL{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr arch;
 	link_t_ptr item;
@@ -2986,7 +2986,7 @@ XDC_API link_t_ptr panelctrl_get_focus_item(res_win_t widget);
 @FUNCTION panelctrl_get_item_rect: get item rect in panel widget client.
 @INPUT res_win_t widget: the panel widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	panelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -2995,8 +2995,8 @@ XDC_API void	panelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 /*******************************owner control************************************************************/
 typedef struct _NOTICE_OWNER{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	void* data;
 
@@ -3030,15 +3030,15 @@ XDC_API res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const x
 */
 XDC_API void	ownerctrl_redraw(res_win_t widget);
 
-XDC_API void ownerctrl_set_delta(res_win_t widget, var_long var);
+XDC_API void ownerctrl_set_delta(res_win_t widget, var_int var);
 
-XDC_API var_long ownerctrl_get_delta(res_win_t widget);
+XDC_API var_int ownerctrl_get_delta(res_win_t widget);
 
 /*******************************curve control************************************************************/
 typedef struct _NOTICE_CURVE{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	void* data;
 
@@ -3080,8 +3080,8 @@ XDC_API void curvectrl_get_vector(res_win_t widget, vector_t* pvt);
 
 typedef struct _NOTICE_TITLE{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr title;
 	link_t_ptr item;
@@ -3182,7 +3182,7 @@ XDC_API link_t_ptr titlectrl_get_focus_item(res_win_t widget);
 @FUNCTION titlectrl_get_item_rect: get item rect in title widget client.
 @INPUT res_win_t widget: the title widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	titlectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -3206,8 +3206,8 @@ XDC_API bool_t	titlectrl_delete_item(res_win_t widget, link_t_ptr ilk);
 /*************************************title control******************************************************/
 typedef struct _NOTICE_TOOL{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr tool;
 	link_t_ptr item;
@@ -3302,7 +3302,7 @@ XDC_API link_t_ptr toolctrl_get_focus_item(res_win_t widget);
 @FUNCTION toolctrl_get_item_rect: get item rect in tool widget client.
 @INPUT res_win_t widget: the tool widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	toolctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -3310,8 +3310,8 @@ XDC_API void	toolctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* p
 /*************************************tree control****************************************************/
 typedef struct _NOTICE_TREE{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr tree;
 	link_t_ptr item;
@@ -3429,7 +3429,7 @@ XDC_API link_t_ptr treectrl_get_focus_item(res_win_t widget);
 @FUNCTION treectrl_get_item_rect: get item rect in tree widget client.
 @INPUT res_win_t widget: the tree widget.
 @INPUT link_t_ptr ilk: the item link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void	treectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
@@ -3477,8 +3477,8 @@ XDC_API void	treectrl_popup_size(res_win_t widget, xsize_t* pse);
 /**************************************rich control**************************************************/
 typedef struct _NOTICE_RICH{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr rich;
 	link_t_ptr anch;
@@ -3562,7 +3562,7 @@ XDC_API link_t_ptr richctrl_get_focus_anch(res_win_t widget);
 @FUNCTION richctrl_get_anch_rect: get item rect in rich widget client.
 @INPUT res_win_t widget: the rich widget.
 @INPUT link_t_ptr ilk: the anchor link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void richctrl_get_anch_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
@@ -3698,8 +3698,8 @@ XDC_API int richctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
 /**************************************memo control**************************************************/
 typedef struct _NOTICE_MEMO{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr memo;
 	link_t_ptr line;
@@ -3778,7 +3778,7 @@ XDC_API link_t_ptr memoctrl_get_focus_line(res_win_t widget);
 @FUNCTION memoctrl_get_line_rect: get line rect in memo widget client.
 @INPUT res_win_t widget: the memo widget.
 @INPUT link_t_ptr ilk: the line link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void memoctrl_get_line_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
@@ -3925,8 +3925,8 @@ XDC_API int memoctrl_get_text(res_win_t widget, tchar_t* buf, int max);
 /**************************************tag control**************************************************/
 typedef struct _NOTICE_TAG{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 
 	link_t_ptr tag;
 	link_t_ptr joint;
@@ -4008,7 +4008,7 @@ XDC_API link_t_ptr tagctrl_get_focus_joint(res_win_t widget);
 @FUNCTION tagctrl_get_joint_rect: get joint rect in tag widget client.
 @INPUT res_win_t widget: the tag widget.
 @INPUT link_t_ptr ilk: the joint link component.
-@OUTPUT xrect_t* pxr: the rect struct using long member.
+@OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
 XDC_API void tagctrl_get_joint_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);

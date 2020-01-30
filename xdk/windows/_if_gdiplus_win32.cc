@@ -226,10 +226,10 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 	POINT pt_p = { 0 };
 	POINT pt_i = { 0 };
 	POINT pt[4] = { 0 };
-	long rx, ry;
-	long sflag, lflag;
+	int rx, ry;
+	int sflag, lflag;
 	RECT rt;
-	long arcf, arct;
+	int arcf, arct;
 	int n = 0;
 
 	if (!aa)
@@ -857,7 +857,7 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 	}
 }
 
-void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
+void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
 	HDC hDC = (HDC)rdc;
 
@@ -920,7 +920,7 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 	}
 }
 
-void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, long rx, long ry, double fang, double tang)
+void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, int rx, int ry, double fang, double tang)
 {
 	HDC hDC = (HDC)rdc;
 
@@ -967,7 +967,7 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 	HDC hDC = (HDC)rdc;
 	double a1;
 	int x_line0, y_line0, x_line1, y_line1, x_line2, y_line2;
-	long x1, x2, y1, y2;
+	int x1, x2, y1, y2;
 	POINT pt[4];
 
 	pt[0].x = prt->x;
@@ -1486,7 +1486,7 @@ void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, c
 {
 	HFONT hFont, orgFont;
 	COLORREF clr, orgClr;
-	long fs;
+	int fs;
 	LOGFONT lf;
 	xcolor_t xc;
 
@@ -1709,10 +1709,10 @@ void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 	path.GetBounds(&rfOut);
 	*/
 
-	pt[0].x = (long)(rfOut.GetLeft());
-	pt[0].y = (long)(rfOut.GetTop());
-	pt[1].x = (long)(rfOut.GetRight());
-	pt[1].y = (long)(rfOut.GetBottom());
+	pt[0].x = (int)(rfOut.GetLeft());
+	pt[0].y = (int)(rfOut.GetTop());
+	pt[1].x = (int)(rfOut.GetRight());
+	pt[1].y = (int)(rfOut.GetBottom());
 
 	LPtoDP(hDC, pt, 2);
 
@@ -1741,7 +1741,7 @@ void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, i
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	SIZE si;
-	long fs;
+	int fs;
 
 	CopyMemory((void*)&lf, (void*)&lf_gdiplus, sizeof(LOGFONT));
 
@@ -1799,7 +1799,7 @@ void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 
 	LOGFONT lf;
 	HFONT hFont, orgFont;
-	long fs;
+	int fs;
 	TEXTMETRIC tm = { 0 };
 
 	CopyMemory((void*)&lf, (void*)&lf_gdiplus, sizeof(LOGFONT));

@@ -130,12 +130,12 @@ LICENSE.GPL3 for more details.
 */
 #define set_split_item_height(ilk,y)					set_dom_node_attr_float(ilk,ATTR_HEIGHT,y)
 /*
-@PROPER delta: var long.
+@PROPER delta: var int.
 @SET set_split_item_delta: set the splitor extract data.
 */
 #define set_split_item_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
 /*
-@PROPER delta: var long.
+@PROPER delta: var int.
 @GET get_split_item_delta: get the splitor extract data.
 */
 #define get_split_item_delta(ilk)						get_dom_node_delta(ilk)

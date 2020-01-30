@@ -51,7 +51,7 @@ typedef struct tagJsonPanelDelta{
 }JsonPanelDelta;
 
 #define GETJSONPANELDELTA(ph) 		(JsonPanelDelta*)widget_get_user_delta(ph)
-#define SETJSONPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETJSONPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define JSONPANEL_ACCEL_COUNT	5
 accel_t	JSONPANEL_ACCEL[JSONPANEL_ACCEL_COUNT] = {
@@ -685,12 +685,12 @@ void JsonPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	
 }
 
-void JsonPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void JsonPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	JsonPanelDelta* pdt = GETJSONPANELDELTA(widget);
 }
 
-void JsonPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void JsonPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	JsonPanelDelta* pdt = GETJSONPANELDELTA(widget);
 	void* pv = NULL;

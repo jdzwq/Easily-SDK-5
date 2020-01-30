@@ -36,11 +36,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_FILE
 
-#if defined(DEBUG) || defined(_DEBUG)
-#define FILE_BASE_TIMO	(-1)
-#else
-#define FILE_BASE_TIMO	(3000)
-#endif
+#define FILE_BASE_TIMO	(3000) //millionsecond
 
 #ifdef	__cplusplus
 extern "C" {

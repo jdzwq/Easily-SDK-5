@@ -43,14 +43,11 @@ typedef enum{
 	_XUDP_TYPE_SRV = 2
 }XUDP_TYPE;
 
-#if defined(DEBUG) || defined(_DEBUG)
-#define UDP_BASE_TIMO		(-1)
-#else
-#define UDP_BASE_TIMO		(30000)
-#endif
-#define UDP_BASE_BUFF		65535
-#define UDP_MIN_PORT		49152
-#define UDP_MAX_PORT		65535
+
+#define UDP_BASE_TIMO		(2000) //millionsecond
+#define UDP_BASE_BUFF		(65535)
+#define UDP_MIN_PORT		(49152)
+#define UDP_MAX_PORT		(65535)
 
 #ifdef	__cplusplus
 extern "C" {

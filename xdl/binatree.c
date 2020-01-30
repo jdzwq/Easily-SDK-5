@@ -1148,39 +1148,39 @@ static int calc_bina_step(link_t_ptr ilk)
 	link_t_ptr nlk;
 
 	variant_t v = { 0 };
-	v.vv = VV_LONG;
+	v.vv = VV_INT;
 
 	object_t val = object_alloc();
 
-	v.long_one = 0;
+	v.int_one = 0;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 1;
+	v.int_one = 1;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 3;
+	v.int_one = 3;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 5;
+	v.int_one = 5;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 2;
+	v.int_one = 2;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 4;
+	v.int_one = 4;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 6;
+	v.int_one = 6;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
-	v.long_one = 7;
+	v.int_one = 7;
 	object_set_variant(val, v);
 	nlk = insert_bina_node(ptr, v, val);
 
@@ -1213,7 +1213,7 @@ void _test_bina_tree(int level)
 	float max_1 = 0;
 
 	variant_t v = { 0 };
-	v.vv = VV_LONG;
+	v.vv = VV_INT;
 
 	object_t val = object_alloc(_UTF8);
 
@@ -1233,7 +1233,7 @@ void _test_bina_tree(int level)
 
 		for (int i = 0; i < n; i++)
 		{
-			v.long_one =  (level)? (Lrand48() % n) : i;
+			v.int_one =  (level)? (Lrand48() % n) : i;
 
 			object_set_variant(val, v);
 
@@ -1245,7 +1245,7 @@ void _test_bina_tree(int level)
 		n0 = n1 = 0;
 		for (int i = 0; i < n; i++)
 		{
-			v.long_one = i;
+			v.int_one = i;
 
 			nlk = find_bina_node(ptr_0, v, val);
 			if (nlk)

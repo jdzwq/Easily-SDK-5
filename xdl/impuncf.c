@@ -41,7 +41,8 @@ typedef struct _xuncf_t{
 	xhand_head head;		//reserved for xhand_t
 
 	res_file_t file;
-	async_t over;
+
+	async_t* pov;
 }xuncf_t;
 
 
@@ -70,12 +71,12 @@ bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 		format_gmttime(&fi.write_time, ftime);
 
 	if (fsize)
-		format_longlong(fi.high_size, fi.low_size, fsize);
+		format_long(fi.high_size, fi.low_size, fsize);
 
 	if (fetag)
 	{
 		format_gmttime(&fi.write_time, sz_time);
-		format_longlong(fi.high_size, fi.low_size, sz_size);
+		format_long(fi.high_size, fi.low_size, sz_size);
 #ifdef XDL_SUPPORT_CRYPT
 		file_info_etag(fi.file_name, sz_time, sz_size, fetag);
 #endif
@@ -223,10 +224,7 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 	pcf->head.tag = _HANDLE_UNC;
 	pcf->file = fh;
 
-	if (fmode & FILE_OPEN_OVERLAP)
-	{
-		async_alloc_lapp(&pcf->over, FILE_BASE_TIMO);
-	}
+	pcf->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), FILE_BASE_TIMO, INVALID_FILE);
 
 	return &pcf->head;
 }
@@ -258,7 +256,10 @@ void xuncf_close_file(xhand_t unc)
 
 	(*pif->pf_file_close)(pcf->file);
 
-	async_release_lapp(&pcf->over);
+	if (pcf->pov)
+	{
+		async_free_lapp(pcf->pov);
+	}
 
 	xmem_free(pcf);
 }
@@ -266,8 +267,8 @@ void xuncf_close_file(xhand_t unc)
 bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 {
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
-	size_t size;
 	if_file_t* pif;
+	dword_t size, pos = 0;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
 
@@ -276,24 +277,31 @@ bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 	XDL_ASSERT(pif != NULL);
 
 	size = *pcb;
-
-	if (!(*pif->pf_file_read)(pcf->file, (void*)(buf), size, &pcf->over))
+	while (pos < size)
 	{
-		set_system_error(_T("xuncf_read_file"));
-		*pcb = 0;
-		return 0;
+		pcf->pov->size = 0;
+		if (!(*pif->pf_file_read)(pcf->file, (void*)(buf + pos), size - pos, pcf->pov))
+		{
+			set_system_error(_T("xuncf_read_file"));
+
+			*pcb = (dword_t)pos;
+			return 0;
+		}
+
+		if (!(pcf->pov->size)) break;
+
+		pos += pcf->pov->size;
 	}
 
-	*pcb = (dword_t)pcf->over.size;
-
+	*pcb = (dword_t)pos;
 	return 1;
 }
 
 bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 {
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
-	size_t size;
 	if_file_t* pif;
+	dword_t size, pos = 0;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
 
@@ -302,16 +310,23 @@ bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 	XDL_ASSERT(pif != NULL);
 
 	size = *pcb;
-
-	if (!(*pif->pf_file_write)(pcf->file, (void*)(buf), size, &pcf->over))
+	while (pos < size)
 	{
-		set_system_error(_T("xuncf_write_file"));
-		*pcb = 0;
-		return 0;
+		pcf->pov->size = 0;
+		if (!(*pif->pf_file_write)(pcf->file, (void*)(buf + pos), size - pos, pcf->pov))
+		{
+			set_system_error(_T("xuncf_write_file"));
+
+			*pcb = (dword_t)pos;
+			return 0;
+		}
+
+		if (!(pcf->pov->size)) break;
+
+		pos += pcf->pov->size;
 	}
 
-	*pcb = (dword_t)pcf->over.size;
-
+	*pcb = (dword_t)pos;
 	return 1;
 }
 
@@ -332,8 +347,6 @@ bool_t xuncf_flush_file(xhand_t unc)
 bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* buf, dword_t dw)
 {
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
-	size_t size;
-	long long ll = 0;
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
@@ -342,9 +355,7 @@ bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* bu
 
 	XDL_ASSERT(pif != NULL);
 
-	size = dw;
-
-	if (!(*pif->pf_file_read_range)(pcf->file, hoff, loff, (void*)(buf), size))
+	if (!(*pif->pf_file_read_range)(pcf->file, hoff, loff, (void*)(buf), dw))
 	{
 		set_system_error(_T("xuncf_read_file_range"));
 		return 0;
@@ -356,17 +367,13 @@ bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* bu
 bool_t xuncf_write_file_range(xhand_t unc, dword_t hoff, dword_t loff, const byte_t* buf, dword_t dw)
 {
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
-	size_t size;
-	long long ll = 0;
 	if_file_t* pif;
 
 	pif = PROCESS_FILE_INTERFACE;
 
 	XDL_ASSERT(pif != NULL);
-
-	size = dw;
 	
-	if (!(*pif->pf_file_write_range)(pcf->file,  hoff, loff, (void*)(buf), size))
+	if (!(*pif->pf_file_write_range)(pcf->file,  hoff, loff, (void*)(buf), dw))
 	{
 		set_system_error(_T("xuncf_write_file_range"));
 		return 0;

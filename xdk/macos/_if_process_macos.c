@@ -68,33 +68,47 @@ void _get_runpath(res_modu_t ins, tchar_t* buf, int max)
 bool_t _create_process(const tchar_t* exename, const tchar_t* cmdline, int share, proc_info_t* ppi)
 {
     int fd[2] = {0};
+    char cmdname[PATH_MAX] = {0};
+    char* token;
+
+    if(_tstrnull(exename))
+        return 0;
+    
+    token = (char*)exename + _tstrlen(exename);
+    while(*token != '/' && *token != '\\' && token != exename)
+        token--;
+    
+    if(*token == '/' || *token == '\\')
+        token ++;
+    
+    _tstrcpy(cmdname, token);
     
     if(share == SHARE_PIPE)
     {
         if(pipe(fd) >= 0)
         {
-            ppi->pip_read = fd[0];
-            ppi->std_write = fd[1];
+            ppi->std_read = fd[0];
+            ppi->pip_write = fd[1];
         }
         
         if(pipe(fd) >= 0)
         {
-            ppi->std_read = fd[0];
-            ppi->pip_write = fd[1];
+            ppi->pip_read = fd[0];
+            ppi->std_write = fd[1];
         }
     }
     else if(share == SHARE_SOCK)
     {
         if(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) >= 0)
         {
-            ppi->pip_read = fd[0];
-            ppi->std_write = fd[1];
+            ppi->std_read = fd[0];
+            ppi->pip_write = fd[1];
         }
         
         if(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) >= 0)
         {
-            ppi->std_read = fd[0];
-            ppi->pip_write = fd[1];
+            ppi->pip_read = fd[0];
+            ppi->std_write = fd[1];
         }
     }
     
@@ -115,37 +129,88 @@ bool_t _create_process(const tchar_t* exename, const tchar_t* cmdline, int share
         return 0;
     }else if(ppi->process_id > 0) //parent process
     {
-        close(ppi->std_read);
-        ppi->std_read = 0;
-        
-        close(ppi->std_write);
-        ppi->std_write = 0;
-        
-        close(ppi->pip_read);
-        ppi->pip_read = 0;
+        if(share)
+        {
+            if(ppi->std_read)
+                close(ppi->std_read);
+            ppi->std_read = 0;
+            
+            if(ppi->std_write)
+                close(ppi->std_write);
+            ppi->std_write = 0;
+            
+            if(ppi->pip_read)
+                close(ppi->pip_read);
+            ppi->pip_read = 0;
+        }
         
         ppi->thread_id = ppi->process_id;
-        ppi->thread_handle = ppi->process_handle = (res_hand_t)getpid();
+        ppi->process_handle = ppi->process_id;
+        ppi->thread_handle = 0;
+        
         return 1;
     }
     else //child process
     {
-        close(ppi->pip_read);
-        ppi->pip_read = 0;
+        if(share)
+        {
+            if(ppi->pip_read)
+                close(ppi->pip_read);
+            ppi->pip_read = 0;
+            
+            if(ppi->pip_write)
+                close(ppi->pip_write);
+            ppi->pip_write = 0;
+            
+            if(ppi->std_read)
+                dup2(ppi->std_read, STDIN_FILENO);
+            
+            if(ppi->std_read)
+                close(ppi->std_read);
+            ppi->std_read = 0;
+            
+            //if(ppi->std_write)
+            //dup2(ppi->std_write, STDOUT_FILENO);
+            
+            if(ppi->std_write)
+                close(ppi->std_write);
+            ppi->std_write = 0;
+        }
         
-        close(ppi->pip_write);
-        ppi->pip_write = 0;
-        
-        dup2(ppi->std_read, STDIN_FILENO);
-        //dup2(ppi->std_write, STDOUT_FILENO);
-        
-        close(ppi->std_write);
-        ppi->std_write = 0;
-        
-        execl(exename, cmdline, NULL);
+        execl(exename, cmdname, cmdline, NULL);
         
         return 0;
     }
+}
+
+void _process_safe()
+{
+    struct sigaction sa = {0};
+    
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+    sigaction(SIGALRM, &sa, NULL);
+    
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+    sigaction(SIGPROF, &sa, NULL);
+    
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+    sigaction(SIGPIPE, &sa, NULL);
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+    sigaction(SIGIO, &sa, NULL);
+    
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+    sigaction(SIGSYS, &sa, NULL);
 }
 
 void _release_process(proc_info_t* ppi)
@@ -162,44 +227,44 @@ void _release_process(proc_info_t* ppi)
     memset((void*)ppi, 0, sizeof(proc_info_t));
 }
 
-void _process_waitrun(res_hand_t ph)
+void _process_waitrun(res_proc_t ph)
 {
     int status;
     
     waitpid((pid_t)ph, &status, WNOHANG);
 }
 
-res_hand_t _process_dupli(res_hand_t ph, res_hand_t vh)
+res_file_t _process_dupli(res_proc_t ph, res_file_t vh)
 {
-	return 0;
+	return INVALID_FILE;
 }
 
-void* _process_alloc(res_hand_t ph, size_t dw)
+void* _process_alloc(res_proc_t ph, dword_t dw)
 {
 	return NULL;
 }
 
-void _process_free(res_hand_t ph, void* p)
+void _process_free(res_proc_t ph, void* p)
 {
 	return;
 }
 
-bool_t _process_write(res_hand_t ph, void* p, void* data, size_t dw)
+bool_t _process_write(res_proc_t ph, void* p, void* data, dword_t dw)
 {
 	return 0;
 }
 
-bool_t _process_read(res_hand_t ph, void* p, void* data, size_t dw)
+bool_t _process_read(res_proc_t ph, void* p, void* data, dword_t dw)
 {
 	return 0;
 }
 
-bool_t _inherit_handle(res_hand_t hh, bool_t b)
+bool_t _inherit_handle(res_file_t hh, bool_t b)
 {
 	return 0;
 }
 
-void _release_handle(res_hand_t hh)
+void _release_handle(res_file_t hh)
 {
     close(hh);
 }

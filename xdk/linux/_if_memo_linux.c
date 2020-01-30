@@ -55,21 +55,21 @@ void  _heapo_destroy(res_heap_t heap)
     SDK_UNSUPPORT_ERROR;
 }
 
-void* _heapo_alloc(res_heap_t heap, size_t size)
+void* _heapo_alloc(res_heap_t heap, dword_t size)
 {
     SDK_UNSUPPORT_ERROR;
     
 	return (res_heap_t)NULL;
 }
 
-void* _heapo_realloc(res_heap_t heap, void* p, size_t size)
+void* _heapo_realloc(res_heap_t heap, void* p, dword_t size)
 {
     SDK_UNSUPPORT_ERROR;
     
 	return (res_heap_t)NULL;
 }
 
-void _heapo_zero(res_heap_t heap, void* p, size_t size)
+void _heapo_zero(res_heap_t heap, void* p, dword_t size)
 {
     SDK_UNSUPPORT_ERROR;
 }
@@ -87,14 +87,14 @@ void _heapo_clean(res_heap_t heap)
 /******************************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_GLOB
 
-res_glob_t _globo_alloc(size_t size)
+res_glob_t _globo_alloc(dword_t size)
 {
     SDK_UNSUPPORT_ERROR;
     
 	return NULL;
 }
 
-res_glob_t _globo_realloc(res_glob_t glob, size_t size)
+res_glob_t _globo_realloc(res_glob_t glob, dword_t size)
 {
     SDK_UNSUPPORT_ERROR;
     
@@ -108,7 +108,7 @@ void _globo_free(res_glob_t glob)
 	return;
 }
 
-size_t _globo_size(res_glob_t glob)
+dword_t _globo_size(res_glob_t glob)
 {
     SDK_UNSUPPORT_ERROR;
     
@@ -131,14 +131,14 @@ bool_t _globo_unlock(res_glob_t glob)
 #endif
 /*****************************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_LOCAL
-void* _local_alloc(size_t size)
+void* _local_alloc(dword_t size)
 {
-    return calloc(1, size);
+    return calloc(1, (size_t)size);
 }
 
-void* _local_realloc(void* p, size_t size)
+void* _local_realloc(void* p, dword_t size)
 {
-    return realloc(p, size);
+    return realloc(p, (size_t)size);
 }
 
 void _local_free(void* p)
@@ -149,27 +149,27 @@ void _local_free(void* p)
 #endif
 /******************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_PAGE
-void* _paged_alloc(size_t size)
+void* _paged_alloc(dword_t size)
 {
     void* p = NULL;
-    size_t dw;
+    dword_t dw;
     
     dw = size / PAGE_SIZE;
     if (size % PAGE_SIZE)
         dw++;
     
-    return (posix_memalign(&p, PAGE_SIZE, dw * PAGE_SIZE) < 0)? NULL : p;
+    return (posix_memalign(&p, PAGE_SIZE, (size_t)(dw * PAGE_SIZE)) < 0)? NULL : p;
 }
 
-void* _paged_realloc(void* p, size_t size)
+void* _paged_realloc(void* p, dword_t size)
 {
     void* pn;
-    size_t n;
+    dword_t n;
     
     if (!p)
         return _paged_alloc(size);
     
-    n = malloc_usable_size(p);
+    n = (dword_t)malloc_usable_size(p);
     
     if (n < size)
     {
@@ -195,9 +195,9 @@ void _paged_free(void* p)
     free(p);
 }
 
-size_t _paged_size(void* p)
+dword_t _paged_size(void* p)
 {
-    return (size_t)malloc_usable_size(p);
+    return (dword_t)malloc_usable_size(p);
 }
 
 void* _paged_lock(void* p)
@@ -249,18 +249,28 @@ void _cache_close(void* fh)
 	munmap(fh, PAGE_SPACE);
 }
 
-bool_t _cache_write(void* fh, size_t offset, void* buf, size_t size, size_t* pb)
+bool_t _cache_write(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t size, dword_t* pb)
 {
-    memcpy((void*)((char*)fh + offset), buf, size);
+    size_t off;
+
+    off = MAKESIZE(loff, hoff);
+
+    memcpy((void*)((char*)fh + off), buf, (size_t)size);
+
     if(pb)
         *pb = size;
     
     return 1;
 }
 
-bool_t _cache_read(void* fh, size_t offset, void* buf, size_t size, size_t* pb)
+bool_t _cache_read(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t size, dword_t* pb)
 {
-    memcpy(buf, (void*)((char*)fh + offset), size);
+    size_t off;
+
+    off = MAKESIZE(loff, hoff);
+
+    memcpy(buf, (void*)((char*)fh + off), (size_t)size);
+    
     if(pb)
         *pb = size;
     

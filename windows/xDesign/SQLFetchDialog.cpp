@@ -47,7 +47,7 @@ typedef struct tagSQLFetchDlgDelta{
 
 
 #define GETSQLFETCHDLGDELTA(ph) 		(SQLFetchDlgDelta*)widget_get_user_delta(ph)
-#define SETSQLFETCHDLGDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETSQLFETCHDLGDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 void SQLFetchDlg_OnOK(res_win_t widget)
 {
@@ -270,7 +270,7 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void SQLFetchDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void SQLFetchDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	SQLFetchDlgDelta* pdt = GETSQLFETCHDLGDELTA(widget);
 

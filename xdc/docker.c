@@ -33,14 +33,14 @@ LICENSE.GPL3 for more details.
 #include "handler.h"
 #include "widgetex.h"
 
-#define DOCKER_SPLIT_SPAN		(long)10 //pt
+#define DOCKER_SPLIT_SPAN		(int)10 //pt
 
 
 static int _docker_calc_hint(docker_t* ptd, const xpoint_t* pxp)
 {
 	xrect_t xr,xr_cli;
-	long top, bottom, left, right;
-	long span;
+	int top, bottom, left, right;
+	int span;
 	int i;
 
 	widget_get_client_rect(ptd->widget, &xr_cli);
@@ -118,7 +118,7 @@ static int _docker_calc_hint(docker_t* ptd, const xpoint_t* pxp)
 void _docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr)
 {
 	xrect_t xr, xr_cli;
-	long top, bottom, left, right, span;
+	int top, bottom, left, right, span;
 	int i;
 
 	if (!ptd)
@@ -263,7 +263,7 @@ void hand_docker_lbutton_down(docker_t* ptd, const xpoint_t* pxp)
 void hand_docker_lbutton_up(docker_t* ptd, const xpoint_t* pxp)
 {
 	xrect_t xr;
-	long span = DOCKER_SPLIT_SPAN;
+	int span = DOCKER_SPLIT_SPAN;
 
 	if (ptd->drag)
 	{
@@ -311,7 +311,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 	res_ctx_t rdc;
 	canvas_t canv;
 	xrect_t xr, xr_cli, xr_bar;
-	long top, bottom, left, right, span;
+	int top, bottom, left, right, span;
 	xbrush_t xb = { 0 };
 	xgradi_t gi = { 0 };
 	xcolor_t xc = { 0 };

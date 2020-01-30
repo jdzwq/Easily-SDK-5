@@ -271,7 +271,7 @@
 				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxds.dylib;
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
-					/../lib,
+					../lib,
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -296,7 +296,7 @@
 				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxds.dylib;
 				LIBRARY_SEARCH_PATHS = (
 					/opt/X11/lib,
-					/../lib,
+					../lib,
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";

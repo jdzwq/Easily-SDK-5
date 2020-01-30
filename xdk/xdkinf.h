@@ -41,29 +41,29 @@ typedef res_heap_t(*PF_PROCESS_HEAP)(void);
 typedef res_heap_t(*PF_HEAP_CREATE)(void);
 typedef void(*PF_HEAP_DESTROY)(res_heap_t);
 typedef void(*PF_HEAP_CLEAN)(res_heap_t);
-typedef void* (*PF_HEAP_ALLOC)(res_heap_t, size_t);
-typedef void* (*PF_HEAP_REALLOC)(res_heap_t, void*, size_t);
+typedef void* (*PF_HEAP_ALLOC)(res_heap_t, dword_t);
+typedef void* (*PF_HEAP_REALLOC)(res_heap_t, void*, dword_t);
 typedef void(*PF_HEAP_FREE)(res_heap_t, void*);
-typedef void(*PF_HEAP_ZERO)(res_heap_t, void*, size_t);
+typedef void(*PF_HEAP_ZERO)(res_heap_t, void*, dword_t);
 #endif
 #ifdef XDK_SUPPORT_MEMO_GLOB
-typedef res_glob_t (*PF_GLOB_ALLOC)(size_t);
-typedef res_glob_t(*PF_GLOB_REALLOC)(res_glob_t, size_t);
+typedef res_glob_t (*PF_GLOB_ALLOC)(dword_t);
+typedef res_glob_t(*PF_GLOB_REALLOC)(res_glob_t, dword_t);
 typedef void (*PF_GLOB_FREE)(res_glob_t);
-typedef size_t(*PF_GLOB_SIZE)(res_glob_t);
+typedef dword_t(*PF_GLOB_SIZE)(res_glob_t);
 typedef void* (*PF_GLOB_LOCK)(res_glob_t);
 typedef bool_t (*PF_GLOB_UNLOCK)(res_glob_t);
 #endif
 #ifdef XDK_SUPPORT_MEMO_LOCAL
-typedef void* (*PF_LOCAL_ALLOC)(size_t);
-typedef void* (*PF_LOCAL_REALLOC)(void*, size_t);
+typedef void* (*PF_LOCAL_ALLOC)(dword_t);
+typedef void* (*PF_LOCAL_REALLOC)(void*, dword_t);
 typedef void(*PF_LOCAL_FREE)(void*);
 #endif
 #ifdef XDK_SUPPORT_MEMO_PAGE
-typedef void* (*PF_PAGE_ALLOC)(size_t);
-typedef void* (*PF_PAGE_REALLOC)(void*, size_t);
+typedef void* (*PF_PAGE_ALLOC)(dword_t);
+typedef void* (*PF_PAGE_REALLOC)(void*, dword_t);
 typedef void(*PF_PAGE_FREE)(void*);
-typedef size_t(*PF_PAGE_SIZE)(void*);
+typedef dword_t(*PF_PAGE_SIZE)(void*);
 typedef void* (*PF_PAGE_LOCK)(void*);
 typedef void(*PF_PAGE_UNLOCK)(void*);
 typedef bool_t(*PF_PAGE_PROTECT)(void*, bool_t);
@@ -71,8 +71,8 @@ typedef bool_t(*PF_PAGE_PROTECT)(void*, bool_t);
 #ifdef XDK_SUPPORT_MEMO_CACHE
 typedef void*(*PF_CACHE_OPEN)(void);
 typedef void(*PF_CACHE_CLOSE)(void*);
-typedef bool_t(*PF_CACHE_WRITE)(void*, size_t, void*, size_t, size_t*);
-typedef bool_t(*PF_CACHE_READ)(void*, size_t, void*, size_t, size_t*);
+typedef bool_t(*PF_CACHE_WRITE)(void*, dword_t, dword_t, void*, dword_t, dword_t*);
+typedef bool_t(*PF_CACHE_READ)(void*, dword_t, dword_t, void*, dword_t, dword_t*);
 #endif
 
 typedef struct _if_memo_t{
@@ -153,18 +153,18 @@ typedef struct _if_mbcs_t{
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-typedef void(*PF_ASYNC_ALLOC_LAPP)(async_t*, int ms);
-typedef void(*PF_ASYNC_RELEASE_LAPP)(async_t*);
+typedef async_t*(*PF_ASYNC_ALLOC_LAPP)(int, int, res_file_t);
+typedef void(*PF_ASYNC_FREE_LAPP)(async_t*);
 
 typedef struct _if_async_t{
-	PF_ASYNC_ALLOC_LAPP		pf_async_alloc_lapp;
-	PF_ASYNC_RELEASE_LAPP	pf_async_release_lapp;
+	PF_ASYNC_ALLOC_LAPP	pf_async_alloc_lapp;
+	PF_ASYNC_FREE_LAPP	pf_async_free_lapp;
 }if_async_t;
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
 /*thread interface*/
-typedef void (*PF_THREAD_BEGIN)(res_hand_t*, PF_THREADFUNC, void*);
+typedef void (*PF_THREAD_BEGIN)(res_thread_t*, PF_THREADFUNC, void*);
 typedef void (*PF_THREAD_END)(void);
 typedef void (*PF_THREAD_CREATE_TLS)(tls_key_t*);
 typedef void(*PF_THREAD_DESTROY_TLS)(tls_key_t);
@@ -172,7 +172,9 @@ typedef void* (*PF_THREAD_GET_TLS)(tls_key_t);
 typedef void(*PF_THREAD_SET_TLS)(tls_key_t, void*);
 typedef pid_t (* PF_THREAD_GET_ID)(void);
 typedef void (* PF_THREAD_SLEEP)(int);
-typedef void(*PF_THREAD_JOIN)(res_hand_t);
+typedef void(*PF_THREAD_YIELD)(void);
+typedef void(*PF_THREAD_JOIN)(res_thread_t);
+typedef void (*PF_THREAD_SAFE)(void);
 #ifdef XDK_SUPPORT_THREAD_EVENT
 typedef res_even_t (*PF_EVENT_CREATE)(void);
 typedef void (*PF_EVENT_DESTROY)(res_even_t);
@@ -209,12 +211,14 @@ typedef struct _if_thread_t{
 	PF_THREAD_BEGIN		pf_thread_begin;
 	PF_THREAD_END		pf_thread_end;
 	PF_THREAD_SLEEP		pf_thread_sleep;
+	PF_THREAD_YIELD		pf_thread_yield;
 	PF_THREAD_CREATE_TLS pf_thread_create_tls;
 	PF_THREAD_DESTROY_TLS pf_thread_destroy_tls;
 	PF_THREAD_GET_TLS	pf_thread_get_tls;
 	PF_THREAD_SET_TLS	pf_thread_set_tls;
 	PF_THREAD_GET_ID	pf_thread_get_id;
 	PF_THREAD_JOIN		pf_thread_join;
+    PF_THREAD_SAFE      pf_thread_safe;
 #ifdef XDK_SUPPORT_THREAD_EVENT
 	PF_EVENT_CREATE		pf_event_create;
 	PF_EVENT_DESTROY	pf_event_destroy;
@@ -252,11 +256,11 @@ typedef struct _if_thread_t{
 
 #ifdef XDK_SUPPORT_TIMER
 /*timer interface*/
-typedef res_hand_t(*PF_CREATE_TIMER_QUEUE)(void);
-typedef void(*PF_DESTROY_TIMER_QUEUE)(res_hand_t);
-typedef res_timer_t(*PF_CREATE_TIMER)(res_hand_t, clock_t, clock_t, PF_TIMERFUNC, void*);
-typedef void(*PF_DESTROY_TIMER)(res_hand_t, res_timer_t);
-typedef bool_t(*PF_ALTER_TIMER)(res_hand_t, res_timer_t, clock_t, clock_t);
+typedef res_queue_t(*PF_CREATE_TIMER_QUEUE)(void);
+typedef void(*PF_DESTROY_TIMER_QUEUE)(res_queue_t);
+typedef res_timer_t(*PF_CREATE_TIMER)(res_queue_t, clock_t, clock_t, PF_TIMERFUNC, void*);
+typedef void(*PF_DESTROY_TIMER)(res_queue_t, res_timer_t);
+typedef bool_t(*PF_ALTER_TIMER)(res_queue_t, res_timer_t, clock_t, clock_t);
 
 typedef struct _if_timer_t{
 	PF_CREATE_TIMER_QUEUE		pf_create_timer_queue;
@@ -279,16 +283,17 @@ typedef void (*PF_SOCKET_CLOSE)(res_file_t);
 typedef dword_t(*PF_SOCKET_WAIT)(res_file_t, dword_t, int);
 typedef bool_t (*PF_SOCKET_BIND)(res_file_t, res_addr_t, int);
 typedef bool_t (*PF_SOCKET_CONNECT)(res_file_t, res_addr_t, int);
-typedef bool_t(*PF_SOCKET_SENDTO)(res_file_t, res_addr_t, int, void*, size_t, async_t*);
-typedef bool_t(*PF_SOCKET_RECVFROM)(res_file_t, res_addr_t, int*, void*, size_t, async_t*);
-typedef bool_t(*PF_SOCKET_SEND)(res_file_t, void*, size_t, async_t*);
-typedef bool_t(*PF_SOCKET_RECV)(res_file_t, void*, size_t, async_t*);
+typedef bool_t(*PF_SOCKET_SENDTO)(res_file_t, res_addr_t, int, void*, dword_t, async_t*);
+typedef bool_t(*PF_SOCKET_RECVFROM)(res_file_t, res_addr_t, int*, void*, dword_t, async_t*);
+typedef bool_t(*PF_SOCKET_SEND)(res_file_t, void*, dword_t, async_t*);
+typedef bool_t(*PF_SOCKET_RECV)(res_file_t, void*, dword_t, async_t*);
 typedef bool_t (*PF_SOCKET_SETOPT)(res_file_t, int, const char*, int);
 typedef bool_t (*PF_SOCKET_GETOPT)(res_file_t, int, char*, int*);
 typedef bool_t (*PF_SOCKET_SET_LINGER)(res_file_t, bool_t, int);
 typedef bool_t (*PF_SOCKET_SET_SNDBUF)(res_file_t, int);
 typedef bool_t (*PF_SOCKET_SET_RCVBUF)(res_file_t, int);
 typedef bool_t (*PF_SOCKET_SET_NONBLK)(res_file_t, bool_t);
+typedef bool_t(*PF_SOCKET_GET_NONBLK)(res_file_t);
 typedef bool_t (*PF_HOST_ADDR)(const schar_t*, schar_t*);
 typedef void (*PF_FILL_ADDR)(net_addr_t*, unsigned short, const schar_t*);
 typedef void(*PF_CONV_ADDR)(net_addr_t*, unsigned short*, schar_t*);
@@ -299,8 +304,8 @@ typedef res_file_t (*PF_SOCKET_ACCEPT)(res_file_t, res_addr_t, int*, async_t*);
 typedef int(*PF_SOCKET_WRITE)(void* pso, unsigned char* buf, int len);
 typedef int(*PF_SOCKET_READ)(void* pso, unsigned char* buf, int len);
 typedef int(*PF_SOCKET_ERROR)(tchar_t*, int);
-typedef bool_t(*PF_SOCKET_SHARE)(pid_t, res_file_t, res_file_t, void*, size_t);
-typedef res_file_t(*PF_SOCKET_DUPLI)(res_file_t, dword_t, void*, size_t*);
+typedef bool_t(*PF_SOCKET_SHARE)(pid_t, res_file_t, res_file_t, void*, dword_t);
+typedef res_file_t(*PF_SOCKET_DUPLI)(res_file_t, void*, dword_t*);
 
 typedef struct _if_socket_t{
 	PF_SOCKET_STARTUP		pf_socket_startup;
@@ -323,6 +328,7 @@ typedef struct _if_socket_t{
 	PF_SOCKET_SET_SNDBUF	pf_socket_set_sndbuf;
 	PF_SOCKET_SET_RCVBUF	pf_socket_set_rcvbuf;
 	PF_SOCKET_SET_NONBLK	pf_socket_set_nonblk;
+	PF_SOCKET_GET_NONBLK	pf_socket_get_nonblk;
 	PF_HOST_ADDR			pf_host_addr;
 	PF_FILL_ADDR			pf_fill_addr;
 	PF_CONV_ADDR			pf_conv_addr;
@@ -343,11 +349,11 @@ typedef struct _if_socket_t{
 typedef res_file_t (*PF_FILE_OPEN)(const tchar_t*, dword_t);
 typedef void (*PF_FILE_CLOSE)(res_file_t);
 typedef bool_t(*PF_FILE_SIZE)(res_file_t, dword_t*, dword_t*);
-typedef bool_t(*PF_FILE_WRITE)(res_file_t, void*, size_t, async_t*);
+typedef bool_t(*PF_FILE_WRITE)(res_file_t, void*, dword_t, async_t*);
 typedef bool_t(*PF_FILE_FLUSH)(res_file_t);
-typedef bool_t(*PF_FILE_READ)(res_file_t, void*, size_t, async_t*);
-typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, dword_t, dword_t, void*, size_t);
-typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, dword_t, dword_t, void*, size_t);
+typedef bool_t(*PF_FILE_READ)(res_file_t, void*, dword_t, async_t*);
+typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, dword_t, dword_t, void*, dword_t);
+typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, dword_t, dword_t, void*, dword_t);
 typedef bool_t(*PF_FILE_TRUNCATE)(res_file_t, dword_t, dword_t);
 typedef bool_t (*PF_FILE_DELETE)(const tchar_t*);
 typedef bool_t(*PF_FILE_RENAME)(const tchar_t*, const tchar_t*);
@@ -394,13 +400,13 @@ typedef struct _if_file_t{
 
 
 #ifdef XDK_SUPPORT_SHARE
-typedef res_file_t(*PF_SHARE_SRV)(const tchar_t*, const tchar_t*, size_t);
+typedef res_file_t(*PF_SHARE_SRV)(const tchar_t*, const tchar_t*, dword_t, dword_t, dword_t);
 typedef void(*PF_SHARE_CLOSE)(const tchar_t*, res_file_t);
-typedef res_file_t(*PF_SHARE_CLI)(const tchar_t*, size_t);
-typedef bool_t(*PF_SHARE_WRITE)(res_file_t, size_t, void*, size_t, size_t*);
-typedef bool_t(*PF_SHARE_READ)(res_file_t, size_t, void*, size_t, size_t*);
-typedef void*(*PF_SHARE_LOCK)(res_file_t, size_t, size_t);
-typedef void(*PF_SHARE_UNLOCK)(res_file_t, size_t, size_t, void*);
+typedef res_file_t(*PF_SHARE_CLI)(const tchar_t*, dword_t);
+typedef bool_t(*PF_SHARE_WRITE)(res_file_t, dword_t, void*, dword_t, dword_t*);
+typedef bool_t(*PF_SHARE_READ)(res_file_t, dword_t, void*, dword_t, dword_t*);
+typedef void*(*PF_SHARE_LOCK)(res_file_t, dword_t, dword_t);
+typedef void(*PF_SHARE_UNLOCK)(res_file_t, dword_t, dword_t, void*);
 
 typedef struct _if_share_t{
 	PF_SHARE_SRV		pf_share_srv;
@@ -420,9 +426,9 @@ typedef bool_t(*PF_PIPE_LISTEN)(res_file_t, async_t*);
 typedef void(*PF_PIPE_STOP)(res_file_t);
 typedef res_file_t (*PF_PIPE_CLI)(const tchar_t*, dword_t);
 typedef void(*PF_PIPE_CLOSE)(const tchar_t*, res_file_t);
-typedef bool_t(*PF_PIPE_WRITE)(res_file_t, void*, size_t, async_t*);
+typedef bool_t(*PF_PIPE_WRITE)(res_file_t, void*, dword_t, async_t*);
 typedef bool_t(*PF_PIPE_FLUSH)(res_file_t);
-typedef bool_t(*PF_PIPE_READ)(res_file_t, void*, size_t, async_t*);
+typedef bool_t(*PF_PIPE_READ)(res_file_t, void*, dword_t, async_t*);
 typedef wait_t(*PF_PIPE_WAIT)(const tchar_t*, int);
 
 typedef struct _if_pipe_t{
@@ -444,16 +450,16 @@ typedef bool_t(*PF_GET_COMM_MODE)(res_file_t, dev_com_t*);
 typedef bool_t(*PF_SET_COMM_MODE)(res_file_t, const dev_com_t*);
 typedef res_file_t(*PF_COMM_OPEN)(const tchar_t*, dword_t);
 typedef void(*PF_COMM_CLOSE)(res_file_t);
-typedef dword_t(*PF_COMM_WAIT)(res_file_t, async_t*);
-typedef bool_t(*PF_COMM_READ)(res_file_t, void*, size_t, async_t*);
-typedef bool_t(*PF_COMM_WRITE)(res_file_t, void*, size_t, async_t*);
+typedef dword_t(*PF_COMM_LISTEN)(res_file_t, async_t*);
+typedef bool_t(*PF_COMM_READ)(res_file_t, void*, dword_t, async_t*);
+typedef bool_t(*PF_COMM_WRITE)(res_file_t, void*, dword_t, async_t*);
 typedef bool_t(*PF_COMM_FLUSH)(res_file_t);
 
 typedef struct _if_comm_t{
 	PF_DEFAULT_COMM_MODE	pf_default_comm_mode;
 	PF_GET_COMM_MODE		pf_get_comm_mode;
 	PF_SET_COMM_MODE		pf_set_comm_mode;
-	PF_COMM_WAIT		pf_comm_wait;
+	PF_COMM_LISTEN		pf_comm_listen;
 	PF_COMM_OPEN		pf_comm_open;
 	PF_COMM_CLOSE		pf_comm_close;
 	PF_COMM_READ		pf_comm_read;
@@ -467,9 +473,9 @@ typedef struct _if_comm_t{
 typedef res_file_t (*PF_CONS_ALLOC)(tchar_t*, int);
 typedef void (*PF_CONS_FREE)(res_file_t);
 typedef bool_t(*PF_CONS_SIGACTION)(res_file_t, PF_SIGHANDLER);
-typedef bool_t(*PF_CONS_WRITE)(res_file_t, void*, size_t, size_t*);
+typedef bool_t(*PF_CONS_WRITE)(res_file_t, void*, dword_t, dword_t*);
 typedef bool_t(*PF_CONS_FLUSH)(res_file_t);
-typedef bool_t(*PF_CONS_READ)(res_file_t, void*, size_t, size_t*);
+typedef bool_t(*PF_CONS_READ)(res_file_t, void*, dword_t, dword_t*);
 typedef res_file_t (*PF_CONS_STDOUT)(res_file_t);
 typedef res_file_t (*PF_CONS_STDIN)(res_file_t);
 
@@ -521,14 +527,15 @@ typedef void* (*PF_GET_ADDRESS)(res_modu_t, const schar_t*);
 typedef void (*PF_GET_RUNPATH)(res_modu_t, tchar_t*, int);
 typedef bool_t (*PF_CREATE_PROCESS)(const tchar_t*, const tchar_t*, int, proc_info_t*);
 typedef void (*PF_RELEASE_PROCESS)(proc_info_t*);
-typedef void(*PF_PROCESS_WAITRUN)(res_hand_t);
-typedef res_hand_t (*PF_PROCESS_DUPLI)(res_hand_t, res_hand_t);
-typedef void* (*PF_PROCESS_ALLOC)(res_hand_t, size_t);
-typedef void (*PF_PROCESS_FREE)(res_hand_t, void*);
-typedef bool_t(*PF_PROCESS_WRITE)(res_hand_t, void*, void*, size_t);
-typedef bool_t(*PF_PROCESS_READ)(res_hand_t, void*, void*, size_t);
-typedef void(*PF_RELEASE_HANDLE)(res_hand_t);
-typedef bool_t(*PF_INHERIT_HANDLE)(res_hand_t, bool_t);
+typedef void(*PF_PROCESS_WAITRUN)(res_proc_t);
+typedef res_file_t(*PF_PROCESS_DUPLI)(res_proc_t, res_file_t);
+typedef void* (*PF_PROCESS_ALLOC)(res_proc_t, dword_t);
+typedef void(*PF_PROCESS_FREE)(res_proc_t, void*);
+typedef bool_t(*PF_PROCESS_WRITE)(res_proc_t, void*, void*, dword_t);
+typedef bool_t(*PF_PROCESS_READ)(res_proc_t, void*, void*, dword_t);
+typedef void (*PF_PROCESS_SAFE)(void);
+typedef void(*PF_RELEASE_HANDLE)(res_file_t);
+typedef bool_t(*PF_INHERIT_HANDLE)(res_file_t, bool_t);
 typedef void(*PF_WRITE_PROFILE)(const tchar_t*, const tchar_t*, const tchar_t*, const tchar_t*);
 typedef void(*PF_READ_PROFILE)(const tchar_t*, const tchar_t*, const tchar_t*, tchar_t*, int);
 typedef int(*PF_GET_ENVVAR)(const tchar_t*, tchar_t*, int);
@@ -541,6 +548,7 @@ typedef struct _if_process_t{
 	PF_GET_RUNPATH		pf_get_runpath;
 	PF_CREATE_PROCESS	pf_create_process;
 	PF_RELEASE_PROCESS	pf_release_process;
+    PF_PROCESS_SAFE     pf_process_safe;
 	PF_PROCESS_WAITRUN	pf_process_waitrun;
 	PF_PROCESS_DUPLI	pf_process_dupli;
 	PF_PROCESS_ALLOC	pf_process_alloc;
@@ -589,19 +597,19 @@ typedef res_ctx_t(*PF_CREATE_DISPLAY_CONTEXT)(void);
 typedef res_ctx_t(*PF_CREATE_COMPATIBLE_CONTEXT)(res_ctx_t);
 typedef void(*PF_DESTROY_CONTEXT)(res_ctx_t);
 typedef void(*PF_GET_DEVICE_CAPS)(res_ctx_t, dev_cap_t*);
-typedef void(*PF_RENDER_CONTEXT)(res_ctx_t, long, long, res_ctx_t, long, long, long, long);
+typedef void(*PF_RENDER_CONTEXT)(res_ctx_t, int, int, res_ctx_t, int, int, int, int);
 typedef res_pmp_t(*PF_SELECT_PIXMAP)(res_ctx_t, res_pmp_t);
-typedef res_pmp_t(*PF_CREATE_COMPATIBLE_PIXMAP)(res_ctx_t, long, long);
+typedef res_pmp_t(*PF_CREATE_COMPATIBLE_PIXMAP)(res_ctx_t, int, int);
 typedef void(*PF_DESTROY_PIXMAP)(res_pmp_t);
 
 typedef float(*PF_PT_PER_MM)(res_ctx_t, bool_t);
 typedef void(*PF_TEXT_MM_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, float*, float*);
-typedef void(*PF_TEXT_PT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, long*, long*);
+typedef void(*PF_TEXT_PT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, int*, int*);
 typedef void(*PF_TEXT_MM_METRIC)(res_ctx_t, const xfont_t*, float*, float*);
-typedef void(*PF_TEXT_PT_METRIC)(res_ctx_t, const xfont_t*, long*, long*);
-typedef float(*PF_CAST_PT_TO_MM)(res_ctx_t, long, bool_t);
-typedef long(*PF_CAST_MM_TO_PT)(res_ctx_t, float, bool_t);
-typedef int(*PF_FONT_SIZE)(res_ctx_t, long);
+typedef void(*PF_TEXT_PT_METRIC)(res_ctx_t, const xfont_t*, int*, int*);
+typedef float(*PF_CAST_PT_TO_MM)(res_ctx_t, int, bool_t);
+typedef int(*PF_CAST_MM_TO_PT)(res_ctx_t, float, bool_t);
+typedef int(*PF_FONT_SIZE)(res_ctx_t, int);
 
 #ifdef XDK_SUPPORT_CONTEXT_REGION
 typedef res_rgn_t(*PF_CREATE_REGION)(const tchar_t*, const xrect_t*);
@@ -612,18 +620,18 @@ typedef bool_t(*PF_PT_IN_REGION)(res_rgn_t, const xpoint_t*);
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
 /*bitmap interface*/
 typedef void(*PF_DESTROY_BITMAP)(res_bmp_t);
-typedef void(*PF_GET_BITMAP_SIZE)(res_bmp_t, long*, long*);
+typedef void(*PF_GET_BITMAP_SIZE)(res_bmp_t, int*, int*);
 
-typedef res_bmp_t(*PF_CREATE_COLOR_BITMAP)(res_ctx_t, const xcolor_t*, long, long);
-typedef res_bmp_t(*PF_CREATE_PATTERN_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, long, long, const tchar_t*);
-typedef res_bmp_t(*PF_CREATE_GRADIENT_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, long, long, const tchar_t*);
-typedef res_bmp_t(*PF_CREATE_CODE128_BITMAP)(res_ctx_t, long, long, const unsigned char*, size_t, const tchar_t*);
-typedef res_bmp_t(*PF_CREATE_PDF417_BITMAP)(res_ctx_t, long, long, const unsigned char*, size_t, int, int);
-typedef res_bmp_t(*PF_CREATE_QRCODE_BITMAP)(res_ctx_t, long, long, const unsigned char*, size_t, int, int);
+typedef res_bmp_t(*PF_CREATE_COLOR_BITMAP)(res_ctx_t, const xcolor_t*, int, int);
+typedef res_bmp_t(*PF_CREATE_PATTERN_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
+typedef res_bmp_t(*PF_CREATE_GRADIENT_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
+typedef res_bmp_t(*PF_CREATE_CODE128_BITMAP)(res_ctx_t, int, int, const unsigned char*, dword_t, const tchar_t*);
+typedef res_bmp_t(*PF_CREATE_PDF417_BITMAP)(res_ctx_t, int, int, const unsigned char*, dword_t, int, int);
+typedef res_bmp_t(*PF_CREATE_QRCODE_BITMAP)(res_ctx_t, int, int, const unsigned char*, dword_t, int, int);
 typedef res_bmp_t(*PF_CREATE_STORAGE_BITMAP)(res_ctx_t, const tchar_t*);
-typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_BYTES)(res_ctx_t, const unsigned char*, size_t);
-typedef size_t(*PF_SAVE_BITMAP_TO_BYTES)(res_ctx_t, res_bmp_t, unsigned char*, size_t);
-typedef size_t(*PF_GET_BITMAP_BYTES)(res_bmp_t);
+typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_BYTES)(res_ctx_t, const unsigned char*, dword_t);
+typedef dword_t(*PF_SAVE_BITMAP_TO_BYTES)(res_ctx_t, res_bmp_t, unsigned char*, dword_t);
+typedef dword_t(*PF_GET_BITMAP_BYTES)(res_bmp_t);
 typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_THUMB)(res_ctx_t, const tchar_t*);
 typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_ICON)(res_ctx_t, const tchar_t*);
 #endif
@@ -641,8 +649,8 @@ typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
 typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, long, long, double, double);
-typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xpoint_t*, long, long, double, double);
+typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int, int, double, double);
+typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xpoint_t*, int, int, double, double);
 typedef void(*PF_GDI_DRAW_ARROW)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, int, double);
 typedef void(*PF_GDI_DRAW_TEXT)(res_ctx_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
 typedef void(*PF_GDI_TEXT_OUT)(res_ctx_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);

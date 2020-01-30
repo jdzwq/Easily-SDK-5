@@ -659,7 +659,7 @@ link_t_ptr set_row_delete(link_t_ptr rlk)
 void set_cell_dirty(link_t_ptr rlk,link_t_ptr clk,bool_t b)
 {
 	link_t_ptr ent;
-	unsigned long msk;
+	var_long msk;
 
 	const tchar_t* sz_col;
 
@@ -671,20 +671,20 @@ void set_cell_dirty(link_t_ptr rlk,link_t_ptr clk,bool_t b)
 	if (!ent)
 		return;
 
-	msk = (unsigned long)get_hash_entity_delta(ent);
+	msk = get_hash_entity_delta(ent);
 	if (b)
 		msk |= dsDirty;
 	else
 		msk &= (~dsDirty);
 
-	set_hash_entity_delta(ent,(var_long)msk);
+	set_hash_entity_delta(ent,msk);
 }
 
 bool_t get_cell_dirty(link_t_ptr rlk,link_t_ptr clk)
 {
 	link_t_ptr ent;
 	const tchar_t* sz_col;
-	unsigned long msk;
+	var_long msk;
 
 	sz_col = get_col_name_ptr(clk);
 	if(is_null(sz_col))
@@ -694,7 +694,7 @@ bool_t get_cell_dirty(link_t_ptr rlk,link_t_ptr clk)
 	if(!ent)
 		return dsClean;
 
-	msk = (unsigned long)get_hash_entity_delta(ent);
+	msk = get_hash_entity_delta(ent);
 
 	return (msk & dsDirty)? 1 : 0;
 }
@@ -860,7 +860,7 @@ bool_t get_cell_boolean(link_t_ptr rlk,link_t_ptr clk)
 	return (compare_text(get_cell_text_ptr(rlk, clk), -1, _T("1"), -1, 0) == 0) ? 1 : 0;
 }
 
-void set_cell_integer(link_t_ptr rlk,link_t_ptr clk,long n)
+void set_cell_integer(link_t_ptr rlk,link_t_ptr clk,int n)
 {
 	tchar_t token[NUM_LEN  + 1];
 
@@ -868,7 +868,7 @@ void set_cell_integer(link_t_ptr rlk,link_t_ptr clk,long n)
 	set_dom_node_attr(rlk,get_col_name_ptr(clk),-1,token,-1);
 }
 
-long get_cell_integer(link_t_ptr rlk,link_t_ptr clk)
+int get_cell_integer(link_t_ptr rlk,link_t_ptr clk)
 {
 	const tchar_t* token;
 	
@@ -1067,7 +1067,7 @@ int calc_grid_rowset(link_t_ptr ptr)
 int sum_grid_col(link_t_ptr ptr,link_t_ptr clk)
 {
 	link_t_ptr rlk;
-	long longRt;
+	int intRt;
 	double dbRt;
 	int count;
 	const tchar_t* str;
@@ -1083,7 +1083,7 @@ int sum_grid_col(link_t_ptr ptr,link_t_ptr clk)
 
 	type = get_col_data_type_ptr(clk);
 	count = 0;
-	longRt = 0;
+	intRt = 0;
 	dbRt = 0;
 	rlk = get_next_visible_row(ptr,LINK_FIRST);
 	while(rlk)
@@ -1104,7 +1104,7 @@ int sum_grid_col(link_t_ptr ptr,link_t_ptr clk)
 		}
 
 		if(compare_text(type,-1,ATTR_DATA_TYPE_INTEGER,-1,0) == 0)
-			longRt += xstol(str);
+			intRt += xstol(str);
 		else if(compare_text(type,-1,ATTR_DATA_TYPE_NUMERIC,-1,0) == 0)
 			dbRt += xstonum(str);
 		
@@ -1121,13 +1121,13 @@ int sum_grid_col(link_t_ptr ptr,link_t_ptr clk)
 	}else if(compare_text(mode,-1,ATTR_SUM_MODE_SUM,-1,0) == 0)
 	{
 		if (compare_text(type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
-			xsprintf(buf, _T("%d"), longRt);
+			xsprintf(buf, _T("%d"), intRt);
 		else if (compare_text(type, -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
 			numtoxs_dig(dbRt, get_col_data_dig(clk), buf, NUM_LEN);
 	}else if(compare_text(mode,-1,ATTR_SUM_MODE_AVG,-1,0) == 0)
 	{
 		if(compare_text(type,-1,ATTR_DATA_TYPE_INTEGER,-1,0) == 0)
-			xsprintf(buf,_T("%.2f"),(double)longRt / (double)count);
+			xsprintf(buf,_T("%.2f"),(double)intRt / (double)count);
 		else if(compare_text(type,-1,ATTR_DATA_TYPE_NUMERIC,-1,0) == 0)
 			numtoxs_dig(dbRt / (double)count, get_col_data_dig(clk) + 2,buf, NUM_LEN);
 	}

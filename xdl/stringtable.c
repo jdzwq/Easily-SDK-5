@@ -42,7 +42,7 @@ typedef struct _string_table{
 
 typedef struct _string_entity_t{
 	link_t lk;			/* entity self link component*/
-	unsigned long mask; /* endtity runtime state*/
+	unsigned int mask; /* endtity runtime state*/
 	tchar_t* key;		/* entity key, can not be null*/
 	tchar_t* val;		/* entity value*/
 	var_long data;			/* entiry data for runtime use*/

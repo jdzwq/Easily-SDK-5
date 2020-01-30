@@ -39,10 +39,10 @@ typedef struct _radiobox_delta_t{
 }radiobox_delta_t;
 
 #define GETRADIOBOXDELTA(ph) 	(radiobox_delta_t*)widget_get_user_delta(ph)
-#define SETRADIOBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETRADIOBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /********************************************************************************/
-void noti_radiobox_command(res_win_t widget, int code, var_long data)
+void noti_radiobox_command(res_win_t widget, int code, var_int data)
 {
 	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
 
@@ -112,14 +112,14 @@ void hand_radiobox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		ptd->on = 1;
 		widget_redraw(widget, NULL, 0);
 
-		noti_radiobox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+		noti_radiobox_command(widget, COMMAND_UPDATE, (var_int)NULL);
 	}
 	else if (hint == RADIOBOX_HINT_OFF)
 	{
 		ptd->on = 0;
 		widget_redraw(widget, NULL, 0);
 
-		noti_radiobox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+		noti_radiobox_command(widget, COMMAND_UPDATE, (var_int)NULL);
 	}
 }
 

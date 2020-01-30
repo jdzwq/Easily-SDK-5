@@ -134,7 +134,7 @@ res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t obj)
 	return (res_pmp_t)SelectObject(rdc, (HGDIOBJ)obj);
 }
 
-res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, long cx, long cy)
+res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, int cx, int cy)
 {
 	return (res_pmp_t)CreateCompatibleBitmap(rdc, cx, cy);
 }
@@ -159,20 +159,20 @@ void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
 	pcap->vert_feed = GetDeviceCaps(rdc, PHYSICALOFFSETY);
 }
 
-void _render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth)
+void _render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
 {
 	BitBlt(dst, dstx, dsty, dstw, dsth, src, srcx, srcy, SRCCOPY);
 }
 
 /*******************************************************************************************************************/
 #ifdef WINCE
-static long MulDiv(long a, long b, long c)
+static int MulDiv(int a, int b, int c)
 {
-	return (long)((float)a * (float)b / (float)c);
+	return (int)((float)a * (float)b / (float)c);
 }
 #endif
 
-int _font_size(res_ctx_t rdc, long height)
+int _font_size(res_ctx_t rdc, int height)
 {
 	HDC hDC = (HDC)rdc;
 	TEXTMETRIC tm = { 0 };
@@ -260,7 +260,7 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 	DeleteObject(hFont);
 }
 
-void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, long* pcx, long* pcy)
+void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, int* pcx, int* pcy)
 {
 	HDC hDC = (HDC)rdc;
 	LOGFONT lf;
@@ -363,7 +363,7 @@ void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
 	DeleteObject(hFont);
 }
 
-void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, long* pcx, long* pcy)
+void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
 {
 	HDC hDC = (HDC)rdc;
 	LOGFONT lf;
@@ -411,7 +411,7 @@ void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, long* pcx, long* pcy)
 	DeleteObject(hFont);
 }
 
-float _cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz)
+float _cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
 {
 	HDC hDC = (HDC)rdc;
 	float htpermm, vtpermm;
@@ -428,19 +428,19 @@ float _cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz)
 	return mm;
 }
 
-long _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
+int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 {
 	HDC hDC = (HDC)rdc;
 	float htpermm, vtpermm;
-	long pt;
+	int pt;
 
 	htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
 	if (horz)
-		pt = (long)(mm * htpermm);
+		pt = (int)(mm * htpermm);
 	else
-		pt = (long)(mm * vtpermm);
+		pt = (int)(mm * vtpermm);
 
 	return pt;
 }

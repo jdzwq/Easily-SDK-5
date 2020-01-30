@@ -887,7 +887,7 @@ void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr 
 			if (compare_text(gtype, -1, ATTR_STATIS_TYPE_PIE, -1, 0) == 0)
 				cury = th + yt + yh + xw + py;
 			else
-				cury = midy - (long)(((coornum - (float)middnum) / stepnum * (float)incy / 10));
+				cury = midy - (int)(((coornum - (float)middnum) / stepnum * (float)incy / 10));
 
 			if (compare_text(gtype, -1, ATTR_STATIS_TYPE_LINE, -1, 0) == 0)
 			{
@@ -912,7 +912,7 @@ void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr 
 				if (xlk != xlk_first)
 				{
 					xlk_pre = get_prev_xax(ptr, xlk);
-					prey = midy - (long)(((get_coor_numeric(xlk_pre, ylk) - (float)middnum) / stepnum * (float)incy / 10));
+					prey = midy - (int)(((get_coor_numeric(xlk_pre, ylk) - (float)middnum) / stepnum * (float)incy / 10));
 
 					pt[0].fx = (x1 + x2) / 2 - xw;
 					pt[0].fy = prey;
@@ -938,7 +938,7 @@ void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr 
 					xr.fh = midy - cury;
 				}
 
-				if ((long)cury == (long)midy)
+				if ((int)cury == (int)midy)
 				{
 					pt[0].fx = xr.fx;
 					pt[0].fy = cury;

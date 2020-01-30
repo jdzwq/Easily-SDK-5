@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:test/xdl_ssl_test/xdl_ssl_test.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:test/xdl_file_test/xdl_file_test.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:test/xdb_mysql_test/xdb_mysql_test.xcodeproj">
    </FileRef>
    <FileRef

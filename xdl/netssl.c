@@ -645,10 +645,10 @@ int _ssl_write_snd_msg(ssl_t *pssl)
 	//0: message type
 	//1-2: version
 	//3-4: package message length
-	PUT_BYTE(pssl->snd_hdr, 0, (byte_t)pssl->snd_msg_type);
-	PUT_BYTE(pssl->snd_hdr, 1, (byte_t)pssl->major_ver);
-	PUT_BYTE(pssl->snd_hdr, 2, (byte_t)pssl->minor_ver);
-	PUT_SWORD_NET(pssl->snd_hdr, 3, (unsigned short)pssl->snd_msg_len);
+	PUT_BYTE(pssl->snd_hdr, 0, (byte_t)(pssl->snd_msg_type));
+	PUT_BYTE(pssl->snd_hdr, 1, (byte_t)(pssl->major_ver));
+	PUT_BYTE(pssl->snd_hdr, 2, (byte_t)(pssl->minor_ver));
+	PUT_SWORD_NET(pssl->snd_hdr, 3, (unsigned short)(pssl->snd_msg_len));
 
 	if (pssl->snd_msg_type == SSL_MSG_HANDSHAKE)
 	{
@@ -754,6 +754,11 @@ int _ssl_read_rcv_msg(ssl_t *pssl)
 	{
 		raise_user_error(NULL, NULL);
 	}
+    
+    if(!dw)
+    {
+        raise_user_error(_T("0"), _T("ssl read msg failed"));
+    }
 
 	if (pssl->rcv_hdr[1] != SSL_MAJOR_VERSION_3)
 	{
@@ -882,8 +887,8 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 	//6~9:	current UNIX time
 	//10~37:	random bytes
 
-	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)pssl->max_major_ver);
-	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)pssl->max_minor_ver);
+	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)(pssl->max_major_ver));
+	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)(pssl->max_minor_ver));
 	
 	xmem_copy(pssl->snd_msg + msglen, pssl->rnd_cli, SSL_RND_SIZE);
 	msglen += SSL_RND_SIZE;
@@ -1938,8 +1943,8 @@ static handshake_states _ssl_write_server_hello(ssl_t *pssl)
 	//6~9   UNIX time()
 	//10~37   random bytes
 
-	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)pssl->major_ver);
-	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)pssl->minor_ver);
+	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)(pssl->major_ver));
+	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)(pssl->minor_ver));
 
 	xmem_copy(pssl->snd_msg + msglen, pssl->rnd_srv, SSL_RND_SIZE);
 	msglen += SSL_RND_SIZE;
@@ -1949,7 +1954,7 @@ static handshake_states _ssl_write_server_hello(ssl_t *pssl)
 	//39+n~40+n:	chosen cipher
 	//41+n~41+n:	chosen compression alg.
 	
-	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)pssl->ses_size);
+	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)(pssl->ses_size));
 	xmem_copy(pssl->snd_msg + msglen, pssl->ses_id, pssl->ses_size);
 	msglen += pssl->ses_size;
 

@@ -50,7 +50,7 @@ typedef struct tagTopogPanelDelta{
 }TopogPanelDelta;
 
 #define GETTOPOGPANELDELTA(ph) 		(TopogPanelDelta*)widget_get_user_delta(ph)
-#define SETTOPOGPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETTOPOGPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define TOPOGPANEL_ACCEL_COUNT	5
 accel_t	TOPOGPANEL_ACCEL[TOPOGPANEL_ACCEL_COUNT] = {
@@ -311,7 +311,7 @@ void TopogPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	TopogPanelDelta* pdt = GETTOPOGPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -386,7 +386,7 @@ void TopogPanel_Topog_OnLBClick(res_win_t widget, NOTICE_TOPOG* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -398,7 +398,7 @@ void TopogPanel_Topog_OnSpotDrop(res_win_t widget, NOTICE_TOPOG* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -410,7 +410,7 @@ void TopogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 
 	LINKPTR ptrTopog = topogctrl_fetch(pdt->hTopog);
 	LINKPTR ptrSpot = topogctrl_get_focus_spot(pdt->hTopog);
@@ -866,7 +866,7 @@ void TopogPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void TopogPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void TopogPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	TopogPanelDelta* pdt = GETTOPOGPANELDELTA(widget);
 
@@ -893,7 +893,7 @@ void TopogPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void TopogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void TopogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	TopogPanelDelta* pdt = GETTOPOGPANELDELTA(widget);
 	void* pv = NULL;

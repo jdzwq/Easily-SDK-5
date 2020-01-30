@@ -63,16 +63,16 @@ XDL_API void destroy_context(res_ctx_t rdc);
 /*
 @FUNCTION render_context: render source memory context bitmap into destination device context.
 @INPUT res_ctx_t src: source memory context resource handle.
-@INPUT long srcx: source bitmap start x coordinate.
-@INPUT long srcy: source bitmap start y coordinate.
+@INPUT int srcx: source bitmap start x coordinate.
+@INPUT int srcy: source bitmap start y coordinate.
 @INPUT res_ctx_t dst: destination device context resource handle.
-@INPUT long dstx: destination bitmap start x coordinate.
-@INPUT long dsty: destination bitmap start y coordinate.
-@INPUT long dstw: destination bitmap width.
-@INPUT long dsth: destination bitmap height.
+@INPUT int dstx: destination bitmap start x coordinate.
+@INPUT int dsty: destination bitmap start y coordinate.
+@INPUT int dstw: destination bitmap width.
+@INPUT int dsth: destination bitmap height.
 @RETURN void: none.
 */
-XDL_API void render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth);
+XDL_API void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
 
 /*
 @FUNCTION select_pixmap: select a pixmap object into memory context.
@@ -85,11 +85,11 @@ XDL_API res_pmp_t select_pixmap(res_ctx_t rdc, res_pmp_t obj);
 /*
 @FUNCTION create_compatible_pixmap: create a memory context.
 @INPUT res_ctx_t rdc: device context resource handle.
-@INPUT long cx: pixmap width in points.
-@INPUT long cy: pixmap height in points.
+@INPUT int cx: pixmap width in points.
+@INPUT int cy: pixmap height in points.
 @RETURN res_pmp_t: if succeeds return memory context resource handle, fails return NULL.
 */
-XDL_API res_pmp_t create_compatible_pixmap(res_ctx_t rdc, long cx, long cy);
+XDL_API res_pmp_t create_compatible_pixmap(res_ctx_t rdc, int cx, int cy);
 
 /*
 @FUNCTION destroy_pixmap: destroy pixmap object.
@@ -157,11 +157,11 @@ XDL_API float pt_per_mm(res_ctx_t rdc, bool_t horz);
 /*
 @FUNCTION cast_pt_to_mm: mapping points to millimeter.
 @INPUT res_ctx_t rdc: device context resource handle.
-@INPUT long pt: the span value in points.
+@INPUT int pt: the span value in points.
 @INPUT bool_t horz: nonzero for horizonal mapping, zero for vertical mapping.
 @RETURN float: float millimeter value.
 */
-XDL_API float cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz);
+XDL_API float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
 
 /*
 @FUNCTION cast_mm_to_pt: mapping millimeter to points.
@@ -170,15 +170,15 @@ XDL_API float cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz);
 @INPUT bool_t horz: nonzero for horizonal mapping, zero for vertical mapping.
 @RETURN float: float millimeter value.
 */
-XDL_API long cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
+XDL_API int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
 
 /*
 @FUNCTION font_size: calc suitable font size by height in points.
 @INPUT res_ctx_t rdc: device context resource handle.
-@INPUT long height: the height value in points.
+@INPUT int height: the height value in points.
 @RETURN int: font size.
 */
-XDL_API int font_size(res_ctx_t rdc, long height);
+XDL_API int font_size(res_ctx_t rdc, int height);
 
 #ifdef XDK_SUPPORT_CONTEXT_PRINTER
 

@@ -93,7 +93,7 @@ res_file_t _cons_stdout(res_file_t con)
 		return (res_file_t)hCon;
 }
 
-bool_t _cons_write(res_file_t con, void* buf, size_t len, size_t* pb)
+bool_t _cons_write(res_file_t con, void* buf, dword_t len, dword_t* pb)
 {
 	DWORD dw = 0;
 	HANDLE hCon;
@@ -129,7 +129,7 @@ bool_t _cons_flush(res_file_t con)
 	return (FlushConsoleInputBuffer(hCon)) ? 1 : 0;
 }
 
-bool_t _cons_read(res_file_t con, void* buf, size_t size, size_t* pb)
+bool_t _cons_read(res_file_t con, void* buf, dword_t size, dword_t* pb)
 {
 	DWORD dw = 0;
 	HANDLE hCon;

@@ -912,7 +912,7 @@ bool_t get_field_boolean(link_t_ptr flk)
 	return (compare_text(get_field_text_ptr(flk), -1, _T("1"), -1, 0) == 0) ? 1 : 0;
 }
 
-void set_field_integer(link_t_ptr flk,long n)
+void set_field_integer(link_t_ptr flk,int n)
 {
 	tchar_t token[NUM_LEN + 1];
 
@@ -920,7 +920,7 @@ void set_field_integer(link_t_ptr flk,long n)
 	set_dom_node_text(flk,token,-1);
 }
 
-long get_field_integer(link_t_ptr flk)
+int get_field_integer(link_t_ptr flk)
 {
 	return xstol(get_field_text_ptr(flk));
 }

@@ -46,7 +46,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_THREAD_CRITI
 #define XDK_SUPPORT_THREAD_MUTEX
 #define XDK_SUPPORT_THREAD_SEMAP
-//#define XDK_SUPPORT_THREAD_QUEUE
+#define XDK_SUPPORT_THREAD_QUEUE
 #define XDK_SUPPORT_THREAD
 #define XDK_SUPPORT_PROCESS
 #define XDK_SUPPORT_FILE_FIND
@@ -148,6 +148,8 @@ LICENSE.GPL3 for more details.
 
 #define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
 
+typedef HANDLE		res_queue_t;
+
 #ifdef XDK_SUPPORT_SOCK
 typedef struct sockaddr_in	net_addr_t;
 typedef struct in_addr		sin_addr_t;
@@ -175,6 +177,7 @@ typedef BOOL(WINAPI *WIN_SIGNAL_HANDLER)(DWORD sig);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
+typedef HANDLE		res_thread_t;
 typedef DWORD		tls_key_t;
 #ifdef XDK_SUPPORT_THREAD_EVENT
 typedef HANDLE		res_even_t;
@@ -188,15 +191,13 @@ typedef CRITICAL_SECTION* res_crit_t;
 #ifdef XDK_SUPPORT_THREAD_SEMAP
 typedef HANDLE		res_sema_t;
 #endif
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-typedef HANDLE		res_queue_t;
-#endif
 
-typedef unsigned int(__stdcall *WIN_THREAD_PROC)(void* param);
+typedef unsigned (__stdcall *WIN_THREAD_PROC)(void* param);
 #endif
 
 #ifdef XDK_SUPPORT_PROCESS
 typedef HMODULE		res_modu_t;
+typedef HANDLE		res_proc_t;
 #endif
 
 #ifdef XDK_SUPPORT_TIMER
@@ -204,12 +205,10 @@ typedef HANDLE		res_timer_t;
 typedef void(__stdcall *WIN_TIMER_PROC)(void* param, unsigned char wait);
 #endif
 
-typedef HANDLE		res_hand_t;
-
 #define INVALID_FILE	((HANDLE)(LONG_PTR)-1)
 
 #ifndef pid_t
-typedef unsigned long	pid_t;
+typedef unsigned int	pid_t;
 #endif
 
 #ifndef uid_t

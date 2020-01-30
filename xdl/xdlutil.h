@@ -56,21 +56,21 @@ XDL_API int skip_utfbom(const byte_t* buf);
 
 XDL_API bool_t is_ip(const tchar_t* addr);
 
-XDL_API void parse_long_range(tchar_t* sz_range, dword_t* phoff, dword_t* ploff, dword_t* psize, long long* ptotal);
+XDL_API void parse_bytes_range(tchar_t* sz_range, dword_t* phoff, dword_t* ploff, dword_t* psize, long long* ptotal);
 
-XDL_API void format_long_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t size, long long total);
+XDL_API void format_bytes_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t size, long long total);
 
 XDL_API bool_t is_zero_size(const tchar_t* fsize);
 
 XDL_API bool_t is_huge_size(const tchar_t* fsize);
 
-XDL_API unsigned long parse_hexnum(const tchar_t* token, int len);
+XDL_API unsigned int parse_hexnum(const tchar_t* token, int len);
 
-XDL_API int format_hexnum(unsigned long n, tchar_t* buf, int max);
+XDL_API int format_hexnum(unsigned int n, tchar_t* buf, int max);
 
-XDL_API int fill_long(long ln, tchar_t* buf, int max);
+XDL_API int fill_integer(int ln, tchar_t* buf, int max);
 
-XDL_API int format_long_ex(long n, const tchar_t* fmt, tchar_t* buf, int max);
+XDL_API int format_integer_ex(int n, const tchar_t* fmt, tchar_t* buf, int max);
 
 XDL_API bool_t is_zero_numeric(double dbl, int scale);
 
@@ -82,9 +82,9 @@ XDL_API int format_money_chs(double dbl, int n_span, tchar_t* buf, int max);
 
 XDL_API int format_ages(const xdate_t* bday, const xdate_t* tday, tchar_t* buf);
 
-XDL_API int format_longlong(unsigned long hl, unsigned long ll, tchar_t* buf);
+XDL_API int format_long(unsigned int hl, unsigned int ll, tchar_t* buf);
 
-XDL_API void parse_longlong(unsigned long* phl, unsigned long* pll, const tchar_t* str);
+XDL_API void parse_long(unsigned int* phl, unsigned int* pll, const tchar_t* str);
 
 XDL_API void reset_date(xdate_t* pmd);
 
@@ -144,7 +144,7 @@ XDL_API void fill_calendar(calendar_t* pca, const xdate_t* pdt);
 
 XDL_API int format_password(const tchar_t* sz, tchar_t* buf, int max);
 
-XDL_API long mul_div_long(long m1, long m2, long d);
+XDL_API int mul_div_int(int m1, int m2, int d);
 
 XDL_API short mul_div_short(short m1, short m2, short d);
 
@@ -212,7 +212,7 @@ XDL_API int compare_rowcol(int from_row, int from_col, int to_row, int to_col);
 
 XDL_API bool_t ft_inside(float x, float y, float x1, float y1, float x2, float y2);
 
-XDL_API bool_t pt_inside(long x, long y, long x1, long y1, long x2, long y2);
+XDL_API bool_t pt_inside(int x, int y, int x1, int y1, int x2, int y2);
 
 XDL_API bool_t ft_in_rect(const xpoint_t* ppt, const xrect_t* prt);
 
@@ -220,19 +220,19 @@ XDL_API bool_t pt_in_rect(const xpoint_t* ppt, const xrect_t* prt);
 
 XDL_API void ft_offset_point(xpoint_t* ppt, float cx, float cy);
 
-XDL_API void pt_offset_point(xpoint_t* ppt, long cx, long cy);
+XDL_API void pt_offset_point(xpoint_t* ppt, int cx, int cy);
 
 XDL_API void ft_center_rect(xrect_t* pxr, float cx, float cy);
 
-XDL_API void pt_center_rect(xrect_t* pxr, long cx, long cy);
+XDL_API void pt_center_rect(xrect_t* pxr, int cx, int cy);
 
 XDL_API void ft_expand_rect(xrect_t* pxr, float cx, float cy);
 
-XDL_API void pt_expand_rect(xrect_t* pxr, long cx, long cy);
+XDL_API void pt_expand_rect(xrect_t* pxr, int cx, int cy);
 
 XDL_API void ft_offset_rect(xrect_t* pxr, float cx, float cy);
 
-XDL_API void pt_offset_rect(xrect_t* pxr, long cx, long cy);
+XDL_API void pt_offset_rect(xrect_t* pxr, int cx, int cy);
 
 XDL_API void ft_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
 

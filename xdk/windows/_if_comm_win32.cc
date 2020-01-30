@@ -163,10 +163,10 @@ void _comm_close(res_file_t fh)
 	CloseHandle(fh);
 }
 
-dword_t _comm_wait(res_file_t fh, async_t* pb)
+dword_t _comm_listen(res_file_t fh, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	DWORD dwCount, dwError, dwLine, dwEvent = 0;
 	COMMTIMEOUTS tms = { 0 };
@@ -195,18 +195,17 @@ dword_t _comm_wait(res_file_t fh, async_t* pb)
 			{
 				dwEvent = COMM_EVNET_ERROR;
 			}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
+
 			if (pb->type == ASYNC_QUEUE)
 			{
-				if (GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
+				if (GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 				{
 					ResetEvent(pov->hEvent);
 				}
 			}
-#endif
 			if (pb->type == ASYNC_EVENT)
 			{
-				if (WaitForSingleObject(pov->hEvent, ((pb->timo)? pb->timo : INFINITE)) == WAIT_OBJECT_0)
+				if (WaitForSingleObject(pov->hEvent, pb->timo) == WAIT_OBJECT_0)
 				{
 					ResetEvent(pov->hEvent);
 				}
@@ -224,7 +223,7 @@ dword_t _comm_wait(res_file_t fh, async_t* pb)
 			ClearCommError(fh, &dwError, NULL);
 			if (pcb)
 			{
-				*pcb = (size_t)dwError;
+				*pcb = dwError;
 			}
 			dwEvent = COMM_EVNET_ERROR;
 		}
@@ -234,7 +233,7 @@ dword_t _comm_wait(res_file_t fh, async_t* pb)
 			ClearCommError(fh, &dwError, NULL);
 			if (pcb)
 			{
-				*pcb = (size_t)dwError;
+				*pcb = dwError;
 			}
 			dwEvent = COMM_EVNET_BREAK;
 		}
@@ -303,12 +302,12 @@ dword_t _comm_wait(res_file_t fh, async_t* pb)
 	return dwEvent;
 }
 
-bool_t _comm_read(res_file_t fh, void* buf, size_t size, async_t* pb)
+bool_t _comm_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
 	return _file_read(fh, buf, size, pb);
 }
 
-bool_t _comm_write(res_file_t fh, void* buf, size_t size, async_t* pb)
+bool_t _comm_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
 	return _file_write(fh, buf, size, pb);
 }

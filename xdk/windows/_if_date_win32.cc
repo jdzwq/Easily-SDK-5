@@ -113,7 +113,7 @@ dword_t _get_times()
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	lowrd_t dif1, dif2;
+	lword_t dif1, dif2;
 	double dif;
 
 	st.wYear = 1970;
@@ -140,7 +140,7 @@ clock_t _get_ticks()
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	ldword_t dif1, dif2;
+	lword_t dif1, dif2;
 	double dif;
 
 	st.wYear = 1970;
@@ -216,7 +216,7 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
 	double fs;
-	ldword_t ss;
+	lword_t ss;
 
 	st.wYear = 1970;
 	st.wMonth = 1;
@@ -229,7 +229,7 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 	SystemTimeToFileTime(&st, &ft);
 
 	fs = ((double)ts / (double)CLOCKS_PER_SEC) * 10000000.0;
-	ss = (ldword_t)fs + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	ss = (lword_t)fs + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	ft.dwLowDateTime = GETLDWORD(ss);
 	ft.dwHighDateTime = GETHDWORD(ss);
@@ -251,7 +251,7 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	ldword_t ss;
+	lword_t ss;
 
 	ss = ts * 10000;
 	ft.dwLowDateTime = GETLDWORD(ss);

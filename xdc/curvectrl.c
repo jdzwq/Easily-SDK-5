@@ -43,11 +43,11 @@ typedef struct _curve_delta_t{
 }curve_delta_t;
 
 #define GETCURVEDELTA(ph) 	(curve_delta_t*)widget_get_user_delta(ph)
-#define SETCURVEDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETCURVEDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /***************************************************************************************/
 
-static int noti_curve_curve(res_win_t widget, unsigned long code, void* data)
+static int noti_curve_curve(res_win_t widget, unsigned int code, void* data)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 
@@ -180,7 +180,7 @@ void hand_curve_size(res_win_t widget, int code, const xsize_t* prs)
 	curvectrl_redraw(widget);
 }
 
-void hand_curve_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_curve_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 
@@ -189,12 +189,12 @@ void hand_curve_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_curve_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_curve_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	XDL_ASSERT(ptd != NULL);
@@ -255,7 +255,7 @@ void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	xpoint_t pt[5];
 	int i;
-	long w;
+	int w;
 
 	XDL_ASSERT(ptd != NULL);
 

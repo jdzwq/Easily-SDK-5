@@ -62,7 +62,7 @@ void* thr_fun(void* param)
     
     res_even_t ev = (res_even_t)param;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -161,18 +161,78 @@ void test_path()
     
 }
 
+typedef struct _sock_param{
+    res_file_t so;
+    res_even_t ev;
+}sock_param;
+
+void* sock_thread(void *param)
+{
+    sock_param* psp = (sock_param*)param;
+    
+    proc_info_t pi = { 0 };
+    
+    xdl_thread_init(0);
+    
+    event_sign(psp->ev, 1);
+    
+    net_addr_t addr;
+    char token[20] = {0};
+    unsigned short port = 0;
+    socket_addr(psp->so, &addr);
+    conv_addr(&addr, &port, token);
+    
+    if (create_process("../sbin/xhttps", "CERT:AAA PASS:123", SHARE_SOCK, &pi))
+    {
+        if(!socket_share(pi.process_id, pi.pip_write, psp->so, NULL, 0))
+            printf("parent error : %s\n", strerror(errno));
+        else
+            printf("parent sock=%d port: %d addr: %s\n", psp->so, (int)port, token);
+        
+        thread_yield();
+        
+        release_process(&pi);
+    }
+    
+    socket_close(psp->so);
+    
+    xdl_thread_uninit(0);
+    
+    thread_stop();
+    
+    return 0;
+}
+
+void test_sock()
+{
+    sock_param sp;
+    
+    sp.so = socket_tcp(0, FILE_OPEN_OVERLAP);
+    sp.ev = event_create();
+    
+    res_thread_t tt;
+    
+    thread_start(&tt, (PF_THREADFUNC)sock_thread, (void*)&sp);
+    
+    thread_join(tt);
+    
+    event_destroy(sp.ev);
+}
+
 int main(int argc, const char * argv[]) {
     xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
     //test_error();
     
-    test_path();
+    //test_path();
     
     //test_thread();
     
     //test_stream();
     
     //test_conv();
+    
+    test_sock();
     
     xdl_process_uninit();
     

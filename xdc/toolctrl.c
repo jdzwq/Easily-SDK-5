@@ -43,7 +43,7 @@ typedef struct _tool_delta_t{
 }tool_delta_t;
 
 #define GETTOOLDELTA(ph) 		(tool_delta_t*)widget_get_user_delta(ph)
-#define SETTOOLDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETTOOLDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 /********************************************************************************************************/
 static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -61,7 +61,7 @@ static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 static void _toolctrl_reset_page(res_win_t widget)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
-	long pw, ph;
+	int pw, ph;
 	xrect_t xr;
 
 	widget_get_client_rect(widget, &xr);
@@ -72,7 +72,7 @@ static void _toolctrl_reset_page(res_win_t widget)
 }
 
 /*********************************************************************************************************/
-int noti_tool_owner(res_win_t widget, unsigned long code, link_t_ptr tool, link_t_ptr ilk, void* data)
+int noti_tool_owner(res_win_t widget, unsigned int code, link_t_ptr tool, link_t_ptr ilk, void* data)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
 	NOTICE_TOOL nf = { 0 };
@@ -119,7 +119,7 @@ void noti_tool_item_enter(res_win_t widget, link_t_ptr plk)
 	}
 }
 
-void noti_tool_item_hover(res_win_t widget, long x, long y)
+void noti_tool_item_hover(res_win_t widget, int x, int y)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
 	xpoint_t xp;

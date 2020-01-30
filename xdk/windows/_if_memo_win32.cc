@@ -52,27 +52,27 @@ void  _heapo_destroy(res_heap_t heap)
 	b = HeapDestroy(heap);
 }
 
-void* _heapo_alloc(res_heap_t heap, size_t size)
+void* _heapo_alloc(res_heap_t heap, dword_t size)
 {
-	return HeapAlloc(heap, HEAP_ZERO_MEMORY, size);
+	return HeapAlloc(heap, HEAP_ZERO_MEMORY, (SIZE_T)size);
 }
 
-void* _heapo_realloc(res_heap_t heap, void* p, size_t size)
+void* _heapo_realloc(res_heap_t heap, void* p, dword_t size)
 {
 	if(!p)
-		return HeapAlloc(heap, HEAP_ZERO_MEMORY, size);
+		return HeapAlloc(heap, HEAP_ZERO_MEMORY, (SIZE_T)size);
 	else
-		return HeapReAlloc(heap, HEAP_ZERO_MEMORY, p, size);
+		return HeapReAlloc(heap, HEAP_ZERO_MEMORY, p, (SIZE_T)size);
 }
 
-void _heapo_zero(res_heap_t heap, void* p, size_t size)
+void _heapo_zero(res_heap_t heap, void* p, dword_t size)
 {
 	if (p)
 	{
 #ifdef WINCE
-		ZeroMemory(p, size);	
+		ZeroMemory(p, (SIZE_T)size);	
 #else
-		SecureZeroMemory(p, size);
+		SecureZeroMemory(p, (SIZE_T)size);
 #endif
 	}
 }
@@ -118,17 +118,17 @@ void _heapo_clean(res_heap_t heap)
 #endif
 /*****************************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_LOCAL
-void* _local_alloc(size_t size)
+void* _local_alloc(dword_t size)
 {
-	return HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size);
+	return HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (SIZE_T)size);
 }
 
-void* _local_realloc(void* p, size_t size)
+void* _local_realloc(void* p, dword_t size)
 {
 	if (!p)
-		return HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size);
+		return HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (SIZE_T)size);
 	else
-		return HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, p, size);
+		return HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, p, (SIZE_T)size);
 }
 
 void _local_free(void* p)
@@ -140,14 +140,14 @@ void _local_free(void* p)
 #endif
 /******************************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_GLOB
-res_glob_t _globo_alloc(size_t size)
+res_glob_t _globo_alloc(dword_t size)
 {
-	return GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE | GMEM_ZEROINIT, size);
+	return GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE | GMEM_ZEROINIT, (SIZE_T)size);
 }
 
-res_glob_t _globo_realloc(res_glob_t glob, size_t size)
+res_glob_t _globo_realloc(res_glob_t glob, dword_t size)
 {
-	return GlobalReAlloc(glob, (size_t)size, GMEM_MOVEABLE | GMEM_DDESHARE | GMEM_ZEROINIT);
+	return GlobalReAlloc(glob, (SIZE_T)size, GMEM_MOVEABLE | GMEM_DDESHARE | GMEM_ZEROINIT);
 }
 
 void _globo_free(res_glob_t glob)
@@ -155,9 +155,9 @@ void _globo_free(res_glob_t glob)
 	GlobalFree(glob);
 }
 
-size_t _globo_size(res_glob_t glob)
+dword_t _globo_size(res_glob_t glob)
 {
-	return (size_t)GlobalSize(glob);
+	return (dword_t)GlobalSize(glob);
 }
 
 void* _globo_lock(res_glob_t glob)
@@ -172,7 +172,7 @@ bool_t _globo_unlock(res_glob_t glob)
 #endif
 /******************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_PAGE
-void* _paged_alloc(size_t size)
+void* _paged_alloc(dword_t size)
 {
 	DWORD dw;
 	void* p;
@@ -190,11 +190,11 @@ void* _paged_alloc(size_t size)
 	return p;
 }
 
-void* _paged_realloc(void* p, size_t size)
+void* _paged_realloc(void* p, dword_t size)
 {
 	MEMORY_BASIC_INFORMATION mbi = { 0 };
 	void* pnew;
-	size_t n;
+	dword_t n;
 	bool_t b;
 
 	if (!p)
@@ -253,7 +253,7 @@ void _paged_free(void* p)
 	}
 }
 
-size_t _paged_size(void* p)
+dword_t _paged_size(void* p)
 {
 	MEMORY_BASIC_INFORMATION mbi = { 0 };
 
@@ -262,7 +262,7 @@ size_t _paged_size(void* p)
 
 	VirtualQuery(p, &mbi, sizeof(mbi));
 	
-	return mbi.RegionSize;
+	return (dword_t)mbi.RegionSize;
 }
 
 void* _paged_lock(void* p)
@@ -355,15 +355,12 @@ void _cache_close(void* fh)
 	VirtualFree(fh, 0, MEM_RELEASE);
 }
 
-bool_t _cache_write(void* fh, size_t off, void* buf, size_t size, size_t* pb)
+bool_t _cache_write(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t size, dword_t* pb)
 {
 	void* pBase = NULL;
-	DWORD loff, hoff, poff;
+	DWORD poff;
 	DWORD dwh, dwl;
-	size_t dlen, flen;
-
-	hoff = GETSIZEH(off);
-	loff = GETSIZEL(off);
+	SIZE_T dlen, flen;
 
 	poff = (loff % PAGE_GRAN);
 	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
@@ -381,7 +378,7 @@ bool_t _cache_write(void* fh, size_t off, void* buf, size_t size, size_t* pb)
 		return 0;
 	}
 
-	CopyMemory((void*)((char*)pBase + poff), buf, size);
+	CopyMemory((void*)((char*)pBase + poff), buf, (SIZE_T)size);
 
 	VirtualFree(pBase, dlen, MEM_DECOMMIT);
 
@@ -390,15 +387,12 @@ bool_t _cache_write(void* fh, size_t off, void* buf, size_t size, size_t* pb)
 	return 1;
 }
 
-bool_t _cache_read(void* fh, size_t off, void* buf, size_t size, size_t* pb)
+bool_t _cache_read(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t size, dword_t* pb)
 {
 	void* pBase = NULL;
-	DWORD loff, hoff, poff;
+	DWORD poff;
 	DWORD dwh, dwl;
-	size_t dlen, flen;
-
-	hoff = GETSIZEH(off);
-	loff = GETSIZEL(off);
+	SIZE_T dlen, flen;
 
 	poff = (loff % PAGE_GRAN);
 	loff = (loff / PAGE_GRAN) * PAGE_GRAN;

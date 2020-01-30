@@ -366,8 +366,8 @@ int utf8_byte_to_ucs(const byte_t* src, wchar_t* dest)
 
 int utf8_to_ucs(const byte_t* src, dword_t slen, wchar_t* dest, int dlen)
 {
-	int seq, count = 0;
-	dword_t i = 0;
+	int count = 0;
+	dword_t seq, i = 0;
 
 	while (i < slen && count < dlen)
 	{
@@ -867,8 +867,8 @@ dword_t ucs_byte_to_utf8(wchar_t ch, byte_t* dest)
 
 dword_t ucs_to_utf8(const wchar_t* src, int slen, byte_t* dest, dword_t dlen)
 {
-	dword_t count = 0;
-	int seq, i = 0;
+	dword_t seq, count = 0;
+	int i = 0;
 
 	if (slen < 0)
 	{
@@ -898,8 +898,8 @@ dword_t ucs_byte_to_utf16lit(wchar_t ch, byte_t* dest)
 
 dword_t ucs_to_utf16lit(const wchar_t* src, int slen, byte_t* dest, dword_t dlen)
 {
-	dword_t count = 0;
-	int seq, i = 0;
+	dword_t seq, count = 0;
+	int i = 0;
 
 	if (slen < 0)
 	{
@@ -928,8 +928,8 @@ dword_t ucs_byte_to_utf16big(wchar_t ch, byte_t* dest)
 
 dword_t ucs_to_utf16big(const wchar_t* src, int slen, byte_t* dest, dword_t dlen)
 {
-	dword_t count = 0;
-	int seq, i = 0;
+	dword_t seq, count = 0;
+	int i = 0;
 
 	if (slen < 0)
 	{
@@ -1048,10 +1048,12 @@ dword_t mbs_byte_to_utf8(const schar_t* src, byte_t* dest)
 #if DEF_MBS == _GB2312
 	return gb2312_byte_to_utf8((byte_t*)src, dest);
 #else
-	int len;
+	dword_t len;
 	len = utf8_sequence(*(byte_t*)src);
 	if (dest)
+    {
 		xmem_copy((void*)dest, (void*)src, len);
+    }
 	return len;
 #endif
 }
@@ -1070,7 +1072,9 @@ dword_t mbs_to_utf8(const schar_t* src, int slen, byte_t* dest, dword_t dlen)
 #else
 	dlen = (dlen < slen) ? dlen : slen;
 	if (dest)
+    {
 		xmem_copy((void*)dest, (void*)src, dlen);
+    }
 	return dlen;
 #endif
 }
@@ -1132,7 +1136,9 @@ dword_t mbs_byte_to_gb2312(const schar_t* src, byte_t* dest)
 	dword_t len;
 	len = gb2312_sequence(*(byte_t*)src);
 	if (dest)
+    {
 		xmem_copy((void*)dest, (void*)src, len);
+    }
 	return len;
 #else
 	return utf8_byte_to_gb2312((byte_t*)src, dest);
@@ -1151,7 +1157,9 @@ dword_t mbs_to_gb2312(const schar_t* src, int slen, byte_t* dest, dword_t dlen)
 #if DEF_MBS == _GB2312
 	dlen = (dlen < (dword_t)slen) ? dlen : (dword_t)slen;
 	if (dest)
+    {
 		xmem_copy((void*)dest, (void*)src, dlen);
+    }
 	return dlen;
 #else
 	return utf8_to_gb2312((byte_t*)src, slen, dest, dlen);
@@ -1186,11 +1194,13 @@ dword_t mbs_to_unn(const schar_t* src, int slen, byte_t* dest, dword_t dlen)
 
 int mbs_byte_to_mbs(const schar_t* src, schar_t* dest)
 {
-	int len;
+	dword_t len;
 	len = mbs_sequence(*(schar_t*)src);
 	if (dest)
+    {
 		xmem_copy((void*)dest, (void*)src, len);
-	return len;
+    }
+	return (int)len;
 }
 
 int mbs_to_mbs(const schar_t* src, int slen, schar_t* dest, int dlen)
@@ -1204,7 +1214,9 @@ int mbs_to_mbs(const schar_t* src, int slen, schar_t* dest, int dlen)
 
 	dlen = (dlen < slen) ? dlen : slen;
 	if (dest)
+    {
 		xmem_copy(dest, (void*)src, dlen);
+    }
 	return dlen;
 }
 
@@ -1339,7 +1351,7 @@ int unn_byte_to_mbs(const byte_t* src, schar_t* dest)
 
 	unn_byte_to_ucs(src, &ch);
 
-	return ucs_byte_to_unn(ch, (byte_t*)dest);
+	return (int)ucs_byte_to_unn(ch, (byte_t*)dest);
 }
 
 int unn_to_mbs(const byte_t* src, dword_t slen, schar_t* dest, int dlen)

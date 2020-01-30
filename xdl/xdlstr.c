@@ -421,10 +421,10 @@ int w_ustoxs(unsigned short s, wchar_t* buf, int n)
 	return len;
 }
 
-long a_xsntol(const schar_t* sz, int n)
+int a_xsntol(const schar_t* sz, int n)
 {
 	bool_t sign = 0;
-	long num = 0;
+	int num = 0;
 	int len = 0;
 	schar_t* token = NULL;
 
@@ -456,10 +456,10 @@ long a_xsntol(const schar_t* sz, int n)
 	return (sign) ? -num : num;
 }
 
-long w_xsntol(const wchar_t* sz, int n)
+int w_xsntol(const wchar_t* sz, int n)
 {
 	bool_t sign = 0;
-	long num = 0;
+	int num = 0;
 	int len = 0;
 	wchar_t* token = NULL;
 
@@ -491,20 +491,20 @@ long w_xsntol(const wchar_t* sz, int n)
 	return (sign) ? -num : num;
 }
 
-long a_xstol(const schar_t* sz)
+int a_xstol(const schar_t* sz)
 {
 	return a_xsntol(sz, a_xslen(sz));
 }
 
-long w_xstol(const wchar_t* sz)
+int w_xstol(const wchar_t* sz)
 {
 	return w_xsntol(sz, w_xslen(sz));
 }
 
-unsigned long a_hexntol(const schar_t* token, int n)
+unsigned int a_hexntol(const schar_t* token, int n)
 {
-	unsigned long k = 0;
-	long c = 0;
+	unsigned int k = 0;
+	int c = 0;
 	int pos = 0;
 
 	if (!n)
@@ -536,10 +536,10 @@ unsigned long a_hexntol(const schar_t* token, int n)
 	return k;
 }
 
-unsigned long w_hexntol(const wchar_t* token, int n)
+unsigned int w_hexntol(const wchar_t* token, int n)
 {
-	unsigned long k = 0;
-	long c = 0;
+	unsigned int k = 0;
+	int c = 0;
 	int pos = 0;
 
 	if (!n)
@@ -571,17 +571,17 @@ unsigned long w_hexntol(const wchar_t* token, int n)
 	return k;
 }
 
-unsigned long a_hextol(const schar_t* sz)
+unsigned int a_hextol(const schar_t* sz)
 {
 	return a_hexntol(sz, a_xslen(sz));
 }
 
-unsigned long w_hextol(const wchar_t* sz)
+unsigned int w_hextol(const wchar_t* sz)
 {
 	return w_hexntol(sz, w_xslen(sz));
 }
 
-int a_ltoxs(long s, schar_t* buf, int n)
+int a_ltoxs(int s, schar_t* buf, int n)
 {
 	int sign = 0;
 	int len = 0;
@@ -622,7 +622,7 @@ int a_ltoxs(long s, schar_t* buf, int n)
 	return len;
 }
 
-int a_ultoxs(unsigned long s, schar_t* buf, int n)
+int a_ultoxs(unsigned int s, schar_t* buf, int n)
 {
 	int len = 0;
 
@@ -647,7 +647,7 @@ int a_ultoxs(unsigned long s, schar_t* buf, int n)
 	return len;
 }
 
-int w_ltoxs(long s, wchar_t* buf, int n)
+int w_ltoxs(int s, wchar_t* buf, int n)
 {
 	int sign = 0;
 	int len = 0;
@@ -688,7 +688,7 @@ int w_ltoxs(long s, wchar_t* buf, int n)
 	return len;
 }
 
-int w_ultoxs(unsigned long s, wchar_t* buf, int n)
+int w_ultoxs(unsigned int s, wchar_t* buf, int n)
 {
 	int len = 0;
 
@@ -713,7 +713,7 @@ int w_ultoxs(unsigned long s, wchar_t* buf, int n)
 	return len;
 }
 
-int a_ltohex(unsigned long s, schar_t type, schar_t* buf, int n)
+int a_ltohex(unsigned int s, schar_t type, schar_t* buf, int n)
 {
 	int len = 0;
 	int us;
@@ -752,7 +752,7 @@ int a_ltohex(unsigned long s, schar_t type, schar_t* buf, int n)
 	return len;
 }
 
-int w_ltohex(unsigned long s, wchar_t type, wchar_t* buf, int n)
+int w_ltohex(unsigned int s, wchar_t type, wchar_t* buf, int n)
 {
 	int len = 0;
 	int us;
@@ -796,8 +796,8 @@ float a_xsntof(const schar_t* sz, int n)
 	bool_t sign = 0;
 	int prec = MAX_FLOAT_DIGI;
 	int mul = 1;
-	long num = 0;
-	long dec = 0; 
+	int num = 0;
+	int dec = 0; 
 	float f = 0;
 	schar_t* token;
 
@@ -855,8 +855,8 @@ float w_xsntof(const wchar_t* sz, int n)
 	int sign = 0;
 	int prec = MAX_FLOAT_DIGI;
 	int mul = 1;
-	long num = 0;
-	long dec = 0; 
+	int num = 0;
+	int dec = 0; 
 	float f = 0;
 	wchar_t* token;
 
@@ -923,7 +923,7 @@ int a_ftoxs(float f, schar_t* buf, int n)
 	int sign = 0;
 	int prec = MAX_FLOAT_DIGI;
 	int dot,len = 0;
-	unsigned long xi;
+	unsigned int xi;
 	int dig;
 	float inc = 5.0;
 
@@ -945,7 +945,7 @@ int a_ftoxs(float f, schar_t* buf, int n)
 
 	f += inc;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 	f -= (float)xi;
 
 	while (len < n)
@@ -985,7 +985,7 @@ int a_ftoxs(float f, schar_t* buf, int n)
 	while (dig--)
 		f *= 10.0;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 
 	dig = prec;
 	while (dig && xi % 10 == 0)
@@ -1027,7 +1027,7 @@ int w_ftoxs(float f, wchar_t* buf, int n)
 	int sign = 0;
 	int prec = MAX_FLOAT_DIGI;
 	int dot, len = 0;
-	unsigned long xi;
+	unsigned int xi;
 	int dig;
 	float inc = 5.0;
 
@@ -1049,7 +1049,7 @@ int w_ftoxs(float f, wchar_t* buf, int n)
 
 	f += inc;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 	f -= (float)xi;
 
 	while (len < n)
@@ -1089,7 +1089,7 @@ int w_ftoxs(float f, wchar_t* buf, int n)
 	while (dig--)
 		f *= 10.0;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 
 	dig = prec;
 	while (dig && xi % 10 == 0)
@@ -1130,8 +1130,8 @@ double a_xsntonum_dig(const schar_t* sz, int n, int prec)
 {
 	bool_t sign = 0;
 	int mul = 1;
-	long num = 0;
-	long dec = 0;
+	int num = 0;
+	int dec = 0;
 	double f = 0;
 	schar_t* token;
 
@@ -1186,8 +1186,8 @@ double w_xsntonum_dig(const wchar_t* sz, int n, int prec)
 {
 	int sign = 0;
 	int mul = 1;
-	long num = 0;
-	long dec = 0;
+	int num = 0;
+	int dec = 0;
 	double f = 0;
 	wchar_t* token;
 
@@ -1272,7 +1272,7 @@ int a_numtoxs_dig(double f, int prec, schar_t* buf, int n)
 {
 	int sign = 0;
 	int dot, len = 0;
-	unsigned long xi;
+	unsigned int xi;
 	int dig;
 	double inc = 5.0;
 
@@ -1297,7 +1297,7 @@ int a_numtoxs_dig(double f, int prec, schar_t* buf, int n)
 
 	f += inc;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 	f -= (double)xi;
 
 	while (len < n)
@@ -1337,7 +1337,7 @@ int a_numtoxs_dig(double f, int prec, schar_t* buf, int n)
 	while (dig--)
 		f *= 10.0;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 
 	dig = prec;
 	while (dig && xi % 10 == 0)
@@ -1377,7 +1377,7 @@ int w_numtoxs_dig(double f, int prec, wchar_t* buf, int n)
 {
 	int sign = 0;
 	int dot, len = 0;
-	unsigned long xi;
+	unsigned int xi;
 	int dig;
 	double inc = 5.0;
 
@@ -1402,7 +1402,7 @@ int w_numtoxs_dig(double f, int prec, wchar_t* buf, int n)
 
 	f += inc;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 	f -= (double)xi;
 
 	while (len < n)
@@ -1442,7 +1442,7 @@ int w_numtoxs_dig(double f, int prec, wchar_t* buf, int n)
 	while (dig--)
 		f *= 10.0;
 
-	xi = (unsigned long)(f);
+	xi = (unsigned int)(f);
 
 	dig = prec;
 	while (dig && xi % 10 == 0)
@@ -3026,9 +3026,10 @@ int a_tk_printf(schar_t* buf,schar_t flag,int width,int prec,schar_t size,schar_
 	int len,pos;
 	short s;
 	unsigned short us;
-	long i;
-	long long li;
-	unsigned long ui;
+	int i;
+	unsigned int ui;
+	long long l;
+	unsigned long long ul;
 	double dbl;
 	schar_t* sz;
 	wchar_t* wz;
@@ -3100,16 +3101,16 @@ int a_tk_printf(schar_t* buf,schar_t flag,int width,int prec,schar_t size,schar_
 		}else if (size == 'l')
 		{
 			pos = 0;
-			li = va_arg(*parg, long long);
+			l = va_arg(*parg, long long);
 			if (flag == '+')
 			{
-				if (li < 0)
+				if (l < 0)
 				{
 					if (buf)
 					{
 						buf[pos] = '-';
 					}
-					li = 0 - li;
+					l = 0 - l;
 				}
 				else
 				{
@@ -3122,19 +3123,19 @@ int a_tk_printf(schar_t* buf,schar_t flag,int width,int prec,schar_t size,schar_
 			}
 			else
 			{
-				if (li < 0)
+				if (l < 0)
 				{
 					if (buf)
 					{
 						buf[pos] = '-';
 					}
-					li = 0 - li;
+					l = 0 - l;
 					pos++;
 				}
 			}
 			if (width)
 			{
-				len = width - a_lltoxs(li, NULL, width);
+				len = width - a_lltoxs(l, NULL, width);
 				while (len > 0)
 				{
 					if (buf)
@@ -3149,12 +3150,12 @@ int a_tk_printf(schar_t* buf,schar_t flag,int width,int prec,schar_t size,schar_
 			{
 				width = NUM_LEN;
 			}
-			return pos + a_lltoxs(li, ((buf) ? buf + pos : NULL), width);
+			return pos + a_lltoxs(l, ((buf) ? buf + pos : NULL), width);
 		}
 		else
 		{
 			pos = 0;
-			i = va_arg(*parg,long);
+			i = va_arg(*parg,int);
 			if (flag == '+')
 			{
 				if (i < 0)
@@ -3230,10 +3231,33 @@ int a_tk_printf(schar_t* buf,schar_t flag,int width,int prec,schar_t size,schar_
 			}
 			return pos + a_ustoxs(us, ((buf)? buf + pos : NULL),width);
 		}
+		else if (size == 'l')
+		{
+			pos = 0;
+			ul = va_arg(*parg, unsigned long long);
+			if (width)
+			{
+				len = width - a_lltoxs(ul, NULL, width);
+				while (len > 0)
+				{
+					if (buf)
+					{
+						buf[pos] = '0';
+					}
+					pos++;
+					len--;
+				}
+			}
+			else
+			{
+				width = NUM_LEN;
+			}
+			return pos + a_lltoxs(ul, ((buf) ? buf + pos : NULL), width);
+		}
 		else
 		{
 			pos = 0;
-			ui = va_arg(*parg, unsigned long);
+			ui = va_arg(*parg, unsigned int);
 			if (width)
 			{
 				len = width - a_ultoxs(ui, NULL,width);
@@ -3255,7 +3279,7 @@ int a_tk_printf(schar_t* buf,schar_t flag,int width,int prec,schar_t size,schar_
 		}
 	case 'x':
 	case 'X':
-		ui = va_arg(*parg,unsigned long);
+		ui = va_arg(*parg,unsigned int);
 		pos = 0;
 		if (flag == '#')
 		{
@@ -3339,9 +3363,10 @@ int w_tk_printf(wchar_t* buf,wchar_t flag,int width,int prec,wchar_t size,wchar_
 	int len, pos;
 	short s;
 	unsigned short us;
-	long i;
-	long long li;
-	unsigned long ui;
+	int i;
+	unsigned int ui;
+	long long l;
+	unsigned long long ul;
 	double dbl;
 	wchar_t* sz;
 	schar_t* wz;
@@ -3414,16 +3439,16 @@ int w_tk_printf(wchar_t* buf,wchar_t flag,int width,int prec,wchar_t size,wchar_
 		else if (size == L'l')
 		{
 			pos = 0;
-			li = va_arg(*parg, long long);
+			l = va_arg(*parg, long long);
 			if (flag == L'+')
 			{
-				if (li < 0)
+				if (l < 0)
 				{
 					if (buf)
 					{
 						buf[pos] = L'-';
 					}
-					li = 0 - li;
+					l = 0 - l;
 				}
 				else
 				{
@@ -3436,19 +3461,19 @@ int w_tk_printf(wchar_t* buf,wchar_t flag,int width,int prec,wchar_t size,wchar_
 			}
 			else
 			{
-				if (li < 0)
+				if (l < 0)
 				{
 					if (buf)
 					{
 						buf[pos] = L'-';
 					}
-					li = 0 - li;
+					l = 0 - l;
 					pos++;
 				}
 			}
 			if (width)
 			{
-				len = width - w_lltoxs(li, NULL, width);
+				len = width - w_lltoxs(l, NULL, width);
 				while (len > 0)
 				{
 					if (buf)
@@ -3463,12 +3488,12 @@ int w_tk_printf(wchar_t* buf,wchar_t flag,int width,int prec,wchar_t size,wchar_
 			{
 				width = NUM_LEN;
 			}
-			return pos + w_lltoxs(li, ((buf) ? buf + pos : NULL), width);
+			return pos + w_lltoxs(l, ((buf) ? buf + pos : NULL), width);
 		}
 		else
 		{
 			pos = 0;
-			i = va_arg(*parg, long);
+			i = va_arg(*parg, int);
 			if (flag == L'+')
 			{
 				if (i < 0)
@@ -3544,10 +3569,33 @@ int w_tk_printf(wchar_t* buf,wchar_t flag,int width,int prec,wchar_t size,wchar_
 			}
 			return pos + w_ustoxs(us, ((buf) ? buf + pos : NULL), width);
 		}
+		else if (size == L'l')
+		{
+			pos = 0;
+			ul = va_arg(*parg, unsigned long long);
+			if (width)
+			{
+				len = width - w_lltoxs(ul, NULL, width);
+				while (len > 0)
+				{
+					if (buf)
+					{
+						buf[pos] = L'0';
+					}
+					pos++;
+					len--;
+				}
+			}
+			else
+			{
+				width = NUM_LEN;
+			}
+			return pos + w_lltoxs(ul, ((buf) ? buf + pos : NULL), width);
+		}
 		else
 		{
 			pos = 0;
-			ui = va_arg(*parg, unsigned long);
+			ui = va_arg(*parg, unsigned int);
 			if (width)
 			{
 				len = width - w_ultoxs(ui, NULL, width);
@@ -3569,7 +3617,7 @@ int w_tk_printf(wchar_t* buf,wchar_t flag,int width,int prec,wchar_t size,wchar_
 		}
 	case L'x':
 	case L'X':
-		ui = va_arg(*parg, unsigned long);
+		ui = va_arg(*parg, unsigned int);
 		pos = 0;
 		if (flag == L'#')
 		{
@@ -4084,10 +4132,11 @@ const schar_t* a_tk_scanf(const schar_t* token, schar_t size, schar_t type, va_l
 	int pos;
 	schar_t* pch;
 	short *ps;
-	long *pi;
-	long long *pli;
 	unsigned short *pus;
-	unsigned long *pui;
+	int *pi;
+	unsigned int *pui;
+	long long *pl;
+	unsigned long long *pul;
 	double *pdb;
 
 	switch (type)
@@ -4109,16 +4158,16 @@ const schar_t* a_tk_scanf(const schar_t* token, schar_t size, schar_t type, va_l
 		else if (size == 'l')
 		{
 			pos = 0;
-			pli = va_arg(*parg, long long*);
+			pl = va_arg(*parg, long long*);
 
 			pos = a_test_numeric(token, -1);
-			*pli = a_xsntoll(token, pos);
+			*pl = a_xsntoll(token, pos);
 			return token + pos;
 		}
 		else
 		{
 			pos = 0;
-			pi = va_arg(*parg, long*);
+			pi = va_arg(*parg, int*);
 
 			pos = a_test_numeric(token, -1);
 			*pi = a_xsntol(token, pos);
@@ -4134,21 +4183,29 @@ const schar_t* a_tk_scanf(const schar_t* token, schar_t size, schar_t type, va_l
 			pos = a_test_numeric(token, -1);
 			*pus = (unsigned short)a_xsntos(token, pos);
 			return token + pos;
+		}else if (size == 'l')
+		{
+			pos = 0;
+			pul = va_arg(*parg, unsigned long long*);
+
+			pos = a_test_numeric(token, -1);
+			*pul = (unsigned long long)a_xsntoll(token, pos);
+			return token + pos;
 		}
 		else
 		{
 			pos = 0;
-			pui = va_arg(*parg, unsigned long*);
+			pui = va_arg(*parg, unsigned int*);
 
 			pos = a_test_numeric(token, -1);
-			*pui = (unsigned long)a_xsntol(token, pos);
+			*pui = (unsigned int)a_xsntol(token, pos);
 			return token + pos;
 		}
 		break;
 	case 'x':
 	case 'X':
 		pos = 0;
-		pui = va_arg(*parg, unsigned long*);
+		pui = va_arg(*parg, unsigned int*);
 
 		pos = a_test_hex(token, -1);
 		*pui = a_hexntol(token, pos);
@@ -4169,11 +4226,12 @@ const wchar_t* w_tk_scanf(const wchar_t* token, wchar_t size, wchar_t type, va_l
 {
 	int pos;
 	wchar_t* pch;
-	short *ps;
-	long *pi;
-	long long *pli;
+	short *ps; 
 	unsigned short *pus;
-	unsigned long *pui;
+	int *pi;
+	unsigned int *pui;
+	long long *pl;
+	unsigned long long* pul;
 	double *pdb;
 
 	switch (type)
@@ -4195,16 +4253,16 @@ const wchar_t* w_tk_scanf(const wchar_t* token, wchar_t size, wchar_t type, va_l
 		else if (size == L'l')
 		{
 			pos = 0;
-			pli = va_arg(*parg, long long*);
+			pl = va_arg(*parg, long long*);
 
 			pos = w_test_numeric(token, -1);
-			*pli = w_xsntoll(token, pos);
+			*pl = w_xsntoll(token, pos);
 			return token + pos;
 		}
 		else
 		{
 			pos = 0;
-			pi = va_arg(*parg, long*);
+			pi = va_arg(*parg, int*);
 
 			pos = w_test_numeric(token, -1);
 			*pi = w_xsntol(token, pos);
@@ -4220,21 +4278,29 @@ const wchar_t* w_tk_scanf(const wchar_t* token, wchar_t size, wchar_t type, va_l
 			pos = w_test_numeric(token, -1);
 			*pus = (unsigned short)w_xsntos(token, pos);
 			return token + pos;
+		}else if (size == L'l')
+		{
+			pos = 0;
+			pul = va_arg(*parg, unsigned long long*);
+
+			pos = w_test_numeric(token, -1);
+			*pul = (unsigned short)w_xsntoll(token, pos);
+			return token + pos;
 		}
 		else
 		{
 			pos = 0;
-			pui = va_arg(*parg, unsigned long*);
+			pui = va_arg(*parg, unsigned int*);
 
 			pos = w_test_numeric(token, -1);
-			*pui = (unsigned long)w_xsntol(token, pos);
+			*pui = (unsigned int)w_xsntol(token, pos);
 			return token + pos;
 		}
 		break;
 	case L'x':
 	case L'X':
 		pos = 0;
-		pui = va_arg(*parg, unsigned long*);
+		pui = va_arg(*parg, unsigned int*);
 
 		pos = w_test_hex(token, -1);
 		*pui = w_hexntol(token, pos);

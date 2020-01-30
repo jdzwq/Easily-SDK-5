@@ -46,8 +46,8 @@ typedef struct _form_delta_t{
 	link_t_ptr hover;
 
 	int org_hint;
-	long org_x, org_y;
-	long cur_x, cur_y;
+	int org_x, org_y;
+	int cur_x, cur_y;
 	short cur_page;
 	short max_page;
 
@@ -65,7 +65,7 @@ typedef struct _form_delta_t{
 }form_delta_t;
 
 #define GETFORMDELTA(ph) 	(form_delta_t*)widget_get_user_delta(ph)
-#define SETFORMDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETFORMDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /******************************************form event********************************************************/
 static void _formctrl_done(res_win_t widget)
@@ -343,7 +343,7 @@ static void _formctrl_reset_page(res_win_t widget)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -389,7 +389,7 @@ static void _formctrl_reset_group(res_win_t widget)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	LINKPTR flk;
-	long gid;
+	int gid;
 
 	XDL_ASSERT(ptd->field);
 
@@ -430,7 +430,7 @@ static void _formctrl_reset_group(res_win_t widget)
 	}
 }
 /*********************************************************************************************************/
-int noti_form_owner(res_win_t widget, unsigned long code, link_t_ptr form, link_t_ptr flk, void* data)
+int noti_form_owner(res_win_t widget, unsigned int code, link_t_ptr form, link_t_ptr flk, void* data)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	NOTICE_FORM nf = { 0 };
@@ -574,7 +574,7 @@ void noti_form_field_leave(res_win_t widget)
 	}
 }
 
-void noti_form_field_hover(res_win_t widget, long x, long y)
+void noti_form_field_hover(res_win_t widget, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	xpoint_t xp;
@@ -586,7 +586,7 @@ void noti_form_field_hover(res_win_t widget, long x, long y)
 	noti_form_owner(widget, NC_FIELDHOVER, ptd->form, ptd->hover, (void*)&xp);
 }
 
-void noti_form_field_drag(res_win_t widget, long x, long y)
+void noti_form_field_drag(res_win_t widget, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	xpoint_t pt;
@@ -608,7 +608,7 @@ void noti_form_field_drag(res_win_t widget, long x, long y)
 	noti_form_owner(widget, NC_FIELDDRAG, ptd->form, ptd->field, (void*)&pt);
 }
 
-void noti_form_field_drop(res_win_t widget, long x, long y)
+void noti_form_field_drop(res_win_t widget, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	
@@ -616,7 +616,7 @@ void noti_form_field_drop(res_win_t widget, long x, long y)
 	xrect_t xr;
 	link_t_ptr flk;
 	int gid;
-	long cx, cy;
+	int cx, cy;
 	canvbox_t cb;
 
 	XDL_ASSERT(ptd->field);
@@ -672,8 +672,8 @@ void noti_form_field_drop(res_win_t widget, long x, long y)
 	
 		widgetex_point_to_tm(widget, &pt);
 
-		pt.fx = (float)((long)(pt.fx));
-		pt.fy = (float)((long)(pt.fy));
+		pt.fx = (float)((int)(pt.fx));
+		pt.fy = (float)((int)(pt.fy));
 
 		set_field_x(flk, pt.fx);
 		set_field_y(flk, pt.fy);
@@ -688,7 +688,7 @@ void noti_form_field_drop(res_win_t widget, long x, long y)
 	noti_form_owner(widget, NC_FIELDDROP, ptd->form, ptd->field, (void*)&pt);
 }
 
-void noti_form_field_sizing(res_win_t widget, int hint, long x, long y)
+void noti_form_field_sizing(res_win_t widget, int hint, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
@@ -721,7 +721,7 @@ void noti_form_field_sizing(res_win_t widget, int hint, long x, long y)
 	noti_form_owner(widget, NC_FIELDSIZING, ptd->form, ptd->field, NULL);
 }
 
-void noti_form_field_sized(res_win_t widget, long x, long y)
+void noti_form_field_sized(res_win_t widget, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	float minw, minh, fw, fh;
@@ -775,8 +775,8 @@ void noti_form_field_sized(res_win_t widget, long x, long y)
 	if (fh < minh)
 		fh = minh;
 
-	fw = (float)((long)fw);
-	fh = (float)((long)fh);
+	fw = (float)((int)fw);
+	fh = (float)((int)fh);
 
 	if (hint == FORM_HINT_HORZ_SPLIT)
 	{
@@ -801,7 +801,7 @@ void noti_form_field_sized(res_win_t widget, long x, long y)
 	noti_form_owner(widget, NC_FIELDSIZED, ptd->form, ptd->field, NULL);
 }
 
-void noti_form_begin_group(res_win_t widget, long x, long y)
+void noti_form_begin_group(res_win_t widget, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
@@ -816,7 +816,7 @@ void noti_form_begin_group(res_win_t widget, long x, long y)
 	ptd->org_y = y;
 }
 
-void noti_form_end_group(res_win_t widget, long x, long y)
+void noti_form_end_group(res_win_t widget, int x, int y)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	link_t_ptr flk;
@@ -1861,7 +1861,7 @@ void hand_form_size(res_win_t widget, int code, const xsize_t* prs)
 	formctrl_redraw(widget, 1);
 }
 
-void hand_form_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_form_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	xrect_t xr;
@@ -1888,12 +1888,12 @@ void hand_form_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	}
 }
 
-void hand_form_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_form_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	XDL_ASSERT(ptd != NULL);
@@ -2420,7 +2420,7 @@ void hand_form_undo(res_win_t widget)
 	_formctrl_undo(widget);
 }
 
-void hand_form_child_command(res_win_t widget, int code, var_long data)
+void hand_form_child_command(res_win_t widget, int code, var_int data)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
@@ -2435,7 +2435,7 @@ void hand_form_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_form_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_form_menu_command(res_win_t widget, int code, int cid, var_int data)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
@@ -2444,7 +2444,7 @@ void hand_form_menu_command(res_win_t widget, int code, int cid, var_long data)
 
 	if (widget_get_user_id(ptd->editor) == cid && code)
 	{
-		widget_post_command(widget_get_owner(widget), code, IDC_CHILD, (var_long)ptd->editor);
+		widget_post_command(widget_get_owner(widget), code, IDC_CHILD, (var_int)ptd->editor);
 	}
 }
 

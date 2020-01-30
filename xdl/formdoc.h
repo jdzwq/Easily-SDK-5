@@ -736,17 +736,17 @@ XDL_API bool_t get_field_boolean(link_t_ptr flk);
 /*
 @FUNCTION set_field_integer: set the field integer value.
 @INPUT link_t_ptr flk: the field link component.
-@INPUT long n: the integer value.
+@INPUT int n: the integer value.
 @RETURN void: none.
 */
-XDL_API void set_field_integer(link_t_ptr flk, long n);
+XDL_API void set_field_integer(link_t_ptr flk, int n);
 
 /*
 @FUNCTION get_field_integer: get the field integer value.
 @INPUT link_t_ptr flk: the field link component.
-@RETURN long: return field integer value.
+@RETURN int: return field integer value.
 */
-XDL_API long get_field_integer(link_t_ptr flk);
+XDL_API int get_field_integer(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_numeric: set the field numeric value.

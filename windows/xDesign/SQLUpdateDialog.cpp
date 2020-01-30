@@ -47,7 +47,7 @@ typedef struct tagSQLUpdateDlgDelta{
 
 
 #define GETSQLUPDATEDLGDELTA(ph) 		(SQLUpdateDlgDelta*)widget_get_user_delta(ph)
-#define SETSQLUPDATEDLGDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETSQLUPDATEDLGDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 void SQLUpdateDlg_OnOK(res_win_t widget)
 {
@@ -232,7 +232,7 @@ void SQLUpdateDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void SQLUpdateDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void SQLUpdateDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	SQLUpdateDlgDelta* pdt = GETSQLUPDATEDLGDELTA(widget);
 

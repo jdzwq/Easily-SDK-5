@@ -56,7 +56,12 @@ jmp_buf* thread_jump_buff(void)
 
 #ifdef XDK_SUPPORT_THREAD
 
-void xdl_thread_init()
+static void _action_pipe(int sig)
+{
+    
+}
+
+void xdl_thread_init(int master)
 {
 	if_zone_t* pzn;
 	if_jump_t* pju;
@@ -67,11 +72,16 @@ void xdl_thread_init()
 #endif
     dword_t tid;
 
-	XDL_ASSERT(XDL_MOUNTED);
+    XDL_ASSERT(XDL_MOUNTED);
 
 	piv = PROCESS_MEMO_INTERFACE;
 	pit = PROCESS_THREAD_INTERFACE;
 
+    if(!master)
+    {
+        (*pit->pf_thread_safe)();
+    }
+    
     tid = (*pit->pf_thread_get_id)();
 
 #ifdef XDK_SUPPORT_MEMO_HEAP  
@@ -235,6 +245,9 @@ static int _is_big_endian()
 //mount system call
 void xdl_process_init(dword_t opt)
 {
+#if defined(XDK_SUPPORT_PROCESS)
+    if_process_t* pro;
+#endif
 #if defined(XDK_SUPPORT_THREAD)
 	if_thread_t* pit;
 #endif
@@ -244,13 +257,19 @@ void xdl_process_init(dword_t opt)
 #endif
 
 	if (g_xdl_mou.if_ok)
-		return ;
+		return;
 
-	g_xdl_mou.if_ok = 1;
-
+    g_xdl_mou.if_ok = 1;
 	g_xdl_mou.if_opt = opt;
 
 	//g_xdl_mou.if_big = _is_big_endian();
+    
+#ifdef XDK_SUPPORT_PROCESS
+    xdk_impl_process(&g_xdl_mou.if_process);
+    
+    pro = PROCESS_PROCESS_INTERFACE;
+    (*pro->pf_process_safe)();
+#endif
 
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	xdk_impl_memo_heap(&g_xdl_mou.if_memo);
@@ -345,11 +364,6 @@ void xdl_process_init(dword_t opt)
 	xdk_impl_date(&g_xdl_mou.if_date);
 #endif
 
-#ifdef XDK_SUPPORT_PROCESS
-	xdk_impl_process(&g_xdl_mou.if_process);
-#endif
-
-
 #ifdef XDK_SUPPORT_THREAD
 	pit = PROCESS_THREAD_INTERFACE;
 	g_xdl_mou.thread_id = (*pit->pf_thread_get_id)();
@@ -388,7 +402,7 @@ void xdl_process_init(dword_t opt)
 
 #ifdef XDK_SUPPORT_THREAD
 	//init the master thread local heap, error handler
-	xdl_thread_init();
+	xdl_thread_init(1);
 #endif
 
 #if defined(GPL_SUPPORT_ACP) && !defined(XDK_SUPPORT_MBCS)

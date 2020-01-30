@@ -79,11 +79,11 @@ XDL_API float svg_pt_per_mm(canvas_t canv, bool_t horz);
 /*
 @FUNCTION svg_pt_to_tm: mapping points to millimeter in svg canvas.
 @INPUT canvas_t canv: the svg canvas object.
-@INPUT long pt: the points value.
+@INPUT int pt: the points value.
 @INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
 @RETURN float: return the value in millimeter.
 */
-XDL_API float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz);
+XDL_API float svg_pt_to_tm(canvas_t canv, int pt, bool_t horz);
 
 /*
 @FUNCTION svg_tm_to_pt: mapping millimeter to points in svg canvas.
@@ -92,7 +92,7 @@ XDL_API float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz);
 @INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
 @RETURN float: return the value in points.
 */
-XDL_API long svg_tm_to_pt(canvas_t canv, float tm, bool_t horz);
+XDL_API int svg_tm_to_pt(canvas_t canv, float tm, bool_t horz);
 
 /*
 @FUNCTION svg_rect_tm_to_pt: mapping rectangle points to millimeter in svg canvas.

@@ -61,7 +61,7 @@ LICENSE.GPL3 for more details.
 
 #define	LIT_ENDIAN	1234	/* least-significant byte first (vax, pc) */
 #define	BIG_ENDIAN	4321	/* most-significant byte first (IBM, net) */
-#define	PDP_ENDIAN	3412	/* LSB first in word, MSW first in long (pdp)*/
+#define	PDP_ENDIAN	3412	/* LSB first in word, MSW first in int (pdp)*/
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__i386__) || defined(__x86_64__) || defined(__amd64__) || \
    defined(vax) || defined(ns32000) || defined(sun386) || \
@@ -121,14 +121,12 @@ typedef char			tchar_t;
 typedef char			schar_t;
 #endif
 
-#ifdef _OS_64
-typedef unsigned long	bool_t;
-#else
-typedef unsigned short	bool_t;
-#endif
-
 #ifndef byte_t
 typedef unsigned char	byte_t;
+#endif
+
+#ifndef bool_t
+typedef unsigned int	bool_t;
 #endif
 
 #ifndef sword_t
@@ -136,7 +134,7 @@ typedef unsigned short	sword_t;
 #endif
 
 #ifndef dword_t
-typedef unsigned long	dword_t;
+typedef unsigned int	dword_t;
 #endif
 
 #ifndef lword_t
@@ -146,7 +144,7 @@ typedef unsigned long long lword_t;
 #ifdef _OS_64
 typedef long long		var_long;
 #else
-typedef long			var_long;
+typedef int				var_long;
 #endif
 
 #ifndef stamp_t
@@ -227,10 +225,10 @@ typedef int				wait_t;
 
 #define GET_BYTE(buf,off)			((unsigned char)(buf[off] & 0xFF))
 #define GET_SWORD_LIT(buf,off)		((((unsigned short)(buf[off + 1]) << 8) & 0xFF00) | ((unsigned short)(buf[off]) & 0x00FF))
-#define GET_DWORD_LIT(buf,off)		((((unsigned long)(buf[off + 3]) << 24) & 0xFF000000) | (((unsigned long)(buf[off + 2]) << 16) & 0x00FF0000)  | (((unsigned long)(buf[off + 1]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off]) & 0x000000FF))
+#define GET_DWORD_LIT(buf,off)		((((unsigned int)(buf[off + 3]) << 24) & 0xFF000000) | (((unsigned int)(buf[off + 2]) << 16) & 0x00FF0000)  | (((unsigned int)(buf[off + 1]) << 8) & 0x0000FF00) | ((unsigned int)(buf[off]) & 0x000000FF))
 #define GET_LWORD_LIT(buf,off)      LIT_MAKELWORD(GET_DWORD_LIT(buf,off),GET_DWORD_LIT(buf,(off + 4)))
 #define GET_SWORD_BIG(buf,off)		((((unsigned short)(buf[off]) << 8) & 0xFF00) | ((unsigned short)(buf[off+1]) & 0x00FF))
-#define GET_DWORD_BIG(buf,off)		((((unsigned long)(buf[off]) << 24) & 0xFF000000)  | (((unsigned long)(buf[off + 1]) << 16) & 0x00FF0000) | (((unsigned long)(buf[off + 2]) << 8) & 0x0000FF00) | ((unsigned long)(buf[off + 3]) & 0x000000FF))
+#define GET_DWORD_BIG(buf,off)		((((unsigned int)(buf[off]) << 24) & 0xFF000000)  | (((unsigned int)(buf[off + 1]) << 16) & 0x00FF0000) | (((unsigned int)(buf[off + 2]) << 8) & 0x0000FF00) | ((unsigned int)(buf[off + 3]) & 0x000000FF))
 #define GET_LWORD_BIG(buf,off)      (BIG_MAKELWORD(GET_DWORD_BIG(buf,off),GET_DWORD_BIG(buf,(off + 4)))
 
 #define PUT_SWORD_NET		PUT_SWORD_BIG
@@ -258,12 +256,12 @@ typedef int				wait_t;
 
 #ifdef _OS_64
 #define LIT_MAKESIZE(lw,hw)		((((size_t)(hw) << 32) & 0xFFFFFFFF00000000) | ((size_t)(lw) & 0x00000000FFFFFFFF))
-#define LIT_GETSIZEH(ll)		(unsigned long)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
-#define LIT_GETSIZEL(ll)		(unsigned long)((size_t)(ll) & 0x00000000FFFFFFFF)
+#define LIT_GETSIZEH(ll)		(unsigned int)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
+#define LIT_GETSIZEL(ll)		(unsigned int)((size_t)(ll) & 0x00000000FFFFFFFF)
 
 #define BIG_MAKESIZE(lw,hw)		((((size_t)(lw) << 32) & 0xFFFFFFFF00000000) | (size_t)(hw) & 0x00000000FFFFFFFF))
-#define BIG_GETSIZEH(ll)		(unsigned long)((size_t)(ll) & 0x00000000FFFFFFFF)
-#define BIG_GETSIZEL(ll)		(unsigned long)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
+#define BIG_GETSIZEH(ll)		(unsigned int)((size_t)(ll) & 0x00000000FFFFFFFF)
+#define BIG_GETSIZEL(ll)		(unsigned int)(((size_t)(ll) >> 32) & 0x00000000FFFFFFFF)
 
 #if BYTE_ORDER == BIG_ENDIAN
 #define MAKESIZE			BIG_MAKESIZE
@@ -277,8 +275,8 @@ typedef int				wait_t;
 
 #else
 #define MAKESIZE(l,h)		((size_t)l)
-#define GETSIZEH(ll)		((unsigned long)0)
-#define GETSIZEL(ll)		((unsigned long)(ll))
+#define GETSIZEH(ll)		((unsigned int)0)
+#define GETSIZEL(ll)		((unsigned int)(ll))
 #endif /*_OS_64*/
 
 #ifdef _OS_64
@@ -428,7 +426,7 @@ typedef int				wait_t;
 typedef struct async_t{
 	int type;		/*the async type, can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE*/
 	dword_t timo;		/*the timeout value in millisecond*/
-	size_t size;	/*async operation data bytes*/
+	dword_t size;	/*async operation data bytes*/
 
 	void* lapp;		/*inner overlapped struct*/
 #ifdef XDK_SUPPORT_THREAD_QUEUE
@@ -659,8 +657,8 @@ typedef struct _sys_info_t{
 }sys_info_t;
 
 typedef struct _proc_info_t{
-	res_hand_t process_handle;
-	res_hand_t thread_handle;
+	res_proc_t process_handle;
+	res_thread_t thread_handle;
 
 	pid_t process_id;
 	pid_t thread_id;
@@ -697,10 +695,10 @@ typedef struct _accel_t{
 }accel_t;
 
 typedef struct _dev_cap_t{
-	long horz_res, vert_res;
-	long horz_pixels, vert_pixels;
-	long horz_feed, vert_feed;
-	long horz_size, vert_size;
+	int horz_res, vert_res;
+	int horz_pixels, vert_pixels;
+	int horz_feed, vert_feed;
+	int horz_size, vert_size;
 }dev_cap_t;
 
 typedef struct _dev_prn_t{
@@ -742,41 +740,41 @@ typedef struct _clr_mod_t{
 
 typedef struct _xrect_t{
 	union{
-		long x;
+		int x;
 		float fx;
 	};
 	union{
-		long y;
+		int y;
 		float fy;
 	};
 	union{
-		long w;
+		int w;
 		float fw;
 	};
 	union{
-		long h;
+		int h;
 		float fh;
 	};
 }xrect_t;
 
 typedef struct _xpoint_t{
 	union{
-		long x;
+		int x;
 		float fx;
 	};
 	union{
-		long y;
+		int y;
 		float fy;
 	};
 }xpoint_t;
 
 typedef struct _xsize_t{
 	union{
-		long cx;
+		int cx;
 		float fx;
 	};
 	union{
-		long cy;
+		int cy;
 		float fy;
 	};
 }xsize_t;
@@ -785,13 +783,13 @@ typedef struct _xsize_t{
 #define RECTSIZE(pxr)	((xsize_t*)pxr + 1)
 
 typedef struct _shadow_t{
-	long offx;
-	long offy;
+	int offx;
+	int offy;
 }shadow_t;
 
 typedef struct _adorn_t{
-	long feed;
-	long size;
+	int feed;
+	int size;
 }adorn_t;
 
 typedef struct _xgradi_t{
@@ -841,20 +839,20 @@ typedef struct _ximage_t{
 
 
 typedef struct _border_t{
-	long title;
-	long edge;
-	long hscroll;
-	long vscroll;
-	long menu;
-	long icon;
+	int title;
+	int edge;
+	int hscroll;
+	int vscroll;
+	int menu;
+	int icon;
 }border_t;
 
 typedef struct _scroll_t{
-	long pos;
-	long min;
-	long max;
-	long page;
-	long track;
+	int pos;
+	int min;
+	int max;
+	int page;
+	int track;
 }scroll_t;
 
 typedef struct _str_find_t{
@@ -880,8 +878,8 @@ typedef int(STDCALL *PF_ENUM_WINDOW_PROC)(res_win_t widget, var_long pv);
 /*define widget notify header*/
 typedef struct _NOTICE{
 	res_win_t widget;
-	unsigned long id;
-	unsigned long code;
+	unsigned int id;
+	unsigned int code;
 }NOTICE, *LPNOTICE;
 
 /*subclass widget event*/
@@ -890,11 +888,11 @@ typedef int(*SUB_ON_LBUTTON_UP)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_LBUTTON_DBCLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_RBUTTON_DOWN)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_RBUTTON_UP)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOUSE_MOVE)(res_win_t, unsigned long, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOUSE_HOVER)(res_win_t, unsigned long, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOUSE_LEAVE)(res_win_t, unsigned long, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_WHEEL)(res_win_t, bool_t, long, uid_t, var_long);
-typedef int(*SUB_ON_SCROLL)(res_win_t, bool_t, long, uid_t, var_long);
+typedef int(*SUB_ON_MOUSE_MOVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
+typedef int(*SUB_ON_MOUSE_HOVER)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
+typedef int(*SUB_ON_MOUSE_LEAVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
+typedef int(*SUB_ON_WHEEL)(res_win_t, bool_t, int, uid_t, var_long);
+typedef int(*SUB_ON_SCROLL)(res_win_t, bool_t, int, uid_t, var_long);
 typedef int(*SUB_ON_KEYDOWN)(res_win_t, int, uid_t, var_long);
 typedef int(*SUB_ON_CHAR)(res_win_t, tchar_t, uid_t, var_long);
 typedef int(*SUB_ON_SIZE)(res_win_t, int, const xsize_t*, uid_t, var_long);
@@ -975,7 +973,7 @@ typedef struct _if_subproc_t{
 typedef void(*PF_ON_NCPAINT)(res_win_t, res_ctx_t);
 typedef void(*PF_ON_NCCALCSIZE)(res_win_t, xrect_t*);
 typedef int(*PF_ON_NCHITTEST)(res_win_t, const xpoint_t*);
-typedef long(*PF_ON_NCCALCSCROLL)(res_win_t, bool_t, const xpoint_t*);
+typedef int(*PF_ON_NCCALCSCROLL)(res_win_t, bool_t, const xpoint_t*);
 
 typedef int(*PF_ON_CREATE)(res_win_t, void*);
 typedef int(*PF_ON_CLOSE)(res_win_t);
@@ -988,8 +986,8 @@ typedef void(*PF_ON_RBUTTON_UP)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_MOUSE_MOVE)(res_win_t, dword_t, const xpoint_t*);
 typedef void(*PF_ON_MOUSE_HOVER)(res_win_t, dword_t, const xpoint_t*);
 typedef void(*PF_ON_MOUSE_LEAVE)(res_win_t, dword_t, const xpoint_t*);
-typedef void(*PF_ON_WHEEL)(res_win_t, bool_t, long);
-typedef void(*PF_ON_SCROLL)(res_win_t, bool_t, long);
+typedef void(*PF_ON_WHEEL)(res_win_t, bool_t, int);
+typedef void(*PF_ON_SCROLL)(res_win_t, bool_t, int);
 typedef void(*PF_ON_KEYDOWN)(res_win_t, int);
 typedef void(*PF_ON_CHAR)(res_win_t, tchar_t);
 typedef void(*PF_ON_SIZE)(res_win_t, int, const xsize_t*);

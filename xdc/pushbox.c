@@ -42,7 +42,7 @@ typedef struct _pushbox_delta_t{
 }pushbox_delta_t;
 
 #define GETPUSHBOXDELTA(ph) 	(pushbox_delta_t*)widget_get_user_delta(ph)
-#define SETPUSHBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPUSHBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /********************************************************************************/
 void _pushbox_reset_page(res_win_t widget)
@@ -131,7 +131,7 @@ void hand_pushbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	widget_redraw(widget, NULL, 0);
 
-	widget_post_command(widget_get_owner(widget), ptd->b_check, widget_get_user_id(widget), (var_long)widget);
+	widget_post_command(widget_get_owner(widget), ptd->b_check, widget_get_user_id(widget), (var_int)widget);
 }
 
 void hand_pushbox_size(res_win_t widget, int code, const xsize_t* prs)

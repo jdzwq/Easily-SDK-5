@@ -13,7 +13,7 @@
 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *  GNU General Public License for more details.
 *
-*  You should have received a copy of the GNU General Public License along
+*  You should have received a copy of the GNU General Public License aint
 *  with this program; if not, write to the Free Software Foundation, Inc.,
 *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
@@ -1032,7 +1032,7 @@ int mpi_div_mpi(mpi *Q, mpi *R, mpi *A, mpi *B)
 			Z.p[i - t - 1] = (t_int)r;
 #else
 			/*
-			* __udiv_qrnnd_c, from gmp/longlong.h
+			* __udiv_qrnnd_c, from gmp/long.h
 			*/
 			t_int q0, q1, r0, r1;
 			t_int d0, d1, d, m;

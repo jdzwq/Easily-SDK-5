@@ -218,12 +218,19 @@ XDL_API bool_t	socket_set_sndbuf(res_file_t so, int size);
 XDL_API bool_t	socket_set_rcvbuf(res_file_t so, int size);
 
 /*
-@FUNCTION socket_set_nonblk: set the socket none blocking mode.
+@FUNCTION socket_set_nonblk: set the socket none-blocking mode.
 @INPUT res_file_t so: socket resource handle.
 @INPUT bool_t none: zero for blocking mode.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t	socket_set_nonblk(res_file_t so, bool_t none);
+
+/*
+@FUNCTION socket_get_nonblk: get the socket is blocking or none-blocking mode.
+@INPUT res_file_t so: socket resource handle.
+@RETURN bool_t: zero for blocking mode, none zero for non-blocking mode.
+*/
+XDL_API bool_t	socket_get_nonblk(res_file_t so);
 
 /*
 @FUNCTION host_addr: peer the host name to a ip address.
@@ -266,24 +273,23 @@ XDL_API void	socket_peer(res_file_t so, net_addr_t* paddr);
 
 /*
 @FUNCTION socket_share: describe the socket and write some data into other process.
-@INPUT dword_t procid: the destination process id.
+@INPUT pid_t procid: the destination process id.
 @INPUT res_file_t procfd: the file resource handle for writing.
 @INPUT res_file_t so: the socket resource handle.
 @INPUT const byte_t* data: the extract data need to send.
 @INPUT dword_t size: the extract data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t socket_share(dword_t procid, res_file_t procfd, res_file_t so, const byte_t* data, dword_t size);
+XDL_API bool_t socket_share(pid_t procid, res_file_t procfd, res_file_t so, const byte_t* data, dword_t size);
 
 /*
 @FUNCTION socket_dupli: restore socket from file and read some extract data.
 @INPUT res_file_t procfd: the file resource handle for writing.
-@INPUT dword_t fmode: the file operation mode, it can be FILE_OPEN_OVERLAP for async reading.
 @OUTPUT byte_t* data: the extract data want to read.
 @INOUTPUT dword_t* pb: the buffer size in bytes, and return the size of data readed in bytes.
 @RETURN res_file_t: if succeeds return socket resource handle, fails return INVALID_FILE.
 */
-XDL_API res_file_t socket_dupli(res_file_t procfd, dword_t fmode, byte_t* data, dword_t* pb);
+XDL_API res_file_t socket_dupli(res_file_t procfd, byte_t* data, dword_t* pb);
 
 
 #ifdef	__cplusplus

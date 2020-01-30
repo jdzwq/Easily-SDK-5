@@ -150,7 +150,7 @@ bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb)
 {
 	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
-	size_t size;
+	dword_t size;
 
 	pif = PROCESS_CONS_INTERFACE;
 
@@ -191,7 +191,7 @@ bool_t xcons_read(xhand_t con, byte_t* buf, dword_t* pb)
 {
 	console_t* pst = TypePtrFromHead(console_t, con);
 	if_cons_t* pif;
-	size_t size;
+	dword_t size;
 
 	pif = PROCESS_CONS_INTERFACE;
 

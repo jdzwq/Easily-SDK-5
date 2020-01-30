@@ -128,7 +128,7 @@ static void _key_md5(variant_t* pvar, key128_t* pkey)
 static void _key_gen(variant_t* pvar, key128_t* pkey)
 {
 	pkey->h = 0;
-	pkey->l = pvar->long_one;
+	pkey->l = pvar->int_one;
 }
 #endif*/
 
@@ -2093,7 +2093,7 @@ void test_bplus_tree()
 	link_t_ptr ptr = create_bplus_tree();
 
 	variant_t v = { 0 };
-	v.vv = VV_LONG;
+	v.vv = VV_INT;
 
 	object_t val = object_alloc(DEF_MBS);
 
@@ -2104,8 +2104,8 @@ void test_bplus_tree()
 	const tchar_t *token = numset;
 	while (token = parse_string_token(token, -1, _T(' '), &key, &len))
 	{
-		v.long_one = xsntol(key, len);
-		_tprintf(_T("INS %d: "), v.long_one);
+		v.int_one = xsntol(key, len);
+		_tprintf(_T("INS %d: "), v.int_one);
 
 		object_set_variant(val, v);
 		insert_bplus_entity(ptr, v, val);
@@ -2148,13 +2148,13 @@ void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname)
 
 		int n = 100;
 
-		v.vv = VV_LONG;
+		v.vv = VV_INT;
 		for (int i = 0; i < n; i++)
 		{
-			v.long_one = Lrand48() % n;
-			//_tprintf(_T("04d "), v.long_one);
+			v.int_one = Lrand48() % n;
+			//_tprintf(_T("04d "), v.int_one);
 
-			if (v.long_one)
+			if (v.int_one)
 			{
 				object_set_variant(val, v);
 				insert_bplus_entity(ptr, v, val);
@@ -2171,13 +2171,13 @@ void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname)
 
 		Srand48(time(NULL));
 
-		v.vv = VV_LONG;
+		v.vv = VV_INT;
 		for (int i = 0; i < n; i++)
 		{
-			v.long_one = Lrand48() % n;
-			//_tprintf(_T("04d "), v.long_one);
+			v.int_one = Lrand48() % n;
+			//_tprintf(_T("04d "), v.int_one);
 
-			if (v.long_one)
+			if (v.int_one)
 				delete_bplus_entity(ptr, v);
 		}
 

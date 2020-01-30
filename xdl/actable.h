@@ -58,7 +58,7 @@ XDL_API void destroy_ac_table(link_t_ptr ptr);
 @INPUT link_t_ptr ptr: the ac table link component.
 @INPUT const tchar_t* key: the key string token.
 @INPUT int len: the key string token length in characters.
-@INPUT var_long val: the long val.
+@INPUT var_long val: the int val.
 @RETURN void: none.
 */
 XDL_API void insert_ac_table(link_t_ptr ptr, const tchar_t* key, int len, var_long val);

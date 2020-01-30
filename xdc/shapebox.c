@@ -39,7 +39,7 @@ typedef struct _shapebox_delta_t{
 }shapebox_delta_t;
 
 #define GETSHAPEBOXDELTA(ph) 	(shapebox_delta_t*)widget_get_user_delta(ph)
-#define SETSHAPEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETSHAPEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /*********************************************************************************/
 int hand_shapebox_create(res_win_t widget, void* data)

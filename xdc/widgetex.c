@@ -426,7 +426,7 @@ void widgetex_layout_splitor(res_win_t wt)
 	}
 }
 
-bool_t widgetex_dock(res_win_t wt, dword_t style, long cx, long cy)
+bool_t widgetex_dock(res_win_t wt, dword_t style, int cx, int cy)
 {
 	widget_struct_t* pwt;
 	int i;
@@ -497,7 +497,7 @@ void widgetex_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr)
 	hand_docker_calc_rect(&pwt->docker, style, pxr);
 }
 
-static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
+static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_int pv)
 {
 	dword_t dw;
 
@@ -535,14 +535,14 @@ void widgetex_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 	if (widget_has_subproc(wt))
 	{
-		widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (var_long)pclr);
+		widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (var_int)pclr);
 	}
 
 	dw = widget_get_style(wt);
 	if (dw & WD_STYLE_NOCHANGE)
 		return;
 
-	widget_enum_child(wt, _widget_set_child_color_mode, (var_long)pclr);
+	widget_enum_child(wt, _widget_set_child_color_mode, (var_int)pclr);
 }
 
 void widgetex_get_color_mode(res_win_t wt, clr_mod_t* pclr)
@@ -620,9 +620,9 @@ void widget_reset_scroll(res_win_t wt, bool_t horz)
 	}
 }
 
-void widgetex_reset_paging(res_win_t wt, long ww, long wh, long vw, long vh, long lw, long lh)
+void widgetex_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh)
 {
-	long cx, cy;
+	int cx, cy;
 	float min_cx, min_cy;
 	canvas_t canv;
 

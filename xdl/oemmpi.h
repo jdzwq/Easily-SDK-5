@@ -37,8 +37,8 @@ typedef unsigned long t_int;
 typedef unsigned __int64 t_dbl;
 #else
 #if defined(__amd64__) || defined(__x86_64__)    || \
-        defined(__ppc64__) || defined(__powerpc64__) || \
-        defined(__ia64__)  || defined(__alpha__)
+defined(__ppc64__) || defined(__powerpc64__) || \
+defined(__ia64__)  || defined(__alpha__)
 typedef unsigned int t_dbl __attribute__((mode(TI)));
 #else
 typedef unsigned long long t_dbl;
@@ -1066,7 +1066,7 @@ extern "C" {
 }
 
 #endif /* C (generic)  */
-#endif /* C (longlong) */
+#endif /* C (long) */
 
 
 #endif /* bignum.h */

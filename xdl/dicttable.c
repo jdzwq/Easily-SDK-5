@@ -734,13 +734,13 @@ void test_dict_table()
 	ptr = create_dict_table();
 
 	variant_t key;
-	key.vv = VV_LONG;
+	key.vv = VV_INT;
 
 	object_t val = object_alloc(_UTF8);
 
 	for (i = 0x4E00; i <= 0x9FA5; i++)
 	{
-		key.long_one = i;
+		key.int_one = i;
 
 		object_set_variant(val, key);
 		write_dict_item(ptr, key, val);

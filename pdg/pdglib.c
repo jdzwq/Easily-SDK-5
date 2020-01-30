@@ -20,7 +20,7 @@
 
 #define GET_UC(buf,off)			((unsigned char)(buf[off] & 0xFF))
 #define GET_US(buf,off)			(unsigned short)((buf[off] & 0x00FF) | ((buf[off + 1] << 8) & 0xFF00))
-#define GET_UL(buf,off)			(unsigned long)((buf[off] & 0x000000FF) | ((buf[off + 1] << 8) & 0x0000FF00) | ((buf[off + 2] << 16) & 0x00FF0000) | ((buf[off + 3] << 24) & 0xFF000000))
+#define GET_UL(buf,off)			(unsigned int)((buf[off] & 0x000000FF) | ((buf[off + 1] << 8) & 0x0000FF00) | ((buf[off + 2] << 16) & 0x00FF0000) | ((buf[off + 3] << 24) & 0xFF000000))
 
 /******************************************************************************************************************/
 

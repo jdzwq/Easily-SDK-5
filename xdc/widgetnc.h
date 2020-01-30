@@ -44,7 +44,7 @@ XDC_API void widgetnc_on_calcsize(res_win_t wt, xrect_t* pxr);
 
 XDC_API int widgetnc_on_hittest(res_win_t wt, const xpoint_t* pxp);
 
-XDC_API long widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp);
+XDC_API int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp);
 
 XDC_API void widgetex_redraw_scroll(res_win_t wt, bool_t horz);
 

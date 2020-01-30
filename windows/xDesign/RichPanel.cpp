@@ -46,7 +46,7 @@ typedef struct tagRichPanelDelta{
 }RichPanelDelta;
 
 #define GETRICHPANELDELTA(ph) 		(RichPanelDelta*)widget_get_user_delta(ph)
-#define SETRICHPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETRICHPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define RICHPANEL_ACCEL_COUNT	5
 accel_t	RICHPANEL_ACCEL[RICHPANEL_ACCEL_COUNT] = {
@@ -674,7 +674,7 @@ void RichPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void RichPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void RichPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
@@ -701,7 +701,7 @@ void RichPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void RichPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void RichPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 	void* pv = NULL;

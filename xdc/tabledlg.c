@@ -47,7 +47,7 @@ typedef struct _tabledlg_delta_t{
 }tabledlg_delta_t;
 
 #define GETTABLEDLGDELTA(ph) 	(tabledlg_delta_t*)widget_get_user_delta(ph)
-#define SETTABLEDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTABLEDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /************************************************************************************/
 void tabledlg_on_ok(res_win_t widget)
@@ -292,7 +292,7 @@ void hand_tabledlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void hand_tabledlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_tabledlg_menu_command(res_win_t widget, int code, int cid, var_int data)
 {
 	tabledlg_delta_t* ptd = GETTABLEDLGDELTA(widget);
 

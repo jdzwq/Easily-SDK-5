@@ -44,7 +44,7 @@ typedef struct _tree_delta_t{
 	res_win_t editor;
 	res_win_t vsc;
 
-	long org_x, org_y, cur_x, cur_y;
+	int org_x, org_y, cur_x, cur_y;
 
 	bool_t b_drag;
 	bool_t b_lock;
@@ -57,7 +57,7 @@ typedef struct _tree_redraw_param{
 }tree_redraw_param;
 
 #define GETTREEDELTA(ph) 		(tree_delta_t*)widget_get_user_delta(ph)
-#define SETTREEDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETTREEDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 
 /*********************************************control event**************************************/
@@ -102,7 +102,7 @@ static void _treectrl_item_expand_rect(res_win_t widget, link_t_ptr ilk, xrect_t
 static void _treectrl_reset_page(res_win_t widget)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
-	long pw, ph, fw, fh, lh;
+	int pw, ph, fw, fh, lh;
 	xrect_t xr;
 	xsize_t xs;
 	canvbox_t cb;
@@ -171,7 +171,7 @@ static void _treectrl_ensure_visible(res_win_t widget)
 }
 
 /******************************************************************************************/
-int noti_tree_owner(res_win_t widget, unsigned long code, link_t_ptr tree, link_t_ptr ilk, void* data)
+int noti_tree_owner(res_win_t widget, unsigned int code, link_t_ptr tree, link_t_ptr ilk, void* data)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	NOTICE_TREE nf = { 0 };
@@ -218,7 +218,7 @@ void noti_tree_item_leave(res_win_t widget)
 	}
 }
 
-void noti_tree_item_hover(res_win_t widget, long x, long y)
+void noti_tree_item_hover(res_win_t widget, int x, int y)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	xpoint_t xp;
@@ -331,7 +331,7 @@ void noti_tree_item_collapse(res_win_t widget, link_t_ptr ilk)
 	treectrl_redraw(widget);
 }
 
-void noti_tree_item_drag(res_win_t widget, long x, long y)
+void noti_tree_item_drag(res_win_t widget, int x, int y)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	xpoint_t pt;
@@ -351,7 +351,7 @@ void noti_tree_item_drag(res_win_t widget, long x, long y)
 	noti_tree_owner(widget, NC_TREEITEMDRAG, ptd->tree, ptd->item, (void*)&pt);
 }
 
-void noti_tree_item_drop(res_win_t widget, long x, long y)
+void noti_tree_item_drop(res_win_t widget, int x, int y)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	xpoint_t pt;
@@ -774,7 +774,7 @@ void hand_tree_char(res_win_t widget, tchar_t nChar)
 		return;
 }
 
-void hand_tree_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_tree_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 
@@ -786,11 +786,11 @@ void hand_tree_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_tree_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_tree_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->tree)
@@ -826,7 +826,7 @@ void hand_tree_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	}
 }
 
-void hand_tree_child_command(res_win_t widget, int code, var_long data)
+void hand_tree_child_command(res_win_t widget, int code, var_int data)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 

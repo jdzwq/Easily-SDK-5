@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\api\net_srv\srvcert.cc">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\api\net_srv\srvlog.cc">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -27,11 +24,11 @@
     <ClCompile Include="xudpsMain.cc">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\api\net_srv\srvcrt.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\api\net_srv\srvcert.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\api\net_srv\srvdef.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -39,6 +36,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\api\net_srv\xudps.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\api\net_srv\srvcrt.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,15 +16,16 @@ void test_pipe()
     xdk_impl_pipe(&if_pipe);
     
     char buf[1024] = {0};
-    size_t dw = 0;
     async_t over = {0};
 
-    res_file_t srv = (*if_pipe.pf_pipe_srv)(NULL, 0);
+    res_file_t srv = (*if_pipe.pf_pipe_srv)(NULL, FILE_OPEN_READ);
     
     if(!(*if_pipe.pf_pipe_read)(srv, buf, 1024, &over))
         printf("child error : %s\n", strerror(errno));
     else
-        printf("child pid=%d recv %d: %s\n", getpid(), (int)dw, buf);
+        printf("child pid=%d recv %d: %s\n", getpid(), (int)over.size, buf);
+    
+    (*if_pipe.pf_pipe_close)(NULL, srv);
         
 }
 
@@ -36,11 +37,11 @@ void test_sock()
     if_socket_t if_sock = { 0 };
     xdk_impl_socket(&if_sock);
     
-    res_file_t srv = (*if_pipe.pf_pipe_srv)(NULL, 0);
+    res_file_t srv = (*if_pipe.pf_pipe_srv)(NULL, FILE_OPEN_READ);
     if(srv == INVALID_FILE)
         printf("child error : %s\n", strerror(errno));
     
-    res_file_t so = (*if_sock.pf_socket_dupli)(srv, 0, NULL, 0);
+    res_file_t so = (*if_sock.pf_socket_dupli)(srv, NULL, 0);
     if(so == INVALID_FILE)
         printf("child error : %s\n", strerror(errno));
     
@@ -53,6 +54,8 @@ void test_sock()
     printf("child sock=%d port: %d addr: %s\n", so, (int)port, token);
     
     (*if_sock.pf_socket_close)(so);
+    
+    (*if_pipe.pf_pipe_close)(NULL, srv);
 }
 
 int main(int argc, const char * argv[]) {
@@ -70,8 +73,6 @@ int main(int argc, const char * argv[]) {
         else if(strstr(argv[1],"sock") != NULL)
             test_sock();
     }
-    
-    test_sock();
     
     return 0;
 }

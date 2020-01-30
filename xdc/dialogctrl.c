@@ -44,8 +44,8 @@ typedef struct _dialog_delta_t{
 	link_t_ptr hover;
 
 	int org_hint;
-	long org_x, org_y;
-	long cur_x, cur_y;
+	int org_x, org_y;
+	int cur_x, cur_y;
 	short cur_page;
 
 	int opera;
@@ -57,7 +57,7 @@ typedef struct _dialog_delta_t{
 }dialog_delta_t;
 
 #define GETDIALOGDELTA(ph) 	(dialog_delta_t*)widget_get_user_delta(ph)
-#define SETDIALOGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETDIALOGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /******************************************dialog event********************************************************/
 static void _dialogctrl_done(res_win_t widget)
@@ -314,7 +314,7 @@ static void _dialogctrl_reset_page(res_win_t widget)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -356,7 +356,7 @@ static void _dialogctrl_ensure_visible(res_win_t widget)
 	widgetex_ensure_visible(widget, &xr, 1);
 }
 /*********************************************************************************************************/
-int noti_dialog_owner(res_win_t widget, unsigned long code, link_t_ptr ptr, link_t_ptr ilk, void* data)
+int noti_dialog_owner(res_win_t widget, unsigned int code, link_t_ptr ptr, link_t_ptr ilk, void* data)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	NOTICE_DIALOG nf = { 0 };
@@ -485,7 +485,7 @@ void noti_dialog_item_leave(res_win_t widget)
 	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
 }
 
-void noti_dialog_item_hover(res_win_t widget, long x, long y)
+void noti_dialog_item_hover(res_win_t widget, int x, int y)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	xpoint_t pt;
@@ -497,7 +497,7 @@ void noti_dialog_item_hover(res_win_t widget, long x, long y)
 	noti_dialog_owner(widget, NC_DIALOGITEMHOVER, ptd->dialog, ptd->hover, (void*)&pt);
 }
 
-void noti_dialog_item_drag(res_win_t widget, long x, long y)
+void noti_dialog_item_drag(res_win_t widget, int x, int y)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	xpoint_t pt;
@@ -519,13 +519,13 @@ void noti_dialog_item_drag(res_win_t widget, long x, long y)
 	noti_dialog_owner(widget, NC_DIALOGITEMDRAG, ptd->dialog, ptd->item, (void*)&pt);
 }
 
-void noti_dialog_item_drop(res_win_t widget, long x, long y)
+void noti_dialog_item_drop(res_win_t widget, int x, int y)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	
 	xpoint_t pt;
 	xrect_t xr;
-	long cx, cy;
+	int cx, cy;
 
 	XDL_ASSERT(ptd->item);
 
@@ -560,8 +560,8 @@ void noti_dialog_item_drop(res_win_t widget, long x, long y)
 
 	widgetex_point_to_tm(widget, &pt);
 
-	pt.fx = (float)((long)(pt.fx));
-	pt.fy = (float)((long)(pt.fy));
+	pt.fx = (float)((int)(pt.fx));
+	pt.fy = (float)((int)(pt.fy));
 
 	set_dialog_item_x(ptd->item, pt.fx);
 	set_dialog_item_y(ptd->item, pt.fy);
@@ -573,7 +573,7 @@ void noti_dialog_item_drop(res_win_t widget, long x, long y)
 	noti_dialog_owner(widget, NC_DIALOGITEMDROP, ptd->dialog, ptd->item, (void*)&pt);
 }
 
-void noti_dialog_item_sizing(res_win_t widget, int hint, long x, long y)
+void noti_dialog_item_sizing(res_win_t widget, int hint, int x, int y)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	xrect_t xr;
@@ -609,7 +609,7 @@ void noti_dialog_item_sizing(res_win_t widget, int hint, long x, long y)
 	noti_dialog_owner(widget, NC_DIALOGITEMSIZING, ptd->dialog, ptd->item, (void*)&xr);
 }
 
-void noti_dialog_item_sized(res_win_t widget, long x, long y)
+void noti_dialog_item_sized(res_win_t widget, int x, int y)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	float minw, minh, fw, fh;
@@ -661,8 +661,8 @@ void noti_dialog_item_sized(res_win_t widget, long x, long y)
 	if (fh < minh)
 		fh = minh;
 
-	fw = (float)((long)fw);
-	fh = (float)((long)fh);
+	fw = (float)((int)fw);
+	fh = (float)((int)fh);
 
 	_dialogctrl_done(widget);
 
@@ -739,7 +739,7 @@ void hand_dialog_size(res_win_t widget, int code, const xsize_t* prs)
 	dialogctrl_redraw(widget);
 }
 
-void hand_dialog_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_dialog_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 

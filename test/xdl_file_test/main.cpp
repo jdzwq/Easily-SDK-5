@@ -7,52 +7,58 @@
 #include <conio.h>
 #endif
 
-
 void test_share_read()
 {
-	DWORD dw = 8192;
-	//XHANDLE gb = xshare_share(_T("tlscli"), _T("tlscli.crt"), dw);
-
-	BYTE buf[8192] = { 0 };
-
-	//XHANDLE cb = xshare_open(_T("tlscli"), 8192);
-
-	dw = 8192;
-	//xshare_read(cb, buf, &dw);
-
-	printf("%s", (char*)buf);
-
-	//xshare_close(cb);
-
-	//xshare_close(gb);
+    xhand_t gh = xshare_srv(_T("sslsrv-crt"), _T("./sslsrv.crt"), X509_CERT_SIZE);
+    if(gh)
+    {
+        xhand_t bh = xshare_cli(_T("sslsrv-crt"), X509_CERT_SIZE);
+        if (bh)
+        {
+            byte_t* buf = (byte_t*)xshare_lock(bh, 0, X509_CERT_SIZE);
+            if (buf)
+            {
+                int len = a_xslen((schar_t*)buf);
+                printf("%s", (char*)buf);
+                
+                xshare_unlock(bh, 0, X509_CERT_SIZE, buf);
+            }
+            xshare_close(bh);
+        }
+        xshare_close(gh);
+    }
 }
 
 void test_share_write()
 {
-	BYTE buf[8192] = { 0 };
-	for (int i=0; i < 8192; i++)
-		buf[i] = (BYTE)i;
+    xhand_t gh = xshare_srv(_T("testsrv"), _T("./test_srv"), 8192);
+    if(gh)
+    {
+        byte_t buf[8192] = { 0 };
+        for (int i=0; i < 8192; i++)
+            buf[i] = (byte_t)i;
 
-	//XHANDLE cb = xshare_open(_T("tlscli"), 8192);
+        xhand_t cb = xshare_cli(_T("testsrv"), 8192);
 
-	DWORD dw = 8192;
-	//xshare_write(cb, buf, &dw);
+        dword_t dw = 8192;
+        xshare_write(cb, buf, &dw);
+        xshare_close(cb);
 
-	//XHANDLE gb = xshare_open(_T("tlscli"), 8192);
-	//xshare_read(cb, buf, &dw);
+        cb = xshare_cli(_T("testsrv"), 8192);
+        xshare_read(cb, buf, &dw);
+        xshare_close(cb);
 
-	//xshare_close(cb);
-
-	//xshare_close(gb);
+        xshare_close(gh);
+    }
 }
 
 void test_block_read()
 {
-	DWORD dw = 8192;
+	dword_t dw = 8192;
 
 	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_READ);
 
-	BYTE buf[20480] = { 0 };
+	byte_t buf[20480] = { 0 };
 
 	//xblock_read(gb, 0, 0, buf, 20480);
 
@@ -61,11 +67,11 @@ void test_block_read()
 
 void test_block_write()
 {
-	DWORD dw = 8192;
+	dword_t dw = 8192;
 
 	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_CREATE);
 
-	BYTE buf[20480] = { 0 };
+	byte_t buf[20480] = { 0 };
 
 	//xblock_write(gb, 0, 0, buf, 20480);
 
@@ -76,7 +82,7 @@ void test_block_append()
 {
 	//XHANDLE gb = xblock_open(_T("D:\\Easily-app-5\\windows\\bin\\phone.jpg"), FILE_OPEN_READ);
 
-	BYTE buf[1024] = { 0 };
+	byte_t buf[1024] = { 0 };
 
 	//xblock_read(gb, 0, 0, buf, 1024);
 
@@ -205,11 +211,11 @@ int main()
 
 	//test_share_read();
 
-	//test_share_write();
+	test_share_write();
 
 	//test_tftp_write();
 
-	test_tftp_read();
+	//test_tftp_read();
 
 	//test_tftp_delete();
 
@@ -226,8 +232,6 @@ int main()
 	//test_load();
 
 	xdl_process_uninit();
-
-	getch();
 
 	return 0;
 }

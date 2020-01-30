@@ -1230,11 +1230,11 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
 		}
 		else if (*token == _T('d'))
 		{
-			pdg[ind].src = va_arg(*parg, long*);
+			pdg[ind].src = va_arg(*parg, int*);
 			pdg[ind].cp = _T('d');
-			pdg[ind].len = sizeof(long);
-			pdg[ind].buf = xmem_alloc(sizeof(long));
-			xmem_copy((void*)pdg[ind].buf, (void*)pdg[ind].src, sizeof(long));
+			pdg[ind].len = sizeof(int);
+			pdg[ind].buf = xmem_alloc(sizeof(int));
+			xmem_copy((void*)pdg[ind].buf, (void*)pdg[ind].src, sizeof(int));
 			OCIBindByPos(stm, &(pdg[ind].bin), pdb->err, ind + 1, pdg[ind].buf, pdg[ind].len, SQLT_INT, &(pdg[ind].ind), NULL, NULL, 0, NULL, (ub4)OCI_DEFAULT);
 		}
 		else if (*token == _T('f'))
@@ -1289,7 +1289,7 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
 				xscpy((tchar_t*)pdg[ind].src, (tchar_t*)pdg[ind].buf);
 				break;
 			case _T('d'):
-				xmem_copy((void*)pdg[ind].src, (void*)pdg[ind].buf, sizeof(long));
+				xmem_copy((void*)pdg[ind].src, (void*)pdg[ind].buf, sizeof(int));
 				break;
 			case _T('f'):
 				OCINumberToReal(pdb->err, (OCINumber*)pdg[ind].buf, sizeof(double), pdg[ind].src);
@@ -1366,7 +1366,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 	tchar_t* sqlstr = NULL;
 	int sqllen, pas, ind;
 	const tchar_t* procname;
-	long na;
+	int na;
 	double nf;
 	const tchar_t* txt;
 
@@ -1449,10 +1449,10 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 		{
 			pdg[ind].src = (void*)flk;
 			pdg[ind].cp = _T('d');
-			pdg[ind].len = sizeof(long);
-			pdg[ind].buf = xmem_alloc(sizeof(long));
+			pdg[ind].len = sizeof(int);
+			pdg[ind].buf = xmem_alloc(sizeof(int));
 			na = get_func_param_integer(flk);
-			xmem_copy((void*)pdg[ind].buf, (void*)&na, sizeof(long));
+			xmem_copy((void*)pdg[ind].buf, (void*)&na, sizeof(int));
 			OCIBindByPos(stm, &(pdg[ind].bin), pdb->err, ind + 1, pdg[ind].buf, pdg[ind].len, SQLT_INT, &(pdg[ind].ind), NULL, NULL, 0, NULL, (ub4)OCI_DEFAULT);
 		}
 		else if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
@@ -1538,7 +1538,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 				break;
 			case _T('d'):
 				flk = (LINKPTR)pdg[ind].src;
-				xmem_copy((void*)na, (void*)pdg[ind].buf, sizeof(long));
+				xmem_copy((void*)na, (void*)pdg[ind].buf, sizeof(int));
 				set_func_param_integer(flk, na);
 				break;
 			case _T('f'):

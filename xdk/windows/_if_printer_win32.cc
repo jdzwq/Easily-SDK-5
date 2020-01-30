@@ -41,7 +41,7 @@ bool_t _default_printer_mode(dev_prn_t* pmod)
 	DEVMODE* pdev = NULL;
 
 	TCHAR* tmp;
-	long size;
+	int size;
 
 	_tstrcpy(szPrinter, _T(""));
 	GetProfileString(_T("windows"), _T("device"), _T(""), szPrinter, MAX_PATH);
@@ -88,7 +88,7 @@ bool_t _setup_printer_mode(res_win_t wnd, dev_prn_t* pmod)
 	DEVMODE* pdev = NULL;
 
 	TCHAR* tmp;
-	long size;
+	int size;
 
 	if (pmod->devname[0] != _T('\0'))
 	{
@@ -139,7 +139,7 @@ res_ctx_t _create_printer_context(const dev_prn_t* pmod)
 	HDC hDC;
 	HANDLE hPrinter;
 	DEVMODE* pdev;
-	long size;
+	int size;
 	tchar_t szPrinter[PATH_LEN] = { 0 };
 	tchar_t* tmp;
 

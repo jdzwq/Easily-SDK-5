@@ -41,7 +41,7 @@ LICENSE.GPL3 for more details.
 
 #define GET_UC(buf,off)			((unsigned char)(buf[off] & 0xFF))
 #define GET_US(buf,off)			(unsigned short)((buf[off] & 0x00FF) | ((buf[off + 1] << 8) & 0xFF00))
-#define GET_UL(buf,off)			(unsigned long)((buf[off] & 0x000000FF) | ((buf[off + 1] << 8) & 0x0000FF00) | ((buf[off + 2] << 16) & 0x00FF0000) | ((buf[off + 3] << 24) & 0xFF000000))
+#define GET_UL(buf,off)			(unsigned int)((buf[off] & 0x000000FF) | ((buf[off + 1] << 8) & 0x0000FF00) | ((buf[off + 2] << 16) & 0x00FF0000) | ((buf[off + 3] << 24) & 0xFF000000))
 
 /******************************************************************************************************************/
 
@@ -100,12 +100,12 @@ dword_t xpdg_get_header(pdg_file_t* pfi, pdg_info_t* pbi, const byte_t* src, dwo
 	pbi->bytes = GET_UL(pb, 12);
 	pbi->psize = GET_US(pb, 16);
 	pbi->psign = GET_US(pb, 18);
-	pbi->win_width = (long)GET_UL(pb, 20);
-	pbi->win_center = (long)GET_UL(pb, 24);
-	pbi->win_inter = (long)GET_UL(pb, 28);
-	pbi->win_slope = (long)GET_UL(pb, 32);
-	pbi->xmm_pixel = (long)GET_UL(pb, 36);
-	pbi->ymm_pixel = (long)GET_UL(pb, 40);
+	pbi->win_width = (int)GET_UL(pb, 20);
+	pbi->win_center = (int)GET_UL(pb, 24);
+	pbi->win_inter = (int)GET_UL(pb, 28);
+	pbi->win_slope = (int)GET_UL(pb, 32);
+	pbi->xmm_pixel = (int)GET_UL(pb, 36);
+	pbi->ymm_pixel = (int)GET_UL(pb, 40);
 
 	memcpy((void*)pbi->moda, (void*)(pb + 44), 16);
 

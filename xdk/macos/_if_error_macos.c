@@ -35,8 +35,20 @@ LICENSE.GPL3 for more details.
 
 int _error_text(tchar_t* buf, int max)
 {
-	strncpy(buf, strerror(errno), max);
-	return (int)strlen(buf);;
+    char* err;
+    int len;
+    
+    err = strerror(errno);
+    
+    if(!_tstrnull(err))
+    {
+        len = (int)_tstrlen(err);
+        len = (len < max)? len : max;
+        strncpy(buf, err, len);
+        buf[len] = '\0';
+    }
+    
+    return len;
 }
 
 void _error_exit(void)

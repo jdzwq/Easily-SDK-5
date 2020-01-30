@@ -104,7 +104,7 @@ bool_t create_process(const tchar_t* exename, const tchar_t* cmdline, int share,
 	return 1;
 }
 
-void process_waitrun(res_hand_t ph)
+void process_waitrun(res_proc_t ph)
 {
 	if_process_t* pif;
 
@@ -115,7 +115,7 @@ void process_waitrun(res_hand_t ph)
 	(*pif->pf_process_waitrun)(ph);
 }
 
-void release_handle(res_hand_t hh)
+void release_handle(res_file_t hh)
 {
 	if_process_t* pif;
 
@@ -126,7 +126,7 @@ void release_handle(res_hand_t hh)
 	(*pif->pf_release_handle)(hh);
 }
 
-bool_t inherit_handle(res_hand_t hh, bool_t b)
+bool_t inherit_handle(res_file_t hh, bool_t b)
 {
 	if_process_t* pif;
 
@@ -154,10 +154,10 @@ void release_process(proc_info_t* ppi)
 	(*pif->pf_release_process)(ppi);
 }
 
-res_hand_t process_dupli(res_hand_t ph, res_hand_t vh)
+res_file_t process_dupli(res_proc_t ph, res_file_t vh)
 {
 	if_process_t* pif;
-	res_hand_t rv;
+	res_file_t rv;
 
 	pif = PROCESS_PROCESS_INTERFACE;
 
@@ -172,7 +172,7 @@ res_hand_t process_dupli(res_hand_t ph, res_hand_t vh)
 	return rv;
 }
 
-void* process_alloc(res_hand_t ph, dword_t dw)
+void* process_alloc(res_proc_t ph, dword_t dw)
 {
 	if_process_t* pif;
 	void* p;
@@ -191,7 +191,7 @@ void* process_alloc(res_hand_t ph, dword_t dw)
 	return p;
 }
 
-void process_free(res_hand_t ph, void* p)
+void process_free(res_proc_t ph, void* p)
 {
 	if_process_t* pif;
 
@@ -202,7 +202,7 @@ void process_free(res_hand_t ph, void* p)
 	(*pif->pf_process_free)(ph, p);
 }
 
-bool_t process_write(res_hand_t ph, void* p, void* data, dword_t dw)
+bool_t process_write(res_proc_t ph, void* p, void* data, dword_t dw)
 {
 	if_process_t* pif;
 
@@ -219,7 +219,7 @@ bool_t process_write(res_hand_t ph, void* p, void* data, dword_t dw)
 	return 1;
 }
 
-bool_t process_read(res_hand_t ph, void* p, void* data, dword_t dw)
+bool_t process_read(res_proc_t ph, void* p, void* data, dword_t dw)
 {
 	if_process_t* pif;
 

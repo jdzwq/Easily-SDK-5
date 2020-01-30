@@ -43,13 +43,9 @@ typedef enum{
 	_XPNP_TYPE_SRV = 2
 }XPNP_TYPE;
 
-#if defined(DEBUG) || defined(_DEBUG)
-#define PNP_BASE_TIMO		(-1)
-#else
-#define PNP_BASE_TIMO		(30000)
-#endif
-#define PNP_MIN_PORT		49152
-#define PNP_MAX_PORT		65535
+#define PNP_BASE_TIMO		(2000) //millionsecond
+#define PNP_MIN_PORT		(49152)
+#define PNP_MAX_PORT		(65535)
 
 #define PNP_PKG_SIZE	516
 #define PNP_HDR_SIZE	0

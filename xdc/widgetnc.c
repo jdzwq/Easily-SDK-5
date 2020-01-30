@@ -65,7 +65,7 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	border_t bd = { 0 };
 	xrect_t rtWnd, rtScr;
 	scroll_t sl = { 0 };
-	long ind;
+	int ind;
 
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -130,7 +130,7 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	}
 	else
 	{
-		ind = (long)((float)sl.pos / (float)sl.max * (float)(rtWnd.w - 2 * bd.edge - bd.vscroll - bd.hscroll));
+		ind = (int)((float)sl.pos / (float)sl.max * (float)(rtWnd.w - 2 * bd.edge - bd.vscroll - bd.hscroll));
 		rtScr.x = rtWnd.x + bd.edge + ind;
 		rtScr.w = bd.hscroll;
 		rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
@@ -148,7 +148,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	border_t bd = { 0 };
 	xrect_t rtWnd, rtScr;
 	scroll_t sl = { 0 };
-	long ind;
+	int ind;
 
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -233,7 +233,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	}
 	else
 	{
-		ind = (long)((float)sl.pos / (float)sl.max * (float)(rtWnd.h - bd.title - bd.menu - 2 * bd.edge - 3 * bd.vscroll));
+		ind = (int)((float)sl.pos / (float)sl.max * (float)(rtWnd.h - bd.title - bd.menu - 2 * bd.edge - 3 * bd.vscroll));
 
 		rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
 		rtScr.y = rtWnd.y + bd.edge + bd.title + bd.menu + bd.vscroll + ind;
@@ -250,7 +250,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 
 static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 {
-	long edge, title, hscr, vscr, menu, icon;
+	int edge, title, hscr, vscr, menu, icon;
 	border_t bd = { 0 };
 	xrect_t rtWnd, rtScr;
 	xpoint_t pt1, pt2;
@@ -464,7 +464,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 {
-	long edge, title, vscr, hscr, menu;
+	int edge, title, vscr, hscr, menu;
 	dword_t ws;
 	border_t bd = { 0 };
 	scroll_t sc = { 0 };
@@ -600,7 +600,7 @@ void widgetnc_on_calcsize(res_win_t wt, xrect_t* pxr)
 
 int widgetnc_on_hittest(res_win_t wt, const xpoint_t* pxp)
 {
-	long edge, title, vscr, hscr, menu;
+	int edge, title, vscr, hscr, menu;
 	border_t bd = { 0 };
 	dword_t ws;
 	xrect_t xr, rt;
@@ -853,11 +853,11 @@ int widgetnc_on_hittest(res_win_t wt, const xpoint_t* pxp)
 	return HINT_NOWHERE;
 }
 
-long widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
+int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 {
-	long edge, title, hscr, vscr, menu;
+	int edge, title, hscr, vscr, menu;
 	border_t bd = { 0 };
-	long pos;
+	int pos;
 	xrect_t xr;
 	scroll_t sc = { 0 };
 
@@ -892,7 +892,7 @@ long widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 
 		if (sc.max > 0)
 		{
-			pos = (long)((float)(pxp->x - edge) / (float)(xr.w - 2 * edge - hscr - vscr) * (float)sc.max);
+			pos = (int)((float)(pxp->x - edge) / (float)(xr.w - 2 * edge - hscr - vscr) * (float)sc.max);
 			if (pos < 0)
 				pos = 0;
 			else if (pos > sc.max)
@@ -918,7 +918,7 @@ long widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 
 		if (sc.max > 0)
 		{
-			pos = (long)((float)(pxp->y - edge - title - menu - vscr) / (float)(xr.h - 2 * edge - title - menu - 2 * vscr) * (float)sc.max);
+			pos = (int)((float)(pxp->y - edge - title - menu - vscr) / (float)(xr.h - 2 * edge - title - menu - 2 * vscr) * (float)sc.max);
 			if (pos < 0)
 				pos = 0;
 			else if (pos > sc.max)

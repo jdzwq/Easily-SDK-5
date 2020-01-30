@@ -170,12 +170,12 @@ LICENSE.GPL3 for more details.
 */
 #define set_tool_item_icon(ilk,token)					set_dom_node_attr(ilk,ATTR_ICON,-1,token,-1)
 /*
-@PROPER delta: var long.
+@PROPER delta: var int.
 @SET set_tool_item_delta: set the tool item extract data.
 */
 #define set_tool_item_delta(ilk,ul)						set_dom_node_delta(ilk,(var_long)ul)
 /*
-@PROPER delta: var long.
+@PROPER delta: var int.
 @GET get_tool_item_delta: get the tool item extract data.
 */
 #define get_tool_item_delta(ilk)						get_dom_node_delta(ilk)

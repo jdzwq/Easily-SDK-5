@@ -57,9 +57,9 @@ typedef enum{
 
 typedef struct _WORDPLACE
 {
-	long char_w, char_h, line_h;
-	long cur_x, cur_y, cur_w, cur_h;
-	long min_x, min_y, max_x, max_y;
+	int char_w, char_h, line_h;
+	int cur_x, cur_y, cur_w, cur_h;
+	int min_x, min_y, max_x, max_y;
 }WORDPLACE;
 
 typedef int(*PF_SCAN_TEXTOR_CALLBACK)(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_word, int cur_count, tchar_t* ret_word, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp);
@@ -87,7 +87,7 @@ typedef struct _if_wordscan_t{
 extern "C" {
 #endif
 
-XDL_API void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+XDL_API void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 
 #ifdef	__cplusplus
 }

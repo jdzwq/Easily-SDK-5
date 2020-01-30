@@ -51,7 +51,7 @@ typedef struct _images_delta_t{
 }images_delta_t;
 
 #define GETIMAGESDELTA(widget) 	((images_delta_t*)widget_get_user_delta(widget))
-#define SETIMAGESDELTA(widget,ptd) widget_set_user_delta(widget,(var_long)ptd)
+#define SETIMAGESDELTA(widget,ptd) widget_set_user_delta(widget,(var_int)ptd)
 
 /******************************************************************************************************/
 static bool_t _imagesctrl_copy(res_win_t widget)
@@ -199,7 +199,7 @@ static void _imagesctrl_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr
 static void _imagesctrl_reset_page(res_win_t widget)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	canvbox_t cb = { 0 };
@@ -257,7 +257,7 @@ void _imagesctrl_ensure_visible(res_win_t widget)
 }
 
 /************************************control event**********************************************/
-int noti_images_owner(res_win_t widget, unsigned long code, link_t_ptr image, link_t_ptr ilk, void* data)
+int noti_images_owner(res_win_t widget, unsigned int code, link_t_ptr image, link_t_ptr ilk, void* data)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	NOTICE_IMAGES nf = { 0 };
@@ -368,7 +368,7 @@ void noti_images_item_leave(res_win_t widget)
 	}
 }
 
-void noti_images_item_hover(res_win_t widget, long x, long y)
+void noti_images_item_hover(res_win_t widget, int x, int y)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	xpoint_t xp;
@@ -400,7 +400,7 @@ void noti_images_item_check(res_win_t widget, link_t_ptr plk)
 	widget_redraw(widget, &xr, 0);
 }
 
-void noti_images_item_drag(res_win_t widget, long x, long y)
+void noti_images_item_drag(res_win_t widget, int x, int y)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	xpoint_t pt;
@@ -420,7 +420,7 @@ void noti_images_item_drag(res_win_t widget, long x, long y)
 	noti_images_owner(widget, NC_IMAGEITEMDRAG, ptd->images, ptd->item, (void*)&pt);
 }
 
-void noti_images_item_drop(res_win_t widget, long x, long y)
+void noti_images_item_drop(res_win_t widget, int x, int y)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	xpoint_t pt;
@@ -588,7 +588,7 @@ void hand_images_size(res_win_t widget, int code, const xsize_t* prs)
 	imagesctrl_redraw(widget);
 }
 
-void hand_images_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_images_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 
@@ -600,11 +600,11 @@ void hand_images_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_images_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_images_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 	bool_t b_horz;
 
@@ -964,7 +964,7 @@ void hand_images_kill_focus(res_win_t widget, res_win_t wt)
 
 	if (widget_is_editor(widget))
 	{
-		widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
 	}
 }
 
@@ -977,7 +977,7 @@ void hand_images_notice(res_win_t widget, NOTICE* pnt)
 
 }
 
-void hand_images_child_command(res_win_t widget, int code, var_long data)
+void hand_images_child_command(res_win_t widget, int code, var_int data)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 

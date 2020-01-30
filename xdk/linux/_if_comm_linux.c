@@ -176,10 +176,10 @@ void _comm_close(res_file_t fh)
     close(fh);
 }
 
-dword_t _comm_wait(res_file_t fd, async_t* pb)
+dword_t _comm_listen(res_file_t fd, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     dword_t dwEvent = 0;
     int status;
@@ -191,10 +191,10 @@ dword_t _comm_wait(res_file_t fd, async_t* pb)
     if(fcntl(fd,F_SETFL,FNDELAY) < 0)
         return 0;
     
-    pov->tv.tv_sec = 0;
-    pov->tv.tv_usec = (int)(pb->timo * 1000);
+    pov->tv.tv_sec = pb->timo / 1000;
+    pov->tv.tv_usec = (pb->timo % 1000) * 1000;
     
-    *pcb = 0;
+    if(pcb) *pcb = 0;
     
     while(!dwEvent)
     {
@@ -203,7 +203,7 @@ dword_t _comm_wait(res_file_t fd, async_t* pb)
         
         if(FD_ISSET(fd, &(pov->fd[0])))
         {
-            rt = select(fd+1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
+            rt = select(fd+1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
             if(rt < 0)
             {
                 dwEvent = COMM_EVNET_ERROR;
@@ -263,12 +263,12 @@ dword_t _comm_wait(res_file_t fd, async_t* pb)
     return dwEvent;
 }
 
-bool_t _comm_read(res_file_t fd, void* buf, size_t size, async_t* pb)
+bool_t _comm_read(res_file_t fd, void* buf, dword_t size, async_t* pb)
 {
     return _file_read(fd, buf, size, pb);
 }
 
-bool_t _comm_write(res_file_t fd, void* buf, size_t size, async_t* pb)
+bool_t _comm_write(res_file_t fd, void* buf, dword_t size, async_t* pb)
 {
     return _file_write(fd, buf, size, pb);
 }

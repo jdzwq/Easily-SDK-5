@@ -55,7 +55,7 @@ typedef struct _list_delta_t{
 }list_delta_t;
 
 #define GETLISTDELTA(widget) 	((list_delta_t*)widget_get_user_delta(widget))
-#define SETLISTDELTA(widget,ptd) widget_set_user_delta(widget,(var_long)ptd)
+#define SETLISTDELTA(widget,ptd) widget_set_user_delta(widget,(var_int)ptd)
 
 /******************************************************************************************************/
 
@@ -86,7 +86,7 @@ static void _listctrl_item_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 static void _listctrl_reset_page(res_win_t widget)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	canvbox_t cb = { 0 };
@@ -192,7 +192,7 @@ void _listctrl_find(res_win_t widget, const tchar_t* token)
 }
 
 /************************************control event**********************************************/
-int noti_list_owner(res_win_t widget, unsigned long code, link_t_ptr list, link_t_ptr ilk, void* data)
+int noti_list_owner(res_win_t widget, unsigned int code, link_t_ptr list, link_t_ptr ilk, void* data)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	NOTICE_LIST nf = { 0 };
@@ -303,7 +303,7 @@ void noti_list_item_leave(res_win_t widget)
 	}
 }
 
-void noti_list_item_hover(res_win_t widget, long x, long y)
+void noti_list_item_hover(res_win_t widget, int x, int y)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	xpoint_t xp;
@@ -379,7 +379,7 @@ void noti_list_item_expand(res_win_t widget, link_t_ptr plk)
 	noti_list_owner(widget, NC_LISTITEMEXPAND, ptd->list, plk, NULL);
 }
 
-void noti_list_item_drag(res_win_t widget, long x, long y)
+void noti_list_item_drag(res_win_t widget, int x, int y)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	xpoint_t pt;
@@ -399,7 +399,7 @@ void noti_list_item_drag(res_win_t widget, long x, long y)
 	noti_list_owner(widget, NC_LISTITEMDRAG, ptd->list, ptd->item, (void*)&pt);
 }
 
-void noti_list_item_drop(res_win_t widget, long x, long y)
+void noti_list_item_drop(res_win_t widget, int x, int y)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	xpoint_t pt;
@@ -566,7 +566,7 @@ void hand_list_size(res_win_t widget, int code, const xsize_t* prs)
 	listctrl_redraw(widget);
 }
 
-void hand_list_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_list_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 
@@ -578,11 +578,11 @@ void hand_list_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_list_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_list_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 	bool_t b_horz;
 
@@ -910,7 +910,7 @@ void hand_list_char(res_win_t widget, tchar_t ch)
 	}
 }
 
-void hand_list_child_command(res_win_t widget, int code, var_long data)
+void hand_list_child_command(res_win_t widget, int code, var_int data)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 

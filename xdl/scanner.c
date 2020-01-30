@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	float line_rati;
 	bool_t b_wordbreak = 0;
@@ -88,7 +88,7 @@ void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,
 
 	tm.char_w = (xs.cx + 4) / 4;
 	tm.char_h = xs.cy;
-	tm.line_h = (long)((float)xs.cy * (line_rati - 1.0));
+	tm.line_h = (int)((float)xs.cy * (line_rati - 1.0));
 	tm.min_x = bx;
 	tm.min_y = by;
 	tm.max_x = bx + bw;

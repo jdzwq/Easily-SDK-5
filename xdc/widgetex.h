@@ -247,11 +247,11 @@ XDC_API void	widgetex_layout_splitor(res_win_t wt);
 @FUNCTION widgetex_dock: add a dock to widget.
 @INPUT res_win_t wt: windowd resource handle.
 @INPUT dword_t style: the dock style, it can be WD_DOCK_TOP, WD_DOCK_BOTTOM, WD_DOCK_LEFT, WD_DOCK_RIGHT, WD_DOCK_DYNA.
-@INPUT long cx: the dock width.
-@INPUT long cy: the dock height.
+@INPUT int cx: the dock width.
+@INPUT int cy: the dock height.
 @RETURN bool_t: return nonzero if added, return zero if exists.
 */
-XDC_API bool_t	widgetex_dock(res_win_t wt, dword_t style, long cx, long cy);
+XDC_API bool_t	widgetex_dock(res_win_t wt, dword_t style, int cx, int cy);
 
 /*
 @FUNCTION widgetex_undock: remove a dock from widget.
@@ -391,15 +391,15 @@ XDC_API void	widgetex_get_canv_size(res_win_t wt, xsize_t* pxs);
 /*
 @FUNCTION widgetex_reset_paging: reset the widget page face.
 @INPUT res_win_t wt: windowd resource handle.
-@INPUT long ww: the widget client width in points.
-@INPUT long wh: the widget client height in points.
-@INPUT long vw: the widget viewbox width in points.
-@INPUT long vh: the widget viewbox height in points.
-@INPUT long lw: the widget line width in points.
-@INPUT long lh: the widget line height in points.
+@INPUT int ww: the widget client width in points.
+@INPUT int wh: the widget client height in points.
+@INPUT int vw: the widget viewbox width in points.
+@INPUT int vh: the widget viewbox height in points.
+@INPUT int lw: the widget line width in points.
+@INPUT int lh: the widget line height in points.
 @RETURN void: none.
 */
-XDC_API void	widgetex_reset_paging(res_win_t wt, long ww, long wh, long vw, long vh, long lw, long lh);
+XDC_API void	widgetex_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh);
 
 /*
 @FUNCTION widgetex_ensure_visible: ensure the rect scrolling into widget visual area.

@@ -54,7 +54,7 @@ typedef struct _SQLVIEWDLGDELTA{
 }SQLVIEWDLGDELTA;
 
 #define GETSQLVIEWDLGDELTA(ph) 		(SQLVIEWDLGDELTA*)widget_get_user_delta(ph)
-#define SETSQLVIEWDLGDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETSQLVIEWDLGDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 void SQLViewDlg_OnOK(res_win_t widget)
 {
@@ -378,7 +378,7 @@ void SQLViewDlg_OnNotice(res_win_t widget, LPNOTICE phdr)
 	}
 }
 
-void SQLViewDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void SQLViewDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	SQLVIEWDLGDELTA* pdt = GETSQLVIEWDLGDELTA(widget);
 

@@ -42,7 +42,7 @@ typedef struct _iconbox_delta_t{
 }iconbox_delta_t;
 
 #define GETICONBOXDELTA(ph) 	(iconbox_delta_t*)widget_get_user_delta(ph)
-#define SETICONBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETICONBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /*********************************************************************************/
 void _iconbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
@@ -70,7 +70,7 @@ void _iconbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 void _iconbox_reset_page(res_win_t widget)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
-	long vw, vh, lw, lh;
+	int vw, vh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	xfont_t xf;
@@ -99,7 +99,7 @@ void _iconbox_reset_page(res_win_t widget)
 	widget_reset_scroll(widget, 0);
 }
 /*********************************************************************************/
-void noti_iconbox_command(res_win_t widget, int code, var_long data)
+void noti_iconbox_command(res_win_t widget, int code, var_int data)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
 
@@ -115,7 +115,7 @@ void iconbox_on_click_item(res_win_t widget, link_t_ptr ent)
 
 	widget_redraw(widget, NULL, 0);
 
-	noti_iconbox_command(widget, xstol(get_string_entity_key_ptr(ent)), (var_long)NULL);
+	noti_iconbox_command(widget, xstol(get_string_entity_key_ptr(ent)), (var_int)NULL);
 }
 
 /*********************************************************************************/

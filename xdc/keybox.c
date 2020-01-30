@@ -37,8 +37,8 @@ LICENSE.GPL3 for more details.
 typedef struct _keybox_delta_t{
 	int index;
 	int ca;
-	long bw, bh;
-	long org_x, org_y;
+	int bw, bh;
+	int org_x, org_y;
 }keybox_delta_t;
 
 
@@ -58,7 +58,7 @@ static tchar_t KEYBOX_HCA[] = _T("1234567890QWERTYUIOP\0ASDFGHJKL\x1ZXCV BNM\b\x
 static tchar_t KEYBOX_SCA[] = _T("1234567890~!@#$%^-*_\0()={}[]:;\x3\'\"<> ,.?\b\x4\a\r\f\v\n");
 
 typedef struct _KEYBOX_RECT{
-	long x, y, w, h;
+	int x, y, w, h;
 }KEYBOX_RECT;
 
 static KEYBOX_RECT KEYBOX_POS[KEYBOX_COUNT] = {
@@ -116,10 +116,10 @@ static KEYBOX_RECT KEYBOX_POS[KEYBOX_COUNT] = {
 
 
 #define GETKEYBOXDELTA(ph) 	(keybox_delta_t*)widget_get_user_delta(ph)
-#define SETKEYBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETKEYBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /***********************************************************************************/
-static int _keybox_calc_hint(res_win_t widget, long x, long y, tchar_t* pch)
+static int _keybox_calc_hint(res_win_t widget, int x, int y, tchar_t* pch)
 {
 	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
 	xpoint_t xp;
@@ -235,7 +235,7 @@ void hand_keybox_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
 	int hint;
 	tchar_t ch = 0;
-	long cx, cy;
+	int cx, cy;
 	xrect_t xr;
 
 	hint = _keybox_calc_hint(widget, pxp->x, pxp->y, &ch);

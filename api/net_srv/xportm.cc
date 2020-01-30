@@ -8,13 +8,14 @@ void* STDCALL wait_thread(void* param)
 	dword_t size;
 	byte_t* buf;
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
 	while (pxm->act)
 	{
-		if(!xpipe_listen(pxm->pip, 500))
+        size = 0;
+		if(!xpipe_listen(pxm->pip))
 		{
-			thread_sleep(10);
+            thread_sleep(THREAD_BASE_TMO);
 			continue;
 		}
 
@@ -26,6 +27,7 @@ void* STDCALL wait_thread(void* param)
 
 		stream_set_mode(stm, CHUNK_OPERA);
 
+        size = 0;
 		while (stream_read_chunk_size(stm, &size))
 		{
 			if (!size)

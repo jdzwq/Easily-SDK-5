@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_THREAD
 
-void  thread_start(res_hand_t* ph_hand, PF_THREADFUNC pf_worker, void* param)
+void  thread_start(res_thread_t* ph_hand, PF_THREADFUNC pf_worker, void* param)
 {
 	if_thread_t* pit;
 
@@ -68,6 +68,17 @@ void thread_sleep(int ms)
 	(*pit->pf_thread_sleep)(ms);
 }
 
+void thread_yield()
+{
+	if_thread_t* pit;
+
+	pit = PROCESS_THREAD_INTERFACE;
+
+	XDL_ASSERT(pit != NULL);
+
+	(*pit->pf_thread_yield)();
+}
+
 dword_t thread_get_id(void)
 {
 	if_thread_t* pit;
@@ -79,7 +90,7 @@ dword_t thread_get_id(void)
 	return (*pit->pf_thread_get_id)();
 }
 
-void thread_join(res_hand_t th)
+void thread_join(res_thread_t th)
 {
 	if_thread_t* pit;
 

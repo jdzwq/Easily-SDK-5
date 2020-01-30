@@ -54,7 +54,7 @@ typedef struct tagStatisPanelDelta{
 }StatisPanelDelta;
 
 #define GETSTATISPANELDELTA(ph) 		(StatisPanelDelta*)widget_get_user_delta(ph)
-#define SETSTATISPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETSTATISPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define STATISPANEL_ACCEL_COUNT	5
 accel_t	STATISPANEL_ACCEL[STATISPANEL_ACCEL_COUNT] = {
@@ -762,7 +762,7 @@ void StatisPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -775,7 +775,7 @@ void StatisPanel_Statis_OnLBClick(res_win_t widget, NOTICE_STATIS* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -787,7 +787,7 @@ void StatisPanel_Statis_OnYaxSize(res_win_t widget, NOTICE_STATIS* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -805,7 +805,7 @@ void StatisPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 
 	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 	LINKPTR ptrYax = statisctrl_get_focus_yax(pdt->hStatis);
@@ -1224,7 +1224,7 @@ void StatisPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void StatisPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void StatisPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
@@ -1251,7 +1251,7 @@ void StatisPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void StatisPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void StatisPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 

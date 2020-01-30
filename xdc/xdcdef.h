@@ -168,7 +168,7 @@ typedef struct _widget_struct_t{
 }widget_struct_t;
 
 #define GETWIDGSTRUCT(wt)			(widget_struct_t*)widget_get_core_delta(wt)
-#define SETWIDGSTRUCT(wt, lp)		widget_set_core_delta(wt, (var_long)lp)
+#define SETWIDGSTRUCT(wt, lp)		widget_set_core_delta(wt, (var_int)lp)
 
 
 

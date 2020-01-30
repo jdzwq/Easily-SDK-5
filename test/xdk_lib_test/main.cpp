@@ -157,7 +157,7 @@ void test_process()
     (*if_proc.pf_get_envvar)("XSERVICE_ROOT", path, PATH_LEN);
     printf("service path: %s\n", path);
 
-    strcat(path,"/../sbin/api/libxdk_api.dylib");
+    strcat(path,"/../sbin/api/libwww_api.dylib");
     
     typedef void (*PF_DEFAULT_XPEN)(xpen_t* pxp);
     res_modu_t dl = (*if_proc.pf_load_library)(path);
@@ -165,13 +165,9 @@ void test_process()
     xpen_t xp = {0};
     (*pf)(&xp);
     (*if_proc.pf_free_library)(dl);
-    
-    proc_info_t pi = {0};
-    (*if_proc.pf_create_process)("./xdk_child_test", NULL, 0, &pi);
-    
 }
 
-void test_exec()
+void test_pipe()
 {
     if_process_t if_proc = { 0 };
     xdk_impl_process(&if_proc);
@@ -187,13 +183,13 @@ void test_exec()
     
     async_t over = {0};
     
-    size_t dw = strlen(buf);
+    dword_t dw = strlen(buf);
     if(!(*if_pipe.pf_pipe_write)(pi.pip_write, buf, dw, &over))
         printf("parent error : %s\n", strerror(errno));
     else
         printf("parent pid=%d send %d: %s\n", getpid(), (int)dw, buf);
     
-    sleep(3);
+    (*if_proc.pf_release_process)(&pi);
 }
 
 void test_sock()
@@ -224,6 +220,8 @@ void test_sock()
         printf("parent error : %s\n", strerror(errno));  
     else
         printf("parent sock=%d port: %d addr: %s\n", so, (int)port, token);
+    
+    (*if_proc.pf_release_process)(&pi);
     
     (*if_sock.pf_socket_close)(so);
 }
@@ -264,7 +262,7 @@ void test_page()
     xdk_impl_memo_page(&if_memo);
     
     void* p = (*if_memo.pf_page_alloc)(1024);
-    size_t dw = (*if_memo.pf_page_size)(p);
+    dword_t dw = (*if_memo.pf_page_size)(p);
     p = (*if_memo.pf_page_lock)(p);
     (*if_memo.pf_page_unlock)(p);
     p = (*if_memo.pf_page_realloc)(p, 4096);
@@ -284,13 +282,13 @@ void test_cache()
     char buf[4096] = {0};
     strcpy(buf, "hello word!");
     
-    size_t dw = 0;
-    (*if_memo.pf_cache_write)(p, 10, buf, 4096, &dw);
+    dword_t dw = 0;
+    (*if_memo.pf_cache_write)(p, 0, 10, buf, 4096, &dw);
     printf("write: %s\n", buf);
     
     memset((void*)buf,0,4096);
     dw = 0;
-    (*if_memo.pf_cache_read)(p, 10, buf, 4096, &dw);
+    (*if_memo.pf_cache_read)(p, 0, 10, buf, 4096, &dw);
     printf("read: %s\n", buf);
 
     (*if_memo.pf_cache_close)(p);
@@ -302,12 +300,12 @@ void test_share()
     
     xdk_impl_share(&if_share);
     
-    res_file_t fh = (*if_share.pf_share_srv)("mytest","./demo.txt",1024);
+    res_file_t fh = (*if_share.pf_share_srv)("mytest","./demo.txt",0,0,1024);
     if(!fh)
         printf("parent error : %s\n", strerror(errno));
     
     char buf[4096] = {0};
-    size_t dw = 0;
+    dword_t dw = 0;
     
     strcpy(buf, "hello word!");
     
@@ -379,7 +377,7 @@ void test_cons()
         printf("device : %s\n", cname);
     
     strcat(cname,"\n");
-    size_t len = strlen(cname);
+    dword_t len = strlen(cname);
     
     if((*if_cons.pf_cons_write)(con, cname, len, &len))
         printf("master write : %s\n", cname);
@@ -407,11 +405,11 @@ void test_comm()
     
     char buf[1024] = { 0 };
     async_t over = {0};
-    size_t msk = 0;
-    size_t dw;
+    dword_t msk = 0;
+    dword_t dw;
     int idle = 0;
     
-    while (msk = (*if_comm.pf_comm_wait)(com, &over))
+    while (msk = (*if_comm.pf_comm_listen)(com, &over))
     {
         if (msk == COMM_EVNET_ERROR)
         {
@@ -603,11 +601,11 @@ int main(int argc, const char * argv[]) {
     
     //test_name_pipe();
     
-    test_process();
+    //test_process();
     
-    //test_exec();
+    //test_pipe();
     
-    //test_sock();
+    test_sock();
     
     //test_heap();
     

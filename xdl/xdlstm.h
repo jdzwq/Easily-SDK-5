@@ -256,23 +256,23 @@ XDL_API bool_t stream_read_sword_lit(stream_t xs, sword_t* psw);
 XDL_API bool_t stream_read_sword_big(stream_t xs, sword_t* psw);
 
 /*
-@FUNCTION stream_write_dword_lit: write a unsigned long data into stream using Little Endian.
+@FUNCTION stream_write_dword_lit: write a unsigned int data into stream using Little Endian.
 @INPUT stream_t xs: the stream object.
-@INPUT dword_t dw: the unsigned long data.
+@INPUT dword_t dw: the unsigned int data.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t stream_write_dword_lit(stream_t xs, dword_t dw);
 
 /*
-@FUNCTION stream_write_dword_big: write a unsigned long data into stream using Big Endian.
+@FUNCTION stream_write_dword_big: write a unsigned int data into stream using Big Endian.
 @INPUT stream_t xs: the stream object.
-@INPUT dword_t dw: the unsigned long data.
+@INPUT dword_t dw: the unsigned int data.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t stream_write_dword_big(stream_t xs, dword_t dw);
 
 /*
-@FUNCTION stream_read_dword_lit: read a unsigned long data from stream using Little Endian.
+@FUNCTION stream_read_dword_lit: read a unsigned int data from stream using Little Endian.
 @INPUT stream_t xs: the stream object.
 @OUTPUT dword_t* pdw: for return unsigned short data.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
@@ -280,9 +280,9 @@ XDL_API bool_t stream_write_dword_big(stream_t xs, dword_t dw);
 XDL_API bool_t stream_read_dword_lit(stream_t xs, dword_t* pdw);
 
 /*
-@FUNCTION stream_read_dword_big: read a unsigned long data from stream using Big Endian.
+@FUNCTION stream_read_dword_big: read a unsigned int data from stream using Big Endian.
 @INPUT stream_t xs: the stream object.
-@OUTPUT dword_t* pdw: for return unsigned long data.
+@OUTPUT dword_t* pdw: for return unsigned int data.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 XDL_API bool_t stream_read_dword_big(stream_t xs, dword_t* pdw);

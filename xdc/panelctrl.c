@@ -40,8 +40,8 @@ typedef struct _panel_delta_t{
 	link_t_ptr item;
 	link_t_ptr hover;
 
-	long title_height;
-	long item_width;
+	int title_height;
+	int item_width;
 
 	res_win_t vsc;
 
@@ -49,10 +49,10 @@ typedef struct _panel_delta_t{
 }panel_delta_t;
 
 #define GETPANELDELTA(ph) 	(panel_delta_t*)widget_get_user_delta(ph)
-#define SETPANELDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPANELDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 #define PANELCTRL_GUID_SPAN		(float)6
-#define PANELCTRL_SPAN_PLUS		(long)10
+#define PANELCTRL_SPAN_PLUS		(int)10
 
 typedef enum{
 	_PANEL_HINT_NONE = 0,
@@ -62,7 +62,7 @@ typedef enum{
 }PANEL_HINT;
 /***************************************************************************************/
 
-static long _panelctrl_calc_width(res_win_t widget)
+static int _panelctrl_calc_width(res_win_t widget)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	link_t_ptr ilk, doc;
@@ -71,7 +71,7 @@ static long _panelctrl_calc_width(res_win_t widget)
 	res_ctx_t rdc;
 	xrect_t xr;
 	xsize_t xs;
-	long pw;
+	int pw;
 
 	widgetex_get_xfont(widget, &xf);
 	widgetex_get_xface(widget, &xa);
@@ -98,7 +98,7 @@ static long _panelctrl_calc_width(res_win_t widget)
 	return pw;
 }
 
-static long _panelctrl_calc_height(res_win_t widget)
+static int _panelctrl_calc_height(res_win_t widget)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	link_t_ptr ilk,doc;
@@ -106,7 +106,7 @@ static long _panelctrl_calc_height(res_win_t widget)
 	xface_t xa;
 	res_ctx_t rdc;
 	xrect_t xr;
-	long pw, ph;
+	int pw, ph;
 
 	rdc = widget_client_ctx(widget);
 
@@ -132,7 +132,7 @@ static int _panelctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	link_t_ptr ilk,doc;
 	int hint, n;
-	long total = 0;
+	int total = 0;
 
 	xrect_t xr;
 	xfont_t xf;
@@ -202,7 +202,7 @@ static void _panelctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	xfont_t xf;
 	xface_t xa;
 	viewbox_t vb;
-	long n,total = 0;
+	int n,total = 0;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
@@ -238,7 +238,7 @@ static void _panelctrl_reset_page(res_win_t widget)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	xrect_t xr;
-	long mh;
+	int mh;
 
 	mh = _panelctrl_calc_height(widget);
 
@@ -261,7 +261,7 @@ static void _panelctrl_ensure_visible(res_win_t widget)
 }
 
 /*************************************************************************/
-int noti_panel_owner(res_win_t widget, unsigned long code, link_t_ptr arch, link_t_ptr item, void* data)
+int noti_panel_owner(res_win_t widget, unsigned int code, link_t_ptr arch, link_t_ptr item, void* data)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	NOTICE_PANEL nf = { 0 };
@@ -349,7 +349,7 @@ void noti_panel_item_leave(res_win_t widget)
 	}
 }
 
-void noti_panel_item_hover(res_win_t widget, long x, long y)
+void noti_panel_item_hover(res_win_t widget, int x, int y)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	xpoint_t xp;
@@ -378,8 +378,8 @@ int hand_panel_create(res_win_t widget, void* data)
 	text_metric_raw(rdc, &xf, &xs);
 	widget_release_ctx(widget, rdc);
 
-	ptd->item_width = (long)((float)xs.cx * 8);
-	ptd->title_height = (long)((float)xs.cy * 1.25);
+	ptd->item_width = (int)((float)xs.cx * 8);
+	ptd->title_height = (int)((float)xs.cy * 1.25);
 
 	SETPANELDELTA(widget, ptd);
 
@@ -563,7 +563,7 @@ void hand_panel_size(res_win_t widget, int code, const xsize_t* prs)
 	panelctrl_redraw(widget);
 }
 
-void hand_panel_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_panel_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 
@@ -573,11 +573,11 @@ void hand_panel_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_panel_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_panel_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->arch)
@@ -629,7 +629,7 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xrect_t xr_icon,xr_view,xr;
 	xpoint_t pt[9];
 	xsize_t xs;
-	long total = 0;;
+	int total = 0;;
 
 	viewbox_t vb = { 0 };
 	xfont_t xf_top,xf = { 0 };

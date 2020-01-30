@@ -44,7 +44,7 @@ typedef struct _pipe_t{
 	bool_t b_srv;
 	tchar_t* pname;
 
-	async_t over;
+	async_t* pov;
 }pipe_t;
 
 xhand_t xpipe_srv(const tchar_t* pname, dword_t fmode)
@@ -71,18 +71,16 @@ xhand_t xpipe_srv(const tchar_t* pname, dword_t fmode)
 	ppi->b_srv = 1;
 	ppi->pname = xsclone(pname);
 
-	if (fmode & FILE_OPEN_OVERLAP)
-	{
-		async_alloc_lapp(&ppi->over, PIPE_BASE_TIMO);
-	}
+	ppi->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), PIPE_BASE_TIMO, INVALID_FILE);
 
 	return &ppi->head;
 }
 
-bool_t xpipe_listen(xhand_t pip, int ms)
+bool_t xpipe_listen(xhand_t pip)
 {
 	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
 	if_pipe_t* pif;
+    bool_t rt;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
@@ -90,9 +88,9 @@ bool_t xpipe_listen(xhand_t pip, int ms)
 
 	XDL_ASSERT(pif != NULL);
 
-    ppi->over.timo = ms;
+    rt = (*pif->pf_pipe_listen)(ppi->pipe, ppi->pov);
     
-	return (*pif->pf_pipe_listen)(ppi->pipe, &ppi->over);
+    return rt;
 }
 
 void xpipe_stop(xhand_t pip)
@@ -133,10 +131,7 @@ xhand_t xpipe_cli(const tchar_t* pname, dword_t fmode)
 	ppi->b_srv = 0;
 	ppi->pname = xsclone(pname);
 
-	if (fmode & FILE_OPEN_OVERLAP)
-	{
-		async_alloc_lapp(&ppi->over, PIPE_BASE_TIMO);
-	}
+	ppi->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), PIPE_BASE_TIMO, INVALID_FILE);
 
 	return &ppi->head;
 }
@@ -154,6 +149,8 @@ xhand_t xpipe_attach(res_file_t hp)
 	ppi->head.tag = _HANDLE_PIPE;
 	ppi->pipe = hp;
 
+	ppi->pov = async_alloc_lapp(ASYNC_BLOCK, PIPE_BASE_TIMO, INVALID_FILE);
+
 	return &ppi->head;
 }
 
@@ -165,6 +162,11 @@ res_file_t xpipe_detach(xhand_t pip)
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
 	hp = ppi->pipe;
+
+	if (ppi->pov)
+	{
+		async_free_lapp(ppi->pov);
+	}
 
 	xmem_free(ppi);
 
@@ -232,7 +234,10 @@ void xpipe_free(xhand_t pip)
             (*pif->pf_pipe_close)(NULL, ppi->pipe);
 	}
 
-	async_release_lapp(&ppi->over);
+	if (ppi->pov)
+	{
+		async_free_lapp(ppi->pov);
+	}
 
 	xsfree(ppi->pname);
 	xmem_free(ppi);
@@ -242,7 +247,7 @@ bool_t xpipe_write(xhand_t pip, const byte_t* buf, dword_t* pcb)
 {
 	pipe_t* ppt = (pipe_t*)pip;
 	if_pipe_t* pif;
-	size_t size;
+	dword_t size, pos = 0;;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
@@ -252,15 +257,23 @@ bool_t xpipe_write(xhand_t pip, const byte_t* buf, dword_t* pcb)
 
 	size = *pcb;
 
-	if (!(*pif->pf_pipe_write)(ppt->pipe, (char*)buf, size, &ppt->over))
+	while (pos < size)
 	{
-		set_system_error(_T("pf_pipe_write"));
-		*pcb = 0;
-		return 0;
+		ppt->pov->size = 0;
+		if (!(*pif->pf_pipe_write)(ppt->pipe, (void*)(buf + pos), size - pos, ppt->pov))
+		{
+			set_system_error(_T("pf_pipe_write"));
+
+			*pcb = (dword_t)pos;
+			return 0;
+		}
+
+		if (!(ppt->pov->size)) break;
+
+		pos += (ppt->pov->size);
 	}
 
-	*pcb = (dword_t)ppt->over.size;
-
+	*pcb = (dword_t)pos;
 	return 1;
 }
 
@@ -268,7 +281,7 @@ bool_t xpipe_read(xhand_t pip, byte_t* buf, dword_t* pcb)
 {
 	pipe_t* ppt = (pipe_t*)pip;
 	if_pipe_t* pif;
-	size_t size;
+	dword_t size, pos = 0;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
@@ -278,15 +291,23 @@ bool_t xpipe_read(xhand_t pip, byte_t* buf, dword_t* pcb)
 
 	size = *pcb;
 
-	if (!(*pif->pf_pipe_read)(ppt->pipe, (char*)(buf), size, &ppt->over))
+	while (pos < size)
 	{
-		set_system_error(_T("pf_pipe_read"));
-		*pcb = 0;
-		return 0;
+		ppt->pov->size = 0;
+		if (!(*pif->pf_pipe_read)(ppt->pipe, (void*)(buf + pos), size - pos, ppt->pov))
+		{
+			set_system_error(_T("pf_pipe_read"));
+
+			*pcb = pos;
+			return 0;
+		}
+
+		if (!(ppt->pov->size)) break;
+
+		pos += (ppt->pov->size);
 	}
 
-	*pcb = (dword_t)ppt->over.size;
-
+	*pcb = pos;
 	return 1;
 }
 

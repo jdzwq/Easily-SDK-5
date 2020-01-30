@@ -58,7 +58,7 @@ XDL_API void	message_position(xpoint_t* ppt);
 @INPUT const tchar_t* wname: widget name.
 @INPUT dword_t wstyle: widget style, it can be WD_STYLE_CONTROL, WD_STYLE_POPUP, WD_STYLE_DIALOG, WD_STYLE_FRAME.
 @INPUT const xrect_t* pxr: rect struct for widget initialize position and size.
-if wstyle is WD_STYLE_CONTROL the rect belong to parent window client, otherwise the rect is screen coordinate based.
+if wstyle is WD_STYLE_CONTROL the rect beint to parent window client, otherwise the rect is screen coordinate based.
 @INPUT res_win_t wparent: the parent window resource handle, child widget must have a parent window.
 @INPUT if_event_t* pev: the window message dispatch struct.
 @RETURN res_win_t: if succeeds retur window resource handle, fails return NULL.
@@ -555,10 +555,10 @@ XDL_API void	widget_reset_scroll(res_win_t wt, bool_t horz);
 @FUNCTION widget_scroll: scroll the widget.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT bool_t horz: nonzero for horizon scroll, zero for vertical scroll.
-@INPUT long line: the line to be scrolled
+@INPUT int line: the line to be scrolled
 @RETURN void: none.
 */
-XDL_API void	widget_scroll(res_win_t wt, bool_t horz, long line);
+XDL_API void	widget_scroll(res_win_t wt, bool_t horz, int line);
 
 /*
 @FUNCTION widget_post_char: post a char input message into windows message queue.

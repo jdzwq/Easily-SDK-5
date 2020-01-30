@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _numbox_delta_t{
 	int index;
-	long bw, bh;
+	int bw, bh;
 }numbox_delta_t;
 
 #define NUMBOX_COUNT	13
@@ -46,7 +46,7 @@ typedef struct _numbox_delta_t{
 static tchar_t NUMBOX_DATA[] = _T("1234567890.-\n");
 
 typedef struct _NUMBOX_RECT{
-	long x, y, w, h;
+	int x, y, w, h;
 }NUMBOX_RECT;
 
 static NUMBOX_RECT NUMBOX_POS[NUMBOX_COUNT] = {
@@ -66,7 +66,7 @@ static NUMBOX_RECT NUMBOX_POS[NUMBOX_COUNT] = {
 };
 
 #define GETNUMBOXDELTA(ph) 	(numbox_delta_t*)widget_get_user_delta(ph)
-#define SETNUMBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETNUMBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 
 int hand_numbox_create(res_win_t widget, void* data)

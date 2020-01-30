@@ -52,7 +52,7 @@ typedef struct _INPUTPARAM{
 
 
 #define GETINPUTDLGDELTA(ph) 	(inputdlg_delta_t*)widget_get_user_delta(ph)
-#define SETINPUTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETINPUTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 /*********************************************************************************/
 void noti_inputdlg_commit_edit(res_win_t widget)
 {
@@ -152,7 +152,7 @@ void hand_inputdlg_destroy(res_win_t widget)
 	widgetex_hand_destroy(widget);
 }
 
-void hand_inputdlg_child_command(res_win_t widget, int code, var_long data)
+void hand_inputdlg_child_command(res_win_t widget, int code, var_int data)
 {
 	inputdlg_delta_t* ptd = GETINPUTDLGDELTA(widget);
 
@@ -167,7 +167,7 @@ void hand_inputdlg_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_inputdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_inputdlg_menu_command(res_win_t widget, int code, int cid, var_int data)
 {
 	inputdlg_delta_t* ptd = GETINPUTDLGDELTA(widget);
 
@@ -301,7 +301,7 @@ void inputdlg_popup_size(res_win_t widget, xsize_t* pxs)
 	text_metric_raw(rdc, &xf, &xs);
 	widget_release_ctx(widget, rdc);
 
-	xs.cy = (long)((float)xs.cy * 1.25);
+	xs.cy = (int)((float)xs.cy * 1.25);
 	xs.cx = 15 * xs.cx;
 
 	widget_adjust_size(widget_get_style(widget), &xs);

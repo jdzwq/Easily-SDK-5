@@ -307,7 +307,7 @@ bool_t get_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent
 	return (compare_text(get_proper_ptr(ptr, sec, ent), -1, _T("1"), -1, 0) == 0) ? 1 : 0;
 }
 
-link_t_ptr set_proper_integer(link_t_ptr ptr,const tchar_t* sec,const tchar_t* ent,long n)
+link_t_ptr set_proper_integer(link_t_ptr ptr,const tchar_t* sec,const tchar_t* ent,int n)
 {
 	tchar_t token[NUM_LEN + 1];
 
@@ -315,7 +315,7 @@ link_t_ptr set_proper_integer(link_t_ptr ptr,const tchar_t* sec,const tchar_t* e
 	return write_proper(ptr,sec,-1,ent,-1,token,-1);
 }
 
-long get_proper_integer(link_t_ptr ptr,const tchar_t* sec,const tchar_t* ent)
+int get_proper_integer(link_t_ptr ptr,const tchar_t* sec,const tchar_t* ent)
 {
 	return xstol(get_proper_ptr(ptr,sec,ent));
 }

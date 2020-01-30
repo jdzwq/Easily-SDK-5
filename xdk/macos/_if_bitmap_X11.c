@@ -56,7 +56,7 @@ void _destroy_bitmap(res_bmp_t bmp)
 	XDestroyImage(pim);
 }
 
-void _get_bitmap_size(res_bmp_t rb, long* pw, long* ph)
+void _get_bitmap_size(res_bmp_t rb, int* pw, int* ph)
 {
     XImage* pbi = (XImage*)rb;
 
@@ -65,7 +65,7 @@ void _get_bitmap_size(res_bmp_t rb, long* pw, long* ph)
     if(ph) *ph = pbi->height;
 }
 
-res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h)
+res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
     XImage* pim;
     Visual *pvi;
@@ -93,27 +93,27 @@ res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long 
     return pim;
 }
 
-res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, long w, long h, const tchar_t* lay)
+res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
 {
     return NULL;
 }
 
-res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, long w, long h, const tchar_t* type)
+res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* type)
 {
 	return NULL;
 }
 
-res_bmp_t _create_code128_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, const tchar_t* text)
+res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text)
 {
 	return NULL;
 }
 
-res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, int rows, int cols)
+res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
 	return NULL;
 }
 
-res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, int rows, int cols)
+res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
 	return NULL;
 }
@@ -128,25 +128,25 @@ res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
 typedef struct _bitmap_filehead_t
 {
     unsigned short type;		//bitmap file type
-    unsigned long size;		//bitmap file size
+    unsigned int size;		//bitmap file size
     unsigned short reserved1;
     unsigned short reserved2;
-    unsigned long offset;		//bitmap data offset from file header
+    unsigned int offset;		//bitmap data offset from file header
 }bitmap_filehead_t;		//14 bytes
 #pragma pack ()
 
 typedef struct _bitmap_infohead_t{
-    unsigned long size;		//struct size
-    unsigned long width;		//bitmap point width
-    unsigned long height;		//bitmap point height
+    unsigned int size;		//struct size
+    unsigned int width;		//bitmap point width
+    unsigned int height;		//bitmap point height
     unsigned short planes;		//number of planes for the target device, set to 1
     unsigned short bitcount;	//the number of bits-per-pixel. 1:is monochrome; 4:maximum of 16 colors; 8:maximum of 256 colors; 16:maximum of 2^16 colors; 24~; 32~;
-    unsigned long compression; //type of compression.0: uncompressed format; 1: RLE format for bitmaps with 8 bpp; 2:RLE format for bitmaps with 4 bpp.
-    unsigned long imagesize;	// the size, in bytes, of the image
-    unsigned long horzpixels;	//the horizontal resolution, in pixels-per-meter
-    unsigned long vertpixels;	//the vertical resolution, in pixels-per-meter
-    unsigned long clrused;	// the number of color indexes in the color table  that are actually used by the bitmap
-    unsigned long clrimportant;//the number of color indexes that are required for displaying the bitmap
+    unsigned int compression; //type of compression.0: uncompressed format; 1: RLE format for bitmaps with 8 bpp; 2:RLE format for bitmaps with 4 bpp.
+    unsigned int imagesize;	// the size, in bytes, of the image
+    unsigned int horzpixels;	//the horizontal resolution, in pixels-per-meter
+    unsigned int vertpixels;	//the vertical resolution, in pixels-per-meter
+    unsigned int clrused;	// the number of color indexes in the color table  that are actually used by the bitmap
+    unsigned int clrimportant;//the number of color indexes that are required for displaying the bitmap
 }bitmap_infohead_t;			//40 bytes
 
 typedef struct _bitmap_rgbquad_t{
@@ -157,14 +157,14 @@ typedef struct _bitmap_rgbquad_t{
 }bitmap_rgbquad_t;
 
 
-size_t _get_bitmap_bytes(res_bmp_t rb)
+dword_t _get_bitmap_bytes(res_bmp_t rb)
 {
     XImage* pim = (XImage*)rb;
     
 	unsigned short cClrBits;
-	unsigned long dwClrUsed;
-	unsigned long dwSizeImage;
-	unsigned long dwTotal;
+	unsigned int dwClrUsed;
+	unsigned int dwSizeImage;
+	unsigned int dwTotal;
 
     cClrBits = pim->bitmap_unit;
 
@@ -188,12 +188,12 @@ size_t _get_bitmap_bytes(res_bmp_t rb)
 
     dwSizeImage = ((pim->width * cClrBits + 31) & ~31) / 8 * pim->height;
 
-	dwTotal = (unsigned long)(sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t) + dwClrUsed * sizeof(bitmap_rgbquad_t) + dwSizeImage);
+	dwTotal = (unsigned int)(sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t) + dwClrUsed * sizeof(bitmap_rgbquad_t) + dwSizeImage);
 
-	return (size_t)dwTotal;
+	return dwTotal;
 }
 
-res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t bytes)
+res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_t bytes)
 {
 	bitmap_infohead_t* pbmi;
 	bitmap_filehead_t bfh;
@@ -205,7 +205,7 @@ res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t
 	if (!pb)
 		return NULL;
 
-	if ((unsigned long)bytes < sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t))
+	if ((unsigned int)bytes < sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t))
 		return NULL;
 
 	memcpy((void*)&bfh, (void*)pb, sizeof(bitmap_filehead_t));
@@ -213,7 +213,7 @@ res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t
 	if (bfh.type != 0x4d42)
 		return NULL;
 
-	if ((unsigned long)bytes < bfh.size)
+	if ((unsigned int)bytes < bfh.size)
 		return NULL;
 
 	pbmi = (bitmap_infohead_t*)(pb + sizeof(bitmap_filehead_t));
@@ -227,7 +227,7 @@ res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t
     return pim;
 }
 
-size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, size_t max)
+dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, dword_t max)
 {
 	XImage* pim = (XImage*)rb;
     
@@ -235,7 +235,7 @@ size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, si
 	unsigned short    cClrBits;
 	bitmap_filehead_t bfh;
 	char* lpBits;
-	unsigned long dwTotal;
+	unsigned int dwTotal;
 
 	cClrBits = (unsigned short)(pim->bitmap_unit);
 
@@ -253,7 +253,7 @@ size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, si
 		cClrBits = 32;
 
 	if (cClrBits < 24)
-		pbmi = (bitmap_infohead_t*)calloc(1, sizeof(bitmap_infohead_t) + sizeof(bitmap_rgbquad_t) * (unsigned long)(1 << cClrBits));
+		pbmi = (bitmap_infohead_t*)calloc(1, sizeof(bitmap_infohead_t) + sizeof(bitmap_rgbquad_t) * (unsigned int)(1 << cClrBits));
 	else
 		pbmi = (bitmap_infohead_t*)calloc(1, sizeof(bitmap_infohead_t));
 
@@ -271,12 +271,12 @@ size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, si
 	pbmi->clrimportant = 0;
 
 	bfh.type = 0x4d42;        // 0x42 = "B" 0x4d = "M"
-	bfh.size = (unsigned long)(sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t) + pbmi->clrused * sizeof(bitmap_rgbquad_t) + pbmi->imagesize);
+	bfh.size = (unsigned int)(sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t) + pbmi->clrused * sizeof(bitmap_rgbquad_t) + pbmi->imagesize);
 	bfh.reserved1 = 0;
 	bfh.reserved2 = 0;
-	bfh.offset = (unsigned long)(sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t) + pbmi->clrused * sizeof(bitmap_rgbquad_t));
+	bfh.offset = (unsigned int)(sizeof(bitmap_filehead_t) + sizeof(bitmap_infohead_t) + pbmi->clrused * sizeof(bitmap_rgbquad_t));
 
-	if (pbmi->imagesize > (unsigned long)max)
+	if (pbmi->imagesize > (unsigned int)max)
 	{
 		free(pbmi);
 		return 0;
@@ -312,7 +312,7 @@ size_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, si
 
 	free(pbmi);
 
-	return (size_t)dwTotal;
+	return dwTotal;
 }
 
 #ifdef XDK_SUPPORT_SHELL

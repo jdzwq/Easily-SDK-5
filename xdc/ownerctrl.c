@@ -36,18 +36,18 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 typedef struct _owner_delta_t{
-	var_long var;
+	var_int var;
 
 	res_win_t hsc;
 	res_win_t vsc;
 }owner_delta_t;
 
 #define GETOWNERDELTA(ph) 	(owner_delta_t*)widget_get_user_delta(ph)
-#define SETOWNERDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETOWNERDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /***************************************************************************************/
 
-static int noti_owner_owner(res_win_t widget, unsigned long code, void* data)
+static int noti_owner_owner(res_win_t widget, unsigned int code, void* data)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
@@ -186,7 +186,7 @@ void hand_owner_size(res_win_t widget, int code, const xsize_t* prs)
 	ownerctrl_redraw(widget);
 }
 
-void hand_owner_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_owner_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
@@ -195,12 +195,12 @@ void hand_owner_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_owner_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_owner_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	XDL_ASSERT(ptd != NULL);
@@ -325,7 +325,7 @@ void ownerctrl_redraw(res_win_t widget)
 	widget_redraw(widget, NULL, 0);
 }
 
-void ownerctrl_set_delta(res_win_t widget, var_long var)
+void ownerctrl_set_delta(res_win_t widget, var_int var)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
@@ -334,7 +334,7 @@ void ownerctrl_set_delta(res_win_t widget, var_long var)
 	ptd->var = var;
 }
 
-var_long ownerctrl_get_delta(res_win_t widget)
+var_int ownerctrl_get_delta(res_win_t widget)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 

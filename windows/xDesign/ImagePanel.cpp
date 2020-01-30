@@ -52,7 +52,7 @@ typedef struct tagImagePanelDelta{
 }ImagePanelDelta;
 
 #define GETIMAGEPANELDELTA(ph) 		(ImagePanelDelta*)widget_get_user_delta(ph)
-#define SETIMAGEPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETIMAGEPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define IMAGEPANEL_ACCEL_COUNT	5
 accel_t	IMAGEPANEL_ACCEL[IMAGEPANEL_ACCEL_COUNT] = {
@@ -273,7 +273,7 @@ void ImagePanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -328,7 +328,7 @@ void ImagePanel_Image_OnLBClick(res_win_t widget, NOTICE_IMAGES* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -340,7 +340,7 @@ void ImagePanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!tlk)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(tlk));
+	int n_id = xstol(get_title_item_id_ptr(tlk));
 
 	LINKPTR ptrImages = imagesctrl_fetch(pdt->hImage);
 	LINKPTR ptrItem = imagesctrl_get_focus_item(pdt->hImage);
@@ -740,7 +740,7 @@ void ImagePanel_OnShow(res_win_t widget, bool_t bShow)
 	}
 }
 
-void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 	void* pv = NULL;
@@ -799,7 +799,7 @@ void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data
 	}
 }
 
-void ImagePanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void ImagePanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 

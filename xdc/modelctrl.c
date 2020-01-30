@@ -42,7 +42,7 @@ LICENSE.GPL3 for more details.
 
 
 typedef struct _model_delta_t{
-	long org_x, org_y;
+	int org_x, org_y;
 	int index;
 
 	res_bmp_t bmp;
@@ -63,9 +63,9 @@ typedef struct _model_delta_t{
 
 
 #define GETMODELDELTA(ph) 	(model_delta_t*)widget_get_user_delta(ph)
-#define SETMODELDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETMODELDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
-int noti_model_owner(res_win_t widget, unsigned long code, link_t_ptr arti, void* data, res_ctx_t rdc);
+int noti_model_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, res_ctx_t rdc);
 /*******************************************************************************************************/
 static void _modelctrl_done(res_win_t widget)
 {
@@ -361,7 +361,7 @@ static res_bmp_t _modelctrl_merge_anno(res_win_t widget)
 static void _modelctrl_reset_page(res_win_t widget)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
-	long pw, ph, fw, fh;
+	int pw, ph, fw, fh;
 	xrect_t xr;
 
 	widget_get_client_rect(widget, &xr);
@@ -386,7 +386,7 @@ static void _modelctrl_reset_page(res_win_t widget)
 	widget_reset_scroll(widget, 0);
 }
 /*******************************************************************************************************/
-int noti_model_owner(res_win_t widget, unsigned long code, link_t_ptr arti, void* data, res_ctx_t rdc)
+int noti_model_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, res_ctx_t rdc)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	NOTICE_MODEL nf = { 0 };
@@ -405,7 +405,7 @@ int noti_model_owner(res_win_t widget, unsigned long code, link_t_ptr arti, void
 	return nf.ret;
 }
 
-void noti_model_arti_drag(res_win_t widget, long x, long y)
+void noti_model_arti_drag(res_win_t widget, int x, int y)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	xpoint_t pt;
@@ -419,7 +419,7 @@ void noti_model_arti_drag(res_win_t widget, long x, long y)
 	noti_model_owner(widget, NC_MODELANNODRAG, ptd->arti, (void*)&pt, NULL);
 }
 
-void noti_model_arti_drop(res_win_t widget, long x, long y)
+void noti_model_arti_drop(res_win_t widget, int x, int y)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	xpoint_t pt;
@@ -470,7 +470,7 @@ void noti_model_arti_drop(res_win_t widget, long x, long y)
 	noti_model_owner(widget, NC_MODELANNODROP, ptd->arti, (void*)&pt, NULL);
 }
 
-void noti_model_arti_sizing(res_win_t widget, long x, long y)
+void noti_model_arti_sizing(res_win_t widget, int x, int y)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	xrect_t xr;
@@ -484,7 +484,7 @@ void noti_model_arti_sizing(res_win_t widget, long x, long y)
 	noti_model_owner(widget, NC_MODELANNOSIZING, ptd->arti, (void*)&xr, NULL);
 }
 
-void noti_model_arti_sized(res_win_t widget, long x, long y)
+void noti_model_arti_sized(res_win_t widget, int x, int y)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	xrect_t xr_org,xr;
@@ -894,7 +894,7 @@ void hand_model_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_model_owner(widget, NC_MODELRBCLK, ptd->arti, (void*)pxp, NULL);
 }
 
-void hand_model_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_model_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 
@@ -906,11 +906,11 @@ void hand_model_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_model_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_model_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd)
@@ -997,9 +997,9 @@ void hand_model_kill_focus(res_win_t widget, res_win_t wt)
 	if (widget_is_editor(widget))
 	{
 		if (modelctrl_get_dirty(widget))
-			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
 		else
-			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
 	}
 }
 
@@ -1053,7 +1053,7 @@ void hand_model_undo(res_win_t widget)
 	_modelctrl_undo(widget);
 }
 
-void hand_model_child_command(res_win_t widget, int code, var_long data)
+void hand_model_child_command(res_win_t widget, int code, var_int data)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 

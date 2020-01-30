@@ -27,8 +27,8 @@ PF_DB_EXPORT pf_db_export;
 PF_DB_CALL_FUNC pf_db_call_func;
 
 //#define odbcdsn _T("./demo_odbc.dsn")
-#define odbcdsn _T("./demo_stub.dsn")
-//#define odbcdsn _T("./demo_mysql.dsn")
+//#define odbcdsn _T("./demo_stub.dsn")
+#define odbcdsn _T("./demo_mysql.dsn")
 //#define odbcdsn _T("./demo_oci.dsn")
 
 #if defined(_OS_WINDOWS)
@@ -38,7 +38,7 @@ PF_DB_CALL_FUNC pf_db_call_func;
 #define xdblib	_T("xdb_stub.dll")
 #elif defined(_OS_MACOS)
 //#define xdblib	_T("libxdb_mysql.dylib")
-#define xdblib	_T("libxdb_mysql.dylib")
+#define xdblib	_T("../sbin/api/libxdb_mysql.dylib")
 #elif defined(_OS_LINUX)
 //#define xdblib	_T("libxdb_oci.so")
 #define xdblib	_T("libxdb_oci.so")
@@ -127,6 +127,83 @@ ONERROR:
 	return 0;
 }
 
+unsigned int STDCALL odbc_db_schema(void* param)
+{
+    tchar_t errcode[NUM_LEN + 1] = { 0 };
+    tchar_t errtext[ERR_LEN + 1] = { 0 };
+    
+    xdb_t xdb = NULL;
+    
+    LINKPTR grid = NULL;
+    LINKPTR clk;
+    
+    bool_t rt;
+    
+    xdl_thread_init();
+    
+    TRY_CATCH;
+    
+    xdb = (*pf_db_open_dsn)(odbcdsn);
+    if (!xdb)
+    {
+        raise_user_error(_T("-1"), _T("open connection falied\n"));
+    }
+    
+    grid = create_grid_doc();
+    
+    rt = (*pf_db_schema)(xdb, grid, _T("select * from dogs"));
+    if (!rt)
+    {
+        (*pf_db_error)(xdb, errtext, ERR_LEN);
+        
+        raise_user_error(_T("-1"), errtext);
+    }
+    
+    clk = get_next_col(grid, LINK_FIRST);
+    while (clk)
+    {
+#ifdef _UNICODE
+        wprintf(L"%s %s %d\n", get_col_name_ptr(clk), get_col_data_type_ptr(clk), get_col_data_len(clk));
+#else
+        printf("%s %s %d\n", get_col_name_ptr(clk), get_col_data_type_ptr(clk), get_col_data_len(clk));
+#endif
+        clk = get_next_col(grid, clk);
+    }
+    
+    destroy_grid_doc(grid);
+    grid = NULL;
+    
+    (*pf_db_close)(xdb);
+    xdb = NULL;
+    
+    END_CATCH;
+    
+    xdl_thread_uninit(0);
+    
+    return 0;
+    
+ONERROR:
+    
+    get_last_error(errcode, errtext, ERR_LEN);
+    
+#ifdef _UNICODE
+    wprintf(L"%s\n", errtext);
+#else
+    printf("%s\n", errtext);
+#endif
+    
+    if (grid)
+        destroy_grid_doc(grid);
+    
+    if (xdb)
+        (*pf_db_close)(xdb);
+    
+    xdl_thread_uninit(0);
+    
+    return 0;
+}
+
+
 unsigned int STDCALL odbc_db_exec(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
@@ -201,82 +278,6 @@ ONERROR:
     
     if (vs)
         string_free(vs);
-    
-    if (xdb)
-        (*pf_db_close)(xdb);
-    
-    xdl_thread_uninit(0);
-    
-    return 0;
-}
-
-unsigned int STDCALL odbc_db_schema(void* param)
-{
-    tchar_t errcode[NUM_LEN + 1] = { 0 };
-    tchar_t errtext[ERR_LEN + 1] = { 0 };
-    
-    xdb_t xdb = NULL;
-    
-    LINKPTR grid = NULL;
-    LINKPTR clk;
-    
-    bool_t rt;
-    
-    xdl_thread_init();
-    
-    TRY_CATCH;
-    
-    xdb = (*pf_db_open_dsn)(odbcdsn);
-    if (!xdb)
-    {
-        raise_user_error(_T("-1"), _T("open connection falied\n"));
-    }
-    
-    grid = create_grid_doc();
-    
-    rt = (*pf_db_schema)(xdb, grid, _T("select * from dogs"));
-    if (!rt)
-    {
-        (*pf_db_error)(xdb, errtext, ERR_LEN);
-        
-        raise_user_error(_T("-1"), errtext);
-    }
-    
-    clk = get_next_col(grid, LINK_FIRST);
-    while (clk)
-    {
-#ifdef _UNICODE
-        wprintf(L"%s %s %d\n", get_col_name_ptr(clk), get_col_data_type_ptr(clk), get_col_data_len(clk));
-#else
-        printf("%s %s %d\n", get_col_name_ptr(clk), get_col_data_type_ptr(clk), get_col_data_len(clk));
-#endif
-        clk = get_next_col(grid, clk);
-    }
-    
-    destroy_grid_doc(grid);
-    grid = NULL;
-    
-    (*pf_db_close)(xdb);
-    xdb = NULL;
-    
-    END_CATCH;
-    
-    xdl_thread_uninit(0);
-    
-    return 0;
-    
-ONERROR:
-    
-    get_last_error(errcode, errtext, ERR_LEN);
-    
-#ifdef _UNICODE
-    wprintf(L"%s\n", errtext);
-#else
-    printf("%s\n", errtext);
-#endif
-    
-    if (grid)
-        destroy_grid_doc(grid);
     
     if (xdb)
         (*pf_db_close)(xdb);
@@ -622,11 +623,19 @@ unsigned int STDCALL odbc_db_export(void* param)
         raise_user_error(_T("-1"), _T("open file falied\n"));
     }
     
+    rt = (*pf_db_export)(xdb, NULL, _T("select * from dogs"));
+    if (!rt)
+    {
+        (*pf_db_error)(xdb, errtext, ERR_LEN);
+        
+        raise_user_error(_T("-1"), errtext);
+    }
+    
     stream = stream_alloc(xfile_bio(file));
     
     stream_set_encode(stream, _UTF8);
     
-    rt = (*pf_db_export)(xdb, stream, _T("select * from dogs"));
+    rt = (*pf_db_export)(xdb, stream, NULL);
     
     if (!rt)
     {
@@ -1347,7 +1356,7 @@ int main(int argc, char* argv[])
     
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-    int maxt = 5000;
+    int maxt = 1;
 
 	res_modu_t lib = load_library(xdblib);
 
@@ -1370,23 +1379,23 @@ int main(int argc, char* argv[])
 	pf_db_export = (PF_DB_EXPORT)get_address(lib, "db_export");
 	pf_db_call_func = (PF_DB_CALL_FUNC)get_address(lib, "db_call_func");
 
-	res_hand_t* pth = (res_hand_t*)xmem_alloc(maxt * sizeof(res_hand_t));
+	res_thread_t* pth = (res_thread_t*)xmem_alloc(maxt * sizeof(res_thread_t));
 
     for (int i = 0; i < maxt; i++)
     {
-        thread_start(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
         
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_schema, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_schema, (void*)0);
                       
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_exec, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_exec, (void*)0);
         
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_select, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_select, (void*)0);
         
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_batch, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_batch, (void*)0);
         
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_export, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_export, (void*)0);
         
-        //xthread_begin(&pth[i], (PF_THREADFUNC)odbc_db_import, (void*)0);
+        thread_start(&pth[i], (PF_THREADFUNC)odbc_db_import, (void*)0);
         
         thread_sleep(10);
     }

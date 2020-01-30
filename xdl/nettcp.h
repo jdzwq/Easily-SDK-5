@@ -46,11 +46,7 @@ typedef enum{
 #define TCP_MAX_BUFF	(64 * 1024)
 //#define TCP_MTU_BUFF	(1500 - 20 - 20)
 #define TCP_MTU_BUFF	(576 - 20 - 20)
-#if defined(DEBUG) || defined(_DEBUG)
-#define TCP_BASE_TIMO	(-1)
-#else
-#define TCP_BASE_TIMO	(10000)
-#endif
+#define TCP_BASE_TIMO	(5000) //milloinsecond
 
 #ifdef	__cplusplus
 extern "C" {

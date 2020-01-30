@@ -37,12 +37,12 @@ LICENSE.GPL3 for more details.
 typedef struct _words_delta_t{
 	link_t_ptr words;
 	link_t_ptr item;
-	long bw, bh;
+	int bw, bh;
 	int page;
 }words_delta_t;
 
 #define GETWORDSDELTA(ph) 	(words_delta_t*)widget_get_user_delta(ph)
-#define SETWORDSDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETWORDSDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 
 #define WORDSBOX_MAX_ITEMS		9
@@ -102,7 +102,7 @@ void _wordsbox_ensure_visible(res_win_t widget)
 
 /*************************************************************************/
 
-void noti_wordsbox_command(res_win_t widget, int code, var_long data)
+void noti_wordsbox_command(res_win_t widget, int code, var_int data)
 {
 	words_delta_t* ptd = GETWORDSDELTA(widget);
 
@@ -139,7 +139,7 @@ void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
 	
 	widget_redraw(widget, &xr, 0);
 
-	noti_wordsbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_wordsbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
 }
 
 /********************************************************************************************/
@@ -265,7 +265,7 @@ void hand_words_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			wordsbox_on_item_changed(widget, ilk);
 	}
 
-	noti_wordsbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+	noti_wordsbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 }
 
 void hand_words_size(res_win_t widget, int code, const xsize_t* prs)
@@ -278,7 +278,7 @@ void hand_words_size(res_win_t widget, int code, const xsize_t* prs)
 	wordsbox_redraw(widget);
 }
 
-void hand_words_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_words_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	words_delta_t* ptd = GETWORDSDELTA(widget);
 

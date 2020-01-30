@@ -383,7 +383,7 @@ bool_t xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const tchar_t*
 		}
 	}
 
-	parse_longlong(&hoff, &loff, fsize);
+	parse_long(&hoff, &loff, fsize);
 	b_range = (hoff || loff > max) ? 1 : 0;
 	l_total = xstoll(fsize);
 
@@ -544,7 +544,7 @@ static void _dump_file(const file_info_t* pfi, void* pa)
 	if (pfi->is_dir)
 		xscpy(fsize, _T(""));
 	else
-		format_longlong(pfi->high_size, pfi->low_size, fsize);
+		format_long(pfi->high_size, pfi->low_size, fsize);
 
 	string_cat(vs, fsize, -1);
 	string_cat(vs, feed, 1);

@@ -60,7 +60,7 @@ typedef enum{
 	_TEXTOR_PRESS_ACCEPT = 2
 }TEXTOR_PRESS;
 
-typedef void(*PF_SCAN_TEXT)(void* data, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+typedef void(*PF_SCAN_TEXT)(void* data, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 typedef int(*PF_GET_TEXT)(void* data, tchar_t* buf, int max);
 typedef void(*PF_SET_TEXT)(void* data, const tchar_t* buf, int len);
 typedef bool_t(*PF_GET_PAGING)(res_win_t wt, xsize_t* pse);
@@ -111,7 +111,7 @@ XDC_API void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* pp
 
 XDC_API void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs);
 
-XDC_API bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, long nLine);
+XDC_API bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, int nLine);
 
 XDC_API void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr);
 

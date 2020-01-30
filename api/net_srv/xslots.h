@@ -28,13 +28,11 @@ LICENSE.GPL3 for more details.
 #define _XSLOTS_H
 
 #include "srvdef.h"
-#include "srvcert.h"
 
 typedef struct _xslots_param_t{
 	slot_listen_t* lis_slot;
 
 	int			n_secu;
-	cert_t*		p_certs;
 
 	tchar_t		sz_mode[INT_LEN];
 	tchar_t		sz_port[INT_LEN];

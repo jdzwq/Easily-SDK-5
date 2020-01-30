@@ -56,7 +56,7 @@ typedef struct tagFormPanelDelta{
 }FormPanelDelta;
 
 #define GETFORMPANELDELTA(ph) 		(FormPanelDelta*)widget_get_user_delta(ph)
-#define SETFORMPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETFORMPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define FORMPANEL_ACCEL_COUNT	5
 accel_t	FORMPANEL_ACCEL[FORMPANEL_ACCEL_COUNT] = {
@@ -268,9 +268,9 @@ void FormPanel_DropDomain(res_win_t widget, DROPDOMAIN* pdrop)
 	flk = insert_field(ptrForm, DOC_FORM_LABEL);
 	set_field_name(flk, fname);
 	set_field_text(flk, pdrop->dm.Title, -1);
-	xsprintf(token, _T("%d"), (long)(pdrop->xp.fx + 0.5));
+	xsprintf(token, _T("%d"), (int)(pdrop->xp.fx + 0.5));
 	set_field_x(flk, (float)xstol(token));
-	xsprintf(token, _T("%d"), (long)(pdrop->xp.fy + 0.5));
+	xsprintf(token, _T("%d"), (int)(pdrop->xp.fy + 0.5));
 	set_field_y(flk, (float)xstol(token));
 	
 	len = xslen(pdrop->dm.Title);
@@ -286,9 +286,9 @@ void FormPanel_DropDomain(res_win_t widget, DROPDOMAIN* pdrop)
 	flk = insert_field(ptrForm, DOC_FORM_TEXT);
 	set_field_name(flk, fname);
 	set_field_id(flk, fname);
-	xsprintf(token, _T("%d"), (long)(fw + pdrop->xp.fx + 0.5));
+	xsprintf(token, _T("%d"), (int)(fw + pdrop->xp.fx + 0.5));
 	set_field_x(flk, (float)xstol(token));
-	xsprintf(token, _T("%d"), (long)(pdrop->xp.fy + 0.5));
+	xsprintf(token, _T("%d"), (int)(pdrop->xp.fy + 0.5));
 	set_field_y(flk, (float)xstol(token));
 	if (!is_null(pdrop->dm.DataType))
 		set_field_data_type(flk, pdrop->dm.DataType);
@@ -1195,7 +1195,7 @@ void FormPanel_OnGroup(res_win_t widget)
 
 	formctrl_set_dirty(pdt->hForm, 1);
 
-	long n_max = 0;
+	int n_max = 0;
 	if (bGroup)
 		n_max = get_field_max_group(ptrForm) + 1;
 	else
@@ -1635,7 +1635,7 @@ void FormPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 
 	LINKPTR ptrForm = formctrl_fetch(pdt->hForm);
 	LINKPTR ptrField = formctrl_get_focus_field(pdt->hForm);
@@ -1685,7 +1685,7 @@ void FormPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -1773,7 +1773,7 @@ void FormPanel_Form_OnLBClick(res_win_t widget, NOTICE_FORM* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1785,7 +1785,7 @@ void FormPanel_Form_OnFieldSize(res_win_t widget, NOTICE_FORM* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1797,7 +1797,7 @@ void FormPanel_Form_OnFieldMove(res_win_t widget, NOTICE_FORM* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -2258,7 +2258,7 @@ void FormPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void FormPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void FormPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
@@ -2292,7 +2292,7 @@ void FormPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void FormPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void FormPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 

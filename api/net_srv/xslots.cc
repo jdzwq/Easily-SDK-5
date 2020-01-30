@@ -26,6 +26,7 @@ LICENSE.GPL3 for more details.
 
 #include "xslots.h"
 #include "srvlog.h"
+#include "srvcrt.h"
 
 static void _xslots_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
 {
@@ -173,31 +174,36 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	tchar_t sz_hmac[KEY_LEN + 1] = { 0 };
 	byte_t textbom[4] = { 0 };
 
+	byte_t buf_crt[X509_CERT_SIZE] = { 0 };
+	byte_t buf_key[RSA_KEY_SIZE] = { 0 };
+	dword_t dw;
+
 	TRY_CATCH;
 
 	_xslots_log_request(slot);
 
-	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
-
-	_xslots_get_config(sz_site, sz_path, sz_track, sz_level, sz_proc);
-
-	if (is_null(sz_path))
-	{
-		raise_user_error(_T("_slots_invoke"), _T("website not define service entry\n"));
-	}
-
-	if (is_null(sz_proc))
-	{
-		raise_user_error(_T("_slots_invoke"), _T("website not define service module\n"));
-	}
+	get_envvar(XSERVICE_ROOT, sz_path, PATH_LEN);
 
 	if (pxp->n_secu == _SECU_SSL)
 	{
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
-
-		set_certs(_SECU_SSL, sz_pass, slot);
-
 		get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
+
+		dw = X509_CERT_SIZE;
+		if (!get_ssl_crt(sz_path, buf_crt, &dw))
+		{
+			raise_user_error(_T("_https_invoke"), _T("http get ssl certif failed"));
+		}
+
+		xssl_set_cert(slot, buf_crt, dw);
+
+		dw = RSA_KEY_SIZE;
+		if (!get_ssl_key(sz_path, buf_key, &dw))
+		{
+			raise_user_error(_T("_https_invoke"), _T("http get ssl rsa key failed"));
+		}
+
+		xssl_set_rsa(slot, buf_key, dw, sz_pass, -1);
 
 		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0)
 			xssl_set_auth(slot, SSL_VERIFY_REQUIRED);
@@ -210,7 +216,29 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	{
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
 
-		set_certs(_SECU_SSH, sz_pass, slot);
+		dw = RSA_KEY_SIZE;
+		if (!get_ssh_key(sz_path, buf_key, &dw))
+		{
+			raise_user_error(_T("_https_invoke"), _T("http get ssh rsa key failed"));
+		}
+
+		//xssh_set_rsa(slot, buf_key, dw, sz_pass, -1);
+	}
+
+	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
+
+	xszero(sz_path, PATH_LEN);
+
+	_xslots_get_config(sz_site, sz_path, sz_track, sz_level, sz_proc);
+
+	if (is_null(sz_path))
+	{
+		raise_user_error(_T("_slots_invoke"), _T("website not define service entry\n"));
+	}
+
+	if (is_null(sz_proc))
+	{
+		raise_user_error(_T("_slots_invoke"), _T("website not define service module\n"));
 	}
 
 	pb = (slots_block_t*)xmem_alloc(sizeof(slots_block_t));
@@ -302,7 +330,6 @@ ONERROR:
 
 void _xslots_start(xslots_param_t* pxp)
 {
-	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	tchar_t sz_token[RES_LEN] = { 0 };
 	unsigned short port;
@@ -321,9 +348,6 @@ void _xslots_start(xslots_param_t* pxp)
 	else
 		pxp->n_secu = _SECU_NONE;
 
-	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
-
-	pxp->p_certs = alloc_certs(pxp->n_secu, sz_root);
 	port = xstous(pxp->sz_port);
 
 	if (IS_THREAD_MODE(pxp->sz_mode))
@@ -380,11 +404,5 @@ void _xslots_stop(xslots_param_t* pxp)
 			xsprintf(sz_file, _T("SLOT %s service at port: %s ...stoped!\r\n"), sz_token, pxp->sz_port);
 
 		xportm_log_info(sz_file, -1);
-	}
-
-	if (pxp->p_certs)
-	{
-		free_certs(pxp->p_certs);
-		pxp->p_certs = NULL;
 	}
 }

@@ -104,7 +104,7 @@ bool_t _invoke_get(const https_block_t* pb)
 	{
 		n_hoff = n_loff = n_size = 0;
 		n_total = 0;
-		parse_long_range(frange, &n_hoff, &n_loff, &n_size, &n_total);
+		parse_bytes_range(frange, &n_hoff, &n_loff, &n_size, &n_total);
 
 		if (!n_total)
 			n_total = xstoll(fsize);
@@ -253,7 +253,7 @@ bool_t _invoke_get(const https_block_t* pb)
 	if (b_range)
 	{
 		xscpy(frange, _T("bytes "));
-		format_long_range(frange + xslen(frange), n_hoff, n_loff, n_size, n_total);
+		format_bytes_range(frange + xslen(frange), n_hoff, n_loff, n_size, n_total);
 
 		xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, frange, -1);
 		xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, HTTP_HEADER_ACCEPTRANGES_BYTES, -1);

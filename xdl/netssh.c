@@ -1456,6 +1456,9 @@ static bool_t _ssh_parse_kexinit(ssh_t* pssh, const byte_t* buf, dword_t len)
 			cli_token = ssh_algo_client[i];
 		}
 
+        matched = 0;
+        cli_len = 0;
+        
 		while (*cli_token)
 		{
 			cli_len = 0;
@@ -1639,7 +1642,10 @@ static bool_t _ssh_make_dh(ssh_t* pssh)
 	{
 		bits = 1024;
 		mpi_read_binary(&(pssh->kex_dhm.P), group1_dhm_P, GROUP1_DHM_P_LEN);
-	}
+	}else
+    {
+        bits = 0;
+    }
 
 	kex_sec = pssh->alg_method[SSH_METHOD_INDEX_KEYSECRET];
 
@@ -1891,7 +1897,7 @@ static bool_t _ssh_parse_pubkey(ssh_t* pssh, const byte_t* buf, dword_t size)
 	//byte[n]	key / certificate data
 	n = GET_DWORD_NET(buf, total);
 	total += 4;
-	a_xsncpy(kex_type, buf + total, n);
+	a_xsncpy(kex_type, (schar_t*)(buf + total), n);
 	total += n;
 
 	if (a_xsicmp(kex_type, pssh->alg_method[SSH_METHOD_INDEX_KEYSECRET]) != 0)
@@ -1993,7 +1999,7 @@ static bool_t _ssh_parse_pubsig(ssh_t* pssh, const byte_t* buf, dword_t size)
 	//byte[n]	signature blob in format specific encoding.
 	n = GET_DWORD_NET(buf, total);
 	total += 4;
-	a_xsncpy(sig_type, buf + total, n);
+	a_xsncpy(sig_type, (schar_t*)(buf + total), n);
 	total += n;
 
 	if (a_xsicmp(sig_type, pssh->alg_method[SSH_METHOD_INDEX_KEYSECRET]) != 0)

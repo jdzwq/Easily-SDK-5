@@ -44,7 +44,7 @@ typedef struct _status_delta_t{
 }status_delta_t;
 
 #define GETSTATUSDELTA(ph) 		(status_delta_t*)widget_get_user_delta(ph)
-#define SETSTATUSDELTA(ph,ptd)	 widget_set_user_delta(ph,(var_long)ptd)
+#define SETSTATUSDELTA(ph,ptd)	 widget_set_user_delta(ph,(var_int)ptd)
 
 /**************************************************************************************************/
 static void _statusctrl_title_rect(res_win_t widget, xrect_t* pxr)
@@ -74,7 +74,7 @@ static void _statusctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr
 void _statusctrl_reset_page(res_win_t widget)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
-	long pw, ph;
+	int pw, ph;
 	xrect_t xr;
 
 	widget_get_client_rect(widget, &xr);
@@ -85,7 +85,7 @@ void _statusctrl_reset_page(res_win_t widget)
 }
 
 /**************************************************************************************************/
-int noti_status_owner(res_win_t widget, unsigned long code, link_t_ptr status, link_t_ptr ilk, void* data)
+int noti_status_owner(res_win_t widget, unsigned int code, link_t_ptr status, link_t_ptr ilk, void* data)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
 	NOTICE_STATUS nf = { 0 };
@@ -132,7 +132,7 @@ void noti_status_item_leave(res_win_t widget)
 	}
 }
 
-void noti_status_item_hover(res_win_t widget, long x, long y)
+void noti_status_item_hover(res_win_t widget, int x, int y)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
 	xpoint_t xp;

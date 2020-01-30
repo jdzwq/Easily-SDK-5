@@ -44,12 +44,12 @@ extern "C" {
 
 /*
 @FUNCTION thread_start: create and run a thread. 
-@INPUT res_hand_t* ph_hand: used to return thread system resource handle.
+@INPUT res_thread_t* ph_hand: used to return thread system resource handle.
 @INPUT PF_THREADFUNC pf_worker: the working function will running when thread created.
 @INPUT void* param: the paramter send into worker function.
 @RETURN void: none.
 */
-XDL_API void thread_start(res_hand_t* ph_hand, PF_THREADFUNC pf_worker, void* param);
+XDL_API void thread_start(res_thread_t* ph_hand, PF_THREADFUNC pf_worker, void* param);
 
 /*
 @FUNCTION thread_stop: terminate thread, this functoin must be called at end of the PF_THREADFUNC worker function body.
@@ -64,6 +64,8 @@ XDL_API void thread_stop(void);
 */
 XDL_API void thread_sleep(int ms);
 
+XDL_API void thread_yield(void);
+
 /*
 @FUNCTION thread_get_id: get the thread identifier, this function may be called in PF_THREADFUNC worker function.
 @RETURN dword_t: identifier.
@@ -72,10 +74,10 @@ XDL_API dword_t thread_get_id(void);
 
 /*
 @FUNCTION thread_join: join the thread into process thread list, then the process will wait for thread terminated befor it exit.
-@INPUT res_hand_t th: the thread handle.
+@INPUT res_thread_t th: the thread handle.
 @RETURN void: none.
 */
-XDL_API void thread_join(res_hand_t th);
+XDL_API void thread_join(res_thread_t th);
 
 #ifdef XDK_SUPPORT_THREAD_EVENT
 

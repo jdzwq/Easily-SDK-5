@@ -75,29 +75,33 @@ bool_t _file_size(res_file_t fh, dword_t* ph, dword_t* pl)
     return 1;
 }
 
-bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
+bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
     int rs, rt;
     struct kevent kv = {0};
     
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->tp.tv_sec = 0;
-        pov->tp.tv_nsec = pb->timo * 1000 * 1000;
-        
+        pov->tp.tv_sec = pb->timo / 1000;
+        pov->tp.tv_nsec = (pb->timo % 1000) * 1000 * 1000;
+    
         EV_SET(&(pov->ev[1]), fh, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
         
-        rs = kevent(pb->port, &(pov->ev[1]), 1, &kv, 1, ((pb->timo)? &(pov->tp) : NULL));
-        if(rs <= 0)
+        rs = kevent(pb->port, &(pov->ev[1]), 1, &kv, 1, &(pov->tp));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
-        rt = ((size_t)kv.data < size)? (int)kv.data : (int)size;
+        rt = ((int)kv.data < (int)size)? (int)kv.data : (int)size;
         if(rt < 0) rt = (int)size;
     }
     else if (pb->type == ASYNC_EVENT)
@@ -105,14 +109,18 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
         FD_ZERO(&(pov->fd[1]));
         FD_SET(fh, &(pov->fd[1]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(fh + 1, NULL, &(pov->fd[1]), NULL, ((pb->timo)? &(pov->tv) : NULL));
-        if(rs <= 0)
+        rs = select(fh + 1, NULL, &(pov->fd[1]), NULL, &(pov->tv));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         rt = (int)size;
@@ -136,7 +144,7 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
         
     }
     
-    if (pcb) *pcb = (size_t)rt;
+    if (pcb) *pcb = (dword_t)rt;
     
     return 1;
 }
@@ -146,29 +154,33 @@ bool_t _file_flush(res_file_t fh)
     return 1;
 }
 
-bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
+bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
     int rs, rt;
     struct kevent kv = {0};
     
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->tp.tv_sec = 0;
-        pov->tp.tv_nsec = pb->timo * 1000 * 1000;
+        pov->tp.tv_sec = pb->timo / 1000;
+        pov->tp.tv_nsec = (pb->timo % 1000) * 1000 * 1000;
         
         EV_SET(&(pov->ev[0]), fh, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         
-        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, ((pb->timo)? &(pov->tp) : NULL));
-        if(rs <= 0)
+        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, &(pov->tp));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
-        rt = ((size_t)kv.data < size)? (int)kv.data : (int)size;
+        rt = ((int)kv.data < (int)size)? (int)kv.data : (int)size;
         if(rt < 0) rt = (int)size;
     }
     else if (pb->type == ASYNC_EVENT)
@@ -176,20 +188,24 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
         FD_ZERO(&(pov->fd[0]));
         FD_SET(fh, &(pov->fd[0]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(fh + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
-        if(rs <= 0)
+        rs = select(fh + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        if(rs < 0)
         {
             if (pcb)  *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         if(ioctl(fh, FIONREAD, &rt) < 0)
             rt = (int)size;
         else
-            rt = ((size_t)rt < size)? rt : (int)size;
+            rt = (rt < (int)size)? rt : (int)size;
     }else
     {
         rt = (int)size;
@@ -210,12 +226,12 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
         
     }
     
-    if (pcb) *pcb = (size_t)rt;
+    if (pcb) *pcb = (dword_t)rt;
     
     return 1;
 }
 
-bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
+bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
     void* pBase = NULL;
     dword_t poff;
@@ -238,7 +254,7 @@ bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, si
     return 1;
 }
 
-bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
+bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
     void* pBase = NULL;
     dword_t dwh, dwl, poff;
@@ -311,7 +327,7 @@ bool_t _file_gettime(res_file_t fh, xdate_t* pdt)
 
 bool_t _file_settime(res_file_t fh, const xdate_t* pdt)
 {
-    struct timeval um = {0};
+    struct timeval um[2] = {0};
     struct tm t = {0};
     
     t.tm_year = pdt->year - 1900;
@@ -321,9 +337,9 @@ bool_t _file_settime(res_file_t fh, const xdate_t* pdt)
     t.tm_min = pdt->min;
     t.tm_sec = pdt->sec;
     
-    um.tv_sec = um.tv_sec = mktime(&t);
+    um[0].tv_sec = um[1].tv_sec = mktime(&t);
     
-    return (futimes(fh, &um) < 0)? 0 : 1;
+    return (futimes(fh, um) < 0)? 0 : 1;
 }
 
 bool_t _file_delete(const tchar_t* fname)

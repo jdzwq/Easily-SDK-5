@@ -129,7 +129,7 @@ static void _ScreenPointToWindow(HWND hWnd, POINT* ppt)
 	ppt->y -= rtWnd.top;
 }
 
-static void _CenterRect(RECT* prt, long cx, long cy)
+static void _CenterRect(RECT* prt, int cx, int cy)
 {
 	if (prt->right - prt->left > cx)
 	{
@@ -477,7 +477,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 					xp.x -= rt.left;
 					xp.y -= rt.top;
 
-					long pos = (*pev->pf_on_nc_calcscroll)(hWnd, 1, &xp);
+					int pos = (*pev->pf_on_nc_calcscroll)(hWnd, 1, &xp);
 
 					scroll_t scr = { 0 };
 					_widget_get_scroll_info(hWnd, 1, &scr);
@@ -512,7 +512,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 					xp.x -= rt.left;
 					xp.y -= rt.top;
 
-					long pos = (*pev->pf_on_nc_calcscroll)(hWnd, 0, &xp);
+					int pos = (*pev->pf_on_nc_calcscroll)(hWnd, 0, &xp);
 
 					scroll_t scr = { 0 };
 					_widget_get_scroll_info(hWnd, 0, &scr);
@@ -601,8 +601,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_lbutton_dbclick)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_lbutton_dbclick)(hWnd, &xp);
 		}
@@ -612,8 +612,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_lbutton_down)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_lbutton_down)(hWnd, &xp);
 		}
@@ -623,8 +623,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_lbutton_up)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_lbutton_up)(hWnd, &xp);
 		}
@@ -634,8 +634,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_rbutton_down)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_rbutton_down)(hWnd, &xp);
 		}
@@ -645,8 +645,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_rbutton_up)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_rbutton_up)(hWnd, &xp);
 		}
@@ -656,8 +656,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_mouse_move)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_mouse_move)(hWnd, (dword_t)wParam, &xp);
 		}
@@ -667,8 +667,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_mouse_hover)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_mouse_hover)(hWnd, (dword_t)wParam, &xp);
 		}
@@ -678,8 +678,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if (pev && pev->pf_on_mouse_leave)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_mouse_leave)(hWnd, (dword_t)wParam, &xp);
 		}
@@ -690,8 +690,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		{
 			xpoint_t xp;
 
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_move)(hWnd, &xp);
 			return 0;
@@ -703,8 +703,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		{
 			xsize_t xs;
 			
-			xs.cx = (long)(short)LOWORD(lParam);
-			xs.cy = (long)(short)HIWORD(lParam);
+			xs.cx = (int)(short)LOWORD(lParam);
+			xs.cy = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_size)(hWnd, (int)wParam, &xs);
 
@@ -819,7 +819,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		pev = GETXDKDISPATCH(hWnd);
 		if (pev && pev->pf_on_scroll)
 		{
-			(*pev->pf_on_scroll)(hWnd, (bool_t)wParam, (long)lParam);
+			(*pev->pf_on_scroll)(hWnd, (bool_t)wParam, (int)lParam);
 		}
 		return 0;
 #ifndef WINCE
@@ -827,7 +827,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		pev = GETXDKDISPATCH(hWnd);
 		if (pev && pev->pf_on_wheel)
 		{
-			(*pev->pf_on_wheel)(hWnd, (bool_t)0, (long)GET_WHEEL_DELTA_WPARAM(wParam));
+			(*pev->pf_on_wheel)(hWnd, (bool_t)0, (int)GET_WHEEL_DELTA_WPARAM(wParam));
 			return 0;
 		}
 		else if (pev && pev->pf_on_scroll)
@@ -848,7 +848,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		pev = GETXDKDISPATCH(hWnd);
 		if (pev && pev->pf_on_wheel)
 		{
-			(*pev->pf_on_wheel)(hWnd, (bool_t)1, (long)GET_WHEEL_DELTA_WPARAM(wParam));
+			(*pev->pf_on_wheel)(hWnd, (bool_t)1, (int)GET_WHEEL_DELTA_WPARAM(wParam));
 			return 0;
 		}
 		else if (pev && pev->pf_on_scroll)
@@ -1029,8 +1029,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		if ((wParam & 0xFFF0) == SC_CONTEXTHELP && pev && pev->pf_on_syscmd_click)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 			(*pev->pf_on_syscmd_click)(hWnd, &xp);
 			return 0;
 		}
@@ -1110,8 +1110,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_lbutton_dbclick)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_lbutton_dbclick)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1121,8 +1121,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_lbutton_down)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_lbutton_down)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1132,8 +1132,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_lbutton_up)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_lbutton_up)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1143,8 +1143,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_rbutton_down)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_rbutton_down)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1154,8 +1154,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_rbutton_up)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_rbutton_up)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1165,8 +1165,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_mouse_move)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_mouse_move)(hWnd, (dword_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1176,8 +1176,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_mouse_hover)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_mouse_hover)(hWnd, (dword_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1187,8 +1187,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_mouse_leave)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_mouse_leave)(hWnd, (dword_t)wParam, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1198,8 +1198,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_size)
 		{
 			xsize_t xs = { 0 };
-			xs.cx = (long)(short)LOWORD(lParam);
-			xs.cy = (long)(short)HIWORD(lParam);
+			xs.cx = (int)(short)LOWORD(lParam);
+			xs.cy = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_size)(hWnd, (int)wParam, &xs, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1210,8 +1210,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		{
 			xpoint_t xp = { 0 };
 
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_move)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1227,7 +1227,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	case WM_SCROLL:
 		if (pev && pev->sub_on_scroll)
 		{
-			if ((*pev->sub_on_scroll)(hWnd, (bool_t)wParam, (long)lParam, (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_scroll)(hWnd, (bool_t)wParam, (int)lParam, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -1235,7 +1235,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	case WM_MOUSEWHEEL:
 		if (pev && pev->sub_on_wheel)
 		{
-			if ((*pev->sub_on_wheel)(hWnd, (bool_t)0, (long)GET_WHEEL_DELTA_WPARAM(wParam), (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_wheel)(hWnd, (bool_t)0, (int)GET_WHEEL_DELTA_WPARAM(wParam), (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		else if (pev && pev->sub_on_scroll)
@@ -1260,7 +1260,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	case WM_MOUSEHWHEEL:
 		if (pev && pev->sub_on_wheel)
 		{
-			if ((*pev->sub_on_wheel)(hWnd, (bool_t)1, (long)GET_WHEEL_DELTA_WPARAM(wParam), (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_wheel)(hWnd, (bool_t)1, (int)GET_WHEEL_DELTA_WPARAM(wParam), (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		else if (pev && pev->sub_on_scroll)
@@ -1434,16 +1434,16 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if ((wParam & 0xFFF0) == SC_MOUSEMENU && pev && pev->sub_on_sysclr_click)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 			if ((*pev->sub_on_sysclr_click)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		else if ((wParam & 0xFFF0) == SC_CONTEXTHELP && pev && pev->sub_on_syslog_click)
 		{
 			xpoint_t xp;
-			xp.x = (long)(short)LOWORD(lParam);
-			xp.y = (long)(short)HIWORD(lParam);
+			xp.x = (int)(short)LOWORD(lParam);
+			xp.y = (int)(short)HIWORD(lParam);
 			if ((*pev->sub_on_syslog_click)(hWnd, &xp, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
@@ -2471,7 +2471,7 @@ void _widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl)
 
 	psl->max = si.nMax;
 	psl->min = si.nMin;
-	psl->page = (long)(si.nPage);
+	psl->page = (int)(si.nPage);
 	psl->pos = si.nPos;
 	psl->track = si.nTrackPos;
 }
@@ -2689,15 +2689,15 @@ void _screen_size_to_pt(xsize_t* pxs)
 {
 	HDC hDC;
 	float htpermm, vtpermm;
-	long cx, cy;
+	int cx, cy;
 
 	hDC = GetDC(NULL);
 
 	htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
-	cx = (long)((float)pxs->fx * htpermm);
-	cy = (long)((float)pxs->fy * vtpermm);
+	cx = (int)((float)pxs->fx * htpermm);
+	cy = (int)((float)pxs->fy * vtpermm);
 
 	pxs->cx = cx;
 	pxs->cy = cy;

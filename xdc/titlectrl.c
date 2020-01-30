@@ -41,7 +41,7 @@ typedef struct title_delta_t{
 }title_delta_t;
 
 #define GETTITLEDELTA(ph) 	(title_delta_t*)widget_get_user_delta(ph)
-#define SETTITLEDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTITLEDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /****************************************************************************************************/
 
@@ -60,7 +60,7 @@ static void _titlectrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 static void _titlectrl_reset_page(res_win_t widget)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
-	long pw, ph;
+	int pw, ph;
 	xrect_t xr;
 
 	widget_get_client_rect(widget, &xr);
@@ -71,7 +71,7 @@ static void _titlectrl_reset_page(res_win_t widget)
 }
 
 /*********************************************control event******************************************/
-int noti_title_owner(res_win_t widget, unsigned long code, link_t_ptr title, link_t_ptr ilk, void* data)
+int noti_title_owner(res_win_t widget, unsigned int code, link_t_ptr title, link_t_ptr ilk, void* data)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
 	NOTICE_TITLE nf = { 0 };
@@ -122,7 +122,7 @@ void noti_title_item_enter(res_win_t widget, link_t_ptr plk)
 	}
 }
 
-void noti_title_item_hover(res_win_t widget, long x, long y)
+void noti_title_item_hover(res_win_t widget, int x, int y)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
 	xpoint_t xp;

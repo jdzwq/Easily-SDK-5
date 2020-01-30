@@ -444,7 +444,7 @@ uint64_t MurmurHash64A(const void * key, int len, unsigned int seed) {
 /* Given a string element to add to the HyperLogLog, returns the length
 * of the pattern 000..1 of the element hash. As a side effect 'regp' is
 * set to the register index this element hashes to. */
-int hllPatLen(unsigned char *ele, size_t elesize, long *regp) {
+int hllPatLen(unsigned char *ele, size_t elesize, int *regp) {
 	uint64_t hash, bit, index;
 	int count;
 
@@ -476,7 +476,7 @@ int hllPatLen(unsigned char *ele, size_t elesize, long *regp) {
 
 /* "Add" the element in the dense hyperloglog data structure.
 * Actually nothing is added, but the max 0 pattern counter of the subset
-* the element belongs to is incremented if needed.
+* the element beints to is incremented if needed.
 *
 * 'registers' is expected to have room for HLL_REGISTERS plus an
 * additional byte on the right. This requirement is met by sds strings
@@ -487,9 +487,9 @@ int hllPatLen(unsigned char *ele, size_t elesize, long *regp) {
 * is returned. */
 int hllDenseAdd(uint8_t *registers, unsigned char *ele, size_t elesize) {
 	uint8_t oldcount, count;
-	long index;
+	int index;
 
-	/* Update the register if this element produced a longer run of zeroes. */
+	/* Update the register if this element produced a inter run of zeroes. */
 	count = hllPatLen(ele, elesize, &index);
 	HLL_DENSE_GET_REGISTER(oldcount, registers, index);
 	if (count > oldcount) {

@@ -51,15 +51,13 @@ typedef struct _radstm_t{
 bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
 {
 	byte_t bsize[INT_LEN + 1] = { 0 };
-	dword_t dw;
-	int pos = 0;
+	dword_t bys, pos = 0;
 	bool_t b_rt = 0;
 
 	while (pos < INT_LEN)
 	{
-		dw = 1;
-
-		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &dw);
+		bys = 1;
+		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys);
 
 		if (pos && bsize[pos - 1] == '\r' && bsize[pos] == '\n')
 		{
@@ -68,8 +66,11 @@ bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
 			break;
 		}
 
-		if (!b_rt || !dw)
+		if (!b_rt)
 			break;
+        
+        if(!bys)
+            continue;
 
 		pos++;
 	}
@@ -92,28 +93,35 @@ bool_t _stream_read_chunk_tail(radstm_t* pxt)
 {
 	byte_t bsize[3] = { 0 };
 	dword_t bys, pos = 0;
+	bool_t b_rt = 0;
 
     while(pos < 2)
     {
         bys = 1;
-        if (!(*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys))
-        {
-            return 0;
-        }
+		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys);
+		//last \r\n
+		if (bsize[0] == '\r' && bsize[1] == '\n')
+		{
+			b_rt = 1;
+			break;
+		}
+
+		if (!b_rt)
+			break;
+        
         if(!bys)
-            break;
+            continue;
         
         pos += bys;
     }
 
-	//last \r\n
-	return (bsize[0] == '\r' && bsize[1] == '\n') ? 1 : 0;
+	return b_rt;
 }
 
 bool_t _stream_write_chunk_head(radstm_t* pxt, dword_t dw)
 {
 	byte_t bsize[INT_LEN + 1] = { 0 };
-	dword_t len, bys, pos = 0;
+	dword_t len, bys;
 
 	len = a_ltohex(dw, _T('x'), (schar_t*)bsize, INT_LEN);
 
@@ -121,44 +129,30 @@ bool_t _stream_write_chunk_head(radstm_t* pxt, dword_t dw)
 	bsize[len + 1] = '\n';
 	len += 2;
 
-    while(pos < len)
-    {
-        bys = 1;
-        if(!(*pxt->inf.pf_write)(pxt->inf.bio, bsize + pos, &bys))
-        {
-            return 0;
-        }
-        if(!bys)
-            break;
-        
-        pos += bys;
-    }
-    
-    return (pos == len)? 1 : 0;
+	bys = len;
+	if (!(*pxt->inf.pf_write)(pxt->inf.bio, bsize, &bys))
+	{
+		return 0;
+	}
+
+    return (bys == len)? 1 : 0;
 }
 
 bool_t _stream_write_chunk_tail(radstm_t* pxt)
 {
 	byte_t bsize[3] = { 0 };
-	dword_t bys, pos = 0;
+	dword_t bys;
 
 	bsize[0] = '\r';
 	bsize[1] = '\n';
 
-    while(pos < 2)
-    {
-        bys = 1;
-        if(!(*pxt->inf.pf_write)(pxt->inf.bio, bsize, &bys))
-        {
-            return 0;
-        }
-        if(!bys)
-            break;
-        
-        pos += bys;
-    }
-    
-    return (pos == 2)? 1 : 0;
+	bys = 2;
+	if (!(*pxt->inf.pf_write)(pxt->inf.bio, bsize, &bys))
+	{
+		return 0;
+	}
+
+    return (bys == 2)? 1 : 0;
 }
 
 void _stream_begin_write(radstm_t* pxt, dword_t* pd)
@@ -266,9 +260,10 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		_stream_begin_read(pxt, &dw);
 
-		if(!(*pxt->inf.pf_read)(pxt->inf.bio, buf + pos, &dw))
+		if (!(*pxt->inf.pf_read)(pxt->inf.bio, buf + pos, &dw))
 		{
-			break;
+			*pb = pos;
+			return 0;
 		}
 
 		_stream_end_read(pxt, dw);
@@ -281,6 +276,7 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		pos += dw;
 	}
+    
 	*pb = pos;
 
 	return (size == pos)? 1 : 0;
@@ -303,9 +299,10 @@ bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		_stream_begin_write(pxt, &dw);
 
-		if(!(*pxt->inf.pf_write)(pxt->inf.bio, buf + pos, &dw))
+		if (!(*pxt->inf.pf_write)(pxt->inf.bio, buf + pos, &dw))
 		{
-			break;
+			*pb = pos;
+			return 0;
 		}
 
 		_stream_end_write(pxt, dw);
@@ -315,6 +312,7 @@ bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		pos += dw;
 	}
+
 	*pb = pos;
 
 	return (size == pos)? 1 : 0;
@@ -383,12 +381,6 @@ stream_t stream_alloc(xhand_t io)
 		pxt->inf.pf_read = xcons_read;
 		pxt->inf.pf_write = xcons_write;
 		pxt->inf.pf_flush = xcons_flush;
-		break;
-#endif
-#ifdef XDK_SUPPORT_SHARE
-	case _HANDLE_SHARE:
-		pxt->inf.pf_read = xshare_read;
-		pxt->inf.pf_write = xshare_write;
 		break;
 #endif
 #ifdef XDK_SUPPORT_MEMO_CACHE

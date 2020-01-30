@@ -374,7 +374,7 @@ void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const
 	link_t_ptr g, nlk;
 
 	float line_rati;
-	long th, lh;
+	int th, lh;
 	int i, rows;
 	xpoint_t pt1, pt2;
 	xrect_t xr;
@@ -394,7 +394,7 @@ void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const
 	svg_rect_tm_to_pt(canv, &xr);
 
 	th = xs.cy;
-	lh = (long)((float)th * (line_rati - 1.0));
+	lh = (int)((float)th * (line_rati - 1.0));
 
 	rows = xr.h / (th + lh);
 
@@ -484,7 +484,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 {
 	tchar_t sz_format[RES_LEN] = { 0 };
 	xdate_t dt = { 0 };
-	long lt;
+	int lt;
 	double db;
 
 	xsize_t xs;
@@ -505,7 +505,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 		}
 		else if (!is_null(fmt))
 		{
-			format_long_ex(lt, fmt, sz_format, RES_LEN);
+			format_integer_ex(lt, fmt, sz_format, RES_LEN);
 		}
 		else
 		{

@@ -116,11 +116,7 @@ res_file_t _socket_open(int af, int type, int protocol)
     int opt = 1;
     
     so = socket(af, type, protocol);
-    if(so >= 0)
-    {
-        //setsockopt(so, SOL_SOCKET, SO_NOSIGPIPE, (void*)&opt, sizeof(int));
-    }
-    
+   
     return (so < 0) ? INVALID_FILE : so;
 }
 
@@ -196,8 +192,8 @@ dword_t _socket_wait(res_file_t so, dword_t msk, int ms)
     FD_ZERO(&fw);
     FD_SET(so, &fw);
     
-    tv.tv_sec = 0;
-    tv.tv_usec = ms * 1000;
+    tv.tv_sec = ms / 1000;
+    tv.tv_usec = (ms % 1000) * 1000;
     
     if(((msk & FD_ACCEPT) || (msk & FD_READ)) && (msk & FD_WRITE))
         select(so + 1, &fr, &fw, NULL, &tv);
@@ -227,10 +223,10 @@ bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
 	return (connect(so, saddr, slen) == 0) ? 1 : 0;
 }
 
-bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size_t size, async_t* pb)
+bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dword_t size, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
     struct epoll_event ev = {0};
@@ -241,11 +237,15 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
         pov->ev.data.fd = so; 
         epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
         
-        rs = epoll_wait(pb->port, &ev, 1, ((pb->timo)? pb->timo : -1));
-        if(rs <= 0)
+        rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         rt = (int)size;
@@ -255,14 +255,18 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
         FD_ZERO(&(pov->fd[1]));
         FD_SET(so, &(pov->fd[1]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, NULL, &(pov->fd[1]), NULL, ((pb->timo)? &(pov->tv) : NULL));
-        if(rs <= 0)
+        rs = select(so + 1, NULL, &(pov->fd[1]), NULL, &(pov->tv));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         rt = (int)size;
@@ -271,7 +275,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
         rt = (int)size;
     }
     
-    rt = (int)sendto(so, (char*)buf, (size_t)rt, 0, (struct sockaddr*)saddr, (socklen_t)alen);
+    rt = (int)sendto(so, (char*)buf, (size_t)rt, MSG_NOSIGNAL, (struct sockaddr*)saddr, (socklen_t)alen);
     if (rt < 0)
     {
         if(errno != EINPROGRESS)
@@ -284,15 +288,15 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
         }
     }
     
-    if (pcb) *pcb = (size_t)rt;
+    if (pcb) *pcb = (dword_t)rt;
     
     return 1;
 }
 
-bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, size_t size, async_t* pb)
+bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, dword_t size, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
     struct epoll_event ev = {0};
@@ -303,43 +307,51 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
         pov->ev.data.fd = so; 
         epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
         
-        rs = epoll_wait(pb->port, &ev, 1, ((pb->timo)? pb->timo : -1));
-        if(rs <= 0)
+        rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         if(ioctl(so, FIONREAD, &rt) < 0)
             rt = (int)size;
         else
-            rt = ((size_t)rt < size)? rt : (int)size;
+            rt = (rt < (int)size)? rt : (int)size;
     }
     else if (pb->type == ASYNC_EVENT)
     {
         FD_ZERO(&(pov->fd[0]));
         FD_SET(so, &(pov->fd[0]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
-        if(rs <= 0)
+        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         if(ioctl(so, FIONREAD, &rt) < 0)
             rt = (int)size;
         else
-            rt = ((size_t)rt < size)? rt : (int)size;
+            rt = (rt < (int)size)? rt : (int)size;
     }else
     {
         rt = (int)size;
     }
     
-    rt = (int)recvfrom(so, (char*)buf, (size_t)rt, 0, (struct sockaddr*)saddr, (socklen_t*)plen);
+    rt = (int)recvfrom(so, (char*)buf, (size_t)rt, MSG_NOSIGNAL, (struct sockaddr*)saddr, (socklen_t*)plen);
     if (rt < 0)
     {
         if(errno != EINPROGRESS)
@@ -354,15 +366,15 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
         
     }
     
-    if (pcb) *pcb = (size_t)rt;
+    if (pcb) *pcb = (dword_t)rt;
     
     return 1;
 }
 
-bool_t _socket_send(res_file_t so, void* buf, size_t size, async_t* pb)
+bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
     struct epoll_event ev = {0};
@@ -373,11 +385,15 @@ bool_t _socket_send(res_file_t so, void* buf, size_t size, async_t* pb)
         pov->ev.data.fd = so; 
         epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
         
-        rs = epoll_wait(pb->port, &ev, 1, ((pb->timo)? pb->timo : -1));
-        if(rs <= 0)
+        rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         rt = (int)size;
@@ -387,14 +403,18 @@ bool_t _socket_send(res_file_t so, void* buf, size_t size, async_t* pb)
         FD_ZERO(&(pov->fd[1]));
         FD_SET(so, &(pov->fd[1]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, NULL, &(pov->fd[1]), NULL, ((pb->timo)? &(pov->tv) : NULL));
-        if(rs <= 0)
+        rs = select(so + 1, NULL, &(pov->fd[1]), NULL, &(pov->tv));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         rt = (int)size;
@@ -403,7 +423,7 @@ bool_t _socket_send(res_file_t so, void* buf, size_t size, async_t* pb)
         rt = (int)size;
     }
 
-    rt = (int)send(so, (char*)buf, rt, 0);
+    rt = (int)send(so, (char*)buf, rt, MSG_NOSIGNAL);
     if (rt < 0)
     {
         if(errno != EINPROGRESS)
@@ -418,15 +438,15 @@ bool_t _socket_send(res_file_t so, void* buf, size_t size, async_t* pb)
         
     }
     
-    if (pcb) *pcb = (size_t)rt;
+    if (pcb) *pcb = (dword_t)rt;
     
     return 1;
 }
 
-bool_t _socket_recv(res_file_t so, void* buf, size_t size, async_t* pb)
+bool_t _socket_recv(res_file_t so, void* buf, dword_t size, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
+    dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
    struct epoll_event ev = {0};
@@ -437,43 +457,51 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t size, async_t* pb)
         pov->ev.data.fd = so; 
         epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
         
-        rs = epoll_wait(pb->port, &ev, 1, ((pb->timo)? pb->timo : -1));
-        if(rs <= 0)
+        rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         if(ioctl(so, FIONREAD, &rt) < 0)
             rt = (int)size;
         else
-            rt = ((size_t)rt < size)? rt : (int)size;
+            rt = (rt < (int)size)? rt : (int)size;
     }
     else if (pb->type == ASYNC_EVENT)
     {
         FD_ZERO(&(pov->fd[0]));
         FD_SET(so, &(pov->fd[0]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
-        if(rs <= 0)
+        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        if(rs < 0)
         {
-            if (pcb)  *pcb = 0;
+            *pcb = 0;
             return 0;
+        }else if(rs == 0)
+        {
+            *pcb = 0;
+            return 1;
         }
         
         if(ioctl(so, FIONREAD, &rt) < 0)
             rt = (int)size;
         else
-            rt = ((size_t)rt < size)? rt : (int)size;
+            rt = (rt < (int)size)? rt : (int)size;
     }else
     {
         rt = (int)size;
     }
     
-    rt = (int)recv(so, (char*)buf, rt, 0);
+    rt = (int)recv(so, (char*)buf, rt, MSG_NOSIGNAL);
     if (rt < 0)
     {
         if(errno != EINPROGRESS)
@@ -488,7 +516,7 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t size, async_t* pb)
         
     }
     
-    if (pcb) *pcb = (size_t)rt;
+    if (pcb) *pcb = (dword_t)rt;
     
     return 1;
 }
@@ -527,8 +555,8 @@ bool_t _socket_set_sndtmo(res_file_t so, int tmo)
 {
     struct timeval tv;
     
-    tv.tv_sec = 0;
-    tv.tv_usec = tmo * 1000;
+    tv.tv_sec = tmo / 1000;
+    tv.tv_usec = (tmo % 1000) * 1000;
     
     return (setsockopt(so, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof(tv)) < 0) ? 0 : 1;
 }
@@ -537,8 +565,8 @@ bool_t _socket_set_rcvtmo(res_file_t so, int tmo)
 {
     struct timeval tv;
     
-    tv.tv_sec = 0;
-    tv.tv_usec = tmo * 1000;
+    tv.tv_sec = tmo / 1000;
+    tv.tv_usec = (tmo % 1000) * 1000;
     
     return (setsockopt(so, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) ? 0 : 1;
 }
@@ -555,9 +583,34 @@ bool_t _socket_set_linger(res_file_t so, bool_t wait, int sec)
 
 bool_t	_socket_set_nonblk(res_file_t so, bool_t none)
 {
-    unsigned long dw = (none)? 1 : 0;
+    //unsigned long dw = (none)? 1 : 0;
 
-    return (ioctl(so, FIONBIO, ((none)? 1 : 0)) < 0)? 0 : 1;
+    //return (ioctl(so, FIONBIO, ((none)? 1 : 0)) < 0)? 0 : 1;
+
+    int flags;
+    
+    flags = fcntl(so, F_GETFL, 0);
+
+    if(!(flags & O_NONBLOCK) && none)
+    {
+        return (fcntl(so, F_SETFL, flags | O_NONBLOCK) < 0)? 0 : 1;
+    }
+
+    if((flags & O_NONBLOCK) && !none)
+    {
+        return (fcntl(so, F_SETFL, (flags & (~O_NONBLOCK))) < 0)? 0 : 1;
+    }
+
+    return (1);
+}
+
+bool_t _socket_get_nonblk(res_file_t so)
+{
+    int flags;
+    
+    flags = fcntl(so, F_GETFL, 0);
+
+    return (flags & O_NONBLOCK)? 1 : 0;
 }
 
 bool_t _socket_listen(res_file_t so, int max)
@@ -569,94 +622,114 @@ res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* p
 {
     res_file_t po;
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
-#ifdef XDK_SUPPORT_QUEUE
-    struct kevent kv = {0};
-    
+    struct epoll_event ev = {0};
+    socklen_t nlen = 0;
+
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->tp.tv_sec = 0;
-        pov->tp.tv_nsec = pb->timo * 1000 * 1000;
+        pov->ev.events = EPOLLIN;
+        pov->ev.data.fd = so; 
+        epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
         
-        EV_SET(&(pov->ev[0]), so, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-        
-        rs = kevent(pb->port, &(pov->ev[0]), 1, &kv, 1, ((pb->timo)? &(pov->tp) : NULL));
+        rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
         if(rs <= 0)
         {
-            if (pcb)  *pcb = 0;
-            return 0;
+            return INVALID_FILE;
         }
     }
-    else 
-#endif
-    if (pb->type == ASYNC_EVENT)
+    else if (pb->type == ASYNC_EVENT)
     {
         FD_ZERO(&(pov->fd[0]));
         FD_SET(so, &(pov->fd[0]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
+        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
         if(rs <= 0)
         {
-            if (pcb)  *pcb = 0;
-            return 0;
+            return INVALID_FILE;
         }
     }
     
-    po = accept(so, saddr, (socklen_t*)plen);
+    po = accept(so, saddr, (socklen_t*)&nlen);
     if(po < 0)
+    {
+        *plen = 0;
         return INVALID_FILE;
+    }
     
     ioctl(po, FIONBIO, 1);
+    
+    *plen = (int)nlen;
     
     return (res_file_t)po;
 }
 
 int _socket_write(void* pso, unsigned char* buf, int len)
 {
-    int rt;
+    ssize_t rt;
+    int pos = 0;
     
-    rt = (int)send(*((int*)pso), (char*)buf, len, 0);
+    while (pos < len)
+    {
+        rt = send(*((int*)pso), (char*)(buf + pos), len - pos, MSG_NOSIGNAL);
+        if (rt < 0)
+        {
+            return (-1);
+        }
+        if (!rt) continue;
+        
+        pos += rt;
+    }
     
-    return rt;
+    return pos;
 }
 
 int _socket_read(void* pso, unsigned char* buf, int len)
 {
-    int rt;
+    ssize_t rt;
+    int pos = 0;
     
-    rt = (int)recv(*((int*)pso), (char*)buf, len, 0);
+    while (pos < len)
+    {
+        rt = recv(*((int*)pso), (char*)(buf + pos), len - pos, MSG_NOSIGNAL);
+        if (rt < 0)
+        {
+            return (-1);
+        }
+        if (!rt) continue;
+        
+        pos += rt;
+    }
     
-    return rt;
+    return pos;
 }
 
-bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, size_t size)
+bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, dword_t size)
 {
     struct msghdr msg;
     struct cmsghdr* pcms;
     struct iovec vec;
-    char nch = 0;
+    char nch[2] = {0};
     
-    char buf[CMSG_SPACE(sizeof(int))];
+    char buf[CMSG_SPACE(sizeof(int))] = {0};
     
-    int rt;
+    int rt = 0;
     fd_set fw;
-    struct timeval tmo = {1, 0};
+    struct timeval tmo = {3, 0};
     
     FD_ZERO(&fw);
     FD_SET(procfd, &fw);
     
-    rt = select(procfd + 1, NULL, &fw, NULL, &tmo);
-    if(rt <= 0)
+    if(select(procfd + 1, NULL, &fw, NULL, &tmo) <= 0)
     {
         return 0;
     }
     
-    vec.iov_base = (data)? (char*)data : &nch;
+    vec.iov_base = (data)? (char*)data : nch;
     vec.iov_len = (data)? size : 1;
     
     msg.msg_name = NULL;
@@ -671,34 +744,34 @@ bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data,
     pcms->cmsg_level = SOL_SOCKET;
     pcms->cmsg_type = SCM_RIGHTS;
     pcms->cmsg_len = CMSG_LEN(sizeof(int));
-    *(int*)CMSG_DATA(pcms) = so;
+    *((int*)CMSG_DATA(pcms)) = so;
 
-    return (sendmsg(procfd, &msg, 0) > 0)? 1 : 0;
+    return (sendmsg(procfd, &msg, MSG_NOSIGNAL) > 0)? 1 : 0;
 }
 
-res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pcb)
+res_file_t _socket_dupli(res_file_t procfd, void* data, dword_t* pcb)
 {
     struct msghdr msg;
     struct cmsghdr* pcms;
     struct iovec vec;
-    char nch = 0;
+    char nch[2] = {0};
+    int so;
     
-    char buf[CMSG_SPACE(sizeof(int))];
+    char buf[CMSG_SPACE(sizeof(int))] = {0};
     
-    int rt;
+    int rt = 0;
     fd_set fr;
-    struct timeval tmo = {5, 0};
+    struct timeval tmo = {3, 0};
     
     FD_ZERO(&fr);
     FD_SET(procfd, &fr);
     
-    rt = select(procfd + 1, &fr, NULL, NULL, &tmo);
-    if(rt <= 0)
+    if(select(procfd + 1, &fr, NULL, NULL, &tmo) <= 0)
     {
         return INVALID_FILE;
     }
 
-    vec.iov_base = (data)? (char*)data : &nch;
+    vec.iov_base = (data)? (char*)data : nch;
     vec.iov_len = (data)? *pcb : 1;
 
     msg.msg_name = NULL;
@@ -709,14 +782,23 @@ res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pc
     msg.msg_control = buf;
     msg.msg_controllen = sizeof(buf);
 
-    if(recvmsg(procfd, &msg, 0) < 1)
+    if(recvmsg(procfd, &msg, MSG_NOSIGNAL) < 1)
         return INVALID_FILE;
     
     pcms = CMSG_FIRSTHDR(&msg);
     if(pcms->cmsg_level != SOL_SOCKET || pcms->cmsg_type != SCM_RIGHTS)
         return INVALID_FILE;
     
-    return (*(int*)CMSG_DATA(pcms));
+    so = *((int*)CMSG_DATA(pcms));
+
+    if(!so || so == INVALID_FILE)
+    {
+        return INVALID_FILE;
+    }
+    
+    ioctl(so, FIONBIO, 1);
+    
+    return so;
 }
 
 

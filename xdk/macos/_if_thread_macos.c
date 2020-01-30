@@ -65,15 +65,26 @@ pid_t _thread_get_id(void)
     return (tid < 0)? getpid() : (pid_t)tid;
 }
 
-void _thread_begin(res_hand_t* ph_hand, PF_THREADFUNC pf_func, void* param)
+void _thread_safe()
+{
+    sigset_t mask;
+    
+    //sigfillset(&mask);
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGSYS);
+    sigaddset(&mask, SIGPIPE);
+    sigaddset(&mask, SIGALRM);
+    sigaddset(&mask, SIGPROF);
+    sigaddset(&mask, SIGIO);
+    //sigaddset(&mask, SIGPOLL);
+    
+    pthread_sigmask(SIG_BLOCK, &mask, NULL);
+}
+
+void _thread_begin(res_thread_t* ph_hand, PF_THREADFUNC pf_func, void* param)
 {
     pthread_t* ptt;
-    sigset_t sig;
     pthread_t tt = {0};
-    
-    sigemptyset (&sig);
-    sigaddset (&sig, SIGPIPE);
-    pthread_sigmask (SIG_BLOCK, &sig, NULL);
     
     if(ph_hand)
         ptt = (pthread_t*)ph_hand;
@@ -92,15 +103,20 @@ void _thread_sleep(int ms)
 {
     struct timeval dl;
     
-    dl.tv_sec = 0;
-    dl.tv_usec = (int)(ms * 1000);
+    dl.tv_sec = ms / 1000;
+    dl.tv_usec = (ms % 1000) * 1000;
     
     select(0, NULL, NULL, NULL, ((ms < 0)? NULL : &dl));
 }
 
-void _thread_join(res_hand_t th)
+void _thread_yield()
 {
-    pthread_join((pthread_t)th, NULL);
+    sched_yield();
+}
+
+void _thread_join(res_thread_t th)
+{
+    pthread_join(th, NULL);
 }
 /**********************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_EVENT

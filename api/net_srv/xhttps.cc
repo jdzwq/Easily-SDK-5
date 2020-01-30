@@ -26,6 +26,7 @@ LICENSE.GPL3 for more details.
 
 #include "xhttps.h"
 #include "srvlog.h"
+#include "srvcrt.h"
 
 static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_track, tchar_t* sz_level, tchar_t* sz_proc)
 {
@@ -242,6 +243,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	tchar_t sz_trace[NUM_LEN] = { 0 };
 	tchar_t sz_space[RES_LEN] = { 0 };
 	tchar_t sz_level[INT_LEN] = { 0 };
+	tchar_t sz_auth[INT_LEN] = { 0 };
 	tchar_t sz_cert[RES_LEN] = { 0 };
 	tchar_t sz_pass[NUM_LEN] = { 0 };
 	int n_state = 0;
@@ -256,21 +258,50 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 	tchar_t signature[KEY_LEN + 1] = { 0 };
 
-	xhand_t bio;
+    byte_t* buf_crt = NULL;
+    byte_t* buf_key = NULL;
+	dword_t dw;
+
+	xhand_t bio = NULL;
 
 	TRY_CATCH;
 
 	bio = xhttp_bio(http);
 
+	get_envvar(XSERVICE_ROOT, sz_path, PATH_LEN);
+
 	if (pxp->n_secu == _SECU_SSL)
 	{
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
-
-		set_certs(_SECU_SSL, sz_pass, bio);
-
 		get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
 
-		if (compare_text(sz_cert, 5, _T("SSL_2"),5,1) == 0)
+		dw = X509_CERT_SIZE;
+        buf_crt = (byte_t*)xmem_alloc(dw);
+        
+		if (!get_ssl_crt(sz_path, buf_crt, &dw))
+		{
+			raise_user_error(_T("_https_invoke"), _T("http get ssl certif failed"));
+		}
+
+		xssl_set_cert(bio, buf_crt, dw);
+        
+        xmem_free(buf_crt);
+        buf_crt = NULL;
+
+		dw = RSA_KEY_SIZE;
+        buf_key = (byte_t*)xmem_alloc(dw);
+        
+		if (!get_ssl_key(sz_path, buf_key, &dw))
+		{
+			raise_user_error(_T("_https_invoke"), _T("http get ssl rsa key failed"));
+		}
+
+		xssl_set_rsa(bio, buf_key, dw, sz_pass, -1);
+        
+        xmem_free(buf_key);
+        buf_key = NULL;
+
+		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0)
 			xssl_set_auth(bio, SSL_VERIFY_REQUIRED);
 		else if (compare_text(sz_cert, 5, _T("SSL_1"), 5, 1) == 0)
 			xssl_set_auth(bio, SSL_VERIFY_OPTIONAL);
@@ -281,8 +312,21 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	{
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
 
-		set_certs(_SECU_SSH, sz_pass, bio);
+		dw = RSA_KEY_SIZE;
+        buf_key = (byte_t*)xmem_alloc(dw);
+        
+		if (!get_ssh_key(sz_path, buf_key, &dw))
+		{
+			raise_user_error(_T("_https_invoke"), _T("http get ssh rsa key failed"));
+		}
+
+		//xssh_set_rsa(bio, buf_key, dw, sz_pass, -1);
+        
+        xmem_free(buf_key);
+        buf_key = NULL;
 	}
+
+	xszero(sz_path, PATH_LEN);
 	
 	if (!xhttp_recv_request(http))
 	{
@@ -333,7 +377,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		raise_user_error(sz_site, _T("website not define service module\n"));
 	}
 
-	if (compare_text(pxp->sz_auth,-1,HTTP_HEADER_AUTHORIZATION_XDS,-1,1) == 0)
+	get_param_item(pxp->sz_param, _T("AUTH"), sz_auth, INT_LEN);
+
+	if (compare_text(sz_auth,-1,HTTP_HEADER_AUTHORIZATION_XDS,-1,1) == 0)
 	{
 		if (!_xhttps_licence(http, sz_site + 1, signature))
 		{
@@ -451,6 +497,12 @@ ONERROR:
 
 		xmem_free(pb);
 	}
+    
+    if(buf_crt)
+        xmem_free(buf_crt);
+    
+    if(buf_key)
+        xmem_free(buf_key);
 
 	if (api)
 		free_library(api);
@@ -464,8 +516,8 @@ ONERROR:
 
 void _xhttps_start(xhttps_param_t* pxp)
 {
-	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_auth[INT_LEN] = { 0 };
 	unsigned short port;
 
 	if (pxp->lis_http)
@@ -474,7 +526,7 @@ void _xhttps_start(xhttps_param_t* pxp)
 	}
 
 	get_param_item(pxp->sz_param, _T("CERT"), sz_file, RES_LEN);
-	get_param_item(pxp->sz_param, _T("AUTH"), pxp->sz_auth, INT_LEN);
+	get_param_item(pxp->sz_param, _T("AUTH"), sz_auth, INT_LEN);
 
 	if (compare_text(sz_file, 3, _T("SSL"), 3, 1) == 0)
 		pxp->n_secu = _SECU_SSL;
@@ -482,10 +534,7 @@ void _xhttps_start(xhttps_param_t* pxp)
 		pxp->n_secu = _SECU_SSH;
 	else
 		pxp->n_secu = _SECU_NONE;
-
-	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
-
-	pxp->p_certs = alloc_certs(pxp->n_secu, sz_root);
+    
 	port = xstous(pxp->sz_port);
 
 	if (IS_THREAD_MODE(pxp->sz_mode))
@@ -497,9 +546,9 @@ void _xhttps_start(xhttps_param_t* pxp)
 	if (!pxp->lis_http)
 	{
 		if (pxp->n_secu == _SECU_SSL)
-			xsprintf(sz_file, _T("HTTP/SSL started at port: %s  ...failed!\r\n"), pxp->sz_port);
+			xsprintf(sz_file, _T("HTTP/ssl service started at port: %s  ...failed!\r\n"), pxp->sz_port);
 		else if (pxp->n_secu == _SECU_SSH)
-			xsprintf(sz_file, _T("HTTP/SSH started at port: %s ...failed!\r\n"), pxp->sz_port);
+			xsprintf(sz_file, _T("HTTP/ssh service started at port: %s ...failed!\r\n"), pxp->sz_port);
 		else
 			xsprintf(sz_file, _T("HTTP service at port: %s ...failed!\r\n"), pxp->sz_port);
 
@@ -510,11 +559,11 @@ void _xhttps_start(xhttps_param_t* pxp)
 	else
 	{
 		if (pxp->n_secu == _SECU_SSL)
-			xsprintf(sz_file, _T("HTTP/SSL started at port: %s  mode: %s authorization: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_auth);
+			xsprintf(sz_file, _T("HTTP/ssl service started at port: %s  mode: %s authorization: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, sz_auth);
 		else if (pxp->n_secu == _SECU_SSH)
-			xsprintf(sz_file, _T("HTTP/SSH started at port: %s  mode: %s authorization: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_auth);
+			xsprintf(sz_file, _T("HTTP/ssh service started at port: %s  mode: %s authorization: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, sz_auth);
 		else
-			xsprintf(sz_file, _T("HTTP service started at port: %s  mode: %s authorization: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, pxp->sz_auth);
+			xsprintf(sz_file, _T("HTTP service started at port: %s  mode: %s authorization: %s ...succeed!\r\n"), pxp->sz_port, pxp->sz_mode, sz_auth);
 
 		xportm_log_info(sz_file, -1);
 	}
@@ -530,18 +579,12 @@ void _xhttps_stop(xhttps_param_t* pxp)
 		pxp->lis_http = NULL;
 
 		if (pxp->n_secu == _SECU_SSL)
-			xsprintf(sz_file, _T("HTTP/SSL service at port: %s ...stoped!\r\n"), pxp->sz_port);
+			xsprintf(sz_file, _T("HTTP/ssl service at port: %s ...stoped!\r\n"), pxp->sz_port);
 		else if (pxp->n_secu == _SECU_SSH)
-			xsprintf(sz_file, _T("HTTP/SSH service at port: %s ...stoped!\r\n"), pxp->sz_port);
+			xsprintf(sz_file, _T("HTTP/ssh service at port: %s ...stoped!\r\n"), pxp->sz_port);
 		else
 			xsprintf(sz_file, _T("HTTP service at port: %s ...stoped!\r\n"), pxp->sz_port);
 
 		xportm_log_info(sz_file, -1);
-	}
-
-	if (pxp->p_certs)
-	{
-		free_certs(pxp->p_certs);
-		pxp->p_certs = NULL;
 	}
 }

@@ -71,11 +71,11 @@ XDL_API short w_xsntos(const wchar_t* sz, int n);
 XDL_API short a_xstos(const schar_t* sz);
 XDL_API short w_xstos(const wchar_t* sz);
 
-XDL_API long a_xsntol(const schar_t* sz, int n);
-XDL_API long w_xsntol(const wchar_t* sz, int n);
+XDL_API int a_xsntol(const schar_t* sz, int n);
+XDL_API int w_xsntol(const wchar_t* sz, int n);
 
-XDL_API long a_xstol(const schar_t* sz);
-XDL_API long w_xstol(const wchar_t* sz);
+XDL_API int a_xstol(const schar_t* sz);
+XDL_API int w_xstol(const wchar_t* sz);
 
 XDL_API float a_xsntof(const schar_t* sz, int n);
 XDL_API float w_xsntof(const wchar_t* sz, int n);
@@ -83,11 +83,11 @@ XDL_API float w_xsntof(const wchar_t* sz, int n);
 XDL_API float a_xstof(const schar_t* sz);
 XDL_API float w_xstof(const wchar_t* sz);
 
-XDL_API unsigned long a_hexntol(const schar_t* sz, int n);
-XDL_API unsigned long w_hexntol(const wchar_t* sz, int n);
+XDL_API unsigned int a_hexntol(const schar_t* sz, int n);
+XDL_API unsigned int w_hexntol(const wchar_t* sz, int n);
 
-XDL_API unsigned long a_hextol(const schar_t* sz);
-XDL_API unsigned long w_hextol(const wchar_t* sz);
+XDL_API unsigned int a_hextol(const schar_t* sz);
+XDL_API unsigned int w_hextol(const wchar_t* sz);
 
 XDL_API double a_xsntonum_dig(const schar_t* sz, int n, int digi);
 XDL_API double w_xsntonum_dig(const wchar_t* sz, int n, int digi);
@@ -113,14 +113,14 @@ XDL_API int w_stoxs(short s, wchar_t* buf, int n);
 XDL_API int a_ustoxs(unsigned short s, schar_t* buf, int n);
 XDL_API int w_ustoxs(unsigned short s, wchar_t* buf, int n);
 
-XDL_API int a_ltoxs(long s, schar_t* buf, int n);
-XDL_API int w_ltoxs(long s, wchar_t* buf, int n);
+XDL_API int a_ltoxs(int s, schar_t* buf, int n);
+XDL_API int w_ltoxs(int s, wchar_t* buf, int n);
 
-XDL_API int a_ultoxs(unsigned long s, schar_t* buf, int n);
-XDL_API int w_ultoxs(unsigned long s, wchar_t* buf, int n);
+XDL_API int a_ultoxs(unsigned int s, schar_t* buf, int n);
+XDL_API int w_ultoxs(unsigned int s, wchar_t* buf, int n);
 
-XDL_API int a_ltohex(unsigned long s, schar_t type, schar_t* buf, int n);
-XDL_API int w_ltohex(unsigned long s, wchar_t type, wchar_t* buf, int n);
+XDL_API int a_ltohex(unsigned int s, schar_t type, schar_t* buf, int n);
+XDL_API int w_ltohex(unsigned int s, wchar_t type, wchar_t* buf, int n);
 
 XDL_API int a_ftoxs(float s, schar_t* buf, int n);
 XDL_API int w_ftoxs(float s, wchar_t* buf, int n);
@@ -282,7 +282,7 @@ XDL_API const wchar_t* w_xscanf_arg(const wchar_t* str, const wchar_t* fmt, va_l
 #define xstous				(unsigned short)w_xstos
 #define xsntol				w_xsntol
 #define xstol				w_xstol
-#define xstoul				(unsigned long)w_xstol
+#define xstoul				(unsigned int)w_xstol
 #define xsntof				w_xsntof
 #define xstof				w_xstof
 #define xsntonum_dig		w_xsntonum_dig
@@ -364,7 +364,7 @@ XDL_API const wchar_t* w_xscanf_arg(const wchar_t* str, const wchar_t* fmt, va_l
 #define xstous				(unsigned short)a_xstos
 #define xsntol				a_xsntol
 #define xstol				a_xstol
-#define xstoul				(unsigned long)w_xstol
+#define xstoul				(unsigned int)w_xstol
 #define xsntof				a_xsntof
 #define xstof				a_xstof
 #define xsntonum_dig		a_xsntonum_dig

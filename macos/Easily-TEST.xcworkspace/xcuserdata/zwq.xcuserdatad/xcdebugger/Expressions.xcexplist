@@ -3,10 +3,13 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "db_datetime:xdb_mysql.c">
+         contextName = "_create_display_context:_if_context_x11.c">
       </ContextState>
       <ContextState
-         contextName = "_get_device_caps:_if_context_x11.c">
+         contextName = "db_exec:xdb_mysql.c">
+      </ContextState>
+      <ContextState
+         contextName = "set_network_error:impsock.c">
       </ContextState>
       <ContextState
          contextName = "set_system_error:imperr.c">
@@ -17,38 +20,7 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "load_proper_doc_from_ini_file:docbag.c">
-      </ContextState>
-      <ContextState
-         contextName = "db_exec:xdb_mysql.c">
-      </ContextState>
-      <ContextState
-         contextName = "main:main.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "g_">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "default_xfont:xdkutil.c">
-      </ContextState>
-      <ContextState
-         contextName = "raise_user_error:impjmp.c">
-      </ContextState>
-      <ContextState
-         contextName = "xdl_process_init:xdlinit.c">
-         <PersistentStrings>
-            <PersistentString
-               value = "g_xdl_mou">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "_create_display_context:_if_context_x11.c">
-      </ContextState>
-      <ContextState
-         contextName = "_file_info:_if_file_macos.c">
       </ContextState>
       <ContextState
          contextName = "_db_fetch_row:xdb_mysql.c">
@@ -68,7 +40,68 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "a_ltoxs:xdlstr.c">
+      </ContextState>
+      <ContextState
+         contextName = "_get_device_caps:_if_context_x11.c">
+      </ContextState>
+      <ContextState
+         contextName = "load_proper_doc_from_ini_file:docbag.c">
+      </ContextState>
+      <ContextState
+         contextName = "xtcp_read:nettcp.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "*pcb">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_">
+            </PersistentString>
+            <PersistentString
+               value = "xdblib">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_file_info:_if_file_macos.c">
+      </ContextState>
+      <ContextState
+         contextName = "_text_mm_size:_if_context_x11.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char*)pattern">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "_ssl_read_rcv_msg:netssl.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "pssl-&gt;rcv_hdr[0]">
+            </PersistentString>
+            <PersistentString
+               value = "pssl">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "db_select:xdb_mysql.c">
+      </ContextState>
+      <ContextState
+         contextName = "xdl_process_init:xdlinit.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_xdl_mou">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "db_datetime:xdb_mysql.c">
       </ContextState>
       <ContextState
          contextName = "_context_startup:_if_context_x11.c">
@@ -87,15 +120,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "a_ltoxs:xdlstr.c">
+         contextName = "test_sock():main.cpp">
       </ContextState>
       <ContextState
-         contextName = "_text_mm_size:_if_context_x11.c">
-         <PersistentStrings>
-            <PersistentString
-               value = "(char*)pattern">
-            </PersistentString>
-         </PersistentStrings>
+         contextName = "raise_user_error:impjmp.c">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

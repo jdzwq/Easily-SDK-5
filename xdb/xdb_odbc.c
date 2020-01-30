@@ -1032,7 +1032,7 @@ bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 
 		if (colsize > MAX_SQL_DATA)
 			colsize = 0;
-		set_col_data_len(clk,(long)colsize);
+		set_col_data_len(clk,(int)colsize);
 
 		if(scale < 0)
 			scale = 0;
@@ -1156,10 +1156,10 @@ bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 		set_col_data_type(clk, strattr);
 
 		SQLColAttribute(pdb->stm, i, SQL_DESC_LENGTH, NULL, 0, &si, &numattr);
-		set_col_data_len(clk, (long)numattr);
+		set_col_data_len(clk, (int)numattr);
 
 		SQLColAttribute(pdb->stm, i, SQL_DESC_SCALE, NULL, 0, &si, &numattr);
-		set_col_data_dig(clk, (long)numattr);
+		set_col_data_dig(clk, (int)numattr);
 
 		SQLColAttribute(pdb->stm, i, SQL_DESC_NULLABLE, NULL, 0, &si, &numattr);
 		set_col_nullable(clk, (bool_t)numattr);
@@ -1207,13 +1207,13 @@ int __cdecl _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt
 
 	bindguid_t* pbind = NULL;
 	int i,ind = 0;
-	long tk = -1;
+	int tk = -1;
 	
 	int sqllen;
 	tchar_t* d_sql = NULL;
 	tchar_t* token;
 	tchar_t* ptr_str;
-	long* ptr_long;
+	int* ptr_int;
 	double* ptr_double;
 
 	TRY_CATCH;
@@ -1267,7 +1267,7 @@ int __cdecl _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt
 	pbind = (bindguid_t*)xmem_alloc((ind + 1) * sizeof(bindguid_t));
 
 	ind = 0;
-	pbind[ind].len = sizeof(long);
+	pbind[ind].len = sizeof(int);
 	pbind[ind].buf = xmem_alloc(pbind[ind].len);
 	pbind[ind].ind = 0;
 	pbind[ind].ref = (void*)&tk;
@@ -1352,17 +1352,17 @@ int __cdecl _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt
 			ind++;
 			break;
 		case _T('d'):
-			ptr_long = va_arg(*parg, long*);
-			pbind[ind].len = sizeof(long);
+			ptr_int = va_arg(*parg, int*);
+			pbind[ind].len = sizeof(int);
 			pbind[ind].buf = xmem_alloc(pbind[ind].len);
 			if (iotype == SQL_PARAM_INPUT_OUTPUT || iotype == SQL_PARAM_INPUT)
 			{
-				xmem_copy(pbind[ind].buf, ptr_long, sizeof(long));
+				xmem_copy(pbind[ind].buf, ptr_int, sizeof(int));
 			}
 			pbind[ind].ind = 0;
 			if (iotype == SQL_PARAM_INPUT_OUTPUT || iotype == SQL_PARAM_OUTPUT)
 			{
-				pbind[ind].ref = (void*)ptr_long;
+				pbind[ind].ref = (void*)ptr_int;
 			}
 			rt = SQLBindParameter(pdb->stm, ind + 1, iotype, SQL_C_LONG, SQL_INTEGER, 0, 0, (SQLPOINTER)(pbind[ind].buf), pbind[ind].len, &(pbind[ind].ind));
 			ind++;
@@ -1373,7 +1373,7 @@ int __cdecl _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt
 			pbind[ind].buf = xmem_alloc(pbind[ind].len);
 			if (iotype == SQL_PARAM_INPUT_OUTPUT || iotype == SQL_PARAM_INPUT)
 			{
-				xmem_copy(pbind[ind].buf, ptr_long, sizeof(double));
+				xmem_copy(pbind[ind].buf, ptr_int, sizeof(double));
 			}
 			pbind[ind].ind = 0;
 			if (iotype == SQL_PARAM_INPUT_OUTPUT || iotype == SQL_PARAM_OUTPUT)
@@ -1498,7 +1498,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 
 	ind = 0;
 	pbind[ind].ind = 0;
-	pbind[ind].len = sizeof(long);
+	pbind[ind].len = sizeof(int);
 	pbind[ind].buf = xmem_alloc(pbind[ind].len);
 
 	rt = SQLBindParameter(pdb->stm, ind + 1, SQL_PARAM_OUTPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, (SQLPOINTER)(pbind[ind].buf), pbind[ind].len, &(pbind[ind].ind));
@@ -1534,11 +1534,11 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 
 		if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
 		{
-			pbind[ind].len = sizeof(long);
+			pbind[ind].len = sizeof(int);
 			pbind[ind].buf = xmem_alloc(pbind[ind].len);
 			if (iotype == SQL_PARAM_INPUT_OUTPUT || iotype == SQL_PARAM_INPUT)
 			{
-				*(long*)(pbind[ind].buf) = get_func_param_integer(flk);
+				*(int*)(pbind[ind].buf) = get_func_param_integer(flk);
 			}
 			pbind[ind].ind = pbind[ind].len;
 
@@ -1644,7 +1644,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 
 	ind = 0;
 	set_func_data_type(func, ATTR_DATA_TYPE_INTEGER);
-	set_func_return_integer(func, *((long*)(pbind[ind].buf)));
+	set_func_return_integer(func, *((int*)(pbind[ind].buf)));
 	xmem_free(pbind[ind].buf);
 	pbind[ind].buf = NULL;
 
@@ -1657,7 +1657,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 		{
 			if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
 			{
-				set_func_param_integer(flk, *(long*)(pbind[ind].buf));
+				set_func_param_integer(flk, *(int*)(pbind[ind].buf));
 			}
 			else if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
 			{
@@ -1751,7 +1751,7 @@ bool_t STDCALL db_call_json(xdb_t db, const tchar_t* pname, LINKPTR json)
 
 	ind = 0;
 	pbind[ind].ind = 0;
-	pbind[ind].len = sizeof(long);
+	pbind[ind].len = sizeof(int);
 	pbind[ind].buf = xmem_alloc(pbind[ind].len);
 
 	rt = SQLBindParameter(pdb->stm, ind + 1, SQL_PARAM_OUTPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, (SQLPOINTER)(pbind[ind].buf), pbind[ind].len, &(pbind[ind].ind));

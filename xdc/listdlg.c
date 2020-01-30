@@ -47,7 +47,7 @@ typedef struct _listdlg_delta_t{
 }listdlg_delta_t;
 
 #define GETLISTDLGDELTA(ph) 	(listdlg_delta_t*)widget_get_user_delta(ph)
-#define SETLISTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETLISTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /**********************************************************************************/
 void listdlg_on_ok(res_win_t widget)
@@ -233,7 +233,7 @@ void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	end_canvas_paint(canv, dc, pxr);
 }
 
-void hand_listdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_listdlg_menu_command(res_win_t widget, int code, int cid, var_int data)
 {
 	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
 

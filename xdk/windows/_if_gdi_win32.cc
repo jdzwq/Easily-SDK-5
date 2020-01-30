@@ -38,9 +38,9 @@ LICENSE.GPL3 for more details.
 static LOGFONT lf_gdi = { 0 };
 
 #ifdef WINCE
-static long MulDiv(long a, long b, long c)
+static int MulDiv(int a, int b, int c)
 {
-	return (long)((float)a * (float)b / (float)c);
+	return (int)((float)a * (float)b / (float)c);
 }
 
 static void DPtoLP(HDC hDC,POINT* pt,int n)
@@ -139,7 +139,7 @@ static void _adjust_rect(RECT* pRect, int src_width, int src_height, const tchar
 
 static HPEN create_pen(const xpen_t* pxp)
 {
-	long ps;
+	int ps;
 	xcolor_t xc = {0};
 
 	parse_xcolor(&xc,pxp->color);
@@ -746,7 +746,7 @@ void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const
 
 }
 
-void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
+void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
 #ifdef WINCE
 	return;
@@ -803,7 +803,7 @@ void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 	HDC hDC = (HDC)rdc;
 	double a1;
 	int x_line0,y_line0,x_line1,y_line1,x_line2,y_line2;
-	long x1, x2, y1, y2;
+	int x1, x2, y1, y2;
 	POINT pt[4];
 
 	pt[0].x = prt->x;

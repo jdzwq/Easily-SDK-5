@@ -53,12 +53,12 @@ typedef struct _pdg_info_t{
 	unsigned short psize;	/*bytes per pixel*/
 	unsigned short psign;	/*bytes is sign*/
 
-	long win_width;		/*windows width*/
-	long win_center;	/*windows center*/
-	long win_inter;		/*rescale intercept*/
-	long win_slope;		/*rescale slope*/
-	long xmm_pixel;	/*x pixel spaceing*/
-	long ymm_pixel;	/*x pixel spaceing*/
+	int win_width;		/*windows width*/
+	int win_center;	/*windows center*/
+	int win_inter;		/*rescale intercept*/
+	int win_slope;		/*rescale slope*/
+	int xmm_pixel;	/*x pixel spaceing*/
+	int ymm_pixel;	/*x pixel spaceing*/
 
 	unsigned char moda[16]; /*modality*/
 }pdg_info_t;

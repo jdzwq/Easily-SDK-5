@@ -740,7 +740,7 @@ void widget_set_scroll(res_win_t wt, bool_t horz, const scroll_t* psc)
 	(*pif->pf_widget_set_scroll_info)(wt, horz, psc);
 }
 
-void widget_scroll(res_win_t wt, bool_t horz, long line)
+void widget_scroll(res_win_t wt, bool_t horz, int line)
 {
 	if_widget_t* pif;
 

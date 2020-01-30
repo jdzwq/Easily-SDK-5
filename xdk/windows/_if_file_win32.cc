@@ -94,12 +94,12 @@ bool_t _file_size(res_file_t fh, dword_t* ph, dword_t* pl)
 	return rt;
 }
 
-bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
+bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
-	DWORD dw = 0;
+	DWORD err, dw = 0;
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
 
@@ -111,26 +111,40 @@ bool_t _file_write(res_file_t fh, void* buf, size_t size, async_t* pb)
 			return 0;
 		}
 
-		if (GetLastError() != ERROR_IO_PENDING)
+		err = GetLastError();
+		if (err == ERROR_HANDLE_EOF)
 		{
-			if (pcb) *pcb = 0;
+			ResetEvent(pov->hEvent);
+			*pcb = dw;
+			return 1;
+		}
+
+		if (err != ERROR_IO_PENDING)
+		{
+			*pcb = 0;
 			return 0;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
+			dw = 0;
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
-				if (pcb) *pcb = 0;
+				*pcb = 0;
 				return 0;
 			}
 		}
-#endif 
 		if (pb->type == ASYNC_EVENT)
 		{
-			if (!GetOverlappedResult(fh, pov, &dw, TRUE))
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
 			{
-				if (pcb) *pcb = 0;
+				*pcb = 0;
+				return 0;
+			}
+
+			dw = 0;
+			if (!GetOverlappedResult(fh, pov, &dw, FALSE))
+			{
+				*pcb = 0;
 				return 0;
 			}
 		}
@@ -148,12 +162,12 @@ bool_t _file_flush(res_file_t fh)
 	return (FlushFileBuffers(fh)) ? 1 : 0;
 }
 
-bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
+bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
-	DWORD dw = 0;
+	DWORD err, dw = 0;
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
 
@@ -165,26 +179,41 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
 			return 0;
 		}
 
-		if (GetLastError() != ERROR_IO_PENDING)
+		err = GetLastError();
+		if (err == ERROR_HANDLE_EOF)
 		{
-			if (pcb) *pcb = 0;
+			ResetEvent(pov->hEvent);
+			*pcb = dw;
+			return 1;
+		}
+
+		if (err != ERROR_IO_PENDING)
+		{
+			*pcb = 0;
 			return 0;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
+
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
+			dw = 0;
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
-				if (pcb) *pcb = 0;
+				*pcb = 0;
 				return 0;
 			}
 		}
-#endif
 		if (pb->type == ASYNC_EVENT)
 		{
-			if (!GetOverlappedResult(fh, pov, &dw, TRUE))
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
 			{
-				if (pcb) *pcb = 0;
+				*pcb = 0;
+				return 0;
+			}
+
+			dw = 0;
+			if (!GetOverlappedResult(fh, pov, &dw, FALSE))
+			{
+				*pcb = 0;
 				return 0;
 			}
 		}
@@ -197,21 +226,20 @@ bool_t _file_read(res_file_t fh, void* buf, size_t size, async_t* pb)
 	return 1;
 }
 
-bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
+bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
 	HANDLE mh;
 	void* pBase = NULL;
 	DWORD dwh, dwl, poff;
-	size_t dlen;
-	unsigned long long flen;
+	SIZE_T dlen, flen;
 
 	poff = (loff % PAGE_GRAN);
 	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	flen = MAKELWORD(loff, hoff) + dlen;
-	dwh = GETHDWORD(flen);
-	dwl = GETLDWORD(flen);
+	flen = MAKESIZE(loff, hoff) + dlen;
+	dwh = GETSIZEH(flen);
+	dwl = GETSIZEL(flen);
 
 	mh = CreateFileMapping(fh, NULL, PAGE_READONLY, dwh, dwl, NULL);
 	if (!mh)
@@ -234,21 +262,20 @@ bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, si
 	return 1;
 }
 
-bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size)
+bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
 	HANDLE mh;
 	void* pBase = NULL;
 	DWORD dwh, dwl, poff;
-	size_t dlen;
-	unsigned long long flen;
+	SIZE_T dlen, flen;
 
 	poff = (loff % PAGE_GRAN);
 	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	flen = MAKELWORD(loff, hoff) + dlen;
-	dwh = GETHDWORD(flen);
-	dwl = GETLDWORD(flen);
+	flen = MAKESIZE(loff, hoff) + dlen;
+	dwh = GETSIZEH(flen);
+	dwl = GETSIZEL(flen);
 
 	mh = CreateFileMapping(fh, NULL, PAGE_READWRITE, dwh, dwl, NULL);
 	if (!mh)

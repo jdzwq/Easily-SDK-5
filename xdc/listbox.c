@@ -40,7 +40,7 @@ typedef struct _listbox_delta_t{
 }listbox_delta_t;
 
 #define GETLISTBOXDELTA(ph) 	(listbox_delta_t*)widget_get_user_delta(ph)
-#define SETLISTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETLISTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /***************************************************************************************/
 void _listbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
@@ -66,7 +66,7 @@ void _listbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 void _listbox_reset_page(res_win_t widget)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
-	long vw, vh, lw, lh;
+	int vw, vh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	xfont_t xf;
@@ -165,7 +165,7 @@ static link_t_ptr _listbox_get_prev_entity(res_win_t widget, link_t_ptr pos)
 }
 /*************************************************************************/
 
-void noti_listbox_command(res_win_t widget, int code, var_long data)
+void noti_listbox_command(res_win_t widget, int code, var_int data)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 
@@ -206,7 +206,7 @@ void listbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	widget_redraw(widget, &xr, 1);
 
-	noti_listbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_listbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
 }
 
 /********************************************************************************************/
@@ -251,10 +251,10 @@ void hand_listbox_keydown(res_win_t widget, int key)
 	switch (key)
 	{
 	case KEY_ENTER:
-		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_listbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 		break;
 	case KEY_SPACE:
-		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_listbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 		break;
 	case KEY_LEFT:
 		listbox_tabskip(widget,WD_TAB_LEFT);
@@ -313,7 +313,7 @@ void hand_listbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			listbox_on_item_changed(widget, ilk);
 	}
 
-	noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+	noti_listbox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 }
 
 void hand_listbox_size(res_win_t widget, int code, const xsize_t* prs)
@@ -326,7 +326,7 @@ void hand_listbox_size(res_win_t widget, int code, const xsize_t* prs)
 	listbox_redraw(widget);
 }
 
-void hand_listbox_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_listbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 

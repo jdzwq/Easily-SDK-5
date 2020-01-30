@@ -133,11 +133,11 @@ XDL_API res_ctx_t get_canvas_ctx(canvas_t canv);
 @FUNCTION begin_canvas_paint: begin canvas painting and return a memory context for drawing buffer.
 @INPUT canvas_t canv: the canvas object.
 @INPUT res_ctx_t rdc: the display or printer context resource handle.
-@INPUT long width: the client width in points.
-@INPUT long height: the client height in points.
+@INPUT int width: the client width in points.
+@INPUT int height: the client height in points.
 @RETURN res_ctx_t: if succeeds return memory context resource handle, fails return NULL.
 */
-XDL_API res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, long width, long height);
+XDL_API res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height);
 
 /*
 @FUNCTION end_canvas_paint: end canvas painting and free drawing buffer.
@@ -176,11 +176,11 @@ XDL_API void	destroy_printer_canvas(canvas_t canv);
 /*
 @FUNCTION pt_to_tm: mapping points to millimeter in canvas.
 @INPUT canvas_t canv: the canvas object.
-@INPUT long pt: the points value.
+@INPUT int pt: the points value.
 @INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
 @RETURN float: return the value in millimeter.
 */
-XDL_API float pt_to_tm(canvas_t canv, long pt, bool_t horz);
+XDL_API float pt_to_tm(canvas_t canv, int pt, bool_t horz);
 
 /*
 @FUNCTION tm_to_pt: mapping millimeter to points in canvas.
@@ -189,7 +189,7 @@ XDL_API float pt_to_tm(canvas_t canv, long pt, bool_t horz);
 @INPUT bool_t horz: nonzero fro horizon mapping, zero for vertical mapping.
 @RETURN float: return the value in points.
 */
-XDL_API long tm_to_pt(canvas_t canv, float tm, bool_t horz);
+XDL_API int tm_to_pt(canvas_t canv, float tm, bool_t horz);
 
 /*
 @FUNCTION rect_tm_to_pt: mapping rectangle points to millimeter in canvas.

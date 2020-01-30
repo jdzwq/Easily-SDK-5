@@ -22,12 +22,15 @@ int main(int argc, char* argv[])
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
-	xdl_process_init(XDL_APARTMENT_PROCESS);
+	xdl_process_init(XDL_APARTMENT_PROCESS | XDL_INITIALIZE_SERVER);
 
 	TRY_CATCH;
 
 	for (i = 1; i < argc; i++)
 	{
+		if (a_is_null(argv[i]))
+			continue;
+
 		len = xslen(xp.sz_param);
 #ifdef _UNICODE
 		mbs_to_ucs((const schar_t*)argv[i], -1, xp.sz_param + len, PATH_LEN - len);
@@ -54,7 +57,7 @@ int main(int argc, char* argv[])
 	}
 
 	dw = 0;
-	sok = socket_dupli(xpipe_handle(pipe), FILE_OPEN_OVERLAP, NULL, &dw);
+	sok = socket_dupli(xpipe_handle(pipe), NULL, &dw);
 
 	if (sok == INVALID_FILE)
 	{
@@ -90,6 +93,8 @@ int main(int argc, char* argv[])
 	socket_close(sok);
 	sok = INVALID_FILE;
 
+	xportm_log_error(_T("slots"), _T("process terminated"));
+
 	END_CATCH;
 
 	xdl_process_uninit();
@@ -115,6 +120,8 @@ ONERROR:
 		else
 			xtcp_close(bio);
 	}
+
+	xportm_log_error(errcode, errtext);
 
 	xdl_process_uninit();
 

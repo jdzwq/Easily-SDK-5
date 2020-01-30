@@ -61,8 +61,8 @@ canvas_t create_svg_canvas(link_t_ptr svg)
 
 	vb.x = 0;
 	vb.y = 0;
-	vb.w = (long)(get_svg_width(svg) * htpermm);
-	vb.h = (long)(get_svg_height(svg) * vtpermm);
+	vb.w = (int)(get_svg_width(svg) * htpermm);
+	vb.h = (int)(get_svg_height(svg) * vtpermm);
 	set_svg_viewbox(svg, &vb);
 
 	pcanv->g = svg;
@@ -119,7 +119,7 @@ float svg_pt_per_mm(canvas_t canv, bool_t horz)
 	}
 }
 
-float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz)
+float svg_pt_to_tm(canvas_t canv, int pt, bool_t horz)
 {
 	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
 
@@ -144,7 +144,7 @@ float svg_pt_to_tm(canvas_t canv, long pt, bool_t horz)
 	}
 }
 
-long svg_tm_to_pt(canvas_t canv, float tm, bool_t horz)
+int svg_tm_to_pt(canvas_t canv, float tm, bool_t horz)
 {
 	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
 
@@ -159,19 +159,19 @@ long svg_tm_to_pt(canvas_t canv, float tm, bool_t horz)
 	{
 		htpermm = (float)((float)vb.w / get_svg_width(pcanv->g));
 
-		return (long)(tm * htpermm);
+		return (int)(tm * htpermm);
 	}
 	else
 	{
 		vtpermm = (float)((float)vb.h / get_svg_height(pcanv->g));
 
-		return (long)(tm * vtpermm);
+		return (int)(tm * vtpermm);
 	}
 }
 
 void svg_rect_tm_to_pt(canvas_t canv, xrect_t* pxr)
 {
-	long left, right, top, bottom;
+	int left, right, top, bottom;
 
 	if (pxr->fw < 0)
 	{
@@ -235,7 +235,7 @@ void svg_rect_pt_to_tm(canvas_t canv, xrect_t* pxr)
 
 void svg_size_tm_to_pt(canvas_t canv, xsize_t* pxs)
 {
-	long cx, cy;
+	int cx, cy;
 
 	cx = svg_tm_to_pt(canv, pxs->fx, 1) - svg_tm_to_pt(canv, 0, 1);
 	cy = svg_tm_to_pt(canv, pxs->fy, 0) - svg_tm_to_pt(canv, 0, 0);
@@ -257,7 +257,7 @@ void svg_size_pt_to_tm(canvas_t canv, xsize_t* pxs)
 
 void svg_point_tm_to_pt(canvas_t canv, xpoint_t* ppt)
 {
-	long x, y;
+	int x, y;
 
 	x = svg_tm_to_pt(canv, ppt->fx, 1);
 	y = svg_tm_to_pt(canv, ppt->fy, 0);

@@ -118,7 +118,7 @@ void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
     pcap->vert_feed = 0;
 }
 
-void _render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth)
+void _render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
 {
     XCopyArea(g_display, src, dst, src, srcx, srcy, dstw, dsth, dstx, dsty);
 }
@@ -134,7 +134,7 @@ res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp)
     return org;
 }
 
-res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, long cx, long cy)
+res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, int cx, int cy)
 {
     X11_suface_t* ctx = (X11_suface_t*)rdc;
     
@@ -208,7 +208,7 @@ float _pt_per_mm(res_ctx_t rdc, bool_t horz)
         return (float)((float)DisplayHeight(g_display, scrn) / (float)DisplayHeightMM(g_display, scrn));
 }
 
-int _font_size(res_ctx_t rdc, long height)
+int _font_size(res_ctx_t rdc, int height)
 {
     float fh;
     int size;
@@ -220,7 +220,7 @@ int _font_size(res_ctx_t rdc, long height)
     return size;
 }
 
-void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, long* pcx, long* pcy)
+void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, int* pcx, int* pcy)
 {
     XFontStruct* pfs = NULL;
     tchar_t pattern[256] = {0};
@@ -242,7 +242,7 @@ void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 
 void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy)
 {
-    long w,h;
+    int w,h;
     
     _text_pt_size(rdc, pxf, txt, len, &w, &h);
     
@@ -251,7 +251,7 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
     if(pfy) *pfy = (float)h / _pt_per_mm(rdc, 0);
 }
 
-void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, long* pcx, long* pcy)
+void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
 {
     XFontStruct* pfs = NULL;
     tchar_t pattern[256] = {0};
@@ -269,7 +269,7 @@ void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, long* pcx, long* pcy)
 
 void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
 {
-    long w,h;
+    int w,h;
     
     _text_pt_metric(rdc, pxf, &w, &h);
     
@@ -278,7 +278,7 @@ void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
     if(pfy) *pfy = (float)h / _pt_per_mm(rdc, 0);
 }
 
-float _cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz)
+float _cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
 {
     if(horz)
         return (float)pt / _pt_per_mm(rdc, 1);
@@ -286,12 +286,12 @@ float _cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz)
         return (float)pt / _pt_per_mm(rdc, 0);
 }
 
-long _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
+int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 {
     if(horz)
-        return (long)(mm * _pt_per_mm(rdc, 1));
+        return (int)(mm * _pt_per_mm(rdc, 1));
     else
-        return (long)(mm * _pt_per_mm(rdc, 0));
+        return (int)(mm * _pt_per_mm(rdc, 0));
 }
 
 #endif //XDK_SUPPORT_CONTEXT

@@ -46,14 +46,14 @@ typedef struct _tablectrl_delta_t{
 	res_win_t editor;
 	res_win_t vsc;
 
-	long org_x, org_y;
+	int org_x, org_y;
 	bool_t b_size;
 	bool_t b_auto;
 	bool_t b_lock;
 }tablectrl_delta_t;
 
 #define GETTABLECTRLDELTA(ph) 	(tablectrl_delta_t*)widget_get_user_delta(ph)
-#define SETTABLECTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTABLECTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 #define TABLECTRL_MIN_SPLIT		10
 /***************************************************************************************/
@@ -163,7 +163,7 @@ static void _tablectrl_ensure_visible(res_win_t widget)
 }
 
 /*****************************************************************************************************************/
-int noti_tablectrl_owner(res_win_t widget, unsigned long code, link_t_ptr table, link_t_ptr ilk, bool_t onkey, void* data)
+int noti_tablectrl_owner(res_win_t widget, unsigned int code, link_t_ptr table, link_t_ptr ilk, bool_t onkey, void* data)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 	NOTICE_TABLE nf = { 0 };
@@ -182,7 +182,7 @@ int noti_tablectrl_owner(res_win_t widget, unsigned long code, link_t_ptr table,
 	return nf.ret;
 }
 
-void noti_tablectrl_begin_size(res_win_t widget, long x, long y)
+void noti_tablectrl_begin_size(res_win_t widget, int x, int y)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 
@@ -194,7 +194,7 @@ void noti_tablectrl_begin_size(res_win_t widget, long x, long y)
 	widget_set_cursor(widget, CURSOR_SIZEWE);
 }
 
-void noti_tablectrl_end_size(res_win_t widget, long x, long y)
+void noti_tablectrl_end_size(res_win_t widget, int x, int y)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 	canvbox_t cb;
@@ -662,7 +662,7 @@ void hand_tablectrl_size(res_win_t widget, int code, const xsize_t* prs)
 	tablectrl_redraw(widget);
 }
 
-void hand_tablectrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_tablectrl_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 
@@ -672,11 +672,11 @@ void hand_tablectrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->table)
@@ -710,7 +710,7 @@ void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
 	}
 }
 
-void hand_tablectrl_child_command(res_win_t widget, int code, var_long data)
+void hand_tablectrl_child_command(res_win_t widget, int code, var_int data)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 

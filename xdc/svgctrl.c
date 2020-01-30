@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "widgetex.h"
 #include "xdcbox.h"
 
-#define SVG_LINE_FEED		(long)100
+#define SVG_LINE_FEED		(int)100
 
 typedef struct _svg_delta_t{
 	link_t_ptr svg;
@@ -45,14 +45,14 @@ typedef struct _svg_delta_t{
 }svg_delta_t;
 
 #define GETSVGDELTA(ph) 		(svg_delta_t*)widget_get_user_delta(ph)
-#define SETSVGDELTA(ph,ptd)		widget_set_user_delta(ph,(var_long)ptd)
+#define SETSVGDELTA(ph,ptd)		widget_set_user_delta(ph,(var_int)ptd)
 
 /************************************************************************************************/
 
 static void _svgctrl_reset_page(res_win_t widget)
 {
 	svg_delta_t* ptd = GETSVGDELTA(widget);
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -80,7 +80,7 @@ static void _svgctrl_reset_page(res_win_t widget)
 }
 
 /*********************************************control event**************************************/
-int noti_svg_owner(res_win_t widget, unsigned long code, link_t_ptr svg, void* data)
+int noti_svg_owner(res_win_t widget, unsigned int code, link_t_ptr svg, void* data)
 {
 	svg_delta_t* ptd = GETSVGDELTA(widget);
 	NOTICE_SVG nf = { 0 };
@@ -197,7 +197,7 @@ void hand_svg_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_svg_owner(widget, NC_SVGRBCLK, ptd->svg, (void*)pxp);
 }
 
-void hand_svg_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_svg_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	svg_delta_t* ptd = GETSVGDELTA(widget);
 
@@ -207,11 +207,11 @@ void hand_svg_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_svg_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_svg_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	svg_delta_t* ptd = GETSVGDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->svg)

@@ -71,7 +71,7 @@ typedef struct {
 
 typedef struct {
 	GeoHashBits hash;
-	GeoHashRange longitude;
+	GeoHashRange intitude;
 	GeoHashRange latitude;
 } GeoHashArea;
 
@@ -104,11 +104,11 @@ typedef struct {
 extern "C" {
 #endif
 
-	XDL_API void geohashGetCoordRange(GeoHashRange *long_range, GeoHashRange *lat_range);
-	XDL_API int geohashEncode(const GeoHashRange *long_range, const GeoHashRange *lat_range, double longitude, double latitude, uint8_t step, GeoHashBits *hash);
-	XDL_API int geohashEncodeType(double longitude, double latitude, uint8_t step, GeoHashBits *hash);
-	XDL_API int geohashEncodeWGS84(double longitude, double latitude, uint8_t step, GeoHashBits *hash);
-	XDL_API int geohashDecode(const GeoHashRange long_range, const GeoHashRange lat_range, const GeoHashBits hash, GeoHashArea *area);
+	XDL_API void geohashGetCoordRange(GeoHashRange *int_range, GeoHashRange *lat_range);
+	XDL_API int geohashEncode(const GeoHashRange *int_range, const GeoHashRange *lat_range, double intitude, double latitude, uint8_t step, GeoHashBits *hash);
+	XDL_API int geohashEncodeType(double intitude, double latitude, uint8_t step, GeoHashBits *hash);
+	XDL_API int geohashEncodeWGS84(double intitude, double latitude, uint8_t step, GeoHashBits *hash);
+	XDL_API int geohashDecode(const GeoHashRange int_range, const GeoHashRange lat_range, const GeoHashBits hash, GeoHashArea *area);
 	XDL_API int geohashDecodeType(const GeoHashBits hash, GeoHashArea *area);
 	XDL_API int geohashDecodeWGS84(const GeoHashBits hash, GeoHashArea *area);
 	XDL_API int geohashDecodeAreaToLongLat(const GeoHashArea *area, double *xy);
@@ -120,10 +120,10 @@ extern "C" {
 
 	XDL_API int GeoHashBitsComparator(const GeoHashBits *a, const GeoHashBits *b);
 	XDL_API uint8_t geohashEstimateStepsByRadius(double range_meters, double lat);
-	XDL_API int geohashBoundingBox(double longitude, double latitude, double radius_meters, double *bounds);
-	XDL_API GeoHashRadius geohashGetAreasByRadius(double longitude, double latitude, double radius_meters);
-	XDL_API GeoHashRadius geohashGetAreasByRadiusWGS84(double longitude, double latitude, double radius_meters);
-	XDL_API GeoHashRadius geohashGetAreasByRadiusMercator(double longitude, double latitude, double radius_meters);
+	XDL_API int geohashBoundingBox(double intitude, double latitude, double radius_meters, double *bounds);
+	XDL_API GeoHashRadius geohashGetAreasByRadius(double intitude, double latitude, double radius_meters);
+	XDL_API GeoHashRadius geohashGetAreasByRadiusWGS84(double intitude, double latitude, double radius_meters);
+	XDL_API GeoHashRadius geohashGetAreasByRadiusMercator(double intitude, double latitude, double radius_meters);
 	XDL_API GeoHashFix52Bits geohashAlign52Bits(const GeoHashBits hash);
 	XDL_API double geohashGetDistance(double lon1d, double lat1d, double lon2d, double lat2d);
 	XDL_API int geohashGetDistanceIfInRadius(double x1, double y1, double x2, double y2, double radius, double *distance);

@@ -44,14 +44,14 @@ typedef struct _proper_delta_t{
 	res_win_t editor;
 	res_win_t vsc;
 
-	long org_x, org_y;
+	int org_x, org_y;
 
 	bool_t b_size;
 	bool_t b_lock;
 }proper_delta_t;
 
 #define GETPROPERDELTA(ph) 	(proper_delta_t*)widget_get_user_delta(ph)
-#define SETPROPERDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPROPERDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /*****************************************************************************************************/
 static void _properctrl_section_rect(res_win_t widget, link_t_ptr sec, xrect_t* pxr)
@@ -93,7 +93,7 @@ static void _properctrl_entity_text_rect(res_win_t widget, link_t_ptr ent, xrect
 static void _properctrl_reset_page(res_win_t widget)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	canvbox_t cb;
@@ -141,7 +141,7 @@ static void _properctrl_ensure_visible(res_win_t widget)
 
 /**********************************************************************************************************/
 
-int noti_proper_owner(res_win_t widget, unsigned long code, link_t_ptr proper, link_t_ptr slk, link_t_ptr elk, void* data)
+int noti_proper_owner(res_win_t widget, unsigned int code, link_t_ptr proper, link_t_ptr slk, link_t_ptr elk, void* data)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	NOTICE_PROPER nf = { 0 };
@@ -161,7 +161,7 @@ int noti_proper_owner(res_win_t widget, unsigned long code, link_t_ptr proper, l
 	return nf.ret;
 }
 
-void noti_proper_begin_size(res_win_t widget, long x, long y)
+void noti_proper_begin_size(res_win_t widget, int x, int y)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 
@@ -176,7 +176,7 @@ void noti_proper_begin_size(res_win_t widget, long x, long y)
 	widget_set_cursor(widget,CURSOR_SIZEWE);
 }
 
-void noti_proper_end_size(res_win_t widget, long x, long y)
+void noti_proper_end_size(res_win_t widget, int x, int y)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	float pw, iw, ew;
@@ -279,7 +279,7 @@ void noti_proper_entity_leave(res_win_t widget)
 	}
 }
 
-void noti_proper_entity_hover(res_win_t widget, long x, long y)
+void noti_proper_entity_hover(res_win_t widget, int x, int y)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	xpoint_t xp;
@@ -677,7 +677,7 @@ void hand_proper_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-void hand_proper_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_proper_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 
@@ -687,11 +687,11 @@ void hand_proper_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_proper_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_proper_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->proper)
@@ -972,7 +972,7 @@ void hand_proper_char(res_win_t widget, tchar_t nChar)
 
 }
 
-void hand_proper_child_command(res_win_t widget, int code, var_long data)
+void hand_proper_child_command(res_win_t widget, int code, var_int data)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 

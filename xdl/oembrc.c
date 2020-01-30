@@ -1423,7 +1423,7 @@ dword_t pdf417_encode(const byte_t* token, dword_t len, byte_t* buf, dword_t max
 
 	if (buf)
 	{
-		max = (max < (dword_t)pp.lenBits) ? max : (dword_t)pp.lenBits;
+		max = (max < (dword_t)(pp.lenBits)) ? max : (dword_t)(pp.lenBits);
 		memcpy((void*)buf, (void*)(pp.outBits), max);
 	}
 	else

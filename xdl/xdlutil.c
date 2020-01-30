@@ -101,7 +101,7 @@ void format_charset(int encode, tchar_t* buf)
 
 int compare_data(const tchar_t* szSrc, const tchar_t* szDes, const tchar_t* datatype)
 {
-	long nSrc, nDes;
+	int nSrc, nDes;
 	double dbSrc, dbDes;
 	short shSrc, shDes;
 	int rt;
@@ -326,7 +326,7 @@ bool_t is_ip(const tchar_t* addr)
 	return 0;
 }
 
-void parse_long_range(tchar_t* sz_range, dword_t* phoff, dword_t* ploff, dword_t* psize, long long* ptotal)
+void parse_bytes_range(tchar_t* sz_range, dword_t* phoff, dword_t* ploff, dword_t* psize, long long* ptotal)
 {
 	int len,step = 0;
 	const tchar_t* token = sz_range;
@@ -374,7 +374,7 @@ void parse_long_range(tchar_t* sz_range, dword_t* phoff, dword_t* ploff, dword_t
 	*ptotal = ll_total;
 }
 
-void format_long_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t size, long long total)
+void format_bytes_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t size, long long total)
 {
 	tchar_t sz_from[NUM_LEN + 1] = { 0 };
 	tchar_t sz_to[NUM_LEN + 1] = { 0 };
@@ -393,7 +393,7 @@ void format_long_range(tchar_t* sz_range, dword_t hoff, dword_t loff, dword_t si
 	xsprintf(sz_range, _T("%s-%s/%s"), sz_from, sz_to, sz_total);
 }
 
-int format_longlong(unsigned long hl, unsigned long ll, tchar_t* buf)
+int format_long(unsigned int hl, unsigned int ll, tchar_t* buf)
 {
 	unsigned long long li;
 	int len = 0;
@@ -419,7 +419,7 @@ int format_longlong(unsigned long hl, unsigned long ll, tchar_t* buf)
 	return len;
 }
 
-void parse_longlong(unsigned long* phl, unsigned long* pll, const tchar_t* str)
+void parse_long(unsigned int* phl, unsigned int* pll, const tchar_t* str)
 {
 	unsigned long long li = 0;
 	int len = 0;
@@ -439,16 +439,16 @@ void parse_longlong(unsigned long* phl, unsigned long* pll, const tchar_t* str)
 	}
 
 	if (phl)
-		*phl = (unsigned long)((li & 0xFFFFFFFF00000000) >> 32);
+		*phl = (unsigned int)((li & 0xFFFFFFFF00000000) >> 32);
 	if (pll)
-		*pll = (unsigned long)(li & 0x00000000FFFFFFFF);
+		*pll = (unsigned int)(li & 0x00000000FFFFFFFF);
 }
 
 bool_t is_zero_size(const tchar_t* fsize)
 {
 	dword_t hdw, ldw;
 
-	parse_longlong(&hdw, &ldw, fsize);
+	parse_long(&hdw, &ldw, fsize);
 
 	return (!hdw && !ldw)? 1 : 0;
 }
@@ -457,7 +457,7 @@ bool_t is_huge_size(const tchar_t* fsize)
 {
 	dword_t hdw, ldw;
 
-	parse_longlong(&hdw, &ldw, fsize);
+	parse_long(&hdw, &ldw, fsize);
 
 	if (hdw)
 		return 1;
@@ -467,10 +467,10 @@ bool_t is_huge_size(const tchar_t* fsize)
 	return 0;
 }
 
-unsigned long parse_hexnum(const tchar_t* token, int len)
+unsigned int parse_hexnum(const tchar_t* token, int len)
 {
-	unsigned long k = 0;
-	long c = 0;
+	unsigned int k = 0;
+	int c = 0;
 	int pos = 0;
 
 	if (len < 0)
@@ -505,9 +505,9 @@ unsigned long parse_hexnum(const tchar_t* token, int len)
 	return k;
 }
 
-int format_hexnum(unsigned long n, tchar_t* buf, int max)
+int format_hexnum(unsigned int n, tchar_t* buf, int max)
 {
-	long c = 0;
+	int c = 0;
 	int pos = 0;
 
 	do
@@ -538,7 +538,7 @@ int format_hexnum(unsigned long n, tchar_t* buf, int max)
 	return pos;
 }
 
-int fill_long(long ln, tchar_t* buf, int max)
+int fill_integer(int ln, tchar_t* buf, int max)
 {
 	int len;
 	bool_t b = 0;
@@ -575,7 +575,7 @@ int fill_long(long ln, tchar_t* buf, int max)
 	}
 }
 
-int format_long_ex(long ln, const tchar_t* fmt, tchar_t* buf, int max)
+int format_integer_ex(int ln, const tchar_t* fmt, tchar_t* buf, int max)
 {
 	int n_split, b_negat;
 	int n, len, total = 0;
@@ -711,7 +711,7 @@ bool_t is_zero_numeric(double dbl, int scale)
 		dbl *= 10;
 	}
 
-	return ((long)dbl) ? 0 : 1;
+	return ((int)dbl) ? 0 : 1;
 }
 
 double parse_numeric(const tchar_t* token, int len)
@@ -2334,9 +2334,9 @@ int compare_numeric(const tchar_t* szSrc, const tchar_t* szDes, int digi)
 }
 
 
-long mul_div_long(long m1, long m2, long d)
+int mul_div_int(int m1, int m2, int d)
 {
-	return (long)((double)(m1 * m2) / (double)d);
+	return (int)((double)(m1 * m2) / (double)d);
 }
 
 short mul_div_short(short m1, short m2, short d)
@@ -3027,9 +3027,9 @@ int compare_rowcol(int from_row, int from_col, int to_row, int to_col)
 		return 1;
 }
 
-bool_t pt_inside(long x, long y, long x1, long y1, long x2, long y2)
+bool_t pt_inside(int x, int y, int x1, int y1, int x2, int y2)
 {
-	long minx, maxx, miny, maxy;
+	int minx, maxx, miny, maxy;
 
 	minx = (x1 < x2) ? x1 : x2;
 	maxx = (x1 > x2) ? x1 : x2;
@@ -3068,7 +3068,7 @@ void ft_offset_point(xpoint_t* ppt, float cx, float cy)
 	ppt->fy += cy;
 }
 
-void pt_offset_point(xpoint_t* ppt, long cx, long cy)
+void pt_offset_point(xpoint_t* ppt, int cx, int cy)
 {
 	ppt->x += cx;
 	ppt->y += cy;
@@ -3082,7 +3082,7 @@ void ft_center_rect(xrect_t* pxr, float cx, float cy)
 	pxr->fh = cy;
 }
 
-void pt_center_rect(xrect_t* pxr, long cx, long cy)
+void pt_center_rect(xrect_t* pxr, int cx, int cy)
 {
 	pxr->x += (pxr->w - cx) / 2;
 	pxr->w = cx;
@@ -3090,7 +3090,7 @@ void pt_center_rect(xrect_t* pxr, long cx, long cy)
 	pxr->h = cy;
 }
 
-void pt_expand_rect(xrect_t* pxr, long cx, long cy)
+void pt_expand_rect(xrect_t* pxr, int cx, int cy)
 {
 	pxr->x -= cx;
 	pxr->w += cx * 2;
@@ -3106,7 +3106,7 @@ void ft_expand_rect(xrect_t* pxr, float cx, float cy)
 	pxr->fh += cy * 2;
 }
 
-void pt_offset_rect(xrect_t* pxr, long cx, long cy)
+void pt_offset_rect(xrect_t* pxr, int cx, int cy)
 {
 	pxr->x += cx;
 	pxr->y += cy;
@@ -3135,7 +3135,7 @@ void ft_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt)
 
 void pt_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt)
 {
-	long left, top, right, bottom;
+	int left, top, right, bottom;
 
 	left = (pxr->x < pxr_nxt->x) ? pxr->x : pxr_nxt->x;
 	top = (pxr->y < pxr_nxt->y) ? pxr->y : pxr_nxt->y;

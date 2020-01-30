@@ -197,7 +197,7 @@ void set_list_item_file_info(link_t_ptr ilk, const file_info_t* pfi)
 
 	if (!pfi->is_dir)
 	{
-		format_longlong(pfi->high_size, pfi->low_size, fsize);
+		format_long(pfi->high_size, pfi->low_size, fsize);
 		set_list_item_file_size(ilk, fsize);
 
 		set_list_item_file_etag(ilk, pfi->file_etag);
@@ -220,7 +220,7 @@ void get_list_item_file_info(link_t_ptr ilk, file_info_t* pfi)
 	{
 		xsncpy(pfi->file_etag, get_list_item_file_etag_ptr(ilk), RES_LEN);
 		xsncpy(fsize, get_list_item_file_size_ptr(ilk), NUM_LEN);
-		parse_longlong(&pfi->high_size, &pfi->low_size, fsize);
+		parse_long(&pfi->high_size, &pfi->low_size, fsize);
 	}
 }
 

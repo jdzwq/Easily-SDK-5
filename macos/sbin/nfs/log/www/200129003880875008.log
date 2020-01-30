@@ -1,0 +1,5 @@
+
+[127.0.0.1]
+
+[WWW: GET]
+<?xml version="1.0" encoding="utf-8" ?><fault><fault-code/><fault-string>/Users/zwq/工程/Easily-sdk-5/macos/sbin/www/favicon.ico</fault-string></fault>

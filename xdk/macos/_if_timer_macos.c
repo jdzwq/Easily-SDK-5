@@ -33,29 +33,29 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_TIMER
 
-res_hand_t _create_timer_queue()
+res_queue_t _create_timer_queue()
 {
-	return NULL;
+	return (0);
 }
 
-void _destroy_timer_queue(res_hand_t rq)
+void _destroy_timer_queue(res_queue_t rq)
 {
 	return;
 }
 
-res_timer_t _create_timer(res_hand_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa)
+res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa)
 {
     return NULL;
 }
 
-void _destroy_timer(res_hand_t rq, res_timer_t rt)
+void _destroy_timer(res_queue_t rq, res_timer_t rt)
 {
     return;
 }
 
-bool_t _alter_timer(res_hand_t rq, res_timer_t rt, clock_t duetime, clock_t period)
+bool_t _alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period)
 {
-    return 0;
+    return (0);
 }
 
 #endif //XDK_SUPPORT_TIMER

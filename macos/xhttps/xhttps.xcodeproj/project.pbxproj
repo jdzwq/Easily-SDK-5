@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9B3E8D5F23D1D67D00786BE1 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D5D23D1D67D00786BE1 /* libxdl.dylib */; };
-		9B3E8D6023D1D67D00786BE1 /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3E8D5E23D1D67D00786BE1 /* libxds.dylib */; };
 		9B434EDC2172065700AC4CAA /* xhttpsMain.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EDB2172065700AC4CAA /* xhttpsMain.cc */; };
 		9B434EE22172068C00AC4CAA /* srvlog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EDE2172068C00AC4CAA /* srvlog.cc */; };
 		9B434EE32172068C00AC4CAA /* xhttps.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B434EE02172068C00AC4CAA /* xhttps.cc */; };
-		9B6FD3E2217CBF0000FF6FDC /* srvcert.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9B6FD3E0217CBF0000FF6FDC /* srvcert.cc */; };
+		9B88135523D44B5700735703 /* libxdl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B88135323D44B5700735703 /* libxdl.dylib */; };
+		9B88135623D44B5700735703 /* libxds.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B88135423D44B5700735703 /* libxds.dylib */; };
+		9BF31EC523D5A53200974892 /* srvcrt.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9BF31EC323D5A53200974892 /* srvcrt.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,8 +28,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9B3E8D5D23D1D67D00786BE1 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = ../sbin/api/libxdl.dylib; sourceTree = "<group>"; };
-		9B3E8D5E23D1D67D00786BE1 /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = ../sbin/api/libxds.dylib; sourceTree = "<group>"; };
 		9B434ED12172058400AC4CAA /* xhttps */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xhttps; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B434EDB2172065700AC4CAA /* xhttpsMain.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhttpsMain.cc; sourceTree = "<group>"; };
 		9B434EDD2172068C00AC4CAA /* srvdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvdef.h; path = ../../api/net_srv/srvdef.h; sourceTree = "<group>"; };
@@ -37,8 +35,10 @@
 		9B434EDF2172068C00AC4CAA /* srvlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvlog.h; path = ../../api/net_srv/srvlog.h; sourceTree = "<group>"; };
 		9B434EE02172068C00AC4CAA /* xhttps.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xhttps.cc; path = ../../api/net_srv/xhttps.cc; sourceTree = "<group>"; };
 		9B434EE12172068C00AC4CAA /* xhttps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xhttps.h; path = ../../api/net_srv/xhttps.h; sourceTree = "<group>"; };
-		9B6FD3E0217CBF0000FF6FDC /* srvcert.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvcert.cc; path = ../../api/net_srv/srvcert.cc; sourceTree = "<group>"; };
-		9B6FD3E1217CBF0000FF6FDC /* srvcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvcert.h; path = ../../api/net_srv/srvcert.h; sourceTree = "<group>"; };
+		9B88135323D44B5700735703 /* libxdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxdl.dylib; path = ../sbin/api/libxdl.dylib; sourceTree = "<group>"; };
+		9B88135423D44B5700735703 /* libxds.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxds.dylib; path = ../sbin/api/libxds.dylib; sourceTree = "<group>"; };
+		9BF31EC323D5A53200974892 /* srvcrt.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = srvcrt.cc; path = ../../api/net_srv/srvcrt.cc; sourceTree = "<group>"; };
+		9BF31EC423D5A53200974892 /* srvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = srvcrt.h; path = ../../api/net_srv/srvcrt.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,8 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B3E8D6023D1D67D00786BE1 /* libxds.dylib in Frameworks */,
-				9B3E8D5F23D1D67D00786BE1 /* libxdl.dylib in Frameworks */,
+				9B88135623D44B5700735703 /* libxds.dylib in Frameworks */,
+				9B88135523D44B5700735703 /* libxdl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,10 +57,10 @@
 		9B434EC82172058400AC4CAA = {
 			isa = PBXGroup;
 			children = (
-				9B3E8D5D23D1D67D00786BE1 /* libxdl.dylib */,
-				9B3E8D5E23D1D67D00786BE1 /* libxds.dylib */,
-				9B6FD3E0217CBF0000FF6FDC /* srvcert.cc */,
-				9B6FD3E1217CBF0000FF6FDC /* srvcert.h */,
+				9BF31EC323D5A53200974892 /* srvcrt.cc */,
+				9BF31EC423D5A53200974892 /* srvcrt.h */,
+				9B88135323D44B5700735703 /* libxdl.dylib */,
+				9B88135423D44B5700735703 /* libxds.dylib */,
 				9B434EDD2172068C00AC4CAA /* srvdef.h */,
 				9B434EDE2172068C00AC4CAA /* srvlog.cc */,
 				9B434EDF2172068C00AC4CAA /* srvlog.h */,
@@ -136,9 +136,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B434EE22172068C00AC4CAA /* srvlog.cc in Sources */,
+				9BF31EC523D5A53200974892 /* srvcrt.cc in Sources */,
 				9B434EDC2172065700AC4CAA /* xhttpsMain.cc in Sources */,
 				9B434EE32172068C00AC4CAA /* xhttps.cc in Sources */,
-				9B6FD3E2217CBF0000FF6FDC /* srvcert.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

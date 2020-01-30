@@ -52,7 +52,7 @@ static ssh_listen_t*  _xssh_listen(unsigned short port)
 	res_file_t so;
 	sys_info_t si = { 0 };
 
-	so = socket_tcp(0, FILE_OPEN_OVERLAP);
+	so = socket_tcp(0, 0);
 	if (so == INVALID_FILE)
 	{
 		return NULL;
@@ -85,7 +85,7 @@ static ssh_listen_t*  _xssh_listen(unsigned short port)
 	return plis;
 }
 
-static unsigned int STDCALL thread_dispatch(void* param)
+static unsigned STDCALL thread_dispatch(void* param)
 {
 	ssh_accept_t* pxa = (ssh_accept_t*)param;
 
@@ -93,17 +93,19 @@ static unsigned int STDCALL thread_dispatch(void* param)
 	void* pf_param = NULL;
 	xhand_t ssh = NULL;
 	res_file_t so = 0;
+	res_even_t ev = NULL;
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
 	so = pxa->so;
 	pxa->so = 0;
 	pf_dispatch = pxa->pf_dispatch;
 	pf_param = pxa->pf_param;
+	ev = pxa->ev;
+
+	event_sign(ev, 1);
 
 	ssh = xssh_srv(so);
-
-	event_sign(pxa->ev, 1);
 
 	(*pf_dispatch)(ssh, pf_param);
 
@@ -118,46 +120,37 @@ static unsigned int STDCALL thread_dispatch(void* param)
 	return 0;
 }
 
-static unsigned int STDCALL process_dispatch(void* param)
+static unsigned STDCALL process_dispatch(void* param)
 {
 	ssh_accept_t* pxa = (ssh_accept_t*)param;
 
 	res_file_t so;
 	const tchar_t* sz_module = NULL;
 	const void* pf_param = NULL;
+	res_even_t ev = NULL;
 
 	proc_info_t pi = { 0 };
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
 	so = pxa->so;
 	pxa->so = 0;
 	sz_module = pxa->sz_module;
 	pf_param = pxa->pf_param;
+	ev = pxa->ev;
 
-	if (create_process(sz_module, (tchar_t*)pf_param, 1, &pi))
+	event_sign(ev, 1);
+
+	if (create_process(sz_module, (tchar_t*)pf_param, SHARE_SOCK, &pi))
 	{
-		if (pi.pip_write)
-		{
-			socket_share(pi.process_id, pi.pip_write, so, NULL, 0);
-		}
+		socket_share(pi.process_id, pi.pip_write, so, NULL, 0);
 
-#if defined(_DEBUG) || defined(DEBUG)
-		//wait process run
-		thread_sleep(10);
-#endif
+        thread_yield();
+        
 		release_process(&pi);
-
-		socket_close(so);
 	}
-	else
-	{
-		//disable recive
-		socket_shutdown(so, 0);
-		socket_close(so);
-	}
-
-	event_sign(pxa->ev, 1);
+	
+	socket_close(so);
 
 	xdl_thread_uninit(0);
 
@@ -166,7 +159,7 @@ static unsigned int STDCALL process_dispatch(void* param)
 	return 0;
 }
 
-static unsigned int STDCALL wait_accept(void* param)
+static unsigned STDCALL wait_accept(void* param)
 {
 	ssh_listen_t* plis = (ssh_listen_t*)param;
 
@@ -174,28 +167,28 @@ static unsigned int STDCALL wait_accept(void* param)
 	net_addr_t locaddr, rmtaddr;
 	int addr_len;
 	ssh_accept_t xa = { 0 };
-	async_t over = { 0 };
+	async_t* pov = NULL;
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
-	async_alloc_lapp(&over, TCP_BASE_TIMO);
-
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	if (plis->epo)
+	if (plis->res == 1)
 	{
-		over.type = ASYNC_QUEUE;
-		over.port = plis->epo;
+		pov = async_alloc_lapp(ASYNC_QUEUE, TCP_BASE_TIMO, plis->so);
 	}
-#endif
+	else
+	{
+		pov = async_alloc_lapp(ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
+	}
 
 	socket_addr(plis->so, &locaddr);
 
 	while (plis->act)
 	{
 		addr_len = sizeof(net_addr_t);
-		so = socket_accept(plis->so, (res_addr_t)&rmtaddr, &addr_len, &over);
+		so = socket_accept(plis->so, (res_addr_t)&rmtaddr, &addr_len, pov);
 		if (so == INVALID_FILE)
 		{
+            thread_yield();
 			continue;
 		}
 
@@ -229,7 +222,7 @@ static unsigned int STDCALL wait_accept(void* param)
 		xmem_zero((void*)&xa, sizeof(ssh_accept_t));
 	}
 
-	async_release_lapp(&over);
+	async_free_lapp(pov);
 
 	xdl_thread_uninit(0);
 
@@ -251,18 +244,11 @@ ssh_listen_t* xssh_start_thread(unsigned short port, PF_SSHS_DISPATCH pf_dispatc
 	plis->pf_dispatch = pf_dispatch;
 	plis->pf_param = param;
 
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	plis->epo = queue_create((res_queue_t)NULL, plis->so, plis->res);
-#endif
-
-	plis->thr = (res_hand_t*)xmem_alloc(sizeof(res_hand_t) * plis->res);
+	plis->thr = (res_thread_t*)xmem_alloc(sizeof(res_thread_t) * plis->res);
 
 	for (i = 0; i < plis->res; i++)
 	{
 		thread_start(&(plis->thr[i]), (PF_THREADFUNC)wait_accept, (void*)plis);
-#if defined(_DEBUG) || defined(DEBUG)
-		thread_sleep(10);
-#endif
 	}
 
 	return plis;
@@ -281,18 +267,11 @@ ssh_listen_t* xssh_start_process(unsigned short port, const tchar_t* sz_module, 
 	plis->sz_module = sz_module;
 	plis->pf_param = (void*)sz_cmdline;
 
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	plis->epo = queue_create((res_queue_t)NULL, plis->so, plis->res);
-#endif
-
-	plis->thr = (res_hand_t*)xmem_alloc(sizeof(res_hand_t) * plis->res);
+	plis->thr = (res_thread_t*)xmem_alloc(sizeof(res_thread_t) * plis->res);
 
 	for (i = 0; i < plis->res; i++)
 	{
 		thread_start(&(plis->thr[i]), (PF_THREADFUNC)wait_accept, (void*)plis);
-#if defined(_DEBUG) || defined(DEBUG)
-		thread_sleep(10);
-#endif
 	}
 
 	return plis;
@@ -308,25 +287,16 @@ void xssh_stop(ssh_listen_t* plis)
 	//disiable recive and send
 	socket_shutdown(plis->so, 2);
 
-	//wait listen stoped
-	thread_sleep(THREAD_BASE_TMO);
-
 	socket_close(plis->so);
 
 	for (i = 0; i < plis->res; i++)
 	{
 		thread_join(plis->thr[i]);
 	}
+    
+    thread_yield();
 
 	xmem_free(plis->thr);
-
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	if (plis->epo)
-	{
-		queue_destroy(plis->epo);
-		plis->epo = (res_queue_t)NULL;
-	}
-#endif
 
 	xmem_free(plis);
 }

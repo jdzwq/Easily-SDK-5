@@ -39,7 +39,7 @@ typedef struct _notes_delta_t{
 	link_t_ptr arch;
 	link_t_ptr item;
 	link_t_ptr hover;
-	long tw, th;
+	int tw, th;
 
 	res_win_t vsc;
 
@@ -47,10 +47,10 @@ typedef struct _notes_delta_t{
 }notes_delta_t;
 
 #define GETNOTESDELTA(ph) 	(notes_delta_t*)widget_get_user_delta(ph)
-#define SETNOTESDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETNOTESDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 #define NOTESCTRL_GUID_SPAN		(float)6
-#define NOTESCTRL_SPAN_PLUS		(long)10
+#define NOTESCTRL_SPAN_PLUS		(int)10
 
 typedef enum{
 	_NOTES_HINT_NONE = 0,
@@ -61,7 +61,7 @@ typedef enum{
 }NOTES_HINT;
 /***************************************************************************************/
 
-static long _notesctrl_calc_width(res_win_t widget)
+static int _notesctrl_calc_width(res_win_t widget)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	link_t_ptr ilk, doc;
@@ -69,7 +69,7 @@ static long _notesctrl_calc_width(res_win_t widget)
 	xface_t xa;
 	res_ctx_t rdc;
 	xsize_t xs;
-	long pw;
+	int pw;
 
 	widgetex_get_xfont(widget, &xf);
 	widgetex_get_xface(widget, &xa);
@@ -105,7 +105,7 @@ static long _notesctrl_calc_width(res_win_t widget)
 	return pw + ptd->tw + ptd->th;
 }
 
-static long _notesctrl_calc_height(res_win_t widget)
+static int _notesctrl_calc_height(res_win_t widget)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	link_t_ptr ilk,doc;
@@ -113,7 +113,7 @@ static long _notesctrl_calc_height(res_win_t widget)
 	xface_t xa;
 	res_ctx_t rdc;
 	xrect_t xr;
-	long pw,ph;
+	int pw,ph;
 	int n;
 
 	widget_get_client_rect(widget, &xr);
@@ -165,7 +165,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 	res_ctx_t rdc;
 	link_t_ptr ilk,doc;
 	int hint, n;
-	long total = 0;
+	int total = 0;
 
 	xrect_t xr;
 	xfont_t xf;
@@ -270,7 +270,7 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	xfont_t xf;
 	xface_t xa;
 	viewbox_t vb;
-	long n,total = 0;
+	int n,total = 0;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
@@ -326,7 +326,7 @@ static void _notesctrl_reset_page(res_win_t widget)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	xrect_t xr;
-	long mh;
+	int mh;
 
 	mh = _notesctrl_calc_height(widget);
 
@@ -349,7 +349,7 @@ static void _notesctrl_ensure_visible(res_win_t widget)
 }
 
 /*************************************************************************/
-int noti_notes_owner(res_win_t widget, unsigned long code, link_t_ptr arch, link_t_ptr item, void* data)
+int noti_notes_owner(res_win_t widget, unsigned int code, link_t_ptr arch, link_t_ptr item, void* data)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	NOTICE_NOTES nf = { 0 };
@@ -439,7 +439,7 @@ void noti_notes_item_leave(res_win_t widget)
 	}
 }
 
-void noti_notes_item_hover(res_win_t widget, long x, long y)
+void noti_notes_item_hover(res_win_t widget, int x, int y)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	xpoint_t xp;
@@ -468,8 +468,8 @@ int hand_notes_create(res_win_t widget, void* data)
 	text_metric_raw(rdc, &xf, &xs);
 	widget_release_ctx(widget, rdc);
 
-	ptd->tw = (long)((float)xs.cx * 8);
-	ptd->th = (long)((float)xs.cy * 1.25);
+	ptd->tw = (int)((float)xs.cx * 8);
+	ptd->th = (int)((float)xs.cy * 1.25);
 
 	SETNOTESDELTA(widget, ptd);
 
@@ -653,7 +653,7 @@ void hand_notes_size(res_win_t widget, int code, const xsize_t* prs)
 	notesctrl_redraw(widget);
 }
 
-void hand_notes_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_notes_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 
@@ -663,11 +663,11 @@ void hand_notes_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_notes_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_notes_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->arch)
@@ -719,7 +719,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xrect_t xr_btn,xr_txt,xr;
 	xpoint_t pt_org, pt_cur;
 	xsize_t xs;
-	long n;
+	int n;
 
 	viewbox_t vb = { 0 };
 	xfont_t xf_top,xf = { 0 };

@@ -51,13 +51,13 @@ extern "C" {
 	/* Given a string element to add to the HyperLogLog, returns the length
 	* of the pattern 000..1 of the element hash. As a side effect 'regp' is
 	* set to the register index this element hashes to. */
-	XDL_API int hllPatLen(unsigned char *ele, size_t elesize, long *regp);
+	XDL_API int hllPatLen(unsigned char *ele, size_t elesize, int *regp);
 
 	/* ================== Dense representation implementation  ================== */
 
 	/* "Add" the element in the dense hyperloglog data structure.
 	* Actually nothing is added, but the max 0 pattern counter of the subset
-	* the element belongs to is incremented if needed.
+	* the element beints to is incremented if needed.
 	*
 	* 'registers' is expected to have room for HLL_REGISTERS plus an
 	* additional byte on the right. This requirement is met by sds strings

@@ -91,69 +91,69 @@ XDL_API void release_process(proc_info_t* ppi);
 
 /*
 @FUNCTION process_waitrun: pause process executing till the system resource handle released.
-@INPUT res_hand_t ph: some system resource handle.
+@INPUT res_proc_t ph: some system resource handle.
 @RETURN void: none.
 */
-XDL_API void process_waitrun(res_hand_t ph);
+XDL_API void process_waitrun(res_proc_t ph);
 
 /*
 @FUNCTION process_dupli: duplicate a system resource handle to target process.
-@INPUT res_hand_t ph: current process handle.
-@INPUT res_hand_t vh: current process system resource handle.
-@RETURN res_hand_t: if succeeds return target process resource handle, fails return NULL.
+@INPUT res_proc_t ph: current process handle.
+@INPUT res_file_t fh: current process system resource handle.
+@RETURN res_file_t: if succeeds return target process resource handle, fails return NULL.
 */
-XDL_API res_hand_t process_dupli(res_hand_t ph, res_hand_t vh);
+XDL_API res_file_t process_dupli(res_proc_t ph, res_file_t fh);
 
 /*
 @FUNCTION process_alloc: alloc memory address from target process heap.
-@INPUT res_hand_t ph: current process handle.
+@INPUT res_proc_t ph: current process handle.
 @INPUT dword_t dw: the memory size request.
 @RETURN void*: if succeeds return memory pointer in target process heap, fails return NULL.
 */
-XDL_API void* process_alloc(res_hand_t ph, dword_t dw);
+XDL_API void* process_alloc(res_proc_t ph, dword_t dw);
 
 /*
 @FUNCTION process_free: free memory in target process heap.
-@INPUT res_hand_t ph: current process handle.
+@INPUT res_proc_t ph: current process handle.
 @INPUT void* p: the memory pointer from target process heap.
 @RETURN void: none.
 */
-XDL_API void process_free(res_hand_t ph, void* p);
+XDL_API void process_free(res_proc_t ph, void* p);
 
 /*
 @FUNCTION process_write: write date into target process memory.
-@INPUT res_hand_t ph: current process handle.
+@INPUT res_proc_t ph: current process handle.
 @INPUT void* p: the memory pointer from target process heap.
 @INPUT void* data: the data buffer pointer.
 @INPUT dword_t dw: size in bytes of data.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t process_write(res_hand_t ph, void* p, void* data, dword_t dw);
+XDL_API bool_t process_write(res_proc_t ph, void* p, void* data, dword_t dw);
 
 /*
 @FUNCTION process_read: read date from target process memory.
-@INPUT res_hand_t ph: current process handle.
+@INPUT res_proc_t ph: current process handle.
 @INPUT void* p: the memory pointer from target process heap.
 @INPUT void* data: the data buffer pointer.
 @OUTPUT dword_t dw: the max size in bytes of buffer.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t process_read(res_hand_t ph, void* p, void* data, dword_t dw);
+XDL_API bool_t process_read(res_proc_t ph, void* p, void* data, dword_t dw);
 
 /*
 @FUNCTION release_handle: release system resource handle.
-@INPUT res_hand_t hh: some syste resource handle.
+@INPUT res_file_t hh: some syste resource handle.
 @RETURN void: none.
 */
-XDL_API void release_handle(res_hand_t hh);
+XDL_API void release_handle(res_file_t hh);
 
 /*
 @FUNCTION inherit_handle: make system resource can be or not be inherited by child process.
-@INPUT res_hand_t hh: some syste resource handle.
+@INPUT res_file_t hh: some syste resource handle.
 @INPUT bool_t b: if nonzero the resource handle can be inherited, otherwise can not be.
 @RETURN bool_t: none.
 */
-XDL_API bool_t inherit_handle(res_hand_t hh, bool_t b);
+XDL_API bool_t inherit_handle(res_file_t hh, bool_t b);
 
 /*
 @FUNCTION read_profile: read some runtime config value from profile.

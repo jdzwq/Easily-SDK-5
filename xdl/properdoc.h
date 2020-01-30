@@ -416,10 +416,10 @@ XDL_API bool_t get_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tcha
 @INPUT link_t_ptr ptr: the proper link component.
 @INPUT const tchar_t* sec: the section name token.
 @INPUT const tchar_t* ent: the entity name token.
-@INPUT long n: the integer value.
+@INPUT int n: the integer value.
 @RETURN link_t_ptr: return entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr set_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, long n);
+XDL_API link_t_ptr set_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, int n);
 
 /*
 @FUNCTION get_proper_integer: find entity and return entity integer value.
@@ -428,7 +428,7 @@ XDL_API link_t_ptr set_proper_integer(link_t_ptr ptr, const tchar_t* sec, const 
 @INPUT const tchar_t* ent: the entity name token.
 @RETURN integer: return entity integer value if exists, otherwise return zero.
 */
-XDL_API long get_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
+XDL_API int get_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
 
 /*
 @FUNCTION set_proper_float: set entity float value.

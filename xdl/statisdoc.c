@@ -701,7 +701,7 @@ void set_coor_dirty(link_t_ptr xlk, link_t_ptr ylk, bool_t b)
 {
 	link_t_ptr ent;
 	const tchar_t* sz_yax;
-	unsigned long msk;
+	dword_t msk;
 
 	sz_yax = get_yax_name_ptr(ylk);
 	if (is_null(sz_yax))
@@ -711,20 +711,20 @@ void set_coor_dirty(link_t_ptr xlk, link_t_ptr ylk, bool_t b)
 	if (!ent)
 		return;
 
-	msk = (unsigned long)get_hash_entity_delta(ent);
+	msk = get_hash_entity_delta(ent);
 	if (b)
 		msk |= dsDirty;
 	else
 		msk &= (~dsDirty);
 
-	set_hash_entity_delta(ent, (var_long)msk);
+	set_hash_entity_delta(ent, msk);
 }
 
 bool_t get_coor_dirty(link_t_ptr xlk, link_t_ptr ylk)
 {
 	link_t_ptr ent;
 	const tchar_t* sz_yax;
-	unsigned long msk;
+	dword_t msk;
 
 	sz_yax = get_yax_name_ptr(ylk);
 	if (is_null(sz_yax))
@@ -734,7 +734,7 @@ bool_t get_coor_dirty(link_t_ptr xlk, link_t_ptr ylk)
 	if (!ent)
 		return 0;
 
-	msk = (unsigned long)get_hash_entity_delta(ent);
+	msk = get_hash_entity_delta(ent);
 
 	return (msk & dsDirty) ? 1 : 0;
 }
@@ -771,15 +771,15 @@ void calc_statis_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* p
 
 	if (pmidd)
 	{
-		*pmidd = (float)(long)((f_min + f_max) / 20) * 10;
+		*pmidd = (float)(int)((f_min + f_max) / 20) * 10;
 	}
 
 	if (pstep)
 	{
-		*pstep = (float)(long)(f_max - f_min) / 100;
-		if ((long)(f_max - f_min) % 100)
+		*pstep = (float)(int)(f_max - f_min) / 100;
+		if ((int)(f_max - f_min) % 100)
 			*pstep = (float)(*pstep + 1.0);
-		if (!(long)(*pstep))
+		if (!(int)(*pstep))
 			*pstep = (float)1.0;
 	}
 }

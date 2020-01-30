@@ -66,7 +66,7 @@ int csv_char_encode(const tchar_t* val, int len, tchar_t* buf, int max)
 			if (buf)
 			{
 				buf[total] = _T('%');
-				xsprintf(buf + total + 1, _T("%02X"), (long)(*token));
+				xsprintf(buf + total + 1, _T("%02X"), (int)(*token));
 			}
 			total += 3;
 		}
@@ -172,7 +172,7 @@ dword_t url_byte_encode(const byte_t* val, dword_t len, byte_t* buf, dword_t max
 			if (buf)
 			{
 				buf[total] = ('%');
-				a_xsprintf((schar_t*)(buf + total + 1), ("%02X"), (long)(*token));
+				a_xsprintf((schar_t*)(buf + total + 1), ("%02X"), (int)(*token));
 			}
 			total += 3;
 		}

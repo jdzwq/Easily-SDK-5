@@ -105,11 +105,11 @@ LICENSE.GPL3 for more details.
 #define MAX_FLOAT_PREC	12
 #define MAX_FLOAT_DIGI	4
 
-typedef unsigned long		key32_t;
-typedef unsigned long long	key64_t;
+typedef dword_t		key32_t;
+typedef lword_t		key64_t;
 typedef struct{
-	unsigned long long l;
-	unsigned long long h;
+	lword_t l;
+	lword_t h;
 }key128_t;
 
 typedef struct _link_t* link_t_ptr ;
@@ -124,8 +124,8 @@ typedef struct _link_t{
 #define LINK_FIRST	((link_t_ptr)((unsigned long long)1))		
 #define LINK_LAST	((link_t_ptr)((unsigned long long)-1))
 #else
-#define LINK_FIRST	((link_t_ptr)((unsigned long)1))		
-#define LINK_LAST	((link_t_ptr)((unsigned long)-1))
+#define LINK_FIRST	((link_t_ptr)((unsigned int)1))		
+#define LINK_LAST	((link_t_ptr)((unsigned int)-1))
 #endif
 
 #ifdef _OS_64
@@ -133,9 +133,9 @@ typedef struct _link_t{
 #define TypePtrFromChild(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->lkChild))) 
 #define TypePtrFromSibling(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->lkSibling))) 
 #else
-#define TypePtrFromLink(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->lk))) 
-#define TypePtrFromChild(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->lkChild))) 
-#define TypePtrFromSibling(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->lkSibling))) 
+#define TypePtrFromLink(type,p) ((type*)((unsigned int)p - (unsigned int)&(((type*)0)->lk))) 
+#define TypePtrFromChild(type,p) ((type*)((unsigned int)p - (unsigned int)&(((type*)0)->lkChild))) 
+#define TypePtrFromSibling(type,p) ((type*)((unsigned int)p - (unsigned int)&(((type*)0)->lkSibling))) 
 #endif
 
 
@@ -251,7 +251,7 @@ typedef enum{
 #endif
 
 #define PUT_ENCODE(buf, off, enc)	(buf[off] = (unsigned char)(enc >> 16), buf[off + 1] = (unsigned char)(enc >> 8), buf[off + 2] = (unsigned char)(enc))
-#define GET_ENCODE(buf, off)		(int)((unsigned long)buf[off] << 16 | (unsigned long)buf[off + 1] << 8 | (unsigned long)buf[off + 2])
+#define GET_ENCODE(buf, off)		(int)((unsigned int)buf[off] << 16 | (unsigned int)buf[off + 1] << 8 | (unsigned int)buf[off + 2])
 
 #define CHARSET_GB2312		_T("gb2312")
 #define CHARSET_UTF8		_T("utf-8")
@@ -393,7 +393,7 @@ typedef enum{
 #ifdef _OS_64
 #define TypePtrFromHead(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->head))) 
 #else
-#define TypePtrFromHead(type,p) ((type*)((unsigned long)p - (unsigned long)&(((type*)0)->head))) 
+#define TypePtrFromHead(type,p) ((type*)((unsigned int)p - (unsigned int)&(((type*)0)->head))) 
 #endif
 
 /*define handle type*/
@@ -480,18 +480,20 @@ typedef struct _acp_head{
 #define VV_BYTE			0x02
 #define VV_SCHAR		0x03
 #define VV_WCHAR		0x04
-#define VV_LONG			0x05
-#define VV_LONGLONG		0x06
-#define VV_FLOAT		0x07
-#define VV_DOUBLE		0x08
-#define VV_STRING		0x09
+#define VV_SHORT		0x05
+#define VV_INT			0x06
+#define VV_LONG			0x07
+#define VV_FLOAT		0x08
+#define VV_DOUBLE		0x09
+#define VV_STRING		0x0A
 
 #define VV_BOOL_ARRAY	(VV_BOOL | 0x40)
 #define VV_BYTE_ARRAY	(VV_BYTE | 0x40)
 #define VV_SCHAR_ARRAY	(VV_SCHAR | 0x40)
 #define VV_WCHAR_ARRAY	(VV_WCHAR | 0x40)
+#define VV_SHORT_ARRAY	(VV_SHORT | 0x40)
+#define VV_INT_ARRAY	(VV_INT | 0x40)
 #define VV_LONG_ARRAY	(VV_LONG | 0x40)
-#define VV_LONGLONG_ARRAY	(VV_LONGLONG | 0x40)
 #define VV_FLOAT_ARRAY	(VV_FLOAT | 0x40)
 #define VV_DOUBLE_ARRAY	(VV_DOUBLE | 0x40)
 #define VV_STRING_ARRAY	(VV_STRING | 0x40)
@@ -501,8 +503,9 @@ typedef struct _acp_head{
 #define VV_BYTE_ARRAY_REF	(VV_BYTE_ARRAY | 0x80)
 #define VV_SCHAR_ARRAY_REF	(VV_SCHAR_ARRAY | 0x80)
 #define VV_WCHAR_ARRAY_REF	(VV_WCHAR_ARRAY | 0x80)
+#define VV_SHORT_ARRAY_REF	(VV_SHORT_ARRAY | 0x80)
+#define VV_INT_ARRAY_REF	(VV_INT_ARRAY | 0x80)
 #define VV_LONG_ARRAY_REF	(VV_LONG_ARRAY | 0x80)
-#define VV_LONGLONG_ARRAY_REF	(VV_LONGLONG_ARRAY | 0x80)
 #define VV_FLOAT_ARRAY_REF	(VV_FLOAT_ARRAY | 0x80)
 #define VV_DOUBLE_ARRAY_REF	(VV_DOUBLE_ARRAY | 0x80)
 #define VV_STRING_ARRAY_REF	(VV_STRING_ARRAY | 0x80)
@@ -525,8 +528,9 @@ typedef struct _variant_t{
 		byte_t byte_one;
 		schar_t schar_one;
 		wchar_t wchar_one;
-		long long_one;
-		long long longlong_one;
+		short short_one;
+		int int_one;
+		long long long_one;
 		float float_one;
 		double double_one;
 		tchar_t* string_one;
@@ -535,8 +539,9 @@ typedef struct _variant_t{
 		byte_t* byte_ptr;
 		schar_t* schar_ptr;
 		wchar_t* wchar_ptr;
-		long* long_ptr;
-		long long* longlong_ptr;
+		short* short_ptr;
+		int* int_ptr;
+		long long* long_ptr;
 		float* float_ptr;
 		double* double_ptr;
 		tchar_t** string_ptr;
@@ -606,7 +611,7 @@ typedef struct _page_cator_t{
 }page_cator_t;
 
 typedef struct _viewbox_t{
-	long px, py, pw, ph;
+	int px, py, pw, ph;
 }viewbox_t;
 
 typedef struct _canvbox_t{

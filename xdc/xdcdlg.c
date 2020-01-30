@@ -192,7 +192,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 }
 
 
-int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_t sid, var_long delta)
+int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_t sid, var_int delta)
 {
 	res_ctx_t rdc;
 	xrect_t xr;
@@ -230,7 +230,7 @@ int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_
 	return 1;
 }
 
-static int STDCALL _widget_set_child_point(res_win_t widget, var_long pv)
+static int STDCALL _widget_set_child_point(res_win_t widget, var_int pv)
 {
 	xpoint_t pt;
 
@@ -244,11 +244,11 @@ static int STDCALL _widget_set_child_point(res_win_t widget, var_long pv)
 	return 1;
 }
 
-int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta)
+int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_int delta)
 {
 	if (code != WD_SIZE_MINIMIZED)
 	{
-		widget_enum_child(widget, _widget_set_child_point, (var_long)0);
+		widget_enum_child(widget, _widget_set_child_point, (var_int)0);
 
 		widget_redraw(widget, NULL, 0);
 

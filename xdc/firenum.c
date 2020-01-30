@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_int delta)
 {
 	if (subid != IDS_EDITBOX)
 		return 0;
@@ -44,24 +44,24 @@ static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long
 	switch (nKey)
 	{
 	case KEY_TAB:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
 		return 1;
 	case KEY_ENTER:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
 		return 1;
 	case KEY_ESC:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
 		return 1;
 	case KEY_SPACE:
 		editbox_set_text(widget, NULL);
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
+static int sub_editbox_self_command(res_win_t widget, int code, var_int data, uid_t subid, var_int delta)
 {
 	res_win_t numbox;
 
@@ -82,17 +82,17 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		}
 		return 1;
 	case COMMAND_COMMIT:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
 		return 1;
 	case COMMAND_ROLLBACK:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long delta)
+static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_int delta)
 {
 	res_win_t numbox;
 
@@ -112,7 +112,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	return 1;
 }
 
-static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_int delta)
 {
 	res_win_t numbox;
 
@@ -163,7 +163,7 @@ res_win_t firenum_create(res_win_t widget, const xrect_t* pxr)
 	widget_set_user_id(numbox, IDC_NUMBOX);
 	widget_set_owner(numbox, editor);
 
-	widget_set_subproc_delta(editor, IDS_EDITBOX, (var_long)numbox);
+	widget_set_subproc_delta(editor, IDS_EDITBOX, (var_int)numbox);
 
 	widget_get_window_rect(numbox, &xr);
 	numbox_popup_size(numbox, RECTSIZE(&xr));

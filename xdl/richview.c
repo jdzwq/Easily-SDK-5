@@ -48,11 +48,11 @@ typedef struct _RICHWORDOPERATOR{
 	int len, pos;
 	int ind;
 	tchar_t pch[CHS_LEN + 1];
-	long point;
+	int point;
 
 	float permm;
 	float indent;
-	long place;
+	int place;
 
 	PF_TEXT_SIZE pf_text_size;
 	void* ctx;
@@ -251,7 +251,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 	{
 		if (pscan->pos < 0)
 		{
-			pscan->place = (long)(get_rich_anch_text_place(pscan->nlk) * pscan->permm);
+			pscan->place = (int)(get_rich_anch_text_place(pscan->nlk) * pscan->permm);
 		}
 
 		n = xslen(pscan->pch);
@@ -274,7 +274,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 			*ppch = pscan->pch;
 			n = 1;
 
-			pse->cx = (long)(pscan->indent * pscan->permm);
+			pse->cx = (int)(pscan->indent * pscan->permm);
 		}
 	}
 
@@ -555,7 +555,7 @@ void call_rich_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->nlk;
 }
 
-void scan_rich_text(link_t_ptr ptr, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_rich_text(link_t_ptr ptr, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	RICHWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };

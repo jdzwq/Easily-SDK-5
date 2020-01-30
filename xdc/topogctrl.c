@@ -44,7 +44,7 @@ typedef struct _topog_delta_t{
 	res_win_t vsc;
 
 	bool_t b_drag;
-	long org_x, org_y;
+	int org_x, org_y;
 	int row, col;
 
 	ximage_t img;
@@ -54,7 +54,7 @@ typedef struct _topog_delta_t{
 
 
 #define GETTOPOGDELTA(ph) 	(topog_delta_t*)widget_get_user_delta(ph)
-#define SETTOPOGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTOPOGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /*****************************************************************************/
 static void _topogctrl_done(res_win_t widget)
@@ -365,7 +365,7 @@ static void _topogctrl_reset_matrix(res_win_t widget, int row, int col)
 static void _topogctrl_reset_page(res_win_t widget)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -394,7 +394,7 @@ static void _topogctrl_reset_page(res_win_t widget)
 
 
 /*****************************************************************************/
-int noti_topog_owner(res_win_t widget, unsigned long code, link_t_ptr topog, link_t_ptr spot, int row, int col, void* data)
+int noti_topog_owner(res_win_t widget, unsigned int code, link_t_ptr topog, link_t_ptr spot, int row, int col, void* data)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	NOTICE_TOPOG nf = { 0 };
@@ -535,7 +535,7 @@ void noti_topog_spot_leave(res_win_t widget)
 	}
 }
 
-void noti_topog_spot_hover(res_win_t widget, long x, long y)
+void noti_topog_spot_hover(res_win_t widget, int x, int y)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	xpoint_t xp;
@@ -547,7 +547,7 @@ void noti_topog_spot_hover(res_win_t widget, long x, long y)
 	noti_topog_owner(widget, NC_TOPOGSPOTHOVER, ptd->topog, ptd->hover, get_topog_spot_row(ptd->hover), get_topog_spot_col(ptd->hover), (void*)&xp);
 }
 
-void noti_topog_spot_drag(res_win_t widget, long x, long y)
+void noti_topog_spot_drag(res_win_t widget, int x, int y)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	xpoint_t pt;
@@ -569,12 +569,12 @@ void noti_topog_spot_drag(res_win_t widget, long x, long y)
 	noti_topog_owner(widget, NC_TOPOGSPOTDRAG, ptd->topog, ptd->spot, ptd->row, ptd->col, (void*)&pt);
 }
 
-void noti_topog_spot_drop(res_win_t widget, long x, long y)
+void noti_topog_spot_drop(res_win_t widget, int x, int y)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	xpoint_t pt;
 	xsize_t xs;
-	long cx, cy;
+	int cx, cy;
 
 	XDL_ASSERT(ptd->spot);
 
@@ -871,7 +871,7 @@ void hand_topogctrl_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_topog_owner(widget, NC_TOPOGRBCLK, ptd->topog, ptd->spot, ptd->row, ptd->col, (void*)pxp);
 }
 
-void hand_topogctrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_topogctrl_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 
@@ -881,11 +881,11 @@ void hand_topogctrl_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->topog)

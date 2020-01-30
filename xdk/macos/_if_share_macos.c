@@ -34,11 +34,10 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_SHARE
 
-res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, size_t size)
+res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size)
 {
     int sd = 0, fd = 0;
     void* buf = NULL;
-    size_t len;
     struct stat st = {0};
     void *p = NULL;
     
@@ -47,10 +46,15 @@ res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, size_t size)
         goto ERRRET;
     
     fstat(fd, &st);
-    len =st.st_size;
-    buf = calloc(1, len);
+    if(MAKESIZE(loff, hoff) > st.st_size)
+        goto ERRRET;
     
-    if(read(fd, buf, len) != len)
+    if(lseek(fd, (off_t)MAKESIZE(loff, hoff), SEEK_SET) < 0)
+        goto ERRRET;
+    
+    buf = calloc(1, size);
+    
+    if(read(fd, buf, size) < 0)
         goto ERRRET;
     
     close(fd);
@@ -67,7 +71,7 @@ res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, size_t size)
     if(p == MAP_FAILED)
         goto ERRRET;
     
-    memcpy(p, buf, len);
+    memcpy(p, buf, size);
     free(buf);
     buf = NULL;
     
@@ -97,10 +101,14 @@ ERRRET:
 void _share_close(const tchar_t* sname, res_file_t fh)
 {
     close(fh);
-    shm_unlink(sname);
+    
+    if(!_tstrnull(sname))
+    {
+        shm_unlink(sname);
+    }
 }
 
-res_file_t _share_cli(const tchar_t* sname, size_t size)
+res_file_t _share_cli(const tchar_t* sname, dword_t size)
 {
     int sd = 0;
     struct stat st = {0};
@@ -110,7 +118,6 @@ res_file_t _share_cli(const tchar_t* sname, size_t size)
     if(fstat(sd, &st) < 0)
     {
         close(sd);
-        shm_unlink(sname);
         
         return INVALID_FILE;
     }
@@ -120,7 +127,6 @@ res_file_t _share_cli(const tchar_t* sname, size_t size)
         if(ftruncate(sd, size) < 0)
         {
             close(sd);
-            shm_unlink(sname);
             
             return INVALID_FILE;
         }
@@ -129,20 +135,17 @@ res_file_t _share_cli(const tchar_t* sname, size_t size)
     return (res_file_t)sd;
 }
 
-bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* pcb)
+bool_t _share_write(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t* pcb)
 {
     void* p = NULL;
     size_t len;
     struct stat st = {0};
     
-    dword_t loff, hoff, poff;
+    dword_t loff, poff;
     size_t dlen;
     
-    hoff = GETSIZEH(off);
-    loff = GETSIZEL(off);
-    
-    poff = (loff % PAGE_GRAN);
-    loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+    poff = (off % PAGE_GRAN);
+    loff = (off / PAGE_GRAN) * PAGE_GRAN;
     dlen = poff + size;
 
     if(fstat(fh, &st) < 0)
@@ -161,7 +164,7 @@ bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* p
         }
     }
     
-    p = mmap(NULL, dlen, PROT_WRITE | PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
+    p = mmap(NULL, dlen, PROT_WRITE | PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, 0));
     if(p == MAP_FAILED)
     {
         if (pcb) *pcb = 0;
@@ -179,21 +182,18 @@ bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* p
     return 1;
 }
 
-bool_t _share_read(res_file_t fh, size_t off, void* buf, size_t size, size_t* pcb)
+bool_t _share_read(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t* pcb)
 {
     void* p = NULL;
     
-    dword_t loff, hoff, poff;
+    dword_t loff, poff;
     size_t dlen;
     
-    hoff = GETSIZEH(off);
-    loff = GETSIZEL(off);
-    
-    poff = (loff % PAGE_GRAN);
-    loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+    poff = (off % PAGE_GRAN);
+    loff = (off / PAGE_GRAN) * PAGE_GRAN;
     dlen = poff + size;
     
-    p = mmap(NULL, dlen, PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
+    p = mmap(NULL, dlen, PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, 0));
     if(p == MAP_FAILED)
     {
         if (pcb) *pcb = 0;
@@ -209,37 +209,31 @@ bool_t _share_read(res_file_t fh, size_t off, void* buf, size_t size, size_t* pc
     return 1;
 }
 
-void* _share_lock(res_file_t fh, size_t off, size_t size)
+void* _share_lock(res_file_t fh, dword_t off, dword_t size)
 {
     void* p = NULL;
     
-    dword_t loff, hoff, poff;
+    dword_t loff, poff;
     size_t dlen;
-    
-    hoff = GETSIZEH(off);
-    loff = GETSIZEL(off);
-    
-    poff = (loff % PAGE_GRAN);
-    loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+
+    poff = (off % PAGE_GRAN);
+    loff = (off / PAGE_GRAN) * PAGE_GRAN;
     dlen = poff + size;
     
-    p = mmap(NULL, dlen, PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
+    p = mmap(NULL, dlen, PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, 0));
     if(p == MAP_FAILED)
         return NULL;
 
     return (void*)((char*)p + poff);
 }
 
-void _share_unlock(res_file_t fh, size_t off, size_t size, void* p)
+void _share_unlock(res_file_t fh, dword_t off, dword_t size, void* p)
 {
-    dword_t loff, hoff, poff;
+    dword_t loff, poff;
     size_t dlen;
     
-    hoff = GETSIZEH(off);
-    loff = GETSIZEL(off);
-    
-    poff = (loff % PAGE_GRAN);
-    loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+    poff = (off % PAGE_GRAN);
+    loff = (off / PAGE_GRAN) * PAGE_GRAN;
     dlen = poff + size;
 
     munmap((void*)((char*)p - poff), dlen);

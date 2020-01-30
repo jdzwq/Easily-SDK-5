@@ -1439,7 +1439,7 @@ int get_dom_node_page_cator_count(link_t_ptr ilk)
 	return ptt->pages;
 }
 
-bool_t get_dom_node_line_cator(link_t_ptr ilk, int point, long* pcx, long* pcy)
+bool_t get_dom_node_line_cator(link_t_ptr ilk, int point, int* pcx, int* pcy)
 {
 	dom_node_t* ptt;
 	dword_t dw;
@@ -1459,7 +1459,7 @@ bool_t get_dom_node_line_cator(link_t_ptr ilk, int point, long* pcx, long* pcy)
 	return 1;
 }
 
-void set_dom_node_line_cator(link_t_ptr ilk, int point, long cx, long cy)
+void set_dom_node_line_cator(link_t_ptr ilk, int point, int cx, int cy)
 {
 	dom_node_t* ptt;
 	dword_t dw;
@@ -1474,7 +1474,7 @@ void set_dom_node_line_cator(link_t_ptr ilk, int point, long cx, long cy)
 	ptt->pointer[point] = dw;
 }
 
-void ins_dom_node_line_cator(link_t_ptr ilk, int point, long cx, long cy)
+void ins_dom_node_line_cator(link_t_ptr ilk, int point, int cx, int cy)
 {
 	dom_node_t* ptt;
 	int i;

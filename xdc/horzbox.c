@@ -39,7 +39,7 @@ typedef struct _horzbox_delta_t{
 }horzbox_delta_t;
 
 #define GETHORZBOXDELTA(ph) 	(horzbox_delta_t*)widget_get_user_delta(ph)
-#define SETHORZBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETHORZBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 
 /*********************************************************************************/
@@ -133,7 +133,7 @@ void hand_horzbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void hand_horzbox_timer(res_win_t widget, var_long tid)
+void hand_horzbox_timer(res_win_t widget, var_int tid)
 {
 	horzbox_delta_t* ptd = GETHORZBOXDELTA(widget);
 

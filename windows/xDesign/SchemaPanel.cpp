@@ -42,7 +42,7 @@ typedef struct tagSchemaPanelDelta{
 }SchemaPanelDelta;
 
 #define GETSCHEMAPANELDELTA(ph) 		(SchemaPanelDelta*)widget_get_user_delta(ph)
-#define SETSCHEMAPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETSCHEMAPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 bool_t	SchemaPanel_SaveFile(res_win_t widget, const tchar_t* szFile);
 bool_t	SchemaPanel_OpenFile(res_win_t widget, const tchar_t* szFile);
@@ -486,7 +486,7 @@ void SchemaPanel_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_size(pdt->hMemo, RECTSIZE(&xr));
 }
 
-void SchemaPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void SchemaPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	SchemaPanelDelta* pdt = GETSCHEMAPANELDELTA(widget);
 
@@ -533,7 +533,7 @@ void SchemaPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long dat
 	}
 }
 
-void SchemaPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void SchemaPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	SchemaPanelDelta* pdt = GETSCHEMAPANELDELTA(widget);
 

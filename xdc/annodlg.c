@@ -63,7 +63,7 @@ typedef struct _annodlg_delta_t{
 }annodlg_delta_t;
 
 #define GETANNODLGDELTA(ph) 	(annodlg_delta_t*)widget_get_user_delta(ph)
-#define SETANNODLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETANNODLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /************************************************************************************/
 void annodlg_on_ok(res_win_t widget)
@@ -544,7 +544,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_int data)
 {
 	annodlg_delta_t* ptd = GETANNODLGDELTA(widget);
 	xrect_t xr;

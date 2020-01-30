@@ -33,20 +33,46 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_ASYNC
 
-void _async_alloc_lapp(async_t* pas, int ms)
+async_t* _async_alloc_lapp(int type, int ms, res_file_t fd)
 {
-    pas->type = ASYNC_EVENT;
-    pas->lapp = (void*)_local_alloc(sizeof(OVERLAPPED));
+    async_t* pas;
     
-    pas->timo = (ms < 0)? 0 : ms;
+    pas = (void*)_local_alloc(sizeof(async_t));
+    
+    if (type == ASYNC_EVENT || type == ASYNC_QUEUE)
+    {
+        pas->lapp = (void*)_local_alloc(sizeof(OVERLAPPED));
+    }else
+    {
+        pas->lapp = NULL;
+    }
+    
+#ifdef XDK_SUPPORT_THREAD_QUEUE
+    if (type == ASYNC_QUEUE)
+        pas->port = _queue_create((res_queue_t)0, fd, 0);
+    else
+        pas->port = (res_queue_t)0;
+#endif
+    
+    pas->type = type;
+    pas->timo = (ms < 0)? INFINITE : ms;
+    
+    return pas;
 }
 
-void _async_release_lapp(async_t* pas)
+void _async_free_lapp(async_t* pas)
 {
     if(pas->lapp)
         _local_free(pas->lapp);
     
-    pas->lapp = NULL;
+#ifdef XDK_SUPPORT_THREAD_QUEUE
+    if (pas->port)
+    {
+        _queue_destroy(pas->port);
+    }
+#endif
+    
+    _local_free(pas);
 }
 
 #endif //XDK_SUPPORT_ASYNC

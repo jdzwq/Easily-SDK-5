@@ -85,26 +85,28 @@ static pnp_listen_t*  _xpnp_listen(unsigned short port)
 	return plis;
 }
 
-static unsigned int STDCALL thread_dispatch(void* param)
+static unsigned STDCALL thread_dispatch(void* param)
 {
 	pnp_accept_t* pxa = (pnp_accept_t*)param;
 
 	PF_PNPS_DISPATCH pf_dispatch = NULL;
 	void* pf_param = NULL;
+	res_even_t ev = NULL;
 	unsigned short port;
 	tchar_t addr[ADDR_LEN];
 	byte_t pack[PNP_PKG_SIZE];
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
 	pf_dispatch = pxa->pf_dispatch;
 	pf_param = pxa->pf_param;
+	ev = pxa->ev;
 
 	port = pxa->port;
 	xsncpy(addr, pxa->addr, ADDR_LEN);
 	xmem_copy((void*)pack, (void*)pxa->pack, PNP_PKG_SIZE);
 
-	event_sign(pxa->ev, 1);
+	event_sign(ev, 1);
 
 	(*pf_dispatch)(port, addr, pack, PNP_PKG_SIZE, pf_param);
 
@@ -115,7 +117,7 @@ static unsigned int STDCALL thread_dispatch(void* param)
 	return 0;
 }
 
-static unsigned int STDCALL process_dispatch(void* param)
+static unsigned STDCALL process_dispatch(void* param)
 {
 	pnp_accept_t* pxa = (pnp_accept_t*)param;
 
@@ -127,6 +129,7 @@ static unsigned int STDCALL process_dispatch(void* param)
 
 	const tchar_t* sz_module = NULL;
 	const void* pf_param = NULL;
+	res_even_t ev = NULL;
 
 	proc_info_t pi = { 0 };
 
@@ -134,7 +137,7 @@ static unsigned int STDCALL process_dispatch(void* param)
 	stream_t stm = NULL;
 	byte_t num[2];
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
 	port = pxa->port;
 #ifdef _UNICODE
@@ -147,8 +150,11 @@ static unsigned int STDCALL process_dispatch(void* param)
 
 	sz_module = pxa->sz_module;
 	pf_param = pxa->pf_param;
+	ev = pxa->ev;
 
-	if (create_process(sz_module, (tchar_t*)pf_param, 1, &pi))
+	event_sign(ev, 1);
+
+	if (create_process(sz_module, (tchar_t*)pf_param, SHARE_SOCK, &pi))
 	{
 		if (pi.pip_write)
 		{
@@ -183,15 +189,10 @@ static unsigned int STDCALL process_dispatch(void* param)
 			}
 		}
 
+        thread_yield();
+        
 		release_process(&pi);
-
-#if defined(_DEBUG) || defined(DEBUG)
-		//wait process run
-		thread_sleep(10);
-#endif
 	}
-
-	event_sign(pxa->ev, 1);
 
 	xdl_thread_uninit(0);
 
@@ -200,7 +201,7 @@ static unsigned int STDCALL process_dispatch(void* param)
 	return 0;
 }
 
-static unsigned int STDCALL wait_accept(void* param)
+static unsigned STDCALL wait_accept(void* param)
 {
 	pnp_listen_t* plis = (pnp_listen_t*)param;
 
@@ -209,19 +210,18 @@ static unsigned int STDCALL wait_accept(void* param)
 	pnp_accept_t xa = { 0 };
 	dword_t dw;
 
-	async_t over = { 0 };
+	async_t* pov = NULL;
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
-	async_alloc_lapp(&over, PNP_BASE_TIMO);
-
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	if (plis->epo)
+	if (plis->res == 1)
 	{
-		over.type = ASYNC_QUEUE;
-		over.port = plis->epo;
+		pov = async_alloc_lapp(ASYNC_QUEUE, PNP_BASE_TIMO, plis->so);
 	}
-#endif
+	else
+	{
+		pov = async_alloc_lapp(ASYNC_EVENT, PNP_BASE_TIMO, INVALID_FILE);
+	}
 
 	socket_addr(plis->so, &locaddr);
 
@@ -229,40 +229,43 @@ static unsigned int STDCALL wait_accept(void* param)
 	{
 		addr_len = sizeof(net_addr_t);
 		dw = PNP_PKG_SIZE;
-		if (socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, &over))
+		if (!socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, pov))
 		{
-			conv_addr(&rmtaddr, &xa.port, xa.addr);
-			xa.size = (dword_t)over.size;
-
-			xa.pf_param = plis->pf_param;
-
-			if (plis->is_thread)
-				xa.pf_dispatch = plis->pf_dispatch;
-			else
-				xa.sz_module = plis->sz_module;
-
-			xa.ev = event_create();
-
-			if (xa.ev)
-			{
-				if (plis->is_thread)
-				{
-					thread_start(NULL, (PF_THREADFUNC)thread_dispatch, (void*)&xa);
-				}
-				else
-				{
-					thread_start(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
-				}
-
-				event_wait(xa.ev, PNP_BASE_TIMO);
-				event_destroy(xa.ev);
-			}
-
-			xmem_zero((void*)&xa, sizeof(pnp_accept_t));
+            thread_yield();
+			continue;
 		}
+		
+		conv_addr(&rmtaddr, &xa.port, xa.addr);
+		xa.size = (dword_t)pov->size;
+
+		xa.pf_param = plis->pf_param;
+
+		if (plis->is_thread)
+			xa.pf_dispatch = plis->pf_dispatch;
+		else
+			xa.sz_module = plis->sz_module;
+
+		xa.ev = event_create();
+
+		if (xa.ev)
+		{
+			if (plis->is_thread)
+			{
+				thread_start(NULL, (PF_THREADFUNC)thread_dispatch, (void*)&xa);
+			}
+			else
+			{
+				thread_start(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
+			}
+            
+			event_wait(xa.ev, PNP_BASE_TIMO);
+			event_destroy(xa.ev);
+		}
+
+		xmem_zero((void*)&xa, sizeof(pnp_accept_t));
 	}
 
-	async_release_lapp(&over);
+	async_free_lapp(pov);
 
 	xdl_thread_uninit(0);
 
@@ -284,18 +287,11 @@ pnp_listen_t* xpnp_start_thread(unsigned short port, PF_PNPS_DISPATCH pf_dispatc
 	plis->pf_dispatch = pf_dispatch;
 	plis->pf_param = param;
 
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	plis->epo = queue_create((res_queue_t)NULL, plis->so, plis->res);
-#endif
-
-	plis->thr = (res_hand_t*)xmem_alloc(sizeof(res_hand_t) * plis->res);
+	plis->thr = (res_thread_t*)xmem_alloc(sizeof(res_thread_t) * plis->res);
 
 	for (i = 0; i < plis->res; i++)
 	{
 		thread_start(&(plis->thr[i]), (PF_THREADFUNC)wait_accept, (void*)plis);
-#if defined(_DEBUG) || defined(DEBUG)
-		thread_sleep(10);
-#endif
 	}
 
 	return plis;
@@ -314,18 +310,11 @@ pnp_listen_t* xpnp_start_process(unsigned short port, const tchar_t* sz_module, 
 	plis->sz_module = sz_module;
 	plis->pf_param = (void*)sz_cmdline;
 
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	plis->epo = queue_create((res_queue_t)NULL, plis->so, plis->res);
-#endif
-
-	plis->thr = (res_hand_t*)xmem_alloc(sizeof(res_hand_t) * plis->res);
+	plis->thr = (res_thread_t*)xmem_alloc(sizeof(res_thread_t) * plis->res);
 
 	for (i = 0; i < plis->res; i++)
 	{
 		thread_start(&(plis->thr[i]), (PF_THREADFUNC)wait_accept, (void*)plis);
-#if defined(_DEBUG) || defined(DEBUG)
-		thread_sleep(10);
-#endif
 	}
 
 	return plis;
@@ -341,25 +330,16 @@ void  xpnp_stop(pnp_listen_t* plis)
 	//disiable recive and send
 	socket_shutdown(plis->so, 2);
 
-	//wait listen stoped
-	thread_sleep(THREAD_BASE_TMO);
-
 	socket_close(plis->so);
 
 	for (i = 0; i < plis->res; i++)
 	{
 		thread_join(plis->thr[i]);
 	}
+    
+    thread_yield();
 
 	xmem_free(plis->thr);
-
-#ifdef XDK_SUPPORT_THREAD_QUEUE
-	if (plis->epo)
-	{
-		queue_destroy(plis->epo);
-		plis->epo = (res_queue_t)NULL;
-	}
-#endif
 
 	xmem_free(plis);
 }

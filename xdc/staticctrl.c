@@ -43,9 +43,9 @@ typedef struct _statis_delta_t{
 	link_t_ptr xax;
 	link_t_ptr hover;
 
-	long org_x, org_y;
-	long cur_x, cur_y;
-	long cur_page;
+	int org_x, org_y;
+	int cur_x, cur_y;
+	int cur_page;
 
 	res_win_t editor;
 	res_win_t hsc;
@@ -61,7 +61,7 @@ typedef struct _statis_delta_t{
 }statis_delta_t;
 
 #define GETSTATISDELTA(ph) 	(statis_delta_t*)widget_get_user_delta(ph)
-#define SETSTATISDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETSTATISDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /******************************************************************************************/
 static void _statisctrl_done(res_win_t widget)
@@ -389,7 +389,7 @@ static void _statisctrl_reset_page(res_win_t widget)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -444,7 +444,7 @@ void _statisctrl_ensure_visible(res_win_t widget)
 }
 
 /***********************************************************************************************************************/
-int noti_statis_owner(res_win_t widget, unsigned long code, link_t_ptr statis, link_t_ptr xlk, link_t_ptr ylk, link_t_ptr glk, void* data)
+int noti_statis_owner(res_win_t widget, unsigned int code, link_t_ptr statis, link_t_ptr xlk, link_t_ptr ylk, link_t_ptr glk, void* data)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	NOTICE_STATIS nf = { 0 };
@@ -514,7 +514,7 @@ void noti_statis_reset_check(res_win_t widget)
 		widget_redraw(widget, NULL, 0);
 }
 
-void noti_statis_xax_sizing(res_win_t widget, long x, long y)
+void noti_statis_xax_sizing(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 
@@ -526,7 +526,7 @@ void noti_statis_xax_sizing(res_win_t widget, long x, long y)
 	widget_set_cursor(widget,CURSOR_SIZEWE);
 }
 
-void noti_statis_xax_sized(res_win_t widget, long x, long y)
+void noti_statis_xax_sized(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	float mw;
@@ -550,7 +550,7 @@ void noti_statis_xax_sized(res_win_t widget, long x, long y)
 
 	_statisctrl_done(widget);
 
-	mw = (float)(long)mw;
+	mw = (float)(int)mw;
 	set_statis_xaxbar_width(ptd->statis, mw);
 
 	widget_redraw(widget, NULL, 0);
@@ -558,7 +558,7 @@ void noti_statis_xax_sized(res_win_t widget, long x, long y)
 	noti_statis_owner(widget, NC_XAXSIZED, ptd->statis, ptd->xax, NULL, NULL, NULL);
 }
 
-void noti_statis_yax_sizing(res_win_t widget, long x, long y)
+void noti_statis_yax_sizing(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 
@@ -573,7 +573,7 @@ void noti_statis_yax_sizing(res_win_t widget, long x, long y)
 	widget_set_cursor(widget,CURSOR_SIZENS);
 }
 
-void noti_statis_yax_sized(res_win_t widget, long x, long y)
+void noti_statis_yax_sized(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	float mh;
@@ -600,7 +600,7 @@ void noti_statis_yax_sized(res_win_t widget, long x, long y)
 
 	_statisctrl_done(widget);
 
-	mh = (float)(long)mh;
+	mh = (float)(int)mh;
 	set_statis_yaxbar_height(ptd->statis, mh);
 
 	widget_redraw(widget, NULL, 0);
@@ -608,7 +608,7 @@ void noti_statis_yax_sized(res_win_t widget, long x, long y)
 	noti_statis_owner(widget, NC_YAXSIZED, ptd->statis, NULL, ptd->yax, NULL, NULL);
 }
 
-void noti_statis_yax_drag(res_win_t widget, long x, long y)
+void noti_statis_yax_drag(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	xpoint_t pt;
@@ -630,7 +630,7 @@ void noti_statis_yax_drag(res_win_t widget, long x, long y)
 	noti_statis_owner(widget, NC_YAXDRAG, ptd->statis, NULL, ptd->yax, NULL, (void*)&pt);
 }
 
-void noti_statis_yax_drop(res_win_t widget, long x, long y)
+void noti_statis_yax_drop(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	int nHint;
@@ -684,7 +684,7 @@ void noti_statis_yax_drop(res_win_t widget, long x, long y)
 	noti_statis_owner(widget, NC_YAXDROP, ptd->statis, NULL, ptd->yax, NULL, (void*)&pt);
 }
 
-void noti_statis_xax_drag(res_win_t widget, long x, long y)
+void noti_statis_xax_drag(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	xpoint_t pt;
@@ -706,7 +706,7 @@ void noti_statis_xax_drag(res_win_t widget, long x, long y)
 	noti_statis_owner(widget, NC_XAXDRAG, ptd->statis, ptd->xax, NULL, NULL, (void*)&pt);
 }
 
-void noti_statis_xax_drop(res_win_t widget, long x, long y)
+void noti_statis_xax_drop(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	int nHint;
@@ -949,7 +949,7 @@ void noti_statis_yax_leave(res_win_t widget)
 	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
 }
 
-void noti_statis_yax_hover(res_win_t widget, long x, long y)
+void noti_statis_yax_hover(res_win_t widget, int x, int y)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	xpoint_t xp;
@@ -1160,7 +1160,7 @@ void hand_statis_size(res_win_t widget, int code, const xsize_t* psc)
 	statisctrl_redraw(widget, 1);
 }
 
-void hand_statis_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_statis_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 
@@ -1172,11 +1172,11 @@ void hand_statis_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_statis_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_statis_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->statis)
@@ -1632,7 +1632,7 @@ void hand_statis_undo(res_win_t widget)
 	_statisctrl_undo(widget);
 }
 
-void hand_statis_child_command(res_win_t widget, int code, var_long data)
+void hand_statis_child_command(res_win_t widget, int code, var_int data)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 

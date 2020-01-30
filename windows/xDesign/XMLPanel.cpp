@@ -50,7 +50,7 @@ typedef struct tagXMLPanelDelta{
 }XMLPanelDelta;
 
 #define GETXMLPANELDELTA(ph) 		(XMLPanelDelta*)widget_get_user_delta(ph)
-#define SETXMLPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETXMLPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define XMLPANEL_ACCEL_COUNT	5
 accel_t	XMLPANEL_ACCEL[XMLPANEL_ACCEL_COUNT] = {
@@ -684,12 +684,12 @@ void XMLPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	
 }
 
-void XMLPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void XMLPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	XMLPanelDelta* pdt = GETXMLPANELDELTA(widget);
 }
 
-void XMLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void XMLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	XMLPanelDelta* pdt = GETXMLPANELDELTA(widget);
 	void* pv = NULL;

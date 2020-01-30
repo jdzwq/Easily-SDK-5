@@ -158,7 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\api\net_srv\srvcert.h" />
+    <ClInclude Include="..\..\api\net_srv\srvcrt.h" />
     <ClInclude Include="..\..\api\net_srv\srvdef.h" />
     <ClInclude Include="..\..\api\net_srv\srvlog.h" />
     <ClInclude Include="..\..\api\net_srv\xhttps.h" />
@@ -172,7 +172,7 @@
     <ResourceCompile Include="xportd.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\api\net_srv\srvcert.cc" />
+    <ClCompile Include="..\..\api\net_srv\srvcrt.cc" />
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
     <ClCompile Include="..\..\api\net_srv\xhttps.cc" />
     <ClCompile Include="..\..\api\net_srv\xpnps.cc" />

@@ -138,7 +138,7 @@ void draw_ellipse_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const 
 	(*pif->pf_gdi_draw_ellipse)(rdc,pxp,pxb,pxr);
 }
 
-void draw_pie_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt, long rx, long ry, double fang,double tang)
+void draw_pie_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt, int rx, int ry, double fang,double tang)
 {
 	if_context_t *pif;
 
@@ -147,7 +147,7 @@ void draw_pie_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoi
 	(*pif->pf_gdi_draw_pie)(rdc,pxp,pxb,ppt,rx,ry,fang,tang);
 }
 
-void draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
+void draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
 	if_context_t *pif;
 
@@ -495,7 +495,7 @@ void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const
 void multi_line_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {
 	float line_rati;
-	long lh, th;
+	int lh, th;
 	int i, rows;
 	xpoint_t pt1, pt2;
 	xsize_t xs;
@@ -511,7 +511,7 @@ void multi_line_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const
 	text_metric_raw(rdc, pxf, &xs);
 
 	th = xs.cy;
-	lh = (long)((float)th * (line_rati - 1.0));
+	lh = (int)((float)th * (line_rati - 1.0));
 
 	rows = pxr->h / (th + lh);
 
@@ -1244,7 +1244,7 @@ void draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrec
 {
 	tchar_t sz_format[RES_LEN] = { 0 };
 	xdate_t dt = { 0 };
-	long lt;
+	int lt;
 	double db;
 
 	xsize_t xs;
@@ -1265,7 +1265,7 @@ void draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrec
 		}
 		else if (!is_null(fmt))
 		{
-			format_long_ex(lt, fmt, sz_format, RES_LEN);
+			format_integer_ex(lt, fmt, sz_format, RES_LEN);
 		}
 		else
 		{
@@ -1678,7 +1678,7 @@ void draw_corner(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr)
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
 	xsize_t xs;
-	long SPAN;
+	int SPAN;
 	xpoint_t pt1, pt2;
 	xpen_t xp = { 0 };
 
@@ -1783,10 +1783,10 @@ void draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
 	fw = prt->fw;
 
 	//left edge
-	if ((long)fh % 10)
-		vm = (long)fh / 10;
+	if ((int)fh % 10)
+		vm = (int)fh / 10;
 	else
-		vm = (long)fh / 10 - 1;
+		vm = (int)fh / 10 - 1;
 
 	x1 = fx;
 	x2 = x1 - MAX_SPAN;
@@ -1849,10 +1849,10 @@ void draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
 	}
 
 	//right edge
-	if ((long)fh % 10)
-		vm = (long)fh / 10;
+	if ((int)fh % 10)
+		vm = (int)fh / 10;
 	else
-		vm = (long)fh / 10 - 1;
+		vm = (int)fh / 10 - 1;
 
 	x1 = fx + fw;
 	x2 = x1 + MAX_SPAN;
@@ -1915,10 +1915,10 @@ void draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
 	}
 
 	//top edge
-	if ((long)fw % 10)
-		hm = (long)fw / 10;
+	if ((int)fw % 10)
+		hm = (int)fw / 10;
 	else
-		hm = (long)fw / 10 - 1;
+		hm = (int)fw / 10 - 1;
 
 	x1 = fx;
 	x2 = x1 + 2 * MAX_SPAN;
@@ -1980,10 +1980,10 @@ void draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
 	}
 
 	//bottom edge
-	if ((long)fw % 10)
-		hm = (long)fw / 10;
+	if ((int)fw % 10)
+		hm = (int)fw / 10;
 	else
-		hm = (long)fw / 10 - 1;
+		hm = (int)fw / 10 - 1;
 
 	x1 = fx;
 	x2 = x1 + 2 * MAX_SPAN;
@@ -2048,7 +2048,7 @@ void draw_ruler(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
 void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
-	long count;
+	int count;
 	xrect_t xr = { 0 };
 	xpoint_t pt[2];
 	xbrush_t xb = { 0 };
@@ -2063,7 +2063,7 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 	xpoint_t* ppt;
 	int i;
 	bool_t b_round;
-	long rx, ry;
+	int rx, ry;
 	canvas_t svgcanv;
 
 	link_t_ptr st = NULL;

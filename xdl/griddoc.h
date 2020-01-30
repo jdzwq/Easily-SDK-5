@@ -1147,18 +1147,18 @@ XDL_API bool_t get_cell_boolean(link_t_ptr rlk, link_t_ptr clk);
 @FUNCTION set_cell_integer: set the cell integer value.
 @INPUT link_t_ptr rlk: the row link component.
 @INPUT link_t_ptr clk: the col link component.
-@INPUT long n: the integer value.
+@INPUT int n: the integer value.
 @RETURN void: none.
 */
-XDL_API void set_cell_integer(link_t_ptr rlk, link_t_ptr clk, long n);
+XDL_API void set_cell_integer(link_t_ptr rlk, link_t_ptr clk, int n);
 
 /*
 @FUNCTION get_cell_integer: get the cell integer value.
 @INPUT link_t_ptr rlk: the row link component.
 @INPUT link_t_ptr clk: the col link component.
-@RETURN long: return cell integer value.
+@RETURN int: return cell integer value.
 */
-XDL_API long get_cell_integer(link_t_ptr rlk,link_t_ptr clk);
+XDL_API int get_cell_integer(link_t_ptr rlk,link_t_ptr clk);
 
 /*
 @FUNCTION set_cell_numeric: set the cell numeric value.

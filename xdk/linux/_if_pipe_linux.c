@@ -42,7 +42,10 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
     
     if (_tstrnull(pname))
     {
-        return STDIN_FILENO;
+        if(fmode & FILE_OPEN_WRITE)
+             return STDOUT_FILENO;
+         else
+             return STDIN_FILENO;
     }
     
     sprintf(ppath, "%s%s", PIPE_HEAD, pname);
@@ -71,9 +74,8 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 bool_t _pipe_listen(res_file_t pip, async_t* pb)
 {
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
-    LPSIZE pcb = (pb) ? &(pb->size) : NULL;
     
-    int rs, rt;
+    int rs;
     struct epoll_event ev = {0};
 
     if (pb->type == ASYNC_QUEUE)
@@ -82,39 +84,26 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
         pov->ev.data.fd = pip; 
         epoll_ctl(pb->port, EPOLL_CTL_MOD, pip, &(pov->ev)); 
         
-        rs = epoll_wait(pb->port, &ev, 1, ((pb->timo)? pb->timo : -1));
+        rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
         if(rs <= 0)
         {
-            if (pcb)  *pcb = 0;
             return 0;
         }
-        
-        if(ioctl(pip, FIONREAD, &rt) < 0)
-            rt = 0;
     }
     else if (pb->type == ASYNC_EVENT)
     {
         FD_ZERO(&(pov->fd[0]));
         FD_SET(pip, &(pov->fd[0]));
         
-        pov->tv.tv_sec = 0;
-        pov->tv.tv_usec = (int)(pb->timo * 1000);
+        pov->tv.tv_sec = pb->timo / 1000;
+        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, ((pb->timo)? &(pov->tv) : NULL));
+        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
         if(rs <= 0)
         {
-            if (pcb)  *pcb = 0;
             return 0;
         }
-
-        if(ioctl(pip, FIONREAD, &rt) < 0)
-            rt = 0;
-    }else
-    {
-        rt = 0;
     }
-    
-    if (pcb)  *pcb = (size_t)rt;
     
     return 1;
 }
@@ -144,7 +133,10 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
     
      if(_tstrnull(pname))
      {
-         return STDOUT_FILENO;
+         if(fmode & FILE_OPEN_WRITE)
+             return STDOUT_FILENO;
+         else
+             return STDIN_FILENO;
      }
     
     sprintf(ppath, "%s%s", PIPE_HEAD, pname);
@@ -184,7 +176,7 @@ wait_t _pipe_wait(const tchar_t* pname, int ms)
     return (ms)? WAIT_RET : WAIT_TMO;
 }
 
-bool_t _pipe_write(res_file_t pipe, void* buf, size_t len, async_t* pb)
+bool_t _pipe_write(res_file_t pipe, void* buf, dword_t len, async_t* pb)
 {
     return _file_write(pipe, buf, len, pb);
 }
@@ -194,7 +186,7 @@ bool_t _pipe_flush(res_file_t pipe)
     return _file_flush(pipe);
 }
 
-bool_t _pipe_read(res_file_t pipe, void* buf, size_t size, async_t* pb)
+bool_t _pipe_read(res_file_t pipe, void* buf, dword_t size, async_t* pb)
 {
     return _file_read(pipe, buf, size, pb);
 }

@@ -653,11 +653,11 @@ XDL_API int get_dom_node_page_cator_count(link_t_ptr ilk);
 
 XDL_API void del_dom_node_page_cator(link_t_ptr ilk, int page);
 
-XDL_API bool_t get_dom_node_line_cator(link_t_ptr ilk, int point, long* pcx, long* pcy);
+XDL_API bool_t get_dom_node_line_cator(link_t_ptr ilk, int point, int* pcx, int* pcy);
 
-XDL_API void set_dom_node_line_cator(link_t_ptr ilk, int point, long cx, long cy);
+XDL_API void set_dom_node_line_cator(link_t_ptr ilk, int point, int cx, int cy);
 
-XDL_API void ins_dom_node_line_cator(link_t_ptr ilk, int point, long cx, long cy);
+XDL_API void ins_dom_node_line_cator(link_t_ptr ilk, int point, int cx, int cy);
 
 XDL_API void del_dom_node_line_cator(link_t_ptr ilk, int point);
 

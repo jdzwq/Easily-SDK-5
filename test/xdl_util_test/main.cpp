@@ -5,6 +5,12 @@
 #include <conio.h>
 #endif
 
+void test_printf()
+{
+	char tmp[100] = { 0 };
+	int len = a_xsprintf(tmp, "%d '%Y-%m-%d %H:%i') as DT", -1);
+
+}
 
 void test_path()
 {
@@ -41,7 +47,9 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
-	test_path2();
+	test_printf();
+
+	//test_path2();
 
 	//test_money();
 

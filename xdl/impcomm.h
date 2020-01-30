@@ -36,11 +36,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_COMM
 
-#if defined(DEBUG) || defined(_DEBUG)
-#define COMM_BASE_TIMO	(-1)
-#else
-#define COMM_BASE_TIMO	(3000)
-#endif
+#define COMM_BASE_TIMO	(3000) //millionsecond
 
 #ifdef	__cplusplus
 extern "C" {
@@ -85,14 +81,14 @@ XDL_API xhand_t xcomm_open(const tchar_t* fname, dword_t fmode);
 XDL_API void xcomm_close(xhand_t com);
 
 /*
-@FUNCTION xcomm_wait: wait comm event coming.
+@FUNCTION xcomm_listen: wait comm event coming.
 @INPUT xhand_t com: comm io handle.
 @OUTPUT dword_t* pcb: integer variable for return error code, line state, data queue bytes.
 @RETURN dword_t: event mask. if EV_ERR, EV_BAREK returned, pcb indicate the error code.
 if EV_RING, EV_RLSD, EV_CTS, EV_DSR returned, pcb indicate the line state.
 if EV_RXCHAR, EV_TXTEMPTY returned, pcb indicate data queue bytes.
 */
-XDL_API dword_t xcomm_wait(xhand_t com, dword_t* pcb);
+XDL_API dword_t xcomm_listen(xhand_t com, dword_t* pcb);
 
 /*
 @FUNCTION xcomm_write: write data to comm port.

@@ -40,6 +40,7 @@ void _write_log_xml(file_t log, link_t_ptr ptr_xml);
 void _write_log_json(file_t log, link_t_ptr ptr_json);
 
 /**********************************************************************************************/
+
 void xportm_log_info(const tchar_t* str, int len);
 
 void xportm_log_error(const tchar_t* errcode, const tchar_t* errtext);

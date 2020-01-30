@@ -50,8 +50,8 @@ void nuid_from_timestamp(nuid_t* pu, lword_t tms)
 	nl = Lrand48();
 
 	pu->data1 = (dword_t)(tms & 0xffffffff);
-	pu->data2 = (sword_t)((tms >> 32) & 0xffff);
-	pu->data3 = (sword_t)(((tms >> 48) & 0x0ffff) | 0x1000);
+	pu->data2 = (dword_t)((tms >> 32) & 0xffff);
+	pu->data3 = (dword_t)(((tms >> 48) & 0x0ffff) | 0x1000);
 	
 	PUT_SWORD_LOC(pu->data4, 6, (sword_t)((r & 0x3fff) | 0x8000));
 	PUT_SWORD_LOC(pu->data4, 4, (sword_t)(nh));

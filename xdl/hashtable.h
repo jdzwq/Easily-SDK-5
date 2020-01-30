@@ -269,18 +269,18 @@ XDL_API bool_t get_hash_attr_boolean(link_t_ptr ptr, const tchar_t* key);
 @FUNCTION set_hash_attr_integer: set hash entity a integer value.
 @INPUT link_t_ptr ptr: the hash table link component.
 @INPUT const tchar_t* key: the key string token.
-@INPUT long ul: the integer value.
+@INPUT int ul: the integer value.
 @RETURN link_t_ptr: the hash entity link componet.
 */
-XDL_API link_t_ptr set_hash_attr_integer(link_t_ptr ptr, const tchar_t* key, long ul);
+XDL_API link_t_ptr set_hash_attr_integer(link_t_ptr ptr, const tchar_t* key, int ul);
 
 /*
 @FUNCTION get_hash_attr_integer: get hash entity integer value.
 @INPUT link_t_ptr ptr: the hash table link component.
 @INPUT const tchar_t* key: the key string token.
-@RETURN long: return the hash entity integer value if exists, otherwise return zero.
+@RETURN int: return the hash entity integer value if exists, otherwise return zero.
 */
-XDL_API long get_hash_attr_integer(link_t_ptr ptr, const tchar_t* key);
+XDL_API int get_hash_attr_integer(link_t_ptr ptr, const tchar_t* key);
 
 /*
 @FUNCTION set_hash_attr_float: set hash entity a float value.

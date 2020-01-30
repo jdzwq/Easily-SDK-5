@@ -39,10 +39,10 @@ typedef struct _datebox_delta_t{
 }datebox_delta_t;
 
 #define GETDATEBOXDELTA(ph) 	(datebox_delta_t*)widget_get_user_delta(ph)
-#define SETDATEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETDATEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /**************************************************************************************************/
-void noti_datebox_command(res_win_t widget, int code, var_long data)
+void noti_datebox_command(res_win_t widget, int code, var_int data)
 {
 	datebox_delta_t* ptd = GETDATEBOXDELTA(widget);
 
@@ -90,7 +90,7 @@ void datebox_on_select_day(res_win_t widget, int day)
 
 	widget_redraw(widget, NULL, 1);
 
-	noti_datebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_datebox_command(widget, COMMAND_UPDATE, (var_int)NULL);
 }
 /**************************************************************************************************/
 int hand_datebox_create(res_win_t widget, void* data)
@@ -157,7 +157,7 @@ void hand_datebox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	{
 		datebox_on_select_day(widget, day);
 
-		noti_datebox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_datebox_command(widget, COMMAND_CHANGE, (var_int)NULL);
 	}
 }
 

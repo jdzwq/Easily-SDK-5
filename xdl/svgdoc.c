@@ -723,7 +723,7 @@ bool_t svg_node_is_round(link_t_ptr glk)
 	return (compare_text(get_dom_node_name_ptr(glk),-1,SVG_NODE_RECT,-1,1) == 0 && is_dom_node_attr(glk, SVG_ATTR_RX, -1) && is_dom_node_attr(glk, SVG_ATTR_RY, -1));
 }
 
-void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, long rx, long ry)
+void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int rx, int ry)
 {
 	tchar_t token[NUM_LEN + 1];
 
@@ -752,7 +752,7 @@ void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* 
 	write_xbrush_to_svg_node(glk, pxb);
 }
 
-void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, long* prx, long* pry)
+void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, int* prx, int* pry)
 {
 	if (xsicmp(get_dom_node_name_ptr(glk), SVG_NODE_RECT) != 0)
 		return;
@@ -1048,7 +1048,7 @@ bool_t svg_node_is_pie(link_t_ptr glk)
 		return 0;
 }
 
-void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang)
+void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
 	xpoint_t pt1, pt2;
 	tchar_t token[10 * INT_LEN];
@@ -1056,11 +1056,11 @@ void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
-	pt1.x = (long)((float)rx * cos(fang)) + ppt->x;
-	pt1.y = -(long)((float)ry * sin(fang)) + ppt->y;
+	pt1.x = (int)((float)rx * cos(fang)) + ppt->x;
+	pt1.y = -(int)((float)ry * sin(fang)) + ppt->y;
 
-	pt2.x = (long)((float)rx * cos(tang)) + ppt->x;
-	pt2.y = -(long)((float)ry * sin(tang)) + ppt->y;
+	pt2.x = (int)((float)rx * cos(tang)) + ppt->x;
+	pt2.y = -(int)((float)ry * sin(tang)) + ppt->y;
 
 	if (tang - fang > XPI)
 		larg = 1;
@@ -1076,10 +1076,10 @@ void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 	write_xbrush_to_svg_node(glk, pxb);
 }
 
-void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, long* prx, long* pry, double* pfang, double* ptang)
+void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang)
 {
 	const tchar_t* token;
-	long x1, y1, x2, y2, x3, y3, rx, ry;
+	int x1, y1, x2, y2, x3, y3, rx, ry;
 	int tan, lar, ccw;
 
 	if (xsicmp(get_dom_node_name_ptr(glk), SVG_NODE_PATH) != 0)

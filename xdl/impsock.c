@@ -200,59 +200,86 @@ res_file_t socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* pb
 bool_t socket_sendto(res_file_t so, res_addr_t saddr, int alen, const byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
+	dword_t pos = 0;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
+
 	XDL_ASSERT(pif_so != NULL);
 
-	if (!(*pif_so->pf_socket_sendto)(so, saddr, alen, buf, size, pov))
+	while (pos < size)
 	{
-		set_network_error(_T("socket_sendto"));
-		return 0;
+		pov->size = 0;
+		if (!(*pif_so->pf_socket_sendto)(so, saddr, alen, (void*)(buf + pos), size - pos, pov))
+		{
+			set_network_error(_T("socket_sendto"));
+
+			pov->size = pos;
+			return 0;
+		}
+
+		if (!(pov->size)) break;
+
+		pos += pov->size;
 	}
 
+	pov->size = pos;
 	return 1;
 }
 
 bool_t socket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
+	dword_t pos = 0;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
+
 	XDL_ASSERT(pif_so != NULL);
 
-	if (!(*pif_so->pf_socket_recvfrom)(so, saddr, plen, buf, size, pov))
+	while (pos < size)
 	{
-		set_network_error(_T("socket_recvfrom"));
-		return 0;
+		pov->size = 0;
+		if (!(*pif_so->pf_socket_recvfrom)(so, saddr, plen, (void*)(buf + pos), size - pos, pov))
+		{
+			set_network_error(_T("socket_recvfrom"));
+
+			pov->size = pos;
+			return 0;
+		}
+
+		if (!(pov->size)) break;
+
+		pos += pov->size;
 	}
 
+	pov->size = pos;
 	return 1;
 }
 
 bool_t	socket_send(res_file_t so, const byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
-	dword_t pos;
-	size_t bys;
+	dword_t pos = 0;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
-	pos = 0;
 	while (pos < size)
 	{
-		bys = size - pos;
-		if (!(*pif_so->pf_socket_send)(so, (void*)(buf + pos), bys, pov))
+		pov->size = 0;
+		if (!(*pif_so->pf_socket_send)(so, (void*)(buf + pos), size - pos, pov))
 		{
 			set_network_error(_T("socket_send"));
+
+			pov->size = pos;
 			return 0;
 		}
-		bys = pov->size;
+		
+		if (!(pov->size)) break;
 
-		pos += (dword_t)bys;
+		pos += pov->size;
 	}
 
-	pov->size = (size_t)pos;
+	pov->size = pos;
 
 	return 1;
 }
@@ -260,37 +287,35 @@ bool_t	socket_send(res_file_t so, const byte_t* buf, dword_t size, async_t* pov)
 bool_t	socket_recv(res_file_t so, byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
-	dword_t pos;
-	size_t bys;
+	dword_t pos = 0;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
-	pos = 0;
 	while (pos < size)
 	{
-		bys = size - pos;
-		if (!(*pif_so->pf_socket_recv)(so, (void*)(buf + pos), bys, pov))
+		pov->size = 0;
+		if (!(*pif_so->pf_socket_recv)(so, (void*)(buf + pos), size - pos, pov))
 		{
 			set_network_error(_T("socket_recv"));
+
+			pov->size = pos;
 			return 0;
 		}
-		bys = pov->size;
-		if (!bys)
-			break;
-
-		pos += (dword_t)bys;
+		
+		if (!(pov->size)) break;
+		
+		pos += pov->size;
 	}
 
-	pov->size = (size_t)pos;
-
+	pov->size = pos;
 	return 1;
 }
 
 int	socket_write(void* pso, unsigned char* buf, int len)
 {
 	if_socket_t* pif_so;
-
+	
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
@@ -415,6 +440,16 @@ bool_t	socket_set_nonblk(res_file_t so, bool_t none)
 	return 1;
 }
 
+bool_t	socket_get_nonblk(res_file_t so)
+{
+	if_socket_t* pif_so;
+
+	pif_so = PROCESS_SOCKET_INTERFACE;
+	XDL_ASSERT(pif_so != NULL);
+
+	return (*pif_so->pf_socket_get_nonblk)(so);
+}
+
 bool_t host_addr(const tchar_t* host, tchar_t* addr)
 {
 	if_socket_t* pif_so;
@@ -501,7 +536,7 @@ void socket_peer(res_file_t so, net_addr_t* paddr)
 	(*pif_so->pf_socket_peer)(so, paddr);
 }
 
-bool_t socket_share(dword_t procid, res_file_t procfd, res_file_t so, const byte_t* data, dword_t size)
+bool_t socket_share(pid_t procid, res_file_t procfd, res_file_t so, const byte_t* data, dword_t size)
 {
 	if_socket_t* pif_so;
 	bool_t rt = 0;
@@ -509,7 +544,7 @@ bool_t socket_share(dword_t procid, res_file_t procfd, res_file_t so, const byte
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
-	rt = (*pif_so->pf_socket_share)(procid, procfd, so, (void*)data, (size_t)size);
+	rt = (*pif_so->pf_socket_share)(procid, procfd, so, (void*)data, size);
 	if (!rt)
 	{
 		set_network_error(_T("socket_share"));
@@ -519,22 +554,24 @@ bool_t socket_share(dword_t procid, res_file_t procfd, res_file_t so, const byte
 	return rt;
 }
 
-res_file_t socket_dupli(res_file_t procfd, dword_t flag, byte_t* data, dword_t* pb)
+res_file_t socket_dupli(res_file_t procfd, byte_t* data, dword_t* pb)
 {
 	if_socket_t* pif_so;
 	res_file_t sd;
-	size_t size;
+	dword_t size;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
 
-	size = (size_t)*pb;
-	sd = (*pif_so->pf_socket_dupli)(procfd, flag, (void*)data, &size);
+    size = (pb)? (*pb) : 0;
+    
+	sd = (*pif_so->pf_socket_dupli)(procfd, (void*)data, &size);
 	if (sd == INVALID_FILE)
 	{
 		set_network_error(_T("socket_dupli"));
 	}
-	*pb = (dword_t)size;
+    
+	if(pb) *pb = (dword_t)size;
 
 	return sd;
 }

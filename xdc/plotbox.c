@@ -42,10 +42,10 @@ typedef struct _plotbox_delta_t{
 }plotbox_delta_t;
 
 #define GETPLOTBOXDELTA(ph) 	(plotbox_delta_t*)widget_get_user_delta(ph)
-#define SETPLOTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPLOTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /********************************************************************************/
-void noti_plotbox_command(res_win_t widget, int code, var_long data)
+void noti_plotbox_command(res_win_t widget, int code, var_int data)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
 
@@ -299,8 +299,8 @@ void plotbox_calc_plot(res_win_t widget)
 	}
 
 	ptd->plt.x_step = (f_max - f_min) / (ptd->vec.size + 1);
-	if (ptd->plt.x_step >(long)ptd->plt.x_step)
-		ptd->plt.x_step = (long)ptd->plt.x_step + 0.5;
+	if (ptd->plt.x_step >(int)ptd->plt.x_step)
+		ptd->plt.x_step = (int)ptd->plt.x_step + 0.5;
 	
 	for (i = 0; i < ptd->vec.order * ptd->vec.size; i += ptd->vec.order)
 	{
@@ -312,10 +312,10 @@ void plotbox_calc_plot(res_win_t widget)
 	}
 
 	ptd->plt.y_base = (f_max + f_min) / 2;
-	if (ptd->plt.y_base >(long)ptd->plt.y_base)
-		ptd->plt.y_base = (long)ptd->plt.y_base + 0.5;
+	if (ptd->plt.y_base >(int)ptd->plt.y_base)
+		ptd->plt.y_base = (int)ptd->plt.y_base + 0.5;
 
 	ptd->plt.y_step = (f_max - f_min) / (ptd->vec.size + 1);
-	if (ptd->plt.y_step >(long)ptd->plt.y_step)
+	if (ptd->plt.y_step >(int)ptd->plt.y_step)
 		ptd->plt.y_step = ptd->plt.y_step + 0.5;
 }

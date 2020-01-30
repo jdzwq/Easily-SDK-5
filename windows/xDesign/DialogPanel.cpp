@@ -55,7 +55,7 @@ typedef struct tagDialogPanelDelta{
 }DialogPanelDelta;
 
 #define GETDIALOGPANELDELTA(ph) 		(DialogPanelDelta*)widget_get_user_delta(ph)
-#define SETDIALOGPANELDELTA(ph,ptd)		widget_set_user_delta(ph,(var_long)ptd)
+#define SETDIALOGPANELDELTA(ph,ptd)		widget_set_user_delta(ph,(var_int)ptd)
 
 #define DIALOGPANEL_ACCEL_COUNT	5
 accel_t	DIALOGPANEL_ACCEL[DIALOGPANEL_ACCEL_COUNT] = {
@@ -288,12 +288,12 @@ void DialogPanel_OnPreview(res_win_t widget)
 	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
 }
 
-static void demoDlg_OnSubbing(res_win_t widget, uid_t sid, var_long delta)
+static void demoDlg_OnSubbing(res_win_t widget, uid_t sid, var_int delta)
 {
 	widgetex_hand_create(widget);
 }
 
-static void demoDlg_OnUnSubbing(res_win_t widget, uid_t sid, var_long delta)
+static void demoDlg_OnUnSubbing(res_win_t widget, uid_t sid, var_int delta)
 {
 	widget_del_subproc(widget, sid);
 
@@ -1191,7 +1191,7 @@ void DialogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!ilk)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ilk));
+	int n_id = xstol(get_title_item_id_ptr(ilk));
 
 	LINKPTR ptrDialog = dialogctrl_fetch(pdt->hDialog);
 	LINKPTR ptrItem = dialogctrl_get_focus_item(pdt->hDialog);
@@ -1241,7 +1241,7 @@ void DialogPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -1307,7 +1307,7 @@ void DialogPanel_Dialog_OnLBClick(res_win_t widget, NOTICE_DIALOG* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1319,7 +1319,7 @@ void DialogPanel_Dialog_OnItemSize(res_win_t widget, NOTICE_DIALOG* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1331,7 +1331,7 @@ void DialogPanel_Dialog_OnItemMove(res_win_t widget, NOTICE_DIALOG* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1769,7 +1769,7 @@ void DialogPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void DialogPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void DialogPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
@@ -1796,7 +1796,7 @@ void DialogPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void DialogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void DialogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 

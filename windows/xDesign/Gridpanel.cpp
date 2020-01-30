@@ -70,7 +70,7 @@ accel_t	GRIDPANEL_ACCEL[GRIDPANEL_ACCEL_COUNT] = {
 };
 
 #define GETGRIDPANELDELTA(ph) 		(GridPanelDelta*)widget_get_user_delta(ph)
-#define SETGRIDPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETGRIDPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 
 void	GridPanel_Switch(res_win_t widget);
@@ -1065,7 +1065,7 @@ void GridPanel_OnFillCode(res_win_t widget)
 
 	tchar_t sz_col[RES_LEN + 1] = { 0 };
 	tchar_t sz_pre[NUM_LEN + 1] = { 0 };
-	long n_len, n_val;
+	int n_len, n_val;
 
 	read_proper(ptrProper, _T("生成参数"), -1, _T("代码列"), -1, sz_col, RES_LEN);
 	read_proper(ptrProper, _T("生成参数"), -1, _T("代码前缀"), -1, sz_pre, NUM_LEN);
@@ -1148,7 +1148,7 @@ void GridPanel_OnFillHelp(res_win_t widget)
 
 	tchar_t sz_text[RES_LEN + 1] = { 0 };
 	tchar_t sz_help[RES_LEN + 1] = { 0 };
-	long n_len;
+	int n_len;
 
 	read_proper(ptrProper, _T("生成参数"), -1, _T("文本列"), -1, sz_text, RES_LEN);
 	read_proper(ptrProper, _T("生成参数"), -1, _T("拼音列"), -1, sz_help, RES_LEN);
@@ -1234,7 +1234,7 @@ void GridPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -1247,7 +1247,7 @@ void GridPanel_Grid_OnLBClick(res_win_t widget, NOTICE_GRID* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1259,7 +1259,7 @@ void GridPanel_Grid_OnColSize(res_win_t widget, NOTICE_GRID* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1277,7 +1277,7 @@ void GridPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 	LINKPTR ptrCol = gridctrl_get_focus_col(pdt->hGrid);
@@ -1681,7 +1681,7 @@ void GridPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void GridPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void GridPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
@@ -1716,7 +1716,7 @@ void GridPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void GridPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void GridPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 

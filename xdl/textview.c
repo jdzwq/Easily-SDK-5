@@ -138,7 +138,7 @@ void call_string_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->vs;
 }
 
-void scan_var_text(string_t vs, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_var_text(string_t vs, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	VARSTRWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };
@@ -285,7 +285,7 @@ void call_fixstr_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->buf;
 }
 
-void scan_fix_text(tchar_t* buf, int size, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_fix_text(tchar_t* buf, int size, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	FIXSTRWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };

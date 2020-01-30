@@ -5,10 +5,9 @@
 
 xhttps_param_t xp = { 0 };
 
-
 int main(int argc, char* argv[])
 {
-	res_file_t sok = NULL;
+	res_file_t sok = INVALID_FILE;
 	xhand_t bio = NULL;
 	xhand_t http = NULL;
 	xhand_t pipe = NULL;
@@ -20,12 +19,21 @@ int main(int argc, char* argv[])
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
-	xdl_process_init(XDL_APARTMENT_PROCESS);
+	int fd = open("/dev/null",O_RDWR,0);
+    if(fd != -1){
+        dup2(fd,STDOUT_FILENO);
+        dup2(fd,STDERR_FILENO);
+    }
+
+	xdl_process_init(XDL_APARTMENT_PROCESS | XDL_INITIALIZE_SERVER);
 
 	TRY_CATCH;
 
 	for (i = 1; i < argc; i++)
 	{
+		if(a_is_null(argv[i]))
+            continue;
+
 		len = xslen(xp.sz_param);
 #ifdef _UNICODE
 		mbs_to_ucs((const schar_t*)argv[i], -1, xp.sz_param + len, PATH_LEN - len);
@@ -36,21 +44,21 @@ int main(int argc, char* argv[])
 	}
 
 	get_param_item(xp.sz_param, _T("CERT"), sz_cert, RES_LEN);
-    get_param_item(xp.sz_param, _T("AUTH"), xp.sz_auth, INT_LEN);
     
-    if (compare_text(sz_cert, -1, _T("SSL"), -1, 1) == 0)
+    if (compare_text(sz_cert, 3, _T("SSL"), 3, 1) == 0)
         xp.n_secu = _SECU_SSL;
+	else  if (compare_text(sz_cert, 3, _T("SSH"), 3, 1) == 0)
+		xp.n_secu = _SECU_SSH;
     else
         xp.n_secu = _SECU_NONE;
 
-	pipe = xpipe_srv(NULL, 0);
-
+	pipe = xpipe_srv(NULL, FILE_OPEN_READ);
 	if (!pipe)
 	{
 		raise_user_error(_T("-1"), _T("child process create std pipe failed"));
 	}
 
-	sok = socket_dupli(xpipe_handle(pipe), FILE_OPEN_OVERLAP, NULL, &dw);
+	sok = socket_dupli(xpipe_handle(pipe), NULL, NULL);
 	if (sok == INVALID_FILE)
 	{
 		raise_user_error(_T("-1"), _T("child process create socket failed"));
@@ -61,6 +69,8 @@ int main(int argc, char* argv[])
 
     if (xp.n_secu == _SECU_SSL)
         bio = xssl_srv(sok);
+	else if (xp.n_secu == _SECU_SSH)
+        bio = xssh_srv(sok);
     else
         bio = xtcp_srv(sok);
 
@@ -83,6 +93,8 @@ int main(int argc, char* argv[])
 
     if (xp.n_secu == _SECU_SSL)
         xssl_close(bio);
+	else if (xp.n_secu == _SECU_SSH)
+        xssh_close(bio);
     else
         xtcp_close(bio);
 
@@ -90,6 +102,8 @@ int main(int argc, char* argv[])
 
 	socket_close(sok);
 	sok = NULL;
+
+	xportm_log_error(_T("xhttps"), _T("process terminated"));
 
 	END_CATCH;
 
@@ -103,23 +117,27 @@ ONERROR:
 
     XDL_TRACE_LAST;
     
-    if (sok != INVALID_FILE)
-        socket_close(sok);
-    
 	if (pipe)
 		xpipe_free(pipe);
+
+	if (http)
+		xhttp_close(http);
 
     if (bio)
 	{
         if (xp.n_secu == _SECU_SSL)
             xssl_close(bio);
+		else if (xp.n_secu == _SECU_SSH)
+            xssh_close(bio);
         else
             xtcp_close(bio);
 	}
 
-	if (http)
-		xhttp_close(http);
+	if (sok != INVALID_FILE)
+        socket_close(sok);
 
+	xportm_log_error(errcode, errtext);
+	
 	xdl_process_uninit();
 
 	return -1;

@@ -49,7 +49,7 @@ typedef struct label_delta_t{
 }label_delta_t;
 
 #define GETLABELDELTA(ph) 	(label_delta_t*)widget_get_user_delta(ph)
-#define SETLABELDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETLABELDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
 
 /********************************************************************************************/
 void _labelctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -68,7 +68,7 @@ void _labelctrl_reset_page(res_win_t widget)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 
-	long pw, ph, fw, fh, lw, lh;
+	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 
@@ -110,7 +110,7 @@ void _labelctrl_ensure_visible(res_win_t widget)
 
 /******************************************control event***************************************/
 
-int noti_label_owner(res_win_t widget, unsigned long code, link_t_ptr label, link_t_ptr ilk, void* data)
+int noti_label_owner(res_win_t widget, unsigned int code, link_t_ptr label, link_t_ptr ilk, void* data)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	NOTICE_LABEL nf = { 0 };
@@ -195,7 +195,7 @@ void noti_label_item_leave(res_win_t widget)
 	}
 }
 
-void noti_label_item_hover(res_win_t widget, long x, long y)
+void noti_label_item_hover(res_win_t widget, int x, int y)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	xpoint_t xp;
@@ -292,7 +292,7 @@ void hand_label_size(res_win_t widget, int code, const xsize_t* prs)
 	labelctrl_redraw(widget);
 }
 
-void hand_label_scroll(res_win_t widget, bool_t bHorz, long nLine)
+void hand_label_scroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 
@@ -302,11 +302,11 @@ void hand_label_scroll(res_win_t widget, bool_t bHorz, long nLine)
 	widgetex_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_label_wheel(res_win_t widget, bool_t bHorz, long nDelta)
+void hand_label_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	scroll_t scr = { 0 };
-	long nLine;
+	int nLine;
 	res_win_t win;
 
 	if (!ptd->label)

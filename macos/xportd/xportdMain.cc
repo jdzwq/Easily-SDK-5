@@ -15,9 +15,19 @@
 
 #define PID_FILE "/var/run/xportd.pid"
 
-void _action_term(int sig)
+static void _action_term(int sig)
 {
     xportd_stop();
+}
+
+static void _action_child(int sig)
+{
+    pid_t pid;
+    int stat;
+    
+    while((pid = waitpid(-1, &stat, WNOHANG)) > 0);
+    
+    return;
 }
 
 int main(int argc, const char * argv[])
@@ -35,6 +45,13 @@ int main(int argc, const char * argv[])
     char errnum[INT_LEN] = {0};
     char errtxt[ERR_LEN] = {0};
     
+    char param[RES_LEN] = {0};
+    
+    if(argc > 1)
+    {
+        strcpy(param, argv[1]);
+    }
+    
     f_pid = fopen(PID_FILE, "r");
     if (f_pid)
     {
@@ -47,11 +64,26 @@ int main(int argc, const char * argv[])
         f_pid = NULL;
         
         //instance is running
-        if (kill(pid, 0) == 0)
-            return 0;
-    
-        unlink(PID_FILE);
+        if (pid)
+        {
+            kill(pid, SIGTERM);
+            waitpid(pid, NULL, 0);
+        }
+        
+        //empty pid
+        f_pid = fopen(PID_FILE, "w");
+        if (f_pid)
+        {
+            fclose(f_pid);
+            f_pid = NULL;
+        }
+
         syslog(LOG_INFO, "remove a zombie pidfile");
+    }
+    
+    if(strstr(param, "shutdown") != NULL)
+    {
+        return 0;
     }
     
     umask(0);
@@ -72,8 +104,8 @@ int main(int argc, const char * argv[])
         raise_user_error("-1" ,"xportd: setsid error");
     }
     
-    sa.sa_handler = SIG_IGN;
     sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
     sa.sa_flags = 0;
     sigaction(SIGHUP, &sa, NULL);
     
@@ -90,13 +122,10 @@ int main(int argc, const char * argv[])
     }
 
     //child process begin...
-    
-    xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_SERVER);
-    
-    TRY_CATCH;
 
     if (chdir("/") < 0) {
-        raise_user_error("-1", "xportd: chidr change directory error");
+        syslog(LOG_INFO,  "xportd: chidr change directory error");
+        exit(-1);
     }
     
     if(getrlimit(RLIMIT_NOFILE, &rl) >= 0)
@@ -117,7 +146,8 @@ int main(int argc, const char * argv[])
     }
     if (fd > 2){
         close(fd);
-        fd = 0;
+        syslog(LOG_INFO,  "xportd: /dev/null opened");
+        exit(-1);
     }
     
     fd = creat(PID_FILE, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
@@ -126,26 +156,28 @@ int main(int argc, const char * argv[])
     }
 
     if (!f_pid){
-        raise_user_error("-1", "xportd write pidfile failed");
+        syslog(LOG_INFO, "write xportd.pid falied");
+        exit(-1);
     }
     
     fprintf(f_pid, "%d", getpid());
     fclose(f_pid);
     f_pid = NULL;
     
-    xportd_start();
-    
     sigemptyset(&sa.sa_mask);
     sa.sa_handler = _action_term;
     sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
-    
-    ret = sigaction(SIGALRM, &sa, 0);
     ret = sigaction(SIGINT, &sa, 0);
     ret = sigaction(SIGTERM, &sa, 0);
     
     sigemptyset(&sa.sa_mask);
     sa.sa_handler = SIG_IGN;
-    ret = sigaction( SIGPIPE, &sa, 0 );
+    sa.sa_flags = 0;
+    ret = sigaction(SIGCHLD, &sa, 0);
+
+    xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_SERVER);
+    
+    xportd_start();
     
     while(1) {
         if(xportd_state() == XPORTD_STATE_STOPPED)
@@ -154,21 +186,17 @@ int main(int argc, const char * argv[])
         usleep(100000);
     }
     
-    END_CATCH;
+    //empty pid
+    f_pid = fopen(PID_FILE, "w");
+    if (f_pid)
+    {
+        fclose(f_pid);
+        f_pid = NULL;
+    }
+    
+    unlink(PID_FILE);
     
     xdl_process_uninit();
     
     return 0;
-ONERROR:
-    
-    if(f_pid)
-        fclose(f_pid);
-    
-    get_last_error(errnum, errtxt, ERR_LEN);
-    
-    syslog(LOG_INFO, "%s\n", errtxt);
-    
-    xdl_process_uninit();
-    
-    exit((int)xstol(errnum));
 }

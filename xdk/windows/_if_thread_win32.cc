@@ -63,16 +63,21 @@ pid_t _thread_get_id(void)
 	return (pid_t)GetCurrentThreadId();
 }
 
-void _thread_begin(res_hand_t* ph_hand, PF_THREADFUNC pf_func, void* param)
+void _thread_safe()
 {
-	HANDLE th;
+	return;
+}
+
+void _thread_begin(res_thread_t* ph_thread, PF_THREADFUNC pf_func, void* param)
+{
+	res_thread_t th;
 #ifdef WINCE
-	th = (res_hand_t)CreateThread(NULL,0,pf_func,param,0,NULL);
+	th = (res_thread_t)CreateThread(NULL,0,pf_func,param,0,NULL);
 #else
-	th = (res_hand_t)_beginthreadex(NULL, 0, (PF_THREADFUNC)pf_func, param, 0, NULL);
+	th = (res_thread_t)_beginthreadex(NULL, 0, (PF_THREADFUNC)pf_func, param, 0, NULL);
 #endif
 
-	if (ph_hand) *ph_hand = th;
+	if (ph_thread) *ph_thread = th;
 }
 
 void _thread_end(void)
@@ -89,9 +94,21 @@ void _thread_sleep(int ms)
 	Sleep(((ms < 0)? INFINITE : ms));
 }
 
-void _thread_join(res_hand_t th)
+void _thread_yield()
 {
+	SwitchToThread();
+}
+
+void _thread_join(res_thread_t th)
+{
+#ifdef WINCE
+	DWORD dw = 0;
+
+	if (!GetHandleInformation((HANDLE)th, &dw))
+		return;
+
 	WaitForSingleObject((HANDLE)th, INFINITE);
+#endif
 }
 
 /**********************************************************************************/
@@ -109,6 +126,11 @@ void _event_destroy(res_even_t ev)
 wait_t _event_wait(res_even_t ev, int milsec)
 {
 	DWORD dw;
+
+	if (!GetHandleInformation(ev, &dw))
+	{
+		return WAIT_ERR;
+	}
 
 	if (milsec < 0)
 		dw = INFINITE;
@@ -189,6 +211,11 @@ wait_t _mutex_lock(res_mutx_t mtx, int milsec)
 {
 	DWORD dw;
 
+	if (!GetHandleInformation(mtx, &dw))
+	{
+		return WAIT_ERR;
+	}
+
 	if (milsec < 0)
 		dw = INFINITE;
 	else
@@ -231,6 +258,11 @@ wait_t _semap_lock(res_sema_t sem, int milsec)
 {
 	DWORD dw;
 
+	if (!GetHandleInformation(sem, &dw))
+	{
+		return WAIT_ERR;
+	}
+
 	if (milsec < 0)
 		dw = INFINITE;
 	else
@@ -257,7 +289,7 @@ void _semap_unlock(res_sema_t sem)
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 res_queue_t _queue_create(res_queue_t ep, res_file_t fd, int max)
 {
-	return (res_hand_t)CreateIoCompletionPort(((fd == INVALID_FILE)? INVALID_HANDLE_VALUE : (HANDLE)fd), ep, (ULONG_PTR)fd, (DWORD)max);
+	return (res_queue_t)CreateIoCompletionPort(((fd == INVALID_FILE)? INVALID_HANDLE_VALUE : (HANDLE)fd), ep, (ULONG_PTR)fd, (DWORD)max);
 }
 
 void _queue_destroy(res_queue_t ep)

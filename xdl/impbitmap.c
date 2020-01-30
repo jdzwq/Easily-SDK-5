@@ -47,7 +47,7 @@ void destroy_bitmap(res_bmp_t bmp)
 	(*pif->pf_destroy_bitmap)(bmp);
 }
 
-void get_bitmap_size(res_bmp_t rdc, long* pw, long* ph)
+void get_bitmap_size(res_bmp_t rdc, int* pw, int* ph)
 {
 	if_context_t* pif;
 
@@ -56,7 +56,7 @@ void get_bitmap_size(res_bmp_t rdc, long* pw, long* ph)
 	(*pif->pf_get_bitmap_size)(rdc, pw, ph);
 }
 
-res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h)
+res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
 	if_context_t* pif;
 
@@ -65,7 +65,7 @@ res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h
 	return (*pif->pf_create_color_bitmap)(rdc, pxc, w, h);
 }
 
-res_bmp_t create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, long w, long h, const tchar_t* lay)
+res_bmp_t create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
 {
 	if_context_t* pif;
 
@@ -74,7 +74,7 @@ res_bmp_t create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const 
 	return (*pif->pf_create_pattern_bitmap)(rdc, pxc_front, pxc_back, w, h, lay);
 }
 
-res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, long w, long h, const tchar_t* lay)
+res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay)
 {
 	if_context_t* pif;
 
@@ -84,7 +84,7 @@ res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const 
 }
 
 #ifdef XDL_SUPPORT_BAR
-res_bmp_t create_code128_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* text)
+res_bmp_t create_code128_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
 
@@ -92,7 +92,7 @@ res_bmp_t create_code128_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* te
 	int len;
 
 	byte_t* bar_buf;
-	int bar_len;
+	dword_t bar_len;
 	res_bmp_t bmp;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
@@ -132,7 +132,7 @@ res_bmp_t create_code128_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* te
 	return bmp;
 }
 
-res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* text)
+res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
 
@@ -140,7 +140,8 @@ res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* tex
 	int len;
 
 	byte_t* bar_buf;
-	int cols, rows, bar_len;
+	int cols, rows;
+	dword_t bar_len;
 	res_bmp_t bmp;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
@@ -180,7 +181,7 @@ res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* tex
 	return bmp;
 }
 
-res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* text)
+res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
 
@@ -188,7 +189,8 @@ res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, long w, long h, const tchar_t* tex
 	int len;
 
 	byte_t* bar_buf;
-	int cols, rows, bar_len;
+	int cols, rows;
+	dword_t bar_len;
 	res_bmp_t bmp;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
@@ -311,7 +313,7 @@ bool_t save_bitmap_to_ximage(res_ctx_t rdc, res_bmp_t bmp, ximage_t* pmi)
 	return 1;
 }
 
-res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, long cx, long cy)
+res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, int cy)
 {
 	res_bmp_t ih = NULL;
 	int len, len_bmp, len_zip;

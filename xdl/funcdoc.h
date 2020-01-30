@@ -261,17 +261,17 @@ XDL_API bool_t get_func_param_boolean(link_t_ptr nlk);
 /*
 @FUNCTION set_func_param_integer: set the function paramter node a integer value.
 @INPUT link_t_ptr nlk: the parameter link component.
-@INPUT long n: the integer value.
+@INPUT int n: the integer value.
 @RETURN void: none.
 */
-XDL_API void set_func_param_integer(link_t_ptr nlk, long n);
+XDL_API void set_func_param_integer(link_t_ptr nlk, int n);
 
 /*
 @FUNCTION get_func_param_integer: get the function paramter node integer value.
 @INPUT link_t_ptr nlk: the parameter link component.
-@RETURN long: return the parameter node integer value.
+@RETURN int: return the parameter node integer value.
 */
-XDL_API long get_func_param_integer(link_t_ptr nlk);
+XDL_API int get_func_param_integer(link_t_ptr nlk);
 
 /*
 @FUNCTION set_func_param_numeric: set the function paramter node a double value.

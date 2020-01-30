@@ -578,7 +578,7 @@ bool_t vmem_read(xhand_t cache, byte_t* buf, dword_t* pb)
 {
 	cache_t* ppt = TypePtrFromHead(cache_t, cache);
 	if_memo_t* pif;
-	size_t size;
+	dword_t size;
 	bool_t rt;
 
 	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
@@ -588,7 +588,7 @@ bool_t vmem_read(xhand_t cache, byte_t* buf, dword_t* pb)
 	XDL_ASSERT(pif != NULL);
 
 	size = *pb;
-	rt = (*pif->pf_cache_read)(ppt->cache, ppt->read_bytes, buf, size, &size);
+	rt = (*pif->pf_cache_read)(ppt->cache, 0, ppt->read_bytes, buf, size, &size);
 	if (rt)
 	{
 		ppt->read_bytes += (dword_t)size;
@@ -607,7 +607,7 @@ bool_t vmem_write(xhand_t cache, const byte_t* buf, dword_t* pb)
 {
 	cache_t* ppt = TypePtrFromHead(cache_t, cache);
 	if_memo_t* pif;
-	size_t size;
+	dword_t size;
 	bool_t rt;
 
 	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
@@ -617,7 +617,7 @@ bool_t vmem_write(xhand_t cache, const byte_t* buf, dword_t* pb)
 	XDL_ASSERT(pif != NULL);
 
 	size = *pb;
-	rt = (*pif->pf_cache_write)(ppt->cache, ppt->write_bytes, (void*)buf, size, &size);
+	rt = (*pif->pf_cache_write)(ppt->cache, 0, ppt->write_bytes, (void*)buf, size, &size);
 	if (rt)
 	{
 		ppt->write_bytes += (dword_t)size;

@@ -140,9 +140,9 @@ void xportm_log_info(const tchar_t* str, int len)
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
 
-	xpipe_wait(MONITOR_PIPE_NAME, 100);
+	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
-	pipe = xpipe_cli(MONITOR_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
+	pipe = xpipe_cli(XPORTM_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
 	if (!pipe)
 	{
 		return;
@@ -195,9 +195,9 @@ void xportm_log_error(const tchar_t* errcode, const tchar_t* errtext)
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
 
-	xpipe_wait(MONITOR_PIPE_NAME, 100);
+	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
-	pipe = xpipe_cli(MONITOR_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
+	pipe = xpipe_cli(XPORTM_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
 	if (!pipe)
 	{
 		return;
@@ -262,9 +262,9 @@ void xportm_log_data(const byte_t* data, dword_t size)
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
     
-	xpipe_wait(MONITOR_PIPE_NAME, 100);
+	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
-	pipe = xpipe_cli(MONITOR_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
+	pipe = xpipe_cli(XPORTM_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
 	if (!pipe)
 	{
 		return;

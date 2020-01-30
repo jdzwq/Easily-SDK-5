@@ -43,7 +43,7 @@ extern "C" {
 #endif
 
 	typedef struct _if_jump_t{
-		jmp_buf*	if_buf;		//thread long jmp buffer
+		jmp_buf*	if_buf;		//thread int jmp buffer
 		int			if_size;	//jmp buffer array size
 		int			if_index;  // top jmp buffer index
 
@@ -249,20 +249,20 @@ extern "C" {
 #endif
 
 #ifdef XDK_SUPPORT_CONTEXT
-#define PROCESS_CONTEXT_INTERFACE	(if_context_t*)(&g_xdl_mou.if_context)
+#define PROCESS_CONTEXT_INTERFACE	((g_xdl_mou.if_ok)? (if_context_t*)(&g_xdl_mou.if_context) : NULL)
 #define XDL_CONTEXT_VERSION			(g_xdl_mou.ctx_ver)
 #endif
 
 #ifdef XDK_SUPPORT_CLIPBOARD
-#define PROCESS_CLIPBOARD_INTERFACE		(if_clipboard_t*)(&g_xdl_mou.if_clipboard)
+#define PROCESS_CLIPBOARD_INTERFACE		((g_xdl_mou.if_ok)? (if_clipboard_t*)(&g_xdl_mou.if_clipboard) : NULL)
 #endif
 
 #ifdef XDK_SUPPORT_WIDGET
-#define PROCESS_WIDGET_INTERFACE		(if_widget_t*)(&g_xdl_mou.if_widget)
+#define PROCESS_WIDGET_INTERFACE		((g_xdl_mou.if_ok)? (if_widget_t*)(&g_xdl_mou.if_widget) : NULL)
 #endif
 
 #ifdef XDK_SUPPORT_SHELL
-#define PROCESS_SHELL_INTERFACE			(if_shell_t*)(&g_xdl_mou.if_shell)
+#define PROCESS_SHELL_INTERFACE			((g_xdl_mou.if_ok)? (if_shell_t*)(&g_xdl_mou.if_shell) : NULL)
 #endif
 
 
@@ -274,7 +274,7 @@ extern "C" {
 
 #ifdef XDK_SUPPORT_THREAD
 
-	XDL_API	void	xdl_thread_init();
+	XDL_API	void	xdl_thread_init(int master);
 
 	XDL_API void	xdl_thread_uninit(int error);
 

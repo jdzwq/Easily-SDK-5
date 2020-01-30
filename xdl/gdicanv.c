@@ -50,7 +50,7 @@ typedef struct _rdc_canvas_t{
 }rdc_canvas_t;
 
 /*******************************************************************************************************************/
-float pt_to_tm(canvas_t canv, long pt, bool_t horz)
+float pt_to_tm(canvas_t canv, int pt, bool_t horz)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t,canv);
 
@@ -62,21 +62,21 @@ float pt_to_tm(canvas_t canv, long pt, bool_t horz)
 		return (float)((float)pt / (float)(pcanv->vtpermm * pcanv->scale)) - pcanv->vert_feed;
 }
 
-long tm_to_pt(canvas_t canv, float tm, bool_t horz)
+int tm_to_pt(canvas_t canv, float tm, bool_t horz)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
 	XDL_ASSERT(canv);
 
 	if (horz)
-		return (long)(((float)tm * pcanv->scale + (float)pcanv->horz_feed) * pcanv->htpermm);
+		return (int)(((float)tm * pcanv->scale + (float)pcanv->horz_feed) * pcanv->htpermm);
 	else
-		return (long)(((float)tm * pcanv->scale + (float)pcanv->vert_feed) * pcanv->vtpermm);
+		return (int)(((float)tm * pcanv->scale + (float)pcanv->vert_feed) * pcanv->vtpermm);
 }
 
 void rect_tm_to_pt(canvas_t canv, xrect_t* pxr)
 {
-	long left, right, top, bottom;
+	int left, right, top, bottom;
 
 	if (pxr->fw < 0)
 	{
@@ -140,7 +140,7 @@ void rect_pt_to_tm(canvas_t canv, xrect_t* pxr)
 
 void size_tm_to_pt(canvas_t canv, xsize_t* pxs)
 {
-	long cx, cy;
+	int cx, cy;
 
 	cx = tm_to_pt(canv, pxs->fx, 1) - tm_to_pt(canv, 0, 1);
 	cy = tm_to_pt(canv, pxs->fy, 0) - tm_to_pt(canv, 0, 0);
@@ -162,7 +162,7 @@ void size_pt_to_tm(canvas_t canv, xsize_t* pxs)
 
 void point_tm_to_pt(canvas_t canv, xpoint_t* ppt)
 {
-	long x, y;
+	int x, y;
 
 	x = tm_to_pt(canv, ppt->fx, 1);
 	y = tm_to_pt(canv, ppt->fy, 0);
@@ -313,7 +313,7 @@ res_ctx_t get_canvas_ctx(canvas_t canv)
 	return (res_ctx_t)pcanv->dc;
 }
 
-res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, long width, long height)
+res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 

@@ -65,16 +65,38 @@ pid_t _thread_get_id(void)
     return (tid < 0)? getpid() : (pid_t)tid;
 }
 
-void _thread_begin(res_hand_t* ph_hand, PF_THREADFUNC pf_func, void* param)
+void _thread_safe()
 {
-    pthread_t tt = {0};
+    sigset_t mask;
+    
+    //sigfillset(&mask);
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGSYS);
+    sigaddset(&mask, SIGPIPE);
+    sigaddset(&mask, SIGALRM);
+    sigaddset(&mask, SIGPROF);
+    sigaddset(&mask, SIGIO);
+    //sigaddset(&mask, SIGPOLL);
+    
+    pthread_sigmask(SIG_BLOCK, &mask, NULL);
+}
+
+void _thread_begin(res_thread_t* ph_hand, PF_THREADFUNC pf_func, void* param)
+{
+    pthread_t* ptt;
     sigset_t sig;
+    pthread_t tt = {0};
     
     sigemptyset (&sig);
     sigaddset (&sig, SIGPIPE);
     pthread_sigmask (SIG_BLOCK, &sig, NULL);
     
-    pthread_create(&tt, NULL, pf_func, param);
+    if(ph_hand)
+        ptt = (pthread_t*)ph_hand;
+    else
+        ptt = &tt;
+    
+    pthread_create(ptt, NULL, pf_func, param);
 }
 
 void _thread_end(void)
@@ -86,15 +108,20 @@ void _thread_sleep(int ms)
 {
     struct timeval dl;
     
-    dl.tv_sec = 0;
-    dl.tv_usec = (int)(ms * 1000);
+    dl.tv_sec = ms / 1000;
+    dl.tv_usec = (ms % 1000) * 1000;
     
     select(0, NULL, NULL, NULL, ((ms < 0)? NULL : &dl));
 }
 
-void _thread_join(res_hand_t th)
+void _thread_yield()
 {
-    pthread_join((pthread_t)th, NULL);
+    sched_yield();
+}
+
+void _thread_join(res_thread_t th)
+{
+    pthread_join(th, NULL);
 }
 /**********************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_EVENT
@@ -320,7 +347,7 @@ void _semap_unlock(res_sema_t sem)
 
 /**********************************************************************************/
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-res_hand_t _queue_create(res_hand_t kp, res_file_t fd, int max)
+res_queue_t _queue_create(res_queue_t kp, res_file_t fd, int max)
 {
     int ep;
     struct epoll_event ev;
@@ -333,15 +360,15 @@ res_hand_t _queue_create(res_hand_t kp, res_file_t fd, int max)
     ev.data.fd = fd; 
     epoll_ctl(ep, EPOLL_CTL_ADD, fd, &ev); 
 
-    return (ep < 0)? 0 : (res_hand_t)ep;
+    return (ep < 0)? 0 : ep;
 }
 
-void _queue_destroy(res_hand_t ep)
+void _queue_destroy(res_queue_t ep)
 {
     close(ep);
 }
 
-wait_t _queue_wait(res_hand_t ep, int ms)
+wait_t _queue_wait(res_queue_t ep, int ms)
 {
     int rt, n = 0;
     struct epoll_event ev = {0};

@@ -33,36 +33,29 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_SHARE
 
-res_file_t _share_srv(const tchar_t* fname, const tchar_t* fpath, size_t size)
+res_file_t _share_srv(const tchar_t* fname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size)
 {
 	HANDLE hShare,hFile;
-	DWORD dwh, dwl,dwSize,dwPos = 0;
+	DWORD dwBys = 0;
 	void* buf = NULL;
 
 	WIN32_FILE_ATTRIBUTE_DATA ad = { 0 };
 
-	dwh = GETSIZEH(size);
-	dwl = GETSIZEL(size);
+	if (!GetFileAttributesEx(fpath, GetFileExInfoStandard, &ad))
+	{
+		return INVALID_FILE;
+	}
 
-	hShare = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, dwh, dwl, fname);
+	if (MAKESIZE(loff, hoff) > MAKESIZE(ad.nFileSizeLow, ad.nFileSizeHigh))
+	{
+		return INVALID_FILE;
+	}
+
+	hShare = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, size, fname);
 	if (!hShare)
 	{
 		return INVALID_FILE;
 	}
-
-	if (!GetFileAttributesEx(fpath, GetFileExInfoStandard, &ad))
-	{
-		CloseHandle(hShare);
-		return INVALID_FILE;
-	}
-
-	if (ad.nFileSizeHigh)
-	{
-		CloseHandle(hShare);
-		return INVALID_FILE;
-	}
-
-	dwSize = ad.nFileSizeLow;
 
 	hFile = CreateFile(fpath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if ((HANDLE)hFile == INVALID_HANDLE_VALUE)
@@ -71,32 +64,34 @@ res_file_t _share_srv(const tchar_t* fname, const tchar_t* fpath, size_t size)
 		return INVALID_FILE;
 	}
 
-	buf = HeapAlloc(GetProcessHeap(), 0, dwSize);
-
-	while (dwPos < dwSize)
+	dwBys = hoff;
+	if (INVALID_SET_FILE_POINTER == SetFilePointer(hFile, loff, (PLONG)&dwBys, FILE_BEGIN))
 	{
-		dwl = 0;
-		if (!ReadFile(hFile, (void*)((BYTE*)buf + dwPos), dwSize - dwPos, &dwl, NULL))
-			break;
-
-		if (!dwl)
-			break;
-
-		dwPos += dwl;
-	}
-
-	CloseHandle(hFile);
-
-	if (dwPos < dwSize)
-	{
-		HeapFree(GetProcessHeap(), 0, buf);
+		CloseHandle(hFile);
 		CloseHandle(hShare);
 		return INVALID_FILE;
 	}
 
-	dwSize = (dwSize < (DWORD)size) ? dwSize : (DWORD)size;
+	buf = HeapAlloc(GetProcessHeap(), 0, (SIZE_T)size);
+	if (!buf)
+	{
+		CloseHandle(hFile);
+		CloseHandle(hShare);
+		return INVALID_FILE;
+	}
 
-	if (!_share_write(hShare, 0, buf, dwSize, NULL))
+	dwBys = 0;
+	if (!ReadFile(hFile, buf, (DWORD)size, &dwBys, NULL))
+	{
+		HeapFree(GetProcessHeap(), 0, buf);
+		CloseHandle(hFile);
+		CloseHandle(hShare);
+		return INVALID_FILE;
+	}
+
+	CloseHandle(hFile);
+
+	if (!_share_write(hShare, 0, buf, size, NULL))
 	{
 		HeapFree(GetProcessHeap(), 0, buf);
 		CloseHandle(hShare);
@@ -113,33 +108,26 @@ void _share_close(const tchar_t* fname, res_file_t fh)
 	CloseHandle(fh);
 }
 
-res_file_t _share_cli(const tchar_t* fname, size_t size)
+res_file_t _share_cli(const tchar_t* fname, dword_t size)
 {
 	HANDLE hp;
-	DWORD dwh, dwl;
 
-	dwh = GETSIZEH(size);
-	dwl = GETSIZEL(size);
-
-	hp = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, dwh, dwl, fname);
+	hp = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, size, fname);
 
 	return (hp) ? hp : INVALID_FILE;
 }
 
-bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* pcb)
+bool_t _share_write(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t* pcb)
 {
 	void* pBase = NULL;
-	DWORD loff, hoff, poff;
-	size_t dlen;
+	DWORD poff, loff;
+	SIZE_T dlen;
 
-	hoff = GETSIZEH(off);
-	loff = GETSIZEL(off);
-
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	poff = (off % PAGE_GRAN);
+	loff = (off / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	pBase = MapViewOfFile(fh, FILE_MAP_WRITE, hoff, loff, dlen);
+	pBase = MapViewOfFile(fh, FILE_MAP_WRITE, 0, loff, dlen);
 	if (!pBase)
 	{
 		if (pcb) *pcb = 0;
@@ -147,7 +135,7 @@ bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* p
 		return 0;
 	}
 
-	CopyMemory((void*)((char*)pBase + poff), buf, size);
+	CopyMemory((void*)((char*)pBase + poff), buf, (SIZE_T)size);
 
 	UnmapViewOfFile(pBase);
 
@@ -156,20 +144,17 @@ bool_t _share_write(res_file_t fh, size_t off, void* buf, size_t size, size_t* p
 	return 1;
 }
 
-bool_t _share_read(res_file_t fh, size_t off, void* buf, size_t size, size_t* pcb)
+bool_t _share_read(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t* pcb)
 {
 	void* pBase = NULL;
-	DWORD loff, hoff, poff;
-	size_t dlen;
+	DWORD poff, loff;
+	SIZE_T dlen;
 
-	hoff = GETSIZEH(off);
-	loff = GETSIZEL(off);
-
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	poff = (off % PAGE_GRAN);
+	loff = (off / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	pBase = MapViewOfFile(fh, FILE_MAP_READ, hoff, loff, dlen);
+	pBase = MapViewOfFile(fh, FILE_MAP_READ, 0, loff, dlen);
 	if (!pBase)
 	{
 		if (pcb) *pcb = 0;
@@ -177,7 +162,7 @@ bool_t _share_read(res_file_t fh, size_t off, void* buf, size_t size, size_t* pc
 		return 0;
 	}
 
-	CopyMemory(buf, (void*)((char*)pBase + poff), size);
+	CopyMemory(buf, (void*)((char*)pBase + poff), (SIZE_T)size);
 
 	UnmapViewOfFile(pBase);
 
@@ -186,34 +171,28 @@ bool_t _share_read(res_file_t fh, size_t off, void* buf, size_t size, size_t* pc
 	return 1;
 }
 
-void* _share_lock(res_file_t fh, size_t off, size_t size)
+void* _share_lock(res_file_t fh, dword_t off, dword_t size)
 {
 	void* pBase = NULL;
-	DWORD loff, hoff, poff;
-	size_t dlen;
+	DWORD poff, loff;
+	SIZE_T dlen;
 
-	hoff = GETSIZEH(off);
-	loff = GETSIZEL(off);
-
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	poff = (off % PAGE_GRAN);
+	loff = (off / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
-	pBase = MapViewOfFile(fh, FILE_MAP_READ, hoff, loff, dlen);
+	pBase = MapViewOfFile(fh, FILE_MAP_READ, 0, loff, dlen);
 
 	return (pBase) ? (void*)((char*)pBase + poff) : NULL;
 }
 
-void _share_unlock(res_file_t fh, size_t off, size_t size, void* p)
+void _share_unlock(res_file_t fh, dword_t off, dword_t size, void* p)
 {
-	DWORD loff, hoff, poff;
-	size_t dlen;
+	DWORD poff,loff;
+	SIZE_T dlen;
 
-	hoff = GETSIZEH(off);
-	loff = GETSIZEL(off);
-
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	poff = (off % PAGE_GRAN);
+	loff = (off / PAGE_GRAN) * PAGE_GRAN;
 	dlen = poff + size;
 
 	UnmapViewOfFile((void*)((char*)p - poff));

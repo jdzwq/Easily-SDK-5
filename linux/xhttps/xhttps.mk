@@ -10,7 +10,7 @@ NET_PATH = ~/Easily-sdk-5/api/net_srv
 LOC_PATH = .
 OUT_PATH = ../sbin
 
-SRCS = $(NET_PATH)/srvcert.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xhttps.cc $(LOC_PATH)/xhttpsMain.cc
+SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xhttps.cc $(LOC_PATH)/xhttpsMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 TARGET = $(OUT_PATH)/xhttps
 
@@ -22,7 +22,7 @@ TARGET = $(OUT_PATH)/xhttps
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdl -lxds
+	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdl -lxds -lpthread
 	rm -f $(OBJS)
 
 test:

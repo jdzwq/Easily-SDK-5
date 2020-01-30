@@ -44,10 +44,12 @@ extern "C" {
 @FUNCTION xshare_srv: create a share memory file server, and read local file data as it content.
 @INPUT const tchar_t* pname: share memory file server name.
 @INPUT const tchar_t* fpath: the file path name.
+@INPUT dword_t hoff: the high word of file start position.
+@INPUT dword_t hoff: the lower word of file start position.
 @INPUT dword_t size: the share memory size.
 @RETURN xhand_t: if succeeds return share memory handle, fails return NULL.
 */
-XDL_API xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t size);
+XDL_API xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size);
 
 /*
 @FUNCTION xshare_cli: create a share memory client, and connect to named pipe server.
@@ -74,20 +76,22 @@ XDL_API res_file_t xshare_handle(xhand_t sh);
 /*
 @FUNCTION xshare_write: write data to pipe.
 @INPUT xhand_t sh: share memory handle.
+@INPUT dword_t offset: the offset of the share file.
 @INPUT const byte_t* buf: data buffer pointer.
 @INOUTPUT dword_t* pb: integer variable indicate total bytes to write, and return actually bytes writed.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xshare_write(xhand_t sh, const byte_t* data, dword_t* pb);
+XDL_API bool_t xshare_write(xhand_t sh, dword_t offset, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xshare_read: read data from pipe.
 @INPUT xhand_t sh: share memory handle.
+@INPUT dword_t offset: the offset of the share file.
 @OUTPUT byte_t* buf: data buffer pointer.
 @INOUTPUT dword_t* pb: integer variable indicate total bytes to read, and return actually bytes readed.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xshare_read(xhand_t sh, byte_t* buf, dword_t* pb);
+XDL_API bool_t xshare_read(xhand_t sh, dword_t offset, byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xshare_lock: lock share memory inner buffer pointer from the position.

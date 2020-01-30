@@ -76,9 +76,9 @@ static int _next_prim(int prim)
 	return PRIM_TABLE[i];
 }
 
-static unsigned int hash_code(unsigned char* key,int keylen)
+static dword_t hash_code(unsigned char* key,int keylen)
 {
-	unsigned int sum,ge;
+	dword_t sum,ge;
 	
 	if (!key)
 		return 0;
@@ -155,7 +155,7 @@ static void _expand_hash_table(hash_table_t* pht)
 	hash_entity_t* phe;
 	link_t_ptr plk, pnew;
 	int i, index, prim;
-	unsigned int code;
+	dword_t code;
 
 	prim = _next_prim(pht->size);
 	if (prim == pht->size)
@@ -457,7 +457,7 @@ link_t_ptr	write_hash_attr(link_t_ptr ptr,const tchar_t* key,int keylen,const tc
 	hash_table_t* pht;
 	hash_entity_t* phe;
 	link_t_ptr plk;
-	unsigned long code;
+	dword_t code;
 	int count;
 
 	XDL_ASSERT(ptr && ptr->tag == lkHashTable);
@@ -579,7 +579,7 @@ int get_hash_attr_len(link_t_ptr ptr, const tchar_t* key, int keylen)
 
 link_t_ptr get_hash_entity(link_t_ptr ptr,const tchar_t* key,int keylen)
 {
-	unsigned long code;
+	dword_t code;
 	hash_entity_t* phe;
 	hash_table_t* pht;
 	link_t_ptr plk;
@@ -754,7 +754,7 @@ bool_t get_hash_attr_boolean(link_t_ptr ptr,const tchar_t* key)
 	return xstol(token)? 1 : 0;
 }
 
-link_t_ptr set_hash_attr_integer(link_t_ptr ptr,const tchar_t* key,long s)
+link_t_ptr set_hash_attr_integer(link_t_ptr ptr,const tchar_t* key,int s)
 {
 	tchar_t token[NUM_LEN + 1] = {0};
 
@@ -762,7 +762,7 @@ link_t_ptr set_hash_attr_integer(link_t_ptr ptr,const tchar_t* key,long s)
 	return write_hash_attr(ptr,key,-1,token,-1);
 }
 
-long get_hash_attr_integer(link_t_ptr ptr,const tchar_t* key)
+int get_hash_attr_integer(link_t_ptr ptr,const tchar_t* key)
 {
 	tchar_t token[NUM_LEN + 1] = {0};
 

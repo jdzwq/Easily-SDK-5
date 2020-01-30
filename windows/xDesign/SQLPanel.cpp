@@ -47,7 +47,7 @@ typedef struct tagSQLPanelDelta{
 }SQLPanelDelta;
 
 #define GETSQLPANELDELTA(ph) 		(SQLPanelDelta*)widget_get_user_delta(ph)
-#define SETSQLPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETSQLPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
 
 #define SQLPANEL_ACCEL_COUNT	5
 accel_t	SQLPANEL_ACCEL[SQLPANEL_ACCEL_COUNT] = {
@@ -623,7 +623,7 @@ void SQLPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	
 }
 
-void SQLPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void SQLPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
@@ -650,7 +650,7 @@ void SQLPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void SQLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void SQLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 	void* pv = NULL;

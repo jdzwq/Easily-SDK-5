@@ -56,7 +56,7 @@ typedef struct tagDiagramPanelDelta{
 }DiagramPanelDelta;
 
 #define GETDIAGRAMPANELDELTA(ph) 		(DiagramPanelDelta*)widget_get_user_delta(ph)
-#define SETDIAGRAMPANELDELTA(ph,ptd)		widget_set_user_delta(ph,(var_long)ptd)
+#define SETDIAGRAMPANELDELTA(ph,ptd)		widget_set_user_delta(ph,(var_int)ptd)
 
 #define DIAGRAMPANEL_ACCEL_COUNT	5
 accel_t	DIAGRAMPANEL_ACCEL[DIAGRAMPANEL_ACCEL_COUNT] = {
@@ -966,7 +966,7 @@ void DiagramPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	if (!ilk)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ilk));
+	int n_id = xstol(get_title_item_id_ptr(ilk));
 
 	LINKPTR ptrDiagram = diagramctrl_fetch(pdt->hDiagram);
 	LINKPTR ptrItem = diagramctrl_get_focus_entity(pdt->hDiagram);
@@ -1016,7 +1016,7 @@ void DiagramPanel_Title_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	long n_id = xstol(get_title_item_id_ptr(pnt->item));
+	int n_id = xstol(get_title_item_id_ptr(pnt->item));
 
 	widget_post_command(widget, 0, n_id, NULL);
 }
@@ -1082,7 +1082,7 @@ void DiagramPanel_Diagram_OnLBClick(res_win_t widget, NOTICE_DIAGRAM* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1094,7 +1094,7 @@ void DiagramPanel_Diagram_OnItemSize(res_win_t widget, NOTICE_DIAGRAM* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1106,7 +1106,7 @@ void DiagramPanel_Diagram_OnItemMove(res_win_t widget, NOTICE_DIAGRAM* pnf)
 	if (!ptrItem)
 		return;
 
-	long n_id = xstol(get_title_item_id_ptr(ptrItem));
+	int n_id = xstol(get_title_item_id_ptr(ptrItem));
 	widget_post_command(widget, 0, n_id, NULL);
 }
 
@@ -1496,7 +1496,7 @@ void DiagramPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_long data)
+void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
@@ -1523,7 +1523,7 @@ void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 }
 
-void DiagramPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
+void DiagramPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 

@@ -41,7 +41,7 @@ void export_grid_schema(link_t_ptr ptr,link_t_ptr sch)
 {
 	link_t_ptr clk,nlk_rowset,nlk_row,nlk;
 	const tchar_t *cname,*cid,*type;
-	long len, dig;
+	int len, dig;
 
 	delete_dom_child_nodes(sch);
 
@@ -119,7 +119,7 @@ void import_grid_schema(link_t_ptr ptr, link_t_ptr sch)
 	link_t_ptr clk;
 	link_t_ptr slk_rowset,slk_row,slk_ref,slk;
 	const tchar_t* type;
-	long prec, scale;
+	int prec, scale;
 
 	clear_grid_rowset(ptr);
 	clear_grid_colset(ptr);
@@ -471,7 +471,7 @@ void export_statis_schema(link_t_ptr ptr, link_t_ptr sch)
 {
 	link_t_ptr ylk, nlk_rowset, nlk_row, nlk;
 	const tchar_t *cname,*cid;
-	long len, dig;
+	int len, dig;
 
 	delete_dom_child_nodes(sch);
 
@@ -786,7 +786,7 @@ void export_form_schema(link_t_ptr ptr, link_t_ptr sch)
 {
 	link_t_ptr flk, nlk_rowset, nlk_row, nlk;
 	const tchar_t *cname,*cid, *type;
-	long len, dig;
+	int len, dig;
 
 	delete_dom_child_nodes(sch);
 

@@ -9,12 +9,12 @@
 
 #define PID_FILE "/var/run/xportd.pid"
 
-void _action_term(int sig)
+static void _action_term(int sig)
 {
     xportd_stop();
 }
 
-void _action_child(int sig)
+static void _action_child(int sig)
 {
     pid_t pid; 
     int stat; 
@@ -22,6 +22,11 @@ void _action_child(int sig)
     while((pid = waitpid(-1, &stat, WNOHANG)) > 0);
 
     return; 
+}
+
+static void _action_pipe(int sig)
+{
+    
 }
 
 int main(int argc, const char * argv[])
@@ -71,7 +76,6 @@ int main(int argc, const char * argv[])
             f_pid = NULL;
         }
 
-        //unlink(PID_FILE);
         syslog(LOG_INFO, "remove a zombie pidfile");
     }
 
@@ -116,12 +120,10 @@ int main(int argc, const char * argv[])
     }
 
     //child process begin...
-    xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_SERVER);
-    
-    TRY_CATCH;
 
     if (chdir("/") < 0) {
-        raise_user_error("-1", "xportd: chidr change directory error");
+        syslog(LOG_INFO,  "xportd: chidr change directory error");
+        exit(-1);
     }
     
     if(getrlimit(RLIMIT_NOFILE, &rl) >= 0)
@@ -142,36 +144,36 @@ int main(int argc, const char * argv[])
     }
     if (fd > 2){
         close(fd);
-        fd = 0;
+        syslog(LOG_INFO,  "xportd: /dev/null opened");
+        exit(-1);
     }
     
     f_pid = fopen(PID_FILE, "w");
     if (!f_pid){
-        raise_user_error("-1", "xportd write pidfile failed");
+        syslog(LOG_INFO,  "xportd write pidfile failed");
+        exit(-1);
     }
     
     fprintf(f_pid, "%d", getpid());
     fclose(f_pid);
     f_pid = NULL;
     
-    xportd_start();
-    
     sigemptyset(&sa.sa_mask);
     sa.sa_handler = _action_term;
     sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
-    
     ret = sigaction(SIGALRM, &sa, 0);
     ret = sigaction(SIGINT, &sa, 0);
     ret = sigaction(SIGTERM, &sa, 0);
 
     sigemptyset(&sa.sa_mask);
-    sa.sa_handler = _action_child;
-    sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
+    sa.sa_handler = SIG_IGN;
     ret = sigaction(SIGCHLD, &sa, 0);
     
-    sigemptyset(&sa.sa_mask);
-    sa.sa_handler = SIG_IGN;
-    ret = sigaction( SIGPIPE, &sa, 0 );
+    xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_SERVER);
+    
+    TRY_CATCH;
+
+    xportd_start();
     
     while(1) {
         if(xportd_state() == XPORTD_STATE_STOPPED)
@@ -187,6 +189,8 @@ int main(int argc, const char * argv[])
         fclose(f_pid);
         f_pid = NULL;
     }
+
+    unlink(PID_FILE);
     
     END_CATCH;
     
@@ -211,6 +215,8 @@ ONERROR:
         fclose(f_pid);
         f_pid = NULL;
     }
+
+    unlink(PID_FILE);
     
     xdl_process_uninit();
     

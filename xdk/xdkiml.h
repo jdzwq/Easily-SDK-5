@@ -45,35 +45,35 @@ res_heap_t _process_heapo(void);
 res_heap_t	_heapo_create(void);
 void	_heapo_destroy(res_heap_t heap);
 void	_heapo_clean(res_heap_t heap);
-void*	_heapo_alloc(res_heap_t heap, size_t size);
-void*	_heapo_realloc(res_heap_t heap, void* p, size_t size);
+void*	_heapo_alloc(res_heap_t heap, dword_t size);
+void*	_heapo_realloc(res_heap_t heap, void* p, dword_t size);
 void	_heapo_free(res_heap_t heap, void* p);
-void	_heapo_zero(res_heap_t heap, void* p, size_t size);
+void	_heapo_zero(res_heap_t heap, void* p, dword_t size);
 #endif
 
 #ifdef XDK_SUPPORT_MEMO_GLOB
 /*glob memory*/
-res_glob_t	_globo_alloc(size_t size);
-res_glob_t	_globo_realloc(res_glob_t glob, size_t size);
+res_glob_t	_globo_alloc(dword_t size);
+res_glob_t	_globo_realloc(res_glob_t glob, dword_t size);
 void	_globo_free(res_glob_t glob);
-size_t	_globo_size(res_glob_t glob);
+dword_t	_globo_size(res_glob_t glob);
 void*	_globo_lock(res_glob_t glob);
 bool_t	_globo_unlock(res_glob_t glob);
 #endif
 
 #ifdef XDK_SUPPORT_MEMO_LOCAL
 /*local memory*/
-void*	_local_alloc(size_t size);
-void*	_local_realloc(void* p, size_t size);
+void*	_local_alloc(dword_t size);
+void*	_local_realloc(void* p, dword_t size);
 void	_local_free(void* p);
 #endif
 
 #ifdef XDK_SUPPORT_MEMO_PAGE
 /*page memory*/
-void*	_paged_alloc(size_t size);
-void*	_paged_realloc(void* p, size_t size);
+void*	_paged_alloc(dword_t size);
+void*	_paged_realloc(void* p, dword_t size);
 void	_paged_free(void* p);
-size_t	_paged_size(void* p);
+dword_t	_paged_size(void* p);
 void*	_paged_lock(void* p);
 void	_paged_unlock(void* p);
 bool_t	_paged_protect(void* p, bool_t b);
@@ -82,8 +82,8 @@ bool_t	_paged_protect(void* p, bool_t b);
 #ifdef XDK_SUPPORT_MEMO_CACHE
 void*	_cache_open(void);
 void	_cache_close(void* bh);
-bool_t	_cache_write(void* bh, size_t off, void* buf, size_t size, size_t* pb);
-bool_t	_cache_read(void* bh, size_t off, void* buf, size_t size, size_t* pb);
+bool_t	_cache_write(void* bh, dword_t hoff, dword_t loff, void* buf, dword_t size, dword_t* pb);
+bool_t	_cache_read(void* bh, dword_t hoff, dword_t loff, void* buf, dword_t size, dword_t* pb);
 #endif
 
 #endif /*XDK_SUPPORT_MEMO*/
@@ -117,21 +117,23 @@ void	_utc_date_from_timestamp(xdate_t* pxd, stamp_t ts);
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-void	_async_alloc_lapp(async_t* pas, int ms);
-void	_async_release_lapp(async_t* pas);
+async_t* _async_alloc_lapp(int type, int ms, res_file_t fd);
+void	_async_free_lapp(async_t* pas);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
 //those thread function must implemented by each platform
-void	_thread_begin(res_hand_t* ptr_hand, PF_THREADFUNC pf_func, void* param);
+void	_thread_begin(res_thread_t* ptr_hand, PF_THREADFUNC pf_func, void* param);
 void	_thread_end(void);
 void	_thread_create_tls(tls_key_t* pkey);
 void	_thread_destroy_tls(tls_key_t key);
 void*	_thread_get_tls(tls_key_t key);
 void	_thread_set_tls(tls_key_t key, void* pval);
 pid_t	_thread_get_id(void);
-void	_thread_sleep(int);
-void	_thread_join(res_hand_t th);
+void	_thread_sleep(int ms);
+void	_thread_yield(void);
+void	_thread_join(res_thread_t th);
+void	_thread_safe(void);
 
 #ifdef XDK_SUPPORT_THREAD_EVENT
 res_even_t	_event_create(void);
@@ -173,11 +175,11 @@ wait_t		_queue_wait(res_queue_t ep, int ms);
 #endif /*XDK_SUPPORT_THREAD*/
 
 #ifdef XDK_SUPPORT_TIMER
-res_hand_t _create_timer_queue(void);
-void		_destroy_timer_queue(res_hand_t rq);
-res_timer_t _create_timer(res_hand_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa);
-void		_destroy_timer(res_hand_t rq, res_timer_t rt);
-bool_t		_alter_timer(res_hand_t rq, res_timer_t rt, clock_t duetime, clock_t period);
+res_queue_t _create_timer_queue(void);
+void		_destroy_timer_queue(res_queue_t rq);
+res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa);
+void		_destroy_timer(res_queue_t rq, res_timer_t rt);
+bool_t		_alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period);
 #endif
 
 #ifdef XDK_SUPPORT_SOCK
@@ -193,15 +195,16 @@ bool_t	_socket_bind(res_file_t so, res_addr_t saddr, int slen);
 bool_t	_socket_listen(res_file_t so, int max);
 bool_t	_socket_connect(res_file_t so, res_addr_t saddr, int slen);
 res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *slen, async_t* pb);
-bool_t	_socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size_t len, async_t* pb);
-bool_t	_socket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, void* buf, size_t len, async_t* pb);
-bool_t	_socket_send(res_file_t so, void* buf, size_t len, async_t* pb);
-bool_t	_socket_recv(res_file_t so, void* buf, size_t len, async_t* pb);
+bool_t	_socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dword_t len, async_t* pb);
+bool_t	_socket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, void* buf, dword_t len, async_t* pb);
+bool_t	_socket_send(res_file_t so, void* buf, dword_t len, async_t* pb);
+bool_t	_socket_recv(res_file_t so, void* buf, dword_t len, async_t* pb);
 int		_socket_write(void* pso, unsigned char* buf, int len);
 int		_socket_read(void* pso, unsigned char* buf, int len);
 bool_t	_socket_setopt(res_file_t so, int optname, const char* optval, int optlen);
 bool_t	_socket_getopt(res_file_t so, int optname, char* pval, int* plen);
 bool_t	_socket_set_nonblk(res_file_t so, bool_t none);
+bool_t	_socket_get_nonblk(res_file_t so);
 bool_t	_socket_set_linger(res_file_t so, bool_t wait, int sec);
 bool_t	_socket_set_sndbuf(res_file_t so, int size);
 bool_t	_socket_set_rcvbuf(res_file_t so, int size);
@@ -210,8 +213,8 @@ void	_fill_addr(net_addr_t* paddr, unsigned short port, const char* saddr);
 void	_conv_addr(net_addr_t* paddr, unsigned short* port, char* addr);
 void	_socket_addr(res_file_t so, net_addr_t* paddr);
 void	_socket_peer(res_file_t so, net_addr_t* paddr);
-bool_t	_socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, size_t size);
-res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pcb);
+bool_t	_socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, dword_t size);
+res_file_t _socket_dupli(res_file_t procfd, void* data, dword_t* pcb);
 int		_socket_error(tchar_t* buf, int max);
 #endif
 
@@ -219,11 +222,11 @@ int		_socket_error(tchar_t* buf, int max);
 res_file_t	_file_open(const tchar_t* fname, dword_t fmode);
 void	_file_close(res_file_t fl);
 bool_t	_file_size(res_file_t fh, dword_t* ph, dword_t* pl);
-bool_t	_file_write(res_file_t fl, void* buf, size_t size, async_t* pb);
+bool_t	_file_write(res_file_t fl, void* buf, dword_t size, async_t* pb);
 bool_t	_file_flush(res_file_t fl);
-bool_t	_file_read(res_file_t fl, void* buf, size_t size, async_t* pb);
-bool_t	_file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size);
-bool_t	_file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, size_t size);
+bool_t	_file_read(res_file_t fl, void* buf, dword_t size, async_t* pb);
+bool_t	_file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size);
+bool_t	_file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size);
 bool_t	_file_truncate(res_file_t fh, dword_t hoff, dword_t loff);
 bool_t	_file_delete(const tchar_t* fname);
 bool_t	_file_rename(const tchar_t* fname, const tchar_t* nname);
@@ -241,13 +244,13 @@ void _file_find_close(res_find_t ff);
 #endif
 
 #ifdef XDK_SUPPORT_SHARE
-res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, size_t size);
+res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size);
 void	_share_close(const tchar_t* sname, res_file_t bh);
-res_file_t	_share_cli(const tchar_t* fname, size_t size);
-bool_t	_share_write(res_file_t bh, size_t off, void* buf, size_t size, size_t* pb);
-bool_t	_share_read(res_file_t bh, size_t off, void* buf, size_t size, size_t* pb);
-void*	_share_lock(res_file_t fh, size_t off, size_t size);
-void	_share_unlock(res_file_t fh, size_t off, size_t size, void* p);
+res_file_t	_share_cli(const tchar_t* fname, dword_t size);
+bool_t	_share_write(res_file_t bh, dword_t off, void* buf, dword_t size, dword_t* pcb);
+bool_t	_share_read(res_file_t bh, dword_t off, void* buf, dword_t size, dword_t* pcb);
+void*	_share_lock(res_file_t fh, dword_t off, dword_t size);
+void	_share_unlock(res_file_t fh, dword_t off, dword_t size, void* p);
 #endif
 
 #ifdef XDK_SUPPORT_PIPE
@@ -257,18 +260,18 @@ void	_pipe_stop(res_file_t pip);
 res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode);
 void	_pipe_close(const tchar_t* pname, res_file_t pip);
 wait_t	_pipe_wait(const tchar_t* pname, int milsec);
-bool_t	_pipe_write(res_file_t pipe, void* buf, size_t len, async_t* pb);
+bool_t	_pipe_write(res_file_t pipe, void* buf, dword_t len, async_t* pb);
 bool_t	_pipe_flush(res_file_t pipe);
-bool_t	_pipe_read(res_file_t pipe, void* buf, size_t len, async_t* pb);
+bool_t	_pipe_read(res_file_t pipe, void* buf, dword_t len, async_t* pb);
 #endif
 
 #ifdef XDK_SUPPORT_CONS
 res_file_t	_cons_alloc(tchar_t* cname, int max);
 void	_cons_free(res_file_t ch);
 bool_t	_cons_sigaction(res_file_t con, PF_SIGHANDLER pf);
-bool_t	_cons_write(res_file_t ch, void* buf, size_t len, size_t* pb);
+bool_t	_cons_write(res_file_t ch, void* buf, dword_t len, dword_t* pcb);
 bool_t	_cons_flush(res_file_t ch);
-bool_t	_cons_read(res_file_t ch, void* buf, size_t len, size_t* pb);
+bool_t	_cons_read(res_file_t ch, void* buf, dword_t len, dword_t* pcb);
 res_file_t _cons_stdout(res_file_t ch);
 res_file_t _cons_stdin(res_file_t ch);
 #endif
@@ -279,10 +282,10 @@ bool_t	_get_comm_mode(res_file_t fh, dev_com_t* pmod);
 bool_t	_set_comm_mode(res_file_t fh, const dev_com_t* pmod);
 res_file_t _comm_open(const tchar_t* pname, dword_t fmode);
 void	_comm_close(res_file_t fh);
-bool_t	_comm_read(res_file_t fh, void* buf, size_t size, async_t* pb);
-bool_t	_comm_write(res_file_t fh, void* buf, size_t size, async_t* pb);
+bool_t	_comm_read(res_file_t fh, void* buf, dword_t size, async_t* pb);
+bool_t	_comm_write(res_file_t fh, void* buf, dword_t size, async_t* pb);
 bool_t	_comm_flush(res_file_t fh);
-dword_t	_comm_wait(res_file_t fh, async_t* pb);
+dword_t	_comm_listen(res_file_t fh, async_t* pb);
 #endif
 
 
@@ -293,14 +296,15 @@ void*	_get_address(res_modu_t lib, const schar_t* fname);
 void	_get_runpath(res_modu_t ins, tchar_t* buf, int max);
 bool_t	_create_process(const tchar_t* exename, const tchar_t* cmdline, int share, proc_info_t* ppi);
 void	_release_process(proc_info_t* ppi);
-void	_process_waitrun(res_hand_t child);
-res_hand_t _process_dupli(res_hand_t ph, res_hand_t vh);
-void*	_process_alloc(res_hand_t ph, size_t dw);
-void	_process_free(res_hand_t ph, void* p);
-bool_t	_process_write(res_hand_t ph, void* p, void* data, size_t size);
-bool_t	_process_read(res_hand_t ph, void* p, void* data, size_t size);
-void	_release_handle(res_hand_t hh);
-bool_t	_inherit_handle(res_hand_t hh, bool_t b);
+void	_process_safe(void);
+void	_process_waitrun(res_proc_t child);
+res_file_t _process_dupli(res_proc_t ph, res_file_t fh);
+void*	_process_alloc(res_proc_t ph, dword_t dw);
+void	_process_free(res_proc_t ph, void* p);
+bool_t	_process_write(res_proc_t ph, void* p, void* data, dword_t size);
+bool_t	_process_read(res_proc_t ph, void* p, void* data, dword_t size);
+void	_release_handle(res_file_t fh);
+bool_t	_inherit_handle(res_file_t fh, bool_t b);
 void	_read_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, tchar_t* buf, int max);
 void	_write_profile(const tchar_t* fname, const tchar_t* sec, const tchar_t* key, const tchar_t* val);
 int		_get_envvar(const tchar_t* ename, tchar_t* buf, int max);
@@ -326,36 +330,36 @@ res_ctx_t _create_display_context(void);
 res_ctx_t _create_compatible_context(res_ctx_t rdc);
 void	_destroy_context(res_ctx_t rdc);
 void	_get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
-void	_render_context(res_ctx_t src, long srcx, long srcy, res_ctx_t dst, long dstx, long dsty, long dstw, long dsth);
+void	_render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
 res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp);
-res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, long cx, long cy);
+res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, int cx, int cy);
 void	_destroy_pixmap(res_pmp_t pmp);
 
 float	_pt_per_mm(res_ctx_t rdc, bool_t horz);
 void	_text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy);
-void	_text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, long* pcx, long* pcy);
+void	_text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, int* pcx, int* pcy);
 void	_text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy);
-void	_text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, long* pcx, long* pcy);
-float	_cast_pt_to_mm(res_ctx_t rdc, long pt, bool_t horz);
-long	_cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
-int		_font_size(res_ctx_t rdc, long height);
+void	_text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy);
+float	_cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
+int	_cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
+int		_font_size(res_ctx_t rdc, int height);
 #ifdef XDK_SUPPORT_CONTEXT_REGION
 res_rgn_t _create_region(const tchar_t* shape, const xrect_t* pxr);
 void	_delete_region(res_rgn_t rgn);
 bool_t	_pt_in_region(res_rgn_t rgn, const xpoint_t* ppt);
 #endif
 #ifdef XDK_SUPPORT_CONTEXT_BITMAP
-res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, long w, long h);
-res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, long w, long h, const tchar_t* lay);
-res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, long w, long h, const tchar_t* lay);
-res_bmp_t _create_code128_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, const tchar_t* text);
-res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, int rows, int cols);
-res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, long w, long h, const unsigned char* bar_buf, size_t bar_len, int rows, int cols);
+res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h);
+res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay);
+res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay);
+res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text);
+res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols);
+res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols);
 res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename);
-res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, size_t len);
-size_t	_save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* pb, size_t max);
-size_t	_get_bitmap_bytes(res_bmp_t rdc);
-void	_get_bitmap_size(res_bmp_t rb, long* pw, long* ph);
+res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_t len);
+dword_t	_save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* pb, dword_t max);
+dword_t	_get_bitmap_bytes(res_bmp_t rdc);
+void	_get_bitmap_size(res_bmp_t rb, int* pw, int* ph);
 void	_destroy_bitmap(res_bmp_t bmp);
 #ifdef XDK_SUPPORT_SHELL
 res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname);
@@ -386,8 +390,8 @@ void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
 void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
 void _gdi_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdi_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
-void _gdi_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
+void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+void _gdi_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 void _gdi_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
 void _gdi_draw_text(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
 void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
@@ -416,8 +420,8 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* p
 void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
 void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
 void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
-void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, long rx, long ry, double fang, double tang);
+void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
 void _gdiplus_draw_text(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
 void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);

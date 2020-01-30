@@ -89,12 +89,12 @@ LICENSE.GPL3 for more details.
 */
 #define set_status_alignment(ptr,token)					set_dom_node_attr(ptr,ATTR_ALIGNMENT,-1,token,-1)
 /*
-@PROPER delta: var long.
+@PROPER delta: var int.
 @SET set_status_item_delta: set the status item extract data.
 */
 #define set_status_item_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
 /*
-@PROPER alignment: var long.
+@PROPER alignment: var int.
 @GET get_status_item_delta: get the status item extract data.
 */
 #define get_status_item_delta(ilk)						get_dom_node_delta(ilk)

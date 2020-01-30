@@ -303,20 +303,15 @@ bool_t _socket_bind(res_file_t so, res_addr_t saddr, int slen)
 	return (bind((SOCKET)so, saddr, slen) == 0) ? 1 : 0;
 }
 
-/*bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
-{
-	return (connect((SOCKET)so, saddr, slen) == 0) ? 1 : 0;
-}*/
-
 bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
 {
 	return (WSAConnect((SOCKET)so, saddr, slen, NULL, NULL, NULL, NULL) == 0) ? 1 : 0;
 }
 
-bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size_t size, async_t* pb)
+bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dword_t size, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
@@ -339,34 +334,31 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
-			if (pcb) *pcb = 0;
-			if (pov) WSAResetEvent(pov->hEvent);
+			*pcb = 0;
 			return 0;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
+
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo) ? pb->timo : INFINITE)))
+			dw = 0;
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
-				if (pcb) *pcb = 0;
-				return 0;
-			}
-			if ((res_file_t)up != so)
-			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
-#endif
 		if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
+			{
+				*pcb = 0;
+				return 0;
+			}
 
+			dw = 0;
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
@@ -374,15 +366,15 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, size
 
 	if (pov) WSAResetEvent(pov->hEvent);
 
-	if (pcb) *pcb = (size_t)dw;
+	if (pcb) *pcb = dw;
 	
 	return 1;
 }
 
-bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, size_t size, async_t* pb)
+bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, dword_t size, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
@@ -405,35 +397,31 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
-			if (pcb) *pcb = 0;
-			if (pov) WSAResetEvent(pov->hEvent);
+			*pcb = 0;
 			return 0;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
+
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, ((pb->timo)? pb->timo : INFINITE)))
+			dw = 0;
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
-				return 0;
-			}
-			if ((res_file_t)up != so)
-			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
-#endif
 		if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
+			{
+				*pcb = 0;
+				return 0;
+			}
 
+			dw = 0;
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
@@ -441,15 +429,15 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, s
 
 	if (pov) WSAResetEvent(pov->hEvent);
 
-	if (pcb) *pcb = (size_t)dw;
+	if (pcb) *pcb = dw;
 
 	return 1;
 }
 
-bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
+bool_t _socket_send(res_file_t so, void* buf, dword_t len, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
@@ -472,35 +460,30 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
-			if (pcb) *pcb = 0;
-			if (pov) WSAResetEvent(pov->hEvent);
+			*pcb = 0;
 			return 0;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
+			dw = 0;
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
-				return 0;
-			}
-			if ((res_file_t)up != so)
-			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
-#endif
 		if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
+			{
+				*pcb = 0;
+				return 0;
+			}
 
+			dw = 0;
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
@@ -508,15 +491,15 @@ bool_t _socket_send(res_file_t so, void* buf, size_t len, async_t* pb)
 
 	if (pov) WSAResetEvent(pov->hEvent);
 
-	if (pcb) *pcb = (size_t)dw;
+	if (pcb) *pcb = dw;
 
 	return 1;
 }
 
-bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
+bool_t _socket_recv(res_file_t so, void* buf, dword_t len, async_t* pb)
 {
 	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
-	size_t* pcb = (pb) ? &(pb->size) : NULL;
+	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
 	LPOVERLAPPED ul = NULL;
@@ -539,35 +522,30 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 
 		if (WSA_IO_PENDING != WSAGetLastError())
 		{
-			if (pcb) *pcb = 0;
-			if (pov) WSAResetEvent(pov->hEvent);
+			*pcb = 0;
 			return 0;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
+
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
-				return 0;
-			}
-			if ((res_file_t)up != so)
-			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
-#endif
 		if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, ((pb->timo) ? pb->timo : INFINITE));
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
+			{
+				*pcb = 0;
+				return 0;
+			}
 
+			dw = 0;
 			if (!WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
-				if (pcb) *pcb = 0;
-				if (pov) WSAResetEvent(pov->hEvent);
+				*pcb = 0;
 				return 0;
 			}
 		}
@@ -575,7 +553,7 @@ bool_t _socket_recv(res_file_t so, void* buf, size_t len, async_t* pb)
 
 	if (pov) WSAResetEvent(pov->hEvent);
 
-	if (pcb) *pcb = (size_t)dw;
+	if (pcb) *pcb = dw;
 
 	return 1;
 }
@@ -632,50 +610,48 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 		*plen = 0;
 		return INVALID_FILE;
 	}
-
+	
 	if (!pf_acceptex((SOCKET)ls, (SOCKET)so, buf, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, &dw, (LPOVERLAPPED)pov))
 	{
-		if (WSAGetLastError() != ERROR_IO_PENDING)
+		if (!pov)
 		{
 			closesocket((SOCKET)so);
-
-			if (pov) WSAResetEvent(pov->hEvent);
 
 			*plen = 0;
 			return INVALID_FILE;
 		}
-#ifdef XDK_SUPPORT_THREAD_QUEUE
+
+		if (WSAGetLastError() != ERROR_IO_PENDING)
+		{
+			closesocket((SOCKET)so);
+
+			*plen = 0;
+			return INVALID_FILE;
+		}
+
 		if (pb->type == ASYNC_QUEUE)
 		{
-			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, INFINITE))
+			if (!GetQueuedCompletionStatus((HANDLE)pb->port, &dw, &up, &ul, pb->timo))
 			{
 				closesocket((SOCKET)so);
-
-				if (pov) WSAResetEvent(pov->hEvent);
-
-				*plen = 0;
-				return INVALID_FILE;
-			}
-			if ((res_file_t)up != ls)
-			{
-				closesocket((SOCKET)so);
-
-				if (pov) WSAResetEvent(pov->hEvent);
 
 				*plen = 0;
 				return INVALID_FILE;
 			}
 		}
-#endif
 		if (pb->type == ASYNC_EVENT)
 		{
-			WaitForSingleObject(pov->hEvent, INFINITE);
+			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
+			{
+				closesocket((SOCKET)so);
+
+				*plen = 0;
+				return INVALID_FILE;
+			}
 
 			if (!WSAGetOverlappedResult((SOCKET)ls, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd))
 			{
 				closesocket((SOCKET)so);
-
-				WSAResetEvent(pov->hEvent);
 
 				*plen = 0;
 				return INVALID_FILE;
@@ -742,7 +718,12 @@ bool_t _socket_set_nonblk(res_file_t so, bool_t none)
 	//set socket to blocking or none blocking mode
 	unsigned long dw = (none)? 1 : 0;
 	
-	return (ioctlsocket((SOCKET)so, FIONBIO, (unsigned long*)&dw) == SOCKET_ERROR) ? 0 : 1;
+	return (ioctlsocket((SOCKET)so, FIONBIO, &dw) == SOCKET_ERROR) ? 0 : 1;
+}
+
+bool_t _socket_get_nonblk(res_file_t so)
+{
+	return 0;
 }
 
 bool_t _socket_listen(res_file_t so, int max)
@@ -753,22 +734,44 @@ bool_t _socket_listen(res_file_t so, int max)
 int _socket_write(void* pso, unsigned char* buf, int len)
 {
 	int rt;
+	int pos = 0;
 
-	rt = send(*((SOCKET*)pso), (char*)buf, len, 0);
+	while (pos < len)
+	{
+		rt = send(*((SOCKET*)pso), (char*)(buf + pos), len - pos, 0);
+		if (rt == SOCKET_ERROR)
+		{
+			return (-1);
+		}
+		if (!rt) continue;
 
-	return rt;
+		pos += rt;
+	}
+
+	return pos;
 }
 
 int _socket_read(void* pso, unsigned char* buf, int len)
 {
 	int rt;
+	int pos = 0;
 
-	rt = recv(*((SOCKET*)pso), (char*)buf, len, 0);
+	while (pos < len)
+	{
+		rt = recv(*((SOCKET*)pso), (char*)(buf + pos), len - pos, 0);
+		if (rt == SOCKET_ERROR)
+		{
+			return (-1);
+		}
+		if (!rt) continue;
 
-	return rt;
+		pos += rt;
+	}
+
+	return pos;
 }
 
-bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, size_t size)
+bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, dword_t size)
 {
 	WSAPROTOCOL_INFO wi = { 0 };
 	DWORD dw;
@@ -819,13 +822,14 @@ bool_t _socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data,
 	return 1;
 }
 
-res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pcb)
+res_file_t _socket_dupli(res_file_t procfd, void* data, dword_t* pcb)
 {
 	WSAPROTOCOL_INFO wi = { 0 };
 	DWORD dw;
 	SOCKET so;
 	BYTE num[4] = { 0 };
-	BYTE *buf = NULL;
+	void *buf = NULL;
+	BOOL rt;
 
 	dw = (DWORD)sizeof(wi);
 
@@ -834,53 +838,47 @@ res_file_t _socket_dupli(res_file_t procfd, dword_t flag, void* data, size_t* pc
 		return INVALID_FILE;
 	}
 
-	if (flag & FILE_OPEN_OVERLAP)
-		dw = WSA_FLAG_OVERLAPPED;
-	else
-		dw = 0;
-
-	so = WSASocket(0, 0, 0, &wi, 0, dw);
+	so = WSASocket(0, 0, 0, &wi, 0, 0);
 	if (so == INVALID_SOCKET)
 		return INVALID_FILE;
 
 	dw = sizeof(DWORD);
 	if (!ReadFile(procfd, (void*)num, dw, &dw, NULL))
 	{
-		*pcb = 0;
+		if(pcb) *pcb = 0;
+
 		return (res_file_t)so;
 	}
 
-	dw = (((unsigned long)(num[0]) << 24) & 0xFF000000) |
-		(((unsigned long)(num[1]) << 16) & 0x00FF0000) |
-		(((unsigned long)(num[2]) << 8) & 0x0000FF00) |
-		((unsigned long)(num[3]) & 0x000000FF);
+	dw = (((unsigned int)(num[0]) << 24) & 0xFF000000) |
+		(((unsigned int)(num[1]) << 16) & 0x00FF0000) |
+		(((unsigned int)(num[2]) << 8) & 0x0000FF00) |
+		((unsigned int)(num[3]) & 0x000000FF);
 
 	if (!dw)
 	{
-		*pcb = 0;
+		if (pcb) *pcb = 0;
+
 		return (res_file_t)so;
 	}
 
-	if (!ReadFile(procfd, (void*)num, dw, &dw, NULL))
+	buf = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dw);
+
+	rt = ReadFile(procfd, buf, dw, &dw, NULL);
+	
+	if (rt && data && pcb)
 	{
-		*pcb = 0;
-		return (res_file_t)so;
+		dw = (dw < (DWORD)(*pcb)) ? dw : (DWORD)(*pcb);
+		CopyMemory(data, buf, dw);
 	}
-
-	dw = (dw < (DWORD)(*pcb)) ? dw : (DWORD)(*pcb);
-	if (!dw)
+	else
 	{
-		*pcb = 0;
-		return (res_file_t)so;
+		dw = 0;
 	}
 
-	if (!ReadFile(procfd, data, dw, &dw, NULL))
-	{
-		*pcb = 0;
-		return (res_file_t)so;
-	}
+	HeapFree(GetProcessHeap(), 0, buf);
 
-	*pcb = (size_t)dw;
+	if (pcb) *pcb = dw;
 
 	return (res_file_t)so;
 }

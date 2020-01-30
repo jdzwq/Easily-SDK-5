@@ -49,7 +49,7 @@ typedef struct _TAGWORDOPERATOR{
 	int ind;
 	tchar_t pch[CHS_LEN + 1];
 
-	long point;
+	int point;
 
 	PF_TEXT_SIZE pf_text_size;
 	void* ctx;
@@ -287,7 +287,7 @@ void call_tag_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->nlk;
 }
 
-void scan_tag_text(link_t_ptr ptr, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, long bx, long by, long bw, long bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_tag_text(link_t_ptr ptr, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	TAGWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };
