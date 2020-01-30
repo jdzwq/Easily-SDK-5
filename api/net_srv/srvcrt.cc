@@ -26,7 +26,7 @@ LICENSE.GPL3 for more details.
 
 #include "srvcrt.h"
 
-bool_t get_ssl_crt(const tchar_t* path, byte_t* buf, dword_t* pb)
+bool_t get_ssl_crt(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb)
 {
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	tchar_t sz_size[NUM_LEN] = { 0 };
@@ -34,7 +34,7 @@ bool_t get_ssl_crt(const tchar_t* path, byte_t* buf, dword_t* pb)
 	file_t xf;
 	dword_t n_size;
 
-	xsprintf(sz_file, _T("%s/ssl/sslsrv.crt"), path);
+	xsprintf(sz_file, _T("%s/ssl/%s.crt"), path, name);
 	if (!xfile_info(NULL, sz_file, NULL, sz_size, NULL, NULL))
 	{
 		*pb = 0;
@@ -65,7 +65,7 @@ bool_t get_ssl_crt(const tchar_t* path, byte_t* buf, dword_t* pb)
 	return 1;
 }
 
-bool_t get_ssl_key(const tchar_t* path, byte_t* buf, dword_t* pb)
+bool_t get_ssl_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb)
 {
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	tchar_t sz_size[NUM_LEN] = { 0 };
@@ -73,7 +73,7 @@ bool_t get_ssl_key(const tchar_t* path, byte_t* buf, dword_t* pb)
 	file_t xf;
 	dword_t n_size;
 
-	xsprintf(sz_file, _T("%s/ssl/sslsrv.key"), path);
+	xsprintf(sz_file, _T("%s/ssl/%s.key"), path, name);
 	if (!xfile_info(NULL, sz_file, NULL, sz_size, NULL, NULL))
 	{
 		*pb = 0;
@@ -104,7 +104,7 @@ bool_t get_ssl_key(const tchar_t* path, byte_t* buf, dword_t* pb)
 	return 1;
 }
 
-bool_t get_ssh_key(const tchar_t* path, byte_t* buf, dword_t* pb)
+bool_t get_ssh_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb)
 {
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	tchar_t sz_size[NUM_LEN] = { 0 };
@@ -112,7 +112,7 @@ bool_t get_ssh_key(const tchar_t* path, byte_t* buf, dword_t* pb)
 	file_t xf;
 	dword_t n_size;
 
-	xsprintf(sz_file, _T("%s/ssh/sshsrv.key"), path);
+	xsprintf(sz_file, _T("%s/ssh/%s.key"), path, name);
 	if (!xfile_info(NULL, sz_file, NULL, sz_size, NULL, NULL))
 	{
 		*pb = 0;

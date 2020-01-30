@@ -4,7 +4,7 @@ VAR_PATH = /var/run
 DAE_PATH = /lib/systemd/system
 EXE_PATH = ~/Easily-app-5/linux/sbin
 API_PATH = ~/Easily-app-5/linux/sbin/api
-TMP_PATH = ~/Easily-sdk-5/tmp
+INS_PATH = ~/Easily-sdk-5/install
 CUR_PATH = $(abspath ./)
 
 API_OBJS = $(API_PATH)/libxdk.so.1.0 \
@@ -48,17 +48,17 @@ install:
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
 	cd $(CUR_PATH)
 
-	sudo cp -rpf $(TMP_PATH)/* $(SRV_PATH);
+	sudo cp -rpf $(INS_PATH)/* $(SRV_PATH);
 	sudo chmod +x $(SRV_PATH)/xService.sh; 
 
 	if ! test -d $(VAR_PATH); then \
 	sudo mkdir $(VAR_PATH); \
 	fi
 
-	sudo cp -f $(TMP_PATH)/xportd.pid $(VAR_PATH);
+	sudo cp -f $(INS_PATH)/xportd.pid $(VAR_PATH);
 	sudo chmod 777 $(VAR_PATH)/xportd.pid; 
 
-	sudo cp -f $(TMP_PATH)/xportd.service $(DAE_PATH);
+	sudo cp -f $(INS_PATH)/xportd.service $(DAE_PATH);
 
 .PHONY : test
 clean:

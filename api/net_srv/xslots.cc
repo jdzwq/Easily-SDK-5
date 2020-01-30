@@ -157,6 +157,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	tchar_t sz_trace[NUM_LEN] = { 0 };
 	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_site[RES_LEN] = { 0 };
+    tchar_t sz_name[RES_LEN] = { 0 };
 	tchar_t sz_cert[RES_LEN] = { 0 };
 	tchar_t sz_pass[NUM_LEN] = { 0 };
 
@@ -186,11 +187,12 @@ void _xslots_dispatch(xhand_t slot, void* p)
 
 	if (pxp->n_secu == _SECU_SSL)
 	{
+        get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
+        get_param_item(pxp->sz_param, _T("NAME"), sz_name, RES_LEN);
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
-		get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
 
 		dw = X509_CERT_SIZE;
-		if (!get_ssl_crt(sz_path, buf_crt, &dw))
+		if (!get_ssl_crt(sz_path, sz_name, buf_crt, &dw))
 		{
 			raise_user_error(_T("_https_invoke"), _T("http get ssl certif failed"));
 		}
@@ -198,7 +200,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		xssl_set_cert(slot, buf_crt, dw);
 
 		dw = RSA_KEY_SIZE;
-		if (!get_ssl_key(sz_path, buf_key, &dw))
+		if (!get_ssl_key(sz_path, sz_name, buf_key, &dw))
 		{
 			raise_user_error(_T("_https_invoke"), _T("http get ssl rsa key failed"));
 		}
@@ -214,10 +216,11 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{
+        get_param_item(pxp->sz_param, _T("NAME"), sz_name, RES_LEN);
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
 
 		dw = RSA_KEY_SIZE;
-		if (!get_ssh_key(sz_path, buf_key, &dw))
+		if (!get_ssh_key(sz_path, sz_name, buf_key, &dw))
 		{
 			raise_user_error(_T("_https_invoke"), _T("http get ssh rsa key failed"));
 		}

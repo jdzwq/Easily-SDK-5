@@ -43,11 +43,11 @@ LICENSE.GPL3 for more details.
 #define SSH_SSHCLI_CRT		_T("sshcli-crt")
 #define SSH_SSHCLI_KEY		_T("sshcli-key")
 
-bool_t get_ssl_crt(const tchar_t* path, byte_t* buf, dword_t* pb);
+bool_t get_ssl_crt(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb);
 
-bool_t get_ssl_key(const tchar_t* path, byte_t* buf, dword_t* pb);
+bool_t get_ssl_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb);
 
-bool_t get_ssh_key(const tchar_t* path, byte_t* buf, dword_t* pb);
+bool_t get_ssh_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb);
 
 typedef struct _cert_t{
 	xhand_t		srv_crt;
