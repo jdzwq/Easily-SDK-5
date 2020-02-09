@@ -99,7 +99,7 @@ int get_xml_encode(link_t_ptr ptr)
 	else if (xsicmp(ptd->encoding, CHARSET_UTF8) == 0)
 		return _UTF8;
 	else if (xsicmp(ptd->encoding, CHARSET_UTF16) == 0)
-		return (DEF_BOM == BIGBOM)? _UTF16_BIG : _UTF16_LIT;
+		return _UCS2;
 	else
 		return _UNKNOWN;
 }

@@ -101,14 +101,12 @@ void _thread_yield()
 
 void _thread_join(res_thread_t th)
 {
-#ifdef WINCE
 	DWORD dw = 0;
 
 	if (!GetHandleInformation((HANDLE)th, &dw))
 		return;
 
 	WaitForSingleObject((HANDLE)th, INFINITE);
-#endif
 }
 
 /**********************************************************************************/

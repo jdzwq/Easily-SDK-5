@@ -29,6 +29,7 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 
+#define XDB_API_DBEXECUTE	_T("xdb_execute")
 #define XDB_API_DBBATCH		_T("xdb_batch")
 #define XDB_API_DBEXPORT	_T("xdb_export")
 #define XDB_API_DBIMPORT	_T("xdb_import")

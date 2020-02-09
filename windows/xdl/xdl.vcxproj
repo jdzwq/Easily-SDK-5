@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
@@ -88,7 +88,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
-    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)55</TargetName>
   </PropertyGroup>
@@ -187,6 +187,8 @@
     <ClInclude Include="..\..\xdl\diagramview.h" />
     <ClInclude Include="..\..\xdl\formbio.h" />
     <ClInclude Include="..\..\xdl\gridbio.h" />
+    <ClInclude Include="..\..\xdl\impcache.h" />
+    <ClInclude Include="..\..\xdl\memobio.h" />
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\properbio.h" />
@@ -391,6 +393,8 @@
     <ClCompile Include="..\..\xdl\diagramview.c" />
     <ClCompile Include="..\..\xdl\formbio.c" />
     <ClCompile Include="..\..\xdl\gridbio.c" />
+    <ClCompile Include="..\..\xdl\impcache.c" />
+    <ClCompile Include="..\..\xdl\memobio.c" />
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\properbio.c" />

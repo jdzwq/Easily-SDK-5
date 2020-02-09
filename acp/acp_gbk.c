@@ -15023,13 +15023,6 @@ void gb2312_unicode_code(int index, unsigned short* code, unsigned short* val, u
 
 int gb2312_code_sequence(unsigned char b)
 {
-	/*if (b == 0xFF) //_UTF16_LIT
-	return 2;
-	else if (b == 0xFE) //_UTF16_BIG
-	return 2;
-	else if (b == 0xEF) //_UTF8
-	return 3;*/
-
 	if ((b & ~0x7F) == 0)
 		return 1;
 
@@ -15054,10 +15047,9 @@ int unicode_seek_gb2312(unsigned short ucs, unsigned char* mbs)
 	{
 		if (mbs)
 		{
-			mbs[0] = GETLCHAR(ucs);
-			mbs[1] = GETHCHAR(ucs);
+			mbs[0] = ALT_CHAR;
 		}
-		return 2;
+		return 1;
 	}
 
 	if (ucs >= 0x0000 && ucs <= 0x007F)
@@ -15116,14 +15108,6 @@ int gb2312_seek_unicode(unsigned char* mbs, unsigned short* ucs)
 	}
 
 	ch = MAKESHORT(mbs[0], mbs[1]);
-	if (ch == BIGBOM || ch == LITBOM)
-	{
-		if (ucs)
-		{
-			*ucs = ch;
-		}
-		return 1;
-	}
 
 	while (min <= max)
 	{

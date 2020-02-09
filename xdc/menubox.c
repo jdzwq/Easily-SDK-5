@@ -40,7 +40,7 @@ typedef struct _menu_delta_t{
 }menu_delta_t;
 
 #define GETMENUDELTA(widget) 	((menu_delta_t*)widget_get_user_delta(widget))
-#define SETMENUDELTA(widget,ptd) widget_set_user_delta(widget,(var_int)ptd)
+#define SETMENUDELTA(widget,ptd) widget_set_user_delta(widget,(var_long)ptd)
 
 /**********************************************************************************************/
 static void _menubox_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -234,7 +234,7 @@ void hand_menu_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	else
 		code = 0;
 
-	widget_post_command(widget_get_owner(widget), code, widget_get_user_id(widget), (var_int)widget);
+	widget_post_command(widget_get_owner(widget), code, widget_get_user_id(widget), (var_long)widget);
 }
 
 void hand_menu_rbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -263,7 +263,7 @@ void hand_menu_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	else
 		code = 0;
 
-	widget_post_command(widget_get_owner(widget), code, widget_get_user_id(widget), (var_int)widget);
+	widget_post_command(widget_get_owner(widget), code, widget_get_user_id(widget), (var_long)widget);
 }
 
 void hand_menu_scroll(res_win_t widget, bool_t bHorz, int nLine)

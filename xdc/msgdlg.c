@@ -63,7 +63,7 @@ typedef struct _MSGDLGDATA{
 }MSGDLGDATA;
 
 #define GETMSGDLGDELTA(ph) 	(msgdlg_delta_t*)widget_get_user_delta(ph)
-#define SETMSGDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETMSGDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /**********************************************************************************/
 int hand_msgdlg_create(res_win_t widget, void* data)
@@ -256,7 +256,7 @@ void hand_msgdlg_destroy(res_win_t widget)
 	widgetex_hand_destroy(widget);
 }
 
-void hand_msgdlg_menu_command(res_win_t widget, int code, int cid, var_int data)
+void hand_msgdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	msgdlg_delta_t* ptd = GETMSGDLGDELTA(widget);
 

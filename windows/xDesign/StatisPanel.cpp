@@ -54,7 +54,7 @@ typedef struct tagStatisPanelDelta{
 }StatisPanelDelta;
 
 #define GETSTATISPANELDELTA(ph) 		(StatisPanelDelta*)widget_get_user_delta(ph)
-#define SETSTATISPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETSTATISPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 #define STATISPANEL_ACCEL_COUNT	5
 accel_t	STATISPANEL_ACCEL[STATISPANEL_ACCEL_COUNT] = {
@@ -1224,7 +1224,7 @@ void StatisPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void StatisPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void StatisPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
@@ -1251,7 +1251,7 @@ void StatisPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void StatisPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void StatisPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 

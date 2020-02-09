@@ -695,6 +695,7 @@ static bool_t http_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 
 	while (1)
 	{
+		string_empty(vs);
 		dw = 0;
 		if (!stream_read_line(stream, vs, &dw))
 		{
@@ -702,7 +703,7 @@ static bool_t http_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 			break;
 		}
 
-		if (!dw)
+		if (string_len(vs) == 0)
 			break;
 
 		xmem_zero((void*)&fi, sizeof(file_info_t));
@@ -713,8 +714,6 @@ static bool_t http_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 		{
 			(*pf)(&fi, pa);
 		}
-
-		string_empty(vs);
 	}
 
 	string_free(vs);

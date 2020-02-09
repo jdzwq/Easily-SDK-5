@@ -47,7 +47,7 @@ typedef struct _properdlg_delta_t{
 }properdlg_delta_t;
 
 #define GETPROPERDLGDELTA(ph) 	(properdlg_delta_t*)widget_get_user_delta(ph)
-#define SETPROPERDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETPROPERDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /**********************************************************************************/
 void properdlg_on_ok(res_win_t widget)
@@ -135,7 +135,7 @@ void hand_properdlg_destroy(res_win_t widget)
 	widgetex_hand_destroy(widget);
 }
 
-void hand_properdlg_menu_command(res_win_t widget, int code, int cid, var_int data)
+void hand_properdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	properdlg_delta_t* ptd = GETPROPERDLGDELTA(widget);
 

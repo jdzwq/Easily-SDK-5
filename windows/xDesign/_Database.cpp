@@ -62,6 +62,7 @@ DBCTX* _CreateDBCtx(void)
 	pct->pf_db_schema = (PF_DB_SCHEMA)GetProcAddress(lib, "db_schema");
 	pct->pf_db_fetch = (PF_DB_FETCH)GetProcAddress(lib, "db_fetch");
 	pct->pf_db_update = (PF_DB_UPDATE)GetProcAddress(lib, "db_update");
+	pct->pf_db_batch = (PF_DB_BATCH)GetProcAddress(lib, "db_batch");
 	pct->pf_db_rows = (PF_DB_ROWS)GetProcAddress(lib, "db_rows");
 	pct->pf_db_call_func = (PF_DB_CALL_FUNC)GetProcAddress(lib, "db_call_func");
 	pct->pf_db_error = (PF_DB_ERROR)GetProcAddress(lib, "db_error");
@@ -118,6 +119,20 @@ bool_t _DBExec(DBCTX* pct, const tchar_t* sql)
 
 	bool_t rt = (*(pct->pf_db_exec))(pct->xdb, sql, -1);
 	
+	widget_set_cursor(NULL, CURSOR_ARROW);
+
+	return rt;
+}
+
+bool_t _DBBatch(DBCTX* pct, stream_t stm)
+{
+	XDL_ASSERT(pct && pct->pf_db_batch);
+	XDL_ASSERT(pct->xdb);
+
+	widget_set_cursor(NULL, CURSOR_WAIT);
+
+	bool_t rt = (*(pct->pf_db_batch))(pct->xdb, stm);
+
 	widget_set_cursor(NULL, CURSOR_ARROW);
 
 	return rt;
@@ -302,6 +317,39 @@ bool_t DBExec(DBCTX* pct, const tchar_t* sz_sql)
 	}
 
 	if (!_DBExec(pct, sz_sql))
+	{
+		_DBError(pct, szERR, ERR_LEN);
+		raise_user_error(_T("-1"), szERR);
+	}
+
+	_DBClose(pct);
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+
+	_DBClose(pct);
+
+	get_last_error(NULL, szERR, ERR_LEN);
+	ShowMsg(MSGICO_ERR, szERR);
+
+	return 0;
+}
+
+bool_t DBBatch(DBCTX* pct, stream_t stm)
+{
+	tchar_t szERR[ERR_LEN + 1] = { 0 };
+
+	TRY_CATCH;
+
+	if (!_DBOpenDSN(pct))
+	{
+		raise_user_error(_T("-1"), _T("连接数据库失败！"));
+	}
+
+	if (!_DBBatch(pct, stm))
 	{
 		_DBError(pct, szERR, ERR_LEN);
 		raise_user_error(_T("-1"), szERR);

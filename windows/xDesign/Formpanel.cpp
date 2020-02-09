@@ -56,7 +56,7 @@ typedef struct tagFormPanelDelta{
 }FormPanelDelta;
 
 #define GETFORMPANELDELTA(ph) 		(FormPanelDelta*)widget_get_user_delta(ph)
-#define SETFORMPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETFORMPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 #define FORMPANEL_ACCEL_COUNT	5
 accel_t	FORMPANEL_ACCEL[FORMPANEL_ACCEL_COUNT] = {
@@ -2258,7 +2258,7 @@ void FormPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void FormPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void FormPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
@@ -2292,7 +2292,7 @@ void FormPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void FormPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void FormPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 

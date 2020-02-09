@@ -47,7 +47,7 @@ typedef struct _editbox_delta_t{
 }editbox_delta_t;
 
 #define GETEDITBOXDELTA(ph) 	(editbox_delta_t*)widget_get_user_delta(ph)
-#define SETEDITBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETEDITBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 int _editbox_get_text(void* data, tchar_t* buf, int max)
 {
@@ -114,7 +114,7 @@ void _editbox_auto_resize(res_win_t widget)
 }
 
 /*****************************************************************************/
-void noti_editbox_command(res_win_t widget, int code, var_int data)
+void noti_editbox_command(res_win_t widget, int code, var_long data)
 {
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
 
@@ -188,7 +188,7 @@ void hand_editbox_kill_focus(res_win_t widget, res_win_t wt)
 
 	if (widget_is_editor(widget))
 	{
-		noti_editbox_command(widget, COMMAND_COMMIT, (var_int)NULL);
+		noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
 	}
 }
 
@@ -204,7 +204,7 @@ void hand_editbox_keydown(res_win_t widget, int key)
 			break;
 		if (_TEXTOR_PRESS_ACCEPT == hand_textor_back(&ptd->textor))
 		{
-			noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+			noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 		}
 		break;
 	case KEY_DELETE:
@@ -212,7 +212,7 @@ void hand_editbox_keydown(res_win_t widget, int key)
 			break;
 		if (_TEXTOR_PRESS_ACCEPT == hand_textor_delete(&ptd->textor))
 		{
-			noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+			noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 		}
 		break;
 	case KEY_TAB:
@@ -223,7 +223,7 @@ void hand_editbox_keydown(res_win_t widget, int key)
 			pxa = widgetex_get_xface_ptr(widget);
 			if (is_null(pxa->text_wrap))
 			{
-				noti_editbox_command(widget, COMMAND_COMMIT, (var_int)NULL);
+				noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
 			}
 		}
 		break;
@@ -309,7 +309,7 @@ void hand_editbox_char(res_win_t widget, tchar_t ch)
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
 	{
-		noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 
 		if (ptd->b_auto)
 		{
@@ -334,7 +334,7 @@ void hand_editbox_cut(res_win_t widget)
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_cut(&ptd->textor))
 	{
-		noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 
 		if (ptd->b_auto)
 		{
@@ -352,7 +352,7 @@ void hand_editbox_paste(res_win_t widget)
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_paste(&ptd->textor))
 	{
-		noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 
 		if (ptd->b_auto)
 		{
@@ -370,7 +370,7 @@ void hand_editbox_undo(res_win_t widget)
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_undo(&ptd->textor))
 	{
-		noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 
 		if (ptd->b_auto)
 		{
@@ -442,7 +442,7 @@ void hand_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	hand_textor_scroll(&ptd->textor, bHorz, nLine);
 }
 
-void hand_editbox_menu_command(res_win_t widget, int code, int cid, var_int data)
+void hand_editbox_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
 
@@ -581,7 +581,7 @@ void editbox_set_text(res_win_t widget, const tchar_t* text)
 		editbox_redraw(widget);
 	}
 
-	noti_editbox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+	noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
 
 int editbox_get_text(res_win_t widget, tchar_t* buf, int max)
@@ -686,7 +686,7 @@ res_win_t editbox_create_keybox(res_win_t widget, dword_t style, const xrect_t* 
 	widget_update(keybox);
 	widget_show(keybox, WD_SHOW_NORMAL);
 
-	widget_set_user_prop(editbox, XDCKEYBOX, (var_int)keybox);
+	widget_set_user_prop(editbox, XDCKEYBOX, (var_long)keybox);
 
 	return editbox;
 }

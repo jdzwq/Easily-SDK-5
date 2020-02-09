@@ -75,7 +75,7 @@ extern "C" {
 
 #ifdef XDK_SUPPORT_THREAD
 		/*master thread id*/
-		dword_t		thread_id;
+		pid_t		thread_id;
 		/*thread local storage index*/
 		tls_key_t	tls_thr_zero;
 		tls_key_t	tls_thr_zone;

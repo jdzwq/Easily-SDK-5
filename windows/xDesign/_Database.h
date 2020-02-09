@@ -37,6 +37,7 @@ typedef struct _DBCTX{
 	PF_DB_SCHEMA	pf_db_schema;
 	PF_DB_FETCH		pf_db_fetch;
 	PF_DB_UPDATE	pf_db_update;
+	PF_DB_BATCH		pf_db_batch;
 	PF_DB_ROWS		pf_db_rows;
 	PF_DB_ERROR		pf_db_error;
 	PF_DB_CALL_FUNC	pf_db_call_func;
@@ -58,6 +59,8 @@ DBCTX*		DBOpen(const tchar_t* conn);
 void		DBClose(DBCTX* pctx);
 
 bool_t		DBExec(DBCTX* pctx, const tchar_t* sql);
+
+bool_t		DBBatch(DBCTX* pctx, stream_t stm);
 
 bool_t		DBSelect(DBCTX* pctx, link_t_ptr grid, const tchar_t* sql);
 

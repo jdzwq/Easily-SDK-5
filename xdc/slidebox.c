@@ -40,10 +40,10 @@ typedef struct _slidebox_delta_t{
 }slidebox_delta_t;
 
 #define GETSLIDEBOXDELTA(ph) 	(slidebox_delta_t*)widget_get_user_delta(ph)
-#define SETSLIDEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETSLIDEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /*********************************************************************************/
-void noti_slidebox_command(res_win_t widget, int code, var_int data)
+void noti_slidebox_command(res_win_t widget, int code, var_long data)
 {
 	slidebox_delta_t* ptd = GETSLIDEBOXDELTA(widget);
 
@@ -100,7 +100,7 @@ void slidebox_on_moved(res_win_t widget, const xpoint_t* pxp)
 
 	widget_redraw(widget, NULL, 1);
 
-	noti_slidebox_command(widget, COMMAND_UPDATE, (var_int)NULL);
+	noti_slidebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
 /*********************************************************************************/
 int hand_slidebox_create(res_win_t widget, void* data)

@@ -48,13 +48,6 @@ int utf16lit_seek_unicode(unsigned char* mbs, unsigned short* ucs)
 			*ucs = ((ch & ~0xD800) << 10) | (cl & ~0xDC00) + 0x10000;
 		}
 	}
-	else if (ch == 0xFEFF)
-	{
-		if (ucs)
-		{
-			*ucs = ALT_CHAR;
-		}
-	}
 	else
 	{
 		if (ucs)
@@ -72,6 +65,15 @@ int unicode_seek_utf16lit(unsigned short ucs, unsigned char* mbs)
 		return 0;
 
 	if (ucs < 0x10000)
+	{
+		if (mbs)
+		{
+			mbs[0] = LIT_GETLCHAR(ucs);
+			mbs[1] = LIT_GETHCHAR(ucs);
+		}
+		return 2;
+	}
+	else if (ucs == DEFBOM)
 	{
 		if (mbs)
 		{
@@ -117,13 +119,6 @@ int utf16big_seek_unicode(unsigned char* mbs, unsigned short* ucs)
 			*ucs = ((ch & ~0xD800) << 10) | (cl & ~0xDC00) + 0x10000;
 		}
 	}
-	else if (ch == 0xFEFF)
-	{
-		if (ucs)
-		{
-			*ucs = ALT_CHAR;
-		}
-	}
 	else
 	{
 		if (ucs)
@@ -141,6 +136,15 @@ int unicode_seek_utf16big(unsigned short ucs, unsigned char* mbs)
 		return 0;
 
 	if (ucs < 0x10000)
+	{
+		if (mbs)
+		{
+			mbs[0] = BIG_GETLCHAR(ucs);
+			mbs[1] = BIG_GETHCHAR(ucs);
+		}
+		return 2;
+	}
+	else if (ucs == DEFBOM)
 	{
 		if (mbs)
 		{

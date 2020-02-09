@@ -51,7 +51,7 @@ typedef struct _richctrl_delta_t{
 }richctrl_delta_t;
 
 #define GETRICHCTRLDELTA(ph) 	(richctrl_delta_t*)widget_get_user_delta(ph)
-#define SETRICHCTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETRICHCTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 static int _richctrl_get_text(void* data, tchar_t* buf, int max)
 {
@@ -189,9 +189,9 @@ void hand_richctrl_kill_focus(res_win_t widget, res_win_t wt)
 	if (widget_is_editor(widget))
 	{
 		if (richctrl_get_dirty(widget))
-			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 		else
-			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
 	}
 }
 
@@ -216,12 +216,12 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 
 		if (_TEXTOR_PRESS_ACCEPT == hand_textor_back(&ptd->textor))
 		{
-			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_int)NULL);
+			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
 			if (ptd->anch != (link_t_ptr)ptd->textor.object)
 			{
 				ptd->anch = (link_t_ptr)ptd->textor.object;
-				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)NULL);
+				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 			}
 		}
 		break;
@@ -231,12 +231,12 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 
 		if (_TEXTOR_PRESS_ACCEPT == hand_textor_delete(&ptd->textor))
 		{
-			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_int)NULL);
+			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
 			if (ptd->anch != (link_t_ptr)ptd->textor.object)
 			{
 				ptd->anch = (link_t_ptr)ptd->textor.object;
-				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)NULL);
+				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 			}
 		}
 		break;
@@ -256,7 +256,7 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->anch = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_RIGHT:
@@ -265,7 +265,7 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->anch = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_UP:
@@ -274,7 +274,7 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->anch = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_DOWN:
@@ -283,7 +283,7 @@ void hand_richctrl_keydown(res_win_t widget, int key)
 		if (ptd->anch != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->anch = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 		}
 		break;
 	case KEY_PAGEDOWN:
@@ -372,7 +372,7 @@ void hand_richctrl_char(res_win_t widget, tchar_t ch)
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
 	{
-		widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_int)NULL);
+		widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 	}
 }
 
@@ -405,12 +405,12 @@ void hand_richctrl_cut(res_win_t widget)
 	if (hand_textor_cut(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
 		return;
 
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_int)NULL);
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
 
@@ -430,12 +430,12 @@ void hand_richctrl_paste(res_win_t widget)
 	if (hand_textor_paste(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
 		return;
 
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_int)NULL);
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
 
@@ -455,12 +455,12 @@ void hand_richctrl_undo(res_win_t widget)
 	if (hand_textor_undo(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
 		return;
 
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_int)NULL);
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
 
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
 
@@ -492,7 +492,7 @@ void hand_richctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -630,7 +630,7 @@ void hand_richctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_richctrl_self_command(res_win_t widget, int code, var_int data)
+void hand_richctrl_self_command(res_win_t widget, int code, var_long data)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 
@@ -650,7 +650,7 @@ void hand_richctrl_self_command(res_win_t widget, int code, var_int data)
 	}
 }
 
-void hand_richctrl_menu_command(res_win_t widget, int code, int cid, var_int data)
+void hand_richctrl_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	richctrl_delta_t* ptd = GETRICHCTRLDELTA(widget);
 
@@ -770,7 +770,7 @@ void richctrl_attach(res_win_t widget, link_t_ptr data)
 	ptd->anch = NULL;
 	richctrl_redraw(widget);
 
-	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)NULL);
+	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 }
 
 link_t_ptr richctrl_fetch(res_win_t widget)
@@ -826,7 +826,7 @@ void richctrl_set_focus_anch(res_win_t widget, link_t_ptr nlk)
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -929,7 +929,7 @@ void richctrl_redraw(res_win_t widget)
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -947,7 +947,7 @@ void richctrl_select_cur(res_win_t widget)
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 
@@ -965,7 +965,7 @@ void richctrl_select_all(res_win_t widget)
 	if (ptd->anch != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->anch = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_int)ptd->anch);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)ptd->anch);
 	}
 }
 

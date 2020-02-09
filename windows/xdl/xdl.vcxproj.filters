@@ -627,6 +627,12 @@
     <ClInclude Include="..\..\xdl\docattr.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\impcache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\memobio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -1182,6 +1188,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\strutil.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\impcache.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\memobio.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

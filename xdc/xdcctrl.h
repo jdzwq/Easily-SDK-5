@@ -3030,9 +3030,9 @@ XDC_API res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const x
 */
 XDC_API void	ownerctrl_redraw(res_win_t widget);
 
-XDC_API void ownerctrl_set_delta(res_win_t widget, var_int var);
+XDC_API void ownerctrl_set_delta(res_win_t widget, var_long var);
 
-XDC_API var_int ownerctrl_get_delta(res_win_t widget);
+XDC_API var_long ownerctrl_get_delta(res_win_t widget);
 
 /*******************************curve control************************************************************/
 typedef struct _NOTICE_CURVE{

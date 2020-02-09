@@ -208,6 +208,11 @@ bool_t parse_xml_doc_from_stream(link_t_ptr xml, stream_t xs)
 		stream_set_encode(xs, encode);
 	}
 
+	if (encode == _UTF16_LIT || encode == _UTF16_BIG)
+	{
+		stream_read_utfbom(xs, NULL);
+	}
+
 	bo.obj = (void*)xs;
 	bo.max = 0;
 	bo.encode = encode;
@@ -257,17 +262,13 @@ bool_t format_xml_doc_to_stream(link_t_ptr xml, stream_t xs)
 	if_operator_t bo = { 0 };
 
 	int encode;
-	byte_t bom[4] = { 0 };
-	int len;
 
 	encode = get_xml_encode(xml);
 	stream_set_encode(xs, encode);
 
 	if (encode == _UTF16_LIT || encode == _UTF16_BIG)
 	{
-		len = format_utfbom(encode, bom);
-		if (!stream_write_bytes(xs, bom, len))
-			return 0;
+		stream_write_utfbom(xs, NULL);
 	}
 
 	bo.obj = (void*)xs;
@@ -286,14 +287,12 @@ bool_t parse_xml_doc_from_bytes(link_t_ptr xml, const byte_t* str, dword_t len)
 {
 	if_operator_t bo = { 0 };
 
-	int bytes;
-	int encode = _UNKNOWN;
+	int encode, bytes = 0;
 
 	if (!str || !len)
 		return 0;
 
-	if (len > 3)
-		encode = parse_utfbom(str, 3);
+	encode = parse_utfbom(str, 3);
 
 	if (encode == _UNKNOWN)
 	{
@@ -363,13 +362,19 @@ dword_t format_xml_doc_to_bytes(link_t_ptr xml, byte_t* buf, dword_t max)
 
 	if (encode == _UTF16_LIT || encode == _UTF16_BIG)
 	{
-		total += format_utfbom(encode, ((buf) ? buf + total : NULL));
+		total += format_utfbom(encode, ((buf) ? (buf + total) : NULL));
 		if (total >= max)
 			return total;
+
+		max -= total;
+		if (buf)
+		{
+			buf += total;
+		}
 	}
 
-	bo.obj = (void*)((buf) ? buf + total : NULL);
-	bo.max = max - total;
+	bo.obj = (void*)buf;
+	bo.max = max;
 	bo.pos = 0;
 	bo.encode = encode;
 	bo.pf_write_char = call_buffer_write_char;
@@ -378,7 +383,7 @@ dword_t format_xml_doc_to_bytes(link_t_ptr xml, byte_t* buf, dword_t max)
 	bo.pf_can_escape = call_buffer_can_escape;
 
 	if (format_xml_doc_to_object(xml, &bo))
-		return bo.pos;
+		return (bo.pos + total);
 	else
 		return 0;
 }

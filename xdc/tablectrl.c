@@ -53,7 +53,7 @@ typedef struct _tablectrl_delta_t{
 }tablectrl_delta_t;
 
 #define GETTABLECTRLDELTA(ph) 	(tablectrl_delta_t*)widget_get_user_delta(ph)
-#define SETTABLECTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETTABLECTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 #define TABLECTRL_MIN_SPLIT		10
 /***************************************************************************************/
@@ -710,7 +710,7 @@ void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_tablectrl_child_command(res_win_t widget, int code, var_int data)
+void hand_tablectrl_child_command(res_win_t widget, int code, var_long data)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 

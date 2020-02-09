@@ -194,7 +194,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		dw = X509_CERT_SIZE;
 		if (!get_ssl_crt(sz_path, sz_name, buf_crt, &dw))
 		{
-			raise_user_error(_T("_https_invoke"), _T("http get ssl certif failed"));
+			raise_user_error(_T("_slots_invoke"), _T("http get ssl certif failed"));
 		}
 
 		xssl_set_cert(slot, buf_crt, dw);
@@ -202,7 +202,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		dw = RSA_KEY_SIZE;
 		if (!get_ssl_key(sz_path, sz_name, buf_key, &dw))
 		{
-			raise_user_error(_T("_https_invoke"), _T("http get ssl rsa key failed"));
+			raise_user_error(_T("_slots_invoke"), _T("http get ssl rsa key failed"));
 		}
 
 		xssl_set_rsa(slot, buf_key, dw, sz_pass, -1);
@@ -222,7 +222,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		dw = RSA_KEY_SIZE;
 		if (!get_ssh_key(sz_path, sz_name, buf_key, &dw))
 		{
-			raise_user_error(_T("_https_invoke"), _T("http get ssh rsa key failed"));
+			raise_user_error(_T("_slots_invoke"), _T("http get ssh rsa key failed"));
 		}
 
 		//xssh_set_rsa(slot, buf_key, dw, sz_pass, -1);

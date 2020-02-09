@@ -50,7 +50,7 @@ typedef struct _griddlg_delta_t{
 }griddlg_delta_t;
 
 #define GETGRIDDLGDELTA(ph) 	(griddlg_delta_t*)widget_get_user_delta(ph)
-#define SETGRIDDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETGRIDDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /**********************************************************************************/
 void griddlg_on_ok(res_win_t widget)
@@ -306,7 +306,7 @@ void hand_griddlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	end_canvas_paint(canv, dc, pxr);
 }
 
-void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_int data)
+void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
 

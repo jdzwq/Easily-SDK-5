@@ -56,7 +56,7 @@ typedef struct tagDiagramPanelDelta{
 }DiagramPanelDelta;
 
 #define GETDIAGRAMPANELDELTA(ph) 		(DiagramPanelDelta*)widget_get_user_delta(ph)
-#define SETDIAGRAMPANELDELTA(ph,ptd)		widget_set_user_delta(ph,(var_int)ptd)
+#define SETDIAGRAMPANELDELTA(ph,ptd)		widget_set_user_delta(ph,(var_long)ptd)
 
 #define DIAGRAMPANEL_ACCEL_COUNT	5
 accel_t	DIAGRAMPANEL_ACCEL[DIAGRAMPANEL_ACCEL_COUNT] = {
@@ -1496,7 +1496,7 @@ void DiagramPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
@@ -1523,7 +1523,7 @@ void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void DiagramPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void DiagramPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 

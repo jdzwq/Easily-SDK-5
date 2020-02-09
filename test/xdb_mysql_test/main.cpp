@@ -26,26 +26,26 @@ PF_DB_IMPORT pf_db_import;
 PF_DB_EXPORT pf_db_export;
 PF_DB_CALL_FUNC pf_db_call_func;
 
+#define odbcdsn _T("./demo_stub.dsn")
 //#define odbcdsn _T("./demo_odbc.dsn")
-//#define odbcdsn _T("./demo_stub.dsn")
-#define odbcdsn _T("./demo_mysql.dsn")
+//#define odbcdsn _T("./demo_mysql.dsn")
 //#define odbcdsn _T("./demo_oci.dsn")
 
 #if defined(_OS_WINDOWS)
+#define xdblib	_T("xdb_stub.dll")
+//#define xdblib	_T("xdb_odbc.dll")
 //#define xdblib	_T("xdb_mysql.dll")
 //#define xdblib	_T("xdb_oci.dll")
-//#define xdblib	_T("xdb_odbc.dll")
-#define xdblib	_T("xdb_stub.dll")
 #elif defined(_OS_MACOS)
 //#define xdblib	_T("libxdb_mysql.dylib")
 #define xdblib	_T("../sbin/api/libxdb_mysql.dylib")
 #elif defined(_OS_LINUX)
-//#define xdblib	_T("libxdb_oci.so")
-#define xdblib	_T("libxdb_oci.so")
+//#define xdblib	_T("libxdb_mysql.so")
+#define xdblib	_T("libxdb_mysql.so")
 #endif
 
 
-unsigned int STDCALL odbc_db_datetime(void* param)
+unsigned int STDCALL test_xdb_datetime(void* param)
 {
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -56,7 +56,7 @@ unsigned int STDCALL odbc_db_datetime(void* param)
 
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 
-	xdl_thread_init();
+	xdl_thread_init(0);
 
 	TRY_CATCH;
 
@@ -127,7 +127,7 @@ ONERROR:
 	return 0;
 }
 
-unsigned int STDCALL odbc_db_schema(void* param)
+unsigned int STDCALL test_xdb_schema(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -139,7 +139,7 @@ unsigned int STDCALL odbc_db_schema(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -204,7 +204,7 @@ ONERROR:
 }
 
 
-unsigned int STDCALL odbc_db_exec(void* param)
+unsigned int STDCALL test_xdb_exec(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -216,7 +216,7 @@ unsigned int STDCALL odbc_db_exec(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -228,7 +228,7 @@ unsigned int STDCALL odbc_db_exec(void* param)
     
     vs = string_alloc();
     
-    string_append(vs, _T("insert into dogs (did,dname,dage,dprice) values ('%s','%s','%s','%s')\n"),
+    string_append(vs, _T("insert into dogs (did,dname,dage,dprice) values ('%s','%s','%s','%s')\r\n"),
                   _T("1"),
                   _T("旺\n财"),
                   _T("2014-01-01"),
@@ -287,7 +287,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_select(void* param)
+unsigned int STDCALL test_xdb_select(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -299,7 +299,7 @@ unsigned int STDCALL odbc_db_select(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -373,7 +373,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_proc(void* param)
+unsigned int STDCALL test_xdb_proc(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -385,7 +385,7 @@ unsigned int STDCALL odbc_db_proc(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -493,7 +493,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_batch(void* param)
+unsigned int STDCALL test_xdb_batch(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -509,7 +509,7 @@ unsigned int STDCALL odbc_db_batch(void* param)
     tchar_t enc[INT_LEN] = { 0 };
     byte_t bom[4] = { 0 };
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -534,6 +534,8 @@ unsigned int STDCALL odbc_db_batch(void* param)
     
     stream = stream_alloc(xfile_bio(file));
     stream_set_encode(stream, parse_charset(enc));
+	stream_read_utfbom(stream, NULL);
+
     stream_set_mode(stream, LINE_OPERA);
     stream_set_size(stream, size);
     
@@ -591,7 +593,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_export(void* param)
+unsigned int STDCALL test_xdb_export(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -607,7 +609,7 @@ unsigned int STDCALL odbc_db_export(void* param)
     
     byte_t bom[4] = { 0 };
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -632,8 +634,8 @@ unsigned int STDCALL odbc_db_export(void* param)
     }
     
     stream = stream_alloc(xfile_bio(file));
-    
     stream_set_encode(stream, _UTF8);
+	stream_write_utfbom(stream, NULL);
     
     rt = (*pf_db_export)(xdb, stream, NULL);
     
@@ -689,7 +691,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_import(void* param)
+unsigned int STDCALL test_xdb_import(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -706,7 +708,7 @@ unsigned int STDCALL odbc_db_import(void* param)
     
     byte_t bom[4] = { 0 };
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -729,6 +731,8 @@ unsigned int STDCALL odbc_db_import(void* param)
     
     stream = stream_alloc(xfile_bio(file));
     stream_set_encode(stream, parse_charset(enc));
+	stream_read_utfbom(stream, NULL);
+
     stream_set_mode(stream, LINE_OPERA);
     stream_set_size(stream, xstol(fsize));
     
@@ -786,7 +790,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_write_blob(void* param)
+unsigned int STDCALL test_xdb_write_blob(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -802,7 +806,7 @@ unsigned int STDCALL odbc_db_write_blob(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -879,7 +883,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_read_blob(void* param)
+unsigned int STDCALL test_xdb_read_blob(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -895,7 +899,7 @@ unsigned int STDCALL odbc_db_read_blob(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -966,7 +970,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_write_clob(void* param)
+unsigned int STDCALL test_xdb_write_clob(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -986,7 +990,7 @@ unsigned int STDCALL odbc_db_write_clob(void* param)
     byte_t* file_buf = NULL;
     tchar_t* base_buf = NULL;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -1084,7 +1088,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_read_clob(void* param)
+unsigned int STDCALL test_xdb_read_clob(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -1103,7 +1107,7 @@ unsigned int STDCALL odbc_db_read_clob(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -1183,7 +1187,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_write_xdoc(void* param)
+unsigned int STDCALL test_xdb_write_xdoc(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -1195,7 +1199,7 @@ unsigned int STDCALL odbc_db_write_xdoc(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -1273,7 +1277,7 @@ ONERROR:
     return 0;
 }
 
-unsigned int STDCALL odbc_db_read_xdoc(void* param)
+unsigned int STDCALL test_xdb_read_xdoc(void* param)
 {
     tchar_t errcode[NUM_LEN + 1] = { 0 };
     tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -1285,7 +1289,7 @@ unsigned int STDCALL odbc_db_read_xdoc(void* param)
     
     bool_t rt;
     
-    xdl_thread_init();
+    xdl_thread_init(0);
     
     TRY_CATCH;
     
@@ -1383,19 +1387,19 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < maxt; i++)
     {
-        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_datetime, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_datetime, (void*)0);
         
-        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_schema, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_schema, (void*)0);
                       
-        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_exec, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_exec, (void*)0);
         
-        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_select, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_select, (void*)0);
         
-        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_batch, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_batch, (void*)0);
         
-        //thread_start(&pth[i], (PF_THREADFUNC)odbc_db_export, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_export, (void*)0);
         
-        thread_start(&pth[i], (PF_THREADFUNC)odbc_db_import, (void*)0);
+        thread_start(&pth[i], (PF_THREADFUNC)test_xdb_import, (void*)0);
         
         thread_sleep(10);
     }

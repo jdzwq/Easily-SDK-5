@@ -29,6 +29,7 @@ LICENSE.GPL3 for more details.
 typedef struct _xdb_block_t{
 	XDB xdb;
 
+	PF_DB_EXEC	pf_db_exec;
 	PF_DB_SCHEMA pf_db_schema;
 	PF_DB_EXPORT pf_db_export;
 	PF_DB_IMPORT pf_db_import;
@@ -38,15 +39,12 @@ typedef struct _xdb_block_t{
 	PF_DB_DATETIME pf_db_datetime;
 	PF_DB_ROWS pf_db_rows;
 	PF_DB_ERROR pf_db_error;
-	PF_DB_TRACE pf_db_trace;
 	PF_DB_READ_BLOB pf_db_read_blob;
 	PF_DB_WRITE_BLOB pf_db_write_blob;
 	PF_DB_READ_CLOB pf_db_read_clob;
 	PF_DB_WRITE_CLOB pf_db_write_clob;
 	PF_DB_READ_XDOC pf_db_read_xdoc;
 	PF_DB_WRITE_XDOC pf_db_write_xdoc;
-
-	stream_t stm;
 }xdb_block_t;
 
 static void _format_db_range(tchar_t* sz_range, int from, int to, int all)
@@ -325,7 +323,6 @@ bool_t _invoke_export(const https_block_t* pb, xdb_block_t* pxb)
 
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	xhttp_set_response_content_type_charset(pb->http, sz_enc, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
 	xsprintf(sz_range, _T("rows /%d"), n_rows);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, _T("rows"), -1);
@@ -461,6 +458,170 @@ ONERROR:
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[ODBC: IMPORT]"), -1);
+
+		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
+	}
+
+	return 0;
+}
+
+bool_t _invoke_execute(const https_block_t* pb, xdb_block_t* pxb)
+{
+	tchar_t sz_enc[RES_LEN + 1] = { 0 };
+	tchar_t sz_size[NUM_LEN + 1] = { 0 };
+	tchar_t sz_range[META_LEN + 1] = { 0 };
+
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	byte_t** pbuf = NULL;
+	dword_t n_bom, n_size = 0;
+	int bom;
+
+	tchar_t* d_sql = NULL;
+	int n_rows, n_sql = 0;
+
+	string_t vs_sql = NULL;
+	string_t vs = NULL;
+
+	stream_t stream;
+
+	TRY_CATCH;
+
+	if (xhttp_need_expect(pb->http))
+	{
+		xhttp_send_continue(pb->http);
+	}
+
+	if (xhttp_is_lined_recv(pb->http))
+	{
+		stream = xhttp_get_recv_stream(pb->http);
+
+		stream_read_utfbom(stream, NULL);
+
+		vs_sql = string_alloc();
+		vs = string_alloc();
+
+		while(1){
+			string_empty(vs);
+			n_size = 0;
+
+			if (!(stream_read_line(stream, vs, &n_size)))
+			{
+				raise_user_error(NULL, NULL);
+			}
+
+			if (string_len(vs) == 0)
+				break;
+
+			string_cat(vs_sql, string_ptr(vs), string_len(vs));
+		}
+
+		string_free(vs);
+		vs = NULL;
+
+		if (!(*pxb->pf_db_exec)(pxb->xdb, string_ptr(vs_sql), string_len(vs_sql)))
+		{
+			(*pxb->pf_db_error)(pxb->xdb, sz_error, ERR_LEN);
+			raise_user_error(_T("-1"), sz_error);
+		}
+
+		string_free(vs_sql);
+		vs_sql = NULL;
+	}
+	else
+	{
+		pbuf = bytes_alloc();
+		n_size = 0;
+
+		if (!xhttp_recv_full(pb->http, pbuf, &n_size))
+		{
+			raise_user_error(NULL, NULL);
+		}
+
+		bom = parse_utfbom(*pbuf, n_size);
+		if (bom)
+			n_bom = format_utfbom(bom, NULL);
+		else
+			n_bom = 0;
+
+		n_size -= n_bom;
+
+#if defined(UNICODE) || defined(_UNICODE)
+		n_sql = utf8_to_ucs((*pbuf + n_bom), n_size, NULL, MAX_LONG);
+#else
+		n_sql = utf8_to_mbs((*pbuf + n_bom), n_size, NULL, MAX_LONG);
+#endif
+
+		d_sql = xsalloc(n_sql + 1);
+
+#if defined(UNICODE) || defined(_UNICODE)
+		n_sql = utf8_to_ucs((*pbuf + n_bom), n_size, d_sql, n_sql);
+#else
+		n_sql = utf8_to_mbs((*pbuf + n_bom), n_size, d_sql, n_sql);
+#endif
+
+		bytes_free(pbuf);
+		pbuf = NULL;
+
+		if (!(*pxb->pf_db_exec)(pxb->xdb, d_sql, n_sql))
+		{
+			(*pxb->pf_db_error)(pxb->xdb, sz_error, ERR_LEN);
+			raise_user_error(_T("-1"), sz_error);
+		}
+
+		xsfree(d_sql);
+		d_sql = NULL;
+	}
+
+	n_rows = (*pxb->pf_db_rows)(pxb->xdb);
+
+	xhttp_set_response_code(pb->http, HTTP_CODE_200);
+	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
+
+	xsprintf(sz_range, _T("rows /%d"), n_rows);
+
+	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, _T("rows"), -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, sz_range, -1);
+
+	if (!xhttp_send_response(pb->http))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[ODBC: EXECUTE]"), -1);
+
+		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
+		(*pb->pf_log_error)(pb->log, _T("0"), sz_error, -1);
+	}
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+
+	get_last_error(sz_code, sz_error, ERR_LEN);
+
+	if (d_sql)
+		xsfree(d_sql);
+
+	if (pbuf)
+		bytes_free(pbuf);
+
+	if (vs)
+		string_free(vs);
+
+	if (vs_sql)
+		string_free(vs_sql);
+
+	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[ODBC: EXECUTE]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -815,8 +976,7 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 	tchar_t fcode[INT_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	tchar_t frange[RES_LEN + 1] = { 0 }; 
-	byte_t sz_bom[4] = { 0 };
-	int n_bom = 0;
+
 	int encode = 0;
 
 	tchar_t* d_sql = NULL;
@@ -866,9 +1026,8 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 	xhttp_set_response_content_type_charset(pb->http, fcode, -1);
 
 	n_size = string_encode(vs, encode, NULL, MAX_LONG);
-	n_bom = format_utfbom(encode, sz_bom);
 
-	xsprintf(fsize, _T("%d"), n_size + n_bom);
+	xsprintf(fsize, _T("%d"), n_size);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 	xsprintf(frange, _T("rows /%d"), n_rows);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, _T("rows"), -1);
@@ -1397,7 +1556,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	PF_DB_PARSE_DSN pf_db_parse_dsn = NULL;
 	PF_DB_OPEN pf_db_open = NULL;
 	PF_DB_CLOSE pf_db_close = NULL;
-	PF_DB_TRACE pf_db_trace = NULL;
 
 	bool_t rt = 1;
 
@@ -1406,7 +1564,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	pxb = (xdb_block_t*)xmem_alloc(sizeof(xdb_block_t));
 
-	if (xsnicmp(DSN_TYPE_OCI, pb->object + 1, xslen(DSN_TYPE_OCI)) == 0)
+	if (xsnicmp(pb->object + 1, DSN_TYPE_OCI, xslen(DSN_TYPE_OCI)) == 0)
 	{
 #if defined(_OS_WINDOWS)
 		xdb_lib = load_library(_T("xdb_oci.dll"));
@@ -1417,7 +1575,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 #endif
 		len += xslen(DSN_TYPE_OCI);
 	}
-	else if (xsnicmp(DSN_TYPE_MYSQL, pb->object + 1, xslen(DSN_TYPE_MYSQL)) == 0)
+	else if (xsnicmp(pb->object + 1, DSN_TYPE_MYSQL, xslen(DSN_TYPE_MYSQL)) == 0)
 	{
 #if defined(_OS_WINDOWS)
 		xdb_lib = load_library(_T("xdb_mysql.dll"));
@@ -1428,7 +1586,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 #endif
 		len += xslen(DSN_TYPE_MYSQL);
 	}
-	else if (xsnicmp(DSN_TYPE_ODBC, pb->object + 1, xslen(DSN_TYPE_ODBC)) == 0)
+	else if (xsnicmp(pb->object + 1, DSN_TYPE_ODBC, xslen(DSN_TYPE_ODBC)) == 0)
 	{
 #if defined(_OS_WINDOWS)
 		xdb_lib = load_library(_T("xdb_odbc.dll"));
@@ -1453,6 +1611,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	pf_db_open = (PF_DB_OPEN)get_address(xdb_lib, "db_open");
 	pf_db_close = (PF_DB_CLOSE)get_address(xdb_lib, "db_close");
 
+	pxb->pf_db_exec = (PF_DB_EXEC)get_address(xdb_lib, "db_exec");
 	pxb->pf_db_schema = (PF_DB_SCHEMA)get_address(xdb_lib, "db_schema");
 	pxb->pf_db_export = (PF_DB_EXPORT)get_address(xdb_lib, "db_export");
 	pxb->pf_db_import = (PF_DB_IMPORT)get_address(xdb_lib, "db_import");
@@ -1461,7 +1620,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	pxb->pf_db_call_json = (PF_DB_CALL_JSON)get_address(xdb_lib, "db_call_json");
 	pxb->pf_db_rows = (PF_DB_ROWS)get_address(xdb_lib, "db_rows");
 	pxb->pf_db_error = (PF_DB_ERROR)get_address(xdb_lib, "db_error");
-	pxb->pf_db_trace = (PF_DB_TRACE)get_address(xdb_lib, "db_trace");
 
 	pxb->pf_db_write_blob = (PF_DB_WRITE_BLOB)get_address(xdb_lib, "db_write_blob");
 	pxb->pf_db_read_blob = (PF_DB_READ_BLOB)get_address(xdb_lib, "db_read_blob");
@@ -1487,12 +1645,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	if (!pxb->xdb)
 	{
 		raise_user_error(_T("xdb_api"), _T("open database connection failed"));
-	}
-
-	if (pxb->pf_db_trace && pb->log)
-	{
-		pxb->stm = stream_alloc(xfile_bio(pb->log));
-		(*pxb->pf_db_trace)(pxb->xdb, pxb->stm);
 	}
 
 	xhttp_get_url_method(pb->http, token, INT_LEN);
@@ -1524,6 +1676,14 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 			raise_user_error(_T("xdb_api"), _T("load xdb function falied\n"));
 		}
 		rt = _invoke_import(pb, pxb);
+	}
+	else if (compare_text(action, xslen(XDB_API_DBEXECUTE), XDB_API_DBEXECUTE, -1, 1) == 0)
+	{
+		if (pxb->pf_db_exec == NULL || pxb->pf_db_error == NULL || pxb->pf_db_rows == NULL)
+		{
+			raise_user_error(_T("xdb_api"), _T("load xdb function falied\n"));
+		}
+		rt = _invoke_execute(pb, pxb);
 	}
 	else if (compare_text(action, xslen(XDB_API_DBBATCH), XDB_API_DBBATCH, -1, 1) == 0)
 	{
@@ -1613,9 +1773,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	if (pxb->xdb)
 		(*pf_db_close)(pxb->xdb);
 
-	if (pxb->stm)
-		stream_free(pxb->stm);
-
 	if (xdb_lib)
 		free_library(xdb_lib);
 
@@ -1631,9 +1788,6 @@ ONERROR:
 
 	if (pxb->xdb)
 		(*pf_db_close)(pxb->xdb);
-
-	if (pxb->stm)
-		stream_free(pxb->stm);
 
 	if (xdb_lib)
 		free_library(xdb_lib);

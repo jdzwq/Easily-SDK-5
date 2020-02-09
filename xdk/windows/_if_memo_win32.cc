@@ -176,15 +176,21 @@ void* _paged_alloc(dword_t size)
 {
 	DWORD dw;
 	void* p;
+	DWORD page_size;
 
-	dw = (DWORD)(size / PAGE_SIZE);
-	if (size % PAGE_SIZE)
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_size = si.dwPageSize;
+
+	dw = (DWORD)(size / page_size);
+	if (size % page_size)
 		dw++;
 	
-	p = VirtualAlloc(NULL, dw * PAGE_SIZE, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+	p = VirtualAlloc(NULL, dw * page_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	if (p)
 	{
-		ZeroMemory(p, dw * PAGE_SIZE);
+		ZeroMemory(p, dw * page_size);
 	}
 
 	return p;
@@ -196,6 +202,12 @@ void* _paged_realloc(void* p, dword_t size)
 	void* pnew;
 	dword_t n;
 	bool_t b;
+	DWORD page_size;
+
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_size = si.dwPageSize;
 
 	if (!p)
 		return _paged_alloc(size);
@@ -216,13 +228,13 @@ void* _paged_realloc(void* p, dword_t size)
 	}
 	else
 	{
-		n = size / PAGE_SIZE;
-		if (size % PAGE_SIZE)
+		n = size / page_size;
+		if (size % page_size)
 			n++;
 
-		if (mbi.RegionSize > n * PAGE_SIZE)
+		if (mbi.RegionSize > n * page_size)
 		{
-			b = VirtualFree((LPBYTE)mbi.AllocationBase + n * PAGE_SIZE, mbi.RegionSize - n * PAGE_SIZE, MEM_DECOMMIT);
+			b = VirtualFree((LPBYTE)mbi.AllocationBase + n * page_size, mbi.RegionSize - n * page_size, MEM_DECOMMIT);
 		}
 		return mbi.AllocationBase;
 	}
@@ -232,6 +244,12 @@ void _paged_free(void* p)
 {
 	MEMORY_BASIC_INFORMATION mbi = { 0 };
 	bool_t b;
+	DWORD page_size;
+
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_size = si.dwPageSize;
 
 	if (!p)
 		return;
@@ -341,13 +359,15 @@ bool_t _paged_protect(void* p, bool_t b)
 
 void* _cache_open()
 {
-	size_t psize = 0;
+	SIZE_T psize = 0;
+	DWORD page_gran;
 
 	SYSTEM_INFO si = { 0 };
 
 	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
 
-	return VirtualAlloc(NULL, MAX_SIZE, MEM_RESERVE, 0);
+	return VirtualAlloc(NULL, (page_gran * 1024), MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
 }
 
 void _cache_close(void* fh)
@@ -362,8 +382,15 @@ bool_t _cache_write(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t siz
 	DWORD dwh, dwl;
 	SIZE_T dlen, flen;
 
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	DWORD page_gran;
+
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (loff % page_gran);
+	loff = (loff / page_gran) * page_gran;
 	dlen = poff + size;
 
 	flen = MAKESIZE(loff, hoff) + dlen;
@@ -380,8 +407,6 @@ bool_t _cache_write(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t siz
 
 	CopyMemory((void*)((char*)pBase + poff), buf, (SIZE_T)size);
 
-	VirtualFree(pBase, dlen, MEM_DECOMMIT);
-
 	if (pb) *pb = size;
 
 	return 1;
@@ -393,9 +418,16 @@ bool_t _cache_read(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t size
 	DWORD poff;
 	DWORD dwh, dwl;
 	SIZE_T dlen, flen;
+	DWORD page_size, page_gran;
 
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_size = si.dwPageSize;
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (loff % page_gran);
+	loff = (loff / page_gran) * page_gran;
 	dlen = poff + size;
 
 	flen = MAKESIZE(loff, hoff) + dlen;
@@ -412,7 +444,11 @@ bool_t _cache_read(void* fh, dword_t hoff, dword_t loff, void* buf, dword_t size
 
 	CopyMemory(buf, (void*)((char*)pBase + poff), size);
 
-	VirtualFree(pBase, dlen, MEM_DECOMMIT);
+	dlen = (flen / page_size) * page_size;
+	if (dlen)
+	{
+		VirtualFree(pBase, dlen, MEM_DECOMMIT);
+	}
 
 	if (pb) *pb = size;
 

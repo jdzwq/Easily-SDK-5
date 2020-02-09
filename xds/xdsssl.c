@@ -293,8 +293,6 @@ void xssl_stop(ssl_listen_t* plis)
 	{
 		thread_join(plis->thr[i]);
 	}
-    
-    thread_yield();
 
 	xmem_free(plis->thr);
 

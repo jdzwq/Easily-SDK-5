@@ -63,7 +63,7 @@ void hexkv_write(hex_obj_t hkv, variant_t key, object_t val)
 {
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	link_t_ptr ent;
-	var_int mask;
+	var_long mask;
 
 	XDL_ASSERT(hkv && hkv->tag == HEX_OBJ_KV);
 
@@ -86,7 +86,7 @@ bool_t hexkv_update(hex_obj_t hkv, variant_t key, object_t val)
 {
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	link_t_ptr ent;
-	var_int mask;
+	var_long mask;
 
 	XDL_ASSERT(hkv && hkv->tag == HEX_OBJ_KV);
 
@@ -115,7 +115,7 @@ bool_t hexkv_read(hex_obj_t hkv, variant_t key, object_t val)
 {
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	link_t_ptr ent;
-	var_int mask;
+	var_long mask;
 
 	XDL_ASSERT(hkv && hkv->tag == HEX_OBJ_KV);
 
@@ -147,7 +147,7 @@ void hexkv_delete(hex_obj_t hkv, variant_t key)
 {
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	link_t_ptr ent;
-	var_int mask;
+	var_long mask;
 	
 	XDL_ASSERT(hkv && hkv->tag == HEX_OBJ_KV);
 
@@ -173,7 +173,7 @@ void hexkv_attach(hex_obj_t hkv, variant_t key, object_t val)
 {
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	link_t_ptr ent;
-	var_int mask;
+	var_long mask;
 
 	XDL_ASSERT(hkv && hkv->tag == HEX_OBJ_KV);
 
@@ -197,7 +197,7 @@ object_t hexkv_detach(hex_obj_t hkv, variant_t key)
 {
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	link_t_ptr ent;
-	var_int mask;
+	var_long mask;
 	object_t val;
 
 	XDL_ASSERT(hkv && hkv->tag == HEX_OBJ_KV);
@@ -226,7 +226,7 @@ void hexkv_flush(hex_obj_t hkv)
 	hex_kv_t* pobj = (hex_kv_t*)hkv;
 	dict_enum_t de = { 0 };
 	link_t_ptr ent,nxt;
-	var_int mask;
+	var_long mask;
 	const variant_t *pkey;
 	const object_t* pval;
 

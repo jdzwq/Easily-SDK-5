@@ -43,7 +43,7 @@ typedef struct _curve_delta_t{
 }curve_delta_t;
 
 #define GETCURVEDELTA(ph) 	(curve_delta_t*)widget_get_user_delta(ph)
-#define SETCURVEDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETCURVEDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /***************************************************************************************/
 

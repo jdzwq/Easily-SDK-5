@@ -95,8 +95,9 @@ int format_grid_colset_to_csv(link_t_ptr ptr, tchar_t* buf, int max)
 int format_grid_rowset_to_csv(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr clk, rlk;
-	int len, size;
+	int len, enc, size;
 	const tchar_t* str;
+	tchar_t* esc;
 
 	size = 0;
 	if (size >= max)
@@ -110,12 +111,27 @@ int format_grid_rowset_to_csv(link_t_ptr ptr, tchar_t* buf, int max)
 		{
 			str = get_cell_text_ptr(rlk, clk);
 			len = xslen(str);
-			if (size + len > max)
+			enc = csv_char_encode(str, len, NULL, MAX_LONG);
+
+			if (size + ((len == enc)? len : enc) > max)
 				return size;
 
 			if (buf)
 			{
-				get_cell_text(rlk, clk, buf + size, len);
+				if (len != enc)
+				{
+					esc = xsalloc(enc + 1);
+					csv_char_encode(str, len, esc, enc);
+
+					xsncpy((buf + size), esc, enc);
+					xsfree(esc);
+
+					len = enc;
+				}
+				else
+				{
+					get_cell_text(rlk, clk, (buf + size), len);
+				}
 			}
 			size += len;
 
@@ -204,7 +220,9 @@ int parse_grid_rowset_from_csv(link_t_ptr ptr, const tchar_t* flat, int len)
 	link_t_ptr clk, rlk;
 	tchar_t* token;
 	tchar_t* prev;
-	int total = 0;
+	int tklen, total = 0;
+	tchar_t* esc;
+	int enc;
 
 	if (len <= 0)
 		return 0;
@@ -226,7 +244,22 @@ int parse_grid_rowset_from_csv(link_t_ptr ptr, const tchar_t* flat, int len)
 				total++;
 			}
 
-			set_cell_text(rlk, clk, prev, (int)(token - prev));
+			tklen = (int)(token - prev);
+			enc = csv_char_decode(prev, tklen, NULL, MAX_LONG);
+
+			if (tklen != enc)
+			{
+				esc = xsalloc(enc + 1);
+				csv_char_decode(prev, tklen, esc, enc);
+
+				set_cell_text(rlk, clk, esc, enc);
+
+				xsfree(esc);
+			}
+			else
+			{
+				set_cell_text(rlk, clk, prev, tklen);
+			}
 
 			if (*token == CSV_LINEFEED || *token == TXT_LINEFEED || *token == _T('\0') || total >= len)
 				break;

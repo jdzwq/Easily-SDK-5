@@ -288,29 +288,48 @@ dword_t gb2312_to_utf8(const byte_t* src, dword_t slen, byte_t* dest, dword_t dl
 
 dword_t gb2312_byte_to_unn(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	dword_t i;
 
-	gb2312_byte_to_ucs(src, &ch);
+	i = gb2312_sequence(*src);
+	
+	if (dest)
+	{
+		xmem_zero((void*)dest, 4);
 
-	return ucs_byte_to_unn(ch, dest);
+		switch (i)
+		{
+		case 1:
+			dest[0] = src[0];
+			break;
+		case 2:
+			dest[0] = src[0];
+			dest[1] = src[1];
+			break;
+		case 3:
+			dest[0] = src[0];
+			dest[1] = src[1];
+			dest[2] = src[2];
+			break;
+		case 4:
+			dest[0] = src[0];
+			dest[1] = src[1];
+			dest[2] = src[2];
+			dest[3] = src[3];
+			break;
+		}
+	}
+
+	return 4;
 }
 
 dword_t gb2312_to_unn(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i, total = 0;
-	wchar_t ch;
+	dword_t i = 0, total = 0;
 
-	i = 0;
-	while (i < slen)
+	while (i < slen && total < dlen)
 	{
-		if (total >= dlen)
-			break;
-
-		gb2312_byte_to_ucs(src + i, &ch);
-
+		total += gb2312_byte_to_unn(src + i, ((dest) ? (dest + total) : NULL));
 		i += gb2312_sequence(*(src + i));
-
-		total += ucs_byte_to_unn(ch, ((dest) ? (dest + total) : NULL));
 	}
 
 	return total;
@@ -473,28 +492,48 @@ dword_t utf8_to_gb2312(const byte_t* src, dword_t slen, byte_t* dest, dword_t dl
 
 dword_t utf8_byte_to_unn(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	dword_t i;
 
-	utf8_byte_to_ucs(src, &ch);
+	i = utf8_sequence(*src);
 
-	return ucs_byte_to_unn(ch, dest);
+	if (dest)
+	{
+		xmem_zero((void*)dest, 4);
+
+		switch (i)
+		{
+		case 1:
+			dest[0] = src[0];
+			break;
+		case 2:
+			dest[0] = src[0];
+			dest[1] = src[1];
+			break;
+		case 3:
+			dest[0] = src[0];
+			dest[1] = src[1];
+			dest[2] = src[2];
+			break;
+		case 4:
+			dest[0] = src[0];
+			dest[1] = src[1];
+			dest[2] = src[2];
+			dest[3] = src[3];
+			break;
+		}
+	}
+
+	return 4;
 }
 
 dword_t utf8_to_unn(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i, total = 0;
-	wchar_t ch;
+	dword_t i = 0, total = 0;
 
-	i = 0;
-	while (i < slen)
+	while (i < slen && total < dlen)
 	{
-		if (total >= dlen)
-			break;
-
-		utf8_byte_to_ucs(src + i, &ch);
+		total += utf8_byte_to_unn(src + i, ((dest) ? (dest + total) : NULL));
 		i += utf8_sequence(*(src + i));
-
-		total += ucs_byte_to_unn(ch, ((dest) ? (dest + total) : NULL));
 	}
 
 	return total;
@@ -722,37 +761,38 @@ dword_t utf16big_to_gb2312(const byte_t* src, dword_t slen, byte_t* dest, dword_
 
 dword_t utf16lit_byte_to_unn(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	if (dest)
+	{
+		xmem_zero((void*)dest, 4);
 
-	utf16lit_byte_to_ucs(src, &ch);
+		dest[0] = src[0];
+		dest[1] = src[1];
+	}
 
-	return ucs_byte_to_unn(ch, dest);
+	return 4;
 }
 
 dword_t utf16big_byte_to_unn(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	if (dest)
+	{
+		xmem_zero((void*)dest, 4);
 
-	utf16big_byte_to_ucs(src, &ch);
+		dest[0] = src[0];
+		dest[1] = src[1];
+	}
 
-	return ucs_byte_to_unn(ch, dest);
+	return 4;
 }
 
 dword_t utf16lit_to_unn(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i, total = 0;
-	wchar_t ch;
+	dword_t i = 0, total = 0;
 
-	i = 0;
-	while (i < slen)
+	while (i < slen && total < dlen)
 	{
-		if (total >= dlen)
-			break;
-
-		utf16lit_byte_to_ucs(src + i, &ch);
+		total += utf16lit_byte_to_unn(src + i, ((dest) ? (dest + total) : NULL));
 		i += utf16_sequence(*(src + i));
-
-		total += ucs_byte_to_unn(ch, ((dest) ? (dest + total) : NULL));
 	}
 
 	return total;
@@ -760,19 +800,12 @@ dword_t utf16lit_to_unn(const byte_t* src, dword_t slen, byte_t* dest, dword_t d
 
 dword_t utf16big_to_unn(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i, total = 0;
-	wchar_t ch;
+	dword_t i = 0, total = 0;
 
-	i = 0;
-	while (i < slen)
+	while (i < slen && total < dlen)
 	{
-		if (total >= dlen)
-			break;
-
-		utf16big_byte_to_ucs(src + i, &ch);
+		total += utf16big_byte_to_unn(src + i, ((dest) ? (dest + total) : NULL));
 		i += utf16_sequence(*(src + i));
-
-		total += ucs_byte_to_unn(ch, ((dest) ? (dest + total) : NULL));
 	}
 
 	return total;
@@ -952,20 +985,23 @@ dword_t ucs_to_utf16big(const wchar_t* src, int slen, byte_t* dest, dword_t dlen
 	return count;
 }
 
-dword_t ucs_byte_to_unn(wchar_t ch, byte_t* buf)
+dword_t ucs_byte_to_unn(wchar_t ch, byte_t* dest)
 {
-	if (buf)
+	if (dest)
 	{
-		buf[0] = GETLBYTE(ch);
-		buf[1] = GETHBYTE(ch);
+		xmem_zero((void*)dest, 4);
+
+		dest[0] = GETLBYTE(ch);
+		dest[1] = GETHBYTE(ch);
 	}
-	return 2;
+
+	return 4;
 }
 
 dword_t ucs_to_unn(const wchar_t* src, int slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i = 0;
-	int pos = 0;
+	dword_t total = 0;
+	int i = 0;
 
 	if (slen < 0)
 	{
@@ -974,13 +1010,13 @@ dword_t ucs_to_unn(const wchar_t* src, int slen, byte_t* dest, dword_t dlen)
 			slen++;
 	}
 
-	while (pos < slen && i < dlen)
+	while (i < slen && total < dlen)
 	{
-		i += ucs_byte_to_unn(src[pos], ((dest) ? dest + i : NULL));
-		pos++;
+		total += ucs_byte_to_unn(src[i], ((dest) ? dest + total : NULL));
+		i++;
 	}
 
-	return i;
+	return total;
 }
 
 int ucs_byte_to_mbs(wchar_t ch, schar_t* buf)
@@ -1223,149 +1259,157 @@ int mbs_to_mbs(const schar_t* src, int slen, schar_t* dest, int dlen)
 /********************************************************************************************/
 dword_t unn_sequence(byte_t b)
 {
-#ifdef _UNICODE
-	return 2;
-#else
-	return 1;
-#endif
+	return 4;
 }
 
 int unn_byte_to_ucs(const byte_t* src, wchar_t* dest)
 {
-	*dest = MAKESWORD(src[0], src[1]);
+	if (dest)
+	{
+		*dest = MAKESWORD(src[0], src[1]);
+	}
 
 	return 1;
 }
 
 int unn_to_ucs(const byte_t* src, dword_t slen, wchar_t* dest, int dlen)
 {
-	int i = 0;
+	int total = 0;
 	dword_t pos = 0;
 
-	while (pos < slen && i < dlen)
+	while (pos < slen && total < dlen)
 	{
-		i += unn_byte_to_ucs(src + pos, ((dest) ? dest + i : NULL));
+		total += unn_byte_to_ucs(src + pos, ((dest) ? dest + total : NULL));
 		pos += unn_sequence(src[pos]);
 	}
 
-	return i;
+	return total;
 }
 
 #if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 dword_t unn_byte_to_gb2312(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	dword_t i;
 
-	unn_byte_to_ucs(src, &ch);
+	i = gb2312_sequence(*src);
 
-	return ucs_byte_to_gb2312(ch, dest);
+	if (dest)
+	{
+		xmem_copy((void*)dest, (void*)src, i);
+	}
+
+	return i;
 }
 
 dword_t unn_to_gb2312(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i = 0;
+	dword_t total = 0;
 	dword_t pos = 0;
 
-	while (pos < slen && i < dlen)
+	while (pos < slen && total < dlen)
 	{
-		i += unn_byte_to_gb2312(src + pos, ((dest) ? dest + i : NULL));
+		total += unn_byte_to_gb2312(src + pos, ((dest) ? dest + total : NULL));
 		pos += unn_sequence(src[pos]);
 	}
 
-	return i;
+	return total;
 }
 #endif
 
 dword_t unn_byte_to_utf8(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	dword_t i;
 
-	unn_byte_to_ucs(src, &ch);
+	i = utf8_sequence(*src);
 
-	return ucs_byte_to_utf8(ch, dest);
+	if (dest)
+	{
+		xmem_copy((void*)dest, (void*)src, i);
+	}
+
+	return i;
 }
 
 dword_t unn_to_utf8(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i = 0;
+	dword_t total = 0;
 	dword_t pos = 0;
 
-	while (pos < slen && i < dlen)
+	while (pos < slen && total < dlen)
 	{
-		i += unn_byte_to_utf8(src + pos, ((dest) ? dest + i : NULL));
+		total += unn_byte_to_utf8(src + pos, ((dest) ? dest + total : NULL));
 		pos += unn_sequence(src[pos]);
 	}
 
-	return i;
+	return total;
 }
 
 dword_t unn_byte_to_utf16lit(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	if (dest)
+	{
+		dest[0] = src[0];
+		dest[1] = src[1];
+	}
 
-	unn_byte_to_ucs(src, &ch);
-
-	return ucs_byte_to_utf16lit(ch, dest);
+	return 2;
 }
 
 dword_t unn_to_utf16lit(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i = 0;
+	dword_t total = 0;
 	dword_t pos = 0;
 
-	while (pos < slen && i < dlen)
+	while (pos < slen && total < dlen)
 	{
-		i += unn_byte_to_utf16lit(src + pos, ((dest) ? dest + i : NULL));
+		total += unn_byte_to_utf16lit(src + pos, ((dest) ? dest + total : NULL));
 		pos += unn_sequence(src[pos]);
 	}
 
-	return i;
+	return total;
 }
 
 dword_t unn_byte_to_utf16big(const byte_t* src, byte_t* dest)
 {
-	wchar_t ch;
+	if (dest)
+	{
+		dest[0] = src[0];
+		dest[1] = src[1];
+	}
 
-	unn_byte_to_ucs(src, &ch);
-
-	return ucs_byte_to_utf16big(ch, dest);
+	return 2;
 }
 
 dword_t unn_to_utf16big(const byte_t* src, dword_t slen, byte_t* dest, dword_t dlen)
 {
-	dword_t i = 0;
+	dword_t total = 0;
 	dword_t pos = 0;
 
-	while (pos < slen && i < dlen)
+	while (pos < slen && total < dlen)
 	{
-		i += unn_byte_to_utf16big(src + pos, ((dest) ? dest + i : NULL));
+		total += unn_byte_to_utf16big(src + pos, ((dest) ? dest + total : NULL));
 		pos += unn_sequence(src[pos]);
 	}
 
-	return i;
+	return total;
 }
 
 int unn_byte_to_mbs(const byte_t* src, schar_t* dest)
 {
-	wchar_t ch;
-
-	unn_byte_to_ucs(src, &ch);
-
-	return (int)ucs_byte_to_unn(ch, (byte_t*)dest);
+#if DEF_MBS == _GB2312
+	return (int)unn_byte_to_gb2312(src, (byte_t*)dest);
+#else
+	return (int)unn_byte_to_utf8(src, (byte_t*)dest);
+#endif
 }
 
 int unn_to_mbs(const byte_t* src, dword_t slen, schar_t* dest, int dlen)
 {
-	int i = 0;
-	dword_t pos = 0;
-
-	while (pos < slen && i < dlen)
-	{
-		i += unn_byte_to_mbs(src + pos, ((dest) ? dest + i : NULL));
-		pos += unn_sequence(src[pos]);
-	}
-
-	return i;
+#if DEF_MBS == _GB2312
+	return (int)unn_to_gb2312(src, slen, (byte_t*)dest, (dword_t)dlen);
+#else
+	return (int)unn_to_utf8(src,slen, (byte_t*)dest, (dword_t)dlen);
+#endif
 }
 
 

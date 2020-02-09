@@ -42,8 +42,10 @@ typedef enum{
 	_XTCP_TYPE_SRV = 2
 }XTCP_TYPE;
 
-#define TCP_ZERO_BUFF	0
-#define TCP_MAX_BUFF	(64 * 1024)
+#define TCP_MIN_SNDBUFF	(4096)
+#define TCP_MIN_RCVBUFF	(4096)
+#define TCP_MAX_SNDBUFF	(16 * 1024 * 1024)
+#define TCP_MAX_RCVBUFF	(8 * 1024 * 1024)
 //#define TCP_MTU_BUFF	(1500 - 20 - 20)
 #define TCP_MTU_BUFF	(576 - 20 - 20)
 #define TCP_BASE_TIMO	(5000) //milloinsecond

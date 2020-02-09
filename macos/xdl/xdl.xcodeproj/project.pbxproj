@@ -395,6 +395,9 @@
 		9BDB03B823B221CC00127E62 /* statisdoc.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BDB039A23B221CC00127E62 /* statisdoc.h */; };
 		9BDB03B923B221CC00127E62 /* statisview.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BDB039B23B221CC00127E62 /* statisview.h */; };
 		9BDB03BA23B221CC00127E62 /* textbio.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BDB039C23B221CC00127E62 /* textbio.h */; };
+		9BDD3B8A23ED46F6003AE6B4 /* impcache.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD3B8723ED46F6003AE6B4 /* impcache.c */; };
+		9BDD3B8B23ED46F6003AE6B4 /* impcache.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BDD3B8823ED46F6003AE6B4 /* impcache.h */; };
+		9BDD3B8C23ED46F6003AE6B4 /* memobio.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BDD3B8923ED46F6003AE6B4 /* memobio.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -787,6 +790,9 @@
 		9BDB039A23B221CC00127E62 /* statisdoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = statisdoc.h; path = ../../xdl/statisdoc.h; sourceTree = "<group>"; };
 		9BDB039B23B221CC00127E62 /* statisview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = statisview.h; path = ../../xdl/statisview.h; sourceTree = "<group>"; };
 		9BDB039C23B221CC00127E62 /* textbio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = textbio.h; path = ../../xdl/textbio.h; sourceTree = "<group>"; };
+		9BDD3B8723ED46F6003AE6B4 /* impcache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = impcache.c; path = ../../xdl/impcache.c; sourceTree = "<group>"; };
+		9BDD3B8823ED46F6003AE6B4 /* impcache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = impcache.h; path = ../../xdl/impcache.h; sourceTree = "<group>"; };
+		9BDD3B8923ED46F6003AE6B4 /* memobio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memobio.c; path = ../../xdl/memobio.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -804,6 +810,9 @@
 		9B077E29214EDE3000C647DD = {
 			isa = PBXGroup;
 			children = (
+				9BDD3B8723ED46F6003AE6B4 /* impcache.c */,
+				9BDD3B8823ED46F6003AE6B4 /* impcache.h */,
+				9BDD3B8923ED46F6003AE6B4 /* memobio.c */,
 				9B56964D2167D4AA00A9A2E7 /* actable.c */,
 				9B56964E2167D4AA00A9A2E7 /* actable.h */,
 				9B56964F2167D4AA00A9A2E7 /* annodoc.c */,
@@ -1252,6 +1261,7 @@
 				9B5698EE2167D4AB00A9A2E7 /* textview.h in Headers */,
 				9B5698062167D4AB00A9A2E7 /* impbitmap.h in Headers */,
 				9B5698752167D4AB00A9A2E7 /* oemasn.h in Headers */,
+				9BDD3B8B23ED46F6003AE6B4 /* impcache.h in Headers */,
 				9B5699342167D4AB00A9A2E7 /* xmlopera.h in Headers */,
 				9B5698042167D4AB00A9A2E7 /* impassert.h in Headers */,
 				9B56990C2167D4AB00A9A2E7 /* wordstable.h in Headers */,
@@ -1535,6 +1545,7 @@
 				9B56980B2167D4AB00A9A2E7 /* impclip.c in Sources */,
 				9BDB03A923B221CC00127E62 /* plotgdi.c in Sources */,
 				9B56990D2167D4AB00A9A2E7 /* wsdldoc.c in Sources */,
+				9BDD3B8A23ED46F6003AE6B4 /* impcache.c in Sources */,
 				9B5699332167D4AB00A9A2E7 /* xmlopera.c in Sources */,
 				9B5697FF2167D4AB00A9A2E7 /* imagesdoc.c in Sources */,
 				9B5698862167D4AB00A9A2E7 /* oemdhm.c in Sources */,
@@ -1638,6 +1649,7 @@
 				9B5698372167D4AB00A9A2E7 /* jsondoc.c in Sources */,
 				9B5698032167D4AB00A9A2E7 /* impassert.c in Sources */,
 				9B56983D2167D4AB00A9A2E7 /* labelview.c in Sources */,
+				9BDD3B8C23ED46F6003AE6B4 /* memobio.c in Sources */,
 				9B5699012167D4AB00A9A2E7 /* ubbparser.c in Sources */,
 				9B5698882167D4AB00A9A2E7 /* oemgeo.c in Sources */,
 				9B56987E2167D4AB00A9A2E7 /* oemcert.c in Sources */,

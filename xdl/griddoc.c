@@ -1489,6 +1489,38 @@ link_t_ptr find_grid_row(link_t_ptr ptr,const tchar_t* token,link_t_ptr cur,bool
 	return rlk;
 }
 
+void diff_grid_row(link_t_ptr ptr_dest, link_t_ptr rlk_dest, link_t_ptr ptr_src, link_t_ptr rlk_src)
+{
+	link_t_ptr clk_dest, clk_src;
+	const tchar_t* cname;
+	const tchar_t* token;
+	const tchar_t* type;
+
+	clk_dest = get_next_col(ptr_dest, LINK_FIRST);
+	while (clk_dest)
+	{
+		cname = get_col_name_ptr(clk_dest);
+		clk_src = get_col(ptr_src, cname);
+		if (clk_src)
+		{
+			token = get_cell_text_ptr(rlk_src, clk_src);
+			type = get_col_data_type_ptr(clk_dest);
+
+			if (compare_data(get_cell_text_ptr(rlk_dest, clk_dest), token, type) != 0)
+			{
+				set_cell_dirty(rlk_dest, clk_dest, 1);
+
+				if (get_col_integrity(clk_dest))
+				{
+					set_row_dirty(rlk_dest);
+				}
+			}
+		}
+
+		clk_dest = get_next_col(ptr_dest, clk_dest);
+	}
+}
+
 void copy_grid_row(link_t_ptr ptr_dest,link_t_ptr rlk_dest,link_t_ptr ptr_src,link_t_ptr rlk_src)
 {
 	link_t_ptr clk_dest,clk_src;
@@ -1606,28 +1638,19 @@ void update_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 	string_free(vs);
 }
 
-void copy_grid_colsch(link_t_ptr ptr_dest, link_t_ptr ptr_src)
+void copy_grid_schema(link_t_ptr ptr_dest, link_t_ptr ptr_src)
 {
-	link_t_ptr clk_dest, clk_src;
-	const tchar_t* cname;
+	link_t_ptr colset_dest, colset_src;
 
-	clk_dest = get_next_col(ptr_dest, LINK_FIRST);
-	while (clk_dest)
+	copy_hash_table(get_dom_node_attr_table(ptr_dest), get_dom_node_attr_table(ptr_src));
+	set_dom_node_name(ptr_dest, get_dom_node_name_ptr(ptr_src), -1);
+
+	colset_dest = get_grid_colset(ptr_dest);
+	colset_src = get_grid_colset(ptr_src);
+
+	if (colset_dest && colset_src)
 	{
-		cname = get_col_name_ptr(clk_dest);
-		clk_src = get_col(ptr_src, cname);
-		if (clk_src)
-		{
-			set_col_data_type(clk_dest, get_col_data_type_ptr(clk_src));
-
-			set_col_data_len(clk_dest, get_col_data_len(clk_src));
-
-			set_col_data_dig(clk_dest, get_col_data_dig(clk_src));
-
-			set_col_field_cast(clk_dest, get_col_field_cast_ptr(clk_src));
-		}
-
-		clk_dest = get_next_col(ptr_dest, clk_dest);
+		copy_dom_node(colset_dest, colset_src);
 	}
 }
 

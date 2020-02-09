@@ -45,7 +45,7 @@ typedef struct _tipbox_delta_t{
 }tipbox_delta_t;
 
 #define GETTIPBOXDELTA(ph) 	(tipbox_delta_t*)widget_get_user_delta(ph)
-#define SETTIPBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETTIPBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /*********************************************************************************/
 int hand_tipbox_create(res_win_t widget, void* data)
@@ -100,7 +100,7 @@ void hand_tipbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_redraw(widget, NULL, 0);
 }
 
-void hand_tipbox_timer(res_win_t widget, var_int tid)
+void hand_tipbox_timer(res_win_t widget, var_long tid)
 {
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
 

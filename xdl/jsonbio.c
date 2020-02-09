@@ -128,6 +128,11 @@ bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t xs)
 		stream_set_encode(xs, encode);
 	}
 
+	if (encode == _UTF16_LIT || encode == _UTF16_BIG)
+	{
+		stream_read_utfbom(xs, NULL);
+	}
+
 	bo.obj = (void*)xs;
 	bo.max = 0;
 	bo.encode = encode;
@@ -143,6 +148,14 @@ bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t xs)
 bool_t format_json_doc_to_stream(link_t_ptr json, stream_t xs)
 {
 	if_operator_t bo = { 0 };
+	int encode;
+
+	encode = stream_get_encode(xs);
+
+	if (encode == _UTF16_LIT || encode == _UTF16_BIG)
+	{
+		stream_write_utfbom(xs, NULL);
+	}
 
 	bo.obj = (void*)xs;
 	bo.max = 0;
@@ -160,6 +173,15 @@ bool_t parse_json_doc_from_bytes(link_t_ptr json, const byte_t* str, dword_t len
 {
 	if_operator_t bo = { 0 };
 
+	int bytes = 0;
+
+	if (!str || !len)
+		return 0;
+
+	bytes = skip_utfbom(str);
+	str += bytes;
+	len -= bytes;
+
 	bo.obj = (void*)str;
 	bo.max = len;
 	bo.encode = encode;
@@ -176,6 +198,21 @@ dword_t format_json_doc_to_bytes(link_t_ptr json, byte_t* buf, dword_t max, int 
 {
 	if_operator_t bo = { 0 };
 
+	dword_t total = 0;
+
+	if (encode == _UTF16_LIT || encode == _UTF16_BIG)
+	{
+		total += format_utfbom(encode, ((buf) ? (buf + total) : NULL));
+		if (total >= max)
+			return total;
+
+		max -= total;
+		if (buf)
+		{
+			buf += total;
+		}
+	}
+
 	bo.obj = (void*)buf;
 	bo.max = max;
 	bo.pos = 0;
@@ -186,7 +223,7 @@ dword_t format_json_doc_to_bytes(link_t_ptr json, byte_t* buf, dword_t max, int 
 	bo.pf_can_escape = call_buffer_can_escape;
 
 	if (format_json_doc_to_object(json, &bo))
-		return bo.pos;
+		return (bo.pos + total);
 	else
 		return 0;
 }

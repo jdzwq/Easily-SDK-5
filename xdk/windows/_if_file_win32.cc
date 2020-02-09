@@ -232,9 +232,15 @@ bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dw
 	void* pBase = NULL;
 	DWORD dwh, dwl, poff;
 	SIZE_T dlen, flen;
+	DWORD page_gran;
 
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (loff % page_gran);
+	loff = (loff / page_gran) * page_gran;
 	dlen = poff + size;
 
 	flen = MAKESIZE(loff, hoff) + dlen;
@@ -268,9 +274,15 @@ bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, d
 	void* pBase = NULL;
 	DWORD dwh, dwl, poff;
 	SIZE_T dlen, flen;
+	DWORD page_gran;
 
-	poff = (loff % PAGE_GRAN);
-	loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (loff % page_gran);
+	loff = (loff / page_gran) * page_gran;
 	dlen = poff + size;
 
 	flen = MAKESIZE(loff, hoff) + dlen;

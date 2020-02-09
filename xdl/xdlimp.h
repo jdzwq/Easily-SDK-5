@@ -40,6 +40,10 @@
 #include "impshare.h"
 #endif
 
+#ifdef XDK_SUPPORT_MEMO_CACHE
+#include "impcache.h"
+#endif
+
 #ifdef XDK_SUPPORT_PROCESS
 #include "impproc.h"
 #endif

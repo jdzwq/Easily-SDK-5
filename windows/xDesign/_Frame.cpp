@@ -114,7 +114,7 @@ typedef struct tagMainFrameDelta{
 }MainFrameDelta;
 
 #define GETMAINFRAMEDELTA(widget) 			(MainFrameDelta*)widget_get_user_delta(widget)
-#define SETMAINFRAMEDELTA(widget,ptd)		widget_set_user_delta(widget,(var_int)ptd)
+#define SETMAINFRAMEDELTA(widget,ptd)		widget_set_user_delta(widget,(var_long)ptd)
 
 res_win_t	_MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath);
 bool_t		_MainFrame_FindPanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath);
@@ -1185,7 +1185,7 @@ void MainFrame_FreshObject(res_win_t widget)
 
 	QUERYOBJECT qo = { 0 };
 
-	widget_send_command(hPanel, COMMAND_QUERYINFO, IDC_PARENT, (var_int)&qo);
+	widget_send_command(hPanel, COMMAND_QUERYINFO, IDC_PARENT, (var_long)&qo);
 
 	tchar_t token[1024];
 
@@ -1333,7 +1333,7 @@ void MainFrame_CheckObject(res_win_t widget)
 	if (is_null(fd.sub_str))
 		return;
 
-	widget_send_command(hPanel, COMMAND_FIND, IDC_PARENT, (var_int)&fd);
+	widget_send_command(hPanel, COMMAND_FIND, IDC_PARENT, (var_long)&fd);
 }
 
 void MainFrame_SetDataSource(res_win_t widget)
@@ -1772,7 +1772,7 @@ void MainFrame_DomBar_OnItemDrop(res_win_t widget, NOTICE_TREE* pnt)
 		xscpy(drop.dm.DataLen, get_dom_node_attr_ptr(pnt->item, ATTR_DATA_LEN, -1));
 		xscpy(drop.dm.DataDig, get_dom_node_attr_ptr(pnt->item, ATTR_DATA_DIG, -1));
 
-		widget_send_command(hPanel, COMMAND_QUERYDROP, IDC_PARENT, (var_int)&drop);
+		widget_send_command(hPanel, COMMAND_QUERYDROP, IDC_PARENT, (var_long)&drop);
 	}
 }
 
@@ -2050,7 +2050,7 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_FILE_EXEC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("测试运行"));
-	set_tool_item_icon(ilk, ICON_EXECUTE);
+	set_tool_item_icon(ilk, ICON_NEXT);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
 	widget_show(pdt->hToolBar, WD_SHOW_NORMAL);
@@ -2361,7 +2361,7 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 
 	set_title_item_name(ilk, wclass);
 	set_title_item_title(ilk, wname);
-	set_title_item_delta(ilk, (var_int)hPanel);
+	set_title_item_delta(ilk, (var_long)hPanel);
 
 	titlectrl_redraw(pdt->hTitleBar);
 	titlectrl_set_focus_item(pdt->hTitleBar, ilk);
@@ -2411,7 +2411,7 @@ void _MainFrame_RenamePanel(res_win_t widget, const tchar_t* wclass, const tchar
 			res_win_t hPanel = (res_win_t)get_title_item_delta(ilk);
 			if (widget_is_valid(hPanel))
 			{
-				widget_send_command(hPanel, COMMAND_RENAME, IDC_PARENT, (var_int)nname);
+				widget_send_command(hPanel, COMMAND_RENAME, IDC_PARENT, (var_long)nname);
 			}
 			return;
 		}
@@ -2520,7 +2520,7 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 	widgetex_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
-	SETMAINFRAMEDELTA(widget, (var_int)pdt);
+	SETMAINFRAMEDELTA(widget, (var_long)pdt);
 
 	res_ctx_t rdc = widget_client_ctx(widget);
 
@@ -2606,7 +2606,7 @@ int MainFrame_OnClose(res_win_t widget)
 	return 0;
 }
 
-void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 

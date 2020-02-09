@@ -234,6 +234,8 @@ typedef enum{
 #ifndef GBKBOM
 #define GBKBOM		0xFFFF
 #endif
+
+#if ACP_BYTE_ORDER == BIG_ENDIAN
 #ifndef BIGBOM
 #define BIGBOM		0xFEFF
 #endif
@@ -243,11 +245,22 @@ typedef enum{
 #ifndef UTFBOM
 #define UTFBOM		0xEFBBBF
 #endif
-
-#if BYTE_ORDER == BIG_ENDIAN
-#define DEF_BOM		BIGBOM
+#ifndef DEFBOM
+#define DEFBOM		BIGBOM
+#endif
 #else
-#define DEF_BOM		LITBOM
+#ifndef BIGBOM
+#define BIGBOM		0xFFFE
+#endif
+#ifndef LITBOM
+#define LITBOM		0xFEFF
+#endif
+#ifndef UTFBOM
+#define UTFBOM		0xBFBBEF
+#endif
+#ifndef DEFBOM
+#define DEFBOM		LITBOM
+#endif
 #endif
 
 #define PUT_ENCODE(buf, off, enc)	(buf[off] = (unsigned char)(enc >> 16), buf[off + 1] = (unsigned char)(enc >> 8), buf[off + 2] = (unsigned char)(enc))

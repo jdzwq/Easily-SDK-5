@@ -37,6 +37,7 @@ typedef struct _db_stub_t{
 	tchar_t err_text[ERR_LEN + 1];
 
 	int rows;
+	xhand_t http;
 }db_stub_t;
 
 static tchar_t stub_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
@@ -247,6 +248,11 @@ void STDCALL db_close(xdb_t db)
 	
 	XDL_ASSERT(db && db->dbt == _DB_STUB);
 	
+	if (pdb->http)
+	{
+		xhttp_close(pdb->http);
+	}
+
 	xmem_free(pdb);
 }
 
@@ -487,9 +493,10 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 	int n_from, n_to, n_all;
 
 	link_t_ptr ptr_xml = NULL;
-	stream_t stream;
 	string_t vs = NULL;
 	dword_t size = 0;
+
+	stream_t stream;
 
 	XDL_ASSERT(db && db->dbt == _DB_STUB);
 
@@ -559,6 +566,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	while (1)
 	{
+		string_empty(vs);
 		size = 0;
 		if (!stream_read_line(stream, vs, &size))
 		{
@@ -567,12 +575,10 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 			raise_user_error(pdb->err_code, pdb->err_text);
 		}
 
-		if (!size)
+		if (string_len(vs) == 0)
 			break;
 
 		parse_rowset_from_line(grid, vs);
-
-		string_empty(vs);
 	}
 
 	string_free(vs);
@@ -687,22 +693,22 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 
 	vs = string_alloc();
 
-	tmp_grid = create_grid_doc();
-
+	//skip colset
 	if (!stream_read_line(stream, vs, &size))
 	{
 		get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
 
 		raise_user_error(pdb->err_code, pdb->err_text);
 	}
-
-	parse_colset_from_line(tmp_grid, vs);
 	string_empty(vs);
 
-	copy_grid_colsch(tmp_grid, grid);
+	tmp_grid = create_grid_doc();
+
+	copy_grid_schema(tmp_grid, grid);
 
 	while (1)
 	{
+		string_empty(vs);
 		size = 0;
 		if (!stream_read_line(stream, vs, &size))
 		{
@@ -711,12 +717,10 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 			raise_user_error(pdb->err_code, pdb->err_text);
 		}
 
-		if (!size)
+		if (string_len(vs) == 0)
 			break;
 
 		parse_rowset_from_line(tmp_grid, vs);
-
-		string_empty(vs);
 	}
 
 	string_free(vs);
@@ -776,15 +780,12 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	byte_t sz_bom[4] = { 0 };
-	int n_bom = 0;
-	int n_from, n_to, n_all;
+
+	int n_bom, n_from, n_to, n_all;
 	bool_t b_continue = 0;
 
-	bool_t glt = 0;
+	byte_t* buf = NULL;
 	dword_t dw;
-
-	stream_t stm = NULL;
 
 	XDL_ASSERT(db && db->dbt == _DB_STUB);
 
@@ -798,7 +799,7 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 
 	TRY_CATCH;
 
-	xsprintf(sz_url, _T("%s/%s.dsn?%s"), pdb->sz_srv, pdb->sz_dbn, XDB_API_DBBATCH);
+	xsprintf(sz_url, _T("%s/%s.dsn?%s"), pdb->sz_srv, pdb->sz_dbn, XDB_API_DBEXECUTE);
 
 	xhttp = xhttp_client(_T("POST"), sz_url);
 	if (!xhttp)
@@ -823,8 +824,9 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 #else
 	dw = mbs_to_utf8(sqlstr, sqllen, NULL, MAX_LONG);
 #endif
-	dw += format_utfbom(_UTF8, NULL);
-	xhttp_set_request_content_length(xhttp, dw);
+	n_bom = format_utfbom(_UTF8, NULL);
+
+	xhttp_set_request_content_length(xhttp, (n_bom + dw));
 
 	rt = xhttp_send_request(xhttp);
 	if (!rt)
@@ -851,16 +853,23 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 
 	if (b_continue)
 	{
-		stm = xhttp_get_send_stream(xhttp);
+		buf = (byte_t*)xmem_alloc(n_bom + dw);
+		format_utfbom(_UTF8, buf);
 
-		stream_write_utfbom(stm, NULL);
+#ifdef _UNICODE
+		ucs_to_utf8(sqlstr, sqllen, (buf + n_bom), dw);
+#else
+		mbs_to_utf8(sqlstr, sqllen, (buf + n_bom), dw);
+#endif
 
-		if (!stream_write(stm, sqlstr, sqllen, &dw))
+		rt = xhttp_send_full(xhttp, buf, n_bom + dw);
+		if (!rt)
 		{
-			get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
-
-			raise_user_error(pdb->err_code, pdb->err_text);
+			raise_user_error(NULL, NULL);
 		}
+
+		xmem_free(buf);
+		buf = NULL;
 	}
 
 	rt = xhttp_recv_response(xhttp);
@@ -893,6 +902,9 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 	return 1;
 
 ONERROR:
+
+	if (buf)
+		xmem_free(buf);
 
 	if (xhttp)
 		xhttp_close(xhttp);
@@ -929,7 +941,7 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 
 	TRY_CATCH;
 
-	xsprintf(sz_url, _T("%s/%s.dsn?%s"), pdb->sz_srv, pdb->sz_dbn, XDB_API_DBBATCH);
+	xsprintf(sz_url, _T("%s/%s.dsn?%s"), pdb->sz_srv, pdb->sz_dbn, XDB_API_DBEXECUTE);
 
 	xhttp = xhttp_client(_T("POST"), sz_url);
 	if (!xhttp)
@@ -942,7 +954,7 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 	xhttp_set_request_default_header(xhttp);
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
-	xhttp_set_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
+
 	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN_UTF8, -1);
 
 	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
@@ -1016,11 +1028,10 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 			rlk = get_next_row(grid, rlk);
 		}
 
-		string_empty(var);
-		stream_write_line(stream, var, &len);
-
 		string_free(var);
 		var = NULL;
+
+		stream_write_line(stream, NULL, NULL);
 	}
 
 	rt = xhttp_recv_response(xhttp);
@@ -1098,14 +1109,14 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	xhttp_set_request_default_header(xhttp);
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
-	xhttp_set_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1);
 
 	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	format_charset(stream_get_encode(stream), sz_enc);
-	if (!is_null(sz_enc))
+	if (is_null(sz_enc))
 	{
-		xhttp_set_request_content_type_charset(xhttp, sz_enc, -1);
+		format_charset(DEF_MBS, sz_enc);
 	}
+	xhttp_set_request_content_type_charset(xhttp, sz_enc, -1);
 
 	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
 	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
@@ -1137,10 +1148,6 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	if (b_continue)
 	{
 		stm_http = xhttp_get_send_stream(xhttp);
-
-		stream_read_utfbom(stream, NULL);
-
-		stream_write_utfbom(stm_http, NULL);
 
 		stream_copy(stream, stm_http);
 	}
@@ -1223,10 +1230,11 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 
 	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
 	format_charset(stream_get_encode(stream), sz_enc);
-	if (!is_null(sz_enc))
+	if (is_null(sz_enc))
 	{
-		xhttp_set_request_content_type_charset(xhttp, sz_enc, -1);
+		format_charset(DEF_MBS, sz_enc);
 	}
+	xhttp_set_request_content_type_charset(xhttp, sz_enc, -1);
 
 	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
 	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
@@ -1258,10 +1266,6 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	if (b_continue)
 	{
 		stm_http = xhttp_get_send_stream(xhttp);
-
-		stream_read_utfbom(stream, NULL);
-
-		stream_write_utfbom(stm_http, NULL);
 
 		stream_copy(stream, stm_http);
 	}
@@ -1316,7 +1320,6 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_enc[RES_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
 	int n_from, n_to, n_all;
@@ -1325,71 +1328,71 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 	TRY_CATCH;
 
-	xsprintf(sz_url, _T("%s/%s.dsn"), pdb->sz_srv, pdb->sz_dbn);
-
-	xhttp = xhttp_client(_T("GET"), sz_url);
-	if (!xhttp)
+	if (!stream)
 	{
-		get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
+		xsprintf(sz_url, _T("%s/%s.dsn"), pdb->sz_srv, pdb->sz_dbn);
 
-		raise_user_error(pdb->err_code, pdb->err_text);
+		xhttp = xhttp_client(_T("GET"), sz_url);
+		if (!xhttp)
+		{
+			get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
+
+			raise_user_error(pdb->err_code, pdb->err_text);
+		}
+		xhttp_set_url_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
+
+		xhttp_set_request_default_header(xhttp);
+
+		xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN_UTF8, -1);
+
+		xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
+		xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
+		xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
+
+		rt = xhttp_send_request(xhttp);
+		if (!rt)
+		{
+			get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
+
+			raise_user_error(pdb->err_code, pdb->err_text);
+		}
+
+		rt = xhttp_recv_response(xhttp);
+		if (!rt)
+		{
+			get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
+
+			raise_user_error(pdb->err_code, pdb->err_text);
+		}
+
+		if (!xhttp_get_response_state(xhttp))
+		{
+			xhttp_recv_error(xhttp, NULL, NULL, pdb->err_code, pdb->err_text, ERR_LEN);
+			raise_user_error(pdb->err_code, pdb->err_text);
+		}
+
+		pdb->http = xhttp;
 	}
-
-	xhttp_set_url_query_entity(xhttp, XDB_API_DBEXPORT, -1, sqlstr, -1);
-
-	xhttp_set_request_default_header(xhttp);
-
-	xhttp_set_request_accept_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
-	format_charset(stream_get_encode(stream), sz_enc);
-	if (!is_null(sz_enc))
+	else
 	{
-		xhttp_set_request_accept_charset(xhttp, sz_enc, -1);
+		xhttp = pdb->http;
+		pdb->http = NULL;
+
+		stm_http = xhttp_get_recv_stream(xhttp);
+
+		stream_copy(stm_http, stream);
+
+		xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTRANGE, -1, frange, META_LEN);
+		n_from = n_to = n_all = 0;
+		_parse_db_range(frange, &n_from, &n_to, &n_all);
+		pdb->rows = n_all;
+
+		xhttp_close(xhttp);
+		xhttp = NULL;
+
+		xscpy(pdb->err_code, _T("0"));
+		xsprintf(pdb->err_text, _T("succeed, %d rows affected"), pdb->rows);
 	}
-
-	xhttp_request_signature(xhttp, HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_pwd, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pdb->sz_uid, sz_hmac);
-	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
-
-	rt = xhttp_send_request(xhttp);
-	if (!rt)
-	{
-		get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
-
-		raise_user_error(pdb->err_code, pdb->err_text);
-	}
-
-	rt = xhttp_recv_response(xhttp);
-	if (!rt)
-	{
-		get_last_error(pdb->err_code, pdb->err_text, ERR_LEN);
-
-		raise_user_error(pdb->err_code, pdb->err_text);
-	}
-
-	if (!xhttp_get_response_state(xhttp))
-	{
-		xhttp_recv_error(xhttp, NULL, NULL, pdb->err_code, pdb->err_text, ERR_LEN);
-		raise_user_error(pdb->err_code, pdb->err_text);
-	}
-
-	stm_http = xhttp_get_recv_stream(xhttp);
-
-	stream_read_utfbom(stm_http, NULL);
-
-	stream_write_utfbom(stream, NULL);
-
-	stream_copy(stm_http, stream);
-
-	xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTRANGE, -1, frange, META_LEN);
-	n_from = n_to = n_all = 0;
-	_parse_db_range(frange, &n_from, &n_to, &n_all);
-	pdb->rows = n_all;
-
-	xhttp_close(xhttp);
-	xhttp = NULL;
-
-	xscpy(pdb->err_code, _T("0"));
-	xsprintf(pdb->err_text, _T("succeed, %d rows affected"), pdb->rows);
 
 	END_CATCH;
 
@@ -1847,8 +1850,6 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
 
-	byte_t sz_bom[4] = { 0 };
-	int n_bom = 0;
 	int n_from, n_to, n_all;
 
 	bool_t b_continue = 0;
@@ -1872,15 +1873,13 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 
 	xhttp_set_url_query_entity(xhttp, XDB_API_DBWRITECLOB, -1, sqlfmt, -1);
 
-	n_bom = format_utfbom(_UTF8, sz_bom);
-
 	xhttp_set_request_default_header(xhttp);
 
 	xhttp_set_request_header(xhttp, HTTP_HEADER_EXPECT, -1, HTTP_HEADER_EXPECT_CONTINUE, -1);
 
 	xhttp_set_request_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN_UTF8, -1);
 
-	n_size = string_encode(varstr, _UTF8, NULL, MAX_LONG) + n_bom;
+	n_size = string_encode(varstr, _UTF8, NULL, MAX_LONG);
 	xsprintf(fsize, _T("%d"), n_size);
 	xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 

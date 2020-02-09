@@ -67,6 +67,12 @@ LICENSE.GPL3 for more details.
 
 #define idle		while(0 == 1)
 
+#if defined(UNICODE) || defined(_UNICODE)
+#define _IsBomChar(pch)	((*pch == _UTF16_LIT || *pch == _UTF16_LIT)? 1 : 0)
+#else
+#define _IsBomChar(pch)	((pch[0] == 0xEF && pch[1] == 0xBB && pch[2] == 0xBF)? 1 : 0)
+#endif
+
 //以下定义自动机的状态
 typedef enum{
 	NIL_FAILED	= -1,		//错误中断
@@ -256,6 +262,13 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			{
 				ma.cur[0] = _T('\0');
 				pos = 0;
+			}
+
+			//忽略BOM
+			if (_IsBomChar(ma.cur))
+			{
+				xmem_zero((void*)ma.cur, sizeof(ma.cur));
+				ma.cur[0] = _T(' ');
 			}
 
 			//处理转义字符

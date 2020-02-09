@@ -570,6 +570,8 @@ bool_t xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t stm)
 	byte_t proto;
 	bool_t b = 0;
 
+	stream_write_utfbom(stm, NULL);
+
 	if (!is_null(path))
 	{
 		proto = parse_proto(path);

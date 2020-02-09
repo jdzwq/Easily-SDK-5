@@ -62,8 +62,16 @@ LICENSE.GPL3 for more details.
 #endif
 
 #define ALT_CHAR	0x20
+
+#if ACP_BYTE_ORDER == 4321
 #define BIGBOM		0xFEFF
 #define LITBOM		0xFFFE
+#define DEFBOM		BIGBOM
+#else
+#define BIGBOM		0xFFFE
+#define LITBOM		0xFEFF
+#define DEFBOM		LITBOM
+#endif
 
 #ifdef __cplusplus
 extern "C" {

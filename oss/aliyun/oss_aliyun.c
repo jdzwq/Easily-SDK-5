@@ -598,7 +598,7 @@ static bool_t _parse_oss_result(byte_t* buf, int size, CALLBACK_LISTFILE pf, voi
 				}
 				else if (compare_text(get_dom_node_name_ptr(clk), -1, _T("Size"), -1, 1) == 0)
 				{
-					parse_longint(&fi.high_size, &fi.low_size, get_dom_node_text_ptr(clk));
+					parse_long(&fi.high_size, &fi.low_size, get_dom_node_text_ptr(clk));
 				}
 
 				clk = get_dom_next_sibling_node(clk);
@@ -980,7 +980,7 @@ bool_t oss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftim
 	if (ftime)
 		format_gmttime(&fi.write_time, ftime);
 	if (fsize)
-		format_longint(fi.high_size, fi.low_size, fsize);
+		format_long(fi.high_size, fi.low_size, fsize);
 	if (fetag)
 		xsncpy(fetag, fi.file_etag, ETAG_LEN);
 

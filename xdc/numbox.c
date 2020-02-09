@@ -66,7 +66,7 @@ static NUMBOX_RECT NUMBOX_POS[NUMBOX_COUNT] = {
 };
 
 #define GETNUMBOXDELTA(ph) 	(numbox_delta_t*)widget_get_user_delta(ph)
-#define SETNUMBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETNUMBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 
 int hand_numbox_create(res_win_t widget, void* data)

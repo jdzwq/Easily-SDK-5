@@ -51,7 +51,9 @@ typedef enum{
 #define IS_XHTTP_CONTINUE(code)		((compare_text(code,-1,_T("100"),-1,0) == 0)? 1 : 0)
 #define IS_XHTTP_REDIRECT(code)		((compare_text(code,-1,_T("302"),-1,0) == 0)? 1 : 0)
 
-#define CONENTYPE_IS_JSON(token)	((compare_text(token, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0)? 1 : 0)
+#define CONTENTTYPE_IS_JSON(token)	((compare_text(token, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0)? 1 : 0)
+#define CONTENTTYPE_IS_TEXT(token)	((compare_text(token, 5, _T("text/"), 5 ,1) == 0)? 1 : 0)
+#define CHARSET_NEED_UTFBOM(token)	((compare_text(charset,6,_T("utf-16"),6,1) == 0)? 1 : 0)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -717,6 +719,20 @@ XDL_API bool_t		xhttp_is_chunked_send(xhand_t xhttp);
 XDL_API bool_t		xhttp_is_chunked_recv(xhand_t xhttp);
 
 /*
+@FUNCTION xhttp_is_lined_send: test http is lined sending, the content type must b "text***" and content length must bu zero.
+@INPUT xhand_t xhttp: the http handle.
+@RETURN bool_t: return nonzero for lined sending, otherwise return zero.
+*/
+XDL_API bool_t		xhttp_is_lined_send(xhand_t xhttp);
+
+/*
+@FUNCTION xhttp_is_lined_recv: test http is lined receiving, the content type must b "text***" and content length must bu zero.
+@INPUT xhand_t xhttp: the http handle.
+@RETURN bool_t: return nonzero for lined receiving, otherwise return zero.
+*/
+XDL_API bool_t		xhttp_is_lined_recv(xhand_t xhttp);
+
+/*
 @FUNCTION xhttp_is_zipped_send: test http is zipped sending, the header token is "Content-Encoding".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for zipped sending, otherwise return zero.
@@ -736,6 +752,7 @@ XDL_API bool_t		xhttp_is_zipped_recv(xhand_t xhttp);
 @RETURN bool_t: return nonzero for need expect, otherwise return zero.
 */
 XDL_API bool_t		xhttp_need_expect(xhand_t xhttp);
+
 
 #define xhttp_get_request_content_type(xhttp, buf, len) xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTTYPE, -1, buf, len)
 

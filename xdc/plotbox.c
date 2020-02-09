@@ -42,10 +42,10 @@ typedef struct _plotbox_delta_t{
 }plotbox_delta_t;
 
 #define GETPLOTBOXDELTA(ph) 	(plotbox_delta_t*)widget_get_user_delta(ph)
-#define SETPLOTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETPLOTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /********************************************************************************/
-void noti_plotbox_command(res_win_t widget, int code, var_int data)
+void noti_plotbox_command(res_win_t widget, int code, var_long data)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
 

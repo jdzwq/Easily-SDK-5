@@ -793,12 +793,12 @@ XDL_API void merge_grid_colset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 XDL_API void merge_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src);
 
 /*
-@FUNCTION copy_grid_colsch: copy source colset schema to destination colset.
+@FUNCTION copy_grid_schema: copy source grid attributes and colset schema to destination grid.
 @INPUT link_t_ptr ptr_dst: the destination grid document link component.
 @INPUT link_t_ptr ptr_src: the source grid document link component.
 @RETURN void: none.
 */
-XDL_API void copy_grid_colsch(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+XDL_API void copy_grid_schema(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION get_col_count: counting the cols in grid.
@@ -1414,6 +1414,16 @@ XDL_API void filter_grid_rowset(link_t_ptr ptr, const tchar_t* token);
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
 XDL_API link_t_ptr find_grid_row(link_t_ptr ptr, const tchar_t* token, link_t_ptr rlk, bool_t next);
+
+/*
+@FUNCTION diff_grid_row: mask destination row state according to source row content.
+@INPUT link_t_ptr ptr_dst: the destination grid link component.
+@INPUT link_t_ptr rlk_dst: the destination row link component.
+@INPUT link_t_ptr ptr_src: the source grid link component.
+@INPUT link_t_ptr rlk_src: the source row link component.
+@RETURN void: none.
+*/
+XDL_API void diff_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr ptr_src, link_t_ptr rlk_src);
 
 /*
 @FUNCTION copy_grid_row: copy source row content to destination row.

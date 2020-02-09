@@ -197,9 +197,9 @@ XDC_API void previewdlg_redraw(res_win_t widget);
 */
 XDC_API res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner);
 
-XDC_API int sub_dialog_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_int delta);
+XDC_API int sub_dialog_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
-XDC_API int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_int delta);
+XDC_API int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
 
 #ifdef	__cplusplus
 }

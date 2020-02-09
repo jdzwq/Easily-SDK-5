@@ -226,46 +226,6 @@ XDL_API bool_t		pmem_protect(void* p, bool_t b);
 
 #endif
 
-#ifdef XDK_SUPPORT_MEMO_CACHE
-/*
-@FUNCTION vmem_open: open a memory cache.
-@RETURN xhand_t: if succeeds return cache handle, fails return NULL.
-*/
-XDL_API xhand_t vmem_open(void);
-
-/*
-@FUNCTION vmem_close: close a memory cache.
-@INPUT xhand_t cache: the cache handle.
-@RETURN void: none.
-*/
-XDL_API void vmem_close(xhand_t vmem);
-
-/*
-@FUNCTION vmem_handle: get a cache handle, the handle is buffer pointer.
-@INPUT xhand_t vmem: the cache handle.
-@RETURN void*: if succeeds return buffer pointer, fails return NULL.
-*/
-XDL_API void* vmem_handle(xhand_t vmem);
-
-/*
-@FUNCTION vmem_write: write data into cache.
-@INPUT xhand_t vmem: the cache handle.
-@INPUT const byte_t* data: the data buffer pointer.
-@INOUTPUT dword_t* pb: the integer buffer pointer holding byte count for writing, and return the actually byte count writed.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-XDL_API bool_t vmem_write(xhand_t vmem, const byte_t* data, dword_t* pb);
-
-/*
-@FUNCTION vmem_read: read data from cache.
-@INPUT xhand_t vmem: the cache handle.
-@INPUT byte_t* data: the data buffer pointer.
-@INOUTPUT dword_t* pb: the integer buffer pointer for holding byte count for reading, and return the actually byte count readed.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-XDL_API bool_t vmem_read(xhand_t vmem, byte_t* buf, dword_t* pb);
-
-#endif
 
 #ifdef	__cplusplus
 }

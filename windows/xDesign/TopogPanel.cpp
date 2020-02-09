@@ -50,7 +50,7 @@ typedef struct tagTopogPanelDelta{
 }TopogPanelDelta;
 
 #define GETTOPOGPANELDELTA(ph) 		(TopogPanelDelta*)widget_get_user_delta(ph)
-#define SETTOPOGPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETTOPOGPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 #define TOPOGPANEL_ACCEL_COUNT	5
 accel_t	TOPOGPANEL_ACCEL[TOPOGPANEL_ACCEL_COUNT] = {
@@ -866,7 +866,7 @@ void TopogPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void TopogPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void TopogPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	TopogPanelDelta* pdt = GETTOPOGPANELDELTA(widget);
 
@@ -893,7 +893,7 @@ void TopogPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void TopogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void TopogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	TopogPanelDelta* pdt = GETTOPOGPANELDELTA(widget);
 	void* pv = NULL;

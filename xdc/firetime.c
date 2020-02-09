@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_int delta)
+static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
 {
 	if (subid != IDS_EDITBOX)
 		return 0;
@@ -44,24 +44,24 @@ static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_int 
 	switch (nKey)
 	{
 	case KEY_TAB:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 		return 1;
 	case KEY_ENTER:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 		return 1;
 	case KEY_ESC:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
 		return 1;
 	case KEY_SPACE:
 		editbox_set_text(widget, NULL);
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_self_command(res_win_t widget, int code, var_int data, uid_t subid, var_int delta)
+static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
 {
 	res_win_t timebox;
 	xdate_t tt;
@@ -88,17 +88,17 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_int data, ui
 		}
 		return 1;
 	case COMMAND_COMMIT:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 		return 1;
 	case COMMAND_ROLLBACK:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_int delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	res_win_t timebox;
 
@@ -114,7 +114,7 @@ static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_int delta)
 	widget_del_subproc(widget, IDS_EDITBOX);
 }
 
-static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_int delta)
+static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long delta)
 {
 	res_win_t timebox;
 
@@ -135,7 +135,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_int 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-int sub_timebox_self_command(res_win_t widget, int code, var_int data, uid_t subid, var_int delta)
+int sub_timebox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
 {
 	res_win_t editbox;
 	tchar_t token[DATE_LEN + 1] = { 0 };
@@ -168,7 +168,7 @@ int sub_timebox_self_command(res_win_t widget, int code, var_int data, uid_t sub
 	return 0;
 }
 
-void sub_timebox_unsubbing(res_win_t widget, uid_t subid, var_int delta)
+void sub_timebox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 {
 	if (subid != IDS_TIMEBOX)
 		return;
@@ -209,7 +209,7 @@ res_win_t firetime_create(res_win_t widget, const xrect_t* pxr)
 
 	timebox = timebox_create(widget, WD_STYLE_POPUP | WD_STYLE_BORDER | WD_STYLE_NOACTIVE, &xr);
 
-	widget_set_subproc_delta(editor, IDS_EDITBOX, (var_int)timebox);
+	widget_set_subproc_delta(editor, IDS_EDITBOX, (var_long)timebox);
 
 	widget_set_user_id(timebox, IDC_TIMEBOX);
 	widget_set_owner(timebox, editor);
@@ -220,7 +220,7 @@ res_win_t firetime_create(res_win_t widget, const xrect_t* pxr)
 	ev.sub_on_unsubbing = sub_timebox_unsubbing;
 
 	widget_set_subproc(timebox, IDS_TIMEBOX, &ev);
-	widget_set_subproc_delta(timebox, IDS_TIMEBOX, (var_int)editor);
+	widget_set_subproc_delta(timebox, IDS_TIMEBOX, (var_long)editor);
 
 	widget_get_window_rect(timebox, &xr);
 	timebox_popup_size(timebox, RECTSIZE(&xr));

@@ -56,13 +56,13 @@ void _thread_set_tls(tls_key_t key, void* pv)
 
 pid_t _thread_get_id(void)
 {
-    int tid;
+    pid_t tid;
 
-    //tid = syscall(SYS_gettid);
+    tid = syscall(SYS_gettid);
     
-    tid = (int)pthread_self();
+    //tid = (int)pthread_self();
     
-    return (tid < 0)? getpid() : (pid_t)tid;
+    return tid;
 }
 
 void _thread_safe()

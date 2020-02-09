@@ -215,23 +215,6 @@ XDL_API link_t_ptr get_memo_line_at(link_t_ptr ptr, int index);
 */
 XDL_API int get_memo_line_index(link_t_ptr ptr, link_t_ptr ilk);
 
-/*
-@FUNCTION format_memo_doc: format the memo document to string buffer.
-@INPUT link_t_ptr ptr: the memo link component.
-@OUTPUT tchar_t* buf: the string buffer.
-@INPUT int max: the string buffer size in characters.
-@RETURN int: return the characters formated.
-*/
-XDL_API int format_memo_doc(link_t_ptr ptr, tchar_t* buf, int max);
-
-/*
-@FUNCTION parse_memo_doc: parse the memo document from string buffer.
-@INPUT link_t_ptr ptr: the memo link component.
-@INPUT const tchar_t* buf: the string buffer.
-@INPUT int len: the string buffer size in characters.
-@RETURN int: if succeeds return nonzero, fails return zero.
-*/
-XDL_API bool_t parse_memo_doc(link_t_ptr ptr, const tchar_t* buf, int len);
 
 #ifdef	__cplusplus
 }

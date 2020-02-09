@@ -37,19 +37,19 @@ void test_file()
 
     file_info_t fi = {0};
     
-    (*if_file.pf_file_info)("./body.bmp", &fi);
+    (*if_file.pf_file_info)(_T("./body.bmp"), &fi);
     
     printf("size: %d time: %d-%02d-%02d %02d:%02d:%02d\n", (int)fi.low_size, fi.write_time.year, fi.write_time.mon, fi.write_time.day, fi.write_time.hour, fi.write_time.min, fi.write_time.sec);
     
     void* buf = calloc(1, fi.low_size);
     
-    res_file_t fh = (*if_file.pf_file_open)("./body.bmp", 0);
+    res_file_t fh = (*if_file.pf_file_open)(_T("./body.bmp"), 0);
     
     async_t over = {0};
     
     (*if_file.pf_file_read)(fh, buf, fi.low_size, &over);
     
-    res_file_t fh2 = (*if_file.pf_file_open)("./body2.bmp", FILE_OPEN_CREATE);
+    res_file_t fh2 = (*if_file.pf_file_open)(_T("./body2.bmp"), FILE_OPEN_CREATE);
     (*if_file.pf_file_write)(fh2, buf, over.size, &over);
     (*if_file.pf_file_close)(fh2);
 
@@ -57,9 +57,9 @@ void test_file()
     free(buf);
     (*if_file.pf_file_close)(fh);
     
-    (*if_file.pf_file_rename)("./body2.bmp","./body3.bmp");
+    (*if_file.pf_file_rename)(_T("./body2.bmp"),_T("./body3.bmp"));
     
-     (*if_file.pf_file_delete)("./body3.bmp");
+     (*if_file.pf_file_delete)(_T("./body3.bmp"));
 }
 
 void test_dir()
@@ -68,7 +68,7 @@ void test_dir()
     
     xdk_impl_process(&if_proc);
     
-    char path[PATH_LEN] = {0};
+    tchar_t path[PATH_LEN] = {0};
     (*if_proc.pf_get_runpath)(NULL, path, PATH_LEN);
     printf("running path: %s\n", path);
 
@@ -85,11 +85,11 @@ void test_dir()
         printf("find file: %s\n", fi.file_name);
     }
 
-    strcat(path,"/test/mydir");
+    _tstrcat(path,_T("/test/mydir"));
     (*if_file.pf_directory_open)(path, FILE_OPEN_CREATE);
 
 }
-
+/*
 void test_name_pipe()
 {
     if_pipe_t if_pipe = { 0 };
@@ -104,14 +104,14 @@ void test_name_pipe()
     
     res_file_t srv = 0, cli=0;
     
-    srv = (*if_pipe.pf_pipe_srv)("xportm", FILE_OPEN_READ | FILE_OPEN_OVERLAP);
+    srv = (*if_pipe.pf_pipe_srv)(_T("xportm"), FILE_OPEN_READ | FILE_OPEN_OVERLAP);
     if(!srv)
         printf("parent error : %s\n", strerror(errno));
     
     if((pid = fork()) == 0){
         close(srv);
         
-        cli = (*if_pipe.pf_pipe_cli)("xportm", FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
+        cli = (*if_pipe.pf_pipe_cli)(_T("xportm"), FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
         if(!cli)
              printf("child error : %s\n", strerror(errno));
         
@@ -135,10 +135,10 @@ void test_name_pipe()
             printf("parent error : %s\n", strerror(errno));
         
          waitpid(pid, &status, 0);
-         (*if_pipe.pf_pipe_close)("xportm", srv);
+         (*if_pipe.pf_pipe_close)(_T("xportm"), srv);
     }
 }
-
+*/
 void test_process()
 {
     if_process_t if_proc = { 0 };
@@ -149,15 +149,14 @@ void test_process()
     (*if_proc.pf_system_info)(&si);
     printf("processer: %d,page size: %d\n", si.processor_number, si.page_size);
     
-    
-    char path[PATH_LEN] = {0};
+    tchar_t path[PATH_LEN] = {0};
     (*if_proc.pf_get_runpath)(NULL, path, PATH_LEN);
     printf("running path: %s\n", path);
     
-    (*if_proc.pf_get_envvar)("XSERVICE_ROOT", path, PATH_LEN);
+    (*if_proc.pf_get_envvar)(_T("XSERVICE_ROOT"), path, PATH_LEN);
     printf("service path: %s\n", path);
 
-    strcat(path,"/../sbin/api/libwww_api.dylib");
+    _tstrcat(path, _T("/../sbin/api/libwww_api.dylib"));
     
     typedef void (*PF_DEFAULT_XPEN)(xpen_t* pxp);
     res_modu_t dl = (*if_proc.pf_load_library)(path);
@@ -166,7 +165,7 @@ void test_process()
     (*pf)(&xp);
     (*if_proc.pf_free_library)(dl);
 }
-
+/*
 void test_pipe()
 {
     if_process_t if_proc = { 0 };
@@ -176,14 +175,14 @@ void test_pipe()
     xdk_impl_pipe(&if_pipe);
 
     proc_info_t pi = {0};
-    (*if_proc.pf_create_process)("./xdk_child_test", "pipe", 1, &pi);
+    (*if_proc.pf_create_process)(_T("./xdk_child_test"), _T("pipe"), 1, &pi);
     
-    char buf[20] = {0};
-    strcpy(buf,"hello word!");
+    tchar_t buf[20] = {0};
+    _tstrcpy(buf,_T("hello word!"));
     
     async_t over = {0};
     
-    dword_t dw = strlen(buf);
+    dword_t dw = _tstrlen(buf);
     if(!(*if_pipe.pf_pipe_write)(pi.pip_write, buf, dw, &over))
         printf("parent error : %s\n", strerror(errno));
     else
@@ -214,7 +213,7 @@ void test_sock()
     (*if_sock.pf_conv_addr)(&addr, &port, token);
     
     proc_info_t pi = {0};
-    (*if_proc.pf_create_process)("./xdk_child_test", "sock", 2, &pi);
+    (*if_proc.pf_create_process)(_T("./xdk_child_test"), _T("sock"), 2, &pi);
     
     if(!(*if_sock.pf_socket_share)(pi.process_id, pi.pip_write, so, NULL, 0))
         printf("parent error : %s\n", strerror(errno));  
@@ -254,7 +253,7 @@ void test_heap()
     
     (*if_memo.pf_heap_destroy)(hp);
 }
-
+*/
 void test_page()
 {
     if_memo_t if_memo = { 0 };
@@ -282,25 +281,30 @@ void test_cache()
     char buf[4096] = {0};
     strcpy(buf, "hello word!");
     
-    dword_t dw = 0;
-    (*if_memo.pf_cache_write)(p, 0, 10, buf, 4096, &dw);
-    printf("write: %s\n", buf);
-    
-    memset((void*)buf,0,4096);
-    dw = 0;
-    (*if_memo.pf_cache_read)(p, 0, 10, buf, 4096, &dw);
-    printf("read: %s\n", buf);
+    dword_t dw,total = 10;
+	int i = 1024;
+	while (i--)
+	{
+		(*if_memo.pf_cache_write)(p, 0, total, buf, 4096, &dw);
+		printf("write: %s\n", buf);
+
+		memset((void*)buf, 0, 4096);
+		(*if_memo.pf_cache_read)(p, 0, total, buf, 4096, &dw);
+		printf("read: %s\n", buf);
+
+		total += 4096;
+	}
 
     (*if_memo.pf_cache_close)(p);
 }
-
+/*
 void test_share()
 {
     if_share_t if_share = { 0 };
     
     xdk_impl_share(&if_share);
     
-    res_file_t fh = (*if_share.pf_share_srv)("mytest","./demo.txt",0,0,1024);
+    res_file_t fh = (*if_share.pf_share_srv)(_T("mytest"),_T("./demo.txt"),0,0,1024);
     if(!fh)
         printf("parent error : %s\n", strerror(errno));
     
@@ -322,7 +326,7 @@ void test_share()
     
     if(pid == 0)
     {
-        res_file_t ch = (*if_share.pf_share_cli)("mytest",1024);
+        res_file_t ch = (*if_share.pf_share_cli)(_T("mytest"),1024);
         if(!ch)
             printf("child error : %s\n", strerror(errno));
         
@@ -333,13 +337,14 @@ void test_share()
         else
             printf("child read : %s\n", buf);
         
-        (*if_share.pf_share_close)("mytest", ch);
+        (*if_share.pf_share_close)(_T("mytest"), ch);
     }
     else{
         waitpid(pid, &status, 0);
-        (*if_share.pf_share_close)("mytest", fh);
+        (*if_share.pf_share_close)(_T("mytest"), fh);
     }
 }
+*/
 
 void test_mbcs()
 {
@@ -360,6 +365,56 @@ void test_mbcs()
     (*if_mbcs.pf_ucs_to_gbk)(ucs_buf, -1, gbk_buf, n);
     printf("GBK: %s\n", gbk_buf);
     wprintf(L"UCS: %S\n", ucs_buf);
+
+	unsigned char bom[4];
+
+	bom[0] = 0xEF;
+	bom[1] = 0xBB;
+	bom[2] = 0xBF;
+	memset((void*)ucs_buf, 0, 20 * sizeof(wchar_t));
+	n = (*if_mbcs.pf_utf8_to_ucs)((schar_t*)bom, 3, ucs_buf, 20); //1
+
+	bom[0] = 0xFF;
+	bom[1] = 0xFE;
+	memset((void*)gbk_buf, 0, 20 * sizeof(schar_t));
+	n = (*if_mbcs.pf_ucs_to_utf8)((wchar_t*)bom, 1, gbk_buf, 20); //3
+
+	bom[0] = 0xEF;
+	bom[1] = 0xBB;
+	bom[2] = 0xBF;
+	memset((void*)gbk_buf, 0, 20 * sizeof(schar_t));
+	n = (*if_mbcs.pf_gbk_to_ucs)((schar_t*)bom, 3, ucs_buf, 20); //2
+
+	bom[0] = 0xFF;
+	bom[1] = 0xFE;
+	memset((void*)gbk_buf, 0, 20 * sizeof(schar_t));
+	n = (*if_mbcs.pf_ucs_to_gbk)((wchar_t*)bom, 1, gbk_buf, 20); //1
+
+//#define GET_THREEBYTE_LEN(buf,off)	((buf[off] << 16) | (buf[off+1] << 8) | buf[off+2])
+//#define PUT_THREEBYTE_LEN(buf,off,n)	{buf[off] = (unsigned char)((n) >> 16);buf[off+1] = (unsigned char)((n) >> 8);buf[off+2] = (unsigned char)((n));}
+//#define GET_SWORD_BIG(buf,off)		((((unsigned short)(buf[off]) << 8) & 0xFF00) | ((unsigned short)(buf[off+1]) & 0x00FF))
+//#define GET_DWORD_LIT(buf,off)		((((unsigned int)(buf[off + 3]) << 24) & 0xFF000000) | (((unsigned int)(buf[off + 2]) << 16) & 0x00FF0000)  | (((unsigned int)(buf[off + 1]) << 8) & 0x0000FF00) | ((unsigned int)(buf[off]) & 0x000000FF))
+
+	bom[0] = 0xEF;
+	bom[1] = 0xBB;
+	bom[2] = 0xBF;
+
+	n = ((((unsigned int)(bom[2]) << 16) & 0x00FF0000) | (((unsigned int)(bom[1]) << 8) & 0x0000FF00) | ((unsigned int)(bom[0]) & 0x000000FF));
+
+	memset((void*)bom, 0, 4);
+
+	bom[0] = (unsigned char)((n)& 0xFF);
+	bom[1] = (unsigned char)(((n) >> 8) & 0xFF);
+	bom[2] = (unsigned char)(((n) >> 16) & 0xFF);
+
+	byte_t c = 0xab;
+	wchar_t w = (wchar_t)c;
+	memcpy((void*)bom, (void*)&w, sizeof(wchar_t));
+
+	bom[0] = GETLBYTE(w);
+	bom[1] = GETHBYTE(w);
+
+	w = MAKESWORD(bom[0], bom[1]);
 }
 
 void test_cons()
@@ -376,8 +431,8 @@ void test_cons()
     else
         printf("device : %s\n", cname);
     
-    strcat(cname,"\n");
-    dword_t len = strlen(cname);
+    _tstrcat(cname,_T("\n"));
+    dword_t len = _tstrlen(cname);
     
     if((*if_cons.pf_cons_write)(con, cname, len, &len))
         printf("master write : %s\n", cname);
@@ -512,7 +567,7 @@ void test_context()
     
     float fw, fh;
     
-    (*if_context.pf_text_mm_size)(rdc, &xf, "hello world!", -1, &fw, &fh);
+    (*if_context.pf_text_mm_size)(rdc, &xf, _T("hello world!"), -1, &fw, &fh);
     
     float f = (*if_context.pf_pt_per_mm)(rdc,1);
     
@@ -574,7 +629,7 @@ void test_widget()
     xr.w = 300;
     xr.h = 400;
     
-    res_win_t win = (*if_widget.pf_widget_create)("demo",0,&xr,NULL,NULL);
+    res_win_t win = (*if_widget.pf_widget_create)(_T("demo"),0,&xr,NULL,NULL);
     
     
     (*if_widget.pf_widget_show)(win, 0);
@@ -585,9 +640,9 @@ void test_widget()
 }
 
 int main(int argc, const char * argv[]) {
-    struct sigaction sa = {0};
-    sa.sa_handler = SIG_IGN;
-    sigaction(SIGPIPE, &sa, 0 );
+    //struct sigaction sa = {0};
+    //sa.sa_handler = SIG_IGN;
+    //sigaction(SIGPIPE, &sa, 0 );
     
     // insert code here...
     
@@ -605,7 +660,7 @@ int main(int argc, const char * argv[]) {
     
     //test_pipe();
     
-    test_sock();
+    //test_sock();
     
     //test_heap();
     
@@ -617,7 +672,7 @@ int main(int argc, const char * argv[]) {
     
     //test_share();
     
-    //test_mbcs();
+    test_mbcs();
     
     //test_cons();
     

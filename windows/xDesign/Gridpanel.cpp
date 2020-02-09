@@ -70,7 +70,7 @@ accel_t	GRIDPANEL_ACCEL[GRIDPANEL_ACCEL_COUNT] = {
 };
 
 #define GETGRIDPANELDELTA(ph) 		(GridPanelDelta*)widget_get_user_delta(ph)
-#define SETGRIDPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETGRIDPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 
 void	GridPanel_Switch(res_win_t widget);
@@ -315,7 +315,7 @@ void GridPanel_OnExport(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("xml data file(*.xml)\0*.xml\0"), _T("xml"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("csv data file(*.csv)\0*.csv\0"), _T("csv"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));
@@ -324,19 +324,11 @@ void GridPanel_OnExport(res_win_t widget)
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 
-	LINKPTR ptrDom = create_dom_doc();
-
-	export_grid_data(ptrGrid, NULL, ptrDom);
-
-	if (!save_dom_doc_to_file(ptrDom, NULL, szFile))
+	if (!save_grid_to_csv_file(ptrGrid, 0, NULL, szFile))
 	{
-		destroy_dom_doc(ptrDom);
-
 		ShowMsg(MSGICO_ERR, _T("保存数据失败！"));
 		return;
 	}
-
-	destroy_dom_doc(ptrDom);
 }
 
 
@@ -349,7 +341,7 @@ void GridPanel_OnImport(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("xml data file(*.xml)\0*.xml\0"), _T("xml"), 0, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("csv data file(*.csv)\0*.csv\0"), _T("csv"), 0, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));
@@ -358,19 +350,20 @@ void GridPanel_OnImport(res_win_t widget)
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 
-	LINKPTR ptrDom = create_dom_doc();
+	clear_grid_rowset(ptrGrid);
 
-	if (!load_dom_doc_from_file(ptrDom, NULL, szFile))
+	if (!load_grid_from_csv_file(ptrGrid, 0, NULL, szFile))
 	{
-		destroy_dom_doc(ptrDom);
-
 		ShowMsg(MSGICO_ERR, _T("导入数据失败！"));
 		return;
 	}
 
-	import_grid_data(ptrGrid, NULL, ptrDom);
-
-	destroy_dom_doc(ptrDom);
+	LINKPTR rlk = get_next_row(ptrGrid, LINK_FIRST);
+	while (rlk)
+	{
+		set_row_state(rlk, dsNewDirty);
+		rlk = get_next_row(ptrGrid, rlk);
+	}
 
 	gridctrl_redraw(pdt->hGrid, 1);
 }
@@ -1009,6 +1002,8 @@ void GridPanel_OnUpdateRows(res_win_t widget)
 
 	refresh_grid_rowset(ptrGrid);
 	gridctrl_redraw(pdt->hGrid, 1);
+
+	ShowMsg(MSGICO_TIP, _T("数据更新成功！"));
 }
 
 void GridPanel_OnFillCode(res_win_t widget)
@@ -1613,6 +1608,12 @@ void GridPanel_OnShow(res_win_t widget, bool_t bShow)
 		set_tool_item_icon(ilk, ICON_PLUS);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
+		xsprintf(token, _T("%d"), IDA_SELECT_COLS);
+		set_tool_item_id(ilk, token);
+		set_tool_item_title(ilk, _T("查询列集"));
+		set_tool_item_icon(ilk, ICON_EXECUTE);
+
+		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_ROW);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增行"));
@@ -1681,7 +1682,7 @@ void GridPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void GridPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void GridPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
@@ -1716,7 +1717,7 @@ void GridPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void GridPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void GridPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
@@ -1817,7 +1818,7 @@ void GridPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 		GridPanel_OnEraseRows(widget);
 		break;
 	case IDA_SELECT_COLS:
-		//GridPanel_OnSelectCols(widget);
+		GridPanel_OnSelectCols(widget);
 		break;
 	case IDA_IMPORT_COLS:
 		//GridPanel_OnImportCols(widget);

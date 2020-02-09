@@ -122,9 +122,15 @@ bool_t _share_write(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t
 	void* pBase = NULL;
 	DWORD poff, loff;
 	SIZE_T dlen;
+	DWORD page_gran;
 
-	poff = (off % PAGE_GRAN);
-	loff = (off / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (off % page_gran);
+	loff = (off / page_gran) * page_gran;
 	dlen = poff + size;
 
 	pBase = MapViewOfFile(fh, FILE_MAP_WRITE, 0, loff, dlen);
@@ -149,9 +155,15 @@ bool_t _share_read(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t*
 	void* pBase = NULL;
 	DWORD poff, loff;
 	SIZE_T dlen;
+	DWORD page_gran;
 
-	poff = (off % PAGE_GRAN);
-	loff = (off / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (off % page_gran);
+	loff = (off / page_gran) * page_gran;
 	dlen = poff + size;
 
 	pBase = MapViewOfFile(fh, FILE_MAP_READ, 0, loff, dlen);
@@ -176,9 +188,15 @@ void* _share_lock(res_file_t fh, dword_t off, dword_t size)
 	void* pBase = NULL;
 	DWORD poff, loff;
 	SIZE_T dlen;
+	DWORD page_gran;
 
-	poff = (off % PAGE_GRAN);
-	loff = (off / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (off % page_gran);
+	loff = (off / page_gran) * page_gran;
 	dlen = poff + size;
 
 	pBase = MapViewOfFile(fh, FILE_MAP_READ, 0, loff, dlen);
@@ -190,9 +208,15 @@ void _share_unlock(res_file_t fh, dword_t off, dword_t size, void* p)
 {
 	DWORD poff,loff;
 	SIZE_T dlen;
+	DWORD page_gran;
 
-	poff = (off % PAGE_GRAN);
-	loff = (off / PAGE_GRAN) * PAGE_GRAN;
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	page_gran = si.dwAllocationGranularity;
+
+	poff = (off % page_gran);
+	loff = (off / page_gran) * page_gran;
 	dlen = poff + size;
 
 	UnmapViewOfFile((void*)((char*)p - poff));

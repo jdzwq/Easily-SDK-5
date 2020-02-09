@@ -248,14 +248,6 @@ extern bool_t STDCALL db_read_xdoc(xdb_t db, LINKPTR domdoc, const tchar_t* sqls
 */
 extern bool_t STDCALL db_write_xdoc(xdb_t db, LINKPTR domdoc, const tchar_t* sqlfmt);
 
-/*
-@FUNCTION db_trace: dump sql statement and error into stream.
-@INPUT xdb_t db: the xdb handle.
-@OUTPUT stream_t stm: the strem object.
-@RETURN void: none.
-*/
-extern void STDCALL db_trace(xdb_t db, stream_t stm);
-
 #ifdef	__cplusplus
 }
 #endif
@@ -274,7 +266,6 @@ typedef bool_t(STDCALL *PF_DB_UPDATE)(xdb_t, LINKPTR);
 typedef bool_t(STDCALL *PF_DB_DATETIME)(xdb_t, int, tchar_t*);
 typedef int(STDCALL *PF_DB_ROWS)(xdb_t);
 typedef int(STDCALL *PF_DB_ERROR)(xdb_t, tchar_t*, int);
-typedef void(STDCALL *PF_DB_TRACE)(xdb_t, stream_t);
 typedef bool_t(STDCALL *PF_DB_CALL_FUNC)(xdb_t, LINKPTR);
 typedef bool_t(STDCALL *PF_DB_CALL_JSON)(xdb_t, const tchar_t*, LINKPTR);
 typedef int (*PF_DB_CALL_ARGV)(xdb_t, const tchar_t*, const tchar_t*, ...);

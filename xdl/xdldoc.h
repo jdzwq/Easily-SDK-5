@@ -50,6 +50,7 @@
 #include "properbio.h"
 #include "textbio.h"
 #include "formbio.h"
+#include "memobio.h"
 #include "schemabag.h"
 #include "imagesbag.h"
 #include "docmeta.h"

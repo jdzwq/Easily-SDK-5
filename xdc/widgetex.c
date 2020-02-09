@@ -497,7 +497,7 @@ void widgetex_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr)
 	hand_docker_calc_rect(&pwt->docker, style, pxr);
 }
 
-static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_int pv)
+static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
 {
 	dword_t dw;
 
@@ -535,14 +535,14 @@ void widgetex_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 	if (widget_has_subproc(wt))
 	{
-		widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (var_int)pclr);
+		widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (var_long)pclr);
 	}
 
 	dw = widget_get_style(wt);
 	if (dw & WD_STYLE_NOCHANGE)
 		return;
 
-	widget_enum_child(wt, _widget_set_child_color_mode, (var_int)pclr);
+	widget_enum_child(wt, _widget_set_child_color_mode, (var_long)pclr);
 }
 
 void widgetex_get_color_mode(res_win_t wt, clr_mod_t* pclr)

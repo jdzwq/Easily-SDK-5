@@ -52,7 +52,7 @@ typedef struct tagImagePanelDelta{
 }ImagePanelDelta;
 
 #define GETIMAGEPANELDELTA(ph) 		(ImagePanelDelta*)widget_get_user_delta(ph)
-#define SETIMAGEPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETIMAGEPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 #define IMAGEPANEL_ACCEL_COUNT	5
 accel_t	IMAGEPANEL_ACCEL[IMAGEPANEL_ACCEL_COUNT] = {
@@ -740,7 +740,7 @@ void ImagePanel_OnShow(res_win_t widget, bool_t bShow)
 	}
 }
 
-void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 	void* pv = NULL;
@@ -799,7 +799,7 @@ void ImagePanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 	}
 }
 
-void ImagePanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void ImagePanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 

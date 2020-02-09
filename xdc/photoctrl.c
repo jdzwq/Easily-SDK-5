@@ -63,7 +63,7 @@ typedef struct _photo_delta_t{
 
 
 #define GETPHOTODELTA(ph) 	(photo_delta_t*)widget_get_user_delta(ph)
-#define SETPHOTODELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETPHOTODELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 int noti_photo_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, res_ctx_t rdc);
 /*******************************************************************************************************/
@@ -997,9 +997,9 @@ void hand_photo_kill_focus(res_win_t widget, res_win_t wt)
 	if (widget_is_editor(widget))
 	{
 		if (photoctrl_get_dirty(widget))
-			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 		else
-			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_int)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
 	}
 }
 
@@ -1053,7 +1053,7 @@ void hand_photo_undo(res_win_t widget)
 	_photoctrl_undo(widget);
 }
 
-void hand_photo_child_command(res_win_t widget, int code, var_int data)
+void hand_photo_child_command(res_win_t widget, int code, var_long data)
 {
 	photo_delta_t* ptd = GETPHOTODELTA(widget);
 

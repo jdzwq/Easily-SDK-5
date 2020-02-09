@@ -40,7 +40,7 @@ typedef struct _navibox_delta_t{
 }navibox_delta_t;
 
 #define GETNAVIBOXDELTA(ph) 	(navibox_delta_t*)widget_get_user_delta(ph)
-#define SETNAVIBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETNAVIBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /*********************************************************************************/
 void navibox_on_home(res_win_t widget)

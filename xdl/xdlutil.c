@@ -72,7 +72,7 @@ int parse_charset(const tchar_t* enstr)
 	else if (xsnicmp(enstr, CHARSET_UTF8, xslen(CHARSET_UTF8)) == 0)
 		return _UTF8;
 	else if (xsnicmp(enstr, CHARSET_UTF16, xslen(CHARSET_UTF16)) == 0)
-		return (DEF_BOM == BIGBOM) ? _UTF16_BIG : _UTF16_LIT;
+		return _UCS2;
 	else
 		return _UNKNOWN;
 }

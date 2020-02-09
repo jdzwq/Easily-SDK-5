@@ -2647,7 +2647,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 
-	tchar_t charset[INT_LEN + 1] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 	byte_t *buf_response = NULL;
 	dword_t len_response = 0;
 	int opt = 0;
@@ -2666,7 +2666,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 		if (phttp->inf.pf_setopt)
 		{
-			opt = 0;
+			opt = TCP_MIN_SNDBUFF;
 			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
 		}
 
@@ -2689,31 +2689,34 @@ bool_t xhttp_send_response(xhand_t xhttp)
 		{
 			phttp->send_stream = stream_alloc(phttp->inf.bio);
 
-			xhttp_get_response_content_type_charset(xhttp, charset, INT_LEN);
-			if (!is_null(charset))
+			xhttp_get_response_content_type_charset(xhttp, token, INT_LEN);
+			if (!is_null(token))
 			{
-				stream_set_encode(phttp->send_stream, parse_charset(charset));
+				stream_set_encode(phttp->send_stream, parse_charset(token));
 			}
 
 			if (xhttp_is_chunked_send(xhttp))
 			{
 				stream_set_mode(phttp->send_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->send_stream);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = TCP_MAX_BUFF;
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
-				}
+				opt = TCP_MAX_SNDBUFF;
+			}
+			else if (xhttp_is_lined_send(xhttp))
+			{
+				stream_set_mode(phttp->send_stream, LINE_OPERA);
+				stream_opera_reset(phttp->send_stream);
+				opt = TCP_MAX_SNDBUFF;
 			}
 			else
 			{
 				len_response = xhttp_get_response_content_length(xhttp);
 				stream_set_size(phttp->send_stream, len_response);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = ((len_response) ? len_response : TCP_MAX_BUFF);
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
-				}
+				opt = ((len_response) ? len_response : TCP_MAX_SNDBUFF);
+			}
+
+			if (phttp->inf.pf_setopt)
+			{
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
 			}
 		}
 
@@ -2738,7 +2741,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	dword_t len_header, len_response,len_one;
-	tchar_t charset[INT_LEN + 1] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 	byte_t* buf_response = NULL;
 	int opt;
 
@@ -2751,7 +2754,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 	{
 		if (phttp->inf.pf_setopt)
 		{
-			opt = 0;
+			opt = TCP_MIN_RCVBUFF;
 			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
 		}
 
@@ -2796,31 +2799,34 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 
 			_xhttp_parse_response(phttp, buf_response, len_response);
 
-			xhttp_get_response_content_type_charset(xhttp, charset, INT_LEN);
-			if (!is_null(charset))
+			xhttp_get_response_content_type_charset(xhttp, token, INT_LEN);
+			if (!is_null(token))
 			{
-				stream_set_encode(phttp->recv_stream, parse_charset(charset));
+				stream_set_encode(phttp->recv_stream, parse_charset(token));
 			}
 
 			if (xhttp_is_chunked_recv(xhttp))
 			{
 				stream_set_mode(phttp->recv_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->recv_stream);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = TCP_MAX_BUFF;
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
-				}
+				opt = TCP_MAX_RCVBUFF;
+			}
+			else if (xhttp_is_lined_recv(xhttp))
+			{
+				stream_set_mode(phttp->recv_stream, LINE_OPERA);
+				stream_opera_reset(phttp->recv_stream);
+				opt = TCP_MAX_RCVBUFF;
 			}
 			else
 			{
 				len_one = xhttp_get_response_content_length(xhttp);
 				stream_set_size(phttp->recv_stream, len_one);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = ((len_one) ? len_one : TCP_MAX_BUFF);
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
-				}
+				opt = ((len_one) ? len_one : TCP_MAX_RCVBUFF);
+			}
+
+			if (phttp->inf.pf_setopt)
+			{
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
 			}
 		}
 
@@ -2864,7 +2870,7 @@ bool_t xhttp_send_request(xhand_t xhttp)
 
 		if (phttp->inf.pf_setopt)
 		{
-			opt = 0;
+			opt = TCP_MIN_SNDBUFF;
 			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
 		}
 
@@ -2897,21 +2903,24 @@ bool_t xhttp_send_request(xhand_t xhttp)
 			{
 				stream_set_mode(phttp->send_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->send_stream);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = TCP_MAX_BUFF;
-					(*phttp->inf.pf_setopt)(phttp->inf.bio,SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
-				}
+				opt = TCP_MAX_SNDBUFF;
+			}
+			else if (xhttp_is_lined_send(xhttp))
+			{
+				stream_set_mode(phttp->send_stream, LINE_OPERA);
+				stream_opera_reset(phttp->send_stream);
+				opt = TCP_MAX_SNDBUFF;
 			}
 			else
 			{
 				len_request = xhttp_get_request_content_length(xhttp);
 				stream_set_size(phttp->send_stream, len_request);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = ((len_request) ? len_request : TCP_MAX_BUFF);
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
-				}
+				opt = ((len_request) ? len_request : TCP_MAX_SNDBUFF);
+			}
+
+			if (phttp->inf.pf_setopt)
+			{
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
 			}
 		}
 
@@ -2949,7 +2958,7 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 	{
 		if (phttp->inf.pf_setopt)
 		{
-			opt = 0;
+			opt = TCP_MIN_RCVBUFF;
 			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
 		}
 
@@ -3017,21 +3026,24 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 			{
 				stream_set_mode(phttp->recv_stream, CHUNK_OPERA);
 				stream_opera_reset(phttp->recv_stream);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = TCP_MAX_BUFF;
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
-				}
+				opt = TCP_MAX_RCVBUFF;
+			}
+			else if (xhttp_is_lined_recv(xhttp))
+			{
+				stream_set_mode(phttp->recv_stream, LINE_OPERA);
+				stream_opera_reset(phttp->recv_stream);
+				opt = TCP_MAX_RCVBUFF;
 			}
 			else
 			{
 				len_one = xhttp_get_request_content_length(xhttp);
 				stream_set_size(phttp->recv_stream, len_one);
-				if (phttp->inf.pf_setopt)
-				{
-					opt = ((len_one) ? len_one : TCP_MAX_BUFF);
-					(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
-				}
+				opt = ((len_one) ? len_one : TCP_MAX_RCVBUFF);
+			}
+
+			if (phttp->inf.pf_setopt)
+			{
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
 			}
 		}
 
@@ -3050,6 +3062,63 @@ ONERROR:
 	XDL_TRACE_LAST;
 
 	return phttp->b_request;
+}
+
+bool_t xhttp_is_lined_recv(xhand_t xhttp)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	tchar_t token[RES_LEN + 1] = { 0 };
+	dword_t size = 0;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	if (phttp->type == _XHTTP_TYPE_CLI && !phttp->b_response)
+		return 0;
+
+	if (phttp->type == _XHTTP_TYPE_SRV && !phttp->b_request)
+		return 0;
+
+	if (phttp->type == _XHTTP_TYPE_CLI)
+	{
+		xhttp_get_response_content_type(xhttp, token, RES_LEN);
+		size = xhttp_get_response_content_length(xhttp);
+	}
+	else
+	{
+		xhttp_get_request_content_type(xhttp, token, RES_LEN);
+		size = xhttp_get_request_content_length(xhttp);
+	}
+
+	return (CONTENTTYPE_IS_TEXT(token) && (!size)) ? 1 : 0;
+}
+
+bool_t xhttp_is_lined_send(xhand_t xhttp)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+
+	tchar_t token[RES_LEN + 1] = { 0 };
+	dword_t size = 0;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	if (phttp->type == _XHTTP_TYPE_CLI && !phttp->b_request)
+		return 0;
+
+	if (phttp->type == _XHTTP_TYPE_SRV && !phttp->b_response)
+		return 0;
+
+	if (phttp->type == _XHTTP_TYPE_CLI)
+	{
+		xhttp_get_request_content_type(xhttp, token, RES_LEN);
+		size = xhttp_get_request_content_length(xhttp);
+	}
+	else
+	{
+		xhttp_get_response_content_type(xhttp, token, RES_LEN);
+		size = xhttp_get_response_content_length(xhttp);
+	}
+
+	return (CONTENTTYPE_IS_TEXT(token) && (!size)) ? 1 : 0;
 }
 
 bool_t xhttp_is_chunked_recv(xhand_t xhttp)
@@ -3229,20 +3298,22 @@ ONERROR:
 	return 0;
 }
 
-bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len)
+bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t size)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	tchar_t fsize[NUM_LEN + 1] = { 0 };
-	dword_t n_size = 0;
+	tchar_t trans[RES_LEN] = { 0 };
+	tchar_t fsize[NUM_LEN] = { 0 };
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
 	if (phttp->type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
 	{
+		xhttp_get_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
 		xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
-		if (is_null(fsize))
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
 		{
-			ltoxs(len, fsize, NUM_LEN);
+			ltoxs(size, fsize, NUM_LEN);
 			xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 		}
 
@@ -3252,10 +3323,12 @@ bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len)
 	
 	if (phttp->type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
 	{
+		xhttp_get_response_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
 		xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
-		if (is_null(fsize))
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
 		{
-			ltoxs(len, fsize, NUM_LEN);
+			ltoxs(size, fsize, NUM_LEN);
 			xhttp_set_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 		}
 
@@ -3265,7 +3338,7 @@ bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len)
 
 	XDL_ASSERT(phttp->send_stream != NULL);
 
-	if (!stream_write_bytes(phttp->send_stream, buf, len))
+	if (!stream_write_bytes(phttp->send_stream, buf, size))
 	{
 		return 0;
 	}
@@ -3276,7 +3349,8 @@ bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len)
 bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	dword_t nlen, npos, nbys;
+	dword_t npos, nbys;
+	bool_t rt = 0;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -3296,46 +3370,278 @@ bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 
 	if (xhttp_is_chunked_recv(xhttp))
 	{
-		nlen = npos = 0;
-
+		npos = 0;
 		do{
-			if (!stream_read_chunk_size(phttp->recv_stream, &nbys))
-				return 0;
+			nbys = 0;
+			if (!(rt = stream_read_chunk_size(phttp->recv_stream, &nbys)))
+				break;
 
 			if (!nbys)
 				break;
 
-			nlen += nbys;
-			bytes_realloc(pbuf, nlen);
+			bytes_realloc(pbuf, npos + nbys);
 
-			if (!stream_read_bytes(phttp->recv_stream, *pbuf + npos, &nbys))
+			if (!(rt = stream_read_bytes(phttp->recv_stream, *pbuf + npos, &nbys)))
 				break;
 
 			npos += nbys;
-		} while (nbys);
+		} while (rt);
 
 		*plen = npos;
-		return (!nbys) ? 1 : 0;
+		return rt;
 	}
 	else
 	{
 		if (phttp->type == _XHTTP_TYPE_CLI)
-			nlen = xhttp_get_response_content_length(xhttp);
+			npos = xhttp_get_response_content_length(xhttp);
 		else
-			nlen = xhttp_get_request_content_length(xhttp);
+			npos = xhttp_get_request_content_length(xhttp);
 
-		bytes_realloc(pbuf, nlen);
+		bytes_realloc(pbuf, npos);
 
-		if (!stream_read_bytes(phttp->recv_stream, *pbuf, &nlen))
-		{
-			bytes_realloc(pbuf, 0);
-			*plen = 0;
-			return 0;
-		}
+		rt = stream_read_bytes(phttp->recv_stream, *pbuf, &npos);
 
-		*plen = nlen;
+		*plen = npos;
 		return 1;
 	}
+}
+
+bool_t xhttp_send_xml(xhand_t xhttp,link_t_ptr xml)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	int type;
+	tchar_t trans[RES_LEN] = { 0 };
+	tchar_t fsize[NUM_LEN] = { 0 };
+	dword_t size = 0;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	type = xhttp_type(xhttp);
+
+	if (type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
+	{
+		xhttp_get_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
+		xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
+		{
+			size = format_xml_doc_to_bytes(xml, NULL, MAX_LONG);
+			ltoxs(size, fsize, NUM_LEN);
+			xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
+		}
+
+		if (!xhttp_send_request(xhttp))
+			return 0;
+	}
+
+	if (type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
+	{
+		xhttp_get_response_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
+		xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+		
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
+		{
+			size = format_xml_doc_to_bytes(xml, NULL, MAX_LONG);
+			ltoxs(size, fsize, NUM_LEN);
+			xhttp_set_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
+		}
+
+		if (!xhttp_send_response(xhttp))
+			return 0;
+	}
+
+	XDL_ASSERT(phttp->send_stream != NULL);
+
+	if (!format_xml_doc_to_stream(xml, phttp->send_stream))
+		return 0;
+
+	return stream_flush(phttp->send_stream);
+}
+
+bool_t xhttp_recv_xml(xhand_t xhttp,link_t_ptr xml)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	int type;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	type = xhttp_type(xhttp);
+
+	if (type == _XHTTP_TYPE_CLI && !xhttp_is_responsed(xhttp))
+	{
+		if (!xhttp_recv_response(xhttp))
+			return 0;
+	}
+
+	if (type == _XHTTP_TYPE_SRV && !xhttp_is_requested(xhttp))
+	{
+		if (!xhttp_recv_request(xhttp))
+			return 0;
+	}
+
+	XDL_ASSERT(phttp->recv_stream != NULL);
+
+	return parse_xml_doc_from_stream(xml, phttp->recv_stream);
+}
+
+bool_t xhttp_send_json(xhand_t xhttp, link_t_ptr json)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	int type;
+	tchar_t trans[RES_LEN] = { 0 };
+	tchar_t fsize[NUM_LEN] = { 0 };
+	dword_t size = 0;
+	tchar_t charset[RES_LEN] = { 0 };
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	type = xhttp_type(xhttp);
+
+	if (type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
+	{
+		xhttp_get_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
+		xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+		xhttp_get_request_content_type_charset(xhttp, charset, INT_LEN);
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
+		{
+			size = format_json_doc_to_bytes(json, NULL, MAX_LONG, parse_charset(charset));
+			ltoxs(size, fsize, NUM_LEN);
+			xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
+		}
+
+		if (!xhttp_send_request(xhttp))
+			return 0;
+	}
+
+	if (type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
+	{
+		xhttp_get_response_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
+		xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+		xhttp_get_response_content_type_charset(xhttp, charset, INT_LEN);
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
+		{
+			size = format_json_doc_to_bytes(json, NULL, MAX_LONG, parse_charset(charset));
+			ltoxs(size, fsize, NUM_LEN);
+			xhttp_set_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
+		}
+
+		if (!xhttp_send_response(xhttp))
+			return 0;
+	}
+
+	XDL_ASSERT(phttp->send_stream != NULL);
+
+	if (!format_json_doc_to_stream(json, phttp->send_stream))
+		return 0;
+
+	return stream_flush(phttp->send_stream);
+}
+
+bool_t xhttp_recv_json(xhand_t xhttp, link_t_ptr json)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	int type;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	type = xhttp_type(xhttp);
+
+	if (type == _XHTTP_TYPE_CLI && !xhttp_is_responsed(xhttp))
+	{
+		if (!xhttp_recv_response(xhttp))
+			return 0;
+	}
+
+	if (type == _XHTTP_TYPE_SRV && !xhttp_is_requested(xhttp))
+	{
+		if (!xhttp_recv_request(xhttp))
+			return 0;
+	}
+
+	XDL_ASSERT(phttp->recv_stream != NULL);
+
+	return parse_json_doc_from_stream(json, phttp->recv_stream);
+}
+
+bool_t xhttp_send_string(xhand_t xhttp, string_t var)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+	int type;
+	tchar_t trans[RES_LEN] = { 0 };
+	tchar_t fsize[NUM_LEN] = { 0 };
+	dword_t size = 0;
+	tchar_t charset[RES_LEN] = { 0 };
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	type = xhttp_type(xhttp);
+
+	if (type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
+	{
+		xhttp_get_request_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
+		xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+		xhttp_get_request_content_type_charset(xhttp, charset, INT_LEN);
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
+		{
+			size = string_encode(var, parse_charset(charset), NULL, MAX_LONG);
+			ltoxs(size, fsize, NUM_LEN);
+			xhttp_set_request_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
+		}
+
+		if (!xhttp_send_request(xhttp))
+			return 0;
+	}
+
+	if (type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
+	{
+		xhttp_get_response_header(xhttp, HTTP_HEADER_TRANSFERENCODING, -1, trans, RES_LEN);
+		xhttp_get_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+		xhttp_get_response_content_type_charset(xhttp, charset, INT_LEN);
+
+		if (compare_text(trans, -1, HTTP_HEADER_TRANSFERENCODING_CHUNKED, -1, 1) != 0 && xstol(fsize) == 0)
+		{
+			size = string_encode(var, parse_charset(charset), NULL, MAX_LONG);
+			ltoxs(size, fsize, NUM_LEN);
+			xhttp_set_response_header(xhttp, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
+		}
+
+		if (!xhttp_send_response(xhttp))
+			return 0;
+	}
+
+	XDL_ASSERT(phttp->send_stream != NULL);
+
+	return stream_write_line(phttp->send_stream, var, NULL);
+}
+
+bool_t xhttp_recv_string(xhand_t xhttp, string_t var)
+{
+	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
+
+	int type;
+
+	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
+
+	type = xhttp_type(xhttp);
+
+	if (type == _XHTTP_TYPE_CLI && !xhttp_is_responsed(xhttp))
+	{
+		if (!xhttp_recv_response(xhttp))
+			return 0;
+	}
+
+	if (type == _XHTTP_TYPE_SRV && !xhttp_is_requested(xhttp))
+	{
+		if (!xhttp_recv_request(xhttp))
+			return 0;
+	}
+
+	XDL_ASSERT(phttp->recv_stream != NULL);
+
+	return stream_read_line(phttp->recv_stream, var, NULL);
 }
 
 bool_t xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* http_info, const tchar_t* errcode, const tchar_t* errtext, int slen)
@@ -3374,7 +3680,7 @@ bool_t xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* 
 	}
 
 	nlen = xhttp_format_error(b_json, encoding, errcode, errtext, slen, NULL, MAX_LONG);
-	sz_buf = (byte_t*)xmem_alloc(nlen + 1);
+	sz_buf = (byte_t*)xmem_alloc(nlen);
 	nlen = xhttp_format_error(b_json, encoding, errcode, errtext, slen, sz_buf, nlen);
 
 	xsprintf(fsize, _T("%d"), nlen);
@@ -3382,8 +3688,8 @@ bool_t xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* 
 	if (b_json)
 		xhttp_set_response_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPJSON, -1);
 	else
-		xhttp_set_response_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML,-1);
-	xhttp_set_response_content_type_charset(xhttp, encoding,-1);
+		xhttp_set_response_content_type(xhttp, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	xhttp_set_response_content_type_charset(xhttp, encoding, -1);
 
 	if (!is_null(http_code))
 		xhttp_set_response_code(xhttp, http_code);
@@ -3444,171 +3750,5 @@ bool_t xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, t
 
 	return b_rt;
 }
-
-bool_t xhttp_send_xml(xhand_t xhttp,link_t_ptr xml)
-{
-	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	int type;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	type = xhttp_type(xhttp);
-
-	if (type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
-	{
-		if (!xhttp_send_request(xhttp))
-			return 0;
-	}
-
-	if (type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
-	{
-		if (!xhttp_send_response(xhttp))
-			return 0;
-	}
-
-	XDL_ASSERT(phttp->send_stream != NULL);
-
-	if (!format_xml_doc_to_stream(xml, phttp->send_stream))
-		return 0;
-
-	return stream_flush(phttp->send_stream);
-}
-
-bool_t xhttp_recv_xml(xhand_t xhttp,link_t_ptr xml)
-{
-	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	int type;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	type = xhttp_type(xhttp);
-
-	if (type == _XHTTP_TYPE_CLI && !xhttp_is_responsed(xhttp))
-	{
-		if (!xhttp_recv_response(xhttp))
-			return 0;
-	}
-
-	if (type == _XHTTP_TYPE_SRV && !xhttp_is_requested(xhttp))
-	{
-		if (!xhttp_recv_request(xhttp))
-			return 0;
-	}
-
-	XDL_ASSERT(phttp->recv_stream != NULL);
-
-	return parse_xml_doc_from_stream(xml, phttp->recv_stream);
-}
-
-bool_t xhttp_send_json(xhand_t xhttp, link_t_ptr json)
-{
-	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	int type;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	type = xhttp_type(xhttp);
-
-	if (type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
-	{
-		if (!xhttp_send_request(xhttp))
-			return 0;
-	}
-
-	if (type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
-	{
-		if (!xhttp_send_response(xhttp))
-			return 0;
-	}
-
-	XDL_ASSERT(phttp->send_stream != NULL);
-
-	if (!format_json_doc_to_stream(json, phttp->send_stream))
-		return 0;
-
-	return stream_flush(phttp->send_stream);
-}
-
-bool_t xhttp_recv_json(xhand_t xhttp, link_t_ptr json)
-{
-	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	int type;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	type = xhttp_type(xhttp);
-
-	if (type == _XHTTP_TYPE_CLI && !xhttp_is_responsed(xhttp))
-	{
-		if (!xhttp_recv_response(xhttp))
-			return 0;
-	}
-
-	if (type == _XHTTP_TYPE_SRV && !xhttp_is_requested(xhttp))
-	{
-		if (!xhttp_recv_request(xhttp))
-			return 0;
-	}
-
-	XDL_ASSERT(phttp->recv_stream != NULL);
-
-	return parse_json_doc_from_stream(json, phttp->recv_stream);
-}
-
-bool_t xhttp_send_string(xhand_t xhttp, string_t var)
-{
-	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-
-	int type;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	type = xhttp_type(xhttp);
-
-	if (type == _XHTTP_TYPE_CLI && !xhttp_is_requested(xhttp))
-	{
-		if (!xhttp_send_request(xhttp))
-			return 0;
-	}
-
-	if (type == _XHTTP_TYPE_SRV && !xhttp_is_responsed(xhttp))
-	{
-		if (!xhttp_send_response(xhttp))
-			return 0;
-	}
-
-	XDL_ASSERT(phttp->send_stream != NULL);
-
-	return stream_write_line(phttp->send_stream, var, NULL);
-}
-
-bool_t xhttp_recv_string(xhand_t xhttp, string_t var)
-{
-	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-
-	int type;
-
-	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
-
-	type = xhttp_type(xhttp);
-
-	if (type == _XHTTP_TYPE_CLI && !xhttp_is_responsed(xhttp))
-	{
-		if (!xhttp_recv_response(xhttp))
-			return 0;
-	}
-
-	if (type == _XHTTP_TYPE_SRV && !xhttp_is_requested(xhttp))
-	{
-		if (!xhttp_recv_request(xhttp))
-			return 0;
-	}
-
-	XDL_ASSERT(phttp->recv_stream != NULL);
-
-	return stream_read_line(phttp->recv_stream, var, NULL);
-}
-
-
 
 #endif /*XDK_SUPPORT_SOCK*/

@@ -43,7 +43,7 @@ typedef struct _tool_delta_t{
 }tool_delta_t;
 
 #define GETTOOLDELTA(ph) 		(tool_delta_t*)widget_get_user_delta(ph)
-#define SETTOOLDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETTOOLDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 /********************************************************************************************************/
 static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)

@@ -65,7 +65,7 @@ typedef struct _form_delta_t{
 }form_delta_t;
 
 #define GETFORMDELTA(ph) 	(form_delta_t*)widget_get_user_delta(ph)
-#define SETFORMDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETFORMDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /******************************************form event********************************************************/
 static void _formctrl_done(res_win_t widget)
@@ -2420,7 +2420,7 @@ void hand_form_undo(res_win_t widget)
 	_formctrl_undo(widget);
 }
 
-void hand_form_child_command(res_win_t widget, int code, var_int data)
+void hand_form_child_command(res_win_t widget, int code, var_long data)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
@@ -2435,7 +2435,7 @@ void hand_form_child_command(res_win_t widget, int code, var_int data)
 	}
 }
 
-void hand_form_menu_command(res_win_t widget, int code, int cid, var_int data)
+void hand_form_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 
@@ -2444,7 +2444,7 @@ void hand_form_menu_command(res_win_t widget, int code, int cid, var_int data)
 
 	if (widget_get_user_id(ptd->editor) == cid && code)
 	{
-		widget_post_command(widget_get_owner(widget), code, IDC_CHILD, (var_int)ptd->editor);
+		widget_post_command(widget_get_owner(widget), code, IDC_CHILD, (var_long)ptd->editor);
 	}
 }
 

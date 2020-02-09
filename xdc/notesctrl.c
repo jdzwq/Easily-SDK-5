@@ -47,7 +47,7 @@ typedef struct _notes_delta_t{
 }notes_delta_t;
 
 #define GETNOTESDELTA(ph) 	(notes_delta_t*)widget_get_user_delta(ph)
-#define SETNOTESDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETNOTESDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 #define NOTESCTRL_GUID_SPAN		(float)6
 #define NOTESCTRL_SPAN_PLUS		(int)10

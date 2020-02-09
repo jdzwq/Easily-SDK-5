@@ -116,6 +116,46 @@ static void ocitodt(int type, tchar_t* dt)
 	}
 }
 
+static int split_semi(const tchar_t* token, int len)
+{
+	int tklen = 0, total = 0;
+	bool_t glt = 0;
+	const tchar_t* tkcur = token;
+
+	if (len < 0)
+		len = xslen(token);
+
+	if (!len)
+		return 0;
+
+	while (*tkcur != _T(';') && *tkcur != _T('\0') && total < len)
+	{
+		if (*tkcur == _T('\'') || *tkcur == _T('\"'))
+		{
+			if (glt)
+				glt = 0;
+			else
+				glt = 1;
+		}
+
+		tklen++;
+		tkcur++;
+		total++;
+
+		if (glt)
+		{
+			while (*tkcur == _T(';'))
+			{
+				tklen++;
+				tkcur++;
+				total++;
+			}
+		}
+	}
+
+	return total;
+}
+
 static void _raise_oci_error(OCIError * oci_err)
 {
 	tchar_t err_code[NUM_LEN + 1] = { 0 };
@@ -603,7 +643,7 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 		row = 0;
 		OCIAttrGet(stm, OCI_HTYPE_STMT, &row, 0, OCI_ATTR_ROW_COUNT, pdb->err);
 
-		if (rows != 1)
+		if (row != 1)
 		{
 			raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
 		}
@@ -1697,10 +1737,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		_raise_oci_error(pdb->err);
 	}
 
-	if (!stream_write_utfbom(stream, NULL))
-	{
-		raise_user_error(NULL, NULL);
-	}
+	stream_write_utfbom(stream, NULL);
 
 	vs = string_alloc();
 
@@ -1821,13 +1858,10 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	
 	string_empty(vs);
 
-	if (!stream_write_line(stream, vs, &pos))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
 	string_free(vs);
 	vs = NULL;
+
+	stream_write_line(stream, NULL, NULL);
 
 	if (!stream_flush(stream))
 	{
@@ -1993,13 +2027,14 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 
 	while (1)
 	{
+		string_empty(vs);
 		dw = 0;
 		if (!stream_read_line(stream, vs, &dw))
 		{
 			raise_user_error(_T("-1"), _T("stream read line failed"));
 		}
 
-		if (!dw)
+		if (string_len(vs) == 0)
 			break;
 
 		i = 0;
@@ -2059,8 +2094,6 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			if (++i == cols)
 				break;
 		}
-
-		string_empty(vs);
 
 		for (i = 0; i < cols; i++)
 		{
@@ -2155,9 +2188,8 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 
 	string_t vs = NULL;
 	string_t vs_sql = NULL;
-	const tchar_t *sqlstr = NULL;
 	const tchar_t *tkcur, *tkpre;
-	int tklen, sqllen;
+	int tklen;
 	dword_t dw;
 	bool_t b_uni;
 
@@ -2174,80 +2206,95 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 		raise_user_error(_T("-1"), _T("Alloc stm handle failed"));
 	}
 
-	_db_tran(pdb);
-
 	stream_read_utfbom(stream, NULL);
 
 	vs = string_alloc();
+	vs_sql = string_alloc();
 
 	while (1)
 	{
+		string_empty(vs);
 		dw = 0;
 		if (!stream_read_line(stream, vs, &dw))
 		{
 			raise_user_error(_T("-1"), _T("stream read line failed"));
 		}
 
-		if (!dw)
-			break;
-
-		sqlstr = string_ptr(vs);
-		sqllen = string_len(vs);
-
-		tkcur = sqlstr;
-		while (sqllen)
+		if (string_len(vs) == 0)
 		{
-			tklen = split_line(tkcur, sqllen);
+			dw = 0;
 
-			tkpre = tkcur;
-			tkcur += tklen;
-			sqllen -= tklen;
-			b_uni = 0;
+			if (string_len(vs_sql))
+				goto EXECUTE;
+			else
+				break;
+		}
 
-			while (*tkcur == _T(' ') || *tkcur == _T('\t') || *tkcur == _T('\n') || *tkcur == _T('\r'))
-			{
-				if (*tkcur == _T('\r'))
-					b_uni = 1;
+		tkcur = string_ptr(vs);
+		tklen = string_len(vs);
 
-				tkcur++;
-				sqllen--;
-			}
+		while (*tkcur == _T(' ') || *tkcur == _T('\t') || *tkcur == _T('\r') || *tkcur == _T('\n'))
+		{
+			tkcur++;
+			tklen--;
+		}
 
-			if (!tklen)
-			{
-				continue;
-			}
+		if (*tkcur == _T('-') && *(tkcur + 1) == _T('-'))
+		{
+			continue;
+		}
 
-			rt = OCIStmtPrepare(stm, pdb->err, (text*)tkpre, tklen * sizeof(tchar_t), OCI_NTV_SYNTAX, OCI_DEFAULT);
-			if (rt == OCI_ERROR)
-			{
-				_raise_oci_error(pdb->err);
-			}
+		tklen = split_semi(tkcur, tklen);
 
-			rt = OCIStmtExecute(pdb->ctx, stm, pdb->err, 1, (ub4)0, NULL, NULL, (ub4)OCI_DEFAULT);
-			if (rt == OCI_ERROR)
-			{
-				_raise_oci_error(pdb->err);
-			}
+		tkpre = tkcur;
+		tkcur += tklen;
 
-			ne = 0;
-			OCIAttrGet(stm, OCI_HTYPE_STMT, &ne, 0, OCI_ATTR_ROW_COUNT, pdb->err);
+		string_cat(vs_sql, tkpre, tklen);
 
-			if (b_uni && ne != 1)
-			{
-				raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
-			}
-
-			pdb->rows += (int)ne;
+		if (*tkcur != _T(';'))
+		{
+			continue;
 		}
 
 		string_empty(vs);
+
+EXECUTE:
+		tkpre = string_ptr(vs_sql);
+		tklen = string_len(vs_sql);
+
+		rt = OCIStmtPrepare(stm, pdb->err, (text*)tkpre, tklen * sizeof(tchar_t), OCI_NTV_SYNTAX, OCI_DEFAULT);
+		if (rt == OCI_ERROR)
+		{
+			_raise_oci_error(pdb->err);
+		}
+
+		rt = OCIStmtExecute(pdb->ctx, stm, pdb->err, 1, (ub4)0, NULL, NULL, (ub4)OCI_DEFAULT);
+		if (rt == OCI_ERROR)
+		{
+			_raise_oci_error(pdb->err);
+		}
+
+		string_empty(vs_sql);
+
+		ne = 0;
+		OCIAttrGet(stm, OCI_HTYPE_STMT, &ne, 0, OCI_ATTR_ROW_COUNT, pdb->err);
+
+		if (b_uni && ne != 1)
+		{
+			raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
+		}
+
+		pdb->rows += (int)ne;
+
+		if (!dw)
+			break;
 	}
 
 	string_free(vs);
 	vs = NULL;
 
-	_db_commit(pdb);
+	string_free(vs_sql);
+	vs_sql = NULL;
 
 	OCIHandleFree((dvoid *)stm, OCI_HTYPE_STMT);
 	stm = NULL;
@@ -2261,10 +2308,11 @@ ONERROR:
 	if (vs)
 		string_free(vs);
 
+	if (vs_sql)
+		string_free(vs_sql);
+
 	if (stm)
 	{
-		_db_rollback(pdb);
-
 		OCIHandleFree((dvoid *)stm, OCI_HTYPE_STMT);
 		stm = NULL;
 	}
@@ -2296,11 +2344,4 @@ int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 	}
 
 	return -1;
-}
-
-void STDCALL db_trace(xdb_t db, stream_t stm)
-{
-	db_t* pdb = (db_t*)db;
-
-	XDL_ASSERT(db && db->dbt == _DB_OCI);
 }

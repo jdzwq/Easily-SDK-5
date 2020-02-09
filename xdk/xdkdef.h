@@ -289,10 +289,8 @@ typedef int				wait_t;
 
 #ifdef _OS_64
 #define VOID_SIZE       8
-#define MAX_SIZE		0x7FFFFFFFFFF
 #else
 #define VOID_SIZE       4
-#define MAX_SIZE		0x7FFFFFFF
 #endif
 
 #ifndef INVALID_SIZE
@@ -324,18 +322,13 @@ typedef int				wait_t;
 
 #endif /*PAGE_SHIFT*/
 
-#ifndef PAGE_SPACE
-#ifdef _OS_64
-#define PAGE_SPACE		0x7FFFFFFFFFF
-#else
-#define PAGE_SPACE		0x7FFFFFFF
-#endif
-#endif /*PAGE_SPACE*/
-
 #ifndef PAGE_GRAN
 #define PAGE_GRAN       (64 * 1024)
 #endif
 
+#ifndef PAGE_SPACE
+#define PAGE_SPACE       (PAGE_GRAN * 1024)
+#endif
 
 #define SDK_UNSUPPORT_ERROR     assert(0)
 

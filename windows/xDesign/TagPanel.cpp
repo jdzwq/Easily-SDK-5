@@ -45,7 +45,7 @@ typedef struct tagTagPanelDelta{
 }TagPanelDelta;
 
 #define GETTAGPANELDELTA(ph) 		(TagPanelDelta*)widget_get_user_delta(ph)
-#define SETTAGPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETTAGPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 #define TAGPANEL_ACCEL_COUNT	5
 accel_t	TAGPANEL_ACCEL[TAGPANEL_ACCEL_COUNT] = {
@@ -542,7 +542,7 @@ void TagPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	}
 }
 
-void TagPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void TagPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
@@ -569,7 +569,7 @@ void TagPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void TagPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void TagPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 	void* pv = NULL;

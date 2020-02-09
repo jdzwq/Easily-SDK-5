@@ -36,14 +36,14 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 typedef struct _owner_delta_t{
-	var_int var;
+	var_long var;
 
 	res_win_t hsc;
 	res_win_t vsc;
 }owner_delta_t;
 
 #define GETOWNERDELTA(ph) 	(owner_delta_t*)widget_get_user_delta(ph)
-#define SETOWNERDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETOWNERDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /***************************************************************************************/
 
@@ -325,7 +325,7 @@ void ownerctrl_redraw(res_win_t widget)
 	widget_redraw(widget, NULL, 0);
 }
 
-void ownerctrl_set_delta(res_win_t widget, var_int var)
+void ownerctrl_set_delta(res_win_t widget, var_long var)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
@@ -334,7 +334,7 @@ void ownerctrl_set_delta(res_win_t widget, var_int var)
 	ptd->var = var;
 }
 
-var_int ownerctrl_get_delta(res_win_t widget)
+var_long ownerctrl_get_delta(res_win_t widget)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 

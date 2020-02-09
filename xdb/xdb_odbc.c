@@ -44,8 +44,6 @@ typedef struct _db_t{
 	int rows;
 	tchar_t err_code[NUM_LEN + 1];
 	tchar_t err_text[ERR_LEN + 1];
-
-	stream_t log;
 }db_t;
 
 typedef struct _bindguid_t{
@@ -170,6 +168,46 @@ static void _db_reset(db_t* pdb)
 	xscpy(pdb->err_text, _T(""));
 
 	pdb->rows = 0;
+}
+
+static int split_go(const tchar_t* token, int len)
+{
+	int tklen = 0, total = 0;
+	bool_t glt = 0;
+	const tchar_t* tkcur = token;
+
+	if (len < 0)
+		len = xslen(token);
+
+	if (!len)
+		return 0;
+
+	while (*tkcur != _T('\0') && (xsnicmp(tkcur,_T("GO"),2) != 0) && total < len)
+	{
+		if (*tkcur == _T('\'') || *tkcur == _T('\"'))
+		{
+			if (glt)
+				glt = 0;
+			else
+				glt = 1;
+		}
+
+		tklen++;
+		tkcur++;
+		total++;
+
+		if (glt)
+		{
+			while (xsnicmp(tkcur, _T("GO"), 2) == 0)
+			{
+				tklen += 2;
+				tkcur += 2;
+				total += 2;
+			}
+		}
+	}
+
+	return total;
 }
 
 bool_t STDCALL db_parse_dsn(const tchar_t* dsnfile, tchar_t* srv_buf, int srv_len, tchar_t* dbn_buf, int dbn_len, tchar_t* uid_buf, int uid_len, tchar_t* pwd_buf, int pwd_len)
@@ -544,11 +582,6 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 
 		if(rt != SQL_SUCCESS && rt != SQL_NO_DATA && rt != SQL_SUCCESS_WITH_INFO)
 		{
-			if (pdb->log)
-			{
-				stream_write(pdb->log, tkpre, tklen, NULL);
-			}
-
 			_raise_stmt_error(pdb->stm);
 		}
 
@@ -557,11 +590,6 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 
 		if (uni && ne != 1)
 		{
-			if (pdb->log)
-			{
-				stream_write(pdb->log, tkpre, tklen, NULL);
-			}
-
 			raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
 		}
 
@@ -669,11 +697,6 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 
 		if (rt != SQL_SUCCESS && rt != SQL_NO_DATA && rt != SQL_SUCCESS_WITH_INFO)
 		{
-			if (pdb->log)
-			{
-				stream_write(pdb->log, d_sql, len, NULL);
-			}
-
 			_raise_stmt_error(pdb->stm);
 		}
 
@@ -681,19 +704,9 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 		SQLRowCount(pdb->stm, &ne);
 		if (!ne)
 		{
-			if (pdb->log)
-			{
-				stream_write(pdb->log, d_sql, len, NULL);
-			}
-
 			raise_user_error(_T("-1"), ERR_TEXT_ROWCANCEL);
 		}else if (ne > 1)
 		{
-			if (pdb->log)
-			{
-				stream_write(pdb->log, d_sql, len, NULL);
-			}
-
 			raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
 		}
 		else
@@ -903,11 +916,6 @@ bool_t STDCALL db_fetch(xdb_t db, LINKPTR grid)
 
 	if (rt != SQL_SUCCESS && rt != SQL_NO_DATA && rt != SQL_SUCCESS_WITH_INFO)
 	{
-		if (pdb->log)
-		{
-			stream_write(pdb->log, d_sql, len, NULL);
-		}
-
 		_raise_stmt_error(pdb->stm);
 	}
 
@@ -1000,11 +1008,6 @@ bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 
 	if (rt != SQL_SUCCESS && rt != SQL_NO_DATA && rt != SQL_SUCCESS_WITH_INFO)
 	{
-		if (pdb->log)
-		{
-			stream_write(pdb->log, sqlstr, xslen(sqlstr), NULL);
-		}
-
 		_raise_stmt_error(pdb->stm);
 	}
 		
@@ -1916,11 +1919,6 @@ bool_t STDCALL _db_prepare(db_t* pdb, const tchar_t* sqlstr)
 
 	if (rt != SQL_SUCCESS && rt != SQL_SUCCESS_WITH_INFO)
 	{
-		if (pdb->log)
-		{
-			stream_write(pdb->log, sqlstr, xslen(sqlstr), NULL);
-		}
-
 		_raise_stmt_error(pdb->stm);
 	}
 
@@ -1998,10 +1996,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		_raise_stmt_error(pdb->stm);
 	}
 
-	if (!stream_write_utfbom(stream, NULL))
-	{
-		raise_user_error(NULL, NULL);
-	}
+	stream_write_utfbom(stream, NULL);
 
 	vs = string_alloc();
 
@@ -2098,15 +2093,10 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		string_empty(vs);
 	}
 
-	string_empty(vs);
-
-	if (!stream_write_line(stream, vs, &pos))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
 	string_free(vs);
 	vs = NULL;
+
+	stream_write_line(stream, NULL, NULL);
 
 	if (!stream_flush(stream))
 	{
@@ -2211,7 +2201,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 		raise_user_error(_T("-1"), _T("read stream failed"));
 	}
 
-	if (!dw)
+	if (string_len(vs) == 0)
 	{
 		raise_user_error(_T("-1"), _T("empty table define"));
 	}
@@ -2273,13 +2263,14 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 
 	while (1)
 	{
+		string_empty(vs);
 		dw = 0;
 		if (!stream_read_line(stream, vs, &dw))
 		{
 			raise_user_error(_T("-1"), _T("stream read line failed"));
 		}
 
-		if (!dw)
+		if (string_len(vs) == 0)
 			break;
 
 		i = 0;
@@ -2336,8 +2327,6 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 			if (++i == cols)
 				break;
 		}
-
-		string_empty(vs);
 
 		for (i = 0; i < cols; i++)
 		{
@@ -2419,13 +2408,11 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	SQLLEN rows;
 
 	dword_t dw;
-	bool_t b_uni = 0;
-	const tchar_t *sqlstr = NULL;
 	const tchar_t *tkcur, *tkpre;
-	int tklen, sqllen;
-	int encode = 0;
+	int tklen;
 
 	string_t vs = NULL;
+	string_t vs_sql = NULL;
 
 	XDL_ASSERT(db && db->dbt == _DB_ODBC);
 
@@ -2440,111 +2427,86 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 		_raise_dbc_error(pdb->dbc);
 	}
 
-	_db_tran(pdb);
-
 	stream_read_utfbom(stream, NULL);
 
 	vs = string_alloc();
+	vs_sql = string_alloc();
 
 	while (1)
 	{
+		string_empty(vs);
 		dw = 0;
 		if (!stream_read_line(stream, vs, &dw))
 		{
-			raise_user_error(_T("-1"), _T("stream read line failed"));
+			raise_user_error(NULL, NULL);
 		}
 
-		if (!dw)
-			break;
-
-		if (compare_text(string_ptr(vs), xslen(SQL_BREAK), SQL_BREAK, -1, 1) == 0)
+		if (string_len(vs) == 0)
 		{
-			_db_commit(pdb);
+			dw = 0;
 
-			if (pdb->log)
-			{
-				stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
-			}
+			if (string_len(vs_sql))
+				goto EXECUTE;
+			else
+				break;
+		}
 
-			string_empty(vs);
+		tkcur = string_ptr(vs);
+		tklen = string_len(vs);
 
-			_db_tran(pdb);
+		while (*tkcur == _T(' ') || *tkcur == _T('\t') || *tkcur == _T('\r') || *tkcur == _T('\n'))
+		{
+			tkcur++;
+			tklen--;
+		}
 
+		if (*tkcur == _T('-') && *(tkcur + 1) == _T('-'))
+		{
 			continue;
 		}
 
-		sqlstr = string_ptr(vs);
-		sqllen = string_len(vs);
+		tklen = split_go(tkcur, tklen);
 
-		tkcur = sqlstr;
-		while (sqllen)
+		tkpre = tkcur;
+		tkcur += tklen;
+
+		string_cat(vs_sql, tkpre, tklen);
+
+		if (xsnicmp(tkcur,_T("GO"),2) != 0)
 		{
-			tklen = split_line(tkcur, sqllen);
-
-			tkpre = tkcur;
-			tkcur += tklen;
-			sqllen -= tklen;
-			b_uni = 0;
-
-			while (*tkcur == _T(' ') || *tkcur == _T('\t') || *tkcur == _T('\n') || *tkcur == _T('\r'))
-			{
-				if (*tkcur == _T('\r'))
-					b_uni = 1;
-
-				tkcur++;
-				sqllen--;
-			}
-
-			if (!tklen)
-			{
-				continue;
-			}
-
-			rt = SQLExecDirect(pdb->stm, (SQLTCHAR*)tkpre, tklen);
-
-			if (rt != SQL_SUCCESS && rt != SQL_NO_DATA && rt != SQL_SUCCESS_WITH_INFO)
-			{
-				if (pdb->log)
-				{
-					stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
-				}
-
-				_raise_stmt_error(pdb->stm);
-			}
-
-			rows = 0;
-			SQLRowCount(pdb->stm, &rows);
-
-			if (!rows && b_uni)
-			{
-				if (pdb->log)
-				{
-					stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
-				}
-
-				raise_user_error(_T("-1"), ERR_TEXT_ROWCANCEL);
-			}
-			else if (rows > 1 && b_uni)
-			{
-				if (pdb->log)
-				{
-					stream_write(pdb->log, string_ptr(vs), string_len(vs), NULL);
-				}
-
-				raise_user_error(_T("-1"), ERR_TEXT_ROWCHANGED);
-			}
-
-			pdb->rows += (int)rows;
-			SQLFreeStmt(pdb->stm, SQL_CLOSE);
+			continue;
 		}
 
 		string_empty(vs);
+
+EXECUTE:
+		tkpre = string_ptr(vs_sql);
+		tklen = string_len(vs_sql);
+
+		rt = SQLExecDirect(pdb->stm, (SQLTCHAR*)tkpre, tklen);
+
+		string_empty(vs_sql);
+
+		if (rt != SQL_SUCCESS && rt != SQL_NO_DATA && rt != SQL_SUCCESS_WITH_INFO)
+		{
+			_raise_stmt_error(pdb->stm);
+		}
+
+		rows = 0;
+		SQLRowCount(pdb->stm, &rows);
+
+		pdb->rows += (int)rows;
+		SQLFreeStmt(pdb->stm, SQL_CLOSE);
+
+		if (!dw)
+			break;
 	}
 
 	string_free(vs);
 	vs = NULL;
 
-	_db_commit(pdb);
+	string_free(vs_sql);
+	vs_sql = NULL;
 
 	SQLFreeHandle(SQL_HANDLE_STMT, pdb->stm);
 	pdb->stm = NULL;
@@ -2558,10 +2520,11 @@ ONERROR:
 	if (vs)
 		string_free(vs);
 
+	if (vs_sql)
+		string_free(vs_sql);
+
 	if (pdb->stm)
 	{
-		_db_rollback(pdb);
-
 		SQLFreeStmt(pdb->stm, SQL_CLOSE);
 		SQLFreeHandle(SQL_HANDLE_STMT, pdb->stm);
 		pdb->stm = NULL;
@@ -3246,13 +3209,4 @@ int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 	}
 
 	return -1;
-}
-
-void STDCALL db_trace(xdb_t db, stream_t stm)
-{
-	db_t* pdb = (db_t*)db;
-
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
-
-	pdb->log = stm;
 }

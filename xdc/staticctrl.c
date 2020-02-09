@@ -61,7 +61,7 @@ typedef struct _statis_delta_t{
 }statis_delta_t;
 
 #define GETSTATISDELTA(ph) 	(statis_delta_t*)widget_get_user_delta(ph)
-#define SETSTATISDELTA(ph,ptd) widget_set_user_delta(ph,(var_int)ptd)
+#define SETSTATISDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
 /******************************************************************************************/
 static void _statisctrl_done(res_win_t widget)
@@ -1632,7 +1632,7 @@ void hand_statis_undo(res_win_t widget)
 	_statisctrl_undo(widget);
 }
 
-void hand_statis_child_command(res_win_t widget, int code, var_int data)
+void hand_statis_child_command(res_win_t widget, int code, var_long data)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 

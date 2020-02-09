@@ -68,7 +68,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdk\</IncludePath>
@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
+    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
     <TargetName>$(ProjectName)55</TargetName>

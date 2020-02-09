@@ -52,7 +52,7 @@ static ssh_listen_t*  _xssh_listen(unsigned short port)
 	res_file_t so;
 	sys_info_t si = { 0 };
 
-	so = socket_tcp(0, 0);
+	so = socket_tcp(0, FILE_OPEN_OVERLAP);
 	if (so == INVALID_FILE)
 	{
 		return NULL;
@@ -293,8 +293,6 @@ void xssh_stop(ssh_listen_t* plis)
 	{
 		thread_join(plis->thr[i]);
 	}
-    
-    thread_yield();
 
 	xmem_free(plis->thr);
 

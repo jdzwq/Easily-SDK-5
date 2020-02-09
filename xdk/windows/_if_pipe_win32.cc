@@ -66,7 +66,7 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 	saAttr.bInheritHandle = FALSE;
 	saAttr.lpSecurityDescriptor = NULL;
 
-	hp = CreateNamedPipe(path, dwAccess, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, PAGE_SIZE, PAGE_SIZE, 0, &saAttr);
+	hp = CreateNamedPipe(path, dwAccess, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, 4096, 4096, 0, &saAttr);
 	if (hp == INVALID_HANDLE_VALUE)
 	{
 		return INVALID_FILE;

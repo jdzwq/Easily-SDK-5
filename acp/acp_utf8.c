@@ -27,11 +27,6 @@ LICENSE.GPL3 for more details.
 
 int utf8_code_sequence(unsigned char b)
 {
-	if (b == 0xFF) //_UTF16_LIT
-		return 2;
-	else if (b == 0xFE) //_UTF16_BIG
-		return 2;
-
 	if ((b & ~0x7F) == 0) {
 		return 1;
 	}
@@ -59,21 +54,13 @@ int utf8_seek_unicode(unsigned char* src, unsigned short* dest)
 
 	len = utf8_code_sequence(*src);
 
-	if (len == 2)
+	if (len == 3)
 	{
-		if (src[0] == 0xFF && src[1] == 0xFE) //_UTF16_LIT
+		if (src[0] == 0xEF && src[1] == 0xBB && src[2] == 0xBF) //_UTF8 BOM
 		{
 			if (dest)
 			{
-				*dest = MAKESHORT(src[0], src[1]);
-			}
-			return 1;
-		}
-		else if (src[0] == 0xFE && src[1] == 0xFF) //_UTF16_BIG
-		{
-			if (dest)
-			{
-				*dest = MAKESHORT(src[0], src[1]);
+				*dest = (unsigned short)DEFBOM;
 			}
 			return 1;
 		}
@@ -160,10 +147,11 @@ int unicode_seek_utf8(unsigned short ch, unsigned char* dest)
 	{
 		if (dest)
 		{
-			dest[0] = GETLCHAR(ch);
-			dest[1] = GETHCHAR(ch);
+			dest[0] = 0xEF;
+			dest[1] = 0xBB;
+			dest[2] = 0xBF;
 		}
-		return 2;
+		return 3;
 	}
 
 	c = (int)(ch);

@@ -47,7 +47,7 @@ typedef struct tagSQLPanelDelta{
 }SQLPanelDelta;
 
 #define GETSQLPANELDELTA(ph) 		(SQLPanelDelta*)widget_get_user_delta(ph)
-#define SETSQLPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_int)ptd)
+#define SETSQLPANELDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
 
 #define SQLPANEL_ACCEL_COUNT	5
 accel_t	SQLPANEL_ACCEL[SQLPANEL_ACCEL_COUNT] = {
@@ -300,10 +300,6 @@ void SQLPanel_OnExecute(res_win_t widget)
 		return;
 	}
 
-	int len = memoctrl_get_selected_text(pdt->hMemo, NULL, MAX_LONG);
-	if (!len)
-		return;
-
 	tchar_t sz_conn[PATH_LEN] = { 0 };
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
 	if (is_null(sz_conn))
@@ -312,31 +308,74 @@ void SQLPanel_OnExecute(res_win_t widget)
 		return;
 	}
 
+	int len = memoctrl_get_selected_text(pdt->hMemo, NULL, MAX_LONG);
+	if (!len)
+	{
+		if (ShowMsg(MSGBTN_YES | MSGBTN_NO, _T("您确定执行以下语句吗？")) != MSGBTN_YES)
+			return;
+	}
+
+	LINKPTR ptrMemo = memoctrl_fetch(pdt->hMemo);
+
+	xhand_t cah = xcache_open();
+	if (!cah)
+	{
+		ShowMsg(MSGICO_TIP, _T("创建缓存错误！"));
+		return;
+	}
+
+	stream_t stm = stream_alloc(cah);
+	stream_set_encode(stm, _UTF16_LIT);
+	stream_set_mode(stm, LINE_OPERA);
+
+	if (len)
+	{
+		string_t vs = string_alloc();
+
+		memoctrl_get_selected_text(pdt->hMemo, string_ensure_buf(vs, len), len);
+
+		stream_write_utfbom(stm, NULL);
+
+		stream_write_line(stm, vs, NULL);
+
+		string_free(vs);
+
+		stream_write_line(stm, NULL, NULL);
+	}
+	else
+	{
+		format_memo_doc_to_stream(ptrMemo, stm);
+	}
+
 	DBCTX* pct = DBOpen(sz_conn);
 
 	if (!pct)
-		return;
-
-	tchar_t* szSQL = xsalloc(len + 1);
-	memoctrl_get_selected_text(pdt->hMemo, szSQL, len);
-
-	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
-
-	if (!DBSelect(pct, ptrGrid, szSQL))
 	{
-		xsfree(szSQL);
+		stream_free(stm);
+		xcache_close(cah);
+		return;
+	}
+
+	if (!DBBatch(pct, stm))
+	{
+		stream_free(stm);
+		xcache_close(cah);
 
 		DBClose(pct);
 		return;
 	}
 
-	xsfree(szSQL);
+	stream_free(stm);
+	xcache_close(cah);
+
 	DBClose(pct);
 
 	gridctrl_redraw(pdt->hGrid, 1);
+
+	ShowMsg(MSGICO_TIP, _T("执行成功！"));
 }
 
-void SQLPanel_OnSchema(res_win_t widget)
+void SQLPanel_OnSelect(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
@@ -347,10 +386,6 @@ void SQLPanel_OnSchema(res_win_t widget)
 		return;
 	}
 
-	int len = memoctrl_get_selected_text(pdt->hMemo, NULL, MAX_LONG);
-	if (!len)
-		return;
-
 	tchar_t sz_conn[PATH_LEN] = { 0 };
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
 	if (is_null(sz_conn))
@@ -359,8 +394,14 @@ void SQLPanel_OnSchema(res_win_t widget)
 		return;
 	}
 
-	DBCTX* pct = DBOpen(sz_conn);
+	int len = memoctrl_get_selected_text(pdt->hMemo, NULL, MAX_LONG);
+	if (!len)
+	{
+		ShowMsg(MSGICO_TIP, _T("请选中查询语句！"));
+		return;
+	}
 
+	DBCTX* pct = DBOpen(sz_conn);
 	if (!pct)
 		return;
 
@@ -369,7 +410,7 @@ void SQLPanel_OnSchema(res_win_t widget)
 
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 
-	if (!DBSchema(pct, ptrGrid, szSQL))
+	if (!DBSelect(pct, ptrGrid, szSQL))
 	{
 		xsfree(szSQL);
 
@@ -596,14 +637,14 @@ void SQLPanel_OnShow(res_win_t widget, bool_t bShow)
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DATABASE_EXECUTE);
 		set_tool_item_id(ilk, token);
-		set_tool_item_title(ilk, _T("查询"));
+		set_tool_item_title(ilk, _T("执行"));
 		set_tool_item_icon(ilk, ICON_EXECUTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
-		xsprintf(token, _T("%d"), IDA_DATABASE_SCHEMA);
+		xsprintf(token, _T("%d"), IDA_DATABASE_SELECT);
 		set_tool_item_id(ilk, token);
-		set_tool_item_title(ilk, _T("模式"));
-		set_tool_item_icon(ilk, ICON_SCHEMA);
+		set_tool_item_title(ilk, _T("查询"));
+		set_tool_item_icon(ilk, ICON_GRID);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 
@@ -623,7 +664,7 @@ void SQLPanel_OnCommandFind(res_win_t widget, str_find_t* pfd)
 	
 }
 
-void SQLPanel_OnParentCommand(res_win_t widget, int code, var_int data)
+void SQLPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
@@ -650,7 +691,7 @@ void SQLPanel_OnParentCommand(res_win_t widget, int code, var_int data)
 	}
 }
 
-void SQLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
+void SQLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 	void* pv = NULL;
@@ -695,8 +736,8 @@ void SQLPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_int data)
 	case IDA_DATABASE_EXECUTE:
 		SQLPanel_OnExecute(widget);
 		break;
-	case IDA_DATABASE_SCHEMA:
-		SQLPanel_OnSchema(widget);
+	case IDA_DATABASE_SELECT:
+		SQLPanel_OnSelect(widget);
 		break;
 	}
 

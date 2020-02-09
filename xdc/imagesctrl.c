@@ -51,7 +51,7 @@ typedef struct _images_delta_t{
 }images_delta_t;
 
 #define GETIMAGESDELTA(widget) 	((images_delta_t*)widget_get_user_delta(widget))
-#define SETIMAGESDELTA(widget,ptd) widget_set_user_delta(widget,(var_int)ptd)
+#define SETIMAGESDELTA(widget,ptd) widget_set_user_delta(widget,(var_long)ptd)
 
 /******************************************************************************************************/
 static bool_t _imagesctrl_copy(res_win_t widget)
@@ -964,7 +964,7 @@ void hand_images_kill_focus(res_win_t widget, res_win_t wt)
 
 	if (widget_is_editor(widget))
 	{
-		widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_int)NULL);
+		widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
 	}
 }
 
@@ -977,7 +977,7 @@ void hand_images_notice(res_win_t widget, NOTICE* pnt)
 
 }
 
-void hand_images_child_command(res_win_t widget, int code, var_int data)
+void hand_images_child_command(res_win_t widget, int code, var_long data)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 

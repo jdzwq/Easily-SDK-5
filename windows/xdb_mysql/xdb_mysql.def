@@ -21,4 +21,3 @@ EXPORTS
 	db_import
 	db_batch
 	db_datetime
-	db_trace

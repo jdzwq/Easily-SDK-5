@@ -40,83 +40,21 @@ typedef struct _radstm_t{
 
 	int encode;
 	int mode;
-	dword_t opera_bytes;
+
 	dword_t opera_limit;
+
+	dword_t write_bytes;
+	dword_t read_bytes;
+
+	bool_t write_bomed;
+	bool_t read_bomed;
+
+
 
 	if_bio_t inf;
 }radstm_t;
 
 /////////////////////////////////////////////////////////////////////////////////////
-
-bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
-{
-	byte_t bsize[INT_LEN + 1] = { 0 };
-	dword_t bys, pos = 0;
-	bool_t b_rt = 0;
-
-	while (pos < INT_LEN)
-	{
-		bys = 1;
-		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys);
-
-		if (pos && bsize[pos - 1] == '\r' && bsize[pos] == '\n')
-		{
-			bsize[pos - 1] = '\0';
-			b_rt = 1;
-			break;
-		}
-
-		if (!b_rt)
-			break;
-        
-        if(!bys)
-            continue;
-
-		pos++;
-	}
-
-	if (b_rt)
-	{
-		if (pb)
-			*pb = (dword_t)a_hextol((schar_t*)bsize);
-	}
-	else
-	{
-		if (pb)
-			*pb = 0;
-	}
-
-	return b_rt;
-}
-
-bool_t _stream_read_chunk_tail(radstm_t* pxt)
-{
-	byte_t bsize[3] = { 0 };
-	dword_t bys, pos = 0;
-	bool_t b_rt = 0;
-
-    while(pos < 2)
-    {
-        bys = 1;
-		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys);
-		//last \r\n
-		if (bsize[0] == '\r' && bsize[1] == '\n')
-		{
-			b_rt = 1;
-			break;
-		}
-
-		if (!b_rt)
-			break;
-        
-        if(!bys)
-            continue;
-        
-        pos += bys;
-    }
-
-	return b_rt;
-}
 
 bool_t _stream_write_chunk_head(radstm_t* pxt, dword_t dw)
 {
@@ -161,7 +99,7 @@ void _stream_begin_write(radstm_t* pxt, dword_t* pd)
 
 	if (pxt->mode == CHUNK_OPERA)
 	{
-		dw = pxt->opera_limit - pxt->opera_bytes;
+		dw = pxt->opera_limit - pxt->write_bytes;
 
 		if (!dw)
 		{
@@ -170,34 +108,139 @@ void _stream_begin_write(radstm_t* pxt, dword_t* pd)
 				return;
 			}
 			pxt->opera_limit = *pd;
-			pxt->opera_bytes = 0;
+			pxt->write_bytes = 0;
 		}
 
-		dw = pxt->opera_limit - pxt->opera_bytes;
+		dw = pxt->opera_limit - pxt->write_bytes;
 		*pd = (dw < *pd) ? dw : *pd;
-
 	}
 }
 
 void _stream_end_write(radstm_t* pxt, dword_t dw)
 {
-	if (pxt->opera_limit)
+	if (pxt->opera_limit || pxt->mode == LINE_OPERA)
 	{
-		pxt->opera_bytes += dw;
+		pxt->write_bytes += dw;
 	}
 
 	if (pxt->mode == CHUNK_OPERA)
 	{
-		if (pxt->opera_limit == pxt->opera_bytes)
+		if (pxt->opera_limit == pxt->write_bytes)
 		{
 			if (!_stream_write_chunk_tail(pxt))
 			{
 				return;
 			}
 			pxt->opera_limit = 0;
-			pxt->opera_bytes = 0;
+			pxt->write_bytes = 0;
 		}
 	}
+}
+
+bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
+{
+	dword_t size, dw, pos = 0;
+
+	if (pxt->opera_limit && pxt->write_bytes == pxt->opera_limit)
+	{
+		*pb = 0;
+		return 1;
+	}
+
+	size = *pb;
+	while (pos < size)
+	{
+		dw = size - pos;
+
+		_stream_begin_write(pxt, &dw);
+
+		if (!(*pxt->inf.pf_write)(pxt->inf.bio, buf + pos, &dw))
+		{
+			*pb = pos;
+			return 0;
+		}
+
+		_stream_end_write(pxt, dw);
+
+		if (!dw)
+			break;
+
+		pos += dw;
+	}
+
+	*pb = pos;
+
+	return (size == pos) ? 1 : 0;
+}
+
+bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
+{
+	byte_t bsize[INT_LEN + 1] = { 0 };
+	dword_t bys, pos = 0;
+	bool_t b_rt = 0;
+
+	while (pos < INT_LEN)
+	{
+		bys = 1;
+		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys);
+
+		if (pos && bsize[pos - 1] == '\r' && bsize[pos] == '\n')
+		{
+			bsize[pos - 1] = '\0';
+			b_rt = 1;
+			break;
+		}
+
+		if (!b_rt)
+			break;
+
+		if (!bys)
+			continue;
+
+		pos++;
+	}
+
+	if (b_rt)
+	{
+		if (pb)
+			*pb = (dword_t)a_hextol((schar_t*)bsize);
+	}
+	else
+	{
+		if (pb)
+			*pb = 0;
+	}
+
+	return b_rt;
+}
+
+bool_t _stream_read_chunk_tail(radstm_t* pxt)
+{
+	byte_t bsize[3] = { 0 };
+	dword_t bys, pos = 0;
+	bool_t b_rt = 0;
+
+	while (pos < 2)
+	{
+		bys = 1;
+		b_rt = (*pxt->inf.pf_read)(pxt->inf.bio, bsize + pos, &bys);
+		//last \r\n
+		if (bsize[0] == '\r' && bsize[1] == '\n')
+		{
+			b_rt = 1;
+			break;
+		}
+
+		if (!b_rt)
+			break;
+
+		if (!bys)
+			continue;
+
+		pos += bys;
+	}
+
+	return b_rt;
 }
 
 void _stream_begin_read(radstm_t* pxt, dword_t* pd)
@@ -206,7 +249,7 @@ void _stream_begin_read(radstm_t* pxt, dword_t* pd)
 
 	if (pxt->mode == CHUNK_OPERA)
 	{
-		dw = pxt->opera_limit - pxt->opera_bytes;
+		dw = pxt->opera_limit - pxt->read_bytes;
 
 		if (!dw)
 		{
@@ -214,31 +257,31 @@ void _stream_begin_read(radstm_t* pxt, dword_t* pd)
 			{
 				return;
 			}
-			pxt->opera_bytes = 0;
+			pxt->read_bytes = 0;
 		}
 
-		dw = pxt->opera_limit - pxt->opera_bytes;
+		dw = pxt->opera_limit - pxt->read_bytes;
 		*pd = (dw < *pd) ? dw : *pd;
 	}
 }
 
 void _stream_end_read(radstm_t* pxt, dword_t dw)
 {
-	if (pxt->opera_limit)
+	if (pxt->opera_limit || pxt->mode == LINE_OPERA)
 	{
-		pxt->opera_bytes += dw;
+		pxt->read_bytes += dw;
 	}
 
 	if (pxt->mode == CHUNK_OPERA)
 	{
-		if (pxt->opera_limit == pxt->opera_bytes)
+		if (pxt->opera_limit == pxt->read_bytes)
 		{
 			if (!_stream_read_chunk_tail(pxt))
 			{
 				return;
 			}
 			pxt->opera_limit = 0;
-			pxt->opera_bytes = 0;
+			pxt->read_bytes = 0;
 		}
 	}
 }
@@ -247,7 +290,7 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 {
 	dword_t size, dw, pos = 0;
 
-	if (pxt->opera_limit && pxt->opera_bytes == pxt->opera_limit)
+	if (pxt->opera_limit && pxt->read_bytes == pxt->opera_limit)
 	{
 		*pb = 0;
 		return 1;
@@ -282,42 +325,6 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 	return (size == pos)? 1 : 0;
 }
 
-bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
-{
-	dword_t size, dw, pos = 0;
-
-	if (pxt->opera_limit && pxt->opera_bytes == pxt->opera_limit)
-	{
-		*pb = 0;
-		return 1;
-	}
-
-	size = *pb;
-	while (pos < size)
-	{
-		dw = size - pos;
-
-		_stream_begin_write(pxt, &dw);
-
-		if (!(*pxt->inf.pf_write)(pxt->inf.bio, buf + pos, &dw))
-		{
-			*pb = pos;
-			return 0;
-		}
-
-		_stream_end_write(pxt, dw);
-	
-		if (!dw)
-			break;
-
-		pos += dw;
-	}
-
-	*pb = pos;
-
-	return (size == pos)? 1 : 0;
-}
-
 /************************************************************************************/
 stream_t stream_alloc(xhand_t io)
 {
@@ -329,7 +336,12 @@ stream_t stream_alloc(xhand_t io)
 	pxt->mode = 0;
 
 	pxt->opera_limit = 0;
-	pxt->opera_bytes = 0;
+
+	pxt->write_bytes = 0;
+	pxt->read_bytes = 0;
+
+	pxt->write_bomed = 0;
+	pxt->read_bomed = 0;
 
 	if (!io)
 		return &pxt->head;
@@ -385,8 +397,14 @@ stream_t stream_alloc(xhand_t io)
 #endif
 #ifdef XDK_SUPPORT_MEMO_CACHE
 	case _HANDLE_CACHE:
-		pxt->inf.pf_read = vmem_read;
-		pxt->inf.pf_write = vmem_write;
+		pxt->inf.pf_read = xcache_read;
+		pxt->inf.pf_write = xcache_write;
+		break;
+#endif
+#ifdef XDK_SUPPORT_SHARE
+	case _HANDLE_SHARE:
+		pxt->inf.pf_read = xshare_read;
+		pxt->inf.pf_write = xshare_write;
 		break;
 #endif
 	case _HANDLE_UNC:
@@ -499,9 +517,6 @@ void stream_set_mode(stream_t xs, int mode)
 	XDL_ASSERT(xs);
 
 	pxt->mode = mode;
-
-	pxt->opera_limit = 0;
-	pxt->opera_bytes = 0;
 }
 
 int stream_get_mode(stream_t xs)
@@ -522,7 +537,6 @@ void stream_set_size(stream_t xs, dword_t dw)
 	if (pxt->mode != CHUNK_OPERA)
 	{
 		pxt->opera_limit = dw;
-		pxt->opera_bytes = 0;
 	}
 }
 
@@ -532,7 +546,7 @@ dword_t stream_get_size(stream_t xs)
 
 	XDL_ASSERT(xs);
 
-	return (pxt->mode == CHUNK_OPERA)? 0 : (pxt->opera_limit - pxt->opera_bytes);
+	return (pxt->mode == CHUNK_OPERA || pxt->mode == LINE_OPERA) ? 0 : (pxt->opera_limit - pxt->read_bytes);
 }
 
 void stream_opera_reset(stream_t xs)
@@ -541,8 +555,13 @@ void stream_opera_reset(stream_t xs)
 
 	XDL_ASSERT(xs);
 
-	pxt->opera_bytes = 0;
 	pxt->opera_limit = 0;
+
+	pxt->write_bytes = 0;
+	pxt->read_bytes = 0;
+
+	pxt->write_bomed = 0;
+	pxt->read_bomed = 0;
 }
 
 bool_t stream_write_char(stream_t xs, const tchar_t* buf, dword_t* pch)
@@ -552,7 +571,6 @@ bool_t stream_write_char(stream_t xs, const tchar_t* buf, dword_t* pch)
 	byte_t ba[4] = { 0 };
 	dword_t bs;
 	bool_t rt = 1;
-	int pos = 0;
 
 	XDL_ASSERT(xs);
 
@@ -612,28 +630,14 @@ bool_t stream_write_char(stream_t xs, const tchar_t* buf, dword_t* pch)
 		*pch = (rt) ? bs : 0;
 	}
 
-#ifdef _UNICODE
-	pos = ucs_sequence(*buf);
-#else
-	pos = mbs_sequence(*buf);
-#endif
-
 	return rt;
 }
 
 bool_t	stream_write(stream_t xs,const tchar_t* buf,int len,dword_t* pch)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
-
-	byte_t ba[4] = { 0 };
-	dword_t bs;
-	dword_t total = 0;
+	dword_t bys, total = 0;
 	int pos = 0;
-	bool_t rt = 1;;
-
-	XDL_ASSERT(xs);
-
-	XDL_ASSERT(pxt->inf.bio != NULL);
+	bool_t rt = 1;
 
 	if (len < 0)
 		len = xslen(buf);
@@ -642,68 +646,20 @@ bool_t	stream_write(stream_t xs,const tchar_t* buf,int len,dword_t* pch)
 	pos = 0;
 	while (pos < len)
 	{
-		if (pxt->encode == _UTF8)
-		{
-#ifdef _UNICODE
-			bs = ucs_byte_to_utf8(*(buf + pos), ba);
-			pos += ucs_sequence(*(buf + pos));
-#else
-			bs = mbs_byte_to_utf8(buf + pos, ba);
-			pos += mbs_sequence(*(buf + pos));
-#endif
-		}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
-		else if (pxt->encode == _GB2312)
-		{
-#ifdef _UNICODE
-			bs = ucs_byte_to_gb2312(*(buf + pos), ba);
-			pos += ucs_sequence(*(buf + pos));
-#else
-			bs = mbs_byte_to_gb2312(buf + pos, ba);
-			pos += mbs_sequence(*(buf + pos));
-#endif
-		}
-#endif
-		else if (pxt->encode == _UTF16_LIT)
-		{
-#ifdef _UNICODE
-			bs = ucs_byte_to_utf16lit(*(buf + pos), ba);
-			pos += ucs_sequence(*(buf + pos));
-#else
-			bs = mbs_byte_to_utf16lit(buf + pos, ba);
-			pos += mbs_sequence(*(buf + pos));
-#endif
-		}
-		else if (pxt->encode == _UTF16_BIG)
-		{
-#ifdef _UNICODE
-			bs = ucs_byte_to_utf16big(*(buf + pos), ba);
-			pos += ucs_sequence(*(buf + pos));
-#else
-			bs = mbs_byte_to_utf16big(buf + pos, ba);
-			pos += mbs_sequence(*(buf + pos));
-#endif
-		}
-		else
-		{
-#ifdef _UNICODE
-			bs = ucs_byte_to_unn(*(buf + pos), ba);
-			pos += ucs_sequence(*(buf + pos));
-#else
-			bs = mbs_byte_to_unn(buf + pos, ba);
-			pos += mbs_sequence(*(buf + pos));
-#endif
-		}
-
-		if (bs)
-			rt = _stream_write(pxt, ba, &bs);
-		else
-			rt = 1;
-
-		if (!rt)
+		bys = 0;
+		if (!(rt = stream_write_char(xs, (buf + pos), &bys)))
 			break;
 
-		total += bs;
+		if (!bys)
+			break;
+
+		total += bys;
+
+#ifdef _UNICODE
+		pos += ucs_sequence(*(buf + pos));
+#else
+		pos += mbs_sequence(*(buf + pos));
+#endif
 	}
 
 	if (pch)
@@ -817,104 +773,30 @@ errret:
 	return rt;
 }
 
-bool_t	stream_read(stream_t xs, tchar_t* buf, int len, dword_t* pch)
+bool_t stream_read(stream_t xs, tchar_t* buf, int len, dword_t* pch)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
-
-	byte_t ba[4] = { 0 };
-	dword_t bs, total = 0;
+	dword_t bys, total = 0;
 	int pos;
 	bool_t rt = 1;
-
-	XDL_ASSERT(xs);
-
-	XDL_ASSERT(pxt->inf.bio != NULL);
 
 	total = 0;
 	pos = 0;
 	while (pos < len)
 	{
-		bs = 1;
-		rt = _stream_read(pxt, ba, &bs);
-
-		if (!rt || !bs)
+		bys = 0;
+		if (!(rt = stream_read_char(xs, (buf + pos), &bys)))
 			break;
 
-		if (pxt->encode == _UTF8)
-		{
-			bs = utf8_sequence(ba[0]);
-		}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
-		else if (pxt->encode == _GB2312)
-		{
-			bs = gb2312_sequence(ba[0]);
-		}
-#endif
-		else if (pxt->encode == _UTF16_LIT || pxt->encode == _UTF16_BIG)
-		{
-			bs = utf16_sequence(ba[0]);
-		}
-		else
-		{
-			bs = unn_sequence(ba[0]);
-		}
-
-		bs--;
-
-		if (bs > 0)
-			rt = _stream_read(pxt, ba + 1, &bs);
-		else
-			rt = 1;
-
-		if (!rt)
+		if (!bys || buf[pos] == _T('\0'))
 			break;
 
-		bs++;
+		total += bys;
 
-		if (pxt->encode == _UTF8)
-		{
 #ifdef _UNICODE
-			pos += utf8_byte_to_ucs(ba, buf + pos);
+		pos += ucs_sequence(*(buf + pos));
 #else
-			pos += utf8_byte_to_mbs(ba, buf + pos);
+		pos += mbs_sequence(*(buf + pos));
 #endif
-		}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
-		else if (pxt->encode == _GB2312)
-		{
-#ifdef _UNICODE
-			pos += gb2312_byte_to_ucs(ba, buf + pos);
-#else
-			pos += gb2312_byte_to_mbs(ba, buf + pos);
-#endif
-		}
-#endif
-		else if (pxt->encode == _UTF16_LIT)
-		{
-#ifdef _UNICODE
-			pos += utf16lit_byte_to_ucs(ba, buf + pos);
-#else
-			pos += utf16lit_byte_to_mbs(ba, buf + pos);
-#endif
-		}
-		else if (pxt->encode == _UTF16_BIG)
-		{
-#ifdef _UNICODE
-			pos += utf16big_byte_to_ucs(ba, buf + pos);
-#else
-			pos += utf16big_byte_to_mbs(ba, buf + pos);
-#endif
-		}
-		else
-		{
-#ifdef _UNICODE
-			pos += unn_byte_to_ucs(ba, buf + pos);
-#else
-			pos += unn_byte_to_mbs(ba, buf + pos);
-#endif
-		}
-
-		total += bs;
 	}
 
 	if (pch)
@@ -1057,38 +939,6 @@ bool_t stream_read_escape(stream_t xs, tchar_t* buf, dword_t* pb)
 		*pb = total;
 
 	return 1;
-}
-
-bool_t stream_write_bytes(stream_t xs, const byte_t* buf, dword_t len)
-{
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
-
-	XDL_ASSERT(xs);
-
-	XDL_ASSERT(pxt->inf.bio != NULL);
-
-	if (!buf || !len)
-	{
-		return 1;
-	}
-
-	return _stream_write(pxt, (byte_t*)buf, &len);
-}
-
-bool_t stream_read_bytes(stream_t xs, byte_t* buf, dword_t *pb)
-{
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
-
-	XDL_ASSERT(xs);
-
-	XDL_ASSERT(pxt->inf.bio != NULL);
-
-	if (!buf || !(*pb))
-	{
-		return 1;
-	}
-
-	return _stream_read(pxt, buf, pb);
 }
 
 bool_t stream_write_sword_lit(stream_t xs, sword_t sw)
@@ -1246,7 +1096,7 @@ bool_t stream_read_chunk_size(stream_t xs, dword_t* pb)
 		return 0;
 	}
 
-	if (pxt->opera_limit == pxt->opera_bytes)
+	if (pxt->opera_limit == pxt->read_bytes)
 	{
 		if (!_stream_read_chunk_head(pxt, &pxt->opera_limit))
 		{
@@ -1257,7 +1107,7 @@ bool_t stream_read_chunk_size(stream_t xs, dword_t* pb)
         if(pxt->opera_limit > MAX_LONG)
             pxt->opera_limit = 0;
         
-		pxt->opera_bytes = 0;
+		pxt->read_bytes = 0;
 	}
 
 	if (!pxt->opera_limit)
@@ -1265,7 +1115,7 @@ bool_t stream_read_chunk_size(stream_t xs, dword_t* pb)
 		_stream_read_chunk_tail(pxt);
 	}
 
-	*pb = pxt->opera_limit - pxt->opera_bytes;
+	*pb = pxt->opera_limit - pxt->read_bytes;
 
 	return 1;
 }
@@ -1283,7 +1133,7 @@ bool_t stream_write_chunk_size(stream_t xs, dword_t dw)
 		return 0;
 	}
 
-	if (pxt->opera_limit == pxt->opera_bytes)
+	if (pxt->opera_limit == pxt->write_bytes)
 	{
 		if (!_stream_write_chunk_head(pxt, dw))
 		{
@@ -1291,7 +1141,7 @@ bool_t stream_write_chunk_size(stream_t xs, dword_t dw)
 		}
 
 		pxt->opera_limit = dw;
-		pxt->opera_bytes = 0;
+		pxt->write_bytes = 0;
 	}
 
 	if (!pxt->opera_limit)
@@ -1306,21 +1156,25 @@ bool_t stream_write_utfbom(stream_t xs, dword_t* pb)
 
 	byte_t ba[4] = { 0 };
 	dword_t len = 0;
-	bool_t rt = 1;
+	bool_t rt = 0;
 
 	XDL_ASSERT(xs);
 	
+	if (pxt->write_bomed)
+		return 1;
+
 	len = format_utfbom(pxt->encode, ba);
 	if (!len)
 	{
-		if (pb)
-			*pb = 0;
-
-		return 0;
+		rt = 1;
+	}
+	else
+	{
+		rt = _stream_write(pxt, ba, &len);
 	}
 
-	rt = _stream_write(pxt, ba, &len);
-	
+	pxt->write_bomed = rt;
+
 	if (pb)
 	{
 		*pb = (rt) ? len : 0;
@@ -1340,6 +1194,9 @@ bool_t stream_read_utfbom(stream_t xs, dword_t* pb)
 
 	XDL_ASSERT(xs);
 
+	if (pxt->read_bomed)
+		return 1;
+
 	if (pxt->encode == _UTF16_LIT || pxt->encode == _UTF16_BIG)
 	{
 		len = 2;
@@ -1355,22 +1212,22 @@ bool_t stream_read_utfbom(stream_t xs, dword_t* pb)
 
 	if (!len)
 	{
-		if (pb)
-			*pb = 0;
-
-		return 0;
+		rt = 1;
 	}
-
-	rt = _stream_read(pxt, ba, &len);
-
-	if (rt)
+	else
 	{
-		encode = parse_utfbom(ba, len);
-		if (encode == _UTF16_LIT || encode == _UTF16_BIG)
+		rt = _stream_read(pxt, ba, &len);
+		if (rt)
 		{
-			pxt->encode = encode;
+			encode = parse_utfbom(ba, len);
+			if (encode == _UTF16_LIT || encode == _UTF16_BIG)
+			{
+				pxt->encode = encode;
+			}
 		}
 	}
+
+	pxt->read_bomed = rt;
 
 	if (pb)
 	{
@@ -1380,31 +1237,46 @@ bool_t stream_read_utfbom(stream_t xs, dword_t* pb)
 	return rt;
 }
 
-bool_t stream_write_zero(stream_t xs, dword_t* pb)
+bool_t stream_write_bytes(stream_t xs, const byte_t* buf, dword_t len)
 {
 	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
 
-	byte_t ba[3] = { 0 };
-	dword_t len = 0;
-	bool_t rt = 1;
+	XDL_ASSERT(xs);
+
+	XDL_ASSERT(pxt->inf.bio != NULL);
+
+	if (!buf || !len)
+	{
+		return 1;
+	}
+
+	return _stream_write(pxt, (byte_t*)buf, &len);
+}
+
+bool_t stream_read_bytes(stream_t xs, byte_t* buf, dword_t *pb)
+{
+	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
 
 	XDL_ASSERT(xs);
 
-	if (pxt->encode == _UTF16_LIT || pxt->encode == _UTF16_BIG)
+	XDL_ASSERT(pxt->inf.bio != NULL);
+
+	if (!buf || !(*pb))
 	{
-		len = 2;
-		rt = _stream_write(pxt, ba, &len);
-	}
-	else
-	{
-		len = 1;
-		rt = _stream_write(pxt, ba, &len);
+		return 1;
 	}
 
-	if (pb)
-		*pb = (rt) ? len : 0;
+	return _stream_read(pxt, buf, pb);
+}
 
-	return rt;
+void stream_read_line_end(stream_t xs)
+{
+	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+
+	if (pxt->mode != LINE_OPERA)
+		return;
+
+	pxt->opera_limit = pxt->read_bytes;
 }
 
 bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
@@ -1468,7 +1340,13 @@ bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
 			}
 			
 			if ((!glt && sch[0] == _T('\n')) || sch[0] == _T('\0'))
+			{
+				if (sch[0] == _T('\0'))
+				{
+					stream_read_line_end(xs);
+				}
 				break;
+			}
 		}
 	}
 	else
@@ -1489,11 +1367,58 @@ bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
 
 			total = dw;
 		}
+		else
+		{
+			rt = 1;
+		}
 	}
 
 	if (pb)
 	{
 		*pb = (rt) ? total : 0;
+	}
+
+	return rt;
+}
+
+bool_t stream_write_line_end(stream_t xs, dword_t* pb)
+{
+	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+
+	byte_t ba[4] = { 0 };
+	dword_t len = 0;
+	bool_t rt = 1;
+
+	XDL_ASSERT(xs);
+
+	if (pxt->mode != LINE_OPERA)
+	{
+		if (pb) *pb = 0;
+
+		return 0;
+	}
+
+	if (pxt->encode == _UTF16_LIT || pxt->encode == _UTF16_BIG)
+	{
+		len = 2;
+		rt = _stream_write(pxt, ba, &len);
+	}
+	else if (pxt->encode == _UNKNOWN)
+	{
+		len = 4;
+		rt = _stream_write(pxt, ba, &len);
+	}
+	else
+	{
+		len = 1;
+		rt = _stream_write(pxt, ba, &len);
+	}
+
+	pxt->opera_limit = pxt->write_bytes;
+
+	if (pb)
+	{
+		*pb = (rt) ? len : 0;
 	}
 
 	return rt;
@@ -1538,18 +1463,166 @@ bool_t stream_write_line(stream_t xs, string_t vs, dword_t* pb)
 	{
 		if (mode ==	LINE_OPERA)
 		{
-			rt = stream_write_zero(xs, &dw);
+			rt = stream_write_line_end(xs, &dw);
 		}
 		else
 		{
 			rt = 1;
 		}
+		dw = 0;
 	}
 
 	if (pb)
 		*pb = (rt)? dw : 0;
 
 	return rt;
+}
+
+bool_t stream_copy(stream_t xs_src, stream_t xs_dst)
+{
+	int src_mode, dst_mode;
+	dword_t size = 0;
+	byte_t* buf = NULL;
+	string_t vs = NULL;
+	bool_t eq, rt = 0;
+
+	src_mode = stream_get_mode(xs_src);
+	dst_mode = stream_get_mode(xs_dst);
+
+	eq = (stream_get_encode(xs_src) == stream_get_encode(xs_dst)) ? 1 : 0;
+
+	stream_read_utfbom(xs_src, NULL);
+
+	stream_write_utfbom(xs_dst, NULL);
+
+	vs = string_alloc();
+
+	if (src_mode == CHUNK_OPERA)
+	{
+		while (1)
+		{
+			size = 0;
+			if (!(rt = stream_read_chunk_size(xs_src, &size)))
+				break;
+
+			if (!size)
+				break;
+
+			buf = (byte_t*)xmem_alloc(size);
+			if (!(rt = stream_read_bytes(xs_src, buf, &size)))
+			{
+				break;
+			}
+
+			if (!eq)
+			{
+				string_empty(vs);
+				string_decode(vs, stream_get_encode(xs_src), buf, size);
+
+				xmem_free(buf);
+				buf = NULL;
+
+				size = string_encode(vs, stream_get_encode(xs_dst), NULL, MAX_LONG);
+				buf = (byte_t*)xmem_alloc(size);
+				string_encode(vs, stream_get_encode(xs_dst), buf, size);
+			}
+
+			if (dst_mode == CHUNK_OPERA)
+			{
+				stream_write_chunk_size(xs_dst, size);
+			}
+
+			if (!(rt = stream_write_bytes(xs_dst, buf, size)))
+			{
+				break;
+			}
+
+			xmem_free(buf);
+			buf = NULL;
+		}
+	}
+	else if (src_mode == LINE_OPERA)
+	{
+		while (1)
+		{
+			string_empty(vs);
+			size = 0;
+			if (!(rt = stream_read_line(xs_src, vs, &size)))
+				break;
+
+			if (string_len(vs) == 0)
+				break;
+
+			if (!(rt = stream_write_line(xs_dst, vs, &size)))
+			{
+				break;
+			}
+		}
+	}
+	else
+	{
+		rt = 1;
+		size = stream_get_size(xs_src);
+		if (!size)
+		{
+			goto RET;
+		}
+
+		buf = (byte_t*)xmem_alloc(size);
+		if (!(rt = stream_read_bytes(xs_src, buf, &size)))
+		{
+			goto RET;
+		}
+
+		if (!eq)
+		{
+			string_empty(vs);
+			string_decode(vs, stream_get_encode(xs_src), buf, size);
+
+			xmem_free(buf);
+			buf = NULL;
+
+			size = string_encode(vs, stream_get_encode(xs_dst), NULL, MAX_LONG);
+			buf = (byte_t*)xmem_alloc(size);
+			string_encode(vs, stream_get_encode(xs_dst), buf, size);
+		}
+
+		if (dst_mode == CHUNK_OPERA)
+		{
+			stream_write_chunk_size(xs_dst, size);
+		}
+
+		if (!(rt = stream_write_bytes(xs_dst, buf, size)))
+		{
+			goto RET;
+		}
+
+		xmem_free(buf);
+		buf = NULL;
+	}
+
+RET:
+	if (buf)
+		xmem_free(buf);
+
+	if (vs)
+		string_free(vs);
+
+	if (rt)
+	{
+		if (dst_mode == CHUNK_OPERA)
+		{
+			stream_write_chunk_size(xs_dst, 0);
+		}
+		else if (dst_mode == LINE_OPERA)
+		{
+			stream_write_line(xs_dst, NULL, NULL);
+		}
+
+		return stream_flush(xs_dst);
+	}
+
+	return (0);
 }
 
 dword_t stream_printf(stream_t xs, const tchar_t* fmt, ...)
@@ -1570,125 +1643,6 @@ dword_t stream_printf(stream_t xs, const tchar_t* fmt, ...)
 	xsfree(buf);
 
 	va_end(arg);
-	
+
 	return dw;
 }
-
-bool_t _stream_copy_chars(stream_t xs_src, stream_t xs_dst)
-{
-	string_t vs = NULL;
-	
-	vs = string_alloc();
-
-	while (stream_read_line(xs_src, vs, NULL))
-	{
-		if (!stream_write_line(xs_dst, vs, NULL))
-		{
-			string_free(vs);
-			return 0;
-		}
-
-		if (string_len(vs) == 0)
-			break;
-
-		string_empty(vs);
-	}
-
-	string_free(vs);
-
-	return stream_flush(xs_dst);
-}
-
-bool_t _stream_copy_bytes(stream_t xs_src, stream_t xs_dst)
-{
-	int src_mode, dst_mode;
-	dword_t size = 0;
-	byte_t* buf = NULL;
-
-	src_mode = stream_get_mode(xs_src);
-	dst_mode = stream_get_mode(xs_dst);
-
-	if (src_mode == CHUNK_OPERA)
-	{
-		while (stream_read_chunk_size(xs_src, &size))
-		{
-			if (dst_mode == CHUNK_OPERA)
-			{
-				stream_write_chunk_size(xs_dst, size);
-			}
-			else if (dst_mode == LINE_OPERA && !size)
-			{
-				stream_write_zero(xs_dst, NULL);
-			}
-
-			if (!size)
-			{
-				break;
-			}
-
-			buf = (byte_t*)xmem_alloc(size);
-			if (!stream_read_bytes(xs_src, buf, &size))
-			{
-				xmem_free(buf);
-				return 0;
-			}
-
-			if (!stream_write_bytes(xs_dst, buf, size))
-			{
-				xmem_free(buf);
-				return 0;
-			}
-
-			xmem_free(buf);
-			buf = NULL;
-		}
-	}
-	else 
-	{
-		size = stream_get_size(xs_src);
-
-		if (dst_mode == CHUNK_OPERA && size)
-		{
-			stream_write_chunk_size(xs_dst, size);
-		}
-
-		if (size)
-		{
-			buf = (byte_t*)xmem_alloc(size);
-			if (!stream_read_bytes(xs_src, buf, &size))
-			{
-				xmem_free(buf);
-				return 0;
-			}
-
-			if (!stream_write_bytes(xs_dst, buf, size))
-			{
-				xmem_free(buf);
-				return 0;
-			}
-
-			xmem_free(buf);
-			buf = NULL;
-		}
-
-		if (dst_mode == CHUNK_OPERA)
-		{
-			stream_write_chunk_size(xs_dst, 0);
-		}
-		else if (dst_mode == LINE_OPERA)
-		{
-			stream_write_zero(xs_dst, NULL);
-		}
-	}
-
-	return stream_flush(xs_dst);
-}
-
-bool_t stream_copy(stream_t xs_src, stream_t xs_dst)
-{
-	if (stream_get_mode(xs_src) != LINE_OPERA && stream_get_encode(xs_src) == stream_get_encode(xs_dst))
-		return _stream_copy_bytes(xs_src, xs_dst);
-	else
-		return _stream_copy_chars(xs_src, xs_dst);
-}
-
