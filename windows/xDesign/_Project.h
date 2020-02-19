@@ -46,10 +46,6 @@ bool_t	Project_SetConfig(LINKPTR ptr_prj, const tchar_t* key, const tchar_t* val
 
 bool_t	Project_GetConfig(LINKPTR ptr_prj, const tchar_t* key, tchar_t* buf, int max);
 
-bool_t	Project_SetDomain(LINKPTR ptr_prj, LINKPTR ptr_tree);
-
-bool_t	Project_GetDomain(LINKPTR ptr_prj, LINKPTR ptr_tree);
-
 bool_t	Project_GetResource(LINKPTR ptr_prj, LINKPTR ptr_tree);
 
 bool_t	Project_SetResource(LINKPTR ptr_prj, LINKPTR ptr_tree);

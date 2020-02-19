@@ -37,20 +37,6 @@ void MainFrame_MergeTool(res_win_t widget, LINKPTR subTool);
 
 void MainFrame_ClearTool(res_win_t widget);
 
-typedef struct _DOMMAIN_ITEM{
-	tchar_t Name[KEY_LEN + 1];
-	tchar_t Title[RES_LEN + 1];
-	tchar_t DataType[RES_LEN + 1];
-	tchar_t DataLen[NUM_LEN + 1];
-	tchar_t DataDig[NUM_LEN + 1];
-	tchar_t CodeSystem[RES_LEN + 1];
-}DOMAINITEM, *LPDOMAINITEM;
-
-typedef struct _DROPDOMAIN{
-	DOMAINITEM dm;
-	xpoint_t xp;
-}DROPDOMAIN;
-
 typedef struct _QUERYOBJECT{
 	tchar_t szDoc[RES_LEN + 1];
 	LINKPTR ptrDoc;

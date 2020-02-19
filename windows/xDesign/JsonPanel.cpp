@@ -467,7 +467,7 @@ int JsonPanel_OnCreate(res_win_t widget, void* data)
 
 	LoadPreference(_T("JSON"), _T("URL"), sz_url);
 	LoadPreference(_T("JSON"), _T("SECRET-ID"), sz_id);
-	LoadPreference(_T("JSON"), _T("SECRET-KEY"), sz_id);
+	LoadPreference(_T("JSON"), _T("SECRET-KEY"), sz_key);
 
 	ent = write_proper(ptrProper, JSONPANEL_SECTION, -1, _T("URL"), -1, sz_url, -1);
 	set_entity_icon(ent, ICON_BOOK);
@@ -587,7 +587,7 @@ int JsonPanel_OnClose(res_win_t widget)
 
 		if (!is_null(sz_key))
 		{
-			SavePreference(_T("JSON"), _T("SECRET-KEY"), sz_id);
+			SavePreference(_T("JSON"), _T("SECRET-KEY"), sz_key);
 		}
 	}
 

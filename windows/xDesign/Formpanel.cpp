@@ -233,106 +233,7 @@ void FormPanel_SelectShape(res_win_t widget, const tchar_t* attr_val)
 	formctrl_redraw(pdt->hForm, 1);
 }
 
-void FormPanel_DropDomain(res_win_t widget, DROPDOMAIN* pdrop)
-{
-	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	formctrl_set_dirty(pdt->hForm, 1);
-
-	widget_screen_to_client(pdt->hForm, &pdrop->xp);
-	widgetex_point_to_tm(pdt->hForm, &pdrop->xp);
-
-	tchar_t fname[RES_LEN + 1] = { 0 };
-	int len, n_count = 0;
-
-	len = xslen(pdrop->dm.Name);
-
-	LINKPTR ptrForm = formctrl_fetch(pdt->hForm);
-
-	LINKPTR flk = get_next_field(ptrForm, LINK_FIRST);
-	while (flk)
-	{
-		if (compare_text(get_field_class_ptr(flk),-1,DOC_FORM_TEXT,-1,0) == 0 && compare_text(pdrop->dm.Name, len, get_field_name_ptr(flk), len, 1) == 0)
-		{
-			n_count++;
-		}
-
-		flk = get_next_field(ptrForm, flk);
-	}
-
-	tchar_t token[NUM_LEN + 1];
-	float fw;
-
-	xsprintf(fname, _T("%s%d_t"), pdrop->dm.Name, n_count);
-
-	flk = insert_field(ptrForm, DOC_FORM_LABEL);
-	set_field_name(flk, fname);
-	set_field_text(flk, pdrop->dm.Title, -1);
-	xsprintf(token, _T("%d"), (int)(pdrop->xp.fx + 0.5));
-	set_field_x(flk, (float)xstol(token));
-	xsprintf(token, _T("%d"), (int)(pdrop->xp.fy + 0.5));
-	set_field_y(flk, (float)xstol(token));
-	
-	len = xslen(pdrop->dm.Title);
-	if (len < 3)
-		set_field_width(flk, 10);
-	else if (len < 4)
-		set_field_width(flk, 15);
-	
-	fw = get_field_width(flk);
-
-	xsprintf(fname, _T("%s%d"), pdrop->dm.Name, n_count);
-
-	flk = insert_field(ptrForm, DOC_FORM_TEXT);
-	set_field_name(flk, fname);
-	set_field_id(flk, fname);
-	xsprintf(token, _T("%d"), (int)(fw + pdrop->xp.fx + 0.5));
-	set_field_x(flk, (float)xstol(token));
-	xsprintf(token, _T("%d"), (int)(pdrop->xp.fy + 0.5));
-	set_field_y(flk, (float)xstol(token));
-	if (!is_null(pdrop->dm.DataType))
-		set_field_data_type(flk, pdrop->dm.DataType);
-	if (!is_null(pdrop->dm.DataLen))
-		set_field_data_len(flk, xstol(pdrop->dm.DataLen));
-	if (!is_null(pdrop->dm.DataDig))
-		set_field_data_dig(flk, xstol(pdrop->dm.DataDig));
-
-	formctrl_redraw(pdt->hForm, 1);
-}
-
-void FormPanel_AlterDomain(res_win_t widget, DROPDOMAIN* pdrop)
-{
-	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
-
-	formctrl_set_dirty(pdt->hForm, 1);
-
-	LINKPTR ptrForm = formctrl_fetch(pdt->hForm);
-
-	LINKPTR flk = formctrl_get_focus_field(pdt->hForm);
-	if (!flk)
-		return;
-
-	if (compare_text(get_field_class_ptr(flk), -1, DOC_FORM_TEXT, -1, 0) != 0)
-		return;
-
-	tchar_t fname[RES_LEN + 1] = { 0 };
-
-	xsprintf(fname, _T("%s0"), pdrop->dm.Name);
-
-	set_field_name(flk, fname);
-	set_field_id(flk, fname);
-
-	clear_field_datadef(flk);
-
-	if (!is_null(pdrop->dm.DataType))
-		set_field_data_type(flk, pdrop->dm.DataType);
-	if (!is_null(pdrop->dm.DataLen))
-		set_field_data_len(flk, xstol(pdrop->dm.DataLen));
-	if (!is_null(pdrop->dm.DataDig))
-		set_field_data_dig(flk, xstol(pdrop->dm.DataDig));
-
-	formctrl_redraw_field(pdt->hForm, flk, 1);
-}
 /*********************************************************************************************************/
 void FormPanel_OnSave(res_win_t widget)
 {
@@ -1379,7 +1280,6 @@ void FormPanel_OnCheckField(res_win_t widget)
 	xsprintf(token, _T("check%d"), count);
 
 	set_field_name(flk, token);
-	set_field_text(flk, _T("1"), -1);
 
 	formctrl_redraw_field(pdt->hForm, flk, 1);
 }
@@ -2262,14 +2162,7 @@ void FormPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	if (code == COMMAND_QUERYDROP)
-	{
-		if (widget_key_state(widget, KEY_CONTROL))
-			FormPanel_AlterDomain(widget, (DROPDOMAIN*)data);
-		else
-			FormPanel_DropDomain(widget, (DROPDOMAIN*)data);
-	}
-	else if (code == COMMAND_QUERYINFO)
+	if (code == COMMAND_QUERYINFO)
 	{
 		QUERYOBJECT* pqo = (QUERYOBJECT*)data;
 		xscpy(pqo->szDoc, DOC_FORM);

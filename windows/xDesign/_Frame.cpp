@@ -54,14 +54,12 @@ LICENSE.GPL3 for more details.
 #define MAINFRAME_TITLEITEM_WIDTH		(float)15
 #define MAINFRAME_STATUSITEM_WIDTH		(float)20
 
-#define MAINFRAME_TREE_OBJECT			_T("item")
-#define MAINFRAME_TREE_DOMAIN		_T("domain")
+#define MAINFRAME_TREE_OBJECT		_T("item")
 #define MAINFRAME_TREE_RESOURCE		_T("resource")
 
 #define IDC_MAINFRAME_TOOLBAR		100
 #define IDC_MAINFRAME_TITLEBAR		101
 #define IDC_MAINFRAME_RESBAR		102
-#define IDC_MAINFRAME_DOMBAR		103
 #define IDC_MAINFRAME_OBJBAR		104
 #define IDC_MAINFRAME_STATUSBAR		105
 #define IDC_MAINFRAME_CATEBAR		106
@@ -96,7 +94,6 @@ typedef struct tagMainFrameDelta{
 	res_win_t hToolBar;
 	res_win_t hTitleBar;
 	res_win_t hResBar;
-	res_win_t hDomBar;
 	res_win_t hObjBar;
 	res_win_t hCateBar;
 	res_win_t hClientWnd;
@@ -200,9 +197,6 @@ void MainFrame_SaveProject(res_win_t widget)
 	LINKPTR ptrResTree = treectrl_fetch(pdt->hResBar);
 	Project_SetResource(pdt->ptrProject, ptrResTree);
 
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-	Project_SetDomain(pdt->ptrProject, ptrDomTree);
-
 	if (!Project_Save(pdt->ptrProject, pdt->szFile))
 	{
 		ShowMsg(MSGICO_ERR, _T("保存工程文件错误！"));
@@ -236,9 +230,9 @@ void MainFrame_CloseProject(res_win_t widget)
 	clear_tree_doc(ptrResTree);
 	treectrl_redraw(pdt->hResBar);
 
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-	clear_tree_doc(ptrDomTree);
-	treectrl_redraw(pdt->hDomBar);
+	LINKPTR ptrObjTree = treectrl_fetch(pdt->hObjBar);
+	clear_tree_doc(ptrObjTree);
+	treectrl_redraw(pdt->hObjBar);
 
 	widget_set_title(widget, _T("xDesign"));
 }
@@ -278,10 +272,6 @@ void MainFrame_CreateProject(res_win_t widget)
 	LINKPTR ptrResTree = treectrl_fetch(pdt->hResBar);
 	Project_GetResource(pdt->ptrProject, ptrResTree);
 	treectrl_redraw(pdt->hResBar);
-
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-	Project_GetDomain(pdt->ptrProject, ptrDomTree);
-	treectrl_redraw(pdt->hDomBar);
 
 	tchar_t token[RES_LEN + 1] = { 0 };
 	xscpy(token, _T("xDesign ["));
@@ -329,10 +319,6 @@ void MainFrame_OpenProject(res_win_t widget)
 	LINKPTR ptrResTree = treectrl_fetch(pdt->hResBar);
 	Project_GetResource(pdt->ptrProject, ptrResTree);
 	treectrl_redraw(pdt->hResBar);
-
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-	Project_GetDomain(pdt->ptrProject, ptrDomTree);
-	treectrl_redraw(pdt->hDomBar);
 
 	tchar_t token[RES_LEN + 1] = { 0 };
 	xscpy(token, _T("xDesign ["));
@@ -845,331 +831,6 @@ void MainFrame_SortFile(res_win_t widget)
 	treectrl_redraw(pdt->hResBar);
 }
 
-void MainFrame_InsertElement(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	if (is_null(pdt->szFile))
-	{
-		ShowMsg(MSGICO_TIP, _T("请先新建或打开工程！"));
-		return;
-	}
-
-	LINKPTR ptrProper = create_proper_doc();
-
-	LINKPTR ent;
-	
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_NAME, -1, NULL, 0);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_TITLE, -1, NULL, 0);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_DATA_TYPE, -1, NULL, 0);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-	set_entity_options(ent, ATTR_DATA_TYPE_OPTIONS, -1);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_DATA_LEN, -1, NULL, 0);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_DATA_DIG, -1, NULL, 0);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_CATEGORY, -1, NULL, 0);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	res_win_t hProperDlg = properdlg_create(_T("数据元件"), ptrProper, widget);
-
-	widget_show(hProperDlg, WD_SHOW_NORMAL);
-
-	int nRet = (int)widget_do_modal(hProperDlg);
-
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-
-	if (nRet)
-	{
-		LINKPTR tlk_parent = find_tree_item_by_title(ptrDomTree, get_proper_ptr(ptrProper, _T("Element"), ATTR_CATEGORY));
-		if (!tlk_parent)
-		{
-			tlk_parent = insert_tree_item(ptrDomTree, LINK_LAST);
-			set_tree_item_name(tlk_parent, ATTR_CATEGORY);
-			set_tree_item_title(tlk_parent, get_proper_ptr(ptrProper, _T("Element"), ATTR_CATEGORY));
-		}
-
-		LINKPTR tlk = insert_tree_item(tlk_parent, LINK_LAST);
-
-		tchar_t sz_title[250] = { 0 };
-
-		set_tree_item_name(tlk, get_proper_ptr(ptrProper, _T("Element"), ATTR_NAME));
-		xsprintf(sz_title, _T("%s: %s"), get_proper_ptr(ptrProper, _T("Element"), ATTR_NAME), get_proper_ptr(ptrProper, _T("Element"), ATTR_TITLE));
-		set_tree_item_title(tlk, sz_title);
-		set_dom_node_attr(tlk, ATTR_DATA_TYPE, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_TYPE), -1);
-		set_dom_node_attr(tlk, ATTR_DATA_LEN, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_LEN), -1);
-		set_dom_node_attr(tlk, ATTR_DATA_DIG, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_DIG), -1);
-		set_dom_node_attr(tlk, ATTR_CATEGORY, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_CATEGORY), -1);
-		set_dom_node_attr(tlk, ATTR_TITLE, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_TITLE), -1);
-		set_tree_item_icon(tlk, ICON_GROUP);
-
-		pdt->bDirty = TRUE;
-
-		treectrl_redraw(pdt->hDomBar);
-	}
-
-	destroy_proper_doc(ptrProper);
-}
-
-void MainFrame_EditElement(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	LINKPTR tlk = treectrl_get_focus_item(pdt->hDomBar);
-	if (!tlk)
-		return;
-
-	if (compare_text(get_tree_item_name_ptr(tlk),-1,ATTR_CATEGORY,-1,0) == 0)
-		return;
-
-	LINKPTR ptrProper = create_proper_doc();
-
-	LINKPTR ent;
-	
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_NAME, -1, get_tree_item_name_ptr(tlk), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_TITLE, -1, get_dom_node_attr_ptr(tlk, ATTR_TITLE, -1), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_DATA_TYPE, -1, get_dom_node_attr_ptr(tlk, ATTR_DATA_TYPE, -1), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-	set_entity_options(ent, ATTR_DATA_TYPE_OPTIONS, -1);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_DATA_LEN, -1, get_dom_node_attr_ptr(tlk, ATTR_DATA_LEN, -1), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_DATA_DIG, -1, get_dom_node_attr_ptr(tlk, ATTR_DATA_DIG, -1), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	ent = write_proper(ptrProper, _T("Element"), -1, ATTR_CATEGORY, -1, get_dom_node_attr_ptr(tlk, ATTR_CATEGORY, -1), -1);
-	set_entity_editable(ent, 0);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
-
-	res_win_t hProperDlg = properdlg_create(_T("数据元件"), ptrProper, widget);
-
-	widget_show(hProperDlg, WD_SHOW_NORMAL);
-
-	int nRet = (int)widget_do_modal(hProperDlg);
-
-	if (nRet)
-	{
-		tchar_t sz_title[250] = { 0 };
-
-		set_tree_item_name(tlk, get_proper_ptr(ptrProper, _T("Element"), ATTR_NAME));
-		xsprintf(sz_title, _T("%s: %s"), get_proper_ptr(ptrProper, _T("Element"), ATTR_NAME), get_proper_ptr(ptrProper, _T("Element"), ATTR_TITLE));
-		set_tree_item_title(tlk, sz_title);
-		set_dom_node_attr(tlk, ATTR_DATA_TYPE, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_TYPE), -1);
-		set_dom_node_attr(tlk, ATTR_DATA_LEN, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_LEN), -1);
-		set_dom_node_attr(tlk, ATTR_DATA_DIG, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_DATA_DIG), -1);
-		set_dom_node_attr(tlk, ATTR_TITLE, -1, get_proper_ptr(ptrProper, _T("Element"), ATTR_TITLE), -1);
-
-		treectrl_redraw(pdt->hDomBar);
-
-		pdt->bDirty = TRUE;
-	}
-
-	destroy_proper_doc(ptrProper);
-}
-
-void MainFrame_RemoveElement(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	LINKPTR tlk = treectrl_get_focus_item(pdt->hDomBar);
-	if (!tlk)
-		return;
-
-	if (!is_tree_doc(get_tree_parent_item(tlk)))
-		return;
-
-	delete_tree_item(tlk);
-	treectrl_redraw(pdt->hDomBar);
-
-	pdt->bDirty = TRUE;
-}
-
-
-void MainFrame_ImportElement(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	if (is_null(pdt->szFile))
-	{
-		ShowMsg(MSGICO_TIP, _T("请先新建或打开工程！"));
-		return;
-	}
-
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szFilter[] = _T("CSV File(*.csv)\0*.csv\0");
-
-	split_path(pdt->szFile, szPath, NULL, NULL);
-
-	if (!shell_get_filename(widget, szPath, szFilter, _T("csv"), 0, szPath, PATH_LEN, szFile, PATH_LEN))
-		return;
-
-	LINKPTR ptr_grid = create_grid_doc();
-
-	LINKPTR clk_name = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_name, ATTR_NAME);
-
-	LINKPTR clk_title = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_title, ATTR_TITLE);
-
-	LINKPTR clk_datatype = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_datatype, ATTR_DATA_TYPE);
-
-	LINKPTR clk_datalen = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_datalen, ATTR_DATA_LEN);
-
-	LINKPTR clk_datadig = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_datadig, ATTR_DATA_DIG);
-
-	LINKPTR clk_category = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_category, ATTR_CATEGORY);
-
-	if (!load_grid_from_csv_file(ptr_grid,0, NULL, szFile))
-	{
-		ShowMsg(MSGICO_TIP, _T("导入文件失败！"));
-		return;
-	}
-
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-
-	tchar_t sz_title[250] = { 0 };
-
-	LINKPTR rlk = get_next_row(ptr_grid, LINK_FIRST);
-	while (rlk)
-	{
-		if (is_null(get_cell_text_ptr(rlk, clk_name)))
-		{
-			rlk = get_next_row(ptr_grid, rlk);
-			continue;
-		}
-
-		LINKPTR tlk_parent = find_tree_item_by_title(ptrDomTree, get_cell_text_ptr(rlk, clk_category));
-		if (!tlk_parent)
-		{
-			tlk_parent = insert_tree_item(ptrDomTree, LINK_LAST);
-			set_tree_item_title(tlk_parent, get_cell_text_ptr(rlk, clk_category));
-		}
-
-		LINKPTR tlk_child = find_tree_item_by_name(tlk_parent, get_cell_text_ptr(rlk, clk_name));
-		if (!tlk_child)
-		{
-			tlk_child = insert_tree_item(tlk_parent, LINK_LAST);
-		}
-
-		set_tree_item_name(tlk_child, get_cell_text_ptr(rlk, clk_name));
-		xsprintf(sz_title, _T("%s: %s"), get_cell_text_ptr(rlk, clk_name), get_cell_text_ptr(rlk, clk_title));
-		set_tree_item_title(tlk_child, sz_title);
-		set_dom_node_attr(tlk_child, ATTR_DATA_TYPE, -1, get_cell_text_ptr(rlk, clk_datatype), -1);
-		set_dom_node_attr(tlk_child, ATTR_DATA_LEN, -1, get_cell_text_ptr(rlk, clk_datalen), -1);
-		set_dom_node_attr(tlk_child, ATTR_DATA_DIG, -1, get_cell_text_ptr(rlk, clk_datadig), -1);
-		set_dom_node_attr(tlk_child, ATTR_TITLE, -1, get_cell_text_ptr(rlk, clk_title), -1);
-
-		pdt->bDirty = TRUE;
-
-		rlk = get_next_row(ptr_grid, rlk);
-	}
-
-	destroy_grid_doc(ptr_grid);
-
-	treectrl_redraw(pdt->hDomBar);
-}
-
-void MainFrame_ExportElement(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	if (is_null(pdt->szFile))
-	{
-		ShowMsg(MSGICO_TIP, _T("请先新建或打开工程！"));
-		return;
-	}
-
-	LINKPTR ptrDomTree = treectrl_fetch(pdt->hDomBar);
-	if (!get_tree_child_item_count(ptrDomTree))
-		return;
-
-	LINKPTR ptr_grid = create_grid_doc();
-
-	LINKPTR clk_name = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_name, ATTR_NAME);
-
-	LINKPTR clk_title = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_title, ATTR_TITLE);
-
-	LINKPTR clk_datatype = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_datatype, ATTR_DATA_TYPE);
-
-	LINKPTR clk_datalen = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_datalen, ATTR_DATA_LEN);
-
-	LINKPTR clk_datadig = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_datadig, ATTR_DATA_DIG);
-
-	LINKPTR clk_category = insert_col(ptr_grid, LINK_LAST);
-	set_col_name(clk_category, ATTR_CATEGORY);
-
-	LINKPTR tlk_parent = get_tree_first_child_item(ptrDomTree);
-	while (tlk_parent)
-	{
-		LINKPTR tlk_child = get_tree_first_child_item(tlk_parent);
-		while (tlk_child)
-		{
-			LINKPTR rlk = insert_row(ptr_grid, LINK_LAST);
-
-			set_cell_text(rlk, clk_name, get_tree_item_name_ptr(tlk_child), -1);
-			set_cell_text(rlk, clk_title, get_dom_node_attr_ptr(tlk_child, ATTR_TITLE, -1), -1);
-			set_cell_text(rlk, clk_datatype, get_dom_node_attr_ptr(tlk_child, ATTR_DATA_TYPE, -1), -1);
-			set_cell_text(rlk, clk_datalen, get_dom_node_attr_ptr(tlk_child, ATTR_DATA_LEN, -1), -1);
-			set_cell_text(rlk, clk_datadig, get_dom_node_attr_ptr(tlk_child, ATTR_DATA_DIG, -1), -1);
-			set_cell_text(rlk, clk_category, get_tree_item_title_ptr(tlk_parent), -1);
-
-			tlk_child = get_tree_next_sibling_item(tlk_child);
-		}
-
-		tlk_parent = get_tree_next_sibling_item(tlk_parent);
-	}
-
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szFilter[] = _T("CSV File(*.csv)\0*.csv\0");
-
-	split_path(pdt->szFile, szPath, NULL, NULL);
-
-	if (!shell_get_filename(widget, szPath, szFilter, _T("csv"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
-		return;
-
-	if (!save_grid_to_csv_file(ptr_grid, 0, NULL, szFile))
-	{
-		ShowMsg(MSGICO_TIP, _T("保存文件失败！"));
-		return;
-	}
-
-	destroy_grid_doc(ptr_grid);
-}
-
 void MainFrame_FreshObject(res_win_t widget)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
@@ -1670,112 +1331,6 @@ void MainFrame_ResBar_OnCommit(res_win_t widget, NOTICE_TREE* pnt)
 	}
 }
 
-void MainFrame_DomBar_OnLBClick(res_win_t widget, NOTICE_TREE* pnt)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-}
-
-void MainFrame_DomBar_OnDBClick(res_win_t widget, NOTICE_TREE* pnt)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	widget_post_command(widget, 0, IDA_ELEMENT_EDIT, NULL);
-}
-
-void MainFrame_DomBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	xpoint_t* ppt = (xpoint_t*)pnt->data;
-
-	xrect_t xr = { 0 };
-	xpoint_t pt = { 0 };
-
-	res_win_t hMenu = menubox_create(widget, WD_STYLE_POPUP, &xr);
-	widget_set_user_id(hMenu, IDC_MAINFRAME_MENUBOX);
-	widget_set_owner(hMenu, widget);
-
-	clr_mod_t clr;
-	widgetex_get_color_mode(widget, &clr);
-
-	widgetex_set_color_mode(hMenu, &clr);
-
-	LINKPTR ptrMenu = create_menu_doc();
-
-	LINKPTR mlk = insert_menu_item(ptrMenu, LINK_LAST);
-	set_menu_item_iid(mlk, IDA_ELEMENT_INSERT);
-	set_menu_item_title(mlk, _T("添加元件"));
-	set_menu_item_icon(mlk, ICON_INSERT);
-
-	mlk = insert_menu_item(ptrMenu, LINK_LAST);
-	set_menu_item_iid(mlk, IDA_ELEMENT_REMOVE);
-	set_menu_item_title(mlk, _T("移除元件"));
-	set_menu_item_icon(mlk, ICON_DELETE);
-
-	mlk = insert_menu_item(ptrMenu, LINK_LAST);
-	set_menu_item_iid(mlk, IDA_ELEMENT_EDIT);
-	set_menu_item_title(mlk, _T("编辑元件"));
-	set_menu_item_icon(mlk, ICON_EDIT);
-
-	mlk = insert_menu_item(ptrMenu, LINK_LAST);
-	set_menu_item_iid(mlk, IDA_ELEMENT_IMPORT);
-	set_menu_item_title(mlk, _T("导入元件"));
-	set_menu_item_icon(mlk, ICON_INPUT);
-
-	mlk = insert_menu_item(ptrMenu, LINK_LAST);
-	set_menu_item_iid(mlk, IDA_ELEMENT_EXPORT);
-	set_menu_item_title(mlk, _T("导出元件"));
-	set_menu_item_icon(mlk, ICON_OUTPUT);
-
-	menubox_set_data(hMenu, ptrMenu);
-
-	pt.x = ppt->x;
-	pt.y = ppt->y;
-	widget_client_to_screen(pdt->hDomBar, &pt);
-
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
-
-	widget_do_trace(hMenu);
-
-	destroy_menu_doc(ptrMenu);
-}
-
-void MainFrame_DomBar_OnItemDrop(res_win_t widget, NOTICE_TREE* pnt)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	xpoint_t *ppt = (xpoint_t*)pnt->data;
-
-	XDL_ASSERT(ppt != NULL);
-
-	if (compare_text(get_tree_item_name_ptr(pnt->item),-1, ATTR_CATEGORY,-1,0) == 0)
-		return;
-
-	res_win_t hPanel = MainFrame_GetActivePanel(widget);
-	if (!hPanel)
-		return;
-
-	xrect_t xr;
-	widget_get_window_rect(hPanel, &xr);
-
-	if (pt_in_rect(ppt, &xr))
-	{
-		DROPDOMAIN drop = { 0 };
-
-		drop.xp.x = ppt->x;
-		drop.xp.y = ppt->y;
-
-		xscpy(drop.dm.Name, get_tree_item_name_ptr(pnt->item));
-		xscpy(drop.dm.Title, get_dom_node_attr_ptr(pnt->item, ATTR_TITLE, -1));
-		xscpy(drop.dm.DataType, get_dom_node_attr_ptr(pnt->item, ATTR_DATA_TYPE, -1));
-		xscpy(drop.dm.DataLen, get_dom_node_attr_ptr(pnt->item, ATTR_DATA_LEN, -1));
-		xscpy(drop.dm.DataDig, get_dom_node_attr_ptr(pnt->item, ATTR_DATA_DIG, -1));
-
-		widget_send_command(hPanel, COMMAND_QUERYDROP, IDC_PARENT, (var_long)&drop);
-	}
-}
-
 void MainFrame_ObjBar_OnLBClick(res_win_t widget, NOTICE_TREE* pnt)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
@@ -1851,19 +1406,6 @@ void _MainFrame_CalcStatusBar(res_win_t widget, xrect_t* pxr)
 }
 
 void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-	xsize_t xs;
-
-	xs.fx = 0;
-	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
-
-	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
-	pxr->h -= xs.cy;
-}
-
-void _MainFrame_CalcDomBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
@@ -2099,26 +1641,6 @@ void _MainFrame_CreateResBar(res_win_t widget)
 	//widget_show(pdt->hResBar, WD_SHOW_NORMAL);
 }
 
-void _MainFrame_CreateDomBar(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	xrect_t xr = { 0 };
-
-	_MainFrame_CalcDomBar(widget, &xr);
-
-	pdt->hDomBar = treectrl_create(_T("DomBar"), WD_STYLE_CONTROL, &xr, widget);
-	widget_set_user_id(pdt->hDomBar, IDC_MAINFRAME_DOMBAR);
-	widget_set_owner(pdt->hDomBar, widget);
-
-	LINKPTR ptrTree = create_tree_doc();
-
-	treectrl_attach(pdt->hDomBar, ptrTree);
-	treectrl_set_lock(pdt->hDomBar, 1);
-
-	//widget_show(pdt->hDomBar, WD_SHOW_NORMAL);
-}
-
 void _MainFrame_CreateObjBar(res_win_t widget)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
@@ -2161,12 +1683,6 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 	set_title_item_name(tlk, MAINFRAME_TREE_RESOURCE);
 	set_title_item_locked(tlk, 1);
 	set_title_item_icon(tlk, ICON_NEW);
-
-	tlk = insert_title_item(ptrTitle, LINK_LAST);
-	set_title_item_title(tlk, _T("元件"));
-	set_title_item_name(tlk, MAINFRAME_TREE_DOMAIN);
-	set_title_item_locked(tlk, 1);
-	set_title_item_icon(tlk, ICON_NOTE);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("对象"));
@@ -2450,16 +1966,6 @@ void _MainFrame_DestroyResBar(res_win_t widget)
 	widget_destroy(pdt->hResBar);
 }
 
-void _MainFrame_DestroyDomBar(res_win_t widget)
-{
-	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
-
-	LINKPTR ptrTree = treectrl_detach(pdt->hDomBar);
-	if (ptrTree)
-		destroy_tree_doc(ptrTree);
-	widget_destroy(pdt->hDomBar);
-}
-
 void _MainFrame_DestroyObjBar(res_win_t widget)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
@@ -2534,8 +2040,6 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	_MainFrame_CreateResBar(widget);
 
-	_MainFrame_CreateDomBar(widget);
-
 	_MainFrame_CreateObjBar(widget);
 
 	_MainFrame_CreateCateBar(widget);
@@ -2556,8 +2060,6 @@ void MainFrame_OnDestroy(res_win_t widget)
 	_MainFrame_DestroyTitleBar(widget);
 
 	_MainFrame_DestroyResBar(widget);
-
-	_MainFrame_DestroyDomBar(widget);
 
 	_MainFrame_DestroyObjBar(widget);
 
@@ -2651,21 +2153,6 @@ void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 		break;
 	case IDA_FILE_SORT:
 		MainFrame_SortFile(widget);
-		break;
-	case IDA_ELEMENT_INSERT:
-		MainFrame_InsertElement(widget);
-		break;
-	case IDA_ELEMENT_REMOVE:
-		MainFrame_RemoveElement(widget);
-		break;
-	case IDA_ELEMENT_EDIT:
-		MainFrame_EditElement(widget);
-		break;
-	case IDA_ELEMENT_IMPORT:
-		MainFrame_ImportElement(widget);
-		break;
-	case IDA_ELEMENT_EXPORT:
-		MainFrame_ExportElement(widget);
 		break;
 	case IDA_OBJECT_FRESH:
 		MainFrame_FreshObject(widget);
@@ -2813,25 +2300,6 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 			break;
 		}
 	}
-	else if (phdr->id == IDC_MAINFRAME_DOMBAR)
-	{
-		NOTICE_TREE* pnt = (NOTICE_TREE*)phdr;
-		switch (pnt->code)
-		{
-		case NC_TREELBCLK:
-			MainFrame_DomBar_OnLBClick(widget, pnt);
-			break;
-		case NC_TREEDBCLK:
-			MainFrame_DomBar_OnDBClick(widget, pnt);
-			break;
-		case NC_TREERBCLK:
-			MainFrame_DomBar_OnRBClick(widget, pnt);
-			break;
-		case NC_TREEITEMDROP:
-			MainFrame_DomBar_OnItemDrop(widget, pnt);
-			break;
-		}
-	}
 	else if (phdr->id == IDC_MAINFRAME_OBJBAR)
 	{
 		NOTICE_TREE* pnt = (NOTICE_TREE*)phdr;
@@ -2858,10 +2326,6 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 			{
 				widget_show(pdt->hResBar, WD_SHOW_HIDE);
 			}
-			else if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_DOMAIN, -1, 0) == 0)
-			{
-				widget_show(pdt->hDomBar, WD_SHOW_HIDE);
-			}
 			else if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_OBJECT, -1, 0) == 0)
 			{
 				widget_show(pdt->hObjBar, WD_SHOW_HIDE);
@@ -2871,10 +2335,6 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 			if(compare_text(get_title_item_name_ptr(pnt->item),-1,MAINFRAME_TREE_RESOURCE,-1,0) == 0)
 			{
 				widget_show(pdt->hResBar, WD_SHOW_NORMAL);
-			}
-			else if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_DOMAIN, -1, 0) == 0)
-			{
-				widget_show(pdt->hDomBar, WD_SHOW_NORMAL);
 			}
 			else if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_OBJECT, -1, 0) == 0)
 			{
@@ -2915,11 +2375,6 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_move(pdt->hResBar, RECTPOINT(&xr));
 	widget_size(pdt->hResBar, RECTSIZE(&xr));
 	widget_update(pdt->hResBar);
-
-	_MainFrame_CalcDomBar(widget, &xr);
-	widget_move(pdt->hDomBar, RECTPOINT(&xr));
-	widget_size(pdt->hDomBar, RECTSIZE(&xr));
-	widget_update(pdt->hDomBar);
 
 	_MainFrame_CalcObjBar(widget, &xr);
 	widget_move(pdt->hObjBar, RECTPOINT(&xr));
@@ -2970,9 +2425,6 @@ void MainFrame_OnMove(res_win_t widget, const xpoint_t* ppt)
 
 	_MainFrame_CalcResBar(widget, &xr);
 	widget_move(pdt->hResBar, RECTPOINT(&xr));
-
-	_MainFrame_CalcDomBar(widget, &xr);
-	widget_move(pdt->hDomBar, RECTPOINT(&xr));
 
 	_MainFrame_CalcObjBar(widget, &xr);
 	widget_move(pdt->hObjBar, RECTPOINT(&xr));

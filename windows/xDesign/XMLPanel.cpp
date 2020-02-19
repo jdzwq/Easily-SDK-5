@@ -466,7 +466,7 @@ int XMLPanel_OnCreate(res_win_t widget, void* data)
 
 	LoadPreference(_T("XML"), _T("URL"), sz_url);
 	LoadPreference(_T("XML"), _T("SECRET-ID"), sz_id);
-	LoadPreference(_T("XML"), _T("SECRET-KEY"), sz_id);
+	LoadPreference(_T("XML"), _T("SECRET-KEY"), sz_key);
 
 	ent = write_proper(ptrProper, XMLPANEL_SECTION, -1, _T("URL"), -1, sz_url, -1);
 	set_entity_icon(ent, ICON_BOOK);
@@ -586,7 +586,7 @@ int XMLPanel_OnClose(res_win_t widget)
 
 		if (!is_null(sz_key))
 		{
-			SavePreference(_T("XML"), _T("SECRET-KEY"), sz_id);
+			SavePreference(_T("XML"), _T("SECRET-KEY"), sz_key);
 		}
 	}
 

@@ -423,8 +423,6 @@ static void _formctrl_reset_group(res_win_t widget)
 
 		set_field_text(flk, sz_text, -1);
 
-		formctrl_redraw_field(widget, flk, 0);
-
 		flk = get_next_visible_field(ptd->form, flk);
 	}
 }
@@ -859,7 +857,6 @@ void noti_form_begin_edit(res_win_t widget)
 	const tchar_t* fclass;
 	const tchar_t* editor;
 	const tchar_t* text;
-	bool_t checked;
 	link_t_ptr data;
 
 	xrect_t xr;
@@ -960,17 +957,25 @@ void noti_form_begin_edit(res_win_t widget)
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRECHECK, -1, 0) == 0)
 	{
-		if (is_null(get_field_value_ptr(ptd->field)))
+		if (noti_form_owner(widget, NC_FIELDEDITING, ptd->form, ptd->field, NULL))
 			return;
 
-		checked = (compare_text(get_field_text_ptr(ptd->field), -1, get_field_value_ptr(ptd->field), -1, 0) == 0) ? 1 : 0;
-		if (checked)
-			formctrl_set_field_text(widget, ptd->field, NULL);
-		else
-			formctrl_set_field_text(widget, ptd->field, get_field_value_ptr(ptd->field));
+		ptd->editor = firecheck_create(widget, &xr);
+		XDL_ASSERT(ptd->editor);
+		widget_set_user_id(ptd->editor, IDC_FIRECHECK);
+		widget_set_owner(ptd->editor, widget);
 
-		_formctrl_reset_group(widget);
-		return;
+		widgetex_set_xfont(ptd->editor, &xf);
+		widgetex_set_color_mode(ptd->editor, &ob);
+
+		text = get_field_text_ptr(ptd->field);
+		if (is_null(text))
+			checkbox_set_state(ptd->editor, 1);
+		else
+			checkbox_set_state(ptd->editor, 0);
+
+		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_set_focus(ptd->editor);
 	}
 	else if (compare_text(editor, -1, ATTR_EDITOR_FIRENUM, -1, 0) == 0)
 	{
@@ -1431,6 +1436,20 @@ void noti_form_commit_edit(res_win_t widget)
 		if (b_accept)
 		{
 			formctrl_set_field_text(widget, ptd->field, text);
+		}
+	}
+	else if (uid == IDC_FIRECHECK)
+	{
+		if (checkbox_get_state(ptd->editor))
+			text = get_field_value_ptr(ptd->field);
+		else
+			text = NULL;
+		b_accept = (noti_form_owner(widget, NC_FIELDCOMMIT, ptd->form, ptd->field, (void*)text) == 0) ? 1 : 0;
+		if (b_accept)
+		{
+			formctrl_set_field_text(widget, ptd->field, text);
+
+			_formctrl_reset_group(widget);
 		}
 	}
 	else if (uid == IDC_FIRELIST)

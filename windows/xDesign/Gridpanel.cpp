@@ -424,78 +424,6 @@ void GridPanel_OnSelectAll(res_win_t widget)
 	gridctrl_redraw(pdt->hGrid, 1);
 }
 
-void GridPanel_DropDomain(res_win_t widget, DROPDOMAIN* pdrop)
-{
-	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
-
-	gridctrl_set_dirty(pdt->hGrid, 1);
-
-	widget_screen_to_client(pdt->hGrid, &pdrop->xp);
-	widgetex_point_to_tm(pdt->hGrid, &pdrop->xp);
-
-	tchar_t fname[RES_LEN + 1] = { 0 };
-	int len, n_count = 0;
-
-	len = xslen(pdrop->dm.Name);
-
-	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
-
-	LINKPTR clk = get_next_col(ptrGrid, LINK_FIRST);
-	while (clk)
-	{
-		if (compare_text(pdrop->dm.Name, len, get_col_name_ptr(clk), len, 1) == 0)
-		{
-			n_count++;
-		}
-
-		clk = get_next_col(ptrGrid, clk);
-	}
-
-	xsprintf(fname, _T("%s%d"), pdrop->dm.Name, n_count);
-	clk = insert_col(ptrGrid, LINK_LAST);
-	set_col_name(clk, fname);
-	set_col_id(clk, fname);
-	set_col_title(clk, pdrop->dm.Title);
-	if (!is_null(pdrop->dm.DataType))
-		set_col_data_type(clk, pdrop->dm.DataType);
-	if (!is_null(pdrop->dm.DataLen))
-		set_col_data_len(clk, xstol(pdrop->dm.DataLen));
-	if (!is_null(pdrop->dm.DataDig))
-		set_col_data_dig(clk, xstol(pdrop->dm.DataDig));
-
-	gridctrl_redraw(pdt->hGrid, 1);
-}
-
-void GridPanel_AlterDomain(res_win_t widget, DROPDOMAIN* pdrop)
-{
-	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
-
-	gridctrl_set_dirty(pdt->hGrid, 1);
-
-	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
-
-	LINKPTR clk = gridctrl_get_focus_col(pdt->hGrid);
-	if (!clk)
-		return;
-
-	tchar_t cname[RES_LEN + 1] = { 0 };
-
-	xsprintf(cname, _T("%s0"), pdrop->dm.Name);
-
-	set_col_name(clk, cname);
-	set_col_id(clk, cname);
-
-	clear_col_datadef(clk);
-
-	if (!is_null(pdrop->dm.DataType))
-		set_col_data_type(clk, pdrop->dm.DataType);
-	if (!is_null(pdrop->dm.DataLen))
-		set_col_data_len(clk, xstol(pdrop->dm.DataLen));
-	if (!is_null(pdrop->dm.DataDig))
-		set_col_data_dig(clk, xstol(pdrop->dm.DataDig));
-
-	gridctrl_redraw_col(pdt->hGrid, clk, 1);
-}
 /*****************************************************************************/
 
 void GridPanel_OnDelete(res_win_t widget)
@@ -1686,15 +1614,7 @@ void GridPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	if (code == COMMAND_QUERYDROP)
-	{
-		if (widget_key_state(widget, KEY_CONTROL))
-			GridPanel_AlterDomain(widget, (DROPDOMAIN*)data);
-		else
-			GridPanel_DropDomain(widget, (DROPDOMAIN*)data);
-
-	}
-	else if (code == COMMAND_QUERYINFO)
+	if (code == COMMAND_QUERYINFO)
 	{
 		QUERYOBJECT* pqo = (QUERYOBJECT*)data;
 		xscpy(pqo->szDoc, DOC_GRID);

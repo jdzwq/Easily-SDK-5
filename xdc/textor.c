@@ -1868,9 +1868,9 @@ void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs)
 {
 	XDL_ASSERT(ptd && ptd->widget);
 
-	widgetex_get_view_rect(ptd->widget, &ptd->vb);
-
 	_textor_reset_page(ptd, 0);
+
+	widgetex_get_view_rect(ptd->widget, &ptd->vb);
 
 	widget_redraw(ptd->widget, NULL, 0);
 }
