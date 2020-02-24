@@ -9,7 +9,7 @@ OUT_PATH = ~/Easily-app-5/linux/bin
 
 SRCS = $(LOC_PATH)/main.cpp
 OBJS = $(patsubst %.cpp, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/xdk_child_test
+TARGET = $(OUT_PATH)/xdl_util_test
 
 %.o : $(LOC_PATH)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH)

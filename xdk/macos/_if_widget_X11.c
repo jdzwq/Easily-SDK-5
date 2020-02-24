@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 #ifdef XDK_SUPPORT_WIDGET
 
 
-#define WIDGET_EVENTS   （KeyPressMask | KeyReleaseMask \
+#define WIDGET_EVENTS   KeyPressMask | KeyReleaseMask \
                         | ButtonPressMask | ButtonReleaseMask | Button1MotionMask | Button2MotionMask | Button3MotionMask | Button4MotionMask | Button5MotionMask | ButtonMotionMask \
                         | EnterWindowMask |LeaveWindowMask | PointerMotionMask| PointerMotionHintMask \
                         | KeymapStateMask | ExposureMask | VisibilityChangeMask | StructureNotifyMask | SubstructureNotifyMask | FocusChangeMask | PropertyChangeMask | ColormapChangeMask | OwnerGrabButtonMask)
