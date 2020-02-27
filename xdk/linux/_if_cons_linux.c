@@ -44,7 +44,7 @@ res_file_t _cons_alloc(tchar_t* cname, int max)
     if(ttym < 0)
         return INVALID_FILE;
     
-    strcpy(tty_name, ptsname(ttym));
+    xscpy(tty_name, ptsname(ttym));
     
     if(grantpt(ttym) < 0)
     {
@@ -79,9 +79,9 @@ res_file_t _cons_alloc(tchar_t* cname, int max)
         return INVALID_FILE;
     }else
     {
-        len = (int)strlen(tty_name);
+        len = (int)xslen(tty_name);
         len = (len < max)? len : max;
-        strncpy(cname, tty_name, len);
+        xsncpy(cname, tty_name, len);
         cname[len] = '\0';
 
         return ttym;

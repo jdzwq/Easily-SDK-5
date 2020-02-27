@@ -341,11 +341,6 @@ typedef bool_t(*PF_WIDGET_SET_SUBPROC_DELTA)(res_win_t, uid_t, var_long);
 typedef var_long (*PF_WIDGET_GET_SUBPROC_DELTA)(res_win_t, uid_t);
 typedef bool_t(*PF_WIDGET_HAS_SUBPROC)(res_win_t);
 
-typedef void(*PF_WIDGET_COPY)(res_win_t);
-typedef void(*PF_WIDGET_CUT)(res_win_t);
-typedef void(*PF_WIDGET_PASTE)(res_win_t);
-typedef void(*PF_WIDGET_UNDO)(res_win_t);
-
 typedef void(*PF_WIDGET_POST_MESSAGE)(res_win_t, int, var_long, var_long);
 typedef int(*PF_WIDGET_SEND_MESSAGE)(res_win_t, int, var_long, var_long);
 typedef void(*PF_WIDGET_POST_COMMAND)(res_win_t, int, uid_t, var_long);
@@ -356,6 +351,29 @@ typedef void(*PF_WIDGET_KILL_TIMER)(res_win_t, var_long);
 
 typedef void(*PF_WIDGET_GET_SCROLLINFO)(res_win_t, bool_t, scroll_t*);
 typedef void(*PF_WIDGET_SET_SCROLLINFO)(res_win_t, bool_t, const scroll_t*);
+typedef bool_t(*PF_WIDGET_HAS_STRUCT)(res_win_t);
+typedef void(*PF_WIDGET_SET_XFONT)(res_win_t,const xfont_t*);
+typedef void(*PF_WIDGET_GET_XFONT)(res_win_t, xfont_t*);
+typedef const xfont_t*(*PF_WIDGET_GET_XFONT_PTR)(res_win_t);
+typedef void(*PF_WIDGET_SET_XFACE)(res_win_t, const xface_t*);
+typedef void(*PF_WIDGET_GET_XFACE)(res_win_t, xface_t*);
+typedef const xface_t*(*PF_WIDGET_GET_XFACE_PTR)(res_win_t);
+typedef void(*PF_WIDGET_SET_XBRUSH)(res_win_t, const xbrush_t*);
+typedef void(*PF_WIDGET_GET_XBRUSH)(res_win_t, xbrush_t*);
+typedef const xbrush_t*(*PF_WIDGET_GET_XBRUSH_PTR)(res_win_t);
+typedef void(*PF_WIDGET_SET_XPEN)(res_win_t, const xpen_t*);
+typedef void(*PF_WIDGET_GET_XPEN)(res_win_t, xpen_t*);
+typedef const xpen_t*(*PF_WIDGET_GET_XPEN_PTR)(res_win_t);
+typedef void(*PF_WIDGET_SET_MASK)(res_win_t, const xcolor_t*);
+typedef void(*PF_WIDGET_GET_MASK)(res_win_t, xcolor_t*);
+typedef const xcolor_t*(*PF_WIDGET_GET_MASK_PTR)(res_win_t);
+typedef void(*PF_WIDGET_SET_ICONIC)(res_win_t, const xcolor_t*);
+typedef void(*PF_WIDGET_GET_ICONIC)(res_win_t, xcolor_t*);
+typedef const xcolor_t*(*PF_WIDGET_GET_ICONIC_PTR)(res_win_t);
+typedef void(*PF_WIDGET_SET_POINT)(res_win_t, const xpoint_t*);
+typedef void(*PF_WIDGET_GET_POINT)(res_win_t, xpoint_t*);
+typedef void(*PF_WIDGET_SET_COLOR_MODE)(res_win_t, const clr_mod_t*);
+typedef void(*PF_WIDGET_GET_COLOR_MODE)(res_win_t, clr_mod_t*);
 
 typedef int(*PF_WIDGET_DO_MODAL)(res_win_t);
 typedef void(*PF_WIDGET_DO_TRACE)(res_win_t);
@@ -465,11 +483,6 @@ typedef struct _if_widget_t{
 	PF_WIDGET_GET_SUBPROC_DELTA		pf_widget_get_subproc_delta;
 	PF_WIDGET_HAS_SUBPROC		pf_widget_has_subproc;
 
-	PF_WIDGET_COPY				pf_widget_copy;
-	PF_WIDGET_CUT				pf_widget_cut;
-	PF_WIDGET_PASTE				pf_widget_paste;
-	PF_WIDGET_UNDO				pf_widget_undo;
-
 	PF_WIDGET_POST_MESSAGE		pf_widget_post_message;
 	PF_WIDGET_SEND_MESSAGE		pf_widget_send_message;
 	PF_WIDGET_POST_COMMAND		pf_widget_post_command;
@@ -477,6 +490,30 @@ typedef struct _if_widget_t{
 
 	PF_WIDGET_GET_SCROLLINFO	pf_widget_get_scroll_info;
 	PF_WIDGET_SET_SCROLLINFO	pf_widget_set_scroll_info;
+
+	PF_WIDGET_HAS_STRUCT		pf_widget_has_struct;
+	PF_WIDGET_SET_XFONT			pf_widget_set_xfont;
+	PF_WIDGET_GET_XFONT			pf_widget_get_xfont;
+	PF_WIDGET_GET_XFONT_PTR		pf_widget_get_xfont_ptr;
+	PF_WIDGET_SET_XFACE			pf_widget_set_xface;
+	PF_WIDGET_GET_XFACE			pf_widget_get_xface;
+	PF_WIDGET_GET_XFACE_PTR		pf_widget_get_xface_ptr;
+	PF_WIDGET_SET_XBRUSH		pf_widget_set_xbrush;
+	PF_WIDGET_GET_XBRUSH		pf_widget_get_xbrush;
+	PF_WIDGET_GET_XBRUSH_PTR	pf_widget_get_xbrush_ptr;
+	PF_WIDGET_SET_XPEN			pf_widget_set_xpen;
+	PF_WIDGET_GET_XPEN			pf_widget_get_xpen;
+	PF_WIDGET_GET_XPEN_PTR		pf_widget_get_xpen_ptr;
+	PF_WIDGET_SET_MASK			pf_widget_set_mask;
+	PF_WIDGET_GET_MASK			pf_widget_get_mask;
+	PF_WIDGET_GET_MASK_PTR		pf_widget_get_mask_ptr;
+	PF_WIDGET_SET_ICONIC		pf_widget_set_iconic;
+	PF_WIDGET_GET_ICONIC		pf_widget_get_iconic;
+	PF_WIDGET_GET_ICONIC_PTR	pf_widget_get_iconic_ptr;
+	PF_WIDGET_SET_POINT			pf_widget_set_point;
+	PF_WIDGET_GET_POINT			pf_widget_get_point;
+	PF_WIDGET_SET_COLOR_MODE	pf_widget_set_color_mode;
+	PF_WIDGET_GET_COLOR_MODE	pf_widget_get_color_mode;
 
 	PF_WIDGET_DO_MODAL			pf_widget_do_modal;
 	PF_WIDGET_DO_TRACE			pf_widget_do_trace;

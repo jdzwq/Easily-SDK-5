@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcbox.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 
 typedef struct _keybox_delta_t{
 	int index;
@@ -197,7 +195,7 @@ int hand_keybox_create(res_win_t widget, void* data)
 	keybox_delta_t* ptd;
 	xsize_t xs;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (keybox_delta_t*)xmem_alloc(sizeof(keybox_delta_t));
 	xmem_zero((void*)ptd, sizeof(keybox_delta_t));
@@ -205,7 +203,7 @@ int hand_keybox_create(res_win_t widget, void* data)
 	xs.fx = DEF_TOUCH_SPAN;
 	xs.fy = DEF_TOUCH_SPAN;
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	ptd->bw = xs.cx;
 	ptd->bh = xs.cy;
@@ -227,7 +225,7 @@ void hand_keybox_destroy(res_win_t widget)
 
 	SETKEYBOXDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_keybox_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
@@ -322,19 +320,19 @@ void hand_keybox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	}
 	else if (ch == _T('\a'))
 	{
-		widget_copy(NULL);
+		//widget_copy(NULL);
 	}
 	else if (ch == _T('\r'))
 	{
-		widget_cut(NULL);
+		//widget_cut(NULL);
 	}
 	else if (ch == _T('\f'))
 	{
-		widget_paste(NULL);
+		//widget_paste(NULL);
 	}
 	else if (ch == _T('\v'))
 	{
-		widget_undo(NULL);
+		//widget_undo(NULL);
 	}
 	else if (ch == 0x2)
 	{
@@ -396,15 +394,15 @@ void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	int i;
 	tchar_t tk[2] = { 0 };
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 	xmem_copy((void*)&xb_focus, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_focus, DEF_SOFT_LIGHTEN);
 
 	xmem_copy((void*)&xb_bark, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_bark, DEF_SOFT_DARKEN);
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 

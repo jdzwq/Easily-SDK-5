@@ -96,16 +96,16 @@ bool_t _create_process(const tchar_t* exename, const tchar_t* cmdline, int share
 
 	if (exename)
 	{
-		_tstrcpy(sz_cmd, exename);
+		xscpy(sz_cmd, exename);
 	}
 
 	if (cmdline)
 	{
 		if (sz_cmd[0] != _T('\0') && cmdline[0] != _T('\0'))
 		{
-			_tstrcat(sz_cmd, _T(" "));
+			xscat(sz_cmd, _T(" "));
 		}
-		_tstrcat(sz_cmd, cmdline);
+		xscat(sz_cmd, cmdline);
 	}
 
 	if (sz_cmd[0] == _T('\0'))

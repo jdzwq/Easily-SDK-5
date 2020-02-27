@@ -71,17 +71,17 @@ bool_t _create_process(const tchar_t* exename, const tchar_t* cmdline, int share
     char cmdname[PATH_MAX] = {0};
     char* token;
 
-    if(_tstrnull(exename))
+    if(is_null(exename))
         return 0;
     
-    token = (char*)exename + _tstrlen(exename);
+    token = (char*)exename + xslen(exename);
     while(*token != '/' && *token != '\\' && token != exename)
         token--;
     
     if(*token == '/' || *token == '\\')
         token ++;
     
-    _tstrcpy(cmdname, token);
+    xscpy(cmdname, token);
     
     if(share == SHARE_PIPE)
     {
@@ -289,10 +289,10 @@ int	_get_envvar(const tchar_t* ename, tchar_t* buf, int max)
     if(!str)
         return 0;
     
-    len = _tstrlen(str);
+    len = xslen(str);
 
     len = (len < max)? len : max;
-    _tstrncpy(buf, str, len);
+    xsncpy(buf, str, len);
     buf[len] = _T('\0');
     
     return len;

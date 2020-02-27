@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_proper_icon_span: set the proper icon span.
 */
-#define set_proper_icon_span(ptr,n)					set_dom_node_attr_float(ptr,ICON_SPAN,n)
+#define set_proper_icon_span(ptr,n)					set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_proper_icon_span: get the proper icon span.
 */
-#define get_proper_icon_span(ptr)					get_dom_node_attr_float(ptr,ICON_SPAN)
+#define get_proper_icon_span(ptr)					get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
 /*
 @PROPER itemSpan: numeric.
 @SET set_proper_item_span: set the proper item span.

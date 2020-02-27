@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcbox.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 
 typedef struct _dropbox_delta_t{
 	link_t_ptr table;
@@ -54,10 +52,10 @@ static void _dropbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
 	im.pf_text_size = (PF_TEXT_SIZE)text_size;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	calc_dropbox_item_rect(&im, &xf, ptd->table, plk, pxr);
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 
 	widget_get_client_rect(widget, &xr);
 	pxr->w = xr.w;
@@ -76,21 +74,21 @@ static void _dropbox_reset_page(res_win_t widget)
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
 	im.pf_text_size = (PF_TEXT_SIZE)text_size;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	text_metric((canvas_t)im.ctx, &xf, &xs);
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
 	calc_dropbox_size(&im, &xf, ptd->table, &xs);
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	vw = xs.cx;
 	vh = xs.cy;
 
 	widget_get_client_rect(widget, &xr);
 
-	widgetex_reset_paging(widget, xr.w, xr.h, vw, vh, lw, lh);
+	widget_reset_paging(widget, xr.w, xr.h, vw, vh, lw, lh);
 
 	widget_reset_scroll(widget, 0);
 }
@@ -104,7 +102,7 @@ static void _dropbox_reset_visible(res_win_t widget)
 		return;
 
 	_dropbox_item_rect(widget, ptd->entity, &xr);
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 
 static link_t_ptr _dropbox_get_next_entity(res_win_t widget, link_t_ptr pos)
@@ -213,7 +211,7 @@ int hand_dropbox_create(res_win_t widget, void* data)
 {
 	dropbox_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (dropbox_delta_t*)xmem_alloc(sizeof(dropbox_delta_t));
 
@@ -235,7 +233,7 @@ void hand_dropbox_destroy(res_win_t widget)
 
 	SETDROPBOXDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_dropbox_keydown(res_win_t widget, int key)
@@ -293,11 +291,11 @@ void hand_dropbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
 	im.pf_text_size = (PF_TEXT_SIZE)text_size;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	hint = calc_dropbox_hint(&im, &xf, &pt, ptd->table, &ilk);
 
@@ -330,7 +328,7 @@ void hand_dropbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->table)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_dropbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -358,9 +356,9 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->table)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -368,8 +366,8 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -377,7 +375,7 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	draw_dropbox(pif, &cb, &xf, ptd->table);
 
@@ -550,14 +548,14 @@ void dropbox_popup_size(res_win_t widget, xsize_t* pxs)
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
 	im.pf_text_size = (PF_TEXT_SIZE)text_size;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	calc_dropbox_size(&im, &xf, ptd->table, pxs);
 
 	if (pxs->fy > 7 * DEF_TOUCH_SPAN)
 		pxs->fy = 7 * DEF_TOUCH_SPAN;
 
-	widgetex_size_to_pt(widget, pxs);
+	widget_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

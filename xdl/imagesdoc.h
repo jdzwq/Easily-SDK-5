@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_images_icon_span: set the images icon span.
 */
-#define set_images_icon_span(ptr,n)					set_dom_node_attr_float(ptr,ICON_SPAN,n)
+#define set_images_icon_span(ptr,n)					set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_images_icon_span: get the images icon span.
 */
-#define get_images_icon_span(ptr)					get_dom_node_attr_float(ptr,ICON_SPAN)
+#define get_images_icon_span(ptr)					get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
 /*
 @PROPER src: string.
 @SET set_images_item_src: set the images item source.

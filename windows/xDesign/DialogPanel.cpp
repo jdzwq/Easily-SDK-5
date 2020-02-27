@@ -290,14 +290,14 @@ void DialogPanel_OnPreview(res_win_t widget)
 
 static void demoDlg_OnSubbing(res_win_t widget, uid_t sid, var_long delta)
 {
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 }
 
 static void demoDlg_OnUnSubbing(res_win_t widget, uid_t sid, var_long delta)
 {
 	widget_del_subproc(widget, sid);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void DialogPanel_OnExec(res_win_t widget)
@@ -326,7 +326,7 @@ void DialogPanel_OnExec(res_win_t widget)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widgetex_set_color_mode(dlg, &clr);
+	widget_set_color_mode(dlg, &clr);
 
 	widget_show(dlg, WD_SHOW_NORMAL);
 
@@ -390,14 +390,14 @@ void DialogPanel_OnCopy(res_win_t widget)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	widget_copy(pdt->hDialog);
+	widget_post_command(pdt->hDialog, COMMAND_COPY, IDC_EDITMENU, 0);
 }
 
 void DialogPanel_OnCut(res_win_t widget)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	widget_cut(pdt->hDialog);
+	widget_post_command(pdt->hDialog, COMMAND_CUT, IDC_EDITMENU, 0);
 }
 
 void DialogPanel_OnPaste(res_win_t widget)
@@ -406,7 +406,7 @@ void DialogPanel_OnPaste(res_win_t widget)
 
 	LINKPTR ptrDialog = dialogctrl_fetch(pdt->hDialog);
 
-	widget_paste(pdt->hDialog);
+	widget_post_command(pdt->hDialog, COMMAND_PASTE, IDC_EDITMENU, 0);
 }
 
 
@@ -420,7 +420,7 @@ void DialogPanel_OnUndo(res_win_t widget)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	widget_undo(pdt->hDialog);
+	widget_post_command(pdt->hDialog, COMMAND_UNDO, IDC_EDITMENU, 0);
 }
 
 void DialogPanel_OnCSSProper(res_win_t widget)
@@ -1262,9 +1262,9 @@ void DialogPanel_Dialog_OnRBClick(res_win_t widget, NOTICE_DIALOG* pnf)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widgetex_get_color_mode(widget, &clr);
+	widget_get_color_mode(widget, &clr);
 
-	widgetex_set_color_mode(hMenu, &clr);
+	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1343,7 +1343,7 @@ int DialogPanel_OnCreate(res_win_t widget, void* data)
 	xrect_t xr;
 	const tchar_t* szParam;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	SETDIALOGPANELDELTA(widget, pdt);
 
@@ -1407,7 +1407,7 @@ int DialogPanel_OnCreate(res_win_t widget, void* data)
 	xsprintf(token, _T("%d"), IDA_ATTRIBUTES);
 	set_title_item_id(tlk, token);
 	set_title_item_width(tlk, DIALOGPANEL_TITLEITEM_WIDTH);
-	set_title_item_icon(tlk, ICON_PROPER);
+	set_title_item_icon(tlk, GDI_ICON_PROPER);
 	set_title_item_locked(tlk, 1);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
@@ -1415,14 +1415,14 @@ int DialogPanel_OnCreate(res_win_t widget, void* data)
 	xsprintf(token, _T("%d"), IDA_STYLESHEET);
 	set_title_item_id(tlk, token);
 	set_title_item_width(tlk, DIALOGPANEL_TITLEITEM_WIDTH);
-	set_title_item_icon(tlk, ICON_STYLE);
+	set_title_item_icon(tlk, GDI_ICON_STYLE);
 	set_title_item_locked(tlk, 1);
 
 	titlectrl_attach(pdt->hTitle, ptrTitle);
 
 	titlectrl_set_focus_item(pdt->hTitle, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widgetex_attach_splitor(widget, ptrSplit);
+	widget_attach_splitor(widget, ptrSplit);
 
 	if (!is_null(szParam))
 	{
@@ -1443,7 +1443,7 @@ void DialogPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widgetex_detach_splitor(widget);
+	link_t_ptr split = widget_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -1476,7 +1476,7 @@ void DialogPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void DialogPanel_OnShow(res_win_t widget, bool_t bShow)
@@ -1501,37 +1501,37 @@ void DialogPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("全选"));
-		set_tool_item_icon(ilk, ICON_SELECTALL);
+		set_tool_item_icon(ilk, GDI_ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除"));
-		set_tool_item_icon(ilk, ICON_DELETE);
+		set_tool_item_icon(ilk, GDI_ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("拷贝"));
-		set_tool_item_icon(ilk, ICON_COPY);
+		set_tool_item_icon(ilk, GDI_ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("剪切"));
-		set_tool_item_icon(ilk, ICON_CUT);
+		set_tool_item_icon(ilk, GDI_ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("粘贴"));
-		set_tool_item_icon(ilk, ICON_PASTE);
+		set_tool_item_icon(ilk, GDI_ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("撤销"));
-		set_tool_item_icon(ilk, ICON_UNDO);
+		set_tool_item_icon(ilk, GDI_ICON_UNDO);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_STYLE);
@@ -1544,109 +1544,109 @@ void DialogPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_NAME);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体名称"));
-		set_tool_item_icon(ilk, ICON_FONTNAME);
+		set_tool_item_icon(ilk, GDI_ICON_FONTNAME);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_SIZE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字号大小"));
-		set_tool_item_icon(ilk, ICON_FONTSIZE);
+		set_tool_item_icon(ilk, GDI_ICON_FONTSIZE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_WEIGHT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体加黑"));
-		set_tool_item_icon(ilk, ICON_FONTWEIGHT);
+		set_tool_item_icon(ilk, GDI_ICON_FONTWEIGHT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体颜色"));
-		set_tool_item_icon(ilk, ICON_FONTCOLOR);
+		set_tool_item_icon(ilk, GDI_ICON_FONTCOLOR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_PAINT_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("背景颜色"));
-		set_tool_item_icon(ilk, ICON_PRINT);
+		set_tool_item_icon(ilk, GDI_ICON_PRINT);
 
 		/*ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_DRAW_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("前景"));
-		set_tool_item_icon(ilk, ICON_STYLE);*/
+		set_tool_item_icon(ilk, GDI_ICON_STYLE);*/
 
 		/*ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_PROPER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("CSS属性"));
-		set_tool_item_icon(ilk, ICON_PROPER);*/
+		set_tool_item_icon(ilk, GDI_ICON_PROPER);*/
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_icon(ilk, ICON_ALIGNNEAR);
+		set_tool_item_icon(ilk, GDI_ICON_ALIGNNEAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_icon(ilk, ICON_ALIGNCENTER);
+		set_tool_item_icon(ilk, GDI_ICON_ALIGNCENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_icon(ilk, ICON_ALIGNFAR);
+		set_tool_item_icon(ilk, GDI_ICON_ALIGNFAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_icon(ilk, ICON_ARRANGELEFT);
+		set_tool_item_icon(ilk, GDI_ICON_ARRANGELEFT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_icon(ilk, ICON_ARRANGECENTER);
+		set_tool_item_icon(ilk, GDI_ICON_ARRANGECENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_icon(ilk, ICON_ARRANGERIGHT);
+		set_tool_item_icon(ilk, GDI_ICON_ARRANGERIGHT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_SIZE_WIDTH);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("等宽"));
-		set_tool_item_icon(ilk, ICON_SIZEHORZ);
+		set_tool_item_icon(ilk, GDI_ICON_SIZEHORZ);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_SIZE_HEIGHT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("等高"));
-		set_tool_item_icon(ilk, ICON_SIZEVERT);
+		set_tool_item_icon(ilk, GDI_ICON_SIZEVERT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_SIZE_HORZ);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("水平等距"));
-		set_tool_item_icon(ilk, ICON_SPACEHORZ);
+		set_tool_item_icon(ilk, GDI_ICON_SPACEHORZ);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_SIZE_VERT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("垂直等距"));
-		set_tool_item_icon(ilk, ICON_SPACEVERT);
+		set_tool_item_icon(ilk, GDI_ICON_SPACEVERT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_SENDBACK);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("置于后端"));
-		set_tool_item_icon(ilk, ICON_ORDER);
+		set_tool_item_icon(ilk, GDI_ICON_ORDER);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_ELEMENT);
@@ -1659,79 +1659,79 @@ void DialogPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_APPEND_STATICBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("静态文本"));
-		set_tool_item_icon(ilk, ICON_STATIC);
+		set_tool_item_icon(ilk, GDI_ICON_STATIC);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_EDITBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("文本框"));
-		set_tool_item_icon(ilk, ICON_SINGLETEXT);
+		set_tool_item_icon(ilk, GDI_ICON_SINGLETEXT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_LISTBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("列表框"));
-		set_tool_item_icon(ilk, ICON_LIST);
+		set_tool_item_icon(ilk, GDI_ICON_LIST);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_NAVIBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("导航框"));
-		set_tool_item_icon(ilk, ICON_NAVI);
+		set_tool_item_icon(ilk, GDI_ICON_NAVI);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_SPINBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("增减框"));
-		set_tool_item_icon(ilk, ICON_SPIN);
+		set_tool_item_icon(ilk, GDI_ICON_SPIN);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_SLIDEBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("滑动框"));
-		set_tool_item_icon(ilk, ICON_SLIDE);
+		set_tool_item_icon(ilk, GDI_ICON_SLIDE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_RADIOBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("状态框"));
-		set_tool_item_icon(ilk, ICON_RADIO);
+		set_tool_item_icon(ilk, GDI_ICON_RADIO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_CHECKBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("检查框"));
-		set_tool_item_icon(ilk, ICON_CHECK);
+		set_tool_item_icon(ilk, GDI_ICON_CHECK);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_DATEBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("日期框"));
-		set_tool_item_icon(ilk, ICON_DATE);
+		set_tool_item_icon(ilk, GDI_ICON_DATE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_TIMEBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("时间框"));
-		set_tool_item_icon(ilk, ICON_TIME);
+		set_tool_item_icon(ilk, GDI_ICON_TIME);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_SHAPEBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("形状框"));
-		set_tool_item_icon(ilk, ICON_SHAPE);
+		set_tool_item_icon(ilk, GDI_ICON_SHAPE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_PUSHBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("按钮框"));
-		set_tool_item_icon(ilk, ICON_PUSH);
+		set_tool_item_icon(ilk, GDI_ICON_PUSH);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_USERBOX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("自定义"));
-		set_tool_item_icon(ilk, ICON_USER);
+		set_tool_item_icon(ilk, GDI_ICON_USER);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

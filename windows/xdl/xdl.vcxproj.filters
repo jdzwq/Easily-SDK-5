@@ -81,12 +81,6 @@
     <ClInclude Include="..\..\xdl\funcdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\gdicanv.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\gdiinf.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\gridbag.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -117,12 +111,6 @@
     <ClInclude Include="..\..\xdl\impassert.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\impbitmap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\impclip.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\impcons.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -130,9 +118,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\imperr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\impgdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\impjmp.h">
@@ -153,9 +138,6 @@
     <ClInclude Include="..\..\xdl\impshare.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\impshell.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\impsock.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -163,9 +145,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\imptimer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\impwin.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\jsonbio.h">
@@ -345,9 +324,6 @@
     <ClInclude Include="..\..\xdl\optparser.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\printbag.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\properdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -516,13 +492,7 @@
     <ClInclude Include="..\..\xdl\impcomm.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\xdlprn.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\nuid.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\impcontext.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\netpnp.h">
@@ -606,13 +576,7 @@
     <ClInclude Include="..\..\xdl\diagramdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\plotgdi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\diagramview.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdl\icongdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\calendarview.h">
@@ -631,6 +595,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\memobio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\xdletag.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -686,12 +653,6 @@
     <ClCompile Include="..\..\xdl\funcdoc.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\gdicanv.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\gdiinf.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\gridbag.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -719,12 +680,6 @@
     <ClCompile Include="..\..\xdl\impassert.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\impbitmap.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\impclip.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\impcons.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -732,9 +687,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\imperr.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\impgdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\impjmp.c">
@@ -755,9 +707,6 @@
     <ClCompile Include="..\..\xdl\impshare.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\impshell.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\impsock.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -765,9 +714,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\imptimer.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\impwin.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\jsonbio.c">
@@ -944,9 +890,6 @@
     <ClCompile Include="..\..\xdl\optparser.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\printbag.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\properdoc.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1088,9 +1031,6 @@
     <ClCompile Include="..\..\xdl\nuid.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\impcontext.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\netpnp.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1172,13 +1112,7 @@
     <ClCompile Include="..\..\xdl\diagramdoc.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\plotgdi.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\diagramview.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdl\icongdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\calendardoc.c">
@@ -1194,6 +1128,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\memobio.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\xdletag.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -117,7 +117,7 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 {
 	SQLFetchDlgDelta* pdt;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	pdt = (SQLFetchDlgDelta*)xmem_alloc(sizeof(SQLFetchDlgDelta));
 	pdt->pSel = (SQLFETCHDLG_PARAM*)data;
@@ -133,7 +133,7 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = SQLFETCHDLG_BAR_SPLIT;
 	xs.fy = SQLFETCHDLG_BAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
 
@@ -148,9 +148,9 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hEdit, widget);
 
 	xface_t xa = { 0 };
-	widgetex_get_xface(pdt->hEdit, &xa);
+	widget_get_xface(pdt->hEdit, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_LINEBREAK);
-	widgetex_set_xface(pdt->hEdit, &xa);
+	widget_set_xface(pdt->hEdit, &xa);
 
 	LINKPTR ptr_grid = pdt->pSel->ptrGrid;
 
@@ -168,7 +168,7 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = SQLFETCHDLG_BTN_WIDTH;
 	xs.fy = SQLFETCHDLG_BAR_SPLIT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
@@ -215,7 +215,7 @@ void SQLFetchDlg_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
@@ -232,7 +232,7 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	xs.fx = SQLFETCHDLG_BAR_SPLIT;
 	xs.fy = SQLFETCHDLG_BAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
 
@@ -250,7 +250,7 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	xs.fx = SQLFETCHDLG_BTN_WIDTH;
 	xs.fy = SQLFETCHDLG_BAR_SPLIT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
@@ -301,7 +301,7 @@ void SQLFetchDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -312,7 +312,7 @@ void SQLFetchDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xs.fx = SQLFETCHDLG_BAR_SPLIT;
 	xs.fy = SQLFETCHDLG_BAR_HEIGHT;
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -373,7 +373,7 @@ res_win_t SQLFetchDlg_Create(const TCHAR* title, SQLFETCHDLG_PARAM* ppd)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widgetex_set_color_mode(widget, &clr);
+	widget_set_color_mode(widget, &clr);
 
 	widget_center_window(widget, g_hMain);
 	widget_update(widget);

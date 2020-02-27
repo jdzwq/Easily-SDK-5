@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 typedef struct _topog_delta_t{
@@ -302,11 +300,11 @@ static void _topogctrl_spot_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	canvbox_t cb;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	calc_topog_spot_rect(&cb, ptd->topog, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _topogctrl_ensure_visible(res_win_t widget)
@@ -319,7 +317,7 @@ static void _topogctrl_ensure_visible(res_win_t widget)
 
 	_topogctrl_spot_rect(widget, ptd->spot, &xr);
 
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 
 static void _topogctrl_reset_matrix(res_win_t widget, int row, int col)
@@ -375,17 +373,17 @@ static void _topogctrl_reset_page(res_win_t widget)
 
 	xs.fx = get_topog_cols(ptd->topog) * get_topog_rx(ptd->topog);
 	xs.fy = get_topog_rows(ptd->topog) * get_topog_ry(ptd->topog);
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = (float)10;
 	xs.fy = (float)10;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -589,7 +587,7 @@ void noti_topog_spot_drop(res_win_t widget, int x, int y)
 	xs.fx = get_topog_rx(ptd->topog);
 	xs.fy = get_topog_ry(ptd->topog);
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	if (!xs.cx || !xs.cy)
 		return;
@@ -630,7 +628,7 @@ int hand_topogctrl_create(res_win_t widget, void* data)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (topog_delta_t*)xmem_alloc(sizeof(topog_delta_t));
 	xmem_zero((void*)ptd, sizeof(topog_delta_t));
@@ -666,7 +664,7 @@ void hand_topogctrl_destroy(res_win_t widget)
 
 	SETTOPOGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_topogctrl_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
@@ -686,9 +684,9 @@ void hand_topogctrl_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	ilk = NULL;
 	row = col = -1;
@@ -758,9 +756,9 @@ void hand_topogctrl_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	ilk = NULL;
 	row = col = -1;
@@ -805,9 +803,9 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	ilk = NULL;
 	row = col = -1;
@@ -878,7 +876,7 @@ void hand_topogctrl_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->topog)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -898,7 +896,7 @@ void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -996,19 +994,29 @@ void hand_topogctrl_keydown(res_win_t widget, int nKey)
 		}
 		else if ((nKey == _T('z') || nKey == _T('Z')) && widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_undo(widget);
+			_topogctrl_undo(widget);
 		}
 		else if ((nKey == _T('c') || nKey == _T('C')) && widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_copy(widget);
+			_topogctrl_copy(widget);
 		}
 		else if ((nKey == _T('x') || nKey == _T('X')) && widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_cut(widget);
+			_topogctrl_done(widget);
+
+			if (!_topogctrl_cut(widget))
+			{
+				_topogctrl_discard(widget);
+			}
 		}
 		else if ((nKey == _T('v') || nKey == _T('V')) && widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_paste(widget);
+			_topogctrl_done(widget);
+
+			if (!_topogctrl_paste(widget))
+			{
+				_topogctrl_discard(widget);
+			}
 		}
 	}
 	else
@@ -1035,47 +1043,7 @@ void hand_topogctrl_copy(res_win_t widget)
 	if (!ptd->topog)
 		return;
 
-	_topogctrl_copy(widget);
-}
-
-void hand_topogctrl_cut(res_win_t widget)
-{
-	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-
-	if (!ptd->topog)
-		return;
-
-	_topogctrl_done(widget);
-
-	if (!_topogctrl_cut(widget))
-	{
-		_topogctrl_discard(widget);
-	}
-}
-
-void hand_topogctrl_paste(res_win_t widget)
-{
-	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-
-	if (!ptd->topog)
-		return;
-
-	_topogctrl_done(widget);
-
-	if (!_topogctrl_paste(widget))
-	{
-		_topogctrl_discard(widget);
-	}
-}
-
-void hand_topogctrl_undo(res_win_t widget)
-{
-	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-
-	if (!ptd->topog)
-		return;
-
-	_topogctrl_undo(widget);
+	
 }
 
 void hand_topogctrl_size(res_win_t widget, int code, const xsize_t* prs)
@@ -1110,11 +1078,11 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -1122,8 +1090,8 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -1131,7 +1099,7 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 	
 	if (ptd->img.source)
 	{
@@ -1196,11 +1164,6 @@ res_win_t topogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_LBUTTON_UP(hand_topogctrl_lbutton_up)
 		EVENT_ON_RBUTTON_DOWN(hand_topogctrl_rbutton_down)
 		EVENT_ON_RBUTTON_UP(hand_topogctrl_rbutton_up)
-
-		EVENT_ON_COPY(hand_topogctrl_copy)
-		EVENT_ON_CUT(hand_topogctrl_cut)
-		EVENT_ON_PASTE(hand_topogctrl_paste)
-		EVENT_ON_UNDO(hand_topogctrl_undo)
 
 		EVENT_ON_NC_IMPLEMENT
 

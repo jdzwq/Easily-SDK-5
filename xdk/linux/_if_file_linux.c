@@ -391,9 +391,9 @@ bool_t _file_info(const tchar_t* fname, file_info_t* pxf)
     
     token = strchr(fname, '/');
     if(token)
-        strcpy(pxf->file_name, token + 1);
+        xscpy(pxf->file_name, token + 1);
     else
-        strcpy(pxf->file_name, fname);
+        xscpy(pxf->file_name, fname);
 
 	return 1;
 }
@@ -503,7 +503,7 @@ bool_t	_directory_open(const tchar_t* path, dword_t mode)
         }
         
         len = (int)(token - path);
-        _tstrncpy(cur_path, path, len);
+        xsncpy(cur_path, path, len);
         cur_path[len] = _T('\0');
         
         if(access(cur_path, F_OK) < 0)

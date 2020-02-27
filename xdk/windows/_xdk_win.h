@@ -57,23 +57,6 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_COMM
 #define XDK_SUPPORT_SOCK
 #define XDK_SUPPORT_TIMER
-#define XDK_SUPPORT_SHELL_DIALOG
-#define XDK_SUPPORT_SHELL
-
-#if defined(XDK_SUPPORT_MEMO_GLOB)
-#define XDK_SUPPORT_CLIPBOARD
-#endif
-
-#define XDK_SUPPORT_CONTEXT_BITMAP
-#define XDK_SUPPORT_CONTEXT_PRINTER
-#define XDK_SUPPORT_CONTEXT_GRAPHIC
-#define XDK_SUPPORT_CONTEXT_REGION
-#define XDK_SUPPORT_CONTEXT_OPENGL
-#define XDK_SUPPORT_CONTEXT
-
-#define XDK_SUPPORT_WIDGET_NC
-#define XDK_SUPPORT_WIDGET_EX
-#define XDK_SUPPORT_WIDGET
 
 #if defined(WINCE)
 #undef XDK_SUPPORT_THREAD_MUTEX
@@ -84,12 +67,6 @@ LICENSE.GPL3 for more details.
 #undef XDK_SUPPORT_SHARE
 #undef XDK_SUPPORT_MEMO_CACHE
 #undef XDK_SUPPORT_PROCESS
-
-#undef XDK_SUPPORT_CONTEXT_BITMAP_THUMB
-#undef XDK_SUPPORT_CONTEXT_PRINTER
-#undef XDK_SUPPORT_WIDGET_NC
-#undef XDK_SUPPORT_WIDGET_EX
-#undef XDK_SUPPORT_SHELL
 #endif
 
 #ifdef _WIN32_WINNT
@@ -108,14 +85,6 @@ LICENSE.GPL3 for more details.
 #define WINVER			0x0501
 #endif
 
-#ifndef OEMRESOURCE 
-#define OEMRESOURCE 
-#endif
-
-#ifndef STRICT
-#define STRICT
-#endif
-
 #include <stdio.h>
 #include <tchar.h>
 #include <math.h>
@@ -127,17 +96,6 @@ LICENSE.GPL3 for more details.
 #endif
 #include <windows.h>
 //#include <WinSock.h>
-#ifdef XDK_SUPPORT_CONTEXT
-#include <ole2.h>
-#include <olectl.h>
-#endif
-#ifdef XDK_SUPPORT_WIDGET
-#include <commctrl.h>
-#endif
-#ifdef XDK_SUPPORT_SHELL
-#include <ShellAPI.h>
-#include <ShlObj.h>
-#endif
 #include <windowsx.h>
 
 //#if defined(_UNICODE) || defined(UNICODE)
@@ -211,10 +169,6 @@ typedef void(__stdcall *WIN_TIMER_PROC)(void* param, unsigned char wait);
 typedef unsigned int	pid_t;
 #endif
 
-#ifndef uid_t
-typedef unsigned int	uid_t;
-#endif
-
 #ifdef XDK_SUPPORT_COMM
 #define COMM_EVNET_RING		EV_RING
 #define COMM_EVNET_RLSD		EV_RLSD
@@ -268,138 +222,5 @@ typedef unsigned int	uid_t;
 #endif
 #endif /*XDK_SUPPORT_SOCK*/
 
-#ifdef XDK_SUPPORT_CONTEXT
-typedef HDC			res_ctx_t;
-typedef COLORREF	res_clr_t;
-typedef HFONT		res_font_t;
-typedef HBITMAP		res_pmp_t;
-#ifdef XDK_SUPPORT_CONTEXT_BITMAP
-typedef HBITMAP		res_bmp_t;
-#endif
-#ifdef XDK_SUPPORT_CONTEXT_REGION
-typedef HRGN		res_rgn_t;
-#endif
-#ifdef XDK_SUPPORT_CONTEXT_OPENGL
-typedef HGLRC		res_glc_t;
-#endif
-#endif
-
-#ifdef XDK_SUPPORT_WIDGET
-typedef MSG			msg_t;
-typedef HACCEL		res_acl_t;
-typedef HWND		res_win_t;
-typedef WPARAM		uparam_t;
-typedef LPARAM		lparam_t;
-typedef LRESULT		result_t;
-#endif
-
-#ifdef XDK_SUPPORT_CLIPBOARD
-/*clipboard format*/
-#define CB_FORMAT_MBS		CF_TEXT
-#define CB_FORMAT_UCS		CF_UNICODETEXT
-#define CB_FORMAT_DIB		CF_DIB
-
-#ifdef _UNICODE
-#define DEF_CB_FORMAT		CB_FORMAT_UCS
-#else
-#define DEF_CB_FORMAT		CB_FORMAT_MBS
-#endif
-#endif
-
-#ifdef XDK_SUPPORT_WIDGET
-#define WM_EASYMSG_MIN		WM_USER + 10
-#define WM_EASYMSG_MAX		WM_USER  + 100
-
-/*mouse button state*/
-#define MS_WITH_LBUTTON		MK_LBUTTON
-#define MS_WITH_RBUTTON		MK_RBUTTON
-#define MS_WITH_MBUTTON		MK_MBUTTON
-#define MS_WITH_CONTROL		MK_CONTROL
-#define MS_WITH_SHIFT		MK_SHIFT
-
-/*mouse track state*/
-#define MS_TRACK_HOVER		TME_HOVER
-#define	MS_TRACK_LEAVE		TME_LEAVE
-#define MS_TRACK_CANCEL		TME_CANCEL
-
-
-/*widget size mode*/
-#define WD_SIZE_LAYOUT		9
-#define WD_SIZE_RESTORE		SIZE_RESTORED
-#define WD_SIZE_MINIMIZED	SIZE_MINIMIZED
-#define WD_SIZE_MAXIMIZED	SIZE_MAXIMIZED
-#define WD_SIZE_MAXHIDED	SIZE_MAXHIDE
-
-/*widget activate mode*/
-#define WD_ACTIVE_NONE		WA_INACTIVE
-#define WD_ACTIVE_CLICK		WA_CLICKACTIVE
-#define WD_ACTIVE_OTHER		WA_ACTIVE
-
-/*widget position mode*/
-#define WD_ZORDER_NOTOPMOST	HWND_NOTOPMOST
-#define WD_ZORDER_BOTTOM	HWND_BOTTOM
-#define WD_ZORDER_TOP		HWND_TOP
-#define WD_ZORDER_TOPMOST	HWND_TOPMOST
-
-#ifdef XDK_SUPPORT_WIDGET_NC
-/*widget nc hit test*/
-#define HINT_NOWHERE	HTNOWHERE
-#define HINT_CLIENT		HTCLIENT
-#define HINT_MINIMIZE	HTMINBUTTON
-#define HINT_MAXIMIZE	HTMAXBUTTON
-#define HINT_RESTORE	HTSIZE
-#define HINT_CLOSE		HTCLOSE
-#define HINT_TITLE		HTCAPTION
-#define HINT_TOP		HTTOP
-#define HINT_TOPLEFT	HTTOPLEFT
-#define HINT_TOPRIGHT	HTTOPRIGHT
-#define HINT_LEFT		HTLEFT
-#define HINT_RIGHT		HTRIGHT
-#define HINT_BOTTOM		HTBOTTOM
-#define HINT_LEFTBOTTOM	HTBOTTOMLEFT
-#define HINT_RIGHTBOTTOM	HTBOTTOMRIGHT
-#define HINT_BORDER		HTBORDER
-#define HINT_ICON		HTHELP
-#define HINT_MENUBAR	100
-#define HINT_HSCROLL	101
-#define HINT_VSCROLL	102
-#define HINT_PAGEUP		103
-#define HINT_PAGEDOWN	104
-#define HINT_LINEUP		105
-#define HINT_LINEDOWN	106
-#define HINT_LINELEFT	107
-#define HINT_LINERIGHT	108
-#endif
-#endif
-
-#ifdef _UNICODE
-#define _tstrcmp	wcscmp
-#define _tstrncmp	wcsncmp
-#define _tsprintf	wsprintf
-#define _tstrcat	wcscat
-#define _tstrncat	wcsncat
-#define _tstrcpy	wcscpy
-#define _tstrstr	wcsstr
-#define _tstrncpy	wcsncpy
-#define _tstrlen	wcslen
-#define _tstrtol	_wtol
-#define _tstrtof	_wtof
-#define _tsscanf	swscanf
-#define _tstrnull(s)		(s == NULL || s[0] == L'\0')
-#else
-#define _tstrcmp	strcmp
-#define _tstrncmp	strncmp
-#define _tsprintf	sprintf
-#define _tstrcat	stecat
-#define _tstrncat	strncat
-#define _tstrcpy	strcpy
-#define _tstrstr	strstr
-#define _tstrncpy	strncpy
-#define _tstrlen	strlen
-#define _tstrtol	atol
-#define _tstrtof	atof
-#define _tsscanf	sscanf
-#define _tstrnull(s)		(s == NULL || s[0] == '\0')
-#endif
 
 #endif //_XDK_WIN_H

@@ -5,6 +5,7 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+INC_PATH = ../../include
 SRC_PATH = ../../xdk
 SUB_PATH = ../../xdk/linux
 OUT_PATH = ../sbin/api
@@ -15,14 +16,14 @@ OBJS = $(patsubst %.c, %.o, $(SRCS))
 TARGET = $(OUT_PATH)/libxdk.so.1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
 
 %.o : $(SUB_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -L $(LIB_PATH)
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lxdp -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:
@@ -40,6 +41,7 @@ install:
 
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
 	sudo chmod +x $(SRV_PATH)/api/libxdk.so.1.0;
+	sudo rm -f $(LNK_PATH)/libxdk*;
 	sudo ln -bs $(SRV_PATH)/api/libxdk.so.1.0 $(LNK_PATH)/libxdk.so;
 
 .PHONY : clean

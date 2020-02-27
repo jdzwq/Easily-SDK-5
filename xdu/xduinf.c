@@ -278,10 +278,6 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_adjust_size = _widget_adjust_size;
 	pif->pf_widget_calc_border = _widget_calc_border;
 
-	pif->pf_widget_copy = _widget_copy;
-	pif->pf_widget_cut = _widget_cut;
-	pif->pf_widget_paste = _widget_paste;
-	pif->pf_widget_undo = _widget_undo;
 	pif->pf_widget_enum_child = _widget_enum_child;
 
 	pif->pf_widget_is_maximized = _widget_is_maximized;
@@ -295,6 +291,30 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_has_subproc = _widget_has_subproc;
 	pif->pf_widget_set_scroll_info = _widget_set_scroll_info;
 	pif->pf_widget_get_scroll_info = _widget_get_scroll_info;
+
+	pif->pf_widget_has_struct = _widget_has_struct;
+	pif->pf_widget_set_xfont = _widget_set_xfont;
+	pif->pf_widget_get_xfont = _widget_get_xfont;
+	pif->pf_widget_get_xfont_ptr = _widget_get_xfont_ptr;
+	pif->pf_widget_set_xface = _widget_set_xface;
+	pif->pf_widget_get_xface = _widget_get_xface;
+	pif->pf_widget_get_xface_ptr = _widget_get_xface_ptr;
+	pif->pf_widget_set_xbrush = _widget_set_xbrush;
+	pif->pf_widget_get_xbrush = _widget_get_xbrush;
+	pif->pf_widget_get_xbrush_ptr = _widget_get_xbrush_ptr;
+	pif->pf_widget_set_xpen = _widget_set_xpen;
+	pif->pf_widget_get_xpen = _widget_get_xpen;
+	pif->pf_widget_get_xpen_ptr = _widget_get_xpen_ptr;
+	pif->pf_widget_set_mask = _widget_set_mask;
+	pif->pf_widget_get_mask = _widget_get_mask;
+	pif->pf_widget_get_mask_ptr = _widget_get_mask_ptr;
+	pif->pf_widget_set_iconic = _widget_set_iconic;
+	pif->pf_widget_get_iconic = _widget_get_iconic;
+	pif->pf_widget_get_iconic_ptr = _widget_get_iconic_ptr;
+	pif->pf_widget_set_point = _widget_set_point;
+	pif->pf_widget_get_point = _widget_get_point;
+	pif->pf_widget_set_color_mode = _widget_set_color_mode;
+	pif->pf_widget_get_color_mode = _widget_get_color_mode;
 
 	pif->pf_widget_do_modal = _widget_do_modal;
 	pif->pf_widget_do_trace = _widget_do_trace;

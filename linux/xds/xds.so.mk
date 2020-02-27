@@ -19,7 +19,7 @@ TARGET = $(OUT_PATH)/libxds.so.1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdl
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl
 	rm -f $(OBJS)
 
 test:
@@ -37,6 +37,7 @@ install:
 
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
 	sudo chmod +x $(SRV_PATH)/api/libxds.so.1.0;
+	sudo rm -f $(LNK_PATH)/libxds*;
 	sudo ln -bs $(SRV_PATH)/api/libxds.so.1.0 $(LNK_PATH)/libxds.so;
 
 .PHONY : clean

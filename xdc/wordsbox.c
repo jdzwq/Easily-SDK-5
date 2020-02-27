@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcbox.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 
 typedef struct _words_delta_t{
 	link_t_ptr words;
@@ -55,14 +53,14 @@ void _wordsbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	if_measure_t im = { 0 };
 	xfont_t xf = { 0 };
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	im.ctx = widget_get_canvas(widget);
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
 	im.pf_text_size = (PF_TEXT_SIZE)text_size;
 
 	calc_wordsbox_item_rect(&im, &xf, ptd->words, ptd->page, plk, pxr);
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 void _wordsbox_reset_page(res_win_t widget)
@@ -73,18 +71,18 @@ void _wordsbox_reset_page(res_win_t widget)
 	xrect_t xr;
 	xsize_t xs;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	im.ctx = widget_get_canvas(widget);
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
 	im.pf_text_size = (PF_TEXT_SIZE)text_size;
 
 	calc_wordsbox_size(&im, &xf, ptd->words, &xs);
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 
-	widgetex_reset_paging(widget, xr.w, xr.h, xs.cx, xs.cy, 0, 0);
+	widget_reset_paging(widget, xr.w, xr.h, xs.cx, xs.cy, 0, 0);
 }
 
 void _wordsbox_ensure_visible(res_win_t widget)
@@ -97,7 +95,7 @@ void _wordsbox_ensure_visible(res_win_t widget)
 
 	_wordsbox_item_rect(widget, ptd->item, &xr);
 
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 
 /*************************************************************************/
@@ -152,7 +150,7 @@ int hand_words_create(res_win_t widget, void* data)
 
 	ptd = (words_delta_t*)xmem_alloc(sizeof(words_delta_t));
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	rdc = widget_client_ctx(widget);
 	text_metric_raw(rdc, &xf, &xs);
@@ -244,7 +242,7 @@ void hand_words_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->words)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	im.ctx = widget_get_canvas(widget);
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
@@ -252,7 +250,7 @@ void hand_words_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	calc_wordsbox_hint(&im, &xf, &pt, ptd->words, ptd->page, &ilk);
 
@@ -285,7 +283,7 @@ void hand_words_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->words)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_words_erase(res_win_t widget, res_ctx_t rdc)
@@ -310,9 +308,9 @@ void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xpen_t xp;
 	xcolor_t xc;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 
@@ -321,8 +319,8 @@ void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -330,7 +328,7 @@ void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	draw_wordsbox(pif, &cb, &xf, ptd->words, ptd->page);
 
@@ -583,7 +581,7 @@ void wordsbox_move_next_page(res_win_t widget)
 	if (!ptd->words)
 		return;
 
-	widgetex_get_canv_size(widget, &xs);
+	widget_get_canv_size(widget, &xs);
 
 	nCurPage = ptd->page;
 	nMaxPage = calc_wordsbox_pages(ptd->words);
@@ -629,7 +627,7 @@ void wordsbox_move_last_page(res_win_t widget)
 	if (!ptd->words)
 		return;
 
-	widgetex_get_canv_size(widget, &xs);
+	widget_get_canv_size(widget, &xs);
 
 	nCurPage = ptd->page;
 	nMaxPage = calc_wordsbox_pages(ptd->words);
@@ -654,7 +652,7 @@ void wordsbox_move_to_page(res_win_t widget, int page)
 	if (!ptd->words)
 		return;
 
-	widgetex_get_canv_size(widget, &xs);
+	widget_get_canv_size(widget, &xs);
 
 	nCurPage = ptd->page;
 	nMaxPage = calc_wordsbox_pages(ptd->words);
@@ -678,7 +676,7 @@ int wordsbox_get_max_page(res_win_t widget)
 	if (!ptd->words)
 		return 0;
 
-	widgetex_get_canv_size(widget, &xs);
+	widget_get_canv_size(widget, &xs);
 
 	return calc_wordsbox_pages(ptd->words);
 }
@@ -835,7 +833,7 @@ void wordsbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	im.ctx = widget_get_canvas(widget);
 	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
@@ -843,7 +841,7 @@ void wordsbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	calc_wordsbox_size(&im, &xf, ptd->words, pxs);
 
-	widgetex_size_to_pt(widget, pxs);
+	widget_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

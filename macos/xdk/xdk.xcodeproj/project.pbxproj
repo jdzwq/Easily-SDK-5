@@ -8,18 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		9B053698216487C200B1DD42 /* xdkinf.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B053696216487C200B1DD42 /* xdkinf.c */; };
-		9B053699216487C200B1DD42 /* xdkutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B053697216487C200B1DD42 /* xdkutil.c */; };
-		9B077CAF214ED2AF00C647DD /* xdkattr.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CA8214ED2AF00C647DD /* xdkattr.h */; };
 		9B077CB0214ED2AF00C647DD /* xdkdef.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CA9214ED2AF00C647DD /* xdkdef.h */; };
 		9B077CB1214ED2AF00C647DD /* xdkiml.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CAA214ED2AF00C647DD /* xdkiml.h */; };
 		9B077CB3214ED2AF00C647DD /* xdkinf.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CAC214ED2AF00C647DD /* xdkinf.h */; };
-		9B077CB5214ED2AF00C647DD /* xdkutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B077CAE214ED2AF00C647DD /* xdkutil.h */; };
-		9B0953492184D7D50013F6AE /* _if_bitmap_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B0953482184D7D50013F6AE /* _if_bitmap_X11.c */; };
-		9B09534B2185EB7C0013F6AE /* _if_gdi_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B09534A2185EB7C0013F6AE /* _if_gdi_X11.c */; };
-		9B09534D218621A90013F6AE /* _if_region_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B09534C218621A90013F6AE /* _if_region_X11.c */; };
-		9B09534F218623F90013F6AE /* _if_widget_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B09534E218623F90013F6AE /* _if_widget_X11.c */; };
 		9B15EEAF216B9819005E9489 /* _if_comm_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B15EEAE216B9819005E9489 /* _if_comm_macos.c */; };
-		9B3165342183374D0063E38B /* _if_context_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B3165332183374D0063E38B /* _if_context_X11.c */; };
 		9B8097A1223EC04500649706 /* _if_async_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B8097A0223EC04500649706 /* _if_async_macos.c */; };
 		9BED61F32165F59300024C7F /* _if_cons_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E32165F59300024C7F /* _if_cons_macos.c */; };
 		9BED61F42165F59300024C7F /* _if_date_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E42165F59300024C7F /* _if_date_macos.c */; };
@@ -30,7 +22,6 @@
 		9BED61F92165F59300024C7F /* _if_pipe_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61E92165F59300024C7F /* _if_pipe_macos.c */; };
 		9BED61FA2165F59300024C7F /* _if_process_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EA2165F59300024C7F /* _if_process_macos.c */; };
 		9BED61FB2165F59300024C7F /* _if_share_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EB2165F59300024C7F /* _if_share_macos.c */; };
-		9BED61FC2165F59300024C7F /* _if_shell_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EC2165F59300024C7F /* _if_shell_macos.c */; };
 		9BED61FD2165F59300024C7F /* _if_socket_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61ED2165F59300024C7F /* _if_socket_macos.c */; };
 		9BED61FE2165F59300024C7F /* _if_thread_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EE2165F59300024C7F /* _if_thread_macos.c */; };
 		9BED61FF2165F59300024C7F /* _if_timer_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9BED61EF2165F59300024C7F /* _if_timer_macos.c */; };
@@ -39,19 +30,11 @@
 
 /* Begin PBXFileReference section */
 		9B053696216487C200B1DD42 /* xdkinf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdkinf.c; path = ../../xdk/xdkinf.c; sourceTree = "<group>"; };
-		9B053697216487C200B1DD42 /* xdkutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xdkutil.c; path = ../../xdk/xdkutil.c; sourceTree = "<group>"; };
 		9B077CA1214ED28800C647DD /* libxdk.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxdk.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		9B077CA8214ED2AF00C647DD /* xdkattr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkattr.h; path = ../../xdk/xdkattr.h; sourceTree = "<group>"; };
 		9B077CA9214ED2AF00C647DD /* xdkdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkdef.h; path = ../../xdk/xdkdef.h; sourceTree = "<group>"; };
 		9B077CAA214ED2AF00C647DD /* xdkiml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkiml.h; path = ../../xdk/xdkiml.h; sourceTree = "<group>"; };
 		9B077CAC214ED2AF00C647DD /* xdkinf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkinf.h; path = ../../xdk/xdkinf.h; sourceTree = "<group>"; };
-		9B077CAE214ED2AF00C647DD /* xdkutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdkutil.h; path = ../../xdk/xdkutil.h; sourceTree = "<group>"; };
-		9B0953482184D7D50013F6AE /* _if_bitmap_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_bitmap_X11.c; path = ../../xdk/macos/_if_bitmap_X11.c; sourceTree = "<group>"; };
-		9B09534A2185EB7C0013F6AE /* _if_gdi_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_gdi_X11.c; path = ../../xdk/macos/_if_gdi_X11.c; sourceTree = "<group>"; };
-		9B09534C218621A90013F6AE /* _if_region_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_region_X11.c; path = ../../xdk/macos/_if_region_X11.c; sourceTree = "<group>"; };
-		9B09534E218623F90013F6AE /* _if_widget_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_widget_X11.c; path = ../../xdk/macos/_if_widget_X11.c; sourceTree = "<group>"; };
 		9B15EEAE216B9819005E9489 /* _if_comm_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_comm_macos.c; path = ../../xdk/macos/_if_comm_macos.c; sourceTree = "<group>"; };
-		9B3165332183374D0063E38B /* _if_context_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_context_X11.c; path = ../../xdk/macos/_if_context_X11.c; sourceTree = "<group>"; };
 		9B8097A0223EC04500649706 /* _if_async_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_async_macos.c; path = ../../xdk/macos/_if_async_macos.c; sourceTree = "<group>"; };
 		9BED61E32165F59300024C7F /* _if_cons_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_cons_macos.c; path = ../../xdk/macos/_if_cons_macos.c; sourceTree = "<group>"; };
 		9BED61E42165F59300024C7F /* _if_date_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_date_macos.c; path = ../../xdk/macos/_if_date_macos.c; sourceTree = "<group>"; };
@@ -62,7 +45,6 @@
 		9BED61E92165F59300024C7F /* _if_pipe_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_pipe_macos.c; path = ../../xdk/macos/_if_pipe_macos.c; sourceTree = "<group>"; };
 		9BED61EA2165F59300024C7F /* _if_process_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_process_macos.c; path = ../../xdk/macos/_if_process_macos.c; sourceTree = "<group>"; };
 		9BED61EB2165F59300024C7F /* _if_share_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_share_macos.c; path = ../../xdk/macos/_if_share_macos.c; sourceTree = "<group>"; };
-		9BED61EC2165F59300024C7F /* _if_shell_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_shell_macos.c; path = ../../xdk/macos/_if_shell_macos.c; sourceTree = "<group>"; };
 		9BED61ED2165F59300024C7F /* _if_socket_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_socket_macos.c; path = ../../xdk/macos/_if_socket_macos.c; sourceTree = "<group>"; };
 		9BED61EE2165F59300024C7F /* _if_thread_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_thread_macos.c; path = ../../xdk/macos/_if_thread_macos.c; sourceTree = "<group>"; };
 		9BED61EF2165F59300024C7F /* _if_timer_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_timer_macos.c; path = ../../xdk/macos/_if_timer_macos.c; sourceTree = "<group>"; };
@@ -85,13 +67,10 @@
 			children = (
 				9BED61E02165F57800024C7F /* macos */,
 				9B077CA2214ED28800C647DD /* Products */,
-				9B077CA8214ED2AF00C647DD /* xdkattr.h */,
 				9B077CA9214ED2AF00C647DD /* xdkdef.h */,
 				9B077CAA214ED2AF00C647DD /* xdkiml.h */,
 				9B053696216487C200B1DD42 /* xdkinf.c */,
 				9B077CAC214ED2AF00C647DD /* xdkinf.h */,
-				9B053697216487C200B1DD42 /* xdkutil.c */,
-				9B077CAE214ED2AF00C647DD /* xdkutil.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -107,25 +86,19 @@
 			isa = PBXGroup;
 			children = (
 				9B8097A0223EC04500649706 /* _if_async_macos.c */,
-				9B0953482184D7D50013F6AE /* _if_bitmap_X11.c */,
 				9B15EEAE216B9819005E9489 /* _if_comm_macos.c */,
 				9BED61E32165F59300024C7F /* _if_cons_macos.c */,
-				9B3165332183374D0063E38B /* _if_context_X11.c */,
 				9BED61E42165F59300024C7F /* _if_date_macos.c */,
 				9BED61E52165F59300024C7F /* _if_error_macos.c */,
 				9BED61E62165F59300024C7F /* _if_file_macos.c */,
-				9B09534A2185EB7C0013F6AE /* _if_gdi_X11.c */,
 				9BED61E72165F59300024C7F /* _if_mbcs_macos.c */,
 				9BED61E82165F59300024C7F /* _if_memo_macos.c */,
 				9BED61E92165F59300024C7F /* _if_pipe_macos.c */,
 				9BED61EA2165F59300024C7F /* _if_process_macos.c */,
-				9B09534C218621A90013F6AE /* _if_region_X11.c */,
 				9BED61EB2165F59300024C7F /* _if_share_macos.c */,
-				9BED61EC2165F59300024C7F /* _if_shell_macos.c */,
 				9BED61ED2165F59300024C7F /* _if_socket_macos.c */,
 				9BED61EE2165F59300024C7F /* _if_thread_macos.c */,
 				9BED61EF2165F59300024C7F /* _if_timer_macos.c */,
-				9B09534E218623F90013F6AE /* _if_widget_X11.c */,
 				9BED61F02165F59300024C7F /* _xdk_macos.h */,
 			);
 			name = macos;
@@ -142,8 +115,6 @@
 				9BED62002165F59300024C7F /* _xdk_macos.h in Headers */,
 				9B077CB1214ED2AF00C647DD /* xdkiml.h in Headers */,
 				9B077CB3214ED2AF00C647DD /* xdkinf.h in Headers */,
-				9B077CB5214ED2AF00C647DD /* xdkutil.h in Headers */,
-				9B077CAF214ED2AF00C647DD /* xdkattr.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,27 +175,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BED61F52165F59300024C7F /* _if_error_macos.c in Sources */,
-				9B0953492184D7D50013F6AE /* _if_bitmap_X11.c in Sources */,
 				9BED61FF2165F59300024C7F /* _if_timer_macos.c in Sources */,
-				9BED61FC2165F59300024C7F /* _if_shell_macos.c in Sources */,
 				9BED61F32165F59300024C7F /* _if_cons_macos.c in Sources */,
 				9BED61F72165F59300024C7F /* _if_mbcs_macos.c in Sources */,
 				9BED61F42165F59300024C7F /* _if_date_macos.c in Sources */,
 				9B8097A1223EC04500649706 /* _if_async_macos.c in Sources */,
 				9BED61F82165F59300024C7F /* _if_memo_macos.c in Sources */,
 				9BED61FA2165F59300024C7F /* _if_process_macos.c in Sources */,
-				9B053699216487C200B1DD42 /* xdkutil.c in Sources */,
 				9BED61FD2165F59300024C7F /* _if_socket_macos.c in Sources */,
 				9BED61FE2165F59300024C7F /* _if_thread_macos.c in Sources */,
-				9B09534B2185EB7C0013F6AE /* _if_gdi_X11.c in Sources */,
-				9B09534D218621A90013F6AE /* _if_region_X11.c in Sources */,
 				9BED61FB2165F59300024C7F /* _if_share_macos.c in Sources */,
-				9B3165342183374D0063E38B /* _if_context_X11.c in Sources */,
 				9B15EEAF216B9819005E9489 /* _if_comm_macos.c in Sources */,
 				9BED61F62165F59300024C7F /* _if_file_macos.c in Sources */,
 				9BED61F92165F59300024C7F /* _if_pipe_macos.c in Sources */,
 				9B053698216487C200B1DD42 /* xdkinf.c in Sources */,
-				9B09534F218623F90013F6AE /* _if_widget_X11.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,15 +286,17 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
+					../../include,
 				);
 				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxdk.dylib;
-				LIBRARY_SEARCH_PATHS = /opt/X11/lib;
+				LIBRARY_SEARCH_PATHS = (
+					/opt/X11/lib,
+					../lib,
+				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = (
+					"-lxdp",
 					"-lpthread",
-					"-lX11",
-					"-lXft",
-					"-lfontconfig",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = ../sbin/api;
@@ -349,15 +315,17 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/X11/include,
 					/opt/X11/include/freetype2,
+					../../include,
 				);
 				LD_DYLIB_INSTALL_NAME = ../sbin/api/libxdk.dylib;
-				LIBRARY_SEARCH_PATHS = /opt/X11/lib;
+				LIBRARY_SEARCH_PATHS = (
+					/opt/X11/lib,
+					../lib,
+				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
 				OTHER_LDFLAGS = (
+					"-lxdp",
 					"-lpthread",
-					"-lX11",
-					"-lXft",
-					"-lfontconfig",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = ../sbin/api;

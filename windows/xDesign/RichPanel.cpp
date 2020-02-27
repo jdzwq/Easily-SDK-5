@@ -134,21 +134,21 @@ void RichPanel_OnCopy(res_win_t widget)
 {
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
-	widget_copy(pdt->hRich);
+	widget_post_command(pdt->hRich, COMMAND_COPY, IDC_EDITMENU, 0);
 }
 
 void RichPanel_OnCut(res_win_t widget)
 {
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
-	widget_cut(pdt->hRich);
+	widget_post_command(pdt->hRich, COMMAND_CUT, IDC_EDITMENU, 0);
 }
 
 void RichPanel_OnPaste(res_win_t widget)
 {
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
-	widget_paste(pdt->hRich);
+	widget_post_command(pdt->hRich, COMMAND_PASTE, IDC_EDITMENU, 0);
 }
 
 void RichPanel_OnRedo(res_win_t widget)
@@ -161,7 +161,7 @@ void RichPanel_OnUndo(res_win_t widget)
 {
 	RichPanelDelta* pdt = GETRICHPANELDELTA(widget);
 
-	widget_undo(pdt->hRich);
+	widget_post_command(pdt->hRich, COMMAND_UNDO, IDC_EDITMENU, 0);
 }
 
 void RichPanel_Rich_OnNodeChange(res_win_t widget, NOTICE_RICH* pnf)
@@ -451,8 +451,8 @@ void RichPanel_OnPreview(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	widgetex_get_xfont(pdt->hRich, &xf);
-	widgetex_get_xface(pdt->hRich, &xa);
+	widget_get_xfont(pdt->hRich, &xf);
+	widget_get_xface(pdt->hRich, &xa);
 
 	svg_print_rich(svg, &xf, &xa, ptrRich, page);
 
@@ -476,7 +476,7 @@ int RichPanel_OnCreate(res_win_t widget, void* data)
 	RichPanelDelta* pdt = (RichPanelDelta*)xmem_alloc(sizeof(RichPanelDelta));
 	xrect_t xr;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	SETRICHPANELDELTA(widget, pdt);
 
@@ -515,7 +515,7 @@ int RichPanel_OnCreate(res_win_t widget, void* data)
 	set_split_item_delta(ilkProper, pdt->hProper);
 	widget_show(pdt->hProper, WD_SHOW_NORMAL);
 
-	widgetex_attach_splitor(widget, ptrSplit);
+	widget_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -538,7 +538,7 @@ void RichPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widgetex_detach_splitor(widget);
+	link_t_ptr split = widget_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -562,7 +562,7 @@ void RichPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 int RichPanel_OnClose(res_win_t widget)
@@ -609,43 +609,43 @@ void RichPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("È«Ñ¡"));
-		set_tool_item_icon(ilk, ICON_SELECTALL);
+		set_tool_item_icon(ilk, GDI_ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("É¾³ý"));
-		set_tool_item_icon(ilk, ICON_DELETE);
+		set_tool_item_icon(ilk, GDI_ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¿½±´"));
-		set_tool_item_icon(ilk, ICON_COPY);
+		set_tool_item_icon(ilk, GDI_ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¼ôÇÐ"));
-		set_tool_item_icon(ilk, ICON_CUT);
+		set_tool_item_icon(ilk, GDI_ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Õ³Ìù"));
-		set_tool_item_icon(ilk, ICON_PASTE);
+		set_tool_item_icon(ilk, GDI_ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("³·Ïú"));
-		set_tool_item_icon(ilk, ICON_UNDO);
+		set_tool_item_icon(ilk, GDI_ICON_UNDO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_INSERT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("ÐÂÔö"));
-		set_tool_item_icon(ilk, ICON_PLUS);
+		set_tool_item_icon(ilk, GDI_ICON_PLUS);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

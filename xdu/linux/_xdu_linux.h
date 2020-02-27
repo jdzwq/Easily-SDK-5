@@ -40,38 +40,6 @@ LICENSE.GPL3 for more details.
 
 #define XDU_SUPPORT_WIDGET
 
-#include <stdio.h>
-#include <wchar.h>
-#include <string.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <errno.h>
-#include <locale.h>
-
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/mman.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/sysctl.h>
-#include <sys/epoll.h>
-#include <semaphore.h>
-#include <signal.h>
-#include <time.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <dlfcn.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
-#include <termios.h>
-#include <pthread.h> 
-
 #ifdef XDU_SUPPORT_CONTEXT
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -468,54 +436,21 @@ typedef struct _X11_create_struct_t{
 #endif
 #endif /*XDU_SUPPORT_WIDGET*/
 
-#ifdef _UNICODE
-#define _tstrcmp	wcscmp
-#define _tstrncmp	wcsncmp
-#define _tsprintf	swprintf
-#define _tstrcat	wcscat
-#define _tstrncat	wcsncat
-#define _tstrcpy	wcscpy
-#define _tstrstr	wcsstr
-#define _tstrncpy	wcsncpy
-#define _tstrlen	wcslen
-#define _tstrtol	wcstol
-#define _tstrtof	wcstof
-#define _tstrnull(s)		(s == NULL || s[0] == L'\0')
-#define _tprintf    wprintf
-#define _tsscanf	swscanf
-#else
-#define _tstrcmp	strcmp
-#define _tstrncmp	strncmp
-#define _tstricmp	strcmp
-#define _tstrnicmp	strncmp
-#define _tsprintf	sprintf
-#define _tstrcat	strcat
-#define _tstrncat	strncat
-#define _tstrcpy	strcpy
-#define _tstrstr	strstr
-#define _tstrncpy	strncpy
-#define _tstrlen	strlen
-#define _tstrtol	atol
-#define _tstrtof	atof
-#define _tstrnull(s)		(s == NULL || s[0] == '\0')
-#define _tprintf    printf
-#define _tsscanf	sscanf
-#endif
-
 #ifndef min
-#define min(x, y) ({                            \
-         __typeof__(x) _min1 = (x);                  \
-         __typeof__(y) _min2 = (y);                  \
-         (void) (&_min1 == &_min2);              \
-         _min1 < _min2 ? _min1 : _min2; })
+#define min(x, y) ({                        \
+    __typeof__(x) _min1 = (x);              \
+    __typeof__(y) _min2 = (y);              \
+    (void) (&_min1 == &_min2);              \
+    _min1 < _min2 ? _min1 : _min2; })
+#endif
+    
+#ifndef max
+#define max(x, y) ({                         \
+    __typeof__(x) _max1 = (x);               \
+    __typeof__(y) _max2 = (y);               \
+    (void) (&_max1 == &_max2);               \
+    _max1 > _max2 ? _max1 : _max2; })
 #endif
 
-#ifndef max
-#define max(x, y) ({                            \
-         __typeof__(x) _max1 = (x);                  \
-         __typeof__(y) _max2 = (y);                  \
-         (void) (&_max1 == &_max2);              \
-         _max1 > _max2 ? _max1 : _max2; })
-#endif
 
 #endif //_XDU_LINUX_H

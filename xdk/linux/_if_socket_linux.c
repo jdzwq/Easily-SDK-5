@@ -48,7 +48,7 @@ bool_t _host_addr(const schar_t* host, schar_t* addr)
     {
         while (hos->h_addr_list[i] != 0) {
             addr_list = (struct in_addr *)hos->h_addr_list[i++];
-            strcpy(addr, inet_ntoa(*addr_list));
+            xscpy(addr, inet_ntoa(*addr_list));
             return 1;
         }
     }
@@ -70,7 +70,7 @@ void _fill_addr(net_addr_t* paddr, unsigned short port, const schar_t* saddr)
 void _conv_addr(net_addr_t* paddr, unsigned short* port, schar_t* saddr)
 {
     *port = ntohs(paddr->sin_port);
-    strcpy(saddr, inet_ntoa(paddr->sin_addr));
+    xscpy(saddr, inet_ntoa(paddr->sin_addr));
 }
 
 void _socket_addr(res_file_t so, net_addr_t* paddr)
@@ -106,8 +106,8 @@ void _socket_cleanup(void)
 
 int _socket_error(tchar_t* buf, int max)
 {
-    strncpy(buf, strerror(errno), max);
-    return (int)strlen(buf);;
+    xsncpy(buf, strerror(errno), max);
+    return (int)xslen(buf);;
 }
 
 res_file_t _socket_open(int af, int type, int protocol)

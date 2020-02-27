@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcmenu.h"
 #include "textor.h"
 #include "xdcbox.h"
@@ -79,7 +77,7 @@ static bool_t _memoctrl_get_paging(res_win_t widget, xsize_t* pse)
 		pse->fx = get_memo_width((link_t_ptr)(ptd->textor.data));
 		pse->fy = get_memo_height((link_t_ptr)(ptd->textor.data));
 
-		widgetex_size_to_pt(widget, pse);
+		widget_size_to_pt(widget, pse);
 
 		return 1;
 	}else
@@ -118,7 +116,7 @@ int hand_memoctrl_create(res_win_t widget, void* data)
 {
 	memoctrl_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (memoctrl_delta_t*)xmem_alloc(sizeof(memoctrl_delta_t));
 	xmem_zero((void*)ptd, sizeof(memoctrl_delta_t));
@@ -159,7 +157,96 @@ void hand_memoctrl_destroy(res_win_t widget)
 
 	SETMEMOCTRLDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
+}
+
+
+void hand_memoctrl_copy(res_win_t widget)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	hand_textor_copy(&ptd->textor);
+}
+
+void hand_memoctrl_cut(res_win_t widget)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	if (hand_textor_cut(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
+		return;
+
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+
+	if (ptd->line != (link_t_ptr)ptd->textor.object)
+	{
+		ptd->line = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	}
+}
+
+void hand_memoctrl_paste(res_win_t widget)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	if (hand_textor_paste(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
+		return;
+
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+
+	if (ptd->line != (link_t_ptr)ptd->textor.object)
+	{
+		ptd->line = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	}
+}
+
+void hand_memoctrl_undo(res_win_t widget)
+{
+	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	if (hand_textor_undo(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
+		return;
+
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+
+	if (ptd->line != (link_t_ptr)ptd->textor.object)
+	{
+		ptd->line = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	}
 }
 
 void hand_memoctrl_set_focus(res_win_t widget, res_win_t wt)
@@ -207,7 +294,7 @@ void hand_memoctrl_keydown(res_win_t widget, int key)
 	if (!ptd->textor.data)
 		return;
 
-	widgetex_get_xface(widget, &xa);
+	widget_get_xface(widget, &xa);
 
 	switch (key)
 	{
@@ -303,28 +390,28 @@ void hand_memoctrl_keydown(res_win_t widget, int key)
 	case _T('C'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_copy(widget);
+			hand_memoctrl_copy(widget);
 		}
 		break;
 	case _T('x'):
 	case _T('X'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_cut(widget);
+			hand_memoctrl_cut(widget);
 		}
 		break;
 	case _T('v'):
 	case _T('V'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_paste(widget);
+			hand_memoctrl_paste(widget);
 		}
 		break;
 	case _T('z'):
 	case _T('Z'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_undo(widget);
+			hand_memoctrl_undo(widget);
 		}
 		break;
 	}
@@ -371,94 +458,6 @@ void hand_memoctrl_char(res_win_t widget, tchar_t ch)
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
 	{
 		widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-	}
-}
-
-void hand_memoctrl_copy(res_win_t widget)
-{
-	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	hand_textor_copy(&ptd->textor);
-}
-
-void hand_memoctrl_cut(res_win_t widget)
-{
-	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (ptd->b_lock)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	if (hand_textor_cut(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
-		return;
-
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-
-	if (ptd->line != (link_t_ptr)ptd->textor.object)
-	{
-		ptd->line = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
-	}
-}
-
-void hand_memoctrl_paste(res_win_t widget)
-{
-	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (ptd->b_lock)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	if (hand_textor_paste(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
-		return;
-
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-
-	if (ptd->line != (link_t_ptr)ptd->textor.object)
-	{
-		ptd->line = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
-	}
-}
-
-void hand_memoctrl_undo(res_win_t widget)
-{
-	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (ptd->b_lock)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	if (hand_textor_undo(&ptd->textor) != _TEXTOR_PRESS_ACCEPT)
-		return;
-
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-
-	if (ptd->line != (link_t_ptr)ptd->textor.object)
-	{
-		ptd->line = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
 
@@ -657,20 +656,23 @@ void hand_memoctrl_menu_command(res_win_t widget, int code, int cid, var_long da
 		switch (code)
 		{
 		case COMMAND_COPY:
-			widget_copy(widget);
+			hand_memoctrl_copy(widget);
 			break;
 		case COMMAND_CUT:
-			widget_cut(widget);
+			hand_memoctrl_cut(widget);
 			break;
 		case COMMAND_PASTE:
-			widget_paste(widget);
+			hand_memoctrl_paste(widget);
 			break;
 		case COMMAND_UNDO:
-			widget_undo(widget);
+			hand_memoctrl_undo(widget);
 			break;
 		}
 
-		widget_close((res_win_t)data, 1);
+		if (widget_is_valid((res_win_t)data))
+		{
+			widget_close((res_win_t)data, 1);
+		}
 	}
 }
 
@@ -733,11 +735,6 @@ res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_SET_FOCUS(hand_memoctrl_set_focus)
 		EVENT_ON_KILL_FOCUS(hand_memoctrl_kill_focus)
 
-		EVENT_ON_COPY(hand_memoctrl_copy)
-		EVENT_ON_CUT(hand_memoctrl_cut)
-		EVENT_ON_PASTE(hand_memoctrl_paste)
-		EVENT_ON_UNDO(hand_memoctrl_undo)
-
 		EVENT_ON_NC_IMPLEMENT
 
 	EVENT_END_DISPATH
@@ -746,9 +743,9 @@ res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 	if (!wt)
 		return NULL;
 
-	widgetex_get_xface(wt, &xa);
+	widget_get_xface(wt, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-	widgetex_set_xface(wt, &xa);
+	widget_set_xface(wt, &xa);
 
 	return wt;
 }

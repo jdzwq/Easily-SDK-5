@@ -100,43 +100,37 @@ void _heapo_clean(res_heap_t heap)
 #ifdef XDK_SUPPORT_MEMO_GLOB
 res_glob_t _globo_alloc(dword_t size)
 {
-    SDK_UNSUPPORT_ERROR;
-    
+
 	return NULL;
 }
 
 res_glob_t _globo_realloc(res_glob_t glob, dword_t size)
 {
-    SDK_UNSUPPORT_ERROR;
-    
+
 	return NULL;
 }
 
 void _globo_free(res_glob_t glob)
 {
-    SDK_UNSUPPORT_ERROR;
-    
+
 	return;
 }
 
 dword_t _globo_size(res_glob_t glob)
 {
-    SDK_UNSUPPORT_ERROR;
-    
+
 	return 0;
 }
 
 void* _globo_lock(res_glob_t glob)
 {
-    SDK_UNSUPPORT_ERROR;
-    
+
 	return NULL;
 }
 
 bool_t _globo_unlock(res_glob_t glob)
 {
-    SDK_UNSUPPORT_ERROR;
-    
+
 	return 0;
 }
 #endif

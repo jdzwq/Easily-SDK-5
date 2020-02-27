@@ -21,16 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\xdk\windows\_if_bitmap_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_clipboard_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_cons_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_context_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_date_win32.cc">
@@ -42,12 +33,6 @@
     <ClCompile Include="..\..\xdk\windows\_if_file_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_gdi_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_gdiplus_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_mbcs_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
@@ -57,16 +42,10 @@
     <ClCompile Include="..\..\xdk\windows\_if_pipe_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_printer_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_process_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_share_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_shell_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_socket_win32.cc">
@@ -78,19 +57,10 @@
     <ClCompile Include="..\..\xdk\windows\_if_timer_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_widget_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdk\xdkinf.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdk\xdkutil.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_comm_win32.cc">
-      <Filter>源文件\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdk\windows\_if_region_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdk\windows\_if_async_win32.cc">
@@ -101,9 +71,6 @@
     <ClInclude Include="..\..\xdk\windows\_xdk_win.h">
       <Filter>头文件\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdk\xdkattr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdk\xdkdef.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -111,9 +78,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdk\xdkinf.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdk\xdkutil.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

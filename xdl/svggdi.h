@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#if defined(XDL_SUPPORT_SVG)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -399,6 +399,6 @@ XDL_API void	svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t*
 }
 #endif
 
-#endif /*XDK_SUPPORT_CONTEXT*/
+#endif /*XDL_SUPPORT_SVG*/
 
 #endif /*SVGGDI_H*/

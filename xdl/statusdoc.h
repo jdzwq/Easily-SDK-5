@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_status_icon_span: set the status icon span.
 */
-#define set_status_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ICON_SPAN,n)
+#define set_status_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_status_icon_span: get the status icon span.
 */
-#define get_status_icon_span(ptr)						get_dom_node_attr_float(ptr,ICON_SPAN)
+#define get_status_icon_span(ptr)						get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
 /*
 @PROPER alignment: string.
 @GET get_status_alignment_ptr: get the status alignment.

@@ -36,12 +36,11 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 #include "xdlview.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#if defined(XDL_SUPPORT_SVG)
 
 typedef struct _svg_canvas_t{
 	canvas_head head;
 
-	res_ctx_t rdc;
 	link_t_ptr g;		// svg document 
 }svg_canvas_t;
 
@@ -54,10 +53,8 @@ canvas_t create_svg_canvas(link_t_ptr svg)
 
 	pcanv = (svg_canvas_t*)xmem_alloc(sizeof(svg_canvas_t));
 
-	pcanv->rdc = create_display_context();
-
-	htpermm = pt_per_mm(pcanv->rdc, 1);
-	vtpermm = pt_per_mm(pcanv->rdc, 0);
+	htpermm = SVGPTPERMM;
+	vtpermm = SVGPTPERMM;
 
 	vb.x = 0;
 	vb.y = 0;
@@ -77,18 +74,7 @@ void destroy_svg_canvas(canvas_t canv)
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
-	destroy_context(pcanv->rdc);
-
 	xmem_free(pcanv);
-}
-
-res_ctx_t svg_get_canvas_ctx(canvas_t canv)
-{
-	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
-
-	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
-
-	return pcanv->rdc;
 }
 
 link_t_ptr svg_get_canvas_doc(canvas_t canv)
@@ -284,4 +270,4 @@ void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif)
 	pif->pf_text_size = (PF_TEXT_SIZE)svg_text_size;;
 }
 
-#endif /*XDL_SUPPORT_VIEW*/
+#endif /*XDL_SUPPORT_SVG*/

@@ -31,9 +31,7 @@ LICENSE.GPL3 for more details.
 
 
 #include "xdcfire.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
@@ -162,7 +160,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 	case COMMAND_COLOR:
 		if (widget_is_valid(ctrl))
 		{
-			widgetex_set_color_mode(ctrl, (clr_mod_t*)data);
+			widget_set_color_mode(ctrl, (clr_mod_t*)data);
 			widget_update(ctrl);
 		}
 		return 1;
@@ -284,9 +282,9 @@ res_win_t firewords_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data
 	widget_set_subproc(editor, IDS_EDITBOX, &ev);
 	widget_set_imm(editor, 0);
 
-	widgetex_get_xface(editor, &xa);
+	widget_get_xface(editor, &xa);
 	xscpy(xa.text_wrap, NULL);
-	widgetex_set_xface(editor, &xa);
+	widget_set_xface(editor, &xa);
 
 	if (data)
 	{

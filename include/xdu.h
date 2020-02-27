@@ -3,7 +3,6 @@
 #define _XDU_H
 
 #include "../xdu/xdudef.h"
-#include "../xdu/xduattr.h"
 #include "../xdu/xduutil.h"
 #include "../xdu/xduinf.h"
 

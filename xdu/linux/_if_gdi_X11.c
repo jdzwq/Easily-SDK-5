@@ -30,7 +30,6 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xduiml.h"
-#include "xduattr.h"
 #include "xduutil.h"
 
 #ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
@@ -52,27 +51,27 @@ static void _alphablend_rect(res_ctx_t rdc, const xbrush_t* pxb, const XRectangl
 
 static void _adjust_rect(XRectangle* prt, int src_width, int src_height, const tchar_t* horz_align, const tchar_t* vert_align)
 {
-	if (_tstrcmp(horz_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0 && _tstrcmp(vert_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0)
+	if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0 && xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0)
 	{
 		prt->width = (prt->width < src_width) ? prt->width : src_width;
 		prt->height = (prt->height < src_height) ? prt->height : src_height;
 	}
-	else if (_tstrcmp(horz_align, GDI_ATTR_TEXT_ALIGN_FAR) == 0 && _tstrcmp(vert_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	else if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_FAR) == 0 && xscmp(vert_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0)
 	{
 		prt->x = (prt->width < src_width) ? prt->x : (prt->x + prt->width - src_width);
 		prt->height = (prt->height < src_height) ? prt->height : src_height;
 	}
-	else if (_tstrcmp(horz_align,GDI_ATTR_TEXT_ALIGN_NEAR) == 0 && _tstrcmp(vert_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	else if (xscmp(horz_align,GDI_ATTR_TEXT_ALIGN_NEAR) == 0 && xscmp(vert_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0)
 	{
 		prt->width = (prt->width < src_width) ? prt->width : src_width;
 		prt->y = (prt->height < src_height) ? prt->y : (prt->y + prt->height - src_height);
 	}
-	else if (_tstrcmp(horz_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0 && _tstrcmp(vert_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	else if (xscmp(horz_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0 && xscmp(vert_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0)
 	{
 		prt->x = (prt->width < src_width) ? prt->x : (prt->x + prt->width - src_width);
 		prt->y = (prt->height < src_height) ? prt->y : (prt->y + prt->height - src_height);
 	}
-	else if (_tstrcmp(horz_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0 && _tstrcmp(vert_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	else if (xscmp(horz_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0 && xscmp(vert_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
 	{
 		if (prt->width > src_width)
 		{
@@ -85,13 +84,13 @@ static void _adjust_rect(XRectangle* prt, int src_width, int src_height, const t
 			prt->height = src_height;
 		}
 	}
-	else if (_tstrcmp(horz_align,GDI_ATTR_TEXT_ALIGN_NEAR) == 0 && _tstrcmp(vert_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	else if (xscmp(horz_align,GDI_ATTR_TEXT_ALIGN_NEAR) == 0 && xscmp(vert_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
 	{
 		prt->width = (prt->width < src_width) ? prt->width : src_width;
 		prt->y = (prt->height < src_height) ? prt->y : (prt->y + (prt->height - src_height) / 2);
 		prt->height = (prt->height < src_height) ? prt->height : src_height;
 	}
-	else if (_tstrcmp(horz_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0 && _tstrcmp(vert_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	else if (xscmp(horz_align,GDI_ATTR_TEXT_ALIGN_FAR) == 0 && xscmp(vert_align,GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
 	{
 		prt->x = (prt->width < src_width) ? prt->x : (prt->x + prt->width - src_width);
 		prt->y = (prt->height < src_height) ? prt->y : (prt->y + (prt->height - src_height) / 2);

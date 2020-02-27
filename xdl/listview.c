@@ -351,7 +351,7 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	xr_img.fh = xr.fh - ic;
 	ft_center_rect(&xr_img, DEF_LARGE_ICON, DEF_LARGE_ICON);
 
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, ICON_FOLDER);
+	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, GDI_ICON_FOLDER);
 
 	xr_text.fx = xr.fx;
 	xr_text.fy = xr.fy + xr.fh - ic;
@@ -386,7 +386,7 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		xr_img.fh = xr.fh - ic;
 		ft_center_rect(&xr_img, DEF_LARGE_ICON, DEF_LARGE_ICON);
 
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, ICON_FOLDER);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_img, GDI_ICON_FOLDER);
 
 		xr_img.fx = xr.fx;
 		xr_img.fy = xr.fy;
@@ -411,11 +411,11 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 			if (get_list_item_checked(nlk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, ICON_CHECKED);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, GDI_ICON_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, ICON_CHECKBOX);
+				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_checkbox, GDI_ICON_CHECKBOX);
 			}
 
 			xr_text.fx = xr.fx + ic;

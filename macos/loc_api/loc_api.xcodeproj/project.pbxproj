@@ -215,18 +215,13 @@
 				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
-					/opt/X11/include,
-					/opt/X11/include/freetype2,
 					../../include,
 					../../api/loc_api,
 				);
 				LD_DYLIB_INSTALL_NAME = ../sbin/api/libloc_api.dylib;
-				LIBRARY_SEARCH_PATHS = (
-					/opt/X11/lib,
-					../lib,
-					"$(BUILD_DIR)",
-				);
+				LIBRARY_SEARCH_PATHS = ../lib;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				OTHER_LDFLAGS = "-lxdp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = ../sbin/api;
 			};
@@ -241,18 +236,13 @@
 				DYLIB_INSTALL_NAME_BASE = ../sbin/api;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = (
-					/opt/X11/include,
-					/opt/X11/include/freetype2,
 					../../include,
 					../../api/loc_api,
 				);
 				LD_DYLIB_INSTALL_NAME = ../sbin/api/libloc_api.dylib;
-				LIBRARY_SEARCH_PATHS = (
-					/opt/X11/lib,
-					../lib,
-					"$(BUILD_DIR)",
-				);
+				LIBRARY_SEARCH_PATHS = ../lib;
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				OTHER_LDFLAGS = "-lxdp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = ../sbin/api;
 			};

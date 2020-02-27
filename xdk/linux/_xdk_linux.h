@@ -58,7 +58,6 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_COMM
 #define XDK_SUPPORT_SOCK
 #define XDK_SUPPORT_TIMER
-#define XDK_SUPPORT_SHELL
 
 #include <stdio.h>
 #include <wchar.h>
@@ -93,12 +92,6 @@ LICENSE.GPL3 for more details.
 #include <pthread.h> 
 
 //linux
-
-#if defined(_UNICODE) || defined(UNICODE)
-#define _T(x)      L ## x
-#else
-#define _T(x)      x
-#endif
 
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 
@@ -226,57 +219,6 @@ typedef struct OVERLAPPED{
 
 #ifndef LPSIZE
 typedef size_t*     LPSIZE;
-#endif
-
-
-#ifdef _UNICODE
-#define _tstrcmp	wcscmp
-#define _tstrncmp	wcsncmp
-#define _tsprintf	swprintf
-#define _tstrcat	wcscat
-#define _tstrncat	wcsncat
-#define _tstrcpy	wcscpy
-#define _tstrstr	wcsstr
-#define _tstrncpy	wcsncpy
-#define _tstrlen	wcslen
-#define _tstrtol	wcstol
-#define _tstrtof	wcstof
-#define _tstrnull(s)		(s == NULL || s[0] == L'\0')
-#define _tprintf    wprintf
-#define _tsscanf	swscanf
-#else
-#define _tstrcmp	strcmp
-#define _tstrncmp	strncmp
-#define _tstricmp	strcmp
-#define _tstrnicmp	strncmp
-#define _tsprintf	sprintf
-#define _tstrcat	stecat
-#define _tstrncat	strncat
-#define _tstrcpy	strcpy
-#define _tstrstr	strstr
-#define _tstrncpy	strncpy
-#define _tstrlen	strlen
-#define _tstrtol	atol
-#define _tstrtof	atof
-#define _tstrnull(s)		(s == NULL || s[0] == '\0')
-#define _tprintf    printf
-#define _tsscanf	sscanf
-#endif
-
-#ifndef min
-#define min(x, y) ({                            \
-         __typeof__(x) _min1 = (x);                  \
-         __typeof__(y) _min2 = (y);                  \
-         (void) (&_min1 == &_min2);              \
-         _min1 < _min2 ? _min1 : _min2; })
-#endif
-
-#ifndef max
-#define max(x, y) ({                            \
-         __typeof__(x) _max1 = (x);                  \
-         __typeof__(y) _max2 = (y);                  \
-         (void) (&_max1 == &_max2);              \
-         _max1 > _max2 ? _max1 : _max2; })
 #endif
 
 #endif //_XDK_LINUX_H

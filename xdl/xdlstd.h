@@ -40,6 +40,7 @@
 #include "xdlstm.h"
 
 #include "xdlsort.h"
+#include "xdletag.h"
 #include "xdlutil.h"
 
 

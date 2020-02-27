@@ -36,32 +36,28 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 #include "xdlview.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#if defined(XDL_SUPPORT_SVG)
 
 void svg_text_metric_raw(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
 {
-	res_ctx_t rdc;
-	xsize_t xs;
+	float mm = 0.0f;
 
-	rdc = svg_get_canvas_ctx(canv);
+	font_metric_by_point(xstof(pxf->size), &mm, NULL);
 
-	text_mm_metric(rdc, pxf, &xs);
-
-	pxs->cx = svg_tm_to_pt(canv, xs.fx, 1) - svg_tm_to_pt(canv, 0, 1);
-	pxs->cy = svg_tm_to_pt(canv, xs.fy, 0) - svg_tm_to_pt(canv, 0, 0);
+	pxs->cx = svg_tm_to_pt(canv, mm, 1) - svg_tm_to_pt(canv, 0, 1);
+	pxs->cy = svg_tm_to_pt(canv, mm, 0) - svg_tm_to_pt(canv, 0, 0);
 }
 
 void svg_text_size_raw(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	xsize_t xs;
-	res_ctx_t rdc;
+	float mm = 0.0f;
 
-	rdc = svg_get_canvas_ctx(canv);
+	font_metric_by_point(xstof(pxf->size), &mm, NULL);
 
-	text_mm_size(rdc, pxf, txt, len, &xs);
+	if (len < 0) len = xslen(txt);
 
-	pxs->cx = svg_tm_to_pt(canv, xs.fx, 1) - svg_tm_to_pt(canv, 0, 1);
-	pxs->cy = svg_tm_to_pt(canv, xs.fy, 0) - svg_tm_to_pt(canv, 0, 0);
+	pxs->cx = svg_tm_to_pt(canv, mm * len, 1) - svg_tm_to_pt(canv, 0, 1);
+	pxs->cy = svg_tm_to_pt(canv, mm, 0) - svg_tm_to_pt(canv, 0, 0);
 }
 
 void svg_draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
@@ -514,7 +510,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 		if (autowrap && pxa && is_null(xa.text_wrap))
 		{
-			text_size(canv, pxf, sz_format, -1, &xs);
+			svg_text_size(canv, pxf, sz_format, -1, &xs);
 			if (xs.fx > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
@@ -542,7 +538,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			text_size(canv, pxf, sz_format, -1, &xs);
+			svg_text_size(canv, pxf, sz_format, -1, &xs);
 			if (xs.fx > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
@@ -565,7 +561,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			text_size(canv, pxf, sz_format, -1, &xs);
+			svg_text_size(canv, pxf, sz_format, -1, &xs);
 			if (xs.fx > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
@@ -588,7 +584,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			text_size(canv, pxf, sz_format, -1, &xs);
+			svg_text_size(canv, pxf, sz_format, -1, &xs);
 			if (xs.fx > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
@@ -601,7 +597,7 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	{
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			text_size(canv, pxf, data, len, &xs);
+			svg_text_size(canv, pxf, data, len, &xs);
 			if (xs.fx > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
@@ -612,14 +608,12 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	}
 }
 
-
 void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 {
 	link_t_ptr g, nlk;
 	xrect_t xr;
 
-#ifdef XDK_SUPPORT_CONTEXT_BITMAP
-	res_ctx_t rdc;
+	/*res_ctx_t rdc;
 	res_bmp_t bmp;
 	byte_t* bmp_buf;
 	dword_t bmp_len;
@@ -629,7 +623,6 @@ void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 	int base_len;
 	ximage_t xi = { 0 };
 	xcolor_t xc;
-#endif
 
 	if (is_null(pxi->source))
 		return;
@@ -643,7 +636,6 @@ void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-#ifdef XDK_SUPPORT_CONTEXT_BITMAP
 	if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_BMP, -1, 0) == 0)
 	{
 #ifdef GPL_SUPPORT_PNG
@@ -896,19 +888,12 @@ void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 #endif
 		}
 	}
-#endif
+#endif 
 	else if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_JPG, -1, 0) == 0 || compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_PNG, -1, 0) == 0)
 	{
 		nlk = insert_svg_node(g);
 		write_ximage_to_svg_node(nlk, pxi, &xr);
-	}
-#else
-	if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_JPG, -1, 0) == 0 || compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_PNG, -1, 0) == 0)
-	{
-		nlk = insert_svg_node(g);
-		write_ximage_to_svg_node(nlk, pxi, &xr);
-	}
-#endif
+	}*/
 }
 
 void svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
@@ -935,20 +920,24 @@ void svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const 
 
 void svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	res_ctx_t rdc;
+	float mm = 0.0f;
 
-	rdc = svg_get_canvas_ctx(canv);
+	font_metric_by_point(xstof(pxf->size), &mm, NULL);
 
-	text_mm_size(rdc, pxf, txt, len, pxs);
+	if (len < 0) len = xslen(txt);
+
+	pxs->fx = mm * len;
+	pxs->fy = mm;
 }
 
 void svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
 {
-	res_ctx_t rdc;
+	float mm = 0.0f;
 
-	rdc = svg_get_canvas_ctx(canv);
+	font_metric_by_point(xstof(pxf->size), &mm, NULL);
 
-	text_mm_metric(rdc, pxf, pxs);
+	pxs->fx = mm;
+	pxs->fy = mm;
 }
 
 typedef struct _FIXTEXT_SCAN{
@@ -1294,7 +1283,7 @@ void svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 	tt.vs = string_alloc();
 
 	it.ctx = (void*)canv;
-	it.pf_mm_points = (PF_PT_PER_MM)svg_pt_per_mm;
+	it.pf_mm_points = (PF_MM_POINTS)svg_pt_per_mm;
 	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
 	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
 
@@ -1911,63 +1900,63 @@ void _svg_draw_fixed_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt
 
 void svg_draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
 {
-	if (compare_text(iname, -1, ICON_LOGO, -1, 0) == 0)
+	if (compare_text(iname, -1, GDI_ICON_LOGO, -1, 0) == 0)
 		_svg_draw_logo_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_COLLAPSE, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_COLLAPSE, -1, 0) == 0)
 		_svg_draw_collapse_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_EXPAND, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_EXPAND, -1, 0) == 0)
 		_svg_draw_expand_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_INSERT, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_INSERT, -1, 0) == 0)
 		_svg_draw_insert_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_DELETE, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_DELETE, -1, 0) == 0)
 		_svg_draw_delete_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_PLUS, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_PLUS, -1, 0) == 0)
 		_svg_draw_plus_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_MINUS, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_MINUS, -1, 0) == 0)
 		_svg_draw_minus_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_HOME, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_HOME, -1, 0) == 0)
 		_svg_draw_home_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_UP, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_UP, -1, 0) == 0)
 		_svg_draw_up_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_DOWN, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_DOWN, -1, 0) == 0)
 		_svg_draw_down_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_END, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_END, -1, 0) == 0)
 		_svg_draw_end_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_FIRST, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_FIRST, -1, 0) == 0)
 		_svg_draw_first_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_PREV, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_PREV, -1, 0) == 0)
 		_svg_draw_prev_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_NEXT, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_NEXT, -1, 0) == 0)
 		_svg_draw_next_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_LAST, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_LAST, -1, 0) == 0)
 		_svg_draw_last_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_GUIDER, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_GUIDER, -1, 0) == 0)
 		_svg_draw_guider_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_FOLDER, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_FOLDER, -1, 0) == 0)
 		_svg_draw_folder_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_CHECKBOX, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_CHECKBOX, -1, 0) == 0)
 		_svg_draw_checkbox_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_CHECKED, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_CHECKED, -1, 0) == 0)
 		_svg_draw_checked_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_RADIOBOX, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_RADIOBOX, -1, 0) == 0)
 		_svg_draw_radiobox_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_RADIOED, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_RADIOED, -1, 0) == 0)
 		_svg_draw_radioed_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_SELECTED, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_SELECTED, -1, 0) == 0)
 		_svg_draw_selected_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_SUM, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_SUM, -1, 0) == 0)
 		_svg_draw_sum_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_CLOSE, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_CLOSE, -1, 0) == 0)
 		_svg_draw_close_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_MINIMIZE, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_MINIMIZE, -1, 0) == 0)
 		_svg_draw_minimize_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_MAXIMIZE, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_MAXIMIZE, -1, 0) == 0)
 		_svg_draw_maximize_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_RESTORE, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_RESTORE, -1, 0) == 0)
 		_svg_draw_restore_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, ICON_FIXED, -1, 0) == 0)
+	else if (compare_text(iname, -1, GDI_ICON_FIXED, -1, 0) == 0)
 		_svg_draw_fixed_icon(canv, pxc, pxr);
 }
 
-#endif /*XDL_SUPPORT_VIEW*/
+#endif /*XDL_SUPPORT_SVG*/
 

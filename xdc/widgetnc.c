@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "widgetnc.h"
 #include "widgetex.h"
-#include "handler.h"
+#include "xdcimp.h"
 
 static void _WidgetDrawEdge(res_win_t wt, res_ctx_t dc)
 {
@@ -54,7 +54,7 @@ static void _WidgetDrawEdge(res_win_t wt, res_ctx_t dc)
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
-	widgetex_get_xbrush(wt, &xb);
+	widget_get_xbrush(wt, &xb);
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
 	draw_rect_raw(dc, NULL, &xb, &rtWnd);
@@ -80,8 +80,8 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
-	widgetex_get_xbrush(wt, &xb);
-	widgetex_get_xpen(wt, &xp);
+	widget_get_xbrush(wt, &xb);
+	widget_get_xpen(wt, &xp);
 
 	rtScr.x = rtWnd.x + bd.edge;
 	rtScr.w = rtWnd.w - 2 * bd.edge - bd.vscroll;
@@ -163,8 +163,8 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
-	widgetex_get_xbrush(wt, &xb);
-	widgetex_get_xpen(wt, &xp);
+	widget_get_xbrush(wt, &xb);
+	widget_get_xpen(wt, &xp);
 
 	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
 	rtScr.w = bd.vscroll;
@@ -297,10 +297,10 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	rtScr.w = rtWnd.w - 2 * edge;
 	rtScr.h = title;
 
-	widgetex_get_xbrush(wt, &xb);
-	widgetex_get_xpen(wt, &xp);
-	widgetex_get_xfont(wt, &xf);
-	widgetex_get_xface(wt, &xa);
+	widget_get_xbrush(wt, &xb);
+	widget_get_xpen(wt, &xp);
+	widget_get_xfont(wt, &xf);
+	widget_get_xface(wt, &xa);
 
 	/*lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	parse_xcolor(&xc_near, xb.color);
@@ -392,7 +392,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 	pt_center_rect(&rtScr, 16, 16);
 	parse_xcolor(&xc_center, xp.color);
-	draw_icon_raw(dc, &xc_center, &rtScr, ICON_LOGO);
+	draw_icon_raw(dc, &xc_center, &rtScr, GDI_ICON_LOGO);
 
 	/*caption*/
 	len = widget_get_title(wt, txt, RES_LEN);
@@ -495,12 +495,12 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
 
-	widgetex_get_xbrush(wt, &xb);
+	widget_get_xbrush(wt, &xb);
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
-	widgetex_get_xpen(wt, &xp);
-	widgetex_get_xfont(wt, &xf);
-	widgetex_get_xface(wt, &xa);
-	widgetex_get_iconic(wt, &xc);
+	widget_get_xpen(wt, &xp);
+	widget_get_xfont(wt, &xf);
+	widget_get_xface(wt, &xa);
+	widget_get_iconic(wt, &xc);
 
 	if (!is_null(xf.size))
 	{
@@ -516,7 +516,7 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 
 	draw_rect_raw(dc, NULL, &xb, &rtMenu);
 
-	ptr = widgetex_get_menu(wt);
+	ptr = widget_get_menu(wt);
 
 	rtImage.x = rtWnd.x + edge;
 	rtImage.w = 0;
@@ -933,7 +933,7 @@ int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 	return pos;
 }
 
-void widgetex_redraw_scroll(res_win_t wt, bool_t horz)
+void widget_redraw_scroll(res_win_t wt, bool_t horz)
 {
 	res_ctx_t dc;
 

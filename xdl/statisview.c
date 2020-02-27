@@ -608,17 +608,17 @@ void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr 
 		ft_center_rect(&xr_bar, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
 		if (compare_text(lcap, -1, ATTR_LINE_CAP_RECT, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_RECT);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, GDI_ICON_RECT);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_ELLIPSE, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_ELLIPSE);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, GDI_ICON_ELLIPSE);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_CROSS, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_CROSS);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, GDI_ICON_CROSS);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_STAR, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_STAR);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, GDI_ICON_STAR);
 		else if (compare_text(lcap, -1, ATTR_LINE_CAP_DIAMOND, -1, 0) == 0)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_DIAMOND);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, GDI_ICON_DIAMOND);
 		else
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, ICON_RECT);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_bar, GDI_ICON_RECT);
 
 		xr_bar.fx = xr.fx + yh;
 		xr_bar.fy = xr.fy;
@@ -641,7 +641,7 @@ void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr 
 		ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
 		parse_xcolor(&xc, xf.color);
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_SUM);
+		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_SUM);
 	}
 
 	//draw xax bar and coor
@@ -897,17 +897,17 @@ void draw_statis_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr 
 				xr.fh = DEF_SMALL_ICON;
 
 				if (compare_text(lcap, -1, ATTR_LINE_CAP_RECT, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_RECT);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_RECT);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_ELLIPSE, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_ELLIPSE);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_ELLIPSE);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_CROSS, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_CROSS);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_CROSS);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_STAR, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_STAR);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_STAR);
 				else if (compare_text(lcap, -1, ATTR_LINE_CAP_DIAMOND, -1, 0) == 0)
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_DIAMOND);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_DIAMOND);
 				else
-					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, ICON_ELLIPSE);
+					(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_ELLIPSE);
 
 				if (xlk != xlk_first)
 				{

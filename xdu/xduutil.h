@@ -38,49 +38,6 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDU_API void rgb_to_hsl(unsigned char r, unsigned char g, unsigned char b, short* ph, short* ps, short* pl);
-
-XDU_API void hsl_to_rgb(short h, short s, short l, unsigned char* pr, unsigned char* pg, unsigned char* pb);
-
-XDU_API void parse_xcolor(xcolor_t* pxc, const tchar_t* token);
-
-XDU_API void format_xcolor(const xcolor_t* pxc, tchar_t* buf);
-
-XDU_API void lighten_xcolor(xcolor_t* clr, int n);
-
-XDU_API bool_t is_null_xpen(const xpen_t* pxp);
-
-XDU_API bool_t is_null_xbrush(const xbrush_t* pxb);
-
-XDU_API bool_t is_null_xfont(const xfont_t* pxf);
-
-XDU_API bool_t is_null_xface(const xface_t* pxa);
-
-XDU_API void default_xpen(xpen_t* pxp);
-
-XDU_API void default_xbrush(xbrush_t* pxb);
-
-XDU_API void default_xfont(xfont_t* pxf);
-
-XDU_API void default_xface(xface_t* pxa);
-
-XDU_API void default_xgradi(xgradi_t* pxg);
-
-XDU_API void lighten_xpen(xpen_t* pxp, int n);
-
-XDU_API void merge_xpen(xpen_t* pxp_dst, const xpen_t* pxp_src);
-
-XDU_API void merge_xbrush(xbrush_t* pxb_dst, const xbrush_t* pxb_src);
-
-XDU_API void merge_xfont(xfont_t* pxf_dst, const xfont_t* pxf_src);
-
-XDU_API void merge_xface(xface_t* pxa_dst, const xface_t* pxa_src);
-
-XDU_API void lighten_xbrush(xbrush_t* pxb, int n);
-
-XDU_API void lighten_xfont(xfont_t* pxf, int n);
-
-XDU_API void lighten_xgradi(xgradi_t* pxg, int n);
 
 XDU_API tchar_t* next_draw_path(const tchar_t* script, int len, tchar_t* pname, xpoint_t* ppt, int* pn);
 

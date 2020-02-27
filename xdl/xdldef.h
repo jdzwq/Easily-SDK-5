@@ -37,6 +37,7 @@ LICENSE.GPL3 for more details.
 #include <setjmp.h>
 #include <assert.h>
 
+#include <xdp.h>
 #include <xdk.h>
 
 #if defined(_OS_WINDOWS)
@@ -45,15 +46,6 @@ LICENSE.GPL3 for more details.
 #include "macos/_cfg_macos.h"
 #elif defined(_OS_LINUX)
 #include "linux/_cfg_linux.h"
-#endif
-
-#ifdef XDK_SUPPORT_CONTEXT_OPENGL
-#include <gl/GL.h>
-#include <gl/GLU.h>
-#if defined(_OS_WINDOWS)
-#pragma comment(lib,"opengl32.lib")
-#pragma comment(lib, "GLU32.lib")
-#endif
 #endif
 
 
@@ -98,12 +90,6 @@ LICENSE.GPL3 for more details.
 #ifndef C_ERR
 #define C_ERR		((int)-1)
 #endif
-
-/*define max numeric precision*/
-#define MAX_DOUBLE_PREC	18
-#define MAX_DOUBLE_DIGI	6
-#define MAX_FLOAT_PREC	12
-#define MAX_FLOAT_DIGI	4
 
 typedef dword_t		key32_t;
 typedef lword_t		key64_t;
@@ -592,7 +578,7 @@ typedef struct _variant_t{
 
 #define DEF_SPLIT_SPAN			(float)1.5
 #define DEF_TOUCH_SPAN			(float)7
-#define DEF_ICON_SPAN			(float)6.8
+#define DEF_GDI_ICON_SPAN			(float)6.8
 #define DEF_TEXT_HEIGHT			(float)8
 #define DEF_TEXT_WIDTH			(float)20
 #define DEF_ITEM_HEIGHT			(float)7

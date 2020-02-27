@@ -23,7 +23,7 @@ TARGET = $(OUT_PATH)/libxdu.so.1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lX11 -L $(LIB_PATH)
+	$(CC) -shared -fPIC -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lX11 -lxdp -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:

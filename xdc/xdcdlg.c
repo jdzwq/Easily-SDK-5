@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcdlg.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 #include "xdcctrl.h"
 
@@ -171,7 +169,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 		{
 			widget_set_owner(box, dlg);
 			widget_set_user_id(box, xstol(get_dialog_item_id_ptr(ilk)));
-			widgetex_set_point(box, RECTPOINT(&xr));
+			widget_set_point(box, RECTPOINT(&xr));
 			widget_show(box, WD_SHOW_NORMAL);
 		}
 		
@@ -202,7 +200,7 @@ int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_
 	canvas_t canv;
 	if_canvas_t* pif;
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -234,9 +232,9 @@ static int STDCALL _widget_set_child_point(res_win_t widget, var_long pv)
 {
 	xpoint_t pt;
 
-	if (widgetex_has_struct(widget))
+	if (widget_has_struct(widget))
 	{
-		widgetex_get_point(widget, &pt);
+		widget_get_point(widget, &pt);
 
 		widget_move(widget, &pt);
 	}

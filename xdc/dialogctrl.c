@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 
 #define DIALOG_LINE_FEED		(float)50
 #define DIALOG_ITEM_MIN_WIDTH	(float)10
@@ -307,7 +305,7 @@ static void _dialogctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr
 
 	calc_dialog_item_rect(ptd->dialog, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _dialogctrl_reset_page(res_win_t widget)
@@ -325,17 +323,17 @@ static void _dialogctrl_reset_page(res_win_t widget)
 	xs.fx = get_dialog_width(ptd->dialog);
 	xs.fy = get_dialog_height(ptd->dialog);
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = (float)10;
 	xs.fy = (float)10;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -353,7 +351,7 @@ static void _dialogctrl_ensure_visible(res_win_t widget)
 
 	_dialogctrl_item_rect(widget, ptd->item, &xr);
 
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 /*********************************************************************************************************/
 int noti_dialog_owner(res_win_t widget, unsigned int code, link_t_ptr ptr, link_t_ptr ilk, void* data)
@@ -548,7 +546,7 @@ void noti_dialog_item_drop(res_win_t widget, int x, int y)
 
 	calc_dialog_item_rect(ptd->dialog, ptd->item, &xr);
 
-	widgetex_rect_to_pt(widget, &xr);
+	widget_rect_to_pt(widget, &xr);
 
 	if (xr.x + cx < 0 || xr.y + cy < 0)
 		return;
@@ -558,7 +556,7 @@ void noti_dialog_item_drop(res_win_t widget, int x, int y)
 	pt.x = xr.x + cx;
 	pt.y = xr.y + cy;
 
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	pt.fx = (float)((int)(pt.fx));
 	pt.fy = (float)((int)(pt.fy));
@@ -641,7 +639,7 @@ void noti_dialog_item_sized(res_win_t widget, int x, int y)
 	if (!xs.cx && !xs.cy)
 		return;
 
-	widgetex_size_to_tm(widget, &xs);
+	widget_size_to_tm(widget, &xs);
 
 	_dialogctrl_item_rect(widget, ptd->item, &xr);
 
@@ -701,7 +699,7 @@ int hand_dialog_create(res_win_t widget, void* data)
 {
 	dialog_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (dialog_delta_t*)xmem_alloc(sizeof(dialog_delta_t));
 	xmem_zero((void*)ptd, sizeof(dialog_delta_t));
@@ -726,7 +724,7 @@ void hand_dialog_destroy(res_win_t widget)
 
 	SETDIALOGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_dialog_size(res_win_t widget, int code, const xsize_t* prs)
@@ -746,7 +744,7 @@ void hand_dialog_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->dialog)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
@@ -769,7 +767,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_dialog_hint(ptd->dialog, &pt, &ilk);
@@ -881,7 +879,7 @@ void hand_dialog_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_dialog_hint(ptd->dialog, &pt, &ilk);
@@ -927,7 +925,7 @@ void hand_dialog_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_dialog_hint(ptd->dialog, &pt, &ilk);
@@ -1060,19 +1058,29 @@ void hand_dialog_keydown(res_win_t widget, int nKey)
 	}
 	else if ((nKey == _T('z') || nKey == _T('Z')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_undo(widget);
+		_dialogctrl_undo(widget);
 	}
 	else if ((nKey == _T('c') || nKey == _T('C')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_copy(widget);
+		_dialogctrl_copy(widget);
 	}
 	else if ((nKey == _T('x') || nKey == _T('X')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_cut(widget);
+		_dialogctrl_done(widget);
+
+		if (!_dialogctrl_cut(widget))
+		{
+			_dialogctrl_discard(widget);
+		}
 	}
 	else if ((nKey == _T('v') || nKey == _T('V')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_paste(widget);
+		_dialogctrl_done(widget);
+
+		if (!_dialogctrl_paste(widget))
+		{
+			_dialogctrl_discard(widget);
+		}
 	}
 }
 
@@ -1082,56 +1090,6 @@ void hand_dialog_char(res_win_t widget, tchar_t nChar)
 
 	if (!ptd->dialog)
 		return;
-}
-
-void hand_dialog_copy(res_win_t widget)
-{
-	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
-
-	if (!ptd->dialog)
-		return;
-
-	_dialogctrl_copy(widget);
-}
-
-void hand_dialog_cut(res_win_t widget)
-{
-	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
-
-	if (!ptd->dialog)
-		return;
-
-	_dialogctrl_done(widget);
-
-	if (!_dialogctrl_cut(widget))
-	{
-		_dialogctrl_discard(widget);
-	}
-}
-
-void hand_dialog_paste(res_win_t widget)
-{
-	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
-
-	if (!ptd->dialog)
-		return;
-
-	_dialogctrl_done(widget);
-
-	if (!_dialogctrl_paste(widget))
-	{
-		_dialogctrl_discard(widget);
-	}
-}
-
-void hand_dialog_undo(res_win_t widget)
-{
-	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
-
-	if (!ptd->dialog)
-		return;
-
-	_dialogctrl_undo(widget);
 }
 
 void hand_dialog_notice(res_win_t widget, NOTICE* pnt)
@@ -1169,9 +1127,9 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->dialog)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -1179,20 +1137,20 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xpen(widget, &xp);
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	draw_dialog(pif, &cb, ptd->dialog);
 
@@ -1290,11 +1248,6 @@ res_win_t dialogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 		EVENT_ON_RBUTTON_UP(hand_dialog_rbutton_up)
 
 		EVENT_ON_NOTICE(hand_dialog_notice)
-
-		EVENT_ON_COPY(hand_dialog_copy)
-		EVENT_ON_CUT(hand_dialog_cut)
-		EVENT_ON_PASTE(hand_dialog_paste)
-		EVENT_ON_UNDO(hand_dialog_undo)
 
 		EVENT_ON_NC_IMPLEMENT
 

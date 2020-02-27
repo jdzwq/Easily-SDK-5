@@ -19,7 +19,7 @@ TARGET = $(OUT_PATH)/libloc_api.so.1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdl -lxds
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl -lxds
 	rm -f $(OBJS)
 
 test:
@@ -37,6 +37,7 @@ install:
 
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
 	sudo chmod +x $(SRV_PATH)/api/libloc_api.so.1.0;
+	sudo rm -f $(LNK_PATH)/libloc_api*;
 	sudo ln -bs $(SRV_PATH)/api/libloc_api.so.1.0 $(LNK_PATH)/libloc_api.so;
 
 .PHONY : clean

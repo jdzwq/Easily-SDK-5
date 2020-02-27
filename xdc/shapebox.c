@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcbox.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 
 typedef struct _shapebox_delta_t{
 	tchar_t shape[INT_LEN];
@@ -46,7 +44,7 @@ int hand_shapebox_create(res_win_t widget, void* data)
 {
 	shapebox_delta_t* ptd = GETSHAPEBOXDELTA(widget);
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (shapebox_delta_t*)xmem_alloc(sizeof(shapebox_delta_t));
 	xmem_zero((void*)ptd, sizeof(shapebox_delta_t));
@@ -66,7 +64,7 @@ void hand_shapebox_destroy(res_win_t widget)
 
 	SETSHAPEBOXDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_shapebox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -105,8 +103,8 @@ void hand_shapebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widgetex_get_xpen(widget, &xp);
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
 
 	widget_get_client_rect(widget, &xr);
 

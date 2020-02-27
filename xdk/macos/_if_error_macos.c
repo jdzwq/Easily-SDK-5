@@ -40,11 +40,11 @@ int _error_text(tchar_t* buf, int max)
     
     err = strerror(errno);
     
-    if(!_tstrnull(err))
+    if(!is_null(err))
     {
-        len = (int)_tstrlen(err);
+        len = (int)xslen(err);
         len = (len < max)? len : max;
-        strncpy(buf, err, len);
+        xsncpy(buf, err, len);
         buf[len] = '\0';
     }
     

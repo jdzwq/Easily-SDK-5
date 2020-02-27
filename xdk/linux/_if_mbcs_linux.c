@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 int _gbk_to_ucs(const schar_t* gbk, int len, wchar_t* ucs, int max)
 {
     if(len < 0)
-        len = (int)strlen(gbk);
+        len = (int)xslen(gbk);
     
     setlocale(P_ALL, "zh_CN.GBK");
     
@@ -64,7 +64,7 @@ int _ucs_to_gbk(const wchar_t* ucs, int len, schar_t* gbk, int max)
 int _utf8_to_ucs(const schar_t* utf, int len, wchar_t* ucs, int max)
 {
     if(len < 0)
-        len = (int)strlen(utf);
+        len = (int)xslen(utf);
     
     setlocale(P_ALL, "zh_CN.UTF-8");
     

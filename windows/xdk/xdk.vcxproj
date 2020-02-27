@@ -71,14 +71,14 @@
     <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdk\</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdk\;..\..\include\;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdk\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdk\;..\..\include\;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -86,7 +86,7 @@
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
     <TargetName>$(ProjectName)55</TargetName>
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdk\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdk\;..\..\include\;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
@@ -94,7 +94,7 @@
     <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)64</TargetName>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdk\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdk\;..\..\include\;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -179,38 +179,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdk\windows\_if_async_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_bitmap_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_clipboard_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_comm_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_cons_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_context_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_date_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_error_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_file_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_gdiplus_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_gdi_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_mbcs_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_memo_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_pipe_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_printer_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_process_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_region_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_share_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_shell_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_socket_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_thread_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_timer_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_widget_win32.cc" />
     <ClCompile Include="..\..\xdk\xdkinf.c" />
-    <ClCompile Include="..\..\xdk\xdkutil.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xdk\windows\_xdk_win.h" />
-    <ClInclude Include="..\..\xdk\xdkattr.h" />
     <ClInclude Include="..\..\xdk\xdkdef.h" />
     <ClInclude Include="..\..\xdk\xdkiml.h" />
     <ClInclude Include="..\..\xdk\xdkinf.h" />
-    <ClInclude Include="..\..\xdk\xdkutil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

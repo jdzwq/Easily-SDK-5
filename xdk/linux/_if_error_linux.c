@@ -35,8 +35,8 @@ LICENSE.GPL3 for more details.
 
 int _error_text(tchar_t* buf, int max)
 {
-	strncpy(buf, strerror(errno), max);
-	return (int)strlen(buf);;
+	xsncpy(buf, strerror(errno), max);
+	return (int)xslen(buf);;
 }
 
 void _error_exit(void)

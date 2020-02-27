@@ -229,17 +229,16 @@
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				HEADER_SEARCH_PATHS = (
-					/opt/X11/include,
-					/opt/X11/include/freetype2,
 					../../include,
 					../../api/net_srv,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/opt/X11/lib,
 					../lib,
 					"$(BUILD_DIR)/api",
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "-lxdp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = ../sbin;
 			};
@@ -250,17 +249,16 @@
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				HEADER_SEARCH_PATHS = (
-					/opt/X11/include,
-					/opt/X11/include/freetype2,
 					../../include,
 					../../api/net_srv,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/opt/X11/lib,
 					../lib,
 					"$(BUILD_DIR)/api",
 				);
 				OBJROOT = "/Users/zwq/工程/Easily-tmp/macos";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "-lxdp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = ../sbin;
 			};

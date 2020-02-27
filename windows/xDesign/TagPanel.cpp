@@ -123,21 +123,21 @@ void TagPanel_OnCopy(res_win_t widget)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
-	widget_copy(pdt->hTag);
+	widget_post_command(pdt->hTag, COMMAND_COPY, IDC_EDITMENU, 0);
 }
 
 void TagPanel_OnCut(res_win_t widget)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
-	widget_cut(pdt->hTag);
+	widget_post_command(pdt->hTag, COMMAND_CUT, IDC_EDITMENU, 0);
 }
 
 void TagPanel_OnPaste(res_win_t widget)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
-	widget_paste(pdt->hTag);
+	widget_post_command(pdt->hTag, COMMAND_PASTE, IDC_EDITMENU, 0);
 }
 
 void TagPanel_OnRedo(res_win_t widget)
@@ -150,7 +150,7 @@ void TagPanel_OnUndo(res_win_t widget)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
-	widget_undo(pdt->hTag);
+	widget_post_command(pdt->hTag, COMMAND_UNDO, IDC_EDITMENU, 0);
 }
 
 void TagPanel_Tag_OnNodeChange(res_win_t widget, NOTICE_TAG* pnf)
@@ -314,8 +314,8 @@ void TagPanel_OnPreview(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	widgetex_get_xfont(pdt->hTag, &xf);
-	widgetex_get_xface(pdt->hTag, &xa);
+	widget_get_xfont(pdt->hTag, &xf);
+	widget_get_xface(pdt->hTag, &xa);
 
 	//svg_print_tag(svg, &xf, &xa, ptrTag, page);
 
@@ -339,7 +339,7 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	TagPanelDelta* pdt = (TagPanelDelta*)xmem_alloc(sizeof(TagPanelDelta));
 	xrect_t xr;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	SETTAGPANELDELTA(widget, pdt);
 
@@ -361,9 +361,9 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTag, widget);
 
 	xface_t xa;
-	widgetex_get_xface(pdt->hTag, &xa);
+	widget_get_xface(pdt->hTag, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-	widgetex_set_xface(pdt->hTag, &xa);
+	widget_set_xface(pdt->hTag, &xa);
 
 	LINKPTR ptrTag = create_tag_doc();
 	tagctrl_attach(pdt->hTag, ptrTag);
@@ -383,7 +383,7 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	set_split_item_delta(ilkProper, pdt->hProper);
 	widget_show(pdt->hProper, WD_SHOW_NORMAL);
 
-	widgetex_attach_splitor(widget, ptrSplit);
+	widget_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -406,7 +406,7 @@ void TagPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widgetex_detach_splitor(widget);
+	link_t_ptr split = widget_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -430,7 +430,7 @@ void TagPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 int TagPanel_OnClose(res_win_t widget)
@@ -477,43 +477,43 @@ void TagPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("È«Ñ¡"));
-		set_tool_item_icon(ilk, ICON_SELECTALL);
+		set_tool_item_icon(ilk, GDI_ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("É¾³ý"));
-		set_tool_item_icon(ilk, ICON_DELETE);
+		set_tool_item_icon(ilk, GDI_ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¿½±´"));
-		set_tool_item_icon(ilk, ICON_COPY);
+		set_tool_item_icon(ilk, GDI_ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¼ôÇÐ"));
-		set_tool_item_icon(ilk, ICON_CUT);
+		set_tool_item_icon(ilk, GDI_ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Õ³Ìù"));
-		set_tool_item_icon(ilk, ICON_PASTE);
+		set_tool_item_icon(ilk, GDI_ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("³·Ïú"));
-		set_tool_item_icon(ilk, ICON_UNDO);
+		set_tool_item_icon(ilk, GDI_ICON_UNDO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_INSERT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("ÐÂÔö"));
-		set_tool_item_icon(ilk, ICON_PLUS);
+		set_tool_item_icon(ilk, GDI_ICON_PLUS);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

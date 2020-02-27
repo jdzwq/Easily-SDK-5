@@ -30,7 +30,6 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xduiml.h"
-#include "xduattr.h"
 
 
 #ifdef XDU_SUPPORT_CONTEXT
@@ -171,29 +170,29 @@ static void _format_font_pattern(const xfont_t* pxf, tchar_t* buf)
     const tchar_t* fs_weight = NULL;
     int fs_size = 10;
     
-    if(_tstrnull((pxf->family)))
+    if(is_null((pxf->family)))
         fs_name = x11_font_name[0];
     else
         fs_name = pxf->family;
        
-    if(_tstrtol(pxf->weight) < 400)
+    if(xstol(pxf->weight) < 400)
         fs_weight = x11_font_weight[0];
-    else if(_tstrtol(pxf->weight) < 700)
+    else if(xstol(pxf->weight) < 700)
         fs_weight = x11_font_weight[1];
     else
         fs_weight = x11_font_weight[2];
     
-    if(_tstrcmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
+    if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
         fs_style = x11_font_style[1];
-    else if(_tstrcmp(pxf->style,GDI_ATTR_FONT_STYLE_OBLIQUE) == 0)
+    else if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_OBLIQUE) == 0)
         fs_style = x11_font_style[2];
     else
         fs_style = x11_font_style[0];
     
-     if(_tstrnull((pxf->size)))
+     if(is_null((pxf->size)))
          fs_size = 10;
     else
-        fs_size = _tstrtol(pxf->size);
+        fs_size = xstol(pxf->size);
     
     _tsprintf(buf, x11_pattern, fs_name, fs_weight, fs_style, fs_size);
 }
@@ -227,7 +226,7 @@ void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
     XFontStruct* pfs = NULL;
     tchar_t pattern[256] = {0};
     
-    if(len < 0) len = _tstrlen(txt);
+    if(len < 0) len = xslen(txt);
     
     _format_font_pattern(pxf, pattern);
     

@@ -60,36 +60,6 @@
 #include "impcons.h"
 #endif
 
-#ifdef XDK_SUPPORT_SHELL
-#include "impshell.h"
-#endif
-
-#ifdef XDK_SUPPORT_CLIPBOARD
-#include "impclip.h"
-#endif
-
-#ifdef XDK_SUPPORT_CONTEXT
-#include "impcontext.h"
-#endif
-
-#ifdef XDK_SUPPORT_CONTEXT_BITMAP
-#include "impbitmap.h"
-#endif
-
-#ifdef XDK_SUPPORT_CONTEXT_GRAPHIC
-#include "impgdi.h"
-#endif
-
-#ifdef XDK_SUPPORT_WIDGET
-#include "impwin.h"
-#endif
-
-
-#include "icongdi.h"
-#include "plotgdi.h"
-#include "gdicanv.h"
-#include "gdiinf.h"
-
 #include "svgcanv.h"
 #include "svggdi.h"
 #include "svginf.h"

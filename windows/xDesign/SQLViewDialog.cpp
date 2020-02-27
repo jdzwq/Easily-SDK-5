@@ -109,7 +109,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 
 	XDL_ASSERT(pdt->psp);
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	SETSQLVIEWDLGDELTA(widget, pdt);
 
@@ -143,9 +143,9 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	widget_show(pdt->hEdit, WD_SHOW_NORMAL);
 
 	xface_t xa;
-	widgetex_get_xface(pdt->hEdit, &xa);
+	widget_get_xface(pdt->hEdit, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_LINEBREAK);
-	widgetex_set_xface(pdt->hEdit, &xa);
+	widget_set_xface(pdt->hEdit, &xa);
 
 	set_split_item_delta(ilkEdit, pdt->hEdit);
 
@@ -155,12 +155,12 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	xsize_t xs;
 	xs.fx = SQLVIEWDLG_BAR_SPLIT;
 	xs.fy = 0;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	int nSplit = xs.cx;
 
 	xs.fx = SQLVIEWDLG_BTN_WIDTH;
 	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
@@ -233,7 +233,7 @@ void SQLViewDlg_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void SQLViewDlg_OnMouseMove(res_win_t widget, dword_t dw, const xpoint_t* pxp)
@@ -279,7 +279,7 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	xsize_t xs;
 	xs.fx = 0;
 	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
 
@@ -292,12 +292,12 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	xs.fx = SQLVIEWDLG_BAR_SPLIT;
 	xs.fy = 0;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	int nSplit = xs.cx;
 
 	xs.fx = SQLVIEWDLG_BTN_WIDTH;
 	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
@@ -335,7 +335,7 @@ void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xrect_t xr, xr_bar;
 	xsize_t xs;
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -348,7 +348,7 @@ void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xs.fx = SQLVIEWDLG_BAR_SPLIT;
 	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -445,7 +445,7 @@ res_win_t SQLViewDlg_Create(const TCHAR* title, SQLVIEWDLG_PARAM* ppd)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widgetex_set_color_mode(widget, &clr);
+	widget_set_color_mode(widget, &clr);
 
 	widget_center_window(widget, g_hMain);
 	widget_update(widget);

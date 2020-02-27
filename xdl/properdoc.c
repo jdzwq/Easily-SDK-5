@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 void default_proper_attr(link_t_ptr ptr)
 {
-	set_proper_icon_span(ptr,DEF_ICON_SPAN); 
+	set_proper_icon_span(ptr,DEF_GDI_ICON_SPAN); 
 	set_proper_item_span(ptr,25); 
 	set_proper_item_height(ptr, DEF_ITEM_HEIGHT);
 

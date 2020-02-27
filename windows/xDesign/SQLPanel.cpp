@@ -96,21 +96,21 @@ void SQLPanel_OnCopy(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	widget_copy(pdt->hMemo);
+	widget_post_command(pdt->hMemo, COMMAND_COPY, IDC_EDITMENU, 0);
 }
 
 void SQLPanel_OnCut(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	widget_cut(pdt->hMemo);
+	widget_post_command(pdt->hMemo, COMMAND_CUT, IDC_EDITMENU, 0);
 }
 
 void SQLPanel_OnPaste(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	widget_paste(pdt->hMemo);
+	widget_post_command(pdt->hMemo, COMMAND_PASTE, IDC_EDITMENU, 0);
 }
 
 void SQLPanel_OnRedo(res_win_t widget)
@@ -123,7 +123,7 @@ void SQLPanel_OnUndo(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	widget_undo(pdt->hMemo);
+	widget_post_command(pdt->hMemo, COMMAND_UNDO, IDC_EDITMENU, 0);
 }
 
 bool_t SQLPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
@@ -444,8 +444,8 @@ void SQLPanel_OnPreview(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	widgetex_get_xfont(pdt->hMemo, &xf);
-	widgetex_get_xface(pdt->hMemo, &xa);
+	widget_get_xfont(pdt->hMemo, &xf);
+	widget_get_xface(pdt->hMemo, &xa);
 
 	svg_print_memo(svg, &xf, &xa, ptrMemo, page);
 
@@ -469,7 +469,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	SQLPanelDelta* pdt = (SQLPanelDelta*)xmem_alloc(sizeof(SQLPanelDelta));
 	xrect_t xr;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	SETSQLPANELDELTA(widget, pdt);
 
@@ -508,7 +508,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	set_split_item_delta(ilkGrid, pdt->hGrid);
 	widget_show(pdt->hGrid, WD_SHOW_NORMAL);
 
-	widgetex_attach_splitor(widget, ptrSplit);
+	widget_attach_splitor(widget, ptrSplit);
 
 	const tchar_t* szParam = (tchar_t*)data;
 
@@ -531,7 +531,7 @@ void SQLPanel_OnDestroy(res_win_t widget)
 	if (hac)
 		destroy_accel_table(hac);
 
-	link_t_ptr split = widgetex_detach_splitor(widget);
+	link_t_ptr split = widget_detach_splitor(widget);
 	if (split)
 		destroy_split_doc(split);
 
@@ -555,7 +555,7 @@ void SQLPanel_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 int SQLPanel_OnClose(res_win_t widget)
@@ -602,49 +602,49 @@ void SQLPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("È«Ñ¡"));
-		set_tool_item_icon(ilk, ICON_SELECTALL);
+		set_tool_item_icon(ilk, GDI_ICON_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("É¾³ý"));
-		set_tool_item_icon(ilk, ICON_DELETE);
+		set_tool_item_icon(ilk, GDI_ICON_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¿½±´"));
-		set_tool_item_icon(ilk, ICON_COPY);
+		set_tool_item_icon(ilk, GDI_ICON_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¼ôÇÐ"));
-		set_tool_item_icon(ilk, ICON_CUT);
+		set_tool_item_icon(ilk, GDI_ICON_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Õ³Ìù"));
-		set_tool_item_icon(ilk, ICON_PASTE);
+		set_tool_item_icon(ilk, GDI_ICON_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("³·Ïú"));
-		set_tool_item_icon(ilk, ICON_UNDO);
+		set_tool_item_icon(ilk, GDI_ICON_UNDO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DATABASE_EXECUTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Ö´ÐÐ"));
-		set_tool_item_icon(ilk, ICON_EXECUTE);
+		set_tool_item_icon(ilk, GDI_ICON_EXECUTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DATABASE_SELECT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("²éÑ¯"));
-		set_tool_item_icon(ilk, ICON_GRID);
+		set_tool_item_icon(ilk, GDI_ICON_GRID);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

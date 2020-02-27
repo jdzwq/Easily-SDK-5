@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 typedef struct _panel_delta_t{
@@ -73,8 +71,8 @@ static int _panelctrl_calc_width(res_win_t widget)
 	xsize_t xs;
 	int pw;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
 	rdc = widget_client_ctx(widget);
@@ -139,11 +137,11 @@ static int _panelctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 	xface_t xa;
 	viewbox_t vb;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
-	widgetex_get_view_rect(widget, &vb);
+	widget_get_view_rect(widget, &vb);
 
 	*pplk = NULL;
 	hint = _PANEL_HINT_NONE;
@@ -206,11 +204,11 @@ static void _panelctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
-	widgetex_get_view_rect(widget, &vb);
+	widget_get_view_rect(widget, &vb);
 
 	ilk = get_arch_first_child_item(ptd->arch);
 	while (ilk)
@@ -244,7 +242,7 @@ static void _panelctrl_reset_page(res_win_t widget)
 
 	widget_get_client_rect(widget, &xr);
 
-	widgetex_reset_paging(widget, xr.w, xr.h, xr.w, mh, ptd->item_width, ptd->title_height);
+	widget_reset_paging(widget, xr.w, xr.h, xr.w, mh, ptd->item_width, ptd->title_height);
 }
 
 static void _panelctrl_ensure_visible(res_win_t widget)
@@ -257,7 +255,7 @@ static void _panelctrl_ensure_visible(res_win_t widget)
 
 	_panelctrl_item_rect(widget, ptd->item, &xr);
 
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 
 /*************************************************************************/
@@ -368,11 +366,11 @@ int hand_panel_create(res_win_t widget, void* data)
 	xfont_t xf = { 0 };
 	xsize_t xs;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (panel_delta_t*)xmem_alloc(sizeof(panel_delta_t));
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	rdc = widget_client_ctx(widget);
 	text_metric_raw(rdc, &xf, &xs);
@@ -399,7 +397,7 @@ void hand_panel_destroy(res_win_t widget)
 
 	SETPANELDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_panel_keydown(res_win_t widget, int key)
@@ -570,7 +568,7 @@ void hand_panel_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->arch)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_panel_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -590,7 +588,7 @@ void hand_panel_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -643,11 +641,11 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->arch)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
-	widgetex_get_iconic(widget, &xc);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
+	widget_get_iconic(widget, &xc);
 
 	memcpy((void*)&xf_top, (void*)&xf, sizeof(xfont_t));
 	xscpy(xf_top.weight, GDI_ATTR_FONT_WEIGHT_BOLD);
@@ -670,7 +668,7 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_view_rect(widget, &vb);
+	widget_get_view_rect(widget, &vb);
 
 	pt_offset_rect(&xr, vb.px, vb.py);
 
@@ -708,7 +706,7 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_icon.w = ptd->title_height;
 		xr_icon.h = ptd->title_height;
 		pt_center_rect(&xr_icon, 12, 12);
-		draw_icon_raw(rdc, &xc, &xr_icon, ICON_BOOK);
+		draw_icon_raw(rdc, &xc, &xr_icon, GDI_ICON_BOOK);
 
 		xr_icon.x = xr.x + 12;
 		xr_icon.y = xr.y;

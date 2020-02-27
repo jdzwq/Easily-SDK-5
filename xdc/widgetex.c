@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc widget default handler document
+	@doc widgetex default handler document
 
-	@module	handler.c | implement file
+	@module	widgetex.c | implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -31,279 +31,69 @@ LICENSE.GPL3 for more details.
 
 #include "widgetex.h"
 #include "widgetnc.h"
+#include "xdcimp.h"
 #include "splitor.h"
 #include "docker.h"
 
+typedef struct _exten_struct_t{
+	xrect_t vb;
+	xrect_t cb;
+	xsize_t sc;
+
+	link_t_ptr menu;
+	canvas_t canv;
+
+	union{
+		splitor_t splitor;
+		docker_t docker;
+	};
+}exten_struct_t;
+
+#define GETEXTENSTRUCT(wt)			(exten_struct_t*)widget_get_core_delta(wt)
+#define SETEXTENSTRUCT(wt, lp)		widget_set_core_delta(wt, (var_long)lp)
+
+
 /***********************************************************************************************************************/
-
-bool_t	widgetex_has_struct(res_win_t wt)
-{
-	widget_struct_t* pws;
-
-	pws = GETWIDGSTRUCT(wt);
-
-	return (pws != NULL) ? 1 : 0;
-}
-
-void  widgetex_set_xfont(res_win_t wt, const xfont_t* pxf)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->xf, (void*)pxf, sizeof(xfont_t));
-}
-
-void  widgetex_get_xfont(res_win_t wt, xfont_t* pxf)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)pxf, (void*)&pwt->xf, sizeof(xfont_t));
-}
-
-const xfont_t*  widgetex_get_xfont_ptr(res_win_t wt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	return &pwt->xf;
-}
-
-void widgetex_set_xface(res_win_t wt, const xface_t* pxa)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->xa, (void*)pxa, sizeof(xface_t));
-}
-
-void  widgetex_get_xface(res_win_t wt, xface_t* pxa)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)pxa, (void*)&pwt->xa, sizeof(xface_t));
-}
-
-const xface_t*  widgetex_get_xface_ptr(res_win_t wt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	return &pwt->xa;
-}
-
-void  widgetex_set_xbrush(res_win_t wt, const xbrush_t* pxb)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->xb, (void*)pxb, sizeof(xbrush_t));
-}
-
-void  widgetex_get_xbrush(res_win_t wt, xbrush_t* pxb)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)pxb, (void*)&pwt->xb, sizeof(xbrush_t));
-}
-
-const xbrush_t*  widgetex_get_xbrush_ptr(res_win_t wt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	return &pwt->xb;
-}
-
-void  widgetex_set_xpen(res_win_t wt, const xpen_t* pxp)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->xp, (void*)pxp, sizeof(xpen_t));
-}
-
-void  widgetex_get_xpen(res_win_t wt, xpen_t* pxp)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)pxp, (void*)&pwt->xp, sizeof(xpen_t));
-}
-
-const xpen_t*  widgetex_get_xpen_ptr(res_win_t wt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	return &pwt->xp;
-}
-
-void  widgetex_set_mask(res_win_t wt, const xcolor_t* pxc)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->msk, (void*)pxc, sizeof(xcolor_t));
-}
-
-void  widgetex_get_mask(res_win_t wt, xcolor_t* pxc)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)pxc, (void*)&pwt->msk, sizeof(xcolor_t));
-}
-
-const xcolor_t*  widgetex_get_mask_ptr(res_win_t wt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	return &pwt->msk;
-}
-
-void  widgetex_set_iconic(res_win_t wt, const xcolor_t* pxc)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->ico, (void*)pxc, sizeof(xcolor_t));
-}
-
-void  widgetex_get_iconic(res_win_t wt, xcolor_t* pxc)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)pxc, (void*)&pwt->ico, sizeof(xcolor_t));
-}
-
-const xcolor_t*  widgetex_get_iconic_ptr(res_win_t wt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	return &pwt->ico;
-}
-
-void  widgetex_set_point(res_win_t wt, const xpoint_t* ppt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)&pwt->pt, (void*)ppt, sizeof(xpoint_t));
-}
-
-void  widgetex_get_point(res_win_t wt, xpoint_t* ppt)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	XDL_ASSERT(pwt != NULL);
-
-	xmem_copy((void*)ppt, (void*)&pwt->pt, sizeof(xpoint_t));
-}
 
 canvas_t widget_get_canvas(res_win_t wt)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
 	return pwt->canv;
 }
 
-void  widgetex_attach_menu(res_win_t wt, link_t_ptr menu)
+void  widget_attach_menu(res_win_t wt, link_t_ptr menu)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
 	pwt->menu = menu;
 }
 
-link_t_ptr  widgetex_get_menu(res_win_t wt)
+link_t_ptr  widget_get_menu(res_win_t wt)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
 	return pwt->menu;
 }
 
-link_t_ptr  widgetex_detach_menu(res_win_t wt)
+link_t_ptr  widget_detach_menu(res_win_t wt)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 	link_t_ptr menu;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -313,7 +103,7 @@ link_t_ptr  widgetex_detach_menu(res_win_t wt)
 	return menu;
 }
 
-void  widgetex_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
+void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 {
 	border_t bd = { 0 };
 	link_t_ptr plk, ilk;
@@ -322,11 +112,11 @@ void  widgetex_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 	const tchar_t* text;
 	res_ctx_t rdc;
 	xfont_t xf = { 0 };
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
 	pxr->x = pxr->w = pxr->y = pxr->h = 0;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	plk = (pwt->menu) ? get_menu_item_by_iid(pwt->menu, iid) : NULL;
 	if (!plk)
@@ -342,7 +132,7 @@ void  widgetex_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 	xrItem.y = bd.edge + bd.title;
 	xrItem.h = bd.menu;
 
-	widgetex_get_xfont(wt, &xf);
+	widget_get_xfont(wt, &xf);
 
 	rdc = widget_window_ctx(wt);
 
@@ -371,11 +161,11 @@ void  widgetex_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 	widget_release_ctx(wt, rdc);
 }
 
-void  widgetex_attach_splitor(res_win_t wt, link_t_ptr split)
+void  widget_attach_splitor(res_win_t wt, link_t_ptr split)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -383,23 +173,23 @@ void  widgetex_attach_splitor(res_win_t wt, link_t_ptr split)
 	pwt->splitor.split = split;
 }
 
-link_t_ptr  widgetex_get_splitor(res_win_t wt)
+link_t_ptr  widget_get_splitor(res_win_t wt)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
 	return pwt->splitor.split;
 }
 
-link_t_ptr  widgetex_detach_splitor(res_win_t wt)
+link_t_ptr  widget_detach_splitor(res_win_t wt)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 	link_t_ptr splitor;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -410,12 +200,12 @@ link_t_ptr  widgetex_detach_splitor(res_win_t wt)
 	return splitor;
 }
 
-void widgetex_layout_splitor(res_win_t wt)
+void widget_layout_splitor(res_win_t wt)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 	xrect_t xr;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -426,12 +216,12 @@ void widgetex_layout_splitor(res_win_t wt)
 	}
 }
 
-bool_t widgetex_dock(res_win_t wt, dword_t style, int cx, int cy)
+bool_t widget_dock(res_win_t wt, dword_t style, int cx, int cy)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 	int i;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -456,12 +246,12 @@ bool_t widgetex_dock(res_win_t wt, dword_t style, int cx, int cy)
 	return 1;
 }
 
-void widgetex_undock(res_win_t wt, dword_t style)
+void widget_undock(res_win_t wt, dword_t style)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 	int i;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -486,90 +276,22 @@ void widgetex_undock(res_win_t wt, dword_t style)
 	}
 }
 
-void widgetex_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr)
+void widget_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
 	hand_docker_calc_rect(&pwt->docker, style, pxr);
 }
 
-static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
+void widget_calc_scroll(res_win_t wt, bool_t bHorz, scroll_t* psl)
 {
-	dword_t dw;
+	exten_struct_t* pwt;
 
-	if (widgetex_has_struct(wt))
-	{
-		dw = widget_get_style(wt);
-		if (dw & WD_STYLE_NOCHANGE)
-			return 1;
-
-		widgetex_set_color_mode(wt, (const clr_mod_t*)pv);
-	}
-
-	return 1;
-}
-
-void widgetex_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
-{
-	widget_struct_t* pwt;
-	dword_t dw;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	if (!pwt)
-		return;
-
-	format_xcolor(&pclr->clr_bkg, pwt->xb.color);
-
-	format_xcolor(&pclr->clr_frg, pwt->xp.color);
-
-	format_xcolor(&pclr->clr_txt, pwt->xf.color);
-
-	xmem_copy((void*)&pwt->msk, (void*)&pclr->clr_msk, sizeof(xcolor_t));
-
-	xmem_copy((void*)&pwt->ico, (void*)&pclr->clr_ico, sizeof(xcolor_t));
-
-	if (widget_has_subproc(wt))
-	{
-		widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (var_long)pclr);
-	}
-
-	dw = widget_get_style(wt);
-	if (dw & WD_STYLE_NOCHANGE)
-		return;
-
-	widget_enum_child(wt, _widget_set_child_color_mode, (var_long)pclr);
-}
-
-void widgetex_get_color_mode(res_win_t wt, clr_mod_t* pclr)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
-
-	if (!pwt)
-		return;
-
-	parse_xcolor(&pclr->clr_bkg, pwt->xb.color);
-
-	parse_xcolor(&pclr->clr_frg, pwt->xp.color);
-
-	parse_xcolor(&pclr->clr_txt, pwt->xf.color);
-
-	xmem_copy((void*)&pclr->clr_msk, (void*)&pwt->msk, sizeof(xcolor_t));
-
-	xmem_copy((void*)&pclr->clr_ico, (void*)&pwt->ico, sizeof(xcolor_t));
-}
-
-void widget_get_scroll(res_win_t wt, bool_t bHorz, scroll_t* psl)
-{
-	widget_struct_t* pwt;
-
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	if (bHorz)
 	{
@@ -589,10 +311,10 @@ void widget_get_scroll(res_win_t wt, bool_t bHorz, scroll_t* psl)
 
 void widget_reset_scroll(res_win_t wt, bool_t horz)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 	scroll_t sc = { 0 };
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	if (!pwt)
 		return;
@@ -616,19 +338,19 @@ void widget_reset_scroll(res_win_t wt, bool_t horz)
 
 	if (widget_get_style(wt) & WD_STYLE_OWNERNC)
 	{
-		widgetex_redraw_scroll(wt, horz);
+		widget_redraw_scroll(wt, horz);
 	}
 }
 
-void widgetex_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh)
+void widget_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh)
 {
 	int cx, cy;
 	float min_cx, min_cy;
 	canvas_t canv;
 
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -700,11 +422,11 @@ void widgetex_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw,
 	pwt->sc.cx = lw;
 }
 
-void widgetex_get_view_rect(res_win_t wt, viewbox_t* pbox)
+void widget_get_view_rect(res_win_t wt, viewbox_t* pbox)
 {
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -714,14 +436,14 @@ void widgetex_get_view_rect(res_win_t wt, viewbox_t* pbox)
 	pbox->ph = pwt->cb.h - 2 * pwt->cb.y;
 }
 
-void widgetex_get_canv_rect(res_win_t wt, canvbox_t* pbox)
+void widget_get_canv_rect(res_win_t wt, canvbox_t* pbox)
 {
 	canvas_t canv;
 	xrect_t xr;
 
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -742,13 +464,13 @@ void widgetex_get_canv_rect(res_win_t wt, canvbox_t* pbox)
 	pbox->fh = xr.fh;
 }
 
-void widgetex_get_canv_size(res_win_t wt, xsize_t* pps)
+void widget_get_canv_size(res_win_t wt, xsize_t* pps)
 {
 	canvas_t canv;
 
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -762,14 +484,14 @@ void widgetex_get_canv_size(res_win_t wt, xsize_t* pps)
 	size_pt_to_tm(canv, pps);
 }
 
-void widgetex_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll)
+void widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll)
 {
 	bool_t b_horz = 0;
 	bool_t b_vert = 0;
 
-	widget_struct_t* pwt;
+	exten_struct_t* pwt;
 
-	pwt = GETWIDGSTRUCT(wt);
+	pwt = GETEXTENSTRUCT(wt);
 
 	XDL_ASSERT(pwt != NULL);
 
@@ -817,7 +539,7 @@ void widgetex_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll)
 		widget_redraw(wt, NULL, 0);
 }
 
-void widgetex_rect_to_pt(res_win_t wt, xrect_t* pxr)
+void widget_rect_to_pt(res_win_t wt, xrect_t* pxr)
 {
 	canvas_t canv;
 	canvbox_t cb;
@@ -826,14 +548,14 @@ void widgetex_rect_to_pt(res_win_t wt, xrect_t* pxr)
 
 	XDL_ASSERT(canv != NULL);
 
-	widgetex_get_canv_rect(wt, &cb);
+	widget_get_canv_rect(wt, &cb);
 
 	ft_offset_rect(pxr, cb.fx, cb.fy);
 
 	rect_tm_to_pt(canv, pxr);
 }
 
-void widgetex_rect_to_tm(res_win_t wt, xrect_t* pxr)
+void widget_rect_to_tm(res_win_t wt, xrect_t* pxr)
 {
 	canvas_t canv;
 	canvbox_t cb;
@@ -842,14 +564,14 @@ void widgetex_rect_to_tm(res_win_t wt, xrect_t* pxr)
 
 	XDL_ASSERT(canv != NULL);
 
-	widgetex_get_canv_rect(wt, &cb);
+	widget_get_canv_rect(wt, &cb);
 
 	rect_pt_to_tm(canv, pxr);
 
 	ft_offset_rect(pxr, -cb.fx, -cb.fy);
 }
 
-void widgetex_point_to_pt(res_win_t wt, xpoint_t* ppt)
+void widget_point_to_pt(res_win_t wt, xpoint_t* ppt)
 {
 	canvas_t canv;
 	canvbox_t cb;
@@ -858,14 +580,14 @@ void widgetex_point_to_pt(res_win_t wt, xpoint_t* ppt)
 
 	XDL_ASSERT(canv != NULL);
 
-	widgetex_get_canv_rect(wt, &cb);
+	widget_get_canv_rect(wt, &cb);
 
 	ft_offset_point(ppt, cb.fx, cb.fy);
 
 	point_tm_to_pt(canv, ppt);
 }
 
-void widgetex_point_to_tm(res_win_t wt, xpoint_t* ppt)
+void widget_point_to_tm(res_win_t wt, xpoint_t* ppt)
 {
 	canvas_t canv;
 	canvbox_t cb;
@@ -874,14 +596,14 @@ void widgetex_point_to_tm(res_win_t wt, xpoint_t* ppt)
 
 	XDL_ASSERT(canv != NULL);
 
-	widgetex_get_canv_rect(wt, &cb);
+	widget_get_canv_rect(wt, &cb);
 
 	point_pt_to_tm(canv, ppt);
 
 	ft_offset_point(ppt, -cb.fx, -cb.fy);
 }
 
-void widgetex_size_to_pt(res_win_t wt, xsize_t* pxs)
+void widget_size_to_pt(res_win_t wt, xsize_t* pxs)
 {
 	canvas_t canv;
 
@@ -892,7 +614,7 @@ void widgetex_size_to_pt(res_win_t wt, xsize_t* pxs)
 	size_tm_to_pt(canv, pxs);
 }
 
-void widgetex_size_to_tm(res_win_t wt, xsize_t* pxs)
+void widget_size_to_tm(res_win_t wt, xsize_t* pxs)
 {
 	canvas_t canv;
 
@@ -903,7 +625,7 @@ void widgetex_size_to_tm(res_win_t wt, xsize_t* pxs)
 	size_pt_to_tm(canv, pxs);
 }
 
-bool_t widgetex_point_corner(res_win_t wt, const xpoint_t* ppt)
+bool_t widget_point_corner(res_win_t wt, const xpoint_t* ppt)
 {
 	xrect_t rt;
 	int corn = 10;
@@ -913,6 +635,342 @@ bool_t widgetex_point_corner(res_win_t wt, const xpoint_t* ppt)
 	rt.y = rt.h - corn;
 
 	return pt_in_rect(ppt, &rt);
+}
+
+/************************************default widget handler**************************************************/
+
+void widget_hand_create(res_win_t wt)
+{
+	exten_struct_t* pwt;
+	res_ctx_t rdc;
+
+	pwt = (exten_struct_t*)xmem_alloc(sizeof(exten_struct_t));
+
+	rdc = widget_client_ctx(wt);
+	pwt->canv = create_display_canvas(rdc);
+	widget_release_ctx(wt, rdc);
+
+	SETEXTENSTRUCT(wt, pwt);
+}
+
+void widget_hand_destroy(res_win_t wt)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	if (pwt)
+	{
+		destroy_display_canvas(pwt->canv);
+
+		xmem_free(pwt);
+	}
+
+	SETEXTENSTRUCT(wt, 0);
+}
+
+bool_t widget_hand_scroll(res_win_t wt, bool_t bHorz, int nLine)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+	int nCur, nMax;
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (bHorz)
+	{
+		nMax = (pwt->cb.w - pwt->vb.w);
+		if (nMax < 0)
+			nMax = 0;
+
+		if (nLine < 0 && pwt->vb.x == 0)
+			return 0;
+
+		if (nLine > 0 && pwt->vb.x == nMax)
+			return 0;
+
+		nCur = (pwt->vb.x + nLine);
+
+		if (nCur > nMax)
+			nCur = nMax;
+		if (nCur < 0)
+			nCur = 0;
+
+		pwt->vb.x = nCur;
+	}
+	else
+	{
+		nMax = (pwt->cb.h - pwt->vb.h);
+		if (nMax < 0)
+			nMax = 0;
+
+		if (nLine < 0 && pwt->vb.y == 0)
+			return 0;
+
+		if (nLine > 0 && pwt->vb.y == nMax)
+			return 0;
+
+		nCur = (pwt->vb.y + nLine);
+
+		if (nCur > nMax)
+			nCur = nMax;
+		if (nCur < 0)
+			nCur = 0;
+
+		pwt->vb.y = nCur;
+	}
+
+	widget_redraw(wt, NULL, 0);
+
+	widget_reset_scroll(wt, bHorz);
+
+	return 1;
+}
+
+/************************************default widget splitting dispatch**************************************************/
+
+void widget_splitor_on_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_mouse_move(&pwt->splitor, dw, pxp);
+	}
+}
+
+void widget_splitor_on_lbuttondown(res_win_t wt, const xpoint_t* pxp)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_lbutton_down(&pwt->splitor, pxp);
+	}
+}
+
+void widget_splitor_on_lbuttonup(res_win_t wt, const xpoint_t* pxp)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_lbutton_up(&pwt->splitor, pxp);
+	}
+}
+
+void widget_splitor_on_size(res_win_t wt, int code, const xsize_t* pxs)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+	xrect_t xr;
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		widget_get_client_rect(wt, &xr);
+		hand_splitor_size(&pwt->splitor, &xr);
+	}
+}
+
+void widget_splitor_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_paint(&pwt->splitor, rdc);
+	}
+}
+
+int widget_splitor_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_mouse_move(&pwt->splitor, dw, pxp);
+		return 1;
+	}
+
+	return 0;
+}
+
+int widget_splitor_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_lbutton_down(&pwt->splitor, pxp);
+		return 1;
+	}
+
+	return 0;
+}
+
+int widget_splitor_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_lbutton_up(&pwt->splitor, pxp);
+
+		return 1;
+	}
+
+	return 0;
+}
+
+int widget_splitor_sub_size(res_win_t wt, int code, const xsize_t* pxs, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+	xrect_t xr;
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		widget_get_client_rect(wt, &xr);
+		hand_splitor_size(&pwt->splitor, &xr);
+
+		return 1;
+	}
+
+	return 0;
+}
+
+int widget_splitor_sub_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->splitor.split)
+	{
+		hand_splitor_paint(&pwt->splitor, rdc);
+
+		return 1;
+	}
+
+	return 0;
+}
+
+/************************************default widget docking dispatch**************************************************/
+
+void widget_docker_on_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_mouse_move(&pwt->docker, dw, pxp);
+	}
+}
+
+void widget_docker_on_lbuttondown(res_win_t wt, const xpoint_t* pxp)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_lbutton_down(&pwt->docker, pxp);
+	}
+}
+
+void widget_docker_on_lbuttonup(res_win_t wt, const xpoint_t* pxp)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_lbutton_up(&pwt->docker, pxp);
+	}
+}
+
+void widget_docker_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_paint(&pwt->docker, rdc, prt);
+	}
+}
+
+int widget_docker_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_mouse_move(&pwt->docker, dw, pxp);
+	}
+
+	return 1;
+}
+
+int widget_docker_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_lbutton_down(&pwt->docker, pxp);
+	}
+	return 1;
+}
+
+int widget_docker_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_lbutton_up(&pwt->docker, pxp);
+	}
+
+	return 1;
+}
+
+int widget_docker_sub_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
+{
+	exten_struct_t* pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->docker.widget)
+	{
+		hand_docker_paint(&pwt->docker, rdc, prt);
+	}
+
+	return 1;
 }
 
 

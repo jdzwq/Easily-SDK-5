@@ -34,6 +34,7 @@ LICENSE.GPL3 for more details.
 #define	_XDCDEF_H
 
 #include <xdl.h>
+#include <xdu.h>
 
 
 #if defined(_USRDLL)
@@ -113,15 +114,14 @@ LICENSE.GPL3 for more details.
 #define DEF_OUTER_FEED		(long)1
 #define DEF_FOCUS_SPAN		(long)5
 
-typedef struct _PAGE_CALC{
+typedef struct _PAGEINFO{
 	long total_width;
 	long total_height;
 	long page_width;
 	long page_height;
 	long line_width;
 	long line_height;
-}PAGE_CALC;
-
+}PAGEINFO;
 
 typedef struct _DOCKINFO{
 	dword_t style;
@@ -143,34 +143,16 @@ typedef struct _splitor_t{
 	long x, y;
 }splitor_t;
 
-typedef struct _widget_struct_t{
-	int result;
+typedef struct _plot_t{
+	double x_step;
+	double y_step;
+	double y_base;
 
-	xpoint_t pt;
-	xrect_t vb;
-	xrect_t cb;
-	xsize_t sc;
+	tchar_t y_unit[8];
+	tchar_t x_unit[8];
 
-	link_t_ptr menu;
-	canvas_t canv;
-
-	union{
-		splitor_t splitor;
-		docker_t docker;
-	};
-
-	xfont_t xf;
-	xface_t xa;
-	xbrush_t xb;
-	xpen_t xp;
-	xcolor_t msk;
-	xcolor_t ico;
-}widget_struct_t;
-
-#define GETWIDGSTRUCT(wt)			(widget_struct_t*)widget_get_core_delta(wt)
-#define SETWIDGSTRUCT(wt, lp)		widget_set_core_delta(wt, (var_long)lp)
-
-
+	xcolor_t clr_argv[8];
+}plot_t;
 
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;
 #define EVENT_ON_NCPAINT(proc)			pev->pf_on_nc_paint = proc;
@@ -208,13 +190,9 @@ typedef struct _widget_struct_t{
 #define EVENT_ON_SELF_COMMAND(proc)		pev->pf_on_self_command = proc;
 #define EVENT_ON_SYSCMD_CLICK(proc)		pev->pf_on_syscmd_click = proc;
 #define EVENT_ON_TIMER(proc)			pev->pf_on_timer = proc;
-#define EVENT_ON_COPY(proc)				pev->pf_on_copy = proc;
-#define EVENT_ON_CUT(proc)				pev->pf_on_cut = proc;
-#define EVENT_ON_PASTE(proc)			pev->pf_on_paste = proc;
-#define EVENT_ON_UNDO(proc)				pev->pf_on_undo = proc;
 #define EVENT_ON_NC_IMPLEMENT			{pev->pf_on_nc_paint = widgetnc_on_paint;pev->pf_on_nc_calcsize = widgetnc_on_calcsize;pev->pf_on_nc_hittest = widgetnc_on_hittest;pev->pf_on_nc_calcscroll = widgetnc_on_calcscroll;}
-#define EVENT_ON_SPLITOR_IMPLEMENT		{pev->pf_on_mouse_move = widgetex_splitor_on_mousemove;pev->pf_on_lbutton_down=widgetex_splitor_on_lbuttondown;pev->pf_on_lbutton_up=widgetex_splitor_on_lbuttonup;pev->pf_on_size=widgetex_splitor_on_size;pev->pf_on_paint=widgetex_splitor_on_paint;}
-#define EVENT_ON_DOCKER_IMPLEMENT		{pev->pf_on_mouse_move = widgetex_docker_on_mousemove;pev->pf_on_lbutton_down=widgetex_docker_on_lbuttondown;pev->pf_on_lbutton_up=widgetex_docker_on_lbuttonup;pev->pf_on_paint=widgetex_docker_on_paint;}
+#define EVENT_ON_SPLITOR_IMPLEMENT		{pev->pf_on_mouse_move = widget_splitor_on_mousemove;pev->pf_on_lbutton_down=widget_splitor_on_lbuttondown;pev->pf_on_lbutton_up=widget_splitor_on_lbuttonup;pev->pf_on_size=widget_splitor_on_size;pev->pf_on_paint=widget_splitor_on_paint;}
+#define EVENT_ON_DOCKER_IMPLEMENT		{pev->pf_on_mouse_move = widget_docker_on_mousemove;pev->pf_on_lbutton_down=widget_docker_on_lbuttondown;pev->pf_on_lbutton_up=widget_docker_on_lbuttonup;pev->pf_on_paint=widget_docker_on_paint;}
 #define EVENT_END_DISPATH				}
 
 
@@ -253,8 +231,8 @@ typedef struct _widget_struct_t{
 #define SUBPROC_ON_SELF_COMMAND(proc)		pev->sub_on_self_command = proc;
 #define SUNPROC_ON_SYSCMD_CLICK(proc)		pev->sub_on_syscmd_click = proc;
 #define SUBPROC_ON_TIMER(proc)				pev->sub_on_timer = proc;
-#define SUBPROC_ON_SPLITOR_IMPLEMENT		{pev->sub_on_mouse_move = widgetex_splitor_sub_mousemove;pev->sub_on_lbutton_down=widgetex_splitor_sub_lbuttondown;pev->sub_on_lbutton_up=widgetex_splitor_sub_lbuttonup;pev->sub_on_size=widgetex_splitor_sub_size;pev->sub_on_paint=widgetex_splitor_sub_paint;}
-#define SUBPROC_ON_DOCKER_IMPLEMENT			{pev->sub_on_mouse_move = widgetex_docker_sub_mousemove;pev->sub_on_lbutton_down=widgetex_docker_sub_lbuttondown;pev->sub_on_lbutton_up=widgetex_docker_sub_lbuttonup;pev->sub_on_paint=widgetex_docker_sub_paint;}
+#define SUBPROC_ON_SPLITOR_IMPLEMENT		{pev->sub_on_mouse_move = widget_splitor_sub_mousemove;pev->sub_on_lbutton_down=widget_splitor_sub_lbuttondown;pev->sub_on_lbutton_up=widget_splitor_sub_lbuttonup;pev->sub_on_size=widget_splitor_sub_size;pev->sub_on_paint=widget_splitor_sub_paint;}
+#define SUBPROC_ON_DOCKER_IMPLEMENT			{pev->sub_on_mouse_move = widget_docker_sub_mousemove;pev->sub_on_lbutton_down=widget_docker_sub_lbuttondown;pev->sub_on_lbutton_up=widget_docker_sub_lbuttonup;pev->sub_on_paint=widget_docker_sub_paint;}
 #define SUBPROC_ON_DIALOG_IMPLEMENT			{pev->sub_on_paint=sub_dialog_on_paint;pev->sub_on_size=sub_dialog_on_size;}
 #define SUBPROC_END_DISPATH					}
 

@@ -144,10 +144,6 @@ XDL_API void fill_calendar(calendar_t* pca, const xdate_t* pdt);
 
 XDL_API int format_password(const tchar_t* sz, tchar_t* buf, int max);
 
-XDL_API int mul_div_int(int m1, int m2, int d);
-
-XDL_API short mul_div_short(short m1, short m2, short d);
-
 XDL_API int compare_date(const xdate_t* pmd1, const xdate_t* pmd2);
 
 XDL_API int compare_datetime(const xdate_t* pmd1, const xdate_t* pmd2);
@@ -178,10 +174,6 @@ XDL_API byte_t parse_proto(const tchar_t* file);
 
 XDL_API void parse_url(const tchar_t* url, tchar_t** proat, int* prolen, tchar_t** addrat, int* addrlen, tchar_t** portat, int* portlen, tchar_t** objat, int* objlen, tchar_t** qryat, int* qrylen);
 
-XDL_API void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext);
-
-XDL_API void split_file(const tchar_t* pathfile, tchar_t* path, tchar_t* file);
-
 XDL_API int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...);
 /***************************************************************************************************************************/
 
@@ -210,50 +202,6 @@ XDL_API bool_t inside_rowcol(int row, int col, int from_row, int from_col, int t
 
 XDL_API int compare_rowcol(int from_row, int from_col, int to_row, int to_col);
 
-XDL_API bool_t ft_inside(float x, float y, float x1, float y1, float x2, float y2);
-
-XDL_API bool_t pt_inside(int x, int y, int x1, int y1, int x2, int y2);
-
-XDL_API bool_t ft_in_rect(const xpoint_t* ppt, const xrect_t* prt);
-
-XDL_API bool_t pt_in_rect(const xpoint_t* ppt, const xrect_t* prt);
-
-XDL_API void ft_offset_point(xpoint_t* ppt, float cx, float cy);
-
-XDL_API void pt_offset_point(xpoint_t* ppt, int cx, int cy);
-
-XDL_API void ft_center_rect(xrect_t* pxr, float cx, float cy);
-
-XDL_API void pt_center_rect(xrect_t* pxr, int cx, int cy);
-
-XDL_API void ft_expand_rect(xrect_t* pxr, float cx, float cy);
-
-XDL_API void pt_expand_rect(xrect_t* pxr, int cx, int cy);
-
-XDL_API void ft_offset_rect(xrect_t* pxr, float cx, float cy);
-
-XDL_API void pt_offset_rect(xrect_t* pxr, int cx, int cy);
-
-XDL_API void ft_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
-
-XDL_API void pt_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
-
-XDL_API void ft_cell_rect(xrect_t* pxr, int rows, int cols, int index);
-
-XDL_API void pt_cell_rect(xrect_t* pxr, int rows, int cols, int index);
-
-XDL_API bool_t ft_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
-
-XDL_API bool_t pt_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
-
-XDL_API void ft_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
-
-XDL_API void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
-
-XDL_API bool_t rect_is_empty(const xrect_t* pxr);
-
-XDL_API void empty_rect(xrect_t* pxr);
-
 XDL_API int ft_parse_points_from_token(xpoint_t* ppt, int max, const tchar_t* token, int len);
 
 XDL_API int ft_format_points_to_token(const xpoint_t* ppt, int n, tchar_t* buf, int max);
@@ -266,23 +214,8 @@ XDL_API int parse_dicm_point(const tchar_t* token, int len, xpoint_t* ppt, int m
 
 XDL_API int format_dicm_point(const xpoint_t* ppt, int count, tchar_t* buf, int max);
 
-/**********************************************************************************************/
-#ifdef XDL_SUPPORT_CRYPT
-XDL_API	void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN]);
-
-XDL_API	void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN]);
-
-XDL_API void file_info_etag(const tchar_t* fname, const tchar_t* ftime, const tchar_t* fsize, tchar_t* buf);
-#endif
-
 #ifdef	__cplusplus
 }
-#endif
-
-#if defined(UNICODE) || defined(_UNICODE)
-#define md5_token		w_md5_token
-#else
-#define md5_token		a_md5_token
 #endif
 
 #endif

@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 #define SVG_LINE_FEED		(int)100
@@ -62,17 +60,17 @@ static void _svgctrl_reset_page(res_win_t widget)
 
 	xs.fx = get_svg_width(ptd->svg);
 	xs.fy = get_svg_height(ptd->svg);
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = (float)5;
 	xs.fy = (float)5;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -104,7 +102,7 @@ int hand_svg_create(res_win_t widget, void* data)
 {
 	svg_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (svg_delta_t*)xmem_alloc(sizeof(svg_delta_t));
 	xmem_zero((void*)ptd, sizeof(svg_delta_t));
@@ -130,7 +128,7 @@ void hand_svg_destroy(res_win_t widget)
 
 	SETSVGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_svg_size(res_win_t widget, int code, const xsize_t* pxs)
@@ -204,7 +202,7 @@ void hand_svg_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->svg)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_svg_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -224,7 +222,7 @@ void hand_svg_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -278,9 +276,9 @@ void hand_svg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->svg)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -288,8 +286,8 @@ void hand_svg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -297,7 +295,7 @@ void hand_svg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	if (widget_can_paging(widget))
 	{

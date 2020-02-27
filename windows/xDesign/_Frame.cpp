@@ -374,79 +374,79 @@ void MainFrame_CreateFile(res_win_t widget)
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_FORMPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白表单"));
-	set_list_item_icon(llk, ICON_MEMO);
+	set_list_item_icon(llk, GDI_ICON_MEMO);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_GRIDPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白网格"));
-	set_list_item_icon(llk, ICON_GRID);
+	set_list_item_icon(llk, GDI_ICON_GRID);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_TAGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白标记文本"));
-	set_list_item_icon(llk, ICON_NEW);
+	set_list_item_icon(llk, GDI_ICON_NEW);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_RICHPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白富文本"));
-	set_list_item_icon(llk, ICON_RICH);
+	set_list_item_icon(llk, GDI_ICON_RICH);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_STATISPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白图表"));
-	set_list_item_icon(llk, ICON_GRAPH);
+	set_list_item_icon(llk, GDI_ICON_GRAPH);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SCHEMAPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白模式"));
-	set_list_item_icon(llk, ICON_SCHEMA);
+	set_list_item_icon(llk, GDI_ICON_SCHEMA);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_TOPOGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白地形"));
-	set_list_item_icon(llk, ICON_GROUP);
+	set_list_item_icon(llk, GDI_ICON_GROUP);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_IMAGESPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("图像列表"));
-	set_list_item_icon(llk, ICON_IMAGES);
+	set_list_item_icon(llk, GDI_ICON_IMAGES);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIALOGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("对话框"));
-	set_list_item_icon(llk, ICON_DIALOG);
+	set_list_item_icon(llk, GDI_ICON_DIALOG);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIAGRAMPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("流程图"));
-	set_list_item_icon(llk, ICON_DIAGRAM);
+	set_list_item_icon(llk, GDI_ICON_DIAGRAM);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SQLPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("SQL"));
-	set_list_item_icon(llk, ICON_EDIT);
+	set_list_item_icon(llk, GDI_ICON_EDIT);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_XMLPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("XML"));
-	set_list_item_icon(llk, ICON_EDIT);
+	set_list_item_icon(llk, GDI_ICON_EDIT);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_JSONPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("JSON"));
-	set_list_item_icon(llk, ICON_EDIT);
+	set_list_item_icon(llk, GDI_ICON_EDIT);
 
 	res_win_t hNewFileDlg = listdlg_create(_T("选择文档类型"), ptrList, widget);
 	
@@ -608,7 +608,7 @@ void MainFrame_AppendFile(res_win_t widget)
 			tlk_parent = insert_tree_item(ptr_tree, LINK_LAST);
 			set_tree_item_name(tlk_parent, szType);
 			set_tree_item_title(tlk_parent, szType);
-			set_tree_item_icon(tlk_parent, ICON_NOTE);
+			set_tree_item_icon(tlk_parent, GDI_ICON_NOTE);
 
 			pdt->bDirty = TRUE;
 		}
@@ -619,7 +619,7 @@ void MainFrame_AppendFile(res_win_t widget)
 			tlk_child = insert_tree_item(tlk_parent, LINK_LAST);
 			set_tree_item_name(tlk_child, szName);
 			set_tree_item_title(tlk_child, szTitle);
-			set_tree_item_icon(tlk_child, ICON_SCHEMA);
+			set_tree_item_icon(tlk_child, GDI_ICON_SCHEMA);
 
 			pdt->bDirty = TRUE;
 		}
@@ -861,7 +861,7 @@ void MainFrame_FreshObject(res_win_t widget)
 
 			set_tree_item_name(tlk, get_field_name_ptr(flk));
 			set_tree_item_title(tlk, token);
-			set_tree_item_icon(tlk, ICON_NOTE);
+			set_tree_item_icon(tlk, GDI_ICON_NOTE);
 
 			flk = get_next_field(qo.ptrDoc, flk);
 		}
@@ -1111,7 +1111,7 @@ void MainFrame_ChangeFace(res_win_t widget, int ind)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widgetex_set_color_mode(widget, &clr);
+	widget_set_color_mode(widget, &clr);
 
 	widget_update(widget);
 }
@@ -1201,9 +1201,9 @@ void MainFrame_TitleBar_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 	if (widget_is_valid(hPanel))
 	{
 		clr_mod_t clr;
-		widgetex_get_color_mode(widget, &clr);
+		widget_get_color_mode(widget, &clr);
 
-		widgetex_set_color_mode(hPanel, &clr);
+		widget_set_color_mode(hPanel, &clr);
 
 		widget_show(hPanel, WD_SHOW_NORMAL);
 
@@ -1256,21 +1256,21 @@ void MainFrame_ResBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widgetex_get_color_mode(widget, &clr);
+	widget_get_color_mode(widget, &clr);
 
-	widgetex_set_color_mode(hMenu, &clr);
+	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
 	LINKPTR mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_APPEND);
 	set_menu_item_title(mlk, _T("添加文件"));
-	set_menu_item_icon(mlk, ICON_PLUS);
+	set_menu_item_icon(mlk, GDI_ICON_PLUS);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_REMOVE);
 	set_menu_item_title(mlk, _T("移除文件"));
-	set_menu_item_icon(mlk, ICON_MINUS);
+	set_menu_item_icon(mlk, GDI_ICON_MINUS);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_SHOW);
@@ -1358,9 +1358,9 @@ void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widgetex_get_color_mode(widget, &clr);
+	widget_get_color_mode(widget, &clr);
 
-	widgetex_set_color_mode(hMenu, &clr);
+	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -1369,12 +1369,12 @@ void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_OBJECT_FRESH);
 	set_menu_item_title(mlk, _T("刷新对象"));
-	set_menu_item_icon(mlk, ICON_FRESH);
+	set_menu_item_icon(mlk, GDI_ICON_FRESH);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_OBJECT_CHECK);
 	set_menu_item_title(mlk, _T("选中对象"));
-	set_menu_item_icon(mlk, ICON_CHECK);
+	set_menu_item_icon(mlk, GDI_ICON_CHECK);
 
 	menubox_set_data(hMenu, ptrMenu);
 
@@ -1395,14 +1395,14 @@ void _MainFrame_CalcToolBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	
-	widgetex_get_dock_rect(widget, WD_DOCK_TOP, pxr);
+	widget_get_dock_rect(widget, WD_DOCK_TOP, pxr);
 }
 
 void _MainFrame_CalcStatusBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
+	widget_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
 }
 
 void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
@@ -1412,9 +1412,9 @@ void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1425,9 +1425,9 @@ void _MainFrame_CalcObjBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1438,9 +1438,9 @@ void _MainFrame_CalcCateBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
 	pxr->y = pxr->y + pxr->h - xs.cy;
 	pxr->h = xs.cy;
 }
@@ -1452,9 +1452,9 @@ void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, 0, pxr);
+	widget_get_dock_rect(widget, 0, pxr);
 	pxr->h = xs.cy;
 }
 
@@ -1465,9 +1465,9 @@ void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, 0, pxr);
+	widget_get_dock_rect(widget, 0, pxr);
 	pxr->y += xs.cy;
 	pxr->h -= xs.cy;
 }
@@ -1519,13 +1519,13 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_CONFIG_RDS);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("数据服务"));
-	set_tool_item_icon(ilk, ICON_IMPORT);
+	set_tool_item_icon(ilk, GDI_ICON_IMPORT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CONFIG_DOC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("文档服务"));
-	set_tool_item_icon(ilk, ICON_IMPORT);
+	set_tool_item_icon(ilk, GDI_ICON_IMPORT);
 
 	glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
@@ -1538,61 +1538,61 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_FILE_CREATE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("新建文件"));
-	set_tool_item_icon(ilk, ICON_NEW);
+	set_tool_item_icon(ilk, GDI_ICON_NEW);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_OPEN);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("打开文件"));
-	set_tool_item_icon(ilk, ICON_OPEN);
+	set_tool_item_icon(ilk, GDI_ICON_OPEN);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SAVE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("保存文件"));
-	set_tool_item_icon(ilk, ICON_SAVE);
+	set_tool_item_icon(ilk, GDI_ICON_SAVE);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SAVEAS);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("另存文件"));
-	set_tool_item_icon(ilk, ICON_SAVEAS);
+	set_tool_item_icon(ilk, GDI_ICON_SAVEAS);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SCHEMA);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导出模式"));
-	set_tool_item_icon(ilk, ICON_SCHEMA);
+	set_tool_item_icon(ilk, GDI_ICON_SCHEMA);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_EXPORT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导出数据"));
-	set_tool_item_icon(ilk, ICON_OUTPUT);
+	set_tool_item_icon(ilk, GDI_ICON_OUTPUT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_IMPORT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导入数据"));
-	set_tool_item_icon(ilk, ICON_INPUT);
+	set_tool_item_icon(ilk, GDI_ICON_INPUT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_PRINT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("打印文件"));
-	set_tool_item_icon(ilk, ICON_PRINT);
+	set_tool_item_icon(ilk, GDI_ICON_PRINT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_PREVIEW);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("预览文件"));
-	set_tool_item_icon(ilk, ICON_SCREEN);
+	set_tool_item_icon(ilk, GDI_ICON_SCREEN);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_EXEC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("测试运行"));
-	set_tool_item_icon(ilk, ICON_NEXT);
+	set_tool_item_icon(ilk, GDI_ICON_NEXT);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
 	widget_show(pdt->hToolBar, WD_SHOW_NORMAL);
@@ -1634,7 +1634,7 @@ void _MainFrame_CreateResBar(res_win_t widget)
 	LINKPTR ptrTree = create_tree_doc();
 
 	set_tree_title(ptrTree, _T("资源列表"));
-	set_tree_title_icon(ptrTree, ICON_PROPER);
+	set_tree_title_icon(ptrTree, GDI_ICON_PROPER);
 	treectrl_attach(pdt->hResBar, ptrTree);
 	treectrl_set_lock(pdt->hResBar, 0);
 
@@ -1682,13 +1682,13 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 	set_title_item_title(tlk, _T("文件"));
 	set_title_item_name(tlk, MAINFRAME_TREE_RESOURCE);
 	set_title_item_locked(tlk, 1);
-	set_title_item_icon(tlk, ICON_NEW);
+	set_title_item_icon(tlk, GDI_ICON_NEW);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("对象"));
 	set_title_item_name(tlk, MAINFRAME_TREE_OBJECT);
 	set_title_item_locked(tlk, 1);
-	set_title_item_icon(tlk, ICON_HERF);
+	set_title_item_icon(tlk, GDI_ICON_HERF);
 
 	titlectrl_attach(pdt->hCateBar, ptrTitle);
 
@@ -2002,7 +2002,7 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 {
 	MainFrameDelta* pdt;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	res_acl_t hac = create_accel_table(MAINFRAME_ACCEL, MAINFRAME_ACCEL_COUNT);
 
@@ -2012,18 +2012,18 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
-	widgetex_dock(widget, WD_DOCK_TOP, 0, xs.cy);
+	widget_size_to_pt(widget, &xs);
+	widget_dock(widget, WD_DOCK_TOP, 0, xs.cy);
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
-	widgetex_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
+	widget_size_to_pt(widget, &xs);
+	widget_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
 
 	xs.fx = MAINFRAME_TREEBAR_WIDTH;
 	xs.fy = 0;
-	widgetex_size_to_pt(widget, &xs);
-	widgetex_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
+	widget_size_to_pt(widget, &xs);
+	widget_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, (var_long)pdt);
@@ -2075,7 +2075,7 @@ void MainFrame_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 int MainFrame_OnClose(res_win_t widget)
@@ -2199,9 +2199,9 @@ void MainFrame_OnSysColor(res_win_t widget, const xpoint_t* ppt)
 	widget_set_owner(hMenu, widget);
 
 	clr_mod_t clr;
-	widgetex_get_color_mode(widget, &clr);
+	widget_get_color_mode(widget, &clr);
 
-	widgetex_set_color_mode(hMenu, &clr);
+	widget_set_color_mode(hMenu, &clr);
 
 	LINKPTR ptrMenu = create_menu_doc();
 
@@ -2495,7 +2495,7 @@ res_win_t MainFrame_Create(const tchar_t* mname)
 	parse_xcolor(&clr.clr_msk, g_face[g_indFace].msk);
 	parse_xcolor(&clr.clr_ico, g_face[g_indFace].ico);
 
-	widgetex_set_color_mode(widget, &clr);
+	widget_set_color_mode(widget, &clr);
 
 	widget_update(widget);
 

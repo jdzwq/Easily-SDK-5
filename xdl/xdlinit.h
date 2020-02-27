@@ -142,23 +142,6 @@ extern "C" {
 		if_process_t	if_process;
 #endif
 
-#ifdef XDK_SUPPORT_CONTEXT
-		int	ctx_ver;
-		if_context_t if_context;
-#endif
-
-#ifdef XDK_SUPPORT_CLIPBOARD
-		if_clipboard_t	if_clipboard;
-#endif
-
-#ifdef XDK_SUPPORT_WIDGET
-		if_widget_t		if_widget;
-#endif
-
-#ifdef XDK_SUPPORT_SHELL
-		if_shell_t		if_shell;
-#endif
-
 #ifdef XDL_SUPPORT_MEMO_DUMP
 		/*for thread trace*/
 		res_crit_t	dump_crit;
@@ -182,7 +165,6 @@ extern "C" {
 #define XDL_INITIALIZE_DRIVER			0x00000001
 #define XDL_INITIALIZE_SERVER			0x00000002
 #define XDL_INITIALIZE_CONSOLE			0x00000004
-#define XDL_INITIALIZE_DESKTOP			0x00000008
 
 #define XDL_APARTMENT_PROCESS			0x00000000
 #ifdef XDK_SUPPORT_THREAD
@@ -246,23 +228,6 @@ extern "C" {
 
 #ifdef XDK_SUPPORT_CONS
 #define PROCESS_CONS_INTERFACE		((g_xdl_mou.if_ok)? (if_cons_t*)(&g_xdl_mou.if_cons): NULL)
-#endif
-
-#ifdef XDK_SUPPORT_CONTEXT
-#define PROCESS_CONTEXT_INTERFACE	((g_xdl_mou.if_ok)? (if_context_t*)(&g_xdl_mou.if_context) : NULL)
-#define XDL_CONTEXT_VERSION			(g_xdl_mou.ctx_ver)
-#endif
-
-#ifdef XDK_SUPPORT_CLIPBOARD
-#define PROCESS_CLIPBOARD_INTERFACE		((g_xdl_mou.if_ok)? (if_clipboard_t*)(&g_xdl_mou.if_clipboard) : NULL)
-#endif
-
-#ifdef XDK_SUPPORT_WIDGET
-#define PROCESS_WIDGET_INTERFACE		((g_xdl_mou.if_ok)? (if_widget_t*)(&g_xdl_mou.if_widget) : NULL)
-#endif
-
-#ifdef XDK_SUPPORT_SHELL
-#define PROCESS_SHELL_INTERFACE			((g_xdl_mou.if_ok)? (if_shell_t*)(&g_xdl_mou.if_shell) : NULL)
 #endif
 
 

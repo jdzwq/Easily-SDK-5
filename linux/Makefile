@@ -7,7 +7,8 @@ API_PATH = ~/Easily-app-5/linux/sbin/api
 INS_PATH = ~/Easily-sdk-5/install
 CUR_PATH = $(abspath ./)
 
-API_OBJS = $(API_PATH)/libxdk.so.1.0 \
+API_OBJS = $(API_PATH)/libxdu.so.1.0 \
+	$(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
 	$(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
@@ -25,6 +26,8 @@ all:
 	sudo mkdir $(SRV_PATH)/api; \
 	fi
 
+	cd $(CUR_PATH)/xdp && make -f xdp.ar.mk
+	cd $(CUR_PATH)/xdu && make -f xdu.so.mk
 	cd $(CUR_PATH)/xdk && make -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make -f xdl.so.mk
 	cd $(CUR_PATH)/xds && make -f xds.so.mk
@@ -38,6 +41,7 @@ test:
 	@echo $(CUR_PATH)
 
 install:
+	cd $(CUR_PATH)/xdu && make install -f xdu.so.mk
 	cd $(CUR_PATH)/xdk && make install -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make install -f xdl.so.mk
 	cd $(CUR_PATH)/xds && make install -f xds.so.mk

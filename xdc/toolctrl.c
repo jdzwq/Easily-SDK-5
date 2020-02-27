@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 
 typedef struct _tool_delta_t{
 	link_t_ptr tool;
@@ -51,11 +49,11 @@ static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
 	canvbox_t cb;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	calc_tool_group_item_rect(&cb, ptd->tool, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _toolctrl_reset_page(res_win_t widget)
@@ -68,7 +66,7 @@ static void _toolctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	widgetex_reset_paging(widget, pw, ph, pw, ph, 0, 0);
+	widget_reset_paging(widget, pw, ph, pw, ph, 0, 0);
 }
 
 /*********************************************************************************************************/
@@ -168,7 +166,7 @@ int hand_tool_create(res_win_t widget, void* data)
 {
 	tool_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (tool_delta_t*)xmem_alloc(sizeof(tool_delta_t));
 	xmem_zero((void*)ptd, sizeof(tool_delta_t));
@@ -188,7 +186,7 @@ void hand_tool_destroy(res_win_t widget)
 
 	SETTOOLDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_tool_size(res_win_t widget, int code, const xsize_t* prs)
@@ -213,11 +211,11 @@ void hand_tool_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (!ptd->tool)
 		return;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
@@ -309,11 +307,11 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		widget_redraw(widget, &xr, 0);
 	}
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
@@ -354,11 +352,11 @@ void hand_tool_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->tool)
 		return;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
 	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
@@ -418,9 +416,9 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->tool)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -428,8 +426,8 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -442,7 +440,7 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	gradient_rect_raw(rdc, &xg, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	draw_tool(pif, &cb, ptd->tool);
 

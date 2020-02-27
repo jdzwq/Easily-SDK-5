@@ -263,16 +263,35 @@ int		_widget_send_message(res_win_t wt, int msg, var_long wp, var_long lp);
 void	_widget_post_command(res_win_t wt, int code, uid_t cid, var_long data);
 int		_widget_send_command(res_win_t wt, int code, uid_t cid, var_long data);
 
-void	_widget_copy(res_win_t wt);
-void	_widget_cut(res_win_t wt);
-void	_widget_paste(res_win_t wt);
-void	_widget_undo(res_win_t wt);
-
 var_long _widget_set_timer(res_win_t wt, int ms);
 void	_widget_kill_timer(res_win_t wt, var_long tid);
 
 void	_widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl);
 void	_widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psl);
+bool_t	_widget_has_struct(res_win_t wt);
+void	_widget_set_xfont(res_win_t wt, const xfont_t* pxf);
+void	_widget_get_xfont(res_win_t wt, xfont_t* pxf);
+const xfont_t*	_widget_get_xfont_ptr(res_win_t wt);
+void	_widget_set_xface(res_win_t wt, const xface_t* pxa);
+void	_widget_get_xface(res_win_t wt, xface_t* pxa);
+const xface_t*	_widget_get_xface_ptr(res_win_t wt);
+void	_widget_set_xbrush(res_win_t wt, const xbrush_t* pxb);
+void	_widget_get_xbrush(res_win_t wt, xbrush_t* pxb);
+const xbrush_t*	_widget_get_xbrush_ptr(res_win_t wt);
+void	_widget_set_xpen(res_win_t wt, const xpen_t* pxp);
+void	_widget_get_xpen(res_win_t wt, xpen_t* pxp);
+const xpen_t*	_widget_get_xpen_ptr(res_win_t wt);
+void	_widget_set_mask(res_win_t wt, const xcolor_t* pxc);
+void	_widget_get_mask(res_win_t wt, xcolor_t* pxc);
+const xcolor_t*	_widget_get_mask_ptr(res_win_t wt);
+void	_widget_set_iconic(res_win_t wt, const xcolor_t* pxc);
+void	_widget_get_iconic(res_win_t wt, xcolor_t* pxc);
+const xcolor_t*	_widget_get_iconic_ptr(res_win_t wt);
+void	_widget_set_point(res_win_t wt, const xpoint_t* ppt);
+void	_widget_get_point(res_win_t wt, xpoint_t* ppt);
+void	_widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr);
+void	_widget_get_color_mode(res_win_t wt, clr_mod_t* pclr);
+
 
 int		_widget_do_modal(res_win_t wt);
 void	_widget_do_trace(res_win_t wt);

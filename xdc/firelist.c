@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcfire.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 
@@ -107,14 +105,14 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 	case COMMAND_COLOR:
 		if (widget_is_valid(dropbox))
 		{
-			widgetex_set_color_mode(dropbox, (clr_mod_t*)data);
+			widget_set_color_mode(dropbox, (clr_mod_t*)data);
 			widget_update(dropbox);
 		}
 
 		/*keybox = editbox_get_keybox(widget);
 		if (widget_is_valid(keybox))
 		{
-			widgetex_set_color_mode(keybox, (clr_mod_t*)data);
+			widget_set_color_mode(keybox, (clr_mod_t*)data);
 			widget_update(keybox);
 		}*/
 		return 1;
@@ -241,9 +239,9 @@ res_win_t firelist_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data)
 	widget_set_subproc(editor, IDS_EDITBOX, &ev);
 	editbox_set_lock(editor, 1);
 
-	widgetex_get_xface(editor, &xa);
+	widget_get_xface(editor, &xa);
 	xscpy(xa.text_wrap, NULL);
-	widgetex_set_xface(editor, &xa);
+	widget_set_xface(editor, &xa);
 
 	widget_get_window_rect(editor, &xr_ed);
 

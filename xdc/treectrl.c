@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcfire.h"
 #include "xdcbox.h"
 
@@ -68,11 +66,11 @@ static void _treectrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	canvbox_t cb;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	calc_tree_item_entity_rect(&cb, ptd->tree, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _treectrl_item_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -80,11 +78,11 @@ static void _treectrl_item_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	canvbox_t cb;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	calc_tree_item_text_rect(&cb, ptd->tree, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _treectrl_item_expand_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
@@ -92,11 +90,11 @@ static void _treectrl_item_expand_rect(res_win_t widget, link_t_ptr ilk, xrect_t
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	canvbox_t cb;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	calc_tree_item_expand_rect(&cb, ptd->tree, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _treectrl_reset_page(res_win_t widget)
@@ -114,12 +112,12 @@ static void _treectrl_reset_page(res_win_t widget)
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	xs.fx = calc_tree_width(&im, &cb, ptd->tree);
 	xs.fy = calc_tree_height(&cb, ptd->tree);
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	if (fw < pw)
 		fw = pw;
@@ -128,10 +126,10 @@ static void _treectrl_reset_page(res_win_t widget)
 	xs.fx = ZERO_WIDTH;
 	xs.fy = get_tree_item_height(ptd->tree);
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	lh = xs.cy;
 
-	widgetex_reset_paging(widget, pw, ph, fw, fh, lh, lh);
+	widget_reset_paging(widget, pw, ph, fw, fh, lh, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -167,7 +165,7 @@ static void _treectrl_ensure_visible(res_win_t widget)
 	}
 
 	_treectrl_item_rect(widget, ptd->item, &xr);
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 
 /******************************************************************************************/
@@ -391,10 +389,10 @@ void noti_tree_begin_edit(res_win_t widget)
 	if (get_tree_item_locked(ptd->item))
 		return;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 	parse_xfont_from_style(&xf, get_tree_style_ptr(ptd->tree));
 
-	widgetex_get_color_mode(widget, &ob);
+	widget_get_color_mode(widget, &ob);
 
 	_treectrl_item_text_rect(widget, ptd->item, &xr);
 	pt_expand_rect(&xr, 0, DEF_INNER_FEED);
@@ -409,8 +407,8 @@ void noti_tree_begin_edit(res_win_t widget)
 	widget_set_owner(ptd->editor, widget);
 	editbox_auto_size(ptd->editor, 1);
 
-	widgetex_set_xfont(ptd->editor, &xf);
-	widgetex_set_color_mode(ptd->editor, &ob);
+	widget_set_xfont(ptd->editor, &xf);
+	widget_set_color_mode(ptd->editor, &ob);
 
 	widget_show(ptd->editor, WD_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
@@ -483,7 +481,7 @@ int hand_tree_create(res_win_t widget, void* data)
 {
 	tree_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (tree_delta_t*)xmem_alloc(sizeof(tree_delta_t));
 	xmem_zero((void*)ptd, sizeof(tree_delta_t));
@@ -510,7 +508,7 @@ void hand_tree_destroy(res_win_t widget)
 
 	SETTREEDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_tree_size(res_win_t widget, int code, const xsize_t* pxs)
@@ -544,9 +542,9 @@ void hand_tree_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	tlk = NULL;
 	nHint = calc_tree_hint(&cb, &pt, ptd->tree, &tlk);
@@ -587,11 +585,11 @@ void hand_tree_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	tlk = NULL;
 	nHint = calc_tree_hint( &cb, &pt, ptd->tree, &tlk);
@@ -675,11 +673,11 @@ void hand_tree_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (ptd->b_drag)
 		return;
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	tlk = NULL;
 	nHint = calc_tree_hint(&cb, &pt, ptd->tree, &tlk);
@@ -783,7 +781,7 @@ void hand_tree_scroll(res_win_t widget, bool_t bHorz, int nLine)
 
 	noti_tree_reset_editor(widget, 1);
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_tree_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -805,7 +803,7 @@ void hand_tree_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -866,9 +864,9 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->tree)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -876,8 +874,8 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -885,7 +883,7 @@ void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	draw_tree(pif, &cb, ptd->tree);
 
@@ -1311,12 +1309,12 @@ void treectrl_popup_size(res_win_t widget, xsize_t* pse)
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	pse->fx = calc_tree_width(&im, &cb, ptd->tree);
 	pse->fy = count * get_tree_item_height(ptd->tree);
 
-	widgetex_size_to_pt(widget, pse);
+	widget_size_to_pt(widget, pse);
 
 	widget_adjust_size(widget_get_style(widget), pse);
 }

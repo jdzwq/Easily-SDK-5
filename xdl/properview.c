@@ -354,11 +354,11 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		if (get_section_expanded(sec))
 		{
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, ICON_EXPAND);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, GDI_ICON_EXPAND);
 		}
 		else
 		{
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, ICON_COLLAPSE);
+			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, GDI_ICON_COLLAPSE);
 		}
 
 		xr_draw.fx = xr.fx + ic;

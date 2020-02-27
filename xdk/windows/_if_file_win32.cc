@@ -488,7 +488,7 @@ bool_t	_directory_open(const tchar_t* path, dword_t mode)
 		}
 
 		len = (int)(token - path);
-		_tstrncpy(cur_path, path, len);
+		xsncpy(cur_path, path, len);
 		cur_path[len] = _T('\0');
 
 		hFind = FindFirstFile(cur_path, &wfd);
@@ -544,7 +544,7 @@ res_find_t _file_find_first(const tchar_t* fpath, file_info_t* pfi)
 	FileTimeToSystemTime(&wfd.ftLastWriteTime, &stm);
 	_systime_to_xdate(&stm, &pfi->write_time);
 
-	_tstrncpy(pfi->file_name, wfd.cFileName, META_LEN);
+	xsncpy(pfi->file_name, wfd.cFileName, META_LEN);
 
 	return hFind;
 }
@@ -573,7 +573,7 @@ bool_t _file_find_next(res_find_t ff, file_info_t* pfi)
 	FileTimeToSystemTime(&wfd.ftLastWriteTime, &stm);
 	_systime_to_xdate(&stm, &pfi->write_time);
 
-	_tstrncpy(pfi->file_name, wfd.cFileName, META_LEN);
+	xsncpy(pfi->file_name, wfd.cFileName, META_LEN);
 
 	return 1;
 }

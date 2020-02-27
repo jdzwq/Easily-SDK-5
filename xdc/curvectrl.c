@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 typedef struct _curve_delta_t{
@@ -68,11 +66,11 @@ static void _curvectrl_reset_page(res_win_t widget)
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 
 	xrect_t xr;
-	PAGE_CALC pc = { 0 };
+	PAGEINFO pc = { 0 };
 
 	widget_get_client_rect(widget, &xr);
 
-	widgetex_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 10, 10);
+	widget_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 10, 10);
 }
 
 /********************************************************************************************/
@@ -80,7 +78,7 @@ int hand_curve_create(res_win_t widget, void* data)
 {
 	curve_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (curve_delta_t*)xmem_alloc(sizeof(curve_delta_t));
 
@@ -105,7 +103,7 @@ void hand_curve_destroy(res_win_t widget)
 
 	SETCURVEDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_curve_keydown(res_win_t widget, int key)
@@ -186,7 +184,7 @@ void hand_curve_scroll(res_win_t widget, bool_t bHorz, int nLine)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_curve_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -206,7 +204,7 @@ void hand_curve_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -259,8 +257,8 @@ void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 

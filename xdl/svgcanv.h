@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#if defined(XDL_SUPPORT_SVG)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -53,13 +53,6 @@ XDL_API canvas_t create_svg_canvas(link_t_ptr svg);
 @RETURN void: none.
 */
 XDL_API void destroy_svg_canvas(canvas_t canv);
-
-/*
-@FUNCTION svg_get_canvas_ctx: get the svg canvas context resource handle.
-@INPUT canvas_t canv: the svg canvas object.
-@RETURN res_ctx_t: return the context resource handle if exists, otherwise return NULL.
-*/
-XDL_API res_ctx_t svg_get_canvas_ctx(canvas_t canv);
 
 /*
 @FUNCTION svg_get_canvas_doc: get the svg canvas document.
@@ -154,6 +147,6 @@ XDL_API void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif);
 }
 #endif
 
-#endif /*XDK_SUPPORT_CONTEXT*/
+#endif /*XDL_SUPPORT_SVG*/
 
 #endif /*SVGCANV_H*/

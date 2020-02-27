@@ -92,12 +92,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_tree_icon_span: set the tree icon span.
 */
-#define set_tree_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ICON_SPAN,n)
+#define set_tree_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_tree_icon_span: get the tree icon span.
 */
-#define get_tree_icon_span(ptr)							get_dom_node_attr_float(ptr,ICON_SPAN)
+#define get_tree_icon_span(ptr)							get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
 /*
 @PROPER itemHeight: numeric.
 @GET get_tree_item_height: get the tree item height.

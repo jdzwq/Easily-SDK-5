@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcbox.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcmenu.h"
 #include "textor.h"
 
@@ -91,7 +89,7 @@ void _editbox_auto_resize(res_win_t widget)
 	int cx;
 	const xfont_t* pxf;
 
-	pxf = widgetex_get_xfont_ptr(widget);
+	pxf = widget_get_xfont_ptr(widget);
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -129,7 +127,7 @@ int hand_editbox_create(res_win_t widget, void* data)
 {
 	editbox_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (editbox_delta_t*)xmem_alloc(sizeof(editbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(editbox_delta_t));
@@ -165,7 +163,7 @@ void hand_editbox_destroy(res_win_t widget)
 
 	SETEDITBOXDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 
 	keybox = (res_win_t)widget_get_user_prop(widget, XDCKEYBOX);
 
@@ -173,150 +171,6 @@ void hand_editbox_destroy(res_win_t widget)
 		widget_destroy(keybox);
 }
 
-void hand_editbox_set_focus(res_win_t widget, res_win_t wt)
-{
-	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
-
-	hand_textor_set_focus(&ptd->textor, wt);
-}
-
-void hand_editbox_kill_focus(res_win_t widget, res_win_t wt)
-{
-	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
-
-	hand_textor_kill_focus(&ptd->textor, wt);
-
-	if (widget_is_editor(widget))
-	{
-		noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
-	}
-}
-
-void hand_editbox_keydown(res_win_t widget, int key)
-{
-	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
-	const xface_t* pxa;
-
-	switch (key)
-	{
-	case KEY_BACK:
-		if (ptd->b_lock)
-			break;
-		if (_TEXTOR_PRESS_ACCEPT == hand_textor_back(&ptd->textor))
-		{
-			noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
-		}
-		break;
-	case KEY_DELETE:
-		if (ptd->b_lock)
-			break;
-		if (_TEXTOR_PRESS_ACCEPT == hand_textor_delete(&ptd->textor))
-		{
-			noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
-		}
-		break;
-	case KEY_TAB:
-		break;
-	case KEY_ENTER:
-		if (widget_is_editor(widget))
-		{
-			pxa = widgetex_get_xface_ptr(widget);
-			if (is_null(pxa->text_wrap))
-			{
-				noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
-			}
-		}
-		break;
-	case KEY_ESC:
-		if (ptd->b_lock)
-			break;
-		hand_textor_escape(&ptd->textor);
-		break;
-	case KEY_LEFT:
-		hand_textor_left(&ptd->textor);
-		break;
-	case KEY_RIGHT:
-		hand_textor_right(&ptd->textor);
-		break;
-	case KEY_UP:
-		hand_textor_up(&ptd->textor);
-		break;
-	case KEY_DOWN:
-		hand_textor_down(&ptd->textor);
-		break;
-	case _T('c'):
-	case _T('C'):
-		if (widget_key_state(widget, KEY_CONTROL))
-		{
-			widget_copy(widget);
-		}
-		break;
-	case _T('x'):
-	case _T('X'):
-		if (widget_key_state(widget, KEY_CONTROL))
-		{
-			widget_cut(widget);
-		}
-		break;
-	case _T('v'):
-	case _T('V'):
-		if (widget_key_state(widget, KEY_CONTROL))
-		{
-			widget_paste(widget);
-		}
-		break;
-	case _T('z'):
-	case _T('Z'):
-		if (widget_key_state(widget, KEY_CONTROL))
-		{
-			widget_undo(widget);
-		}
-		break;
-	}
-}
-
-void hand_editbox_char(res_win_t widget, tchar_t ch)
-{
-	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
-
-	if (ptd->b_lock)
-		return;
-
-	if (ch == KEY_BACK)
-		return;
-
-	if (ch != KEY_ENTER && ch != KEY_TAB && ch > 0 && ch < 32)
-		return;
-
-	if (!ptd->chs)
-	{
-		ptd->chs = xschs(&ch);
-
-		xsncpy(ptd->pch, &ch, 1);
-		ptd->chs--;
-
-		if (ptd->chs)
-			return;
-	}
-	else
-	{
-		xsncat(ptd->pch, &ch, 1);
-		ptd->chs--;
-
-		if (ptd->chs)
-			return;
-	}
-
-	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
-	{
-		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
-
-		if (ptd->b_auto)
-		{
-			_editbox_auto_resize(widget);
-		}
-	}
-}
 
 void hand_editbox_copy(res_win_t widget)
 {
@@ -369,6 +223,151 @@ void hand_editbox_undo(res_win_t widget)
 		return;
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_undo(&ptd->textor))
+	{
+		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+
+		if (ptd->b_auto)
+		{
+			_editbox_auto_resize(widget);
+		}
+	}
+}
+
+void hand_editbox_set_focus(res_win_t widget, res_win_t wt)
+{
+	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
+
+	hand_textor_set_focus(&ptd->textor, wt);
+}
+
+void hand_editbox_kill_focus(res_win_t widget, res_win_t wt)
+{
+	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
+
+	hand_textor_kill_focus(&ptd->textor, wt);
+
+	if (widget_is_editor(widget))
+	{
+		noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
+	}
+}
+
+void hand_editbox_keydown(res_win_t widget, int key)
+{
+	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
+	const xface_t* pxa;
+
+	switch (key)
+	{
+	case KEY_BACK:
+		if (ptd->b_lock)
+			break;
+		if (_TEXTOR_PRESS_ACCEPT == hand_textor_back(&ptd->textor))
+		{
+			noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+		}
+		break;
+	case KEY_DELETE:
+		if (ptd->b_lock)
+			break;
+		if (_TEXTOR_PRESS_ACCEPT == hand_textor_delete(&ptd->textor))
+		{
+			noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+		}
+		break;
+	case KEY_TAB:
+		break;
+	case KEY_ENTER:
+		if (widget_is_editor(widget))
+		{
+			pxa = widget_get_xface_ptr(widget);
+			if (is_null(pxa->text_wrap))
+			{
+				noti_editbox_command(widget, COMMAND_COMMIT, (var_long)NULL);
+			}
+		}
+		break;
+	case KEY_ESC:
+		if (ptd->b_lock)
+			break;
+		hand_textor_escape(&ptd->textor);
+		break;
+	case KEY_LEFT:
+		hand_textor_left(&ptd->textor);
+		break;
+	case KEY_RIGHT:
+		hand_textor_right(&ptd->textor);
+		break;
+	case KEY_UP:
+		hand_textor_up(&ptd->textor);
+		break;
+	case KEY_DOWN:
+		hand_textor_down(&ptd->textor);
+		break;
+	case _T('c'):
+	case _T('C'):
+		if (widget_key_state(widget, KEY_CONTROL))
+		{
+			hand_editbox_copy(widget);
+		}
+		break;
+	case _T('x'):
+	case _T('X'):
+		if (widget_key_state(widget, KEY_CONTROL))
+		{
+			hand_editbox_cut(widget);
+		}
+		break;
+	case _T('v'):
+	case _T('V'):
+		if (widget_key_state(widget, KEY_CONTROL))
+		{
+			hand_editbox_paste(widget);
+		}
+		break;
+	case _T('z'):
+	case _T('Z'):
+		if (widget_key_state(widget, KEY_CONTROL))
+		{
+			hand_editbox_undo(widget);
+		}
+		break;
+	}
+}
+
+void hand_editbox_char(res_win_t widget, tchar_t ch)
+{
+	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
+
+	if (ptd->b_lock)
+		return;
+
+	if (ch == KEY_BACK)
+		return;
+
+	if (ch != KEY_ENTER && ch != KEY_TAB && ch > 0 && ch < 32)
+		return;
+
+	if (!ptd->chs)
+	{
+		ptd->chs = xschs(&ch);
+
+		xsncpy(ptd->pch, &ch, 1);
+		ptd->chs--;
+
+		if (ptd->chs)
+			return;
+	}
+	else
+	{
+		xsncat(ptd->pch, &ch, 1);
+		ptd->chs--;
+
+		if (ptd->chs)
+			return;
+	}
+
+	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
 	{
 		noti_editbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 
@@ -451,16 +450,16 @@ void hand_editbox_menu_command(res_win_t widget, int code, int cid, var_long dat
 		switch (code)
 		{
 		case COMMAND_COPY:
-			widget_copy(widget);
+			hand_editbox_copy(widget);
 			break;
 		case COMMAND_CUT:
-			widget_cut(widget);
+			hand_editbox_cut(widget);
 			break;
 		case COMMAND_PASTE:
-			widget_paste(widget);
+			hand_editbox_paste(widget);
 			break;
 		case COMMAND_UNDO:
-			widget_undo(widget);
+			hand_editbox_undo(widget);
 			break;
 		}
 
@@ -524,11 +523,6 @@ res_win_t editbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_SET_FOCUS(hand_editbox_set_focus)
 		EVENT_ON_KILL_FOCUS(hand_editbox_kill_focus)
 
-		EVENT_ON_COPY(hand_editbox_copy)
-		EVENT_ON_CUT(hand_editbox_cut)
-		EVENT_ON_PASTE(hand_editbox_paste)
-		EVENT_ON_UNDO(hand_editbox_undo)
-
 		EVENT_ON_NC_IMPLEMENT
 
 	EVENT_END_DISPATH
@@ -537,9 +531,9 @@ res_win_t editbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 	if (!wt)
 		return NULL;
 
-	/*widgetex_get_xface(wt, &xa);
+	/*widget_get_xface(wt, &xa);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_LINEBREAK);
-	widgetex_set_xface(wt, &xa);*/
+	widget_set_xface(wt, &xa);*/
 
 	return wt;
 }
@@ -630,7 +624,7 @@ bool_t editbox_is_multiline(res_win_t widget)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widgetex_get_xface(widget, &xa);
+	widget_get_xface(widget, &xa);
 
 	return is_null(xa.text_wrap) ? 0 : 1;
 }

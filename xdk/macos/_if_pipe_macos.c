@@ -40,7 +40,7 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
     int flag, rt;
     char ppath[1024] = {0};
     
-    if (_tstrnull(pname))
+    if (is_null(pname))
     {
         if(fmode & FILE_OPEN_WRITE)
             return STDOUT_FILENO;
@@ -48,7 +48,7 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
             return STDIN_FILENO;
     }
     
-    sprintf(ppath, "%s%s", PIPE_HEAD, pname);
+    xsprintf(ppath, "%s%s", PIPE_HEAD, pname);
     
     if (0 == access(ppath, F_OK))
     {
@@ -120,9 +120,9 @@ void _pipe_close(const tchar_t* pname, res_file_t pip)
     
     close(pip);
     
-    if(!_tstrnull(pname))
+    if(!is_null(pname))
     {
-        sprintf(ppath, "%s%s", PIPE_HEAD, pname);
+        xsprintf(ppath, "%s%s", PIPE_HEAD, pname);
     
         unlink(ppath);
     }
@@ -133,7 +133,7 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
     int flag, rt;
     char ppath[1024] = {0};
     
-     if(_tstrnull(pname))
+     if(is_null(pname))
      {
          if(fmode & FILE_OPEN_WRITE)
              return STDOUT_FILENO;
@@ -141,7 +141,7 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
              return STDIN_FILENO;
      }
     
-    sprintf(ppath, "%s%s", PIPE_HEAD, pname);
+    xsprintf(ppath, "%s%s", PIPE_HEAD, pname);
     
     if (access(ppath, F_OK) != 0)
         return INVALID_FILE;
@@ -163,12 +163,12 @@ wait_t _pipe_wait(const tchar_t* pname, int ms)
 {
     char ppath[1024] = {0};
     
-    if(_tstrnull(pname))
+    if(is_null(pname))
     {
         return WAIT_RET;
     }
 
-    sprintf(ppath, "%s%s", PIPE_HEAD, pname);
+    xsprintf(ppath, "%s%s", PIPE_HEAD, pname);
  
     if(ms < 0) ms = MAX_LONG;
     

@@ -102,7 +102,7 @@ void _share_close(const tchar_t* sname, res_file_t fh)
 {
     close(fh);
     
-    if(!_tstrnull(sname))
+    if(!is_null(sname))
     {
         shm_unlink(sname);
     }

@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 #define DIAGRAM_LINE_FEED		(float)50
@@ -311,7 +309,7 @@ static void _diagramctrl_entity_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 
 	calc_diagram_entity_rect(ptd->diagram, ilk, pxr);
 
-	widgetex_rect_to_pt(widget, pxr);
+	widget_rect_to_pt(widget, pxr);
 }
 
 static void _diagramctrl_reset_page(res_win_t widget)
@@ -329,17 +327,17 @@ static void _diagramctrl_reset_page(res_win_t widget)
 	xs.fx = get_diagram_width(ptd->diagram);
 	xs.fy = get_diagram_height(ptd->diagram);
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
 	fh = xs.cy;
 
 	xs.fx = (float)10;
 	xs.fy = (float)10;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	lw = xs.cx;
 	lh = xs.cy;
 
-	widgetex_reset_paging(widget, pw, ph, fw, fh, lw, lh);
+	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
 	widget_reset_scroll(widget, 1);
 
@@ -357,7 +355,7 @@ static void _diagramctrl_ensure_visible(res_win_t widget)
 
 	_diagramctrl_entity_rect(widget, ptd->entity, &xr);
 
-	widgetex_ensure_visible(widget, &xr, 1);
+	widget_ensure_visible(widget, &xr, 1);
 }
 /*********************************************************************************************************/
 int noti_diagram_owner(res_win_t widget, unsigned int code, link_t_ptr ptr, link_t_ptr ilk, void* data)
@@ -552,7 +550,7 @@ void noti_diagram_entity_drop(res_win_t widget, int x, int y)
 
 	calc_diagram_entity_rect(ptd->diagram, ptd->entity, &xr);
 
-	widgetex_rect_to_pt(widget, &xr);
+	widget_rect_to_pt(widget, &xr);
 
 	if (xr.x + cx < 0 || xr.y + cy < 0)
 		return;
@@ -562,7 +560,7 @@ void noti_diagram_entity_drop(res_win_t widget, int x, int y)
 	pt.x = xr.x + cx;
 	pt.y = xr.y + cy;
 
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	pt.fx = (float)((int)(pt.fx));
 	pt.fy = (float)((int)(pt.fy));
@@ -645,7 +643,7 @@ void noti_diagram_entity_sized(res_win_t widget, int x, int y)
 	if (!xs.cx && !xs.cy)
 		return;
 
-	widgetex_size_to_tm(widget, &xs);
+	widget_size_to_tm(widget, &xs);
 
 	_diagramctrl_entity_rect(widget, ptd->entity, &xr);
 
@@ -705,7 +703,7 @@ int hand_diagram_create(res_win_t widget, void* data)
 {
 	diagram_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (diagram_delta_t*)xmem_alloc(sizeof(diagram_delta_t));
 	xmem_zero((void*)ptd, sizeof(diagram_delta_t));
@@ -736,7 +734,7 @@ void hand_diagram_destroy(res_win_t widget)
 
 	SETDIAGRAMDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_diagram_size(res_win_t widget, int code, const xsize_t* prs)
@@ -756,7 +754,7 @@ void hand_diagram_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	if (!ptd->diagram)
 		return;
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_diagram_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -776,7 +774,7 @@ void hand_diagram_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -825,7 +823,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_diagram_hint(ptd->diagram, &pt, &ilk);
@@ -937,7 +935,7 @@ void hand_diagram_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_diagram_hint(ptd->diagram, &pt, &ilk);
@@ -983,7 +981,7 @@ void hand_diagram_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
-	widgetex_point_to_tm(widget, &pt);
+	widget_point_to_tm(widget, &pt);
 
 	ilk = NULL;
 	nHint = calc_diagram_hint(ptd->diagram, &pt, &ilk);
@@ -1116,19 +1114,29 @@ void hand_diagram_keydown(res_win_t widget, int nKey)
 	}
 	else if ((nKey == _T('z') || nKey == _T('Z')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_undo(widget);
+		_diagramctrl_undo(widget);
 	}
 	else if ((nKey == _T('c') || nKey == _T('C')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_copy(widget);
+		_diagramctrl_copy(widget);
 	}
 	else if ((nKey == _T('x') || nKey == _T('X')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_cut(widget);
+		_diagramctrl_done(widget);
+
+		if (!_diagramctrl_cut(widget))
+		{
+			_diagramctrl_discard(widget);
+		}
 	}
 	else if ((nKey == _T('v') || nKey == _T('V')) && widget_key_state(widget, KEY_CONTROL))
 	{
-		widget_paste(widget);
+		_diagramctrl_done(widget);
+
+		if (!_diagramctrl_paste(widget))
+		{
+			_diagramctrl_discard(widget);
+		}
 	}
 }
 
@@ -1140,55 +1148,6 @@ void hand_diagram_char(res_win_t widget, tchar_t nChar)
 		return;
 }
 
-void hand_diagram_copy(res_win_t widget)
-{
-	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
-
-	if (!ptd->diagram)
-		return;
-
-	_diagramctrl_copy(widget);
-}
-
-void hand_diagram_cut(res_win_t widget)
-{
-	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
-
-	if (!ptd->diagram)
-		return;
-
-	_diagramctrl_done(widget);
-
-	if (!_diagramctrl_cut(widget))
-	{
-		_diagramctrl_discard(widget);
-	}
-}
-
-void hand_diagram_paste(res_win_t widget)
-{
-	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
-
-	if (!ptd->diagram)
-		return;
-
-	_diagramctrl_done(widget);
-
-	if (!_diagramctrl_paste(widget))
-	{
-		_diagramctrl_discard(widget);
-	}
-}
-
-void hand_diagram_undo(res_win_t widget)
-{
-	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
-
-	if (!ptd->diagram)
-		return;
-
-	_diagramctrl_undo(widget);
-}
 
 void hand_diagram_notice(res_win_t widget, NOTICE* pnt)
 {
@@ -1225,9 +1184,9 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	if (!ptd->diagram)
 		return;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xfont(widget, &xf);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
@@ -1235,20 +1194,20 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
 	parse_xcolor(&pif->clr_txt, xf.color);
-	widgetex_get_mask(widget, &pif->clr_msk);
-	widgetex_get_iconic(widget, &pif->clr_ico);
+	widget_get_mask(widget, &pif->clr_msk);
+	widget_get_iconic(widget, &pif->clr_ico);
 
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xpen(widget, &xp);
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &cb);
 
 	draw_diagram(pif, &cb, ptd->diagram);
 
@@ -1347,11 +1306,6 @@ res_win_t diagramctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t
 		EVENT_ON_RBUTTON_UP(hand_diagram_rbutton_up)
 
 		EVENT_ON_NOTICE(hand_diagram_notice)
-
-		EVENT_ON_COPY(hand_diagram_copy)
-		EVENT_ON_CUT(hand_diagram_cut)
-		EVENT_ON_PASTE(hand_diagram_paste)
-		EVENT_ON_UNDO(hand_diagram_undo)
 
 		EVENT_ON_NC_IMPLEMENT
 

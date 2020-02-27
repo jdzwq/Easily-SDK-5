@@ -42,7 +42,7 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 	DWORD dwAccess;
 	SECURITY_ATTRIBUTES saAttr;
 
-	if (_tstrnull(pname))
+	if (is_null(pname))
 	{
 		if (fmode & FILE_OPEN_WRITE)
 			hp = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -52,7 +52,7 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 		return (hp) ? hp : INVALID_FILE;
 	}
 
-	_tsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
+	xsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
 
 	if (fmode & FILE_OPEN_WRITE)
 		dwAccess = PIPE_ACCESS_OUTBOUND;
@@ -107,7 +107,7 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 	HANDLE hp = NULL;
 	DWORD dwAccess;
 
-	if (_tstrnull(pname))
+	if (is_null(pname))
 	{
 		if (fmode & FILE_OPEN_WRITE)
 			hp = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -117,7 +117,7 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 		return (hp) ? hp : INVALID_FILE;
 	}
 
-	_tsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
+	xsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
 
 	if (fmode & FILE_OPEN_WRITE)
 		dwAccess = GENERIC_WRITE;
@@ -137,12 +137,12 @@ wait_t _pipe_wait(const tchar_t* pname, int ms)
 	tchar_t path[PATH_LEN] = { 0 };
 	DWORD dw;
 
-	if (_tstrnull(pname))
+	if (is_null(pname))
 	{
 		return WAIT_RET;
 	}
 
-	_tsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
+	xsprintf(path, _T("%s%s"), PIPE_HEAD, pname);
 
 	if (ms < 0)
 		dw = NMPWAIT_WAIT_FOREVER;

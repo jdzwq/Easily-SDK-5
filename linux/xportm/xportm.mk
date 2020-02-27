@@ -23,7 +23,7 @@ TARGET = $(OUT_PATH)/xportm
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdl -lxds
+	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl -lxds
 	rm -f $(OBJS)
 
 test:

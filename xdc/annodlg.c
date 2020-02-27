@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcdlg.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcctrl.h"
 #include "xdcbox.h"
 #include "xdcmenu.h"
@@ -255,7 +253,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	byte_t* buf_bmp = NULL;
 	int len_zip, len_bmp;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (annodlg_delta_t*)xmem_alloc(sizeof(annodlg_delta_t));
 	xmem_zero((void*)ptd, sizeof(annodlg_delta_t));
@@ -264,7 +262,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 
 	xs.fx = ZERO_WIDTH;
 	xs.fy = DEF_TOUCH_SPAN;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	nBar = xs.cy;
 
 	widget_get_client_rect(widget, &xr);
@@ -275,18 +273,18 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(iconbox, IDC_ANNODLG_ICONBOX);
 
 	xsprintf(icons, _T("%d~%s;%d~%s;%d~%s;%d~%s;%d~%s;"),
-		IDA_ANNODLG_ICON_RECT, ICON_RECT,
-		IDA_ANNODLG_ICON_ELLIPSE, ICON_ELLIPSE,
-		IDA_ANNODLG_ICON_CROSS, ICON_CROSS,
-		IDA_ANNODLG_ICON_STAR, ICON_STAR,
-		IDA_ANNODLG_ICON_DIAMOND, ICON_DIAMOND);
+		IDA_ANNODLG_ICON_RECT, GDI_ICON_RECT,
+		IDA_ANNODLG_ICON_ELLIPSE, GDI_ICON_ELLIPSE,
+		IDA_ANNODLG_ICON_CROSS, GDI_ICON_CROSS,
+		IDA_ANNODLG_ICON_STAR, GDI_ICON_STAR,
+		IDA_ANNODLG_ICON_DIAMOND, GDI_ICON_DIAMOND);
 
 	iconbox_set_options(iconbox, icons, -1);
 	widget_show(iconbox, WD_SHOW_NORMAL);
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y += nBar;
@@ -352,7 +350,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = DEF_SPLIT_FEED;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	nSplit = xs.cx;
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
@@ -373,7 +371,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -438,7 +436,7 @@ void hand_annodlg_destroy(res_win_t widget)
 
 	SETANNODLGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
@@ -451,7 +449,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = ZERO_WIDTH;
 	xs.fy = DEF_TOUCH_SPAN;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	nBar = xs.cy;
 
 	widget_get_client_rect(widget, &xr);
@@ -467,7 +465,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y += nBar;
@@ -489,7 +487,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = DEF_SPLIT_FEED;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 	nSplit = xs.cx;
 
 	pt_expand_rect(&xr, -nSplit, -nSplit);
@@ -514,7 +512,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -578,19 +576,19 @@ void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long dat
 		switch (code)
 		{
 		case IDA_ANNODLG_ICON_CROSS:
-			annodlg_on_append_item(widget, ICON_CROSS);
+			annodlg_on_append_item(widget, GDI_ICON_CROSS);
 			break;
 		case IDA_ANNODLG_ICON_DIAMOND:
-			annodlg_on_append_item(widget, ICON_DIAMOND);
+			annodlg_on_append_item(widget, GDI_ICON_DIAMOND);
 			break;
 		case IDA_ANNODLG_ICON_ELLIPSE:
-			annodlg_on_append_item(widget, ICON_ELLIPSE);
+			annodlg_on_append_item(widget, GDI_ICON_ELLIPSE);
 			break;
 		case IDA_ANNODLG_ICON_RECT:
-			annodlg_on_append_item(widget, ICON_RECT);
+			annodlg_on_append_item(widget, GDI_ICON_RECT);
 			break;
 		case IDA_ANNODLG_ICON_STAR:
-			annodlg_on_append_item(widget, ICON_STAR);
+			annodlg_on_append_item(widget, GDI_ICON_STAR);
 			break;
 		}
 	}else if (cid == IDC_ANNODLG_MENU_COLOR)
@@ -646,11 +644,11 @@ void hand_annodlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xsize_t xs;
 	canvas_t canv;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -662,7 +660,7 @@ void hand_annodlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -729,8 +727,8 @@ res_win_t annodlg_create(const tchar_t* title, string_t var, res_win_t owner)
 
 	if (widget_is_valid(owner))
 	{
-		widgetex_get_color_mode(owner, &clr);
-		widgetex_set_color_mode(dlg, &clr);
+		widget_get_color_mode(owner, &clr);
+		widget_set_color_mode(dlg, &clr);
 	}
 
 	return dlg;

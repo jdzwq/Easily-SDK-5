@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcdlg.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcfire.h"
 #include "xdcbox.h"
 
@@ -77,7 +75,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 
 	XDL_ASSERT(pm != NULL);
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (msgdlg_delta_t*)xmem_alloc(sizeof(msgdlg_delta_t));
 	xmem_zero((void*)ptd, sizeof(msgdlg_delta_t));
@@ -87,7 +85,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 
 	xs.fx = MSGDLG_TITLE_WIDTH;
 	xs.fy = MSGDLG_TITLE_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.x += MSGDLG_EDGE_FEED;
@@ -99,7 +97,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -119,7 +117,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MINI;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -139,7 +137,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MINI;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -159,7 +157,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -179,7 +177,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -199,7 +197,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MAXI;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -253,7 +251,7 @@ void hand_msgdlg_destroy(res_win_t widget)
 
 	SETMSGDLGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_msgdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
@@ -335,7 +333,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = MSGDLG_TITLE_WIDTH;
 	xs.fy = MSGDLG_TITLE_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.x += MSGDLG_EDGE_FEED;
@@ -347,7 +345,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -364,7 +362,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MINI;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -381,7 +379,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MINI;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -398,7 +396,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -415,7 +413,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MIDD;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x + xr.w - xs.cx;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -432,7 +430,7 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	{
 		xs.fx = MSGDLG_BUTTON_WIDTH_MAXI;
 		xs.fy = MSGDLG_BUTTON_HEIGHT;
-		widgetex_size_to_pt(widget, &xs);
+		widget_size_to_pt(widget, &xs);
 
 		xr_btn.x = xr.x;
 		xr_btn.y = xr.y + xr.h / 2 - xs.cy / 2;
@@ -481,11 +479,11 @@ void hand_msgdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -498,7 +496,7 @@ void hand_msgdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xs.fx = MSGDLG_TITLE_HEIGHT;
 	xs.fy = MSGDLG_TITLE_HEIGHT;
 
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -587,8 +585,8 @@ res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t owner)
 
 	if (widget_is_valid(owner))
 	{
-		widgetex_get_color_mode(owner, &clr);
-		widgetex_set_color_mode(dlg, &clr);
+		widget_get_color_mode(owner, &clr);
+		widget_set_color_mode(dlg, &clr);
 	}
 
 	return dlg;
@@ -601,7 +599,7 @@ void msgdlg_popup_size(res_win_t widget, xsize_t* pxs)
 	pxs->fx = MSGDLG_TITLE_HEIGHT * 8;
 	pxs->fy = MSGDLG_TITLE_HEIGHT * 4;
 
-	widgetex_size_to_pt(widget, pxs);
+	widget_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

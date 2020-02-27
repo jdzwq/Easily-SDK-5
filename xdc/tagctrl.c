@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcmenu.h"
 #include "textor.h"
 #include "xdcbox.h"
@@ -104,7 +102,7 @@ int hand_tagctrl_create(res_win_t widget, void* data)
 {
 	tagctrl_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (tagctrl_delta_t*)xmem_alloc(sizeof(tagctrl_delta_t));
 	xmem_zero((void*)ptd, sizeof(tagctrl_delta_t));
@@ -145,7 +143,95 @@ void hand_tagctrl_destroy(res_win_t widget)
 
 	SETTAGCTRLDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
+}
+
+void hand_tagctrl_copy(res_win_t widget)
+{
+	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	hand_textor_copy(&ptd->textor);
+}
+
+void hand_tagctrl_cut(res_win_t widget)
+{
+	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	if (_TEXTOR_PRESS_ACCEPT != hand_textor_cut(&ptd->textor))
+		return;
+
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
+	{
+		ptd->joint = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	}
+}
+
+void hand_tagctrl_paste(res_win_t widget)
+{
+	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	if (_TEXTOR_PRESS_ACCEPT != hand_textor_paste(&ptd->textor))
+		return;
+
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
+	{
+		ptd->joint = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	}
+}
+
+void hand_tagctrl_undo(res_win_t widget)
+{
+	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
+
+	if (!ptd)
+		return;
+
+	if (ptd->b_lock)
+		return;
+
+	if (!ptd->textor.data)
+		return;
+
+	if (_TEXTOR_PRESS_ACCEPT != hand_textor_undo(&ptd->textor))
+		return;
+
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+
+	if (ptd->joint != (link_t_ptr)ptd->textor.object)
+	{
+		ptd->joint = (link_t_ptr)ptd->textor.object;
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	}
 }
 
 void hand_tagctrl_set_focus(res_win_t widget, res_win_t wt)
@@ -272,28 +358,28 @@ void hand_tagctrl_keydown(res_win_t widget, int key)
 	case _T('C'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_copy(widget);
+			hand_tagctrl_copy(widget);
 		}
 		break;
 	case _T('x'):
 	case _T('X'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_cut(widget);
+			hand_tagctrl_cut(widget);
 		}
 		break;
 	case _T('v'):
 	case _T('V'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_paste(widget);
+			hand_tagctrl_paste(widget);
 		}
 		break;
 	case _T('z'):
 	case _T('Z'):
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
-			widget_undo(widget);
+			hand_tagctrl_undo(widget);
 		}
 		break;
 	}
@@ -343,94 +429,6 @@ void hand_tagctrl_char(res_win_t widget, tchar_t ch)
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
 	{
 		widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-	}
-}
-
-void hand_tagctrl_copy(res_win_t widget)
-{
-	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	hand_textor_copy(&ptd->textor);
-}
-
-void hand_tagctrl_cut(res_win_t widget)
-{
-	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (ptd->b_lock)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	if (_TEXTOR_PRESS_ACCEPT != hand_textor_cut(&ptd->textor))
-		return;
-
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-
-	if (ptd->joint != (link_t_ptr)ptd->textor.object)
-	{
-		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
-	}
-}
-
-void hand_tagctrl_paste(res_win_t widget)
-{
-	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (ptd->b_lock)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	if (_TEXTOR_PRESS_ACCEPT != hand_textor_paste(&ptd->textor))
-		return;
-
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-
-	if (ptd->joint != (link_t_ptr)ptd->textor.object)
-	{
-		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
-	}
-}
-
-void hand_tagctrl_undo(res_win_t widget)
-{
-	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (ptd->b_lock)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-
-	if (_TEXTOR_PRESS_ACCEPT != hand_textor_undo(&ptd->textor))
-		return;
-
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
-
-	if (ptd->joint != (link_t_ptr)ptd->textor.object)
-	{
-		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
 	}
 }
 
@@ -626,16 +624,16 @@ void hand_tagctrl_menu_command(res_win_t widget, int code, int cid, var_long dat
 		switch (code)
 		{
 		case COMMAND_COPY:
-			widget_copy(widget);
+			hand_tagctrl_copy(widget);
 			break;
 		case COMMAND_CUT:
-			widget_cut(widget);
+			hand_tagctrl_cut(widget);
 			break;
 		case COMMAND_PASTE:
-			widget_paste(widget);
+			hand_tagctrl_paste(widget);
 			break;
 		case COMMAND_UNDO:
-			widget_undo(widget);
+			hand_tagctrl_undo(widget);
 			break;
 		}
 		
@@ -699,11 +697,6 @@ res_win_t tagctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 		EVENT_ON_KILL_FOCUS(hand_tagctrl_kill_focus)
 		EVENT_ON_SELF_COMMAND(hand_tagctrl_self_command)
 		EVENT_ON_MENU_COMMAND(hand_tagctrl_menu_command)
-
-		EVENT_ON_COPY(hand_tagctrl_copy)
-		EVENT_ON_CUT(hand_tagctrl_cut)
-		EVENT_ON_PASTE(hand_tagctrl_paste)
-		EVENT_ON_UNDO(hand_tagctrl_undo)
 
 		EVENT_ON_NC_IMPLEMENT
 

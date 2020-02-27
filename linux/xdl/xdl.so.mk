@@ -10,7 +10,7 @@ SRC_PATH = ../../xdl
 SUB_PATH = ../../xdl/linux
 OUT_PATH = ../sbin/api
 
-ARLIB = -lm -L$(LIB_PATH) -lacp -lbmp -ljpg -lzlib -lpng -lqrcode
+ARLIB = -lm -L$(LIB_PATH) -lacp -lbmp -ljpg -lzlib -lpng -lqrcode -lxdp
 
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
@@ -43,6 +43,7 @@ install:
 
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
 	sudo chmod +x $(SRV_PATH)/api/libxdl.so.1.0;
+	sudo rm -f $(LNK_PATH)/libxdl*;
 	sudo ln -bs $(SRV_PATH)/api/libxdl.so.1.0 $(LNK_PATH)/libxdl.so;
 
 .PHONY : clean

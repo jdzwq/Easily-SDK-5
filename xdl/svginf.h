@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#if defined(XDL_SUPPORT_SVG)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -58,6 +58,6 @@ XDL_API void destroy_svg_interface(if_canvas_t* pic);
 }
 #endif
 
-#endif /*XDK_SUPPORT_CONTEXT*/
+#endif /*XDL_SUPPORT_SVG*/
 
 #endif /*SVGINF_H*/

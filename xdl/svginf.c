@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "xdlstd.h"
 #include "xdlview.h"
 
-#if defined(XDK_SUPPORT_CONTEXT)
+#if defined(XDL_SUPPORT_SVG)
 
 if_canvas_t* create_svg_interface(canvas_t canv)
 {
@@ -84,4 +84,4 @@ void destroy_svg_interface(if_canvas_t* pic)
 	xmem_free(pic);
 }
 
-#endif /*XDL_SUPPORT_VIEW*/
+#endif /*XDL_SUPPORT_SVG*/

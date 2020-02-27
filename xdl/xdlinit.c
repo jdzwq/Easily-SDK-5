@@ -416,57 +416,6 @@ void xdl_process_init(dword_t opt)
 		(*g_xdl_mou.if_socket.pf_socket_startup)();
 	}
 #endif
-
-	if (g_xdl_mou.if_opt & XDL_INITIALIZE_DESKTOP)
-	{
-#ifdef XDK_SUPPORT_CONTEXT
-		xdk_impl_context(&g_xdl_mou.if_context);
-
-		if (g_xdl_mou.if_context.pf_context_startup)
-		{
-			g_xdl_mou.ctx_ver = (*g_xdl_mou.if_context.pf_context_startup)();
-		}
-
-#ifdef XDK_SUPPORT_CONTEXT_BITMAP
-		xdk_impl_context_bitmap(&g_xdl_mou.if_context);
-#endif //XDK_SUPPORT_CONTEXT_BITMAP
-
-#ifdef XDK_SUPPORT_CONTEXT_GRAPHIC
-		xdk_impl_context_graphic(&g_xdl_mou.if_context);
-#endif /*XDK_SUPPORT_CONTEXT_GRAPHIC*/
-
-#ifdef XDK_SUPPORT_CONTEXT_PRINTER
-		xdk_impl_context_printer(&g_xdl_mou.if_context);
-#endif
-#ifdef XDK_SUPPORT_CONTEXT_REGION
-		xdk_impl_context_region(&g_xdl_mou.if_context);
-#endif
-
-#endif //XDK_SUPPORT_CONTEXT
-
-#ifdef XDK_SUPPORT_CLIPBOARD
-		xdk_impl_clipboard(&g_xdl_mou.if_clipboard);
-#endif //XDK_SUPPORT_CLIPBOARD
-
-#ifdef XDK_SUPPORT_SHELL
-		xdk_impl_shell(&g_xdl_mou.if_shell);
-#ifdef XDK_SUPPORT_SHELL_DIALOG
-		xdk_impl_shell_dialog(&g_xdl_mou.if_shell);
-#endif
-#endif //XDK_SUPPORT_SHELL
-
-#ifdef XDK_SUPPORT_WIDGET
-		xdk_impl_widget(&g_xdl_mou.if_widget);
-#ifdef XDK_SUPPORT_WIDGET_EX
-		xdk_impl_widget_ex(&g_xdl_mou.if_widget);
-#endif
-		//start widget context
-		if (g_xdl_mou.if_widget.pf_widget_startup)
-		{
-			(*(g_xdl_mou.if_widget.pf_widget_startup))(g_xdl_mou.ctx_ver);
-		}
-#endif //XDK_SUPPORT_WIDGET
-	}
 }
 
 //unmount system call
@@ -478,19 +427,6 @@ void xdl_process_uninit()
 
 	if (!g_xdl_mou.if_ok)
 		return;
-
-	if (g_xdl_mou.if_opt & XDL_INITIALIZE_DESKTOP)
-	{
-#ifdef XDK_SUPPORT_CONTEXT
-		//stop gdi context
-		(*g_xdl_mou.if_context.pf_context_cleanup)();
-#endif
-
-#ifdef XDK_SUPPORT_WIDGET
-		//stop widget context
-		(*g_xdl_mou.if_widget.pf_widget_cleanup)();
-#endif
-	}
 
 #ifdef XDK_SUPPORT_SOCK
 	(*g_xdl_mou.if_socket.pf_socket_cleanup)();

@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:xdu/xdu.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:xdp/xdp.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:www_api/www_api.xcodeproj">
    </FileRef>
    <FileRef

@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #ifndef _XDUDEF_H
 #define	_XDUDEF_H
 
-#include <plf.h>
+#include <xdp.h>
 
 #if defined(_OS_WINDOWS)
 #include "windows/_xdu_win.h"
@@ -53,21 +53,14 @@ LICENSE.GPL3 for more details.
 #define XDU_API extern
 #endif
 
-#define XPI			3.1415926535
-//#define INCHPERTM	0.003937
-#define INCHPERMM	0.03937
-//#define TMPERINCH	254
-#define MMPERINCH	25.4
-//#define PTPERINCH	1440
-//#define PTPERMM	56.693
-#define MMPERLOGPT	0.1
-#define MMPERPD		0.35
-#define PDPERMM		2.835
-#define PDPERINCH	72
-
-#define ZERO_WIDTH				(float)0
-#define ZERO_HEIGHT				(float)0
-
+/*widget class*/
+#define XDUWIDGET		_T("XDUWIDGET")
+/*widget store property*/
+#define XDUSTRUCT		_T("XDUSTRUCT")
+#define XDUDISPATCH		_T("XDUDISPATCH")
+#define XDUSUBPROC		_T("XDUSUBPROC")
+#define XDUUSERDELTA	_T("XDUUSERDELTA")
+#define XDUCOREDELTA	_T("XDUCOREDELTA")
 
 /*keyboard*/
 #define KEY_SHIFT		0x10
@@ -90,21 +83,8 @@ LICENSE.GPL3 for more details.
 #define KEY_INSERT		45	//0x2D
 #define KEY_DELETE		46	//0x2E
 
-
-/*widget class*/
-#define XDUWIDGET		_T("XDUWIDGET")
-/*widget store property*/
-#define XDUSTRUCT		_T("XDUSTRUCT")
-#define XDUDISPATCH		_T("XDUDISPATCH")
-#define XDUSUBPROC		_T("XDUSUBPROC")
-#define XDUUSERDELTA	_T("XDUUSERDELTA")
-#define XDUCOREDELTA	_T("XDUCOREDELTA")
-#define XDUSTYLE		_T("XDUSTYLE")
-#define XDUACCEL		_T("XDUACCEL")
-#define XDUOWNER		_T("XDUOWNER")
-#define XDUUSERID		_T("XDUUSERID")
-#define XDURESULT		_T("XDURESULT")
-#define XDUGLRC			_T("XDUGLRC")
+#define ZERO_WIDTH				(float)0
+#define ZERO_HEIGHT				(float)0
 
 #define WIDGET_TITLE_SPAN		(float)10	//mm
 #define WIDGET_MENU_SPAN		(float)7.5	//mm
@@ -262,8 +242,6 @@ LICENSE.GPL3 for more details.
 #define ICON_HAND			_T("hand")
 #define ICON_ASTERISK		_T("asterisk")
 
-
-
 typedef struct _accel_t{
 	unsigned char vir;
 	unsigned short key;
@@ -280,129 +258,8 @@ typedef struct _dev_cap_t{
 typedef struct _dev_prn_t{
 	short paper_width, paper_height;
 	short landscape;
+	tchar_t devname[1024];
 }dev_prn_t;
-
-
-typedef enum{ _RGB_COLOR, HSL_COLOR, _HEX_COLOR }CLRFMT;
-
-#define RGB_GRAY(r,g,b) (unsigned char)(0.299 * r + 0.587 * g + 0.114 * b)
-
-typedef struct _yuv_color_t{
-	unsigned char y, u, v;
-}yuv_color_t;
-
-typedef struct _xcolor_t{
-	unsigned char r, g, b;
-}xcolor_t;
-
-typedef struct _clr_mod_t{
-	xcolor_t clr_bkg;
-	xcolor_t clr_frg;
-	xcolor_t clr_txt;
-	xcolor_t clr_msk;
-	xcolor_t clr_ico;
-}clr_mod_t;
-
-
-typedef struct _xrect_t{
-	union{
-		int x;
-		float fx;
-	};
-	union{
-		int y;
-		float fy;
-	};
-	union{
-		int w;
-		float fw;
-	};
-	union{
-		int h;
-		float fh;
-	};
-}xrect_t;
-
-typedef struct _xpoint_t{
-	union{
-		int x;
-		float fx;
-	};
-	union{
-		int y;
-		float fy;
-	};
-}xpoint_t;
-
-typedef struct _xsize_t{
-	union{
-		int cx;
-		float fx;
-	};
-	union{
-		int cy;
-		float fy;
-	};
-}xsize_t;
-
-#define RECTPOINT(pxr)	((xpoint_t*)pxr)
-#define RECTSIZE(pxr)	((xsize_t*)pxr + 1)
-
-typedef struct _shadow_t{
-	int offx;
-	int offy;
-}shadow_t;
-
-typedef struct _adorn_t{
-	int feed;
-	int size;
-}adorn_t;
-
-typedef struct _xgradi_t{
-	tchar_t type[64];
-	tchar_t opacity[16];
-	tchar_t brim_color[16];
-	tchar_t core_color[16];
-}xgradi_t;
-
-typedef struct _xbrush_t{
-	tchar_t style[64];
-	tchar_t opacity[16];
-	tchar_t color[16];
-	shadow_t shadow;
-}xbrush_t;
-
-typedef struct _xpen_t{
-	tchar_t style[64];
-	tchar_t size[16];
-	tchar_t opacity[16];
-	tchar_t color[16];
-	adorn_t adorn;
-}xpen_t;
-
-typedef struct _xfont_t{
-	tchar_t style[64];
-	tchar_t size[16];
-	tchar_t weight[16];
-	tchar_t family[64];
-	tchar_t color[16];
-}xfont_t;
-
-typedef struct _xface_t{
-	tchar_t text_wrap[64];
-	tchar_t text_align[64];
-	tchar_t line_align[64];
-	tchar_t line_height[16];
-}xface_t;
-
-typedef struct _ximage_t{
-	tchar_t style[64];
-	tchar_t type[64];
-	tchar_t color[16];
-
-	const tchar_t* source;
-}ximage_t;
-
 
 typedef struct _border_t{
 	int title;
@@ -621,10 +478,6 @@ typedef struct _if_event_t{
 	PF_ON_SYSCMD_CLICK		pf_on_syscmd_click;
 
 	PF_ON_TIMER			pf_on_timer;
-	PF_ON_COPY			pf_on_copy;
-	PF_ON_CUT			pf_on_cut;
-	PF_ON_PASTE			pf_on_paste;
-	PF_ON_UNDO			pf_on_undo;
 
 	void* param;
 }if_event_t;

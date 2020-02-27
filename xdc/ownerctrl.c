@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 typedef struct _owner_delta_t{
@@ -68,13 +66,13 @@ static void _ownerctrl_reset_page(res_win_t widget)
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
 	xrect_t xr;
-	PAGE_CALC pc = { 0 };
+	PAGEINFO pc = { 0 };
 
 	noti_owner_owner(widget, NC_OWNERCALC, (void*)&pc);
 
 	widget_get_client_rect(widget, &xr);
 
-	widgetex_reset_paging(widget, xr.w, xr.h, pc.total_width, pc.total_height, pc.line_width, pc.line_height);
+	widget_reset_paging(widget, xr.w, xr.h, pc.total_width, pc.total_height, pc.line_width, pc.line_height);
 }
 
 /********************************************************************************************/
@@ -82,7 +80,7 @@ int hand_owner_create(res_win_t widget, void* data)
 {
 	owner_delta_t* ptd;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (owner_delta_t*)xmem_alloc(sizeof(owner_delta_t));
 
@@ -107,7 +105,7 @@ void hand_owner_destroy(res_win_t widget)
 
 	SETOWNERDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_owner_keydown(res_win_t widget, int key)
@@ -192,7 +190,7 @@ void hand_owner_scroll(res_win_t widget, bool_t bHorz, int nLine)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void hand_owner_wheel(res_win_t widget, bool_t bHorz, int nDelta)
@@ -212,7 +210,7 @@ void hand_owner_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	else
 		nLine = (nDelta < 0) ? scr.min : -scr.min;
 
-	if (widgetex_hand_scroll(widget, bHorz, nLine))
+	if (widget_hand_scroll(widget, bHorz, nLine))
 	{
 		if (!bHorz && !(widget_get_style(widget) & WD_STYLE_VSCROLL))
 		{
@@ -260,7 +258,7 @@ void hand_owner_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widgetex_get_xbrush(widget, &xb);
+	widget_get_xbrush(widget, &xb);
 	
 	widget_get_client_rect(widget, &xr);
 
@@ -270,7 +268,7 @@ void hand_owner_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	draw_rect_raw(rdc, NULL, &xb, &xr);
 
-	widgetex_get_view_rect(widget, &vb);
+	widget_get_view_rect(widget, &vb);
 
 	noti_owner_owner(widget, NC_OWNERDRAW, (void*)rdc);
 

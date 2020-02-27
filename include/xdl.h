@@ -8,7 +8,6 @@
 #include "../xdl/xdlstd.h"
 
 #include "../xdl/xdlnet.h"
-#include "../xdl/xdlprn.h"
 
 #ifdef XDL_SUPPORT_DOC
 #include "../xdl/xdldoc.h"

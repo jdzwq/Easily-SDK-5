@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcdlg.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcfire.h"
 #include "xdcbox.h"
 
@@ -87,7 +85,7 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	clr_mod_t ob = { 0 };
 	INPUTPARAM* pim = (INPUTPARAM*)data;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (inputdlg_delta_t*)xmem_alloc(sizeof(inputdlg_delta_t));
 	xmem_zero((void*)ptd, sizeof(inputdlg_delta_t));
@@ -100,8 +98,8 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 		ptd->max = pim->max;
 	}
 	
-	widgetex_get_color_mode(widget, &ob);
-	widgetex_get_xfont(widget, &xf);
+	widget_get_color_mode(widget, &ob);
+	widget_get_xfont(widget, &xf);
 
 	widget_get_client_rect(widget, &xr);
 	xr.x = xr.w - xr.h;
@@ -109,7 +107,7 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	ptd->button = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(ptd->button, IDC_INPUTDLG_PUSHBOX_CLOSE);
 	widget_set_owner(ptd->button, widget);
-	pushbox_set_text(ptd->button, ICON_CLOSE, -1);
+	pushbox_set_text(ptd->button, GDI_ICON_CLOSE, -1);
 	widget_show(ptd->button, WD_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
@@ -118,8 +116,8 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	widget_set_user_id(ptd->editor, IDC_FIREEDIT);
 	widget_set_owner(ptd->editor, widget);
 	
-	widgetex_set_xfont(ptd->editor, &xf);
-	widgetex_set_color_mode(ptd->editor, &ob);
+	widget_set_xfont(ptd->editor, &xf);
+	widget_set_color_mode(ptd->editor, &ob);
 
 	widget_show(ptd->editor, WD_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
@@ -149,7 +147,7 @@ void hand_inputdlg_destroy(res_win_t widget)
 
 	SETINPUTDLGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_inputdlg_child_command(res_win_t widget, int code, var_long data)
@@ -220,11 +218,11 @@ void hand_inputdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -279,10 +277,10 @@ res_win_t inputdlg_create(const tchar_t* title, tchar_t* buf, int max, res_win_t
 
 	widget_center_window(dlg, owner);
 
-	if (widget_is_valid(owner) && widgetex_has_struct(owner))
+	if (widget_is_valid(owner) && widget_has_struct(owner))
 	{
-		widgetex_get_color_mode(owner, &clr);
-		widgetex_set_color_mode(dlg, &clr);
+		widget_get_color_mode(owner, &clr);
+		widget_set_color_mode(dlg, &clr);
 	}
 
 	return dlg;
@@ -295,7 +293,7 @@ void inputdlg_popup_size(res_win_t widget, xsize_t* pxs)
 	xfont_t xf = { 0 };
 	xsize_t xs;
 
-	widgetex_get_xfont(widget, &xf);
+	widget_get_xfont(widget, &xf);
 
 	rdc = widget_client_ctx(widget);
 	text_metric_raw(rdc, &xf, &xs);

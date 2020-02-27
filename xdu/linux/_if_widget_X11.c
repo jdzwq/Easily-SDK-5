@@ -30,7 +30,6 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xduiml.h"
-#include "xduattr.h"
 #include "xduutil.h"
 
 #ifdef XDU_SUPPORT_WIDGET
@@ -713,38 +712,6 @@ static result_t _XduWidgetProc(res_win_t hWnd, unsigned int message, wparam_t wP
 			return 0;
 		}
 		break;
-	case WM_COPY:
-		pev = GETXDUDISPATCH(hWnd);
-		if (pev && pev->pf_on_copy)
-		{
-			(*pev->pf_on_copy)(hWnd);
-			return 0;
-		}
-		break;
-	case WM_CUT:
-		pev = GETXDUDISPATCH(hWnd);
-		if (pev && pev->pf_on_cut)
-		{
-			(*pev->pf_on_cut)(hWnd);
-			return 0;
-		}
-		break;
-	case WM_PASTE:
-		pev = GETXDUDISPATCH(hWnd);
-		if (pev && pev->pf_on_paste)
-		{
-			(*pev->pf_on_paste)(hWnd);
-			return 0;
-		}
-		break;
-	case WM_UNDO:
-		pev = GETXDUDISPATCH(hWnd);
-		if (pev && pev->pf_on_undo)
-		{
-			(*pev->pf_on_undo)(hWnd);
-			return 0;
-		}
-		break;
 	case WM_NOTICE:
 		pev = GETXDUDISPATCH(hWnd);
 		if (pev && pev->pf_on_notice)
@@ -1292,9 +1259,9 @@ void _widget_destroy(res_win_t wt)
 
 	if(ps)
 	{
-		if(ps->wgc) XFreeGC(ps->wgc);
+		if(ps->wgc) XFreeGC(g_display, ps->wgc);
 
-		if(ps->cgc) XFreeGC(ps->cgc);
+		if(ps->cgc) XFreeGC(g_display, ps->cgc);
 
 		free(ps);
 		XDUSETSTRUCT(wt, NULL);

@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcfire.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcbox.h"
 
 
@@ -70,7 +68,7 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		/*keybox = editbox_get_keybox(widget);
 		if (widget_is_valid(keybox))
 		{
-			widgetex_set_color_mode(keybox, (clr_mod_t*)data,);
+			widget_set_color_mode(keybox, (clr_mod_t*)data,);
 			widget_update_window(keybox);
 			widget_update_client(keybox);
 		}*/
@@ -133,9 +131,9 @@ res_win_t fireedit_create(res_win_t widget, const xrect_t* pxr)
 
 	widget_set_user_id(editor, IDC_EDITBOX);
 
-	widgetex_get_xface(editor, &xa);
+	widget_get_xface(editor, &xa);
 	xscpy(xa.text_wrap, NULL);
-	widgetex_set_xface(editor, &xa);
+	widget_set_xface(editor, &xa);
 
 	ev.sub_on_keydown = sub_editbox_keydown;
 	ev.sub_on_unsubbing = sub_editbox_unsubbing;

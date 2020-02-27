@@ -30,9 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcdlg.h"
-#include "handler.h"
-#include "widgetnc.h"
-#include "widgetex.h"
+#include "xdcimp.h"
 #include "xdcctrl.h"
 #include "xdcbox.h"
 
@@ -72,7 +70,7 @@ int hand_listdlg_create(res_win_t widget, void* data)
 	xsize_t xs;
 	res_win_t listctrl, pushbox;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	ptd = (listdlg_delta_t*)xmem_alloc(sizeof(listdlg_delta_t));
 	xmem_zero((void*)ptd, sizeof(listdlg_delta_t));
@@ -80,7 +78,7 @@ int hand_listdlg_create(res_win_t widget, void* data)
 
 	xs.fx = LISTDLG_BUTTON_WIDTH;
 	xs.fy = LISTDLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.h -= xs.cy;
@@ -100,7 +98,7 @@ int hand_listdlg_create(res_win_t widget, void* data)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = DEF_SPLIT_FEED;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
 
@@ -134,7 +132,7 @@ void hand_listdlg_destroy(res_win_t widget)
 
 	SETLISTDLGDELTA(widget, 0);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
@@ -146,7 +144,7 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = LISTDLG_BUTTON_WIDTH;
 	xs.fy = LISTDLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 	xr.h -= xs.cy;
@@ -167,7 +165,7 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	xs.fx = DEF_SPLIT_FEED;
 	xs.fy = DEF_SPLIT_FEED;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	pt_expand_rect(&xr, -xs.cx, -xs.cy);
 
@@ -200,11 +198,11 @@ void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xsize_t xs;
 	canvas_t canv;
 
-	widgetex_get_xfont(widget, &xf);
-	widgetex_get_xface(widget, &xa);
+	widget_get_xfont(widget, &xf);
+	widget_get_xface(widget, &xa);
 
-	widgetex_get_xbrush(widget, &xb);
-	widgetex_get_xpen(widget, &xp);
+	widget_get_xbrush(widget, &xb);
+	widget_get_xpen(widget, &xp);
 
 	widget_get_client_rect(widget, &xr);
 
@@ -216,7 +214,7 @@ void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	xs.fx = LISTDLG_BUTTON_WIDTH;
 	xs.fy = LISTDLG_BUTTON_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
 	xr_bar.y = xr.y + xr.h - xs.cy;
@@ -297,8 +295,8 @@ res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner)
 
 	if (widget_is_valid(owner))
 	{
-		widgetex_get_color_mode(owner, &clr);
-		widgetex_set_color_mode(dlg, &clr);
+		widget_get_color_mode(owner, &clr);
+		widget_set_color_mode(dlg, &clr);
 	}
 
 	return dlg;
@@ -313,7 +311,7 @@ void listdlg_popup_size(res_win_t widget, xsize_t* pxs)
 	pxs->fx = get_list_item_width(ptd->list) * 5 + DEF_TOUCH_SPAN;
 	pxs->fy = get_list_item_height(ptd->list) * 3 + LISTDLG_BUTTON_HEIGHT;
 	
-	widgetex_size_to_pt(widget, pxs);
+	widget_size_to_pt(widget, pxs);
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }
