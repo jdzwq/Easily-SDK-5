@@ -68,7 +68,7 @@ void _get_runpath(res_modu_t ins, tchar_t* buf, int max)
 
 	GetModuleFileName(ins, buf, max);
 
-	token = buf + _tcslen(buf);
+	token = buf + xslen(buf);
 	while (*token != _T('\\') && *token != _T('/') && token != buf)
 		token--;
 

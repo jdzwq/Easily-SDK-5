@@ -43,6 +43,11 @@ void xportd_start()
 		return ;
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
+	if(is_null(sz_root))
+	{
+		//xscpy(sz_root,_T("."));
+		get_runpath((res_modu_t)0, sz_root, PATH_LEN);
+	}
 
 	xsprintf(sz_file, _T("%s/xportd.config"), sz_root);
 

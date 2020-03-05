@@ -384,21 +384,6 @@ typedef struct _X11_create_struct_t{
 #endif
 #endif /*XDU_SUPPORT_WIDGET*/
 
-#ifndef min
-#define min(x, y) ({                        \
-    __typeof__(x) _min1 = (x);              \
-    __typeof__(y) _min2 = (y);              \
-    (void) (&_min1 == &_min2);              \
-    _min1 < _min2 ? _min1 : _min2; })
-#endif
-    
-#ifndef max
-#define max(x, y) ({                         \
-    __typeof__(x) _max1 = (x);               \
-    __typeof__(y) _max2 = (y);               \
-    (void) (&_max1 == &_max2);               \
-    _max1 > _max2 ? _max1 : _max2; })
-#endif
 
 
 #endif //_XDU_MACOS_H

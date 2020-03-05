@@ -337,6 +337,82 @@ typedef int				wait_t;
 #define PAGE_SPACE       (PAGE_GRAN * 1024)
 #endif
 
+/*define unicode prefix*/
+#ifndef GBKBOM
+#define GBKBOM		0xFFFF
+#endif
+
+#if BYTE_ORDER == BIG_ENDIAN
+#ifndef BIGBOM
+#define BIGBOM		0xFEFF
+#endif
+#ifndef LITBOM
+#define LITBOM		0xFFFE
+#endif
+#ifndef UTFBOM
+#define UTFBOM		0xEFBBBF
+#endif
+#ifndef DEFBOM
+#define DEFBOM		BIGBOM
+#endif
+#else
+#ifndef BIGBOM
+#define BIGBOM		0xFFFE
+#endif
+#ifndef LITBOM
+#define LITBOM		0xFEFF
+#endif
+#ifndef UTFBOM
+#define UTFBOM		0xBFBBEF
+#endif
+#ifndef DEFBOM
+#define DEFBOM		LITBOM
+#endif
+#endif
+
+#define PUT_ENCODE(buf, off, enc)	(buf[off] = (unsigned char)(enc >> 16), buf[off + 1] = (unsigned char)(enc >> 8), buf[off + 2] = (unsigned char)(enc))
+#define GET_ENCODE(buf, off)		(int)((unsigned int)buf[off] << 16 | (unsigned int)buf[off + 1] << 8 | (unsigned int)buf[off + 2])
+
+#define CHARSET_GB2312		_T("gb2312")
+#define CHARSET_UTF8		_T("utf-8")
+#define CHARSET_UTF16		_T("utf-16")
+
+#define _UNKNOWN        0x0000
+#define _GB2312         GBKBOM
+#define _UTF8           UTFBOM
+#define _UTF16_LIT      LITBOM
+#define _UTF16_BIG      BIGBOM
+#if BYTE_ORDER == BIG_ENDIAN
+#define _UCS2           _UTF16_BIG
+#else
+#define _UCS2           _UTF16_LIT
+#endif
+
+
+#ifdef _OS_WINDOWS
+#define DEF_MBS			_GB2312
+#else
+#define DEF_MBS			_UTF8
+#endif
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define DEF_UCS			_UTF16_BIG
+#else
+#define DEF_UCS			_UTF16_LIT
+#endif
+
+/*define max encode bytes*/
+#ifdef _UNICODE
+#define CHS_LEN		1
+#else
+#define CHS_LEN		3
+#endif
+
+#define UTF_LEN		3
+
+#define IS_CONTROL_CHAR(ch)		(((int)ch >= 0 && (int)ch <= 31) || (int)ch == 127)
+
+
 /*define max integer value*/
 #define MAX_LONG        2147483647		//0x7fffffff
 #define MIN_LONG		-2147483648		//0x80000000
@@ -517,7 +593,23 @@ typedef struct _ximage_t{
 #define _tprintf    printf
 #endif
 
-
+#ifndef _OS_WINDOWS
+#ifndef min
+#define min(x, y) ({                        \
+    __typeof__(x) _min1 = (x);              \
+    __typeof__(y) _min2 = (y);              \
+    (void) (&_min1 == &_min2);              \
+    _min1 < _min2 ? _min1 : _min2; })
+#endif
+    
+#ifndef max
+#define max(x, y) ({                         \
+    __typeof__(x) _max1 = (x);               \
+    __typeof__(y) _max2 = (y);               \
+    (void) (&_max1 == &_max2);               \
+    _max1 > _max2 ? _max1 : _max2; })
+#endif
+#endif
 
 #endif	/* _PLATFORM_H */
 

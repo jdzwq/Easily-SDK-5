@@ -34,6 +34,11 @@ static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* 
 	tchar_t sz_file[PATH_LEN] = { 0 };
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
+	if(is_null(sz_root))
+	{
+		//xscpy(sz_root,_T("."));
+		get_runpath((res_modu_t)0, sz_root, PATH_LEN);
+	}
 
 	xsprintf(sz_file, _T("%s/cfg/%s.config"), sz_root, site);
 
@@ -148,7 +153,12 @@ static bool_t _xhttps_licence(xhand_t http, const tchar_t* site, tchar_t* hmac)
 	xhttp_get_authorization(http, sz_auth, sz_sid, RES_LEN, sz_sign, KEY_LEN);
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
-
+	if(is_null(sz_root))
+	{
+		//xscpy(sz_root,_T("."));
+		get_runpath((res_modu_t)0, sz_root, PATH_LEN);
+	}
+	
 	xsprintf(sz_file, _T("%s/lic/%s/%s.lic"), sz_root, site, sz_sid);
 
 	ptr_xml = create_xml_doc();

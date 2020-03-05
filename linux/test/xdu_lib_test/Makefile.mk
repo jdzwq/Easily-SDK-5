@@ -1,8 +1,7 @@
 CC = g++
 CFLAGS = -g -Wall
 
-SYS_PATH = /usr/local
-LIB_PATH = ../sbin/api
+LIB_PATH = ~/Easily-sdk-5/linux/lib
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/test/xdu_lib_test
 OBJ_PATH = ~/Easily-sdk-5/test/xdu_lib_test
@@ -17,7 +16,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lX11 -lxdu
+	$(CC) -o $(TARGET) $(OBJS) -lX11 -lxdp -lxdu -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:

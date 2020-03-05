@@ -173,12 +173,6 @@ res_glob_t _clipboard_get(int fmt);
 #endif
 
 #ifdef XDU_SUPPORT_WIDGET
-bool_t	_fetch_message(msg_t* pmsg, res_win_t wt);
-bool_t	_peek_message(msg_t* pmsg, res_win_t wt);
-bool_t	_translate_message(const msg_t* pmsg);
-result_t _dispatch_message(const msg_t* pmsg);
-int		_translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg);
-void	_message_position(xpoint_t* ppt);
 
 void	_widget_startup(int ver);
 void	_widget_cleanup(void);
@@ -287,12 +281,20 @@ const xcolor_t*	_widget_get_mask_ptr(res_win_t wt);
 void	_widget_set_iconic(res_win_t wt, const xcolor_t* pxc);
 void	_widget_get_iconic(res_win_t wt, xcolor_t* pxc);
 const xcolor_t*	_widget_get_iconic_ptr(res_win_t wt);
-void	_widget_set_point(res_win_t wt, const xpoint_t* ppt);
-void	_widget_get_point(res_win_t wt, xpoint_t* ppt);
 void	_widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr);
 void	_widget_get_color_mode(res_win_t wt, clr_mod_t* pclr);
+void	_widget_set_point(res_win_t wt, const xpoint_t* ppt);
+void	_widget_get_point(res_win_t wt, xpoint_t* ppt);
+void	_widget_set_size(res_win_t wt, const xsize_t* pst);
+void	_widget_get_size(res_win_t wt, xsize_t* pst);
 
+void	_message_fetch(msg_t* pmsg, res_win_t wt);
+bool_t	_message_peek(msg_t* pmsg);
+bool_t	_message_translate(const msg_t* pmsg);
+result_t _message_dispatch(const msg_t* pmsg);
+void	_message_position(xpoint_t* ppt);
 
+int		_widget_do_normal(res_win_t wt);
 int		_widget_do_modal(res_win_t wt);
 void	_widget_do_trace(res_win_t wt);
 

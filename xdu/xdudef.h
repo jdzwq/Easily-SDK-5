@@ -113,32 +113,6 @@ LICENSE.GPL3 for more details.
 #define IDC_PARENT			(IDC_USERCTRL_MIN - 3)
 #define IDC_TIMER			(IDC_USERCTRL_MIN - 4)
 
-/*widget states*/
-#define WIDGET_NORMAL		0
-#define WIDGET_HIDDEN		1
-#define WIDGET_MINIMIZED	2
-#define WIDGET_MAXIMIZED	3
-#define WIDGET_FULLSCREEN	4
-#define WIDGET_SHADED		5
-
-/*widget command code*/
-#define COMMAND_COLOR		1
-#define COMMAND_TABSKIP		9
-#define COMMAND_COMMIT		13
-#define	COMMAND_ROLLBACK	27
-#define COMMAND_UPDATE		11
-#define COMMAND_CHANGE		12
-#define COMMAND_COPY		20
-#define COMMAND_CUT			21
-#define COMMAND_PASTE		22
-#define COMMAND_UNDO		23
-#define COMMAND_QURYDRAG	40
-#define COMMAND_QUERYDROP	41
-#define COMMAND_QUERYINFO	42
-#define COMMAND_FIND		43
-#define COMMAND_REPLACE		44
-#define COMMAND_RENAME		45
-#define COMMAND_REMOVE		46
 
 /*widget style*/
 #define WD_STYLE_CHILD		0x00000001
@@ -166,48 +140,104 @@ LICENSE.GPL3 for more details.
 #define WD_STYLE_DIALOG		(WD_STYLE_TITLE | WD_STYLE_CLOSEBOX | WD_STYLE_BORDER | WD_STYLE_OWNERNC)
 #define WD_STYLE_FRAME		(WD_STYLE_TITLE | WD_STYLE_CLOSEBOX | WD_STYLE_SIZEBOX | WD_STYLE_BORDER | WD_STYLE_OWNERNC)
 
-
-/*widget show mode*/
-#define WD_SHOW_NORMAL		0
-#define WD_SHOW_HIDE		1
-#define WD_SHOW_MAXIMIZE	2
-#define WD_SHOW_MINIMIZE	3
-#define WD_SHOW_FULLSCREEN	4
-#define WD_SHOW_POPUPTOP	5
-
-/*widget docking position*/
-#define WD_DOCK_TOP			0x00000001
-#define WD_DOCK_BOTTOM		0x00000002
-#define WD_DOCK_LEFT		0x00000004
-#define WD_DOCK_RIGHT		0x00000008
-#define WD_DOCK_DYNA		0x00010000
-
 /*pushbox style*/
 #define WD_PUSHBOX_TEXT		0x00010000
 #define WD_PUSHBOX_CHECK	0x00020000
 #define	WD_PUSHBOX_ICON		0x00040000
 #define WD_PUSHBOX_IMAGE	0x00080000
 
-/*tab opera*/
-#define WD_TAB_LEFT			0
-#define WD_TAB_UP			1
-#define WD_TAB_RIGHT		2
-#define WD_TAB_DOWN			3
-#define WD_TAB_END			4
-#define	WD_TAB_HOME			5
-#define WD_TAB_PAGEUP		6
-#define WD_TAB_PAGEDOWN		7
+/*mouse button state*/
+#define MS_WITH_LBUTTON		0x0001
+#define MS_WITH_RBUTTON		0x0002
+#define MS_WITH_MBUTTON		0x0010
+/*key button state*/
+#define KS_WITH_CONTROL		0x0008
+#define KS_WITH_SHIFT		0x0004
 
-/*widget opera state*/
-#define WD_OPERA_NONE		0x00000000
-#define WD_OPERA_CONTROL	0x00000001
-#define WD_OPERA_SHIFT		0x00000002
+/*widget size mode*/
+#define WS_SIZE_RESTORE		0
+#define WS_SIZE_MINIMIZED	1
+#define WS_SIZE_MAXIMIZED	2
+#define WS_SIZE_LAYOUT		9
+
+/*widget position mode*/
+#define WS_TAKE_TOP			(0)
+#define WS_TAKE_BOTTOM		(1)
+#define WS_TAKE_TOPMOST		(-1)
+#define WS_TAKE_NOTOPMOST	(-2)
+
+/*widget show mode*/
+#define WS_SHOW_NORMAL		0
+#define WS_SHOW_HIDE		1
+#define WS_SHOW_MAXIMIZE	2
+#define WS_SHOW_MINIMIZE	3
+#define WS_SHOW_FULLSCREEN	4
+#define WS_SHOW_POPUPTOP	5
+
+/*widget docking position*/
+#define WS_DOCK_TOP			0x00000001
+#define WS_DOCK_BOTTOM		0x00000002
+#define WS_DOCK_LEFT		0x00000004
+#define WS_DOCK_RIGHT		0x00000008
+#define WS_DOCK_DYNA		0x00010000
+
+/*widget activate mode*/
+#define WS_ACTIVE_NONE		0
+#define WS_ACTIVE_OTHER		1
+#define WS_ACTIVE_CLICK		2
 
 /*widget layout position*/
-#define WD_LAYOUT_LEFTTOP		1
-#define WD_LAYOUT_RIGHTTOP		2
-#define WD_LAYOUT_LEFTBOTTOM	3
-#define WD_LAYOUT_RIGHTBOTTOM	4
+#define WS_LAYOUT_LEFTTOP		1
+#define WS_LAYOUT_RIGHTTOP		2
+#define WS_LAYOUT_LEFTBOTTOM	3
+#define WS_LAYOUT_RIGHTBOTTOM	4
+
+/*widget scroll code*/
+#define SCROLL_LINEUP           0
+#define SCROLL_LINELEFT         0
+#define SCROLL_LINEDOWN         1
+#define SCROLL_LINERIGHT        1
+#define SCROLL_PAGEUP           2
+#define SCROLL_PAGELEFT         2
+#define SCROLL_PAGEDOWN         3
+#define SCROLL_PAGERIGHT        3
+#define SCROLL_THUMBPOSITION    4
+#define SCROLL_THUMBTRACK       5
+#define SCROLL_TOP              6
+#define SCROLL_LEFT             6
+#define SCROLL_BOTTOM           7
+#define SCROLL_RIGHT            7
+#define SCROLL_ENDSCROLL        8
+
+/*widget command code*/
+#define COMMAND_COLOR		1
+#define COMMAND_TABSKIP		9
+#define COMMAND_COMMIT		13
+#define	COMMAND_ROLLBACK	27
+#define COMMAND_UPDATE		11
+#define COMMAND_CHANGE		12
+#define COMMAND_COPY		20
+#define COMMAND_CUT			21
+#define COMMAND_PASTE		22
+#define COMMAND_UNDO		23
+#define COMMAND_QURYDRAG	40
+#define COMMAND_QUERYDROP	41
+#define COMMAND_QUERYINFO	42
+#define COMMAND_FIND		43
+#define COMMAND_REPLACE		44
+#define COMMAND_RENAME		45
+#define COMMAND_REMOVE		46
+
+
+/*tab opera*/
+#define TABORDER_LEFT		0
+#define TABORDER_UP			1
+#define TABORDER_RIGHT		2
+#define TABORDER_DOWN		3
+#define TABORDER_END		4
+#define	TABORDER_HOME		5
+#define TABORDER_PAGEUP		6
+#define TABORDER_PAGEDOWN	7
 
 //widget message button
 #define MSGBTN_OK		0x00000001
@@ -316,7 +346,8 @@ typedef int(*SUB_ON_MOUSE_HOVER)(res_win_t, unsigned int, const xpoint_t*, uid_t
 typedef int(*SUB_ON_MOUSE_LEAVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_WHEEL)(res_win_t, bool_t, int, uid_t, var_long);
 typedef int(*SUB_ON_SCROLL)(res_win_t, bool_t, int, uid_t, var_long);
-typedef int(*SUB_ON_KEYDOWN)(res_win_t, int, uid_t, var_long);
+typedef int(*SUB_ON_KEYDOWN)(res_win_t, dword_t, int, uid_t, var_long);
+typedef int(*SUB_ON_KEYUP)(res_win_t, dword_t, int, uid_t, var_long);
 typedef int(*SUB_ON_CHAR)(res_win_t, tchar_t, uid_t, var_long);
 typedef int(*SUB_ON_SIZE)(res_win_t, int, const xsize_t*, uid_t, var_long);
 typedef int(*SUB_ON_MOVE)(res_win_t, const xpoint_t*, uid_t, var_long);
@@ -334,10 +365,6 @@ typedef int(*SUB_ON_SELF_COMMAND)(res_win_t, int, var_long, uid_t, var_long);
 typedef int(*SUB_ON_COMMAND_FIND)(res_win_t, str_find_t*, uid_t, var_long);
 typedef int(*SUB_ON_COMMAND_REPLACE)(res_win_t, str_replace_t*, uid_t, var_long);
 typedef int(*SUB_ON_TIMER)(res_win_t, var_long, uid_t, var_long);
-typedef int(*SUB_ON_COPY)(res_win_t, uid_t, var_long);
-typedef int(*SUB_ON_CUT)(res_win_t, uid_t, var_long);
-typedef int(*SUB_ON_PASTE)(res_win_t, uid_t, var_long);
-typedef int(*SUB_ON_UNDO)(res_win_t, uid_t, var_long);
 
 typedef int(*SUB_ON_SYSCLR_CLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_SYSLOG_CLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
@@ -383,10 +410,6 @@ typedef struct _if_subproc_t{
 	SUB_ON_SYSLOG_CLICK		sub_on_syslog_click;
 
 	SUB_ON_TIMER		sub_on_timer;
-	SUB_ON_COPY			sub_on_copy;
-	SUB_ON_CUT			sub_on_cut;
-	SUB_ON_PASTE		sub_on_paste;
-	SUB_ON_UNDO			sub_on_undo;
 
 	void* proc;
 	uid_t sid;
@@ -411,7 +434,8 @@ typedef void(*PF_ON_MOUSE_HOVER)(res_win_t, dword_t, const xpoint_t*);
 typedef void(*PF_ON_MOUSE_LEAVE)(res_win_t, dword_t, const xpoint_t*);
 typedef void(*PF_ON_WHEEL)(res_win_t, bool_t, int);
 typedef void(*PF_ON_SCROLL)(res_win_t, bool_t, int);
-typedef void(*PF_ON_KEYDOWN)(res_win_t, int);
+typedef void(*PF_ON_KEYDOWN)(res_win_t, dword_t, int);
+typedef void(*PF_ON_KEYUP)(res_win_t, dword_t, int);
 typedef void(*PF_ON_CHAR)(res_win_t, tchar_t);
 typedef void(*PF_ON_SIZE)(res_win_t, int, const xsize_t*);
 typedef void(*PF_ON_MOVE)(res_win_t, const xpoint_t*);
@@ -431,10 +455,6 @@ typedef void(*PF_ON_COMMAND_FIND)(res_win_t, str_find_t*);
 typedef void(*PF_ON_COMMAND_REPLACE)(res_win_t, str_replace_t*);
 typedef void(*PF_ON_SYSCMD_CLICK)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_TIMER)(res_win_t, var_long);
-typedef void(*PF_ON_COPY)(res_win_t);
-typedef void(*PF_ON_CUT)(res_win_t);
-typedef void(*PF_ON_PASTE)(res_win_t);
-typedef void(*PF_ON_UNDO)(res_win_t);
 
 /*widget event*/
 typedef struct _if_event_t{
@@ -457,6 +477,7 @@ typedef struct _if_event_t{
 	PF_ON_WHEEL			pf_on_wheel;
 	PF_ON_SCROLL		pf_on_scroll;
 	PF_ON_KEYDOWN		pf_on_keydown;
+	PF_ON_KEYUP			pf_on_keyup;
 	PF_ON_CHAR			pf_on_char;
 	PF_ON_SIZE			pf_on_size;
 	PF_ON_MOVE			pf_on_move;

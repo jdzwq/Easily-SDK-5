@@ -198,12 +198,6 @@ void xdu_impl_clipboard(if_clipboard_t* pif)
 #ifdef XDU_SUPPORT_WIDGET
 void xdu_impl_widget(if_widget_t* pif)
 {
-	pif->pf_fetch_message = _fetch_message;
-    pif->pf_peek_message = _peek_message;
-	pif->pf_translate_message = _translate_message;
-	pif->pf_dispatch_message = _dispatch_message;
-	pif->pf_translate_accelerator = _translate_accelerator;
-	pif->pf_message_position = _message_position;
 
 	pif->pf_widget_startup = _widget_startup;
 	pif->pf_widget_cleanup = _widget_cleanup;
@@ -311,13 +305,22 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_set_iconic = _widget_set_iconic;
 	pif->pf_widget_get_iconic = _widget_get_iconic;
 	pif->pf_widget_get_iconic_ptr = _widget_get_iconic_ptr;
-	pif->pf_widget_set_point = _widget_set_point;
-	pif->pf_widget_get_point = _widget_get_point;
 	pif->pf_widget_set_color_mode = _widget_set_color_mode;
 	pif->pf_widget_get_color_mode = _widget_get_color_mode;
+	pif->pf_widget_set_point = _widget_set_point;
+	pif->pf_widget_get_point = _widget_get_point;
+	pif->pf_widget_set_size = _widget_set_size;
+	pif->pf_widget_get_size = _widget_get_size;
 
+	pif->pf_widget_do_normal = _widget_do_normal;
 	pif->pf_widget_do_modal = _widget_do_modal;
 	pif->pf_widget_do_trace = _widget_do_trace;
+
+	pif->pf_message_fetch = _message_fetch;
+    pif->pf_message_peek = _message_peek;
+	pif->pf_message_translate = _message_translate;
+	pif->pf_message_dispatch = _message_dispatch;
+	pif->pf_message_position = _message_position;
 
 	pif->pf_get_screen_size = _get_screen_size;
 	pif->pf_get_desktop_size = _get_desktop_size;

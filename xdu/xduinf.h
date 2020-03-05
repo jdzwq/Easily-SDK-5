@@ -257,12 +257,6 @@ typedef struct _if_clipboard_t{
 
 #ifdef XDU_SUPPORT_WIDGET
 /*widget interface*/
-typedef bool_t(*PF_FETCH_MESSAGE)(msg_t*, res_win_t);
-typedef bool_t(*PF_PEEK_MESSAGE)(msg_t*, res_win_t);
-typedef bool_t(*PF_TRANSLATE_MESSAGE)(const msg_t*);
-typedef result_t(*PF_DISPATCH_MESSAGE)(const msg_t*);
-typedef int(*PF_TRANSLATE_ACCELERATOR)(res_win_t, res_acl_t, msg_t*);
-typedef void(*PF_MESSAGE_POSITION)(xpoint_t*);
 
 typedef void(*PF_WIDGET_STARTUP)(int);
 typedef void(*PF_WIDGET_CLEANUP)(void);
@@ -370,13 +364,22 @@ typedef const xcolor_t*(*PF_WIDGET_GET_MASK_PTR)(res_win_t);
 typedef void(*PF_WIDGET_SET_ICONIC)(res_win_t, const xcolor_t*);
 typedef void(*PF_WIDGET_GET_ICONIC)(res_win_t, xcolor_t*);
 typedef const xcolor_t*(*PF_WIDGET_GET_ICONIC_PTR)(res_win_t);
-typedef void(*PF_WIDGET_SET_POINT)(res_win_t, const xpoint_t*);
-typedef void(*PF_WIDGET_GET_POINT)(res_win_t, xpoint_t*);
 typedef void(*PF_WIDGET_SET_COLOR_MODE)(res_win_t, const clr_mod_t*);
 typedef void(*PF_WIDGET_GET_COLOR_MODE)(res_win_t, clr_mod_t*);
+typedef void(*PF_WIDGET_SET_POINT)(res_win_t, const xpoint_t*);
+typedef void(*PF_WIDGET_GET_POINT)(res_win_t, xpoint_t*);
+typedef void(*PF_WIDGET_SET_SIZE)(res_win_t, const xsize_t*);
+typedef void(*PF_WIDGET_GET_SIZE)(res_win_t, xsize_t*);
 
+typedef int(*PF_WIDGET_DO_NORMAL)(res_win_t);
 typedef int(*PF_WIDGET_DO_MODAL)(res_win_t);
 typedef void(*PF_WIDGET_DO_TRACE)(res_win_t);
+
+typedef void(*PF_MESSAGE_FETCH)(msg_t*, res_win_t);
+typedef bool_t(*PF_MESSAGE_PEEK)(msg_t*);
+typedef bool_t(*PF_MESSAGE_TRANSLATE)(const msg_t*);
+typedef result_t(*PF_MESSAGE_DISPATCH)(const msg_t*);
+typedef void(*PF_MESSAGE_POSITION)(xpoint_t*);
 
 typedef void(*PF_GET_SCREEN_SIZE)(xsize_t*);
 typedef void(*PF_GET_DESKTOP_SIZE)(xsize_t*);
@@ -397,12 +400,6 @@ typedef res_glc_t(*PF_WIDGET_GET_GLCTX)(res_win_t);
 #endif
 
 typedef struct _if_widget_t{
-	PF_FETCH_MESSAGE		pf_fetch_message;
-    PF_PEEK_MESSAGE         pf_peek_message;
-	PF_TRANSLATE_MESSAGE	pf_translate_message;
-	PF_DISPATCH_MESSAGE		pf_dispatch_message;
-	PF_TRANSLATE_ACCELERATOR	pf_translate_accelerator;
-	PF_MESSAGE_POSITION		pf_message_position;
 
 	PF_WIDGET_STARTUP		pf_widget_startup;
 	PF_WIDGET_CLEANUP		pf_widget_cleanup;
@@ -510,13 +507,22 @@ typedef struct _if_widget_t{
 	PF_WIDGET_SET_ICONIC		pf_widget_set_iconic;
 	PF_WIDGET_GET_ICONIC		pf_widget_get_iconic;
 	PF_WIDGET_GET_ICONIC_PTR	pf_widget_get_iconic_ptr;
-	PF_WIDGET_SET_POINT			pf_widget_set_point;
-	PF_WIDGET_GET_POINT			pf_widget_get_point;
 	PF_WIDGET_SET_COLOR_MODE	pf_widget_set_color_mode;
 	PF_WIDGET_GET_COLOR_MODE	pf_widget_get_color_mode;
+	PF_WIDGET_SET_POINT			pf_widget_set_point;
+	PF_WIDGET_GET_POINT			pf_widget_get_point;
+	PF_WIDGET_SET_SIZE			pf_widget_set_size;
+	PF_WIDGET_GET_SIZE			pf_widget_get_size;
 
+	PF_WIDGET_DO_NORMAL			pf_widget_do_normal;
 	PF_WIDGET_DO_MODAL			pf_widget_do_modal;
 	PF_WIDGET_DO_TRACE			pf_widget_do_trace;
+
+	PF_MESSAGE_FETCH			pf_message_fetch;
+    PF_MESSAGE_PEEK         	pf_message_peek;
+	PF_MESSAGE_TRANSLATE		pf_message_translate;
+	PF_MESSAGE_DISPATCH			pf_message_dispatch;
+	PF_MESSAGE_POSITION			pf_message_position;
 
 	PF_GET_SCREEN_SIZE			pf_get_screen_size;
 	PF_GET_DESKTOP_SIZE			pf_get_desktop_size;

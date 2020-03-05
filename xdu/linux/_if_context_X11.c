@@ -194,7 +194,7 @@ static void _format_font_pattern(const xfont_t* pxf, tchar_t* buf)
     else
         fs_size = xstol(pxf->size);
     
-    _tsprintf(buf, x11_pattern, fs_name, fs_weight, fs_style, fs_size);
+    xsprintf(buf, x11_pattern, fs_name, fs_weight, fs_style, fs_size);
 }
 
 float _pt_per_mm(res_ctx_t rdc, bool_t horz)
