@@ -108,7 +108,7 @@ void hand_plotbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_get_client_rect(widget, &xr);
 	widget_reset_paging(widget, xr.w, xr.h, xr.w, xr.h, 0, 0);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_plotbox_erase(res_win_t widget, res_ctx_t rdc)

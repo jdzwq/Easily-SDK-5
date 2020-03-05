@@ -126,7 +126,7 @@ void noti_status_item_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -154,7 +154,7 @@ bool_t noti_status_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -172,7 +172,7 @@ void noti_status_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 /****************************************************************************************/
@@ -339,7 +339,7 @@ void hand_status_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_status_owner(widget, NC_STATUSRBCLK, ptd->status, ptd->item, (void*)pxp);
 }
 
-void hand_status_keydown(res_win_t widget, int nKey)
+void hand_status_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
 
@@ -350,17 +350,17 @@ void hand_status_keydown(res_win_t widget, int nKey)
 	{
 	case KEY_LEFT:
 	case KEY_PAGEDOWN:
-		statusctrl_tabskip(widget,WD_TAB_LEFT);
+		statusctrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
 	case KEY_PAGEUP:
-		statusctrl_tabskip(widget,WD_TAB_RIGHT);
+		statusctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_HOME:
-		statusctrl_tabskip(widget,WD_TAB_HOME);
+		statusctrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		statusctrl_tabskip(widget,WD_TAB_END);
+		statusctrl_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -561,7 +561,7 @@ void statusctrl_redraw(res_win_t widget)
 
 	_statusctrl_reset_page(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void statusctrl_tabskip(res_win_t widget, int nSkip)
@@ -578,8 +578,8 @@ void statusctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_status_next_item(ptd->status, LINK_FIRST);
 		else
@@ -588,8 +588,8 @@ void statusctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			statusctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_status_prev_item(ptd->status, LINK_LAST);
 		else
@@ -598,13 +598,13 @@ void statusctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			statusctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_status_next_item(ptd->status, LINK_FIRST);
 
 		if (plk)
 			statusctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_status_prev_item(ptd->status, LINK_LAST);
 
 		if (plk)
@@ -625,7 +625,7 @@ void statusctrl_redraw_title(res_win_t widget)
 
 	_statusctrl_title_rect(widget, &xr);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void statusctrl_redraw_item(res_win_t widget, link_t_ptr plk)
@@ -646,7 +646,7 @@ void statusctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 
 	_statusctrl_item_rect(widget, plk, &xr);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t statusctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -723,7 +723,7 @@ void statusctrl_show_step(res_win_t widget, bool_t b_show)
 	ptd->n_step = 0;
 	set_status_title(ptd->status, NULL);
 	
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 	widget_paint(widget);
 }
 
@@ -742,6 +742,6 @@ void statusctrl_step_it(res_win_t widget, int steps, const tchar_t* sz_step)
 	ptd->n_step += steps;
 	set_status_title(ptd->status, sz_step);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 	widget_paint(widget);
 }

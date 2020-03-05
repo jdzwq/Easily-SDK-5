@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcimp.h"
 #include "xdcbox.h"
 
-static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
 {
 	res_win_t ctrl;
 
@@ -62,7 +62,7 @@ static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long
 	{
 		if (widget_is_valid(ctrl))
 		{
-			wordsbox_tabskip(ctrl,WD_TAB_DOWN); 
+			wordsbox_tabskip(ctrl,TABORDER_DOWN); 
 			return 1;
 		}
 	}
@@ -70,7 +70,7 @@ static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long
 	{
 		if (widget_is_valid(widget))
 		{
-			wordsbox_tabskip(ctrl,WD_TAB_UP); 
+			wordsbox_tabskip(ctrl,TABORDER_UP); 
 			return 1;
 		}
 	}
@@ -122,11 +122,11 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t s
 	{
 		if (nLine < 0)
 		{
-			wordsbox_tabskip(ctrl,WD_TAB_DOWN); 
+			wordsbox_tabskip(ctrl,TABORDER_DOWN); 
 		}
 		else
 		{
-			wordsbox_tabskip(ctrl,WD_TAB_UP); 
+			wordsbox_tabskip(ctrl,TABORDER_UP); 
 		}
 	}
 
@@ -187,18 +187,18 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	if (widget_is_valid(keybox))
 	{
 		if (show)
-			widget_show(keybox, WD_SHOW_NORMAL);
+			widget_show(keybox, WS_SHOW_NORMAL);
 		else
-			widget_show(keybox, WD_SHOW_HIDE);
+			widget_show(keybox, WS_SHOW_HIDE);
 	}*/
 
 	ctrl = (res_win_t)delta;
 	if (widget_is_valid(ctrl))
 	{
 		if (show)
-			widget_show(ctrl, WD_SHOW_NORMAL);
+			widget_show(ctrl, WS_SHOW_NORMAL);
 		else
-			widget_show(ctrl, WD_SHOW_HIDE);
+			widget_show(ctrl, WS_SHOW_HIDE);
 	}
 
 	return 1;
@@ -280,7 +280,6 @@ res_win_t firewords_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data
 	}
 	widget_set_user_id(editor, IDC_EDITBOX);
 	widget_set_subproc(editor, IDS_EDITBOX, &ev);
-	widget_set_imm(editor, 0);
 
 	widget_get_xface(editor, &xa);
 	xscpy(xa.text_wrap, NULL);

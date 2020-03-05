@@ -121,7 +121,7 @@ void child_on_lbutton_up(res_win_t wt, const xpoint_t* ppt)
 
     (*if_widget.pf_widget_post_char)(0, 'A');
 
-    (*if_widget.pf_widget_redraw)(wt, NULL, 0);
+    (*if_widget.pf_widget_erase)(wt, NULL);
 }
 
 void child_on_lbutton_dbclick(res_win_t wt, const xpoint_t* ppt)
@@ -190,6 +190,19 @@ void child_on_parent_command(res_win_t, int code, var_long data)
 void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
 {
     printf("child on_paint the rect is x:%d y:%d w:%d h:%d \n", prt->x, prt->y, prt->w, prt->h);
+
+    res_ctx_t mem = (*if_context.pf_create_compatible_context)(rdc);
+    res_pmp_t pmp = (*if_context.pf_create_compatible_pixmap)(rdc, 100, 100);
+
+    res_pmp_t org = (*if_context.pf_select_pixmap)(mem, pmp);
+
+    (*if_context.pf_render_context)(mem, 0,0, rdc, 100, 100, 100, 100);
+
+    (*if_context.pf_select_pixmap)(mem, org);
+
+    (*if_context.pf_destroy_pixmap)(pmp);
+    (*if_context.pf_destroy_context)(mem);
+
 }
 /**********************************************************************************/
 
@@ -491,7 +504,7 @@ void init_instance()
     
     g_main = (*if_widget.pf_widget_create)(_T("frame"),WD_STYLE_FRAME,&xr,NULL,&ev);
 
-    (*if_widget.pf_widget_show)(g_main, WS_SHOW_MAXIMIZE);
+    (*if_widget.pf_widget_show)(g_main, WS_SHOW_NORMAL);
 
     (*if_widget.pf_widget_set_accel)(g_main, acl);
 }

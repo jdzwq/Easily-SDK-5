@@ -244,14 +244,10 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_take = _widget_take;
 	pif->pf_widget_show = _widget_show;
 	pif->pf_widget_update = _widget_update;
-	pif->pf_widget_resize = _widget_resize;
+	pif->pf_widget_layout = _widget_layout;
 	pif->pf_widget_paint = _widget_paint;
-	pif->pf_widget_redraw = _widget_redraw;
-	pif->pf_widget_post_char = _widget_post_char;
-	pif->pf_widget_post_key = _widget_post_key;
+	pif->pf_widget_erase = _widget_erase;
 	pif->pf_widget_set_capture = _widget_set_capture;
-	pif->pf_widget_set_imm = _widget_set_imm;
-	pif->pf_widget_get_imm = _widget_get_imm;
 	pif->pf_widget_set_cursor = _widget_set_cursor;
 	pif->pf_widget_set_focus = _widget_set_focus;
 	pif->pf_widget_set_title = _widget_set_title;
@@ -262,8 +258,10 @@ void xdu_impl_widget(if_widget_t* pif)
 
 	pif->pf_widget_enable = _widget_enable;
 
-	pif->pf_widget_post_message = _widget_post_message;
-	pif->pf_widget_send_message = _widget_send_message;
+	pif->pf_widget_post_char = _widget_post_char;
+	pif->pf_widget_post_key = _widget_post_key;
+	pif->pf_widget_post_notice = _widget_post_notice;
+	pif->pf_widget_send_notice = _widget_send_notice;
 	pif->pf_widget_post_command = _widget_post_command;
 	pif->pf_widget_send_command = _widget_send_command;
 
@@ -283,6 +281,8 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_get_subproc_delta = _widget_get_subproc_delta;
 	pif->pf_widget_set_subproc_delta = _widget_set_subproc_delta;
 	pif->pf_widget_has_subproc = _widget_has_subproc;
+
+	pif->pf_widget_scroll = _widget_scroll;
 	pif->pf_widget_set_scroll_info = _widget_set_scroll_info;
 	pif->pf_widget_get_scroll_info = _widget_get_scroll_info;
 
@@ -316,6 +316,7 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_do_modal = _widget_do_modal;
 	pif->pf_widget_do_trace = _widget_do_trace;
 
+	pif->pf_message_quit = _message_quit;
 	pif->pf_message_fetch = _message_fetch;
     pif->pf_message_peek = _message_peek;
 	pif->pf_message_translate = _message_translate;

@@ -295,7 +295,7 @@ void noti_images_reset_check(res_win_t widget)
 	if (!count)
 		return;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 bool_t noti_images_item_changing(res_win_t widget)
@@ -314,7 +314,7 @@ bool_t noti_images_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -332,7 +332,7 @@ void noti_images_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_images_owner(widget, NC_IMAGEITEMCHANGED, ptd->images, ptd->item, NULL);
 }
@@ -362,7 +362,7 @@ void noti_images_item_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -395,7 +395,7 @@ void noti_images_item_check(res_win_t widget, link_t_ptr plk)
 	_imagesctrl_item_rect(widget, plk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_images_item_drag(res_win_t widget, int x, int y)
@@ -472,7 +472,7 @@ void noti_images_begin_edit(res_win_t widget)
 	widget_set_xfont(ptd->editor, &xf);
 	widget_set_color_mode(ptd->editor, &ob);
 
-	widget_show(ptd->editor, WD_SHOW_NORMAL);
+	widget_show(ptd->editor, WS_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
 	text = get_images_item_alt_ptr(ptd->item);
@@ -611,7 +611,7 @@ void hand_images_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 
 	noti_images_reset_editor(widget, 1);
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -672,7 +672,7 @@ void hand_images_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	plk = NULL;
 	nHint = calc_images_hint(&cb, &pt, ptd->images, &plk);
 
-	if (nHint == IMAGE_HINT_ITEM && plk == ptd->item && !(dw & MS_WITH_CONTROL))
+	if (nHint == IMAGE_HINT_ITEM && plk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -765,7 +765,7 @@ void hand_images_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	}
 	else if (nHint == IMAGE_HINT_NONE)
 	{
-		if (ptd->opera != WD_OPERA_CONTROL && !widget_key_state(widget, KEY_CONTROL))
+		if (!widget_key_state(widget, KEY_CONTROL))
 		{
 			noti_images_reset_check(widget);
 		}
@@ -848,7 +848,7 @@ void hand_images_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_images_owner(widget, NC_IMAGESRBCLK, ptd->images, ptd->item, (void*)pxp);
 }
 
-void hand_images_keydown(res_win_t widget, int nKey)
+void hand_images_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
 
@@ -866,22 +866,22 @@ void hand_images_keydown(res_win_t widget, int nKey)
 			noti_images_item_check(widget, ptd->item);
 		break;
 	case KEY_LEFT:
-		imagesctrl_tabskip(widget,WD_TAB_LEFT);
+		imagesctrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		imagesctrl_tabskip(widget,WD_TAB_RIGHT);
+		imagesctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case VK_UP:
-		imagesctrl_tabskip(widget,WD_TAB_UP);
+		imagesctrl_tabskip(widget,TABORDER_UP);
 		break;
 	case VK_DOWN:
-		imagesctrl_tabskip(widget,WD_TAB_DOWN);
+		imagesctrl_tabskip(widget,TABORDER_DOWN);
 		break;
 	case KEY_HOME:
-		imagesctrl_tabskip(widget,WD_TAB_HOME);
+		imagesctrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		imagesctrl_tabskip(widget,WD_TAB_END);
+		imagesctrl_tabskip(widget,TABORDER_END);
 		break;
 	case _T('c'):
 	case _T('C'):
@@ -1164,24 +1164,24 @@ void imagesctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_images_next_item(ptd->images, LINK_FIRST);
 		else
 			plk = get_images_next_item(ptd->images, ptd->item);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_images_prev_item(ptd->images, LINK_LAST);
 		else
 			plk = get_images_prev_item(ptd->images, ptd->item);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_images_next_item(ptd->images, LINK_FIRST);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_images_prev_item(ptd->images, LINK_LAST);
 		break;
 	}
@@ -1211,7 +1211,7 @@ void imagesctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 	
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t imagesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

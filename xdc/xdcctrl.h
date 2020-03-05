@@ -240,7 +240,7 @@ XDC_API void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t b_ca
 /*
 @FUNCTION formctrl_tabskip: tab focus to next field.
 @INPUT res_win_t widget: the form widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void formctrl_tabskip(res_win_t widget, int skip);
@@ -500,7 +500,7 @@ XDC_API void	gridctrl_redraw_col(res_win_t widget, link_t_ptr clk, bool_t b_calc
 /*
 @FUNCTION gridctrl_tabskip: tab focus to next cell.
 @INPUT res_win_t widget: the grid widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	gridctrl_tabskip(res_win_t widget, int skip);
@@ -834,7 +834,7 @@ XDC_API void	statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCal
 /*
 @FUNCTION gridctrl_tabskip: tab focus to next cell.
 @INPUT res_win_t widget: the grid widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	statisctrl_tabskip(res_win_t widget, int skip);
@@ -1078,7 +1078,7 @@ XDC_API void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION dialogctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the dialog widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void dialogctrl_tabskip(res_win_t widget, int skip);
@@ -1206,7 +1206,7 @@ XDC_API void calendarctrl_redraw_daily(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION calendarctrl_tabskip: tab focus to next daily.
 @INPUT res_win_t widget: the calendar widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void calendarctrl_tabskip(res_win_t widget, int skip);
@@ -1334,7 +1334,7 @@ XDC_API void diagramctrl_redraw_entity(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION diagramctrl_tabskip: tab focus to next entity.
 @INPUT res_win_t widget: the diagram widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void diagramctrl_tabskip(res_win_t widget, int skip);
@@ -1465,7 +1465,7 @@ XDC_API void	imagesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION imagesctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the images widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	imagesctrl_tabskip(res_win_t widget, int skip);
@@ -1610,7 +1610,7 @@ XDC_API void topogctrl_redraw_spot(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION topogctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the topog widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void topogctrl_tabskip(res_win_t widget, int skip);
@@ -2067,7 +2067,7 @@ XDC_API void	tablectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION tablectrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the table widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	tablectrl_tabskip(res_win_t widget, int skip);
@@ -2242,7 +2242,7 @@ XDC_API void	labelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION labelctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the label widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	labelctrl_tabskip(res_win_t widget, int skip);
@@ -2426,7 +2426,7 @@ XDC_API void	listctrl_redraw_item(res_win_t widget, link_t_ptr plk);
 /*
 @FUNCTION listctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the list widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	listctrl_tabskip(res_win_t widget, int nSkip);
@@ -2596,7 +2596,7 @@ XDC_API void	properctrl_redraw_section(res_win_t widget, link_t_ptr slk);
 /*
 @FUNCTION properctrl_tabskip: tab focus to next entity.
 @INPUT res_win_t widget: the proper widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	properctrl_tabskip(res_win_t widget, int skip);
@@ -2731,7 +2731,7 @@ XDC_API void	statusctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION statusctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the status widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	statusctrl_tabskip(res_win_t widget, int skip);
@@ -2855,7 +2855,7 @@ XDC_API void	notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION notesctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the notes widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	notesctrl_tabskip(res_win_t widget, int skip);
@@ -2962,7 +2962,7 @@ XDC_API void	panelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION panelctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the panel widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	panelctrl_tabskip(res_win_t widget, int skip);
@@ -3158,7 +3158,7 @@ XDC_API void	titlectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION titlectrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the title widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	titlectrl_tabskip(res_win_t widget, int skip);
@@ -3278,7 +3278,7 @@ XDC_API void	toolctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION toolctrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the tool widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	toolctrl_tabskip(res_win_t widget, int nSkip);
@@ -3405,7 +3405,7 @@ XDC_API void	treectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 /*
 @FUNCTION treectrl_tabskip: tab focus to next item.
 @INPUT res_win_t widget: the tree widget.
-@INPUT int skip: the skip code, it can be WD_TAB_RIGHT, WD_TAB_LEFT, WD_TAB_UP, WD_TAB_DOWN, WD_TAB_PAGEUP, WD_TAB_PAGEDOWN, WD_TAB_HOME, WD_TAB_END.
+@INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
 XDC_API void	treectrl_tabskip(res_win_t widget, int nSkip);

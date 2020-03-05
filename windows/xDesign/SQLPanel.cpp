@@ -459,7 +459,7 @@ void SQLPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 /***********************************************************************************************/
@@ -495,7 +495,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	memoctrl_set_lock(pdt->hMemo, 0);
 
 	set_split_item_delta(ilkMemo, pdt->hMemo);
-	widget_show(pdt->hMemo, WD_SHOW_NORMAL);
+	widget_show(pdt->hMemo, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hGrid = gridctrl_create(_T("SQLGrid"), WD_STYLE_CONTROL, &xr, widget);
@@ -506,7 +506,7 @@ int SQLPanel_OnCreate(res_win_t widget, void* data)
 	gridctrl_attach(pdt->hGrid, ptrGrid);
 
 	set_split_item_delta(ilkGrid, pdt->hGrid);
-	widget_show(pdt->hGrid, WD_SHOW_NORMAL);
+	widget_show(pdt->hGrid, WS_SHOW_NORMAL);
 
 	widget_attach_splitor(widget, ptrSplit);
 

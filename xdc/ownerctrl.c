@@ -108,7 +108,7 @@ void hand_owner_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_owner_keydown(res_win_t widget, int key)
+void hand_owner_keydown(res_win_t widget, dword_t ks, int key)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 	int ch;
@@ -203,7 +203,7 @@ void hand_owner_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -320,7 +320,7 @@ void ownerctrl_redraw(res_win_t widget)
 
 	widget_update(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void ownerctrl_set_delta(res_win_t widget, var_long var)

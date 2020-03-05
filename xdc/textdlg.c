@@ -95,7 +95,7 @@ int hand_textdlg_create(res_win_t widget, void* data)
 		editbox_set_text(editbox, string_ptr(ptd->var));
 	}
 
-	widget_show(editbox, WD_SHOW_NORMAL);
+	widget_show(editbox, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -113,7 +113,7 @@ int hand_textdlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_TEXTDLG_PUSHBOX_OK);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, TEXTDLG_PUSHBOX_OK, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	SETTEXTDLGDELTA(widget, ptd);
 
@@ -194,7 +194,7 @@ void hand_textdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_textdlg_erase(res_win_t widget, res_ctx_t dc)

@@ -101,7 +101,7 @@ void hand_horzbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	hint = calc_horzbox_hint(&im, &xf, &pt);
 
-	widget_get_scroll(ptd->target, 1, &sc);
+	widget_get_scroll_info(ptd->target, 1, &sc);
 	widget_get_client_rect(ptd->target, &xr);
 
 	if (hint == HORZBOX_HINT_PAGELEFT)
@@ -128,7 +128,7 @@ void hand_horzbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	horzbox_delta_t* ptd = GETHORZBOXDELTA(widget);
 	
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_horzbox_timer(res_win_t widget, var_long tid)
@@ -289,7 +289,7 @@ res_win_t show_horzbox(res_win_t owner)
 
 	widget_set_timer(wt, DEF_TIPTIME);
 
-	widget_show(wt, WD_SHOW_NORMAL);
+	widget_show(wt, WS_SHOW_NORMAL);
 
 	return wt;
 }

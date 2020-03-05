@@ -150,36 +150,6 @@ typedef HANDLE		res_glob_t;
 #define WM_EASYMSG_MIN		WM_USER + 10
 #define WM_EASYMSG_MAX		WM_USER  + 100
 
-/*mouse button state*/
-#define MS_WITH_LBUTTON		MK_LBUTTON
-#define MS_WITH_RBUTTON		MK_RBUTTON
-#define MS_WITH_MBUTTON		MK_MBUTTON
-#define MS_WITH_CONTROL		MK_CONTROL
-#define MS_WITH_SHIFT		MK_SHIFT
-
-/*mouse track state*/
-#define MS_TRACK_HOVER		TME_HOVER
-#define	MS_TRACK_LEAVE		TME_LEAVE
-#define MS_TRACK_CANCEL		TME_CANCEL
-
-
-/*widget size mode*/
-#define WD_SIZE_LAYOUT		9
-#define WD_SIZE_RESTORE		SIZE_RESTORED
-#define WD_SIZE_MINIMIZED	SIZE_MINIMIZED
-#define WD_SIZE_MAXIMIZED	SIZE_MAXIMIZED
-#define WD_SIZE_MAXHIDED	SIZE_MAXHIDE
-
-/*widget activate mode*/
-#define WD_ACTIVE_NONE		WA_INACTIVE
-#define WD_ACTIVE_CLICK		WA_CLICKACTIVE
-#define WD_ACTIVE_OTHER		WA_ACTIVE
-
-/*widget position mode*/
-#define WD_ZORDER_NOTOPMOST	HWND_NOTOPMOST
-#define WD_ZORDER_BOTTOM	HWND_BOTTOM
-#define WD_ZORDER_TOP		HWND_TOP
-#define WD_ZORDER_TOPMOST	HWND_TOPMOST
 
 #ifdef XDU_SUPPORT_WIDGET_NC
 /*widget nc hit test*/

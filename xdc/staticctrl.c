@@ -433,7 +433,7 @@ void _statisctrl_ensure_visible(res_win_t widget)
 	if (page != ptd->cur_page)
 	{
 		ptd->cur_page = page;
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 
 	_statisctrl_coor_rect(widget, ptd->xax, ptd->yax, &xr);
@@ -483,7 +483,7 @@ void noti_statis_reset_select(res_win_t widget)
 	}
 
 	if (count)
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 }
 
 void noti_statis_reset_check(res_win_t widget)
@@ -509,7 +509,7 @@ void noti_statis_reset_check(res_win_t widget)
 	}
 
 	if (count)
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 }
 
 void noti_statis_xax_sizing(res_win_t widget, int x, int y)
@@ -551,7 +551,7 @@ void noti_statis_xax_sized(res_win_t widget, int x, int y)
 	mw = (float)(int)mw;
 	set_statis_xaxbar_width(ptd->statis, mw);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	noti_statis_owner(widget, NC_XAXSIZED, ptd->statis, ptd->xax, NULL, NULL, NULL);
 }
@@ -601,7 +601,7 @@ void noti_statis_yax_sized(res_win_t widget, int x, int y)
 	mh = (float)(int)mh;
 	set_statis_yaxbar_height(ptd->statis, mh);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	noti_statis_owner(widget, NC_YAXSIZED, ptd->statis, NULL, ptd->yax, NULL, NULL);
 }
@@ -675,7 +675,7 @@ void noti_statis_yax_drop(res_win_t widget, int x, int y)
 		}
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	pt.x = x;
 	pt.y = y;
@@ -751,7 +751,7 @@ void noti_statis_xax_drop(res_win_t widget, int x, int y)
 		}
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	pt.x = x;
 	pt.y = y;
@@ -775,7 +775,7 @@ void noti_statis_yax_selected(res_win_t widget, link_t_ptr ylk)
 	_statisctrl_yax_rect(widget, ylk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t noti_statis_xax_insert(res_win_t widget, link_t_ptr xlk)
@@ -817,7 +817,7 @@ bool_t noti_statis_xax_changing(res_win_t widget)
 
 	ptd->xax = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return (bool_t)1;
 }
@@ -834,7 +834,7 @@ void noti_statis_xax_changed(res_win_t widget, link_t_ptr xlk)
 
 	ptd->xax = xlk;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_statis_owner(widget, NC_XAXCHANGED, ptd->statis, ptd->xax, NULL, NULL, NULL);
 }
@@ -853,7 +853,7 @@ void noti_statis_xax_checked(res_win_t widget, link_t_ptr xlk)
 	_statisctrl_xax_rect(widget, xlk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_statis_gax_changing(res_win_t widget)
@@ -870,7 +870,7 @@ void noti_statis_gax_changing(res_win_t widget)
 
 	ptd->gax = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_statis_gax_changed(res_win_t widget, link_t_ptr glk)
@@ -885,7 +885,7 @@ void noti_statis_gax_changed(res_win_t widget, link_t_ptr glk)
 
 	ptd->gax = glk;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_statis_owner(widget, NC_GAXCHANGED, ptd->statis, NULL, NULL, ptd->gax, NULL);
 }
@@ -904,7 +904,7 @@ void noti_statis_yax_changing(res_win_t widget)
 
 	ptd->yax = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_statis_yax_changed(res_win_t widget, link_t_ptr ylk)
@@ -919,7 +919,7 @@ void noti_statis_yax_changed(res_win_t widget, link_t_ptr ylk)
 
 	ptd->yax = ylk;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_statis_owner(widget, NC_YAXCHANGED, ptd->statis, NULL, ptd->yax, NULL, NULL);
 }
@@ -944,7 +944,7 @@ void noti_statis_yax_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 }
 
 void noti_statis_yax_hover(res_win_t widget, int x, int y)
@@ -1005,7 +1005,7 @@ void noti_statis_begin_edit(res_win_t widget)
 
 	widget_set_xfont(ptd->editor, &xf);
 	widget_set_color_mode(ptd->editor, &ob);
-	widget_show(ptd->editor, WD_SHOW_NORMAL);
+	widget_show(ptd->editor, WS_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
 	if (ptd->yax)
@@ -1071,7 +1071,7 @@ void noti_statis_commit_edit(res_win_t widget)
 		}
 		else
 		{
-			statisctrl_tabskip(widget,WD_TAB_DOWN);
+			statisctrl_tabskip(widget,TABORDER_DOWN);
 		}
 	}
 }
@@ -1232,7 +1232,7 @@ void hand_statis_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 
 	noti_statis_reset_editor(widget, 1);
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -1294,7 +1294,7 @@ void hand_statis_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 
 	nHint = calc_statis_hint(&cb, &pt,ptd->statis, ptd->cur_page,  &xax, &yax, &gax);
 
-	if (nHint == STATIS_HINT_HORZ_SPLIT && yax == ptd->yax && !(dw & MS_WITH_CONTROL))
+	if (nHint == STATIS_HINT_HORZ_SPLIT && yax == ptd->yax && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -1304,7 +1304,7 @@ void hand_statis_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget,CURSOR_SIZENS);
 	}
-	else if (nHint == STATIS_HINT_VERT_SPLIT && xax == ptd->xax && !(dw & MS_WITH_CONTROL))
+	else if (nHint == STATIS_HINT_VERT_SPLIT && xax == ptd->xax && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -1314,7 +1314,7 @@ void hand_statis_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget,CURSOR_SIZEWE);
 	}
-	else if (nHint == STATIS_HINT_YAXBAR && yax == ptd->yax && !(dw & MS_WITH_CONTROL))
+	else if (nHint == STATIS_HINT_YAXBAR && yax == ptd->yax && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -1322,7 +1322,7 @@ void hand_statis_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 			return;
 		}
 	}
-	else if (nHint == STATIS_HINT_XAXBAR && xax == ptd->xax && !(dw & MS_WITH_CONTROL))
+	else if (nHint == STATIS_HINT_XAXBAR && xax == ptd->xax && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -1372,7 +1372,7 @@ void hand_statis_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 		if (get_yax_sortable(ptd->yax))
 		{
 			//sort_statis_yax(ptd->statis,ptd->yax);
-			//widget_redraw(widget, 0, 0, 0, 0);
+			//widget_erase(widget, 0, 0, 0, 0);
 		}
 	}
 
@@ -1546,7 +1546,7 @@ void hand_statis_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_statis_owner(widget, NC_STATISRBCLK, ptd->statis, ptd->xax, ptd->yax, ptd->gax, (void*)pxp);
 }
 
-void hand_statis_keydown(res_win_t widget, int nKey)
+void hand_statis_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 
@@ -1586,28 +1586,28 @@ void hand_statis_keydown(res_win_t widget, int nKey)
 		}
 		break;
 	case KEY_LEFT:
-		statisctrl_tabskip(widget, WD_TAB_LEFT);
+		statisctrl_tabskip(widget, TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		statisctrl_tabskip(widget, WD_TAB_RIGHT);
+		statisctrl_tabskip(widget, TABORDER_RIGHT);
 		break;
 	case KEY_UP:
-		statisctrl_tabskip(widget, WD_TAB_UP);
+		statisctrl_tabskip(widget, TABORDER_UP);
 		break;
 	case KEY_DOWN:
-		statisctrl_tabskip(widget, WD_TAB_DOWN);
+		statisctrl_tabskip(widget, TABORDER_DOWN);
 		break;
 	case KEY_END:
-		statisctrl_tabskip(widget, WD_TAB_END);
+		statisctrl_tabskip(widget, TABORDER_END);
 		break;
 	case KEY_HOME:
-		statisctrl_tabskip(widget, WD_TAB_HOME);
+		statisctrl_tabskip(widget, TABORDER_HOME);
 		break;
 	case KEY_PAGEUP:
-		statisctrl_tabskip(widget, WD_TAB_PAGEUP);
+		statisctrl_tabskip(widget, TABORDER_PAGEUP);
 		break;
 	case KEY_PAGEDOWN:
-		statisctrl_tabskip(widget, WD_TAB_PAGEDOWN);
+		statisctrl_tabskip(widget, TABORDER_PAGEDOWN);
 		break;
 	}
 }
@@ -1621,7 +1621,7 @@ void hand_statis_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		hand_statis_keydown(widget, KEY_ENTER);
+		hand_statis_keydown(widget, 0, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
@@ -1839,7 +1839,7 @@ link_t_ptr statisctrl_detach(res_win_t widget)
 
 	ptd->cur_page = 0;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return data;
 }
@@ -1999,7 +1999,7 @@ void statisctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc)
@@ -2024,7 +2024,7 @@ void statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void statisctrl_tabskip(res_win_t widget, int dir)
@@ -2044,7 +2044,7 @@ void statisctrl_tabskip(res_win_t widget, int dir)
 
 	switch (dir)
 	{
-	case WD_TAB_UP:
+	case TABORDER_UP:
 		if (ylk == NULL)
 			ylk = get_prev_yax(ptd->statis, LINK_LAST);
 		else
@@ -2053,7 +2053,7 @@ void statisctrl_tabskip(res_win_t widget, int dir)
 		if (ylk)
 			statisctrl_set_focus_coor(widget, xlk, ylk);
 		break;
-	case WD_TAB_DOWN:
+	case TABORDER_DOWN:
 		if (ylk == NULL)
 			ylk = get_next_yax(ptd->statis, LINK_FIRST);
 		else
@@ -2062,7 +2062,7 @@ void statisctrl_tabskip(res_win_t widget, int dir)
 		if (ylk)
 			statisctrl_set_focus_coor(widget, xlk, ylk);
 		break;
-	case WD_TAB_LEFT:
+	case TABORDER_LEFT:
 		if (xlk != NULL)
 		{
 			xlk = get_prev_xax(ptd->statis, xlk);
@@ -2070,7 +2070,7 @@ void statisctrl_tabskip(res_win_t widget, int dir)
 				statisctrl_set_focus_coor(widget, xlk, ylk);
 		}
 		break;
-	case WD_TAB_RIGHT:
+	case TABORDER_RIGHT:
 		if (xlk != NULL)
 		{
 			xlk = get_next_xax(ptd->statis, xlk);
@@ -2078,16 +2078,16 @@ void statisctrl_tabskip(res_win_t widget, int dir)
 				statisctrl_set_focus_coor(widget, xlk, ylk);
 		}
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		statisctrl_move_first_page(widget);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		statisctrl_move_last_page(widget);
 		break;
-	case WD_TAB_PAGEUP:
+	case TABORDER_PAGEUP:
 		statisctrl_move_prev_page(widget);
 		break;
-	case WD_TAB_PAGEDOWN:
+	case TABORDER_PAGEDOWN:
 		statisctrl_move_next_page(widget);
 		break;
 	}
@@ -2206,7 +2206,7 @@ bool_t statisctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk
 
 			statisctrl_get_coor_rect(widget, xlk, ylk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_redraw(widget, &xr, 1);
+			widget_erase(widget, &xr);
 		}
 	}
 	else
@@ -2221,7 +2221,7 @@ bool_t statisctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk
 
 			_statisctrl_xaxbar_rect(widget, xlk, &xr);
 			pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-			widget_redraw(widget, &xr, 1);
+			widget_erase(widget, &xr);
 		}
 	}
 
@@ -2345,7 +2345,7 @@ void statisctrl_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -2368,7 +2368,7 @@ void statisctrl_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -2395,7 +2395,7 @@ void statisctrl_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -2422,7 +2422,7 @@ void statisctrl_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -2449,7 +2449,7 @@ void statisctrl_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 

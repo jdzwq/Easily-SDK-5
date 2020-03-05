@@ -95,7 +95,7 @@ void hand_tipbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
 	
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_tipbox_timer(res_win_t widget, var_long tid)
@@ -254,12 +254,12 @@ res_win_t show_toolbox(const xpoint_t* ppt, const tchar_t* sz_text)
 
 	widget_move(wt, RECTPOINT(&xr));
 	widget_size(wt, RECTSIZE(&xr));
-	widget_take(wt, (int)WD_ZORDER_TOPMOST);
+	widget_take(wt, (int)WS_TAKE_TOPMOST);
 	widget_update(wt);
 
 	widget_set_timer(wt, DEF_TIPTIME);
 
-	widget_show(wt, WD_SHOW_NORMAL);
+	widget_show(wt, WS_SHOW_NORMAL);
 
 	return wt;
 }
@@ -272,7 +272,7 @@ bool_t reset_toolbox(res_win_t widget, const xpoint_t* ppt, const tchar_t* sz_te
 	if (!widget_is_valid(widget))
 		return 0;
 
-	widget_show(widget, WD_SHOW_HIDE);
+	widget_show(widget, WS_SHOW_HIDE);
 
 	widget_kill_timer(widget, 0);
 
@@ -294,12 +294,12 @@ bool_t reset_toolbox(res_win_t widget, const xpoint_t* ppt, const tchar_t* sz_te
 
 	widget_move(widget, RECTPOINT(&xr));
 	widget_size(widget, RECTSIZE(&xr));
-	widget_take(widget, (int)WD_ZORDER_TOPMOST);
+	widget_take(widget, (int)WS_TAKE_TOPMOST);
 	widget_update(widget);
 
 	widget_set_timer(widget, DEF_TIPTIME);
 
-	widget_show(widget, WD_SHOW_NORMAL);
+	widget_show(widget, WS_SHOW_NORMAL);
 
 	return 1;
 }

@@ -88,7 +88,7 @@ int hand_listdlg_create(res_win_t widget, void* data)
 	widget_set_user_id(listctrl, IDC_LISTDLG_LIST);
 
 	listctrl_attach(listctrl, ptd->list);
-	widget_show(listctrl, WD_SHOW_NORMAL);
+	widget_show(listctrl, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -106,7 +106,7 @@ int hand_listdlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_LISTDLG_PUSHBOX_OK);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, LISTDLG_PUSHBOX_OK, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	SETLISTDLGDELTA(widget, ptd);
 
@@ -177,7 +177,7 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_listdlg_erase(res_win_t widget, res_ctx_t dc)

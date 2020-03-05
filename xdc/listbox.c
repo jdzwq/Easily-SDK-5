@@ -186,7 +186,7 @@ void listbox_on_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 1);
+	widget_erase(widget, &xr);
 }
 
 void listbox_on_item_changed(res_win_t widget, link_t_ptr ent)
@@ -202,7 +202,7 @@ void listbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 1);
+	widget_erase(widget, &xr);
 
 	noti_listbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -239,7 +239,7 @@ void hand_listbox_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_listbox_keydown(res_win_t widget, int key)
+void hand_listbox_keydown(res_win_t widget, dword_t ks, int key)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 
@@ -255,16 +255,16 @@ void hand_listbox_keydown(res_win_t widget, int key)
 		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 		break;
 	case KEY_LEFT:
-		listbox_tabskip(widget,WD_TAB_LEFT);
+		listbox_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		listbox_tabskip(widget,WD_TAB_RIGHT);
+		listbox_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_HOME:
-		listbox_tabskip(widget,WD_TAB_HOME);
+		listbox_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		listbox_tabskip(widget,WD_TAB_END);
+		listbox_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -487,7 +487,7 @@ void listbox_redraw(res_win_t widget)
 	ptd->entity = ent;
 	_listbox_reset_page(widget);
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 }
 
 void listbox_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -525,12 +525,12 @@ void listbox_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_LEFT:
-	case WD_TAB_DOWN:
+	case TABORDER_LEFT:
+	case TABORDER_DOWN:
 		ilk = _listbox_get_next_entity(widget, ilk);
 		break;
-	case WD_TAB_RIGHT:
-	case WD_TAB_UP:
+	case TABORDER_RIGHT:
+	case TABORDER_UP:
 		ilk = _listbox_get_prev_entity(widget, ilk);
 		break;
 	}

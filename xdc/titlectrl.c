@@ -95,11 +95,11 @@ void noti_title_item_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -112,7 +112,7 @@ void noti_title_item_enter(res_win_t widget, link_t_ptr plk)
 
 	ptd->hover = plk;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	if (widget_is_hotvoer(widget))
 	{
@@ -143,7 +143,7 @@ bool_t noti_title_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return 1;
 }
@@ -157,7 +157,7 @@ void noti_title_item_changed(res_win_t widget, link_t_ptr plk)
 
 	ptd->item = plk;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	noti_title_owner(widget, NC_TITLEITEMCHANGED, ptd->title, ptd->item, NULL);
 }
@@ -345,7 +345,7 @@ void hand_title_mouse_wheel(res_win_t widget, dword_t dw, short delta)
 		return;
 }
 
-void hand_title_keydown(res_win_t widget, int nKey)
+void hand_title_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
 
@@ -356,17 +356,17 @@ void hand_title_keydown(res_win_t widget, int nKey)
 	{
 	case KEY_LEFT:
 	case KEY_PAGEUP:
-		titlectrl_tabskip(widget,WD_TAB_LEFT);
+		titlectrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
 	case KEY_PAGEDOWN:
-		titlectrl_tabskip(widget,WD_TAB_RIGHT);
+		titlectrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_HOME:
-		titlectrl_tabskip(widget,WD_TAB_HOME);
+		titlectrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		titlectrl_tabskip(widget,WD_TAB_END);
+		titlectrl_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -527,8 +527,8 @@ void titlectrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_title_next_item(ptd->title, LINK_FIRST);
 		else
@@ -537,8 +537,8 @@ void titlectrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			titlectrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_title_prev_item(ptd->title, LINK_LAST);
 		else
@@ -547,13 +547,13 @@ void titlectrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			titlectrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_title_next_item(ptd->title, LINK_FIRST);
 
 		if (plk)
 			titlectrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_title_prev_item(ptd->title, LINK_LAST);
 
 		if (plk)
@@ -595,7 +595,7 @@ void titlectrl_redraw(res_win_t widget)
 
 	_titlectrl_reset_page(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void titlectrl_redraw_item(res_win_t widget, link_t_ptr plk)
@@ -625,7 +625,7 @@ void titlectrl_redraw_item(res_win_t widget, link_t_ptr plk)
 		widget_get_client_rect(widget, &xr);
 	}
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos)

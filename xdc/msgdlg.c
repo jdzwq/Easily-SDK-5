@@ -108,7 +108,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 		widget_set_user_id(pushbox, IDC_PUSHBOX_CLOSE);
 		widget_set_owner(pushbox, widget);
 		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_CLOSE, -1);
-		widget_show(pushbox, WD_SHOW_NORMAL);
+		widget_show(pushbox, WS_SHOW_NORMAL);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -128,7 +128,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 		widget_set_user_id(pushbox, IDC_PUSHBOX_NO);
 		widget_set_owner(pushbox, widget);
 		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_NO, -1);
-		widget_show(pushbox, WD_SHOW_NORMAL);
+		widget_show(pushbox, WS_SHOW_NORMAL);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -148,7 +148,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 		widget_set_user_id(pushbox, IDC_PUSHBOX_YES);
 		widget_set_owner(pushbox, widget);
 		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_YES, -1);
-		widget_show(pushbox, WD_SHOW_NORMAL);
+		widget_show(pushbox, WS_SHOW_NORMAL);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -168,7 +168,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 		widget_set_user_id(pushbox, IDC_PUSHBOX_CANCEL);
 		widget_set_owner(pushbox, widget);
 		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_CANCEL, -1);
-		widget_show(pushbox, WD_SHOW_NORMAL);
+		widget_show(pushbox, WS_SHOW_NORMAL);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -188,7 +188,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 		widget_set_user_id(pushbox, IDC_PUSHBOX_OK);
 		widget_set_owner(pushbox, widget);
 		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_OK, -1);
-		widget_show(pushbox, WD_SHOW_NORMAL);
+		widget_show(pushbox, WS_SHOW_NORMAL);
 
 		xr.w -= (xr_btn.w + MSGDLG_EDGE_FEED);
 	}
@@ -208,7 +208,7 @@ int hand_msgdlg_create(res_win_t widget, void* data)
 		widget_set_user_id(pushbox, IDC_PUSHBOX_KNOWN);
 		widget_set_owner(pushbox, widget);
 		pushbox_set_text(pushbox, MSGDLG_PUSHBOX_KNOWN, -1);
-		widget_show(pushbox, WD_SHOW_NORMAL);
+		widget_show(pushbox, WS_SHOW_NORMAL);
 	}
 
 	SETMSGDLGDELTA(widget, ptd);
@@ -441,10 +441,10 @@ void hand_msgdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_move(pushbox, RECTPOINT(&xr_btn));
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
-void hand_msgdlg_keydown(res_win_t widget, int key)
+void hand_msgdlg_keydown(res_win_t widget, dword_t ks, int key)
 {
 	msgdlg_delta_t* ptd = GETMSGDLGDELTA(widget);
 

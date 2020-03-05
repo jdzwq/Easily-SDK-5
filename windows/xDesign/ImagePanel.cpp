@@ -313,7 +313,7 @@ void ImagePanel_Image_OnRBClick(res_win_t widget, NOTICE_IMAGES* pnf)
 	pt.y = ppt->y;
 	widget_client_to_screen(pdt->hImage, &pt);
 
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -548,7 +548,7 @@ int ImagePanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hImage, widget);
 
 	set_split_item_delta(ilkImage, pdt->hImage);
-	widget_show(pdt->hImage, WD_SHOW_NORMAL);
+	widget_show(pdt->hImage, WS_SHOW_NORMAL);
 
 	LINKPTR ptrImage = create_images_doc();
 	set_images_layer(ptrImage, ATTR_LAYER_HORZ);
@@ -561,7 +561,7 @@ int ImagePanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hProper, widget);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	LINKPTR ptrProper = create_proper_doc();
 	properctrl_attach(pdt->hProper, ptrProper);
@@ -572,7 +572,7 @@ int ImagePanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTitle, widget);
 
 	set_split_item_delta(ilkTitle, pdt->hTitle);
-	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitle, WS_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
 

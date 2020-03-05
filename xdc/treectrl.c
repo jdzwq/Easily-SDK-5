@@ -212,7 +212,7 @@ void noti_tree_item_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -246,7 +246,7 @@ bool_t noti_tree_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -263,7 +263,7 @@ void noti_tree_item_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_tree_owner(widget, NC_TREEITEMCHANGED, ptd->tree, ptd->item, NULL);
 }
@@ -300,7 +300,7 @@ void noti_tree_item_checked(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_tree_item_expand(res_win_t widget, link_t_ptr ilk)
@@ -410,7 +410,7 @@ void noti_tree_begin_edit(res_win_t widget)
 	widget_set_xfont(ptd->editor, &xf);
 	widget_set_color_mode(ptd->editor, &ob);
 
-	widget_show(ptd->editor, WD_SHOW_NORMAL);
+	widget_show(ptd->editor, WS_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
 	text = get_tree_item_title_ptr(ptd->item);
@@ -682,7 +682,7 @@ void hand_tree_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	tlk = NULL;
 	nHint = calc_tree_hint(&cb, &pt, ptd->tree, &tlk);
 
-	if (nHint == TREE_HINT_ITEM && tlk == ptd->item && !(dw & MS_WITH_CONTROL))
+	if (nHint == TREE_HINT_ITEM && tlk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -727,7 +727,7 @@ void hand_tree_mouse_leave(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		noti_tree_item_leave(widget);
 }
 
-void hand_tree_keydown(res_win_t widget, int nKey)
+void hand_tree_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 
@@ -749,17 +749,17 @@ void hand_tree_keydown(res_win_t widget, int nKey)
 		}
 		break;
 	case KEY_DOWN:
-		treectrl_tabskip(widget,WD_TAB_DOWN);
+		treectrl_tabskip(widget,TABORDER_DOWN);
 		break;
 	case KEY_RIGHT:
-		treectrl_tabskip(widget,WD_TAB_RIGHT);
+		treectrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 		break;
 	case VK_UP:
-		treectrl_tabskip(widget,WD_TAB_UP);
+		treectrl_tabskip(widget,TABORDER_UP);
 		break;
 	case VK_LEFT:
-		treectrl_tabskip(widget,WD_TAB_LEFT);
+		treectrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	}
 }
@@ -796,7 +796,7 @@ void hand_tree_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 
 	noti_tree_reset_editor(widget, 1);
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -971,7 +971,7 @@ link_t_ptr treectrl_detach(res_win_t widget)
 	ptr = ptd->tree;
 	ptd->tree = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 	return ptr;
 }
 
@@ -1063,7 +1063,7 @@ void treectrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 	_treectrl_item_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t treectrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -1158,7 +1158,7 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
+	case TABORDER_RIGHT:
 		if (ptd->item && get_tree_child_item_count(ptd->item))
 		{
 			if (!get_tree_item_expanded(ptd->item))
@@ -1172,7 +1172,7 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 			plk = ptd->item;
 		}
 		break;
-	case WD_TAB_DOWN:
+	case TABORDER_DOWN:
 		if (ptd->item)
 		{
 			plk = get_tree_next_visible_item(ptd->tree, ptd->item);
@@ -1182,7 +1182,7 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 			plk = get_tree_first_child_item(ptd->tree);
 		}
 		break;
-	case WD_TAB_LEFT:
+	case TABORDER_LEFT:
 		if (ptd->item && get_tree_parent_item(ptd->item))
 		{
 			plk = get_tree_parent_item(ptd->item);
@@ -1196,7 +1196,7 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 			plk = ptd->item;
 		}
 		break;
-	case WD_TAB_UP:
+	case TABORDER_UP:
 		if (ptd->item)
 		{
 			plk = get_tree_prev_visible_item(ptd->tree, ptd->item);
@@ -1206,10 +1206,10 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 			plk = get_tree_last_child_item(ptd->tree);
 		}
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_tree_first_child_item(ptd->tree);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_tree_last_child_item(ptd->tree);
 		break;
 	}

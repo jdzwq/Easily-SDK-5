@@ -97,8 +97,8 @@ typedef struct _widget_struct_t{
 	int state;
 	int result;
 
-	GC wgc;
-	GC cgc;
+	res_ctx_t wgc;
+	res_ctx_t cgc;
 
 	xpoint_t pt;
 	xsize_t st;
@@ -343,7 +343,6 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 	Atom atom;
 	widget_struct_t* ps = NULL;
 	if_event_t* pv = NULL;
-    XGCValues gv = {0};
 
     screen_num = DefaultScreen(g_display);
 	screen_dep = DefaultDepth(g_display, screen_num);
@@ -423,8 +422,9 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 	ps->style = wstyle;
 	ps->state = WS_SHOW_HIDE;
 	ps->events = attr.event_mask;
-	ps->wgc = XCreateGC(g_display, rot, 0, &gv);
-	ps->cgc = XCreateGC(g_display, win, 0, &gv);
+
+	ps->wgc = _create_display_context();
+	ps->cgc = _create_display_context();
     
 	SETXDUSTRUCT(win, ps);
 
@@ -457,9 +457,9 @@ void _widget_destroy(res_win_t wt)
 
 	if(ps)
 	{
-		if(ps->wgc) XFreeGC(g_display, ps->wgc);
+		if(ps->wgc) _destroy_context(ps->wgc);
 
-		if(ps->cgc) XFreeGC(g_display, ps->cgc);
+		if(ps->cgc) _destroy_context(ps->cgc);
 
 		free(ps);
 	}
@@ -1185,7 +1185,7 @@ void _widget_update(res_win_t wt)
 
 }
 
-void _widget_resize(res_win_t wt)
+void _widget_layout(res_win_t wt)
 {
 	XEvent ev = {0};
 
@@ -1195,7 +1195,7 @@ void _widget_resize(res_win_t wt)
     XSendEvent(g_display,wt,False,ResizeRedirectMask,&ev);
 }
 
-void _widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
+void _widget_erase(res_win_t wt, const xrect_t* prt)
 {
 	if(!prt)
 		XClearArea(g_display, wt, 0, 0, 0, 0, True);
@@ -1217,12 +1217,12 @@ void _widget_enable(res_win_t wt, bool_t b)
 	if(ps) ps->disable = (b)? 0 : 1;
 }
 
-void _widget_post_message(res_win_t wt, int msg, var_long wp, var_long lp)
+void _widget_post_notice(res_win_t wt, NOTICE* pnt)
 {
 
 }
 
-int _widget_send_message(res_win_t wt, int msg, var_long wp, var_long lp)
+int _widget_send_notice(res_win_t wt, NOTICE* pnt)
 {
     return 0;
 }
@@ -1365,6 +1365,10 @@ void _widget_set_title(res_win_t wt, const tchar_t* token)
 int _widget_get_title(res_win_t wt, tchar_t* buf, int max)
 {
 	return 0;
+}
+
+void _widget_scroll(res_win_t wt, bool_t horz, int line)
+{
 }
 
 void _widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl)
@@ -1652,6 +1656,10 @@ void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 
 
 /*******************************************************************************************/
+void _message_quit(int code)
+{
+
+}
 
 bool_t _message_translate(const msg_t* pmsg)
 {

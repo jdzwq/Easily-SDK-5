@@ -206,39 +206,6 @@ static DWORD _WindowStyle(dword_t wstyle)
 
 /*******************************************************************************************/
 
-bool_t	_fetch_message(msg_t* pmsg, res_win_t wt)
-{
-	return (GetMessage(pmsg, wt, 0, 0)) ? 1 : 0;
-}
-
-bool_t	_peek_message(msg_t* pmsg, res_win_t wt)
-{
-	return (PeekMessage(pmsg, wt, 0, 0, PM_NOREMOVE)) ? 1 : 0;
-}
-
-bool_t	_translate_message(const msg_t* pmsg)
-{
-	return (TranslateMessage(pmsg)) ? 1 : 0;
-}
-
-result_t _dispatch_message(const msg_t* pmsg)
-{
-	return DispatchMessage(pmsg);
-}
-
-int	_translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
-{
-	return TranslateAccelerator(wt, acl, pmsg);
-}
-
-void _message_position(xpoint_t* ppt)
-{
-	DWORD dw = GetMessagePos();
-
-	ppt->x = LOWORD(dw);
-	ppt->y = HIWORD(dw);
-}
-
 ATOM RegisterXdcWidgetClass(HINSTANCE hInstance)
 {
 	WNDCLASS wcex = { 0 };
@@ -900,7 +867,21 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		pev = GETXDUDISPATCH(hWnd);
 		if (pev && pev->pf_on_activate)
 		{
-			(*pev->pf_on_activate)(hWnd, (int)LOWORD(wParam));
+			int ac = 0;
+			switch (LOWORD(wParam))
+			{
+			case WA_CLICKACTIVE:
+				ac = WS_ACTIVE_CLICK;
+				break;
+			case WS_ACTIVE_OTHER:
+				ac = WS_ACTIVE_OTHER;
+				break;
+			case WS_ACTIVE_NONE:
+				ac = WS_ACTIVE_NONE;
+				break;
+			}
+
+			(*pev->pf_on_activate)(hWnd, ac);
 		}
 		break;
 	case WM_MOUSEACTIVATE:
@@ -958,7 +939,13 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		pev = GETXDUDISPATCH(hWnd);
 		if (pev && pev->pf_on_keydown)
 		{
-			(*pev->pf_on_keydown)(hWnd, (int)wParam);
+			dword_t ks = 0;
+
+			if (GetKeyState(VK_SHIFT)) ks |= KS_WITH_SHIFT;
+			if (GetKeyState(VK_CONTROL)) ks |= KS_WITH_CONTROL;
+			if (GetKeyState(VK_MENU)) ks |= KS_WITH_ALT;
+
+			(*pev->pf_on_keydown)(hWnd, ks, (int)wParam);
 			return 0;
 		}
 		break;
@@ -1327,7 +1314,13 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	case WM_KEYDOWN:
 		if (pev && pev->sub_on_keydown)
 		{
-			if ((*pev->sub_on_keydown)(hWnd, (int)wParam, (uid_t)uIdSubclass, pev->delta))
+			dword_t ks = 0;
+
+			if (GetKeyState(VK_SHIFT)) ks |= KS_WITH_SHIFT;
+			if (GetKeyState(VK_CONTROL)) ks |= KS_WITH_CONTROL;
+			if (GetKeyState(VK_MENU)) ks |= KS_WITH_ALT;
+
+			if ((*pev->sub_on_keydown)(hWnd, ks, (int)wParam, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -1443,34 +1436,6 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_timer)
 		{
 			if ((*pev->sub_on_timer)(hWnd, (var_long)wParam, (uid_t)uIdSubclass, pev->delta))
-				return 0;
-		}
-		break;
-	case WM_COPY:
-		if (pev && pev->sub_on_copy)
-		{
-			if ((*pev->sub_on_copy)(hWnd, (uid_t)uIdSubclass, pev->delta))
-				return 0;
-		}
-		break;
-	case WM_CUT:
-		if (pev && pev->sub_on_cut)
-		{
-			if ((*pev->sub_on_cut)(hWnd, (uid_t)uIdSubclass, pev->delta))
-				return 0;
-		}
-		break;
-	case WM_PASTE:
-		if (pev && pev->sub_on_paste)
-		{
-			if ((*pev->sub_on_paste)(hWnd, (uid_t)uIdSubclass, pev->delta))
-				return 0;
-		}
-		break;
-	case WM_UNDO:
-		if (pev && pev->sub_on_undo)
-		{
-			if ((*pev->sub_on_undo)(hWnd, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -2146,27 +2111,6 @@ void _widget_show_caret(res_win_t wt, int x, int y, bool_t b)
 	}
 }
 
-void _widget_set_imm(res_win_t wt, bool_t b)
-{
-	HIMC hMic;
-
-	hMic = ImmGetContext(wt);
-	ImmSetOpenStatus(hMic, b);
-	ImmReleaseContext(wt, hMic);
-}
-
-bool_t _widget_get_imm(res_win_t wt)
-{
-	HIMC hMic;
-	BOOL bOpen;
-
-	hMic = ImmGetContext(wt);
-	bOpen = ImmGetOpenStatus(hMic);
-	ImmReleaseContext(wt, hMic);
-
-	return (bOpen) ? 1 : 0;
-}
-
 void _widget_set_focus(res_win_t wt)
 {
 	SetFocus((HWND)wt);
@@ -2311,10 +2255,28 @@ void _widget_size(res_win_t wt, const xsize_t* pxs)
 
 void _widget_take(res_win_t wt, int zor)
 {
+	HWND wnd;
+
+	switch (zor)
+	{
+	case WS_TAKE_BOTTOM:
+		wnd = HWND_BOTTOM;
+		break;
+	case WS_TAKE_TOP:
+		wnd = HWND_TOP;
+		break;
+	case WS_TAKE_TOPMOST:
+		wnd = HWND_TOPMOST;
+		break;
+	default:
+		wnd = HWND_NOTOPMOST;
+		break;
+	}
+
 #ifdef WINCE
-	SetWindowPos(wt, (HWND)zor, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
+	SetWindowPos(wt, wnd, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
 #else
-	SetWindowPos(wt, (HWND)zor, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOREDRAW);
+	SetWindowPos(wt, wnd, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOREDRAW);
 #endif
 }
 
@@ -2324,11 +2286,11 @@ void _widget_show(res_win_t wt, dword_t sw)
 	DWORD dw = (pws) ? pws->style : 0;
 	RECT rt;
 
-	if (sw == WD_SHOW_HIDE)
+	if (sw == WS_SHOW_HIDE)
 	{
 		ShowWindow(wt, SW_HIDE);
 	}
-	else if (sw == WD_SHOW_NORMAL)
+	else if (sw == WS_SHOW_NORMAL)
 	{
 		if (dw & WD_STYLE_NOACTIVE)
 		{
@@ -2339,15 +2301,15 @@ void _widget_show(res_win_t wt, dword_t sw)
 			ShowWindow(wt, SW_SHOW);
 		}
 	}
-	else if (sw == WD_SHOW_MAXIMIZE)
+	else if (sw == WS_SHOW_MAXIMIZE)
 	{
 		ShowWindow(wt, SW_MAXIMIZE);
 	}
-	else if (sw == WD_SHOW_MINIMIZE)
+	else if (sw == WS_SHOW_MINIMIZE)
 	{
 		ShowWindow(wt, SW_MINIMIZE);
 	}
-	else if (sw == WD_SHOW_FULLSCREEN)
+	else if (sw == WS_SHOW_FULLSCREEN)
 	{
 		rt.left = rt.top = 0;
 		rt.right = GetSystemMetrics(SM_CXFULLSCREEN);
@@ -2364,7 +2326,7 @@ void _widget_show(res_win_t wt, dword_t sw)
 		else
 			SetWindowPos(wt, HWND_TOP, 0, 0, rt.right - rt.left, rt.bottom - rt.top, SWP_SHOWWINDOW);
 	}
-	else if (sw == WD_SHOW_POPUPTOP)
+	else if (sw == WS_SHOW_POPUPTOP)
 	{
 		if (dw & WD_STYLE_NOACTIVE)
 			SetWindowPos(wt, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE);
@@ -2373,7 +2335,7 @@ void _widget_show(res_win_t wt, dword_t sw)
 	}
 }
 
-void _widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
+void _widget_erase(res_win_t wt, const xrect_t* prt)
 {
 	RECT rt;
 
@@ -2383,28 +2345,28 @@ void _widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
 		rt.top = prt->y;
 		rt.right = prt->x + prt->w;
 		rt.bottom = prt->y + prt->h;
-		InvalidateRect(wt, &rt, (BOOL)b_erase);
+		InvalidateRect(wt, &rt, 0);
 	}
 	else
 	{
-		InvalidateRect(wt, NULL, (BOOL)b_erase);
+		InvalidateRect(wt, NULL, 0);
 	}
 }
 
-void _widget_paint(res_win_t wt)
+void _widget_layout(res_win_t wt)
 {
-	UpdateWindow((HWND)wt);
-}
-
-void _widget_resize(res_win_t wt)
-{
-	PostMessage(wt, WM_SIZE, WD_SIZE_LAYOUT, 0);
+	PostMessage(wt, WM_SIZE, WS_SIZE_LAYOUT, 0);
 }
 
 void _widget_update(res_win_t wt)
 {
 	SetWindowPos(wt, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 	PostMessage(wt, WM_NCPAINT, 1, 0);
+}
+
+void _widget_paint(res_win_t wt)
+{
+	UpdateWindow((HWND)wt);
 }
 
 void _widget_enable(res_win_t wt, bool_t b)
@@ -2415,14 +2377,14 @@ void _widget_enable(res_win_t wt, bool_t b)
 		EnableWindow(wt, 0);
 }
 
-void _widget_post_message(res_win_t wt, int msg, var_long wp, var_long lp)
+void _widget_post_notice(res_win_t wt, NOTICE* pnt)
 {
-	PostMessage((HWND)wt, msg, (WPARAM)wp, (LPARAM)lp);
+	PostMessage((HWND)wt, WM_NOTICE, (WPARAM)pnt->id, (LPARAM)pnt);
 }
 
-int _widget_send_message(res_win_t wt, int msg, var_long wp, var_long lp)
+int _widget_send_notice(res_win_t wt, NOTICE* pnt)
 {
-	return (int)SendMessage((HWND)wt, msg, (WPARAM)wp, (LPARAM)lp);
+	return (int)SendMessage((HWND)wt, WM_NOTICE, (WPARAM)pnt->id, (LPARAM)pnt);
 }
 
 void _widget_post_command(res_win_t wt, int code, uid_t cid, var_long data)
@@ -2473,6 +2435,11 @@ int _widget_get_title(res_win_t wt, tchar_t* buf, int max)
 	}
 
 	return 0;
+}
+
+void _widget_scroll(res_win_t wt, bool_t horz, int line)
+{
+	PostMessage(wt, WM_SCROLL, (var_long)horz, (var_long)line);
 }
 
 void _widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl)
@@ -2713,6 +2680,26 @@ void _widget_get_point(res_win_t wt, xpoint_t* ppt)
 	}
 }
 
+void _widget_set_size(res_win_t wt, const xsize_t* pst)
+{
+	widget_struct_t* pws = GETXDUSTRUCT(wt);
+
+	if (pws)
+	{
+		CopyMemory((void*)&pws->pt, (void*)pst, sizeof(xsize_t));
+	}
+}
+
+void _widget_get_size(res_win_t wt, xsize_t* pst)
+{
+	widget_struct_t* pws = GETXDUSTRUCT(wt);
+
+	if (pws)
+	{
+		CopyMemory((void*)pst, (void*)&pws->pt, sizeof(xsize_t));
+	}
+}
+
 static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
 {
 	dword_t dw;
@@ -2778,6 +2765,43 @@ void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+void _message_quit(int code)
+{
+	PostQuitMessage(code);
+}
+
+void _message_fetch(msg_t* pmsg, res_win_t wt)
+{
+	GetMessage(pmsg, wt, 0, 0);
+}
+
+bool_t	_message_peek(msg_t* pmsg)
+{
+	return (PeekMessage(pmsg, NULL, 0, 0, PM_NOREMOVE)) ? 1 : 0;
+}
+
+bool_t	_message_translate(const msg_t* pmsg)
+{
+	return (TranslateMessage(pmsg)) ? 1 : 0;
+}
+
+result_t _message_dispatch(const msg_t* pmsg)
+{
+	return DispatchMessage(pmsg);
+}
+
+void _message_position(xpoint_t* ppt)
+{
+	DWORD dw = GetMessagePos();
+
+	ppt->x = LOWORD(dw);
+	ppt->y = HIWORD(dw);
+}
+
+int _widget_do_normal(res_win_t hWnd)
+{
+	return 0;
+}
 
 int _widget_do_modal(res_win_t hWnd)
 {
@@ -3002,11 +3026,6 @@ void _widget_track_mouse(res_win_t wt, dword_t mask)
 	if (mask & TME_LEAVE)
 	{
 		te.dwFlags |= TME_LEAVE;
-	}
-
-	if (mask & TME_CANCEL)
-	{
-		te.dwFlags |= TME_CANCEL;
 	}
 
 	te.hwndTrack = wt;

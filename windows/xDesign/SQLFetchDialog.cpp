@@ -161,7 +161,7 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 	editbox_set_text(pdt->hEdit, sz_sql);
 	xsfree(sz_sql);
 
-	widget_show(pdt->hEdit, WD_SHOW_NORMAL);
+	widget_show(pdt->hEdit, WS_SHOW_NORMAL);
 
 	xr.y = xr.y + xr.h - xs.cy;
 	xr.h = xs.cy;
@@ -180,14 +180,14 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_user_id(pdt->hPushCancel, IDC_SQLFETCHDLG_CANCEL);
 	widget_set_owner(pdt->hPushCancel, widget);
 	pushbox_set_text(pdt->hPushCancel, _T("取消"), -1);
-	widget_show(pdt->hPushCancel, WD_SHOW_NORMAL);
+	widget_show(pdt->hPushCancel, WS_SHOW_NORMAL);
 
 	xr_push.x -= (xs.cx + xs.cy);
 	pdt->hPushOK = pushbox_create(widget, WD_STYLE_CONTROL, &xr_push);
 	widget_set_owner(pdt->hPushOK, widget);
 	widget_set_user_id(pdt->hPushOK, IDC_SQLFETCHDLG_OK);
 	pushbox_set_text(pdt->hPushOK, _T("确定"), -1);
-	widget_show(pdt->hPushOK, WD_SHOW_NORMAL);
+	widget_show(pdt->hPushOK, WS_SHOW_NORMAL);
 
 	return 0;
 }
@@ -267,7 +267,7 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushOK);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void SQLFetchDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
@@ -377,7 +377,7 @@ res_win_t SQLFetchDlg_Create(const TCHAR* title, SQLFETCHDLG_PARAM* ppd)
 
 	widget_center_window(widget, g_hMain);
 	widget_update(widget);
-	widget_show(widget, WD_SHOW_NORMAL);
+	widget_show(widget, WS_SHOW_NORMAL);
 
 	return widget;
 }

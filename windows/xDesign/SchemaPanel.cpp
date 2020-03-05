@@ -224,8 +224,8 @@ void SchemaPanel_Schema_OnRBClick(res_win_t widget, NOTICE_MEMO* pnf)
 	pt.y = ppt->y;
 	widget_client_to_screen(pdt->hMemo, &pt);
 
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
-	widget_show(hMenu, WD_SHOW_NORMAL);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
+	widget_show(hMenu, WS_SHOW_NORMAL);
 
 	widget_do_trace(hMenu);
 
@@ -341,7 +341,7 @@ void SchemaPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 /***********************************************************************************************************/
 int SchemaPanel_OnCreate(res_win_t widget, void* data)
@@ -372,7 +372,7 @@ int SchemaPanel_OnCreate(res_win_t widget, void* data)
 	memoctrl_attach(pdt->hMemo, ptr_memo);
 	memoctrl_set_lock(pdt->hMemo, 0);
 
-	widget_show(pdt->hMemo, WD_SHOW_NORMAL);
+	widget_show(pdt->hMemo, WS_SHOW_NORMAL);
 
 	if (!is_null(szParam))
 	{

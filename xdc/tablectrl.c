@@ -215,7 +215,7 @@ void noti_tablectrl_end_size(res_win_t widget, int x, int y)
 
 	ptd->ratio = (float)(xs.fx / cb.fw);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 bool_t noti_tablectrl_item_insert(res_win_t widget, link_t_ptr ilk)
@@ -257,7 +257,7 @@ bool_t noti_tablectrl_item_changing(res_win_t widget)
 	ptd->item = NULL;
 	ptd->onkey = 0;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -274,7 +274,7 @@ void noti_tablectrl_item_changed(res_win_t widget, link_t_ptr elk, bool_t onkey)
 
 	_tablectrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_tablectrl_begin_edit(res_win_t widget)
@@ -314,7 +314,7 @@ void noti_tablectrl_begin_edit(res_win_t widget)
 
 	widget_set_xfont(ptd->editor, &xf);
 	widget_set_color_mode(ptd->editor, &ob);
-	widget_show(ptd->editor, WD_SHOW_NORMAL);
+	widget_show(ptd->editor, WS_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
 	if (ptd->onkey)
@@ -372,11 +372,11 @@ void noti_tablectrl_commit_edit(res_win_t widget)
 	{
 		if (ptd->onkey)
 		{
-			tablectrl_tabskip(widget,WD_TAB_RIGHT);
+			tablectrl_tabskip(widget,TABORDER_RIGHT);
 		}
 		else
 		{
-			tablectrl_tabskip(widget,WD_TAB_DOWN);
+			tablectrl_tabskip(widget,TABORDER_DOWN);
 		}
 	}
 }
@@ -445,7 +445,7 @@ void hand_tablectrl_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_tablectrl_keydown(res_win_t widget, int key)
+void hand_tablectrl_keydown(res_win_t widget, dword_t ks, int key)
 {
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 
@@ -463,22 +463,22 @@ void hand_tablectrl_keydown(res_win_t widget, int key)
 	case KEY_SPACE:
 		break;
 	case KEY_LEFT:
-		tablectrl_tabskip(widget,WD_TAB_LEFT);
+		tablectrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		tablectrl_tabskip(widget,WD_TAB_RIGHT);
+		tablectrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_UP:
-		tablectrl_tabskip(widget,WD_TAB_UP);
+		tablectrl_tabskip(widget,TABORDER_UP);
 		break;
 	case KEY_DOWN:
-		tablectrl_tabskip(widget,WD_TAB_DOWN);
+		tablectrl_tabskip(widget,TABORDER_DOWN);
 		break;
 	case KEY_HOME:
-		tablectrl_tabskip(widget,WD_TAB_HOME);
+		tablectrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		tablectrl_tabskip(widget,WD_TAB_END);
+		tablectrl_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -492,7 +492,7 @@ void hand_tablectrl_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		hand_tablectrl_keydown(widget, KEY_ENTER);
+		hand_tablectrl_keydown(widget, 0, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
@@ -680,7 +680,7 @@ void hand_tablectrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->table)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -925,7 +925,7 @@ void tablectrl_redraw_item(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t tablectrl_set_focus_item(res_win_t widget, link_t_ptr ent)
@@ -1003,21 +1003,21 @@ void tablectrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
+	case TABORDER_RIGHT:
 		if (ptd->onkey && ptd->item)
 		{
 			ptd->onkey = 0;
 			tablectrl_redraw_item(widget, ptd->item);
 		}
 		break;
-	case WD_TAB_LEFT:
+	case TABORDER_LEFT:
 		if (!ptd->onkey && ptd->item)
 		{
 			ptd->onkey = 1;
 			tablectrl_redraw_item(widget, ptd->item);
 		}
 		break;
-	case WD_TAB_DOWN:
+	case TABORDER_DOWN:
 		if (ptd->item)
 		{
 			plk = get_string_next_entity(ptd->table, ptd->item);
@@ -1029,7 +1029,7 @@ void tablectrl_tabskip(res_win_t widget, int nSkip)
 			}
 		}
 		break;
-	case WD_TAB_UP:
+	case TABORDER_UP:
 		if (ptd->item)
 		{
 			plk = get_string_prev_entity(ptd->table, ptd->item);
@@ -1041,7 +1041,7 @@ void tablectrl_tabskip(res_win_t widget, int nSkip)
 			}
 		}
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_string_next_entity(ptd->table, LINK_FIRST);
 
 		if (plk)
@@ -1050,7 +1050,7 @@ void tablectrl_tabskip(res_win_t widget, int nSkip)
 			tablectrl_set_focus_item(widget, plk);
 		}
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_string_prev_entity(ptd->table, LINK_LAST);
 
 		if (plk)
@@ -1087,7 +1087,7 @@ void tablectrl_set_item_key_text(res_win_t widget, link_t_ptr elk, const tchar_t
 
 	tablectrl_get_item_rect(widget, elk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void tablectrl_set_item_val_text(res_win_t widget, link_t_ptr elk, const tchar_t* token)
@@ -1114,7 +1114,7 @@ void tablectrl_set_item_val_text(res_win_t widget, link_t_ptr elk, const tchar_t
 
 	tablectrl_get_item_rect(widget, elk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void tablectrl_accept(res_win_t widget, bool_t bAccept)

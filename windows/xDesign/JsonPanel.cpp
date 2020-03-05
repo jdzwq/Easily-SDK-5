@@ -439,7 +439,7 @@ int JsonPanel_OnCreate(res_win_t widget, void* data)
 	memoctrl_set_lock(pdt->hRequest, 0);
 
 	set_split_item_delta(ilkRequest, pdt->hRequest);
-	widget_show(pdt->hRequest, WD_SHOW_NORMAL);
+	widget_show(pdt->hRequest, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hResponse = memoctrl_create(_T("JsonResponse"), WD_STYLE_CONTROL, &xr, widget);
@@ -450,7 +450,7 @@ int JsonPanel_OnCreate(res_win_t widget, void* data)
 	memoctrl_attach(pdt->hResponse, ptrResponse);
 
 	set_split_item_delta(ilkResponse, pdt->hResponse);
-	widget_show(pdt->hResponse, WD_SHOW_NORMAL);
+	widget_show(pdt->hResponse, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hProper = properctrl_create(_T("JsonProper"), WD_STYLE_CONTROL, &xr, widget);
@@ -490,7 +490,7 @@ int JsonPanel_OnCreate(res_win_t widget, void* data)
 	properctrl_set_lock(pdt->hProper, 0);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	widget_attach_splitor(widget, ptrSplit);
 

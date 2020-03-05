@@ -102,7 +102,7 @@ void hand_vertbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	hint = calc_vertbox_hint(&im, &xf, &pt);
 
-	widget_get_scroll(ptd->target,0, &sc);
+	widget_get_scroll_info(ptd->target,0, &sc);
 	widget_get_client_rect(ptd->target, &xr);
 	dw = widget_get_style(ptd->target);
 
@@ -142,7 +142,7 @@ void hand_vertbox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	vertbox_delta_t* ptd = GETVERTBOXDELTA(widget);
 	
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_vertbox_timer(res_win_t widget, var_long tid)
@@ -302,7 +302,7 @@ res_win_t show_vertbox(res_win_t owner)
 
 	widget_set_timer(wt, DEF_TIPTIME);
 
-	widget_show(wt, WD_SHOW_NORMAL);
+	widget_show(wt, WS_SHOW_NORMAL);
 
 	return wt;
 }

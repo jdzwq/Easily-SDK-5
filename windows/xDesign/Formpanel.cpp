@@ -331,7 +331,7 @@ void FormPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 void FormPanel_OnSchema(res_win_t widget)
@@ -461,7 +461,7 @@ void FormPanel_OnExec(res_win_t widget)
 	formctrl_attach(win, ptr_form);
 
 	widget_center_window(win, widget);
-	widget_show(win, WD_SHOW_NORMAL);
+	widget_show(win, WS_SHOW_NORMAL);
 
 	widget_do_modal(win);
 
@@ -689,7 +689,7 @@ void FormPanel_OnEditEx(res_win_t widget)
 
 		res_win_t hAnnoDlg = annodlg_create(_T("标注图像"), vs_img, g_hMain);
 
-		widget_show(hAnnoDlg, WD_SHOW_NORMAL);
+		widget_show(hAnnoDlg, WS_SHOW_NORMAL);
 
 		if (!widget_do_modal(hAnnoDlg))
 		{
@@ -721,7 +721,7 @@ void FormPanel_OnCSSProper(res_win_t widget)
 
 	res_win_t hProperDlg = properdlg_create(_T("绘制样式"), ptr_proper, g_hMain);
 	
-	widget_show(hProperDlg, WD_SHOW_NORMAL);
+	widget_show(hProperDlg, WS_SHOW_NORMAL);
 
 	int nRet = widget_do_modal(hProperDlg);
 
@@ -751,42 +751,42 @@ void FormPanel_OnFontName(res_win_t widget, void* pv)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	fontname_menu(widget, IDC_FORMPANEL_FONTNAME, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontname_menu(widget, IDC_FORMPANEL_FONTNAME, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void FormPanel_OnFontSize(res_win_t widget, void* pv)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	fontsize_menu(widget, IDC_FORMPANEL_FONTSIZE, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontsize_menu(widget, IDC_FORMPANEL_FONTSIZE, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void FormPanel_OnTextColor(res_win_t widget, void* pv)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	color_menu(widget, IDC_FORMPANEL_FONTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_FORMPANEL_FONTCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void FormPanel_OnPaintColor(res_win_t widget, void* pv)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	color_menu(widget, IDC_FORMPANEL_PAINTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_FORMPANEL_PAINTCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void FormPanel_OnDrawColor(res_win_t widget, void* pv)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	color_menu(widget, IDC_FORMPANEL_DRAWCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_FORMPANEL_DRAWCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void FormPanel_OnFieldShape(res_win_t widget, void* pv)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
 
-	shape_menu(widget, IDC_FORMPANEL_FIELDSHAPE, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	shape_menu(widget, IDC_FORMPANEL_FIELDSHAPE, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void FormPanel_OnTextNear(res_win_t widget)
@@ -1658,7 +1658,7 @@ void FormPanel_Form_OnRBClick(res_win_t widget, NOTICE_FORM* pnf)
 	pt.y = ppt->y;
 	widget_client_to_screen(pdt->hForm, &pt);
 
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -1741,7 +1741,7 @@ int FormPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hForm, widget);
 
 	set_split_item_delta(ilkForm, pdt->hForm);
-	widget_show(pdt->hForm, WD_SHOW_NORMAL);
+	widget_show(pdt->hForm, WS_SHOW_NORMAL);
 
 	LINKPTR ptrForm = create_form_doc();
 	set_form_design(ptrForm, 1);
@@ -1756,7 +1756,7 @@ int FormPanel_OnCreate(res_win_t widget, void* data)
 	properctrl_attach(pdt->hProper, ptrProper);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hTitle = titlectrl_create(_T("FormTitle"), WD_STYLE_CONTROL | WD_STYLE_OWNERNC, &xr, widget);
@@ -1764,7 +1764,7 @@ int FormPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTitle, widget);
 
 	set_split_item_delta(ilkTitle, pdt->hTitle);
-	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitle, WS_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
 

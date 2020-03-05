@@ -86,7 +86,7 @@ int hand_properdlg_create(res_win_t widget, void* data)
 	properctrl_attach(properctrl, ptd->proper);
 	properctrl_set_lock(properctrl, 0);
 
-	widget_show(properctrl, WD_SHOW_NORMAL);
+	widget_show(properctrl, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -104,7 +104,7 @@ int hand_properdlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_PROPERDLG_PUSHBOX_OK);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, PROPERDLG_PUSHBOX_OK, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	SETPROPERDLGDELTA(widget, ptd);
 
@@ -185,7 +185,7 @@ void hand_properdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_properdlg_erase(res_win_t widget, res_ctx_t dc)

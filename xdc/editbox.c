@@ -252,7 +252,7 @@ void hand_editbox_kill_focus(res_win_t widget, res_win_t wt)
 	}
 }
 
-void hand_editbox_keydown(res_win_t widget, int key)
+void hand_editbox_keydown(res_win_t widget, dword_t ks, int key)
 {
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
 	const xface_t* pxa;
@@ -417,7 +417,7 @@ void hand_editbox_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	xp.y = pxp->y;
 	widget_client_to_screen(widget, &xp);
 
-	textor_menu(widget, &xp, WD_LAYOUT_LEFTBOTTOM);
+	textor_menu(widget, &xp, WS_LAYOUT_LEFTBOTTOM);
 }
 
 void hand_editbox_mousemove(res_win_t widget, dword_t mk, const xpoint_t* ppt)
@@ -676,9 +676,9 @@ res_win_t editbox_create_keybox(res_win_t widget, dword_t style, const xrect_t* 
 	keybox_popup_size(keybox, RECTSIZE(&xr));
 
 	widget_size(keybox, RECTSIZE(&xr));
-	widget_take(keybox, (int)WD_ZORDER_TOP);
+	widget_take(keybox, (int)WS_TAKE_TOP);
 	widget_update(keybox);
-	widget_show(keybox, WD_SHOW_NORMAL);
+	widget_show(keybox, WS_SHOW_NORMAL);
 
 	widget_set_user_prop(editbox, XDCKEYBOX, (var_long)keybox);
 

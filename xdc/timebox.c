@@ -58,7 +58,7 @@ void timebox_on_year_up(res_win_t widget)
 	if (ptd->tt.year > MAX_YEAR)
 		ptd->tt.year = MIN_YEAR;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -71,7 +71,7 @@ void timebox_on_year_down(res_win_t widget)
 	if (ptd->tt.year < MIN_YEAR)
 		ptd->tt.year = MIN_YEAR;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -84,7 +84,7 @@ void timebox_on_mon_up(res_win_t widget)
 	if (ptd->tt.mon > 12)
 		ptd->tt.mon = 1;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -97,7 +97,7 @@ void timebox_on_mon_down(res_win_t widget)
 	if (ptd->tt.mon < 1)
 		ptd->tt.mon = 12;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -110,7 +110,7 @@ void timebox_on_day_up(res_win_t widget)
 	if (ptd->tt.day > max_mon_days(ptd->tt.year, ptd->tt.mon))
 		ptd->tt.day = 1;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -123,7 +123,7 @@ void timebox_on_day_down(res_win_t widget)
 	if (ptd->tt.day < 1)
 		ptd->tt.day = max_mon_days(ptd->tt.year, ptd->tt.mon);
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -136,7 +136,7 @@ void timebox_on_hour_up(res_win_t widget)
 	if (ptd->tt.hour > 23)
 		ptd->tt.hour = 0;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -149,7 +149,7 @@ void timebox_on_hour_down(res_win_t widget)
 	if (ptd->tt.hour < 0)
 		ptd->tt.hour = 23;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -160,7 +160,7 @@ void timebox_on_hour_zero(res_win_t widget)
 
 	ptd->tt.hour = 0;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -173,7 +173,7 @@ void timebox_on_minute_up(res_win_t widget)
 	if (ptd->tt.min > 59)
 		ptd->tt.min = 0;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -186,7 +186,7 @@ void timebox_on_minute_down(res_win_t widget)
 	if (ptd->tt.min < 0)
 		ptd->tt.min = 59;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -197,7 +197,7 @@ void timebox_on_minute_zero(res_win_t widget)
 
 	ptd->tt.min = 0;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -210,7 +210,7 @@ void timebox_on_second_up(res_win_t widget)
 	if (ptd->tt.sec > 59)
 		ptd->tt.sec = 0;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -223,7 +223,7 @@ void timebox_on_second_down(res_win_t widget)
 	if (ptd->tt.sec < 0)
 		ptd->tt.sec = 59;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -234,7 +234,7 @@ void timebox_on_second_zero(res_win_t widget)
 
 	ptd->tt.sec = 0;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 
 	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -336,7 +336,7 @@ void hand_timebox_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	timebox_delta_t* ptd = GETTIMEBOXDELTA(widget);
 	
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_timebox_erase(res_win_t widget, res_ctx_t rdc)
@@ -442,7 +442,7 @@ void timebox_set_datetime(res_win_t widget, const xdate_t* pxt)
 	else
 		get_loc_date(&ptd->tt);
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 }
 
 void timebox_get_datetime(res_win_t widget, xdate_t* pxt)

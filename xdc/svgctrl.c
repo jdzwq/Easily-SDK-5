@@ -140,7 +140,7 @@ void hand_svg_size(res_win_t widget, int code, const xsize_t* pxs)
 
 	_svgctrl_reset_page(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_svg_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -215,7 +215,7 @@ void hand_svg_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->svg)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -373,7 +373,7 @@ link_t_ptr svgctrl_detach(res_win_t widget)
 	ptr = ptd->svg;
 	ptd->svg = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 	return ptr;
 }
 

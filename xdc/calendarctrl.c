@@ -147,7 +147,7 @@ void noti_calendar_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -170,7 +170,7 @@ void noti_calendar_daily_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t noti_calendar_daily_changing(res_win_t widget)
@@ -189,7 +189,7 @@ bool_t noti_calendar_daily_changing(res_win_t widget)
 
 	ptd->daily = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return (bool_t)1;
 }
@@ -208,7 +208,7 @@ void noti_calendar_daily_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_calendar_owner(widget, NC_CALENDARDAILYCHANGED, ptd->calendar, ilk, NULL);
 }
@@ -233,7 +233,7 @@ void noti_calendar_daily_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 }
 
 void noti_calendar_daily_hover(res_win_t widget, int x, int y)
@@ -306,7 +306,7 @@ void hand_calendar_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->calendar)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -485,11 +485,10 @@ void hand_calendar_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_calendar_owner(widget, NC_CALENDARRBCLK, ptd->calendar, ptd->daily, (void*)pxp);
 }
 
-void hand_calendar_keydown(res_win_t widget, int nKey)
+void hand_calendar_keydown(res_win_t widget, dword_t ks, int key)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 	float x, y, w, h, m;
-	bool_t ks;
 	link_t_ptr ilk;
 
 	if (!ptd->calendar)
@@ -661,7 +660,7 @@ link_t_ptr calendarctrl_detach(res_win_t widget)
 	ptd->calendar = NULL;
 	ptd->daily = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return data;
 }
@@ -731,7 +730,7 @@ void calendarctrl_redraw_daily(res_win_t widget, link_t_ptr ilk)
 	_calendarctrl_daily_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void calendarctrl_tabskip(res_win_t widget, int nSkip)
@@ -746,24 +745,24 @@ void calendarctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (ptd->daily == NULL)
 			ilk = get_calendar_prev_daily(ptd->calendar, LINK_LAST);
 		else
 			ilk = get_calendar_prev_daily(ptd->calendar, ptd->daily);
 		break;
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (ptd->daily == NULL)
 			ilk = get_calendar_next_daily(ptd->calendar, LINK_FIRST);
 		else
 			ilk = get_calendar_next_daily(ptd->calendar, ptd->daily);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		ilk = get_calendar_next_daily(ptd->calendar, LINK_FIRST);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		ilk = get_calendar_prev_daily(ptd->calendar, LINK_LAST);
 		break;
 	}

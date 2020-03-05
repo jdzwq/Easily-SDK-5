@@ -611,7 +611,7 @@ XDC_API void listbox_redraw(res_win_t widget);
 /*
 @FUNCTION listbox_tabskip: tab the listbox focus item to next.
 @INPUT res_win_t widget: the listbox widget.
-@INPUT int skip: the skip code, it can be WD_TAB_LEFT, WD_TAB_RIGHT, WD_TAB_TOP, WD_TAB_BOTTOM.
+@INPUT int skip: the skip code, it can be TABORDER_LEFT, TABORDER_RIGHT, TABORDER_TOP, TABORDER_BOTTOM.
 @RETURN void: none.
 */
 XDC_API void listbox_tabskip(res_win_t widget, int skip);
@@ -676,7 +676,7 @@ XDC_API void dropbox_redraw(res_win_t widget);
 /*
 @FUNCTION dropbox_tabskip: tab the dropbox focus item to next.
 @INPUT res_win_t widget: the dropbox widget.
-@INPUT int skip: the skip code, it can be WD_TAB_LEFT, WD_TAB_RIGHT, WD_TAB_TOP, WD_TAB_BOTTOM.
+@INPUT int skip: the skip code, it can be TABORDER_LEFT, TABORDER_RIGHT, TABORDER_TOP, TABORDER_BOTTOM.
 @RETURN void: none.
 */
 XDC_API void dropbox_tabskip(res_win_t widget, int skip);
@@ -756,7 +756,7 @@ XDC_API void	wordsbox_redraw(res_win_t widget);
 /*
 @FUNCTION wordsbox_tabskip: tab the wordsbox focus item to next.
 @INPUT res_win_t widget: the wordsbox widget.
-@INPUT int skip: the skip code, it can be WD_TAB_LEFT, WD_TAB_RIGHT, WD_TAB_TOP, WD_TAB_BOTTOM.
+@INPUT int skip: the skip code, it can be TABORDER_LEFT, TABORDER_RIGHT, TABORDER_TOP, TABORDER_BOTTOM.
 @RETURN void: none.
 */
 XDC_API void	wordsbox_tabskip(res_win_t widget, int nSkip);
@@ -895,7 +895,7 @@ XDC_API void	menubox_redraw(res_win_t widget);
 /*
 @FUNCTION menubox_tabskip: tab the menubox focus item to next.
 @INPUT res_win_t widget: the menubox widget.
-@INPUT int skip: the skip code, it can be WD_TAB_LEFT, WD_TAB_RIGHT, WD_TAB_TOP, WD_TAB_BOTTOM.
+@INPUT int skip: the skip code, it can be TABORDER_LEFT, TABORDER_RIGHT, TABORDER_TOP, TABORDER_BOTTOM.
 @RETURN void: none.
 */
 XDC_API void	menubox_tabskip(res_win_t widget, int skip);
@@ -928,7 +928,7 @@ XDC_API void	menubox_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* px
 @FUNCTION menubox_layout: layout the menubox at position.
 @INPUT res_win_t widget: the menubox widget.
 @INPUT const xpoint_t* ppt: the base position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM, WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM, WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP.
 @RETURN void: none.
 */
 XDC_API void	menubox_layout(res_win_t widget, const xpoint_t* ppt, int lay);

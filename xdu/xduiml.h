@@ -224,16 +224,14 @@ bool_t	_widget_is_ownc(res_win_t wt);
 bool_t	_widget_is_valid(res_win_t wt);
 bool_t	_widget_is_child(res_win_t wt);
 bool_t	_widget_is_focus(res_win_t wt);
-void	_widget_post_char(res_win_t wt, tchar_t ch);
-void	_widget_post_key(res_win_t wt, int key);
 void	_widget_size(res_win_t wt, const xsize_t* pxs);
 void	_widget_move(res_win_t wt, const xpoint_t* ppt);
 void	_widget_take(res_win_t wt, int zor);
 void	_widget_show(res_win_t wt, dword_t sw);
 void	_widget_update(res_win_t wt);
-void	_widget_resize(res_win_t wt);
+void	_widget_layout(res_win_t wt);
+void	_widget_erase(res_win_t wt, const xrect_t* prt);
 void	_widget_paint(res_win_t wt);
-void	_widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase);
 void	_widget_enable(res_win_t wt, bool_t b);
 
 void	_widget_set_title(res_win_t wt, const tchar_t* token);
@@ -252,14 +250,17 @@ bool_t	_widget_set_subproc_delta(res_win_t wt, uid_t sid, var_long delta);
 var_long _widget_get_subproc_delta(res_win_t wt, uid_t sid);
 bool_t	_widget_has_subproc(res_win_t wt);
 
-void	_widget_post_message(res_win_t wt, int msg, var_long wp, var_long lp);
-int		_widget_send_message(res_win_t wt, int msg, var_long wp, var_long lp);
+void	_widget_post_char(res_win_t wt, tchar_t ch);
+void	_widget_post_key(res_win_t wt, int key);
+void	_widget_post_notice(res_win_t wt, NOTICE* pnc);
+int		_widget_send_notice(res_win_t wt, NOTICE* pnc);
 void	_widget_post_command(res_win_t wt, int code, uid_t cid, var_long data);
 int		_widget_send_command(res_win_t wt, int code, uid_t cid, var_long data);
 
 var_long _widget_set_timer(res_win_t wt, int ms);
 void	_widget_kill_timer(res_win_t wt, var_long tid);
 
+void	_widget_scroll(res_win_t wt, bool_t horz, int line);
 void	_widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl);
 void	_widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psl);
 bool_t	_widget_has_struct(res_win_t wt);
@@ -288,6 +289,7 @@ void	_widget_get_point(res_win_t wt, xpoint_t* ppt);
 void	_widget_set_size(res_win_t wt, const xsize_t* pst);
 void	_widget_get_size(res_win_t wt, xsize_t* pst);
 
+void	_message_quit(int code);
 void	_message_fetch(msg_t* pmsg, res_win_t wt);
 bool_t	_message_peek(msg_t* pmsg);
 bool_t	_message_translate(const msg_t* pmsg);

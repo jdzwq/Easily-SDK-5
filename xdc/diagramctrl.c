@@ -398,7 +398,7 @@ void noti_diagram_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -421,7 +421,7 @@ void noti_diagram_entity_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t noti_diagram_entity_changing(res_win_t widget)
@@ -440,7 +440,7 @@ bool_t noti_diagram_entity_changing(res_win_t widget)
 
 	ptd->entity = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return (bool_t)1;
 }
@@ -459,7 +459,7 @@ void noti_diagram_entity_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_diagram_owner(widget, NC_DIAGRAMENTITYCHANGED, ptd->diagram, ilk, NULL);
 }
@@ -484,7 +484,7 @@ void noti_diagram_entity_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 }
 
 void noti_diagram_entity_hover(res_win_t widget, int x, int y)
@@ -568,7 +568,7 @@ void noti_diagram_entity_drop(res_win_t widget, int x, int y)
 	set_diagram_entity_x(ptd->entity, pt.fx);
 	set_diagram_entity_y(ptd->entity, pt.fy);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	pt.x = x;
 	pt.y = y;
@@ -649,7 +649,7 @@ void noti_diagram_entity_sized(res_win_t widget, int x, int y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	fw = get_diagram_entity_width(ptd->entity);
 	fh = get_diagram_entity_height(ptd->entity);
@@ -686,7 +686,7 @@ void noti_diagram_entity_sized(res_win_t widget, int x, int y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	_diagramctrl_entity_rect(widget, ptd->entity, &xr);
 
@@ -767,7 +767,7 @@ void hand_diagram_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->diagram)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -817,7 +817,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	{
 		ptd->cur_x = pxp->x;
 		ptd->cur_y = pxp->y;
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 		return;
 	}
 
@@ -828,7 +828,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	ilk = NULL;
 	nHint = calc_diagram_hint(ptd->diagram, &pt, &ilk);
 
-	if (nHint == DIAGRAM_HINT_HORZ_SPLIT && ilk == ptd->entity && !(dw & MS_WITH_CONTROL))
+	if (nHint == DIAGRAM_HINT_HORZ_SPLIT && ilk == ptd->entity && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -838,7 +838,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget, CURSOR_SIZENS);
 	}
-	else if (nHint == DIAGRAM_HINT_VERT_SPLIT && ilk == ptd->entity && !(dw & MS_WITH_CONTROL))
+	else if (nHint == DIAGRAM_HINT_VERT_SPLIT && ilk == ptd->entity && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -848,7 +848,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget, CURSOR_SIZEWE);
 	}
-	else if (nHint == DIAGRAM_HINT_CROSS_SPLIT && ilk == ptd->entity && !(dw & MS_WITH_CONTROL))
+	else if (nHint == DIAGRAM_HINT_CROSS_SPLIT && ilk == ptd->entity && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -858,7 +858,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget, CURSOR_SIZEALL);
 	}
-	else if (nHint == DIAGRAM_HINT_ENTITY && ilk == ptd->entity && !(dw & MS_WITH_CONTROL))
+	else if (nHint == DIAGRAM_HINT_ENTITY && ilk == ptd->entity && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -868,10 +868,7 @@ void hand_diagram_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	}
 	else if (nHint == DIAGRAM_HINT_NONE)
 	{
-		if (ptd->opera == WD_OPERA_CONTROL)
-			widget_set_cursor(widget, CURSOR_IBEAM);
-		else
-			widget_set_cursor(widget, CURSOR_ARROW);
+		widget_set_cursor(widget, CURSOR_ARROW);
 	}
 
 	if (widget_is_hotvoer(widget))
@@ -944,7 +941,7 @@ void hand_diagram_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	switch (nHint)
 	{
 	case DIAGRAM_HINT_ENTITY:
-		if (ptd->opera == WD_OPERA_CONTROL || widget_key_state(widget, KEY_CONTROL))
+		if (widget_key_state(widget, KEY_CONTROL))
 		{
 			noti_diagram_entity_selected(widget, ilk);
 		}
@@ -1030,11 +1027,10 @@ void hand_diagram_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_diagram_owner(widget, NC_DIAGRAMRBCLK, ptd->diagram, ptd->entity, (void*)pxp);
 }
 
-void hand_diagram_keydown(res_win_t widget, int nKey)
+void hand_diagram_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
 	float x, y, w, h, m;
-	bool_t ks;
 	link_t_ptr ilk;
 
 	if (!ptd->diagram)
@@ -1105,7 +1101,7 @@ void hand_diagram_keydown(res_win_t widget, int nKey)
 			ilk = get_diagram_next_entity(ptd->diagram, ilk);
 		}
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 
 		if (ks)
 			noti_diagram_owner(widget, NC_DIAGRAMENTITYSIZED, ptd->diagram, ptd->entity, NULL);
@@ -1339,7 +1335,7 @@ link_t_ptr diagramctrl_detach(res_win_t widget)
 	ptd->diagram = NULL;
 	ptd->entity = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return data;
 }
@@ -1409,7 +1405,7 @@ void diagramctrl_redraw_entity(res_win_t widget, link_t_ptr ilk)
 	_diagramctrl_entity_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void diagramctrl_tabskip(res_win_t widget, int nSkip)
@@ -1424,24 +1420,24 @@ void diagramctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (ptd->entity == NULL)
 			ilk = get_diagram_prev_entity(ptd->diagram, LINK_LAST);
 		else
 			ilk = get_diagram_prev_entity(ptd->diagram, ptd->entity);
 		break;
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (ptd->entity == NULL)
 			ilk = get_diagram_next_entity(ptd->diagram, LINK_FIRST);
 		else
 			ilk = get_diagram_next_entity(ptd->diagram, ptd->entity);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		ilk = get_diagram_next_entity(ptd->diagram, LINK_FIRST);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		ilk = get_diagram_prev_entity(ptd->diagram, LINK_LAST);
 		break;
 	}

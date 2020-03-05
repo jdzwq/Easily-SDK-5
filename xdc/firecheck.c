@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_checkbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
+static int sub_checkbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
 {
 	if (subid != IDS_CHECKBOX)
 		return 0;

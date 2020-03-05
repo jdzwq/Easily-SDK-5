@@ -312,7 +312,7 @@ XDC_API void	widget_move(res_win_t wt, const xpoint_t* ppt);
 /*
 @FUNCTION widget_move: change widget z-order.
 @INPUT res_win_t wt: the widget resource handle.
-@INPUT int zor: the new z-order, it can be WD_ZORDER_NOTOPMOST, WD_ZORDER_BOTTOM, WD_ZORDER_TOP, WD_ZORDER_TOPMOST.
+@INPUT int zor: the new z-order, it can be WS_TAKE_NOTOPMOST, WS_TAKE_BOTTOM, WS_TAKE_TOP, WS_TAKE_TOPMOST.
 @RETURN void: none.
 */
 XDC_API void	widget_take(res_win_t wt, int zor);
@@ -320,7 +320,7 @@ XDC_API void	widget_take(res_win_t wt, int zor);
 /*
 @FUNCTION widget_show: show or hide widget.
 @INPUT res_win_t wt: the widget resource handle.
-@INPUT dword_t sw: the show mode, it can be WD_SHOW_NORMAL, WD_SHOW_HIDE, WD_SHOW_MAXIMIZE, WD_SHOW_MINIMIZE, WD_SHOW_FULLSCREEN, WD_SHOW_POPUPTOP.
+@INPUT dword_t sw: the show mode, it can be WS_SHOW_NORMAL, WS_SHOW_HIDE, WS_SHOW_MAXIMIZE, WS_SHOW_MINIMIZE, WS_SHOW_FULLSCREEN, WS_SHOW_POPUPTOP.
 @RETURN void: none.
 */
 XDC_API void	widget_show(res_win_t wt, dword_t sw);
@@ -334,20 +334,19 @@ XDC_API void	widget_show(res_win_t wt, dword_t sw);
 XDC_API void	widget_center_window(res_win_t wt, res_win_t owner);
 
 /*
-@FUNCTION widget_resize: resize whole widndow.
+@FUNCTION widget_layout: relayout whole widndow.
 @INPUT res_win_t wt: the widget resource handle.
 @RETURN void: none.
 */
-XDC_API void	widget_resize(res_win_t wt);
+XDC_API void	widget_layout(res_win_t wt);
 
 /*
-@FUNCTION widget_redraw: redraw rect in widget client.
+@FUNCTION widget_erase: redraw rect in widget client.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT const xrect_t* prt: the rect need to redraw.
-@INPUT bool_t b_erase: if nonzero the background need to redraw.
 @RETURN void: none.
 */
-XDC_API void	widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase);
+XDC_API void	widget_erase(res_win_t wt, const xrect_t* prt);
 
 /*
 @FUNCTION widget_update_window: redraw whole widndow immediately.
@@ -412,21 +411,6 @@ XDC_API void	widget_destroy_caret(res_win_t wt);
 @RETURN void: none.
 */
 XDC_API void	widget_show_caret(res_win_t wt, int x, int y, bool_t b);
-
-/*
-@FUNCTION widget_set_imm: open or close input context.
-@INPUT res_win_t wt: the widget resource handle.
-@INPUT bool_t b: nonzero for opening, zero for closing.
-@RETURN void: none.
-*/
-XDC_API void	widget_set_imm(res_win_t wt, bool_t b);
-
-/*
-@FUNCTION widget_get_imm: test input context is opened.
-@INPUT res_win_t wt: the widget resource handle.
-@RETURN bool_t: if return nonzero indicate opened, zero indicate closed.
-*/
-XDC_API bool_t	widget_get_imm(res_win_t wt);
 
 /*
 @FUNCTION widget_set_focus: let the widget get focus.
@@ -514,13 +498,22 @@ XDC_API bool_t	widget_has_size(res_win_t wt);
 XDC_API bool_t	widget_has_border(res_win_t wt);
 
 /*
+@FUNCTION widget_scroll: scroll the widget.
+@INPUT res_win_t wt: the widget resource handle.
+@INPUT bool_t horz: nonzero for horizon scroll, zero for vertical scroll.
+@INPUT int line: line will be scrolled.
+@RETURN void: none.
+*/
+XDC_API void	widget_scroll(res_win_t wt, bool_t horz, int line);
+
+/*
 @FUNCTION widget_get_scroll: get widget scroll information.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT bool_t horz: nonzero for horizon scroll, zero for vertical scroll.
 @OUTPUT scroll_t* psl: scroll struct for returning information.
 @RETURN void: none.
 */
-XDC_API void	widget_get_scroll(res_win_t wt, bool_t horz, scroll_t* psl);
+XDC_API void	widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl);
 
 /*
 @FUNCTION widget_set_scroll: set widget scroll information.
@@ -529,24 +522,7 @@ XDC_API void	widget_get_scroll(res_win_t wt, bool_t horz, scroll_t* psl);
 @INPUT const scroll_t* psl: scroll struct for setting scroll information.
 @RETURN void: none.
 */
-XDC_API void	widget_set_scroll(res_win_t wt, bool_t horz, const scroll_t* psc);
-
-/*
-@FUNCTION widget_reset_scroll: reset widget scroll.
-@INPUT res_win_t wt: the widget resource handle.
-@INPUT bool_t horz: nonzero for horizon scroll, zero for vertical scroll.
-@RETURN void: none.
-*/
-XDC_API void	widget_reset_scroll(res_win_t wt, bool_t horz);
-
-/*
-@FUNCTION widget_scroll: scroll the widget.
-@INPUT res_win_t wt: the widget resource handle.
-@INPUT bool_t horz: nonzero for horizon scroll, zero for vertical scroll.
-@INPUT int line: the line to be scrolled
-@RETURN void: none.
-*/
-XDC_API void	widget_scroll(res_win_t wt, bool_t horz, int line);
+XDC_API void	widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psc);
 
 /*
 @FUNCTION widget_post_char: post a char input message into windows message queue.
@@ -563,6 +539,14 @@ XDC_API void	widget_post_char(res_win_t wt, tchar_t ch);
 @RETURN void: none.
 */
 XDC_API void	widget_post_key(res_win_t wt, int key);
+
+/*
+@FUNCTION widget_post_notice: post notice message to owner window, and not wait the message processed.
+@INPUT res_win_t wt: the widget resource handle.
+@INPUT NOTICE* pnt: the notice message struct.
+@RETURN none:
+*/
+XDC_API void	widget_post_notice(res_win_t wt, NOTICE* pnt);
 
 /*
 @FUNCTION widget_send_notice: send notice message to owner window, and not wait the message processed.
@@ -873,6 +857,22 @@ XDC_API void	widget_set_point(res_win_t wt, const xpoint_t* ppt);
 XDC_API void	widget_get_point(res_win_t wt, xpoint_t* ppt);
 
 /*
+@FUNCTION widget_set_size: set the child widget size in client coordinate.
+@INPUT res_win_t wt: windowd resource handle.
+@INPUT const xsize_t* ppt: the size struct.
+@RETURN void: none.
+*/
+XDC_API void	widget_set_size(res_win_t wt, const xsize_t* ppt);
+
+/*
+@FUNCTION widget_get_size: get the child widget size in client coordinate.
+@INPUT res_win_t wt: windowd resource handle.
+@OUTPUT xsize_t* ppt: the size struct.
+@RETURN void: none.
+*/
+XDC_API void	widget_get_size(res_win_t wt, xsize_t* ppt);
+
+/*
 @FUNCTION widget_set_color_mode: set the widget color mode.
 @INPUT res_win_t wt: windowd resource handle.
 @INPUT const clr_mod_t* pclr: the color mode struct.
@@ -983,16 +983,15 @@ XDC_API int		widget_do_modal(res_win_t wt);
 */
 XDC_API void	widget_do_trace(res_win_t wt);
 
+XDC_API void message_quit(int code);
 
-XDC_API bool_t fetch_message(msg_t* pmsg, res_win_t wt);
+XDC_API void message_fetch(msg_t* pmsg, res_win_t wt);
 
-XDC_API bool_t peek_message(msg_t* pmsg, res_win_t wt);
+XDC_API bool_t message_peek(msg_t* pmsg);
 
-XDC_API bool_t	translate_message(const msg_t* pmsg);
+XDC_API bool_t	message_translate(const msg_t* pmsg);
 
-XDC_API result_t dispatch_message(const msg_t* pmsg);
-
-XDC_API int		translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg);
+XDC_API result_t message_dispatch(const msg_t* pmsg);
 
 XDC_API void	message_position(xpoint_t* ppt);
 

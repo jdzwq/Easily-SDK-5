@@ -357,7 +357,7 @@ static void _topogctrl_reset_matrix(res_win_t widget, int row, int col)
 	set_topog_matrix(ptd->topog, buf, len);
 	xsfree(buf);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 static void _topogctrl_reset_page(res_win_t widget)
@@ -434,7 +434,7 @@ void noti_topog_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -457,7 +457,7 @@ void noti_topog_spot_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t noti_topog_spot_changing(res_win_t widget)
@@ -478,7 +478,7 @@ bool_t noti_topog_spot_changing(res_win_t widget)
 	ptd->row = -1;
 	ptd->col = -1;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return (bool_t)1;
 }
@@ -499,7 +499,7 @@ void noti_topog_spot_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_topog_owner(widget, NC_TOPOGSPOTCHANGED, ptd->topog, ptd->spot, ptd->row, ptd->col, NULL);
 }
@@ -529,7 +529,7 @@ void noti_topog_spot_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -617,7 +617,7 @@ void noti_topog_spot_drop(res_win_t widget, int x, int y)
 	ptd->row = cy;
 	ptd->col = cx;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	pt.x = x;
 	pt.y = y;
@@ -705,7 +705,7 @@ void hand_topogctrl_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp
 		noti_topog_spot_leave(widget);
 	}
 
-	if (topog_is_design(ptd->topog) && nHint == TOPOG_HINT_SPOT && ilk == ptd->spot && (dw & MS_WITH_LBUTTON) && !(dw & MS_WITH_CONTROL))
+	if (topog_is_design(ptd->topog) && nHint == TOPOG_HINT_SPOT && ilk == ptd->spot && (dw & MS_WITH_LBUTTON) && !(dw & KS_WITH_CONTROL))
 	{
 		noti_topog_spot_drag(widget, pxp->x, pxp->y);
 	}
@@ -889,7 +889,7 @@ void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->topog)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -925,7 +925,7 @@ void hand_topogctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_topogctrl_keydown(res_win_t widget, int nKey)
+void hand_topogctrl_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 
@@ -988,7 +988,7 @@ void hand_topogctrl_keydown(res_win_t widget, int nKey)
 				slk = get_topog_next_spot(ptd->spot, slk);
 			}
 
-			widget_redraw(widget, NULL, 0);
+			widget_erase(widget, NULL);
 
 			noti_topog_owner(widget, NC_TOPOGSPOTDROP, ptd->topog, ptd->spot, ptd->row, ptd->col, NULL);
 		}
@@ -1023,15 +1023,15 @@ void hand_topogctrl_keydown(res_win_t widget, int nKey)
 	{
 		if (nKey == KEY_TAB)
 		{
-			topogctrl_tabskip(widget,WD_TAB_RIGHT);
+			topogctrl_tabskip(widget,TABORDER_RIGHT);
 		}
 		else if (nKey == KEY_LEFT || nKey == KEY_UP) //VK_LEFT VK_UP
 		{
-			topogctrl_tabskip(widget,WD_TAB_LEFT);
+			topogctrl_tabskip(widget,TABORDER_LEFT);
 		}
 		else if (nKey == KEY_RIGHT || nKey == KEY_DOWN) //VK_RIGHT VK_DOWN
 		{
-			topogctrl_tabskip(widget,WD_TAB_RIGHT);
+			topogctrl_tabskip(widget,TABORDER_RIGHT);
 		}
 	}
 }
@@ -1055,7 +1055,7 @@ void hand_topogctrl_size(res_win_t widget, int code, const xsize_t* prs)
 
 	_topogctrl_reset_page(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_topogctrl_erase(res_win_t widget, res_ctx_t dc)
@@ -1201,7 +1201,7 @@ link_t_ptr topogctrl_detach(res_win_t widget)
 	ptd->row = -1;
 	ptd->col = -1;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return data;
 }
@@ -1266,8 +1266,8 @@ void topogctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_topog_next_spot(ptd->topog, LINK_FIRST);
 		else
@@ -1276,8 +1276,8 @@ void topogctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			topogctrl_set_focus_spot(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_topog_prev_spot(ptd->topog, LINK_LAST);
 		else
@@ -1309,7 +1309,7 @@ void topogctrl_redraw_spot(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t topogctrl_set_focus_spot(res_win_t widget, link_t_ptr ilk)

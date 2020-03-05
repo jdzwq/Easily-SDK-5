@@ -75,7 +75,7 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	if (!bd.hscroll)
 		return;
 
-	widget_get_scroll(wt, 1, &sl);
+	widget_get_scroll_info(wt, 1, &sl);
 
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
@@ -158,7 +158,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	if (!bd.vscroll)
 		return;
 
-	widget_get_scroll(wt, 0, &sl);
+	widget_get_scroll_info(wt, 0, &sl);
 
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
@@ -879,7 +879,7 @@ int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 
 	if (horz)
 	{
-		widget_get_scroll(wt, 1, &sc);
+		widget_get_scroll_info(wt, 1, &sc);
 
 		if (!sc.pos &&  pxp->x < edge + hscr)
 		{
@@ -905,7 +905,7 @@ int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 	}
 	else
 	{
-		widget_get_scroll(wt, 0, &sc);
+		widget_get_scroll_info(wt, 0, &sc);
 
 		if (!sc.pos && pxp->y < edge + title + menu + 2 * vscr)
 		{
@@ -933,7 +933,7 @@ int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 	return pos;
 }
 
-void widget_redraw_scroll(res_win_t wt, bool_t horz)
+void widget_draw_scroll(res_win_t wt, bool_t horz)
 {
 	res_ctx_t dc;
 

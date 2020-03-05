@@ -108,7 +108,7 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	widget_set_user_id(ptd->button, IDC_INPUTDLG_PUSHBOX_CLOSE);
 	widget_set_owner(ptd->button, widget);
 	pushbox_set_text(ptd->button, GDI_ICON_CLOSE, -1);
-	widget_show(ptd->button, WD_SHOW_NORMAL);
+	widget_show(ptd->button, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	xr.w -= xr.h;
@@ -119,7 +119,7 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	widget_set_xfont(ptd->editor, &xf);
 	widget_set_color_mode(ptd->editor, &ob);
 
-	widget_show(ptd->editor, WD_SHOW_NORMAL);
+	widget_show(ptd->editor, WS_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
 	if (ptd->buf)
@@ -198,7 +198,7 @@ void hand_inputdlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ptd->editor);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_inputdlg_erase(res_win_t widget, res_ctx_t dc)

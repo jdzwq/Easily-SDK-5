@@ -77,7 +77,7 @@ XDC_API void	widget_layout_splitor(res_win_t wt);
 /*
 @FUNCTION widget_dock: add a dock to widget.
 @INPUT res_win_t wt: windowd resource handle.
-@INPUT dword_t style: the dock style, it can be WD_DOCK_TOP, WD_DOCK_BOTTOM, WD_DOCK_LEFT, WD_DOCK_RIGHT, WD_DOCK_DYNA.
+@INPUT dword_t style: the dock style, it can be WS_DOCK_TOP, WS_DOCK_BOTTOM, WS_DOCK_LEFT, WS_DOCK_RIGHT, WS_DOCK_DYNA.
 @INPUT int cx: the dock width.
 @INPUT int cy: the dock height.
 @RETURN bool_t: return nonzero if added, return zero if exists.
@@ -87,7 +87,7 @@ XDC_API bool_t	widget_dock(res_win_t wt, dword_t style, int cx, int cy);
 /*
 @FUNCTION widget_undock: remove a dock from widget.
 @INPUT res_win_t wt: windowd resource handle.
-@INPUT dword_t style: the dock style, it can be WD_DOCK_TOP, WD_DOCK_BOTTOM, WD_DOCK_LEFT, WD_DOCK_RIGHT, WD_DOCK_DYNA.
+@INPUT dword_t style: the dock style, it can be WS_DOCK_TOP, WS_DOCK_BOTTOM, WS_DOCK_LEFT, WS_DOCK_RIGHT, WS_DOCK_DYNA.
 @RETURN bool_t: return nonzero if added, return zero if exists.
 */
 XDC_API void	widget_undock(res_win_t wt, dword_t style);
@@ -95,7 +95,7 @@ XDC_API void	widget_undock(res_win_t wt, dword_t style);
 /*
 @FUNCTION widget_get_dock_rect: get the dock rect.
 @INPUT res_win_t wt: windowd resource handle.
-@INPUT dword_t style: the dock style, it can be WD_DOCK_TOP, WD_DOCK_BOTTOM, WD_DOCK_LEFT, WD_DOCK_RIGHT, WD_DOCK_DYNA.
+@INPUT dword_t style: the dock style, it can be WS_DOCK_TOP, WS_DOCK_BOTTOM, WS_DOCK_LEFT, WS_DOCK_RIGHT, WS_DOCK_DYNA.
 @OUTPUT xrect_t* pxr: the rect struct.
 @RETURN void: none.
 */
@@ -218,6 +218,14 @@ XDC_API void	widget_get_canv_rect(res_win_t wt, canvbox_t* pbox);
 @RETURN void: none.
 */
 XDC_API void	widget_get_canv_size(res_win_t wt, xsize_t* pxs);
+
+/*
+@FUNCTION widget_reset_scroll: reset widget scroll.
+@INPUT res_win_t wt: windowd resource handle.
+@OUTPUT bool_t horz: zero for vert scroll, zero for horz scroll.
+@RETURN void: none.
+*/
+XDC_API	void	widget_reset_scroll(res_win_t wt, bool_t horz);
 
 /*
 @FUNCTION widget_reset_paging: reset the widget page face.

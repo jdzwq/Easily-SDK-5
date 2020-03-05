@@ -49,62 +49,62 @@ static int _docker_calc_hint(docker_t* ptd, const xpoint_t* pxp)
 
 	for (i = 0; i < 4; i++)
 	{
-		if (ptd->dock[i].style & WD_DOCK_LEFT)
+		if (ptd->dock[i].style & WS_DOCK_LEFT)
 		{
 			xr.x = xr_cli.x;
 			xr.w = ptd->dock[i].cx;
 			xr.y = xr_cli.y + top;
 			xr.h = xr_cli.h - top - bottom;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA) && pt_inside(pxp->x, pxp->y, xr.x + xr.w, xr.y, xr.x + xr.w + span, xr.y + xr.h))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA) && pt_inside(pxp->x, pxp->y, xr.x + xr.w, xr.y, xr.x + xr.w + span, xr.y + xr.h))
 				return i;
 
-			if (ptd->dock[i].style & WD_DOCK_DYNA)
+			if (ptd->dock[i].style & WS_DOCK_DYNA)
 				left += (ptd->dock[i].cx + span);
 			else
 				left += ptd->dock[i].cx;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_TOP)
+		else if (ptd->dock[i].style & WS_DOCK_TOP)
 		{
 			xr.x = xr_cli.x + left;
 			xr.w = xr_cli.w - left - right;
 			xr.y = xr_cli.y;
 			xr.h = ptd->dock[i].cy;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA) && pt_inside(pxp->x, pxp->y, xr.x, xr.y + xr.h, xr.x + xr.w, xr.y + xr.h + span))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA) && pt_inside(pxp->x, pxp->y, xr.x, xr.y + xr.h, xr.x + xr.w, xr.y + xr.h + span))
 				return i;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				top += (ptd->dock[i].cy + span);
 			else
 				top += ptd->dock[i].cy;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_RIGHT)
+		else if (ptd->dock[i].style & WS_DOCK_RIGHT)
 		{
 			xr.x = xr_cli.x + xr_cli.w - ptd->dock[i].cx;
 			xr.w = ptd->dock[i].cx;
 			xr.y = xr_cli.y + top;
 			xr.h = xr_cli.h - top - bottom;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA) && pt_inside(pxp->x, pxp->y, xr.x - span, xr.y, xr.x, xr.y + xr.h))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA) && pt_inside(pxp->x, pxp->y, xr.x - span, xr.y, xr.x, xr.y + xr.h))
 				return i;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				right += (ptd->dock[i].cx + span);
 			else
 				right += ptd->dock[i].cx;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_BOTTOM)
+		else if (ptd->dock[i].style & WS_DOCK_BOTTOM)
 		{
 			xr.x = xr_cli.x + left;
 			xr.w = xr_cli.w - left - right;
 			xr.y = xr_cli.y + xr_cli.h - ptd->dock[i].cy;
 			xr.h = ptd->dock[i].cy;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA)  && pt_inside(pxp->x, pxp->y, xr.x, xr.y - span, xr.x + xr.w, xr.y))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA)  && pt_inside(pxp->x, pxp->y, xr.x, xr.y - span, xr.x + xr.w, xr.y))
 				return i;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				bottom += (ptd->dock[i].cy + span);
 			else
 				bottom += ptd->dock[i].cy;
@@ -135,7 +135,7 @@ void _docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr)
 
 	for (i = 0; i < 4; i++)
 	{
-		if (ptd->dock[i].style & WD_DOCK_LEFT)
+		if (ptd->dock[i].style & WS_DOCK_LEFT)
 		{
 			xr.x = xr_cli.x;
 			xr.w = ptd->dock[i].cx;
@@ -148,12 +148,12 @@ void _docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr)
 				return;
 			}
 
-			if (ptd->dock[i].style & WD_DOCK_DYNA)
+			if (ptd->dock[i].style & WS_DOCK_DYNA)
 				left += (ptd->dock[i].cx + span);
 			else
 				left += ptd->dock[i].cx;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_TOP)
+		else if (ptd->dock[i].style & WS_DOCK_TOP)
 		{
 			xr.x = xr_cli.x + left;
 			xr.w = xr_cli.w - left - right;
@@ -166,12 +166,12 @@ void _docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr)
 				return;
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				top += (ptd->dock[i].cy + span);
 			else
 				top += ptd->dock[i].cy;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_RIGHT)
+		else if (ptd->dock[i].style & WS_DOCK_RIGHT)
 		{
 			xr.x = xr_cli.x + xr_cli.w - ptd->dock[i].cx;
 			xr.w = ptd->dock[i].cx;
@@ -184,12 +184,12 @@ void _docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr)
 				return;
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				right += (ptd->dock[i].cx + span);
 			else
 				right += ptd->dock[i].cx;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_BOTTOM)
+		else if (ptd->dock[i].style & WS_DOCK_BOTTOM)
 		{
 			xr.x = xr_cli.x + left;
 			xr.w = xr_cli.w - left - right;
@@ -202,7 +202,7 @@ void _docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr)
 				return;
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				bottom += (ptd->dock[i].cy + span);
 			else
 				bottom += ptd->dock[i].cy;
@@ -244,12 +244,12 @@ void hand_docker_lbutton_down(docker_t* ptd, const xpoint_t* pxp)
 
 		switch (ptd->dock[ptd->ind].style & 0x0000FFFF)
 		{
-		case WD_DOCK_LEFT:
-		case WD_DOCK_RIGHT:
+		case WS_DOCK_LEFT:
+		case WS_DOCK_RIGHT:
 			widget_set_cursor(ptd->widget, CURSOR_SIZEWE);
 			break;
-		case WD_DOCK_TOP:
-		case WD_DOCK_BOTTOM:
+		case WS_DOCK_TOP:
+		case WS_DOCK_BOTTOM:
 			widget_set_cursor(ptd->widget, CURSOR_SIZENS);
 			break;
 		}
@@ -270,16 +270,16 @@ void hand_docker_lbutton_up(docker_t* ptd, const xpoint_t* pxp)
 
 		switch (ptd->dock[ptd->ind].style & 0x0000FFFF)
 		{
-		case WD_DOCK_LEFT:
+		case WS_DOCK_LEFT:
 			ptd->dock[ptd->ind].cx += (pxp->x - ptd->x);
 			break;
-		case WD_DOCK_RIGHT:
+		case WS_DOCK_RIGHT:
 			ptd->dock[ptd->ind].cx -= (pxp->x - ptd->x);
 			break;
-		case WD_DOCK_TOP:
+		case WS_DOCK_TOP:
 			ptd->dock[ptd->ind].cy += (pxp->y - ptd->y);
 			break;
-		case WD_DOCK_BOTTOM:
+		case WS_DOCK_BOTTOM:
 			ptd->dock[ptd->ind].cy -= (pxp->y - ptd->y);
 			break;
 		}
@@ -301,7 +301,7 @@ void hand_docker_lbutton_up(docker_t* ptd, const xpoint_t* pxp)
 		ptd->y = pxp->y;
 		ptd->ind = -1;
 
-		widget_resize(ptd->widget);
+		widget_layout(ptd->widget);
 	}
 }
 
@@ -338,14 +338,14 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 	for (i = 0; i < 4; i++)
 	{
-		if (ptd->dock[i].style & WD_DOCK_LEFT)
+		if (ptd->dock[i].style & WS_DOCK_LEFT)
 		{
 			xr.x = xr_cli.x;
 			xr.w = ptd->dock[i].cx;
 			xr.y = xr_cli.y + top;
 			xr.h = xr_cli.h - top - bottom;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 			{
 				xr_bar.x = xr.x + xr.w;
 				xr_bar.w = span;
@@ -355,19 +355,19 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				left += (ptd->dock[i].cx + span);
 			else
 				left += ptd->dock[i].cx;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_TOP)
+		else if (ptd->dock[i].style & WS_DOCK_TOP)
 		{
 			xr.x = xr_cli.x + left;
 			xr.w = xr_cli.w - left - right;
 			xr.y = xr_cli.y;
 			xr.h = ptd->dock[i].cy;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 			{
 				xr_bar.x = xr.x;
 				xr_bar.w = xr.w;
@@ -377,19 +377,19 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				top += (ptd->dock[i].cy + span);
 			else
 				top += ptd->dock[i].cy;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_RIGHT)
+		else if (ptd->dock[i].style & WS_DOCK_RIGHT)
 		{
 			xr.x = xr_cli.x + xr_cli.w - ptd->dock[i].cx;
 			xr.w = ptd->dock[i].cx;
 			xr.y = xr_cli.y + top;
 			xr.h = xr_cli.h - top - bottom;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 			{
 				xr_bar.x = xr.x - span;
 				xr_bar.w = span;
@@ -399,19 +399,19 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				right += (ptd->dock[i].cx + span);
 			else
 				right += ptd->dock[i].cx;
 		}
-		else if (ptd->dock[i].style & WD_DOCK_BOTTOM)
+		else if (ptd->dock[i].style & WS_DOCK_BOTTOM)
 		{
 			xr.x = xr_cli.x + left;
 			xr.w = xr_cli.w - left - right;
 			xr.y = xr_cli.y + xr_cli.h - ptd->dock[i].cy;
 			xr.h = ptd->dock[i].cy;
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 			{
 				xr_bar.x = xr.x;
 				xr_bar.w = xr.w;
@@ -421,7 +421,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				gradient_rect_raw(rdc, &gi, &xr_bar);
 			}
 
-			if ((ptd->dock[i].style & WD_DOCK_DYNA))
+			if ((ptd->dock[i].style & WS_DOCK_DYNA))
 				bottom += (ptd->dock[i].cy + span);
 			else
 				bottom += ptd->dock[i].cy;

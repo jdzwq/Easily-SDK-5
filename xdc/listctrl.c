@@ -230,7 +230,7 @@ void noti_list_reset_check(res_win_t widget)
 	if (!count)
 		return;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 bool_t noti_list_item_changing(res_win_t widget)
@@ -249,7 +249,7 @@ bool_t noti_list_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -267,7 +267,7 @@ void noti_list_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_list_owner(widget, NC_LISTITEMCHANGED, ptd->list, ptd->item, NULL);
 }
@@ -297,7 +297,7 @@ void noti_list_item_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -329,7 +329,7 @@ void noti_list_item_check(res_win_t widget, link_t_ptr plk)
 	_listctrl_item_rect(widget, plk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_list_item_collapse(res_win_t widget)
@@ -449,7 +449,7 @@ void noti_list_begin_edit(res_win_t widget)
 	widget_set_owner(ptd->editor, widget);
 
 	widget_set_color_mode(ptd->editor, &ob);
-	widget_show(ptd->editor, WD_SHOW_NORMAL);
+	widget_show(ptd->editor, WS_SHOW_NORMAL);
 	widget_set_focus(ptd->editor);
 
 	text = get_list_item_title_ptr(ptd->item);
@@ -589,7 +589,7 @@ void hand_list_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 
 	noti_list_reset_editor(widget, 1);
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -650,7 +650,7 @@ void hand_list_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	plk = NULL;
 	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
 
-	if (nHint == LIST_HINT_ITEM && plk == ptd->item && !(dw & MS_WITH_CONTROL))
+	if (nHint == LIST_HINT_ITEM && plk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -852,7 +852,7 @@ void hand_list_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_list_owner(widget, NC_LISTRBCLK, ptd->list, ptd->item, (void*)pxp);
 }
 
-void hand_list_keydown(res_win_t widget, int nKey)
+void hand_list_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 
@@ -874,16 +874,16 @@ void hand_list_keydown(res_win_t widget, int nKey)
 		}
 		break;
 	case KEY_LEFT:
-		listctrl_tabskip(widget,WD_TAB_LEFT);
+		listctrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		listctrl_tabskip(widget,WD_TAB_RIGHT);
+		listctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_HOME:
-		listctrl_tabskip(widget,WD_TAB_HOME);
+		listctrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		listctrl_tabskip(widget,WD_TAB_END);
+		listctrl_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -1138,8 +1138,8 @@ void listctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_list_first_child_item(ptd->parent);
 		else
@@ -1148,8 +1148,8 @@ void listctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			listctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_list_last_child_item(ptd->parent);
 		else
@@ -1158,13 +1158,13 @@ void listctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			listctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_list_first_child_item(ptd->parent);
 
 		if (plk)
 			listctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_list_last_child_item(ptd->parent);
 
 		if (plk)
@@ -1195,7 +1195,7 @@ void listctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 	
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t listctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)

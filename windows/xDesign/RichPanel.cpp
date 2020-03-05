@@ -466,7 +466,7 @@ void RichPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 /***********************************************************************************************/
@@ -502,7 +502,7 @@ int RichPanel_OnCreate(res_win_t widget, void* data)
 	richctrl_set_lock(pdt->hRich, 0);
 
 	set_split_item_delta(ilkRich, pdt->hRich);
-	widget_show(pdt->hRich, WD_SHOW_NORMAL);
+	widget_show(pdt->hRich, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hProper = properctrl_create(_T("RichProper"), WD_STYLE_CONTROL, &xr, widget);
@@ -513,7 +513,7 @@ int RichPanel_OnCreate(res_win_t widget, void* data)
 	properctrl_attach(pdt->hProper, ptrProper);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	widget_attach_splitor(widget, ptrSplit);
 

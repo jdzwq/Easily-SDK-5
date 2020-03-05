@@ -195,7 +195,7 @@ int hand_tabledlg_create(res_win_t widget, void* data)
 	tablectrl_attach(tablectrl, ptd->table);
 	tablectrl_set_lock(tablectrl, 0);
 
-	widget_show(tablectrl, WD_SHOW_NORMAL);
+	widget_show(tablectrl, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -213,7 +213,7 @@ int hand_tabledlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_TABLEDLG_PUSHBOX_OK);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, TABLEDLG_PUSHBOX_OK, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	SETTABLEDLGDELTA(widget, ptd);
 
@@ -287,7 +287,7 @@ void hand_tabledlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_tabledlg_menu_command(res_win_t widget, int code, int cid, var_long data)

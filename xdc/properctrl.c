@@ -206,7 +206,7 @@ void noti_proper_end_size(res_win_t widget, int x, int y)
 
 	set_proper_item_span(ptd->proper, ew);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 bool_t noti_proper_entity_changing(res_win_t widget)
@@ -225,7 +225,7 @@ bool_t noti_proper_entity_changing(res_win_t widget)
 
 	ptd->entity = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -243,7 +243,7 @@ void noti_proper_entity_changed(res_win_t widget, link_t_ptr elk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_proper_owner(widget, NC_ENTITYCHANGED, ptd->proper, section_from_entity(ptd->entity), ptd->entity, NULL);
 }
@@ -273,7 +273,7 @@ void noti_proper_entity_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -307,7 +307,7 @@ void noti_proper_section_expand(res_win_t widget, link_t_ptr slk)
 	widget_get_client_rect(widget, &xr);
 
 	pt_inter_rect(&xr, &xr_sec);
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_proper_begin_edit(res_win_t widget)
@@ -355,7 +355,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
 		text = get_entity_value_ptr(ptd->entity);
@@ -374,7 +374,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
 		text = get_entity_value_ptr(ptd->entity);
@@ -393,7 +393,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
 		text = get_entity_value_ptr(ptd->entity);
@@ -412,7 +412,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
 		text = get_entity_value_ptr(ptd->entity);
@@ -435,7 +435,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
 		text = get_entity_value_ptr(ptd->entity);
@@ -455,7 +455,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 
 		text = get_entity_value_ptr(ptd->entity);
@@ -478,7 +478,7 @@ void noti_proper_begin_edit(res_win_t widget)
 
 		widget_set_xfont(ptd->editor, &xf);
 		widget_set_color_mode(ptd->editor, &ob);
-		widget_show(ptd->editor, WD_SHOW_NORMAL);
+		widget_show(ptd->editor, WS_SHOW_NORMAL);
 		widget_set_focus(ptd->editor);
 	}
 }
@@ -695,7 +695,7 @@ void hand_proper_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->proper)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -746,7 +746,7 @@ void hand_proper_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	slk = elk = NULL;
 	nHint = calc_proper_hint(&cb, &pt, ptd->proper, &slk, &elk);
 
-	if (nHint == PROPER_HINT_VERT_SPLIT && !(dw & MS_WITH_CONTROL))
+	if (nHint == PROPER_HINT_VERT_SPLIT && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -909,7 +909,7 @@ void hand_proper_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_proper_owner(widget, NC_PROPERRBCLK, ptd->proper, ((ptd->editor)? section_from_entity(ptd->entity) : NULL), ptd->entity, (void*)pxp);
 }
 
-void hand_proper_keydown(res_win_t widget, int nKey)
+void hand_proper_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 
@@ -925,28 +925,28 @@ void hand_proper_keydown(res_win_t widget, int nKey)
 		}
 		break;
 	case KEY_LEFT:
-		properctrl_tabskip(widget,WD_TAB_LEFT);
+		properctrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		properctrl_tabskip(widget,WD_TAB_RIGHT);
+		properctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_UP:
-		properctrl_tabskip(widget,WD_TAB_UP);
+		properctrl_tabskip(widget,TABORDER_UP);
 		break;
 	case KEY_DOWN:
-		properctrl_tabskip(widget,WD_TAB_DOWN);
+		properctrl_tabskip(widget,TABORDER_DOWN);
 		break;
 	case KEY_END:
-		properctrl_tabskip(widget,WD_TAB_END);
+		properctrl_tabskip(widget,TABORDER_END);
 		break;
 	case KEY_HOME:
-		properctrl_tabskip(widget,WD_TAB_HOME);
+		properctrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_PAGEUP:
-		properctrl_tabskip(widget,WD_TAB_PAGEUP);
+		properctrl_tabskip(widget,TABORDER_PAGEUP);
 		break;
 	case KEY_PAGEDOWN:
-		properctrl_tabskip(widget,WD_TAB_PAGEDOWN);
+		properctrl_tabskip(widget,TABORDER_PAGEDOWN);
 		break;
 	}
 }
@@ -960,7 +960,7 @@ void hand_proper_char(res_win_t widget, tchar_t nChar)
 
 	if (IS_VISIBLE_CHAR(nChar) && !widget_is_valid(ptd->editor))
 	{
-		hand_proper_keydown(widget, KEY_ENTER);
+		hand_proper_keydown(widget, 0, KEY_ENTER);
 	}
 
 	if (IS_VISIBLE_CHAR(nChar) && widget_is_valid(ptd->editor))
@@ -1116,7 +1116,7 @@ link_t_ptr properctrl_detach(res_win_t widget)
 	data = ptd->proper;
 	ptd->proper = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return data;
 }
@@ -1208,7 +1208,7 @@ void properctrl_redraw_entity(res_win_t widget, link_t_ptr elk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void properctrl_redraw_section(res_win_t widget, link_t_ptr slk)
@@ -1239,7 +1239,7 @@ void properctrl_redraw_section(res_win_t widget, link_t_ptr slk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t properctrl_set_focus_entity(res_win_t widget, link_t_ptr elk)
@@ -1304,8 +1304,8 @@ void properctrl_tabskip(res_win_t widget, int dir)
 
 	switch (dir)
 	{
-	case WD_TAB_DOWN:
-	case WD_TAB_RIGHT:
+	case TABORDER_DOWN:
+	case TABORDER_RIGHT:
 		if (ptd->entity)
 		{
 			slk = section_from_entity(ptd->entity);
@@ -1343,8 +1343,8 @@ void properctrl_tabskip(res_win_t widget, int dir)
 				properctrl_set_focus_entity(widget, elk);
 		}
 		break;
-	case WD_TAB_UP:
-	case WD_TAB_LEFT:
+	case TABORDER_UP:
+	case TABORDER_LEFT:
 		if (ptd->entity)
 		{
 			slk = section_from_entity(ptd->entity);

@@ -71,18 +71,18 @@ res_ctx_t _create_display_context(void)
 
 res_ctx_t _create_compatible_context(res_ctx_t rdc)
 {
-    X11_suface_t* ctx = (X11_suface_t*)rdc;
     XGCValues gv = {0};
     Window r;
     int x,y;
     unsigned int w,h,b,d;
+    X11_suface_t* ctx = NULL;
     
-    XGetGeometry(g_display, ctx->device, &r, &x, &y, &w, &h, &b, &d);
+    XGetGeometry(g_display, rdc->device, &r, &x, &y, &w, &h, &b, &d);
     
     ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
 
     ctx->device = XCreatePixmap (g_display, r, w, h, d);
-    ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
+    ctx->context = XCreateGC(g_display, rdc->device, 0, &gv);
     ctx->memo = 1;
     
     return ctx;
@@ -90,14 +90,13 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc)
 
 void _destroy_context(res_ctx_t rdc)
 {
-    X11_suface_t* ctx = (X11_suface_t*)rdc;
+    if(rdc->memo && rdc->device)
+        XFreePixmap(g_display, rdc->device);
     
-    if(ctx->memo)
-        XFreePixmap(g_display, ctx->device);
+    if(rdc->context)
+	    XFreeGC(g_display, rdc->context);
     
-	XFreeGC(g_display, ctx->context);
-    
-    free(ctx);
+    free(rdc);
 }
 
 void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
@@ -121,7 +120,7 @@ void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
 
 void _render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
 {
-    XCopyArea(g_display, src, dst, src, srcx, srcy, dstw, dsth, dstx, dsty);
+    XCopyArea(g_display, src->device, dst->device, src->context, srcx, srcy, dstw, dsth, dstx, dsty);
 }
 
 res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp)

@@ -285,7 +285,7 @@ void DiagramPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 void DiagramPanel_OnExec(res_win_t widget)
@@ -306,7 +306,7 @@ void DiagramPanel_OnExec(res_win_t widget)
 
 	widget_set_color_mode(dlg, &clr);
 
-	widget_show(dlg, WD_SHOW_NORMAL);
+	widget_show(dlg, WS_SHOW_NORMAL);
 
 	widget_do_modal(dlg);
 }
@@ -417,7 +417,7 @@ void DiagramPanel_OnCSSProper(res_win_t widget)
 
 	res_win_t hProperDlg = properdlg_create(_T("»æÖÆÑùÊ½"), ptrProper, g_hMain);
 
-	widget_show(hProperDlg, WD_SHOW_NORMAL);
+	widget_show(hProperDlg, WS_SHOW_NORMAL);
 
 	int nRet = widget_do_modal(hProperDlg);
 
@@ -447,35 +447,35 @@ void DiagramPanel_OnFontName(res_win_t widget, void* pv)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	fontname_menu(widget, IDC_DIAGRAMPANEL_FONTNAME, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontname_menu(widget, IDC_DIAGRAMPANEL_FONTNAME, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void DiagramPanel_OnFontSize(res_win_t widget, void* pv)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	fontsize_menu(widget, IDC_DIAGRAMPANEL_FONTSIZE, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontsize_menu(widget, IDC_DIAGRAMPANEL_FONTSIZE, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void DiagramPanel_OnTextColor(res_win_t widget, void* pv)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	color_menu(widget, IDC_DIAGRAMPANEL_FONTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_DIAGRAMPANEL_FONTCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void DiagramPanel_OnPaintColor(res_win_t widget, void* pv)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	color_menu(widget, IDC_DIAGRAMPANEL_PAINTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_DIAGRAMPANEL_PAINTCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void DiagramPanel_OnDrawColor(res_win_t widget, void* pv)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	color_menu(widget, IDC_DIAGRAMPANEL_DRAWCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_DIAGRAMPANEL_DRAWCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void DiagramPanel_OnTextNear(res_win_t widget)
@@ -1067,7 +1067,7 @@ void DiagramPanel_Diagram_OnRBClick(res_win_t widget, NOTICE_DIAGRAM* pnf)
 
 	widget_client_to_screen(pdt->hDiagram, &xp);
 
-	menubox_layout(hMenu, &xp, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &xp, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -1151,7 +1151,7 @@ int DiagramPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hDiagram, widget);
 
 	set_split_item_delta(ilkDiagram, pdt->hDiagram);
-	widget_show(pdt->hDiagram, WD_SHOW_NORMAL);
+	widget_show(pdt->hDiagram, WS_SHOW_NORMAL);
 
 	LINKPTR ptrDiagram = create_diagram_doc();
 	diagramctrl_attach(pdt->hDiagram, ptrDiagram);
@@ -1165,7 +1165,7 @@ int DiagramPanel_OnCreate(res_win_t widget, void* data)
 	properctrl_attach(pdt->hProper, ptrProper);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hTitle = titlectrl_create(_T("DiagramTitle"), WD_STYLE_CONTROL, &xr, widget);
@@ -1173,7 +1173,7 @@ int DiagramPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTitle, widget);
 
 	set_split_item_delta(ilkTitle, pdt->hTitle);
-	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitle, WS_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
 

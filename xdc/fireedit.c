@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
 {
 	if (subid != IDS_EDITBOX)
 		return 0;
@@ -96,9 +96,9 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	if (widget_is_valid(keybox))
 	{
 		if (show)
-			widget_show(keybox, WD_SHOW_NORMAL);
+			widget_show(keybox, WS_SHOW_NORMAL);
 		else
-			widget_show(keybox, WD_SHOW_HIDE);
+			widget_show(keybox, WS_SHOW_HIDE);
 	}*/
 
 	return 1;

@@ -371,7 +371,7 @@ void TopogPanel_Topog_OnRBClick(res_win_t widget, NOTICE_TOPOG* pnf)
 	pt.y = ppt->y;
 	widget_client_to_screen(pdt->hTopog, &pt);
 
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -610,7 +610,7 @@ void TopogPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 /***********************************************************************************************/
@@ -652,7 +652,7 @@ int TopogPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTopog, widget);
 
 	set_split_item_delta(ilkTopog, pdt->hTopog);
-	widget_show(pdt->hTopog, WD_SHOW_NORMAL);
+	widget_show(pdt->hTopog, WS_SHOW_NORMAL);
 
 	LINKPTR ptrTopog = create_topog_doc();
 	set_topog_design(ptrTopog, 1);
@@ -664,7 +664,7 @@ int TopogPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hProper, widget);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	LINKPTR ptrProper = create_proper_doc();
 	properctrl_attach(pdt->hProper, ptrProper);
@@ -675,7 +675,7 @@ int TopogPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTitle, widget);
 
 	set_split_item_delta(ilkTitle, pdt->hTitle);
-	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitle, WS_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
 

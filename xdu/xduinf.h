@@ -295,25 +295,20 @@ typedef void(*PF_WIDGET_WINDOW_TO_CLIENT)(res_win_t, xpoint_t*);
 typedef void(*PF_WIDGET_CENTER_WINDOW)(res_win_t, res_win_t);
 typedef void(*PF_WIDGET_SET_CURSOR)(res_win_t, int);
 typedef void(*PF_WIDGET_SET_CAPTURE)(res_win_t, bool_t);
-typedef void(*PF_WIDGET_SET_IMM)(res_win_t, bool_t);
-typedef bool_t(*PF_WIDGET_GET_IMM)(res_win_t);
 typedef void(*PF_WIDGET_SET_FOCUS)(res_win_t);
 typedef bool_t(*PF_WIDGET_KEY_STATE)(res_win_t, int);
 typedef bool_t(*PF_WIDGET_IS_VALID)(res_win_t);
 typedef bool_t(*PF_WIDGET_IS_CHILD)(res_win_t);
 typedef bool_t(*PF_WIDGET_IS_FOCUS)(res_win_t);
 typedef bool_t(*PF_WIDGET_IS_OWNC)(res_win_t);
-typedef void(*PF_WIDGET_POST_CHAR)(res_win_t, tchar_t);
-typedef void(*PF_WIDGET_POST_KEY)(res_win_t, int);
-typedef void(*PF_WIDGET_POST_QUIT)(res_win_t);
 typedef void(*PF_WIDGET_SIZE)(res_win_t, const xsize_t*);
 typedef void(*PF_WIDGET_MOVE)(res_win_t, const xpoint_t*);
 typedef void(*PF_WIDGET_TAKE)(res_win_t, int);
 typedef void(*PF_WIDGET_SHOW)(res_win_t, dword_t);
 typedef void(*PF_WIDGET_UPDATE)(res_win_t);
-typedef void(*PF_WIDGET_RESIZE)(res_win_t);
+typedef void(*PF_WIDGET_LAYOUT)(res_win_t);
 typedef void(*PF_WIDGET_PAINT)(res_win_t);
-typedef void(*PF_WIDGET_REDRAW)(res_win_t, const xrect_t*, bool_t);
+typedef void(*PF_WIDGET_ERASE)(res_win_t, const xrect_t*);
 typedef void(*PF_WIDGET_ENABLE)(res_win_t, bool_t);
 typedef void(*PF_WIDGET_CREATE_CARET)(res_win_t, int, int);
 typedef void(*PF_WIDGET_DESTROY_CARET)(res_win_t);
@@ -335,14 +330,17 @@ typedef bool_t(*PF_WIDGET_SET_SUBPROC_DELTA)(res_win_t, uid_t, var_long);
 typedef var_long (*PF_WIDGET_GET_SUBPROC_DELTA)(res_win_t, uid_t);
 typedef bool_t(*PF_WIDGET_HAS_SUBPROC)(res_win_t);
 
-typedef void(*PF_WIDGET_POST_MESSAGE)(res_win_t, int, var_long, var_long);
-typedef int(*PF_WIDGET_SEND_MESSAGE)(res_win_t, int, var_long, var_long);
+typedef void(*PF_WIDGET_POST_CHAR)(res_win_t, tchar_t);
+typedef void(*PF_WIDGET_POST_KEY)(res_win_t, int);
+typedef void(*PF_WIDGET_POST_NOTICE)(res_win_t, NOTICE*);
+typedef int(*PF_WIDGET_SEND_NOTICE)(res_win_t, NOTICE*);
 typedef void(*PF_WIDGET_POST_COMMAND)(res_win_t, int, uid_t, var_long);
 typedef int(*PF_WIDGET_SEND_COMMAND)(res_win_t, int, uid_t, var_long);
 
 typedef var_long(*PF_WIDGET_SET_TIMER)(res_win_t, int);
 typedef void(*PF_WIDGET_KILL_TIMER)(res_win_t, var_long);
 
+typedef void(*PF_WIDGET_SCROLL)(res_win_t, bool_t, int);
 typedef void(*PF_WIDGET_GET_SCROLLINFO)(res_win_t, bool_t, scroll_t*);
 typedef void(*PF_WIDGET_SET_SCROLLINFO)(res_win_t, bool_t, const scroll_t*);
 typedef bool_t(*PF_WIDGET_HAS_STRUCT)(res_win_t);
@@ -375,6 +373,7 @@ typedef int(*PF_WIDGET_DO_NORMAL)(res_win_t);
 typedef int(*PF_WIDGET_DO_MODAL)(res_win_t);
 typedef void(*PF_WIDGET_DO_TRACE)(res_win_t);
 
+typedef void(*PF_MESSAGE_QUIT)(int);
 typedef void(*PF_MESSAGE_FETCH)(msg_t*, res_win_t);
 typedef bool_t(*PF_MESSAGE_PEEK)(msg_t*);
 typedef bool_t(*PF_MESSAGE_TRANSLATE)(const msg_t*);
@@ -439,25 +438,20 @@ typedef struct _if_widget_t{
 	PF_WIDGET_CENTER_WINDOW		pf_widget_center_window;
 	PF_WIDGET_SET_CURSOR		pf_widget_set_cursor;
 	PF_WIDGET_SET_CAPTURE		pf_widget_set_capture;
-	PF_WIDGET_SET_IMM			pf_widget_set_imm;
-	PF_WIDGET_GET_IMM			pf_widget_get_imm;
 	PF_WIDGET_SET_FOCUS			pf_widget_set_focus;
 	PF_WIDGET_KEY_STATE			pf_widget_key_state;
 	PF_WIDGET_IS_VALID			pf_widget_is_valid;
 	PF_WIDGET_IS_CHILD			pf_widget_is_child;
 	PF_WIDGET_IS_FOCUS			pf_widget_is_focus;
 	PF_WIDGET_IS_OWNC			pf_widget_is_ownc;
-	PF_WIDGET_POST_CHAR			pf_widget_post_char;
-	PF_WIDGET_POST_KEY			pf_widget_post_key;
-	PF_WIDGET_POST_QUIT			pf_widget_post_quit;
 	PF_WIDGET_SIZE				pf_widget_size;
 	PF_WIDGET_MOVE				pf_widget_move;
 	PF_WIDGET_TAKE				pf_widget_take;
 	PF_WIDGET_SHOW				pf_widget_show;
 	PF_WIDGET_UPDATE			pf_widget_update;
-	PF_WIDGET_RESIZE			pf_widget_resize;
+	PF_WIDGET_LAYOUT			pf_widget_layout;
 	PF_WIDGET_PAINT				pf_widget_paint;
-	PF_WIDGET_REDRAW			pf_widget_redraw;
+	PF_WIDGET_ERASE				pf_widget_erase;
 	PF_WIDGET_ENABLE			pf_widget_enable;
 	PF_WIDGET_CREATE_CARET		pf_widget_create_caret;
 	PF_WIDGET_DESTROY_CARET		pf_widget_destroy_caret;
@@ -480,11 +474,14 @@ typedef struct _if_widget_t{
 	PF_WIDGET_GET_SUBPROC_DELTA		pf_widget_get_subproc_delta;
 	PF_WIDGET_HAS_SUBPROC		pf_widget_has_subproc;
 
-	PF_WIDGET_POST_MESSAGE		pf_widget_post_message;
-	PF_WIDGET_SEND_MESSAGE		pf_widget_send_message;
+	PF_WIDGET_POST_CHAR			pf_widget_post_char;
+	PF_WIDGET_POST_KEY			pf_widget_post_key;
+	PF_WIDGET_POST_NOTICE		pf_widget_post_notice;
+	PF_WIDGET_SEND_NOTICE		pf_widget_send_notice;
 	PF_WIDGET_POST_COMMAND		pf_widget_post_command;
 	PF_WIDGET_SEND_COMMAND		pf_widget_send_command;
 
+	PF_WIDGET_SCROLL			pf_widget_scroll;
 	PF_WIDGET_GET_SCROLLINFO	pf_widget_get_scroll_info;
 	PF_WIDGET_SET_SCROLLINFO	pf_widget_set_scroll_info;
 
@@ -518,6 +515,7 @@ typedef struct _if_widget_t{
 	PF_WIDGET_DO_MODAL			pf_widget_do_modal;
 	PF_WIDGET_DO_TRACE			pf_widget_do_trace;
 
+	PF_MESSAGE_QUIT				pf_message_quit;
 	PF_MESSAGE_FETCH			pf_message_fetch;
     PF_MESSAGE_PEEK         	pf_message_peek;
 	PF_MESSAGE_TRANSLATE		pf_message_translate;

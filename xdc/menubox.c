@@ -111,7 +111,7 @@ void noti_menu_item_changing(res_win_t widget)
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
 	ptd->item = NULL;
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void noti_menu_item_changed(res_win_t widget, link_t_ptr plk)
@@ -126,7 +126,7 @@ void noti_menu_item_changed(res_win_t widget, link_t_ptr plk)
 	_menubox_item_rect(widget, ptd->item, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 /**************************************************************************************/
@@ -436,8 +436,8 @@ void menubox_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_menu_next_item(ptd->menu, LINK_FIRST);
 		else
@@ -446,8 +446,8 @@ void menubox_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			menubox_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_menu_prev_item(ptd->menu, LINK_LAST);
 		else
@@ -456,13 +456,13 @@ void menubox_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			menubox_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_menu_next_item(ptd->menu, LINK_FIRST);
 
 		if (plk)
 			menubox_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_menu_prev_item(ptd->menu, LINK_LAST);
 
 		if (plk)
@@ -572,25 +572,25 @@ void menubox_layout(res_win_t widget, const xpoint_t* ppt, int lay)
 
 	switch (lay)
 	{
-	case WD_LAYOUT_LEFTBOTTOM:
+	case WS_LAYOUT_LEFTBOTTOM:
 		xr.x = ppt->x - xs.cx;
 		xr.y = ppt->y;
 		xr.w = xs.cx;
 		xr.h = xs.cy;
 		break;
-	case WD_LAYOUT_RIGHTBOTTOM:
+	case WS_LAYOUT_RIGHTBOTTOM:
 		xr.x = ppt->x;
 		xr.y = ppt->y;
 		xr.w = xs.cx;
 		xr.h = xs.cy;
 		break;
-	case WD_LAYOUT_LEFTTOP:
+	case WS_LAYOUT_LEFTTOP:
 		xr.x = ppt->x - xs.cx;
 		xr.y = ppt->y - xs.cy;
 		xr.w = xs.cx;
 		xr.h = xs.cy;
 		break;
-	case WD_LAYOUT_RIGHTTOP:
+	case WS_LAYOUT_RIGHTTOP:
 		xr.x = ppt->x;
 		xr.y = ppt->y - xs.cy;
 		xr.w = xs.cx;
@@ -602,5 +602,5 @@ void menubox_layout(res_win_t widget, const xpoint_t* ppt, int lay)
 	widget_move(widget, RECTPOINT(&xr));
 	widget_update(widget);
 
-	widget_show(widget, WD_SHOW_NORMAL);
+	widget_show(widget, WS_SHOW_NORMAL);
 }

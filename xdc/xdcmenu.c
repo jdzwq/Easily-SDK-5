@@ -76,7 +76,7 @@ void textor_menu(res_win_t widget, const xpoint_t* ppt, int lay)
 
 	menubox_layout(editmenu, ppt, lay);
 
-	widget_show(editmenu, WD_SHOW_NORMAL);
+	widget_show(editmenu, WS_SHOW_NORMAL);
 
 	widget_do_trace(editmenu);
 
@@ -127,7 +127,7 @@ void fontname_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	menubox_layout(menu, ppt, lay);
 
-	widget_show(menu, WD_SHOW_NORMAL);
+	widget_show(menu, WS_SHOW_NORMAL);
 
 	widget_do_trace(menu);
 
@@ -198,7 +198,7 @@ void fontsize_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	menubox_layout(menu, ppt, lay);
 
-	widget_show(menu, WD_SHOW_NORMAL);
+	widget_show(menu, WS_SHOW_NORMAL);
 
 	widget_do_trace(menu);
 
@@ -269,7 +269,7 @@ void fontstyle_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	menubox_layout(menu, ppt, lay);
 
-	widget_show(menu, WD_SHOW_NORMAL);
+	widget_show(menu, WS_SHOW_NORMAL);
 
 	widget_do_trace(menu);
 
@@ -340,7 +340,7 @@ void fontweight_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay
 
 	menubox_layout(menu, ppt, lay);
 
-	widget_show(menu, WD_SHOW_NORMAL);
+	widget_show(menu, WS_SHOW_NORMAL);
 
 	widget_do_trace(menu);
 
@@ -411,7 +411,7 @@ void color_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	menubox_layout(menu, ppt, lay);
 
-	widget_show(menu, WD_SHOW_NORMAL);
+	widget_show(menu, WS_SHOW_NORMAL);
 
 	widget_do_trace(menu);
 
@@ -486,7 +486,7 @@ void shape_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay)
 
 	menubox_layout(menu, ppt, lay);
 
-	widget_show(menu, WD_SHOW_NORMAL);
+	widget_show(menu, WS_SHOW_NORMAL);
 
 	widget_do_trace(menu);
 
@@ -536,13 +536,13 @@ void track_popup_menu(res_win_t widget, dword_t idc, link_t_ptr menu, const xpoi
 	xpoint_t pt;
 	pt.x = ppt->x;
 	pt.y = ppt->y;
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
 
 	clr_mod_t clr;
 	widget_get_color_mode(widget, &clr);
 	widget_set_color_mode(hMenu, &clr);
 	widget_update(hMenu);
-	widget_show(hMenu, WD_SHOW_NORMAL);
+	widget_show(hMenu, WS_SHOW_NORMAL);
 
 	widget_do_trace(hMenu);
 }

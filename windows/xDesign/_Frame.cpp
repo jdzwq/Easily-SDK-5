@@ -450,7 +450,7 @@ void MainFrame_CreateFile(res_win_t widget)
 
 	res_win_t hNewFileDlg = listdlg_create(_T("选择文档类型"), ptrList, widget);
 	
-	widget_show(hNewFileDlg, WD_SHOW_NORMAL);
+	widget_show(hNewFileDlg, WS_SHOW_NORMAL);
 
 	int ret = (int)widget_do_modal(hNewFileDlg);
 
@@ -1031,7 +1031,7 @@ void MainFrame_SetDataSource(res_win_t widget)
 
 	res_win_t hTableDlg = tabledlg_create(_T("设置数据服务"), ptr_str, widget);
 
-	widget_show(hTableDlg, WD_SHOW_NORMAL);
+	widget_show(hTableDlg, WS_SHOW_NORMAL);
 
 	int nRet = (int)widget_do_modal(hTableDlg);
 	if (!nRet)
@@ -1082,7 +1082,7 @@ void MainFrame_SetDocServer(res_win_t widget)
 
 	res_win_t hTableDlg = tabledlg_create(_T("设置文档服务"), ptr_str, widget);
 
-	widget_show(hTableDlg, WD_SHOW_NORMAL);
+	widget_show(hTableDlg, WS_SHOW_NORMAL);
 
 	int nRet = (int)widget_do_modal(hTableDlg);
 	if (!nRet)
@@ -1184,7 +1184,7 @@ void MainFrame_TitleBar_OnItemChanging(res_win_t widget, NOTICE_TITLE* pnt)
 
 	if (widget_is_valid(hPanel))
 	{
-		widget_show(hPanel, WD_SHOW_HIDE);
+		widget_show(hPanel, WS_SHOW_HIDE);
 
 		LINKPTR ptr_obj = treectrl_fetch(pdt->hObjBar);
 		clear_tree_doc(ptr_obj);
@@ -1205,7 +1205,7 @@ void MainFrame_TitleBar_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 
 		widget_set_color_mode(hPanel, &clr);
 
-		widget_show(hPanel, WD_SHOW_NORMAL);
+		widget_show(hPanel, WS_SHOW_NORMAL);
 
 		widget_post_command(widget, 0, IDA_OBJECT_FRESH, NULL);
 	}
@@ -1293,7 +1293,7 @@ void MainFrame_ResBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	pt.y = ppt->y;
 	widget_client_to_screen(pdt->hResBar, &pt);
 
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -1382,7 +1382,7 @@ void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	pt.y = ppt->y;
 	widget_client_to_screen(pdt->hObjBar, &pt);
 
-	menubox_layout(hMenu, &pt, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &pt, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -1395,14 +1395,14 @@ void _MainFrame_CalcToolBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	
-	widget_get_dock_rect(widget, WD_DOCK_TOP, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_TOP, pxr);
 }
 
 void _MainFrame_CalcStatusBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widget_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_BOTTOM, pxr);
 }
 
 void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
@@ -1414,7 +1414,7 @@ void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1427,7 +1427,7 @@ void _MainFrame_CalcObjBar(res_win_t widget, xrect_t* pxr)
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
 	pxr->h -= xs.cy;
 }
 
@@ -1440,7 +1440,7 @@ void _MainFrame_CalcCateBar(res_win_t widget, xrect_t* pxr)
 	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
-	widget_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
 	pxr->y = pxr->y + pxr->h - xs.cy;
 	pxr->h = xs.cy;
 }
@@ -1595,7 +1595,7 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	set_tool_item_icon(ilk, GDI_ICON_NEXT);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
-	widget_show(pdt->hToolBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hToolBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateTitleBar(res_win_t widget)
@@ -1616,7 +1616,7 @@ void _MainFrame_CreateTitleBar(res_win_t widget)
 
 	titlectrl_attach(pdt->hTitleBar, ptrTitle);
 
-	widget_show(pdt->hTitleBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitleBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateResBar(res_win_t widget)
@@ -1638,7 +1638,7 @@ void _MainFrame_CreateResBar(res_win_t widget)
 	treectrl_attach(pdt->hResBar, ptrTree);
 	treectrl_set_lock(pdt->hResBar, 0);
 
-	//widget_show(pdt->hResBar, WD_SHOW_NORMAL);
+	//widget_show(pdt->hResBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateObjBar(res_win_t widget)
@@ -1658,7 +1658,7 @@ void _MainFrame_CreateObjBar(res_win_t widget)
 	treectrl_attach(pdt->hObjBar, ptrTree);
 	treectrl_set_lock(pdt->hObjBar, 1);
 
-	//widget_show(pdt->hObjBar, WD_SHOW_NORMAL);
+	//widget_show(pdt->hObjBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateCateBar(res_win_t widget)
@@ -1694,7 +1694,7 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 
 	titlectrl_set_focus_item(pdt->hCateBar, get_title_next_item(ptrTitle, LINK_FIRST));
 
-	widget_show(pdt->hCateBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hCateBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateStatusBar(res_win_t widget)
@@ -1722,14 +1722,14 @@ void _MainFrame_CreateStatusBar(res_win_t widget)
 
 	statusctrl_attach(pdt->hStatusBar, ptrStatus);
 
-	widget_show(pdt->hStatusBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hStatusBar, WS_SHOW_NORMAL);
 
 	ilk = get_status_item(ptrStatus, _T("navibox"));
 	statusctrl_get_item_rect(pdt->hStatusBar, ilk, &xr);
 	
 	pdt->hNaviBox = navibox_create(pdt->hStatusBar, WD_STYLE_CONTROL, &xr);
 	widget_set_owner(pdt->hNaviBox, pdt->hStatusBar);
-	widget_show(pdt->hNaviBox, WD_SHOW_NORMAL);
+	widget_show(pdt->hNaviBox, WS_SHOW_NORMAL);
 }
 
 res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const tchar_t* fpath)
@@ -2013,17 +2013,17 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_TOP, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_TOP, 0, xs.cy);
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.cy);
 
 	xs.fx = MAINFRAME_TREEBAR_WIDTH;
 	xs.fy = 0;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
+	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, (var_long)pdt);
@@ -2222,7 +2222,7 @@ void MainFrame_OnSysColor(res_win_t widget, const xpoint_t* ppt)
 
 	widget_client_to_screen(widget, &xp);
 
-	menubox_layout(hMenu, &xp, WD_LAYOUT_RIGHTBOTTOM);
+	menubox_layout(hMenu, &xp, WS_LAYOUT_RIGHTBOTTOM);
 
 	widget_do_trace(hMenu);
 
@@ -2324,21 +2324,21 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 		case NC_TITLEITEMCHANGING:
 			if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_RESOURCE, -1, 0) == 0)
 			{
-				widget_show(pdt->hResBar, WD_SHOW_HIDE);
+				widget_show(pdt->hResBar, WS_SHOW_HIDE);
 			}
 			else if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_OBJECT, -1, 0) == 0)
 			{
-				widget_show(pdt->hObjBar, WD_SHOW_HIDE);
+				widget_show(pdt->hObjBar, WS_SHOW_HIDE);
 			}
 			break;
 		case NC_TITLEITEMCHANGED:
 			if(compare_text(get_title_item_name_ptr(pnt->item),-1,MAINFRAME_TREE_RESOURCE,-1,0) == 0)
 			{
-				widget_show(pdt->hResBar, WD_SHOW_NORMAL);
+				widget_show(pdt->hResBar, WS_SHOW_NORMAL);
 			}
 			else if (compare_text(get_title_item_name_ptr(pnt->item), -1, MAINFRAME_TREE_OBJECT, -1, 0) == 0)
 			{
-				widget_show(pdt->hObjBar, WD_SHOW_NORMAL);
+				widget_show(pdt->hObjBar, WS_SHOW_NORMAL);
 				widget_post_command(widget, 0, IDA_OBJECT_FRESH, NULL);
 			}
 			break;
@@ -2408,7 +2408,7 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 		plk = get_title_next_item(ptrTitle, plk);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void MainFrame_OnMove(res_win_t widget, const xpoint_t* ppt)
@@ -2499,7 +2499,7 @@ res_win_t MainFrame_Create(const tchar_t* mname)
 
 	widget_update(widget);
 
-	widget_show(widget, WD_SHOW_NORMAL);
+	widget_show(widget, WS_SHOW_NORMAL);
 
 	return widget;
 }

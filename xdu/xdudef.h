@@ -153,6 +153,11 @@ LICENSE.GPL3 for more details.
 /*key button state*/
 #define KS_WITH_CONTROL		0x0008
 #define KS_WITH_SHIFT		0x0004
+#define KS_WITH_ALT			0x0020
+
+/*mouse track mode*/
+#define MS_TRACK_HOVER		0x00000001
+#define	MS_TRACK_LEAVE		0x00000002
 
 /*widget size mode*/
 #define WS_SIZE_RESTORE		0

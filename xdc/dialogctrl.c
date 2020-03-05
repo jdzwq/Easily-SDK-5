@@ -394,7 +394,7 @@ void noti_dialog_reset_select(res_win_t widget)
 
 	if (count)
 	{
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -417,7 +417,7 @@ void noti_dialog_item_selected(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t noti_dialog_item_changing(res_win_t widget)
@@ -436,7 +436,7 @@ bool_t noti_dialog_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return (bool_t)1;
 }
@@ -455,7 +455,7 @@ void noti_dialog_item_changed(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_dialog_owner(widget, NC_DIALOGITEMCHANGED, ptd->dialog, ilk, NULL);
 }
@@ -480,7 +480,7 @@ void noti_dialog_item_leave(res_win_t widget)
 
 	ptd->hover = NULL;
 
-	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+	widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 }
 
 void noti_dialog_item_hover(res_win_t widget, int x, int y)
@@ -564,7 +564,7 @@ void noti_dialog_item_drop(res_win_t widget, int x, int y)
 	set_dialog_item_x(ptd->item, pt.fx);
 	set_dialog_item_y(ptd->item, pt.fy);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	pt.x = x;
 	pt.y = y;
@@ -645,7 +645,7 @@ void noti_dialog_item_sized(res_win_t widget, int x, int y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	fw = get_dialog_item_width(ptd->item);
 	fh = get_dialog_item_height(ptd->item);
@@ -682,7 +682,7 @@ void noti_dialog_item_sized(res_win_t widget, int x, int y)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	_dialogctrl_item_rect(widget, ptd->item, &xr);
 
@@ -761,7 +761,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	{
 		ptd->cur_x = pxp->x;
 		ptd->cur_y = pxp->y;
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 		return;
 	}
 
@@ -772,7 +772,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	ilk = NULL;
 	nHint = calc_dialog_hint(ptd->dialog, &pt, &ilk);
 
-	if (nHint == DIALOG_HINT_HORZ_SPLIT && ilk == ptd->item && !(dw & MS_WITH_CONTROL))
+	if (nHint == DIALOG_HINT_HORZ_SPLIT && ilk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -782,7 +782,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget, CURSOR_SIZENS);
 	}
-	else if (nHint == DIALOG_HINT_VERT_SPLIT && ilk == ptd->item && !(dw & MS_WITH_CONTROL))
+	else if (nHint == DIALOG_HINT_VERT_SPLIT && ilk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -792,7 +792,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget, CURSOR_SIZEWE);
 	}
-	else if (nHint == DIALOG_HINT_CROSS_SPLIT && ilk == ptd->item && !(dw & MS_WITH_CONTROL))
+	else if (nHint == DIALOG_HINT_CROSS_SPLIT && ilk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -802,7 +802,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		else
 			widget_set_cursor(widget, CURSOR_SIZEALL);
 	}
-	else if (nHint == DIALOG_HINT_ITEM && ilk == ptd->item && !(dw & MS_WITH_CONTROL))
+	else if (nHint == DIALOG_HINT_ITEM && ilk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -812,10 +812,7 @@ void hand_dialog_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	}
 	else if (nHint == DIALOG_HINT_NONE)
 	{
-		if (ptd->opera == WD_OPERA_CONTROL)
-			widget_set_cursor(widget, CURSOR_IBEAM);
-		else
-			widget_set_cursor(widget, CURSOR_ARROW);
+		widget_set_cursor(widget, CURSOR_ARROW);
 	}
 
 	if (widget_is_hotvoer(widget))
@@ -888,7 +885,7 @@ void hand_dialog_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	switch (nHint)
 	{
 	case DIALOG_HINT_ITEM:
-		if (ptd->opera == WD_OPERA_CONTROL || widget_key_state(widget, KEY_CONTROL))
+		if (widget_key_state(widget, KEY_CONTROL))
 		{
 			noti_dialog_item_selected(widget, ilk);
 		}
@@ -974,11 +971,10 @@ void hand_dialog_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_dialog_owner(widget, NC_DIALOGRBCLK, ptd->dialog, ptd->item, (void*)pxp);
 }
 
-void hand_dialog_keydown(res_win_t widget, int nKey)
+void hand_dialog_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	float x, y, w, h, m;
-	bool_t ks;
 	link_t_ptr ilk;
 
 	if (!ptd->dialog)
@@ -1049,7 +1045,7 @@ void hand_dialog_keydown(res_win_t widget, int nKey)
 			ilk = get_dialog_next_item(ptd->dialog, ilk);
 		}
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 
 		if (ks)
 			noti_dialog_owner(widget, NC_DIALOGITEMSIZED, ptd->dialog, ptd->item, NULL);
@@ -1281,7 +1277,7 @@ link_t_ptr dialogctrl_detach(res_win_t widget)
 	ptd->dialog = NULL;
 	ptd->item = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return data;
 }
@@ -1351,7 +1347,7 @@ void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 	_dialogctrl_item_rect(widget, ilk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void dialogctrl_tabskip(res_win_t widget, int nSkip)
@@ -1366,24 +1362,24 @@ void dialogctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (ptd->item == NULL)
 			ilk = get_dialog_prev_item(ptd->dialog, LINK_LAST);
 		else
 			ilk = get_dialog_prev_item(ptd->dialog, ptd->item);
 		break;
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (ptd->item == NULL)
 			ilk = get_dialog_next_item(ptd->dialog, LINK_FIRST);
 		else
 			ilk = get_dialog_next_item(ptd->dialog, ptd->item);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		ilk = get_dialog_next_item(ptd->dialog, LINK_FIRST);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		ilk = get_dialog_prev_item(ptd->dialog, LINK_LAST);
 		break;
 	}

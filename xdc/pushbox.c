@@ -99,7 +99,7 @@ void hand_pushbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	if (!(ws & WD_PUSHBOX_CHECK))
 	{
 		ptd->b_check = 1;
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -127,7 +127,7 @@ void hand_pushbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		ptd->b_check = 0;
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	widget_post_command(widget_get_owner(widget), ptd->b_check, widget_get_user_id(widget), (var_long)widget);
 }
@@ -138,7 +138,7 @@ void hand_pushbox_size(res_win_t widget, int code, const xsize_t* prs)
 	
 	_pushbox_reset_page(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_pushbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -352,7 +352,7 @@ void pushbox_set_text(res_win_t widget, const tchar_t* text, int len)
 	ptd->sz_text = xsalloc(len + 1);
 	xsncpy(ptd->sz_text, text, len);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void pushbox_popup_size(res_win_t widget, xsize_t* pxs)

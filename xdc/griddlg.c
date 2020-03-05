@@ -102,7 +102,7 @@ int hand_griddlg_create(res_win_t widget, void* data)
 	gridctrl_attach(gridctrl, ptd->grid);
 	gridctrl_set_lock(gridctrl, 1);
 
-	widget_show(gridctrl, WD_SHOW_NORMAL);
+	widget_show(gridctrl, WS_SHOW_NORMAL);
 
 	xs.fx = GRIDDLG_EDITBOX_WIDTH;
 	xs.fy = GRIDDLG_BUTTON_HEIGHT;
@@ -123,7 +123,7 @@ int hand_griddlg_create(res_win_t widget, void* data)
 	editbox = editbox_create(widget, WD_STYLE_CONTROL | WD_STYLE_EDITOR, &xr);
 	widget_set_user_id(editbox, IDC_GRIDDLG_EDITBOX);
 	widget_set_owner(editbox, widget);
-	widget_show(editbox, WD_SHOW_NORMAL);
+	widget_show(editbox, WS_SHOW_NORMAL);
 
 	xs.fx = GRIDDLG_BUTTON_WIDTH;
 	xs.fy = GRIDDLG_BUTTON_HEIGHT;
@@ -145,7 +145,7 @@ int hand_griddlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_GRIDDLG_PUSHBOX_OK);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, GRIDDLG_PUSHBOX_OK, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	SETGRIDDLGDELTA(widget, ptd);
 
@@ -250,7 +250,7 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_griddlg_erase(res_win_t widget, res_ctx_t dc)

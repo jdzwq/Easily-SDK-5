@@ -268,7 +268,7 @@ void hand_tagctrl_kill_focus(res_win_t widget, res_win_t wt)
 	}
 }
 
-void hand_tagctrl_keydown(res_win_t widget, int key)
+void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
@@ -504,7 +504,7 @@ void hand_tagctrl_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	xp.y = pxp->y;
 	widget_client_to_screen(widget, &xp);
 
-	textor_menu(widget, &xp, WD_LAYOUT_LEFTBOTTOM);
+	textor_menu(widget, &xp, WS_LAYOUT_LEFTBOTTOM);
 }
 
 void hand_tagctrl_mousemove(res_win_t widget, dword_t mk, const xpoint_t* ppt)
@@ -559,7 +559,7 @@ void hand_tagctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->textor.data)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;

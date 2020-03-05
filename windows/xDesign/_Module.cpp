@@ -102,7 +102,7 @@ INT ShowMsg(dword_t mid, const tchar_t* text)
 {
 	res_win_t hMsg = msgdlg_create(text, mid, g_hMain);
 
-	widget_show(hMsg, WD_SHOW_NORMAL);
+	widget_show(hMsg, WS_SHOW_NORMAL);
 	widget_set_focus(hMsg);
 
 	return widget_do_modal(hMsg);
@@ -114,7 +114,7 @@ INT DoInput(const tchar_t* title, tchar_t* buf, int max)
 
 	res_win_t hInput = inputdlg_create(title, buf, max, g_hMain);
 
-	widget_show(hInput, WD_SHOW_NORMAL);
+	widget_show(hInput, WS_SHOW_NORMAL);
 
 	return (INT)widget_do_modal(hInput);
 }

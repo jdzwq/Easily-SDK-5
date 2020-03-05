@@ -121,7 +121,7 @@ void wordsbox_on_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
@@ -135,7 +135,7 @@ void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
 
 	_wordsbox_item_rect(widget, ptd->item, &xr);
 	
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_wordsbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -177,7 +177,7 @@ void hand_words_destroy(res_win_t widget)
 	SETWORDSDELTA(widget, 0);
 }
 
-void hand_words_keydown(res_win_t widget, int key)
+void hand_words_keydown(res_win_t widget, dword_t ks, int key)
 {
 	words_delta_t* ptd = GETWORDSDELTA(widget);
 
@@ -187,28 +187,28 @@ void hand_words_keydown(res_win_t widget, int key)
 	switch (key)
 	{
 	case KEY_LEFT:
-		wordsbox_tabskip(widget,WD_TAB_LEFT);
+		wordsbox_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		wordsbox_tabskip(widget,WD_TAB_RIGHT);
+		wordsbox_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_UP:
-		wordsbox_tabskip(widget,WD_TAB_UP);
+		wordsbox_tabskip(widget,TABORDER_UP);
 		break;
 	case KEY_DOWN:
-		wordsbox_tabskip(widget,WD_TAB_DOWN);
+		wordsbox_tabskip(widget,TABORDER_DOWN);
 		break;
 	case KEY_HOME:
-		wordsbox_tabskip(widget,WD_TAB_HOME);
+		wordsbox_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		wordsbox_tabskip(widget,WD_TAB_END);
+		wordsbox_tabskip(widget,TABORDER_END);
 		break;
 	case KEY_PAGEUP:
-		wordsbox_tabskip(widget,WD_TAB_PAGEUP);
+		wordsbox_tabskip(widget,TABORDER_PAGEUP);
 		break;
 	case KEY_PAGEDOWN:
-		wordsbox_tabskip(widget,WD_TAB_PAGEDOWN);
+		wordsbox_tabskip(widget,TABORDER_PAGEDOWN);
 		break;
 	}
 }
@@ -514,8 +514,8 @@ void wordsbox_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (ptd->item)
 			plk = get_words_next_visible_item(ptd->words, ptd->item);
 		else
@@ -524,8 +524,8 @@ void wordsbox_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			wordsbox_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (ptd->item)
 			plk = get_words_prev_visible_item(ptd->words, ptd->item);
 		else
@@ -534,16 +534,16 @@ void wordsbox_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			wordsbox_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		wordsbox_move_first_page(widget);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		wordsbox_move_last_page(widget);
 		break;
-	case WD_TAB_PAGEUP:
+	case TABORDER_PAGEUP:
 		wordsbox_move_prev_page(widget);
 		break;
-	case WD_TAB_PAGEDOWN:
+	case TABORDER_PAGEDOWN:
 		wordsbox_move_next_page(widget);
 		break;
 	}
@@ -566,7 +566,7 @@ void wordsbox_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -591,7 +591,7 @@ void wordsbox_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -612,7 +612,7 @@ void wordsbox_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -637,7 +637,7 @@ void wordsbox_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -662,7 +662,7 @@ void wordsbox_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 

@@ -132,7 +132,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	LINKPTR ptrGrid = create_grid_doc();
 
 	gridctrl_attach(pdt->hGrid, ptrGrid);
-	widget_show(pdt->hGrid, WD_SHOW_NORMAL);
+	widget_show(pdt->hGrid, WS_SHOW_NORMAL);
 
 	set_split_item_delta(ilkGrid, pdt->hGrid);
 
@@ -140,7 +140,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	XDL_ASSERT(pdt->hEdit);
 	widget_set_user_id(pdt->hEdit, IDC_SQLVIEWDLG_EDIT);
 	widget_set_owner(pdt->hEdit, widget);
-	widget_show(pdt->hEdit, WD_SHOW_NORMAL);
+	widget_show(pdt->hEdit, WS_SHOW_NORMAL);
 
 	xface_t xa;
 	widget_get_xface(pdt->hEdit, &xa);
@@ -173,7 +173,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_user_id(pdt->hPushCancel, IDC_SQLVIEWDLG_CANCEL);
 	widget_set_owner(pdt->hPushCancel, widget);
 	pushbox_set_text(pdt->hPushCancel, _T("取消"), -1);
-	widget_show(pdt->hPushCancel, WD_SHOW_NORMAL);
+	widget_show(pdt->hPushCancel, WS_SHOW_NORMAL);
 
 	xr_push.x -= (xs.cx + nSplit);
 
@@ -181,7 +181,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hPushOK, widget);
 	widget_set_user_id(pdt->hPushOK, IDC_SQLVIEWDLG_OK);
 	pushbox_set_text(pdt->hPushOK, _T("确定"), -1);
-	widget_show(pdt->hPushOK, WD_SHOW_NORMAL);
+	widget_show(pdt->hPushOK, WS_SHOW_NORMAL);
 
 	xr_push.x -= (xs.cx + nSplit);
 
@@ -189,7 +189,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hPushExec, widget);
 	widget_set_user_id(pdt->hPushExec, IDC_SQLVIEWDLG_EXEC);
 	pushbox_set_text(pdt->hPushExec, _T("执行"), -1);
-	widget_show(pdt->hPushExec, WD_SHOW_NORMAL);
+	widget_show(pdt->hPushExec, WS_SHOW_NORMAL);
 
 	return 0;
 }
@@ -319,7 +319,7 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_move(pdt->hPushExec, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushExec);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
@@ -449,7 +449,7 @@ res_win_t SQLViewDlg_Create(const TCHAR* title, SQLVIEWDLG_PARAM* ppd)
 
 	widget_center_window(widget, g_hMain);
 	widget_update(widget);
-	widget_show(widget, WD_SHOW_NORMAL);
+	widget_show(widget, WS_SHOW_NORMAL);
 
 	return widget;
 }

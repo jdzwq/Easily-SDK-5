@@ -71,7 +71,7 @@ void checkbox_on_switch(res_win_t widget)
 	else
 		ptd->on = 1;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	noti_checkbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -117,7 +117,7 @@ void hand_checkbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	checkbox_on_switch(widget);
 }
 
-void hand_checkbox_keydown(res_win_t widget, int key)
+void hand_checkbox_keydown(res_win_t widget, dword_t ks, int key)
 {
 	checkbox_delta_t* ptd = GETCHECKBOXDELTA(widget);
 
@@ -135,7 +135,7 @@ void hand_checkbox_size(res_win_t widget, int code, const xsize_t* prs)
 	
 	_checkbox_reset_page(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_checkbox_erase(res_win_t widget, res_ctx_t rdc)
@@ -240,7 +240,7 @@ void checkbox_set_state(res_win_t widget, bool_t cur)
 
 	ptd->on = cur;
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 }
 
 bool_t checkbox_get_state(res_win_t widget)

@@ -185,7 +185,7 @@ void dropbox_on_item_changing(res_win_t widget)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 1);
+	widget_erase(widget, &xr);
 }
 
 void dropbox_on_item_changed(res_win_t widget, link_t_ptr ent)
@@ -201,7 +201,7 @@ void dropbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 1);
+	widget_erase(widget, &xr);
 
 	noti_dropbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
 }
@@ -236,7 +236,7 @@ void hand_dropbox_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_dropbox_keydown(res_win_t widget, int key)
+void hand_dropbox_keydown(res_win_t widget, dword_t ks, int key)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
 
@@ -252,16 +252,16 @@ void hand_dropbox_keydown(res_win_t widget, int key)
 		noti_dropbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
 		break;
 	case KEY_LEFT:
-		dropbox_tabskip(widget,WD_TAB_LEFT);
+		dropbox_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		dropbox_tabskip(widget,WD_TAB_RIGHT);
+		dropbox_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_HOME:
-		dropbox_tabskip(widget,WD_TAB_HOME);
+		dropbox_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		dropbox_tabskip(widget,WD_TAB_END);
+		dropbox_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -467,7 +467,7 @@ void dropbox_redraw(res_win_t widget)
 	ptd->entity = ent;
 	_dropbox_reset_page(widget);
 
-	widget_redraw(widget, NULL, 1);
+	widget_erase(widget, NULL);
 }
 
 void dropbox_tabskip(res_win_t widget, int nSkip)
@@ -484,12 +484,12 @@ void dropbox_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_LEFT:
-	case WD_TAB_DOWN:
+	case TABORDER_LEFT:
+	case TABORDER_DOWN:
 		ilk = _dropbox_get_next_entity(widget, ilk);
 		break;
-	case WD_TAB_RIGHT:
-	case WD_TAB_UP:
+	case TABORDER_RIGHT:
+	case TABORDER_UP:
 		ilk = _dropbox_get_prev_entity(widget, ilk);
 		break;
 	}

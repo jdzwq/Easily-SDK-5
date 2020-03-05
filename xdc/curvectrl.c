@@ -106,7 +106,7 @@ void hand_curve_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_curve_keydown(res_win_t widget, int key)
+void hand_curve_keydown(res_win_t widget, dword_t ks, int key)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 	int ch;
@@ -197,7 +197,7 @@ void hand_curve_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 
 	XDL_ASSERT(ptd != NULL);
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -336,7 +336,7 @@ void curvectrl_redraw(res_win_t widget)
 
 	widget_update(widget);
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void curvectrl_set_vector(res_win_t widget, vector_t vt)

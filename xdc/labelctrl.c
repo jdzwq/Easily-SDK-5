@@ -141,7 +141,7 @@ bool_t noti_label_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	return 1;
 }
@@ -159,7 +159,7 @@ void noti_label_item_changed(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 
 	noti_label_owner(widget, NC_LABELITEMCHANGED, ptd->label, ptd->item, NULL);
 }
@@ -189,7 +189,7 @@ void noti_label_item_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -310,7 +310,7 @@ void hand_label_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->label)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -368,7 +368,7 @@ void hand_label_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 
 	nHint = calc_label_hint(&cb, &pt, ptd->label, ptd->cur_page, &ilk);
 
-	if (nHint == LABEL_HINT_ITEM && ilk == ptd->item && !(dw & MS_WITH_CONTROL))
+	if (nHint == LABEL_HINT_ITEM && ilk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
 		if (dw & MS_WITH_LBUTTON)
 		{
@@ -499,7 +499,7 @@ void hand_label_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	noti_label_owner(widget, NC_LABELRBCLK, ptd->label, ptd->item, (void*)pxp);
 }
 
-void hand_label_keydown(res_win_t widget, int nKey)
+void hand_label_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 
@@ -514,23 +514,23 @@ void hand_label_keydown(res_win_t widget, int nKey)
 		break;
 	case KEY_LEFT:
 	case KEY_UP:
-		labelctrl_tabskip(widget,WD_TAB_LEFT);
+		labelctrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
 	case KEY_DOWN:
-		labelctrl_tabskip(widget,WD_TAB_RIGHT);
+		labelctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_PAGEUP:
-		labelctrl_tabskip(widget,WD_TAB_PAGEUP);
+		labelctrl_tabskip(widget,TABORDER_PAGEUP);
 		break;
 	case KEY_PAGEDOWN:
-		labelctrl_tabskip(widget,WD_TAB_PAGEDOWN);
+		labelctrl_tabskip(widget,TABORDER_PAGEDOWN);
 		break;
 	case KEY_HOME:
-		labelctrl_tabskip(widget,WD_TAB_HOME);
+		labelctrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		labelctrl_tabskip(widget,WD_TAB_END);
+		labelctrl_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -735,8 +735,8 @@ void labelctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (plk == NULL)
 			plk = get_label_next_item(ptd->label, LINK_FIRST);
 		else
@@ -745,8 +745,8 @@ void labelctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			labelctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (plk == NULL)
 			plk = get_label_prev_item(ptd->label, LINK_LAST);
 		else
@@ -755,16 +755,16 @@ void labelctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			labelctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		labelctrl_move_first_page(widget);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		labelctrl_move_last_page(widget);
 		break;
-	case WD_TAB_PAGEUP:
+	case TABORDER_PAGEUP:
 		labelctrl_move_prev_page(widget);
 		break;
-	case WD_TAB_PAGEDOWN:
+	case TABORDER_PAGEDOWN:
 		labelctrl_move_next_page(widget);
 		break;
 	}
@@ -790,7 +790,7 @@ void labelctrl_redraw_item(res_win_t widget, link_t_ptr plk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t labelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -870,7 +870,7 @@ void labelctrl_move_first_page(res_win_t widget)
 		nCurPage = 1;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -891,7 +891,7 @@ void labelctrl_move_prev_page(res_win_t widget)
 		nCurPage--;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -916,7 +916,7 @@ void labelctrl_move_next_page(res_win_t widget)
 		nCurPage++;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -941,7 +941,7 @@ void labelctrl_move_last_page(res_win_t widget)
 		nCurPage = nMaxPage;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 
@@ -966,7 +966,7 @@ void labelctrl_move_to_page(res_win_t widget, int page)
 		nCurPage = page;
 		ptd->cur_page = nCurPage;
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 	}
 }
 

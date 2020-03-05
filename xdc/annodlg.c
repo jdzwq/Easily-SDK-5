@@ -153,7 +153,7 @@ void annodlg_on_show_color(res_win_t widget, const xrect_t* pxr)
 
 	pt.x = pxr->x;
 	pt.y = pxr->y;
-	color_menu(widget, IDC_ANNODLG_MENU_COLOR, &pt, WD_LAYOUT_RIGHTTOP);
+	color_menu(widget, IDC_ANNODLG_MENU_COLOR, &pt, WS_LAYOUT_RIGHTTOP);
 }
 
 void annodlg_on_select_color(res_win_t widget, const tchar_t* mid)
@@ -191,7 +191,7 @@ void annodlg_on_show_font(res_win_t widget, const xrect_t* pxr)
 
 	pt.x = pxr->x;
 	pt.y = pxr->y;
-	fontsize_menu(widget, IDC_ANNODLG_MENU_COLOR, &pt, WD_LAYOUT_RIGHTTOP);
+	fontsize_menu(widget, IDC_ANNODLG_MENU_COLOR, &pt, WS_LAYOUT_RIGHTTOP);
 }
 
 void annodlg_on_select_font(res_win_t widget, const tchar_t* mid)
@@ -280,7 +280,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 		IDA_ANNODLG_ICON_DIAMOND, GDI_ICON_DIAMOND);
 
 	iconbox_set_options(iconbox, icons, -1);
-	widget_show(iconbox, WD_SHOW_NORMAL);
+	widget_show(iconbox, WS_SHOW_NORMAL);
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
@@ -340,7 +340,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 		}
 	}
 
-	widget_show(ptd->photo, WD_SHOW_NORMAL);
+	widget_show(ptd->photo, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	xr.y = xr.y + xr.h - xs.cy;
@@ -359,7 +359,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_ANNODLG_PUSHBOX_OK);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, ANNODLG_PUSHBOX_OK, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 
@@ -367,7 +367,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_ANNODLG_PUSHBOX_COMMIT);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, ANNODLG_PUSHBOX_COMMIT, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xs.fx = ANNODLG_BUTTON_WIDTH;
 	xs.fy = ANNODLG_BUTTON_HEIGHT;
@@ -384,7 +384,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_ANNODLG_PUSHBOX_FONT);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, ANNODLG_PUSHBOX_FONTSIZE, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x += (xr.w + nSplit);
 
@@ -392,7 +392,7 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(pushbox, IDC_ANNODLG_PUSHBOX_COLOR);
 	widget_set_owner(pushbox, widget);
 	pushbox_set_text(pushbox, ANNODLG_PUSHBOX_FONTCOLOR, -1);
-	widget_show(pushbox, WD_SHOW_NORMAL);
+	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	SETANNODLGDELTA(widget, ptd);
 
@@ -539,7 +539,7 @@ void hand_annodlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long data)

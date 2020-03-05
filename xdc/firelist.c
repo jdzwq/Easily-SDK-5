@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
 {
 	if (subid != IDS_EDITBOX)
 		return 0;
@@ -51,10 +51,10 @@ static int sub_editbox_keydown(res_win_t widget, int nKey, uid_t subid, var_long
 		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
 		return 1;
 	case KEY_DOWN:
-		dropbox_tabskip((res_win_t)delta,WD_TAB_DOWN);
+		dropbox_tabskip((res_win_t)delta,TABORDER_DOWN);
 		return 1;
 	case KEY_UP:
-		dropbox_tabskip((res_win_t)delta,WD_TAB_UP);
+		dropbox_tabskip((res_win_t)delta,TABORDER_UP);
 		return 1;
 	case KEY_SPACE:
 		editbox_set_text(widget, NULL);
@@ -80,9 +80,9 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t s
 	if (widget_is_valid(dropbox))
 	{
 		if (nLine < 0)
-			dropbox_tabskip((res_win_t)delta,WD_TAB_DOWN);
+			dropbox_tabskip((res_win_t)delta,TABORDER_DOWN);
 		else
-			dropbox_tabskip((res_win_t)delta,WD_TAB_UP);
+			dropbox_tabskip((res_win_t)delta,TABORDER_UP);
 	}
 
 	return 1;
@@ -155,18 +155,18 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	if (widget_is_valid(keybox))
 	{
 		if (show)
-			widget_show(keybox, WD_SHOW_NORMAL);
+			widget_show(keybox, WS_SHOW_NORMAL);
 		else
-			widget_show(keybox, WD_SHOW_HIDE);
+			widget_show(keybox, WS_SHOW_HIDE);
 	}*/
 
 	dropbox = (res_win_t)delta;
 	if (widget_is_valid(dropbox))
 	{
 		if (show)
-			widget_show(dropbox, WD_SHOW_NORMAL);
+			widget_show(dropbox, WS_SHOW_NORMAL);
 		else
-			widget_show(dropbox, WD_SHOW_HIDE);
+			widget_show(dropbox, WS_SHOW_HIDE);
 	}
 
 	return 1;

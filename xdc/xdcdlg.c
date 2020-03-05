@@ -170,7 +170,7 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 			widget_set_owner(box, dlg);
 			widget_set_user_id(box, xstol(get_dialog_item_id_ptr(ilk)));
 			widget_set_point(box, RECTPOINT(&xr));
-			widget_show(box, WD_SHOW_NORMAL);
+			widget_show(box, WS_SHOW_NORMAL);
 		}
 		
 		ilk = get_dialog_prev_item(ptr_dlg, ilk);
@@ -244,11 +244,11 @@ static int STDCALL _widget_set_child_point(res_win_t widget, var_long pv)
 
 int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta)
 {
-	if (code != WD_SIZE_MINIMIZED)
+	if (code != WS_SIZE_MINIMIZED)
 	{
 		widget_enum_child(widget, _widget_set_child_point, (var_long)0);
 
-		widget_redraw(widget, NULL, 0);
+		widget_erase(widget, NULL);
 
 		return 1;
 	}

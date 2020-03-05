@@ -329,7 +329,7 @@ void TagPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 /***********************************************************************************************/
@@ -370,7 +370,7 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	tagctrl_set_lock(pdt->hTag, 0);
 
 	set_split_item_delta(ilkTag, pdt->hTag);
-	widget_show(pdt->hTag, WD_SHOW_NORMAL);
+	widget_show(pdt->hTag, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
 	pdt->hProper = properctrl_create(_T("TagProper"), WD_STYLE_CONTROL, &xr, widget);
@@ -381,7 +381,7 @@ int TagPanel_OnCreate(res_win_t widget, void* data)
 	properctrl_attach(pdt->hProper, ptrProper);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	widget_attach_splitor(widget, ptrSplit);
 

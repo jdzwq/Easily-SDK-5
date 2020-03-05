@@ -34,41 +34,51 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_WIDGET
 
-bool_t fetch_message(msg_t* pmsg, res_win_t wt)
+
+void message_quit(int code)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_fetch_message)(pmsg, wt);
+	(*pif->pf_message_quit)(code);
 }
 
-bool_t peek_message(msg_t* pmsg, res_win_t wt)
+void message_fetch(msg_t* pmsg, res_win_t wt)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_peek_message)(pmsg, wt);
+	(*pif->pf_message_fetch)(pmsg, wt);
+}
+
+bool_t message_peek(msg_t* pmsg)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_message_peek)(pmsg);
 }
 
 
-bool_t	translate_message(const msg_t* pmsg)
+bool_t	message_translate(const msg_t* pmsg)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_translate_message)(pmsg);
+	return (*pif->pf_message_translate)(pmsg);
 }
 
-result_t dispatch_message(const msg_t* pmsg)
+result_t message_dispatch_message(const msg_t* pmsg)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_translate_message)(pmsg);
+	return (*pif->pf_message_dispatch)(pmsg);
 }
 
 void message_position(xpoint_t* ppt)
@@ -78,15 +88,6 @@ void message_position(xpoint_t* ppt)
 	pif = PROCESS_WIDGET_INTERFACE;
 
 	(*pif->pf_message_position)(ppt);
-}
-
-int	translate_accelerator(res_win_t wt, res_acl_t acl, msg_t* pmsg)
-{
-	if_widget_t* pif;
-
-	pif = PROCESS_WIDGET_INTERFACE;
-
-	return (*pif->pf_translate_accelerator)(wt, acl, pmsg);
 }
 
 #ifdef XDU_SUPPORT_WIDGET_EX
@@ -555,24 +556,6 @@ void widget_set_capture(res_win_t wt, bool_t b)
 	(*pif->pf_widget_set_capture)(wt, b);
 }
 
-void widget_set_imm(res_win_t wt, bool_t b)
-{
-	if_widget_t* pif;
-
-	pif = PROCESS_WIDGET_INTERFACE;
-
-	(*pif->pf_widget_set_imm)(wt, b);
-}
-
-bool_t	widget_get_imm(res_win_t wt)
-{
-	if_widget_t* pif;
-
-	pif = PROCESS_WIDGET_INTERFACE;
-
-	return (*pif->pf_widget_get_imm)(wt);
-}
-
 void widget_create_caret(res_win_t wt, int w, int h)
 {
 	if_widget_t* pif;
@@ -719,7 +702,7 @@ bool_t widget_has_border(res_win_t wt)
 	return (dw & WD_STYLE_BORDER) ? 1 : 0;
 }
 
-void widget_get_scroll(res_win_t wt, bool_t horz, scroll_t* psc)
+void widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psc)
 {
 	if_widget_t* pif;
 
@@ -728,7 +711,7 @@ void widget_get_scroll(res_win_t wt, bool_t horz, scroll_t* psc)
 	(*pif->pf_widget_get_scroll_info)(wt, horz, psc);
 }
 
-void widget_set_scroll(res_win_t wt, bool_t horz, const scroll_t* psc)
+void widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psc)
 {
 	if_widget_t* pif;
 
@@ -743,7 +726,7 @@ void widget_scroll(res_win_t wt, bool_t horz, int line)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_post_message)(wt, WM_SCROLL, (var_long)horz, (var_long)line);
+	(*pif->pf_widget_scroll)(wt, WM_SCROLL, horz, line);
 }
 
 void widget_post_char(res_win_t wt, tchar_t ch)
@@ -764,13 +747,22 @@ void widget_post_key(res_win_t wt, int key)
 	(*pif->pf_widget_post_key)(wt, key);
 }
 
+void widget_post_notice(res_win_t wt, NOTICE* pnt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	(*pif->pf_widget_post_notice)(wt, pnt);
+}
+
 int widget_send_notice(res_win_t wt, NOTICE* pnt)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_send_message)(wt, WM_NOTICE, (var_long)pnt->id, (var_long)pnt);
+	return (*pif->pf_widget_send_notice)(wt, pnt);
 }
 
 void widget_post_command(res_win_t wt, int code, int cid, var_long data)
@@ -827,13 +819,13 @@ void widget_show(res_win_t wt, dword_t sw)
 	(*pif->pf_widget_show)(wt, sw);
 }
 
-void widget_resize(res_win_t wt)
+void widget_layout(res_win_t wt)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_resize)(wt);
+	(*pif->pf_widget_layout)(wt);
 }
 
 void widget_paint(res_win_t wt)
@@ -854,13 +846,13 @@ void widget_update(res_win_t wt)
 	(*pif->pf_widget_update)(wt);
 }
 
-void widget_redraw(res_win_t wt, const xrect_t* prt, bool_t b_erase)
+void widget_erase(res_win_t wt, const xrect_t* prt)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_redraw)(wt, prt, b_erase);
+	(*pif->pf_widget_erase)(wt, prt);
 }
 
 void widget_enable(res_win_t wt, bool_t b)

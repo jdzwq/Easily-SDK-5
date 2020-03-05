@@ -334,11 +334,11 @@ void widget_reset_scroll(res_win_t wt, bool_t horz)
 		sc.pos = pwt->vb.y;
 	}
 
-	widget_set_scroll(wt, horz, &sc);
+	widget_set_scroll_info(wt, horz, &sc);
 
 	if (widget_get_style(wt) & WD_STYLE_OWNERNC)
 	{
-		widget_redraw_scroll(wt, horz);
+		widget_draw_scroll(wt, horz);
 	}
 }
 
@@ -536,7 +536,7 @@ void widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll)
 	}
 
 	if (b_vert || b_horz)
-		widget_redraw(wt, NULL, 0);
+		widget_erase(wt, NULL);
 }
 
 void widget_rect_to_pt(res_win_t wt, xrect_t* pxr)
@@ -717,7 +717,7 @@ bool_t widget_hand_scroll(res_win_t wt, bool_t bHorz, int nLine)
 		pwt->vb.y = nCur;
 	}
 
-	widget_redraw(wt, NULL, 0);
+	widget_erase(wt, NULL);
 
 	widget_reset_scroll(wt, bHorz);
 

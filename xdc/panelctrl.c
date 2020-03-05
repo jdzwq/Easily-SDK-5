@@ -291,7 +291,7 @@ bool_t noti_panel_item_changing(res_win_t widget)
 
 	ptd->item = NULL;
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 
 	return 1;
 }
@@ -307,7 +307,7 @@ void noti_panel_item_changed(res_win_t widget, link_t_ptr elk)
 
 	_panelctrl_item_rect(widget, ptd->item, &xr);
 	
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
 bool_t noti_panel_item_delete(res_win_t widget, link_t_ptr ilk)
@@ -343,7 +343,7 @@ void noti_panel_item_leave(res_win_t widget)
 
 	if (widget_is_hotvoer(widget))
 	{
-		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_CANCEL);
+		widget_track_mouse(widget, MS_TRACK_HOVER | MS_TRACK_LEAVE);
 	}
 }
 
@@ -400,7 +400,7 @@ void hand_panel_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_panel_keydown(res_win_t widget, int key)
+void hand_panel_keydown(res_win_t widget, dword_t ks, int key)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 
@@ -414,16 +414,16 @@ void hand_panel_keydown(res_win_t widget, int key)
 	case KEY_SPACE:
 		break;
 	case KEY_LEFT:
-		panelctrl_tabskip(widget,WD_TAB_LEFT);
+		panelctrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	case KEY_RIGHT:
-		panelctrl_tabskip(widget,WD_TAB_RIGHT);
+		panelctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 	case KEY_HOME:
-		panelctrl_tabskip(widget,WD_TAB_HOME);
+		panelctrl_tabskip(widget,TABORDER_HOME);
 		break;
 	case KEY_END:
-		panelctrl_tabskip(widget,WD_TAB_END);
+		panelctrl_tabskip(widget,TABORDER_END);
 		break;
 	}
 }
@@ -581,7 +581,7 @@ void hand_panel_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	if (!ptd->arch)
 		return;
 
-	widget_get_scroll(widget, bHorz, &scr);
+	widget_get_scroll_info(widget, bHorz, &scr);
 
 	if (bHorz)
 		nLine = (nDelta > 0) ? scr.min : -scr.min;
@@ -858,7 +858,7 @@ void panelctrl_redraw_item(res_win_t widget, link_t_ptr ilk)
 
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
-	widget_redraw(widget, &xr, 0);
+	widget_erase(widget, &xr);
 }
 
 bool_t panelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk)
@@ -932,8 +932,8 @@ void panelctrl_tabskip(res_win_t widget, int nSkip)
 
 	switch (nSkip)
 	{
-	case WD_TAB_RIGHT:
-	case WD_TAB_DOWN:
+	case TABORDER_RIGHT:
+	case TABORDER_DOWN:
 		if (ptd->item)
 			plk = get_arch_next_sibling_item(ptd->item);
 		else
@@ -942,8 +942,8 @@ void panelctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			panelctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_LEFT:
-	case WD_TAB_UP:
+	case TABORDER_LEFT:
+	case TABORDER_UP:
 		if (ptd->item)
 			plk = get_arch_prev_sibling_item(ptd->item);
 		else
@@ -952,13 +952,13 @@ void panelctrl_tabskip(res_win_t widget, int nSkip)
 		if (plk)
 			panelctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_HOME:
+	case TABORDER_HOME:
 		plk = get_arch_first_child_item(ptd->arch);
 
 		if (plk)
 			panelctrl_set_focus_item(widget, plk);
 		break;
-	case WD_TAB_END:
+	case TABORDER_END:
 		plk = get_arch_last_child_item(ptd->arch);
 
 		if (plk)

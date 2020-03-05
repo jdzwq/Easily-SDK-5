@@ -262,7 +262,7 @@ void StatisPanel_OnPreview(res_win_t widget)
 
 	previewdlg_redraw(hPreviewDlg);
 
-	widget_show(hPreviewDlg, WD_SHOW_FULLSCREEN);
+	widget_show(hPreviewDlg, WS_SHOW_FULLSCREEN);
 }
 
 void StatisPanel_OnSchema(res_win_t widget)
@@ -393,7 +393,7 @@ void StatisPanel_OnExec(res_win_t widget)
 	statisctrl_attach(win, ptr_statis);
 
 	widget_center_window(win, widget);
-	widget_show(win, WD_SHOW_NORMAL);
+	widget_show(win, WS_SHOW_NORMAL);
 
 	widget_do_modal(win);
 
@@ -520,35 +520,35 @@ void StatisPanel_OnFontName(res_win_t widget, void* pv)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	fontname_menu(widget, IDC_STATISPANEL_FONTNAME, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontname_menu(widget, IDC_STATISPANEL_FONTNAME, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void StatisPanel_OnFontSize(res_win_t widget, void* pv)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	fontsize_menu(widget, IDC_STATISPANEL_FONTSIZE, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	fontsize_menu(widget, IDC_STATISPANEL_FONTSIZE, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void StatisPanel_OnTextColor(res_win_t widget, void* pv)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	color_menu(widget, IDC_STATISPANEL_FONTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_STATISPANEL_FONTCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void StatisPanel_OnPaintColor(res_win_t widget, void* pv)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	color_menu(widget, IDC_STATISPANEL_PAINTCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_STATISPANEL_PAINTCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 void StatisPanel_OnDrawColor(res_win_t widget, void* pv)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	color_menu(widget, IDC_STATISPANEL_DRAWCOLOR, (xpoint_t*)pv, WD_LAYOUT_RIGHTBOTTOM);
+	color_menu(widget, IDC_STATISPANEL_DRAWCOLOR, (xpoint_t*)pv, WS_LAYOUT_RIGHTBOTTOM);
 }
 
 
@@ -884,7 +884,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hStatis, widget);
 
 	set_split_item_delta(ilkStatis, pdt->hStatis);
-	widget_show(pdt->hStatis, WD_SHOW_NORMAL);
+	widget_show(pdt->hStatis, WS_SHOW_NORMAL);
 
 	LINKPTR ptrStatis = create_statis_doc();
 	set_statis_design(ptrStatis, 1);
@@ -897,7 +897,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hProper, widget);
 
 	set_split_item_delta(ilkProper, pdt->hProper);
-	widget_show(pdt->hProper, WD_SHOW_NORMAL);
+	widget_show(pdt->hProper, WS_SHOW_NORMAL);
 
 	LINKPTR ptrProper = create_proper_doc();
 	properctrl_attach(pdt->hProper, ptrProper);
@@ -908,7 +908,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	widget_set_owner(pdt->hTitle, widget);
 
 	set_split_item_delta(ilkTitle, pdt->hTitle);
-	widget_show(pdt->hTitle, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitle, WS_SHOW_NORMAL);
 
 	LINKPTR ptrTitle = create_title_doc();
 

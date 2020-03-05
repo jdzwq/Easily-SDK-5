@@ -42,7 +42,7 @@ extern "C" {
 @FUNCTION textor_menu: create a text operation menu.
 @INPUT res_win_t widget: the owner widget.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void textor_menu(res_win_t widget, const xpoint_t* ppt, int lay);
@@ -52,7 +52,7 @@ XDC_API void textor_menu(res_win_t widget, const xpoint_t* ppt, int lay);
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t idc: the menu control id.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void fontname_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay);
@@ -71,7 +71,7 @@ XDC_API void fontname_menu_item(int iid, tchar_t* buf, int max);
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t idc: the menu control id.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void fontsize_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay);
@@ -90,7 +90,7 @@ XDC_API void fontsize_menu_item(int iid, tchar_t* buf, int max);
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t idc: the menu control id.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void fontstyle_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay);
@@ -109,7 +109,7 @@ XDC_API void fontstyle_menu_item(int iid, tchar_t* buf, int max);
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t idc: the menu control id.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void fontweight_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay);
@@ -128,7 +128,7 @@ XDC_API void fontweight_menu_item(int iid, tchar_t* buf, int max);
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t idc: the menu control id.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void color_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay);
@@ -147,7 +147,7 @@ XDC_API void color_menu_item(int iid, tchar_t* buf, int max);
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t idc: the menu control id.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void shape_menu(res_win_t widget, dword_t idc, const xpoint_t* ppt, int lay);
@@ -167,7 +167,7 @@ XDC_API void shape_menu_item(int iid, tchar_t* buf, int max);
 @INPUT dword_t idc: the menu control id.
 @INPUT link_t_ptr menu: the menu document.
 @INPUT const xpoint_t* ppt: the based position.
-@INPUT int lay: the layout mode, it can be WD_LAYOUT_LEFTTOP, WD_LAYOUT_RIGHTTOP, WD_LAYOUT_LEFTBOTTOM, WD_LAYOUT_RIGHTBOTTOM.
+@INPUT int lay: the layout mode, it can be WS_LAYOUT_LEFTTOP, WS_LAYOUT_RIGHTTOP, WS_LAYOUT_LEFTBOTTOM, WS_LAYOUT_RIGHTBOTTOM.
 @RETURN void: none.
 */
 XDC_API void track_popup_menu(res_win_t widget, dword_t idc, link_t_ptr menu, const xpoint_t* ppt, int lay);
