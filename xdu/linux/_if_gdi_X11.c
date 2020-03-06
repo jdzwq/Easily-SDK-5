@@ -114,7 +114,10 @@ void _gdi_uninit(void)
 void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
     X11_suface_t* ctx = (X11_suface_t*)rdc;
+
 	XPoint pt[2];
+	xcolor_t xc = {0};
+	int l_w, l_s;
     
 	pt[0].x = ppt1->x;
 	pt[0].y = ppt1->y;
@@ -123,9 +126,27 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 
 	DPtoLP(rdc,pt,2);
 
-	//XSetLineAttributes(dpy, gc, 5, LineSolid, CapRound, JoinRound);
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
 
-    XSetForeground(g_display, ctx->device, BlackPixel(g_display, DefaultScreen(g_display)));
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+	}else
+	{
+		l_w = 1;
+		l_s = LineSolid;
+	}
+
+	XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapRound, JoinRound);
+
+    XSetForeground(g_display, ctx->context, WhitePixel(g_display, DefaultScreen(g_display)));
     
     XDrawLine(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x, pt[1].y);
 }
@@ -166,7 +187,21 @@ void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 
 void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
-	
+	X11_suface_t* ctx = (X11_suface_t*)rdc;
+	XPoint pt[2];
+    
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	DPtoLP(rdc,pt,2);
+
+	//XSetLineAttributes(dpy, gc, 5, LineSolid, CapRound, JoinRound);
+
+    XSetForeground(g_display, ctx->context, WhitePixel(g_display, DefaultScreen(g_display)));
+    
+    XDrawRectangle(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 }
 
 void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)

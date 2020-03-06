@@ -191,16 +191,26 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
 {
     printf("child on_paint the rect is x:%d y:%d w:%d h:%d \n", prt->x, prt->y, prt->w, prt->h);
 
-    res_ctx_t mem = (*if_context.pf_create_compatible_context)(rdc);
-    res_pmp_t pmp = (*if_context.pf_create_compatible_pixmap)(rdc, 100, 100);
+    res_ctx_t mem = (*if_context.pf_create_compatible_context)(rdc, 100, 100);
 
-    res_pmp_t org = (*if_context.pf_select_pixmap)(mem, pmp);
+    xrect_t xr;
+    xr.x = 0;
+    xr.y = 0;
+    xr.w = 100;
+    xr.h = 98;
+
+    (*if_context.pf_gdi_draw_rect)(mem, NULL, NULL, &xr);
+
+    xpoint_t xp1,xp2;
+    xp1.x = 10;
+    xp1.y = 10;
+    xp2.x = 80;
+    xp2.y = 80;
+
+    (*if_context.pf_gdi_draw_line)(mem, NULL, &xp1, &xp2);
 
     (*if_context.pf_render_context)(mem, 0,0, rdc, 100, 100, 100, 100);
 
-    (*if_context.pf_select_pixmap)(mem, org);
-
-    (*if_context.pf_destroy_pixmap)(pmp);
     (*if_context.pf_destroy_context)(mem);
 
 }
@@ -451,9 +461,13 @@ void init_instance()
 {
     xdu_impl_context(&if_context);
 
+    xdu_impl_context_graphic(&if_context);
+
+    xdu_impl_context_bitmap(&if_context);
+
     (*if_context.pf_context_startup)();
 
-     xdu_impl_widget(&if_widget);
+    xdu_impl_widget(&if_widget);
 
     (*if_widget.pf_widget_startup)(0);
 
@@ -516,46 +530,6 @@ void uninit_instance()
     (*if_context.pf_context_cleanup)();
 }
 
-void test_context()
-{
-    if_context_t if_context = { 0 };
-    
-    xdu_impl_context(&if_context);
-    
-    (*if_context.pf_context_startup)();
-    
-    dev_cap_t dev = {0};
-    
-    (*if_context.pf_get_device_caps)(NULL, &dev);
-    
-    res_ctx_t rdc = (*if_context.pf_create_display_context)();
-    
-    res_ctx_t xdc = (*if_context.pf_create_compatible_context)(rdc);
-    
-    res_pmp_t pmp = (*if_context.pf_create_compatible_pixmap)(xdc, 32, 32);
-    
-    res_pmp_t org = (*if_context.pf_select_pixmap)(xdc, pmp);
-    
-    (*if_context.pf_destroy_pixmap)(org);
-    
-     (*if_context.pf_destroy_context)(xdc);
-    
-    xfont_t xf;
-    default_xfont(&xf);
-    
-    float fw, fh;
-    
-    (*if_context.pf_text_mm_size)(rdc, &xf, _T("hello world!"), -1, &fw, &fh);
-    
-    float f = (*if_context.pf_pt_per_mm)(rdc,1);
-    
-    int s = (*if_context.pf_font_size)(rdc,7 * 3.77);
-    
-    (*if_context.pf_destroy_context)(rdc);
-    
-    (*if_context.pf_context_cleanup)();
-}
-
 void test_bitmap()
 {
     if_context_t if_context = { 0 };
@@ -566,7 +540,7 @@ void test_bitmap()
 
     (*if_context.pf_context_startup)();
     
-    res_ctx_t rdc = (*if_context.pf_create_display_context)();
+    res_ctx_t rdc = (*if_context.pf_create_display_context)(0);
     
     xcolor_t clr;
     parse_xcolor(&clr, GDI_ATTR_RGB_AZURE);
@@ -588,81 +562,12 @@ void test_bitmap()
     (*if_context.pf_context_cleanup)();
 }
 
-void test_widget()
-{
-    if_context_t if_context = { 0 };
-    
-    xdu_impl_context(&if_context);
-    
-    (*if_context.pf_context_startup)();
-
-    
-    if_widget_t if_widget = {0};
-    
-    xdu_impl_widget(&if_widget);
-
-    (*if_widget.pf_widget_startup)(0);
-    
-    xrect_t xr ;
-    xr.x = 0;
-    xr.y = 0;
-    xr.w = 800;
-    xr.h = 600;
-    
-    res_win_t win = (*if_widget.pf_widget_create)(_T("demo"),WD_STYLE_DIALOG,&xr,NULL,NULL);
-
-    (*if_widget.pf_widget_show)(win, 0);
-
-    (*if_widget.pf_widget_get_window_rect)(win, &xr);
-
-    (*if_widget.pf_widget_get_client_rect)(win, &xr);
-
-    xr.x = 0;
-    xr.y = 0;
-    xr.w = 300;
-    xr.h = 200;
-    res_win_t child = (*if_widget.pf_widget_create)(_T("child"),WD_STYLE_CHILD,&xr,win,NULL);
-
-    (*if_widget.pf_widget_set_user_id)(child, 1000);
-
-    child = (*if_widget.pf_widget_get_child)(win, 1000);
-
-    (*if_widget.pf_widget_show)(child, 0);
-
-    win = (*if_widget.pf_widget_get_parent)(child);
-
-    bool_t b = (*if_widget.pf_widget_is_minimized)(win);
-
-    xr.x = 0;
-    xr.y = 0;
-    xr.w = 200;
-    xr.h = 300;
-    res_win_t pop = (*if_widget.pf_widget_create)(_T("popup"),WD_STYLE_POPUP,&xr,NULL,NULL);
-
-    (*if_widget.pf_widget_show)(pop, 0);
-
-    (*if_widget.pf_widget_take)(pop, WS_TAKE_TOPMOST);
-
-    (*if_widget.pf_widget_do_modal)(win);
-    
-    (*if_widget.pf_widget_destroy)(child);
-
-    (*if_widget.pf_widget_destroy)(win);
-
-    (*if_widget.pf_widget_destroy)(pop);
-
-    (*if_widget.pf_widget_cleanup)();
-    
-    (*if_context.pf_context_cleanup)();
-}
 
 int main(int argc, const char * argv[]) {
 
     //test_context();
     
     //test_bitmap();
-    
-    //test_widget();
 
     init_instance();
 

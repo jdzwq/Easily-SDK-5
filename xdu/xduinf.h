@@ -64,15 +64,11 @@ typedef struct _if_shell_t {
 /*context interface*/
 typedef int(*PF_CONTEXT_STARTUP)(void);
 typedef void(*PF_CONTEXT_CLEANUP)(void);
-typedef res_ctx_t(*PF_CREATE_DISPLAY_CONTEXT)(void);
-typedef res_ctx_t(*PF_CREATE_COMPATIBLE_CONTEXT)(res_ctx_t);
+typedef res_ctx_t(*PF_CREATE_DISPLAY_CONTEXT)(res_win_t);
+typedef res_ctx_t(*PF_CREATE_COMPATIBLE_CONTEXT)(res_ctx_t, int, int);
 typedef void(*PF_DESTROY_CONTEXT)(res_ctx_t);
-typedef void(*PF_GET_DEVICE_CAPS)(res_ctx_t, dev_cap_t*);
 typedef void(*PF_RENDER_CONTEXT)(res_ctx_t, int, int, res_ctx_t, int, int, int, int);
-typedef res_pmp_t(*PF_SELECT_PIXMAP)(res_ctx_t, res_pmp_t);
-typedef res_pmp_t(*PF_CREATE_COMPATIBLE_PIXMAP)(res_ctx_t, int, int);
-typedef void(*PF_DESTROY_PIXMAP)(res_pmp_t);
-
+typedef void(*PF_GET_DEVICE_CAPS)(res_ctx_t, dev_cap_t*);
 typedef float(*PF_PT_PER_MM)(res_ctx_t, bool_t);
 typedef void(*PF_TEXT_MM_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, float*, float*);
 typedef void(*PF_TEXT_PT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, int*, int*);
@@ -156,13 +152,9 @@ typedef struct _if_context_t{
 	PF_CREATE_COMPATIBLE_CONTEXT	pf_create_compatible_context;
 	PF_CREATE_DISPLAY_CONTEXT	pf_create_display_context;
 	PF_DESTROY_CONTEXT			pf_destroy_context;
-	PF_GET_DEVICE_CAPS			pf_get_device_caps;
 	PF_RENDER_CONTEXT			pf_render_context;
 
-	PF_SELECT_PIXMAP	pf_select_pixmap;
-	PF_CREATE_COMPATIBLE_PIXMAP	pf_create_compatible_pixmap;
-	PF_DESTROY_PIXMAP	pf_destroy_pixmap;
-
+	PF_GET_DEVICE_CAPS			pf_get_device_caps;
 	PF_TEXT_MM_SIZE		pf_text_mm_size;
 	PF_TEXT_PT_SIZE		pf_text_pt_size;
 	PF_TEXT_MM_METRIC	pf_text_mm_metric;

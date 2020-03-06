@@ -119,13 +119,12 @@ extern X11_atoms_t  g_atoms;
 typedef struct _X11_suface_t{
     Drawable device;
     GC context;
-    int memo;
+    int type;
 }X11_suface_t;
 
 extern Display*     g_display;
 
 typedef X11_suface_t* res_ctx_t;
-typedef Pixmap      res_pmp_t;
 typedef Colormap    res_clr_t;
 typedef Font		res_font_t;
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP

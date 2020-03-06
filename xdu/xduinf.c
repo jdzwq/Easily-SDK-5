@@ -65,10 +65,6 @@ void xdu_impl_context(if_context_t* pif)
 	pif->pf_get_device_caps = _get_device_caps;
 	pif->pf_render_context = _render_context;
 
-	pif->pf_select_pixmap = _select_pixmap;
-	pif->pf_create_compatible_pixmap = _create_compatible_pixmap;
-	pif->pf_destroy_pixmap = _destroy_pixmap;
-
 	pif->pf_pt_per_mm = _pt_per_mm;;
 	pif->pf_text_mm_metric = _text_mm_metric;
 	pif->pf_text_pt_metric = _text_pt_metric;

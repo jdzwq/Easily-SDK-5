@@ -423,8 +423,8 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 	ps->state = WS_SHOW_HIDE;
 	ps->events = attr.event_mask;
 
-	ps->wgc = _create_display_context();
-	ps->cgc = _create_display_context();
+	ps->wgc = _create_display_context(win);
+	ps->cgc = _create_display_context(win);
     
 	SETXDUSTRUCT(win, ps);
 
@@ -816,38 +816,21 @@ bool_t _widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv)
 res_ctx_t _widget_client_ctx(res_win_t wt)
 {
 	widget_struct_t* ps = GETXDUSTRUCT(wt);
-	X11_suface_t* ctx;
-	XGCValues gv = {0};
-
-	ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
-
-    ctx->device = (ps)? ps->self : wt;
-    ctx->context = (ps)? ps->cgc : XCreateGC(g_display, ctx->device, 0, &gv);
-    ctx->memo = 0;
-
-	return (res_ctx_t)ctx;
+	
+	return (ps)? ps->cgc : NULL;
 }
 
 res_ctx_t _widget_window_ctx(res_win_t wt)
 {
 	widget_struct_t* ps = GETXDUSTRUCT(wt);
-	X11_suface_t* ctx;
-	XGCValues gv = {0};
-
-	ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
-
-    ctx->device = (ps)? ps->root : RootWindow(g_display,DefaultScreen(g_display));
-    ctx->context = (ps)? ps->wgc : XCreateGC(g_display, ctx->device, 0, &gv);
-    ctx->memo = 0;
-
-	return (res_ctx_t)ctx;
+	
+	return (ps)? ps->wgc : NULL;
 }
 
 void _widget_release_ctx(res_win_t wt, res_ctx_t dc)
 {
 	X11_suface_t* ctx = (X11_suface_t*)dc;
 
-	free(ctx);
 }
 
 void _widget_get_client_rect(res_win_t wt, xrect_t* prt)

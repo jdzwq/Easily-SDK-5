@@ -55,21 +55,21 @@ void _context_cleanup(void)
     g_display = NULL;
 }
 
-res_ctx_t _create_display_context(void)
+res_ctx_t _create_display_context(res_win_t wt)
 {
     X11_suface_t* ctx = NULL;
     XGCValues gv = {0};
     
     ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
     
-    ctx->device = DefaultRootWindow(g_display);
+    ctx->device = (wt)? wt : DefaultRootWindow(g_display);
     ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
-    ctx->memo = 0;
+    ctx->type = CONTEXT_WIDGET;
     
     return ctx;
 }
 
-res_ctx_t _create_compatible_context(res_ctx_t rdc)
+res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy)
 {
     XGCValues gv = {0};
     Window r;
@@ -81,16 +81,16 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc)
     
     ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
 
-    ctx->device = XCreatePixmap (g_display, r, w, h, d);
+    ctx->device = XCreatePixmap (g_display, r, cx, cy, d);
     ctx->context = XCreateGC(g_display, rdc->device, 0, &gv);
-    ctx->memo = 1;
+    ctx->type = CONTEXT_MEMORY;
     
     return ctx;
 }
 
 void _destroy_context(res_ctx_t rdc)
 {
-    if(rdc->memo && rdc->device)
+    if(rdc->type == CONTEXT_MEMORY && rdc->device)
         XFreePixmap(g_display, rdc->device);
     
     if(rdc->context)
@@ -121,38 +121,6 @@ void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
 void _render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
 {
     XCopyArea(g_display, src->device, dst->device, src->context, srcx, srcy, dstw, dsth, dstx, dsty);
-}
-
-res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp)
-{
-    X11_suface_t* ctx = (X11_suface_t*)rdc;
-    Pixmap org;
-    
-    org = (Pixmap)ctx->device;
-    ctx->device = pmp;
-    
-    return org;
-}
-
-res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, int cx, int cy)
-{
-    X11_suface_t* ctx = (X11_suface_t*)rdc;
-    
-    Pixmap pmp;
-    Window r;
-    int x,y;
-    unsigned int w,h,b,d;
-    
-    XGetGeometry(g_display, ctx->device, &r, &x, &y, &w, &h, &b, &d);
-    
-    pmp = XCreatePixmap (g_display, ctx->device, cx, cy, d);
-    
-    return (res_pmp_t)pmp;
-}
-
-void _destroy_pixmap(res_pmp_t pmp)
-{
-    XFreePixmap(g_display, pmp);
 }
 
 /*******************************************************************************************************************/

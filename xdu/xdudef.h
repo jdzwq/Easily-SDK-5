@@ -277,6 +277,11 @@ LICENSE.GPL3 for more details.
 #define ICON_HAND			_T("hand")
 #define ICON_ASTERISK		_T("asterisk")
 
+/*define context type*/
+#define CONTEXT_WIDGET		0
+#define CONTEXT_MEMORY		1
+#define CONTEXT_PRINTER		2
+
 typedef struct _accel_t{
 	unsigned char vir;
 	unsigned short key;

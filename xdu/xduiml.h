@@ -54,14 +54,11 @@ bool_t	_shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t creat
 #ifdef XDU_SUPPORT_CONTEXT
 int		_context_startup(void);
 void	_context_cleanup(void);
-res_ctx_t _create_display_context(void);
-res_ctx_t _create_compatible_context(res_ctx_t rdc);
+res_ctx_t _create_display_context(res_win_t wt);
+res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy);
 void	_destroy_context(res_ctx_t rdc);
 void	_get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
 void	_render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
-res_pmp_t _select_pixmap(res_ctx_t rdc, res_pmp_t pmp);
-res_pmp_t _create_compatible_pixmap(res_ctx_t rdc, int cx, int cy);
-void	_destroy_pixmap(res_pmp_t pmp);
 
 float	_pt_per_mm(res_ctx_t rdc, bool_t horz);
 void	_text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy);
