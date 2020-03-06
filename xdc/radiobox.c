@@ -128,12 +128,6 @@ void hand_radiobox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_radiobox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
-	
-}
-
 void hand_radiobox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
@@ -184,7 +178,6 @@ res_win_t radiobox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_radiobox_create)
 		EVENT_ON_DESTROY(hand_radiobox_destroy)
 
-		EVENT_ON_ERASE(hand_radiobox_erase)
 		EVENT_ON_PAINT(hand_radiobox_paint)
 
 		EVENT_ON_SIZE(hand_radiobox_size)

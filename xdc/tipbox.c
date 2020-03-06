@@ -107,12 +107,6 @@ void hand_tipbox_timer(res_win_t widget, var_long tid)
 	widget_close(widget, 0);
 }
 
-void hand_tipbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
-	
-}
-
 void hand_tipbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
@@ -171,7 +165,6 @@ res_win_t tipbox_create(res_win_t widget, dword_t style, const xrect_t* pxr, int
 		EVENT_ON_CREATE(hand_tipbox_create)
 		EVENT_ON_DESTROY(hand_tipbox_destroy)
 
-		EVENT_ON_ERASE(hand_tipbox_erase)
 		EVENT_ON_PAINT(hand_tipbox_paint)
 
 		EVENT_ON_SIZE(hand_tipbox_size)

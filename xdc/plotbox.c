@@ -111,12 +111,6 @@ void hand_plotbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_plotbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
-	
-}
-
 void hand_plotbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	plotbox_delta_t* ptd = GETPLOTBOXDELTA(widget);
@@ -177,7 +171,6 @@ res_win_t plotbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_plotbox_create)
 		EVENT_ON_DESTROY(hand_plotbox_destroy)
 
-		EVENT_ON_ERASE(hand_plotbox_erase)
 		EVENT_ON_PAINT(hand_plotbox_paint)
 
 		EVENT_ON_SIZE(hand_plotbox_size)

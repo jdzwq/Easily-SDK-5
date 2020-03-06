@@ -38,7 +38,6 @@ typedef struct _rdc_canvas_t{
 	canvas_head head;
 
 	res_ctx_t dc;		// memory draw context 
-	res_pmp_t pixmap;	// memory view
 
 	float htpermm, vtpermm;
 	float scale;
@@ -188,9 +187,9 @@ canvas_t create_display_canvas(res_ctx_t rdc)
 	pcanv = (rdc_canvas_t*)xmem_alloc(sizeof(rdc_canvas_t));
 
 	if (rdc)
-		pcanv->dc = create_compatible_context(rdc);
+		pcanv->dc = create_compatible_context(rdc, 1, 1);
 	else
-		pcanv->dc = create_display_context();
+		pcanv->dc = create_display_context(NULL);
 
 	get_device_caps(pcanv->dc, &cap);
 
@@ -314,18 +313,13 @@ res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	res_pmp_t pmp;
 	dev_cap_t dev = { 0 };
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
-	pmp = create_compatible_pixmap(rdc, width, height);
-	XDL_ASSERT(pmp != NULL);
+	pcanv->dc = create_compatible_context(rdc, width, height);
 
-	pcanv->dc = create_compatible_context(rdc);
 	XDL_ASSERT(pcanv->dc != NULL);
-
-	pcanv->pixmap = (res_bmp_t)select_pixmap(pcanv->dc, pmp);
 
 	return pcanv->dc;
 }
@@ -333,14 +327,10 @@ res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height
 void end_canvas_paint(canvas_t canv, res_ctx_t rdc, const xrect_t* pxr)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
-	res_pmp_t pmp;
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
 
 	render_context(pcanv->dc, pxr->x, pxr->y, rdc, pxr->x, pxr->y, pxr->w, pxr->h);
-
-	pmp = (res_pmp_t)select_pixmap(pcanv->dc, pcanv->pixmap);
-	destroy_pixmap(pmp);
 
 	destroy_context(pcanv->dc);
 	pcanv->dc = NULL;

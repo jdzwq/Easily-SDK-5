@@ -106,10 +106,19 @@ typedef unsigned int	uid_t;
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT
-typedef HDC			res_ctx_t;
+typedef struct _win32_context_t{
+	HDC context;
+	union
+	{
+		HBITMAP bitmap;
+		HWND widget;
+	}device;
+	int type;
+}win32_context_t;
+
+typedef win32_context_t* res_ctx_t;
 typedef COLORREF	res_clr_t;
 typedef HFONT		res_font_t;
-typedef HBITMAP		res_pmp_t;
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
 typedef HBITMAP		res_bmp_t;
 #endif

@@ -334,14 +334,6 @@ void hand_listbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_listbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
-	
-	if (!ptd->string)
-		return;
-}
-
 void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
@@ -404,7 +396,6 @@ res_win_t listbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_listbox_create)
 		EVENT_ON_DESTROY(hand_listbox_destroy)
 
-		EVENT_ON_ERASE(hand_listbox_erase)
 		EVENT_ON_PAINT(hand_listbox_paint)
 
 		EVENT_ON_SIZE(hand_listbox_size)

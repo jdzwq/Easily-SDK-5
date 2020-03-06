@@ -166,12 +166,6 @@ void hand_datebox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_datebox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	datebox_delta_t* ptd = GETDATEBOXDELTA(widget);
-	
-}
-
 void hand_datebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	datebox_delta_t* ptd = GETDATEBOXDELTA(widget);
@@ -224,7 +218,6 @@ res_win_t datebox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_datebox_create)
 		EVENT_ON_DESTROY(hand_datebox_destroy)
 
-		EVENT_ON_ERASE(hand_datebox_erase)
 		EVENT_ON_PAINT(hand_datebox_paint)
 
 		EVENT_ON_SIZE(hand_datebox_size)

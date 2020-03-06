@@ -81,6 +81,7 @@ void xdu_impl_context_bitmap(if_context_t* pif)
 	pif->pf_destroy_bitmap = _destroy_bitmap;
 	pif->pf_get_bitmap_size = _get_bitmap_size;
 
+	pif->pf_create_context_bitmap = _create_context_bitmap;
 	pif->pf_create_color_bitmap = _create_color_bitmap;
 	pif->pf_create_gradient_bitmap = _create_gradient_bitmap;
 	pif->pf_create_pattern_bitmap = _create_pattern_bitmap;
@@ -153,6 +154,7 @@ void xdu_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_ellipse = _gdi_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdi_draw_line;
 	pif->pf_gdi_draw_pie = _gdi_draw_pie;
+	pif->pf_gdi_draw_arc = _gdi_draw_arc;
 	pif->pf_gdi_draw_polygon = _gdi_draw_polygon;
 	pif->pf_gdi_draw_polyline = _gdi_draw_polyline;
 	pif->pf_gdi_draw_bezier = _gdi_draw_bezier;

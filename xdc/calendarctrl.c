@@ -512,15 +512,6 @@ void hand_calendar_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-
-void hand_calendar_erase(res_win_t widget, res_ctx_t dc)
-{
-	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
-
-	if (!ptd->calendar)
-		return;
-}
-
 void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
@@ -605,7 +596,6 @@ res_win_t calendarctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_
 		EVENT_ON_CREATE(hand_calendar_create)
 		EVENT_ON_DESTROY(hand_calendar_destroy)
 
-		EVENT_ON_ERASE(hand_calendar_erase)
 		EVENT_ON_PAINT(hand_calendar_paint)
 
 		EVENT_ON_SIZE(hand_calendar_size)

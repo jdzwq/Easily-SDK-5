@@ -73,15 +73,31 @@ void _get_bitmap_size(res_bmp_t rb, int* pw, int* ph)
 	*ph = bmp.bmHeight;
 }
 
+res_bmp_t _create_context_bitmap(res_ctx_t rdc)
+{
+	HDC hDC = (HDC)(rdc->context);
+	HBITMAP hbmp;
+
+	if (rdc->type != CONTEXT_MEMORY)
+		return NULL;
+
+	hbmp = (HBITMAP)GetCurrentObject(hDC, OBJ_BITMAP);
+	if (!hbmp)
+		return NULL;
+
+	return (HBITMAP)CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_COPYRETURNORG);
+}
+
 res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HDC memDC;
 	HBRUSH hBrush;
 	HBITMAP newBmp, orgBmp;
 	RECT rt;
 
-	newBmp = CreateCompatibleBitmap(rdc, w, h);
-	memDC = CreateCompatibleDC(rdc);
+	newBmp = CreateCompatibleBitmap(hDC, w, h);
+	memDC = CreateCompatibleDC(hDC);
 	orgBmp = (HBITMAP)SelectObject(memDC, newBmp);
 
 	rt.left = rt.top = 0;
@@ -100,6 +116,7 @@ res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 
 res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HDC memDC;
 	HBRUSH hBrush;
 	HPEN newPen, orgPen;
@@ -107,8 +124,8 @@ res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const
 	RECT rt;
 	POINT pt[2];
 
-	newBmp = CreateCompatibleBitmap(rdc, w, h);
-	memDC = CreateCompatibleDC(rdc);
+	newBmp = CreateCompatibleBitmap(hDC, w, h);
+	memDC = CreateCompatibleDC(hDC);
 	orgBmp = (HBITMAP)SelectObject(memDC, newBmp);
 
 	rt.left = rt.top = 0;
@@ -151,6 +168,7 @@ res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const
 
 res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* type)
 {
+	HDC hDC = (HDC)(rdc->context);
 	RECT rt;
 	HBITMAP newBmp, orgBmp;
 	HDC memDC;
@@ -164,8 +182,8 @@ res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const
 	rt.right = w;
 	rt.bottom = h;
 
-	newBmp = CreateCompatibleBitmap(rdc, rt.right - rt.left, rt.bottom - rt.top);
-	memDC = CreateCompatibleDC(rdc);
+	newBmp = CreateCompatibleBitmap(hDC, rt.right - rt.left, rt.bottom - rt.top);
+	memDC = CreateCompatibleDC(hDC);
 	orgBmp = (HBITMAP)SelectObject(memDC, newBmp);
 
 	clr_brush = RGB(pxc_near->r, pxc_near->g, pxc_near->b);
@@ -251,6 +269,7 @@ res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const
 
 res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HDC winDC,memDC;
 	HBRUSH wBrush, bBrush;
 	HBITMAP newBmp, orgBmp;
@@ -262,14 +281,14 @@ res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned cha
 	int black,span;
 	
 	winDC = GetDC(NULL);
-	unit = GetDeviceCaps(rdc, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
+	unit = GetDeviceCaps(hDC, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
 	ReleaseDC(NULL, winDC);
 
 	wBrush = CreateSolidBrush(RGB(255, 255, 255));
 	bBrush = CreateSolidBrush(RGB(0, 0, 0));
 
-	newBmp = CreateCompatibleBitmap(rdc, w, h);
-	memDC = CreateCompatibleDC(rdc);
+	newBmp = CreateCompatibleBitmap(hDC, w, h);
+	memDC = CreateCompatibleDC(hDC);
 
 	SetBkMode(memDC, TRANSPARENT);
 
@@ -305,7 +324,7 @@ res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned cha
 
 	orgFont = (HFONT)GetStockObject(SYSTEM_FONT);
 	GetObject(orgFont, sizeof(LOGFONT), (void*)&lf);
-	lf.lfHeight = -MulDiv(10, GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), 72);
 
 	newFont = CreateFontIndirect(&lf);
 	orgFont = (HFONT)SelectObject(memDC, newFont);
@@ -330,6 +349,7 @@ res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned cha
 
 res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HDC winDC, memDC;
 	HBRUSH wBrush, bBrush;
 	HBITMAP newBmp, orgBmp;
@@ -340,7 +360,7 @@ res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 	int len, i,j, black;
 
 	winDC = GetDC(NULL);
-	unit = GetDeviceCaps(rdc, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
+	unit = GetDeviceCaps(hDC, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
 	if (unit < 2)
 		unit = 2;
 	ReleaseDC(NULL, winDC);
@@ -348,8 +368,8 @@ res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 	wBrush = CreateSolidBrush(RGB(255, 255, 255));
 	bBrush = CreateSolidBrush(RGB(0, 0, 0));
 
-	newBmp = CreateCompatibleBitmap(rdc, w, h);
-	memDC = CreateCompatibleDC(rdc);
+	newBmp = CreateCompatibleBitmap(hDC, w, h);
+	memDC = CreateCompatibleDC(hDC);
 
 	orgBmp = (HBITMAP)SelectObject(memDC, newBmp);
 
@@ -404,6 +424,7 @@ res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 
 res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HDC winDC, memDC;
 	HBRUSH wBrush, bBrush;
 	HBITMAP newBmp, orgBmp;
@@ -414,7 +435,7 @@ res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 	int len, i,j, black;
 
 	winDC = GetDC(NULL);
-	unit = GetDeviceCaps(rdc, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
+	unit = GetDeviceCaps(hDC, LOGPIXELSX) / GetDeviceCaps(winDC, LOGPIXELSX);
 	if (unit < 2)
 		unit = 2;
 	ReleaseDC(NULL, winDC);
@@ -422,8 +443,8 @@ res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 	wBrush = CreateSolidBrush(RGB(255, 255, 255));
 	bBrush = CreateSolidBrush(RGB(0, 0, 0));
 
-	newBmp = CreateCompatibleBitmap(rdc, w, h);
-	memDC = CreateCompatibleDC(rdc);
+	newBmp = CreateCompatibleBitmap(hDC, w, h);
+	memDC = CreateCompatibleDC(hDC);
 
 	orgBmp = (HBITMAP)SelectObject(memDC, newBmp);
 
@@ -483,6 +504,7 @@ res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 
 res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HANDLE handle;
 	IPicture* p = NULL;
 	IStream* s = NULL;
@@ -592,6 +614,7 @@ dword_t _get_bitmap_bytes(res_bmp_t rb)
 
 res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_t bytes)
 {
+	HDC hDC = (HDC)(rdc->context);
 	PBITMAPINFO pbmi;
 	BITMAPFILEHEADER bfh;
 	LPBYTE lpBits;
@@ -613,14 +636,15 @@ res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_
 	pbmi = (PBITMAPINFO)(pb + sizeof(BITMAPFILEHEADER));
 	lpBits = (LPBYTE)(pb + bfh.bfOffBits);
 #ifdef WINCE
-	return CreateDIBSection(rdc, pbmi, DIB_RGB_COLORS, NULL, NULL, bfh.bfOffBits);
+	return CreateDIBSection(hDC, pbmi, DIB_RGB_COLORS, NULL, NULL, bfh.bfOffBits);
 #else
-	return  CreateDIBitmap(rdc, (BITMAPINFOHEADER*)pbmi, CBM_INIT, lpBits, pbmi, DIB_RGB_COLORS);
+	return  CreateDIBitmap(hDC, (BITMAPINFOHEADER*)pbmi, CBM_INIT, lpBits, pbmi, DIB_RGB_COLORS);
 #endif
 }
 
 dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, dword_t max)
 {
+	HDC hDC = (HDC)(rdc->context);
 	BITMAP bmp;
 	PBITMAPINFO pbmi;
 	WORD    cClrBits;
@@ -710,7 +734,7 @@ dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, d
 	{
 #ifdef WINCE
 		pbuf = NULL;
-		hSec = CreateDIBSection(rdc, pbmi, DIB_RGB_COLORS, &pbuf, NULL, bfh.bfOffBits);
+		hSec = CreateDIBSection(hDC, pbmi, DIB_RGB_COLORS, &pbuf, NULL, bfh.bfOffBits);
 		if(!hSec)
 		{
 			LocalFree(pbmi);
@@ -719,7 +743,7 @@ dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, d
 		CopyMemory((void*)lpBits, (void*)pbuf, pbih->biSizeImage);
 		DeleteObject(hSec);
 #else
-		if (!GetDIBits(rdc, rb, 0, (WORD)pbih->biHeight, lpBits, pbmi, DIB_RGB_COLORS))
+		if (!GetDIBits(hDC, rb, 0, (WORD)pbih->biHeight, lpBits, pbmi, DIB_RGB_COLORS))
 		{
 			LocalFree(pbmi);
 			return 0;
@@ -735,6 +759,7 @@ dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, d
 #ifdef XDU_SUPPORT_SHELL
 res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HICON hIcon;
 	ICONINFO ico = { 0 };
 
@@ -770,8 +795,8 @@ res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
 	rt.right = w;
 	rt.bottom = h;
 
-	hdc = CreateCompatibleDC(rdc);
-	hbmp = CreateCompatibleBitmap(rdc, w, h);
+	hdc = CreateCompatibleDC(hDC);
+	hbmp = CreateCompatibleBitmap(hDC, w, h);
 	horg = (HBITMAP)SelectObject(hdc, hbmp);
 
 	hBrush = CreateSolidBrush(RGB(250, 250, 250));
@@ -792,6 +817,7 @@ res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
 
 res_bmp_t _load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* file)
 {
+	HDC hDC = (HDC)(rdc->context);
 	SHFILEINFO shi = { 0 };
 	ICONINFO ico = { 0 };
 
@@ -815,8 +841,8 @@ res_bmp_t _load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* file)
 	rt.right = w;
 	rt.bottom = h;
 
-	hdc = CreateCompatibleDC(rdc);
-	hbmp = CreateCompatibleBitmap(rdc, w, h);
+	hdc = CreateCompatibleDC(hDC);
+	hbmp = CreateCompatibleBitmap(hDC, w, h);
 	horg = (HBITMAP)SelectObject(hdc, hbmp);
 
 	hBrush = CreateSolidBrush(RGB(250, 250, 250));

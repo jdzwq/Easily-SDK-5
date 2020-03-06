@@ -311,7 +311,7 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 	photo_delta_t* ptd = GETPHOTODELTA(widget);
 
 	res_ctx_t rdc, memdc;
-	res_pmp_t org, membm;
+	res_bmp_t membm;
 	xcolor_t xc = { 0 };
 	xbrush_t xb = { 0 };
 	xrect_t xr = { 0 };
@@ -324,10 +324,8 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 	rdc = widget_client_ctx(widget);
 
 	get_bitmap_size(ptd->bmp, &xs.cx, &xs.cy);
-	membm = create_compatible_pixmap(rdc, xs.cx, xs.cy);
-
-	memdc = create_compatible_context(rdc);
-	org = (res_pmp_t)select_pixmap(memdc, membm);
+	
+	memdc = create_compatible_context(rdc, xs.cx, xs.cy);
 
 	xr.x = 0;
 	xr.h = 0;
@@ -347,7 +345,7 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 		//noti_photo_owner(widget, NC_PHOTOANNODRAW, ilk, (void*)&xr, memdc);
 	}
 
-	membm = (res_pmp_t)select_pixmap(memdc, org);
+	membm = create_context_bitmap(memdc);
 
 	destroy_context(memdc);
 
@@ -1035,11 +1033,6 @@ void hand_photo_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_photo_erase(res_win_t widget, res_ctx_t dc)
-{
-	photo_delta_t* ptd = GETPHOTODELTA(widget);
-}
-
 void hand_photo_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	photo_delta_t* ptd = GETPHOTODELTA(widget);
@@ -1105,7 +1098,6 @@ res_win_t photoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_photo_create)
 		EVENT_ON_DESTROY(hand_photo_destroy)
 
-		EVENT_ON_ERASE(hand_photo_erase)
 		EVENT_ON_PAINT(hand_photo_paint)
 
 		EVENT_ON_SIZE(hand_photo_size)

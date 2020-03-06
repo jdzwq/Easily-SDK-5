@@ -1153,15 +1153,6 @@ void hand_diagram_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-
-void hand_diagram_erase(res_win_t widget, res_ctx_t dc)
-{
-	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
-
-	if (!ptd->diagram)
-		return;
-}
-
 void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
@@ -1280,7 +1271,6 @@ res_win_t diagramctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t
 		EVENT_ON_CREATE(hand_diagram_create)
 		EVENT_ON_DESTROY(hand_diagram_destroy)
 
-		EVENT_ON_ERASE(hand_diagram_erase)
 		EVENT_ON_PAINT(hand_diagram_paint)
 
 		EVENT_ON_SIZE(hand_diagram_size)

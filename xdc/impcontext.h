@@ -42,16 +42,19 @@ extern "C" {
 
 /*
 @FUNCTION create_display_context: create display device context.
+@INPUT wt: the widget, if NULL created for screen.
 @RETURN res_ctx_t: if succeeds return device context, fails return NULL.
 */
-XDC_API res_ctx_t create_display_context(void);
+XDC_API res_ctx_t create_display_context(res_win_t wt);
 
 /*
 @FUNCTION create_compatible_context: create memory context compatiable with device context.
 @INPUT res_ctx_t rdc: device context resource handle.
+@INPUT width: the memory context width in pixel.
+@INPUT height: the memory context height in pixel.
 @RETURN res_ctx_t: if succeeds return memory context, fails return NULL.
 */
-XDC_API res_ctx_t create_compatible_context(res_ctx_t rdc);
+XDC_API res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height);
 
 /*
 @FUNCTION destroy_context: destroy device or memory context.
@@ -73,30 +76,6 @@ XDC_API void destroy_context(res_ctx_t rdc);
 @RETURN void: none.
 */
 XDC_API void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
-
-/*
-@FUNCTION select_pixmap: select a pixmap object into memory context.
-@INPUT res_ctx_t rdc: memory context resource handle.
-@INPUT res_pmp_t obj: pixmap resource handle.
-@RETURN res_pmp_t: if succeeds return original pixmap object in memory context, fails return NULL.
-*/
-XDC_API res_pmp_t select_pixmap(res_ctx_t rdc, res_pmp_t obj);
-
-/*
-@FUNCTION create_compatible_pixmap: create a memory context.
-@INPUT res_ctx_t rdc: device context resource handle.
-@INPUT int cx: pixmap width in points.
-@INPUT int cy: pixmap height in points.
-@RETURN res_pmp_t: if succeeds return memory context resource handle, fails return NULL.
-*/
-XDC_API res_pmp_t create_compatible_pixmap(res_ctx_t rdc, int cx, int cy);
-
-/*
-@FUNCTION destroy_pixmap: destroy pixmap object.
-@INPUT res_pmp_t pmp: device context resource handle.
-@RETURN void: none.
-*/
-XDC_API void destroy_pixmap(res_pmp_t pmp);
 
 /*
 @FUNCTION get_device_caps: get device context capabilities.

@@ -253,11 +253,6 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_griddlg_erase(res_win_t widget, res_ctx_t dc)
-{
-	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
-}
-
 void hand_griddlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
@@ -354,7 +349,6 @@ res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_ptr* prow,
 		EVENT_ON_CREATE(hand_griddlg_create)
 		EVENT_ON_DESTROY(hand_griddlg_destroy)
 
-		EVENT_ON_ERASE(hand_griddlg_erase)
 		EVENT_ON_PAINT(hand_griddlg_paint)
 
 		EVENT_ON_SIZE(hand_griddlg_size)

@@ -233,13 +233,6 @@ void hand_curve_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_curve_erase(res_win_t widget, res_ctx_t rdc)
-{
-	curve_delta_t* ptd = GETCURVEDELTA(widget);
-
-	XDL_ASSERT(ptd != NULL);
-}
-
 void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
@@ -301,7 +294,6 @@ res_win_t curvectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_curve_create)
 		EVENT_ON_DESTROY(hand_curve_destroy)
 
-		EVENT_ON_ERASE(hand_curve_erase)
 		EVENT_ON_PAINT(hand_curve_paint)
 
 		EVENT_ON_SIZE(hand_curve_size)

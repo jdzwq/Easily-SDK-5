@@ -839,14 +839,6 @@ void hand_tree_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_tree_erase(res_win_t widget, res_ctx_t dc)
-{
-	tree_delta_t* ptd = GETTREEDELTA(widget);
-
-	if (!ptd->tree)
-		return;
-}
-
 void hand_tree_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
@@ -913,7 +905,6 @@ res_win_t treectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_CREATE(hand_tree_create)
 		EVENT_ON_DESTROY(hand_tree_destroy)
 
-		EVENT_ON_ERASE(hand_tree_erase)
 		EVENT_ON_PAINT(hand_tree_paint)
 
 		EVENT_ON_SIZE(hand_tree_size)

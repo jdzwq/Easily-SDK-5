@@ -100,12 +100,6 @@ void hand_staticbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_staticbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	staticbox_delta_t* ptd = GETSTATICBOXDELTA(widget);
-	
-}
-
 void hand_staticbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	staticbox_delta_t* ptd = GETSTATICBOXDELTA(widget);
@@ -146,7 +140,6 @@ res_win_t staticbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_staticbox_create)
 		EVENT_ON_DESTROY(hand_staticbox_destroy)
 
-		EVENT_ON_ERASE(hand_staticbox_erase)
 		EVENT_ON_PAINT(hand_staticbox_paint)
 
 		EVENT_ON_SIZE(hand_staticbox_size)

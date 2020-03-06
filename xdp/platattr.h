@@ -65,7 +65,7 @@
 
 
 #define GDI_ATTR_FONT_SIZE_FOOTER			_T("9")
-#define GDI_ATTR_FONT_SIZE_SYSTEM			_T("10.5")
+#define GDI_ATTR_FONT_SIZE_SYSTEM			_T("10")
 #define GDI_ATTR_FONT_SIZE_TEXT				_T("12")
 #define GDI_ATTR_FONT_SIZE_TITLE			_T("14")
 

@@ -459,11 +459,6 @@ void hand_msgdlg_keydown(res_win_t widget, dword_t ks, int key)
 	}
 }
 
-void hand_msgdlg_erase(res_win_t widget, res_ctx_t dc)
-{
-	msgdlg_delta_t* ptd = GETMSGDLGDELTA(widget);
-}
-
 void hand_msgdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	msgdlg_delta_t* ptd = GETMSGDLGDELTA(widget);
@@ -552,7 +547,6 @@ res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t owner)
 		EVENT_ON_CREATE(hand_msgdlg_create)
 		EVENT_ON_DESTROY(hand_msgdlg_destroy)
 
-		EVENT_ON_ERASE(hand_msgdlg_erase)
 		EVENT_ON_PAINT(hand_msgdlg_paint)
 
 		EVENT_ON_SIZE(hand_msgdlg_size)

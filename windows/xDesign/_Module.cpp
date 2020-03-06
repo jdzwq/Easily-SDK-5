@@ -166,11 +166,11 @@ VOID LoadResource()
 
 	GetModuleFileName(NULL, path, PATH_LEN);
 
-	HDC hDC = GetDC(NULL);
+	res_ctx_t ctx = create_display_context(NULL);
 	
-	g_bmpThumb = load_bitmap_from_thumb(hDC, path);
+	g_bmpThumb = load_bitmap_from_thumb(ctx, path);
 
-	ReleaseDC(NULL, hDC);
+	destroy_context(ctx);
 
 	//create image list
 	g_imagelist = create_images_doc();

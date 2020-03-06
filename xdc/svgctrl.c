@@ -251,14 +251,6 @@ void hand_svg_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_svg_erase(res_win_t widget, res_ctx_t dc)
-{
-	svg_delta_t* ptd = GETSVGDELTA(widget);
-
-	if (!ptd->svg)
-		return;
-}
-
 void hand_svg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	svg_delta_t* ptd = GETSVGDELTA(widget);
@@ -329,7 +321,6 @@ res_win_t svgctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 		EVENT_ON_CREATE(hand_svg_create)
 		EVENT_ON_DESTROY(hand_svg_destroy)
 
-		EVENT_ON_ERASE(hand_svg_erase)
 		EVENT_ON_PAINT(hand_svg_paint)
 
 		EVENT_ON_SIZE(hand_svg_size)

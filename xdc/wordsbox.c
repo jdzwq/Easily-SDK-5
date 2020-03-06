@@ -286,14 +286,6 @@ void hand_words_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_words_erase(res_win_t widget, res_ctx_t rdc)
-{
-	words_delta_t* ptd = GETWORDSDELTA(widget);
-	
-	if (!ptd->words)
-		return;
-}
-
 void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	words_delta_t* ptd = GETWORDSDELTA(widget);
@@ -357,7 +349,6 @@ res_win_t wordsbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 
 		EVENT_ON_CREATE(hand_words_create)
 		EVENT_ON_DESTROY(hand_words_destroy)
-		EVENT_ON_ERASE(hand_words_erase)
 		EVENT_ON_PAINT(hand_words_paint)
 		EVENT_ON_SIZE(hand_words_size)
 		EVENT_ON_SCROLL(hand_words_scroll)

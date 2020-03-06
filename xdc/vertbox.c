@@ -164,12 +164,6 @@ void hand_vertbox_timer(res_win_t widget, var_long tid)
 	}
 }
 
-void hand_vertbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	vertbox_delta_t* ptd = GETVERTBOXDELTA(widget);
-	
-}
-
 void hand_vertbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	vertbox_delta_t* ptd = GETVERTBOXDELTA(widget);
@@ -222,7 +216,6 @@ res_win_t vertbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_vertbox_create)
 		EVENT_ON_DESTROY(hand_vertbox_destroy)
 
-		EVENT_ON_ERASE(hand_vertbox_erase)
 		EVENT_ON_PAINT(hand_vertbox_paint)
 
 		EVENT_ON_SIZE(hand_vertbox_size)

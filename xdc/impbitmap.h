@@ -57,6 +57,13 @@ XDC_API void destroy_bitmap(res_bmp_t bmp);
 XDC_API void get_bitmap_size(res_bmp_t bmp, int* pw, int* ph);
 
 /*
+@FUNCTION create_context_bitmap: create a bitmap from memory context.
+@INPUT res_ctx_t rdc: memoey context resource handle.
+@RETURN res_bmp_t: if succeeds return bitmap resource handle, fails return NULL.
+*/
+XDC_API res_bmp_t create_context_bitmap(res_ctx_t rdc);
+
+/*
 @FUNCTION create_color_bitmap: create a color based bitmap.
 @INPUT res_ctx_t rdc: device context resource handle.
 @INPUT const xcolor_t* pxc: the color struct.

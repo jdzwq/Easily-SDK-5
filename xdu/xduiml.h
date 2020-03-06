@@ -74,6 +74,7 @@ void	_delete_region(res_rgn_t rgn);
 bool_t	_pt_in_region(res_rgn_t rgn, const xpoint_t* ppt);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
+res_bmp_t _create_context_bitmap(res_ctx_t rdc);
 res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h);
 res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay);
 res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay);

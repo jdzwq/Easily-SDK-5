@@ -587,7 +587,7 @@ void _gdiplus_uninit(void)
 
 void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, const xpoint_t* ppt2)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = ppt1->x;
@@ -622,7 +622,7 @@ void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, co
 
 void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -690,7 +690,7 @@ void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 
 void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	int r;
 
 	r = (prt->w) / 10;
@@ -800,7 +800,7 @@ void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 
 void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -858,7 +858,7 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 
 void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = ppt->x - rx;
@@ -921,7 +921,7 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 
 void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, int rx, int ry, double fang, double tang)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = ppt->x - rx;
@@ -963,7 +963,7 @@ void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, i
 
 void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int alen, double arc)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	double a1;
 	int x_line0, y_line0, x_line1, y_line1, x_line2, y_line2;
 	int x1, x2, y1, y2;
@@ -1082,7 +1082,7 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 
 void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	GraphicsPath path;	
 	POINT pt[2];
@@ -1138,7 +1138,7 @@ void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,
 
 void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	GraphicsPath path;	
 	POINT pt[2];
@@ -1245,7 +1245,7 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 
 void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[4];
 	pt[0].x = ppt1->x;
@@ -1272,7 +1272,7 @@ void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1
 
 void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	Point* pa = new Point[n];
 	POINT pi;
@@ -1303,9 +1303,9 @@ void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, 
 
 void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
-	GraphicsPath* path = create_path(rdc, aa, pa);
+	GraphicsPath* path = create_path(hDC, aa, pa);
 
 	if (!path)
 		return;
@@ -1390,7 +1390,7 @@ void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 
 void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	xbrush_t xb;
 
 	POINT pt[2];
@@ -1416,7 +1416,7 @@ void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 
 void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -1447,7 +1447,7 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* p
 
 void _gdiplus_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	Font* pf = create_font(pxf);
 
@@ -1483,6 +1483,7 @@ void _gdiplus_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,cons
 
 void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HFONT hFont, orgFont;
 	COLORREF clr, orgClr;
 	int fs;
@@ -1495,7 +1496,7 @@ void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, c
 
 	parse_xcolor(&xc, pxf->color);
 
-	lf.lfHeight = -MulDiv(fs, GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(fs, GetDeviceCaps(hDC, LOGPIXELSY), 72);
 	lf.lfWeight = xstol(pxf->weight);
 
 	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
@@ -1518,24 +1519,24 @@ void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, c
 
 	hFont = CreateFontIndirect(&lf);
 
-	orgFont = (HFONT)SelectObject(rdc, hFont);
+	orgFont = (HFONT)SelectObject(hDC, hFont);
 
 	clr = RGB(xc.r, xc.g, xc.b);
-	orgClr = SetTextColor(rdc, clr);
+	orgClr = SetTextColor(hDC, clr);
 
 	if (len < 0 && txt)
 		len = xslen(txt);
 
-	TextOut(rdc, ppt->x, ppt->y, txt, len);
+	TextOut(hDC, ppt->x, ppt->y, txt, len);
 
-	SetTextColor(rdc, orgClr);
-	hFont = (HFONT)SelectObject(rdc, orgFont);
+	SetTextColor(hDC, orgClr);
+	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
 }
 
 void _gdiplus_draw_image(res_ctx_t rdc,res_bmp_t bmp,const tchar_t* clr,const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	Image* pi = new Bitmap((HBITMAP)bmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	if (!pi)
@@ -1577,7 +1578,7 @@ void _gdiplus_draw_image(res_ctx_t rdc,res_bmp_t bmp,const tchar_t* clr,const xr
 
 void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	Image* pi = new Bitmap((HBITMAP)bmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	if (!pi)
@@ -1611,9 +1612,7 @@ void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* prt)
 
 /*void _gdiplus_draw_ico(res_ctx_t rdc, res_ico_t icon, const xrect_t* prt)
 {
-XDC_ASSERT(rdc != NULL);
-
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	Image* pi = new Bitmap((HICON)icon);
 	if (!pi)
@@ -1645,21 +1644,26 @@ XDC_ASSERT(rdc != NULL);
 
 void _gdiplus_exclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 {
-	ExcludeClipRect(rdc, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
+	HDC hDC = (HDC)(rdc->context);
+
+	ExcludeClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
 void _gdiplus_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 {
-	IntersectClipRect(rdc, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
+	HDC hDC = (HDC)(rdc->context);
+
+	IntersectClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
 void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 {
+	HDC hDC = (HDC)(rdc->context);
 	Region gn(rgn);
 
 	Brush* pb = create_brush(pxb);
 
-	Graphics gh(rdc);
+	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
 
 	gh.FillRegion(pb, &gn);
@@ -1670,14 +1674,17 @@ void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
 {
 	BOOL bRef = 0;
+	HDC hDC;
 
 	if (!rdc)
 	{
 		bRef = 1;
-		rdc = GetDC(NULL);
+		hDC = GetDC(NULL);
 	}
-
-	HDC hDC = (HDC)rdc;
+	else
+	{
+		hDC = (HDC)(rdc->context);
+	}
 
 	POINT pt[2];
 	pt[0].x = pxr->x;
@@ -1724,17 +1731,22 @@ void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 	delete ps;
 
 	if (bRef)
-		ReleaseDC(NULL, rdc);
+		ReleaseDC(NULL, hDC);
 }
 
 void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
 	BOOL bRef = 0;
+	HDC hDC;
 
 	if (!rdc)
 	{
 		bRef = 1;
-		rdc = GetDC(NULL);
+		hDC = GetDC(NULL);
+	}
+	else
+	{
+		hDC = (HDC)(rdc->context);
 	}
 
 	LOGFONT lf;
@@ -1746,7 +1758,7 @@ void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, i
 
 	fs = xstol(pxf->size);
 
-	lf.lfHeight = -MulDiv(fs, GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(fs, GetDeviceCaps(hDC, LOGPIXELSY), 72);
 	lf.lfWeight = xstol(pxf->weight);
 
 	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
@@ -1769,18 +1781,18 @@ void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, i
 
 	hFont = CreateFontIndirect(&lf);
 
-	orgFont = (HFONT)SelectObject(rdc, hFont);
+	orgFont = (HFONT)SelectObject(hDC, hFont);
 
 	if (len < 0)
 		len = (txt)? xslen(txt) : 0;
 
-	GetTextExtentPoint32(rdc, txt, len, &si);
+	GetTextExtentPoint32(hDC, txt, len, &si);
 
-	hFont = (HFONT)SelectObject(rdc, orgFont);
+	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
 
 	if (bRef)
-		ReleaseDC(NULL, rdc);
+		ReleaseDC(NULL, hDC);
 
 	pxs->cx = si.cx;
 	pxs->cy = si.cy;
@@ -1789,11 +1801,16 @@ void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, i
 void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
 	BOOL bRef = 0;
+	HDC hDC;
 
 	if (!rdc)
 	{
 		bRef = 1;
-		rdc = GetDC(NULL);
+		hDC = GetDC(NULL);
+	}
+	else
+	{
+		hDC = (HDC)(rdc->context);
 	}
 
 	LOGFONT lf;
@@ -1805,7 +1822,7 @@ void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 
 	fs = xstol(pxf->size);
 
-	lf.lfHeight = -MulDiv(fs, GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(fs, GetDeviceCaps(hDC, LOGPIXELSY), 72);
 	lf.lfWeight = xstol(pxf->weight);
 
 	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
@@ -1827,15 +1844,15 @@ void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	}
 
 	hFont = CreateFontIndirect(&lf);
-	orgFont = (HFONT)SelectObject(rdc, hFont);
+	orgFont = (HFONT)SelectObject(hDC, hFont);
 
-	GetTextMetrics(rdc, &tm);
+	GetTextMetrics(hDC, &tm);
 
-	hFont = (HFONT)SelectObject(rdc, orgFont);
+	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
 
 	if (bRef)
-		ReleaseDC(NULL, rdc);
+		ReleaseDC(NULL, hDC);
 
 	//pxs->cx = tm.tmAveCharWidth;
 	pxs->cy = tm.tmHeight;

@@ -180,7 +180,6 @@ typedef struct _plot_t{
 #define EVENT_ON_SET_FOCUS(proc)		pev->pf_on_set_focus = proc;
 #define EVENT_ON_KILL_FOCUS(proc)		pev->pf_on_kill_focus = proc;
 #define EVENT_ON_PAINT(proc)			pev->pf_on_paint = proc;
-#define EVENT_ON_ERASE(proc)			pev->pf_on_erase = proc;
 #define EVENT_ON_NOTICE(proc)			pev->pf_on_notice = proc;
 #define EVENT_ON_MENU_COMMAND(proc)		pev->pf_on_menu_command = proc;
 #define EVENT_ON_PARENT_COMMAND(proc)	pev->pf_on_parent_command = proc;
@@ -220,7 +219,6 @@ typedef struct _plot_t{
 #define SUBPROC_ON_SET_FOCUS(proc)			pev->sub_on_set_focus = proc;
 #define SUBPROC_ON_KILL_FOCUS(proc)			pev->sub_on_kill_focus = proc;
 #define SUBPROC_ON_PAINT(proc)				pev->sub_on_paint = proc;
-#define SUBPROC_ON_ERASE(proc)				pev->sub_on_erase = proc;
 #define SUBPROC_ON_NOTICE(proc)				pev->sub_on_notice = proc;
 #define SUBPROC_ON_MENU_COMMAND(proc)		pev->sub_on_menu_command = proc;
 #define SUBPROC_ON_PARENT_COMMAND(proc)		pev->sub_on_parent_command = proc;

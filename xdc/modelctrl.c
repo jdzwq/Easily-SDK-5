@@ -311,7 +311,7 @@ static res_bmp_t _modelctrl_merge_anno(res_win_t widget)
 	model_delta_t* ptd = GETMODELDELTA(widget);
 
 	res_ctx_t rdc, memdc;
-	res_pmp_t org, membm;
+	res_bmp_t membm;
 	xcolor_t xc = { 0 };
 	xbrush_t xb = { 0 };
 	xrect_t xr = { 0 };
@@ -324,10 +324,8 @@ static res_bmp_t _modelctrl_merge_anno(res_win_t widget)
 	rdc = widget_client_ctx(widget);
 
 	get_bitmap_size(ptd->bmp, &xs.cx, &xs.cy);
-	membm = create_compatible_pixmap(rdc, xs.cx, xs.cy);
 
-	memdc = create_compatible_context(rdc);
-	org = (res_pmp_t)select_pixmap(memdc, membm);
+	memdc = create_compatible_context(rdc, xs.cx, xs.cy);
 
 	xr.x = 0;
 	xr.h = 0;
@@ -347,7 +345,7 @@ static res_bmp_t _modelctrl_merge_anno(res_win_t widget)
 		//noti_model_owner(widget, NC_MODELANNODRAW, ilk, (void*)&xr, memdc);
 	}
 
-	membm = (res_pmp_t)select_pixmap(memdc, org);
+	membm = create_context_bitmap(memdc);
 
 	destroy_context(memdc);
 
@@ -1035,11 +1033,6 @@ void hand_model_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_model_erase(res_win_t widget, res_ctx_t dc)
-{
-	model_delta_t* ptd = GETMODELDELTA(widget);
-}
-
 void hand_model_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
@@ -1105,7 +1098,6 @@ res_win_t modelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_model_create)
 		EVENT_ON_DESTROY(hand_model_destroy)
 
-		EVENT_ON_ERASE(hand_model_erase)
 		EVENT_ON_PAINT(hand_model_paint)
 
 		EVENT_ON_SIZE(hand_model_size)

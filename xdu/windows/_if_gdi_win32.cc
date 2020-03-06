@@ -55,7 +55,7 @@ static void DPtoLP(HDC hDC,POINT* pt,int n)
 
 static void _alphablend_rect(res_ctx_t rdc, const xbrush_t* pxb, const RECT* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	HBITMAP hBmp = CreateCompatibleBitmap(hDC, prt->right - prt->left, prt->bottom - prt->top);
 	HDC hComDC = CreateCompatibleDC(hDC);
@@ -166,13 +166,13 @@ static HBRUSH create_brush(const xbrush_t* pxb)
 	return CreateSolidBrush(RGB(xc.r, xc.g, xc.b));
 }
 
-static HFONT create_font(res_ctx_t rdc, const xfont_t* pxf)
+static HFONT create_font(HDC hDC, const xfont_t* pxf)
 {
 	LOGFONT lf;
 	
 	CopyMemory((void*)&lf, (void*)&lf_gdi, sizeof(LOGFONT));
 
-	lf.lfHeight = -MulDiv(xstol(pxf->size), GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(xstol(pxf->size), GetDeviceCaps(hDC, LOGPIXELSY), 72);
 	lf.lfWeight = xstol(pxf->weight);
 
 	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
@@ -214,7 +214,7 @@ void _gdi_uninit(void)
 
 void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	
 	POINT pt[2];
 	pt[0].x = ppt1->x;
@@ -244,7 +244,7 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 
 void _gdi_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT pt[2];
 	pt[0].x = ppt1->x;
@@ -291,7 +291,7 @@ void _gdi_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, co
 
 void _gdi_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = prt->x;
@@ -347,7 +347,7 @@ void _gdi_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 
 void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT* pt = (POINT*)LocalAlloc(LPTR, n * sizeof(POINT));
 	
@@ -380,7 +380,7 @@ void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int 
 
 void _gdi_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT* pt = (POINT*)LocalAlloc(LPTR, n * sizeof(POINT));
 
@@ -426,7 +426,7 @@ void _gdi_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const
 
 void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT* pt = (POINT*)LocalAlloc(LPTR, 4 * sizeof(POINT));
 
@@ -462,7 +462,7 @@ void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, co
 
 void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	POINT* pt = (POINT*)LocalAlloc(LPTR, n * sizeof(POINT));
 
@@ -495,7 +495,7 @@ void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int 
 
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = prt->x;
@@ -528,7 +528,7 @@ void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 
 void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	xbrush_t xb;
 
 	RECT rt;
@@ -548,7 +548,7 @@ void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 
 void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = prt->x;
@@ -602,7 +602,7 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 
 void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	int r;
 
 	r = (prt->w) / 10;
@@ -689,7 +689,7 @@ void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 
 void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = prt->x;
@@ -750,7 +750,7 @@ void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const x
 #ifdef WINCE
 	return;
 #else
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = ppt->x - rx;
@@ -799,7 +799,7 @@ void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const x
 
 void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt,int alen,double arc)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	double a1;
 	int x_line0,y_line0,x_line1,y_line1,x_line2,y_line2;
 	int x1, x2, y1, y2;
@@ -869,7 +869,7 @@ void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 
 void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 	
 	if (is_null(txt))
 		return;
@@ -920,7 +920,7 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 
 	if (pxf)
 	{
-		hFont = create_font(rdc,pxf);
+		hFont = create_font(hDC,pxf);
 		orgFont = (HFONT)SelectObject(hDC, hFont);
 
 		xcolor_t xc;
@@ -945,41 +945,42 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 
 void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HFONT hFont, orgFont;
 	COLORREF clr, orgClr;
 	xcolor_t xc;
 
-	hFont = create_font(rdc, pxf);
-	orgFont = (HFONT)SelectObject(rdc, hFont);
+	hFont = create_font(hDC, pxf);
+	orgFont = (HFONT)SelectObject(hDC, hFont);
 
 	if (pxf)
 	{
 		parse_xcolor(&xc, pxf->color);
 		clr = RGB(xc.r, xc.g, xc.b);
-		orgClr = SetTextColor(rdc, clr);
+		orgClr = SetTextColor(hDC, clr);
 	}
 
 	if (len < 0)
 		len = xslen(txt);
 
 #ifdef WINCE
-	ExtTextOut(rdc, ppt->x, ppt->y, 0, NULL, txt, len, NULL);
+	ExtTextOut(hDC, ppt->x, ppt->y, 0, NULL, txt, len, NULL);
 #else
-	TextOut(rdc, ppt->x, ppt->y, txt, len);
+	TextOut(hDC, ppt->x, ppt->y, txt, len);
 #endif
 
 	if (pxf)
 	{
-		SetTextColor(rdc, orgClr);
+		SetTextColor(hDC, orgClr);
 	}
 
-	hFont = (HFONT)SelectObject(rdc, orgFont);
+	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
 }
 
 void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hBmp,const tchar_t* clr,const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = prt->x;
@@ -1014,7 +1015,7 @@ void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hBmp,const tchar_t* clr,const xrect
 
 void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
 {
-	HDC hDC = (HDC)rdc;
+	HDC hDC = (HDC)(rdc->context);
 
 	RECT rt;
 	rt.left = prt->x;
@@ -1039,36 +1040,44 @@ void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
 
 void _gdi_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 {
+	HDC hDC = (HDC)(rdc->context);
 	HBRUSH hBrush;
 
 	hBrush = create_brush(pxb);
 
-	FillRgn(rdc, rgn, hBrush);
+	FillRgn(hDC, rgn, hBrush);
 
 	DeleteObject(hBrush);
 }
 
 void _gdi_exclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 {
-	ExcludeClipRect(rdc, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
+	HDC hDC = (HDC)(rdc->context);
+
+	ExcludeClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
 void _gdi_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 {
-	IntersectClipRect(rdc, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
+	HDC hDC = (HDC)(rdc->context);
+
+	IntersectClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
 void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* prt)
 {
 	BOOL bRef = 0;
+	HDC hDC;
 
 	if (!rdc)
 	{
 		bRef = 1;
-		rdc = GetDC(NULL);
+		hDC = GetDC(NULL);
 	}
-
-	HDC hDC = (HDC)rdc;
+	else
+	{
+		hDC = (HDC)rdc->context;
+	}
 
 	if (is_null(txt))
 		return;
@@ -1117,7 +1126,7 @@ void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const
 
 	if (pxf)
 	{
-		hFont = create_font(rdc, pxf);
+		hFont = create_font(hDC, pxf);
 		orgFont = (HFONT)SelectObject(hDC, hFont);
 	}
 
@@ -1136,7 +1145,7 @@ void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const
 	}
 
 	if (bRef)
-		ReleaseDC(NULL, rdc);
+		ReleaseDC(NULL, hDC);
 }
 
 void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
@@ -1145,16 +1154,21 @@ void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int l
 	LOGFONT lf;
 	HFONT hFont,orgFont;
 	SIZE si;
+	HDC hDC;
 
 	if (!rdc)
 	{
 		bRef = 1;
-		rdc = GetDC(NULL);
+		hDC = GetDC(NULL);
+	}
+	else
+	{
+		hDC = (HDC)rdc->context;
 	}
 
 	CopyMemory((void*)&lf, (void*)&lf_gdi, sizeof(LOGFONT));
 
-	lf.lfHeight = lf.lfHeight = -MulDiv(xstol(pxf->size), GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = lf.lfHeight = -MulDiv(xstol(pxf->size), GetDeviceCaps(hDC, LOGPIXELSY), 72);
 	lf.lfWeight = xstol(pxf->weight);
 
 	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
@@ -1177,30 +1191,35 @@ void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int l
 
 	hFont = CreateFontIndirect(&lf);
 
-	orgFont = (HFONT)SelectObject(rdc, hFont);
+	orgFont = (HFONT)SelectObject(hDC, hFont);
 
 	if (len < 0)
 		len = xslen(txt);
 
-	GetTextExtentPoint32(rdc, txt, len, &si);
+	GetTextExtentPoint32(hDC, txt, len, &si);
 	pxs->cx = si.cx;
 	pxs->cy = si.cy;
 
-	hFont = (HFONT)SelectObject(rdc, orgFont);
+	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
 
 	if (bRef)
-		ReleaseDC(NULL, rdc);
+		ReleaseDC(NULL, hDC);
 }
 
 void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
 	BOOL bRef = 0;
+	HDC hDC;
 
 	if (!rdc)
 	{
 		bRef = 1;
-		rdc = GetDC(NULL);
+		hDC = GetDC(NULL);
+	}
+	else
+	{
+		hDC = (HDC)rdc->context;
 	}
 
 	LOGFONT lf;
@@ -1209,7 +1228,7 @@ void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 
 	CopyMemory((void*)&lf, (void*)&lf_gdi, sizeof(LOGFONT));
 
-	lf.lfHeight = lf.lfHeight = -MulDiv(xstol(pxf->size), GetDeviceCaps(rdc, LOGPIXELSY), 72);
+	lf.lfHeight = lf.lfHeight = -MulDiv(xstol(pxf->size), GetDeviceCaps(hDC, LOGPIXELSY), 72);
 	lf.lfWeight = xstol(pxf->weight);
 
 	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
@@ -1231,16 +1250,16 @@ void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	}
 
 	hFont = CreateFontIndirect(&lf);
-	orgFont = (HFONT)SelectObject(rdc, hFont);
+	orgFont = (HFONT)SelectObject(hDC, hFont);
 
-	GetTextMetrics(rdc, &tm);
+	GetTextMetrics(hDC, &tm);
 
-	hFont = (HFONT)SelectObject(rdc, orgFont);
+	hFont = (HFONT)SelectObject(hDC, orgFont);
 
 	DeleteObject(hFont);
 
 	if (bRef)
-		ReleaseDC(NULL, rdc);
+		ReleaseDC(NULL, hDC);
 
 	pxs->cy = tm.tmHeight;
 	pxs->cx = tm.tmMaxCharWidth;

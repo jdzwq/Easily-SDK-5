@@ -2496,15 +2496,6 @@ void hand_form_notice(res_win_t widget, NOTICE* pnt)
 	}
 }
 
-
-void hand_form_erase(res_win_t widget, res_ctx_t dc)
-{
-	form_delta_t* ptd = GETFORMDELTA(widget);
-
-	if (!ptd->form)
-		return;
-}
-
 void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
@@ -2689,7 +2680,6 @@ res_win_t formctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_CREATE(hand_form_create)
 		EVENT_ON_DESTROY(hand_form_destroy)
 
-		EVENT_ON_ERASE(hand_form_erase)
 		EVENT_ON_PAINT(hand_form_paint)
 
 		EVENT_ON_SIZE(hand_form_size)

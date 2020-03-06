@@ -371,14 +371,6 @@ void hand_title_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_title_erase(res_win_t widget, res_ctx_t dc)
-{
-	title_delta_t* ptd = GETTITLEDELTA(widget);
-
-	if (!ptd->title)
-		return;
-}
-
 void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
@@ -447,7 +439,6 @@ res_win_t titlectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_title_create)
 		EVENT_ON_DESTROY(hand_title_destroy)
 
-		EVENT_ON_ERASE(hand_title_erase)
 		EVENT_ON_PAINT(hand_title_paint)
 
 		EVENT_ON_SIZE(hand_title_size)

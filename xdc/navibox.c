@@ -206,12 +206,6 @@ void hand_navibox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_navibox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
-	
-}
-
 void hand_navibox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
@@ -271,7 +265,6 @@ res_win_t navibox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_navibox_create)
 		EVENT_ON_DESTROY(hand_navibox_destroy)
 
-		EVENT_ON_ERASE(hand_navibox_erase)
 		EVENT_ON_PAINT(hand_navibox_paint)
 
 		EVENT_ON_SIZE(hand_navibox_size)

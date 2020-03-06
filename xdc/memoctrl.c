@@ -676,17 +676,6 @@ void hand_memoctrl_menu_command(res_win_t widget, int code, int cid, var_long da
 	}
 }
 
-void hand_memoctrl_erase(res_win_t widget, res_ctx_t dc)
-{
-	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-}
-
 void hand_memoctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
@@ -712,7 +701,6 @@ res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_CREATE(hand_memoctrl_create)
 		EVENT_ON_DESTROY(hand_memoctrl_destroy)
 
-		EVENT_ON_ERASE(hand_memoctrl_erase)
 		EVENT_ON_PAINT(hand_memoctrl_paint)
 
 		EVENT_ON_SIZE(hand_memoctrl_size)

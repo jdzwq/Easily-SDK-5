@@ -301,6 +301,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 	LPCREATESTRUCT lpcs;
 	if_event_t* pev;
+	win32_context_t wct = { 0 };
 
 	switch (message)
 	{
@@ -320,9 +321,14 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 			SetBkMode(hDC, TRANSPARENT);
 
-			(*pev->pf_on_nc_paint)(hWnd, hDC);
+			wct.context = hDC;
+			wct.device.widget = hWnd;
+			wct.type = CONTEXT_WIDGET;
+
+			(*pev->pf_on_nc_paint)(hWnd, &wct);
 
 			ReleaseDC(hWnd, hDC);
+			ZeroMemory((void*)&wct, sizeof(win32_context_t));
 
 			return 0;
 		}
@@ -889,16 +895,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			return MA_NOACTIVATE;
 		break;
 	case WM_ERASEBKGND:
-		if (ds & WD_STYLE_OPENGL)
+		if ((ds & WD_STYLE_OWNERNC) || (ds & WD_STYLE_OPENGL))
 		{
-			return 0;
-		}
-
-		pev = GETXDUDISPATCH(hWnd);
-		if (pev && pev->pf_on_erase)
-		{
-			(*pev->pf_on_erase)(hWnd, (res_ctx_t)wParam);
-
 			return 0;
 		}
 		break;
@@ -924,7 +922,13 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 					GL_BEGIN(hWnd, ps.hdc);
 				}
 
-				(*pev->pf_on_paint)(hWnd, ps.hdc, &xrFront);
+				wct.context = ps.hdc;
+				wct.device.widget = hWnd;
+				wct.type = CONTEXT_WIDGET;
+
+				(*pev->pf_on_paint)(hWnd, &wct, &xrFront);
+
+				ZeroMemory((void*)&wct, sizeof(win32_context_t));
 
 				if (ds & WD_STYLE_OPENGL)
 				{
@@ -1083,6 +1087,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	DWORD uIdSubclass;
 	uIdSubclass = (pev)? pev->sid : 0;
 #endif
+
+	win32_context_t wct = { 0 };
 
 	switch (message)
 	{
@@ -1264,15 +1270,9 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		break;
 #endif 
 	case WM_ERASEBKGND:
-		if (ds & WD_STYLE_OPENGL)
+		if ((ds & WD_STYLE_OWNERNC) || (ds & WD_STYLE_OPENGL))
 		{
 			return 0;
-		}
-
-		if (pev && pev->sub_on_erase)
-		{
-			if ((*pev->sub_on_erase)(hWnd, (res_ctx_t)wParam, (uid_t)uIdSubclass, pev->delta))
-				return 0;
 		}
 		break;
 	case WM_PAINT:
@@ -1297,7 +1297,13 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 					GL_BEGIN(hWnd, ps.hdc);
 				}
 
-				rt = (*pev->sub_on_paint)(hWnd, ps.hdc, &xrFront, (uid_t)uIdSubclass, pev->delta);
+				wct.context = ps.hdc;
+				wct.device.widget = hWnd;
+				wct.type = CONTEXT_WIDGET;
+
+				rt = (*pev->sub_on_paint)(hWnd, &wct, &xrFront, (uid_t)uIdSubclass, pev->delta);
+
+				ZeroMemory((void*)&wct, sizeof(win32_context_t));
 
 				if (ds & WD_STYLE_OPENGL)
 				{
@@ -1902,17 +1908,35 @@ bool_t _widget_enum_child(res_win_t widget, PF_ENUM_WINDOW_PROC pf, var_long pv)
 
 res_ctx_t _widget_client_ctx(res_win_t wt)
 {
-	return GetDC(wt);
+	win32_context_t* pct;
+
+	pct = (win32_context_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_context_t));
+	pct->context = GetDC(wt);
+	pct->device.widget = wt;
+	pct->type = CONTEXT_WIDGET;
+	
+	return (res_ctx_t)pct;
 }
 
 res_ctx_t _widget_window_ctx(res_win_t wt)
 {
-	return GetWindowDC(wt);
+	win32_context_t* pct;
+
+	pct = (win32_context_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_context_t));
+	pct->context = GetWindowDC(wt);
+	pct->device.widget = wt;
+	pct->type = CONTEXT_WIDGET;
+
+	return (res_ctx_t)pct;
 }
 
 void _widget_release_ctx(res_win_t wt, res_ctx_t dc)
 {
-	ReleaseDC(wt, dc);
+	win32_context_t* pct = (win32_context_t*)dc;
+
+	ReleaseDC(wt, pct->context);
+
+	HeapFree(GetProcessHeap(), 0, pct);
 }
 
 void _widget_get_client_rect(res_win_t wt, xrect_t* prt)

@@ -180,11 +180,6 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_listdlg_erase(res_win_t widget, res_ctx_t dc)
-{
-	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
-}
-
 void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
@@ -271,7 +266,6 @@ res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner)
 		EVENT_ON_CREATE(hand_listdlg_create)
 		EVENT_ON_DESTROY(hand_listdlg_destroy)
 
-		EVENT_ON_ERASE(hand_listdlg_erase)
 		EVENT_ON_PAINT(hand_listdlg_paint)
 
 		EVENT_ON_SIZE(hand_listdlg_size)

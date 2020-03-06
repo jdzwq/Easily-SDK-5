@@ -52,6 +52,15 @@ void get_bitmap_size(res_bmp_t rdc, int* pw, int* ph)
 	(*pif->pf_get_bitmap_size)(rdc, pw, ph);
 }
 
+res_bmp_t create_context_bitmap(res_ctx_t rdc)
+{
+	if_context_t* pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	return (*pif->pf_create_context_bitmap)(rdc);
+}
+
 res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
 	if_context_t* pif;

@@ -274,14 +274,6 @@ void hand_menu_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_menu_erase(res_win_t widget, res_ctx_t dc)
-{
-	menu_delta_t* ptd = GETMENUDELTA(widget);
-	
-	if (!ptd->menu)
-		return;
-}
-
 void hand_menu_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	menu_delta_t* ptd = GETMENUDELTA(widget);
@@ -349,7 +341,6 @@ res_win_t menubox_create(res_win_t wparent, dword_t wstyle, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_menu_create)
 		EVENT_ON_DESTROY(hand_menu_destroy)
 
-		EVENT_ON_ERASE(hand_menu_erase)
 		EVENT_ON_PAINT(hand_menu_paint)
 
 		EVENT_ON_SIZE(hand_menu_size)

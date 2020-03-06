@@ -829,7 +829,7 @@ res_ctx_t _widget_window_ctx(res_win_t wt)
 
 void _widget_release_ctx(res_win_t wt, res_ctx_t dc)
 {
-	X11_suface_t* ctx = (X11_suface_t*)dc;
+	X11_context_t* ctx = (X11_context_t*)dc;
 
 }
 

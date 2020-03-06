@@ -699,14 +699,6 @@ void hand_notes_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_notes_erase(res_win_t widget, res_ctx_t rdc)
-{
-	notes_delta_t* ptd = GETNOTESDELTA(widget);
-	
-	if (!ptd->arch)
-		return;
-}
-
 void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
@@ -909,7 +901,6 @@ res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_notes_create)
 		EVENT_ON_DESTROY(hand_notes_destroy)
 
-		EVENT_ON_ERASE(hand_notes_erase)
 		EVENT_ON_PAINT(hand_notes_paint)
 
 		EVENT_ON_SIZE(hand_notes_size)

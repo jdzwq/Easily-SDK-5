@@ -120,22 +120,22 @@ void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len
 }
 
 /*************************************************************************************************/
-res_ctx_t create_display_context()
+res_ctx_t create_display_context(res_win_t wt)
 {
 	if_context_t* pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	return (*pif->pf_create_display_context)();
+	return (*pif->pf_create_display_context)(wt);
 }
 
-res_ctx_t create_compatible_context(res_ctx_t rdc)
+res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height)
 {
 	if_context_t* pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	return (*pif->pf_create_compatible_context)(rdc);
+	return (*pif->pf_create_compatible_context)(rdc, width, height);
 }
 
 void destroy_context(res_ctx_t rdc)
@@ -163,33 +163,6 @@ void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
 	pif = PROCESS_CONTEXT_INTERFACE;
 
 	(*pif->pf_get_device_caps)(rdc, pcap);
-}
-
-res_pmp_t select_pixmap(res_ctx_t rdc, res_pmp_t obj)
-{
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	return (*pif->pf_select_pixmap)(rdc, obj);
-}
-
-res_pmp_t create_compatible_pixmap(res_ctx_t rdc, int cx, int cy)
-{
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	return (*pif->pf_create_compatible_pixmap)(rdc, cx, cy);
-}
-
-void destroy_pixmap(res_pmp_t pmp)
-{
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_destroy_pixmap)(pmp);
 }
 
 #ifdef XDU_SUPPORT_CONTEXT_REGION

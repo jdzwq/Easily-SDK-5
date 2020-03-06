@@ -365,14 +365,6 @@ void hand_status_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_status_erase(res_win_t widget, res_ctx_t dc)
-{
-	status_delta_t* ptd = GETSTATUSDELTA(widget);
-
-	if (!ptd->status)
-		return;
-}
-
 void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
@@ -465,7 +457,6 @@ res_win_t statusctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 		EVENT_ON_CREATE(hand_status_create)
 		EVENT_ON_DESTROY(hand_status_destroy)
 
-		EVENT_ON_ERASE(hand_status_erase)
 		EVENT_ON_PAINT(hand_status_paint)
 
 		EVENT_ON_SIZE(hand_status_size)

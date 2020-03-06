@@ -1096,15 +1096,6 @@ void hand_dialog_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-
-void hand_dialog_erase(res_win_t widget, res_ctx_t dc)
-{
-	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
-
-	if (!ptd->dialog)
-		return;
-}
-
 void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
@@ -1223,7 +1214,6 @@ res_win_t dialogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 		EVENT_ON_CREATE(hand_dialog_create)
 		EVENT_ON_DESTROY(hand_dialog_destroy)
 
-		EVENT_ON_ERASE(hand_dialog_erase)
 		EVENT_ON_PAINT(hand_dialog_paint)
 
 		EVENT_ON_SIZE(hand_dialog_size)

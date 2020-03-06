@@ -86,12 +86,6 @@ void hand_shapebox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_shapebox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	shapebox_delta_t* ptd = GETSHAPEBOXDELTA(widget);
-	
-}
-
 void hand_shapebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	shapebox_delta_t* ptd = GETSHAPEBOXDELTA(widget);
@@ -132,7 +126,6 @@ res_win_t shapebox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_shapebox_create)
 		EVENT_ON_DESTROY(hand_shapebox_destroy)
 
-		EVENT_ON_ERASE(hand_shapebox_erase)
 		EVENT_ON_PAINT(hand_shapebox_paint)
 
 		EVENT_ON_SIZE(hand_shapebox_size)

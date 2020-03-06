@@ -641,16 +641,6 @@ void hand_tagctrl_menu_command(res_win_t widget, int code, int cid, var_long dat
 	}
 }
 
-void hand_tagctrl_erase(res_win_t widget, res_ctx_t dc)
-{
-	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
-
-	if (!ptd)
-		return;
-
-	if (!ptd->textor.data)
-		return;
-}
 
 void hand_tagctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
@@ -675,7 +665,6 @@ res_win_t tagctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 		EVENT_ON_CREATE(hand_tagctrl_create)
 		EVENT_ON_DESTROY(hand_tagctrl_destroy)
 
-		EVENT_ON_ERASE(hand_tagctrl_erase)
 		EVENT_ON_PAINT(hand_tagctrl_paint)
 
 		EVENT_ON_SIZE(hand_tagctrl_size)

@@ -300,11 +300,6 @@ void hand_tabledlg_menu_command(res_win_t widget, int code, int cid, var_long da
 	}
 }
 
-void hand_tabledlg_erase(res_win_t widget, res_ctx_t dc)
-{
-	tabledlg_delta_t* ptd = GETTABLEDLGDELTA(widget);
-}
-
 void hand_tabledlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	tabledlg_delta_t* ptd = GETTABLEDLGDELTA(widget);
@@ -366,7 +361,6 @@ res_win_t tabledlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner)
 		EVENT_ON_CREATE(hand_tabledlg_create)
 		EVENT_ON_DESTROY(hand_tabledlg_destroy)
 
-		EVENT_ON_ERASE(hand_tabledlg_erase)
 		EVENT_ON_PAINT(hand_tabledlg_paint)
 
 		EVENT_ON_SIZE(hand_tabledlg_size)

@@ -57,10 +57,10 @@ void _context_cleanup(void)
 
 res_ctx_t _create_display_context(res_win_t wt)
 {
-    X11_suface_t* ctx = NULL;
+    X11_context_t* ctx = NULL;
     XGCValues gv = {0};
     
-    ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
+    ctx = (X11_context_t*)calloc(1, sizeof(X11_context_t));
     
     ctx->device = (wt)? wt : DefaultRootWindow(g_display);
     ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
@@ -76,11 +76,11 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy)
     Window r;
     int x,y;
     unsigned int w,h,b,d;
-    X11_suface_t* ctx = NULL;
+    X11_context_t* ctx = NULL;
     
     XGetGeometry(g_display, rdc->device, &r, &x, &y, &w, &h, &b, &d);
     
-    ctx = (X11_suface_t*)calloc(1, sizeof(X11_suface_t));
+    ctx = (X11_context_t*)calloc(1, sizeof(X11_context_t));
 
     ctx->device = XCreatePixmap (g_display, r, cx, cy, d);
     ctx->context = XCreateGC(g_display, rdc->device, 0, &gv);

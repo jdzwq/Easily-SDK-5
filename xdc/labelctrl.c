@@ -535,14 +535,6 @@ void hand_label_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_label_erase(res_win_t widget, res_ctx_t dc)
-{
-	label_delta_t* ptd = GETLABELDELTA(widget);
-
-	if (!ptd->label)
-		return;
-}
-
 void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
@@ -606,7 +598,6 @@ res_win_t labelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_label_create)
 		EVENT_ON_DESTROY(hand_label_destroy)
 
-		EVENT_ON_ERASE(hand_label_erase)
 		EVENT_ON_PAINT(hand_label_paint)
 
 		EVENT_ON_SIZE(hand_label_size)

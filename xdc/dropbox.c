@@ -331,14 +331,6 @@ void hand_dropbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_dropbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
-	
-	if (!ptd->table)
-		return;
-}
-
 void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
@@ -401,7 +393,6 @@ res_win_t dropbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_dropbox_create)
 		EVENT_ON_DESTROY(hand_dropbox_destroy)
 
-		EVENT_ON_ERASE(hand_dropbox_erase)
 		EVENT_ON_PAINT(hand_dropbox_paint)
 
 		EVENT_ON_SIZE(hand_dropbox_size)

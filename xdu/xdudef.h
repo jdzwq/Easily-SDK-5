@@ -280,7 +280,8 @@ LICENSE.GPL3 for more details.
 /*define context type*/
 #define CONTEXT_WIDGET		0
 #define CONTEXT_MEMORY		1
-#define CONTEXT_PRINTER		2
+#define CONTEXT_SCREEN		2
+#define CONTEXT_PRINTER		3
 
 typedef struct _accel_t{
 	unsigned char vir;
@@ -363,7 +364,6 @@ typedef int(*SUB_ON_SIZE)(res_win_t, int, const xsize_t*, uid_t, var_long);
 typedef int(*SUB_ON_MOVE)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_SHOW)(res_win_t, bool_t, uid_t, var_long);
 typedef int(*SUB_ON_PAINT)(res_win_t, res_ctx_t, const xrect_t*, uid_t, var_long);
-typedef int(*SUB_ON_ERASE)(res_win_t, res_ctx_t, uid_t, var_long);
 typedef int(*SUB_ON_SET_FOCUS)(res_win_t, res_win_t, uid_t, var_long);
 typedef int(*SUB_ON_KILL_FOCUS)(res_win_t, res_win_t, uid_t, var_long);
 typedef int(*SUB_ON_ENABLE)(res_win_t, bool_t, uid_t, var_long);
@@ -407,7 +407,6 @@ typedef struct _if_subproc_t{
 	SUB_ON_SET_FOCUS	sub_on_set_focus;
 	SUB_ON_KILL_FOCUS	sub_on_kill_focus;
 	SUB_ON_PAINT		sub_on_paint;
-	SUB_ON_ERASE		sub_on_erase;
 	SUB_ON_NOTICE		sub_on_notice;
 	SUB_ON_MENU_COMMAND		sub_on_menu_command;
 	SUB_ON_PARENT_COMMAND	sub_on_parent_command;
@@ -452,7 +451,6 @@ typedef void(*PF_ON_MOVE)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_SHOW)(res_win_t, bool_t);
 typedef void(*PF_ON_ACTIVATE)(res_win_t, int);
 typedef void(*PF_ON_PAINT)(res_win_t, res_ctx_t, const xrect_t*);
-typedef void(*PF_ON_ERASE)(res_win_t, res_ctx_t);
 typedef void(*PF_ON_ENABLE)(res_win_t, bool_t);
 typedef void(*PF_ON_SET_FOCUS)(res_win_t, res_win_t);
 typedef void(*PF_ON_KILL_FOCUS)(res_win_t, res_win_t);
@@ -497,7 +495,6 @@ typedef struct _if_event_t{
 	PF_ON_SET_FOCUS		pf_on_set_focus;
 	PF_ON_KILL_FOCUS	pf_on_kill_focus;
 	PF_ON_PAINT			pf_on_paint;
-	PF_ON_ERASE			pf_on_erase;
 	PF_ON_NOTICE		pf_on_notice;
 	PF_ON_MENU_COMMAND		pf_on_menu_command;
 	PF_ON_PARENT_COMMAND	pf_on_parent_command;

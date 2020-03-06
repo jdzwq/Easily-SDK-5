@@ -1677,14 +1677,6 @@ void hand_statis_menu_command(res_win_t widget, int code, int cid, var_long data
 	}
 }
 
-void hand_statis_erase(res_win_t widget, res_ctx_t dc)
-{
-	statis_delta_t* ptd = GETSTATISDELTA(widget);
-
-	if (!ptd->statis)
-		return;
-}
-
 void hand_statis_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
@@ -1770,7 +1762,6 @@ res_win_t statisctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 		EVENT_ON_CREATE(hand_statis_create)
 		EVENT_ON_DESTROY(hand_statis_destroy)
 
-		EVENT_ON_ERASE(hand_statis_erase)
 		EVENT_ON_PAINT(hand_statis_paint)
 
 		EVENT_ON_SIZE(hand_statis_size)

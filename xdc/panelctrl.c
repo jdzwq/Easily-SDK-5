@@ -609,14 +609,6 @@ void hand_panel_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_panel_erase(res_win_t widget, res_ctx_t rdc)
-{
-	panel_delta_t* ptd = GETPANELDELTA(widget);
-	
-	if (!ptd->arch)
-		return;
-}
-
 void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
@@ -732,7 +724,6 @@ res_win_t panelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 		EVENT_ON_CREATE(hand_panel_create)
 		EVENT_ON_DESTROY(hand_panel_destroy)
 
-		EVENT_ON_ERASE(hand_panel_erase)
 		EVENT_ON_PAINT(hand_panel_paint)
 
 		EVENT_ON_SIZE(hand_panel_size)

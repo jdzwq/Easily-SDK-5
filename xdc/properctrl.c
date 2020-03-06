@@ -985,14 +985,6 @@ void hand_proper_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_proper_erase(res_win_t widget, res_ctx_t dc)
-{
-	proper_delta_t* ptd = GETPROPERDELTA(widget);
-
-	if (!ptd->proper)
-		return;
-}
-
 void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
@@ -1058,7 +1050,6 @@ res_win_t properctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 		EVENT_ON_CREATE(hand_proper_create)
 		EVENT_ON_DESTROY(hand_proper_destroy)
 
-		EVENT_ON_ERASE(hand_proper_erase)
 		EVENT_ON_PAINT(hand_proper_paint)
 
 		EVENT_ON_SIZE(hand_proper_size)

@@ -923,15 +923,6 @@ void hand_list_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_list_erase(res_win_t widget, res_ctx_t dc)
-{
-	list_delta_t* ptd = GETLISTDELTA(widget);
-
-	if (!ptd->list)
-		return;
-
-}
-
 void hand_list_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
@@ -998,7 +989,6 @@ res_win_t listctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_CREATE(hand_list_create)
 		EVENT_ON_DESTROY(hand_list_destroy)
 
-		EVENT_ON_ERASE(hand_list_erase)
 		EVENT_ON_PAINT(hand_list_paint)
 
 		EVENT_ON_SIZE(hand_list_size)

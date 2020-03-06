@@ -179,12 +179,6 @@ void hand_numbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_numbox_erase(res_win_t widget, res_ctx_t dc)
-{
-	numbox_delta_t* ptd = GETNUMBOXDELTA(widget);
-	
-}
-
 void hand_numbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	numbox_delta_t* ptd = GETNUMBOXDELTA(widget);
@@ -257,7 +251,6 @@ res_win_t numbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_numbox_create)
 		EVENT_ON_DESTROY(hand_numbox_destroy)
 
-		EVENT_ON_ERASE(hand_numbox_erase)
 		EVENT_ON_PAINT(hand_numbox_paint)
 
 		EVENT_ON_SIZE(hand_numbox_size)

@@ -150,12 +150,6 @@ void hand_horzbox_timer(res_win_t widget, var_long tid)
 	}
 }
 
-void hand_horzbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	horzbox_delta_t* ptd = GETHORZBOXDELTA(widget);
-	
-}
-
 void hand_horzbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	horzbox_delta_t* ptd = GETHORZBOXDELTA(widget);
@@ -208,7 +202,6 @@ res_win_t horzbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_horzbox_create)
 		EVENT_ON_DESTROY(hand_horzbox_destroy)
 
-		EVENT_ON_ERASE(hand_horzbox_erase)
 		EVENT_ON_PAINT(hand_horzbox_paint)
 
 		EVENT_ON_SIZE(hand_horzbox_size)

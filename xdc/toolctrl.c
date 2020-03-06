@@ -390,14 +390,6 @@ void hand_tool_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_tool_erase(res_win_t widget, res_ctx_t dc)
-{
-	tool_delta_t* ptd = GETTOOLDELTA(widget);
-
-	if (!ptd->tool)
-		return;
-}
-
 void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
@@ -470,7 +462,6 @@ res_win_t toolctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_CREATE(hand_tool_create)
 		EVENT_ON_DESTROY(hand_tool_destroy)
 
-		EVENT_ON_ERASE(hand_tool_erase)
 		EVENT_ON_PAINT(hand_tool_paint)
 
 		EVENT_ON_SIZE(hand_tool_size)

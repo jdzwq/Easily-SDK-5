@@ -209,13 +209,48 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
 
     (*if_context.pf_gdi_draw_rect)(mem, &xp, &xb, &xr);
 
+    xscpy(xb.color, GDI_ATTR_RGB_BLUE);
+
+    xpoint_t pt;
+    pt.x = xr.x + xr.w / 2;
+    pt.y = xr.y + xr.h / 2;
+    (*if_context.pf_gdi_draw_pie)(mem, &xp, &xb, &pt, xr.w / 2, xr.h / 2, 0, XPI / 2);
+
+    xscpy(xp.size,"2");
+    xscpy(xp.color, GDI_ATTR_RGB_YELLOW);
+    (*if_context.pf_gdi_draw_arc)(mem, &xp, &pt, xr.w / 2, xr.h / 2, XPI, XPI * 3 / 2);
+
+    xscpy(xp.size,"1");
+    xscpy(xb.color, GDI_ATTR_RGB_GREEN);
+    xr.x = 10;
+    xr.y = 10;
+    xr.w = 10;
+    xr.h = 10;
+    (*if_context.pf_gdi_draw_arrow)(mem, &xp, &xb, &xr, 20, XPI / 8);
+
     xpoint_t xp1,xp2;
     xp1.x = 10;
     xp1.y = 10;
     xp2.x = 80;
     xp2.y = 80;
 
+    xscpy(xp.color, GDI_ATTR_RGB_GRAY);
     (*if_context.pf_gdi_draw_line)(mem, &xp, &xp1, &xp2);
+
+    xfont_t xf = {0};
+    default_xfont(&xf);
+    xscpy(xf.size,"20");
+    xscpy(xf.color,GDI_ATTR_RGB_LIGHTCYAN);
+
+    xr.x = 20;
+    xr.y = 20;
+    xr.w = 100;
+    xr.h = 20;
+     (*if_context.pf_gdi_draw_text)(mem, &xf, NULL, &xr, "Hello World!", -1);
+
+    xsize_t xs = {0};
+    (*if_context.pf_gdi_text_size)(mem, &xf, "Hello World!", -1, &xs);
+    (*if_context.pf_gdi_text_metric)(mem, &xf,&xs);
 
     (*if_context.pf_render_context)(mem, 0,0, rdc, 100, 100, 100, 100);
 
@@ -538,44 +573,7 @@ void uninit_instance()
     (*if_context.pf_context_cleanup)();
 }
 
-void test_bitmap()
-{
-    if_context_t if_context = { 0 };
-    
-    xdu_impl_context(&if_context);
-    
-    xdu_impl_context_bitmap(&if_context);
-
-    (*if_context.pf_context_startup)();
-    
-    res_ctx_t rdc = (*if_context.pf_create_display_context)(0);
-    
-    xcolor_t clr;
-    parse_xcolor(&clr, GDI_ATTR_RGB_AZURE);
-
-    res_bmp_t bmp = (*if_context.pf_create_color_bitmap)(rdc, &clr, 32, 32);
-    
-    int n = (*if_context.pf_save_bitmap_to_bytes)(rdc, bmp, NULL, MAX_LONG);
-    
-    unsigned char* buf = (unsigned char*)calloc(1, n);
-    
-    (*if_context.pf_save_bitmap_to_bytes)(rdc, bmp, buf, n);
-    
-    free(buf);
-    
-    (*if_context.pf_destroy_bitmap)(bmp);
-
-    (*if_context.pf_destroy_context)(rdc);
-
-    (*if_context.pf_context_cleanup)();
-}
-
-
 int main(int argc, const char * argv[]) {
-
-    //test_context();
-    
-    //test_bitmap();
 
     init_instance();
 

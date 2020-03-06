@@ -467,12 +467,6 @@ void hand_editbox_menu_command(res_win_t widget, int code, int cid, var_long dat
 	}
 }
 
-void hand_editbox_erase(res_win_t widget, res_ctx_t dc)
-{
-	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
-
-}
-
 void hand_editbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
@@ -502,7 +496,6 @@ res_win_t editbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_editbox_create)
 		EVENT_ON_DESTROY(hand_editbox_destroy)
 
-		EVENT_ON_ERASE(hand_editbox_erase)
 		EVENT_ON_PAINT(hand_editbox_paint)
 
 		EVENT_ON_SIZE(hand_editbox_size)

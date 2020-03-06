@@ -149,12 +149,6 @@ void hand_slidebox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_slidebox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	slidebox_delta_t* ptd = GETSLIDEBOXDELTA(widget);
-	
-}
-
 void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	slidebox_delta_t* ptd = GETSLIDEBOXDELTA(widget);
@@ -205,7 +199,6 @@ res_win_t slidebox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_slidebox_create)
 		EVENT_ON_DESTROY(hand_slidebox_destroy)
 
-		EVENT_ON_ERASE(hand_slidebox_erase)
 		EVENT_ON_PAINT(hand_slidebox_paint)
 
 		EVENT_ON_SIZE(hand_slidebox_size)

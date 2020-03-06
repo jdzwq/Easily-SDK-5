@@ -626,11 +626,6 @@ void hand_annodlg_notice(res_win_t widget, NOTICE* pnt)
 	
 }
 
-void hand_annodlg_erase(res_win_t widget, res_ctx_t dc)
-{
-	annodlg_delta_t* ptd = GETANNODLGDELTA(widget);
-}
-
 void hand_annodlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	annodlg_delta_t* ptd = GETANNODLGDELTA(widget);
@@ -694,7 +689,6 @@ res_win_t annodlg_create(const tchar_t* title, string_t var, res_win_t owner)
 		EVENT_ON_CREATE(hand_annodlg_create)
 		EVENT_ON_DESTROY(hand_annodlg_destroy)
 
-		EVENT_ON_ERASE(hand_annodlg_erase)
 		EVENT_ON_PAINT(hand_annodlg_paint)
 
 		EVENT_ON_SIZE(hand_annodlg_size)

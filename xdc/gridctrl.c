@@ -1875,14 +1875,6 @@ void hand_grid_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-void hand_grid_erase(res_win_t widget, res_ctx_t dc)
-{
-	grid_delta_t* ptd = GETGRIDDELTA(widget);
-
-	if (!ptd->grid)
-		return;
-}
-
 void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
@@ -2012,7 +2004,6 @@ res_win_t gridctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 		EVENT_ON_CREATE(hand_grid_create)
 		EVENT_ON_DESTROY(hand_grid_destroy)
 
-		EVENT_ON_ERASE(hand_grid_erase)
 		EVENT_ON_PAINT(hand_grid_paint)
 
 		EVENT_ON_SIZE(hand_grid_size)

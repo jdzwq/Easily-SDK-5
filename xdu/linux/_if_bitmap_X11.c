@@ -64,6 +64,11 @@ void _get_bitmap_size(res_bmp_t rb, int* pw, int* ph)
     if(ph) *ph = pbi->height;
 }
 
+res_bmp_t _create_context_bitmap(res_ctx_t rdc)
+{
+    return NULL;
+}
+
 res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
     XImage* pim;

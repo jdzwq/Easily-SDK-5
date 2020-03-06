@@ -960,15 +960,6 @@ void hand_images_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_images_erase(res_win_t widget, res_ctx_t dc)
-{
-	images_delta_t* ptd = GETIMAGESDELTA(widget);
-
-	if (!ptd->images)
-		return;
-
-}
-
 void hand_images_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	images_delta_t* ptd = GETIMAGESDELTA(widget);
@@ -1035,7 +1026,6 @@ res_win_t imagesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 		EVENT_ON_CREATE(hand_images_create)
 		EVENT_ON_DESTROY(hand_images_destroy)
 
-		EVENT_ON_ERASE(hand_images_erase)
 		EVENT_ON_PAINT(hand_images_paint)
 
 		EVENT_ON_SIZE(hand_images_size)

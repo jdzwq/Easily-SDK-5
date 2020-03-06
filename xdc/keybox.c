@@ -377,11 +377,6 @@ void hand_keybox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_keybox_erase(res_win_t widget, res_ctx_t dc)
-{
-	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
-}
-
 void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
@@ -489,7 +484,6 @@ res_win_t keybox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_keybox_create)
 		EVENT_ON_DESTROY(hand_keybox_destroy)
 
-		EVENT_ON_ERASE(hand_keybox_erase)
 		EVENT_ON_PAINT(hand_keybox_paint)
 
 		EVENT_ON_SIZE(hand_keybox_size)

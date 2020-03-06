@@ -116,16 +116,16 @@ typedef struct _X11_atoms_t{
 
 extern X11_atoms_t  g_atoms;
 
-typedef struct _X11_suface_t{
+typedef struct _X11_context_t{
     Drawable device;
     GC context;
     int type;
     Colormap color;
-}X11_suface_t;
+}X11_context_t;
 
 extern Display*     g_display;
 
-typedef X11_suface_t* res_ctx_t;
+typedef X11_context_t* res_ctx_t;
 typedef Colormap    res_clr_t;
 typedef Font		res_font_t;
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
@@ -141,25 +141,11 @@ typedef Region		res_rgn_t;
 extern Window       g_capture;
 
 typedef XEvent      msg_t;
-typedef void*	    res_acl_t;
+typedef unsigned long	res_acl_t;
 typedef unsigned int	wparam_t;
-typedef void*       lparam_t;
+typedef unsigned long   lparam_t;
 typedef int         result_t;
 typedef Window      res_win_t;
-
-typedef struct _X11_create_struct_t{
-    void*      param;
-    //res_modu_t  inst;
-    res_win_t   parent;
-    int         cy;
-    int         cx;
-    int         y;
-    int         x;
-    const char*     wname;
-    const char*     wclass;
-    unsigned int   stylex;
-}X11_create_struct_t;
-
 
 /*mouse track state*/
 #define MS_TRACK_HOVER		0x00000001

@@ -34,6 +34,8 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
 
+#define XRGB(ch) (unsigned short)((double)ch * 65535.0 / 256.0)
+
 static void DPtoLP(res_ctx_t rdc, XPoint* pt,int n)
 {
 	int i;
@@ -113,7 +115,7 @@ void _gdi_uninit(void)
 
 void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
-    X11_suface_t* ctx = (X11_suface_t*)rdc;
+    X11_context_t* ctx = (X11_context_t*)rdc;
 
 	xcolor_t xc = {0};
 	int l_w, l_s;
@@ -132,9 +134,9 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 	{
 		parse_xcolor(&xc,pxp->color);
 
-		clr_pen.red = (unsigned short)((double)xc.r * 65535.0 / 256.0);
-		clr_pen.green = (unsigned short)((double)xc.g * 65535.0 / 256.0);
-		clr_pen.blue = (unsigned short)((double)xc.b * 65535.0 / 256.0);
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
 
 		XAllocColor(g_display, ctx->color, &clr_pen);
 
@@ -169,12 +171,141 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 
 void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
+
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	unsigned long l_p;
+	XColor ext, clr_pen = {0};
+    
+	XPoint* pa;
+	int i;
 	
+	if(!n) return;
+
+	pa = (XPoint*)calloc(n, sizeof(XPoint));
+	for(i =0;i<n;i++)
+	{
+		pa[i].x = ppt[i].x;
+		pa[i].y = ppt[i].y;
+	}
+	DPtoLP(rdc,pa,n);
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		l_p = clr_pen.pixel;
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+	}else
+	{
+		l_p = BlackPixel(g_display, DefaultScreen(g_display));
+		l_w = 1;
+		l_s = LineSolid;
+	}
+
+	XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapRound, JoinRound);
+
+    XSetForeground(g_display, ctx->context, l_p);
+    
+    XDrawLines(g_display, ctx->device, ctx->context, pa, n, CoordModePrevious);
+
+	free(pa);
+
+	if(clr_pen.pixel)
+	{
+		XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+	}
 }
 
 void _gdi_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n)
 {
-    
+    X11_context_t* ctx = (X11_context_t*)rdc;
+
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+
+	XPoint* pa;
+	int i;
+
+	pa = (XPoint*)calloc(n + 1, sizeof(XPoint));
+	for(i =0;i<n;i++)
+	{
+		pa[i].x = ppt[i].x;
+		pa[i].y = ppt[i].y;
+	}
+	pa[n].x = ppt[0].x;
+	pa[n].y = ppt[0].y;
+
+	DPtoLP(rdc,pa,n + 1);
+
+	if(pxb)
+	{
+		parse_xcolor(&xc,pxb->color);
+
+		clr_brush.red = XRGB(xc.r);
+		clr_brush.green = XRGB(xc.g);
+		clr_brush.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_brush);
+
+		XSetForeground(g_display, ctx->context, clr_brush.pixel);
+
+		XFillPolygon(g_display, ctx->device, ctx->context, pa, n + 1, Nonconvex, CoordModePrevious);
+
+		if(clr_brush.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_brush.pixel), 1, 0);
+		}
+	}
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+
+		XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+		XSetForeground(g_display, ctx->context, clr_pen.pixel);
+		
+		XDrawLines(g_display, ctx->device, ctx->context, pa, n + 1, CoordModePrevious);
+
+		if(clr_pen.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+		}
+	}
+
+	free(pa);
 }
 
 void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
@@ -203,7 +334,7 @@ void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 
 void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
-	X11_suface_t* ctx = (X11_suface_t*)rdc;
+	X11_context_t* ctx = (X11_context_t*)rdc;
 
 	xcolor_t xc = {0};
 	int l_w, l_s;
@@ -222,9 +353,9 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 	{
 		parse_xcolor(&xc,pxb->color);
 
-		clr_brush.red = (unsigned short)((double)xc.r * 65535.0 / 256.0);
-		clr_brush.green = (unsigned short)((double)xc.g * 65535.0 / 256.0);
-		clr_brush.blue = (unsigned short)((double)xc.b * 65535.0 / 256.0);
+		clr_brush.red = XRGB(xc.r);
+		clr_brush.green = XRGB(xc.g);
+		clr_brush.blue = XRGB(xc.b);
 
 		XAllocColor(g_display, ctx->color, &clr_brush);
 
@@ -242,9 +373,9 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 	{
 		parse_xcolor(&xc,pxp->color);
 
-		clr_pen.red = (unsigned short)((double)xc.r * 65535.0 / 256.0);
-		clr_pen.green = (unsigned short)((double)xc.g * 65535.0 / 256.0);
-		clr_pen.blue = (unsigned short)((double)xc.b * 65535.0 / 256.0);
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
 
 		XAllocColor(g_display, ctx->color, &clr_pen);
 
@@ -272,50 +403,531 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 
 void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
-	
+	X11_context_t* ctx = (X11_context_t*)rdc;
+
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+
+	XPoint pa[9];
+	int i;
+
+	int r;
+
+	r = (prt->w) / 10;
+	if (r < 1)
+		r = 1;
+	else if (r > 6)
+		r = 6;
+
+	pa[0].x = prt->x;
+	pa[0].y = prt->y + r;
+	pa[1].x = prt->x + r;
+	pa[1].y = prt->y;
+	pa[2].x = prt->x + prt->w - r;
+	pa[2].y = prt->y;
+	pa[3].x = prt->x + prt->w;
+	pa[3].y = prt->y + r;
+	pa[4].x = prt->x;
+	pa[4].y = prt->y + prt->h - r;
+	pa[5].x = prt->x + prt->w - r;
+	pa[5].y = prt->y + prt->h;
+	pa[6].x = prt->x + r;
+	pa[6].y = prt->y + prt->h;
+	pa[7].x = prt->x;
+	pa[7].y = prt->y + prt->h - r;
+	pa[8].x = prt->x;
+	pa[8].y = prt->y + r;
+
+	DPtoLP(rdc,pa,9);
+
+	if(pxb)
+	{
+		parse_xcolor(&xc,pxb->color);
+
+		clr_brush.red = XRGB(xc.r);
+		clr_brush.green = XRGB(xc.g);
+		clr_brush.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_brush);
+
+		XSetForeground(g_display, ctx->context, clr_brush.pixel);
+
+		XFillPolygon(g_display, ctx->device, ctx->context, pa, 9, Nonconvex, CoordModePrevious);
+
+		if(clr_brush.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_brush.pixel), 1, 0);
+		}
+	}
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+
+		XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+		XSetForeground(g_display, ctx->context, clr_pen.pixel);
+		
+		XDrawLines(g_display, ctx->device, ctx->context, pa, 9, CoordModePrevious);
+
+		if(clr_pen.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+		}
+	}
 }
 
 void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+
+	XPoint pt[2];
+    
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	DPtoLP(rdc,pt,2);
+
+	if(pxb)
+	{
+		parse_xcolor(&xc,pxb->color);
+
+		clr_brush.red = XRGB(xc.r);
+		clr_brush.green = XRGB(xc.g);
+		clr_brush.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_brush);
+
+		XSetForeground(g_display, ctx->context, clr_brush.pixel);
+
+		XFillArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, 0, 360 * 64);
+
+		if(clr_brush.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_brush.pixel), 1, 0);
+		}
+	}
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+
+		XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+		XSetForeground(g_display, ctx->context, clr_pen.pixel);
+		
+		XDrawArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, 0, 360 * 64);
+
+		if(clr_pen.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+		}
+	}
 }
 
 void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+
+	XPoint pt[2];
+
+	int fdeg, tdeg;
+    
+	pt[0].x = ppt->x - rx;
+	pt[0].y = ppt->y - ry;
+	pt[1].x = ppt->x + rx;
+	pt[1].y = ppt->y + ry;
+
+	DPtoLP(rdc,pt,2);
+
+	fdeg = (int)(fang / XPI * 180 * 64);
+	tdeg = (int)((tang - fang) / XPI * 180 * 64);
+
+	if(pxb)
+	{
+		parse_xcolor(&xc,pxb->color);
+
+		clr_brush.red = XRGB(xc.r);
+		clr_brush.green = XRGB(xc.g);
+		clr_brush.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_brush);
+
+		XSetForeground(g_display, ctx->context, clr_brush.pixel);
+
+		XFillArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, fdeg, tdeg);
+
+		if(clr_brush.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_brush.pixel), 1, 0);
+		}
+	}
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+
+		XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+		XSetForeground(g_display, ctx->context, clr_pen.pixel);
+		
+		XDrawArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, fdeg, tdeg);
+
+		if(clr_pen.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+		}
+	}
 }
 
-void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, int rx, int ry, double fang, double tang)
+void _gdi_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, int rx, int ry, double fang, double tang)
 {
+    X11_context_t* ctx = (X11_context_t*)rdc;
+
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+	unsigned long l_p;
+
+	XPoint pt[2];
+
+	int fdeg, tdeg;
     
+	pt[0].x = ppt->x - rx;
+	pt[0].y = ppt->y - ry;
+	pt[1].x = ppt->x + rx;
+	pt[1].y = ppt->y + ry;
+
+	DPtoLP(rdc,pt,2);
+
+	fdeg = (int)(fang / XPI * 180 * 64);
+	tdeg = (int)((tang - fang) / XPI * 180 * 64);
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+		l_p = clr_pen.pixel;
+	}else
+	{
+		l_s = LineSolid;
+		l_w = 1;
+		l_p = BlackPixel(g_display, DefaultScreen(g_display));
+	}
+	
+	XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+	XSetForeground(g_display, ctx->context, l_p);
+	
+	XDrawArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, fdeg, tdeg);
+
+	if(clr_pen.pixel)
+	{
+		XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+	}
 }
 
 void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt,int alen,double arc)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+
+	double a1;
+	int x_line0, y_line0, x_line1, y_line1, x_line2, y_line2;
+	int x1, x2, y1, y2;
+	XPoint pa[4];
+
+	pa[0].x = prt->x;
+	pa[0].y = prt->y;
+	pa[1].x = prt->x + prt->w;
+	pa[1].y = prt->y + prt->h;
+
+	DPtoLP(rdc, pa, 2);
+
+	x1 = pa[0].x;
+	y1 = pa[0].y;
+	x2 = pa[1].x;
+	y2 = pa[1].y;
+
+	pa[0].x = x2;
+	pa[0].y = y2;
+
+	a1 = atan2((float)(y2 - y1), (float)(x2 - x1));
+	x_line0 = (int)((float)x2 - (float)alen * cos(a1));
+	y_line0 = (int)((float)y2 - (float)alen * sin(a1));
+
+	x_line1 = x2 + (int)((float)(x_line0 - x2) * cos(arc) - (float)(y_line0 - y2) * sin(arc));
+	y_line1 = y2 + (int)((float)(x_line0 - x2) * sin(arc) + (float)(y_line0 - y2) * cos(arc));
+	pa[1].x = x_line1;
+	pa[1].y = y_line1;
+
+	x_line2 = x2 + (int)((float)(x_line0 - x2) * cos(-arc) - (float)(y_line0 - y2) * sin(-arc));
+	y_line2 = y2 + (int)((float)(x_line0 - x2) * sin(-arc) + (float)(y_line0 - y2) * cos(-arc));
+	pa[2].x = x_line2;
+	pa[2].y = y_line2;
+
+	pa[3].x = x2;
+	pa[3].y = y2;
+
+	if(pxb)
+	{
+		parse_xcolor(&xc,pxb->color);
+
+		clr_brush.red = XRGB(xc.r);
+		clr_brush.green = XRGB(xc.g);
+		clr_brush.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_brush);
+
+		XSetForeground(g_display, ctx->context, clr_brush.pixel);
+
+		XFillPolygon(g_display, ctx->device, ctx->context, pa, 4, Nonconvex, CoordModePrevious);
+
+		if(clr_brush.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_brush.pixel), 1, 0);
+		}
+	}
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = XRGB(xc.r);
+		clr_pen.green = XRGB(xc.g);
+		clr_pen.blue = XRGB(xc.b);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+
+		XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+		XSetForeground(g_display, ctx->context, clr_pen.pixel);
+		
+		XDrawLines(g_display, ctx->device, ctx->context, pa, 4, CoordModePrevious);
+
+		if(clr_pen.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+		}
+	}
+}
+
+static XFontStruct* _create_font(const xfont_t* pxf)
+{
+	XFontStruct* fs;
+	char font_token[1024] = {0};
+	
+	if(is_null(pxf->family))
+		xsappend(font_token, "*-%s", "*");
+	else
+		xsappend(font_token, "*-%s", pxf->family);
+	
+	if(xscmp(pxf->weight,GDI_ATTR_FONT_WEIGHT_BOLD) == 0)
+		xsappend(font_token, "-%s-*", "bold");
+	else
+		xsappend(font_token, "-%s-*", "medium");
+	
+	if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
+		xsappend(font_token, "-%s-*", "italic");
+	else
+		xsappend(font_token, "-%s-*", "normal");
+
+	xsappend(font_token, "-%s-*", pxf->size);
+
+	fs = XLoadQueryFont(g_display, font_token);
+	if(!fs)
+	{
+		xsprintf(font_token, "*-*-*-%s-*", pxf->size);
+		fs = XLoadQueryFont(g_display, font_token);
+	}
+
+	return fs;
 }
 
 void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
 {
-    /*f = XLoadFont(d, "fixed");
-    XSetFont(d, gc, f);
+	XFontStruct* pfs = NULL;
+
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_font = {0};
+
+	XPoint pt[2];
     
-    fontset = XCreateFontSet(dpy, "-*-*-*-*-*-*-16-*-*-*-*-*-*-*",
-                             &missing_charsets, &num_missing_charsets,
-                             &default_string);
-    XFreeStringList(missing_charsets);
-    
-    (void) XmbTextExtents(fontset, str, num_bytes, &dummy, &boundingbox);
-    
-    originx = x + (width - boundingbox.width) / 2 - boundingbox.x;
-    originy = y + (height - boundingbox.height) / 2 - boundingbox.y;
-    
-    XmbDrawString(dpy, w, fontset, gc, originx, originy, str, num_bytes);*/
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	DPtoLP(rdc,pt,2);
+
+	if(pxf)
+	{
+		pfs = _create_font(pxf);
+	}
+
+	if(pfs)
+	{
+		XSetFont(g_display, rdc->context, pfs->fid);
+	}
+
+	parse_xcolor(&xc,pxf->color);
+
+	clr_font.red = XRGB(xc.r);
+	clr_font.green = XRGB(xc.g);
+	clr_font.blue = XRGB(xc.b);
+
+	XAllocColor(g_display, rdc->color, &clr_font);
+
+	XSetForeground(g_display, rdc->context, clr_font.pixel);
+
+	if(len < 0) len = xslen(txt);
+
+	XDrawString(g_display, rdc->device, rdc->context, pt[0].x, pt[0].y, txt, len);
+
+	if(pfs)
+	{
+		XFreeFont(g_display, pfs);
+	}
+
+	if(clr_font.pixel)
+	{
+		XFreeColors(g_display, rdc->color, &(clr_font.pixel), 1, 0);
+	}
 }
 
 void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
+	XFontStruct* pfs = NULL;
 
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_font = {0};
+
+	XPoint pt[2];
+    
+	pt[0].x = ppt->x;
+	pt[0].y = ppt->y;
+	pt[1].x = ppt->x;
+	pt[1].y = ppt->y;
+
+	DPtoLP(rdc,pt,2);
+
+	if(pxf)
+	{
+		pfs = _create_font(pxf);
+	}
+
+	if(pfs)
+	{
+		XSetFont(g_display, rdc->context, pfs->fid);
+	}
+
+	parse_xcolor(&xc,pxf->color);
+
+	clr_font.red = XRGB(xc.r);
+	clr_font.green = XRGB(xc.g);
+	clr_font.blue = XRGB(xc.b);
+
+	XAllocColor(g_display, rdc->color, &clr_font);
+
+	XSetForeground(g_display, rdc->context, clr_font.pixel);
+
+	if(len < 0) len = xslen(txt);
+
+	XDrawString(g_display, rdc->device, rdc->context, pt[0].x, pt[0].y, txt, len);
+
+	if(pfs)
+	{
+		XFreeFont(g_display, pfs);
+	}
+
+	if(clr_font.pixel)
+	{
+		XFreeColors(g_display, rdc->color, &(clr_font.pixel), 1, 0);
+	}
 }
 
 void _gdi_exclip_rect(res_ctx_t rdc, const xrect_t* pxr)
@@ -330,17 +942,76 @@ void _gdi_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 
 void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* prt)
 {
+	XFontStruct* pfs = NULL;
+	XCharStruct chs = {0};
+	int direct = 0, ascent = 0, descent = 0;
+	if(pxf)
+	{
+		pfs = _create_font(pxf);
+	}
 
+	if(!pfs) return;
+	
+	if(len < 0) len = xslen(txt);
+
+	prt->w = XTextWidth(pfs, txt, len);
+
+	XTextExtents(pfs, txt, len, &direct, &ascent, &descent, &chs);
+
+	prt->h = ascent + descent;
+
+	if(pfs)
+	{
+		XFreeFont(g_display, pfs);
+	}
 }
 
 void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
+	XFontStruct* pfs = NULL;
+	XCharStruct chs = {0};
+	int direct = 0, ascent = 0, descent = 0;
+	if(pxf)
+	{
+		pfs = _create_font(pxf);
+	}
 
+	if(!pfs) return;
+	
+	if(len < 0) len = xslen(txt);
+
+	XTextExtents(pfs, txt, len, &direct, &ascent, &descent, &chs);
+
+	pxs->cx = chs.width;
+	pxs->cy = ascent + descent;
+
+	if(pfs)
+	{
+		XFreeFont(g_display, pfs);
+	}
 }
 
 void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
+	XFontStruct* pfs = NULL;
+	XCharStruct chs = {0};
+	int direct = 0, ascent = 0, descent = 0;
+	if(pxf)
+	{
+		pfs = _create_font(pxf);
+	}
 
+	if(!pfs) return;
+	
+	XTextExtents(pfs, "aj", 2, &direct, &ascent, &descent, &chs);
+
+	pxs->cx = chs.width / 2;
+	pxs->cy = (ascent + descent) / 2;
+
+	if(pfs)
+	{
+		XFreeFont(g_display, pfs);
+	}
 }
 
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP

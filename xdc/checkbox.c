@@ -138,12 +138,6 @@ void hand_checkbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_checkbox_erase(res_win_t widget, res_ctx_t rdc)
-{
-	checkbox_delta_t* ptd = GETCHECKBOXDELTA(widget);
-	
-}
-
 void hand_checkbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 {
 	checkbox_delta_t* ptd = GETCHECKBOXDELTA(widget);
@@ -194,7 +188,6 @@ res_win_t checkbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 		EVENT_ON_CREATE(hand_checkbox_create)
 		EVENT_ON_DESTROY(hand_checkbox_destroy)
 
-		EVENT_ON_ERASE(hand_checkbox_erase)
 		EVENT_ON_PAINT(hand_checkbox_paint)
 
 		EVENT_ON_SIZE(hand_checkbox_size)

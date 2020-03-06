@@ -89,6 +89,7 @@ typedef bool_t(*PF_PT_IN_REGION)(res_rgn_t, const xpoint_t*);
 typedef void(*PF_DESTROY_BITMAP)(res_bmp_t);
 typedef void(*PF_GET_BITMAP_SIZE)(res_bmp_t, int*, int*);
 
+typedef res_bmp_t(*PF_CREATE_CONTEXT_BITMAP)(res_ctx_t);
 typedef res_bmp_t(*PF_CREATE_COLOR_BITMAP)(res_ctx_t, const xcolor_t*, int, int);
 typedef res_bmp_t(*PF_CREATE_PATTERN_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
 typedef res_bmp_t(*PF_CREATE_GRADIENT_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
@@ -174,6 +175,7 @@ typedef struct _if_context_t{
 	PF_DESTROY_BITMAP			pf_destroy_bitmap;
 	PF_GET_BITMAP_SIZE			pf_get_bitmap_size;
 
+	PF_CREATE_CONTEXT_BITMAP	pf_create_context_bitmap;
 	PF_CREATE_COLOR_BITMAP		pf_create_color_bitmap;
 	PF_CREATE_PATTERN_BITMAP	pf_create_pattern_bitmap;
 	PF_CREATE_GRADIENT_BITMAP	pf_create_gradient_bitmap;
