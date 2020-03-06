@@ -115,10 +115,12 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 {
     X11_suface_t* ctx = (X11_suface_t*)rdc;
 
-	XPoint pt[2];
 	xcolor_t xc = {0};
 	int l_w, l_s;
+	unsigned long l_for;
+	XColor ext, clr_pen = {0};
     
+	XPoint pt[2];
 	pt[0].x = ppt1->x;
 	pt[0].y = ppt1->y;
 	pt[1].x = ppt2->x;
@@ -130,6 +132,14 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 	{
 		parse_xcolor(&xc,pxp->color);
 
+		clr_pen.red = (unsigned short)((double)xc.r * 65535.0 / 256.0);
+		clr_pen.green = (unsigned short)((double)xc.g * 65535.0 / 256.0);
+		clr_pen.blue = (unsigned short)((double)xc.b * 65535.0 / 256.0);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		l_for = clr_pen.pixel;
+
 		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
 			l_s = LineOnOffDash;
 		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
@@ -140,15 +150,21 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 		l_w = xstol(pxp->size);
 	}else
 	{
+		l_for = BlackPixel(g_display, DefaultScreen(g_display));
 		l_w = 1;
 		l_s = LineSolid;
 	}
 
 	XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapRound, JoinRound);
 
-    XSetForeground(g_display, ctx->context, WhitePixel(g_display, DefaultScreen(g_display)));
+    XSetForeground(g_display, ctx->context, l_for);
     
     XDrawLine(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+
+	if(clr_pen.pixel)
+	{
+		XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+	}
 }
 
 void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
@@ -188,6 +204,11 @@ void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
 	X11_suface_t* ctx = (X11_suface_t*)rdc;
+
+	xcolor_t xc = {0};
+	int l_w, l_s;
+	XColor ext, clr_brush = {0}, clr_pen = {0};
+
 	XPoint pt[2];
     
 	pt[0].x = prt->x;
@@ -197,11 +218,56 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 
 	DPtoLP(rdc,pt,2);
 
-	//XSetLineAttributes(dpy, gc, 5, LineSolid, CapRound, JoinRound);
+	if(pxb)
+	{
+		parse_xcolor(&xc,pxb->color);
 
-    XSetForeground(g_display, ctx->context, WhitePixel(g_display, DefaultScreen(g_display)));
-    
-    XDrawRectangle(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+		clr_brush.red = (unsigned short)((double)xc.r * 65535.0 / 256.0);
+		clr_brush.green = (unsigned short)((double)xc.g * 65535.0 / 256.0);
+		clr_brush.blue = (unsigned short)((double)xc.b * 65535.0 / 256.0);
+
+		XAllocColor(g_display, ctx->color, &clr_brush);
+
+		XSetForeground(g_display, ctx->context, clr_brush.pixel);
+
+		XFillRectangle(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+
+		if(clr_brush.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_brush.pixel), 1, 0);
+		}
+	}
+
+	if(pxp)
+	{
+		parse_xcolor(&xc,pxp->color);
+
+		clr_pen.red = (unsigned short)((double)xc.r * 65535.0 / 256.0);
+		clr_pen.green = (unsigned short)((double)xc.g * 65535.0 / 256.0);
+		clr_pen.blue = (unsigned short)((double)xc.b * 65535.0 / 256.0);
+
+		XAllocColor(g_display, ctx->color, &clr_pen);
+
+		if (xscmp(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED) == 0)
+			l_s = LineOnOffDash;
+		else if (xscmp(pxp->style,GDI_ATTR_STROKE_STYLE_DASHED) == 0)
+			l_s = LineDoubleDash;
+		else
+			l_s = LineSolid;
+		
+		l_w = xstol(pxp->size);
+
+		XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapNotLast, JoinMiter);
+
+		XSetForeground(g_display, ctx->context, clr_pen.pixel);
+		
+		XDrawRectangle(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+
+		if(clr_pen.pixel)
+		{
+			XFreeColors(g_display, ctx->color, &(clr_pen.pixel), 1, 0);
+		}
+	}
 }
 
 void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)

@@ -193,13 +193,21 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
 
     res_ctx_t mem = (*if_context.pf_create_compatible_context)(rdc, 100, 100);
 
+    xpen_t xp = {0};
+    default_xpen(&xp);
+    xscpy(xp.color, GDI_ATTR_RGB_GREEN);
+
+    xbrush_t xb = {0};
+    default_xbrush(&xb);
+    xscpy(xb.color, GDI_ATTR_RGB_GRAY);
+
     xrect_t xr;
     xr.x = 0;
     xr.y = 0;
     xr.w = 100;
     xr.h = 98;
 
-    (*if_context.pf_gdi_draw_rect)(mem, NULL, NULL, &xr);
+    (*if_context.pf_gdi_draw_rect)(mem, &xp, &xb, &xr);
 
     xpoint_t xp1,xp2;
     xp1.x = 10;
@@ -207,7 +215,7 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
     xp2.x = 80;
     xp2.y = 80;
 
-    (*if_context.pf_gdi_draw_line)(mem, NULL, &xp1, &xp2);
+    (*if_context.pf_gdi_draw_line)(mem, &xp, &xp1, &xp2);
 
     (*if_context.pf_render_context)(mem, 0,0, rdc, 100, 100, 100, 100);
 

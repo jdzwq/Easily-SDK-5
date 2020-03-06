@@ -65,6 +65,7 @@ res_ctx_t _create_display_context(res_win_t wt)
     ctx->device = (wt)? wt : DefaultRootWindow(g_display);
     ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
     ctx->type = CONTEXT_WIDGET;
+    ctx->color = DefaultColormap(g_display, DefaultScreen(g_display));
     
     return ctx;
 }
@@ -84,6 +85,7 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy)
     ctx->device = XCreatePixmap (g_display, r, cx, cy, d);
     ctx->context = XCreateGC(g_display, rdc->device, 0, &gv);
     ctx->type = CONTEXT_MEMORY;
+    ctx->color = DefaultColormap(g_display, DefaultScreen(g_display));
     
     return ctx;
 }

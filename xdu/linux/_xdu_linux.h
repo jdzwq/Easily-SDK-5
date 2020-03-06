@@ -120,6 +120,7 @@ typedef struct _X11_suface_t{
     Drawable device;
     GC context;
     int type;
+    Colormap color;
 }X11_suface_t;
 
 extern Display*     g_display;
