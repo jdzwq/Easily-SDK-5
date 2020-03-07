@@ -48,6 +48,7 @@ LICENSE.GPL3 for more details.
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
+#include <X11/cursorfont.h>
 #endif
 
 
@@ -90,6 +91,7 @@ typedef struct _X11_atoms_t{
     Atom net_wm_window_type_toolbar;
     Atom net_wm_window_type_tooltip;
     Atom net_wm_window_type_utility;
+    Atom net_wm_ping;
     Atom wm_change_state;
     Atom wm_colormap_windows;
     Atom wm_delete_window;
@@ -105,6 +107,7 @@ typedef struct _X11_atoms_t{
     Atom wm_message;
     Atom wm_notice;
     Atom wm_input;
+    Atom wm_scroll;
     
     Atom xdu_struct;
     Atom xdu_dispatch;
@@ -116,11 +119,17 @@ typedef struct _X11_atoms_t{
 
 extern X11_atoms_t  g_atoms;
 
+#define XRGB(ch) (unsigned short)((double)ch * 65535.0 / 256.0)
+
 typedef struct _X11_context_t{
-    Drawable device;
-    GC context;
     int type;
+    GC context;
+    Drawable device;
+    int width;
+    int height;
+    Visual* visual;
     Colormap color;
+    unsigned int depth;
 }X11_context_t;
 
 extern Display*     g_display;
@@ -146,33 +155,6 @@ typedef unsigned int	wparam_t;
 typedef unsigned long   lparam_t;
 typedef int         result_t;
 typedef Window      res_win_t;
-
-/*mouse track state*/
-#define MS_TRACK_HOVER		0x00000001
-#define	MS_TRACK_LEAVE		0x00000002
-#define MS_TRACK_CANCEL		0x80000000
-
-
-#define SC_SIZE         0xF000
-#define SC_MOVE         0xF010
-#define SC_MINIMIZE     0xF020
-#define SC_MAXIMIZE     0xF030
-#define SC_NEXTWINDOW   0xF040
-#define SC_PREVWINDOW   0xF050
-#define SC_CLOSE        0xF060
-#define SC_VSCROLL      0xF070
-#define SC_HSCROLL      0xF080
-#define SC_MOUSEMENU    0xF090
-#define SC_KEYMENU      0xF100
-#define SC_ARRANGE      0xF110
-#define SC_RESTORE      0xF120
-#define SC_TASKLIST     0xF130
-#define SC_SCREENSAVE   0xF140
-#define SC_HOTKEY       0xF150
-#define SC_DEFAULT      0xF160
-#define SC_MONITORPOWER 0xF170
-#define SC_CONTEXTHELP  0xF180
-#define SC_SEPARATOR    0xF00F
 
 #ifdef XDU_SUPPORT_WIDGET_NC
 /*widget nc hit test*/

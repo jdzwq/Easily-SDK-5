@@ -148,7 +148,7 @@ void child_on_rbutton_up(res_win_t wt, const xpoint_t* ppt)
     xr.w = 200;
     xr.h = 300;
 
-    res_win_t pop = (*if_widget.pf_widget_create)(_T("popup"),WD_STYLE_POPUP,&xr,g_main,&ev);
+    res_win_t pop = (*if_widget.pf_widget_create)(_T("popup"),WD_STYLE_MENU,&xr,g_main,&ev);
 
     (*if_widget.pf_widget_show)(pop, 0);
 
@@ -170,11 +170,15 @@ void child_on_keydown(res_win_t wt, dword_t ks, int key)
 void child_on_set_focus(res_win_t wt, res_win_t from)
 {
     printf("child on_set_focus \n");
+
+    (*if_widget.pf_widget_create_caret)(wt, 100, 100);
 }
 
 void child_on_kill_focus(res_win_t wt, res_win_t to)
 {
     printf("child on_kill_focus \n");
+
+    (*if_widget.pf_widget_destroy_caret)(wt);
 }
 
 void child_on_menu_command(res_win_t wt, int code, int cid, var_long data)
@@ -251,6 +255,17 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
     xsize_t xs = {0};
     (*if_context.pf_gdi_text_size)(mem, &xf, "Hello World!", -1, &xs);
     (*if_context.pf_gdi_text_metric)(mem, &xf,&xs);
+
+    xcolor_t xc = {0};
+    parse_xcolor(&xc, GDI_ATTR_RGB_RED);
+    res_bmp_t bmp = (*if_context.pf_create_color_bitmap)(mem, &xc, 32, 32);
+
+    xr.x = 50;
+    xr.y = 50;
+    xr.w = 32;
+    xr.h = 32;
+    (*if_context.pf_gdi_draw_bitmap)(mem, bmp, &xr);
+    (*if_context.pf_destroy_bitmap)(bmp);    
 
     (*if_context.pf_render_context)(mem, 0,0, rdc, 100, 100, 100, 100);
 

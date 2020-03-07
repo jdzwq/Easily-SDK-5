@@ -40,6 +40,8 @@ extern "C" {
 
 extern void font_metric_by_point(float pt, float* pm, float* px);
 
+extern int format_font_pattern(const xfont_t* pxf, tchar_t* buf);
+
 #ifdef	__cplusplus
 }
 #endif

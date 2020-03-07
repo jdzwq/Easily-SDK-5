@@ -1546,15 +1546,9 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	tchar_t action[RES_LEN + 1] = { 0 };
 	int len;
 
-	tchar_t srv[PATH_LEN] = { 0 };
-	tchar_t dbn[RES_LEN + 1] = { 0 };
-	tchar_t uid[KEY_LEN + 1] = { 0 };
-	tchar_t pwd[KEY_LEN + 1] = { 0 };
-
 	res_modu_t xdb_lib = NULL;
 
-	PF_DB_PARSE_DSN pf_db_parse_dsn = NULL;
-	PF_DB_OPEN pf_db_open = NULL;
+	PF_DB_OPEN_DSN pf_db_open_dsn = NULL;
 	PF_DB_CLOSE pf_db_close = NULL;
 
 	bool_t rt = 1;
@@ -1607,8 +1601,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		raise_user_error(_T("xdb_api"), _T("load xdb library falied\n"));
 	}
 
-	pf_db_parse_dsn = (PF_DB_PARSE_DSN)get_address(xdb_lib, "db_parse_dsn");
-	pf_db_open = (PF_DB_OPEN)get_address(xdb_lib, "db_open");
+	pf_db_open_dsn = (PF_DB_OPEN_DSN)get_address(xdb_lib, "db_open_dsn");
 	pf_db_close = (PF_DB_CLOSE)get_address(xdb_lib, "db_close");
 
 	pxb->pf_db_exec = (PF_DB_EXEC)get_address(xdb_lib, "db_exec");
@@ -1629,19 +1622,14 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	pxb->pf_db_read_xdoc = (PF_DB_READ_XDOC)get_address(xdb_lib, "db_read_xdoc");
 	pxb->pf_db_datetime = (PF_DB_DATETIME)get_address(xdb_lib, "db_datetime");
 
-	if (!pf_db_parse_dsn || !pf_db_open || !pf_db_close)
+	if (!pf_db_open_dsn || !pf_db_close)
 	{
 		raise_user_error(_T("xdb_api"), _T("get open/close functon falied"));
 	}
 
 	xsprintf(token, _T("%s%s"), pb->path, pb->object);
 
-	if (!(*pf_db_parse_dsn)(token, srv, PATH_LEN, dbn, RES_LEN, uid, KEY_LEN, pwd, KEY_LEN))
-	{
-		raise_user_error(_T("xdb_api"), _T("load database dsn file failed"));
-	}
-
-	pxb->xdb = (*pf_db_open)(srv, dbn, uid, pwd);
+	pxb->xdb = (*pf_db_open_dsn)(token);
 	if (!pxb->xdb)
 	{
 		raise_user_error(_T("xdb_api"), _T("open database connection failed"));

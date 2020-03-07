@@ -59,13 +59,33 @@ res_ctx_t _create_display_context(res_win_t wt)
 {
     X11_context_t* ctx = NULL;
     XGCValues gv = {0};
-    
+    XWindowAttributes attr = {0};
+
+    XGetGCValues(g_display, DefaultGC(g_display, DefaultScreen(g_display)), GCFunction | GCForeground | GCBackground | GCPlaneMask, &gv);
+    gv.subwindow_mode = ClipByChildren;
+
     ctx = (X11_context_t*)calloc(1, sizeof(X11_context_t));
     
+    ctx->type = CONTEXT_WIDGET;
     ctx->device = (wt)? wt : DefaultRootWindow(g_display);
     ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
-    ctx->type = CONTEXT_WIDGET;
-    ctx->color = DefaultColormap(g_display, DefaultScreen(g_display));
+
+    if(wt)
+    {
+        XGetWindowAttributes(g_display, wt, &attr);
+        ctx->width = attr.width;
+        ctx->height = attr.height;
+        ctx->color = attr.colormap;
+        ctx->visual = attr.visual;
+        ctx->depth = attr.depth;
+    }else
+    {
+        ctx->width = DisplayWidth(g_display, DefaultScreen(g_display));
+        ctx->height = DisplayHeight(g_display, DefaultScreen(g_display));
+        ctx->color = DefaultColormap(g_display, DefaultScreen(g_display));
+        ctx->visual = DefaultVisual(g_display, DefaultScreen(g_display));
+        ctx->depth = DefaultDepth(g_display, DefaultScreen(g_display));
+    }
     
     return ctx;
 }
@@ -82,10 +102,14 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy)
     
     ctx = (X11_context_t*)calloc(1, sizeof(X11_context_t));
 
+    ctx->type = CONTEXT_MEMORY;
     ctx->device = XCreatePixmap (g_display, r, cx, cy, d);
     ctx->context = XCreateGC(g_display, rdc->device, 0, &gv);
-    ctx->type = CONTEXT_MEMORY;
-    ctx->color = DefaultColormap(g_display, DefaultScreen(g_display));
+    ctx->width = cx;
+    ctx->height = cy;
+    ctx->color = rdc->color;
+    ctx->visual = rdc->visual;
+    ctx->depth = rdc->depth;
     
     return ctx;
 }
@@ -127,45 +151,6 @@ void _render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx,
 
 /*******************************************************************************************************************/
 
-static tchar_t *x11_font_name[] = {_T("*")};
-static tchar_t *x11_font_weight[] = {_T("regular"), _T("medium"), _T("bold")};
-static tchar_t *x11_font_style[]  = {_T("r"), _T("i"), _T("o")};
-static tchar_t x11_pattern[] = {_T("-*-%s-%s-%s-*--%d-*-*-*-*-*-*")};
-    
-static void _format_font_pattern(const xfont_t* pxf, tchar_t* buf)
-{
-    const tchar_t* fs_name = NULL;
-    const tchar_t* fs_style = NULL;
-    const tchar_t* fs_weight = NULL;
-    int fs_size = 10;
-    
-    if(is_null((pxf->family)))
-        fs_name = x11_font_name[0];
-    else
-        fs_name = pxf->family;
-       
-    if(xstol(pxf->weight) < 400)
-        fs_weight = x11_font_weight[0];
-    else if(xstol(pxf->weight) < 700)
-        fs_weight = x11_font_weight[1];
-    else
-        fs_weight = x11_font_weight[2];
-    
-    if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
-        fs_style = x11_font_style[1];
-    else if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_OBLIQUE) == 0)
-        fs_style = x11_font_style[2];
-    else
-        fs_style = x11_font_style[0];
-    
-     if(is_null((pxf->size)))
-         fs_size = 10;
-    else
-        fs_size = xstol(pxf->size);
-    
-    xsprintf(buf, x11_pattern, fs_name, fs_weight, fs_style, fs_size);
-}
-
 float _pt_per_mm(res_ctx_t rdc, bool_t horz)
 {
     int scrn;
@@ -197,7 +182,7 @@ void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
     
     if(len < 0) len = xslen(txt);
     
-    _format_font_pattern(pxf, pattern);
+    format_font_pattern(pxf, pattern);
     
     pfs = XLoadQueryFont(g_display, pattern);
     if(!pfs)
@@ -226,7 +211,7 @@ void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
     XFontStruct* pfs = NULL;
     tchar_t pattern[256] = {0};
     
-    _format_font_pattern(pxf, pattern);
+    format_font_pattern(pxf, pattern);
     
     pfs = XLoadQueryFont(g_display, pattern);
     if(!pfs)

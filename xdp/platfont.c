@@ -30,6 +30,8 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "platfont.h"
+#include "platattr.h"
+#include "platstr.h"
 
 typedef struct _font_map_t{
 	tchar_t cn_font[16];
@@ -74,4 +76,44 @@ void font_metric_by_point(float pt, float* pm, float* px)
 		if (pt >= font_map[i].pt_font)
 			break;
 	}
+}
+
+static tchar_t *x11_font_name[] = {_T("*")};
+static tchar_t *x11_font_weight[] = {_T("regular"), _T("medium"), _T("bold")};
+static tchar_t *x11_font_style[]  = {_T("r"), _T("i"), _T("o")};
+static tchar_t x11_pattern[] = {_T("-*-%s-%s-%s-*--%d-*-*-*-*-*-*")};
+
+ 
+int format_font_pattern(const xfont_t* pxf, tchar_t* buf)
+{
+    const tchar_t* fs_name = NULL;
+    const tchar_t* fs_style = NULL;
+    const tchar_t* fs_weight = NULL;
+    int fs_size = 10;
+    
+    if(is_null((pxf->family)))
+        fs_name = x11_font_name[0];
+    else
+        fs_name = pxf->family;
+       
+    if(xstol(pxf->weight) < 400)
+        fs_weight = x11_font_weight[0];
+    else if(xstol(pxf->weight) < 700)
+        fs_weight = x11_font_weight[1];
+    else
+        fs_weight = x11_font_weight[2];
+    
+    if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
+        fs_style = x11_font_style[1];
+    else if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_OBLIQUE) == 0)
+        fs_style = x11_font_style[2];
+    else
+        fs_style = x11_font_style[0];
+    
+     if(is_null((pxf->size)))
+         fs_size = 10;
+    else
+        fs_size = xstol(pxf->size);
+    
+    return xsprintf(buf, x11_pattern, fs_name, fs_weight, fs_style, fs_size);
 }

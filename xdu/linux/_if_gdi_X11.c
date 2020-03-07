@@ -34,8 +34,6 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
 
-#define XRGB(ch) (unsigned short)((double)ch * 65535.0 / 256.0)
-
 static void DPtoLP(res_ctx_t rdc, XPoint* pt,int n)
 {
 	int i;
@@ -44,11 +42,6 @@ static void DPtoLP(res_ctx_t rdc, XPoint* pt,int n)
 		pt[i].x = pt[i].x;
 		pt[i].y = pt[i].y;
 	}
-}
-
-static void _alphablend_rect(res_ctx_t rdc, const xbrush_t* pxb, const XRectangle* prt)
-{
-
 }
 
 static void _adjust_rect(XRectangle* prt, int src_width, int src_height, const tchar_t* horz_align, const tchar_t* vert_align)
@@ -100,6 +93,17 @@ static void _adjust_rect(XRectangle* prt, int src_width, int src_height, const t
 	}
 }
 
+static XFontStruct* _create_font(const xfont_t* pxf)
+{
+	XFontStruct* fs;
+	char font_token[1024] = {0};
+	
+	format_font_pattern(pxf, font_token);
+
+	fs = XLoadQueryFont(g_display, font_token);
+
+	return fs;
+}
 
 /************************************************************************************************/
 
@@ -160,7 +164,7 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 	XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapRound, JoinRound);
 
     XSetForeground(g_display, ctx->context, l_for);
-    
+
     XDrawLine(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x, pt[1].y);
 
 	if(clr_pen.pixel)
@@ -221,7 +225,7 @@ void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int 
 	XSetLineAttributes(g_display, ctx->context, l_w, l_s, CapRound, JoinRound);
 
     XSetForeground(g_display, ctx->context, l_p);
-    
+
     XDrawLines(g_display, ctx->device, ctx->context, pa, n, CoordModePrevious);
 
 	free(pa);
@@ -266,6 +270,9 @@ void _gdi_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 
 		XSetForeground(g_display, ctx->context, clr_brush.pixel);
 
+		XSetFillRule(g_display, ctx->context, EvenOddRule);
+		XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 		XFillPolygon(g_display, ctx->device, ctx->context, pa, n + 1, Nonconvex, CoordModePrevious);
 
 		if(clr_brush.pixel)
@@ -361,6 +368,9 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 
 		XSetForeground(g_display, ctx->context, clr_brush.pixel);
 
+		XSetFillRule(g_display, ctx->context, EvenOddRule);
+		XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 		XFillRectangle(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 
 		if(clr_brush.pixel)
@@ -453,6 +463,9 @@ void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 
 		XSetForeground(g_display, ctx->context, clr_brush.pixel);
 
+		XSetFillRule(g_display, ctx->context, EvenOddRule);
+		XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 		XFillPolygon(g_display, ctx->device, ctx->context, pa, 9, Nonconvex, CoordModePrevious);
 
 		if(clr_brush.pixel)
@@ -522,6 +535,9 @@ void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const
 
 		XSetForeground(g_display, ctx->context, clr_brush.pixel);
 
+		XSetFillRule(g_display, ctx->context, EvenOddRule);
+		XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 		XFillArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, 0, 360 * 64);
 
 		if(clr_brush.pixel)
@@ -596,6 +612,9 @@ void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const x
 
 		XSetForeground(g_display, ctx->context, clr_brush.pixel);
 
+		XSetFillRule(g_display, ctx->context, EvenOddRule);
+		XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 		XFillArc(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y, fdeg, tdeg);
 
 		if(clr_brush.pixel)
@@ -754,6 +773,9 @@ void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 
 		XSetForeground(g_display, ctx->context, clr_brush.pixel);
 
+		XSetFillRule(g_display, ctx->context, EvenOddRule);
+		XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 		XFillPolygon(g_display, ctx->device, ctx->context, pa, 4, Nonconvex, CoordModePrevious);
 
 		if(clr_brush.pixel)
@@ -794,40 +816,9 @@ void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 	}
 }
 
-static XFontStruct* _create_font(const xfont_t* pxf)
-{
-	XFontStruct* fs;
-	char font_token[1024] = {0};
-	
-	if(is_null(pxf->family))
-		xsappend(font_token, "*-%s", "*");
-	else
-		xsappend(font_token, "*-%s", pxf->family);
-	
-	if(xscmp(pxf->weight,GDI_ATTR_FONT_WEIGHT_BOLD) == 0)
-		xsappend(font_token, "-%s-*", "bold");
-	else
-		xsappend(font_token, "-%s-*", "medium");
-	
-	if(xscmp(pxf->style,GDI_ATTR_FONT_STYLE_ITALIC) == 0)
-		xsappend(font_token, "-%s-*", "italic");
-	else
-		xsappend(font_token, "-%s-*", "normal");
-
-	xsappend(font_token, "-%s-*", pxf->size);
-
-	fs = XLoadQueryFont(g_display, font_token);
-	if(!fs)
-	{
-		xsprintf(font_token, "*-*-*-%s-*", pxf->size);
-		fs = XLoadQueryFont(g_display, font_token);
-	}
-
-	return fs;
-}
-
 void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 	XFontStruct* pfs = NULL;
 
 	xcolor_t xc = {0};
@@ -841,7 +832,7 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 	pt[1].x = prt->x + prt->w;
 	pt[1].y = prt->y + prt->h;
 
-	DPtoLP(rdc,pt,2);
+	DPtoLP(ctx,pt,2);
 
 	if(pxf)
 	{
@@ -850,7 +841,7 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 
 	if(pfs)
 	{
-		XSetFont(g_display, rdc->context, pfs->fid);
+		XSetFont(g_display, ctx->context, pfs->fid);
 	}
 
 	parse_xcolor(&xc,pxf->color);
@@ -859,13 +850,16 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 	clr_font.green = XRGB(xc.g);
 	clr_font.blue = XRGB(xc.b);
 
-	XAllocColor(g_display, rdc->color, &clr_font);
+	XAllocColor(g_display, ctx->color, &clr_font);
 
-	XSetForeground(g_display, rdc->context, clr_font.pixel);
+	XSetForeground(g_display, ctx->context, clr_font.pixel);
 
+	XSetFillRule(g_display, ctx->context, EvenOddRule);
+	XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 	if(len < 0) len = xslen(txt);
 
-	XDrawString(g_display, rdc->device, rdc->context, pt[0].x, pt[0].y, txt, len);
+	XDrawString(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, txt, len);
 
 	if(pfs)
 	{
@@ -874,12 +868,13 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 
 	if(clr_font.pixel)
 	{
-		XFreeColors(g_display, rdc->color, &(clr_font.pixel), 1, 0);
+		XFreeColors(g_display, ctx->color, &(clr_font.pixel), 1, 0);
 	}
 }
 
 void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 	XFontStruct* pfs = NULL;
 
 	xcolor_t xc = {0};
@@ -893,7 +888,7 @@ void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const
 	pt[1].x = ppt->x;
 	pt[1].y = ppt->y;
 
-	DPtoLP(rdc,pt,2);
+	DPtoLP(ctx,pt,2);
 
 	if(pxf)
 	{
@@ -902,7 +897,7 @@ void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const
 
 	if(pfs)
 	{
-		XSetFont(g_display, rdc->context, pfs->fid);
+		XSetFont(g_display, ctx->context, pfs->fid);
 	}
 
 	parse_xcolor(&xc,pxf->color);
@@ -911,13 +906,16 @@ void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const
 	clr_font.green = XRGB(xc.g);
 	clr_font.blue = XRGB(xc.b);
 
-	XAllocColor(g_display, rdc->color, &clr_font);
+	XAllocColor(g_display, ctx->color, &clr_font);
 
-	XSetForeground(g_display, rdc->context, clr_font.pixel);
+	XSetForeground(g_display, ctx->context, clr_font.pixel);
 
+	XSetFillRule(g_display, ctx->context, EvenOddRule);
+	XSetFillStyle(g_display, ctx->context, FillOpaqueStippled);
+    
 	if(len < 0) len = xslen(txt);
 
-	XDrawString(g_display, rdc->device, rdc->context, pt[0].x, pt[0].y, txt, len);
+	XDrawString(g_display, ctx->device, ctx->context, pt[0].x, pt[0].y, txt, len);
 
 	if(pfs)
 	{
@@ -926,7 +924,7 @@ void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const
 
 	if(clr_font.pixel)
 	{
-		XFreeColors(g_display, rdc->color, &(clr_font.pixel), 1, 0);
+		XFreeColors(g_display, ctx->color, &(clr_font.pixel), 1, 0);
 	}
 }
 
@@ -942,9 +940,11 @@ void _gdi_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 
 void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* prt)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 	XFontStruct* pfs = NULL;
 	XCharStruct chs = {0};
 	int direct = 0, ascent = 0, descent = 0;
+
 	if(pxf)
 	{
 		pfs = _create_font(pxf);
@@ -968,6 +968,8 @@ void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const
 
 void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
+
 	XFontStruct* pfs = NULL;
 	XCharStruct chs = {0};
 	int direct = 0, ascent = 0, descent = 0;
@@ -993,9 +995,11 @@ void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int l
 
 void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
+	X11_context_t* ctx = (X11_context_t*)rdc;
 	XFontStruct* pfs = NULL;
 	XCharStruct chs = {0};
 	int direct = 0, ascent = 0, descent = 0;
+
 	if(pxf)
 	{
 		pfs = _create_font(pxf);
@@ -1022,8 +1026,25 @@ void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hbmp,const tchar_t* clr,const xrect
 
 void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
 {
-    
+	X11_context_t* ctx = (X11_context_t*)rdc;
+	XImage* pmi = (XImage*)hbmp;
+	Pixmap pmp;
+	unsigned long fg, bg;
+	int w,h, dp;
+
+	fg = WhitePixel(g_display, DefaultScreen(g_display));
+	bg = BlackPixel(g_display, DefaultScreen(g_display));
+	dp = pmi->depth;
+	w = pmi->width;
+	h = pmi->height;
+
+    pmp = XCreatePixmapFromBitmapData(g_display, ctx->device, pmi->data, w, h, fg, bg, dp);
+
+	XCopyPlane(g_display, pmp, ctx->device, ctx->context, 0, 0, w, h, prt->x, prt->y, 1);
+
+	XFreePixmap(g_display, pmp);
 }
+
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_REGION

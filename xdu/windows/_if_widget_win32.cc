@@ -43,7 +43,7 @@ LICENSE.GPL3 for more details.
 #pragma comment(lib, "GLU32.lib")
 #endif
 
-typedef struct _widget_struct_t{
+typedef struct _win32_widget_t{
 	res_win_t parent, owner, self;
 
 	dword_t style;
@@ -64,9 +64,9 @@ typedef struct _widget_struct_t{
 	HGLRC glrc;
 #endif
 
-}widget_struct_t;
+}win32_widget_t;
 
-#define GETXDUSTRUCT(hWnd)			(widget_struct_t*)GetProp(hWnd, XDUSTRUCT)
+#define GETXDUSTRUCT(hWnd)			(win32_widget_t*)GetProp(hWnd, XDUSTRUCT)
 #define SETXDUSTRUCT(hWnd, ev)		SetProp(hWnd, XDUSTRUCT, (HANDLE)ev)
 
 #define GETXDUDISPATCH(hWnd)		(if_event_t*)GetProp(hWnd, XDUDISPATCH)
@@ -82,73 +82,6 @@ typedef struct _widget_struct_t{
 #define SETXDUUSERDELTA(hWnd, lp)	SetProp(hWnd, XDUUSERDELTA, (HANDLE)lp)
 
 LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
-static void _ClientRectToWindow(HWND hWnd, RECT* prt)
-{
-	RECT rtWnd, rtCli;
-
-	GetClientRect(hWnd, &rtCli);
-
-	ClientToScreen(hWnd, (LPPOINT)&rtCli);
-
-	GetWindowRect(hWnd, &rtWnd);
-
-	prt->left += (rtCli.left - rtWnd.left);
-	prt->top += (rtCli.top - rtWnd.top);
-	prt->right += (rtCli.left - rtWnd.left);
-	prt->bottom += (rtCli.top - rtWnd.top);
-}
-
-static void _ClientPointToWindow(HWND hWnd, POINT* ppt)
-{
-	RECT rtWnd, rtCli;
-
-	GetClientRect(hWnd, &rtCli);
-
-	ClientToScreen(hWnd, (LPPOINT)&rtCli);
-
-	GetWindowRect(hWnd, &rtWnd);
-
-	ppt->x += (rtCli.left - rtWnd.left);
-	ppt->y += (rtCli.top - rtWnd.top);
-}
-
-static void _ScreenRectToWindow(HWND hWnd, RECT* prt)
-{
-	RECT rtWnd;
-
-	GetWindowRect(hWnd, &rtWnd);
-
-	prt->left -=rtWnd.left;
-	prt->right -= rtWnd.left;
-	prt->top -= rtWnd.top;
-	prt->bottom -= rtWnd.top;
-}
-
-static void _ScreenPointToWindow(HWND hWnd, POINT* ppt)
-{
-	RECT rtWnd;
-
-	GetWindowRect(hWnd, &rtWnd);
-
-	ppt->x -= rtWnd.left;
-	ppt->y -= rtWnd.top;
-}
-
-static void _CenterRect(RECT* prt, int cx, int cy)
-{
-	if (prt->right - prt->left > cx)
-	{
-		prt->left += cx / 2;
-		prt->right -= cx / 2;
-	}
-
-	if (prt->bottom - prt->top > cy)
-	{
-		prt->top += cy / 2;
-		prt->bottom -= cy / 2;
-	}
-}
 
 static DWORD _WindowStyle(dword_t wstyle)
 {
@@ -228,7 +161,7 @@ ATOM RegisterXdcWidgetClass(HINSTANCE hInstance)
 
 BOOL GL_BEGIN(HWND hWnd, HDC hDC)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(hWnd);
+	win32_widget_t* pws = GETXDUSTRUCT(hWnd);
 
 	if (!pws) return FALSE;
 
@@ -272,7 +205,7 @@ BOOL GL_BEGIN(HWND hWnd, HDC hDC)
 
 VOID GL_END(HWND hWnd, HDC hDC)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(hWnd);
+	win32_widget_t* pws = GETXDUSTRUCT(hWnd);
 
 	if (pws && pws->glrc)
 	{
@@ -287,7 +220,7 @@ VOID GL_END(HWND hWnd, HDC hDC)
 
 res_glc_t	_widget_get_glctx(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws) ? pws->glrc : NULL;
 }
@@ -296,7 +229,7 @@ res_glc_t	_widget_get_glctx(res_win_t wt)
 
 LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(hWnd);
+	win32_widget_t* pws = GETXDUSTRUCT(hWnd);
 	DWORD ds = (pws) ? pws->style : 0;
 
 	LPCREATESTRUCT lpcs;
@@ -552,7 +485,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			}
 		}
 
-		pws = (widget_struct_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(widget_struct_t));
+		pws = (win32_widget_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_widget_t));
 		pws->parent = (lpcs)? lpcs->hwndParent : NULL;
 		pws->self = hWnd;
 
@@ -1078,7 +1011,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 #endif
 {
-	widget_struct_t* pws = GETXDUSTRUCT(hWnd);
+	win32_widget_t* pws = GETXDUSTRUCT(hWnd);
 	DWORD ds = (pws) ? pws->style : 0;
 
 	if_subproc_t* pev = GETXDUSUBPROC(hWnd);
@@ -1487,7 +1420,7 @@ void _widget_cleanup()
 
 res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev)
 {
-	widget_struct_t* pws;
+	win32_widget_t* pws;
 
 	HWND hWnd = CreateWindow(XDUWIDGET, wname, _WindowStyle(wstyle), pxr->x, pxr->y, pxr->w, pxr->h, wparent, NULL, NULL, (void*)pev);
 
@@ -1520,7 +1453,7 @@ void _widget_destroy(res_win_t wt)
 
 void _widget_close(res_win_t wt, int ret)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if(pws) pws->result = ret;
 
@@ -1645,42 +1578,42 @@ bool_t _widget_has_subproc(res_win_t wt)
 
 void _widget_set_style(res_win_t wt, dword_t ws)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws) pws->style = ws;
 }
 
 dword_t _widget_get_style(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws) ? pws->style : 0;
 }
 
 void _widget_set_accel(res_win_t wt, res_acl_t acl)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws) pws->acl = acl;
 }
 
 res_acl_t _widget_get_accel(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws) ? pws->acl : NULL;
 }
 
 void _widget_set_owner(res_win_t wt, res_win_t win)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws) pws->owner = win;
 }
 
 res_win_t _widget_get_owner(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws) ? pws->owner : NULL;
 }
@@ -1707,7 +1640,7 @@ var_long _widget_get_user_delta(res_win_t wt)
 
 void _widget_set_user_id(res_win_t wt, uid_t uid)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 #ifdef WINCE
 	if (GetWindowLong(wt, GWL_STYLE) & WS_CHILD)
@@ -1722,7 +1655,7 @@ void _widget_set_user_id(res_win_t wt, uid_t uid)
 
 uid_t _widget_get_user_id(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 #ifdef WINCE
 	if (GetWindowLong(wt, GWL_STYLE) & WS_CHILD)
@@ -1739,14 +1672,14 @@ uid_t _widget_get_user_id(res_win_t wt)
 
 void _widget_set_user_result(res_win_t wt, int rt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws) pws->result = rt;
 }
 
 int _widget_get_user_result(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? pws->result : 0;
 }
@@ -2180,7 +2113,7 @@ bool_t _widget_is_child(res_win_t wt)
 
 bool_t _widget_is_ownc(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 	dword_t ds = (pws) ? pws->style : 0;
 
 #ifdef WINCE
@@ -2306,7 +2239,7 @@ void _widget_take(res_win_t wt, int zor)
 
 void _widget_show(res_win_t wt, dword_t sw)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 	DWORD dw = (pws) ? pws->style : 0;
 	RECT rt;
 
@@ -2490,7 +2423,7 @@ void _widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl)
 
 void _widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psl)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 	dword_t ds = (pws) ? pws->style : 0;
 
 	SCROLLINFO si = { 0 };
@@ -2517,14 +2450,14 @@ void _widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psl)
 
 bool_t _widget_has_struct(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws != NULL) ? 1 : 0;
 }
 
 void  _widget_set_xfont(res_win_t wt, const xfont_t* pxf)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2534,7 +2467,7 @@ void  _widget_set_xfont(res_win_t wt, const xfont_t* pxf)
 
 void _widget_get_xfont(res_win_t wt, xfont_t* pxf)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2544,14 +2477,14 @@ void _widget_get_xfont(res_win_t wt, xfont_t* pxf)
 
 const xfont_t* _widget_get_xfont_ptr(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xf : NULL;
 }
 
 void _widget_set_xface(res_win_t wt, const xface_t* pxa)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2561,7 +2494,7 @@ void _widget_set_xface(res_win_t wt, const xface_t* pxa)
 
 void _widget_get_xface(res_win_t wt, xface_t* pxa)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2571,14 +2504,14 @@ void _widget_get_xface(res_win_t wt, xface_t* pxa)
 
 const xface_t* _widget_get_xface_ptr(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xa : NULL;
 }
 
 void _widget_set_xbrush(res_win_t wt, const xbrush_t* pxb)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2588,7 +2521,7 @@ void _widget_set_xbrush(res_win_t wt, const xbrush_t* pxb)
 
 void _widget_get_xbrush(res_win_t wt, xbrush_t* pxb)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2598,14 +2531,14 @@ void _widget_get_xbrush(res_win_t wt, xbrush_t* pxb)
 
 const xbrush_t* _widget_get_xbrush_ptr(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xb : NULL;
 }
 
 void _widget_set_xpen(res_win_t wt, const xpen_t* pxp)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2615,7 +2548,7 @@ void _widget_set_xpen(res_win_t wt, const xpen_t* pxp)
 
 void _widget_get_xpen(res_win_t wt, xpen_t* pxp)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2625,14 +2558,14 @@ void _widget_get_xpen(res_win_t wt, xpen_t* pxp)
 
 const xpen_t* _widget_get_xpen_ptr(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xp : NULL;
 }
 
 void _widget_set_mask(res_win_t wt, const xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2642,7 +2575,7 @@ void _widget_set_mask(res_win_t wt, const xcolor_t* pxc)
 
 void _widget_get_mask(res_win_t wt, xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2652,14 +2585,14 @@ void _widget_get_mask(res_win_t wt, xcolor_t* pxc)
 
 const xcolor_t* _widget_get_mask_ptr(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->msk : NULL;
 }
 
 void _widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2669,7 +2602,7 @@ void _widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
 
 void _widget_get_iconic(res_win_t wt, xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2679,14 +2612,14 @@ void _widget_get_iconic(res_win_t wt, xcolor_t* pxc)
 
 const xcolor_t* _widget_get_iconic_ptr(res_win_t wt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->ico : NULL;
 }
 
 void _widget_set_point(res_win_t wt, const xpoint_t* ppt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2696,7 +2629,7 @@ void _widget_set_point(res_win_t wt, const xpoint_t* ppt)
 
 void _widget_get_point(res_win_t wt, xpoint_t* ppt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2706,7 +2639,7 @@ void _widget_get_point(res_win_t wt, xpoint_t* ppt)
 
 void _widget_set_size(res_win_t wt, const xsize_t* pst)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2716,7 +2649,7 @@ void _widget_set_size(res_win_t wt, const xsize_t* pst)
 
 void _widget_get_size(res_win_t wt, xsize_t* pst)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -2742,7 +2675,7 @@ static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
 
 void _widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 	dword_t dw = (pws)? pws->style : 0;
 
 	if (!pws)
@@ -2771,7 +2704,7 @@ void _widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	win32_widget_t* pws = GETXDUSTRUCT(wt);
 	dword_t dw = (pws) ? pws->style : 0;
 
 	if (!pws)

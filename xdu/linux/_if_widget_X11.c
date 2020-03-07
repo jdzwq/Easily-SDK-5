@@ -79,9 +79,7 @@ LICENSE.GPL3 for more details.
 X11_atoms_t  g_atoms = {0};
 Window g_capture = (res_win_t)0;
 
-
-
-typedef struct _widget_struct_t{
+typedef struct _X11_widget_t{
 	res_win_t root;
 	res_win_t parent;
 	res_win_t owner;
@@ -103,13 +101,17 @@ typedef struct _widget_struct_t{
 	xpoint_t pt;
 	xsize_t st;
 
+	scroll_t hs;
+	scroll_t vs;
+
 	xfont_t xf;
 	xface_t xa;
 	xbrush_t xb;
 	xpen_t xp;
 	xcolor_t msk;
 	xcolor_t ico;
-}widget_struct_t;
+}X11_widget_t;
+
 
 result_t XdcWidgetProc(res_win_t hWnd, unsigned int message, wparam_t wParam, lparam_t lParam);
 
@@ -144,16 +146,16 @@ static bool_t _WindowDelProper(res_win_t wt, Atom atom)
     return (Success == XDeleteProperty(g_display, wt, atom))? 1 : 0;
 }
 
-static widget_struct_t* GETXDUSTRUCT(res_win_t hWnd)
+static X11_widget_t* GETXDUSTRUCT(res_win_t hWnd)
 {
     byte_t bys[VOID_SIZE] = {0};
     
     _WindowGetProper(hWnd, g_atoms.xdu_struct, bys, VOID_SIZE);
     
-    return (widget_struct_t*)GET_VAR_LONG_NET(bys);
+    return (X11_widget_t*)GET_VAR_LONG_NET(bys);
 }
 
-static void SETXDUSTRUCT(res_win_t hWnd, widget_struct_t* p)
+static void SETXDUSTRUCT(res_win_t hWnd, X11_widget_t* p)
 {
     byte_t bys[VOID_SIZE] = {0};
     
@@ -187,7 +189,6 @@ static if_subproc_t* GETXDUSUBPROC(res_win_t hWnd)
     _WindowGetProper(hWnd, g_atoms.xdu_subproc, bys, VOID_SIZE);
     
     return (if_subproc_t*)GET_VAR_LONG_NET(bys);
-
 }
 
 static void SETXDUSUBPROC(res_win_t hWnd, if_subproc_t* p)
@@ -237,33 +238,6 @@ static void SETXDUUSERDELTA(res_win_t hWnd, void* p)
     _WindowSetProper(hWnd, g_atoms.xdu_user_delta, bys, VOID_SIZE);
 }
 
-
-static void _ClientRectToWindow(res_win_t hWnd, XRectangle* prt)
-{
-
-}
-
-static void _ClientPointToWindow(res_win_t hWnd, XPoint* ppt)
-{
-
-}
-
-static void _ScreenRectToWindow(res_win_t hWnd, XRectangle* prt)
-{
-
-}
-
-static void _ScreenPointToWindow(res_win_t hWnd, XPoint* ppt)
-{
-
-}
-
-static void _CenterRect(XRectangle* prt, int cx, int cy)
-{
-
-}
-
-
 /*******************************************************************************************/
 
 void _widget_startup(int ver)
@@ -305,7 +279,8 @@ void _widget_startup(int ver)
     g_atoms.net_wm_window_type_tooltip = XInternAtom (g_display, "_NET_WM_WINDOW_TYPE_TOOLTIP", False);
     g_atoms.net_wm_window_type_toolbar = XInternAtom (g_display, "_NET_WM_WINDOW_TYPE_TOOLBAR", False);
     g_atoms.net_wm_window_type_utility = XInternAtom (g_display, "_NET_WM_WINDOW_TYPE_UTILITY", False);
-    g_atoms.wm_change_state = XInternAtom (g_display, "WM_CHANGE_STATE", False);
+    g_atoms.net_wm_ping = XInternAtom (g_display, "_NET_WM_PING", False);
+	g_atoms.wm_change_state = XInternAtom (g_display, "WM_CHANGE_STATE", False);
     g_atoms.wm_colormap_windows = XInternAtom (g_display, "WM_COLORMAP_WINDOWS", False);
     g_atoms.wm_delete_window = XInternAtom (g_display, "WM_DELETE_WINDOW", False);
     g_atoms.wm_hints = XInternAtom (g_display, "WM_HINTS", False);
@@ -320,6 +295,7 @@ void _widget_startup(int ver)
 	g_atoms.wm_message = XInternAtom (g_display, "WM_MESSAGE", False);
 	g_atoms.wm_notice = XInternAtom (g_display, "WM_NOTICE", False);
 	g_atoms.wm_input = XInternAtom (g_display, "WM_INPUT", False);
+	g_atoms.wm_scroll = XInternAtom (g_display, "WM_SCROLL", False);
 
     g_atoms.xdu_struct = XInternAtom (g_display, "XDUSTRUCT", False);
     g_atoms.xdu_dispatch = XInternAtom (g_display, "XDUDISPATCH", False);
@@ -340,8 +316,9 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
     int screen_num, screen_dep;
 	int border_width = 0;
     XSetWindowAttributes attr = {0};
-	Atom atom;
-	widget_struct_t* ps = NULL;
+	Atom atom, atoms[2] = {0};
+	XWMHints *hints = NULL;
+	X11_widget_t* ps = NULL;
 	if_event_t* pv = NULL;
 
     screen_num = DefaultScreen(g_display);
@@ -410,11 +387,25 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 
 	if(wstyle == WD_STYLE_FRAME)
 	{
-		atom = g_atoms.wm_delete_window;
-		XSetWMProtocols (g_display, win, &atom, 1);
+		atoms[0] = g_atoms.wm_take_focus;
+		atoms[1] = g_atoms.wm_delete_window;
+		XSetWMProtocols (g_display, win, atoms, 2);
+	}else
+	{
+		atoms[0] = g_atoms.wm_take_focus;
+		XSetWMProtocols (g_display, win, atoms, 1);
 	}
 
-	ps = (widget_struct_t*)calloc(1, sizeof(widget_struct_t));
+	if(wstyle & WD_STYLE_NOACTIVE)
+	{
+		hints = XAllocWMHints();
+		hints->flags |= InputHint;
+		hints->input = False;
+		XSetWMHints(g_display, win, hints);
+		XFree(hints);
+	}
+
+	ps = (X11_widget_t*)calloc(1, sizeof(X11_widget_t));
 
 	ps->root = rot;
 	ps->parent = wparent;
@@ -445,7 +436,7 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 
 void _widget_destroy(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	if_event_t* pv = GETXDUDISPATCH(wt);
 
 	if(pv && pv->pf_on_destroy)
@@ -472,7 +463,7 @@ void _widget_destroy(res_win_t wt)
 
 void _widget_close(res_win_t wt, int ret)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
     if_event_t* pv = GETXDUDISPATCH(wt);
 	//XClientMessageEvent ev = {0};
 
@@ -562,70 +553,70 @@ var_long _widget_get_user_delta(res_win_t wt)
 
 void _widget_set_style(res_win_t wt, dword_t ws)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(ps) ps->style = ws;
 }
 
 dword_t _widget_get_style(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	return (ps)? ps->style : 0;
 }
 
 void _widget_set_accel(res_win_t wt, res_acl_t acl)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(ps) ps->acl = acl;
 }
 
 res_acl_t _widget_get_accel(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	return (ps)? ps->acl : (res_acl_t)0;
 }
 
 void _widget_set_owner(res_win_t wt, res_win_t win)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(ps) ps->owner = win;
 }
 
 res_win_t _widget_get_owner(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	return (ps)? ps->owner : (res_win_t)0;
 }
 
 void _widget_set_user_id(res_win_t wt, uid_t uid)
 {
-    widget_struct_t* ps = GETXDUSTRUCT(wt);
+    X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(ps) ps->uid = uid;
 }
 
 uid_t _widget_get_user_id(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
     return (ps)? ps->uid : 0;
 }
 
 void _widget_set_user_result(res_win_t wt, int rt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(ps) ps->result = rt;
 }
 
 int _widget_get_user_result(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
     return (ps)? ps->result : 0;
 }
@@ -635,7 +626,7 @@ res_win_t _widget_get_child(res_win_t wt, uid_t uid)
     unsigned int i, n;
     Window Root, Parent, child;
     Window* Children;
-	widget_struct_t* ps;
+	X11_widget_t* ps;
 
     if(XQueryTree(g_display, wt, &Root, &Parent, &Children, &n) != True)
         return (res_win_t)NULL;
@@ -781,14 +772,14 @@ void _widget_adjust_size(dword_t ws, xsize_t* pxs)
 
 bool_t _widget_is_maximized(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	return (ps->state == WS_SHOW_MAXIMIZE)? 1 : 0;
 }
 
 bool_t _widget_is_minimized(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	return (ps->state == WS_SHOW_MINIMIZE)? 1 : 0;
 }
@@ -815,14 +806,14 @@ bool_t _widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv)
 
 res_ctx_t _widget_client_ctx(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	
 	return (ps)? ps->cgc : NULL;
 }
 
 res_ctx_t _widget_window_ctx(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	
 	return (ps)? ps->wgc : NULL;
 }
@@ -835,7 +826,7 @@ void _widget_release_ctx(res_win_t wt, res_ctx_t dc)
 
 void _widget_get_client_rect(res_win_t wt, xrect_t* prt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	XWindowAttributes attr = {0};
 	border_t bd = {0};
 
@@ -854,7 +845,7 @@ void _widget_get_client_rect(res_win_t wt, xrect_t* prt)
 
 void _widget_get_window_rect(res_win_t wt, xrect_t* prt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	XWindowAttributes attr = {0};
 	int dst_x = 0, dst_y = 0;
 	Window rot, cld = NULL;
@@ -873,7 +864,7 @@ void _widget_get_window_rect(res_win_t wt, xrect_t* prt)
 
 void _widget_client_to_screen(res_win_t wt, xpoint_t* ppt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	Window rot, cld = NULL;
 	int dst_x = 0, dst_y = 0;
 
@@ -887,7 +878,7 @@ void _widget_client_to_screen(res_win_t wt, xpoint_t* ppt)
 
 void _widget_screen_to_client(res_win_t wt, xpoint_t* ppt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	Window rot, cld = NULL;
 	int dst_x = 0, dst_y = 0;
 
@@ -901,7 +892,7 @@ void _widget_screen_to_client(res_win_t wt, xpoint_t* ppt)
 
 void _widget_client_to_window(res_win_t wt, xpoint_t* ppt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	border_t bd = {0};
 
 	if(ps)
@@ -915,7 +906,7 @@ void _widget_client_to_window(res_win_t wt, xpoint_t* ppt)
 
 void _widget_window_to_client(res_win_t wt, xpoint_t* ppt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	border_t bd = {0};
 
 	if(ps)
@@ -975,12 +966,19 @@ void _widget_kill_timer(res_win_t wt, var_long tid)
 
 void _widget_create_caret(res_win_t wt, int w, int h)
 {
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
+	Cursor cur;
 
+	cur = XCreateFontCursor(g_display, XC_xterm);
+
+	XDefineCursor(g_display, wt, cur);
+
+	XFreeCursor(g_display, cur);
 }
 
 void _widget_destroy_caret(res_win_t wt)
 {
-
+	XUndefineCursor(g_display, wt);
 }
 
 void _widget_show_caret(res_win_t wt, int x, int y, bool_t b)
@@ -988,26 +986,21 @@ void _widget_show_caret(res_win_t wt, int x, int y, bool_t b)
 
 }
 
-void _widget_set_imm(res_win_t wt, bool_t b)
-{
-
-}
-
-bool_t _widget_get_imm(res_win_t wt)
-{
-    return 0;
-}
-
 void _widget_set_focus(res_win_t wt)
 {
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
+
 	Window org = NULL;
 	int rev = 0;
+
+	if(ps && (ps->style & WD_STYLE_NOACTIVE))
+		return;
 
 	XGetInputFocus(g_display, &org, &rev);
 	if(org == wt)
 		return;
 	
-	XSetInputFocus(g_display, wt, RevertToNone, CurrentTime);
+	XSetInputFocus(g_display, wt, RevertToParent, CurrentTime);
 }
 
 bool_t _widget_key_state(res_win_t wt, int key)
@@ -1040,7 +1033,7 @@ static int _tmp_error_handler(Display* dpy, XErrorEvent* pee)
 
 bool_t _widget_is_valid(res_win_t wt)
 {
-	widget_struct_t* ps ;
+	X11_widget_t* ps ;
 	XErrorHandler pf_org;
 	
 	pf_org = XSetErrorHandler(_tmp_error_handler);
@@ -1064,7 +1057,7 @@ bool_t _widget_is_focus(res_win_t wt)
 
 bool_t _widget_is_child(res_win_t wt)
 {
-    widget_struct_t* ps = GETXDUSTRUCT(wt);
+    X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(!ps) return 0;
 
@@ -1073,7 +1066,7 @@ bool_t _widget_is_child(res_win_t wt)
 
 bool_t _widget_is_ownc(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(!ps) return 0;
 
@@ -1082,21 +1075,21 @@ bool_t _widget_is_ownc(res_win_t wt)
 
 void _widget_move(res_win_t wt, const xpoint_t* ppt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	XMoveWindow(g_display, wt, ppt->x, ppt->y);
 }
 
 void _widget_size(res_win_t wt, const xsize_t* pxs)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	XResizeWindow(g_display, wt, pxs->cx, pxs->cy);
 }
 
 void _widget_take(res_win_t wt, int zor)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	XWindowChanges wc = {0};
 
 	switch(zor)
@@ -1120,7 +1113,7 @@ void _widget_take(res_win_t wt, int zor)
 
 void _widget_show(res_win_t wt, dword_t sw)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	XClientMessageEvent ev = {0};
 
 	switch(sw)
@@ -1195,7 +1188,7 @@ void _widget_paint(res_win_t wt)
 
 void _widget_enable(res_win_t wt, bool_t b)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
 	if(ps) ps->disable = (b)? 0 : 1;
 }
@@ -1212,7 +1205,7 @@ int _widget_send_notice(res_win_t wt, NOTICE* pnt)
 
 void _widget_post_command(res_win_t wt, int code, uid_t cid, var_long data)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	XClientMessageEvent ev = {0};
 
     ev.type = ClientMessage;
@@ -1352,28 +1345,59 @@ int _widget_get_title(res_win_t wt, tchar_t* buf, int max)
 
 void _widget_scroll(res_win_t wt, bool_t horz, int line)
 {
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
+
+	XClientMessageEvent ev = {0};
+
+    ev.type = ClientMessage;
+	ev.serial = 0;
+	ev.send_event = 1;
+	ev.display = g_display;
+    ev.window = wt;
+    ev.message_type = g_atoms.wm_scroll;
+    ev.format = 32;
+    ev.data.l[0] = (horz)? 1 : 0;
+    ev.data.l[1] = line;
+    ev.data.l[2] = 0;
+	ev.data.l[3] = ev.data.l[4] = 0;
+    
+    XSendEvent (g_display, wt, False, SubstructureNotifyMask, (XEvent*)&ev);
 }
 
 void _widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl)
 {
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
+	if(!ps) return;
+
+	if(horz)
+		memcpy((void*)psl, (void*)&(ps->hs), sizeof(scroll_t));
+	else
+		memcpy((void*)psl, (void*)&(ps->vs), sizeof(scroll_t));
 }
 
 void _widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psl)
 {
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
+	if(!ps) return;
+
+	if(horz)
+		memcpy((void*)&(ps->hs), (void*)psl, sizeof(scroll_t));
+	else
+		memcpy((void*)&(ps->vs), (void*)psl, sizeof(scroll_t));
 }
 
 bool_t _widget_has_struct(res_win_t wt)
 {
-	widget_struct_t* ps = GETXDUSTRUCT(wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
 
     return (ps)? 1 : 0;
 }
 
 void  _widget_set_xfont(res_win_t wt, const xfont_t* pxf)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1383,7 +1407,7 @@ void  _widget_set_xfont(res_win_t wt, const xfont_t* pxf)
 
 void _widget_get_xfont(res_win_t wt, xfont_t* pxf)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1393,14 +1417,14 @@ void _widget_get_xfont(res_win_t wt, xfont_t* pxf)
 
 const xfont_t* _widget_get_xfont_ptr(res_win_t wt)
 {
-    widget_struct_t* pws = GETXDUSTRUCT(wt);
+    X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xf : NULL;
 }
 
 void _widget_set_xface(res_win_t wt, const xface_t* pxa)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1410,7 +1434,7 @@ void _widget_set_xface(res_win_t wt, const xface_t* pxa)
 
 void _widget_get_xface(res_win_t wt, xface_t* pxa)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1420,14 +1444,14 @@ void _widget_get_xface(res_win_t wt, xface_t* pxa)
 
 const xface_t* _widget_get_xface_ptr(res_win_t wt)
 {
-    widget_struct_t* pws = GETXDUSTRUCT(wt);
+    X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xa : NULL;
 }
 
 void _widget_set_xbrush(res_win_t wt, const xbrush_t* pxb)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1437,7 +1461,7 @@ void _widget_set_xbrush(res_win_t wt, const xbrush_t* pxb)
 
 void _widget_get_xbrush(res_win_t wt, xbrush_t* pxb)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1447,14 +1471,14 @@ void _widget_get_xbrush(res_win_t wt, xbrush_t* pxb)
 
 const xbrush_t* _widget_get_xbrush_ptr(res_win_t wt)
 {
-    widget_struct_t* pws = GETXDUSTRUCT(wt);
+    X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xb : NULL;
 }
 
 void _widget_set_xpen(res_win_t wt, const xpen_t* pxp)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1464,7 +1488,7 @@ void _widget_set_xpen(res_win_t wt, const xpen_t* pxp)
 
 void _widget_get_xpen(res_win_t wt, xpen_t* pxp)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1474,14 +1498,14 @@ void _widget_get_xpen(res_win_t wt, xpen_t* pxp)
 
 const xpen_t* _widget_get_xpen_ptr(res_win_t wt)
 {
-    widget_struct_t* pws = GETXDUSTRUCT(wt);
+    X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->xp : NULL;
 }
 
 void _widget_set_mask(res_win_t wt, const xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1491,7 +1515,7 @@ void _widget_set_mask(res_win_t wt, const xcolor_t* pxc)
 
 void _widget_get_mask(res_win_t wt, xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1501,14 +1525,14 @@ void _widget_get_mask(res_win_t wt, xcolor_t* pxc)
 
 const xcolor_t* _widget_get_mask_ptr(res_win_t wt)
 {
-    widget_struct_t* pws = GETXDUSTRUCT(wt);
+    X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->msk : NULL;
 }
 
 void _widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1518,7 +1542,7 @@ void _widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
 
 void _widget_get_iconic(res_win_t wt, xcolor_t* pxc)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1528,14 +1552,14 @@ void _widget_get_iconic(res_win_t wt, xcolor_t* pxc)
 
 const xcolor_t* _widget_get_iconic_ptr(res_win_t wt)
 {
-    widget_struct_t* pws = GETXDUSTRUCT(wt);
+    X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	return (pws)? &pws->ico : NULL;
 }
 
 void _widget_set_point(res_win_t wt, const xpoint_t* ppt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1545,7 +1569,7 @@ void _widget_set_point(res_win_t wt, const xpoint_t* ppt)
 
 void _widget_get_point(res_win_t wt, xpoint_t* ppt)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1555,7 +1579,7 @@ void _widget_get_point(res_win_t wt, xpoint_t* ppt)
 
 void _widget_set_size(res_win_t wt, const xsize_t* pst)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1565,7 +1589,7 @@ void _widget_set_size(res_win_t wt, const xsize_t* pst)
 
 void _widget_get_size(res_win_t wt, xsize_t* pst)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 
 	if (pws)
 	{
@@ -1591,7 +1615,7 @@ static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
 
 void _widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 	dword_t dw = (pws)? pws->style : 0;
 
 	if (!pws)
@@ -1620,7 +1644,7 @@ void _widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 {
-	widget_struct_t* pws = GETXDUSTRUCT(wt);
+	X11_widget_t* pws = GETXDUSTRUCT(wt);
 	dword_t dw = (pws) ? pws->style : 0;
 
 	if (!pws)
@@ -1646,7 +1670,7 @@ void _message_quit(int code)
 
 bool_t _message_translate(const msg_t* pmsg)
 {
-	widget_struct_t* pwt;
+	X11_widget_t* pwt;
 	if_event_t* pif;
 	accel_t* pac;
 
@@ -1737,7 +1761,7 @@ bool_t _message_translate(const msg_t* pmsg)
 
 result_t _message_dispatch(const msg_t* pmsg)
 {
-	widget_struct_t* pwt;
+	X11_widget_t* pwt;
 	if_event_t* pif;
 	
 	switch(pmsg->type)
@@ -1922,7 +1946,7 @@ result_t _message_dispatch(const msg_t* pmsg)
 				xr.w = pmsg->xexpose.width;
 				xr.h = pmsg->xexpose.height;
 
-				(*pif->pf_on_paint)(pmsg->xexpose.window, pwt->cgc, &xr);
+				(*pif->pf_on_paint)(pmsg->xexpose.window, pwt->wgc, &xr);
 			}
 			break;
 		case FocusIn:
@@ -2043,12 +2067,37 @@ result_t _message_dispatch(const msg_t* pmsg)
 						(*pif->pf_on_menu_command)(pmsg->xclient.window, (int)(pmsg->xclient.data.l[1]), (int)(pmsg->xclient.data.l[0]), (var_long)(pmsg->xclient.data.l[2]));
 					}
 				}
-				
+				break;
+			}
+
+			if(pmsg->xclient.message_type == g_atoms.wm_scroll)
+			{
+				if(pmsg->xclient.data.l[0] == 1)
+				{
+					if(pif && pif->pf_on_scroll)
+					{
+						(*pif->pf_on_scroll)(pmsg->xclient.window, (bool_t)1, (int)(pmsg->xclient.data.l[1]));
+					}
+				}else
+				{
+					if(pif && pif->pf_on_scroll)
+					{
+						(*pif->pf_on_scroll)(pmsg->xclient.window, (bool_t)0, (int)(pmsg->xclient.data.l[1]));
+					}
+				}
+				break;
+			}
+
+			if(pmsg->xclient.message_type == g_atoms.wm_protocols && pmsg->xclient.data.l[0] == g_atoms.wm_take_focus)
+			{
+				_widget_set_focus(pmsg->xclient.window);
+				break;
 			}
 
 			if(pmsg->xclient.message_type == g_atoms.wm_protocols && pmsg->xclient.data.l[0] == g_atoms.wm_delete_window)
 			{
 				_widget_close(pmsg->xclient.window, 0);
+				break;
 			}
 			break;
 	}

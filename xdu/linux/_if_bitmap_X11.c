@@ -66,34 +66,47 @@ void _get_bitmap_size(res_bmp_t rb, int* pw, int* ph)
 
 res_bmp_t _create_context_bitmap(res_ctx_t rdc)
 {
-    return NULL;
+	return XGetImage(g_display, rdc->device, 0, 0, rdc->width, rdc->height, AllPlanes, ZPixmap);
 }
 
 res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 {
     XImage* pim;
-    Visual *pvi;
-    char* buf;
     int row,col;
+	unsigned long pix;
     
-    pvi = DefaultVisual(g_display, DefaultScreen(g_display));
+    pim = (XImage*)calloc(1, sizeof(XImage));
+	pim->width = w;
+	pim->height = h;
+	pim->xoffset = 0;
+	pim->format = ZPixmap;
+	pim->data = (char*)calloc(1, w * h * 4);
+	pim->byte_order = LSBFirst;
+	pim->bitmap_unit = 32;
+	pim->bitmap_bit_order = LSBFirst;
+	pim->bitmap_pad = 32;
+	pim->depth = rdc->depth;
+	pim->bytes_per_line = w * 4;
+	pim->bits_per_pixel = 32;
+	pim->red_mask = rdc->visual->red_mask;
+	pim->green_mask = rdc->visual->green_mask;
+	pim->blue_mask = rdc->visual->blue_mask;
+
+	XInitImage(pim);
     
-    buf = calloc(1, w * h * 4);
-    
-    for(row = 0; row < h;row ++)
+	pix = 0;
+	pix |= ((pxc->r << 16) & pim->red_mask);
+	pix |= ((pxc->g << 8) & pim->green_mask);
+	pix |= ((pxc->b) & pim->blue_mask);
+	
+    for(row = 0; row < h; row ++)
     {
-        for(col = 0;col < 4 * w;col+=4)
+        for(col = 0; col < w; col++)
         {
-            buf[row * col] = (char)pxc->r;
-            buf[row * col + 1] = (char)pxc->g;
-            buf[row * col + 2] = (char)pxc->b;
+			XPutPixel(pim, row, col, pix);
         }
     }
-    
-    pim = XCreateImage(g_display, pvi, 24, ZPixmap, 0, buf, w, h, 32, w * sizeof(int));
-    
-    //free(buf);
-    
+
     return pim;
 }
 

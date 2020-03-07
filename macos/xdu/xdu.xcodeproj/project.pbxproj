@@ -7,12 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9B1A8F152406734A00A8091A /* _if_bitmap_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F0F2406734A00A8091A /* _if_bitmap_X11.c */; };
-		9B1A8F162406734A00A8091A /* _if_context_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F102406734A00A8091A /* _if_context_X11.c */; };
-		9B1A8F172406734A00A8091A /* _if_gdi_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F112406734A00A8091A /* _if_gdi_X11.c */; };
-		9B1A8F182406734A00A8091A /* _if_region_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F122406734A00A8091A /* _if_region_X11.c */; };
-		9B1A8F192406734A00A8091A /* _if_shell_macos.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F132406734A00A8091A /* _if_shell_macos.c */; };
-		9B1A8F1A2406734A00A8091A /* _if_widget_X11.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F142406734A00A8091A /* _if_widget_X11.c */; };
 		9B1A8F22240673A000A8091A /* xdudef.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B1A8F1C240673A000A8091A /* xdudef.h */; };
 		9B1A8F23240673A000A8091A /* xduutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B1A8F1D240673A000A8091A /* xduutil.c */; };
 		9B1A8F24240673A000A8091A /* xduiml.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B1A8F1E240673A000A8091A /* xduiml.h */; };
@@ -24,12 +18,6 @@
 
 /* Begin PBXFileReference section */
 		9B1A8F082406728200A8091A /* libxdu.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxdu.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		9B1A8F0F2406734A00A8091A /* _if_bitmap_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_bitmap_X11.c; path = ../../xdu/macos/_if_bitmap_X11.c; sourceTree = "<group>"; };
-		9B1A8F102406734A00A8091A /* _if_context_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_context_X11.c; path = ../../xdu/macos/_if_context_X11.c; sourceTree = "<group>"; };
-		9B1A8F112406734A00A8091A /* _if_gdi_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_gdi_X11.c; path = ../../xdu/macos/_if_gdi_X11.c; sourceTree = "<group>"; };
-		9B1A8F122406734A00A8091A /* _if_region_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_region_X11.c; path = ../../xdu/macos/_if_region_X11.c; sourceTree = "<group>"; };
-		9B1A8F132406734A00A8091A /* _if_shell_macos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_shell_macos.c; path = ../../xdu/macos/_if_shell_macos.c; sourceTree = "<group>"; };
-		9B1A8F142406734A00A8091A /* _if_widget_X11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _if_widget_X11.c; path = ../../xdu/macos/_if_widget_X11.c; sourceTree = "<group>"; };
 		9B1A8F1C240673A000A8091A /* xdudef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdudef.h; path = ../../xdu/xdudef.h; sourceTree = "<group>"; };
 		9B1A8F1D240673A000A8091A /* xduutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xduutil.c; path = ../../xdu/xduutil.c; sourceTree = "<group>"; };
 		9B1A8F1E240673A000A8091A /* xduiml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xduiml.h; path = ../../xdu/xduiml.h; sourceTree = "<group>"; };
@@ -76,12 +64,6 @@
 			isa = PBXGroup;
 			children = (
 				9B1A8F2824067DED00A8091A /* _xdu_macos.h */,
-				9B1A8F102406734A00A8091A /* _if_context_X11.c */,
-				9B1A8F112406734A00A8091A /* _if_gdi_X11.c */,
-				9B1A8F0F2406734A00A8091A /* _if_bitmap_X11.c */,
-				9B1A8F122406734A00A8091A /* _if_region_X11.c */,
-				9B1A8F132406734A00A8091A /* _if_shell_macos.c */,
-				9B1A8F142406734A00A8091A /* _if_widget_X11.c */,
 			);
 			name = macos;
 			sourceTree = "<group>";
@@ -158,12 +140,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B1A8F23240673A000A8091A /* xduutil.c in Sources */,
-				9B1A8F172406734A00A8091A /* _if_gdi_X11.c in Sources */,
-				9B1A8F152406734A00A8091A /* _if_bitmap_X11.c in Sources */,
-				9B1A8F162406734A00A8091A /* _if_context_X11.c in Sources */,
-				9B1A8F1A2406734A00A8091A /* _if_widget_X11.c in Sources */,
-				9B1A8F182406734A00A8091A /* _if_region_X11.c in Sources */,
-				9B1A8F192406734A00A8091A /* _if_shell_macos.c in Sources */,
 				9B1A8F25240673A000A8091A /* xduinf.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
