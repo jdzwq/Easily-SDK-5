@@ -70,11 +70,11 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdu\;..\..\include\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\gdiplus;..\..\xdu\;..\..\include\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdu\;..\..\include\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\gdiplus;..\..\xdu\;..\..\include\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>D:\Easily-app-5\windows\bin64\</OutDir>
@@ -85,12 +85,12 @@
     <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)55</TargetName>
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdu\;..\..\include\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\gdiplus;..\..\xdu\;..\..\include\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>$(ProjectName)64</TargetName>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdu\;..\..\include\;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\gdiplus;..\..\xdu\;..\..\include\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>D:\Easily-app-5\windows\bin64</OutDir>

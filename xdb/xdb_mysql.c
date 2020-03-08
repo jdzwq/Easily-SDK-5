@@ -577,9 +577,9 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
         d_sql = (char*)xmem_alloc(d_len + 1);
         
 #ifdef _UNICODE
-        d_len = ucs_to_utf8(tkpre, tklen, d_sql, d_len);
+        d_len = ucs_to_utf8(tkpre, tklen, (byte_t*)d_sql, d_len);
 #else
-        d_len = mbs_to_utf8(tkpre, tklen, d_sql, d_len);
+        d_len = mbs_to_utf8(tkpre, tklen, (byte_t*)d_sql, d_len);
 #endif
         
         if(C_OK != mysql_stmt_prepare(stm, d_sql, d_len))
@@ -721,9 +721,9 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
         d_sql = (char*)xmem_alloc(d_len + 1);
         
 #ifdef _UNICODE
-        d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+        d_len = ucs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #else
-        d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+        d_len = mbs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #endif
         
         xmem_free(sqlstr);
@@ -835,9 +835,9 @@ int STDCALL _db_fetch_row(db_t* pdb, MYSQL_STMT* stm, LINKPTR grid)
         field = mysql_fetch_field_direct(meta, i);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #endif
 		colname[len] = _T('\0');
 
@@ -900,9 +900,9 @@ int STDCALL _db_fetch_row(db_t* pdb, MYSQL_STMT* stm, LINKPTR grid)
 		{
 			field = mysql_fetch_field_direct(meta, i);
 #ifdef _UNICODE
-			len = utf8_to_ucs(field->name, field->name_length, colname, MAX_SQL_NAME);
+			len = utf8_to_ucs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #else
-			len = utf8_to_mbs(field->name, field->name_length, colname, MAX_SQL_NAME);
+			len = utf8_to_mbs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #endif
 			colname[len] = _T('\0');
 
@@ -1008,9 +1008,9 @@ bool_t STDCALL db_fetch(xdb_t db, LINKPTR grid)
     d_sql = (char*)xmem_alloc(d_len + 1);
     
 #ifdef _UNICODE
-    d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+    d_len = ucs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #else
-    d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+    d_len = mbs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #endif
     
     xmem_free(sqlstr);
@@ -1114,9 +1114,9 @@ bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
     d_sql = (char*)xmem_alloc(d_len + 1);
     
 #ifdef _UNICODE
-    d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+    d_len = ucs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #else
-    d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+    d_len = mbs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #endif
     
     if(C_OK != mysql_stmt_prepare(stm, d_sql, d_len))
@@ -1149,26 +1149,26 @@ bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 		clk = insert_col(grid, LINK_LAST);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #endif
 		colname[len] = _T('\0');
         set_col_name(clk, colname);
         set_col_title(clk, colname);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->org_name, field->org_name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->org_name), field->org_name_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->org_name, field->org_name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->org_name), field->org_name_length, colname, MAX_SQL_NAME);
 #endif
 		colname[len] = _T('\0');
         set_col_field_name(clk, colname);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->org_table, field->org_table_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->org_table), field->org_table_length, colname, MAX_SQL_NAME);
 #else
-		len =  utf8_to_mbs(field->org_table, field->org_table_length, colname, MAX_SQL_NAME);
+		len =  utf8_to_mbs((byte_t*)(field->org_table), field->org_table_length, colname, MAX_SQL_NAME);
 #endif 
 		colname[len] = _T('\0');
         set_col_table_name(clk, colname);
@@ -1277,9 +1277,9 @@ bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 #endif
 	d_sql = (char*)xmem_alloc(d_len + 1);
 #ifdef _UNICODE
-	d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+	d_len = ucs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #else
-	d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+	d_len = mbs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #endif
 
     if(C_OK != mysql_stmt_prepare(stm, d_sql, d_len))
@@ -1312,26 +1312,26 @@ bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
         clk = insert_col(grid, LINK_LAST);
         
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #endif
 		colname[len] = _T('\0');
 		set_col_name(clk, colname);
 		set_col_title(clk, colname);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->org_name, field->org_name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->org_name), field->org_name_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->org_name, field->org_name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->org_name), field->org_name_length, colname, MAX_SQL_NAME);
 #endif
 		colname[len] = _T('\0');
 		set_col_field_name(clk, colname);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->org_table, field->org_table_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->org_table), field->org_table_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->org_table, field->org_table_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->org_table), field->org_table_length, colname, MAX_SQL_NAME);
 #endif 
 		colname[len] = _T('\0');
 		set_col_table_name(clk, colname);
@@ -1513,18 +1513,18 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
 #ifdef _UNICODE
 					plen[ind] = ucs_to_utf8(ptr_str, -1, NULL, MAX_LONG);
 #else
-					plen[ind] = ucs_to_mbs(ptr_str, -1, NULL, MAX_LONG);
+					plen[ind] = mbs_to_utf8(ptr_str, -1, NULL, MAX_LONG);
 #endif
 				}
 
-                pbuf[ind] = xmem_alloc(plen[ind] + 1);
+                pbuf[ind] = (char*)xmem_alloc(plen[ind] + 1);
                 
                 if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
                 {
 #ifdef _UNICODE
-					ucs_to_utf8(ptr_str, -1, pbuf[ind], plen[ind]);
+					ucs_to_utf8(ptr_str, -1, (byte_t*)(pbuf[ind]), plen[ind]);
 #else
-					mbs_to_utf8(ptr_str, -1, pbuf[ind], plen[ind]);
+					mbs_to_utf8(ptr_str, -1, (byte_t*)(pbuf[ind]), plen[ind]);
 #endif
                 }
                 bind[ind].buffer_type= MYSQL_TYPE_STRING;
@@ -1532,7 +1532,7 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
             case _T('d'):
                 ptr_int = va_arg(*parg, int*);
                 plen[ind] = sizeof(int);
-                pbuf[ind] = xmem_alloc(plen[ind]);
+                pbuf[ind] = (char*)xmem_alloc(plen[ind]);
                 
                 if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
                 {
@@ -1543,7 +1543,7 @@ int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_lis
             case _T('f'):
                 ptr_double = va_arg(*parg, double*);
                 plen[ind] = sizeof(double);
-                pbuf[ind] = xmem_alloc(plen[ind]);
+                pbuf[ind] = (char*)xmem_alloc(plen[ind]);
                 
                 if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
                 {
@@ -1708,7 +1708,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
         if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
         {
             plen[ind] = sizeof(int);
-            pbuf[ind] = xmem_alloc(plen[ind]);
+            pbuf[ind] = (char*)xmem_alloc(plen[ind]);
             if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
             {
                 *(int*)(pbuf[ind]) = get_func_param_integer(flk);
@@ -1717,7 +1717,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
         else if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
         {
             plen[ind] = sizeof(double);
-            pbuf[ind] = xmem_alloc(plen[ind]);
+            pbuf[ind] = (char*)xmem_alloc(plen[ind]);
             if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
             {
                 *(double*)(pbuf[ind]) = get_func_param_numeric(flk);
@@ -1726,13 +1726,13 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
         else if (compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_DATE, -1, 0) == 0 || compare_text(get_func_data_type_ptr(flk), -1, ATTR_DATA_TYPE_DATETIME, -1, 0) == 0)
         {
             plen[ind] = DATE_LEN;
-            pbuf[ind] = xmem_alloc(plen[ind]);
+            pbuf[ind] = (char*)xmem_alloc(plen[ind]);
            if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
             {
 #ifdef _UNICODE
-				ucs_to_utf8(get_func_param_text_ptr(flk), -1, pbuf[ind], plen[ind]);
+				ucs_to_utf8(get_func_param_text_ptr(flk), -1, (byte_t*)(pbuf[ind]), plen[ind]);
 #else
-				mbs_to_utf8(get_func_param_text_ptr(flk), -1, pbuf[ind], plen[ind]);
+				mbs_to_utf8(get_func_param_text_ptr(flk), -1, (byte_t*)(pbuf[ind]), plen[ind]);
 #endif
             }
         }
@@ -1746,13 +1746,13 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 				plen[ind] = mbs_to_utf8(get_func_param_text_ptr(flk), -1, NULL, MAX_LONG);
 #endif
 			}
-            pbuf[ind] = xmem_alloc(plen[ind] + 1);
+            pbuf[ind] = (char*)xmem_alloc(plen[ind] + 1);
             if (pinout[ind] == MYSQL_PARAM_INPUT_OUTPUT || pinout[ind] == MYSQL_PARAM_INPUT)
             {
 #ifdef _UNICODE
-				ucs_to_utf8(get_func_param_text_ptr(flk), -1, pbuf[ind], plen[ind]);
+				ucs_to_utf8(get_func_param_text_ptr(flk), -1, (byte_t*)(pbuf[ind]), plen[ind]);
 #else
-				mbs_to_utf8(get_func_param_text_ptr(flk), -1, pbuf[ind], plen[ind]);
+				mbs_to_utf8(get_func_param_text_ptr(flk), -1, (byte_t*)(pbuf[ind]), plen[ind]);
 #endif
             }
         }
@@ -1917,9 +1917,9 @@ bool_t STDCALL _db_prepare(db_t* pdb, const tchar_t* sqlstr)
 	d_sql = (char*)xmem_alloc(d_len + 1);
     
 #ifdef _UNICODE
-	d_len = ucs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+	d_len = ucs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #else
-	d_len = mbs_to_utf8(sqlstr, sqllen, d_sql, d_len);
+	d_len = mbs_to_utf8(sqlstr, sqllen, (byte_t*)d_sql, d_len);
 #endif
     
     if(C_OK != mysql_stmt_prepare(pdb->stm, d_sql, d_len))
@@ -2028,9 +2028,9 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 		field = mysql_fetch_field_direct(meta, i);
 
 #ifdef _UNICODE
-		len = utf8_to_ucs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_ucs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #else
-		len = utf8_to_mbs(field->name, field->name_length, colname, MAX_SQL_NAME);
+		len = utf8_to_mbs((byte_t*)(field->name), field->name_length, colname, MAX_SQL_NAME);
 #endif
 		colname[len] = _T('\0');
         
@@ -2312,9 +2312,9 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 #endif
     d_sql = (char*)xmem_alloc(d_len + 1);
 #ifdef _UNICODE
-    d_len = ucs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),d_sql, d_len);
+    d_len = ucs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),(byte_t*)d_sql, d_len);
 #else
-    d_len = mbs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),d_sql, d_len);
+    d_len = mbs_to_utf8(string_ptr(vs_sql),string_len(vs_sql),(byte_t*)d_sql, d_len);
 #endif
     
     string_free(vs_sql);
@@ -2376,11 +2376,11 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 #else
                     plen[i] = mbs_to_utf8(sz_esc, len_esc, NULL, MAX_LONG);
 #endif
-                    pbuf[i] = xmem_alloc(plen[i] + 1);
+                    pbuf[i] = (char*)xmem_alloc(plen[i] + 1);
 #ifdef _UNICODE
-                    plen[i] = ucs_to_utf8(sz_esc, len_esc, pbuf[i], plen[i]);
+                    plen[i] = ucs_to_utf8(sz_esc, len_esc, (byte_t*)(pbuf[i]), plen[i]);
 #else
-                    plen[i] = mbs_to_utf8(sz_esc, len_esc, pbuf[i], plen[i]);
+                    plen[i] = mbs_to_utf8(sz_esc, len_esc, (byte_t*)(pbuf[i]), plen[i]);
 #endif
                     
                 }
@@ -2391,11 +2391,11 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 #else
                     plen[i] = mbs_to_utf8(tkpre, tklen, NULL, MAX_LONG);
 #endif
-                    pbuf[i] = xmem_alloc(plen[i] + 1);
+                    pbuf[i] = (char*)xmem_alloc(plen[i] + 1);
 #ifdef _UNICODE
-                    plen[i] = ucs_to_utf8(tkpre, tklen, pbuf[i], plen[i]);
+                    plen[i] = ucs_to_utf8(tkpre, tklen, (byte_t*)(pbuf[i]), plen[i]);
 #else
-                    plen[i] = mbs_to_utf8(tkpre, tklen, pbuf[i], plen[i]);
+                    plen[i] = mbs_to_utf8(tkpre, tklen, (byte_t*)(pbuf[i]), plen[i]);
 #endif
                 }
                 
@@ -2626,9 +2626,9 @@ EXECUTE:
 		d_sql = (char*)xmem_alloc(d_len + 1);
 
 #ifdef _UNICODE
-		d_len = ucs_to_utf8(tkpre, tklen, d_sql, d_len);
+		d_len = ucs_to_utf8(tkpre, tklen, (byte_t*)d_sql, d_len);
 #else
-		d_len = mbs_to_utf8(tkpre, tklen, d_sql, d_len);
+		d_len = mbs_to_utf8(tkpre, tklen, (byte_t*)d_sql, d_len);
 #endif
 
 		string_empty(vs_sql);

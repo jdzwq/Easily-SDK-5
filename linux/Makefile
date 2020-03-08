@@ -4,11 +4,10 @@ VAR_PATH = /var/run
 DAE_PATH = /lib/systemd/system
 EXE_PATH = ~/Easily-app-5/linux/sbin
 API_PATH = ~/Easily-app-5/linux/sbin/api
-INS_PATH = ~/Easily-sdk-5/install
+INS_PATH = ~/Easily-sdk-5/linux/setup
 CUR_PATH = $(abspath ./)
 
-API_OBJS = $(API_PATH)/libxdu.so.1.0 \
-	$(API_PATH)/libxdk.so.1.0 \
+API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
 	$(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
@@ -27,7 +26,6 @@ all:
 	fi
 
 	cd $(CUR_PATH)/xdp && make -f xdp.ar.mk
-	cd $(CUR_PATH)/xdu && make -f xdu.so.mk
 	cd $(CUR_PATH)/xdk && make -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make -f xdl.so.mk
 	cd $(CUR_PATH)/xds && make -f xds.so.mk
@@ -41,7 +39,43 @@ test:
 	@echo $(CUR_PATH)
 
 install:
-	cd $(CUR_PATH)/xdu && make install -f xdu.so.mk
+	if ! test -d $(SRV_PATH); then \
+	sudo mkdir $(SRV_PATH); \
+	fi
+	if ! test -d $(SRV_PATH)/api; then \
+	sudo mkdir $(SRV_PATH)/api; \
+	fi
+	if ! test -d $(SRV_PATH)/cfg; then \
+	sudo mkdir $(SRV_PATH)/cfg; \
+	fi
+	if ! test -d $(SRV_PATH)/lic; then \
+	sudo mkdir $(SRV_PATH)/lic; \
+	fi
+	if ! test -d $(SRV_PATH)/ssl; then \
+	sudo mkdir $(SRV_PATH)/ssl; \
+	fi
+	if ! test -d $(SRV_PATH)/nfs; then \
+	sudo mkdir $(SRV_PATH)/nfs; \
+	fi
+
+	sudo cp -rf $(INS_PATH)/cfg $(SRV_PATH);
+	sudo cp -rf $(INS_PATH)/lic $(SRV_PATH);
+	sudo cp -rf $(INS_PATH)/ssl $(SRV_PATH);
+
+	sudo cp -f $(INS_PATH)/readme.txt $(SRV_PATH);
+	sudo cp -f $(INS_PATH)/xportd.config $(SRV_PATH);
+
+	sudo cp -f $(INS_PATH)/xService.sh $(SRV_PATH);
+	sudo chmod +x $(SRV_PATH)/xService.sh; 
+
+	if ! test -d $(VAR_PATH); then \
+	sudo mkdir $(VAR_PATH); \
+	fi
+	sudo cp -f $(INS_PATH)/xportd.pid $(VAR_PATH);
+	sudo chmod 777 $(VAR_PATH)/xportd.pid;
+
+	sudo cp -f $(INS_PATH)/xportd.service $(DAE_PATH);
+
 	cd $(CUR_PATH)/xdk && make install -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make install -f xdl.so.mk
 	cd $(CUR_PATH)/xds && make install -f xds.so.mk
@@ -51,18 +85,6 @@ install:
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
 	cd $(CUR_PATH)
-
-	sudo cp -rpf $(INS_PATH)/* $(SRV_PATH);
-	sudo chmod +x $(SRV_PATH)/xService.sh; 
-
-	if ! test -d $(VAR_PATH); then \
-	sudo mkdir $(VAR_PATH); \
-	fi
-
-	sudo cp -f $(INS_PATH)/xportd.pid $(VAR_PATH);
-	sudo chmod 777 $(VAR_PATH)/xportd.pid; 
-
-	sudo cp -f $(INS_PATH)/xportd.service $(DAE_PATH);
 
 .PHONY : test
 clean:

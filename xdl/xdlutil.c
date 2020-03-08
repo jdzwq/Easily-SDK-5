@@ -261,7 +261,7 @@ int parse_utfbom(const byte_t* buf, int len)
 	if (len > 2 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF)
 		return _UTF8;
 	
-	return _UNKNOWN;
+	return _GB2312;
 }
 
 int format_utfbom(int encode, byte_t* buf)

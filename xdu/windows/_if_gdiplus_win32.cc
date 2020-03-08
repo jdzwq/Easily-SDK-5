@@ -40,7 +40,7 @@ static LOGFONT lf_gdiplus = { 0 };
 #define ULONG_PTR ULONG
 #endif
 
-#include "gdiplus\gdiplus.h"
+#include <gdiplus.h>
 
 #pragma comment(lib,"gdiplus.lib")
 

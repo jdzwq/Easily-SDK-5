@@ -26,10 +26,10 @@ PF_DB_IMPORT pf_db_import;
 PF_DB_EXPORT pf_db_export;
 PF_DB_CALL_FUNC pf_db_call_func;
 
-#define odbcdsn _T("./demo_stub.dsn")
-//#define odbcdsn _T("./demo_odbc.dsn")
-//#define odbcdsn _T("./demo_mysql.dsn")
-//#define odbcdsn _T("./demo_oci.dsn")
+//#define dsnfile _T("./demo_stub.dsn")
+//#define dsnfile _T("./demo_odbc.dsn")
+#define dsnfile _T("./demo_mysql.dsn")
+//#define dsnfile _T("./demo_oci.dsn")
 
 #if defined(_OS_WINDOWS)
 #define xdblib	_T("xdb_stub.dll")
@@ -41,7 +41,7 @@ PF_DB_CALL_FUNC pf_db_call_func;
 #define xdblib	_T("../sbin/api/libxdb_mysql.dylib")
 #elif defined(_OS_LINUX)
 //#define xdblib	_T("libxdb_mysql.so")
-#define xdblib	_T("libxdb_mysql.so")
+#define xdblib	_T("/usr/local/lib/libxdb_mysql.so")
 #endif
 
 
@@ -60,7 +60,7 @@ unsigned int STDCALL test_xdb_datetime(void* param)
 
 	TRY_CATCH;
 
-	xdb = (*pf_db_open_dsn)(odbcdsn);
+	xdb = (*pf_db_open_dsn)(dsnfile);
 	if (!xdb)
 	{
 		raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -143,7 +143,7 @@ unsigned int STDCALL test_xdb_schema(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -220,7 +220,7 @@ unsigned int STDCALL test_xdb_exec(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -303,7 +303,7 @@ unsigned int STDCALL test_xdb_select(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -389,7 +389,7 @@ unsigned int STDCALL test_xdb_proc(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -513,7 +513,7 @@ unsigned int STDCALL test_xdb_batch(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -613,7 +613,7 @@ unsigned int STDCALL test_xdb_export(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -712,7 +712,7 @@ unsigned int STDCALL test_xdb_import(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -731,7 +731,6 @@ unsigned int STDCALL test_xdb_import(void* param)
     
     stream = stream_alloc(xfile_bio(file));
     stream_set_encode(stream, parse_charset(enc));
-	stream_read_utfbom(stream, NULL);
 
     stream_set_mode(stream, LINE_OPERA);
     stream_set_size(stream, xstol(fsize));
@@ -810,7 +809,7 @@ unsigned int STDCALL test_xdb_write_blob(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -903,7 +902,7 @@ unsigned int STDCALL test_xdb_read_blob(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -994,7 +993,7 @@ unsigned int STDCALL test_xdb_write_clob(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -1111,7 +1110,7 @@ unsigned int STDCALL test_xdb_read_clob(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -1203,7 +1202,7 @@ unsigned int STDCALL test_xdb_write_xdoc(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));
@@ -1293,7 +1292,7 @@ unsigned int STDCALL test_xdb_read_xdoc(void* param)
     
     TRY_CATCH;
     
-    xdb = (*pf_db_open_dsn)(odbcdsn);
+    xdb = (*pf_db_open_dsn)(dsnfile);
     if (!xdb)
     {
         raise_user_error(_T("-1"), _T("open connection falied\n"));

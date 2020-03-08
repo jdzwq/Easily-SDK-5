@@ -1,0 +1,5 @@
+[OCI]
+SERVER=127.0.0.1
+DATABASE=demo
+UID=usr
+PWD=123

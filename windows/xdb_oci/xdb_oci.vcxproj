@@ -78,21 +78,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdb\oci;..\..\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\oci;..\..\include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib;..\lib\oci\msvc;</LibraryPath>
     <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdb\oci;..\..\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\oci;..\..\include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;..\lib\x64\oci\msvc;</LibraryPath>
     <OutDir>d:\easily-app-5\windows\sbin64\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\xdb_oci\x64\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\xdb\oci;..\..\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\oci;..\..\include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib;..\lib\oci\msvc;</LibraryPath>
     <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
@@ -100,7 +100,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\xdb\oci;..\..\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\oci;..\..\include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;..\lib\x64\oci\msvc;</LibraryPath>
     <OutDir>d:\easily-app-5\windows\sbin64\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\x64\</IntDir>
