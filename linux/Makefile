@@ -11,7 +11,9 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
 	$(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
-	$(API_PATH)/libwww_api.so.1.0
+	$(API_PATH)/libwww_api.so.1.0 \
+	$(API_PATH)/libxdb_api.so.1.0 \
+	$(API_PATH)/libxdb_mysql.so.1.0
 
 EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
@@ -31,6 +33,8 @@ all:
 	cd $(CUR_PATH)/xds && make -f xds.so.mk
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
+	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
+	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/xportm && make -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make -f xhttps.mk
 	cd $(CUR_PATH)/xportd && make -f xportd.mk
@@ -57,6 +61,15 @@ install:
 	if ! test -d $(SRV_PATH)/nfs; then \
 	sudo mkdir $(SRV_PATH)/nfs; \
 	fi
+	if ! test -d $(SRV_PATH)/loc; then \
+	sudo mkdir $(SRV_PATH)/loc; \
+	fi
+	if ! test -d $(SRV_PATH)/www; then \
+	sudo mkdir $(SRV_PATH)/www; \
+	fi
+	if ! test -d $(SRV_PATH)/xdb; then \
+	sudo mkdir $(SRV_PATH)/xdb; \
+	fi
 
 	sudo cp -rf $(INS_PATH)/cfg $(SRV_PATH);
 	sudo cp -rf $(INS_PATH)/lic $(SRV_PATH);
@@ -81,6 +94,8 @@ install:
 	cd $(CUR_PATH)/xds && make install -f xds.so.mk
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
+	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
+	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/xportm && make install -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
