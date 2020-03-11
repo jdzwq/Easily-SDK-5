@@ -39,33 +39,6 @@ LICENSE.GPL3 for more details.
 #if defined(XDL_SUPPORT_DOC) && defined(XDK_SUPPORT_FILE) 
 
 
-link_t_ptr insert_images_item_from_color(link_t_ptr ptr, const tchar_t* iname, const tchar_t* color)
-{
-	link_t_ptr nlk;
-	tchar_t* buf = NULL;
-	int len;
-
-	if (is_null(iname))
-		return NULL;
-
-	len = xslen(GDI_ATTR_IMAGE_TYPE_COLOR) + xslen(color);
-	buf = xsalloc(len + 1);
-
-	xscat(buf, GDI_ATTR_IMAGE_TYPE_COLOR);
-	xscat(buf, color);
-
-	nlk = get_images_item(ptr, iname, -1);
-	if (!nlk)
-	{
-		nlk = insert_images_item(ptr, LINK_LAST);
-		set_images_item_alt(nlk, iname);
-	}
-
-	attach_dom_node_attr(nlk, ATTR_SRC, buf);
-
-	return nlk;
-}
-
 link_t_ptr insert_images_item_from_url(link_t_ptr ptr, const tchar_t* iname, const tchar_t* url)
 {
 	link_t_ptr nlk;

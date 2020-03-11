@@ -226,43 +226,40 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			if (!b_print)
 			{
-				format_xcolor(&pif->clr_msk, xi.color);
+				xmem_copy((void*)&xc, (void*)(&pif->clr_frg), sizeof(xcolor_t));
 			}
 			else
 			{
-				xscpy(xi.color, _T(""));
+				parse_xfont_from_style(&xf, style);
+				parse_xcolor(&xc, xf.color);
 			}
 
 			if (compare_text(get_field_codebar_ptr(flk),-1,ATTR_CODEBAR_IMAGE,-1,0) == 0)
 			{
+				if (!b_print && get_field_transparent(flk))
+				{
+					format_xcolor(&pif->clr_msk, xi.color);
+				}
+				else
+				{
+					xscpy(xi.color, _T(""));
+				}
+
+				parse_ximage_from_source(&xi, get_field_text_ptr(flk));
 				
+				(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_CODE128, -1, 0) == 0)
 			{
-				xscpy(xi.color, _T(""));
-				
-				xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_CODE128);
-				xi.source = get_field_text_ptr(flk);
-
-				(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
+				(*pif->pf_draw_code128)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_PDF417, -1, 0) == 0)
 			{
-				xscpy(xi.color, _T(""));
-
-				xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_PDF417);
-				xi.source = get_field_text_ptr(flk);
-
-				(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
+				(*pif->pf_draw_pdf417)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_QRCODE, -1, 0) == 0)
 			{
-				xscpy(xi.color, _T(""));
-
-				xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_QRCODE);
-				xi.source = get_field_text_ptr(flk);
-
-				(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
+				(*pif->pf_draw_qrcode)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else
 			{
@@ -292,7 +289,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 			if (get_field_password(flk))
 			{
-				(*pif->pf_draw_password)(pif->canvas, &xf, &xa, &xr, get_field_text_ptr(flk), -1);
+				(*pif->pf_draw_pass)(pif->canvas, &xf, &xa, &xr, get_field_text_ptr(flk), -1);
 			}
 			else
 			{
@@ -314,7 +311,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 				parse_xcolor(&xc, xf.color);
 				ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, GDI_ICON_CHECKED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_CHECKED);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 0) == 0)
@@ -337,9 +334,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			sz_text = get_field_text_ptr(flk);
 			if (!is_null(sz_text))
 			{
-				xi.source = sz_text;
-				xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_THUMB);
-				(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
+				(*pif->pf_draw_thumb)(pif->canvas, sz_text, &xr);
 
 				parse_xfont_from_style(&xf, style);
 				parse_xface_from_style(&xa, style);

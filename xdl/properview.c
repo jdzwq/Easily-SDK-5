@@ -344,7 +344,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, get_section_icon_ptr(sec));
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, get_section_icon_ptr(sec));
 
 		xr_draw.fx = xr.fx + xr.fw - ic;
 		xr_draw.fw = ic;
@@ -354,11 +354,11 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		if (get_section_expanded(sec))
 		{
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, GDI_ICON_EXPAND);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, GDI_ICON_EXPAND);
 		}
 		else
 		{
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, GDI_ICON_COLLAPSE);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, GDI_ICON_COLLAPSE);
 		}
 
 		xr_draw.fx = xr.fx + ic;
@@ -409,7 +409,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_draw, get_entity_icon_ptr(ent));
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, get_entity_icon_ptr(ent));
 
 			//key text
 			xr_draw.fx = xr.fx + ic;

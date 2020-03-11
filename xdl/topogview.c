@@ -204,7 +204,7 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_ICON, -1, 0) == 0)
 		{
 			parse_xcolor(&xc, xf.color);
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, get_topog_spot_title_ptr(ilk));
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, get_topog_spot_title_ptr(ilk));
 		}
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_IMAGE, -1, 0) == 0)
 		{

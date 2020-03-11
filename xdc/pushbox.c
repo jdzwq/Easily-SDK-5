@@ -190,9 +190,9 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		ft_center_rect(&xr_box, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
 		if (ptd->b_check)
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, GDI_ICON_CHECKED);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_box, GDI_ICON_CHECKED);
 		else
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, GDI_ICON_CHECKBOX);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_box, GDI_ICON_CHECKBOX);
 
 		xr_box.fx = cb.fx + DEF_SMALL_ICON;
 		xr_box.fy = cb.fy;
@@ -227,7 +227,7 @@ void hand_pushbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_box.fh = cb.fh;
 
 		ft_center_rect(&xr_box, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_box, ptd->sz_text);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_box, ptd->sz_text);
 	}
 	else if (ws & WD_PUSHBOX_IMAGE)
 	{

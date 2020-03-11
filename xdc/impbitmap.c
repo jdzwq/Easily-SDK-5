@@ -327,23 +327,8 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 
 	parse_xcolor(&xc, pmi->color);
 
-	if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_COLOR) == 0)
-	{
-		parse_xcolor(&xc, pmi->source);
-		ih = create_color_bitmap(rdc, &xc, cx, cy);
-	}
-#ifdef XDU_SUPPORT_SHELL
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_ICON) == 0)
-	{
-		ih = load_bitmap_from_icon(rdc, pmi->source);
-	}
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_THUMB) == 0)
-	{
-		ih = load_bitmap_from_thumb(rdc, pmi->source);
-	}
-#endif
 #ifdef GPL_SUPPORT_JPG
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_JPG) == 0)
+	if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_JPG) == 0)
 	{
 		len = xslen(pmi->source);
 		len_zip = xbas_decode(pmi->source, len, NULL, MAX_LONG);
@@ -374,7 +359,7 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 	}
 #endif
 #ifdef GPL_SUPPORT_PNG
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_PNG) == 0)
+	if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_PNG) == 0)
 	{
 		len = xslen(pmi->source);
 		len_zip = xbas_decode(pmi->source, len, NULL, MAX_LONG);
@@ -405,7 +390,7 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 	}
 #endif
 #ifdef XDL_SUPPORT_BMP
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_BMP) == 0)
+	if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_BMP) == 0)
 	{
 		len = xslen(pmi->source);
 		len_bmp = xbas_decode(pmi->source, len, NULL, MAX_LONG);
@@ -427,20 +412,6 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 		ih = load_bitmap_from_bytes(rdc, buf_bmp, len_bmp);
 
 		xmem_free(buf_bmp);
-	}
-#endif
-#ifdef XDL_SUPPORT_BAR
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_CODE128) == 0)
-	{
-		ih = create_code128_bitmap(rdc, cx, cy, pmi->source);
-	}
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_PDF417) == 0)
-	{
-		ih = create_pdf417_bitmap(rdc, cx, cy, pmi->source);
-	}
-	else if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_QRCODE) == 0)
-	{
-		ih = create_qrcode_bitmap(rdc, cx, cy, pmi->source);
 	}
 #endif
 #if defined(XDU_SUPPORT_FILE)

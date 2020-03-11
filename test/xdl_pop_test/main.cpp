@@ -39,19 +39,19 @@ void test_bytes()
 }
 
 /*
-¢Ù.ÏµÍ³²ÎÊý
+ï¿½ï¿½.ÏµÍ³ï¿½ï¿½ï¿½ï¿½
 1.	paras.put("SignatureMethod", "HMAC-SHA1");
 2.	paras.put("SignatureNonce", java.util.UUID.randomUUID().toString());
 3.	paras.put("AccessKeyId", accessKeyId);
 4.	paras.put("SignatureVersion", "1.0");
 5.	paras.put("Timestamp", df.format(new java.util.Date()));
 6.	paras.put("Format", "XML");
-¢Ú.ÒµÎñAPI²ÎÊý
+ï¿½ï¿½.Òµï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½
 1.	paras.put("Action", "SendSms");
 2.	paras.put("Version", "2017-05-25");
 3.	paras.put("RegionId", "cn-hangzhou");
 4.	paras.put("PhoneNumbers", "15300000001");
-5.	paras.put("SignName", "°¢ÀïÔÆ¶ÌÐÅ²âÊÔ×¨ÓÃ");
+5.	paras.put("SignName", "ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Å²ï¿½ï¿½ï¿½×¨ï¿½ï¿½");
 6.	paras.put("TemplateParam", "{\"customer\":\"test\"}");
 7.	paras.put("TemplateCode", "SMS_71390007");
 8.	paras.put("OutId", "123");
@@ -98,7 +98,7 @@ void aliyun_encode(byte_t** pbuf)
 //&OutId=123
 //&PhoneNumbers=15300000001
 //&RegionId=cn-hangzhou
-//&SignName=°¢ÀïÔÆ¶ÌÐÅ²âÊÔ×¨ÓÃ
+//&SignName=ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Å²ï¿½ï¿½ï¿½×¨ï¿½ï¿½
 //&SignatureMethod=HMAC-SHA1
 //&SignatureNonce=45e25e9b-0a6f-4070-8c85-2956eda1b466
 //&SignatureVersion=1.0
@@ -123,7 +123,7 @@ void test_aliyun()
 	write_string_entity(st, _T("Version"), -1, _T("2017-05-25"), -1);
 	write_string_entity(st, _T("RegionId"), -1, _T("cn-hangzhou"), -1);
 	write_string_entity(st, _T("PhoneNumbers"), -1, _T("15300000001"), -1);
-	write_string_entity(st, _T("SignName"), -1, _T("°¢ÀïÔÆ¶ÌÐÅ²âÊÔ×¨ÓÃ"), -1);
+	write_string_entity(st, _T("SignName"), -1, _T("ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Å²ï¿½ï¿½ï¿½×¨ï¿½ï¿½"), -1);
 	write_string_entity(st, _T("TemplateParam"), -1, _T("{\"customer\":\"test\"}"), -1);
 	write_string_entity(st, _T("TemplateCode"), -1, _T("SMS_71390007"), -1);
 	write_string_entity(st, _T("OutId"), -1, _T("123"), -1);
@@ -189,15 +189,15 @@ void test_aliyun()
 	bytes_free(pbuf);
 }
 
-//·¢ËÍ¶ÌÐÅ	dysmsapi.aliyuncs.com
-//ÏûÏ¢½ÓÊÕ1	dybaseapi.aliyuncs.com
+//ï¿½ï¿½ï¿½Í¶ï¿½ï¿½ï¿½	dysmsapi.aliyuncs.com
+//ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½1	dybaseapi.aliyuncs.com
 
-//ÓÃ»§µÇÂ¼Ãû³Æ fcv - user@1596062550886330.onaliyun.com
+//ï¿½Ã»ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ fcv - user@1596062550886330.onaliyun.com
 //AccessKey ID LTAI4Fwa4AL6JHMD338PomPF
 //AccessKeySecret MMXrzSPCNHx89K91MFEdcjFor4jOXj
-//ÑéÖ¤ÂëÄ£°æ£ºSMS_176913456
-//Ä£°åÄÚÈÝ£ºÄúµÄÑéÖ¤Âë${code}£¬¸ÃÑéÖ¤Âë5·ÖÖÓÄÚÓÐÐ§£¬ÇëÎðÐ¹Â©ÓÚËûÈË£¡
-//Ç©ÃûÃû³Æ£º¾Ó¼Ò½¡¿µÕÕ»¤
+//ï¿½ï¿½Ö¤ï¿½ï¿½Ä£ï¿½æ£ºSMS_176913456
+//Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½${code}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¹Â©ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½
+//Ç©ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½Ó¼Ò½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½
 
 void test_sms_aliyun()
 {
@@ -228,7 +228,7 @@ void test_sms_aliyun()
 	write_string_entity(st, _T("Version"), -1, _T("2017-05-25"), -1);
 	write_string_entity(st, _T("RegionId"), -1, _T("cn-hangzhou"), -1);
 	write_string_entity(st, _T("PhoneNumbers"), -1, _T("13588368696"), -1);
-	write_string_entity(st, _T("SignName"), -1, _T("¾Ó¼Ò½¡¿µÕÕ»¤"), -1);
+	write_string_entity(st, _T("SignName"), -1, _T("ï¿½Ó¼Ò½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½"), -1);
 	write_string_entity(st, _T("TemplateParam"), -1, _T("{\"code\":\"123456\"}"), -1);
 	write_string_entity(st, _T("TemplateCode"), -1, _T("SMS_176913456"), -1);
 	//write_string_entity(st, _T("OutId"), -1, _T(""), -1);
@@ -330,11 +330,11 @@ void test_isp()
 	PF_SMS_CODE pf_code;
 	PF_SMS_ERROR pf_error;
 
-	HMODULE hLib = LoadLibrary(_T("sms_aliyun.dll"));
-	pf_open_isp = (PF_SMS_OPEN_ISP)GetProcAddress(hLib, "sms_open_isp");
-	pf_close = (PF_SMS_CLOSE)GetProcAddress(hLib, "sms_close");
-	pf_code = (PF_SMS_CODE)GetProcAddress(hLib, "sms_code");
-	pf_error = (PF_SMS_ERROR)GetProcAddress(hLib, "sms_error");
+	res_modu_t hLib = load_library(_T("sms_aliyun.dll"));
+	pf_open_isp = (PF_SMS_OPEN_ISP)get_address(hLib, "sms_open_isp");
+	pf_close = (PF_SMS_CLOSE)get_address(hLib, "sms_close");
+	pf_code = (PF_SMS_CODE)get_address(hLib, "sms_code");
+	pf_error = (PF_SMS_ERROR)get_address(hLib, "sms_error");
 
 	SMS sms = (*pf_open_isp)(_T("fcv.isp"));
 
@@ -345,12 +345,12 @@ void test_isp()
 
 	(*pf_close)(sms);
 
-	FreeLibrary(hLib);
+	free_library(hLib);
 }
 
-void test_sms()
+void test_sms_code()
 {
-	xhand_t xh = xhttp_client(_T("GET"), _T("https://127.0.0.1:8888/sms/aliyun/fcv.isp?Action=SendSms&Phone=13588368696"));
+	xhand_t xh = xhttp_client(_T("GET"), _T("http://118.178.180.81/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"));
 
 	xhttp_set_request_default_header(xh);
 
@@ -379,11 +379,40 @@ void test_sms()
 	xhttp_close(xh);
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+void test_sms_verify()
+{
+	xhand_t xh = xhttp_client(_T("GET"), _T("https://118.178.180.81/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=123456"));
+
+	xhttp_set_request_default_header(xh);
+
+	if (!xhttp_send_request(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_recv_response(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	bool_t rt = xhttp_get_response_state(xh);
+
+	dword_t nlen = xhttp_get_response_content_length(xh);
+
+	byte_t** pb = bytes_alloc();
+	byte_t* pbuf = bytes_realloc(pb, nlen);
+
+	if (!xhttp_recv(xh, pbuf, &nlen))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	xhttp_close(xh);
+}
+
+int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
-
-	//test_query();
 
 	//test_bytes();
 
@@ -391,11 +420,15 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//test_isp();
 
-	test_sms();
+	test_sms_code();
+
+	//test_sms_verify();
 
 	xdl_process_uninit();
 
+#ifdef _OS_WINDOWS
 	getch();
+#endif
 	return 0;
 }
 

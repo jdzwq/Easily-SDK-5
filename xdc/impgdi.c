@@ -224,6 +224,38 @@ void draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* pxr)
 	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, pxr);
 }
 
+void draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* pxr)
+{
+	if_context_t *pif;
+	res_bmp_t bmp;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	bmp = load_bitmap_from_icon(rdc, iname);
+
+	if (bmp)
+	{
+		(*pif->pf_gdi_draw_bitmap)(rdc, bmp, pxr);
+		destroy_bitmap(bmp);
+	}
+}
+
+void draw_thumb_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* pxr)
+{
+	if_context_t *pif;
+	res_bmp_t bmp;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	bmp = load_bitmap_from_thumb(rdc, fname);
+
+	if (bmp)
+	{
+		(*pif->pf_gdi_draw_bitmap)(rdc, bmp, pxr);
+		destroy_bitmap(bmp);
+	}
+}
+
 void draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* pxr)
 {
 	if_context_t *pif;
@@ -239,6 +271,268 @@ void draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* pxr)
 		destroy_bitmap(bmp);
 	}
 }
+
+void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+{
+	if_context_t *pif;
+
+	link_t_ptr g, nlk;
+
+	int black,span;
+	dword_t i;
+	int unit;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
+
+	xmem_free(buf);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.3, 1);
+
+	rt.x = prt->x + unit;
+	rt.y = prt->y + unit;
+	rt.w = unit;
+	rt.h = prt->h - 2 * unit;
+
+	black = 0;
+	for (i = 0; i < bar_len; i++)
+	{
+		span = (bar_buf[i] - '0');
+		rt.fw = span * unit;
+
+		black = (black) ? 0 : 1;
+
+		if (black)
+		{
+			(*pif->pf_gdi_draw_rect)(rdc, &xp, &xb, &rt);
+		}
+		
+		rt.x += rt.w;
+	}
+
+	xmem_free(bar_buf);
+}
+
+void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+{
+	if_context_t *pif;
+
+	link_t_ptr g, nlk;
+
+	int black,span;
+	int rows,cols;
+	unsigned char b, c;
+	int i,j;
+	int unit;
+
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return NULL;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.x = prt->x + unit;
+		rt.w = unit;
+		rt.y = prt->y + unit + i * 2 * unit;
+		rt.h = 2 * unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.x += rt.w;
+
+				black = (c & b) ? 0 : 1;
+
+				if (black)
+				{
+					(*pif->pf_gdi_draw_rect)(rdc, &xp, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
+		}
+	}
+
+	xmem_free(bar_buf);
+}
+
+void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+{
+	if_context_t *pif;
+
+	link_t_ptr g, nlk;
+
+	int black,span;
+	int rows,cols;
+	unsigned char b, c;
+	int i,j;
+
+	float unit = 0.5;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return NULL;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.x = prt->x + unit;
+		rt.w = unit;
+		rt.y = prt->y + unit + i * unit;
+		rt.h = unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.x += rt.w;
+
+				black = (c & b) ? 1 : 0;
+
+				if (black)
+				{
+					(*pif->pf_gdi_draw_rect)(rdc, &xp, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
+		}
+	}
+
+	xmem_free(bar_buf);
+}
+
 
 void image_size_raw(res_ctx_t rdc, const ximage_t* pxi, xsize_t* pxs)
 {
@@ -1227,7 +1521,7 @@ void text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
 	size_pt_to_tm(canv, pxs);
 }
 
-void draw_password(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+void draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
 	tchar_t sz_pass[INT_LEN + 1] = { 0 };
 
@@ -1368,6 +1662,36 @@ void draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrec
 	}
 }
 
+void draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* pxr)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_icon_raw(rdc, iname, &xr);
+}
+
+void draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* pxr)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_thumb_raw(rdc, fname, &xr);
+}
+
 void draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1381,6 +1705,51 @@ void draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 	rect_tm_to_pt(canv, &xr);
 
 	draw_image_raw(rdc, pxi, &xr);
+}
+
+void draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_code128_raw(rdc, pxc, &xr, text, len);
+}
+
+void draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_pdf417_raw(rdc, pxc, &xr, text, len);
+}
+
+void draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_qrcode_raw(rdc, pxc, &xr, text, len);
 }
 
 void image_size(canvas_t canv, const ximage_t* pxi, xsize_t* pxs)

@@ -107,12 +107,6 @@
 #define GDI_ATTR_IMAGE_TYPE_JPG		_T("data:image/jpg;base64,")
 #define GDI_ATTR_IMAGE_TYPE_PNG		_T("data:image/png;base64,")
 #define GDI_ATTR_IMAGE_TYPE_BMP		_T("data:image/bmp;base64,")
-#define GDI_ATTR_IMAGE_TYPE_CODE128		_T("data:image/code128;")
-#define GDI_ATTR_IMAGE_TYPE_PDF417		_T("data:image/pdf417;")
-#define GDI_ATTR_IMAGE_TYPE_QRCODE		_T("data:image/qrcode;")
-#define GDI_ATTR_IMAGE_TYPE_THUMB	_T("data::image/thumb;")
-#define GDI_ATTR_IMAGE_TYPE_ICON	_T("data::image/icon;")
-#define GDI_ATTR_IMAGE_TYPE_COLOR	_T("data::image/color;")
 
 #define GDI_ATTR_REGION				_T("region")
 #define GDI_ATTR_REGION_RECT		_T("rect")

@@ -330,6 +330,24 @@ XDC_API void	draw_rich_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t
 XDC_API int		calc_rich_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich);
 
 /*
+@FUNCTION draw_thumn_raw: draw thumn image in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const tchar_t* fname: the file name.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@RETURN void: none.
+*/
+XDC_API void	draw_thumn_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* pxr);
+
+/*
+@FUNCTION draw_icon_raw: draw icon in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const tchar_t* iname: the icon name.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@RETURN void: none.
+*/
+XDC_API void	draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* pxr);
+
+/*
 @FUNCTION draw_image_raw: draw image in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const ximage_t* pxi: the image struct.
@@ -348,14 +366,47 @@ XDC_API void	draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* p
 XDC_API void	draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* pxr);
 
 /*
-@FUNCTION draw_icon_raw: draw icon in memory or device context using points coordinate.
+@FUNCTION draw_gzimo_raw: draw system icon in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xcolor_t* pxc: the color struct.
 @INPUT const xrect_t* pxr: the rect struct using integer member.
 @INPUT const tchar_t* iname: the icon name.
 @RETURN void: none.
 */
-XDC_API void	draw_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname);
+XDC_API void	draw_gzimo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname);
+
+/*
+@FUNCTION draw_code128_raw: draw CODE128 code in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xcolor_t* pxc: the foreground color struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const tchar_t* text: the text for coding.
+@INPUT int len: the length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDC_API void 	draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+
+/*
+@FUNCTION draw_pdf417_raw: draw PDF417 code in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xcolor_t* pxc: the foreground color struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const tchar_t* text: the text for coding.
+@INPUT int len: the length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDC_API void 	draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+
+/*
+@FUNCTION draw_qrcode_raw: draw QR code in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xcolor_t* pxc: the foreground color struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const tchar_t* text: the text for coding.
+@INPUT int len: the length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDC_API void 	draw_qrcode_raw(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
 
 /*
 @FUNCTION fill_region_raw: fill the windows region in memory or device context using points coordinate.
@@ -745,6 +796,24 @@ XDC_API void	draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* px
 XDC_API int		calc_rich_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich);
 
 /*
+@FUNCTION draw_icon: draw system icon in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const tchar_t* iname: the icon name.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@RETURN void: none.
+*/
+XDC_API void	draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* pxr);
+
+/*
+@FUNCTION draw_thumb: draw file thumb in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const tchar_t* fname: the file name.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@RETURN void: none.
+*/
+XDC_API void	draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* pxr);
+
+/*
 @FUNCTION draw_image: draw image in canvas using millimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const ximage_t* pxi: the image struct.
@@ -763,14 +832,47 @@ XDC_API void	draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr);
 XDC_API void	draw_bitmap(canvas_t canv, res_bmp_t bmp, const xrect_t* pxr);
 
 /*
-@FUNCTION draw_icon: draw icon in canvas using millimeter coordinate.
+@FUNCTION draw_gizmo: draw gizmo icon in canvas using millimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xcolor_t* pxc: the color struct.
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @INPUT const tchar_t* iname: the icon name.
 @RETURN void: none.
 */
-XDC_API void	draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname);
+XDC_API void	draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname);
+
+/*
+@FUNCTION draw_code128: draw CODE128 code in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xcolor_t* pxc: the foreground color struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* text: the text for coding.
+@INPUT int len: the length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDC_API void 	draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+
+/*
+@FUNCTION draw_pdf417: draw PDF417 code in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xcolor_t* pxc: the foreground color struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* text: the text for coding.
+@INPUT int len: the length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDC_API void 	draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+
+/*
+@FUNCTION draw_qrcode: draw QR code in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xcolor_t* pxc: the foreground color struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* text: the text for coding.
+@INPUT int len: the length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDC_API void 	draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
 
 /*
 @FUNCTION draw_select: draw select frame in canvas using millimeter coordinate.
@@ -861,7 +963,7 @@ XDC_API void	image_size(canvas_t canv, const ximage_t* pxi, xsize_t* pxs);
 
 /***************************************************************************************************************/
 /*
-@FUNCTION draw_password: draw the password in canvas using millimeter coordinate.
+@FUNCTION draw_pass: draw the password in canvas using millimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT cont xfont_t* pxf: the font struct.
 @INPUT cont xface_t* pxa: the face struct.
@@ -870,7 +972,7 @@ XDC_API void	image_size(canvas_t canv, const ximage_t* pxi, xsize_t* pxs);
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDC_API void	draw_password(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
+XDC_API void	draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
 
 /*
 @FUNCTION draw_data: draw the formated data in canvas using millimeter coordinate.

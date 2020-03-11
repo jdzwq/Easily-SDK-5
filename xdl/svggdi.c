@@ -330,41 +330,6 @@ void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 	write_shape_to_svg_node(nlk, pxp, pxb, &xr, shape);
 }
 
-void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
-{
-	const tchar_t *pre, *nxt;
-	xrect_t xr;
-	xcolor_t xc;
-	xbrush_t xb;
-	tchar_t* val;
-	int vlen;
-	tchar_t clr[CLR_LEN + 1];
-
-	if (len < 0)
-		len = xslen(rgbstr);
-
-	default_xbrush(&xb);
-
-	pre = rgbstr;
-	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
-	{
-		xsncpy(clr, val, CLR_LEN);
-		parse_xcolor(&xc, clr);
-		format_xcolor(&xc, xb.color);
-
-		svg_draw_rect(canv, NULL, &xb, &xr);
-
-		len -= (nxt - pre);
-
-		if (horz)
-			xr.fx += xr.fw;
-		else
-			xr.fy += xr.fh;
-
-		pre = nxt;
-	}
-}
-
 void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {
 	link_t_ptr g, nlk;
@@ -409,6 +374,41 @@ void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const
 
 		pt1.y += (th + lh);
 		pt2.y += (th + lh);
+	}
+}
+
+void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+{
+	const tchar_t *pre, *nxt;
+	xrect_t xr;
+	xcolor_t xc;
+	xbrush_t xb;
+	tchar_t* val;
+	int vlen;
+	tchar_t clr[CLR_LEN + 1];
+
+	if (len < 0)
+		len = xslen(rgbstr);
+
+	default_xbrush(&xb);
+
+	pre = rgbstr;
+	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
+	{
+		xsncpy(clr, val, CLR_LEN);
+		parse_xcolor(&xc, clr);
+		format_xcolor(&xc, xb.color);
+
+		svg_draw_rect(canv, NULL, &xb, &xr);
+
+		len -= (nxt - pre);
+
+		if (horz)
+			xr.fx += xr.fw;
+		else
+			xr.fy += xr.fh;
+
+		pre = nxt;
 	}
 }
 
@@ -467,7 +467,7 @@ void svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	}
 }
 
-void svg_draw_password(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+void svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
 	tchar_t sz_pass[INT_LEN + 1] = { 0 };
 
@@ -613,17 +613,6 @@ void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 	link_t_ptr g, nlk;
 	xrect_t xr;
 
-	/*res_ctx_t rdc;
-	res_bmp_t bmp;
-	byte_t* bmp_buf;
-	dword_t bmp_len;
-	byte_t* png_buf;
-	dword_t png_len;
-	tchar_t* base_buf;
-	int base_len;
-	ximage_t xi = { 0 };
-	xcolor_t xc;
-
 	if (is_null(pxi->source))
 		return;
 
@@ -636,264 +625,263 @@ void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_BMP, -1, 0) == 0)
-	{
-#ifdef GPL_SUPPORT_PNG
-		bmp_len = xbas_decode(pxi->source, -1, NULL, MAX_LONG);
-		bmp_buf = (byte_t*)xmem_alloc(bmp_len);
-		xbas_decode(pxi->source, -1, bmp_buf, bmp_len);
+	nlk = insert_svg_node(g);
+	write_ximage_to_svg_node(nlk, pxi, &xr);
+}
 
-		png_len = bmp_len;
-		png_buf = (byte_t*)xmem_alloc(png_len);
-		png_len = xpng_compress(bmp_buf, bmp_len, png_buf, png_len);
+void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+{
+	link_t_ptr g, nlk;
 
-		xmem_free(bmp_buf);
+	int black,span;
+	dword_t i;
+	float unit = 0.3;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
 
-		base_len = xbas_encode(png_buf, png_len, NULL, MAX_LONG);
-		base_buf = xsalloc(base_len + 1);
-		xbas_encode(png_buf, png_len, base_buf, base_len);
+	byte_t* buf;
+	dword_t buf_len;
 
-		xmem_free(png_buf);
+	byte_t* bar_buf;
+	dword_t bar_len;
 
-		xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-		xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_PNG);
-		xi.source = base_buf;
-
-		nlk = insert_svg_node(g);
-
-		write_ximage_to_svg_node(nlk, &xi, &xr);
-
-		xsfree(base_buf);
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
 #else
-		nlk = insert_svg_node(g);
-		write_ximage_to_svg_node(nlk, pxi, &xr);
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
 #endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
 	}
-	else if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_COLOR, -1, 0) == 0)
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
+
+	xmem_free(buf);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	rt.fx = prt->fx + unit;
+	rt.fy = prt->fy + unit;
+	rt.fw = unit;
+	rt.fh = prt->fh - 2 * unit;
+
+	black = 0;
+	for (i = 0; i < bar_len; i++)
 	{
-		parse_xcolor(&xc, pxi->source);
+		span = (bar_buf[i] - '0');
+		rt.fw = span * unit;
 
-		rdc = svg_get_canvas_ctx(canv);
-		bmp = create_color_bitmap(rdc, &xc, xr.w, xr.h);
-		if (bmp)
+		black = (black) ? 0 : 1;
+
+		if (black)
 		{
-			bmp_len = get_bitmap_bytes(bmp);
-			bmp_buf = (byte_t*)xmem_alloc(bmp_len);
+			svg_draw_rect(canv, &xp, &xb, &rt);
+		}
+		
+		rt.fx += rt.fw;
+	}
 
-			save_bitmap_to_bytes(rdc, bmp, bmp_buf, bmp_len);
+	xmem_free(bar_buf);
+}
 
-			destroy_bitmap(bmp);
+void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+{
+	link_t_ptr g, nlk;
 
-#ifdef GPL_SUPPORT_PNG
-			png_len = bmp_len;
-			png_buf = (byte_t*)xmem_alloc(png_len);
-			png_len = xpng_compress(bmp_buf, bmp_len, png_buf, png_len);
+	int black,span;
+	int rows,cols;
+	unsigned char b, c;
+	int i,j;
 
-			xmem_free(bmp_buf);
+	float unit = 0.5;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
 
-			base_len = xbas_encode(png_buf, png_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(png_buf, png_len, base_buf, base_len);
+	byte_t* buf;
+	dword_t buf_len;
 
-			xmem_free(png_buf);
+	byte_t* bar_buf;
+	dword_t bar_len;
 
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_PNG);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
 #else
-			base_len = xbas_encode(bmp_buf, bmp_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(bmp_buf, bmp_len, base_buf, base_len);
-
-			xmem_free(bmp_buf);
-
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_BMP);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
 #endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return NULL;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.fx = prt->fx + unit;
+		rt.fw = unit;
+		rt.fy = prt->fy + unit + i * 2 * unit;
+		rt.fh = 2 * unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.fx += rt.fw;
+
+				black = (c & b) ? 0 : 1;
+
+				if (black)
+				{
+					svg_draw_rect(canv, &xp, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
 		}
 	}
-#ifdef XDL_SUPPORT_BAR
-	else if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_CODE128, -1, 0) == 0)
-	{
-		rdc = svg_get_canvas_ctx(canv);
-		bmp = create_code128_bitmap(rdc, xr.w, xr.h, pxi->source);
-		if (bmp)
-		{
-			bmp_len = get_bitmap_bytes(bmp);
-			bmp_buf = (byte_t*)xmem_alloc(bmp_len);
 
-			save_bitmap_to_bytes(rdc, bmp, bmp_buf, bmp_len);
+	xmem_free(bar_buf);
+}
 
-			destroy_bitmap(bmp);
+void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+{
+	link_t_ptr g, nlk;
 
-#ifdef GPL_SUPPORT_PNG
-			png_len = bmp_len;
-			png_buf = (byte_t*)xmem_alloc(png_len);
-			png_len = xpng_compress(bmp_buf, bmp_len, png_buf, png_len);
+	int black,span;
+	int rows,cols;
+	unsigned char b, c;
+	int i,j;
 
-			xmem_free(bmp_buf);
+	float unit = 0.5;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
 
-			base_len = xbas_encode(png_buf, png_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(png_buf, png_len, base_buf, base_len);
+	byte_t* buf;
+	dword_t buf_len;
 
-			xmem_free(png_buf);
+	byte_t* bar_buf;
+	dword_t bar_len;
 
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_PNG);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
 #else
-			base_len = xbas_encode(bmp_buf, bmp_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(bmp_buf, bmp_len, base_buf, base_len);
-
-			xmem_free(bmp_buf);
-
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_BMP);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
 #endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return NULL;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.fx = prt->fx + unit;
+		rt.fw = unit;
+		rt.fy = prt->fy + unit + i * unit;
+		rt.fh = unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.fx += rt.fw;
+
+				black = (c & b) ? 1 : 0;
+
+				if (black)
+				{
+					svg_draw_rect(canv, &xp, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
 		}
 	}
-	else if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_PDF417, -1, 0) == 0)
-	{
-		rdc = svg_get_canvas_ctx(canv);
-		bmp = create_pdf417_bitmap(rdc, xr.w, xr.h, pxi->source);
-		if (bmp)
-		{
-			bmp_len = get_bitmap_bytes(bmp);
-			bmp_buf = (byte_t*)xmem_alloc(bmp_len);
 
-			save_bitmap_to_bytes(rdc, bmp, bmp_buf, bmp_len);
+	xmem_free(bar_buf);
+}
 
-			destroy_bitmap(bmp);
+void svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* gname)
+{
+}
 
-#ifdef GPL_SUPPORT_PNG
-			png_len = bmp_len;
-			png_buf = (byte_t*)xmem_alloc(png_len);
-			png_len = xpng_compress(bmp_buf, bmp_len, png_buf, png_len);
+void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
+{
+}
 
-			xmem_free(bmp_buf);
-
-			base_len = xbas_encode(png_buf, png_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(png_buf, png_len, base_buf, base_len);
-
-			xmem_free(png_buf);
-
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_PNG);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
-#else
-			base_len = xbas_encode(bmp_buf, bmp_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(bmp_buf, bmp_len, base_buf, base_len);
-
-			xmem_free(bmp_buf);
-
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_BMP);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
-#endif
-		}
-	}
-	else if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_QRCODE, -1, 0) == 0)
-	{
-		rdc = svg_get_canvas_ctx(canv);
-		bmp = create_qrcode_bitmap(rdc, xr.w, xr.h, pxi->source);
-		if (bmp)
-		{
-			bmp_len = get_bitmap_bytes(bmp);
-			bmp_buf = (byte_t*)xmem_alloc(bmp_len);
-
-			save_bitmap_to_bytes(rdc, bmp, bmp_buf, bmp_len);
-
-			destroy_bitmap(bmp);
-
-#ifdef GPL_SUPPORT_PNG
-			png_len = bmp_len;
-			png_buf = (byte_t*)xmem_alloc(png_len);
-			png_len = xpng_compress(bmp_buf, bmp_len, png_buf, png_len);
-
-			xmem_free(bmp_buf);
-
-			base_len = xbas_encode(png_buf, png_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(png_buf, png_len, base_buf, base_len);
-
-			xmem_free(png_buf);
-
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_PNG);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
-#else
-			base_len = xbas_encode(bmp_buf, bmp_len, NULL, MAX_LONG);
-			base_buf = xsalloc(base_len + 1);
-			xbas_encode(bmp_buf, bmp_len, base_buf, base_len);
-
-			xmem_free(bmp_buf);
-
-			xmem_copy((void*)&xi, (void*)pxi, sizeof(ximage_t));
-			xscpy(xi.type, GDI_ATTR_IMAGE_TYPE_BMP);
-			xi.source = base_buf;
-
-			nlk = insert_svg_node(g);
-
-			write_ximage_to_svg_node(nlk, &xi, &xr);
-
-			xsfree(base_buf);
-#endif
-		}
-	}
-#endif 
-	else if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_JPG, -1, 0) == 0 || compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_PNG, -1, 0) == 0)
-	{
-		nlk = insert_svg_node(g);
-		write_ximage_to_svg_node(nlk, pxi, &xr);
-	}*/
+void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
+{
 }
 
 void svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
@@ -1298,665 +1286,6 @@ void svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, c
 	string_free(tt.vs);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-void _svg_draw_logo_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	
-}
-
-void _svg_draw_insert_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	xr.fx = prt->fx;
-	xr.fy = (float)(prt->fy + prt->fh / 2 - 0.25);
-	xr.fw = prt->fw;
-	xr.fh = 0.5;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-
-	xr.fx = (float)(prt->fx + prt->fw / 2 - 0.25);
-	xr.fy = prt->fy;
-	xr.fw = 0.5;
-	xr.fh = prt->fh;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_delete_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	xr.fx = prt->fx;
-	xr.fy = (float)(prt->fy + prt->fh / 2 - 0.25);
-	xr.fw = prt->fw;
-	xr.fh = 0.5;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_plus_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xrect_t xr;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	xr.fx = prt->fx;
-	xr.fy = prt->fy;
-	xr.fw = prt->fw / 2;
-	xr.fh = prt->fh / 2;
-	svg_draw_rect(canv, &xp, NULL, &xr);
-
-	svg_draw_rect(canv, &xp, NULL, prt);
-}
-
-void _svg_draw_minus_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt1, pt2;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	pt1.fx = prt->fx;
-	pt1.fy = prt->fy + prt->fh / 2;
-	pt2.fx = prt->fx + prt->fw;
-	pt2.fy = prt->fy + prt->fh / 2;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	svg_draw_rect(canv, &xp, NULL, prt);
-}
-
-void _svg_draw_collapse_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt1, pt2;
-
-	default_xpen(&xp);
-	xscpy(xp.size, _T("2"));
-	format_xcolor(pxc, xp.color);
-
-	pt1.fx = prt->fx + prt->fw / 2;
-	pt1.fy = prt->fy;
-	pt2.fx = prt->fx + prt->fw;
-	pt2.fy = prt->fy + prt->fh / 2;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = prt->fx + prt->fw / 2;
-	pt1.fy = prt->fy + prt->fh;
-	pt2.fx = prt->fx + prt->fw;
-	pt2.fy = prt->fy + prt->fh / 2;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-}
-
-void _svg_draw_expand_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt1, pt2;
-
-	default_xpen(&xp);
-	xscpy(xp.size, _T("2"));
-	format_xcolor(pxc, xp.color);
-
-	pt1.fx = prt->fx;
-	pt1.fy = prt->fy + prt->fh / 2;
-	pt2.fx = prt->fx + prt->fw / 2;
-	pt2.fy = prt->fy + prt->fh;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = prt->fx + prt->fw;
-	pt1.fy = prt->fy + prt->fh / 2;
-	pt2.fx = prt->fx + prt->fw / 2;
-	pt2.fy = prt->fy + prt->fh;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-}
-
-void _svg_draw_home_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = (float)(prt->fx + prt->fw / 2);
-	pt[0].fy = (float)(prt->fy + 0.25);
-	pt[1].fx = prt->fx + prt->fw;
-	pt[1].fy = prt->fy + prt->fh;
-	pt[2].fx = prt->fx;
-	pt[2].fy = prt->fy + prt->fh;
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-
-	xr.fx = prt->fx;
-	xr.fy = prt->fy;
-	xr.fw = prt->fw;
-	xr.fh = 0.5;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_up_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = (float)(prt->fx + prt->fw / 2);
-	pt[0].fy = (float)(prt->fy + 0.25);
-	pt[1].fx = prt->fx + prt->fw;
-	pt[1].fy = prt->fy + prt->fh;
-	pt[2].fx = prt->fx;
-	pt[2].fy = prt->fy + prt->fh;
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-}
-
-void _svg_draw_down_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = prt->fx;
-	pt[0].fy = prt->fy;
-	pt[1].fx = prt->fx + prt->fw;
-	pt[1].fy = prt->fy;
-	pt[2].fx = (float)(prt->fx + prt->fw / 2);
-	pt[2].fy = (float)(prt->fy + prt->fh - 0.25);
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-}
-
-void _svg_draw_end_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = prt->fx;
-	pt[0].fy = prt->fy;
-	pt[1].fx = prt->fx + prt->fw;
-	pt[1].fy = prt->fy;
-	pt[2].fx = (float)prt->fx + prt->fw / 2;
-	pt[2].fy = (float)(prt->fy + prt->fh - 0.25);
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-
-	xr.fx = prt->fx;
-	xr.fy = (float)(prt->fy + prt->fh - 0.5);
-	xr.fw = prt->fw;
-	xr.fh = (float)0.5;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_first_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = (float)(prt->fx + 0.25);
-	pt[0].fy = (float)(prt->fy + prt->fh / 2);
-	pt[1].fx = prt->fx + prt->fw;
-	pt[1].fy = prt->fy;
-	pt[2].fx = prt->fx + prt->fw;
-	pt[2].fy = prt->fy + prt->fh;
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-
-	xr.fx = prt->fx;
-	xr.fy = prt->fy;
-	xr.fw = 0.5;
-	xr.fh = prt->fh;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_prev_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = (float)(prt->fx + 0.25);
-	pt[0].fy = (float)(prt->fy + prt->fh / 2);
-	pt[1].fx = prt->fx + prt->fw;
-	pt[1].fy = prt->fy;
-	pt[2].fx = prt->fx + prt->fw;
-	pt[2].fy = prt->fy + prt->fh;
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-}
-
-void _svg_draw_next_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = prt->fx;
-	pt[0].fy = prt->fy;
-	pt[1].fx = (float)(prt->fx + prt->fw - 0.25);
-	pt[1].fy = (float)(prt->fy + prt->fh / 2);
-	pt[2].fx = prt->fx;
-	pt[2].fy = prt->fy + prt->fh;
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-}
-
-void _svg_draw_last_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-	xpoint_t pt[3];
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	pt[0].fx = prt->fx;
-	pt[0].fy = prt->fy;
-	pt[1].fx = (float)(prt->fx + prt->fw - 0.25);
-	pt[1].fy = (float)(prt->fy + prt->fh / 2);
-	pt[2].fx = prt->fx;
-	pt[2].fy = prt->fy + prt->fh;
-	svg_draw_polygon(canv, &xp, &xb, pt, 3);
-
-	xr.fx = (float)(prt->fx + prt->fw - 0.5);
-	xr.fy = prt->fy;
-	xr.fw = (float)0.5;
-	xr.fh = prt->fh;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_close_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt1, pt2;
-
-	default_xpen(&xp);
-	xscpy(xp.size, _T("2"));
-	format_xcolor(pxc, xp.color);
-
-	pt1.fx = prt->fx;
-	pt1.fy = prt->fy;
-	pt2.fx = prt->fx + prt->fw;
-	pt2.fy = prt->fy + prt->fh;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = prt->fx;
-	pt1.fy = prt->fy + prt->fh;
-	pt2.fx = prt->fx + prt->fw;
-	pt2.fy = prt->fy;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-}
-
-void _svg_draw_minimize_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	xr.fx = prt->fx;
-	xr.fy = (float)(prt->fy + prt->fh - 0.25);
-	xr.fw = (float)1.0;
-	xr.fh = (float)0.5;
-	svg_draw_rect(canv, &xp, &xb, &xr);
-}
-
-void _svg_draw_maximize_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xrect_t xr;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	xr.fx = prt->fx;
-	xr.fw = (float)(prt->fw - 0.5);
-	xr.fy = prt->fy;
-	xr.fh = (float)(prt->fh - 0.5);
-	svg_draw_rect(canv, &xp, NULL, &xr);
-
-	xr.fx = (float)(prt->fx + 0.5);
-	xr.fw = (float)(prt->fw - 0.5);
-	xr.fy = (float)(prt->fy + 0.5);
-	xr.fh = (float)(prt->fh - 0.5);
-	svg_draw_rect(canv, &xp, NULL, &xr);
-}
-
-void _svg_draw_restore_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	svg_draw_rect(canv, &xp, NULL, prt);
-}
-
-void _svg_draw_sum_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt[5] = { 0 };
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	pt[0].fx = prt->fx + prt->fw;
-	pt[0].fy = prt->fy;
-	pt[1].fx = prt->fx;
-	pt[1].fy = prt->fy;
-	pt[2].fx = prt->fx + prt->fw / 2;
-	pt[2].fy = prt->fy + prt->fh / 2;
-	pt[3].fx = prt->fx;
-	pt[3].fy = prt->fy + prt->fh;
-	pt[4].fx = prt->fx + prt->fw;
-	pt[4].fy = prt->fy + prt->fh;
-
-	svg_draw_polyline(canv, &xp, pt, 5);
-}
-
-void _svg_draw_checkbox_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	svg_draw_rect(canv, &xp, NULL, prt);
-}
-
-void _svg_draw_checked_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt1, pt2;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	svg_draw_rect(canv, &xp, NULL, prt);
-
-	pt1.fx = prt->fx;
-	pt1.fy = (float)(prt->fy + prt->fh / 2);
-	pt2.fx = (float)(prt->fx + 0.5);
-	pt2.fy = (float)(prt->fy + prt->fh / 2);
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = (float)(prt->fx + 0.5);
-	pt1.fy = (float)(prt->fy + prt->fh / 2);
-	pt2.fx = (float)(prt->fx + prt->fw / 2);
-	pt2.fy = (float)(prt->fy + prt->fh - 0.25);
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = (float)(prt->fx + prt->fw / 2);
-	pt1.fy = (float)(prt->fy + prt->fh - 0.25);
-	pt2.fx = (float)(prt->fx + prt->fw + 0.5);
-	pt2.fy = (float)(prt->fy + 0.25);
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-}
-
-void _svg_draw_radiobox_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-
-	default_xpen(&xp);
-	xscpy(xp.size, _T("2"));
-	format_xcolor(pxc, xp.color);
-
-	svg_draw_ellipse(canv, &xp, NULL, prt);
-}
-
-void _svg_draw_radioed_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-
-	default_xpen(&xp);
-	xscpy(xp.size, _T("2"));
-	format_xcolor(pxc, xp.color);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	svg_draw_ellipse(canv, &xp, &xb, prt);
-}
-
-void _svg_draw_selected_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xpoint_t pt1, pt2;
-
-	default_xpen(&xp);
-	xscpy(xp.size, _T("1"));
-	format_xcolor(pxc, xp.color);
-
-	pt1.fx = prt->fx;
-	pt1.fy = (float)(prt->fy + prt->fh / 2);
-	pt2.fx = (float)(prt->fx + 0.5);
-	pt2.fy = (float)(prt->fy + prt->fh / 2);
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = (float)(prt->fx + 0.5);
-	pt1.fy = (float)(prt->fy + prt->fh / 2);
-	pt2.fx = (float)(prt->fx + prt->fw / 2);
-	pt2.fy = prt->fy + prt->fh;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = (float)(prt->fx + prt->fw / 2);
-	pt1.fy = prt->fy + prt->fh;
-	pt2.fx = prt->fx + prt->fw;
-	pt2.fy = prt->fy;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-}
-
-void _svg_draw_folder_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xrect_t xr;
-	xpoint_t pt[4];
-
-	xmem_copy((void*)&xr, (void*)prt, sizeof(xrect_t));
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	pt[0].fx = xr.fx;
-	pt[0].fy = (float)(xr.fy + xr.fh / 4);
-
-	pt[1].fx = xr.fx;
-	pt[1].fy = xr.fy;
-
-	pt[2].fx = (float)(xr.fx + xr.fw / 2);
-	pt[2].fy = xr.fy;
-
-	pt[3].fx = (float)(xr.fx + 3 * xr.fw / 4);
-	pt[3].fy = xr.fy + xr.fh / 4;
-
-	svg_draw_polyline(canv, &xp, pt, 4);
-
-	xr.fy += (float)(xr.fh / 4);
-	xr.fh -= (float)(xr.fh / 4);
-
-	svg_draw_rect(canv, &xp, NULL, &xr);
-}
-
-void _svg_draw_guider_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xbrush_t xb;
-	xrect_t xr;
-	xpoint_t pt[5];
-	float feed;
-
-	xmem_copy((void*)&xr, (void*)prt, sizeof(xrect_t));
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-
-	feed = (float)(xr.fw / 3);
-	if (feed < 1.0)
-		feed = 1.0;
-
-	pt[0].fx = xr.fx;
-	pt[0].fy = xr.fy;
-
-	pt[1].fx = (float)(xr.fx + xr.fw - feed);
-	pt[1].fy = xr.fy;
-
-	pt[2].fx = xr.fx + xr.fw;
-	pt[2].fy = (float)(xr.fy + xr.fh / 2);
-
-	pt[3].fx = (float)(xr.fx + xr.fw - feed);
-	pt[3].fy = xr.fy + xr.fh;
-
-	pt[4].fx = xr.fx;
-	pt[4].fy = xr.fy + xr.fh;
-
-	svg_draw_polygon(canv, &xp, &xb, pt, 5);
-}
-
-void _svg_draw_fixed_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt)
-{
-	xpen_t xp;
-	xrect_t xr;
-	xpoint_t pt1, pt2;
-
-	xmem_copy((void*)&xr, (void*)prt, sizeof(xrect_t));
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	pt1.fx = xr.fx;
-	pt1.fy = (float)(xr.fy + xr.fh / 2);
-	pt2.fx = (float)(xr.fx + 0.5);
-	pt2.fy = (float)(xr.fy + xr.fh / 2);
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	pt1.fx = (float)(xr.fx + 0.5);
-	pt1.fy = xr.fy;
-	pt2.fx = (float)(xr.fx + 0.5);
-	pt2.fy = xr.fy + xr.fh;
-	svg_draw_line(canv, &xp, &pt1, &pt2);
-
-	xr.fx += (float)0.5;
-	xr.fw -= (float)0.5;
-	xr.fy += (float)0.5;
-	xr.fh -= (float)1.0;
-
-	svg_draw_rect(canv, &xp, NULL, &xr);
-}
-
-void svg_draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
-{
-	if (compare_text(iname, -1, GDI_ICON_LOGO, -1, 0) == 0)
-		_svg_draw_logo_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_COLLAPSE, -1, 0) == 0)
-		_svg_draw_collapse_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_EXPAND, -1, 0) == 0)
-		_svg_draw_expand_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_INSERT, -1, 0) == 0)
-		_svg_draw_insert_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_DELETE, -1, 0) == 0)
-		_svg_draw_delete_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_PLUS, -1, 0) == 0)
-		_svg_draw_plus_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_MINUS, -1, 0) == 0)
-		_svg_draw_minus_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_HOME, -1, 0) == 0)
-		_svg_draw_home_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_UP, -1, 0) == 0)
-		_svg_draw_up_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_DOWN, -1, 0) == 0)
-		_svg_draw_down_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_END, -1, 0) == 0)
-		_svg_draw_end_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_FIRST, -1, 0) == 0)
-		_svg_draw_first_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_PREV, -1, 0) == 0)
-		_svg_draw_prev_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_NEXT, -1, 0) == 0)
-		_svg_draw_next_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_LAST, -1, 0) == 0)
-		_svg_draw_last_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_GUIDER, -1, 0) == 0)
-		_svg_draw_guider_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_FOLDER, -1, 0) == 0)
-		_svg_draw_folder_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_CHECKBOX, -1, 0) == 0)
-		_svg_draw_checkbox_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_CHECKED, -1, 0) == 0)
-		_svg_draw_checked_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_RADIOBOX, -1, 0) == 0)
-		_svg_draw_radiobox_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_RADIOED, -1, 0) == 0)
-		_svg_draw_radioed_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_SELECTED, -1, 0) == 0)
-		_svg_draw_selected_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_SUM, -1, 0) == 0)
-		_svg_draw_sum_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_CLOSE, -1, 0) == 0)
-		_svg_draw_close_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_MINIMIZE, -1, 0) == 0)
-		_svg_draw_minimize_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_MAXIMIZE, -1, 0) == 0)
-		_svg_draw_maximize_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_RESTORE, -1, 0) == 0)
-		_svg_draw_restore_icon(canv, pxc, pxr);
-	else if (compare_text(iname, -1, GDI_ICON_FIXED, -1, 0) == 0)
-		_svg_draw_fixed_icon(canv, pxc, pxr);
-}
 
 #endif /*XDL_SUPPORT_SVG*/
 

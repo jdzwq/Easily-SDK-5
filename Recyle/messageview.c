@@ -9,10 +9,10 @@
 
 	@module	messageview.c | message view implement file
 
-	@devnote 张文权 2005.01 - 2007.12	v3.0
-	@devnote 张文权 2008.01 - 2009.12	v3.5
-	@devnote 张文权 2012.01 - 2015.12	v4.0
-	@devnote 张文权 2016.01 -			v4.5
+	@devnote 锟斤拷锟斤拷权 2005.01 - 2007.12	v3.0
+	@devnote 锟斤拷锟斤拷权 2008.01 - 2009.12	v3.5
+	@devnote 锟斤拷锟斤拷权 2012.01 - 2015.12	v4.0
+	@devnote 锟斤拷锟斤拷权 2016.01 -			v4.5
 ***********************************************************************/
 
 /**********************************************************************
@@ -517,7 +517,7 @@ void draw_message(const if_canvas_t* pif, link_t_ptr ptr)
 
 			if (get_message_item_checked(ilk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, ATTR_ICON_RADIOED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, ATTR_ICON_RADIOED);
 			}
 			else
 			{

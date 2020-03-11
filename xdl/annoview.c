@@ -224,7 +224,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr.fw = ppt[1].fx - ppt[0].fx;
 			xr.fh = ppt[1].fy - ppt[0].fy;
 
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr, get_anno_arti_text_ptr(ilk));
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, get_anno_arti_text_ptr(ilk));
 		}
 		else if (compare_text(type, -1, ATTR_ANNO_TYPE_CIRCLE, -1, 0) == 0)
 		{

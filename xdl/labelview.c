@@ -318,7 +318,7 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 		xr_text.fh = eh;
 
 		ft_center_rect(&xr_text, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_text, get_label_item_icon_ptr(nlk));
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_text, get_label_item_icon_ptr(nlk));
 		
 		xr_shape.fx = xr.fx + SHAPE_FEED;
 		xr_shape.fy = xr.fy + SHAPE_FEED;

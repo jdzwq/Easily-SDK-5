@@ -621,7 +621,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 			ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, GDI_ICON_CHECKED);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, GDI_ICON_CHECKED);
 		}
 	}
 
@@ -689,7 +689,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			{
 				xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 				ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, GDI_ICON_CHECKED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, GDI_ICON_CHECKED);
 			}
 
 			if (rlk_last == rlk)
@@ -709,7 +709,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 		xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 		ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, GDI_ICON_SUM);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, GDI_ICON_SUM);
 	}
 
 	//draw cell
@@ -785,7 +785,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 			if (get_col_password(clk))
 			{
-				(*pif->pf_draw_password)(pif->canvas, &xf, &xa, &xrCell, get_cell_text_ptr(rlk, clk), -1);
+				(*pif->pf_draw_pass)(pif->canvas, &xf, &xa, &xrCell, get_cell_text_ptr(rlk, clk), -1);
 			}
 			else if (compare_text(type, -1, ATTR_DATA_TYPE_BINARY, -1, 0) == 0)
 			{

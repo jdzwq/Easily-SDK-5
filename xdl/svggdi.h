@@ -313,17 +313,50 @@ XDL_API void	svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t
 XDL_API void	svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr);
 
 /*
-@FUNCTION svg_draw_icon: draw icon in svg canvas using millimeter coordinate.
+@FUNCTION svg_draw_code128: draw CODE128 bar in svg canvas using millimeter coordinate.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT const xcolor_t* pxc: the foreground color.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* text: the text for PDF417 encoding.
+@INPUT int len: text length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDL_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+
+/*
+@FUNCTION svg_draw_pdf417: draw PDF427 bar in svg canvas using millimeter coordinate.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT const xcolor_t* pxc: the foreground color.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* text: the text for PDF417 encoding.
+@INPUT int len: text length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDL_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+
+/*
+@FUNCTION svg_draw_qrcode: draw QR bar in svg canvas using millimeter coordinate.
+@INPUT canvas_t canv: the svg canvas object.
+@INPUT const xcolor_t* pxc: the foreground color.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* text: the text for PDF417 encoding.
+@INPUT int len: text length in characters, -1 indicate zero terminated.
+@RETURN void: none.
+*/
+XDL_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+
+/*
+@FUNCTION svg_draw_gizmo: draw gizmo icon in svg canvas using millimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT const xcolor_t* pxc: the color struct.
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @INPUT const tchar_t* iname: the icon name.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* iname);
+XDL_API void	svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* iname);
 
 /*
-@FUNCTION svg_draw_password: draw the password in svg canvas using millimeter coordinate.
+@FUNCTION svg_draw_pass: draw the password in svg canvas using millimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
 @INPUT cont xfont_t* pxf: the font struct.
 @INPUT cont xface_t* pxa: the face struct.
@@ -332,7 +365,7 @@ XDL_API void	svg_draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pr
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_password(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
+XDL_API void	svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
 
 /*
 @FUNCTION svg_draw_data: draw the formated data in svg canvas using millimeter coordinate.
@@ -394,6 +427,12 @@ XDL_API void	svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs);
 @RETURN void: none.
 */
 XDL_API void	svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* text, int len);
+
+
+XDL_API void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt);
+
+XDL_API void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt);
+
 
 #ifdef	__cplusplus
 }

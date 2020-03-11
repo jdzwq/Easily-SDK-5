@@ -31,6 +31,7 @@ LICENSE.GPL3 for more details.
 
 #define SMS_ACTION			_T("Action")
 #define SMS_ACTION_CODE		_T("Code")
+#define SMS_ACTION_VERIFY	_T("Verify")
 #define SMS_ACTION_MESSAGE	_T("Message")
 #define SMS_ACTION_RECEIPT	_T("Receipt")
 

@@ -60,15 +60,6 @@ XDL_API link_t_ptr insert_images_item_from_url(link_t_ptr ptr, const tchar_t* in
 XDL_API link_t_ptr insert_images_item_from_file(link_t_ptr ptr, const tchar_t* iname, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
-@FUNCTION insert_images_item_from_color: add a new image item from color token.
-@INPUT link_t_ptr ptr: the images link component.
-@INPUT const tchar_t* iname: the image name token.
-@INPUT const tchar_t* color: the color token.
-@RETURN link_t_ptr: return the new item link component.
-*/
-XDL_API link_t_ptr insert_images_item_from_color(link_t_ptr ptr, const tchar_t* iname, const tchar_t* color);
-
-/*
 @FUNCTION load_image_bytes_from_file: load image bitmap bytes from file.
 @INPUT const secu_desc_t* psd: the file security struct.
 @INPUT const tchar_t* fname: the file path name.

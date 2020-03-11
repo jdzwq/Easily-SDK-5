@@ -2869,26 +2869,6 @@ void parse_ximage_from_source(ximage_t* pxi, const tchar_t* token)
 		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_BMP);
 		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_BMP);
 	}
-	else if (compare_text(token, xslen(GDI_ATTR_IMAGE_TYPE_COLOR), GDI_ATTR_IMAGE_TYPE_COLOR, -1, 0) == 0)
-	{
-		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_COLOR);
-		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_COLOR);
-	}
-	else if (compare_text(token, xslen(GDI_ATTR_IMAGE_TYPE_CODE128), GDI_ATTR_IMAGE_TYPE_CODE128, -1, 0) == 0)
-	{
-		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_CODE128);
-		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_CODE128);
-	}
-	else if (compare_text(token, xslen(GDI_ATTR_IMAGE_TYPE_PDF417), GDI_ATTR_IMAGE_TYPE_PDF417, -1, 0) == 0)
-	{
-		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_PDF417);
-		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_PDF417);
-	}
-	else if (compare_text(token, xslen(GDI_ATTR_IMAGE_TYPE_QRCODE), GDI_ATTR_IMAGE_TYPE_QRCODE, -1, 0) == 0)
-	{
-		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_QRCODE);
-		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_QRCODE);
-	}
 	else
 	{
 		xscpy(pxi->type, _T(""));

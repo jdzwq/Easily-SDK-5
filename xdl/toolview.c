@@ -368,7 +368,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			if (compare_text(show, -1, ATTR_SHOW_IMAGEONLY, -1, 0) == 0)
 			{
 				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
 			}
 			else if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) == 0)
 			{
@@ -382,7 +382,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 				xrItem.fy -= xrItem.fh;
 				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
 			}
 
 			ilk = get_tool_group_next_item(glk, ilk);

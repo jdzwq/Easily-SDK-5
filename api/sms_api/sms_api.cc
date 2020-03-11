@@ -54,7 +54,7 @@ bool_t _invoke_sms_code(const https_block_t* pb, sms_block_t* pxb)
 
 	if (is_null(phone))
 	{
-		raise_user_error(_T("0"), _T("µç»°ºÅÂë²»ÄÜÎª¿Õ£¡"));
+		raise_user_error(_T("0"), _T("phone empty!"));
 	}
 
 	sms = (*pxb->pf_open_isp)(pxb->isp_file);
@@ -83,7 +83,7 @@ bool_t _invoke_sms_code(const https_block_t* pb, sms_block_t* pxb)
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[SMS·µ»Ø]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[SMS-Code]"), -1);
 
 		xsprintf(sz_error, _T("SMS succeed"), 1);
 		(*pb->pf_log_error)(pb->log, _T("0"), sz_error, -1);
@@ -105,7 +105,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[SMS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[SMS-Code]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -113,6 +113,59 @@ ONERROR:
 	return 0;
 }
 
+bool_t _invoke_sms_verify(const https_block_t* pb, sms_block_t* pxb)
+{
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	bool_t rt;
+
+	tchar_t code[INT_LEN] = { 0 };
+	tchar_t phone[INT_LEN] = { 0 };
+
+	TRY_CATCH;
+
+	xhttp_get_url_query_entity(pb->http, _T("Phone"), -1, phone, INT_LEN);
+	xhttp_get_url_query_entity(pb->http, _T("Code"), -1, code, INT_LEN);
+
+	if (is_null(phone))
+	{
+		raise_user_error(_T("0"), _T("Phone empty!"));
+	}
+
+	if (is_null(code))
+	{
+		raise_user_error(_T("0"), _T("Code empty!"));
+	}
+
+	xhttp_send_error(pb->http, HTTP_CODE_200, HTTP_CODE_200_TEXT, sz_code, sz_error, -1);
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[SMS-Verify]"), -1);
+
+		xsprintf(sz_error, _T("SMS succeed"), 1);
+		(*pb->pf_log_error)(pb->log, _T("0"), sz_error, -1);
+	}
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+	get_last_error(sz_code, sz_error, ERR_LEN);
+
+	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[SMS-Verify]"), -1);
+
+		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
+	}
+
+	return 0;
+}
 
 void _invoke_error(const https_block_t* pb, sms_block_t* pxb)
 {
@@ -135,7 +188,7 @@ void _invoke_error(const https_block_t* pb, sms_block_t* pxb)
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[SMS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[SMSï¿½ï¿½ï¿½ï¿½]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -196,6 +249,10 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	if (compare_text(action, -1, SMS_ACTION_CODE, -1, 1) == 0)
 	{
 		rt = _invoke_sms_code(pb, pxb);
+	}
+	else if (compare_text(action, -1, SMS_ACTION_VERIFY, -1, 1) == 0)
+	{
+		rt = _invoke_sms_verify(pb, pxb);
 	}
 	else
 	{

@@ -445,7 +445,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr_image.fh = th;
 
 	ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_tree_title_icon_ptr(ptr));
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_tree_title_icon_ptr(ptr));
 
 	xr_text.fx = total_indent + ic;
 	xr_text.fw = pw - ic;
@@ -468,7 +468,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		if ( !is_null(icon))
 		{
 			ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_tree_item_icon_ptr(ilk));
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_tree_item_icon_ptr(ilk));
 		}
 		else
 		{
@@ -476,11 +476,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (get_tree_item_expanded(ilk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_image, GDI_ICON_MINUS);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ICON_MINUS);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_image, GDI_ICON_PLUS);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ICON_PLUS);
 			}
 		}
 
@@ -497,11 +497,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			
 			if (get_tree_item_checked(ilk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_check, GDI_ICON_CHECKED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ICON_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xr_check, GDI_ICON_CHECKBOX);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ICON_CHECKBOX);
 			}
 
 			xr_text.fx = total_indent + ic * 2;

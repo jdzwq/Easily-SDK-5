@@ -477,11 +477,11 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (get_menu_item_checked(ilk))
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, GDI_ICON_CHECKED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ICON_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_menu_item_icon_ptr(ilk));
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_menu_item_icon_ptr(ilk));
 			}
 		}
 		

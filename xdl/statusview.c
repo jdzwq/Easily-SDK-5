@@ -314,7 +314,7 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-		(*pif->pf_draw_icon)(pif->canvas, &xc, &xr_image, get_status_item_icon_ptr(plk));
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_status_item_icon_ptr(plk));
 
 		xr_text.fx = xr.fx + ic;
 		xr_text.fy = xr.fy;

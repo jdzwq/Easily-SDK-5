@@ -9,10 +9,10 @@
 
 	@module	griddoc.c | grid document implement file
 
-	@devnote 张文权 2005.01 - 2007.12	v3.0
-	@devnote 张文权 2008.01 - 2009.12	v3.5
-	@devnote 张文权 2012.01 - 2015.12	v4.0
-	@devnote 张文权 2016.01 -			v4.5
+	@devnote 锟斤拷锟斤拷权 2005.01 - 2007.12	v3.0
+	@devnote 锟斤拷锟斤拷权 2008.01 - 2009.12	v3.5
+	@devnote 锟斤拷锟斤拷权 2012.01 - 2015.12	v4.0
+	@devnote 锟斤拷锟斤拷权 2016.01 -			v4.5
 ***********************************************************************/
 
 /**********************************************************************
@@ -518,7 +518,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			xrCheck.fy = xrBar.fy;
 			xrCheck.fh = xrBar.fh;
 			ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_FIXED);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_FIXED);
 		}
 
 		token = get_col_title_ptr(clk);
@@ -540,7 +540,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	{
 		xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 		ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_SELECTED);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_SELECTED);
 	}
 
 	xrBar.fy = th + ch + py;
@@ -554,7 +554,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 			ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_SELECTED);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_SELECTED);
 		}
 
 		if (rlk_last == rlk)
@@ -573,7 +573,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 		xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 		ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_icon)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_SUM);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, ATTR_ICON_SUM);
 	}
 
 	//draw cell
