@@ -44,17 +44,6 @@ LICENSE.GPL3 for more details.
 #endif
 
 
-#if defined(_USRDLL)
-#if defined(_OS_WINDOWS)
-#define XDK_API __declspec(dllexport)
-#else
-#define XDK_API __attribute__((visibility("default")))
-#endif
-#else
-#define XDK_API extern
-#endif
-
-
 #ifndef INVALID_SIZE
 #define INVALID_SIZE	((size_t)-1)
 #endif

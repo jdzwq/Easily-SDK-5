@@ -38,105 +38,105 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-extern void rgb_to_hsl(unsigned char r, unsigned char g, unsigned char b, short* ph, short* ps, short* pl);
+EXP_API void rgb_to_hsl(unsigned char r, unsigned char g, unsigned char b, short* ph, short* ps, short* pl);
 
-extern void hsl_to_rgb(short h, short s, short l, unsigned char* pr, unsigned char* pg, unsigned char* pb);
+EXP_API void hsl_to_rgb(short h, short s, short l, unsigned char* pr, unsigned char* pg, unsigned char* pb);
 
-extern void parse_xcolor(xcolor_t* pxc, const tchar_t* token);
+EXP_API void parse_xcolor(xcolor_t* pxc, const tchar_t* token);
 
-extern void format_xcolor(const xcolor_t* pxc, tchar_t* buf);
+EXP_API void format_xcolor(const xcolor_t* pxc, tchar_t* buf);
 
-extern void lighten_xcolor(xcolor_t* clr, int n);
+EXP_API void lighten_xcolor(xcolor_t* clr, int n);
 
-extern bool_t is_null_xpen(const xpen_t* pxp);
+EXP_API bool_t is_null_xpen(const xpen_t* pxp);
 
-extern bool_t is_null_xbrush(const xbrush_t* pxb);
+EXP_API bool_t is_null_xbrush(const xbrush_t* pxb);
 
-extern bool_t is_null_xfont(const xfont_t* pxf);
+EXP_API bool_t is_null_xfont(const xfont_t* pxf);
 
-extern bool_t is_null_xface(const xface_t* pxa);
+EXP_API bool_t is_null_xface(const xface_t* pxa);
 
-extern void default_xpen(xpen_t* pxp);
+EXP_API void default_xpen(xpen_t* pxp);
 
-extern void default_xbrush(xbrush_t* pxb);
+EXP_API void default_xbrush(xbrush_t* pxb);
 
-extern void default_xfont(xfont_t* pxf);
+EXP_API void default_xfont(xfont_t* pxf);
 
-extern void default_xface(xface_t* pxa);
+EXP_API void default_xface(xface_t* pxa);
 
-extern void default_xgradi(xgradi_t* pxg);
+EXP_API void default_xgradi(xgradi_t* pxg);
 
-extern void lighten_xpen(xpen_t* pxp, int n);
+EXP_API void lighten_xpen(xpen_t* pxp, int n);
 
-extern void merge_xpen(xpen_t* pxp_dst, const xpen_t* pxp_src);
+EXP_API void merge_xpen(xpen_t* pxp_dst, const xpen_t* pxp_src);
 
-extern void merge_xbrush(xbrush_t* pxb_dst, const xbrush_t* pxb_src);
+EXP_API void merge_xbrush(xbrush_t* pxb_dst, const xbrush_t* pxb_src);
 
-extern void merge_xfont(xfont_t* pxf_dst, const xfont_t* pxf_src);
+EXP_API void merge_xfont(xfont_t* pxf_dst, const xfont_t* pxf_src);
 
-extern void merge_xface(xface_t* pxa_dst, const xface_t* pxa_src);
+EXP_API void merge_xface(xface_t* pxa_dst, const xface_t* pxa_src);
 
-extern void lighten_xbrush(xbrush_t* pxb, int n);
+EXP_API void lighten_xbrush(xbrush_t* pxb, int n);
 
-extern void lighten_xfont(xfont_t* pxf, int n);
+EXP_API void lighten_xfont(xfont_t* pxf, int n);
 
-extern void lighten_xgradi(xgradi_t* pxg, int n);
+EXP_API void lighten_xgradi(xgradi_t* pxg, int n);
 
 /*****************************************************************************************/
-extern bool_t ft_inside(float x, float y, float x1, float y1, float x2, float y2);
+EXP_API bool_t ft_inside(float x, float y, float x1, float y1, float x2, float y2);
 
-extern bool_t pt_inside(int x, int y, int x1, int y1, int x2, int y2);
+EXP_API bool_t pt_inside(int x, int y, int x1, int y1, int x2, int y2);
 
-extern bool_t ft_in_rect(const xpoint_t* ppt, const xrect_t* prt);
+EXP_API bool_t ft_in_rect(const xpoint_t* ppt, const xrect_t* prt);
 
-extern bool_t pt_in_rect(const xpoint_t* ppt, const xrect_t* prt);
+EXP_API bool_t pt_in_rect(const xpoint_t* ppt, const xrect_t* prt);
 
-extern void ft_offset_point(xpoint_t* ppt, float cx, float cy);
+EXP_API void ft_offset_point(xpoint_t* ppt, float cx, float cy);
 
-extern void pt_offset_point(xpoint_t* ppt, int cx, int cy);
+EXP_API void pt_offset_point(xpoint_t* ppt, int cx, int cy);
 
-extern void ft_center_rect(xrect_t* pxr, float cx, float cy);
+EXP_API void ft_center_rect(xrect_t* pxr, float cx, float cy);
 
-extern void pt_center_rect(xrect_t* pxr, int cx, int cy);
+EXP_API void pt_center_rect(xrect_t* pxr, int cx, int cy);
 
-extern void ft_expand_rect(xrect_t* pxr, float cx, float cy);
+EXP_API void ft_expand_rect(xrect_t* pxr, float cx, float cy);
 
-extern void pt_expand_rect(xrect_t* pxr, int cx, int cy);
+EXP_API void pt_expand_rect(xrect_t* pxr, int cx, int cy);
 
-extern void ft_offset_rect(xrect_t* pxr, float cx, float cy);
+EXP_API void ft_offset_rect(xrect_t* pxr, float cx, float cy);
 
-extern void pt_offset_rect(xrect_t* pxr, int cx, int cy);
+EXP_API void pt_offset_rect(xrect_t* pxr, int cx, int cy);
 
-extern void ft_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
+EXP_API void ft_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
 
-extern void pt_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
+EXP_API void pt_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
 
-extern void ft_cell_rect(xrect_t* pxr, int rows, int cols, int index);
+EXP_API void ft_cell_rect(xrect_t* pxr, int rows, int cols, int index);
 
-extern void pt_cell_rect(xrect_t* pxr, int rows, int cols, int index);
+EXP_API void pt_cell_rect(xrect_t* pxr, int rows, int cols, int index);
 
-extern bool_t ft_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
+EXP_API bool_t ft_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
-extern bool_t pt_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
+EXP_API bool_t pt_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
-extern void ft_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
+EXP_API void ft_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
-extern void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
+EXP_API void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
-extern bool_t rect_is_empty(const xrect_t* pxr);
+EXP_API bool_t rect_is_empty(const xrect_t* pxr);
 
-extern void empty_rect(xrect_t* pxr);
-
-/**************************************************************************************/
-extern int mul_div_int(int m1, int m2, int d);
-
-extern short mul_div_short(short m1, short m2, short d);
+EXP_API void empty_rect(xrect_t* pxr);
 
 /**************************************************************************************/
+EXP_API int mul_div_int(int m1, int m2, int d);
 
-extern void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext);
+EXP_API short mul_div_short(short m1, short m2, short d);
 
-extern void split_file(const tchar_t* pathfile, tchar_t* path, tchar_t* file);
+/**************************************************************************************/
+
+EXP_API void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext);
+
+EXP_API void split_file(const tchar_t* pathfile, tchar_t* path, tchar_t* file);
 
 #ifdef	__cplusplus
 }

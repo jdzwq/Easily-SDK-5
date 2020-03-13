@@ -51,6 +51,24 @@ LICENSE.GPL3 for more details.
 #endif
 
 #if defined(_OS_WINDOWS)
+#if defined(_USRDLL)
+#define EXP_API __declspec(dllexport)
+#else
+#define EXP_API exten
+#endif
+#else
+#define EXP_API __attribute__((visibility("default"))) extern
+#define LOC_API __attribute__((visibility("hidden")))
+#endif
+
+
+#if defined(_OS_WINDOWS)
+#define STDCALL __stdcall
+#else
+#define STDCALL
+#endif
+
+#if defined(_OS_WINDOWS)
 #include <tchar.h>
 #else
 #include <wchar.h>
@@ -60,13 +78,11 @@ LICENSE.GPL3 for more details.
 #include <stdio.h>
 
 #ifndef _OS_WINDOWS
-
 #if defined(_UNICODE) || defined(UNICODE)
 #define _T(x)      L ## x
 #else
 #define _T(x)      x
 #endif
-
 #endif
 
 #ifndef BYTE_ORDER
@@ -104,13 +120,6 @@ LICENSE.GPL3 for more details.
 
 #ifndef PDP_ENDIAN
 #define PDP_ENDIAN	__PDP_ENDIAN
-#endif
-
-
-#if defined(_OS_WINDOWS)
-#define STDCALL __stdcall
-#else
-#define STDCALL
 #endif
 
 /*

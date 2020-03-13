@@ -1,20 +1,15 @@
 ﻿/***********************************************************************
-	Easily xdp v5.5
+	Easily DCM 1.0
 
-	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
+	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
-	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
+	@author ZhangWenQuan, China ZheJiang HangZhou JianDe, Mail: powersuite@hotmaol.com
 
-	@doc xdp font document
+	@doc dcm defination document
 
-	@module	xdpfont.h | interface file
+	@module	dcmdef.h | definition interface file
 
-	@devnote 张文权 2005.01 - 2007.12	v3.0
-	@devnote 张文权 2008.01 - 2009.12	v3.5
-	@devnote 张文权 2012.01 - 2015.12	v4.0
-	@devnote 张文权 2016.01 - 2016.12	v4.5
-	@devnote 张文权 2017.01 - 2017.12	v5.0
-	@devnote 张文权 2018.01 - 2018.12	v5.5
+	@devnote 张文权 2018.01 - 2018.12	v1.0
 ***********************************************************************/
 
 /**********************************************************************
@@ -29,22 +24,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _XDPFONT_H
-#define _XDPFONT_H
 
-#include "platform.h"
+#ifndef _DCMDEF_H
+#define	_DCMDEF_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-EXP_API void font_metric_by_point(float pt, float* pm, float* px);
-
-EXP_API int format_font_pattern(const xfont_t* pxf, tchar_t* buf);
-
-#ifdef	__cplusplus
-}
-#endif
+#include <xdl.h>
 
 
-#endif
+
+#endif	/* _DCMDEF_H */
+

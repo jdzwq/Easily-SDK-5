@@ -571,90 +571,90 @@ extern "C" {
 
 #ifdef XDK_SUPPORT_MEMO
 #ifdef XDK_SUPPORT_MEMO_HEAP
-	XDK_API void xdk_impl_memo_heap(if_memo_t* pif);
+	EXP_API void xdk_impl_memo_heap(if_memo_t* pif);
 #endif
 #ifdef XDK_SUPPORT_MEMO_GLOB
-	XDK_API void xdk_impl_memo_glob(if_memo_t* pif);
+	EXP_API void xdk_impl_memo_glob(if_memo_t* pif);
 #endif
 #ifdef XDK_SUPPORT_MEMO_GLOB
-	XDK_API void xdk_impl_memo_local(if_memo_t* pif);
+	EXP_API void xdk_impl_memo_local(if_memo_t* pif);
 #endif
 #ifdef XDK_SUPPORT_MEMO_PAGE
-	XDK_API void xdk_impl_memo_page(if_memo_t* pif);
+	EXP_API void xdk_impl_memo_page(if_memo_t* pif);
 #endif
 #ifdef XDK_SUPPORT_MEMO_CACHE
-	XDK_API void xdk_impl_memo_cache(if_memo_t* pif);
+	EXP_API void xdk_impl_memo_cache(if_memo_t* pif);
 #endif
 #endif /*XDK_SUPPORT_MEMO*/
 
 #ifdef XDK_SUPPORT_ERROR
-	XDK_API void xdk_impl_error(if_error_t* pif);
+	EXP_API void xdk_impl_error(if_error_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_MBCS
-	XDK_API void xdk_impl_mbcs(if_mbcs_t* pif);
+	EXP_API void xdk_impl_mbcs(if_mbcs_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-	XDK_API void xdk_impl_async(if_async_t* pif);
+	EXP_API void xdk_impl_async(if_async_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
-	XDK_API void xdk_impl_thread(if_thread_t* pif);
+	EXP_API void xdk_impl_thread(if_thread_t* pif);
 #ifdef XDK_SUPPORT_THREAD_EVENT
-	XDK_API void xdk_impl_thread_event(if_thread_t* pif);
+	EXP_API void xdk_impl_thread_event(if_thread_t* pif);
 #endif
 #ifdef XDK_SUPPORT_THREAD_CRITI
-	XDK_API void xdk_impl_thread_criti(if_thread_t* pif);
+	EXP_API void xdk_impl_thread_criti(if_thread_t* pif);
 #endif
 #ifdef XDK_SUPPORT_THREAD_MUTEX
-	XDK_API void xdk_impl_thread_mutex(if_thread_t* pif);
+	EXP_API void xdk_impl_thread_mutex(if_thread_t* pif);
 #endif
 #ifdef XDK_SUPPORT_THREAD_SEMAP
-	XDK_API void xdk_impl_thread_semap(if_thread_t* pif);
+	EXP_API void xdk_impl_thread_semap(if_thread_t* pif);
 #endif
 #ifdef XDK_SUPPORT_THREAD_QUEUE
-	XDK_API void xdk_impl_thread_queue(if_thread_t* pif);
+	EXP_API void xdk_impl_thread_queue(if_thread_t* pif);
 #endif
 #endif /*XDK_SUPPORT_THREAD*/
 
 #ifdef XDK_SUPPORT_TIMER
-	XDK_API void xdk_impl_timer(if_timer_t* pif);
+	EXP_API void xdk_impl_timer(if_timer_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_FILE
-	XDK_API void xdk_impl_file(if_file_t* pif);
+	EXP_API void xdk_impl_file(if_file_t* pif);
 #ifdef XDK_SUPPORT_FILE_FIND
-	XDK_API void xdk_impl_file_find(if_file_t* pif);
+	EXP_API void xdk_impl_file_find(if_file_t* pif);
 #endif
 #endif /*XDK_SUPPORT_FILE*/
 
 #ifdef XDK_SUPPORT_SHARE
-	XDK_API void xdk_impl_share(if_share_t* pif);
+	EXP_API void xdk_impl_share(if_share_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_PIPE
-	XDK_API void xdk_impl_pipe(if_pipe_t* pif);
+	EXP_API void xdk_impl_pipe(if_pipe_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_COMM
-	XDK_API void xdk_impl_comm(if_comm_t* pif);
+	EXP_API void xdk_impl_comm(if_comm_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_CONS
-	XDK_API void xdk_impl_cons(if_cons_t* pif);
+	EXP_API void xdk_impl_cons(if_cons_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_SOCK
-	XDK_API void xdk_impl_socket(if_socket_t* pif);
+	EXP_API void xdk_impl_socket(if_socket_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_DATE
-	XDK_API void xdk_impl_date(if_date_t* pif);
+	EXP_API void xdk_impl_date(if_date_t* pif);
 #endif
 
 #ifdef XDK_SUPPORT_PROCESS
-	XDK_API void xdk_impl_process(if_process_t* pif);
+	EXP_API void xdk_impl_process(if_process_t* pif);
 #endif
 
 

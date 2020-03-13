@@ -29,7 +29,7 @@ typedef struct _mqtt_block_t{
 
 	tchar_t topic_name[PATH_LEN];
 
-	radhex_t* radhex;
+	radnet_t* radnet;
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
@@ -69,7 +69,7 @@ void _invoke_subcribe(const slots_block_t* pb, const mqtt_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	if (!radhex_get(pd->radhex, key, val))
+	if (!radnet_get(pd->radnet, key, val))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -132,7 +132,7 @@ void _invoke_unsubcribe(const slots_block_t* pb, const mqtt_block_t* pd)
 	key.vv = VV_STRING;
 	variant_from_string(&key, pd->topic_name, -1);
 
-	if (!radhex_del(pd->radhex, key))
+	if (!radnet_del(pd->radnet, key))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -178,9 +178,9 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		raise_user_error(NULL, NULL);
 	}
 
-	read_proper(ptr_prop, _T("RADHEX"), -1, _T("SERVER"), -1, addr, ADDR_LEN);
-	read_proper(ptr_prop, _T("RADHEX"), -1, _T("PORT"), -1, port, INT_LEN);
-	read_proper(ptr_prop, _T("RADHEX"), -1, _T("DATABASE"), -1, dbn, RES_LEN);
+	read_proper(ptr_prop, _T("RADNET"), -1, _T("SERVER"), -1, addr, ADDR_LEN);
+	read_proper(ptr_prop, _T("RADNET"), -1, _T("PORT"), -1, port, INT_LEN);
+	read_proper(ptr_prop, _T("RADNET"), -1, _T("DATABASE"), -1, dbn, RES_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
@@ -191,9 +191,9 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		raise_user_error(NULL, NULL);
 	}
 
-	pd->radhex = radhex_scu(bio);
+	pd->radnet = radnet_scu(bio);
 
-	if (!radhex_connect(pd->radhex, dbn))
+	if (!radnet_connect(pd->radnet, dbn))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -219,8 +219,8 @@ int STDCALL slots_invoke(slots_block_t* pb)
 	else
 		_invoke_unsubcribe(pb, pd);
 
-	radhex_close(pd->radhex);
-	pd->radhex = NULL;
+	radnet_close(pd->radnet);
+	pd->radnet = NULL;
 
 	xtcp_close(bio);
 	bio = NULL;
@@ -247,8 +247,8 @@ ONERROR:
 		if (pd->mqtt)
 			mqtt_close(pd->mqtt);
 
-		if (pd->radhex)
-			radhex_close(pd->radhex);
+		if (pd->radnet)
+			radnet_close(pd->radnet);
 
 		xmem_free(pd);
 	}

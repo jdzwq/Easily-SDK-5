@@ -1,20 +1,13 @@
-﻿/***********************************************************************
-	Easily xdp v5.5
+/***********************************************************************
+	Easily radhex web api
 
-	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
+	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
-	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
+	@author ZhangWenQuan, China ZheJiang HangZhou JianDe, Mail: powersuite@hotmaol.com
 
-	@doc xdp font document
+	@doc radhex defination document
 
-	@module	xdpfont.h | interface file
-
-	@devnote 张文权 2005.01 - 2007.12	v3.0
-	@devnote 张文权 2008.01 - 2009.12	v3.5
-	@devnote 张文权 2012.01 - 2015.12	v4.0
-	@devnote 张文权 2016.01 - 2016.12	v4.5
-	@devnote 张文权 2017.01 - 2017.12	v5.0
-	@devnote 张文权 2018.01 - 2018.12	v5.5
+	@module	rad_api.h | radhex web api definition interface file
 ***********************************************************************/
 
 /**********************************************************************
@@ -29,18 +22,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _XDPFONT_H
-#define _XDPFONT_H
+#ifndef _RADAPI_H
+#define _RADAPI_H
 
-#include "platform.h"
+#include <xdl.h>
+#include <xds.h>
+#include <rad.h>
+#include <hexdfs.h>
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-EXP_API void font_metric_by_point(float pt, float* pm, float* px);
-
-EXP_API int format_font_pattern(const xfont_t* pxf, tchar_t* buf);
+	extern int STDCALL slots_invoke(const slots_block_t* pb);
 
 #ifdef	__cplusplus
 }

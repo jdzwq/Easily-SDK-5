@@ -31,10 +31,18 @@ all:
 	cd $(CUR_PATH)/xdk && make -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make -f xdl.so.mk
 	cd $(CUR_PATH)/xds && make -f xds.so.mk
+
+	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/sms_aliyun && make -f sms_aliyun.so.mk
+
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
-	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/sms_api && make -f sms_api.so.mk
+	cd $(CUR_PATH)/rad_api && make -f rad_api.so.mk
+	cd $(CUR_PATH)/sub_api && make -f sub_api.so.mk
+	cd $(CUR_PATH)/pub_api && make -f pub_api.so.mk
+
 	cd $(CUR_PATH)/xportm && make -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make -f xhttps.mk
 	cd $(CUR_PATH)/xportd && make -f xportd.mk
@@ -70,6 +78,18 @@ install:
 	if ! test -d $(SRV_PATH)/xdb; then \
 	sudo mkdir $(SRV_PATH)/xdb; \
 	fi
+	if ! test -d $(SRV_PATH)/sms; then \
+	sudo mkdir $(SRV_PATH)/sms; \
+	fi
+	if ! test -d $(SRV_PATH)/rad; then \
+	sudo mkdir $(SRV_PATH)/rad; \
+	fi
+	if ! test -d $(SRV_PATH)/sub; then \
+	sudo mkdir $(SRV_PATH)/sub; \
+	fi
+	if ! test -d $(SRV_PATH)/pub; then \
+	sudo mkdir $(SRV_PATH)/pub; \
+	fi
 
 	sudo cp -rf $(INS_PATH)/cfg $(SRV_PATH);
 	sudo cp -rf $(INS_PATH)/lic $(SRV_PATH);
@@ -92,10 +112,18 @@ install:
 	cd $(CUR_PATH)/xdk && make install -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make install -f xdl.so.mk
 	cd $(CUR_PATH)/xds && make install -f xds.so.mk
+
+	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/sms_aliyun && make install -f sms_aliyun.so.mk
+
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
-	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/sms_api && make install -f sms_api.so.mk
+	cd $(CUR_PATH)/rad_api && make install -f rad_api.so.mk
+	cd $(CUR_PATH)/sub_api && make install -f sub_api.so.mk
+	cd $(CUR_PATH)/pub_api && make install -f pub_api.so.mk
+
 	cd $(CUR_PATH)/xportm && make install -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk

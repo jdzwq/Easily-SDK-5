@@ -38,218 +38,218 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-extern bool_t a_is_null(const schar_t* sz);
-extern bool_t w_is_null(const wchar_t* sz);
+EXP_API bool_t a_is_null(const schar_t* sz);
+EXP_API bool_t w_is_null(const wchar_t* sz);
 
-extern void a_xszero(schar_t* str,int len);
-extern void w_xszero(wchar_t* str,int len);
+EXP_API void a_xszero(schar_t* str,int len);
+EXP_API void w_xszero(wchar_t* str,int len);
 
-extern int a_xslen(const schar_t* str);
-extern int w_xslen(const wchar_t* str);
+EXP_API int a_xslen(const schar_t* str);
+EXP_API int w_xslen(const wchar_t* str);
 
-extern const schar_t* a_xsnskip(const schar_t* sz, int max);
-extern const wchar_t* w_xsnskip(const wchar_t* sz, int max);
+EXP_API const schar_t* a_xsnskip(const schar_t* sz, int max);
+EXP_API const wchar_t* w_xsnskip(const wchar_t* sz, int max);
 
-extern const schar_t* a_xsskip(const schar_t* sz);
-extern const wchar_t* w_xsskip(const wchar_t* sz);
+EXP_API const schar_t* a_xsskip(const schar_t* sz);
+EXP_API const wchar_t* w_xsskip(const wchar_t* sz);
 
-extern bool_t a_is_numeric(const schar_t* sz);
-extern bool_t w_is_numeric(const wchar_t* sz);
+EXP_API bool_t a_is_numeric(const schar_t* sz);
+EXP_API bool_t w_is_numeric(const wchar_t* sz);
 
-extern short a_xsntos(const schar_t* sz, int n);
-extern short w_xsntos(const wchar_t* sz, int n);
+EXP_API short a_xsntos(const schar_t* sz, int n);
+EXP_API short w_xsntos(const wchar_t* sz, int n);
 
-extern short a_xstos(const schar_t* sz);
-extern short w_xstos(const wchar_t* sz);
+EXP_API short a_xstos(const schar_t* sz);
+EXP_API short w_xstos(const wchar_t* sz);
 
-extern int a_xsntol(const schar_t* sz, int n);
-extern int w_xsntol(const wchar_t* sz, int n);
+EXP_API int a_xsntol(const schar_t* sz, int n);
+EXP_API int w_xsntol(const wchar_t* sz, int n);
 
-extern int a_xstol(const schar_t* sz);
-extern int w_xstol(const wchar_t* sz);
+EXP_API int a_xstol(const schar_t* sz);
+EXP_API int w_xstol(const wchar_t* sz);
 
-extern float a_xsntof(const schar_t* sz, int n);
-extern float w_xsntof(const wchar_t* sz, int n);
+EXP_API float a_xsntof(const schar_t* sz, int n);
+EXP_API float w_xsntof(const wchar_t* sz, int n);
 
-extern float a_xstof(const schar_t* sz);
-extern float w_xstof(const wchar_t* sz);
+EXP_API float a_xstof(const schar_t* sz);
+EXP_API float w_xstof(const wchar_t* sz);
 
-extern unsigned int a_hexntol(const schar_t* sz, int n);
-extern unsigned int w_hexntol(const wchar_t* sz, int n);
+EXP_API unsigned int a_hexntol(const schar_t* sz, int n);
+EXP_API unsigned int w_hexntol(const wchar_t* sz, int n);
 
-extern unsigned int a_hextol(const schar_t* sz);
-extern unsigned int w_hextol(const wchar_t* sz);
+EXP_API unsigned int a_hextol(const schar_t* sz);
+EXP_API unsigned int w_hextol(const wchar_t* sz);
 
-extern double a_xsntonum_dig(const schar_t* sz, int n, int digi);
-extern double w_xsntonum_dig(const wchar_t* sz, int n, int digi);
+EXP_API double a_xsntonum_dig(const schar_t* sz, int n, int digi);
+EXP_API double w_xsntonum_dig(const wchar_t* sz, int n, int digi);
 
-extern double a_xsntonum(const schar_t* sz, int n);
-extern double w_xsntonum(const wchar_t* sz, int n);
+EXP_API double a_xsntonum(const schar_t* sz, int n);
+EXP_API double w_xsntonum(const wchar_t* sz, int n);
 
-extern double a_xstonum(const schar_t* sz);
-extern double w_xstonum(const wchar_t* sz);
+EXP_API double a_xstonum(const schar_t* sz);
+EXP_API double w_xstonum(const wchar_t* sz);
 
-extern long long a_xsntoll(const schar_t* sz, int n);
-extern long long w_xsntoll(const wchar_t* sz, int n);
+EXP_API long long a_xsntoll(const schar_t* sz, int n);
+EXP_API long long w_xsntoll(const wchar_t* sz, int n);
 
-extern long long a_xstoll(const schar_t* sz);
-extern long long w_xstoll(const wchar_t* sz);
+EXP_API long long a_xstoll(const schar_t* sz);
+EXP_API long long w_xstoll(const wchar_t* sz);
 
-extern int a_lltoxs(long long ll, schar_t* buf, int n);
-extern int w_lltoxs(long long ll, wchar_t* buf, int n);
+EXP_API int a_lltoxs(long long ll, schar_t* buf, int n);
+EXP_API int w_lltoxs(long long ll, wchar_t* buf, int n);
 
-extern int a_stoxs(short s, schar_t* buf, int n);
-extern int w_stoxs(short s, wchar_t* buf, int n);
+EXP_API int a_stoxs(short s, schar_t* buf, int n);
+EXP_API int w_stoxs(short s, wchar_t* buf, int n);
 
-extern int a_ustoxs(unsigned short s, schar_t* buf, int n);
-extern int w_ustoxs(unsigned short s, wchar_t* buf, int n);
+EXP_API int a_ustoxs(unsigned short s, schar_t* buf, int n);
+EXP_API int w_ustoxs(unsigned short s, wchar_t* buf, int n);
 
-extern int a_ltoxs(int s, schar_t* buf, int n);
-extern int w_ltoxs(int s, wchar_t* buf, int n);
+EXP_API int a_ltoxs(int s, schar_t* buf, int n);
+EXP_API int w_ltoxs(int s, wchar_t* buf, int n);
 
-extern int a_ultoxs(unsigned int s, schar_t* buf, int n);
-extern int w_ultoxs(unsigned int s, wchar_t* buf, int n);
+EXP_API int a_ultoxs(unsigned int s, schar_t* buf, int n);
+EXP_API int w_ultoxs(unsigned int s, wchar_t* buf, int n);
 
-extern int a_ltohex(unsigned int s, schar_t type, schar_t* buf, int n);
-extern int w_ltohex(unsigned int s, wchar_t type, wchar_t* buf, int n);
+EXP_API int a_ltohex(unsigned int s, schar_t type, schar_t* buf, int n);
+EXP_API int w_ltohex(unsigned int s, wchar_t type, wchar_t* buf, int n);
 
-extern int a_ftoxs(float s, schar_t* buf, int n);
-extern int w_ftoxs(float s, wchar_t* buf, int n);
+EXP_API int a_ftoxs(float s, schar_t* buf, int n);
+EXP_API int w_ftoxs(float s, wchar_t* buf, int n);
 
-extern int a_numtoxs_dig(double s, int digi, schar_t* buf, int n);
-extern int w_numtoxs_dig(double s, int digi, wchar_t* buf, int n);
+EXP_API int a_numtoxs_dig(double s, int digi, schar_t* buf, int n);
+EXP_API int w_numtoxs_dig(double s, int digi, wchar_t* buf, int n);
 
-extern int a_numtoxs(double s, schar_t* buf, int n);
-extern int w_numtoxs(double s, wchar_t* buf, int n);
+EXP_API int a_numtoxs(double s, schar_t* buf, int n);
+EXP_API int w_numtoxs(double s, wchar_t* buf, int n);
 
-extern void a_xsntriml(schar_t* sz, int n);
-extern void w_xsntriml(wchar_t* sz, int n);
+EXP_API void a_xsntriml(schar_t* sz, int n);
+EXP_API void w_xsntriml(wchar_t* sz, int n);
 
-extern void a_xstriml(schar_t* sz);
-extern void w_xstriml(wchar_t* sz);
+EXP_API void a_xstriml(schar_t* sz);
+EXP_API void w_xstriml(wchar_t* sz);
 
-extern void a_xsntrimr(schar_t* sz, int n);
-extern void w_xsntrimr(wchar_t* sz, int n);
+EXP_API void a_xsntrimr(schar_t* sz, int n);
+EXP_API void w_xsntrimr(wchar_t* sz, int n);
 
-extern void a_xstrimr(schar_t* sz);
-extern void w_xstrimr(wchar_t* sz);
+EXP_API void a_xstrimr(schar_t* sz);
+EXP_API void w_xstrimr(wchar_t* sz);
 
-extern void a_xsntrim(schar_t* sz, int n);
-extern void w_xsntrim(wchar_t* sz, int n);
+EXP_API void a_xsntrim(schar_t* sz, int n);
+EXP_API void w_xsntrim(wchar_t* sz, int n);
 
-extern void a_xstrim(schar_t* sz);
-extern void w_xstrim(wchar_t* sz);
+EXP_API void a_xstrim(schar_t* sz);
+EXP_API void w_xstrim(wchar_t* sz);
 
-extern void a_xsnupr(schar_t* sz, int n);
-extern void w_xsnupr(wchar_t* sz, int n);
+EXP_API void a_xsnupr(schar_t* sz, int n);
+EXP_API void w_xsnupr(wchar_t* sz, int n);
 
-extern void a_xsupr(schar_t* sz);
-extern void w_xsupr(wchar_t* sz);
+EXP_API void a_xsupr(schar_t* sz);
+EXP_API void w_xsupr(wchar_t* sz);
 
-extern void a_xsnlwr(schar_t* sz, int n);
-extern void w_xsnlwr(wchar_t* sz, int n);
+EXP_API void a_xsnlwr(schar_t* sz, int n);
+EXP_API void w_xsnlwr(wchar_t* sz, int n);
 
-extern void a_xslwr(schar_t* sz);
-extern void w_xslwr(wchar_t* sz);
+EXP_API void a_xslwr(schar_t* sz);
+EXP_API void w_xslwr(wchar_t* sz);
 
-extern void a_xsndel(schar_t* str, int start,int len);
-extern void w_xsndel(wchar_t* str, int start, int len);
+EXP_API void a_xsndel(schar_t* str, int start,int len);
+EXP_API void w_xsndel(wchar_t* str, int start, int len);
 
-extern void a_xsdel(schar_t* str, int start);
-extern void w_xsdel(wchar_t* str, int start);
+EXP_API void a_xsdel(schar_t* str, int start);
+EXP_API void w_xsdel(wchar_t* str, int start);
 
-extern void a_xsnins(schar_t* str, int index, const schar_t* sub, int len);
-extern void w_xsnins(wchar_t* str, int index, const wchar_t* sub, int len);
+EXP_API void a_xsnins(schar_t* str, int index, const schar_t* sub, int len);
+EXP_API void w_xsnins(wchar_t* str, int index, const wchar_t* sub, int len);
 
-extern void a_xsins(schar_t* str, int index, const schar_t* sub);
-extern void w_xsins(wchar_t* str, int index, const wchar_t* sub);
+EXP_API void a_xsins(schar_t* str, int index, const schar_t* sub);
+EXP_API void w_xsins(wchar_t* str, int index, const wchar_t* sub);
 
-extern void a_xsnset(schar_t* str, int index, const schar_t* sub, int len);
-extern void w_xsnset(wchar_t* str, int index, const wchar_t* sub, int len);
+EXP_API void a_xsnset(schar_t* str, int index, const schar_t* sub, int len);
+EXP_API void w_xsnset(wchar_t* str, int index, const wchar_t* sub, int len);
 
-extern void a_xsset(schar_t* str, int index, const schar_t* sub);
-extern void w_xsset(wchar_t* str, int index, const wchar_t* sub);
+EXP_API void a_xsset(schar_t* str, int index, const schar_t* sub);
+EXP_API void w_xsset(wchar_t* str, int index, const wchar_t* sub);
 
-extern void a_xsncpy(schar_t* dest, const schar_t* src, int n);
-extern void w_xsncpy(wchar_t* dest, const wchar_t* src, int n);
+EXP_API void a_xsncpy(schar_t* dest, const schar_t* src, int n);
+EXP_API void w_xsncpy(wchar_t* dest, const wchar_t* src, int n);
 
-extern void a_xscpy(schar_t* dest, const schar_t* src);
-extern void w_xscpy(wchar_t* dest, const wchar_t* src);
+EXP_API void a_xscpy(schar_t* dest, const schar_t* src);
+EXP_API void w_xscpy(wchar_t* dest, const wchar_t* src);
 
-extern void a_xsncat(schar_t* dest, const schar_t* src,int n);
-extern void w_xsncat(wchar_t* dest, const wchar_t* src,int n);
+EXP_API void a_xsncat(schar_t* dest, const schar_t* src,int n);
+EXP_API void w_xsncat(wchar_t* dest, const wchar_t* src,int n);
 
-extern void a_xscat(schar_t* dest, const schar_t* src);
-extern void w_xscat(wchar_t* dest, const wchar_t* src);
+EXP_API void a_xscat(schar_t* dest, const schar_t* src);
+EXP_API void w_xscat(wchar_t* dest, const wchar_t* src);
 
-extern void a_xsnmid(schar_t* dest, const schar_t* src,int from,int len);
-extern void w_xsnmid(wchar_t* dest, const wchar_t* src,int from,int len);
+EXP_API void a_xsnmid(schar_t* dest, const schar_t* src,int from,int len);
+EXP_API void w_xsnmid(wchar_t* dest, const wchar_t* src,int from,int len);
 
-extern void a_xsmid(schar_t* dest, const schar_t* src, int from);
-extern void w_xsmid(wchar_t* dest, const wchar_t* src, int from);
+EXP_API void a_xsmid(schar_t* dest, const schar_t* src, int from);
+EXP_API void w_xsmid(wchar_t* dest, const wchar_t* src, int from);
 
-extern int a_xscmp(const schar_t* dest,const schar_t* src);
-extern int w_xscmp(const wchar_t* dest,const wchar_t* src);
+EXP_API int a_xscmp(const schar_t* dest,const schar_t* src);
+EXP_API int w_xscmp(const wchar_t* dest,const wchar_t* src);
 
-extern int a_xsncmp(const schar_t* dest,const schar_t* src,int n);
-extern int w_xsncmp(const wchar_t* dest,const wchar_t* src,int n);
+EXP_API int a_xsncmp(const schar_t* dest,const schar_t* src,int n);
+EXP_API int w_xsncmp(const wchar_t* dest,const wchar_t* src,int n);
 
-extern int a_xsicmp(const schar_t* dest,const schar_t* src);
-extern int w_xsicmp(const wchar_t* dest,const wchar_t* src);
+EXP_API int a_xsicmp(const schar_t* dest,const schar_t* src);
+EXP_API int w_xsicmp(const wchar_t* dest,const wchar_t* src);
 
-extern int a_xsnicmp(const schar_t* dest,const schar_t* src,int n);
-extern int w_xsnicmp(const wchar_t* dest,const wchar_t* src,int n);
+EXP_API int a_xsnicmp(const schar_t* dest,const schar_t* src,int n);
+EXP_API int w_xsnicmp(const wchar_t* dest,const wchar_t* src,int n);
 
-extern const schar_t* a_xsnstr(const schar_t* str,int len,const schar_t* sub);
-extern const wchar_t* w_xsnstr(const wchar_t* str,int len,const wchar_t* sub);
+EXP_API const schar_t* a_xsnstr(const schar_t* str,int len,const schar_t* sub);
+EXP_API const wchar_t* w_xsnstr(const wchar_t* str,int len,const wchar_t* sub);
 
-extern const schar_t* a_xsstr(const schar_t* str, const schar_t* sub);
-extern const wchar_t* w_xsstr(const wchar_t* str, const wchar_t* sub);
+EXP_API const schar_t* a_xsstr(const schar_t* str, const schar_t* sub);
+EXP_API const wchar_t* w_xsstr(const wchar_t* str, const wchar_t* sub);
 
-extern const schar_t* a_xsnistr(const schar_t* str,int len,const schar_t* sub);
-extern const wchar_t* w_xsnistr(const wchar_t* str,int len,const wchar_t* sub);
+EXP_API const schar_t* a_xsnistr(const schar_t* str,int len,const schar_t* sub);
+EXP_API const wchar_t* w_xsnistr(const wchar_t* str,int len,const wchar_t* sub);
 
-extern const schar_t* a_xsistr(const schar_t* str, const schar_t* sub);
-extern const wchar_t* w_xsistr(const wchar_t* str, const wchar_t* sub);
+EXP_API const schar_t* a_xsistr(const schar_t* str, const schar_t* sub);
+EXP_API const wchar_t* w_xsistr(const wchar_t* str, const wchar_t* sub);
 
-extern const schar_t* a_kmpnstr(const schar_t* str, int len, const schar_t* sub);
-extern const wchar_t* w_kmpnstr(const wchar_t* str, int len, const wchar_t* sub);
+EXP_API const schar_t* a_kmpnstr(const schar_t* str, int len, const schar_t* sub);
+EXP_API const wchar_t* w_kmpnstr(const wchar_t* str, int len, const wchar_t* sub);
 
-extern const schar_t* a_kmpstr(const schar_t* str, const schar_t* sub);
-extern const wchar_t* w_kmpstr(const wchar_t* str, const wchar_t* sub);
+EXP_API const schar_t* a_kmpstr(const schar_t* str, const schar_t* sub);
+EXP_API const wchar_t* w_kmpstr(const wchar_t* str, const wchar_t* sub);
 
-extern const schar_t* a_kmpnistr(const schar_t* str, int len, const schar_t* sub);
-extern const wchar_t* w_kmpnistr(const wchar_t* str, int len, const wchar_t* sub);
+EXP_API const schar_t* a_kmpnistr(const schar_t* str, int len, const schar_t* sub);
+EXP_API const wchar_t* w_kmpnistr(const wchar_t* str, int len, const wchar_t* sub);
 
-extern const schar_t* a_kmpistr(const schar_t* str, const schar_t* sub);
-extern const wchar_t* w_kmpistr(const wchar_t* str, const wchar_t* sub);
+EXP_API const schar_t* a_kmpistr(const schar_t* str, const schar_t* sub);
+EXP_API const wchar_t* w_kmpistr(const wchar_t* str, const wchar_t* sub);
 
-extern void a_xsnrev(schar_t* str, int len);
-extern void w_xsnrev(wchar_t* str, int len);
+EXP_API void a_xsnrev(schar_t* str, int len);
+EXP_API void w_xsnrev(wchar_t* str, int len);
 
-extern void a_xsrev(schar_t* str);
-extern void w_xsrev(wchar_t* str);
+EXP_API void a_xsrev(schar_t* str);
+EXP_API void w_xsrev(wchar_t* str);
 
-extern bool_t a_is_prefix(const schar_t* str, const schar_t* sub);
-extern bool_t w_is_prefix(const wchar_t* str, const wchar_t* sub);
+EXP_API bool_t a_is_prefix(const schar_t* str, const schar_t* sub);
+EXP_API bool_t w_is_prefix(const wchar_t* str, const wchar_t* sub);
 
-extern bool_t a_is_suffix(const schar_t* str, const schar_t* sub);
-extern bool_t w_is_suffix(const wchar_t* str, const wchar_t* sub);
+EXP_API bool_t a_is_suffix(const schar_t* str, const schar_t* sub);
+EXP_API bool_t w_is_suffix(const wchar_t* str, const wchar_t* sub);
 
-extern int a_xsprintf_arg(schar_t* buf,const schar_t* fmt,va_list* parg);
-extern int w_xsprintf_arg(wchar_t* buf,const wchar_t* fmt,va_list* parg);
+EXP_API int a_xsprintf_arg(schar_t* buf,const schar_t* fmt,va_list* parg);
+EXP_API int w_xsprintf_arg(wchar_t* buf,const wchar_t* fmt,va_list* parg);
 
-extern int a_xsprintf(schar_t* buf,const schar_t* fmt,...);
-extern int w_xsprintf(wchar_t* buf,const wchar_t* fmt,...);
+EXP_API int a_xsprintf(schar_t* buf,const schar_t* fmt,...);
+EXP_API int w_xsprintf(wchar_t* buf,const wchar_t* fmt,...);
 
-extern int a_xsappend(schar_t* buf, const schar_t* fmt, ...);
-extern int w_xsappend(wchar_t* buf, const wchar_t* fmt, ...);
+EXP_API int a_xsappend(schar_t* buf, const schar_t* fmt, ...);
+EXP_API int w_xsappend(wchar_t* buf, const wchar_t* fmt, ...);
 
-extern const schar_t* a_xsscanf(const schar_t* str, const schar_t* fmt, ...);
-extern const wchar_t* w_xsscanf(const wchar_t* str, const wchar_t* fmt, ...);
+EXP_API const schar_t* a_xsscanf(const schar_t* str, const schar_t* fmt, ...);
+EXP_API const wchar_t* w_xsscanf(const wchar_t* str, const wchar_t* fmt, ...);
 
-extern const schar_t* a_xsscanf_arg(const schar_t* str, const schar_t* fmt, va_list* parg);
-extern const wchar_t* w_xsscanf_arg(const wchar_t* str, const wchar_t* fmt, va_list* parg);
+EXP_API const schar_t* a_xsscanf_arg(const schar_t* str, const schar_t* fmt, va_list* parg);
+EXP_API const wchar_t* w_xsscanf_arg(const wchar_t* str, const wchar_t* fmt, va_list* parg);
 
 #ifdef	__cplusplus
 }
