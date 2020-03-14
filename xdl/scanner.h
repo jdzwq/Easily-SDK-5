@@ -87,7 +87,7 @@ typedef struct _if_wordscan_t{
 extern "C" {
 #endif
 
-XDL_API void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+EXP_API void scan_object_text(if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 
 #ifdef	__cplusplus
 }

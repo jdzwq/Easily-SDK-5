@@ -49,13 +49,13 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API void calc_form_field_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr flk, xrect_t* pxr);
+	EXP_API void calc_form_field_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr flk, xrect_t* pxr);
 
-	XDL_API void calc_form_group_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr alk, xrect_t* pxr);
+	EXP_API void calc_form_group_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr alk, xrect_t* pxr);
 
-	XDL_API int calc_form_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pflk);
+	EXP_API int calc_form_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pflk);
 
-	XDL_API void draw_form_page(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, int page);
+	EXP_API void draw_form_page(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

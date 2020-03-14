@@ -107,29 +107,29 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_task_doc(void);
+EXP_API link_t_ptr create_task_doc(void);
 
-XDL_API void destroy_task_doc(link_t_ptr ptr);
+EXP_API void destroy_task_doc(link_t_ptr ptr);
 
-XDL_API bool_t is_task_doc(link_t_ptr ptr);
+EXP_API bool_t is_task_doc(link_t_ptr ptr);
 
-XDL_API void clear_task_doc(link_t_ptr ptr);
+EXP_API void clear_task_doc(link_t_ptr ptr);
 
-XDL_API link_t_ptr get_task_next_schedule_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_task_next_schedule_node(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API link_t_ptr get_task_prev_schedule_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_task_prev_schedule_node(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API link_t_ptr insert_task_schedule_node(link_t_ptr slk, link_t_ptr pos);
+EXP_API link_t_ptr insert_task_schedule_node(link_t_ptr slk, link_t_ptr pos);
 
-XDL_API void delete_task_schedule_node(link_t_ptr ilk);
+EXP_API void delete_task_schedule_node(link_t_ptr ilk);
 
-XDL_API link_t_ptr get_task_next_step_node(link_t_ptr slk, link_t_ptr pos);
+EXP_API link_t_ptr get_task_next_step_node(link_t_ptr slk, link_t_ptr pos);
 
-XDL_API link_t_ptr get_task_prev_step_node(link_t_ptr slk, link_t_ptr pos);
+EXP_API link_t_ptr get_task_prev_step_node(link_t_ptr slk, link_t_ptr pos);
 
-XDL_API link_t_ptr insert_task_step_node(link_t_ptr slk, link_t_ptr pos);
+EXP_API link_t_ptr insert_task_step_node(link_t_ptr slk, link_t_ptr pos);
 
-XDL_API void delete_task_step_node(link_t_ptr ilk);
+EXP_API void delete_task_step_node(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

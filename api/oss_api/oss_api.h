@@ -27,11 +27,17 @@ LICENSE.GPL3 for more details.
 #define _OSSAPI_H
 
 #include <xdl.h>
-#include <xds.h>
 #include <oss.h>
 
-extern int STDCALL https_invoke(const wchar_t* method, const https_block_t* pb);
+#ifdef	__cplusplus
+extern "C" {
+#endif
 
+	extern int STDCALL https_invoke(const wchar_t* method, const https_block_t* pb);
+
+#ifdef	__cplusplus
+}
+#endif
 
 #define OSS_IS_SUCCEED(code)	(xscmp(code,_T("0")) == 0)
 

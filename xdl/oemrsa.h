@@ -102,7 +102,7 @@ extern "C" {
 	* \note           Currently (xyssl-0.8), RSA_PKCS_V21 padding
 	*                 is not supported.
 	*/
-	XDL_API void rsa_init(rsa_context *ctx,
+	EXP_API void rsa_init(rsa_context *ctx,
 		int padding,
 		int hash_id,
 		int(*f_rng)(void *),
@@ -120,12 +120,12 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_RSA_XXX error code
 	*/
-	XDL_API int rsa_gen_key(rsa_context *ctx, int nbits, int exponent);
-	XDL_API int rsa_size(rsa_context* ctx);
+	EXP_API int rsa_gen_key(rsa_context *ctx, int nbits, int exponent);
+	EXP_API int rsa_size(rsa_context* ctx);
 
-	XDL_API int rsa_import_pubkey(rsa_context *ctx, const unsigned char *data, int len, int ne);
-	XDL_API int rsa_export_pubkey(rsa_context *ctx, unsigned char *data, int* olen, int ne);
-	XDL_API int rsa_pubkey_size(rsa_context* ctx);
+	EXP_API int rsa_import_pubkey(rsa_context *ctx, const unsigned char *data, int len, int ne);
+	EXP_API int rsa_export_pubkey(rsa_context *ctx, unsigned char *data, int* olen, int ne);
+	EXP_API int rsa_pubkey_size(rsa_context* ctx);
 
 	/**
 	* \brief          Check a public RSA key
@@ -134,7 +134,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_RSA_XXX error code
 	*/
-	XDL_API int rsa_check_pubkey(rsa_context *ctx);
+	EXP_API int rsa_check_pubkey(rsa_context *ctx);
 
 	/**
 	* \brief          Check a private RSA key
@@ -143,7 +143,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_RSA_XXX error code
 	*/
-	XDL_API int rsa_check_privkey(rsa_context *ctx);
+	EXP_API int rsa_check_privkey(rsa_context *ctx);
 
 	/**
 	* \brief          Do an RSA public key operation
@@ -160,7 +160,7 @@ extern "C" {
 	* \note           The input and output buffers must be large
 	*                 enough (eg. 128 bytes if RSA-1024 is used).
 	*/
-	XDL_API int rsa_public(rsa_context *ctx,
+	EXP_API int rsa_public(rsa_context *ctx,
 		unsigned char *input,
 		unsigned char *output);
 
@@ -176,7 +176,7 @@ extern "C" {
 	* \note           The input and output buffers must be large
 	*                 enough (eg. 128 bytes if RSA-1024 is used).
 	*/
-	XDL_API int rsa_private(rsa_context *ctx,
+	EXP_API int rsa_private(rsa_context *ctx,
 		unsigned char *input,
 		unsigned char *output);
 
@@ -194,7 +194,7 @@ extern "C" {
 	* \note           The output buffer must be as large as the size
 	*                 of ctx->N (eg. 128 bytes if RSA-1024 is used).
 	*/
-	XDL_API int rsa_pkcs1_encrypt(rsa_context *ctx,
+	EXP_API int rsa_pkcs1_encrypt(rsa_context *ctx,
 		int mode, int  ilen,
 		unsigned char *input,
 		unsigned char *output);
@@ -213,7 +213,7 @@ extern "C" {
 	* \note           The output buffer must be as large as the size
 	*                 of ctx->N (eg. 128 bytes if RSA-1024 is used).
 	*/
-	XDL_API int rsa_pkcs1_decrypt(rsa_context *ctx,
+	EXP_API int rsa_pkcs1_decrypt(rsa_context *ctx,
 		int mode, int *olen,
 		unsigned char *input,
 		unsigned char *output);
@@ -234,7 +234,7 @@ extern "C" {
 	* \note           The "sig" buffer must be as large as the size
 	*                 of ctx->N (eg. 128 bytes if RSA-1024 is used).
 	*/
-	XDL_API int rsa_pkcs1_sign(rsa_context *ctx,
+	EXP_API int rsa_pkcs1_sign(rsa_context *ctx,
 		int mode,
 		int hash_id,
 		int hashlen,
@@ -257,7 +257,7 @@ extern "C" {
 	* \note           The "sig" buffer must be as large as the size
 	*                 of ctx->N (eg. 128 bytes if RSA-1024 is used).
 	*/
-	XDL_API int rsa_pkcs1_verify(rsa_context *ctx,
+	EXP_API int rsa_pkcs1_verify(rsa_context *ctx,
 		int mode,
 		int hash_id,
 		int hashlen,
@@ -267,14 +267,14 @@ extern "C" {
 	/**
 	* \brief          Free the components of an RSA key
 	*/
-	XDL_API void rsa_free(rsa_context *ctx);
+	EXP_API void rsa_free(rsa_context *ctx);
 
 	/**
 	* \brief          Checkup routine
 	*
 	* \return         0 if successful, or 1 if the test failed
 	*/
-	XDL_API int rsa_self_test(int verbose);
+	EXP_API int rsa_self_test(int verbose);
 
 #ifdef __cplusplus
 }

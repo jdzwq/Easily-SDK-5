@@ -1,4 +1,4 @@
-/***********************************************************************
+﻿/***********************************************************************
 	Easily port service
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
@@ -28,7 +28,6 @@ LICENSE.GPL3 for more details.
 #define _SRVDEF_H
 
 #include <xdl.h>
-#include <xds.h>
 
 #define XSERVICE_ROOT			_T("XSERVICE_ROOT")
 #define XSERVICE_DATA			_T("XSERVICE_DATA")

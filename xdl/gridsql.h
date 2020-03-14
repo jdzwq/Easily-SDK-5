@@ -48,7 +48,7 @@ extern "C" {
 @INPUT int max: the string buffer size in characters.
 @RETURN bool_t: return nonzero if exists, otherwise return zero.
 */
-XDL_API bool_t get_grid_next_param(link_t_ptr ptr, tchar_t* pname, int max);
+EXP_API bool_t get_grid_next_param(link_t_ptr ptr, tchar_t* pname, int max);
 
 /*
 @FUNCTION set_grid_sql_param: set sql parameter value in where clause.
@@ -57,7 +57,7 @@ XDL_API bool_t get_grid_next_param(link_t_ptr ptr, tchar_t* pname, int max);
 @INPUT const tchar_t*: parmval: the sql parameter value token.
 @RETURN void: none.
 */
-XDL_API void set_grid_sql_param(link_t_ptr ptr, const tchar_t* paramname, const tchar_t* paramval);
+EXP_API void set_grid_sql_param(link_t_ptr ptr, const tchar_t* paramname, const tchar_t* paramval);
 
 /*
 @FUNCTION get_grid_sql_param_ptr: get sql parameter value in where clause.
@@ -66,7 +66,7 @@ XDL_API void set_grid_sql_param(link_t_ptr ptr, const tchar_t* paramname, const 
 @INPUT int len: the parameter name length in characters.
 @RETURN const tchar_t*: return the parameter value if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_grid_sql_param_ptr(link_t_ptr ptr, const tchar_t* paramname, int len);
+EXP_API const tchar_t* get_grid_sql_param_ptr(link_t_ptr ptr, const tchar_t* paramname, int len);
 
 /*
 @FUNCTION format_grid_param_clause: format sql where clause.
@@ -76,7 +76,7 @@ XDL_API const tchar_t* get_grid_sql_param_ptr(link_t_ptr ptr, const tchar_t* par
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_grid_param_clause(link_t_ptr ptr, const tchar_t* clause, tchar_t* buf, int max);
+EXP_API int format_grid_param_clause(link_t_ptr ptr, const tchar_t* clause, tchar_t* buf, int max);
 
 /*
 @FUNCTION format_row_update_sql: format sql update clause.
@@ -86,7 +86,7 @@ XDL_API int format_grid_param_clause(link_t_ptr ptr, const tchar_t* clause, tcha
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_row_update_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
+EXP_API int format_row_update_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
 
 /*
 @FUNCTION format_row_insert_sql: format sql insert clause.
@@ -96,7 +96,7 @@ XDL_API int format_row_update_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, 
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_row_insert_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
+EXP_API int format_row_insert_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
 
 /*
 @FUNCTION format_row_delete_sql: format sql delete clause.
@@ -106,7 +106,7 @@ XDL_API int format_row_insert_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, 
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_row_delete_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
+EXP_API int format_row_delete_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, int max);
 
 /*
 @FUNCTION format_grid_select_sql: format sql select clause.
@@ -116,7 +116,7 @@ XDL_API int format_row_delete_sql(link_t_ptr ptr, link_t_ptr rlk, tchar_t* buf, 
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_grid_select_sql(link_t_ptr ptr, tchar_t* buf, int max);
+EXP_API int format_grid_select_sql(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
 @FUNCTION format_grid_exec_sql: format sql execute clause.
@@ -126,7 +126,7 @@ XDL_API int format_grid_select_sql(link_t_ptr ptr, tchar_t* buf, int max);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_grid_exec_sql(link_t_ptr ptr, tchar_t* buf, int max);
+EXP_API int format_grid_exec_sql(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
 @FUNCTION format_grid_exec_string: format sql execute clause to string object.
@@ -135,7 +135,7 @@ XDL_API int format_grid_exec_sql(link_t_ptr ptr, tchar_t* buf, int max);
 @OUTPUT string_t vs: the string object.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_grid_exec_string(link_t_ptr ptr, string_t vs);
+EXP_API int format_grid_exec_string(link_t_ptr ptr, string_t vs);
 
 #ifdef	__cplusplus
 }

@@ -41,11 +41,11 @@ extern "C" {
 
 #ifdef XDL_SUPPORT_CRYPT
 
-XDL_API	void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN]);
+EXP_API	void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN]);
 
-XDL_API	void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN]);
+EXP_API	void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN]);
 
-XDL_API void file_info_etag(const tchar_t* fname, const tchar_t* ftime, const tchar_t* fsize, tchar_t* buf);
+EXP_API void file_info_etag(const tchar_t* fname, const tchar_t* ftime, const tchar_t* fsize, tchar_t* buf);
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define md5_token		w_md5_token

@@ -84,28 +84,28 @@ extern "C" {
 @FUNCTION create_json_doc: create a json document.
 @RETURN link_t_ptr: return the json document link component.
 */
-XDL_API link_t_ptr create_json_doc(void);
+EXP_API link_t_ptr create_json_doc(void);
 
 /*
 @FUNCTION destroy_json_doc: destroy a json document.
 @INPUT link_t_ptr ptr: the json document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_json_doc(link_t_ptr ptr);
+EXP_API void destroy_json_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_json_doc: clear a json document, all of child nodes in dom body will be emptied.
 @INPUT link_t_ptr ptr: the json document link component.
 @RETURN void: none.
 */
-XDL_API void clear_json_doc(link_t_ptr ptr);
+EXP_API void clear_json_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_json_doc: test is json document.
 @INPUT link_t_ptr ptr: the json document link component.
 @RETURN bool_t: return nonzero for json document.
 */
-XDL_API bool_t is_json_doc(link_t_ptr ptr);
+EXP_API bool_t is_json_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_json_item: test is json child item.
@@ -113,7 +113,7 @@ XDL_API bool_t is_json_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the json item link component.
 @RETURN bool_t: return nonzero for json child item.
 */
-XDL_API bool_t is_json_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_json_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_item: find json child item by name.
@@ -121,7 +121,7 @@ XDL_API bool_t is_json_item(link_t_ptr ptr, link_t_ptr ilk);
 @INPUT const tchar_t* iname: the name string token.
 @RETURN link_t_ptr: return json item link component.
 */
-XDL_API link_t_ptr get_json_item(link_t_ptr ptr, const tchar_t* iname);
+EXP_API link_t_ptr get_json_item(link_t_ptr ptr, const tchar_t* iname);
 
 /*
 @FUNCTION insert_json_item: insert new json child item at the position.
@@ -129,56 +129,56 @@ XDL_API link_t_ptr get_json_item(link_t_ptr ptr, const tchar_t* iname);
 @INPUT link_t_ptr pos: the json item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new json item link component.
 */
-XDL_API link_t_ptr insert_json_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_json_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_json_item: delete json child item.
 @INPUT link_t_ptr ilk: the json iem link component.
 @RETURN void: none.
 */
-XDL_API void delete_json_item(link_t_ptr ilk);
+EXP_API void delete_json_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_item_count: counting the json child items.
 @INPUT link_t_ptr ilk: the json iem link component.
 @RETURN int: return the number of child items.
 */
-XDL_API int get_json_item_count(link_t_ptr ilk);
+EXP_API int get_json_item_count(link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_first_child_item: get json first child item.
 @INPUT link_t_ptr ilk: the parent json item link component.
 @RETURN link_t_ptr: return item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_json_first_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_json_first_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_last_child_item: get json last child item.
 @INPUT link_t_ptr ilk: the parent json item link component.
 @RETURN link_t_ptr: return item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_json_last_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_json_last_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_parent_item: get json parent item.
 @INPUT link_t_ptr ilk: the json item link component.
 @RETURN link_t_ptr: return parent item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_json_parent_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_json_parent_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_next_sibling_item: get json next sibling item.
 @INPUT link_t_ptr ilk: the json item link component.
 @RETURN link_t_ptr: return next sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_json_next_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_json_next_sibling_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_json_prev_sibling_item: get json previous sibling item.
 @INPUT link_t_ptr ilk: the json item link component.
 @RETURN link_t_ptr: return previous sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_json_prev_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_json_prev_sibling_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

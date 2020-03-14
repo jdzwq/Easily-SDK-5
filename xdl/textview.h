@@ -41,9 +41,9 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API void scan_var_text(string_t vs, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+EXP_API void scan_var_text(string_t vs, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 
-XDL_API void scan_fix_text(tchar_t* text, int size, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+EXP_API void scan_fix_text(tchar_t* text, int size, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 
 #ifdef	__cplusplus
 }

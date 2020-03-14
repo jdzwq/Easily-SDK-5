@@ -476,11 +476,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (get_tree_item_expanded(ilk))
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ICON_MINUS);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ATTR_GIZMO_MINUS);
 			}
 			else
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ICON_PLUS);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ATTR_GIZMO_PLUS);
 			}
 		}
 
@@ -497,11 +497,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			
 			if (get_tree_item_checked(ilk))
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ICON_CHECKED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ATTR_GIZMO_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ICON_CHECKBOX);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ATTR_GIZMO_CHECKBOX);
 			}
 
 			xr_text.fx = total_indent + ic * 2;

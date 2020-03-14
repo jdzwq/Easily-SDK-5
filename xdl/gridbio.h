@@ -48,7 +48,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN link_t_ptr: if succeeds return the grid link component, fails return NULL.
 	*/
-	XDL_API bool_t load_grid_from_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t load_grid_from_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION save_grid_to_csv_file: save a grid document to csv file.
@@ -58,7 +58,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t save_grid_to_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t save_grid_to_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* psd, const tchar_t* fname);
 
 #ifdef	__cplusplus
 }

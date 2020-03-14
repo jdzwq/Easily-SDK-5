@@ -40,9 +40,9 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API	dword_t xjpg_decompress(const byte_t* jpg_buf, dword_t jpg_len, byte_t* bmp_buf, dword_t bmp_size);
+	EXP_API	dword_t xjpg_decompress(const byte_t* jpg_buf, dword_t jpg_len, byte_t* bmp_buf, dword_t bmp_size);
 
-	XDL_API	dword_t xjpg_compress(const byte_t* bmp_buf, dword_t bmp_len, byte_t* jpg_buf, dword_t jpg_size);
+	EXP_API	dword_t xjpg_compress(const byte_t* bmp_buf, dword_t bmp_len, byte_t* jpg_buf, dword_t jpg_size);
 
 #ifdef	__cplusplus
 }

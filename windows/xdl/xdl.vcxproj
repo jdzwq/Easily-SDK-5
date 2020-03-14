@@ -192,6 +192,13 @@
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\properbio.h" />
+    <ClInclude Include="..\..\xdl\srvhttp.h" />
+    <ClInclude Include="..\..\xdl\srvpnp.h" />
+    <ClInclude Include="..\..\xdl\srvslot.h" />
+    <ClInclude Include="..\..\xdl\srvssh.h" />
+    <ClInclude Include="..\..\xdl\srvssl.h" />
+    <ClInclude Include="..\..\xdl\srvtcp.h" />
+    <ClInclude Include="..\..\xdl\srvudp.h" />
     <ClInclude Include="..\..\xdl\strutil.h" />
     <ClInclude Include="..\..\xdl\textbio.h" />
     <ClInclude Include="..\..\xdl\varbytes.h" />
@@ -357,6 +364,7 @@
     <ClInclude Include="..\..\xdl\xdloem.h" />
     <ClInclude Include="..\..\xdl\oemprim.h" />
     <ClInclude Include="..\..\xdl\xdlsort.h" />
+    <ClInclude Include="..\..\xdl\xdlsrv.h" />
     <ClInclude Include="..\..\xdl\xdlstd.h" />
     <ClInclude Include="..\..\xdl\xdlstm.h" />
     <ClInclude Include="..\..\xdl\xdlstr.h" />
@@ -387,6 +395,13 @@
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\properbio.c" />
+    <ClCompile Include="..\..\xdl\srvhttp.c" />
+    <ClCompile Include="..\..\xdl\srvpnp.c" />
+    <ClCompile Include="..\..\xdl\srvslot.c" />
+    <ClCompile Include="..\..\xdl\srvssh.c" />
+    <ClCompile Include="..\..\xdl\srvssl.c" />
+    <ClCompile Include="..\..\xdl\srvtcp.c" />
+    <ClCompile Include="..\..\xdl\srvudp.c" />
     <ClCompile Include="..\..\xdl\strutil.c" />
     <ClCompile Include="..\..\xdl\textbio.c" />
     <ClCompile Include="..\..\xdl\varbytes.c" />

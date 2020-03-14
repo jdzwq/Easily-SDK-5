@@ -782,12 +782,12 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		if (ilk == ptd->item)
 		{
 			pt_center_rect(&xr_btn, 16, 16);
-			draw_icon_raw(rdc, &xc, &xr_btn, GDI_ICON_GUIDER);
+			draw_gizmo_raw(rdc, &xc, &xr_btn, GDI_ATTR_GIZMO_GUIDER);
 		}
 		else
 		{
 			pt_center_rect(&xr_btn, 16, 16);
-			draw_icon_raw(rdc, &xc, &xr_btn, GDI_ICON_RADIOED);
+			draw_gizmo_raw(rdc, &xc, &xr_btn, GDI_ATTR_GIZMO_RADIOED);
 		}
 
 		if (!is_null(get_notes_time_ptr(doc)))
@@ -834,7 +834,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			xr_btn.h = NOTESCTRL_SPAN_PLUS * ptd->tw;
 
 			pt_center_rect(&xr_btn, 8, 8);
-			draw_icon_raw(rdc, &xc, &xr_btn, GDI_ICON_FIXED);
+			draw_gizmo_raw(rdc, &xc, &xr_btn, GDI_ATTR_GIZMO_FIXED);
 		}
 
 		pt_cur.x = xr.x + ptd->th / 2;
@@ -853,7 +853,7 @@ void hand_notes_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			xr_btn.h = ptd->th;
 
 			pt_center_rect(&xr_btn, 8, 8);
-			draw_icon_raw(rdc, &xc, &xr_btn, GDI_ICON_CLOSE);
+			draw_gizmo_raw(rdc, &xc, &xr_btn, GDI_ATTR_GIZMO_CLOSE);
 		}
 
 		if (compare_text(get_notes_type_ptr(doc), -1, ATTR_NOTES_TEXT, -1, 0) == 0)

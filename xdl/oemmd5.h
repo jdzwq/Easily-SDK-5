@@ -31,7 +31,7 @@ extern "C" {
 	*
 	* \param ctx      context to be initialized
 	*/
-	XDL_API void md5_starts(md5_context *ctx);
+	EXP_API void md5_starts(md5_context *ctx);
 
 	/**
 	* \brief          MD5 process buffer
@@ -40,7 +40,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void md5_update(md5_context *ctx, unsigned char *input, int ilen);
+	EXP_API void md5_update(md5_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          MD5 final digest
@@ -48,7 +48,7 @@ extern "C" {
 	* \param ctx      MD5 context
 	* \param output   MD5 checksum result
 	*/
-	XDL_API void md5_finish(md5_context *ctx, unsigned char output[16]);
+	EXP_API void md5_finish(md5_context *ctx, unsigned char output[16]);
 
 	/**
 	* \brief          Output = MD5( input buffer )
@@ -57,7 +57,7 @@ extern "C" {
 	* \param ilen     length of the input data
 	* \param output   MD5 checksum result
 	*/
-	XDL_API void md5(unsigned char *input, int ilen, unsigned char output[16]);
+	EXP_API void md5(unsigned char *input, int ilen, unsigned char output[16]);
 
 	/**
 	* \brief          Output = MD5( file contents )
@@ -68,7 +68,7 @@ extern "C" {
 	* \return         0 if successful, 1 if fopen failed,
 	*                 or 2 if fread failed
 	*/
-	//XDL_API int md5_file(char *path, unsigned char output[16]);
+	//EXP_API int md5_file(char *path, unsigned char output[16]);
 
 	/**
 	* \brief          MD5 HMAC context setup
@@ -77,7 +77,7 @@ extern "C" {
 	* \param key      HMAC secret key
 	* \param keylen   length of the HMAC key
 	*/
-	XDL_API void md5_hmac_starts(md5_context *ctx, unsigned char *key, int keylen);
+	EXP_API void md5_hmac_starts(md5_context *ctx, unsigned char *key, int keylen);
 
 	/**
 	* \brief          MD5 HMAC process buffer
@@ -86,7 +86,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void md5_hmac_update(md5_context *ctx, unsigned char *input, int ilen);
+	EXP_API void md5_hmac_update(md5_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          MD5 HMAC final digest
@@ -94,7 +94,7 @@ extern "C" {
 	* \param ctx      HMAC context
 	* \param output   MD5 HMAC checksum result
 	*/
-	XDL_API void md5_hmac_finish(md5_context *ctx, unsigned char output[16]);
+	EXP_API void md5_hmac_finish(md5_context *ctx, unsigned char output[16]);
 
 	/**
 	* \brief          Output = HMAC-MD5( hmac key, input buffer )
@@ -105,7 +105,7 @@ extern "C" {
 	* \param ilen     length of the input data
 	* \param output   HMAC-MD5 result
 	*/
-	XDL_API void md5_hmac(unsigned char *key, int keylen, unsigned char *input, int ilen, unsigned char output[16]);
+	EXP_API void md5_hmac(unsigned char *key, int keylen, unsigned char *input, int ilen, unsigned char output[16]);
 
 #ifdef __cplusplus
 }

@@ -741,7 +741,7 @@ void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 	if (bar_len <= 0)
 	{
 		xmem_free(buf);
-		return NULL;
+		return;
 	}
 
 	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
@@ -826,7 +826,7 @@ void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 	if (bar_len <= 0)
 	{
 		xmem_free(buf);
-		return NULL;
+		return;
 	}
 
 	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);

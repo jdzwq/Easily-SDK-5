@@ -107,7 +107,7 @@ extern "C" {
 @INPUT const tchar_t* url: the TFTP service url.
 @RETURN xhand_t: if succeeds return TFTP client handle, fails return NULL.
 */
-XDL_API xhand_t		xtftp_client(const tchar_t* method, const tchar_t* url);
+EXP_API xhand_t		xtftp_client(const tchar_t* method, const tchar_t* url);
 
 /*
 @FUNCTION xtftp_server: create a TFTP server.
@@ -117,7 +117,7 @@ XDL_API xhand_t		xtftp_client(const tchar_t* method, const tchar_t* url);
 @INPUT dword_t size: the network package size in bytes.
 @RETURN xhand_t: if succeeds return TFTP server handle, fails return NULL.
 */
-XDL_API xhand_t		xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
+EXP_API xhand_t		xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
 
 /*
 @FUNCTION xtftp_method: get a TFTP method.
@@ -126,7 +126,7 @@ XDL_API xhand_t		xtftp_server(unsigned short port, const tchar_t* addr, const by
 @INPUT int max: the buffer size in characters.
 @RETURN int: return the method token length in characters.
 */
-XDL_API int			xtftp_method(xhand_t tftp, tchar_t* buf, int max);
+EXP_API int			xtftp_method(xhand_t tftp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xtftp_object: get a TFTP file name.
@@ -135,14 +135,14 @@ XDL_API int			xtftp_method(xhand_t tftp, tchar_t* buf, int max);
 @INPUT int max: the buffer size in characters.
 @RETURN int: return the object token length in characters.
 */
-XDL_API int			xtftp_object(xhand_t tftp, tchar_t* buf, int max);
+EXP_API int			xtftp_object(xhand_t tftp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xtftp_close: close the TFPT handle.
 @INPUT xhand_t tftp: the TFPT handle.
 @RETURN void: none.
 */
-XDL_API void		xtftp_close(xhand_t tftp);
+EXP_API void		xtftp_close(xhand_t tftp);
 
 /*
 @FUNCTION xtftp_send: send TFPT data.
@@ -151,14 +151,14 @@ XDL_API void		xtftp_close(xhand_t tftp);
 @INOUTPUT dword_t* pb: indicate the bytes to send and return the bytes sended.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xtftp_send(xhand_t tftp, const byte_t* data, dword_t *pb);
+EXP_API bool_t		xtftp_send(xhand_t tftp, const byte_t* data, dword_t *pb);
 
 /*
 @FUNCTION xtftp_flush: ensure TFPT data sending compeleted.
 @INPUT xhand_t tftp: the TFPT handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xtftp_flush(xhand_t tftp);
+EXP_API bool_t		xtftp_flush(xhand_t tftp);
 
 /*
 @FUNCTION xtftp_recv: recv TFPT data.
@@ -167,7 +167,7 @@ XDL_API bool_t		xtftp_flush(xhand_t tftp);
 @INOUTPUT dword_t* pb: indicate the bytes to read and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xtftp_recv(xhand_t tftp, byte_t* buf, dword_t *pb);
+EXP_API bool_t		xtftp_recv(xhand_t tftp, byte_t* buf, dword_t *pb);
 
 /*
 @FUNCTION xtftp_abort: abort a TFPT operation, it must be called by TFTP server.
@@ -175,21 +175,21 @@ XDL_API bool_t		xtftp_recv(xhand_t tftp, byte_t* buf, dword_t *pb);
 @INPUT int errcode: the TFTP error code.
 @RETURN void: none.
 */
-XDL_API void		xtftp_abort(xhand_t tftp, int errcode);
+EXP_API void		xtftp_abort(xhand_t tftp, int errcode);
 
 /*
 @FUNCTION xtftp_head: send a TFPT file head package, it must be called by TFTP client.
 @INPUT xhand_t tftp: the TFPT handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		 xtftp_head(xhand_t tftp);
+EXP_API bool_t		 xtftp_head(xhand_t tftp);
 
 /*
 @FUNCTION xtftp_fetch: recv a TFPT file head package, it must be called by TFTP server.
 @INPUT xhand_t tftp: the TFPT handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		 xtftp_fetch(xhand_t tftp);
+EXP_API bool_t		 xtftp_fetch(xhand_t tftp);
 	
 /*
 @FUNCTION xtftp_set_isdir: set TFPT current object is a directory.
@@ -197,14 +197,14 @@ XDL_API bool_t		 xtftp_fetch(xhand_t tftp);
 @INPUT bool_t dir: nonezero for directory object, zero for file object.
 @RETURN void: none.
 */
-XDL_API void		xtftp_set_isdir(xhand_t tftp, bool_t dir);
+EXP_API void		xtftp_set_isdir(xhand_t tftp, bool_t dir);
 
 /*
 @FUNCTION xtftp_get_isdir: get TFPT current object is a directory.
 @INPUT xhand_t tftp: the TFPT handle.
 @RETURN bool_t: return nonezero for directory object, zero for file object..
 */
-XDL_API bool_t		xtftp_get_isdir(xhand_t tftp);
+EXP_API bool_t		xtftp_get_isdir(xhand_t tftp);
 
 /*
 @FUNCTION xtftp_set_filesize: set TFPT current object file size.
@@ -212,14 +212,14 @@ XDL_API bool_t		xtftp_get_isdir(xhand_t tftp);
 @INPUT dword_t size: the file size in bytes.
 @RETURN void: none.
 */
-XDL_API void		xtftp_set_filesize(xhand_t tftp, dword_t size);
+EXP_API void		xtftp_set_filesize(xhand_t tftp, dword_t size);
 
 /*
 @FUNCTION xtftp_get_filesize: get TFPT current object file size.
 @INPUT xhand_t tftp: the TFPT handle.
 @RETURN dword_t: return the file size in bytes.
 */
-XDL_API dword_t		xtftp_get_filesize(xhand_t tftp);
+EXP_API dword_t		xtftp_get_filesize(xhand_t tftp);
 
 /*
 @FUNCTION xtftp_set_filetime: set TFPT current object file time.
@@ -227,7 +227,7 @@ XDL_API dword_t		xtftp_get_filesize(xhand_t tftp);
 @INPUT const tchar_t* ftime: the file GMT time token.
 @RETURN void: none.
 */
-XDL_API void		xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime);
+EXP_API void		xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime);
 
 /*
 @FUNCTION xtftp_get_filetime: get TFPT current object file time.
@@ -235,7 +235,7 @@ XDL_API void		xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime);
 @OUTPUT tchar_t* ftime: the string buffer for returning file GMT time.
 @RETURN void: none.
 */
-XDL_API void		xtftp_get_filetime(xhand_t tftp, tchar_t* ftime);
+EXP_API void		xtftp_get_filetime(xhand_t tftp, tchar_t* ftime);
 
 /*
 @FUNCTION xtftp_set_filename: set TFPT current object file name.
@@ -243,7 +243,7 @@ XDL_API void		xtftp_get_filetime(xhand_t tftp, tchar_t* ftime);
 @INPUT const tchar_t* fname: the file name token.
 @RETURN void: none.
 */
-XDL_API void		xtftp_set_filename(xhand_t tftp, const tchar_t* fname);
+EXP_API void		xtftp_set_filename(xhand_t tftp, const tchar_t* fname);
 
 /*
 @FUNCTION xtftp_get_filename: get TFPT current object file name.
@@ -251,7 +251,7 @@ XDL_API void		xtftp_set_filename(xhand_t tftp, const tchar_t* fname);
 @OUTPUT tchar_t* ftime: the string buffer for returning file name.
 @RETURN void: none.
 */
-XDL_API void		xtftp_get_filename(xhand_t tftp, tchar_t* fname);
+EXP_API void		xtftp_get_filename(xhand_t tftp, tchar_t* fname);
 
 #ifdef	__cplusplus
 }

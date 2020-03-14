@@ -31,7 +31,7 @@ extern "C" {
 	* \note           Call this function with *dlen = 0 to obtain the
 	*                 required buffer size in *dlen
 	*/
-	XDL_API int base64_encode(unsigned char *dst, int *dlen,
+	EXP_API int base64_encode(unsigned char *dst, int *dlen,
 		unsigned char *src, int  slen);
 
 	/**
@@ -50,7 +50,7 @@ extern "C" {
 	* \note           Call this function with *dlen = 0 to obtain the
 	*                 required buffer size in *dlen
 	*/
-	XDL_API int base64_decode(unsigned char *dst, int *dlen,
+	EXP_API int base64_decode(unsigned char *dst, int *dlen,
 		unsigned char *src, int  slen);
 
 

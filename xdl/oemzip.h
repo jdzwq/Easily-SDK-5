@@ -40,13 +40,13 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API	bool_t xzlib_compress_bytes(const byte_t* src_buf, dword_t src_len, byte_t* zip_buf, dword_t* zip_len);
+EXP_API	bool_t xzlib_compress_bytes(const byte_t* src_buf, dword_t src_len, byte_t* zip_buf, dword_t* zip_len);
 
-XDL_API	bool_t xzlib_uncompress_bytes(const byte_t* zip_buf, dword_t zip_len, byte_t* dst_buf, dword_t* dst_len);
+EXP_API	bool_t xzlib_uncompress_bytes(const byte_t* zip_buf, dword_t zip_len, byte_t* dst_buf, dword_t* dst_len);
 
-XDL_API	bool_t xgzip_compress_bytes(const byte_t* src_buf, dword_t src_len, byte_t* zip_buf, dword_t* zip_len);
+EXP_API	bool_t xgzip_compress_bytes(const byte_t* src_buf, dword_t src_len, byte_t* zip_buf, dword_t* zip_len);
 
-XDL_API	bool_t xgzip_uncompress_bytes(const byte_t* zip_buf, dword_t zip_len, byte_t* dst_buf, dword_t* dst_len);
+EXP_API	bool_t xgzip_uncompress_bytes(const byte_t* zip_buf, dword_t zip_len, byte_t* dst_buf, dword_t* dst_len);
 
 #ifdef	__cplusplus
 }

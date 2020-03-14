@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API void xdl_assert(const char* _Expr, const char* _File, unsigned int _Line);
+EXP_API void xdl_assert(const char* _Expr, const char* _File, unsigned int _Line);
 
 #if defined(_DEBUG) || defined(DEBUG)
 #define XDL_ASSERT(token) (void)( (!!(token)) || (xdl_assert(#token, __FILE__, __LINE__), 0) )

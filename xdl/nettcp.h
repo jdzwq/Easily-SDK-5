@@ -60,35 +60,35 @@ extern "C" {
 @INPUT const tchar_t* addr: the network address to connect.
 @RETURN xhand_t: if succeeds return TCP client handle, fails return NULL.
 */
-XDL_API xhand_t xtcp_cli(unsigned short port, const tchar_t* addr);
+EXP_API xhand_t xtcp_cli(unsigned short port, const tchar_t* addr);
 
 /*
 @FUNCTION xtcp_srv: create a TCP server.
 @INPUT res_file_t so: the network io resource handle, it must be a socket resource handle.
 @RETURN xhand_t: if succeeds return TCP server handle, fails return NULL.
 */
-XDL_API xhand_t xtcp_srv(res_file_t so);
+EXP_API xhand_t xtcp_srv(res_file_t so);
 
 /*
 @FUNCTION xtcp_socket: get socket resource handle.
 @INPUT xhand_t tcp: the TCP handle.
 @RETURN res_file_t: return the socket resource handle.
 */
-XDL_API res_file_t xtcp_socket(xhand_t tcp);
+EXP_API res_file_t xtcp_socket(xhand_t tcp);
 
 /*
 @FUNCTION xtcp_type: get socket type, it can be _XTCP_TYPE_CLI, _XTCP_TYPE_SRV.
 @INPUT xhand_t tcp: the TCP handle.
 @RETURN int: return the socket type.
 */
-XDL_API int  xtcp_type(xhand_t tcp);
+EXP_API int  xtcp_type(xhand_t tcp);
 
 /*
 @FUNCTION xtcp_close: close TCP handle.
 @INPUT xhand_t tcp: the TCP handle.
 @RETURN void: none.
 */
-XDL_API void  xtcp_close(xhand_t tcp);
+EXP_API void  xtcp_close(xhand_t tcp);
 
 /*
 @FUNCTION xtcp_write: write TCP data.
@@ -97,7 +97,7 @@ XDL_API void  xtcp_close(xhand_t tcp);
 @INOUTPUT dword_t* pb: indicate the bytes to write and return the bytes writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t  xtcp_write(xhand_t tcp, const byte_t* data, dword_t* pb);
+EXP_API bool_t  xtcp_write(xhand_t tcp, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xtcp_read: read TCP data.
@@ -106,7 +106,7 @@ XDL_API bool_t  xtcp_write(xhand_t tcp, const byte_t* data, dword_t* pb);
 @INOUTPUT dword_t* pb: indicate the bytes to read and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t  xtcp_read(xhand_t tcp, byte_t* data, dword_t* pb);
+EXP_API bool_t  xtcp_read(xhand_t tcp, byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xtcp_set_option: set the socket options.
@@ -116,7 +116,7 @@ XDL_API bool_t  xtcp_read(xhand_t tcp, byte_t* data, dword_t* pb);
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len);
+EXP_API void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len);
 
 /*
 @FUNCTION xtcp_addr_port: get TCP local address and port.
@@ -124,7 +124,7 @@ XDL_API void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the local port.
 */
-XDL_API unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr);
+EXP_API unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr);
 
 /*
 @FUNCTION xtcp_peer_port: get TCP remote address and port.
@@ -132,7 +132,7 @@ XDL_API unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the remote port.
 */
-XDL_API unsigned short xtcp_peer_port(xhand_t tcp, tchar_t* addr);
+EXP_API unsigned short xtcp_peer_port(xhand_t tcp, tchar_t* addr);
 
 #ifdef	__cplusplus
 }

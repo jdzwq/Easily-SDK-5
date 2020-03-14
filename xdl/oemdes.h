@@ -43,7 +43,7 @@ extern "C" {
 	* \param ctx      DES context to be initialized
 	* \param key      8-byte secret key
 	*/
-	XDL_API void des_setkey_enc(des_context *ctx, unsigned char key[8]);
+	EXP_API void des_setkey_enc(des_context *ctx, unsigned char key[8]);
 
 	/**
 	* \brief          DES key schedule (56-bit, decryption)
@@ -51,7 +51,7 @@ extern "C" {
 	* \param ctx      DES context to be initialized
 	* \param key      8-byte secret key
 	*/
-	XDL_API void des_setkey_dec(des_context *ctx, unsigned char key[8]);
+	EXP_API void des_setkey_dec(des_context *ctx, unsigned char key[8]);
 
 	/**
 	* \brief          Triple-DES key schedule (112-bit, encryption)
@@ -59,7 +59,7 @@ extern "C" {
 	* \param ctx      3DES context to be initialized
 	* \param key      16-byte secret key
 	*/
-	XDL_API void des3_set2key_enc(des3_context *ctx, unsigned char key[16]);
+	EXP_API void des3_set2key_enc(des3_context *ctx, unsigned char key[16]);
 
 	/**
 	* \brief          Triple-DES key schedule (112-bit, decryption)
@@ -67,7 +67,7 @@ extern "C" {
 	* \param ctx      3DES context to be initialized
 	* \param key      16-byte secret key
 	*/
-	XDL_API void des3_set2key_dec(des3_context *ctx, unsigned char key[16]);
+	EXP_API void des3_set2key_dec(des3_context *ctx, unsigned char key[16]);
 
 	/**
 	* \brief          Triple-DES key schedule (168-bit, encryption)
@@ -75,7 +75,7 @@ extern "C" {
 	* \param ctx      3DES context to be initialized
 	* \param key      24-byte secret key
 	*/
-	XDL_API void des3_set3key_enc(des3_context *ctx, unsigned char key[24]);
+	EXP_API void des3_set3key_enc(des3_context *ctx, unsigned char key[24]);
 
 	/**
 	* \brief          Triple-DES key schedule (168-bit, decryption)
@@ -83,7 +83,7 @@ extern "C" {
 	* \param ctx      3DES context to be initialized
 	* \param key      24-byte secret key
 	*/
-	XDL_API void des3_set3key_dec(des3_context *ctx, unsigned char key[24]);
+	EXP_API void des3_set3key_dec(des3_context *ctx, unsigned char key[24]);
 
 	/**
 	* \brief          DES-ECB block encryption/decryption
@@ -92,7 +92,7 @@ extern "C" {
 	* \param input    64-bit input block
 	* \param output   64-bit output block
 	*/
-	XDL_API void des_crypt_ecb(des_context *ctx,
+	EXP_API void des_crypt_ecb(des_context *ctx,
 		unsigned char input[8],
 		unsigned char output[8]);
 
@@ -106,7 +106,7 @@ extern "C" {
 	* \param input    buffer holding the input data
 	* \param output   buffer holding the output data
 	*/
-	XDL_API void des_crypt_cbc(des_context *ctx,
+	EXP_API void des_crypt_cbc(des_context *ctx,
 		int mode,
 		int length,
 		unsigned char iv[8],
@@ -120,7 +120,7 @@ extern "C" {
 	* \param input    64-bit input block
 	* \param output   64-bit output block
 	*/
-	XDL_API void des3_crypt_ecb(des3_context *ctx,
+	EXP_API void des3_crypt_ecb(des3_context *ctx,
 		unsigned char input[8],
 		unsigned char output[8]);
 
@@ -134,7 +134,7 @@ extern "C" {
 	* \param input    buffer holding the input data
 	* \param output   buffer holding the output data
 	*/
-	XDL_API void des3_crypt_cbc(des3_context *ctx,
+	EXP_API void des3_crypt_cbc(des3_context *ctx,
 		int mode,
 		int length,
 		unsigned char iv[8],

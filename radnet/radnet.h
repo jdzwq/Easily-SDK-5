@@ -100,7 +100,7 @@ typedef struct _radnet_pdv_head_t{
 }radnet_pdv_head_t;
 
 #ifdef	__cplusplus
-EXP_API "C" {
+extern "C" {
 #endif
 
 EXP_API radnet_t* radnet_scu(xhand_t bio);

@@ -49,7 +49,7 @@ extern "C" {
 @INPUT dword_t size: the share memory size.
 @RETURN xhand_t: if succeeds return share memory handle, fails return NULL.
 */
-XDL_API xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size);
+EXP_API xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size);
 
 /*
 @FUNCTION xshare_cli: create a share memory client, and connect to named pipe server.
@@ -57,21 +57,21 @@ XDL_API xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t h
 @INPUT dword_t size: the share memory size.
 @RETURN xhand_t: if succeeds return pipe handle, fails return NULL.
 */
-XDL_API xhand_t xshare_cli(const tchar_t* bname, dword_t size);
+EXP_API xhand_t xshare_cli(const tchar_t* bname, dword_t size);
 
 /*
 @FUNCTION xshare_close: free share memory server or client handle.
 @INPUT xhand_t sh: share memory handle.
 @RETURN void: none.
 */
-XDL_API void xshare_close(xhand_t sh);
+EXP_API void xshare_close(xhand_t sh);
 
 /*
 @FUNCTION xshare_handle: get system resource handle attached.
 @INPUT xhand_t sh: share memory handle.
 @RETURN res_file_t: system resource handle if exists, else return NULL.
 */
-XDL_API res_file_t xshare_handle(xhand_t sh);
+EXP_API res_file_t xshare_handle(xhand_t sh);
 
 /*
 @FUNCTION xshare_write: write data to pipe.
@@ -80,7 +80,7 @@ XDL_API res_file_t xshare_handle(xhand_t sh);
 @INOUTPUT dword_t* pb: integer variable indicate total bytes to write, and return actually bytes writed.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xshare_write(xhand_t sh, const byte_t* data, dword_t* pb);
+EXP_API bool_t xshare_write(xhand_t sh, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xshare_read: read data from pipe.
@@ -89,7 +89,7 @@ XDL_API bool_t xshare_write(xhand_t sh, const byte_t* data, dword_t* pb);
 @INOUTPUT dword_t* pb: integer variable indicate total bytes to read, and return actually bytes readed.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xshare_read(xhand_t sh, byte_t* buf, dword_t* pb);
+EXP_API bool_t xshare_read(xhand_t sh, byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xshare_lock: lock share memory inner buffer pointer from the position.
@@ -98,7 +98,7 @@ XDL_API bool_t xshare_read(xhand_t sh, byte_t* buf, dword_t* pb);
 @INPUT dword_t size: the locked buffer size.
 @RETURN void*: if succeeds return buffer pointer, fails return NULL.
 */
-XDL_API void* xshare_lock(xhand_t sh, dword_t offset, dword_t size);
+EXP_API void* xshare_lock(xhand_t sh, dword_t offset, dword_t size);
 
 /*
 @FUNCTION xshare_unlock: unlock share memory inner buffer pointer from the position.
@@ -108,7 +108,7 @@ XDL_API void* xshare_lock(xhand_t sh, dword_t offset, dword_t size);
 @INPUT void* p: the original returned buffer pointer.
 @RETURN void*: if succeeds return buffer pointer, fails return NULL.
 */
-XDL_API void xshare_unlock(xhand_t sh, dword_t offset, dword_t size, void* p);
+EXP_API void xshare_unlock(xhand_t sh, dword_t offset, dword_t size, void* p);
 
 #ifdef	__cplusplus
 }

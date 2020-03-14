@@ -42,16 +42,16 @@ extern "C" {
 #endif
 
 /*parse expression token*/
-XDL_API bool_t expr_parse(link_t_ptr ptr,const tchar_t* str);
+EXP_API bool_t expr_parse(link_t_ptr ptr,const tchar_t* str);
 
 /*format expression token size*/
-XDL_API int expr_format_length(link_t_ptr ptr);
+EXP_API int expr_format_length(link_t_ptr ptr);
 
 /*format expression token*/
-XDL_API int expr_format(link_t_ptr ptr,tchar_t* buf,int max);
+EXP_API int expr_format(link_t_ptr ptr,tchar_t* buf,int max);
 
 /*execute expression and return result*/
-XDL_API bool_t expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm);
+EXP_API bool_t expr_exec(link_t_ptr ptr,expr_compare_ptr pf,void* parm);
 
 #ifdef	__cplusplus
 }

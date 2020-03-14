@@ -47,7 +47,7 @@ extern "C" {
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t	save_xml_doc_to_file(link_t_ptr xml, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t	save_xml_doc_to_file(link_t_ptr xml, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION load_xml_doc_from_file: load a xml document from file.
@@ -56,7 +56,7 @@ XDL_API bool_t	save_xml_doc_to_file(link_t_ptr xml, const secu_desc_t* psd, cons
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t	load_xml_doc_from_file(link_t_ptr xml, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t	load_xml_doc_from_file(link_t_ptr xml, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_dom_doc_to_file: save a dom document to file.
@@ -65,7 +65,7 @@ XDL_API bool_t	load_xml_doc_from_file(link_t_ptr xml, const secu_desc_t* psd, co
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t	save_dom_doc_to_file(link_t_ptr dom, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t	save_dom_doc_to_file(link_t_ptr dom, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION load_dom_doc_from_file: load a dom document from file.
@@ -74,7 +74,7 @@ XDL_API bool_t	save_dom_doc_to_file(link_t_ptr dom, const secu_desc_t* psd, cons
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t	load_dom_doc_from_file(link_t_ptr dom, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t	load_dom_doc_from_file(link_t_ptr dom, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_schema_doc_from_file: create a schema document from schema xml file.
@@ -82,7 +82,7 @@ XDL_API bool_t	load_dom_doc_from_file(link_t_ptr dom, const secu_desc_t* psd, co
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the schema link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_schema_doc_from_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_schema_doc_from_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_schema_doc_to_file: save a schema document to schema xml file.
@@ -91,7 +91,7 @@ XDL_API link_t_ptr	create_schema_doc_from_file(const secu_desc_t* psd, const tch
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_schema_doc_to_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_schema_doc_to_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_form_from_meta_file: create a form document and load content from meta file.
@@ -99,7 +99,7 @@ XDL_API bool_t save_schema_doc_to_file(link_t_ptr ptr, const secu_desc_t* psd, c
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the form link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_form_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_form_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_form_to_meta_file: save a form document to meta file.
@@ -108,7 +108,7 @@ XDL_API link_t_ptr	create_form_from_meta_file(const secu_desc_t* psd, const tcha
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_form_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_form_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_grid_from_meta_file: create a grid document and load content from meta file.
@@ -116,7 +116,7 @@ XDL_API bool_t save_form_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, co
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the grid link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_grid_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_grid_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_grid_to_meta_file: save a grid document to meta file.
@@ -125,7 +125,7 @@ XDL_API link_t_ptr	create_grid_from_meta_file(const secu_desc_t* psd, const tcha
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_grid_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_grid_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_statis_from_meta_file: create a statisic document and load content from meta file.
@@ -133,7 +133,7 @@ XDL_API bool_t save_grid_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, co
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the statisic link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_statis_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_statis_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_statis_to_meta_file: save a statisic document to meta file.
@@ -142,7 +142,7 @@ XDL_API link_t_ptr	create_statis_from_meta_file(const secu_desc_t* psd, const tc
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_statis_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_statis_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_dialog_from_meta_file: create a dialog document and load content from meta file.
@@ -150,7 +150,7 @@ XDL_API bool_t save_statis_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, 
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the dialog link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_dialog_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_dialog_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_dialog_to_meta_file: save a dialog document to meta file.
@@ -159,7 +159,7 @@ XDL_API link_t_ptr	create_dialog_from_meta_file(const secu_desc_t* psd, const tc
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_calendar_from_meta_file: create a calendar document and load content from meta file.
@@ -167,7 +167,7 @@ XDL_API bool_t save_dialog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, 
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the calendar link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_calendar_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_calendar_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_calendar_to_meta_file: save a calendar document to meta file.
@@ -176,7 +176,7 @@ XDL_API link_t_ptr	create_calendar_from_meta_file(const secu_desc_t* psd, const 
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_calendar_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_calendar_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_diagram_from_meta_file: create a diagram document and load content from meta file.
@@ -184,7 +184,7 @@ XDL_API bool_t save_calendar_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the diagram link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_diagram_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_diagram_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_diagram_to_meta_file: save a diagram document to meta file.
@@ -193,7 +193,7 @@ XDL_API link_t_ptr	create_diagram_from_meta_file(const secu_desc_t* psd, const t
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_diagram_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_diagram_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_topog_from_meta_file: create a topog document and load content from meta file.
@@ -201,7 +201,7 @@ XDL_API bool_t save_diagram_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd,
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the topog link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_topog_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_topog_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_topog_to_meta_file: save a topog document to meta file.
@@ -210,7 +210,7 @@ XDL_API link_t_ptr	create_topog_from_meta_file(const secu_desc_t* psd, const tch
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_topog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_topog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_rich_from_meta_file: create a rich document and load content from meta file.
@@ -218,7 +218,7 @@ XDL_API bool_t save_topog_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, c
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the rich link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_rich_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_rich_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_rich_to_meta_file: save a rich document to meta file.
@@ -227,7 +227,7 @@ XDL_API link_t_ptr	create_rich_from_meta_file(const secu_desc_t* psd, const tcha
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_rich_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_rich_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION create_images_from_meta_file: create a images document and load content from meta file.
@@ -235,7 +235,7 @@ XDL_API bool_t save_rich_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, co
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN link_t_ptr: if succeeds return the images link component, fails return NULL.
 */
-XDL_API link_t_ptr	create_images_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr	create_images_from_meta_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION save_images_doc_to_file: save a images document to meta file.
@@ -244,7 +244,7 @@ XDL_API link_t_ptr	create_images_from_meta_file(const secu_desc_t* psd, const tc
 @INPUT const tchar_t* fname: the destination file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_images_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t save_images_to_meta_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 
 #ifdef	__cplusplus

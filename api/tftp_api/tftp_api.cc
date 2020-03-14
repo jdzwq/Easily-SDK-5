@@ -30,13 +30,14 @@ typedef struct _tftp_block_t{
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
+
+	tchar_t code[NUM_LEN + 1];
+	tchar_t text[ERR_LEN + 1];
 }tftp_block_t;
 
 /*********************************************************************************/
-static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -48,50 +49,46 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* ptb)
 
 	TRY_CATCH;
 
-	xtftp_object(ptb->tftp, fname, 512);
-	xsprintf(sz_object, _T("%s%s"), ptb->local, fname);
+	xtftp_object(pd->tftp, fname, 512);
+	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: HEAD]"), -1);
-
-		(*pb->pf_log_error)(pb->log, _T(""), sz_object, -1);
-	}
-
-	fd = xuncf_find_first(&ptb->sd, sz_object, &fi);
+	fd = xuncf_find_first(&pd->sd, sz_object, &fi);
 	if (!fd)
 	{
-		xtftp_abort(ptb->tftp, TFTP_CODE_NOTFIND);
+		xtftp_abort(pd->tftp, TFTP_CODE_NOTFIND);
 	}
 	else
 	{
 		do
 		{
-			xtftp_set_isdir(ptb->tftp, fi.is_dir);
-			xtftp_set_filename(ptb->tftp, fi.file_name);
+			xtftp_set_isdir(pd->tftp, fi.is_dir);
+			xtftp_set_filename(pd->tftp, fi.file_name);
 
 			if (!fi.is_dir)
 			{
-				xtftp_set_filesize(ptb->tftp, fi.low_size);
+				xtftp_set_filesize(pd->tftp, fi.low_size);
 
 				format_gmttime(&fi.create_time, ftime);
-				xtftp_set_filetime(ptb->tftp, ftime);
+				xtftp_set_filetime(pd->tftp, ftime);
 			}
 
-			xtftp_head(ptb->tftp);
+			xtftp_head(pd->tftp);
 
 		} while (xuncf_find_next(fd, &fi));
 
 		xuncf_find_close(fd);
 
 		//NULL FILE
-		xtftp_set_isdir(ptb->tftp, 0);
-		xtftp_set_filename(ptb->tftp, NULL);
-		xtftp_set_filesize(ptb->tftp, 0);
-		xtftp_set_filetime(ptb->tftp, NULL);
+		xtftp_set_isdir(pd->tftp, 0);
+		xtftp_set_filename(pd->tftp, NULL);
+		xtftp_set_filesize(pd->tftp, 0);
+		xtftp_set_filetime(pd->tftp, NULL);
 
-		xtftp_head(ptb->tftp);
+		xtftp_head(pd->tftp);
 	}
+
+	xscpy(pd->code, _T("_invoke_head"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -99,22 +96,13 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* ptb)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: ´íÎó]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	return 0;
 }
 
-static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -129,34 +117,27 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* ptb)
 
 	TRY_CATCH;
 	
-	xtftp_object(ptb->tftp, fname, 512);
-	xsprintf(sz_object, _T("%s%s"), ptb->local, fname);
+	xtftp_object(pd->tftp, fname, 512);
+	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
-	if (pb->log)
+	if (!xfile_info(&pd->sd, sz_object, ftime, fsize, NULL, NULL))
 	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: GET]"), -1);
-
-		(*pb->pf_log_error)(pb->log, _T(""), sz_object, -1);
-	}
-
-	if (!xfile_info(&ptb->sd, sz_object, ftime, fsize, NULL, NULL))
-	{
-		xtftp_abort(ptb->tftp, TFTP_CODE_NOTFIND);
+		xtftp_abort(pd->tftp, TFTP_CODE_NOTFIND);
 
 		raise_user_error(NULL, NULL);
 	}
 
 	if (is_huge_size(fsize))
 	{
-		xtftp_abort(ptb->tftp, TFTP_CODE_DSKFULL);
+		xtftp_abort(pd->tftp, TFTP_CODE_DSKFULL);
 
 		raise_user_error(_T("_invoke_get"), _T("not support large file\n"));
 	}
 
-	xf = xfile_open(&ptb->sd, sz_object, FILE_OPEN_READ);
+	xf = xfile_open(&pd->sd, sz_object, FILE_OPEN_READ);
 	if (!xf)
 	{
-		xtftp_abort(ptb->tftp, TFTP_CODE_REJECT);
+		xtftp_abort(pd->tftp, TFTP_CODE_REJECT);
 
 		raise_user_error(_T("_invoke_get"), _T("open local file failed\n"));
 	}
@@ -168,12 +149,12 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* ptb)
 		rt = xfile_read_range(xf, 0, pos, pack, bys);
 		if (!rt)
 		{
-			xtftp_abort(ptb->tftp, TFTP_CODE_REJECT);
+			xtftp_abort(pd->tftp, TFTP_CODE_REJECT);
 
 			raise_user_error(_T("_invoke_get"), _T("read local data failed\n"));
 		}
 
-		rt = xtftp_send(ptb->tftp, pack, &bys);
+		rt = xtftp_send(pd->tftp, pack, &bys);
 		if (!rt)
 		{
 			raise_user_error(NULL, NULL);
@@ -182,10 +163,13 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* ptb)
 		pos += bys;
 	}
 
-	xtftp_flush(ptb->tftp);
+	xtftp_flush(pd->tftp);
 
 	xfile_close(xf);
 	xf = NULL;
+
+	xscpy(pd->code, _T("_invoke_get"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -193,25 +177,16 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* ptb)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	if (xf)
 		xfile_close(xf);
 
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: ´íÎó]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-
 	return 0;
 }
 
-static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -224,18 +199,13 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* ptb)
 
 	TRY_CATCH;
 
-	xtftp_object(ptb->tftp, fname, 512);
-	xsprintf(sz_object, _T("%s%s"), ptb->local, fname);
+	xtftp_object(pd->tftp, fname, 512);
+	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: PUT]"), -1);
-	}
-
-	xf = xfile_open(&ptb->sd, sz_object, FILE_OPEN_CREATE);
+	xf = xfile_open(&pd->sd, sz_object, FILE_OPEN_CREATE);
 	if (!xf)
 	{
-		xtftp_abort(ptb->tftp, TFTP_CODE_REJECT);
+		xtftp_abort(pd->tftp, TFTP_CODE_REJECT);
 
 		raise_user_error(_T("_invoke_put"), _T("open file failed\n"));
 	}
@@ -243,7 +213,7 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* ptb)
 	while (1)
 	{
 		bys = TFTP_PDV_SIZE;
-		rt = xtftp_recv(ptb->tftp, pack, &bys);
+		rt = xtftp_recv(pd->tftp, pack, &bys);
 		if (!rt)
 		{
 			raise_user_error(NULL, NULL);
@@ -252,7 +222,7 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* ptb)
 		rt = xfile_write_range(xf, 0, pos, pack, bys);
 		if (!rt)
 		{
-			xtftp_abort(ptb->tftp, TFTP_CODE_REJECT);
+			xtftp_abort(pd->tftp, TFTP_CODE_REJECT);
 
 			raise_user_error(_T("_invoke_put"), _T("write local file failed\n"));
 		}
@@ -265,31 +235,25 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* ptb)
 	xfile_close(xf);
 	xf = NULL;
 
+	xscpy(pd->code, _T("_invoke_put"));
+	xscpy(pd->text, _T("Succeeded"));
+
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	if (xf)
 		xfile_close(xf);
 
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: ´íÎó]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-
 	return 0;
 }
 
-static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* ptb)
+static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -301,20 +265,16 @@ static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* ptb)
 
 	TRY_CATCH;
 
-	xtftp_object(ptb->tftp, fname, 512);
-	xsprintf(sz_object, _T("%s%s"), ptb->local, fname);
+	xtftp_object(pd->tftp, fname, 512);
+	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: DELETE]"), -1);
-
-		(*pb->pf_log_error)(pb->log, _T(""), sz_object, -1);
-	}
-
-	if (!xfile_delete(&ptb->sd, sz_object))
-		xtftp_abort(ptb->tftp, TFTP_CODE_NOTFIND);
+	if (!xfile_delete(&pd->sd, sz_object))
+		xtftp_abort(pd->tftp, TFTP_CODE_NOTFIND);
 	else
-		xtftp_abort(ptb->tftp, 0);
+		xtftp_abort(pd->tftp, 0);
+
+	xscpy(pd->code, _T("_invoke_delete"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -322,14 +282,7 @@ static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* ptb)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: ´íÎó]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	return 0;
 }
@@ -337,7 +290,7 @@ ONERROR:
 
 int STDCALL udps_invoke(const udps_block_t* pb)
 {
-	tftp_block_t* ptb = NULL;
+	tftp_block_t* pd = NULL;
 
 	tchar_t file[PATH_LEN] = { 0 };
 	tchar_t token[RES_LEN] = { 0 };
@@ -345,12 +298,9 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	link_t_ptr ptr_prop = NULL;
 	bool_t rt = 1;
 
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	TRY_CATCH;
 
-	ptb = (tftp_block_t*)xmem_alloc(sizeof(tftp_block_t));
+	pd = (tftp_block_t*)xmem_alloc(sizeof(tftp_block_t));
 
 	ptr_prop = create_proper_doc();
 
@@ -366,33 +316,39 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
-	printf_path(ptb->local, file);
+	printf_path(pd->local, file);
 
-	ptb->tftp = xtftp_server(pb->port, pb->addr, pb->pack, pb->size);
-	if (!ptb->tftp)
+	pd->tftp = xtftp_server(pb->port, pb->addr, pb->pack, pb->size);
+	if (!pd->tftp)
 	{
 		raise_user_error(_T("tftp_api"), _T("create tftp service failed"));
 	}
 
-	xtftp_method(ptb->tftp, token, INT_LEN);
+	xtftp_method(pd->tftp, token, INT_LEN);
 
 	if (compare_text(token, -1, _T("GET"), -1, 1) == 0)
-		rt = _invoke_get(pb, ptb);
+		rt = _invoke_get(pb, pd);
 	else if(compare_text(token, -1, _T("PUT"), -1, 1) == 0)
-		rt = _invoke_put(pb, ptb);
+		rt = _invoke_put(pb, pd);
 	else if (compare_text(token, -1, _T("HEAD"), -1, 1) == 0)
-		rt = _invoke_head(pb, ptb);
+		rt = _invoke_head(pb, pd);
 	else if (compare_text(token, -1, _T("DELETE"), -1, 1) == 0)
-		rt = _invoke_delete(pb, ptb);
+		rt = _invoke_delete(pb, pd);
 	else
 	{
 		raise_user_error(_T("tftp_api"), _T("unknown tftp method"));
 	}
 
-	xtftp_close(ptb->tftp);
-	ptb->tftp = NULL;
+	xtftp_close(pd->tftp);
+	pd->tftp = NULL;
 
-	xmem_free(ptb);
+	if (pb->pf_track_eror)
+	{
+		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+	}
+
+	xmem_free(pd);
+	pd = NULL;
 
 	END_CATCH;
 
@@ -400,24 +356,22 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[TFTP: ´íÎó]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
-	if (ptb)
+	if (pd)
 	{
-		if (ptb->tftp)
-			xtftp_close(ptb->tftp);
+		get_last_error(pd->code, pd->text, ERR_LEN);
 
-		xmem_free(ptb);
+		if (pb->pf_track_eror)
+		{
+			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+		}
+
+		if (pd->tftp)
+			xtftp_close(pd->tftp);
+
+		xmem_free(pd);
 	}
 
 	return UDPS_INVOKE_WITHINFO;

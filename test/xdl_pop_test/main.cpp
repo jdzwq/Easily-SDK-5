@@ -1,4 +1,4 @@
-
+﻿
 #include <xdl.h>
 #include <xds.h>
 #include <sms.h>
@@ -7,8 +7,8 @@
 #include <conio.h>
 #endif
 
-#define URL		_T("https://www.baidu.com:443/")
-#define SMS_URL		_T("https://127.0.0.1:8888/")
+#define SMS_URL		_T("https://118.178.180.81")
+//#define SMS_URL		_T("https://127.0.0.1:8888")
 
 void test_bytes()
 {
@@ -39,19 +39,18 @@ void test_bytes()
 }
 
 /*
-��.ϵͳ����
 1.	paras.put("SignatureMethod", "HMAC-SHA1");
 2.	paras.put("SignatureNonce", java.util.UUID.randomUUID().toString());
 3.	paras.put("AccessKeyId", accessKeyId);
 4.	paras.put("SignatureVersion", "1.0");
 5.	paras.put("Timestamp", df.format(new java.util.Date()));
 6.	paras.put("Format", "XML");
-��.ҵ��API����
+
 1.	paras.put("Action", "SendSms");
 2.	paras.put("Version", "2017-05-25");
 3.	paras.put("RegionId", "cn-hangzhou");
 4.	paras.put("PhoneNumbers", "15300000001");
-5.	paras.put("SignName", "�����ƶ��Ų���ר��");
+5.	paras.put("SignName", "短信模板名称");
 6.	paras.put("TemplateParam", "{\"customer\":\"test\"}");
 7.	paras.put("TemplateCode", "SMS_71390007");
 8.	paras.put("OutId", "123");
@@ -98,7 +97,7 @@ void aliyun_encode(byte_t** pbuf)
 //&OutId=123
 //&PhoneNumbers=15300000001
 //&RegionId=cn-hangzhou
-//&SignName=�����ƶ��Ų���ר��
+//&SignName=短信模板名称
 //&SignatureMethod=HMAC-SHA1
 //&SignatureNonce=45e25e9b-0a6f-4070-8c85-2956eda1b466
 //&SignatureVersion=1.0
@@ -123,7 +122,7 @@ void test_aliyun()
 	write_string_entity(st, _T("Version"), -1, _T("2017-05-25"), -1);
 	write_string_entity(st, _T("RegionId"), -1, _T("cn-hangzhou"), -1);
 	write_string_entity(st, _T("PhoneNumbers"), -1, _T("15300000001"), -1);
-	write_string_entity(st, _T("SignName"), -1, _T("�����ƶ��Ų���ר��"), -1);
+	write_string_entity(st, _T("SignName"), -1, _T("短信模板名称"), -1);
 	write_string_entity(st, _T("TemplateParam"), -1, _T("{\"customer\":\"test\"}"), -1);
 	write_string_entity(st, _T("TemplateCode"), -1, _T("SMS_71390007"), -1);
 	write_string_entity(st, _T("OutId"), -1, _T("123"), -1);
@@ -189,15 +188,17 @@ void test_aliyun()
 	bytes_free(pbuf);
 }
 
-//���Ͷ���	dysmsapi.aliyuncs.com
-//��Ϣ����1	dybaseapi.aliyuncs.com
+//验证码地址	dysmsapi.aliyuncs.com
+//回执地址	dybaseapi.aliyuncs.com
 
-//�û���¼���� fcv - user@1596062550886330.onaliyun.com
+//短信账户 fcv - user@1596062550886330.onaliyun.com
 //AccessKey ID LTAI4Fwa4AL6JHMD338PomPF
 //AccessKeySecret MMXrzSPCNHx89K91MFEdcjFor4jOXj
-//��֤��ģ�棺SMS_176913456
-//ģ�����ݣ�������֤��${code}������֤��5��������Ч������й©�����ˣ�
-//ǩ�����ƣ��Ӽҽ����ջ�
+//TemplateCode SMS_176913456
+//TemplateParam  _T("{\"code\":\"123456\"}
+//SignName 居家健康照护
+
+//<?xml version='1.0' encoding='UTF-8'?><SendSmsResponse><Message>OK</Message><RequestId>6BAB9EEC-6CCF-4DF4-91BC-E874B6FB5280</RequestId><BizId>392807084177959405^0</BizId><Code>OK</Code></SendSmsResponse>
 
 void test_sms_aliyun()
 {
@@ -228,7 +229,7 @@ void test_sms_aliyun()
 	write_string_entity(st, _T("Version"), -1, _T("2017-05-25"), -1);
 	write_string_entity(st, _T("RegionId"), -1, _T("cn-hangzhou"), -1);
 	write_string_entity(st, _T("PhoneNumbers"), -1, _T("13588368696"), -1);
-	write_string_entity(st, _T("SignName"), -1, _T("�Ӽҽ����ջ�"), -1);
+	write_string_entity(st, _T("SignName"), -1, _T("居家健康照护"), -1);
 	write_string_entity(st, _T("TemplateParam"), -1, _T("{\"code\":\"123456\"}"), -1);
 	write_string_entity(st, _T("TemplateCode"), -1, _T("SMS_176913456"), -1);
 	//write_string_entity(st, _T("OutId"), -1, _T(""), -1);
@@ -321,6 +322,31 @@ void test_sms_aliyun()
 	xhttp_get_response_content_type_charset(xh, type, INT_LEN);
 
 	xhttp_close(xh);
+
+	LINKPTR ptr_xml = create_xml_doc();
+
+	parse_xml_doc_from_bytes(ptr_xml, *pbuf, nlen);
+	
+	bytes_free(pbuf);
+	pbuf = NULL;
+
+	tchar_t message[INT_LEN] = { 0 };
+	tchar_t request[ERR_LEN] = { 0 };
+
+	LINKPTR dom = get_xml_dom_node(ptr_xml);
+	LINKPTR nlk = get_dom_first_child_node(dom);
+	while (nlk)
+	{
+		if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("Message"), -1, 1) == 0)
+			get_dom_node_text(nlk, message, INT_LEN);
+		else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("RequestId"), -1, 1) == 0)
+			get_dom_node_text(nlk, request, ERR_LEN);
+
+		nlk = get_dom_next_sibling_node(nlk);
+	}
+
+	destroy_xml_doc(ptr_xml);
+	ptr_xml = NULL;
 }
 
 void test_isp()
@@ -350,7 +376,10 @@ void test_isp()
 
 void test_sms_code()
 {
-	xhand_t xh = xhttp_client(_T("GET"), _T("http://118.178.180.81/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"));
+	tchar_t url[1024] = { 0 };
+
+	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"), SMS_URL);
+	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);
 
@@ -375,13 +404,18 @@ void test_sms_code()
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	bytes_free(pb);
 
 	xhttp_close(xh);
 }
 
 void test_sms_verify()
 {
-	xhand_t xh = xhttp_client(_T("GET"), _T("https://118.178.180.81/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=123456"));
+	tchar_t url[1024] = { 0 };
+
+	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=123456"), SMS_URL);
+	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);
 
@@ -406,6 +440,8 @@ void test_sms_verify()
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	bytes_free(pb);
 
 	xhttp_close(xh);
 }
@@ -420,9 +456,9 @@ int main(int argc, char* argv[])
 
 	//test_isp();
 
-	test_sms_code();
+	//test_sms_code();
 
-	//test_sms_verify();
+	test_sms_verify();
 
 	xdl_process_uninit();
 

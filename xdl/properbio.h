@@ -48,7 +48,7 @@ extern "C" {
 	@INPUT int len: the ini content length in characters.
 	@RETURN void: non.
 	*/
-	XDL_API void parse_proper_from_ini(link_t_ptr ptr, const tchar_t* ini, int len);
+	EXP_API void parse_proper_from_ini(link_t_ptr ptr, const tchar_t* ini, int len);
 
 	/*
 	@FUNCTION format_proper_doc_to_ini: format proper content to ini content.
@@ -57,7 +57,7 @@ extern "C" {
 	@INPUT int max: the string buffer size in characters.
 	@RETURN int: return the characters formated.
 	*/
-	XDL_API int format_proper_to_ini(link_t_ptr ptr, tchar_t* buf, int max);
+	EXP_API int format_proper_to_ini(link_t_ptr ptr, tchar_t* buf, int max);
 
 	/*
 	@FUNCTION load_proper_doc_from_ini_file: load a proper content from ini file.
@@ -66,7 +66,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t load_proper_from_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t load_proper_from_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION save_proper_doc_to_ini_file: save a proper document to csv file.
@@ -76,7 +76,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t save_proper_to_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t save_proper_to_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION parse_proper_doc_from_style: parse a proper content from style content.
@@ -85,7 +85,7 @@ extern "C" {
 	@INPUT int len: the style content length in characters.
 	@RETURN void: non.
 	*/
-	XDL_API void parse_proper_from_style(link_t_ptr ptr, const tchar_t* str);
+	EXP_API void parse_proper_from_style(link_t_ptr ptr, const tchar_t* str);
 
 	/*
 	@FUNCTION format_proper_doc_to_style: format proper content to style content.
@@ -94,7 +94,7 @@ extern "C" {
 	@INPUT int max: the string buffer size in characters.
 	@RETURN int: return the characters formated.
 	*/
-	XDL_API int format_proper_to_style(link_t_ptr ptr, tchar_t* buf, int len);
+	EXP_API int format_proper_to_style(link_t_ptr ptr, tchar_t* buf, int len);
 
 
 #ifdef	__cplusplus

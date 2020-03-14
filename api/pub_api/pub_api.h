@@ -26,9 +26,8 @@ LICENSE.GPL3 for more details.
 #define _PUBAPI_H
 
 #include <xdl.h>
-#include <xds.h>
 #include <mqtt.h>
-#include <radhex.h>
+#include <hexdfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

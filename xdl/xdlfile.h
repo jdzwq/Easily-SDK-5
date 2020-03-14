@@ -50,7 +50,7 @@ oss file: "oss://127.0.0.1/virdir/somefile"
 @INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE, FILE_OPEN_APPEND or combined.
 @RETURN file_t: if succeeds return file object, fails return NULL.
 */
-XDL_API file_t		xfile_open(const secu_desc_t* psd, const tchar_t* fname, dword_t fmode);
+EXP_API file_t		xfile_open(const secu_desc_t* psd, const tchar_t* fname, dword_t fmode);
 
 /*
 @FUNCTION xfile_read: read data from file.
@@ -59,7 +59,7 @@ XDL_API file_t		xfile_open(const secu_desc_t* psd, const tchar_t* fname, dword_t
 @INPUT dword_t size: the request size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_read(file_t fh, byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_read(file_t fh, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_write: write data to file.
@@ -68,14 +68,14 @@ XDL_API bool_t		xfile_read(file_t fh, byte_t* buf, dword_t size);
 @INPUT dword_t size: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_write(file_t fh, const byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_write(file_t fh, const byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_flush: flush file, ensure data writing come to end.
 @INPUT file_t fh: the file object.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t		xfile_flush(file_t fh);
+EXP_API bool_t		xfile_flush(file_t fh);
 
 /*
 @FUNCTION xfile_read_range: random read file data at the start position.
@@ -86,7 +86,7 @@ XDL_API bool_t		xfile_flush(file_t fh);
 @INPUT dword_t size: the request size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_read_range(file_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_read_range(file_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_write_range: random write file data at the start position.
@@ -97,28 +97,28 @@ XDL_API bool_t		xfile_read_range(file_t fh, dword_t hoff, dword_t loff, byte_t* 
 @INPUT dword_t size: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_write_range(file_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_write_range(file_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_close: close file and free file object.
 @INPUT file_t fh: the file object.
 @RETURN void: none.
 */
-XDL_API void		xfile_close(file_t fh);
+EXP_API void		xfile_close(file_t fh);
 
 /*
 @FUNCTION xfile_bio: get file io handle, the handle may be xuncf, xhttp, xtftp, xoss handle.
 @INPUT file_t fh: the file object.
 @RETURN xhand_t: the file io handle if exists, otherwise NULL retuned.
 */
-XDL_API xhand_t		xfile_bio(file_t fh);
+EXP_API xhand_t		xfile_bio(file_t fh);
 
 /*
 @FUNCTION xfile_proto: get the file protocol type, eg: _PROTO_LOC, _PROTO_NFS, _PROTO_HTTP, _PROTO_TFTP, _PROTO_OSS.
 @INPUT file_t fh: the file object.
 @RETURN int: file protocol type.
 */
-XDL_API int			xfile_proto(file_t fh);
+EXP_API int			xfile_proto(file_t fh);
 
 /*
 @FUNCTION xfile_settime: set the file write time.
@@ -126,7 +126,7 @@ XDL_API int			xfile_proto(file_t fh);
 @INPUT const tchar_t* ftime: string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"
 @RETURN void: none.
 */
-XDL_API void		xfile_settime(file_t fh, const tchar_t* ftime);
+EXP_API void		xfile_settime(file_t fh, const tchar_t* ftime);
 
 /*
 @FUNCTION xfile_setsince: set the file write since.
@@ -134,7 +134,7 @@ XDL_API void		xfile_settime(file_t fh, const tchar_t* ftime);
 @INPUT int fs: file since tag, eg: FILE_SINCE_TIME, FILE_SINCE_ETAG.
 @RETURN void: none.
 */
-XDL_API void		xfile_setsince(file_t fh, int fs);
+EXP_API void		xfile_setsince(file_t fh, int fs);
 
 /*
 @FUNCTION xfile_info: get the file information.
@@ -146,7 +146,7 @@ XDL_API void		xfile_setsince(file_t fh, int fs);
 @OUTPUT tchar_t* fencode: string buffer for return file encode, eg: "utf-8", "utf-16", "gb2312", if can be NULL.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
+EXP_API bool_t		xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
 
 /*
 @FUNCTION xfile_copy: copy source file to destination.
@@ -157,7 +157,7 @@ XDL_API bool_t		xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t
 with FILE_SINE_ETAG, if the destination file exists and file-etag equal to source file, overwriting will discard and return nonezero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const tchar_t* destfile, int fsince);
+EXP_API bool_t		xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const tchar_t* destfile, int fsince);
 
 /*
 @FUNCTION xfile_delete: delete file by path name.
@@ -165,7 +165,7 @@ XDL_API bool_t		xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const
 @INPUT const tchar_t* fname: the file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_delete(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t		xfile_delete(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION xfile_rename: change the file path name.
@@ -174,7 +174,7 @@ XDL_API bool_t		xfile_delete(const secu_desc_t* psd, const tchar_t* fname);
 @INPUT const tchar_t* nname: the new file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* nname);
+EXP_API bool_t		xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* nname);
 
 /*
 @FUNCTION xfile_mkdir: make a directory.
@@ -182,7 +182,7 @@ XDL_API bool_t		xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const
 @INPUT const tchar_t* path: the path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_mkdir(const secu_desc_t* psd, const tchar_t* path);
+EXP_API bool_t		xfile_mkdir(const secu_desc_t* psd, const tchar_t* path);
 
 /*
 @FUNCTION xfile_rmdir: remove a directory, the directory must be empty.
@@ -190,7 +190,7 @@ XDL_API bool_t		xfile_mkdir(const secu_desc_t* psd, const tchar_t* path);
 @INPUT const tchar_t* path: the path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_rmdir(const secu_desc_t* psd, const tchar_t* path);
+EXP_API bool_t		xfile_rmdir(const secu_desc_t* psd, const tchar_t* path);
 
 /*
 @FUNCTION xfile_list: list a directory child items.
@@ -199,7 +199,7 @@ XDL_API bool_t		xfile_rmdir(const secu_desc_t* psd, const tchar_t* path);
 @INPUT link_t_ptr ptr: the list document link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+EXP_API bool_t		xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
 
 /*
 @FUNCTION xfile_dump: dump a directory child items.
@@ -208,7 +208,7 @@ XDL_API bool_t		xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_p
 @INPUT stream_t stm: the stream object.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t stm);
+EXP_API bool_t		xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t stm);
 
 /*
 @FUNCTION xfile_tree: list a directory child and all sub child items.
@@ -217,7 +217,7 @@ XDL_API bool_t		xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t
 @INPUT link_t_ptr ptr: the list document link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void		xfile_tree(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+EXP_API void		xfile_tree(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

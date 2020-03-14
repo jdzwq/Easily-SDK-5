@@ -125,35 +125,35 @@ extern "C" {
 @INPUT const tchar_t* addr: the network address to connect.
 @RETURN xhand_t: if succeeds return SSL client handle, fails return NULL.
 */
-XDL_API xhand_t xssl_cli(unsigned short port, const tchar_t* addr);
+EXP_API xhand_t xssl_cli(unsigned short port, const tchar_t* addr);
 
 /*
 @FUNCTION xssl_srv: create a SSL server.
 @INPUT res_file_t so: the network io resource handle, it must be a socket resource handle.
 @RETURN xhand_t: if succeeds return SSL server handle, fails return NULL.
 */
-XDL_API xhand_t xssl_srv(res_file_t so);
+EXP_API xhand_t xssl_srv(res_file_t so);
 
 /*
 @FUNCTION xssl_socket: get socket resource handle.
 @INPUT xhand_t ssl: the SSL handle.
 @RETURN res_file_t: return the socket resource handle.
 */
-XDL_API res_file_t xssl_socket(xhand_t ssl);
+EXP_API res_file_t xssl_socket(xhand_t ssl);
 
 /*
 @FUNCTION xssl_type: get socket type, it can be _XSSL_TYPE_CLI, _XSSL_TYPE_SRV.
 @INPUT xhand_t ssl: the SSL handle.
 @RETURN int: return the socket type.
 */
-XDL_API int  xssl_type(xhand_t ssl);
+EXP_API int  xssl_type(xhand_t ssl);
 
 /*
 @FUNCTION xssl_close: close SSL handle.
 @INPUT xhand_t ssl: the SSL handle.
 @RETURN void: none.
 */
-XDL_API void  xssl_close(xhand_t ssl);
+EXP_API void  xssl_close(xhand_t ssl);
 
 /*
 @FUNCTION xssl_write: write SSL data.
@@ -162,14 +162,14 @@ XDL_API void  xssl_close(xhand_t ssl);
 @INOUTPUT dword_t* pb: indicate the bytes to write and return the bytes writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_write(xhand_t ssl, const byte_t* data, dword_t* pb);
+EXP_API bool_t xssl_write(xhand_t ssl, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xssl_flush: ensure write SSL data compeleted.
 @INPUT xhand_t ssl: the SSL handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_flush(xhand_t ssl);
+EXP_API bool_t xssl_flush(xhand_t ssl);
 
 /*
 @FUNCTION xssl_read: read SSL data.
@@ -178,7 +178,7 @@ XDL_API bool_t xssl_flush(xhand_t ssl);
 @INOUTPUT dword_t* pb: indicate the bytes to read and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_read(xhand_t ssl, byte_t* data, dword_t* pb);
+EXP_API bool_t xssl_read(xhand_t ssl, byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xssl_setopt: set the socket options.
@@ -188,7 +188,7 @@ XDL_API bool_t xssl_read(xhand_t ssl, byte_t* data, dword_t* pb);
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void xssl_setopt(xhand_t ssl, int oid, void* opt, int len);
+EXP_API void xssl_setopt(xhand_t ssl, int oid, void* opt, int len);
 
 /*
 @FUNCTION xssl_addr_port: get SSL local address and port.
@@ -196,7 +196,7 @@ XDL_API void xssl_setopt(xhand_t ssl, int oid, void* opt, int len);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the local port.
 */
-XDL_API unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr);
+EXP_API unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr);
 
 /*
 @FUNCTION xssl_peer_port: get SSL remote address and port.
@@ -204,7 +204,7 @@ XDL_API unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the remote port.
 */
-XDL_API unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr);
+EXP_API unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr);
 
 /*
 @FUNCTION xssl_set_host: set SSL host name.
@@ -212,7 +212,7 @@ XDL_API unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr);
 @INPUT const tchar_t* host_cn: the host name.
 @RETURN void: none.
 */
-XDL_API void xssl_set_host(xhand_t ssl, const tchar_t* host_cn);
+EXP_API void xssl_set_host(xhand_t ssl, const tchar_t* host_cn);
 
 /*
 @FUNCTION xssl_set_peer: set SSL peer name.
@@ -220,7 +220,7 @@ XDL_API void xssl_set_host(xhand_t ssl, const tchar_t* host_cn);
 @INPUT const tchar_t* host_cn: the peer name.
 @RETURN void: none.
 */
-XDL_API void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn);
+EXP_API void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn);
 
 /*
 @FUNCTION xssl_set_auth: set SSL authorization mode.
@@ -228,7 +228,7 @@ XDL_API void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn);
 @INPUT int authmode: the authorization mode, it can be SSL_VERIFY_NONE, SSL_VERIFY_OPTIONAL, SSL_VERIFY_REQUIRED.
 @RETURN void: none.
 */
-XDL_API void xssl_set_auth(xhand_t ssl, int authmode);
+EXP_API void xssl_set_auth(xhand_t ssl, int authmode);
 
 /*
 @FUNCTION xssl_set_ca: set SSL root certificate.
@@ -237,7 +237,7 @@ XDL_API void xssl_set_auth(xhand_t ssl, int authmode);
 @INPUT dword_t clen: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
+EXP_API bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 
 /*
 @FUNCTION xssl_set_cert: set SSL owner certificate.
@@ -246,7 +246,7 @@ XDL_API bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 @INPUT dword_t clen: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
+EXP_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 
 /*
 @FUNCTION xssl_set_rsa: set SSL private rsa key.
@@ -257,7 +257,7 @@ XDL_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
 @INPUT dword_t plen: the password data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int plen);
+EXP_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int plen);
 
 /*
 @FUNCTION xssl_set_dhm: set SSL dhm key.
@@ -266,7 +266,7 @@ XDL_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, con
 @INPUT const byte_t* dhm_G: the dhm G value bytes buffer.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_P, const byte_t *dhm_G);
+EXP_API bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_P, const byte_t *dhm_G);
 
 #ifdef	__cplusplus
 }

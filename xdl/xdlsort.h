@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API void bubble_xsort(xsort_t* pxs, int count);
+EXP_API void bubble_xsort(xsort_t* pxs, int count);
 
 #ifdef	__cplusplus
 }

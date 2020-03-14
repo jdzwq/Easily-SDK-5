@@ -40,40 +40,40 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API bool_t parse_xml_doc_from_bytes(link_t_ptr xml, const byte_t* str, dword_t len);
+	EXP_API bool_t parse_xml_doc_from_bytes(link_t_ptr xml, const byte_t* str, dword_t len);
 
-	XDL_API bool_t parse_dom_doc_from_bytes(link_t_ptr dom, const byte_t* str, dword_t len, int encode);
+	EXP_API bool_t parse_dom_doc_from_bytes(link_t_ptr dom, const byte_t* str, dword_t len, int encode);
 
-	XDL_API dword_t format_dom_doc_to_bytes(link_t_ptr dom, byte_t* buf, dword_t max, int encode);
+	EXP_API dword_t format_dom_doc_to_bytes(link_t_ptr dom, byte_t* buf, dword_t max, int encode);
 
-	XDL_API dword_t format_xml_doc_to_bytes(link_t_ptr xml, byte_t* buf, dword_t max);
-
-
-	XDL_API bool_t parse_xml_doc_from_string(link_t_ptr xml, string_t vs);
-
-	XDL_API bool_t format_xml_doc_to_string(link_t_ptr xml, string_t vs);
-
-	XDL_API bool_t parse_dom_doc_from_string(link_t_ptr dom, string_t vs);
-
-	XDL_API bool_t format_dom_doc_to_string(link_t_ptr dom, string_t vs);
+	EXP_API dword_t format_xml_doc_to_bytes(link_t_ptr xml, byte_t* buf, dword_t max);
 
 
-	XDL_API bool_t parse_xml_doc_from_stream(link_t_ptr xml, stream_t stm);
+	EXP_API bool_t parse_xml_doc_from_string(link_t_ptr xml, string_t vs);
 
-	XDL_API bool_t format_xml_doc_to_stream(link_t_ptr xml, stream_t stm);
+	EXP_API bool_t format_xml_doc_to_string(link_t_ptr xml, string_t vs);
 
-	XDL_API bool_t parse_dom_doc_from_stream(link_t_ptr dom, stream_t stm);
+	EXP_API bool_t parse_dom_doc_from_string(link_t_ptr dom, string_t vs);
 
-	XDL_API bool_t format_dom_doc_to_stream(link_t_ptr dom, stream_t stm);
+	EXP_API bool_t format_dom_doc_to_string(link_t_ptr dom, string_t vs);
 
 
-	XDL_API bool_t parse_xml_doc_from_memo(link_t_ptr xml, link_t_ptr txt);
+	EXP_API bool_t parse_xml_doc_from_stream(link_t_ptr xml, stream_t stm);
 
-	XDL_API bool_t format_xml_doc_to_memo(link_t_ptr xml, link_t_ptr txt);
+	EXP_API bool_t format_xml_doc_to_stream(link_t_ptr xml, stream_t stm);
 
-	XDL_API bool_t parse_dom_doc_from_memo(link_t_ptr dom, link_t_ptr txt);
+	EXP_API bool_t parse_dom_doc_from_stream(link_t_ptr dom, stream_t stm);
 
-	XDL_API bool_t format_dom_doc_to_memo(link_t_ptr dom, link_t_ptr txt);
+	EXP_API bool_t format_dom_doc_to_stream(link_t_ptr dom, stream_t stm);
+
+
+	EXP_API bool_t parse_xml_doc_from_memo(link_t_ptr xml, link_t_ptr txt);
+
+	EXP_API bool_t format_xml_doc_to_memo(link_t_ptr xml, link_t_ptr txt);
+
+	EXP_API bool_t parse_dom_doc_from_memo(link_t_ptr dom, link_t_ptr txt);
+
+	EXP_API bool_t format_dom_doc_to_memo(link_t_ptr dom, link_t_ptr txt);
 
 
 #ifdef	__cplusplus

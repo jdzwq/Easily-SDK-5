@@ -46,7 +46,7 @@ it can be MSGDLG_PUSHBOX_CLOSE, MSGDLG_PUSHBOX_OK, MSGDLG_PUSHBOX_CANCEL, MSGDLG
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t owner);
+EXP_API res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t owner);
 
 /*
 @FUNCTION msgdlg_popup_size: calcing the message dialog popup size according to client size.
@@ -54,7 +54,7 @@ XDC_API res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t o
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void msgdlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void msgdlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION inputdlg_create: create a input dialog.
@@ -63,7 +63,7 @@ XDC_API void msgdlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t inputdlg_create(const tchar_t* title, tchar_t* buf, int max, res_win_t owner);
+EXP_API res_win_t inputdlg_create(const tchar_t* title, tchar_t* buf, int max, res_win_t owner);
 
 /*
 @FUNCTION inputdlg_popup_size: calcing the input dialog popup size according to client size.
@@ -71,7 +71,7 @@ XDC_API res_win_t inputdlg_create(const tchar_t* title, tchar_t* buf, int max, r
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void inputdlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void inputdlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION properdlg_create: create a proper dialog.
@@ -80,7 +80,7 @@ XDC_API void inputdlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t properdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner);
+EXP_API res_win_t properdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner);
 
 /*
 @FUNCTION properdlg_popup_size: calcing the proper dialog popup size according to client size.
@@ -88,7 +88,7 @@ XDC_API res_win_t properdlg_create(const tchar_t* title, link_t_ptr ptr, res_win
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void properdlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void properdlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION tabledlg_create: create a string table dialog.
@@ -97,7 +97,7 @@ XDC_API void properdlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t tabledlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner);
+EXP_API res_win_t tabledlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner);
 
 /*
 @FUNCTION tabledlg_popup_size: calcing the string table dialog popup size according to client size.
@@ -105,7 +105,7 @@ XDC_API res_win_t tabledlg_create(const tchar_t* title, link_t_ptr ptr, res_win_
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void tabledlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void tabledlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION listdlg_create: create a list document dialog.
@@ -114,7 +114,7 @@ XDC_API void tabledlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner);
+EXP_API res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t owner);
 
 /*
 @FUNCTION listdlg_popup_size: calcing the list document dialog popup size according to client size.
@@ -122,7 +122,7 @@ XDC_API res_win_t listdlg_create(const tchar_t* title, link_t_ptr ptr, res_win_t
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void listdlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void listdlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION textdlg_create: create a multiple line text dialog.
@@ -131,7 +131,7 @@ XDC_API void listdlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t textdlg_create(const tchar_t* title, string_t var, res_win_t owner);
+EXP_API res_win_t textdlg_create(const tchar_t* title, string_t var, res_win_t owner);
 
 /*
 @FUNCTION textdlg_popup_size: calcing the multiple line text dialog popup size according to client size.
@@ -139,7 +139,7 @@ XDC_API res_win_t textdlg_create(const tchar_t* title, string_t var, res_win_t o
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void textdlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void textdlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION griddlg_create: create a grid document dialog.
@@ -148,7 +148,7 @@ XDC_API void textdlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_ptr* prow, res_win_t owner);
+EXP_API res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_ptr* prow, res_win_t owner);
 
 /*
 @FUNCTION griddlg_popup_size: calcing the grid document dialog popup size according to client size.
@@ -156,7 +156,7 @@ XDC_API res_win_t griddlg_create(const tchar_t* title, link_t_ptr ptr, link_t_pt
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void griddlg_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void griddlg_popup_size(res_win_t widget, xsize_t* pxs);
 
 /*
 @FUNCTION annodlg_create: create a annotation document dialog.
@@ -165,7 +165,7 @@ XDC_API void griddlg_popup_size(res_win_t widget, xsize_t* pxs);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t annodlg_create(const tchar_t* title, string_t var, res_win_t owner);
+EXP_API res_win_t annodlg_create(const tchar_t* title, string_t var, res_win_t owner);
 
 /*
 @FUNCTION previewdlg_create: create a preview dialog.
@@ -173,21 +173,21 @@ XDC_API res_win_t annodlg_create(const tchar_t* title, string_t var, res_win_t o
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t previewdlg_create(const tchar_t* title, res_win_t owner);
+EXP_API res_win_t previewdlg_create(const tchar_t* title, res_win_t owner);
 
 /*
 @FUNCTION previewdlg_get_arch: get a preview dialog archive document.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN link_t_ptr: return the archive document link component.
 */
-XDC_API link_t_ptr previewdlg_get_arch(res_win_t widget);
+EXP_API link_t_ptr previewdlg_get_arch(res_win_t widget);
 
 /*
 @FUNCTION previewdlg_redraw: redraw the preview dialog.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN void: none.
 */
-XDC_API void previewdlg_redraw(res_win_t widget);
+EXP_API void previewdlg_redraw(res_win_t widget);
 
 /*
 @FUNCTION create_dialog: create a dialog .
@@ -195,11 +195,11 @@ XDC_API void previewdlg_redraw(res_win_t widget);
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the dialog resource handle.
 */
-XDC_API res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner);
+EXP_API res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner);
 
-XDC_API int sub_dialog_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+EXP_API int sub_dialog_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
-XDC_API int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
+EXP_API int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
 
 #ifdef	__cplusplus
 }

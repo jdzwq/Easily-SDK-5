@@ -24,7 +24,7 @@ LICENSE.GPL3 for more details.
 
 #include "dcm_api.h"
 
-bool_t _invoke_c_echo(dcm_t* dcm, const dcm_block_t* pd)
+bool_t _invoke_c_echo(dcm_t* dcm, dcm_block_t* pd)
 {
 	dicm_command_t cmd = { 0 };
 	dword_t n, dw = 0;
@@ -45,7 +45,7 @@ bool_t _invoke_c_echo(dcm_t* dcm, const dcm_block_t* pd)
 	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + n);
 
 	cmd.mask |= MSK_CommandField;
-	cmd.CommandField = PACS_CMD_C_ECHO_RSP;
+	cmd.CommandField = DCM_CMD_C_ECHO_RSP;
 	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + 2);
 
 	cmd.mask |= MSK_MessageIDBeingRespondedTo;
@@ -66,7 +66,7 @@ bool_t _invoke_c_echo(dcm_t* dcm, const dcm_block_t* pd)
 
 	pdv.did = pd->pdv.did;
 	pdv.ctl = 0x03;
-	pdv.size = PACS_PDV_SIZE_FROM_SET(dw);
+	pdv.size = DCM_PDV_SIZE_FROM_SET(dw);
 
 	dw = dcm_pdv_group_size(&pdv, 1);
 	dcm_set_response_bytes(dcm, dw);
@@ -76,8 +76,8 @@ bool_t _invoke_c_echo(dcm_t* dcm, const dcm_block_t* pd)
 		raise_user_error(NULL, NULL);
 	}
 
-	dcm_get_options(dcm, PACS_OPT_SYNTAX_TRANSFER, syntax, RES_LEN);
-	dcm_get_options(dcm, PACS_OPT_DATA_MAXINUM, (void*)&n_max, sizeof(long));
+	dcm_get_options(dcm, DCM_OPT_SYNTAX_TRANSFER, syntax, RES_LEN);
+	dcm_get_options(dcm, DCM_OPT_DATA_MAXINUM, (void*)&n_max, sizeof(long));
 	b_big = sop_is_bigendian(syntax);
 
 	stm = stream_alloc(dcm_bio(dcm));
@@ -90,11 +90,16 @@ bool_t _invoke_c_echo(dcm_t* dcm, const dcm_block_t* pd)
 	stream_free(stm);
 	stm = NULL;
 
+	xscpy(pd->code, _T("_invoke_c_echo"));
+	xscpy(pd->text, _T("Succeeded"));
+
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
+
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	if (stm)
 		stream_free(stm);

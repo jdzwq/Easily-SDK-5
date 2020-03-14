@@ -22,7 +22,7 @@ TARGET = $(OUT_PATH)/xhttps
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl -lxds -lpthread
+	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl -lpthread
 	rm -f $(OBJS)
 
 test:

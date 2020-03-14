@@ -27,7 +27,6 @@ LICENSE.GPL3 for more details.
 #define _WWWAPI_H
 
 #include <xdl.h>
-#include <xds.h>
 
 #ifdef	__cplusplus
 extern "C" {

@@ -81,13 +81,13 @@ typedef struct _pdg_bits_t{
 extern "C" {
 #endif
 
-	XDL_API dword_t xpdg_set_header(const pdg_file_t* pfi, const pdg_info_t* pbi, byte_t* buf, dword_t max);
+	EXP_API dword_t xpdg_set_header(const pdg_file_t* pfi, const pdg_info_t* pbi, byte_t* buf, dword_t max);
 
-	XDL_API dword_t xpdg_get_header(pdg_file_t* pfi, pdg_info_t* pbi, const byte_t* src, dword_t len);
+	EXP_API dword_t xpdg_get_header(pdg_file_t* pfi, pdg_info_t* pbi, const byte_t* src, dword_t len);
 
-	XDL_API	dword_t xpdg_revert(const byte_t* pdg_buf, dword_t pdg_len, byte_t* bmp_buf, dword_t bmp_size);
+	EXP_API	dword_t xpdg_revert(const byte_t* pdg_buf, dword_t pdg_len, byte_t* bmp_buf, dword_t bmp_size);
 
-	XDL_API	dword_t xpdg_convert(const byte_t* bmp_buf, dword_t bmp_len, byte_t* pdg_buf, dword_t pdg_size);
+	EXP_API	dword_t xpdg_convert(const byte_t* bmp_buf, dword_t bmp_len, byte_t* pdg_buf, dword_t pdg_size);
 
 #ifdef	__cplusplus
 }

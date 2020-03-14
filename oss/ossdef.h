@@ -29,11 +29,6 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 
-#if defined(_OS_WINDOWS) && defined(_USRDLL)
-#define OSS_API __declspec(dllexport)
-#else
-#define OSSAPI extern
-#endif
 
 #endif	/* _OSSDEF_H */
 

@@ -45,7 +45,7 @@ extern "C" {
 @INPUT wt: the widget, if NULL created for screen.
 @RETURN res_ctx_t: if succeeds return device context, fails return NULL.
 */
-XDC_API res_ctx_t create_display_context(res_win_t wt);
+EXP_API res_ctx_t create_display_context(res_win_t wt);
 
 /*
 @FUNCTION create_compatible_context: create memory context compatiable with device context.
@@ -54,14 +54,14 @@ XDC_API res_ctx_t create_display_context(res_win_t wt);
 @INPUT height: the memory context height in pixel.
 @RETURN res_ctx_t: if succeeds return memory context, fails return NULL.
 */
-XDC_API res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height);
+EXP_API res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height);
 
 /*
 @FUNCTION destroy_context: destroy device or memory context.
 @INPUT res_ctx_t rdc: device or memory context resource handle.
 @RETURN void: none.
 */
-XDC_API void destroy_context(res_ctx_t rdc);
+EXP_API void destroy_context(res_ctx_t rdc);
 
 /*
 @FUNCTION render_context: render source memory context bitmap into destination device context.
@@ -75,7 +75,7 @@ XDC_API void destroy_context(res_ctx_t rdc);
 @INPUT int dsth: destination bitmap height.
 @RETURN void: none.
 */
-XDC_API void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
+EXP_API void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
 
 /*
 @FUNCTION get_device_caps: get device context capabilities.
@@ -83,7 +83,7 @@ XDC_API void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, in
 @OUTPUT dev_cap_t* pcap: device capabilities struct for returning information.
 @RETURN void: none.
 */
-XDC_API void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
+EXP_API void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
 
 /*
 @FUNCTION text_mm_metric: get character millimeter metrics according to the font.
@@ -92,7 +92,7 @@ XDC_API void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
 @OUTPUT xsize_t* pxs: the size struct for returning character millimeter metrics.
 @RETURN void: none.
 */
-XDC_API void text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
 
 /*
 @FUNCTION text_pt_metric: get character points metrics according to the font.
@@ -101,7 +101,7 @@ XDC_API void text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
 @OUTPUT xsize_t* pxs: the size struct for returning character millimeter metrics.
 @RETURN void: none.
 */
-XDC_API void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
 
 /*
 @FUNCTION text_mm_size: get text millimeter metrics according to the font.
@@ -112,7 +112,7 @@ XDC_API void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
 @OUTPUT xsize_t* pxs: the size struct for returning text millimeter metrics.
 @RETURN void: none.
 */
-XDC_API void text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+EXP_API void text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
 
 /*
 @FUNCTION text_pt_size: get text points metrics according to the font.
@@ -123,7 +123,7 @@ XDC_API void text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt,
 @OUTPUT xsize_t* pxs: the size struct for returning text points metrics.
 @RETURN void: none.
 */
-XDC_API void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+EXP_API void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
 
 /*
 @FUNCTION pt_per_mm: calc points per millimeter.
@@ -131,7 +131,7 @@ XDC_API void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt,
 @INPUT bool_t horz: nonzero for horizonal calcing, zero for vertical calcing.
 @RETURN float: float millimeter value.
 */
-XDC_API float pt_per_mm(res_ctx_t rdc, bool_t horz);
+EXP_API float pt_per_mm(res_ctx_t rdc, bool_t horz);
 
 /*
 @FUNCTION cast_pt_to_mm: mapping points to millimeter.
@@ -140,7 +140,7 @@ XDC_API float pt_per_mm(res_ctx_t rdc, bool_t horz);
 @INPUT bool_t horz: nonzero for horizonal mapping, zero for vertical mapping.
 @RETURN float: float millimeter value.
 */
-XDC_API float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
+EXP_API float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
 
 /*
 @FUNCTION cast_mm_to_pt: mapping millimeter to points.
@@ -149,7 +149,7 @@ XDC_API float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
 @INPUT bool_t horz: nonzero for horizonal mapping, zero for vertical mapping.
 @RETURN float: float millimeter value.
 */
-XDC_API int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
+EXP_API int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
 
 /*
 @FUNCTION font_size: calc suitable font size by height in points.
@@ -157,7 +157,7 @@ XDC_API int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
 @INPUT int height: the height value in points.
 @RETURN int: font size.
 */
-XDC_API int font_size(res_ctx_t rdc, int height);
+EXP_API int font_size(res_ctx_t rdc, int height);
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 
@@ -166,21 +166,21 @@ XDC_API int font_size(res_ctx_t rdc, int height);
 @INPUT const dev_prn_t* pmod: the printer device mode.
 @RETURN res_ctx_t: if succeeds return device context, fails return NULL.
 */
-XDC_API res_ctx_t create_printer_context(const dev_prn_t* pmod);
+EXP_API res_ctx_t create_printer_context(const dev_prn_t* pmod);
 
 /*
 @FUNCTION destroy_printer_context: destroy printer device context.
 @INPUT res_ctx_t rdc: the printer device context.
 @RETURN void: none.
 */
-XDC_API void destroy_printer_context(res_ctx_t rdc);
+EXP_API void destroy_printer_context(res_ctx_t rdc);
 
 /*
 @FUNCTION default_printer_mode: get default printer device mode.
 @OUTPUT dev_prn_t* pmod: for returning device mode.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t default_printer_mode(dev_prn_t* pmod);
+EXP_API bool_t default_printer_mode(dev_prn_t* pmod);
 
 /*
 @FUNCTION setup_printer_mode: show printer setup dialog and set printer mode.
@@ -188,21 +188,21 @@ XDC_API bool_t default_printer_mode(dev_prn_t* pmod);
 @OUTPUT dev_prn_t* pmod: for returning device mode.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t setup_printer_mode(res_win_t wnd, dev_prn_t* pmod);
+EXP_API bool_t setup_printer_mode(res_win_t wnd, dev_prn_t* pmod);
 
 /*
 @FUNCTION begin_page: start printing a page.
 @INPUT res_ctx_t rdc: the printer device context.
 @RETURN void: none.
 */
-XDC_API void  begin_page(res_ctx_t rdc);
+EXP_API void  begin_page(res_ctx_t rdc);
 
 /*
 @FUNCTION end_page: end printing a page.
 @INPUT res_ctx_t rdc: the printer device context.
 @RETURN void: none.
 */
-XDC_API void  end_page(res_ctx_t rdc);
+EXP_API void  end_page(res_ctx_t rdc);
 
 /*
 @FUNCTION begin_doc: start printing a document.
@@ -210,14 +210,14 @@ XDC_API void  end_page(res_ctx_t rdc);
 @INPUT const tchar_t* docname: the document title.
 @RETURN void: none.
 */
-XDC_API void  begin_doc(res_ctx_t rdc, const tchar_t* docname);
+EXP_API void  begin_doc(res_ctx_t rdc, const tchar_t* docname);
 
 /*
 @FUNCTION end_doc: end printing a document.
 @INPUT res_ctx_t rdc: the printer device context.
 @RETURN void: none.
 */
-XDC_API void  end_doc(res_ctx_t rdc);
+EXP_API void  end_doc(res_ctx_t rdc);
 
 #endif //XDU_SUPPORT_CONTEXT_PRINTER
 
@@ -228,14 +228,14 @@ XDC_API void  end_doc(res_ctx_t rdc);
 @INPUT const xrect_t* pxr: the region rect.
 @RETURN res_rgn_t: if succeeds return region resource handle, fails return NULL.
 */
-XDC_API res_rgn_t create_region(const tchar_t* shape, const xrect_t* pxr);
+EXP_API res_rgn_t create_region(const tchar_t* shape, const xrect_t* pxr);
 
 /*
 @FUNCTION delete_region: free region object.
 @INPUT res_rgn_t rgn: the region resource handle.
 @RETURN void: none.
 */
-XDC_API void	delete_region(res_rgn_t rgn);
+EXP_API void	delete_region(res_rgn_t rgn);
 
 /*
 @FUNCTION pt_in_region: test if the point inside the region.
@@ -243,7 +243,7 @@ XDC_API void	delete_region(res_rgn_t rgn);
 @INPUT const xpoint_t* ppt: the point to test.
 @RETURN bool_t: if inside return nonzero, otherwise return zero.
 */
-XDC_API bool_t	pt_in_region(res_rgn_t rgn, const xpoint_t* ppt);
+EXP_API bool_t	pt_in_region(res_rgn_t rgn, const xpoint_t* ppt);
 #endif
 
 #ifdef	__cplusplus

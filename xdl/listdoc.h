@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_list_icon_span: set the list icon span.
 */
-#define set_list_icon_span(ptr,n)							set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_list_icon_span(ptr,n)							set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_list_icon_span: get the list icon span.
 */
-#define get_list_icon_span(ptr)								get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_list_icon_span(ptr)								get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER itemWidth: numeric.
 @SET set_list_item_width: set the list item width.
@@ -213,42 +213,42 @@ extern "C" {
 @FUNCTION create_list_doc: create a list document.
 @RETURN link_t_ptr: return the list document link component.
 */
-XDL_API link_t_ptr create_list_doc(void);
+EXP_API link_t_ptr create_list_doc(void);
 
 /*
 @FUNCTION destroy_list_doc: destroy a list document.
 @INPUT link_t_ptr ptr: the list link component.
 @RETURN void: none.
 */
-XDL_API void destroy_list_doc(link_t_ptr ptr);
+EXP_API void destroy_list_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_list_doc: clear the list document.
 @INPUT link_t_ptr ptr: the list link component.
 @RETURN void: none.
 */
-XDL_API void clear_list_doc(link_t_ptr ptr);
+EXP_API void clear_list_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_list_item_level: get the item level.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN int: return the zero based level index.
 */
-XDL_API int get_list_item_level(link_t_ptr ilk);
+EXP_API int get_list_item_level(link_t_ptr ilk);
 
 /*
 @FUNCTION get_list_child_item_count: counting the list child items.
 @INPUT link_t_ptr ptr: the parent item link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_list_child_item_count(link_t_ptr ilk);
+EXP_API int get_list_child_item_count(link_t_ptr ilk);
 
 /*
 @FUNCTION is_list_doc: test is list document.
 @INPUT link_t_ptr ptr: the list link component.
 @RETURN bool_t: return nonzero for being a list document, otherwise return zero.
 */
-XDL_API bool_t is_list_doc(link_t_ptr ptr);
+EXP_API bool_t is_list_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_list_item: test is list item node.
@@ -256,14 +256,14 @@ XDL_API bool_t is_list_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a list item, otherwise return zero.
 */
-XDL_API bool_t is_list_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_list_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION list_doc_from_item: trackback to list document from child item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the list link component.
 */
-XDL_API link_t_ptr list_doc_from_item(link_t_ptr ilk);
+EXP_API link_t_ptr list_doc_from_item(link_t_ptr ilk);
 
 /*
 @FUNCTION insert_list_item: add a new item to list document.
@@ -271,21 +271,21 @@ XDL_API link_t_ptr list_doc_from_item(link_t_ptr ilk);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_list_item(link_t_ptr ilk, link_t_ptr pos);
+EXP_API link_t_ptr insert_list_item(link_t_ptr ilk, link_t_ptr pos);
 
 /*
 @FUNCTION get_list_first_child_item: get the first child item.
 @INPUT link_t_ptr ilk: the parent item link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_list_first_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_list_first_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_list_last_child_item: get the last child item.
 @INPUT link_t_ptr ilk: the parent item link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_list_last_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_list_last_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_list_item_at: get the child item at position.
@@ -293,35 +293,35 @@ XDL_API link_t_ptr get_list_last_child_item(link_t_ptr ilk);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_list_item_at(link_t_ptr ilk, int index);
+EXP_API link_t_ptr get_list_item_at(link_t_ptr ilk, int index);
 
 /*
 @FUNCTION get_list_parent_item: get the parent item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the parent item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_list_parent_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_list_parent_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_list_next_sibling_item: get the next sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the next sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_list_next_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_list_next_sibling_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_list_prev_sibling_item: get the previous sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the previous sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_list_prev_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_list_prev_sibling_item(link_t_ptr ilk);
 
 /*
 @FUNCTION delete_list_item: delete the list item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_list_item(link_t_ptr ilk);
+EXP_API void delete_list_item(link_t_ptr ilk);
 
 /*
 @FUNCTION insert_list_file_item: add a new file item to list document.
@@ -329,7 +329,7 @@ XDL_API void delete_list_item(link_t_ptr ilk);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_list_file_item(link_t_ptr ilk, link_t_ptr pos);
+EXP_API link_t_ptr insert_list_file_item(link_t_ptr ilk, link_t_ptr pos);
 
 /*
 @FUNCTION insert_list_directory_item: add a new directory item to list document.
@@ -337,21 +337,21 @@ XDL_API link_t_ptr insert_list_file_item(link_t_ptr ilk, link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_list_directory_item(link_t_ptr ilk, link_t_ptr pos);
+EXP_API link_t_ptr insert_list_directory_item(link_t_ptr ilk, link_t_ptr pos);
 
 /*
 @FUNCTION is_list_file_item: test is a file item.
 @INPUT link_t_ptr ilk: the list link component.
 @RETURN bool_t: return nonzero being a file item, otherwise return zero.
 */
-XDL_API bool_t is_list_file_item(link_t_ptr ilk);
+EXP_API bool_t is_list_file_item(link_t_ptr ilk);
 
 /*
 @FUNCTION is_list_directory_item: test is a directory item.
 @INPUT link_t_ptr ilk: the list link component.
 @RETURN bool_t: return nonzero being a directory item, otherwise return zero.
 */
-XDL_API bool_t is_list_directory_item(link_t_ptr ilk);
+EXP_API bool_t is_list_directory_item(link_t_ptr ilk);
 
 /*
 @FUNCTION set_list_item_file_info: set file information to item.
@@ -359,7 +359,7 @@ XDL_API bool_t is_list_directory_item(link_t_ptr ilk);
 @INPUT const file_info_t* pfi: the file information struct.
 @RETURN void: none.
 */
-XDL_API void set_list_item_file_info(link_t_ptr ilk, const file_info_t* pfi);
+EXP_API void set_list_item_file_info(link_t_ptr ilk, const file_info_t* pfi);
 
 /*
 @FUNCTION get_list_item_file_info: get file information from item.
@@ -367,7 +367,7 @@ XDL_API void set_list_item_file_info(link_t_ptr ilk, const file_info_t* pfi);
 @OUTPUT file_info_t* pfi: the file information struct.
 @RETURN void: none.
 */
-XDL_API void get_list_item_file_info(link_t_ptr ilk, file_info_t* pfi);
+EXP_API void get_list_item_file_info(link_t_ptr ilk, file_info_t* pfi);
 
 #ifdef	__cplusplus
 }

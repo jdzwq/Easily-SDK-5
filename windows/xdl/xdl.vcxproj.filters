@@ -600,6 +600,30 @@
     <ClInclude Include="..\..\xdl\xdletag.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\srvudp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\srvssl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\srvssh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\srvslot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\srvpnp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\srvhttp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\srvtcp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\xdlsrv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -1131,6 +1155,27 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\xdletag.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvudp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvtcp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvssl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvssh.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvslot.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvpnp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\srvhttp.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

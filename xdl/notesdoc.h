@@ -66,11 +66,11 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_notes_doc();
+EXP_API link_t_ptr create_notes_doc();
 
-XDL_API void destroy_notes_doc(link_t_ptr ptr);
+EXP_API void destroy_notes_doc(link_t_ptr ptr);
 
-XDL_API bool_t is_notes_doc(link_t_ptr ptr);
+EXP_API bool_t is_notes_doc(link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

@@ -30,7 +30,7 @@ extern "C" {
 	* \param key      the secret key
 	* \param keylen   length of the key
 	*/
-	XDL_API void arc4_setup(arc4_context *ctx, unsigned char *key, int keylen);
+	EXP_API void arc4_setup(arc4_context *ctx, unsigned char *key, int keylen);
 
 	/**
 	* \brief          ARC4 cipher function
@@ -40,7 +40,7 @@ extern "C" {
 	* \param input    input buffer to be processed
 	* \param output   output buffer
 	*/
-	XDL_API void arc4_crypt(arc4_context *ctx, int length, unsigned char *input, unsigned char* output);
+	EXP_API void arc4_crypt(arc4_context *ctx, int length, unsigned char *input, unsigned char* output);
 
 
 #ifdef __cplusplus

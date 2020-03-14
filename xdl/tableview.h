@@ -47,19 +47,19 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr);
+	EXP_API void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr);
 
-	XDL_API void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
+	EXP_API void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
 
-	XDL_API void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
+	EXP_API void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
 
-	XDL_API int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk);
+	EXP_API int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk);
 
-	XDL_API void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, const canvbox_t* pbox, link_t_ptr ptr, float ratio);
+	EXP_API void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, const canvbox_t* pbox, link_t_ptr ptr, float ratio);
 
 #ifdef	__cplusplus
 }

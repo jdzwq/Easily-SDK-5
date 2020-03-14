@@ -47,14 +47,14 @@ extern "C" {
 @INPUT res_file_t fd: if type is ASYNC_QUEUE, this param is the input output handle for creating queue.
 @RETURN  async_t*: the async struct for allocing background resource.
 */
-XDL_API async_t* async_alloc_lapp(int type, int ms, res_file_t fd);
+EXP_API async_t* async_alloc_lapp(int type, int ms, res_file_t fd);
 
 /*
 @FUNCTION async_free_lapp: free async operation resource.
 @INPUT async_t* pas: the async struct for releasing background resource.
 @RETURN void: none.
 */
-XDL_API void async_free_lapp(async_t* pas);
+EXP_API void async_free_lapp(async_t* pas);
 
 
 #ifdef	__cplusplus

@@ -141,35 +141,35 @@ extern "C" {
 @FUNCTION create_anno_doc: create a annotation document.
 @RETURN link_t_ptr: return the annotation document link component.
 */
-XDL_API link_t_ptr create_anno_doc(void);
+EXP_API link_t_ptr create_anno_doc(void);
 
 /*
 @FUNCTION destroy_anno_doc: destroy a annotation document.
 @INPUT link_t_ptr ptr: the annotation link component.
 @RETURN void: none.
 */
-XDL_API void destroy_anno_doc(link_t_ptr ptr);
+EXP_API void destroy_anno_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_anno_doc: clear the annotation document.
 @INPUT link_t_ptr ptr: the annotation link component.
 @RETURN void: none.
 */
-XDL_API void clear_anno_doc(link_t_ptr ptr);
+EXP_API void clear_anno_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_anno_artiset: get annotation article set.
 @INPUT link_t_ptr ptr: the annotation link component.
 @RETURN link_t_ptr: the article set link component.
 */
-XDL_API link_t_ptr get_anno_artiset(link_t_ptr ptr);
+EXP_API link_t_ptr get_anno_artiset(link_t_ptr ptr);
 
 /*
 @FUNCTION is_anno_doc: test is annotation document.
 @INPUT link_t_ptr ptr: the annotation link component.
 @RETURN bool_t: return nonzero for being a annotation document, otherwise return zero.
 */
-XDL_API bool_t is_anno_doc(link_t_ptr ptr);
+EXP_API bool_t is_anno_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_anno_arti: test is annotation article node.
@@ -177,14 +177,14 @@ XDL_API bool_t is_anno_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the article link component.
 @RETURN bool_t: return nonzero for being a article, otherwise return zero.
 */
-XDL_API bool_t is_anno_arti(link_t_ptr ptr, link_t_ptr plk);
+EXP_API bool_t is_anno_arti(link_t_ptr ptr, link_t_ptr plk);
 
 /*
 @FUNCTION anno_doc_from_arti: trackback to annotation document from article node.
 @INPUT link_t_ptr ilk: the article link component.
 @RETURN link_t_ptr: return the annotation link component.
 */
-XDL_API link_t_ptr anno_doc_from_arti(link_t_ptr ilk);
+EXP_API link_t_ptr anno_doc_from_arti(link_t_ptr ilk);
 
 /*
 @FUNCTION insert_anno_arti: add a new article to annotation document.
@@ -192,7 +192,7 @@ XDL_API link_t_ptr anno_doc_from_arti(link_t_ptr ilk);
 @INPUT link_t_ptr pos: the article link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new article link component.
 */
-XDL_API link_t_ptr insert_anno_arti(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_anno_arti(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_anno_next_arti: get the next article.
@@ -200,7 +200,7 @@ XDL_API link_t_ptr insert_anno_arti(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the article link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the article link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_anno_next_arti(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_anno_next_arti(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_anno_prev_arti: get the previous article.
@@ -208,7 +208,7 @@ XDL_API link_t_ptr get_anno_next_arti(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the article link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the article link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_anno_prev_arti(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_anno_prev_arti(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_anno_arti_at: get the article at position.
@@ -216,28 +216,28 @@ XDL_API link_t_ptr get_anno_prev_arti(link_t_ptr ptr,link_t_ptr pos);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the article link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_anno_arti_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_anno_arti_at(link_t_ptr ptr, int index);
 
 /*
 @FUNCTION delete_anno_arti: delete the article.
 @INPUT link_t_ptr ilk: the article link component.
 @RETURN void: none.
 */
-XDL_API void delete_anno_arti(link_t_ptr ilk);
+EXP_API void delete_anno_arti(link_t_ptr ilk);
 
 /*
 @FUNCTION get_anno_arti_count: counting the articles in annotation document.
 @INPUT link_t_ptr ptr: the annotation link component.
 @RETURN int: return the number of nodes.
 */
-XDL_API int get_anno_arti_count(link_t_ptr ptr);
+EXP_API int get_anno_arti_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_anno_arti_selected_count: counting the selected articles in annotation document.
 @INPUT link_t_ptr ptr: the annotation link component.
 @RETURN int: return the number of nodes.
 */
-XDL_API int get_anno_arti_selected_count(link_t_ptr ptr);
+EXP_API int get_anno_arti_selected_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_anno_arti_xpoint: get the article points.
@@ -246,7 +246,7 @@ XDL_API int get_anno_arti_selected_count(link_t_ptr ptr);
 @INPUT int max: the points buffer size.
 @RETURN int: return the number of pioints.
 */
-XDL_API int get_anno_arti_xpoint(link_t_ptr ilk, xpoint_t* ppt, int max);
+EXP_API int get_anno_arti_xpoint(link_t_ptr ilk, xpoint_t* ppt, int max);
 
 /*
 @FUNCTION set_anno_arti_xpoint: set the article points.
@@ -255,7 +255,7 @@ XDL_API int get_anno_arti_xpoint(link_t_ptr ilk, xpoint_t* ppt, int max);
 @INPUT int n: the number of points.
 @RETURN int: return the number of pioints.
 */
-XDL_API void set_anno_arti_xpoint(link_t_ptr ilk, const xpoint_t* ppt, int n);
+EXP_API void set_anno_arti_xpoint(link_t_ptr ilk, const xpoint_t* ppt, int n);
 
 #ifdef	__cplusplus
 }

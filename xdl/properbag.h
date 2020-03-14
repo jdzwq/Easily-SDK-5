@@ -40,81 +40,81 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API int write_style_attr(const tchar_t* org_style, int slen, const tchar_t* sz_key, int klen, const tchar_t* sz_val, int vlen, tchar_t* new_style, int max);
+EXP_API int write_style_attr(const tchar_t* org_style, int slen, const tchar_t* sz_key, int klen, const tchar_t* sz_val, int vlen, tchar_t* new_style, int max);
 
-XDL_API int read_style_attr(const tchar_t* style, int len, const tchar_t* sz_key, int klen, tchar_t* buf, int max);
+EXP_API int read_style_attr(const tchar_t* style, int len, const tchar_t* sz_key, int klen, tchar_t* buf, int max);
 
-XDL_API void properbag_parse_stylesheet(link_t_ptr ptr,const tchar_t* str);
+EXP_API void properbag_parse_stylesheet(link_t_ptr ptr,const tchar_t* str);
 
-XDL_API int properbag_format_stylesheet(link_t_ptr ptr,tchar_t* buf,int len);
+EXP_API int properbag_format_stylesheet(link_t_ptr ptr,tchar_t* buf,int len);
 
-XDL_API void properbag_write_images_attributes(link_t_ptr ptr, link_t_ptr imagelist);
+EXP_API void properbag_write_images_attributes(link_t_ptr ptr, link_t_ptr imagelist);
 
-XDL_API void properbag_read_images_attributes(link_t_ptr ptr, link_t_ptr imagelist);
+EXP_API void properbag_read_images_attributes(link_t_ptr ptr, link_t_ptr imagelist);
 
-XDL_API void properbag_write_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem);
+EXP_API void properbag_write_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem);
 
-XDL_API void properbag_read_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem);
+EXP_API void properbag_read_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem);
 
-XDL_API void properbag_write_form_attributes(link_t_ptr ptr, link_t_ptr form);
+EXP_API void properbag_write_form_attributes(link_t_ptr ptr, link_t_ptr form);
 
-XDL_API void properbag_read_form_attributes(link_t_ptr ptr, link_t_ptr form);
+EXP_API void properbag_read_form_attributes(link_t_ptr ptr, link_t_ptr form);
 
-XDL_API void properbag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk);
+EXP_API void properbag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk);
 
-XDL_API void properbag_read_field_attributes(link_t_ptr ptr, link_t_ptr flk);
+EXP_API void properbag_read_field_attributes(link_t_ptr ptr, link_t_ptr flk);
 
-XDL_API void properbag_write_grid_attributes(link_t_ptr ptr, link_t_ptr grid);
+EXP_API void properbag_write_grid_attributes(link_t_ptr ptr, link_t_ptr grid);
 
-XDL_API void properbag_read_grid_attributes(link_t_ptr ptr, link_t_ptr grid);
+EXP_API void properbag_read_grid_attributes(link_t_ptr ptr, link_t_ptr grid);
 
-XDL_API void properbag_write_col_attributes(link_t_ptr ptr, link_t_ptr clk);
+EXP_API void properbag_write_col_attributes(link_t_ptr ptr, link_t_ptr clk);
 
-XDL_API void properbag_read_col_attributes(link_t_ptr ptr, link_t_ptr clk);
+EXP_API void properbag_read_col_attributes(link_t_ptr ptr, link_t_ptr clk);
 
-XDL_API void properbag_write_statis_attributes(link_t_ptr ptr, link_t_ptr grid);
+EXP_API void properbag_write_statis_attributes(link_t_ptr ptr, link_t_ptr grid);
 
-XDL_API void properbag_read_statis_attributes(link_t_ptr ptr, link_t_ptr grid);
+EXP_API void properbag_read_statis_attributes(link_t_ptr ptr, link_t_ptr grid);
 
-XDL_API void properbag_write_gax_attributes(link_t_ptr ptr, link_t_ptr glk);
+EXP_API void properbag_write_gax_attributes(link_t_ptr ptr, link_t_ptr glk);
 
-XDL_API void properbag_read_gax_attributes(link_t_ptr ptr, link_t_ptr glk);
+EXP_API void properbag_read_gax_attributes(link_t_ptr ptr, link_t_ptr glk);
 
-XDL_API void properbag_write_yax_attributes(link_t_ptr ptr, link_t_ptr ylk);
+EXP_API void properbag_write_yax_attributes(link_t_ptr ptr, link_t_ptr ylk);
 
-XDL_API void properbag_read_yax_attributes(link_t_ptr ptr, link_t_ptr ylk);
+EXP_API void properbag_read_yax_attributes(link_t_ptr ptr, link_t_ptr ylk);
 
-XDL_API void properbag_write_topog_attributes(link_t_ptr ptr, link_t_ptr topog, int row, int col);
+EXP_API void properbag_write_topog_attributes(link_t_ptr ptr, link_t_ptr topog, int row, int col);
 
-XDL_API void properbag_read_topog_attributes(link_t_ptr ptr, link_t_ptr topog);
+EXP_API void properbag_read_topog_attributes(link_t_ptr ptr, link_t_ptr topog);
 
-XDL_API void properbag_write_topog_spot_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_write_topog_spot_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_read_topog_spot_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_read_topog_spot_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_write_rich_attributes(link_t_ptr ptr, link_t_ptr rich);
+EXP_API void properbag_write_rich_attributes(link_t_ptr ptr, link_t_ptr rich);
 
-XDL_API void properbag_read_rich_attributes(link_t_ptr ptr, link_t_ptr rich);
+EXP_API void properbag_read_rich_attributes(link_t_ptr ptr, link_t_ptr rich);
 
-XDL_API void properbag_write_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_write_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_read_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_read_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_write_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog);
+EXP_API void properbag_write_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog);
 
-XDL_API void properbag_read_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog);
+EXP_API void properbag_read_dialog_attributes(link_t_ptr ptr, link_t_ptr dialog);
 
-XDL_API void properbag_write_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_write_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_read_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_read_dialog_item_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram);
+EXP_API void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram);
 
-XDL_API void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram);
+EXP_API void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram);
 
-XDL_API void properbag_write_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_write_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void properbag_read_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API void properbag_read_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

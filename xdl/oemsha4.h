@@ -41,7 +41,7 @@ extern "C" {
 	* \param ctx      context to be initialized
 	* \param is384    0 = use SHA512, 1 = use SHA384
 	*/
-	XDL_API void sha4_starts(sha4_context *ctx, int is384);
+	EXP_API void sha4_starts(sha4_context *ctx, int is384);
 
 	/**
 	* \brief          SHA-512 process buffer
@@ -50,7 +50,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void sha4_update(sha4_context *ctx, unsigned char *input, int ilen);
+	EXP_API void sha4_update(sha4_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          SHA-512 final digest
@@ -58,7 +58,7 @@ extern "C" {
 	* \param ctx      SHA-512 context
 	* \param output   SHA-384/512 checksum result
 	*/
-	XDL_API void sha4_finish(sha4_context *ctx, unsigned char output[64]);
+	EXP_API void sha4_finish(sha4_context *ctx, unsigned char output[64]);
 
 	/**
 	* \brief          Output = SHA-512( input buffer )
@@ -68,7 +68,7 @@ extern "C" {
 	* \param output   SHA-384/512 checksum result
 	* \param is384    0 = use SHA512, 1 = use SHA384
 	*/
-	XDL_API void sha4(unsigned char *input, int ilen,
+	EXP_API void sha4(unsigned char *input, int ilen,
 		unsigned char output[64], int is384);
 
 	/**
@@ -81,7 +81,7 @@ extern "C" {
 	* \return         0 if successful, 1 if fopen failed,
 	*                 or 2 if fread failed
 	*/
-	//XDL_API int sha4_file(char *path, unsigned char output[64], int is384);
+	//EXP_API int sha4_file(char *path, unsigned char output[64], int is384);
 
 	/**
 	* \brief          SHA-512 HMAC context setup
@@ -91,7 +91,7 @@ extern "C" {
 	* \param key      HMAC secret key
 	* \param keylen   length of the HMAC key
 	*/
-	XDL_API void sha4_hmac_starts(sha4_context *ctx, unsigned char *key, int keylen,
+	EXP_API void sha4_hmac_starts(sha4_context *ctx, unsigned char *key, int keylen,
 		int is384);
 
 	/**
@@ -101,7 +101,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void sha4_hmac_update(sha4_context *ctx, unsigned char *input, int ilen);
+	EXP_API void sha4_hmac_update(sha4_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          SHA-512 HMAC final digest
@@ -109,7 +109,7 @@ extern "C" {
 	* \param ctx      HMAC context
 	* \param output   SHA-384/512 HMAC checksum result
 	*/
-	XDL_API void sha4_hmac_finish(sha4_context *ctx, unsigned char output[64]);
+	EXP_API void sha4_hmac_finish(sha4_context *ctx, unsigned char output[64]);
 
 	/**
 	* \brief          Output = HMAC-SHA-512( hmac key, input buffer )
@@ -121,7 +121,7 @@ extern "C" {
 	* \param output   HMAC-SHA-384/512 result
 	* \param is384    0 = use SHA512, 1 = use SHA384
 	*/
-	XDL_API void sha4_hmac(unsigned char *key, int keylen,
+	EXP_API void sha4_hmac(unsigned char *key, int keylen,
 		unsigned char *input, int ilen,
 		unsigned char output[64], int is384);
 

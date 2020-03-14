@@ -48,7 +48,7 @@ extern "C" {
 @INPUT const xpoint_t* ppt2: the to point struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
+EXP_API void	svg_draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
 
 /*
 @FUNCTION svg_draw_3dline: draw 3d line in svg canvas using milimeter coordinate.
@@ -58,7 +58,7 @@ XDL_API void	svg_draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt
 @INPUT const xpoint_t* ppt2: the to point struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_3dline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
+EXP_API void	svg_draw_3dline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
 
 /*
 @FUNCTION svg_draw_3drect: draw 3d rect in svg canvas using milimeter coordinate.
@@ -67,7 +67,7 @@ XDL_API void	svg_draw_3dline(canvas_t canv, const xpen_t* pxp, const xpoint_t* p
 @INPUT const xrect_t* prt: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_3drect(canvas_t canv, const xpen_t* pxp, const xrect_t* prt);
+EXP_API void	svg_draw_3drect(canvas_t canv, const xpen_t* pxp, const xrect_t* prt);
 
 /*
 @FUNCTION svg_draw_polyline: draw polyline in svg canvas using milimeter coordinate.
@@ -77,7 +77,7 @@ XDL_API void	svg_draw_3drect(canvas_t canv, const xpen_t* pxp, const xrect_t* pr
 @INPUT int n: the point entity count.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
+EXP_API void	svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
 
 /*
 @FUNCTION svg_draw_polygon: draw polygon in svg canvas using milimeter coordinate.
@@ -88,7 +88,7 @@ XDL_API void	svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t*
 @INPUT int n: the point entity count.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
+EXP_API void	svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
 
 /*
 @FUNCTION svg_draw_bezier: draw bezier in svg canvas using millimeter coordinate
@@ -100,7 +100,7 @@ XDL_API void	svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* 
 @INPUT const xpoint_t* ppt4: the end point using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+EXP_API void	svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
 
 /*
 @FUNCTION svg_draw_curve: draw curve in svg canvas using millimeter coordinate
@@ -110,7 +110,7 @@ XDL_API void	svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* p
 @INPUT int n: the point array size.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
+EXP_API void	svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
 
 /*
 @FUNCTION draw_rect: draw svg_draw_rect in svg canvas using milimeter coordinate.
@@ -120,7 +120,7 @@ XDL_API void	svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* pp
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
+EXP_API void	svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
 
 /*
 @FUNCTION svg_gradient_rect: gradient a rect in svg canvas using milimeter coordinate.
@@ -129,7 +129,7 @@ XDL_API void	svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr);
+EXP_API void	svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr);
 
 /*
 @FUNCTION svg_alphablend_rect: alphablend a rect in svg canvas using millimeter coordinate.
@@ -139,7 +139,7 @@ XDL_API void	svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t
 @INPUT int opacity: the alphablend level: 0~255, or use predefined value: ALPHA_SOLID(250), ALPHA_SOFT(128), ALPHA_TRANS(64).
 @RETURN void: none.
 */
-XDL_API void	svg_alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+EXP_API void	svg_alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opacity);
 
 /*
 @FUNCTION svg_draw_round: draw round rect in svg canvas using millimeter coordinate.
@@ -149,7 +149,7 @@ XDL_API void	svg_alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
+EXP_API void	svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
 
 /*
 @FUNCTION svg_draw_ellipse: draw ellipse in svg canvas using millimeter coordinate.
@@ -159,7 +159,7 @@ XDL_API void	svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* px
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
+EXP_API void	svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
 
 /*
 @FUNCTION svg_draw_pie: draw pie in svg canvas using millimeter coordinate.
@@ -173,7 +173,7 @@ XDL_API void	svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* 
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
+EXP_API void	svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
 
 /*
 @FUNCTION svg_draw_arc: draw arc in svg canvas using millimeter coordinate.
@@ -186,7 +186,7 @@ XDL_API void	svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb,
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
+EXP_API void	svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
 
 /*
 @FUNCTION svg_draw_arrow: draw arrrow in svg canvas using millimeter coordinate.
@@ -198,7 +198,7 @@ XDL_API void	svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt,
 @INPUT double arc: the arrow angle PI value.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc);
+EXP_API void	svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc);
 
 /*
 @FUNCTION svg_draw_shape: draw shape in svg canvas using millimeter coordinate.
@@ -209,7 +209,7 @@ XDL_API void	svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* px
 @INPUT const tchar_t* shape: the shape name, eg: ATTR_SHAPE_*.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
+EXP_API void	svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
 
 /*
 @FUNCTION svg_multi_line: draw multiple base line in svg canvas using millimeter coordinate, the line separated by line height of font and face.
@@ -220,7 +220,7 @@ XDL_API void	svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* px
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr);
+EXP_API void	svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr);
 
 /*
 @FUNCTION svg_draw_text: draw text in svg canvas using millimeter coordinate.
@@ -232,7 +232,7 @@ XDL_API void	svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* px
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
+EXP_API void	svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
 
 /*
 @FUNCTION svg_text_out: output text in svg canvas using millimeter coordinate.
@@ -243,7 +243,7 @@ XDL_API void	svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDL_API void	svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
+EXP_API void	svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
 
 /*
 @FUNCTION svg_color_out: output color sequence in svg canvas using millimeter coordinate.
@@ -254,7 +254,7 @@ XDL_API void	svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDL_API void	svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len);
+EXP_API void	svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len);
 
 /*
 @FUNCTION svg_draw_var_text: draw string object in svg canvas using millimeter coordinate.
@@ -265,7 +265,7 @@ XDL_API void	svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const
 @INPUT string_t var: the string object.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var);
+EXP_API void	svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var);
 
 /*
 @FUNCTION svg_draw_tag_text: draw tag document in svg canvas using millimeter coordinate.
@@ -277,7 +277,7 @@ XDL_API void	svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t*
 @INPUT int page: the page will be drawed, the page index is 1-based.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page);
+EXP_API void	svg_draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page);
 
 /*
 @FUNCTION svg_draw_memo_text: draw memo document in svg canvas using millimeter coordinate.
@@ -289,7 +289,7 @@ XDL_API void	svg_draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t*
 @INPUT int page: the page will be drawed, the page index is 1-based.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page);
+EXP_API void	svg_draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page);
 
 /*
 @FUNCTION svg_draw_rich_text: draw rich document in svg canvas using millimeter coordinate.
@@ -301,7 +301,7 @@ XDL_API void	svg_draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t
 @INPUT int page: the page will be drawed, the page index is 1-based.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page);
+EXP_API void	svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page);
 
 /*
 @FUNCTION svg_draw_image: draw image in svg canvas using millimeter coordinate.
@@ -310,7 +310,7 @@ XDL_API void	svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr);
+EXP_API void	svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr);
 
 /*
 @FUNCTION svg_draw_code128: draw CODE128 bar in svg canvas using millimeter coordinate.
@@ -321,7 +321,7 @@ XDL_API void	svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* p
 @INPUT int len: text length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-XDL_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
 
 /*
 @FUNCTION svg_draw_pdf417: draw PDF427 bar in svg canvas using millimeter coordinate.
@@ -332,7 +332,7 @@ XDL_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t
 @INPUT int len: text length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-XDL_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
 
 /*
 @FUNCTION svg_draw_qrcode: draw QR bar in svg canvas using millimeter coordinate.
@@ -343,7 +343,7 @@ XDL_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t*
 @INPUT int len: text length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-XDL_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
 
 /*
 @FUNCTION svg_draw_gizmo: draw gizmo icon in svg canvas using millimeter coordinate.
@@ -353,7 +353,7 @@ XDL_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t*
 @INPUT const tchar_t* iname: the icon name.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* iname);
+EXP_API void	svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* iname);
 
 /*
 @FUNCTION svg_draw_pass: draw the password in svg canvas using millimeter coordinate.
@@ -365,7 +365,7 @@ XDL_API void	svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* p
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
+EXP_API void	svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
 
 /*
 @FUNCTION svg_draw_data: draw the formated data in svg canvas using millimeter coordinate.
@@ -382,7 +382,7 @@ XDL_API void	svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa
 @INPUT bool_t autowap: if nonzero, the text will auto
 @RETURN void: none.
 */
-XDL_API void	svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap);
+EXP_API void	svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap);
 
 /*
 @FUNCTION svg_text_rect: calc the text suitable rectangle in svg canvas using millimeter coordinate.
@@ -394,7 +394,7 @@ XDL_API void	svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa
 @OUTPUT xrect_t* pxr: the rect struct for returning float member.
 @RETURN void: none.
 */
-XDL_API void	svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* sz_text, int sz_len, xrect_t* pxr);
+EXP_API void	svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* sz_text, int sz_len, xrect_t* pxr);
 
 /*
 @FUNCTION svg_text_size: calc the text suitable size in svg canvas using millimeter coordinate.
@@ -405,7 +405,7 @@ XDL_API void	svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa
 @OUTPUT xsize_t* pxs: the size struct for returning float member.
 @RETURN void: none.
 */
-XDL_API void	svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+EXP_API void	svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
 
 /*
 @FUNCTION svg_text_metric: calc the image size in svg canvas using millimeter coordinate.
@@ -414,7 +414,7 @@ XDL_API void	svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt
 @OUTPUT xsize_t* pxs: the size struct for returning float member.
 @RETURN void: none.
 */
-XDL_API void	svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void	svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs);
 
 /*
 @FUNCTION svg_draw_fix_text: draw multiple line text in svg canvas using millimeter coordinate.
@@ -426,12 +426,12 @@ XDL_API void	svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs);
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-XDL_API void	svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void	svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* text, int len);
 
 
-XDL_API void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt);
+EXP_API void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt);
 
-XDL_API void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt);
+EXP_API void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt);
 
 
 #ifdef	__cplusplus

@@ -35,7 +35,7 @@ extern "C" {
 	* \param key      encryption key
 	* \param keysize  must be 128, 192 or 256
 	*/
-	XDL_API void aes_setkey_enc(aes_context *ctx, unsigned char *key, int keysize);
+	EXP_API void aes_setkey_enc(aes_context *ctx, unsigned char *key, int keysize);
 
 	/**
 	* \brief          AES key schedule (decryption)
@@ -44,7 +44,7 @@ extern "C" {
 	* \param key      decryption key
 	* \param keysize  must be 128, 192 or 256
 	*/
-	XDL_API void aes_setkey_dec(aes_context *ctx, unsigned char *key, int keysize);
+	EXP_API void aes_setkey_dec(aes_context *ctx, unsigned char *key, int keysize);
 
 	/**
 	* \brief          AES-ECB block encryption/decryption
@@ -54,7 +54,7 @@ extern "C" {
 	* \param input    16-byte input block
 	* \param output   16-byte output block
 	*/
-	XDL_API void aes_crypt_ecb(aes_context *ctx,
+	EXP_API void aes_crypt_ecb(aes_context *ctx,
 		int mode,
 		unsigned char input[16],
 		unsigned char output[16]);
@@ -69,7 +69,7 @@ extern "C" {
 	* \param input    buffer holding the input data
 	* \param output   buffer holding the output data
 	*/
-	XDL_API void aes_crypt_cbc(aes_context *ctx,
+	EXP_API void aes_crypt_cbc(aes_context *ctx,
 		int mode,
 		int length,
 		unsigned char iv[16],
@@ -87,7 +87,7 @@ extern "C" {
 	* \param input    buffer holding the input data
 	* \param output   buffer holding the output data
 	*/
-	XDL_API void aes_crypt_cfb(aes_context *ctx,
+	EXP_API void aes_crypt_cfb(aes_context *ctx,
 		int mode,
 		int length,
 		int *iv_off,

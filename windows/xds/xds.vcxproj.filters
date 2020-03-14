@@ -15,51 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\xds\xdsdef.h">
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xds\platattr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdshttp.h">
+    <ClInclude Include="..\..\xds\platform.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdsslot.h">
+    <ClInclude Include="..\..\xds\platfont.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdsssl.h">
+    <ClInclude Include="..\..\xds\platstr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdstcp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xds\xdspnp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xds\xdsssh.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xds\xdsudp.h">
+    <ClInclude Include="..\..\xds\platutil.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\xds\xdshttp.c">
+    <ClCompile Include="..\..\xds\platfont.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xds\xdsslot.c">
+    <ClCompile Include="..\..\xds\platutil.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xds\xdsssl.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xds\xdstcp.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xds\xdspnp.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xds\xdsssh.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xds\xdsudp.c">
+    <ClCompile Include="..\..\xds\platstr.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -49,35 +49,35 @@ extern "C" {
 @INPUT void* param: the paramter send into worker function.
 @RETURN void: none.
 */
-XDL_API void thread_start(res_thread_t* ph_hand, PF_THREADFUNC pf_worker, void* param);
+EXP_API void thread_start(res_thread_t* ph_hand, PF_THREADFUNC pf_worker, void* param);
 
 /*
 @FUNCTION thread_stop: terminate thread, this functoin must be called at end of the PF_THREADFUNC worker function body.
 @RETURN void: none.
 */
-XDL_API void thread_stop(void);
+EXP_API void thread_stop(void);
 
 /*
 @FUNCTION thread_sleep: let thread sleeping some millisecond, this function may be called in PF_THREADFUNC worker function.
 @INPUT int ms: millisecond, it can be negative, if so thread will sleep infinity.
 @RETURN void: none.
 */
-XDL_API void thread_sleep(int ms);
+EXP_API void thread_sleep(int ms);
 
-XDL_API void thread_yield(void);
+EXP_API void thread_yield(void);
 
 /*
 @FUNCTION thread_get_id: get the thread identifier, this function may be called in PF_THREADFUNC worker function.
 @RETURN dword_t: identifier.
 */
-XDL_API dword_t thread_get_id(void);
+EXP_API dword_t thread_get_id(void);
 
 /*
 @FUNCTION thread_join: join the thread into process thread list, then the process will wait for thread terminated befor it exit.
 @INPUT res_thread_t th: the thread handle.
 @RETURN void: none.
 */
-XDL_API void thread_join(res_thread_t th);
+EXP_API void thread_join(res_thread_t th);
 
 #ifdef XDK_SUPPORT_THREAD_EVENT
 
@@ -85,14 +85,14 @@ XDL_API void thread_join(res_thread_t th);
 @FUNCTION event_create: create system event object.
 @RETURN res_even_t: if succeeds return system resource handle, fails return NULL.
 */
-XDL_API res_even_t event_create(void);
+EXP_API res_even_t event_create(void);
 
 /*
 @FUNCTION event_destroy: destroy system event object.
 @INPUT res_even_t eh: event system resource handle.
 @RETURN void: none.
 */
-XDL_API void event_destroy(res_even_t eh);
+EXP_API void event_destroy(res_even_t eh);
 
 /*
 @FUNCTION event_wait: pause thread some time for until event singed, or timeout.
@@ -100,7 +100,7 @@ XDL_API void event_destroy(res_even_t eh);
 @INPUT int ms: millisecond. it can be negative value, if so, the thread will wait infinity until event signed.
 @RETURN wait_t: if succeeds return WAIT_RET, if fails return WAIT_ERR, otherwise timeout with WAIT_TMO returned.
 */
-XDL_API wait_t event_wait(res_even_t eh, int ms);
+EXP_API wait_t event_wait(res_even_t eh, int ms);
 
 /*
 @FUNCTION event_sign: sign or unsign the event.
@@ -108,7 +108,7 @@ XDL_API wait_t event_wait(res_even_t eh, int ms);
 @INPUT bool_t b: if nonzero sign the event, if zero unsign the event.
 @RETURN void: none.
 */
-XDL_API void event_sign(res_even_t eh, bool_t b);
+EXP_API void event_sign(res_even_t eh, bool_t b);
 
 #endif
 
@@ -118,35 +118,35 @@ XDL_API void event_sign(res_even_t eh, bool_t b);
 @FUNCTION criti_create: create critical section system object.
 @RETURN res_crit_t: system resource handle.
 */
-XDL_API res_crit_t criti_create(void);
+EXP_API res_crit_t criti_create(void);
 
 /*
 @FUNCTION criti_destroy: destroy critical section system object.
 @INPUT res_crit_t cr: the critical section system resource handle.
 @RETURN void: none.
 */
-XDL_API void criti_destroy(res_crit_t cr);
+EXP_API void criti_destroy(res_crit_t cr);
 
 /*
 @FUNCTION criti_enter: try enter critical section, if other thread occupy the section, then the calling thread must wait.
 @INPUT res_crit_t cr: the critical section system resource handle.
 @RETURN void: none.
 */
-XDL_API void criti_enter(res_crit_t cr);
+EXP_API void criti_enter(res_crit_t cr);
 
 /*
 @FUNCTION criti_leave: leave critical section.
 @INPUT res_crit_t cr: the critical section system resource handle.
 @RETURN void: none.
 */
-XDL_API void criti_leave(res_crit_t cr);
+EXP_API void criti_leave(res_crit_t cr);
 
 /*
 @FUNCTION criti_query: query critical section can be entering.
 @INPUT res_crit_t cr: the critical section system resource handle.
 @RETURN bool_t: if can enter section return nonzero, otherwise return zero.
 */
-XDL_API bool_t criti_query(res_crit_t cr);
+EXP_API bool_t criti_query(res_crit_t cr);
 
 #endif
 
@@ -157,7 +157,7 @@ XDL_API bool_t criti_query(res_crit_t cr);
 @INPUT const tchar_t* mname: the mutex name.
 @RETURN res_mutx_t: if succeeds return mutex system resource handle, fails return NULL.
 */
-XDL_API res_mutx_t	mutex_create(const tchar_t* mname);
+EXP_API res_mutx_t	mutex_create(const tchar_t* mname);
 
 /*
 @FUNCTION mutex_destroy: destroy meutex system object.
@@ -165,14 +165,14 @@ XDL_API res_mutx_t	mutex_create(const tchar_t* mname);
 @INPUT res_mutx_t mx: the mutex system resource handle.
 @RETURN void: none.
 */
-XDL_API void mutex_destroy(const tchar_t* mname, res_mutx_t mx);
+EXP_API void mutex_destroy(const tchar_t* mname, res_mutx_t mx);
 
 /*
 @FUNCTION mutex_open: open a meutex created by other process.
 @INPUT const tchar_t* mname: the mutex name.
 @RETURN res_mutx_t: if the mutex exists then return sytem resource handle, otherwise return NULL.
 */
-XDL_API res_mutx_t	mutex_open(const tchar_t* mname);
+EXP_API res_mutx_t	mutex_open(const tchar_t* mname);
 
 /*
 @FUNCTION mutex_lock: occupy a mutex object.
@@ -180,14 +180,14 @@ XDL_API res_mutx_t	mutex_open(const tchar_t* mname);
 @INPUT int ms: millisecond for wait,it can be negative, if so, waiting will be infinity untill mutex object occupied.
 @RETURN wait_t: if succeeds return WAIT_RET, if fails return WAIT_ERR, otherwise timeout with WAIT_TMO returned.
 */
-XDL_API wait_t mutex_lock(res_mutx_t mx, int ms);
+EXP_API wait_t mutex_lock(res_mutx_t mx, int ms);
 
 /*
 @FUNCTION mutex_unlock: release the mutex object.
 @INPUT res_mutx_t mx: the mutex system resource handle.
 @RETURN void: none.
 */
-XDL_API void mutex_unlock(res_mutx_t mx);
+EXP_API void mutex_unlock(res_mutx_t mx);
 
 #endif
 
@@ -199,7 +199,7 @@ XDL_API void mutex_unlock(res_mutx_t mx);
 @INPUT int max: the max semaphone count.
 @RETURN res_sema_t: if succeeds return semaphone system resource handle, fails return NULL.
 */
-XDL_API res_sema_t	semap_create(const tchar_t* mname, int max);
+EXP_API res_sema_t	semap_create(const tchar_t* mname, int max);
 
 /*
 @FUNCTION semap_destroy: destroy semaphone system object.
@@ -207,14 +207,14 @@ XDL_API res_sema_t	semap_create(const tchar_t* mname, int max);
 @INPUT res_sema_t mx: the semaphone system resource handle.
 @RETURN void: none.
 */
-XDL_API void semap_destroy(const tchar_t* mname, res_sema_t mx);
+EXP_API void semap_destroy(const tchar_t* mname, res_sema_t mx);
 
 /*
 @FUNCTION semap_open: open a semaphone created by other process.
 @INPUT const tchar_t* mname: the semaphone name.
 @RETURN res_sema_t: if the semaphone exists then return sytem resource handle, otherwise return NULL.
 */
-XDL_API res_sema_t	semap_open(const tchar_t* mname);
+EXP_API res_sema_t	semap_open(const tchar_t* mname);
 
 /*
 @FUNCTION semap_lock: the semaphone P operation.
@@ -222,14 +222,14 @@ XDL_API res_sema_t	semap_open(const tchar_t* mname);
 @INPUT int ms: millisecond for wait,it can be negative, if so, waiting will be infinity until P operation succeed.
 @RETURN wait_t: if succeeds return WAIT_RET, if fails return WAIT_ERR, otherwise timeout with WAIT_TMO returned.
 */
-XDL_API wait_t semap_lock(res_sema_t mx, int milsec);
+EXP_API wait_t semap_lock(res_sema_t mx, int milsec);
 
 /*
 @FUNCTION semap_unlock: the semaphone V operation.
 @INPUT res_sema_t mx: the mutex system resource handle.
 @RETURN void: none.
 */
-XDL_API void semap_unlock(res_sema_t mx);
+EXP_API void semap_unlock(res_sema_t mx);
 
 #endif
 
@@ -241,14 +241,14 @@ XDL_API void semap_unlock(res_sema_t mx);
 @INPUT int max: the max threads can monitor the queue. 
 @RETURN res_queue_t: if succeeds return queue system resource handle, fails return NULL.
 */
-XDL_API res_queue_t queue_create(res_queue_t ep, res_file_t fd, int max);
+EXP_API res_queue_t queue_create(res_queue_t ep, res_file_t fd, int max);
 
 /*
 @FUNCTION queue_destroy: destroy queue system object.
 @INPUT res_queue_t mx: the queue system resource handle.
 @RETURN void: none.
 */
-XDL_API void queue_destroy(res_queue_t ep);
+EXP_API void queue_destroy(res_queue_t ep);
 
 /*
 @FUNCTION queue_wait: wait io coming.
@@ -256,7 +256,7 @@ XDL_API void queue_destroy(res_queue_t ep);
 @INPUT int ms: millisecond for wait,it can be negative, if so, waiting will be infinity until io coming.
 @RETURN wait_t: if succeeds return WAIT_RET, if fails return WAIT_ERR, otherwise timeout with WAIT_TMO returned.
 */
-XDL_API wait_t queue_wait(res_queue_t ep, int ms);
+EXP_API wait_t queue_wait(res_queue_t ep, int ms);
 #endif
 
 #ifdef	__cplusplus

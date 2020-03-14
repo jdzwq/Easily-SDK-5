@@ -45,21 +45,21 @@ typedef struct _STRINGOBJECT{
 extern "C" {
 #endif
 
-	XDL_API bool_t call_string_can_escape(void* p_obj);
+	EXP_API bool_t call_string_can_escape(void* p_obj);
 
-	XDL_API bool_t call_string_with_eof(void* p_obj);
+	EXP_API bool_t call_string_with_eof(void* p_obj);
 
-	XDL_API int call_string_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pch);
+	EXP_API int call_string_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pch);
 
-	XDL_API int call_string_read_token(void* p_obj, int max, int pos, int encode, tchar_t* pch, int len);
+	EXP_API int call_string_read_token(void* p_obj, int max, int pos, int encode, tchar_t* pch, int len);
 
-	XDL_API int call_string_write_char(void* p_obj, int max, int pos, int encode, const tchar_t* pch);
+	EXP_API int call_string_write_char(void* p_obj, int max, int pos, int encode, const tchar_t* pch);
 
-	XDL_API int call_string_write_indent(void* p_obj, int max, int pos, int encode);
+	EXP_API int call_string_write_indent(void* p_obj, int max, int pos, int encode);
 
-	XDL_API int call_string_write_carriage(void* p_obj, int max, int pos, int encode);
+	EXP_API int call_string_write_carriage(void* p_obj, int max, int pos, int encode);
 
-	XDL_API int call_string_write_token(void* p_obj, int max, int pos, int encode, const tchar_t* pch, int len);
+	EXP_API int call_string_write_token(void* p_obj, int max, int pos, int encode, const tchar_t* pch, int len);
 
 
 #ifdef	__cplusplus

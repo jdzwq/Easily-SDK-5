@@ -84,9 +84,9 @@ typedef struct _xdc_mou_t{
 #endif
 
 
-	XDC_API	void	xdc_process_init(void);
+	EXP_API	void	xdc_process_init(void);
 
-	XDC_API void	xdc_process_uninit(void);
+	EXP_API void	xdc_process_uninit(void);
 
 #ifdef	__cplusplus
 }

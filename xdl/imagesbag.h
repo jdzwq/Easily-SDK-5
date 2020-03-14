@@ -47,7 +47,7 @@ extern "C" {
 @INPUT const tchar_t* url: the url token.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_images_item_from_url(link_t_ptr ptr, const tchar_t* iname, const tchar_t* url);
+EXP_API link_t_ptr insert_images_item_from_url(link_t_ptr ptr, const tchar_t* iname, const tchar_t* url);
 
 /*
 @FUNCTION insert_images_item_from_file: add a new image item from file content.
@@ -57,7 +57,7 @@ XDL_API link_t_ptr insert_images_item_from_url(link_t_ptr ptr, const tchar_t* in
 @INPUT const tchar_t* fname: the file path name.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_images_item_from_file(link_t_ptr ptr, const tchar_t* iname, const secu_desc_t* psd, const tchar_t* fname);
+EXP_API link_t_ptr insert_images_item_from_file(link_t_ptr ptr, const tchar_t* iname, const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION load_image_bytes_from_file: load image bitmap bytes from file.
@@ -68,7 +68,7 @@ XDL_API link_t_ptr insert_images_item_from_file(link_t_ptr ptr, const tchar_t* i
 @INPUT dword_t max: the bytes buffer size.
 @RETURN dword_t: return the bitmap bytes loaded.
 */
-XDL_API dword_t load_image_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* itype, byte_t* buf, dword_t max);
+EXP_API dword_t load_image_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* itype, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION save_image_bytes_to_file: save image bitmap bytes to file.
@@ -78,7 +78,7 @@ XDL_API dword_t load_image_bytes_from_file(const secu_desc_t* psd, const tchar_t
 @INPUT dword_t len: the buffer data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_image_bytes_to_file(const secu_desc_t* psd, const tchar_t* fname, const byte_t* buf, dword_t len);
+EXP_API bool_t save_image_bytes_to_file(const secu_desc_t* psd, const tchar_t* fname, const byte_t* buf, dword_t len);
 
 /*
 @FUNCTION load_image_base64_from_file: load image bitmap base64 characters from file.
@@ -88,7 +88,7 @@ XDL_API bool_t save_image_bytes_to_file(const secu_desc_t* psd, const tchar_t* f
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the base64 bitmap characters loaded.
 */
-XDL_API int load_image_base64_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* buf, int max);
+EXP_API int load_image_base64_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* buf, int max);
 
 /*
 @FUNCTION save_image_base64_to_file: save image bitmap base64 characters to file.
@@ -98,7 +98,7 @@ XDL_API int load_image_base64_from_file(const secu_desc_t* psd, const tchar_t* f
 @INPUT int len: the string data size in characters.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_image_base64_to_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* buf, int len);
+EXP_API bool_t save_image_base64_to_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* buf, int len);
 
 /*
 @FUNCTION load_bitmap_bytes_from_file: load bitmap bytes from file.
@@ -108,7 +108,7 @@ XDL_API bool_t save_image_base64_to_file(const secu_desc_t* psd, const tchar_t* 
 @INPUT dword_t max: the bytes buffer size.
 @RETURN dword_t: return the bitmap bytes loaded.
 */
-XDL_API dword_t load_bitmap_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname, byte_t* buf, dword_t max);
+EXP_API dword_t load_bitmap_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION save_bitmap_bytes_to_file: save bitmap bytes to file.
@@ -118,7 +118,7 @@ XDL_API dword_t load_bitmap_bytes_from_file(const secu_desc_t* psd, const tchar_
 @INPUT dword_t len: the buffer data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t save_bitmap_bytes_to_file(const secu_desc_t* psd, const tchar_t* fname, const byte_t* buf, dword_t len);
+EXP_API bool_t save_bitmap_bytes_to_file(const secu_desc_t* psd, const tchar_t* fname, const byte_t* buf, dword_t len);
 
 #ifdef	__cplusplus
 }

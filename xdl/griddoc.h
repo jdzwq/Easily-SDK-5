@@ -723,28 +723,28 @@ extern "C" {
 @FUNCTION create_grid_doc: create a grid document.
 @RETURN link_t_ptr: return the grid document link component.
 */
-XDL_API link_t_ptr create_grid_doc(void);
+EXP_API link_t_ptr create_grid_doc(void);
 
 /*
 @FUNCTION destroy_grid_doc: destroy a grid document.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_grid_doc(link_t_ptr ptr);
+EXP_API void destroy_grid_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_grid_doc: clear the grid document.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN void: none.
 */
-XDL_API void clear_grid_doc(link_t_ptr ptr);
+EXP_API void clear_grid_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_grid_doc: test is the grid document.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN bool_t: return nonzero for grid document, otherwise return zero.
 */
-XDL_API bool_t is_grid_doc(link_t_ptr ptr);
+EXP_API bool_t is_grid_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_grid_col: test is a grid col node.
@@ -752,7 +752,7 @@ XDL_API bool_t is_grid_doc(link_t_ptr ptr);
 @INPUT link_t_ptr clk: the col node link component.
 @RETURN bool_t: return nonzero for col node, otherwise return zero.
 */
-XDL_API bool_t is_grid_col(link_t_ptr ptr,link_t_ptr clk);
+EXP_API bool_t is_grid_col(link_t_ptr ptr,link_t_ptr clk);
 
 /*
 @FUNCTION is_grid_row: test is a grid row node.
@@ -760,21 +760,21 @@ XDL_API bool_t is_grid_col(link_t_ptr ptr,link_t_ptr clk);
 @INPUT link_t_ptr rlk: the row node link component.
 @RETURN bool_t: return nonzero for row node, otherwise return zero.
 */
-XDL_API bool_t is_grid_row(link_t_ptr ptr, link_t_ptr rlk);
+EXP_API bool_t is_grid_row(link_t_ptr ptr, link_t_ptr rlk);
 
 /*
 @FUNCTION clear_grid_rowset: clear grid rowset.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN void: none.
 */
-XDL_API void clear_grid_rowset(link_t_ptr ptr);
+EXP_API void clear_grid_rowset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_grid_colset: clear grid colset.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN void: none.
 */
-XDL_API void clear_grid_colset(link_t_ptr ptr);
+EXP_API void clear_grid_colset(link_t_ptr ptr);
 
 /*
 @FUNCTION merge_grid_colset: merge source colset to destination colset.
@@ -782,7 +782,7 @@ XDL_API void clear_grid_colset(link_t_ptr ptr);
 @INPUT link_t_ptr ptr_src: the source grid document link component.
 @RETURN void: none.
 */
-XDL_API void merge_grid_colset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void merge_grid_colset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION merge_grid_rowset: merge source rowset to destination rowset.
@@ -790,7 +790,7 @@ XDL_API void merge_grid_colset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 @INPUT link_t_ptr ptr_src: the source grid document link component.
 @RETURN void: none.
 */
-XDL_API void merge_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src);
+EXP_API void merge_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src);
 
 /*
 @FUNCTION copy_grid_schema: copy source grid attributes and colset schema to destination grid.
@@ -798,28 +798,28 @@ XDL_API void merge_grid_rowset(link_t_ptr ptr_dest, link_t_ptr ptr_src);
 @INPUT link_t_ptr ptr_src: the source grid document link component.
 @RETURN void: none.
 */
-XDL_API void copy_grid_schema(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void copy_grid_schema(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION get_col_count: counting the cols in grid.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN int: return the numner of cols.
 */
-XDL_API int get_col_count(link_t_ptr ptr);
+EXP_API int get_col_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_col_selected_count: counting the selected cols in grid.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN int: return the numner of cols.
 */
-XDL_API int get_col_selected_count(link_t_ptr ptr);
+EXP_API int get_col_selected_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_grid_colset: get the colset link component.
 @INPUT link_t_ptr ptr: the grid document link component.
 @RETURN link_t_ptr: return the colset link component.
 */
-XDL_API link_t_ptr get_grid_colset(link_t_ptr ptr);
+EXP_API link_t_ptr get_grid_colset(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_col: add a new col to grid at position.
@@ -827,21 +827,21 @@ XDL_API link_t_ptr get_grid_colset(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new col link component.
 */
-XDL_API link_t_ptr insert_col(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_col(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_col: delete the col.
 @INPUT link_t_ptr clk: the col link component.
 @RETURN void: none.
 */
-XDL_API void delete_col(link_t_ptr clk);
+EXP_API void delete_col(link_t_ptr clk);
 
 /*
 @FUNCTION clear_col_datadef: clear the col data defination.
 @INPUT link_t_ptr clk: the col link component.
 @RETURN void: none.
 */
-XDL_API void clear_col_datadef(link_t_ptr clk);
+EXP_API void clear_col_datadef(link_t_ptr clk);
 
 /*
 @FUNCTION get_col: find the col by name.
@@ -849,7 +849,7 @@ XDL_API void clear_col_datadef(link_t_ptr clk);
 @INPUT const tchar_t* cname: the col name token.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_col(link_t_ptr ptr, const tchar_t* cname);
+EXP_API link_t_ptr get_col(link_t_ptr ptr, const tchar_t* cname);
 
 /*
 @FUNCTION get_col_by_id: find the col by identifier.
@@ -857,7 +857,7 @@ XDL_API link_t_ptr get_col(link_t_ptr ptr, const tchar_t* cname);
 @INPUT const tchar_t* cid: the col identifier token.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_col_by_id(link_t_ptr ptr, const tchar_t* cid);
+EXP_API link_t_ptr get_col_by_id(link_t_ptr ptr, const tchar_t* cid);
 
 /*
 @FUNCTION get_col_at: get the col at the position.
@@ -865,7 +865,7 @@ XDL_API link_t_ptr get_col_by_id(link_t_ptr ptr, const tchar_t* cid);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_col_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_col_at(link_t_ptr ptr, int index);
 
 /*
 @FUNCTION get_next_col: get the next col at the position.
@@ -873,7 +873,7 @@ XDL_API link_t_ptr get_col_at(link_t_ptr ptr, int index);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_col(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_col(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_col: get the previous col at the position.
@@ -881,7 +881,7 @@ XDL_API link_t_ptr get_next_col(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_col(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_prev_col(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_next_visible_col: get the next visible col at the position.
@@ -889,7 +889,7 @@ XDL_API link_t_ptr get_prev_col(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_visible_col(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_visible_col(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_visible_col: get the previous visible col at the position.
@@ -897,7 +897,7 @@ XDL_API link_t_ptr get_next_visible_col(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_visible_col(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_prev_visible_col(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_next_focusable_col: get the next focusable col at the position.
@@ -905,7 +905,7 @@ XDL_API link_t_ptr get_prev_visible_col(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_focusable_col(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_next_focusable_col(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_focusable_col: get the previous focusable col at the position.
@@ -913,35 +913,35 @@ XDL_API link_t_ptr get_next_focusable_col(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the col link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_focusable_col(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_prev_focusable_col(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_col_focusable: get the col is focusable.
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: return nonzero for being focusable col.
 */
-XDL_API bool_t get_col_focusable(link_t_ptr clk);
+EXP_API bool_t get_col_focusable(link_t_ptr clk);
 
 /*
 @FUNCTION get_grid_updateable: get the col is updateable.
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: return nonzero for being updateable col.
 */
-XDL_API bool_t get_grid_updateable(link_t_ptr ptr);
+EXP_API bool_t get_grid_updateable(link_t_ptr ptr);
 
 /*
 @FUNCTION get_col_integrity: test the col is integrity.
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: return nonzero for being integrity col.
 */
-XDL_API bool_t get_col_integrity(link_t_ptr clk);
+EXP_API bool_t get_col_integrity(link_t_ptr clk);
 
 /*
 @FUNCTION get_grid_rowset: get the grid rowset.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN link_t_ptr: return grid rowset link component.
 */
-XDL_API link_t_ptr get_grid_rowset(link_t_ptr ptr);
+EXP_API link_t_ptr get_grid_rowset(link_t_ptr ptr);
 
 /*
 @FUNCTION set_rowset_checked: set the rowset checked.
@@ -949,14 +949,14 @@ XDL_API link_t_ptr get_grid_rowset(link_t_ptr ptr);
 @INPUT bool_t b: nonzero for checked, zero for unchecked.
 @RETURN void: return grid rowset link component.
 */
-XDL_API void set_rowset_checked(link_t_ptr ptr, bool_t b);
+EXP_API void set_rowset_checked(link_t_ptr ptr, bool_t b);
 
 /*
 @FUNCTION get_rowset_checked: get the rowset checked.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN bool_t: return nonzero for being rowset checked, zero for being rowset unchecked.
 */
-XDL_API bool_t get_rowset_checked(link_t_ptr ptr);
+EXP_API bool_t get_rowset_checked(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_row: add a new row to grod at position.
@@ -964,14 +964,14 @@ XDL_API bool_t get_rowset_checked(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new row link component.
 */
-XDL_API link_t_ptr insert_row(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_row(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_row: delete the row.
 @INPUT link_t_ptr rlk: the row link component.
 @RETURN void: none.
 */
-XDL_API void delete_row(link_t_ptr rlk);
+EXP_API void delete_row(link_t_ptr rlk);
 
 /*
 @FUNCTION get_next_row: get the next row at position.
@@ -979,7 +979,7 @@ XDL_API void delete_row(link_t_ptr rlk);
 @INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_row(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_row(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_row: get the previous row at position.
@@ -987,7 +987,7 @@ XDL_API link_t_ptr get_next_row(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_row(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_prev_row(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_next_visible_row: get the next visible row at position.
@@ -995,7 +995,7 @@ XDL_API link_t_ptr get_prev_row(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_visible_row(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_visible_row(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_visible_row: get the previsou visible row at position.
@@ -1003,21 +1003,21 @@ XDL_API link_t_ptr get_next_visible_row(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_visible_row(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_prev_visible_row(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_row_count: counting the rows in grid.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN int: return the number of rows.
 */
-XDL_API int get_row_count(link_t_ptr ptr);
+EXP_API int get_row_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_row_checked_count: counting the checked rows in grid.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN int: return the number of rows.
 */
-XDL_API int get_row_checked_count(link_t_ptr ptr);
+EXP_API int get_row_checked_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_row_storage_ptr: get the row storage token by key.
@@ -1025,7 +1025,7 @@ XDL_API int get_row_checked_count(link_t_ptr ptr);
 @INPUT const tchar_t* key: the key string token.
 @RETURN const tchar_t*: return row storage value token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_row_storage_ptr(link_t_ptr rlk, const tchar_t* key);
+EXP_API const tchar_t* get_row_storage_ptr(link_t_ptr rlk, const tchar_t* key);
 
 /*
 @FUNCTION set_row_storage: add a row storage.
@@ -1034,7 +1034,7 @@ XDL_API const tchar_t* get_row_storage_ptr(link_t_ptr rlk, const tchar_t* key);
 @INPUT const tchar_t* val: the value string token.
 @RETURN void: none.
 */
-XDL_API void set_row_storage(link_t_ptr rlk, const tchar_t* key, const tchar_t* val);
+EXP_API void set_row_storage(link_t_ptr rlk, const tchar_t* key, const tchar_t* val);
 
 /*
 @FUNCTION get_cell_storage_ptr: get the cell storage token by key.
@@ -1043,7 +1043,7 @@ XDL_API void set_row_storage(link_t_ptr rlk, const tchar_t* key, const tchar_t* 
 @INPUT const tchar_t* key: the key string token.
 @RETURN const tchar_t*: return cell storage value token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_cell_storage_ptr(link_t_ptr rlk, link_t_ptr clk, const tchar_t* key);
+EXP_API const tchar_t* get_cell_storage_ptr(link_t_ptr rlk, link_t_ptr clk, const tchar_t* key);
 
 /*
 @FUNCTION set_cell_storage: add a cell storage.
@@ -1053,7 +1053,7 @@ XDL_API const tchar_t* get_cell_storage_ptr(link_t_ptr rlk, link_t_ptr clk, cons
 @INPUT const tchar_t* val: the value string token.
 @RETURN void: none.
 */
-XDL_API void set_cell_storage(link_t_ptr rlk, link_t_ptr clk, const tchar_t* key, const tchar_t* val);
+EXP_API void set_cell_storage(link_t_ptr rlk, link_t_ptr clk, const tchar_t* key, const tchar_t* val);
 
 /*
 @FUNCTION get_cell_prim_ptr: get the cell prim token.
@@ -1061,7 +1061,7 @@ XDL_API void set_cell_storage(link_t_ptr rlk, link_t_ptr clk, const tchar_t* key
 @INPUT link_t_ptr clk: the col link component.
 @RETURN const tchar_t*: return cell prim token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_cell_prim_ptr(link_t_ptr rlk, link_t_ptr clk);
+EXP_API const tchar_t* get_cell_prim_ptr(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION set_cell_prim: set the cell prim value.
@@ -1071,7 +1071,7 @@ XDL_API const tchar_t* get_cell_prim_ptr(link_t_ptr rlk, link_t_ptr clk);
 @INPUT int len: the prim token length in characters.
 @RETURN void: none.
 */
-XDL_API void set_cell_prim(link_t_ptr rlk, link_t_ptr clk, const tchar_t* str, int len);
+EXP_API void set_cell_prim(link_t_ptr rlk, link_t_ptr clk, const tchar_t* str, int len);
 
 /*
 @FUNCTION get_cell_options_text_ptr: get the cell options text.
@@ -1079,7 +1079,7 @@ XDL_API void set_cell_prim(link_t_ptr rlk, link_t_ptr clk, const tchar_t* str, i
 @INPUT link_t_ptr clk: the col link component.
 @RETURN const tchar_t*: return the cell options text if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_cell_options_text_ptr(link_t_ptr rlk, link_t_ptr clk);
+EXP_API const tchar_t* get_cell_options_text_ptr(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION attach_cell_text: attach a text buffer to cell.
@@ -1088,7 +1088,7 @@ XDL_API const tchar_t* get_cell_options_text_ptr(link_t_ptr rlk, link_t_ptr clk)
 @INPUT tchar_t* val: the value buffer.
 @RETURN void: none.
 */
-XDL_API void attach_cell_text(link_t_ptr rlk, link_t_ptr clk, tchar_t* val);
+EXP_API void attach_cell_text(link_t_ptr rlk, link_t_ptr clk, tchar_t* val);
 
 /*
 @FUNCTION detach_cell_text: detach a text buffer from cell.
@@ -1096,7 +1096,7 @@ XDL_API void attach_cell_text(link_t_ptr rlk, link_t_ptr clk, tchar_t* val);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN tchar_t*: return the text buffer if exists, otherwise return NULL.
 */
-XDL_API tchar_t* detach_cell_text(link_t_ptr rlk, link_t_ptr clk);
+EXP_API tchar_t* detach_cell_text(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION get_cell_text_ptr: get the cell text token.
@@ -1104,7 +1104,7 @@ XDL_API tchar_t* detach_cell_text(link_t_ptr rlk, link_t_ptr clk);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN tchar_t*: return the text token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_cell_text_ptr(link_t_ptr rlk,link_t_ptr clk);
+EXP_API const tchar_t* get_cell_text_ptr(link_t_ptr rlk,link_t_ptr clk);
 
 /*
 @FUNCTION get_cell_text: copy the cell text token.
@@ -1114,7 +1114,7 @@ XDL_API const tchar_t* get_cell_text_ptr(link_t_ptr rlk,link_t_ptr clk);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return characters copied.
 */
-XDL_API int get_cell_text(link_t_ptr rlk, link_t_ptr clk, tchar_t* buf, int max);
+EXP_API int get_cell_text(link_t_ptr rlk, link_t_ptr clk, tchar_t* buf, int max);
 
 /*
 @FUNCTION set_cell_text: set the cell text token.
@@ -1124,7 +1124,7 @@ XDL_API int get_cell_text(link_t_ptr rlk, link_t_ptr clk, tchar_t* buf, int max)
 @INPUT int len: the text length in characters
 @RETURN void: none.
 */
-XDL_API void set_cell_text(link_t_ptr rlk, link_t_ptr clk, const tchar_t* str, int len);
+EXP_API void set_cell_text(link_t_ptr rlk, link_t_ptr clk, const tchar_t* str, int len);
 
 /*
 @FUNCTION set_cell_boolean: set the cell boolean value.
@@ -1133,7 +1133,7 @@ XDL_API void set_cell_text(link_t_ptr rlk, link_t_ptr clk, const tchar_t* str, i
 @INPUT bool_t b: the boolean value.
 @RETURN void: none.
 */
-XDL_API void set_cell_boolean(link_t_ptr rlk, link_t_ptr clk, bool_t b);
+EXP_API void set_cell_boolean(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 
 /*
 @FUNCTION get_cell_boolean: get the cell boolean value.
@@ -1141,7 +1141,7 @@ XDL_API void set_cell_boolean(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: return cell boolean value.
 */
-XDL_API bool_t get_cell_boolean(link_t_ptr rlk, link_t_ptr clk);
+EXP_API bool_t get_cell_boolean(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION set_cell_integer: set the cell integer value.
@@ -1150,7 +1150,7 @@ XDL_API bool_t get_cell_boolean(link_t_ptr rlk, link_t_ptr clk);
 @INPUT int n: the integer value.
 @RETURN void: none.
 */
-XDL_API void set_cell_integer(link_t_ptr rlk, link_t_ptr clk, int n);
+EXP_API void set_cell_integer(link_t_ptr rlk, link_t_ptr clk, int n);
 
 /*
 @FUNCTION get_cell_integer: get the cell integer value.
@@ -1158,7 +1158,7 @@ XDL_API void set_cell_integer(link_t_ptr rlk, link_t_ptr clk, int n);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN int: return cell integer value.
 */
-XDL_API int get_cell_integer(link_t_ptr rlk,link_t_ptr clk);
+EXP_API int get_cell_integer(link_t_ptr rlk,link_t_ptr clk);
 
 /*
 @FUNCTION set_cell_numeric: set the cell numeric value.
@@ -1167,7 +1167,7 @@ XDL_API int get_cell_integer(link_t_ptr rlk,link_t_ptr clk);
 @INPUT double dbl: the numeric value.
 @RETURN void: none.
 */
-XDL_API void set_cell_numeric(link_t_ptr rlk, link_t_ptr clk, double dbl);
+EXP_API void set_cell_numeric(link_t_ptr rlk, link_t_ptr clk, double dbl);
 
 /*
 @FUNCTION get_cell_numeric: get the cell numeric value.
@@ -1175,7 +1175,7 @@ XDL_API void set_cell_numeric(link_t_ptr rlk, link_t_ptr clk, double dbl);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN double: return cell numeric value.
 */
-XDL_API double get_cell_numeric(link_t_ptr rlk,link_t_ptr clk);
+EXP_API double get_cell_numeric(link_t_ptr rlk,link_t_ptr clk);
 
 /*
 @FUNCTION set_cell_date: set the cell date value.
@@ -1184,7 +1184,7 @@ XDL_API double get_cell_numeric(link_t_ptr rlk,link_t_ptr clk);
 @INPUT const xdate_t*: the date struct.
 @RETURN void: none.
 */
-XDL_API void set_cell_date(link_t_ptr rlk,link_t_ptr clk,const xdate_t* pdt);
+EXP_API void set_cell_date(link_t_ptr rlk,link_t_ptr clk,const xdate_t* pdt);
 
 /*
 @FUNCTION get_cell_date: get the cell date value.
@@ -1193,7 +1193,7 @@ XDL_API void set_cell_date(link_t_ptr rlk,link_t_ptr clk,const xdate_t* pdt);
 @OUTPUT xdate_t*: the buffer of date struct.
 @RETURN void: none.
 */
-XDL_API void get_cell_date(link_t_ptr rlk,link_t_ptr clk,xdate_t* pdt);
+EXP_API void get_cell_date(link_t_ptr rlk,link_t_ptr clk,xdate_t* pdt);
 
 /*
 @FUNCTION set_cell_datetime: set the cell datetime value.
@@ -1202,7 +1202,7 @@ XDL_API void get_cell_date(link_t_ptr rlk,link_t_ptr clk,xdate_t* pdt);
 @INPUT const xdate_t*: the date struct.
 @RETURN void: none.
 */
-XDL_API void set_cell_datetime(link_t_ptr rlk,link_t_ptr clk,const xdate_t* pdt);
+EXP_API void set_cell_datetime(link_t_ptr rlk,link_t_ptr clk,const xdate_t* pdt);
 
 /*
 @FUNCTION get_cell_datetime: get the cell datetime value.
@@ -1211,7 +1211,7 @@ XDL_API void set_cell_datetime(link_t_ptr rlk,link_t_ptr clk,const xdate_t* pdt)
 @OUTPUT xdate_t*: the buffer of date struct.
 @RETURN void: none.
 */
-XDL_API void get_cell_datetime(link_t_ptr rlk,link_t_ptr clk,xdate_t* pdt);
+EXP_API void get_cell_datetime(link_t_ptr rlk,link_t_ptr clk,xdate_t* pdt);
 
 /*
 @FUNCTION set_cell_dirty: set the cell state to dirty.
@@ -1220,7 +1220,7 @@ XDL_API void get_cell_datetime(link_t_ptr rlk,link_t_ptr clk,xdate_t* pdt);
 @INPUT bool_t b: nonzero for dirty state, zero for clean state.
 @RETURN void: none.
 */
-XDL_API void set_cell_dirty(link_t_ptr rlk, link_t_ptr clk, bool_t b);
+EXP_API void set_cell_dirty(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 
 /*
 @FUNCTION get_cell_dirty: get the cell state.
@@ -1228,42 +1228,42 @@ XDL_API void set_cell_dirty(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: return nonzero for dirty state, zero for clean state.
 */
-XDL_API bool_t get_cell_dirty(link_t_ptr rlk, link_t_ptr clk);
+EXP_API bool_t get_cell_dirty(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION set_row_clean: set the row state to clean.
 @INPUT link_t_ptr rlk: the row link component.
 @RETURN void: none.
 */
-XDL_API void set_row_clean(link_t_ptr rlk);
+EXP_API void set_row_clean(link_t_ptr rlk);
 
 /*
 @FUNCTION set_row_dirty: set the row state to dirty.
 @INPUT link_t_ptr rlk: the row link component.
 @RETURN void: none.
 */
-XDL_API void set_row_dirty(link_t_ptr rlk);
+EXP_API void set_row_dirty(link_t_ptr rlk);
 
 /*
 @FUNCTION set_row_delete: set the row state to delete.
 @INPUT link_t_ptr rlk: the row link component.
 @RETURN link_t_ptr: if set the deleted mask return self, otherwise return NULL for being deleted permanent.
 */
-XDL_API link_t_ptr set_row_delete(link_t_ptr rlk);
+EXP_API link_t_ptr set_row_delete(link_t_ptr rlk);
 
 /*
 @FUNCTION get_visible_row_count: counting the visible rows.
 @INPUT link_t_ptr ptr: the row link component.
 @RETURN int: return the number of rows.
 */
-XDL_API int get_visible_row_count(link_t_ptr ptr);
+EXP_API int get_visible_row_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_update_row_count: counting the update rows.
 @INPUT link_t_ptr ptr: the row link component.
 @RETURN int: return the number of rows.
 */
-XDL_API int get_update_row_count(link_t_ptr ptr);
+EXP_API int get_update_row_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_visible_row_at: get visible row at position.
@@ -1271,7 +1271,7 @@ XDL_API int get_update_row_count(link_t_ptr ptr);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_visible_row_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_visible_row_at(link_t_ptr ptr, int index);
 
 /*
 @FUNCTION calc_grid_row: calcing the row.
@@ -1279,14 +1279,14 @@ XDL_API link_t_ptr get_visible_row_at(link_t_ptr ptr, int index);
 @INPUT link_t_ptr rlk: the row link component.
 @RETURN int: return the number of cells value changed.
 */
-XDL_API int calc_grid_row(link_t_ptr ptr, link_t_ptr rlk);
+EXP_API int calc_grid_row(link_t_ptr ptr, link_t_ptr rlk);
 
 /*
 @FUNCTION calc_grid_rowset: calcing all of rows in grid.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN int: return the number of rows changed.
 */
-XDL_API int calc_grid_rowset(link_t_ptr ptr);
+EXP_API int calc_grid_rowset(link_t_ptr ptr);
 
 /*
 @FUNCTION sum_grid_col: suming the col.
@@ -1294,21 +1294,21 @@ XDL_API int calc_grid_rowset(link_t_ptr ptr);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN int: return the number of rows sumed.
 */
-XDL_API int sum_grid_col(link_t_ptr ptr, link_t_ptr clk);
+EXP_API int sum_grid_col(link_t_ptr ptr, link_t_ptr clk);
 
 /*
 @FUNCTION sum_grid_colset: suming all of cols in grid.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN int: return the number of cols sumed.
 */
-XDL_API int sum_grid_colset(link_t_ptr ptr);
+EXP_API int sum_grid_colset(link_t_ptr ptr);
 
 /*
 @FUNCTION get_col_sum_text_ptr: get the col sumary text.
 @INPUT link_t_ptr clk: the col link component.
 @RETURN const tchar_t*: return the sumary text token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_col_sum_text_ptr(link_t_ptr clk);
+EXP_API const tchar_t* get_col_sum_text_ptr(link_t_ptr clk);
 
 /*
 @FUNCTION set_col_sum_text: set the col sumary text.
@@ -1316,7 +1316,7 @@ XDL_API const tchar_t* get_col_sum_text_ptr(link_t_ptr clk);
 @INPUT const tchar_t* token: the col text token.
 @RETURN void: none.
 */
-XDL_API void set_col_sum_text(link_t_ptr clk,const tchar_t* token);
+EXP_API void set_col_sum_text(link_t_ptr clk,const tchar_t* token);
 
 /*
 @FUNCTION group_grid_col: grouping the col.
@@ -1326,14 +1326,14 @@ XDL_API void set_col_sum_text(link_t_ptr clk,const tchar_t* token);
 @INPUT link_t_ptr rlk_to: the row link component end.
 @RETURN link_t_ptr: return grouped end row, it may be LINK_LAST.
 */
-XDL_API link_t_ptr group_grid_col(link_t_ptr ptr, link_t_ptr clk, link_t_ptr rlk_from, link_t_ptr rlk_to);
+EXP_API link_t_ptr group_grid_col(link_t_ptr ptr, link_t_ptr clk, link_t_ptr rlk_from, link_t_ptr rlk_to);
 
 /*
 @FUNCTION group_grid_colset: grouping all of cols in grid.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN int: return the number of cols grouped.
 */
-XDL_API int group_grid_colset(link_t_ptr ptr);
+EXP_API int group_grid_colset(link_t_ptr ptr);
 
 /*
 @FUNCTION get_cell_grouped: set cell be grouped.
@@ -1342,7 +1342,7 @@ XDL_API int group_grid_colset(link_t_ptr ptr);
 @INPUT bool_t b: the boolean value to set.
 @RETURN void: none.
 */
-XDL_API void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b);
+EXP_API void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 
 /*
 @FUNCTION get_cell_grouped: get cell be grouped.
@@ -1350,7 +1350,7 @@ XDL_API void set_cell_grouped(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: nonezero for grouped.
 */
-XDL_API bool_t get_cell_grouped(link_t_ptr rlk, link_t_ptr clk);
+EXP_API bool_t get_cell_grouped(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION verify_grid_cell: verify the cell data,
@@ -1359,7 +1359,7 @@ the verify code returned can be veValid, veNull, veTruncate, veDatatype, veOverf
 @INPUT link_t_ptr clk: the col link component.
 @RETURN int: return the verify code.
 */
-XDL_API int verify_grid_cell(link_t_ptr rlk, link_t_ptr clk);
+EXP_API int verify_grid_cell(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION verify_grid_doc: verify the grid data,
@@ -1369,7 +1369,7 @@ the verify code returned can be veValid, veNull, veTruncate, veDatatype, veOverf
 @INPUT link_t_ptr* pclk: link component buffer for returning col.
 @RETURN int: return the verify code.
 */
-XDL_API int verify_grid_doc(link_t_ptr ptr, link_t_ptr* prlk, link_t_ptr* pclk);
+EXP_API int verify_grid_doc(link_t_ptr ptr, link_t_ptr* prlk, link_t_ptr* pclk);
 
 /*
 @FUNCTION format_grid_verify: verify the cell data, and format the wraning text.
@@ -1381,7 +1381,7 @@ XDL_API int verify_grid_doc(link_t_ptr ptr, link_t_ptr* prlk, link_t_ptr* pclk);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_grid_verify(link_t_ptr ptr, link_t_ptr rlk, link_t_ptr clk, int code, tchar_t* buf, int max);
+EXP_API int format_grid_verify(link_t_ptr ptr, link_t_ptr rlk, link_t_ptr clk, int code, tchar_t* buf, int max);
 
 /*
 @FUNCTION sort_grid_col: sorting rowset according the col.
@@ -1389,14 +1389,14 @@ XDL_API int format_grid_verify(link_t_ptr ptr, link_t_ptr rlk, link_t_ptr clk, i
 @INPUT link_t_ptr clk: the col link component.
 @RETURN void: none.
 */
-XDL_API void sort_grid_col(link_t_ptr ptr, link_t_ptr clk);
+EXP_API void sort_grid_col(link_t_ptr ptr, link_t_ptr clk);
 
 /*
 @FUNCTION refresh_grid_rowset: clear rowset dirty state.
 @INPUT link_t_ptr ptr: the grid link component.
 @RETURN void: none.
 */
-XDL_API void refresh_grid_rowset(link_t_ptr ptr);
+EXP_API void refresh_grid_rowset(link_t_ptr ptr);
 
 /*
 @FUNCTION filter_grid_rowset: filter rowset by a expression.
@@ -1404,7 +1404,7 @@ XDL_API void refresh_grid_rowset(link_t_ptr ptr);
 @INPUT const tchar_t* token: the expression token.
 @RETURN void: none.
 */
-XDL_API void filter_grid_rowset(link_t_ptr ptr, const tchar_t* token);
+EXP_API void filter_grid_rowset(link_t_ptr ptr, const tchar_t* token);
 
 /*
 @FUNCTION find_grid_row: find a row by expression.
@@ -1413,7 +1413,7 @@ XDL_API void filter_grid_rowset(link_t_ptr ptr, const tchar_t* token);
 @INPUT link_t_ptr rlk: the start row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the row link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr find_grid_row(link_t_ptr ptr, const tchar_t* token, link_t_ptr rlk, bool_t next);
+EXP_API link_t_ptr find_grid_row(link_t_ptr ptr, const tchar_t* token, link_t_ptr rlk, bool_t next);
 
 /*
 @FUNCTION diff_grid_row: mask destination row state according to source row content.
@@ -1423,7 +1423,7 @@ XDL_API link_t_ptr find_grid_row(link_t_ptr ptr, const tchar_t* token, link_t_pt
 @INPUT link_t_ptr rlk_src: the source row link component.
 @RETURN void: none.
 */
-XDL_API void diff_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr ptr_src, link_t_ptr rlk_src);
+EXP_API void diff_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr ptr_src, link_t_ptr rlk_src);
 
 /*
 @FUNCTION copy_grid_row: copy source row content to destination row.
@@ -1433,7 +1433,7 @@ XDL_API void diff_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr pt
 @INPUT link_t_ptr rlk_src: the source row link component.
 @RETURN void: none.
 */
-XDL_API void copy_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr ptr_src, link_t_ptr rlk_src);
+EXP_API void copy_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr ptr_src, link_t_ptr rlk_src);
 
 /*
 @FUNCTION copy_grid_rowset: copy source rowset to destination rowset.
@@ -1441,7 +1441,7 @@ XDL_API void copy_grid_row(link_t_ptr ptr_dst, link_t_ptr rlk_dst, link_t_ptr pt
 @INPUT link_t_ptr ptr_src: the source grid link component.
 @RETURN void: none.
 */
-XDL_API void copy_grid_rowset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void copy_grid_rowset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION update_grid_rowset: update source rowset to destination rowset.
@@ -1449,7 +1449,7 @@ XDL_API void copy_grid_rowset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 @INPUT link_t_ptr ptr_src: the source grid link component.
 @RETURN void: none.
 */
-XDL_API void update_grid_rowset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void update_grid_rowset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION make_grid_options: make grid options.
@@ -1460,7 +1460,7 @@ XDL_API void update_grid_rowset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int make_grid_options(link_t_ptr ptr, const tchar_t* keycol, const tchar_t*  valcol, tchar_t* buf, int max);
+EXP_API int make_grid_options(link_t_ptr ptr, const tchar_t* keycol, const tchar_t*  valcol, tchar_t* buf, int max);
 
 /*
 @FUNCTION create_group_grid: create a group grid document.
@@ -1470,7 +1470,7 @@ XDL_API int make_grid_options(link_t_ptr ptr, const tchar_t* keycol, const tchar
 @INPUT const tchar_t* ncol: the data value col name.
 @RETURN link_t_ptr: return the new grid link component.
 */
-XDL_API link_t_ptr create_group_grid(link_t_ptr ptr, const tchar_t* scol, const tchar_t* dcol, const tchar_t* ncol);
+EXP_API link_t_ptr create_group_grid(link_t_ptr ptr, const tchar_t* scol, const tchar_t* dcol, const tchar_t* ncol);
 
 #ifdef	__cplusplus
 }

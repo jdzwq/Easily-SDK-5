@@ -108,35 +108,35 @@ extern "C" {
 @FUNCTION create_memo_doc: create a memo document.
 @RETURN link_t_ptr: return the memo document link component.
 */
-XDL_API link_t_ptr create_memo_doc(void);
+EXP_API link_t_ptr create_memo_doc(void);
 
 /*
 @FUNCTION destroy_memo_doc: destroy a memo document.
 @INPUT link_t_ptr ptr: the memo link component.
 @RETURN void: none.
 */
-XDL_API void destroy_memo_doc(link_t_ptr ptr);
+EXP_API void destroy_memo_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_memo_lineset: get memo line set.
 @INPUT link_t_ptr ptr: the memo link component.
 @RETURN link_t_ptr: the line set link component.
 */
-XDL_API link_t_ptr get_memo_lineset(link_t_ptr ptr);
+EXP_API link_t_ptr get_memo_lineset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_memo_doc: clear the memo document.
 @INPUT link_t_ptr ptr: the memo link component.
 @RETURN void: none.
 */
-XDL_API void clear_memo_doc(link_t_ptr ptr);
+EXP_API void clear_memo_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_memo_doc: test is memo document.
 @INPUT link_t_ptr ptr: the memo link component.
 @RETURN bool_t: return nonzero for being a memo document, otherwise return zero.
 */
-XDL_API bool_t is_memo_doc(link_t_ptr ptr);
+EXP_API bool_t is_memo_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_memo_line: test is memo line node.
@@ -144,14 +144,14 @@ XDL_API bool_t is_memo_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the line link component.
 @RETURN bool_t: return nonzero for being a line node, otherwise return zero.
 */
-XDL_API bool_t is_memo_line(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_memo_line(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION get_memo_line_count: counting the line nodes in memo document.
 @INPUT link_t_ptr ptr: the memo link component.
 @RETURN int: return the number of line nodes.
 */
-XDL_API int get_memo_line_count(link_t_ptr ptr);
+EXP_API int get_memo_line_count(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_memo_line: add a new line node to memo document.
@@ -159,21 +159,21 @@ XDL_API int get_memo_line_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the line link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new line link component.
 */
-XDL_API link_t_ptr insert_memo_line(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_memo_line(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_memo_line: delete the line node.
 @INPUT link_t_ptr ilk: the line link component.
 @RETURN void: none.
 */
-XDL_API void delete_memo_line(link_t_ptr ilk);
+EXP_API void delete_memo_line(link_t_ptr ilk);
 
 /*
 @FUNCTION merge_memo_line: merge the line text to previous node.
 @INPUT link_t_ptr ilk: the line link component.
 @RETURN link_t_ptr: return the line link component merged.
 */
-XDL_API link_t_ptr merge_memo_line(link_t_ptr ilk);
+EXP_API link_t_ptr merge_memo_line(link_t_ptr ilk);
 
 /*
 @FUNCTION split_memo_line: split the line text at position.
@@ -181,7 +181,7 @@ XDL_API link_t_ptr merge_memo_line(link_t_ptr ilk);
 @INPUT int pos: the zero based position.
 @RETURN link_t_ptr: return the new line link component splited.
 */
-XDL_API link_t_ptr split_memo_line(link_t_ptr ilk, int pos);
+EXP_API link_t_ptr split_memo_line(link_t_ptr ilk, int pos);
 
 /*
 @FUNCTION get_memo_next_line: get the next line node.
@@ -189,7 +189,7 @@ XDL_API link_t_ptr split_memo_line(link_t_ptr ilk, int pos);
 @INPUT link_t_ptr pos: the line link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the line link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_memo_next_line(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_memo_next_line(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_memo_prev_line: get the previous line node.
@@ -197,7 +197,7 @@ XDL_API link_t_ptr get_memo_next_line(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the line link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the line link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_memo_prev_line(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_memo_prev_line(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_memo_line_at: find the line node at position.
@@ -205,7 +205,7 @@ XDL_API link_t_ptr get_memo_prev_line(link_t_ptr ptr,link_t_ptr pos);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the line link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_memo_line_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_memo_line_at(link_t_ptr ptr, int index);
 
 /*
 @FUNCTION get_memo_line_index: calc the line index in memo document.
@@ -213,7 +213,7 @@ XDL_API link_t_ptr get_memo_line_at(link_t_ptr ptr, int index);
 @INPUT link_t_ptr ilk: the line link component.
 @RETURN int: return the zero based position.
 */
-XDL_API int get_memo_line_index(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API int get_memo_line_index(link_t_ptr ptr, link_t_ptr ilk);
 
 
 #ifdef	__cplusplus

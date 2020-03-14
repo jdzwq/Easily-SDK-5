@@ -38,21 +38,21 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_stack_table(void);
+EXP_API link_t_ptr create_stack_table(void);
 
-XDL_API void destroy_stack_table(link_t_ptr st);
+EXP_API void destroy_stack_table(link_t_ptr st);
 
-XDL_API void clear_stack_table(link_t_ptr st);
+EXP_API void clear_stack_table(link_t_ptr st);
 
-XDL_API void push_stack_node(link_t_ptr st,void* data);
+EXP_API void push_stack_node(link_t_ptr st,void* data);
 
-XDL_API void* pop_stack_node(link_t_ptr st);
+EXP_API void* pop_stack_node(link_t_ptr st);
 
-XDL_API void* pick_stack_node(link_t_ptr st);
+EXP_API void* pick_stack_node(link_t_ptr st);
 
-XDL_API int get_stack_node_count(link_t_ptr st);
+EXP_API int get_stack_node_count(link_t_ptr st);
 
-XDL_API void* peek_stack_node(link_t_ptr st, int index);
+EXP_API void* peek_stack_node(link_t_ptr st, int index);
 
 #ifdef	__cplusplus
 }

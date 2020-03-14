@@ -65,12 +65,12 @@ extern "C" {
 	/**
 	* \brief          Initialize one or more mpi
 	*/
-	XDL_API void mpi_init(mpi *X, ...);
+	EXP_API void mpi_init(mpi *X, ...);
 
 	/**
 	* \brief          Unallocate one or more mpi
 	*/
-	XDL_API void mpi_free(mpi *X, ...);
+	EXP_API void mpi_free(mpi *X, ...);
 
 	/**
 	* \brief          Enlarge to the specified number of limbs
@@ -78,7 +78,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_grow(mpi *X, int nblimbs);
+	EXP_API int mpi_grow(mpi *X, int nblimbs);
 
 	/**
 	* \brief          Copy the contents of Y into X
@@ -86,12 +86,12 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_copy(mpi *X, mpi *Y);
+	EXP_API int mpi_copy(mpi *X, mpi *Y);
 
 	/**
 	* \brief          Swap the contents of X and Y
 	*/
-	XDL_API void mpi_swap(mpi *X, mpi *Y);
+	EXP_API void mpi_swap(mpi *X, mpi *Y);
 
 	/**
 	* \brief          Set value from integer
@@ -99,22 +99,22 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_lset(mpi *X, int z);
+	EXP_API int mpi_lset(mpi *X, int z);
 
 	/**
 	* \brief          Return the number of least significant bits
 	*/
-	XDL_API int mpi_lsb(mpi *X);
+	EXP_API int mpi_lsb(mpi *X);
 
 	/**
 	* \brief          Return the number of most significant bits
 	*/
-	XDL_API int mpi_msb(mpi *X);
+	EXP_API int mpi_msb(mpi *X);
 
 	/**
 	* \brief          Return the total size in bytes
 	*/
-	XDL_API int mpi_size(mpi *X);
+	EXP_API int mpi_size(mpi *X);
 
 	/**
 	* \brief          Import from an ASCII string
@@ -125,7 +125,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_MPI_XXX error code
 	*/
-	XDL_API int mpi_read_string(mpi *X, int radix, char *s, int slen);
+	EXP_API int mpi_read_string(mpi *X, int radix, char *s, int slen);
 
 	/**
 	* \brief          Export into an ASCII string
@@ -140,7 +140,7 @@ extern "C" {
 	* \note           Call this function with *slen = 0 to obtain the
 	*                 minimum required buffer size in *slen.
 	*/
-	XDL_API int mpi_write_string(mpi *X, int radix, char *s, int *slen);
+	EXP_API int mpi_write_string(mpi *X, int radix, char *s, int *slen);
 
 	/**
 	* \brief          Read X from an opened file
@@ -151,7 +151,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_MPI_XXX error code
 	*/
-	XDL_API int mpi_read_file(mpi *X, int radix, FILE *fin);
+	EXP_API int mpi_read_file(mpi *X, int radix, FILE *fin);
 
 	/**
 	* \brief          Write X into an opened file, or stdout
@@ -165,7 +165,7 @@ extern "C" {
 	*
 	* \note           Set fout == NULL to print X on the console.
 	*/
-	XDL_API int mpi_write_file(char *p, mpi *X, int radix, FILE *fout);
+	EXP_API int mpi_write_file(char *p, mpi *X, int radix, FILE *fout);
 
 	/**
 	* \brief          Import X from unsigned binary data, big endian
@@ -177,7 +177,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_read_binary(mpi *X, unsigned char *buf, int buflen);
+	EXP_API int mpi_read_binary(mpi *X, unsigned char *buf, int buflen);
 
 	/**
 	* \brief          Export X into unsigned binary data, big endian
@@ -192,7 +192,7 @@ extern "C" {
 	* \note           Call this function with *buflen = 0 to obtain the
 	*                 minimum required buffer size in *buflen.
 	*/
-	XDL_API int mpi_write_binary(mpi *X, unsigned char *buf, int buflen);
+	EXP_API int mpi_write_binary(mpi *X, unsigned char *buf, int buflen);
 
 	/**
 	* \brief          Left-shift: X <<= count
@@ -200,7 +200,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_shift_l(mpi *X, int count);
+	EXP_API int mpi_shift_l(mpi *X, int count);
 
 	/**
 	* \brief          Right-shift: X >>= count
@@ -208,7 +208,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_shift_r(mpi *X, int count);
+	EXP_API int mpi_shift_r(mpi *X, int count);
 
 	/**
 	* \brief          Compare unsigned values
@@ -217,7 +217,7 @@ extern "C" {
 	*                -1 if |X| is lesser  than |Y| or
 	*                 0 if |X| is equal to |Y|
 	*/
-	XDL_API int mpi_cmp_abs(mpi *X, mpi *Y);
+	EXP_API int mpi_cmp_abs(mpi *X, mpi *Y);
 
 	/**
 	* \brief          Compare signed values
@@ -226,7 +226,7 @@ extern "C" {
 	*                -1 if X is lesser  than Y or
 	*                 0 if X is equal to Y
 	*/
-	XDL_API int mpi_cmp_mpi(mpi *X, mpi *Y);
+	EXP_API int mpi_cmp_mpi(mpi *X, mpi *Y);
 
 	/**
 	* \brief          Compare signed values
@@ -235,7 +235,7 @@ extern "C" {
 	*                -1 if X is lesser  than z or
 	*                 0 if X is equal to z
 	*/
-	XDL_API int mpi_cmp_int(mpi *X, int z);
+	EXP_API int mpi_cmp_int(mpi *X, int z);
 
 	/**
 	* \brief          Unsigned addition: X = |A| + |B|
@@ -243,7 +243,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_add_abs(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_add_abs(mpi *X, mpi *A, mpi *B);
 
 	/**
 	* \brief          Unsigned substraction: X = |A| - |B|
@@ -251,7 +251,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 ERR_MPI_NEGATIVE_VALUE if B is greater than A
 	*/
-	XDL_API int mpi_sub_abs(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_sub_abs(mpi *X, mpi *A, mpi *B);
 
 	/**
 	* \brief          Signed addition: X = A + B
@@ -259,7 +259,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_add_mpi(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_add_mpi(mpi *X, mpi *A, mpi *B);
 
 	/**
 	* \brief          Signed substraction: X = A - B
@@ -267,7 +267,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_sub_mpi(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_sub_mpi(mpi *X, mpi *A, mpi *B);
 
 	/**
 	* \brief          Signed addition: X = A + b
@@ -275,7 +275,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_add_int(mpi *X, mpi *A, int b);
+	EXP_API int mpi_add_int(mpi *X, mpi *A, int b);
 
 	/**
 	* \brief          Signed substraction: X = A - b
@@ -283,7 +283,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_sub_int(mpi *X, mpi *A, int b);
+	EXP_API int mpi_sub_int(mpi *X, mpi *A, int b);
 
 	/**
 	* \brief          Baseline multiplication: X = A * B
@@ -291,7 +291,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_mul_mpi(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_mul_mpi(mpi *X, mpi *A, mpi *B);
 
 	/**
 	* \brief          Baseline multiplication: X = A * b
@@ -299,7 +299,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_mul_int(mpi *X, mpi *A, t_int b);
+	EXP_API int mpi_mul_int(mpi *X, mpi *A, t_int b);
 
 	/**
 	* \brief          Division by mpi: A = Q * B + R
@@ -310,7 +310,7 @@ extern "C" {
 	*
 	* \note           Either Q or R can be NULL.
 	*/
-	XDL_API int mpi_div_mpi(mpi *Q, mpi *R, mpi *A, mpi *B);
+	EXP_API int mpi_div_mpi(mpi *Q, mpi *R, mpi *A, mpi *B);
 
 	/**
 	* \brief          Division by int: A = Q * b + R
@@ -321,7 +321,7 @@ extern "C" {
 	*
 	* \note           Either Q or R can be NULL.
 	*/
-	XDL_API int mpi_div_int(mpi *Q, mpi *R, mpi *A, int b);
+	EXP_API int mpi_div_int(mpi *Q, mpi *R, mpi *A, int b);
 
 	/**
 	* \brief          Modulo: R = A mod B
@@ -330,7 +330,7 @@ extern "C" {
 	*                 1 if memory allocation failed,
 	*                 ERR_MPI_DIVISION_BY_ZERO if B == 0
 	*/
-	XDL_API int mpi_mod_mpi(mpi *R, mpi *A, mpi *B);
+	EXP_API int mpi_mod_mpi(mpi *R, mpi *A, mpi *B);
 
 	/**
 	* \brief          Modulo: r = A mod b
@@ -339,7 +339,7 @@ extern "C" {
 	*                 1 if memory allocation failed,
 	*                 ERR_MPI_DIVISION_BY_ZERO if b == 0
 	*/
-	XDL_API int mpi_mod_int(t_int *r, mpi *A, int b);
+	EXP_API int mpi_mod_int(t_int *r, mpi *A, int b);
 
 	/**
 	* \brief          Sliding-window exponentiation: X = A^E mod N
@@ -352,7 +352,7 @@ extern "C" {
 	*                 multiple calls, which speeds up things a bit. It can
 	*                 be set to NULL if the extra performance is unneeded.
 	*/
-	XDL_API int mpi_exp_mod(mpi *X, mpi *A, mpi *E, mpi *N, mpi *_RR);
+	EXP_API int mpi_exp_mod(mpi *X, mpi *A, mpi *E, mpi *N, mpi *_RR);
 
 	/**
 	* \brief          Greatest common divisor: G = gcd(A, B)
@@ -360,7 +360,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	XDL_API int mpi_gcd(mpi *G, mpi *A, mpi *B);
+	EXP_API int mpi_gcd(mpi *G, mpi *A, mpi *B);
 
 	/**
 	* \brief          Modular inverse: X = A^-1 mod N
@@ -370,7 +370,7 @@ extern "C" {
 	*                 ERR_MPI_BAD_INPUT_DATA if N is negative or nil
 	*                 ERR_MPI_NOT_ACCEPTABLE if A has no inverse mod N
 	*/
-	XDL_API int mpi_inv_mod(mpi *X, mpi *A, mpi *N);
+	EXP_API int mpi_inv_mod(mpi *X, mpi *A, mpi *N);
 
 	/**
 	* \brief          Miller-Rabin primality test
@@ -379,7 +379,7 @@ extern "C" {
 	*                 1 if memory allocation failed,
 	*                 ERR_MPI_NOT_ACCEPTABLE if X is not prime
 	*/
-	XDL_API int mpi_is_prime(mpi *X, int(*f_rng)(void *), void *p_rng);
+	EXP_API int mpi_is_prime(mpi *X, int(*f_rng)(void *), void *p_rng);
 
 	/**
 	* \brief          Prime number generation
@@ -394,7 +394,7 @@ extern "C" {
 	*                 1 if memory allocation failed,
 	*                 ERR_MPI_BAD_INPUT_DATA if nbits is < 3
 	*/
-	XDL_API int mpi_gen_prime(mpi *X, int nbits, int dh_flag,
+	EXP_API int mpi_gen_prime(mpi *X, int nbits, int dh_flag,
 		int(*f_rng)(void *), void *p_rng);
 
 	/**
@@ -402,7 +402,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or 1 if the test failed
 	*/
-	XDL_API int mpi_self_test(int verbose);
+	EXP_API int mpi_self_test(int verbose);
 
 #ifdef __cplusplus
 }

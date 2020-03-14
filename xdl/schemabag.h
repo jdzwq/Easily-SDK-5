@@ -46,7 +46,7 @@ extern "C" {
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */
-XDL_API void export_grid_schema(link_t_ptr ptr, link_t_ptr sch);
+EXP_API void export_grid_schema(link_t_ptr ptr, link_t_ptr sch);
 
 /*
 @FUNCTION import_grid_schema: import grid col set defination from a schema document.
@@ -54,7 +54,7 @@ XDL_API void export_grid_schema(link_t_ptr ptr, link_t_ptr sch);
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */
-XDL_API void import_grid_schema(link_t_ptr ptr, link_t_ptr sch);
+EXP_API void import_grid_schema(link_t_ptr ptr, link_t_ptr sch);
 
 /*
 @FUNCTION export_grid_data: export grid row set to dom document using schema defination.
@@ -63,7 +63,7 @@ XDL_API void import_grid_schema(link_t_ptr ptr, link_t_ptr sch);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void export_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void export_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION import_grid_data: import grid row set from dom document using schema defination.
@@ -72,7 +72,7 @@ XDL_API void export_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void import_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void import_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION export_statis_schema: export statis yax set defination to a schema document.
@@ -80,7 +80,7 @@ XDL_API void import_grid_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */
-XDL_API void export_statis_schema(link_t_ptr ptr, link_t_ptr sch);
+EXP_API void export_statis_schema(link_t_ptr ptr, link_t_ptr sch);
 
 /*
 @FUNCTION export_statis_data: export statis xax set to dom document using schema defination.
@@ -89,7 +89,7 @@ XDL_API void export_statis_schema(link_t_ptr ptr, link_t_ptr sch);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void export_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void export_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION import_statis_data: import statis xax set from dom document using schema defination.
@@ -98,7 +98,7 @@ XDL_API void export_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void import_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void import_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION export_form_schema: export form field set defination to a schema document.
@@ -106,7 +106,7 @@ XDL_API void import_statis_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */
-XDL_API void export_form_schema(link_t_ptr ptr, link_t_ptr sch);
+EXP_API void export_form_schema(link_t_ptr ptr, link_t_ptr sch);
 
 /*
 @FUNCTION export_form_data: export form field data to dom document using schema defination.
@@ -115,7 +115,7 @@ XDL_API void export_form_schema(link_t_ptr ptr, link_t_ptr sch);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void export_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void export_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION import_form_data: import form field data from dom document using schema defination.
@@ -124,7 +124,7 @@ XDL_API void export_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void import_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void import_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION export_rich_schema: export rich anchor set defination to a schema document.
@@ -132,7 +132,7 @@ XDL_API void import_form_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @INPUT link_t_ptr sch: the schema link component.
 @RETURN void: none.
 */
-XDL_API void export_rich_schema(link_t_ptr ptr, link_t_ptr sch);
+EXP_API void export_rich_schema(link_t_ptr ptr, link_t_ptr sch);
 
 /*
 @FUNCTION export_rich_data: export rich anchor set to dom document using schema defination.
@@ -141,7 +141,7 @@ XDL_API void export_rich_schema(link_t_ptr ptr, link_t_ptr sch);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void export_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void export_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
 /*
 @FUNCTION import_rich_data: import rich anchor set from dom document using schema defination.
@@ -150,11 +150,11 @@ XDL_API void export_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 @OUTPUT link_t_ptr dom: the dom link component.
 @RETURN void: none.
 */
-XDL_API void import_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
+EXP_API void import_rich_data(link_t_ptr ptr, link_t_ptr sch, link_t_ptr dom);
 
-//XDL_API void export_dom_node(link_t_ptr node, link_t_ptr sch, link_t_ptr dom);
+//EXP_API void export_dom_node(link_t_ptr node, link_t_ptr sch, link_t_ptr dom);
 
-//XDL_API void import_dom_node(link_t_ptr node, link_t_ptr sch, link_t_ptr dom);
+//EXP_API void import_dom_node(link_t_ptr node, link_t_ptr sch, link_t_ptr dom);
 
 #ifdef	__cplusplus
 }

@@ -32,21 +32,21 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	OSS_API xhand_t oss_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
+	EXP_API xhand_t oss_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
 
-	OSS_API void oss_close_file(xhand_t inet);
+	EXP_API void oss_close_file(xhand_t inet);
 
-	OSS_API bool_t oss_read_file(xhand_t inet, byte_t* buf, dword_t* pb);
+	EXP_API bool_t oss_read_file(xhand_t inet, byte_t* buf, dword_t* pb);
 
-	OSS_API bool_t oss_write_file(xhand_t inet, const byte_t* buf, dword_t* pb);
+	EXP_API bool_t oss_write_file(xhand_t inet, const byte_t* buf, dword_t* pb);
 
-	OSS_API bool_t oss_delete_file(const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t oss_delete_file(const secu_desc_t* psd, const tchar_t* fname);
 
-	OSS_API bool_t oss_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa);
+	EXP_API bool_t oss_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa);
 
-	OSS_API bool_t oss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
+	EXP_API bool_t oss_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
 
-	OSS_API bool_t oss_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
+	EXP_API bool_t oss_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

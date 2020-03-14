@@ -430,56 +430,56 @@ void _previewdlg_create_toolbar(res_win_t widget)
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_CLOSE);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_CLOSE, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_CLOSE, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_PRINT_CUR);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_PRINT, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_PRINT, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_PRINT_SEL);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_PRINT, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_PRINT, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_PRINT_ALL);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_PRINT, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_PRINT, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_SETUP);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_STYLE, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_STYLE, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_SAVEAS);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_SAVEAS, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_SAVEAS, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_SAVE);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_SAVE, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_SAVE, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 
 	xr.x -= (xr.w + nSplit);
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_OPEN);
 	widget_set_owner(pushbox, widget);
-	pushbox_set_text(pushbox, GDI_ICON_OPEN, -1);
+	pushbox_set_text(pushbox, GDI_ATTR_GIZMO_OPEN, -1);
 	widget_show(pushbox, WS_SHOW_NORMAL);
 }
 

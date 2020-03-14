@@ -1,4 +1,4 @@
-
+﻿
 /***********************************************************************
 	Easily port service
 
@@ -37,27 +37,29 @@ static void _xpnps_log_request(unsigned short port, const tchar_t* addr)
 	xportm_log_info(token, len);
 }
 
-static void _invoke_error()
+static void _xpnps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-	tchar_t sz_method[INT_LEN + 1] = { 0 };
+	pnps_block_t* pb = (pnps_block_t*)hand;
 
-	byte_t** d_recv = NULL;
-	dword_t n_size = 0;
+	tchar_t token[PATH_LEN + 1] = { 0 };
+	int len;
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	len = xsprintf(token, _T("PNP-SCP: [%s: %d] %s %s\r\n"), pb->addr, pb->port, code, text);
 
-	xportm_log_error(sz_code, sz_error);
+	xportm_log_info(token, len);
 }
 
-static void _xpnps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
+static void _xpnps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_proc)
 {
 	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
-
+	if (is_null(sz_root))
+	{
+		//xscpy(sz_root,_T("."));
+		get_runpath((res_modu_t)0, sz_root, PATH_LEN);
+	}
 	xsprintf(sz_file, _T("%s/cfg/%s.config"), sz_root, site);
 
 	LINKPTR ptr_cfg = create_xml_doc();
@@ -85,14 +87,6 @@ static void _xpnps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz
 				{
 					get_dom_node_text(nlk, sz_proc, PATH_LEN);
 				}
-				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("level"), -1, 1) == 0 && sz_level)
-				{
-					get_dom_node_text(nlk, sz_level, INT_LEN);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("trace"), -1, 1) == 0 && sz_trace)
-				{
-					get_dom_node_text(nlk, sz_trace, PATH_LEN);
-				}
 				
 				nlk = get_dom_next_sibling_node(nlk);
 			}
@@ -119,11 +113,8 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
 	tchar_t sz_site[RES_LEN] = { 0 };
-	tchar_t sz_track[PATH_LEN] = { 0 };
-	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_proc[PATH_LEN] = { 0 };
 	tchar_t sz_path[PATH_LEN] = { 0 };
-	tchar_t sz_trace[RES_LEN] = { 0 };
 
 	TRY_CATCH;
 
@@ -131,7 +122,7 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
 
-	_xpnps_get_config(sz_site, sz_path, sz_track, sz_level, sz_proc);
+	_xpnps_get_config(sz_site, sz_path, sz_proc);
 	
 	if (is_null(sz_path))
 	{
@@ -145,9 +136,7 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	pb = (pnps_block_t*)xmem_alloc(sizeof(pnps_block_t));
 	pb->cbs = sizeof(pnps_block_t);
-
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
-
 	pb->port = port;
 	xsncpy(pb->addr, addr, ADDR_LEN);
 	if (pack)
@@ -155,11 +144,9 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		xmem_copy((void*)pb->pack, (void*)pack, size);
 		pb->size = size;
 	}
-
-	pb->pf_log_title = _write_log_title;
-	pb->pf_log_error = _write_log_error;
-	pb->pf_log_data = _write_log_data;
 	printf_path(pb->path, sz_path);
+	pb->hand = (void*)pb;
+	pb->pf_track_eror = (PF_TRACK_ERROR)_xpnps_track_error;
 
 	xszero(sz_path, PATH_LEN);
 	printf_path(sz_path, sz_proc);
@@ -176,31 +163,7 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(_T("_pnps_invoke"), _T("website invoke module function failed\n"));
 	}
 
-	get_loc_date(&xdt);
-	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, thread_get_id());
-
-	xszero(sz_path, PATH_LEN);
-
-	if (!is_null(sz_track))
-	{
-		printf_path(sz_path, sz_track);
-		xsappend(sz_path, _T("/%s.log"), sz_trace);
-
-		pb->log = xfile_open(NULL, sz_path, FILE_OPEN_CREATE);
-	}
-
 	n_state = (*pf_invoke)(pb);
-
-	if (pb->log)
-	{
-		xfile_close(pb->log);
-		pb->log = NULL;
-
-		if (n_state < xstol(sz_level))
-		{
-			xfile_delete(NULL, sz_path);
-		}
-	}
 
 	xmem_free(pb);
 	pb = NULL;
@@ -214,15 +177,11 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 ONERROR:
 
-	_invoke_error();
+	get_last_error(errcode, errtext, ERR_LEN);
 
 	if (pb)
 	{
-		if (pb->log)
-		{
-			xfile_close(pb->log);
-		}
-
+		_xpnps_track_error((void*)pb, errcode, errtext);
 		xmem_free(pb);
 	}
 

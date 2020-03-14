@@ -50,42 +50,42 @@ extern "C" {
 @INPUT int cols: cols of matrix.
 @RETURN matrix_t*: return matrix struct.
 */
-XDL_API matrix_t* matrix_alloc(int rows, int cols);
+EXP_API matrix_t* matrix_alloc(int rows, int cols);
 
 /*
 @FUNCTION matrix_free: free matrix.
 @INPUT matrix_t* pmt: the matrix struct.
 @RETURN void: none.
 */
-XDL_API void matrix_free(matrix_t* pmt);
+EXP_API void matrix_free(matrix_t* pmt);
 
 /*
 @FUNCTION matrix_clone: clone a matrix from souce.
 @INPUT const matrix_t*: the source matrix struct.
 @RETURN matrix_t*: return matrix struct.
 */
-XDL_API matrix_t* matrix_clone(const matrix_t* pvt);
+EXP_API matrix_t* matrix_clone(const matrix_t* pvt);
 
 /*
 @FUNCTION matrix_clear: clear matrix elements.
 @INPUT matrix_t*: the matrix struct.
 @RETURN void: none.
 */
-XDL_API void matrix_empty(matrix_t* pvt);
+EXP_API void matrix_empty(matrix_t* pvt);
 
 /*
 @FUNCTION matrix_zero: set the matrix elements value to zero.
 @INPUT matrix_t* pmt: the matrix struct.
 @RETURN void: none.
 */
-XDL_API void matrix_zero(matrix_t* pmt);
+EXP_API void matrix_zero(matrix_t* pmt);
 
 /*
 @FUNCTION matrix_unit: set the matrix elements value to 1.
 @INPUT matrix_t* pmt: the matrix struct.
 @RETURN void: none.
 */
-XDL_API void matrix_unit(matrix_t* pmt);
+EXP_API void matrix_unit(matrix_t* pmt);
 
 /*
 @FUNCTION matrix_copy: copy the matrix.
@@ -93,7 +93,7 @@ XDL_API void matrix_unit(matrix_t* pmt);
 @INPUT const matrix_t*: the srource matrix struct.
 @RETURN void: none.
 */
-XDL_API void matrix_copy(matrix_t* dest, const matrix_t* src);
+EXP_API void matrix_copy(matrix_t* dest, const matrix_t* src);
 
 /*
 @FUNCTION matrix_set_value: set the matrix element value.
@@ -103,7 +103,7 @@ XDL_API void matrix_copy(matrix_t* dest, const matrix_t* src);
 @INPUT double db: the value to set.
 @RETURN void: none.
 */
-XDL_API void matrix_set_value(matrix_t* pmt, int i, int j, double db);
+EXP_API void matrix_set_value(matrix_t* pmt, int i, int j, double db);
 
 /*
 @FUNCTION matrix_get_value: get the matrix element value.
@@ -112,7 +112,7 @@ XDL_API void matrix_set_value(matrix_t* pmt, int i, int j, double db);
 @INPUT int j: zero based col index.
 @RETURN double: return the element value if exists, otherwise return zero.
 */
-XDL_API double matrix_get_value(matrix_t* pmt, int i, int j);
+EXP_API double matrix_get_value(matrix_t* pmt, int i, int j);
 
 /*
 @FUNCTION matrix_parse: parse matrix element value from string.
@@ -121,7 +121,7 @@ XDL_API double matrix_get_value(matrix_t* pmt, int i, int j);
 @INPUT int len: length of string token.
 @RETURN void: none.
 */
-XDL_API void matrix_parse(matrix_t* pmt, const tchar_t* str, int len);
+EXP_API void matrix_parse(matrix_t* pmt, const tchar_t* str, int len);
 
 /*
 @FUNCTION matrix_format: format matrix element to string.
@@ -130,20 +130,20 @@ XDL_API void matrix_parse(matrix_t* pmt, const tchar_t* str, int len);
 @INPUT int max: the buffer size in characters, not include terminate character.
 @RETURN int: return the formated string token length.
 */
-XDL_API int matrix_format(matrix_t* pmt, tchar_t* buf, int max);
+EXP_API int matrix_format(matrix_t* pmt, tchar_t* buf, int max);
 
-XDL_API matrix_t* matrix_trans(matrix_t mt);
+EXP_API matrix_t* matrix_trans(matrix_t mt);
 
-XDL_API matrix_t* matrix_plus(matrix_t mt, double dbl);
+EXP_API matrix_t* matrix_plus(matrix_t mt, double dbl);
 
-XDL_API matrix_t* matrix_add(matrix_t mt1, matrix_t mt2);
+EXP_API matrix_t* matrix_add(matrix_t mt1, matrix_t mt2);
 
-XDL_API matrix_t* matrix_mul(matrix_t mt1, matrix_t mt2);
+EXP_API matrix_t* matrix_mul(matrix_t mt1, matrix_t mt2);
 
-XDL_API double matrix_det(matrix_t mt);
+EXP_API double matrix_det(matrix_t mt);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_matrix(void);
+	EXP_API void test_matrix(void);
 #endif
 
 #ifdef	__cplusplus

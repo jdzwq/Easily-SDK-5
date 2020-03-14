@@ -45,14 +45,14 @@ extern "C" {
 @INPUT canvas_t canv: the canvas object.
 @RETURN if_canvas_t*: if succeeds return canvas interface struct, fails return NULL.
 */
-XDC_API if_canvas_t* create_canvas_interface(canvas_t canv);
+EXP_API if_canvas_t* create_canvas_interface(canvas_t canv);
 
 /*
 @FUNCTION destroy_canvas_interface: destroy canvas interface.
 @INPUT if_canvas_t*: the canvas interface struct.
 @RETURN void: none.
 */
-XDC_API void	destroy_canvas_interface(if_canvas_t* pic);
+EXP_API void	destroy_canvas_interface(if_canvas_t* pic);
 
 #ifdef	__cplusplus
 }

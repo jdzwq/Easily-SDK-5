@@ -38,20 +38,20 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API schar_t* a_xsalloc(int len);
-XDL_API wchar_t* w_xsalloc(int len);
+EXP_API schar_t* a_xsalloc(int len);
+EXP_API wchar_t* w_xsalloc(int len);
 
-XDL_API schar_t* a_xsrealloc(schar_t* str,int len);
-XDL_API wchar_t* w_xsrealloc(wchar_t* str,int len);
+EXP_API schar_t* a_xsrealloc(schar_t* str,int len);
+EXP_API wchar_t* w_xsrealloc(wchar_t* str,int len);
 
-XDL_API void a_xsfree(schar_t* str);
-XDL_API void w_xsfree(wchar_t* str);
+EXP_API void a_xsfree(schar_t* str);
+EXP_API void w_xsfree(wchar_t* str);
 
-XDL_API schar_t* a_xsnclone(const schar_t* str, int len);
-XDL_API wchar_t* w_xsnclone(const wchar_t* str, int len);
+EXP_API schar_t* a_xsnclone(const schar_t* str, int len);
+EXP_API wchar_t* w_xsnclone(const wchar_t* str, int len);
 
-XDL_API schar_t* a_xsclone(const schar_t* str);
-XDL_API wchar_t* w_xsclone(const wchar_t* str);
+EXP_API schar_t* a_xsclone(const schar_t* str);
+EXP_API wchar_t* w_xsclone(const wchar_t* str);
 
 #ifdef	__cplusplus
 }

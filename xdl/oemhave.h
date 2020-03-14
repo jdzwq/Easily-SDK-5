@@ -30,7 +30,7 @@ extern "C" {
 	*
 	* \param hs       HAVEGE state to be initialized
 	*/
-	XDL_API void havege_init(havege_state *hs);
+	EXP_API void havege_init(havege_state *hs);
 
 	/**
 	* \brief          HAVEGE rand function
@@ -39,7 +39,7 @@ extern "C" {
 	*
 	* \return         A random int
 	*/
-	XDL_API int havege_rand(void *p_rng);
+	EXP_API int havege_rand(void *p_rng);
 
 #ifdef __cplusplus
 }

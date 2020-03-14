@@ -374,79 +374,79 @@ void MainFrame_CreateFile(res_win_t widget)
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_FORMPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白表单"));
-	set_list_item_icon(llk, GDI_ICON_MEMO);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_MEMO);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_GRIDPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白网格"));
-	set_list_item_icon(llk, GDI_ICON_GRID);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_GRID);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_TAGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白标记文本"));
-	set_list_item_icon(llk, GDI_ICON_NEW);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_NEW);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_RICHPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白富文本"));
-	set_list_item_icon(llk, GDI_ICON_RICH);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_RICH);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_STATISPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白图表"));
-	set_list_item_icon(llk, GDI_ICON_GRAPH);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_GRAPH);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SCHEMAPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白模式"));
-	set_list_item_icon(llk, GDI_ICON_SCHEMA);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_SCHEMA);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_TOPOGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("空白地形"));
-	set_list_item_icon(llk, GDI_ICON_GROUP);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_GROUP);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_IMAGESPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("图像列表"));
-	set_list_item_icon(llk, GDI_ICON_IMAGES);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_IMAGES);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIALOGPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("对话框"));
-	set_list_item_icon(llk, GDI_ICON_DIALOG);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_DIALOG);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIAGRAMPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("流程图"));
-	set_list_item_icon(llk, GDI_ICON_DIAGRAM);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_DIAGRAM);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_SQLPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("SQL"));
-	set_list_item_icon(llk, GDI_ICON_EDIT);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_EDIT);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_XMLPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("XML"));
-	set_list_item_icon(llk, GDI_ICON_EDIT);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_EDIT);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_JSONPANEL);
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("JSON"));
-	set_list_item_icon(llk, GDI_ICON_EDIT);
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_EDIT);
 
 	res_win_t hNewFileDlg = listdlg_create(_T("选择文档类型"), ptrList, widget);
 	
@@ -608,7 +608,7 @@ void MainFrame_AppendFile(res_win_t widget)
 			tlk_parent = insert_tree_item(ptr_tree, LINK_LAST);
 			set_tree_item_name(tlk_parent, szType);
 			set_tree_item_title(tlk_parent, szType);
-			set_tree_item_icon(tlk_parent, GDI_ICON_NOTE);
+			set_tree_item_icon(tlk_parent, GDI_ATTR_GIZMO_NOTE);
 
 			pdt->bDirty = TRUE;
 		}
@@ -619,7 +619,7 @@ void MainFrame_AppendFile(res_win_t widget)
 			tlk_child = insert_tree_item(tlk_parent, LINK_LAST);
 			set_tree_item_name(tlk_child, szName);
 			set_tree_item_title(tlk_child, szTitle);
-			set_tree_item_icon(tlk_child, GDI_ICON_SCHEMA);
+			set_tree_item_icon(tlk_child, GDI_ATTR_GIZMO_SCHEMA);
 
 			pdt->bDirty = TRUE;
 		}
@@ -861,7 +861,7 @@ void MainFrame_FreshObject(res_win_t widget)
 
 			set_tree_item_name(tlk, get_field_name_ptr(flk));
 			set_tree_item_title(tlk, token);
-			set_tree_item_icon(tlk, GDI_ICON_NOTE);
+			set_tree_item_icon(tlk, GDI_ATTR_GIZMO_NOTE);
 
 			flk = get_next_field(qo.ptrDoc, flk);
 		}
@@ -1265,12 +1265,12 @@ void MainFrame_ResBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	LINKPTR mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_APPEND);
 	set_menu_item_title(mlk, _T("添加文件"));
-	set_menu_item_icon(mlk, GDI_ICON_PLUS);
+	set_menu_item_icon(mlk, GDI_ATTR_GIZMO_PLUS);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_REMOVE);
 	set_menu_item_title(mlk, _T("移除文件"));
-	set_menu_item_icon(mlk, GDI_ICON_MINUS);
+	set_menu_item_icon(mlk, GDI_ATTR_GIZMO_MINUS);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_FILE_SHOW);
@@ -1369,12 +1369,12 @@ void MainFrame_ObjBar_OnRBClick(res_win_t widget, NOTICE_TREE* pnt)
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_OBJECT_FRESH);
 	set_menu_item_title(mlk, _T("刷新对象"));
-	set_menu_item_icon(mlk, GDI_ICON_FRESH);
+	set_menu_item_icon(mlk, GDI_ATTR_GIZMO_FRESH);
 
 	mlk = insert_menu_item(ptrMenu, LINK_LAST);
 	set_menu_item_iid(mlk, IDA_OBJECT_CHECK);
 	set_menu_item_title(mlk, _T("选中对象"));
-	set_menu_item_icon(mlk, GDI_ICON_CHECK);
+	set_menu_item_icon(mlk, GDI_ATTR_GIZMO_CHECK);
 
 	menubox_set_data(hMenu, ptrMenu);
 
@@ -1519,13 +1519,13 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_CONFIG_RDS);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("数据服务"));
-	set_tool_item_icon(ilk, GDI_ICON_IMPORT);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_IMPORT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CONFIG_DOC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("文档服务"));
-	set_tool_item_icon(ilk, GDI_ICON_IMPORT);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_IMPORT);
 
 	glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
@@ -1538,61 +1538,61 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_FILE_CREATE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("新建文件"));
-	set_tool_item_icon(ilk, GDI_ICON_NEW);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_NEW);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_OPEN);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("打开文件"));
-	set_tool_item_icon(ilk, GDI_ICON_OPEN);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_OPEN);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SAVE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("保存文件"));
-	set_tool_item_icon(ilk, GDI_ICON_SAVE);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_SAVE);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SAVEAS);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("另存文件"));
-	set_tool_item_icon(ilk, GDI_ICON_SAVEAS);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_SAVEAS);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_SCHEMA);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导出模式"));
-	set_tool_item_icon(ilk, GDI_ICON_SCHEMA);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_SCHEMA);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_EXPORT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导出数据"));
-	set_tool_item_icon(ilk, GDI_ICON_OUTPUT);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_OUTPUT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_IMPORT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("导入数据"));
-	set_tool_item_icon(ilk, GDI_ICON_INPUT);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_INPUT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_PRINT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("打印文件"));
-	set_tool_item_icon(ilk, GDI_ICON_PRINT);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_PRINT);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_PREVIEW);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("预览文件"));
-	set_tool_item_icon(ilk, GDI_ICON_SCREEN);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_SCREEN);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_FILE_EXEC);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("测试运行"));
-	set_tool_item_icon(ilk, GDI_ICON_NEXT);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_NEXT);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
 	widget_show(pdt->hToolBar, WS_SHOW_NORMAL);
@@ -1634,7 +1634,7 @@ void _MainFrame_CreateResBar(res_win_t widget)
 	LINKPTR ptrTree = create_tree_doc();
 
 	set_tree_title(ptrTree, _T("资源列表"));
-	set_tree_title_icon(ptrTree, GDI_ICON_PROPER);
+	set_tree_title_icon(ptrTree, GDI_ATTR_GIZMO_PROPER);
 	treectrl_attach(pdt->hResBar, ptrTree);
 	treectrl_set_lock(pdt->hResBar, 0);
 
@@ -1682,13 +1682,13 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 	set_title_item_title(tlk, _T("文件"));
 	set_title_item_name(tlk, MAINFRAME_TREE_RESOURCE);
 	set_title_item_locked(tlk, 1);
-	set_title_item_icon(tlk, GDI_ICON_NEW);
+	set_title_item_icon(tlk, GDI_ATTR_GIZMO_NEW);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
 	set_title_item_title(tlk, _T("对象"));
 	set_title_item_name(tlk, MAINFRAME_TREE_OBJECT);
 	set_title_item_locked(tlk, 1);
-	set_title_item_icon(tlk, GDI_ICON_HERF);
+	set_title_item_icon(tlk, GDI_ATTR_GIZMO_HERF);
 
 	titlectrl_attach(pdt->hCateBar, ptrTitle);
 

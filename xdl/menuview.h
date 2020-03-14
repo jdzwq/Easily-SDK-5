@@ -46,15 +46,15 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API float calc_menu_height(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_menu_height(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API float calc_menu_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_menu_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
+	EXP_API int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-	XDL_API void draw_menu(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API void draw_menu(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

@@ -524,28 +524,28 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my / 2);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my * 1.5);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = (float)(pbox->fy + my * 2);
@@ -559,28 +559,28 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my / 2);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my * 1.5);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = (float)(pbox->fy + my * 2);
@@ -594,28 +594,28 @@ void draw_timebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my / 2);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my * 1.5);
 	xr.fw = (float)(mx / 2);
 	xr.fh = (float)(my / 2);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = (float)(pbox->fy + my * 2);
@@ -1218,7 +1218,7 @@ void draw_checkbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 
 	if (b_on)
 	{
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_CHECKED);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_CHECKED);
 	}
 }
 
@@ -1362,7 +1362,7 @@ void draw_slidebox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t*
 	xr.fy = pbox->fy + my / 2;
 	xr.fw = mx / 2;
 	xr.fh = my / 2;
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1460,14 +1460,14 @@ void draw_spinbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = mx / 2;
 	xr.fh = my / 2;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = pbox->fx + mx;
 	xr.fy = pbox->fy + my / 2;
 	xr.fw = mx / 2;
 	xr.fh = my / 2;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1576,28 +1576,28 @@ void draw_navibox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_FIRST);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_FIRST);
 
 	xr.fx = pbox->fx + mx;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_PREV);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_PREV);
 
 	xr.fx = pbox->fx + mx * 2;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_NEXT);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_NEXT);
 
 	xr.fx = pbox->fx + mx * 3;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_LAST);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_LAST);
 
 	xr.fx = pbox->fx + mx * 4;
 	xr.fy = pbox->fy;
@@ -1605,9 +1605,9 @@ void draw_navibox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
 	if (pns && pns->keyboxed)
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_KEYBOXED);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_KEYBOXED);
 	else
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_KEYBOX);
+		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_KEYBOX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1708,28 +1708,28 @@ void draw_vertbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_BEGIN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_BEGIN);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy + my;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_UP);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_UP);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy + my * 2;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_DOWN);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_DOWN);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy + my * 3;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_END);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_END);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1830,28 +1830,28 @@ void draw_horzbox(const if_canvas_t* pif, const canvbox_t* pbox, const xfont_t* 
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_FIRST);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_FIRST);
 
 	xr.fx = pbox->fx + mx;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_PREV);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_PREV);
 
 	xr.fx = pbox->fx + mx * 2;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_NEXT);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_NEXT);
 
 	xr.fx = pbox->fx+ mx * 3;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_MIDD_ICON, DEF_MIDD_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_LAST);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_LAST);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

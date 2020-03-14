@@ -50,14 +50,14 @@ extern "C" {
 @FUNCTION create_bina_tree: create a binary tree.
 @RETURN link_t_ptr: return the binary tree link component.
 */
-XDL_API link_t_ptr create_bina_tree(int level);
+EXP_API link_t_ptr create_bina_tree(int level);
 
 /*
 @FUNCTION destroy_bina_tree: destroy a binary tree.
 @INPUT link_t_ptr ptr: the binary tree link component.
 @RETURN void: none.
 */
-XDL_API void destroy_bina_tree(link_t_ptr ptr);
+EXP_API void destroy_bina_tree(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_bina_node: insert a binary node.
@@ -66,7 +66,7 @@ XDL_API void destroy_bina_tree(link_t_ptr ptr);
 @INPUT object_t val: the object value.
 @RETURN link_t_ptr: return the node link component.
 */
-XDL_API link_t_ptr insert_bina_node(link_t_ptr ptr, variant_t key, object_t val);
+EXP_API link_t_ptr insert_bina_node(link_t_ptr ptr, variant_t key, object_t val);
 
 /*
 @FUNCTION delete_bina_node: delete a binary node by key.
@@ -74,7 +74,7 @@ XDL_API link_t_ptr insert_bina_node(link_t_ptr ptr, variant_t key, object_t val)
 @INPUT variant_t key: the variant key.
 @RETURN bool_t: return nonzero if exists, otherwise return zero.
 */
-XDL_API bool_t delete_bina_node(link_t_ptr ptr, variant_t key);
+EXP_API bool_t delete_bina_node(link_t_ptr ptr, variant_t key);
 
 /*
 @FUNCTION find_bina_node: find a binary node by key and return the value.
@@ -83,7 +83,7 @@ XDL_API bool_t delete_bina_node(link_t_ptr ptr, variant_t key);
 @OUTPUT object_t val: the object for returning value.
 @RETURN link_t_ptr: return the node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr find_bina_node(link_t_ptr ptr, variant_t key, object_t val);
+EXP_API link_t_ptr find_bina_node(link_t_ptr ptr, variant_t key, object_t val);
 
 /*
 @FUNCTION attach_bina_leaf_object: attach value to node leaf, then the orginal leaf object will be freed.
@@ -91,42 +91,42 @@ XDL_API link_t_ptr find_bina_node(link_t_ptr ptr, variant_t key, object_t val);
 @INPUT object_t val: the object value for attaching.
 @RETURN void: none.
 */
-XDL_API void attach_bina_leaf_object(link_t_ptr nlk, object_t val);
+EXP_API void attach_bina_leaf_object(link_t_ptr nlk, object_t val);
 
 /*
 @FUNCTION detach_bina_leaf_object: detach value from node left leaf, then the leaf value is empty.
 @INPUT link_t_ptr nlk: the node link component.
 @RETURN object_t: return the object value if exists, otherwise return NULL.
 */
-XDL_API object_t detach_bina_leaf_object(link_t_ptr nlk);
+EXP_API object_t detach_bina_leaf_object(link_t_ptr nlk);
 
 /*
 @FUNCTION get_bina_left_child_node: get left child node.
 @INPUT link_t_ptr nlk: the node link component.
 @RETURN link_t_ptr: return the left child node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_bina_left_child_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_bina_left_child_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_bina_right_child_node: get right child node.
 @INPUT link_t_ptr nlk: the node link component.
 @RETURN link_t_ptr: return the right child node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_bina_right_child_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_bina_right_child_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_bina_parent_node: get parent node.
 @INPUT link_t_ptr nlk: the node link component.
 @RETURN link_t_ptr: return the parent node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_bina_parent_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_bina_parent_node(link_t_ptr nlk);
 
 /*
 @FUNCTION is_bina_leaf: test is a leaf node.
 @INPUT link_t_ptr nlk: the node link component.
 @RETURN bool_t: return nonzero for a leaf node, otherwise return zero.
 */
-XDL_API bool_t is_bina_leaf(link_t_ptr nlk);
+EXP_API bool_t is_bina_leaf(link_t_ptr nlk);
 
 /*
 @FUNCTION traver_bina_tree_preorder: enum the binary tree nodes by preorder.
@@ -135,7 +135,7 @@ XDL_API bool_t is_bina_leaf(link_t_ptr nlk);
 @INPUT void* param: parameter translate into callback function.
 @RETURN link_t_ptr: return node link component breaked at.
 */
-XDL_API link_t_ptr traver_bina_tree_preorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr traver_bina_tree_preorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION traver_bina_tree_postorder: enum the binary tree nodes by postorder.
@@ -144,7 +144,7 @@ XDL_API link_t_ptr traver_bina_tree_preorder(link_t_ptr ptr, CALLBACK_ENUMLINK p
 @INPUT void* param: parameter translate into callback function.
 @RETURN link_t_ptr: return node link component breaked at.
 */
-XDL_API link_t_ptr traver_bina_tree_postorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr traver_bina_tree_postorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION traver_bina_tree_inorder: enum the binary tree nodes by inorder.
@@ -153,7 +153,7 @@ XDL_API link_t_ptr traver_bina_tree_postorder(link_t_ptr ptr, CALLBACK_ENUMLINK 
 @INPUT void* param: parameter translate into callback function.
 @RETURN link_t_ptr: return node link component breaked at.
 */
-XDL_API link_t_ptr traver_bina_tree_inorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr traver_bina_tree_inorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION traver_bina_tree_levelorder: enum the binary tree nodes by level order.
@@ -162,10 +162,10 @@ XDL_API link_t_ptr traver_bina_tree_inorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf
 @INPUT void* param: parameter translate into callback function.
 @RETURN link_t_ptr: return node link component breaked at.
 */
-XDL_API link_t_ptr traver_bina_tree_levelorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr traver_bina_tree_levelorder(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_bina_tree();
+	EXP_API void test_bina_tree();
 #endif
 
 #ifdef	__cplusplus

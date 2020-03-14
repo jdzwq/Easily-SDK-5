@@ -46,7 +46,7 @@ extern "C" {
 @INPUT int pathlen: length of the buffer in characters, not include terminated character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_curpath(tchar_t* pathbuf, int pathlen);
+EXP_API bool_t shell_get_curpath(tchar_t* pathbuf, int pathlen);
 
 /*
 @FUNCTION shell_get_runpath: get module runing path.
@@ -54,7 +54,7 @@ XDC_API bool_t shell_get_curpath(tchar_t* pathbuf, int pathlen);
 @INPUT int pathlen: length of the buffer in characters, not include terminated character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_runpath(tchar_t* pathbuf, int pathlen);
+EXP_API bool_t shell_get_runpath(tchar_t* pathbuf, int pathlen);
 
 /*
 @FUNCTION shell_get_docpath: get default system document path.
@@ -62,7 +62,7 @@ XDC_API bool_t shell_get_runpath(tchar_t* pathbuf, int pathlen);
 @INPUT int pathlen: length of the buffer in characters, not include terminated character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_docpath(tchar_t* pathbuf, int pathlen);
+EXP_API bool_t shell_get_docpath(tchar_t* pathbuf, int pathlen);
 
 /*
 @FUNCTION shell_get_apppath: get default system application path.
@@ -70,7 +70,7 @@ XDC_API bool_t shell_get_docpath(tchar_t* pathbuf, int pathlen);
 @INPUT int pathlen: length of the buffer in characters, not include terminated character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_apppath(tchar_t* pathbuf, int pathlen);
+EXP_API bool_t shell_get_apppath(tchar_t* pathbuf, int pathlen);
 
 /*
 @FUNCTION shell_get_tmppath: get default system template path.
@@ -78,7 +78,7 @@ XDC_API bool_t shell_get_apppath(tchar_t* pathbuf, int pathlen);
 @INPUT int pathlen: length of the buffer in characters, not include terminated character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_tmppath(tchar_t* pathbuf, int pathlen);
+EXP_API bool_t shell_get_tmppath(tchar_t* pathbuf, int pathlen);
 
 #ifdef XDU_SUPPORT_SHELL_DIALOG
 /*
@@ -94,7 +94,7 @@ XDC_API bool_t shell_get_tmppath(tchar_t* pathbuf, int pathlen);
 @INPUT filelen: the path buffer length in characters, not include terminate character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_filename(res_win_t owner, const tchar_t* defpath, const tchar_t* filter, const tchar_t* defext, bool_t saveit, tchar_t* pathbuf, int pathlen, tchar_t* filebuf, int filelen);
+EXP_API bool_t shell_get_filename(res_win_t owner, const tchar_t* defpath, const tchar_t* filter, const tchar_t* defext, bool_t saveit, tchar_t* pathbuf, int pathlen, tchar_t* filebuf, int filelen);
 
 /*
 @FUNCTION shell_get_pathname: use system file explorer to select a path name.
@@ -105,7 +105,7 @@ XDC_API bool_t shell_get_filename(res_win_t owner, const tchar_t* defpath, const
 @INPUT pathlen: the path buffer length in characters, not include terminate character.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t createit, tchar_t* pathbuf, int pathlen);
+EXP_API bool_t shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t createit, tchar_t* pathbuf, int pathlen);
 #endif
 
 #ifdef	__cplusplus

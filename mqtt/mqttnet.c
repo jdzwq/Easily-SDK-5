@@ -2690,13 +2690,13 @@ bool_t mqtt_publish(mqtt_t* mqtt, const tchar_t* topic, int len)
 #ifdef _UNICODE
 	mqtt->topic_size = ucs_to_utf8(topic, len, NULL, MAX_LONG);
 #else
-	topic_size = mbs_to_utf8(topic, len, NULL, MAX_LONG);
+	mqtt->topic_size = mbs_to_utf8(topic, len, NULL, MAX_LONG);
 #endif
 	mqtt->topic_name = (byte_t*)xmem_realloc(mqtt->topic_name, mqtt->topic_size);
 #ifdef _UNICODE
 	mqtt->topic_size = ucs_to_utf8(topic, len, mqtt->topic_name, mqtt->topic_size);
 #else
-	topic_size = mbs_to_utf8(topic, len, mqtt->topic_name, mqtt->topic_size);
+	mqtt->topic_size = mbs_to_utf8(topic, len, mqtt->topic_name, mqtt->topic_size);
 #endif
 
 	return 1;

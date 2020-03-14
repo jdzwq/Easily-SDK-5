@@ -41,10 +41,10 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API dword_t next_prim(dword_t prim);
+	EXP_API dword_t next_prim(dword_t prim);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_prim(void);
+	EXP_API void test_prim(void);
 #endif
 
 #ifdef	__cplusplus

@@ -49,7 +49,7 @@ extern "C" {
 	@INPUT int max: the text buffer size in characters.
 	@RETURN int: if succeeds return the text size in characters, fails return C_ERR(-1).
 	*/
-	XDL_API int load_text_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* buf, int max);
+	EXP_API int load_text_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* buf, int max);
 
 	/*
 	@FUNCTION save_text_to_file: save a text content to binary file using default encoding.
@@ -59,7 +59,7 @@ extern "C" {
 	@INPUT int len: the text buffer size in characters.
 	@RETURN int: if succeeds return the text size in characters, fails return C_ERR(-1).
 	*/
-	XDL_API int save_text_to_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* buf, int len);
+	EXP_API int save_text_to_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* buf, int len);
 
 	/*
 	@FUNCTION load_memo_from_text_file: load memo document from text file.
@@ -68,7 +68,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t load_memo_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t load_memo_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION save_memo_to_text_file: save memo document as text file.
@@ -77,7 +77,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t save_memo_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t save_memo_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION load_tag_from_text_file: load tag document from text file.
@@ -86,7 +86,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t load_tag_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t load_tag_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION save_tag_to_text_file: save tag document as text file.
@@ -95,7 +95,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t save_tag_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t save_tag_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION load_json_from_text_file: load json document from text file.
@@ -104,7 +104,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t load_json_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t load_json_from_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 	/*
 	@FUNCTION save_json_to_text_file: save json document as text file.
@@ -113,7 +113,7 @@ extern "C" {
 	@INPUT const tchar_t* fname: the destination file path name.
 	@RETURN bool_t: if succeeds return nonzero, fails return zero.
 	*/
-	XDL_API bool_t save_json_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
+	EXP_API bool_t save_json_to_text_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
 #ifdef	__cplusplus
 }

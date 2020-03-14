@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #ifndef _XDUDEF_H
 #define	_XDUDEF_H
 
-#include <xdp.h>
+#include <xds.h>
 
 #if defined(_OS_WINDOWS)
 #include "windows/_xdu_win.h"
@@ -41,16 +41,6 @@ LICENSE.GPL3 for more details.
 #include "macos/_xdu_macos.h"
 #elif defined(_OS_LINUX)
 #include "linux/_xdu_linux.h"
-#endif
-
-#if defined(_USRDLL)
-#if defined(_OS_WINDOWS)
-#define XDU_API __declspec(dllexport)
-#else
-#define XDU_API __attribute__((visibility("default")))
-#endif
-#else
-#define XDU_API extern
 #endif
 
 /*widget class*/

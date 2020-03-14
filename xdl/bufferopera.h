@@ -40,21 +40,21 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API bool_t call_buffer_can_escape(void* p_obj);
+	EXP_API bool_t call_buffer_can_escape(void* p_obj);
 
-	XDL_API bool_t call_buffer_with_eof(void* p_obj);
+	EXP_API bool_t call_buffer_with_eof(void* p_obj);
 
-	XDL_API int call_buffer_read_escape(void* p_obj, int max, int pos, int encode, tchar_t* pch);
+	EXP_API int call_buffer_read_escape(void* p_obj, int max, int pos, int encode, tchar_t* pch);
 
-	XDL_API int call_buffer_write_escape(void* p_obj, int max, int pos, int encode, tchar_t ch);
+	EXP_API int call_buffer_write_escape(void* p_obj, int max, int pos, int encode, tchar_t ch);
 
-	XDL_API int call_buffer_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pch);
+	EXP_API int call_buffer_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pch);
 
-	XDL_API int call_buffer_read_token(void* p_obj, int max, int pos, int encode, tchar_t* pch, int len);
+	EXP_API int call_buffer_read_token(void* p_obj, int max, int pos, int encode, tchar_t* pch, int len);
 
-	XDL_API int call_buffer_write_char(void* p_obj, int max, int pos, int encode, const tchar_t* pch);
+	EXP_API int call_buffer_write_char(void* p_obj, int max, int pos, int encode, const tchar_t* pch);
 
-	XDL_API int call_buffer_write_token(void* p_obj, int max, int pos, int encode, const tchar_t* pch, int len);
+	EXP_API int call_buffer_write_token(void* p_obj, int max, int pos, int encode, const tchar_t* pch, int len);
 
 #ifdef	__cplusplus
 }

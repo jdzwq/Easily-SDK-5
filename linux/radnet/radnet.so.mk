@@ -11,17 +11,18 @@ SRC_PATH = ~/Easily-sdk-5/radnet
 
 OUT_PATH = ../sbin/api
 
-SRCS = $(SRC_PATH)/*.c
+DIRS = $(wildcard $(SRC_PATH)/*.c)
+SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
 MODULE = libradnet.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
-$(SRC_PATH)%.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH) -I $(SRC_PATH)
+%.o : $(SRC_PATH)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH)
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl -lxds
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
 	rm -f $(OBJS)
 
 test:
@@ -33,7 +34,7 @@ install:
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
 	sudo chmod +x $(SRV_PATH)/api/$(MODULE).1.0;
 	sudo rm -f $(LNK_PATH)/$(MODULE)*;
-	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/l$(MODULE);
+	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
 
 .PHONY : clean
 clean:

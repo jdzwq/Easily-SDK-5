@@ -40,15 +40,15 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDC_API void plot_geogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
+	EXP_API void plot_geogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDC_API void plot_trendgram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
+	EXP_API void plot_trendgram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDC_API void plot_histogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
+	EXP_API void plot_histogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDC_API void plot_pantogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
+	EXP_API void plot_pantogram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
-	XDC_API void plot_scattergram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
+	EXP_API void plot_scattergram(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xfont_t* pxf, const xrect_t* prt, const tchar_t* title, const plot_t* plt, const vector_t* pvc);
 
 #ifdef	__cplusplus
 }

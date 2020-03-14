@@ -79,28 +79,28 @@ extern "C" {
 @FUNCTION create_tag_doc: create a tag document.
 @RETURN link_t_ptr: return the tag document link component.
 */
-XDL_API link_t_ptr create_tag_doc(void);
+EXP_API link_t_ptr create_tag_doc(void);
 
 /*
 @FUNCTION destroy_tag_doc: destroy a tag document.
 @INPUT link_t_ptr ptr: the tag link component.
 @RETURN void: none.
 */
-XDL_API void destroy_tag_doc(link_t_ptr ptr);
+EXP_API void destroy_tag_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_tag_jointset: get tag node set.
 @INPUT link_t_ptr ptr: the tag link component.
 @RETURN link_t_ptr: the joint set link component.
 */
-XDL_API link_t_ptr get_tag_jointset(link_t_ptr ptr);
+EXP_API link_t_ptr get_tag_jointset(link_t_ptr ptr);
 
 /*
 @FUNCTION is_tag_doc: test is tag document.
 @INPUT link_t_ptr ptr: the tag link component.
 @RETURN bool_t: return nonzero for being a tag document, otherwise return zero.
 */
-XDL_API bool_t is_tag_doc(link_t_ptr ptr);
+EXP_API bool_t is_tag_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_tag_joint: test is tag line node.
@@ -108,21 +108,21 @@ XDL_API bool_t is_tag_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the joint link component.
 @RETURN bool_t: return nonzero for being a node, otherwise return zero.
 */
-XDL_API bool_t is_tag_joint(link_t_ptr ptr, link_t_ptr nlk);
+EXP_API bool_t is_tag_joint(link_t_ptr ptr, link_t_ptr nlk);
 
 /*
 @FUNCTION clear_tag_doc: clear the tag document.
 @INPUT link_t_ptr ptr: the tag link component.
 @RETURN void: none.
 */
-XDL_API void clear_tag_doc(link_t_ptr ptr);
+EXP_API void clear_tag_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_tag_joint_count: counting the nodes in tag document.
 @INPUT link_t_ptr ptr: the tag link component.
 @RETURN int: return the number of nodes.
 */
-XDL_API int get_tag_joint_count(link_t_ptr ptr);
+EXP_API int get_tag_joint_count(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_tag_joint: add a new node to tag document.
@@ -130,21 +130,21 @@ XDL_API int get_tag_joint_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the joint link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new node link component.
 */
-XDL_API link_t_ptr insert_tag_joint(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_tag_joint(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_tag_joint: delete the node.
 @INPUT link_t_ptr ilk: the joint link component.
 @RETURN void: none.
 */
-XDL_API void delete_tag_joint(link_t_ptr ilk);
+EXP_API void delete_tag_joint(link_t_ptr ilk);
 
 /*
 @FUNCTION merge_tag_joint: merge the node text to previous node.
 @INPUT link_t_ptr ilk: the joint link component.
 @RETURN link_t_ptr: return the joint link component merged.
 */
-XDL_API link_t_ptr merge_tag_joint(link_t_ptr ilk);
+EXP_API link_t_ptr merge_tag_joint(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tag_joint: find the node by name.
@@ -152,7 +152,7 @@ XDL_API link_t_ptr merge_tag_joint(link_t_ptr ilk);
 @INPUT const tchar_t* nname: the joint name token.
 @RETURN link_t_ptr: return the joint link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tag_joint(link_t_ptr ptr, const tchar_t* nname);
+EXP_API link_t_ptr get_tag_joint(link_t_ptr ptr, const tchar_t* nname);
 
 /*
 @FUNCTION get_tag_next_joint: get the next node.
@@ -160,7 +160,7 @@ XDL_API link_t_ptr get_tag_joint(link_t_ptr ptr, const tchar_t* nname);
 @INPUT link_t_ptr pos: the joint link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the joint link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tag_next_joint(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_tag_next_joint(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_tag_prev_joint: get the previous node.
@@ -168,21 +168,21 @@ XDL_API link_t_ptr get_tag_next_joint(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the joint link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the joint link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tag_prev_joint(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_tag_prev_joint(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION clear_tag_joint_tag: clear the node tag.
 @INPUT link_t_ptr ilk: the joint link component.
 @RETURN void: none.
 */
-XDL_API void clear_tag_joint_tag(link_t_ptr ilk);
+EXP_API void clear_tag_joint_tag(link_t_ptr ilk);
 
 /*
 @FUNCTION is_tag_text_reserve: test is the tag reserve character.
 @INPUT tchar_t ch: the character.
 @RETURN bool_t: return nonzero for reserved, otherwise return zero.
 */
-XDL_API bool_t is_tag_text_reserve(tchar_t ch);
+EXP_API bool_t is_tag_text_reserve(tchar_t ch);
 
 /*
 @FUNCTION format_tag_doc: format the tag document to string buffer.
@@ -191,7 +191,7 @@ XDL_API bool_t is_tag_text_reserve(tchar_t ch);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max);
+EXP_API int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
 @FUNCTION parse_tag_doc: parse the tag document from string buffer.
@@ -200,7 +200,7 @@ XDL_API int format_tag_doc(link_t_ptr ptr, tchar_t* buf, int max);
 @INPUT int len: the string buffer size in characters.
 @RETURN int: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t parse_tag_doc(link_t_ptr ptr, const tchar_t* buf, int len);
+EXP_API bool_t parse_tag_doc(link_t_ptr ptr, const tchar_t* buf, int len);
 
 #ifdef	__cplusplus
 }

@@ -26,7 +26,6 @@ LICENSE.GPL3 for more details.
 #define _DCMAPI_H
 
 #include <xdl.h>
-#include <xds.h>
 
 #include <dicm.h>
 #include <dcm.h>
@@ -39,6 +38,9 @@ typedef struct _dcm_block_t{
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
+
+	tchar_t code[NUM_LEN + 1];
+	tchar_t text[ERR_LEN + 1];
 }dcm_block_t;
 
 #ifdef	__cplusplus
@@ -51,6 +53,6 @@ extern "C" {
 }
 #endif
 
-bool_t _invoke_c_echo(dcm_t* dcm, const dcm_block_t* pd);
+bool_t _invoke_c_echo(dcm_t* dcm, dcm_block_t* pd);
 
 #endif

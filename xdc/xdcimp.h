@@ -26,8 +26,8 @@
 #include "impwidget.h"
 #endif
 
-
-#include "icongdi.h"
+#include "shapegdi.h"
+#include "gizmogdi.h"
 #include "plotgdi.h"
 #include "gdicanv.h"
 #include "gdiinf.h"

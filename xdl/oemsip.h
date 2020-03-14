@@ -17,7 +17,7 @@ uint64_t siphash_nocase(const uint8_t *in, const size_t inlen, const uint8_t *k)
 extern "C" {
 #endif
 
-	XDL_API void siphash64(const uint8_t *in, const size_t inlen, uint8_t out[8]);
+	EXP_API void siphash64(const uint8_t *in, const size_t inlen, uint8_t out[8]);
 
 #ifdef __cplusplus
 }

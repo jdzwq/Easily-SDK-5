@@ -44,35 +44,35 @@ extern "C" {
 @FUNCTION create_wsdl_doc: create a wsdl document.
 @RETURN link_t_ptr: return the wsdl document link component.
 */
-XDL_API link_t_ptr create_wsdl_doc();
+EXP_API link_t_ptr create_wsdl_doc();
 
 /*
 @FUNCTION destroy_wsdl_doc: destroy the wsdl document.
 @INPUT link_t_ptr ptr: the wsdl document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_wsdl_doc(link_t_ptr ptr);
+EXP_API void destroy_wsdl_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_wsdl_doc: test is a wsdl document.
 @INPUT link_t_ptr ptr: the wsdl document link component.
 @RETURN bool_t: return nonzero for being a wsdl document, otherwise return zero.
 */
-XDL_API bool_t is_wsdl_doc(link_t_ptr ptr);
+EXP_API bool_t is_wsdl_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION set_wsdl_default_xmlns: set wsdl default xml namespace.
 @INPUT link_t_ptr ptr: the wsdl document link component.
 @RETURN void: none.
 */
-XDL_API void set_wsdl_default_xmlns(link_t_ptr ptr);
+EXP_API void set_wsdl_default_xmlns(link_t_ptr ptr);
 
 /*
 @FUNCTION get_wsdl_types_node: get wsdl type node.
 @INPUT link_t_ptr ptr: the wsdl document link component.
 @RETURN link_t_ptr: return the type node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_types_node(link_t_ptr ptr);
+EXP_API link_t_ptr get_wsdl_types_node(link_t_ptr ptr);
 
 /*
 @FUNCTION get_wsdl_next_message_node: get wsdl next message node.
@@ -80,7 +80,7 @@ XDL_API link_t_ptr get_wsdl_types_node(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the message node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the message node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_next_message_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_next_message_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_prev_message_node: get wsdl previous message node.
@@ -88,7 +88,7 @@ XDL_API link_t_ptr get_wsdl_next_message_node(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the message node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the message node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_prev_message_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_prev_message_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_next_porttype_node: get wsdl next porttype node.
@@ -96,7 +96,7 @@ XDL_API link_t_ptr get_wsdl_prev_message_node(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the porttype node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the porttype node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_next_porttype_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_next_porttype_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_prev_porttype_node: get wsdl previous porttype node.
@@ -104,7 +104,7 @@ XDL_API link_t_ptr get_wsdl_next_porttype_node(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the porttype node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the porttype node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_prev_porttype_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_prev_porttype_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_next_binding_node: get wsdl next binding node.
@@ -112,7 +112,7 @@ XDL_API link_t_ptr get_wsdl_prev_porttype_node(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the binding node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the binding node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_next_binding_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_next_binding_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_prev_binding_node: get wsdl previous binding node.
@@ -120,7 +120,7 @@ XDL_API link_t_ptr get_wsdl_next_binding_node(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the binding node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the binding node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_prev_binding_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_prev_binding_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_next_service_node: get wsdl next service node.
@@ -128,14 +128,14 @@ XDL_API link_t_ptr get_wsdl_prev_binding_node(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the service node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the service node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_next_service_node(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_wsdl_next_service_node(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_wsdl_service_node: get wsdl first service node.
 @INPUT link_t_ptr ptr: the wsdl document link component.
 @RETURN link_t_ptr: return the service node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_wsdl_service_node(link_t_ptr ptr);
+EXP_API link_t_ptr get_wsdl_service_node(link_t_ptr ptr);
 
 /*
 @FUNCTION add_wsdl_message_node: add a wsdl message node.
@@ -143,7 +143,7 @@ XDL_API link_t_ptr get_wsdl_service_node(link_t_ptr ptr);
 @INPUT const tchar_t* sz_name: the message node name token.
 @RETURN link_t_ptr: return the message node link component.
 */
-XDL_API link_t_ptr add_wsdl_message_node(link_t_ptr ptr, const tchar_t* sz_name);
+EXP_API link_t_ptr add_wsdl_message_node(link_t_ptr ptr, const tchar_t* sz_name);
 
 /*
 @FUNCTION add_wsdl_message_part_element: add a wsdl message part node with element.
@@ -152,7 +152,7 @@ XDL_API link_t_ptr add_wsdl_message_node(link_t_ptr ptr, const tchar_t* sz_name)
 @INPUT const tchar_t* sz_element: the element value token.
 @RETURN link_t_ptr: return the message part node link component.
 */
-XDL_API link_t_ptr add_wsdl_message_part_element(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_element);
+EXP_API link_t_ptr add_wsdl_message_part_element(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_element);
 
 /*
 @FUNCTION add_wsdl_message_part_param: add a wsdl message part node with type.
@@ -161,7 +161,7 @@ XDL_API link_t_ptr add_wsdl_message_part_element(link_t_ptr ilk, const tchar_t* 
 @INPUT const tchar_t* sz_type: the type value token.
 @RETURN link_t_ptr: return the message part node link component.
 */
-XDL_API link_t_ptr add_wsdl_message_part_param(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_type);
+EXP_API link_t_ptr add_wsdl_message_part_param(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_type);
 
 /*
 @FUNCTION add_wsdl_porttype_node: add a wsdl porttype node.
@@ -169,7 +169,7 @@ XDL_API link_t_ptr add_wsdl_message_part_param(link_t_ptr ilk, const tchar_t* sz
 @INPUT const tchar_t* sz_name: the porttype node name token.
 @RETURN link_t_ptr: return the porttype node link component.
 */
-XDL_API link_t_ptr add_wsdl_porttype_node(link_t_ptr ptr, const tchar_t* sz_name);
+EXP_API link_t_ptr add_wsdl_porttype_node(link_t_ptr ptr, const tchar_t* sz_name);
 
 /*
 @FUNCTION add_wsdl_porttype_operation: add a wsdl porttype operation node.
@@ -179,7 +179,7 @@ XDL_API link_t_ptr add_wsdl_porttype_node(link_t_ptr ptr, const tchar_t* sz_name
 @INPUT const tchar_t* sz_outmsg: the operation node output message token.
 @RETURN link_t_ptr: return the porttype operation node link component.
 */
-XDL_API link_t_ptr add_wsdl_porttype_operation(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_inmsg, const tchar_t* sz_outmsg);
+EXP_API link_t_ptr add_wsdl_porttype_operation(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_inmsg, const tchar_t* sz_outmsg);
 
 /*
 @FUNCTION add_wsdl_binding_node: add a wsdl binding node.
@@ -188,7 +188,7 @@ XDL_API link_t_ptr add_wsdl_porttype_operation(link_t_ptr ilk, const tchar_t* sz
 @INPUT const tchar_t* sz_type: the binding node type token.
 @RETURN link_t_ptr: return the binding node link component.
 */
-XDL_API link_t_ptr add_wsdl_binding_node(link_t_ptr ptr, const tchar_t* sz_name, const tchar_t* sz_type);
+EXP_API link_t_ptr add_wsdl_binding_node(link_t_ptr ptr, const tchar_t* sz_name, const tchar_t* sz_type);
 
 /*
 @FUNCTION add_wsdl_binding_operation: add a wsdl binding operation node.
@@ -197,7 +197,7 @@ XDL_API link_t_ptr add_wsdl_binding_node(link_t_ptr ptr, const tchar_t* sz_name,
 @INPUT const tchar_t* sz_action: the operation node action token.
 @RETURN link_t_ptr: return the binding operation node link component.
 */
-XDL_API link_t_ptr add_wsdl_binding_operation(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_action);
+EXP_API link_t_ptr add_wsdl_binding_operation(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_action);
 
 /*
 @FUNCTION add_wsdl_service_node: add a wsdl service node.
@@ -205,7 +205,7 @@ XDL_API link_t_ptr add_wsdl_binding_operation(link_t_ptr ilk, const tchar_t* sz_
 @INPUT const tchar_t* sz_name: the service node name token.
 @RETURN link_t_ptr: return the service node link component.
 */
-XDL_API link_t_ptr add_wsdl_service_node(link_t_ptr ptr, const tchar_t* sname);
+EXP_API link_t_ptr add_wsdl_service_node(link_t_ptr ptr, const tchar_t* sname);
 
 /*
 @FUNCTION add_wsdl_service_port: add a wsdl service port node.
@@ -215,14 +215,14 @@ XDL_API link_t_ptr add_wsdl_service_node(link_t_ptr ptr, const tchar_t* sname);
 @INPUT const tchar_t* sz_location: the service node location token.
 @RETURN link_t_ptr: return the service port node link component.
 */
-XDL_API link_t_ptr add_wsdl_service_port(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_binding, const tchar_t* sz_location);
+EXP_API link_t_ptr add_wsdl_service_port(link_t_ptr ilk, const tchar_t* sz_name, const tchar_t* sz_binding, const tchar_t* sz_location);
 
 /*
 @FUNCTION add_wsdl_types_node: add a wsdl types node.
 @INPUT link_t_ptr ptr: the wsdl document link component.
 @RETURN link_t_ptr: return the types node link component.
 */
-XDL_API link_t_ptr add_wsdl_types_node(link_t_ptr ptr);
+EXP_API link_t_ptr add_wsdl_types_node(link_t_ptr ptr);
 
 /*
 @FUNCTION add_wsdl_types_schema: add a wsdl types schema.
@@ -230,7 +230,7 @@ XDL_API link_t_ptr add_wsdl_types_node(link_t_ptr ptr);
 @INPUT const tchar_t* sz_tns: the types tns.
 @RETURN link_t_ptr: return the types schema node link component.
 */
-XDL_API link_t_ptr add_wsdl_types_schema(link_t_ptr ilk, const tchar_t* sz_tns);
+EXP_API link_t_ptr add_wsdl_types_schema(link_t_ptr ilk, const tchar_t* sz_tns);
 
 /*
 @FUNCTION add_wsdl_schema_element: add a wsdl schema element.
@@ -239,7 +239,7 @@ XDL_API link_t_ptr add_wsdl_types_schema(link_t_ptr ilk, const tchar_t* sz_tns);
 @INPUT link_t_ptr sch: the schema document link component.
 @RETURN link_t_ptr: return the schema node link component.
 */
-XDL_API link_t_ptr add_wsdl_schema_element(link_t_ptr ilk, const tchar_t* sz_name, link_t_ptr sch);
+EXP_API link_t_ptr add_wsdl_schema_element(link_t_ptr ilk, const tchar_t* sz_name, link_t_ptr sch);
 
 #ifdef	__cplusplus
 }

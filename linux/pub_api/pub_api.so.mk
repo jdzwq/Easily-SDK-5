@@ -19,11 +19,11 @@ MODULE = libpub_api.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.cc
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH)
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl -lxds
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
 	rm -f $(OBJS)
 
 test:
@@ -39,7 +39,7 @@ install:
 
 	sudo cp -f $(INS_PATH)/cfg/pub.config $(SRV_PATH)/cfg;
 
-	if ! test -d $(SRV_PATH)pub; then \
+	if ! test -d $(SRV_PATH)/pub; then \
 	sudo mkdir $(SRV_PATH)/pub; \
 	fi
 	sudo cp -f $(INS_PATH)/pub/pub.ini $(SRV_PATH)/pub;

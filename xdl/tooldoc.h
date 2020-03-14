@@ -63,12 +63,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_tool_icon_span: set the tool icon span.
 */
-#define set_tool_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_tool_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_tool_icon_span: get the tool icon span.
 */
-#define get_tool_icon_span(ptr)							get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_tool_icon_span(ptr)							get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER titleHeight: numeric.
 @GET get_tool_title_height: get the tool title height.
@@ -190,21 +190,21 @@ extern "C" {
 @FUNCTION create_tool_doc: create a tool document.
 @RETURN link_t_ptr: return the tool document link component.
 */
-XDL_API link_t_ptr create_tool_doc(void);
+EXP_API link_t_ptr create_tool_doc(void);
 
 /*
 @FUNCTION destroy_tool_doc: destroy a tool document.
 @INPUT link_t_ptr ptr: the tool link component.
 @RETURN void: none.
 */
-XDL_API void destroy_tool_doc(link_t_ptr ptr);
+EXP_API void destroy_tool_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_tool_doc: test is tool document.
 @INPUT link_t_ptr ptr: the tool link component.
 @RETURN bool_t: return nonzero for being a tool document, otherwise return zero.
 */
-XDL_API bool_t is_tool_doc(link_t_ptr ptr);
+EXP_API bool_t is_tool_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_tool_group_item: test is tool group node.
@@ -212,21 +212,21 @@ XDL_API bool_t is_tool_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the group link component.
 @RETURN bool_t: return nonzero for being a group node, otherwise return zero.
 */
-XDL_API bool_t is_tool_group_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_tool_group_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION clear_tool_doc: clear the tool document.
 @INPUT link_t_ptr ptr: the tool link component.
 @RETURN void: none.
 */
-XDL_API void clear_tool_doc(link_t_ptr ptr);
+EXP_API void clear_tool_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION merge_tool_doc: merge source tool child items into destination tool document.
 @INPUT link_t_ptr ptr_dst: the tool link component.
 @RETURN void: none.
 */
-XDL_API void merge_tool_doc(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void merge_tool_doc(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION insert_tool_group: add a new group to tool document.
@@ -234,7 +234,7 @@ XDL_API void merge_tool_doc(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 @INPUT link_t_ptr pos: the group link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new group link component.
 */
-XDL_API link_t_ptr insert_tool_group(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_tool_group(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_tool_group: find the group by name.
@@ -242,7 +242,7 @@ XDL_API link_t_ptr insert_tool_group(link_t_ptr ptr, link_t_ptr pos);
 @INPUT const tchar_t* sz_name: the group name token.
 @RETURN link_t_ptr: return the group link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tool_group(link_t_ptr ptr, const tchar_t* sz_name);
+EXP_API link_t_ptr get_tool_group(link_t_ptr ptr, const tchar_t* sz_name);
 
 /*
 @FUNCTION get_tool_next_group: get the next group.
@@ -250,7 +250,7 @@ XDL_API link_t_ptr get_tool_group(link_t_ptr ptr, const tchar_t* sz_name);
 @INPUT link_t_ptr pos: the group link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the group link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tool_next_group(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_tool_next_group(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_tool_prev_group: get the previous group.
@@ -258,21 +258,21 @@ XDL_API link_t_ptr get_tool_next_group(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the group link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the group link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tool_prev_group(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_tool_prev_group(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_tool_group_count: counting the groups in annotation document.
 @INPUT link_t_ptr ptr: the tool link component.
 @RETURN int: return the number of groups.
 */
-XDL_API int get_tool_group_count(link_t_ptr ptr);
+EXP_API int get_tool_group_count(link_t_ptr ptr);
 
 /*
 @FUNCTION delete_tool_group: delete the tool group.
 @INPUT link_t_ptr glk: the group link component.
 @RETURN void: none.
 */
-XDL_API void delete_tool_group(link_t_ptr glk);
+EXP_API void delete_tool_group(link_t_ptr glk);
 
 /*
 @FUNCTION insert_tool_group_item: add a new item to tool group.
@@ -280,7 +280,7 @@ XDL_API void delete_tool_group(link_t_ptr glk);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_tool_group_item(link_t_ptr glk, link_t_ptr pos);
+EXP_API link_t_ptr insert_tool_group_item(link_t_ptr glk, link_t_ptr pos);
 
 /*
 @FUNCTION get_tool_group_next_item: get the next item.
@@ -288,7 +288,7 @@ XDL_API link_t_ptr insert_tool_group_item(link_t_ptr glk, link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tool_group_next_item(link_t_ptr glk,link_t_ptr pos);
+EXP_API link_t_ptr get_tool_group_next_item(link_t_ptr glk,link_t_ptr pos);
 
 /*
 @FUNCTION get_tool_group_prev_item: get the previous item.
@@ -296,7 +296,7 @@ XDL_API link_t_ptr get_tool_group_next_item(link_t_ptr glk,link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tool_group_prev_item(link_t_ptr glk,link_t_ptr pos);
+EXP_API link_t_ptr get_tool_group_prev_item(link_t_ptr glk,link_t_ptr pos);
 
 /*
 @FUNCTION get_tool_group_item: find the item by name.
@@ -304,21 +304,21 @@ XDL_API link_t_ptr get_tool_group_prev_item(link_t_ptr glk,link_t_ptr pos);
 @INPUT const tchar_t* sz_name: the item name token.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tool_group_item(link_t_ptr glk, const tchar_t* sz_name);
+EXP_API link_t_ptr get_tool_group_item(link_t_ptr glk, const tchar_t* sz_name);
 
 /*
 @FUNCTION get_tool_group_item_count: counting the items in group.
 @INPUT link_t_ptr glk: the group link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_tool_group_item_count(link_t_ptr glk);
+EXP_API int get_tool_group_item_count(link_t_ptr glk);
 
 /*
 @FUNCTION delete_tool_group_item: delete the group item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_tool_group_item(link_t_ptr ilk);
+EXP_API void delete_tool_group_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

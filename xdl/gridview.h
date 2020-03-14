@@ -52,25 +52,25 @@ typedef enum{
 extern "C" {
 #endif
 
-XDL_API float calc_grid_page_width(link_t_ptr ptr);
+EXP_API float calc_grid_page_width(link_t_ptr ptr);
 
-XDL_API float calc_grid_page_height(const canvbox_t* pbox, link_t_ptr ptr, int page);
+EXP_API float calc_grid_page_height(const canvbox_t* pbox, link_t_ptr ptr, int page);
 
-XDL_API int calc_grid_row_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* pfirst, link_t_ptr* plast);
+EXP_API int calc_grid_row_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* pfirst, link_t_ptr* plast);
 
-XDL_API int calc_grid_row_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr rlk);
+EXP_API int calc_grid_row_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr rlk);
 
-XDL_API int calc_grid_pages(const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API int calc_grid_pages(const canvbox_t* pbox, link_t_ptr ptr);
 
-XDL_API int calc_grid_cell_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
+EXP_API int calc_grid_cell_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
 
-XDL_API int calc_grid_row_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, xrect_t* pxr);
+EXP_API int calc_grid_row_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, xrect_t* pxr);
 
-XDL_API int calc_grid_col_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
+EXP_API int calc_grid_col_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
 
-XDL_API int calc_grid_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* prlk, link_t_ptr* pclk);
+EXP_API int calc_grid_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* prlk, link_t_ptr* pclk);
 
-XDL_API void draw_grid_page(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, int page);
+EXP_API void draw_grid_page(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

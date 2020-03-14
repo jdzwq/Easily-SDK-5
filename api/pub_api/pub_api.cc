@@ -34,28 +34,16 @@ typedef struct _mqtt_block_t{
 	dword_t msg_len;
 	byte_t* msg_buf;
 
-	radnet_t* radnet;
+	hex_obj_t hdb;
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
+
+	tchar_t code[NUM_LEN + 1];
+	tchar_t text[ERR_LEN + 1];
 }mqtt_block_t;
 
-void _invoke_error(const slots_block_t* pb, const mqtt_block_t* pd)
-{
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[ERROR]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-}
-
-void _invoke_publish(const slots_block_t* pb, const mqtt_block_t* pd)
+void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 	object_t val = NULL;
@@ -64,17 +52,22 @@ void _invoke_publish(const slots_block_t* pb, const mqtt_block_t* pd)
 	dword_t len;
 	sword_t sw = 0;
 
+	hex_obj_t hkv = NULL;
+
 	TRY_CATCH;
+
+	hkv = hexkv_create(pd->hdb);
+	if (!hkv)
+	{
+		raise_user_error(_T("_invoke_publish"), _T("create hexdb kv entity falied"));
+	}
 
 	key.vv = VV_STRING;
 	variant_from_string(&key, pd->topic_name, -1);
 
 	val = object_alloc(_UTF8);
 
-	if (!radnet_get(pd->radnet, key, val))
-	{
-		raise_user_error(NULL, NULL);
-	}
+	hexkv_read(hkv, key, val);
 
 	len = object_get_bytes(val, NULL, MAX_LONG);
 
@@ -94,21 +87,23 @@ void _invoke_publish(const slots_block_t* pb, const mqtt_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	if (!radnet_set(pd->radnet, key, val))
-	{
-		raise_user_error(NULL, NULL);
-	}
+	hexkv_attach(hkv, key, val);
+	val = NULL;
 
 	variant_to_null(&key);
-	object_free(val);
-	val = NULL;
+
+	hexkv_destroy(hkv);
+	hkv = NULL;
+
+	xscpy(pd->code, _T("_invoke_publish"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
 	return;
 ONERROR:
 
-	XDL_TRACE_LAST;
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	if (buf)
 		xmem_free(buf);
@@ -118,22 +113,20 @@ ONERROR:
 	if (val)
 		object_free(val);
 
+	if (hkv)
+		hexkv_destroy(hkv);
+
 	return;
 }
 
-int STDCALL slots_invoke(slots_block_t* pb)
+int STDCALL slots_invoke(const slots_block_t* pb)
 {
 	mqtt_block_t* pd = NULL;
 
 	LINKPTR ptr_prop = NULL;
 
-	tchar_t file[PATH_LEN + 1] = { 0 };
-
-	tchar_t addr[ADDR_LEN] = { 0 };
-	tchar_t port[INT_LEN] = { 0 };
-	tchar_t dbn[RES_LEN] = { 0 };
-
-	xhand_t bio = NULL;
+	tchar_t file[PATH_LEN] = { 0 };
+	tchar_t token[RES_LEN] = { 0 };
 
 	TRY_CATCH;
 
@@ -148,24 +141,22 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		raise_user_error(NULL, NULL);
 	}
 
-	read_proper(ptr_prop, _T("RADNET"), -1, _T("SERVER"), -1, addr, ADDR_LEN);
-	read_proper(ptr_prop, _T("RADNET"), -1, _T("PORT"), -1, port, INT_LEN);
-	read_proper(ptr_prop, _T("RADNET"), -1, _T("DATABASE"), -1, dbn, RES_LEN);
+	xszero(file, PATH_LEN);
+
+	read_proper(ptr_prop, _T("PUB"), -1, _T("DATABASE"), -1, token, RES_LEN);
+	read_proper(ptr_prop, _T("PUB"), -1, _T("LOCATION"), -1, file, PATH_LEN);
+	read_proper(ptr_prop, _T("PUB"), -1, _T("PUBLICKEY"), -1, pd->sd.scr_uid, KEY_LEN);
+	read_proper(ptr_prop, _T("PUB"), -1, _T("PRIVATEKEY"), -1, pd->sd.scr_key, KEY_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
-	bio = xtcp_cli((unsigned short)xstol(port), addr);
-	if (!bio)
-	{
-		raise_user_error(NULL, NULL);
-	}
+	printf_path(pd->local, file);
 
-	pd->radnet = radnet_scu(bio);
-
-	if (!radnet_connect(pd->radnet, dbn))
+	pd->hdb = hexdb_create(pd->local, token);
+	if (!pd->hdb)
 	{
-		raise_user_error(NULL, NULL);
+		raise_user_error(_T("-1"), _T("open database failed"));
 	}
 
 	pd->mqtt = mqtt_scp(pb->slot, _MQTT_TYPE_SCP_PUB);
@@ -199,14 +190,16 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		_invoke_publish(pb, pd);
 	}
 
-	radnet_close(pd->radnet);
-	pd->radnet = NULL;
-
-	xtcp_close(bio);
-	bio = NULL;
-
 	mqtt_close(pd->mqtt);
 	pd->mqtt = NULL;
+
+	hexdb_destroy(pd->hdb);
+	pd->hdb = NULL;
+
+	if (pb->pf_track_eror)
+	{
+		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+	}
 
 	xmem_free(pd);
 	pd = NULL;
@@ -217,24 +210,26 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 ONERROR:
 
-	_invoke_error(pb, pd);
-
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
 	if (pd)
 	{
+		get_last_error(pd->code, pd->text, ERR_LEN);
+
+		if (pb->pf_track_eror)
+		{
+			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+		}
+
 		if (pd->mqtt)
 			mqtt_close(pd->mqtt);
 
-		if (pd->radnet)
-			radnet_close(pd->radnet);
+		if (pd->hdb)
+			hexdb_destroy(pd->hdb);
 
 		xmem_free(pd);
 	}
-
-	if (bio)
-		xtcp_close(bio);
 
 	return SLOTS_INVOKE_WITHINFO;
 }

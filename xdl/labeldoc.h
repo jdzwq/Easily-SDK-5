@@ -160,35 +160,35 @@ extern "C" {
 @FUNCTION create_label_doc: create a label document.
 @RETURN link_t_ptr: return the label document link component.
 */
-XDL_API link_t_ptr create_label_doc(void);
+EXP_API link_t_ptr create_label_doc(void);
 
 /*
 @FUNCTION destroy_label_doc: destroy a label document.
 @INPUT link_t_ptr ptr: the label document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_label_doc(link_t_ptr ptr);
+EXP_API void destroy_label_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_label_itemset: get the label item set.
 @INPUT link_t_ptr ptr: the label document link component.
 @RETURN link_t_ptr: return the label item set .
 */
-XDL_API link_t_ptr get_label_itemset(link_t_ptr ptr);
+EXP_API link_t_ptr get_label_itemset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_label_doc: clear the label docuement.
 @INPUT link_t_ptr ptr: the label document link component.
 @RETURN void: none.
 */
-XDL_API void clear_label_doc(link_t_ptr ptr);
+EXP_API void clear_label_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_label_doc: test is label docuement.
 @INPUT link_t_ptr ptr: the label document link component.
 @RETURN bool_t: return nonzero for being a lable document, otherwise return zero.
 */
-XDL_API bool_t is_label_doc(link_t_ptr ptr);
+EXP_API bool_t is_label_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_label_item: test is label item.
@@ -196,14 +196,14 @@ XDL_API bool_t is_label_doc(link_t_ptr ptr);
 @INPUT link_t_ptr plk: the label item link component.
 @RETURN bool_t: return nonzero for being a lable document, otherwise return zero.
 */
-XDL_API bool_t is_label_item(link_t_ptr ptr, link_t_ptr plk);
+EXP_API bool_t is_label_item(link_t_ptr ptr, link_t_ptr plk);
 
 /*
 @FUNCTION label_doc_from_item: trackback item to label.
 @INPUT link_t_ptr ilk: the label item link component.
 @RETURN link_t_ptr: return the lable link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr label_doc_from_item(link_t_ptr ilk);
+EXP_API link_t_ptr label_doc_from_item(link_t_ptr ilk);
 
 /*
 @FUNCTION insert_label_item: add a new item to label at positoin.
@@ -211,7 +211,7 @@ XDL_API link_t_ptr label_doc_from_item(link_t_ptr ilk);
 @INPUT link_t_ptr pos: the label item link component, or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_label_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr insert_label_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_label_next_item: get the next item in label.
@@ -219,7 +219,7 @@ XDL_API link_t_ptr insert_label_item(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the label item link component, or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the next item link component.
 */
-XDL_API link_t_ptr get_label_next_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_label_next_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_label_next_item: get the previous item in label.
@@ -227,7 +227,7 @@ XDL_API link_t_ptr get_label_next_item(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the label item link component, or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the previous item link component.
 */
-XDL_API link_t_ptr get_label_prev_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_label_prev_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_label_item_at: get item at posotion.
@@ -235,21 +235,21 @@ XDL_API link_t_ptr get_label_prev_item(link_t_ptr ptr,link_t_ptr pos);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the item link component.
 */
-XDL_API link_t_ptr get_label_item_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_label_item_at(link_t_ptr ptr, int index);
 
 /*
 @FUNCTION delete_label_item: delete the label item.
 @INPUT link_t_ptr ilk: the label item link component.
 @RETURN void: none.
 */
-XDL_API void delete_label_item(link_t_ptr ilk);
+EXP_API void delete_label_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_label_item_count: counting the label items.
 @INPUT link_t_ptr ptr: the label link component.
 @RETURN int: return the number of label items.
 */
-XDL_API int get_label_item_count(link_t_ptr ptr);
+EXP_API int get_label_item_count(link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

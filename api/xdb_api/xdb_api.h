@@ -28,7 +28,6 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 #include <xdb.h>
-#include <xds.h>
 
 #ifdef	__cplusplus
 extern "C" {

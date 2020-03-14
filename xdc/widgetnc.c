@@ -392,7 +392,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 	pt_center_rect(&rtScr, 16, 16);
 	parse_xcolor(&xc_center, xp.color);
-	draw_icon_raw(dc, &xc_center, &rtScr, GDI_ICON_LOGO);
+	draw_gizmo_raw(dc, &xc_center, &rtScr, GDI_ATTR_GIZMO_LOGO);
 
 	/*caption*/
 	len = widget_get_title(wt, txt, RES_LEN);
@@ -531,7 +531,7 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 
 		pt_center_rect(&rtImage, 16, 16);
 
-		draw_icon_raw(dc, &xc, &rtImage, get_menu_item_icon_ptr(ilk));
+		draw_gizmo_raw(dc, &xc, &rtImage, get_menu_item_icon_ptr(ilk));
 		
 		text = get_menu_item_title_ptr(ilk);
 		if (!is_null(text))

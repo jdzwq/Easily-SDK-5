@@ -469,21 +469,21 @@ int XMLPanel_OnCreate(res_win_t widget, void* data)
 	LoadPreference(_T("XML"), _T("SECRET-KEY"), sz_key);
 
 	ent = write_proper(ptrProper, XMLPANEL_SECTION, -1, _T("URL"), -1, sz_url, -1);
-	set_entity_icon(ent, GDI_ICON_BOOK);
+	set_entity_icon(ent, GDI_ATTR_GIZMO_BOOK);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 	set_entity_editable(ent, 1);
 
 	ent = write_proper(ptrProper, XMLPANEL_SECTION, -1, _T("SECRET-ID"), -1, sz_id, -1);
-	set_entity_icon(ent, GDI_ICON_BOOK);
+	set_entity_icon(ent, GDI_ATTR_GIZMO_BOOK);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 	set_entity_editable(ent, 1);
 
 	ent = write_proper(ptrProper, XMLPANEL_SECTION, -1, _T("SECRET-KEY"), -1, sz_key, -1);
-	set_entity_icon(ent, GDI_ICON_BOOK);
+	set_entity_icon(ent, GDI_ATTR_GIZMO_BOOK);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 	set_entity_editable(ent, 1);
 
-	set_section_icon(section_from_entity(ent), GDI_ICON_PROPER);
+	set_section_icon(section_from_entity(ent), GDI_ATTR_GIZMO_PROPER);
 
 	properctrl_attach(pdt->hProper, ptrProper);
 	properctrl_set_lock(pdt->hProper, 0);
@@ -628,43 +628,43 @@ void XMLPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("È«Ñ¡"));
-		set_tool_item_icon(ilk, GDI_ICON_SELECTALL);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("É¾³ý"));
-		set_tool_item_icon(ilk, GDI_ICON_DELETE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¿½±´"));
-		set_tool_item_icon(ilk, GDI_ICON_COPY);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("¼ôÇÐ"));
-		set_tool_item_icon(ilk, GDI_ICON_CUT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Õ³Ìù"));
-		set_tool_item_icon(ilk, GDI_ICON_PASTE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("³·Ïú"));
-		set_tool_item_icon(ilk, GDI_ICON_UNDO);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_UNDO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DATABASE_EXECUTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Ö´ÐÐ"));
-		set_tool_item_icon(ilk, GDI_ICON_EXECUTE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_EXECUTE);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

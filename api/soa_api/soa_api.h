@@ -27,9 +27,15 @@ LICENSE.GPL3 for more details.
 #define _LOCAPI_H
 
 #include <xdl.h>
-#include <xds.h>
 
-extern int STDCALL https_invoke(const wchar_t* method, const https_block_t* pb);
+#ifdef	__cplusplus
+extern "C" {
+#endif
 
+	extern int STDCALL https_invoke(const wchar_t* method, const https_block_t* pb);
+
+#ifdef	__cplusplus
+}
+#endif
 
 #endif

@@ -227,28 +227,28 @@ extern "C" {
 @FUNCTION create_dialog_doc: create a dialog document.
 @RETURN link_t_ptr: return the dialog document link component.
 */
-XDL_API link_t_ptr create_dialog_doc(void);
+EXP_API link_t_ptr create_dialog_doc(void);
 
 /*
 @FUNCTION destroy_dialog_doc: destroy a dialog document.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN void: none.
 */
-XDL_API void destroy_dialog_doc(link_t_ptr ptr);
+EXP_API void destroy_dialog_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_dialog_doc: clear the dialog document.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN void: none.
 */
-XDL_API void clear_dialog_doc(link_t_ptr ptr);
+EXP_API void clear_dialog_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_dialog_doc: test is dialog document.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN bool_t: return nonzero for being a dialog document, otherwise return zero.
 */
-XDL_API bool_t is_dialog_doc(link_t_ptr ptr);
+EXP_API bool_t is_dialog_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_dialog_item: test is dialog item node.
@@ -256,21 +256,21 @@ XDL_API bool_t is_dialog_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a item, otherwise return zero.
 */
-XDL_API bool_t is_dialog_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_dialog_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION reset_dialog_taborder: reset the dialog item tab order.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN void: none.
 */
-XDL_API void reset_dialog_taborder(link_t_ptr ptr);
+EXP_API void reset_dialog_taborder(link_t_ptr ptr);
 
 /*
 @FUNCTION get_dialog_itemset: get dialog item set.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN link_t_ptr: the item set link component.
 */
-XDL_API link_t_ptr get_dialog_itemset(link_t_ptr ptr);
+EXP_API link_t_ptr get_dialog_itemset(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_dialog_item: add a new item to dialog document.
@@ -278,7 +278,7 @@ XDL_API link_t_ptr get_dialog_itemset(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_dialog_item(link_t_ptr ptr,const tchar_t* sz_class);
+EXP_API link_t_ptr insert_dialog_item(link_t_ptr ptr,const tchar_t* sz_class);
 
 /*
 @FUNCTION get_dialog_next_item: get the next dialog item.
@@ -286,7 +286,7 @@ XDL_API link_t_ptr insert_dialog_item(link_t_ptr ptr,const tchar_t* sz_class);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_dialog_next_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_dialog_next_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_dialog_prev_item: get the previous dialog item.
@@ -294,7 +294,7 @@ XDL_API link_t_ptr get_dialog_next_item(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_dialog_prev_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_dialog_prev_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_dialog_item: find the item by name.
@@ -302,14 +302,14 @@ XDL_API link_t_ptr get_dialog_prev_item(link_t_ptr ptr,link_t_ptr pos);
 @INPUT const tchar_t* sz_name: the dialog item name.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_dialog_item(link_t_ptr ptr, const tchar_t* sz_name);
+EXP_API link_t_ptr get_dialog_item(link_t_ptr ptr, const tchar_t* sz_name);
 
 /*
 @FUNCTION get_dialog_item_count: counting the items in dialog document.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_dialog_item_count(link_t_ptr ptr);
+EXP_API int get_dialog_item_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_dialog_item_count_by_class: counting the items according to class.
@@ -317,21 +317,21 @@ XDL_API int get_dialog_item_count(link_t_ptr ptr);
 @INPUT const tchar_t* sz_class: the class token.
 @RETURN int: return the number of items.
 */
-XDL_API int get_dialog_item_count_by_class(link_t_ptr ptr, const tchar_t* sz_class);
+EXP_API int get_dialog_item_count_by_class(link_t_ptr ptr, const tchar_t* sz_class);
 
 /*
 @FUNCTION get_dialog_item_selected_count: counting the selected items in dialog document.
 @INPUT link_t_ptr ptr: the dialog link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_dialog_item_selected_count(link_t_ptr ptr);
+EXP_API int get_dialog_item_selected_count(link_t_ptr ptr);
 
 /*
 @FUNCTION delete_dialog_item: delete the dialog item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_dialog_item(link_t_ptr ilk);
+EXP_API void delete_dialog_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

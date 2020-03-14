@@ -300,7 +300,7 @@ bool_t	xfile_rename(const secu_desc_t* psd, const tchar_t* fname, const tchar_t*
 	return 0;
 }
 
-XDL_API bool_t xfile_mkdir(const secu_desc_t* psd, const tchar_t* path)
+EXP_API bool_t xfile_mkdir(const secu_desc_t* psd, const tchar_t* path)
 {
 	byte_t proto;
 
@@ -322,7 +322,7 @@ XDL_API bool_t xfile_mkdir(const secu_desc_t* psd, const tchar_t* path)
 	return 0;
 }
 
-XDL_API bool_t xfile_rmdir(const secu_desc_t* psd, const tchar_t* path)
+EXP_API bool_t xfile_rmdir(const secu_desc_t* psd, const tchar_t* path)
 {
 	byte_t proto;
 

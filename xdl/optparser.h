@@ -42,9 +42,9 @@ typedef bool_t(*PF_OPTIONS_FORMAT)(void* fp, const tchar_t** pkey, int* pklen, c
 extern "C" {
 #endif
 	
-	XDL_API int parse_options(const tchar_t* str, int len, tchar_t itemfeed, tchar_t linefeed, void* param, PF_OPTIONS_PARSE pf_parse);
+	EXP_API int parse_options(const tchar_t* str, int len, tchar_t itemfeed, tchar_t linefeed, void* param, PF_OPTIONS_PARSE pf_parse);
 
-	XDL_API int format_options(tchar_t* buf, int max, tchar_t itemfeed, tchar_t linefeed, void* param, PF_OPTIONS_FORMAT pf_format);
+	EXP_API int format_options(tchar_t* buf, int max, tchar_t itemfeed, tchar_t linefeed, void* param, PF_OPTIONS_FORMAT pf_format);
 
 #ifdef	__cplusplus
 }

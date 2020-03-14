@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_proper_icon_span: set the proper icon span.
 */
-#define set_proper_icon_span(ptr,n)					set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_proper_icon_span(ptr,n)					set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_proper_icon_span: get the proper icon span.
 */
-#define get_proper_icon_span(ptr)					get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_proper_icon_span(ptr)					get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER itemSpan: numeric.
 @SET set_proper_item_span: set the proper item span.
@@ -233,28 +233,28 @@ extern "C" {
 @FUNCTION create_proper_doc: create a proper document.
 @RETURN link_t_ptr: return the proper document link component.
 */
-XDL_API link_t_ptr create_proper_doc(void);
+EXP_API link_t_ptr create_proper_doc(void);
 
 /*
 @FUNCTION destroy_proper_doc: destroy a proper document.
 @INPUT link_t_ptr ptr: the proper link component.
 @RETURN void: none.
 */
-XDL_API void destroy_proper_doc(link_t_ptr ptr);
+EXP_API void destroy_proper_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_proper_doc: clear the proper document.
 @INPUT link_t_ptr ptr: the proper link component.
 @RETURN void: none.
 */
-XDL_API void clear_proper_doc(link_t_ptr ptr);
+EXP_API void clear_proper_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_proper_doc: test is proper document.
 @INPUT link_t_ptr ptr: the proper link component.
 @RETURN bool_t: return nonzero for being a proper document, otherwise return zero.
 */
-XDL_API bool_t is_proper_doc(link_t_ptr ptr);
+EXP_API bool_t is_proper_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_proper_section: test is proper section node.
@@ -262,7 +262,7 @@ XDL_API bool_t is_proper_doc(link_t_ptr ptr);
 @INPUT link_t_ptr slk: the section link component.
 @RETURN bool_t: return nonzero for being a section, otherwise return zero.
 */
-XDL_API bool_t is_proper_section(link_t_ptr ptr, link_t_ptr slk);
+EXP_API bool_t is_proper_section(link_t_ptr ptr, link_t_ptr slk);
 
 /*
 @FUNCTION is_proper_entity: test is proper entity node.
@@ -270,7 +270,7 @@ XDL_API bool_t is_proper_section(link_t_ptr ptr, link_t_ptr slk);
 @INPUT link_t_ptr ilk: the entity link component.
 @RETURN bool_t: return nonzero for being a entity, otherwise return zero.
 */
-XDL_API bool_t is_proper_entity(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_proper_entity(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION get_section: get the proper section by name.
@@ -279,7 +279,7 @@ XDL_API bool_t is_proper_entity(link_t_ptr ptr, link_t_ptr ilk);
 @INPUT int len: the name token length in characters.
 @RETURN link_t_ptr: return the section link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_section(link_t_ptr ptr, const tchar_t* sname, int len);
+EXP_API link_t_ptr get_section(link_t_ptr ptr, const tchar_t* sname, int len);
 
 /*
 @FUNCTION get_next_section: get the next proper section.
@@ -287,7 +287,7 @@ XDL_API link_t_ptr get_section(link_t_ptr ptr, const tchar_t* sname, int len);
 @INPUT link_t_ptr pos: the section link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the section link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_section(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_section(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_section: get the previous proper section.
@@ -295,21 +295,21 @@ XDL_API link_t_ptr get_next_section(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the section link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the section link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_section(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_prev_section(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_section: delete the proper section.
 @INPUT link_t_ptr slk: the section link component.
 @RETURN void: none.
 */
-XDL_API void delete_section(link_t_ptr slk);
+EXP_API void delete_section(link_t_ptr slk);
 
 /*
 @FUNCTION proper_doc_from_section: trackback to proper document from section node.
 @INPUT link_t_ptr ilk: the section link component.
 @RETURN link_t_ptr: return the proper link component.
 */
-XDL_API link_t_ptr proper_doc_from_section(link_t_ptr slk);
+EXP_API link_t_ptr proper_doc_from_section(link_t_ptr slk);
 
 /*
 @FUNCTION get_entity: get the entity by name.
@@ -318,7 +318,7 @@ XDL_API link_t_ptr proper_doc_from_section(link_t_ptr slk);
 @INPUT int len: the name token length in characters.
 @RETURN link_t_ptr: return the entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_entity(link_t_ptr slk, const tchar_t* ename, int len);
+EXP_API link_t_ptr get_entity(link_t_ptr slk, const tchar_t* ename, int len);
 
 /*
 @FUNCTION get_next_entity: get the next entity.
@@ -326,7 +326,7 @@ XDL_API link_t_ptr get_entity(link_t_ptr slk, const tchar_t* ename, int len);
 @INPUT link_t_ptr pos: the entity link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_entity(link_t_ptr slk, link_t_ptr pos);
+EXP_API link_t_ptr get_next_entity(link_t_ptr slk, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_entity: get the previous entity.
@@ -334,21 +334,21 @@ XDL_API link_t_ptr get_next_entity(link_t_ptr slk, link_t_ptr pos);
 @INPUT link_t_ptr pos: the entity link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_entity(link_t_ptr slk, link_t_ptr pos);
+EXP_API link_t_ptr get_prev_entity(link_t_ptr slk, link_t_ptr pos);
 
 /*
 @FUNCTION delete_entity: delete the entity.
 @INPUT link_t_ptr ilk: the entity link component.
 @RETURN void: none.
 */
-XDL_API void delete_entity(link_t_ptr elk);
+EXP_API void delete_entity(link_t_ptr elk);
 
 /*
 @FUNCTION section_from_entity: trackback to section from entity node.
 @INPUT link_t_ptr ilk: the entity link component.
 @RETURN link_t_ptr: return the section link component.
 */
-XDL_API link_t_ptr section_from_entity(link_t_ptr elk);
+EXP_API link_t_ptr section_from_entity(link_t_ptr elk);
 
 /*
 @FUNCTION write_proper: write content to proper document.
@@ -361,7 +361,7 @@ XDL_API link_t_ptr section_from_entity(link_t_ptr elk);
 @INPUT int vallen: the value length in characters.
 @RETURN link_t_ptr: return the entity link component.
 */
-XDL_API	link_t_ptr write_proper(link_t_ptr ptr, const tchar_t* sec, int seclen, const tchar_t* ent, int entlen, const tchar_t* val, int vallen);
+EXP_API	link_t_ptr write_proper(link_t_ptr ptr, const tchar_t* sec, int seclen, const tchar_t* ent, int entlen, const tchar_t* val, int vallen);
 
 /*
 @FUNCTION read_proper: read content from proper document.
@@ -374,14 +374,14 @@ XDL_API	link_t_ptr write_proper(link_t_ptr ptr, const tchar_t* sec, int seclen, 
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters readed.
 */
-XDL_API int	read_proper(link_t_ptr ptr, const tchar_t* sec, int seclen, const tchar_t* ent, int entlen, tchar_t* buf, int max);
+EXP_API int	read_proper(link_t_ptr ptr, const tchar_t* sec, int seclen, const tchar_t* ent, int entlen, tchar_t* buf, int max);
 
 /*
 @FUNCTION get_entity_options_text_ptr: get entity options text releative to entity value.
 @INPUT link_t_ptr ent: the proper link component.
 @RETURN const tchar_t*: return options text token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_entity_options_text_ptr(link_t_ptr ent);
+EXP_API const tchar_t* get_entity_options_text_ptr(link_t_ptr ent);
 
 /*
 @FUNCTION get_proper_ptr: find entity and return entity value token.
@@ -390,7 +390,7 @@ XDL_API const tchar_t* get_entity_options_text_ptr(link_t_ptr ent);
 @INPUT const tchar_t* ent: the entity name token.
 @RETURN const tchar_t*: return entity value token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_proper_ptr(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
+EXP_API const tchar_t* get_proper_ptr(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
 
 /*
 @FUNCTION set_proper_boolean: set entity boolean value.
@@ -400,7 +400,7 @@ XDL_API const tchar_t* get_proper_ptr(link_t_ptr ptr, const tchar_t* sec, const 
 @INPUT bool_t b: the boolean value.
 @RETURN link_t_ptr: return entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr set_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, bool_t b);
+EXP_API link_t_ptr set_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, bool_t b);
 
 /*
 @FUNCTION get_proper_boolean: find entity and return entity boolean value.
@@ -409,7 +409,7 @@ XDL_API link_t_ptr set_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const 
 @INPUT const tchar_t* ent: the entity name token.
 @RETURN bool_t: return entity boolean value if exists, otherwise return zero.
 */
-XDL_API bool_t get_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
+EXP_API bool_t get_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
 
 /*
 @FUNCTION set_proper_integer: set entity integer value.
@@ -419,7 +419,7 @@ XDL_API bool_t get_proper_boolean(link_t_ptr ptr, const tchar_t* sec, const tcha
 @INPUT int n: the integer value.
 @RETURN link_t_ptr: return entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr set_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, int n);
+EXP_API link_t_ptr set_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, int n);
 
 /*
 @FUNCTION get_proper_integer: find entity and return entity integer value.
@@ -428,7 +428,7 @@ XDL_API link_t_ptr set_proper_integer(link_t_ptr ptr, const tchar_t* sec, const 
 @INPUT const tchar_t* ent: the entity name token.
 @RETURN integer: return entity integer value if exists, otherwise return zero.
 */
-XDL_API int get_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
+EXP_API int get_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
 
 /*
 @FUNCTION set_proper_float: set entity float value.
@@ -438,7 +438,7 @@ XDL_API int get_proper_integer(link_t_ptr ptr, const tchar_t* sec, const tchar_t
 @INPUT float n: the float value.
 @RETURN link_t_ptr: return entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr set_proper_float(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, float n);
+EXP_API link_t_ptr set_proper_float(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, float n);
 
 /*
 @FUNCTION get_proper_float: find entity and return entity float value.
@@ -447,7 +447,7 @@ XDL_API link_t_ptr set_proper_float(link_t_ptr ptr, const tchar_t* sec, const tc
 @INPUT const tchar_t* ent: the entity name token.
 @RETURN float: return entity float value if exists, otherwise return zero.
 */
-XDL_API float get_proper_float(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
+EXP_API float get_proper_float(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
 
 /*
 @FUNCTION set_proper_numeric: set entity double value.
@@ -457,7 +457,7 @@ XDL_API float get_proper_float(link_t_ptr ptr, const tchar_t* sec, const tchar_t
 @INPUT double n: the double value.
 @RETURN link_t_ptr: return entity link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr set_proper_numeric(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, double n);
+EXP_API link_t_ptr set_proper_numeric(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent, double n);
 
 /*
 @FUNCTION get_proper_numeric: find entity and return entity double value.
@@ -466,7 +466,7 @@ XDL_API link_t_ptr set_proper_numeric(link_t_ptr ptr, const tchar_t* sec, const 
 @INPUT const tchar_t* ent: the entity name token.
 @RETURN double: return entity double value if exists, otherwise return zero.
 */
-XDL_API double get_proper_numeric(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
+EXP_API double get_proper_numeric(link_t_ptr ptr, const tchar_t* sec, const tchar_t* ent);
 
 #ifdef	__cplusplus
 }

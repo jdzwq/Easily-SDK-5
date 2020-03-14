@@ -247,7 +247,7 @@ extern "C" {
 	* and lzf_c.c.
 	*
 	*/
-	XDL_API unsigned int lzf_compress(const void *const in_data, unsigned int in_len, void *out_data, unsigned int out_len);
+	EXP_API unsigned int lzf_compress(const void *const in_data, unsigned int in_len, void *out_data, unsigned int out_len);
 
 	/*
 	* Decompress data compressed with some version of the lzf_compress
@@ -264,7 +264,7 @@ extern "C" {
 	*
 	* This function is very fast, about as fast as a copying loop.
 	*/
-	XDL_API unsigned int lzf_decompress(const void *const in_data, unsigned int in_len, void *out_data, unsigned int out_len);
+	EXP_API unsigned int lzf_decompress(const void *const in_data, unsigned int in_len, void *out_data, unsigned int out_len);
 
 #ifdef __cplusplus
 }

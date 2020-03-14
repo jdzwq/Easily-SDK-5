@@ -151,31 +151,31 @@ typedef struct _mqtt_t{
 extern "C" {
 #endif
 
-	MQ_API mqtt_t*	mqtt_scu(xhand_t bio, int scu);
+	EXP_API mqtt_t*	mqtt_scu(xhand_t bio, int scu);
 
-	MQ_API mqtt_t*	mqtt_scp(xhand_t bio, int scp);
+	EXP_API mqtt_t*	mqtt_scp(xhand_t bio, int scp);
 
-	MQ_API xhand_t	mqtt_bio(mqtt_t* mqtt);
+	EXP_API xhand_t	mqtt_bio(mqtt_t* mqtt);
 
-	MQ_API void mqtt_close(mqtt_t* mqtt);
+	EXP_API void mqtt_close(mqtt_t* mqtt);
 
-	MQ_API int mqtt_status(mqtt_t* mqtt);
+	EXP_API int mqtt_status(mqtt_t* mqtt);
 
-	MQ_API bool_t mqtt_connect(mqtt_t* mqtt);
+	EXP_API bool_t mqtt_connect(mqtt_t* mqtt);
 
-	MQ_API bool_t mqtt_accept(mqtt_t* mqtt);
+	EXP_API bool_t mqtt_accept(mqtt_t* mqtt);
 
-	MQ_API bool_t mqtt_subcribe(mqtt_t* mqtt, const tchar_t* topic, int len);
+	EXP_API bool_t mqtt_subcribe(mqtt_t* mqtt, const tchar_t* topic, int len);
 
-	MQ_API bool_t mqtt_unsubcribe(mqtt_t* mqtt, const tchar_t* topic, int len);
+	EXP_API bool_t mqtt_unsubcribe(mqtt_t* mqtt, const tchar_t* topic, int len);
 
-	MQ_API bool_t mqtt_poll_subscribe(mqtt_t* mqtt, tchar_t* topic, int len);
+	EXP_API bool_t mqtt_poll_subscribe(mqtt_t* mqtt, tchar_t* topic, int len);
 
-	MQ_API bool_t mqtt_poll_message(mqtt_t* mqtt, byte_t** pbuf, dword_t* plen);
+	EXP_API bool_t mqtt_poll_message(mqtt_t* mqtt, byte_t** pbuf, dword_t* plen);
 
-	MQ_API bool_t mqtt_publish(mqtt_t* mqtt, const tchar_t* topic, int len);
+	EXP_API bool_t mqtt_publish(mqtt_t* mqtt, const tchar_t* topic, int len);
 
-	MQ_API bool_t mqtt_push_message(mqtt_t* mqtt, const byte_t* buf, dword_t len);
+	EXP_API bool_t mqtt_push_message(mqtt_t* mqtt, const byte_t* buf, dword_t len);
 
 #ifdef	__cplusplus
 }

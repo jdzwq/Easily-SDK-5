@@ -237,9 +237,6 @@
     <ClCompile Include="..\..\xdc\xdcinit.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\icongdi.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\impgdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -268,6 +265,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\impwidget.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\gizmogdi.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\shapegdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -311,9 +314,6 @@
     <ClInclude Include="..\..\xdc\xdcinit.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdc\icongdi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdc\impbitmap.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -345,6 +345,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdc\impwidget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdc\gizmogdi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdc\shapegdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

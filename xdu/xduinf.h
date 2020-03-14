@@ -541,36 +541,36 @@ extern "C" {
 #endif
 
 #ifdef XDU_SUPPORT_SHELL
-	XDU_API void xdu_impl_shell(if_shell_t* pif);
+	EXP_API void xdu_impl_shell(if_shell_t* pif);
 #ifdef XDU_SUPPORT_SHELL_DIALOG
-	XDU_API void xdu_impl_shell_dialog(if_shell_t* pif);
+	EXP_API void xdu_impl_shell_dialog(if_shell_t* pif);
 #endif
 #endif /*XDU_SUPPORT_SHELL*/
 
 #ifdef XDU_SUPPORT_CONTEXT
-	XDU_API void xdu_impl_context(if_context_t* pif);
+	EXP_API void xdu_impl_context(if_context_t* pif);
 #ifdef XDU_SUPPORT_CONTEXT_REGION
-	XDU_API void xdu_impl_context_region(if_context_t* pif);
+	EXP_API void xdu_impl_context_region(if_context_t* pif);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
-	XDU_API void xdu_impl_context_bitmap(if_context_t* pif);
+	EXP_API void xdu_impl_context_bitmap(if_context_t* pif);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
-	XDU_API void xdu_impl_context_graphic(if_context_t* pif);
+	EXP_API void xdu_impl_context_graphic(if_context_t* pif);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
-	XDU_API void xdu_impl_context_printer(if_context_t* pif);
+	EXP_API void xdu_impl_context_printer(if_context_t* pif);
 #endif
 #endif /*XDU_SUPPORT_CONTEXT*/
 
 #ifdef XDU_SUPPORT_CLIPBOARD
-	XDU_API void xdu_impl_clipboard(if_clipboard_t* pif);
+	EXP_API void xdu_impl_clipboard(if_clipboard_t* pif);
 #endif
 
 #ifdef XDU_SUPPORT_WIDGET
-	XDU_API void xdu_impl_widget(if_widget_t* pif);
+	EXP_API void xdu_impl_widget(if_widget_t* pif);
 #ifdef XDU_SUPPORT_WIDGET_EX
-	XDU_API void xdu_impl_widget_ex(if_widget_t* pif);
+	EXP_API void xdu_impl_widget_ex(if_widget_t* pif);
 #endif
 #endif
 

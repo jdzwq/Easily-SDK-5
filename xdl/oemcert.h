@@ -200,7 +200,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or a specific X509 error code
 	*/
-	XDL_API int x509parse_crt(x509_cert *crt, unsigned char *buf, int buflen);
+	EXP_API int x509parse_crt(x509_cert *crt, unsigned char *buf, int buflen);
 
 	/**
 	* \brief          Load one or more certificates and add them
@@ -224,7 +224,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or a specific X509 error code
 	*/
-	XDL_API int x509parse_key(rsa_context *rsa,
+	EXP_API int x509parse_key(rsa_context *rsa,
 		unsigned char *buf, int buflen,
 		unsigned char *pwd, int pwdlen);
 
@@ -237,25 +237,25 @@ extern "C" {
 	*
 	* \return         0 if successful, or a specific X509 error code
 	*/
-	//XDL_API int x509parse_keyfile(rsa_context *rsa, char *path, char *password);
+	//EXP_API int x509parse_keyfile(rsa_context *rsa, char *path, char *password);
 
 	/**
 	* \brief          Store the certificate DN in printable form into buf;
 	*                 no more than (end - buf) characters will be written.
 	*/
-	XDL_API int x509parse_dn_gets(char *buf, char *end, x509_name *dn);
+	EXP_API int x509parse_dn_gets(char *buf, char *end, x509_name *dn);
 
 	/**
 	* \brief          Returns an informational string about the
 	*                 certificate.
 	*/
-	XDL_API char *x509parse_cert_info(char *prefix, x509_cert *crt);
+	EXP_API char *x509parse_cert_info(char *prefix, x509_cert *crt);
 
 	/**
 	* \brief          Return 0 if the certificate is still valid,
 	*                 or BADCERT_EXPIRED
 	*/
-	XDL_API int x509parse_expired(x509_cert *crt);
+	EXP_API int x509parse_expired(x509_cert *crt);
 
 	/**
 	* \brief          Verify the certificate signature
@@ -276,21 +276,21 @@ extern "C" {
 	*
 	* \note           TODO: add two arguments, depth and crl
 	*/
-	XDL_API int x509parse_verify(x509_cert *crt,
+	EXP_API int x509parse_verify(x509_cert *crt,
 		x509_cert *trust_ca,
 		char *cn, int *flags);
 
 	/**
 	* \brief          Unallocate all certificate data
 	*/
-	XDL_API void x509_free(x509_cert *crt);
+	EXP_API void x509_free(x509_cert *crt);
 
 	/**
 	* \brief          Checkup routine
 	*
 	* \return         0 if successful, or 1 if the test failed
 	*/
-	XDL_API int x509_self_test(int verbose);
+	EXP_API int x509_self_test(int verbose);
 
 #ifdef __cplusplus
 }

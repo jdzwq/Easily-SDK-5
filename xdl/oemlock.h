@@ -25,7 +25,7 @@ extern "C" {
 	/**
 	* \brief          Return the CPU cycle counter value
 	*/
-	XDL_API unsigned long hardclock(void);
+	EXP_API unsigned long hardclock(void);
 
 	/**
 	* \brief          Return the elapsed time in milliseconds
@@ -33,19 +33,19 @@ extern "C" {
 	* \param val      points to a timer structure
 	* \param reset    if set to 1, the timer is restarted
 	*/
-	XDL_API unsigned long get_timer(struct hr_time *val, int reset);
+	EXP_API unsigned long get_timer(struct hr_time *val, int reset);
 
 	/**
 	* \brief          Setup an alarm clock
 	*
 	* \param seconds  delay before the "alarmed" flag is set
 	*/
-	XDL_API void set_alarm(int seconds);
+	EXP_API void set_alarm(int seconds);
 
 	/**
 	* \brief          Sleep for a certain amount of time
 	*/
-	XDL_API void m_sleep(int milliseconds);
+	EXP_API void m_sleep(int milliseconds);
 
 #ifdef __cplusplus
 }

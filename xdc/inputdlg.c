@@ -107,7 +107,7 @@ int hand_inputdlg_create(res_win_t widget, void* data)
 	ptd->button = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(ptd->button, IDC_INPUTDLG_PUSHBOX_CLOSE);
 	widget_set_owner(ptd->button, widget);
-	pushbox_set_text(ptd->button, GDI_ICON_CLOSE, -1);
+	pushbox_set_text(ptd->button, GDI_ATTR_GIZMO_CLOSE, -1);
 	widget_show(ptd->button, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);

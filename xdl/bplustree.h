@@ -44,28 +44,28 @@ extern "C" {
 @FUNCTION create_bplus_tree: create a bplus tree.
 @RETURN link_t_ptr: return the bplus tree link component.
 */
-XDL_API link_t_ptr create_bplus_tree(void);
+EXP_API link_t_ptr create_bplus_tree(void);
 
 /*
 @FUNCTION destroy_bplus_tree: destroy a bplus tree.
 @INPUT link_t_ptr ptr: the bplus tree link component.
 @RETURN void: none.
 */
-XDL_API void destroy_bplus_tree(link_t_ptr ptr);
+EXP_API void destroy_bplus_tree(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_bplus_tree: clear all child entity in the bplus tree.
 @INPUT link_t_ptr ptr: the bplus tree link component.
 @RETURN void: none.
 */
-XDL_API void clear_bplus_tree(link_t_ptr ptr);
+EXP_API void clear_bplus_tree(link_t_ptr ptr);
 
 /*
 @FUNCTION is_bplus_tree: test is the bplus tree.
 @INPUT link_t_ptr ptr: the bplus tree link component.
 @RETURN boo_t: return nonzero for bplus tree, otherwise return zero.
 */
-XDL_API bool_t is_bplus_tree(link_t_ptr ptr);
+EXP_API bool_t is_bplus_tree(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_bplus_entity: insert a entity with the key and value.
@@ -74,7 +74,7 @@ XDL_API bool_t is_bplus_tree(link_t_ptr ptr);
 @INPUT object_t val: the object value.
 @RETURN boo_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t insert_bplus_entity(link_t_ptr ptr, variant_t key, object_t val);
+EXP_API bool_t insert_bplus_entity(link_t_ptr ptr, variant_t key, object_t val);
 
 /*
 @FUNCTION delete_bplus_entity: delete a entity by the key.
@@ -82,7 +82,7 @@ XDL_API bool_t insert_bplus_entity(link_t_ptr ptr, variant_t key, object_t val);
 @INPUT variant_t key: the variant key.
 @RETURN boo_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t delete_bplus_entity(link_t_ptr ptr, variant_t key);
+EXP_API bool_t delete_bplus_entity(link_t_ptr ptr, variant_t key);
 
 /*
 @FUNCTION find_bplus_entity: find a entity by the key and get the entity value.
@@ -91,7 +91,7 @@ XDL_API bool_t delete_bplus_entity(link_t_ptr ptr, variant_t key);
 @OUTPUT object_t val: the object for returning value.
 @RETURN boo_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t find_bplus_entity(link_t_ptr ptr, variant_t var, object_t val);
+EXP_API bool_t find_bplus_entity(link_t_ptr ptr, variant_t var, object_t val);
 
 /*
 @FUNCTION enum_bplus_entity: enum bplus tree entities.
@@ -100,7 +100,7 @@ XDL_API bool_t find_bplus_entity(link_t_ptr ptr, variant_t var, object_t val);
 @INPUT void* param: the parameter translate into callback function.
 @RETURN void: none.
 */
-XDL_API void enum_bplus_entity(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API void enum_bplus_entity(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION attach_bplus_index_table: attach a index file table to bplus tree.
@@ -108,7 +108,7 @@ XDL_API void enum_bplus_entity(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param
 @INPUT link_t_ptr ft: the index file table link component.
 @RETURN link_t_ptr: retur the original file table link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr attach_bplus_index_table(link_t_ptr ptr, link_t_ptr ft);
+EXP_API link_t_ptr attach_bplus_index_table(link_t_ptr ptr, link_t_ptr ft);
 
 /*
 @FUNCTION attach_bplus_data_table: attach a data file table to bplus tree.
@@ -116,7 +116,7 @@ XDL_API link_t_ptr attach_bplus_index_table(link_t_ptr ptr, link_t_ptr ft);
 @INPUT link_t_ptr ft: the data file table link component.
 @RETURN link_t_ptr: retur the original file table link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr attach_bplus_data_table(link_t_ptr ptr, link_t_ptr ft);
+EXP_API link_t_ptr attach_bplus_data_table(link_t_ptr ptr, link_t_ptr ft);
 
 /*
 @FUNCTION update_bplus_index_table: save or load index entities from file table.
@@ -124,11 +124,11 @@ XDL_API link_t_ptr attach_bplus_data_table(link_t_ptr ptr, link_t_ptr ft);
 @INPUT bool_t b_save: nonzero for saving, zero for loading.
 @RETURN void: none.
 */
-XDL_API void update_bplus_index_table(link_t_ptr ptr, bool_t b_save);
+EXP_API void update_bplus_index_table(link_t_ptr ptr, bool_t b_save);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_bplus_tree();
-	XDL_API void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname);
+	EXP_API void test_bplus_tree();
+	EXP_API void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname);
 #endif
 
 #ifdef	__cplusplus

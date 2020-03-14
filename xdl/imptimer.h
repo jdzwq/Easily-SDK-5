@@ -44,14 +44,14 @@ extern "C" {
 @FUNCTION create_timer_queue: create timer queue, every queue can manage multiple timer.
 @RETURN res_queue_t: if succeeds return queue resource handle, fails return NULL.
 */
-XDL_API res_queue_t create_timer_queue(void);
+EXP_API res_queue_t create_timer_queue(void);
 
 /*
 @FUNCTION destroy_timer_queue: destroy timer queue and free all timer in queue.
 @INPUT res_queue_t rq: the timer queue resource handle.
 @RETURN void: none.
 */
-XDL_API void destroy_timer_queue(res_queue_t rq);
+EXP_API void destroy_timer_queue(res_queue_t rq);
 
 /*
 @FUNCTION create_timer: create timer and add into queue.
@@ -63,7 +63,7 @@ if zero, the timer is signed once. the timer is periodic by the period value.
 @INPUT void* pa: the worker function parameter.
 @RETURN res_timer_t: if succeeds return timer resource hanle, fails return NULL.
 */
-XDL_API res_timer_t create_timer(res_queue_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa);
+EXP_API res_timer_t create_timer(res_queue_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa);
 
 /*
 @FUNCTION destroy_timer: destroy timer and remove from queue.
@@ -71,7 +71,7 @@ XDL_API res_timer_t create_timer(res_queue_t rq, dword_t duetime, dword_t period
 @INPUT res_timer_t rt: the timer resource handle.
 @RETURN void: none.
 */
-XDL_API void destroy_timer(res_queue_t rq, res_timer_t rt);
+EXP_API void destroy_timer(res_queue_t rq, res_timer_t rt);
 
 /*
 @FUNCTION alter_timer: change timer time setting.
@@ -82,7 +82,7 @@ XDL_API void destroy_timer(res_queue_t rq, res_timer_t rt);
 if zero, the timer is signed once. the timer is periodic by the period value.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period);
+EXP_API bool_t alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period);
 
 #ifdef	__cplusplus
 }

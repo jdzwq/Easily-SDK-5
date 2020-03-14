@@ -221,35 +221,35 @@ extern "C" {
 @FUNCTION create_topog_doc: create a topog document.
 @RETURN link_t_ptr: return the topog document link component.
 */
-XDL_API link_t_ptr create_topog_doc(void);
+EXP_API link_t_ptr create_topog_doc(void);
 
 /*
 @FUNCTION destroy_topog_doc: destroy a topog document.
 @INPUT link_t_ptr ptr: the topog link component.
 @RETURN void: none.
 */
-XDL_API void destroy_topog_doc(link_t_ptr ptr);
+EXP_API void destroy_topog_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_topog_spotset: get topog spot set.
 @INPUT link_t_ptr ptr: the topog link component.
 @RETURN link_t_ptr: the spot set link component.
 */
-XDL_API link_t_ptr get_topog_spotset(link_t_ptr ptr);
+EXP_API link_t_ptr get_topog_spotset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_topog_doc: clear the topog document.
 @INPUT link_t_ptr ptr: the topog link component.
 @RETURN void: none.
 */
-XDL_API void clear_topog_doc(link_t_ptr ptr);
+EXP_API void clear_topog_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_topog_doc: test is topog document.
 @INPUT link_t_ptr ptr: the topog link component.
 @RETURN bool_t: return nonzero for being a topog document, otherwise return zero.
 */
-XDL_API bool_t is_topog_doc(link_t_ptr ptr);
+EXP_API bool_t is_topog_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_topog_spot: test is topog spot node.
@@ -257,14 +257,14 @@ XDL_API bool_t is_topog_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the sopt link component.
 @RETURN bool_t: return nonzero for being a spot node, otherwise return zero.
 */
-XDL_API bool_t is_topog_spot(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_topog_spot(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION topog_doc_from_spot: trackback spot node to topog document.
 @INPUT link_t_ptr ilk: the sopt link component.
 @RETURN link_t_ptr: return topog link component.
 */
-XDL_API link_t_ptr topog_doc_from_spot(link_t_ptr ilk);
+EXP_API link_t_ptr topog_doc_from_spot(link_t_ptr ilk);
 
 /*
 @FUNCTION insert_topog_spot: add a new spot node to topog document.
@@ -272,7 +272,7 @@ XDL_API link_t_ptr topog_doc_from_spot(link_t_ptr ilk);
 @INPUT link_t_ptr pos: the sopt link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new spot link component.
 */
-XDL_API link_t_ptr insert_topog_spot(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_topog_spot(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_topog_next_spot: get the next spot node.
@@ -280,7 +280,7 @@ XDL_API link_t_ptr insert_topog_spot(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the sopt link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_topog_next_spot(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_topog_next_spot(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_topog_prev_spot: get the previous spot node.
@@ -288,7 +288,7 @@ XDL_API link_t_ptr get_topog_next_spot(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the sopt link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_topog_prev_spot(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_topog_prev_spot(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_topog_spot: find the spot node by name.
@@ -296,7 +296,7 @@ XDL_API link_t_ptr get_topog_prev_spot(link_t_ptr ptr, link_t_ptr pos);
 @INPUT const tchar_t* sname: the sopt name token.
 @RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_topog_spot(link_t_ptr ptr, const tchar_t* sname);
+EXP_API link_t_ptr get_topog_spot(link_t_ptr ptr, const tchar_t* sname);
 
 /*
 @FUNCTION get_topog_spot_at: find the spot node at position.
@@ -304,28 +304,28 @@ XDL_API link_t_ptr get_topog_spot(link_t_ptr ptr, const tchar_t* sname);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return the spot link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_topog_spot_at(link_t_ptr ptr,int index);
+EXP_API link_t_ptr get_topog_spot_at(link_t_ptr ptr,int index);
 
 /*
 @FUNCTION delete_topog_spot: delete the spot node.
 @INPUT link_t_ptr ilk: the spot link component.
 @RETURN void: none.
 */
-XDL_API void delete_topog_spot(link_t_ptr ilk);
+EXP_API void delete_topog_spot(link_t_ptr ilk);
 
 /*
 @FUNCTION get_topog_spot_count: counting the spot nodes in topog document.
 @INPUT link_t_ptr ptr: the topog link component.
 @RETURN int: return the number of spot nodes.
 */
-XDL_API int get_topog_spot_count(link_t_ptr ptr);
+EXP_API int get_topog_spot_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_topog_spot_selected_count: counting the selected spot nodes in topog document.
 @INPUT link_t_ptr ptr: the topog link component.
 @RETURN int: return the number of spot nodes.
 */
-XDL_API int get_topog_spot_selected_count(link_t_ptr ptr);
+EXP_API int get_topog_spot_selected_count(link_t_ptr ptr);
 
 /*
 @FUNCTION set_topog_matrix_value: set the topog matrix value at row and col.
@@ -335,7 +335,7 @@ XDL_API int get_topog_spot_selected_count(link_t_ptr ptr);
 @INPUT double v: the value.
 @RETURN bool_t: return nonzero if the row and col is valid, otherwise return zero.
 */
-XDL_API bool_t set_topog_matrix_value(link_t_ptr ptr, int row, int col, double v);
+EXP_API bool_t set_topog_matrix_value(link_t_ptr ptr, int row, int col, double v);
 
 /*
 @FUNCTION get_topog_matrix_value: get the topog matrix value at row and col.
@@ -344,7 +344,7 @@ XDL_API bool_t set_topog_matrix_value(link_t_ptr ptr, int row, int col, double v
 @INPUT int col: the zero based col position.
 @RETURN double: return the value if the row and col is valid, otherwise return zero.
 */
-XDL_API double get_topog_matrix_value(link_t_ptr ptr, int row, int col);
+EXP_API double get_topog_matrix_value(link_t_ptr ptr, int row, int col);
 
 #ifdef	__cplusplus
 }

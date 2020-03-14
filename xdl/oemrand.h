@@ -40,9 +40,9 @@
 extern "C" {
 #endif
 
-	XDL_API int32_t Lrand48();
+	EXP_API int32_t Lrand48();
 
-	XDL_API void Srand48(int32_t seedval);
+	EXP_API void Srand48(int32_t seedval);
 
 #ifdef __cplusplus
 }

@@ -46,19 +46,19 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API float calc_images_height(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_images_height(const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API float calc_images_width(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_images_width(const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API bool_t calc_images_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API bool_t calc_images_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API bool_t calc_images_image_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API bool_t calc_images_image_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API bool_t calc_images_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API bool_t calc_images_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API int	calc_images_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
+	EXP_API int	calc_images_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-	XDL_API void draw_images(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API void draw_images(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

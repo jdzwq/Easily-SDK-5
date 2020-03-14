@@ -45,7 +45,7 @@ if XDL reduced to not support heap, then use c library to alloc memory.
 @INPUT dword_t size: great then or equal to zero
 @RETURN void*: if size equal to zero then return NULL, otherwise return the memory buffer pointer
 */
-XDL_API void*	xmem_alloc(dword_t size);
+EXP_API void*	xmem_alloc(dword_t size);
 
 /*
 @FUNCTION xmem_realloc: realloc memory by request size. the alloc mode same as xmem_alloc function.
@@ -53,14 +53,14 @@ XDL_API void*	xmem_alloc(dword_t size);
 @INPUT dword_t size: great then or equal to zero
 @RETURN void*: if size equal to zero then return NULL, otherwise return the memory buffer pointer
 */
-XDL_API void*	xmem_realloc(void* p, dword_t size);
+EXP_API void*	xmem_realloc(void* p, dword_t size);
 
 /*
 @FUNCTION xmem_free: free the memory by pointer.
 @INPUT void* p: the memoy pointer, can be NULL.
 @RETURN void: none
 */
-XDL_API void	xmem_free(void* p);
+EXP_API void	xmem_free(void* p);
 
 /*
 @FUNCTION xmem_zero: set the memory content to zero.
@@ -68,7 +68,7 @@ XDL_API void	xmem_free(void* p);
 @INPUT dword_t size: total bytes to set zero.
 @RETURN void: none
 */
-XDL_API void	xmem_zero(void* p, dword_t size);
+EXP_API void	xmem_zero(void* p, dword_t size);
 
 /*
 @FUNCTION xmem_set: fill the memory with a byte value.
@@ -77,7 +77,7 @@ XDL_API void	xmem_zero(void* p, dword_t size);
 @INPUT dword_t size: total bytes to fill.
 @RETURN void: none
 */
-XDL_API void	xmem_set(void* p, byte_t c, dword_t size);
+EXP_API void	xmem_set(void* p, byte_t c, dword_t size);
 
 /*
 @FUNCTION xmem_clone: clone the memory segment.
@@ -85,7 +85,7 @@ XDL_API void	xmem_set(void* p, byte_t c, dword_t size);
 @INPUT dword_t size: total bytes to copy.
 @RETURN void*: the new memory pointer.
 */
-XDL_API void*	xmem_clone(void* p,dword_t size);
+EXP_API void*	xmem_clone(void* p,dword_t size);
 
 /*
 @FUNCTION xmem_copy: copy the source memoy content to destent.
@@ -94,7 +94,7 @@ XDL_API void*	xmem_clone(void* p,dword_t size);
 @INPUT dword_t size: the source memory content size in bytes.
 @RETURN void: none
 */
-XDL_API void	xmem_copy(void* dst, void* src, dword_t size);
+EXP_API void	xmem_copy(void* dst, void* src, dword_t size);
 
 /*
 @FUNCTION xmem_move: move the memoy content.
@@ -104,7 +104,7 @@ XDL_API void	xmem_copy(void* dst, void* src, dword_t size);
 else if less then zero,then move to lower address.
 @RETURN void: none
 */
-XDL_API void	xmem_move(void* p, dword_t len, int off);
+EXP_API void	xmem_move(void* p, dword_t len, int off);
 
 /*
 @FUNCTION xmem_comp: compare two memoy content one by one byte.
@@ -114,13 +114,13 @@ XDL_API void	xmem_move(void* p, dword_t len, int off);
 @INPUT dword_t len2: mem2 total bytes to compare
 @RETURN int: the same content and length will return 0, else if mem1 great then mem2 then return 1, otherwise return -1.
 */
-XDL_API int xmem_comp(void* mem1, dword_t len1, void* mem2, dword_t len2);
+EXP_API int xmem_comp(void* mem1, dword_t len1, void* mem2, dword_t len2);
 
 #ifdef XDL_SUPPORT_MEMO_DUMP
 
-XDL_API dword_t	xmem_size(void* p);
+EXP_API dword_t	xmem_size(void* p);
 
-XDL_API	void	xmem_assert(void* p);
+EXP_API	void	xmem_assert(void* p);
 
 #endif
 
@@ -131,7 +131,7 @@ XDL_API	void	xmem_assert(void* p);
 @INPUT dword_t size: total bytes to alloc.
 @RETURN res_glob_t: the global memory handle.
 */
-XDL_API res_glob_t	gmem_alloc(dword_t size);
+EXP_API res_glob_t	gmem_alloc(dword_t size);
 
 /*
 @FUNCTION gmem_realloc: realloc global memory.
@@ -139,35 +139,35 @@ XDL_API res_glob_t	gmem_alloc(dword_t size);
 @INPUT dword_t size: total bytes to alloc.
 @RETURN res_glob_t: the new global memory handle.
 */
-XDL_API res_glob_t	gmem_realloc(res_glob_t glob, dword_t size);
+EXP_API res_glob_t	gmem_realloc(res_glob_t glob, dword_t size);
 
 /*
 @FUNCTION gmem_free: free global memory.
 @INPUT res_glob_t glob: the original global handle
 @RETURN void: none.
 */
-XDL_API void		gmem_free(res_glob_t glob);
+EXP_API void		gmem_free(res_glob_t glob);
 
 /*
 @FUNCTION gmem_size: get global memory space size.
 @INPUT res_glob_t glob: the global handle
 @RETURN dword_t: bytes.
 */
-XDL_API dword_t		gmem_size(res_glob_t glob);
+EXP_API dword_t		gmem_size(res_glob_t glob);
 
 /*
 @FUNCTION gmem_lock: reference the global memory pointer
 @INPUT res_glob_t glob: the global handle
 @RETURN void*: memory pointer.
 */
-XDL_API void*		gmem_lock(res_glob_t glob);
+EXP_API void*		gmem_lock(res_glob_t glob);
 
 /*
 @FUNCTION gmem_unlock: discard the global memory pointer
 @INPUT res_glob_t glob: the global handle
 @RETURN bool_t: if succeed then return none zero, else return zero.
 */
-XDL_API bool_t		gmem_unlock(res_glob_t glob);
+EXP_API bool_t		gmem_unlock(res_glob_t glob);
 
 #endif
 
@@ -178,7 +178,7 @@ XDL_API bool_t		gmem_unlock(res_glob_t glob);
 @INPUT dword_t size: the bytes want to alloc. eg: page size is 4096, if request size is 4097, then 4096 * 2 size memory will alloced.
 @RETURN void*: the page based memory pointer.
 */
-XDL_API void*		pmem_alloc(dword_t size);
+EXP_API void*		pmem_alloc(dword_t size);
 
 /*
 @FUNCTION pmem_realloc: realloc page based memoy by page size granularity.
@@ -186,35 +186,35 @@ XDL_API void*		pmem_alloc(dword_t size);
 @INPUT dword_t size: the bytes want to alloc.
 @RETURN void*: the new page based memory pointer.
 */
-XDL_API void*		pmem_realloc(void* p, dword_t size);
+EXP_API void*		pmem_realloc(void* p, dword_t size);
 
 /*
 @FUNCTION pmem_free: free the page based memory.
 @INPUT void* p: the page based memory pointer.
 @RETURN void: none.
 */
-XDL_API void		pmem_free(void* p);
+EXP_API void		pmem_free(void* p);
 
 /*
 @FUNCTION pmem_size: get the page based memory size.
 @INPUT void* p: the page based memory pointer.
 @RETURN dword_t: total space size in bytes.
 */
-XDL_API dword_t		pmem_size(void* p);
+EXP_API dword_t		pmem_size(void* p);
 
 /*
 @FUNCTION pmem_lock: lock the page based memory into physical memory
 @INPUT void* p: the page based memory pointer.
 @RETURN void*: if succeed return memory pointer, failed return NULL.
 */
-XDL_API void*		pmem_lock(void* p);
+EXP_API void*		pmem_lock(void* p);
 
 /*
 @FUNCTION pmem_unlock: unlock the page based memory, then it can be switched out of physical memory
 @INPUT void* p: the page based memory pointer.
 @RETURN void: none
 */
-XDL_API void		pmem_unlock(void* p);
+EXP_API void		pmem_unlock(void* p);
 
 /*
 @FUNCTION pmem_protect: protect or unprotect the page based memory, let it be READONLY or READWRITE
@@ -222,7 +222,7 @@ XDL_API void		pmem_unlock(void* p);
 @INPUT bool_t b: if nonezero protect it, zero unprotect it.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		pmem_protect(void* p, bool_t b);
+EXP_API bool_t		pmem_protect(void* p, bool_t b);
 
 #endif
 

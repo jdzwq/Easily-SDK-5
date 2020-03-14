@@ -149,56 +149,56 @@ extern "C" {
 @FUNCTION create_schema_doc: create a schema document.
 @RETURN link_t_ptr: return the schema document link component.
 */
-XDL_API link_t_ptr create_schema_doc(void);
+EXP_API link_t_ptr create_schema_doc(void);
 
 /*
 @FUNCTION destroy_schema_doc: destroy a schema document.
 @INPUT link_t_ptr ptr: the schema link component.
 @RETURN void: none.
 */
-XDL_API void destroy_schema_doc(link_t_ptr ptr);
+EXP_API void destroy_schema_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_schema_doc: test is a schema document.
 @INPUT link_t_ptr ptr: the schema link component.
 @RETURN bool_t: return nonzero for being a schema document, otherwise return zero.
 */
-XDL_API bool_t is_schema_doc(link_t_ptr ptr);
+EXP_API bool_t is_schema_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_empty_schema: test the schema document is empty.
 @INPUT link_t_ptr ptr: the schema link component.
 @RETURN bool_t: return nonzero for being empty document, otherwise return zero.
 */
-XDL_API bool_t is_empty_schema(link_t_ptr ptr);
+EXP_API bool_t is_empty_schema(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_schema_doc: clear the schema document, all of child nodes will be emptied.
 @INPUT link_t_ptr ptr: the schema link component.
 @RETURN void: none.
 */
-XDL_API void clear_schema_doc(link_t_ptr ptr);
+EXP_API void clear_schema_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_schema_declare: test is a declare schema node.
 @INPUT link_t_ptr nlk: the declare node link component.
 @RETURN bool_t: return nonzero for being declare node, otherwise return zero.
 */
-XDL_API bool_t is_schema_declare(link_t_ptr nlk);
+EXP_API bool_t is_schema_declare(link_t_ptr nlk);
 
 /*
 @FUNCTION is_schema_attribute: test is a attribute schema node.
 @INPUT link_t_ptr nlk: the attribute node link component.
 @RETURN bool_t: return nonzero for being attribute node, otherwise return zero.
 */
-XDL_API bool_t is_schema_attribute(link_t_ptr nlk);
+EXP_API bool_t is_schema_attribute(link_t_ptr nlk);
 
 /*
 @FUNCTION is_schema_element: test is a element schema node.
 @INPUT link_t_ptr nlk: the element node link component.
 @RETURN bool_t: return nonzero for being element node, otherwise return zero.
 */
-XDL_API bool_t is_schema_element(link_t_ptr nlk);
+EXP_API bool_t is_schema_element(link_t_ptr nlk);
 
 /*
 @FUNCTION insert_schema_declare: insert a declare schema node.
@@ -206,7 +206,7 @@ XDL_API bool_t is_schema_element(link_t_ptr nlk);
 @INPUT link_t_ptr pos: the declare link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return declare link component.
 */
-XDL_API link_t_ptr insert_schema_declare(link_t_ptr parent, link_t_ptr pos);
+EXP_API link_t_ptr insert_schema_declare(link_t_ptr parent, link_t_ptr pos);
 
 /*
 @FUNCTION insert_schema_attribute: insert a attribute schema node.
@@ -214,7 +214,7 @@ XDL_API link_t_ptr insert_schema_declare(link_t_ptr parent, link_t_ptr pos);
 @INPUT link_t_ptr pos: the attribute link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return attribute link component.
 */
-XDL_API link_t_ptr insert_schema_attribute(link_t_ptr parent, link_t_ptr pos);
+EXP_API link_t_ptr insert_schema_attribute(link_t_ptr parent, link_t_ptr pos);
 
 /*
 @FUNCTION insert_schema_element: insert a element schema node.
@@ -222,21 +222,21 @@ XDL_API link_t_ptr insert_schema_attribute(link_t_ptr parent, link_t_ptr pos);
 @INPUT link_t_ptr pos: the element link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return element link component.
 */
-XDL_API link_t_ptr insert_schema_element(link_t_ptr parent, link_t_ptr pos);
+EXP_API link_t_ptr insert_schema_element(link_t_ptr parent, link_t_ptr pos);
 
 /*
 @FUNCTION delete_schema_element: delete a element schema node.
 @INPUT link_t_ptr nlk: the elementt link component.
 @RETURN none: none.
 */
-XDL_API void delete_schema_element(link_t_ptr nlk);
+EXP_API void delete_schema_element(link_t_ptr nlk);
 
 /*
 @FUNCTION get_schema_element_count: counting the element child nodes.
 @INPUT link_t_ptr nlk: the elementt link component.
 @RETURN int: the number of element child nodes.
 */
-XDL_API int get_schema_element_count(link_t_ptr nlk);
+EXP_API int get_schema_element_count(link_t_ptr nlk);
 
 /*
 @FUNCTION get_schema_next_element: get the next element node.
@@ -244,7 +244,7 @@ XDL_API int get_schema_element_count(link_t_ptr nlk);
 @INPUT link_t_ptr nlk: the element link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return element link component.
 */
-XDL_API link_t_ptr get_schema_next_element(link_t_ptr parent,link_t_ptr nlk);
+EXP_API link_t_ptr get_schema_next_element(link_t_ptr parent,link_t_ptr nlk);
 
 /*
 @FUNCTION get_schema_prev_element: get the previous element node.
@@ -252,14 +252,14 @@ XDL_API link_t_ptr get_schema_next_element(link_t_ptr parent,link_t_ptr nlk);
 @INPUT link_t_ptr nlk: the element link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return element link component.
 */
-XDL_API link_t_ptr get_schema_prev_element(link_t_ptr parent,link_t_ptr nlk);
+EXP_API link_t_ptr get_schema_prev_element(link_t_ptr parent,link_t_ptr nlk);
 
 /*
 @FUNCTION get_schema_parent_element: get the parent element node.
 @INPUT link_t_ptr nlk: the element link component.
 @RETURN link_t_ptr: return parent link component.
 */
-XDL_API link_t_ptr get_schema_parent_element(link_t_ptr nlk);
+EXP_API link_t_ptr get_schema_parent_element(link_t_ptr nlk);
 
 /*
 @FUNCTION get_schema_element: find the parent element node by name.
@@ -267,7 +267,7 @@ XDL_API link_t_ptr get_schema_parent_element(link_t_ptr nlk);
 @INPUT const tchar_t* ename: the name string token.
 @RETURN link_t_ptr: return element link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_schema_element(link_t_ptr nlk,const tchar_t* ename);
+EXP_API link_t_ptr get_schema_element(link_t_ptr nlk,const tchar_t* ename);
 
 #ifdef	__cplusplus
 }

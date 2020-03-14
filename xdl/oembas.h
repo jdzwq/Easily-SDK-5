@@ -39,13 +39,13 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API dword_t a_xbas_decode(const schar_t* src, int slen, byte_t* dest, dword_t dlen);
+EXP_API dword_t a_xbas_decode(const schar_t* src, int slen, byte_t* dest, dword_t dlen);
 
-XDL_API dword_t w_xbas_decode(const wchar_t* src, int slen, byte_t* dest, dword_t dlen);
+EXP_API dword_t w_xbas_decode(const wchar_t* src, int slen, byte_t* dest, dword_t dlen);
 
-XDL_API int a_xbas_encode(const byte_t* src, dword_t slen, schar_t* dest, int dlen);
+EXP_API int a_xbas_encode(const byte_t* src, dword_t slen, schar_t* dest, int dlen);
 
-XDL_API int w_xbas_encode(const byte_t* src, dword_t slen, wchar_t* dest, int dlen);
+EXP_API int w_xbas_encode(const byte_t* src, dword_t slen, wchar_t* dest, int dlen);
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define xbas_decode		w_xbas_decode

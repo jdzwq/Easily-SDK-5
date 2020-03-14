@@ -44,7 +44,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_DHM_XXX error code
 	*/
-	XDL_API int dhm_read_params(dhm_context *ctx,
+	EXP_API int dhm_read_params(dhm_context *ctx,
 		unsigned char **p,
 		unsigned char *end);
 
@@ -64,12 +64,12 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_DHM_XXX error code
 	*/
-	XDL_API int dhm_make_params(dhm_context *ctx, int s_size,
+	EXP_API int dhm_make_params(dhm_context *ctx, int s_size,
 		unsigned char *output, int *olen,
 		int(*f_rng)(void *), void *p_rng);
 
 
-	XDL_API int dhm_make_params_size(dhm_context *ctx, int x_size);
+	EXP_API int dhm_make_params_size(dhm_context *ctx, int x_size);
 
 	/**
 	* \brief          Import the peer's public value G^Y
@@ -80,7 +80,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_DHM_XXX error code
 	*/
-	XDL_API int dhm_read_public(dhm_context *ctx,
+	EXP_API int dhm_read_public(dhm_context *ctx,
 		unsigned char *input, int ilen);
 
 	/**
@@ -95,11 +95,11 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_DHM_XXX error code
 	*/
-	XDL_API int dhm_make_public(dhm_context *ctx, int s_size,
+	EXP_API int dhm_make_public(dhm_context *ctx, int s_size,
 		unsigned char *output, int* olen,
 		int(*f_rng)(void *), void *p_rng);
 
-	XDL_API int dhm_make_public_size(dhm_context *ctx, int x_size);
+	EXP_API int dhm_make_public_size(dhm_context *ctx, int x_size);
 
 	/**
 	* \brief          Derive and export the shared secret (G^Y)^X mod P
@@ -110,13 +110,13 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_DHM_XXX error code
 	*/
-	XDL_API int dhm_calc_secret(dhm_context *ctx,
+	EXP_API int dhm_calc_secret(dhm_context *ctx,
 		unsigned char *output, int *olen);
 
 	/*
 	* \brief          Free the components of a DHM key
 	*/
-	XDL_API void dhm_free(dhm_context *ctx);
+	EXP_API void dhm_free(dhm_context *ctx);
 
 
 #ifdef __cplusplus

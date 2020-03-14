@@ -41,7 +41,7 @@ void default_menu_attr(link_t_ptr ptr)
 {
 	set_menu_style(ptr, _T("font-size:9;text-align:near;line-align:center;"));
 
-	set_menu_icon_span(ptr, DEF_GDI_ICON_SPAN);
+	set_menu_icon_span(ptr, DEF_GDI_ATTR_GIZMO_SPAN);
 }
 
 link_t_ptr create_menu_doc()

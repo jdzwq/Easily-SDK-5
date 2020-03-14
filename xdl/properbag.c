@@ -246,7 +246,7 @@ void properbag_write_images_attributes(link_t_ptr ptr, link_t_ptr imagelist)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, GDI_ICON_SPAN, get_images_icon_span(imagelist));
+	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, GDI_ATTR_GIZMO_SPAN, get_images_icon_span(imagelist));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 }
@@ -262,7 +262,7 @@ void properbag_read_images_attributes(link_t_ptr ptr, link_t_ptr imagelist)
 
 	set_images_item_height(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_HEIGHT));
 
-	set_images_icon_span(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, GDI_ICON_SPAN));
+	set_images_icon_span(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, GDI_ATTR_GIZMO_SPAN));
 }
 
 void properbag_write_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem)

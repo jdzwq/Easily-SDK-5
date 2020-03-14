@@ -45,14 +45,14 @@ extern "C" {
 @INPUT canvas_t canv: the svg canvas object.
 @RETURN if_canvas_t*: if succeeds return svg canvas interface struct, fails return NULL.
 */
-XDL_API if_canvas_t* create_svg_interface(canvas_t canv);
+EXP_API if_canvas_t* create_svg_interface(canvas_t canv);
 
 /*
 @FUNCTION destroy_svg_interface: destroy svg canvas interface.
 @INPUT if_canvas_t*: the svg canvas interface struct.
 @RETURN void: none.
 */
-XDL_API void destroy_svg_interface(if_canvas_t* pic);
+EXP_API void destroy_svg_interface(if_canvas_t* pic);
 
 #ifdef	__cplusplus
 }

@@ -179,6 +179,9 @@ bool_t STDCALL sms_code(sms_t sms, const tchar_t* phone, const tchar_t* param, i
 	byte_t hmac[20] = { 0 };
 	byte_t sign[RES_LEN] = { 0 };
 
+	LINKPTR ptr_xml = NULL;
+	LINKPTR dom, nlk;
+
 	TRY_CATCH;
 	
 	_sms_reset(pal);
@@ -323,14 +326,35 @@ bool_t STDCALL sms_code(sms_t sms, const tchar_t* phone, const tchar_t* param, i
 	xhttp_close(http);
 	http = NULL;
 
-#ifdef _UNICODE
-	utf8_to_ucs(qry_buf, dw, pal->err_text, ERR_LEN - 1);
-#else
-	utf8_to_mbs(qry_buf, dw, pal->err_text, ERR_LEN - 1);
-#endif
+	ptr_xml = create_xml_doc();
+
+	if (!parse_xml_doc_from_bytes(ptr_xml, qry_buf, dw))
+	{
+		raise_user_error(_T("-1"), _T("parse message recipt failed"));
+	}
 
 	xmem_free(qry_buf);
 	qry_buf = NULL;
+
+	dom = get_xml_dom_node(ptr_xml);
+	nlk = get_dom_first_child_node(dom);
+	while (nlk)
+	{
+		if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("Message"), -1, 1) == 0)
+			get_dom_node_text(nlk, pal->err_code, INT_LEN);
+		else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("RequestId"), -1, 1) == 0)
+			get_dom_node_text(nlk, pal->err_text, ERR_LEN);
+
+		nlk = get_dom_next_sibling_node(nlk);
+	}
+
+	destroy_xml_doc(ptr_xml);
+	ptr_xml = NULL;
+
+	if (compare_text(pal->err_code, -1, _T("OK"), -1, 1) != 0)
+	{
+		raise_user_error(_T("-1"), _T("send message code failed"));
+	}
 
 	END_CATCH;
 
@@ -351,6 +375,9 @@ ONERROR:
 
 	if (pb)
 		bytes_free(pb);
+
+	if (ptr_xml)
+		destroy_xml_doc(ptr_xml);
 
 	if (http)
 		xhttp_close(http);

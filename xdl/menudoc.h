@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_menu_icon_span: set the menu icon span.
 */
-#define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_menu_icon_span: get the menu icon span.
 */
-#define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER name: string.
 @GET get_menu_item_name_ptr: get the menu name.
@@ -150,35 +150,35 @@ extern "C" {
 @FUNCTION create_menu_doc: create a menu document.
 @RETURN link_t_ptr: return the menu document link component.
 */
-XDL_API link_t_ptr create_menu_doc(void);
+EXP_API link_t_ptr create_menu_doc(void);
 
 /*
 @FUNCTION destroy_menu_doc: destroy a menu document.
 @INPUT link_t_ptr ptr: the menu link component.
 @RETURN void: none.
 */
-XDL_API void destroy_menu_doc(link_t_ptr ptr);
+EXP_API void destroy_menu_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_menu_itemset: get menu item set.
 @INPUT link_t_ptr ptr: the menu link component.
 @RETURN link_t_ptr: the item set link component.
 */
-XDL_API link_t_ptr get_menu_itemset(link_t_ptr ptr);
+EXP_API link_t_ptr get_menu_itemset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_menu_doc: clear the menu document.
 @INPUT link_t_ptr ptr: the menu link component.
 @RETURN void: none.
 */
-XDL_API void clear_menu_doc(link_t_ptr ptr);
+EXP_API void clear_menu_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_menu_doc: test is menu document.
 @INPUT link_t_ptr ptr: the menu link component.
 @RETURN bool_t: return nonzero for being a menu document, otherwise return zero.
 */
-XDL_API bool_t is_menu_doc(link_t_ptr ptr);
+EXP_API bool_t is_menu_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_menu_item: test is menu item node.
@@ -186,14 +186,14 @@ XDL_API bool_t is_menu_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a item, otherwise return zero.
 */
-XDL_API bool_t is_menu_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_menu_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION get_menu_item_count: counting the items in menu document.
 @INPUT link_t_ptr ptr: the menu link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_menu_item_count(link_t_ptr ptr);
+EXP_API int get_menu_item_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_menu_next_item: get the next menu item.
@@ -201,7 +201,7 @@ XDL_API int get_menu_item_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_menu_next_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_menu_next_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_menu_prev_item: get the previous menu item.
@@ -209,7 +209,7 @@ XDL_API link_t_ptr get_menu_next_item(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_menu_prev_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_menu_prev_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_menu_item: find the item by name.
@@ -217,7 +217,7 @@ XDL_API link_t_ptr get_menu_prev_item(link_t_ptr ptr, link_t_ptr pos);
 @INPUT const tchar_t* sz_name: the menu item name.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_menu_item(link_t_ptr ptr, const tchar_t* sz_name);
+EXP_API link_t_ptr get_menu_item(link_t_ptr ptr, const tchar_t* sz_name);
 
 /*
 @FUNCTION get_menu_item_by_iid: find the item by iid.
@@ -225,7 +225,7 @@ XDL_API link_t_ptr get_menu_item(link_t_ptr ptr, const tchar_t* sz_name);
 @INPUT const tchar_t* sz_iid: the menu item iid.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_menu_item_by_iid(link_t_ptr ptr, int sz_iid);
+EXP_API link_t_ptr get_menu_item_by_iid(link_t_ptr ptr, int sz_iid);
 
 /*
 @FUNCTION insert_menu_item: add a new item to menu document.
@@ -233,14 +233,14 @@ XDL_API link_t_ptr get_menu_item_by_iid(link_t_ptr ptr, int sz_iid);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_menu_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr insert_menu_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION delete_menu_item: delete the menu item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_menu_item(link_t_ptr ilk);
+EXP_API void delete_menu_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

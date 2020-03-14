@@ -30,14 +30,6 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 
-#if defined(_OS_WINDOWS) && defined(_USRDLL)
-#define MQ_API __declspec(dllexport)
-#else
-#define MQ_API extern
-#endif
-
-
-
 
 #endif	/* _MQTTDEF_H */
 

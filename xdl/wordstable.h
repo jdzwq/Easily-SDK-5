@@ -50,47 +50,47 @@ typedef enum{
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_words_table(int order);
+EXP_API link_t_ptr create_words_table(int order);
 
-XDL_API void destroy_words_table(link_t_ptr ptr);
+EXP_API void destroy_words_table(link_t_ptr ptr);
 
-XDL_API void clear_words_table(link_t_ptr ptr);
+EXP_API void clear_words_table(link_t_ptr ptr);
 
-XDL_API bool_t is_words_table(link_t_ptr ptr);
+EXP_API bool_t is_words_table(link_t_ptr ptr);
 
-XDL_API bool_t is_words_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_words_item(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API int get_words_item_count(link_t_ptr ptr);
+EXP_API int get_words_item_count(link_t_ptr ptr);
 
-XDL_API link_t_ptr insert_words_item(link_t_ptr ptr, const tchar_t* val, int len);
+EXP_API link_t_ptr insert_words_item(link_t_ptr ptr, const tchar_t* val, int len);
 
-XDL_API link_t_ptr get_words_item(link_t_ptr ptr, const tchar_t* val, int len);
+EXP_API link_t_ptr get_words_item(link_t_ptr ptr, const tchar_t* val, int len);
 
-XDL_API void delete_words_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API void delete_words_item(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API const tchar_t* get_words_item_text_ptr(link_t_ptr ilk);
+EXP_API const tchar_t* get_words_item_text_ptr(link_t_ptr ilk);
 
-XDL_API void set_words_item_delta(link_t_ptr ilk, var_long data);
+EXP_API void set_words_item_delta(link_t_ptr ilk, var_long data);
 
-XDL_API var_long get_words_item_delta(link_t_ptr ilk);
+EXP_API var_long get_words_item_delta(link_t_ptr ilk);
 
-XDL_API link_t_ptr get_words_next_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_words_next_item(link_t_ptr ptr,link_t_ptr pos);
 
-XDL_API link_t_ptr get_words_prev_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_words_prev_item(link_t_ptr ptr,link_t_ptr pos);
 
-XDL_API link_t_ptr get_words_item_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_words_item_at(link_t_ptr ptr, int index);
 
-XDL_API int get_words_item_index(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API int get_words_item_index(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API link_t_ptr get_words_next_visible_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_words_next_visible_item(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API link_t_ptr get_words_prev_visible_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_words_prev_visible_item(link_t_ptr ptr, link_t_ptr pos);
 
-XDL_API int get_words_visible_item_count(link_t_ptr ptr);
+EXP_API int get_words_visible_item_count(link_t_ptr ptr);
 
-XDL_API void words_table_parse_tokens(link_t_ptr ptr,const tchar_t* tokens,int len,tchar_t feed);
+EXP_API void words_table_parse_tokens(link_t_ptr ptr,const tchar_t* tokens,int len,tchar_t feed);
 
-XDL_API int words_table_format_tokens(link_t_ptr ptr,tchar_t* buf,int max,tchar_t feed);
+EXP_API int words_table_format_tokens(link_t_ptr ptr,tchar_t* buf,int max,tchar_t feed);
 
 #ifdef	__cplusplus
 }

@@ -40,24 +40,24 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API bool_t parse_json_doc_from_bytes(link_t_ptr json, const byte_t* str, dword_t len, int encode);
+	EXP_API bool_t parse_json_doc_from_bytes(link_t_ptr json, const byte_t* str, dword_t len, int encode);
 
-	XDL_API dword_t format_json_doc_to_bytes(link_t_ptr json, byte_t* buf, dword_t max, int encode);
-
-
-	XDL_API bool_t parse_json_doc_from_string(link_t_ptr json, string_t vs);
-
-	XDL_API bool_t format_json_doc_to_string(link_t_ptr json, string_t vs);
+	EXP_API dword_t format_json_doc_to_bytes(link_t_ptr json, byte_t* buf, dword_t max, int encode);
 
 
-	XDL_API bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t stm);
+	EXP_API bool_t parse_json_doc_from_string(link_t_ptr json, string_t vs);
 
-	XDL_API bool_t format_json_doc_to_stream(link_t_ptr json, stream_t stm);
+	EXP_API bool_t format_json_doc_to_string(link_t_ptr json, string_t vs);
 
 
-	XDL_API bool_t parse_json_doc_from_memo(link_t_ptr json, link_t_ptr txt);
+	EXP_API bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t stm);
 
-	XDL_API bool_t format_json_doc_to_memo(link_t_ptr json, link_t_ptr txt);
+	EXP_API bool_t format_json_doc_to_stream(link_t_ptr json, stream_t stm);
+
+
+	EXP_API bool_t parse_json_doc_from_memo(link_t_ptr json, link_t_ptr txt);
+
+	EXP_API bool_t format_json_doc_to_memo(link_t_ptr json, link_t_ptr txt);
 
 
 #ifdef	__cplusplus

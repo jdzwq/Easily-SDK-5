@@ -33,24 +33,12 @@ typedef struct _radnet_block_t{
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
+
+	tchar_t code[NUM_LEN + 1];
+	tchar_t text[ERR_LEN + 1];
 }radnet_block_t;
 
-void _invoke_error(const slots_block_t* pb, const radnet_block_t* pd)
-{
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[ERROR]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-}
-
-void _invoke_insert(const slots_block_t* pb, const radnet_block_t* pd)
+void _invoke_insert(const slots_block_t* pb, radnet_block_t* pd)
 {
 	byte_t* buf = NULL;
 	dword_t n, dw;
@@ -94,12 +82,15 @@ void _invoke_insert(const slots_block_t* pb, const radnet_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	(*pd->pf_hexkv_attach)(pd->hkv, var, val);
+	hexkv_attach(pd->hkv, var, val);
 	val = NULL;
 
 	variant_to_null(&var);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_SUCCEED);
+
+	xscpy(pd->code, _T("_invoke_insert"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -107,7 +98,7 @@ void _invoke_insert(const slots_block_t* pb, const radnet_block_t* pd)
 
 ONERROR:
 
-	XDL_TRACE_LAST;
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_INSERT);
 
@@ -125,7 +116,7 @@ ONERROR:
 	return;
 }
 
-void _invoke_update(const slots_block_t* pb, const radnet_block_t* pd)
+void _invoke_update(const slots_block_t* pb, radnet_block_t* pd)
 {
 	byte_t* buf = NULL;
 	dword_t n, dw;
@@ -169,7 +160,7 @@ void _invoke_update(const slots_block_t* pb, const radnet_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	if (!(*pd->pf_hexkv_update)(pd->hkv, var, val))
+	if (!hexkv_update(pd->hkv, var, val))
 	{
 		raise_user_error(_T("_invoke_update"), _T("update failed"));
 	}
@@ -181,13 +172,16 @@ void _invoke_update(const slots_block_t* pb, const radnet_block_t* pd)
 
 	radnet_abort(pd->radnet, RADNET_ERROR_SUCCEED);
 
+	xscpy(pd->code, _T("_invoke_update"));
+	xscpy(pd->text, _T("Succeeded"));
+
 	END_CATCH;
 
 	return;
 
 ONERROR:
 
-	XDL_TRACE_LAST;
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_UPDATE);
 
@@ -205,7 +199,7 @@ ONERROR:
 	return;
 }
 
-void _invoke_delete(const slots_block_t* pb, const radnet_block_t* pd)
+void _invoke_delete(const slots_block_t* pb, radnet_block_t* pd)
 {
 	byte_t* buf = NULL;
 	dword_t n, dw;
@@ -240,11 +234,14 @@ void _invoke_delete(const slots_block_t* pb, const radnet_block_t* pd)
 	stream_free(stm);
 	stm = NULL;
 
-	(*pd->pf_hexkv_delete)(pd->hkv, var);
+	hexkv_delete(pd->hkv, var);
 
 	variant_to_null(&var);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_SUCCEED);
+
+	xscpy(pd->code, _T("_invoke_delete"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -252,7 +249,7 @@ void _invoke_delete(const slots_block_t* pb, const radnet_block_t* pd)
 
 ONERROR:
 
-	XDL_TRACE_LAST;
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_DELETE);
 
@@ -267,7 +264,7 @@ ONERROR:
 	return;
 }
 
-void _invoke_trunca(const slots_block_t* pb, const radnet_block_t* pd)
+void _invoke_trunca(const slots_block_t* pb, radnet_block_t* pd)
 {
 	byte_t* buf = NULL;
 	dword_t n, dw;
@@ -302,11 +299,14 @@ void _invoke_trunca(const slots_block_t* pb, const radnet_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	(*pd->pf_hexkv_write)(pd->hkv, var, NULL);
+	hexkv_write(pd->hkv, var, NULL);
 
 	variant_to_null(&var);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_SUCCEED);
+
+	xscpy(pd->code, _T("_invoke_trunca"));
+	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -314,7 +314,7 @@ void _invoke_trunca(const slots_block_t* pb, const radnet_block_t* pd)
 
 ONERROR:
 
-	XDL_TRACE_LAST;
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	radnet_abort(pd->radnet, RADNET_ERROR_TRUNCA);
 
@@ -329,7 +329,7 @@ ONERROR:
 	return;
 }
 
-void _invoke_select(const slots_block_t* pb, const radnet_block_t* pd)
+void _invoke_select(const slots_block_t* pb, radnet_block_t* pd)
 {
 	radnet_pdv_head_t pdv = { 0 };
 	byte_t* buf = NULL;
@@ -366,7 +366,7 @@ void _invoke_select(const slots_block_t* pb, const radnet_block_t* pd)
 
 	val = object_alloc(DEF_MBS);
 
-	(*pd->pf_hexkv_read)(pd->hkv, var, val);
+	hexkv_read(pd->hkv, var, val);
 
 	dw = variant_encode(&var, NULL, MAX_LONG) + object_encode(val, NULL, MAX_LONG);
 	buf = (byte_t*)xmem_alloc(dw);
@@ -400,13 +400,16 @@ void _invoke_select(const slots_block_t* pb, const radnet_block_t* pd)
 	stream_free(stm);
 	stm = NULL;
 
+	xscpy(pd->code, _T("_invoke_select"));
+	xscpy(pd->text, _T("Succeeded"));
+
 	END_CATCH;
 
 	return;
 
 ONERROR:
 
-	XDL_TRACE_LAST;
+	get_last_error(pd->code, pd->text, ERR_LEN);
 
 	if (!snd)
 		radnet_abort(pd->radnet, RADNET_ERROR_SELECT);
@@ -425,7 +428,7 @@ ONERROR:
 	return;
 }
 
-int STDCALL slots_invoke(slots_block_t* pb)
+int STDCALL slots_invoke(const slots_block_t* pb)
 {
 	radnet_block_t* pd = NULL;
 
@@ -461,27 +464,6 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	printf_path(pd->local, token);
 
-	pd->lib = load_library(HEXPAI_LIBRARY);
-	if(!pd->lib)
-	{
-		raise_user_error(0, _T("load hexdb library failed"));
-	}
-	
-	pd->pf_hexkv_create = (PF_HEXKV_CREATE)get_address(pd->lib, "hexkv_create");
-	pd->pf_hexkv_destroy = (PF_HEXKV_DESTROY)get_address(pd->lib, "hexkv_destroy");
-	pd->pf_hexkv_write = (PF_HEXKV_WRITE)get_address(pd->lib, "hexkv_write");
-	pd->pf_hexkv_read = (PF_HEXKV_READ)get_address(pd->lib, "hexkv_read");
-	pd->pf_hexkv_update = (PF_HEXKV_UPDATE)get_address(pd->lib, "hexkv_update");
-	pd->pf_hexkv_attach = (PF_HEXKV_ATTACH)get_address(pd->lib, "hexkv_attach");
-	pd->pf_hexkv_detach = (PF_HEXKV_DETACH)get_address(pd->lib, "hexkv_detach");
-	pd->pf_hexkv_delete = (PF_HEXKV_DELETE)get_address(pd->lib, "hexkv_delete");
-	pd->pf_hexkv_flush = (PF_HEXKV_FLUSH)get_address(pd->lib, "hexkv_flush");
-	pd->pf_hexdb_create = (PF_HEXDB_CREATE)get_address(pd->lib, "hexdb_create");
-	pd->pf_hexdb_destroy = (PF_HEXDB_DESTROY)get_address(pd->lib, "hexdb_destroy");
-	pd->pf_hexdb_save = (PF_HEXDB_SAVE)get_address(pd->lib, "hexdb_save");
-	pd->pf_hexdb_load = (PF_HEXDB_LOAD)get_address(pd->lib, "hexdb_load");
-	pd->pf_hexdb_clean = (PF_HEXDB_CLEAN)get_address(pd->lib, "hexdb_clean");
-
 	pd->radnet = radnet_scp(pb->slot);
 	if (!pd->radnet)
 	{
@@ -493,7 +475,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		raise_user_error(NULL, NULL);
 	}
 
-	hdb = (*pd->pf_hexdb_create)(pd->local, pd->radnet->dbname);
+	hdb = hexdb_create(pd->local, pd->radnet->dbname);
 	if (!hdb)
 	{
 		radnet_abort(pd->radnet, RADNET_ERROR_OPEN);
@@ -501,7 +483,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		raise_user_error(_T("-1"), _T("open database failed"));
 	}
 
-	pd->hkv = (*pd->pf_hexkv_create)(hdb);
+	pd->hkv = hexkv_create(hdb);
 
 	while (radnet_status(pd->radnet) != _RADNET_STATUS_RELEASE)
 	{
@@ -535,19 +517,21 @@ int STDCALL slots_invoke(slots_block_t* pb)
 		}
 	}
 
-	(*pd->pf_hexkv_flush)(pd->hkv);
+	hexkv_flush(pd->hkv);
 
-	(*pd->pf_hexkv_destroy)(pd->hkv);
+	hexkv_destroy(pd->hkv);
 	pd->hkv = NULL;
 
-	(*pd->pf_hexdb_destroy)(hdb);
+	hexdb_destroy(hdb);
 	hdb = NULL;
 
 	radnet_close(pd->radnet);
 	pd->radnet = NULL;
 
-	if(pd->lib)
-		free_library(pd->lib);
+	if (pb->pf_track_eror)
+	{
+		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+	}
 
 	xmem_free(pd);
 	pd = NULL;
@@ -558,27 +542,29 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 ONERROR:
 
-	_invoke_error(pb, pd);
-
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
 	if (pd)
 	{
+		get_last_error(pd->code, pd->text, ERR_LEN);
+
+		if (pb->pf_track_eror)
+		{
+			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+		}
+
 		if (pd->radnet)
 			radnet_close(pd->radnet);
 
 		if (pd->hkv)
-			(*pd->pf_hexkv_destroy)(pd->hkv);
-
-		if(pd->lib)
-			free_library(pd->lib);
+			hexkv_destroy(pd->hkv);
 
 		xmem_free(pd);
 	}
 
 	if (hdb)
-		(*pd->pf_hexdb_destroy)(hdb);
+		hexdb_destroy(hdb);
 
 	return SLOTS_INVOKE_WITHINFO;
 }

@@ -1,4 +1,4 @@
-
+﻿
 /***********************************************************************
 	Easily slot service
 
@@ -28,13 +28,17 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 #include "srvcrt.h"
 
-static void _xslots_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_trace, tchar_t* sz_level, tchar_t* sz_proc)
+static void _xslots_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_proc)
 {
 	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
-
+	if (is_null(sz_root))
+	{
+		//xscpy(sz_root,_T("."));
+		get_runpath((res_modu_t)0, sz_root, PATH_LEN);
+	}
 	xsprintf(sz_file, _T("%s/cfg/%s.config"), sz_root, site);
 
 	LINKPTR ptr_cfg = create_xml_doc();
@@ -61,14 +65,6 @@ static void _xslots_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* s
 				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("proc"), -1, 1) == 0 && sz_proc)
 				{
 					get_dom_node_text(nlk, sz_proc, PATH_LEN);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("trace"), -1, 1) == 0 && sz_trace)
-				{
-					get_dom_node_text(nlk, sz_trace, PATH_LEN);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("level"), -1, 1) == 0 && sz_level)
-				{
-					get_dom_node_text(nlk, sz_level, INT_LEN);
 				}
 				
 				nlk = get_dom_next_sibling_node(nlk);
@@ -107,45 +103,33 @@ static void _xslots_log_request(xhand_t slot)
 	xportm_log_info(token, len);
 }
 
-static void _xslots_log_response(xhand_t slot)
+static void _xslots_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 {
-	tchar_t token[RES_LEN + 1] = { 0 };
+	slots_block_t* pb = (slots_block_t*)hand;
+
+	tchar_t token[PATH_LEN + 1] = { 0 };
 	int len;
 
 	xscpy(token, _T("SLOT-SCP: ["));
 	len = xslen(token);
 
-	switch (slot->tag)
+	switch (pb->slot->tag)
 	{
 	case _HANDLE_SSL:
-		xssl_peer_port(slot, token + len);
+		xssl_peer_port(pb->slot, token + len);
 		break;
 	case _HANDLE_SSH:
-		xssh_peer_port(slot, token + len);
+		xssh_peer_port(pb->slot, token + len);
 		break;
 	case _HANDLE_TCP:
-		xtcp_peer_port(slot, token + len);
+		xtcp_peer_port(pb->slot, token + len);
 		break;
 	}
 
 	len = xslen(token);
-	len += xsprintf(token + len, _T(": %d]\r\n"), thread_get_id());
+	len += xsprintf(token + len, _T(": %d] %s %s\r\n"), thread_get_id(), code, text);
 
 	xportm_log_info(token, len);
-}
-
-static void _invoke_error(xhand_t slot)
-{
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-	tchar_t sz_method[INT_LEN + 1] = { 0 };
-
-	byte_t** d_recv = NULL;
-	dword_t n_size = 0;
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	xportm_log_error(sz_code, sz_error);
 }
 
 /**********************************************************************************************************************/
@@ -153,9 +137,6 @@ void _xslots_dispatch(xhand_t slot, void* p)
 {
 	tchar_t sz_path[PATH_LEN] = { 0 };
 	tchar_t sz_proc[PATH_LEN] = { 0 };
-	tchar_t sz_track[PATH_LEN] = { 0 };
-	tchar_t sz_trace[NUM_LEN] = { 0 };
-	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_site[RES_LEN] = { 0 };
     tchar_t sz_name[RES_LEN] = { 0 };
 	tchar_t sz_cert[RES_LEN] = { 0 };
@@ -232,7 +213,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 
 	xszero(sz_path, PATH_LEN);
 
-	_xslots_get_config(sz_site, sz_path, sz_track, sz_level, sz_proc);
+	_xslots_get_config(sz_site, sz_path, sz_proc);
 
 	if (is_null(sz_path))
 	{
@@ -248,12 +229,10 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	pb->cbs = sizeof(slots_block_t);
 	pb->slot = slot;
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
-
-	pb->pf_log_title = _write_log_title;
-	pb->pf_log_error = _write_log_error;
-	pb->pf_log_data = _write_log_data;
 	printf_path(pb->path, sz_path);
 	xsncpy(pb->site, sz_site, RES_LEN);
+	pb->hand = (void*)pb;
+	pb->pf_track_eror = (PF_TRACK_ERROR)_xslots_track_error;
 	
 	xszero(sz_path, PATH_LEN);
 	printf_path(sz_path, sz_proc);
@@ -270,31 +249,7 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		raise_user_error(_T("_slots_invoke"), _T("website load invoke function failed\n"));
 	}
 
-	get_loc_date(&xdt);
-	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, thread_get_id());
-
-	xszero(sz_path, PATH_LEN);
-
-	if (!is_null(sz_track))
-	{
-		printf_path(sz_path, sz_track);
-		xsappend(sz_path, _T("/%s.log"), sz_trace);
-
-		pb->log = xfile_open(NULL, sz_track, FILE_OPEN_CREATE);
-	}
-
 	n_state = (*pf_invoke)(pb);
-
-	if (pb->log)
-	{
-		xfile_close(pb->log);
-		pb->log = NULL;
-
-		if (n_state < xstol(sz_level))
-		{
-			xfile_delete(NULL, sz_path);
-		}
-	}
 
 	xmem_free(pb);
 	pb = NULL;
@@ -302,31 +257,23 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	free_library(api);
 	api = NULL;
 
-	_xslots_log_response(slot);
-
 	END_CATCH;
 
 	return;
 
 ONERROR:
-
-	_invoke_error(slot);
+	get_last_error(errcode, errtext, ERR_LEN);
 
 	if (pb)
 	{
-		if (pb->log)
-		{
-			xfile_close(pb->log);
-			pb->log = NULL;
-		}
-
+		_xslots_track_error((void*)pb, errcode, errtext);
 		xmem_free(pb);
 	}
 
 	if (api)
+	{
 		free_library(api);
-
-	_xslots_log_response(slot);
+	}
 
 	return;
 }

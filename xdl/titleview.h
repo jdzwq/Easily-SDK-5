@@ -46,15 +46,15 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API float calc_title_width(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_title_width(const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API float calc_title_height(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_title_height(const canvbox_t* pbox, link_t_ptr ptr);
 
-	XDL_API void calc_title_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API void calc_title_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API int calc_title_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk_focus, link_t_ptr* pilk);
+	EXP_API int calc_title_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk_focus, link_t_ptr* pilk);
 
-	XDL_API void draw_title(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk_focus);
+	EXP_API void draw_title(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk_focus);
 
 #ifdef	__cplusplus
 }

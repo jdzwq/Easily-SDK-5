@@ -151,7 +151,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	parse_xcolor(&xc, xp.color);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_LOGO);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_LOGO);
 
 	xr.fx = pbox->fx + DIALOG_TITLE_HEIGHT;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
@@ -167,7 +167,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	parse_xcolor(&xc, xp.color);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_CLOSE);
+	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_CLOSE);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy;

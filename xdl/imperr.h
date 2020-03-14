@@ -43,7 +43,7 @@ extern "C" {
 @INPUT const tchar_t* errcode: the error code.
 @RETURN void: none.
 */
-XDL_API void set_system_error(const tchar_t* errcode);
+EXP_API void set_system_error(const tchar_t* errcode);
 
 /*
 @FUNCTION set_last_error: set last error.
@@ -52,7 +52,7 @@ XDL_API void set_system_error(const tchar_t* errcode);
 @INPUT int len: the error text length in characters, not include terminate character.
 @RETURN void: none.
 */
-XDL_API void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len);
+EXP_API void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len);
 
 /*
 @FUNCTION get_last_error: get last error.
@@ -61,7 +61,7 @@ XDL_API void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int 
 @INPUT int len: the error text length in characters, not include terminate character.
 @RETURN void: none.
 */
-XDL_API void get_last_error(tchar_t* code, tchar_t* text, int max);
+EXP_API void get_last_error(tchar_t* code, tchar_t* text, int max);
 
 /*
 @FUNCTION trace_error: set error trace routing.
@@ -69,7 +69,7 @@ XDL_API void get_last_error(tchar_t* code, tchar_t* text, int max);
 @INPUT PF_ERROR_TRACE pf: the error trace routing.
 @RETURN void: none.
 */
-XDL_API void trace_error(void* param, PF_ERROR_TRACE pf);
+EXP_API void trace_error(void* param, PF_ERROR_TRACE pf);
 
 /*
 @FUNCTION xdl_trace: set and trace error.
@@ -77,13 +77,13 @@ XDL_API void trace_error(void* param, PF_ERROR_TRACE pf);
 @INPUT const tchar_t* info: the error text.
 @RETURN void: none.
 */
-XDL_API void xdl_trace(const tchar_t* code, const tchar_t* info);
+EXP_API void xdl_trace(const tchar_t* code, const tchar_t* info);
 
 /*
 @FUNCTION xdl_trace_last: trace last error.
 @RETURN void: none.
 */
-XDL_API void xdl_trace_last(void);
+EXP_API void xdl_trace_last(void);
 
 #define XDL_TRACE(code, token)	xdl_trace(code, token)
 

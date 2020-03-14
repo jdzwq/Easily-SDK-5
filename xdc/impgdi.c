@@ -394,7 +394,7 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 	if (bar_len <= 0)
 	{
 		xmem_free(buf);
-		return NULL;
+		return;
 	}
 
 	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
@@ -485,7 +485,7 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 	if (bar_len <= 0)
 	{
 		xmem_free(buf);
-		return NULL;
+		return;
 	}
 
 	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
@@ -595,11 +595,11 @@ void text_metric_raw(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	(*pif->pf_gdi_text_metric)(rdc, pxf, pxs);
 }
 
-void draw_icon_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
+void draw_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
 {
-	PF_GDI_ICON_MAKE pf;
+	PF_GIZMO_MAKE pf;
 
-	pf = find_icon_maker(iname);
+	pf = find_gizmo_maker(iname);
 	if (pf)
 	{
 		(*pf)(rdc, pxc, pxr);
@@ -668,117 +668,12 @@ void draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int d
 
 void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape)
 {
-	xpoint_t pt[4];
+	PF_SHAPE_MAKE pf;
 
-	if (compare_text(shape, -1, ATTR_SHAPE_LEFTLINE, -1, 0) == 0)
+	pf = find_shape_maker(shape);
+	if (pf)
 	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_RIGHTLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_TOPLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_BOTTOMLINE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y + prt->h;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_FORWARDSLASH, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_BACKSLASH, -1, 0) == 0)
-	{
-		pt[0].x = prt->x;
-		pt[0].y = prt->y;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y + prt->h;
-
-		draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_RECT, -1, 0) == 0)
-	{
-		draw_rect_raw(rdc, pxp, pxb, prt);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_ELLIPSE, -1, 0) == 0)
-	{
-		draw_ellipse_raw(rdc, pxp, pxb, prt);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_ROUND, -1, 0) == 0)
-	{
-		draw_round_raw(rdc, pxp, pxb, prt);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_LEFTTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + 1;
-		pt[0].y = prt->y + prt->h / 2;
-		pt[1].x = prt->x + prt->w;
-		pt[1].y = prt->y;;
-		pt[2].x = prt->x + prt->w;
-		pt[2].y = prt->y + prt->h;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_RIGHTTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w - 1;
-		pt[0].y = prt->y + prt->h / 2;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y;
-		pt[2].x = prt->x;
-		pt[2].y = prt->y + prt->h;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_TOPTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w / 2;
-		pt[0].y = prt->y + 1;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y + prt->h;
-		pt[2].x = prt->x + prt->w;
-		pt[2].y = prt->y + prt->h;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-	}
-	else if (compare_text(shape, -1, ATTR_SHAPE_BOTTOMTRIANGLE, -1, 0) == 0)
-	{
-		pt[0].x = prt->x + prt->w / 2;
-		pt[0].y = prt->y + prt->h - 1;
-		pt[1].x = prt->x;
-		pt[1].y = prt->y;
-		pt[2].x = prt->x + prt->w;
-		pt[2].y = prt->y;
-
-		draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+		(*pf)(rdc, pxp, pxb, prt);
 	}
 }
 
@@ -1843,7 +1738,7 @@ void multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpe
 	multi_line_raw(rdc, pxf, pxa, pxp, &xr);
 }
 
-void draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
+void draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1851,8 +1746,10 @@ void draw_icon(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tch
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	draw_icon_raw(rdc, pxc, &xr, iname);
+	draw_gizmo_raw(rdc, pxc, &xr, iname);
 }
+
+
 
 void color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
 {

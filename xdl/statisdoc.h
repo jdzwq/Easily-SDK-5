@@ -463,42 +463,42 @@ extern "C" {
 @FUNCTION create_statis_doc: create a statis document.
 @RETURN link_t_ptr: return the statis document link component.
 */
-XDL_API link_t_ptr create_statis_doc(void);
+EXP_API link_t_ptr create_statis_doc(void);
 
 /*
 @FUNCTION destroy_statis_doc: destroy a statis document.
 @INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_statis_doc(link_t_ptr ptr);
+EXP_API void destroy_statis_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_statis_doc: clear a statis document.
 @INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_statis_doc(link_t_ptr ptr);
+EXP_API void clear_statis_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_statis_xaxset: clear the statis xax set.
 @INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_statis_xaxset(link_t_ptr ptr);
+EXP_API void clear_statis_xaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_statis_gaxset: clear the statis gax set.
 @INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_statis_gaxset(link_t_ptr ptr);
+EXP_API void clear_statis_gaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_statis_yaxset: clear the statis yax set.
 @INPUT link_t_ptr ptr: the statis document link component.
 @RETURN void: none.
 */
-XDL_API void clear_statis_yaxset(link_t_ptr ptr);
+EXP_API void clear_statis_yaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION merge_statis_yaxset: merge source yax set to destination yax set.
@@ -506,7 +506,7 @@ XDL_API void clear_statis_yaxset(link_t_ptr ptr);
 @INPUT link_t_ptr ptr_src: the source yax link component.
 @RETURN void: none.
 */
-XDL_API void merge_statis_yaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void merge_statis_yaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION merge_statis_xaxset: merge source xax set to destination xax set.
@@ -514,14 +514,14 @@ XDL_API void merge_statis_yaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 @INPUT link_t_ptr ptr_src: the source xax link component.
 @RETURN void: none.
 */
-XDL_API void merge_statis_xaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
+EXP_API void merge_statis_xaxset(link_t_ptr ptr_dst, link_t_ptr ptr_src);
 
 /*
 @FUNCTION is_statis_doc: test is statis document.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN bool_t: return nonzero for being a statis document, otherwise return zero.
 */
-XDL_API bool_t is_statis_doc(link_t_ptr ptr);
+EXP_API bool_t is_statis_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_statis_xax: test is statis xax.
@@ -529,7 +529,7 @@ XDL_API bool_t is_statis_doc(link_t_ptr ptr);
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN bool_t: return nonzero for being a xax of statis, otherwise return zero.
 */
-XDL_API bool_t is_statis_xax(link_t_ptr ptr,link_t_ptr xlk);
+EXP_API bool_t is_statis_xax(link_t_ptr ptr,link_t_ptr xlk);
 
 /*
 @FUNCTION is_statis_yax: test is statis yax.
@@ -537,7 +537,7 @@ XDL_API bool_t is_statis_xax(link_t_ptr ptr,link_t_ptr xlk);
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN bool_t: return nonzero for being a yax of statis, otherwise return zero.
 */
-XDL_API bool_t is_statis_yax(link_t_ptr ptr,link_t_ptr ylk);
+EXP_API bool_t is_statis_yax(link_t_ptr ptr,link_t_ptr ylk);
 
 /*
 @FUNCTION is_statis_gax: test is statis gax.
@@ -545,7 +545,7 @@ XDL_API bool_t is_statis_yax(link_t_ptr ptr,link_t_ptr ylk);
 @INPUT link_t_ptr glk: the gax link component.
 @RETURN bool_t: return nonzero for being a gax of statis, otherwise return zero.
 */
-XDL_API bool_t is_statis_gax(link_t_ptr ptr, link_t_ptr glk);
+EXP_API bool_t is_statis_gax(link_t_ptr ptr, link_t_ptr glk);
 
 /*
 @FUNCTION insert_gax: add a new gax into statis.
@@ -553,21 +553,21 @@ XDL_API bool_t is_statis_gax(link_t_ptr ptr, link_t_ptr glk);
 @INPUT link_t_ptr pos: the gax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new gax link component.
 */
-XDL_API link_t_ptr insert_gax(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_gax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_gax: delete a gax.
 @INPUT link_t_ptr glk: the gax link component.
 @RETURN void: none.
 */
-XDL_API void delete_gax(link_t_ptr glk);
+EXP_API void delete_gax(link_t_ptr glk);
 
 /*
 @FUNCTION get_statis_gaxset: get the statis gax set.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN link_t_ptr: return the gax set link component.
 */
-XDL_API link_t_ptr get_statis_gaxset(link_t_ptr ptr);
+EXP_API link_t_ptr get_statis_gaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION get_next_gax: get the next gax.
@@ -575,7 +575,7 @@ XDL_API link_t_ptr get_statis_gaxset(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the gax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the gax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_gax(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_gax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_gax: get the previous gax.
@@ -583,7 +583,7 @@ XDL_API link_t_ptr get_next_gax(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the gax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the gax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_gax(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_prev_gax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_gax: find the gax by name.
@@ -591,14 +591,14 @@ XDL_API link_t_ptr get_prev_gax(link_t_ptr ptr, link_t_ptr pos);
 @INPUT const tchar_t* gname: the gax name token.
 @RETURN link_t_ptr: return the gax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_gax(link_t_ptr ptr, const tchar_t* gname);
+EXP_API link_t_ptr get_gax(link_t_ptr ptr, const tchar_t* gname);
 
 /*
 @FUNCTION get_gax_count: counting the gaxs in statis.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of gaxs.
 */
-XDL_API int get_gax_count(link_t_ptr ptr);
+EXP_API int get_gax_count(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_yax: add a new yax into statis.
@@ -606,35 +606,35 @@ XDL_API int get_gax_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the yax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new yax link component.
 */
-XDL_API link_t_ptr insert_yax(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_yax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_yax: delete a yax.
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN void: none.
 */
-XDL_API void delete_yax(link_t_ptr ylk);
+EXP_API void delete_yax(link_t_ptr ylk);
 
 /*
 @FUNCTION get_statis_yaxset: get statis yax set.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN link_t_ptr: return yax set link component.
 */
-XDL_API link_t_ptr get_statis_yaxset(link_t_ptr ptr);
+EXP_API link_t_ptr get_statis_yaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION get_yax_count: counting yaxs in statis
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of yaxs.
 */
-XDL_API int get_yax_count(link_t_ptr ptr);
+EXP_API int get_yax_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_yax_selected_count: counting selected yaxs in statis
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of yaxs.
 */
-XDL_API int get_yax_selected_count(link_t_ptr ptr);
+EXP_API int get_yax_selected_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_next_yax: get the next statis yax.
@@ -642,7 +642,7 @@ XDL_API int get_yax_selected_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the yax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_yax(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_next_yax(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_yax: get the previous statis yax.
@@ -650,7 +650,7 @@ XDL_API link_t_ptr get_next_yax(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the yax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_yax(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_prev_yax(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_yax_at: get the statis yax at position.
@@ -658,7 +658,7 @@ XDL_API link_t_ptr get_prev_yax(link_t_ptr ptr,link_t_ptr pos);
 @INPUT int index: the zero based position.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_yax_at(link_t_ptr ptr, int index);
+EXP_API link_t_ptr get_yax_at(link_t_ptr ptr, int index);
 
 /*
 @FUNCTION get_yax: find statis yax by name.
@@ -666,7 +666,7 @@ XDL_API link_t_ptr get_yax_at(link_t_ptr ptr, int index);
 @INPUT const tchar_t* yname: the yax name token.
 @RETURN link_t_ptr: return yax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_yax(link_t_ptr ptr, const tchar_t* yname);
+EXP_API link_t_ptr get_yax(link_t_ptr ptr, const tchar_t* yname);
 
 /*
 @FUNCTION get_xax: find statis xax by name.
@@ -674,7 +674,7 @@ XDL_API link_t_ptr get_yax(link_t_ptr ptr, const tchar_t* yname);
 @INPUT const tchar_t* xname: the xax name token.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_yax_by_id(link_t_ptr ptr, const tchar_t* cid);
+EXP_API link_t_ptr get_yax_by_id(link_t_ptr ptr, const tchar_t* cid);
 
 /*
 @FUNCTION get_yax_gax: get gax bind to the yax.
@@ -682,14 +682,14 @@ XDL_API link_t_ptr get_yax_by_id(link_t_ptr ptr, const tchar_t* cid);
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN link_t_ptr: return gax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_yax_gax(link_t_ptr ptr, link_t_ptr ylk);
+EXP_API link_t_ptr get_yax_gax(link_t_ptr ptr, link_t_ptr ylk);
 
 /*
 @FUNCTION get_statis_xaxset: get xax set.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN link_t_ptr: return gax set link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_statis_xaxset(link_t_ptr ptr);
+EXP_API link_t_ptr get_statis_xaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_xax: add a xax to statis.
@@ -697,21 +697,21 @@ XDL_API link_t_ptr get_statis_xaxset(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new xax link component.
 */
-XDL_API link_t_ptr insert_xax(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_xax(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_xax_count: counting the xaxs in statis.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of xaxs.
 */
-XDL_API int get_xax_count(link_t_ptr ptr);
+EXP_API int get_xax_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_xax_checked_count: counting the checked xaxs in statis.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN int: return the number of xaxs.
 */
-XDL_API int get_xax_checked_count(link_t_ptr ptr);
+EXP_API int get_xax_checked_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_xax_at: get the xax at position.
@@ -719,14 +719,14 @@ XDL_API int get_xax_checked_count(link_t_ptr ptr);
 @INPUT int pos: the zero based position.
 @RETURN link_t_ptr: return the xax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_xax_at(link_t_ptr ptr, int pos);
+EXP_API link_t_ptr get_xax_at(link_t_ptr ptr, int pos);
 
 /*
 @FUNCTION delete_xax: delete the xax.
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN void: none.
 */
-XDL_API void delete_xax(link_t_ptr xlk);
+EXP_API void delete_xax(link_t_ptr xlk);
 
 /*
 @FUNCTION get_next_xax: get the next xax.
@@ -734,7 +734,7 @@ XDL_API void delete_xax(link_t_ptr xlk);
 @INPUT link_t_ptr xlk: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_xax(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_next_xax(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_xax: get the previous xax.
@@ -742,7 +742,7 @@ XDL_API link_t_ptr get_next_xax(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr xlk: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_xax(link_t_ptr ptr, link_t_ptr xlk);
+EXP_API link_t_ptr get_prev_xax(link_t_ptr ptr, link_t_ptr xlk);
 
 /*
 @FUNCTION get_xax: find statis xax by name.
@@ -750,7 +750,7 @@ XDL_API link_t_ptr get_prev_xax(link_t_ptr ptr, link_t_ptr xlk);
 @INPUT const tchar_t* xname: the xax name token.
 @RETURN link_t_ptr: return xax link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_xax(link_t_ptr ptr, const tchar_t* xname);
+EXP_API link_t_ptr get_xax(link_t_ptr ptr, const tchar_t* xname);
 
 /*
 @FUNCTION get_xax_storage_ptr: find the xax storage by key.
@@ -758,7 +758,7 @@ XDL_API link_t_ptr get_xax(link_t_ptr ptr, const tchar_t* xname);
 @INPUT const tchar_t* key: the key token.
 @RETURN const tchar_t*: return the storage token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_xax_storage_ptr(link_t_ptr xlk, const tchar_t* key);
+EXP_API const tchar_t* get_xax_storage_ptr(link_t_ptr xlk, const tchar_t* key);
 
 /*
 @FUNCTION set_xax_storage: add a storage to xax.
@@ -767,21 +767,21 @@ XDL_API const tchar_t* get_xax_storage_ptr(link_t_ptr xlk, const tchar_t* key);
 @INPUT const tchar_t* val: the value token.
 @RETURN void: none.
 */
-XDL_API void set_xax_storage(link_t_ptr xlk, const tchar_t* key, const tchar_t* val);
+EXP_API void set_xax_storage(link_t_ptr xlk, const tchar_t* key, const tchar_t* val);
 
 /*
 @FUNCTION get_update_xax_count: counting the update state xaxs.
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN int: return the number of xaxs.
 */
-XDL_API int get_update_xax_count(link_t_ptr ptr);
+EXP_API int get_update_xax_count(link_t_ptr ptr);
 
 /*
 @FUNCTION refresh_statis_xaxset: clear the xax set state.
 @INPUT link_t_ptr ptr: the statis link component.
 @RETURN void: none.
 */
-XDL_API void refresh_statis_xaxset(link_t_ptr ptr);
+EXP_API void refresh_statis_xaxset(link_t_ptr ptr);
 
 /*
 @FUNCTION set_coor_numeric: set the coor numeric.
@@ -790,7 +790,7 @@ XDL_API void refresh_statis_xaxset(link_t_ptr ptr);
 @INPUT double dbl: the numeric.
 @RETURN void: none.
 */
-XDL_API void set_coor_numeric(link_t_ptr xlk, link_t_ptr ylk, double dbl);
+EXP_API void set_coor_numeric(link_t_ptr xlk, link_t_ptr ylk, double dbl);
 
 /*
 @FUNCTION get_coor_numeric: get the coor numeric.
@@ -798,7 +798,7 @@ XDL_API void set_coor_numeric(link_t_ptr xlk, link_t_ptr ylk, double dbl);
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN double: return the coor numeric.
 */
-XDL_API double get_coor_numeric(link_t_ptr xlk,link_t_ptr ylk);
+EXP_API double get_coor_numeric(link_t_ptr xlk,link_t_ptr ylk);
 
 /*
 @FUNCTION set_coor_text: set the coor text.
@@ -808,7 +808,7 @@ XDL_API double get_coor_numeric(link_t_ptr xlk,link_t_ptr ylk);
 @INPUT int len: the length of text in characters.
 @RETURN void: none.
 */
-XDL_API void set_coor_text(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* token, int len);
+EXP_API void set_coor_text(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* token, int len);
 
 /*
 @FUNCTION get_coor_text_ptr: get the coor text token.
@@ -816,7 +816,7 @@ XDL_API void set_coor_text(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* token,
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN const tchar_t*: return the text token.
 */
-XDL_API const tchar_t* get_coor_text_ptr(link_t_ptr xlk, link_t_ptr ylk);
+EXP_API const tchar_t* get_coor_text_ptr(link_t_ptr xlk, link_t_ptr ylk);
 
 /*
 @FUNCTION get_coor_text: copy the coor text token.
@@ -826,7 +826,7 @@ XDL_API const tchar_t* get_coor_text_ptr(link_t_ptr xlk, link_t_ptr ylk);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters copied.
 */
-XDL_API int get_coor_text(link_t_ptr xlk, link_t_ptr ylk, tchar_t* buf, int max);
+EXP_API int get_coor_text(link_t_ptr xlk, link_t_ptr ylk, tchar_t* buf, int max);
 
 /*
 @FUNCTION get_coor_storage_ptr: get the coor storage value by key.
@@ -835,7 +835,7 @@ XDL_API int get_coor_text(link_t_ptr xlk, link_t_ptr ylk, tchar_t* buf, int max)
 @INPUT const tchar_t* key: the key token.
 @RETURN const tchar_t*: return the storage value token.
 */
-XDL_API const tchar_t* get_coor_storage_ptr(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* key);
+EXP_API const tchar_t* get_coor_storage_ptr(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* key);
 
 /*
 @FUNCTION set_coor_storage: add a storage to coor.
@@ -845,7 +845,7 @@ XDL_API const tchar_t* get_coor_storage_ptr(link_t_ptr xlk, link_t_ptr ylk, cons
 @INPUT const tchar_t* val: the value token.
 @RETURN void: none.
 */
-XDL_API void set_coor_storage(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* key, const tchar_t* val);
+EXP_API void set_coor_storage(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* key, const tchar_t* val);
 
 /*
 @FUNCTION set_coor_dirty: set the coor state.
@@ -854,7 +854,7 @@ XDL_API void set_coor_storage(link_t_ptr xlk, link_t_ptr ylk, const tchar_t* key
 @INPUT bool_t b: nonzero for dirty, zero for clean.
 @RETURN void: none.
 */
-XDL_API void set_coor_dirty(link_t_ptr rlk, link_t_ptr clk, bool_t b);
+EXP_API void set_coor_dirty(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 
 /*
 @FUNCTION get_coor_dirty: get the coor state.
@@ -862,21 +862,21 @@ XDL_API void set_coor_dirty(link_t_ptr rlk, link_t_ptr clk, bool_t b);
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN bool_t: return nonzero for dirty, zero for clean..
 */
-XDL_API bool_t get_coor_dirty(link_t_ptr rlk, link_t_ptr clk);
+EXP_API bool_t get_coor_dirty(link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION set_xax_clean: set xax state to clean.
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN void: none.
 */
-XDL_API void set_xax_clean(link_t_ptr rlk);
+EXP_API void set_xax_clean(link_t_ptr rlk);
 
 /*
 @FUNCTION set_xax_dirty: set xax state to dirty.
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN void: none.
 */
-XDL_API void set_xax_dirty(link_t_ptr rlk);
+EXP_API void set_xax_dirty(link_t_ptr rlk);
 
 /*
 @FUNCTION calc_statis_gax_base: calcing the statis gax base line.
@@ -886,7 +886,7 @@ XDL_API void set_xax_dirty(link_t_ptr rlk);
 @OUTPUT float* pstep: for return step value.
 @RETURN void: none.
 */
-XDL_API void calc_statis_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* pstep);
+EXP_API void calc_statis_gax_base(link_t_ptr ptr, link_t_ptr glk, float* pmidd, float* pstep);
 
 #ifdef	__cplusplus
 }

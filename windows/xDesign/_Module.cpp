@@ -175,83 +175,83 @@ VOID LoadResource()
 	//create image list
 	g_imagelist = create_images_doc();
 
-	/*xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath,GDI_ICON_NEW);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_NEW, NULL, path);
+	/*xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath,GDI_ATTR_GIZMO_NEW);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_NEW, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_OPEN);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_OPEN, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_OPEN);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_OPEN, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_CLOSE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_CLOSE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_CLOSE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_CLOSE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SAVE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SAVE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SAVE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SAVE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SAVEAS);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SAVEAS, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SAVEAS);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SAVEAS, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SCHEMA);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SCHEMA, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SCHEMA);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SCHEMA, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PRINT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PRINT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PRINT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PRINT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PRINT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PRINT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PRINT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PRINT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PREVIEW);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PREVIEW, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PREVIEW);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PREVIEW, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SELECTALL);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SELECTALL, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SELECTALL);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SELECTALL, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_DELETE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_DELETE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_DELETE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_DELETE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_COPY);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_COPY, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_COPY);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_COPY, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_CUT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_CUT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_CUT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_CUT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_UNDO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_UNDO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_UNDO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_UNDO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PASTE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PASTE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PASTE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PASTE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_EDIT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_EDIT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_EDIT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_EDIT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PROPER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PROPER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PROPER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PROPER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FONTNAME);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FONTNAME, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FONTNAME);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FONTNAME, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FONTSIZE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FONTSIZE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FONTSIZE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FONTSIZE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FONTCOLOR);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FONTCOLOR, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FONTCOLOR);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FONTCOLOR, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FONTWEIGHT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FONTWEIGHT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FONTWEIGHT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FONTWEIGHT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ALIGNNEAR);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ALIGNNEAR, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ALIGNNEAR);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ALIGNNEAR, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ALIGNCENTER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ALIGNCENTER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ALIGNCENTER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ALIGNCENTER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ALIGNFAR);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ALIGNFAR, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ALIGNFAR);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ALIGNFAR, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ARRANGELEFT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ARRANGELEFT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ARRANGELEFT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ARRANGELEFT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ARRANGERIGHT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ARRANGERIGHT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ARRANGERIGHT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ARRANGERIGHT, NULL, path);
 
 	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, BMP_ALIGNTOP);
 	insert_images_item_from_file(g_imagelist, BMP_ALIGNTOP, NULL, path);
@@ -259,227 +259,215 @@ VOID LoadResource()
 	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, BMP_ALIGNBOTTOM);
 	insert_images_item_from_file(g_imagelist, BMP_ALIGNBOTTOM, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ARRANGECENTER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ARRANGECENTER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ARRANGECENTER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ARRANGECENTER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SIZEHORZ);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SIZEHORZ, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SIZEHORZ);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SIZEHORZ, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SIZEVERT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SIZEVERT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SIZEVERT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SIZEVERT, NULL, path);
 
 	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, BMP_SIZEALL);
 	insert_images_item_from_file(g_imagelist, BMP_SIZEALL, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SPACEHORZ);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SPACEHORZ, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SPACEHORZ);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SPACEHORZ, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SPACEVERT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SPACEVERT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SPACEVERT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SPACEVERT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PRINT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PRINT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PRINT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PRINT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_EXECUTE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_EXECUTE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_EXECUTE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_EXECUTE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_STOP);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_STOP, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_STOP);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_STOP, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_UP);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_UP, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_UP);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_UP, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_DOWN);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_DOWN, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_DOWN);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_DOWN, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_KEYBOX);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_KEYBOX, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_KEYBOX);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_KEYBOX, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SUM);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SUM, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SUM);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SUM, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_STYLE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_STYLE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_STYLE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_STYLE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_GROUP);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_GROUP, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_GROUP);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_GROUP, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_NOTE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_NOTE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_NOTE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_NOTE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_ORDER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_ORDER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_ORDER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_ORDER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SHAPE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SHAPE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SHAPE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SHAPE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_BORDER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_BORDER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_BORDER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_BORDER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_LABEL);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_LABEL, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_LABEL);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_LABEL, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SINGLETEXT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SINGLETEXT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SINGLETEXT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SINGLETEXT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FRESH);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FRESH, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FRESH);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FRESH, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_CHECK);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_CHECK, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_CHECK);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_CHECK, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_MEMO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_MEMO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_MEMO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_MEMO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_GRID);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_GRID, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_GRID);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_GRID, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_GRAPH);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_GRAPH, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_GRAPH);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_GRAPH, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PHOTO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PHOTO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PHOTO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PHOTO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PHOTO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PHOTO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PHOTO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PHOTO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_BOOK);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_BOOK, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_BOOK);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_BOOK, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_INSERT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_INSERT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_INSERT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_INSERT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PLUS);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PLUS, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PLUS);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PLUS, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_MINUS);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_MINUS, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_MINUS);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_MINUS, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_REMOVE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_REMOVE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_REMOVE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_REMOVE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_IMPORT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_IMPORT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_IMPORT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_IMPORT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_INPUT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_INPUT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_INPUT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_INPUT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_OUTPUT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_OUTPUT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_OUTPUT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_OUTPUT, NULL, path);
 
 	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, BMP_SQL);
 	insert_images_item_from_file(g_imagelist, BMP_SQL, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FETCH);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FETCH, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FETCH);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FETCH, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_UPDATE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_UPDATE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_UPDATE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_UPDATE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_HELPC);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_HELPC, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_HELPC);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_HELPC, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_HELPP);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_HELPP, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_HELPP);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_HELPP, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_LOGO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_LOGO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_LOGO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_LOGO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_FIRST);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_FIRST, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_FIRST);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_FIRST, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_NEXT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_NEXT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_NEXT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_NEXT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PREV);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PREV, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PREV);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PREV, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_LAST);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_LAST, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_LAST);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_LAST, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_HERF);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_HERF, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_HERF);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_HERF, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_RICH);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_RICH, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_RICH);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_RICH, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_STATIC);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_STATIC, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_STATIC);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_STATIC, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_EDIT);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_EDIT, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_EDIT);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_EDIT, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_LIST);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_LIST, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_LIST);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_LIST, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_NAVI);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_NAVI, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_NAVI);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_NAVI, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SPIN);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SPIN, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SPIN);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SPIN, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SLIDE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SLIDE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SLIDE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SLIDE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_RADIO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_RADIO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_RADIO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_RADIO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_CHECKBOX);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_CHECKBOX, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_CHECKBOX);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_CHECKBOX, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_DATE);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_DATE, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_DATE);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_DATE, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_TIME);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_TIME, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_TIME);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_TIME, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PUSH);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PUSH, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PUSH);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PUSH, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_GROUPBOX);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_GROUPBOX, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_GROUPBOX);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_GROUPBOX, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_USER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_USER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_USER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_USER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_DIALOG);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_DIALOG, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_DIALOG);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_DIALOG, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_HERF);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_HERF, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_HERF);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_HERF, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PANORAMA);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PANORAMA, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PANORAMA);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PANORAMA, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_LOCATION);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_LOCATION, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_LOCATION);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_LOCATION, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_TRENDS);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_TRENDS, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_TRENDS);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_TRENDS, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_PANTO);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_PANTO, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_PANTO);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_PANTO, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_SCATTER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_SCATTER, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_SCATTER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_SCATTER, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_DENSITY);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_DENSITY, NULL, path);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_DENSITY);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_DENSITY, NULL, path);
 
-	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ICON_COUNTER);
-	insert_images_item_from_file(g_imagelist, GDI_ICON_COUNTER, NULL, path);*/
-
-	LINKPTR ptr_string = create_string_table(0);
-	string_table_parse_options(ptr_string, GDI_ATTR_RGB_OPTIONS, -1, OPT_ITEMFEED, OPT_LINEFEED);
-
-	LINKPTR ent = get_string_next_entity(ptr_string, LINK_FIRST);
-	while (ent)
-	{
-		insert_images_item_from_color(g_imagelist, get_string_entity_val_ptr(ent), get_string_entity_key_ptr(ent));
-		
-		ent = get_string_next_entity(ptr_string, ent);
-	}
-	destroy_string_table(ptr_string);
+	xsprintf(path, _T("%s\\..\\image\\%s.bmp"), g_szRunPath, GDI_ATTR_GIZMO_COUNTER);
+	insert_images_item_from_file(g_imagelist, GDI_ATTR_GIZMO_COUNTER, NULL, path);*/
 }
 
 VOID FreeResource()

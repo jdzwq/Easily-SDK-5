@@ -497,35 +497,35 @@ extern "C" {
 @FUNCTION create_form_doc: create a form document.
 @RETURN link_t_ptr: return the form document link component.
 */
-XDL_API link_t_ptr create_form_doc(void);
+EXP_API link_t_ptr create_form_doc(void);
 
 /*
 @FUNCTION destroy_form_doc: destroy a form document.
 @INPUT link_t_ptr ptr: the form document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_form_doc(link_t_ptr ptr);
+EXP_API void destroy_form_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_form_doc: clear a form document, all of field nodes in form document will be emptied.
 @INPUT link_t_ptr ptr: the form document link component.
 @RETURN void: none.
 */
-XDL_API void clear_form_doc(link_t_ptr ptr);
+EXP_API void clear_form_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_form_fieldset: get a form fields set link component
 @INPUT link_t_ptr ptr: the form document link component.
 @RETURN link_t_ptr: return form fields set link component.
 */
-XDL_API link_t_ptr get_form_fieldset(link_t_ptr ptr);
+EXP_API link_t_ptr get_form_fieldset(link_t_ptr ptr);
 
 /*
 @FUNCTION is_form_doc: test is a form document.
 @INPUT link_t_ptr ptr: the form document link component.
 @RETURN bool_t: return nonzero for being a form document, otherwise return zero.
 */
-XDL_API bool_t is_form_doc(link_t_ptr ptr);
+EXP_API bool_t is_form_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_form_field: test is a form field node.
@@ -533,28 +533,28 @@ XDL_API bool_t is_form_doc(link_t_ptr ptr);
 @INPUT link_t_ptr nlk: the field link component.
 @RETURN bool_t: return nonzero for being a field node, otherwise return zero.
 */
-XDL_API bool_t is_form_field(link_t_ptr ptr,link_t_ptr flk);
+EXP_API bool_t is_form_field(link_t_ptr ptr,link_t_ptr flk);
 
 /*
 @FUNCTION form_from_field: trackback to form from a field node.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN link_t_ptr: return form link component.
 */
-XDL_API link_t_ptr form_from_field(link_t_ptr flk);
+EXP_API link_t_ptr form_from_field(link_t_ptr flk);
 
 /*
 @FUNCTION reset_form_doc: clear all of field value in form document.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN void: none.
 */
-XDL_API void reset_form_doc(link_t_ptr ptr);
+EXP_API void reset_form_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION refresh_form_doc: rest all of field status to clean in form document.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN void: none.
 */
-XDL_API void refresh_form_doc(link_t_ptr ptr);
+EXP_API void refresh_form_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_field: add a new field to form document.
@@ -562,21 +562,21 @@ XDL_API void refresh_form_doc(link_t_ptr ptr);
 @INPUT const tchar_t* sz_class: the field class name.
 @RETURN link_t_ptr: return the field link component.
 */
-XDL_API link_t_ptr insert_field(link_t_ptr ptr,const tchar_t* sz_class);
+EXP_API link_t_ptr insert_field(link_t_ptr ptr,const tchar_t* sz_class);
 
 /*
 @FUNCTION delete_field: delete a field.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN void: none.
 */
-XDL_API void delete_field(link_t_ptr flk);
+EXP_API void delete_field(link_t_ptr flk);
 
 /*
 @FUNCTION get_field_count: counting the fields in form document.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN int: return the number of fields.
 */
-XDL_API int get_field_count(link_t_ptr ptr);
+EXP_API int get_field_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_field_count_by_class: counting the fields in form document by class.
@@ -584,28 +584,28 @@ XDL_API int get_field_count(link_t_ptr ptr);
 @INPUT const tchar_t* sz_class
 @RETURN int: return the number of fields.
 */
-XDL_API int get_field_count_by_class(link_t_ptr ptr,const tchar_t* sz_class);
+EXP_API int get_field_count_by_class(link_t_ptr ptr,const tchar_t* sz_class);
 
 /*
 @FUNCTION get_field_selected_count: counting the selected fields in form document.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN int: return the number of fields.
 */
-XDL_API int get_field_selected_count(link_t_ptr ptr);
+EXP_API int get_field_selected_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_update_field_count: counting the dirty fields in form document.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN int: return the number of fields.
 */
-XDL_API int get_update_field_count(link_t_ptr ptr);
+EXP_API int get_update_field_count(link_t_ptr ptr);
 
 /*
 @FUNCTION get_field_max_group: calcing the maximized group identifier.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN int: return the maximized group identifier.
 */
-XDL_API int get_field_max_group(link_t_ptr ptr);
+EXP_API int get_field_max_group(link_t_ptr ptr);
 
 /*
 @FUNCTION get_next_field: get the next field by position.
@@ -613,7 +613,7 @@ XDL_API int get_field_max_group(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the field link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_field(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_field(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_field: get the previous field by position.
@@ -621,7 +621,7 @@ XDL_API link_t_ptr get_next_field(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the field link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_field(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_prev_field(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_next_visible_field: get the next visible field by position.
@@ -629,7 +629,7 @@ XDL_API link_t_ptr get_prev_field(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the field link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_visible_field(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_next_visible_field(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_visible_field: get the previous visible field by position.
@@ -637,7 +637,7 @@ XDL_API link_t_ptr get_next_visible_field(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the field link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_visible_field(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_prev_visible_field(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_next_focusable_field: get the next focusable field by position.
@@ -645,7 +645,7 @@ XDL_API link_t_ptr get_prev_visible_field(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the field link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_next_focusable_field(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_next_focusable_field(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_prev_focusable_field: get the previous focusable field by position.
@@ -653,14 +653,14 @@ XDL_API link_t_ptr get_next_focusable_field(link_t_ptr ptr,link_t_ptr pos);
 @INPUT link_t_ptr pos: the field link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_prev_focusable_field(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_prev_focusable_field(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_field_focusable: get the field is focusable.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN bool_t: return nonzero if the field is focusable, otherwise return zero.
 */
-XDL_API bool_t get_field_focusable(link_t_ptr flk);
+EXP_API bool_t get_field_focusable(link_t_ptr flk);
 
 /*
 @FUNCTION get_field: find a field by name.
@@ -668,7 +668,7 @@ XDL_API bool_t get_field_focusable(link_t_ptr flk);
 @INPUT const tchar_t* fname: the name string token.
 @RETURN link_t_ptr: return field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field(link_t_ptr ptr,const tchar_t* fname);
+EXP_API link_t_ptr get_field(link_t_ptr ptr,const tchar_t* fname);
 
 /*
 @FUNCTION get_field: find a field by identifier.
@@ -676,7 +676,7 @@ XDL_API link_t_ptr get_field(link_t_ptr ptr,const tchar_t* fname);
 @INPUT const tchar_t* fid: the indetifier string token.
 @RETURN link_t_ptr: return field link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_by_id(link_t_ptr ptr, const tchar_t* fid);
+EXP_API link_t_ptr get_field_by_id(link_t_ptr ptr, const tchar_t* fid);
 
 /*
 @FUNCTION attach_field_text: attach a string buffer to field.
@@ -684,21 +684,21 @@ XDL_API link_t_ptr get_field_by_id(link_t_ptr ptr, const tchar_t* fid);
 @INPUT const tchar_t* val: the string buffer.
 @RETURN void: none.
 */
-XDL_API void attach_field_text(link_t_ptr flk, tchar_t* val);
+EXP_API void attach_field_text(link_t_ptr flk, tchar_t* val);
 
 /*
 @FUNCTION detach_field_text: detach the string buffer from field.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN tchar_t*: return the string buffer if exists, otherwise return NULL.
 */
-XDL_API tchar_t* detach_field_text(link_t_ptr flk);
+EXP_API tchar_t* detach_field_text(link_t_ptr flk);
 
 /*
 @FUNCTION get_field_text_ptr: get the field text token.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN tchar_t*: return the text token if exists, otherwise return NULL.
 */
-XDL_API const tchar_t* get_field_text_ptr(link_t_ptr flk);
+EXP_API const tchar_t* get_field_text_ptr(link_t_ptr flk);
 
 /*
 @FUNCTION get_field_text: copy the field text token.
@@ -707,7 +707,7 @@ XDL_API const tchar_t* get_field_text_ptr(link_t_ptr flk);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters copied.
 */
-XDL_API int get_field_text(link_t_ptr flk, tchar_t* buf, int max);
+EXP_API int get_field_text(link_t_ptr flk, tchar_t* buf, int max);
 
 /*
 @FUNCTION set_field_text: set the field text value.
@@ -716,7 +716,7 @@ XDL_API int get_field_text(link_t_ptr flk, tchar_t* buf, int max);
 @INPUT int len: the text value length in characters.
 @RETURN void: none.
 */
-XDL_API void set_field_text(link_t_ptr flk,const tchar_t* str,int len);
+EXP_API void set_field_text(link_t_ptr flk,const tchar_t* str,int len);
 
 /*
 @FUNCTION set_field_boolean: set the field boolean value.
@@ -724,14 +724,14 @@ XDL_API void set_field_text(link_t_ptr flk,const tchar_t* str,int len);
 @INPUT bool_t b: the boolean value.
 @RETURN void: none.
 */
-XDL_API void set_field_boolean(link_t_ptr flk, bool_t n);
+EXP_API void set_field_boolean(link_t_ptr flk, bool_t n);
 
 /*
 @FUNCTION get_field_boolean: get the field boolean value.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN bool_t: return field boolean value.
 */
-XDL_API bool_t get_field_boolean(link_t_ptr flk);
+EXP_API bool_t get_field_boolean(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_integer: set the field integer value.
@@ -739,14 +739,14 @@ XDL_API bool_t get_field_boolean(link_t_ptr flk);
 @INPUT int n: the integer value.
 @RETURN void: none.
 */
-XDL_API void set_field_integer(link_t_ptr flk, int n);
+EXP_API void set_field_integer(link_t_ptr flk, int n);
 
 /*
 @FUNCTION get_field_integer: get the field integer value.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN int: return field integer value.
 */
-XDL_API int get_field_integer(link_t_ptr flk);
+EXP_API int get_field_integer(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_numeric: set the field numeric value.
@@ -754,14 +754,14 @@ XDL_API int get_field_integer(link_t_ptr flk);
 @INPUT double dbl: the numeric value.
 @RETURN void: none.
 */
-XDL_API void set_field_numeric(link_t_ptr flk, double dbl);
+EXP_API void set_field_numeric(link_t_ptr flk, double dbl);
 
 /*
 @FUNCTION get_field_numeric: get the field numeric value.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN double: return field numeric value.
 */
-XDL_API double get_field_numeric(link_t_ptr flk);
+EXP_API double get_field_numeric(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_date: set the field date value.
@@ -769,7 +769,7 @@ XDL_API double get_field_numeric(link_t_ptr flk);
 @INPUT const xdate_t* pdt: the date struct.
 @RETURN void: none.
 */
-XDL_API void set_field_date(link_t_ptr flk, const xdate_t* pdt);
+EXP_API void set_field_date(link_t_ptr flk, const xdate_t* pdt);
 
 /*
 @FUNCTION get_field_date: get the field date value.
@@ -777,7 +777,7 @@ XDL_API void set_field_date(link_t_ptr flk, const xdate_t* pdt);
 @OUTPUT xdate_t* pdt: the date struct buffer.
 @RETURN void: none.
 */
-XDL_API void get_field_date(link_t_ptr flk, xdate_t* pdt);
+EXP_API void get_field_date(link_t_ptr flk, xdate_t* pdt);
 
 /*
 @FUNCTION set_field_datetime: set the field datetime value.
@@ -785,7 +785,7 @@ XDL_API void get_field_date(link_t_ptr flk, xdate_t* pdt);
 @INPUT const xdate_t* pdt: the date struct.
 @RETURN void: none.
 */
-XDL_API void set_field_datetime(link_t_ptr flk, const xdate_t* pdt);
+EXP_API void set_field_datetime(link_t_ptr flk, const xdate_t* pdt);
 
 /*
 @FUNCTION get_field_datetime: get the field datetime value.
@@ -793,21 +793,21 @@ XDL_API void set_field_datetime(link_t_ptr flk, const xdate_t* pdt);
 @OUTPUT xdate_t* pdt: the date struct buffer.
 @RETURN void: none.
 */
-XDL_API void get_field_datetime(link_t_ptr flk,xdate_t* pdt);
+EXP_API void get_field_datetime(link_t_ptr flk,xdate_t* pdt);
 
 /*
 @FUNCTION get_field_options_text_ptr: get the field option text marching to field value.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN const tchar_t*: return the option token if marched, otherwise return NULL.
 */
-XDL_API const tchar_t* get_field_options_text_ptr(link_t_ptr flk);
+EXP_API const tchar_t* get_field_options_text_ptr(link_t_ptr flk);
 
 /*
 @FUNCTION get_field_embed_rich: get the field embed rich document.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN link_t_ptr: return the rich link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_embed_rich(link_t_ptr flk);
+EXP_API link_t_ptr get_field_embed_rich(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_embed_rich: set the field embed rich document.
@@ -815,14 +815,14 @@ XDL_API link_t_ptr get_field_embed_rich(link_t_ptr flk);
 @INPUT link_t_ptr doc: the rich link componet.
 @RETURN void: none.
 */
-XDL_API void set_field_embed_rich(link_t_ptr flk, link_t_ptr doc);
+EXP_API void set_field_embed_rich(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION get_field_embed_grid: get the field embed grid document.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN link_t_ptr: return the grid link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_embed_grid(link_t_ptr flk);
+EXP_API link_t_ptr get_field_embed_grid(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_embed_grid: set the field embed grid document.
@@ -830,14 +830,14 @@ XDL_API link_t_ptr get_field_embed_grid(link_t_ptr flk);
 @INPUT link_t_ptr doc: the grid link componet.
 @RETURN void: none.
 */
-XDL_API void set_field_embed_grid(link_t_ptr flk, link_t_ptr doc);
+EXP_API void set_field_embed_grid(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION get_field_embed_statis: get the field embed statis document.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN link_t_ptr: return the statis link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_embed_statis(link_t_ptr flk);
+EXP_API link_t_ptr get_field_embed_statis(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_embed_statis: set the field embed statis document.
@@ -845,14 +845,14 @@ XDL_API link_t_ptr get_field_embed_statis(link_t_ptr flk);
 @INPUT link_t_ptr doc: the statis link componet.
 @RETURN void: none.
 */
-XDL_API void set_field_embed_statis(link_t_ptr flk, link_t_ptr doc);
+EXP_API void set_field_embed_statis(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION get_field_embed_images: get the field embed images document.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN link_t_ptr: return the images link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_embed_images(link_t_ptr flk);
+EXP_API link_t_ptr get_field_embed_images(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_embed_images: set the field embed images document.
@@ -860,14 +860,14 @@ XDL_API link_t_ptr get_field_embed_images(link_t_ptr flk);
 @INPUT link_t_ptr doc: the images link componet.
 @RETURN void: none.
 */
-XDL_API void set_field_embed_images(link_t_ptr flk, link_t_ptr doc);
+EXP_API void set_field_embed_images(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION get_field_embed_form: get the field embed form document.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN link_t_ptr: return the form link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_field_embed_form(link_t_ptr flk);
+EXP_API link_t_ptr get_field_embed_form(link_t_ptr flk);
 
 /*
 @FUNCTION set_field_embed_form: set the field embed form document.
@@ -875,21 +875,21 @@ XDL_API link_t_ptr get_field_embed_form(link_t_ptr flk);
 @INPUT link_t_ptr doc: the form link componet.
 @RETURN void: none.
 */
-XDL_API void set_field_embed_form(link_t_ptr flk, link_t_ptr doc);
+EXP_API void set_field_embed_form(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION clear_field_embed: clear the field embed document.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN void: none.
 */
-XDL_API void clear_field_embed(link_t_ptr flk);
+EXP_API void clear_field_embed(link_t_ptr flk);
 
 /*
 @FUNCTION clear_field_datadef: clear the field data defination.
 @INPUT link_t_ptr flk: the field link component.
 @RETURN void: none.
 */
-XDL_API void clear_field_datadef(link_t_ptr flk);
+EXP_API void clear_field_datadef(link_t_ptr flk);
 
 /*
 @FUNCTION calc_form_field: calcing the field data.
@@ -897,14 +897,14 @@ XDL_API void clear_field_datadef(link_t_ptr flk);
 @INPUT link_t_ptr flk: the field link component.
 @RETURN int: return the numner of fields with data changed.
 */
-XDL_API int calc_form_field(link_t_ptr ptr,link_t_ptr flk);
+EXP_API int calc_form_field(link_t_ptr ptr,link_t_ptr flk);
 
 /*
 @FUNCTION calc_form_doc: calcing all of fields data in form.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN void: none.
 */
-XDL_API int calc_form_doc(link_t_ptr ptr);
+EXP_API int calc_form_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION verify_form_field: verify the field data, 
@@ -913,7 +913,7 @@ the verify code returned can be veValid, veNull, veTruncate, veDatatype, veOverf
 @INPUT link_t_ptr flk: the field link component.
 @RETURN int: return the verify code.
 */
-XDL_API int verify_form_field(link_t_ptr ptr, link_t_ptr flk);
+EXP_API int verify_form_field(link_t_ptr ptr, link_t_ptr flk);
 
 /*
 @FUNCTION verify_form_field: verify the fields data in form,
@@ -922,7 +922,7 @@ the verify code returned can be veValid, veNull, veTruncate, veDatatype, veOverf
 @OUTPUT link_t_ptr* plk: the link component for return the invalid data field.
 @RETURN int: return the verify code.
 */
-XDL_API int verify_form_doc(link_t_ptr ptr, link_t_ptr* plk);
+EXP_API int verify_form_doc(link_t_ptr ptr, link_t_ptr* plk);
 
 /*
 @FUNCTION format_form_verify: verify the fields data in form, and format the wraning text.
@@ -933,14 +933,14 @@ XDL_API int verify_form_doc(link_t_ptr ptr, link_t_ptr* plk);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_form_verify(link_t_ptr ptr, link_t_ptr flk, int code, tchar_t* buf, int max);
+EXP_API int format_form_verify(link_t_ptr ptr, link_t_ptr flk, int code, tchar_t* buf, int max);
 
 /*
 @FUNCTION reset_form_taborder: recalc the fields taborder in form.
 @INPUT link_t_ptr ptr: the form link component.
 @RETURN void: none.
 */
-XDL_API void reset_form_taborder(link_t_ptr ptr);
+EXP_API void reset_form_taborder(link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

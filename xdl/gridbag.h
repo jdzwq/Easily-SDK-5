@@ -48,7 +48,7 @@ extern "C" {
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void save_form_to_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
+EXP_API void save_form_to_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
 
 /*
 @FUNCTION load_form_from_grid_row: load form content from a grid row.
@@ -57,7 +57,7 @@ XDL_API void save_form_to_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr 
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void load_form_from_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
+EXP_API void load_form_from_grid_row(link_t_ptr form, link_t_ptr grid, link_t_ptr row);
 
 /*
 @FUNCTION save_statis_to_grid: save statisic content to a grid row.
@@ -66,7 +66,7 @@ XDL_API void load_form_from_grid_row(link_t_ptr form, link_t_ptr grid, link_t_pt
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void save_statis_to_grid(link_t_ptr statis, link_t_ptr grid);
+EXP_API void save_statis_to_grid(link_t_ptr statis, link_t_ptr grid);
 
 /*
 @FUNCTION load_statis_from_grid: load statis content from a grid row.
@@ -75,7 +75,7 @@ XDL_API void save_statis_to_grid(link_t_ptr statis, link_t_ptr grid);
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void load_statis_from_grid(link_t_ptr statis, link_t_ptr grid);
+EXP_API void load_statis_from_grid(link_t_ptr statis, link_t_ptr grid);
 
 /*
 @FUNCTION load_rich_from_grid_row: load rich content from a grid row.
@@ -84,7 +84,7 @@ XDL_API void load_statis_from_grid(link_t_ptr statis, link_t_ptr grid);
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void load_rich_from_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_ptr rlk);
+EXP_API void load_rich_from_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_ptr rlk);
 
 /*
 @FUNCTION save_rich_to_grid_row: save rich content to a grid row.
@@ -93,7 +93,7 @@ XDL_API void load_rich_from_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_pt
 @INPUT link_t_ptr row: the row link component.
 @RETURN void: none.
 */
-XDL_API void save_rich_to_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_ptr rlk);
+EXP_API void save_rich_to_grid_row(link_t_ptr rich, link_t_ptr grid, link_t_ptr rlk);
 
 #ifdef	__cplusplus
 }

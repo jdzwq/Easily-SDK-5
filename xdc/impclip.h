@@ -44,33 +44,33 @@ extern "C" {
 @FUNCTION clipboard_open: open clipboard for operation.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	clipboard_open(void);
+EXP_API bool_t	clipboard_open(void);
 
 /*
 @FUNCTION clipboard_close: close clipboard.
 @RETURN void: none.
 */
-XDC_API void	clipboard_close(void);
+EXP_API void	clipboard_close(void);
 
 /*
 @FUNCTION clipboard_clean: clean the clipboard content.
 @RETURN void: none.
 */
-XDC_API void	clipboard_clean();
+EXP_API void	clipboard_clean();
 
 /*
 @FUNCTION clipboard_put: put the content into clipboard.
 @INPUT int fmt: the data format, it can be mutiple characters(CB_FORMAT_MBS), unicode characers(CB_FORMAT_UCS), or binary bitmap(CB_FORMAT_DIB).
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	clipboard_put(int fmt, res_glob_t gb);
+EXP_API bool_t	clipboard_put(int fmt, res_glob_t gb);
 
 /*
 @FUNCTION clipboard_get: get the content from clipboard.
 @INPUT int fmt: the data format, it can be mutiple characters(CB_FORMAT_MBS), unicode characers(CB_FORMAT_UCS), or binary bitmap(CB_FORMAT_DIB).
 @RETURN res_glob_t: if succeeds return global resource handle, fails return NULL.
 */
-XDC_API res_glob_t clipboard_get(int fmt);
+EXP_API res_glob_t clipboard_get(int fmt);
 
 #ifdef	__cplusplus
 }

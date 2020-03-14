@@ -698,7 +698,7 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_icon.w = ptd->title_height;
 		xr_icon.h = ptd->title_height;
 		pt_center_rect(&xr_icon, 12, 12);
-		draw_icon_raw(rdc, &xc, &xr_icon, GDI_ICON_BOOK);
+		draw_gizmo_raw(rdc, &xc, &xr_icon, GDI_ATTR_GIZMO_BOOK);
 
 		xr_icon.x = xr.x + 12;
 		xr_icon.y = xr.y;

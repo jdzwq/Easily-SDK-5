@@ -151,6 +151,14 @@ typedef struct _if_bio_t{
 	PF_BIO_SETOPT	pf_setopt;
 }if_bio_t;
 
+typedef void(*PF_LOG_TITLE)(file_t, const tchar_t*, int);
+typedef void(*PF_LOG_ERROR)(file_t, const tchar_t*, const tchar_t*, int);
+typedef void(*PF_LOG_DATA)(file_t, const byte_t*, dword_t);
+typedef void(*PF_LOG_XML)(file_t, link_t_ptr);
+typedef void(*PF_LOG_JSON)(file_t, link_t_ptr);
+
+typedef void(*PF_TRACK_ERROR)(void* hand, const tchar_t* code, const tchar_t* text);
+
 typedef float(*PF_MM_POINTS)(void*, bool_t);
 typedef void(*PF_IMAGE_SIZE)(void*, const ximage_t*, xsize_t* pxs);
 typedef void(*PF_TEXT_SIZE)(void*, const xfont_t*, const tchar_t*, int, xsize_t* pxs);

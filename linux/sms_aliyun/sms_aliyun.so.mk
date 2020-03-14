@@ -12,16 +12,20 @@ LOC_PATH = ~/Easily-sdk-5/sms
 
 OUT_PATH = ../sbin/api
 
-SRCS = $(SRC_PATH)/sms_aliyun.c
-OBJS = $(patsubst %.c, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/libsms_aliyun.so.1.0
+INS_PATH = ~/Easily-sdk-5/linux/setup
 
-$(SRC_PATH)%.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH) -I $(SRC_PATH) -I $(LOC_PATH) 
+DIRS = $(wildcard $(SRC_PATH)/sms_aliyun.c)
+SRCS = $(notdir $(DIRS))
+OBJS = $(patsubst %.c, %.o, $(SRCS))
+MODULE = libsms_aliyun.so
+TARGET = $(OUT_PATH)/$(MODULE).1.0
+
+%.o : $(SRC_PATH)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH) -I $(LOC_PATH) 
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
 	rm -f $(OBJS)
 
 test:
@@ -31,9 +35,14 @@ test:
 
 install:
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
-	sudo chmod +x $(SRV_PATH)/api/libsms_aliyun.so.1.0;
-	sudo rm -f $(LNK_PATH)/libsms_aliyun*;
-	sudo ln -bs $(SRV_PATH)/api/libsms_aliyun.so.1.0 $(LNK_PATH)/libsms_aliyun.so;
+	sudo chmod +x $(SRV_PATH)/api/$(MODULE).1.0;
+	sudo rm -f $(LNK_PATH)/$(MODULE)*;
+	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
+
+	if ! test -d $(SRV_PATH)/sms/aliyun; then \
+	sudo mkdir $(SRV_PATH)/sms/aliyun; \
+	fi
+	sudo cp -rf $(INS_PATH)/sms/aliyun $(SRV_PATH)/sms;
 
 .PHONY : clean
 clean:

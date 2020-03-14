@@ -43,21 +43,21 @@ extern "C" {
 @INPUT int encode: the encode, it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
 @RETURN object_t: return the object.
 */
-XDL_API object_t object_alloc(int encode);
+EXP_API object_t object_alloc(int encode);
 
 /*
 @FUNCTION object_free: free a object.
 @INPUT object_t obj: the object.
 @RETURN void: none.
 */
-XDL_API void object_free(object_t obj);
+EXP_API void object_free(object_t obj);
 
 /*
 @FUNCTION object_clone: clone a new object.
 @INPUT object_t obj: the object for copying.
 @RETURN object_t: the new object.
 */
-XDL_API object_t object_clone(object_t obj);
+EXP_API object_t object_clone(object_t obj);
 
 /*
 @FUNCTION object_copy: copy source object to destination object.
@@ -65,35 +65,35 @@ XDL_API object_t object_clone(object_t obj);
 @INPUT object_t src: the source object.
 @RETURN void: none.
 */
-XDL_API void object_copy(object_t dst, object_t src);
+EXP_API void object_copy(object_t dst, object_t src);
 
 /*
 @FUNCTION object_empty: empty the object.
 @INPUT object_t obj: the object.
 @RETURN void: none.
 */
-XDL_API void object_empty(object_t obj);
+EXP_API void object_empty(object_t obj);
 
 /*
 @FUNCTION object_get_type: get the object type, it can be _OBJECT_UNKNOWN, _OBJECT_STRING, _OBJECT_VARIANT, _OBJECT_DOMDOC, _OBJECT_BINARY.
 @INPUT object_t obj: the object.
 @RETURN int: return the object type, default is _OBJECT_UNKNOWN.
 */
-XDL_API int object_get_type(object_t obj);
+EXP_API int object_get_type(object_t obj);
 
 /*
 @FUNCTION object_get_encode: get the object encode, it can be it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
 @INPUT object_t obj: the object.
 @RETURN int: return the object encode.
 */
-XDL_API int object_get_encode(object_t obj);
+EXP_API int object_get_encode(object_t obj);
 
 /*
 @FUNCTION object_get_commpress: test the object is compressed.
 @INPUT object_t obj: the object.
 @RETURN boo_t: return nonzero if compressed, otherwise return zero.
 */
-XDL_API bool_t object_get_commpress(object_t obj);
+EXP_API bool_t object_get_commpress(object_t obj);
 
 /*
 @FUNCTION object_set_commpress: compress or decompress object.
@@ -101,7 +101,7 @@ XDL_API bool_t object_get_commpress(object_t obj);
 @INPUT bool_t b: nonzero for compressing, zero for decompressing.
 @RETURN void: none.
 */
-XDL_API void object_set_commpress(object_t obj, bool_t b);
+EXP_API void object_set_commpress(object_t obj, bool_t b);
 
 /*
 @FUNCTION object_set_string: save string token to object.
@@ -110,7 +110,7 @@ XDL_API void object_set_commpress(object_t obj, bool_t b);
 @INPUT int len: the string token length in characters.
 @RETURN void: none.
 */
-XDL_API void object_set_string(object_t obj, const tchar_t* str, int len);
+EXP_API void object_set_string(object_t obj, const tchar_t* str, int len);
 
 /*
 @FUNCTION object_get_string: get string token from object.
@@ -119,7 +119,7 @@ XDL_API void object_set_string(object_t obj, const tchar_t* str, int len);
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return the length of string token.
 */
-XDL_API int object_get_string(object_t obj, tchar_t* str, int max);
+EXP_API int object_get_string(object_t obj, tchar_t* str, int max);
 
 /*
 @FUNCTION object_set_variant: save variant to object.
@@ -127,7 +127,7 @@ XDL_API int object_get_string(object_t obj, tchar_t* str, int max);
 @INPUT variant_t val: the variant object.
 @RETURN void: none.
 */
-XDL_API void object_set_variant(object_t obj, variant_t val);
+EXP_API void object_set_variant(object_t obj, variant_t val);
 
 /*
 @FUNCTION object_get_variant: get variant from object.
@@ -135,7 +135,7 @@ XDL_API void object_set_variant(object_t obj, variant_t val);
 @OUTPUT variant_t* pval: the variant object.
 @RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
 */
-XDL_API bool_t object_get_variant(object_t obj, variant_t* pval);
+EXP_API bool_t object_get_variant(object_t obj, variant_t* pval);
 
 /*
 @FUNCTION object_set_domdoc: save dom document to object.
@@ -143,7 +143,7 @@ XDL_API bool_t object_get_variant(object_t obj, variant_t* pval);
 @INPUT link_t_ptr dom: the dom document.
 @RETURN void: none.
 */
-XDL_API void object_set_domdoc(object_t obj, link_t_ptr dom);
+EXP_API void object_set_domdoc(object_t obj, link_t_ptr dom);
 
 /*
 @FUNCTION object_get_domdoc: get dom document from object.
@@ -151,7 +151,7 @@ XDL_API void object_set_domdoc(object_t obj, link_t_ptr dom);
 @OUTPUT link_t_ptr dom: the dom document.
 @RETURN bool_t: return nonzero if the object type is _OBJECT_DOMDOC, otherwise return zero.
 */
-XDL_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
+EXP_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
 
 /*
 @FUNCTION object_set_bytes: save bytes to object.
@@ -161,7 +161,7 @@ XDL_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
 @INPUT dword_t len: the buffer size in bytes.
 @RETURN void: none.
 */
-XDL_API void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len);
+EXP_API void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len);
 
 /*
 @FUNCTION object_get_bytes: load bytes from object.
@@ -170,7 +170,7 @@ XDL_API void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the bytes loaded.
 */
-XDL_API dword_t object_get_bytes(object_t obj, byte_t* buf, dword_t max);
+EXP_API dword_t object_get_bytes(object_t obj, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION object_encode: encode a object to bytes buffer.
@@ -179,7 +179,7 @@ XDL_API dword_t object_get_bytes(object_t obj, byte_t* buf, dword_t max);
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the bytes encoded.
 */
-XDL_API dword_t object_encode(object_t obj, byte_t* buf, dword_t max);
+EXP_API dword_t object_encode(object_t obj, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION object_decode: decode a object from bytes buffer.
@@ -187,10 +187,10 @@ XDL_API dword_t object_encode(object_t obj, byte_t* buf, dword_t max);
 @INPUT const byte_t* data: the bytes buffer.
 @RETURN dword_t: return the bytes decoded.
 */
-XDL_API dword_t object_decode(object_t obj, const byte_t* data);
+EXP_API dword_t object_decode(object_t obj, const byte_t* data);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_object(void);
+	EXP_API void test_object(void);
 #endif
 
 #ifdef	__cplusplus

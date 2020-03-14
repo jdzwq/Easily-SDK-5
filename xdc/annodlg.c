@@ -273,11 +273,11 @@ int hand_annodlg_create(res_win_t widget, void* data)
 	widget_set_user_id(iconbox, IDC_ANNODLG_ICONBOX);
 
 	xsprintf(icons, _T("%d~%s;%d~%s;%d~%s;%d~%s;%d~%s;"),
-		IDA_ANNODLG_ICON_RECT, GDI_ICON_RECT,
-		IDA_ANNODLG_ICON_ELLIPSE, GDI_ICON_ELLIPSE,
-		IDA_ANNODLG_ICON_CROSS, GDI_ICON_CROSS,
-		IDA_ANNODLG_ICON_STAR, GDI_ICON_STAR,
-		IDA_ANNODLG_ICON_DIAMOND, GDI_ICON_DIAMOND);
+		IDA_ANNODLG_ICON_RECT, GDI_ATTR_GIZMO_RECT,
+		IDA_ANNODLG_ICON_ELLIPSE, GDI_ATTR_GIZMO_ELLIPSE,
+		IDA_ANNODLG_ICON_CROSS, GDI_ATTR_GIZMO_CROSS,
+		IDA_ANNODLG_ICON_STAR, GDI_ATTR_GIZMO_STAR,
+		IDA_ANNODLG_ICON_DIAMOND, GDI_ATTR_GIZMO_DIAMOND);
 
 	iconbox_set_options(iconbox, icons, -1);
 	widget_show(iconbox, WS_SHOW_NORMAL);
@@ -576,19 +576,19 @@ void hand_annodlg_menu_command(res_win_t widget, int code, int cid, var_long dat
 		switch (code)
 		{
 		case IDA_ANNODLG_ICON_CROSS:
-			annodlg_on_append_item(widget, GDI_ICON_CROSS);
+			annodlg_on_append_item(widget, GDI_ATTR_GIZMO_CROSS);
 			break;
 		case IDA_ANNODLG_ICON_DIAMOND:
-			annodlg_on_append_item(widget, GDI_ICON_DIAMOND);
+			annodlg_on_append_item(widget, GDI_ATTR_GIZMO_DIAMOND);
 			break;
 		case IDA_ANNODLG_ICON_ELLIPSE:
-			annodlg_on_append_item(widget, GDI_ICON_ELLIPSE);
+			annodlg_on_append_item(widget, GDI_ATTR_GIZMO_ELLIPSE);
 			break;
 		case IDA_ANNODLG_ICON_RECT:
-			annodlg_on_append_item(widget, GDI_ICON_RECT);
+			annodlg_on_append_item(widget, GDI_ATTR_GIZMO_RECT);
 			break;
 		case IDA_ANNODLG_ICON_STAR:
-			annodlg_on_append_item(widget, GDI_ICON_STAR);
+			annodlg_on_append_item(widget, GDI_ATTR_GIZMO_STAR);
 			break;
 		}
 	}else if (cid == IDC_ANNODLG_MENU_COLOR)

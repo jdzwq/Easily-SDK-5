@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_images_icon_span: set the images icon span.
 */
-#define set_images_icon_span(ptr,n)					set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_images_icon_span(ptr,n)					set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_images_icon_span: get the images icon span.
 */
-#define get_images_icon_span(ptr)					get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_images_icon_span(ptr)					get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER src: string.
 @SET set_images_item_src: set the images item source.
@@ -131,35 +131,35 @@ extern "C" {
 @FUNCTION create_images_doc: create a images document.
 @RETURN link_t_ptr: return the images document link component.
 */
-XDL_API link_t_ptr create_images_doc(void);
+EXP_API link_t_ptr create_images_doc(void);
 
 /*
 @FUNCTION destroy_images_doc: destroy a images document.
 @INPUT link_t_ptr ptr: the images link component.
 @RETURN void: none.
 */
-XDL_API void destroy_images_doc(link_t_ptr ptr);
+EXP_API void destroy_images_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_images_itemset: get images item set.
 @INPUT link_t_ptr ptr: the imaes link component.
 @RETURN link_t_ptr: the item set link component.
 */
-XDL_API link_t_ptr get_images_itemset(link_t_ptr ptr);
+EXP_API link_t_ptr get_images_itemset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_images_doc: clear the images document.
 @INPUT link_t_ptr ptr: the images link component.
 @RETURN void: none.
 */
-XDL_API void clear_images_doc(link_t_ptr ptr);
+EXP_API void clear_images_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_images_doc: test is images document.
 @INPUT link_t_ptr ptr: the images link component.
 @RETURN bool_t: return nonzero for being a images document, otherwise return zero.
 */
-XDL_API bool_t is_images_doc(link_t_ptr ptr);
+EXP_API bool_t is_images_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_images_item: test is images item node.
@@ -167,7 +167,7 @@ XDL_API bool_t is_images_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a item, otherwise return zero.
 */
-XDL_API bool_t is_images_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_images_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION sort_images_doc: sorting images items by name order.
@@ -175,14 +175,14 @@ XDL_API bool_t is_images_item(link_t_ptr ptr, link_t_ptr ilk);
 @INPUT bool_t desc: nonzero for descend sorting, zero for abscend sorting.
 @RETURN void: none.
 */
-XDL_API void sort_images_doc(link_t_ptr ptr, bool_t desc);
+EXP_API void sort_images_doc(link_t_ptr ptr, bool_t desc);
 
 /*
 @FUNCTION get_images_item_count: counting the items in images document.
 @INPUT link_t_ptr ptr: the images link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_images_item_count(link_t_ptr ptr);
+EXP_API int get_images_item_count(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_images_item: add a new item to images document.
@@ -190,14 +190,14 @@ XDL_API int get_images_item_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_images_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_images_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_images_item: delete the images item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_images_item(link_t_ptr ilk);
+EXP_API void delete_images_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_images_next_item: get the next images item.
@@ -205,7 +205,7 @@ XDL_API void delete_images_item(link_t_ptr ilk);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_images_next_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_images_next_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_images_prev_item: get the previous images item.
@@ -213,7 +213,7 @@ XDL_API link_t_ptr get_images_next_item(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_images_prev_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_images_prev_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_images_item: get the images item by name.
@@ -222,7 +222,7 @@ XDL_API link_t_ptr get_images_prev_item(link_t_ptr ptr, link_t_ptr pos);
 @INPUT int altlen: the key token length in characters.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_images_item(link_t_ptr ptr, const tchar_t* alt, int altlen);
+EXP_API link_t_ptr get_images_item(link_t_ptr ptr, const tchar_t* alt, int altlen);
 
 /*
 @FUNCTION get_ximage: get the ximage content by key.
@@ -231,7 +231,7 @@ XDL_API link_t_ptr get_images_item(link_t_ptr ptr, const tchar_t* alt, int altle
 @OUTPUT ximage_t* the ximage struct buffer.
 @RETURN bool_t: return nonzero if item exists, otherwise return zero.
 */
-XDL_API bool_t get_ximage(link_t_ptr ptr, const tchar_t* alt, ximage_t* pxi);
+EXP_API bool_t get_ximage(link_t_ptr ptr, const tchar_t* alt, ximage_t* pxi);
 
 #ifdef	__cplusplus
 }

@@ -61,7 +61,7 @@ extern "C" {
 @INPUT const tchar_t* addr: the network address to connect.
 @RETURN xhand_t: if succeeds return PNP client handle, fails return NULL.
 */
-XDL_API xhand_t xpnp_cli(unsigned short port, const tchar_t* addr);
+EXP_API xhand_t xpnp_cli(unsigned short port, const tchar_t* addr);
 
 /*
 @FUNCTION xpnp_srv: create a PNP server.
@@ -71,21 +71,21 @@ XDL_API xhand_t xpnp_cli(unsigned short port, const tchar_t* addr);
 @INPUT dword_t size: the network package size in bytes.
 @RETURN xhand_t: if succeeds return PNP server handle, fails return NULL.
 */
-XDL_API xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
+EXP_API xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
 
 /*
 @FUNCTION xpnp_close: close a PNP client or server handle.
 @INPUT xhand_t pnp: the PNP xhandle.
 @RETURN void: none.
 */
-XDL_API void xpnp_close(xhand_t pnp);
+EXP_API void xpnp_close(xhand_t pnp);
 
 /*
 @FUNCTION xpnp_type: get PNP type, it can be _XPNP_TYPE_CLI, _XPNP_TYPE_SRV.
 @INPUT xhand_t pnp: the PNP xhandle.
 @RETURN int: the PNP type.
 */
-XDL_API int xpnp_type(xhand_t pnp);;
+EXP_API int xpnp_type(xhand_t pnp);;
 
 /*
 @FUNCTION xpnp_write: write PNP data.
@@ -94,14 +94,14 @@ XDL_API int xpnp_type(xhand_t pnp);;
 @INOUTPUT dword_t* pb: input the size for writing, and return the bytes writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xpnp_write(xhand_t pnp, const byte_t* data, dword_t* pb);
+EXP_API bool_t xpnp_write(xhand_t pnp, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xpnp_flush: ensure PNP data writed.
 @INPUT xhand_t pnp: the PNP xhandle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xpnp_flush(xhand_t pnp);
+EXP_API bool_t xpnp_flush(xhand_t pnp);
 
 /*
 @FUNCTION xpnp_read: read PNP data.
@@ -110,7 +110,7 @@ XDL_API bool_t xpnp_flush(xhand_t pnp);
 @INOUTPUT dword_t* pb: input the size for reading, and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
+EXP_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xpnp_addr_port: get PNP local address and port.
@@ -118,7 +118,7 @@ XDL_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the local port.
 */
-XDL_API unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr);
+EXP_API unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr);
 
 /*
 @FUNCTION xpnp_peer_port: get PNP remote address and port.
@@ -126,7 +126,7 @@ XDL_API unsigned short xpnp_addr_port(xhand_t pnp, tchar_t* addr);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the remote port.
 */
-XDL_API unsigned short xpnp_peer_port(xhand_t pnp, tchar_t* addr);
+EXP_API unsigned short xpnp_peer_port(xhand_t pnp, tchar_t* addr);
 
 #ifdef	__cplusplus
 }

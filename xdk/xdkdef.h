@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #ifndef _XDKDEF_H
 #define	_XDKDEF_H
 
-#include <xdp.h>
+#include <xds.h>
 
 #if defined(_OS_WINDOWS)
 #include "windows/_xdk_win.h"

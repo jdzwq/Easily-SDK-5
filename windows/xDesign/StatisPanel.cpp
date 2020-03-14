@@ -917,7 +917,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	xsprintf(token, _T("%d"), IDA_ATTRIBUTES);
 	set_title_item_id(tlk, token);
 	set_title_item_width(tlk, STATISPANEL_TITLEITEM_WIDTH);
-	set_title_item_icon(tlk, GDI_ICON_PROPER);
+	set_title_item_icon(tlk, GDI_ATTR_GIZMO_PROPER);
 	set_title_item_locked(tlk, 1);
 
 	tlk = insert_title_item(ptrTitle, LINK_LAST);
@@ -925,7 +925,7 @@ int StatisPanel_OnCreate(res_win_t widget, void* data)
 	xsprintf(token, _T("%d"), IDA_STYLESHEET);
 	set_title_item_id(tlk, token);
 	set_title_item_width(tlk, STATISPANEL_TITLEITEM_WIDTH);
-	set_title_item_icon(tlk, GDI_ICON_STYLE);
+	set_title_item_icon(tlk, GDI_ATTR_GIZMO_STYLE);
 	set_title_item_locked(tlk, 1);
 
 	titlectrl_attach(pdt->hTitle, ptrTitle);
@@ -1031,37 +1031,37 @@ void StatisPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_EDIT_SELECTALL);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("全选"));
-		set_tool_item_icon(ilk, GDI_ICON_SELECTALL);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_SELECTALL);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_DELETE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除"));
-		set_tool_item_icon(ilk, GDI_ICON_DELETE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_DELETE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_COPY);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("拷贝"));
-		set_tool_item_icon(ilk, GDI_ICON_COPY);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_COPY);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_CUT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("剪切"));
-		set_tool_item_icon(ilk, GDI_ICON_CUT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_CUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_PASTE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("粘贴"));
-		set_tool_item_icon(ilk, GDI_ICON_PASTE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_PASTE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_EDIT_UNDO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("撤销"));
-		set_tool_item_icon(ilk, GDI_ICON_UNDO);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_UNDO);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_STYLE);
@@ -1074,25 +1074,25 @@ void StatisPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_NAME);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体名称"));
-		set_tool_item_icon(ilk, GDI_ICON_FONTNAME);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_FONTNAME);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_SIZE);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字号大小"));
-		set_tool_item_icon(ilk, GDI_ICON_FONTSIZE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_FONTSIZE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_FONT_WEIGHT);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体加黑"));
-		set_tool_item_icon(ilk, GDI_ICON_FONTWEIGHT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_FONTWEIGHT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("字体颜色"));
-		set_tool_item_icon(ilk, GDI_ICON_FONTCOLOR);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_FONTCOLOR);
 
 		/*ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_PAint_COLOR);
@@ -1104,49 +1104,49 @@ void StatisPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_STYLE_DRAW_COLOR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("前景"));
-		set_tool_item_icon(ilk, GDI_ICON_STYLE);*/
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_STYLE);*/
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_PROPER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("CSS属性"));
-		set_tool_item_icon(ilk, GDI_ICON_PROPER);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_PROPER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_icon(ilk, GDI_ICON_ALIGNNEAR);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_ALIGNNEAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_icon(ilk, GDI_ICON_ALIGNCENTER);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_ALIGNCENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_TEXT_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_icon(ilk, GDI_ICON_ALIGNFAR);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_ALIGNFAR);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_NEAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("左对齐"));
-		set_tool_item_icon(ilk, GDI_ICON_ARRANGELEFT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_ARRANGELEFT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_CENTER);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("居中对齐"));
-		set_tool_item_icon(ilk, GDI_ICON_ARRANGECENTER);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_ARRANGECENTER);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_STYLE_ALIGN_FAR);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("右对齐"));
-		set_tool_item_icon(ilk, GDI_ICON_ARRANGERIGHT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_ARRANGERIGHT);
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_ELEMENT);
@@ -1159,43 +1159,43 @@ void StatisPanel_OnShow(res_win_t widget, bool_t bShow)
 		xsprintf(token, _T("%d"), IDA_INSERT_GAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增坐标"));
-		set_tool_item_icon(ilk, GDI_ICON_GRAPH);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_GRAPH);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_YAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增Y轴"));
-		set_tool_item_icon(ilk, GDI_ICON_INSERT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_INSERT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_INSERT_XAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("新增X轴"));
-		set_tool_item_icon(ilk, GDI_ICON_PLUS);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_PLUS);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_DELETE_XAX);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("删除X轴"));
-		set_tool_item_icon(ilk, GDI_ICON_MINUS);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_MINUS);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_ERASE_XAXS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("清除数据集"));
-		set_tool_item_icon(ilk, GDI_ICON_REMOVE);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_REMOVE);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_IMPORT_XAXS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("导入数据集"));
-		set_tool_item_icon(ilk, GDI_ICON_INPUT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_INPUT);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_UPDATE_XAXS);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("更新数据集"));
-		set_tool_item_icon(ilk, GDI_ICON_OUTPUT);
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_OUTPUT);
 
 		MainFrame_MergeTool(g_hMain, ptrTool);
 

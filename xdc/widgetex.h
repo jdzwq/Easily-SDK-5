@@ -43,7 +43,7 @@ extern "C" {
 @INPUT res_win_t wt: the widget resource handle.
 @RETURN canvas_t: return canvas handle if exists, otherwise return zero.
 */
-XDC_API canvas_t widget_get_canvas(res_win_t wt);
+EXP_API canvas_t widget_get_canvas(res_win_t wt);
 
 /*
 @FUNCTION widget_attach_splitor: attach a splitor document to widget.
@@ -51,28 +51,28 @@ XDC_API canvas_t widget_get_canvas(res_win_t wt);
 @INPUT link_t_ptr split: the splitor link component.
 @RETURN void: none.
 */
-XDC_API void	widget_attach_splitor(res_win_t wt, link_t_ptr split);
+EXP_API void	widget_attach_splitor(res_win_t wt, link_t_ptr split);
 
 /*
 @FUNCTION widget_get_splitor: get the splitor document from widget.
 @INPUT res_win_t wt: windowd resource handle.
 @RETURN link_t_ptr: return the splitor link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	widget_get_splitor(res_win_t wt);
+EXP_API link_t_ptr	widget_get_splitor(res_win_t wt);
 
 /*
 @FUNCTION widget_detach_splitor: detach the splitor document from widget.
 @INPUT res_win_t wt: windowd resource handle.
 @RETURN link_t_ptr: return the splitor link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	widget_detach_splitor(res_win_t wt);
+EXP_API link_t_ptr	widget_detach_splitor(res_win_t wt);
 
 /*
 @FUNCTION widget_layout_splitor: recalc and redraw the splitor in widget.
 @INPUT res_win_t wt: windowd resource handle.
 @RETURN void: none.
 */
-XDC_API void	widget_layout_splitor(res_win_t wt);
+EXP_API void	widget_layout_splitor(res_win_t wt);
 
 /*
 @FUNCTION widget_dock: add a dock to widget.
@@ -82,7 +82,7 @@ XDC_API void	widget_layout_splitor(res_win_t wt);
 @INPUT int cy: the dock height.
 @RETURN bool_t: return nonzero if added, return zero if exists.
 */
-XDC_API bool_t	widget_dock(res_win_t wt, dword_t style, int cx, int cy);
+EXP_API bool_t	widget_dock(res_win_t wt, dword_t style, int cx, int cy);
 
 /*
 @FUNCTION widget_undock: remove a dock from widget.
@@ -90,7 +90,7 @@ XDC_API bool_t	widget_dock(res_win_t wt, dword_t style, int cx, int cy);
 @INPUT dword_t style: the dock style, it can be WS_DOCK_TOP, WS_DOCK_BOTTOM, WS_DOCK_LEFT, WS_DOCK_RIGHT, WS_DOCK_DYNA.
 @RETURN bool_t: return nonzero if added, return zero if exists.
 */
-XDC_API void	widget_undock(res_win_t wt, dword_t style);
+EXP_API void	widget_undock(res_win_t wt, dword_t style);
 
 /*
 @FUNCTION widget_get_dock_rect: get the dock rect.
@@ -99,7 +99,7 @@ XDC_API void	widget_undock(res_win_t wt, dword_t style);
 @OUTPUT xrect_t* pxr: the rect struct.
 @RETURN void: none.
 */
-XDC_API void	widget_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr);
+EXP_API void	widget_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr);
 
 /*
 @FUNCTION widget_rect_to_pt: mapping rect millimeter value to points value.
@@ -107,7 +107,7 @@ XDC_API void	widget_get_dock_rect(res_win_t wt, dword_t style, xrect_t* pxr);
 @INOUTPUT xrect_t* pxr: the rect struct for inputing millimeter value and outping points value.
 @RETURN void: none.
 */
-XDC_API void	widget_rect_to_pt(res_win_t wt, xrect_t* pxr);
+EXP_API void	widget_rect_to_pt(res_win_t wt, xrect_t* pxr);
 
 /*
 @FUNCTION widget_rect_to_tm: mapping rect points value to millimeter value.
@@ -115,7 +115,7 @@ XDC_API void	widget_rect_to_pt(res_win_t wt, xrect_t* pxr);
 @INOUTPUT xrect_t* pxr: the rect struct for inputing points value and outping millimeter value.
 @RETURN void: none.
 */
-XDC_API void	widget_rect_to_tm(res_win_t wt, xrect_t* pxr);
+EXP_API void	widget_rect_to_tm(res_win_t wt, xrect_t* pxr);
 
 /*
 @FUNCTION widget_size_to_pt: mapping size millimeter value to points value.
@@ -123,7 +123,7 @@ XDC_API void	widget_rect_to_tm(res_win_t wt, xrect_t* pxr);
 @INOUTPUT xsize_t* pxs: the size struct for inputing millimeter value and outping points value.
 @RETURN void: none.
 */
-XDC_API void	widget_size_to_pt(res_win_t wt, xsize_t* pxs);
+EXP_API void	widget_size_to_pt(res_win_t wt, xsize_t* pxs);
 
 /*
 @FUNCTION widget_size_to_tm: mapping rect millimeter value to points value.
@@ -131,7 +131,7 @@ XDC_API void	widget_size_to_pt(res_win_t wt, xsize_t* pxs);
 @INOUTPUT xsize_t* pxs: the size struct for inputing points value and outping millimeter value.
 @RETURN void: none.
 */
-XDC_API void	widget_size_to_tm(res_win_t wt, xsize_t* pxs);
+EXP_API void	widget_size_to_tm(res_win_t wt, xsize_t* pxs);
 
 /*
 @FUNCTION widget_point_to_pt: mapping point millimeter value to points value.
@@ -139,7 +139,7 @@ XDC_API void	widget_size_to_tm(res_win_t wt, xsize_t* pxs);
 @INOUTPUT xpoint_t* ppt: the point struct for inputing millimeter value and outping points value.
 @RETURN void: none.
 */
-XDC_API void	widget_point_to_pt(res_win_t wt, xpoint_t* ppt);
+EXP_API void	widget_point_to_pt(res_win_t wt, xpoint_t* ppt);
 
 /*
 @FUNCTION widget_point_to_tm: mapping point millimeter value to points value.
@@ -147,7 +147,7 @@ XDC_API void	widget_point_to_pt(res_win_t wt, xpoint_t* ppt);
 @INOUTPUT xpoint_t* ppt: the point struct for inputing points value and outping millimeter value.
 @RETURN void: none.
 */
-XDC_API void	widget_point_to_tm(res_win_t wt, xpoint_t* ppt);
+EXP_API void	widget_point_to_tm(res_win_t wt, xpoint_t* ppt);
 
 /*
 @FUNCTION widget_attach_menu: attach a menu document to widget.
@@ -155,21 +155,21 @@ XDC_API void	widget_point_to_tm(res_win_t wt, xpoint_t* ppt);
 @INPUT link_t_ptr menu: the menu link component.
 @RETURN void: none.
 */
-XDC_API void	widget_attach_menu(res_win_t wt, link_t_ptr menu);
+EXP_API void	widget_attach_menu(res_win_t wt, link_t_ptr menu);
 
 /*
 @FUNCTION widget_get_menu: get a menu document from widget.
 @INPUT res_win_t wt: windowd resource handle.
 @RETURN link_t_ptr: return the menu link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	widget_get_menu(res_win_t wt);
+EXP_API link_t_ptr	widget_get_menu(res_win_t wt);
 
 /*
 @FUNCTION widget_detach_menu: detach the menu document from widget.
 @INPUT res_win_t wt: windowd resource handle.
 @RETURN link_t_ptr: return the menu link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	widget_detach_menu(res_win_t wt);
+EXP_API link_t_ptr	widget_detach_menu(res_win_t wt);
 
 /*
 @FUNCTION widget_menu_item_rect: find a menu item by iid and get the item rect.
@@ -177,7 +177,7 @@ XDC_API link_t_ptr	widget_detach_menu(res_win_t wt);
 @INPUT int iid: the menu item iid value.
 @RETURN void: none.
 */
-XDC_API void	widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr);
+EXP_API void	widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr);
 
 /*
 @FUNCTION widget_get_view_rect: get the widget view rect.
@@ -185,7 +185,7 @@ XDC_API void	widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr);
 @OUTPUT viewbox_t* pbox: the view box struct.
 @RETURN void: none.
 */
-XDC_API void	widget_get_view_rect(res_win_t wt, viewbox_t* pbox);
+EXP_API void	widget_get_view_rect(res_win_t wt, viewbox_t* pbox);
 
 /*
 @FUNCTION widget_client_to_viewbox: mapping widget client coordinate to viewbox coordinate.
@@ -193,7 +193,7 @@ XDC_API void	widget_get_view_rect(res_win_t wt, viewbox_t* pbox);
 @INOUTPUT xpoint_t* ppt: the point struct.
 @RETURN void: none.
 */
-XDC_API void	widget_client_to_viewbox(res_win_t wt, xpoint_t* ppt);
+EXP_API void	widget_client_to_viewbox(res_win_t wt, xpoint_t* ppt);
 
 /*
 @FUNCTION widget_viewbox_to_client: mapping widget viewbox coordinate to client coordinate.
@@ -201,7 +201,7 @@ XDC_API void	widget_client_to_viewbox(res_win_t wt, xpoint_t* ppt);
 @INOUTPUT xpoint_t* ppt: the point struct.
 @RETURN void: none.
 */
-XDC_API void	widget_viewbox_to_client(res_win_t wt, xpoint_t* pst);
+EXP_API void	widget_viewbox_to_client(res_win_t wt, xpoint_t* pst);
 
 /*
 @FUNCTION widget_get_canv_rect: get the widget canvas rect.
@@ -209,7 +209,7 @@ XDC_API void	widget_viewbox_to_client(res_win_t wt, xpoint_t* pst);
 @OUTPUT canvbox_t* pbox: the canvas box struct.
 @RETURN void: none.
 */
-XDC_API void	widget_get_canv_rect(res_win_t wt, canvbox_t* pbox);
+EXP_API void	widget_get_canv_rect(res_win_t wt, canvbox_t* pbox);
 
 /*
 @FUNCTION widget_get_canv_size: get the widget canvas size.
@@ -217,7 +217,7 @@ XDC_API void	widget_get_canv_rect(res_win_t wt, canvbox_t* pbox);
 @OUTPUT xsize_t* pxs: the size struct using millimeter member.
 @RETURN void: none.
 */
-XDC_API void	widget_get_canv_size(res_win_t wt, xsize_t* pxs);
+EXP_API void	widget_get_canv_size(res_win_t wt, xsize_t* pxs);
 
 /*
 @FUNCTION widget_reset_scroll: reset widget scroll.
@@ -225,7 +225,7 @@ XDC_API void	widget_get_canv_size(res_win_t wt, xsize_t* pxs);
 @OUTPUT bool_t horz: zero for vert scroll, zero for horz scroll.
 @RETURN void: none.
 */
-XDC_API	void	widget_reset_scroll(res_win_t wt, bool_t horz);
+EXP_API	void	widget_reset_scroll(res_win_t wt, bool_t horz);
 
 /*
 @FUNCTION widget_reset_paging: reset the widget page face.
@@ -238,7 +238,7 @@ XDC_API	void	widget_reset_scroll(res_win_t wt, bool_t horz);
 @INPUT int lh: the widget line height in points.
 @RETURN void: none.
 */
-XDC_API void	widget_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh);
+EXP_API void	widget_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh);
 
 /*
 @FUNCTION widget_ensure_visible: ensure the rect scrolling into widget visual area.
@@ -247,7 +247,7 @@ XDC_API void	widget_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, i
 @INPUT bool_t scroll: nonzero for redrawing scroll bar.
 @RETURN void: none.
 */
-XDC_API void	widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll);
+EXP_API void	widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scroll);
 
 /*
 @FUNCTION widget_point_corner: test point is in widget corner.
@@ -255,55 +255,55 @@ XDC_API void	widget_ensure_visible(res_win_t wt, const xrect_t* pxr, bool_t scro
 @INPUT const xpoint_t* ppt: the point struct.
 @RETURN bool_t: return nonzero if the point in widget corner.
 */
-XDC_API bool_t	widget_point_corner(res_win_t wt, const xpoint_t* ppt);
+EXP_API bool_t	widget_point_corner(res_win_t wt, const xpoint_t* ppt);
 
 /******************************widget event implement*****************************************************/
 
-XDC_API void	widget_hand_create(res_win_t wt);
+EXP_API void	widget_hand_create(res_win_t wt);
 
-XDC_API void	widget_hand_destroy(res_win_t wt);
+EXP_API void	widget_hand_destroy(res_win_t wt);
 
-XDC_API bool_t	widget_hand_scroll(res_win_t wt, bool_t b_horz, int pos);
+EXP_API bool_t	widget_hand_scroll(res_win_t wt, bool_t b_horz, int pos);
 
 /******************************widget splitor implement*****************************************************/
 
-XDC_API void widget_splitor_on_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp);
+EXP_API void widget_splitor_on_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp);
 
-XDC_API void widget_splitor_on_lbuttondown(res_win_t widget, const xpoint_t* pxp);
+EXP_API void widget_splitor_on_lbuttondown(res_win_t widget, const xpoint_t* pxp);
 
-XDC_API void widget_splitor_on_lbuttonup(res_win_t widget, const xpoint_t* pxp);
+EXP_API void widget_splitor_on_lbuttonup(res_win_t widget, const xpoint_t* pxp);
 
-XDC_API void widget_splitor_on_size(res_win_t widget, int code, const xsize_t* pxs);
+EXP_API void widget_splitor_on_size(res_win_t widget, int code, const xsize_t* pxs);
 
-XDC_API void widget_splitor_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
+EXP_API void widget_splitor_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
 
-XDC_API int widget_splitor_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
+EXP_API int widget_splitor_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-XDC_API int widget_splitor_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+EXP_API int widget_splitor_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-XDC_API int widget_splitor_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+EXP_API int widget_splitor_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-XDC_API int widget_splitor_sub_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
+EXP_API int widget_splitor_sub_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
 
-XDC_API int widget_splitor_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+EXP_API int widget_splitor_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
 /******************************widget docker implement*****************************************************/
 
-XDC_API void widget_docker_on_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp);
+EXP_API void widget_docker_on_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp);
 
-XDC_API void widget_docker_on_lbuttondown(res_win_t widget, const xpoint_t* pxp);
+EXP_API void widget_docker_on_lbuttondown(res_win_t widget, const xpoint_t* pxp);
 
-XDC_API void widget_docker_on_lbuttonup(res_win_t widget, const xpoint_t* pxp);
+EXP_API void widget_docker_on_lbuttonup(res_win_t widget, const xpoint_t* pxp);
 
-XDC_API void widget_docker_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
+EXP_API void widget_docker_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
 
-XDC_API int widget_docker_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
+EXP_API int widget_docker_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-XDC_API int widget_docker_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+EXP_API int widget_docker_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-XDC_API int widget_docker_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
+EXP_API int widget_docker_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-XDC_API int widget_docker_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+EXP_API int widget_docker_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
 #ifdef	__cplusplus
 }

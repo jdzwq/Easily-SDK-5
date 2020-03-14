@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API dword_t qr_encode(const byte_t* token, dword_t len, byte_t* buf, dword_t max, int* prows, int* pcols);
+	EXP_API dword_t qr_encode(const byte_t* token, dword_t len, byte_t* buf, dword_t max, int* prows, int* pcols);
 
 #ifdef	__cplusplus
 }

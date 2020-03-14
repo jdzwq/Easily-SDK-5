@@ -191,28 +191,28 @@ extern "C" {
 @FUNCTION create_rich_doc: create a rich document.
 @RETURN link_t_ptr: return the rich document link component.
 */
-XDL_API link_t_ptr create_rich_doc(void);
+EXP_API link_t_ptr create_rich_doc(void);
 
 /*
 @FUNCTION destroy_rich_doc: destroy a rich document.
 @INPUT link_t_ptr ptr: the rich link component.
 @RETURN void: none.
 */
-XDL_API void destroy_rich_doc(link_t_ptr ptr);
+EXP_API void destroy_rich_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_rich_anchset: get rich anchor set.
 @INPUT link_t_ptr ptr: the rich link component.
 @RETURN link_t_ptr: the anchor set link component.
 */
-XDL_API link_t_ptr get_rich_anchset(link_t_ptr ptr);
+EXP_API link_t_ptr get_rich_anchset(link_t_ptr ptr);
 
 /*
 @FUNCTION is_rich_doc: test is rich document.
 @INPUT link_t_ptr ptr: the rich link component.
 @RETURN bool_t: return nonzero for being a rich document, otherwise return zero.
 */
-XDL_API bool_t is_rich_doc(link_t_ptr ptr);
+EXP_API bool_t is_rich_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_rich_anch: test is rich anchor.
@@ -220,28 +220,28 @@ XDL_API bool_t is_rich_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the anchor link component.
 @RETURN bool_t: return nonzero for being a anchor, otherwise return zero.
 */
-XDL_API bool_t is_rich_anch(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_rich_anch(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION clear_rich_doc: clear the rich document.
 @INPUT link_t_ptr ptr: the rich link component.
 @RETURN void: none.
 */
-XDL_API void clear_rich_doc(link_t_ptr ptr);
+EXP_API void clear_rich_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION reset_rich_doc: clear all of anchors text.
 @INPUT link_t_ptr ptr: the rich link component.
 @RETURN void: none.
 */
-XDL_API void reset_rich_doc(link_t_ptr ptr);
+EXP_API void reset_rich_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_rich_anch_count: counting the anchors in tag document.
 @INPUT link_t_ptr ptr: the rich link component.
 @RETURN int: return the number of anchors.
 */
-XDL_API int get_rich_anch_count(link_t_ptr ptr);
+EXP_API int get_rich_anch_count(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_rich_anch: add a new anchor to rich document.
@@ -249,14 +249,14 @@ XDL_API int get_rich_anch_count(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the anchor link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new anchor link component.
 */
-XDL_API link_t_ptr insert_rich_anch(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_rich_anch(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION delete_rich_anch: delete the anchor.
 @INPUT link_t_ptr ilk: the anchor link component.
 @RETURN void: none.
 */
-XDL_API void delete_rich_anch(link_t_ptr ilk);
+EXP_API void delete_rich_anch(link_t_ptr ilk);
 
 /*
 @FUNCTION get_rich_anch: find the anchor by name.
@@ -264,7 +264,7 @@ XDL_API void delete_rich_anch(link_t_ptr ilk);
 @INPUT const tchar_t* nname: the anchor name token.
 @RETURN link_t_ptr: return the anchor link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_rich_anch(link_t_ptr ptr, const tchar_t* nname);
+EXP_API link_t_ptr get_rich_anch(link_t_ptr ptr, const tchar_t* nname);
 
 /*
 @FUNCTION get_rich_next_anchor: get the next anchor.
@@ -272,7 +272,7 @@ XDL_API link_t_ptr get_rich_anch(link_t_ptr ptr, const tchar_t* nname);
 @INPUT link_t_ptr pos: the anchor link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the anchor link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_rich_next_anch(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_rich_next_anch(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_rich_prev_anchor: get the previous anchor.
@@ -280,14 +280,14 @@ XDL_API link_t_ptr get_rich_next_anch(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the anchor link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the anchor link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_rich_prev_anch(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_rich_prev_anch(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION is_rich_text_reserve: test is the rich reserve character.
 @INPUT tchar_t ch: the character.
 @RETURN bool_t: return nonzero for reserved, otherwise return zero.
 */
-XDL_API bool_t is_rich_text_reserve(tchar_t ch);
+EXP_API bool_t is_rich_text_reserve(tchar_t ch);
 
 /*
 @FUNCTION format_rich_doc: format the rich document to string buffer.
@@ -296,7 +296,7 @@ XDL_API bool_t is_rich_text_reserve(tchar_t ch);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_rich_doc(link_t_ptr ptr, tchar_t* buf, int max);
+EXP_API int format_rich_doc(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
 @FUNCTION parse_rich_doc: parse the rich document from string buffer.
@@ -305,7 +305,7 @@ XDL_API int format_rich_doc(link_t_ptr ptr, tchar_t* buf, int max);
 @INPUT int len: the string buffer size in characters.
 @RETURN int: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t parse_rich_doc(link_t_ptr ptr, const tchar_t* buf, int len);
+EXP_API bool_t parse_rich_doc(link_t_ptr ptr, const tchar_t* buf, int len);
 
 #ifdef	__cplusplus
 }

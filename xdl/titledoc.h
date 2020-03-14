@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_title_icon_span: set the title icon span.
 */
-#define set_title_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_title_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_title_icon_span: get the title icon span.
 */
-#define get_title_icon_span(ptr)						get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_title_icon_span(ptr)						get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER itemHeight: numeric.
 @SET set_title_item_height: set the title item height.
@@ -189,28 +189,28 @@ extern "C" {
 @FUNCTION create_title_doc: create a title document.
 @RETURN link_t_ptr: return the title document link component.
 */
-XDL_API link_t_ptr create_title_doc(void);
+EXP_API link_t_ptr create_title_doc(void);
 
 /*
 @FUNCTION destroy_title_doc: destroy a title document.
 @INPUT link_t_ptr ptr: the title link component.
 @RETURN void: none.
 */
-XDL_API void destroy_title_doc(link_t_ptr ptr);
+EXP_API void destroy_title_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_title_itemset: get the title item set.
 @INPUT link_t_ptr ptr: the title link component.
 @RETURN link_t_ptr: return the title item set link component.
 */
-XDL_API link_t_ptr get_title_itemset(link_t_ptr ptr);
+EXP_API link_t_ptr get_title_itemset(link_t_ptr ptr);
 
 /*
 @FUNCTION is_title_doc: test is title document.
 @INPUT link_t_ptr ptr: the title link component.
 @RETURN bool_t: return nonzero for being a title document, otherwise return zero.
 */
-XDL_API bool_t is_title_doc(link_t_ptr ptr);
+EXP_API bool_t is_title_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_title_item: test is title item node.
@@ -218,14 +218,14 @@ XDL_API bool_t is_title_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a group node, otherwise return zero.
 */
-XDL_API bool_t is_title_item(link_t_ptr ptr,link_t_ptr ilk);
+EXP_API bool_t is_title_item(link_t_ptr ptr,link_t_ptr ilk);
 
 /*
 @FUNCTION clear_title_doc: clear the title document.
 @INPUT link_t_ptr ptr: the title link component.
 @RETURN void: none.
 */
-XDL_API void clear_title_doc(link_t_ptr ptr);
+EXP_API void clear_title_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_title_item: add a new item to title document.
@@ -233,7 +233,7 @@ XDL_API void clear_title_doc(link_t_ptr ptr);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_title_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr insert_title_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_title_item: find the title item by name.
@@ -241,7 +241,7 @@ XDL_API link_t_ptr insert_title_item(link_t_ptr ptr, link_t_ptr pos);
 @INPUT const tchar_t* sz_name: the item name token.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_title_item(link_t_ptr ptr,const tchar_t* szName);
+EXP_API link_t_ptr get_title_item(link_t_ptr ptr,const tchar_t* szName);
 
 /*
 @FUNCTION get_title_item_by_id: find the title item by id.
@@ -249,7 +249,7 @@ XDL_API link_t_ptr get_title_item(link_t_ptr ptr,const tchar_t* szName);
 @INPUT const tchar_t* sz_id: the item id token.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_title_item_by_id(link_t_ptr ptr, const tchar_t* sz_id);
+EXP_API link_t_ptr get_title_item_by_id(link_t_ptr ptr, const tchar_t* sz_id);
 
 /*
 @FUNCTION get_title_next_item: get the next item.
@@ -257,7 +257,7 @@ XDL_API link_t_ptr get_title_item_by_id(link_t_ptr ptr, const tchar_t* sz_id);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_title_next_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_title_next_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_title_prev_item: get the previous item.
@@ -265,21 +265,21 @@ XDL_API link_t_ptr get_title_next_item(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_title_prev_item(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_title_prev_item(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_title_item_count: counting the items in title document.
 @INPUT link_t_ptr ptr: the title link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_title_item_count(link_t_ptr ptr);
+EXP_API int get_title_item_count(link_t_ptr ptr);
 
 /*
 @FUNCTION delete_title_item: delete the title item.
 @INPUT link_t_ptr ptr: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_title_item(link_t_ptr ilk);
+EXP_API void delete_title_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

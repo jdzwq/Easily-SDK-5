@@ -160,7 +160,7 @@ extern "C" {
 #define THREAD_JUMP_INTERFACE (g_xdl_mou.pif_jump)
 #endif
 
-	XDL_API jmp_buf*	thread_jump_buff(void);
+	EXP_API jmp_buf*	thread_jump_buff(void);
 
 #define XDL_INITIALIZE_DRIVER			0x00000001
 #define XDL_INITIALIZE_SERVER			0x00000002
@@ -231,21 +231,21 @@ extern "C" {
 #endif
 
 
-	XDL_API	void	xdl_process_init(dword_t opt);
+	EXP_API	void	xdl_process_init(dword_t opt);
 
-	XDL_API void	xdl_process_uninit();
+	EXP_API void	xdl_process_uninit();
 
-	XDL_API void	xdl_process_clean();
+	EXP_API void	xdl_process_clean();
 
 #ifdef XDK_SUPPORT_THREAD
 
-	XDL_API	void	xdl_thread_init(int master);
+	EXP_API	void	xdl_thread_init(int master);
 
-	XDL_API void	xdl_thread_uninit(int error);
+	EXP_API void	xdl_thread_uninit(int error);
 
-	XDL_API void	xmem_dump();
+	EXP_API void	xmem_dump();
 
-	XDL_API void	thread_dump();
+	EXP_API void	thread_dump();
 
 #endif /*XDK_SUPPORT_THREAD*/
 

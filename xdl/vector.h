@@ -51,42 +51,42 @@ extern "C" {
 @INPUT int order: the vector order, 1-order like: (x), 2-order like: (x,y), 3-order like (x,y,z).
 @RETURN vector_t*: return vector struct.
 */
-XDL_API vector_t* vector_alloc(int size, int order);
+EXP_API vector_t* vector_alloc(int size, int order);
 
 /*
 @FUNCTION vector_free: free the vector.
 @INPUT vector_t*: the vector struct.
 @RETURN void: none.
 */
-XDL_API void vector_free(vector_t* pvt);
+EXP_API void vector_free(vector_t* pvt);
 
 /*
 @FUNCTION vector_clone: clone a vector from souce.
 @INPUT const vector_t*: the source vector struct.
 @RETURN vector_t*: return vector struct.
 */
-XDL_API vector_t* vector_clone(const vector_t* pvt);
+EXP_API vector_t* vector_clone(const vector_t* pvt);
 
 /*
 @FUNCTION vector_clear: clear vector elements.
 @INPUT vector_t*: the vector struct.
 @RETURN void: none.
 */
-XDL_API void vector_empty(vector_t* pvt);
+EXP_API void vector_empty(vector_t* pvt);
 
 /*
 @FUNCTION vector_zero: set vector elements value to zero.
 @INPUT vector_t*: the vector struct.
 @RETURN void: none.
 */
-XDL_API void vector_zero(vector_t* pvt);
+EXP_API void vector_zero(vector_t* pvt);
 
 /*
 @FUNCTION vector_unit: set vector elements value to 1.
 @INPUT vector_t*: the vector struct.
 @RETURN void: none.
 */
-XDL_API void vector_unit(vector_t* pvt);
+EXP_API void vector_unit(vector_t* pvt);
 
 /*
 @FUNCTION vector_copy: copy the vector.
@@ -94,7 +94,7 @@ XDL_API void vector_unit(vector_t* pvt);
 @INPUT const vector_t*: the srource vector struct.
 @RETURN void: none.
 */
-XDL_API void vector_copy(vector_t* dest, const vector_t* src);
+EXP_API void vector_copy(vector_t* dest, const vector_t* src);
 
 /*
 @FUNCTION vector_set_value: set vector element value.
@@ -104,7 +104,7 @@ XDL_API void vector_copy(vector_t* dest, const vector_t* src);
 @INPUT ...: variant double value to set according to vector order.
 @RETURN void: none.
 */
-XDL_API void vector_set_value(vector_t* pvt, int i, ...);
+EXP_API void vector_set_value(vector_t* pvt, int i, ...);
 
 /*
 @FUNCTION vector_get_value: get vector element value.
@@ -114,7 +114,7 @@ XDL_API void vector_set_value(vector_t* pvt, int i, ...);
 @INPUT ...: variant double value buffer for return more, according to vector order.
 @RETURN void: none.
 */
-XDL_API void vector_get_value(vector_t* pvt, int i, ...);
+EXP_API void vector_get_value(vector_t* pvt, int i, ...);
 
 /*
 @FUNCTION vector_parse: parse vector element value from string.
@@ -123,7 +123,7 @@ XDL_API void vector_get_value(vector_t* pvt, int i, ...);
 @INPUT int len: length of string token.
 @RETURN void: none.
 */
-XDL_API void vector_parse(vector_t* pvt, const tchar_t* str, int len);
+EXP_API void vector_parse(vector_t* pvt, const tchar_t* str, int len);
 
 /*
 @FUNCTION vector_format: format vector element to string.
@@ -132,20 +132,20 @@ XDL_API void vector_parse(vector_t* pvt, const tchar_t* str, int len);
 @INPUT int max: the buffer size in characters, not include terminate character.
 @RETURN int: return the formated string token length.
 */
-XDL_API int vector_format(vector_t* pvt, tchar_t* buf, int max);
+EXP_API int vector_format(vector_t* pvt, tchar_t* buf, int max);
 
-XDL_API vector_t* vector_shift(vector_t vt, ...);
+EXP_API vector_t* vector_shift(vector_t vt, ...);
 
-XDL_API vector_t* vector_rotate(vector_t vt, double ang);
+EXP_API vector_t* vector_rotate(vector_t vt, double ang);
 
-XDL_API vector_t* vector_scale(vector_t vt, ...);
+EXP_API vector_t* vector_scale(vector_t vt, ...);
 
-XDL_API vector_t* vector_shear(vector_t vt, double sx, double sy);
+EXP_API vector_t* vector_shear(vector_t vt, double sx, double sy);
 
-XDL_API vector_t* vector_trans(vector_t vt, matrix_t mt);
+EXP_API vector_t* vector_trans(vector_t vt, matrix_t mt);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_vector(void);
+	EXP_API void test_vector(void);
 #endif
 
 #ifdef	__cplusplus

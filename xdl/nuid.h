@@ -45,22 +45,22 @@ typedef struct _nuid_t {
 extern "C" {
 #endif
 
-	XDL_API void nuid_zero(nuid_t* pu);
+	EXP_API void nuid_zero(nuid_t* pu);
 
-	XDL_API void nuid_from_timestamp(nuid_t* pu, lword_t tms);
+	EXP_API void nuid_from_timestamp(nuid_t* pu, lword_t tms);
 
-	XDL_API lword_t nuid_to_timestamp(nuid_t* pu);
+	EXP_API lword_t nuid_to_timestamp(nuid_t* pu);
 
-	XDL_API void nuid_from_md5(nuid_t* pu, byte_t buf[16]);
+	EXP_API void nuid_from_md5(nuid_t* pu, byte_t buf[16]);
 
-	XDL_API void nuid_to_md5(nuid_t* pu, byte_t buf[16]);
+	EXP_API void nuid_to_md5(nuid_t* pu, byte_t buf[16]);
 
-	XDL_API void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len);
+	EXP_API void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len);
 
-	XDL_API int nuid_format_string(nuid_t* pu, tchar_t* buf, int max);
+	EXP_API int nuid_format_string(nuid_t* pu, tchar_t* buf, int max);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_nuid(void);
+	EXP_API void test_nuid(void);
 #endif
 
 #ifdef	__cplusplus

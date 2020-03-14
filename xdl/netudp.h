@@ -59,7 +59,7 @@ extern "C" {
 @INPUT const tchar_t* addr: the network address to connect.
 @RETURN xhand_t: if succeeds return UDP client handle, fails return NULL.
 */
-XDL_API xhand_t xudp_cli(unsigned short port, const tchar_t* addr);
+EXP_API xhand_t xudp_cli(unsigned short port, const tchar_t* addr);
 
 /*
 @FUNCTION xudp_srv: create a UDP server.
@@ -69,7 +69,7 @@ XDL_API xhand_t xudp_cli(unsigned short port, const tchar_t* addr);
 @INPUT dword_t size: the network package size in bytes.
 @RETURN xhand_t: if succeeds return UDP server handle, fails return NULL.
 */
-XDL_API xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
+EXP_API xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
 
 /*
 @FUNCTION xudp_bind: bind the local port.
@@ -77,21 +77,21 @@ XDL_API xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t*
 @INPUT unsigned short port: the network port from binding.
 @RETURN bool_t: if succeeds return nonzero.
 */
-XDL_API bool_t xudp_bind(xhand_t udp, unsigned short bind);
+EXP_API bool_t xudp_bind(xhand_t udp, unsigned short bind);
 
 /*
 @FUNCTION xudp_close: close a UDP client or server handle.
 @INPUT xhand_t udp: the UDP xhandle.
 @RETURN void: none.
 */
-XDL_API void xudp_close(xhand_t udp);
+EXP_API void xudp_close(xhand_t udp);
 
 /*
 @FUNCTION xudp_type: get UDP type, it can be _XUDP_TYPE_CLI, _XUDP_TYPE_SRV.
 @INPUT xhand_t udp: the UDP xhandle.
 @RETURN int: the UDP type.
 */
-XDL_API int xudp_type(xhand_t udp);
+EXP_API int xudp_type(xhand_t udp);
 
 /*
 @FUNCTION xudp_set_package: set UDP package size.
@@ -99,14 +99,14 @@ XDL_API int xudp_type(xhand_t udp);
 @INPUT dword_t size: the package size in bytes
 @RETURN void: none.
 */
-XDL_API void xudp_set_package(xhand_t udp, dword_t size);
+EXP_API void xudp_set_package(xhand_t udp, dword_t size);
 
 /*
 @FUNCTION xudp_get_package: get UDP package size.
 @INPUT xhand_t udp: the UDP xhandle.
 @RETURN dword_t: return the package size in bytes.
 */
-XDL_API dword_t xudp_get_package(xhand_t udp);
+EXP_API dword_t xudp_get_package(xhand_t udp);
 
 /*
 @FUNCTION xudp_write: write UDP data.
@@ -115,14 +115,14 @@ XDL_API dword_t xudp_get_package(xhand_t udp);
 @INOUTPUT dword_t* pb: input the size for writing, and return the bytes writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xudp_write(xhand_t udp, const byte_t* data, dword_t* pb);
+EXP_API bool_t xudp_write(xhand_t udp, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xudp_flush: ensure UDP data writed.
 @INPUT xhand_t udp: the UDP xhandle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xudp_flush(xhand_t udp);
+EXP_API bool_t xudp_flush(xhand_t udp);
 
 /*
 @FUNCTION xudp_read: read UDP data.
@@ -131,7 +131,7 @@ XDL_API bool_t xudp_flush(xhand_t udp);
 @INOUTPUT dword_t* pb: input the size for reading, and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xudp_read(xhand_t udp, byte_t* data, dword_t* pb);
+EXP_API bool_t xudp_read(xhand_t udp, byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xudp_addr_port: get UDP local address and port.
@@ -139,7 +139,7 @@ XDL_API bool_t xudp_read(xhand_t udp, byte_t* data, dword_t* pb);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the local port.
 */
-XDL_API unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr);
+EXP_API unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr);
 
 /*
 @FUNCTION xudp_peer_port: get UDP remote address and port.
@@ -147,7 +147,7 @@ XDL_API unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr);
 @OUTPUT tchar_t* addr: the string buffer.
 @RETURN unsigned short: return the remote port.
 */
-XDL_API unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr);
+EXP_API unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr);
 
 #ifdef	__cplusplus
 }

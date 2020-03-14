@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+<sub>
+<proc>libsub_api.so</proc>
+<path>$(XSERVICE_ROOT)/sub</path>
+<level>1</level>
+<track>$(XSERVICE_DATA)/log/sub</track>
+</sub>
+</config>

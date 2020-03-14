@@ -26,7 +26,6 @@ LICENSE.GPL3 for more details.
 #define _RADAPI_H
 
 #include <xdl.h>
-#include <xds.h>
 #include <rad.h>
 #include <hexdfs.h>
 

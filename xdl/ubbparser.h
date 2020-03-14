@@ -40,9 +40,9 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len);
+EXP_API bool_t parse_ubb_doc(link_t_ptr dom, const tchar_t* str, int len);
 
-XDL_API int format_ubb_doc(link_t_ptr dom, tchar_t* buf, int max);
+EXP_API int format_ubb_doc(link_t_ptr dom, tchar_t* buf, int max);
 
 #ifdef	__cplusplus
 }

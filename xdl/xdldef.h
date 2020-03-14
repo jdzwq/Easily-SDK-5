@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 #include <setjmp.h>
 #include <assert.h>
 
-#include <xdp.h>
+#include <xds.h>
 #include <xdk.h>
 
 #if defined(_OS_WINDOWS)
@@ -46,17 +46,6 @@ LICENSE.GPL3 for more details.
 #include "macos/_cfg_macos.h"
 #elif defined(_OS_LINUX)
 #include "linux/_cfg_linux.h"
-#endif
-
-
-#if defined(_USRDLL)
-#if defined(_OS_WINDOWS)
-#define XDL_API __declspec(dllexport)
-#else
-#define XDL_API __attribute__((visibility("default")))
-#endif
-#else
-#define XDL_API extern
 #endif
 
 
@@ -503,7 +492,7 @@ typedef struct _variant_t{
 
 #define DEF_SPLIT_SPAN			(float)1.5
 #define DEF_TOUCH_SPAN			(float)7
-#define DEF_GDI_ICON_SPAN			(float)6.8
+#define DEF_GDI_ATTR_GIZMO_SPAN			(float)6.8
 #define DEF_TEXT_HEIGHT			(float)8
 #define DEF_TEXT_WIDTH			(float)20
 #define DEF_ITEM_HEIGHT			(float)7

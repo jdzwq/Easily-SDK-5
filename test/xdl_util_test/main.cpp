@@ -47,7 +47,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
-	test_printf();
+	//test_printf();
 
 	//test_path2();
 
@@ -59,7 +59,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//test_set();
 
-	//test_object();
+	test_object();
 
 
 	xdl_process_uninit();

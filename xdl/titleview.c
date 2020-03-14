@@ -385,7 +385,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ICON_CLOSE);
+						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx;
@@ -462,7 +462,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ICON_CLOSE);
+						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx + TITLE_EDGE_DARK;
@@ -542,7 +542,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ICON_CLOSE);
+						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx + ic;
@@ -619,7 +619,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ICON_CLOSE);
+						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx + ic;

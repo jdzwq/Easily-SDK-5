@@ -76,7 +76,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t svgctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t owner);
+EXP_API res_win_t svgctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t owner);
 
 /*
 @FUNCTION svgctrl_attach: attach a svg document to widget.
@@ -84,28 +84,28 @@ XDC_API res_win_t svgctrl_create(const tchar_t* wname, dword_t wstyle, const xre
 @INPUT link_t_ptr ptr: the svg document.
 @RETURN void: none.
 */
-XDC_API void	svgctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	svgctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION svgctrl_detach: detach the svg document from widget.
 @INPUT res_win_t widget: the svg widget.
 @RETURN link_t_ptr: the svg link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr svgctrl_detach(res_win_t widget);
+EXP_API link_t_ptr svgctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION svgctrl_fetch: get the svg document from widget.
 @INPUT res_win_t widget: the svg widget.
 @RETURN link_t_ptr: the svg link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr svgctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr svgctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION svgctrl_redraw: redraw the svg widget.
 @INPUT res_win_t widget: the svg widget.
 @RETURN void: none.
 */
-XDC_API void	svgctrl_redraw(res_win_t widget);
+EXP_API void	svgctrl_redraw(res_win_t widget);
 
 /**********************************************form control******************************************************************/
 
@@ -166,7 +166,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t formctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t owner);
+EXP_API res_win_t formctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t owner);
 
 /*
 @FUNCTION formctrl_attach: attach a form document to widget.
@@ -174,28 +174,28 @@ XDC_API res_win_t formctrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the form document.
 @RETURN void: none.
 */
-XDC_API void formctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void formctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION formctrl_detach: detach the form document from widget.
 @INPUT res_win_t widget: the form widget.
 @RETURN link_t_ptr: the form link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr formctrl_detach(res_win_t widget);
+EXP_API link_t_ptr formctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION formctrl_fetch: get the form document from widget.
 @INPUT res_win_t widget: the form widget.
 @RETURN link_t_ptr: the form link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr formctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr formctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION formctrl_get_editor: get the current editor in form widget.
 @INPUT res_win_t widget: the form widget.
 @RETURN res_win_t: the editor widget if exists, otherwise return NULL.
 */
-XDC_API res_win_t formctrl_get_editor(res_win_t widget);
+EXP_API res_win_t formctrl_get_editor(res_win_t widget);
 
 /*
 @FUNCTION formctrl_verify: verify field data in form widget.
@@ -203,7 +203,7 @@ XDC_API res_win_t formctrl_get_editor(res_win_t widget);
 @INPUT bool_t b_alarm: nonzero for popup a alarm dialog for being a invalid field data.
 @RETURN bool_t: return nonzero for being all of fields valus is valid.
 */
-XDC_API bool_t formctrl_verify(res_win_t widget, bool_t b_alarm);
+EXP_API bool_t formctrl_verify(res_win_t widget, bool_t b_alarm);
 
 /*
 @FUNCTION formctrl_accept: accept or discard current editor value in form widget.
@@ -211,14 +211,14 @@ XDC_API bool_t formctrl_verify(res_win_t widget, bool_t b_alarm);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void formctrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void formctrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION formctrl_is_update: test form field value is updated.
 @INPUT res_win_t widget: the form widget.
 @RETURN bool_t: return nonzero if some field content is updated.
 */
-XDC_API bool_t formctrl_is_update(res_win_t widget);
+EXP_API bool_t formctrl_is_update(res_win_t widget);
 
 /*
 @FUNCTION formctrl_redraw: redraw form widget.
@@ -226,7 +226,7 @@ XDC_API bool_t formctrl_is_update(res_win_t widget);
 @INPUT bool_t b_calc: nonzero for recalcing field value.
 @RETURN void: none.
 */
-XDC_API void formctrl_redraw(res_win_t widget, bool_t b_calc);
+EXP_API void formctrl_redraw(res_win_t widget, bool_t b_calc);
 
 /*
 @FUNCTION formctrl_redraw: redraw form widget.
@@ -235,7 +235,7 @@ XDC_API void formctrl_redraw(res_win_t widget, bool_t b_calc);
 @INPUT bool_t b_calc: nonzero for recalcing field value.
 @RETURN void: none.
 */
-XDC_API void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t b_calc);
+EXP_API void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t b_calc);
 
 /*
 @FUNCTION formctrl_tabskip: tab focus to next field.
@@ -243,7 +243,7 @@ XDC_API void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t b_ca
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void formctrl_tabskip(res_win_t widget, int skip);
+EXP_API void formctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION formctrl_set_focus_field: set focus to the field.
@@ -251,14 +251,14 @@ XDC_API void formctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr flk: the field link component.
 @RETURN bool_t: return nonzero for being the field focused, otherwise return zero.
 */
-XDC_API bool_t formctrl_set_focus_field(res_win_t widget, link_t_ptr flk);
+EXP_API bool_t formctrl_set_focus_field(res_win_t widget, link_t_ptr flk);
 
 /*
 @FUNCTION formctrl_get_focus_field: get focus field in form widget.
 @INPUT res_win_t widget: the form widget.
 @RETURN link_t_ptr: return the focused field link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr formctrl_get_focus_field(res_win_t widget);
+EXP_API link_t_ptr formctrl_get_focus_field(res_win_t widget);
 
 /*
 @FUNCTION formctrl_get_field_rect: get field rect int form widget client.
@@ -267,14 +267,14 @@ XDC_API link_t_ptr formctrl_get_focus_field(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void formctrl_get_field_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
+EXP_API void formctrl_get_field_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
 
 /*
 @FUNCTION formctrl_get_lock: get the form widget is locked.
 @INPUT res_win_t widget: the form widget.
 @RETURN bool_t: return nonzero for being form locked, otherwise return zero.
 */
-XDC_API bool_t formctrl_get_lock(res_win_t widget);
+EXP_API bool_t formctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION formctrl_set_lock: set the form widget is locked.
@@ -282,7 +282,7 @@ XDC_API bool_t formctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the form, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void formctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void formctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION formctrl_move_to_page: move to the page.
@@ -290,56 +290,56 @@ XDC_API void formctrl_set_lock(res_win_t widget, bool_t b_lock);
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void formctrl_move_to_page(res_win_t widget, int page);
+EXP_API void formctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION formctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the form widget.
 @RETURN void: none.
 */
-XDC_API void formctrl_move_first_page(res_win_t widget);
+EXP_API void formctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION formctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the form widget.
 @RETURN void: none.
 */
-XDC_API void formctrl_move_last_page(res_win_t widget);
+EXP_API void formctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION formctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the form widget.
 @RETURN void: none.
 */
-XDC_API void formctrl_move_next_page(res_win_t widget);
+EXP_API void formctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION formctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the form widget.
 @RETURN void: none.
 */
-XDC_API void formctrl_move_prev_page(res_win_t widget);
+EXP_API void formctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION formctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the form widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int formctrl_get_cur_page(res_win_t widget);
+EXP_API int formctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION formctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the form widget.
 @RETURN int: return the total pages.
 */
-XDC_API int formctrl_get_max_page(res_win_t widget);
+EXP_API int formctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION formctrl_get_dirty: get form is dirty in design mode.
 @INPUT res_win_t widget: the form widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t formctrl_get_dirty(res_win_t widget);
+EXP_API bool_t formctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION formctrl_set_dirty: set form is dirty in design mode.
@@ -347,7 +347,7 @@ XDC_API bool_t formctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void formctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void formctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /*
 @FUNCTION formctrl_set_field_text: set the field text.
@@ -356,7 +356,7 @@ XDC_API void formctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 @INPUT const tchar_t* text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* text);
+EXP_API bool_t formctrl_set_field_text(res_win_t widget, link_t_ptr flk, const tchar_t* text);
 
 /***********************************grid control*******************************************************************/
 #define GRID_NOTICE_ACCEPT		0
@@ -424,7 +424,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t gridctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t gridctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION gridctrl_attach: attach a grid document to widget.
@@ -432,21 +432,21 @@ XDC_API res_win_t gridctrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the grid document.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	gridctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION gridctrl_detach: detach the grid document from widget.
 @INPUT res_win_t widget: the grid widget.
 @RETURN link_t_ptr: the grid link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr gridctrl_detach(res_win_t widget);
+EXP_API link_t_ptr gridctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_fetch: get the grid document from widget.
 @INPUT res_win_t widget: the grid widget.
 @RETURN link_t_ptr: the grid link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr gridctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr gridctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_verify: verify cell data in grid widget.
@@ -454,7 +454,7 @@ XDC_API link_t_ptr gridctrl_fetch(res_win_t widget);
 @INPUT bool_t b_alarm: nonzero for popup a alarm dialog for being a invalid cell data.
 @RETURN bool_t: return nonzero for being all of cells valus is valid.
 */
-XDC_API bool_t	gridctrl_verify(res_win_t widget, bool_t b_alarm);
+EXP_API bool_t	gridctrl_verify(res_win_t widget, bool_t b_alarm);
 
 /*
 @FUNCTION gridctrl_accept: accept or discard current editor value in grid widget.
@@ -462,14 +462,14 @@ XDC_API bool_t	gridctrl_verify(res_win_t widget, bool_t b_alarm);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void	gridctrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION gridctrl_is_update: test grid rows is updated.
 @INPUT res_win_t widget: the grid widget.
 @RETURN bool_t: return nonzero if some rows content is updated.
 */
-XDC_API bool_t	gridctrl_is_update(res_win_t widget);
+EXP_API bool_t	gridctrl_is_update(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_redraw: redraw grid widget.
@@ -477,7 +477,7 @@ XDC_API bool_t	gridctrl_is_update(res_win_t widget);
 @INPUT bool_t b_calc: nonzero for recalcing rows value.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_redraw(res_win_t widget, bool_t b_calc);
+EXP_API void	gridctrl_redraw(res_win_t widget, bool_t b_calc);
 
 /*
 @FUNCTION gridctrl_redraw_row: redraw the row in grid widget.
@@ -486,7 +486,7 @@ XDC_API void	gridctrl_redraw(res_win_t widget, bool_t b_calc);
 @INPUT bool_t b_calc: nonzero for recalcing cells value of the row.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_redraw_row(res_win_t widget, link_t_ptr rlk, bool_t b_calc);
+EXP_API void	gridctrl_redraw_row(res_win_t widget, link_t_ptr rlk, bool_t b_calc);
 
 /*
 @FUNCTION gridctrl_redraw_col: redraw the col in grid widget.
@@ -495,7 +495,7 @@ XDC_API void	gridctrl_redraw_row(res_win_t widget, link_t_ptr rlk, bool_t b_calc
 @INPUT bool_t b_calc: nonzero for recalcing cells value of the col.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_redraw_col(res_win_t widget, link_t_ptr clk, bool_t b_calc);
+EXP_API void	gridctrl_redraw_col(res_win_t widget, link_t_ptr clk, bool_t b_calc);
 
 /*
 @FUNCTION gridctrl_tabskip: tab focus to next cell.
@@ -503,7 +503,7 @@ XDC_API void	gridctrl_redraw_col(res_win_t widget, link_t_ptr clk, bool_t b_calc
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	gridctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION gridctrl_set_focus_cell: set focus to the cell.
@@ -512,21 +512,21 @@ XDC_API void	gridctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN bool_t: return nonzero for being the cell focused, otherwise return zero.
 */
-XDC_API bool_t	gridctrl_set_focus_cell(res_win_t widget, link_t_ptr rlk, link_t_ptr clk);
+EXP_API bool_t	gridctrl_set_focus_cell(res_win_t widget, link_t_ptr rlk, link_t_ptr clk);
 
 /*
 @FUNCTION gridctrl_get_focus_row: get focus row in grid widget.
 @INPUT res_win_t widget: the grid widget.
 @RETURN link_t_ptr: return the focused row link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr gridctrl_get_focus_row(res_win_t widget);
+EXP_API link_t_ptr gridctrl_get_focus_row(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_get_focus_col: get focus col in grid widget.
 @INPUT res_win_t widget: the grid widget.
 @RETURN link_t_ptr: return the focused col link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr gridctrl_get_focus_col(res_win_t widget);
+EXP_API link_t_ptr gridctrl_get_focus_col(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_get_cell_rect: get cell rect int grid widget client.
@@ -536,14 +536,14 @@ XDC_API link_t_ptr gridctrl_get_focus_col(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_get_cell_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
+EXP_API void	gridctrl_get_cell_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr);
 
 /*
 @FUNCTION gridctrl_get_lock: get the grid widget is locked.
 @INPUT res_win_t widget: the grid widget.
 @RETURN bool_t: return nonzero for being grid locked, otherwise return zero.
 */
-XDC_API bool_t	gridctrl_get_lock(res_win_t widget);
+EXP_API bool_t	gridctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_set_lock: set the grid widget is locked.
@@ -551,7 +551,7 @@ XDC_API bool_t	gridctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the grid, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void	gridctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION gridctrl_move_to_page: move to the page.
@@ -559,56 +559,56 @@ XDC_API void	gridctrl_set_lock(res_win_t widget, bool_t b_lock);
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_move_to_page(res_win_t widget, int page);
+EXP_API void	gridctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION gridctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the grid widget.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_move_first_page(res_win_t widget);
+EXP_API void	gridctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the grid widget.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_move_prev_page(res_win_t widget);
+EXP_API void	gridctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the grid widget.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_move_next_page(res_win_t widget);
+EXP_API void	gridctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the grid widget.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_move_last_page(res_win_t widget);
+EXP_API void	gridctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the grid widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int		gridctrl_get_cur_page(res_win_t widget);
+EXP_API int		gridctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the grid widget.
 @RETURN int: return the total pages.
 */
-XDC_API int		gridctrl_get_max_page(res_win_t widget);
+EXP_API int		gridctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_get_dirty: get grid is dirty in design mode.
 @INPUT res_win_t widget: the grid widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t	gridctrl_get_dirty(res_win_t widget);
+EXP_API bool_t	gridctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_set_dirty: set grid is dirty in design mode.
@@ -616,7 +616,7 @@ XDC_API bool_t	gridctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void	gridctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /*
 @FUNCTION gridctrl_auto_insert: set insert new row automatic.
@@ -624,7 +624,7 @@ XDC_API void	gridctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 @INPUT bool_t b_auto: nonzero for automatic.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_auto_insert(res_win_t widget, bool_t b_auto);
+EXP_API void	gridctrl_auto_insert(res_win_t widget, bool_t b_auto);
 
 /*
 @FUNCTION gridctrl_set_fixed: set fixed navigate col.
@@ -632,14 +632,14 @@ XDC_API void	gridctrl_auto_insert(res_win_t widget, bool_t b_auto);
 @INPUT link_t_ptr clk: the col link component.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_set_fixed(res_win_t widget, link_t_ptr clk);
+EXP_API void	gridctrl_set_fixed(res_win_t widget, link_t_ptr clk);
 
 /*
 @FUNCTION gridctrl_get_fixed: get fixed navigate col.
 @INPUT res_win_t widget: the grid widget.
 @RETURN link_t_ptr: return the col link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	gridctrl_get_fixed(res_win_t widget);
+EXP_API link_t_ptr	gridctrl_get_fixed(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_set_cell_text: Set cell text.
@@ -649,7 +649,7 @@ XDC_API link_t_ptr	gridctrl_get_fixed(res_win_t widget);
 @INPUT const tchar_t* sz_text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	gridctrl_set_cell_text(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, const tchar_t* sz_text);
+EXP_API bool_t	gridctrl_set_cell_text(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, const tchar_t* sz_text);
 
 /*
 @FUNCTION gridctrl_copy_row: copy source row content into current focus row.
@@ -658,7 +658,7 @@ XDC_API bool_t	gridctrl_set_cell_text(res_win_t widget, link_t_ptr rlk, link_t_p
 @INPUT link_t_ptr srcRow: the source row link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	gridctrl_copy_row(res_win_t widget, link_t_ptr srcGrid, link_t_ptr srcRow);
+EXP_API bool_t	gridctrl_copy_row(res_win_t widget, link_t_ptr srcGrid, link_t_ptr srcRow);
 
 /*
 @FUNCTION gridctrl_delete_row: delete the row in grid widget.
@@ -666,7 +666,7 @@ XDC_API bool_t	gridctrl_copy_row(res_win_t widget, link_t_ptr srcGrid, link_t_pt
 @INPUT link_t_ptr rlk: the row link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	gridctrl_delete_row(res_win_t widget, link_t_ptr rlk);
+EXP_API bool_t	gridctrl_delete_row(res_win_t widget, link_t_ptr rlk);
 
 /*
 @FUNCTION gridctrl_insert_row: add a new row into grid.
@@ -674,7 +674,7 @@ XDC_API bool_t	gridctrl_delete_row(res_win_t widget, link_t_ptr rlk);
 @INPUT link_t_ptr pos: the row link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: if succeeds return the new row link component, fails return NULL.
 */
-XDC_API link_t_ptr gridctrl_insert_row(res_win_t widget, link_t_ptr pos);
+EXP_API link_t_ptr gridctrl_insert_row(res_win_t widget, link_t_ptr pos);
 
 /*
 @FUNCTION gridctrl_find: find a matched row from position.
@@ -682,7 +682,7 @@ XDC_API link_t_ptr gridctrl_insert_row(res_win_t widget, link_t_ptr pos);
 @INPUT const tchar_t* token: the pattern token, eg: "col = val".
 @RETURN void: none.
 */
-XDC_API void	gridctrl_find(res_win_t widget, const tchar_t* token);
+EXP_API void	gridctrl_find(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION gridctrl_filter: filter a matched rows.
@@ -690,7 +690,7 @@ XDC_API void	gridctrl_find(res_win_t widget, const tchar_t* token);
 @INPUT const tchar_t* token: the pattern token, eg: "col = val".
 @RETURN void: none.
 */
-XDC_API void	gridctrl_filter(res_win_t widget, const tchar_t* token);
+EXP_API void	gridctrl_filter(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION gridctrl_popup_size: calcing the grid popup size according to client size.
@@ -698,7 +698,7 @@ XDC_API void	gridctrl_filter(res_win_t widget, const tchar_t* token);
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void	gridctrl_popup_size(res_win_t widget, xsize_t* pse);
+EXP_API void	gridctrl_popup_size(res_win_t widget, xsize_t* pse);
 
 /**********************************statis control*******************************************************************/
 
@@ -766,7 +766,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t statisctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t statisctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION statisctrl_attach: attach a statis document to widget.
@@ -774,21 +774,21 @@ XDC_API res_win_t statisctrl_create(const tchar_t* wname, dword_t wstyle, const 
 @INPUT link_t_ptr ptr: the statis document.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	statisctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION statisctrl_detach: detach the statis document from widget.
 @INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: the statis link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr statisctrl_detach(res_win_t widget);
+EXP_API link_t_ptr statisctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_fetch: get the statis document from widget.
 @INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: the statis link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr statisctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr statisctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_accept: accept or discard current editor value in statis widget.
@@ -796,14 +796,14 @@ XDC_API link_t_ptr statisctrl_fetch(res_win_t widget);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void	statisctrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION statisctrl_is_update: test statis xaxs is updated.
 @INPUT res_win_t widget: the statis widget.
 @RETURN bool_t: return nonzero if some xaxs content is updated.
 */
-XDC_API bool_t	statisctrl_is_update(res_win_t widget);
+EXP_API bool_t	statisctrl_is_update(res_win_t widget);
 
 /*
 @FUNCTION gridctrl_redraw: redraw grid widget.
@@ -811,7 +811,7 @@ XDC_API bool_t	statisctrl_is_update(res_win_t widget);
 @INPUT bool_t b_calc: nonzero for recalcing rows value.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_redraw(res_win_t widget, bool_t b_calc);
+EXP_API void	statisctrl_redraw(res_win_t widget, bool_t b_calc);
 
 /*
 @FUNCTION statisctrl_redraw_xax: redraw the xax in statis widget.
@@ -820,7 +820,7 @@ XDC_API void	statisctrl_redraw(res_win_t widget, bool_t b_calc);
 @INPUT bool_t b_calc: nonzero for recalcing coors value of the xax.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc);
+EXP_API void	statisctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCalc);
 
 /*
 @FUNCTION statisctrl_redraw_yax: redraw the yax in statis widget.
@@ -829,7 +829,7 @@ XDC_API void	statisctrl_redraw_xax(res_win_t widget, link_t_ptr xlk, bool_t bCal
 @INPUT bool_t b_calc: nonzero for recalcing coors value of the yax.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc);
+EXP_API void	statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCalc);
 
 /*
 @FUNCTION gridctrl_tabskip: tab focus to next cell.
@@ -837,7 +837,7 @@ XDC_API void	statisctrl_redraw_yax(res_win_t widget, link_t_ptr ylk, bool_t bCal
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	statisctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION statisctrl_set_focus_coor: set focus to the coor.
@@ -846,28 +846,28 @@ XDC_API void	statisctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ylk: the yax link component.
 @RETURN bool_t: return nonzero for being the coor focused, otherwise return zero.
 */
-XDC_API bool_t	statisctrl_set_focus_coor(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk);
+EXP_API bool_t	statisctrl_set_focus_coor(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk);
 
 /*
 @FUNCTION statisctrl_get_focus_xax: get focus xax in statis widget.
 @INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: return the focused xax link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr statisctrl_get_focus_xax(res_win_t widget);
+EXP_API link_t_ptr statisctrl_get_focus_xax(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_get_focus_yax: get focus yax in statis widget.
 @INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: return the focused yax link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr statisctrl_get_focus_yax(res_win_t widget);
+EXP_API link_t_ptr statisctrl_get_focus_yax(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_get_focus_gax: get focus gax in statis widget.
 @INPUT res_win_t widget: the statis widget.
 @RETURN link_t_ptr: return the focused gax link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr statisctrl_get_focus_gax(res_win_t widget);
+EXP_API link_t_ptr statisctrl_get_focus_gax(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_get_coor_rect: get coor rect int statis widget client.
@@ -877,14 +877,14 @@ XDC_API link_t_ptr statisctrl_get_focus_gax(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_get_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
+EXP_API void	statisctrl_get_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
 
 /*
 @FUNCTION statisctrl_get_lock: get the statis widget is locked.
 @INPUT res_win_t widget: the statis widget.
 @RETURN bool_t: return nonzero for being statis locked, otherwise return zero.
 */
-XDC_API bool_t	statisctrl_get_lock(res_win_t widget);
+EXP_API bool_t	statisctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_set_lock: set the statis widget is locked.
@@ -892,7 +892,7 @@ XDC_API bool_t	statisctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the statis, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void	statisctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION statisctrl_move_to_page: move to the page.
@@ -900,56 +900,56 @@ XDC_API void	statisctrl_set_lock(res_win_t widget, bool_t b_lock);
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_move_to_page(res_win_t widget, int page);
+EXP_API void	statisctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION statisctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_move_first_page(res_win_t widget);
+EXP_API void	statisctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_move_prev_page(res_win_t widget);
+EXP_API void	statisctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_move_next_page(res_win_t widget);
+EXP_API void	statisctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the statis widget.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_move_last_page(res_win_t widget);
+EXP_API void	statisctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the statis widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int		statisctrl_get_cur_page(res_win_t widget);
+EXP_API int		statisctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the statis widget.
 @RETURN int: return the tital pages.
 */
-XDC_API int		statisctrl_get_max_page(res_win_t widget);
+EXP_API int		statisctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_get_dirty: get statis is dirty in design mode.
 @INPUT res_win_t widget: the statis widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t	statisctrl_get_dirty(res_win_t widget);
+EXP_API bool_t	statisctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION statisctrl_set_dirty: set statis is dirty in design mode.
@@ -957,7 +957,7 @@ XDC_API bool_t	statisctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void	statisctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /*
 @FUNCTION statisctrl_auto_insert: set insert new xax automatic.
@@ -965,7 +965,7 @@ XDC_API void	statisctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 @INPUT bool_t b_auto: nonzero for automatic.
 @RETURN void: none.
 */
-XDC_API void	statisctrl_auto_insert(res_win_t widget, bool_t b_auto);
+EXP_API void	statisctrl_auto_insert(res_win_t widget, bool_t b_auto);
 
 /*
 @FUNCTION statisctrl_delete_xax: delete the xax in statis widget.
@@ -973,7 +973,7 @@ XDC_API void	statisctrl_auto_insert(res_win_t widget, bool_t b_auto);
 @INPUT link_t_ptr xlk: the xax link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	statisctrl_delete_xax(res_win_t widget, link_t_ptr xlk);
+EXP_API bool_t	statisctrl_delete_xax(res_win_t widget, link_t_ptr xlk);
 
 /*
 @FUNCTION statisctrl_insert_xax: add a new xax into grid.
@@ -981,7 +981,7 @@ XDC_API bool_t	statisctrl_delete_xax(res_win_t widget, link_t_ptr xlk);
 @INPUT link_t_ptr pos: the xax link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: if succeeds return the new xax link component, fails return NULL.
 */
-XDC_API link_t_ptr statisctrl_insert_xax(res_win_t widget, link_t_ptr pre);
+EXP_API link_t_ptr statisctrl_insert_xax(res_win_t widget, link_t_ptr pre);
 
 /*
 @FUNCTION statisctrl_set_coor_text: Set coor text.
@@ -991,7 +991,7 @@ XDC_API link_t_ptr statisctrl_insert_xax(res_win_t widget, link_t_ptr pre);
 @INPUT const tchar_t* sz_text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	statisctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, const tchar_t* sz_text);
+EXP_API bool_t	statisctrl_set_coor_text(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, const tchar_t* sz_text);
 
 /***********************************dialog control*******************************************************************/
 typedef struct _NOTICE_DIALOG{
@@ -1035,7 +1035,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t dialogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t dialogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION dialogctrl_attach: attach a dialog document to widget.
@@ -1043,28 +1043,28 @@ XDC_API res_win_t dialogctrl_create(const tchar_t* wname, dword_t wstyle, const 
 @INPUT link_t_ptr ptr: the dialog document.
 @RETURN void: none.
 */
-XDC_API void dialogctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void dialogctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION dialogctrl_detach: detach the dialog document from widget.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN link_t_ptr: the dialog link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr dialogctrl_detach(res_win_t widget);
+EXP_API link_t_ptr dialogctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_fetch: get the dialog document from widget.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN link_t_ptr: the dialog link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr dialogctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr dialogctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_redraw: redraw dialog widget.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN void: none.
 */
-XDC_API void dialogctrl_redraw(res_win_t widget);
+EXP_API void dialogctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_redraw_item: redraw the item in dialog widget.
@@ -1073,7 +1073,7 @@ XDC_API void dialogctrl_redraw(res_win_t widget);
 @INPUT bool_t b_calc: nonzero for recalcing coors value of the yax.
 @RETURN void: none.
 */
-XDC_API void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION dialogctrl_tabskip: tab focus to next item.
@@ -1081,7 +1081,7 @@ XDC_API void dialogctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void dialogctrl_tabskip(res_win_t widget, int skip);
+EXP_API void dialogctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION dialogctrl_set_focus_item: set focus to the item.
@@ -1089,14 +1089,14 @@ XDC_API void dialogctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t dialogctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t dialogctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION dialogctrl_get_focus_item: get focus item in dialog widget.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr dialogctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr dialogctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_get_item_rect: get item rect int dialog widget client.
@@ -1105,14 +1105,14 @@ XDC_API link_t_ptr dialogctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void dialogctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void dialogctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION dialogctrl_get_dirty: get dialog is dirty in design mode.
 @INPUT res_win_t widget: the dialog widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t dialogctrl_get_dirty(res_win_t widget);
+EXP_API bool_t dialogctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_set_dirty: set dialog is dirty in design mode.
@@ -1120,7 +1120,7 @@ XDC_API bool_t dialogctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void dialogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void dialogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /***********************************calendar control*******************************************************************/
 typedef struct _NOTICE_CALENDAR{
@@ -1164,7 +1164,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t calendarctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t calendarctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION calendarctrl_attach: attach a calendar document to widget.
@@ -1172,28 +1172,28 @@ XDC_API res_win_t calendarctrl_create(const tchar_t* wname, dword_t wstyle, cons
 @INPUT link_t_ptr ptr: the calendar document.
 @RETURN void: none.
 */
-XDC_API void calendarctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void calendarctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION calendarctrl_detach: detach the calendar document from widget.
 @INPUT res_win_t widget: the calendar widget.
 @RETURN link_t_ptr: the calendar link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr calendarctrl_detach(res_win_t widget);
+EXP_API link_t_ptr calendarctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION calendarctrl_fetch: get the calendar document from widget.
 @INPUT res_win_t widget: the calendar widget.
 @RETURN link_t_ptr: the calendar link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr calendarctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr calendarctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION calendarctrl_redraw: redraw calendar widget.
 @INPUT res_win_t widget: the calendar widget.
 @RETURN void: none.
 */
-XDC_API void calendarctrl_redraw(res_win_t widget);
+EXP_API void calendarctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_redraw_item: redraw the daily in calendar widget.
@@ -1201,7 +1201,7 @@ XDC_API void calendarctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the daily link component.
 @RETURN void: none.
 */
-XDC_API void calendarctrl_redraw_daily(res_win_t widget, link_t_ptr ilk);
+EXP_API void calendarctrl_redraw_daily(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION calendarctrl_tabskip: tab focus to next daily.
@@ -1209,7 +1209,7 @@ XDC_API void calendarctrl_redraw_daily(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void calendarctrl_tabskip(res_win_t widget, int skip);
+EXP_API void calendarctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION calendarctrl_set_focus_daily: set focus to the daily.
@@ -1217,14 +1217,14 @@ XDC_API void calendarctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr flk: the daily link component.
 @RETURN bool_t: return nonzero for being the daily focused, otherwise return zero.
 */
-XDC_API bool_t calendarctrl_set_focus_daily(res_win_t widget, link_t_ptr flk);
+EXP_API bool_t calendarctrl_set_focus_daily(res_win_t widget, link_t_ptr flk);
 
 /*
 @FUNCTION calendarctrl_get_focus_daily: get focus daily in calendar widget.
 @INPUT res_win_t widget: the calendar widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr calendarctrl_get_focus_daily(res_win_t widget);
+EXP_API link_t_ptr calendarctrl_get_focus_daily(res_win_t widget);
 
 /*
 @FUNCTION calendarctrl_get_daily_rect: get daily rect int calendar widget client.
@@ -1233,14 +1233,14 @@ XDC_API link_t_ptr calendarctrl_get_focus_daily(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void calendarctrl_get_daily_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
+EXP_API void calendarctrl_get_daily_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
 
 /*
 @FUNCTION calendarctrl_get_dirty: get calendar is dirty in design mode.
 @INPUT res_win_t widget: the calendar widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t calendarctrl_get_dirty(res_win_t widget);
+EXP_API bool_t calendarctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION calendarctrl_set_dirty: set calendar is dirty in design mode.
@@ -1248,7 +1248,7 @@ XDC_API bool_t calendarctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void calendarctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void calendarctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /***********************************diagram control*******************************************************************/
 typedef struct _NOTICE_DIAGRAM{
@@ -1292,7 +1292,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t diagramctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t diagramctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION diagramctrl_attach: attach a diagram document to widget.
@@ -1300,28 +1300,28 @@ XDC_API res_win_t diagramctrl_create(const tchar_t* wname, dword_t wstyle, const
 @INPUT link_t_ptr ptr: the diagram document.
 @RETURN void: none.
 */
-XDC_API void diagramctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void diagramctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION diagramctrl_detach: detach the diagram document from widget.
 @INPUT res_win_t widget: the diagram widget.
 @RETURN link_t_ptr: the diagram link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr diagramctrl_detach(res_win_t widget);
+EXP_API link_t_ptr diagramctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION diagramctrl_fetch: get the diagram document from widget.
 @INPUT res_win_t widget: the diagram widget.
 @RETURN link_t_ptr: the diagram link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr diagramctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr diagramctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION diagramctrl_redraw: redraw diagram widget.
 @INPUT res_win_t widget: the diagram widget.
 @RETURN void: none.
 */
-XDC_API void diagramctrl_redraw(res_win_t widget);
+EXP_API void diagramctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION dialogctrl_redraw_item: redraw the entity in diagram widget.
@@ -1329,7 +1329,7 @@ XDC_API void diagramctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the entity link component.
 @RETURN void: none.
 */
-XDC_API void diagramctrl_redraw_entity(res_win_t widget, link_t_ptr ilk);
+EXP_API void diagramctrl_redraw_entity(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION diagramctrl_tabskip: tab focus to next entity.
@@ -1337,7 +1337,7 @@ XDC_API void diagramctrl_redraw_entity(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void diagramctrl_tabskip(res_win_t widget, int skip);
+EXP_API void diagramctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION diagramctrl_set_focus_entity: set focus to the entity.
@@ -1345,14 +1345,14 @@ XDC_API void diagramctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr flk: the entity link component.
 @RETURN bool_t: return nonzero for being the entity focused, otherwise return zero.
 */
-XDC_API bool_t diagramctrl_set_focus_entity(res_win_t widget, link_t_ptr flk);
+EXP_API bool_t diagramctrl_set_focus_entity(res_win_t widget, link_t_ptr flk);
 
 /*
 @FUNCTION diagramctrl_get_focus_entity: get focus entity in diagram widget.
 @INPUT res_win_t widget: the diagram widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr diagramctrl_get_focus_entity(res_win_t widget);
+EXP_API link_t_ptr diagramctrl_get_focus_entity(res_win_t widget);
 
 /*
 @FUNCTION diagramctrl_get_entity_rect: get entity rect int diagram widget client.
@@ -1361,14 +1361,14 @@ XDC_API link_t_ptr diagramctrl_get_focus_entity(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void diagramctrl_get_entity_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
+EXP_API void diagramctrl_get_entity_rect(res_win_t widget, link_t_ptr flk, xrect_t* pxr);
 
 /*
 @FUNCTION diagramctrl_get_dirty: get diagram is dirty in design mode.
 @INPUT res_win_t widget: the diagram widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t diagramctrl_get_dirty(res_win_t widget);
+EXP_API bool_t diagramctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION diagramctrl_set_dirty: set diagram is dirty in design mode.
@@ -1376,7 +1376,7 @@ XDC_API bool_t diagramctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void diagramctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void diagramctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /********************************image list control************************************************************/
 typedef struct _NOTICE_IMAGES{
@@ -1423,7 +1423,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t imagesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t imagesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION imagesctrl_attach: attach a images document to widget.
@@ -1431,28 +1431,28 @@ XDC_API res_win_t imagesctrl_create(const tchar_t* wname, dword_t wstyle, const 
 @INPUT link_t_ptr ptr: the images document.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	imagesctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION imagesctrl_detach: detach the images document from widget.
 @INPUT res_win_t widget: the images widget.
 @RETURN link_t_ptr: the images link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr	imagesctrl_detach(res_win_t widget);
+EXP_API link_t_ptr	imagesctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION imagesctrl_fetch: get the images document from widget.
 @INPUT res_win_t widget: the images widget.
 @RETURN link_t_ptr: the images link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr	imagesctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr	imagesctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION imagesctrl_redraw: redraw images widget.
 @INPUT res_win_t widget: the images widget.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_redraw(res_win_t widget);
+EXP_API void	imagesctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION imagesctrl_redraw_item: redraw the item in images widget.
@@ -1460,7 +1460,7 @@ XDC_API void	imagesctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	imagesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION imagesctrl_tabskip: tab focus to next item.
@@ -1468,7 +1468,7 @@ XDC_API void	imagesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	imagesctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION imagesctrl_set_focus_item: set focus to the item.
@@ -1476,14 +1476,14 @@ XDC_API void	imagesctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	imagesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	imagesctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION imagesctrl_get_focus_item: get focus item in images widget.
 @INPUT res_win_t widget: the images widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	imagesctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr	imagesctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION imagesctrl_get_item_rect: get item rect int images widget client.
@@ -1492,14 +1492,14 @@ XDC_API link_t_ptr	imagesctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	imagesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION imagesctrl_get_lock: get the images widget is locked.
 @INPUT res_win_t widget: the images widget.
 @RETURN bool_t: return nonzero for being images locked, otherwise return zero.
 */
-XDC_API bool_t	imagesctrl_get_lock(res_win_t widget);
+EXP_API bool_t	imagesctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION imagesctrl_set_lock: set the images widget is locked.
@@ -1507,7 +1507,7 @@ XDC_API bool_t	imagesctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the images, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_set_lock(res_win_t widget, bool_t bLock);
+EXP_API void	imagesctrl_set_lock(res_win_t widget, bool_t bLock);
 
 /*
 @FUNCTION imagesctrl_set_item_title: Set item text.
@@ -1516,7 +1516,7 @@ XDC_API void	imagesctrl_set_lock(res_win_t widget, bool_t bLock);
 @INPUT const tchar_t* sz_text: the title token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t imagesctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* sz_text);
+EXP_API bool_t imagesctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* sz_text);
 
 /*
 @FUNCTION imagesctrl_popup_size: calcing the images popup size according to client size.
@@ -1524,7 +1524,7 @@ XDC_API bool_t imagesctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void	imagesctrl_popup_size(res_win_t widget, xsize_t* pse);
+EXP_API void	imagesctrl_popup_size(res_win_t widget, xsize_t* pse);
 
 /*********************************topog control**************************************************************/
 
@@ -1568,7 +1568,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t topogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t topogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION topogctrl_attach: attach a topog document to widget.
@@ -1576,28 +1576,28 @@ XDC_API res_win_t topogctrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the topog document.
 @RETURN void: none.
 */
-XDC_API void topogctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void topogctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION topogctrl_detach: detach the topog document from widget.
 @INPUT res_win_t widget: the topog widget.
 @RETURN link_t_ptr: the topog link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr topogctrl_detach(res_win_t widget);
+EXP_API link_t_ptr topogctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION topogctrl_fetch: get the topog document from widget.
 @INPUT res_win_t widget: the topog widget.
 @RETURN link_t_ptr: the topog link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr topogctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr topogctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION topogctrl_redraw: redraw topog widget.
 @INPUT res_win_t widget: the topog widget.
 @RETURN void: none.
 */
-XDC_API void topogctrl_redraw(res_win_t widget);
+EXP_API void topogctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION topogctrl_redraw_spot: redraw the sopt in topog widget.
@@ -1605,7 +1605,7 @@ XDC_API void topogctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the spot link component.
 @RETURN void: none.
 */
-XDC_API void topogctrl_redraw_spot(res_win_t widget, link_t_ptr ilk);
+EXP_API void topogctrl_redraw_spot(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION topogctrl_tabskip: tab focus to next item.
@@ -1613,7 +1613,7 @@ XDC_API void topogctrl_redraw_spot(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void topogctrl_tabskip(res_win_t widget, int skip);
+EXP_API void topogctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION topogctrl_set_focus_spot: set focus to the spot.
@@ -1621,14 +1621,14 @@ XDC_API void topogctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the spot link component.
 @RETURN bool_t: return nonzero for being the spot focused, otherwise return zero.
 */
-XDC_API bool_t topogctrl_set_focus_spot(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t topogctrl_set_focus_spot(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION topogctrl_get_focus_spot: get focus spot in topog widget.
 @INPUT res_win_t widget: the topog widget.
 @RETURN link_t_ptr: return the focused spot link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr topogctrl_get_focus_spot(res_win_t widget);
+EXP_API link_t_ptr topogctrl_get_focus_spot(res_win_t widget);
 
 /*
 @FUNCTION topogctrl_get_focus_dot: get focus dot in topog widget.
@@ -1637,7 +1637,7 @@ XDC_API link_t_ptr topogctrl_get_focus_spot(res_win_t widget);
 @OUTPUT int* pcol: for returning zero based col index.
 @RETURN void: none.
 */
-XDC_API void topogctrl_get_focus_dot(res_win_t widget, int* prow, int* pcol);
+EXP_API void topogctrl_get_focus_dot(res_win_t widget, int* prow, int* pcol);
 
 /*
 @FUNCTION topogctrl_get_spot_rect: get spot rect int topog widget client.
@@ -1646,14 +1646,14 @@ XDC_API void topogctrl_get_focus_dot(res_win_t widget, int* prow, int* pcol);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void topogctrl_get_spot_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void topogctrl_get_spot_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION topogctrl_get_lock: get the topog widget is locked.
 @INPUT res_win_t widget: the topog widget.
 @RETURN bool_t: return nonzero for being topog locked, otherwise return zero.
 */
-XDC_API bool_t topogctrl_get_lock(res_win_t widget);
+EXP_API bool_t topogctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION topogctrl_set_lock: set the topog widget is locked.
@@ -1661,14 +1661,14 @@ XDC_API bool_t topogctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the topog, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void topogctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void topogctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION topogctrl_get_dirty: get topog is dirty in design mode.
 @INPUT res_win_t widget: the topog widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t topogctrl_get_dirty(res_win_t widget);
+EXP_API bool_t topogctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION topogctrl_set_dirty: set topog is dirty in design mode.
@@ -1676,7 +1676,7 @@ XDC_API bool_t topogctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void topogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
+EXP_API void topogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 
 /*
 @FUNCTION topogctrl_set_bitmap: set a bitmap to topog widget.
@@ -1684,7 +1684,7 @@ XDC_API void topogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 @INPUT res_bmp_t bmp: the bitmap resource handle.
 @RETURN bool_t: if succeeds return nonzero, otherwise return zero.
 */
-XDC_API bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp);
+EXP_API bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp);
 
 /********************************photo control***************************************************************/
 typedef struct _NOTICE_PHOTO{
@@ -1729,7 +1729,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t photoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t photoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION photoctrl_attach: attach a photo document to widget.
@@ -1737,28 +1737,28 @@ XDC_API res_win_t photoctrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the photo document.
 @RETURN void: none.
 */
-XDC_API void	photoctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	photoctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION photoctrl_detach: detach the photo document from widget.
 @INPUT res_win_t widget: the photo widget.
 @RETURN link_t_ptr: the photo link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr photoctrl_detach(res_win_t widget);
+EXP_API link_t_ptr photoctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION photoctrl_fetch: get the photo document from widget.
 @INPUT res_win_t widget: the photo widget.
 @RETURN link_t_ptr: the photo link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr photoctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr photoctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION photoctrl_redraw: redraw photo widget.
 @INPUT res_win_t widget: the photo widget.
 @RETURN void: none.
 */
-XDC_API void photoctrl_redraw(res_win_t widget);
+EXP_API void photoctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION photoctrl_set_focus_arti: set focus to the arti.
@@ -1766,21 +1766,21 @@ XDC_API void photoctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the arti link component.
 @RETURN bool_t: return nonzero for being the arti focused, otherwise return zero.
 */
-XDC_API bool_t photoctrl_set_focus_arti(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t photoctrl_set_focus_arti(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION photoctrl_get_focus_arti: get focus arti in photo widget.
 @INPUT res_win_t widget: the photo widget.
 @RETURN link_t_ptr: return the focused arti link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr photoctrl_get_focus_arti(res_win_t widget);
+EXP_API link_t_ptr photoctrl_get_focus_arti(res_win_t widget);
 
 /*
 @FUNCTION photoctrl_get_lock: get the photo widget is locked.
 @INPUT res_win_t widget: the photo widget.
 @RETURN bool_t: return nonzero for being photo locked, otherwise return zero.
 */
-XDC_API bool_t photoctrl_get_lock(res_win_t widget);
+EXP_API bool_t photoctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION photoctrl_set_lock: set the photo widget is locked.
@@ -1788,14 +1788,14 @@ XDC_API bool_t photoctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the photo, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void photoctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void photoctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION photoctrl_get_dirty: get photo is dirty.
 @INPUT res_win_t widget: the photo widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t photoctrl_get_dirty(res_win_t widget);
+EXP_API bool_t photoctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION photoctrl_set_dirty: set photo is dirty in design mode.
@@ -1803,7 +1803,7 @@ XDC_API bool_t photoctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void photoctrl_set_dirty(res_win_t widget, bool_t bDirty);
+EXP_API void photoctrl_set_dirty(res_win_t widget, bool_t bDirty);
 
 /*
 @FUNCTION photoctrl_set_bitmap: set a bitmap bytes data to photo widget.
@@ -1812,7 +1812,7 @@ XDC_API void photoctrl_set_dirty(res_win_t widget, bool_t bDirty);
 @INPUT dword_t size: the bytes of bitmap data.
 @RETURN void: none.
 */
-XDC_API void photoctrl_set_bitmap(res_win_t widget, const byte_t* data, dword_t size);
+EXP_API void photoctrl_set_bitmap(res_win_t widget, const byte_t* data, dword_t size);
 
 /*
 @FUNCTION photoctrl_get_bitmap: copy the bitmap bytes data from photo widget.
@@ -1821,14 +1821,14 @@ XDC_API void photoctrl_set_bitmap(res_win_t widget, const byte_t* data, dword_t 
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the bytes copyed.
 */
-XDC_API dword_t photoctrl_get_bitmap(res_win_t widget, byte_t* buf, dword_t max);
+EXP_API dword_t photoctrl_get_bitmap(res_win_t widget, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION photoctrl_commit: commit and merge arti into bitmap.
 @INPUT res_win_t widget: the photo widget.
 @RETURN void: none.
 */
-XDC_API void photoctrl_commit(res_win_t widget);
+EXP_API void photoctrl_commit(res_win_t widget);
 
 /********************************bitmap control***************************************************************/
 typedef struct _NOTICE_MODEL{
@@ -1873,7 +1873,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t modelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t modelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION modelctrl_attach: attach a model document to widget.
@@ -1881,28 +1881,28 @@ XDC_API res_win_t modelctrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the model document.
 @RETURN void: none.
 */
-XDC_API void	modelctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	modelctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION modelctrl_detach: detach the model document from widget.
 @INPUT res_win_t widget: the model widget.
 @RETURN link_t_ptr: the model link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr modelctrl_detach(res_win_t widget);
+EXP_API link_t_ptr modelctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION modelctrl_fetch: get the model document from widget.
 @INPUT res_win_t widget: the model widget.
 @RETURN link_t_ptr: the model link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr modelctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr modelctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION modelctrl_redraw: redraw model widget.
 @INPUT res_win_t widget: the model widget.
 @RETURN void: none.
 */
-XDC_API void modelctrl_redraw(res_win_t widget);
+EXP_API void modelctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION modelctrl_set_focus_arti: set focus to the arti.
@@ -1910,21 +1910,21 @@ XDC_API void modelctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the arti link component.
 @RETURN bool_t: return nonzero for being the arti focused, otherwise return zero.
 */
-XDC_API bool_t modelctrl_set_focus_arti(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t modelctrl_set_focus_arti(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION modelctrl_get_focus_arti: get focus arti in model widget.
 @INPUT res_win_t widget: the model widget.
 @RETURN link_t_ptr: return the focused arti link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr modelctrl_get_focus_arti(res_win_t widget);
+EXP_API link_t_ptr modelctrl_get_focus_arti(res_win_t widget);
 
 /*
 @FUNCTION modelctrl_get_lock: get the model widget is locked.
 @INPUT res_win_t widget: the model widget.
 @RETURN bool_t: return nonzero for being model locked, otherwise return zero.
 */
-XDC_API bool_t modelctrl_get_lock(res_win_t widget);
+EXP_API bool_t modelctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION modelctrl_set_lock: set the model widget is locked.
@@ -1932,14 +1932,14 @@ XDC_API bool_t modelctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the model, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void modelctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void modelctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION modelctrl_get_dirty: get model is dirty.
 @INPUT res_win_t widget: the model widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t modelctrl_get_dirty(res_win_t widget);
+EXP_API bool_t modelctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION modelctrl_set_dirty: set model is dirty in design mode.
@@ -1947,7 +1947,7 @@ XDC_API bool_t modelctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void modelctrl_set_dirty(res_win_t widget, bool_t bDirty);
+EXP_API void modelctrl_set_dirty(res_win_t widget, bool_t bDirty);
 
 /*
 @FUNCTION modelctrl_set_object: set a object bytes data to model widget.
@@ -1956,7 +1956,7 @@ XDC_API void modelctrl_set_dirty(res_win_t widget, bool_t bDirty);
 @INPUT dword_t size: the bytes of object data.
 @RETURN void: none.
 */
-XDC_API void modelctrl_set_object(res_win_t widget, const byte_t* data, dword_t size);
+EXP_API void modelctrl_set_object(res_win_t widget, const byte_t* data, dword_t size);
 
 /*
 @FUNCTION modelctrl_get_object: copy the object bytes data from model widget.
@@ -1965,7 +1965,7 @@ XDC_API void modelctrl_set_object(res_win_t widget, const byte_t* data, dword_t 
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the bytes copyed.
 */
-XDC_API dword_t modelctrl_get_object(res_win_t widget, byte_t* buf, dword_t max);
+EXP_API dword_t modelctrl_get_object(res_win_t widget, byte_t* buf, dword_t max);
 
 /***********************************table control*******************************************************************/
 typedef struct _NOTICE_TABLE{
@@ -2010,7 +2010,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t tablectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t tablectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION tablectrl_attach: attach a string table to widget.
@@ -2018,21 +2018,21 @@ XDC_API res_win_t tablectrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the string table.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	tablectrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION tablectrl_detach: detach the string table from widget.
 @INPUT res_win_t widget: the table widget.
 @RETURN link_t_ptr: the string table link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr tablectrl_detach(res_win_t widget);
+EXP_API link_t_ptr tablectrl_detach(res_win_t widget);
 
 /*
 @FUNCTION tablectrl_fetch: get the string table from widget.
 @INPUT res_win_t widget: the table widget.
 @RETURN link_t_ptr: the string table link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr tablectrl_fetch(res_win_t widget);
+EXP_API link_t_ptr tablectrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION tablectrl_accept: accept or discard current editor value in table widget.
@@ -2040,21 +2040,21 @@ XDC_API link_t_ptr tablectrl_fetch(res_win_t widget);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void	tablectrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION tablectrl_is_update: test string entities is updated.
 @INPUT res_win_t widget: the table widget.
 @RETURN bool_t: return nonzero if some entities content is updated.
 */
-XDC_API bool_t	tablectrl_is_update(res_win_t widget);
+EXP_API bool_t	tablectrl_is_update(res_win_t widget);
 
 /*
 @FUNCTION tablectrl_redraw: redraw table widget.
 @INPUT res_win_t widget: the table widget.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_redraw(res_win_t widget);
+EXP_API void	tablectrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION tablectrl_redraw_item: redraw the item in table widget.
@@ -2062,7 +2062,7 @@ XDC_API void	tablectrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	tablectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION tablectrl_tabskip: tab focus to next item.
@@ -2070,7 +2070,7 @@ XDC_API void	tablectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_tabskip(res_win_t widget, int skip);
+EXP_API void	tablectrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION tablectrl_set_focus_item: set focus to the item.
@@ -2078,21 +2078,21 @@ XDC_API void	tablectrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	tablectrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	tablectrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION tablectrl_get_focus_item: get focus item in table widget.
 @INPUT res_win_t widget: the table widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr tablectrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr tablectrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION tablectrl_get_lock: get the table widget is locked.
 @INPUT res_win_t widget: the table widget.
 @RETURN bool_t: return nonzero for being table locked, otherwise return zero.
 */
-XDC_API bool_t	tablectrl_get_lock(res_win_t widget);
+EXP_API bool_t	tablectrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION tablectrl_set_lock: set the table widget is locked.
@@ -2100,7 +2100,7 @@ XDC_API bool_t	tablectrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the table, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void	tablectrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION tablectrl_auto_insert: set the table add a new item automatic.
@@ -2108,7 +2108,7 @@ XDC_API void	tablectrl_set_lock(res_win_t widget, bool_t b_lock);
 @INPUT bool_t b_auto: nonzero for automatic.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_auto_insert(res_win_t widget, bool_t b_auto);
+EXP_API void	tablectrl_auto_insert(res_win_t widget, bool_t b_auto);
 
 /*
 @FUNCTION tablectrl_delete_item: delete a item in table widget.
@@ -2116,7 +2116,7 @@ XDC_API void	tablectrl_auto_insert(res_win_t widget, bool_t b_auto);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	tablectrl_delete_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	tablectrl_delete_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION tablectrl_insert_item: add a new item into table widget.
@@ -2124,7 +2124,7 @@ XDC_API bool_t	tablectrl_delete_item(res_win_t widget, link_t_ptr ilk);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: if succeeds return new item link component, fails return NULL.
 */
-XDC_API link_t_ptr tablectrl_insert_item(res_win_t widget, link_t_ptr pos);
+EXP_API link_t_ptr tablectrl_insert_item(res_win_t widget, link_t_ptr pos);
 
 /*
 @FUNCTION tablectrl_set_item_key_text: set the table item key value.
@@ -2133,7 +2133,7 @@ XDC_API link_t_ptr tablectrl_insert_item(res_win_t widget, link_t_ptr pos);
 @INPUT const tchar_t* key: the key token.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_set_item_key_text(res_win_t widget, link_t_ptr ilk, const tchar_t* key);
+EXP_API void	tablectrl_set_item_key_text(res_win_t widget, link_t_ptr ilk, const tchar_t* key);
 
 /*
 @FUNCTION tablectrl_set_item_val_text: set the table item text value.
@@ -2142,7 +2142,7 @@ XDC_API void	tablectrl_set_item_key_text(res_win_t widget, link_t_ptr ilk, const
 @INPUT const tchar_t* val: the value token.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_set_item_val_text(res_win_t widget, link_t_ptr ilk, const tchar_t* val);
+EXP_API void	tablectrl_set_item_val_text(res_win_t widget, link_t_ptr ilk, const tchar_t* val);
 
 /*
 @FUNCTION tablectrl_set_ratio: set the table item key and value column width ratio.
@@ -2150,14 +2150,14 @@ XDC_API void	tablectrl_set_item_val_text(res_win_t widget, link_t_ptr ilk, const
 @INPUT float r: the ratio value.
 @RETURN void: none.
 */
-XDC_API void	tablectrl_set_ratio(res_win_t widget, float r);
+EXP_API void	tablectrl_set_ratio(res_win_t widget, float r);
 
 /*
 @FUNCTION tablectrl_get_ratio: get the table item key and value column width ratio.
 @INPUT res_win_t widget: the table widget.
 @RETURN float: return the ratio value.
 */
-XDC_API float	tablectrl_get_ratio(res_win_t widget);
+EXP_API float	tablectrl_get_ratio(res_win_t widget);
 
 /*********************************label control**************************************************************/
 
@@ -2200,7 +2200,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t labelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t labelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION labelctrl_attach: attach a label document to widget.
@@ -2208,28 +2208,28 @@ XDC_API res_win_t labelctrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the label document.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	labelctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION labelctrl_detach: detach the label document from widget.
 @INPUT res_win_t widget: the label widget.
 @RETURN link_t_ptr: the label link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr labelctrl_detach(res_win_t widget);
+EXP_API link_t_ptr labelctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_fetch: get the label document from widget.
 @INPUT res_win_t widget: the label widget.
 @RETURN link_t_ptr: the label link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr labelctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr labelctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_redraw: redraw label widget.
 @INPUT res_win_t widget: the label widget.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_redraw(res_win_t widget);
+EXP_API void	labelctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_redraw_item: redraw the item in label widget.
@@ -2237,7 +2237,7 @@ XDC_API void	labelctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	labelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION labelctrl_tabskip: tab focus to next item.
@@ -2245,7 +2245,7 @@ XDC_API void	labelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	labelctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION labelctrl_set_focus_item: set focus to the item.
@@ -2253,14 +2253,14 @@ XDC_API void	labelctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	labelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	labelctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION labelctrl_get_focus_item: get focus item in label widget.
 @INPUT res_win_t widget: the label widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr labelctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr labelctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_get_item_rect: get item rect in label widget client.
@@ -2269,7 +2269,7 @@ XDC_API link_t_ptr labelctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	labelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION labelctrl_move_to_page: move to the page.
@@ -2277,49 +2277,49 @@ XDC_API void	labelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_move_to_page(res_win_t widget, int page);
+EXP_API void	labelctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION labelctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the label widget.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_move_first_page(res_win_t widget);
+EXP_API void	labelctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the label widget.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_move_prev_page(res_win_t widget);
+EXP_API void	labelctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the label widget.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_move_next_page(res_win_t widget);
+EXP_API void	labelctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the label widget.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_move_last_page(res_win_t widget);
+EXP_API void	labelctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the label widget.
 @RETURN int: return 1-based page index.
 */
-XDC_API int		labelctrl_get_cur_page(res_win_t widget);
+EXP_API int		labelctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the label widget.
 @RETURN int: return the total pages.
 */
-XDC_API int		labelctrl_get_max_page(res_win_t widget);
+EXP_API int		labelctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION labelctrl_popup_size: calcing the label popup size according to client size.
@@ -2327,7 +2327,7 @@ XDC_API int		labelctrl_get_max_page(res_win_t widget);
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void	labelctrl_popup_size(res_win_t widget, xsize_t* pse);
+EXP_API void	labelctrl_popup_size(res_win_t widget, xsize_t* pse);
 
 /********************************list control************************************************************/
 typedef struct _NOTICE_LIST{
@@ -2376,7 +2376,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t listctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t listctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION listctrl_attach: attach a list document to widget.
@@ -2384,21 +2384,21 @@ XDC_API res_win_t listctrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the list document.
 @RETURN void: none.
 */
-XDC_API void	listctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	listctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION listctrl_detach: detach the list document from widget.
 @INPUT res_win_t widget: the list widget.
 @RETURN link_t_ptr: the list link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr	listctrl_detach(res_win_t widget);
+EXP_API link_t_ptr	listctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION listctrl_fetch: get the list document from widget.
 @INPUT res_win_t widget: the list widget.
 @RETURN link_t_ptr: the list link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr	listctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr	listctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION listctrl_accept: accept or discard current editor value in list widget.
@@ -2406,14 +2406,14 @@ XDC_API link_t_ptr	listctrl_fetch(res_win_t widget);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	listctrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void	listctrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION listctrl_redraw: redraw list widget.
 @INPUT res_win_t widget: the list widget.
 @RETURN void: none.
 */
-XDC_API void	listctrl_redraw(res_win_t widget);
+EXP_API void	listctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION listctrl_redraw_item: redraw the item in list widget.
@@ -2421,7 +2421,7 @@ XDC_API void	listctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	listctrl_redraw_item(res_win_t widget, link_t_ptr plk);
+EXP_API void	listctrl_redraw_item(res_win_t widget, link_t_ptr plk);
 
 /*
 @FUNCTION listctrl_tabskip: tab focus to next item.
@@ -2429,7 +2429,7 @@ XDC_API void	listctrl_redraw_item(res_win_t widget, link_t_ptr plk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	listctrl_tabskip(res_win_t widget, int nSkip);
+EXP_API void	listctrl_tabskip(res_win_t widget, int nSkip);
 
 /*
 @FUNCTION listctrl_set_focus_item: set focus to the item.
@@ -2437,14 +2437,14 @@ XDC_API void	listctrl_tabskip(res_win_t widget, int nSkip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	listctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	listctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION listctrl_get_focus_item: get focus item in list widget.
 @INPUT res_win_t widget: the list widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr	listctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr	listctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION listctrl_get_item_rect: get item rect in list widget client.
@@ -2453,14 +2453,14 @@ XDC_API link_t_ptr	listctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	listctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	listctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION listctrl_get_lock: get the list widget is locked.
 @INPUT res_win_t widget: the list widget.
 @RETURN bool_t: return nonzero for being list locked, otherwise return zero.
 */
-XDC_API bool_t	listctrl_get_lock(res_win_t widget);
+EXP_API bool_t	listctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION listctrl_set_lock: set the list widget is locked.
@@ -2468,7 +2468,7 @@ XDC_API bool_t	listctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the list, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	listctrl_set_lock(res_win_t widget, bool_t b_lock);
+EXP_API void	listctrl_set_lock(res_win_t widget, bool_t b_lock);
 
 /*
 @FUNCTION listctrl_set_item_title: set the list item text.
@@ -2477,7 +2477,7 @@ XDC_API void	listctrl_set_lock(res_win_t widget, bool_t b_lock);
 @INPUT const tchar_t* sz_text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t listctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* sz_text);
+EXP_API bool_t listctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* sz_text);
 
 /*
 @FUNCTION listctrl_find: find the list item from position.
@@ -2485,7 +2485,7 @@ XDC_API bool_t listctrl_set_item_title(res_win_t widget, link_t_ptr ilk, const t
 @INPUT const tchar_t* token: the text token.
 @RETURN void: none.
 */
-XDC_API void	listctrl_find(res_win_t widget, const tchar_t* token);
+EXP_API void	listctrl_find(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION listctrl_popup_size: calcing the list popup size according to client size.
@@ -2493,7 +2493,7 @@ XDC_API void	listctrl_find(res_win_t widget, const tchar_t* token);
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void	listctrl_popup_size(res_win_t widget, xsize_t* pse);
+EXP_API void	listctrl_popup_size(res_win_t widget, xsize_t* pse);
 
 /**************************proper control*************************************************************/
 typedef struct _NOTICE_PROPER{
@@ -2538,7 +2538,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t properctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t properctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION properctrl_attach: attach a proper document to widget.
@@ -2546,21 +2546,21 @@ XDC_API res_win_t properctrl_create(const tchar_t* wname, dword_t wstyle, const 
 @INPUT link_t_ptr ptr: the proper document.
 @RETURN void: none.
 */
-XDC_API void	properctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	properctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION properctrl_detach: detach the proper document from widget.
 @INPUT res_win_t widget: the proper widget.
 @RETURN link_t_ptr: the proper link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr properctrl_detach(res_win_t widget);
+EXP_API link_t_ptr properctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION properctrl_fetch: get the proper document from widget.
 @INPUT res_win_t widget: the proper widget.
 @RETURN link_t_ptr: the proper link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr properctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr properctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION properctrl_accept: accept or discard current editor value in proper widget.
@@ -2568,14 +2568,14 @@ XDC_API link_t_ptr properctrl_fetch(res_win_t widget);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	properctrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void	properctrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION properctrl_redraw: redraw proper widget.
 @INPUT res_win_t widget: the proper widget.
 @RETURN void: none.
 */
-XDC_API void	properctrl_redraw(res_win_t widget);
+EXP_API void	properctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION properctrl_redraw_entity: redraw the entity in proper widget.
@@ -2583,7 +2583,7 @@ XDC_API void	properctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr elk: the entity link component.
 @RETURN void: none.
 */
-XDC_API void	properctrl_redraw_entity(res_win_t widget, link_t_ptr elk);
+EXP_API void	properctrl_redraw_entity(res_win_t widget, link_t_ptr elk);
 
 /*
 @FUNCTION properctrl_redraw_section: redraw the section in proper widget.
@@ -2591,7 +2591,7 @@ XDC_API void	properctrl_redraw_entity(res_win_t widget, link_t_ptr elk);
 @INPUT link_t_ptr elk: the section link component.
 @RETURN void: none.
 */
-XDC_API void	properctrl_redraw_section(res_win_t widget, link_t_ptr slk);
+EXP_API void	properctrl_redraw_section(res_win_t widget, link_t_ptr slk);
 
 /*
 @FUNCTION properctrl_tabskip: tab focus to next entity.
@@ -2599,7 +2599,7 @@ XDC_API void	properctrl_redraw_section(res_win_t widget, link_t_ptr slk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	properctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	properctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION properctrl_set_focus_entity: set focus to the entity.
@@ -2607,14 +2607,14 @@ XDC_API void	properctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the entity link component.
 @RETURN bool_t: return nonzero for being the entity focused, otherwise return zero.
 */
-XDC_API bool_t	properctrl_set_focus_entity(res_win_t widget, link_t_ptr elk);
+EXP_API bool_t	properctrl_set_focus_entity(res_win_t widget, link_t_ptr elk);
 
 /*
 @FUNCTION properctrl_get_focus_entity: get focus entity in list widget.
 @INPUT res_win_t widget: the proper widget.
 @RETURN link_t_ptr: return the focused entity link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr properctrl_get_focus_entity(res_win_t widget);
+EXP_API link_t_ptr properctrl_get_focus_entity(res_win_t widget);
 
 /*
 @FUNCTION properctrl_get_entity_rect: get entity rect in proper widget client.
@@ -2623,14 +2623,14 @@ XDC_API link_t_ptr properctrl_get_focus_entity(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	properctrl_get_entity_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	properctrl_get_entity_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION properctrl_get_lock: get the proper widget is locked.
 @INPUT res_win_t widget: the proper widget.
 @RETURN bool_t: return nonzero for being proper locked, otherwise return zero.
 */
-XDC_API bool_t	properctrl_get_lock(res_win_t widget);
+EXP_API bool_t	properctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION properctrl_set_lock: set the proper widget is locked.
@@ -2638,7 +2638,7 @@ XDC_API bool_t	properctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the proper, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	properctrl_set_lock(res_win_t widget, bool_t bLock);
+EXP_API void	properctrl_set_lock(res_win_t widget, bool_t bLock);
 
 /*
 @FUNCTION properctrl_set_entity_value: set the proper entity text.
@@ -2647,7 +2647,7 @@ XDC_API void	properctrl_set_lock(res_win_t widget, bool_t bLock);
 @INPUT const tchar_t* sz_text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	properctrl_set_entity_value(res_win_t widget, link_t_ptr elk, const tchar_t* token);
+EXP_API bool_t	properctrl_set_entity_value(res_win_t widget, link_t_ptr elk, const tchar_t* token);
 
 /***************************************status control******************************************************************/
 typedef struct _NOTICE_STATUS{
@@ -2682,7 +2682,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t statusctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t statusctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION statusctrl_attach: attach a status document to widget.
@@ -2690,35 +2690,35 @@ XDC_API res_win_t statusctrl_create(const tchar_t* wname, dword_t wstyle, const 
 @INPUT link_t_ptr ptr: the status document.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	statusctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION statusctrl_detach: detach the status document from widget.
 @INPUT res_win_t widget: the status widget.
 @RETURN link_t_ptr: the status link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr statusctrl_detach(res_win_t widget);
+EXP_API link_t_ptr statusctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION statusctrl_fetch: get the status document from widget.
 @INPUT res_win_t widget: the status widget.
 @RETURN link_t_ptr: the status link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr statusctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr statusctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION statusctrl_redraw: redraw status widget.
 @INPUT res_win_t widget: the status widget.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_redraw(res_win_t widget);
+EXP_API void	statusctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION statusctrl_redraw_title: redraw the title in status widget.
 @INPUT res_win_t widget: the status widget.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_redraw_title(res_win_t widget);
+EXP_API void	statusctrl_redraw_title(res_win_t widget);
 
 /*
 @FUNCTION statusctrl_redraw_item: redraw the item in status widget.
@@ -2726,7 +2726,7 @@ XDC_API void	statusctrl_redraw_title(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	statusctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION statusctrl_tabskip: tab focus to next item.
@@ -2734,7 +2734,7 @@ XDC_API void	statusctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	statusctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION statusctrl_set_focus_item: set focus to the item.
@@ -2742,14 +2742,14 @@ XDC_API void	statusctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	statusctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	statusctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION statusctrl_get_focus_item: get focus item in status widget.
 @INPUT res_win_t widget: the status widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr statusctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr statusctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION statusctrl_get_item_rect: get item rect in status widget client.
@@ -2758,7 +2758,7 @@ XDC_API link_t_ptr statusctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	statusctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION statusctrl_show_step: show or hide the step bar in stattus widget.
@@ -2766,7 +2766,7 @@ XDC_API void	statusctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t*
 @INPUT bool_t b_show: nonzero for showing, zero for hiding.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_show_step(res_win_t widget, bool_t b_show);
+EXP_API void	statusctrl_show_step(res_win_t widget, bool_t b_show);
 
 /*
 @FUNCTION statusctrl_step_it: add some step to status step bar.
@@ -2775,7 +2775,7 @@ XDC_API void	statusctrl_show_step(res_win_t widget, bool_t b_show);
 @INPUT const tchar_t* sz_step: the step text.
 @RETURN void: none.
 */
-XDC_API void	statusctrl_step_it(res_win_t widget, int steps, const tchar_t* sz_step);
+EXP_API void	statusctrl_step_it(res_win_t widget, int steps, const tchar_t* sz_step);
 
 /*******************************message control************************************************************/
 typedef struct _NOTICE_NOTES{
@@ -2813,7 +2813,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION notesctrl_attach: attach a notes document to widget.
@@ -2821,28 +2821,28 @@ XDC_API res_win_t notesctrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the notes document.
 @RETURN void: none.
 */
-XDC_API void	notesctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	notesctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION notesctrl_detach: detach the notes document from widget.
 @INPUT res_win_t widget: the notes widget.
 @RETURN link_t_ptr: the notes link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr notesctrl_detach(res_win_t widget);
+EXP_API link_t_ptr notesctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION notesctrl_fetch: get the notes document from widget.
 @INPUT res_win_t widget: the notes widget.
 @RETURN link_t_ptr: the notes link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr notesctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr notesctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION notesctrl_redraw: redraw notes widget.
 @INPUT res_win_t widget: the notes widget.
 @RETURN void: none.
 */
-XDC_API void	notesctrl_redraw(res_win_t widget);
+EXP_API void	notesctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION notesctrl_redraw_item: redraw the item in notes widget.
@@ -2850,7 +2850,7 @@ XDC_API void	notesctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION notesctrl_tabskip: tab focus to next item.
@@ -2858,7 +2858,7 @@ XDC_API void	notesctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	notesctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	notesctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION notesctrl_set_focus_item: set focus to the item.
@@ -2866,14 +2866,14 @@ XDC_API void	notesctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	notesctrl_set_focus_item(res_win_t widget, link_t_ptr ent);
+EXP_API bool_t	notesctrl_set_focus_item(res_win_t widget, link_t_ptr ent);
 
 /*
 @FUNCTION notesctrl_get_focus_item: get focus item in notes widget.
 @INPUT res_win_t widget: the notes widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr notesctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr notesctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION notesctrl_get_item_rect: get item rect in notes widget client.
@@ -2882,7 +2882,7 @@ XDC_API link_t_ptr notesctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	notesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	notesctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*******************************message control************************************************************/
 typedef struct _NOTICE_PANEL{
@@ -2920,7 +2920,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t panelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t panelctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION panelctrl_attach: attach a panel document to widget.
@@ -2928,28 +2928,28 @@ XDC_API res_win_t panelctrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the panel document.
 @RETURN void: none.
 */
-XDC_API void	panelctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	panelctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION panelctrl_detach: detach the panel document from widget.
 @INPUT res_win_t widget: the panel widget.
 @RETURN link_t_ptr: the panel link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr panelctrl_detach(res_win_t widget);
+EXP_API link_t_ptr panelctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION panelctrl_fetch: get the panel document from widget.
 @INPUT res_win_t widget: the panel widget.
 @RETURN link_t_ptr: the panel link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr panelctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr panelctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION panelctrl_redraw: redraw panel widget.
 @INPUT res_win_t widget: the panel widget.
 @RETURN void: none.
 */
-XDC_API void	panelctrl_redraw(res_win_t widget);
+EXP_API void	panelctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION panelctrl_redraw_item: redraw the item in panel widget.
@@ -2957,7 +2957,7 @@ XDC_API void	panelctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	panelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	panelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION panelctrl_tabskip: tab focus to next item.
@@ -2965,7 +2965,7 @@ XDC_API void	panelctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	panelctrl_tabskip(res_win_t widget, int skip);
+EXP_API void	panelctrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION panelctrl_set_focus_item: set focus to the item.
@@ -2973,14 +2973,14 @@ XDC_API void	panelctrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	panelctrl_set_focus_item(res_win_t widget, link_t_ptr ent);
+EXP_API bool_t	panelctrl_set_focus_item(res_win_t widget, link_t_ptr ent);
 
 /*
 @FUNCTION panelctrl_get_focus_item: get focus item in panel widget.
 @INPUT res_win_t widget: the panel widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr panelctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr panelctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION panelctrl_get_item_rect: get item rect in panel widget client.
@@ -2989,7 +2989,7 @@ XDC_API link_t_ptr panelctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	panelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	panelctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 
 /*******************************owner control************************************************************/
@@ -3021,18 +3021,18 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION ownerctrl_redraw: redraw owner widget.
 @INPUT res_win_t widget: the owner widget.
 @RETURN void: none.
 */
-XDC_API void	ownerctrl_redraw(res_win_t widget);
+EXP_API void	ownerctrl_redraw(res_win_t widget);
 
-XDC_API void ownerctrl_set_delta(res_win_t widget, var_long var);
+EXP_API void ownerctrl_set_delta(res_win_t widget, var_long var);
 
-XDC_API var_long ownerctrl_get_delta(res_win_t widget);
+EXP_API var_long ownerctrl_get_delta(res_win_t widget);
 
 /*******************************curve control************************************************************/
 typedef struct _NOTICE_CURVE{
@@ -3063,18 +3063,18 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t curvectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t curvectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION curvectrl_redraw: redraw curve widget.
 @INPUT res_win_t widget: the curve widget.
 @RETURN void: none.
 */
-XDC_API void curvectrl_redraw(res_win_t widget);
+EXP_API void curvectrl_redraw(res_win_t widget);
 
-XDC_API void curvectrl_set_vector(res_win_t widget, vector_t vt);
+EXP_API void curvectrl_set_vector(res_win_t widget, vector_t vt);
 
-XDC_API void curvectrl_get_vector(res_win_t widget, vector_t* pvt);
+EXP_API void curvectrl_get_vector(res_win_t widget, vector_t* pvt);
 
 /*************************************title control***********************************************************/
 
@@ -3116,7 +3116,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t titlectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t titlectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION titlectrl_attach: attach a title document to widget.
@@ -3124,28 +3124,28 @@ XDC_API res_win_t titlectrl_create(const tchar_t* wname, dword_t wstyle, const x
 @INPUT link_t_ptr ptr: the title document.
 @RETURN void: none.
 */
-XDC_API void	titlectrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	titlectrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION titlectrl_detach: detach the title document from widget.
 @INPUT res_win_t widget: the title widget.
 @RETURN link_t_ptr: the title link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr titlectrl_detach(res_win_t widget);
+EXP_API link_t_ptr titlectrl_detach(res_win_t widget);
 
 /*
 @FUNCTION titlectrl_fetch: get the title document from widget.
 @INPUT res_win_t widget: the title widget.
 @RETURN link_t_ptr: the title link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr titlectrl_fetch(res_win_t widget);
+EXP_API link_t_ptr titlectrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION titlectrl_redraw: redraw title widget.
 @INPUT res_win_t widget: the title widget.
 @RETURN void: none.
 */
-XDC_API void	titlectrl_redraw(res_win_t widget);
+EXP_API void	titlectrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION titlectrl_redraw_item: redraw the item in title widget.
@@ -3153,7 +3153,7 @@ XDC_API void	titlectrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	titlectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	titlectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION titlectrl_tabskip: tab focus to next item.
@@ -3161,7 +3161,7 @@ XDC_API void	titlectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	titlectrl_tabskip(res_win_t widget, int skip);
+EXP_API void	titlectrl_tabskip(res_win_t widget, int skip);
 
 /*
 @FUNCTION titlectrl_set_focus_item: set focus to the item.
@@ -3169,14 +3169,14 @@ XDC_API void	titlectrl_tabskip(res_win_t widget, int skip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	titlectrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	titlectrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION titlectrl_get_focus_item: get focus item in title widget.
 @INPUT res_win_t widget: the title widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr titlectrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr titlectrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION titlectrl_get_item_rect: get item rect in title widget client.
@@ -3185,7 +3185,7 @@ XDC_API link_t_ptr titlectrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	titlectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	titlectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION titlectrl_insert_item: add a new item into title.
@@ -3193,7 +3193,7 @@ XDC_API void	titlectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* 
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: if succeeds return the new item link component, fails return NULL.
 */
-XDC_API link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos);
+EXP_API link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos);
 
 /*
 @FUNCTION titlectrl_delete_item: delete the item.
@@ -3201,7 +3201,7 @@ XDC_API link_t_ptr titlectrl_insert_item(res_win_t widget, link_t_ptr pos);
 @INPUT link_t_ptr pos: the item link component.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDC_API bool_t	titlectrl_delete_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	titlectrl_delete_item(res_win_t widget, link_t_ptr ilk);
 
 /*************************************title control******************************************************/
 typedef struct _NOTICE_TOOL{
@@ -3236,7 +3236,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t toolctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t toolctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION toolctrl_attach: attach a tool document to widget.
@@ -3244,28 +3244,28 @@ XDC_API res_win_t toolctrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the tool document.
 @RETURN void: none.
 */
-XDC_API void	toolctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	toolctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION toolctrl_detach: detach the tool document from widget.
 @INPUT res_win_t widget: the tool widget.
 @RETURN link_t_ptr: the tool link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr toolctrl_detach(res_win_t widget);
+EXP_API link_t_ptr toolctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION toolctrl_fetch: get the tool document from widget.
 @INPUT res_win_t widget: the tool widget.
 @RETURN link_t_ptr: the tool link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr toolctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr toolctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION toolctrl_redraw: redraw tool widget.
 @INPUT res_win_t widget: the tool widget.
 @RETURN void: none.
 */
-XDC_API void	toolctrl_redraw(res_win_t widget);
+EXP_API void	toolctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION toolctrl_redraw_item: redraw the item in tool widget.
@@ -3273,7 +3273,7 @@ XDC_API void	toolctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	toolctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	toolctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION toolctrl_tabskip: tab focus to next item.
@@ -3281,7 +3281,7 @@ XDC_API void	toolctrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	toolctrl_tabskip(res_win_t widget, int nSkip);
+EXP_API void	toolctrl_tabskip(res_win_t widget, int nSkip);
 
 /*
 @FUNCTION toolctrl_set_focus_item: set focus to the item.
@@ -3289,14 +3289,14 @@ XDC_API void	toolctrl_tabskip(res_win_t widget, int nSkip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	toolctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	toolctrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION toolctrl_get_focus_item: get focus item in tool widget.
 @INPUT res_win_t widget: the tool widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr toolctrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr toolctrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION toolctrl_get_item_rect: get item rect in tool widget client.
@@ -3305,7 +3305,7 @@ XDC_API link_t_ptr toolctrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	toolctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	toolctrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*************************************tree control****************************************************/
 typedef struct _NOTICE_TREE{
@@ -3355,7 +3355,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t treectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t treectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION treectrl_attach: attach a tree document to widget.
@@ -3363,21 +3363,21 @@ XDC_API res_win_t treectrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the tree document.
 @RETURN void: none.
 */
-XDC_API void	treectrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	treectrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION treectrl_detach: detach the tree document from widget.
 @INPUT res_win_t widget: the tree widget.
 @RETURN link_t_ptr: the tree link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr treectrl_detach(res_win_t widget);
+EXP_API link_t_ptr treectrl_detach(res_win_t widget);
 
 /*
 @FUNCTION treectrl_fetch: get the tree document from widget.
 @INPUT res_win_t widget: the tree widget.
 @RETURN link_t_ptr: the tree link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr treectrl_fetch(res_win_t widget);
+EXP_API link_t_ptr treectrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION treectrl_accept: accept or discard current editor value in tree widget.
@@ -3385,14 +3385,14 @@ XDC_API link_t_ptr treectrl_fetch(res_win_t widget);
 @INPUT bool_t b_accept: nonzero for accepting the editor value, zero for discarding.
 @RETURN void: none.
 */
-XDC_API void	treectrl_accept(res_win_t widget, bool_t b_accept);
+EXP_API void	treectrl_accept(res_win_t widget, bool_t b_accept);
 
 /*
 @FUNCTION treectrl_redraw: redraw tree widget.
 @INPUT res_win_t widget: the tree widget.
 @RETURN void: none.
 */
-XDC_API void	treectrl_redraw(res_win_t widget);
+EXP_API void	treectrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION treectrl_redraw_item: redraw the item in tree widget.
@@ -3400,7 +3400,7 @@ XDC_API void	treectrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void	treectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
+EXP_API void	treectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION treectrl_tabskip: tab focus to next item.
@@ -3408,7 +3408,7 @@ XDC_API void	treectrl_redraw_item(res_win_t widget, link_t_ptr ilk);
 @INPUT int skip: the skip code, it can be TABORDER_RIGHT, TABORDER_LEFT, TABORDER_UP, TABORDER_DOWN, TABORDER_PAGEUP, TABORDER_PAGEDOWN, TABORDER_HOME, TABORDER_END.
 @RETURN void: none.
 */
-XDC_API void	treectrl_tabskip(res_win_t widget, int nSkip);
+EXP_API void	treectrl_tabskip(res_win_t widget, int nSkip);
 
 /*
 @FUNCTION treectrl_set_focus_item: set focus to the item.
@@ -3416,14 +3416,14 @@ XDC_API void	treectrl_tabskip(res_win_t widget, int nSkip);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being the item focused, otherwise return zero.
 */
-XDC_API bool_t	treectrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
+EXP_API bool_t	treectrl_set_focus_item(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION treectrl_get_focus_item: get focus item in tree widget.
 @INPUT res_win_t widget: the tree widget.
 @RETURN link_t_ptr: return the focused item link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr treectrl_get_focus_item(res_win_t widget);
+EXP_API link_t_ptr treectrl_get_focus_item(res_win_t widget);
 
 /*
 @FUNCTION treectrl_get_item_rect: get item rect in tree widget client.
@@ -3432,14 +3432,14 @@ XDC_API link_t_ptr treectrl_get_focus_item(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void	treectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void	treectrl_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr);
 
 /*
 @FUNCTION treectrl_get_lock: get the tree widget is locked.
 @INPUT res_win_t widget: the tree widget.
 @RETURN bool_t: return nonzero for being tree locked, otherwise return zero.
 */
-XDC_API bool_t	treectrl_get_lock(res_win_t widget);
+EXP_API bool_t	treectrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION treectrl_set_lock: set the tree widget is locked.
@@ -3447,7 +3447,7 @@ XDC_API bool_t	treectrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the tree, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void	treectrl_set_lock(res_win_t widget, bool_t bLock);
+EXP_API void	treectrl_set_lock(res_win_t widget, bool_t bLock);
 
 /*
 @FUNCTION treectrl_set_item_title: set the tree item text.
@@ -3456,7 +3456,7 @@ XDC_API void	treectrl_set_lock(res_win_t widget, bool_t bLock);
 @INPUT const tchar_t* sz_text: the text token.
 @RETURN bool_t: if succeeds return nonzero, fails return zero..
 */
-XDC_API bool_t treectrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* sz_text);
+EXP_API bool_t treectrl_set_item_title(res_win_t widget, link_t_ptr ilk, const tchar_t* sz_text);
 
 /*
 @FUNCTION treectrl_find: find a item from position.
@@ -3464,7 +3464,7 @@ XDC_API bool_t treectrl_set_item_title(res_win_t widget, link_t_ptr ilk, const t
 @INPUT const tchar_t* token: the matching token.
 @RETURN void: none.
 */
-XDC_API void	treectrl_find(res_win_t widget, const tchar_t* token);
+EXP_API void	treectrl_find(res_win_t widget, const tchar_t* token);
 
 /*
 @FUNCTION treectrl_popup_size: calcing the tree popup size according to client size.
@@ -3472,7 +3472,7 @@ XDC_API void	treectrl_find(res_win_t widget, const tchar_t* token);
 @INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
 @RETURN void: none.
 */
-XDC_API void	treectrl_popup_size(res_win_t widget, xsize_t* pse);
+EXP_API void	treectrl_popup_size(res_win_t widget, xsize_t* pse);
 
 /**************************************rich control**************************************************/
 typedef struct _NOTICE_RICH{
@@ -3512,7 +3512,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t richctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t richctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION richctrl_attach: attach a rich document to widget.
@@ -3520,28 +3520,28 @@ XDC_API res_win_t richctrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the rich document.
 @RETURN void: none.
 */
-XDC_API void	richctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	richctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION richctrl_detach: detach the rich document from widget.
 @INPUT res_win_t widget: the rich widget.
 @RETURN link_t_ptr: the rich link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr richctrl_detach(res_win_t widget);
+EXP_API link_t_ptr richctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION richctrl_fetch: get the rich document from widget.
 @INPUT res_win_t widget: the rich widget.
 @RETURN link_t_ptr: the rich link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr richctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr richctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION richctrl_redraw: redraw rich widget.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void	richctrl_redraw(res_win_t widget);
+EXP_API void	richctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION richctrl_set_focus_anch: set focus to the anchor.
@@ -3549,14 +3549,14 @@ XDC_API void	richctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the anchor link component.
 @RETURN bool_t: return nonzero for being the anchor focused, otherwise return zero.
 */
-XDC_API void richctrl_set_focus_anch(res_win_t widget, link_t_ptr nlk);
+EXP_API void richctrl_set_focus_anch(res_win_t widget, link_t_ptr nlk);
 
 /*
 @FUNCTION richctrl_get_focus_anch: get focus anchor in rich widget.
 @INPUT res_win_t widget: the rich widget.
 @RETURN link_t_ptr: return the focused anchor link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr richctrl_get_focus_anch(res_win_t widget);
+EXP_API link_t_ptr richctrl_get_focus_anch(res_win_t widget);
 
 /*
 @FUNCTION richctrl_get_anch_rect: get item rect in rich widget client.
@@ -3565,14 +3565,14 @@ XDC_API link_t_ptr richctrl_get_focus_anch(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void richctrl_get_anch_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
+EXP_API void richctrl_get_anch_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
 
 /*
 @FUNCTION richctrl_get_lock: get the rich widget is locked.
 @INPUT res_win_t widget: the rich widget.
 @RETURN bool_t: return nonzero for being rich locked, otherwise return zero.
 */
-XDC_API bool_t richctrl_get_lock(res_win_t widget);
+EXP_API bool_t richctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION richctrl_set_lock: set the rich widget is locked.
@@ -3580,7 +3580,7 @@ XDC_API bool_t richctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the rich, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void richctrl_set_lock(res_win_t widget, bool_t bLock);
+EXP_API void richctrl_set_lock(res_win_t widget, bool_t bLock);
 
 /*
 @FUNCTION richctrl_move_to_page: move to the page.
@@ -3588,56 +3588,56 @@ XDC_API void richctrl_set_lock(res_win_t widget, bool_t bLock);
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void richctrl_move_to_page(res_win_t widget, int page);
+EXP_API void richctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION richctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void richctrl_move_first_page(res_win_t widget);
+EXP_API void richctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION richctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void richctrl_move_last_page(res_win_t widget);
+EXP_API void richctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION richctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void richctrl_move_next_page(res_win_t widget);
+EXP_API void richctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION richctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void richctrl_move_prev_page(res_win_t widget);
+EXP_API void richctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION richctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the rich widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int richctrl_get_cur_page(res_win_t widget);
+EXP_API int richctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION richctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the rich widget.
 @RETURN int: return the total pages.
 */
-XDC_API int richctrl_get_max_page(res_win_t widget);
+EXP_API int richctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION richctrl_get_dirty: get rich is dirty.
 @INPUT res_win_t widget: the rich widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t richctrl_get_dirty(res_win_t widget);
+EXP_API bool_t richctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION richctrl_set_dirty: set rich is dirty in design mode.
@@ -3645,7 +3645,7 @@ XDC_API bool_t richctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void richctrl_set_dirty(res_win_t widget, bool_t bDirty);
+EXP_API void richctrl_set_dirty(res_win_t widget, bool_t bDirty);
 
 /*
 @FUNCTION richctrl_delete_anch: delete the ahchor.
@@ -3653,7 +3653,7 @@ XDC_API void richctrl_set_dirty(res_win_t widget, bool_t bDirty);
 @INPUT link_t_ptr ilk: the anchor link component.
 @RETURN void: none.
 */
-XDC_API void richctrl_delete_anch(res_win_t widget, link_t_ptr ilk);
+EXP_API void richctrl_delete_anch(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION richctrl_insert_anch: add a new ahchor into rich widget.
@@ -3661,7 +3661,7 @@ XDC_API void richctrl_delete_anch(res_win_t widget, link_t_ptr ilk);
 @INPUT link_t_ptr pos: the anchor link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: if succeeds return the new anchor link component, fails return NULL.
 */
-XDC_API link_t_ptr richctrl_insert_anch(res_win_t widget, link_t_ptr pos);
+EXP_API link_t_ptr richctrl_insert_anch(res_win_t widget, link_t_ptr pos);
 
 /*
 @FUNCTION richctrl_set_anch_text: set the ahchor text.
@@ -3670,21 +3670,21 @@ XDC_API link_t_ptr richctrl_insert_anch(res_win_t widget, link_t_ptr pos);
 @INPUT const tchar_t* token: the text token.
 @RETURN void: none.
 */
-XDC_API void richctrl_set_anch_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token);
+EXP_API void richctrl_set_anch_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token);
 
 /*
 @FUNCTION richctrl_select_cur: select currnet ahchor in widget.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void richctrl_select_cur(res_win_t widget);
+EXP_API void richctrl_select_cur(res_win_t widget);
 
 /*
 @FUNCTION richctrl_select_all: select all ahchor in widget.
 @INPUT res_win_t widget: the rich widget.
 @RETURN void: none.
 */
-XDC_API void richctrl_select_all(res_win_t widget);
+EXP_API void richctrl_select_all(res_win_t widget);
 
 /*
 @FUNCTION richctrl_get_selected_text: copy the selected ahchor text.
@@ -3693,7 +3693,7 @@ XDC_API void richctrl_select_all(res_win_t widget);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return characters copied.
 */
-XDC_API int richctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
+EXP_API int richctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
 
 /**************************************memo control**************************************************/
 typedef struct _NOTICE_MEMO{
@@ -3728,7 +3728,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION memoctrl_attach: attach a memo document to widget.
@@ -3736,28 +3736,28 @@ XDC_API res_win_t memoctrl_create(const tchar_t* wname, dword_t wstyle, const xr
 @INPUT link_t_ptr ptr: the memo document.
 @RETURN void: none.
 */
-XDC_API void	memoctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	memoctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION memoctrl_detach: detach the memo document from widget.
 @INPUT res_win_t widget: the memo widget.
 @RETURN link_t_ptr: the memo link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr memoctrl_detach(res_win_t widget);
+EXP_API link_t_ptr memoctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_fetch: get the memo document from widget.
 @INPUT res_win_t widget: the memo widget.
 @RETURN link_t_ptr: the memo link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr memoctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr memoctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_redraw: redraw memo widget.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void	memoctrl_redraw(res_win_t widget);
+EXP_API void	memoctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_get_focus_line: set focus to the line.
@@ -3765,14 +3765,14 @@ XDC_API void	memoctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the line link component.
 @RETURN bool_t: return nonzero for being the line focused, otherwise return zero.
 */
-XDC_API void memoctrl_set_focus_line(res_win_t widget, link_t_ptr nlk);
+EXP_API void memoctrl_set_focus_line(res_win_t widget, link_t_ptr nlk);
 
 /*
 @FUNCTION memoctrl_get_focus_line: get focus line in memo widget.
 @INPUT res_win_t widget: the memo widget.
 @RETURN link_t_ptr: return the focused line link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr memoctrl_get_focus_line(res_win_t widget);
+EXP_API link_t_ptr memoctrl_get_focus_line(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_get_line_rect: get line rect in memo widget client.
@@ -3781,14 +3781,14 @@ XDC_API link_t_ptr memoctrl_get_focus_line(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void memoctrl_get_line_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
+EXP_API void memoctrl_get_line_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
 
 /*
 @FUNCTION memoctrl_get_lock: get the memo widget is locked.
 @INPUT res_win_t widget: the memo widget.
 @RETURN bool_t: return nonzero for being memo locked, otherwise return zero.
 */
-XDC_API bool_t memoctrl_get_lock(res_win_t widget);
+EXP_API bool_t memoctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_set_lock: set the memo widget is locked.
@@ -3796,7 +3796,7 @@ XDC_API bool_t memoctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the memo, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void memoctrl_set_lock(res_win_t widget, bool_t bLock);
+EXP_API void memoctrl_set_lock(res_win_t widget, bool_t bLock);
 
 /*
 @FUNCTION memoctrl_move_to_page: move to the page.
@@ -3804,56 +3804,56 @@ XDC_API void memoctrl_set_lock(res_win_t widget, bool_t bLock);
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void memoctrl_move_to_page(res_win_t widget, int page);
+EXP_API void memoctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION memoctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void memoctrl_move_first_page(res_win_t widget);
+EXP_API void memoctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void memoctrl_move_last_page(res_win_t widget);
+EXP_API void memoctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void memoctrl_move_next_page(res_win_t widget);
+EXP_API void memoctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void memoctrl_move_prev_page(res_win_t widget);
+EXP_API void memoctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the memo widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int memoctrl_get_cur_page(res_win_t widget);
+EXP_API int memoctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the memo widget.
 @RETURN int: return the tital pages.
 */
-XDC_API int memoctrl_get_max_page(res_win_t widget);
+EXP_API int memoctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_get_dirty: get memo is dirty.
 @INPUT res_win_t widget: the memo widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t memoctrl_get_dirty(res_win_t widget);
+EXP_API bool_t memoctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_set_dirty: set memo is dirty in design mode.
@@ -3861,7 +3861,7 @@ XDC_API bool_t memoctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void memoctrl_set_dirty(res_win_t widget, bool_t bDirty);
+EXP_API void memoctrl_set_dirty(res_win_t widget, bool_t bDirty);
 
 /*
 @FUNCTION memoctrl_delete_line: delete the line in widget.
@@ -3869,7 +3869,7 @@ XDC_API void memoctrl_set_dirty(res_win_t widget, bool_t bDirty);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDC_API void memoctrl_delete_line(res_win_t widget, link_t_ptr ilk);
+EXP_API void memoctrl_delete_line(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION memoctrl_set_line_text: set the line text.
@@ -3879,21 +3879,21 @@ XDC_API void memoctrl_delete_line(res_win_t widget, link_t_ptr ilk);
 @INPUT int len: the length of text in characters.
 @RETURN void: none.
 */
-XDC_API void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len);
+EXP_API void memoctrl_set_line_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len);
 
 /*
 @FUNCTION memoctrl_selec_cur: select currnet line in widget.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void memoctrl_selec_cur(res_win_t widget);
+EXP_API void memoctrl_selec_cur(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_select_all: select all line in widget.
 @INPUT res_win_t widget: the memo widget.
 @RETURN void: none.
 */
-XDC_API void memoctrl_select_all(res_win_t widget);
+EXP_API void memoctrl_select_all(res_win_t widget);
 
 /*
 @FUNCTION memoctrl_get_selected_text: copy the selected line text.
@@ -3902,7 +3902,7 @@ XDC_API void memoctrl_select_all(res_win_t widget);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return characters copied.
 */
-XDC_API int memoctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
+EXP_API int memoctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
 
 /*
 @FUNCTION memoctrl_set_text: set the memo text.
@@ -3911,7 +3911,7 @@ XDC_API int memoctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
 @INPUT int len: the length of text in characters.
 @RETURN void: none.
 */
-XDC_API void memoctrl_set_text(res_win_t widget, const tchar_t* text, int len);
+EXP_API void memoctrl_set_text(res_win_t widget, const tchar_t* text, int len);
 
 /*
 @FUNCTION memoctrl_get_text: copy the whole text in memo control.
@@ -3920,7 +3920,7 @@ XDC_API void memoctrl_set_text(res_win_t widget, const tchar_t* text, int len);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return characters copied.
 */
-XDC_API int memoctrl_get_text(res_win_t widget, tchar_t* buf, int max);
+EXP_API int memoctrl_get_text(res_win_t widget, tchar_t* buf, int max);
 
 /**************************************tag control**************************************************/
 typedef struct _NOTICE_TAG{
@@ -3958,7 +3958,7 @@ typedef enum{
 @INPUT res_win_t owner: the owner widget.
 @RETURN res_win_t: return the new widget resource handle.
 */
-XDC_API res_win_t tagctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
+EXP_API res_win_t tagctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent);
 
 /*
 @FUNCTION tagctrl_attach: attach a tag document to widget.
@@ -3966,28 +3966,28 @@ XDC_API res_win_t tagctrl_create(const tchar_t* wname, dword_t wstyle, const xre
 @INPUT link_t_ptr ptr: the tag document.
 @RETURN void: none.
 */
-XDC_API void	tagctrl_attach(res_win_t widget, link_t_ptr ptr);
+EXP_API void	tagctrl_attach(res_win_t widget, link_t_ptr ptr);
 
 /*
 @FUNCTION tagctrl_detach: detach the tag document from widget.
 @INPUT res_win_t widget: the tag widget.
 @RETURN link_t_ptr: the tag link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr tagctrl_detach(res_win_t widget);
+EXP_API link_t_ptr tagctrl_detach(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_fetch: get the tag document from widget.
 @INPUT res_win_t widget: the tag widget.
 @RETURN link_t_ptr: the tag link component if exist, otherwise return NULL.
 */
-XDC_API link_t_ptr tagctrl_fetch(res_win_t widget);
+EXP_API link_t_ptr tagctrl_fetch(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_redraw: redraw tag widget.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void	tagctrl_redraw(res_win_t widget);
+EXP_API void	tagctrl_redraw(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_set_focus_joint: set focus to the joint.
@@ -3995,14 +3995,14 @@ XDC_API void	tagctrl_redraw(res_win_t widget);
 @INPUT link_t_ptr ilk: the joint link component.
 @RETURN bool_t: return nonzero for being the joint focused, otherwise return zero.
 */
-XDC_API void tagctrl_set_focus_joint(res_win_t widget, link_t_ptr ilk);
+EXP_API void tagctrl_set_focus_joint(res_win_t widget, link_t_ptr ilk);
 
 /*
 @FUNCTION tagctrl_get_focus_joint: get focus joint in tag widget.
 @INPUT res_win_t widget: the tag widget.
 @RETURN link_t_ptr: return the focused joint link component if exists, otherwise return NULL.
 */
-XDC_API link_t_ptr tagctrl_get_focus_joint(res_win_t widget);
+EXP_API link_t_ptr tagctrl_get_focus_joint(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_get_joint_rect: get joint rect in tag widget client.
@@ -4011,14 +4011,14 @@ XDC_API link_t_ptr tagctrl_get_focus_joint(res_win_t widget);
 @OUTPUT xrect_t* pxr: the rect struct using int member.
 @RETURN void: none.
 */
-XDC_API void tagctrl_get_joint_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
+EXP_API void tagctrl_get_joint_rect(res_win_t widget, link_t_ptr nlk, xrect_t* pxr);
 
 /*
 @FUNCTION tagctrl_get_lock: get the tag widget is locked.
 @INPUT res_win_t widget: the tag widget.
 @RETURN bool_t: return nonzero for being tag locked, otherwise return zero.
 */
-XDC_API bool_t tagctrl_get_lock(res_win_t widget);
+EXP_API bool_t tagctrl_get_lock(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_set_lock: set the tag widget is locked.
@@ -4026,7 +4026,7 @@ XDC_API bool_t tagctrl_get_lock(res_win_t widget);
 @INPUT bool_t b_lock: nonzero for locking the tag, zero for unlocking.
 @RETURN void: none.
 */
-XDC_API void tagctrl_set_lock(res_win_t widget, bool_t bLock);
+EXP_API void tagctrl_set_lock(res_win_t widget, bool_t bLock);
 
 /*
 @FUNCTION tagctrl_move_to_page: move to the page.
@@ -4034,56 +4034,56 @@ XDC_API void tagctrl_set_lock(res_win_t widget, bool_t bLock);
 @INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-XDC_API void tagctrl_move_to_page(res_win_t widget, int page);
+EXP_API void tagctrl_move_to_page(res_win_t widget, int page);
 
 /*
 @FUNCTION tagctrl_move_first_page: move to the first page.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void tagctrl_move_first_page(res_win_t widget);
+EXP_API void tagctrl_move_first_page(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_move_last_page: move to the last page.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void tagctrl_move_last_page(res_win_t widget);
+EXP_API void tagctrl_move_last_page(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_move_next_page: move to the next page.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void tagctrl_move_next_page(res_win_t widget);
+EXP_API void tagctrl_move_next_page(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_move_prev_page: move to the previous page.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void tagctrl_move_prev_page(res_win_t widget);
+EXP_API void tagctrl_move_prev_page(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_get_cur_page: get current page.
 @INPUT res_win_t widget: the tag widget.
 @RETURN int: return the 1-based page index.
 */
-XDC_API int tagctrl_get_cur_page(res_win_t widget);
+EXP_API int tagctrl_get_cur_page(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_get_max_page: get maximized page.
 @INPUT res_win_t widget: the tag widget.
 @RETURN int: return the total pages.
 */
-XDC_API int tagctrl_get_max_page(res_win_t widget);
+EXP_API int tagctrl_get_max_page(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_get_dirty: get tag is dirty.
 @INPUT res_win_t widget: the tag widget.
 @RETURN bool_t: return nonzero for beging dirty.
 */
-XDC_API bool_t tagctrl_get_dirty(res_win_t widget);
+EXP_API bool_t tagctrl_get_dirty(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_set_dirty: set tag is dirty in design mode.
@@ -4091,7 +4091,7 @@ XDC_API bool_t tagctrl_get_dirty(res_win_t widget);
 @INPUT bool_t b_dirty: nonzero for setting dirty, zero for cleaning.
 @RETURN void: none.
 */
-XDC_API void tagctrl_set_dirty(res_win_t widget, bool_t bDirty);
+EXP_API void tagctrl_set_dirty(res_win_t widget, bool_t bDirty);
 
 /*
 @FUNCTION tagctrl_delete_joint: delete the joint in widget.
@@ -4099,7 +4099,7 @@ XDC_API void tagctrl_set_dirty(res_win_t widget, bool_t bDirty);
 @INPUT link_t_ptr ilk: the joint link component.
 @RETURN void: none.
 */
-XDC_API void tagctrl_delete_joint(res_win_t widget, link_t_ptr nlk);
+EXP_API void tagctrl_delete_joint(res_win_t widget, link_t_ptr nlk);
 
 /*
 @FUNCTION tagctrl_set_joint_text: set the joint text.
@@ -4109,21 +4109,21 @@ XDC_API void tagctrl_delete_joint(res_win_t widget, link_t_ptr nlk);
 @INPUT int len: the token length in characters.
 @RETURN void: none.
 */
-XDC_API void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len);
+EXP_API void tagctrl_set_joint_text(res_win_t widget, link_t_ptr nlk, const tchar_t* token, int len);
 
 /*
 @FUNCTION tagctrl_select_all: select all joint in widget.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void tagctrl_select_all(res_win_t widget);
+EXP_API void tagctrl_select_all(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_select_cur: select currnet joint in widget.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none
 */
-XDC_API void tagctrl_select_cur(res_win_t widget);
+EXP_API void tagctrl_select_cur(res_win_t widget);
 
 /*
 @FUNCTION tagctrl_get_selected_text: copy the selected joint text.
@@ -4132,7 +4132,7 @@ XDC_API void tagctrl_select_cur(res_win_t widget);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return characters copied.
 */
-XDC_API int tagctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
+EXP_API int tagctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
 
 /*
 @FUNCTION tagctrl_setup_tag: set the current selected text as a tag.
@@ -4140,14 +4140,14 @@ XDC_API int tagctrl_get_selected_text(res_win_t widget, tchar_t* buf, int max);
 @INPUT const tchar_t* tname: the tag name token.
 @RETURN void: none.
 */
-XDC_API void tagctrl_setup_tag(res_win_t widget, const tchar_t* tname);
+EXP_API void tagctrl_setup_tag(res_win_t widget, const tchar_t* tname);
 
 /*
 @FUNCTION tagctrl_setup_tag: clear the current joint tag.
 @INPUT res_win_t widget: the tag widget.
 @RETURN void: none.
 */
-XDC_API void tagctrl_clean_tag(res_win_t widget);
+EXP_API void tagctrl_clean_tag(res_win_t widget);
 
 
 #ifdef	__cplusplus

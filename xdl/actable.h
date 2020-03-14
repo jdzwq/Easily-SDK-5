@@ -44,14 +44,14 @@ extern "C" {
 @FUNCTION create_ac_table: create a ac table.
 @RETURN link_t_ptr: return the ac table link component.
 */
-XDL_API link_t_ptr create_ac_table(void);
+EXP_API link_t_ptr create_ac_table(void);
 
 /*
 @FUNCTION destroy_ac_table: destroy a ac table.
 @INPUT link_t_ptr ptr: the ac table link component.
 @RETURN void: none.
 */
-XDL_API void destroy_ac_table(link_t_ptr ptr);
+EXP_API void destroy_ac_table(link_t_ptr ptr);
 
 /*
 @FUNCTION insert_ac_table: insert a key and value into ac table.
@@ -61,14 +61,14 @@ XDL_API void destroy_ac_table(link_t_ptr ptr);
 @INPUT var_long val: the int val.
 @RETURN void: none.
 */
-XDL_API void insert_ac_table(link_t_ptr ptr, const tchar_t* key, int len, var_long val);
+EXP_API void insert_ac_table(link_t_ptr ptr, const tchar_t* key, int len, var_long val);
 
 /*
 @FUNCTION build_ac_table: build failure transfer table of the ac table .
 @INPUT link_t_ptr ptr: the ac table link component.
 @RETURN void: none.
 */
-XDL_API void build_ac_table(link_t_ptr ptr);
+EXP_API void build_ac_table(link_t_ptr ptr);
 
 /*
 @FUNCTION find_ac_table: find and return data in ac table by the key.
@@ -77,7 +77,7 @@ XDL_API void build_ac_table(link_t_ptr ptr);
 @INPUT int len: the key string token length in characters.
 @RETURN var_long: return the data if finded, otherwise return zero.
 */
-XDL_API var_long find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
+EXP_API var_long find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
 
 /*
 @FUNCTION enum_ac_table: enum ac table key and value.
@@ -86,10 +86,10 @@ XDL_API var_long find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
 @INPUT void* pa: the parameter tanslate to callback function.
 @RETURN void: none.
 */
-XDL_API void enum_ac_table(link_t_ptr ptr, PF_ENUM_AC_TABLE pf, void* pa);
+EXP_API void enum_ac_table(link_t_ptr ptr, PF_ENUM_AC_TABLE pf, void* pa);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_ac_table();
+	EXP_API void test_ac_table();
 #endif
 
 #ifdef	__cplusplus

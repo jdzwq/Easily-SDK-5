@@ -311,7 +311,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 				parse_xcolor(&xc, xf.color);
 				ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ICON_CHECKED);
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_CHECKED);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 0) == 0)

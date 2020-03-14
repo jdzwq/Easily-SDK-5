@@ -44,21 +44,21 @@ extern "C" {
 @FUNCTION xcache_open: open a memory cache.
 @RETURN xhand_t: if succeeds return cache handle, fails return NULL.
 */
-XDL_API xhand_t xcache_open(void);
+EXP_API xhand_t xcache_open(void);
 
 /*
 @FUNCTION xcache_close: close a memory cache.
 @INPUT xhand_t cache: the cache handle.
 @RETURN void: none.
 */
-XDL_API void xcache_close(xhand_t vmem);
+EXP_API void xcache_close(xhand_t vmem);
 
 /*
 @FUNCTION xcache_handle: get a cache handle, the handle is buffer pointer.
 @INPUT xhand_t vmem: the cache handle.
 @RETURN void*: if succeeds return buffer pointer, fails return NULL.
 */
-XDL_API void* xcache_handle(xhand_t vmem);
+EXP_API void* xcache_handle(xhand_t vmem);
 
 /*
 @FUNCTION xcache_write: write data into cache.
@@ -67,7 +67,7 @@ XDL_API void* xcache_handle(xhand_t vmem);
 @INOUTPUT dword_t* pb: the integer buffer pointer holding byte count for writing, and return the actually byte count writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xcache_write(xhand_t vmem, const byte_t* data, dword_t* pb);
+EXP_API bool_t xcache_write(xhand_t vmem, const byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xcache_read: read data from cache.
@@ -76,7 +76,7 @@ XDL_API bool_t xcache_write(xhand_t vmem, const byte_t* data, dword_t* pb);
 @INOUTPUT dword_t* pb: the integer buffer pointer for holding byte count for reading, and return the actually byte count readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xcache_read(xhand_t vmem, byte_t* buf, dword_t* pb);
+EXP_API bool_t xcache_read(xhand_t vmem, byte_t* buf, dword_t* pb);
 
 #endif
 

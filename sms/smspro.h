@@ -28,18 +28,25 @@ LICENSE.GPL3 for more details.
 
 #include "smsdef.h"
 
-extern sms_t STDCALL sms_open_isp(const tchar_t* ispfile);
+#ifdef	__cplusplus
+extern "C" {
+#endif
 
-extern void STDCALL sms_close(sms_t sms);
+	extern sms_t STDCALL sms_open_isp(const tchar_t* ispfile);
 
-extern bool_t STDCALL sms_code(sms_t sms,const tchar_t* phone, const tchar_t* param, int len);
+	extern void STDCALL sms_close(sms_t sms);
 
-extern bool_t STDCALL sms_message(sms_t sms, const tchar_t* phone, const tchar_t* param, int len, tchar_t* msgid, int max);
+	extern bool_t STDCALL sms_code(sms_t sms, const tchar_t* phone, const tchar_t* param, int len);
 
-extern bool_t STDCALL sms_receipt(sms_t sms, const tchar_t* phone, const tchar_t* msgid, int len, tchar_t* receipt, int max);
+	extern bool_t STDCALL sms_message(sms_t sms, const tchar_t* phone, const tchar_t* param, int len, tchar_t* msgid, int max);
 
-extern int STDCALL sms_error(sms_t sms,tchar_t* buf,int max);
+	extern bool_t STDCALL sms_receipt(sms_t sms, const tchar_t* phone, const tchar_t* msgid, int len, tchar_t* receipt, int max);
 
+	extern int STDCALL sms_error(sms_t sms, tchar_t* buf, int max);
+
+#ifdef	__cplusplus
+}
+#endif
 /*********************************sms export def***************************************************/
 
 typedef bool_t(STDCALL *PF_SMS_PARSE_ISP)(const tchar_t*, tchar_t*, int, tchar_t*, int, tchar_t*, int);

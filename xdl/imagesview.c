@@ -360,7 +360,7 @@ void draw_images(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr_box.fh = ic;
 
 			ft_center_rect(&xr_box, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_box, GDI_ICON_CHECKED);
+			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_box, GDI_ATTR_GIZMO_CHECKED);
 		}
 
 		count++;

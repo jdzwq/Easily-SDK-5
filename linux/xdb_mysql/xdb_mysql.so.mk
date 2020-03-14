@@ -9,20 +9,21 @@ LIB_MYSQL = /usr/lib
 
 LIB_PATH = ../lib
 INC_PATH = ~/Easily-sdk-5/include
-NET_PATH = ~/Easily-sdk-5/xdb
+SRC_PATH = ~/Easily-sdk-5/xdb
 OUT_PATH = ../sbin/api
-LOC_PATH = .
 
-SRCS = $(NET_PATH)/xdb_mysql.c
+DIRS = $(wildcard $(SRC_PATH)/xdb_mysql.c)
+SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/libxdb_mysql.so.1.0
+MODULE = libxdb_mysql.so
+TARGET = $(OUT_PATH)/$(MODULE).1.0
 
-%.o : $(LOC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(NET_PATH) -I $(INC_MYSQL) -L $(LIB_PATH)
+%.o : $(SRC_PATH)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(INC_MYSQL) -L $(LIB_PATH)
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxdp -lxdl -lmysqlclient -L $(LIB_MYSQL) 
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl -lmysqlclient -L $(LIB_MYSQL) 
 	rm -f $(OBJS)
 
 test:
@@ -32,9 +33,9 @@ test:
 
 install:
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
-	sudo chmod +x $(SRV_PATH)/api/libxdb_mysql.so.1.0;
-	sudo rm -f $(LNK_PATH)/libxdb_mysql*;
-	sudo ln -bs $(SRV_PATH)/api/libxdb_mysql.so.1.0 $(LNK_PATH)/libxdb_mysql.so;
+	sudo chmod +x $(SRV_PATH)/api/$(MODULE).1.0;
+	sudo rm -f $(LNK_PATH)/$(MODULE)*;
+	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
 
 .PHONY : clean
 clean:

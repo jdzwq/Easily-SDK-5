@@ -31,7 +31,7 @@ extern "C" {
 	*
 	* \param ctx      context to be initialized
 	*/
-	XDL_API void md4_starts(md4_context *ctx);
+	EXP_API void md4_starts(md4_context *ctx);
 
 	/**
 	* \brief          MD4 process buffer
@@ -40,7 +40,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void md4_update(md4_context *ctx, unsigned char *input, int ilen);
+	EXP_API void md4_update(md4_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          MD4 final digest
@@ -48,7 +48,7 @@ extern "C" {
 	* \param ctx      MD4 context
 	* \param output   MD4 checksum result
 	*/
-	XDL_API void md4_finish(md4_context *ctx, unsigned char output[16]);
+	EXP_API void md4_finish(md4_context *ctx, unsigned char output[16]);
 
 	/**
 	* \brief          Output = MD4( input buffer )
@@ -57,7 +57,7 @@ extern "C" {
 	* \param ilen     length of the input data
 	* \param output   MD4 checksum result
 	*/
-	XDL_API void md4(unsigned char *input, int ilen, unsigned char output[16]);
+	EXP_API void md4(unsigned char *input, int ilen, unsigned char output[16]);
 
 	/**
 	* \brief          Output = MD4( file contents )
@@ -68,7 +68,7 @@ extern "C" {
 	* \return         0 if successful, 1 if fopen failed,
 	*                 or 2 if fread failed
 	*/
-	//XDL_API int md4_file(char *path, unsigned char output[16]);
+	//EXP_API int md4_file(char *path, unsigned char output[16]);
 
 	/**
 	* \brief          MD4 HMAC context setup
@@ -77,7 +77,7 @@ extern "C" {
 	* \param key      HMAC secret key
 	* \param keylen   length of the HMAC key
 	*/
-	XDL_API void md4_hmac_starts(md4_context *ctx, unsigned char *key, int keylen);
+	EXP_API void md4_hmac_starts(md4_context *ctx, unsigned char *key, int keylen);
 
 	/**
 	* \brief          MD4 HMAC process buffer
@@ -86,7 +86,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void md4_hmac_update(md4_context *ctx, unsigned char *input, int ilen);
+	EXP_API void md4_hmac_update(md4_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          MD4 HMAC final digest
@@ -94,7 +94,7 @@ extern "C" {
 	* \param ctx      HMAC context
 	* \param output   MD4 HMAC checksum result
 	*/
-	XDL_API void md4_hmac_finish(md4_context *ctx, unsigned char output[16]);
+	EXP_API void md4_hmac_finish(md4_context *ctx, unsigned char output[16]);
 
 	/**
 	* \brief          Output = HMAC-MD4( hmac key, input buffer )
@@ -105,7 +105,7 @@ extern "C" {
 	* \param ilen     length of the input data
 	* \param output   HMAC-MD4 result
 	*/
-	XDL_API void md4_hmac(unsigned char *key, int keylen,
+	EXP_API void md4_hmac(unsigned char *key, int keylen,
 		unsigned char *input, int ilen,
 		unsigned char output[16]);
 

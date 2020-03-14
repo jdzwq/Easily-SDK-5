@@ -148,35 +148,35 @@ extern "C" {
 @FUNCTION create_func_doc: create a function document.
 @RETURN link_t_ptr: return the function document link component.
 */
-XDL_API link_t_ptr create_func_doc(void);
+EXP_API link_t_ptr create_func_doc(void);
 
 /*
 @FUNCTION destroy_func_doc: destroy a function document.
 @INPUT link_t_ptr ptr: the function document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_func_doc(link_t_ptr ptr);
+EXP_API void destroy_func_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_func_paramset: get the function parameter set node.
 @INPUT link_t_ptr ptr: the function link component.
 @RETURN link_t_ptr: return the function paramter set link component if exists otherwise return NULL.
 */
-XDL_API link_t_ptr get_func_paramset(link_t_ptr ptr);
+EXP_API link_t_ptr get_func_paramset(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_func_doc: clear function document, the parameter set will be emptied.
 @INPUT link_t_ptr ptr: the function link component.
 @RETURN void: node.
 */
-XDL_API void clear_func_doc(link_t_ptr ptr);
+EXP_API void clear_func_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_func_doc: test is function document.
 @INPUT link_t_ptr ptr: the function link component.
 @RETURN bool_t: return nonzero if being a function, otherwise return zero.
 */
-XDL_API bool_t is_func_doc(link_t_ptr ptr);
+EXP_API bool_t is_func_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION get_func_param: find function paramter node by name.
@@ -185,7 +185,7 @@ XDL_API bool_t is_func_doc(link_t_ptr ptr);
 @INPUT int keylen: the name token length in characters.
 @RETURN link_t_ptr: return parameter node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr	get_func_param(link_t_ptr ptr, const tchar_t* key, int keylen);
+EXP_API link_t_ptr	get_func_param(link_t_ptr ptr, const tchar_t* key, int keylen);
 
 /*
 @FUNCTION insert_func_param: add a function paramter node at position.
@@ -193,21 +193,21 @@ XDL_API link_t_ptr	get_func_param(link_t_ptr ptr, const tchar_t* key, int keylen
 @INPUT link_t_ptr pos: the paramter link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new parameter node link.
 */
-XDL_API link_t_ptr insert_func_param(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr insert_func_param(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_func_param_count: counting the function paramter nodes.
 @INPUT link_t_ptr ptr: the function link component.
 @RETURN int: return the number of parameters
 */
-XDL_API int get_func_param_count(link_t_ptr ptr);
+EXP_API int get_func_param_count(link_t_ptr ptr);
 
 /*
 @FUNCTION delete_func_param: delete the function paramter node.
 @INPUT link_t_ptr nlk: the function parameter link component.
 @RETURN void: none.
 */
-XDL_API void delete_func_param(link_t_ptr nlk);
+EXP_API void delete_func_param(link_t_ptr nlk);
 
 /*
 @FUNCTION get_func_next_param: get next function paramter node.
@@ -215,7 +215,7 @@ XDL_API void delete_func_param(link_t_ptr nlk);
 @INPUT link_t_ptr pos: the parameter link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the next parameter link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_func_next_param(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_func_next_param(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION get_func_prev_param: get previous function paramter node.
@@ -223,7 +223,7 @@ XDL_API link_t_ptr get_func_next_param(link_t_ptr ptr, link_t_ptr pos);
 @INPUT link_t_ptr pos: the parameter link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the previous parameter link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_func_prev_param(link_t_ptr ptr, link_t_ptr pos);
+EXP_API link_t_ptr get_func_prev_param(link_t_ptr ptr, link_t_ptr pos);
 
 /*
 @FUNCTION set_func_param_text: set the function paramter node text.
@@ -232,7 +232,7 @@ XDL_API link_t_ptr get_func_prev_param(link_t_ptr ptr, link_t_ptr pos);
 @INPUT int len: the length of text token in characters.
 @RETURN void: none.
 */
-XDL_API void set_func_param_text(link_t_ptr nlk, const tchar_t* token, int len);
+EXP_API void set_func_param_text(link_t_ptr nlk, const tchar_t* token, int len);
 
 /*
 @FUNCTION get_func_param_text: copy the function paramter node text.
@@ -241,7 +241,7 @@ XDL_API void set_func_param_text(link_t_ptr nlk, const tchar_t* token, int len);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters copyed.
 */
-XDL_API int get_func_param_text(link_t_ptr nlk, tchar_t* buf, int max);
+EXP_API int get_func_param_text(link_t_ptr nlk, tchar_t* buf, int max);
 
 /*
 @FUNCTION set_func_param_boolean: set the function paramter node a boolean value.
@@ -249,14 +249,14 @@ XDL_API int get_func_param_text(link_t_ptr nlk, tchar_t* buf, int max);
 @INPUT bool_t b: the boolean value.
 @RETURN void: none.
 */
-XDL_API void set_func_param_boolean(link_t_ptr nlk, bool_t b);
+EXP_API void set_func_param_boolean(link_t_ptr nlk, bool_t b);
 
 /*
 @FUNCTION get_func_param_boolean: get the function paramter node boolean value.
 @INPUT link_t_ptr nlk: the parameter link component.
 @RETURN bool_t: return the parameter node boolean value.
 */
-XDL_API bool_t get_func_param_boolean(link_t_ptr nlk);
+EXP_API bool_t get_func_param_boolean(link_t_ptr nlk);
 
 /*
 @FUNCTION set_func_param_integer: set the function paramter node a integer value.
@@ -264,14 +264,14 @@ XDL_API bool_t get_func_param_boolean(link_t_ptr nlk);
 @INPUT int n: the integer value.
 @RETURN void: none.
 */
-XDL_API void set_func_param_integer(link_t_ptr nlk, int n);
+EXP_API void set_func_param_integer(link_t_ptr nlk, int n);
 
 /*
 @FUNCTION get_func_param_integer: get the function paramter node integer value.
 @INPUT link_t_ptr nlk: the parameter link component.
 @RETURN int: return the parameter node integer value.
 */
-XDL_API int get_func_param_integer(link_t_ptr nlk);
+EXP_API int get_func_param_integer(link_t_ptr nlk);
 
 /*
 @FUNCTION set_func_param_numeric: set the function paramter node a double value.
@@ -279,14 +279,14 @@ XDL_API int get_func_param_integer(link_t_ptr nlk);
 @INPUT double n: the double value.
 @RETURN void: none.
 */
-XDL_API void set_func_param_numeric(link_t_ptr nlk, double n);
+EXP_API void set_func_param_numeric(link_t_ptr nlk, double n);
 
 /*
 @FUNCTION get_func_param_numeric: get the function paramter node double value.
 @INPUT link_t_ptr nlk: the parameter link component.
 @RETURN double: return the parameter node double value.
 */
-XDL_API double get_func_param_numeric(link_t_ptr nlk);
+EXP_API double get_func_param_numeric(link_t_ptr nlk);
 
 /*
 @FUNCTION merge_func_return: merge the source paramter set into destination parameter set, then source paramter set will be empty.
@@ -294,7 +294,7 @@ XDL_API double get_func_param_numeric(link_t_ptr nlk);
 @INPUT link_t_ptr src: the source function link component.
 @RETURN void: none
 */
-XDL_API void merge_func_return(link_t_ptr dst, link_t_ptr src);
+EXP_API void merge_func_return(link_t_ptr dst, link_t_ptr src);
 
 /*
 @FUNCTION import_func_param: import paramter set from variant array.
@@ -303,7 +303,7 @@ XDL_API void merge_func_return(link_t_ptr dst, link_t_ptr src);
 @INPUT int n: the number of variant array item.
 @RETURN void: none
 */
-XDL_API void import_func_param(link_t_ptr ptr, const variant_t* pv, int n);
+EXP_API void import_func_param(link_t_ptr ptr, const variant_t* pv, int n);
 
 /*
 @FUNCTION export_func_param: export paramter set to variant array.
@@ -312,7 +312,7 @@ XDL_API void import_func_param(link_t_ptr ptr, const variant_t* pv, int n);
 @INPUT int n: the variant array size..
 @RETURN int: return the number of variant item copied.
 */
-XDL_API int export_func_param(link_t_ptr ptr, variant_t* pv, int n);
+EXP_API int export_func_param(link_t_ptr ptr, variant_t* pv, int n);
 
 #ifdef	__cplusplus
 }

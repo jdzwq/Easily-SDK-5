@@ -104,35 +104,35 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API link_t_ptr create_calendar_doc(void);
+EXP_API link_t_ptr create_calendar_doc(void);
 
-XDL_API void destroy_calendar_doc(link_t_ptr ptr);
+EXP_API void destroy_calendar_doc(link_t_ptr ptr);
 
-XDL_API void clear_calendar_doc(link_t_ptr ptr);
+EXP_API void clear_calendar_doc(link_t_ptr ptr);
 
-XDL_API bool_t is_calendar_doc(link_t_ptr ptr);
+EXP_API bool_t is_calendar_doc(link_t_ptr ptr);
 
-XDL_API bool_t is_calendar_daily(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_calendar_daily(link_t_ptr ptr, link_t_ptr ilk);
 
-XDL_API void reset_calendar_taborder(link_t_ptr ptr);
+EXP_API void reset_calendar_taborder(link_t_ptr ptr);
 
-XDL_API link_t_ptr get_calendar_dailyset(link_t_ptr ptr);
+EXP_API link_t_ptr get_calendar_dailyset(link_t_ptr ptr);
 
-XDL_API link_t_ptr insert_calendar_daily(link_t_ptr ptr, const tchar_t* sz_today);
+EXP_API link_t_ptr insert_calendar_daily(link_t_ptr ptr, const tchar_t* sz_today);
 
-XDL_API link_t_ptr get_calendar_next_daily(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_calendar_next_daily(link_t_ptr ptr,link_t_ptr pos);
 
-XDL_API link_t_ptr get_calendar_prev_daily(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_calendar_prev_daily(link_t_ptr ptr,link_t_ptr pos);
 
-XDL_API link_t_ptr get_calendar_daily(link_t_ptr ptr, const tchar_t* sz_today);
+EXP_API link_t_ptr get_calendar_daily(link_t_ptr ptr, const tchar_t* sz_today);
 
-XDL_API int get_calendar_daily_count(link_t_ptr ptr);
+EXP_API int get_calendar_daily_count(link_t_ptr ptr);
 
-XDL_API int get_calendar_daily_count_by_today(link_t_ptr ptr, const tchar_t* sz_today);
+EXP_API int get_calendar_daily_count_by_today(link_t_ptr ptr, const tchar_t* sz_today);
 
-XDL_API int get_calendar_daily_selected_count(link_t_ptr ptr);
+EXP_API int get_calendar_daily_selected_count(link_t_ptr ptr);
 
-XDL_API void delete_calendar_daily(link_t_ptr ilk);
+EXP_API void delete_calendar_daily(link_t_ptr ilk);
 
 
 #ifdef	__cplusplus

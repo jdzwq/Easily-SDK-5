@@ -65,56 +65,56 @@ extern "C" {
 @INPUT const tchar_t* url: the service url token.
 @RETURN xhand_t: if succeeds return http client handle, fails return NULL.
 */
-XDL_API xhand_t		xhttp_client(const tchar_t* method,const tchar_t* url);
+EXP_API xhand_t		xhttp_client(const tchar_t* method,const tchar_t* url);
 
 /*
 @FUNCTION xhttp_server: create a http server.
 @INPUT xhand_t bio: the background io handle, it can be tcp, ssl handle.
 @RETURN xhand_t: if succeeds return http server handle, fails return NULL.
 */
-XDL_API xhand_t		xhttp_server(xhand_t bio);
+EXP_API xhand_t		xhttp_server(xhand_t bio);
 
 /*
 @FUNCTION xhttp_close: close a http client or server handle.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN void: none.
 */
-XDL_API void		xhttp_close(xhand_t xhttp);
+EXP_API void		xhttp_close(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_get_send_stream: get a http stream object for writing.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN stream_t: return the stream object.
 */
-XDL_API stream_t	xhttp_get_send_stream(xhand_t xhttp);
+EXP_API stream_t	xhttp_get_send_stream(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_get_recv_stream: get a http stream object for reading.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN stream_t: return the stream object.
 */
-XDL_API stream_t	xhttp_get_recv_stream(xhand_t xhttp);
+EXP_API stream_t	xhttp_get_recv_stream(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_type: get the http type, it can be _XHTTP_TYPE_CLI, _XHTTP_TYPE_SRV.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN int: return the http type.
 */
-XDL_API int			xhttp_type(xhand_t xhttp);
+EXP_API int			xhttp_type(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_secu: get the http security type, it can be _SECU_SSL, _SECU_XSL or zero.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN int: return the http security type, zero indicate no security.
 */
-XDL_API int			xhttp_secu(xhand_t xhttp);
+EXP_API int			xhttp_secu(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_bio: get the http background io handle, it can be tcp, ssl handle.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN xhand_t: return background io handle.
 */
-XDL_API xhand_t		xhttp_bio(xhand_t xhttp);
+EXP_API xhand_t		xhttp_bio(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_format_request: format http request to bytes buffer.
@@ -123,9 +123,9 @@ XDL_API xhand_t		xhttp_bio(xhand_t xhttp);
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the bytes formated.
 */
-XDL_API dword_t	xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max);
+EXP_API dword_t	xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max);
 
-XDL_API int xhttp_format_content_type(const tchar_t* filter, tchar_t* buf, int max);
+EXP_API int xhttp_format_content_type(const tchar_t* filter, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_split_object: split and copy http query url site and file token,
@@ -135,7 +135,7 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 @OUTPUT tchar_t* sz_file: the string buffer for returning file token.
 @RETURN void: none.
 */
-XDL_API void		xhttp_split_object(const tchar_t* sz_url, tchar_t* sz_site, tchar_t* sz_file);
+EXP_API void		xhttp_split_object(const tchar_t* sz_url, tchar_t* sz_site, tchar_t* sz_file);
 
 /*
 @FUNCTION xhttp_url_encoding: encoding the url query token.
@@ -145,7 +145,7 @@ XDL_API void		xhttp_split_object(const tchar_t* sz_url, tchar_t* sz_site, tchar_
 @INPUT int max: the buffer max size.
 @RETURN int: return bytes encoded.
 */
-XDL_API dword_t		xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max);
+EXP_API dword_t		xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION xhttp_url_decoding: decoding the url query token.
@@ -155,7 +155,7 @@ XDL_API dword_t		xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dw
 @INPUT int max: the buffer max size.
 @RETURN int: return characters decoded.
 */
-XDL_API int			xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max);
+EXP_API int			xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_encoded_query: get http query token.
@@ -164,7 +164,7 @@ XDL_API int			xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, i
 @INPUT int max: the buffer max size.
 @RETURN int: return bytes copyed.
 */
-XDL_API dword_t		xhttp_get_encoded_query(xhand_t xhttp, byte_t* buf, dword_t max);
+EXP_API dword_t		xhttp_get_encoded_query(xhand_t xhttp, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION xhttp_set_encoded_query: set http encoded query.
@@ -173,7 +173,7 @@ XDL_API dword_t		xhttp_get_encoded_query(xhand_t xhttp, byte_t* buf, dword_t max
 @INPUT dword_t len: the encoded query token length in bytes.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_encoded_query(xhand_t xhttp, const byte_t* query, dword_t len);
+EXP_API void		xhttp_set_encoded_query(xhand_t xhttp, const byte_t* query, dword_t len);
 
 /*
 @FUNCTION xhttp_get_url_method: get http method.
@@ -182,7 +182,7 @@ XDL_API void		xhttp_set_encoded_query(xhand_t xhttp, const byte_t* query, dword_
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return method token length in characters.
 */
-XDL_API int			xhttp_get_url_method(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_url_method(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_url_host: get http url host.
@@ -192,7 +192,7 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return method token length in characters.
 */
-XDL_API int			xhttp_get_url_host(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_url_host(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_url_port: get http url port.
@@ -202,7 +202,7 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return port token length in characters.
 */
-XDL_API int			xhttp_get_url_port(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_url_port(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_url_object: get http url object.
@@ -212,7 +212,7 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return object token length in characters.
 */
-XDL_API int			xhttp_get_url_object(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_url_object(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_url_query: get http url encoded query.
@@ -222,7 +222,7 @@ if the url like "http://127.0.0.1:8080/mysite/mydir/myfile?mykey=myval", then th
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return object token length in characters.
 */
-XDL_API int			xhttp_get_url_query(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_url_query(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_set_query: set http query token.
@@ -231,7 +231,7 @@ XDL_API int			xhttp_get_url_query(xhand_t xhttp, tchar_t* buf, int max);
 @INPUT int len: the query token length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_url_query(xhand_t xhttp, const tchar_t* query, int len);
+EXP_API void		xhttp_set_url_query(xhand_t xhttp, const tchar_t* query, int len);
 
 /*
 @FUNCTION xhttp_set_url_query_entity: set http query entity key and value.
@@ -242,7 +242,7 @@ XDL_API void		xhttp_set_url_query(xhand_t xhttp, const tchar_t* query, int len);
 @INPUT int vlen: the value length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, const tchar_t* val, int vlen);
+EXP_API void		xhttp_set_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, const tchar_t* val, int vlen);
 
 /*
 @FUNCTION xhttp_get_url_query_entity: get http query entity value by key.
@@ -253,7 +253,7 @@ XDL_API void		xhttp_set_url_query_entity(xhand_t xhttp, const tchar_t* key, int 
 @INPUT int max: the string buffer size in characters, not include terminate character.
 @RETURN int: return value token length in characters.
 */
-XDL_API int			xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, tchar_t* buf, int max);
+EXP_API int			xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int klen, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_get_request_header: get http request header value.
@@ -264,7 +264,7 @@ XDL_API int			xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int 
 @INPUT int vmax: the value string buffer size in characters, not include terminate character.
 @RETURN int: return the header value length in characters if exists, otherwise return zero.
 */
-XDL_API int			xhttp_get_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, tchar_t* hvalue, int vmax);
+EXP_API int			xhttp_get_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, tchar_t* hvalue, int vmax);
 
 /*
 @FUNCTION xhttp_set_request_header: set http request header value.
@@ -275,14 +275,14 @@ XDL_API int			xhttp_get_request_header(xhand_t xhttp, const tchar_t* hname, int 
 @INPUT int vlen: the header value length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, const tchar_t* hvalue, int vlen);
+EXP_API void		xhttp_set_request_header(xhand_t xhttp, const tchar_t* hname, int nlen, const tchar_t* hvalue, int vlen);
 
 /*
 @FUNCTION xhttp_set_request_default_header: set http default request header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_request_default_header(xhand_t xhttp);
+EXP_API void		xhttp_set_request_default_header(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_format_response: format http response header to bytes buffer.
@@ -291,7 +291,7 @@ XDL_API void		xhttp_set_request_default_header(xhand_t xhttp);
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the response formated size in bytes.
 */
-XDL_API dword_t		xhttp_format_response(xhand_t xhttp, byte_t* buf, dword_t max);
+EXP_API dword_t		xhttp_format_response(xhand_t xhttp, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION xhttp_get_response_code: get http response code.
@@ -299,7 +299,7 @@ XDL_API dword_t		xhttp_format_response(xhand_t xhttp, byte_t* buf, dword_t max);
 @OUTPUT tchar_t* token: the string buffer for returning code.
 @RETURN void: none.
 */
-XDL_API void		xhttp_get_response_code(xhand_t xhttp, tchar_t* token);
+EXP_API void		xhttp_get_response_code(xhand_t xhttp, tchar_t* token);
 
 /*
 @FUNCTION xhttp_set_response_code: set http response code.
@@ -307,7 +307,7 @@ XDL_API void		xhttp_get_response_code(xhand_t xhttp, tchar_t* token);
 @INPUT const tchar_t* token: the response code string token. 
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_response_code(xhand_t xhttp, const tchar_t* token);
+EXP_API void		xhttp_set_response_code(xhand_t xhttp, const tchar_t* token);
 
 /*
 @FUNCTION xhttp_get_response_message: get http response message.
@@ -315,7 +315,7 @@ XDL_API void		xhttp_set_response_code(xhand_t xhttp, const tchar_t* token);
 @OUTPUT tchar_t* token: the string buffer for returning message.
 @RETURN void: none.
 */
-XDL_API int			xhttp_get_response_message(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_response_message(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_set_response_message: set http response message.
@@ -323,7 +323,7 @@ XDL_API int			xhttp_get_response_message(xhand_t xhttp, tchar_t* buf, int max);
 @INPUT const tchar_t* token: the response message string token.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_response_message(xhand_t xhttp, const tchar_t* buf, int len);
+EXP_API void		xhttp_set_response_message(xhand_t xhttp, const tchar_t* buf, int len);
 
 /*
 @FUNCTION xhttp_get_response_header: get http response header value.
@@ -334,7 +334,7 @@ XDL_API void		xhttp_set_response_message(xhand_t xhttp, const tchar_t* buf, int 
 @INPUT int vmax: the value string buffer size in characters, not include terminate character.
 @RETURN int: return the header value length in characters if exists, otherwise return zero.
 */
-XDL_API int			xhttp_get_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, tchar_t* buf, int max);
+EXP_API int			xhttp_get_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_set_response_header: set http response header value.
@@ -345,21 +345,21 @@ XDL_API int			xhttp_get_response_header(xhand_t xhttp, const tchar_t* hname, int
 @INPUT int vlen: the header value length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, const tchar_t* hvalue, int vlen);
+EXP_API void		xhttp_set_response_header(xhand_t xhttp, const tchar_t* hname, int nlen, const tchar_t* hvalue, int vlen);
 
 /*
 @FUNCTION xhttp_set_response_default_header: set http default response header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_response_default_header(xhand_t xhttp);
+EXP_API void		xhttp_set_response_default_header(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_get_response_state: get http default response state.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for succeed response, zero for failed response.
 */
-XDL_API bool_t		xhttp_get_response_state(xhand_t xhttp);
+EXP_API bool_t		xhttp_get_response_state(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_addr_port: get http local address and port.
@@ -367,7 +367,7 @@ XDL_API bool_t		xhttp_get_response_state(xhand_t xhttp);
 @OUTPUT tchar_t* addr: the string buffer for returning address.
 @RETURN unsigned short: return the local port.
 */
-XDL_API unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr);
+EXP_API unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr);
 
 /*
 @FUNCTION xhttp_peer_port: get http remote address and port.
@@ -375,7 +375,7 @@ XDL_API unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr);
 @OUTPUT tchar_t* addr: the string buffer for returning address.
 @RETURN unsigned short: return the remote port.
 */
-XDL_API unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr);
+EXP_API unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr);
 
 /*
 @FUNCTION xhttp_get_authorization: get http authorization key and sign.
@@ -387,7 +387,7 @@ XDL_API unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr);
 @INPUT int nlen: the sign string buffer size in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_auth, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int nlen);
+EXP_API void		xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_auth, tchar_t* sz_sid, int slen, tchar_t* sz_sign, int nlen);
 
 /*
 @FUNCTION xhttp_set_authorization: set http authorization key and sign.
@@ -399,7 +399,7 @@ XDL_API void		xhttp_get_authorization(xhand_t xhttp, tchar_t* sz_auth, tchar_t* 
 @INPUT int nlen: the sign string token length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_auth, const tchar_t* sz_sid, int slen, const tchar_t* sz_sign, int nlen);
+EXP_API void		xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_auth, const tchar_t* sz_sid, int slen, const tchar_t* sz_sign, int nlen);
 
 /*
 @FUNCTION xhttp_format_error: format http error information into bytes buffer.
@@ -412,7 +412,7 @@ XDL_API void		xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_auth, con
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return the formated bytes.
 */
-XDL_API dword_t		xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int len, byte_t* buf, dword_t max);
+EXP_API dword_t		xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int len, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION xhttp_parse_error: parse http error information from bytes buffer.
@@ -425,7 +425,7 @@ XDL_API dword_t		xhttp_format_error(bool_t b_json, const tchar_t* encoding, cons
 @INPUT int max: the error string buffer size in characters.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max);
+EXP_API bool_t		xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max);
 
 #ifdef XDL_SUPPORT_CRYPT
 /*
@@ -437,7 +437,7 @@ XDL_API bool_t		xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const 
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the signature length in characters.
 */
-XDL_API int			xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* skey, tchar_t* buf, int max);
+EXP_API int			xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* skey, tchar_t* buf, int max);
 #endif
 
 /*
@@ -445,63 +445,63 @@ XDL_API int			xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const 
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for been sended, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_requested(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_requested(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_is_responsed: test http response header has been sended.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for been sended, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_responsed(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_responsed(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_reset_request: clear http request header send status, then the http request header can send again.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN void: none.
 */
-XDL_API void		xhttp_reset_request(xhand_t xhttp);
+EXP_API void		xhttp_reset_request(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_reset_response: clear http response header send status, then the http response header can send again.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN void: none.
 */
-XDL_API void		xhttp_reset_response(xhand_t xhttp);
+EXP_API void		xhttp_reset_response(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_send_request: send the http request header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_request(xhand_t xhttp);
+EXP_API bool_t		xhttp_send_request(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_send_response: send the http response header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_response(xhand_t xhttp);
+EXP_API bool_t		xhttp_send_response(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_recv_request: recv the http request header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_request(xhand_t xhttp);
+EXP_API bool_t		xhttp_recv_request(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_recv_response: recv the http response header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_response(xhand_t xhttp);
+EXP_API bool_t		xhttp_recv_response(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_send_continue: send a http continue header.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void		xhttp_send_continue(xhand_t xhttp);
+EXP_API void		xhttp_send_continue(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_send: send http data.
@@ -510,14 +510,14 @@ XDL_API void		xhttp_send_continue(xhand_t xhttp);
 @INPUT dword_t len: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send(xhand_t xhttp, const byte_t* data, dword_t len);
+EXP_API bool_t		xhttp_send(xhand_t xhttp, const byte_t* data, dword_t len);
 
 /*
 @FUNCTION xhttp_fush: ensure http data sending compeleted.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_fush(xhand_t xhttp);
+EXP_API bool_t		xhttp_fush(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_recv: recv http data.
@@ -526,7 +526,7 @@ XDL_API bool_t		xhttp_fush(xhand_t xhttp);
 @INOUTPUT dword_t* pb: indicate the bytes wanted for reading and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv(xhand_t xhttp, byte_t* buf, dword_t *pb);
+EXP_API bool_t		xhttp_recv(xhand_t xhttp, byte_t* buf, dword_t *pb);
 
 /*
 @FUNCTION xhttp_send_full: send http full data.
@@ -535,7 +535,7 @@ XDL_API bool_t		xhttp_recv(xhand_t xhttp, byte_t* buf, dword_t *pb);
 @INPUT dword_t len: the data size in bytes
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len);
+EXP_API bool_t		xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len);
 
 /*
 @FUNCTION xhttp_recv_full: recv http full data.
@@ -544,7 +544,7 @@ XDL_API bool_t		xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t len);
 @OUTPUT dword_t* plen: for return bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen);
+EXP_API bool_t		xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen);
 
 /*
 @FUNCTION xhttp_send_error: send a http error.
@@ -556,7 +556,7 @@ XDL_API bool_t		xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen);
 @INPUT int len: the user error text length in characters.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* http_info, const tchar_t* errcode, const tchar_t* errtext, int len);
+EXP_API bool_t		xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const tchar_t* http_info, const tchar_t* errcode, const tchar_t* errtext, int len);
 
 /*
 @FUNCTION xhttp_recv_error: recv a http error.
@@ -568,7 +568,7 @@ XDL_API bool_t		xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const 
 @INPUT int max: the user error text string buffer size in characters.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, tchar_t* errcode, tchar_t* errtext, int max);
+EXP_API bool_t		xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, tchar_t* errcode, tchar_t* errtext, int max);
 
 /*
 @FUNCTION xhttp_send_xml: send a http xml document.
@@ -576,7 +576,7 @@ XDL_API bool_t		xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* htt
 @INPUT link_t_ptr xml: the xml document.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_xml(xhand_t xhttp, link_t_ptr xml);
+EXP_API bool_t		xhttp_send_xml(xhand_t xhttp, link_t_ptr xml);
 
 /*
 @FUNCTION xhttp_recv_xml: recv a http xml document.
@@ -584,7 +584,7 @@ XDL_API bool_t		xhttp_send_xml(xhand_t xhttp, link_t_ptr xml);
 @OUTPUT link_t_ptr xml: the xml document for receiving.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_xml(xhand_t xhttp, link_t_ptr xml);
+EXP_API bool_t		xhttp_recv_xml(xhand_t xhttp, link_t_ptr xml);
 
 /*
 @FUNCTION xhttp_send_json: send a http json document.
@@ -592,7 +592,7 @@ XDL_API bool_t		xhttp_recv_xml(xhand_t xhttp, link_t_ptr xml);
 @INPUT link_t_ptr json: the json document.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_json(xhand_t xhttp, link_t_ptr json);
+EXP_API bool_t		xhttp_send_json(xhand_t xhttp, link_t_ptr json);
 
 /*
 @FUNCTION xhttp_recv_json: recv a http json document.
@@ -600,7 +600,7 @@ XDL_API bool_t		xhttp_send_json(xhand_t xhttp, link_t_ptr json);
 @OUTPUT link_t_ptr json: the json document for receiving.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_json(xhand_t xhttp, link_t_ptr json);
+EXP_API bool_t		xhttp_recv_json(xhand_t xhttp, link_t_ptr json);
 
 /*
 @FUNCTION xhttp_send_string: send a http string object.
@@ -608,7 +608,7 @@ XDL_API bool_t		xhttp_recv_json(xhand_t xhttp, link_t_ptr json);
 @INPUT string_t var: the string object.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_send_string(xhand_t xhttp, string_t var);
+EXP_API bool_t		xhttp_send_string(xhand_t xhttp, string_t var);
 
 /*
 @FUNCTION xhttp_recv_string: recv a http string object.
@@ -616,14 +616,14 @@ XDL_API bool_t		xhttp_send_string(xhand_t xhttp, string_t var);
 @OUTPUT string_t var: the string object for receiving.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t		xhttp_recv_string(xhand_t xhttp, string_t var);
+EXP_API bool_t		xhttp_recv_string(xhand_t xhttp, string_t var);
 
 /*
 @FUNCTION xhttp_get_response_content_length: get http response content length in bytes, the header token is "Content-Length".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN dword_t: return the content length in bytes if header exists, otherwise return zero.
 */
-XDL_API dword_t		xhttp_get_response_content_length(xhand_t xhttp);
+EXP_API dword_t		xhttp_get_response_content_length(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_set_response_content_length: set http response content length in bytes, the header token is "Content-Length".
@@ -631,14 +631,14 @@ XDL_API dword_t		xhttp_get_response_content_length(xhand_t xhttp);
 @INPUT dword_t len: the content size in bytes.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_response_content_length(xhand_t xhttp, dword_t len);
+EXP_API void		xhttp_set_response_content_length(xhand_t xhttp, dword_t len);
 
 /*
 @FUNCTION xhttp_get_request_content_length: get http request content length in bytes, the header token is "Content-Length".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN dword_t: return the content length in bytes if header exists, otherwise return zero.
 */
-XDL_API dword_t		xhttp_get_request_content_length(xhand_t xhttp);
+EXP_API dword_t		xhttp_get_request_content_length(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_set_request_content_length: set http request content length in bytes, the header token is "Content-Length".
@@ -646,7 +646,7 @@ XDL_API dword_t		xhttp_get_request_content_length(xhand_t xhttp);
 @INPUT dword_t len: the content size in bytes.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_request_content_length(xhand_t xhttp, dword_t len);
+EXP_API void		xhttp_set_request_content_length(xhand_t xhttp, dword_t len);
 
 /*
 @FUNCTION xhttp_get_response_content_type_charset: get http response content type charset, the header token is "charset".
@@ -655,7 +655,7 @@ XDL_API void		xhttp_set_request_content_length(xhand_t xhttp, dword_t len);
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the charset length in characters if header exists, otherwise return zero.
 */
-XDL_API int			xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_set_response_content_type_charset: set http response content type charset, the header token is "charset".
@@ -664,7 +664,7 @@ XDL_API int			xhttp_get_response_content_type_charset(xhand_t xhttp, tchar_t* bu
 @INPUT int len: the charset token length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token, int len);
+EXP_API void		xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token, int len);
 
 /*
 @FUNCTION xhttp_get_request_content_type_charset: get http request content type charset, the header token is "charset".
@@ -673,7 +673,7 @@ XDL_API void		xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the charset length in characters if header exists, otherwise return zero.
 */
-XDL_API int			xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf, int max);
+EXP_API int			xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xhttp_set_request_content_type_charset: set http request content type charset, the header token is "charset".
@@ -682,7 +682,7 @@ XDL_API int			xhttp_get_request_content_type_charset(xhand_t xhttp, tchar_t* buf
 @INPUT int len: the charset token length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token, int len);
+EXP_API void		xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token, int len);
 
 /*
 @FUNCTION xhttp_set_request_cookie: set http request cookies, the header token is "Cookie".
@@ -692,7 +692,7 @@ XDL_API void		xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_
 @INPUT int len: the cookie value token length in characters.
 @RETURN void: none.
 */
-XDL_API void		xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* val, int len);
+EXP_API void		xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* val, int len);
 
 /*
 @FUNCTION xhttp_get_request_cookie: get http request cookie, the header token is "Cookie".
@@ -702,56 +702,56 @@ XDL_API void		xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const 
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the cookie length in characters if header exists, otherwise return zero.
 */
-XDL_API int			xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, int max);
+EXP_API int			xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, int max);
 
 /*
 @FUNCTION xhttp_is_chunked_send: test http is chunked sending, the header token is "Transfer-Encoding".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for chunked sending, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_chunked_send(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_chunked_send(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_is_chunked_recv: test http is chunked receiving, the header token is "Transfer-Encoding".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for chunked receiving, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_chunked_recv(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_chunked_recv(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_is_lined_send: test http is lined sending, the content type must b "text***" and content length must bu zero.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for lined sending, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_lined_send(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_lined_send(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_is_lined_recv: test http is lined receiving, the content type must b "text***" and content length must bu zero.
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for lined receiving, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_lined_recv(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_lined_recv(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_is_zipped_send: test http is zipped sending, the header token is "Content-Encoding".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for zipped sending, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_zipped_send(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_zipped_send(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_is_zipped_send: test http is zipped receiving, the header token is "Content-Encoding".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for zipped receiving, otherwise return zero.
 */
-XDL_API bool_t		xhttp_is_zipped_recv(xhand_t xhttp);
+EXP_API bool_t		xhttp_is_zipped_recv(xhand_t xhttp);
 
 /*
 @FUNCTION xhttp_need_expect: test http is need expect, the header token is "Expect".
 @INPUT xhand_t xhttp: the http handle.
 @RETURN bool_t: return nonzero for need expect, otherwise return zero.
 */
-XDL_API bool_t		xhttp_need_expect(xhand_t xhttp);
+EXP_API bool_t		xhttp_need_expect(xhand_t xhttp);
 
 
 #define xhttp_get_request_content_type(xhttp, buf, len) xhttp_get_request_header(xhttp, HTTP_HEADER_CONTENTTYPE, -1, buf, len)

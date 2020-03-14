@@ -52,7 +52,7 @@ extern "C" {
 @OUTPUT tchar_t* fencode: string buffer for return file encode, eg: "utf-8", "utf-16", "gb2312", if can be NULL.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
+EXP_API bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
 
 /*
 @FUNCTION xuncf_file_encode: get the file encode.
@@ -60,7 +60,7 @@ XDL_API bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tch
 @INPUT const tchar_t* fname: the file path name.
 @RETURN int: if succeeds return _UTF8, _UTF16_LIT, _UTF16_BIG, _GB2312, fails return zero.
 */
-XDL_API int xuncf_file_encode(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API int xuncf_file_encode(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION xuncf_find_first: find first file in the path.
@@ -69,7 +69,7 @@ XDL_API int xuncf_file_encode(const secu_desc_t* psd, const tchar_t* fname);
 @OUTPUT file_info_t* pfi: fill the file or path information.
 @RETURN res_find_t: if succeeds return find handle, fails return NULL.
 */
-XDL_API res_find_t xuncf_find_first(const secu_desc_t* psd, const tchar_t* path, file_info_t* pfi);
+EXP_API res_find_t xuncf_find_first(const secu_desc_t* psd, const tchar_t* path, file_info_t* pfi);
 
 /*
 @FUNCTION xuncf_find_next: find first file in the path.
@@ -77,14 +77,14 @@ XDL_API res_find_t xuncf_find_first(const secu_desc_t* psd, const tchar_t* path,
 @OUTPUT file_info_t* pfi: fill the file or path information.
 @RETURN bool_t: if succeeds nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_find_next(res_find_t fd, file_info_t* pfi);
+EXP_API bool_t xuncf_find_next(res_find_t fd, file_info_t* pfi);
 
 /*
 @FUNCTION xuncf_find_close: close find handle.
 @INPUT res_find_t fd: the find handle.
 @RETURN void: none.
 */
-XDL_API void xuncf_find_close(res_find_t fd);
+EXP_API void xuncf_find_close(res_find_t fd);
 
 /*
 @FUNCTION xuncf_open_file: open file.
@@ -95,7 +95,7 @@ network file: "127.0.0.1//share/somepath/somefile"
 @INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE, FILE_OPEN_APPEND or combined.
 @RETURN file_t: if succeeds return file handle, fails return NULL.
 */
-XDL_API xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
+EXP_API xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
 
 /*
 @FUNCTION xuncf_read_file: read data from file.
@@ -104,7 +104,7 @@ XDL_API xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dw
 @INOUTPUT dword_t* pb: the reading request size in bytes, and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_read_file(xhand_t fh, byte_t* buf, dword_t* pb);
+EXP_API bool_t xuncf_read_file(xhand_t fh, byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xuncf_write_file: write data to file.
@@ -113,14 +113,14 @@ XDL_API bool_t xuncf_read_file(xhand_t fh, byte_t* buf, dword_t* pb);
 @INOUTPUT dword_t* pb: the writing request size in bytes, and return the bytes writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_write_file(xhand_t fh, const byte_t* buf, dword_t* pb);
+EXP_API bool_t xuncf_write_file(xhand_t fh, const byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xuncf_flush_file: flush file, ensure data writing come to end.
 @INPUT xhand_t fh: the file handle.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xuncf_flush_file(xhand_t fh);
+EXP_API bool_t xuncf_flush_file(xhand_t fh);
 
 /*
 @FUNCTION xuncf_read_file_range: random read file data at the start position.
@@ -131,7 +131,7 @@ XDL_API bool_t xuncf_flush_file(xhand_t fh);
 @INPUT dword_t size: the request size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_read_file_range(xhand_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
+EXP_API bool_t xuncf_read_file_range(xhand_t fh, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xuncf_write_file_range: random write file data at the start position.
@@ -142,7 +142,7 @@ XDL_API bool_t xuncf_read_file_range(xhand_t fh, dword_t hoff, dword_t loff, byt
 @INPUT dword_t size: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_write_file_range(xhand_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
+EXP_API bool_t xuncf_write_file_range(xhand_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xuncf_setopt: set the file options.
@@ -152,7 +152,7 @@ XDL_API bool_t xuncf_write_file_range(xhand_t fh, dword_t hoff, dword_t loff, co
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void xuncf_setopt(xhand_t fh, int oid, void* opt, int len);
+EXP_API void xuncf_setopt(xhand_t fh, int oid, void* opt, int len);
 
 /*
 @FUNCTION xuncf_truncate: truncate file content at the position.
@@ -161,14 +161,14 @@ XDL_API void xuncf_setopt(xhand_t fh, int oid, void* opt, int len);
 @INPUT dword_t loff: the low value of 64bits position.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_truncate(xhand_t fh, dword_t hoff, dword_t loff);
+EXP_API bool_t xuncf_truncate(xhand_t fh, dword_t hoff, dword_t loff);
 
 /*
 @FUNCTION xuncf_close_file: close file and free file object.
 @INPUT xhand_t fh: the file handle.
 @RETURN void: none.
 */
-XDL_API void xuncf_close_file(xhand_t fh);
+EXP_API void xuncf_close_file(xhand_t fh);
 
 /*
 @FUNCTION xuncf_file_size: get file size.
@@ -177,7 +177,7 @@ XDL_API void xuncf_close_file(xhand_t fh);
 @OUTPUT dword_t* ph: the low value of 64bits file size.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_file_size(xhand_t fh, dword_t* ph, dword_t* pl);
+EXP_API bool_t xuncf_file_size(xhand_t fh, dword_t* ph, dword_t* pl);
 
 /*
 @FUNCTION xuncf_set_filetime: set the file write time.
@@ -185,7 +185,7 @@ XDL_API bool_t xuncf_file_size(xhand_t fh, dword_t* ph, dword_t* pl);
 @INPUT const tchar_t* ftime: string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_set_filetime(xhand_t fh, const tchar_t* ftime);
+EXP_API bool_t xuncf_set_filetime(xhand_t fh, const tchar_t* ftime);
 
 /*
 @FUNCTION xuncf_get_filetime: get the file write time.
@@ -193,7 +193,7 @@ XDL_API bool_t xuncf_set_filetime(xhand_t fh, const tchar_t* ftime);
 @OUTPUT tchar_t* ftime: buffer for returning string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_get_filetime(xhand_t fh, tchar_t* ftime);
+EXP_API bool_t xuncf_get_filetime(xhand_t fh, tchar_t* ftime);
 
 /*
 @FUNCTION xuncf_delete_file: delete file by path name.
@@ -201,7 +201,7 @@ XDL_API bool_t xuncf_get_filetime(xhand_t fh, tchar_t* ftime);
 @INPUT const tchar_t* fname: the file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_delete_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t xuncf_delete_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION xuncf_rename_file: change the file path name.
@@ -210,7 +210,7 @@ XDL_API bool_t xuncf_delete_file(const secu_desc_t* psd, const tchar_t* fname);
 @INPUT const tchar_t* nname: the new file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_rename_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* nname);
+EXP_API bool_t xuncf_rename_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* nname);
 
 /*
 @FUNCTION xuncf_open_directory: open directory gradually, the open mode with FILE_OPEN_WRITE, the directory will be created if not exists.
@@ -219,7 +219,7 @@ XDL_API bool_t xuncf_rename_file(const secu_desc_t* psd, const tchar_t* fname, c
 @INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE or combined.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_open_directory(const secu_desc_t* psd, const tchar_t* path, dword_t mode);
+EXP_API bool_t xuncf_open_directory(const secu_desc_t* psd, const tchar_t* path, dword_t mode);
 
 /*
 @FUNCTION xuncf_create_directory: create directory.
@@ -227,7 +227,7 @@ XDL_API bool_t xuncf_open_directory(const secu_desc_t* psd, const tchar_t* path,
 @INPUT const tchar_t* pname: the path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_create_directory(const secu_desc_t* psd, const tchar_t* pname);
+EXP_API bool_t xuncf_create_directory(const secu_desc_t* psd, const tchar_t* pname);
 
 /*
 @FUNCTION xuncf_remove_directory: remove directory.
@@ -235,7 +235,7 @@ XDL_API bool_t xuncf_create_directory(const secu_desc_t* psd, const tchar_t* pna
 @INPUT const tchar_t* pname: the path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_remove_directory(const secu_desc_t* psd, const tchar_t* pname);
+EXP_API bool_t xuncf_remove_directory(const secu_desc_t* psd, const tchar_t* pname);
 
 /*
 @FUNCTION xuncf_list_file: lis files one by one in the directory.
@@ -245,7 +245,7 @@ XDL_API bool_t xuncf_remove_directory(const secu_desc_t* psd, const tchar_t* pna
 @INPUT void* pa: the param transfer into CALLBACK_LISTFILE function.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xuncf_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa);
+EXP_API bool_t xuncf_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa);
 
 #ifdef	__cplusplus
 }

@@ -39,7 +39,7 @@ extern "C" {
 #endif
 
 
-XDU_API tchar_t* next_draw_path(const tchar_t* script, int len, tchar_t* pname, xpoint_t* ppt, int* pn);
+EXP_API tchar_t* next_draw_path(const tchar_t* script, int len, tchar_t* pname, xpoint_t* ppt, int* pn);
 
 #ifdef	__cplusplus
 }

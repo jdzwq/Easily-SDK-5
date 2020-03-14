@@ -92,12 +92,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_tree_icon_span: set the tree icon span.
 */
-#define set_tree_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ICON_SPAN,n)
+#define set_tree_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_tree_icon_span: get the tree icon span.
 */
-#define get_tree_icon_span(ptr)							get_dom_node_attr_float(ptr,GDI_ICON_SPAN)
+#define get_tree_icon_span(ptr)							get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
 /*
 @PROPER itemHeight: numeric.
 @GET get_tree_item_height: get the tree item height.
@@ -210,28 +210,28 @@ extern "C" {
 @FUNCTION create_tree_doc: create a tree document.
 @RETURN link_t_ptr: return the tree document link component.
 */
-XDL_API link_t_ptr create_tree_doc(void);
+EXP_API link_t_ptr create_tree_doc(void);
 
 /*
 @FUNCTION destroy_tree_doc: destroy a tree document.
 @INPUT link_t_ptr ptr: the tree link component.
 @RETURN void: none.
 */
-XDL_API void destroy_tree_doc(link_t_ptr ptr);
+EXP_API void destroy_tree_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_tree_doc: test is tree document.
 @INPUT link_t_ptr ptr: the tree link component.
 @RETURN bool_t: return nonzero for being a tree document, otherwise return zero.
 */
-XDL_API bool_t is_tree_doc(link_t_ptr ptr);
+EXP_API bool_t is_tree_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_tree_doc: clear the tree document.
 @INPUT link_t_ptr ptr: the tree link component.
 @RETURN void: none.
 */
-XDL_API void clear_tree_doc(link_t_ptr ptr);
+EXP_API void clear_tree_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_tree_item: test is tree item node.
@@ -239,7 +239,7 @@ XDL_API void clear_tree_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a tree item, otherwise return zero.
 */
-XDL_API bool_t is_tree_item(link_t_ptr ptr, link_t_ptr ilk);
+EXP_API bool_t is_tree_item(link_t_ptr ptr, link_t_ptr ilk);
 
 /*
 @FUNCTION insert_tree_item: add a new item to tree document.
@@ -247,84 +247,84 @@ XDL_API bool_t is_tree_item(link_t_ptr ptr, link_t_ptr ilk);
 @INPUT link_t_ptr pos: the item link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return the new item link component.
 */
-XDL_API link_t_ptr insert_tree_item(link_t_ptr ilk, link_t_ptr pos);
+EXP_API link_t_ptr insert_tree_item(link_t_ptr ilk, link_t_ptr pos);
 
 /*
 @FUNCTION delete_tree_item: delete the tree item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void delete_tree_item(link_t_ptr ilk);
+EXP_API void delete_tree_item(link_t_ptr ilk);
 
 /*
 @FUNCTION delete_tree_child_items: delete all of child items.
 @INPUT link_t_ptr ilk: the parent item link component.
 @RETURN void: none.
 */
-XDL_API void delete_tree_child_items(link_t_ptr ilk);
+EXP_API void delete_tree_child_items(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_item_level: get the item level.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN int: return the zero based level index.
 */
-XDL_API int get_tree_item_level(link_t_ptr ilk);
+EXP_API int get_tree_item_level(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_child_item_count: counting the tree child items.
 @INPUT link_t_ptr ptr: the parent item link component.
 @RETURN int: return the number of items.
 */
-XDL_API int get_tree_child_item_count(link_t_ptr ilk);
+EXP_API int get_tree_child_item_count(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_first_child_item: get the first child item.
 @INPUT link_t_ptr ilk: the parent item link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_first_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_tree_first_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_last_child_item: get the last child item.
 @INPUT link_t_ptr ilk: the parent item link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_last_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_tree_last_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_parent_item: get the parent item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the parent item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_parent_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_tree_parent_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_next_sibling_item: get the next sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the next sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_next_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_tree_next_sibling_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_prev_sibling_item: get the previous sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the previous sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_prev_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_tree_prev_sibling_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_tree_next_visible_item: get the next visible sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the next sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_next_visible_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_tree_next_visible_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION get_tree_prev_visible_item: get the previous visible sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the previous sibling item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_tree_prev_visible_item(link_t_ptr ptr,link_t_ptr pos);
+EXP_API link_t_ptr get_tree_prev_visible_item(link_t_ptr ptr,link_t_ptr pos);
 
 /*
 @FUNCTION find_tree_item_by_name: find tree item by name.
@@ -332,7 +332,7 @@ XDL_API link_t_ptr get_tree_prev_visible_item(link_t_ptr ptr,link_t_ptr pos);
 @INPUT const tchar_t* sz_name: the name string token.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr find_tree_item_by_name(link_t_ptr ptr, const tchar_t* sz_name);
+EXP_API link_t_ptr find_tree_item_by_name(link_t_ptr ptr, const tchar_t* sz_name);
 
 /*
 @FUNCTION find_tree_item_by_title: find tree item by title.
@@ -340,7 +340,7 @@ XDL_API link_t_ptr find_tree_item_by_name(link_t_ptr ptr, const tchar_t* sz_name
 @INPUT const tchar_t* sz_title: the title string token.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr find_tree_item_by_title(link_t_ptr ptr, const tchar_t* sz_title);
+EXP_API link_t_ptr find_tree_item_by_title(link_t_ptr ptr, const tchar_t* sz_title);
 
 #ifdef	__cplusplus
 }

@@ -24,27 +24,7 @@ LICENSE.GPL3 for more details.
 
 #include "dcm_api.h"
 
-void _invoke_error(const slots_block_t* pb, const dcm_block_t* pd)
-{
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[ERROR]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-}
-
-void _invoke_command(const slots_block_t* pb, const dcm_block_t* pd)
-{
-
-}
-
-int STDCALL slots_invoke(slots_block_t* pb)
+int STDCALL slots_invoke(const slots_block_t* pb)
 {
 	dcm_block_t* pd = NULL;
 	dcm_t* dcm = NULL;
@@ -75,7 +55,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 	xsprintf(file, _T("%s/dcm.ini"), pb->path);
 
-	if (!load_proper_doc_from_ini_file(ptr_prop, NULL, file))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -83,15 +63,15 @@ int STDCALL slots_invoke(slots_block_t* pb)
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
-	dcm_set_options(dcm, PACS_OPT_AET_SCP, (void*)"ANY-SCP", a_xslen("ANY-SCP"));
+	dcm_set_options(dcm, DCM_OPT_AET_SCP, (void*)"ANY-SCP", a_xslen("ANY-SCP"));
 
-	while (dcm_status(dcm) != _PACS_STATUS_RELEASE)
+	while (dcm_status(dcm) != _DCM_STATUS_RELEASE)
 	{
 		if (!dcm_recv(dcm, &pd->pdv))
 			continue;
 
-		dcm_get_options(dcm, PACS_OPT_SYNTAX_TRANSFER, syntax, RES_LEN);
-		dcm_get_options(dcm, PACS_OPT_DATA_MAXINUM, (void*)&n_max, sizeof(long));
+		dcm_get_options(dcm, DCM_OPT_SYNTAX_TRANSFER, syntax, RES_LEN);
+		dcm_get_options(dcm, DCM_OPT_DATA_MAXINUM, (void*)&n_max, sizeof(long));
 		b_big = sop_is_bigendian(syntax);
 
 		//is command set
@@ -106,7 +86,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 
 			switch (pd->cmd.CommandField)
 			{
-			case PACS_CMD_C_ECHO_RQ:
+			case DCM_CMD_C_ECHO_RQ:
 				_invoke_c_echo(dcm, pd);
 				break;
 			}
@@ -125,6 +105,11 @@ int STDCALL slots_invoke(slots_block_t* pb)
 	dcm_close(dcm);
 	dcm = NULL;
 
+	if (pb->pf_track_eror)
+	{
+		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+	}
+
 	xmem_free(pd);
 	pd = NULL;
 
@@ -133,9 +118,7 @@ int STDCALL slots_invoke(slots_block_t* pb)
 	return (rt) ? SLOTS_INVOKE_SUCCEED : SLOTS_INVOKE_WITHINFO;
 
 ONERROR:
-
-	_invoke_error(pb, pd);
-
+	
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
@@ -145,7 +128,17 @@ ONERROR:
 	if (stm)
 		stream_free(stm);
 
-	xmem_free(pd);
+	if (pd)
+	{
+		get_last_error(pd->code, pd->text, ERR_LEN);
+
+		if (pb->pf_track_eror)
+		{
+			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
+		}
+
+		xmem_free(pd);
+	}
 
 	return SLOTS_INVOKE_WITHINFO;
 }

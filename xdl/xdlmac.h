@@ -115,22 +115,22 @@ extern "C" {
 #endif
 
 /*parse macro function to multi tree*/
-XDL_API bool_t macro_parse(link_t_ptr ptr,const tchar_t* str,int len);
+EXP_API bool_t macro_parse(link_t_ptr ptr,const tchar_t* str,int len);
 
 /*format macro function to token*/
-XDL_API int macro_format(link_t_ptr ptr,tchar_t* buf,int max);
+EXP_API int macro_format(link_t_ptr ptr,tchar_t* buf,int max);
 
 /*format macro functin to token size*/
-XDL_API int macro_format_size(link_t_ptr ptr);
+EXP_API int macro_format_size(link_t_ptr ptr);
 
 /*run macro and return result token*/
-XDL_API tchar_t* macro_calc(link_t_ptr ptr,macro_var_fetch vf,void* parm);
+EXP_API tchar_t* macro_calc(link_t_ptr ptr,macro_var_fetch vf,void* parm);
 
 /*set macro self function*/
-XDL_API void macro_set_func(link_t_ptr ptr,const tchar_t* funcname,macro_func_ptr pf);
+EXP_API void macro_set_func(link_t_ptr ptr,const tchar_t* funcname,macro_func_ptr pf);
 
 /*get macro self function by name*/
-XDL_API macro_func_ptr macro_get_func(link_t_ptr ptr,const tchar_t* funcname);
+EXP_API macro_func_ptr macro_get_func(link_t_ptr ptr,const tchar_t* funcname);
 
 #ifdef	__cplusplus
 }

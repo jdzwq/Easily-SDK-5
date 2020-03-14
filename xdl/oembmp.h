@@ -76,15 +76,15 @@ typedef struct _bmp_info_t{
 extern "C" {
 #endif
 
-	XDL_API dword_t xbmp_set_header(const bmp_file_t* pbf, const bmp_info_t* pbi, unsigned char* buf, unsigned long max);
+	EXP_API dword_t xbmp_set_header(const bmp_file_t* pbf, const bmp_info_t* pbi, unsigned char* buf, unsigned long max);
 
-	XDL_API dword_t xbmp_get_header(bmp_file_t* pbf, bmp_info_t* pbi, const unsigned char* src, unsigned long len);
+	EXP_API dword_t xbmp_get_header(bmp_file_t* pbf, bmp_info_t* pbi, const unsigned char* src, unsigned long len);
 
-	XDL_API dword_t xbmp_fill_quad(const bmp_info_t* pbi, unsigned char* buf, unsigned long max);
+	EXP_API dword_t xbmp_fill_quad(const bmp_info_t* pbi, unsigned char* buf, unsigned long max);
 
-	XDL_API	dword_t xbmp_convgray(const byte_t* src, dword_t len, byte_t* buf, dword_t max);
+	EXP_API	dword_t xbmp_convgray(const byte_t* src, dword_t len, byte_t* buf, dword_t max);
 
-	XDL_API	dword_t xbmp_convbina(const byte_t* src, dword_t len, byte_t* buf, dword_t max);
+	EXP_API	dword_t xbmp_convbina(const byte_t* src, dword_t len, byte_t* buf, dword_t max);
 
 #ifdef	__cplusplus
 }

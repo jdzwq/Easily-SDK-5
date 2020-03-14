@@ -52,21 +52,21 @@ extern "C" {
 @FUNCTION create_multi_tree: create a tree.
 @RETURN link_t_ptr: return the tree link component.
 */
-XDL_API link_t_ptr create_multi_tree(void);
+EXP_API link_t_ptr create_multi_tree(void);
 
 /*
 @FUNCTION destroy_multi_tree: destroy a tree.
 @INPUT link_t_ptr ptr: the tree link component.
 @RETURN void: none.
 */
-XDL_API void destroy_multi_tree(link_t_ptr ptr);
+EXP_API void destroy_multi_tree(link_t_ptr ptr);
 
 /*
 @FUNCTION is_multi_tree: test is a tree.
 @INPUT link_t_ptr ptr: the tree link component.
 @RETURN bool_t: return nonzero for tree, otherwise return zero.
 */
-XDL_API bool_t is_multi_tree(link_t_ptr ptr);
+EXP_API bool_t is_multi_tree(link_t_ptr ptr);
 
 /*
 @FUNCTION is_multi_child_node: test is a tree child node.
@@ -74,7 +74,7 @@ XDL_API bool_t is_multi_tree(link_t_ptr ptr);
 @INPUT link_t_ptr plk: the node link component.
 @RETURN bool_t: return nonzero for tree node, otherwise return zero.
 */
-XDL_API bool_t is_multi_child_node(link_t_ptr ilk, link_t_ptr plk);
+EXP_API bool_t is_multi_child_node(link_t_ptr ilk, link_t_ptr plk);
 
 /*
 @FUNCTION enum_multi_tree: enum tree nodes.
@@ -83,7 +83,7 @@ XDL_API bool_t is_multi_child_node(link_t_ptr ilk, link_t_ptr plk);
 @INPUT void* param: the parameter translate into callback function.
 @RETURN link_t_ptr: return node link component breaked at, return NULL for none breaking.
 */
-XDL_API link_t_ptr enum_multi_tree(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr enum_multi_tree(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION enum_multi_tree_deep: enum tree nodes deep order.
@@ -92,7 +92,7 @@ XDL_API link_t_ptr enum_multi_tree(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* p
 @INPUT void* param: the parameter translate into callback function.
 @RETURN link_t_ptr: return node link component breaked at, return NULL for none breaking.
 */
-XDL_API link_t_ptr enum_multi_tree_deep(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr enum_multi_tree_deep(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION insert_multi_node_before: insert node into tree before the position.
@@ -100,7 +100,7 @@ XDL_API link_t_ptr enum_multi_tree_deep(link_t_ptr ptr, CALLBACK_ENUMLINK pf, vo
 @INPUT link_t_ptr pos: the positon node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return node link component inserted.
 */
-XDL_API link_t_ptr insert_multi_node_before(link_t_ptr ilk, link_t_ptr pos);
+EXP_API link_t_ptr insert_multi_node_before(link_t_ptr ilk, link_t_ptr pos);
 
 /*
 @FUNCTION insert_multi_node: insert node into tree after the position.
@@ -108,77 +108,77 @@ XDL_API link_t_ptr insert_multi_node_before(link_t_ptr ilk, link_t_ptr pos);
 @INPUT link_t_ptr pos: the positon node link component or link indicator: LINK_FIRST, LINK_LAST.
 @RETURN link_t_ptr: return node link component inserted.
 */
-XDL_API link_t_ptr insert_multi_node(link_t_ptr ilk, link_t_ptr pos);
+EXP_API link_t_ptr insert_multi_node(link_t_ptr ilk, link_t_ptr pos);
 
 /*
 @FUNCTION delete_multi_node: delete a node in tree.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN void: none.
 */
-XDL_API void delete_multi_node(link_t_ptr ilk);
+EXP_API void delete_multi_node(link_t_ptr ilk);
 
 /*
 @FUNCTION delete_multi_child_nodes: delete all child nodes.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN void: none.
 */
-XDL_API void delete_multi_child_nodes(link_t_ptr ilk);
+EXP_API void delete_multi_child_nodes(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_child_node_count: get child nodes count.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN void: none.
 */
-XDL_API int get_multi_child_node_count(link_t_ptr ilk);
+EXP_API int get_multi_child_node_count(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_first_child_node: get the first child node.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN link_t_ptr: return the node component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_multi_first_child_node(link_t_ptr ilk);
+EXP_API link_t_ptr get_multi_first_child_node(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_last_child_node: get the last child node.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN link_t_ptr: return the node component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_multi_last_child_node(link_t_ptr ilk);
+EXP_API link_t_ptr get_multi_last_child_node(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_parent_node: get the parent node.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN link_t_ptr: return the node or tree link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_multi_parent_node(link_t_ptr ilk);
+EXP_API link_t_ptr get_multi_parent_node(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_next_sibling_node: get the next sibling node.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN link_t_ptr: return the node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_multi_next_sibling_node(link_t_ptr ilk);
+EXP_API link_t_ptr get_multi_next_sibling_node(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_prev_sibling_node: get the previous sibling node.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN link_t_ptr: return the node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_multi_prev_sibling_node(link_t_ptr ilk);
+EXP_API link_t_ptr get_multi_prev_sibling_node(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_node_attr_table: get the node attributes hash table.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN link_t_ptr: return the hash table link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_multi_node_attr_table(link_t_ptr ilk);
+EXP_API link_t_ptr get_multi_node_attr_table(link_t_ptr ilk);
 
 /*
 @FUNCTION get_multi_node_delta: get the node extract data.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN var_long: return the extract data if exists, otherwise return zero.
 */
-XDL_API var_long get_multi_node_delta(link_t_ptr ilk);
+EXP_API var_long get_multi_node_delta(link_t_ptr ilk);
 
 /*
 @FUNCTION set_multi_node_delta: set the node extract data.
@@ -186,14 +186,14 @@ XDL_API var_long get_multi_node_delta(link_t_ptr ilk);
 @INPUT var_long delta: the extract data.
 @RETURN void: none.
 */
-XDL_API void set_multi_node_delta(link_t_ptr ilk,var_long delta);
+EXP_API void set_multi_node_delta(link_t_ptr ilk,var_long delta);
 
 /*
 @FUNCTION get_multi_node_mask: get the node mask.
 @INPUT link_t_ptr ilk: the node link component.
 @RETURN dword_t: return the node mask value.
 */
-XDL_API dword_t get_multi_node_mask(link_t_ptr ilk);
+EXP_API dword_t get_multi_node_mask(link_t_ptr ilk);
 
 /*
 @FUNCTION set_multi_node_mask: set the node mask value.
@@ -201,7 +201,7 @@ XDL_API dword_t get_multi_node_mask(link_t_ptr ilk);
 @INPUT dword_t ul: the mask value.
 @RETURN void: none.
 */
-XDL_API void set_multi_node_mask(link_t_ptr ilk, dword_t ul);
+EXP_API void set_multi_node_mask(link_t_ptr ilk, dword_t ul);
 
 /*
 @FUNCTION set_multi_node_mask_check: set the node mask bits.
@@ -210,7 +210,7 @@ XDL_API void set_multi_node_mask(link_t_ptr ilk, dword_t ul);
 @INPUT bool_t b: nonzero for setting, zero for clearing.
 @RETURN void: none.
 */
-XDL_API void set_multi_node_mask_check(link_t_ptr ilk, dword_t ul, bool_t b);
+EXP_API void set_multi_node_mask_check(link_t_ptr ilk, dword_t ul, bool_t b);
 
 /*
 @FUNCTION get_multi_node_mask_check: test the node mask bits is setted.
@@ -218,7 +218,7 @@ XDL_API void set_multi_node_mask_check(link_t_ptr ilk, dword_t ul, bool_t b);
 @INPUT dword_t ul: the mask bits.
 @RETURN bool_t: if bits setted return nonzero, otherwise return zero.
 */
-XDL_API bool_t get_multi_node_mask_check(link_t_ptr ilk, dword_t ul);
+EXP_API bool_t get_multi_node_mask_check(link_t_ptr ilk, dword_t ul);
 
 /*
 @FUNCTION get_multi_child_node_mask_check_count: counting the child nodes with mask bits setted.
@@ -226,7 +226,7 @@ XDL_API bool_t get_multi_node_mask_check(link_t_ptr ilk, dword_t ul);
 @INPUT dword_t ul: the mask bits.
 @RETURN int: return the count of nodes with mask bits setted.
 */
-XDL_API int get_multi_child_node_mask_check_count(link_t_ptr ilk, dword_t ul);
+EXP_API int get_multi_child_node_mask_check_count(link_t_ptr ilk, dword_t ul);
 
 /*
 @FUNCTION set_multi_child_node_mask_check: set the child nodes mask bits to set or clear.
@@ -235,7 +235,7 @@ XDL_API int get_multi_child_node_mask_check_count(link_t_ptr ilk, dword_t ul);
 @INPUT bool_t b: nonzero for setting, zero for clearing.
 @RETURN int: return the count of nodes with mask bits setted or cleared.
 */
-XDL_API int set_multi_child_node_mask_check(link_t_ptr ilk, dword_t ul, bool_t b);
+EXP_API int set_multi_child_node_mask_check(link_t_ptr ilk, dword_t ul, bool_t b);
 
 
 

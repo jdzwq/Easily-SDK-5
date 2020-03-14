@@ -49,14 +49,14 @@ http file: "tftp://127.0.0.1/virpath/somefile"
 @INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE, FILE_OPEN_APPEND or combined.
 @RETURN file_t: if succeeds return file handle, fails return NULL.
 */
-XDL_API xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
+EXP_API xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
 
 /*
 @FUNCTION xinet_close_file: close file and free file object.
 @INPUT xhand_t inet: the file handle.
 @RETURN void: none.
 */
-XDL_API void xinet_close_file(xhand_t inet);
+EXP_API void xinet_close_file(xhand_t inet);
 
 /*
 @FUNCTION xinet_read_file: read data from file.
@@ -65,7 +65,7 @@ XDL_API void xinet_close_file(xhand_t inet);
 @INOUTPUT dword_t* pb: the reading request size in bytes, and return the bytes readed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb);
+EXP_API bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xinet_write_file: write data to file.
@@ -74,7 +74,7 @@ XDL_API bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb);
 @INOUTPUT dword_t* pb: the writing request size in bytes, and return the bytes writed.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb);
+EXP_API bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xinet_write_file_range: random write file data at the start position.
@@ -85,7 +85,7 @@ XDL_API bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb);
 @INPUT dword_t size: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
+EXP_API bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xinet_read_file_range: random read file data at the start position.
@@ -96,7 +96,7 @@ XDL_API bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, 
 @INPUT dword_t size: the request size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
+EXP_API bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xinet_setopt: set the file options.
@@ -106,7 +106,7 @@ XDL_API bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, b
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void xinet_setopt(xhand_t inet, int oid, void* opt, int len);
+EXP_API void xinet_setopt(xhand_t inet, int oid, void* opt, int len);
 
 /*
 @FUNCTION xinet_set_filetime: set the file write time.
@@ -114,7 +114,7 @@ XDL_API void xinet_setopt(xhand_t inet, int oid, void* opt, int len);
 @INPUT const tchar_t* ftime: string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API void xinet_set_filetime(xhand_t inet, const tchar_t* ftime);
+EXP_API void xinet_set_filetime(xhand_t inet, const tchar_t* ftime);
 
 /*
 @FUNCTION xinet_set_filesince: set the file write since.
@@ -122,7 +122,7 @@ XDL_API void xinet_set_filetime(xhand_t inet, const tchar_t* ftime);
 @INPUT int since: file since tag, eg: FILE_SINCE_TIME, FILE_SINCE_ETAG.
 @RETURN void: none.
 */
-XDL_API void xinet_set_filesince(xhand_t inet, int since);
+EXP_API void xinet_set_filesince(xhand_t inet, int since);
 
 /*
 @FUNCTION xinet_delete_file: delete file by path name.
@@ -130,7 +130,7 @@ XDL_API void xinet_set_filesince(xhand_t inet, int since);
 @INPUT const tchar_t* fname: the file path name.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname);
+EXP_API bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname);
 
 /*
 @FUNCTION xinet_list_file: lis files one by one in the directory.
@@ -140,7 +140,7 @@ XDL_API bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname);
 @INPUT void* pa: the param transfer into CALLBACK_LISTFILE function.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa);
+EXP_API bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa);
 
 /*
 @FUNCTION xinet_file_info: get the file information.
@@ -152,7 +152,7 @@ XDL_API bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALL
 @OUTPUT tchar_t* fencode: string buffer for return file encode, eg: "utf-8", "utf-16", "gb2312", if can be NULL.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
+EXP_API bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode);
 
 #ifdef	__cplusplus
 }

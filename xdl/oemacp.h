@@ -41,20 +41,20 @@ extern "C" {
 
 #ifdef GPL_SUPPORT_ACP
 
-	XDL_API acp_t create_ucs_codepage(void);
+	EXP_API acp_t create_ucs_codepage(void);
 
-	XDL_API acp_t create_gbk_codepage(void);
+	EXP_API acp_t create_gbk_codepage(void);
 
-	XDL_API void destroy_codepage(acp_t acp);
+	EXP_API void destroy_codepage(acp_t acp);
 
-	XDL_API bool_t acp_get_code(acp_t acp, sword_t code, sword_t* pval);
+	EXP_API bool_t acp_get_code(acp_t acp, sword_t code, sword_t* pval);
 
 #endif /*GPL_SUPPORT_ACP*/
 
 
-XDL_API int w_help_code(const wchar_t* src, int len, wchar_t* buf, int max);
+EXP_API int w_help_code(const wchar_t* src, int len, wchar_t* buf, int max);
 
-XDL_API int a_help_code(const schar_t* src, int len, schar_t* buf, int max);
+EXP_API int a_help_code(const schar_t* src, int len, schar_t* buf, int max);
 
 #ifdef _UNICODE
 #define help_code			w_help_code

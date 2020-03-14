@@ -131,27 +131,27 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API xhand_t xssh_cli(unsigned short port, const tchar_t* addr);
+EXP_API xhand_t xssh_cli(unsigned short port, const tchar_t* addr);
 
-XDL_API xhand_t xssh_srv(res_file_t so);
+EXP_API xhand_t xssh_srv(res_file_t so);
 
-XDL_API res_file_t xssh_socket(xhand_t ssh);
+EXP_API res_file_t xssh_socket(xhand_t ssh);
 
-XDL_API int  xssh_type(xhand_t ssh);
+EXP_API int  xssh_type(xhand_t ssh);
 
-XDL_API void  xssh_close(xhand_t ssh);
+EXP_API void  xssh_close(xhand_t ssh);
 
-XDL_API bool_t xssh_write(xhand_t ssh, const byte_t* data, dword_t* pb);
+EXP_API bool_t xssh_write(xhand_t ssh, const byte_t* data, dword_t* pb);
 
-XDL_API bool_t xssh_read(xhand_t ssh, byte_t* data, dword_t* pb);
+EXP_API bool_t xssh_read(xhand_t ssh, byte_t* data, dword_t* pb);
 
-XDL_API bool_t xssh_flush(xhand_t ssh);
+EXP_API bool_t xssh_flush(xhand_t ssh);
 
-XDL_API void xssh_setopt(xhand_t ssh, int oid, void* opt, int len);
+EXP_API void xssh_setopt(xhand_t ssh, int oid, void* opt, int len);
 
-XDL_API unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr);
+EXP_API unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr);
 
-XDL_API unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr);
+EXP_API unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr);
 
 #ifdef	__cplusplus
 }

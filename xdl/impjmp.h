@@ -43,15 +43,15 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDL_API void push_jump(void);
+EXP_API void push_jump(void);
 
-XDL_API void pop_jump(void);
+EXP_API void pop_jump(void);
 
-XDL_API void clear_jump(void);
+EXP_API void clear_jump(void);
 
-XDL_API void raise_user_error(const tchar_t* errcode, const tchar_t* errtext);
+EXP_API void raise_user_error(const tchar_t* errcode, const tchar_t* errtext);
 
-XDL_API void raise_system_error(const tchar_t* errcode);
+EXP_API void raise_system_error(const tchar_t* errcode);
 
 #ifdef	__cplusplus
 }

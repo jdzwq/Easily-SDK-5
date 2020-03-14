@@ -43,14 +43,14 @@ extern "C" {
 @INPUT const tchar_t* fname: the file path name.
 @RETURN link_t_ptr: return the file table link component.
 */
-XDL_API link_t_ptr create_file_table(const tchar_t* fname);
+EXP_API link_t_ptr create_file_table(const tchar_t* fname);
 
 /*
 @FUNCTION destroy_file_table: destroy a file table.
 @INPUT link_t_ptr pt: the file table link component.
 @RETURN void: none.
 */
-XDL_API void destroy_file_table(link_t_ptr pt);
+EXP_API void destroy_file_table(link_t_ptr pt);
 
 /*
 @FUNCTION set_file_table_guid: set the file table identifier.
@@ -58,14 +58,14 @@ XDL_API void destroy_file_table(link_t_ptr pt);
 @INPUT dword_t guid: the identifier.
 @RETURN void: none.
 */
-XDL_API void set_file_table_guid(link_t_ptr pt, dword_t guid);
+EXP_API void set_file_table_guid(link_t_ptr pt, dword_t guid);
 
 /*
 @FUNCTION get_file_table_guid: get the file table identifier.
 @INPUT link_t_ptr pt: the file table link component.
 @RETURN dword_t: return the file table identifier.
 */
-XDL_API dword_t get_file_table_guid(link_t_ptr pt);
+EXP_API dword_t get_file_table_guid(link_t_ptr pt);
 
 /*
 @FUNCTION set_file_table_root: set the file table root block index.
@@ -73,14 +73,14 @@ XDL_API dword_t get_file_table_guid(link_t_ptr pt);
 @INPUT int pos: the zero based index.
 @RETURN void: none.
 */
-XDL_API void set_file_table_root(link_t_ptr pt, int pos);
+EXP_API void set_file_table_root(link_t_ptr pt, int pos);
 
 /*
 @FUNCTION get_file_table_root: get the file table root block index.
 @INPUT link_t_ptr pt: the file table link component.
 @RETURN int: return the root block index.
 */
-XDL_API int get_file_table_root(link_t_ptr pt);
+EXP_API int get_file_table_root(link_t_ptr pt);
 
 /*
 @FUNCTION alloc_file_table_block: alloc a file block.
@@ -88,7 +88,7 @@ XDL_API int get_file_table_root(link_t_ptr pt);
 @INPUT dword_t size: the size needed.
 @RETURN int: if succeeds return the block index, otherwise return C_ERR(-1).
 */
-XDL_API int alloc_file_table_block(link_t_ptr pt, dword_t size);
+EXP_API int alloc_file_table_block(link_t_ptr pt, dword_t size);
 
 /*
 @FUNCTION free_file_table_block: free a file block.
@@ -97,7 +97,7 @@ XDL_API int alloc_file_table_block(link_t_ptr pt, dword_t size);
 @INPUT dword_t size: the size of file block.
 @RETURN void: none.
 */
-XDL_API void free_file_table_block(link_t_ptr pt, int pos, dword_t size);
+EXP_API void free_file_table_block(link_t_ptr pt, int pos, dword_t size);
 
 /*
 @FUNCTION get_file_table_block_alloced: test a file block is alloced by index.
@@ -105,7 +105,7 @@ XDL_API void free_file_table_block(link_t_ptr pt, int pos, dword_t size);
 @INPUT int pos: the file block index.
 @RETURN bool_t: return nonzero for alloced, otherwise return zero.
 */
-XDL_API bool_t get_file_table_block_alloced(link_t_ptr pt, int pos);
+EXP_API bool_t get_file_table_block_alloced(link_t_ptr pt, int pos);
 
 /*
 @FUNCTION read_file_table_block: read a file block into buffer.
@@ -115,7 +115,7 @@ XDL_API bool_t get_file_table_block_alloced(link_t_ptr pt, int pos);
 @INPUT dword_t size: the buffer size.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t read_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size);
+EXP_API bool_t read_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION write_file_table_block: write a file block from buffer.
@@ -125,10 +125,10 @@ XDL_API bool_t read_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_
 @INPUT dword_t size: the buffer size.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t write_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size);
+EXP_API bool_t write_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size);
 
 #if defined(_DEBUG) || defined(DEBUG)
-XDL_API void test_file_table(const tchar_t* fname);
+EXP_API void test_file_table(const tchar_t* fname);
 #endif
 
 #ifdef	__cplusplus

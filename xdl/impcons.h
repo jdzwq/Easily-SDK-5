@@ -44,34 +44,34 @@ extern "C" {
 @FUNCTION xcons_alloc: create a console.
 @RETURN xhand_t: if succeeds return console handle, fails return NULL.
 */
-XDL_API xhand_t xcons_alloc(void);
+EXP_API xhand_t xcons_alloc(void);
 
 /*
 @FUNCTION xcons_name: get the console name.
 @RETURN const tchar_t*: if succeeds return console name, fails return NULL.
 */
-XDL_API const tchar_t* xcons_name(xhand_t con);
+EXP_API const tchar_t* xcons_name(xhand_t con);
 
 /*
 @FUNCTION xcons_stdin: get the console input system resource handle, the STDIN hanle used to read data from console.
 @INPUT xhand_t con: console handle.
 @RETURN res_file_t: if succeeds return system resource handle, fails return INVALID_FILE.
 */
-XDL_API res_file_t xcons_stdin(xhand_t con);
+EXP_API res_file_t xcons_stdin(xhand_t con);
 
 /*
 @FUNCTION xcons_stdout: get the console output system resource handle, the STDOUT hanle used to write data to console.
 @INPUT xhand_t con: console handle.
 @RETURN res_file_t: if succeeds return system resource handle, fails return NULL.
 */
-XDL_API res_file_t xcons_stdout(xhand_t con);
+EXP_API res_file_t xcons_stdout(xhand_t con);
 
 /*
 @FUNCTION xcons_free: free the console.
 @INPUT xhand_t con: console handle.
 @RETURN void: none.
 */
-XDL_API void xcons_free(xhand_t con);
+EXP_API void xcons_free(xhand_t con);
 
 /*
 @FUNCTION xcons_sigaction: install a signal monitor function into console.
@@ -79,7 +79,7 @@ XDL_API void xcons_free(xhand_t con);
 @INPUT PF_SIGHANDLER pf: the signal fonction.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf);
+EXP_API bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf);
 
 /*
 @FUNCTION xcons_write: write data to console.
@@ -88,14 +88,14 @@ XDL_API bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf);
 @INOUTPUT dword_t* pb: integer variable indicate total bytes to write, and return actually bytes writed.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb);
+EXP_API bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb);
 
 /*
 @FUNCTION xcons_flush: flush console, ensure data writing come to end.
 @INPUT xhand_t con: console handle.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xcons_flush(xhand_t con);
+EXP_API bool_t xcons_flush(xhand_t con);
 
 /*
 @FUNCTION xcons_read: read data from console.
@@ -104,7 +104,7 @@ XDL_API bool_t xcons_flush(xhand_t con);
 @INOUTPUT dword_t* pb: integer variable indicate total bytes to read, and return actually bytes readed.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-XDL_API bool_t xcons_read(xhand_t con, byte_t* buf, dword_t* pb);
+EXP_API bool_t xcons_read(xhand_t con, byte_t* buf, dword_t* pb);
 
 #ifdef	__cplusplus
 }

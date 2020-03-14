@@ -13,7 +13,8 @@ OUT_PATH = ../sbin/api
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/libxdk.so.1.0
+MODULE = libxdk.so
+TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
@@ -23,7 +24,7 @@ TARGET = $(OUT_PATH)/libxdk.so.1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lxdp -L $(LIB_PATH)
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lxds -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:
@@ -40,9 +41,9 @@ install:
 	fi
 
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
-	sudo chmod +x $(SRV_PATH)/api/libxdk.so.1.0;
-	sudo rm -f $(LNK_PATH)/libxdk*;
-	sudo ln -bs $(SRV_PATH)/api/libxdk.so.1.0 $(LNK_PATH)/libxdk.so;
+	sudo chmod +x $(SRV_PATH)/api/$(MODULE).1.0;
+	sudo rm -f $(LNK_PATH)/$(MODULE)*;
+	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
 
 .PHONY : clean
 clean:

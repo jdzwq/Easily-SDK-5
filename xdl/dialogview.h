@@ -48,11 +48,11 @@ typedef enum{
 extern "C" {
 #endif
 
-	XDL_API void calc_dialog_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API void calc_dialog_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-	XDL_API int calc_dialog_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
+	EXP_API int calc_dialog_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
 
-	XDL_API void draw_dialog(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API void draw_dialog(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

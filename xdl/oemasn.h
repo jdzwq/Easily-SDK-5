@@ -62,17 +62,17 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	XDL_API dword_t xasn_get_tag(byte_t *buf, int* ptag);
+	EXP_API dword_t xasn_get_tag(byte_t *buf, int* ptag);
 
-	XDL_API dword_t xasn_set_tag(byte_t* buf, int tag);
+	EXP_API dword_t xasn_set_tag(byte_t* buf, int tag);
 
-	XDL_API dword_t xasn_get_len(byte_t* buf, int *plen);
+	EXP_API dword_t xasn_get_len(byte_t* buf, int *plen);
 
-	XDL_API dword_t xasn_set_len(byte_t* buf, int len);
+	EXP_API dword_t xasn_set_len(byte_t* buf, int len);
 
-	XDL_API dword_t xasn_get_bool(byte_t* buf, bool_t *pval);
+	EXP_API dword_t xasn_get_bool(byte_t* buf, bool_t *pval);
 
-	XDL_API dword_t xasn_set_bool(byte_t* buf, bool_t val);
+	EXP_API dword_t xasn_set_bool(byte_t* buf, bool_t val);
 
 #ifdef	__cplusplus
 }

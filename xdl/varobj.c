@@ -37,29 +37,29 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 
 /***********************************
-typedef struct _radobj_t{
+object struct{
 	object_head{
-		dword_t tag;
-		dword_t lru;
+		byte_t tag;
+		byte_t lru[3];
 	}
 	byte_t[1] compressed;
 	byte_t[3] encode;
-	dword_t encode bytes;
-	[dword_t compressed bytes;]
+	byte_t[4] encode bytes;
+	[option: byte_t[4] compressed bytes;]
 	byte_t[] data;
-}radobj_t;
+};
 *************************************/
 
 #define OBJECT_GET_TYPE(obj)	GET_BYTE((obj), 0)
 #define OBJECT_SET_TYPE(obj,n)	PUT_BYTE((obj),0,n)
 #define OBJECT_GET_COMPRESS(obj)	(bool_t)GET_BYTE((obj), sizeof(object_head))
 #define OBJECT_SET_COMPRESS(obj, b)	PUT_BYTE((obj),sizeof(object_head),(byte_t)b)
-#define OBJECT_SET_ENCODE(obj,n)	PUT_ENCODE((obj),sizeof(object_head) + 1,n)
-#define OBJECT_GET_ENCODE(obj)		GET_ENCODE((obj),sizeof(object_head) + 1)
-#define OBJECT_SET_ENCODE_SIZE(obj,n)	PUT_DWORD_LOC((obj),sizeof(object_head) + 4,n)
-#define OBJECT_GET_ENCODE_SIZE(obj)		GET_DWORD_LOC((obj),sizeof(object_head) + 4)
-#define OBJECT_SET_COMPRESS_SIZE(obj,n)	PUT_DWORD_LOC((obj),sizeof(object_head) + 8,n)
-#define OBJECT_GET_COMPRESS_SIZE(obj)	GET_DWORD_LOC((obj),sizeof(object_head) + 8)
+#define OBJECT_SET_ENCODE(obj,n)	PUT_ENCODE((obj),(sizeof(object_head) + 1),n)
+#define OBJECT_GET_ENCODE(obj)		GET_ENCODE((obj),(sizeof(object_head) + 1))
+#define OBJECT_SET_ENCODE_SIZE(obj,n)	PUT_DWORD_LOC((obj),(sizeof(object_head) + 4),n)
+#define OBJECT_GET_ENCODE_SIZE(obj)		GET_DWORD_LOC((obj),(sizeof(object_head) + 4))
+#define OBJECT_SET_COMPRESS_SIZE(obj,n)	PUT_DWORD_LOC((obj),(sizeof(object_head) + 8),n)
+#define OBJECT_GET_COMPRESS_SIZE(obj)	GET_DWORD_LOC((obj),(sizeof(object_head) + 8))
 
 #define OBJECT_ENCODE_BUFFER(obj)		(obj + sizeof(object_head) + 8)
 #define OBJECT_COMPRESS_BUFFER(obj)		(obj + sizeof(object_head) + 12)
@@ -513,7 +513,7 @@ bool_t object_get_variant(object_t obj, variant_t* pval)
 	}
 
 	dw = OBJECT_GET_ENCODE_SIZE(*pobj);
-	variant_decode(pval, (*pobj) + sizeof(object_head) + 8);
+	variant_decode(pval, OBJECT_ENCODE_BUFFER(*pobj));
 
 	return 1;
 }
@@ -534,7 +534,7 @@ void object_set_variant(object_t obj, variant_t val)
 
 	dw = variant_encode(&val, NULL, MAX_LONG);
 
-	bytes_realloc(pobj, sizeof(object_head) + 8 + dw);
+	bytes_realloc(pobj, OBJECT_ENCODE_HEAD_SIZE + dw);
 	variant_encode(&val, OBJECT_ENCODE_BUFFER(*pobj), dw);
 
 	type = _OBJECT_VARIANT;
@@ -620,7 +620,7 @@ void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len)
 
 	object_empty(obj);
 
-	bytes_realloc(pobj, sizeof(object_head) + 8 + len);
+	bytes_realloc(pobj, OBJECT_ENCODE_HEAD_SIZE + len);
 
 	xmem_copy((void*)OBJECT_ENCODE_BUFFER(*pobj), (void*)buf, len);
 
@@ -662,7 +662,7 @@ dword_t object_get_bytes(object_t obj, byte_t* buf, dword_t max)
 
 	if (buf)
 	{
-		xmem_copy((void*)buf, (void*)((*pobj) + sizeof(object_head) + 8), dw);
+		xmem_copy((void*)buf, (void*)(OBJECT_ENCODE_BUFFER(*pobj)), dw);
 	}
 
 	return dw;
@@ -676,12 +676,12 @@ dword_t object_decode(object_t obj, const byte_t* data)
 
 	XDL_ASSERT(obj && data);
 
-	type = OBJECT_GET_TYPE(*pobj);
+	type = OBJECT_GET_TYPE(data);
 
 	if (type != _OBJECT_BINARY && type != _OBJECT_STRING && type != _OBJECT_VARIANT && type != _OBJECT_DOMDOC)
 		return 0;
 
-	dw = OBJECT_ENCODE_HEAD_SIZE + GET_DWORD_LOC(data, sizeof(object_head) + 4);
+	dw = OBJECT_ENCODE_HEAD_SIZE + OBJECT_GET_ENCODE_SIZE(data);
 
 	bytes_realloc(pobj, dw);
 	xmem_copy((void*)(*pobj), (void*)data, dw);
@@ -702,12 +702,12 @@ dword_t object_encode(object_t obj, byte_t* buf, dword_t max)
 	if (compre)
 		_object_decompress(pobj);
 
-	dw = sizeof(object_head) + 8 + GET_DWORD_LOC((*pobj), sizeof(object_head) + 4);
+	dw = OBJECT_ENCODE_HEAD_SIZE + OBJECT_GET_ENCODE_SIZE(*pobj);
 	dw = (dw < max) ? dw : max;
 
 	if (buf)
 	{
-		xmem_copy(buf, (*pobj), dw);
+		xmem_copy((void*)buf, (void*)(*pobj), dw);
 	}
 
 	return dw;

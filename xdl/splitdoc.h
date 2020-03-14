@@ -151,28 +151,28 @@ extern "C" {
 @FUNCTION create_split_doc: create a splitor document.
 @RETURN link_t_ptr: return the splitor document link component.
 */
-XDL_API link_t_ptr create_split_doc(void);
+EXP_API link_t_ptr create_split_doc(void);
 
 /*
 @FUNCTION destroy_split_doc: destroy a splitor document.
 @INPUT link_t_ptr ptr: the splitor link component.
 @RETURN void: none.
 */
-XDL_API void destroy_split_doc(link_t_ptr ptr);
+EXP_API void destroy_split_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_split_doc: test is splitor document.
 @INPUT link_t_ptr ptr: the splitor link component.
 @RETURN bool_t: return nonzero for being a splitor document, otherwise return zero.
 */
-XDL_API bool_t is_split_doc(link_t_ptr ptr);
+EXP_API bool_t is_split_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_split_doc: clear the splitor document.
 @INPUT link_t_ptr ptr: the splitor link component.
 @RETURN void: none.
 */
-XDL_API void clear_split_doc(link_t_ptr ptr);
+EXP_API void clear_split_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_split_item: test is splitor item node.
@@ -180,7 +180,7 @@ XDL_API void clear_split_doc(link_t_ptr ptr);
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN bool_t: return nonzero for being a item node, otherwise return zero.
 */
-XDL_API bool_t is_split_item(link_t_ptr ptr,link_t_ptr ilk);
+EXP_API bool_t is_split_item(link_t_ptr ptr,link_t_ptr ilk);
 
 /*
 @FUNCTION split_item: split the item.
@@ -188,14 +188,14 @@ XDL_API bool_t is_split_item(link_t_ptr ptr,link_t_ptr ilk);
 @INPUT bool_t b_horz: nonzero for horizonal spliting, zero for vertical spliting.
 @RETURN void: none.
 */
-XDL_API void split_item(link_t_ptr ilk, bool_t b_horz);
+EXP_API void split_item(link_t_ptr ilk, bool_t b_horz);
 
 /*
 @FUNCTION unsplit_item: unsplit the item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN void: none.
 */
-XDL_API void unsplit_item(link_t_ptr ilk);
+EXP_API void unsplit_item(link_t_ptr ilk);
 
 /*
 @FUNCTION enum_split_item: enm the items in splitor document.
@@ -204,42 +204,42 @@ XDL_API void unsplit_item(link_t_ptr ilk);
 @INPUT void* param: the parameter translate into callback function.
 @RETURN link_t_ptr: return the splitor item link component breaked at.
 */
-XDL_API link_t_ptr enum_split_item(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API link_t_ptr enum_split_item(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
 
 /*
 @FUNCTION get_split_first_child_item: get the first child item.
 @INPUT link_t_ptr ilk: the parent link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_split_first_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_split_first_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_split_last_child_item: get the last child item.
 @INPUT link_t_ptr ilk: the parent link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_split_last_child_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_split_last_child_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_split_parent_item: get the parent item.
 @INPUT link_t_ptr ilk: the child link component.
 @RETURN link_t_ptr: return the parent item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_split_parent_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_split_parent_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_split_next_sibling_item: get the next sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_split_next_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_split_next_sibling_item(link_t_ptr ilk);
 
 /*
 @FUNCTION get_split_prev_sibling_item: get the previous sibling item.
 @INPUT link_t_ptr ilk: the item link component.
 @RETURN link_t_ptr: return the item link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_split_prev_sibling_item(link_t_ptr ilk);
+EXP_API link_t_ptr get_split_prev_sibling_item(link_t_ptr ilk);
 
 #ifdef	__cplusplus
 }

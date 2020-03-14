@@ -48,7 +48,7 @@ extern "C" {
 @INPUT int max: the string buffer size in characters.
 @RETURN int: return the characters formated.
 */
-XDL_API int format_memo_doc(link_t_ptr ptr, tchar_t* buf, int max);
+EXP_API int format_memo_doc(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
 @FUNCTION parse_memo_doc: parse the memo document from string buffer.
@@ -57,11 +57,11 @@ XDL_API int format_memo_doc(link_t_ptr ptr, tchar_t* buf, int max);
 @INPUT int len: the string buffer size in characters.
 @RETURN int: if succeeds return nonzero, fails return zero.
 */
-XDL_API bool_t parse_memo_doc(link_t_ptr ptr, const tchar_t* buf, int len);
+EXP_API bool_t parse_memo_doc(link_t_ptr ptr, const tchar_t* buf, int len);
 
-XDL_API bool_t format_memo_doc_to_stream(link_t_ptr ptr, stream_t stm);
+EXP_API bool_t format_memo_doc_to_stream(link_t_ptr ptr, stream_t stm);
 
-XDL_API bool_t parse_memo_doc_from_stream(link_t_ptr ptr, stream_t stm);
+EXP_API bool_t parse_memo_doc_from_stream(link_t_ptr ptr, stream_t stm);
 
 #ifdef	__cplusplus
 }

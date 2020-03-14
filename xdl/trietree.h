@@ -42,28 +42,28 @@ typedef bool_t(*PF_ENUM_TRIE_TREE)(const tchar_t* key, int len, var_long delta, 
 extern "C" {
 #endif
 
-	XDL_API link_t_ptr create_trie_tree(void);
+	EXP_API link_t_ptr create_trie_tree(void);
 
-	XDL_API void destroy_trie_tree(link_t_ptr trie);
+	EXP_API void destroy_trie_tree(link_t_ptr trie);
 
-	XDL_API link_t_ptr insert_trie_node(link_t_ptr trie, const tchar_t* key, int len, tchar_t kfeed);
+	EXP_API link_t_ptr insert_trie_node(link_t_ptr trie, const tchar_t* key, int len, tchar_t kfeed);
 
-	XDL_API void delete_trie_node(link_t_ptr trie, const tchar_t* key, int len, tchar_t kfeed);
+	EXP_API void delete_trie_node(link_t_ptr trie, const tchar_t* key, int len, tchar_t kfeed);
 
-	XDL_API link_t_ptr find_trie_node(link_t_ptr trie, const tchar_t* key, int len, tchar_t kfeed);
+	EXP_API link_t_ptr find_trie_node(link_t_ptr trie, const tchar_t* key, int len, tchar_t kfeed);
 
-	XDL_API link_t_ptr get_trie_from_node(link_t_ptr node);
+	EXP_API link_t_ptr get_trie_from_node(link_t_ptr node);
 
-	XDL_API bool_t is_trie_leaf(link_t_ptr node);
+	EXP_API bool_t is_trie_leaf(link_t_ptr node);
 
-	XDL_API link_t_ptr enum_trie_tree(link_t_ptr trie, tchar_t kfeed, PF_ENUM_TRIE_TREE pf, void* param);
+	EXP_API link_t_ptr enum_trie_tree(link_t_ptr trie, tchar_t kfeed, PF_ENUM_TRIE_TREE pf, void* param);
 
-	XDL_API var_long get_trie_node_delta(link_t_ptr node);
+	EXP_API var_long get_trie_node_delta(link_t_ptr node);
 
-	XDL_API void set_trie_node_delta(link_t_ptr node, var_long delta);
+	EXP_API void set_trie_node_delta(link_t_ptr node, var_long delta);
 
 #if defined(_DEBUG) || defined(DEBUG)
-	XDL_API void test_trie_tree();
+	EXP_API void test_trie_tree();
 #endif
 
 #ifdef	__cplusplus

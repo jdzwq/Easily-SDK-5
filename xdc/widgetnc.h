@@ -38,15 +38,15 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-XDC_API void widgetnc_on_paint(res_win_t wt, res_ctx_t dc);
+EXP_API void widgetnc_on_paint(res_win_t wt, res_ctx_t dc);
 
-XDC_API void widgetnc_on_calcsize(res_win_t wt, xrect_t* pxr);
+EXP_API void widgetnc_on_calcsize(res_win_t wt, xrect_t* pxr);
 
-XDC_API int widgetnc_on_hittest(res_win_t wt, const xpoint_t* pxp);
+EXP_API int widgetnc_on_hittest(res_win_t wt, const xpoint_t* pxp);
 
-XDC_API int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp);
+EXP_API int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp);
 
-XDC_API void widget_draw_scroll(res_win_t wt, bool_t horz);
+EXP_API void widget_draw_scroll(res_win_t wt, bool_t horz);
 
 #ifdef	__cplusplus
 }

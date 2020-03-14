@@ -46,15 +46,15 @@ typedef enum{
 extern "C" {
 #endif
 
-XDL_API void calc_split_item_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr);
+EXP_API void calc_split_item_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr);
 
-XDL_API void calc_split_span_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr);
+EXP_API void calc_split_span_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr);
 
-XDL_API void resize_split_item(link_t_ptr ilk);
+EXP_API void resize_split_item(link_t_ptr ilk);
 
-XDL_API void adjust_split_item(link_t_ptr ilk, float off);
+EXP_API void adjust_split_item(link_t_ptr ilk, float off);
 
-XDL_API int calc_split_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
+EXP_API int calc_split_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
 
 #ifdef	__cplusplus
 }

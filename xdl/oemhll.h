@@ -46,12 +46,12 @@ extern "C" {
 	/* Our hash function is MurmurHash2, 64 bit version.
 	* It was modified for Redis in order to provide the same result in
 	* big and little endian archs (endian neutral). */
-	XDL_API uint64_t MurmurHash64A(const void * key, int len, unsigned int seed);
+	EXP_API uint64_t MurmurHash64A(const void * key, int len, unsigned int seed);
 
 	/* Given a string element to add to the HyperLogLog, returns the length
 	* of the pattern 000..1 of the element hash. As a side effect 'regp' is
 	* set to the register index this element hashes to. */
-	XDL_API int hllPatLen(unsigned char *ele, size_t elesize, int *regp);
+	EXP_API int hllPatLen(unsigned char *ele, size_t elesize, int *regp);
 
 	/* ================== Dense representation implementation  ================== */
 
@@ -66,13 +66,13 @@ extern "C" {
 	* The function always succeed, however if as a result of the operation
 	* the approximated cardinality changed, 1 is returned. Otherwise 0
 	* is returned. */
-	XDL_API int hllDenseAdd(uint8_t *registers, unsigned char *ele, size_t elesize);
+	EXP_API int hllDenseAdd(uint8_t *registers, unsigned char *ele, size_t elesize);
 
 	/* Compute SUM(2^-reg) in the dense representation.
 	* PE is an array with a pre-computer table of values 2^-reg indexed by reg.
 	* As a side effect the integer pointed by 'ezp' is set to the number
 	* of zero registers. */
-	XDL_API double hllDenseSum(uint8_t *registers, double *PE, int *ezp);
+	EXP_API double hllDenseSum(uint8_t *registers, double *PE, int *ezp);
 
 
 #ifdef __cplusplus

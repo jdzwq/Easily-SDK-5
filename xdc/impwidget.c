@@ -726,7 +726,7 @@ void widget_scroll(res_win_t wt, bool_t horz, int line)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_scroll)(wt, WM_SCROLL, horz, line);
+	(*pif->pf_widget_scroll)(wt, horz, line);
 }
 
 void widget_post_char(res_win_t wt, tchar_t ch)

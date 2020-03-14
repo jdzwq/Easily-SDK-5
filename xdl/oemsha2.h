@@ -33,7 +33,7 @@ extern "C" {
 	* \param ctx      context to be initialized
 	* \param is224    0 = use SHA256, 1 = use SHA224
 	*/
-	XDL_API void sha2_starts(sha2_context *ctx, int is224);
+	EXP_API void sha2_starts(sha2_context *ctx, int is224);
 
 	/**
 	* \brief          SHA-256 process buffer
@@ -42,7 +42,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void sha2_update(sha2_context *ctx, unsigned char *input, int ilen);
+	EXP_API void sha2_update(sha2_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          SHA-256 final digest
@@ -50,7 +50,7 @@ extern "C" {
 	* \param ctx      SHA-256 context
 	* \param output   SHA-224/256 checksum result
 	*/
-	XDL_API void sha2_finish(sha2_context *ctx, unsigned char output[32]);
+	EXP_API void sha2_finish(sha2_context *ctx, unsigned char output[32]);
 
 	/**
 	* \brief          Output = SHA-256( input buffer )
@@ -60,7 +60,7 @@ extern "C" {
 	* \param output   SHA-224/256 checksum result
 	* \param is224    0 = use SHA256, 1 = use SHA224
 	*/
-	XDL_API void sha2(unsigned char *input, int ilen,
+	EXP_API void sha2(unsigned char *input, int ilen,
 		unsigned char output[32], int is224);
 
 	/**
@@ -73,7 +73,7 @@ extern "C" {
 	* \return         0 if successful, 1 if fopen failed,
 	*                 or 2 if fread failed
 	*/
-	//XDL_API int sha2_file(char *path, unsigned char output[32], int is224);
+	//EXP_API int sha2_file(char *path, unsigned char output[32], int is224);
 
 	/**
 	* \brief          SHA-256 HMAC context setup
@@ -83,7 +83,7 @@ extern "C" {
 	* \param keylen   length of the HMAC key
 	* \param is224    0 = use SHA256, 1 = use SHA224
 	*/
-	XDL_API void sha2_hmac_starts(sha2_context *ctx, unsigned char *key, int keylen,
+	EXP_API void sha2_hmac_starts(sha2_context *ctx, unsigned char *key, int keylen,
 		int is224);
 
 	/**
@@ -93,7 +93,7 @@ extern "C" {
 	* \param input    buffer holding the  data
 	* \param ilen     length of the input data
 	*/
-	XDL_API void sha2_hmac_update(sha2_context *ctx, unsigned char *input, int ilen);
+	EXP_API void sha2_hmac_update(sha2_context *ctx, unsigned char *input, int ilen);
 
 	/**
 	* \brief          SHA-256 HMAC final digest
@@ -101,7 +101,7 @@ extern "C" {
 	* \param ctx      HMAC context
 	* \param output   SHA-224/256 HMAC checksum result
 	*/
-	XDL_API void sha2_hmac_finish(sha2_context *ctx, unsigned char output[32]);
+	EXP_API void sha2_hmac_finish(sha2_context *ctx, unsigned char output[32]);
 
 	/**
 	* \brief          Output = HMAC-SHA-256( hmac key, input buffer )
@@ -113,7 +113,7 @@ extern "C" {
 	* \param output   HMAC-SHA-224/256 result
 	* \param is224    0 = use SHA256, 1 = use SHA224
 	*/
-	XDL_API void sha2_hmac(unsigned char *key, int keylen,
+	EXP_API void sha2_hmac(unsigned char *key, int keylen,
 		unsigned char *input, int ilen,
 		unsigned char output[32], int is224);
 

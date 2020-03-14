@@ -72,28 +72,28 @@ extern "C" {
 @FUNCTION create_svg_doc: create a svg document.
 @RETURN link_t_ptr: return the svg document link component.
 */
-XDL_API link_t_ptr create_svg_doc(void);
+EXP_API link_t_ptr create_svg_doc(void);
 
 /*
 @FUNCTION destroy_svg_doc: destroy a svg document.
 @INPUT link_t_ptr ptr: the svg document link component.
 @RETURN void: none.
 */
-XDL_API void destroy_svg_doc(link_t_ptr ptr);
+EXP_API void destroy_svg_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION clear_svg_doc: clear a svg document, all of child nodes in svg document will be emptied.
 @INPUT link_t_ptr ptr: the svg document link component.
 @RETURN void: none.
 */
-XDL_API void clear_svg_doc(link_t_ptr ptr);
+EXP_API void clear_svg_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_svg_doc: test is a svg document.
 @INPUT link_t_ptr ptr: the svg document link component.
 @RETURN bool_t: return nonzero for being a svg document, otherwise return zero.
 */
-XDL_API bool_t is_svg_doc(link_t_ptr ptr);
+EXP_API bool_t is_svg_doc(link_t_ptr ptr);
 
 /*
 @FUNCTION is_svg_node: test is a svg child node.
@@ -101,56 +101,56 @@ XDL_API bool_t is_svg_doc(link_t_ptr ptr);
 @INPUT link_t_ptr nlk: the svg node link component.
 @RETURN bool_t: return nonzero for being a svg child node, otherwise return zero.
 */
-XDL_API bool_t is_svg_node(link_t_ptr ptr, link_t_ptr nlk);
+EXP_API bool_t is_svg_node(link_t_ptr ptr, link_t_ptr nlk);
 
 /*
 @FUNCTION insert_svg_node: insert a new svg child node.
 @INPUT link_t_ptr nlk: the svg node link component.
 @RETURN link_t_ptr: return the new svg node link component.
 */
-XDL_API link_t_ptr insert_svg_node(link_t_ptr nlk);
+EXP_API link_t_ptr insert_svg_node(link_t_ptr nlk);
 
 /*
 @FUNCTION delete_svg_node: delete a svg node and its child nodes.
 @INPUT link_t_ptr nlk: the svg node link component.
 @RETURN void: none.
 */
-XDL_API void delete_svg_node(link_t_ptr nlk);
+EXP_API void delete_svg_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_svg_first_child_node: get svg first child node.
 @INPUT link_t_ptr nlk: the parent svg node link component.
 @RETURN link_t_ptr: return the node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_svg_first_child_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_svg_first_child_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_svg_last_child_node: get svg last child node.
 @INPUT link_t_ptr nlk: the parent svg node link component.
 @RETURN link_t_ptr: return the node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_svg_last_child_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_svg_last_child_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_svg_parent_node: get svg parent node.
 @INPUT link_t_ptr nlk: the svg node link component.
 @RETURN link_t_ptr: return the parent node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_svg_parent_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_svg_parent_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_svg_next_sibling_node: get svg next sibling node.
 @INPUT link_t_ptr nlk: the svg node link component.
 @RETURN link_t_ptr: return the next sibling node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_svg_next_sibling_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_svg_next_sibling_node(link_t_ptr nlk);
 
 /*
 @FUNCTION get_svg_prev_sibling_node: get svg previous sibling node.
 @INPUT link_t_ptr nlk: the svg node link component.
 @RETURN link_t_ptr: return the previous sibling node link component if exists, otherwise return NULL.
 */
-XDL_API link_t_ptr get_svg_prev_sibling_node(link_t_ptr nlk);
+EXP_API link_t_ptr get_svg_prev_sibling_node(link_t_ptr nlk);
 
 /*****************************************************************************************************************/
 
@@ -160,14 +160,14 @@ XDL_API link_t_ptr get_svg_prev_sibling_node(link_t_ptr nlk);
 @INPUT float width: the width in millimeter.
 @RETURN void: none.
 */
-XDL_API void set_svg_width(link_t_ptr ptr, float width);
+EXP_API void set_svg_width(link_t_ptr ptr, float width);
 
 /*
 @FUNCTION get_svg_width: get svg width.
 @INPUT link_t_ptr ptr: the svg link component.
 @RETURN float: return the width in millimeter.
 */
-XDL_API float get_svg_width(link_t_ptr ptr);
+EXP_API float get_svg_width(link_t_ptr ptr);
 
 /*
 @FUNCTION set_svg_height: set svg height.
@@ -175,14 +175,14 @@ XDL_API float get_svg_width(link_t_ptr ptr);
 @INPUT float height: the height in millimeter.
 @RETURN void: none.
 */
-XDL_API void set_svg_height(link_t_ptr ptr, float height);
+EXP_API void set_svg_height(link_t_ptr ptr, float height);
 
 /*
 @FUNCTION get_svg_height: get svg height.
 @INPUT link_t_ptr ptr: the svg link component.
 @RETURN float: return the height in millimeter.
 */
-XDL_API float get_svg_height(link_t_ptr ptr);
+EXP_API float get_svg_height(link_t_ptr ptr);
 
 /*
 @FUNCTION set_svg_viewbox: set svg view box.
@@ -190,7 +190,7 @@ XDL_API float get_svg_height(link_t_ptr ptr);
 @INPUT const xrect_t* pbox: the rect struct, using int member.
 @RETURN void: none.
 */
-XDL_API void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox);
+EXP_API void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox);
 
 /*
 @FUNCTION get_svg_viewbox: get svg view box.
@@ -198,7 +198,7 @@ XDL_API void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox);
 @OUTPUT xrect_t* pbox: the rect struct, using int member.
 @RETURN void: none.
 */
-XDL_API void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox);
+EXP_API void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox);
 
 /*
 @FUNCTION write_line_to_svg_node: write line attributes to the svg node.
@@ -208,7 +208,7 @@ XDL_API void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox);
 @INPUT const xpoint_t* ppt2: the two point struct using int member.
 @RETURN void: none.
 */
-XDL_API void write_line_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
+EXP_API void write_line_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
 
 /*
 @FUNCTION read_line_from_svg_node: read line attributes from the svg node.
@@ -218,7 +218,7 @@ XDL_API void write_line_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpo
 @OUTPUT xpoint_t* ppt2: the two point struct for returning in int member.
 @RETURN void: none.
 */
-XDL_API void read_line_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt1, xpoint_t* ppt2);
+EXP_API void read_line_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt1, xpoint_t* ppt2);
 
 /*
 @FUNCTION write_polyline_to_svg_node: write polyline attributes to the svg node.
@@ -228,7 +228,7 @@ XDL_API void read_line_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt1
 @INPUT int n: the number of point in array.
 @RETURN void: none.
 */
-XDL_API void write_polyline_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n);
+EXP_API void write_polyline_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n);
 
 /*
 @FUNCTION read_polyline_from_svg_node: read ployline attributes from the svg node.
@@ -238,7 +238,7 @@ XDL_API void write_polyline_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const
 @INPUT int n: the array size.
 @RETURN int: return the number of points.
 */
-XDL_API int read_polyline_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int n);
+EXP_API int read_polyline_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int n);
 
 /*
 @FUNCTION write_polygon_to_svg_node: write polygon attributes to the svg node.
@@ -249,7 +249,7 @@ XDL_API int read_polyline_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* p
 @INPUT int n: the number of point in array.
 @RETURN void: none.
 */
-XDL_API void write_polygon_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
+EXP_API void write_polygon_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
 
 /*
 @FUNCTION read_polygon_from_svg_node: read ploygon attributes from the svg node.
@@ -260,7 +260,7 @@ XDL_API void write_polygon_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const 
 @INPUT int n: the array size.
 @RETURN int: return the number of points.
 */
-XDL_API int read_polygon_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int n);
+EXP_API int read_polygon_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int n);
 
 /*
 @FUNCTION write_bezier_to_svg_node: write bezier attributes to the svg node.
@@ -272,7 +272,7 @@ XDL_API int read_polygon_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* px
 @INPUT const xpoint_t* ppt4: the end point.
 @RETURN void: none.
 */
-XDL_API void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+EXP_API void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
 
 /*
 @FUNCTION write_curve_to_svg_node: write curve attributes to the svg node.
@@ -282,7 +282,7 @@ XDL_API void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const x
 @INPUT int n: the array size.
 @RETURN void: none.
 */
-XDL_API void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n);
+EXP_API void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n);
 
 /*
 @FUNCTION write_rect_to_svg_node: write rect attributes to the svg node.
@@ -292,7 +292,7 @@ XDL_API void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xp
 @INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
-XDL_API void write_rect_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
+EXP_API void write_rect_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
 
 /*
 @FUNCTION read_rect_from_svg_node: read rect attributes from the svg node.
@@ -302,14 +302,14 @@ XDL_API void write_rect_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbr
 @OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN void: none
 */
-XDL_API void read_rect_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt);
+EXP_API void read_rect_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt);
 
 /*
 @FUNCTION svg_node_is_round: test the node is round node.
 @INPUT link_t_ptr glk: the svg node component.
 @RETURN bool_t: return nonzero for round node, otherwise return zero.
 */
-XDL_API bool_t svg_node_is_round(link_t_ptr glk);
+EXP_API bool_t svg_node_is_round(link_t_ptr glk);
 
 /*
 @FUNCTION write_round_to_svg_node: write round attributes to the svg node.
@@ -321,7 +321,7 @@ XDL_API bool_t svg_node_is_round(link_t_ptr glk);
 @INPUT int ry: the ry value.
 @RETURN void: none.
 */
-XDL_API void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int rx, int ry);
+EXP_API void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int rx, int ry);
 
 /*
 @FUNCTION read_round_from_svg_node: read round attributes from the svg node.
@@ -333,7 +333,7 @@ XDL_API void write_round_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xb
 @OUTPUT int* pry: for returning ry value.
 @RETURN void: none
 */
-XDL_API void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, int* prx, int* pry);
+EXP_API void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, int* prx, int* pry);
 
 /*
 @FUNCTION write_ellipse_to_svg_node: write ellipse attributes to the svg node.
@@ -343,7 +343,7 @@ XDL_API void read_round_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb
 @INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
-XDL_API void write_ellipse_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
+EXP_API void write_ellipse_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
 
 /*
 @FUNCTION read_ellipse_from_svg_node: read ellipse attributes from the svg node.
@@ -353,14 +353,14 @@ XDL_API void write_ellipse_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const 
 @OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN void: none
 */
-XDL_API void read_ellipse_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt);
+EXP_API void read_ellipse_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt);
 
 /*
 @FUNCTION svg_node_is_pie: test the node is pie node.
 @INPUT link_t_ptr glk: the svg node component.
 @RETURN bool_t: return nonzero for pie node, otherwise return zero.
 */
-XDL_API bool_t svg_node_is_pie(link_t_ptr glk);
+EXP_API bool_t svg_node_is_pie(link_t_ptr glk);
 
 /*
 @FUNCTION write_pie_to_svg_node: write pie attributes to the svg node.
@@ -374,7 +374,7 @@ XDL_API bool_t svg_node_is_pie(link_t_ptr glk);
 @INPUT double tang: the end angle.
 @RETURN void: none.
 */
-XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 
 /*
 @FUNCTION read_ellipse_from_svg_node: read pie attributes from the svg node.
@@ -388,7 +388,7 @@ XDL_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbru
 @OUTPUT double* ptang: for returning end angle.
 @RETURN void: none
 */
-XDL_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
+EXP_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
 
 /*
 @FUNCTION write_text_to_svg_node: write text to the svg node.
@@ -400,7 +400,7 @@ XDL_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, 
 @INPUT int len: the length of text token in characters.
 @RETURN void: none.
 */
-XDL_API void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* text, int len);
 
 /*
 @FUNCTION read_text_from_svg_node: read text attributes from the svg node.
@@ -410,7 +410,7 @@ XDL_API void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xf
 @OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN const tchar_t*: return text token.
 */
-XDL_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xface_t* pxa, xrect_t* prt);
+EXP_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xface_t* pxa, xrect_t* prt);
 
 /*
 @FUNCTION write_shape_to_svg_node: write shape attributes to the svg node.
@@ -421,7 +421,7 @@ XDL_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xfa
 @INPUT const tchar_t* shape: the shape name.
 @RETURN void: none.
 */
-XDL_API void write_shape_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape);
+EXP_API void write_shape_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape);
 
 /*
 @FUNCTION write_ximage_to_svg_node: write image attributes to the svg node.
@@ -430,7 +430,7 @@ XDL_API void write_shape_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xb
 @INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
-XDL_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t* prt);
+EXP_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t* prt);
 
 /*
 @FUNCTION read_ximage_from_svg_node: read image attributes from the svg node.
@@ -439,7 +439,7 @@ XDL_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const
 @OUTPUT xrect_t* prt: the rect struct for returning in int member.
 @RETURN void: none.
 */
-XDL_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);
+EXP_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);
 
 #ifdef	__cplusplus
 }

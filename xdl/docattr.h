@@ -281,7 +281,7 @@
 #define ATTR_ITEM_WIDTH				_T("item-width")
 #define ATTR_ITEM_HEIGHT			_T("item-height")
 #define ATTR_ITEM_SPAN				_T("item-span")
-#define GDI_ICON_SPAN					_T("icon-span")
+#define GDI_ATTR_GIZMO_SPAN					_T("icon-span")
 #define ATTR_TEXT_INDENT			_T("text-indent")
 #define ATTR_TEXT_PLACE				_T("text-place")
 #define ATTR_ENTITY_HEIGHT			_T("entity-height")
