@@ -7,8 +7,9 @@
 #include <conio.h>
 #endif
 
-#define SMS_URL		_T("https://118.178.180.81")
+//#define SMS_URL		_T("https://118.178.180.81")
 //#define SMS_URL		_T("https://127.0.0.1:8888")
+#define SMS_URL		_T("http://www.biofolia.cn:8889")
 
 void test_bytes()
 {
@@ -378,7 +379,7 @@ void test_sms_code()
 {
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"), SMS_URL);
+	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code"), SMS_URL);
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);

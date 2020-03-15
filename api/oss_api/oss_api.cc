@@ -1,4 +1,4 @@
-/***********************************************************************
+ï»¿/***********************************************************************
 	Easily oss web api
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
@@ -121,7 +121,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -181,7 +181,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -427,7 +427,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -642,7 +642,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -697,7 +697,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -788,7 +788,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -818,7 +818,7 @@ void _invoke_error(const https_block_t* pb, oss_block_t* pos)
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[OSSé”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}

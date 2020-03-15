@@ -1,4 +1,4 @@
-/***********************************************************************
+ï»¿/***********************************************************************
 	Easily loc web api
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
@@ -263,7 +263,7 @@ ONERROR:
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[SOAP: ´íÎó]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[SOAP: é”™è¯¯]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
