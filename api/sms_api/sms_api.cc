@@ -188,7 +188,7 @@ void _invoke_error(const https_block_t* pb, sms_block_t* pxb)
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[SMS����]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[SMS-Error]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
