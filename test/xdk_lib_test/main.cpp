@@ -9,7 +9,35 @@
 #include <iostream>
 #include <xdk.h>
 
-void test_date()
+void test_heap()
+{
+    if_memo_t if_heap = { 0 };
+    
+    xdk_impl_memo_heap(&if_heap);
+
+    res_heap_t heap = (*if_heap.pf_heap_create)();
+
+    var_long ar[100];
+
+    for(int i=0;i<100;i++)
+    {
+        ar[i] = (var_long)(*if_heap.pf_heap_alloc)(heap, (i) * 10);
+    }
+
+    for(int i=0;i<100;i++)
+    {
+        ar[i] = (var_long)(*if_heap.pf_heap_realloc)(heap, (void*)ar[i], (i) * 100);
+    }
+
+    for(int i=0;i<10;i++)
+    {
+        (*if_heap.pf_heap_free)(heap, (void*)ar[i]);
+    }
+
+    (*if_heap.pf_heap_destroy)(heap);
+}
+
+/*void test_date()
 {
     if_date_t if_date = { 0 };
     
@@ -88,7 +116,7 @@ void test_dir()
     _tstrcat(path,_T("/test/mydir"));
     (*if_file.pf_directory_open)(path, FILE_OPEN_CREATE);
 
-}
+}*/
 /*
 void test_name_pipe()
 {
@@ -138,7 +166,7 @@ void test_name_pipe()
          (*if_pipe.pf_pipe_close)(_T("xportm"), srv);
     }
 }
-*/
+
 void test_process()
 {
     if_process_t if_proc = { 0 };
@@ -165,7 +193,7 @@ void test_process()
     (*pf)(&xp);
     (*if_proc.pf_free_library)(dl);
 }
-/*
+
 void test_pipe()
 {
     if_process_t if_proc = { 0 };
@@ -225,35 +253,6 @@ void test_sock()
     (*if_sock.pf_socket_close)(so);
 }
 
-void test_heap()
-{
-    if_memo_t if_memo = { 0 };
-    
-    xdk_impl_memo_heap(&if_memo);
-    
-    res_heap_t hp = (*if_memo.pf_heap_create)();
-    
-    malloc_statistics_t ms = {0};
-    
-    void *p = (*if_memo.pf_heap_alloc)(hp, 500);
-    if(!p)
-        printf("parent error : %s\n", strerror(errno));
-    
-    malloc_zone_statistics((malloc_zone_t*)hp, &ms);
-    
-    p = (*if_memo.pf_heap_realloc)(hp, p, 10000);
-    if(!p)
-        printf("parent error : %s\n", strerror(errno));
-    
-     malloc_zone_statistics((malloc_zone_t*)hp, &ms);
-    
-    (*if_memo.pf_heap_free)(hp, p);
-    
-    (*if_memo.pf_heap_clean)(hp);
-    
-    (*if_memo.pf_heap_destroy)(hp);
-}
-*/
 void test_page()
 {
     if_memo_t if_memo = { 0 };
@@ -297,7 +296,7 @@ void test_cache()
 
     (*if_memo.pf_cache_close)(p);
 }
-/*
+
 void test_share()
 {
     if_share_t if_share = { 0 };
@@ -344,7 +343,6 @@ void test_share()
         (*if_share.pf_share_close)(_T("mytest"), fh);
     }
 }
-*/
 
 void test_mbcs()
 {
@@ -638,6 +636,7 @@ void test_widget()
     
     (*if_context.pf_context_cleanup)();
 }
+*/
 
 int main(int argc, const char * argv[]) {
     //struct sigaction sa = {0};
@@ -662,7 +661,7 @@ int main(int argc, const char * argv[]) {
     
     //test_sock();
     
-    //test_heap();
+    test_heap();
     
     //test_page();
     
@@ -672,7 +671,7 @@ int main(int argc, const char * argv[]) {
     
     //test_share();
     
-    test_mbcs();
+    //test_mbcs();
     
     //test_cons();
     

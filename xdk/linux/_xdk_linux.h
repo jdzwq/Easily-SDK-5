@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #ifndef _XDK_LINUX_H
 #define _XDK_LINUX_H
 
-//#define XDK_SUPPORT_MEMO_HEAP
+#define XDK_SUPPORT_MEMO_HEAP
 #define XDK_SUPPORT_MEMO_PAGE
 #define XDK_SUPPORT_MEMO_GLOB
 #define XDK_SUPPORT_MEMO_LOCAL

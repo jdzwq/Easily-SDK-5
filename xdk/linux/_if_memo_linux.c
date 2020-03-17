@@ -36,52 +36,126 @@ LICENSE.GPL3 for more details.
 #ifdef XDK_SUPPORT_MEMO
 /******************************************************************************/
 #ifdef XDK_SUPPORT_MEMO_HEAP
+
+typedef struct _heap_head* _heap_head_ptr;
+
+typedef struct _heap_head{
+    _heap_head_ptr prev;
+    _heap_head_ptr next;
+}heap_head;
+
+const heap_head proc_heap = {0};
+
 res_heap_t _process_heapo(void)
 {
-    SDK_UNSUPPORT_ERROR;
-    
-	return (res_heap_t)NULL;
+	return (res_heap_t)&proc_heap;
 }
 
 res_heap_t _heapo_create(void)
 {
-    SDK_UNSUPPORT_ERROR;
-    
-	return (res_heap_t)NULL;
+    heap_head* phh;
+
+    phh = (heap_head*)calloc(1, sizeof(heap_head));
+    phh->next = phh->prev = phh;
+
+	return (res_heap_t)phh;
 }
 
 void  _heapo_destroy(res_heap_t heap)
 {
-    SDK_UNSUPPORT_ERROR;
+    heap_head* phh = (heap_head*)heap;
+    heap_head* pnn;
+
+    while((pnn = phh->next) != phh)
+    {
+        phh->next = pnn->next;
+        (pnn->next)->prev = phh;
+
+        free(pnn);
+    }
+
+    free(phh);
 }
 
 void* _heapo_alloc(res_heap_t heap, dword_t size)
 {
-    SDK_UNSUPPORT_ERROR;
-    
-	return (res_heap_t)NULL;
+    heap_head* phh = (heap_head*)heap;
+    heap_head* pnn;
+
+    if(!size) return NULL;
+
+    if(heap == &proc_heap)
+    {
+        return calloc(1, size);
+    }else
+    {
+        pnn = (heap_head*)calloc(1, sizeof(heap_head) + size);
+
+        phh->next->prev = pnn;
+        pnn->next = phh->next;
+        phh->next = pnn;
+        pnn->prev = phh;
+
+        return (void*)((void*)pnn + sizeof(heap_head));
+    }
 }
 
 void* _heapo_realloc(res_heap_t heap, void* p, dword_t size)
 {
-    SDK_UNSUPPORT_ERROR;
-    
-	return (res_heap_t)NULL;
+    heap_head* phh = (heap_head*)heap;
+    heap_head* pnn;
+
+    if(!p) return _heapo_alloc(heap, size);
+
+    if(heap == &proc_heap)
+    {
+        return realloc(p, size);
+    }else
+    {
+        pnn = (heap_head*)(p - sizeof(heap_head));
+        pnn->prev->next = pnn->next;
+        (pnn->next)->prev = pnn->prev;
+
+        pnn = (heap_head*)realloc((void*)pnn, sizeof(heap_head) + size);
+        phh->next->prev = pnn;
+        pnn->next = phh->next;
+        phh->next = pnn;
+        pnn->prev = phh;
+
+        return (void*)((void*)pnn + sizeof(heap_head));
+    }
 }
 
 void _heapo_zero(res_heap_t heap, void* p, dword_t size)
 {
-    SDK_UNSUPPORT_ERROR;
+    if(!p) return;
+    
+    memset(p, 0, size);
 }
 
 void _heapo_free(res_heap_t heap, void* p)
 {
-    SDK_UNSUPPORT_ERROR;
+    heap_head* phh = (heap_head*)heap;
+    heap_head* pnn;
+
+    if(!p) return;
+
+    if(heap == &proc_heap)
+    {
+        free(p);
+    }else
+    {
+        pnn = (heap_head*)(p - sizeof(heap_head));
+        pnn->prev->next = pnn->next;
+        (pnn->next)->prev = pnn->prev;
+
+        free(pnn);
+    }
 }
 
 void _heapo_clean(res_heap_t heap)
 {
-    SDK_UNSUPPORT_ERROR;
+   
 }
 #endif
 /******************************************************************************************/
