@@ -24,7 +24,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lxds -L $(LIB_PATH)
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lbluetooth -lxds -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:

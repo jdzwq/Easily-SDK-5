@@ -288,6 +288,16 @@ LOC_API bool_t	_comm_flush(res_file_t fh);
 LOC_API dword_t	_comm_listen(res_file_t fh, async_t* pb);
 #endif
 
+#ifdef XDK_SUPPORT_BLUT
+LOC_API int	_enum_blut_device(dev_blt_t* pdb, int max);
+LOC_API res_file_t _blut_open(const tchar_t* addr, int chan, dword_t fmode);
+LOC_API void	_blut_close(res_file_t fh);
+LOC_API bool_t	_blut_read(res_file_t fh, void* buf, dword_t size, async_t* pb);
+LOC_API bool_t	_blut_write(res_file_t fh, void* buf, dword_t size, async_t* pb);
+LOC_API bool_t	_blut_flush(res_file_t fh);
+LOC_API dword_t	_blut_listen(res_file_t fh, async_t* pb);
+#endif
+
 
 #ifdef XDK_SUPPORT_PROCESS
 LOC_API res_modu_t _load_library(const tchar_t* lname);

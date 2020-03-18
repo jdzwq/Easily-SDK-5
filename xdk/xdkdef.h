@@ -166,6 +166,7 @@ typedef struct _file_info_t {
 	tchar_t file_name[META_LEN];
 }file_info_t;
 
+//comm device
 typedef struct _dev_com_t{
 	short baud_rate;	/*the device baud rate, eg:9600, 14400, 19200...*/
 	short parity;		/*parity checking, eg: 1-ODDPARITY, 2-EVENPARITY*/
@@ -174,6 +175,15 @@ typedef struct _dev_com_t{
 	short timeout;		/*timeout value*/
 	tchar_t devname[INT_LEN];
 }dev_com_t;
+
+//bluetooth device
+typedef struct _dev_blt_t{
+	tchar_t major_class[RES_LEN];
+	tchar_t minor_class[RES_LEN];
+	tchar_t name[META_LEN];
+	tchar_t uuid[UUID_LEN];
+	tchar_t addr[ADDR_LEN];
+}dev_blt_t;
 
 
 #endif	/* _XDKDEF_H */

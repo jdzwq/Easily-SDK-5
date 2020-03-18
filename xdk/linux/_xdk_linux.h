@@ -57,6 +57,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_CONS
 #define XDK_SUPPORT_COMM
 #define XDK_SUPPORT_SOCK
+#define XDK_SUPPORT_BLUT
 #define XDK_SUPPORT_TIMER
 
 #include <stdio.h>
@@ -89,7 +90,14 @@ LICENSE.GPL3 for more details.
 #include <arpa/inet.h>
 
 #include <termios.h>
-#include <pthread.h> 
+#include <pthread.h>
+
+#ifdef XDK_SUPPORT_BLUT
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/l2cap.h>
+#endif
 
 //linux
 

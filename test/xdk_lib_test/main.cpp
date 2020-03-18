@@ -9,6 +9,38 @@
 #include <iostream>
 #include <xdk.h>
 
+void test_blut()
+{
+    if_blut_t if_blut = { 0 };
+    
+    xdk_impl_blut(&if_blut);
+
+    int n = (*if_blut.pf_enum_blut)(NULL, MAX_LONG);
+
+    dev_blt_t* pdb = (dev_blt_t*)calloc(n, sizeof(dev_blt_t));
+
+    (*if_blut.pf_enum_blut)(pdb, n);
+
+    async_t asy = {0};
+    asy.type = ASYNC_BLOCK;
+    asy.timo = INFINITE;
+
+    byte_t ch[1];
+    for(int i = 0;i<n;i++)
+    {
+        printf("%s %s %s %s \n", pdb[i].addr, pdb[i].name, pdb[i].major_class, pdb[i].minor_class);
+
+        res_file_t fd = (*if_blut.pf_blut_open)(pdb[i].addr, 0, 0);
+        if(fd)
+        {
+            (*if_blut.pf_blut_read)(fd, &ch, 1, &asy);
+            (*if_blut.pf_blut_close)(fd);
+        }
+    }
+
+    free(pdb);
+}
+
 void test_heap()
 {
     if_memo_t if_heap = { 0 };
@@ -645,6 +677,8 @@ int main(int argc, const char * argv[]) {
     
     // insert code here...
     
+    test_blut();
+    
     //test_date();
     
     //test_file();
@@ -661,7 +695,7 @@ int main(int argc, const char * argv[]) {
     
     //test_sock();
     
-    test_heap();
+    //test_heap();
     
     //test_page();
     

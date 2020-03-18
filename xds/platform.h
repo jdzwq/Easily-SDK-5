@@ -462,7 +462,7 @@ typedef int				wait_t;
 #define MD5_LEN			32
 #define HMAC_LEN		160
 #define ETAG_LEN		64
-#define ADDR_LEN		16
+#define ADDR_LEN		18
 #define ERR_LEN			512
 
 #define XPI			3.1415926535
