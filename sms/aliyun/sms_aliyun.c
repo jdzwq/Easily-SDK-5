@@ -126,8 +126,6 @@ sms_t STDCALL sms_open_isp(const tchar_t* ispfile)
 
 ONERROR:
 
-	get_last_error(pal->err_code, pal->err_text, ERR_LEN);
-
 	if (d_ptr)
 		destroy_proper_doc(d_ptr);
 

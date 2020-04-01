@@ -45,6 +45,19 @@ typedef struct _xuncf_t{
 	async_t* pov;
 }xuncf_t;
 
+static int _split_path_len(const tchar_t* file)
+{
+	int len;
+	tchar_t* token;
+
+	len = xslen(file);
+	token = (tchar_t*)(file + len);
+
+	while (*token != _T('/') && *token != _T('\\') && token != file)
+		token--;
+
+	return (int)(token - file);
+}
 
 bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode)
 {
@@ -53,6 +66,9 @@ bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 	tchar_t sz_size[NUM_LEN + 1] = { 0 };
 	int encode = 0;
 
+	tchar_t fpath[PATH_LEN] = {0};
+	int pos;
+
 	bool_t rt;
 	if_file_t* pif;
 
@@ -60,7 +76,20 @@ bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 
 	XDL_ASSERT(pif != NULL);
 
-	rt = (*pif->pf_file_info)(fname, &fi);
+	pos = _split_path_len(fname);
+	xsncpy(fpath, fname, pos);
+
+	if(is_null(fpath))
+	{
+		get_runpath(NULL, fpath, PATH_LEN);
+		xscat(fpath,_T("/"));
+		xscat(fpath, fname);
+	}else
+	{
+		xscpy(fpath, fname);
+	}
+
+	rt = (*pif->pf_file_info)(fpath, &fi);
 	if (!rt)
 	{
 		set_system_error(_T("xuncf_file_info"));
@@ -84,7 +113,7 @@ bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 
 	if (fencode)
 	{
-		encode = xuncf_file_encode(psd, fname);
+		encode = xuncf_file_encode(psd, fpath);
 
 		format_encode(encode, fencode);
 	}
@@ -98,7 +127,23 @@ int xuncf_file_encode(const secu_desc_t* psd, const tchar_t* fname)
 	byte_t ba[4] = { 0 };
 	dword_t dw = 0;
 
-	xh = xuncf_open_file(psd, fname, 0);
+	tchar_t fpath[PATH_LEN] = {0};
+	int pos;
+
+	pos = _split_path_len(fname);
+	xsncpy(fpath, fname, pos);
+
+	if(is_null(fpath))
+	{
+		get_runpath(NULL, fpath, PATH_LEN);
+		xscat(fpath,_T("/"));
+		xscat(fpath, fname);
+	}else
+	{
+		xscpy(fpath, fname);
+	}
+
+	xh = xuncf_open_file(psd, fpath, 0);
 	if (!xh)
 		return 0;
 
@@ -176,27 +221,13 @@ bool_t xuncf_open_directory(const secu_desc_t* psd, const tchar_t* path, dword_t
 	return rt;
 }
 
-static int _split_path_len(const tchar_t* file)
-{
-	int len;
-	tchar_t* token;
-
-	len = xslen(file);
-	token = (tchar_t*)(file + len);
-
-	while (*token != _T('/') && *token != _T('\\') && token != file)
-		token--;
-
-	return (int)(token - file);
-}
-
 xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fmode)
 {
 	xuncf_t *pcf;
 	res_file_t fh;
 	int pos;
 	bool_t b_add;
-	tchar_t path[PATH_LEN];
+	tchar_t fpath[PATH_LEN] = {0};
 	if_file_t* pif;
 
 	pif = PROCESS_FILE_INTERFACE;
@@ -204,16 +235,29 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 	XDL_ASSERT(pif != NULL);
 
 	pos = _split_path_len(fname);
-	xsncpy(path, fname, pos);
+	xsncpy(fpath, fname, pos);
 
-	b_add = ((fmode & FILE_OPEN_CREATE) || (fmode & FILE_OPEN_APPEND)) ? 1 : 0;
-
-	if (b_add && !xuncf_open_directory(psd, path, fmode))
+	if(!is_null(fpath) && xsncmp(fpath,_T("."),1) != 0)
 	{
-		return NULL;
+		b_add = ((fmode & FILE_OPEN_CREATE) || (fmode & FILE_OPEN_APPEND)) ? 1 : 0;
+
+		if (b_add && !xuncf_open_directory(psd, fpath, fmode))
+		{
+			return NULL;
+		}
 	}
 
-	fh = (*pif->pf_file_open)(fname, fmode);
+	if(is_null(fpath))
+	{
+		get_runpath(NULL, fpath, PATH_LEN);
+		xscat(fpath,_T("/"));
+		xscat(fpath, fname);
+	}else
+	{
+		xscpy(fpath, fname);
+	}
+
+	fh = (*pif->pf_file_open)(fpath, fmode);
 	if (fh == INVALID_FILE)
 	{
 		set_system_error(_T("xuncf_open_file"));
@@ -453,11 +497,27 @@ bool_t xuncf_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 {
 	if_file_t* pif;
 
+	tchar_t fpath[PATH_LEN] = {0};
+	int pos;
+
 	pif = PROCESS_FILE_INTERFACE;
 
 	XDL_ASSERT(pif != NULL);
 
-	if (!(*pif->pf_file_delete)(fname))
+	pos = _split_path_len(fname);
+	xsncpy(fpath, fname, pos);
+
+	if(is_null(fpath))
+	{
+		get_runpath(NULL, fpath, PATH_LEN);
+		xscat(fpath,_T("/"));
+		xscat(fpath, fname);
+	}else
+	{
+		xscpy(fpath, fname);
+	}
+
+	if (!(*pif->pf_file_delete)(fpath))
 	{
 		set_system_error(_T("xuncf_delete_file"));
 		return 0;

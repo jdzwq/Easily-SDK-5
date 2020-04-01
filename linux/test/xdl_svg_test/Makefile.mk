@@ -16,7 +16,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -lxdp -lxdl -L $(LIB_PATH)
+	$(CC) -o $(TARGET) $(OBJS) -lxds -lxdl -L $(LIB_PATH)
 	rm -f $(OBJS)
 
 test:

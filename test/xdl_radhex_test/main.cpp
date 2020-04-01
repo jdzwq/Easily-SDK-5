@@ -8,8 +8,8 @@
 #endif
 
 //#define ADDR		_T("172.16.190.190")
-//#define ADDR		_T("127.0.0.1")
-#define ADDR		_T("118.178.180.81")
+#define ADDR		_T("127.0.0.1")
+//#define ADDR		_T("118.178.180.81")
 #define PORT		8880
 
 void test_radnet()

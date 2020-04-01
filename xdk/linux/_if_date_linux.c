@@ -125,7 +125,7 @@ dword_t _get_times()
 	struct tm t = { 0 };
 	time_t time1,time2;
 
-	t.tm_year = 1970;
+	t.tm_year = 70;
 	t.tm_mon = 0;
 	t.tm_mday = 1;
 	t.tm_hour = 0;
@@ -143,7 +143,7 @@ clock_t _get_ticks()
 	struct tm t = { 0 };
 	time_t time1,time2;
 
-	t.tm_year = 1970;
+	t.tm_year = 70;
 	t.tm_mon = 0;
 	t.tm_mday = 1;
 	t.tm_hour = 0;
@@ -158,7 +158,7 @@ clock_t _get_ticks()
 
 stamp_t _get_timestamp()
 {
-    struct timeval t;
+    struct timeval t = {0};
     
     gettimeofday (&t, NULL);
     
@@ -167,11 +167,11 @@ stamp_t _get_timestamp()
 
 void _utc_date_from_times(xdate_t* pxd, dword_t ms)
 {
-     struct tm t = { 0 };
+    struct tm t = { 0 };
 	time_t time1;
 	struct tm *p;
 
-	t.tm_year = 1970;
+	t.tm_year = 70;
 	t.tm_mon = 0;
 	t.tm_mday = 1;
 	t.tm_hour = 0;
@@ -198,7 +198,7 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 	time_t time1;
 	struct tm *p;
 
-	t.tm_year = 1970;
+	t.tm_year = 70;
 	t.tm_mon = 0;
 	t.tm_mday = 1;
 	t.tm_hour = 0;
@@ -225,7 +225,7 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 	time_t time1;
 	struct tm *p;
 
-	t.tm_year = 1970;
+	t.tm_year = 70;
 	t.tm_mon = 0;
 	t.tm_mday = 1;
 	t.tm_hour = 0;
@@ -234,7 +234,7 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 
 	time1 = mktime(&t) + (dword_t)(ts / 1000);
 
-	p = gmtime(&time1);
+	p = localtime(&time1);
 
 	pxd->year = 1900 + p->tm_year;
 	pxd->mon = 1 + p->tm_mon;

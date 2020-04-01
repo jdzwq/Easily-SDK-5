@@ -1513,7 +1513,7 @@ int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 	schar_t *kstr, *vstr;
 	int klen, vlen;
 
-	wchar_t* ucs;
+	tchar_t* ucs;
 	int ulen;
 
 	byte_t* esc;
@@ -1535,16 +1535,16 @@ int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 		ucs = xsalloc(ulen + 1);
 		utf8_to_ucs(esc, elen, ucs, ulen);
 #else
-		ulen = mbs_to_ucs(esc, elen, NULL, MAX_LONG);
+		ulen = utf8_to_mbs(esc, elen, NULL, MAX_LONG);
 		ucs = xsalloc(ulen + 1);
-		mbs_to_ucs(esc, elen, ucs, ulen);
+		utf8_to_mbs(esc, elen, ucs, ulen);
 #endif
 
 		xmem_free(esc);
 
 		if (total + ulen > max)
 		{
-			xmem_free(ucs);
+			xsfree(ucs);
 			return total;
 		}
 		if (buf)
@@ -1553,7 +1553,7 @@ int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 		}
 		total += ulen;
 
-		xmem_free(ucs);
+		xsfree(ucs);
 
 		if (total + 1 > max)
 			return total;
@@ -1574,16 +1574,16 @@ int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 		ucs = xsalloc(ulen + 1);
 		utf8_to_ucs(esc, elen, ucs, ulen);
 #else
-		ulen = mbs_to_ucs(esc, elen, NULL, MAX_LONG);
+		ulen = utf8_to_mbs(esc, elen, NULL, MAX_LONG);
 		ucs = xsalloc(ulen + 1);
-		mbs_to_ucs(esc, elen, ucs, ulen);
+		utf8_to_mbs(esc, elen, ucs, ulen);
 #endif
 
 		xmem_free(esc);
 
 		if (total + ulen > max)
 		{
-			xmem_free(ucs);
+			xsfree(ucs);
 			return total;
 		}
 		if (buf)
@@ -1592,7 +1592,7 @@ int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 		}
 		total += ulen;
 
-		xmem_free(ucs);
+		xsfree(ucs);
 
 		if (total + 1 > max)
 			return total;

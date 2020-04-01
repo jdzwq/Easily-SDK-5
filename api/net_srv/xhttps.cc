@@ -281,6 +281,12 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	get_envvar(XSERVICE_ROOT, sz_path, PATH_LEN);
 
+	if (is_null(sz_path))
+	{
+		//xscpy(sz_path,_T("."));
+		get_runpath((res_modu_t)0, sz_path, PATH_LEN);
+	}
+
 	if (pxp->n_secu == _SECU_SSL)
 	{
         get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);

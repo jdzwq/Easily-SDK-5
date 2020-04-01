@@ -8,8 +8,20 @@
 #endif
 
 //#define SMS_URL		_T("https://118.178.180.81")
-//#define SMS_URL		_T("https://127.0.0.1:8888")
-#define SMS_URL		_T("http://www.biofolia.cn:8889")
+#define SMS_URL		_T("http://127.0.0.1:8889")
+//#define SMS_URL		_T("http://www.biofolia.cn:8889")
+
+#ifdef _OS_WINDOWS
+#define SMS_MODULE		_T("sms_aliyun.dll")
+#endif
+
+#ifdef _OS_LINUX
+#define SMS_MODULE		_T("libsms_aliyun.so")
+#endif
+
+#ifdef _OS_MACOS
+#define SMS_MODULE		_T("sms_aliyun.dylib")
+#endif
 
 void test_bytes()
 {
@@ -217,6 +229,8 @@ void test_sms_aliyun()
 	tchar_t stamp[50] = { 0 };
 	format_utctime(&dt, stamp);
 
+	get_utc_date(&dt);
+
 	LINKPTR st = create_string_table(1);
 
 	write_string_entity(st, _T("SignatureMethod"), -1, _T("HMAC-SHA1"), -1);
@@ -357,7 +371,7 @@ void test_isp()
 	PF_SMS_CODE pf_code;
 	PF_SMS_ERROR pf_error;
 
-	res_modu_t hLib = load_library(_T("sms_aliyun.dll"));
+	res_modu_t hLib = load_library(SMS_MODULE);
 	pf_open_isp = (PF_SMS_OPEN_ISP)get_address(hLib, "sms_open_isp");
 	pf_close = (PF_SMS_CLOSE)get_address(hLib, "sms_close");
 	pf_code = (PF_SMS_CODE)get_address(hLib, "sms_code");
@@ -379,7 +393,7 @@ void test_sms_code()
 {
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code"), SMS_URL);
+	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"), SMS_URL);
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);
@@ -457,9 +471,9 @@ int main(int argc, char* argv[])
 
 	//test_isp();
 
-	//test_sms_code();
+	test_sms_code();
 
-	test_sms_verify();
+	//test_sms_verify();
 
 	xdl_process_uninit();
 
