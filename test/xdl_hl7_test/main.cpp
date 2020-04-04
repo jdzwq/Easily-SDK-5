@@ -1,87 +1,213 @@
 ﻿
 #include <xdl.h>
 #include <xds.h>
-#include <hl7.h>
 
 #ifdef _OS_WINDOWS
 #include <conio.h>
 #endif
 
-//#define ADDR_SUB		_T("172.16.190.190")
-#define ADDR_SUB		_T("127.0.0.1")
-#define PORT_SUB		8883
 
-//#define ADDR_PUB		_T("172.16.190.190")
-#define ADDR_PUB		_T("127.0.0.1")
-#define PORT_PUB		8884
+//#define HL7_URL		_T("http://172.16.190.190:8889")
+#define HL7_URL		_T("http://127.0.0.1:8889")
 
-void test_hl7net_pub()
+void test_hl7_head()
 {
-	schar_t msg[NUM_LEN] = { 0 };
-	int len;
+	tchar_t errcode[NUM_LEN + 1] = {0};
+	tchar_t errtext[ERR_LEN + 1] = {0};
 
-	hl7net_pdv_head_t pdv = { 0 };
+	TRY_CATCH;
 
-	xhand_t tcp = xtcp_cli(PORT_PUB, ADDR_PUB);
+	tchar_t url[1024] = { 0 };
 
-	hl7net_t* hl7net = hl7net_scu(tcp, _HL7NET_TYPE_SCU_PUB);
+	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
 
-	hl7net_connect(hl7net);
+	xhand_t xh = xhttp_client(_T("HEAD"), url);
 
-	hl7net_publish(hl7net, _T("my"), -1);
+	xhttp_set_request_default_header(xh);
 
-	stream_t stm = stream_alloc(hl7net_bio(hl7net));
-
-	int i = 2;
-	while (i--)
+	if (!xhttp_send_request(xh))
 	{
-		len = a_xsprintf(msg, "msg%d", i);
-
-		xmem_copy((void*)pdv.type, "MSH", 3);
-		pdv.size = len;
-
-		hl7net_push_message(hl7net, &pdv);
-
-		stream_write_bytes(stm, (byte_t*)msg, len);
+		raise_user_error(NULL, NULL);
 	}
 
-	stream_free(stm);
-	
-	hl7net_close(hl7net);
+	if (!xhttp_recv_response(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
 
-	xtcp_close(tcp);
+	if (!xhttp_get_response_state(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	tchar_t fsize[NUM_LEN] = {0};
+	xhttp_get_response_header(xh, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
+
+	_tprintf("%s\n",fsize);
+
+	tchar_t ftime[DATE_LEN] = {0};
+	xhttp_get_response_header(xh, HTTP_HEADER_LASTMODIFIED, -1, ftime, DATE_LEN);
+
+	_tprintf("%s\n",ftime);
+	
+	xhttp_close(xh);
+
+	END_CATCH;
+ONERROR:
+	get_last_error(errcode, errtext, ERR_LEN);
+	
+	_tprintf("%s\n",errtext);
 }
 
-void test_hl7net_sub()
+void test_hl7_put()
 {
-	schar_t msg[NUM_LEN] = { 0 };
-	int len;
+	tchar_t errcode[NUM_LEN + 1] = {0};
+	tchar_t errtext[ERR_LEN + 1] = {0};
 
-	hl7net_pdv_head_t pdv = { 0 };
+	TRY_CATCH;
 
-	xhand_t tcp = xtcp_cli(PORT_SUB, ADDR_SUB);
+	tchar_t url[1024] = { 0 };
 
-	hl7net_t* hl7net = hl7net_scu(tcp, _HL7NET_TYPE_SCU_SUB);
+	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
 
-	hl7net_connect(hl7net);
+	xhand_t xh = xhttp_client(_T("PUT"), url);
 
-	hl7net_subscribe(hl7net, _T("my"), -1);
+	xhttp_set_request_default_header(xh);
+	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-	stream_t stm = stream_alloc(hl7net_bio(hl7net));
-
-	int i = 2;
-	while (i--)
+	if (!xhttp_send_request(xh))
 	{
-		hl7net_poll_message(hl7net, &pdv);
-
-		stream_read_bytes(stm, (byte_t*)msg, &pdv.size);
+		raise_user_error(NULL, NULL);
 	}
 
-	stream_free(stm);
+	LINKPTR ptr_xml = create_xml_doc();
+	LINKPTR nlk_rowset = get_xml_dom_node(ptr_xml);
+	set_dom_node_name(nlk_rowset, _T("rowset"), -1);
 
-	hl7net_close(hl7net);
+	LINKPTR nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
+	set_dom_node_name(nlk_row, _T("row"), -1);
 
-	xtcp_close(tcp);
+	xdate_t dt;
+	get_utc_date(&dt);
+	tchar_t timestamp[25] = {0};
+	format_utctime(&dt, timestamp);
+
+	LINKPTR nlk;
+	
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("timestamp"), -1);
+	set_dom_node_text(nlk, timestamp, -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("longitude"), -1);
+	set_dom_node_text(nlk, _T("130^10'30\""), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("latitude"), -1);
+	set_dom_node_text(nlk, _T("60^20'40\""), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("altitude"), -1);
+	set_dom_node_text(nlk, _T("130"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("package"), -1);
+	set_dom_node_text(nlk, _T("test1"), -1);
+
+	nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
+	set_dom_node_name(nlk_row, _T("row"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("timestamp"), -1);
+	set_dom_node_text(nlk, timestamp, -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("longitude"), -1);
+	set_dom_node_text(nlk, _T("130^10'30\""), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("latitude"), -1);
+	set_dom_node_text(nlk, _T("60^20'40\""), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("altitude"), -1);
+	set_dom_node_text(nlk, _T("130"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("package"), -1);
+	set_dom_node_text(nlk, _T("test1"), -1);
+
+	if (!xhttp_send_xml(xh, ptr_xml))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	destroy_xml_doc(ptr_xml);
+
+	if (!xhttp_recv_response(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_get_response_state(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	_tprintf("%s\n",_T("PUT Succeed"));
+	
+	xhttp_close(xh);
+
+	END_CATCH;
+ONERROR:
+	get_last_error(errcode, errtext, ERR_LEN);
+	
+	_tprintf("%s\n",errtext);
+}
+
+void test_hl7_list()
+{
+	tchar_t errcode[NUM_LEN + 1] = {0};
+	tchar_t errtext[ERR_LEN + 1] = {0};
+
+	TRY_CATCH;
+
+	tchar_t url[1024] = { 0 };
+
+	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+
+	xhand_t xh = xhttp_client(_T("LIST"), url);
+
+	xhttp_set_request_default_header(xh);
+	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+
+	if (!xhttp_send_request(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_recv_response(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	dword_t n = xhttp_get_response_content_length(xh);
+
+	byte_t** pb = bytes_alloc();
+
+	xhttp_recv_full(xh, pb, &n);
+
+	_tprintf("%s\n",*pb);
+
+	bytes_free(pb);
+	
+	xhttp_close(xh);
+
+	END_CATCH;
+ONERROR:
+	get_last_error(errcode, errtext, ERR_LEN);
+	
+	_tprintf("%s\n",errtext);
 }
 
 int main(int argc, char* argv[])
@@ -90,9 +216,11 @@ int main(int argc, char* argv[])
     
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-	//test_hl7net_pub();
+	test_hl7_head();
 
-	test_hl7net_sub();
+	//test_hl7_put();
+
+	//test_hl7_list();
 
 	xdl_process_uninit();
 

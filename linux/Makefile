@@ -14,6 +14,7 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libpub_api.so.1.0 \
 	$(API_PATH)/libsub_api.so.1.0 \
 	$(API_PATH)/libmqtt.so.1.0 \
+	$(API_PATH)/libhl7_api.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
 	$(API_PATH)/libwww_api.so.1.0 \
 	$(API_PATH)/libxdb_api.so.1.0 \
@@ -43,6 +44,7 @@ all:
 	cd $(CUR_PATH)/radnet && make -f radnet.so.mk
 	cd $(CUR_PATH)/mqtt && make -f mqtt.so.mk
 
+	cd $(CUR_PATH)/hl7_api && make -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
@@ -77,6 +79,9 @@ install:
 	fi
 	if ! test -d $(SRV_PATH)/nfs; then \
 	sudo mkdir $(SRV_PATH)/nfs; \
+	fi
+	if ! test -d $(SRV_PATH)/hl7; then \
+	sudo mkdir $(SRV_PATH)/hl7; \
 	fi
 	if ! test -d $(SRV_PATH)/loc; then \
 	sudo mkdir $(SRV_PATH)/loc; \
@@ -126,6 +131,7 @@ install:
 	cd $(CUR_PATH)/radnet && make install -f radnet.so.mk
 	cd $(CUR_PATH)/mqtt && make install -f mqtt.so.mk
 
+	cd $(CUR_PATH)/hl7_api && make install -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
