@@ -25,7 +25,7 @@ LICENSE.GPL3 for more details.
 #include "sub_api.h"
 
 typedef struct _mqtt_block_t{
-	mqtt_t* mqtt;
+	xhand_t mqtt;
 
 	tchar_t topic_name[PATH_LEN];
 
@@ -47,10 +47,19 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 	dword_t len;
 	dword_t total = 0;
 
-	byte_t* msg_buf = NULL;
+	byte_t* han_buf;
+	sword_t han_len;
+	byte_t* hdr_buf;
+	sword_t hdr_len;
+	byte_t* msg_buf;
 	dword_t msg_len;
+	byte_t* sub_buf;
+	dword_t sub_len;
 
 	hex_obj_t hkv = NULL;
+
+	byte_t ver[5] = { 0 };
+	MQTT_PACKET_CTRL mc = { 0 };
 
 	TRY_CATCH;
 
@@ -75,20 +84,56 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 
 	object_get_bytes(val, buf, len);
 
-	while (len)
+	while (total < len)
 	{
-		msg_len = GET_DWORD_LOC(buf, total);
-		pd->mqtt->packet_qos = (byte_t)GET_SWORD_LOC(buf, total + 4);
-		pd->mqtt->packet_pid = GET_SWORD_LOC(buf, total + 6);
-		msg_buf = buf + total + 8;
+		//the message total size
+		msg_buf = buf + total + 4;
+		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
+		if (msg_len > MAX_LONG)
+		{
+			raise_user_error(_T("_invoke_subcribe"), _T("invalid message total size"));
+		}
 
-		if (!mqtt_push_message(pd->mqtt, msg_buf, msg_len - 4))
+		xmem_set((void*)&mc, 0, sizeof(MQTT_PACKET_CTRL));
+
+		//the message handler
+		han_buf = msg_buf + 2;
+		han_len = GET_SWORD_NET((han_buf - 2), 0);
+		if (han_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_subcribe"), _T("invalid message handler size"));
+		}
+		xmem_copy((void*)ver, han_buf, 4);
+		if (ver[0] == 'M' && ver[1] == 'Q')
+		{
+			mc.packet_qos = (byte_t)GET_SWORD_NET(han_buf, 4);
+			mc.packet_pid = GET_SWORD_NET(han_buf, 6);
+		}
+
+		//the message header
+		hdr_buf = han_buf + han_len + 2;
+		hdr_len = GET_SWORD_NET((hdr_buf - 2), 0);
+		if (hdr_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_subcribe"), _T("invalid message header size"));
+		}
+
+		//the message element
+		sub_buf = hdr_buf + hdr_len + 4;
+		sub_len = GET_DWORD_NET((sub_buf - 4), 0);
+		if (sub_len > MAX_LONG)
+		{
+			raise_user_error(_T("_invoke_subcribe"), _T("invalid message element size"));
+		}
+
+		xmqtt_set_packet_ctrl(pd->mqtt, &mc);
+
+		if (!xmqtt_push_message(pd->mqtt, sub_buf, sub_len))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
 		total += (4 + msg_len);
-		len -= (4 + msg_len);
 	}
 
 	xmem_free(buf);
@@ -176,6 +221,8 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 	tchar_t file[PATH_LEN] = { 0 };
 	tchar_t token[RES_LEN] = { 0 };
 
+	MQTT_PACKET_CTRL mc = { 0 };
+
 	TRY_CATCH;
 
 	pd = (mqtt_block_t*)xmem_alloc(sizeof(mqtt_block_t));
@@ -207,28 +254,29 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 		raise_user_error(_T("-1"), _T("open database failed"));
 	}
 
-	pd->mqtt = mqtt_scp(pb->slot, _MQTT_TYPE_SCP_SUB);
+	pd->mqtt = xmqtt_scp(pb->slot, _MQTT_TYPE_SCP_SUB);
 	if (!pd->mqtt)
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (!mqtt_accept(pd->mqtt))
+	if (!xmqtt_accept(pd->mqtt))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (!mqtt_poll_subscribe(pd->mqtt, pd->topic_name, PATH_LEN))
+	if (!xmqtt_poll_subscribe(pd->mqtt, pd->topic_name, PATH_LEN))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (pd->mqtt->packet_qos)
+	xmqtt_get_packet_ctrl(pd->mqtt, &mc);
+	if (mc.packet_qos)
 		_invoke_subcribe(pb, pd);
 	else
 		_invoke_unsubcribe(pb, pd);
 	
-	mqtt_close(pd->mqtt);
+	xmqtt_close(pd->mqtt);
 	pd->mqtt = NULL;
 
 	hexdb_destroy(pd->hdb);
@@ -261,7 +309,7 @@ ONERROR:
 		}
 
 		if (pd->mqtt)
-			mqtt_close(pd->mqtt);
+			xmqtt_close(pd->mqtt);
 
 		if (pd->hdb)
 			hexdb_destroy(pd->hdb);

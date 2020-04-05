@@ -1,6 +1,5 @@
 ﻿
 #include <xdl.h>
-#include <mqtt.h>
 
 #ifdef _OS_WINDOWS
 #include <conio.h>
@@ -9,44 +8,49 @@
 //#define ADDR_PUB		_T("47.97.167.225")
 //#define ADDR_PUB		_T("172.16.190.190")
 //#define ADDR_PUB		_T("127.0.0.1")
-//#define ADDR_PUB		_T("118.178.180.81")
-#define ADDR_PUB		_T("49.234.135.113")
+#define ADDR_PUB		_T("118.178.180.81")
+//#define ADDR_PUB		_T("49.234.135.113")
 #define PORT_PUB		1833
 
 //#define ADDR_SUB		_T("47.97.167.225")
 //#define ADDR_SUB		_T("172.16.190.190")
 //#define ADDR_SUB		_T("127.0.0.1")
-//#define ADDR_SUB		_T("118.178.180.81")
-#define ADDR_SUB		_T("49.234.135.113")
+#define ADDR_SUB		_T("118.178.180.81")
+//#define ADDR_SUB		_T("49.234.135.113")
 #define PORT_SUB		1834
 
 void test_mqtt_pub()
 {
 	xhand_t tcp = xtcp_cli(PORT_PUB, ADDR_PUB);
 
-	mqtt_t* mqtt = mqtt_scu(tcp, _MQTT_TYPE_SCU_PUB);
+	xhand_t mqtt = xmqtt_scu(tcp, _MQTT_TYPE_SCU_PUB);
 
-	mqtt_connect(mqtt);
+	xmqtt_connect(mqtt);
 
 	schar_t msg[NUM_LEN] = { 0 };
 	int len;
 
+	MQTT_PACKET_CTRL mc = { 0 };
+
 	int n = 10;
 	for (int i = 0; i < n; i++)
 	{
-		mqtt->packet_qos = i % 3;
-		mqtt->packet_pid = i + 1;
-		mqtt_publish(mqtt, _T("test"), -1);
+		mc.packet_qos = i % 3;
+		mc.packet_pid = i + 1;
+
+		xmqtt_publish(mqtt, _T("test"), -1);
 
 		len = a_xsprintf(msg, "msg%d", i);
 
-		if (!mqtt_push_message(mqtt, (byte_t*)msg, len))
+		xmqtt_set_packet_ctrl(mqtt, &mc);
+
+		if (!xmqtt_push_message(mqtt, (byte_t*)msg, len))
 			break;
 
 		printf("%s\n", msg);
 	}
 
-	mqtt_close(mqtt);
+	xmqtt_close(mqtt);
 
 	xtcp_close(tcp);
 }
@@ -55,9 +59,9 @@ void test_mqtt_sub()
 {
 	xhand_t tcp = xtcp_cli(PORT_SUB, ADDR_SUB);
 
-	mqtt_t* mqtt = mqtt_scu(tcp, _MQTT_TYPE_SCU_SUB);
+	xhand_t mqtt = xmqtt_scu(tcp, _MQTT_TYPE_SCU_SUB);
 
-	mqtt_connect(mqtt);
+	xmqtt_connect(mqtt);
 
 	tchar_t* msg;
 	int len;
@@ -65,11 +69,11 @@ void test_mqtt_sub()
 	byte_t* buf = NULL;
 	dword_t n;
 
-	mqtt_subcribe(mqtt, _T("test"), -1);
+	xmqtt_subcribe(mqtt, _T("test"), -1);
 
-	while (mqtt_status(mqtt) != _MQTT_STATUS_RELEASE)
+	while (xmqtt_status(mqtt) != _MQTT_STATUS_RELEASE)
 	{
-		if (!mqtt_poll_message(mqtt, &buf, &n))
+		if (!xmqtt_poll_message(mqtt, &buf, &n))
 			break;
 
 #ifdef _UNICODE
@@ -94,7 +98,7 @@ void test_mqtt_sub()
 		xsfree(msg);
 	}
 
-	mqtt_close(mqtt);
+	xmqtt_close(mqtt);
 
 	xtcp_close(tcp);
 }
@@ -103,9 +107,9 @@ void test_mqtt_unsub()
 {
 	xhand_t tcp = xtcp_cli(PORT_SUB, ADDR_SUB);
 
-	mqtt_t* mqtt = mqtt_scu(tcp, _MQTT_TYPE_SCU_SUB);
+	xhand_t mqtt = xmqtt_scu(tcp, _MQTT_TYPE_SCU_SUB);
 
-	mqtt_connect(mqtt);
+	xmqtt_connect(mqtt);
 
 	tchar_t* msg;
 	int len;
@@ -113,9 +117,9 @@ void test_mqtt_unsub()
 	byte_t* buf = NULL;
 	dword_t n;
 
-	mqtt_unsubcribe(mqtt, _T("test"), -1);
+	xmqtt_unsubcribe(mqtt, _T("test"), -1);
 
-	mqtt_close(mqtt);
+	xmqtt_close(mqtt);
 
 	xtcp_close(tcp);
 }

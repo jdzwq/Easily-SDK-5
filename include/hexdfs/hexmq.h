@@ -7,7 +7,7 @@
 
 	@doc hexdfs defination document
 
-	@module	hexiter.h | hexhex iterator definition interface file
+	@module	hexmq.h | hex message queue definition interface file
 
 	@devnote 张文权 2018.01 - 2018.12	v1.0
 ***********************************************************************/
@@ -25,10 +25,29 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 
-#ifndef _HEXITER_H
-#define	_HEXITER_H
+#ifndef _HEXMQ_H
+#define	_HEXMQ_H
 
 #include "hexdef.h"
+
+/*the message queue format*/
+/* struct message queue
+{
+	fixed byte[4]: the message total size(network order), not include this 4 bytes.
+	fixed byte[2]: the message handler information size(network order), not include this 2 bytes.
+	option byte[0~MAX_SHORT]: the message handler information.
+	fixed byte[2]: the message header size(network order), not include this 2 bytes.
+	option byte[0~MAX_SHORT]: the message header.
+	fixed byte[4]: the message element size(network order), not in this 4 bytes;
+	option byte[0~MAX_INT]: the message element.
+}*/
+
+#define MQHEADER_SIZE		96
+#define TIMESTAMP_SIZE		24 //UTC format: 1970-01-01T00:00:00.000Z
+#define LONGITUDE_SIZE		10 //degree format: 180:30:30
+#define LATITUDE_SIZE		10 //degree format: 180:30:30
+#define ALTITUDE_SIZE		16 //metre format: 100.00
+#define IDENTIFY_SIZE		36 //uuid format: 00000000-0000-0000-0000-000000000000
 
 #ifdef	__cplusplus
 extern "C" {

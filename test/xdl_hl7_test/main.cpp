@@ -6,14 +6,20 @@
 #include <conio.h>
 #endif
 
+#define SECRET_ID		_T("2a2f69763c897300efe63c0c5c08d1c7")
+#define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
 
 //#define HL7_URL		_T("http://172.16.190.190:8889")
-#define HL7_URL		_T("http://127.0.0.1:8889")
+//#define HL7_URL		_T("http://127.0.0.1:8889")
+#define HL7_URL		_T("http://118.178.180.81")
 
 void test_hl7_head()
 {
 	tchar_t errcode[NUM_LEN + 1] = {0};
 	tchar_t errtext[ERR_LEN + 1] = {0};
+
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -24,6 +30,10 @@ void test_hl7_head()
 	xhand_t xh = xhttp_client(_T("HEAD"), url);
 
 	xhttp_set_request_default_header(xh);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	if (!xhttp_send_request(xh))
 	{
@@ -43,12 +53,12 @@ void test_hl7_head()
 	tchar_t fsize[NUM_LEN] = {0};
 	xhttp_get_response_header(xh, HTTP_HEADER_CONTENTLENGTH, -1, fsize, NUM_LEN);
 
-	_tprintf("%s\n",fsize);
+	_tprintf(_T("%s\n"),fsize);
 
 	tchar_t ftime[DATE_LEN] = {0};
 	xhttp_get_response_header(xh, HTTP_HEADER_LASTMODIFIED, -1, ftime, DATE_LEN);
 
-	_tprintf("%s\n",ftime);
+	_tprintf(_T("%s\n"),ftime);
 	
 	xhttp_close(xh);
 
@@ -56,13 +66,16 @@ void test_hl7_head()
 ONERROR:
 	get_last_error(errcode, errtext, ERR_LEN);
 	
-	_tprintf("%s\n",errtext);
+	_tprintf(_T("%s\n"),errtext);
 }
 
 void test_hl7_put()
 {
 	tchar_t errcode[NUM_LEN + 1] = {0};
 	tchar_t errtext[ERR_LEN + 1] = {0};
+
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -74,6 +87,10 @@ void test_hl7_put()
 
 	xhttp_set_request_default_header(xh);
 	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	if (!xhttp_send_request(xh))
 	{
@@ -111,8 +128,12 @@ void test_hl7_put()
 	set_dom_node_text(nlk, _T("130"), -1);
 
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("identify"), -1);
+	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("package"), -1);
-	set_dom_node_text(nlk, _T("test1"), -1);
+	set_dom_node_text(nlk, _T("test2"), -1);
 
 	nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
 	set_dom_node_name(nlk_row, _T("row"), -1);
@@ -132,6 +153,10 @@ void test_hl7_put()
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("altitude"), -1);
 	set_dom_node_text(nlk, _T("130"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("identify"), -1);
+	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
 
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("package"), -1);
@@ -154,7 +179,7 @@ void test_hl7_put()
 		raise_user_error(NULL, NULL);
 	}
 
-	_tprintf("%s\n",_T("PUT Succeed"));
+	_tprintf(_T("%s\n"),_T("PUT Succeed"));
 	
 	xhttp_close(xh);
 
@@ -162,13 +187,16 @@ void test_hl7_put()
 ONERROR:
 	get_last_error(errcode, errtext, ERR_LEN);
 	
-	_tprintf("%s\n",errtext);
+	_tprintf(_T("%s\n"),errtext);
 }
 
 void test_hl7_list()
 {
 	tchar_t errcode[NUM_LEN + 1] = {0};
 	tchar_t errtext[ERR_LEN + 1] = {0};
+
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -179,7 +207,12 @@ void test_hl7_list()
 	xhand_t xh = xhttp_client(_T("LIST"), url);
 
 	xhttp_set_request_default_header(xh);
-	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	//xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	if (!xhttp_send_request(xh))
 	{
@@ -197,7 +230,7 @@ void test_hl7_list()
 
 	xhttp_recv_full(xh, pb, &n);
 
-	_tprintf("%s\n",*pb);
+	printf("%s\n",(char*)*pb);
 
 	bytes_free(pb);
 	
@@ -207,24 +240,125 @@ void test_hl7_list()
 ONERROR:
 	get_last_error(errcode, errtext, ERR_LEN);
 	
-	_tprintf("%s\n",errtext);
+	_tprintf(_T("%s\n"),errtext);
+}
+
+void test_hl7_get()
+{
+	tchar_t errcode[NUM_LEN + 1] = { 0 };
+	tchar_t errtext[ERR_LEN + 1] = { 0 };
+
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
+
+	TRY_CATCH;
+
+	tchar_t url[1024] = { 0 };
+
+	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+
+	xhand_t xh = xhttp_client(_T("GET"), url);
+
+	xhttp_set_request_default_header(xh);
+	//xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
+
+	if (!xhttp_send_request(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_recv_response(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	dword_t n = xhttp_get_response_content_length(xh);
+
+	byte_t** pb = bytes_alloc();
+
+	xhttp_recv_full(xh, pb, &n);
+
+	printf("%s\n", (char*)*pb);
+
+	bytes_free(pb);
+
+	xhttp_close(xh);
+
+	END_CATCH;
+ONERROR:
+	get_last_error(errcode, errtext, ERR_LEN);
+
+	_tprintf(_T("%s\n"), errtext);
+}
+
+void test_hl7_delete()
+{
+	tchar_t errcode[NUM_LEN + 1] = { 0 };
+	tchar_t errtext[ERR_LEN + 1] = { 0 };
+
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
+
+	TRY_CATCH;
+
+	tchar_t url[1024] = { 0 };
+
+	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+
+	xhand_t xh = xhttp_client(_T("DELETE"), url);
+
+	xhttp_set_request_default_header(xh);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
+
+	if (!xhttp_send_request(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_recv_response(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_get_response_state(xh))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	xhttp_close(xh);
+
+	printf("%s\n", "Deleted");
+
+	END_CATCH;
+ONERROR:
+	get_last_error(errcode, errtext, ERR_LEN);
+
+	_tprintf(_T("%s\n"), errtext);
 }
 
 int main(int argc, char* argv[])
 {
-	tchar_t errtext[ERR_LEN + 1] = { 0 };
-    
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-	test_hl7_head();
+	//test_hl7_head();
 
 	//test_hl7_put();
 
 	//test_hl7_list();
 
-	xdl_process_uninit();
+	//test_hl7_get();
 
-	printf("%s\n", errtext);
+	//test_hl7_delete();
+
+	xdl_process_uninit();
 
 #ifdef _OS_WINDOWS
 	getch();

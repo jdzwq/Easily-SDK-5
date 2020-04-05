@@ -25,7 +25,7 @@ LICENSE.GPL3 for more details.
 #include "pub_api.h"
 
 typedef struct _mqtt_block_t{
-	mqtt_t* mqtt;
+	xhand_t mqtt;
 
 	tchar_t topic_name[PATH_LEN];
 
@@ -52,6 +52,18 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	dword_t len;
 	sword_t sw = 0;
 
+	byte_t* han_buf;
+	sword_t han_len;
+	byte_t* hdr_buf;
+	sword_t hdr_len;
+	byte_t* msg_buf;
+	dword_t msg_len;
+	byte_t* pub_buf;
+	dword_t pub_len;
+
+	xdate_t dt = { 0 };
+	tchar_t sz_date[DATE_LEN] = { 0 };
+
 	hex_obj_t hkv = NULL;
 
 	TRY_CATCH;
@@ -71,16 +83,44 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 
 	len = object_get_bytes(val, NULL, MAX_LONG);
 
-	buf = (byte_t*)xmem_alloc(len + 8 + pd->msg_len);
-	object_get_bytes(val, buf, len);
-
 	sw = 0;
 	sw |= pd->msg_qos;
-	PUT_DWORD_LOC(buf, len, pd->msg_len + 4);
-	PUT_SWORD_LOC(buf, len + 4, sw);
-	PUT_SWORD_LOC(buf, len + 6, pd->msg_pid);
-	xmem_copy((void*)(buf + len + 8), pd->msg_buf, pd->msg_len);
-	len += (8 + pd->msg_len);
+
+	get_utc_date(&dt);
+	format_utctime(&dt, sz_date);
+
+	buf = (byte_t*)xmem_alloc(len + 4 + 2 + APPHAND_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
+	object_get_bytes(val, buf, len);
+
+	//the message total size
+	msg_buf = buf + len + 4;
+	msg_len = (2 + APPHAND_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
+	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
+	//the message handler size
+	han_buf = msg_buf + 2;
+	han_len = APPHAND_SIZE;
+	PUT_SWORD_NET((han_buf - 2), 0, han_len);
+	//the message handler
+	xmem_copy((void*)(han_buf), (void*)APPVER, 4);
+	PUT_SWORD_NET(han_buf, 4, sw);
+	PUT_SWORD_NET(han_buf, 6, pd->msg_pid);
+	//the message header size
+	hdr_buf = han_buf + APPHAND_SIZE + 2;
+	hdr_len = PUBHEADER_SIZE;
+	PUT_SWORD_NET((hdr_buf - 2), 0, hdr_len);
+	//the message header
+#if defined(_UNICODE) || defined(UNICODE)
+	ucs_to_utf8(sz_date, -1, hdr_buf, TIMESTAMP_SIZE);
+#else
+	mbs_to_utf8(sz_date, -1, hdr_buf, TIMESTAMP_SIZE);
+#endif
+	//the message element size
+	pub_buf = hdr_buf + PUBHEADER_SIZE + 4;
+	pub_len = pd->msg_len;
+	PUT_DWORD_NET((pub_buf - 4), 0, pub_len);
+	//the message element
+	xmem_copy((void*)(pub_buf), pd->msg_buf, pd->msg_len);
+	len += (4 + msg_len);
 
 	object_set_bytes(val, _UTF8, buf, len);
 
@@ -128,6 +168,8 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 	tchar_t file[PATH_LEN] = { 0 };
 	tchar_t token[RES_LEN] = { 0 };
 
+	MQTT_PACKET_CTRL mc = { 0 };
+
 	TRY_CATCH;
 
 	pd = (mqtt_block_t*)xmem_alloc(sizeof(mqtt_block_t));
@@ -159,23 +201,23 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 		raise_user_error(_T("-1"), _T("open database failed"));
 	}
 
-	pd->mqtt = mqtt_scp(pb->slot, _MQTT_TYPE_SCP_PUB);
+	pd->mqtt = xmqtt_scp(pb->slot, _MQTT_TYPE_SCP_PUB);
 	if (!pd->mqtt)
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (!mqtt_accept(pd->mqtt))
+	if (!xmqtt_accept(pd->mqtt))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	while (mqtt_status(pd->mqtt) != _MQTT_STATUS_RELEASE)
+	while (xmqtt_status(pd->mqtt) != _MQTT_STATUS_RELEASE)
 	{
 		pd->msg_buf = NULL;
 		pd->msg_len = 0;
 
-		if (!mqtt_poll_message(pd->mqtt, &pd->msg_buf, &pd->msg_len))
+		if (!xmqtt_poll_message(pd->mqtt, &pd->msg_buf, &pd->msg_len))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -183,14 +225,17 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 		if (!pd->msg_len)
 			continue;
 		
-		mqtt_poll_subscribe(pd->mqtt, pd->topic_name, PATH_LEN);
-		pd->msg_qos = pd->mqtt->packet_qos;
-		pd->msg_pid = pd->mqtt->packet_pid;
+		xmqtt_poll_subscribe(pd->mqtt, pd->topic_name, PATH_LEN);
+
+		xmem_set((void*)&mc, 0, sizeof(MQTT_PACKET_CTRL));
+		xmqtt_get_packet_ctrl(pd->mqtt, &mc);
+		pd->msg_qos = mc.packet_qos;
+		pd->msg_pid = mc.packet_pid;
 
 		_invoke_publish(pb, pd);
 	}
 
-	mqtt_close(pd->mqtt);
+	xmqtt_close(pd->mqtt);
 	pd->mqtt = NULL;
 
 	hexdb_destroy(pd->hdb);
@@ -223,7 +268,7 @@ ONERROR:
 		}
 
 		if (pd->mqtt)
-			mqtt_close(pd->mqtt);
+			xmqtt_close(pd->mqtt);
 
 		if (pd->hdb)
 			hexdb_destroy(pd->hdb);

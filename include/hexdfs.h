@@ -5,6 +5,7 @@
 #include "hexdfs/hexdef.h"
 #include "hexdfs/hexdb.h"
 #include "hexdfs/hexkv.h"
+#include "hexdfs/hexmq.h"
 
 #ifdef _OS_WINDOWS
 #pragma comment(lib,"hexdfs.lib")

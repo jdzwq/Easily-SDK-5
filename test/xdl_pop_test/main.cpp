@@ -7,8 +7,11 @@
 #include <conio.h>
 #endif
 
-//#define SMS_URL		_T("https://118.178.180.81")
-#define SMS_URL		_T("http://127.0.0.1:8889")
+#define SECRET_ID		_T("2a2f69763c897300efe63c0c5c08d1c7")
+#define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
+
+#define SMS_URL		_T("https://118.178.180.81")
+//#define SMS_URL		_T("http://127.0.0.1:8889")
 //#define SMS_URL		_T("http://www.biofolia.cn:8889")
 
 #ifdef _OS_WINDOWS
@@ -393,10 +396,17 @@ void test_sms_code()
 {
 	tchar_t url[1024] = { 0 };
 
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
+
 	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"), SMS_URL);
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	if (!xhttp_send_request(xh))
 	{
@@ -419,6 +429,8 @@ void test_sms_code()
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	printf("%s\n", (char*)pbuf);
 
 	bytes_free(pb);
 
@@ -428,11 +440,17 @@ void test_sms_code()
 void test_sms_verify()
 {
 	tchar_t url[1024] = { 0 };
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
-	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=123456"), SMS_URL);
+	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=134489"), SMS_URL);
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
 	if (!xhttp_send_request(xh))
 	{
@@ -455,6 +473,8 @@ void test_sms_verify()
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	printf("%s\n", (char*)pbuf);
 
 	bytes_free(pb);
 
@@ -471,9 +491,9 @@ int main(int argc, char* argv[])
 
 	//test_isp();
 
-	test_sms_code();
+	//test_sms_code();
 
-	//test_sms_verify();
+	test_sms_verify();
 
 	xdl_process_uninit();
 

@@ -28,6 +28,8 @@ LICENSE.GPL3 for more details.
 typedef struct _hl7_block_t{
 	hex_obj_t hdb;
 
+	tchar_t topic_name[PATH_LEN];
+
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
 }hl7_block_t;
@@ -38,7 +40,7 @@ typedef struct _hl7_block_t{
 	//byte_t longitude[10];
 	//byte_t latitude[10];
 	//byte_t altitude[16];
-	//byte_t reserved[4];
+	//byte_t identify[36];
 //};
 
 
@@ -54,16 +56,18 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	dword_t len;
 	dword_t total = 0;
 
-	byte_t* msg_buf = NULL;
 	dword_t msg_len;
-
-	byte_t mqtt_qos;
-	unsigned short mqtt_pid;
+	sword_t han_len;
+	byte_t* hdr_buf = NULL;
+	dword_t hdr_len;
+	byte_t* hl7_buf = NULL;
+	dword_t hl7_len;
 
 	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
 	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
 	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
 	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
+	tchar_t identify[IDENTIFY_SIZE + 1] = { 0 };
 
 	hex_obj_t hkv = NULL;
 
@@ -77,7 +81,7 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[HL7: HEAD]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), pb->object, -1);
+		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
 	hkv = hexkv_create(pd->hdb);
@@ -87,7 +91,7 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pb->object, -1);
+	variant_from_string(&key, pd->topic_name, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -100,60 +104,95 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 
 	object_get_bytes(val, buf, len);
 
-	while (len)
+	while (total < len)
 	{
-		msg_len = GET_DWORD_LOC(buf, total);
-		mqtt_qos = (byte_t)GET_SWORD_LOC(buf, total + 4);
-		mqtt_pid = GET_SWORD_LOC(buf, total + 6);
-		msg_buf = buf + total + 8;
-		msg_len -= 4;
+		//the message total length
+		msg_len = GET_DWORD_NET(buf, total);
+		if (msg_len > MAX_LONG)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
+		}
+		total += 4;
 
-		if(msg_len >= TIMESTAMP_SIZE)
+		//the message handler length
+		han_len = GET_SWORD_NET(buf, total);
+		if (han_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
+		}
+		total += 2;
+
+		//skip handler
+		total += han_len;
+		//the message header length
+		hdr_len = GET_SWORD_NET(buf, total);
+		if (hdr_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage header size"));
+		}
+		total += 2;
+
+		hdr_buf = buf + total;
+
+		if(hdr_len >= TIMESTAMP_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_ucs(hdr_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
 	#else
-			utf8_to_mbs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_mbs(hdr_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
 	#endif
 		}else
 		{
 			xszero(timestamp, TIMESTAMP_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
+		if(hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
 	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
 	#endif
 		}else
 		{
 			xszero(longitude, LONGITUDE_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
+		if(hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
 	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
 	#endif
 		}else
 		{
 			xszero(latitude, LATITUDE_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
+		if(hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
 	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
 	#endif
 		}else
 		{
 			xszero(altitude, ALTITUDE_SIZE);
+		}
+
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE + IDENTIFY_SIZE)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+#endif
+		}
+		else
+		{
+			xszero(identify, IDENTIFY_SIZE);
 		}
 
 		parse_datetime(&dt, timestamp);
@@ -163,8 +202,24 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 			xmem_copy((void*)&dt_last, (void*)&dt, sizeof(xdate_t));
 		}
 
-		total += (8 + msg_len);
-		len -= (8 + msg_len);
+		total += hdr_len;
+
+		hl7_len = GET_DWORD_NET(buf, total);
+		if (hl7_len > (len - 4))
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
+		}
+		total += 4;
+
+		//the message data
+		hl7_buf = buf + total;
+
+		if (msg_len != (2 + han_len + 2 + hdr_len + 4 + hl7_len))
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage total size"));
+		}
+		//skip message data
+		total += hl7_len;
 	}
 
 	xmem_free(buf);
@@ -233,16 +288,18 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	dword_t len;
 	dword_t total = 0;
 
-	byte_t* msg_buf = NULL;
 	dword_t msg_len;
-
-	byte_t mqtt_qos;
-	unsigned short mqtt_pid;
+	sword_t han_len;
+	byte_t* hdr_buf = NULL;
+	dword_t hdr_len;
+	byte_t* hl7_buf = NULL;
+	dword_t hl7_len;
 
 	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
 	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
 	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
 	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
+	tchar_t identify[IDENTIFY_SIZE + 1] = { 0 };
 
 	hex_obj_t hkv = NULL;
 
@@ -264,7 +321,7 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[HL7: LIST]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), pb->object, -1);
+		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
 	if(b_json)
@@ -287,7 +344,7 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pb->object, -1);
+	variant_from_string(&key, pd->topic_name, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -299,61 +356,109 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 
 	object_get_bytes(val, buf, len);
 
-	while (len)
+	while (total < len)
 	{
-		msg_len = GET_DWORD_LOC(buf, total);
-		mqtt_qos = (byte_t)GET_SWORD_LOC(buf, total + 4);
-		mqtt_pid = GET_SWORD_LOC(buf, total + 6);
-		msg_buf = buf + total + 8;
-		msg_len -= 4;
-
-		if(msg_len >= TIMESTAMP_SIZE)
+		//the message packet length
+		msg_len = GET_DWORD_NET(buf, total);
+		if (msg_len > MAX_LONG)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
-	#else
-			utf8_to_mbs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
-	#endif
-		}else
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
+		}
+		total += 4;
+
+		//the message handler length
+		han_len = GET_SWORD_NET(buf, total);
+		if (han_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
+		}
+		total += 2;
+
+		//skip handler
+		total += han_len;
+		//the message header length
+		hdr_len = GET_SWORD_NET(buf, total);
+		if (hdr_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage header size"));
+		}
+		total += 2;
+
+		hdr_buf = buf + total;
+
+		if (hdr_len >= TIMESTAMP_SIZE)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs(hdr_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+#else
+			utf8_to_mbs(hdr_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(timestamp, TIMESTAMP_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
-	#endif
-		}else
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(longitude, LONGITUDE_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
-	#endif
-		}else
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(latitude, LATITUDE_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
-	#endif
-		}else
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(altitude, ALTITUDE_SIZE);
 		}
+
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE + IDENTIFY_SIZE)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+#endif
+		}
+		else
+		{
+			xszero(identify, IDENTIFY_SIZE);
+		}
+
+		total += hdr_len;
+
+		hl7_len = GET_DWORD_NET(buf, total);
+		if (hl7_len > (len - 4))
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
+		}
+		total += 4;
 
 		nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
 		set_dom_node_name(nlk_row, _T("row"), -1);
@@ -374,8 +479,24 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 		set_dom_node_name(nlk, HL7_ELEMENT_ALTITUDE, -1);
 		set_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
 
-		total += (8 + msg_len);
-		len -= (8 + msg_len);
+		nlk = insert_dom_node(nlk_row, LINK_LAST);
+		set_dom_node_name(nlk, HL7_ELEMENT_IDENTIFY, -1);
+		set_dom_node_text(nlk, identify, IDENTIFY_SIZE);
+
+		nlk = insert_dom_node(nlk_row, LINK_LAST);
+		set_dom_node_name(nlk, HL7_ELEMENT_PACKSIZE, -1);
+		ltoxs(hl7_len, fsize, NUM_LEN);
+		set_dom_node_text(nlk, fsize, -1);
+
+		//the message data
+		hl7_buf = buf + total;
+
+		if (msg_len != (2 + han_len + 2 + hdr_len + 4 + hl7_len))
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage total size"));
+		}
+		//skip message data
+		total += hl7_len;
 	}
 
 	xmem_free(buf);
@@ -473,18 +594,20 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	dword_t len;
 	dword_t total = 0;
 
-	byte_t* msg_buf = NULL;
 	dword_t msg_len;
-
-	byte_t mqtt_qos;
-	unsigned short mqtt_pid;
+	sword_t han_len;
+	byte_t* hdr_buf = NULL;
+	dword_t hdr_len;
+	byte_t* hl7_buf = NULL;
+	dword_t hl7_len;
 
 	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
 	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
 	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
 	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
-	tchar_t* package = NULL;
-	int n = 0;
+	tchar_t identify[IDENTIFY_SIZE + 1] = { 0 };
+	tchar_t *package = NULL;
+	int pkg_len;
 
 	hex_obj_t hkv = NULL;
 
@@ -506,7 +629,7 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[HL7: GET]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), pb->object, -1);
+		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
 	if(b_json)
@@ -529,7 +652,7 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pb->object, -1);
+	variant_from_string(&key, pd->topic_name, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -541,74 +664,125 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 	object_get_bytes(val, buf, len);
 
-	while (len)
+	while (total < len)
 	{
-		msg_len = GET_DWORD_LOC(buf, total);
-		mqtt_qos = (byte_t)GET_SWORD_LOC(buf, total + 4);
-		mqtt_pid = GET_SWORD_LOC(buf, total + 6);
-		msg_buf = buf + total + 8;
-		msg_len -= 4;
-
-		if(msg_len >= TIMESTAMP_SIZE)
+		//the message packet length
+		msg_len = GET_DWORD_NET(buf, total);
+		if (msg_len > MAX_LONG)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
-	#else
-			utf8_to_mbs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
-	#endif
-		}else
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
+		}
+		total += 4;
+
+		//the message handler length
+		han_len = GET_SWORD_NET(buf, total);
+		if (han_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
+		}
+		total += 2;
+
+		//skip handler
+		total += han_len;
+		//the message header length
+		hdr_len = GET_SWORD_NET(buf, total);
+		if (hdr_len > MAX_SHORT)
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage header size"));
+		}
+		total += 2;
+
+		hdr_buf = buf + total;
+
+		if (hdr_len >= TIMESTAMP_SIZE)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs(hdr_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+#else
+			utf8_to_mbs(hdr_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+#endif
+	}
+		else
 		{
 			xszero(timestamp, TIMESTAMP_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
-	#endif
-		}else
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(longitude, LONGITUDE_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
-	#endif
-		}else
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(latitude, LATITUDE_SIZE);
 		}
 
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
 		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
-	#endif
-		}else
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+#endif
+		}
+		else
 		{
 			xszero(altitude, ALTITUDE_SIZE);
 		}
 
+		if (hdr_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE + IDENTIFY_SIZE)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			utf8_to_ucs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+#else
+			utf8_to_mbs((hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+#endif
+		}
+		else
+		{
+			xszero(identify, IDENTIFY_SIZE);
+		}
+
+		total += hdr_len;
+
+		hl7_len = GET_DWORD_NET(buf, total);
+		if (hl7_len > (len - 4))
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
+		}
+		total += 4;
+
+		//the message data
+		hl7_buf = buf + total;
+
 	#if defined(_UNICODE) || defined(UNICODE)
-		n = utf8_to_ucs((msg_buf + HL7HEAD_SIZE), msg_len - HL7HEAD_SIZE, NULL, MAX_LONG);
+		pkg_len = utf8_to_ucs(hl7_buf, hl7_len, NULL, MAX_LONG);
 	#else
-		n = utf8_to_mbs((msg_buf + HL7HEAD_SIZE), msg_len - HL7HEAD_SIZE, NULL, MAX_LONG);
+		pkg_len = utf8_to_mbs(hl7_buf, hl7_len, msg_len - HL7HEADER_SIZE, NULL, MAX_LONG);
 	#endif
 
-		package = xsalloc(n + 1);
+		package = xsalloc(pkg_len + 1);
 
 	#if defined(_UNICODE) || defined(UNICODE)
-		n = utf8_to_ucs((msg_buf + HL7HEAD_SIZE), msg_len - HL7HEAD_SIZE, package, n);
+		pkg_len = utf8_to_ucs(hl7_buf, hl7_len, package, pkg_len);
 	#else
-		n = utf8_to_mbs((msg_buf + HL7HEAD_SIZE), msg_len - HL7HEAD_SIZE, package, n);
+		pkg_len = utf8_to_mbs(hl7_buf, hl7_len, package, pkg_len);
 	#endif
 
 		nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
@@ -631,15 +805,23 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 		set_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
+		set_dom_node_name(nlk, HL7_ELEMENT_IDENTIFY, -1);
+		set_dom_node_text(nlk, identify, IDENTIFY_SIZE);
+
+		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_PACKAGE, -1);
-		set_dom_node_text(nlk, package, n);
+		set_dom_node_text(nlk, package, pkg_len);
 
 		xsfree(package);
 		package = NULL;
-		n = 0;
+		pkg_len = 0;
 
-		total += (8 + msg_len);
-		len -= (8 + msg_len);
+		if (msg_len != (2 + han_len + 2 + hdr_len + 4 + hl7_len))
+		{
+			raise_user_error(_T("_invoke_head"), _T("invalid mesage total size"));
+		}
+		//skip message data
+		total += hl7_len;
 	}
 
 	xmem_free(buf);
@@ -745,17 +927,20 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 
 	byte_t* msg_buf = NULL;
 	dword_t msg_len;
-
-	byte_t mqtt_qos;
-	unsigned short mqtt_pid;
+	byte_t* han_buf = NULL;
+	sword_t han_len;
+	byte_t* hdr_buf = NULL;
+	dword_t hdr_len;
+	byte_t* hl7_buf = NULL;
+	dword_t hl7_len;
 
 	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
 	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
 	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
 	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
-
+	tchar_t identify[IDENTIFY_SIZE + 1] = { 0 };
 	const tchar_t* package = NULL;
-	int n = 0;
+	int pkg_len = 0;
 
 	hex_obj_t hkv = NULL;
 
@@ -780,7 +965,7 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[HL7: PUT]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), pb->object, -1);
+		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
 	if(b_json)
@@ -815,7 +1000,7 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pb->object, -1);
+	variant_from_string(&key, pd->topic_name, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -823,103 +1008,11 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 
 	len = object_get_bytes(val, NULL, MAX_LONG);
 
-	buf = (byte_t*)xmem_alloc(len);
-
-	object_get_bytes(val, buf, len);
-
 	bb = bytes_alloc();
 
-	while (len)
-	{
-		msg_len = GET_DWORD_LOC(buf, total);
-		mqtt_qos = (byte_t)GET_SWORD_LOC(buf, total + 4);
-		mqtt_pid = GET_SWORD_LOC(buf, total + 6);
-		msg_buf = buf + total + 8;
-		msg_len -= 4;
+	bytes_realloc(bb, len);
 
-		if(msg_len >= TIMESTAMP_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
-	#else
-			utf8_to_mbs(msg_buf, TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
-	#endif
-		}else
-		{
-			xszero(timestamp, TIMESTAMP_SIZE);
-		}
-
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(longitude, LONGITUDE_SIZE);
-		}
-
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(latitude, LATITUDE_SIZE);
-		}
-
-		if(msg_len >= TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
-	#else
-			utf8_to_mbs((msg_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(altitude, ALTITUDE_SIZE);
-		}
-
-		tag = -1;
-		while(nlk_row)
-		{
-			nlk = get_dom_first_child_node(nlk_row);
-			while(nlk)
-			{
-				if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_TIMESTAMP,-1,1) == 0)
-				{
-					parse_datetime(&dt1, timestamp);
-					parse_datetime(&dt2, get_dom_node_text_ptr(nlk));
-
-					tag = compare_datetime(&dt1, &dt2);
-					break;
-				}
-				nlk = get_dom_next_sibling_node(nlk);
-			}
-
-			if(tag <= 0)
-				break;
-
-			nlk_row = get_dom_next_sibling_node(nlk_row);
-		}
-
-		if(tag)
-		{
-			bs = bytes_size(bb);
-			bytes_insert(bb, bs, msg_buf - 8, msg_len);
-		}
-
-		total += (8 + msg_len);
-		len -= (8 + msg_len);
-	}
-
-	xmem_free(buf);
-	buf = NULL;
+	object_get_bytes(val, *bb, len);
 
 	while(nlk_row)
 	{
@@ -929,9 +1022,10 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 		xszero(longitude, LONGITUDE_SIZE);
 		xszero(latitude, LATITUDE_SIZE);
 		xszero(altitude, ALTITUDE_SIZE);
+		xszero(identify, IDENTIFY_SIZE);
 
 		package = NULL;
-		n = 0;
+		pkg_len = 0;
 
 		while(nlk)
 		{
@@ -947,39 +1041,62 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_ALTITUDE,-1,1) == 0)
 			{
 				get_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
+			}
+			else if (compare_text(get_dom_node_name_ptr(nlk), -1, HL7_ELEMENT_ALTITUDE, -1, 1) == 0)
+			{
+				get_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
+			}
+			else if (compare_text(get_dom_node_name_ptr(nlk), -1, HL7_ELEMENT_IDENTIFY, -1, 1) == 0)
+			{
+				get_dom_node_text(nlk, identify, IDENTIFY_SIZE);
 			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_PACKAGE,-1,1) == 0)
 			{
 				package = get_dom_node_text_ptr(nlk);
-				n = xslen(package);
+				pkg_len = xslen(package);
 			}
 
 			nlk = get_dom_next_sibling_node(nlk);
 		}
 
 #if defined(_UNICODE) || defined(UNICODE)
-		len = ucs_to_utf8(package, n, NULL, MAX_LONG);
+		len = ucs_to_utf8(package, pkg_len, NULL, MAX_LONG);
 #else
-		len = mbs_to_utf8(package, n, NULL, MAX_LONG);
+		len = mbs_to_utf8(package, pkg_len, NULL, MAX_LONG);
 #endif
 
-		buf = (byte_t*)xmem_alloc(HL7HEAD_SIZE + len);
+		msg_len = 2 + HL7HAND_SIZE + 2 + HL7HEADER_SIZE + 4 + len;
+		buf = (byte_t*)xmem_alloc(4 + msg_len);
+		msg_buf = buf + 4;
+		PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
+
+		han_buf = msg_buf + 2;
+		PUT_SWORD_NET((han_buf - 2), 0, HL7HAND_SIZE);
+		xmem_copy((void*)han_buf, (void*)HL7VER, HL7HAND_SIZE);
+
+		hdr_buf = han_buf + HL7HAND_SIZE + 2;
+		PUT_SWORD_NET((hdr_buf - 2), 0, HL7HEADER_SIZE);
+
+		hl7_buf = hdr_buf + HL7HEADER_SIZE + 4;
+		PUT_DWORD_NET((hl7_buf - 4), 0, len);
 
 #if defined(_UNICODE) || defined(UNICODE)
-		ucs_to_utf8(timestamp, TIMESTAMP_SIZE, buf, TIMESTAMP_SIZE);
-		ucs_to_utf8(longitude, LONGITUDE_SIZE, (buf + TIMESTAMP_SIZE), LONGITUDE_SIZE);
-		ucs_to_utf8(latitude, LATITUDE_SIZE, (buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE);
-		ucs_to_utf8(altitude, ALTITUDE_SIZE, (buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE);
-		ucs_to_utf8(package, n, (buf + HL7HEAD_SIZE), len);
+		ucs_to_utf8(timestamp, TIMESTAMP_SIZE, hdr_buf, TIMESTAMP_SIZE);
+		ucs_to_utf8(longitude, LONGITUDE_SIZE, (hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE);
+		ucs_to_utf8(latitude, LATITUDE_SIZE, (hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE);
+		ucs_to_utf8(altitude, ALTITUDE_SIZE, (hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE);
+		ucs_to_utf8(identify, IDENTIFY_SIZE, (hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE);
+		ucs_to_utf8(package, pkg_len, hl7_buf, len);
 #else
-		mbs_to_utf8(timestamp, TIMESTAMP_SIZE, buf, TIMESTAMP_SIZE);
-		mbs_to_utf8(longitude, LONGITUDE_SIZE, (buf + TIMESTAMP_SIZE), LONGITUDE_SIZE);
-		mbs_to_utf8(latitude, LATITUDE_SIZE, (buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE);
-		mbs_to_utf8(altitude, ALTITUDE_SIZE, (buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE);
-		mbs_to_utf8(package, n, (buf + HL7HEAD_SIZE), len);
+		mbs_to_utf8(timestamp, TIMESTAMP_SIZE, hdr_buf, TIMESTAMP_SIZE);
+		mbs_to_utf8(longitude, LONGITUDE_SIZE, (hdr_buf + TIMESTAMP_SIZE), LONGITUDE_SIZE);
+		mbs_to_utf8(latitude, LATITUDE_SIZE, (hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE);
+		mbs_to_utf8(altitude, ALTITUDE_SIZE, (hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE);
+		mbs_to_utf8(identify, IDENTIFY_SIZE, (hdr_buf + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE), IDENTIFY_SIZE);
+		mbs_to_utf8(package, pkg_len, hl7_buf, len);
 #endif
 
 		bs = bytes_size(bb);
-		bytes_insert(bb, bs, buf, HL7HEAD_SIZE + len);
+		bytes_insert(bb, bs, buf, msg_len + 4);
 
 		xmem_free(buf);
 		buf = NULL;
@@ -1078,7 +1195,7 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[HL7: DELETE]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), pb->object, -1);
+		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
 	hkv = hexkv_create(pd->hdb);
@@ -1088,7 +1205,7 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pb->object, -1);
+	variant_from_string(&key, pd->topic_name, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -1207,6 +1324,8 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	ptr_prop = NULL;
 
 	printf_path(pd->local, file);
+
+	xscpy(pd->topic_name, pb->object + 1);
 	
 	pd->hdb = hexdb_create(pd->local, token);
 	if (!pd->hdb)

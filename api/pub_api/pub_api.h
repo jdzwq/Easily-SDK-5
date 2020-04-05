@@ -26,8 +26,12 @@ LICENSE.GPL3 for more details.
 #define _PUBAPI_H
 
 #include <xdl.h>
-#include <mqtt.h>
 #include <hexdfs.h>
+
+#define APPVER	"MQ10"
+#define APPHAND_SIZE		8
+
+#define PUBHEADER_SIZE		24
 
 #ifdef	__cplusplus
 extern "C" {

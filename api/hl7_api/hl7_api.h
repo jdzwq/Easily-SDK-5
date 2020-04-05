@@ -33,13 +33,13 @@ LICENSE.GPL3 for more details.
 #define HL7_ELEMENT_LONGITUDE	_T("longitude")
 #define HL7_ELEMENT_LATITUDE	_T("latitude")
 #define HL7_ELEMENT_ALTITUDE	_T("altitude")
+#define HL7_ELEMENT_IDENTIFY	_T("identify")
 #define HL7_ELEMENT_PACKAGE		_T("package")
+#define HL7_ELEMENT_PACKSIZE	_T("packsize")
 
-#define HL7HEAD_SIZE		64
-#define TIMESTAMP_SIZE		24
-#define LONGITUDE_SIZE		10
-#define LATITUDE_SIZE		10
-#define ALTITUDE_SIZE		16
+#define HL7VER	"HL10"
+#define HL7HAND_SIZE		4
+#define HL7HEADER_SIZE		(TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE + IDENTIFY_SIZE)
 
 #ifdef	__cplusplus
 extern "C" {

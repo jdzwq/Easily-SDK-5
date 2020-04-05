@@ -1823,6 +1823,33 @@ int diff_days(const xdate_t* pdt1, const xdate_t* pdt2)
 	return (rt < 0)? days : -days;
 }
 
+int diff_hours(const xdate_t* pdt1, const xdate_t* pdt2)
+{
+	int n;
+
+	n = diff_days(pdt1, pdt2);
+
+	return n * 24 + pdt2->hour - pdt1->hour;
+}
+
+int diff_mins(const xdate_t* pdt1, const xdate_t* pdt2)
+{
+	int n;
+
+	n = diff_hours(pdt1, pdt2);
+
+	return n * 60 + pdt2->min - pdt1->min;
+}
+
+int diff_secs(const xdate_t* pdt1, const xdate_t* pdt2)
+{
+	int n;
+
+	n = diff_mins(pdt1, pdt2);
+
+	return n * 60 + pdt2->sec - pdt1->sec;
+}
+
 void plus_years(xdate_t* pdt, int years)
 {
 	pdt->year += years;

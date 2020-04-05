@@ -189,6 +189,7 @@
     <ClInclude Include="..\..\xdl\gridbio.h" />
     <ClInclude Include="..\..\xdl\impcache.h" />
     <ClInclude Include="..\..\xdl\memobio.h" />
+    <ClInclude Include="..\..\xdl\netmqtt.h" />
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\properbio.h" />
@@ -392,6 +393,7 @@
     <ClCompile Include="..\..\xdl\gridbio.c" />
     <ClCompile Include="..\..\xdl\impcache.c" />
     <ClCompile Include="..\..\xdl\memobio.c" />
+    <ClCompile Include="..\..\xdl\netmqtt.c" />
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\properbio.c" />

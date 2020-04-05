@@ -12,6 +12,7 @@
 #include "nethttp.h"
 #include "netpnp.h"
 #include "nettftp.h"
+#include "netmqtt.h"
 #include "netsoap.h"
 
 #endif //_XDLNET_H

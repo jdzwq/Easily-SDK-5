@@ -122,6 +122,12 @@ EXP_API int diff_months(const xdate_t* pdt1, const xdate_t* pdt2);
 
 EXP_API int diff_days(const xdate_t* pdt1, const xdate_t* pdt2);
 
+EXP_API int diff_hours(const xdate_t* pdt1, const xdate_t* pdt2);
+
+EXP_API int diff_mins(const xdate_t* pdt1, const xdate_t* pdt2);
+
+EXP_API int diff_secs(const xdate_t* pdt1, const xdate_t* pdt2);
+
 EXP_API void plus_years(xdate_t* pdt, int years);
 
 EXP_API void plus_months(xdate_t* pdt, int months);

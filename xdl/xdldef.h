@@ -325,6 +325,7 @@ typedef enum{
 #define _HANDLE_SSH			0x0C
 #define _HANDLE_PNP			0x0D
 #define _HANDLE_TFTP		0x0E
+#define _HANDLE_MQTT		0x0F
 
 typedef struct _xhand_head{
 	byte_t tag;
