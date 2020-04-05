@@ -774,7 +774,7 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	#if defined(_UNICODE) || defined(UNICODE)
 		pkg_len = utf8_to_ucs(hl7_buf, hl7_len, NULL, MAX_LONG);
 	#else
-		pkg_len = utf8_to_mbs(hl7_buf, hl7_len, msg_len - HL7HEADER_SIZE, NULL, MAX_LONG);
+		pkg_len = utf8_to_mbs(hl7_buf, hl7_len, NULL, MAX_LONG);
 	#endif
 
 		package = xsalloc(pkg_len + 1);

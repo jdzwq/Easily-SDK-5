@@ -7,15 +7,15 @@
 
 //#define ADDR_PUB		_T("47.97.167.225")
 //#define ADDR_PUB		_T("172.16.190.190")
-//#define ADDR_PUB		_T("127.0.0.1")
-#define ADDR_PUB		_T("118.178.180.81")
+#define ADDR_PUB		_T("127.0.0.1")
+//#define ADDR_PUB		_T("118.178.180.81")
 //#define ADDR_PUB		_T("49.234.135.113")
 #define PORT_PUB		1833
 
 //#define ADDR_SUB		_T("47.97.167.225")
 //#define ADDR_SUB		_T("172.16.190.190")
-//#define ADDR_SUB		_T("127.0.0.1")
-#define ADDR_SUB		_T("118.178.180.81")
+#define ADDR_SUB		_T("127.0.0.1")
+//#define ADDR_SUB		_T("118.178.180.81")
 //#define ADDR_SUB		_T("49.234.135.113")
 #define PORT_SUB		1834
 

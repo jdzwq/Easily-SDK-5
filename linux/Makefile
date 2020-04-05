@@ -13,7 +13,6 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libradnet.so.1.0 \
 	$(API_PATH)/libpub_api.so.1.0 \
 	$(API_PATH)/libsub_api.so.1.0 \
-	$(API_PATH)/libmqtt.so.1.0 \
 	$(API_PATH)/libhl7_api.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
 	$(API_PATH)/libwww_api.so.1.0 \
@@ -42,7 +41,6 @@ all:
 	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/sms_aliyun && make -f sms_aliyun.so.mk
 	cd $(CUR_PATH)/radnet && make -f radnet.so.mk
-	cd $(CUR_PATH)/mqtt && make -f mqtt.so.mk
 
 	cd $(CUR_PATH)/hl7_api && make -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
@@ -129,7 +127,6 @@ install:
 	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/sms_aliyun && make install -f sms_aliyun.so.mk
 	cd $(CUR_PATH)/radnet && make install -f radnet.so.mk
-	cd $(CUR_PATH)/mqtt && make install -f mqtt.so.mk
 
 	cd $(CUR_PATH)/hl7_api && make install -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
