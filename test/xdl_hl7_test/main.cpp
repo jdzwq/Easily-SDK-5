@@ -12,6 +12,7 @@
 //#define HL7_URL		_T("http://172.16.190.190:8889")
 #define HL7_URL		_T("http://127.0.0.1:8889")
 //#define HL7_URL		_T("http://118.178.180.81")
+//#define HL7_URL		_T("http://www.biofolia.cn:8889")
 
 void test_hl7_head()
 {
@@ -207,8 +208,8 @@ void test_hl7_list()
 	xhand_t xh = xhttp_client(_T("LIST"), url);
 
 	xhttp_set_request_default_header(xh);
-	//xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
-	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	//xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 
 	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
 	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
@@ -260,8 +261,8 @@ void test_hl7_get()
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);
-	//xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
-	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+	//xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 
 	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
 	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
@@ -352,9 +353,9 @@ int main(int argc, char* argv[])
 
 	//test_hl7_put();
 
-	//test_hl7_list();
+	test_hl7_list();
 
-	test_hl7_get();
+	//test_hl7_get();
 
 	//test_hl7_delete();
 

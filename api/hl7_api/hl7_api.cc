@@ -304,7 +304,7 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	hex_obj_t hkv = NULL;
 
 	tchar_t sz_encoding[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN] = {0};
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
@@ -513,14 +513,6 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
 	if(b_json)
-		len = format_json_doc_to_bytes(ptr_json, NULL, MAX_LONG, _UTF8);
-	else
-		len = format_xml_doc_to_bytes(ptr_xml, NULL, MAX_LONG);
-
-	xsprintf(fsize, _T("%d"), len);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-
-	if(b_json)
 		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 	else
 		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
@@ -612,7 +604,6 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	hex_obj_t hkv = NULL;
 
 	tchar_t sz_encoding[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
@@ -838,14 +829,6 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
 	if(b_json)
-		len = format_json_doc_to_bytes(ptr_json, NULL, MAX_LONG, _UTF8);
-	else
-		len = format_xml_doc_to_bytes(ptr_xml, NULL, MAX_LONG);
-
-	xsprintf(fsize, _T("%d"), len);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-
-	if(b_json)
 		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 	else
 		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
@@ -945,7 +928,6 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	hex_obj_t hkv = NULL;
 
 	tchar_t sz_encoding[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	bool_t b_json = 0;
 
 	xdate_t dt1, dt2;
