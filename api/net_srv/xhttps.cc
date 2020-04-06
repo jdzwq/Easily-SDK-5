@@ -355,6 +355,8 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		raise_user_error(NULL, NULL);
 	}
 
+	_xhttps_log_request(http);
+
 	xhttp_get_url_method(http, sz_method, RES_LEN);
 	xhttp_get_url_object(http, sz_object, PATH_LEN);
 
@@ -494,8 +496,6 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	free_library(api);
 	api = NULL;
 
-	_xhttps_log_request(http);
-
 	_xhttps_log_response(http);
 
 	END_CATCH;
@@ -525,8 +525,6 @@ ONERROR:
 
 	if (api)
 		free_library(api);
-
-	_xhttps_log_request(http);
 
 	_xhttps_log_response(http);
 
