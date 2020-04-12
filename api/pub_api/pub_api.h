@@ -28,10 +28,11 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 #include <hexdfs.h>
 
-#define APPVER	"MQ10"
-#define APPHAND_SIZE		8
+#define PUBVER	"MQ11"
+#define PUBVER_SIZE			4
+#define PUBHANDER_SIZE		8
 
-#define PUBHEADER_SIZE		24
+#define PUBHEADER_SIZE		60
 
 #ifdef	__cplusplus
 extern "C" {

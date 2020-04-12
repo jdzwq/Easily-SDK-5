@@ -31,7 +31,7 @@ void test_blut()
         printf("%s %s %s %s \n", pdb[i].addr, pdb[i].name, pdb[i].major_class, pdb[i].minor_class);
 
         res_file_t fd = (*if_blut.pf_blut_open)(pdb[i].addr, 0, 0);
-        if(fd)
+        if(fd != INVALID_FILE)
         {
             (*if_blut.pf_blut_read)(fd, &ch, 1, &asy);
             (*if_blut.pf_blut_close)(fd);

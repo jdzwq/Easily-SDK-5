@@ -47,12 +47,12 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 	dword_t len;
 	dword_t total = 0;
 
+	byte_t* msg_buf;
+	dword_t msg_len;
 	byte_t* han_buf;
 	sword_t han_len;
 	byte_t* hdr_buf;
 	sword_t hdr_len;
-	byte_t* msg_buf;
-	dword_t msg_len;
 	byte_t* sub_buf;
 	dword_t sub_len;
 
@@ -103,7 +103,7 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 		{
 			raise_user_error(_T("_invoke_subcribe"), _T("invalid message handler size"));
 		}
-		xmem_copy((void*)ver, han_buf, 4);
+		xmem_copy((void*)ver, han_buf, SUBVER_SIZE);
 		if (ver[0] == 'M' && ver[1] == 'Q')
 		{
 			mc.packet_qos = (byte_t)GET_SWORD_NET(han_buf, 4);

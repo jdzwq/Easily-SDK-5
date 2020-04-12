@@ -52,15 +52,16 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	dword_t len;
 	sword_t sw = 0;
 
+	byte_t* msg_buf;
+	dword_t msg_len;
 	byte_t* han_buf;
 	sword_t han_len;
 	byte_t* hdr_buf;
 	sword_t hdr_len;
-	byte_t* msg_buf;
-	dword_t msg_len;
 	byte_t* pub_buf;
 	dword_t pub_len;
 
+	tchar_t sz_uuid[UUID_LEN + 1] = {0};
 	xdate_t dt = { 0 };
 	tchar_t sz_date[DATE_LEN] = { 0 };
 
@@ -89,30 +90,35 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	get_utc_date(&dt);
 	format_utctime(&dt, sz_date);
 
-	buf = (byte_t*)xmem_alloc(len + 4 + 2 + APPHAND_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
+	buf = (byte_t*)xmem_alloc(len + 4 + 2 + PUBHANDER_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
 	object_get_bytes(val, buf, len);
 
 	//the message total size
 	msg_buf = buf + len + 4;
-	msg_len = (2 + APPHAND_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
+	msg_len = (2 + PUBHANDER_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
 	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
 	//the message handler size
 	han_buf = msg_buf + 2;
-	han_len = APPHAND_SIZE;
+	han_len = PUBHANDER_SIZE;
 	PUT_SWORD_NET((han_buf - 2), 0, han_len);
 	//the message handler
-	xmem_copy((void*)(han_buf), (void*)APPVER, 4);
+	xmem_copy((void*)(han_buf), (void*)PUBVER, PUBVER_SIZE);
 	PUT_SWORD_NET(han_buf, 4, sw);
 	PUT_SWORD_NET(han_buf, 6, pd->msg_pid);
 	//the message header size
-	hdr_buf = han_buf + APPHAND_SIZE + 2;
+	hdr_buf = han_buf + PUBHANDER_SIZE + 2;
 	hdr_len = PUBHEADER_SIZE;
 	PUT_SWORD_NET((hdr_buf - 2), 0, hdr_len);
 	//the message header
 #if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(sz_date, -1, hdr_buf, TIMESTAMP_SIZE);
+	ucs_to_utf8(sz_uuid, -1, hdr_buf, IDENTIFY_SIZE);
 #else
-	mbs_to_utf8(sz_date, -1, hdr_buf, TIMESTAMP_SIZE);
+	mbs_to_utf8(sz_uuid, -1, hdr_buf, IDENTIFY_SIZE);
+#endif
+#if defined(_UNICODE) || defined(UNICODE)
+	ucs_to_utf8(sz_date, -1, (hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE);
+#else
+	mbs_to_utf8(sz_date, -1, (hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE);
 #endif
 	//the message element size
 	pub_buf = hdr_buf + PUBHEADER_SIZE + 4;

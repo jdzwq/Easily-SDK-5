@@ -28,8 +28,11 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 #include <hexdfs.h>
 
-#define APPVER	"MQ10"
-#define APPHAND_SIZE		8
+#define SUBVER	"MQ11"
+#define SUBVER_SIZE			4
+#define SUBHANDER_SIZE		8
+
+#define SUBHEADER_SIZE		60
 
 #ifdef	__cplusplus
 extern "C" {

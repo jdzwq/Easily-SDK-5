@@ -394,6 +394,9 @@ int _enum_blut_device(dev_blt_t* pdb, int max)
 						pdb[i].name[j] = _T('.');
 				}
 			}
+		}else
+		{
+			hci_read_remote_name(dev, &(info+i)->bdaddr, sizeof(pdb[i].name), pdb[i].name, 25000);
 		}
 
 		if (handle > 0) 

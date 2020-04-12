@@ -10,9 +10,9 @@
 #define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
 
 //#define HL7_URL		_T("http://172.16.190.190:8889")
-//#define HL7_URL		_T("http://127.0.0.1:8889")
+#define HL7_URL		_T("http://127.0.0.1:8889")
 //#define HL7_URL		_T("http://118.178.180.81")
-#define HL7_URL		_T("http://www.biofolia.cn:8889")
+//#define HL7_URL		_T("http://www.biofolia.cn:8889")
 
 void test_hl7_head()
 {
@@ -113,6 +113,10 @@ void test_hl7_put()
 	LINKPTR nlk;
 	
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("identify"), -1);
+	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("timestamp"), -1);
 	set_dom_node_text(nlk, timestamp, -1);
 
@@ -129,17 +133,17 @@ void test_hl7_put()
 	set_dom_node_text(nlk, _T("130"), -1);
 
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("identify"), -1);
-	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("package"), -1);
-	set_dom_node_text(nlk, _T("test2"), -1);
+	set_dom_node_text(nlk, _T("test1"), -1);
 
 	nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
 	set_dom_node_name(nlk_row, _T("row"), -1);
 
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
+	set_dom_node_name(nlk, _T("identify"), -1);
+	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
+
+	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("timestamp"), -1);
 	set_dom_node_text(nlk, timestamp, -1);
 
@@ -156,12 +160,8 @@ void test_hl7_put()
 	set_dom_node_text(nlk, _T("130"), -1);
 
 	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("identify"), -1);
-	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
 	set_dom_node_name(nlk, _T("package"), -1);
-	set_dom_node_text(nlk, _T("test1"), -1);
+	set_dom_node_text(nlk, _T("test2"), -1);
 
 	if (!xhttp_send_xml(xh, ptr_xml))
 	{
@@ -353,7 +353,7 @@ int main(int argc, char* argv[])
 
 	//test_hl7_put();
 
-	test_hl7_list();
+	//test_hl7_list();
 
 	//test_hl7_get();
 
