@@ -40,6 +40,7 @@ LICENSE.GPL3 for more details.
 #define SSL_MINOR_VERSION_0             0 //SSL v3.0
 #define SSL_MINOR_VERSION_1             1 //TLS v1.0
 #define SSL_MINOR_VERSION_2             2 //TLS v1.1
+#define SSL_MINOR_VERSION_3             3 //TLS v1.2
 
 #define SSL_MSG_CHANGE_CIPHER_SPEC     20
 #define SSL_MSG_ALERT                  21

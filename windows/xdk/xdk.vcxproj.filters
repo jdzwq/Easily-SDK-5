@@ -66,6 +66,9 @@
     <ClCompile Include="..\..\xdk\windows\_if_async_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xdk\windows\_if_bluetooth_win32.c">
+      <Filter>源文件\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xdk\windows\_xdk_win.h">

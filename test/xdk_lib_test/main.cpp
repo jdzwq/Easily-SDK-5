@@ -1,4 +1,4 @@
-//
+﻿//
 //  main.cpp
 //  xdk_lib_test
 //
@@ -14,6 +14,12 @@ void test_blut()
     if_blut_t if_blut = { 0 };
     
     xdk_impl_blut(&if_blut);
+
+	if_socket_t if_sock = { 0 };
+
+	xdk_impl_socket(&if_sock);
+
+	(*if_sock.pf_socket_startup)();
 
     int n = (*if_blut.pf_enum_blut)(NULL, MAX_LONG);
 
@@ -39,6 +45,8 @@ void test_blut()
     }
 
     free(pdb);
+
+	(*if_sock.pf_socket_cleanup)();
 }
 
 void test_heap()

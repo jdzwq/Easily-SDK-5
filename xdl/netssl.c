@@ -765,7 +765,7 @@ int _ssl_read_rcv_msg(ssl_t *pssl)
 		raise_user_error(_T("0"), _T("major version mismatch"));
 	}
 
-	if (pssl->rcv_hdr[2] != SSL_MINOR_VERSION_0 && pssl->rcv_hdr[2] != SSL_MINOR_VERSION_1)
+	if (pssl->rcv_hdr[2] > SSL_MINOR_VERSION_3)
 	{
 		raise_user_error(_T("0"), _T("minor version mismatch"));
 	}
@@ -870,7 +870,7 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 	pssl->minor_ver = SSL_MINOR_VERSION_0;
 
 	pssl->max_major_ver = SSL_MAJOR_VERSION_3;
-	pssl->max_minor_ver = SSL_MINOR_VERSION_1;
+	pssl->max_minor_ver = SSL_MINOR_VERSION_3;
 
 	//gen client random bytes
 	t = get_times();
@@ -988,7 +988,7 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 		return SSL_HANDSHAKE_ERROR;
 	}
 
-	if (pssl->rcv_msg[4] != SSL_MAJOR_VERSION_3 || (pssl->rcv_msg[5] != SSL_MINOR_VERSION_0 && pssl->rcv_msg[5] != SSL_MINOR_VERSION_1))
+	if (pssl->rcv_msg[4] != SSL_MAJOR_VERSION_3 || pssl->rcv_msg[5] > SSL_MINOR_VERSION_3)
 	{
 		set_last_error(_T("0"), _T("handshake hello message version checked failed"), -1);
 		return SSL_HANDSHAKE_ERROR;
