@@ -35,19 +35,19 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_PDG
 
-#define PUT_UC(buf,off,n)		(buf[off] = (unsigned char)((n) & 0xFF))
-#define PUT_US(buf,off,n)		(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF))
-#define PUT_UL(buf,off,n)		(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+3] = (unsigned char) (((n) >> 24) & 0xFF))
+#define PUT_UC(buf,off,n)		(buf[off] = (byte_t)((n) & 0xFF))
+#define PUT_US(buf,off,n)		(buf[off] = (byte_t) ((n) & 0xFF), buf[off+1] = (byte_t) (((n) >> 8) & 0xFF))
+#define PUT_UL(buf,off,n)		(buf[off] = (byte_t) ((n) & 0xFF), buf[off+1] = (byte_t) (((n) >> 8) & 0xFF), buf[off+2] = (byte_t) (((n) >> 16) & 0xFF), buf[off+3] = (byte_t) (((n) >> 24) & 0xFF))
 
-#define GET_UC(buf,off)			((unsigned char)(buf[off] & 0xFF))
-#define GET_US(buf,off)			(unsigned short)((buf[off] & 0x00FF) | ((buf[off + 1] << 8) & 0xFF00))
-#define GET_UL(buf,off)			(unsigned int)((buf[off] & 0x000000FF) | ((buf[off + 1] << 8) & 0x0000FF00) | ((buf[off + 2] << 16) & 0x00FF0000) | ((buf[off + 3] << 24) & 0xFF000000))
+#define GET_UC(buf,off)			((byte_t)(buf[off] & 0xFF))
+#define GET_US(buf,off)			(sword_t)((buf[off] & 0x00FF) | ((buf[off + 1] << 8) & 0xFF00))
+#define GET_UL(buf,off)			(dword_t)((buf[off] & 0x000000FF) | ((buf[off + 1] << 8) & 0x0000FF00) | ((buf[off + 2] << 16) & 0x00FF0000) | ((buf[off + 3] << 24) & 0xFF000000))
 
 /******************************************************************************************************************/
 
 dword_t pdg_set_header(const pdg_file_t* pfi, const pdg_info_t* pbi, byte_t* buf, dword_t max)
 {
-	unsigned char* pb;
+	byte_t* pb;
 
 	if (buf)
 	{
@@ -79,7 +79,7 @@ dword_t pdg_set_header(const pdg_file_t* pfi, const pdg_info_t* pbi, byte_t* buf
 
 dword_t xpdg_get_header(pdg_file_t* pfi, pdg_info_t* pbi, const byte_t* src, dword_t len)
 {
-	unsigned char* pb;
+	byte_t* pb;
 
 	if (!src || !len)
 		return 0;
@@ -126,10 +126,10 @@ dword_t xpdg_revert(const byte_t* pdg_buf, dword_t pdg_len, byte_t* bmp_buf, dwo
 
 	float p;
 	dword_t i, j, dw;
-	unsigned char c;
-	unsigned char uc;
+	byte_t c;
+	byte_t uc;
 	char sc;
-	unsigned short us;
+	sword_t us;
 	short ss;
 	const byte_t* pval = NULL;
 
@@ -190,7 +190,7 @@ dword_t xpdg_revert(const byte_t* pdg_buf, dword_t pdg_len, byte_t* bmp_buf, dwo
 				if (di.psign)
 					sc = (char)(pval[0]);
 				else
-					uc = (unsigned char)(pval[0]);
+					uc = (byte_t)(pval[0]);
 
 				if (di.psign)
 					p = (float)(sc * win_slope) + win_inter;
@@ -204,7 +204,7 @@ dword_t xpdg_revert(const byte_t* pdg_buf, dword_t pdg_len, byte_t* bmp_buf, dwo
 				else if (p < 0)
 					c = 0;
 				else
-					c = (unsigned char)p;
+					c = (byte_t)p;
 
 				pbm[dTotal + j] = c; //gray
 			}
@@ -227,7 +227,7 @@ dword_t xpdg_revert(const byte_t* pdg_buf, dword_t pdg_len, byte_t* bmp_buf, dwo
 				else if (p < 0)
 					c = 0;
 				else
-					c = (unsigned char)p;
+					c = (byte_t)p;
 
 				pbm[dTotal + j] = c; //gray
 			}
@@ -263,8 +263,8 @@ dword_t xpdg_convert(const byte_t* bmp_buf, dword_t bmp_len, byte_t* pdg_buf, dw
 
 	dword_t i, j;
 	dword_t dRowSize, dIndex, dTotal;
-	unsigned short us;
-	unsigned char uc;
+	sword_t us;
+	byte_t uc;
 	int n;
 
 	if (bmp_len < BMP_FILEHEADER_SIZE + BMP_INFOHEADER_SIZE)

@@ -85,7 +85,14 @@ EXP_API void xpnp_close(xhand_t pnp);
 @INPUT xhand_t pnp: the PNP xhandle.
 @RETURN int: the PNP type.
 */
-EXP_API int xpnp_type(xhand_t pnp);;
+EXP_API int xpnp_type(xhand_t pnp);
+
+/*
+@FUNCTION xpnp_socket: get socket resource handle.
+@INPUT xhand_t pnp: the TCP handle.
+@RETURN res_file_t: return the socket resource handle.
+*/
+EXP_API res_file_t xpnp_socket(xhand_t pnp);
 
 /*
 @FUNCTION xpnp_write: write PNP data.
@@ -111,6 +118,16 @@ EXP_API bool_t xpnp_flush(xhand_t pnp);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 EXP_API bool_t xpnp_read(xhand_t pnp, byte_t* data, dword_t* pb);
+
+/*
+@FUNCTION xpnp_setopt: set the socket options.
+@INPUT xhand_t pnp: the pnp handle.
+@INPUT int oid: the option id, eg: SOCK_OPTION_SNDBUF, SOCK_OPTION_RCVBUF, SOCK_OPTION_NONBLK.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t xpnp_setopt(xhand_t pnp, int oid, void* opt, int len);
 
 /*
 @FUNCTION xpnp_addr_port: get PNP local address and port.

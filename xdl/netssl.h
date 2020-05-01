@@ -183,13 +183,13 @@ EXP_API bool_t xssl_read(xhand_t ssl, byte_t* data, dword_t* pb);
 
 /*
 @FUNCTION xssl_setopt: set the socket options.
-@INPUT xhand_t ssl: the SSL handle.
-@INPUT int oid: the option id, eg: SOCKET_OPTION_SNDBUF, SOCKET_OPTION_RCVBUF, SOCKET_OPTION_NONBLK.
+@INPUT xhand_t ssl: the ssl handle.
+@INPUT int oid: the option id, eg: SOCK_OPTION_SNDBUF, SOCK_OPTION_RCVBUF, SOCK_OPTION_NONBLK.
 @INPUT void* opt: the option value pointer
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API void xssl_setopt(xhand_t ssl, int oid, void* opt, int len);
+EXP_API bool_t xssl_setopt(xhand_t ssl, int oid, void* opt, int len);
 
 /*
 @FUNCTION xssl_addr_port: get SSL local address and port.
@@ -222,14 +222,6 @@ EXP_API void xssl_set_host(xhand_t ssl, const tchar_t* host_cn);
 @RETURN void: none.
 */
 EXP_API void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn);
-
-/*
-@FUNCTION xssl_set_auth: set SSL authorization mode.
-@INPUT xhand_t ssl: the SSL handle.
-@INPUT int authmode: the authorization mode, it can be SSL_VERIFY_NONE, SSL_VERIFY_OPTIONAL, SSL_VERIFY_REQUIRED.
-@RETURN void: none.
-*/
-EXP_API void xssl_set_auth(xhand_t ssl, int authmode);
 
 /*
 @FUNCTION xssl_set_ca: set SSL root certificate.
@@ -268,6 +260,15 @@ EXP_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, con
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 EXP_API bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_P, const byte_t *dhm_G);
+
+/*
+@FUNCTION xssl_set_auth: set SSL authorization mode.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT int srv_verify: the certify verify mode, it can be SSL_VERIFY_NONE, SSL_VERIFY_OPTIONAL, SSL_VERIFY_REQUIRED.
+@INPUT bool_t cli_auth: the client authorization mode.
+@RETURN void: none.
+*/
+EXP_API void xssl_set_verify(xhand_t ssl, int srv_verify, bool_t cli_auth);
 
 #ifdef	__cplusplus
 }

@@ -106,7 +106,7 @@ EXP_API bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, b
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API void xinet_setopt(xhand_t inet, int oid, void* opt, int len);
+EXP_API bool_t xinet_setopt(xhand_t inet, int oid, void* opt, int len);
 
 /*
 @FUNCTION xinet_set_filetime: set the file write time.

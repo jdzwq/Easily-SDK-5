@@ -38,20 +38,20 @@ LICENSE.GPL3 for more details.
 
 typedef struct _pdg_file_t{
 	/*file info header*/
-	unsigned long flag;		/*file flag*/
-	unsigned long fsize;	/*file size*/
-	unsigned long reserved;
-	unsigned long offset;	/*image bytes position*/
+	dword_t flag;		/*file flag*/
+	dword_t fsize;	/*file size*/
+	dword_t reserved;
+	dword_t offset;	/*image bytes position*/
 }pdg_file_t;
 
 typedef struct _pdg_info_t{
 	/*pdg info header*/
-	unsigned long isize;	/*info struct size*/
-	unsigned long width;	/*image cols*/
-	unsigned long height;	/*image rows*/
-	unsigned long bytes;	/*image bytes*/
-	unsigned short psize;	/*bytes per pixel*/
-	unsigned short psign;	/*bytes is sign*/
+	dword_t isize;	/*info struct size*/
+	dword_t width;	/*image cols*/
+	dword_t height;	/*image rows*/
+	dword_t bytes;	/*image bytes*/
+	sword_t psize;	/*bytes per pixel*/
+	sword_t psign;	/*bytes is sign*/
 
 	int win_width;		/*windows width*/
 	int win_center;	/*windows center*/
@@ -60,21 +60,21 @@ typedef struct _pdg_info_t{
 	int xmm_pixel;	/*x pixel spaceing*/
 	int ymm_pixel;	/*x pixel spaceing*/
 
-	unsigned char moda[16]; /*modality*/
+	byte_t moda[16]; /*modality*/
 }pdg_info_t;
 
 typedef struct _pdg_bits_t{
-	unsigned short bit_all;
-	unsigned short bit_len;
-	unsigned short bit_pos;
+	sword_t bit_all;
+	sword_t bit_len;
+	sword_t bit_pos;
 }pdg_bits_t;
 
 #define PDG_FLAG		0x4d434944 /*"D","I","C","M"*/
 #define PDG_FILEHEADER_SIZE		16
 #define PDG_INFOHEADER_SIZE		60
 
-#define PDGFILEHEADERPTR(p)			((unsigned char*)p)
-#define PDGINFOHEADERPTR(p)			((unsigned char*)p + PDG_FILEHEADER_SIZE)
+#define PDGFILEHEADERPTR(p)			((byte_t*)p)
+#define PDGINFOHEADERPTR(p)			((byte_t*)p + PDG_FILEHEADER_SIZE)
 
 
 #ifdef	__cplusplus

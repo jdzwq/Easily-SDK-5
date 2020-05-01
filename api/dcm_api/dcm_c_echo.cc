@@ -26,7 +26,7 @@ LICENSE.GPL3 for more details.
 
 bool_t _invoke_c_echo(dcm_t* dcm, dcm_block_t* pd)
 {
-	dicm_command_t cmd = { 0 };
+	dcm_command_t cmd = { 0 };
 	dword_t n, dw = 0;
 
 	dcm_pdv_head_t pdv = { 0 };
@@ -42,27 +42,27 @@ bool_t _invoke_c_echo(dcm_t* dcm, dcm_block_t* pd)
 	cmd.mask |= MSK_AffectedSOPClassUID;
 	n = a_xslen((schar_t*)pd->cmd.AffectedSOPClassUID);
 	a_xsncpy((schar_t*)cmd.AffectedSOPClassUID, (schar_t*)pd->cmd.AffectedSOPClassUID, n);
-	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + n);
+	dw += (DCM_CMD_TAG_SIZE + DCM_CMD_LEN_SIZE + n);
 
 	cmd.mask |= MSK_CommandField;
 	cmd.CommandField = DCM_CMD_C_ECHO_RSP;
-	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + 2);
+	dw += (DCM_CMD_TAG_SIZE + DCM_CMD_LEN_SIZE + 2);
 
 	cmd.mask |= MSK_MessageIDBeingRespondedTo;
 	cmd.MessageIDBeingRespondedTo = pd->cmd.MessageID;
-	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + 2);
+	dw += (DCM_CMD_TAG_SIZE + DCM_CMD_LEN_SIZE + 2);
 
 	cmd.mask |= MSK_DataSetType;
 	cmd.DataSetType = 0x0101;
-	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + 2);
+	dw += (DCM_CMD_TAG_SIZE + DCM_CMD_LEN_SIZE + 2);
 
 	cmd.mask |= MSK_Status;
 	cmd.Status = 0x0000;
-	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + 2);
+	dw += (DCM_CMD_TAG_SIZE + DCM_CMD_LEN_SIZE + 2);
 
 	cmd.mask |= MSK_GroupLength;
 	cmd.GroupLength = dw;
-	dw += (DICM_CMD_TAG_SIZE + DICM_CMD_LEN_SIZE + 4);
+	dw += (DCM_CMD_TAG_SIZE + DCM_CMD_LEN_SIZE + 4);
 
 	pdv.did = pd->pdv.did;
 	pdv.ctl = 0x03;

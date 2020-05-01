@@ -21,8 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdk_lib_test", "..\test\xdk
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oem_tls_test", "..\test\oem_tls_test\oem_tls_test.vcxproj", "{A95EB162-3B2B-4F88-BABE-537B2451447C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dicmtest", "..\test\dicmtest\dicmtest.vcxproj", "{31E04E9E-6C3B-4E65-A880-81F2A915985D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdb_mssql_test", "..\test\xdb_mssql_test\xdb_mssql_test.vcxproj", "{50390AB3-5630-4158-8338-78345BCEDB78}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdb_odbc", "..\xdb_odbc\xdb_odbc.vcxproj", "{2222FD2E-7413-4694-88A9-CBA5C27C96D0}"
@@ -125,12 +123,6 @@ Global
 		{A95EB162-3B2B-4F88-BABE-537B2451447C}.Release|Win32.ActiveCfg = Release|Win32
 		{A95EB162-3B2B-4F88-BABE-537B2451447C}.Release|Win32.Build.0 = Release|Win32
 		{A95EB162-3B2B-4F88-BABE-537B2451447C}.Release|x64.ActiveCfg = Release|Win32
-		{31E04E9E-6C3B-4E65-A880-81F2A915985D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{31E04E9E-6C3B-4E65-A880-81F2A915985D}.Debug|Win32.Build.0 = Debug|Win32
-		{31E04E9E-6C3B-4E65-A880-81F2A915985D}.Debug|x64.ActiveCfg = Debug|Win32
-		{31E04E9E-6C3B-4E65-A880-81F2A915985D}.Release|Win32.ActiveCfg = Release|Win32
-		{31E04E9E-6C3B-4E65-A880-81F2A915985D}.Release|Win32.Build.0 = Release|Win32
-		{31E04E9E-6C3B-4E65-A880-81F2A915985D}.Release|x64.ActiveCfg = Release|Win32
 		{50390AB3-5630-4158-8338-78345BCEDB78}.Debug|Win32.ActiveCfg = Debug|Win32
 		{50390AB3-5630-4158-8338-78345BCEDB78}.Debug|Win32.Build.0 = Debug|Win32
 		{50390AB3-5630-4158-8338-78345BCEDB78}.Debug|x64.ActiveCfg = Debug|Win32

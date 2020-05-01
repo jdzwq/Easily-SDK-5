@@ -109,14 +109,14 @@ EXP_API bool_t  xtcp_write(xhand_t tcp, const byte_t* data, dword_t* pb);
 EXP_API bool_t  xtcp_read(xhand_t tcp, byte_t* data, dword_t* pb);
 
 /*
-@FUNCTION xtcp_set_option: set the socket options.
-@INPUT xhand_t tcp: the TCP handle.
-@INPUT int oid: the option id, eg: SOCKET_OPTION_SNDBUF, SOCKET_OPTION_RCVBUF, SOCKET_OPTION_NONBLK.
+@FUNCTION xtcp_setopt: set the socket options.
+@INPUT xhand_t tcp: the tcp handle.
+@INPUT int oid: the option id, eg: SOCK_OPTION_SNDBUF, SOCK_OPTION_RCVBUF, SOCK_OPTION_NONBLK.
 @INPUT void* opt: the option value pointer
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len);
+EXP_API bool_t xtcp_setopt(xhand_t tcp, int oid, void* opt, int len);
 
 /*
 @FUNCTION xtcp_addr_port: get TCP local address and port.

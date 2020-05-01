@@ -124,17 +124,17 @@ EXP_API int			xfile_proto(file_t fh);
 @FUNCTION xfile_settime: set the file write time.
 @INPUT file_t fh: the file object.
 @INPUT const tchar_t* ftime: string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"
-@RETURN void: none.
+@RETURN bool_t: return nonzero if supported.
 */
-EXP_API void		xfile_settime(file_t fh, const tchar_t* ftime);
+EXP_API bool_t		xfile_settime(file_t fh, const tchar_t* ftime);
 
 /*
 @FUNCTION xfile_setsince: set the file write since.
 @INPUT file_t fh: the file object.
 @INPUT int fs: file since tag, eg: FILE_SINCE_TIME, FILE_SINCE_ETAG.
-@RETURN void: none.
+@RETURN bool_t: return nonzero if supported.
 */
-EXP_API void		xfile_setsince(file_t fh, int fs);
+EXP_API bool_t		xfile_setsince(file_t fh, int fs);
 
 /*
 @FUNCTION xfile_info: get the file information.

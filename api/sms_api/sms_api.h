@@ -35,6 +35,7 @@ LICENSE.GPL3 for more details.
 
 #define SMSHEADER_SIZE		24
 #define SMSMESSAGE_SIZE		6
+#define TIMESTAMP_SIZE		24
 
 #ifdef	__cplusplus
 extern "C" {

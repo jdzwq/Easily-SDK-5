@@ -195,11 +195,11 @@ void _xslots_dispatch(xhand_t slot, void* p)
 		xssl_set_rsa(slot, buf_key, dw, sz_pass, -1);
 
 		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0)
-			xssl_set_auth(slot, SSL_VERIFY_REQUIRED);
+			xssl_set_verify(slot, SSL_VERIFY_REQUIRED, 0);
 		else if (compare_text(sz_cert, 5, _T("SSL_1"), 5, 1) == 0)
-			xssl_set_auth(slot, SSL_VERIFY_OPTIONAL);
+			xssl_set_verify(slot, SSL_VERIFY_OPTIONAL, 0);
 		else
-			xssl_set_auth(slot, SSL_VERIFY_NONE);
+			xssl_set_verify(slot, SSL_VERIFY_NONE, 0);
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{

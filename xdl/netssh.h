@@ -131,26 +131,91 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
+/*
+@FUNCTION xssh_cli: create a SSL client.
+@INPUT unsigned short port: the network port to connect.
+@INPUT const tchar_t* addr: the network address to connect.
+@RETURN xhand_t: if succeeds return SSL client handle, fails return NULL.
+*/
 EXP_API xhand_t xssh_cli(unsigned short port, const tchar_t* addr);
 
+/*
+@FUNCTION xssh_srv: create a SSL server.
+@INPUT res_file_t so: the network io resource handle, it must be a socket resource handle.
+@RETURN xhand_t: if succeeds return SSL server handle, fails return NULL.
+*/
 EXP_API xhand_t xssh_srv(res_file_t so);
 
+/*
+@FUNCTION xssh_socket: get socket resource handle.
+@INPUT xhand_t ssh: the SSL handle.
+@RETURN res_file_t: return the socket resource handle.
+*/
 EXP_API res_file_t xssh_socket(xhand_t ssh);
 
+/*
+@FUNCTION xssh_type: get socket type, it can be _XSSL_TYPE_CLI, _XSSL_TYPE_SRV.
+@INPUT xhand_t ssh: the SSL handle.
+@RETURN int: return the socket type.
+*/
 EXP_API int  xssh_type(xhand_t ssh);
 
+/*
+@FUNCTION xssh_close: close SSL handle.
+@INPUT xhand_t ssh: the SSL handle.
+@RETURN void: none.
+*/
 EXP_API void  xssh_close(xhand_t ssh);
 
+/*
+@FUNCTION xssh_write: write SSL data.
+@INPUT xhand_t ssh: the SSL handle.
+@INPUT const byte_t* data: the data buffer.
+@INOUTPUT dword_t* pb: indicate the bytes to write and return the bytes writed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 EXP_API bool_t xssh_write(xhand_t ssh, const byte_t* data, dword_t* pb);
 
-EXP_API bool_t xssh_read(xhand_t ssh, byte_t* data, dword_t* pb);
-
+/*
+@FUNCTION xssh_flush: ensure write SSL data compeleted.
+@INPUT xhand_t ssh: the SSL handle.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
 EXP_API bool_t xssh_flush(xhand_t ssh);
 
-EXP_API void xssh_setopt(xhand_t ssh, int oid, void* opt, int len);
+/*
+@FUNCTION xssh_read: read SSL data.
+@INPUT xhand_t ssh: the SSL handle.
+@OUTPUT byte_t* data: the data buffer.
+@INOUTPUT dword_t* pb: indicate the bytes to read and return the bytes readed.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t xssh_read(xhand_t ssh, byte_t* data, dword_t* pb);
 
+/*
+@FUNCTION xssh_setopt: set the socket options.
+@INPUT xhand_t ssh: the ssh handle.
+@INPUT int oid: the option id, eg: SOCK_OPTION_SNDBUF, SOCK_OPTION_RCVBUF, SOCK_OPTION_NONBLK.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t xssh_setopt(xhand_t ssh, int oid, void* opt, int len);
+
+/*
+@FUNCTION xssh_addr_port: get SSL local address and port.
+@INPUT xhand_t ssh: the SSL handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the local port.
+*/
 EXP_API unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr);
 
+/*
+@FUNCTION xssh_peer_port: get SSL remote address and port.
+@INPUT xhand_t ssh: the SSL handle.
+@OUTPUT tchar_t* addr: the string buffer.
+@RETURN unsigned short: return the remote port.
+*/
 EXP_API unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr);
 
 #ifdef	__cplusplus

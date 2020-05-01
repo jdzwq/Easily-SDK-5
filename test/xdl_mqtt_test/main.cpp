@@ -7,17 +7,17 @@
 
 //#define ADDR_PUB		_T("47.97.167.225")
 //#define ADDR_PUB		_T("172.16.190.190")
-#define ADDR_PUB		_T("127.0.0.1")
-//#define ADDR_PUB		_T("118.178.180.81")
+//#define ADDR_PUB		_T("127.0.0.1")
+#define ADDR_PUB		_T("118.178.180.81")
 //#define ADDR_PUB		_T("49.234.135.113")
-#define PORT_PUB		1883
+#define PORT_PUB		1833
 
 //#define ADDR_SUB		_T("47.97.167.225")
 //#define ADDR_SUB		_T("172.16.190.190")
-#define ADDR_SUB		_T("127.0.0.1")
-//#define ADDR_SUB		_T("118.178.180.81")
+//#define ADDR_SUB		_T("127.0.0.1")
+#define ADDR_SUB		_T("118.178.180.81")
 //#define ADDR_SUB		_T("49.234.135.113")
-#define PORT_SUB		1884
+#define PORT_SUB		1834
 
 void test_mqtt_pub()
 {
@@ -69,6 +69,7 @@ void test_mqtt_sub()
 	byte_t* buf = NULL;
 	dword_t n;
 
+	//08:7c:be:58:37:f8-Gateway-NAME
 	xmqtt_subcribe(mqtt, _T("test"), -1);
 
 	while (xmqtt_status(mqtt) != _MQTT_STATUS_RELEASE)

@@ -221,6 +221,15 @@ int xpnp_type(xhand_t pnp)
 	return ppnp->type;
 }
 
+res_file_t xpnp_socket(xhand_t pnp)
+{
+	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
+
+	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
+
+	return ppnp->so;
+}
+
 bool_t xpnp_write(xhand_t pnp, const byte_t* buf, dword_t* pb)
 {
 	pnp_t* ppnp = TypePtrFromHead(pnp_t, pnp);
@@ -390,5 +399,28 @@ unsigned short xpnp_peer_port(xhand_t pnp, tchar_t* addr)
 
 	return port;
 }
+
+bool_t xpnp_setopt(xhand_t pnp, int oid, void* opt, int len)
+{
+	pnp_t* pso = TypePtrFromHead(pnp_t, pnp);
+
+	XDL_ASSERT(pnp && pnp->tag == _HANDLE_PNP);
+
+	switch (oid)
+	{
+	case SOCK_OPTION_SNDBUF:
+		socket_set_sndbuf(pso->so, *(int*)opt);
+		return 1;
+	case SOCK_OPTION_RCVBUF:
+		socket_set_rcvbuf(pso->so, *(int*)opt);
+		return 1;
+	case SOCK_OPTION_NONBLK:
+		socket_set_nonblk(pso->so, *(bool_t*)opt);
+		return 1;
+	}
+
+	return 0;
+}
+
 
 #endif /*XDK_SUPPORT_SOCK*/

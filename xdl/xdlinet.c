@@ -58,6 +58,15 @@ static void _xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
 	xsncpy(pfn->ftime, ftime, DATE_LEN);
 }
 
+static void _xinet_get_filetime(xhand_t inet, tchar_t* ftime)
+{
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+
+	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
+
+	xsncpy(ftime, pfn->ftime, DATE_LEN);
+}
+
 static void _xinet_set_filesince(xhand_t inet, int since)
 {
 	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
@@ -65,6 +74,15 @@ static void _xinet_set_filesince(xhand_t inet, int since)
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	pfn->fsince = since;
+}
+
+static void _xinet_get_filesince(xhand_t inet, int* psince)
+{
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+
+	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
+
+	*psince = pfn->fsince;
 }
 /*************************************************************************************************/
 
@@ -1036,6 +1054,16 @@ void xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
 		_xinet_set_filetime(inet, ftime);
 }
 
+void xinet_get_filetime(xhand_t inet, tchar_t* ftime)
+{
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+
+	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
+
+	if (pfn->proto == _PROTO_HTTP)
+		_xinet_get_filetime(inet, ftime);
+}
+
 void xinet_set_filesince(xhand_t inet, int since)
 {
 	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
@@ -1044,6 +1072,16 @@ void xinet_set_filesince(xhand_t inet, int since)
 
 	if (pfn->proto == _PROTO_HTTP)
 		_xinet_set_filesince(inet, since);
+}
+
+void xinet_get_filesince(xhand_t inet, int* psince)
+{
+	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+
+	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
+
+	if (pfn->proto == _PROTO_HTTP)
+		_xinet_get_filesince(inet, psince);
 }
 
 bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname)
@@ -1088,17 +1126,34 @@ bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 		return 0;
 }
 
-void xinet_setopt(xhand_t inet, int oid, void* opt, int len)
+bool_t xinet_setopt(xhand_t inet, int oid, void* opt, int len)
 {
 	switch (oid)
 	{
 	case FILE_OPTION_SINCE:
 		xinet_set_filesince(inet, *(int*)(opt));
-		break;
+		return 1;
 	case FILE_OPTION_TIME:
 		xinet_set_filetime(inet, (tchar_t*)opt);
-		break;
+		return 1;
 	}
+
+	return 0;
+}
+
+bool_t xinet_getopt(xhand_t inet, int oid, void* opt, int len)
+{
+	switch (oid)
+	{
+	case FILE_OPTION_SINCE:
+		xinet_get_filesince(inet, (int*)(opt));
+		return 1;
+	case FILE_OPTION_TIME:
+		xinet_get_filetime(inet, (tchar_t*)opt);
+		return 1;
+	}
+
+	return 0;
 }
 
 #endif /*XDK_SUPPORT_SOCK*/

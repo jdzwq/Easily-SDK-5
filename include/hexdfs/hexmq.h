@@ -42,12 +42,12 @@ LICENSE.GPL3 for more details.
 	option byte[0~MAX_INT]: the message element.
 }*/
 
-#define MQHEADER_SIZE		96
-#define TIMESTAMP_SIZE		24 //UTC format: 1970-01-01T00:00:00.000Z
-#define LONGITUDE_SIZE		10 //degree format: 180:30:30
-#define LATITUDE_SIZE		10 //degree format: 180:30:30
-#define ALTITUDE_SIZE		16 //metre format: 100.00
-#define IDENTIFY_SIZE		36 //uuid format: 00000000-0000-0000-0000-000000000000
+#define MQ_HEADER_SIZE			96
+#define MQ_IDENTIFY_SIZE		36 //uuid format: 00000000-0000-0000-0000-000000000000
+#define MQ_TIMESTAMP_SIZE		24 //UTC format: 1970-01-01T00:00:00.000Z
+#define MQ_LONGITUDE_SIZE		10 //degree format: 180:30:30
+#define MQ_LATITUDE_SIZE		10 //degree format: 180:30:30
+#define MQ_ALTITUDE_SIZE		16 //metre format: 100.00
 
 #ifdef	__cplusplus
 extern "C" {
@@ -58,5 +58,5 @@ extern "C" {
 #endif
 
 
-#endif	/* _HEXITER_H */
+#endif	/* _HEXMQ_H */
 

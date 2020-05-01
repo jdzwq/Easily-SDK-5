@@ -94,6 +94,23 @@ EXP_API void xudp_close(xhand_t udp);
 EXP_API int xudp_type(xhand_t udp);
 
 /*
+@FUNCTION xudp_socket: get socket resource handle.
+@INPUT xhand_t udp: the TCP handle.
+@RETURN res_file_t: return the socket resource handle.
+*/
+EXP_API res_file_t xudp_socket(xhand_t udp);
+
+/*
+@FUNCTION xudp_setopt: set the socket options.
+@INPUT xhand_t udp: the udp handle.
+@INPUT int oid: the option id, eg: SOCK_OPTION_SNDBUF, SOCK_OPTION_RCVBUF, SOCK_OPTION_NONBLK.
+@INPUT void* opt: the option value pointer
+@INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t xudp_setopt(xhand_t udp, int oid, void* opt, int len);
+
+/*
 @FUNCTION xudp_set_package: set UDP package size.
 @INPUT xhand_t udp: the UDP xhandle.
 @INPUT dword_t size: the package size in bytes

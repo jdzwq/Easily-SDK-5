@@ -1041,7 +1041,7 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		phttp->inf.pf_write = xtcp_write;
 		phttp->inf.pf_read = xtcp_read;
 		phttp->inf.pf_close = xtcp_close;
-		phttp->inf.pf_setopt = xtcp_set_option;
+		phttp->inf.pf_setopt = xtcp_setopt;
 		break;
 	}
 	
@@ -1123,7 +1123,7 @@ xhand_t xhttp_server(xhand_t bio)
 	default:
 		phttp->inf.pf_write = xtcp_write;
 		phttp->inf.pf_read = xtcp_read;
-		phttp->inf.pf_setopt = xtcp_set_option;
+		phttp->inf.pf_setopt = xtcp_setopt;
 
 		socket_peer(xtcp_socket(bio), &na);
 		break;
@@ -2593,7 +2593,7 @@ void xhttp_send_continue(xhand_t xhttp)
 
 	byte_t *buf_response = NULL;
 	dword_t len_response = 0;
-	int n;
+	int opt;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_SRV);
@@ -2607,8 +2607,8 @@ void xhttp_send_continue(xhand_t xhttp)
 
 	if (phttp->inf.pf_setopt)
 	{
-		n = 0;
-		(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &n, sizeof(n));
+		opt = 0;
+		(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 	}
 
 	if (phttp->inf.pf_write)
@@ -2650,7 +2650,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 	tchar_t token[RES_LEN + 1] = { 0 };
 	byte_t *buf_response = NULL;
 	dword_t len_response = 0;
-	int opt = 0;
+	int opt;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 	XDL_ASSERT(phttp->type == _XHTTP_TYPE_SRV);
@@ -2667,7 +2667,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 		if (phttp->inf.pf_setopt)
 		{
 			opt = TCP_MIN_SNDBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 		}
 
 		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_response, &len_response))
@@ -2716,7 +2716,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 			if (phttp->inf.pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -2755,7 +2755,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 		if (phttp->inf.pf_setopt)
 		{
 			opt = TCP_MIN_RCVBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 		}
 
 		len_header = XHTTP_HEADER_SIZE;
@@ -2826,7 +2826,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 
 			if (phttp->inf.pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -2869,9 +2869,9 @@ bool_t xhttp_send_request(xhand_t xhttp)
 		len_request = _xhttp_format_request(phttp, buf_request, len_request);
 
 		if (phttp->inf.pf_setopt)
-		{
+		{			
 			opt = TCP_MIN_SNDBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 		}
 
 		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_request, &len_request))
@@ -2920,7 +2920,7 @@ bool_t xhttp_send_request(xhand_t xhttp)
 
 			if (phttp->inf.pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_SNDBUF, &opt, sizeof(opt));
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -2957,9 +2957,9 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 	if (!phttp->b_request)
 	{
 		if (phttp->inf.pf_setopt)
-		{
+		{			
 			opt = TCP_MIN_RCVBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 		}
 
 		len_header = XHTTP_HEADER_SIZE;
@@ -3043,7 +3043,7 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 
 			if (phttp->inf.pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCKET_OPTION_RCVBUF, &opt, sizeof(opt));
+				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 			}
 		}
 

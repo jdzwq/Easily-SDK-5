@@ -179,7 +179,7 @@ bool_t xfile_flush(file_t fh)
 	}
 }
 
-void xfile_set_since(file_t fh, int fs)
+bool_t xfile_setsince(file_t fh, int fs)
 {
 	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
@@ -187,11 +187,13 @@ void xfile_set_since(file_t fh, int fs)
 
 	if (pfn->inf.pf_setopt)
 	{
-		(*pfn->inf.pf_setopt)(pfn->inf.bio, FILE_OPTION_SINCE, (void*)&fs, sizeof(fs));
+		return (*pfn->inf.pf_setopt)(pfn->inf.bio, FILE_OPTION_SINCE, (void*)&fs, sizeof(fs));
 	}
+
+	return 0;
 }
 
-void xfile_settime(file_t fh, const tchar_t* ftime)
+bool_t xfile_settime(file_t fh, const tchar_t* ftime)
 {
 	radfile_t* pfn = TypePtrFromHead(radfile_t, fh);
 
@@ -199,8 +201,10 @@ void xfile_settime(file_t fh, const tchar_t* ftime)
 
 	if (pfn->inf.pf_setopt)
 	{
-		(*pfn->inf.pf_setopt)(pfn->inf.bio, FILE_OPTION_TIME, (void*)ftime, 0);
+		return (*pfn->inf.pf_setopt)(pfn->inf.bio, FILE_OPTION_TIME, (void*)ftime, 0);
 	}
+
+	return 0;
 }
 
 void xfile_close(file_t fh)

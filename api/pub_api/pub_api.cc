@@ -111,14 +111,14 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	PUT_SWORD_NET((hdr_buf - 2), 0, hdr_len);
 	//the message header
 #if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(sz_uuid, -1, hdr_buf, IDENTIFY_SIZE);
+	ucs_to_utf8(sz_uuid, -1, hdr_buf, MQ_IDENTIFY_SIZE);
 #else
-	mbs_to_utf8(sz_uuid, -1, hdr_buf, IDENTIFY_SIZE);
+	mbs_to_utf8(sz_uuid, -1, hdr_buf, MQ_IDENTIFY_SIZE);
 #endif
 #if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(sz_date, -1, (hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE);
+	ucs_to_utf8(sz_date, -1, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
 #else
-	mbs_to_utf8(sz_date, -1, (hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE);
+	mbs_to_utf8(sz_date, -1, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
 #endif
 	//the message element size
 	pub_buf = hdr_buf + PUBHEADER_SIZE + 4;

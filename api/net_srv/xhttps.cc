@@ -320,11 +320,11 @@ void _xhttps_dispatch(xhand_t http, void* p)
         buf_key = NULL;
 
 		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0)
-			xssl_set_auth(bio, SSL_VERIFY_REQUIRED);
+			xssl_set_verify(bio, SSL_VERIFY_REQUIRED, 0);
 		else if (compare_text(sz_cert, 5, _T("SSL_1"), 5, 1) == 0)
-			xssl_set_auth(bio, SSL_VERIFY_OPTIONAL);
+			xssl_set_verify(bio, SSL_VERIFY_OPTIONAL, 0);
 		else
-			xssl_set_auth(bio, SSL_VERIFY_NONE);
+			xssl_set_verify(bio, SSL_VERIFY_NONE, 0);
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{

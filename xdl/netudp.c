@@ -191,6 +191,15 @@ int xudp_type(xhand_t udp)
 	return pudp->type;
 }
 
+res_file_t xudp_socket(xhand_t udp)
+{
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+
+	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
+
+	return pudp->so;
+}
+
 void xudp_set_package(xhand_t udp, dword_t size)
 {
 	udp_t* pudp = TypePtrFromHead(udp_t, udp);
@@ -385,6 +394,28 @@ unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr)
 	conv_addr(&na, &port, addr);
 
 	return port;
+}
+
+bool_t xudp_setopt(xhand_t udp, int oid, void* opt, int len)
+{
+	udp_t* pso = TypePtrFromHead(udp_t, udp);
+
+	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
+
+	switch (oid)
+	{
+	case SOCK_OPTION_SNDBUF:
+		socket_set_sndbuf(pso->so, *(int*)opt);
+		return 1;
+	case SOCK_OPTION_RCVBUF:
+		socket_set_rcvbuf(pso->so, *(int*)opt);
+		return 1;
+	case SOCK_OPTION_NONBLK:
+		socket_set_nonblk(pso->so, *(bool_t*)opt);
+		return 1;
+	}
+
+	return 0;
 }
 
 

@@ -248,22 +248,6 @@ bool_t xtcp_read(xhand_t tcp, byte_t* buf, dword_t* pcb)
 	return 1;
 }
 
-void xtcp_set_option(xhand_t tcp, int oid, void* opt, int len)
-{
-	switch (oid)
-	{
-	case SOCKET_OPTION_SNDBUF:
-		socket_set_sndbuf(xtcp_socket(tcp), *((int*)opt));
-		break;
-	case SOCKET_OPTION_RCVBUF:
-		socket_set_rcvbuf(xtcp_socket(tcp), *((int*)opt));
-		break;
-	case SOCKET_OPTION_NONBLK:
-		socket_set_nonblk(xtcp_socket(tcp), *((bool_t*)opt));
-		break;
-	}
-}
-
 unsigned short xtcp_addr_port(xhand_t tcp, tchar_t* addr)
 {
 	tcp_t* pso = TypePtrFromHead(tcp_t, tcp);
@@ -290,6 +274,28 @@ unsigned short xtcp_peer_port(xhand_t tcp, tchar_t* addr)
 	conv_addr(&na, &port, addr);
 
 	return port;
+}
+
+bool_t xtcp_setopt(xhand_t tcp, int oid, void* opt, int len)
+{
+	tcp_t* ptcp = TypePtrFromHead(tcp_t, tcp);
+
+	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
+
+	switch (oid)
+	{
+	case SOCK_OPTION_SNDBUF:
+		socket_set_sndbuf(xtcp_socket(tcp), *(int*)opt);
+		return 1;
+	case SOCK_OPTION_RCVBUF:
+		socket_set_rcvbuf(xtcp_socket(tcp), *(int*)opt);
+		return 1;
+	case SOCK_OPTION_NONBLK:
+		socket_set_nonblk(xtcp_socket(tcp), *(bool_t*)opt);
+		return 1;
+	}
+
+	return 0;
 }
 
 #endif //XDK_SUPPORT_SOCK

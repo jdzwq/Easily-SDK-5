@@ -152,7 +152,7 @@ EXP_API bool_t xuncf_write_file_range(xhand_t fh, dword_t hoff, dword_t loff, co
 @INPUT int len: the value length in bytes, string value must be a zero terminated token and set len to zero.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API void xuncf_setopt(xhand_t fh, int oid, void* opt, int len);
+EXP_API bool_t xuncf_setopt(xhand_t fh, int oid, void* opt, int len);
 
 /*
 @FUNCTION xuncf_truncate: truncate file content at the position.

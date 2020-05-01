@@ -3470,22 +3470,6 @@ bool_t xssh_read(xhand_t ssh, byte_t* buf, dword_t* pb)
 	return rt;
 }
 
-void xssh_setopt(xhand_t ssh, int oid, void* opt, int len)
-{
-	switch (oid)
-	{
-	case SOCKET_OPTION_SNDBUF:
-		socket_set_sndbuf(xssh_socket(ssh), *(int*)opt);
-		break;
-	case SOCKET_OPTION_RCVBUF:
-		socket_set_rcvbuf(xssh_socket(ssh), *(int*)opt);
-		break;
-	case SOCKET_OPTION_NONBLK:
-		socket_set_nonblk(xssh_socket(ssh), *(bool_t*)opt);
-		break;
-	}
-}
-
 unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr)
 {
 	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
@@ -3512,6 +3496,28 @@ unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr)
 	conv_addr(&na, &port, addr);
 
 	return port;
+}
+
+bool_t xssh_setopt(xhand_t ssh, int oid, void* opt, int len)
+{
+	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+
+	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
+
+	switch (oid)
+	{
+	case SOCK_OPTION_SNDBUF:
+		socket_set_sndbuf(xssh_socket(ssh), *(int*)opt);
+		return 1;
+	case SOCK_OPTION_RCVBUF:
+		socket_set_rcvbuf(xssh_socket(ssh), *(int*)opt);
+		return 1;
+	case SOCK_OPTION_NONBLK:
+		socket_set_nonblk(xssh_socket(ssh), *(bool_t*)opt);
+		return 1;
+	}
+
+	return 0;
 }
 
 #endif //XDK_SUPPORT_SOCK

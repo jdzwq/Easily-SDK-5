@@ -34,7 +34,7 @@ typedef struct _dcm_block_t{
 	xhand_t scp;
 
 	dcm_pdv_head_t pdv;
-	dicm_command_t cmd;
+	dcm_command_t cmd;
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];

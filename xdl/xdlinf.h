@@ -123,10 +123,9 @@ typedef struct _xml_reader_t{
 	void* obj;
 }xml_reader_t;
 
-#define SOCKET_OPTION_SNDBUF	1
-#define SOCKET_OPTION_RCVBUF	2
-#define SOCKET_OPTION_NONBLK	3
-
+#define SOCK_OPTION_SNDBUF		1
+#define SOCK_OPTION_RCVBUF		2
+#define SOCK_OPTION_NONBLK		3
 #define FILE_OPTION_TIME		10
 #define FILE_OPTION_SINCE		11
 
@@ -137,8 +136,7 @@ typedef bool_t(*PF_BIO_FLUSH)(xhand_t);
 typedef bool_t(*PF_BIO_READ_RANGE)(xhand_t, dword_t, dword_t, byte_t*, dword_t);
 typedef bool_t(*PF_BIO_WRITE_RANGE)(xhand_t, dword_t, dword_t, const byte_t*, dword_t);
 typedef void(*PF_BIO_CLOSE)(xhand_t);
-
-typedef void(*PF_BIO_SETOPT)(xhand_t, int, void*, int);
+typedef bool_t(*PF_BIO_SETOPT)(xhand_t, int, void*, int);
 
 typedef struct _if_bio_t{
 	xhand_t		bio;
