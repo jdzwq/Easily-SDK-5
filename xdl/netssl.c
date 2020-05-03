@@ -81,6 +81,11 @@ static ciphers_set default_ciphers[] = {
 	{ SSL_RSA_RC4_128_MD5, 16, 16, 0, 16, 16 }
 };
 
+static char label_client_finished[] = "client finished";
+static char label_server_finished[] = "server finished";
+static char label_master_secret[] = "master secret";
+static char label_key_expansion[] = "key expansion";
+
 typedef struct _ssl_t{
 	xhand_head head;
 
@@ -418,7 +423,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		}
 		else
 		{
-			_ssl_prf(premaster, prelen, "master secret", rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
+			_ssl_prf(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
 		}
 	}
 
@@ -459,7 +464,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		SecurityParameters.server_random +
 		SecurityParameters.client_random);
 		*/
-		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, "key expansion", rndb, SSL_RND_SIZE * 2, keyblk, 256);
+		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, 256);
 	}
 
 	/* the key_block is partitioned as follows:
@@ -584,13 +589,6 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 
 	pssl->snd_msg_len += pssl->hash_size;
 
-	//incre out message control bits
-	for (i = 7; i >= 0; i--)
-	{
-		if (++pssl->snd_ctr[i] != 0)
-			break;
-	}
-
 	if (pssl->iv_size == 0)
 	{
 		arc4_crypt((arc4_context *)pssl->ctx_enc, pssl->snd_msg_len, pssl->snd_msg, pssl->snd_msg);
@@ -601,13 +599,11 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		if (padlen == pssl->iv_size)
 			padlen = 0;
 
+		padlen ++;
 		for (i = 0; i < padlen; i++)
-			pssl->snd_msg[pssl->snd_msg_len + i] = (byte_t)(padlen);
+			pssl->snd_msg[pssl->snd_msg_len + i] = (byte_t)(padlen - 1);
 
-		pssl->snd_msg_len += padlen;
-
-		pssl->snd_msg[pssl->snd_msg_len] = (byte_t)(padlen);
-		pssl->snd_msg_len++;
+		pssl->snd_msg_len += (padlen);
 
 		if (pssl->minor_ver == SSL_MINOR_VERSION_0 || pssl->minor_ver == SSL_MINOR_VERSION_1)
 		{
@@ -646,9 +642,19 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		if (pssl->minor_ver == SSL_MINOR_VERSION_2)
 		{
 			xmem_move((void*)(pssl->snd_msg), pssl->snd_msg_len, pssl->iv_size);
-			xmem_copy((void*)(pssl->snd_msg), (void*)(pssl->iv_dec), pssl->iv_size);
+			xmem_copy((void*)(pssl->snd_msg), (void*)(pssl->iv_enc), pssl->iv_size);
 			pssl->snd_msg_len += pssl->iv_size;
 		}
+	}
+
+	//reset message length
+	PUT_SWORD_NET(pssl->snd_hdr, 3, (unsigned short)pssl->snd_msg_len);
+
+	//incre out message control bits
+	for (i = 7; i >= 0; i--)
+	{
+		if (++pssl->snd_ctr[i] != 0)
+			break;
 	}
 
 	return C_OK;
@@ -707,7 +713,7 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 		{
 			for (i = 1; i <= padlen; i++)
 			{
-				if (pssl->rcv_msg[pssl->rcv_msg_len - i] != padlen - 1)
+				if (pssl->rcv_msg[pssl->rcv_msg_len - i] != (padlen - 1))
 				{
 					padlen = 0;
 				}
@@ -715,6 +721,12 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 		}
 	}
 
+	if (pssl->iv_size != 0 && padlen == 0)
+	{
+		return C_ERR;
+	}
+
+	//reset message length
 	pssl->rcv_msg_len -= (pssl->hash_size + padlen);
 	PUT_SWORD_NET(pssl->rcv_hdr, 3, (unsigned short)pssl->rcv_msg_len);
 
@@ -736,11 +748,6 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	}
 
 	if (xmem_comp(mac_tmp, pssl->hash_size, mac_buf, pssl->hash_size) != 0)
-	{
-		return C_ERR;
-	}
-
-	if (pssl->iv_size != 0 && padlen == 0)
 	{
 		return C_ERR;
 	}
@@ -785,8 +792,6 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 		{
 			raise_user_error(NULL, NULL);
 		}
-		//reset message length
-		PUT_SWORD_NET(pssl->snd_hdr, 3, (unsigned short)pssl->snd_msg_len);
 	}
 
 	stm = stream_alloc(pssl->tcp);
@@ -1800,9 +1805,9 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 	int msglen = SSL_HSH_SIZE;
 	md5_context  md5;
 	sha1_context sha1;
-	byte_t padbuf[48];
-	byte_t md5sum[16];
-	byte_t sha1sum[20];
+	byte_t padbuf[48] = {0};
+	byte_t md5sum[16] = {0};
+	byte_t sha1sum[20] = {0};
 	byte_t* mac_buf;
 
 	xmem_copy(&md5, &pssl->md5, sizeof(md5_context));
@@ -1846,10 +1851,10 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 	}
 	else
 	{
-		md5_finish(&md5, padbuf);
-		sha1_finish(&sha1, padbuf + 16);
+		md5_finish(&md5, padbuf); //16 bytes
+		sha1_finish(&sha1, padbuf + 16); //20 bytes
 
-		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, "client finished", padbuf, 36, mac_buf, 12);
+		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 36, mac_buf, 12);
 
 		msglen += 12;
 	}
@@ -1958,7 +1963,7 @@ static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
 		md5_finish(&md5, padbuf);
 		sha1_finish(&sha1, padbuf + 16);
 
-		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, "server finished", padbuf, 36, mac_buf, 12);
+		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 36, mac_buf, 12);
 
 		hash_len = 12;
 	}
@@ -2926,7 +2931,7 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 		md5_finish(&md5, padbuf);
 		sha1_finish(&sha1, padbuf + 16);
 
-		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, "client finished", padbuf, 36, mac_buf, 12);
+		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 36, mac_buf, 12);
 
 		hash_len = 12;
 	}
@@ -3027,7 +3032,7 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 		md5_finish(&md5, padbuf);
 		sha1_finish(&sha1, padbuf + 16);
 
-		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, "server finished", padbuf, 36, mac_buf, 12);
+		_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 36, mac_buf, 12);
 
 		msglen += 12;
 	}

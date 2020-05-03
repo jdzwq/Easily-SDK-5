@@ -5,11 +5,26 @@
 #include <conio.h>
 #endif
 
+void test_mem()
+{
+	byte_t b[20] = {0};
+
+	for(int i = 0;i< 10;i++)
+	{
+		b[i] = '0' + i;
+	}
+
+	xmem_move(b, 10, 10);
+	xmem_zero(b, 10);
+
+	xmem_move(b + 10, 10, -10);
+	xmem_zero(b + 10, 10);
+}
+
 void test_printf()
 {
 	char tmp[100] = { 0 };
 	int len = a_xsprintf(tmp, "%d '%Y-%m-%d %H:%i') as DT", -1);
-
 }
 
 void test_path()
@@ -43,9 +58,11 @@ void test_money()
 	format_money_chs(10.01, 0, token, NUM_LEN);
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
+
+	test_mem();
 
 	//test_printf();
 
@@ -59,12 +76,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//test_set();
 
-	test_object();
+	//test_object();
 
 
 	xdl_process_uninit();
 
+#ifdef _OS_WINDOWS
 	getch();
+#endif
 
 	return 0;
 }

@@ -63,11 +63,11 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
 
-	tchar_t identify[IDENTIFY_SIZE + 1] = { 0 };
-	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
+	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = { 0 };
+	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
+	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
+	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
+	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
 
 	hex_obj_t hkv = NULL;
 
@@ -135,65 +135,65 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 
 		hdr_buf = buf + total;
 
-		if(hdr_len >= IDENTIFY_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(hdr_buf, IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+			utf8_to_ucs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
 	#else
-			utf8_to_mbs(hdr_buf, IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+			utf8_to_mbs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
 	#endif
 		}else
 		{
-			xszero(identify, IDENTIFY_SIZE);
+			xszero(identify, MQ_IDENTIFY_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
 	#endif
 		}else
 		{
-			xszero(timestamp, TIMESTAMP_SIZE);
+			xszero(timestamp, MQ_TIMESTAMP_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
 	#endif
 		}else
 		{
-			xszero(longitude, LONGITUDE_SIZE);
+			xszero(longitude, MQ_LONGITUDE_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
 	#endif
 		}else
 		{
-			xszero(latitude, LATITUDE_SIZE);
+			xszero(latitude, MQ_LATITUDE_SIZE);
 		}
 
-		if (hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
+		if (hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
 		{
 #if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
 #else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
 #endif
 		}
 		else
 		{
-			xszero(altitude, ALTITUDE_SIZE);
+			xszero(altitude, MQ_ALTITUDE_SIZE);
 		}
 
 		parse_datetime(&dt, timestamp);
@@ -296,11 +296,11 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
 
-	tchar_t identify[IDENTIFY_SIZE + 1] = {0};
-	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
+	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = {0};
+	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
+	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
+	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
+	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
 
 	hex_obj_t hkv = NULL;
 
@@ -387,65 +387,65 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 
 		hdr_buf = buf + total;
 
-		if(hdr_len >= IDENTIFY_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(hdr_buf, IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+			utf8_to_ucs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
 	#else
-			utf8_to_mbs(hdr_buf, IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+			utf8_to_mbs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
 	#endif
 		}else
 		{
-			xszero(identify, IDENTIFY_SIZE);
+			xszero(identify, MQ_IDENTIFY_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
 	#endif
 		}else
 		{
-			xszero(timestamp, TIMESTAMP_SIZE);
+			xszero(timestamp, MQ_TIMESTAMP_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
 	#endif
 		}else
 		{
-			xszero(longitude, LONGITUDE_SIZE);
+			xszero(longitude, MQ_LONGITUDE_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
 	#endif
 		}else
 		{
-			xszero(latitude, LATITUDE_SIZE);
+			xszero(latitude, MQ_LATITUDE_SIZE);
 		}
 
-		if (hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
+		if (hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
 		{
 #if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
 #else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
 #endif
 		}
 		else
 		{
-			xszero(altitude, ALTITUDE_SIZE);
+			xszero(altitude, MQ_ALTITUDE_SIZE);
 		}
 
 		total += hdr_len;
@@ -462,23 +462,23 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_IDENTIFY, -1);
-		set_dom_node_text(nlk, identify, IDENTIFY_SIZE);
+		set_dom_node_text(nlk, identify, MQ_IDENTIFY_SIZE);
 		
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_TIMESTAMP, -1);
-		set_dom_node_text(nlk, timestamp, TIMESTAMP_SIZE);
+		set_dom_node_text(nlk, timestamp, MQ_TIMESTAMP_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_LONGITUDE, -1);
-		set_dom_node_text(nlk, longitude, LONGITUDE_SIZE);
+		set_dom_node_text(nlk, longitude, MQ_LONGITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_LATITUDE, -1);
-		set_dom_node_text(nlk, latitude, LATITUDE_SIZE);
+		set_dom_node_text(nlk, latitude, MQ_LATITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_ALTITUDE, -1);
-		set_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
+		set_dom_node_text(nlk, altitude, MQ_ALTITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_PACKSIZE, -1);
@@ -590,11 +590,11 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
 
-	tchar_t identify[IDENTIFY_SIZE + 1] = {0};
-	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
+	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = {0};
+	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
+	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
+	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
+	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
 	tchar_t *package = NULL;
 	int pkg_len;
 
@@ -682,65 +682,65 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 		hdr_buf = buf + total;
 
-		if(hdr_len >= IDENTIFY_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(hdr_buf, IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+			utf8_to_ucs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
 	#else
-			utf8_to_mbs(hdr_buf, IDENTIFY_SIZE, identify, IDENTIFY_SIZE);
+			utf8_to_mbs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
 	#endif
 		}else
 		{
-			xszero(identify, IDENTIFY_SIZE);
+			xszero(identify, MQ_IDENTIFY_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE, timestamp, TIMESTAMP_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
 	#endif
 		}else
 		{
-			xszero(timestamp, TIMESTAMP_SIZE);
+			xszero(timestamp, MQ_TIMESTAMP_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE, longitude, LONGITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
 	#endif
 		}else
 		{
-			xszero(longitude, LONGITUDE_SIZE);
+			xszero(longitude, MQ_LONGITUDE_SIZE);
 		}
 
-		if(hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE)
+		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE)
 		{
 	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
 	#else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE, latitude, LATITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
 	#endif
 		}else
 		{
-			xszero(latitude, LATITUDE_SIZE);
+			xszero(latitude, MQ_LATITUDE_SIZE);
 		}
 
-		if (hdr_len >= IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE + ALTITUDE_SIZE)
+		if (hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
 		{
 #if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
 #else
-			utf8_to_mbs((hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE, altitude, ALTITUDE_SIZE);
+			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
 #endif
 		}
 		else
 		{
-			xszero(altitude, ALTITUDE_SIZE);
+			xszero(altitude, MQ_ALTITUDE_SIZE);
 		}
 
 		total += hdr_len;
@@ -774,23 +774,23 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_TIMESTAMP, -1);
-		set_dom_node_text(nlk, timestamp, TIMESTAMP_SIZE);
+		set_dom_node_text(nlk, timestamp, MQ_TIMESTAMP_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_LONGITUDE, -1);
-		set_dom_node_text(nlk, longitude, LONGITUDE_SIZE);
+		set_dom_node_text(nlk, longitude, MQ_LONGITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_LATITUDE, -1);
-		set_dom_node_text(nlk, latitude, LATITUDE_SIZE);
+		set_dom_node_text(nlk, latitude, MQ_LATITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_ALTITUDE, -1);
-		set_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
+		set_dom_node_text(nlk, altitude, MQ_ALTITUDE_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_IDENTIFY, -1);
-		set_dom_node_text(nlk, identify, IDENTIFY_SIZE);
+		set_dom_node_text(nlk, identify, MQ_IDENTIFY_SIZE);
 
 		nlk = insert_dom_node(nlk_row, LINK_LAST);
 		set_dom_node_name(nlk, HL7_ELEMENT_PACKAGE, -1);
@@ -910,11 +910,11 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
 
-	tchar_t identify[IDENTIFY_SIZE + 1] = {0};
-	tchar_t timestamp[TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[ALTITUDE_SIZE + 1] = {0};
+	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = {0};
+	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
+	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
+	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
+	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
 	const tchar_t* package = NULL;
 	int pkg_len = 0;
 
@@ -993,11 +993,11 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	{
 		nlk = get_dom_first_child_node(nlk_row);
 		
-		xszero(identify, IDENTIFY_SIZE);
-		xszero(timestamp, TIMESTAMP_SIZE);
-		xszero(longitude, LONGITUDE_SIZE);
-		xszero(latitude, LATITUDE_SIZE);
-		xszero(altitude, ALTITUDE_SIZE);
+		xszero(identify, MQ_IDENTIFY_SIZE);
+		xszero(timestamp, MQ_TIMESTAMP_SIZE);
+		xszero(longitude, MQ_LONGITUDE_SIZE);
+		xszero(latitude, MQ_LATITUDE_SIZE);
+		xszero(altitude, MQ_ALTITUDE_SIZE);
 
 		package = NULL;
 		pkg_len = 0;
@@ -1006,20 +1006,20 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 		{
 			if (compare_text(get_dom_node_name_ptr(nlk), -1, HL7_ELEMENT_IDENTIFY, -1, 1) == 0)
 			{
-				get_dom_node_text(nlk, identify, IDENTIFY_SIZE);
+				get_dom_node_text(nlk, identify, MQ_IDENTIFY_SIZE);
 			}
 			else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_TIMESTAMP,-1,1) == 0)
 			{
-				get_dom_node_text(nlk, timestamp, TIMESTAMP_SIZE);
+				get_dom_node_text(nlk, timestamp, MQ_TIMESTAMP_SIZE);
 			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_LONGITUDE,-1,1) == 0)
 			{
-				get_dom_node_text(nlk, longitude, LONGITUDE_SIZE);
+				get_dom_node_text(nlk, longitude, MQ_LONGITUDE_SIZE);
 			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_LATITUDE,-1,1) == 0)
 			{
-				get_dom_node_text(nlk, latitude, LATITUDE_SIZE);
+				get_dom_node_text(nlk, latitude, MQ_LATITUDE_SIZE);
 			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_ALTITUDE,-1,1) == 0)
 			{
-				get_dom_node_text(nlk, altitude, ALTITUDE_SIZE);
+				get_dom_node_text(nlk, altitude, MQ_ALTITUDE_SIZE);
 			}
 			else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_PACKAGE,-1,1) == 0)
 			{
@@ -1052,18 +1052,18 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 		PUT_DWORD_NET((hl7_buf - 4), 0, len);
 
 #if defined(_UNICODE) || defined(UNICODE)
-		ucs_to_utf8(identify, IDENTIFY_SIZE, (hdr_buf), IDENTIFY_SIZE);
-		ucs_to_utf8(timestamp, TIMESTAMP_SIZE, (hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE);
-		ucs_to_utf8(longitude, LONGITUDE_SIZE, (hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE);
-		ucs_to_utf8(latitude, LATITUDE_SIZE, (hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE);
-		ucs_to_utf8(altitude, ALTITUDE_SIZE, (hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE);
+		ucs_to_utf8(identify, MQ_IDENTIFY_SIZE, (hdr_buf), MQ_IDENTIFY_SIZE);
+		ucs_to_utf8(timestamp, MQ_TIMESTAMP_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
+		ucs_to_utf8(longitude, MQ_LONGITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE);
+		ucs_to_utf8(latitude, MQ_LATITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE);
+		ucs_to_utf8(altitude, MQ_ALTITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE);
 		ucs_to_utf8(package, pkg_len, hl7_buf, len);
 #else
-		mbs_to_utf8(identify, IDENTIFY_SIZE, (hdr_buf), IDENTIFY_SIZE);
-		mbs_to_utf8(timestamp, TIMESTAMP_SIZE, (hdr_buf + IDENTIFY_SIZE), TIMESTAMP_SIZE);
-		mbs_to_utf8(longitude, LONGITUDE_SIZE, (hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE), LONGITUDE_SIZE);
-		mbs_to_utf8(latitude, LATITUDE_SIZE, (hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE), LATITUDE_SIZE);
-		mbs_to_utf8(altitude, ALTITUDE_SIZE, (hdr_buf + IDENTIFY_SIZE + TIMESTAMP_SIZE + LONGITUDE_SIZE + LATITUDE_SIZE), ALTITUDE_SIZE);
+		mbs_to_utf8(identify, MQ_IDENTIFY_SIZE, (hdr_buf), MQ_IDENTIFY_SIZE);
+		mbs_to_utf8(timestamp, MQ_TIMESTAMP_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
+		mbs_to_utf8(longitude, MQ_LONGITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE);
+		mbs_to_utf8(latitude, MQ_LATITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE);
+		mbs_to_utf8(altitude, MQ_ALTITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE);
 		mbs_to_utf8(package, pkg_len, hl7_buf, len);
 #endif
 
