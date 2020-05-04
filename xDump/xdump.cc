@@ -1,9 +1,10 @@
-// dicmdump.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+// dicmdump.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
 
 #include <stdio.h>
-#include <tchar.h>
+#ifdef _OS_WINDOWS
 #include <conio.h>
+#endif
 
 #include <xdl.h>
 #include <dicm.h>
@@ -14,7 +15,11 @@ static void usage()
 	_tprintf(_T("xDump [-dcm|-med] SourceFile(.dcm|.med) [TargetFile(.xml|.txt)]\n"));
 }
 
+#ifdef _OS_WINDOWS
 int _tmain(int argc, _TCHAR* argv[])
+#else
+int main(int argc, char* argv[])
+#endif
 {
 	tchar_t sz_src[PATH_LEN] = { 0 };
 	tchar_t sz_tag[INT_LEN] = { 0 };

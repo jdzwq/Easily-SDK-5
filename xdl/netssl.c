@@ -381,6 +381,8 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 		}
 	}
 
+	set_last_error(_T("_ssl_choose_cipher"), _T("unknown cipher"), -1);
+
 	return 0;
 }
 
@@ -506,6 +508,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		xmem_copy(pssl->iv_enc, keyblk + pssl->hash_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
 	}
 
+	//initialize encrypt and decrypt context
 	switch (pssl->cipher)
 	{
 	case SSL_RSA_RC4_128_MD5:
@@ -553,6 +556,14 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 {
 	int i, padlen;
 	byte_t* mac_buf;
+	byte_t iv_pre[SSL_IVC_SIZE] = {0};
+
+	/*
+	The MAC is generated as:
+       HMAC_hash(MAC_write_secret, seq_num + TLSCompressed.type +
+                     TLSCompressed.version + TLSCompressed.length +
+                     TLSCompressed.fragment));
+	*/
 
 	mac_buf = pssl->snd_msg + pssl->snd_msg_len;
 
@@ -568,6 +579,8 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		}
 		else
 		{
+			set_last_error(_T("_ssl_encrypt_snd_msg"), _T("unknown hmac function"), -1);
+
 			return C_ERR;
 		}
 	}
@@ -583,6 +596,8 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		}
 		else
 		{
+			set_last_error(_T("_ssl_encrypt_snd_msg"), _T("unknown hmac function"), -1);
+
 			return C_ERR;
 		}
 	}
@@ -629,6 +644,11 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 			*/
 		}
 
+		if (pssl->minor_ver == SSL_MINOR_VERSION_2)
+		{
+			xmem_copy((void*)iv_pre, (void*)pssl->iv_enc, pssl->iv_size);
+		}
+
 		switch (pssl->iv_size)
 		{
 		case  8:
@@ -642,7 +662,7 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		if (pssl->minor_ver == SSL_MINOR_VERSION_2)
 		{
 			xmem_move((void*)(pssl->snd_msg), pssl->snd_msg_len, pssl->iv_size);
-			xmem_copy((void*)(pssl->snd_msg), (void*)(pssl->iv_enc), pssl->iv_size);
+			xmem_copy((void*)(pssl->snd_msg), (void*)(iv_pre), pssl->iv_size);
 			pssl->snd_msg_len += pssl->iv_size;
 		}
 	}
@@ -668,6 +688,8 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 
 	if (pssl->rcv_msg_len < pssl->min_size)
 	{
+		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message length to small"), -1);
+
 		return C_ERR;
 	}
 
@@ -680,6 +702,8 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	{
 		if (pssl->rcv_msg_len % pssl->iv_size != 0)
 		{
+			set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message length not multiple of IV size"), -1);
+
 			return C_ERR;
 		}
 
@@ -723,6 +747,8 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 
 	if (pssl->iv_size != 0 && padlen == 0)
 	{
+		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("invalid message pading length"), -1);
+
 		return C_ERR;
 	}
 
@@ -749,6 +775,8 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 
 	if (xmem_comp(mac_tmp, pssl->hash_size, mac_buf, pssl->hash_size) != 0)
 	{
+		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message signature hash not matched"), -1);
+
 		return C_ERR;
 	}
 
@@ -786,7 +814,7 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 		sha1_update(&pssl->sha1, pssl->snd_msg, SSL_HSH_SIZE + haslen);
 	}
 
-	if (pssl->crypted != 0)
+	if (pssl->crypted)
 	{
 		if (C_OK != _ssl_encrypt_snd_msg(pssl))
 		{
@@ -885,17 +913,17 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
     
     if(!dw)
     {
-        raise_user_error(_T("0"), _T("ssl read msg failed"));
+        raise_user_error(_T("_ssl_read_rcv_msg"), _T("ssl read msg failed"));
     }
 
 	if (pssl->rcv_hdr[1] != SSL_MAJOR_VERSION_3)
 	{
-		raise_user_error(_T("0"), _T("major version mismatch"));
+		raise_user_error(_T("_ssl_read_rcv_msg"), _T("major version mismatch"));
 	}
 
 	if (pssl->rcv_hdr[2] > SSL_MINOR_VERSION_3)
 	{
-		raise_user_error(_T("0"), _T("minor version mismatch"));
+		raise_user_error(_T("_ssl_read_rcv_msg"), _T("minor version mismatch"));
 	}
 
 	pssl->rcv_msg_type = GET_BYTE(pssl->rcv_hdr, 0);
@@ -903,7 +931,7 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 
 	if (pssl->rcv_msg_len < 1 || pssl->rcv_msg_len > SSL_MAX_SIZE)
 	{
-		raise_user_error(_T("0"), _T("invalid message block length"));
+		raise_user_error(_T("_ssl_read_rcv_msg"), _T("invalid message block length"));
 	}
 
 	dw = pssl->rcv_msg_len;
@@ -922,7 +950,7 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 
 		if (pssl->rcv_msg[0] == SSL_ALERT_FATAL)
 		{
-			raise_user_error(_T("0"), _T("fatal alert message"));
+			raise_user_error(_T("_ssl_read_rcv_msg"), _T("fatal alert message"));
 		}
 
 		if (pssl->rcv_msg[0] == SSL_ALERT_WARNING && pssl->rcv_msg[1] == SSL_ALERT_CLOSE_NOTIFY)
@@ -974,7 +1002,7 @@ static bool_t _ssl_read_data(ssl_t* pssl, byte_t* buf, int* need)
 		
 		if (pssl->rcv_msg_len && pssl->rcv_msg_type != SSL_MSG_APPLICATION_DATA)
 		{
-			set_last_error(_T("0"), _T("not application data"), -1);
+			set_last_error(_T("_ssl_read_data"), _T("not application data"), -1);
 			return 0;
 		}
 	}
@@ -1133,19 +1161,19 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_SERVER_HELLO)
 	{
-		set_last_error(_T("0"), _T("not handshake message"), -1);
+		set_last_error(_T("_ssl_parse_server_hello"), _T("not handshake message"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (pssl->rcv_msg[4] != SSL_MAJOR_VERSION_3 || pssl->rcv_msg[5] > SSL_MINOR_VERSION_3)
 	{
-		set_last_error(_T("0"), _T("handshake hello message version checked failed"), -1);
+		set_last_error(_T("_ssl_parse_server_hello"), _T("handshake hello message version checked failed"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (pssl->rcv_msg_len < 38)
 	{
-		set_last_error(_T("0"), _T("handshake hello message block too short"), -1);
+		set_last_error(_T("_ssl_parse_server_hello"), _T("handshake hello message block too short"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1158,7 +1186,7 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 
 	if (pssl->cli_major_ver != pssl->srv_major_ver)
 	{
-		set_last_error(_T("0"), _T("handshake major version mistach"), -1);
+		set_last_error(_T("_ssl_parse_server_hello"), _T("handshake major version mistach"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1189,7 +1217,7 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 
 		if (!_ssl_choose_cipher(pssl, ciph))
 		{
-			set_last_error(_T("0"), _T("unknown cipher type"), -1);
+			set_last_error(_T("_ssl_parse_server_hello"), _T("unknown cipher type"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 	}
@@ -1215,7 +1243,7 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 
 	if (haslen + SSL_HSH_SIZE != msglen)
 	{
-		set_last_error(_T("0"), _T("invalid server hello message session block"), -1);
+		set_last_error(_T("_ssl_parse_server_hello"), _T("invalid server hello message session block"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1250,7 +1278,7 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_CERTIFICATE)
 	{
-		set_last_error(_T("0"), _T("invalid certificate message type"), -1);
+		set_last_error(_T("_ssl_parse_server_certificate"), _T("invalid certificate message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1262,7 +1290,7 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 
 	if (haslen != 3 + crtlen)
 	{
-		set_last_error(_T("0"), _T("invalid certificate block size"), -1);
+		set_last_error(_T("_ssl_parse_server_certificate"), _T("invalid certificate block size"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1276,13 +1304,13 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 
 		if (n < 128 || n > crtlen)
 		{
-			set_last_error(_T("0"), _T("invalid certificate size"), -1);
+			set_last_error(_T("_ssl_parse_server_certificate"), _T("invalid certificate size"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
 		if (C_OK != x509parse_crt(pssl->crt_pe, pssl->rcv_msg + msglen, n))
 		{
-			set_last_error(_T("0"), _T("invalid certificate context"), -1);
+			set_last_error(_T("_ssl_parse_server_certificate"), _T("invalid certificate context"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -1294,7 +1322,7 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 	{
 		if (pssl->crt_ca == NULL)
 		{
-			set_last_error(_T("0"), _T("CA chian empty"), -1);
+			set_last_error(_T("_ssl_parse_server_certificate"), _T("CA chian empty"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -1305,7 +1333,7 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 
 		if (C_OK != x509parse_verify(pssl->crt_pe, pssl->crt_ca, pssl->peer_cn, &ret))
 		{
-			set_last_error(_T("0"), _T("certificate verify failed"), -1);
+			set_last_error(_T("_ssl_parse_server_certificate"), _T("certificate verify failed"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 	}
@@ -1367,19 +1395,19 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 
 	if (C_OK != dhm_read_params(pssl->dhm_ow, &p, end) != 0)
 	{
-		set_last_error(_T("0"), _T("invalid server key exchange message context"), -1);
+		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (pssl->dhm_ow->len < 64 || pssl->dhm_ow->len > 256)
 	{
-		set_last_error(_T("0"), _T("invalid server key exchange message context length"), -1);
+		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context length"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if ((int)(end - p) != pssl->crt_pe->rsa.len)
 	{
-		set_last_error(_T("0"), _T("invalid server key exchange message context rsa key"), -1);
+		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context rsa key"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1399,7 +1427,7 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 
 	if (C_OK != rsa_pkcs1_verify(&pssl->crt_pe->rsa, RSA_PUBLIC, RSA_RAW, 36, hash, p))
 	{
-		set_last_error(_T("0"), _T("invalid server key exchange message context verify"), -1);
+		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context verify"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1435,7 +1463,7 @@ static int _ssl_parse_server_certificate_request(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE)
 	{
-		set_last_error(_T("0"), _T("invalid certificate request message type"), -1);
+		set_last_error(_T("_ssl_parse_server_certificate_request"), _T("invalid certificate request message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1466,13 +1494,13 @@ static int _ssl_parse_server_certificate_request(ssl_t *pssl)
 
 		if (n > crtlen)
 		{
-			set_last_error(_T("0"), _T("invalid certificate size"), -1);
+			set_last_error(_T("_ssl_parse_server_certificate_request"), _T("invalid certificate size"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
 		if (C_OK != x509parse_crt(pssl->crt_ca, pssl->rcv_msg + msglen, n))
 		{
-			set_last_error(_T("0"), _T("invalid certificate context"), -1);
+			set_last_error(_T("_ssl_parse_server_certificate_request"), _T("invalid certificate context"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -1501,14 +1529,14 @@ static int _ssl_parse_server_hello_done(ssl_t *pssl)
 
 		if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE)
 		{
-			set_last_error(_T("0"), _T("not handshake message"), -1);
+			set_last_error(_T("_ssl_parse_server_hello_done"), _T("not handshake message"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 	}
 
 	if (pssl->rcv_msg[0] != SSL_HS_SERVER_HELLO_DONE)
 	{
-		set_last_error(_T("0"), _T("invalid server hello message type"), -1);
+		set_last_error(_T("_ssl_parse_server_hello_done"), _T("invalid server hello message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1559,7 +1587,7 @@ static handshake_states _ssl_write_client_certificate(ssl_t *pssl)
 		n = crt->raw.len;
 		if (msglen + 3 + n > SSL_PKG_SIZE)
 		{
-			set_last_error(_T("0"), _T("message package overwrited"), -1);
+			set_last_error(_T("_ssl_write_client_certificate"), _T("message package overwrited"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -1629,6 +1657,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 
 		if (C_OK != dhm_make_public(pssl->dhm_ow, 256, pssl->snd_msg + msglen, &n, havege_rand, &pssl->rng))
 		{
+			set_last_error(_T("_ssl_write_client_key_exchange"), _T("make public dhm error"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 		msglen += n;
@@ -1640,6 +1669,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 
 		if (C_OK != dhm_calc_secret(pssl->dhm_ow, premaster, &prelen))
 		{
+			set_last_error(_T("_ssl_write_client_key_exchange"), _T("cacl dhm secret error"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 	}
@@ -1671,6 +1701,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 
 		if (C_OK != rsa_pkcs1_encrypt(&pssl->crt_pe->rsa, RSA_PUBLIC, prelen, premaster, pssl->snd_msg + msglen))
 		{
+			set_last_error(_T("_ssl_write_client_key_exchange"), _T("rsa encrypt pre master secret error"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 		msglen += n;
@@ -1712,7 +1743,7 @@ static int _ssl_write_client_certificate_verify(ssl_t *pssl)
 	
 	if (pssl->rsa_ow == NULL)
 	{
-		set_last_error(_T("0"), _T("no private key"), -1);
+		set_last_error(_T("_ssl_write_client_certificate_verify"), _T("no private key"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1761,6 +1792,7 @@ static int _ssl_write_client_certificate_verify(ssl_t *pssl)
 
 	if (C_OK != rsa_pkcs1_sign(pssl->rsa_ow, RSA_PRIVATE, RSA_RAW, 36, hash, pssl->snd_msg + msglen))
 	{
+		set_last_error(_T("_ssl_write_client_certificate_verify"), _T("rsa signature hash error"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 	msglen += n;
@@ -1895,13 +1927,13 @@ static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_CHANGE_CIPHER_SPEC)
 	{
-		set_last_error(_T("0"), _T("invalid change cipher spec message type"), -1);
+		set_last_error(_T("_ssl_parse_server_change_cipher_spec"), _T("invalid change cipher spec message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (pssl->rcv_msg_len != 1 || pssl->rcv_msg[0] != 1)
 	{
-		set_last_error(_T("0"), _T("invalid change cipher spec message context"), -1);
+		set_last_error(_T("_ssl_parse_server_change_cipher_spec"), _T("invalid change cipher spec message context"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1976,13 +2008,13 @@ static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_FINISHED)
 	{
-		set_last_error(_T("0"), _T("invalid finished message type"), -1);
+		set_last_error(_T("_ssl_parse_server_finished"), _T("invalid finished message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (xmem_comp(pssl->rcv_msg + SSL_HSH_SIZE, hash_len, mac_buf, hash_len) != 0)
 	{
-		set_last_error(_T("0"), _T("invalid finished message hash"), -1);
+		set_last_error(_T("_ssl_parse_server_finished"), _T("invalid finished message hash"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2126,14 +2158,14 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	if (pssl->rcv_msg[0] != SSL_HS_CLIENT_HELLO || pssl->rcv_msg[4] != SSL_MAJOR_VERSION_3)
 	{
-		set_last_error(_T("0"), _T("invalid client hello message"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("invalid client hello message"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	haslen = GET_THREEBYTE_LEN(pssl->rcv_msg, 1);
 	if (pssl->rcv_msg_len != SSL_HSH_SIZE + haslen)
 	{
-		set_last_error(_T("0"), _T("invalid client hello message length"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("invalid client hello message length"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2145,7 +2177,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	if (pssl->srv_major_ver != pssl->cli_major_ver)
 	{
-		set_last_error(_T("0"), _T("handshake major version mistech"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("handshake major version mistech"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2160,7 +2192,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	if (seslen < 0 || seslen > 32)
 	{
-		set_last_error(_T("0"), _T("invalid client hello session id length"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("invalid client hello session id length"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2172,7 +2204,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	if (ciphlen < 2 || ciphlen > 256 || (ciphlen % 2) != 0)
 	{
-		set_last_error(_T("0"), _T("invalid client hello session cipher list length"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("invalid client hello session cipher list length"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2195,7 +2227,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	if (!_ssl_choose_cipher(pssl, ciph))
 	{
-		set_last_error(_T("0"), _T("unknown cipher type"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("unknown cipher type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2204,7 +2236,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	if (complen < 1 || complen > 16)
 	{
-		set_last_error(_T("0"), _T("invalid client hello session compress length"), -1);
+		set_last_error(_T("_ssl_parse_client_hello"), _T("invalid client hello session compress length"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2297,7 +2329,7 @@ static handshake_states _ssl_write_server_certificate(ssl_t *pssl)
 
 	if (pssl->crt_ow == NULL)
 	{
-		set_last_error(_T("0"), _T("empty server certificate"), -1);
+		set_last_error(_T("_ssl_write_server_certificate"), _T("empty server certificate"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2320,7 +2352,7 @@ static handshake_states _ssl_write_server_certificate(ssl_t *pssl)
 		n = crt->raw.len;
 		if (msglen + 3 + n > SSL_PKG_SIZE)
 		{
-			set_last_error(_T("0"), _T("message package overwrited"), -1);
+			set_last_error(_T("_ssl_write_server_certificate"), _T("message package overwrited"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -2392,7 +2424,7 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	n = 0;
 	if (C_OK != dhm_make_params(pssl->dhm_ow, 256, pssl->snd_msg + msglen, &n, havege_rand, &pssl->rng))
 	{
-		set_last_error(_T("0"), _T("make dhm params faild"), -1);
+		set_last_error(_T("_ssl_write_server_key_exchange"), _T("make dhm params faild"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 	msglen += n;
@@ -2427,7 +2459,7 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	
 	if(C_OK != rsa_pkcs1_sign(pssl->rsa_ow, RSA_PRIVATE, RSA_RAW, 36, hash, pssl->snd_msg + msglen))
 	{
-		set_last_error(_T("0"), _T("rsa pkcs1 sign failed"), -1);
+		set_last_error(_T("_ssl_write_server_key_exchange"), _T("rsa pkcs1 sign failed"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 	msglen += pssl->rsa_ow->len;
@@ -2561,7 +2593,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 			}
 			else
 			{
-				set_last_error(_T("0"), _T("client has no certificate"), -1);
+				set_last_error(_T("_ssl_parse_client_certificate"), _T("client has no certificate"), -1);
 				return SSL_HANDSHAKE_ERROR;
 			}
 		}
@@ -2572,7 +2604,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 		{
 			if (pssl->verify_server == SSL_VERIFY_REQUIRED)
 			{
-				set_last_error(_T("0"), _T("client has no certificate"), -1);
+				set_last_error(_T("_ssl_parse_client_certificate"), _T("client has no certificate"), -1);
 				return SSL_HANDSHAKE_ERROR;
 			}
 			else
@@ -2592,7 +2624,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_CERTIFICATE)
 	{
-		set_last_error(_T("0"), _T("invalid certificate message type"), -1);
+		set_last_error(_T("_ssl_parse_client_certificate"), _T("invalid certificate message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2604,7 +2636,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 
 	if (haslen != 3 + crtlen)
 	{
-		set_last_error(_T("0"), _T("invalid certificate block size"), -1);
+		set_last_error(_T("_ssl_parse_client_certificate"), _T("invalid certificate block size"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2618,13 +2650,13 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 
 		if (n < 128 || n > crtlen)
 		{
-			set_last_error(_T("0"), _T("invalid certificate size"), -1);
+			set_last_error(_T("_ssl_parse_client_certificate"), _T("invalid certificate size"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
 		if (C_OK != x509parse_crt(pssl->crt_pe, pssl->rcv_msg + msglen, n))
 		{
-			set_last_error(_T("0"), _T("invalid certificate context"), -1);
+			set_last_error(_T("_ssl_parse_client_certificate"), _T("invalid certificate context"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -2636,7 +2668,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 	{
 		if (pssl->crt_ca == NULL)
 		{
-			set_last_error(_T("0"), _T("CA chian empty"), -1);
+			set_last_error(_T("_ssl_parse_client_certificate"), _T("CA chian empty"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -2644,7 +2676,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 		{
 			if (pssl->verify_server == SSL_VERIFY_REQUIRED)
 			{
-				set_last_error(_T("0"), _T("certificate verify failed"), -1);
+				set_last_error(_T("_ssl_parse_client_certificate"), _T("certificate verify failed"), -1);
 				return SSL_HANDSHAKE_ERROR;
 			}
 		}
@@ -2677,7 +2709,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_CLIENT_KEY_EXCHANGE)
 	{
-		set_last_error(_T("0"), _T("invalid client key exchange message type"), -1);
+		set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2693,13 +2725,13 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 		//if (n < 1 || n > pssl->dhm_ow->len || n + 2 != haslen) //key size maybe changed
 		if (n < 1 || n + 2 != haslen)
 		{
-			set_last_error(_T("0"), _T("invalid client key exchange length"), -1);
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange length"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
 		if (C_OK != dhm_read_public(pssl->dhm_ow, pssl->rcv_msg + msglen, n))
 		{
-			set_last_error(_T("0"), _T("invalid client key exchange context"), -1);
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange context"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -2707,7 +2739,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 
 		if (C_OK != dhm_calc_secret(pssl->dhm_ow, premaster, &prelen))
 		{
-			set_last_error(_T("0"), _T("create premaster failed"), -1);
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("create premaster failed"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 	}
@@ -2723,7 +2755,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 
 			if (n != pssl->rsa_ow->len)
 			{
-				set_last_error(_T("0"), _T("invalid client key exchange key length"), -1);
+				set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange key length"), -1);
 				return SSL_HANDSHAKE_ERROR;
 			}
 		}
@@ -2734,13 +2766,13 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 
 		if (haslen != 2 + n)
 		{
-			set_last_error(_T("0"), _T("invalid client key exchange key length"), -1);
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange key length"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
 		if (C_OK != rsa_pkcs1_decrypt(pssl->rsa_ow, RSA_PRIVATE, &prelen, pssl->rcv_msg + msglen, premaster))
 		{
-			set_last_error(_T("0"), _T("decrypt client key exchange key failed"), -1);
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("decrypt client key exchange key failed"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
 
@@ -2820,7 +2852,7 @@ static handshake_states _ssl_parse_client_certificate_verify(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_CERTIFICATE_VERIFY)
 	{
-		set_last_error(_T("0"), _T("invalid certificate verify message type"), -1);
+		set_last_error(_T("_ssl_parse_client_certificate_verify"), _T("invalid certificate verify message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2832,13 +2864,13 @@ static handshake_states _ssl_parse_client_certificate_verify(ssl_t *pssl)
 
 	if (n + 2 != haslen || n != pssl->crt_pe->rsa.len)
 	{
-		set_last_error(_T("0"), _T("invalid certificate verify message length"), -1);
+		set_last_error(_T("_ssl_parse_client_certificate_verify"), _T("invalid certificate verify message length"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if(C_OK != rsa_pkcs1_verify(&pssl->crt_pe->rsa, RSA_PUBLIC, RSA_RAW, 36, hash, pssl->rcv_msg + msglen))
 	{
-		set_last_error(_T("0"), _T("invalid certificate verify message context"), -1);
+		set_last_error(_T("_ssl_parse_client_certificate_verify"), _T("invalid certificate verify message context"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2863,13 +2895,13 @@ static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_CHANGE_CIPHER_SPEC)
 	{
-		set_last_error(_T("0"), _T("invalid change cipher spec message type"), -1);
+		set_last_error(_T("_ssl_parse_client_change_cipher_spec"), _T("invalid change cipher spec message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (pssl->rcv_msg_len != 1 || pssl->rcv_msg[0] != 1)
 	{
-		set_last_error(_T("0"), _T("invalid change cipher spec message context"), -1);
+		set_last_error(_T("_ssl_parse_client_change_cipher_spec"), _T("invalid change cipher spec message context"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -2944,13 +2976,13 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 
 	if (pssl->rcv_msg_type != SSL_MSG_HANDSHAKE || pssl->rcv_msg[0] != SSL_HS_FINISHED)
 	{
-		set_last_error(_T("0"), _T("invalid finished message type"), -1);
+		set_last_error(_T("_ssl_parse_client_finished"), _T("invalid finished message type"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
 	if (xmem_comp(pssl->rcv_msg + SSL_HSH_SIZE, hash_len, mac_buf, hash_len) != 0)
 	{
-		set_last_error(_T("0"), _T("invalid finished message hash"), -1);
+		set_last_error(_T("_ssl_parse_client_finished"), _T("invalid finished message hash"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
