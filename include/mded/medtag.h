@@ -54,6 +54,8 @@ typedef struct _med_gruop_t{
 extern "C" {
 #endif
 
+	EXP_API const med_item_t* med_item_info_by_name(const tchar_t* iname);
+
 	EXP_API const med_item_t* med_item_info(dword_t tag);
 
 	EXP_API const med_group_t* med_group_info(dword_t tag);
