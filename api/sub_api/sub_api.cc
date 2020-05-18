@@ -29,8 +29,6 @@ typedef struct _mqtt_block_t{
 
 	tchar_t topic_name[PATH_LEN];
 
-	hex_obj_t hdb;
-
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
 
@@ -38,39 +36,96 @@ typedef struct _mqtt_block_t{
 	tchar_t text[ERR_LEN + 1];
 }mqtt_block_t;
 
+static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_t* pid)
+{
+	const tchar_t* token = topic;
+	int len;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(cid, token - len, len);
+
+	if (*token != _T('\0'))
+		token++;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(did, token - len, len);
+
+	if (*token != _T('\0'))
+		token++;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(pid, token - len, len);
+}
+
 void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 	object_t val = NULL;
 	int encode;
 	byte_t* buf = NULL;
-	dword_t len;
 	dword_t total = 0;
-
-	byte_t* msg_buf;
-	dword_t msg_len;
-	byte_t* han_buf;
-	sword_t han_len;
-	byte_t* hdr_buf;
-	sword_t hdr_len;
+	dword_t obj_len;
 	byte_t* sub_buf;
 	dword_t sub_len;
+	byte_t* han_buf;
+	sword_t han_len;
+	byte_t* msg_buf;
+	dword_t msg_len;
 
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
 	byte_t ver[5] = { 0 };
 	MQTT_PACKET_CTRL mc = { 0 };
 
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
+
 	TRY_CATCH;
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_publish"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_subcribe"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_subcribe"), _T("create hexdb kv entity falied"));
 	}
 
+	if (is_null(pid))
+	{
+		xscpy(pid, SUB_TOPIC_CONFIG);
+	}
+
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -78,62 +133,58 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 
 	encode = object_get_encode(val);
 
-	len = object_get_bytes(val, NULL, MAX_LONG);
+	obj_len = object_get_bytes(val, NULL, MAX_LONG);
 
-	buf = (byte_t*)xmem_alloc(len);
+	buf = (byte_t*)xmem_alloc(obj_len);
 
-	object_get_bytes(val, buf, len);
+	object_get_bytes(val, buf, obj_len);
 
-	while (total < len)
+	while (total < obj_len)
 	{
-		//the message total size
-		msg_buf = buf + total + 4;
-		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
-		if (msg_len > MAX_LONG)
+		//the object size
+		sub_buf = buf + total + 4;
+		sub_len = GET_DWORD_NET((sub_buf - 4), 0);
+		if (sub_len > MAX_LONG)
 		{
 			raise_user_error(_T("_invoke_subcribe"), _T("invalid message total size"));
 		}
+		total += 4;
 
 		xmem_set((void*)&mc, 0, sizeof(MQTT_PACKET_CTRL));
 
-		//the message handler
-		han_buf = msg_buf + 2;
+		//the object handler
+		han_buf = sub_buf + 2;
 		han_len = GET_SWORD_NET((han_buf - 2), 0);
 		if (han_len > MAX_SHORT)
 		{
 			raise_user_error(_T("_invoke_subcribe"), _T("invalid message handler size"));
 		}
+		total += 2;
 		xmem_copy((void*)ver, han_buf, SUBVER_SIZE);
 		if (ver[0] == 'M' && ver[1] == 'Q')
 		{
 			mc.packet_qos = (byte_t)GET_SWORD_NET(han_buf, 4);
 			mc.packet_pid = GET_SWORD_NET(han_buf, 6);
 		}
+		total += han_len;
 
-		//the message header
-		hdr_buf = han_buf + han_len + 2;
-		hdr_len = GET_SWORD_NET((hdr_buf - 2), 0);
-		if (hdr_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_subcribe"), _T("invalid message header size"));
-		}
-
-		//the message element
-		sub_buf = hdr_buf + hdr_len + 4;
-		sub_len = GET_DWORD_NET((sub_buf - 4), 0);
-		if (sub_len > MAX_LONG)
+		//the object message
+		msg_buf = han_buf + han_len + 4;
+		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
+		if (msg_len > MAX_LONG)
 		{
 			raise_user_error(_T("_invoke_subcribe"), _T("invalid message element size"));
 		}
+		total += 4;
 
 		xmqtt_set_packet_ctrl(pd->mqtt, &mc);
 
-		if (!xmqtt_push_message(pd->mqtt, sub_buf, sub_len))
+		if (!xmqtt_push_message(pd->mqtt, msg_buf, msg_len))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		total += (4 + msg_len);
+		total += msg_len;
 	}
 
 	xmem_free(buf);
@@ -145,6 +196,9 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 
 	hexkv_destroy(hkv);
 	hkv = NULL;
+
+	hexdb_destroy(hdb);
+	hdb = NULL;
 
 	xscpy(pd->code, _T("_invoke_subcribe"));
 	xscpy(pd->text, _T("Succeeded"));
@@ -167,6 +221,9 @@ ONERROR:
 	if (hkv)
 		hexkv_destroy(hkv);
 
+	if (hdb)
+		hexdb_destroy(hdb);
+
 	return;
 }
 
@@ -174,18 +231,43 @@ void _invoke_unsubcribe(const slots_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
 
 	TRY_CATCH;
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_unsubcribe"), _T("unknown kv database"));
+	}
+
+	if (is_null(pid))
+	{
+		raise_user_error(_T("_invoke_unsubcribe"), _T("unknown topic"));
+	}
+
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_unsubcribe"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_unsubcribe"), _T("create hexdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	hexkv_delete(hkv, key);
 
@@ -248,12 +330,6 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	printf_path(pd->local, file);
 
-	pd->hdb = hexdb_create(pd->local, token);
-	if (!pd->hdb)
-	{
-		raise_user_error(_T("-1"), _T("open database failed"));
-	}
-
 	pd->mqtt = xmqtt_scp(pb->slot, _MQTT_TYPE_SCP_SUB);
 	if (!pd->mqtt)
 	{
@@ -278,9 +354,6 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 	
 	xmqtt_close(pd->mqtt);
 	pd->mqtt = NULL;
-
-	hexdb_destroy(pd->hdb);
-	pd->hdb = NULL;
 
 	if (pb->pf_track_eror)
 	{
@@ -310,9 +383,6 @@ ONERROR:
 
 		if (pd->mqtt)
 			xmqtt_close(pd->mqtt);
-
-		if (pd->hdb)
-			hexdb_destroy(pd->hdb);
 
 		xmem_free(pd);
 	}

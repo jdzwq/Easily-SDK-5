@@ -29,10 +29,10 @@ LICENSE.GPL3 for more details.
 #include <hexdfs.h>
 
 #define PUBVER	"MQ11"
-#define PUBVER_SIZE			4
-#define PUBHANDER_SIZE		8
+#define PUBVER_SIZE		4
+#define PUBHAN_SIZE		32
 
-#define PUBHEADER_SIZE		60
+#define PUB_TOPIC_CONFIG	_T("config")
 
 #ifdef	__cplusplus
 extern "C" {

@@ -350,6 +350,7 @@
     <ClInclude Include="..\..\xdl\windows\_cfg_win32.h" />
     <ClInclude Include="..\..\xdl\wordstable.h" />
     <ClInclude Include="..\..\xdl\wsdldoc.h" />
+    <ClInclude Include="..\..\xdl\xdlblock.h" />
     <ClInclude Include="..\..\xdl\xdldef.h" />
     <ClInclude Include="..\..\xdl\xdldoc.h" />
     <ClInclude Include="..\..\xdl\xdlesc.h" />
@@ -547,6 +548,7 @@
     <ClCompile Include="..\..\xdl\vector.c" />
     <ClCompile Include="..\..\xdl\wordstable.c" />
     <ClCompile Include="..\..\xdl\wsdldoc.c" />
+    <ClCompile Include="..\..\xdl\xdlblock.c" />
     <ClCompile Include="..\..\xdl\xdlesc.c" />
     <ClCompile Include="..\..\xdl\xdletag.c" />
     <ClCompile Include="..\..\xdl\xdlexp.c" />

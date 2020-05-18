@@ -114,6 +114,22 @@ dword_t bytes_size(byte_t** pp)
 	return pb->size;
 }
 
+void bytes_copy(byte_t** pp, dword_t pos, byte_t* sub, dword_t* plen)
+{
+	bytes_t* pb;
+	dword_t n;
+
+	XDL_ASSERT(pp != NULL);
+
+	pb = (bytes_t*)(pp);
+
+	XDL_ASSERT(pos <= pb->size);
+
+	n = (*plen < (pb->size - pos)) ? (*plen) : (pb->size - pos);
+	xmem_copy((void*)sub, (void*)(pb->memo + pos), n);
+	*plen = n;
+}
+
 void bytes_insert(byte_t** pp, dword_t pos, const byte_t* sub, dword_t len)
 {
 	bytes_t* pb;

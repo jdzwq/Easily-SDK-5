@@ -269,10 +269,6 @@ int main()
     
     xdl_process_uninit();
     
-#ifdef _OS_WINDOWS
-    getch();
-#endif
-    
     return 0;
 }
 

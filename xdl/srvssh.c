@@ -112,9 +112,13 @@ static unsigned STDCALL thread_dispatch(void* param)
 
 	ssh = xssh_srv(so);
 
-	(*pf_dispatch)(ssh, pf_param);
+	if (ssh && pf_dispatch)
+	{
+		(*pf_dispatch)(ssh, pf_param);
+	}
 
-	xssh_close(ssh);
+	if (ssh)
+		xssh_close(ssh);
 
 	socket_close(so);
 

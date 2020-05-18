@@ -112,9 +112,13 @@ static unsigned STDCALL thread_dispatch(void* param)
     
     tcp = xtcp_srv(so);
 
-	(*pf_dispatch)(tcp, pf_param);
+	if (tcp && pf_dispatch)
+	{
+		(*pf_dispatch)(tcp, pf_param);
+	}
 
-	xtcp_close(tcp);
+	if (tcp)
+		xtcp_close(tcp);
 
 	socket_close(so);
 

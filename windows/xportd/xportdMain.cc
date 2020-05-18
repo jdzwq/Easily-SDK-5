@@ -183,7 +183,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	_CrtMemCheckpoint(&s_begin);
 	#endif*/
 
-	xdl_process_init(XDL_APARTMENT_THREAD & XDL_INITIALIZE_SERVER);
+	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_SERVER);
 
 	hWnd = CreateWindow(_T("XPORTDCLASS"), NULL, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
 	if (!hWnd)

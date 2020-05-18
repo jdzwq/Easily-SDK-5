@@ -52,6 +52,12 @@ LICENSE.GPL3 for more details.
 #define SSL_ALERT_FATAL                 2
 #define SSL_ALERT_NO_CERTIFICATE       41
 
+#define SSL_EXTENSION_SERVERNAME		0
+#define SSL_EXTENSION_SIGNATUREANDHASHALGORITHM	13
+
+#define SSL_CERTIFICATE_TYPE_RSA		1
+
+
 #define SSL_HS_HELLO_REQUEST            0
 #define SSL_HS_CLIENT_HELLO             1
 #define SSL_HS_SERVER_HELLO             2
@@ -63,13 +69,32 @@ LICENSE.GPL3 for more details.
 #define SSL_HS_CLIENT_KEY_EXCHANGE     16
 #define SSL_HS_FINISHED                20
 
-#define SSL_RSA_RC4_128_MD5              4
-#define SSL_RSA_RC4_128_SHA              5
-#define SSL_RSA_DES_168_SHA             10
-#define SSL_EDH_RSA_DES_168_SHA         22
-#define SSL_RSA_AES_128_SHA             47
-#define SSL_RSA_AES_256_SHA             53
-#define SSL_EDH_RSA_AES_256_SHA         57
+#define SSL_RSA_RC4_128_MD5             0x04
+#define SSL_RSA_RC4_128_SHA             0x05
+#define SSL_RSA_DES_168_SHA             0x0A
+#define SSL_EDH_RSA_DES_168_SHA         0x16
+#define SSL_RSA_AES_128_SHA             0x2F
+#define SSL_RSA_AES_256_SHA             0x37
+#define SSL_EDH_RSA_AES_256_SHA         0x39
+#define SSL_RSA_AES_128_SHA256          0x3C   /* TLS 1.2 */
+#define SSL_RSA_AES_256_SHA256          0x3D   /* TLS 1.2 */
+
+typedef enum {
+	ALG_HASH_NONE = 0,
+	ALG_HASH_MD5 = 1,
+	ALG_HASH_SHA1 = 2,
+	ALG_HASH_SHA224 = 3,
+	ALG_HASH_SHA256 = 4,
+	ALG_HASH_SHA384 = 5,
+	ALG_HASH_SHA512 =6
+}HashAlgorithm;
+
+typedef enum {
+	ALG_SIGN_NONE = 0,
+	ALG_SIGN_RSA = 1,
+	ALG_SIGN_DSA = 2,
+	ALG_SIG_ECDSA = 3
+}SignatureAlgorithm;
 
 #define SSL_VERIFY_NONE                 0
 #define SSL_VERIFY_OPTIONAL             1
@@ -107,11 +132,12 @@ typedef enum
 #define SSL_HSH_SIZE		4	//handshake header size
 #define SSL_RND_SIZE		32	//radom byte size
 #define SSL_MST_SIZE		48	//master scret byte size
-#define SSL_MAC_SIZE		20	//mac byte size
-#define SSL_IVC_SIZE		16	//iv code size
 #define SSL_SES_SIZE		32	//session id size
 #define SSL_CTX_SIZE		128	//encrypt/decrypt context size
 #define SSL_BLK_SIZE		256	//key block size
+#define SSL_FIN_SIZE		12 //finished hash size
+#define SSL_MAX_MAC			64	//mac byte size(16, 20 , 32, 64)
+#define SSL_MAX_IVC			16	//iv code size(8, 16)
 
 #define SSL_PKG_SIZE		16384
 #define SSL_MAX_SIZE		(SSL_PKG_SIZE + 512)

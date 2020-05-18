@@ -1378,11 +1378,26 @@ void parse_datetime(xdate_t* pmd, const tchar_t* text)
 	}
 
 	pmd->sec = xstos(token);
+	if (*tmp == _T('\0') || i == 0)
+		return;
+
+	while ((*tmp < _T('0') || *tmp > _T('9')) && *tmp != _T('\0'))
+		tmp++;
+
+	i = 0;
+	token[i] = _T('\0');
+	while (*tmp != _T('\0') && *tmp >= _T('0') && *tmp <= _T('9') && i < 3)
+	{
+		token[i++] = *tmp;
+		token[i] = _T('\0');
+		tmp++;
+	}
+	pmd->millsec = xstos(token);
 }
 
 int format_utctime(const xdate_t* pdt, tchar_t* buf)
 {
-	return xsprintf(buf, _T("%d-%02d-%02dT%02d:%02d:%02dZ"), pdt->year, pdt->mon, pdt->day, pdt->hour, pdt->min, pdt->sec);
+	return xsprintf(buf, _T("%d-%02d-%02dT%02d:%02d:%02d.%03dZ"), pdt->year, pdt->mon, pdt->day, pdt->hour, pdt->min, pdt->sec, pdt->millsec);
 }
 
 int format_gmttime(const xdate_t* pdt, tchar_t* buf)
@@ -2121,6 +2136,10 @@ int compare_datetime(const xdate_t* pmd1, const xdate_t* pmd2)
 	else if(pmd1->sec > pmd2->sec)
 		return 1;
 	else if(pmd1->sec < pmd2->sec)
+		return -1;
+	else if (pmd1->millsec > pmd2->millsec)
+		return 1;
+	else if (pmd1->millsec < pmd2->millsec)
 		return -1;
 	else 
 		return 0;

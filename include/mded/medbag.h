@@ -38,7 +38,9 @@ extern "C" {
 
 	EXP_API bool_t	save_mded_doc_to_file(link_t_ptr ptr, const secu_desc_t* psd, const tchar_t* fname);
 
+	EXP_API bool_t load_mded_doc_from_bytes(link_t_ptr ptr, byte_t** pp);
 
+	EXP_API bool_t save_mded_doc_to_bytes(link_t_ptr ptr, byte_t** pp);
 
 #ifdef	__cplusplus
 }

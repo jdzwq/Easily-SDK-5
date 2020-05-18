@@ -627,6 +627,9 @@
     <ClInclude Include="..\..\xdl\netmqtt.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\xdlblock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -1182,6 +1185,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\netmqtt.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\xdlblock.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

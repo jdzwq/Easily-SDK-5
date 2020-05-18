@@ -21,6 +21,20 @@ void test_mem()
 	xmem_zero(b + 10, 10);
 }
 
+void test_utc()
+{
+	xdate_t dt;
+	tchar_t sz_date[UTC_LEN + 1] = { 0 };
+
+	get_utc_date(&dt);
+	format_utctime(&dt, sz_date);
+
+	xdate_t dt2;
+	parse_datetime(&dt2, sz_date);
+
+	int rt = compare_datetime(&dt, &dt2);
+}
+
 void test_printf()
 {
 	char tmp[100] = { 0 };
@@ -62,7 +76,9 @@ int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
-	test_mem();
+	//test_mem();
+
+	test_utc();
 
 	//test_printf();
 

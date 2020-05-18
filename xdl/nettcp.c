@@ -91,7 +91,11 @@ xhand_t xtcp_cli(unsigned short port, const tchar_t* addr)
 	pso->so = so;
 	pso->type = _XTCP_TYPE_CLI;
 
+#if defined(_DEBUG) || defined(DEBUG)
+	pso->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
+#else
 	pso->pov = async_alloc_lapp(ASYNC_BLOCK, TCP_BASE_TIMO, INVALID_FILE);
+#endif
 
 	END_CATCH;
 
@@ -138,7 +142,11 @@ xhand_t xtcp_srv(res_file_t so)
 	socket_setopt(pso->so, SO_SNDBUF, (const char*)&zo, sizeof(int));
 	socket_setopt(pso->so, SO_RCVBUF, (const char*)&zo, sizeof(int));
 
+#if defined(_DEBUG) || defined(DEBUG)
+	pso->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
+#else
 	pso->pov = async_alloc_lapp(ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
+#endif
 
 	END_CATCH;
 

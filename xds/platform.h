@@ -449,7 +449,8 @@ typedef int				wait_t;
 /*define some string token length*/
 #define INT_LEN			16
 #define NUM_LEN			48 
-#define DATE_LEN		48 
+#define DATE_LEN		48
+#define UTC_LEN			24
 #define CLR_LEN			24
 #define RES_LEN			64
 #define KEY_LEN			128

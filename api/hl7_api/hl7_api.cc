@@ -26,23 +26,47 @@ LICENSE.GPL3 for more details.
 #include "hl7_api.h"
 
 typedef struct _hl7_block_t{
-	hex_obj_t hdb;
-
 	tchar_t topic_name[PATH_LEN];
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
 }hl7_block_t;
 
+static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_t* pid)
+{
+	const tchar_t* token = topic;
+	int len;
 
-//typedef struct _hl7_head_t{
-	//byte_t identify[36];
-	//byte_t timestamp[24];
-	//byte_t longitude[10];
-	//byte_t latitude[10];
-	//byte_t altitude[16];
-//};
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(cid, token - len, len);
 
+	if (*token != _T('\0'))
+		token++;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(did, token - len, len);
+
+	if (*token != _T('\0'))
+		token++;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(pid, token - len, len);
+}
 
 bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 {
@@ -53,27 +77,26 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	object_t val = NULL;
 
 	byte_t* buf = NULL;
-	dword_t len;
+	dword_t obj_len;
 	dword_t total = 0;
-
-	dword_t msg_len;
-	sword_t han_len;
-	byte_t* hdr_buf = NULL;
-	dword_t hdr_len;
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
+	byte_t* han_buf = NULL;
+	dword_t han_len;
+	byte_t* msg_buf = NULL;
+	dword_t msg_len;
 
-	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = { 0 };
-	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
-
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
 	xdate_t dt,dt_last = {0};
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
 
 	TRY_CATCH;
 
@@ -84,143 +107,90 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_head"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_head"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_head"), _T("create hexdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	hexkv_read(hkv, key, val);
 
-	len = object_get_bytes(val, NULL, MAX_LONG);
-	xsprintf(fsize, _T("%d"), len);
+	obj_len = object_get_bytes(val, NULL, MAX_LONG);
+	xsprintf(fsize, _T("%d"), obj_len);
 
-	buf = (byte_t*)xmem_alloc(len);
+	buf = (byte_t*)xmem_alloc(obj_len);
 
-	object_get_bytes(val, buf, len);
+	object_get_bytes(val, buf, obj_len);
 
-	while (total < len)
+	while (total < obj_len)
 	{
-		//the message total length
-		msg_len = GET_DWORD_NET(buf, total);
-		if (msg_len > MAX_LONG)
+		//the object length
+		hl7_buf = buf + total + 4;
+		hl7_len = GET_DWORD_NET((hl7_buf - 4), 0);
+		if (hl7_len > MAX_LONG)
 		{
 			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
 		}
 		total += 4;
 
-		//the message handler length
-		han_len = GET_SWORD_NET(buf, total);
+		//the object handler length
+		han_buf = hl7_buf + 2;
+		han_len = GET_SWORD_NET((han_buf - 2), 0);
 		if (han_len > MAX_SHORT)
 		{
 			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
 		}
 		total += 2;
-
-		//skip handler
-		total += han_len;
-		
-		//the message header length
-		hdr_len = GET_SWORD_NET(buf, total);
-		if (hdr_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage header size"));
-		}
-		total += 2;
-
-		hdr_buf = buf + total;
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
-	#else
-			utf8_to_mbs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
-	#endif
-		}else
-		{
-			xszero(identify, MQ_IDENTIFY_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
-	#endif
-		}else
-		{
-			xszero(timestamp, MQ_TIMESTAMP_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(longitude, MQ_LONGITUDE_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(latitude, MQ_LATITUDE_SIZE);
-		}
-
-		if (hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
+		if(han_len > 8)
 		{
 #if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
+			utf8_to_ucs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
 #else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
+			utf8_to_mbs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
 #endif
+			parse_datetime(&dt, ftime);
 		}
 		else
 		{
-			xszero(altitude, MQ_ALTITUDE_SIZE);
+			get_utc_date(&dt);
 		}
-
-		parse_datetime(&dt, timestamp);
+		//skip handler
+		total += han_len;
 
 		if(compare_datetime(&dt, &dt_last) > 0)
 		{
 			xmem_copy((void*)&dt_last, (void*)&dt, sizeof(xdate_t));
 		}
 
-		total += hdr_len;
-
-		hl7_len = GET_DWORD_NET(buf, total);
-		if (hl7_len > (len - 4))
+		//the object message
+		msg_buf = han_buf + han_len + 4;
+		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
+		if (hl7_len != (2 + han_len + 4 + msg_len))
 		{
 			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
 		}
 		total += 4;
 
-		//the message data
-		hl7_buf = buf + total;
-
-		if (msg_len != (2 + han_len + 2 + hdr_len + 4 + hl7_len))
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage total size"));
-		}
 		//skip message data
-		total += hl7_len;
+		total += msg_len;
 	}
 
 	xmem_free(buf);
@@ -232,6 +202,9 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_destroy(hkv);
 	hkv = NULL;
+
+	hexdb_destroy(hdb);
+	hdb = NULL;
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
@@ -267,6 +240,9 @@ ONERROR:
 	if (hkv)
 		hexkv_destroy(hkv);
 
+	if (hdb)
+		hexdb_destroy(hdb);
+
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[HL7: HEAD]"), -1);
@@ -286,26 +262,29 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	object_t val = NULL;
 
 	byte_t* buf = NULL;
-	dword_t len;
+	dword_t obj_len;
 	dword_t total = 0;
-
-	dword_t msg_len;
-	sword_t han_len;
-	byte_t* hdr_buf = NULL;
-	dword_t hdr_len;
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
+	byte_t* han_buf = NULL;
+	dword_t han_len;
+	byte_t* msg_buf = NULL;
+	dword_t msg_len;
 
-	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = {0};
-	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
-
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
+	tchar_t timestamp[DATE_LEN] = { 0 };
+	xdate_t dt_first, dt = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
+
 	tchar_t sz_encoding[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = {0};
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
@@ -313,6 +292,9 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	LINKPTR nlk_rowset, nlk_row, nlk;
 
 	TRY_CATCH;
+
+	xhttp_get_url_query_entity(pb->http, _T("timestamp"), -1, timestamp, DATE_LEN);
+	parse_datetime(&dt_first, timestamp);
 
 	xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
 	
@@ -338,162 +320,104 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	}
 	set_dom_node_name(nlk_rowset, _T("rowset"), -1);
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_list"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_list"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_head"), _T("create hexdb kv entity falied"));
+		raise_user_error(_T("_invoke_list"), _T("create hexdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	hexkv_read(hkv, key, val);
 
-	len = object_get_bytes(val, NULL, MAX_LONG);
+	obj_len = object_get_bytes(val, NULL, MAX_LONG);
 
-	buf = (byte_t*)xmem_alloc(len);
+	buf = (byte_t*)xmem_alloc(obj_len);
 
-	object_get_bytes(val, buf, len);
+	object_get_bytes(val, buf, obj_len);
 
-	while (total < len)
+	while (total < obj_len)
 	{
-		//the message packet length
-		msg_len = GET_DWORD_NET(buf, total);
-		if (msg_len > MAX_LONG)
+		// the object length
+		hl7_buf = buf + total + 4;
+		hl7_len = GET_DWORD_NET((hl7_buf - 4), 0);
+		if (hl7_len > MAX_LONG)
 		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
+			raise_user_error(_T("_invoke_list"), _T("invalid mesage packet size"));
 		}
 		total += 4;
 
-		//the message handler length
-		han_len = GET_SWORD_NET(buf, total);
+		//the object handler length
+		han_buf = hl7_buf + 2;
+		han_len = GET_SWORD_NET((han_buf - 2), 0);
 		if (han_len > MAX_SHORT)
 		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
+			raise_user_error(_T("_invoke_list"), _T("invalid mesage handler size"));
 		}
 		total += 2;
-
-		//skip handler
-		total += han_len;
-		//the message header length
-		hdr_len = GET_SWORD_NET(buf, total);
-		if (hdr_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage header size"));
-		}
-		total += 2;
-
-		hdr_buf = buf + total;
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
-	#else
-			utf8_to_mbs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
-	#endif
-		}else
-		{
-			xszero(identify, MQ_IDENTIFY_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
-	#endif
-		}else
-		{
-			xszero(timestamp, MQ_TIMESTAMP_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(longitude, MQ_LONGITUDE_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(latitude, MQ_LATITUDE_SIZE);
-		}
-
-		if (hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
+		if (han_len > 8)
 		{
 #if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
+			utf8_to_ucs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
 #else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
+			utf8_to_mbs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
 #endif
+			parse_datetime(&dt, ftime);
 		}
 		else
 		{
-			xszero(altitude, MQ_ALTITUDE_SIZE);
+			get_utc_date(&dt);
 		}
+		//skip handler
+		total += han_len;
 
-		total += hdr_len;
-
-		hl7_len = GET_DWORD_NET(buf, total);
-		if (hl7_len > (len - 4))
+		//the object message
+		msg_buf = han_buf + han_len + 4;
+		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
+		if (hl7_len != (2 + han_len + 4 + msg_len))
 		{
 			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
 		}
 		total += 4;
 
-		nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
-		set_dom_node_name(nlk_row, _T("row"), -1);
+		xsprintf(fsize, _T("%d"), msg_len);
 
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_IDENTIFY, -1);
-		set_dom_node_text(nlk, identify, MQ_IDENTIFY_SIZE);
-		
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_TIMESTAMP, -1);
-		set_dom_node_text(nlk, timestamp, MQ_TIMESTAMP_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_LONGITUDE, -1);
-		set_dom_node_text(nlk, longitude, MQ_LONGITUDE_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_LATITUDE, -1);
-		set_dom_node_text(nlk, latitude, MQ_LATITUDE_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_ALTITUDE, -1);
-		set_dom_node_text(nlk, altitude, MQ_ALTITUDE_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_PACKSIZE, -1);
-		ltoxs(hl7_len, fsize, NUM_LEN);
-		set_dom_node_text(nlk, fsize, -1);
-
-		//the message data
-		hl7_buf = buf + total;
-
-		if (msg_len != (2 + han_len + 2 + hdr_len + 4 + hl7_len))
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage total size"));
-		}
 		//skip message data
-		total += hl7_len;
+		total += msg_len;
+
+		if (compare_datetime(&dt, &dt_first) > 0)
+		{
+			nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
+			set_dom_node_name(nlk_row, _T("row"), -1);
+
+			nlk = insert_dom_node(nlk_row, LINK_LAST);
+			set_dom_node_name(nlk, _T("MessageName"), -1);
+			set_dom_node_text(nlk, pid, -1);
+
+			nlk = insert_dom_node(nlk_row, LINK_LAST);
+			set_dom_node_name(nlk, _T("MessageSize"), -1);
+			set_dom_node_text(nlk, fsize, -1);
+
+			nlk = insert_dom_node(nlk_row, LINK_LAST);
+			set_dom_node_name(nlk, _T("MessageTime"), -1);
+			set_dom_node_text(nlk, ftime, -1);
+		}
 	}
 
 	xmem_free(buf);
@@ -505,6 +429,9 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_destroy(hkv);
 	hkv = NULL;
+
+	hexdb_destroy(hdb);
+	hdb = NULL;
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
@@ -554,6 +481,9 @@ ONERROR:
 
 	if (hkv)
 		hexkv_destroy(hkv);
+
+	if (hdb)
+		hexdb_destroy(hdb);
 
 	if(ptr_json)
 		destroy_json_doc(ptr_json);
@@ -580,47 +510,54 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	object_t val = NULL;
 
 	byte_t* buf = NULL;
-	dword_t len;
+	dword_t obj_len;
 	dword_t total = 0;
-
-	dword_t msg_len;
-	sword_t han_len;
-	byte_t* hdr_buf = NULL;
-	dword_t hdr_len;
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
+	byte_t* han_buf = NULL;
+	dword_t han_len;
+	byte_t* msg_buf = NULL;
+	dword_t msg_len;
 
-	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = {0};
-	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
-	tchar_t *package = NULL;
-	int pkg_len;
-
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
+	tchar_t timestamp[DATE_LEN] = { 0 };
+	xdate_t dt_first, dt = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
+
+	byte_t** pp = NULL;
+
 	tchar_t sz_encoding[RES_LEN] = { 0 };
+	tchar_t fsize[NUM_LEN] = { 0 };
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
 	LINKPTR ptr_xml = NULL;
-	LINKPTR nlk_rowset, nlk_row, nlk;
+	LINKPTR nlk_rowset;
 
 	TRY_CATCH;
 
+	xhttp_get_url_query_entity(pb->http, _T("timestamp"), -1, timestamp, DATE_LEN);
+	parse_datetime(&dt_first, timestamp);
+
 	xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
-	
+
 	b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[HL7: GET]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[HL7: LIST]"), -1);
 
 		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
-	if(b_json)
+	if (b_json)
 	{
 		ptr_json = create_json_doc();
 		nlk_rowset = ptr_json;
@@ -633,179 +570,101 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	}
 	set_dom_node_name(nlk_rowset, _T("rowset"), -1);
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_list"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_list"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_get"), _T("create hexdb kv entity falied"));
+		raise_user_error(_T("_invoke_list"), _T("create hexdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	hexkv_read(hkv, key, val);
 
-	len = object_get_bytes(val, NULL, MAX_LONG);
+	obj_len = object_get_bytes(val, NULL, MAX_LONG);
 
-	buf = (byte_t*)xmem_alloc(len);
+	buf = (byte_t*)xmem_alloc(obj_len);
 
-	object_get_bytes(val, buf, len);
+	object_get_bytes(val, buf, obj_len);
 
-	while (total < len)
+	while (total < obj_len)
 	{
-		//the message packet length
-		msg_len = GET_DWORD_NET(buf, total);
-		if (msg_len > MAX_LONG)
+		// the object length
+		hl7_buf = buf + total + 4;
+		hl7_len = GET_DWORD_NET((hl7_buf - 4), 0);
+		if (hl7_len > MAX_LONG)
 		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
+			raise_user_error(_T("_invoke_list"), _T("invalid mesage packet size"));
 		}
 		total += 4;
 
-		//the message handler length
-		han_len = GET_SWORD_NET(buf, total);
+		//the object handler length
+		han_buf = hl7_buf + 2;
+		han_len = GET_SWORD_NET((han_buf - 2), 0);
 		if (han_len > MAX_SHORT)
 		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
+			raise_user_error(_T("_invoke_list"), _T("invalid mesage handler size"));
 		}
 		total += 2;
-
-		//skip handler
-		total += han_len;
-		//the message header length
-		hdr_len = GET_SWORD_NET(buf, total);
-		if (hdr_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage header size"));
-		}
-		total += 2;
-
-		hdr_buf = buf + total;
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
-	#else
-			utf8_to_mbs(hdr_buf, MQ_IDENTIFY_SIZE, identify, MQ_IDENTIFY_SIZE);
-	#endif
-		}else
-		{
-			xszero(identify, MQ_IDENTIFY_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE, timestamp, MQ_TIMESTAMP_SIZE);
-	#endif
-		}else
-		{
-			xszero(timestamp, MQ_TIMESTAMP_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE, longitude, MQ_LONGITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(longitude, MQ_LONGITUDE_SIZE);
-		}
-
-		if(hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE)
-		{
-	#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
-	#else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE, latitude, MQ_LATITUDE_SIZE);
-	#endif
-		}else
-		{
-			xszero(latitude, MQ_LATITUDE_SIZE);
-		}
-
-		if (hdr_len >= MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
+		if (han_len > 8)
 		{
 #if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
+			utf8_to_ucs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
 #else
-			utf8_to_mbs((hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE, altitude, MQ_ALTITUDE_SIZE);
+			utf8_to_mbs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
 #endif
+			parse_datetime(&dt, ftime);
 		}
 		else
 		{
-			xszero(altitude, MQ_ALTITUDE_SIZE);
+			get_utc_date(&dt);
 		}
+		//skip handler
+		total += han_len;
 
-		total += hdr_len;
-
-		hl7_len = GET_DWORD_NET(buf, total);
-		if (hl7_len > (len - 4))
+		//the object message
+		msg_buf = han_buf + han_len + 4;
+		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
+		if (hl7_len != (2 + han_len + 4 + msg_len))
 		{
 			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
 		}
 		total += 4;
 
-		//the message data
-		hl7_buf = buf + total;
-
-	#if defined(_UNICODE) || defined(UNICODE)
-		pkg_len = utf8_to_ucs(hl7_buf, hl7_len, NULL, MAX_LONG);
-	#else
-		pkg_len = utf8_to_mbs(hl7_buf, hl7_len, NULL, MAX_LONG);
-	#endif
-
-		package = xsalloc(pkg_len + 1);
-
-	#if defined(_UNICODE) || defined(UNICODE)
-		pkg_len = utf8_to_ucs(hl7_buf, hl7_len, package, pkg_len);
-	#else
-		pkg_len = utf8_to_mbs(hl7_buf, hl7_len, package, pkg_len);
-	#endif
-
-		nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
-		set_dom_node_name(nlk_row, _T("row"), -1);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_TIMESTAMP, -1);
-		set_dom_node_text(nlk, timestamp, MQ_TIMESTAMP_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_LONGITUDE, -1);
-		set_dom_node_text(nlk, longitude, MQ_LONGITUDE_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_LATITUDE, -1);
-		set_dom_node_text(nlk, latitude, MQ_LATITUDE_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_ALTITUDE, -1);
-		set_dom_node_text(nlk, altitude, MQ_ALTITUDE_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_IDENTIFY, -1);
-		set_dom_node_text(nlk, identify, MQ_IDENTIFY_SIZE);
-
-		nlk = insert_dom_node(nlk_row, LINK_LAST);
-		set_dom_node_name(nlk, HL7_ELEMENT_PACKAGE, -1);
-		set_dom_node_text(nlk, package, pkg_len);
-
-		xsfree(package);
-		package = NULL;
-		pkg_len = 0;
-
-		if (msg_len != (2 + han_len + 2 + hdr_len + 4 + hl7_len))
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage total size"));
-		}
 		//skip message data
-		total += hl7_len;
+		total += msg_len;
+
+		if (compare_datetime(&dt, &dt_first) > 0)
+		{
+			pp = bytes_alloc();
+
+			bytes_insert(pp, 0, msg_buf, msg_len);
+
+			if (!load_mded_doc_from_bytes(nlk_rowset, pp))
+			{
+				raise_user_error(NULL, NULL);
+			}
+
+			bytes_free(pp);
+			pp = NULL;
+
+			break;
+		}
 	}
 
 	xmem_free(buf);
@@ -818,15 +677,18 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	hexkv_destroy(hkv);
 	hkv = NULL;
 
+	hexdb_destroy(hdb);
+	hdb = NULL;
+
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	if(b_json)
+	if (b_json)
 		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 	else
 		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-	if(b_json)
+	if (b_json)
 	{
 		if (!xhttp_send_json(pb->http, ptr_json))
 		{
@@ -835,7 +697,8 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 		destroy_json_doc(ptr_json);
 		ptr_json = NULL;
-	}else
+	}
+	else
 	{
 		if (!xhttp_send_xml(pb->http, ptr_xml))
 		{
@@ -859,9 +722,6 @@ ONERROR:
 	if (buf)
 		xmem_free(buf);
 
-	if(package)
-		xsfree(package);
-
 	variant_to_null(&key);
 
 	if (val)
@@ -870,15 +730,21 @@ ONERROR:
 	if (hkv)
 		hexkv_destroy(hkv);
 
-	if(ptr_json)
+	if (hdb)
+		hexdb_destroy(hdb);
+
+	if (pp)
+		bytes_free(pp);
+
+	if (ptr_json)
 		destroy_json_doc(ptr_json);
 
-	if(ptr_xml)
+	if (ptr_xml)
 		destroy_xml_doc(ptr_xml);
 
 	if (pb->log)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[HL7: GET]"), -1);
+		(*pb->pf_log_title)(pb->log, _T("[HL7: LIST]"), -1);
 
 		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
 	}
@@ -895,40 +761,36 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	object_t val = NULL;
 
 	byte_t* buf = NULL;
-	dword_t len;
+	dword_t obj_len;
 	dword_t total = 0;
-
-	byte_t** bb = NULL;
-	dword_t bs = 0;
-
-	byte_t* msg_buf = NULL;
-	dword_t msg_len;
-	byte_t* han_buf = NULL;
-	sword_t han_len;
-	byte_t* hdr_buf = NULL;
-	dword_t hdr_len;
 	byte_t* hl7_buf = NULL;
 	dword_t hl7_len;
+	byte_t* han_buf = NULL;
+	dword_t han_len;
+	byte_t* msg_buf = NULL;
+	dword_t msg_len;
 
-	tchar_t identify[MQ_IDENTIFY_SIZE + 1] = {0};
-	tchar_t timestamp[MQ_TIMESTAMP_SIZE + 1] = {0};
-	tchar_t longitude[MQ_LONGITUDE_SIZE + 1] = {0};
-	tchar_t latitude[MQ_LATITUDE_SIZE + 1] = {0};
-	tchar_t altitude[MQ_ALTITUDE_SIZE + 1] = {0};
-	const tchar_t* package = NULL;
-	int pkg_len = 0;
-
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
-	tchar_t sz_encoding[RES_LEN] = { 0 };
-	bool_t b_json = 0;
+	xdate_t dt = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
 
-	xdate_t dt1, dt2;
-	int tag = 0;
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
+
+	byte_t** pp = NULL;
+	dword_t size;
+
+	tchar_t sz_encoding[RES_LEN] = { 0 };
+	tchar_t fsize[NUM_LEN] = { 0 };
+	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
 	LINKPTR ptr_xml = NULL;
-	LINKPTR nlk_rowset, nlk_row, nlk;
+	LINKPTR nlk_rowset;
 
 	TRY_CATCH;
 
@@ -966,122 +828,98 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 		nlk_rowset = get_xml_dom_node(ptr_xml);
 	}
 
-	nlk_row = get_dom_first_child_node(nlk_rowset);
+	pp = bytes_alloc();
 
-	hkv = hexkv_create(pd->hdb);
-	if (!hkv)
+	if (!save_mded_doc_to_bytes(nlk_rowset, pp))
 	{
-		raise_user_error(_T("_invoke_head"), _T("create hexdb kv entity falied"));
+		raise_user_error(NULL, NULL);
 	}
 
+	if (b_json)
+	{
+		destroy_json_doc(ptr_json);
+		ptr_json = NULL;
+	}
+	else
+	{
+		destroy_xml_doc(ptr_xml);
+		ptr_xml = NULL;
+	}
+
+	size = bytes_size(pp);
+
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_put"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_put"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
+	if (!hkv)
+	{
+		raise_user_error(_T("_invoke_put"), _T("create hexdb kv entity falied"));
+	}
+
+	get_utc_date(&dt);
+	format_utctime(&dt, ftime);
+
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	hexkv_read(hkv, key, val);
 
-	len = object_get_bytes(val, NULL, MAX_LONG);
+	obj_len = object_get_bytes(val, NULL, MAX_LONG);
 
-	bb = bytes_alloc();
+	total = 0;
+	buf = (byte_t*)xmem_alloc(obj_len + 4 + (2 + HL7HAN_SIZE) + (4 + size));
+	//copy origin object_list
+	object_get_bytes(val, buf, obj_len);
+	total += obj_len;
 
-	bytes_realloc(bb, len);
+	//the object total size
+	hl7_buf = buf + obj_len + 4;
+	hl7_len = ((2 + HL7HAN_SIZE) + (4 + size));
+	PUT_DWORD_NET((hl7_buf - 4), 0, hl7_len);
+	total += 4;
 
-	object_get_bytes(val, *bb, len);
-
-	while(nlk_row)
-	{
-		nlk = get_dom_first_child_node(nlk_row);
-		
-		xszero(identify, MQ_IDENTIFY_SIZE);
-		xszero(timestamp, MQ_TIMESTAMP_SIZE);
-		xszero(longitude, MQ_LONGITUDE_SIZE);
-		xszero(latitude, MQ_LATITUDE_SIZE);
-		xszero(altitude, MQ_ALTITUDE_SIZE);
-
-		package = NULL;
-		pkg_len = 0;
-
-		while(nlk)
-		{
-			if (compare_text(get_dom_node_name_ptr(nlk), -1, HL7_ELEMENT_IDENTIFY, -1, 1) == 0)
-			{
-				get_dom_node_text(nlk, identify, MQ_IDENTIFY_SIZE);
-			}
-			else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_TIMESTAMP,-1,1) == 0)
-			{
-				get_dom_node_text(nlk, timestamp, MQ_TIMESTAMP_SIZE);
-			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_LONGITUDE,-1,1) == 0)
-			{
-				get_dom_node_text(nlk, longitude, MQ_LONGITUDE_SIZE);
-			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_LATITUDE,-1,1) == 0)
-			{
-				get_dom_node_text(nlk, latitude, MQ_LATITUDE_SIZE);
-			}else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_ALTITUDE,-1,1) == 0)
-			{
-				get_dom_node_text(nlk, altitude, MQ_ALTITUDE_SIZE);
-			}
-			else if(compare_text(get_dom_node_name_ptr(nlk),-1,HL7_ELEMENT_PACKAGE,-1,1) == 0)
-			{
-				package = get_dom_node_text_ptr(nlk);
-				pkg_len = xslen(package);
-			}
-
-			nlk = get_dom_next_sibling_node(nlk);
-		}
+	//the object handler size
+	han_buf = hl7_buf + 2;
+	han_len = HL7HAN_SIZE;
+	PUT_SWORD_NET((han_buf - 2), 0, han_len);
+	total += 2;
+	//the object handler
+	xmem_copy((void*)(han_buf), (void*)HL7VER, HL7VER_SIZE);
 
 #if defined(_UNICODE) || defined(UNICODE)
-		len = ucs_to_utf8(package, pkg_len, NULL, MAX_LONG);
+	ucs_to_utf8(ftime, UTC_LEN, (han_buf + 8), UTC_LEN);
 #else
-		len = mbs_to_utf8(package, pkg_len, NULL, MAX_LONG);
+	mbs_to_utf8(ftime, UTC_LEN, (han_buf + 8), UTC_LEN);
 #endif
+	total += han_len;
 
-		msg_len = 2 + HL7HANDER_SIZE + 2 + HL7HEADER_SIZE + 4 + len;
-		buf = (byte_t*)xmem_alloc(4 + msg_len);
-		msg_buf = buf + 4;
-		PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
+	//the object message size
+	msg_buf = han_buf + HL7HAN_SIZE + 4;
+	msg_len = size;
+	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
+	total += 4;
+	//the object message
+	xmem_copy((void*)(msg_buf), *pp, size);
+	total += size;
 
-		han_buf = msg_buf + 2;
-		PUT_SWORD_NET((han_buf - 2), 0, HL7HANDER_SIZE);
-		xmem_copy((void*)han_buf, (void*)HL7VER, HL7VER_SIZE);
+	bytes_free(pp);
+	pp = NULL;
 
-		hdr_buf = han_buf + HL7HANDER_SIZE + 2;
-		PUT_SWORD_NET((hdr_buf - 2), 0, HL7HEADER_SIZE);
-
-		hl7_buf = hdr_buf + HL7HEADER_SIZE + 4;
-		PUT_DWORD_NET((hl7_buf - 4), 0, len);
-
-#if defined(_UNICODE) || defined(UNICODE)
-		ucs_to_utf8(identify, MQ_IDENTIFY_SIZE, (hdr_buf), MQ_IDENTIFY_SIZE);
-		ucs_to_utf8(timestamp, MQ_TIMESTAMP_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
-		ucs_to_utf8(longitude, MQ_LONGITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE);
-		ucs_to_utf8(latitude, MQ_LATITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE);
-		ucs_to_utf8(altitude, MQ_ALTITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE);
-		ucs_to_utf8(package, pkg_len, hl7_buf, len);
-#else
-		mbs_to_utf8(identify, MQ_IDENTIFY_SIZE, (hdr_buf), MQ_IDENTIFY_SIZE);
-		mbs_to_utf8(timestamp, MQ_TIMESTAMP_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
-		mbs_to_utf8(longitude, MQ_LONGITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE), MQ_LONGITUDE_SIZE);
-		mbs_to_utf8(latitude, MQ_LATITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE), MQ_LATITUDE_SIZE);
-		mbs_to_utf8(altitude, MQ_ALTITUDE_SIZE, (hdr_buf + MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE), MQ_ALTITUDE_SIZE);
-		mbs_to_utf8(package, pkg_len, hl7_buf, len);
-#endif
-
-		bs = bytes_size(bb);
-		bytes_insert(bb, bs, buf, msg_len + 4);
-
-		xmem_free(buf);
-		buf = NULL;
-
-		nlk_row = get_dom_next_sibling_node(nlk_row);
-	}
-
-	object_empty(val);
-	bs = bytes_size(bb);
-	object_set_bytes(val, _UTF8, *bb, bs);
-
-	bytes_free(bb);
-	bb = NULL;
+	//set new object list
+	object_set_bytes(val, _UTF8, buf, total);
 
 	hexkv_write(hkv, key, val);
 
@@ -1092,23 +930,15 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	hexkv_destroy(hkv);
 	hkv = NULL;
 
+	hexdb_destroy(hdb);
+	hdb = NULL;
+
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
 	if (!xhttp_send_response(pb->http))
 	{
 		raise_user_error(NULL, NULL);
-	}
-
-	if(b_json)
-	{
-		destroy_json_doc(ptr_json);
-		ptr_json = NULL;
-	}
-	else
-	{
-		destroy_xml_doc(ptr_xml);
-		ptr_xml = NULL;
 	}
 
 	END_CATCH;
@@ -1124,8 +954,8 @@ ONERROR:
 	if (buf)
 		xmem_free(buf);
 
-	if(bb)
-		bytes_free(bb);
+	if (pp)
+		bytes_free(pp);
 
 	variant_to_null(&key);
 
@@ -1134,6 +964,9 @@ ONERROR:
 
 	if (hkv)
 		hexkv_destroy(hkv);
+
+	if (hdb)
+		hexdb_destroy(hdb);
 
 	if(ptr_json)
 		destroy_json_doc(ptr_json);
@@ -1159,7 +992,13 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 	variant_t key = { 0 };
 	object_t val = NULL;
 
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
 
 	TRY_CATCH;
 
@@ -1170,14 +1009,27 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 		(*pb->pf_log_error)(pb->log, _T(""), pd->topic_name, -1);
 	}
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_put"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_put"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_delete"), _T("create hexdb kv entity falied"));
+		raise_user_error(_T("_invoke_put"), _T("create hexdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
@@ -1193,6 +1045,9 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_destroy(hkv);
 	hkv = NULL;
+
+	hexdb_destroy(hdb);
+	hdb = NULL;
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
@@ -1219,6 +1074,9 @@ ONERROR:
 
 	if (hkv)
 		hexkv_destroy(hkv);
+
+	if (hdb)
+		hexdb_destroy(hdb);
 
 	if (pb->log)
 	{
@@ -1298,12 +1156,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	printf_path(pd->local, file);
 
 	xscpy(pd->topic_name, pb->object + 1);
-	
-	pd->hdb = hexdb_create(pd->local, token);
-	if (!pd->hdb)
-	{
-		raise_user_error(_T("-1"), _T("open database failed"));
-	}
 
 	if (compare_text(method, -1, _T("HEAD"), -1, 1) == 0)
 		rt = _invoke_head(pb, pd);
@@ -1319,9 +1171,6 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	{
 		raise_user_error(_T("hl7_api"), _T("unknown hl7 method"));
 	}
-
-	hexdb_destroy(pd->hdb);
-	pd->hdb = NULL;
 
 	xmem_free(pd);
 
@@ -1340,12 +1189,7 @@ ONERROR:
 		destroy_proper_doc(ptr_prop);
 
 	if(pd)
-	{
-		if (pd->hdb)
-			hexdb_destroy(pd->hdb);
-
 		xmem_free(pd);
-	}
 
 	return HTTPS_INVOKE_WITHINFO;
 }

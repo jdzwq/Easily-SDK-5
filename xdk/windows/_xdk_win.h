@@ -57,7 +57,10 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_COMM
 #define XDK_SUPPORT_SOCK
 #define XDK_SUPPORT_TIMER
+
+#ifndef _WIN64
 #define XDK_SUPPORT_BLUT
+#endif
 
 #if defined(WINCE)
 #undef XDK_SUPPORT_THREAD_MUTEX

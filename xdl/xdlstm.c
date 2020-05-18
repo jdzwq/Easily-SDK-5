@@ -348,6 +348,10 @@ stream_t stream_alloc(xhand_t io)
 
 	switch (io->tag)
 	{
+	case _HANDLE_BLOCK:
+		pxt->inf.pf_read = xblock_read;
+		pxt->inf.pf_write = xblock_write;
+		break;
 	case _HANDLE_PNP:
 #ifdef XDK_SUPPORT_SOCK
 		pxt->inf.pf_read = xpnp_read;

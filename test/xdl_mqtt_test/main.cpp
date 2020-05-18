@@ -7,15 +7,15 @@
 
 //#define ADDR_PUB		_T("47.97.167.225")
 //#define ADDR_PUB		_T("172.16.190.190")
-//#define ADDR_PUB		_T("127.0.0.1")
-#define ADDR_PUB		_T("118.178.180.81")
+#define ADDR_PUB		_T("127.0.0.1")
+//#define ADDR_PUB		_T("118.178.180.81")
 //#define ADDR_PUB		_T("49.234.135.113")
 #define PORT_PUB		1833
 
 //#define ADDR_SUB		_T("47.97.167.225")
 //#define ADDR_SUB		_T("172.16.190.190")
-//#define ADDR_SUB		_T("127.0.0.1")
-#define ADDR_SUB		_T("118.178.180.81")
+#define ADDR_SUB		_T("127.0.0.1")
+//#define ADDR_SUB		_T("118.178.180.81")
 //#define ADDR_SUB		_T("49.234.135.113")
 #define PORT_SUB		1834
 
@@ -38,7 +38,7 @@ void test_mqtt_pub()
 		mc.packet_qos = i % 3;
 		mc.packet_pid = i + 1;
 
-		xmqtt_publish(mqtt, _T("test"), -1);
+		xmqtt_publish(mqtt, _T("test/device/person"), -1);
 
 		len = a_xsprintf(msg, "msg%d", i);
 
@@ -70,7 +70,7 @@ void test_mqtt_sub()
 	dword_t n;
 
 	//08:7c:be:58:37:f8-Gateway-NAME
-	xmqtt_subcribe(mqtt, _T("test"), -1);
+	xmqtt_subcribe(mqtt, _T("test/device/person"), -1);
 
 	while (xmqtt_status(mqtt) != _MQTT_STATUS_RELEASE)
 	{
@@ -118,7 +118,7 @@ void test_mqtt_unsub()
 	byte_t* buf = NULL;
 	dword_t n;
 
-	xmqtt_unsubcribe(mqtt, _T("test"), -1);
+	xmqtt_unsubcribe(mqtt, _T("test/device/person"), -1);
 
 	xmqtt_close(mqtt);
 

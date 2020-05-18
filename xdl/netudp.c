@@ -84,7 +84,11 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 	zo = 1;
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
+#if defined(_DEBUG) || defined(DEBUG)
+	pudp->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
+#else
 	pudp->pov = async_alloc_lapp(ASYNC_BLOCK, UDP_BASE_TIMO, INVALID_FILE);
+#endif
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
 	pudp->snd_bys = 0;
@@ -126,7 +130,11 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	zo = 1;
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
+#if defined(_DEBUG) || defined(DEBUG)
+	pudp->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
+#else
 	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
+#endif
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
 	pudp->snd_bys = 0;

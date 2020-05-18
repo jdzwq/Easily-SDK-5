@@ -28,19 +28,11 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 #include <hexdfs.h>
-
-#define HL7_ELEMENT_TIMESTAMP	_T("timestamp")
-#define HL7_ELEMENT_LONGITUDE	_T("longitude")
-#define HL7_ELEMENT_LATITUDE	_T("latitude")
-#define HL7_ELEMENT_ALTITUDE	_T("altitude")
-#define HL7_ELEMENT_IDENTIFY	_T("identify")
-#define HL7_ELEMENT_PACKAGE		_T("package")
-#define HL7_ELEMENT_PACKSIZE	_T("packsize")
+#include <mded.h>
 
 #define HL7VER	"HL11"
-#define HL7VER_SIZE			4
-#define HL7HANDER_SIZE		8
-#define HL7HEADER_SIZE		(MQ_IDENTIFY_SIZE + MQ_TIMESTAMP_SIZE + MQ_LONGITUDE_SIZE + MQ_LATITUDE_SIZE + MQ_ALTITUDE_SIZE)
+#define HL7VER_SIZE		4
+#define HL7HAN_SIZE		32
 
 #ifdef	__cplusplus
 extern "C" {

@@ -34,8 +34,6 @@ typedef struct _mqtt_block_t{
 	dword_t msg_len;
 	byte_t* msg_buf;
 
-	hex_obj_t hdb;
-
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
 
@@ -43,46 +41,104 @@ typedef struct _mqtt_block_t{
 	tchar_t text[ERR_LEN + 1];
 }mqtt_block_t;
 
+static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_t* pid)
+{
+	const tchar_t* token = topic;
+	int len ;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(cid, token - len, len);
+
+	if (*token != _T('\0'))
+		token++;
+	
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(did, token - len, len);
+
+	if (*token != _T('\0'))
+		token++;
+
+	len = 0;
+	while (*token != _T('/') && *token != _T('\\') && *token != _T('\0'))
+	{
+		token++;
+		len++;
+	}
+	xsncpy(pid, token - len, len);
+}
+
 void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	byte_t* buf = NULL;
-	dword_t len;
 	sword_t sw = 0;
 
-	byte_t* msg_buf;
-	dword_t msg_len;
-	byte_t* han_buf;
-	sword_t han_len;
-	byte_t* hdr_buf;
-	sword_t hdr_len;
+	byte_t* buf = NULL;
+	dword_t total = 0;
+	dword_t obj_len;
 	byte_t* pub_buf;
 	dword_t pub_len;
+	byte_t* han_buf;
+	sword_t han_len;
+	byte_t* msg_buf;
+	dword_t msg_len;
 
-	tchar_t sz_uuid[UUID_LEN + 1] = {0};
-	xdate_t dt = { 0 };
-	tchar_t sz_date[DATE_LEN] = { 0 };
-
+	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
+
+	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t cid[UUID_LEN] = { 0 };
+	tchar_t did[UUID_LEN] = { 0 };
+	tchar_t pid[UUID_LEN] = { 0 };
+
+	xdate_t dt;
+	tchar_t sz_date[UTC_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
-	hkv = hexkv_create(pd->hdb);
+	split_topic(pd->topic_name, cid, did, pid);
+	if (is_null(cid) || is_null(did))
+	{
+		raise_user_error(_T("_invoke_publish"), _T("unknown kv database"));
+	}
+	xsprintf(path, _T("%s/%s"), pd->local, cid);
+
+	hdb = hexdb_create(path, did);
+	if (!hdb)
+	{
+		raise_user_error(_T("_invoke_publish"), _T("open kv database failed"));
+	}
+
+	hkv = hexkv_create(hdb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_publish"), _T("create hexdb kv entity falied"));
+		raise_user_error(_T("_invoke_publish"), _T("create kv entity falied"));
+	}
+
+	if (is_null(pid))
+	{
+		xscpy(pid, PUB_TOPIC_CONFIG);
 	}
 
 	key.vv = VV_STRING;
-	variant_from_string(&key, pd->topic_name, -1);
+	variant_from_string(&key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	hexkv_read(hkv, key, val);
 
-	len = object_get_bytes(val, NULL, MAX_LONG);
+	obj_len = object_get_bytes(val, NULL, MAX_LONG);
 
 	sw = 0;
 	sw |= pd->msg_qos;
@@ -90,45 +146,55 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	get_utc_date(&dt);
 	format_utctime(&dt, sz_date);
 
-	buf = (byte_t*)xmem_alloc(len + 4 + 2 + PUBHANDER_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
-	object_get_bytes(val, buf, len);
+	/* the PDU:
+	struct object_list{
+		origin object_list entities; obj_len bytes
+		new object entity size; 4 bytes
+		new object hander size; 2 bytes
+		new object hander data; 8 bytes
+		new object message size; 4 bytes
+		new object message data; msg_len bytes
+	}
+	*/
+	total = 0;
+	buf = (byte_t*)xmem_alloc(obj_len + 4 + (2 + PUBHAN_SIZE) + (4 + pd->msg_len));
+	//copy origin object_list
+	object_get_bytes(val, buf, obj_len);
+	total += obj_len;
 
-	//the message total size
-	msg_buf = buf + len + 4;
-	msg_len = (2 + PUBHANDER_SIZE + 2 + PUBHEADER_SIZE + 4 + pd->msg_len);
-	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
-	//the message handler size
-	han_buf = msg_buf + 2;
-	han_len = PUBHANDER_SIZE;
+	//the object total size
+	pub_buf = buf + obj_len + 4;
+	pub_len = ((2 + PUBHAN_SIZE) + (4 + pd->msg_len));
+	PUT_DWORD_NET((pub_buf - 4), 0, pub_len);
+	total += 4;
+
+	//the object handler size
+	han_buf = pub_buf + 2;
+	han_len = PUBHAN_SIZE;
 	PUT_SWORD_NET((han_buf - 2), 0, han_len);
-	//the message handler
+	total += 2;
+	//the object handler
 	xmem_copy((void*)(han_buf), (void*)PUBVER, PUBVER_SIZE);
 	PUT_SWORD_NET(han_buf, 4, sw);
 	PUT_SWORD_NET(han_buf, 6, pd->msg_pid);
-	//the message header size
-	hdr_buf = han_buf + PUBHANDER_SIZE + 2;
-	hdr_len = PUBHEADER_SIZE;
-	PUT_SWORD_NET((hdr_buf - 2), 0, hdr_len);
-	//the message header
 #if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(sz_uuid, -1, hdr_buf, MQ_IDENTIFY_SIZE);
+	ucs_to_utf8(sz_date, UTC_LEN, (han_buf + 8), UTC_LEN);
 #else
-	mbs_to_utf8(sz_uuid, -1, hdr_buf, MQ_IDENTIFY_SIZE);
+	mbs_to_utf8(sz_date, UTC_LEN, (han_buf + 8), UTC_LEN);
 #endif
-#if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(sz_date, -1, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
-#else
-	mbs_to_utf8(sz_date, -1, (hdr_buf + MQ_IDENTIFY_SIZE), MQ_TIMESTAMP_SIZE);
-#endif
-	//the message element size
-	pub_buf = hdr_buf + PUBHEADER_SIZE + 4;
-	pub_len = pd->msg_len;
-	PUT_DWORD_NET((pub_buf - 4), 0, pub_len);
-	//the message element
-	xmem_copy((void*)(pub_buf), pd->msg_buf, pd->msg_len);
-	len += (4 + msg_len);
+	total += han_len;
 
-	object_set_bytes(val, _UTF8, buf, len);
+	//the object message size
+	msg_buf = han_buf + PUBHAN_SIZE + 4;
+	msg_len = pd->msg_len;
+	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
+	total += 4;
+	//the object message
+	xmem_copy((void*)(msg_buf), pd->msg_buf, pd->msg_len);
+	total += pd->msg_len;
+
+	//set new object list
+	object_set_bytes(val, _UTF8, buf, total);
 
 	xmem_free(buf);
 	buf = NULL;
@@ -140,6 +206,9 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 
 	hexkv_destroy(hkv);
 	hkv = NULL;
+
+	hexdb_destroy(hdb);
+	hdb = NULL;
 
 	xscpy(pd->code, _T("_invoke_publish"));
 	xscpy(pd->text, _T("Succeeded"));
@@ -161,6 +230,9 @@ ONERROR:
 
 	if (hkv)
 		hexkv_destroy(hkv);
+
+	if (hdb)
+		hexdb_destroy(hdb);
 
 	return;
 }
@@ -201,12 +273,6 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	printf_path(pd->local, file);
 
-	pd->hdb = hexdb_create(pd->local, token);
-	if (!pd->hdb)
-	{
-		raise_user_error(_T("-1"), _T("open database failed"));
-	}
-
 	pd->mqtt = xmqtt_scp(pb->slot, _MQTT_TYPE_SCP_PUB);
 	if (!pd->mqtt)
 	{
@@ -244,9 +310,6 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 	xmqtt_close(pd->mqtt);
 	pd->mqtt = NULL;
 
-	hexdb_destroy(pd->hdb);
-	pd->hdb = NULL;
-
 	if (pb->pf_track_eror)
 	{
 		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
@@ -275,9 +338,6 @@ ONERROR:
 
 		if (pd->mqtt)
 			xmqtt_close(pd->mqtt);
-
-		if (pd->hdb)
-			hexdb_destroy(pd->hdb);
 
 		xmem_free(pd);
 	}

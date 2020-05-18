@@ -26,7 +26,7 @@ void test_hl7_head()
 
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+	xsprintf(url, _T("%s/hl7/test/device/person"), HL7_URL);
 
 	xhand_t xh = xhttp_client(_T("HEAD"), url);
 
@@ -82,7 +82,7 @@ void test_hl7_put()
 
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+	xsprintf(url, _T("%s/hl7/test/device/person"), HL7_URL);
 
 	xhand_t xh = xhttp_client(_T("PUT"), url);
 
@@ -100,68 +100,7 @@ void test_hl7_put()
 
 	LINKPTR ptr_xml = create_xml_doc();
 	LINKPTR nlk_rowset = get_xml_dom_node(ptr_xml);
-	set_dom_node_name(nlk_rowset, _T("rowset"), -1);
-
-	LINKPTR nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
-	set_dom_node_name(nlk_row, _T("row"), -1);
-
-	xdate_t dt;
-	get_utc_date(&dt);
-	tchar_t timestamp[25] = {0};
-	format_utctime(&dt, timestamp);
-
-	LINKPTR nlk;
-	
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("identify"), -1);
-	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("timestamp"), -1);
-	set_dom_node_text(nlk, timestamp, -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("longitude"), -1);
-	set_dom_node_text(nlk, _T("130^10'30\""), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("latitude"), -1);
-	set_dom_node_text(nlk, _T("60^20'40\""), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("altitude"), -1);
-	set_dom_node_text(nlk, _T("130"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("package"), -1);
-	set_dom_node_text(nlk, _T("test1"), -1);
-
-	nlk_row = insert_dom_node(nlk_rowset, LINK_LAST);
-	set_dom_node_name(nlk_row, _T("row"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("identify"), -1);
-	set_dom_node_text(nlk, _T("00000000-0000-0000-0000-000000000000"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("timestamp"), -1);
-	set_dom_node_text(nlk, timestamp, -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("longitude"), -1);
-	set_dom_node_text(nlk, _T("130^10'30\""), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("latitude"), -1);
-	set_dom_node_text(nlk, _T("60^20'40\""), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("altitude"), -1);
-	set_dom_node_text(nlk, _T("130"), -1);
-
-	nlk = insert_dom_node(nlk_row, LINK_LAST);
-	set_dom_node_name(nlk, _T("package"), -1);
-	set_dom_node_text(nlk, _T("test2"), -1);
+	set_dom_node_name(nlk_rowset, _T("MDED"), -1);
 
 	if (!xhttp_send_xml(xh, ptr_xml))
 	{
@@ -203,7 +142,7 @@ void test_hl7_list()
 
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+	xsprintf(url, _T("%s/hl7/test/device/person"), HL7_URL);
 
 	xhand_t xh = xhttp_client(_T("LIST"), url);
 
@@ -256,7 +195,7 @@ void test_hl7_get()
 
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+	xsprintf(url, _T("%s/hl7/test/device/person"), HL7_URL);
 
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
@@ -309,7 +248,7 @@ void test_hl7_delete()
 
 	tchar_t url[1024] = { 0 };
 
-	xsprintf(url, _T("%s/hl7/test"), HL7_URL);
+	xsprintf(url, _T("%s/hl7/test/device/person"), HL7_URL);
 
 	xhand_t xh = xhttp_client(_T("DELETE"), url);
 
@@ -355,7 +294,7 @@ int main(int argc, char* argv[])
 
 	//test_hl7_list();
 
-	//test_hl7_get();
+	test_hl7_get();
 
 	//test_hl7_delete();
 

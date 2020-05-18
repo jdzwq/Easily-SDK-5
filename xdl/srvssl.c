@@ -112,9 +112,13 @@ static unsigned STDCALL thread_dispatch(void* param)
 
 	ssl = xssl_srv(so);
 
-	(*pf_dispatch)(ssl, pf_param);
+	if (ssl && pf_dispatch)
+	{
+		(*pf_dispatch)(ssl, pf_param);
+	}
 
-	xssl_close(ssl);
+	if (ssl)
+		xssl_close(ssl);
 
 	socket_close(so);
 

@@ -115,7 +115,10 @@ static unsigned STDCALL thread_dispatch(void* param)
 	xmem_copy((void*)pack, (void*)pxa->pack, pxa->size);
 	size = pxa->size;
 
-	(*pf_dispatch)(port, addr, pack, size, pf_param);
+	if (pf_dispatch)
+	{
+		(*pf_dispatch)(port, addr, pack, size, pf_param);
+	}
 
 	xdl_thread_uninit(0);
 

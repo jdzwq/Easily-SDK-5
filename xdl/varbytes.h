@@ -83,6 +83,16 @@ EXP_API byte_t* bytes_detach(byte_t** pp);
 EXP_API dword_t bytes_size(byte_t** pp);
 
 /*
+@FUNCTION bytes_copy: copy bytes from buffer.
+@INPUT byte_t** pp: the buffer address.
+@INPUT dword_t pos: the zero based position.
+@OUTPUT byte_t* sub: the sub buffer for returning copyed bytes.
+@INOUTPUT dword_t* plen: input the needed size and return the actual size copyed.
+@RETURN void: none.
+*/
+EXP_API void bytes_copy(byte_t** pp, dword_t pos, byte_t* sub, dword_t* plen);
+
+/*
 @FUNCTION bytes_insert: insert token into buffer.
 @INPUT byte_t** pp: the buffer address.
 @INPUT dword_t pos: the zero based position.
