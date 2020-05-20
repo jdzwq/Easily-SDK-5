@@ -19,7 +19,8 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdb_api.so.1.0 \
 	$(API_PATH)/libxdb_mysql.so.1.0 \
 	$(API_PATH)/libsms_api.so.1.0 \
-	$(API_PATH)/libsms_aliyun.so.1.0
+	$(API_PATH)/libsms_aliyun.so.1.0 \
+	$(API_PATH)/liboau_api.so.1.0
 
 EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
@@ -47,6 +48,7 @@ all:
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
 	cd $(CUR_PATH)/sms_api && make -f sms_api.so.mk
+	cd $(CUR_PATH)/oau_api && make -f oau_api.so.mk
 	cd $(CUR_PATH)/rad_api && make -f rad_api.so.mk
 	cd $(CUR_PATH)/sub_api && make -f sub_api.so.mk
 	cd $(CUR_PATH)/pub_api && make -f pub_api.so.mk
@@ -93,6 +95,9 @@ install:
 	if ! test -d $(SRV_PATH)/sms; then \
 	sudo mkdir $(SRV_PATH)/sms; \
 	fi
+	if ! test -d $(SRV_PATH)/oau; then \
+	sudo mkdir $(SRV_PATH)/oau; \
+	fi
 	if ! test -d $(SRV_PATH)/rad; then \
 	sudo mkdir $(SRV_PATH)/rad; \
 	fi
@@ -133,6 +138,7 @@ install:
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
 	cd $(CUR_PATH)/sms_api && make install -f sms_api.so.mk
+	cd $(CUR_PATH)/oau_api && make install -f oau_api.so.mk
 	cd $(CUR_PATH)/rad_api && make install -f rad_api.so.mk
 	cd $(CUR_PATH)/sub_api && make install -f sub_api.so.mk
 	cd $(CUR_PATH)/pub_api && make install -f pub_api.so.mk
