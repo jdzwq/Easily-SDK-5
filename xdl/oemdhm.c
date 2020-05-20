@@ -74,11 +74,11 @@ int dhm_read_params(dhm_context *ctx,
 	if (end - *p < 2)
 		return(ERR_DHM_BAD_INPUT_DATA);
 
-	n = ((*p)[0] << 8) | (*p)[1];
-	(*p) += 2;
+	//n = ((*p)[0] << 8) | (*p)[1];
+	//(*p) += 2;
 
-	if (end != *p + n)
-		return(ERR_DHM_BAD_INPUT_DATA);
+	//if (end != *p + n)
+	//	return(ERR_DHM_BAD_INPUT_DATA);
 
 	return(0);
 }

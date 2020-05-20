@@ -57,7 +57,7 @@ LICENSE.GPL3 for more details.
 @PROPER value: string.
 @GET get_json_item_value: get the josn text value.
 */
-#define get_json_item_value(ilk,token,max)				set_dom_node_text(ilk,token,max)
+#define get_json_item_value(ilk,token,max)				get_dom_node_text(ilk,token,max)
 /*
 @PROPER value: string.
 @SET set_json_item_value: set the josn item value.

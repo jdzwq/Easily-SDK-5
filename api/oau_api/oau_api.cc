@@ -28,6 +28,10 @@ LICENSE.GPL3 for more details.
 typedef struct _oau_block_t{
 	secu_desc_t sd;
 	tchar_t location[PATH_LEN];
+
+	tchar_t weiapp_access[PATH_LEN];
+	tchar_t weiapp_appid[KEY_LEN];
+	tchar_t weiapp_secret[KEY_LEN];
 }oau_block_t;
 
 
@@ -344,6 +348,165 @@ ONERROR:
 	return 0;
 }
 
+bool_t _invoke_weiapp_access(const https_block_t* pb, oau_block_t* pos)
+{
+	tchar_t sz_err[ERR_LEN + 1] = { 0 };
+	tchar_t sz_num[NUM_LEN + 1] = { 0 };
+
+	tchar_t sz_code[KEY_LEN] = { 0 };
+
+	xhand_t xh_weiapp = NULL;
+
+	tchar_t sz_openid[KEY_LEN] = { 0 };
+	tchar_t sz_session_key[KEY_LEN] = { 0 };
+	tchar_t sz_unionid[KEY_LEN] = { 0 };
+
+	link_t_ptr ptr_json = NULL;
+	link_t_ptr nlk;
+
+	tchar_t* sz_qry = NULL;
+	int len;
+
+	TRY_CATCH;
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
+
+		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+		sz_qry = xsalloc(len + 1);
+		len = xhttp_get_url_query(pb->http, sz_qry, len);
+
+		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+		xsfree(sz_qry);
+		sz_qry = NULL;
+	}
+
+	xhttp_get_url_query_entity(pb->http, _T("code"), -1, sz_code, KEY_LEN);
+
+	if (is_null(sz_code))
+	{
+		raise_user_error(_T("_invoke_weiapp_access"), _T("weixin login code not allow empty"));
+	}
+
+	xh_weiapp = xhttp_client(HTTP_METHOD_GET, pos->weiapp_access);
+	if (!xh_weiapp)
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	xhttp_set_request_default_header(xh_weiapp);
+	xhttp_set_request_content_type(xh_weiapp, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+
+	xhttp_set_url_query_entity(xh_weiapp, _T("appid"), -1, pos->weiapp_appid, -1);
+	xhttp_set_url_query_entity(xh_weiapp, _T("secret"), -1, pos->weiapp_secret, -1);
+	xhttp_set_url_query_entity(xh_weiapp, _T("js_code"), -1, sz_code, -1);
+	xhttp_set_url_query_entity(xh_weiapp, _T("grant_type"), -1, _T("authorization_code"), -1);
+
+	if (!xhttp_send_request(xh_weiapp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_recv_response(xh_weiapp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_get_response_state(xh_weiapp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	ptr_json = create_json_doc();
+
+	if (!xhttp_recv_json(xh_weiapp, ptr_json))
+	{
+		raise_user_error(_T("_invoke_weiapp_access"), _T("parse json doc failed"));
+	}
+
+	xhttp_close(xh_weiapp);
+	xh_weiapp = NULL;
+
+	nlk = get_json_first_child_item(ptr_json);
+	while (nlk)
+	{
+		if (compare_text(get_json_item_name_ptr(nlk), -1, _T("openid"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_openid, KEY_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("session_key"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_session_key, KEY_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("unionid"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_unionid, KEY_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("errcode"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_num, NUM_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("errmsg"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_err, ERR_LEN);
+
+		nlk = get_json_next_sibling_item(nlk);
+	}
+
+	destroy_json_doc(ptr_json);
+	ptr_json = NULL;
+
+	if (!is_null(sz_num) && xstol(sz_num) != 0)
+	{
+		raise_user_error(_T("_invoke_weiapp_access"), sz_err);
+	}
+
+	xhttp_set_response_default_header(pb->http);
+	xhttp_set_response_code(pb->http, HTTP_CODE_200);
+	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
+
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CACHECONTROL, -1, HTTP_HEADER_CACHECONTROL_NOSTORE, -1);
+
+	ptr_json = create_json_doc();
+
+	nlk = insert_json_item(ptr_json, LINK_LAST);
+	set_json_item_name(nlk, _T("openid"));
+	set_json_item_value(nlk, sz_openid);
+
+	nlk = insert_json_item(ptr_json, LINK_LAST);
+	set_json_item_name(nlk, _T("session_key"));
+	set_json_item_value(nlk, sz_session_key);
+
+	if (!xhttp_send_json(pb->http, ptr_json))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	destroy_json_doc(ptr_json);
+	ptr_json = NULL;
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+	get_last_error(sz_num, sz_err, ERR_LEN);
+
+	if (ptr_json)
+		destroy_json_doc(ptr_json);
+
+	if (xh_weiapp)
+		xhttp_close(xh_weiapp);
+
+	xhttp_send_error(pb->http, NULL, NULL, sz_num, sz_err, -1);
+
+	if (sz_qry)
+		xsfree(sz_qry);
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[OAUTH: 错误]"), -1);
+
+		(*pb->pf_log_error)(pb->log, sz_num, sz_err, -1);
+	}
+
+	return 0;
+}
+
 void _invoke_error(const https_block_t* pb, oau_block_t* pos)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
@@ -390,21 +553,25 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	pos = (oau_block_t*)xmem_alloc(sizeof(oau_block_t));
 
-	/*ptr_prop = create_proper_doc();
+	ptr_prop = create_proper_doc();
 
 	xsprintf(token, _T("%s/oau.ini"), pb->path);
 
-	if (!load_proper_doc_from_ini_file(ptr_prop, NULL, token))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
 	{
 		raise_user_error(_T("-1"), _T("load loc config falied\n"));
 	}
 
-	read_proper(ptr_prop, _T("OAU"), -1, _T("OAUATION"), -1, pos->local, PATH_LEN);
-	read_proper(ptr_prop, _T("OAU"), -1, _T("PUBLICKEY"), -1, pos->sd.public_key, KEY_LEN);
-	read_proper(ptr_prop, _T("OAU"), -1, _T("PRIVATEKEY"), -1, pos->sd.private_key, KEY_LEN);
+	read_proper(ptr_prop, _T("OAU"), -1, _T("LOCATION"), -1, pos->location, PATH_LEN);
+	read_proper(ptr_prop, _T("OAU"), -1, _T("PUBLICKEY"), -1, pos->sd.scr_uid, KEY_LEN);
+	read_proper(ptr_prop, _T("OAU"), -1, _T("PRIVATEKEY"), -1, pos->sd.scr_key, KEY_LEN);
+
+	read_proper(ptr_prop, _T("WEIAPP"), -1, _T("ACCESS"), -1, pos->weiapp_access, PATH_LEN);
+	read_proper(ptr_prop, _T("WEIAPP"), -1, _T("APPID"), -1, pos->weiapp_appid, KEY_LEN);
+	read_proper(ptr_prop, _T("WEIAPP"), -1, _T("SECRET"), -1, pos->weiapp_secret, KEY_LEN);
 
 	destroy_proper_doc(ptr_prop);
-	ptr_prop = NULL;*/
+	ptr_prop = NULL;
 
 	if (compare_text(pb->object, -1, _T("/auth_request"), -1, 1) == 0)
 		rt = _invoke_auth_request(pb, pos);
@@ -412,6 +579,9 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		rt = _invoke_auth_access(pb, pos);
 	else if (compare_text(pb->object, -1, _T("/auth_refresh"), -1, 1) == 0)
 		rt = _invoke_auth_refresh(pb, pos);
+
+	else if (compare_text(pb->object, -1, _T("/weiapp_access"), -1, 1) == 0)
+		rt = _invoke_weiapp_access(pb, pos);
 	else
 	{
 		raise_user_error(_T("oau_api"), _T("unknown loc method"));

@@ -661,6 +661,14 @@ int rsa_pkcs1_verify(rsa_context *ctx,
 			return(ERR_RSA_VERIFY_FAILED);
 	}
 
+	while (len >= hashlen)
+	{
+		if (memcmp(p, hash, hashlen) == 0)
+			return(0);
+		p++;
+		len--;
+	} 
+
 	return(ERR_RSA_INVALID_PADDING);
 }
 

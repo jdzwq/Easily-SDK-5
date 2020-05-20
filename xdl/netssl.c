@@ -58,16 +58,26 @@ typedef struct _ciphers_set{
 	int mate_size;
 }ciphers_set;
 
-static ciphers_set default_ciphers[] = {
+static ciphers_set client_ciphers[] = {
+	{ SSL_EDH_RSA_AES_256_SHA, 32, 32, 16, 20, 256 },
+	{ SSL_EDH_RSA_DES_168_SHA, 24, 24, 8, 20, 24 },
 	{ SSL_RSA_AES_128_SHA256,	16, 32, 16, 32, 128 },
 	{ SSL_RSA_AES_256_SHA256,	32, 32, 16, 32, 256 },
 	{ SSL_RSA_AES_128_SHA,		16, 32, 16, 20, 128 },
 	{ SSL_RSA_AES_256_SHA,		32, 32, 16, 20, 256 },
 	{ SSL_RSA_DES_168_SHA,		24, 24, 8, 20, 24 },
-	{ SSL_EDH_RSA_AES_256_SHA,	32, 32, 16, 20, 256 },
-	{ SSL_EDH_RSA_DES_168_SHA,	24, 24, 8, 20, 24 },
 	{ SSL_RSA_RC4_128_SHA,		16, 20, 0, 20, 16 },
 	{ SSL_RSA_RC4_128_MD5,		16, 16, 0, 16, 16 },
+};
+
+static ciphers_set server_ciphers[] = {
+	{ SSL_RSA_AES_128_SHA256, 16, 32, 16, 32, 128 },
+	{ SSL_RSA_AES_256_SHA256, 32, 32, 16, 32, 256 },
+	{ SSL_RSA_AES_128_SHA, 16, 32, 16, 20, 128 },
+	{ SSL_RSA_AES_256_SHA, 32, 32, 16, 20, 256 },
+	{ SSL_RSA_DES_168_SHA, 24, 24, 8, 20, 24 },
+	{ SSL_RSA_RC4_128_SHA, 16, 20, 0, 20, 16 },
+	{ SSL_RSA_RC4_128_MD5, 16, 16, 0, 16, 16 },
 };
 
 
@@ -95,6 +105,8 @@ typedef struct _ssl_t{
 	int alg_mac; //MACAlgorithm: enum { null, hmac_md5, hmac_sha1, hmac_sha256, hmac_sha384, hmac_sha512 }
 	int hash_size; //
 	int compress_method; //CompressionMethod: { null, (0), (255) }
+	int alg_hash; 
+	int alg_sign;
 	byte_t master_secret[SSL_MST_SIZE]; 
 	byte_t rnd_srv[SSL_RND_SIZE]; //server_random
 	byte_t rnd_cli[SSL_RND_SIZE]; //client_random
@@ -336,6 +348,9 @@ static void _ssl_init(ssl_t* pssl)
 
 	if (pssl->type == SSL_TYPE_CLIENT)
 	{
+		pssl->alg_hash = ALG_HASH_SHA256;
+		pssl->alg_sign = ALG_SIGN_RSA;
+
 		pssl->major_ver = pssl->cli_major_ver = SSL_MAJOR_VERSION_3;
 		pssl->minor_ver = pssl->cli_minor_ver = SSL_MINOR_VERSION_3;
 	}
@@ -400,19 +415,29 @@ static void _ssl_uninit(ssl_t* pssl)
 static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 {
 	int i, n;
+	ciphers_set* pcs;
 
-	n = sizeof(default_ciphers) / sizeof(ciphers_set);
+	if (pssl->type == SSL_TYPE_CLIENT)
+	{
+		n = sizeof(client_ciphers) / sizeof(ciphers_set);
+		pcs = client_ciphers;
+	}
+	else
+	{
+		n = sizeof(server_ciphers) / sizeof(ciphers_set);
+		pcs = client_ciphers;
+	}
 
 	for (i = 0; i < n; i++)
 	{
-		if (ciph == default_ciphers[i].cipher)
+		if (ciph == pcs[i].cipher)
 		{
-			pssl->cipher = default_ciphers[i].cipher;
-			pssl->key_size = default_ciphers[i].key_size;
-			pssl->min_size = default_ciphers[i].min_size;
-			pssl->iv_size = default_ciphers[i].iv_size;
-			pssl->hash_size = default_ciphers[i].hash_size;
-			pssl->mate_size = default_ciphers[i].mate_size;
+			pssl->cipher = pcs[i].cipher;
+			pssl->key_size = pcs[i].key_size;
+			pssl->min_size = pcs[i].min_size;
+			pssl->iv_size = pcs[i].iv_size;
+			pssl->hash_size = pcs[i].hash_size;
+			pssl->mate_size = pcs[i].mate_size;
 
 			return 1;
 		}
@@ -426,7 +451,7 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 {
 	byte_t rndb[SSL_RND_SIZE * 2] = { 0 };
-	byte_t keyblk[256] = { 0 };
+	byte_t keyblk[SSL_BLK_SIZE] = { 0 };
 
 	byte_t padding[16] = { 0 };
 	byte_t sha1sum[20] = { 0 };
@@ -1131,7 +1156,7 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 	xmem_copy(pssl->snd_msg + msglen, pssl->ses_id, n);
 	msglen += n;
 
-	n = sizeof(default_ciphers) / sizeof(ciphers_set);
+	n = sizeof(client_ciphers) / sizeof(ciphers_set);
 
 	//cipher list length
 	PUT_SWORD_NET(pssl->snd_msg, msglen, n * 2);
@@ -1140,7 +1165,7 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 	for (i = 0; i < n; i++)
 	{
 		//cipher
-		PUT_SWORD_NET(pssl->snd_msg, msglen, default_ciphers[i].cipher);
+		PUT_SWORD_NET(pssl->snd_msg, msglen, client_ciphers[i].cipher);
 		msglen += 2;
 	}
 
@@ -1222,12 +1247,12 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 		extlen += 2;
 
 		//HashAlgorithm
-		PUT_BYTE(pssl->snd_msg, msglen, ALG_HASH_SHA256);
+		PUT_BYTE(pssl->snd_msg, msglen, pssl->alg_hash);
 		msglen++;
 		extlen++;
 
 		//SignatureAlgorithm
-		PUT_BYTE(pssl->snd_msg, msglen, ALG_SIGN_RSA);
+		PUT_BYTE(pssl->snd_msg, msglen, pssl->alg_sign);
 		msglen++;
 		extlen++;
 	}
@@ -1514,6 +1539,7 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 	md5_context md5;
 	sha1_context sha1;
 	sha2_context sha2;
+	int alg_hash, alg_sign;
 
 	if (pssl->cipher != SSL_EDH_RSA_DES_168_SHA && pssl->cipher != SSL_EDH_RSA_AES_256_SHA)
 	{
@@ -1557,6 +1583,23 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 	{
 		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context length"), -1);
 		return SSL_HANDSHAKE_ERROR;
+	}
+
+	if (pssl->minor_ver == SSL_MINOR_VERSION_3)
+	{
+		alg_hash = *p;
+		p++;
+
+		alg_sign = *p;
+		p++;
+
+		n = GET_SWORD_NET(p, 0);
+		p += 2;
+	}
+	else
+	{
+		n = GET_SWORD_NET(p, 0);
+		p += 2;
 	}
 
 	if ((int)(end - p) != pssl->crt_pe->rsa.len)
@@ -1838,7 +1881,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 	*/
 
 	int pos, n, msglen = SSL_HSH_SIZE;
-	byte_t premaster[2 + SSL_MST_SIZE] = {0};
+	byte_t premaster[SSL_BLK_SIZE] = {0};
 	int prelen = SSL_MST_SIZE;
 
 	//0:	handshake type
@@ -2402,7 +2445,6 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 	int i, j, n;
 	int ciph;
 	int type;
-	int alg_hash, alg_sign;
 	byte_t* ciph_buf;
 
 	if (C_OK != _ssl_read_rcv_msg(pssl))
@@ -2477,13 +2519,13 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 	ciph_buf = pssl->rcv_msg + msglen;
 	ciph = 0;
-	n = sizeof(default_ciphers) / sizeof(ciphers_set);
+	n = sizeof(server_ciphers) / sizeof(ciphers_set);
 	for (i = 0; i < n; i++)
 	{
 		for (j = 0; j < ciphlen; j += 2)
 		{
 			ciph = GET_SWORD_NET(ciph_buf, j);
-			if (ciph == default_ciphers[i].cipher)
+			if (ciph == server_ciphers[i].cipher)
 				break;
 		}
 
@@ -2545,12 +2587,12 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 
 			while (lstlen)
 			{
-				alg_hash = GET_BYTE(pssl->rcv_msg, msglen);
+				pssl->alg_hash = GET_BYTE(pssl->rcv_msg, msglen);
 				msglen++;
 				lstlen--;
 				extlen--;
 
-				alg_sign = GET_BYTE(pssl->rcv_msg, msglen);
+				pssl->alg_sign = GET_BYTE(pssl->rcv_msg, msglen);
 				msglen++;
 				lstlen--;
 				extlen--;
@@ -3115,7 +3157,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 	} ClientKeyExchange;
 	*/
 	int haslen, i, n, msglen = SSL_HSH_SIZE;
-	byte_t premaster[2 + SSL_MST_SIZE] = { 0 };
+	byte_t premaster[SSL_BLK_SIZE] = { 0 };
 	int prelen = SSL_MST_SIZE;
 	int alg_hash, alg_sign;
 

@@ -231,6 +231,7 @@ void xportd_start()
 	xsprintf(sz_file, _T("Service Root Path: %s\r\n"), sz_root);
 	xportm_log_info(sz_file, -1);
 
+	xszero(sz_root, PATH_LEN);
 	get_envvar(XSERVICE_DATA, sz_root, PATH_LEN);
 	xsprintf(sz_file, _T("Service Data Path: %s\r\n"), sz_root);
 	xportm_log_info(sz_file, -1);
