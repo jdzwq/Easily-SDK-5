@@ -3614,7 +3614,10 @@ bool_t xhttp_send_string(xhand_t xhttp, string_t var)
 
 	XDL_ASSERT(phttp->send_stream != NULL);
 
-	return stream_write_line(phttp->send_stream, var, NULL);
+	if (!stream_write_line(phttp->send_stream, var, NULL))
+		return 0;
+
+	return stream_flush(phttp->send_stream);
 }
 
 bool_t xhttp_recv_string(xhand_t xhttp, string_t var)

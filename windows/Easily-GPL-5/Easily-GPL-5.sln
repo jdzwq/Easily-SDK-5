@@ -69,6 +69,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "regex", "..\regex\regex.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hdf", "..\hdf\hdf.vcxproj", "{C2DE8936-0B95-4310-8D09-74A980472887}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "coap", "..\coap\coap.vcxproj", "{4A7D5A08-999B-4D92-A3BD-452D669840C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -473,6 +475,18 @@ Global
 		{C2DE8936-0B95-4310-8D09-74A980472887}.Release|Win32.ActiveCfg = Release|Win32
 		{C2DE8936-0B95-4310-8D09-74A980472887}.Release|Win32.Build.0 = Release|Win32
 		{C2DE8936-0B95-4310-8D09-74A980472887}.Release|x64.ActiveCfg = Release|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Debug|Win32.Build.0 = Debug|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Debug|x64.ActiveCfg = Debug|x64
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Debug|x64.Build.0 = Debug|x64
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Release|Win32.ActiveCfg = Release|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Release|Win32.Build.0 = Release|Win32
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Release|x64.ActiveCfg = Release|x64
+		{4A7D5A08-999B-4D92-A3BD-452D669840C2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

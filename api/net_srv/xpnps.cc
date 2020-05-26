@@ -118,8 +118,6 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	TRY_CATCH;
 
-	_xpnps_log_request(port, addr);
-
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
 
 	_xpnps_get_config(sz_site, sz_path, sz_proc);
@@ -171,6 +169,8 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	free_library(api);
 	api = NULL;
 
+	_xpnps_log_request(port, addr);
+
 	END_CATCH;
 
 	return;
@@ -179,14 +179,16 @@ ONERROR:
 
 	get_last_error(errcode, errtext, ERR_LEN);
 
+	if (api)
+		free_library(api);
+
+	_xpnps_log_request(port, addr);
+
 	if (pb)
 	{
 		_xpnps_track_error((void*)pb, errcode, errtext);
 		xmem_free(pb);
 	}
-
-	if (api)
-		free_library(api);
 
 	return;
 }

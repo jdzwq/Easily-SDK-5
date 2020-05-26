@@ -49,17 +49,5 @@ bool_t get_ssl_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_
 
 bool_t get_ssh_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_t* pb);
 
-typedef struct _cert_t{
-	xhand_t		srv_crt;
-	xhand_t		srv_key;
-	int			ca_count;
-	xhand_t*	ca_chain;
-}cert_t;
-
-cert_t* alloc_certs(int secu, const tchar_t* sz_path);
-
-void free_certs(cert_t* pcrt);
-
-bool_t set_certs(int secu, const tchar_t* pass, xhand_t bio);
 
 #endif //_SRVCERT_H

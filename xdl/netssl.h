@@ -42,6 +42,13 @@ LICENSE.GPL3 for more details.
 #define SSL_MINOR_VERSION_2             2 //TLS v1.1
 #define SSL_MINOR_VERSION_3             3 //TLS v1.2
 
+typedef enum{
+	SSLv30 = 0,
+	TLSv10 = 1,
+	TLSv11 = 2,
+	TLSv12 = 3
+}TLSVER;
+
 #define SSL_MSG_CHANGE_CIPHER_SPEC     20
 #define SSL_MSG_ALERT                  21
 #define SSL_MSG_HANDSHAKE              22
@@ -253,30 +260,27 @@ EXP_API void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn);
 @FUNCTION xssl_set_ca: set SSL root certificate.
 @INPUT xhand_t ssl: the SSL handle.
 @INPUT const byte_t* sz_cert: the cerificate bytes buffer.
-@INPUT dword_t clen: the data size in bytes.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-EXP_API bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
-
-/*
-@FUNCTION xssl_set_cert: set SSL owner certificate.
-@INPUT xhand_t ssl: the SSL handle.
-@INPUT const byte_t* sz_cert: the cerificate bytes buffer.
-@INPUT dword_t clen: the data size in bytes.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-EXP_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen);
-
-/*
-@FUNCTION xssl_set_rsa: set SSL private rsa key.
-@INPUT xhand_t ssl: the SSL handle.
+@INPUT dword_t clen: the cert data size in bytes.
 @INPUT const byte_t* sz_rsa: the rsa key bytes buffer.
 @INPUT dword_t rlen: the rsa data size in bytes.
 @INPUT const byte_t* sz_pwd: the password key bytes buffer.
 @INPUT dword_t plen: the password data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t xssl_set_rsa(xhand_t ssl, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int plen);
+EXP_API bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int plen);
+
+/*
+@FUNCTION xssl_set_cert: set SSL owner certificate.
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT const byte_t* sz_cert: the cerificate bytes buffer.
+@INPUT dword_t clen: the cert data size in bytes.
+@INPUT const byte_t* sz_rsa: the rsa key bytes buffer.
+@INPUT dword_t rlen: the rsa data size in bytes.
+@INPUT const byte_t* sz_pwd: the password key bytes buffer.
+@INPUT dword_t plen: the password data size in bytes.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int plen);
 
 /*
 @FUNCTION xssl_set_dhm: set SSL dhm key.
@@ -291,10 +295,17 @@ EXP_API bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_P, const byte_t *dhm_
 @FUNCTION xssl_set_auth: set SSL authorization mode.
 @INPUT xhand_t ssl: the SSL handle.
 @INPUT int srv_verify: the certify verify mode, it can be SSL_VERIFY_NONE, SSL_VERIFY_OPTIONAL, SSL_VERIFY_REQUIRED.
-@INPUT bool_t cli_auth: the client authorization mode.
 @RETURN void: none.
 */
-EXP_API void xssl_set_verify(xhand_t ssl, int srv_verify, bool_t cli_auth);
+EXP_API void xssl_set_verify(xhand_t ssl, int srv_verify);
+
+/*
+@FUNCTION xssl_set_version: set SSL/TLS maximized version
+@INPUT xhand_t ssl: the SSL handle.
+@INPUT int cli_ver: the client maximized version it can be SSLv30, TLSv10, TLSv11, TLSv12.
+@RETURN void: none.
+*/
+EXP_API void xssl_set_version(xhand_t ssl, int cli_ver);
 
 #ifdef	__cplusplus
 }

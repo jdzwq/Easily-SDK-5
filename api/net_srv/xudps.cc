@@ -128,8 +128,6 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(_T("_xudps_invoke"), _T("unknown destinction addr\n"));
 	}
 
-	_xudps_log_request(port, addr);
-
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
 
 	_xudps_get_config(sz_site, sz_path, sz_proc);
@@ -184,6 +182,8 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	free_library(api);
 	api = NULL;
 
+	_xudps_log_request(port, addr);
+
 	END_CATCH;
 
 	return;
@@ -192,14 +192,16 @@ ONERROR:
 
 	get_last_error(errcode, errtext, ERR_LEN);
 
+	_xudps_log_request(port, addr);
+
+	if (api)
+		free_library(api);
+
 	if (pb)
 	{
 		_xudps_track_error((void*)pb, errcode, errtext);
 		xmem_free(pb);
 	}
-
-	if (api)
-		free_library(api);
 
 	return;
 }

@@ -695,7 +695,7 @@ int x509parse_crt(x509_cert *chain, unsigned char *buf, int buflen)
 		s2 += 25;
 		if (*s2 == '\r') s2++;
 		if (*s2 == '\n') s2++;
-		else
+		else if (*s2 != '\0')
 		{
 			free(p);
 			return(ERR_X509_CERT_INVALID_PEM);

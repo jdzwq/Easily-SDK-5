@@ -54,7 +54,7 @@ bool_t _export_file(xdb_t xdb, const tchar_t* sql, const tchar_t* fname)
 
 	if (compare_text(fname,4,_T("cons"),4,1) == 0)
 	{
-		con = xcons_stdout();
+		//con = xcons_stdout();
 		if (!con)
 			return 0;
 
@@ -88,7 +88,11 @@ bool_t _export_file(xdb_t xdb, const tchar_t* sql, const tchar_t* fname)
 
 		stream_set_encode(xs, _UTF8);
 
-		rt = (*pf_db_export)(xdb, xs, sql);
+		rt = (*pf_db_export)(xdb, NULL, sql);
+		if (rt)
+		{
+			rt = (*pf_db_export)(xdb, xs, sql);
+		}
 
 		stream_free(xs);
 		xfile_close(xf);
@@ -133,6 +137,7 @@ bool_t _import_file(xdb_t xdb, const tchar_t* table, const tchar_t* fname)
 
 	stream_set_encode(xs, encode);
 	stream_set_mode(xs, LINE_OPERA);
+	stream_write_utfbom(xs, NULL);
 
 	rt = (*pf_db_import)(xdb, xs, table);
 

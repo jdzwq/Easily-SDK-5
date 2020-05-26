@@ -89,7 +89,7 @@ static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* 
 	destroy_xml_doc(ptr_cfg);
 }
 
-static void _xhttps_log_request(xhand_t http)
+static void _xhttps_log_head(xhand_t http)
 {
 	tchar_t token[RES_LEN + 1] = { 0 };
 	int len;
@@ -103,38 +103,29 @@ static void _xhttps_log_request(xhand_t http)
 
 	xportm_log_info(token, len);
 
-	size = xhttp_format_request(http, NULL, MAX_LONG);
-	sz_buf = (byte_t*)xmem_alloc(size + 1);
-	xhttp_format_request(http, sz_buf, size);
+	if (xhttp_is_requested(http))
+	{
+		size = xhttp_format_request(http, NULL, MAX_LONG);
+		sz_buf = (byte_t*)xmem_alloc(size + 1);
+		xhttp_format_request(http, sz_buf, size);
 
-	xportm_log_data(sz_buf, size);
+		xportm_log_data(sz_buf, size);
 
-	xmem_free(sz_buf);
-	sz_buf = NULL;
-}
+		xmem_free(sz_buf);
+		sz_buf = NULL;
+	}
 
-static void _xhttps_log_response(xhand_t http)
-{
-	tchar_t token[RES_LEN + 1] = { 0 };
-	int len;
-	byte_t* sz_buf = NULL;
-	dword_t size = 0;
+	if (xhttp_is_responsed(http))
+	{
+		size = xhttp_format_response(http, NULL, MAX_LONG);
+		sz_buf = (byte_t*)xmem_alloc(size + 1);
+		xhttp_format_response(http, sz_buf, size);
 
-	xscpy(token, _T("["));
-	xhttp_peer_port(http, token + 1);
-	len = xslen(token);
-	len += xsprintf(token + len, _T(" :%d]\r\n"), thread_get_id());
+		xportm_log_data(sz_buf, size);
 
-	xportm_log_info(token, len);
-
-	size = xhttp_format_response(http, NULL, MAX_LONG);
-	sz_buf = (byte_t*)xmem_alloc(size + 1);
-	xhttp_format_response(http, sz_buf, size);
-
-	xportm_log_data(sz_buf, size);
-
-	xmem_free(sz_buf);
-	sz_buf = NULL;
+		xmem_free(sz_buf);
+		sz_buf = NULL;
+	}
 }
 
 static bool_t _xhttps_licence(xhand_t http, const tchar_t* site, tchar_t* hmac)
@@ -257,6 +248,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	tchar_t sz_cert[RES_LEN] = { 0 };
     tchar_t sz_name[RES_LEN] = { 0 };
 	tchar_t sz_pass[NUM_LEN] = { 0 };
+	tchar_t sz_ca[RES_LEN] = { 0 };
 	int n_state = 0;
 
 	xhttps_param_t* pxp = (xhttps_param_t*)p;
@@ -271,7 +263,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
     byte_t* buf_crt = NULL;
     byte_t* buf_key = NULL;
-	dword_t dw;
+	dword_t dw_crt, dw_key;
 
 	xhand_t bio = NULL;
 
@@ -292,49 +284,75 @@ void _xhttps_dispatch(xhand_t http, void* p)
         get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
         get_param_item(pxp->sz_param, _T("NAME"), sz_name, RES_LEN);
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
+		get_param_item(pxp->sz_param, _T("CA"), sz_ca, RES_LEN);
 
-		dw = X509_CERT_SIZE;
-        buf_crt = (byte_t*)xmem_alloc(dw);
+		dw_crt = X509_CERT_SIZE;
+        buf_crt = (byte_t*)xmem_alloc(dw_crt);
         
-		if (!get_ssl_crt(sz_path, sz_name, buf_crt, &dw))
+		if (!get_ssl_crt(sz_path, sz_name, buf_crt, &dw_crt))
 		{
 			raise_user_error(_T("_https_invoke"), _T("http get ssl certif failed"));
 		}
 
-		xssl_set_cert(bio, buf_crt, dw);
-        
-        xmem_free(buf_crt);
-        buf_crt = NULL;
+		dw_key = RSA_KEY_SIZE;
+		buf_key = (byte_t*)xmem_alloc(dw_key);
 
-		dw = RSA_KEY_SIZE;
-        buf_key = (byte_t*)xmem_alloc(dw);
-        
-		if (!get_ssl_key(sz_path, sz_name, buf_key, &dw))
+		if (!get_ssl_key(sz_path, sz_name, buf_key, &dw_key))
 		{
 			raise_user_error(_T("_https_invoke"), _T("http get ssl rsa key failed"));
 		}
 
-		xssl_set_rsa(bio, buf_key, dw, sz_pass, -1);
+		xssl_set_cert(bio, buf_crt, dw_crt, buf_key, dw_key, sz_pass, -1);
         
+        xmem_free(buf_crt);
+        buf_crt = NULL;
+
         xmem_free(buf_key);
         buf_key = NULL;
 
+		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0 || compare_text(sz_cert, 5, _T("SSL_1"), 5, 1) == 0)
+		{
+			dw_crt = X509_CERT_SIZE;
+			buf_crt = (byte_t*)xmem_alloc(dw_crt);
+
+			if (!get_ssl_crt(sz_path, sz_ca, buf_crt, &dw_crt))
+			{
+				raise_user_error(_T("_https_invoke"), _T("http get ssl certif failed"));
+			}
+
+			dw_key = RSA_KEY_SIZE;
+			buf_key = (byte_t*)xmem_alloc(dw_key);
+
+			if (!get_ssl_key(sz_path, sz_ca, buf_key, &dw_key))
+			{
+				raise_user_error(_T("_https_invoke"), _T("http get ssl rsa key failed"));
+			}
+
+			xssl_set_ca(bio, buf_crt, dw_crt, buf_key, dw_key, NULL, 0);
+
+			xmem_free(buf_crt);
+			buf_crt = NULL;
+
+			xmem_free(buf_key);
+			buf_key = NULL;
+		}
+
 		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0)
-			xssl_set_verify(bio, SSL_VERIFY_REQUIRED, 0);
+			xssl_set_verify(bio, SSL_VERIFY_REQUIRED);
 		else if (compare_text(sz_cert, 5, _T("SSL_1"), 5, 1) == 0)
-			xssl_set_verify(bio, SSL_VERIFY_OPTIONAL, 0);
+			xssl_set_verify(bio, SSL_VERIFY_OPTIONAL);
 		else
-			xssl_set_verify(bio, SSL_VERIFY_NONE, 0);
+			xssl_set_verify(bio, SSL_VERIFY_NONE);
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{
         get_param_item(pxp->sz_param, _T("NAME"), sz_name, RES_LEN);
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
 
-		dw = RSA_KEY_SIZE;
-        buf_key = (byte_t*)xmem_alloc(dw);
+		dw_key = RSA_KEY_SIZE;
+        buf_key = (byte_t*)xmem_alloc(dw_key);
         
-		if (!get_ssh_key(sz_path, sz_name, buf_key, &dw))
+		if (!get_ssh_key(sz_path, sz_name, buf_key, &dw_key))
 		{
 			raise_user_error(_T("_https_invoke"), _T("http get ssh rsa key failed"));
 		}
@@ -354,8 +372,6 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 		raise_user_error(NULL, NULL);
 	}
-
-	_xhttps_log_request(http);
 
 	xhttp_get_url_method(http, sz_method, RES_LEN);
 	xhttp_get_url_object(http, sz_object, PATH_LEN);
@@ -496,7 +512,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	free_library(api);
 	api = NULL;
 
-	_xhttps_log_response(http);
+	_xhttps_log_head(http);
 
 	END_CATCH;
 
@@ -526,7 +542,7 @@ ONERROR:
 	if (api)
 		free_library(api);
 
-	_xhttps_log_response(http);
+	_xhttps_log_head(http);
 
 	return;
 }

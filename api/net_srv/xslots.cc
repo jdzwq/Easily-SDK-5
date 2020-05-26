@@ -158,11 +158,9 @@ void _xslots_dispatch(xhand_t slot, void* p)
 
 	byte_t buf_crt[X509_CERT_SIZE] = { 0 };
 	byte_t buf_key[RSA_KEY_SIZE] = { 0 };
-	dword_t dw;
+	dword_t dw_crt, dw_key;
 
 	TRY_CATCH;
-
-	_xslots_log_request(slot);
 
 	get_envvar(XSERVICE_ROOT, sz_path, PATH_LEN);
 
@@ -178,36 +176,34 @@ void _xslots_dispatch(xhand_t slot, void* p)
         get_param_item(pxp->sz_param, _T("NAME"), sz_name, RES_LEN);
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
 
-		dw = X509_CERT_SIZE;
-		if (!get_ssl_crt(sz_path, sz_name, buf_crt, &dw))
+		dw_crt = X509_CERT_SIZE;
+		if (!get_ssl_crt(sz_path, sz_name, buf_crt, &dw_crt))
 		{
 			raise_user_error(_T("_slots_invoke"), _T("http get ssl certif failed"));
 		}
 
-		xssl_set_cert(slot, buf_crt, dw);
-
-		dw = RSA_KEY_SIZE;
-		if (!get_ssl_key(sz_path, sz_name, buf_key, &dw))
+		dw_key = RSA_KEY_SIZE;
+		if (!get_ssl_key(sz_path, sz_name, buf_key, &dw_key))
 		{
 			raise_user_error(_T("_slots_invoke"), _T("http get ssl rsa key failed"));
 		}
 
-		xssl_set_rsa(slot, buf_key, dw, sz_pass, -1);
+		xssl_set_cert(slot, buf_crt, dw_crt, buf_key, dw_key, sz_pass, -1);
 
 		if (compare_text(sz_cert, 5, _T("SSL_2"), 5, 1) == 0)
-			xssl_set_verify(slot, SSL_VERIFY_REQUIRED, 0);
+			xssl_set_verify(slot, SSL_VERIFY_REQUIRED);
 		else if (compare_text(sz_cert, 5, _T("SSL_1"), 5, 1) == 0)
-			xssl_set_verify(slot, SSL_VERIFY_OPTIONAL, 0);
+			xssl_set_verify(slot, SSL_VERIFY_OPTIONAL);
 		else
-			xssl_set_verify(slot, SSL_VERIFY_NONE, 0);
+			xssl_set_verify(slot, SSL_VERIFY_NONE);
 	}
 	else if (pxp->n_secu == _SECU_SSH)
 	{
         get_param_item(pxp->sz_param, _T("NAME"), sz_name, RES_LEN);
 		get_param_item(pxp->sz_param, _T("PASS"), sz_pass, NUM_LEN);
 
-		dw = RSA_KEY_SIZE;
-		if (!get_ssh_key(sz_path, sz_name, buf_key, &dw))
+		dw_key = RSA_KEY_SIZE;
+		if (!get_ssh_key(sz_path, sz_name, buf_key, &dw_key))
 		{
 			raise_user_error(_T("_slots_invoke"), _T("http get ssh rsa key failed"));
 		}
@@ -263,6 +259,8 @@ void _xslots_dispatch(xhand_t slot, void* p)
 	free_library(api);
 	api = NULL;
 
+	_xslots_log_request(slot);
+
 	END_CATCH;
 
 	return;
@@ -270,15 +268,17 @@ void _xslots_dispatch(xhand_t slot, void* p)
 ONERROR:
 	get_last_error(errcode, errtext, ERR_LEN);
 
-	if (pb)
-	{
-		_xslots_track_error((void*)pb, errcode, errtext);
-		xmem_free(pb);
-	}
+	_xslots_log_request(slot);
 
 	if (api)
 	{
 		free_library(api);
+	}
+
+	if (pb)
+	{
+		_xslots_track_error((void*)pb, errcode, errtext);
+		xmem_free(pb);
 	}
 
 	return;

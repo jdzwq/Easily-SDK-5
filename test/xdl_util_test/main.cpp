@@ -35,10 +35,33 @@ void test_utc()
 	int rt = compare_datetime(&dt, &dt2);
 }
 
+void test_func(int a, ...)
+{
+	va_list args;
+
+	va_start(args, a);
+
+	char c = (char)va_arg(args, int);
+
+	int b = va_arg(args, int);
+
+	va_end(args);
+}
+
 void test_printf()
 {
 	char tmp[100] = { 0 };
 	int len = a_xsprintf(tmp, "%d '%Y-%m-%d %H:%i') as DT", -1);
+
+	tchar_t buf[20] = {0};
+
+	sprintf(buf,  _T("%c"),  _T('W'));
+
+	//test_func(10, _T('0'), 10);
+
+	xsprintf(buf, _T("%s%"),  _T("hello"));
+
+	printf(buf);
 }
 
 void test_path()
@@ -78,9 +101,9 @@ int main(int argc, char* argv[])
 
 	//test_mem();
 
-	test_utc();
+	//test_utc();
 
-	//test_printf();
+	test_printf();
 
 	//test_path2();
 

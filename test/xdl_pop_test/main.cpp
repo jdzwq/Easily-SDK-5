@@ -10,9 +10,9 @@
 #define SECRET_ID		_T("2a2f69763c897300efe63c0c5c08d1c7")
 #define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
 
-#define SMS_URL		_T("https://118.178.180.81")
+//#define SMS_URL		_T("https://118.178.180.81")
 //#define SMS_URL		_T("http://127.0.0.1:8889")
-//#define SMS_URL		_T("http://www.biofolia.cn:8889")
+#define SMS_URL		_T("http://www.biofolia.cn:8889")
 
 #ifdef _OS_WINDOWS
 #define SMS_MODULE		_T("sms_aliyun.dll")

@@ -7,7 +7,8 @@
 #define AS_URL_AUTH_ACCESS		_T("http://172.16.190.190:8889/oau/auth_access?")
 #define AS_URL_AUTH_REFRESH		_T("http://127.0.0.1:8889/oau/auth_refresh?")
 //#define AS_URL_AUTH_WEIAPP		_T("https://127.0.0.1:8888/oau/weiapp_access?")
-#define AS_URL_AUTH_WEIAPP		_T("https://118.178.180.81/oau/weiapp_access?")
+//#define AS_URL_AUTH_WEIAPP		_T("https://118.178.180.81/oau/weiapp_access?")
+#define AS_URL_AUTH_WEIAPP		_T("https://www.biofolia.cn:8888/oau/weiapp_access")
 
 void _test_implicit()
 {

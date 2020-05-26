@@ -17,29 +17,30 @@ void set_ssl(xhand_t ssl)
     file_t xf;
     byte_t buf_crt[X509_CERT_SIZE] = { 0 };
     byte_t buf_rsa[RSA_KEY_SIZE] = { 0 };
-    dword_t dw;
+	dword_t dw_crt = 0;
+	dword_t dw_key = 0;
     
     xf = xfile_open(NULL, _T("../sbin/ssl/sslsrv.crt"), 0);
     if (xf)
     {
-        dw = X509_CERT_SIZE;
-        xfile_read(xf, buf_crt, dw);
-        
-        xssl_set_cert(ssl, buf_crt, X509_CERT_SIZE);
+        dw_crt = X509_CERT_SIZE;
+        xfile_read(xf, buf_crt, dw_crt);
+		dw_crt = a_xslen((schar_t*)buf_crt);
+       
         xfile_close(xf);
     }
     
     xf = xfile_open(NULL, _T("../sbin/ssl/sslsrv.key"), 0);
     if (xf)
     {
-        dw = RSA_KEY_SIZE;
-        xfile_read(xf, buf_rsa, dw);
-        
-        xssl_set_rsa(ssl, buf_rsa, RSA_KEY_SIZE, _T("123456"), -1);
+        dw_key = RSA_KEY_SIZE;
+        xfile_read(xf, buf_rsa, dw_key);
+		dw_key = a_xslen((schar_t*)buf_rsa);
+
         xfile_close(xf);
     }
-    
-    xssl_set_verify(ssl, SSL_VERIFY_NONE, 0);
+
+	xssl_set_cert(ssl, buf_crt, dw_crt, buf_rsa, dw_key, _T("123456"), -1);
 }
 
 void test_https_get()
@@ -248,6 +249,8 @@ void test_ssl_cli()
     if(!ssl)
         return;
     
+	set_ssl(ssl);
+
     byte_t buf[100] = {0};
     dword_t dw = 100;
     xssl_write(ssl, buf, &dw);
