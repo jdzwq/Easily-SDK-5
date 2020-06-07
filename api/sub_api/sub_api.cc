@@ -76,22 +76,16 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 	object_t val = NULL;
-	int encode;
-	byte_t* buf = NULL;
-	dword_t total = 0;
-	dword_t obj_len;
-	byte_t* sub_buf;
-	dword_t sub_len;
-	byte_t* han_buf;
-	sword_t han_len;
-	byte_t* msg_buf;
-	dword_t msg_len;
 
 	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
-	byte_t ver[5] = { 0 };
 	MQTT_PACKET_CTRL mc = { 0 };
+
+	xdate_t dt;
+	rad_hdr_t hdr = { 0 };
+	dword_t dw = 0;
+	byte_t* buf = NULL;
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -101,6 +95,7 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 	TRY_CATCH;
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_publish"), _T("unknown kv database"));
@@ -121,7 +116,7 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 
 	if (is_null(pid))
 	{
-		xscpy(pid, SUB_TOPIC_CONFIG);
+		xscpy(pid, MSG_CONFIG);
 	}
 
 	key.vv = VV_STRING;
@@ -131,66 +126,36 @@ void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
 
 	hexkv_read(hkv, key, val);
 
-	encode = object_get_encode(val);
-
-	obj_len = object_get_bytes(val, NULL, MAX_LONG);
-
-	buf = (byte_t*)xmem_alloc(obj_len);
-
-	object_get_bytes(val, buf, obj_len);
-
-	while (total < obj_len)
+	while ((dw = radobj_read(val, &hdr, NULL, MAX_LONG)))
 	{
-		//the object size
-		sub_buf = buf + total + 4;
-		sub_len = GET_DWORD_NET((sub_buf - 4), 0);
-		if (sub_len > MAX_LONG)
-		{
-			raise_user_error(_T("_invoke_subcribe"), _T("invalid message total size"));
-		}
-		total += 4;
+		buf = (byte_t*)xmem_alloc(dw);
+		radobj_read(val, &hdr, buf, dw);
 
 		xmem_set((void*)&mc, 0, sizeof(MQTT_PACKET_CTRL));
 
-		//the object handler
-		han_buf = sub_buf + 2;
-		han_len = GET_SWORD_NET((han_buf - 2), 0);
-		if (han_len > MAX_SHORT)
+		if (hdr.ver[1] == 0x01)
 		{
-			raise_user_error(_T("_invoke_subcribe"), _T("invalid message handler size"));
+			mc.packet_qos = hdr.qos;
+			mc.packet_pid = hdr.mid;
 		}
-		total += 2;
-		xmem_copy((void*)ver, han_buf, SUBVER_SIZE);
-		if (ver[0] == 'M' && ver[1] == 'Q')
-		{
-			mc.packet_qos = (byte_t)GET_SWORD_NET(han_buf, 4);
-			mc.packet_pid = GET_SWORD_NET(han_buf, 6);
-		}
-		total += han_len;
-
-		//the object message
-		msg_buf = han_buf + han_len + 4;
-		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
-		if (msg_len > MAX_LONG)
-		{
-			raise_user_error(_T("_invoke_subcribe"), _T("invalid message element size"));
-		}
-		total += 4;
 
 		xmqtt_set_packet_ctrl(pd->mqtt, &mc);
 
-		if (!xmqtt_push_message(pd->mqtt, msg_buf, msg_len))
+		if (!xmqtt_push_message(pd->mqtt, buf, dw))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		total += msg_len;
+		xmem_free(buf);
+		buf = NULL;
+
+		parse_datetime(&dt, hdr.utc);
+		plus_millseconds(&dt, 1);
+		format_utctime(&dt, hdr.utc);
 	}
 
-	xmem_free(buf);
-	buf = NULL;
-
 	variant_to_null(&key);
+
 	object_free(val);
 	val = NULL;
 
@@ -242,6 +207,7 @@ void _invoke_unsubcribe(const slots_block_t* pb, mqtt_block_t* pd)
 	TRY_CATCH;
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_unsubcribe"), _T("unknown kv database"));
@@ -276,6 +242,9 @@ void _invoke_unsubcribe(const slots_block_t* pb, mqtt_block_t* pd)
 	hexkv_destroy(hkv);
 	hkv = NULL;
 
+	hexdb_destroy(hdb);
+	hdb = NULL;
+
 	xscpy(pd->code, _T("_invoke_unsubcribe"));
 	xscpy(pd->text, _T("Succeeded"));
 
@@ -290,6 +259,9 @@ ONERROR:
 
 	if (hkv)
 		hexkv_destroy(hkv);
+
+	if (hdb)
+		hexdb_destroy(hdb);
 
 	return;
 }

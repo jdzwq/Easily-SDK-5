@@ -33,6 +33,7 @@ LICENSE.GPL3 for more details.
 #include "xdlinit.h"
 #include "imperr.h"
 #include "impassert.h"
+#include "impjmp.h"
 #include "impmbcs.h"
 #include "oemacp.h"
 
@@ -128,6 +129,13 @@ void xdl_thread_init(int master)
 	pju->if_index = -1;
 	pju->if_size = 0;
 
+#ifdef XDK_SUPPORT_MEMO_HEAP
+	pju->err_buf = (*piv->pf_heap_alloc)(heap, 4096);
+#else
+	pju->err_buf = (*piv->pf_local_alloc)(4096);
+#endif
+	pju->err_size = 0;
+
 	XDL_ASSERT(g_xdl_mou.tls_thr_jump != 0);
 	(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_jump, (void*)pju);
 }
@@ -171,19 +179,6 @@ void xdl_thread_uninit(int error)
 	if (!pzn)
 		return;
 
-#ifdef XDL_SUPPORT_MEMO_DUMP
-	(*pit->pf_criti_enter)(g_xdl_mou.dump_crit);
-
-	if (!error)
-	{
-		xmem_dump();
-	}
-
-	delete_link(&g_xdl_mou.dump_link, &pzn->if_trak);
-
-	(*pit->pf_criti_leave)(g_xdl_mou.dump_crit);
-#endif
-
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	heap = pzn->if_heap;
 
@@ -204,13 +199,39 @@ void xdl_thread_uninit(int error)
 		{
 			XDL_ASSERT(pju->if_buf == NULL);
 		}
+
+		if (pju)
+		{
+			clear_jump();
+		}
+
 #ifdef XDK_SUPPORT_MEMO_HEAP
-		(*piv->pf_heap_free)(heap, (void*)pju);
+		if (pju->err_buf)
+			(*piv->pf_heap_free)(heap, (void*)pju->err_buf);
+		if(pju)
+			(*piv->pf_heap_free)(heap, (void*)pju);
 #else
-		(*piv->pf_local_free)((void*)pju);
+		if (pju->err_buf)
+			(*piv->pf_local_free)((void*)pju->err_buf);
+		if(pju)
+			(*piv->pf_local_free)((void*)pju);
 #endif
+
 		(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_jump, 0);
 	}
+
+#ifdef XDL_SUPPORT_MEMO_DUMP
+	(*pit->pf_criti_enter)(g_xdl_mou.dump_crit);
+
+	if (!error)
+	{
+		xmem_dump();
+	}
+
+	delete_link(&g_xdl_mou.dump_link, &pzn->if_trak);
+
+	(*pit->pf_criti_leave)(g_xdl_mou.dump_crit);
+#endif
 
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	(*piv->pf_heap_free)(heap, (void*)pzn);

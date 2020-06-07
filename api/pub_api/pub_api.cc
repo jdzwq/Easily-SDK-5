@@ -82,20 +82,10 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	sword_t sw = 0;
-
-	byte_t* buf = NULL;
-	dword_t total = 0;
-	dword_t obj_len;
-	byte_t* pub_buf;
-	dword_t pub_len;
-	byte_t* han_buf;
-	sword_t han_len;
-	byte_t* msg_buf;
-	dword_t msg_len;
-
 	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
+
+	rad_hdr_t hdr = { 0 };
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -103,11 +93,11 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 	tchar_t pid[UUID_LEN] = { 0 };
 
 	xdate_t dt;
-	tchar_t sz_date[UTC_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_publish"), _T("unknown kv database"));
@@ -128,7 +118,7 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 
 	if (is_null(pid))
 	{
-		xscpy(pid, PUB_TOPIC_CONFIG);
+		xscpy(pid, MSG_CONFIG);
 	}
 
 	key.vv = VV_STRING;
@@ -138,66 +128,13 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 
 	hexkv_read(hkv, key, val);
 
-	obj_len = object_get_bytes(val, NULL, MAX_LONG);
-
-	sw = 0;
-	sw |= pd->msg_qos;
-
 	get_utc_date(&dt);
-	format_utctime(&dt, sz_date);
 
-	/* the PDU:
-	struct object_list{
-		origin object_list entities; obj_len bytes
-		new object entity size; 4 bytes
-		new object hander size; 2 bytes
-		new object hander data; 8 bytes
-		new object message size; 4 bytes
-		new object message data; msg_len bytes
-	}
-	*/
-	total = 0;
-	buf = (byte_t*)xmem_alloc(obj_len + 4 + (2 + PUBHAN_SIZE) + (4 + pd->msg_len));
-	//copy origin object_list
-	object_get_bytes(val, buf, obj_len);
-	total += obj_len;
+	xmem_copy((void*)hdr.ver, (void*)MSGVER_DECTOR, MSGVER_SIZE);
+	hdr.qos = pd->msg_qos;
+	format_utctime(&dt, hdr.utc);
 
-	//the object total size
-	pub_buf = buf + obj_len + 4;
-	pub_len = ((2 + PUBHAN_SIZE) + (4 + pd->msg_len));
-	PUT_DWORD_NET((pub_buf - 4), 0, pub_len);
-	total += 4;
-
-	//the object handler size
-	han_buf = pub_buf + 2;
-	han_len = PUBHAN_SIZE;
-	PUT_SWORD_NET((han_buf - 2), 0, han_len);
-	total += 2;
-	//the object handler
-	xmem_copy((void*)(han_buf), (void*)PUBVER, PUBVER_SIZE);
-	PUT_SWORD_NET(han_buf, 4, sw);
-	PUT_SWORD_NET(han_buf, 6, pd->msg_pid);
-#if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(sz_date, UTC_LEN, (han_buf + 8), UTC_LEN);
-#else
-	mbs_to_utf8(sz_date, UTC_LEN, (han_buf + 8), UTC_LEN);
-#endif
-	total += han_len;
-
-	//the object message size
-	msg_buf = han_buf + PUBHAN_SIZE + 4;
-	msg_len = pd->msg_len;
-	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
-	total += 4;
-	//the object message
-	xmem_copy((void*)(msg_buf), pd->msg_buf, pd->msg_len);
-	total += pd->msg_len;
-
-	//set new object list
-	object_set_bytes(val, _UTF8, buf, total);
-
-	xmem_free(buf);
-	buf = NULL;
+	radobj_write(val, &hdr, pd->msg_buf, pd->msg_len);
 
 	hexkv_attach(hkv, key, val);
 	val = NULL;
@@ -219,9 +156,6 @@ void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
 ONERROR:
 
 	get_last_error(pd->code, pd->text, ERR_LEN);
-
-	if (buf)
-		xmem_free(buf);
 
 	variant_to_null(&key);
 

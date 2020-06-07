@@ -1211,6 +1211,9 @@ void reset_date(xdate_t* pmd)
 	pmd->year = 1970;
 	pmd->mon = 1;
 	pmd->day = 1;
+	pmd->hour = pmd->min = pmd->sec = 0;
+	pmd->millsec = 0;
+	pmd->wday = 0;
 }
 
 void parse_date(xdate_t* pmd, const tchar_t* text)
@@ -1219,9 +1222,12 @@ void parse_date(xdate_t* pmd, const tchar_t* text)
 	int i;
 	tchar_t token[5];
 
-	pmd->year = 2000;
+	pmd->year = 1970;
 	pmd->mon = 1;
 	pmd->day = 1;
+	pmd->hour = pmd->min = pmd->sec = 0;
+	pmd->millsec = 0;
+	pmd->wday = 0;
 
 	if (is_null(text))
 		return;
@@ -1278,10 +1284,12 @@ void parse_datetime(xdate_t* pmd, const tchar_t* text)
 	int i;
 	tchar_t token[5];
 
-	pmd->year = 2000;
+	pmd->year = 1970;
 	pmd->mon = 1;
 	pmd->day = 1;
 	pmd->hour = pmd->min = pmd->sec = 0;
+	pmd->millsec = 0;
+	pmd->wday = 0;
 
 	if(is_null(text))
 		return ;
@@ -1411,12 +1419,13 @@ void parse_gmttime(xdate_t* pdt, const tchar_t* str)
 	tchar_t* key;
 	int i, klen;
 
-	pdt->year = 2000;
+	pdt->year = 1970;
 	pdt->mon = 1;
 	pdt->day = 1;
 	pdt->hour = 0;
 	pdt->min = 0;
 	pdt->sec = 0;
+	pdt->millsec = 0;
 	pdt->wday = 0;
 
 	if (is_null(str))
@@ -1994,6 +2003,20 @@ void plus_seconds(xdate_t* pdt, int seconds)
 	}
 
 	pdt->sec = seconds;
+}
+
+void plus_millseconds(xdate_t* pdt, int ms)
+{
+	int seconds;
+
+	seconds = (pdt->millsec + ms) / 1000;
+
+	if (seconds)
+	{
+		plus_seconds(pdt, seconds);
+	}
+
+	pdt->millsec = (pdt->millsec + ms) % 1000;
 }
 
 void get_min_date(xdate_t* pdt)

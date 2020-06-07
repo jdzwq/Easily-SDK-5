@@ -635,6 +635,89 @@ void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len)
 	OBJECT_SET_ENCODE_SIZE(*pobj, len);
 }
 
+void object_add_bytes(object_t obj, const byte_t* buf, dword_t len)
+{
+	byte_t** pobj = (byte_t**)obj;
+	dword_t off;
+	byte_t type;
+	bool_t compre;
+	int encode;
+
+	XDL_ASSERT(obj != NULL);
+
+	type = OBJECT_GET_TYPE(*pobj);
+	compre = OBJECT_GET_COMPRESS(*pobj);
+	encode = OBJECT_GET_ENCODE(*pobj);
+
+	if (compre)
+	{
+		_object_decompress(pobj);
+	}
+
+	off = OBJECT_GET_ENCODE_SIZE(*pobj);
+
+	bytes_realloc(pobj, OBJECT_ENCODE_HEAD_SIZE + off + len);
+
+	xmem_copy((void*)(OBJECT_ENCODE_BUFFER(*pobj) + off), (void*)buf, len);
+
+	type = _OBJECT_BINARY;
+	//type
+	OBJECT_SET_TYPE(*pobj, type);
+	//set commpress bit
+	OBJECT_SET_COMPRESS(*pobj, 0);
+	//encode
+	OBJECT_SET_ENCODE(*pobj, encode);
+	//encodding bytes
+	OBJECT_SET_ENCODE_SIZE(*pobj, len + off);
+
+	if (compre)
+	{
+		_object_compress(pobj);
+	}
+}
+
+void object_del_bytes(object_t obj, dword_t off)
+{
+	byte_t** pobj = (byte_t**)obj;
+	dword_t len;
+	byte_t type;
+	bool_t compre;
+	int encode;
+
+	XDL_ASSERT(obj != NULL);
+
+	type = OBJECT_GET_TYPE(*pobj);
+	compre = OBJECT_GET_COMPRESS(*pobj);
+	encode = OBJECT_GET_ENCODE(*pobj);
+
+	if (compre)
+	{
+		_object_decompress(pobj);
+	}
+
+	len = OBJECT_GET_ENCODE_SIZE(*pobj);
+
+	if (len > off)
+	{
+		bytes_realloc(pobj, OBJECT_ENCODE_HEAD_SIZE + off);
+
+		type = _OBJECT_BINARY;
+		//type
+		OBJECT_SET_TYPE(*pobj, type);
+		//set commpress bit
+		OBJECT_SET_COMPRESS(*pobj, 0);
+		//encode
+		OBJECT_SET_ENCODE(*pobj, encode);
+		//encodding bytes
+		OBJECT_SET_ENCODE_SIZE(*pobj, off);
+	}
+
+	if (compre)
+	{
+		_object_compress(pobj);
+	}
+}
+
 dword_t object_get_bytes(object_t obj, byte_t* buf, dword_t max)
 {
 	byte_t** pobj = (byte_t**)obj;

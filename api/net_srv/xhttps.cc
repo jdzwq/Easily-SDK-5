@@ -279,6 +279,8 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		get_runpath((res_modu_t)0, sz_path, PATH_LEN);
 	}
 
+	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
+
 	if (pxp->n_secu == _SECU_SSL)
 	{
         get_param_item(pxp->sz_param, _T("CERT"), sz_cert, RES_LEN);
@@ -384,19 +386,16 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		raise_user_error(_T("_https_invoke"), _T("request header object is empty"));
 	}
 
-	xhttp_split_object(sz_object, sz_site, sz_res);
-
 	if (is_null(sz_site))
 	{
-		xscat(sz_site, _T("/"));
-		xscat(sz_site, XHTTPS_DEFAULT_SITE);
+		xhttp_split_object(sz_object, sz_site, sz_res);
+		_xhttps_get_config(sz_site + 1, sz_space, sz_path, sz_track, sz_level, sz_proc);
 	}
-	else if ((sz_site[0] == _T('/') || sz_site[0] == _T('\\')) && sz_site[1] == _T('\0'))
+	else
 	{
-		xscat(sz_site, XHTTPS_DEFAULT_SITE);
+		xscpy(sz_res, sz_object);
+		_xhttps_get_config(sz_site, sz_space, sz_path, sz_track, sz_level, sz_proc);
 	}
-
-	_xhttps_get_config(sz_site + 1, sz_space, sz_path, sz_track, sz_level, sz_proc);
 
 	if (is_null(sz_path))
 	{

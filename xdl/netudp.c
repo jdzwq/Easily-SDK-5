@@ -75,7 +75,7 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 
 	pudp->pkg_size = UDP_PDU_SIZE;
 
-	pudp->so = socket_udp(0, 0);
+	pudp->so = socket_udp(0, FILE_OPEN_OVERLAP);
 	if (pudp->so == INVALID_FILE)
 	{
 		xmem_free(pudp);
@@ -85,15 +85,15 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 #if defined(_DEBUG) || defined(DEBUG)
-	pudp->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
+	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO * 10, INVALID_FILE);
 #else
-	pudp->pov = async_alloc_lapp(ASYNC_BLOCK, UDP_BASE_TIMO, INVALID_FILE);
+	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
 #endif
 
-	pudp->snd_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
+	pudp->snd_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->snd_bys = 0;
 
-	pudp->rcv_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
+	pudp->rcv_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->rcv_bys = 0;
 	pudp->rcv_ret = 0;
 
@@ -105,7 +105,7 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	udp_t* pudp = NULL;
 	int zo;
 
-	if (size > UDP_PDU_SIZE)
+	if (size > MTU_MAX_SIZE)
 	{
 		set_last_error(_T("xudp_srv"), _T("too large package size"), -1);
 		return NULL;
@@ -119,7 +119,7 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	pudp->port = port;
 	xscpy(pudp->addr, addr);
 
-	pudp->pkg_size = UDP_PDU_SIZE;
+	pudp->pkg_size = (size > UDP_PDU_SIZE)? size : UDP_PDU_SIZE;
 
 	pudp->so = socket_udp(0, FILE_OPEN_OVERLAP);
 	if (pudp->so == INVALID_FILE)
@@ -131,15 +131,15 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
 #if defined(_DEBUG) || defined(DEBUG)
-	pudp->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
+	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO * 10, INVALID_FILE);
 #else
 	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
 #endif
 
-	pudp->snd_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
+	pudp->snd_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->snd_bys = 0;
 
-	pudp->rcv_pdu = (byte_t*)xmem_alloc(UDP_PDU_SIZE);
+	pudp->rcv_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->rcv_bys = 0;
 	pudp->rcv_ret = 0;
 
@@ -214,13 +214,11 @@ void xudp_set_package(xhand_t udp, dword_t size)
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	if (size > UDP_PDU_SIZE)
-	{
-		set_last_error(_T("xudp_set_package"), _T("too large package size"), -1);
-		return;
-	}
+	pudp->pkg_size = (size > UDP_PDU_SIZE) ? size : UDP_PDU_SIZE;
 
-	pudp->pkg_size = size;
+	pudp->snd_pdu = (byte_t*)xmem_realloc(pudp->snd_pdu, pudp->pkg_size);
+
+	pudp->rcv_pdu = (byte_t*)xmem_realloc(pudp->rcv_pdu, pudp->pkg_size);
 
 	socket_set_rcvbuf(pudp->so, pudp->pkg_size);
 	socket_set_sndbuf(pudp->so, pudp->pkg_size);
@@ -300,6 +298,7 @@ bool_t xudp_flush(xhand_t udp)
 		addr_len = sizeof(net_addr_t);
 
 		dw = pudp->snd_bys;
+		pudp->pov->size = 0;
 		if (!socket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), dw, pudp->pov))
 		{
 			raise_user_error(NULL, NULL);
@@ -338,9 +337,17 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 		{
 			bys = pudp->pkg_size;
 			addr_len = sizeof(net_addr_t);
+			pudp->pov->size = 0;
 			if (!socket_recvfrom(pudp->so, (res_addr_t)&na, &addr_len, (void*)(pudp->rcv_pdu), bys, pudp->pov))
 			{
-				raise_user_error(NULL, NULL);
+				if (!(pudp->pov->size))
+				{
+					raise_user_error(NULL, NULL);
+				}
+				else
+				{
+					b = 1;
+				}
 			}
 			conv_addr(&na, &pudp->port, pudp->addr);
 

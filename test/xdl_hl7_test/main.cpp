@@ -207,6 +207,13 @@ void test_hl7_get()
 	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
 	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
+	xdate_t dt;
+	tchar_t ftime[DATE_LEN] = { 0 };
+	
+	get_utc_date(&dt);
+	format_gmttime(&dt, ftime);
+	xhttp_set_request_header(xh, HTTP_HEADER_IFMODIFIEDSINCE, -1, ftime, -1);
+
 	if (!xhttp_send_request(xh))
 	{
 		raise_user_error(NULL, NULL);

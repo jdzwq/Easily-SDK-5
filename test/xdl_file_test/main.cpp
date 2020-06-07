@@ -6,7 +6,7 @@
 #ifdef _OS_WINDOWS
 #include <conio.h>
 #endif
-
+/*
 void test_share_read()
 {
     xhand_t gh = xshare_srv(_T("sslsrv-crt"), _T("./sslsrv.crt"), X509_CERT_SIZE);
@@ -51,7 +51,7 @@ void test_share_write()
         xshare_close(gh);
     }
 }
-
+*/
 void test_block_read()
 {
 	dword_t dw = 8192;
@@ -110,15 +110,18 @@ void test_tftp_write()
 
 	xfile_info(NULL, _T("./body.bmp"), NULL, fsize, NULL, NULL);
 
-	dword_t dw = xstol(fsize);
-	byte_t* buf = (byte_t*)xmem_alloc(dw);
+	//dword_t dw = xstol(fsize);
+	//byte_t* buf = (byte_t*)xmem_alloc(dw);
 
-	file_t f_loc = xfile_open(NULL, _T("./body.bmp"), FILE_OPEN_READ);
-	xfile_read(f_loc, buf, dw);
+	//file_t f_loc = xfile_open(NULL, _T("./body.bmp"), FILE_OPEN_READ);
+	//xfile_read(f_loc, buf, dw);
 
-	xfile_close(f_loc);
+	//xfile_close(f_loc);
 
 	file_t f_rmt = xfile_open(NULL, _T("tftp://127.0.0.1/body.bmp"), FILE_OPEN_CREATE);
+
+	byte_t buf[100];
+	dword_t dw = 100;
 
 	xfile_write(f_rmt, buf, dw);
 
@@ -211,9 +214,9 @@ int main()
 
 	//test_share_read();
 
-	test_share_write();
+	//test_share_write();
 
-	//test_tftp_write();
+	test_tftp_write();
 
 	//test_tftp_read();
 

@@ -200,59 +200,41 @@ res_file_t socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* pb
 bool_t socket_sendto(res_file_t so, res_addr_t saddr, int alen, const byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
-	dword_t pos = 0;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 
 	XDL_ASSERT(pif_so != NULL);
 
-	while (pos < size)
+	pov->size = 0;
+	if (!(*pif_so->pf_socket_sendto)(so, saddr, alen, (void*)(buf), size, pov))
 	{
+		set_network_error(_T("socket_sendto"));
+
 		pov->size = 0;
-		if (!(*pif_so->pf_socket_sendto)(so, saddr, alen, (void*)(buf + pos), size - pos, pov))
-		{
-			set_network_error(_T("socket_sendto"));
-
-			pov->size = pos;
-			return 0;
-		}
-
-		if (!(pov->size)) break;
-
-		pos += pov->size;
+		return 0;
 	}
 
-	pov->size = pos;
-	return 1;
+	return (pov->size) ? 1 : 0;
 }
 
 bool_t socket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, byte_t* buf, dword_t size, async_t* pov)
 {
 	if_socket_t* pif_so;
-	dword_t pos = 0;
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 
 	XDL_ASSERT(pif_so != NULL);
 
-	while (pos < size)
+	pov->size = 0;
+	if (!(*pif_so->pf_socket_recvfrom)(so, saddr, plen, (void*)(buf), size, pov))
 	{
+		set_network_error(_T("socket_recvfrom"));
+
 		pov->size = 0;
-		if (!(*pif_so->pf_socket_recvfrom)(so, saddr, plen, (void*)(buf + pos), size - pos, pov))
-		{
-			set_network_error(_T("socket_recvfrom"));
-
-			pov->size = pos;
-			return 0;
-		}
-
-		if (!(pov->size)) break;
-
-		pos += pov->size;
+		return 0;
 	}
 
-	pov->size = pos;
-	return 1;
+	return (pov->size)? 1 : 0;
 }
 
 bool_t	socket_send(res_file_t so, const byte_t* buf, dword_t size, async_t* pov)

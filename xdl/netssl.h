@@ -103,9 +103,9 @@ typedef enum {
 	ALG_SIG_ECDSA = 3
 }SignatureAlgorithm;
 
-#define SSL_VERIFY_NONE                 0
-#define SSL_VERIFY_OPTIONAL             1
-#define SSL_VERIFY_REQUIRED             2
+#define SSL_VERIFY_NONE             0
+#define SSL_VERIFY_OPTIONAL         1
+#define SSL_VERIFY_REQUIRED         2
 
 #define SSL_RSA_PUBLIC				0
 #define SSL_RSA_PRIVATE				1

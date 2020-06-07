@@ -142,6 +142,8 @@ EXP_API void plus_minutes(xdate_t* pdt, int minutes);
 
 EXP_API void plus_seconds(xdate_t* pdt, int seconds);
 
+EXP_API void plus_millseconds(xdate_t* pdt, int ms);
+
 #ifdef XDK_SUPPORT_DATE
 EXP_API void default_calendar(calendar_t* pca);
 

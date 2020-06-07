@@ -15,16 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\oss\ossdef.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\oss\osspro.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\oss\aliyun\oss_aliyun.c">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="oss_aliyun.def">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\oss\ossdef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

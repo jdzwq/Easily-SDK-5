@@ -3,12 +3,15 @@
 
 #include "stdafx.h"
 
+#define SECRET_ID		_T("2a2f69763c897300efe63c0c5c08d1c7")
+#define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
+
 #define AS_URL_AUTH_REQUEST		_T("http://172.16.190.190:8889/oau/auth_request?")
 #define AS_URL_AUTH_ACCESS		_T("http://172.16.190.190:8889/oau/auth_access?")
 #define AS_URL_AUTH_REFRESH		_T("http://127.0.0.1:8889/oau/auth_refresh?")
-//#define AS_URL_AUTH_WEIAPP		_T("https://127.0.0.1:8888/oau/weiapp_access?")
-//#define AS_URL_AUTH_WEIAPP		_T("https://118.178.180.81/oau/weiapp_access?")
-#define AS_URL_AUTH_WEIAPP		_T("https://www.biofolia.cn:8888/oau/weiapp_access")
+#define AS_URL_AUTH_WEIAPP		_T("http://127.0.0.1:8889/oau/weiapp/fcv.isp")
+//#define AS_URL_AUTH_WEIAPP		_T("https://118.178.180.81/oau/weiapp/fcv.isp")
+//#define AS_URL_AUTH_WEIAPP		_T("https://www.biofolia.cn:8888/oau/weiapp/fcv.isp")
 
 void _test_implicit()
 {
@@ -185,7 +188,15 @@ void test_auth_weiapp()
 	xhttp_set_request_default_header(xh);
 	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
 
-	xhttp_set_url_query_entity(xh, _T("code"), -1, _T("CODE"), -1);
+	tchar_t sz_auth[META_LEN + 1] = { 0 };
+	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
+
+	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
+	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
+	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
+
+	xhttp_set_url_query_entity(xh, _T("action"), -1, _T("session_key"), -1);
+	xhttp_set_url_query_entity(xh, _T("jscode"), -1, _T("CODE"), -1);
 
 	xhttp_send_request(xh);
 

@@ -23,9 +23,6 @@
     <ClInclude Include="..\..\sms\smsdef.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sms\smspro.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\sms\aliyun\sms_aliyun.c">

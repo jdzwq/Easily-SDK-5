@@ -21,6 +21,7 @@
 #include "varbytes.h"
 #include "variant.h"
 #include "varstr.h"
+#include "radobj.h"
 #include "linebuf.h"
 #include "multitree.h"
 #include "bplustree.h"

@@ -39,23 +39,15 @@ LICENSE.GPL3 for more details.
 void push_jump()
 {
 	if_jump_t* pju;
-	if_memo_t* piv;
 
 	pju = THREAD_JUMP_INTERFACE;
 	XDL_ASSERT(pju != NULL);
-
-	piv = PROCESS_MEMO_INTERFACE;
-	XDL_ASSERT(piv != NULL);
 
 	if (pju->if_index + 1 == pju->if_size)
 	{
 		pju->if_size++;
 
-#ifdef XDK_SUPPORT_MEMO_PAGE
-		pju->if_buf = (jmp_buf*)(*piv->pf_page_realloc)(pju->if_buf, pju->if_size * sizeof(jmp_buf));
-#else
 		pju->if_buf = (jmp_buf*)xmem_realloc(pju->if_buf, pju->if_size * sizeof(jmp_buf));
-#endif 
 	}
 
 	pju->if_index++;
@@ -64,13 +56,9 @@ void push_jump()
 void pop_jump()
 {
 	if_jump_t* pju;
-	if_memo_t* piv;
 
 	pju = THREAD_JUMP_INTERFACE;
 	XDL_ASSERT(pju != NULL);
-
-	piv = PROCESS_MEMO_INTERFACE;
-	XDL_ASSERT(piv != NULL);
 
 	XDL_ASSERT(pju->if_index >= 0);
 
@@ -79,11 +67,7 @@ void pop_jump()
 
 	if (pju->if_index < 0)
 	{
-#ifdef XDK_SUPPORT_MEMO_PAGE
-		(*piv->pf_page_free)(pju->if_buf);
-#else
 		xmem_free(pju->if_buf);
-#endif 
 
 		pju->if_buf = NULL;
 		pju->if_size = 0;
@@ -93,23 +77,14 @@ void pop_jump()
 void clear_jump()
 {
 	if_jump_t* pju;
-	if_memo_t* piv;
 
 	pju = THREAD_JUMP_INTERFACE;
 	if (pju == NULL)
 		return;
 
-	piv = PROCESS_MEMO_INTERFACE;
-	if (piv == NULL)
-		return;
-
 	if (pju->if_buf)
 	{
-#ifdef XDK_SUPPORT_MEMO_PAGE
-		(*piv->pf_page_free)(pju->if_buf);
-#else
 		xmem_free(pju->if_buf);
-#endif 
 
 		pju->if_buf = NULL;
 		pju->if_size = 0;

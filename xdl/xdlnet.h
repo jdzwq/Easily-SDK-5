@@ -11,8 +11,10 @@
 #include "netssh.h"
 #include "nethttp.h"
 #include "netpnp.h"
+#include "netcoap.h"
 #include "nettftp.h"
 #include "netmqtt.h"
 #include "netsoap.h"
+#include "netpacs.h"
 
 #endif //_XDLNET_H

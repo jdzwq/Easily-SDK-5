@@ -26,49 +26,14 @@ LICENSE.GPL3 for more details.
 #include "oss_api.h"
 
 typedef struct _oss_block_t{
-	tchar_t sz_oss[RES_LEN + 1];
-	secu_desc_t sd;
+	PF_OSS_OPEN_ISP pf_open_isp;
+	PF_OSS_CLOSE pf_close;
+	PF_OSS_IOCTL pf_ioctl;
+	PF_OSS_ERROR pf_error;
+
+	tchar_t isp_file[PATH_LEN];
 }oss_block_t;
 
-typedef enum{
-	_OSS_NONE = 0,
-	_OSS_DELETE = 1,
-	_OSS_WRITE = 2,
-	_OSS_READ = 3
-}OSS_OPERA;
-
-static void _split_file(const tchar_t* sz_file, tchar_t** buckat, int* bucklen, tchar_t** fileat, int* filelen)
-{
-	tchar_t* token = (tchar_t*)sz_file;
-	int len;
-
-	*buckat = *fileat = NULL;
-	*bucklen = *filelen = 0;
-
-	if (*token == _T('/'))
-		token++;
-
-	len = 0;
-	*buckat = token;
-	while (*token != _T('/') && *token != _T('\0'))
-	{
-		token++;
-		len++;
-	}
-	*bucklen = len;
-
-	if (*token == _T('/'))
-		token++;
-
-	len = 0;
-	*fileat = token;
-	while (*token != _T('\0'))
-	{
-		token++;
-		len++;
-	}
-	*filelen = len;
-}
 
 bool_t _invoke_head(const https_block_t* pb, oss_block_t* pos)
 {
@@ -78,34 +43,50 @@ bool_t _invoke_head(const https_block_t* pb, oss_block_t* pos)
 	tchar_t sz_object[PATH_LEN] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
-	tchar_t fetag[ETAG_LEN + 1] = { 0 };
-	tchar_t fencode[INT_LEN + 1] = { 0 };
+
+	oss_t oss = NULL;
+
+	file_info_t fi = { 0 };
+	dword_t olen;
 
 	TRY_CATCH;
 
-	//xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
-
-	xsprintf(sz_object, _T("oss://%s%s"), pos->sz_oss, pb->object);
-
-	if (!oss_file_info(&pos->sd, sz_object, ftime, fsize, fetag, fencode))
+	xhttp_get_url_query_entity(pb->http, _T("object"), -1, sz_object, PATH_LEN);
+	if (is_null(sz_object))
 	{
+		raise_user_error(_T("_invoke_head"), _T("empty object"));
+	}
+
+	oss = (*pos->pf_open_isp)(pos->isp_file);
+
+	if (!oss)
+	{
+		raise_user_error(_T("_invoke_head"), _T("open isp file failed"));
+	}
+
+	olen = sizeof(file_info_t);
+
+	if (!(*pos->pf_ioctl)(oss, _T("HEAD"), sz_object, NULL, 0, (void*)&fi, &olen))
+	{
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
+
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
 
-		raise_user_error(NULL, NULL);
+		raise_user_error(_T("_invoke_head"), sz_error);
 	}
+
+	(*pos->pf_close)(oss);
+	oss = NULL;
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
+	lltoxs(fi.file_size, fsize, NUM_LEN);
+	format_gmttime(&fi.write_time, ftime);
+
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_LASTMODIFIED, -1, ftime, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_ETAG, -1, fetag, -1);
-	if (!is_null(fencode))
-	{
-		xhttp_set_response_content_type(pb->http, HTTP_HEADER_CONTENTTYPE_TEXTPLAIN, -1);
-		xhttp_set_response_content_type_charset(pb->http, fencode, -1);
-	}
 
 	xhttp_send_response(pb->http);
 
@@ -119,6 +100,9 @@ ONERROR:
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
+	if (oss)
+		(*pos->pf_close)(oss);
+
 	if (pb->log)
 	{
 		(*pb->pf_log_title)(pb->log, _T("[OSS错误]"), -1);
@@ -131,51 +115,80 @@ ONERROR:
 
 bool_t _invoke_list(const https_block_t* pb, oss_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
-	link_t_ptr ptr_xml, ptr_list = NULL;
+	tchar_t sz_object[PATH_LEN] = { 0 };
+
+	oss_t oss = NULL;
+
+	byte_t* obuf = NULL;
+	dword_t olen;
 
 	TRY_CATCH;
 
-	//xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
-	xsprintf(sz_object, _T("oss://%s%s"), pos->sz_oss, pb->object);
-
-	ptr_list = create_list_doc();
-
-	if (!oss_list(&pos->sd, sz_object, ptr_list))
+	xhttp_get_url_query_entity(pb->http, _T("object"), -1, sz_object, PATH_LEN);
+	if (is_null(sz_object))
 	{
+		raise_user_error(_T("_invoke_list"), _T("empty object"));
+	}
+
+	oss = (*pos->pf_open_isp)(pos->isp_file);
+
+	if (!oss)
+	{
+		raise_user_error(_T("_invoke_list"), _T("open isp file failed"));
+	}
+
+	olen = MAX_LONG;
+
+	if (!(*pos->pf_ioctl)(oss, _T("LIST"), sz_object, NULL, 0, NULL, &olen))
+	{
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
+
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
 
-		raise_user_error(NULL, NULL);
+		raise_user_error(_T("_invoke_list"), sz_error);
 	}
 
-	ptr_xml = upcast_dom_to_xml(ptr_list);
+	obuf = (byte_t*)xmem_alloc(olen);
+
+	if (!(*pos->pf_ioctl)(oss, _T("LIST"), pb->object, NULL, 0, (void*)obuf, &olen))
+	{
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
+
+		xhttp_set_response_code(pb->http, HTTP_CODE_404);
+		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
+
+		raise_user_error(_T("_invoke_list"), sz_error);
+	}
+
+	(*pos->pf_close)(oss);
+	oss = NULL;
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-	xhttp_send_xml(pb->http, ptr_xml);
+	xhttp_send_full(pb->http, obuf, olen);
 
-	ptr_list = downcast_xml_to_dom(ptr_xml);
-
-	destroy_list_doc(ptr_list);
-	ptr_list = NULL;
+	xmem_free(obuf);
+	obuf = NULL;
 
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
-
-	if (ptr_list)
-		destroy_list_doc(ptr_list);
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
+
+	if (obuf)
+		xmem_free(obuf);
+
+	if (oss)
+		(*pos->pf_close)(oss);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
@@ -191,237 +204,81 @@ ONERROR:
 
 bool_t _invoke_get(const https_block_t* pb, oss_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
-	tchar_t fsince[DATE_LEN + 1] = { 0 };
-	tchar_t ftime[DATE_LEN + 1] = { 0 };
-	tchar_t fsize[NUM_LEN + 1] = { 0 };
-	tchar_t fetag[ETAG_LEN + 1] = { 0 };
-	tchar_t not_etag[ETAG_LEN + 1] = { 0 };
-	tchar_t yes_etag[ETAG_LEN + 1] = { 0 };
-	tchar_t fencode[INT_LEN + 1] = { 0 };
-	tchar_t frange[RES_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
-	xdate_t dt_since, dt_time;
+	tchar_t sz_object[PATH_LEN] = { 0 };
 
-	file_t xf = NULL;
-	byte_t *sz_buf = NULL;
-	byte_t *sz_zip = NULL;
-	dword_t n_zip, n_size = 0;
-	dword_t n_hoff, n_loff;
-	long long n_total;
+	oss_t oss = NULL;
 
-	bool_t b_rt = 0;
-	bool_t b_range = 0;
-	bool_t b_zip = 0;
+	file_info_t fi = { 0 };
+
+	byte_t* obuf = NULL;
+	dword_t olen;
 
 	TRY_CATCH;
 
-	xhttp_get_request_header(pb->http, HTTP_HEADER_RANGE, -1, frange, RES_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMODIFIEDSINCE, -1, fsince, DATE_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMATCH, -1, yes_etag, ETAG_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_IFNONEMATCH, -1, not_etag, ETAG_LEN);
-
-	//xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
-	xsprintf(sz_object, _T("oss://%s%s"), pos->sz_oss, pb->object);
-
-	if (!oss_file_info(&pos->sd, sz_object, ftime, fsize, fetag, NULL))
+	xhttp_get_url_query_entity(pb->http, _T("object"), -1, sz_object, PATH_LEN);
+	if (is_null(sz_object))
 	{
+		raise_user_error(_T("_invoke_get"), _T("empty object"));
+	}
+
+	oss = (*pos->pf_open_isp)(pos->isp_file);
+
+	if (!oss)
+	{
+		raise_user_error(_T("_invoke_get"), _T("open isp file failed"));
+	}
+
+	olen = sizeof(file_info_t);
+
+	if (!(*pos->pf_ioctl)(oss, _T("HEAD"), pb->object, NULL, 0, (void*)&fi, &olen))
+	{
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
+
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
 
-		raise_user_error(NULL, NULL);
+		raise_user_error(_T("_invoke_get"), sz_error);
 	}
 
-	if (is_huge_size(fsize) && is_null(frange))
+	olen = (dword_t)fi.file_size;
+	obuf = (byte_t*)xmem_alloc(olen);
+
+	if (!(*pos->pf_ioctl)(oss, _T("GET"), pb->object, NULL, 0, (void*)obuf, &olen))
 	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
 
-		raise_user_error(_T("oss_api._invoke_get"), _T("not support large file\n"));
+		xhttp_set_response_code(pb->http, HTTP_CODE_404);
+		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
+
+		raise_user_error(_T("_invoke_get"), sz_error);
 	}
 
-	if (!is_null(frange))
-	{
-		n_hoff = n_loff = n_size = 0;
-		n_total = 0;
-		parse_bytes_range(frange, &n_hoff, &n_loff, &n_size, &n_total);
-
-		if (!n_total)
-			n_total = xstoll(fsize);
-
-		b_range = 1;
-	}
-	else
-	{
-		n_size = xstol(fsize);
-		n_hoff = 0;
-		n_loff = 0;
-		n_total = n_size;
-
-		b_range = 0;
-	}
-
-	xscpy(frange, _T("bytes "));
-	format_bytes_range(frange + xslen(frange), n_hoff, n_loff, n_size, n_total);
-
-	if (!is_null(yes_etag))
-	{
-		if (compare_text(yes_etag, -1, fetag, -1, 0) != 0)
-		{
-			xhttp_set_response_code(pb->http, HTTP_CODE_304);
-			xhttp_set_response_message(pb->http, HTTP_CODE_304_TEXT, -1);
-
-			raise_user_error(_T("oss_api._invoke_get"), _T("file not modified\n"));
-		}
-	}
-
-	if (!is_null(not_etag))
-	{
-		if (compare_text(not_etag, -1, fetag, -1, 0) == 0)
-		{
-			xhttp_set_response_code(pb->http, HTTP_CODE_304);
-			xhttp_set_response_message(pb->http, HTTP_CODE_304_TEXT, -1);
-
-			raise_user_error(_T("oss_api._invoke_get"), _T("file not modified\n"));
-		}
-	}
-
-	if (!is_null(fsince))
-	{
-		parse_gmttime(&dt_since, fsince);
-		parse_gmttime(&dt_time, ftime);
-
-		if (compare_datetime(&dt_since, &dt_time) >= 0)
-		{
-			xhttp_set_response_code(pb->http, HTTP_CODE_304);
-			xhttp_set_response_message(pb->http, HTTP_CODE_304_TEXT, -1);
-
-			raise_user_error(_T("oss_api._invoke_get"), _T("file not modified\n"));
-		}
-	}
-
-	xf = xfile_open(NULL, sz_object, 0);
-	if (!xf)
-	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-		raise_user_error(NULL, NULL);
-	}
-
-	sz_buf = (byte_t*)xmem_alloc(n_size);
-
-	if (b_range)
-		b_rt = xfile_read_range(xf, n_hoff, n_loff, sz_buf, n_size);
-	else
-		b_rt = xfile_read(xf, sz_buf, n_size);
-
-	xfile_close(xf);
-	xf = NULL;
-
-	if (!b_rt)
-	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-		raise_user_error(NULL, NULL);
-	}
-
-	if (n_size > XHTTP_ZIPED_SIZE)
-	{
-		xhttp_get_request_header(pb->http, HTTP_HEADER_ACCEPTENCODING, -1, fencode, INT_LEN);
-
-		if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0)
-		{
-			sz_zip = (byte_t*)xmem_alloc(n_size);
-
-			n_zip = n_size;
-			if (!xzlib_compress_bytes(sz_buf, n_size, sz_zip, &n_zip))
-			{
-				xhttp_set_response_code(pb->http, HTTP_CODE_403);
-				xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-				raise_user_error(_T("oss_api._invoke_get"), _T("compress data failed\n"));
-			}
-
-			xsprintf(fsize, _T("%d"), n_zip);
-			xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-			xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1);
-
-			b_zip = 1;
-		}
-		else if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1, 1) == 0)
-		{
-			sz_zip = (byte_t*)xmem_alloc(n_size);
-
-			n_zip = n_size;
-			if (!xgzip_compress_bytes(sz_buf, n_size, sz_zip, &n_zip))
-			{
-				xhttp_set_response_code(pb->http, HTTP_CODE_403);
-				xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-				raise_user_error(_T("oss_api._invoke_get"), _T("compress data failed\n"));
-			}
-
-			xsprintf(fsize, _T("%d"), n_zip);
-			xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-			xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1);
-
-			b_zip = 1;
-		}
-		else
-		{
-			xsprintf(fsize, _T("%d"), n_size);
-			xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-			b_zip = 0;
-		}
-	}
-	else
-	{
-		xsprintf(fsize, _T("%d"), n_size);
-		xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
-		b_zip = 0;
-	}
-
-	xhttp_set_response_header(pb->http, HTTP_HEADER_LASTMODIFIED, -1, ftime, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, frange, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_ACCEPTRANGES, -1, HTTP_HEADER_ACCEPTRANGES_BYTES, -1);
+	(*pos->pf_close)(oss);
+	oss = NULL;
 
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
-	if (b_zip)
-		xhttp_send_full(pb->http, sz_zip, n_zip);
-	else
-		xhttp_send_full(pb->http, sz_buf, n_size);
+	xhttp_send_full(pb->http, obuf, olen);
 
-	if (b_zip)
-	{
-		xmem_free(sz_zip);
-		sz_zip = NULL;
-	}
-
-	xmem_free(sz_buf);
-	sz_buf = NULL;
+	xmem_free(obuf);
+	obuf = NULL;
 
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
-	if (xf)
-		xfile_close(xf);
+	if (obuf)
+		xmem_free(obuf);
 
-	if (sz_zip)
-		xmem_free(sz_zip);
-
-	if (sz_buf)
-		xmem_free(sz_buf);
+	if (oss)
+		(*pos->pf_close)(oss);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
@@ -437,206 +294,73 @@ ONERROR:
 
 bool_t _invoke_put(const https_block_t* pb, oss_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-	tchar_t frange[RES_LEN + 1] = { 0 };
-	tchar_t ftime[DATE_LEN + 1] = { 0 };
-	tchar_t fetag[ETAG_LEN + 1] = { 0 };
-	tchar_t fsince[DATE_LEN + 1] = { 0 };
-	tchar_t fencode[INT_LEN + 1] = { 0 };
-	tchar_t yes_etag[ETAG_LEN + 1] = { 0 };
-	tchar_t not_etag[ETAG_LEN + 1] = { 0 };
 
-	tchar_t sz_ossurl[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN] = { 0 };
 
-	dword_t n_hoff, n_loff, n_bys;
-	long long n_all;
+	oss_t oss = NULL;
 
-	xdate_t dt_since, dt_time;
-
-	file_t xf = NULL;
 	byte_t** pbuf = NULL;
-	byte_t* sz_zip = NULL;
-	dword_t n_zip, n_size = 0;
-	bool_t b_rt = 0;
-	bool_t b_zip = 0;
+	dword_t ilen;
+
+	dword_t olen;
 
 	TRY_CATCH;
 
 	pbuf = bytes_alloc();
-	n_size = 0;
+	ilen = 0;
 
-	b_rt = xhttp_recv_full(pb->http, pbuf, &n_size);
-	if (!b_rt)
+	if(!xhttp_recv_full(pb->http, pbuf, &ilen))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
-
-	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMODIFIEDSINCE, -1, fsince, DATE_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMATCH, -1, yes_etag, ETAG_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_IFNONEMATCH, -1, not_etag, ETAG_LEN);
-
-	if (!is_null(fsince))
+	xhttp_get_url_query_entity(pb->http, _T("object"), -1, sz_object, PATH_LEN);
+	if (is_null(sz_object))
 	{
-		xfile_info(NULL, sz_object, ftime, NULL, NULL, NULL);
-		if (!is_null(ftime))
-		{
-			parse_gmttime(&dt_since, fsince);
-			parse_gmttime(&dt_time, ftime);
-
-			if (compare_datetime(&dt_since, &dt_time) <= 0)
-			{
-				xhttp_set_response_code(pb->http, HTTP_CODE_304);
-				xhttp_set_response_message(pb->http, HTTP_CODE_304_TEXT, -1);
-
-				raise_user_error(_T("oss_api._invoke_put"), _T("file not modified\n"));
-			}
-		}
+		raise_user_error(_T("_invoke_put"), _T("empty object"));
 	}
 
-	if (!is_null(yes_etag))
-	{
-		xfile_info(NULL, sz_object, NULL, NULL, fetag, NULL);
-		if (!is_null(fetag))
-		{
-			if (compare_text(yes_etag, -1, fetag, -1, 1) != 0)
-			{
-				xhttp_set_response_code(pb->http, HTTP_CODE_304);
-				xhttp_set_response_message(pb->http, HTTP_CODE_304_TEXT, -1);
+	oss = (*pos->pf_open_isp)(pos->isp_file);
 
-				raise_user_error(_T("oss_api._invoke_put"), _T("file not modified\n"));
-			}
-		}
+	if (!oss)
+	{
+		raise_user_error(_T("_invoke_put"), _T("open isp file failed"));
 	}
 
-	if (!is_null(not_etag))
-	{
-		xfile_info(NULL, sz_object, NULL, NULL, fetag, NULL);
-		if (!is_null(fetag))
-		{
-			if (compare_text(not_etag, -1, fetag, -1, 1) == 0)
-			{
-				xhttp_set_response_code(pb->http, HTTP_CODE_304);
-				xhttp_set_response_message(pb->http, HTTP_CODE_304_TEXT, -1);
+	olen = 0;
 
-				raise_user_error(_T("oss_api._invoke_put"), _T("file not modified\n"));
-			}
-		}
-	}
+	if (!(*pos->pf_ioctl)(oss, _T("PUT"), sz_object, (void*)(*pbuf), ilen, NULL, &olen))
+	{
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
 
-	xhttp_get_request_header(pb->http, HTTP_HEADER_LASTMODIFIED, -1, ftime, DATE_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_CONTENTRANGE, -1, frange, RES_LEN);
-	xhttp_get_request_header(pb->http, HTTP_HEADER_CONTENTENCODING, -1, fencode, INT_LEN);
+		xhttp_set_response_code(pb->http, HTTP_CODE_404);
+		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
 
-	if (is_null(frange))
-	{
-		n_hoff = 0;
-		n_loff = 0;
-		n_bys = n_size;
-		n_all = n_size;
-	}
-	else
-	{
-		n_hoff = n_loff = n_bys = 0;
-		n_all = 0;
-		parse_bytes_range(frange, &n_hoff, &n_loff, &n_bys, &n_all);
-	}
-
-	if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1, 1) == 0)
-	{
-		sz_zip = (byte_t*)xmem_alloc(n_bys);
-		n_zip = n_bys;
-		if (!xzlib_uncompress_bytes(*pbuf, n_size, sz_zip, &n_zip))
-		{
-			raise_user_error(_T("oss_api._invoke_put"), _T("uncompress data failed\n"));
-		}
-		b_zip = 1;
-	}
-	else if (compare_text(fencode, -1, HTTP_HEADER_CONTENTENCODING_GZIP, -1, 1) == 0)
-	{
-		sz_zip = (byte_t*)xmem_alloc(n_bys);
-		n_zip = n_bys;
-		if (!xgzip_uncompress_bytes(*pbuf, n_size, sz_zip, &n_zip))
-		{
-			raise_user_error(_T("oss_api._invoke_put"), _T("uncompress data failed\n"));
-		}
-		b_zip = 1;
-	}
-	else
-	{
-		b_zip = 0;
-	}
-
-	xf = xfile_open(NULL, sz_object, FILE_OPEN_CREATE);
-	if (!xf)
-	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-		raise_user_error(NULL, NULL);
-	}
-
-	if (!is_null(ftime))
-	{
-		xfile_settime(xf, ftime);
-	}
-
-	if (MAKELWORD(n_loff, n_hoff) == 0 && MAKELWORD(n_bys, 0) == n_all)
-	{
-		if (b_zip)
-			b_rt = xfile_write(xf, sz_zip, n_zip);
-		else
-			b_rt = xfile_write(xf, *pbuf, n_size);
-	}
-	else
-	{
-		if (b_zip)
-			b_rt = xfile_write_range(xf, n_hoff, n_loff, sz_zip, n_zip);
-		else
-			b_rt = xfile_write_range(xf, n_hoff, n_loff, *pbuf, n_size);
-	}
-
-	xfile_close(xf);
-	xf = NULL;
-
-	if (b_zip)
-	{
-		xmem_free(sz_zip);
-		sz_zip = NULL;
+		raise_user_error(_T("_invoke_put"), sz_error);
 	}
 
 	bytes_free(pbuf);
 	pbuf = NULL;
 
-	if (!b_rt)
-	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
+	(*pos->pf_close)(oss);
+	oss = NULL;
 
-		raise_user_error(NULL, NULL);
-	}
-
-	xhttp_send_error(pb->http, HTTP_CODE_201, HTTP_CODE_201_TEXT, _T("0"), _T("xhttp write file succeeded\n"), -1);
+	xhttp_send_error(pb->http, HTTP_CODE_202, HTTP_CODE_202_TEXT, _T("0"), _T("xhttp put file succeeded\n"), -1);
 
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (xf)
-		xfile_close(xf);
-
-	if (sz_zip)
-		xmem_free(sz_zip);
 
 	if (pbuf)
 		bytes_free(pbuf);
+
+	if (oss)
+		(*pos->pf_close)(oss);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
@@ -652,46 +376,53 @@ ONERROR:
 
 bool_t _invoke_delete(const https_block_t* pb, oss_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
-	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
-	tchar_t sz_ossurl[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN] = { 0 };
+
+	oss_t oss = NULL;
+	dword_t olen = 0;
 
 	TRY_CATCH;
 
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
-
-	if (!xfile_info(NULL, sz_object, ftime, NULL, NULL, NULL))
+	xhttp_get_url_query_entity(pb->http, _T("object"), -1, sz_object, PATH_LEN);
+	if (is_null(sz_object))
 	{
+		raise_user_error(_T("_invoke_delete"), _T("empty object"));
+	}
+
+	oss = (*pos->pf_open_isp)(pos->isp_file);
+
+	if (!oss)
+	{
+		raise_user_error(_T("_invoke_delete"), _T("open isp file failed"));
+	}
+
+	if (!(*pos->pf_ioctl)(oss, _T("DELETE"), sz_object, NULL, 0, NULL, &olen))
+	{
+		(*pos->pf_error)(oss, sz_error, ERR_LEN);
+
 		xhttp_set_response_code(pb->http, HTTP_CODE_404);
 		xhttp_set_response_message(pb->http, HTTP_CODE_404_TEXT, -1);
 
-		raise_user_error(NULL, NULL);
+		raise_user_error(_T("_invoke_delete"), sz_error);
 	}
 
-	if (!xfile_delete(NULL, sz_object))
-	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-		raise_user_error(NULL, NULL);
-	}
+	(*pos->pf_close)(oss);
+	oss = NULL;
 
 	xhttp_send_error(pb->http, HTTP_CODE_202, HTTP_CODE_202_TEXT, _T("0"), _T("xhttp delete file succeeded\n"), -1);
 
-	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
-
-	oss_delete_file(&pos->sd, sz_ossurl);
-
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
+
+	if (oss)
+		(*pos->pf_close)(oss);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
@@ -704,98 +435,6 @@ ONERROR:
 
 	return 0;
 }
-
-bool_t _invoke_sync(const https_block_t* pb, oss_block_t* pos)
-{
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	tchar_t sz_object[PATH_LEN] = { 0 };
-	tchar_t loc_time[DATE_LEN + 1] = { 0 };
-	tchar_t oss_time[DATE_LEN + 1] = { 0 };
-	xdate_t loc_dt = { 0 };
-	xdate_t oss_dt = { 0 };
-	tchar_t sz_ossurl[PATH_LEN] = { 0 };
-	int oss_op = 0;
-	int rt = 0;
-
-	TRY_CATCH;
-
-	xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
-
-	if (!xfile_info(NULL, sz_object, loc_time, NULL, NULL, NULL))
-	{
-		oss_op = _OSS_DELETE;
-	}
-
-	xsprintf(sz_ossurl, _T("oss://%s%s"), pos->sz_oss, pb->object);
-
-	if (!xfile_info(&pos->sd, sz_ossurl, oss_time, NULL, NULL, NULL))
-	{
-		if (oss_op == _OSS_DELETE)
-			oss_op = _OSS_NONE;
-	}
-
-	if (oss_op != _OSS_DELETE)
-	{
-		parse_gmttime(&loc_dt, loc_time);
-		parse_gmttime(&oss_dt, oss_time);
-
-		rt = compare_datetime(&loc_dt, &oss_dt);
-		if (rt > 0)
-			oss_op = _OSS_WRITE;
-		else if (rt < 0)
-			oss_op = _OSS_READ;
-		else
-			oss_op = _OSS_NONE;
-	}
-
-	switch (oss_op)
-	{
-	case _OSS_DELETE:
-		rt = xfile_delete(&pos->sd, sz_ossurl);
-		break;
-	case _OSS_READ:
-		rt = xfile_copy(&pos->sd, sz_ossurl, sz_object, 0);
-		break;
-	case _OSS_WRITE:
-		rt = xfile_copy(&pos->sd, sz_object, sz_ossurl, 0);
-		break;
-	default:
-		rt = 1;
-		break;
-	}
-
-	if (!rt)
-	{
-		xhttp_set_response_code(pb->http, HTTP_CODE_403);
-		xhttp_set_response_message(pb->http, HTTP_CODE_403_TEXT, -1);
-
-		raise_user_error(NULL, NULL);
-	}
-
-	xhttp_send_error(pb->http, HTTP_CODE_202, HTTP_CODE_202_TEXT, _T("0"), _T("oss synchronous file succeeded\n"), -1);
-
-	END_CATCH;
-
-	return 1;
-
-ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
-
-	if (pb->log)
-	{
-		(*pb->pf_log_title)(pb->log, _T("[OSS错误]"), -1);
-
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
-	}
-
-	return 0;
-}
-
 
 void _invoke_error(const https_block_t* pb, oss_block_t* pos)
 {
@@ -825,15 +464,14 @@ void _invoke_error(const https_block_t* pb, oss_block_t* pos)
 }
 
 /********************************************************************************************/
+
 int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	oss_block_t* pos = NULL;
 
-	tchar_t token[PATH_LEN] = { 0 };
-
-	link_t_ptr ptr_prop = NULL;
-
 	bool_t rt = 1;
+
+	res_modu_t oss_lib = NULL;
 
 	TRY_CATCH;
 
@@ -844,23 +482,37 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	pos = (oss_block_t*)xmem_alloc(sizeof(oss_block_t));
 
-	ptr_prop = create_proper_doc();
-
-	xsprintf(token, _T("%s/oss.ini"), pb->path);
-
-	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
+	if (xsnicmp(_T("aliyun"), pb->object + 1, xslen(_T("aliyun"))) == 0)
 	{
-		raise_user_error(_T("-1"), _T("load loc config falied\n"));
+#if defined(_OS_WINDOWS)
+		oss_lib = load_library(_T("oss_aliyun.dll"));
+#elif defined(_OS_MACOS)
+		oss_lib = load_library(_T("liboss_aliyun.dylib"));
+#elif defined(_OS_LINUX)
+		oss_lib = load_library(_T("liboss_aliyun.so"));
+#endif
+	}
+	else
+	{
+		raise_user_error(_T("oss_api"), _T("unknown oss library"));
 	}
 
-	read_proper(ptr_prop, _T("OSS"), -1, _T("LOCATION"), -1, token, PATH_LEN);
-	read_proper(ptr_prop, _T("OSS"), -1, _T("PUBLICKEY"), -1, pos->sd.scr_uid, KEY_LEN);
-	read_proper(ptr_prop, _T("OSS"), -1, _T("PRIVATEKEY"), -1, pos->sd.scr_key, KEY_LEN);
+	if (!oss_lib)
+	{
+		raise_user_error(_T("oss_api"), _T("load oss library falied\n"));
+	}
 
-	destroy_proper_doc(ptr_prop);
-	ptr_prop = NULL;
+	pos->pf_open_isp = (PF_OSS_OPEN_ISP)get_address(oss_lib, "oss_open_isp");
+	pos->pf_close = (PF_OSS_CLOSE)get_address(oss_lib, "oss_close");
+	pos->pf_ioctl = (PF_OSS_IOCTL)get_address(oss_lib, "oss_ioctl");
+	pos->pf_error = (PF_OSS_ERROR)get_address(oss_lib, "oss_error");
 
-	printf_path(pos->sz_oss, token);
+	if (!pos->pf_open_isp || !pos->pf_close || !pos->pf_ioctl || !pos->pf_error)
+	{
+		raise_user_error(_T("oss_api"), _T("get open/close functon falied"));
+	}
+
+	xsprintf(pos->isp_file, _T("%s%s"), pb->path, pb->object);
 
 	if (compare_text(method, -1, _T("HEAD"), -1, 1) == 0)
 		rt = _invoke_head(pb, pos);
@@ -872,12 +524,12 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		rt = _invoke_put(pb, pos);
 	else if (compare_text(method, -1, _T("DELETE"), -1, 1) == 0)
 		rt = _invoke_delete(pb, pos);
-	else if (compare_text(method, -1, _T("SYNC"), -1, 1) == 0)
-		rt = _invoke_sync(pb, pos);
 	else
 	{ 
 		raise_user_error(_T("oss_api"), _T("unknown oss method"));
 	}
+
+	free_library(oss_lib);
 
 	xmem_free(pos);
 
@@ -889,8 +541,8 @@ ONERROR:
 
 	_invoke_error(pb, pos);
 
-	if (ptr_prop)
-		destroy_proper_doc(ptr_prop);
+	if (oss_lib)
+		free_library(oss_lib);
 
 	xmem_free(pos);
 

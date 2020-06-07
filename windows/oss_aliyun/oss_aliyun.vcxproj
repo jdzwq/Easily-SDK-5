@@ -106,8 +106,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>oss_aliyun.def</ModuleDefinitionFile>
       <ImportLibrary>..\lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -124,8 +123,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>oss_aliyun.def</ModuleDefinitionFile>
       <ImportLibrary>..\lib\x64\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -146,8 +144,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies />
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>oss_aliyun.def</ModuleDefinitionFile>
       <ImportLibrary>..\lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -169,17 +166,18 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>oss_aliyun.def</ModuleDefinitionFile>
       <ImportLibrary>..\lib\x64\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\oss\ossdef.h" />
-    <ClInclude Include="..\..\oss\osspro.h" />
+    <ClCompile Include="..\..\oss\aliyun\oss_aliyun.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\oss\aliyun\oss_aliyun.c" />
+    <None Include="oss_aliyun.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\oss\ossdef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

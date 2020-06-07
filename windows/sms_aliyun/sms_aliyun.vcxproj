@@ -84,7 +84,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\sms\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,7 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sms\smsdef.h" />
-    <ClInclude Include="..\..\sms\smspro.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\sms\aliyun\sms_aliyun.c" />

@@ -248,12 +248,6 @@ typedef enum{
 #define UDP_PKG_SIZE		(MTU_MID_SIZE - IP_HDR_SIZE)
 #define UDP_PDU_SIZE		(UDP_PKG_SIZE - UDP_HDR_SIZE)
 
-/* default net port */
-#define DEF_HTTP_PORT		80
-#define DEF_HTTPS_PORT		443
-#define DEF_SSH_PORT		22
-#define DEF_TFTP_PORT		69
-
 typedef struct _datadef_t{
 	tchar_t data_type[INT_LEN];
 	tchar_t data_len[INT_LEN];
@@ -326,6 +320,7 @@ typedef enum{
 #define _HANDLE_PNP			0x0D
 #define _HANDLE_TFTP		0x0E
 #define _HANDLE_MQTT		0x0F
+#define _HANDLE_COAP		0x10
 
 typedef struct _xhand_head{
 	byte_t tag;
@@ -371,8 +366,9 @@ typedef struct _canvas_head{
 #define _PROTO_HTTP			0x04
 #define _PROTO_SSH			0x06
 #define _PROTO_TFTP			0x08
+#define _PROTO_COAP			0x09
 
-#define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_SSH || n == _PROTO_TFTP)
+#define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_SSH || n == _PROTO_TFTP || n == _PROTO_COAP)
 
 typedef struct _file_head{
 	byte_t tag;

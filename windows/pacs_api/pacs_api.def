@@ -1,0 +1,7 @@
+; pacs_api.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "pacs_api"
+DESCRIPTION  'pacs_api Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	slots_invoke

@@ -47,8 +47,8 @@ extern "C" {
 		int			if_size;	//jmp buffer array size
 		int			if_index;  // top jmp buffer index
 
-		tchar_t		errcode[NUM_LEN + 1];
-		tchar_t		errtext[ERR_LEN + 1];
+		void*		err_buf; //thread error buffer
+		int			err_size; //error buffer index
 	}if_jump_t;
 
 	typedef struct _if_zone_t{

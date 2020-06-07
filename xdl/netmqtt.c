@@ -1629,8 +1629,6 @@ xhand_t xmqtt_scp(xhand_t bio, int scp)
 {
 	mqtt_t* pmqtt = NULL;
 
-	XDL_ASSERT(scp == _MQTT_TYPE_SCP_PUB || scp == _MQTT_TYPE_SCP_SUB);
-
 	if (!bio)
 		return NULL;
 
@@ -1653,6 +1651,15 @@ xhand_t xmqtt_bio(xhand_t mqtt)
 	return pmqtt->bio;
 }
 
+int xmqtt_type(xhand_t mqtt)
+{
+	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+
+	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
+
+	return pmqtt->type;
+}
+
 int xmqtt_status(xhand_t mqtt)
 {
 	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
@@ -1673,7 +1680,7 @@ bool_t xmqtt_recv(xhand_t mqtt, dword_t* size)
 
 	TRY_CATCH;
 
-	if (pmqtt->type == _MQTT_TYPE_SCP_SUB)
+	if (pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_UNK)
 	{
 		switch (pmqtt->status)
 		{
@@ -1700,6 +1707,31 @@ bool_t xmqtt_recv(xhand_t mqtt, dword_t* size)
 			{
 				raise_user_error(NULL, NULL);
 			}
+			if (pdu_type == MQTT_PDU_DISCONNECT)
+			{
+				pmqtt->status = _MQTT_STATUS_RELEASE;
+				break;
+			}
+
+			//_MQTT_TYPE_SCP_UNK -> _MQTT_TYPE_SCP_SUB | _MQTT_TYPE_SCP_PUB
+			if (pmqtt->type == _MQTT_TYPE_SCP_UNK && pdu_type == MQTT_PDU_PUBLISH)
+			{
+				if (!pdv_size)
+				{
+					raise_user_error(_T("mqtt_recv"), _T("publish must has payload"));
+				}
+				pmqtt->packet = pdu_type;
+				//continue read PUBLISH payload
+				pmqtt->status = (pmqtt->packet_qos == MQTT_QOS_NONE) ? _MQTT_STATUS_WAITING : _MQTT_STATUS_PENDING;
+
+				pmqtt->type = _MQTT_TYPE_SCP_PUB;
+				break;
+			}
+			else if (pmqtt->type == _MQTT_TYPE_SCP_UNK && (pdu_type == MQTT_PDU_SUBSCRIBE || pdu_type == MQTT_PDU_UNSUBSCRIBE))
+			{
+				pmqtt->type = _MQTT_TYPE_SCP_SUB;
+			}
+
 			if (pdu_type != MQTT_PDU_SUBSCRIBE && pdu_type != MQTT_PDU_UNSUBSCRIBE)
 			{
 				raise_user_error(_T("mqtt_recv"), _T("invalid message type"));
@@ -2012,7 +2044,7 @@ bool_t xmqtt_send(xhand_t mqtt, dword_t pdv_size)
 
 	TRY_CATCH;
 
-	if (pmqtt->type == _MQTT_TYPE_SCP_SUB)
+	if (pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_UNK)
 	{
 		switch (pmqtt->status)
 		{
@@ -2296,7 +2328,8 @@ bool_t xmqtt_accept(xhand_t mqtt)
 	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
-	XDL_ASSERT(pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_PUB);
+
+	XDL_ASSERT(pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_PUB || pmqtt->type == _MQTT_TYPE_SCP_UNK);
 
 	byte_t* pdv_buf = NULL;
 	dword_t pdv_size;
@@ -2573,77 +2606,13 @@ bool_t xmqtt_poll_subscribe(xhand_t mqtt, tchar_t* topic, int len)
 
 	XDL_ASSERT(pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_PUB);
 
-	byte_t pdu_type = 0;
-	dword_t pdv_size = 0;
-	byte_t* pdv_buf = NULL;
-
-	stream_t stm = NULL;
-
-	TRY_CATCH;
-
-	stm = stream_alloc(pmqtt->bio);
-
-	if (pmqtt->type == _MQTT_TYPE_SCP_SUB)
-	{
-		//read SUBSCRIBE or UNSUBSCRIBE PDU
-		if (!xmqtt_recv(mqtt, &pdv_size))
-		{
-			raise_user_error(NULL, NULL);
-		}
-		pdv_buf = (byte_t*)xmem_alloc(pdv_size);
-
-		//read SUBSCRIBE or UNSUBSCRIBE payload
-		if (!stream_read_bytes(stm, pdv_buf, &pdv_size))
-		{
-			raise_user_error(NULL, NULL);
-		}
-
-		if (!_mqtt_parse_subcribe(pmqtt, pdv_buf, pdv_size))
-		{
-			raise_user_error(NULL, NULL);
-		}
-
-		xmem_free(pdv_buf);
-		pdv_buf = NULL;
-
 #ifdef _UNICODE
-		utf8_to_ucs(pmqtt->topic_name, pmqtt->topic_size, topic, len);
+	utf8_to_ucs(pmqtt->topic_name, pmqtt->topic_size, topic, len);
 #else
-		utf8_to_mbs(pmqtt->topic_name, pmqtt->topic_size, topic, len);
+	utf8_to_mbs(pmqtt->topic_name, pmqtt->topic_size, topic, len);
 #endif
-
-		//write SUBSCRIBE or UNSUBSCRIBE ACK
-		if (!xmqtt_send(mqtt, 0))
-		{
-			raise_user_error(NULL, NULL);
-		}
-	}
-	else if (pmqtt->type == _MQTT_TYPE_SCP_PUB)
-	{
-#ifdef _UNICODE
-		utf8_to_ucs(pmqtt->topic_name, pmqtt->topic_size, topic, len);
-#else
-		utf8_to_mbs(pmqtt->topic_name, pmqtt->topic_size, topic, len);
-#endif
-	}
-
-	stream_free(stm);
-	stm = NULL;
-
-	END_CATCH;
 
 	return 1;
-ONERROR:
-
-	XDL_TRACE_LAST;
-
-	if (pdv_buf)
-		xmem_free(pdv_buf);
-
-	if (stm)
-		stream_free(stm);
-
-	return 0;
 }
 
 bool_t xmqtt_poll_message(xhand_t mqtt, byte_t** pbuf, dword_t* plen)
@@ -2652,7 +2621,7 @@ bool_t xmqtt_poll_message(xhand_t mqtt, byte_t** pbuf, dword_t* plen)
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
-	XDL_ASSERT(pmqtt->type == _MQTT_TYPE_SCU_SUB || pmqtt->type == _MQTT_TYPE_SCP_PUB);
+	XDL_ASSERT(pmqtt->type == _MQTT_TYPE_SCU_SUB || pmqtt->type == _MQTT_TYPE_SCP_PUB || pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_UNK);
 
 	stream_t stm = NULL;
 	dword_t n;
@@ -2712,16 +2681,57 @@ bool_t xmqtt_poll_message(xhand_t mqtt, byte_t** pbuf, dword_t* plen)
 			raise_user_error(NULL, NULL);
 		}
 
-		if (pmqtt->status != _MQTT_STATUS_RELEASE)
-		{
-			pmqtt->message_data = (byte_t*)xmem_realloc(pmqtt->message_data, pmqtt->message_size);
+		pmqtt->message_data = (byte_t*)xmem_realloc(pmqtt->message_data, pmqtt->message_size);
 
-			//read PUBLISH payload
-			if (!stream_read_bytes(stm, pmqtt->message_data, &(pmqtt->message_size)))
+		//read PUBLISH payload
+		if (!stream_read_bytes(stm, pmqtt->message_data, &(pmqtt->message_size)))
+		{
+			raise_user_error(NULL, NULL);
+		}
+
+		if (pmqtt->packet_qos)
+		{
+			//write PUBLISH ACK
+			if (!xmqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
+		}
+
+		if (pmqtt->packet_qos == MQTT_QOS_ONCE)
+		{
+			//read PUBLISH REL
+			if (!xmqtt_recv(mqtt, &n))
 			{
 				raise_user_error(NULL, NULL);
 			}
 
+			//write PUBLISH COMP
+			if (!xmqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
+			}
+		}
+	}
+	else if (pmqtt->type == _MQTT_TYPE_SCP_SUB || pmqtt->type == _MQTT_TYPE_SCP_UNK)
+	{
+		//read SUBSCRIBE or UNSUBSCRIBE PDU
+		if (!xmqtt_recv(mqtt, &(pmqtt->message_size)))
+		{
+			raise_user_error(NULL, NULL);
+		}
+
+		pmqtt->message_data = (byte_t*)xmem_realloc(pmqtt->message_data, pmqtt->message_size);
+
+		//read SUBSCRIBE or UNSUBSCRIBE payload
+		if (!stream_read_bytes(stm, pmqtt->message_data, &(pmqtt->message_size)))
+		{
+			raise_user_error(NULL, NULL);
+		}
+
+		//_MQTT_TYPE_SCP_UNK->_MQTT_TYPE_SCP_PUB
+		if (pmqtt->type == _MQTT_TYPE_SCP_PUB)
+		{
 			if (pmqtt->packet_qos)
 			{
 				//write PUBLISH ACK
@@ -2744,6 +2754,23 @@ bool_t xmqtt_poll_message(xhand_t mqtt, byte_t** pbuf, dword_t* plen)
 				{
 					raise_user_error(NULL, NULL);
 				}
+			}
+		}
+		else
+		{
+			if (!_mqtt_parse_subcribe(pmqtt, pmqtt->message_data, pmqtt->message_size))
+			{
+				raise_user_error(NULL, NULL);
+			}
+
+			xmem_free(pmqtt->message_data);
+			pmqtt->message_data = NULL;
+			pmqtt->message_size = 0;
+
+			//write SUBSCRIBE or UNSUBSCRIBE ACK
+			if (!xmqtt_send(mqtt, 0))
+			{
+				raise_user_error(NULL, NULL);
 			}
 		}
 	}

@@ -36,6 +36,8 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
 
+#define DEF_SSH_PORT		22
+
 #define SSH_VER_SERVER			"SSH-2.0-7.10 xService-5.5"
 #define SSH_VER_CLIENT			"SSH-2.0-7.10 Easily-SDK-5.5"
 

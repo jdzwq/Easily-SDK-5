@@ -630,6 +630,15 @@
     <ClInclude Include="..\..\xdl\xdlblock.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\netcoap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\radobj.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\netpacs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -1188,6 +1197,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\xdlblock.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\netcoap.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\radobj.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\netpacs.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

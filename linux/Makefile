@@ -9,10 +9,8 @@ CUR_PATH = $(abspath ./)
 
 API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
-	$(API_PATH)/librad_api.so.1.0 \
-	$(API_PATH)/libradnet.so.1.0 \
-	$(API_PATH)/libpub_api.so.1.0 \
-	$(API_PATH)/libsub_api.so.1.0 \
+	$(API_PATH)/libmqtt_api.so.1.0 \
+	$(API_PATH)/libcoap_api.so.1.0 \
 	$(API_PATH)/libhl7_api.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
 	$(API_PATH)/libwww_api.so.1.0 \
@@ -20,12 +18,17 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdb_mysql.so.1.0 \
 	$(API_PATH)/libsms_api.so.1.0 \
 	$(API_PATH)/libsms_aliyun.so.1.0 \
-	$(API_PATH)/liboau_api.so.1.0
+	$(API_PATH)/liboau_api.so.1.0 \
+	$(API_PATH)/liboau_weiapp.so.1.0 \
+	$(API_PATH)/liboss_api.so.1.0 \
+	$(API_PATH)/liboss_aliyun.so.1.0 \
+	$(API_PATH)/libpacs_api.so.1.0
 
 EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
 	$(EXE_PATH)/xhttps \
-	$(EXE_PATH)/xslots
+	$(EXE_PATH)/xslots \
+	$(EXE_PATH)/xudps
 
 all:
 	if ! test -d $(SRV_PATH); then \
@@ -41,7 +44,8 @@ all:
 
 	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/sms_aliyun && make -f sms_aliyun.so.mk
-	cd $(CUR_PATH)/radnet && make -f radnet.so.mk
+	cd $(CUR_PATH)/oau_weiapp && make -f oau_weiapp.so.mk
+	cd $(CUR_PATH)/oss_aliyun && make -f oss_aliyun.so.mk
 
 	cd $(CUR_PATH)/hl7_api && make -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
@@ -49,13 +53,15 @@ all:
 	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
 	cd $(CUR_PATH)/sms_api && make -f sms_api.so.mk
 	cd $(CUR_PATH)/oau_api && make -f oau_api.so.mk
-	cd $(CUR_PATH)/rad_api && make -f rad_api.so.mk
-	cd $(CUR_PATH)/sub_api && make -f sub_api.so.mk
-	cd $(CUR_PATH)/pub_api && make -f pub_api.so.mk
+	cd $(CUR_PATH)/oss_api && make -f oss_api.so.mk
+	cd $(CUR_PATH)/mqtt_api && make -f mqtt_api.so.mk
+	cd $(CUR_PATH)/coap_api && make -f coap_api.so.mk
+	cd $(CUR_PATH)/pacs_api && make -f pacs_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make -f xhttps.mk
 	cd $(CUR_PATH)/xslots && make -f xslots.mk
+	cd $(CUR_PATH)/xudps && make -f xudps.mk
 	cd $(CUR_PATH)/xportd && make -f xportd.mk
 
 test:
@@ -98,14 +104,17 @@ install:
 	if ! test -d $(SRV_PATH)/oau; then \
 	sudo mkdir $(SRV_PATH)/oau; \
 	fi
-	if ! test -d $(SRV_PATH)/rad; then \
-	sudo mkdir $(SRV_PATH)/rad; \
+	if ! test -d $(SRV_PATH)/oss; then \
+	sudo mkdir $(SRV_PATH)/oss; \
 	fi
-	if ! test -d $(SRV_PATH)/sub; then \
-	sudo mkdir $(SRV_PATH)/sub; \
+	if ! test -d $(SRV_PATH)/coap; then \
+	sudo mkdir $(SRV_PATH)/coap; \
 	fi
-	if ! test -d $(SRV_PATH)/pub; then \
-	sudo mkdir $(SRV_PATH)/pub; \
+	if ! test -d $(SRV_PATH)/mqtt; then \
+	sudo mkdir $(SRV_PATH)/mqtt; \
+	fi
+	if ! test -d $(SRV_PATH)/pacs; then \
+	sudo mkdir $(SRV_PATH)/pacs; \
 	fi
 
 	sudo cp -rf $(INS_PATH)/cfg $(SRV_PATH);
@@ -131,7 +140,8 @@ install:
 
 	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/sms_aliyun && make install -f sms_aliyun.so.mk
-	cd $(CUR_PATH)/radnet && make install -f radnet.so.mk
+	cd $(CUR_PATH)/oau_weiapp && make install -f oau_weiapp.so.mk
+	cd $(CUR_PATH)/oss_aliyun && make install -f oss_aliyun.so.mk
 
 	cd $(CUR_PATH)/hl7_api && make install -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
@@ -139,13 +149,15 @@ install:
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
 	cd $(CUR_PATH)/sms_api && make install -f sms_api.so.mk
 	cd $(CUR_PATH)/oau_api && make install -f oau_api.so.mk
-	cd $(CUR_PATH)/rad_api && make install -f rad_api.so.mk
-	cd $(CUR_PATH)/sub_api && make install -f sub_api.so.mk
-	cd $(CUR_PATH)/pub_api && make install -f pub_api.so.mk
+	cd $(CUR_PATH)/oss_api && make install -f oss_api.so.mk
+	cd $(CUR_PATH)/coap_api && make install -f coap_api.so.mk
+	cd $(CUR_PATH)/mqtt_api && make install -f mqtt_api.so.mk
+	cd $(CUR_PATH)/pacs_api && make install -f pacs_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make install -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
 	cd $(CUR_PATH)/xslots && make install -f xslots.mk
+	cd $(CUR_PATH)/xudps && make install -f xudps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
 	cd $(CUR_PATH)
 

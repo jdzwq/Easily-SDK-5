@@ -28,14 +28,7 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 #include <sms.h>
-#include <hexdfs.h>
-
-#define APPVER	"SM10"
-#define APPHAND_SIZE		4
-
-#define SMSHEADER_SIZE		24
-#define SMSMESSAGE_SIZE		6
-#define TIMESTAMP_SIZE		24
+#include <hdfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

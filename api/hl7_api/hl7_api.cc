@@ -76,15 +76,9 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	variant_t key = { 0 };
 	object_t val = NULL;
 
+	rad_hdr_t hdr = { 0 };
+	dword_t dw, total = 0;
 	byte_t* buf = NULL;
-	dword_t obj_len;
-	dword_t total = 0;
-	byte_t* hl7_buf = NULL;
-	dword_t hl7_len;
-	byte_t* han_buf = NULL;
-	dword_t han_len;
-	byte_t* msg_buf = NULL;
-	dword_t msg_len;
 
 	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
@@ -108,6 +102,7 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_head"), _T("unknown kv database"));
@@ -133,70 +128,30 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_read(hkv, key, val);
 
-	obj_len = object_get_bytes(val, NULL, MAX_LONG);
-	xsprintf(fsize, _T("%d"), obj_len);
-
-	buf = (byte_t*)xmem_alloc(obj_len);
-
-	object_get_bytes(val, buf, obj_len);
-
-	while (total < obj_len)
+	total = 0;
+	while ((dw = radobj_read(val, &hdr, NULL, MAX_LONG)) > 0)
 	{
-		//the object length
-		hl7_buf = buf + total + 4;
-		hl7_len = GET_DWORD_NET((hl7_buf - 4), 0);
-		if (hl7_len > MAX_LONG)
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage packet size"));
-		}
-		total += 4;
+		buf = (byte_t*)xmem_alloc(dw);
+		radobj_read(val, &hdr, buf, dw);
 
-		//the object handler length
-		han_buf = hl7_buf + 2;
-		han_len = GET_SWORD_NET((han_buf - 2), 0);
-		if (han_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage handler size"));
-		}
-		total += 2;
-		if(han_len > 8)
-		{
-#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
-#else
-			utf8_to_mbs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
-#endif
-			parse_datetime(&dt, ftime);
-		}
-		else
-		{
-			get_utc_date(&dt);
-		}
-		//skip handler
-		total += han_len;
+		parse_datetime(&dt, hdr.utc);
 
 		if(compare_datetime(&dt, &dt_last) > 0)
 		{
 			xmem_copy((void*)&dt_last, (void*)&dt, sizeof(xdate_t));
 		}
 
-		//the object message
-		msg_buf = han_buf + han_len + 4;
-		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
-		if (hl7_len != (2 + han_len + 4 + msg_len))
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
-		}
-		total += 4;
+		xmem_free(buf);
+		buf = NULL;
 
-		//skip message data
-		total += msg_len;
+		total += dw;
+
+		plus_millseconds(&dt, 1);
+		format_utctime(&dt, hdr.utc);
 	}
 
-	xmem_free(buf);
-	buf = NULL;
-
 	variant_to_null(&key);
+
 	object_free(val);
 	val = NULL;
 
@@ -209,6 +164,7 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	xhttp_set_response_code(pb->http, HTTP_CODE_200);
 	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
 
+	ltoxs(total, fsize, INT_LEN);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTLENGTH, -1, fsize, -1);
 	format_utctime(&dt_last, ftime);
 	xhttp_set_response_header(pb->http, HTTP_HEADER_LASTMODIFIED, -1, ftime, -1);
@@ -261,20 +217,13 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	byte_t* buf = NULL;
-	dword_t obj_len;
-	dword_t total = 0;
-	byte_t* hl7_buf = NULL;
-	dword_t hl7_len;
-	byte_t* han_buf = NULL;
-	dword_t han_len;
-	byte_t* msg_buf = NULL;
-	dword_t msg_len;
+	dword_t dw;
 
 	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
-	tchar_t timestamp[DATE_LEN] = { 0 };
+	rad_hdr_t hdr = { 0 };
+	tchar_t fsince[DATE_LEN] = { 0 };
 	xdate_t dt_first, dt = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -293,11 +242,10 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 
 	TRY_CATCH;
 
-	xhttp_get_url_query_entity(pb->http, _T("timestamp"), -1, timestamp, DATE_LEN);
-	parse_datetime(&dt_first, timestamp);
+	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMODIFIEDSINCE, -1, fsince, DATE_LEN);
+	parse_gmttime(&dt_first, fsince);
 
 	xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
-	
 	b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
 	if (pb->log)
@@ -321,6 +269,7 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	set_dom_node_name(nlk_rowset, _T("rowset"), -1);
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_list"), _T("unknown kv database"));
@@ -346,60 +295,9 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_read(hkv, key, val);
 
-	obj_len = object_get_bytes(val, NULL, MAX_LONG);
-
-	buf = (byte_t*)xmem_alloc(obj_len);
-
-	object_get_bytes(val, buf, obj_len);
-
-	while (total < obj_len)
+	while ((dw = radobj_read(val, &hdr, NULL, MAX_LONG)) > 0)
 	{
-		// the object length
-		hl7_buf = buf + total + 4;
-		hl7_len = GET_DWORD_NET((hl7_buf - 4), 0);
-		if (hl7_len > MAX_LONG)
-		{
-			raise_user_error(_T("_invoke_list"), _T("invalid mesage packet size"));
-		}
-		total += 4;
-
-		//the object handler length
-		han_buf = hl7_buf + 2;
-		han_len = GET_SWORD_NET((han_buf - 2), 0);
-		if (han_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_list"), _T("invalid mesage handler size"));
-		}
-		total += 2;
-		if (han_len > 8)
-		{
-#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
-#else
-			utf8_to_mbs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
-#endif
-			parse_datetime(&dt, ftime);
-		}
-		else
-		{
-			get_utc_date(&dt);
-		}
-		//skip handler
-		total += han_len;
-
-		//the object message
-		msg_buf = han_buf + han_len + 4;
-		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
-		if (hl7_len != (2 + han_len + 4 + msg_len))
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
-		}
-		total += 4;
-
-		xsprintf(fsize, _T("%d"), msg_len);
-
-		//skip message data
-		total += msg_len;
+		parse_datetime(&dt, hdr.utc);
 
 		if (compare_datetime(&dt, &dt_first) > 0)
 		{
@@ -410,20 +308,23 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 			set_dom_node_name(nlk, _T("MessageName"), -1);
 			set_dom_node_text(nlk, pid, -1);
 
+			xsprintf(fsize, _T("%d"), dw);
 			nlk = insert_dom_node(nlk_row, LINK_LAST);
 			set_dom_node_name(nlk, _T("MessageSize"), -1);
 			set_dom_node_text(nlk, fsize, -1);
 
+			format_datetime(&dt, ftime);
 			nlk = insert_dom_node(nlk_row, LINK_LAST);
 			set_dom_node_name(nlk, _T("MessageTime"), -1);
 			set_dom_node_text(nlk, ftime, -1);
 		}
+
+		plus_millseconds(&dt, 1);
+		format_utctime(&dt, hdr.utc);
 	}
 
-	xmem_free(buf);
-	buf = NULL;
-
 	variant_to_null(&key);
+
 	object_free(val);
 	val = NULL;
 
@@ -471,9 +372,6 @@ ONERROR:
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
-	if (buf)
-		xmem_free(buf);
-
 	variant_to_null(&key);
 
 	if (val)
@@ -510,19 +408,13 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	object_t val = NULL;
 
 	byte_t* buf = NULL;
-	dword_t obj_len;
-	dword_t total = 0;
-	byte_t* hl7_buf = NULL;
-	dword_t hl7_len;
-	byte_t* han_buf = NULL;
-	dword_t han_len;
-	byte_t* msg_buf = NULL;
-	dword_t msg_len;
+	dword_t dw;
 
 	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
-	tchar_t timestamp[DATE_LEN] = { 0 };
+	rad_hdr_t hdr = { 0 };
+	tchar_t fsince[DATE_LEN] = { 0 };
 	xdate_t dt_first, dt = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 
@@ -543,11 +435,10 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 	TRY_CATCH;
 
-	xhttp_get_url_query_entity(pb->http, _T("timestamp"), -1, timestamp, DATE_LEN);
-	parse_datetime(&dt_first, timestamp);
+	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMODIFIEDSINCE, -1, fsince, DATE_LEN);
+	parse_gmttime(&dt_first, fsince);
 
 	xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
-
 	b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
 	if (pb->log)
@@ -571,6 +462,7 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	set_dom_node_name(nlk_rowset, _T("rowset"), -1);
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_list"), _T("unknown kv database"));
@@ -596,64 +488,21 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_read(hkv, key, val);
 
-	obj_len = object_get_bytes(val, NULL, MAX_LONG);
-
-	buf = (byte_t*)xmem_alloc(obj_len);
-
-	object_get_bytes(val, buf, obj_len);
-
-	while (total < obj_len)
+	while ((dw = radobj_read(val, &hdr, NULL, MAX_LONG)) > 0)
 	{
-		// the object length
-		hl7_buf = buf + total + 4;
-		hl7_len = GET_DWORD_NET((hl7_buf - 4), 0);
-		if (hl7_len > MAX_LONG)
-		{
-			raise_user_error(_T("_invoke_list"), _T("invalid mesage packet size"));
-		}
-		total += 4;
+		buf = (byte_t*)xmem_alloc(dw);
+		radobj_read(val, &hdr, buf, dw);
 
-		//the object handler length
-		han_buf = hl7_buf + 2;
-		han_len = GET_SWORD_NET((han_buf - 2), 0);
-		if (han_len > MAX_SHORT)
-		{
-			raise_user_error(_T("_invoke_list"), _T("invalid mesage handler size"));
-		}
-		total += 2;
-		if (han_len > 8)
-		{
-#if defined(_UNICODE) || defined(UNICODE)
-			utf8_to_ucs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
-#else
-			utf8_to_mbs((han_buf + 8), UTC_LEN, ftime, UTC_LEN);
-#endif
-			parse_datetime(&dt, ftime);
-		}
-		else
-		{
-			get_utc_date(&dt);
-		}
-		//skip handler
-		total += han_len;
-
-		//the object message
-		msg_buf = han_buf + han_len + 4;
-		msg_len = GET_DWORD_NET((msg_buf - 4), 0);
-		if (hl7_len != (2 + han_len + 4 + msg_len))
-		{
-			raise_user_error(_T("_invoke_head"), _T("invalid mesage data size"));
-		}
-		total += 4;
-
-		//skip message data
-		total += msg_len;
+		parse_datetime(&dt, hdr.utc);
 
 		if (compare_datetime(&dt, &dt_first) > 0)
 		{
 			pp = bytes_alloc();
 
-			bytes_insert(pp, 0, msg_buf, msg_len);
+			bytes_insert(pp, 0, buf, dw);
+
+			xmem_free(buf);
+			buf = NULL;
 
 			if (!load_mded_doc_from_bytes(nlk_rowset, pp))
 			{
@@ -665,12 +514,16 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 
 			break;
 		}
+
+		xmem_free(buf);
+		buf = NULL;
+
+		plus_millseconds(&dt, 1);
+		format_utctime(&dt, hdr.utc);
 	}
 
-	xmem_free(buf);
-	buf = NULL;
-
 	variant_to_null(&key);
+
 	object_free(val);
 	val = NULL;
 
@@ -761,18 +614,11 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	object_t val = NULL;
 
 	byte_t* buf = NULL;
-	dword_t obj_len;
-	dword_t total = 0;
-	byte_t* hl7_buf = NULL;
-	dword_t hl7_len;
-	byte_t* han_buf = NULL;
-	dword_t han_len;
-	byte_t* msg_buf = NULL;
-	dword_t msg_len;
 
 	hex_obj_t hdb = NULL;
 	hex_obj_t hkv = NULL;
 
+	rad_hdr_t hdr = { 0 };
 	xdate_t dt = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 
@@ -849,6 +695,7 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	size = bytes_size(pp);
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_put"), _T("unknown kv database"));
@@ -877,55 +724,18 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 
 	hexkv_read(hkv, key, val);
 
-	obj_len = object_get_bytes(val, NULL, MAX_LONG);
+	xmem_copy((void*)hdr.ver, (void*)MSGVER_APPLICATION, MSGVER_SIZE);
+	format_utctime(&dt, hdr.utc);
 
-	total = 0;
-	buf = (byte_t*)xmem_alloc(obj_len + 4 + (2 + HL7HAN_SIZE) + (4 + size));
-	//copy origin object_list
-	object_get_bytes(val, buf, obj_len);
-	total += obj_len;
+	radobj_write(val, &hdr, *pp, size);
 
-	//the object total size
-	hl7_buf = buf + obj_len + 4;
-	hl7_len = ((2 + HL7HAN_SIZE) + (4 + size));
-	PUT_DWORD_NET((hl7_buf - 4), 0, hl7_len);
-	total += 4;
-
-	//the object handler size
-	han_buf = hl7_buf + 2;
-	han_len = HL7HAN_SIZE;
-	PUT_SWORD_NET((han_buf - 2), 0, han_len);
-	total += 2;
-	//the object handler
-	xmem_copy((void*)(han_buf), (void*)HL7VER, HL7VER_SIZE);
-
-#if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(ftime, UTC_LEN, (han_buf + 8), UTC_LEN);
-#else
-	mbs_to_utf8(ftime, UTC_LEN, (han_buf + 8), UTC_LEN);
-#endif
-	total += han_len;
-
-	//the object message size
-	msg_buf = han_buf + HL7HAN_SIZE + 4;
-	msg_len = size;
-	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
-	total += 4;
-	//the object message
-	xmem_copy((void*)(msg_buf), *pp, size);
-	total += size;
+	hexkv_attach(hkv, key, val);
+	val = NULL;
 
 	bytes_free(pp);
 	pp = NULL;
 
-	//set new object list
-	object_set_bytes(val, _UTF8, buf, total);
-
-	hexkv_write(hkv, key, val);
-
 	variant_to_null(&key);
-	object_free(val);
-	val = NULL;
 
 	hexkv_destroy(hkv);
 	hkv = NULL;
@@ -1010,6 +820,7 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 	}
 
 	split_topic(pd->topic_name, cid, did, pid);
+
 	if (is_null(cid) || is_null(did))
 	{
 		raise_user_error(_T("_invoke_put"), _T("unknown kv database"));

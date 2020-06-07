@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "smspro.h"
+#include "smsdef.h"
 
 typedef struct _ali_code_t{
 	tchar_t Location[PATH_LEN];

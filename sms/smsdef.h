@@ -57,5 +57,35 @@ typedef struct _sms_head{
 
 typedef sms_t	SMS;
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+	extern sms_t STDCALL sms_open_isp(const tchar_t* ispfile);
+
+	extern void STDCALL sms_close(sms_t sms);
+
+	extern bool_t STDCALL sms_code(sms_t sms, const tchar_t* phone, const tchar_t* param, int len);
+
+	extern bool_t STDCALL sms_message(sms_t sms, const tchar_t* phone, const tchar_t* param, int len, tchar_t* msgid, int max);
+
+	extern bool_t STDCALL sms_receipt(sms_t sms, const tchar_t* phone, const tchar_t* msgid, int len, tchar_t* receipt, int max);
+
+	extern int STDCALL sms_error(sms_t sms, tchar_t* buf, int max);
+
+#ifdef	__cplusplus
+}
+#endif
+/*********************************sms export def***************************************************/
+
+typedef bool_t(STDCALL *PF_SMS_PARSE_ISP)(const tchar_t*, tchar_t*, int, tchar_t*, int, tchar_t*, int);
+typedef sms_t(STDCALL *PF_SMS_OPEN_ISP)(const tchar_t*);
+typedef void(STDCALL *PF_SMS_CLOSE)(sms_t);
+typedef bool_t(STDCALL *PF_SMS_CODE)(sms_t, const tchar_t*, const tchar_t*, int);
+typedef bool_t(STDCALL *PF_SMS_MESSAGE)(sms_t, const tchar_t*, const tchar_t*, int, tchar_t*, int);
+typedef bool_t(STDCALL *PF_SMS_RECEIPT)(sms_t, const tchar_t*, const tchar_t*, int, tchar_t*, int);
+typedef int(STDCALL *PF_SMS_ERROR)(sms_t, tchar_t*, int);
+
+
 #endif	/* _SMSDEF_H */
 

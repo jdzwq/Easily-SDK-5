@@ -28,12 +28,6 @@ LICENSE.GPL3 for more details.
 #include <xdl.h>
 #include <hexdfs.h>
 
-#define SUBVER	"MQ11"
-#define SUBVER_SIZE		4
-#define SUBHAN_SIZE		32
-
-#define SUB_TOPIC_CONFIG	_T("config")
-
 #ifdef	__cplusplus
 extern "C" {
 #endif

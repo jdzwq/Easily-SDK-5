@@ -189,10 +189,13 @@
     <ClInclude Include="..\..\xdl\gridbio.h" />
     <ClInclude Include="..\..\xdl\impcache.h" />
     <ClInclude Include="..\..\xdl\memobio.h" />
+    <ClInclude Include="..\..\xdl\netcoap.h" />
+    <ClInclude Include="..\..\xdl\netpacs.h" />
     <ClInclude Include="..\..\xdl\netmqtt.h" />
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\properbio.h" />
+    <ClInclude Include="..\..\xdl\radobj.h" />
     <ClInclude Include="..\..\xdl\srvhttp.h" />
     <ClInclude Include="..\..\xdl\srvpnp.h" />
     <ClInclude Include="..\..\xdl\srvslot.h" />
@@ -394,10 +397,13 @@
     <ClCompile Include="..\..\xdl\gridbio.c" />
     <ClCompile Include="..\..\xdl\impcache.c" />
     <ClCompile Include="..\..\xdl\memobio.c" />
+    <ClCompile Include="..\..\xdl\netcoap.c" />
+    <ClCompile Include="..\..\xdl\netpacs.c" />
     <ClCompile Include="..\..\xdl\netmqtt.c" />
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\properbio.c" />
+    <ClCompile Include="..\..\xdl\radobj.c" />
     <ClCompile Include="..\..\xdl\srvhttp.c" />
     <ClCompile Include="..\..\xdl\srvpnp.c" />
     <ClCompile Include="..\..\xdl\srvslot.c" />

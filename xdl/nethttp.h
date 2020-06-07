@@ -35,6 +35,9 @@ LICENSE.GPL3 for more details.
 #include "xdldef.h"
 #include "httpattr.h"
 
+#define DEF_HTTP_PORT		80
+#define DEF_HTTPS_PORT		443
+
 #define XHTTP_HEADER_SIZE	1024
 #define XHTTP_HEADER_MAX	(64 * 1024)
 #define XHTTP_ZIPED_SIZE	(4 * 1024 * 1024)

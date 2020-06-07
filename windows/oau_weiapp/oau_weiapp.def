@@ -1,0 +1,10 @@
+; oau_weiapp.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "oau_weiapp"
+DESCRIPTION  'oau_weiapp Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	oau_open_isp
+	oau_close
+	oau_session_key
+	oau_error

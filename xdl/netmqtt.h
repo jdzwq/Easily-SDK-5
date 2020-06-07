@@ -103,6 +103,7 @@ typedef enum{
 
 /*MQTT type*/
 typedef enum{
+	_MQTT_TYPE_SCP_UNK = 0,
 	_MQTT_TYPE_SCU_PUB = 1,
 	_MQTT_TYPE_SCP_PUB = 2,
 	_MQTT_TYPE_SCU_SUB = 3,
@@ -124,6 +125,8 @@ extern "C" {
 	EXP_API xhand_t	xmqtt_scu(xhand_t bio, int scu);
 
 	EXP_API xhand_t	xmqtt_scp(xhand_t bio, int scp);
+
+	EXP_API int xmqtt_type(xhand_t mqtt);
 
 	EXP_API xhand_t	xmqtt_bio(xhand_t mqtt);
 

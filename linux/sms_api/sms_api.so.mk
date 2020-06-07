@@ -23,7 +23,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl -lhexdfs
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl -lhdfs
 	rm -f $(OBJS)
 
 test:

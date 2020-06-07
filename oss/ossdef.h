@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily oss
+	Easily oss web api
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, China ZheJiang HangZhou JianDe, Mail: powersuite@hotmaol.com
 
-	@doc defination document
+	@doc oss function document
 
-	@module	ossdef.h | definition interface file
+	@module	ossdef.h | oss interface file
 
 ***********************************************************************/
 
@@ -23,12 +23,40 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-
 #ifndef _OSSDEF_H
-#define	_OSSDEF_H
+#define _OSSDEF_H
 
 #include <xdl.h>
 
+typedef struct _oss_head{
+	sword_t dbt;
+	sword_t cbs;
+}oss_head, *oss_t;
 
-#endif	/* _OSSDEF_H */
+typedef oss_t	OSS;
 
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+	extern oss_t STDCALL oss_open_isp(const tchar_t* ispfile);
+
+	extern void STDCALL oss_close(oss_t oss);
+
+	extern bool_t STDCALL oss_ioctl(oss_t oss, const tchar_t* method, const tchar_t* object, void* inbuf, dword_t inlen, void* outbuf, dword_t* outlen);
+
+	extern int STDCALL oss_error(oss_t oss, tchar_t* buf, int max);
+
+#ifdef	__cplusplus
+}
+#endif
+/*********************************oss export def***************************************************/
+
+typedef oss_t(STDCALL *PF_OSS_OPEN_ISP)(const tchar_t*);
+typedef void(STDCALL *PF_OSS_CLOSE)(oss_t);
+typedef bool_t(STDCALL *PF_OSS_IOCTL)(oss_t, const tchar_t*, const tchar_t*, void*, dword_t, void*, dword_t*);
+typedef int(STDCALL *PF_OSS_ERROR)(oss_t, tchar_t*, int);
+
+
+#endif

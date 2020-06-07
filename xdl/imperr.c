@@ -32,8 +32,80 @@ LICENSE.GPL3 for more details.
 #include "imperr.h"
 #include "xdlinit.h"
 #include "xdlimp.h"
+#include "xdloem.h"
 #include "xdlstr.h"
 
+void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
+{
+#ifdef XDK_SUPPORT_ERROR
+	if_jump_t* pju;
+	byte_t* buf;
+
+	pju = THREAD_JUMP_INTERFACE;
+
+	if (!pju)
+		return;
+
+	if (!pju->err_buf)
+		return;
+
+	if (pju->err_size == 4)
+	{
+		xmem_move((void*)((byte_t*)pju->err_buf + 1024), 3072, -1024);
+	}
+	else
+	{
+		pju->err_size++;
+	}
+
+	buf = (byte_t*)pju->err_buf + (pju->err_size - 1) * 1024;
+
+#if defined(_UNICODE) || defined(UNICODE)
+	ucs_to_utf8(errcode, -1, buf, NUM_LEN);
+	ucs_to_utf8(errtext, len, (buf + NUM_LEN), (1024 - NUM_LEN));
+#else
+	mbs_to_utf8(errcode, -1, buf, NUM_LEN);
+	mbs_to_utf8(errtext, len, (buf + NUM_LEN), (1024 - NUM_LEN));
+#endif
+
+#endif
+}
+
+void get_last_error(tchar_t* code, tchar_t* text, int max)
+{
+#ifdef XDK_SUPPORT_ERROR
+	if_jump_t* pju;
+	byte_t* buf;
+
+	pju = THREAD_JUMP_INTERFACE;
+
+	if (!pju)
+		return;
+
+	if (!pju->err_buf || !pju->err_size)
+		return;
+
+	buf = (byte_t*)pju->err_buf + (pju->err_size - 1) * 1024;
+
+	if (code)
+	{
+#if defined(_UNICODE) || defined(UNICODE)
+		utf8_to_ucs(buf, NUM_LEN, code, NUM_LEN);
+#else
+		utf8_to_mbs(buf, NUM_LEN, code, NUM_LEN);
+#endif
+	}
+
+	if (text)
+	{
+#if defined(_UNICODE) || defined(UNICODE)
+		utf8_to_ucs((buf + NUM_LEN), (1024 - NUM_LEN), text, max);
+#else
+		utf8_to_mbs((buf + NUM_LEN), (1024 - NUM_LEN), text, max);
+#endif
+	}
+#endif
+}
 
 void set_system_error(const tchar_t* errcode)
 {
@@ -52,51 +124,6 @@ void set_system_error(const tchar_t* errcode)
 #endif
 
 	set_last_error(errcode, errtext, -1);
-}
-
-void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
-{
-#ifdef XDK_SUPPORT_ERROR
-	if_jump_t* pju;
-
-	pju = THREAD_JUMP_INTERFACE;
-	
-	if (!pju) 
-		return;
-
-	if (len < 0)
-		len = xslen(errtext);
-
-	len = (len < ERR_LEN) ? len : ERR_LEN;
-
-	xsncpy(pju->errcode,errcode,NUM_LEN);
-	xsncpy(pju->errtext, errtext, len);
-#endif
-}
-
-void get_last_error(tchar_t* code, tchar_t* text, int max)
-{
-#ifdef XDK_SUPPORT_ERROR
-	if_jump_t* pju;
-	int len;
-
-	pju = THREAD_JUMP_INTERFACE;
-	
-	if (!pju) 
-		return;
-
-	if (code)
-	{
-		xsncpy(code, pju->errcode, NUM_LEN);
-	}
-
-	if (text)
-	{
-		len = xslen(pju->errtext);
-		len = (len < max) ? len : max;
-		xsncpy(text, pju->errtext, len);
-	}
-#endif
 }
 
 void trace_error(void* param, PF_ERROR_TRACE pf)
@@ -138,10 +165,41 @@ void xdl_trace(const tchar_t* code, const tchar_t* info)
 
 void xdl_trace_last()
 {
+#ifdef XDK_SUPPORT_ERROR
+	if_jump_t* pju;
+	byte_t* buf;
+
 	tchar_t errcode[NUM_LEN + 1];
 	tchar_t errtext[ERR_LEN + 1];
 
-	get_last_error(errcode, errtext, ERR_LEN);
+	pju = THREAD_JUMP_INTERFACE;
 
-	xdl_trace(errcode, errtext);
+	if (!pju)
+		return;
+
+	if (!pju->err_buf)
+		return;
+
+	while (pju->err_size)
+	{
+		buf = (byte_t*)pju->err_buf + (pju->err_size - 1) * 1024;
+
+#if defined(_UNICODE) || defined(UNICODE)
+		utf8_to_ucs(buf, NUM_LEN, errcode, NUM_LEN);
+#else
+		utf8_to_mbs(buf, NUM_LEN, errcode, NUM_LEN);
+#endif
+
+#if defined(_UNICODE) || defined(UNICODE)
+		utf8_to_ucs((buf + NUM_LEN), (1024 - NUM_LEN), errtext, ERR_LEN);
+#else
+		utf8_to_mbs((buf + NUM_LEN), (1024 - NUM_LEN), errtext, ERR_LEN);
+#endif
+
+		xdl_trace(errcode, errtext);
+
+		pju->err_size--;
+	}
+
+#endif
 }

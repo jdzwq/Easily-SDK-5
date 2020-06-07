@@ -164,6 +164,23 @@ EXP_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
 EXP_API void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len);
 
 /*
+@FUNCTION object_add_bytes: append bytes to object.
+@INPUT object_t obj: the object.
+@INPUT const byte_t* buf: the bytes buffer.
+@INPUT dword_t len: the buffer size in bytes.
+@RETURN void: none.
+*/
+EXP_API void object_add_bytes(object_t obj, const byte_t* buf, dword_t len);
+
+/*
+@FUNCTION object_add_bytes: delete followed bytes from object.
+@INPUT object_t obj: the object.
+@INPUT dword_t off: the zero based posotin.
+@RETURN void: none.
+*/
+EXP_API void object_del_bytes(object_t obj, dword_t off);
+
+/*
 @FUNCTION object_get_bytes: load bytes from object.
 @INPUT object_t obj: the object.
 @OUTPUT byte_t* buf: the bytes buffer.

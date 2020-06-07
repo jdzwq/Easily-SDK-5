@@ -50,7 +50,7 @@ typedef struct _udp_accept_t{
 		const tchar_t* sz_module;
 	};
 
-	byte_t pack[UDP_PDU_SIZE];
+	byte_t pack[MTU_MAX_SIZE];
 	dword_t size;
 }udp_accept_t;
 
@@ -99,7 +99,7 @@ static unsigned STDCALL thread_dispatch(void* param)
 	res_even_t ev = NULL;
 	unsigned short port;
 	tchar_t addr[ADDR_LEN];
-	byte_t pack[UDP_PDU_SIZE];
+	byte_t pack[MTU_MAX_SIZE];
 	dword_t size;
 
 	xdl_thread_init(0);
@@ -108,12 +108,12 @@ static unsigned STDCALL thread_dispatch(void* param)
 	pf_param = pxa->pf_param;
 	ev = pxa->ev;
 
-	event_sign(ev, 1);
-
 	port = pxa->port;
 	xsncpy(addr, pxa->addr, ADDR_LEN);
 	xmem_copy((void*)pack, (void*)pxa->pack, pxa->size);
 	size = pxa->size;
+
+	event_sign(ev, 1);
 
 	if (pf_dispatch)
 	{
@@ -134,7 +134,7 @@ static unsigned STDCALL process_dispatch(void* param)
 	unsigned short port;
 	byte_t addr[ADDR_LEN];
 	dword_t alen;
-	byte_t pack[UDP_PDU_SIZE];
+	byte_t pack[MTU_MAX_SIZE];
 	dword_t size;
 
 	const tchar_t* sz_module = NULL;
@@ -241,8 +241,10 @@ static unsigned STDCALL wait_accept(void* param)
 	while (plis->act)
 	{
 		addr_len = sizeof(net_addr_t);
-		dw = UDP_PDU_SIZE;
-		if (!socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, pov))
+		dw = MTU_MAX_SIZE;
+		pov->size = 0;
+		socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, pov);
+		if (!pov->size)
 		{
             thread_yield();
 			continue;
@@ -270,8 +272,11 @@ static unsigned STDCALL wait_accept(void* param)
 			{
 				thread_start(NULL, (PF_THREADFUNC)process_dispatch, (void*)&xa);
 			}
-            
+#if defined(DEBUG) || defined(_DEBUG)
+			event_wait(xa.ev, -1);
+#else
 			event_wait(xa.ev, UDP_BASE_TIMO);
+#endif
 			event_destroy(xa.ev);
 		}
 

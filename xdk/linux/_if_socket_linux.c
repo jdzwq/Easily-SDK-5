@@ -290,7 +290,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
     
     if (pcb) *pcb = (dword_t)rt;
     
-    return 1;
+    return (rt > 0)? 1 : 0;
 }
 
 bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, dword_t size, async_t* pb)
@@ -368,7 +368,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
     
     if (pcb) *pcb = (dword_t)rt;
     
-    return 1;
+    return (rt > 0)? 1 : 0;
 }
 
 bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)

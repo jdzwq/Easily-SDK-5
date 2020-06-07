@@ -27,12 +27,8 @@ LICENSE.GPL3 for more details.
 #define _HL7API_H
 
 #include <xdl.h>
-#include <hexdfs.h>
+#include <hdfs.h>
 #include <mded.h>
-
-#define HL7VER	"HL11"
-#define HL7VER_SIZE		4
-#define HL7HAN_SIZE		32
 
 #ifdef	__cplusplus
 extern "C" {
