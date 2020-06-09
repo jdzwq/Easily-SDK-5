@@ -49,6 +49,7 @@ void _get_loc_date(xdate_t* pxd)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
+	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
 }
@@ -88,6 +89,7 @@ void _get_utc_date(xdate_t* pxd)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
+	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
 }
@@ -114,6 +116,7 @@ bool_t _mak_utc_date(xdate_t* pxd)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
+	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
 
@@ -188,6 +191,7 @@ void _utc_date_from_times(xdate_t* pxd, dword_t ms)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
+	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
 }
@@ -215,6 +219,7 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
+	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
 }
@@ -242,6 +247,7 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
+	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
 }

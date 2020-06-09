@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 
 #include "xportd.h"
 #include "xhttps.h"
-#include "xslots.h"
+#include "xtcps.h"
 #include "xpnps.h"
 #include "xudps.h"
 #include "srvlog.h"
@@ -105,11 +105,11 @@ void xportd_start()
 
 			push_stack_node(g_stack, (void*)phttpd);
 		}
-		else if (compare_text(get_dom_node_attr_ptr(nlk_port, _T("type"), -1), -1, XPORTD_PORT_TYPE_SLOT, -1, 1) == 0)
+		else if (compare_text(get_dom_node_attr_ptr(nlk_port, _T("type"), -1), -1, XPORTD_PORT_TYPE_TCP, -1, 1) == 0)
 		{
-			xslots_param_t* pslots = (xslots_param_t*)xmem_alloc(sizeof(xslots_param_t));
+			xtcps_param_t* ptcps = (xtcps_param_t*)xmem_alloc(sizeof(xtcps_param_t));
 
-			get_dom_node_attr(nlk_port, _T("bind"), -1, pslots->sz_port, INT_LEN);
+			get_dom_node_attr(nlk_port, _T("bind"), -1, ptcps->sz_port, INT_LEN);
 
 			xszero(sz_file, PATH_LEN);
 
@@ -117,29 +117,29 @@ void xportd_start()
 			while (nlk_child)
 			{
 				if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("mode"), -1, 1) == 0)
-					get_dom_node_text(nlk_child, pslots->sz_mode, INT_LEN);
+					get_dom_node_text(nlk_child, ptcps->sz_mode, INT_LEN);
 				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("module"), -1, 1) == 0)
 					get_dom_node_text(nlk_child, sz_file, PATH_LEN);
 				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, _T("param"), -1, 1) == 0)
-					get_dom_node_text(nlk_child, pslots->sz_param, PATH_LEN);
+					get_dom_node_text(nlk_child, ptcps->sz_param, PATH_LEN);
 
 				nlk_child = get_dom_next_sibling_node(nlk_child);
 			}
 
-			if (is_null(pslots->sz_mode))
+			if (is_null(ptcps->sz_mode))
 			{
-				xscpy(pslots->sz_mode, _T("process"));
+				xscpy(ptcps->sz_mode, _T("process"));
 			}
 
 			if (!is_null(sz_file))
 			{
-				printf_path(pslots->sz_module, sz_file);
+				printf_path(ptcps->sz_module, sz_file);
 			}
 
 			xportd_param_t* phttpd = (xportd_param_t*)xmem_alloc(sizeof(xportd_param_t));
-			phttpd->param = (void*)pslots;
-			phttpd->pf_start = (PF_PORT_START)_xslots_start;
-			phttpd->pf_stop = (PF_PORT_STOP)_xslots_stop;
+			phttpd->param = (void*)ptcps;
+			phttpd->pf_start = (PF_PORT_START)_xtcps_start;
+			phttpd->pf_stop = (PF_PORT_STOP)_xtcps_stop;
 
 			push_stack_node(g_stack, (void*)phttpd);
 		}

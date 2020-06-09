@@ -213,7 +213,7 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 	dw = COAP_PDV_SIZE;
 	if (!xcoap_recv(pd->coap, payload, &dw))
 	{
-		raise_user_error(_T("_invoke_post"), _T("empty value"));
+		raise_user_error(NULL, NULL);
 	}
 
 	split_topic(path + 1, cid, did, pid);
@@ -353,7 +353,7 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 		dw = COAP_PDV_SIZE;
 		if (!xcoap_recv(pd->coap, payload + total, &dw))
 		{
-			raise_user_error(_T("_invoke_put"), _T("empty value"));
+			raise_user_error(NULL, NULL);
 		}
 
 		if (!dw)
@@ -535,6 +535,11 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	if (!pd->coap)
 	{
 		raise_user_error(_T("coap_api"), _T("create coap service failed"));
+	}
+
+	if (pb->timo)
+	{
+		xudp_settmo(xcoap_bio(pd->coap), pb->timo);
 	}
 
 	xcoap_set_blockwise(pd->coap, 6);

@@ -113,11 +113,7 @@ xhand_t xpnp_cli(unsigned short port, const tchar_t* addr)
 	socket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
 	socket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
 
-#if defined(_DEBUG) || defined(DEBUG)
-	ppnp->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
-#else
 	ppnp->pov = async_alloc_lapp(ASYNC_BLOCK, PNP_BASE_TIMO, INVALID_FILE);
-#endif
 
 	ppnp->snd_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
 	ppnp->snd_bys = 0;
@@ -172,11 +168,7 @@ xhand_t xpnp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	socket_set_rcvbuf(ppnp->so, PNP_PKG_SIZE);
 	socket_set_sndbuf(ppnp->so, PNP_PKG_SIZE);
 
-#if defined(_DEBUG) || defined(DEBUG)
-	ppnp->pov = async_alloc_lapp(ASYNC_BLOCK, -1, INVALID_FILE);
-#else
 	ppnp->pov = async_alloc_lapp(ASYNC_EVENT, PNP_BASE_TIMO, INVALID_FILE);
-#endif
 
 	ppnp->snd_pkg = (byte_t*)xmem_alloc(PNP_PKG_SIZE);
 	ppnp->snd_bys = 0;

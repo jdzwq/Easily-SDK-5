@@ -24,7 +24,7 @@ LICENSE.GPL3 for more details.
 
 #include "pacs_api.h"
 
-int STDCALL slots_invoke(const slots_block_t* pb)
+int STDCALL tcps_invoke(const tcps_block_t* pb)
 {
 	pacs_block_t* pd = NULL;
 	pacs_t* pacs = NULL;
@@ -42,7 +42,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	TRY_CATCH;
 
-	pacs = pacs_scp(pb->slot);
+	pacs = pacs_scp(pb->tcp);
 
 	if (!pacs)
 	{
@@ -115,7 +115,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	END_CATCH;
 
-	return (rt) ? SLOTS_INVOKE_SUCCEED : SLOTS_INVOKE_WITHINFO;
+	return (rt) ? TCPS_INVOKE_SUCCEED : TCPS_INVOKE_WITHINFO;
 
 ONERROR:
 	
@@ -140,6 +140,6 @@ ONERROR:
 		xmem_free(pd);
 	}
 
-	return SLOTS_INVOKE_WITHINFO;
+	return TCPS_INVOKE_WITHINFO;
 }
 

@@ -199,6 +199,13 @@ EXP_API xhand_t		xcoap_client(const tchar_t* method, const tchar_t* url);
 EXP_API xhand_t		xcoap_server(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
 
 /*
+@FUNCTION xcoap_bio: get the COAP udp bio handle.
+@INPUT xhand_t coap: the COAP handle.
+@RETURN xhand_t: return the udp handle.
+*/
+EXP_API xhand_t		xcoap_bio(xhand_t coap);
+
+/*
 @FUNCTION xcoap_close: close the COAP handle.
 @INPUT xhand_t coap: the COAP handle.
 @RETURN void: none.

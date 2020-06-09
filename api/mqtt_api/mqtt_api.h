@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	extern int STDCALL slots_invoke(const slots_block_t* pb);
+	extern int STDCALL tcps_invoke(const tcps_block_t* pb);
 
 #ifdef	__cplusplus
 }

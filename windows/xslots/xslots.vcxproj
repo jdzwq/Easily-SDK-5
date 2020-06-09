@@ -159,14 +159,14 @@
   <ItemGroup>
     <ClCompile Include="..\..\api\net_srv\srvcrt.cc" />
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
-    <ClCompile Include="..\..\api\net_srv\xslots.cc" />
-    <ClCompile Include="xslotsMain.cc" />
+    <ClCompile Include="..\..\api\net_srv\xtcps.cc" />
+    <ClCompile Include="xtcpsMain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvcrt.h" />
     <ClInclude Include="..\..\api\net_srv\srvdef.h" />
     <ClInclude Include="..\..\api\net_srv\srvlog.h" />
-    <ClInclude Include="..\..\api\net_srv\xslots.h" />
+    <ClInclude Include="..\..\api\net_srv\xtcps.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

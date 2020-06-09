@@ -42,13 +42,14 @@ typedef enum{
 	_XTCP_TYPE_SRV = 2
 }XTCP_TYPE;
 
+#define TCP_BASE_TIMO	(5000) //milloinsecond
 #define TCP_MIN_SNDBUFF	(4096)
 #define TCP_MIN_RCVBUFF	(4096)
 #define TCP_MAX_SNDBUFF	(16 * 1024 * 1024)
 #define TCP_MAX_RCVBUFF	(8 * 1024 * 1024)
 //#define TCP_MTU_BUFF	(1500 - 20 - 20)
 #define TCP_MTU_BUFF	(576 - 20 - 20)
-#define TCP_BASE_TIMO	(5000) //milloinsecond
+
 
 #ifdef	__cplusplus
 extern "C" {
@@ -117,6 +118,14 @@ EXP_API bool_t  xtcp_read(xhand_t tcp, byte_t* data, dword_t* pb);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 EXP_API bool_t xtcp_setopt(xhand_t tcp, int oid, void* opt, int len);
+
+/*
+@FUNCTION xtcp_settmo: set the socket timeout.
+@INPUT xhand_t tcp: the tcp handle.
+@INPUT dword_t tmo: the tmieout in millsecoend.
+@RETURN void: none
+*/
+EXP_API void xtcp_settmo(xhand_t tcp, dword_t tmo);
 
 /*
 @FUNCTION xtcp_addr_port: get TCP local address and port.

@@ -44,7 +44,7 @@ typedef enum{
 }XUDP_TYPE;
 
 
-#define UDP_BASE_TIMO		(2000) //millionsecond
+#define UDP_BASE_TIMO		(5000) //millionsecond
 #define UDP_BASE_BUFF		(65535)
 #define UDP_MIN_PORT		(49152)
 #define UDP_MAX_PORT		(65535)
@@ -109,6 +109,14 @@ EXP_API res_file_t xudp_socket(xhand_t udp);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 EXP_API bool_t xudp_setopt(xhand_t udp, int oid, void* opt, int len);
+
+/*
+@FUNCTION xudp_settmo: set the socket timeout.
+@INPUT xhand_t udp: the udp handle.
+@INPUT dword_t tmo: the tmieout in millsecoend.
+@RETURN void: none
+*/
+EXP_API void xudp_settmo(xhand_t ucp, dword_t tmo);
 
 /*
 @FUNCTION xudp_set_package: set UDP package size.

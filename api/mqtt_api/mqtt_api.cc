@@ -77,7 +77,7 @@ static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_
 	xsncpy(pid, token - len, len);
 }
 
-void _invoke_publish(const slots_block_t* pb, mqtt_block_t* pd)
+void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 	object_t val = NULL;
@@ -171,7 +171,7 @@ ONERROR:
 	return;
 }
 
-void _invoke_subcribe(const slots_block_t* pb, mqtt_block_t* pd)
+void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 	object_t val = NULL;
@@ -291,7 +291,7 @@ ONERROR:
 	return;
 }
 
-void _invoke_unsubcribe(const slots_block_t* pb, mqtt_block_t* pd)
+void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 
@@ -365,7 +365,7 @@ ONERROR:
 	return;
 }
 
-int STDCALL slots_invoke(const slots_block_t* pb)
+int STDCALL tcps_invoke(const tcps_block_t* pb)
 {
 	mqtt_block_t* pd = NULL;
 
@@ -401,7 +401,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	printf_path(pd->local, file);
 
-	pd->mqtt = xmqtt_scp(pb->slot, _MQTT_TYPE_SCP_UNK);
+	pd->mqtt = xmqtt_scp(pb->tcp, _MQTT_TYPE_SCP_UNK);
 
 	if (!pd->mqtt)
 	{
@@ -470,7 +470,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	END_CATCH;
 
-	return SLOTS_INVOKE_SUCCEED;
+	return TCPS_INVOKE_SUCCEED;
 
 ONERROR:
 
@@ -492,6 +492,6 @@ ONERROR:
 		xmem_free(pd);
 	}
 
-	return SLOTS_INVOKE_WITHINFO;
+	return TCPS_INVOKE_WITHINFO;
 }
 

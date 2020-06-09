@@ -4,4 +4,4 @@ LIBRARY      "pacs_api"
 DESCRIPTION  'pacs_api Windows Dynamic Link Library'
 EXPORTS
     ; Explicit exports can go here
-	slots_invoke
+	tcps_invoke

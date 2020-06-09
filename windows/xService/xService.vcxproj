@@ -179,7 +179,7 @@
     <ClCompile Include="..\..\api\net_srv\xhttps.cc" />
     <ClCompile Include="..\..\api\net_srv\xpnps.cc" />
     <ClCompile Include="..\..\api\net_srv\xportd.cc" />
-    <ClCompile Include="..\..\api\net_srv\xslots.cc" />
+    <ClCompile Include="..\..\api\net_srv\xtcps.cc" />
     <ClCompile Include="..\..\api\net_srv\xudps.cc" />
     <ClCompile Include="SrvMain.cpp" />
   </ItemGroup>
@@ -190,7 +190,7 @@
     <ClInclude Include="..\..\api\net_srv\xhttps.h" />
     <ClInclude Include="..\..\api\net_srv\xpnps.h" />
     <ClInclude Include="..\..\api\net_srv\xportd.h" />
-    <ClInclude Include="..\..\api\net_srv\xslots.h" />
+    <ClInclude Include="..\..\api\net_srv\xtcps.h" />
     <ClInclude Include="..\..\api\net_srv\xudps.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

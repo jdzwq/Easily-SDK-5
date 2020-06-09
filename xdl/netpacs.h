@@ -29,6 +29,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
+#define DEF_PACS_PORT		104
+
 /*pacs pdu type*/
 #define PACS_PDU_ASSOCIATE_RQ	0x01
 #define PACS_PDU_ASSOCIATE_AC	0x02

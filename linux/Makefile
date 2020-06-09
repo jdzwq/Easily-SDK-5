@@ -11,6 +11,7 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
 	$(API_PATH)/libmqtt_api.so.1.0 \
 	$(API_PATH)/libcoap_api.so.1.0 \
+	$(API_PATH)/libtftp_api.so.1.0 \
 	$(API_PATH)/libhl7_api.so.1.0 \
 	$(API_PATH)/libloc_api.so.1.0 \
 	$(API_PATH)/libwww_api.so.1.0 \
@@ -27,7 +28,7 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
 	$(EXE_PATH)/xhttps \
-	$(EXE_PATH)/xslots \
+	$(EXE_PATH)/xtcps \
 	$(EXE_PATH)/xudps
 
 all:
@@ -56,11 +57,12 @@ all:
 	cd $(CUR_PATH)/oss_api && make -f oss_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make -f mqtt_api.so.mk
 	cd $(CUR_PATH)/coap_api && make -f coap_api.so.mk
+	cd $(CUR_PATH)/tftp_api && make -f tftp_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make -f pacs_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make -f xhttps.mk
-	cd $(CUR_PATH)/xslots && make -f xslots.mk
+	cd $(CUR_PATH)/xtcps && make -f xtcps.mk
 	cd $(CUR_PATH)/xudps && make -f xudps.mk
 	cd $(CUR_PATH)/xportd && make -f xportd.mk
 
@@ -110,6 +112,9 @@ install:
 	if ! test -d $(SRV_PATH)/coap; then \
 	sudo mkdir $(SRV_PATH)/coap; \
 	fi
+	if ! test -d $(SRV_PATH)/tftp; then \
+	sudo mkdir $(SRV_PATH)/tftp; \
+	fi
 	if ! test -d $(SRV_PATH)/mqtt; then \
 	sudo mkdir $(SRV_PATH)/mqtt; \
 	fi
@@ -150,13 +155,14 @@ install:
 	cd $(CUR_PATH)/sms_api && make install -f sms_api.so.mk
 	cd $(CUR_PATH)/oau_api && make install -f oau_api.so.mk
 	cd $(CUR_PATH)/oss_api && make install -f oss_api.so.mk
+	cd $(CUR_PATH)/tftp_api && make install -f tftp_api.so.mk
 	cd $(CUR_PATH)/coap_api && make install -f coap_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make install -f mqtt_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make install -f pacs_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make install -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
-	cd $(CUR_PATH)/xslots && make install -f xslots.mk
+	cd $(CUR_PATH)/xtcps && make install -f xtcps.mk
 	cd $(CUR_PATH)/xudps && make install -f xudps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
 	cd $(CUR_PATH)

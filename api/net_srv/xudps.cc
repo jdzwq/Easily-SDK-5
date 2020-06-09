@@ -27,16 +27,6 @@ LICENSE.GPL3 for more details.
 #include "xudps.h"
 #include "srvlog.h"
 
-static void _xudps_log_request(unsigned short port, const tchar_t* addr)
-{
-	tchar_t token[RES_LEN + 1] = { 0 };
-	int len;
-
-	len = xsprintf(token, _T("UDP-SCU: [%s: %d]\r\n"), addr, port);
-
-	xportm_log_info(token, len);
-}
-
 static void _xudps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 {
 	udps_block_t* pb = (udps_block_t*)hand;
@@ -112,6 +102,7 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
+	tchar_t sz_timo[INT_LEN] = { 0 };
 	tchar_t sz_site[RES_LEN] = { 0 };
 	tchar_t sz_proc[PATH_LEN] = { 0 };
 	tchar_t sz_path[PATH_LEN] = { 0 };
@@ -128,6 +119,7 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(_T("_xudps_invoke"), _T("unknown destinction addr\n"));
 	}
 
+	get_param_item(pxp->sz_param, _T("TIMO"), sz_timo, INT_LEN);
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
 
 	_xudps_get_config(sz_site, sz_path, sz_proc);
@@ -147,6 +139,7 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
 
+	pb->timo = xstol(sz_timo);
 	pb->port = port;
 	xsncpy(pb->addr, addr, ADDR_LEN);
 	if (pack)
@@ -176,13 +169,13 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	n_state = (*pf_invoke)(pb);
 
-	xmem_free(pb);
-	pb = NULL;
-
 	free_library(api);
 	api = NULL;
 
-	_xudps_log_request(port, addr);
+	_xudps_track_error((void*)pb, _T("_udps_invoke"), _T("site service exist"));
+
+	xmem_free(pb);
+	pb = NULL;
 
 	END_CATCH;
 
@@ -191,8 +184,6 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 ONERROR:
 
 	get_last_error(errcode, errtext, ERR_LEN);
-
-	_xudps_log_request(port, addr);
 
 	if (api)
 		free_library(api);

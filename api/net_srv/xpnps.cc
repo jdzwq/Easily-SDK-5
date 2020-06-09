@@ -27,16 +27,6 @@ LICENSE.GPL3 for more details.
 #include "xpnps.h"
 #include "srvlog.h"
 
-static void _xpnps_log_request(unsigned short port, const tchar_t* addr)
-{
-	tchar_t token[RES_LEN + 1] = { 0 };
-	int len;
-
-	len = xsprintf(token, _T("PNP-SCU: [%s: %d]\r\n"), addr, port);
-
-	xportm_log_info(token, len);
-}
-
 static void _xpnps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 {
 	pnps_block_t* pb = (pnps_block_t*)hand;
@@ -124,12 +114,12 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	
 	if (is_null(sz_path))
 	{
-		raise_user_error(_T("_xpnps_invoke"), _T("website not define service entry\n"));
+		raise_user_error(_T("_xpnps_invoke"), _T("site not define service entry\n"));
 	}
 
 	if (is_null(sz_proc))
 	{
-		raise_user_error(_T("_xpnps_invoke"), _T("website not define service module\n"));
+		raise_user_error(_T("_xpnps_invoke"), _T("site not define service module\n"));
 	}
 
 	pb = (pnps_block_t*)xmem_alloc(sizeof(pnps_block_t));
@@ -152,24 +142,24 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	api = load_library(sz_path);
 	if (!api)
 	{
-		raise_user_error(_T("_pnps_invoke"), _T("website load service module failed\n"));
+		raise_user_error(_T("_pnps_invoke"), _T("site load service module failed\n"));
 	}
 
 	pf_invoke = (PF_PNPS_INVOKE)get_address(api, "pnps_invoke");
 	if (!pf_invoke)
 	{
-		raise_user_error(_T("_pnps_invoke"), _T("website invoke module function failed\n"));
+		raise_user_error(_T("_pnps_invoke"), _T("site invoke module function failed\n"));
 	}
 
 	n_state = (*pf_invoke)(pb);
 
-	xmem_free(pb);
-	pb = NULL;
-
 	free_library(api);
 	api = NULL;
 
-	_xpnps_log_request(port, addr);
+	_xpnps_track_error((void*)pb, _T("_pnps_invoke"), _T("site service exist"));
+
+	xmem_free(pb);
+	pb = NULL;
 
 	END_CATCH;
 
@@ -181,8 +171,6 @@ ONERROR:
 
 	if (api)
 		free_library(api);
-
-	_xpnps_log_request(port, addr);
 
 	if (pb)
 	{

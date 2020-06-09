@@ -319,10 +319,15 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
 	int rt;
 	WSABUF wb;
 	DWORD fd, dw = 0, fg = 0;
+	BOOL opt;
 
 	wb.buf = (char*)buf;
 	wb.len = (ULONG)size;
 
+	opt = FALSE;
+	WSAIoctl((SOCKET)so, SIO_UDP_CONNRESET, (void*)&opt, sizeof(BOOL), NULL, 0, &dw, NULL, NULL);
+
+	dw = 0;
 	rt = WSASendTo((SOCKET)so, &wb, 1, &dw, fg, (SOCKADDR*)saddr, alen, (LPWSAOVERLAPPED)pov, NULL);
 	if (!dw && rt == SOCKET_ERROR)
 	{
@@ -380,10 +385,15 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
 	int rt, alen = 0;
 	WSABUF wb;
 	DWORD fd, dw = 0, fg = 0;
+	BOOL opt;
 
 	wb.buf = (char*)buf;
 	wb.len = (ULONG)size;
 
+	opt = FALSE;
+	WSAIoctl((SOCKET)so, SIO_UDP_CONNRESET, (void*)&opt, sizeof(BOOL), NULL, 0, &dw, NULL, NULL);
+
+	dw = 0;
 	alen = *plen;
 	rt = WSARecvFrom((SOCKET)so, &wb, 1, &dw, &fg, (SOCKADDR*)saddr, &alen, (LPWSAOVERLAPPED)pov, NULL);
 	*plen = alen;

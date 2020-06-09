@@ -306,4 +306,16 @@ bool_t xtcp_setopt(xhand_t tcp, int oid, void* opt, int len)
 	return 0;
 }
 
+void xtcp_settmo(xhand_t tcp, dword_t tmo)
+{
+	tcp_t* ptcp = TypePtrFromHead(tcp_t, tcp);
+
+	XDL_ASSERT(tcp && tcp->tag == _HANDLE_TCP);
+
+	if (ptcp->pov)
+	{
+		ptcp->pov->timo = tmo;
+	}
+}
+
 #endif //XDK_SUPPORT_SOCK

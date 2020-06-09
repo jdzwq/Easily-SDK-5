@@ -101,6 +101,7 @@ typedef struct _udps_block_t{
 	dword_t size;
 	byte_t pack[UDP_PKG_SIZE];
 
+	dword_t timo;
 	tchar_t site[RES_LEN];
 	tchar_t path[PATH_LEN];
 

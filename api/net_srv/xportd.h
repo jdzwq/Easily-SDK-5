@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #define XPORTD_PORT_TYPE_PACS		_T("PACS")
 #define XPORTD_PORT_TYPE_HTTP		_T("HTTP")
-#define XPORTD_PORT_TYPE_SLOT		_T("SLOT")
+#define XPORTD_PORT_TYPE_TCP		_T("TCP")
 #define XPORTD_PORT_TYPE_UDP		_T("UDP")
 #define XPORTD_PORT_TYPE_PNP		_T("PNP")
 

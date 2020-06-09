@@ -11,8 +11,8 @@
 #define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
 
 //#define SMS_URL		_T("https://118.178.180.81")
-#define SMS_URL		_T("http://127.0.0.1:8889")
-//#define SMS_URL		_T("http://www.biofolia.cn:8889")
+//#define SMS_URL		_T("http://127.0.0.1:8889")
+#define SMS_URL		_T("https://www.biofolia.cn:8888")
 
 #ifdef _OS_WINDOWS
 #define SMS_MODULE		_T("sms_aliyun.dll")
@@ -443,7 +443,7 @@ void test_sms_verify()
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
-	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=052354"), SMS_URL);
+	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=685530"), SMS_URL);
 	xhand_t xh = xhttp_client(_T("GET"), url);
 
 	xhttp_set_request_default_header(xh);

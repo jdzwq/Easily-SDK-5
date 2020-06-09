@@ -163,6 +163,18 @@ void _coap_error(int errcode, tchar_t* errtext)
 	}
 }
 
+static unsigned short _coap_dynamic_port(havege_state* phs)
+{
+	unsigned short port = 0;
+
+	while (port < UDP_MIN_PORT || port > UDP_MAX_PORT)
+	{
+		port = (unsigned short)havege_rand(phs);
+	}
+
+	return port;
+}
+
 static dword_t _coap_parse_opt(byte_t* buf, dword_t max, int* popd, byte_t* opt, dword_t* plen)
 {
 	dword_t total = 0;
@@ -889,7 +901,7 @@ xhand_t xcoap_client(const tchar_t* method, const tchar_t* url)
 		raise_user_error(NULL, NULL);
 	}
 
-	bind = (sword_t)havege_rand(&ppt->havs);
+	bind = _coap_dynamic_port(&ppt->havs);
 
 	if (!xudp_bind(ppt->bio, bind))
 	{
@@ -1000,7 +1012,7 @@ xhand_t	xcoap_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(NULL, NULL);
 	}
 
-	bind = (sword_t)havege_rand(&ppt->havs);
+	bind = _coap_dynamic_port(&ppt->havs);
 
 	if (!xudp_bind(ppt->bio, bind))
 	{
@@ -1031,6 +1043,15 @@ ONERROR:
 	XDL_TRACE_LAST;
 
 	return NULL;
+}
+
+xhand_t xcoap_bio(xhand_t coap)
+{
+	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+
+	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
+
+	return ppt->bio;
 }
 
 void xcoap_close(xhand_t coap)

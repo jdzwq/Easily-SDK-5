@@ -33,13 +33,13 @@
     <ClInclude Include="..\..\api\net_srv\xportd.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\api\net_srv\xslots.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\api\net_srv\xudps.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\api\net_srv\srvcrt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\api\net_srv\xtcps.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -64,13 +64,13 @@
     <ClCompile Include="..\..\api\net_srv\xportd.cc">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\api\net_srv\xslots.cc">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\api\net_srv\xudps.cc">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\api\net_srv\srvcrt.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\api\net_srv\xtcps.cc">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

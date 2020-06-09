@@ -84,11 +84,7 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 	zo = 1;
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
-#if defined(_DEBUG) || defined(DEBUG)
-	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO * 10, INVALID_FILE);
-#else
 	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
-#endif
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->snd_bys = 0;
@@ -130,11 +126,7 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	zo = 1;
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
-#if defined(_DEBUG) || defined(DEBUG)
-	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO * 10, INVALID_FILE);
-#else
 	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
-#endif
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->snd_bys = 0;
@@ -385,13 +377,13 @@ ONERROR:
 
 unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)
 {
-	udp_t* pso = TypePtrFromHead(udp_t, udp);
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	socket_addr(pso->so, &na);
+	socket_addr(pudp->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -399,13 +391,13 @@ unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)
 
 unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr)
 {
-	udp_t* pso = TypePtrFromHead(udp_t, udp);
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	socket_peer(pso->so, &na);
+	socket_peer(pudp->so, &na);
 	conv_addr(&na, &port, addr);
 
 	return port;
@@ -413,24 +405,36 @@ unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr)
 
 bool_t xudp_setopt(xhand_t udp, int oid, void* opt, int len)
 {
-	udp_t* pso = TypePtrFromHead(udp_t, udp);
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
 	switch (oid)
 	{
 	case SOCK_OPTION_SNDBUF:
-		socket_set_sndbuf(pso->so, *(int*)opt);
+		socket_set_sndbuf(pudp->so, *(int*)opt);
 		return 1;
 	case SOCK_OPTION_RCVBUF:
-		socket_set_rcvbuf(pso->so, *(int*)opt);
+		socket_set_rcvbuf(pudp->so, *(int*)opt);
 		return 1;
 	case SOCK_OPTION_NONBLK:
-		socket_set_nonblk(pso->so, *(bool_t*)opt);
+		socket_set_nonblk(pudp->so, *(bool_t*)opt);
 		return 1;
 	}
 
 	return 0;
+}
+
+void xudp_settmo(xhand_t udp, dword_t tmo)
+{
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+
+	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
+
+	if (pudp->pov)
+	{
+		pudp->pov->timo = tmo;
+	}
 }
 
 

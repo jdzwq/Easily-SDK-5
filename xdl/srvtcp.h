@@ -87,4 +87,28 @@ EXP_API void  xtcp_stop(tcp_listen_t* plis);
 }
 #endif
 
+typedef struct _tcps_block_t{
+	int cbs;
+
+	bool_t is_thread;
+	xhand_t tcp;
+
+	dword_t timo;
+	tchar_t site[RES_LEN];
+	tchar_t path[PATH_LEN];
+
+	void* hand;
+	PF_TRACK_ERROR pf_track_eror;
+}tcps_block_t;
+
+typedef enum{
+	TCPS_INVOKE_SUCCEED = 0,
+	TCPS_INVOKE_WITHINFO = 1,
+	TCPS_INVOKE_WITHERROR = 2,
+	TCPS_INVOKE_PENDING = 100
+}TCPS_INVOKE_STATE;
+
+typedef int(STDCALL *PF_TCPS_INVOKE)(const tcps_block_t* pb);
+
+
 #endif /*_SRVTCP_H*/
