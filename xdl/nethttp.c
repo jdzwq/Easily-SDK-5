@@ -2024,15 +2024,10 @@ void xhttp_set_response_content_type_charset(xhand_t xhttp, const tchar_t* token
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
 	ent = find_string_entity(phttp->st_response, HTTP_HEADER_CONTENTTYPE, -1);
+	if (!ent)
+		return;
 
-	if (ent)
-	{
-		get_string_entity_val(ent, ctype, META_LEN);
-	}
-	else
-	{
-		xscpy(ctype, HTTP_HEADER_CONTENTTYPE_APPXML);
-	}
+	get_string_entity_val(ent, ctype, META_LEN);
 
 	str = (tchar_t*)xsistr(ctype, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 	if (str)
@@ -2112,15 +2107,10 @@ void xhttp_set_request_content_type_charset(xhand_t xhttp, const tchar_t* token,
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
 	ent = find_string_entity(phttp->st_request, HTTP_HEADER_CONTENTTYPE, -1);
+	if (!ent)
+		return;
 
-	if (ent)
-	{
-		get_string_entity_val(ent, ctype, META_LEN);
-	}
-	else
-	{
-		xscpy(ctype, HTTP_HEADER_CONTENTTYPE_APPXML);
-	}
+	get_string_entity_val(ent, ctype, META_LEN);
 
 	str = (tchar_t*)xsistr(ctype, HTTP_HEADER_CONTENTTYPE_ENTITY_CHARSET);
 	if (str)
@@ -2179,6 +2169,7 @@ void xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* 
 	string_table_format_options(st, cookies, -1, _T('='), _T(';'));
 
 	ilk = get_string_next_entity(st, LINK_FIRST);
+
 	while (ilk)
 	{
 		if (compare_text(get_string_entity_key_ptr(ilk), -1, key, -1, 1) == 0)
@@ -2208,7 +2199,7 @@ void xhttp_set_request_cookie(xhand_t xhttp, const tchar_t* key, const tchar_t* 
 
 	destroy_string_table(st);
 
-	set_string_entity_val(ent, cookies, total);
+	write_string_entity(phttp->st_request, HTTP_HEADER_COOKIE, -1, cookies, total);
 }
 
 int xhttp_get_request_cookie(xhand_t xhttp, const tchar_t* key, tchar_t* val, int max)

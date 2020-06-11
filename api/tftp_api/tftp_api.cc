@@ -324,6 +324,11 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 		raise_user_error(_T("tftp_api"), _T("create tftp service failed"));
 	}
 
+	if (pb->timo)
+	{
+		xudp_settmo(xtftp_bio(pd->tftp), pb->timo);
+	}
+
 	xtftp_method(pd->tftp, token, INT_LEN);
 
 	if (compare_text(token, -1, _T("GET"), -1, 1) == 0)

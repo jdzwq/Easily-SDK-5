@@ -23,6 +23,8 @@ API_OBJS = $(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/liboau_weiapp.so.1.0 \
 	$(API_PATH)/liboss_api.so.1.0 \
 	$(API_PATH)/liboss_aliyun.so.1.0 \
+	$(API_PATH)/libiot_api.so.1.0 \
+	$(API_PATH)/libiot_telecom.so.1.0 \
 	$(API_PATH)/libpacs_api.so.1.0
 
 EXE_OBJS = $(EXE_PATH)/xportm \
@@ -47,6 +49,7 @@ all:
 	cd $(CUR_PATH)/sms_aliyun && make -f sms_aliyun.so.mk
 	cd $(CUR_PATH)/oau_weiapp && make -f oau_weiapp.so.mk
 	cd $(CUR_PATH)/oss_aliyun && make -f oss_aliyun.so.mk
+	cd $(CUR_PATH)/iot_telecom && make -f iot_telecom.so.mk
 
 	cd $(CUR_PATH)/hl7_api && make -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
@@ -55,6 +58,7 @@ all:
 	cd $(CUR_PATH)/sms_api && make -f sms_api.so.mk
 	cd $(CUR_PATH)/oau_api && make -f oau_api.so.mk
 	cd $(CUR_PATH)/oss_api && make -f oss_api.so.mk
+	cd $(CUR_PATH)/iot_api && make -f iot_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make -f mqtt_api.so.mk
 	cd $(CUR_PATH)/coap_api && make -f coap_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make -f tftp_api.so.mk
@@ -103,6 +107,9 @@ install:
 	if ! test -d $(SRV_PATH)/sms; then \
 	sudo mkdir $(SRV_PATH)/sms; \
 	fi
+	if ! test -d $(SRV_PATH)/iot; then \
+	sudo mkdir $(SRV_PATH)/iot; \
+	fi
 	if ! test -d $(SRV_PATH)/oau; then \
 	sudo mkdir $(SRV_PATH)/oau; \
 	fi
@@ -147,12 +154,14 @@ install:
 	cd $(CUR_PATH)/sms_aliyun && make install -f sms_aliyun.so.mk
 	cd $(CUR_PATH)/oau_weiapp && make install -f oau_weiapp.so.mk
 	cd $(CUR_PATH)/oss_aliyun && make install -f oss_aliyun.so.mk
+	cd $(CUR_PATH)/iot_telecom && make install -f iot_telecom.so.mk
 
 	cd $(CUR_PATH)/hl7_api && make install -f hl7_api.so.mk
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
 	cd $(CUR_PATH)/sms_api && make install -f sms_api.so.mk
+	cd $(CUR_PATH)/iot_api && make install -f iot_api.so.mk
 	cd $(CUR_PATH)/oau_api && make install -f oau_api.so.mk
 	cd $(CUR_PATH)/oss_api && make install -f oss_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make install -f tftp_api.so.mk

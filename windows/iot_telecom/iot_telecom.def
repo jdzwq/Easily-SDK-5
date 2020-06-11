@@ -1,0 +1,11 @@
+; iot_telecom.def : Declares the release module parameters for the DLL.
+
+LIBRARY      "iot_telecom"
+DESCRIPTION  'iot_telecom Windows Dynamic Link Library'
+EXPORTS
+    ; Explicit exports can go here
+	iot_open_isp
+	iot_close
+	iot_session
+	iot_command
+	iot_error

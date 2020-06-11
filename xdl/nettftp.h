@@ -120,6 +120,13 @@ EXP_API xhand_t		xtftp_client(const tchar_t* method, const tchar_t* url);
 EXP_API xhand_t		xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size);
 
 /*
+@FUNCTION xtftp_bio: get the TFTP udp bio handle.
+@INPUT xhand_t tftp: the tftp handle.
+@RETURN xhand_t: return the udp handle.
+*/
+EXP_API xhand_t		xtftp_bio(xhand_t tftp);
+
+/*
 @FUNCTION xtftp_method: get a TFTP method.
 @INPUT xhand_t tftp: the TFPT handle.
 @OUTPUT tchar_t* buf: the string buffer for returning method.

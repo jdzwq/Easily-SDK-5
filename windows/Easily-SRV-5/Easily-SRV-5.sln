@@ -63,6 +63,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oau_weiapp", "..\oau_weiapp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xtcps", "..\xtcps\xtcps.vcxproj", "{BE9BCA68-3E2E-4436-A79E-C5DC3B2F8780}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iot_api", "..\iot_api\iot_api.vcxproj", "{14FA6218-839F-468B-BC6A-ED0A5260FE1B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iot_telecom", "..\iot_telecom\iot_telecom.vcxproj", "{D9B8C927-1FE0-4551-B630-3D2079F4966C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -433,6 +437,30 @@ Global
 		{BE9BCA68-3E2E-4436-A79E-C5DC3B2F8780}.Release|Win32.Build.0 = Release|Win32
 		{BE9BCA68-3E2E-4436-A79E-C5DC3B2F8780}.Release|x64.ActiveCfg = Release|x64
 		{BE9BCA68-3E2E-4436-A79E-C5DC3B2F8780}.Release|x64.Build.0 = Release|x64
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Debug|Win32.Build.0 = Debug|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Debug|x64.ActiveCfg = Debug|x64
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Debug|x64.Build.0 = Debug|x64
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Release|Win32.ActiveCfg = Release|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Release|Win32.Build.0 = Release|Win32
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Release|x64.ActiveCfg = Release|x64
+		{14FA6218-839F-468B-BC6A-ED0A5260FE1B}.Release|x64.Build.0 = Release|x64
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Debug|Win32.Build.0 = Debug|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Debug|x64.ActiveCfg = Debug|x64
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Debug|x64.Build.0 = Debug|x64
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Release|Win32.ActiveCfg = Release|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Release|Win32.Build.0 = Release|Win32
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Release|x64.ActiveCfg = Release|x64
+		{D9B8C927-1FE0-4551-B630-3D2079F4966C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

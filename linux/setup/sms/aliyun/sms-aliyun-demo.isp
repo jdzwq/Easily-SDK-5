@@ -1,5 +1,6 @@
-[CODE]
-Location=dysmsapi.aliyuncs.com
+[ISP]
+MessageUrl=dysmsapi.aliyuncs.com
+ReceiptUrl=dybaseapi.aliyuncs.com
 SignatureMethod=HMAC-SHA1
 AccessKeyId=
 AccessSecret=
@@ -10,5 +11,3 @@ Version=2017-05-25
 RegionId=cn-hangzhou
 SignName=
 TemplateCode=
-[RECEIPT]
-Location=dybaseapi.aliyuncs.com

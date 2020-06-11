@@ -764,6 +764,15 @@ ONERROR:
 	return NULL;
 }
 
+xhand_t xtftp_bio(xhand_t tftp)
+{
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+
+	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
+
+	return pftp->bio;
+}
+
 void xtftp_close(xhand_t tftp)
 {
 	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
