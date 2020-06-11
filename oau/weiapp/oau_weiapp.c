@@ -54,9 +54,9 @@ oau_t STDCALL oau_open_isp(const tchar_t* ispfile)
 
 	pal = (weiapp_t*)xmem_alloc(sizeof(weiapp_t));
 
-	read_proper(d_ptr, _T("CODE"), -1, _T("LOCATION"), -1, pal->loca, PATH_LEN);
-	read_proper(d_ptr, _T("CODE"), -1, _T("APPID"), -1, pal->appid, RES_LEN);
-	read_proper(d_ptr, _T("CODE"), -1, _T("SECRET"), -1, pal->secret, KEY_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("SessionUrl"), -1, pal->loca, PATH_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AppId"), -1, pal->appid, RES_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("Secret"), -1, pal->secret, KEY_LEN);
 
 	destroy_proper_doc(d_ptr);
 	d_ptr = NULL;

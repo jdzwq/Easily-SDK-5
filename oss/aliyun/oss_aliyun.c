@@ -723,9 +723,9 @@ oss_t STDCALL oss_open_isp(const tchar_t* ispfile)
 
 	pal = (aliyun_t*)xmem_alloc(sizeof(aliyun_t));
 
-	read_proper(d_ptr, _T("CODE"), -1, _T("Location"), -1, pal->loca, PATH_LEN);
-	read_proper(d_ptr, _T("CODE"), -1, _T("AccessKeyId"), -1, pal->secu.scr_uid, KEY_LEN);
-	read_proper(d_ptr, _T("CODE"), -1, _T("AccessSecret"), -1, pal->secu.scr_key, KEY_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AccessUrl"), -1, pal->loca, PATH_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AccessKeyId"), -1, pal->secu.scr_uid, KEY_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AccessSecret"), -1, pal->secu.scr_key, KEY_LEN);
 
 	destroy_proper_doc(d_ptr);
 	d_ptr = NULL;

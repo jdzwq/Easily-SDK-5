@@ -100,12 +100,12 @@ iot_t STDCALL iot_open_isp(const tchar_t* ispfile)
 
 	split_path(ispfile, pal->IspPath, NULL, NULL);
 
-	read_proper(d_ptr, _T("TELECOM"), -1, _T("SessionUrl"), -1, pal->SessionUrl, PATH_LEN);
-	read_proper(d_ptr, _T("TELECOM"), -1, _T("CommandUrl"), -1, pal->CommandUrl, PATH_LEN);
-	read_proper(d_ptr, _T("TELECOM"), -1, _T("AppId"), -1, pal->AppId, KEY_LEN);
-	read_proper(d_ptr, _T("TELECOM"), -1, _T("Secret"), -1, pal->Secret, KEY_LEN);
-	read_proper(d_ptr, _T("TELECOM"), -1, _T("ServiceId"), -1, pal->ServiceId, RES_LEN);
-	read_proper(d_ptr, _T("TELECOM"), -1, _T("Certify"), -1, pal->Certify, RES_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("SessionUrl"), -1, pal->SessionUrl, PATH_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("CommandUrl"), -1, pal->CommandUrl, PATH_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AppId"), -1, pal->AppId, KEY_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("Secret"), -1, pal->Secret, KEY_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("ServiceId"), -1, pal->ServiceId, RES_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("Certify"), -1, pal->Certify, RES_LEN);
 
 	destroy_proper_doc(d_ptr);
 	d_ptr = NULL;

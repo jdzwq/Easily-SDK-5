@@ -415,6 +415,15 @@ void test_drug_push()
 
 	destroy_json_doc(ptr_json);
 
+	byte_t** pp = bytes_alloc();
+	dword_t dw = 0;
+
+	xhttp_recv_full(xh, pp, &dw);
+
+	printf("%s\n", (schar_t*)*pp);
+
+	bytes_free(pp);
+
 	xhttp_close(xh);
 }
 
@@ -432,9 +441,9 @@ int main(int argc, char* argv[])
 
 	//test_iot_command();
 
-	//test_drug_push();
+	test_drug_push();
 
-	test_bp();
+	//test_bp();
 
 	xdl_process_uninit();
 

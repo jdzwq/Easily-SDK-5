@@ -104,17 +104,17 @@ sms_t STDCALL sms_open_isp(const tchar_t* ispfile)
 
 	pal = (ali_t*)xmem_alloc(sizeof(ali_t));
 
-	read_proper(d_ptr, _T("CODE"), -1, _T("Location"), -1, pal->code.Location, PATH_LEN);
-	read_proper(d_ptr, _T("CODE"), -1, _T("SignatureMethod"), -1, pal->code.SignatureMethod, MAX_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("AccessKeyId"), -1, pal->code.AccessKeyId, MAX_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("AccessSecret"), -1, pal->code.AccessSecret, MAX_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("SignatureVersion"), -1, pal->code.SignatureVersion, MIN_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("Format"), -1, pal->code.Format, MIN_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("Action"), -1, pal->code.Action, MIN_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("Version"), -1, pal->code.Version, MIN_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("RegionId"), -1, pal->code.RegionId, MIN_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("SignName"), -1, pal->code.SignName, MAX_SMS_NAME);
-	read_proper(d_ptr, _T("CODE"), -1, _T("TemplateCode"), -1, pal->code.TemplateCode, MIN_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("MessageUrl"), -1, pal->code.Location, PATH_LEN);
+	read_proper(d_ptr, _T("ISP"), -1, _T("SignatureMethod"), -1, pal->code.SignatureMethod, MAX_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AccessKeyId"), -1, pal->code.AccessKeyId, MAX_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("AccessSecret"), -1, pal->code.AccessSecret, MAX_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("SignatureVersion"), -1, pal->code.SignatureVersion, MIN_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("Format"), -1, pal->code.Format, MIN_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("Action"), -1, pal->code.Action, MIN_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("Version"), -1, pal->code.Version, MIN_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("RegionId"), -1, pal->code.RegionId, MIN_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("SignName"), -1, pal->code.SignName, MAX_SMS_NAME);
+	read_proper(d_ptr, _T("ISP"), -1, _T("TemplateCode"), -1, pal->code.TemplateCode, MIN_SMS_NAME);
 
 	destroy_proper_doc(d_ptr);
 	d_ptr = NULL;
