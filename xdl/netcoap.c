@@ -84,7 +84,7 @@ typedef struct _coap_pdu_t{
 
 	int pdv_off;
 	int pdv_len;
-	byte_t payload[COAP_BLK_SIZE];
+	byte_t payload[COAP_PDV_SIZE];
 }coap_pdu_t;
 
 typedef struct _xcoap_t{
@@ -100,10 +100,10 @@ typedef struct _xcoap_t{
 	coap_pdu_t snd_pdu;
 	coap_pdu_t rcv_pdu;
 
-	int blk_szx;
-	int blk_nxt;
-	int blk_num;
-	int blk_eof;
+	int pdv_szx;
+	int pdv_nxt;
+	int pdv_num;
+	int pdv_eof;
 
 	sword_t errcode;
 	tchar_t errtext[ERR_LEN];
@@ -163,7 +163,7 @@ void _coap_error(int errcode, tchar_t* errtext)
 	}
 }
 
-static unsigned short _coap_dynamic_port(havege_state* phs)
+static unsigned short _coap_port(havege_state* phs)
 {
 	unsigned short port = 0;
 
@@ -356,7 +356,7 @@ static void _coap_clear_opt(coap_pdu_t* pdu)
 
 static void _coap_clear_pdv(coap_pdu_t* pdu)
 {
-	xmem_zero((void*)pdu->payload, COAP_BLK_SIZE);
+	xmem_zero((void*)pdu->payload, COAP_PDV_SIZE);
 	pdu->pdv_off = 0;
 }
 
@@ -518,8 +518,8 @@ bool_t _coap_send_request(xcoap_t* ppt)
 	dword_t len;
 
 	int blk;
-	int blk_num, blk_nxt, blk_szx;
-	byte_t blk_opt[3] = { 0 };
+	int pdv_num, pdv_nxt, pdv_szx;
+	byte_t pdv_opt[3] = { 0 };
 
 	XDL_ASSERT(ppt->type == _XCOAP_TYPE_CLI);
 
@@ -532,27 +532,27 @@ bool_t _coap_send_request(xcoap_t* ppt)
 
 	if (pdu->code == COAP_REQUEST_GET)
 	{
-		blk_num = ppt->blk_num;
-		blk_nxt = 0;
-		blk_szx = ppt->blk_szx;
+		pdv_num = ppt->pdv_num;
+		pdv_nxt = 0;
+		pdv_szx = ppt->pdv_szx;
 
-		blk = (blk_num << 4) | (blk_nxt << 3) | (blk_szx);
-		PUT_THREEBYTE(blk_opt, 0, blk);
-		_coap_write_opt(pdu, COAP_OPTION_BLOCK2, blk_opt, 3);
+		blk = (pdv_num << 4) | (pdv_nxt << 3) | (pdv_szx);
+		PUT_THREEBYTE(pdv_opt, 0, blk);
+		_coap_write_opt(pdu, COAP_OPTION_BLOCK2, pdv_opt, 3);
 
 		_coap_clear_pdv(pdu);
 	}
 	else if (pdu->code == COAP_REQUEST_PUT || pdu->code == COAP_REQUEST_POST)
 	{
-		blk_num = ppt->blk_num;
-		blk_nxt = ppt->blk_nxt;
-		blk_szx = ppt->blk_szx;
+		pdv_num = ppt->pdv_num;
+		pdv_nxt = ppt->pdv_nxt;
+		pdv_szx = ppt->pdv_szx;
 
-		blk = (blk_num << 4) | (blk_nxt << 3) | (blk_szx);
-		PUT_THREEBYTE(blk_opt, 0, blk);
-		_coap_write_opt(pdu, COAP_OPTION_BLOCK1, blk_opt, 3);
+		blk = (pdv_num << 4) | (pdv_nxt << 3) | (pdv_szx);
+		PUT_THREEBYTE(pdv_opt, 0, blk);
+		_coap_write_opt(pdu, COAP_OPTION_BLOCK1, pdv_opt, 3);
 
-		pdu->pdv_len = (1 << (blk_szx + 4));
+		pdu->pdv_len = (1 << (pdv_szx + 4));
 	}
 
 	len = _coap_format_pdu(pkg_buf, COAP_PKG_SIZE, pdu);
@@ -588,8 +588,8 @@ bool_t _coap_recv_request(xcoap_t* ppt)
 	dword_t len;
 
 	int blk;
-	int blk_num, blk_nxt, blk_szx;
-	byte_t blk_opt[3] = { 0 };
+	int pdv_num, pdv_nxt, pdv_szx;
+	byte_t pdv_opt[3] = { 0 };
 	int n;
 
 	XDL_ASSERT(ppt->type == _XCOAP_TYPE_SRV);
@@ -621,42 +621,42 @@ bool_t _coap_recv_request(xcoap_t* ppt)
 	if (pdu->code == COAP_REQUEST_GET)
 	{
 		n = 3;
-		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK2, blk_opt, &n))
+		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK2, pdv_opt, &n))
 		{
-			blk = GET_THREEBYTE(blk_opt, 0);
+			blk = GET_THREEBYTE(pdv_opt, 0);
 			if (blk)
 			{
-				blk_num = (blk >> 4);
-				blk_szx = (blk & 0x07);
+				pdv_num = (blk >> 4);
+				pdv_szx = (blk & 0x07);
 
-				if (blk_num != ppt->blk_num)
+				if (pdv_num != ppt->pdv_num)
 				{
 					raise_user_error(_T("xcoap_recv_request"), _T("block serial invalid"));
 				}
 
-				ppt->blk_szx = blk_szx;
+				ppt->pdv_szx = pdv_szx;
 			}
 		}
 	}
 	else if (pdu->code == COAP_REQUEST_PUT || pdu->code == COAP_REQUEST_POST)
 	{
 		n = 3;
-		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK1, blk_opt, &n))
+		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK1, pdv_opt, &n))
 		{
-			blk = GET_THREEBYTE(blk_opt, 0);
+			blk = GET_THREEBYTE(pdv_opt, 0);
 
-			blk_num = (blk >> 4);
-			blk_nxt = (blk & 0x08) >> 3;
-			blk_szx = (blk & 0x07);
+			pdv_num = (blk >> 4);
+			pdv_nxt = (blk & 0x08) >> 3;
+			pdv_szx = (blk & 0x07);
 
-			if (blk_num != ppt->blk_num)
+			if (pdv_num != ppt->pdv_num)
 			{
 				raise_user_error(_T("xcoap_recv_request"), _T("block serial invalid"));
 			}
 
-			ppt->blk_nxt = blk_nxt;
-			ppt->blk_szx = blk_szx;
-			ppt->blk_eof = (blk_nxt) ? 0 : 1;
+			ppt->pdv_nxt = pdv_nxt;
+			ppt->pdv_szx = pdv_szx;
+			ppt->pdv_eof = (pdv_nxt) ? 0 : 1;
 		}
 	}
 
@@ -678,8 +678,8 @@ bool_t _coap_send_response(xcoap_t* ppt)
 	dword_t len;
 
 	int blk;
-	int blk_num, blk_nxt, blk_szx;
-	byte_t blk_opt[3] = { 0 };
+	int pdv_num, pdv_nxt, pdv_szx;
+	byte_t pdv_opt[3] = { 0 };
 
 	XDL_ASSERT(ppt->type == _XCOAP_TYPE_SRV);
 
@@ -695,31 +695,31 @@ bool_t _coap_send_response(xcoap_t* ppt)
 
 	if (ppt->rcv_pdu.code == COAP_REQUEST_PUT || ppt->rcv_pdu.code == COAP_REQUEST_POST)
 	{
-		blk_num = ppt->blk_num;
-		blk_nxt = 0;
-		blk_szx = ppt->blk_szx;
+		pdv_num = ppt->pdv_num;
+		pdv_nxt = 0;
+		pdv_szx = ppt->pdv_szx;
 
-		blk = (blk_num << 4) | (blk_nxt << 3) | (blk_szx);
-		PUT_THREEBYTE(blk_opt, 0, blk);
-		_coap_write_opt(pdu, COAP_OPTION_BLOCK1, blk_opt, 3);
+		blk = (pdv_num << 4) | (pdv_nxt << 3) | (pdv_szx);
+		PUT_THREEBYTE(pdv_opt, 0, blk);
+		_coap_write_opt(pdu, COAP_OPTION_BLOCK1, pdv_opt, 3);
 
 		_coap_clear_pdv(pdu);
 
-		ppt->blk_num++;
+		ppt->pdv_num++;
 	}
 	else if (ppt->rcv_pdu.code == COAP_REQUEST_GET)
 	{
-		blk_num = ppt->blk_num;
-		blk_nxt = ppt->blk_nxt;
-		blk_szx = ppt->blk_szx;
+		pdv_num = ppt->pdv_num;
+		pdv_nxt = ppt->pdv_nxt;
+		pdv_szx = ppt->pdv_szx;
 
-		blk = (blk_num << 4) | (blk_nxt << 3) | (blk_szx);
-		PUT_THREEBYTE(blk_opt, 0, blk);
-		_coap_write_opt(pdu, COAP_OPTION_BLOCK2, blk_opt, 3);
+		blk = (pdv_num << 4) | (pdv_nxt << 3) | (pdv_szx);
+		PUT_THREEBYTE(pdv_opt, 0, blk);
+		_coap_write_opt(pdu, COAP_OPTION_BLOCK2, pdv_opt, 3);
 
-		pdu->pdv_len = (1 << (blk_szx + 4));
+		pdu->pdv_len = (1 << (pdv_szx + 4));
 
-		ppt->blk_num++;
+		ppt->pdv_num++;
 	}
 
 	len = _coap_format_pdu(pkg_buf, COAP_PKG_SIZE, pdu);
@@ -755,8 +755,8 @@ bool_t _coap_recv_response(xcoap_t* ppt)
 	dword_t len;
 
 	int blk;
-	int blk_num, blk_nxt, blk_szx;
-	byte_t blk_opt[3] = { 0 };
+	int pdv_num, pdv_nxt, pdv_szx;
+	byte_t pdv_opt[3] = { 0 };
 	int n;
 
 	XDL_ASSERT(ppt->type == _XCOAP_TYPE_CLI);
@@ -801,40 +801,40 @@ bool_t _coap_recv_response(xcoap_t* ppt)
 	if (ppt->snd_pdu.code == COAP_REQUEST_GET)
 	{
 		n = 3;
-		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK2, blk_opt, &n))
+		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK2, pdv_opt, &n))
 		{
-			blk = GET_THREEBYTE(blk_opt, 0);
+			blk = GET_THREEBYTE(pdv_opt, 0);
 
-			blk_num = (blk >> 4);
-			blk_nxt = (blk & 0x08) >> 3;
-			blk_szx = (blk & 0x07);
+			pdv_num = (blk >> 4);
+			pdv_nxt = (blk & 0x08) >> 3;
+			pdv_szx = (blk & 0x07);
 
-			if (blk_num != ppt->blk_num)
+			if (pdv_num != ppt->pdv_num)
 			{
 				raise_user_error(_T("xcoap_recv_response"), _T("block serial invalid"));
 			}
 
-			ppt->blk_szx = blk_szx;
-			ppt->blk_eof = (blk_nxt) ? 0 : 1;
+			ppt->pdv_szx = pdv_szx;
+			ppt->pdv_eof = (pdv_nxt) ? 0 : 1;
 
-			ppt->blk_num++;
+			ppt->pdv_num++;
 		}
 	}
 	else if (ppt->snd_pdu.code == COAP_REQUEST_PUT || ppt->snd_pdu.code == COAP_REQUEST_POST)
 	{
 		n = 3;
-		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK1, blk_opt, &n))
+		if (_coap_read_opt(pdu, COAP_OPTION_BLOCK1, pdv_opt, &n))
 		{
-			blk = GET_THREEBYTE(blk_opt, 0);
+			blk = GET_THREEBYTE(pdv_opt, 0);
 
-			blk_num = (blk >> 4);
+			pdv_num = (blk >> 4);
 
-			if (blk_num != ppt->blk_num)
+			if (pdv_num != ppt->pdv_num)
 			{
 				raise_user_error(_T("xcoap_recv_response"), _T("block serial invalid"));
 			}
 
-			ppt->blk_num++;
+			ppt->pdv_num++;
 		}
 	}
 
@@ -901,7 +901,7 @@ xhand_t xcoap_client(const tchar_t* method, const tchar_t* url)
 		raise_user_error(NULL, NULL);
 	}
 
-	bind = _coap_dynamic_port(&ppt->havs);
+	bind = _coap_port(&ppt->havs);
 
 	if (!xudp_bind(ppt->bio, bind))
 	{
@@ -976,6 +976,7 @@ xhand_t xcoap_client(const tchar_t* method, const tchar_t* url)
 	return &ppt->head;
 
 ONERROR:
+	XDL_TRACE_LAST;
 
 	if (ppt)
 	{
@@ -984,8 +985,6 @@ ONERROR:
 
 		xmem_free(ppt);
 	}
-
-	XDL_TRACE_LAST;
 
 	return NULL;
 }
@@ -1012,9 +1011,14 @@ xhand_t	xcoap_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(NULL, NULL);
 	}
 
-	bind = _coap_dynamic_port(&ppt->havs);
+	bind = _coap_port(&ppt->havs);
 
 	if (!xudp_bind(ppt->bio, bind))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xudp_connect(ppt->bio, port, addr))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -1031,6 +1035,7 @@ xhand_t	xcoap_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	return &ppt->head;
 ONERROR:
+	XDL_TRACE_LAST;
 
 	if (ppt)
 	{
@@ -1039,8 +1044,6 @@ ONERROR:
 
 		xmem_free(ppt);
 	}
-
-	XDL_TRACE_LAST;
 
 	return NULL;
 }
@@ -1479,8 +1482,8 @@ void xcoap_set_blockwise(xhand_t coap, int szx)
 
 	XDL_ASSERT(szx >= 0 && szx <= 6);
 
-	ppt->blk_nxt = 1;
-	ppt->blk_szx = szx;
+	ppt->pdv_nxt = 1;
+	ppt->pdv_szx = szx;
 }
 
 
@@ -1598,7 +1601,7 @@ bool_t xcoap_recv(xhand_t coap, byte_t* buf, dword_t* pch)
 		if (pos == *pch)
 			break;
 
-		if ((pdu->pdv_len == pdu->pdv_off) && !ppt->blk_eof)
+		if ((pdu->pdv_len == pdu->pdv_off) && !ppt->pdv_eof)
 		{
 			if (ppt->type == _XCOAP_TYPE_SRV)
 			{
@@ -1658,7 +1661,7 @@ bool_t xcoap_send(xhand_t coap, const byte_t* buf, dword_t *pch)
 	TRY_CATCH;
 
 	pdu = &ppt->snd_pdu;
-	pdu->pdv_len = 1 << (ppt->blk_szx + 4);
+	pdu->pdv_len = 1 << (ppt->pdv_szx + 4);
 
 	while (pos < *pch)
 	{
@@ -1721,10 +1724,10 @@ bool_t xcoap_flush(xhand_t coap)
 
 	TRY_CATCH;
 
-	ppt->blk_nxt = 0;
+	ppt->pdv_nxt = 0;
 
 	pdu = &ppt->snd_pdu;
-	pdu->pdv_len = 1 << (ppt->blk_szx + 4);
+	pdu->pdv_len = 1 << (ppt->pdv_szx + 4);
 
 	if (ppt->type == _XCOAP_TYPE_SRV)
 	{

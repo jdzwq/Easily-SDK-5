@@ -87,16 +87,6 @@ typedef enum{
 #define TFTP_CODE_NOUSER		7
 #define TFTP_CODE_NOUSER_TEXT	_T("No such user")
 
-/*TFTP Status*/
-typedef enum{
-	_TFTP_STATUS_ASSOCIATE = 0,
-	_TFTP_STATUS_WAITING = 1,
-	_TFTP_STATUS_PENDING = 2,
-	_TFTP_STATUS_EOF = 3,
-	_TFTP_STATUS_NOTIFY = 4,
-	_TFTP_STATUS_RELEASE = 5
-}TFTP_STATUS;
-
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -134,15 +124,6 @@ EXP_API xhand_t		xtftp_bio(xhand_t tftp);
 @RETURN int: return the method token length in characters.
 */
 EXP_API int			xtftp_method(xhand_t tftp, tchar_t* buf, int max);
-
-/*
-@FUNCTION xtftp_object: get a TFTP file name.
-@INPUT xhand_t tftp: the TFPT handle.
-@OUTPUT tchar_t* buf: the string buffer for returning file name.
-@INPUT int max: the buffer size in characters.
-@RETURN int: return the object token length in characters.
-*/
-EXP_API int			xtftp_object(xhand_t tftp, tchar_t* buf, int max);
 
 /*
 @FUNCTION xtftp_close: close the TFPT handle.
@@ -183,20 +164,6 @@ EXP_API bool_t		xtftp_recv(xhand_t tftp, byte_t* buf, dword_t *pb);
 @RETURN void: none.
 */
 EXP_API void		xtftp_abort(xhand_t tftp, int errcode);
-
-/*
-@FUNCTION xtftp_head: send a TFPT file head package, it must be called by TFTP client.
-@INPUT xhand_t tftp: the TFPT handle.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-EXP_API bool_t		 xtftp_head(xhand_t tftp);
-
-/*
-@FUNCTION xtftp_fetch: recv a TFPT file head package, it must be called by TFTP server.
-@INPUT xhand_t tftp: the TFPT handle.
-@RETURN bool_t: if succeeds return nonzero, fails return zero.
-*/
-EXP_API bool_t		 xtftp_fetch(xhand_t tftp);
 	
 /*
 @FUNCTION xtftp_set_isdir: set TFPT current object is a directory.
@@ -259,6 +226,10 @@ EXP_API void		xtftp_set_filename(xhand_t tftp, const tchar_t* fname);
 @RETURN void: none.
 */
 EXP_API void		xtftp_get_filename(xhand_t tftp, tchar_t* fname);
+
+EXP_API bool_t		 xtftp_head(xhand_t tftp);
+
+EXP_API bool_t		 xtftp_delete(xhand_t tftp);
 
 #ifdef	__cplusplus
 }

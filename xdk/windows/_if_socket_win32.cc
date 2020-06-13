@@ -357,13 +357,13 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
 			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
 			{
 				*pcb = 0;
-				return 0;
+				return 1;
 			}
 
 			dw = 0;
 			WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd);
 			*pcb = dw;
-			return (dw) ? 1 : 0;
+			return 1;
 		}
 	}
 
@@ -426,13 +426,13 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
 			if (WAIT_OBJECT_0 != WaitForSingleObject(pov->hEvent, pb->timo))
 			{
 				*pcb = 0;
-				return 0;
+				return 1;
 			}
 
 			dw = 0;
 			WSAGetOverlappedResult((SOCKET)so, (LPWSAOVERLAPPED)pov, &dw, FALSE, &fd);
 			*pcb = dw;
-			return (dw) ? 1 : 0;
+			return 1;
 		}
 	}
 

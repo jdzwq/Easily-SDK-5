@@ -80,6 +80,15 @@ EXP_API xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t*
 EXP_API bool_t xudp_bind(xhand_t udp, unsigned short bind);
 
 /*
+@FUNCTION xudp_cli: conenct to some addr.
+@INPUT xhand_t udp: the UDP xhandle.
+@INPUT unsigned short port: the network port to connect.
+@INPUT const tchar_t* addr: the network address to connect.
+@RETURN bool_t: if succeeds return nonzero.
+*/
+EXP_API bool_t xudp_connect(xhand_t udp, unsigned short port, const tchar_t* addr);
+
+/*
 @FUNCTION xudp_close: close a UDP client or server handle.
 @INPUT xhand_t udp: the UDP xhandle.
 @RETURN void: none.

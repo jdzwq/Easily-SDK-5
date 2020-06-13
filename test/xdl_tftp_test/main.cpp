@@ -6,10 +6,10 @@
 #endif
 
 //#define URL_GET			_T("tftp://127.0.0.1:69/demo.txt")
-#define URL_GET			_T("tftp://118.178.180.81:69/demo.txt")
+//#define URL_GET			_T("tftp://118.178.180.81:69/demo.txt")
 //#define URL_GET			_T("tftp://49.234.135.113:69/demo.txt")
 //#define URL_GET			_T("tftp://172.16.190.190:69/demo.txt")
-//#define URL_GET			_T("tftp://172.16.220.133:69/demo.txt")
+#define URL_GET			_T("tftp://172.16.190.200:69/demo.txt")
 
 void test_tftp_put()
 {
@@ -37,6 +37,15 @@ void test_tftp_get()
 	xtftp_recv(tftp, data, &dw);
 	
 	xtftp_close(tftp);
+}
+
+void test_tftp_head()
+{
+	xhand_t tftp = xtftp_client(_T("HEAD"), URL_GET);
+
+	xtftp_head(tftp);
+
+	xtftp_close(tftp);
 
 }
 
@@ -53,9 +62,11 @@ int main(int argc, char* argv[])
     
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-	//test_tftp_put();
+	test_tftp_put();
 
-	test_tftp_get();
+	//test_tftp_get();
+
+	//test_tftp_head();
 
 	//test_tftp_del();
 

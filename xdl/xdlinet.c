@@ -899,35 +899,6 @@ static void tftp_close_file(xhand_t inet)
 
 static bool_t tftp_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa)
 {
-	xhand_t xh;
-	tchar_t ftime[DATE_LEN] = { 0 };
-	file_info_t fi = { 0 };
-
-	xh = xtftp_client(_T("HEAD"), path);
-	if (!xh)
-		return 0;
-
-	while (xtftp_fetch(xh))
-	{
-		fi.is_dir = xtftp_get_isdir(xh);
-		xtftp_get_filename(xh, fi.file_name);
-
-		if (!fi.is_dir)
-		{
-			xtftp_get_filetime(xh, ftime);
-			parse_gmttime(&fi.write_time, ftime);
-			fi.low_size = xtftp_get_filesize(xh);
-		}
-		
-		//NULL FILE
-		if (!fi.is_dir && !fi.low_size && is_null(fi.file_name))
-			break;
-
-		(*pf)(&fi, pa);
-	}
-
-	xtftp_close(xh);
-
 	return 0;
 }
 
@@ -952,18 +923,22 @@ static bool_t tftp_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 	if (!xh)
 		return 0;
 
-	if (xtftp_fetch(xh))
+	if (!xtftp_head(xh))
 	{
-		if (ftime)
-			xtftp_get_filetime(xh, ftime);
-		if (fsize)
-			ltoxs(xtftp_get_filesize(xh), fsize, INT_LEN);
+		xtftp_close(xh);
+		return 0;
 	}
+
+	if (ftime)
+		xtftp_get_filetime(xh, ftime);
+	if (fsize)
+		ltoxs(xtftp_get_filesize(xh), fsize, INT_LEN);
 
 	xtftp_close(xh);
 
 	return 1;
 }
+
 /*************************************************************************************************/
 
 xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)

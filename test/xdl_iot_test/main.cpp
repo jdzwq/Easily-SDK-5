@@ -327,7 +327,113 @@ void test_iot_command()
 }
 
 //#define URL_BP		_T("http://yundatatest.bioland.com.cn:8080/hdwdata/receive/api/data?data=5A25221060115A000253109076070141012120007C4_460027966329481_FFFFFFFFFFFFFFFFFFFFFFFFF")
-#define URL_BP		_T("http://118.178.180.81/BP/bioland?data=5A26001010220D012560000000417141201120407B2_460047080504708_863082038053371FFFFFFFFFF")
+//#define URL_BP		_T("http://118.178.180.81/BP/bioland?data=5A26001010220D012560000000417141201120407B2_460047080504708_863082038053371FFFFFFFFFF")
+#define URL_BP		_T("http://www.biofolia.cn:8889/bp/bioland?data=5A26001010220D012560000000417141201120407B2_460047080504708_863082038053371FFFFFFFFFF")
+
+void test_bp_code()
+{
+	/*
+	服务平台返回数据示例：					
+	服务器 IP: 42.121.236.135 (0x2A:0x79:0xEC:0x87).					
+	服务器端口：8014 （0x1F4E）					
+	服务器时间：14年7月8日10时39分					
+	服务平台返回31字节数据：+IP2A79EC874E1F690E07080A272COK
+	*/
+	//Sum1:   IP，端口按字节HEX异或.如上Sum1＝2A ^ 79 ^ EC ^ 87 ^ 4E ^ 1F＝69H
+	//Sum2：时间数据按字节HEX异或，如上Sum2＝ 0E ^ 07 ^ 08 ^ 0A ^ 27＝2CH
+
+	tchar_t addr[] = _T("42.121.236.135");
+	dword_t port = 8014;
+
+	xdate_t dt = { 0 };
+	dt.year = 2014;
+	dt.mon = 7;
+	dt.day = 8;
+	dt.hour = 10;
+	dt.min = 39;
+
+	int len = xslen(addr);
+	
+	tchar_t* token;
+	byte_t buf[32] = { 0 };
+	dword_t n;
+	byte_t sum;
+
+	for (n = 0; n < len; n++)
+	{
+		if (*(addr + n) == _T('.'))
+			*(addr + n) = _T('\0');
+	}
+
+	buf[0] = '+';
+	buf[1] = 'I';
+	buf[2] = 'P';
+	n = 3;
+	len = 3;
+
+	sum = 0;
+
+	token = addr;
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), xstol(token));
+	n += 2;
+	sum = (sum ^ ((byte_t)xstol(token)));
+
+	token += (xslen(token) + 1);
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), xstol(token));
+	n += 2;
+	sum = (sum ^ ((byte_t)xstol(token)));
+
+	token += (xslen(token) + 1);
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), xstol(token));
+	n += 2;
+	sum = (sum ^ ((byte_t)xstol(token)));
+
+	token += (xslen(token) + 1);
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), xstol(token));
+	n += 2;
+	sum = (sum ^ ((byte_t)xstol(token)));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), (port & 0x00FF));
+	n += 2;
+	sum = (sum ^ (port & 0x00FF));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), (port >> 8));
+	n += 2;
+	sum = (sum ^ (port >> 8));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), sum);
+	n += 2;
+	len += 2;
+
+	sum = 0;
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), (dt.year - 2000));
+	n += 2;
+	sum = (sum ^ ((byte)(dt.year - 2000)));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), dt.mon);
+	n += 2;
+	sum = (sum ^ ((byte)(dt.mon)));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), dt.day);
+	n += 2;
+	sum = (sum ^ ((byte)(dt.day)));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), dt.hour);
+	n += 2;
+	sum = (sum ^ ((byte)(dt.hour)));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), dt.min);
+	n += 2;
+	sum = (sum ^ ((byte)(dt.min)));
+
+	a_xsprintf((schar_t*)(buf + n), ("%02X"), sum);
+	n += 2;
+
+	buf[n] = 'O';
+	buf[n + 1] = 'K';
+	n += 2;
+}
 
 void test_bp()
 {
@@ -354,7 +460,8 @@ void test_bp()
 }
 
 
-#define URL_DRUG			_T("http://118.178.180.81/drug/msense")
+//#define URL_DRUG			_T("http://118.178.180.81/drug/msense")
+#define URL_DRUG			_T("http://www.biofolia.cn:8889/drug/msense")
 
 void test_drug_push()
 {
@@ -441,9 +548,11 @@ int main(int argc, char* argv[])
 
 	//test_iot_command();
 
-	test_drug_push();
+	//test_drug_push();
 
-	//test_bp();
+	test_bp();
+
+	//test_bp_code();
 
 	xdl_process_uninit();
 

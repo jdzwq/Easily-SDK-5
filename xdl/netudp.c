@@ -145,6 +145,21 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	return &pudp->head;
 }
 
+bool_t  xudp_connect(xhand_t udp, unsigned short port, const tchar_t* addr)
+{
+	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	net_addr_t sin = { 0 };
+
+	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
+
+	pudp->port = port;
+	xscpy(pudp->addr, addr);
+
+	fill_addr(&sin, port, addr);
+
+	return socket_connect(pudp->so, (res_addr_t)&sin, sizeof(sin));
+}
+
 bool_t  xudp_bind(xhand_t udp, unsigned short bind)
 {
 	udp_t* pudp = TypePtrFromHead(udp_t, udp);
@@ -212,8 +227,8 @@ void xudp_set_package(xhand_t udp, dword_t size)
 
 	pudp->rcv_pdu = (byte_t*)xmem_realloc(pudp->rcv_pdu, pudp->pkg_size);
 
-	socket_set_rcvbuf(pudp->so, pudp->pkg_size);
-	socket_set_sndbuf(pudp->so, pudp->pkg_size);
+	socket_set_rcvbuf(pudp->so, 32 * 1024);
+	socket_set_sndbuf(pudp->so, 16 * 1024);
 }
 
 dword_t xudp_get_package(xhand_t udp)
@@ -242,7 +257,6 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 		bys = (pudp->snd_bys + dw > pudp->pkg_size) ? (pudp->pkg_size - pudp->snd_bys) : dw;
 		xmem_copy((void*)(pudp->snd_pdu + pudp->snd_bys), (void*)buf, bys);
 		pudp->snd_bys += bys;
-		dw -= bys;
 
 		if (pudp->snd_bys == pudp->pkg_size)
 		{
@@ -255,13 +269,22 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 				raise_user_error(NULL, NULL);
 			}
 
+			if (!(pudp->pov->size))
+			{
+				break;
+			}
+
 			pudp->snd_bys = bys - (dword_t)(pudp->pov->size);
-			if (pudp->snd_bys)
+			if (pudp->snd_bys && (pudp->snd_bys < pudp->pkg_size))
 			{
 				xmem_copy((void*)(pudp->snd_pdu), (void*)(pudp->snd_pdu + pudp->pkg_size - pudp->snd_bys), pudp->snd_bys);
 			}
 		}
+
+		dw -= bys;
 	}
+	*pb -= dw;
+
 
 	END_CATCH;
 
@@ -315,7 +338,7 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 	dword_t bys, dw;
 	net_addr_t na = { 0 };
 	int addr_len;
-	bool_t b = 0;
+	int TRY_MAX = 3;
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -323,7 +346,7 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 
 	dw = *pb;
 	*pb = 0;
-	while (dw && !b)
+	while (dw && TRY_MAX)
 	{
 		if (!pudp->rcv_bys)
 		{
@@ -332,28 +355,25 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 			pudp->pov->size = 0;
 			if (!socket_recvfrom(pudp->so, (res_addr_t)&na, &addr_len, (void*)(pudp->rcv_pdu), bys, pudp->pov))
 			{
-				if (!(pudp->pov->size))
-				{
-					raise_user_error(NULL, NULL);
-				}
-				else
-				{
-					b = 1;
-				}
+				raise_user_error(NULL, NULL);
 			}
-			conv_addr(&na, &pudp->port, pudp->addr);
+
+			if (addr_len)
+			{
+				conv_addr(&na, &pudp->port, pudp->addr);
+			}
 
 			pudp->rcv_bys = (dword_t)(pudp->pov->size);
 			pudp->rcv_ret = 0;
 
-			if (pudp->rcv_bys < pudp->pkg_size)
-			{
-				b = 1;
-			}
+			if (pudp->rcv_bys)
+				TRY_MAX = 0;
+			else
+				TRY_MAX--;
 		}
 		else
 		{
-			b = 1;
+			TRY_MAX = 0;
 		}
 
 		bys = (pudp->rcv_bys < dw) ? pudp->rcv_bys : dw;
@@ -367,7 +387,7 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 
 	END_CATCH;
 
-	return 1;
+	return (!TRY_MAX && !(*pb))? 0 : 1;
 ONERROR:
 
 	*pb = 0;

@@ -49,7 +49,7 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 
 	TRY_CATCH;
 
-	xtftp_object(pd->tftp, fname, 512);
+	xtftp_get_filename(pd->tftp, fname);
 	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
 	fd = xuncf_find_first(&pd->sd, sz_object, &fi);
@@ -59,30 +59,15 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 	}
 	else
 	{
-		do
-		{
-			xtftp_set_isdir(pd->tftp, fi.is_dir);
-			xtftp_set_filename(pd->tftp, fi.file_name);
-
-			if (!fi.is_dir)
-			{
-				xtftp_set_filesize(pd->tftp, fi.low_size);
-
-				format_gmttime(&fi.create_time, ftime);
-				xtftp_set_filetime(pd->tftp, ftime);
-			}
-
-			xtftp_head(pd->tftp);
-
-		} while (xuncf_find_next(fd, &fi));
-
 		xuncf_find_close(fd);
+		fd = NULL;
 
-		//NULL FILE
-		xtftp_set_isdir(pd->tftp, 0);
-		xtftp_set_filename(pd->tftp, NULL);
-		xtftp_set_filesize(pd->tftp, 0);
-		xtftp_set_filetime(pd->tftp, NULL);
+		xtftp_set_filename(pd->tftp, fi.file_name);
+
+		xtftp_set_filesize(pd->tftp, fi.file_size);
+
+		format_gmttime(&fi.write_time, ftime);
+		xtftp_set_filetime(pd->tftp, ftime);
 
 		xtftp_head(pd->tftp);
 	}
@@ -97,6 +82,9 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 ONERROR:
 
 	get_last_error(pd->code, pd->text, ERR_LEN);
+
+	if (fd)
+		xuncf_find_close(fd);
 
 	return 0;
 }
@@ -117,7 +105,7 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 
 	TRY_CATCH;
 	
-	xtftp_object(pd->tftp, fname, 512);
+	xtftp_get_filename(pd->tftp, fname);
 	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
 	if (!xfile_info(&pd->sd, sz_object, ftime, fsize, NULL, NULL))
@@ -199,7 +187,7 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 
 	TRY_CATCH;
 
-	xtftp_object(pd->tftp, fname, 512);
+	xtftp_get_filename(pd->tftp, fname);
 	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
 	xf = xfile_open(&pd->sd, sz_object, FILE_OPEN_CREATE);
@@ -265,13 +253,13 @@ static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 
 	TRY_CATCH;
 
-	xtftp_object(pd->tftp, fname, 512);
+	xtftp_get_filename(pd->tftp, fname);
 	xsprintf(sz_object, _T("%s%s"), pd->local, fname);
 
 	if (!xfile_delete(&pd->sd, sz_object))
 		xtftp_abort(pd->tftp, TFTP_CODE_NOTFIND);
 	else
-		xtftp_abort(pd->tftp, 0);
+		xtftp_delete(pd->tftp);
 
 	xscpy(pd->code, _T("_invoke_delete"));
 	xscpy(pd->text, _T("Succeeded"));

@@ -214,7 +214,7 @@ bool_t socket_sendto(res_file_t so, res_addr_t saddr, int alen, const byte_t* bu
 		return 0;
 	}
 
-	return (pov->size) ? 1 : 0;
+	return 1;
 }
 
 bool_t socket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, byte_t* buf, dword_t size, async_t* pov)
@@ -234,7 +234,7 @@ bool_t socket_recvfrom(res_file_t so, res_addr_t saddr, int *plen, byte_t* buf, 
 		return 0;
 	}
 
-	return (pov->size)? 1 : 0;
+	return 1;
 }
 
 bool_t	socket_send(res_file_t so, const byte_t* buf, dword_t size, async_t* pov)

@@ -44,7 +44,6 @@ LICENSE.GPL3 for more details.
 #define COAP_PKG_SIZE		1472
 #define COAP_HDR_SIZE		4
 #define COAP_PDV_SIZE		1024
-#define COAP_BLK_SIZE		1024
 #define COAP_MAX_MTU		1152
 #define COAP_MAX_TKL		8
 #define COAP_MAX_OPT		1035

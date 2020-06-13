@@ -244,7 +244,7 @@ void test_ssl_srv()
 
 void test_ssl_cli()
 {
-    xhand_t ssl = xssl_cli(8888, _T("127.0.0.1"));
+    xhand_t ssl = xssl_cli(8888, _T("172.16.190.200"));
     
     if(!ssl)
         return;
