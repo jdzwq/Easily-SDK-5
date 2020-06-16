@@ -1,8 +1,8 @@
 // xdc_frame_test.cpp : 定义应用程序的入口点。
 //
 
-#include "stdafx.h"
-#include "xdc_frame_test.h"
+#include <xdl.h>
+#include <xdc.h>
 
 #define MAX_LOADSTRING 100
 
@@ -31,15 +31,11 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	MSG msg;
 	HACCEL hAccelTable;
 
-	// 初始化全局字符串
-	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_XDC_FRAME_TEST, szWindowClass, MAX_LOADSTRING);
+	xdl_process_init(XDL_APARTMENT_PROCESS);
 
-	xdl_process_init(XDL_APARTMENT_PROCESS | XDL_INITIALIZE_DESKTOP);
+	xdc_process_init();
 
 	MainFrame_Create(_T("Main"));
-
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_XDC_FRAME_TEST));
 
 	// 主消息循环: 
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -50,6 +46,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
+
+	xdc_process_uninit();
 
 	xdl_process_uninit();
 
@@ -117,21 +115,21 @@ void _MainFrame_CalcToolBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_TOP, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_TOP, pxr);
 }
 
 void _MainFrame_CalcStatusBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_BOTTOM, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_BOTTOM, pxr);
 }
 
 void _MainFrame_CalcTreeBar(res_win_t widget, xrect_t* pxr)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widgetex_get_dock_rect(widget, WD_DOCK_LEFT, pxr);
+	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
 }
 
 void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
@@ -141,9 +139,9 @@ void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, 0, pxr);
+	widget_get_dock_rect(widget, 0, pxr);
 	pxr->h = xs.cy;
 }
 
@@ -154,9 +152,9 @@ void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
+	widget_size_to_pt(widget, &xs);
 
-	widgetex_get_dock_rect(widget, 0, pxr);
+	widget_get_dock_rect(widget, 0, pxr);
 	pxr->y += xs.cy;
 	pxr->h -= xs.cy;
 }
@@ -200,7 +198,7 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("简单图标"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_name(glk, _T("ImageText"));
@@ -212,46 +210,46 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("自绘"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CALENDAR);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("日历"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_NOTES);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("消息"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_PANEL);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("面板"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CURVE);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("波形"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_MODEL);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("模型"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_PLOT);
 	set_tool_item_id(ilk, token);
 	set_tool_item_title(ilk, _T("图形"));
-	set_tool_item_icon(ilk, ICON_USER);
+	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
-	widget_show(pdt->hToolBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hToolBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateTitleBar(res_win_t widget)
@@ -272,7 +270,7 @@ void _MainFrame_CreateTitleBar(res_win_t widget)
 
 	titlectrl_attach(pdt->hTitleBar, ptrTitle);
 
-	widget_show(pdt->hTitleBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hTitleBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateTreeBar(res_win_t widget)
@@ -290,11 +288,11 @@ void _MainFrame_CreateTreeBar(res_win_t widget)
 	LINKPTR ptrTree = create_tree_doc();
 
 	set_tree_title(ptrTree, _T("资源列表"));
-	set_tree_title_icon(ptrTree, ICON_PROPER);
+	set_tree_title_icon(ptrTree, GDI_ATTR_GIZMO_PROPER);
 	treectrl_attach(pdt->hTreeBar, ptrTree);
 	treectrl_set_lock(pdt->hTreeBar, 0);
 
-	widget_show(pdt->hTreeBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hTreeBar, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_CreateStatusBar(res_win_t widget)
@@ -322,14 +320,14 @@ void _MainFrame_CreateStatusBar(res_win_t widget)
 
 	statusctrl_attach(pdt->hStatusBar, ptrStatus);
 
-	widget_show(pdt->hStatusBar, WD_SHOW_NORMAL);
+	widget_show(pdt->hStatusBar, WS_SHOW_NORMAL);
 
 	ilk = get_status_item(ptrStatus, _T("navibox"));
 	statusctrl_get_item_rect(pdt->hStatusBar, ilk, &xr);
 
 	pdt->hNaviBox = navibox_create(pdt->hStatusBar, WD_STYLE_CONTROL, &xr);
 	widget_set_owner(pdt->hNaviBox, pdt->hStatusBar);
-	widget_show(pdt->hNaviBox, WD_SHOW_NORMAL);
+	widget_show(pdt->hNaviBox, WS_SHOW_NORMAL);
 }
 
 void _MainFrame_DestroyToolBar(res_win_t widget)
@@ -507,16 +505,16 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		widget_set_owner(hPanel, widget);
 
 		xpen_t xp = { 0 };
-		widgetex_get_xpen(hPanel, &xp);
+		widget_get_xpen(hPanel, &xp);
 		xp.adorn.feed = 2;
 		xp.adorn.size = 1;
-		//widgetex_set_xpen(hPanel, &xp);
+		//widget_set_xpen(hPanel, &xp);
 
 		xbrush_t xb = { 0 };
-		widgetex_get_xbrush(hPanel, &xb);
+		widget_get_xbrush(hPanel, &xb);
 		xb.shadow.offx = 3;
 		xb.shadow.offy = 3;
-		widgetex_set_xbrush(hPanel, &xb);
+		widget_set_xbrush(hPanel, &xb);
 
 		vector_t* pvt = vector_alloc(5, 2);
 		vector_parse(pvt, _T(" {(0,1) (2,3)(4, 5) (6, 7) (8,9)}"), -1);
@@ -684,7 +682,7 @@ void MainFrame_TitleBar_OnItemChanging(res_win_t widget, NOTICE_TITLE* pnt)
 
 	if (widget_is_valid(hPanel))
 	{
-		widget_show(hPanel, WD_SHOW_HIDE);
+		widget_show(hPanel, WS_SHOW_HIDE);
 	}
 }
 
@@ -697,11 +695,11 @@ void MainFrame_TitleBar_OnItemChanged(res_win_t widget, NOTICE_TITLE* pnt)
 	if (widget_is_valid(hPanel))
 	{
 		clr_mod_t clr;
-		widgetex_get_color_mode(widget, &clr);
+		widget_get_color_mode(widget, &clr);
 
-		widgetex_set_color_mode(hPanel, &clr);
+		widget_set_color_mode(hPanel, &clr);
 
-		widget_show(hPanel, WD_SHOW_NORMAL);
+		widget_show(hPanel, WS_SHOW_NORMAL);
 	}
 }
 
@@ -723,20 +721,20 @@ void MainFrame_TitleBar_OnItemHover(res_win_t widget, NOTICE_TITLE* pnt)
 		pdt->hToolTip = show_toolbox(&xp, get_title_item_title_ptr(pnt->item));
 }
 
-VOID MainFrame_UserPanel_OnCalc(res_win_t win, PAGE_CALC* ppc)
+/*VOID MainFrame_UserPanel_OnCalc(res_win_t win, PAGE_CALC* ppc)
 {
 	ppc->total_height = 8096;
 	ppc->total_width = 4096;
 	ppc->line_height = 10;
 	ppc->line_width = 10;
-}
+}*/
 
-VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
+VOID MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 {
 	viewbox_t vb;
 	xcolor_t xc;
 
-	widgetex_get_view_rect(win, &vb);
+	widget_get_view_rect(win, &vb);
 
 	//parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
 
@@ -750,9 +748,9 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	int feed = 10;
 
 	xpen_t xp;
-	widgetex_get_xpen(win, &xp);
+	widget_get_xpen(win, &xp);
 	xbrush_t xb;
-	widgetex_get_xbrush(win, &xb);
+	widget_get_xbrush(win, &xb);
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
 	xrect_t xr;
@@ -837,7 +835,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xb.shadow.offx = 10;
 	xb.shadow.offy = 10;
 
-	draw_path_raw(hDC, &xp, &xb, aa, pa, n);
+	draw_path_raw(rdc, &xp, &xb, aa, pa, n);
 
 	xr.y = 60;
 	xr.x = 10;
@@ -848,7 +846,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xp.adorn.size = 0;
 	xb.shadow.offx = 5;
 	xb.shadow.offy = 5;
-	draw_rect_raw(hDC, &xp, &xb, &xr);
+	draw_rect_raw(rdc, &xp, &xb, &xr);
 
 	xr.y = 60;
 	xr.x = 80;
@@ -859,7 +857,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xp.adorn.size = 0;
 	xb.shadow.offx = 5;
 	xb.shadow.offy = 5;
-	draw_round_raw(hDC, &xp, &xb, &xr);
+	draw_round_raw(rdc, &xp, &xb, &xr);
 
 	xr.y = 60;
 	xr.x = 150;
@@ -870,7 +868,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xp.adorn.size = 0;
 	xb.shadow.offx = 5;
 	xb.shadow.offy = 5;
-	draw_ellipse_raw(hDC, &xp, &xb, &xr);
+	draw_ellipse_raw(rdc, &xp, &xb, &xr);
 
 	xr.y = 60;
 	xr.x = 220;
@@ -887,7 +885,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xp.adorn.size = 0;
 	xb.shadow.offx = 5;
 	xb.shadow.offy = 5;
-	draw_pie_raw(hDC, &xp, &xb, &pt, rx, ry, 0, XPI);
+	draw_pie_raw(rdc, &xp, &xb, &pt, rx, ry, 0, XPI);
 
 	xr.y = 60;
 	xr.x = 280;
@@ -903,7 +901,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xp.adorn.size = 1;
 	xb.shadow.offx = 0;
 	xb.shadow.offy = 0;
-	draw_arc_raw(hDC, &xp, &pt, rx, ry, 0, XPI);
+	draw_arc_raw(rdc, &xp, &pt, rx, ry, 0, XPI);
 
 	xr.y = 60;
 	xr.x = 340;
@@ -914,7 +912,7 @@ VOID MainFrame_UserPanel_OnDraw(res_win_t win, HDC hDC)
 	xp.adorn.size = 0;
 	xb.shadow.offx = 5;
 	xb.shadow.offy = 5;
-	draw_arrow_raw(hDC, &xp,&xb, &xr, 20, XPI / 3);
+	draw_arrow_raw(rdc, &xp, &xb, &xr, 20, XPI / 3);
 
 }
 
@@ -924,7 +922,7 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 {
 	MainFrameDelta* pdt;
 
-	widgetex_hand_create(widget);
+	widget_hand_create(widget);
 
 	res_acl_t hac = create_accel_table(MAINFRAME_ACCEL, MAINFRAME_ACCEL_COUNT);
 
@@ -934,18 +932,18 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
-	widgetex_dock(widget, WD_DOCK_TOP, 0, xs.cy);
+	widget_size_to_pt(widget, &xs);
+	widget_dock(widget, WS_DOCK_TOP, 0, xs.cy);
 
 	xs.fx = 0;
 	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
-	widgetex_size_to_pt(widget, &xs);
-	widgetex_dock(widget, WD_DOCK_BOTTOM, 0, xs.cy);
+	widget_size_to_pt(widget, &xs);
+	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.cy);
 
 	xs.fx = MAINFRAME_TREEBAR_WIDTH;
 	xs.fy = 0;
-	widgetex_size_to_pt(widget, &xs);
-	widgetex_dock(widget, WD_DOCK_LEFT | WD_DOCK_DYNA, xs.cx, 0);
+	widget_size_to_pt(widget, &xs);
+	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.cx, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, pdt);
@@ -985,7 +983,7 @@ void MainFrame_OnDestroy(res_win_t widget)
 
 	xmem_free(pdt);
 
-	widgetex_hand_destroy(widget);
+	widget_hand_destroy(widget);
 }
 
 int MainFrame_OnClose(res_win_t widget)
@@ -1056,14 +1054,14 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 		plk = get_title_next_item(ptrTitle, plk);
 	}
 
-	widget_redraw(widget, NULL, 0);
+	widget_erase(widget, NULL);
 }
 
-void MainFrame_OnScroll(res_win_t widget, bool_t bHorz, long nLine)
+void MainFrame_OnScroll(res_win_t widget, bool_t bHorz, int nLine)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	widgetex_hand_scroll(widget, bHorz, nLine);
+	widget_hand_scroll(widget, bHorz, nLine);
 }
 
 void MainFrame_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
@@ -1173,10 +1171,10 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 		switch (pnu->code)
 		{
 		case NC_OWNERCALC:
-			MainFrame_UserPanel_OnCalc(pnu->widget, (PAGE_CALC*)pnu->data);
+			//MainFrame_UserPanel_OnCalc(pnu->widget, (PAGE_CALC*)pnu->data);
 			break;
 		case NC_OWNERDRAW:
-			MainFrame_UserPanel_OnDraw(pnu->widget, (HDC)pnu->data);
+			MainFrame_UserPanel_OnDraw(pnu->widget, (res_ctx_t)pnu->data);
 			break;
 		}
 	}
@@ -1216,7 +1214,7 @@ res_win_t MainFrame_Create(const tchar_t* mname)
 		return 0;
 	}
 
-	widget_show(widget, WD_SHOW_NORMAL);
+	widget_show(widget, WS_SHOW_NORMAL);
 	widget_update(widget);
 
 	return widget;

@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 #define XDU_SUPPORT_CONTEXT_REGION
 #define XDU_SUPPORT_CONTEXT_BITMAP
 #define XDU_SUPPORT_CONTEXT_GRAPHIC
-
+#define XDU_SUPPORT_CLIPBOARD
 #define XDU_SUPPORT_WIDGET
 
 #ifdef XDU_SUPPORT_CONTEXT
@@ -49,6 +49,8 @@ LICENSE.GPL3 for more details.
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 #include <X11/cursorfont.h>
+#include <X11/Xresource.h>
+#include <X11/Xlocale.h>
 #endif
 
 
@@ -104,7 +106,7 @@ typedef struct _X11_atoms_t{
     Atom wm_transient_for;
 
     Atom wm_quit;
-    Atom wm_message;
+    Atom wm_command;
     Atom wm_notice;
     Atom wm_input;
     Atom wm_scroll;
@@ -133,6 +135,7 @@ typedef struct _X11_context_t{
 }X11_context_t;
 
 extern Display*     g_display;
+extern XIM          g_xim;
 
 typedef X11_context_t* res_ctx_t;
 typedef Colormap    res_clr_t;
@@ -145,6 +148,22 @@ typedef Region		res_rgn_t;
 #endif
 
 #endif /*XDU_SUPPORT_CONTEXT*/
+
+#ifdef XDU_SUPPORT_CLIPBOARD
+#ifndef res_glob_t
+typedef void*		res_glob_t;
+#endif
+/*clipboard format*/
+#define CB_FORMAT_MBS		1
+#define CB_FORMAT_UCS		13
+#define CB_FORMAT_DIB		8
+
+#ifdef _UNICODE
+#define DEF_CB_FORMAT		CB_FORMAT_UCS
+#else
+#define DEF_CB_FORMAT		CB_FORMAT_MBS
+#endif
+#endif /*XDU_SUPPORT_CLIPBOARD*/
 
 #ifdef XDU_SUPPORT_WIDGET
 extern Window       g_capture;

@@ -371,6 +371,13 @@ EXP_API void	widget_update(res_win_t wt);
 EXP_API void	widget_enable(res_win_t wt, bool_t b);
 
 /*
+@FUNCTION widget_active: activate the widndow.
+@INPUT res_win_t wt: the widget resource handle.
+@RETURN void: none.
+*/
+EXP_API void	widget_active(res_win_t wt);
+
+/*
 @FUNCTION widget_set_cursor: set widget cursor type.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT int cur: cursor type, it can be CURSOR_SIZENS, CURSOR_SIZEWE, CURSOR_SIZEALL, CURSOR_HAND, CURSOR_HELP, CURSOR_DRAG, CURSOR_ARROW, CURSOR_IBEAM.
@@ -552,7 +559,7 @@ EXP_API void	widget_post_notice(res_win_t wt, NOTICE* pnt);
 @FUNCTION widget_send_notice: send notice message to owner window, and not wait the message processed.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT NOTICE* pnt: the notice message struct.
-@RETURN int: the notice message return code, default is zero.
+@RETURN int: return nonzero if message precessed.
 */
 EXP_API int		widget_send_notice(res_win_t wt, NOTICE* pnt);
 
@@ -572,7 +579,7 @@ EXP_API void	widget_post_command(res_win_t wt, int code, int cid, var_long data)
 @INPUT int code: the command message code.
 @INPUT int cid: the control id of the widget.
 @INPUT var_long data: the extract data posed with command message.
-@RETURN int: the command message return code, default is zero.
+@RETURN int: return nonzero if message precessed.
 */
 EXP_API int		widget_send_command(res_win_t wt, int code, int cid, var_long data);
 

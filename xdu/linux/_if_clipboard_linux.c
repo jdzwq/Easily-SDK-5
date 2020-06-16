@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily xdc v5.5
+	Easily xdu v5.5
 
 	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc window nc document
+	@doc clipboard document
 
-	@module	widgetnc.h | interface file
+	@module	if_clipboard_linux.c | linux implement file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,31 +29,34 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _WIDGETNC_H
-#define _WIDGETNC_H
+#include "xduiml.h"
 
-#include "xdcdef.h"
+#ifdef XDU_SUPPORT_CLIPBOARD
 
-#ifdef XDU_SUPPORT_WIDGET_NC
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-EXP_API void widgetnc_on_paint(res_win_t wt, res_ctx_t dc);
-
-EXP_API void widgetnc_on_calcsize(res_win_t wt, xrect_t* pxr);
-
-EXP_API int widgetnc_on_hittest(res_win_t wt, const xpoint_t* pxp);
-
-EXP_API int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp);
-
-EXP_API void widget_draw_scroll(res_win_t wt, bool_t horz);
-
-#ifdef	__cplusplus
+bool_t _clipboard_open()
+{
+	return 0;
 }
-#endif
 
-#endif
+void _clipboard_close()
+{
+	
+}
 
-#endif /*WIDGETNC_H*/
+void _clipboard_clean()
+{
+	
+}
+
+bool_t _clipboard_put(int fmt, res_glob_t gb)
+{
+
+	return 0;
+}
+
+res_glob_t _clipboard_get(int fmt)
+{
+	return (res_glob_t)0;
+}
+
+#endif //XDU_SUPPORT_CLIPBOARD

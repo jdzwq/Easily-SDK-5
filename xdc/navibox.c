@@ -45,7 +45,7 @@ void navibox_on_home(res_win_t widget)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
 
-	widget_post_key(ptd->target, VK_HOME);
+	widget_post_key(ptd->target, KEY_HOME);
 
 	widget_erase(widget, NULL);
 }

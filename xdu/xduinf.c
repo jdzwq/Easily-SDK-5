@@ -255,6 +255,7 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_show_caret = _widget_show_caret;
 
 	pif->pf_widget_enable = _widget_enable;
+	pif->pf_widget_active = _widget_active;
 
 	pif->pf_widget_post_char = _widget_post_char;
 	pif->pf_widget_post_key = _widget_post_key;

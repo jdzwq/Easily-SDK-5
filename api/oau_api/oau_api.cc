@@ -30,7 +30,7 @@ typedef struct _oau_block_t{
 
 	PF_OAU_OPEN_ISP pf_open_isp;
 	PF_OAU_CLOSE pf_close;
-	PF_OAU_SESSION_KEY pf_session_key;
+	PF_OAU_SESSION pf_session;
 	PF_OAU_ERROR pf_error;
 
 	tchar_t isp_file[PATH_LEN];
@@ -350,13 +350,16 @@ ONERROR:
 	return 0;
 }
 
-bool_t _invoke_weiapp_session_key(const https_block_t* pb, oau_block_t* pos)
+bool_t _invoke_weiapp_session(const https_block_t* pb, oau_block_t* pos)
 {
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
 
 	tchar_t sz_code[KEY_LEN] = { 0 };
+	tchar_t sz_openid[KEY_LEN] = { 0 };
 	tchar_t sz_session_key[KEY_LEN] = { 0 };
+	tchar_t sz_unionid[KEY_LEN] = { 0 };
+
 
 	oau_t oau = NULL;
 	bool_t rt;
@@ -396,7 +399,7 @@ bool_t _invoke_weiapp_session_key(const https_block_t* pb, oau_block_t* pos)
 		raise_user_error(NULL, NULL);
 	}
 
-	rt = (*pos->pf_session_key)(oau, sz_code, sz_session_key, KEY_LEN);
+	rt = (*pos->pf_session)(oau, sz_code, sz_session_key, sz_openid, sz_unionid);
 
 	(*pos->pf_error)(oau, sz_err, ERR_LEN);
 
@@ -420,6 +423,14 @@ bool_t _invoke_weiapp_session_key(const https_block_t* pb, oau_block_t* pos)
 	nlk = insert_json_item(ptr_json, LINK_LAST);
 	set_json_item_name(nlk, _T("session_key"));
 	set_json_item_value(nlk, sz_session_key);
+
+	nlk = insert_json_item(ptr_json, LINK_LAST);
+	set_json_item_name(nlk, _T("openid"));
+	set_json_item_value(nlk, sz_openid);
+
+	nlk = insert_json_item(ptr_json, LINK_LAST);
+	set_json_item_name(nlk, _T("unionid"));
+	set_json_item_value(nlk, sz_unionid);
 
 	if (!xhttp_send_json(pb->http, ptr_json))
 	{
@@ -544,10 +555,10 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 		pos->pf_open_isp = (PF_OAU_OPEN_ISP)get_address(oau_lib, "oau_open_isp");
 		pos->pf_close = (PF_OAU_CLOSE)get_address(oau_lib, "oau_close");
-		pos->pf_session_key = (PF_OAU_SESSION_KEY)get_address(oau_lib, "oau_session_key");
+		pos->pf_session = (PF_OAU_SESSION)get_address(oau_lib, "oau_session");
 		pos->pf_error = (PF_OAU_ERROR)get_address(oau_lib, "oau_error");
 
-		if (!pos->pf_open_isp || !pos->pf_close || !pos->pf_session_key || !pos->pf_error)
+		if (!pos->pf_open_isp || !pos->pf_close || !pos->pf_session || !pos->pf_error)
 		{
 			raise_user_error(_T("oau_api"), _T("get open/close functon falied"));
 		}
@@ -556,9 +567,9 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 		xhttp_get_url_query_entity(pb->http, _T("action"), -1, token, RES_LEN);
 
-		if (compare_text(token, xslen(_T("session_key")), _T("session_key"), -1, 1) == 0)
+		if (compare_text(token, xslen(_T("session")), _T("session"), -1, 1) == 0)
 		{
-			_invoke_weiapp_session_key(pb, pos);
+			_invoke_weiapp_session(pb, pos);
 		}
 		else
 		{

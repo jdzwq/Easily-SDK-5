@@ -6,5 +6,5 @@ EXPORTS
     ; Explicit exports can go here
 	oau_open_isp
 	oau_close
-	oau_session_key
+	oau_session
 	oau_error

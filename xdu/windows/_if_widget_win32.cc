@@ -2334,6 +2334,11 @@ void _widget_enable(res_win_t wt, bool_t b)
 		EnableWindow(wt, 0);
 }
 
+void _widget_active(res_win_t wt)
+{
+	SetActiveWindow(wt);
+}
+
 void _widget_post_notice(res_win_t wt, NOTICE* pnt)
 {
 	PostMessage((HWND)wt, WM_NOTICE, (WPARAM)pnt->id, (LPARAM)pnt);

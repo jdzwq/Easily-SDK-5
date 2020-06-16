@@ -2347,11 +2347,11 @@ void hand_form_keydown(res_win_t widget, dword_t ks, int nKey)
 		{
 			formctrl_tabskip(widget,TABORDER_RIGHT);
 		}
-		else if (nKey == KEY_LEFT || nKey == KEY_UP) //VK_LEFT VK_UP
+		else if (nKey == KEY_LEFT || nKey == KEY_UP) //KEY_LEFT KEY_UP
 		{
 			formctrl_tabskip(widget,TABORDER_LEFT);
 		}
-		else if (nKey == KEY_RIGHT || nKey == KEY_DOWN) //VK_RIGHT VK_DOWN
+		else if (nKey == KEY_RIGHT || nKey == KEY_DOWN) //KEY_RIGHT KEY_DOWN
 		{
 			formctrl_tabskip(widget,TABORDER_RIGHT);
 		}

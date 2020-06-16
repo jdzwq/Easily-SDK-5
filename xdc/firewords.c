@@ -58,7 +58,7 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
 		return 1;
 	}
-	else if (nKey == VK_DOWN)
+	else if (nKey == KEY_DOWN)
 	{
 		if (widget_is_valid(ctrl))
 		{
@@ -66,7 +66,7 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 			return 1;
 		}
 	}
-	else if (nKey == VK_UP)
+	else if (nKey == KEY_UP)
 	{
 		if (widget_is_valid(widget))
 		{

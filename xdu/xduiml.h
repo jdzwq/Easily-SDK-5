@@ -230,6 +230,7 @@ LOC_API void	_widget_layout(res_win_t wt);
 LOC_API void	_widget_erase(res_win_t wt, const xrect_t* prt);
 LOC_API void	_widget_paint(res_win_t wt);
 LOC_API void	_widget_enable(res_win_t wt, bool_t b);
+LOC_API void	_widget_active(res_win_t wt);
 
 LOC_API void	_widget_set_title(res_win_t wt, const tchar_t* token);
 LOC_API int		_widget_get_title(res_win_t wt, tchar_t* buf, int max);

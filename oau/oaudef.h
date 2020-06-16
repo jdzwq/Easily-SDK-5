@@ -43,7 +43,7 @@ extern "C" {
 
 	extern void STDCALL oau_close(oau_t oau);
 
-	extern bool_t STDCALL oau_session_key(oau_t oau, const tchar_t* code, tchar_t* skey, int len);
+	extern bool_t STDCALL oau_session(oau_t oau, const tchar_t* code, tchar_t* skey, tchar_t* oid, tchar_t* uid);
 
 	extern int STDCALL oau_error(oau_t oau, tchar_t* buf, int max);
 
@@ -54,7 +54,7 @@ extern "C" {
 
 typedef oau_t(STDCALL *PF_OAU_OPEN_ISP)(const tchar_t*);
 typedef void(STDCALL *PF_OAU_CLOSE)(oau_t);
-typedef bool_t(STDCALL *PF_OAU_SESSION_KEY)(oau_t, const tchar_t*, tchar_t*, int);
+typedef bool_t(STDCALL *PF_OAU_SESSION)(oau_t, const tchar_t*, tchar_t*, tchar_t*, tchar_t*);
 typedef int(STDCALL *PF_OAU_ERROR)(oau_t, tchar_t*, int);
 
 

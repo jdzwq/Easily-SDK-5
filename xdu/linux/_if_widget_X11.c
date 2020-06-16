@@ -91,6 +91,7 @@ typedef struct _X11_widget_t{
 
 	long events;
 	res_acl_t acl;
+	XIC xic;
 
 	int state;
 	int result;
@@ -292,7 +293,7 @@ void _widget_startup(int ver)
     g_atoms.wm_transient_for = XInternAtom (g_display, "WM_TRANSIENT_FOR", False);
 
 	g_atoms.wm_quit = XInternAtom (g_display, "WM_QUIT", False);
-	g_atoms.wm_message = XInternAtom (g_display, "WM_MESSAGE", False);
+	g_atoms.wm_command = XInternAtom (g_display, "WM_COMMAND", False);
 	g_atoms.wm_notice = XInternAtom (g_display, "WM_NOTICE", False);
 	g_atoms.wm_input = XInternAtom (g_display, "WM_INPUT", False);
 	g_atoms.wm_scroll = XInternAtom (g_display, "WM_SCROLL", False);
@@ -302,7 +303,6 @@ void _widget_startup(int ver)
     g_atoms.xdu_subproc = XInternAtom (g_display, "XDUSUBPROC", False);
     g_atoms.xdu_user_delta = XInternAtom (g_display, "XDUUSERDELTA", False);
     g_atoms.xdu_core_delta = XInternAtom (g_display, "XDUCOREDELTA", False);
-
 }
 
 void _widget_cleanup()
@@ -925,6 +925,14 @@ void _widget_center_window(res_win_t wt, res_win_t owner)
 
 void _widget_set_cursor(res_win_t wt, int curs)
 {
+	Cursor cur;
+
+	if(!curs)
+	{
+		XUndefineCursor(g_display, wt);
+		return;
+	}
+
 	switch (curs)
 	{
 	case CURSOR_SIZENS:
@@ -946,6 +954,12 @@ void _widget_set_cursor(res_win_t wt, int curs)
 	default:
 		break;
 	}
+
+	cur = XCreateFontCursor(g_display, XC_xterm);
+
+	XDefineCursor(g_display, wt, cur);
+
+	XFreeCursor(g_display, cur);
 }
 
 void _widget_set_capture(res_win_t wt, bool_t b)
@@ -967,18 +981,13 @@ void _widget_kill_timer(res_win_t wt, var_long tid)
 void _widget_create_caret(res_win_t wt, int w, int h)
 {
 	X11_widget_t* ps = GETXDUSTRUCT(wt);
-	Cursor cur;
-
-	cur = XCreateFontCursor(g_display, XC_xterm);
-
-	XDefineCursor(g_display, wt, cur);
-
-	XFreeCursor(g_display, cur);
+	
 }
 
 void _widget_destroy_caret(res_win_t wt)
 {
-	XUndefineCursor(g_display, wt);
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
+
 }
 
 void _widget_show_caret(res_win_t wt, int x, int y, bool_t b)
@@ -1195,12 +1204,43 @@ void _widget_enable(res_win_t wt, bool_t b)
 
 void _widget_post_notice(res_win_t wt, NOTICE* pnt)
 {
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
+	XClientMessageEvent ev = {0};
 
+	if(!ps) return;
+
+    ev.type = ClientMessage;
+	ev.serial = 0;
+	ev.send_event = 1;
+	ev.display = g_display;
+    ev.window = wt;
+    ev.message_type = g_atoms.wm_notice;
+    ev.format = 32;
+    ev.data.l[0] = pnt->id;
+    ev.data.l[1] = pnt->code;
+    ev.data.l[2] = (long)pnt;
+	ev.data.l[3] = ev.data.l[4] = 0;
+    
+    XSendEvent (g_display, wt, False, SubstructureNotifyMask, (XEvent*)&ev);
 }
 
 int _widget_send_notice(res_win_t wt, NOTICE* pnt)
 {
-    return 0;
+    X11_widget_t* ps = GETXDUSTRUCT(wt);
+	if_event_t* pif;
+
+	if(!ps) return 0;
+	
+	pif = GETXDUDISPATCH(wt);
+
+	if(pif && pif->pf_on_notice)
+	{
+		(*pif->pf_on_notice)(wt, pnt);
+
+		return 1;
+	}
+
+	return 0;
 }
 
 void _widget_post_command(res_win_t wt, int code, uid_t cid, var_long data)
@@ -1208,12 +1248,14 @@ void _widget_post_command(res_win_t wt, int code, uid_t cid, var_long data)
 	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	XClientMessageEvent ev = {0};
 
+	if(!ps) return;
+
     ev.type = ClientMessage;
 	ev.serial = 0;
 	ev.send_event = 1;
 	ev.display = g_display;
     ev.window = wt;
-    ev.message_type = g_atoms.wm_message;
+    ev.message_type = g_atoms.wm_command;
     ev.format = 32;
     ev.data.l[0] = cid;
     ev.data.l[1] = code;
@@ -1225,7 +1267,46 @@ void _widget_post_command(res_win_t wt, int code, uid_t cid, var_long data)
 
 int _widget_send_command(res_win_t wt, int code, uid_t cid, var_long data)
 {
-    return 0;
+    X11_widget_t* ps = GETXDUSTRUCT(wt);
+	if_event_t* pif;
+
+	if(!ps) return 0;
+
+	pif = GETXDUDISPATCH(wt);
+
+	switch(cid)
+	{
+	case IDC_PARENT:
+		if(pif && pif->pf_on_parent_command)
+		{
+			(*pif->pf_on_parent_command)(wt, code, data);
+			return 1;
+		}
+		break;
+	case IDC_CHILD:
+		if(pif && pif->pf_on_child_command)
+		{
+			(*pif->pf_on_child_command)(wt, code, data);
+			return 1;
+		}
+		break;
+	case IDC_SELF:
+		if(pif && pif->pf_on_self_command)
+		{
+			(*pif->pf_on_self_command)(wt, code, data);
+			return 1;
+		}
+		break;
+	default:
+		if(pif && pif->pf_on_menu_command)
+		{
+			(*pif->pf_on_menu_command)(wt, cid, code, data);
+			return 1;
+		}
+		break;
+	}
+
+	return 0;
 }
 
 void _widget_post_char(res_win_t wt, tchar_t ch)
@@ -1343,6 +1424,28 @@ int _widget_get_title(res_win_t wt, tchar_t* buf, int max)
 	return 0;
 }
 
+void _widget_active(res_win_t wt)
+{
+	X11_widget_t* ps = GETXDUSTRUCT(wt);
+
+	XClientMessageEvent ev = {0};
+
+    ev.type = ClientMessage;
+	ev.serial = 0;
+	ev.send_event = 1;
+	ev.display = g_display;
+    ev.window = wt;
+    ev.message_type = g_atoms.net_active_window;
+    ev.format = 32;
+    ev.data.l[0] = 1;
+    ev.data.l[1] = CurrentTime;
+    ev.data.l[2] = 0;
+	ev.data.l[3] = 0;
+	ev.data.l[4] = 0;
+    
+    XSendEvent (g_display, wt, False, SubstructureNotifyMask, (XEvent*)&ev);
+}
+
 void _widget_scroll(res_win_t wt, bool_t horz, int line)
 {
 	X11_widget_t* ps = GETXDUSTRUCT(wt);
@@ -1359,7 +1462,8 @@ void _widget_scroll(res_win_t wt, bool_t horz, int line)
     ev.data.l[0] = (horz)? 1 : 0;
     ev.data.l[1] = line;
     ev.data.l[2] = 0;
-	ev.data.l[3] = ev.data.l[4] = 0;
+	ev.data.l[3] = 0;
+	ev.data.l[4] = 0;
     
     XSendEvent (g_display, wt, False, SubstructureNotifyMask, (XEvent*)&ev);
 }
@@ -1686,6 +1790,9 @@ bool_t _message_translate(const msg_t* pmsg)
 		if(!_widget_is_valid(pmsg->xkey.window))
 			return 0;
 	
+		if(XFilterEvent(pmsg, pmsg->xkey.window))
+			return 0;
+
 		pwt = GETXDUSTRUCT(pmsg->xkey.window);
 		pif = GETXDUDISPATCH(pmsg->xkey.window);
 
@@ -1754,6 +1861,10 @@ bool_t _message_translate(const msg_t* pmsg)
 				(*pif->pf_on_char)(pmsg->xkey.window, ch);
 			}
 		}
+	}else if(pmsg->type == KeyRelease)
+	{
+		if(XFilterEvent(pmsg, pmsg->xkey.window))
+			return 0;
 	}
 
     return 0;
@@ -1766,6 +1877,9 @@ result_t _message_dispatch(const msg_t* pmsg)
 	
 	switch(pmsg->type)
 	{
+		case KeymapNotify:
+            XRefreshKeyboardMapping(&pmsg->xmapping);
+            break;
 		case KeyPress:
 			if(!_widget_is_valid(pmsg->xkey.window))
 				break;
@@ -1861,6 +1975,18 @@ result_t _message_dispatch(const msg_t* pmsg)
 					xp.y = pmsg->xbutton.y;
 
 					(*pif->pf_on_rbutton_up)(pmsg->xbutton.window, &xp);
+				}
+			}else if(pmsg->xbutton.button == Button4)
+			{
+				if (pif && pif->pf_on_wheel)
+				{
+					(*pif->pf_on_wheel)(pmsg->xbutton.window, 0, pwt->vs.min);
+				}
+			}else if(pmsg->xbutton.button == Button5)
+			{
+				if (pif && pif->pf_on_wheel)
+				{
+					(*pif->pf_on_wheel)(pmsg->xbutton.window, 0, -pwt->vs.min);
 				}
 			}
 			break;
@@ -1959,6 +2085,23 @@ result_t _message_dispatch(const msg_t* pmsg)
 
 			if (pif && pif->pf_on_set_focus)
 			{
+				XIMStyles *styles;
+
+				if(!g_xim) break;
+
+				if(XGetIMValues(g_xim, XNQueryInputStyle, &styles, NULL) != NULL)
+					break;
+
+				pwt->xic = XCreateIC(g_xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing, XNClientWindow, pmsg->xfocus.window, NULL);
+				if(!pwt->xic)
+				{
+					XFree(styles);
+					break;
+				}
+
+				XSetICFocus(pwt->xic);
+				XFree(styles);
+
 				(*pif->pf_on_set_focus)(pmsg->xfocus.window, pmsg->xfocus.window);
 			}
 			break;
@@ -1970,6 +2113,13 @@ result_t _message_dispatch(const msg_t* pmsg)
 			if(pwt->disable)
 				break;
 
+			if(!pwt->xic) break;
+
+			XUnsetICFocus(pwt->xic);
+
+			XDestroyIC(pwt->xic);
+			pwt->xic = (XIC)0;
+			
 			if (pif && pif->pf_on_kill_focus)
 			{
 				(*pif->pf_on_kill_focus)(pmsg->xfocus.window, pmsg->xfocus.window);
@@ -2040,7 +2190,8 @@ result_t _message_dispatch(const msg_t* pmsg)
 			pif = GETXDUDISPATCH(pmsg->xclient.window);
 			if(pwt->disable)
 				break;
-			if(pmsg->xclient.message_type == g_atoms.wm_message)
+
+			if(pmsg->xclient.message_type == g_atoms.wm_command)
 			{
 				if(pmsg->xclient.data.l[0] == IDC_PARENT)
 				{
@@ -2070,6 +2221,14 @@ result_t _message_dispatch(const msg_t* pmsg)
 				break;
 			}
 
+			if(pmsg->xclient.message_type == g_atoms.wm_notice)
+			{
+					if(pif && pif->pf_on_notice)
+					{
+						(*pif->pf_on_notice)(pmsg->xclient.window, (NOTICE*)(pmsg->xclient.data.l[2]));
+					}
+			}
+
 			if(pmsg->xclient.message_type == g_atoms.wm_scroll)
 			{
 				if(pmsg->xclient.data.l[0] == 1)
@@ -2084,6 +2243,15 @@ result_t _message_dispatch(const msg_t* pmsg)
 					{
 						(*pif->pf_on_scroll)(pmsg->xclient.window, (bool_t)0, (int)(pmsg->xclient.data.l[1]));
 					}
+				}
+				break;
+			}
+
+			if(pmsg->xclient.message_type == g_atoms.net_active_window)
+			{
+				if(pif && pif->pf_on_activate)
+				{
+					(*pif->pf_on_activate)(pmsg->xclient.window, 1);
 				}
 				break;
 			}
@@ -2239,22 +2407,36 @@ void _widget_do_trace(res_win_t wt)
                           
 void _get_screen_size(xsize_t* pxs)
 {
-
+	pxs->cx = DisplayWidth(g_display, DefaultScreen(g_display));
+    pxs->cy = DisplayHeight(g_display, DefaultScreen(g_display));
 }
 
 void _get_desktop_size(xsize_t* pxs)
 {
-
+	pxs->cx = DisplayWidth(g_display, DefaultScreen(g_display));
+    pxs->cy = DisplayHeight(g_display, DefaultScreen(g_display));
 }
 
 void _screen_size_to_tm(xsize_t* pxs)
 {
+	double dx, dy;
 
+	dx = (double)DisplayWidthMM(g_display, DefaultScreen(g_display)) / (double)DisplayWidth(g_display, DefaultScreen(g_display));
+	dx = (double)DisplayHeightMM(g_display, DefaultScreen(g_display)) / (double)DisplayHeight(g_display, DefaultScreen(g_display));
+
+	pxs->fx = (float)((double)pxs->cx * dx);
+	pxs->fy = (float)((double)pxs->cy * dy);
 }
 
 void _screen_size_to_pt(xsize_t* pxs)
 {
+	double dx, dy;
 
+	dx = (double)DisplayWidth(g_display, DefaultScreen(g_display)) / (double)DisplayWidthMM(g_display, DefaultScreen(g_display));
+	dx = (double)DisplayHeight(g_display, DefaultScreen(g_display)) / (double)DisplayHeightMM(g_display, DefaultScreen(g_display));
+
+	pxs->cx = (int)((double)pxs->fx * dx);
+	pxs->cy = (int)((double)pxs->fx * dy);
 }
 
 res_acl_t _create_accel_table(const accel_t* pac, int n)

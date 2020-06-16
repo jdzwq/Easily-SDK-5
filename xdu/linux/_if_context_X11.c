@@ -34,25 +34,39 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_CONTEXT
 Display*     g_display = NULL;
+XIM          g_xim = (XIM)0;
 
 int _context_startup(void)
 {
     int nVer = 0;
     char* dname;
-    
+
     dname = getenv("DISPLAY");
     
     g_display = XOpenDisplay(dname);
 
     if(!g_display) return (-1);
 
+    if (setlocale(LC_ALL, "") == NULL) return 0;
+
+    if (!XSupportsLocale()) return 0;
+
+    if (XSetLocaleModifiers("@im=none") == NULL) return 0;
+
+    g_xim = XOpenIM(g_display, NULL, NULL, NULL);
+
 	return nVer;
 }
 
 void _context_cleanup(void)
 {
-    XCloseDisplay(g_display);
+    if(g_display)
+        XCloseDisplay(g_display);
     g_display = NULL;
+
+    if(g_xim)
+	    XCloseIM(g_xim);
+	g_xim = (XIM)0;
 }
 
 res_ctx_t _create_display_context(res_win_t wt)

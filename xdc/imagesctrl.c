@@ -871,10 +871,10 @@ void hand_images_keydown(res_win_t widget, dword_t ks, int nKey)
 	case KEY_RIGHT:
 		imagesctrl_tabskip(widget,TABORDER_RIGHT);
 		break;
-	case VK_UP:
+	case KEY_UP:
 		imagesctrl_tabskip(widget,TABORDER_UP);
 		break;
-	case VK_DOWN:
+	case KEY_DOWN:
 		imagesctrl_tabskip(widget,TABORDER_DOWN);
 		break;
 	case KEY_HOME:

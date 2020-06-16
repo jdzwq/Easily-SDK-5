@@ -864,6 +864,15 @@ void widget_enable(res_win_t wt, bool_t b)
 	(*pif->pf_widget_enable)(wt, b);
 }
 
+void widget_active(res_win_t wt)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	(*pif->pf_widget_active)(wt);
+}
+
 void widget_close(res_win_t wt, int ret)
 {
 	if_widget_t* pif;

@@ -144,9 +144,11 @@ typedef struct _plot_t{
 }plot_t;
 
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;
+#ifdef XDU_SUPPORT_WIDGET_NC
 #define EVENT_ON_NCPAINT(proc)			pev->pf_on_nc_paint = proc;
 #define EVENT_ON_NCCALCSIZE(proc)		pev->pf_on_nc_calcsize = proc;
 #define EVENT_ON_NCHITTEST(proc)		pev->pf_on_nc_hittest = proc;
+#endif
 #define EVENT_ON_CREATE(proc)			pev->pf_on_create = proc;
 #define EVENT_ON_DESTROY(proc)			pev->pf_on_destroy = proc;
 #define EVENT_ON_CLOSE(proc)			pev->pf_on_close = proc;
@@ -178,7 +180,11 @@ typedef struct _plot_t{
 #define EVENT_ON_SELF_COMMAND(proc)		pev->pf_on_self_command = proc;
 #define EVENT_ON_SYSCMD_CLICK(proc)		pev->pf_on_syscmd_click = proc;
 #define EVENT_ON_TIMER(proc)			pev->pf_on_timer = proc;
+#ifdef XDU_SUPPORT_WIDGET_NC
 #define EVENT_ON_NC_IMPLEMENT			{pev->pf_on_nc_paint = widgetnc_on_paint;pev->pf_on_nc_calcsize = widgetnc_on_calcsize;pev->pf_on_nc_hittest = widgetnc_on_hittest;pev->pf_on_nc_calcscroll = widgetnc_on_calcscroll;}
+#else
+#define EVENT_ON_NC_IMPLEMENT
+#endif
 #define EVENT_ON_SPLITOR_IMPLEMENT		{pev->pf_on_mouse_move = widget_splitor_on_mousemove;pev->pf_on_lbutton_down=widget_splitor_on_lbuttondown;pev->pf_on_lbutton_up=widget_splitor_on_lbuttonup;pev->pf_on_size=widget_splitor_on_size;pev->pf_on_paint=widget_splitor_on_paint;}
 #define EVENT_ON_DOCKER_IMPLEMENT		{pev->pf_on_mouse_move = widget_docker_on_mousemove;pev->pf_on_lbutton_down=widget_docker_on_lbuttondown;pev->pf_on_lbutton_up=widget_docker_on_lbuttonup;pev->pf_on_paint=widget_docker_on_paint;}
 #define EVENT_END_DISPATH				}

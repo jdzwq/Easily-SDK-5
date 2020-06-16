@@ -1789,7 +1789,7 @@ void hand_grid_keydown(res_win_t widget, dword_t ks, int nKey)
 		case KEY_END:
 			gridctrl_tabskip(widget, TABORDER_END);
 			break;
-		case VK_HOME:
+		case KEY_HOME:
 			gridctrl_tabskip(widget, TABORDER_HOME);
 			break;
 		case KEY_PAGEUP:

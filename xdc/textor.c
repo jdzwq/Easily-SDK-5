@@ -1840,7 +1840,7 @@ void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt)
 
 		_textor_ensure_visible(ptd, ptd->cur_row, ptd->cur_col);
 	}
-	else if (mk & MK_LBUTTON)
+	else if (mk & MS_WITH_LBUTTON)
 	{
 		if (ptd->b_select)
 		{

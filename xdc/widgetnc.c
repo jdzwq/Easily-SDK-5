@@ -33,6 +33,8 @@ LICENSE.GPL3 for more details.
 #include "widgetex.h"
 #include "xdcimp.h"
 
+#ifdef XDU_SUPPORT_WIDGET_NC
+
 static void _WidgetDrawEdge(res_win_t wt, res_ctx_t dc)
 {
 	border_t bd = { 0 };
@@ -947,3 +949,4 @@ void widget_draw_scroll(res_win_t wt, bool_t horz)
 	widget_release_ctx(wt, dc);
 }
 
+#endif

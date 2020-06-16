@@ -85,7 +85,7 @@ void STDCALL oau_close(oau_t oau)
 	xmem_free(pal);
 }
 
-bool_t STDCALL oau_session_key(oau_t oau, const tchar_t* jscode, tchar_t* skey, int len)
+bool_t STDCALL oau_session(oau_t oau, const tchar_t* jscode, tchar_t* skey, tchar_t* oid, tchar_t* uid)
 {
 	weiapp_t* pal = (weiapp_t*)oau;
 
@@ -167,7 +167,9 @@ bool_t STDCALL oau_session_key(oau_t oau, const tchar_t* jscode, tchar_t* skey, 
 		raise_user_error(_T("_invoke_weiapp_access"), sz_err);
 	}
 
-	xsncpy(skey, sz_session_key, len);
+	xscpy(skey, sz_session_key);
+	xscpy(oid, sz_openid);
+	xscpy(uid, sz_unionid);
 
 	END_CATCH;
 

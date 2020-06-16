@@ -60,7 +60,14 @@ void pop_on_lbutton_up(res_win_t wt, const xpoint_t* ppt)
     printf("pop on_lbutton_up x:%d y:%d\n", ppt->x, ppt->y);
 
     res_win_t par =  (*if_widget.pf_widget_get_parent)(wt);
+
     (*if_widget.pf_widget_post_command)(par, 1, 10, 100);
+
+    NOTICE nt = {0};
+
+    int n = (*if_widget.pf_widget_send_notice)(g_main, &nt);
+
+    printf("pop notice return %d \n", n);
 
     (*if_widget.pf_widget_destroy)(wt);
 }
@@ -389,6 +396,8 @@ void main_on_whell(res_win_t wt, bool_t horz, int delta)
         printf("main on_whell_horz delta:%d\n", delta);
     else
        printf("main on_whell_vert delta:%d\n", delta);
+
+    (*if_widget.pf_widget_scroll)(g_main, horz, delta);
 }
 
 void main_on_scroll(res_win_t wt, bool_t horz, int pos)
@@ -454,7 +463,7 @@ void main_on_activate(res_win_t wt, int ma)
     if(ma == WS_ACTIVE_CLICK)
         printf("main on_activate by mouse click \n");
     else
-        printf("main on_activate by other \n");
+        printf("main on_activate by application \n");
 }
 
 void main_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
@@ -474,7 +483,7 @@ void main_on_kill_focus(res_win_t wt, res_win_t to)
 
 void main_on_notice(res_win_t, NOTICE* pnt)
 {
-    printf("main on_notice child id: %d code: %d \n", pnt->id, pnt->code);
+    printf("main on_notice child id: %d code: %d return: %d\n", pnt->id, pnt->code);
 }
 
 void main_on_menu_command(res_win_t wt, int code, int cid, var_long data)
@@ -567,6 +576,7 @@ void init_instance()
 	ev.pf_on_parent_command = main_on_parent_command;
 	ev.pf_on_child_command = main_on_child_command;
 	ev.pf_on_self_command = main_on_self_command;
+    ev.pf_on_scroll = main_on_scroll;
 
     xrect_t xr ;
     xr.x = 0;
@@ -579,6 +589,14 @@ void init_instance()
     (*if_widget.pf_widget_show)(g_main, WS_SHOW_NORMAL);
 
     (*if_widget.pf_widget_set_accel)(g_main, acl);
+
+    scroll_t scr = {0};
+    scr.max = 1000;
+    scr.min = 10;
+
+    (*if_widget.pf_widget_set_scroll_info)(g_main, 0, &scr);
+
+    (*if_widget.pf_widget_active)(g_main);
 }
 
 void uninit_instance()

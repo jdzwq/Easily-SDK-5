@@ -109,7 +109,7 @@ void hand_vertbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (hint == VERTBOX_HINT_PAGEUP)
 	{
 		if (dw & WD_STYLE_PAGING)
-			widget_post_key(ptd->target, VK_HOME);
+			widget_post_key(ptd->target, KEY_HOME);
 		else
 			widget_scroll(ptd->target, 0, -sc.max);
 	}

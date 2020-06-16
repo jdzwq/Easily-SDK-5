@@ -755,10 +755,10 @@ void hand_tree_keydown(res_win_t widget, dword_t ks, int nKey)
 		treectrl_tabskip(widget,TABORDER_RIGHT);
 		break;
 		break;
-	case VK_UP:
+	case KEY_UP:
 		treectrl_tabskip(widget,TABORDER_UP);
 		break;
-	case VK_LEFT:
+	case KEY_LEFT:
 		treectrl_tabskip(widget,TABORDER_LEFT);
 		break;
 	}
