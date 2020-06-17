@@ -1,57 +1,45 @@
-// xdc_frame_test.cpp : 定义应用程序的入口点。
-//
-
 #include <xdl.h>
 #include <xdc.h>
 
-#define MAX_LOADSTRING 100
-
-// 全局变量: 
-HINSTANCE hInst;								// 当前实例
-TCHAR szTitle[MAX_LOADSTRING];					// 标题栏文本
-TCHAR szWindowClass[MAX_LOADSTRING];			// 主窗口类名
-
-// 此代码模块中包含的函数的前向声明: 
-ATOM				MyRegisterClass(HINSTANCE hInstance);
-BOOL				InitInstance(HINSTANCE, int);
-LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+res_win_t g_main = NULL;
 
 res_win_t MainFrame_Create(const tchar_t* mname);
 
+#ifdef _OS_WINDOWS
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPTSTR    lpCmdLine,
                      _In_ int       nCmdShow)
+#else
+int main(int argc, const char * argv[])
+#endif
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
- 	// TODO:  在此放置代码。
-	MSG msg;
-	HACCEL hAccelTable;
 
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
 	xdc_process_init();
 
-	MainFrame_Create(_T("Main"));
+	g_main = MainFrame_Create(_T("Main"));
 
-	// 主消息循环: 
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+	msg_t msg;
+
+	do{
+		while (message_peek(&msg))
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			message_fetch(&msg, NULL);
+
+			if (!message_translate(&msg))
+			{
+				message_dispatch(&msg);
+			}
 		}
-	}
+	} while (widget_is_valid(g_main));
 
 	xdc_process_uninit();
 
 	xdl_process_uninit();
 
-	return (int) msg.wParam;
+	return 0;
 }
 
 #define MAINFRAME_TOOLBAR_HEIGHT	(float)25
@@ -91,7 +79,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #define MAINFRAME_ACCEL_COUNT		1
 
 accel_t	MAINFRAME_ACCEL[MAINFRAME_ACCEL_COUNT] = {
-	FVIRTKEY | FCONTROL, _T('O'), IDA_OWNER,
+	KEY_CONTROL, _T('O'), IDA_OWNER,
 };
 
 typedef struct tagMainFrameDelta{
@@ -175,7 +163,7 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 
 	LINKPTR glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_name(glk, _T("TextOnly"));
-	set_tool_group_title(glk, _T("文本"));
+	set_tool_group_title(glk, _T("1"));
 	set_tool_group_show(glk, ATTR_SHOW_TEXTONLY);
 	set_tool_group_item_width(glk, 18);
 	set_tool_group_item_height(glk, 7);
@@ -185,11 +173,11 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	LINKPTR ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("简单文本"));
+	set_tool_item_title(ilk, _T("2"));
 
 	glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_name(glk, _T("ImageOnly"));
-	set_tool_group_title(glk, _T("图标"));
+	set_tool_group_title(glk, _T("3"));
 	set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);
 	set_tool_group_item_width(glk, 7);
 	set_tool_group_item_height(glk, 7);
@@ -197,55 +185,55 @@ void _MainFrame_CreateToolBar(res_win_t widget)
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("简单图标"));
+	set_tool_item_title(ilk, _T("4"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	glk = insert_tool_group(ptrTool, LINK_LAST);
 	set_tool_group_name(glk, _T("ImageText"));
-	set_tool_group_title(glk, _T("图文"));
+	set_tool_group_title(glk, _T("5"));
 	set_tool_group_item_width(glk, 18);
 	set_tool_group_item_height(glk, 7);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_OWNER);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("自绘"));
+	set_tool_item_title(ilk, _T("6"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CALENDAR);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("日历"));
+	set_tool_item_title(ilk, _T("7"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_NOTES);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("消息"));
+	set_tool_item_title(ilk, _T("8"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_PANEL);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("面板"));
+	set_tool_item_title(ilk, _T("9"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_CURVE);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("波形"));
+	set_tool_item_title(ilk, _T("10"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_MODEL);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("模型"));
+	set_tool_item_title(ilk, _T("hh"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	ilk = insert_tool_group_item(glk, LINK_LAST);
 	xsprintf(token, _T("%d"), IDA_PLOT);
 	set_tool_item_id(ilk, token);
-	set_tool_item_title(ilk, _T("图形"));
+	set_tool_item_title(ilk, _T("11"));
 	set_tool_item_icon(ilk, GDI_ATTR_GIZMO_USER);
 
 	toolctrl_attach(pdt->hToolBar, ptrTool);
@@ -287,7 +275,7 @@ void _MainFrame_CreateTreeBar(res_win_t widget)
 
 	LINKPTR ptrTree = create_tree_doc();
 
-	set_tree_title(ptrTree, _T("资源列表"));
+	set_tree_title(ptrTree, _T("锟斤拷源锟叫憋拷"));
 	set_tree_title_icon(ptrTree, GDI_ATTR_GIZMO_PROPER);
 	treectrl_attach(pdt->hTreeBar, ptrTree);
 	treectrl_set_lock(pdt->hTreeBar, 0);
@@ -315,7 +303,7 @@ void _MainFrame_CreateStatusBar(res_win_t widget)
 
 	ilk = insert_status_item(ptrStatus, LINK_LAST);
 	set_status_item_name(ilk, _T("navibox"));
-	set_status_item_title(ilk, _T("导航栏"));
+	set_status_item_title(ilk, _T("锟斤拷锟斤拷锟斤拷"));
 	set_status_item_width(ilk, DEF_TOUCH_SPAN * 6 + 1);
 
 	statusctrl_attach(pdt->hStatusBar, ptrStatus);
@@ -426,17 +414,17 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		LINKPTR ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-25 10:00:00"));
-		set_notes_text(ptr_notes, _T("测试消息1"), -1);
+		set_notes_text(ptr_notes, _T("锟斤拷锟斤拷锟斤拷息1"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-26 10:00:00"));
-		set_notes_text(ptr_notes, _T("测试消息2"), -1);
+		set_notes_text(ptr_notes, _T("锟斤拷锟斤拷锟斤拷息2"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-27 10:00:00"));
-		set_notes_text(ptr_notes, _T("测试消息3"), -1);
+		set_notes_text(ptr_notes, _T("锟斤拷锟斤拷锟斤拷息3"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		notesctrl_attach(hPanel, ptr_arch);
@@ -455,17 +443,17 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		LINKPTR ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-25 10:00:00"));
-		set_notes_text(ptr_notes, _T("测试消息1"), -1);
+		set_notes_text(ptr_notes, _T("锟斤拷锟斤拷锟斤拷息1"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-26 10:00:00"));
-		set_notes_text(ptr_notes, _T("测试消息2"), -1);
+		set_notes_text(ptr_notes, _T("锟斤拷锟斤拷锟斤拷息2"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-27 10:00:00"));
-		set_notes_text(ptr_notes, _T("测试消息3"), -1);
+		set_notes_text(ptr_notes, _T("锟斤拷锟斤拷锟斤拷息3"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		notesctrl_attach(hPanel, ptr_arch);
@@ -532,15 +520,9 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		parse_xcolor(&(plt.clr_argv[4]), GDI_ATTR_RGB_CYAN);
 
 		xscpy(plt.x_unit, _T("mmHg"));
-		xscpy(plt.y_unit, _T("天"));
-		plotbox_set_title(hPanel, _T("血压趋势图"));
+		xscpy(plt.y_unit, _T("锟斤拷"));
+		plotbox_set_title(hPanel, _T("血压锟斤拷锟斤拷图"));
 		plotbox_set_plot(hPanel, &plt);
-
-//#define ATTR_PLOT_TYPE_GEOGRAM		_T("geogram") //地理图
-//#define ATTR_PLOT_TYPE_TRENDGRAM	_T("trendgram") //趋势图
-//#define ATTR_PLOT_TYPE_SCATTERGRAM	_T("scattergram") //密度图
-//#define ATTR_PLOT_TYPE_PANTOGRAM	_T("pantogram") //比例图
-//#define ATTR_PLOT_TYPE_HISTOGRAM	_T("histogram") //直方图
 
 		plotbox_set_type(hPanel, ATTR_PLOT_TYPE_PANTOGRAM);
 		plotbox_calc_plot(hPanel);
@@ -593,7 +575,7 @@ void MainFrame_ToolBar_OnLBClick(res_win_t widget, NOTICE_TOOL* pnt)
 	pt.y = xr.y + xr.h;
 	widget_client_to_screen(pdt->hToolBar, &pt);
 
-	SendMessage(widget, WM_COMMAND, MAKEWPARAM(nID, 0), (LPARAM)&pt);
+	widget_send_command(widget, 0, nID, (var_long)&pt);
 }
 
 void MainFrame_ToolBar_OnItemHover(res_win_t widget, NOTICE_TOOL* pnt)
@@ -721,7 +703,7 @@ void MainFrame_TitleBar_OnItemHover(res_win_t widget, NOTICE_TITLE* pnt)
 		pdt->hToolTip = show_toolbox(&xp, get_title_item_title_ptr(pnt->item));
 }
 
-/*VOID MainFrame_UserPanel_OnCalc(res_win_t win, PAGE_CALC* ppc)
+/*void MainFrame_UserPanel_OnCalc(res_win_t win, PAGE_CALC* ppc)
 {
 	ppc->total_height = 8096;
 	ppc->total_width = 4096;
@@ -729,7 +711,7 @@ void MainFrame_TitleBar_OnItemHover(res_win_t widget, NOTICE_TITLE* pnt)
 	ppc->line_width = 10;
 }*/
 
-VOID MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
+void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 {
 	viewbox_t vb;
 	xcolor_t xc;
@@ -950,11 +932,11 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	_MainFrame_CreateToolBar(widget);
 
-	_MainFrame_CreateTitleBar(widget);
+	//_MainFrame_CreateTitleBar(widget);
 
-	_MainFrame_CreateStatusBar(widget);
+	//_MainFrame_CreateStatusBar(widget);
 
-	_MainFrame_CreateTreeBar(widget);
+	//_MainFrame_CreateTreeBar(widget);
 
 	return 0;
 }
@@ -1005,7 +987,7 @@ int MainFrame_OnClose(res_win_t widget)
 
 	widget_destroy(widget);
 
-	PostQuitMessage(0);
+	//PostQuitMessage(0);
 
 	return 0;
 }
@@ -1017,41 +999,56 @@ void MainFrame_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	xrect_t xr;
 
 	_MainFrame_CalcToolBar(widget, &xr);
-	widget_move(pdt->hToolBar, RECTPOINT(&xr));
-	widget_size(pdt->hToolBar, RECTSIZE(&xr));
-	widget_update(pdt->hToolBar);
+	if(widget_is_valid(pdt->hToolBar))
+	{
+		widget_move(pdt->hToolBar, RECTPOINT(&xr));
+		widget_size(pdt->hToolBar, RECTSIZE(&xr));
+		widget_update(pdt->hToolBar);
+	}
 
 	_MainFrame_CalcStatusBar(widget, &xr);
-	widget_move(pdt->hStatusBar, RECTPOINT(&xr));
-	widget_size(pdt->hStatusBar, RECTSIZE(&xr));
-	widget_update(pdt->hStatusBar);
+	if(widget_is_valid(pdt->hStatusBar))
+	{
+		widget_move(pdt->hStatusBar, RECTPOINT(&xr));
+		widget_size(pdt->hStatusBar, RECTSIZE(&xr));
+		widget_update(pdt->hStatusBar);
+	}
 
 	_MainFrame_CalcTreeBar(widget, &xr);
-	widget_move(pdt->hTreeBar, RECTPOINT(&xr));
-	widget_size(pdt->hTreeBar, RECTSIZE(&xr));
-	widget_update(pdt->hTreeBar);
+	if(widget_is_valid(pdt->hTreeBar))
+	{
+		widget_move(pdt->hTreeBar, RECTPOINT(&xr));
+		widget_size(pdt->hTreeBar, RECTSIZE(&xr));
+		widget_update(pdt->hTreeBar);
+	}
 
 	_MainFrame_CalcTitleBar(widget, &xr);
-	widget_move(pdt->hTitleBar, RECTPOINT(&xr));
-	widget_size(pdt->hTitleBar, RECTSIZE(&xr));
-	widget_update(pdt->hTitleBar);
+	if(widget_is_valid(pdt->hTitleBar))
+	{
+		widget_move(pdt->hTitleBar, RECTPOINT(&xr));
+		widget_size(pdt->hTitleBar, RECTSIZE(&xr));
+		widget_update(pdt->hTitleBar);
+	}
 
 	_MainFrame_CalcPanelBar(widget, &xr);
 
-	LINKPTR ptrTitle = titlectrl_fetch(pdt->hTitleBar);
-	LINKPTR plk = get_title_next_item(ptrTitle, LINK_FIRST);
-	while (plk)
+	if(widget_is_valid(pdt->hTitleBar))
 	{
-		res_win_t hPanel = (res_win_t)get_title_item_delta(plk);
-
-		if (widget_is_valid(hPanel))
+		LINKPTR ptrTitle = titlectrl_fetch(pdt->hTitleBar);
+		LINKPTR plk = get_title_next_item(ptrTitle, LINK_FIRST);
+		while (plk)
 		{
-			widget_move(hPanel, RECTPOINT(&xr));
-			widget_size(hPanel, RECTSIZE(&xr));
-			widget_update(hPanel);
-		}
+			res_win_t hPanel = (res_win_t)get_title_item_delta(plk);
 
-		plk = get_title_next_item(ptrTitle, plk);
+			if (widget_is_valid(hPanel))
+			{
+				widget_move(hPanel, RECTPOINT(&xr));
+				widget_size(hPanel, RECTSIZE(&xr));
+				widget_update(hPanel);
+			}
+
+			plk = get_title_next_item(ptrTitle, plk);
+		}
 	}
 
 	widget_erase(widget, NULL);

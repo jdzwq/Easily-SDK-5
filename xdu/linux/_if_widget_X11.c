@@ -344,7 +344,7 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 		{
 			border_width = 0;
 			attr.border_pixel = WhitePixel(g_display, screen_num);
-			attr.background_pixel = BlackPixel(g_display,screen_num);
+			attr.background_pixel = WhitePixel(g_display,screen_num);
 			attr.event_mask = WIDGET_CHILD_EVENTS;
 		}else
 		{
@@ -1769,7 +1769,22 @@ void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 /*******************************************************************************************/
 void _message_quit(int code)
 {
+	XClientMessageEvent ev = {0};
 
+    ev.type = ClientMessage;
+	ev.serial = 0;
+	ev.send_event = 1;
+	ev.display = g_display;
+    ev.window = DefaultRootWindow(g_display);
+    ev.message_type = g_atoms.wm_quit;
+    ev.format = 32;
+    ev.data.l[0] = code;
+    ev.data.l[1] = CurrentTime;
+    ev.data.l[2] = 0;
+	ev.data.l[3] = 0;
+	ev.data.l[4] = 0;
+    
+    XSendEvent (g_display, DefaultRootWindow(g_display), False, SubstructureNotifyMask, (XEvent*)&ev);
 }
 
 bool_t _message_translate(const msg_t* pmsg)
@@ -2460,13 +2475,7 @@ void _destroy_accel_table(res_acl_t hac)
 	free(pac);
 }
 
-#ifdef XDU_SUPPORT_WIDGET_EX
 void _widget_track_mouse(res_win_t wt, dword_t mask)
-{
-
-}
-
-void _widget_set_region(res_win_t wt, res_rgn_t rgn)
 {
 
 }
@@ -2479,6 +2488,12 @@ void _widget_set_alpha(res_win_t wt, unsigned char b)
 unsigned char _widget_get_alpha(res_win_t wt)
 {
 	return (unsigned char)0;
+}
+
+#ifdef XDU_SUPPORT_WIDGET_REGION
+void _widget_set_region(res_win_t wt, res_rgn_t rgn)
+{
+
 }
 #endif //XDU_SUPPORT_WIDGET_EX
 

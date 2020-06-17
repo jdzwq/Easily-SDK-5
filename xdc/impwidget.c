@@ -72,7 +72,7 @@ bool_t	message_translate(const msg_t* pmsg)
 	return (*pif->pf_message_translate)(pmsg);
 }
 
-result_t message_dispatch_message(const msg_t* pmsg)
+result_t message_dispatch(const msg_t* pmsg)
 {
 	if_widget_t* pif;
 
@@ -89,8 +89,6 @@ void message_position(xpoint_t* ppt)
 
 	(*pif->pf_message_position)(ppt);
 }
-
-#ifdef XDU_SUPPORT_WIDGET_EX
 
 void widget_set_alpha(res_win_t wt, byte_t b)
 {
@@ -119,6 +117,7 @@ void widget_track_mouse(res_win_t wt, dword_t mask)
 	(*pif->pf_widget_track_mouse)(wt, mask);
 }
 
+#ifdef XDU_SUPPORT_WIDGET_REGION
 void widget_set_region(res_win_t wt, res_rgn_t rgn)
 {
 	if_widget_t* pif;

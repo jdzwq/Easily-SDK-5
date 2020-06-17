@@ -10,7 +10,7 @@ SRC_PATH = ../../xdc
 SUB_PATH = ../../xdc/linux
 OUT_PATH = ../sbin/api
 
-ARLIB = -lm -L$(LIB_PATH) -lxds -lxdu
+ARLIB = -lm -L $(LIB_PATH) -L $(OUT_PATH) -lxds -lxdu -lxdl
 
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))

@@ -331,7 +331,15 @@ void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int le
 
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 {
+	xpen_t xp;
+	xbrush_t xb;
+
+	default_xpen(&xp);
+	default_xpen(&xb);
+	xscpy(xp.color, pxg->brim_color);
+	xscpy(xb.color, pxg->core_color);
 	
+	_gdi_draw_rect(rdc, &xp, &xb, prt);
 }
 
 void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)

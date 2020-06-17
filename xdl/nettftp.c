@@ -645,53 +645,6 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 	xsncpy(pdu->file, objat, objlen);
 	xscpy(pdu->mode, _T("octet"));
 
-	if (compare_text(pdu->method, -1, TFTP_METHOD_PUT, -1, 1) == 0)
-	{
-		pdu->type = TFTP_PDU_WRQ;
-		if (!_tftp_send_request(pftp))
-		{
-			raise_user_error(NULL, NULL);
-		}
-
-		if (!_tftp_recv_response(pftp))
-		{
-			raise_user_error(NULL, NULL);
-		}
-
-		if (pftp->rcv_pdu.type != TFTP_PDU_ACK)
-		{
-			raise_user_error(_T("xtftp_client"), _T("not ack package"));
-		}
-	}
-	else if (compare_text(pdu->method, -1, TFTP_METHOD_GET, -1, 1) == 0)
-	{
-		pdu->type = TFTP_PDU_RRQ;
-		if (!_tftp_send_request(pftp))
-		{
-			raise_user_error(NULL, NULL);
-		}
-	}
-	else if (compare_text(pdu->method, -1, TFTP_METHOD_HEAD, -1, 1) == 0)
-	{
-		pdu->type = TFTP_PDU_HEAD;
-		if (!_tftp_send_request(pftp))
-		{
-			raise_user_error(NULL, NULL);
-		}
-	}
-	else if (compare_text(pdu->method, -1, TFTP_METHOD_DELETE, -1, 1) == 0)
-	{
-		pdu->type = TFTP_PDU_DEL;
-		if (!_tftp_send_request(pftp))
-		{
-			raise_user_error(NULL, NULL);
-		}
-	}
-	else
-	{
-		raise_user_error(_T("tftp_client"), _T("invalid operator"));
-	}
-
 	END_CATCH;
 
 	return &pftp->head;
@@ -714,9 +667,6 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 {
 	xtftp_t* pftp = NULL;
 	unsigned short bind;
-
-	tftp_pdu_t* pdu;
-	int pdu_type;
 
 	TRY_CATCH;
 
@@ -746,26 +696,6 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	xudp_set_package(pftp->bio, TFTP_PKG_SIZE);
 
-	pftp->serial = 0;
-
-	if (!_tftp_recv_request(pftp))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	pdu_type = pftp->rcv_pdu.type;
-
-	pdu = &pftp->snd_pdu;
-
-	if (pdu_type == TFTP_PDU_WRQ)
-	{
-		pdu->type = TFTP_PDU_ACK;
-
-		if (!_tftp_send_response(pftp))
-		{
-			raise_user_error(NULL, NULL);
-		}
-	}
 
 	END_CATCH;
 
@@ -936,6 +866,117 @@ void xtftp_get_filename(xhand_t tftp, tchar_t* fname)
 
 	xscpy(fname, pdu->file);
 }
+
+bool_t xtftp_connect(xhand_t tftp)
+{
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+
+	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
+
+	tftp_pdu_t* pdu;
+
+	TRY_CATCH;
+
+	pftp->serial = 0;
+
+	pdu = &pftp->snd_pdu;
+
+	if (compare_text(pdu->method, -1, TFTP_METHOD_PUT, -1, 1) == 0)
+	{
+		pdu->type = TFTP_PDU_WRQ;
+		if (!_tftp_send_request(pftp))
+		{
+			raise_user_error(NULL, NULL);
+		}
+
+		if (!_tftp_recv_response(pftp))
+		{
+			raise_user_error(NULL, NULL);
+		}
+
+		if (pftp->rcv_pdu.type != TFTP_PDU_ACK)
+		{
+			raise_user_error(_T("xtftp_connect"), _T("not ack package"));
+		}
+	}
+	else if (compare_text(pdu->method, -1, TFTP_METHOD_GET, -1, 1) == 0)
+	{
+		pdu->type = TFTP_PDU_RRQ;
+		if (!_tftp_send_request(pftp))
+		{
+			raise_user_error(NULL, NULL);
+		}
+	}
+	else if (compare_text(pdu->method, -1, TFTP_METHOD_HEAD, -1, 1) == 0)
+	{
+		pdu->type = TFTP_PDU_HEAD;
+		if (!_tftp_send_request(pftp))
+		{
+			raise_user_error(NULL, NULL);
+		}
+	}
+	else if (compare_text(pdu->method, -1, TFTP_METHOD_DELETE, -1, 1) == 0)
+	{
+		pdu->type = TFTP_PDU_DEL;
+		if (!_tftp_send_request(pftp))
+		{
+			raise_user_error(NULL, NULL);
+		}
+	}
+	else
+	{
+		raise_user_error(_T("xtftp_connect"), _T("invalid operator"));
+	}
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+	XDL_TRACE_LAST;
+
+	return 0;
+}
+
+bool_t	xtftp_accept(xhand_t tftp)
+{
+	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+
+	tftp_pdu_t* pdu;
+	int pdu_type;
+
+	TRY_CATCH;
+
+	pftp->serial = 0;
+
+	if (!_tftp_recv_request(pftp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	pdu_type = pftp->rcv_pdu.type;
+
+	pdu = &pftp->snd_pdu;
+
+	if (pdu_type == TFTP_PDU_WRQ)
+	{
+		pdu->type = TFTP_PDU_ACK;
+
+		if (!_tftp_send_response(pftp))
+		{
+			raise_user_error(NULL, NULL);
+		}
+	}
+
+	END_CATCH;
+
+	return 1;
+ONERROR:
+	XDL_TRACE_LAST;
+
+	return 0;
+}
+
 
 bool_t xtftp_recv(xhand_t tftp, byte_t* buf, dword_t* pch)
 {

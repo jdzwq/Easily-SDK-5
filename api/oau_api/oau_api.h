@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	extern int STDCALL https_invoke(const wchar_t* method, const https_block_t* pb);
+	extern int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb);
 
 #ifdef	__cplusplus
 }

@@ -336,10 +336,12 @@ void widget_reset_scroll(res_win_t wt, bool_t horz)
 
 	widget_set_scroll_info(wt, horz, &sc);
 
+#ifdef XDU_SUPPORT_WIDGET_NC
 	if (widget_get_style(wt) & WD_STYLE_OWNERNC)
 	{
 		widget_draw_scroll(wt, horz);
 	}
+#endif
 }
 
 void widget_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, int lh)

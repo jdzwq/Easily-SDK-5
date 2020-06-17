@@ -2972,7 +2972,6 @@ void _destroy_accel_table(res_acl_t hac)
 	DestroyAcceleratorTable(hac);
 }
 
-#ifdef XDU_SUPPORT_WIDGET_EX
 void _widget_track_mouse(res_win_t wt, dword_t mask)
 {
 	TRACKMOUSEEVENT te = { 0 };
@@ -2995,11 +2994,6 @@ void _widget_track_mouse(res_win_t wt, dword_t mask)
 	TrackMouseEvent(&te);
 }
 
-void _widget_set_region(res_win_t wt, res_rgn_t rgn)
-{
-	SetWindowRgn(wt, rgn, TRUE);
-}
-
 void _widget_set_alpha(res_win_t wt, unsigned char b)
 {
 	DWORD dw = GetWindowLong(wt, GWL_EXSTYLE);
@@ -3017,6 +3011,14 @@ unsigned char _widget_get_alpha(res_win_t wt)
 
 	return (unsigned char)b;
 }
+
+#ifdef XDU_SUPPORT_WIDGET_REGION
+
+void _widget_set_region(res_win_t wt, res_rgn_t rgn)
+{
+	SetWindowRgn(wt, rgn, TRUE);
+}
+
 #endif /*XDU_SUPPORT_WIDGET_EX*/
 
 #endif //XDU_SUPPORT_WIDGET

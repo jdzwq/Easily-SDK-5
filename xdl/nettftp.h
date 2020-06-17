@@ -133,6 +133,20 @@ EXP_API int			xtftp_method(xhand_t tftp, tchar_t* buf, int max);
 EXP_API void		xtftp_close(xhand_t tftp);
 
 /*
+@FUNCTION xtftp_connect: client connect to server.
+@INPUT xhand_t tftp: the TFPT handle.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t		xtftp_connect(xhand_t tftp);
+
+/*
+@FUNCTION xtftp_accept: server accept client request.
+@INPUT xhand_t tftp: the TFPT handle.
+@RETURN bool_t: if succeeds return nonzero, fails return zero.
+*/
+EXP_API bool_t		xtftp_accept(xhand_t tftp);
+
+/*
 @FUNCTION xtftp_send: send TFPT data.
 @INPUT xhand_t tftp: the TFPT handle.
 @INPUT const byte_t* data: the data bytes buffer.

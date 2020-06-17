@@ -9,9 +9,10 @@
 #define AS_URL_AUTH_REQUEST		_T("http://172.16.190.190:8889/oau/auth_request?")
 #define AS_URL_AUTH_ACCESS		_T("http://172.16.190.190:8889/oau/auth_access?")
 #define AS_URL_AUTH_REFRESH		_T("http://127.0.0.1:8889/oau/auth_refresh?")
-#define AS_URL_AUTH_WEIAPP		_T("http://127.0.0.1:8889/oau/weiapp/fcv.isp")
+
+//#define AS_URL_AUTH_WEIAPP		_T("http://127.0.0.1:8889/oau/weiapp/fcv.isp")
 //#define AS_URL_AUTH_WEIAPP		_T("https://118.178.180.81/oau/weiapp/fcv.isp")
-//#define AS_URL_AUTH_WEIAPP		_T("https://www.biofolia.cn:8888/oau/weiapp/fcv.isp")
+#define AS_URL_AUTH_WEIAPP		_T("https://www.biofolia.cn:8888/oau/weiapp/fcv.isp")
 
 void _test_implicit()
 {
@@ -195,7 +196,7 @@ void test_auth_weiapp()
 	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
 	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 
-	xhttp_set_url_query_entity(xh, _T("action"), -1, _T("session_key"), -1);
+	xhttp_set_url_query_entity(xh, _T("action"), -1, _T("session"), -1);
 	xhttp_set_url_query_entity(xh, _T("jscode"), -1, _T("CODE"), -1);
 
 	xhttp_send_request(xh);

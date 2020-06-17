@@ -306,10 +306,11 @@ LOC_API void	_screen_size_to_tm(xsize_t* pxs);
 LOC_API res_acl_t _create_accel_table(const accel_t* pac, int n);
 LOC_API void	_destroy_accel_table(res_acl_t hac);
 
-#ifdef XDU_SUPPORT_WIDGET_EX
 LOC_API void	_widget_track_mouse(res_win_t wt, dword_t mask);
 LOC_API void	_widget_set_alpha(res_win_t, unsigned char a);
 LOC_API unsigned char _widget_get_alpha(res_win_t wt);
+
+#ifdef XDU_SUPPORT_WIDGET_REGION
 LOC_API void	_widget_set_region(res_win_t wt, res_rgn_t rgn);
 #endif
 

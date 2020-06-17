@@ -7,4 +7,5 @@ EXPORTS
 	oau_open_isp
 	oau_close
 	oau_session
+	oau_access
 	oau_error

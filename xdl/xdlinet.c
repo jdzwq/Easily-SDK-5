@@ -837,6 +837,12 @@ static bool_t tftp_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 	if (!xh)
 		return 0;
 
+	if (!xtftp_connect(xh))
+	{
+		xtftp_close(xh);
+		return 0;
+	}
+
 	size = *pb;
 	while (pos < size)
 	{
@@ -869,6 +875,12 @@ static bool_t tftp_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 	xh = xtftp_client(_T("GET"), pfn->path);
 	if (!xh)
 		return 0;
+
+	if (!xtftp_connect(xh))
+	{
+		xtftp_close(xh);
+		return 0;
+	}
 
 	size = *pb;
 	while (pos < size)
@@ -910,6 +922,12 @@ static bool_t tftp_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 	if (!xh)
 		return 0;
 
+	if (!xtftp_connect(xh))
+	{
+		xtftp_close(xh);
+		return 0;
+	}
+
 	xtftp_close(xh);
 
 	return 1;
@@ -922,6 +940,12 @@ static bool_t tftp_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 	xh = xtftp_client(_T("HEAD"), fname);
 	if (!xh)
 		return 0;
+
+	if (!xtftp_connect(xh))
+	{
+		xtftp_close(xh);
+		return 0;
+	}
 
 	if (!xtftp_head(xh))
 	{

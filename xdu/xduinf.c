@@ -330,19 +330,18 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_create_accel_table = _create_accel_table;
 	pif->pf_destroy_accel_table = _destroy_accel_table;
 
+	pif->pf_widget_track_mouse = _widget_track_mouse;
+	pif->pf_widget_set_alpha = _widget_set_alpha;
+	pif->pf_widget_get_alpha = _widget_get_alpha;
+
+#ifdef XDU_SUPPORT_WIDGET_REGION
+	pif->pf_widget_set_region = _widget_set_region;
+#endif
+
 #ifdef XDU_SUPPORT_CONTEXT_OPENGL
 	pif->pf_widget_get_glctx = _widget_get_glctx;
 #endif
 }
 
-#ifdef XDU_SUPPORT_WIDGET_EX
-void xdu_impl_widget_ex(if_widget_t* pif)
-{
-	pif->pf_widget_track_mouse = _widget_track_mouse;
-	pif->pf_widget_set_region = _widget_set_region;
-	pif->pf_widget_set_alpha = _widget_set_alpha;
-	pif->pf_widget_get_alpha = _widget_get_alpha;
-}
-#endif
 
 #endif /*XDU_SUPPORT_WIDGET*/

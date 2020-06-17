@@ -81,9 +81,6 @@ void xdc_process_init()
 
 #ifdef XDU_SUPPORT_WIDGET
 	xdu_impl_widget(&g_xdc_mou.if_widget);
-#ifdef XDU_SUPPORT_WIDGET_EX
-	xdu_impl_widget_ex(&g_xdc_mou.if_widget);
-#endif
 	//start widget context
 	if (g_xdc_mou.if_widget.pf_widget_startup)
 	{

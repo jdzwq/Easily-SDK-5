@@ -382,11 +382,12 @@ typedef void(*PF_SCREEN_SIZE_TO_TM)(xsize_t*);
 typedef res_acl_t(*PF_CREATE_ACCEL_TABLE)(const accel_t*, int);
 typedef void(*PF_DESTROY_ACCEL_TABLE)(res_acl_t);
 
-#ifdef XDU_SUPPORT_WIDGET_EX
 typedef void(*PF_WIDGET_TRACK_MOUSE)(res_win_t, dword_t);
-typedef void(*PF_WIDGET_SET_REGION)(res_win_t, res_rgn_t);
 typedef void(*PF_WIDGET_SET_ALPHA)(res_win_t, unsigned char);
 typedef unsigned char(*PF_WIDGET_GET_ALPHA)(res_win_t);
+
+#ifdef XDU_SUPPORT_WIDGET_REGION
+typedef void(*PF_WIDGET_SET_REGION)(res_win_t, res_rgn_t);
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_OPENGL
@@ -524,10 +525,12 @@ typedef struct _if_widget_t{
 	PF_SCREEN_SIZE_TO_TM		pf_screen_size_to_tm;
 	PF_CREATE_ACCEL_TABLE		pf_create_accel_table;
 	PF_DESTROY_ACCEL_TABLE		pf_destroy_accel_table;
-#ifdef XDU_SUPPORT_WIDGET_EX
+
 	PF_WIDGET_TRACK_MOUSE		pf_widget_track_mouse;
 	PF_WIDGET_SET_ALPHA			pf_widget_set_alpha;
 	PF_WIDGET_GET_ALPHA			pf_widget_get_alpha;
+
+#ifdef XDU_SUPPORT_WIDGET_REGION
 	PF_WIDGET_SET_REGION		pf_widget_set_region;
 #endif
 
@@ -571,9 +574,6 @@ extern "C" {
 
 #ifdef XDU_SUPPORT_WIDGET
 	EXP_API void xdu_impl_widget(if_widget_t* pif);
-#ifdef XDU_SUPPORT_WIDGET_EX
-	EXP_API void xdu_impl_widget_ex(if_widget_t* pif);
-#endif
 #endif
 
 #ifdef	__cplusplus

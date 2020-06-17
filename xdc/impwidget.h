@@ -939,7 +939,6 @@ EXP_API void	screen_size_to_pt(xsize_t* pxs);
 */
 EXP_API void	screen_size_to_tm(xsize_t* pxs);
 
-#ifdef XDU_SUPPORT_WIDGET_EX
 /*
 @FUNCTION widget_track_mouse: let widget track mouse input.
 @INPUT res_win_t wt: the widget resource handle.
@@ -963,6 +962,7 @@ EXP_API void	widget_set_alpha(res_win_t wt, byte_t b);
 */
 EXP_API byte_t	widget_get_alpha(res_win_t wt);
 
+#ifdef XDU_SUPPORT_WIDGET_REGION
 /*
 @FUNCTION widget_set_region: set widget shape region.
 @INPUT res_win_t wt: the widget resource handle.

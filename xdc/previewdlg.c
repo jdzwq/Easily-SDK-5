@@ -184,6 +184,7 @@ void previewdlg_on_close(res_win_t widget)
 	widget_close(widget, 0);
 }
 
+#ifdef XDU_SUPPORT_CONTEXT_PRINTER
 void previewdlg_on_printcur(res_win_t widget)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
@@ -280,7 +281,9 @@ void previewdlg_on_setup(res_win_t widget)
 
 	_previewdlg_fresh_info(widget);
 }
+#endif
 
+#ifdef XDU_SUPPORT_SHELL_DIALOG
 void previewdlg_on_saveas(res_win_t widget)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
@@ -357,6 +360,7 @@ void previewdlg_on_open(res_win_t widget)
 
 	_previewdlg_fresh_info(widget);
 }
+#endif
 
 void previewdlg_on_select(res_win_t widget, link_t_ptr ilk)
 {
@@ -815,6 +819,7 @@ void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, var_long 
 	case IDC_PREVIEWDLG_PUSHBOX_CLOSE:
 		previewdlg_on_close(widget);
 		break;
+#ifdef XDU_SUPPORT_CONTEXT_PRINTER
 	case IDC_PREVIEWDLG_PUSHBOX_PRINT_CUR:
 		previewdlg_on_printcur(widget);
 		break;
@@ -827,6 +832,8 @@ void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, var_long 
 	case IDC_PREVIEWDLG_PUSHBOX_SETUP:
 		previewdlg_on_setup(widget);
 		break;
+#endif
+#ifdef XDU_SUPPORT_SHELL_DIALOG
 	case IDC_PREVIEWDLG_PUSHBOX_SAVEAS:
 		previewdlg_on_saveas(widget);
 		break;
@@ -836,6 +843,7 @@ void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, var_long 
 	case IDC_PREVIEWDLG_PUSHBOX_OPEN:
 		previewdlg_on_open(widget);
 		break;
+#endif
 	}
 }
 

@@ -31,6 +31,7 @@ typedef struct _oau_block_t{
 	PF_OAU_OPEN_ISP pf_open_isp;
 	PF_OAU_CLOSE pf_close;
 	PF_OAU_SESSION pf_session;
+	PF_OAU_ACCESS pf_access;
 	PF_OAU_ERROR pf_error;
 
 	tchar_t isp_file[PATH_LEN];
@@ -468,6 +469,105 @@ ONERROR:
 	return 0;
 }
 
+bool_t _invoke_weiapp_access(const https_block_t* pb, oau_block_t* pos)
+{
+	tchar_t sz_err[ERR_LEN + 1] = { 0 };
+	tchar_t sz_num[NUM_LEN + 1] = { 0 };
+
+	tchar_t sz_token[KEY_LEN] = { 0 };
+
+	oau_t oau = NULL;
+	bool_t rt;
+
+	link_t_ptr ptr_json = NULL;
+	link_t_ptr nlk;
+
+	tchar_t* sz_qry = NULL;
+	int len;
+
+	TRY_CATCH;
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
+
+		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+		sz_qry = xsalloc(len + 1);
+		len = xhttp_get_url_query(pb->http, sz_qry, len);
+
+		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+		xsfree(sz_qry);
+		sz_qry = NULL;
+	}
+
+	oau = (*pos->pf_open_isp)(pos->isp_file);
+	if (!oau)
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	rt = (*pos->pf_access)(oau, sz_token);
+
+	(*pos->pf_error)(oau, sz_err, ERR_LEN);
+
+	if (!rt)
+	{
+		raise_user_error(_T("_invoke_weiapp_access"), sz_err);
+	}
+
+	(*pos->pf_close)(oau);
+	oau = NULL;
+
+	xhttp_set_response_default_header(pb->http);
+	xhttp_set_response_code(pb->http, HTTP_CODE_200);
+	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
+
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CACHECONTROL, -1, HTTP_HEADER_CACHECONTROL_NOSTORE, -1);
+
+	ptr_json = create_json_doc();
+
+	nlk = insert_json_item(ptr_json, LINK_LAST);
+	set_json_item_name(nlk, _T("access_token"));
+	set_json_item_value(nlk, sz_token);
+
+	if (!xhttp_send_json(pb->http, ptr_json))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	destroy_json_doc(ptr_json);
+	ptr_json = NULL;
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+	get_last_error(sz_num, sz_err, ERR_LEN);
+
+	if (ptr_json)
+		destroy_json_doc(ptr_json);
+
+	if (oau)
+		(*pos->pf_close)(oau);
+
+	xhttp_send_error(pb->http, NULL, NULL, sz_num, sz_err, -1);
+
+	if (sz_qry)
+		xsfree(sz_qry);
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[OAUTH: 错误]"), -1);
+
+		(*pb->pf_log_error)(pb->log, sz_num, sz_err, -1);
+	}
+
+	return 0;
+}
+
 void _invoke_error(const https_block_t* pb, oau_block_t* pos)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
@@ -556,6 +656,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		pos->pf_open_isp = (PF_OAU_OPEN_ISP)get_address(oau_lib, "oau_open_isp");
 		pos->pf_close = (PF_OAU_CLOSE)get_address(oau_lib, "oau_close");
 		pos->pf_session = (PF_OAU_SESSION)get_address(oau_lib, "oau_session");
+		pos->pf_access = (PF_OAU_ACCESS)get_address(oau_lib, "oau_access");
 		pos->pf_error = (PF_OAU_ERROR)get_address(oau_lib, "oau_error");
 
 		if (!pos->pf_open_isp || !pos->pf_close || !pos->pf_session || !pos->pf_error)
@@ -570,6 +671,10 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 		if (compare_text(token, xslen(_T("session")), _T("session"), -1, 1) == 0)
 		{
 			_invoke_weiapp_session(pb, pos);
+		}
+		else if (compare_text(token, xslen(_T("access")), _T("access"), -1, 1) == 0)
+		{
+			_invoke_weiapp_access(pb, pos);
 		}
 		else
 		{

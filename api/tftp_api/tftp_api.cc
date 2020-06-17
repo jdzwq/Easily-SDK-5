@@ -274,6 +274,7 @@ ONERROR:
 
 	return 0;
 }
+
 /****************************************************************************************************/
 
 int STDCALL udps_invoke(const udps_block_t* pb)
@@ -315,6 +316,11 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	if (pb->timo)
 	{
 		xudp_settmo(xtftp_bio(pd->tftp), pb->timo);
+	}
+
+	if (!xtftp_accept(pd->tftp))
+	{
+		raise_user_error(NULL, NULL);
 	}
 
 	xtftp_method(pd->tftp, token, INT_LEN);

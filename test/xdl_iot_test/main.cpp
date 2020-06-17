@@ -31,7 +31,9 @@
 #define prod_iot_loginUrl _T("https://device.api.ct10649.com:8743/iocm/app/sec/v1.1.0/login")
 #define prod_iot_postDataUrl _T("https://device.api.ct10649.com:8743/iocm/app/cmd/v1.4.0/deviceCommands")
 
-#define URL_SESSION			_T("http://127.0.0.1:8889/iot/telecom/fcv.isp?action=session_key")
+//#define URL_SESSION			_T("http://127.0.0.1:8889/iot/telecom/msense.isp?action=session_key")
+#define URL_SESSION			_T("http://www.biofolia.cn:8889/iot/telecom/msense.isp?action=session_key")
+
 #define URL_COMMAND			_T("http://127.0.0.1:8889/iot/telecom/fcv.isp?action=command")
 
 void test_baidu()
