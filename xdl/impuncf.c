@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "impuncf.h"
 #include "xdlinit.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 #ifdef XDK_SUPPORT_FILE
@@ -106,9 +106,8 @@ bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 	{
 		format_gmttime(&fi.write_time, sz_time);
 		format_long(fi.high_size, fi.low_size, sz_size);
-#ifdef XDL_SUPPORT_CRYPT
+
 		file_info_etag(fi.file_name, sz_time, sz_size, fetag);
-#endif
 	}
 
 	if (fencode)

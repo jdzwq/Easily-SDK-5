@@ -80,16 +80,14 @@ static void _xtcps_track_error(void* hand, const tchar_t* code, const tchar_t* t
 {
 	tcps_block_t* pb = (tcps_block_t*)hand;
 
+	tchar_t addr[ADDR_LEN + 1] = { 0 };
 	tchar_t token[PATH_LEN + 1] = { 0 };
 	int len;
+	int port;
 
-	xscpy(token, _T("TCP-SCP: ["));
-	len = xslen(token);
+	port = (int)xtcp_peer_port(pb->tcp, addr);
 
-	xtcp_peer_port(pb->tcp, token + len);
-
-	len = xslen(token);
-	len += xsprintf(token + len, _T(": %d] %s %s\r\n"), thread_get_id(), code, text);
+	len = xsprintf(token, _T("TCP-SCP: [%s : %d] %s %s\r\n"), addr, port, code, text);
 
 	xportm_log_info(token, len);
 }
@@ -175,8 +173,6 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 
 	free_library(api);
 	api = NULL;
-
-	_xtcps_track_error((void*)pb, _T("_tcps_invoke"), _T("site service exist"));
 
 	xmem_free(pb);
 	pb = NULL;

@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "vector.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 vector_t* vector_alloc(int size, int order)

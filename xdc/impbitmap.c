@@ -88,7 +88,6 @@ res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const 
 	return (*pif->pf_create_gradient_bitmap)(rdc, pxc_near, pxc_center, w, h, lay);
 }
 
-#ifdef XDL_SUPPORT_BAR
 res_bmp_t create_code128_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
@@ -234,7 +233,6 @@ res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 
 	return bmp;
 }
-#endif
 
 res_bmp_t load_bitmap_from_bytes(res_ctx_t rdc, const byte_t* pb, dword_t len)
 {
@@ -389,7 +387,6 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 		xmem_free(buf_bmp);
 	}
 #endif
-#ifdef XDL_SUPPORT_BMP
 	if (xsicmp(pmi->type, GDI_ATTR_IMAGE_TYPE_BMP) == 0)
 	{
 		len = xslen(pmi->source);
@@ -413,7 +410,6 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 
 		xmem_free(buf_bmp);
 	}
-#endif
 #if defined(XDU_SUPPORT_FILE)
 	else
 	{

@@ -1,7 +1,6 @@
 CC = gcc
 CFLAGS = -g -Wall -fPIC
 
-SYS_PATH = /usr/local
 LIB_PATH = ../lib
 SRC_PATH = ../../xds
 OUT_PATH = ../lib
@@ -12,7 +11,7 @@ OBJS = $(patsubst %.c, %.o, $(SRCS))
 TARGET = $(OUT_PATH)/libxds.a
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(SRC_PATH) -L $(LIB_PATH) -ljpg -lzlib -lpng -lqrcode
 
 $(TARGET) : $(OBJS)
 	rm -f $@

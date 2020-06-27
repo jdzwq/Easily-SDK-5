@@ -1,4 +1,4 @@
-/***********************************************************************
+ï»¿/***********************************************************************
 	Easily codepage
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "acp.h"
+#include "acpdef.h"
 
 int utf8_code_sequence(unsigned char b)
 {
@@ -159,7 +159,7 @@ int unicode_seek_utf8(unsigned short ch, unsigned char* dest)
 	if (c >= 0x00 && c <= 0x7F)
 	{
 		// Handle 1-byte character (plain ASCII).
-		//UNICODE 00000000 â€?0000007F
+		//UNICODE 00000000 éˆ¥?0000007F
 		//UTF8 0xxxxxxx
 		if (dest)
 		{
@@ -170,7 +170,7 @@ int unicode_seek_utf8(unsigned short ch, unsigned char* dest)
 	else if (c >= 0x80 && c <= 0x7FF)
 	{
 		// Handle 2-byte character.
-		//UNICODE 00000080 â€?000007FF
+		//UNICODE 00000080 éˆ¥?000007FF
 		//UTF8 110xxxxx 10xxxxxx 
 
 		//xxxx xxxx xxxx xxxx & 0000 0111 1100 0000
@@ -194,7 +194,7 @@ int unicode_seek_utf8(unsigned short ch, unsigned char* dest)
 	else if (c >= 0x800 && c <= 0xFFFF)
 	{
 		// Handle 3-byte character.
-		//UNICODE 00000800 â€?0000FFFF
+		//UNICODE 00000800 éˆ¥?0000FFFF
 		//UTF8 1110xxxx 10xxxxxx 10xxxxxx
 
 		//xxxx xxxx xxxx xxxx & 1111 0000 0000 0000
@@ -229,7 +229,7 @@ int unicode_seek_utf8(unsigned short ch, unsigned char* dest)
 	else if (c >= 0x10000 && c <= 0xFFFFF)
 	{
 		// Handle 4-bytes character.
-		//UNICODE 00010000 â€?001FFFFF
+		//UNICODE 00010000 éˆ¥?001FFFFF
 		//UTF8 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 
 		//xxxx xxxx xxxx xxxx xxxx & 1100 0000 0000 0000 0000

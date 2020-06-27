@@ -36,6 +36,7 @@
 #include "xdlmac.h"
 #include "xdlexp.h"
 
+#include "xdlconv.h"
 #include "xdlblock.h"
 #include "xdlinet.h"
 #include "xdlfile.h"

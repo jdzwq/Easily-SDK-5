@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "bufferopera.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdldoc.h"
 
@@ -63,7 +63,7 @@ int call_buffer_read_escape(void* p_obj, int max, int pos, int encode, tchar_t* 
 		return (int)xml_utf16lit_decode(buf, pch);
 	case _UTF16_BIG:
 		return (int)xml_utf16big_decode(buf, pch);
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
 		return (int)xml_gb2312_decode(buf, pch);
 #endif
@@ -86,7 +86,7 @@ int call_buffer_write_escape(void* p_obj, int max, int pos, int encode, tchar_t 
 		return (int)xml_utf16lit_encode(ch, buf, max - pos);
 	case _UTF16_BIG:
 		return (int)xml_utf16big_encode(ch, buf, max - pos);
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
 		return (int)xml_gb2312_encode(ch, buf, max - pos);
 #endif
@@ -127,7 +127,7 @@ int call_buffer_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pc
 		utf16big_byte_to_mbs(buf, pch);
 #endif
 		break;
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
 		pos = gb2312_sequence(*(buf));
 #ifdef _UNICODE
@@ -192,7 +192,7 @@ int call_buffer_read_token(void* p_obj, int max, int pos, int encode, tchar_t* p
 			ret = utf16big_byte_to_mbs(buf, pch);
 #endif
 			break;
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 		case _GB2312:
 			pos += gb2312_sequence(*(buf));
 #ifdef _UNICODE
@@ -247,7 +247,7 @@ int call_buffer_write_char(void* p_obj, int max, int pos, int encode, const tcha
 		pos = mbs_byte_to_utf16big(pch, buf);
 #endif
 		break;
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
 #ifdef _UNICODE
 		pos = ucs_byte_to_gb2312(*pch, buf);
@@ -301,7 +301,7 @@ int call_buffer_write_token(void* p_obj, int max, int pos, int encode, const tch
 		pos = mbs_to_utf16big(pch, len, buf, max - pos);
 #endif
 		break;
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	case _GB2312:
 #ifdef _UNICODE
 		pos = ucs_to_gb2312(pch, len, buf, max - pos);

@@ -32,29 +32,9 @@ LICENSE.GPL3 for more details.
 #ifndef _XDLCFG_H
 #define	_XDLCFG_H
 
-#if defined(XDK_SUPPORT_FILE) && defined(_DEBUG)
+#if defined(XDK_SUPPORT_FILE) && (defined(_DEBUG) || defined(DEBUG))
 #define XDL_SUPPORT_MEMO_DUMP
 #endif
-
-#define GPL_SUPPORT_ACP
-#define GPL_SUPPORT_PNG
-#define GPL_SUPPORT_JPG
-#define GPL_SUPPORT_ZIP
-
-#define XDL_SUPPORT_PDG
-#define XDL_SUPPORT_BMP
-#define XDL_SUPPORT_BAR
-#define XDL_SUPPORT_MPI
-#define XDL_SUPPORT_DHM
-#define XDL_SUPPORT_RAND
-#define XDL_SUPPORT_CRYPT
-#define XDL_SUPPORT_CERT
-#define XDL_SUPPORT_HLL
-#define XDL_SUPPORT_LZF
-#define XDL_SUPPORT_SIP
-#define XDL_SUPPORT_MUR
-#define XDL_SUPPORT_ASN
-#define XDL_SUPPORT_SSL
 
 #define XDL_SUPPORT_BIO
 #define XDL_SUPPORT_SVG

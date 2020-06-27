@@ -31,12 +31,12 @@ LICENSE.GPL3 for more details.
 
 #include "netudp.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdlinit.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_RAND)
+#if defined(XDK_SUPPORT_SOCK)
 
 typedef struct _udp_t{
 	xhand_head head;		//head for xhand_t
@@ -249,8 +249,6 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	TRY_CATCH;
-
 	dw = *pb;
 	while (dw)
 	{
@@ -266,7 +264,8 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 			bys = pudp->snd_bys;
 			if (!socket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), bys, pudp->pov))
 			{
-				raise_user_error(NULL, NULL);
+				*pb = 0;
+				return 0;
 			}
 
 			if (!(pudp->pov->size))
@@ -283,17 +282,10 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 
 		dw -= bys;
 	}
+
 	*pb -= dw;
 
-
-	END_CATCH;
-
 	return 1;
-ONERROR:
-
-	*pb = 0;
-
-	return 0;
 }
 
 bool_t xudp_flush(xhand_t udp)
@@ -305,8 +297,6 @@ bool_t xudp_flush(xhand_t udp)
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	TRY_CATCH;
-
 	if (pudp->snd_bys)
 	{
 		fill_addr(&sin, pudp->port, pudp->addr);
@@ -316,7 +306,7 @@ bool_t xudp_flush(xhand_t udp)
 		pudp->pov->size = 0;
 		if (!socket_sendto(pudp->so, (res_addr_t)&sin, addr_len, (void*)(pudp->snd_pdu), dw, pudp->pov))
 		{
-			raise_user_error(NULL, NULL);
+			return 0;
 		}
 
 		dw = (dword_t)(pudp->pov->size);
@@ -324,12 +314,7 @@ bool_t xudp_flush(xhand_t udp)
 		pudp->snd_bys = 0;
 	}
 
-	END_CATCH;
-
 	return 1;
-ONERROR:
-
-	return 0;
 }
 
 bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
@@ -342,8 +327,6 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
-	TRY_CATCH;
-
 	dw = *pb;
 	*pb = 0;
 	while (dw && TRY_MAX)
@@ -355,7 +338,8 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 			pudp->pov->size = 0;
 			if (!socket_recvfrom(pudp->so, (res_addr_t)&na, &addr_len, (void*)(pudp->rcv_pdu), bys, pudp->pov))
 			{
-				raise_user_error(NULL, NULL);
+				*pb = 0;
+				return 0;
 			}
 
 			if (addr_len)
@@ -385,14 +369,13 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 		*pb = *pb + bys;
 	}
 
-	END_CATCH;
+	if (!TRY_MAX && !(*pb))
+	{
+		set_last_error(_T("xudp_read"), _T("recv timeout"), -1);
+		return 0;
+	}
 
-	return (!TRY_MAX && !(*pb))? 0 : 1;
-ONERROR:
-
-	*pb = 0;
-
-	return 0;
+	return 1;
 }
 
 unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)

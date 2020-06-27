@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 #include "xdlview.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 #if defined(XDL_SUPPORT_VIEW) 

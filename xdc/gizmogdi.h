@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdcdef.h"
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
+#if defined(XDU_SUPPORT_CONTEXT)
 
 typedef void(*PF_GIZMO_MAKE)(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt);
 

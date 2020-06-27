@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdlexp.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 /*define some exption operator reserve words function*/

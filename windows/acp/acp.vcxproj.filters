@@ -15,14 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\acp\acp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\acp\acp_gbk.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -32,5 +24,13 @@
     <ClCompile Include="..\..\acp\acp_utf16.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\acp\acp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\acp\acpdef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,11 +5,13 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 NET_PATH = ~/Easily-sdk-5/api/net_srv
 LOC_PATH = .
 OUT_PATH = ../sbin
 
+LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
 DIRS = $(wildcard $(LOC_PATH)/*.cc $(NET_PATH)/*.cc)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
@@ -23,7 +25,7 @@ TARGET = $(OUT_PATH)/xportd
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:

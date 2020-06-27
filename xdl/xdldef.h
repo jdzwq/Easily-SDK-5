@@ -375,12 +375,6 @@ typedef struct _file_head{
 	byte_t lru[3];
 }file_head, *file_t;
 
-/*code range*/
-#define _ACP_GBKMIN			0xa1a0
-#define _ACP_GBKMAX			0xfeff
-#define _ACP_UCSMIN			0x00a0
-#define _ACP_UCSMAX			0xffef
-
 typedef struct _acp_head{
 	sword_t base;
 }acp_head, *acp_t;

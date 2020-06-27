@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "bplustree.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlinit.h"
 
@@ -2018,7 +2018,6 @@ _CLEAN:
 
 #if defined(_DEBUG) || defined(DEBUG)
 #include <time.h>
-#include "oemrand.h"
 
 typedef struct _print_param{
 	void* p1;

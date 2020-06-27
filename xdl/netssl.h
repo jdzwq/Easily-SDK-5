@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
+#if defined(XDK_SUPPORT_SOCK)
 
 #define SSL_MAJOR_VERSION_3             3
 #define SSL_MINOR_VERSION_0             0 //SSL v3.0

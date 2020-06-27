@@ -4,7 +4,6 @@
 
 #include "../xdl/xdldef.h"
 #include "../xdl/xdlimp.h"
-#include "../xdl/xdloem.h"
 #include "../xdl/xdlstd.h"
 
 #include "../xdl/xdlnet.h"

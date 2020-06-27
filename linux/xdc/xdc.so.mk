@@ -5,13 +5,13 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ../../include
 SRC_PATH = ../../xdc
 SUB_PATH = ../../xdc/linux
 OUT_PATH = ../sbin/api
 
-ARLIB = -lm -L $(LIB_PATH) -L $(OUT_PATH) -lxds -lxdu -lxdl
-
+LIBS = -lm -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdu -lxdl
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -26,7 +26,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) $(ARLIB)
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:

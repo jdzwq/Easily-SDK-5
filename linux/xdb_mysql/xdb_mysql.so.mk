@@ -8,10 +8,12 @@ INC_MYSQL = /usr/include/mysql
 LIB_MYSQL = /usr/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/xdb
 OUT_PATH = ../sbin/api
 
+LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl -L $(LIB_MYSQL) -lmysqlclient
 DIRS = $(wildcard $(SRC_PATH)/xdb_mysql.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -23,7 +25,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl -lmysqlclient -L $(LIB_MYSQL) 
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:

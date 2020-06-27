@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "svggdi.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdldoc.h"
 #include "xdlview.h"
@@ -787,6 +787,7 @@ void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 	xmem_free(bar_buf);
 }
 
+#ifdef GPL_SUPPORT_QRCODE
 void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
 {
 	link_t_ptr g, nlk;
@@ -871,6 +872,7 @@ void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 
 	xmem_free(bar_buf);
 }
+#endif
 
 void svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* gname)
 {

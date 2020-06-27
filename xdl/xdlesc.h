@@ -133,7 +133,7 @@ EXP_API dword_t url_byte_encode(const byte_t* val, dword_t len, byte_t* buf, dwo
 
 EXP_API dword_t url_byte_decode(const byte_t* val, dword_t len, byte_t* buf, dword_t max);
 
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 EXP_API dword_t xml_gb2312_decode(const byte_t* src, tchar_t* dest);
 
 EXP_API dword_t xml_gb2312_encode(tchar_t ch, byte_t* dest, dword_t max);

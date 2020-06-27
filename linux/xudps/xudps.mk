@@ -5,11 +5,13 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 NET_PATH = ~/Easily-sdk-5/api/net_srv
 LOC_PATH = .
 OUT_PATH = ../sbin
 
+LIBS = -lpthread -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
 SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xudps.cc $(LOC_PATH)/xudpsMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 TARGET = $(OUT_PATH)/xudps
@@ -22,7 +24,7 @@ TARGET = $(OUT_PATH)/xudps
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl -lpthread
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:

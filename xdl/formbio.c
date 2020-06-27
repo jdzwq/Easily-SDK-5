@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "formbio.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdldoc.h"
 #include "xdlinit.h"

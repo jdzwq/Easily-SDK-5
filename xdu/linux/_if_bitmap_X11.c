@@ -76,6 +76,7 @@ res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 	unsigned long pix;
     
     pim = (XImage*)calloc(1, sizeof(XImage));
+	
 	pim->width = w;
 	pim->height = h;
 	pim->xoffset = 0;
@@ -103,7 +104,7 @@ res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
     {
         for(col = 0; col < w; col++)
         {
-			XPutPixel(pim, row, col, pix);
+			XPutPixel(pim, col, row, pix);
         }
     }
 
@@ -133,13 +134,153 @@ res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
 	return NULL;
-}
+} 
 
-res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
+res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* fname)
 {
-	return NULL;
+	struct stat st = {0};
+	int fd = 0;
+
+	tchar_t itype[10] = {0};
+	int len;
+	byte_t* file_buf;
+	dword_t file_len;
+	byte_t* bmp_buf;
+	dword_t bmp_len;
+
+	xsize_t xs = {0};
+	xcolor_t xc = {0};
+	int i, j;
+
+	XImage* pim = NULL;
+	unsigned long pix;
+    
+    if(stat(fname, &st) < 0)
+        return 0;
+
+	len = xslen(fname);
+	if(len < 4) return (res_bmp_t)0;
+
+	if (xsicmp((fname + len - 4), _T(".jpg")) == 0)
+	{
+		xscpy(itype, GDI_ATTR_IMAGE_TYPE_JPG);
+	}
+	else if (xsicmp((fname + len - 4), _T(".png")) == 0)
+	{
+		xscpy(itype, GDI_ATTR_IMAGE_TYPE_PNG);
+	}
+	else if (xsicmp((fname + len - 4), _T(".bmp")) == 0)
+	{
+		xscpy(itype, GDI_ATTR_IMAGE_TYPE_BMP);
+	}
+	else
+		return 0;
+
+	if(stat(fname, &st) != 0)
+		return 0;
+
+	fd = open(fname, O_RDONLY, S_IRWXU | S_IXGRP | S_IROTH | S_IXOTH);
+    if(fd < 0)
+        return 0;
+
+	file_len = (dword_t)(st.st_size);
+	file_buf = (byte_t*)calloc(1, file_len);
+
+	len = (int)read(fd, file_buf, file_len);
+	if(len < 0)
+	{
+		close(fd);
+		free(file_buf);
+		return 0;
+	}
+
+	close(fd);
+
+	if (xsicmp(itype, GDI_ATTR_IMAGE_TYPE_JPG) == 0)
+	{
+		bmp_len = xjpg_decompress(file_buf, file_len, NULL, MAX_LONG);
+		if (!bmp_len)
+		{
+			free(file_buf);
+			return 0;
+		}
+
+		bmp_buf = (byte_t*)calloc(1, bmp_len);
+
+		xjpg_decompress(file_buf, file_len, bmp_buf, bmp_len);
+
+		free(file_buf);
+	}
+	else if (xsicmp(itype, GDI_ATTR_IMAGE_TYPE_PNG) == 0)
+	{
+		bmp_len = xpng_decompress(file_buf, file_len, NULL, MAX_LONG);
+		if (!bmp_len)
+		{
+			free(file_buf);
+			return 0;
+		}
+
+		bmp_buf = (byte_t*)calloc(1, bmp_len);
+
+		xpng_decompress(file_buf, file_len, bmp_buf, bmp_len);
+
+		free(file_buf);
+	}
+	else if (xsicmp(itype, GDI_ATTR_IMAGE_TYPE_BMP) == 0)
+	{
+		bmp_buf = file_buf;
+		bmp_len = file_len;
+	}
+
+	if(!xbmp_get_size(&xs, bmp_buf, bmp_len))
+	{
+		free(bmp_buf);
+		return 0;
+	}
+
+	pim = (XImage*)calloc(1, sizeof(XImage));
+	
+	pim->width = xs.cx;
+	pim->height = xs.cy;
+	pim->xoffset = 0;
+	pim->format = ZPixmap;
+	pim->data = (char*)calloc(1, xs.cx * xs.cy * 4);
+	pim->byte_order = LSBFirst;
+	pim->bitmap_unit = 32;
+	pim->bitmap_bit_order = LSBFirst;
+	pim->bitmap_pad = 32;
+	pim->depth = rdc->depth;
+	pim->bytes_per_line = xs.cx * 4;
+	pim->bits_per_pixel = 32;
+	pim->red_mask = rdc->visual->red_mask;
+	pim->green_mask = rdc->visual->green_mask;
+	pim->blue_mask = rdc->visual->blue_mask;
+
+	XInitImage(pim);
+	
+	for(i=0;i<xs.cy;i++)
+	{
+		for(j=0;j<xs.cx;j++)
+		{
+			xbmp_get_rgb(&xc, i, j, bmp_buf, bmp_len);
+
+			pix = 0;
+			pix |= ((xc.r << 16) & pim->red_mask);
+			pix |= ((xc.g << 8) & pim->green_mask);
+			pix |= ((xc.b) & pim->blue_mask);
+
+			XPutPixel(pim, j, i, pix);
+		}
+	}
+
+	free(bmp_buf);
+
+	return (res_bmp_t)pim;
 }
 
+//ZPixmap width * height * ((depth + 7) / 8) width * ((depth + 7) / 8)  
+//XYPixmap ((width + 7) / 8) * height * depth (width + 7) / 8  
+//XYBitmap ((width + 7) / 8) * height * 1   (width + 7) / 8  
 /*******************************************************************************/
 #pragma pack (2)
 typedef struct _bitmap_filehead_t

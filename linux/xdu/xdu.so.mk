@@ -3,6 +3,7 @@ CFLAGS = -g -Wall -fPIC
 
 SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
+SYS_PATH = /usr/include
 
 LIB_PATH = ../lib
 INC_PATH = ../../include
@@ -10,6 +11,7 @@ SRC_PATH = ../../xdu
 SUB_PATH = ../../xdu/linux
 OUT_PATH = ../sbin/api
 
+LIBS = -lm -ldl -lutil -lrt -lX11 -lcairo -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -17,14 +19,14 @@ MODULE = libxdu.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(SYS_PATH) -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
 
 %.o : $(SUB_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(SYS_PATH) -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -o $(TARGET) $(OBJS) -lm -ldl -lutil -lrt -lX11 -lxds -L $(LIB_PATH)
+	$(CC) -shared -fPIC -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:

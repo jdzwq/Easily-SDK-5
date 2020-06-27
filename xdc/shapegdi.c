@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "shapegdi.h"
 #include "xdcimp.h"
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
+#if defined(XDU_SUPPORT_CONTEXT)
 
 
 void draw_backslash_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)

@@ -58,7 +58,7 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_SOCK
 #define XDK_SUPPORT_TIMER
 
-#ifndef _WIN64
+#if defined(_DEBUG) || defined(DEBUG)
 #define XDK_SUPPORT_BLUT
 #endif
 

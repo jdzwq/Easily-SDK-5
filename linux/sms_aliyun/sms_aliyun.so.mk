@@ -5,15 +5,14 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
-
 SRC_PATH = ~/Easily-sdk-5/sms/aliyun
 LOC_PATH = ~/Easily-sdk-5/sms
-
+INI_PATH = ~/Easily-sdk-5/linux/setup
 OUT_PATH = ../sbin/api
 
-INS_PATH = ~/Easily-sdk-5/linux/setup
-
+LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
 DIRS = $(wildcard $(SRC_PATH)/sms_aliyun.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -25,7 +24,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:
@@ -42,7 +41,7 @@ install:
 	if ! test -d $(SRV_PATH)/sms/aliyun; then \
 	sudo mkdir $(SRV_PATH)/sms/aliyun; \
 	fi
-	sudo cp -rf $(INS_PATH)/sms/aliyun $(SRV_PATH)/sms;
+	sudo cp -rf $(INI_PATH)/sms/aliyun $(SRV_PATH)/sms;
 
 .PHONY : clean
 clean:

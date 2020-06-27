@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdlstm.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 
@@ -366,14 +366,14 @@ stream_t stream_alloc(xhand_t io)
 #endif
 		break;
 	case _HANDLE_SSL:
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
+#if defined(XDK_SUPPORT_SOCK)
 		pxt->inf.pf_read = xssl_read;
 		pxt->inf.pf_write = xssl_write;
 		pxt->inf.pf_flush = xssl_flush;
 #endif
 		break;
 	case _HANDLE_SSH:
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
+#if defined(XDK_SUPPORT_SOCK)
 		pxt->inf.pf_read = xssh_read;
 		pxt->inf.pf_write = xssh_write;
 #endif
@@ -589,7 +589,7 @@ bool_t stream_write_char(stream_t xs, const tchar_t* buf, dword_t* pch)
 
 #endif
 	}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (pxt->encode == _GB2312)
 	{
 #ifdef _UNICODE
@@ -697,7 +697,7 @@ bool_t stream_read_char(stream_t xs, tchar_t* buf, dword_t* pb)
 	{
 		bs = utf8_sequence(ba[0]);
 	}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (pxt->encode == _GB2312)
 	{
 		bs = gb2312_sequence(ba[0]);
@@ -732,7 +732,7 @@ bool_t stream_read_char(stream_t xs, tchar_t* buf, dword_t* pb)
 		pos = utf8_byte_to_mbs(ba, buf);
 #endif
 	}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (pxt->encode == _GB2312)
 	{
 #ifdef _UNICODE

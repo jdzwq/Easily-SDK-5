@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "map.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 #define MAP_SIZE(ppt)	(pmm->rows * pmm->cols * pmm->bits / 8)

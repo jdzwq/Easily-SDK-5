@@ -55,16 +55,14 @@ void xdc_process_init()
 	xdu_impl_context_bitmap(&g_xdc_mou.if_context);
 #endif //XDU_SUPPORT_CONTEXT_BITMAP
 
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
-	xdu_impl_context_graphic(&g_xdc_mou.if_context);
-#endif /*XDU_SUPPORT_CONTEXT_GRAPHIC*/
-
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 	xdu_impl_context_printer(&g_xdc_mou.if_context);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 	xdu_impl_context_region(&g_xdc_mou.if_context);
 #endif
+
+	xdu_impl_context_graphic(&g_xdc_mou.if_context);
 
 #endif //XDU_SUPPORT_CONTEXT
 

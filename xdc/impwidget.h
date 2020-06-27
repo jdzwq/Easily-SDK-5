@@ -990,7 +990,7 @@ EXP_API int		widget_do_modal(res_win_t wt);
 */
 EXP_API void	widget_do_trace(res_win_t wt);
 
-EXP_API void message_quit(int code);
+EXP_API void send_quit_message(int code);
 
 EXP_API void message_fetch(msg_t* pmsg, res_win_t wt);
 
@@ -999,6 +999,8 @@ EXP_API bool_t message_peek(msg_t* pmsg);
 EXP_API bool_t	message_translate(const msg_t* pmsg);
 
 EXP_API result_t message_dispatch(const msg_t* pmsg);
+
+EXP_API bool_t	message_is_quit(const msg_t* pmsg);
 
 EXP_API void	message_position(xpoint_t* ppt);
 

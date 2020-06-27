@@ -5,15 +5,14 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
-
 SRC_PATH = ~/Easily-sdk-5/iot/telecom
 LOC_PATH = ~/Easily-sdk-5/iot
-
+INI_PATH = ~/Easily-sdk-5/linux/setup
 OUT_PATH = ../sbin/api
 
-INS_PATH = ~/Easily-sdk-5/linux/setup
-
+LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
 DIRS = $(wildcard $(SRC_PATH)/iot_telecom.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -25,7 +24,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:
@@ -42,7 +41,7 @@ install:
 	if ! test -d $(SRV_PATH)/iot/telecom; then \
 	sudo mkdir $(SRV_PATH)/iot/telecom; \
 	fi
-	sudo cp -rf $(INS_PATH)/iot/telecom $(SRV_PATH)/iot;
+	sudo cp -rf $(INI_PATH)/iot/telecom $(SRV_PATH)/iot;
 
 .PHONY : clean
 clean:

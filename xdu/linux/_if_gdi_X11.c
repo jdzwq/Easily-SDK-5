@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "xduiml.h"
 #include "xduutil.h"
 
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
+#ifdef XDU_SUPPORT_CONTEXT_GDI
 
 static void DPtoLP(res_ctx_t rdc, XPoint* pt,int n)
 {
@@ -325,7 +325,7 @@ void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int 
     
 }
 
-void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const tchar_t* str, int len)
+void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa)
 {
 }
 
@@ -1029,16 +1029,43 @@ void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
 void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hbmp,const tchar_t* clr,const xrect_t* prt)
 {
+    X11_context_t* ctx = (X11_context_t*)rdc;
+	XImage* pmi = (XImage*)hbmp;
+
+	XRectangle xr;
+	XPoint pt[2];
+
+	xr.x = prt->x;
+	xr.y = prt->y;
+	xr.width = prt->w;
+	xr.height = prt->h;
+
+	_adjust_rect(&xr, pmi->width, pmi->height, GDI_ATTR_TEXT_ALIGN_CENTER, GDI_ATTR_TEXT_ALIGN_CENTER);
     
+	pt[0].x = xr.x;
+	pt[0].y = xr.y;
+	pt[1].x = xr.x + xr.width;
+	pt[1].y = xr.y + xr.height;
+
+	DPtoLP(ctx,pt,2);
+
+	XPutImage(g_display, rdc->device, rdc->context, pmi, 0, 0, pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 }
 
-void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
+void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xpoint_t* ppt)
 {
 	X11_context_t* ctx = (X11_context_t*)rdc;
 	XImage* pmi = (XImage*)hbmp;
 	Pixmap pmp;
 	unsigned long fg, bg;
 	int w,h, dp;
+
+	XPoint pt[1];
+    
+	pt[0].x = ppt->x;
+	pt[0].y = ppt->y;
+
+	DPtoLP(ctx,pt,1);
 
 	fg = WhitePixel(g_display, DefaultScreen(g_display));
 	bg = BlackPixel(g_display, DefaultScreen(g_display));
@@ -1048,7 +1075,7 @@ void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
 
     pmp = XCreatePixmapFromBitmapData(g_display, ctx->device, pmi->data, w, h, fg, bg, dp);
 
-	XCopyPlane(g_display, pmp, ctx->device, ctx->context, 0, 0, w, h, prt->x, prt->y, 1);
+	XCopyPlane(g_display, pmp, ctx->device, ctx->context, 0, 0, w, h, pt[0].x, pt[0].y, 1);
 
 	XFreePixmap(g_display, pmp);
 }

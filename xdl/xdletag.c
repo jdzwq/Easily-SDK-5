@@ -31,11 +31,9 @@ LICENSE.GPL3 for more details.
 
 #include "xdletag.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
-
-#ifdef XDL_SUPPORT_CRYPT
 
 void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN])
 {
@@ -100,5 +98,3 @@ void file_info_etag(const tchar_t* fname, const tchar_t* ftime, const tchar_t* f
 	buf[total] = _T('\"');
 	buf[total + 1] = _T('\0');
 }
-
-#endif

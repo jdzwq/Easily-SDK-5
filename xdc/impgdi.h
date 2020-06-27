@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdcdef.h"
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
+#if defined(XDU_SUPPORT_CONTEXT)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -336,7 +336,7 @@ EXP_API int		calc_rich_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_
 @INPUT const xrect_t* pxr: the rect struct using integer member.
 @RETURN void: none.
 */
-EXP_API void	draw_thumn_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* pxr);
+EXP_API void	draw_thumn_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* prt);
 
 /*
 @FUNCTION draw_icon_raw: draw icon in memory or device context using points coordinate.
@@ -345,7 +345,7 @@ EXP_API void	draw_thumn_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* 
 @INPUT const xrect_t* pxr: the rect struct using integer member.
 @RETURN void: none.
 */
-EXP_API void	draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* pxr);
+EXP_API void	draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* prt);
 
 /*
 @FUNCTION draw_image_raw: draw image in memory or device context using points coordinate.
@@ -360,10 +360,10 @@ EXP_API void	draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* p
 @FUNCTION draw_bitmap_raw: draw bitmap in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT res_bmp_t bmp: the bitmap resource handle.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const xpoint_t* ppt: the point struct using integer member.
 @RETURN void: none.
 */
-EXP_API void	draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* pxr);
+EXP_API void	draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt);
 
 /*
 @FUNCTION draw_gizmo_raw: draw system icon in memory or device context using points coordinate.
@@ -802,7 +802,7 @@ EXP_API int		calc_rich_pages(canvas_t canv, const xfont_t* pxf, const xface_t* p
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-EXP_API void	draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* pxr);
+EXP_API void	draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt);
 
 /*
 @FUNCTION draw_thumb: draw file thumb in canvas using millimeter coordinate.
@@ -811,7 +811,7 @@ EXP_API void	draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* pxr);
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @RETURN void: none.
 */
-EXP_API void	draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* pxr);
+EXP_API void	draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt);
 
 /*
 @FUNCTION draw_image: draw image in canvas using millimeter coordinate.
@@ -826,10 +826,10 @@ EXP_API void	draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr);
 @FUNCTION draw_bitmap: draw bitmap in canvas using millimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT res_bmp_t bmp: the bitmap resource handle.
-@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const xpoint_t* ppt: the point struct using float member.
 @RETURN void: none.
 */
-EXP_API void	draw_bitmap(canvas_t canv, res_bmp_t bmp, const xrect_t* pxr);
+EXP_API void	draw_bitmap(canvas_t canv, res_bmp_t bmp, const xpoint_t* ppt);
 
 /*
 @FUNCTION draw_gizmo: draw gizmo icon in canvas using millimeter coordinate.
@@ -1032,6 +1032,6 @@ EXP_API void	draw_svg(canvas_t canv, const xrect_t* prt, link_t_ptr svg);
 }
 #endif
 
-#endif /*XDU_SUPPORT_CONTEXT_GRAPHIC*/
+#endif /*XDU_SUPPORT_CONTEXT*/
 
 #endif /*IMPGDI_H*/

@@ -6,14 +6,16 @@
 #endif
 
 //#define URL_GET			_T("tftp://127.0.0.1:69/demo.txt")
-//#define URL_GET			_T("tftp://118.178.180.81:69/demo.txt")
+#define URL_GET			_T("tftp://118.178.180.81:69/demo.txt")
 //#define URL_GET			_T("tftp://49.234.135.113:69/demo.txt")
 //#define URL_GET			_T("tftp://172.16.190.190:69/demo.txt")
-#define URL_GET			_T("tftp://172.16.190.200:69/demo.txt")
+//#define URL_GET			_T("tftp://172.16.190.200:69/demo.txt")
 
 void test_tftp_put()
 {
 	xhand_t tftp = xtftp_client(_T("PUT"), URL_GET);
+
+	xtftp_connect(tftp);
 
 	byte_t data[2050] = { 0 };
 	dword_t dw = 2050;
@@ -31,6 +33,8 @@ void test_tftp_get()
 {
 	xhand_t tftp = xtftp_client(_T("GET"), URL_GET);
 
+	xtftp_connect(tftp);
+
 	byte_t data[4096] = { 0 };
 	dword_t dw = 4096;
 
@@ -45,6 +49,8 @@ void test_tftp_head()
 
 	xtftp_head(tftp);
 
+	xtftp_connect(tftp);
+
 	xtftp_close(tftp);
 
 }
@@ -52,6 +58,8 @@ void test_tftp_head()
 void test_tftp_del()
 {
 	xhand_t tftp = xtftp_client(_T("DELETE"), URL_GET);
+
+	xtftp_connect(tftp);
 
 	xtftp_close(tftp);
 }

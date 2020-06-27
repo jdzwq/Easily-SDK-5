@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "xdldef.h"
 #include "httpattr.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_RAND)
+#if defined(XDK_SUPPORT_SOCK)
 
 typedef enum{
 	_XTFTP_TYPE_LIS = 0,

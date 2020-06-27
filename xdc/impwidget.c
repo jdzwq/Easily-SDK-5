@@ -35,13 +35,13 @@ LICENSE.GPL3 for more details.
 #ifdef XDU_SUPPORT_WIDGET
 
 
-void message_quit(int code)
+void send_quit_message(int code)
 {
 	if_widget_t* pif;
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_message_quit)(code);
+	(*pif->pf_send_quit_message)(code);
 }
 
 void message_fetch(msg_t* pmsg, res_win_t wt)
@@ -79,6 +79,15 @@ result_t message_dispatch(const msg_t* pmsg)
 	pif = PROCESS_WIDGET_INTERFACE;
 
 	return (*pif->pf_message_dispatch)(pmsg);
+}
+
+bool_t	message_is_quit(const msg_t* pmsg)
+{
+	if_widget_t* pif;
+
+	pif = PROCESS_WIDGET_INTERFACE;
+
+	return (*pif->pf_message_is_quit)(pmsg);
 }
 
 void message_position(xpoint_t* ppt)

@@ -31,12 +31,12 @@ LICENSE.GPL3 for more details.
 
 #include "nettftp.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdlinit.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_RAND)
+#if defined(XDK_SUPPORT_SOCK)
 
 typedef struct _tftp_pdu_t{
 	int type;

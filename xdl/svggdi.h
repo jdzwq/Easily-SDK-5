@@ -334,6 +334,7 @@ EXP_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t
 */
 EXP_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
 
+#ifdef GPL_SUPPORT_QRCODE
 /*
 @FUNCTION svg_draw_qrcode: draw QR bar in svg canvas using millimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
@@ -344,6 +345,7 @@ EXP_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t*
 @RETURN void: none.
 */
 EXP_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+#endif
 
 /*
 @FUNCTION svg_draw_gizmo: draw gizmo icon in svg canvas using millimeter coordinate.

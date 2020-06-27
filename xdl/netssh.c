@@ -31,12 +31,12 @@ LICENSE.GPL3 for more details.
 
 #include "netssh.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdlinit.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
+#if defined(XDK_SUPPORT_SOCK)
 
 static unsigned char dhm_G[] = {0x02};
 

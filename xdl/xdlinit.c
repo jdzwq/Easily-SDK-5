@@ -35,7 +35,6 @@ LICENSE.GPL3 for more details.
 #include "impassert.h"
 #include "impjmp.h"
 #include "impmbcs.h"
-#include "oemacp.h"
 
 #ifdef XDL_SUPPORT_MEMO_DUMP
 #include "dblink.h"
@@ -425,11 +424,6 @@ void xdl_process_init(dword_t opt)
 	//init the master thread local heap, error handler
 	xdl_thread_init(1);
 #endif
-
-#if defined(GPL_SUPPORT_ACP) && !defined(XDK_SUPPORT_MBCS)
-    g_xdl_mou.cp_gbk = create_gbk_codepage();
-    g_xdl_mou.cp_ucs = create_ucs_codepage();
-#endif
     
 #ifdef XDK_SUPPORT_SOCK
 	if (g_xdl_mou.if_socket.pf_socket_startup)
@@ -451,13 +445,6 @@ void xdl_process_uninit()
 
 #ifdef XDK_SUPPORT_SOCK
 	(*g_xdl_mou.if_socket.pf_socket_cleanup)();
-#endif
-
-#if defined(GPL_SUPPORT_ACP) && !defined(XDK_SUPPORT_MBCS)
-	if(g_xdl_mou.cp_gbk)
-		destroy_codepage(g_xdl_mou.cp_gbk);
-	if(g_xdl_mou.cp_ucs)
-		destroy_codepage(g_xdl_mou.cp_ucs);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD

@@ -36,7 +36,9 @@ LICENSE.GPL3 for more details.
 #define XDU_SUPPORT_CONTEXT
 #define XDU_SUPPORT_CONTEXT_REGION
 #define XDU_SUPPORT_CONTEXT_BITMAP
-#define XDU_SUPPORT_CONTEXT_GRAPHIC
+//#define XDU_SUPPORT_CONTEXT_GDI
+#define XDU_SUPPORT_CONTEXT_CAIRO
+
 #define XDU_SUPPORT_CLIPBOARD
 #define XDU_SUPPORT_WIDGET
 
@@ -51,6 +53,11 @@ LICENSE.GPL3 for more details.
 #include <X11/cursorfont.h>
 #include <X11/Xresource.h>
 #include <X11/Xlocale.h>
+#endif
+
+#ifdef XDU_SUPPORT_CONTEXT_CAIRO
+#include <cairo/cairo.h>
+#include <cairo/cairo-xlib.h>
 #endif
 
 
@@ -123,6 +130,17 @@ extern X11_atoms_t  g_atoms;
 
 #define XRGB(ch) (unsigned short)((double)ch * 65535.0 / 256.0)
 
+extern Display*     g_display;
+
+typedef Colormap    res_clr_t;
+typedef Font		res_font_t;
+#ifdef XDU_SUPPORT_CONTEXT_BITMAP
+typedef XImage*		res_bmp_t;
+#endif
+#ifdef XDU_SUPPORT_CONTEXT_REGION
+typedef Region		res_rgn_t;
+#endif
+
 typedef struct _X11_context_t{
     int type;
     GC context;
@@ -133,19 +151,7 @@ typedef struct _X11_context_t{
     Colormap color;
     unsigned int depth;
 }X11_context_t;
-
-extern Display*     g_display;
-extern XIM          g_xim;
-
 typedef X11_context_t* res_ctx_t;
-typedef Colormap    res_clr_t;
-typedef Font		res_font_t;
-#ifdef XDU_SUPPORT_CONTEXT_BITMAP
-typedef XImage*		res_bmp_t;
-#endif
-#ifdef XDU_SUPPORT_CONTEXT_REGION
-typedef Region		res_rgn_t;
-#endif
 
 #endif /*XDU_SUPPORT_CONTEXT*/
 

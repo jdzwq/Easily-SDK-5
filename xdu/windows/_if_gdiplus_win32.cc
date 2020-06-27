@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "xduiml.h"
 #include "xduutil.h"
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC) && (defined(UNICODE) || defined(_UNICODE))
+#if defined(XDU_SUPPORT_CONTEXT_GDIPLUS)
 
 static LOGFONT lf_gdiplus = { 0 };
 
@@ -100,6 +100,7 @@ static void _adjust_rect(RECT* pRect, int src_width, int src_height, const tchar
 }
 
 /************************************************************************************************/
+
 static Pen* create_pen(const xpen_t* pxp)
 {
 	xcolor_t pen_color = {0};
@@ -599,7 +600,8 @@ void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, co
 
 	Pen* pp = create_pen(pxp);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
@@ -632,7 +634,8 @@ void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 
 	DPtoLP(hDC, pt, 2);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
@@ -724,7 +727,8 @@ void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 	path.AddArc(rf.X, rf.Y + rf.Height - 2 * r, 2 * r, 2 * r, 90, 90);
 	path.AddLine(rf.X, rf.Y + rf.Height - r, rf.X, rf.Y + r);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeHighQuality);
 
@@ -810,7 +814,8 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 
 	DPtoLP(hDC, pt, 2);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -870,7 +875,8 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 
 	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeHighQuality);
 
@@ -933,7 +939,8 @@ void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, i
 
 	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeHighQuality);
 
@@ -1007,7 +1014,8 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 	path.AddLine(pt[1].x, pt[1].y, pt[2].x, pt[2].y);
 	path.AddLine(pt[2].x, pt[2].y, pt[3].x, pt[3].y);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -1101,7 +1109,8 @@ void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,
 
 	Pen* pp = create_pen(pxp);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -1167,7 +1176,8 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 		path.AddLine(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
 	}
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -1259,7 +1269,8 @@ void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1
 
 	DPtoLP(hDC, pt, 4);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -1288,7 +1299,8 @@ void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, 
 		pa[i].Y = pi.y;
 	}
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -1310,7 +1322,8 @@ void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 	if (!path)
 		return;
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 	gh.SetSmoothingMode(SmoothingModeAntiAlias);
 
@@ -1405,7 +1418,8 @@ void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 	format_xcolor(pxc, xb.color);
 	xsprintf(xb.opacity, _T("%d"), opacity);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	Brush* pb = (Brush*)create_brush(&xb);
@@ -1437,7 +1451,8 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* p
 	Brush* pb = new TextureBrush(pbm, Rect(0, 0, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 	delete pbm;
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
@@ -1468,7 +1483,8 @@ void _gdiplus_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,cons
 
 	RectF rf((REAL)pt[0].x,(REAL)pt[0].y,(REAL)(pt[1].x - pt[0].x),(REAL)(pt[1].y - pt[0].y));
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	if (len < 0 && txt)
@@ -1568,7 +1584,8 @@ void _gdiplus_draw_image(res_ctx_t rdc,res_bmp_t bmp,const tchar_t* clr,const xr
 
 	DPtoLP(hDC,(LPPOINT)&rt,2);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	gh.DrawImage(pi,Rect(rt.left,rt.top,rt.right - rt.left,rt.bottom - rt.top),0,0,srcw,srch,UnitPixel,&iab);
@@ -1576,7 +1593,7 @@ void _gdiplus_draw_image(res_ctx_t rdc,res_bmp_t bmp,const tchar_t* clr,const xr
 	delete pi;
 }
 
-void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* prt)
+void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -1590,22 +1607,17 @@ void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* prt)
 	ImageAttributes iab;
 	iab.SetColorKey(Color(250, 250, 250), Color(255, 255, 255));
 
-	RECT rt;
-	rt.left = prt->x;
-	rt.top = prt->y;
-	rt.right = prt->x + prt->w;
-	rt.bottom = prt->y + prt->h;
+	POINT pt;
+	pt.x = ppt->x;
+	pt.y = ppt->y;
 
-	//_adjust_rect(&rt, srcw, srch, GDI_ATTR_TEXT_ALIGN_CENTER, GDI_ATTR_TEXT_ALIGN_CENTER);
+	DPtoLP(hDC, (LPPOINT)&pt, 1);
 
-	DPtoLP(hDC, (LPPOINT)&rt, 2);
+	Gdiplus::Graphics gh(hDC);
 
-	Graphics gh(hDC);
 	gh.SetPageUnit(UnitPixel);
 
-	//gh.DrawImage(pi, Rect(rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top), 0, 0, srcw, srch, UnitPixel, &iab);
-	
-	gh.DrawImage(pi, rt.left, rt.top, 0, 0, srcw, srch, UnitPixel);
+	gh.DrawImage(pi, pt.x, pt.y, 0, 0, srcw, srch, UnitPixel);
 
 	delete pi;
 }
@@ -1663,7 +1675,8 @@ void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 
 	Brush* pb = create_brush(pxb);
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	gh.FillRegion(pb, &gn);
@@ -1696,7 +1709,8 @@ void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 
 	RectF rf((REAL)pt[0].x, (REAL)pt[0].y, (REAL)(pt[1].x - pt[0].x), (REAL)(pt[1].y - pt[0].y));
 
-	Graphics gh(hDC);
+	Gdiplus::Graphics gh(hDC);
+
 	gh.SetPageUnit(UnitPixel);
 
 	Font* pf = create_font(pxf);

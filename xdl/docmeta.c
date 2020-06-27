@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "docmeta.h"
 #include "xdldoc.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlinit.h"
 

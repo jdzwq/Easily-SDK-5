@@ -81,12 +81,16 @@ int _context_startup()
 	}
 #endif
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
-#ifdef _UNICODE
-	_gdiplus_init(nVer);
-#else
+#ifdef XDU_SUPPORT_CONTEXT_GDI
 	_gdi_init(nVer);
 #endif
+
+#ifdef XDU_SUPPORT_CONTEXT_GDIPLUS
+	_gdiplus_init(nVer);
+#endif
+
+#ifdef XDU_SUPPORT_CONTEXT_CAIRO
+	_cairo_init(nVer);
 #endif
 
 	return nVer;
@@ -94,12 +98,16 @@ int _context_startup()
 
 void _context_cleanup(void)
 {
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
-#ifdef _UNICODE
-	_gdiplus_uninit();
-#else
+#ifdef XDU_SUPPORT_CONTEXT_GDI
 	_gdi_uninit();
 #endif
+
+#ifdef XDU_SUPPORT_CONTEXT_GDIPLUS
+	_gdiplus_uninit();
+#endif
+
+#ifdef XDU_SUPPORT_CONTEXT_CAIRO
+	_cairo_uninit();
 #endif
 }
 

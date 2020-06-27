@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 				if (compare_text(sz_tag, -1, _T("med"), -1, 1) == 0)
 					dump_mded(stm_dst, MED_OPERA_FILEHEAD | MED_OPERA_DATASET, stm_src);
 				else
-					dump_dicm(stm_dst, DCM_OPERA_FILEHEAD | DCM_OPERA_DATASET, stm_src);
+					dump_dicm(stm_dst, DICM_OPERA_FILEHEAD | DICM_OPERA_DATASET, stm_src);
 
 				stream_free(stm_dst);
 				xcons_free(std);
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 				if (compare_text(sz_tag, -1, _T("med"), -1, 1) == 0)
 					decode_mded_doc_from_stream(dom, MED_OPERA_FILEHEAD | MED_OPERA_DATASET, stm_src);
 				else
-					parse_dicm_doc_from_stream(dom, DCM_OPERA_FILEHEAD | DCM_OPERA_DATASET, stm_src);
+					parse_dicm_doc_from_stream(dom, DICM_OPERA_FILEHEAD | DICM_OPERA_DATASET, stm_src);
 
 				save_dom_doc_to_file(dom, NULL, sz_dst);
 

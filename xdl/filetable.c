@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "filetable.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlinit.h"
 
@@ -461,7 +461,6 @@ bool_t write_file_table_block(link_t_ptr pt, int pos, byte_t* buf, dword_t size)
 
 #if defined(_DEBUG) || defined(DEBUG)
 #include <time.h>
-#include "oemrand.h"
 
 void test_file_table(const tchar_t* fname)
 {

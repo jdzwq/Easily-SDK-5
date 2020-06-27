@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "gizmogdi.h"
 #include "xdcimp.h"
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
+#if defined(XDU_SUPPORT_CONTEXT)
 
 void draw_logo_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 {

@@ -1,4 +1,4 @@
-/***********************************************************************
+﻿/***********************************************************************
 	Easily codepage
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
@@ -23,7 +23,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "acp.h"
+#include "acpdef.h"
 
 #define CODE_SIZE	7478
 

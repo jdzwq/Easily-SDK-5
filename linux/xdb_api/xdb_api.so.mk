@@ -5,12 +5,13 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/api/xdb_api
+INI_PATH = ~/Easily-sdk-5/linux/setup
 OUT_PATH = ../sbin/api
 
-INS_PATH = ~/Easily-sdk-5/linux/setup
-
+LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
 DIRS = $(wildcard $(SRC_PATH)/*.cc)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
@@ -22,7 +23,7 @@ TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl
+	$(CC) -shared -fPIC -pthread -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:
@@ -36,17 +37,17 @@ install:
 	sudo rm -f $(LNK_PATH)/$(MODULE)*;
 	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
 
-	sudo cp -f $(INS_PATH)/cfg/xdb.config $(SRV_PATH)/cfg;
+	sudo cp -f $(INI_PATH)/cfg/xdb.config $(SRV_PATH)/cfg;
 
 	if ! test -d $(SRV_PATH)/lic/xdb; then \
 	sudo mkdir $(SRV_PATH)/lic/xdb; \
 	fi
-	sudo cp -rf $(INS_PATH)/lic/xdb $(SRV_PATH)/lic;
+	sudo cp -rf $(INI_PATH)/lic/xdb $(SRV_PATH)/lic;
 
 	if ! test -d $(SRV_PATH)/xdb; then \
 	sudo mkdir $(SRV_PATH)/xdb; \
 	fi
-	sudo cp -rf $(INS_PATH)/xdb $(SRV_PATH);
+	sudo cp -rf $(INI_PATH)/xdb $(SRV_PATH);
 
 .PHONY : clean
 clean:

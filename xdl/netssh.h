@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
+#if defined(XDK_SUPPORT_SOCK)
 
 #define DEF_SSH_PORT		22
 

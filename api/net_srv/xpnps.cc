@@ -156,8 +156,6 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	free_library(api);
 	api = NULL;
 
-	_xpnps_track_error((void*)pb, _T("_pnps_invoke"), _T("site service exist"));
-
 	xmem_free(pb);
 	pb = NULL;
 

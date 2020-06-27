@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "set.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 set_t* set_alloc()

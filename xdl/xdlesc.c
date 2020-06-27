@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "xdlesc.h"
 #include "impmem.h"
 #include "xdlstr.h"
-#include "oemconv.h"
+#include "xdlconv.h"
 
 
 static tchar_t csv_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
@@ -452,7 +452,7 @@ dword_t xml_utf8_decode(const byte_t* src, tchar_t* dest)
 	return pos;
 }
 
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 dword_t xml_gb2312_decode(const byte_t* src, tchar_t* dest)
 {
 	wchar_t pch[ESC_LEN + 1] = { 0 };
@@ -907,7 +907,7 @@ dword_t xml_utf8_encode(tchar_t ch, byte_t* dest, dword_t max)
 	return 0;
 }
 
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 dword_t xml_gb2312_encode(tchar_t ch, byte_t* dest, dword_t max)
 {
 	if (ch == _T('<'))

@@ -84,7 +84,7 @@ int calc_form_pages(canvas_t canv, link_t_ptr form)
 				max = (max > pages) ? max : pages;
 			}
 		}
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
+#ifdef XDU_SUPPORT_CONTEXT
 		else if (compare_text(cls, -1, DOC_FORM_RICH, -1, 0) == 0)
 		{
 			obj = get_field_embed_rich(flk);

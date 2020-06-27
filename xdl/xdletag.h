@@ -39,8 +39,6 @@ extern "C" {
 #endif
 
 
-#ifdef XDL_SUPPORT_CRYPT
-
 EXP_API	void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN]);
 
 EXP_API	void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN]);
@@ -53,7 +51,6 @@ EXP_API void file_info_etag(const tchar_t* fname, const tchar_t* ftime, const tc
 #define md5_token		a_md5_token
 #endif
 
-#endif
 
 #ifdef	__cplusplus
 }

@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "imperr.h"
 #include "xdlinit.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstr.h"
 
 void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)

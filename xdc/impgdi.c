@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #include "xdcimp.h"
 #include "xdcinit.h"
 
-#if defined(XDU_SUPPORT_CONTEXT_GRAPHIC)
+#if defined(XDU_SUPPORT_CONTEXT)
 
 void draw_line_raw(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
@@ -215,16 +215,16 @@ void color_out_raw(res_ctx_t rdc, const xrect_t* pxr, bool_t horz, const tchar_t
 	}
 }
 
-void draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xrect_t* pxr)
+void draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, pxr);
+	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, ppt);
 }
 
-void draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* pxr)
+void draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* prt)
 {
 	if_context_t *pif;
 	res_bmp_t bmp;
@@ -235,12 +235,12 @@ void draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* pxr)
 
 	if (bmp)
 	{
-		(*pif->pf_gdi_draw_bitmap)(rdc, bmp, pxr);
+		(*pif->pf_gdi_draw_image)(rdc, bmp, NULL, prt);
 		destroy_bitmap(bmp);
 	}
 }
 
-void draw_thumb_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* pxr)
+void draw_thumb_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* prt)
 {
 	if_context_t *pif;
 	res_bmp_t bmp;
@@ -251,7 +251,7 @@ void draw_thumb_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* pxr)
 
 	if (bmp)
 	{
-		(*pif->pf_gdi_draw_bitmap)(rdc, bmp, pxr);
+		(*pif->pf_gdi_draw_image)(rdc, bmp, NULL, prt);
 		destroy_bitmap(bmp);
 	}
 }
@@ -1557,7 +1557,7 @@ void draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrec
 	}
 }
 
-void draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* pxr)
+void draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1566,13 +1566,13 @@ void draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* pxr)
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	xmem_copy((void*)&xr, (void*)prt, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
 	draw_icon_raw(rdc, iname, &xr);
 }
 
-void draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* pxr)
+void draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1581,7 +1581,7 @@ void draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* pxr)
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	xmem_copy((void*)&xr, (void*)prt, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
 	draw_thumb_raw(rdc, fname, &xr);
@@ -1671,19 +1671,19 @@ void text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tcha
 	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
-void draw_bitmap(canvas_t canv, res_bmp_t bmp, const xrect_t* pxr)
+void draw_bitmap(canvas_t canv, res_bmp_t bmp, const xpoint_t* ppt)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
+	xpoint_t pt;
 
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
+	xmem_copy((void*)&pt, (void*)ppt, sizeof(xpoint_t));
+	point_tm_to_pt(canv, &pt);
 
-	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, &xr);
+	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, &pt);
 }
 
 void exclip_rect(canvas_t canv, const xrect_t* pxr)

@@ -1,4 +1,4 @@
-/***********************************************************************
+﻿/***********************************************************************
 	Easily codepage
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
@@ -24,7 +24,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 
-#include "acp.h"
+#include "acpdef.h"
 
 int utf16lit_code_sequence(unsigned char b)
 {

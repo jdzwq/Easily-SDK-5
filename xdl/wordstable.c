@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "wordstable.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 typedef struct _words_table{

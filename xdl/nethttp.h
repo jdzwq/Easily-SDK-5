@@ -430,7 +430,6 @@ EXP_API dword_t		xhttp_format_error(bool_t b_json, const tchar_t* encoding, cons
 */
 EXP_API bool_t		xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max);
 
-#ifdef XDL_SUPPORT_CRYPT
 /*
 @FUNCTION xhttp_request_signature: calc http request header signature.
 @INPUT xhand_t xhttp: the http handle.
@@ -441,7 +440,6 @@ EXP_API bool_t		xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const 
 @RETURN int: return the signature length in characters.
 */
 EXP_API int			xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* skey, tchar_t* buf, int max);
-#endif
 
 /*
 @FUNCTION xhttp_is_requested: test http request header has been sended.

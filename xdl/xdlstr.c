@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdlstr.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 schar_t* a_xsalloc(int len)

@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "nethttp.h"
 #include "xdlinit.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdldoc.h"
@@ -1015,7 +1015,6 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 
 	switch (phttp->secu)
 	{
-#ifdef XDL_SUPPORT_CRYPT
 	case _SECU_SSL:
 		phttp->inf.bio = xssl_cli(phttp->port, phttp->addr);
 
@@ -1034,7 +1033,6 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		phttp->inf.pf_close = xssh_close;
 		phttp->inf.pf_setopt = xssh_setopt;
 		break;
-#endif
 	default:
 		phttp->inf.bio = xtcp_cli(phttp->port, phttp->addr);
 
@@ -1102,7 +1100,6 @@ xhand_t xhttp_server(xhand_t bio)
 
 	switch(phttp->secu)
 	{
-#ifdef XDL_SUPPORT_CRYPT
 	case _SECU_SSL:
 		phttp->inf.pf_write = xssl_write;
 		phttp->inf.pf_flush = xssl_flush;
@@ -1119,7 +1116,6 @@ xhand_t xhttp_server(xhand_t bio)
 
 		socket_peer(xssh_socket(bio), &na);
 		break;
-#endif
 	default:
 		phttp->inf.pf_write = xtcp_write;
 		phttp->inf.pf_read = xtcp_read;
@@ -1227,14 +1223,12 @@ unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
 
 	switch (phttp->secu)
 	{
-#ifdef XDL_SUPPORT_CRYPT
 	case _SECU_SSL:
 		so = xssl_socket(phttp->inf.bio);
 		break;
 	case _SECU_SSH:
 		so = xssh_socket(phttp->inf.bio);
 		break;
-#endif
 	default:
 		so = xtcp_socket(phttp->inf.bio);
 		break;
@@ -1260,14 +1254,12 @@ unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
 
 	switch (phttp->secu)
 	{
-#ifdef XDL_SUPPORT_CRYPT
 	case _SECU_SSL:
 		so = xssl_socket(phttp->inf.bio);
 		break;
 	case _SECU_SSH:
 		so = xssh_socket(phttp->inf.bio);
 		break;
-#endif
 	default:
 		so = xtcp_socket(phttp->inf.bio);
 		break;
@@ -2314,7 +2306,6 @@ void xhttp_set_authorization(xhand_t xhttp, const tchar_t* sz_mode, const tchar_
 	xhttp_set_request_header(xhttp, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 }
 
-#ifdef XDL_SUPPORT_CRYPT
 int xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* skey, tchar_t* buf, int max)
 {
 	tchar_t sz_verb[RES_LEN + 1] = { 0 };
@@ -2407,7 +2398,6 @@ int xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* s
 
 	return bas_len;
 }
-#endif
 
 dword_t xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
 {

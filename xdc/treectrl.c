@@ -1233,8 +1233,6 @@ void treectrl_find(res_win_t widget, const tchar_t* token)
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	link_t_ptr elk;
 	int tlen;
-	tchar_t* help;
-	int hlen;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -1247,8 +1245,6 @@ void treectrl_find(res_win_t widget, const tchar_t* token)
 
 	if (tlen)
 	{
-		help = xsalloc(tlen + 1);
-
 		elk = (ptd->item) ? get_tree_next_sibling_item(ptd->item) : get_tree_first_child_item(ptd->tree);
 
 		while (elk)
@@ -1256,18 +1252,8 @@ void treectrl_find(res_win_t widget, const tchar_t* token)
 			if (xsnicmp(get_tree_item_title_ptr(elk), token, tlen) == 0)
 				break;
 
-			hlen = xslen(get_tree_item_title_ptr(elk));
-			if (hlen)
-			{
-				help_code(get_tree_item_title_ptr(elk), hlen, help, tlen);
-				if (xsnicmp(help, token, tlen) == 0)
-					break;
-			}
-
 			elk = get_tree_next_sibling_item(elk);
 		}
-
-		xsfree(help);
 	}
 	else
 	{

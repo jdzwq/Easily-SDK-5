@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdlinet.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdldoc.h"
@@ -221,14 +221,12 @@ static bool_t _http_read_file(xinet_t* pfn, byte_t* buf, dword_t* pb, const tcha
 
 	xhttp_set_request_header(xh, HTTP_HEADER_ACCEPTENCODING, -1, HTTP_HEADER_CONTENTENCODING_DEFLATE, -1);
 
-#ifdef XDL_SUPPORT_CRYPT
 	if (!is_null(pfn->fsecu.scr_key))
 	{
 		xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, pfn->fsecu.scr_key, sz_hmac, HMAC_LEN);
 		xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pfn->fsecu.scr_uid, sz_hmac);
 		xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 	}
-#endif
 
 	if (!xhttp_send_request(xh))
 	{
@@ -440,14 +438,12 @@ static bool_t _http_write_file(xinet_t* pfn, const byte_t* buf, dword_t* pb, con
 		xhttp_set_request_header(xh, HTTP_HEADER_CONTENTRANGE, -1, range, -1);
 	}
 
-#ifdef XDL_SUPPORT_CRYPT
 	if (!is_null(pfn->fsecu.scr_uid))
 	{
 		xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, pfn->fsecu.scr_key, sz_hmac, HMAC_LEN);
 		xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, pfn->fsecu.scr_uid, sz_hmac);
 		xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 	}
-#endif
 
 	if (b_zip)
 		b_rt = xhttp_send_full(xh, sz_zip, n_zip);
@@ -617,14 +613,12 @@ static bool_t http_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 
 	xhttp_set_request_default_header(xh);
 
-#ifdef XDL_SUPPORT_CRYPT
 	if (psd && !is_null(psd->scr_uid))
 	{
 		xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, psd->scr_key, sz_hmac, HMAC_LEN);
 		xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, psd->scr_uid, sz_hmac);
 		xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 	}
-#endif
 
 	if (!xhttp_send_request(xh))
 	{
@@ -675,14 +669,12 @@ static bool_t http_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBA
 	xhttp_set_request_default_header(xh);
 	xhttp_set_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
 
-#ifdef XDL_SUPPORT_CRYPT
 	if (psd && !is_null(psd->scr_uid))
 	{
 		xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, psd->scr_key, sz_hmac, HMAC_LEN);
 		xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, psd->scr_uid, sz_hmac);
 		xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 	}
-#endif
 
 	if (!xhttp_send_request(xh))
 	{
@@ -758,14 +750,12 @@ static bool_t http_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 
 	xhttp_set_request_default_header(xh);
 
-#ifdef XDL_SUPPORT_CRYPT
 	if (psd && !is_null(psd->scr_uid))
 	{
 		xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, psd->scr_key, sz_hmac, HMAC_LEN);
 		xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, psd->scr_uid, sz_hmac);
 		xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
 	}
-#endif
 
 	if (!xhttp_send_request(xh))
 	{

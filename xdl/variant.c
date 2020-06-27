@@ -31,9 +31,9 @@ LICENSE.GPL3 for more details.
 
 #include "variant.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
-#include "xdloem.h"
+
 
 #define VARIANT_HDR_SIZE	8
 

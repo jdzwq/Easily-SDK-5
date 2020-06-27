@@ -26,7 +26,7 @@ LICENSE.GPL3 for more details.
 
 #include "radobj.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlinit.h"
 

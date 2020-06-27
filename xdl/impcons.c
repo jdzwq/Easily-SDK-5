@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #include "xdlinit.h"
 #include "xdlimp.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 #ifdef XDK_SUPPORT_CONS

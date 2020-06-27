@@ -30,7 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "memoview.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdldoc.h"
 

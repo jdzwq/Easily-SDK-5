@@ -850,11 +850,12 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 				BeginPaint(hWnd, &ps);
 
+#ifdef XDU_SUPPORT_CONTEXT_OPENGL
 				if (ds & WD_STYLE_OPENGL)
 				{
 					GL_BEGIN(hWnd, ps.hdc);
 				}
-
+#endif
 				wct.context = ps.hdc;
 				wct.device.widget = hWnd;
 				wct.type = CONTEXT_WIDGET;
@@ -862,12 +863,12 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 				(*pev->pf_on_paint)(hWnd, &wct, &xrFront);
 
 				ZeroMemory((void*)&wct, sizeof(win32_context_t));
-
+#ifdef XDU_SUPPORT_CONTEXT_OPENGL
 				if (ds & WD_STYLE_OPENGL)
 				{
 					GL_END(hWnd, ps.hdc);
 				}
-
+#endif
 				EndPaint(hWnd, &ps);
 			}
 		}
@@ -1225,11 +1226,12 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
 				BeginPaint(hWnd, &ps);
 
+#ifdef XDU_SUPPORT_CONTEXT_OPENGL
 				if (ds & WD_STYLE_OPENGL)
 				{
 					GL_BEGIN(hWnd, ps.hdc);
 				}
-
+#endif
 				wct.context = ps.hdc;
 				wct.device.widget = hWnd;
 				wct.type = CONTEXT_WIDGET;
@@ -1238,10 +1240,12 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
 				ZeroMemory((void*)&wct, sizeof(win32_context_t));
 
+#ifdef XDU_SUPPORT_CONTEXT_OPENGL
 				if (ds & WD_STYLE_OPENGL)
 				{
 					GL_END(hWnd, ps.hdc);
 				}
+#endif
 
 				EndPaint(hWnd, &ps);
 
@@ -2727,7 +2731,7 @@ void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-void _message_quit(int code)
+void _send_quit_message(int code)
 {
 	PostQuitMessage(code);
 }
@@ -2750,6 +2754,11 @@ bool_t	_message_translate(const msg_t* pmsg)
 result_t _message_dispatch(const msg_t* pmsg)
 {
 	return DispatchMessage(pmsg);
+}
+
+bool_t	_message_is_quit(const msg_t* pmsg)
+{
+	return (pmsg->message == WM_QUIT) ? 1 : 0;
 }
 
 void _message_position(xpoint_t* ppt)

@@ -146,15 +146,11 @@ void _listctrl_find(res_win_t widget, const tchar_t* token)
 	list_delta_t* ptd = GETLISTDELTA(widget);
 	link_t_ptr elk;
 	int tlen;
-	tchar_t* help;
-	int hlen;
 
 	tlen = xslen(token);
 
 	if (tlen)
 	{
-		help = xsalloc(tlen + 1);
-
 		elk = (ptd->item) ? get_list_next_sibling_item(ptd->item) : NULL;
 
 		if (!elk)
@@ -165,18 +161,8 @@ void _listctrl_find(res_win_t widget, const tchar_t* token)
 			if (xsnicmp(get_list_item_title_ptr(elk), token, tlen) == 0)
 				break;
 
-			hlen = xslen(get_list_item_title_ptr(elk));
-			if (hlen)
-			{
-				tlen = help_code(get_list_item_title_ptr(elk), hlen, help, tlen);
-				if (xsnicmp(help, token, tlen) == 0)
-					break;
-			}
-
 			elk = get_list_next_sibling_item(elk);
 		}
-
-		xsfree(help);
 	}
 	else
 	{

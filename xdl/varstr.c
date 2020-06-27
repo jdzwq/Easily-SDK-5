@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "varstr.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 #define VARSTR_INC	512
@@ -504,7 +504,7 @@ dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 		return mbs_to_utf8(string_ptr(vs), string_len(vs), buf, max);
 #endif
 	}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (encode == _GB2312)
 	{
 #ifdef _UNICODE
@@ -573,7 +573,7 @@ int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 		len = utf8_to_mbs(buf, size, NULL, MAX_LONG);
 #endif
 	}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (encode == _GB2312)
 	{
 #ifdef _UNICODE
@@ -618,7 +618,7 @@ int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 		len = utf8_to_mbs(buf, size,  str, len);
 #endif
 	}
-#if defined(GPL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
+#if defined(XDL_SUPPORT_ACP) || defined(XDK_SUPPORT_MBCS)
 	else if (encode == _GB2312)
 	{
 #ifdef _UNICODE

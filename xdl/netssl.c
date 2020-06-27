@@ -31,12 +31,12 @@ LICENSE.GPL3 for more details.
 
 #include "netssl.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdlinit.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_CRYPT)
+#if defined(XDK_SUPPORT_SOCK)
 
 
 #define GET_THREEBYTE_LEN(buf,off)		((buf[off] << 16) | (buf[off+1] << 8) | buf[off+2])

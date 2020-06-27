@@ -690,8 +690,6 @@ void wordsbox_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 	link_t_ptr elk;
 	int tlen;
 	const tchar_t* text;
-	tchar_t* help;
-	int hlen;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -705,7 +703,6 @@ void wordsbox_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 	}
 
 	tlen = xslen(token);
-	help = xsalloc(tlen + 1);
 
 	if (pos == LINK_FIRST)
 		elk = get_words_next_visible_item(ptd->words, LINK_FIRST);
@@ -721,18 +718,8 @@ void wordsbox_find(res_win_t widget, link_t_ptr pos, const tchar_t* token)
 		if (xsnicmp(text, token, tlen) == 0)
 			break;
 
-		hlen = xslen(text);
-		if (hlen)
-		{
-			help_code(text, hlen, help, tlen);
-			if (xsnicmp(help, token, tlen) == 0)
-				break;
-		}
-
 		elk = get_words_next_visible_item(ptd->words, elk);
 	}
-
-	xsfree(help);
 
 	wordsbox_set_focus_item(widget, elk);
 }
@@ -745,8 +732,6 @@ void wordsbox_filter(res_win_t widget, const tchar_t* token)
 	const tchar_t* text;
 
 	bool_t b_redraw, b_hidden;
-	tchar_t* help;
-	int hlen;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -756,7 +741,6 @@ void wordsbox_filter(res_win_t widget, const tchar_t* token)
 	wordsbox_set_focus_item(widget, NULL);
 
 	tlen = xslen(token);
-	help = xsalloc(tlen + 1);
 
 	b_redraw = 0;
 	elk = get_words_next_item(ptd->words, LINK_FIRST);
@@ -774,14 +758,6 @@ void wordsbox_filter(res_win_t widget, const tchar_t* token)
 
 			if (xsnicmp(text, token, tlen) == 0)
 				b_hidden = 0;
-
-			hlen = xslen(text);
-			if (hlen)
-			{
-				help_code(text, hlen, help, tlen);
-				if (xsnicmp(help, token, tlen) == 0)
-					b_hidden = 0;
-			}
 		}
 
 		if (b_hidden != get_words_item_hidden(elk))
@@ -792,8 +768,6 @@ void wordsbox_filter(res_win_t widget, const tchar_t* token)
 
 		elk = get_words_next_item(ptd->words, elk);
 	}
-
-	xsfree(help);
 
 	if (b_redraw)
 		wordsbox_redraw(widget);

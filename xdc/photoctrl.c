@@ -335,7 +335,7 @@ static res_bmp_t _photoctrl_merge_anno(res_win_t widget)
 	widget_get_xbrush(widget, &xb);
 	draw_rect_raw(memdc, NULL, &xb, &xr);
 
-	draw_bitmap_raw(memdc, ptd->bmp, &xr);
+	draw_bitmap_raw(memdc, ptd->bmp, RECTPOINT(&xr));
 
 	ilk = get_anno_next_arti(ptd->anno, LINK_FIRST);
 	while (ilk)
@@ -1068,7 +1068,7 @@ void hand_photo_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	if (ptd->bmp)
 	{
-		draw_bitmap_raw(rdc, ptd->bmp, &xr);
+		draw_bitmap_raw(rdc, ptd->bmp, RECTPOINT(&xr));
 	}
 
 	noti_photo_owner(widget, NC_PHOTOFACEDRAW, NULL, (void*)&xr, rdc);

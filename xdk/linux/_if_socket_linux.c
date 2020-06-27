@@ -300,6 +300,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
     
     int rs, rt;
     struct epoll_event ev = {0};
+    socklen_t len = 0;
 
     if (pb->type == ASYNC_QUEUE)
     {
@@ -351,7 +352,9 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
         rt = (int)size;
     }
     
-    rt = (int)recvfrom(so, (char*)buf, (size_t)rt, MSG_NOSIGNAL, (struct sockaddr*)saddr, (socklen_t*)plen);
+    rt = (int)recvfrom(so, (char*)buf, (size_t)rt, MSG_NOSIGNAL, (struct sockaddr*)saddr, (socklen_t*)&len);
+    *plen = (int)len;
+    
     if (rt < 0)
     {
         if(errno != EINPROGRESS)

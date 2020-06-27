@@ -78,6 +78,34 @@ typedef float(*PF_CAST_PT_TO_MM)(res_ctx_t, int, bool_t);
 typedef int(*PF_CAST_MM_TO_PT)(res_ctx_t, float, bool_t);
 typedef int(*PF_FONT_SIZE)(res_ctx_t, int);
 
+/*graphic interface*/
+typedef void(*PF_GDI_DRAW_LINE)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_POLYLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_POLYGON)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_BEZIER)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_CURVE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_PATH)(res_ctx_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*);
+typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
+typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
+typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int, int, double, double);
+typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xpoint_t*, int, int, double, double);
+typedef void(*PF_GDI_DRAW_ARROW)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, int, double);
+typedef void(*PF_GDI_DRAW_TEXT)(res_ctx_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
+typedef void(*PF_GDI_TEXT_OUT)(res_ctx_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
+typedef void(*PF_GDI_DRAW_IMAGE)(res_ctx_t, res_bmp_t, const tchar_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_BITMAP)(res_ctx_t, res_bmp_t, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_ICON)(res_ctx_t, const xcolor_t*, const xrect_t*, const tchar_t*);
+typedef void(*PF_GDI_FILL_REGION)(res_ctx_t, const xbrush_t*, res_rgn_t);
+
+typedef void(*PF_GDI_EXCLIP_RECT)(res_ctx_t, const xrect_t*);
+typedef void(*PF_GDI_INCLIP_RECT)(res_ctx_t, const xrect_t*);
+
+typedef void(*PF_GDI_TEXT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, xsize_t*);
+typedef void(*PF_GDI_TEXT_METRIC)(res_ctx_t, const xfont_t*, xsize_t*);
+
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 typedef res_rgn_t(*PF_CREATE_REGION)(const tchar_t*, const xrect_t*);
 typedef void(*PF_DELETE_REGION)(res_rgn_t);
@@ -102,36 +130,6 @@ typedef dword_t(*PF_SAVE_BITMAP_TO_BYTES)(res_ctx_t, res_bmp_t, unsigned char*, 
 typedef dword_t(*PF_GET_BITMAP_BYTES)(res_bmp_t);
 typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_THUMB)(res_ctx_t, const tchar_t*);
 typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_ICON)(res_ctx_t, const tchar_t*);
-#endif
-
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
-/*graphic interface*/
-typedef void(*PF_GDI_DRAW_LINE)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_POLYLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_POLYGON)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_BEZIER)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_CURVE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_PATH)(res_ctx_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*);
-typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
-typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
-typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int, int, double, double);
-typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xpoint_t*, int, int, double, double);
-typedef void(*PF_GDI_DRAW_ARROW)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, int, double);
-typedef void(*PF_GDI_DRAW_TEXT)(res_ctx_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
-typedef void(*PF_GDI_TEXT_OUT)(res_ctx_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
-typedef void(*PF_GDI_DRAW_IMAGE)(res_ctx_t, res_bmp_t, const tchar_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_BITMAP)(res_ctx_t, res_bmp_t, const xrect_t*);
-typedef void(*PF_GDI_DRAW_ICON)(res_ctx_t, const xcolor_t*, const xrect_t*, const tchar_t*);
-typedef void(*PF_GDI_FILL_REGION)(res_ctx_t, const xbrush_t*, res_rgn_t);
-
-typedef void(*PF_GDI_EXCLIP_RECT)(res_ctx_t, const xrect_t*);
-typedef void(*PF_GDI_INCLIP_RECT)(res_ctx_t, const xrect_t*);
-
-typedef void(*PF_GDI_TEXT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, xsize_t*);
-typedef void(*PF_GDI_TEXT_METRIC)(res_ctx_t, const xfont_t*, xsize_t*);
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
@@ -165,33 +163,6 @@ typedef struct _if_context_t{
 	PF_PT_PER_MM		pf_pt_per_mm;
 	PF_FONT_SIZE		pf_font_size;
 
-#ifdef XDU_SUPPORT_CONTEXT_REGION
-	PF_CREATE_REGION			pf_create_region;
-	PF_DELETE_REGION			pf_delete_region;
-	PF_PT_IN_REGION				pf_pt_in_region;
-#endif
-
-#ifdef XDU_SUPPORT_CONTEXT_BITMAP
-	PF_DESTROY_BITMAP			pf_destroy_bitmap;
-	PF_GET_BITMAP_SIZE			pf_get_bitmap_size;
-
-	PF_CREATE_CONTEXT_BITMAP	pf_create_context_bitmap;
-	PF_CREATE_COLOR_BITMAP		pf_create_color_bitmap;
-	PF_CREATE_PATTERN_BITMAP	pf_create_pattern_bitmap;
-	PF_CREATE_GRADIENT_BITMAP	pf_create_gradient_bitmap;
-	PF_CREATE_CODE128_BITMAP	pf_create_code128_bitmap;
-	PF_CREATE_PDF417_BITMAP		pf_create_pdf417_bitmap;
-	PF_CREATE_QRCODE_BITMAP		pf_create_qrcode_bitmap;
-	PF_CREATE_STORAGE_BITMAP	pf_create_storage_bitmap;
-	PF_LOAD_BITMAP_FROM_BYTES	pf_load_bitmap_from_bytes;
-	PF_SAVE_BITMAP_TO_BYTES		pf_save_bitmap_to_bytes;
-	PF_GET_BITMAP_BYTES			pf_get_bitmap_bytes;
-
-	PF_LOAD_BITMAP_FROM_THUMB	pf_load_bitmap_from_thumb;
-	PF_LOAD_BITMAP_FROM_ICON	pf_load_bitmap_from_icon;
-#endif
-
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
 	PF_GDI_DRAW_LINE		pf_gdi_draw_line;
 	PF_GDI_DRAW_POLYLINE	pf_gdi_draw_polyline;
 	PF_GDI_DRAW_POLYGON		pf_gdi_draw_polygon;
@@ -216,6 +187,31 @@ typedef struct _if_context_t{
 	PF_GDI_TEXT_METRIC		pf_gdi_text_metric;
 	PF_GDI_EXCLIP_RECT		pf_gdi_exclip_rect;
 	PF_GDI_INCLIP_RECT		pf_gdi_inclip_rect;
+
+#ifdef XDU_SUPPORT_CONTEXT_REGION
+	PF_CREATE_REGION			pf_create_region;
+	PF_DELETE_REGION			pf_delete_region;
+	PF_PT_IN_REGION				pf_pt_in_region;
+#endif
+
+#ifdef XDU_SUPPORT_CONTEXT_BITMAP
+	PF_DESTROY_BITMAP			pf_destroy_bitmap;
+	PF_GET_BITMAP_SIZE			pf_get_bitmap_size;
+
+	PF_CREATE_CONTEXT_BITMAP	pf_create_context_bitmap;
+	PF_CREATE_COLOR_BITMAP		pf_create_color_bitmap;
+	PF_CREATE_PATTERN_BITMAP	pf_create_pattern_bitmap;
+	PF_CREATE_GRADIENT_BITMAP	pf_create_gradient_bitmap;
+	PF_CREATE_CODE128_BITMAP	pf_create_code128_bitmap;
+	PF_CREATE_PDF417_BITMAP		pf_create_pdf417_bitmap;
+	PF_CREATE_QRCODE_BITMAP		pf_create_qrcode_bitmap;
+	PF_CREATE_STORAGE_BITMAP	pf_create_storage_bitmap;
+	PF_LOAD_BITMAP_FROM_BYTES	pf_load_bitmap_from_bytes;
+	PF_SAVE_BITMAP_TO_BYTES		pf_save_bitmap_to_bytes;
+	PF_GET_BITMAP_BYTES			pf_get_bitmap_bytes;
+
+	PF_LOAD_BITMAP_FROM_THUMB	pf_load_bitmap_from_thumb;
+	PF_LOAD_BITMAP_FROM_ICON	pf_load_bitmap_from_icon;
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
@@ -368,11 +364,12 @@ typedef int(*PF_WIDGET_DO_NORMAL)(res_win_t);
 typedef int(*PF_WIDGET_DO_MODAL)(res_win_t);
 typedef void(*PF_WIDGET_DO_TRACE)(res_win_t);
 
-typedef void(*PF_MESSAGE_QUIT)(int);
+typedef void(*PF_SEND_QUIT_MESSAGE)(int);
 typedef void(*PF_MESSAGE_FETCH)(msg_t*, res_win_t);
 typedef bool_t(*PF_MESSAGE_PEEK)(msg_t*);
 typedef bool_t(*PF_MESSAGE_TRANSLATE)(const msg_t*);
 typedef result_t(*PF_MESSAGE_DISPATCH)(const msg_t*);
+typedef bool_t(*PF_MESSAGE_IS_QUIT)(const msg_t*);
 typedef void(*PF_MESSAGE_POSITION)(xpoint_t*);
 
 typedef void(*PF_GET_SCREEN_SIZE)(xsize_t*);
@@ -512,11 +509,12 @@ typedef struct _if_widget_t{
 	PF_WIDGET_DO_MODAL			pf_widget_do_modal;
 	PF_WIDGET_DO_TRACE			pf_widget_do_trace;
 
-	PF_MESSAGE_QUIT				pf_message_quit;
+	PF_SEND_QUIT_MESSAGE		pf_send_quit_message;
 	PF_MESSAGE_FETCH			pf_message_fetch;
     PF_MESSAGE_PEEK         	pf_message_peek;
 	PF_MESSAGE_TRANSLATE		pf_message_translate;
 	PF_MESSAGE_DISPATCH			pf_message_dispatch;
+	PF_MESSAGE_IS_QUIT			pf_message_is_quit;
 	PF_MESSAGE_POSITION			pf_message_position;
 
 	PF_GET_SCREEN_SIZE			pf_get_screen_size;
@@ -554,14 +552,12 @@ extern "C" {
 
 #ifdef XDU_SUPPORT_CONTEXT
 	EXP_API void xdu_impl_context(if_context_t* pif);
+	EXP_API void xdu_impl_context_graphic(if_context_t* pif);
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 	EXP_API void xdu_impl_context_region(if_context_t* pif);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
 	EXP_API void xdu_impl_context_bitmap(if_context_t* pif);
-#endif
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
-	EXP_API void xdu_impl_context_graphic(if_context_t* pif);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 	EXP_API void xdu_impl_context_printer(if_context_t* pif);

@@ -28,7 +28,7 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 #include "srvcrt.h"
 
-static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_track, tchar_t* sz_level, tchar_t* sz_proc)
+static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_track, tchar_t* sz_trace, tchar_t* sz_proc)
 {
 	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
@@ -75,9 +75,9 @@ static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* 
 				{
 					get_dom_node_text(nlk, sz_track, PATH_LEN);
 				}
-				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("level"), -1, 1) == 0 && sz_level)
+				else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("trace"), -1, 1) == 0 && sz_trace)
 				{
-					get_dom_node_text(nlk, sz_level, INT_LEN);
+					get_dom_node_text(nlk, sz_trace, INT_LEN);
 				}
 		
 				nlk = get_dom_next_sibling_node(nlk);
@@ -243,13 +243,13 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	tchar_t sz_track[PATH_LEN] = { 0 };
 	tchar_t sz_trace[NUM_LEN] = { 0 };
 	tchar_t sz_space[RES_LEN] = { 0 };
-	tchar_t sz_level[INT_LEN] = { 0 };
 	tchar_t sz_auth[INT_LEN] = { 0 };
 	tchar_t sz_cert[RES_LEN] = { 0 };
     tchar_t sz_name[RES_LEN] = { 0 };
 	tchar_t sz_pass[NUM_LEN] = { 0 };
 	tchar_t sz_ca[RES_LEN] = { 0 };
 	int n_state = 0;
+	int n_trace = 0;
 
 	xhttps_param_t* pxp = (xhttps_param_t*)p;
 	https_block_t *pb = NULL;
@@ -389,12 +389,12 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	if (is_null(sz_site))
 	{
 		xhttp_split_object(sz_object, sz_site, sz_res);
-		_xhttps_get_config(sz_site + 1, sz_space, sz_path, sz_track, sz_level, sz_proc);
+		_xhttps_get_config(sz_site + 1, sz_space, sz_path, sz_track, sz_trace, sz_proc);
 	}
 	else
 	{
 		xscpy(sz_res, sz_object);
-		_xhttps_get_config(sz_site, sz_space, sz_path, sz_track, sz_level, sz_proc);
+		_xhttps_get_config(sz_site, sz_space, sz_path, sz_track, sz_trace, sz_proc);
 	}
 
 	if (is_null(sz_path))
@@ -430,6 +430,8 @@ void _xhttps_dispatch(xhand_t http, void* p)
 			raise_user_error(sz_site, errtext);
 		}
 	}
+
+	n_trace = xstol(sz_trace);
 
 	pb = (https_block_t*)xmem_alloc(sizeof(https_block_t));
 	pb->cbs = sizeof(https_block_t);
@@ -468,15 +470,15 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	xhttp_set_response_default_header(http);
 
-	get_loc_date(&xdt);
-	xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, thread_get_id());
-
-	xhttp_set_response_header(http, HTTP_HEADER_TRACE, -1, sz_trace, -1);
-
     xszero(sz_path, PATH_LEN);
     
 	if (!is_null(sz_track))
 	{
+		get_loc_date(&xdt);
+		xsprintf(sz_trace, _T("%02d%02d%02d%02d%02d%08d"), xdt.year - 200, xdt.mon, xdt.day, xdt.hour, xdt.min, thread_get_id());
+
+		xhttp_set_response_header(http, HTTP_HEADER_TRACE, -1, sz_trace, -1);
+
         printf_path(sz_path, sz_track);
 		xsappend(sz_path, _T("/%s.log"), sz_trace);
 
@@ -499,7 +501,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		xfile_close(pb->log);
 		pb->log = NULL;
 
-		if (n_state < xstol(sz_level))
+		if (n_state < n_trace)
 		{
 			xfile_delete(NULL, sz_path);
 		}

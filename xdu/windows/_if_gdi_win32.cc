@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "xduiml.h"
 #include "xduutil.h"
 
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
+#ifdef XDU_SUPPORT_CONTEXT_GDI
 
 static LOGFONT lf_gdi = { 0 };
 
@@ -1013,17 +1013,15 @@ void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hBmp,const tchar_t* clr,const xrect
 	DeleteDC(hComDC);
 }
 
-void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
+void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xpoint_t* ppt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
-	RECT rt;
-	rt.left = prt->x;
-	rt.top = prt->y;
-	rt.right = prt->x + prt->w;
-	rt.bottom = prt->y + prt->h;
+	POINT pt;
+	pt.x = ppt->x;
+	pt.y = ppt->y;
 
-	DPtoLP(hDC, (LPPOINT)&rt, 2);
+	DPtoLP(hDC, (LPPOINT)&pt, 1);
 
 	BITMAP bmp;
 	GetObject(hbmp, sizeof(BITMAP), (void*)&bmp);
@@ -1031,8 +1029,8 @@ void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xrect_t* prt)
 	HDC hComDC = CreateCompatibleDC(hDC);
 	HBITMAP orgBmp = (HBITMAP)SelectObject(hComDC, hbmp);
 
-	//BitBlt(hDC, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, hComDC, 0, 0, SRCAND);
-	TransparentBlt(hDC, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, hComDC, 0, 0, rt.right - rt.left, rt.bottom - rt.top, RGB(255, 255, 255));
+	//BitBlt(hDC, pt.x, pt.y, bmp.bmWidth, bmp.bmHeight, hComDC, 0, 0, SRCAND);
+	TransparentBlt(hDC, pt.x, pt.y, bmp.bmWidth, bmp.bmHeight, hComDC, 0, 0, bmp.bmWidth, bmp.bmHeight, RGB(255, 255, 255));
 
 	SelectObject(hComDC, orgBmp);
 	DeleteDC(hComDC);

@@ -91,13 +91,11 @@ typedef struct _X11_widget_t{
 
 	long events;
 	res_acl_t acl;
-	XIC xic;
 
 	int state;
 	int result;
 
-	res_ctx_t wgc;
-	res_ctx_t cgc;
+	res_ctx_t ctx;
 
 	xpoint_t pt;
 	xsize_t st;
@@ -329,12 +327,13 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 
 	if(!par) return NULL;
 
+	attr.border_pixel = BlackPixel(g_display, screen_num);
+	attr.background_pixel = WhitePixel(g_display,screen_num);
+
 	if(wstyle & WD_STYLE_TITLE)
 	{
 		attr.override_redirect = False;
 		border_width = WIDGET_BORDER_WIDTH;
-		attr.border_pixel = BlackPixel(g_display, screen_num);
-		attr.background_pixel = WhitePixel(g_display,screen_num);
 		attr.event_mask = WIDGET_NORMAL_EVENTS;
 	}else
 	{
@@ -342,15 +341,11 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 
 		if(wstyle & WD_STYLE_CHILD)
 		{
-			border_width = 0;
-			attr.border_pixel = WhitePixel(g_display, screen_num);
-			attr.background_pixel = WhitePixel(g_display,screen_num);
+			border_width = 1;
 			attr.event_mask = WIDGET_CHILD_EVENTS;
 		}else
 		{
 			border_width = WIDGET_BORDER_WIDTH;
-			attr.border_pixel = BlackPixel(g_display, screen_num);
-			attr.background_pixel = WhitePixel(g_display,screen_num);
 			attr.event_mask = WIDGET_POPUP_EVENTS;
 		}
 	}
@@ -414,8 +409,14 @@ res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* px
 	ps->state = WS_SHOW_HIDE;
 	ps->events = attr.event_mask;
 
-	ps->wgc = _create_display_context(win);
-	ps->cgc = _create_display_context(win);
+	default_xfont(&ps->xf);
+	default_xface(&ps->xa);
+	default_xpen(&ps->xp);
+	default_xbrush(&ps->xb);
+	parse_xcolor(&ps->msk, GDI_ATTR_RGB_WHITE);
+	parse_xcolor(&ps->ico, GDI_ATTR_RGB_GRAY);
+
+	ps->ctx = _create_display_context(win);
     
 	SETXDUSTRUCT(win, ps);
 
@@ -448,9 +449,8 @@ void _widget_destroy(res_win_t wt)
 
 	if(ps)
 	{
-		if(ps->wgc) _destroy_context(ps->wgc);
-
-		if(ps->cgc) _destroy_context(ps->cgc);
+		if(ps->ctx) 
+			_destroy_context(ps->ctx);
 
 		free(ps);
 	}
@@ -465,7 +465,6 @@ void _widget_close(res_win_t wt, int ret)
 {
 	X11_widget_t* ps = GETXDUSTRUCT(wt);
     if_event_t* pv = GETXDUDISPATCH(wt);
-	//XClientMessageEvent ev = {0};
 
 	if(ps) ps->result = ret;
 	
@@ -476,18 +475,6 @@ void _widget_close(res_win_t wt, int ret)
 	}
 
 	_widget_destroy(wt);
-    
-    /*ev.type = ClientMessage;
-    ev.window = wt;
-    ev.message_type = g_atoms.net_close_window;
-    ev.format = 32;
-    ev.data.l[0] = CurrentTime;
-    ev.data.l[1] = 0;
-    ev.data.l[2] = ev.data.l[3] = ev.data.l[4] = 0;
-    
-    XSendEvent (g_display, RootWindow(g_display, XDefaultScreen(g_display)), False, SubstructureRedirectMask | SubstructureNotifyMask, (XEvent*)&ev);
-    
-    XFlush (g_display);*/
 }
 
 if_subproc_t* _widget_get_subproc(res_win_t wt, uid_t sid)
@@ -808,14 +795,14 @@ res_ctx_t _widget_client_ctx(res_win_t wt)
 {
 	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	
-	return (ps)? ps->cgc : NULL;
+	return (ps)? ps->ctx : NULL;
 }
 
 res_ctx_t _widget_window_ctx(res_win_t wt)
 {
 	X11_widget_t* ps = GETXDUSTRUCT(wt);
 	
-	return (ps)? ps->wgc : NULL;
+	return NULL;
 }
 
 void _widget_release_ctx(res_win_t wt, res_ctx_t dc)
@@ -1767,7 +1754,7 @@ void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 
 
 /*******************************************************************************************/
-void _message_quit(int code)
+void _send_quit_message(int code)
 {
 	XClientMessageEvent ev = {0};
 
@@ -2087,7 +2074,7 @@ result_t _message_dispatch(const msg_t* pmsg)
 				xr.w = pmsg->xexpose.width;
 				xr.h = pmsg->xexpose.height;
 
-				(*pif->pf_on_paint)(pmsg->xexpose.window, pwt->wgc, &xr);
+				(*pif->pf_on_paint)(pmsg->xexpose.window, pwt->ctx, &xr);
 			}
 			break;
 		case FocusIn:
@@ -2100,23 +2087,6 @@ result_t _message_dispatch(const msg_t* pmsg)
 
 			if (pif && pif->pf_on_set_focus)
 			{
-				XIMStyles *styles;
-
-				if(!g_xim) break;
-
-				if(XGetIMValues(g_xim, XNQueryInputStyle, &styles, NULL) != NULL)
-					break;
-
-				pwt->xic = XCreateIC(g_xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing, XNClientWindow, pmsg->xfocus.window, NULL);
-				if(!pwt->xic)
-				{
-					XFree(styles);
-					break;
-				}
-
-				XSetICFocus(pwt->xic);
-				XFree(styles);
-
 				(*pif->pf_on_set_focus)(pmsg->xfocus.window, pmsg->xfocus.window);
 			}
 			break;
@@ -2128,13 +2098,6 @@ result_t _message_dispatch(const msg_t* pmsg)
 			if(pwt->disable)
 				break;
 
-			if(!pwt->xic) break;
-
-			XUnsetICFocus(pwt->xic);
-
-			XDestroyIC(pwt->xic);
-			pwt->xic = (XIC)0;
-			
 			if (pif && pif->pf_on_kill_focus)
 			{
 				(*pif->pf_on_kill_focus)(pmsg->xfocus.window, pmsg->xfocus.window);
@@ -2373,6 +2336,11 @@ bool_t _message_peek(msg_t* pmsg)
 void _message_position(xpoint_t* ppt)
 {
 
+}
+
+bool_t _message_is_quit(const msg_t* pmsg)
+{
+	return ((pmsg->type == ClientMessage) && (pmsg->xclient.message_type == g_atoms.wm_quit))? 1 : 0;
 }
 
 int	_widget_do_normal(res_win_t wt)

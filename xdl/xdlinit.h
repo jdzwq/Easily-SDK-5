@@ -97,11 +97,6 @@ extern "C" {
 		if_async_t if_async;
 #endif 
 
-#if defined(GPL_SUPPORT_ACP) && !defined(XDK_SUPPORT_MBCS)
-		acp_t cp_gbk;
-		acp_t cp_ucs;
-#endif
-
 #ifdef XDK_SUPPORT_DATE
 		if_date_t	if_date;
 #endif

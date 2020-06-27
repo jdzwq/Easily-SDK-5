@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 #include "gridview.h"
 #include "xdldoc.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 #ifdef XDL_SUPPORT_VIEW

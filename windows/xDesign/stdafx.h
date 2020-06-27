@@ -18,5 +18,6 @@
 
 // TODO:  在此处引用程序需要的其他头文件
 #include <xdl.h>
+#include <acp.h>
 #include <xdc.h>
 #include <xdb.h>

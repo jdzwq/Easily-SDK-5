@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "acp", "..\acp\acp.vcxproj", "{972E9DE2-9041-40A6-BF5F-CBD586D271F1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "aes", "..\aes\aes.vcxproj", "{DA340AF6-BD54-43CA-AEC7-0563ECD2052E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arc", "..\arc\arc.vcxproj", "{B4D50EE7-511C-486E-9368-59BA970A50DC}"
@@ -81,18 +79,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Debug|Win32.ActiveCfg = Debug|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Debug|Win32.Build.0 = Debug|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Debug|x64.ActiveCfg = Debug|x64
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Debug|x64.Build.0 = Debug|x64
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Release|Win32.ActiveCfg = Release|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Release|Win32.Build.0 = Release|Win32
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Release|x64.ActiveCfg = Release|x64
-		{972E9DE2-9041-40A6-BF5F-CBD586D271F1}.Release|x64.Build.0 = Release|x64
 		{DA340AF6-BD54-43CA-AEC7-0563ECD2052E}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{DA340AF6-BD54-43CA-AEC7-0563ECD2052E}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{DA340AF6-BD54-43CA-AEC7-0563ECD2052E}.Debug|Win32.ActiveCfg = Debug|Win32

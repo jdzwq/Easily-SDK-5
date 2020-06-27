@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "trietree.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 typedef struct _trie_node_t{

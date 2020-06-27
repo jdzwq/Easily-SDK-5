@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "scanner.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdldoc.h"
 

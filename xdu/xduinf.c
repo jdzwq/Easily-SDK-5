@@ -122,34 +122,9 @@ void xdu_impl_context_printer(if_context_t* pif)
 }
 #endif
 
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
 void xdu_impl_context_graphic(if_context_t* pif)
 {
-#if defined(UNICODE) || defined(_UNICODE)
-	pif->pf_gdi_draw_arrow = _gdiplus_draw_arrow;
-	pif->pf_gdi_draw_ellipse = _gdiplus_draw_ellipse;
-	pif->pf_gdi_draw_line = _gdiplus_draw_line;
-	pif->pf_gdi_draw_pie = _gdiplus_draw_pie;
-	pif->pf_gdi_draw_arc = _gdiplus_draw_arc;
-	pif->pf_gdi_draw_polygon = _gdiplus_draw_polygon;
-	pif->pf_gdi_draw_polyline = _gdiplus_draw_polyline;
-	pif->pf_gdi_draw_bezier = _gdiplus_draw_bezier;
-	pif->pf_gdi_draw_curve = _gdiplus_draw_curve;
-	pif->pf_gdi_draw_rect = _gdiplus_draw_rect;
-	pif->pf_gdi_draw_path = _gdiplus_draw_path;
-	pif->pf_gdi_draw_round = _gdiplus_draw_round;
-	pif->pf_gdi_draw_text = _gdiplus_draw_text;
-	pif->pf_gdi_fill_region = _gdiplus_fill_region;
-	pif->pf_gdi_text_out = _gdiplus_text_out;
-	pif->pf_gdi_text_size = _gdiplus_text_size;
-	pif->pf_gdi_text_metric = _gdiplus_text_metric;
-	pif->pf_gdi_gradient_rect = _gdiplus_gradient_rect;
-	pif->pf_gdi_alphablend_rect = _gdiplus_alphablend_rect;
-	pif->pf_gdi_exclip_rect = _gdiplus_exclip_rect;
-	pif->pf_gdi_inclip_rect = _gdiplus_inclip_rect;
-	pif->pf_gdi_draw_bitmap = _gdiplus_draw_bitmap;
-	pif->pf_gdi_draw_image = _gdiplus_draw_image;
-#else
+#ifdef XDU_SUPPORT_CONTEXT_GDI
 	pif->pf_gdi_draw_arrow = _gdi_draw_arrow;
 	pif->pf_gdi_draw_ellipse = _gdi_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdi_draw_line;
@@ -177,8 +152,67 @@ void xdu_impl_context_graphic(if_context_t* pif)
     pif->pf_gdi_fill_region = _gdi_fill_region;
 #endif
 #endif
-}
+
+#ifdef XDU_SUPPORT_CONTEXT_GDIPLUS
+	pif->pf_gdi_draw_arrow = _gdiplus_draw_arrow;
+	pif->pf_gdi_draw_ellipse = _gdiplus_draw_ellipse;
+	pif->pf_gdi_draw_line = _gdiplus_draw_line;
+	pif->pf_gdi_draw_pie = _gdiplus_draw_pie;
+	pif->pf_gdi_draw_arc = _gdiplus_draw_arc;
+	pif->pf_gdi_draw_polygon = _gdiplus_draw_polygon;
+	pif->pf_gdi_draw_polyline = _gdiplus_draw_polyline;
+	pif->pf_gdi_draw_bezier = _gdiplus_draw_bezier;
+	pif->pf_gdi_draw_curve = _gdiplus_draw_curve;
+	pif->pf_gdi_draw_rect = _gdiplus_draw_rect;
+	pif->pf_gdi_draw_path = _gdiplus_draw_path;
+	pif->pf_gdi_draw_round = _gdiplus_draw_round;
+	pif->pf_gdi_draw_text = _gdiplus_draw_text;
+	pif->pf_gdi_text_out = _gdiplus_text_out;
+	pif->pf_gdi_text_size = _gdiplus_text_size;
+	pif->pf_gdi_text_metric = _gdiplus_text_metric;
+	pif->pf_gdi_gradient_rect = _gdiplus_gradient_rect;
+	pif->pf_gdi_alphablend_rect = _gdiplus_alphablend_rect;
+	pif->pf_gdi_exclip_rect = _gdiplus_exclip_rect;
+	pif->pf_gdi_inclip_rect = _gdiplus_inclip_rect;
+#ifdef XDU_SUPPORT_CONTEXT_BITMAP
+	pif->pf_gdi_draw_bitmap = _gdiplus_draw_bitmap;
+	pif->pf_gdi_draw_image = _gdiplus_draw_image;
 #endif
+#ifdef XDU_SUPPORT_CONTEXT_REGION
+	pif->pf_gdi_fill_region = _gdiplus_fill_region;
+#endif
+#endif
+
+#ifdef XDU_SUPPORT_CONTEXT_CAIRO
+	pif->pf_gdi_draw_arrow = _cairo_draw_arrow;
+	pif->pf_gdi_draw_ellipse = _cairo_draw_ellipse;
+	pif->pf_gdi_draw_line = _cairo_draw_line;
+	pif->pf_gdi_draw_pie = _cairo_draw_pie;
+	pif->pf_gdi_draw_arc = _cairo_draw_arc;
+	pif->pf_gdi_draw_polygon = _cairo_draw_polygon;
+	pif->pf_gdi_draw_polyline = _cairo_draw_polyline;
+	pif->pf_gdi_draw_bezier = _cairo_draw_bezier;
+	pif->pf_gdi_draw_curve = _cairo_draw_curve;
+	pif->pf_gdi_draw_rect = _cairo_draw_rect;
+	pif->pf_gdi_draw_path = _cairo_draw_path;
+	pif->pf_gdi_draw_round = _cairo_draw_round;
+	pif->pf_gdi_draw_text = _cairo_draw_text;
+	pif->pf_gdi_text_out = _cairo_text_out;
+	pif->pf_gdi_text_size = _cairo_text_size;
+	pif->pf_gdi_text_metric = _cairo_text_metric;
+	pif->pf_gdi_gradient_rect = _cairo_gradient_rect;
+	pif->pf_gdi_alphablend_rect = _cairo_alphablend_rect;
+	pif->pf_gdi_exclip_rect = _cairo_exclip_rect;
+	pif->pf_gdi_inclip_rect = _cairo_inclip_rect;
+#ifdef XDU_SUPPORT_CONTEXT_BITMAP
+	pif->pf_gdi_draw_bitmap = _cairo_draw_bitmap;
+	pif->pf_gdi_draw_image = _cairo_draw_image;
+#endif
+#ifdef XDU_SUPPORT_CONTEXT_REGION
+	pif->pf_gdi_fill_region = _cairo_fill_region;
+#endif
+#endif
+}
 
 #endif /*XDU_SUPPORT_CONTEXT*/
 
@@ -315,11 +349,12 @@ void xdu_impl_widget(if_widget_t* pif)
 	pif->pf_widget_do_modal = _widget_do_modal;
 	pif->pf_widget_do_trace = _widget_do_trace;
 
-	pif->pf_message_quit = _message_quit;
+	pif->pf_send_quit_message = _send_quit_message;
 	pif->pf_message_fetch = _message_fetch;
     pif->pf_message_peek = _message_peek;
 	pif->pf_message_translate = _message_translate;
 	pif->pf_message_dispatch = _message_dispatch;
+	pif->pf_message_is_quit = _message_is_quit;
 	pif->pf_message_position = _message_position;
 
 	pif->pf_get_screen_size = _get_screen_size;

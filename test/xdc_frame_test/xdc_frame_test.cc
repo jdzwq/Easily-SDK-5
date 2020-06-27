@@ -987,7 +987,7 @@ int MainFrame_OnClose(res_win_t widget)
 
 	widget_destroy(widget);
 
-	//PostQuitMessage(0);
+	send_quit_message(0);
 
 	return 0;
 }

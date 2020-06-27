@@ -2,10 +2,12 @@ CC = g++
 CFLAGS = -g -Wall
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/xDump
 OUT_PATH = ../bin
 
+LIBS = -L $(LIB_PATH) -lxds -lmded -ldicm -L $(API_PATH) -lxdk -lxdl
 DIRS = $(SRC_PATH)/*.cc
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
@@ -16,7 +18,7 @@ TARGET = $(OUT_PATH)/xDump
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdk -lxdl -lmded -ldicm
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 	rm -f $(OBJS)
 
 test:

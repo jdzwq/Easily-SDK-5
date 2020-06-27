@@ -31,12 +31,12 @@ LICENSE.GPL3 for more details.
 
 #include "netcoap.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 #include "xdlnet.h"
 #include "xdlinit.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_RAND)
+#if defined(XDK_SUPPORT_SOCK)
 
 #define GET_THREEBYTE(buf,off)		((buf[off] << 16) | (buf[off+1] << 8) | buf[off+2])
 #define PUT_THREEBYTE(buf,off,n)	{buf[off] = (byte_t)((n) >> 16);buf[off+1] = (byte_t)((n) >> 8);buf[off+2] = (byte_t)((n));}

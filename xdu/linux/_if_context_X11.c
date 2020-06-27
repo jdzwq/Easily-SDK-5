@@ -47,14 +47,6 @@ int _context_startup(void)
 
     if(!g_display) return (-1);
 
-    if (setlocale(LC_ALL, "") == NULL) return 0;
-
-    if (!XSupportsLocale()) return 0;
-
-    if (XSetLocaleModifiers("@im=none") == NULL) return 0;
-
-    g_xim = XOpenIM(g_display, NULL, NULL, NULL);
-
 	return nVer;
 }
 
@@ -62,11 +54,8 @@ void _context_cleanup(void)
 {
     if(g_display)
         XCloseDisplay(g_display);
+    
     g_display = NULL;
-
-    if(g_xim)
-	    XCloseIM(g_xim);
-	g_xim = (XIM)0;
 }
 
 res_ctx_t _create_display_context(res_win_t wt)
@@ -74,8 +63,12 @@ res_ctx_t _create_display_context(res_win_t wt)
     X11_context_t* ctx = NULL;
     XGCValues gv = {0};
     XWindowAttributes attr = {0};
+    GC* gc = NULL;
 
-    XGetGCValues(g_display, DefaultGC(g_display, DefaultScreen(g_display)), GCFunction | GCForeground | GCBackground | GCPlaneMask, &gv);
+    gc = DefaultGC(g_display, DefaultScreen(g_display));
+    if(!gc) return NULL;
+
+    XGetGCValues(g_display, gc, GCFunction | GCForeground | GCBackground | GCPlaneMask, &gv);
     gv.subwindow_mode = ClipByChildren;
 
     ctx = (X11_context_t*)calloc(1, sizeof(X11_context_t));
@@ -84,22 +77,13 @@ res_ctx_t _create_display_context(res_win_t wt)
     ctx->device = (wt)? wt : DefaultRootWindow(g_display);
     ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
 
-    if(wt)
-    {
-        XGetWindowAttributes(g_display, wt, &attr);
-        ctx->width = attr.width;
-        ctx->height = attr.height;
-        ctx->color = attr.colormap;
-        ctx->visual = attr.visual;
-        ctx->depth = attr.depth;
-    }else
-    {
-        ctx->width = DisplayWidth(g_display, DefaultScreen(g_display));
-        ctx->height = DisplayHeight(g_display, DefaultScreen(g_display));
-        ctx->color = DefaultColormap(g_display, DefaultScreen(g_display));
-        ctx->visual = DefaultVisual(g_display, DefaultScreen(g_display));
-        ctx->depth = DefaultDepth(g_display, DefaultScreen(g_display));
-    }
+    XGetWindowAttributes(g_display, ctx->device, &attr);
+
+    ctx->width = attr.width;
+    ctx->height = attr.height;
+    ctx->color = attr.colormap;
+    ctx->visual = attr.visual;
+    ctx->depth = attr.depth;
     
     return ctx;
 }
@@ -117,11 +101,11 @@ res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy)
     ctx = (X11_context_t*)calloc(1, sizeof(X11_context_t));
 
     ctx->type = CONTEXT_MEMORY;
-    ctx->device = XCreatePixmap (g_display, r, cx, cy, d);
-    ctx->context = XCreateGC(g_display, rdc->device, 0, &gv);
+    ctx->device = XCreatePixmap (g_display, r, cx, cy, rdc->depth);
+    ctx->context = XCreateGC(g_display, ctx->device, 0, &gv);
     ctx->width = cx;
     ctx->height = cy;
-    ctx->color = rdc->color;
+    ctx->color = XCreateColormap(g_display, rdc->device, rdc->visual, 0);
     ctx->visual = rdc->visual;
     ctx->depth = rdc->depth;
     
@@ -133,6 +117,9 @@ void _destroy_context(res_ctx_t rdc)
     if(rdc->type == CONTEXT_MEMORY && rdc->device)
         XFreePixmap(g_display, rdc->device);
     
+    if(rdc->color)
+        XFreeColormap(g_display, rdc->color);
+
     if(rdc->context)
 	    XFreeGC(g_display, rdc->context);
     

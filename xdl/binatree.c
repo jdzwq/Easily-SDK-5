@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "binatree.h"
 #include "xdlimp.h"
-#include "xdloem.h"
+
 #include "xdlstd.h"
 
 typedef struct _bina_node_t{
@@ -1112,7 +1112,6 @@ bool_t delete_bina_node(link_t_ptr ptr, variant_t key)
 
 #if defined(_DEBUG) || defined(DEBUG)
 #include <time.h>
-#include "oemrand.h"
 
 static bool_t print_node(link_t_ptr nlk, void* pa)
 {

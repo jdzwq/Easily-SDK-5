@@ -18,7 +18,7 @@
 #include "impbitmap.h"
 #endif
 
-#ifdef XDU_SUPPORT_CONTEXT_GRAPHIC
+#ifdef XDU_SUPPORT_CONTEXT
 #include "impgdi.h"
 #endif
 
