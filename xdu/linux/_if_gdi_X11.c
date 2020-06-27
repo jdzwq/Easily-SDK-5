@@ -327,6 +327,7 @@ void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int 
 
 void _gdi_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa)
 {
+
 }
 
 void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
@@ -938,7 +939,7 @@ void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const
 
 void _gdi_exclip_rect(res_ctx_t rdc, const xrect_t* pxr)
 {
-	
+
 }
 
 void _gdi_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
@@ -981,6 +982,7 @@ void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int l
 	XFontStruct* pfs = NULL;
 	XCharStruct chs = {0};
 	int direct = 0, ascent = 0, descent = 0;
+
 	if(pxf)
 	{
 		pfs = _create_font(pxf);
@@ -1055,31 +1057,16 @@ void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hbmp,const tchar_t* clr,const xrect
 void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xpoint_t* ppt)
 {
 	X11_context_t* ctx = (X11_context_t*)rdc;
+
 	XImage* pmi = (XImage*)hbmp;
-	Pixmap pmp;
-	unsigned long fg, bg;
-	int w,h, dp;
 
 	XPoint pt[1];
     
 	pt[0].x = ppt->x;
 	pt[0].y = ppt->y;
 
-	DPtoLP(ctx,pt,1);
-
-	fg = WhitePixel(g_display, DefaultScreen(g_display));
-	bg = BlackPixel(g_display, DefaultScreen(g_display));
-	dp = pmi->depth;
-	w = pmi->width;
-	h = pmi->height;
-
-    pmp = XCreatePixmapFromBitmapData(g_display, ctx->device, pmi->data, w, h, fg, bg, dp);
-
-	XCopyPlane(g_display, pmp, ctx->device, ctx->context, 0, 0, w, h, pt[0].x, pt[0].y, 1);
-
-	XFreePixmap(g_display, pmp);
+	XPutImage(g_display, ctx->device, ctx->context, pmi, 0, 0, pt[0].x, pt[0].y, pmi->width, pmi->height);
 }
-
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_REGION
