@@ -266,19 +266,6 @@ void xdk_impl_comm(if_comm_t* pif)
 }
 #endif
 
-#ifdef XDK_SUPPORT_BLUT
-void xdk_impl_blut(if_blut_t* pif)
-{
-	pif->pf_enum_blut = _enum_blut_device;
-	pif->pf_blut_listen = _blut_listen;
-	pif->pf_blut_open = _blut_open;
-	pif->pf_blut_close = _blut_close;
-	pif->pf_blut_read = _blut_read;
-	pif->pf_blut_write = _blut_write;
-	pif->pf_blut_flush = _blut_flush;
-}
-#endif
-
 #ifdef XDK_SUPPORT_CONS
 void xdk_impl_cons(if_cons_t* pif)
 {

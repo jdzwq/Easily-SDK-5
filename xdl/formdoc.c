@@ -58,6 +58,19 @@ void default_label_field_attr(link_t_ptr flk)
 	set_field_printable(flk,1); 
 }
 
+void default_code_field_attr(link_t_ptr flk)
+{
+	set_field_style(flk, _T("font-size:12;text-align:near;line-align:center;"));
+
+	set_field_x(flk, 0);
+	set_field_y(flk, 0);
+	set_field_width(flk, DEF_TEXT_WIDTH);
+	set_field_height(flk, DEF_TEXT_HEIGHT);
+
+	set_field_visible(flk, 1);
+	set_field_printable(flk, 1);
+}
+
 void default_pagenum_field_attr(link_t_ptr flk)
 {
 	set_field_style(flk, _T("font-size:10;text-align:center;line-align:center;"));
@@ -583,6 +596,12 @@ link_t_ptr insert_field(link_t_ptr ptr,const tchar_t* sz_class)
 		set_dom_node_name(flk, sz_class, -1);
 		default_href_field_attr(flk);
 	}
+	else if (compare_text(sz_class, -1, DOC_FORM_CODE, -1, 0) == 0)
+	{
+		flk = insert_dom_node(get_form_fieldset(ptr), LINK_LAST);
+		set_dom_node_name(flk, sz_class, -1);
+		default_code_field_attr(flk);
+	}
 	else if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 0) == 0)
 	{
 		flk = insert_dom_node(get_form_fieldset(ptr), LINK_LAST);
@@ -885,6 +904,10 @@ void set_field_text(link_t_ptr flk,const tchar_t* sz_text, int len)
 		set_dom_node_text(flk, sz_text, len);
 	}
 	else if (compare_text(cls, -1, DOC_FORM_MEMO, -1, 0) == 0)
+	{
+		set_dom_node_text(flk, sz_text, len);
+	}
+	else if (compare_text(cls, -1, DOC_FORM_CODE, -1, 0) == 0)
 	{
 		set_dom_node_text(flk, sz_text, len);
 	}
@@ -1340,7 +1363,7 @@ void reset_form_taborder(link_t_ptr ptr)
 	while(flk)
 	{
 		cls = get_field_class_ptr(flk);
-		if (IS_DATA_FIELD(cls) || IS_EMBED_FIELD(cls))
+		if (IS_EDITOR_FIELD(cls))
 		{
 			taborder += 10;
 			set_field_taborder(flk,taborder);

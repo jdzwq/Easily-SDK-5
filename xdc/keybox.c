@@ -446,7 +446,7 @@ void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			tk[0] = KEYBOX_SCA[i];
 
 		if (tk[0] == _T('\n'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("√"), -1);
+			draw_text_raw(rdc, &xf, &xa, &xr, _T("Ent"), -1);
 		else if (tk[0] == _T('\b'))
 			draw_text_raw(rdc, &xf, &xa, &xr, _T("CE"), -1);
 		else if (tk[0] == _T('\0'))

@@ -32,6 +32,18 @@ LICENSE.GPL3 for more details.
 #include "xduinf.h"
 #include "xduiml.h"
 
+#ifdef XDU_SUPPORT_BLUT
+void xdu_impl_blut(if_blut_t* pif)
+{
+	pif->pf_enum_blut = _enum_blut_device;
+	pif->pf_blut_listen = _blut_listen;
+	pif->pf_blut_open = _blut_open;
+	pif->pf_blut_close = _blut_close;
+	pif->pf_blut_read = _blut_read;
+	pif->pf_blut_write = _blut_write;
+	pif->pf_blut_flush = _blut_flush;
+}
+#endif
 
 #ifdef XDU_SUPPORT_SHELL
 void xdu_impl_shell(if_shell_t* pif)

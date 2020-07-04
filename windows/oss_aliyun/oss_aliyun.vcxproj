@@ -108,6 +108,7 @@
       <AdditionalDependencies />
       <ModuleDefinitionFile>oss_aliyun.def</ModuleDefinitionFile>
       <ImportLibrary>..\lib\$(TargetName).lib</ImportLibrary>
+      <IgnoreSpecificDefaultLibraries>LIBCMT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

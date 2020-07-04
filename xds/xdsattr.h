@@ -209,6 +209,7 @@
 #define GDI_ATTR_GIZMO_CHECKED		_T("checked")
 #define GDI_ATTR_GIZMO_CLEAR			_T("clear")
 #define GDI_ATTR_GIZMO_CLOSE			_T("close")
+#define GDI_ATTR_GIZMO_CODE			_T("code")
 #define GDI_ATTR_GIZMO_COLLAPSE		_T("collapse")
 #define GDI_ATTR_GIZMO_COPY			_T("copy")
 #define GDI_ATTR_GIZMO_COUNTER		_T("counter")

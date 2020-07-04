@@ -884,9 +884,9 @@ void draw_keybox_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	xr.x = prt->x;
-	xr.y = prt->y;
+	xr.y = prt->y + ps;
 	xr.w = prt->w;
-	xr.h = prt->h;
+	xr.h = prt->h - 2 * ps;
 
 	draw_round_raw(rdc, &xp, &xb, &xr);
 
@@ -2380,7 +2380,7 @@ void draw_input_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 
 	pt[0].x = prt->x + prt->w / 4 * 3;
 	pt[0].y = prt->y + prt->h / 4;
-	pt[1].x = prt->x + prt->w / 4;
+	pt[1].x = prt->x + prt->w / 2;
 	pt[1].y = prt->y + prt->h / 2;
 	pt[2].x = prt->x + prt->w / 4 * 3;
 	pt[2].y = prt->y + prt->h / 4 * 3;
@@ -3729,9 +3729,9 @@ void draw_fontcolor_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 
 	draw_text_raw(rdc, &xf, &xa, &xr, _T("A"), 1);
 
-	xr.x = prt->x;
+	xr.x = prt->x + ps;
 	xr.y = prt->y + prt->h / 4 * 3 + ps;
-	xr.w = prt->w;
+	xr.w = prt->w - 2 * ps;
 	xr.h = prt->h / 4 - ps;
 
 	draw_rect_raw(rdc, &xp, &xb, &xr);
@@ -3923,12 +3923,12 @@ void draw_background_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t
 
 	draw_polygon_raw(rdc, &xp, NULL, pt, 3);
 
-	pt[0].x = prt->x;
-	pt[0].y = prt->y + prt->h;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
+	xr.x = prt->x + ps;
+	xr.y = prt->y + prt->h - 2 * ps;
+	xr.w = prt->w - 2 * ps;
+	xr.h = 2 * ps;
 
-	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
+	draw_rect_raw(rdc, &xp, &xb, &xr);
 }
 
 void draw_alignnear_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -5415,13 +5415,6 @@ void draw_herf_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
 
-	xr.x = prt->x;
-	xr.y = prt->y + prt->h / 4;
-	xr.w = prt->w;
-	xr.h = prt->h / 2;
-
-	draw_rect_raw(rdc, &xp, NULL, &xr);
-
 	xscpy(xp.size, _T("1"));
 
 	xr.x = prt->x + prt->w / 4 - ps - 1;
@@ -5444,6 +5437,67 @@ void draw_herf_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xr.h = 2.5 * ps - 1;
 
 	draw_ellipse_raw(rdc, &xp, NULL, &xr);
+}
+
+void draw_code_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
+{
+	xpen_t xp;
+	xbrush_t xb;
+	xrect_t rt, xr;
+	int ps;
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
+	rt.x = prt->x;
+	rt.y = prt->y;
+
+	if (prt->w > 24 && prt->h > 24)
+	{
+		xscpy(xp.size, _T("3"));
+		rt.w = 36;
+		rt.h = 36;
+	}
+	else if (prt->w > 16 && prt->h > 16)
+	{
+		xscpy(xp.size, _T("2"));
+		rt.w = 24;
+		rt.h = 24;
+	}
+	else
+	{
+		xscpy(xp.size, _T("1"));
+		rt.w = 16;
+		rt.h = 16;
+	}
+
+	prt = &rt;
+
+	ps = xstol(xp.size);
+
+	xr.x = prt->x;
+	xr.y = prt->y + prt->h / 2 - ps;
+	xr.w = prt->w / 3 - ps;
+	xr.h = 2 * ps;
+
+	draw_rect_raw(rdc, &xp, &xb, &xr);
+
+	xr.x = prt->x + prt->w / 3;
+	xr.y = prt->y + prt->h / 2 - ps;
+	xr.w = prt->w / 3 - ps;
+	xr.h = 2 * ps;
+
+	draw_rect_raw(rdc, &xp, &xb, &xr);
+
+	xr.x = prt->x + prt->w / 3 * 2;
+	xr.y = prt->y + prt->h / 2 - ps;
+	xr.w = prt->w / 3 - ps;
+	xr.h = 2 * ps;
+
+	draw_rect_raw(rdc, &xp, &xb, &xr);
 }
 
 void draw_table_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
@@ -8284,6 +8338,7 @@ GIZMO_DRAW_TABLE g_gizmo_table[] = {
 	{ GDI_ATTR_GIZMO_CHECKED, draw_checked_gizmo_raw },
 	{ GDI_ATTR_GIZMO_CLEAR, draw_clear_gizmo_raw },
 	{ GDI_ATTR_GIZMO_CLOSE, draw_close_gizmo_raw },
+	{ GDI_ATTR_GIZMO_CODE, draw_code_gizmo_raw },
 	{ GDI_ATTR_GIZMO_COLLAPSE, draw_collapse_gizmo_raw },
 	{ GDI_ATTR_GIZMO_COPY, draw_copy_gizmo_raw },
 	{ GDI_ATTR_GIZMO_COUNTER, draw_counter_gizmo_raw },

@@ -136,7 +136,7 @@ void widget_set_region(res_win_t wt, res_rgn_t rgn)
 	(*pif->pf_widget_set_region)(wt, rgn);
 }
 
-#endif //XDU_SUPPORT_WIDGET_EX
+#endif //XDU_SUPPORT_WIDGET_REGION
 
 void get_screen_size(xsize_t* pxs)
 {
@@ -611,11 +611,7 @@ bool_t widget_key_state(res_win_t wt, byte_t key)
 
 bool_t widget_is_hotvoer(res_win_t wt)
 {
-#ifdef XDU_SUPPORT_WIDGET_EX
 	return (widget_get_style(wt) & WD_STYLE_HOTOVER) ? 1 : 0;
-#else
-	return 0;
-#endif
 }
 
 bool_t widget_is_editor(res_win_t wt)

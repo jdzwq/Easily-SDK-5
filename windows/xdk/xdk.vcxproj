@@ -179,7 +179,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdk\windows\_if_async_win32.cc" />
-    <ClCompile Include="..\..\xdk\windows\_if_bluetooth_win32.c" />
     <ClCompile Include="..\..\xdk\windows\_if_comm_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_cons_win32.cc" />
     <ClCompile Include="..\..\xdk\windows\_if_date_win32.cc" />

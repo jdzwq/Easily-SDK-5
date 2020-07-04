@@ -58,10 +58,6 @@ LICENSE.GPL3 for more details.
 #define XDK_SUPPORT_SOCK
 #define XDK_SUPPORT_TIMER
 
-#if defined(_DEBUG) || defined(DEBUG)
-#define XDK_SUPPORT_BLUT
-#endif
-
 #if defined(WINCE)
 #undef XDK_SUPPORT_THREAD_MUTEX
 #undef XDK_SUPPORT_MEMO_PAGE
@@ -97,16 +93,11 @@ LICENSE.GPL3 for more details.
 #ifdef XDK_SUPPORT_SOCK
 #include <WinSock2.h>
 #include <ws2tcpip.h>
+#include <mswsock.h>
 #endif
 #include <windows.h>
 //#include <WinSock.h>
 #include <windowsx.h>
-
-#ifdef XDK_SUPPORT_BLUT
-#include <BluetoothAPIs.h>
-#include <Ws2bth.h>
-#include <KS.H>
-#endif
 
 //#if defined(_UNICODE) || defined(UNICODE)
 //#define _T(x)      L ## x

@@ -71,5 +71,8 @@
     <ClCompile Include="..\..\xdu\windows\_if_widget_win32.cc">
       <Filter>源文件\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xdu\windows\_if_bluetooth_win32.c">
+      <Filter>源文件\windows</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

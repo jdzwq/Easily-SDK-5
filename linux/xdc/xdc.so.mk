@@ -11,7 +11,7 @@ SRC_PATH = ../../xdc
 SUB_PATH = ../../xdc/linux
 OUT_PATH = ../sbin/api
 
-LIBS = -lm -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdu -lxdl
+LIBS = -lm -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdk -lxdu -lxdl
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

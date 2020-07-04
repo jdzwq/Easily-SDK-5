@@ -91,6 +91,7 @@
 #define DOC_FORM_TAG			_T("tag-field")
 #define DOC_FORM_MEMO			_T("memo-field")
 #define DOC_FORM_LABEL			_T("label-field")
+#define DOC_FORM_CODE			_T("code-field")
 #define DOC_FORM_PHOTO			_T("photo-field")
 #define DOC_FORM_HREF			_T("href-field")
 #define DOC_FORM_CHECK			_T("check-field")
@@ -349,11 +350,10 @@
 #define ATTR_SHAPE_RIGHTTRIANGLE		_T("right-triangle")
 
 #define ATTR_CODEBAR					_T("codebar")
-#define ATTR_CODEBAR_OPTIONS			_T("CODE128~CODE128;PDF417~PDF417;QRCODE~QRCODE;IMAGE~IMAGE;")
+#define ATTR_CODEBAR_OPTIONS			_T("CODE128~CODE128;PDF417~PDF417;QRCODE~QRCODE;")
 #define ATTR_CODEBAR_CODE128			_T("CODE128")
 #define ATTR_CODEBAR_PDF417				_T("PDF417")
 #define ATTR_CODEBAR_QRCODE				_T("QRCODE")
-#define ATTR_CODEBAR_IMAGE				_T("IMAGE")
 
 #define ATTR_ANNO_TYPE				_T("type")
 #define ATTR_ANNO_TYPE_ANCHOR		_T("ANCHOR")

@@ -32,6 +32,7 @@ LICENSE.GPL3 for more details.
 #ifndef _XDU_LINUX_H
 #define _XDU_LINUX_H
 
+#define XDU_SUPPORT_BLUT
 #define XDU_SUPPORT_SHELL
 #define XDU_SUPPORT_CONTEXT
 #define XDU_SUPPORT_CONTEXT_REGION
@@ -41,6 +42,13 @@ LICENSE.GPL3 for more details.
 
 #define XDU_SUPPORT_CLIPBOARD
 #define XDU_SUPPORT_WIDGET
+
+#ifdef XDU_SUPPORT_BLUT
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/l2cap.h>
+#endif
 
 #ifdef XDU_SUPPORT_CONTEXT
 #include <X11/X.h>

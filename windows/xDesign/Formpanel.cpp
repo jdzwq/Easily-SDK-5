@@ -1284,6 +1284,27 @@ void FormPanel_OnCheckField(res_win_t widget)
 	formctrl_redraw_field(pdt->hForm, flk, 1);
 }
 
+void FormPanel_OnCodeField(res_win_t widget)
+{
+	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
+
+	LINKPTR ptrForm = formctrl_fetch(pdt->hForm);
+
+	LINKPTR flk = insert_field(ptrForm, DOC_FORM_CODE);
+
+	set_field_x(flk, 10);
+	set_field_y(flk, 10);
+
+	int count = get_field_count_by_class(ptrForm, DOC_FORM_CODE);
+
+	tchar_t token[RES_LEN + 1];
+	xsprintf(token, _T("code%d"), count);
+
+	set_field_name(flk, token);
+
+	formctrl_redraw_field(pdt->hForm, flk, 1);
+}
+
 void FormPanel_OnPhotoField(res_win_t widget)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
@@ -2069,6 +2090,12 @@ void FormPanel_OnShow(res_win_t widget, bool_t bShow)
 		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_TAG);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
+		xsprintf(token, _T("%d"), IDA_APPEND_CODE);
+		set_tool_item_id(ilk, token);
+		set_tool_item_title(ilk, _T("ÌõÂë×Ö¶Î"));
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_CODE);
+
+		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_PHOTO);
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("Í¼Ïñ×Ö¶Î"));
@@ -2323,6 +2350,9 @@ void FormPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 		break;
 	case IDA_APPEND_CHECK:
 		FormPanel_OnCheckField(widget);
+		break;
+	case IDA_APPEND_CODE:
+		FormPanel_OnCodeField(widget);
 		break;
 	case IDA_APPEND_PHOTO:
 		FormPanel_OnPhotoField(widget);

@@ -11,7 +11,7 @@ SRC_PATH = ../../xdu
 SUB_PATH = ../../xdu/linux
 OUT_PATH = ../sbin/api
 
-LIBS = -lm -ldl -lutil -lrt -lX11 -lcairo -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode
+LIBS = -lm -ldl -lutil -lrt -lbluetooth -lX11 -lcairo -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

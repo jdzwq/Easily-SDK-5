@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdu\windows\_if_bitmap_win32.cc" />
+    <ClCompile Include="..\..\xdu\windows\_if_bluetooth_win32.c" />
     <ClCompile Include="..\..\xdu\windows\_if_clipboard_win32.cc" />
     <ClCompile Include="..\..\xdu\windows\_if_context_win32.cc" />
     <ClCompile Include="..\..\xdu\windows\_if_gdiplus_win32.cc" />

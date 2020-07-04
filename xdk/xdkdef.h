@@ -176,15 +176,6 @@ typedef struct _dev_com_t{
 	tchar_t devname[INT_LEN];
 }dev_com_t;
 
-//bluetooth device
-typedef struct _dev_blt_t{
-	tchar_t major_class[RES_LEN];
-	tchar_t minor_class[RES_LEN];
-	tchar_t name[META_LEN];
-	tchar_t uuid[UUID_LEN];
-	tchar_t addr[ADDR_LEN];
-}dev_blt_t;
-
 
 #endif	/* _XDKDEF_H */
 

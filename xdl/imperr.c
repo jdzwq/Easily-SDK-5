@@ -32,6 +32,7 @@ LICENSE.GPL3 for more details.
 #include "imperr.h"
 #include "xdlinit.h"
 #include "xdlimp.h"
+#include "xdlconv.h"
 
 #include "xdlstr.h"
 

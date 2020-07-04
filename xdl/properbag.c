@@ -404,14 +404,6 @@ void properbag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 		set_entity_options(ent, TF_OPTIONS, -1);
 	}
 
-	if (compare_text(sz_class, -1, DOC_FORM_LABEL, -1, 1) == 0)
-	{
-		ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, ATTR_CODEBAR, -1, get_field_codebar_ptr(flk), -1);
-		set_entity_editable(ent, 1);
-		set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
-		set_entity_options(ent, ATTR_CODEBAR_OPTIONS, -1);
-	}
-
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0 || compare_text(sz_class, -1, DOC_FORM_CHECK, -1, 1) == 0)
 	{
 		ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_FIREABLE, get_field_fireable(flk));
@@ -441,6 +433,19 @@ void properbag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 		ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_TABORDER, get_field_taborder(flk));
 		set_entity_editable(ent, 1);
 		set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+	}
+
+	if (compare_text(sz_class, -1, DOC_FORM_CODE, -1, 1) == 0)
+	{
+		ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, ATTR_CODEBAR, -1, get_field_codebar_ptr(flk), -1);
+		set_entity_editable(ent, 1);
+		set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+		set_entity_options(ent, ATTR_CODEBAR_OPTIONS, -1);
+
+		ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_TRANSPARENT, get_field_transparent(flk));
+		set_entity_editable(ent, 1);
+		set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+		set_entity_options(ent, TF_OPTIONS, -1);
 	}
 
 	if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 1) == 0)
@@ -560,11 +565,6 @@ void properbag_read_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 		set_field_wrapable(flk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_WRAPABLE));
 	}
 
-	if (compare_text(sz_class, -1, DOC_FORM_LABEL, -1, 1) == 0)
-	{
-		set_field_codebar(flk, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, ATTR_CODEBAR));
-	}
-
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0)
 	{
 		set_field_fireable(flk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_FIREABLE));
@@ -583,6 +583,13 @@ void properbag_read_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 	if (IS_EDITOR_FIELD(sz_class))
 	{
 		set_field_taborder(flk, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, ATTR_TABORDER));
+	}
+
+	if (compare_text(sz_class, -1, DOC_FORM_CODE, -1, 1) == 0)
+	{
+		set_field_codebar(flk, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, ATTR_CODEBAR));
+
+		set_field_transparent(flk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_TRANSPARENT));
 	}
 
 	if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 1) == 0)

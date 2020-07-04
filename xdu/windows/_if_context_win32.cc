@@ -210,7 +210,7 @@ static int MulDiv(int a, int b, int c)
 
 int _font_size(res_ctx_t rdc, int height)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	TEXTMETRIC tm = { 0 };
 	int size;
 
@@ -218,12 +218,15 @@ int _font_size(res_ctx_t rdc, int height)
 
 	size = (int)((height - tm.tmInternalLeading) * 72 / GetDeviceCaps(hDC, LOGPIXELSY));
 
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
+
 	return size;
 }
 
 float _pt_per_mm(res_ctx_t rdc, bool_t horz)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	float fp;
 
 	if (horz)
@@ -231,12 +234,15 @@ float _pt_per_mm(res_ctx_t rdc, bool_t horz)
 	else
 		fp = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
+
 	return fp;
 }
 
 void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	SIZE si;
@@ -246,59 +252,63 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 	{
 		*pfx = ZERO_WIDTH;
 		*pfy = ZERO_HEIGHT;
-		return;
 	}
-
+	else
+	{
 #ifdef WINCE
-	orgFont = (HFONT)GetStockObject(SYSTEM_FONT);
+		orgFont = (HFONT)GetStockObject(SYSTEM_FONT);
 #else
-	orgFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+		orgFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
 #endif
-	GetObject(orgFont, sizeof(LOGFONT), (void*)&lf);
+		GetObject(orgFont, sizeof(LOGFONT), (void*)&lf);
 
-	lf.lfHeight = lf.lfHeight = -MulDiv(_ttol(pxf->size), GetDeviceCaps(hDC, LOGPIXELSY), 72);
-	lf.lfWeight = _ttol(pxf->weight);
+		lf.lfHeight = lf.lfHeight = -MulDiv(_ttol(pxf->size), GetDeviceCaps(hDC, LOGPIXELSY), 72);
+		lf.lfWeight = _ttol(pxf->weight);
 
-	if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
-	{
-		lf.lfItalic = 1;
+		if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_ITALIC) == 0)
+		{
+			lf.lfItalic = 1;
+		}
+		else if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_UNDERLINE) == 0)
+		{
+			lf.lfUnderline = 1;
+		}
+		else if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_STRIKOUT) == 0)
+		{
+			lf.lfStrikeOut = 1;
+		}
+
+		if (!is_null(pxf->family))
+		{
+			xscpy(lf.lfFaceName, pxf->family);
+		}
+
+		hFont = CreateFontIndirect(&lf);
+
+		orgFont = (HFONT)SelectObject(hDC, hFont);
+
+		if (len < 0)
+			len = (int)xslen(txt);
+
+		GetTextExtentPoint32(hDC, txt, len, &si);
+
+		htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
+		vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
+
+		*pfx = (float)((float)si.cx / htpermm);
+		*pfy = (float)((float)si.cy / vtpermm);
+
+		hFont = (HFONT)SelectObject(hDC, orgFont);
+		DeleteObject(hFont);
 	}
-	else if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_UNDERLINE) == 0)
-	{
-		lf.lfUnderline = 1;
-	}
-	else if (xscmp(pxf->style, GDI_ATTR_FONT_STYLE_STRIKOUT) == 0)
-	{
-		lf.lfStrikeOut = 1;
-	}
 
-	if (!is_null(pxf->family))
-	{
-		xscpy(lf.lfFaceName, pxf->family);
-	}
-
-	hFont = CreateFontIndirect(&lf);
-
-	orgFont = (HFONT)SelectObject(hDC, hFont);
-
-	if (len < 0)
-		len = (int)xslen(txt);
-
-	GetTextExtentPoint32(hDC, txt, len, &si);
-
-	htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
-	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
-
-	*pfx = (float)((float)si.cx / htpermm);
-	*pfy = (float)((float)si.cy / vtpermm);
-
-	hFont = (HFONT)SelectObject(hDC, orgFont);
-	DeleteObject(hFont);
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
 }
 
 void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, int* pcx, int* pcy)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	SIZE si;
@@ -345,11 +355,14 @@ void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
+
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
 }
 
 void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	TEXTMETRIC tm = { 0 };
@@ -397,11 +410,14 @@ void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
+
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
 }
 
 void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	TEXTMETRIC tm = { 0 };
@@ -445,11 +461,14 @@ void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
+
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
 }
 
 float _cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	float htpermm, vtpermm;
 	float mm;
 
@@ -461,12 +480,15 @@ float _cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
 	else
 		mm = (float)((float)pt / vtpermm);
 
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
+
 	return mm;
 }
 
 int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
 	float htpermm, vtpermm;
 	int pt;
 
@@ -477,6 +499,9 @@ int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 		pt = (int)(mm * htpermm);
 	else
 		pt = (int)(mm * vtpermm);
+
+	if (!rdc)
+		ReleaseDC(NULL, hDC);
 
 	return pt;
 }

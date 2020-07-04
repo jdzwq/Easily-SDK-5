@@ -33,7 +33,6 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_SOCK
 
-#include <mswsock.h>
 #ifdef WINCE
 #pragma comment(lib,"ws2.lib")
 #else

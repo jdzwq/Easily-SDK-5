@@ -10,7 +10,7 @@ SRC_PATH = ../../xdk
 SUB_PATH = ../../xdk/linux
 OUT_PATH = ../sbin/api
 
-LIBS = -lm -ldl -lutil -lrt -lbluetooth -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode
+LIBS = -lm -ldl -lutil -lrt -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

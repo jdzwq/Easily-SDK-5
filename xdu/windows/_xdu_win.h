@@ -35,6 +35,7 @@ LICENSE.GPL3 for more details.
 #define XDU_SUPPORT_SHELL_DIALOG
 #define XDU_SUPPORT_SHELL
 #define XDU_SUPPORT_CLIPBOARD
+#define XDU_SUPPORT_BLUT
 
 #define XDU_SUPPORT_CONTEXT_BITMAP
 #define XDU_SUPPORT_CONTEXT_PRINTER
@@ -98,6 +99,12 @@ LICENSE.GPL3 for more details.
 #ifdef XDU_SUPPORT_SHELL
 #include <ShellAPI.h>
 #include <ShlObj.h>
+#endif
+
+#ifdef XDU_SUPPORT_BLUT
+#include <BluetoothAPIs.h>
+#include <Ws2bth.h>
+#include <KS.H>
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_OPENGL

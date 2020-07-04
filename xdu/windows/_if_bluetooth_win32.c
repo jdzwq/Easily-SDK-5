@@ -1,5 +1,5 @@
 ﻿/***********************************************************************
-	Easily xdk v5.5
+	Easily xdu v5.5
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
@@ -29,9 +29,15 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "xdkiml.h"
+#include "xduiml.h"
 
-#ifdef XDK_SUPPORT_BLUT
+#ifdef XDU_SUPPORT_BLUT
+
+#ifdef WINCE
+#pragma comment(lib,"ws2.lib")
+#else
+#pragma comment(lib,"ws2_32.lib")
+#endif
 
 #pragma comment(lib, "Bthprops.lib")
 #pragma comment(lib, "Irprops.lib")
@@ -563,17 +569,17 @@ void _blut_close(res_file_t fh)
 
 dword_t _blut_listen(res_file_t fd, async_t* pb)
 {
-    return _comm_listen(fd, pb);
+	return 0;
 }
 
 bool_t _blut_read(res_file_t fd, void* buf, dword_t size, async_t* pb)
 {
-    return _socket_recv(fd, buf, size, pb);
+	return 0;
 }
 
 bool_t _blut_write(res_file_t fd, void* buf, dword_t size, async_t* pb)
 {
-    return _socket_send(fd, buf, size, pb);
+	return 0;
 }
 
 bool_t _blut_flush(res_file_t fh)

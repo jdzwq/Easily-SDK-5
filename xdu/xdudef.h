@@ -34,6 +34,7 @@ LICENSE.GPL3 for more details.
 #define	_XDUDEF_H
 
 #include <xds.h>
+#include <xdk.h>
 
 #if defined(_OS_WINDOWS)
 #include "windows/_xdu_win.h"
@@ -291,6 +292,15 @@ typedef struct _dev_prn_t{
 	short landscape;
 	tchar_t devname[1024];
 }dev_prn_t;
+
+//bluetooth device
+typedef struct _dev_blt_t{
+	tchar_t major_class[RES_LEN];
+	tchar_t minor_class[RES_LEN];
+	tchar_t name[META_LEN];
+	tchar_t uuid[UUID_LEN];
+	tchar_t addr[ADDR_LEN];
+}dev_blt_t;
 
 typedef struct _border_t{
 	int title;

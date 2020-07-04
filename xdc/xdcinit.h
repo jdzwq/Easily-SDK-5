@@ -38,6 +38,10 @@ LICENSE.GPL3 for more details.
 typedef struct _xdc_mou_t{
 	bool_t		if_ok;
 
+#ifdef XDU_SUPPORT_BLUT
+	if_blut_t if_blut;
+#endif
+
 #ifdef XDU_SUPPORT_CONTEXT
 	int	ctx_ver;
 	if_context_t if_context;

@@ -214,7 +214,7 @@ LOC_API void	_conv_addr(net_addr_t* paddr, unsigned short* port, char* addr);
 LOC_API void	_socket_addr(res_file_t so, net_addr_t* paddr);
 LOC_API void	_socket_peer(res_file_t so, net_addr_t* paddr);
 LOC_API bool_t	_socket_share(pid_t procid, res_file_t procfd, res_file_t so, void* data, dword_t size);
-LOC_API LOC_API res_file_t _socket_dupli(res_file_t procfd, void* data, dword_t* pcb);
+LOC_API res_file_t _socket_dupli(res_file_t procfd, void* data, dword_t* pcb);
 int		_socket_error(tchar_t* buf, int max);
 #endif
 
@@ -286,16 +286,6 @@ LOC_API bool_t	_comm_read(res_file_t fh, void* buf, dword_t size, async_t* pb);
 LOC_API bool_t	_comm_write(res_file_t fh, void* buf, dword_t size, async_t* pb);
 LOC_API bool_t	_comm_flush(res_file_t fh);
 LOC_API dword_t	_comm_listen(res_file_t fh, async_t* pb);
-#endif
-
-#ifdef XDK_SUPPORT_BLUT
-LOC_API int	_enum_blut_device(dev_blt_t* pdb, int max);
-LOC_API res_file_t _blut_open(const tchar_t* addr, int chan, dword_t fmode);
-LOC_API void	_blut_close(res_file_t fh);
-LOC_API bool_t	_blut_read(res_file_t fh, void* buf, dword_t size, async_t* pb);
-LOC_API bool_t	_blut_write(res_file_t fh, void* buf, dword_t size, async_t* pb);
-LOC_API bool_t	_blut_flush(res_file_t fh);
-LOC_API dword_t	_blut_listen(res_file_t fh, async_t* pb);
 #endif
 
 

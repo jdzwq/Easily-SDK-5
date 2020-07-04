@@ -34,6 +34,25 @@ LICENSE.GPL3 for more details.
 
 #include "xdudef.h"
 
+#ifdef XDU_SUPPORT_BLUT
+typedef int(*PF_ENUM_BLUT)(dev_blt_t*, int);
+typedef res_file_t(*PF_BLUT_OPEN)(const tchar_t*, int, dword_t);
+typedef void(*PF_BLUT_CLOSE)(res_file_t);
+typedef dword_t(*PF_BLUT_LISTEN)(res_file_t, async_t*);
+typedef bool_t(*PF_BLUT_READ)(res_file_t, void*, dword_t, async_t*);
+typedef bool_t(*PF_BLUT_WRITE)(res_file_t, void*, dword_t, async_t*);
+typedef bool_t(*PF_BLUT_FLUSH)(res_file_t);
+
+typedef struct _if_blut_t{
+	PF_ENUM_BLUT	pf_enum_blut;
+	PF_BLUT_LISTEN		pf_blut_listen;
+	PF_BLUT_OPEN		pf_blut_open;
+	PF_BLUT_CLOSE		pf_blut_close;
+	PF_BLUT_READ		pf_blut_read;
+	PF_BLUT_WRITE		pf_blut_write;
+	PF_BLUT_FLUSH		pf_blut_flush;
+}if_blut_t;
+#endif
 
 #ifdef XDU_SUPPORT_SHELL
 /*shell interface*/
@@ -541,6 +560,10 @@ typedef struct _if_widget_t{
 
 #ifdef	__cplusplus
 extern "C" {
+#endif
+
+#ifdef XDU_SUPPORT_BLUT
+	EXP_API void xdu_impl_blut(if_blut_t* pif);
 #endif
 
 #ifdef XDU_SUPPORT_SHELL
