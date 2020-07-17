@@ -11,17 +11,18 @@ NET_PATH = ~/Easily-sdk-5/api/net_srv
 LOC_PATH = .
 OUT_PATH = ../sbin
 
-LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
+LIBS = -L $(API_PATH) -lxds -lxdl
 DIRS = $(wildcard $(LOC_PATH)/*.cc $(NET_PATH)/*.cc)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/xportd
+MODULE = xportd
+TARGET = $(OUT_PATH)/$(MODULE)
 
 %.o : $(LOC_PATH)/%.cc
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(NET_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(NET_PATH)
 
 %.o : $(NET_PATH)/%.cc
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(NET_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(NET_PATH)
 
 all : $(OBJS)
 	rm -f $@
@@ -39,7 +40,10 @@ install:
 	fi
 
 	sudo cp -f $(TARGET) $(SRV_PATH);
-	sudo chmod +x $(SRV_PATH)/xportd;
+	sudo chmod +x $(SRV_PATH)/$(MODULE);
+
+uninstall:
+	sudo rm -f $(SRV_PATH)/$(MODULE)
 
 .PHONY : clean
 clean:

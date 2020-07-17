@@ -11,7 +11,7 @@ SRC_PATH = ~/Easily-sdk-5/api/pacs_api
 INI_PATH = ~/Easily-sdk-5/linux/setup
 OUT_PATH = ../sbin/api
 
-LIBS = -L $(LIB_PATH) -lxds -ldicm -L $(API_PATH) -lxdl
+LIBS = -L $(LIB_PATH) -ldicm -L $(API_PATH) -lxds -lxdl
 DIRS = $(wildcard $(SRC_PATH)/*.cc)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
@@ -19,7 +19,7 @@ MODULE = libpacs_api.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.cc
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH)
 
 all : $(OBJS)
 	rm -f $@
@@ -44,6 +44,10 @@ install:
 	fi
 	sudo cp -f $(INI_PATH)/pacs/pacs.ini $(SRV_PATH)/pacs;
 
+uninstall:
+	sudo rm -r $(LNK_PATH)/$(MODULE)*;
+	sudo rm -f $(SRV_PATH)/api/$(MODULE).1.0
+	
 .PHONY : clean
 clean:
 	-rm -f $(OBJS)

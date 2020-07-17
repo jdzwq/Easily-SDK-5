@@ -2545,13 +2545,13 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	if (widget_can_paging(widget))
 	{
-		if (!b_design)
+		/*if (!b_design)
 		{
 			xmem_copy((void*)&xr, (void*)&cb, sizeof(xrect_t));
 			ft_expand_rect(&xr, 4.0, 4.0);
 
 			draw_shape(canv, &xp, NULL, &xr, ATTR_SHAPE_RECT);
-		}
+		}*/
 
 		xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
 		draw_corner(canv, &xc, (const xrect_t*)&cb);
@@ -2571,15 +2571,11 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	{
 		_formctrl_field_rect(widget, ptd->field, &xr);
 
-		if (ptd->b_lock)
-		{
-			parse_xcolor(&xc, DEF_DISABLE_COLOR);
-		}
-		else
-		{
 			if (ptd->b_alarm)
 			{
 				parse_xcolor(&xc, DEF_ALARM_COLOR);
+
+				draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
 			}
 			else
 			{
@@ -2587,9 +2583,9 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 					parse_xcolor(&xc, DEF_ENABLE_COLOR);
 				else
 					parse_xcolor(&xc, DEF_DISABLE_COLOR);
+
+				draw_feed_raw(rdc, &xc, &xr, ALPHA_SOLID);
 			}
-		}
-		draw_feed_raw(rdc, &xc, &xr, ALPHA_SOLID);
 	}
 
 	if (b_design)

@@ -1,8 +1,7 @@
 CC = g++
 CFLAGS = -g -Wall
 
-SYS_PATH = /usr/local
-LIB_PATH = ~/Easily-sdk-5/linux/lib
+LIB_PATH = /usr/local/lib
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/test/xdk_lib_test
 OUT_PATH = ~/Easily-sdk-5/linux/bin

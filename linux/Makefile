@@ -7,7 +7,8 @@ API_PATH = ~/Easily-app-5/linux/sbin/api
 INS_PATH = ~/Easily-sdk-5/linux/setup
 CUR_PATH = $(abspath ./)
 
-API_OBJS = $(API_PATH)/libxdk.so.1.0 \
+API_OBJS = $(API_PATH)/libxds.so.1.0 \
+	$(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
 	$(API_PATH)/libmqtt_api.so.1.0 \
 	$(API_PATH)/libcoap_api.so.1.0 \
@@ -41,7 +42,7 @@ all:
 	sudo mkdir $(SRV_PATH)/api; \
 	fi
 
-	cd $(CUR_PATH)/xds && make -f xds.ar.mk
+	cd $(CUR_PATH)/xds && make -f xds.so.mk
 	cd $(CUR_PATH)/xdk && make -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make -f xdl.so.mk
 
@@ -147,6 +148,7 @@ install:
 
 	sudo cp -f $(INS_PATH)/xportd.service $(DAE_PATH);
 
+	cd $(CUR_PATH)/xds && make install -f xds.so.mk
 	cd $(CUR_PATH)/xdk && make install -f xdk.so.mk
 	cd $(CUR_PATH)/xdl && make install -f xdl.so.mk
 
@@ -174,6 +176,37 @@ install:
 	cd $(CUR_PATH)/xtcps && make install -f xtcps.mk
 	cd $(CUR_PATH)/xudps && make install -f xudps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
+	cd $(CUR_PATH)
+
+uninstall:
+	cd $(CUR_PATH)/xds && make uninstall -f xds.so.mk
+	cd $(CUR_PATH)/xdk && make uninstall -f xdk.so.mk
+	cd $(CUR_PATH)/xdl && make uninstall -f xdl.so.mk
+
+	cd $(CUR_PATH)/xdb_mysql && make uninstall -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/sms_aliyun && make uninstall -f sms_aliyun.so.mk
+	cd $(CUR_PATH)/oau_weiapp && make uninstall -f oau_weiapp.so.mk
+	cd $(CUR_PATH)/oss_aliyun && make uninstall -f oss_aliyun.so.mk
+	cd $(CUR_PATH)/iot_telecom && make uninstall -f iot_telecom.so.mk
+
+	cd $(CUR_PATH)/hl7_api && make uninstall -f hl7_api.so.mk
+	cd $(CUR_PATH)/loc_api && make uninstall -f loc_api.so.mk
+	cd $(CUR_PATH)/www_api && make uninstall -f www_api.so.mk
+	cd $(CUR_PATH)/xdb_api && make uninstall -f xdb_api.so.mk
+	cd $(CUR_PATH)/sms_api && make uninstall -f sms_api.so.mk
+	cd $(CUR_PATH)/iot_api && make uninstall -f iot_api.so.mk
+	cd $(CUR_PATH)/oau_api && make uninstall -f oau_api.so.mk
+	cd $(CUR_PATH)/oss_api && make uninstall -f oss_api.so.mk
+	cd $(CUR_PATH)/tftp_api && make uninstall -f tftp_api.so.mk
+	cd $(CUR_PATH)/coap_api && make uninstall -f coap_api.so.mk
+	cd $(CUR_PATH)/mqtt_api && make uninstall -f mqtt_api.so.mk
+	cd $(CUR_PATH)/pacs_api && make uninstall -f pacs_api.so.mk
+
+	cd $(CUR_PATH)/xportm && make uninstall -f xportm.mk
+	cd $(CUR_PATH)/xhttps && make uninstall -f xhttps.mk
+	cd $(CUR_PATH)/xtcps && make uninstall -f xtcps.mk
+	cd $(CUR_PATH)/xudps && make uninstall -f xudps.mk
+	cd $(CUR_PATH)/xportd && make uninstall -f xportd.mk
 	cd $(CUR_PATH)
 
 .PHONY : test

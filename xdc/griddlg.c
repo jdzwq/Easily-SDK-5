@@ -302,6 +302,7 @@ void hand_griddlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long data)
 {
 	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
+	res_win_t ctl;
 
 	switch (cid)
 	{
@@ -312,6 +313,26 @@ void hand_griddlg_menu_command(res_win_t widget, int code, int cid, var_long dat
 		if (code == COMMAND_UPDATE)
 		{
 			griddlg_on_find(widget);
+		}
+		else if (code == COMMAND_COMMIT)
+		{
+			widget_post_command(widget, 0, IDC_GRIDDLG_PUSHBOX_OK, 0);
+		}
+		else if (code == COMMAND_TABORDER)
+		{
+			ctl = widget_get_child(widget, IDC_GRIDDLG_GRID);
+			if (widget_is_valid(ctl))
+			{
+				switch ((int)data)
+				{
+				case TABORDER_UP:
+					widget_post_key(ctl, KEY_UP);
+					break;
+				case TABORDER_DOWN:
+					widget_post_key(ctl, KEY_DOWN);
+					break;
+				}
+			}
 		}
 		break;
 	}

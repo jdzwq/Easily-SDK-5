@@ -836,6 +836,8 @@ void noti_grid_row_changed(res_win_t widget, link_t_ptr rlk)
 	_gridctrl_row_rect(widget, rlk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
 
+	ptd->b_alarm = 0;
+
 	ptd->row = rlk;
 
 	widget_erase(widget, &xr);
@@ -869,6 +871,8 @@ void noti_grid_col_changed(res_win_t widget, link_t_ptr clk)
 
 	_gridctrl_col_rect(widget, ptd->row, clk, &xr);
 	pt_expand_rect(&xr, DEF_OUTER_FEED, DEF_OUTER_FEED);
+
+	ptd->b_alarm = 0;
 
 	ptd->col = clk;
 
@@ -1959,34 +1963,23 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	else
 	{
 		//draw focus
-		if (ptd->row)
+		if (ptd->row && ptd->col)
 		{
-			if (ptd->b_lock)
-			{
-				_gridctrl_row_rect(widget, ptd->row, &xr);
-				pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
+			_gridctrl_cell_rect(widget, ptd->row, ptd->col, &xr);
 
-				parse_xcolor(&xc, DEF_ALPHA_COLOR);
-				alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+			if (ptd->b_alarm)
+			{
+				parse_xcolor(&xc, DEF_ALARM_COLOR);
 			}
-			else if (ptd->col)
+			else
 			{
-				_gridctrl_cell_rect(widget, ptd->row, ptd->col, &xr);
-
-				if (ptd->b_alarm)
-				{
-					parse_xcolor(&xc, DEF_ALARM_COLOR);
-				}
+				if (get_col_editable(ptd->col))
+					parse_xcolor(&xc, DEF_ENABLE_COLOR);
 				else
-				{
-					if (get_col_editable(ptd->col))
-						parse_xcolor(&xc, DEF_ENABLE_COLOR);
-					else
-						parse_xcolor(&xc, DEF_DISABLE_COLOR);
-				}
-
-				draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+					parse_xcolor(&xc, DEF_DISABLE_COLOR);
 			}
+
+			draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
 		}
 	}
 

@@ -300,9 +300,27 @@ void hand_editbox_keydown(res_win_t widget, dword_t ks, int key)
 		break;
 	case KEY_UP:
 		hand_textor_up(&ptd->textor);
+
+		if (widget_is_editor(widget))
+		{
+			pxa = widget_get_xface_ptr(widget);
+			if (is_null(pxa->text_wrap))
+			{
+				noti_editbox_command(widget, COMMAND_TABORDER, (var_long)TABORDER_UP);
+			}
+		}
 		break;
 	case KEY_DOWN:
 		hand_textor_down(&ptd->textor);
+
+		if (widget_is_editor(widget))
+		{
+			pxa = widget_get_xface_ptr(widget);
+			if (is_null(pxa->text_wrap))
+			{
+				noti_editbox_command(widget, COMMAND_TABORDER, (var_long)TABORDER_DOWN);
+			}
+		}
 		break;
 	case _T('c'):
 	case _T('C'):

@@ -1,26 +1,27 @@
-CC = g++
+CC = gcc
 CFLAGS = -g -Wall -fPIC
 
 SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
-INC_PATH = ~/Easily-sdk-5/include
-SRC_PATH = ~/Easily-sdk-5/oss/aliyun
-LOC_PATH = ~/Easily-sdk-5/oss
-INI_PATH = ~/Easily-sdk-5/linux/setup
+INC_PATH = ../../include
+SRC_PATH = ../../xds
+SUB_PATH = ../../xds/linux
 OUT_PATH = ../sbin/api
 
-LIBS = -L $(API_PATH) -lxds -lxdl
-DIRS = $(wildcard $(SRC_PATH)/oss_aliyun.c)
+LIBS = -lm -ldl -lutil -lrt -L $(LIB_PATH) -ljpg -lzlib -lpng -lqrcode
+DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
-MODULE = liboss_aliyun.so
+MODULE = libxds.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(LOC_PATH) 
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+
+%.o : $(SUB_PATH)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
 
 all : $(OBJS)
 	rm -f $@
@@ -33,15 +34,17 @@ test:
 	@echo $(OBJS)
 
 install:
+	if ! test -d $(SRV_PATH); then \
+	sudo mkdir $(SRV_PATH); \
+	fi
+	if ! test -d $(SRV_PATH)/api; then \
+	sudo mkdir $(SRV_PATH)/api; \
+	fi
+
 	sudo cp -f $(TARGET) $(SRV_PATH)/api;
 	sudo chmod +x $(SRV_PATH)/api/$(MODULE).1.0;
 	sudo rm -f $(LNK_PATH)/$(MODULE)*;
 	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
-
-	if ! test -d $(SRV_PATH)/oss/aliyun; then \
-	sudo mkdir $(SRV_PATH)/oss/aliyun; \
-	fi
-	sudo cp -rf $(INI_PATH)/oss/aliyun $(SRV_PATH)/oss;
 
 uninstall:
 	sudo rm -r $(LNK_PATH)/$(MODULE)*;

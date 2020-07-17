@@ -324,11 +324,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 			{
 				if (compare_text(orita, -1, ATTR_ORITATION_LEFT, -1, 0) == 0)
 				{
-					xr_edge.fx = xr.fx + TITLE_EDGE_DARK;
+					xr_edge.fx = xr.fx + TITLE_EDGE_LIGHT;
 					xr_edge.fy = xr.fy;
-					xr_edge.fw = xr.fw - 2 * TITLE_EDGE_DARK;
+					xr_edge.fw = xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
 					xr_edge.fh = xr.fh;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
+					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
 					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
 
 					pt[0].fx = xr.fx + TITLE_EDGE_LIGHT;
@@ -388,9 +388,9 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				{
 					xr_edge.fx = xr.fx + TITLE_EDGE_DARK;
 					xr_edge.fy = xr.fy;
-					xr_edge.fw = xr.fw - 2 * TITLE_EDGE_DARK;
+					xr_edge.fw = xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
 					xr_edge.fh = xr.fh;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
+					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
 					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
 
 					pt[0].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
@@ -452,10 +452,10 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				if (compare_text(orita, -1, ATTR_ORITATION_TOP, -1, 0) == 0)
 				{
 					xr_edge.fx = xr.fx;
-					xr_edge.fy = xr.fy + TITLE_EDGE_DARK;
+					xr_edge.fy = xr.fy + TITLE_EDGE_LIGHT;
 					xr_edge.fw = xr.fw;
-					xr_edge.fh = xr.fh - 2 * TITLE_EDGE_DARK;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+					xr_edge.fh = xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
+					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
 					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
 
 					pt[0].fx = 0;
@@ -516,8 +516,8 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					xr_edge.fx = xr.fx;
 					xr_edge.fy = xr.fy + TITLE_EDGE_DARK;
 					xr_edge.fw = xr.fw;
-					xr_edge.fh = xr.fh - 2 * TITLE_EDGE_DARK;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+					xr_edge.fh = xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
+					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
 					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
 
 					pt[0].fx = 0;

@@ -11,7 +11,7 @@ SRC_PATH = ../../xdl
 SUB_PATH = ../../xdl/linux
 OUT_PATH = ../sbin/api
 
-LIBS = -lm -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode -L $(API_PATH) -lxdk
+LIBS = -lm -L $(API_PATH) -lxds -lxdk
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -19,10 +19,10 @@ MODULE = libxdl.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH)
 
 %.o : $(SUB_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(SRC_PATH)
 
 all : $(OBJS)
 	rm -f $@
@@ -47,6 +47,10 @@ install:
 	sudo rm -f $(LNK_PATH)/libxdl*;
 	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
 
+uninstall:
+	sudo rm -r $(LNK_PATH)/$(MODULE)*;
+	sudo rm -f $(SRV_PATH)/api/$(MODULE).1.0
+	
 .PHONY : clean
 clean:
 	-rm -f $(OBJS)

@@ -549,6 +549,8 @@ res_win_t msgdlg_create(const tchar_t* text, dword_t button, res_win_t owner)
 
 		EVENT_ON_SIZE(hand_msgdlg_size)
 
+		EVENT_ON_KEYDOWN(hand_msgdlg_keydown)
+
 		EVENT_ON_MENU_COMMAND(hand_msgdlg_menu_command)
 
 		EVENT_ON_NC_IMPLEMENT

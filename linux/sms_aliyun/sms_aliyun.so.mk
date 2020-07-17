@@ -12,7 +12,7 @@ LOC_PATH = ~/Easily-sdk-5/sms
 INI_PATH = ~/Easily-sdk-5/linux/setup
 OUT_PATH = ../sbin/api
 
-LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
+LIBS = -L $(API_PATH) -lxds -lxdl
 DIRS = $(wildcard $(SRC_PATH)/sms_aliyun.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -20,7 +20,7 @@ MODULE = libsms_aliyun.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -L $(LIB_PATH) -I $(LOC_PATH) 
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(LOC_PATH) 
 
 all : $(OBJS)
 	rm -f $@
@@ -43,6 +43,10 @@ install:
 	fi
 	sudo cp -rf $(INI_PATH)/sms/aliyun $(SRV_PATH)/sms;
 
+uninstall:
+	sudo rm -r $(LNK_PATH)/$(MODULE)*;
+	sudo rm -f $(SRV_PATH)/api/$(MODULE).1.0
+	
 .PHONY : clean
 clean:
 	-rm -f $(OBJS)

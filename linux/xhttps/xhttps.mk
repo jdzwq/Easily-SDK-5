@@ -11,10 +11,11 @@ NET_PATH = ~/Easily-sdk-5/api/net_srv
 LOC_PATH = .
 OUT_PATH = ../sbin
 
-LIBS = -lpthread -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl
+LIBS = -lpthread -L $(API_PATH) -lxds -lxdl
 SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xhttps.cc $(LOC_PATH)/xhttpsMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/xhttps
+MODULE = xhttps
+TARGET = $(OUT_PATH)/$(MODULE)
 
 %.o : $(LOC_PATH)/%.cc
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(NET_PATH)
@@ -38,7 +39,10 @@ install:
 	fi
 
 	sudo cp -f $(TARGET) $(SRV_PATH);
-	sudo chmod +x $(SRV_PATH)/xhttps;
+	sudo chmod +x $(SRV_PATH)/$(MODULE);
+
+uninstall:
+	sudo rm -f $(SRV_PATH)/$(MODULE)
 
 .PHONY : clean
 clean:

@@ -47,6 +47,8 @@ extern "C" {
 
 	extern bool_t STDCALL oau_access(oau_t oau, tchar_t* token);
 
+	extern bool_t STDCALL oau_phone(oau_t oau, const tchar_t* jscode, const tchar_t* encrytedData, const tchar_t* iv, tchar_t* phoneNumber, tchar_t* purePhoneNumber, tchar_t* countryCode);
+
 	extern int STDCALL oau_error(oau_t oau, tchar_t* buf, int max);
 
 #ifdef	__cplusplus
@@ -58,6 +60,7 @@ typedef oau_t(STDCALL *PF_OAU_OPEN_ISP)(const tchar_t*);
 typedef void(STDCALL *PF_OAU_CLOSE)(oau_t);
 typedef bool_t(STDCALL *PF_OAU_SESSION)(oau_t, const tchar_t*, tchar_t*, tchar_t*, tchar_t*);
 typedef bool_t(STDCALL *PF_OAU_ACCESS)(oau_t, tchar_t*);
+typedef bool_t(STDCALL *PF_OAU_PHONE)(oau_t, const tchar_t*, const tchar_t*, const tchar_t*, tchar_t*, tchar_t*, tchar_t*);
 typedef int(STDCALL *PF_OAU_ERROR)(oau_t, tchar_t*, int);
 
 

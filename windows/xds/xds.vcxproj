@@ -19,32 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E117B11E-41E3-4B37-970F-C5AE17CFB058}</ProjectGuid>
+    <ProjectGuid>{21C72CC3-E029-4031-96DB-7EAA23EB58A5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>xds</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -67,19 +67,33 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\lib\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xds\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib\;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\lib\x64\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;..\..\xds\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\lib\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)55</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xds\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\lib\x64\</OutDir>
+    <TargetName>$(ProjectName)64</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;..\..\xds\;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -88,15 +102,15 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XDS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <Lib>
+      <AdditionalDependencies />
       <IgnoreSpecificDefaultLibraries>LIBCMT.lib</IgnoreSpecificDefaultLibraries>
-    </Lib>
+      <ImportLibrary>..\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -104,11 +118,15 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XDS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT.lib</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>..\lib\x64\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +137,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XDS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -127,6 +145,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ImportLibrary>..\lib\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,7 +156,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XDS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -145,51 +164,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ImportLibrary>..\lib\x64\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\xds\oemaes.h" />
-    <ClInclude Include="..\..\xds\oemarc.h" />
-    <ClInclude Include="..\..\xds\oemasn.h" />
-    <ClInclude Include="..\..\xds\oemb64.h" />
-    <ClInclude Include="..\..\xds\oembas.h" />
-    <ClInclude Include="..\..\xds\oembmp.h" />
-    <ClInclude Include="..\..\xds\oembrc.h" />
-    <ClInclude Include="..\..\xds\oemcert.h" />
-    <ClInclude Include="..\..\xds\oemcrc.h" />
-    <ClInclude Include="..\..\xds\oemdes.h" />
-    <ClInclude Include="..\..\xds\oemdhm.h" />
-    <ClInclude Include="..\..\xds\oemgeo.h" />
-    <ClInclude Include="..\..\xds\oemhave.h" />
-    <ClInclude Include="..\..\xds\oemhll.h" />
-    <ClInclude Include="..\..\xds\oemjpg.h" />
-    <ClInclude Include="..\..\xds\oemlock.h" />
-    <ClInclude Include="..\..\xds\oemlzf.h" />
-    <ClInclude Include="..\..\xds\oemmd2.h" />
-    <ClInclude Include="..\..\xds\oemmd4.h" />
-    <ClInclude Include="..\..\xds\oemmd5.h" />
-    <ClInclude Include="..\..\xds\oemmpi.h" />
-    <ClInclude Include="..\..\xds\oemmur.h" />
-    <ClInclude Include="..\..\xds\oempdg.h" />
-    <ClInclude Include="..\..\xds\oempng.h" />
-    <ClInclude Include="..\..\xds\oemprim.h" />
-    <ClInclude Include="..\..\xds\oemqrc.h" />
-    <ClInclude Include="..\..\xds\oemrand.h" />
-    <ClInclude Include="..\..\xds\oemrsa.h" />
-    <ClInclude Include="..\..\xds\oemsha1.h" />
-    <ClInclude Include="..\..\xds\oemsha2.h" />
-    <ClInclude Include="..\..\xds\oemsha4.h" />
-    <ClInclude Include="..\..\xds\oemsip.h" />
-    <ClInclude Include="..\..\xds\oemzip.h" />
-    <ClInclude Include="..\..\xds\xdsattr.h" />
-    <ClInclude Include="..\..\xds\xdsfont.h" />
-    <ClInclude Include="..\..\xds\xdsdef.h" />
-    <ClInclude Include="..\..\xds\xdsstr.h" />
-    <ClInclude Include="..\..\xds\xdsutil.h" />
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xds\oemaes.c" />
     <ClCompile Include="..\..\xds\oemarc.c" />
@@ -227,6 +204,46 @@
     <ClCompile Include="..\..\xds\xdsfont.c" />
     <ClCompile Include="..\..\xds\xdsstr.c" />
     <ClCompile Include="..\..\xds\xdsutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xds\oemaes.h" />
+    <ClInclude Include="..\..\xds\oemarc.h" />
+    <ClInclude Include="..\..\xds\oemasn.h" />
+    <ClInclude Include="..\..\xds\oemb64.h" />
+    <ClInclude Include="..\..\xds\oembas.h" />
+    <ClInclude Include="..\..\xds\oembmp.h" />
+    <ClInclude Include="..\..\xds\oembrc.h" />
+    <ClInclude Include="..\..\xds\oemcert.h" />
+    <ClInclude Include="..\..\xds\oemcrc.h" />
+    <ClInclude Include="..\..\xds\oemdes.h" />
+    <ClInclude Include="..\..\xds\oemdhm.h" />
+    <ClInclude Include="..\..\xds\oemgeo.h" />
+    <ClInclude Include="..\..\xds\oemhave.h" />
+    <ClInclude Include="..\..\xds\oemhll.h" />
+    <ClInclude Include="..\..\xds\oemjpg.h" />
+    <ClInclude Include="..\..\xds\oemlock.h" />
+    <ClInclude Include="..\..\xds\oemlzf.h" />
+    <ClInclude Include="..\..\xds\oemmd2.h" />
+    <ClInclude Include="..\..\xds\oemmd4.h" />
+    <ClInclude Include="..\..\xds\oemmd5.h" />
+    <ClInclude Include="..\..\xds\oemmpi.h" />
+    <ClInclude Include="..\..\xds\oemmur.h" />
+    <ClInclude Include="..\..\xds\oempdg.h" />
+    <ClInclude Include="..\..\xds\oempng.h" />
+    <ClInclude Include="..\..\xds\oemprim.h" />
+    <ClInclude Include="..\..\xds\oemqrc.h" />
+    <ClInclude Include="..\..\xds\oemrand.h" />
+    <ClInclude Include="..\..\xds\oemrsa.h" />
+    <ClInclude Include="..\..\xds\oemsha1.h" />
+    <ClInclude Include="..\..\xds\oemsha2.h" />
+    <ClInclude Include="..\..\xds\oemsha4.h" />
+    <ClInclude Include="..\..\xds\oemsip.h" />
+    <ClInclude Include="..\..\xds\oemzip.h" />
+    <ClInclude Include="..\..\xds\xdsattr.h" />
+    <ClInclude Include="..\..\xds\xdsdef.h" />
+    <ClInclude Include="..\..\xds\xdsfont.h" />
+    <ClInclude Include="..\..\xds\xdsstr.h" />
+    <ClInclude Include="..\..\xds\xdsutil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

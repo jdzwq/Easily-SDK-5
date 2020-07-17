@@ -6,12 +6,13 @@ LNK_PATH = /usr/local/lib
 SYS_PATH = /usr/include
 
 LIB_PATH = ../lib
+API_PATH = ../sbin/api
 INC_PATH = ../../include
 SRC_PATH = ../../xdu
 SUB_PATH = ../../xdu/linux
 OUT_PATH = ../sbin/api
 
-LIBS = -lm -ldl -lutil -lrt -lbluetooth -lX11 -lcairo -L $(LIB_PATH) -lxds -ljpg -lzlib -lpng -lqrcode
+LIBS = -lm -ldl -lutil -lrt -lbluetooth -lX11 -lcairo -L $(API_PATH) -lxds -xdk
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -19,10 +20,10 @@ MODULE = libxdu.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(SYS_PATH) -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(SYS_PATH) -I $(INC_PATH) -I $(SRC_PATH)
 
 %.o : $(SUB_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(SYS_PATH) -I $(INC_PATH) -I $(SRC_PATH) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(SYS_PATH) -I $(INC_PATH) -I $(SRC_PATH)
 
 all : $(OBJS)
 	rm -f $@
@@ -46,6 +47,10 @@ install:
 	sudo chmod +x $(SRV_PATH)/api/$(MODULE).1.0;
 	sudo rm -f $(LNK_PATH)/$(MODULE)*;
 	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
+
+uninstall:
+	sudo rm -r $(LNK_PATH)/$(MODULE)*;
+	sudo rm -f $(SRV_PATH)/api/$(MODULE).1.0
 
 .PHONY : clean
 clean:

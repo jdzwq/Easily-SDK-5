@@ -285,6 +285,108 @@ ONERROR:
 	return 0;
 }
 
+bool_t STDCALL oau_phone(oau_t oau, const tchar_t* jscode, const tchar_t* encryptedData, const tchar_t* iv, tchar_t* phoneNumber, tchar_t* purePhoneNumber, tchar_t* countryCode)
+{
+	weiapp_t* pal = (weiapp_t*)oau;
+
+	xhand_t xh_weiapp = NULL;
+
+	tchar_t sz_openid[KEY_LEN] = { 0 };
+	tchar_t sz_session_key[KEY_LEN] = { 0 };
+	tchar_t sz_unionid[KEY_LEN] = { 0 };
+
+	link_t_ptr ptr_json = NULL;
+	link_t_ptr nlk;
+
+	tchar_t sz_err[ERR_LEN + 1] = { 0 };
+	tchar_t sz_num[NUM_LEN + 1] = { 0 };
+
+	TRY_CATCH;
+
+	xh_weiapp = xhttp_client(HTTP_METHOD_GET, pal->session);
+	if (!xh_weiapp)
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	xhttp_set_request_default_header(xh_weiapp);
+	xhttp_set_request_content_type(xh_weiapp, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+
+	xhttp_set_url_query_entity(xh_weiapp, _T("appid"), -1, pal->appid, -1);
+	xhttp_set_url_query_entity(xh_weiapp, _T("secret"), -1, pal->secret, -1);
+	xhttp_set_url_query_entity(xh_weiapp, _T("js_code"), -1, jscode, -1);
+	xhttp_set_url_query_entity(xh_weiapp, _T("grant_type"), -1, _T("authorization_code"), -1);
+
+	if (!xhttp_send_request(xh_weiapp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_recv_response(xh_weiapp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	if (!xhttp_get_response_state(xh_weiapp))
+	{
+		raise_user_error(NULL, NULL);
+	}
+
+	ptr_json = create_json_doc();
+
+	if (!xhttp_recv_json(xh_weiapp, ptr_json))
+	{
+		raise_user_error(_T("_invoke_weiapp_access"), _T("parse json doc failed"));
+	}
+
+	xhttp_close(xh_weiapp);
+	xh_weiapp = NULL;
+
+	nlk = get_json_first_child_item(ptr_json);
+	while (nlk)
+	{
+		if (compare_text(get_json_item_name_ptr(nlk), -1, _T("openid"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_openid, KEY_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("session_key"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_session_key, KEY_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("unionid"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_unionid, KEY_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("errcode"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_num, NUM_LEN);
+		else if (compare_text(get_json_item_name_ptr(nlk), -1, _T("errmsg"), -1, 1) == 0)
+			get_json_item_value(nlk, sz_err, ERR_LEN);
+
+		nlk = get_json_next_sibling_item(nlk);
+	}
+
+	destroy_json_doc(ptr_json);
+	ptr_json = NULL;
+
+	if (!is_null(sz_num) && xstol(sz_num) != 0)
+	{
+		raise_user_error(_T("_invoke_weiapp_access"), sz_err);
+	}
+
+	xscpy(phoneNumber, _T("13500000000"));
+	xscpy(purePhoneNumber, _T("13500000000"));
+	xscpy(countryCode, _T("86"));
+
+	END_CATCH;
+
+	return 1;
+
+ONERROR:
+	get_last_error(pal->err_code, pal->err_text, ERR_LEN);
+
+	if (ptr_json)
+		destroy_json_doc(ptr_json);
+
+	if (xh_weiapp)
+		xhttp_close(xh_weiapp);
+
+	return 0;
+}
+
 int STDCALL oau_error(oau_t oau, tchar_t* buf, int max)
 {
 	weiapp_t* pal = (weiapp_t*)oau;

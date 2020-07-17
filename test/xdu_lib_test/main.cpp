@@ -1,12 +1,5 @@
-//
-//  main.cpp
-//  xdu_lib_test
-//
-//  Created by 张文权 on 18/10/4.
-//  Copyright © 2018年 张文权. All rights reserved.
-//
 
-#include <iostream>
+
 #include <xdu.h>
 
 void test_blut()
@@ -287,11 +280,11 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
 
     pt.x = 20;
     pt.y = 20;
-    xscpy(xp.size,"2");
+    xscpy(xp.size,_T("2"));
     xscpy(xp.color, GDI_ATTR_RGB_YELLOW);
     (*if_context.pf_gdi_draw_arc)(ctx, &xp, &pt, xr.w / 2, xr.h / 2, XPI, XPI * 3 / 2);
 
-    xscpy(xp.size,"1");
+    xscpy(xp.size,_T("1"));
     xscpy(xb.color, GDI_ATTR_RGB_GREEN);
     xr.x = 30;
     xr.y = 30;
@@ -310,17 +303,17 @@ void child_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
 
     xfont_t xf = {0};
     default_xfont(&xf);
-    xscpy(xf.size,"20");
+    xscpy(xf.size,_T("20"));
     xscpy(xf.color,GDI_ATTR_RGB_LIGHTCYAN);
 
     xr.x = 20;
     xr.y = 20;
     xr.w = 100;
     xr.h = 20;
-     (*if_context.pf_gdi_draw_text)(ctx, &xf, NULL, &xr, "Hello World!", -1);
+     (*if_context.pf_gdi_draw_text)(ctx, &xf, NULL, &xr, _T("Hello World!"), -1);
 
     xsize_t xs = {0};
-    (*if_context.pf_gdi_text_size)(ctx, &xf, "Hello World!", -1, &xs);
+    (*if_context.pf_gdi_text_size)(ctx, &xf, _T("Hello World!"), -1, &xs);
     (*if_context.pf_gdi_text_metric)(ctx, &xf,&xs);
 
     xcolor_t xc = {0};
@@ -698,15 +691,22 @@ void uninit_instance()
     (*if_context.pf_context_cleanup)();
 }
 
+void test_win()
+{
+	init_instance();
+
+	(*if_widget.pf_widget_do_normal)(g_main);
+
+	uninit_instance();
+}
+
+#pragma comment( linker, "/subsystem:windows /entry:mainCRTStartup" )
+
 int main(int argc, const char * argv[]) {
 
-    init_instance();
+	test_blut();
 
-    //test_blut();
+	//test_win();
 
-    (*if_widget.pf_widget_do_normal)(g_main);
-
-    uninit_instance();
-    
     return 0;
 }

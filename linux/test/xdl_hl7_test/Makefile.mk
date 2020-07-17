@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -g -Wall
 
-LIB_PATH = ~/Easily-sdk-5/linux/lib
+LIB_PATH = /usr/local/lib
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/test/xdl_hl7_test
 OBJ_PATH = ~/Easily-sdk-5/test/xdl_hl7_test
@@ -16,7 +16,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 
 all : $(OBJS)
 	rm -f $@
-	$(CC) -o $(TARGET) $(OBJS) -lxds -lxdl -L $(LIB_PATH)
+	$(CC) -o $(TARGET) $(OBJS) -L $(LIB_PATH) -lxds -lxdl 
 	rm -f $(OBJS)
 
 test:

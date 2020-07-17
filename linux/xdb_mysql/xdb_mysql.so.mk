@@ -13,7 +13,7 @@ INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/xdb
 OUT_PATH = ../sbin/api
 
-LIBS = -L $(LIB_PATH) -lxds -L $(API_PATH) -lxdl -L $(LIB_MYSQL) -lmysqlclient
+LIBS = -L $(API_PATH) -lxds -lxdl -L $(LIB_MYSQL) -lmysqlclient
 DIRS = $(wildcard $(SRC_PATH)/xdb_mysql.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -21,7 +21,7 @@ MODULE = libxdb_mysql.so
 TARGET = $(OUT_PATH)/$(MODULE).1.0
 
 %.o : $(SRC_PATH)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(INC_MYSQL) -L $(LIB_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH) -I $(INC_MYSQL)
 
 all : $(OBJS)
 	rm -f $@
@@ -39,6 +39,10 @@ install:
 	sudo rm -f $(LNK_PATH)/$(MODULE)*;
 	sudo ln -bs $(SRV_PATH)/api/$(MODULE).1.0 $(LNK_PATH)/$(MODULE);
 
+uninstall:
+	sudo rm -r $(LNK_PATH)/$(MODULE)*;
+	sudo rm -f $(SRV_PATH)/api/$(MODULE).1.0
+	
 .PHONY : clean
 clean:
 	-rm -f $(OBJS)

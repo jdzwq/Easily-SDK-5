@@ -7,7 +7,7 @@ INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/xDump
 OUT_PATH = ../bin
 
-LIBS = -L $(LIB_PATH) -lxds -lmded -ldicm -L $(API_PATH) -lxdk -lxdl
+LIBS = -L $(LIB_PATH) -lmded -ldicm -L $(API_PATH) -lxds -lxdl
 DIRS = $(SRC_PATH)/*.cc
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
