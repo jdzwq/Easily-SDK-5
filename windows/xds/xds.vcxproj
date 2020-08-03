@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{21C72CC3-E029-4031-96DB-7EAA23EB58A5}</ProjectGuid>
+    <ProjectGuid>{E117B11E-41E3-4B37-970F-C5AE17CFB058}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>xds</RootNamespace>
   </PropertyGroup>

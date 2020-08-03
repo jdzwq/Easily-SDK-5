@@ -151,9 +151,9 @@ static void _treectrl_ensure_visible(res_win_t widget)
 	parent = get_tree_parent_item(ptd->item);
 	while (parent)
 	{
-		if (!get_tree_item_expanded(parent))
+		if (get_tree_item_collapsed(parent))
 		{
-			set_tree_item_expanded(parent, 1);
+			set_tree_item_collapsed(parent, 0);
 			b_tag = 1;
 		}
 		parent = get_tree_parent_item(parent);
@@ -309,7 +309,7 @@ void noti_tree_item_expand(res_win_t widget, link_t_ptr ilk)
 
 	XDL_ASSERT(ilk != NULL);
 
-	set_tree_item_expanded(ilk, 1);
+	set_tree_item_collapsed(ilk, 0);
 
 	noti_tree_owner(widget, NC_TREEITEMEXPAND, ptd->tree, ilk, NULL);
 
@@ -322,7 +322,7 @@ void noti_tree_item_collapse(res_win_t widget, link_t_ptr ilk)
 
 	XDL_ASSERT(ilk != NULL);
 
-	set_tree_item_expanded(ilk, 0);
+	set_tree_item_collapsed(ilk, 1);
 
 	noti_tree_owner(widget, NC_TREEITEMCOLLAPSE, ptd->tree, ilk, NULL);
 
@@ -553,10 +553,10 @@ void hand_tree_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	if (nHint == TREE_HINT_EXPAND)
 	{
-		if (get_tree_item_expanded(tlk))
-			noti_tree_item_collapse(widget, tlk);
-		else
+		if (get_tree_item_collapsed(tlk))
 			noti_tree_item_expand(widget, tlk);
+		else
+			noti_tree_item_collapse(widget, tlk);
 		return;
 	}
 
@@ -1152,7 +1152,7 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 	case TABORDER_RIGHT:
 		if (ptd->item && get_tree_child_item_count(ptd->item))
 		{
-			if (!get_tree_item_expanded(ptd->item))
+			if (get_tree_item_collapsed(ptd->item))
 			{
 				noti_tree_item_expand(widget, ptd->item);
 			}
@@ -1177,7 +1177,7 @@ void treectrl_tabskip(res_win_t widget, int nSkip)
 		if (ptd->item && get_tree_parent_item(ptd->item))
 		{
 			plk = get_tree_parent_item(ptd->item);
-			if (get_tree_item_expanded(plk))
+			if (!get_tree_item_collapsed(plk))
 			{
 				noti_tree_item_expand(widget, plk);
 			}

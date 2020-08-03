@@ -89,7 +89,6 @@ void _previewdlg_fresh_tree(res_win_t widget)
 	plk = insert_tree_item(tree, LINK_LAST);
 	set_tree_item_title(plk, PREVIEWDLG_TREE_TITLE);
 	set_tree_item_showcheck(plk, 1);
-	set_tree_item_expanded(plk, 1);
 
 	nlk = get_arch_first_child_item(ptd->arch);
 	while (nlk)

@@ -2758,6 +2758,11 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 
 			len_response++;
 
+			if (len_response > XHTTP_HEADER_MAX)
+			{
+				raise_user_error(_T("0"), _T("invalid http header size"));
+			}
+
 			if (len_response > len_header)
 			{
 				len_header += XHTTP_HEADER_SIZE;

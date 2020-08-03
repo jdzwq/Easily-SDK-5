@@ -294,13 +294,13 @@ void noti_proper_section_expand(res_win_t widget, link_t_ptr slk)
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	xrect_t xr_sec, xr;
 
-	if (get_section_expanded(slk))
+	if (get_section_collapsed(slk))
 	{
-		set_section_expanded(slk, 0);
+		set_section_collapsed(slk, 0);
 	}
 	else
 	{
-		set_section_expanded(slk, 1);
+		set_section_collapsed(slk, 1);
 	}
 
 	_properctrl_section_rect(widget, slk, &xr_sec);
@@ -1311,7 +1311,7 @@ void properctrl_tabskip(res_win_t widget, int dir)
 					break;
 			}
 
-			if (!get_section_expanded(slk))
+			if (get_section_collapsed(slk))
 				noti_proper_section_expand(widget, slk);
 
 			if (elk)
@@ -1327,7 +1327,7 @@ void properctrl_tabskip(res_win_t widget, int dir)
 			if (!elk)
 				break;
 
-			if (!get_section_expanded(slk))
+			if (get_section_collapsed(slk))
 				noti_proper_section_expand(widget, slk);
 
 			if (elk)
@@ -1350,7 +1350,7 @@ void properctrl_tabskip(res_win_t widget, int dir)
 					break;
 			}
 
-			if (!get_section_expanded(slk))
+			if (get_section_collapsed(slk))
 				noti_proper_section_expand(widget, slk);
 
 			if (elk)
@@ -1366,7 +1366,7 @@ void properctrl_tabskip(res_win_t widget, int dir)
 			if (!elk)
 				break;
 
-			if (!get_section_expanded(slk))
+			if (get_section_collapsed(slk))
 				noti_proper_section_expand(widget, slk);
 
 			if (elk)

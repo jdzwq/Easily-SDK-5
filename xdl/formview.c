@@ -247,7 +247,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			if (!b_print)
 			{
-				xmem_copy((void*)&xc, (void*)(&pif->clr_frg), sizeof(xcolor_t));
+				xmem_copy((void*)&xc, (void*)(&pif->clr_txt), sizeof(xcolor_t));
 			}
 			else
 			{

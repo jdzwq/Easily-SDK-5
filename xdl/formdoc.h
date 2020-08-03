@@ -99,6 +99,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_form_height(ptr,n)								set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
 /*
+@PROPER printing: string.
+@SET set_form_printing: set the field printing oritation.
+*/
+#define set_form_printing(ptr,val)							set_dom_node_attr(ptr,ATTR_PRINTING,-1,val,-1)
+/*
+@PROPER printing: string.
+@SET get_form_printing: get the form printing oritation.
+*/
+#define get_form_printing_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_PRINTING,-1)
+/*
 @PROPER name: string.
 @SET set_field_name: set the field name.
 */

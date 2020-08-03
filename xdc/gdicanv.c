@@ -40,7 +40,6 @@ typedef struct _rdc_canvas_t{
 	res_ctx_t dc;		// memory draw context 
 
 	float htpermm, vtpermm;
-	float scale;
 	float horz_feed, vert_feed;
 	float horz_size, vert_size;
 }rdc_canvas_t;
@@ -53,9 +52,9 @@ float pt_to_tm(canvas_t canv, int pt, bool_t horz)
 	XDL_ASSERT(canv);
 
 	if (horz)
-		return (float)((float)pt / (float)(pcanv->htpermm * pcanv->scale)) - pcanv->horz_feed;
+		return (float)((float)pt / (float)(pcanv->htpermm) - pcanv->horz_feed);
 	else
-		return (float)((float)pt / (float)(pcanv->vtpermm * pcanv->scale)) - pcanv->vert_feed;
+		return (float)((float)pt / (float)(pcanv->vtpermm) - pcanv->vert_feed);
 }
 
 int tm_to_pt(canvas_t canv, float tm, bool_t horz)
@@ -65,9 +64,9 @@ int tm_to_pt(canvas_t canv, float tm, bool_t horz)
 	XDL_ASSERT(canv);
 
 	if (horz)
-		return (int)(((float)tm * pcanv->scale + (float)pcanv->horz_feed) * pcanv->htpermm);
+		return (int)(((float)tm + (float)pcanv->horz_feed) * pcanv->htpermm + 0.5);
 	else
-		return (int)(((float)tm * pcanv->scale + (float)pcanv->vert_feed) * pcanv->vtpermm);
+		return (int)(((float)tm + (float)pcanv->vert_feed) * pcanv->vtpermm + 0.5);
 }
 
 void rect_tm_to_pt(canvas_t canv, xrect_t* pxr)
@@ -193,7 +192,6 @@ canvas_t create_display_canvas(res_ctx_t rdc)
 
 	get_device_caps(pcanv->dc, &cap);
 
-	pcanv->scale = 1.0;
 	pcanv->htpermm = (float)((float)cap.horz_pixels * INCHPERMM);
 	pcanv->vtpermm = (float)((float)cap.vert_pixels * INCHPERMM);
 	pcanv->horz_size = (float)((float)cap.horz_res / (float)cap.horz_pixels / INCHPERMM);
@@ -282,24 +280,6 @@ float get_canvas_vert_feed(canvas_t canv)
 	return pcanv->vert_feed;
 }
 
-void set_canvas_scale(canvas_t canv, float sca)
-{
-	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
-
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
-
-	pcanv->scale = sca;
-}
-
-float get_canvas_scale(canvas_t canv)
-{
-	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
-
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
-
-	return pcanv->scale;
-}
-
 res_ctx_t get_canvas_ctx(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
@@ -355,7 +335,6 @@ canvas_t create_printer_canvas(res_ctx_t rdc)
 	get_device_caps(rdc, &cap);
 
 	pcanv->dc = rdc;
-	pcanv->scale = 1.0;
 	pcanv->htpermm = (float)((float)cap.horz_pixels * INCHPERMM);
 	pcanv->vtpermm = (float)((float)cap.vert_pixels * INCHPERMM);
 	pcanv->horz_size = (float)((float)cap.horz_size / (float)cap.horz_pixels / INCHPERMM);

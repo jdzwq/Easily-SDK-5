@@ -213,15 +213,15 @@ LICENSE.GPL3 for more details.
 */
 #define set_entity_icon(elk,token)					set_dom_node_attr(elk,ATTR_ICON,-1,token,-1)
 /*
-@PROPER expanded: boolean.
-@SET set_section_expanded: set the section is expanded.
+@PROPER collapsed: boolean.
+@SET set_section_collapsed: set the section is collapsed.
 */
-#define set_section_expanded(slk,b)					set_dom_node_mask_check(slk,MSK_EXPANDED,b) 
+#define set_section_collapsed(slk,b)					set_dom_node_mask_check(slk,MSK_COLLAPSED,b) 
 /*
-@PROPER expanded: boolean.
-@GET get_section_expanded: get the section is expanded.
+@PROPER collapsed: boolean.
+@GET get_section_collapsed: get the section is collapsed.
 */
-#define get_section_expanded(slk)					get_dom_node_mask_check(slk,MSK_EXPANDED)
+#define get_section_collapsed(slk)					get_dom_node_mask_check(slk,MSK_COLLAPSED)
 
 #ifdef	__cplusplus
 extern "C" {

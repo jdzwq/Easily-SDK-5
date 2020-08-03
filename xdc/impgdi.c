@@ -283,7 +283,6 @@ void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, co
 	int unit;
 	xrect_t rt;
 	xbrush_t xb;
-	xpen_t xp;
 
 	byte_t* buf;
 	dword_t buf_len;
@@ -322,8 +321,6 @@ void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, co
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
 
 	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.3, 1);
 
@@ -336,13 +333,13 @@ void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, co
 	for (i = 0; i < bar_len; i++)
 	{
 		span = (bar_buf[i] - '0');
-		rt.fw = span * unit;
+		rt.w = span * unit;
 
 		black = (black) ? 0 : 1;
 
 		if (black)
 		{
-			(*pif->pf_gdi_draw_rect)(rdc, &xp, &xb, &rt);
+			(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
 		}
 		
 		rt.x += rt.w;
@@ -365,7 +362,6 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 	xrect_t rt;
 	xbrush_t xb;
-	xpen_t xp;
 
 	byte_t* buf;
 	dword_t buf_len;
@@ -404,8 +400,6 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
 
 	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
 
@@ -431,7 +425,7 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 				if (black)
 				{
-					(*pif->pf_gdi_draw_rect)(rdc, &xp, &xb, &rt);
+					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
 				}
 
 				b = b >> 1;
@@ -456,7 +450,6 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 	float unit = 0.5;
 	xrect_t rt;
 	xbrush_t xb;
-	xpen_t xp;
 
 	byte_t* buf;
 	dword_t buf_len;
@@ -495,8 +488,6 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
 
 	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
 
@@ -522,7 +513,7 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 				if (black)
 				{
-					(*pif->pf_gdi_draw_rect)(rdc, &xp, &xb, &rt);
+					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
 				}
 
 				b = b >> 1;
@@ -627,6 +618,97 @@ void draw_focus_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int 
 	xsprintf(xp.opacity, _T("%d"), deep);
 
 	draw_rect_raw(rdc, &xp,NULL, prt);
+}
+
+void draw_sizing_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
+{
+	xrect_t xr;
+	xpen_t xp;
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	xsprintf(xp.opacity, _T("%d"), deep);
+	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DASHED);
+
+	if (pos & SIZING_TOPLEFT)
+	{
+		xr.x = prt->x;
+		xr.y = prt->y;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_TOPCENTER)
+	{
+		xr.x = prt->x + prt->w / 2 - 2;
+		xr.y = prt->y;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_TOPRIGHT)
+	{
+		xr.x = prt->x + prt->w - 4;
+		xr.y = prt->y;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_BOTTOMLEFT)
+	{
+		xr.x = prt->x;
+		xr.y = prt->y + prt->h - 2;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_BOTTOMCENTER)
+	{
+		xr.x = prt->x + prt->w / 2 - 2;
+		xr.y = prt->y + prt->h - 4;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_BOTTOMRIGHT)
+	{
+		xr.x = prt->x + prt->w - 4;
+		xr.y = prt->y + prt->h - 4;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_LEFTCENTER)
+	{
+		xr.x = prt->x;
+		xr.y = prt->y + prt->h / 2 - 2;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_RIGHTCENTER)
+	{
+		xr.x = prt->x + prt->w - 4;
+		xr.y = prt->y + prt->h / 2 - 2;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
 }
 
 void draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
@@ -1172,7 +1254,7 @@ void draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tcha
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xpoint_t* ppt;
-	int i;
+	int i, j;
 
 	if_context_t *pif;
 
@@ -1184,54 +1266,55 @@ void draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tcha
 	ppt = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
 	xmem_copy((void*)ppt, (void*)pa, n * sizeof(xpoint_t));
 
-	i = 0;
-	while (*aa)
+	i = j = 0;
+	while (*(aa + j))
 	{
-		if (*aa == _T('M') || *aa == _T('m'))
+		if (*(aa + j) == _T('M') || *(aa + j) == _T('m'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
 			i += 1;
 		}
-		else if (*aa == _T('L') || *aa == _T('l'))
+		else if (*(aa + j) == _T('L') || *(aa + j) == _T('l'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
-			point_tm_to_pt(canv, &ppt[i+1]);
-			i += 2;
+			i += 1;
 		}
-		else if (*aa == _T('Q') || *aa == _T('q'))
+		else if (*(aa + j) == _T('Q') || *(aa + j) == _T('q'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
 			point_tm_to_pt(canv, &ppt[i + 1]);
 			i += 2;
 		}
-		else if (*aa == _T('T') || *aa == _T('t'))
+		else if (*(aa + j) == _T('T') || *(aa + j) == _T('t'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
 			i += 1;
 		}
-		else if (*aa == _T('C') || *aa == _T('c'))
+		else if (*(aa + j) == _T('C') || *(aa + j) == _T('c'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
 			point_tm_to_pt(canv, &ppt[i + 1]);
 			point_tm_to_pt(canv, &ppt[i + 2]);
 			i += 3;
 		}
-		else if (*aa == _T('S') || *aa == _T('s'))
+		else if (*(aa + j) == _T('S') || *(aa + j) == _T('s'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
 			point_tm_to_pt(canv, &ppt[i + 1]);
 			i += 2;
 		}
-		else if (*aa == _T('A') || *aa == _T('a'))
+		else if (*(aa + j) == _T('A') || *(aa + j) == _T('a'))
 		{
 			point_tm_to_pt(canv, &ppt[i]);
-			point_tm_to_pt(canv, &ppt[i + 2]);
-			i += 3;
+			point_tm_to_pt(canv, &ppt[i + 1]);
+			i += 2;
 		}
-		else if (*aa == _T('Z') || *aa == _T('z'))
+		else if (*(aa + j) == _T('Z') || *(aa + j) == _T('z'))
 		{
 			break;
 		}
+
+		j++;
 	}
 
 	(*pif->pf_gdi_draw_path)(rdc, pxp, pxb, aa, ppt);
@@ -1950,6 +2033,7 @@ void draw_corner(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr)
 
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
+	pt_expand_rect(&xr, 3, 3);
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);

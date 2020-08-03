@@ -1016,7 +1016,7 @@ bool_t STDCALL db_fetch(xdb_t db, LINKPTR grid)
     xmem_free(sqlstr);
     sqlstr = NULL;
     
-    if(C_OK != mysql_stmt_prepare(stm, d_sql, sqllen))
+    if(C_OK != mysql_stmt_prepare(stm, d_sql, d_len))
     {
         _raise_stm_error(stm);
     }

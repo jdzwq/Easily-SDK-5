@@ -169,15 +169,15 @@ LICENSE.GPL3 for more details.
 */
 #define get_tree_item_locked(ilk)						get_dom_node_mask_check(ilk,MSK_LOCKED)
 /*
-@PROPER expanded: boolean.
-@SET set_tree_item_expanded: set the tree item expanded.
+@PROPER collapsed: boolean.
+@SET set_tree_item_collapsed: set the tree item collapsed.
 */
-#define set_tree_item_expanded(ilk,expand)				set_dom_node_mask_check(ilk,MSK_EXPANDED,expand)
+#define set_tree_item_collapsed(ilk,b)				set_dom_node_mask_check(ilk,MSK_COLLAPSED,b)
 /*
-@PROPER expanded: document.
-@GET get_tree_item_expanded: get the tree item expanded.
+@PROPER collapsed: document.
+@GET get_tree_item_collapsed: get the tree item collapsed.
 */
-#define get_tree_item_expanded(ilk)						get_dom_node_mask_check(ilk,MSK_EXPANDED)
+#define get_tree_item_collapsed(ilk)						get_dom_node_mask_check(ilk,MSK_COLLAPSED)
 /*
 @PROPER checked: boolean.
 @SET set_tree_item_checked: set the tree item checked.

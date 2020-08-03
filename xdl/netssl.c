@@ -42,7 +42,6 @@ LICENSE.GPL3 for more details.
 #define GET_THREEBYTE_LEN(buf,off)		((buf[off] << 16) | (buf[off+1] << 8) | buf[off+2])
 #define PUT_THREEBYTE_LEN(buf,off,n)	{buf[off] = (byte_t)((n) >> 16);buf[off+1] = (byte_t)((n) >> 8);buf[off+2] = (byte_t)((n));}
 
-
 static char dhm_G[] = "4";
 static char dhm_P[] = "E4004C1F94182000103D883A448B3F802CE4B44A83301270002C20D0321CFD00" \
 "11CCEF784C26A400F43DFB901BCA7538F2C6B176001CF5A0FD16D2C48B1D0C1C" \
@@ -52,34 +51,34 @@ static char dhm_P[] = "E4004C1F94182000103D883A448B3F802CE4B44A83301270002C20D03
 typedef struct _ciphers_set{
 	int cipher;
 	int key_size;
-	int min_size;
 	int iv_size;
 	int hash_size;
 	int mate_size;
 }ciphers_set;
 
 static ciphers_set client_ciphers[] = {
-	{ SSL_EDH_RSA_AES_256_SHA, 32, 32, 16, 20, 256 },
-	{ SSL_EDH_RSA_DES_168_SHA, 24, 24, 8, 20, 24 },
-	{ SSL_RSA_AES_128_SHA256,	16, 32, 16, 32, 128 },
-	{ SSL_RSA_AES_256_SHA256,	32, 32, 16, 32, 256 },
-	{ SSL_RSA_AES_128_SHA,		16, 32, 16, 20, 128 },
-	{ SSL_RSA_AES_256_SHA,		32, 32, 16, 20, 256 },
-	{ SSL_RSA_DES_168_SHA,		24, 24, 8, 20, 24 },
-	{ SSL_RSA_RC4_128_SHA,		16, 20, 0, 20, 16 },
-	{ SSL_RSA_RC4_128_MD5,		16, 16, 0, 16, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
+	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 8, 20, 24 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA256,	16, 16, 32, 128 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA256,	32, 16, 32, 256 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA,		16, 16, 20, 128 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA,		32, 16, 20, 256 },
+	{ SSL_RSA_WITH_RC4_128_SHA,		16, 0, 20, 16 },
+	{ SSL_RSA_WITH_RC4_128_MD5,		16, 0, 16, 16 },
 };
 
 static ciphers_set server_ciphers[] = {
-	{ SSL_RSA_AES_128_SHA256, 16, 32, 16, 32, 128 },
-	{ SSL_RSA_AES_256_SHA256, 32, 32, 16, 32, 256 },
-	{ SSL_RSA_AES_128_SHA, 16, 32, 16, 20, 128 },
-	{ SSL_RSA_AES_256_SHA, 32, 32, 16, 20, 256 },
-	{ SSL_RSA_DES_168_SHA, 24, 24, 8, 20, 24 },
-	{ SSL_RSA_RC4_128_SHA, 16, 20, 0, 20, 16 },
-	{ SSL_RSA_RC4_128_MD5, 16, 16, 0, 16, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 16, 32, 128 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 16, 32, 256 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
 };
 
+
+#define IS_DHE_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA || cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA)? 1 : 0)
 
 static char label_client_finished[] = "client finished";
 static char label_server_finished[] = "server finished";
@@ -100,7 +99,6 @@ typedef struct _ssl_t{
 	int key_size; //the encrypt decrypt key size
 	int mate_size; //key material length
 	int iv_size;
-	int min_size;
 	int exportable; //IsExportable: { true, false } 
 	int alg_mac; //MACAlgorithm: enum { null, hmac_md5, hmac_sha1, hmac_sha256, hmac_sha384, hmac_sha512 }
 	int hash_size; //
@@ -440,7 +438,6 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 		{
 			pssl->cipher = pcs[i].cipher;
 			pssl->key_size = pcs[i].key_size;
-			pssl->min_size = pcs[i].min_size;
 			pssl->iv_size = pcs[i].iv_size;
 			pssl->hash_size = pcs[i].hash_size;
 			pssl->mate_size = pcs[i].mate_size;
@@ -585,21 +582,22 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	//initialize encrypt and decrypt context
 	switch (pssl->cipher)
 	{
-	case SSL_RSA_RC4_128_MD5:
-	case SSL_RSA_RC4_128_SHA:
+	case SSL_RSA_WITH_RC4_128_MD5:
+	case SSL_RSA_WITH_RC4_128_SHA:
 		arc4_setup((arc4_context *)pssl->ctx_enc, key_enc, pssl->mate_size);
 		arc4_setup((arc4_context *)pssl->ctx_dec, key_dec, pssl->mate_size);
 		break;
-	case SSL_RSA_DES_168_SHA:
-	case SSL_EDH_RSA_DES_168_SHA:
+	case SSL_RSA_WITH_3DES_EDE_CBC_SHA:
+	case SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA:
 		des3_set3key_enc((des3_context *)pssl->ctx_enc, key_enc); //the material size is 24
 		des3_set3key_dec((des3_context *)pssl->ctx_dec, key_dec); //the material size is 24
 		break;
-	case SSL_RSA_AES_128_SHA:
-	case SSL_RSA_AES_256_SHA:
-	case SSL_EDH_RSA_AES_256_SHA:
-	case SSL_RSA_AES_128_SHA256:
-	case SSL_RSA_AES_256_SHA256:
+	case SSL_RSA_WITH_AES_128_CBC_SHA:
+	case SSL_RSA_WITH_AES_256_CBC_SHA:
+	case SSL_DHE_RSA_WITH_AES_128_CBC_SHA:
+	case SSL_DHE_RSA_WITH_AES_256_CBC_SHA:
+	case SSL_RSA_WITH_AES_128_CBC_SHA256:
+	case SSL_RSA_WITH_AES_256_CBC_SHA256:
 		aes_setkey_enc((aes_context *)pssl->ctx_enc, key_enc, pssl->mate_size);
 		aes_setkey_dec((aes_context *)pssl->ctx_dec, key_dec, pssl->mate_size);
 		break;
@@ -757,11 +755,13 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 
 static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 {
-	int i, padlen;
+	int i, n, padlen;
 	byte_t* mac_buf;
 	byte_t mac_tmp[32];
 
-	if (pssl->rcv_msg_len < pssl->min_size)
+	n = (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3) ? (pssl->hash_size + pssl->iv_size) : pssl->hash_size;
+
+	if (pssl->rcv_msg_len < n)
 	{
 		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message length to small"), -1);
 
@@ -1539,12 +1539,12 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 		}
 	}
 
-	return SSL_SERVER_KEY_EXCHANGE;
+	return IS_DHE_CIPHER(pssl->cipher) ? SSL_SERVER_KEY_EXCHANGE : SSL_CERTIFICATE_REQUEST;
 }
 
 static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 {
-	/*
+	/* TLS 1.0/1.1
 	struct {
 		select (KeyExchangeAlgorithm) {
 		case diffie_hellman:
@@ -1565,8 +1565,8 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 		case dhe_rsa:
 			ServerDHParams params;
 			digitally-signed struct {
-			opaque client_random[32];
-			opaque server_random[32];
+				opaque client_random[32];
+				opaque server_random[32];
 			ServerDHParams params;
 			} signed_params;
 		case rsa:
@@ -1583,11 +1583,6 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 	sha1_context sha1;
 	sha2_context sha2;
 	int alg_hash, alg_sign;
-
-	if (pssl->cipher != SSL_EDH_RSA_DES_168_SHA && pssl->cipher != SSL_EDH_RSA_AES_256_SHA)
-	{
-		return SSL_CERTIFICATE_REQUEST;
-	}
 
 	if (pssl->rcv_msg[0] != SSL_HS_SERVER_KEY_EXCHANGE)
 	{
@@ -1935,7 +1930,7 @@ static handshake_states _ssl_write_client_certificate(ssl_t *pssl)
 
 static int _ssl_write_client_key_exchange(ssl_t *pssl)
 {
-	/*
+	/* TLS 1.0/1.1
 	struct {
 		select (KeyExchangeAlgorithm) {
 		case rsa: 
@@ -1970,7 +1965,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 	//4+n~5+n:	rsa key length
 	//6+n:` rsa key hash
 
-	if (pssl->cipher == SSL_EDH_RSA_DES_168_SHA || pssl->cipher == SSL_EDH_RSA_AES_256_SHA)
+	if (IS_DHE_CIPHER(pssl->cipher))
 	{
 		/*
 		struct {
@@ -2736,7 +2731,8 @@ static handshake_states _ssl_write_server_hello(ssl_t *pssl)
 	//39+n~40+n:	chosen cipher
 	//41+n~41+n:	chosen compression alg.
 	
-	PUT_BYTE(pssl->snd_msg, msglen++, (byte_t)(pssl->ses_size));
+	PUT_BYTE(pssl->snd_msg, msglen, (byte_t)(pssl->ses_size));
+	msglen++;
 	xmem_copy(pssl->snd_msg + msglen, pssl->ses_id, pssl->ses_size);
 	msglen += pssl->ses_size;
 
@@ -2823,12 +2819,20 @@ static handshake_states _ssl_write_server_certificate(ssl_t *pssl)
 	//handshake length
 	PUT_THREEBYTE_LEN(pssl->snd_msg, 1, msglen - SSL_HSH_SIZE);
 
-	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_SERVER_KEY_EXCHANGE : SSL_HANDSHAKE_ERROR;
+	if (C_OK != _ssl_write_snd_msg(pssl))
+	{
+		return SSL_HANDSHAKE_ERROR;
+	}
+
+	if (IS_DHE_CIPHER(pssl->cipher))
+		return SSL_SERVER_KEY_EXCHANGE;
+	else
+		return (pssl->verify_server == SSL_VERIFY_NONE) ? SSL_SERVER_HELLO_DONE : SSL_CERTIFICATE_REQUEST;
 }
 
 static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 {
-	/*
+	/* TLS 1.0/1.1
 	struct {
 		select (KeyExchangeAlgorithm) {
 		case diffie_hellman:
@@ -2867,11 +2871,6 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	sha1_context sha1;
 	sha2_context sha2;
 
-	if (pssl->cipher != SSL_EDH_RSA_DES_168_SHA && pssl->cipher != SSL_EDH_RSA_AES_256_SHA)
-	{
-		return (pssl->verify_server == SSL_VERIFY_NONE) ? SSL_SERVER_HELLO_DONE : SSL_CERTIFICATE_REQUEST; 
-	}
-
 	if (!pssl->dhm_ow)
 	{
 		pssl->dhm_ow = (dhm_context*)xmem_alloc(sizeof(dhm_context));
@@ -2894,7 +2893,7 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	}
 	msglen += n;
 
-	/*
+	/* TLS 1.0/1.1
 	* digitally-signed struct {
 	*     opaque md5_hash[16];
 	*     opaque sha_hash[20];
@@ -3134,7 +3133,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 			}
 			else
 			{
-				pssl->verify_server == SSL_VERIFY_NONE;
+				pssl->verify_server = SSL_VERIFY_NONE;
 				return SSL_CLIENT_KEY_EXCHANGE;
 			}
 		}
@@ -3220,7 +3219,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 
 static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 {
-	/*
+	/* TLS 1.0/1.1
 	struct {
 		select (KeyExchangeAlgorithm) {
 		case rsa: 
@@ -3265,7 +3264,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 
 	haslen = GET_THREEBYTE_LEN(pssl->rcv_msg, 1);
 
-	if (pssl->cipher == SSL_EDH_RSA_DES_168_SHA || pssl->cipher == SSL_EDH_RSA_AES_256_SHA)
+	if (IS_DHE_CIPHER(pssl->cipher))
 	{
 		//Receive G^Y mod P, premaster = (G^Y)^X mod P
 		n = GET_SWORD_NET(pssl->rcv_msg, msglen);

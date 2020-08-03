@@ -217,7 +217,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	link_t_ptr plk;
 	bool_t lay_vert;
 	float iw, ih, ic, hw = 0;
-	xrect_t xr_image, xr_text, xr_edge, xr = { 0 };
+	xrect_t xr_image, xr_text, xr = { 0 };
 	xpoint_t pt_arc = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -225,11 +225,13 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	xface_t xa = { 0 };
 	xcolor_t xc = { 0 };
 	ximage_t xi = { 0 };
-	xgradi_t xg = { 0 };
-	xpoint_t pt[6];
 	const tchar_t *style, *orita, *icon;
 	bool_t b_print;
 	float px, py, pw, ph;
+
+	tchar_t ta[10] = { 0 };
+	xpoint_t pa[12] = { 0 };
+
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -289,10 +291,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	else
 		xscpy(xa.text_wrap, _T(""));
 
-	default_xgradi(&xg);
-	xscpy(xg.brim_color, xb.color);
-	lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
-	xscpy(xg.core_color, xb.color);
+	//lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
 
 	iw = get_title_item_width(ptr);
 	ih = get_title_item_height(ptr);
@@ -324,42 +323,51 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 			{
 				if (compare_text(orita, -1, ATTR_ORITATION_LEFT, -1, 0) == 0)
 				{
-					xr_edge.fx = xr.fx + TITLE_EDGE_LIGHT;
-					xr_edge.fy = xr.fy;
-					xr_edge.fw = xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
-					xr_edge.fh = xr.fh;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
-					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
+					ta[0] = _T('M');
+					pa[0].fx = xr.fx;
+					pa[0].fy = py - 0.5;
 
-					pt[0].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pt[0].fy = 0;
-					pt[1].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pt[1].fy = xr.fy;
-					pt[2].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
-					pt[2].fy = xr.fy;
-					pt[3].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
-					pt[3].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 4);
+					ta[1] = _T('L');
+					pa[1].fx = xr.fx + TITLE_EDGE_LIGHT;
+					pa[1].fy = py - 0.5;
 
-					pt_arc.fx = xr.fx + xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, 0, -XPI / 2);
+					ta[2] = _T('L');
+					pa[2].fx = xr.fx + TITLE_EDGE_LIGHT;
+					pa[2].fy = xr.fy;
 
-					pt[0].fx = xr.fx + xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
-					pt[0].fy = xr.fy + xr.fh;
-					pt[1].fx = xr.fx + TITLE_EDGE_LIGHT + TITLE_EDGE_ARC;
-					pt[1].fy = xr.fy + xr.fh;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[3] = _T('L');
+					pa[3].fx = xr.fx + xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
+					pa[3].fy = xr.fy;
 
-					pt_arc.fx = xr.fx + TITLE_EDGE_LIGHT + TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + xr.fh + TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, XPI / 2, XPI);
+					ta[4] = _T('A');
+					pa[4].fx = TITLE_EDGE_ARC;
+					pa[4].fy = TITLE_EDGE_ARC;
+					pa[5].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
+					pa[5].fy = xr.fy + TITLE_EDGE_ARC;
 
-					pt[0].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pt[0].fy = xr.fy + xr.fh + TITLE_EDGE_ARC;
-					pt[1].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pt[1].fy = ph;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[5] = _T('L');
+					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
+					pa[6].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
+
+					ta[6] = _T('A');
+					pa[7].fx = TITLE_EDGE_ARC;
+					pa[7].fy = TITLE_EDGE_ARC;
+					pa[8].fx = xr.fx + xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
+					pa[8].fy = xr.fy + xr.fh;
+
+					ta[7] = _T('L');
+					pa[9].fx = xr.fx + TITLE_EDGE_LIGHT;
+					pa[9].fy = xr.fy + xr.fh;
+
+					ta[8] = _T('L');
+					pa[10].fx = xr.fx + TITLE_EDGE_LIGHT;
+					pa[10].fy = ph + 0.5;
+
+					ta[9] = _T('L');
+					pa[11].fx = xr.fx;
+					pa[11].fy = ph + 0.5;
+
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 - TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -386,42 +394,51 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_RIGHT, -1, 0) == 0)
 				{
-					xr_edge.fx = xr.fx + TITLE_EDGE_DARK;
-					xr_edge.fy = xr.fy;
-					xr_edge.fw = xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
-					xr_edge.fh = xr.fh;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
-					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
+					ta[0] = _T('M');
+					pa[0].fx = xr.fx + xr.fw;
+					pa[0].fy = py - 0.5;
 
-					pt[0].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pt[0].fy = 0;
-					pt[1].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pt[1].fy = xr.fy;
-					pt[2].fx = xr.fx + TITLE_EDGE_DARK;
-					pt[2].fy = xr.fy;
-					pt[3].fx = xr.fx + TITLE_EDGE_DARK;
-					pt[3].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 4);
+					ta[1] = _T('L');
+					pa[1].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
+					pa[1].fy = py - 0.5;
 
-					pt_arc.fx = xr.fx + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, XPI, XPI / 2 * 3);
+					ta[2] = _T('L');
+					pa[2].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
+					pa[2].fy = xr.fy;
 
-					pt[0].fx = xr.fx + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
-					pt[0].fy = xr.fy + xr.fh;
-					pt[1].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT - TITLE_EDGE_ARC;
-					pt[1].fy = xr.fy + xr.fh;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[3] = _T('L');
+					pa[3].fx = xr.fx + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
+					pa[3].fy = xr.fy;
 
-					pt_arc.fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT - TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + xr.fh + TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, 0, XPI / 2);
+					ta[4] = _T('A');
+					pa[4].fx = -TITLE_EDGE_ARC;
+					pa[4].fy = -TITLE_EDGE_ARC;
+					pa[5].fx = xr.fx + TITLE_EDGE_DARK;
+					pa[5].fy = xr.fy + TITLE_EDGE_ARC;
 
-					pt[0].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pt[0].fy = xr.fy + xr.fh + TITLE_EDGE_ARC;
-					pt[1].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pt[1].fy = ph;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[5] = _T('L');
+					pa[6].fx = xr.fx + TITLE_EDGE_DARK;
+					pa[6].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
+
+					ta[6] = _T('A');
+					pa[7].fx = -TITLE_EDGE_ARC;
+					pa[7].fy = -TITLE_EDGE_ARC;
+					pa[8].fx = xr.fx + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
+					pa[8].fy = xr.fy + xr.fh;
+
+					ta[7] = _T('L');
+					pa[9].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
+					pa[9].fy = xr.fy + xr.fh;
+
+					ta[8] = _T('L');
+					pa[10].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
+					pa[10].fy = ph + 0.5;
+
+					ta[9] = _T('L');
+					pa[11].fx = xr.fx + xr.fw;
+					pa[11].fy = ph + 0.5;
+
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 + TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -451,42 +468,51 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 			{
 				if (compare_text(orita, -1, ATTR_ORITATION_TOP, -1, 0) == 0)
 				{
-					xr_edge.fx = xr.fx;
-					xr_edge.fy = xr.fy + TITLE_EDGE_LIGHT;
-					xr_edge.fw = xr.fw;
-					xr_edge.fh = xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
-					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
+					ta[0] = _T('M');
+					pa[0].fx = px - 0.5;
+					pa[0].fy = xr.fy;
 
-					pt[0].fx = 0;
-					pt[0].fy = xr.fy + TITLE_EDGE_LIGHT;
-					pt[1].fx = xr.fx;
-					pt[1].fy = xr.fy + TITLE_EDGE_LIGHT;
-					pt[2].fx = xr.fx;
-					pt[2].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
-					pt[3].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
-					pt[3].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 4);
+					ta[1] = _T('L');
+					pa[1].fx = px - 0.5;
+					pa[1].fy = xr.fy + TITLE_EDGE_LIGHT;
+					
+					ta[2] = _T('L');
+					pa[2].fx = xr.fx;
+					pa[2].fy = xr.fy + TITLE_EDGE_LIGHT;
 
-					pt_arc.fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, XPI / 2 * 3, 2 * XPI);
+					ta[3] = _T('L');
+					pa[3].fx = xr.fx;
+					pa[3].fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
 
-					pt[0].fx = xr.fx + xr.fw;
-					pt[0].fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
-					pt[1].fx = xr.fx + xr.fw;
-					pt[1].fy = xr.fy + TITLE_EDGE_LIGHT + TITLE_EDGE_ARC;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[4] = _T('A');
+					pa[4].fx = -TITLE_EDGE_ARC;
+					pa[4].fy = -TITLE_EDGE_ARC;
+					pa[5].fx = xr.fx + TITLE_EDGE_ARC;
+					pa[5].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
 
-					pt_arc.fx = xr.fx + xr.fw + TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + TITLE_EDGE_LIGHT + TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, XPI / 2, XPI);
+					ta[5] = _T('L');
+					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
+					pa[6].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
 
-					pt[0].fx = xr.fx + xr.fw + TITLE_EDGE_ARC;
-					pt[0].fy = xr.fy + TITLE_EDGE_LIGHT;
-					pt[1].fx = pw;
-					pt[1].fy = xr.fy + TITLE_EDGE_LIGHT;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[6] = _T('A');
+					pa[7].fx = -TITLE_EDGE_ARC;
+					pa[7].fy = -TITLE_EDGE_ARC;
+					pa[8].fx = xr.fx + xr.fw;
+					pa[8].fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
+
+					ta[7] = _T('L');
+					pa[9].fx = xr.fx + xr.fw;
+					pa[9].fy = xr.fy + TITLE_EDGE_LIGHT;
+
+					ta[8] = _T('L');
+					pa[10].fx = pw + 0.5;
+					pa[10].fy = xr.fy + TITLE_EDGE_LIGHT;
+
+					ta[9] = _T('L');
+					pa[11].fx = pw + 0.5;
+					pa[11].fy = xr.fy;
+
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 - TITLE_EDGE_DARK / 2;
@@ -513,42 +539,51 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
 				{
-					xr_edge.fx = xr.fx;
-					xr_edge.fy = xr.fy + TITLE_EDGE_DARK;
-					xr_edge.fw = xr.fw;
-					xr_edge.fh = xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_LIGHT;
-					xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
-					(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_edge);
+					ta[0] = _T('M');
+					pa[0].fx = px - 0.5;
+					pa[0].fy = xr.fy + xr.fh;
 
-					pt[0].fx = 0;
-					pt[0].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
-					pt[1].fx = xr.fx;
-					pt[1].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
-					pt[2].fx = xr.fx;
-					pt[2].fy = xr.fy + TITLE_EDGE_DARK;
-					pt[3].fx = xr.fx + xr.fw -  TITLE_EDGE_ARC;
-					pt[3].fy = xr.fy + TITLE_EDGE_DARK;
-					(*pif->pf_draw_polyline)(pif->canvas, &xp, pt, 4);
+					ta[1] = _T('L');
+					pa[1].fx = px - 0.5;
+					pa[1].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
-					pt_arc.fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, 0, XPI / 2);
+					ta[2] = _T('L');
+					pa[2].fx = xr.fx;
+					pa[2].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
-					pt[0].fx = xr.fx + xr.fw;
-					pt[0].fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
-					pt[1].fx = xr.fx + xr.fw;
-					pt[1].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT - TITLE_EDGE_ARC;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[3] = _T('L');
+					pa[3].fx = xr.fx;
+					pa[3].fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
 
-					pt_arc.fx = xr.fx + xr.fw + TITLE_EDGE_ARC;
-					pt_arc.fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT - TITLE_EDGE_ARC;
-					(*pif->pf_draw_arc)(pif->canvas, &xp, &pt_arc, TITLE_EDGE_ARC, TITLE_EDGE_ARC, XPI, XPI / 2 * 3);
+					ta[4] = _T('A');
+					pa[4].fx = TITLE_EDGE_ARC;
+					pa[4].fy = TITLE_EDGE_ARC;
+					pa[5].fx = xr.fx + TITLE_EDGE_ARC;
+					pa[5].fy = xr.fy + TITLE_EDGE_DARK;
 
-					pt[0].fx = xr.fx + xr.fw + TITLE_EDGE_ARC;
-					pt[0].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
-					pt[1].fx = pw;
-					pt[1].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
-					(*pif->pf_draw_line)(pif->canvas, &xp, &pt[0], &pt[1]);
+					ta[5] = _T('L');
+					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
+					pa[6].fy = xr.fy + TITLE_EDGE_DARK;
+
+					ta[6] = _T('A');
+					pa[7].fx = TITLE_EDGE_ARC;
+					pa[7].fy = TITLE_EDGE_ARC;
+					pa[8].fx = xr.fx + xr.fw;
+					pa[8].fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
+
+					ta[7] = _T('L');
+					pa[9].fx = xr.fx + xr.fw;
+					pa[9].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
+
+					ta[8] = _T('L');
+					pa[10].fx = pw + 0.5;
+					pa[10].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
+
+					ta[9] = _T('L');
+					pa[11].fx = pw + 0.5;
+					pa[11].fy = xr.fy + xr.fh;
+
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 + TITLE_EDGE_DARK / 2;

@@ -179,6 +179,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_grid_colbar_height(ptr,n)						set_dom_node_attr_float(ptr,ATTR_COLBAR_HEIGHT,n)
 /*
+@PROPER printing: string.
+@SET set_grid_printing: get the grid printing oritation.
+*/
+#define set_grid_printing(ptr,val)							set_dom_node_attr(ptr,ATTR_PRINTING,-1,val,-1)
+/*
+@PROPER printing: string.
+@SET get_grid_printing: get the grid printing oritation.
+*/
+#define get_grid_printing_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_PRINTING,-1)
+/*
 @PROPER subfield: integer.
 @GET get_grid_subfield: get the grid subfield number.
 */

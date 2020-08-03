@@ -48,7 +48,7 @@ float calc_proper_height(const canvbox_t* pbox, link_t_ptr ptr)
 	{
 		total += th;
 
-		if (get_section_expanded(slk))
+		if (!get_section_collapsed(slk))
 		{
 			elk = get_next_entity(slk, LINK_FIRST);
 			while (elk)
@@ -95,7 +95,7 @@ void calc_proper_section_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr 
 	{
 		total += th;
 
-		if (get_section_expanded(slk))
+		if (!get_section_collapsed(slk))
 		{
 			elk = get_next_entity(slk, LINK_FIRST);
 			while (elk)
@@ -134,7 +134,7 @@ void calc_proper_entity_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr e
 	while (slk)
 	{
 		total += th;
-		if (get_section_expanded(slk))
+		if (!get_section_collapsed(slk))
 		{
 			elk = get_next_entity(slk, LINK_FIRST);
 			while (elk && elk != ent)
@@ -206,7 +206,7 @@ int calc_proper_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 		}
 
 		y1 = y2;
-		if (get_section_expanded(slk))
+		if (!get_section_collapsed(slk))
 		{
 			b_find = 0;
 			elk = get_next_entity(slk, LINK_FIRST);
@@ -352,7 +352,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		xr_draw.fh = ih;
 		ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-		if (get_section_expanded(sec))
+		if (!get_section_collapsed(sec))
 		{
 			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, GDI_ATTR_GIZMO_EXPAND);
 		}
@@ -370,7 +370,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		xr.fy += ih;
 
-		if (!get_section_expanded(sec))
+		if (get_section_collapsed(sec))
 		{
 			sec = get_next_section(ptr, sec);
 			continue;

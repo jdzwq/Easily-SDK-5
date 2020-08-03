@@ -318,6 +318,11 @@ void properbag_write_form_attributes(link_t_ptr ptr, link_t_ptr form)
 	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_form_height(form));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = write_proper(ptr, PROPERTY_BAG_POSITION, -1, ATTR_PRINTING, -1, get_form_printing_ptr(form), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+	set_entity_options(ent, ATTR_PRINTING_OPTIONS, -1);
 }
 
 void properbag_read_form_attributes(link_t_ptr ptr, link_t_ptr form)
@@ -334,6 +339,8 @@ void properbag_read_form_attributes(link_t_ptr ptr, link_t_ptr form)
 	set_form_width(form, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
 	set_form_height(form, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+
+	set_form_printing(form, get_proper_ptr(ptr, PROPERTY_BAG_POSITION, ATTR_PRINTING));
 }
 
 void properbag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk)
@@ -664,6 +671,11 @@ void properbag_write_grid_attributes(link_t_ptr ptr, link_t_ptr grid)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
+	ent = write_proper(ptr, PROPERTY_BAG_POSITION, -1, ATTR_PRINTING, -1, get_grid_printing_ptr(grid), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+	set_entity_options(ent, ATTR_PRINTING_OPTIONS, -1);
+
 	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT, get_grid_title_height(grid));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
@@ -739,6 +751,8 @@ void properbag_read_grid_attributes(link_t_ptr ptr, link_t_ptr grid)
 	set_grid_width(grid, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
 	set_grid_height(grid, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+
+	set_grid_printing(grid, get_proper_ptr(ptr, PROPERTY_BAG_POSITION, ATTR_PRINTING));
 
 	set_grid_title_height(grid, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT));
 
@@ -1011,6 +1025,11 @@ void properbag_write_statis_attributes(link_t_ptr ptr, link_t_ptr statis)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
+	ent = write_proper(ptr, PROPERTY_BAG_POSITION, -1, ATTR_PRINTING, -1, get_statis_printing_ptr(statis), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+	set_entity_options(ent, ATTR_PRINTING_OPTIONS, -1);
+
 	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT, get_statis_title_height(statis));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
@@ -1069,6 +1088,8 @@ void properbag_read_statis_attributes(link_t_ptr ptr, link_t_ptr statis)
 	set_statis_width(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
 	set_statis_height(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+
+	set_statis_printing(statis, get_proper_ptr(ptr, PROPERTY_BAG_POSITION, ATTR_PRINTING));
 
 	set_statis_title_height(statis, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_TITLE_HEIGHT));
 
@@ -1375,6 +1396,11 @@ void properbag_write_rich_attributes(link_t_ptr ptr, link_t_ptr rich)
 	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_rich_height(rich));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = write_proper(ptr, PROPERTY_BAG_POSITION, -1, ATTR_PRINTING, -1, get_rich_printing_ptr(rich), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+	set_entity_options(ent, ATTR_PRINTING_OPTIONS, -1);
 }
 
 void properbag_read_rich_attributes(link_t_ptr ptr, link_t_ptr rich)
@@ -1393,6 +1419,8 @@ void properbag_read_rich_attributes(link_t_ptr ptr, link_t_ptr rich)
 	set_rich_width(rich, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
 	set_rich_height(rich, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+
+	set_rich_printing(rich, get_proper_ptr(ptr, PROPERTY_BAG_POSITION, ATTR_PRINTING));
 }
 
 void properbag_write_rich_anch_attributes(link_t_ptr ptr, link_t_ptr ilk)
@@ -1585,6 +1613,11 @@ void properbag_write_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
 	ent = set_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT, get_diagram_height(diagram));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = write_proper(ptr, PROPERTY_BAG_POSITION, -1, ATTR_PRINTING, -1, get_diagram_printing_ptr(diagram), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+	set_entity_options(ent, ATTR_PRINTING_OPTIONS, -1);
 }
 
 void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
@@ -1599,6 +1632,8 @@ void properbag_read_diagram_attributes(link_t_ptr ptr, link_t_ptr diagram)
 	set_diagram_width(diagram, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_WIDTH));
 
 	set_diagram_height(diagram, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, ATTR_HEIGHT));
+
+	set_diagram_printing(diagram, get_proper_ptr(ptr, PROPERTY_BAG_POSITION, ATTR_PRINTING));
 }
 
 void properbag_write_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk)

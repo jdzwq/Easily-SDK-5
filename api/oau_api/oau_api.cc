@@ -25,6 +25,9 @@ LICENSE.GPL3 for more details.
 
 #include "oau_api.h"
 
+#define CONENTYPE_IS_JSON(token)	((compare_text(token, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0)? 1 : 0)
+#define CONENTYPE_IS_UNKNOWN(token)	((is_null(token) || compare_text(token, 3, _T("*/*"), -1, 1) == 0)? 1 : 0)
+
 typedef struct _oau_block_t{
 	secu_desc_t sd;
 
@@ -356,12 +359,12 @@ bool_t _invoke_weiapp_session(const https_block_t* pb, oau_block_t* pos)
 {
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
+	tchar_t sz_method[RES_LEN] = { 0 };
 
 	tchar_t sz_code[KEY_LEN] = { 0 };
 	tchar_t sz_openid[KEY_LEN] = { 0 };
 	tchar_t sz_session_key[KEY_LEN] = { 0 };
 	tchar_t sz_unionid[KEY_LEN] = { 0 };
-
 
 	oau_t oau = NULL;
 	bool_t rt;
@@ -374,21 +377,60 @@ bool_t _invoke_weiapp_session(const https_block_t* pb, oau_block_t* pos)
 
 	TRY_CATCH;
 
-	if (pb->log)
+	xhttp_get_url_method(pb->http, sz_method, INT_LEN);
+
+	if (compare_text(sz_method, -1, HTTP_METHOD_GET, -1, 1) == 0)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
+		xhttp_get_url_query_entity(pb->http, _T("jscode"), -1, sz_code, KEY_LEN);
 
-		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
-		sz_qry = xsalloc(len + 1);
-		len = xhttp_get_url_query(pb->http, sz_qry, len);
+		if (pb->log)
+		{
+			(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+			len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+			sz_qry = xsalloc(len + 1);
+			len = xhttp_get_url_query(pb->http, sz_qry, len);
 
-		xsfree(sz_qry);
-		sz_qry = NULL;
+			(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+			xsfree(sz_qry);
+			sz_qry = NULL;
+		}
 	}
+	else
+	{
+		ptr_json = create_json_doc();
 
-	xhttp_get_url_query_entity(pb->http, _T("jscode"), -1, sz_code, KEY_LEN);
+		rt = xhttp_recv_json(pb->http, ptr_json);
+		if (!rt)
+		{
+			get_last_error(sz_code, sz_err, ERR_LEN);
+		}
+
+		if (pb->log)
+		{
+			(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
+
+			(*pb->pf_log_json)(pb->log, ptr_json);
+		}
+
+		if (!rt)
+		{
+			raise_user_error(sz_code, sz_err);
+		}
+
+		nlk = get_dom_first_child_node(ptr_json);
+		while (nlk)
+		{
+			if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("jscode"), -1, 1) == 0)
+				get_dom_node_text(nlk, sz_code, KEY_LEN);
+
+			nlk = get_dom_next_sibling_node(nlk);
+		}
+
+		destroy_json_doc(ptr_json);
+		ptr_json = NULL;
+	}
 
 	if (is_null(sz_code))
 	{
@@ -413,13 +455,7 @@ bool_t _invoke_weiapp_session(const https_block_t* pb, oau_block_t* pos)
 	(*pos->pf_close)(oau);
 	oau = NULL;
 
-	xhttp_set_response_default_header(pb->http);
-	xhttp_set_response_code(pb->http, HTTP_CODE_200);
-	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
-
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
-	xhttp_set_response_header(pb->http, HTTP_HEADER_CACHECONTROL, -1, HTTP_HEADER_CACHECONTROL_NOSTORE, -1);
-
+	//返回应答数据包
 	ptr_json = create_json_doc();
 
 	nlk = insert_json_item(ptr_json, LINK_LAST);
@@ -434,9 +470,24 @@ bool_t _invoke_weiapp_session(const https_block_t* pb, oau_block_t* pos)
 	set_json_item_name(nlk, _T("unionid"));
 	set_json_item_value(nlk, sz_unionid);
 
-	if (!xhttp_send_json(pb->http, ptr_json))
+	xhttp_set_response_default_header(pb->http);
+	xhttp_set_response_code(pb->http, HTTP_CODE_200);
+	xhttp_set_response_message(pb->http, HTTP_CODE_200_TEXT, -1);
+
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CONTENTTYPE, -1, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+	xhttp_set_response_header(pb->http, HTTP_HEADER_CACHECONTROL, -1, HTTP_HEADER_CACHECONTROL_NOSTORE, -1);
+
+	rt = xhttp_send_json(pb->http, ptr_json);
+	if (!rt)
 	{
 		raise_user_error(NULL, NULL);
+	}
+
+	if (pb->log)
+	{
+		(*pb->pf_log_title)(pb->log, _T("[交易应答]"), -1);
+
+		(*pb->pf_log_json)(pb->log, ptr_json);
 	}
 
 	destroy_json_doc(ptr_json);
@@ -474,6 +525,7 @@ bool_t _invoke_weiapp_access(const https_block_t* pb, oau_block_t* pos)
 {
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
+	tchar_t sz_method[RES_LEN] = { 0 };
 
 	tchar_t sz_token[KEY_LEN] = { 0 };
 
@@ -573,6 +625,7 @@ bool_t _invoke_weiapp_phone(const https_block_t* pb, oau_block_t* pos)
 {
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
+	tchar_t sz_method[RES_LEN] = { 0 };
 
 	tchar_t sz_code[KEY_LEN] = { 0 };
 	tchar_t sz_data[1024] = { 0 };
@@ -594,24 +647,69 @@ bool_t _invoke_weiapp_phone(const https_block_t* pb, oau_block_t* pos)
 
 	TRY_CATCH;
 
-	if (pb->log)
+	xhttp_get_url_method(pb->http, sz_method, INT_LEN);
+
+	if (compare_text(sz_method, -1, HTTP_METHOD_GET, -1, 1) == 0)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
+		xhttp_get_url_query_entity(pb->http, _T("jscode"), -1, sz_code, KEY_LEN);
+		xhttp_get_url_query_entity(pb->http, _T("encryptedData"), -1, sz_data, 1024);
+		xhttp_get_url_query_entity(pb->http, _T("iv"), -1, sz_iv, KEY_LEN);
+		xhttp_get_url_query_entity(pb->http, _T("cloudID"), -1, sz_cloud, KEY_LEN);
 
-		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
-		sz_qry = xsalloc(len + 1);
-		len = xhttp_get_url_query(pb->http, sz_qry, len);
+		if (pb->log)
+		{
+			(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
 
-		(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+			len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
+			sz_qry = xsalloc(len + 1);
+			len = xhttp_get_url_query(pb->http, sz_qry, len);
 
-		xsfree(sz_qry);
-		sz_qry = NULL;
+			(*pb->pf_log_error)(pb->log, _T(""), sz_qry, -1);
+
+			xsfree(sz_qry);
+			sz_qry = NULL;
+		}
 	}
+	else
+	{
+		ptr_json = create_json_doc();
 
-	xhttp_get_url_query_entity(pb->http, _T("jscode"), -1, sz_code, KEY_LEN);
-	xhttp_get_url_query_entity(pb->http, _T("encryptedData"), -1, sz_data, 1024);
-	xhttp_get_url_query_entity(pb->http, _T("iv"), -1, sz_iv, KEY_LEN);
-	xhttp_get_url_query_entity(pb->http, _T("cloudID"), -1, sz_cloud, KEY_LEN);
+		rt = xhttp_recv_json(pb->http, ptr_json);
+		if (!rt)
+		{
+			get_last_error(sz_code, sz_err, ERR_LEN);
+		}
+
+		if (pb->log)
+		{
+			(*pb->pf_log_title)(pb->log, _T("[OAUTH: AUTH]"), -1);
+
+			(*pb->pf_log_json)(pb->log, ptr_json);
+		}
+
+		if (!rt)
+		{
+			raise_user_error(sz_code, sz_err);
+		}
+
+		nlk = get_dom_first_child_node(ptr_json);
+		while (nlk)
+		{
+			if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("jscode"), -1, 1) == 0)
+				get_dom_node_text(nlk, sz_code, KEY_LEN);
+			else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("encryptedData"), -1, 1) == 0)
+				get_dom_node_text(nlk, sz_data, 1024);
+			else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("iv"), -1, 1) == 0)
+				get_dom_node_text(nlk, sz_iv, KEY_LEN);
+			else if (compare_text(get_dom_node_name_ptr(nlk), -1, _T("cloudID"), -1, 1) == 0)
+				get_dom_node_text(nlk, sz_cloud, KEY_LEN);
+
+			nlk = get_dom_next_sibling_node(nlk);
+		}
+
+		destroy_json_doc(ptr_json);
+		ptr_json = NULL;
+	}
 
 	if (is_null(sz_code))
 	{

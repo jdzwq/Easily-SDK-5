@@ -349,8 +349,16 @@ static void _formctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_form_width(ptd->form);
-	xs.fy = get_form_height(ptd->form);
+	if (compare_text(get_form_printing_ptr(ptd->form), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
+	{
+		xs.fx = get_form_height(ptd->form);
+		xs.fy = get_form_width(ptd->form);
+	}
+	else
+	{
+		xs.fx = get_form_width(ptd->form);
+		xs.fy = get_form_height(ptd->form);
+	}
 
 	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
@@ -598,7 +606,6 @@ void noti_form_field_drag(res_win_t widget, int x, int y)
 	{
 		widget_set_capture(widget, 1);
 	}
-	widget_set_cursor(widget,CURSOR_HAND);
 
 	pt.x = x;
 	pt.y = y;
@@ -627,7 +634,6 @@ void noti_form_field_drop(res_win_t widget, int x, int y)
 	{
 		widget_set_capture(widget, 0);
 	}
-	widget_set_cursor(widget, CURSOR_ARROW);
 
 	cx = x - ptd->org_x;
 	cy = y - ptd->org_y;
@@ -694,19 +700,6 @@ void noti_form_field_sizing(res_win_t widget, int hint, int x, int y)
 	if (widget_can_focus(widget))
 	{
 		widget_set_capture(widget, 1);
-	}
-
-	if (hint == FORM_HINT_HORZ_SPLIT)
-	{
-		widget_set_cursor(widget,CURSOR_SIZENS);
-	}
-	else if (hint == FORM_HINT_VERT_SPLIT)
-	{
-		widget_set_cursor(widget,CURSOR_SIZEWE);
-	}
-	else
-	{
-		widget_set_cursor(widget,CURSOR_SIZEALL);
 	}
 
 	ptd->org_hint = hint;
@@ -1963,6 +1956,28 @@ void hand_form_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
+void hand_form_mouse_hover(res_win_t widget, dword_t dw, const xpoint_t* pxp)
+{
+	form_delta_t* ptd = GETFORMDELTA(widget);
+
+	if (!ptd->form)
+		return;
+
+	if (ptd->hover)
+		noti_form_field_hover(widget, pxp->x, pxp->y);
+}
+
+void hand_form_mouse_leave(res_win_t widget, dword_t dw, const xpoint_t* pxp)
+{
+	form_delta_t* ptd = GETFORMDELTA(widget);
+
+	if (!ptd->form)
+		return;
+
+	if (ptd->hover)
+		noti_form_field_leave(widget);
+}
+
 void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
@@ -2002,38 +2017,40 @@ void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	{
 		if (nHint == FORM_HINT_HORZ_SPLIT && flk == ptd->field && !(dw & KS_WITH_CONTROL))
 		{
+			widget_set_cursor(widget, CURSOR_SIZENS);
+
 			if (dw & MS_WITH_LBUTTON)
 			{
 				noti_form_field_sizing(widget, nHint, pxp->x, pxp->y);
 				return;
-			}
-			else
-				widget_set_cursor(widget, CURSOR_SIZENS);
+			}	
 		}
 		else if (nHint == FORM_HINT_VERT_SPLIT && flk == ptd->field && !(dw & KS_WITH_CONTROL))
-		{
+		{				
+			widget_set_cursor(widget, CURSOR_SIZEWE);
+
 			if (dw & MS_WITH_LBUTTON)
 			{
 				noti_form_field_sizing(widget, nHint, pxp->x, pxp->y);
 				return;
 			}
-			else
-				widget_set_cursor(widget, CURSOR_SIZEWE);
 		}
 		else if (nHint == FORM_HINT_CROSS_SPLIT && flk == ptd->field && !(dw & KS_WITH_CONTROL))
-		{
+		{	
+			widget_set_cursor(widget, CURSOR_SIZEALL);
+
 			if (dw & MS_WITH_LBUTTON)
 			{
 				noti_form_field_sizing(widget, nHint, pxp->x, pxp->y);
 				return;
 			}
-			else
-				widget_set_cursor(widget, CURSOR_SIZEALL);
 		}
 		else if (nHint == FORM_HINT_FIELD && flk == ptd->field && !(dw & KS_WITH_CONTROL))
 		{
 			if (dw & MS_WITH_LBUTTON)
 			{
+				widget_set_cursor(widget, CURSOR_HAND);
+
 				noti_form_field_drag(widget, pxp->x, pxp->y);
 				return;
 			}
@@ -2047,28 +2064,6 @@ void hand_form_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 			}
 		}
 	}
-}
-
-void hand_form_mouse_hover(res_win_t widget, dword_t dw, const xpoint_t* pxp)
-{
-	form_delta_t* ptd = GETFORMDELTA(widget);
-
-	if (!ptd->form)
-		return;
-
-	if (ptd->hover)
-		noti_form_field_hover(widget, pxp->x, pxp->y);
-}
-
-void hand_form_mouse_leave(res_win_t widget, dword_t dw, const xpoint_t* pxp)
-{
-	form_delta_t* ptd = GETFORMDELTA(widget);
-
-	if (!ptd->form)
-		return;
-
-	if (ptd->hover)
-		noti_form_field_leave(widget);
 }
 
 void hand_form_lbutton_down(res_win_t widget, const xpoint_t* pxp)
@@ -2109,6 +2104,15 @@ void hand_form_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 
 	switch (nHint)
 	{
+	case FORM_HINT_HORZ_SPLIT:
+		widget_set_cursor(widget, CURSOR_SIZENS);
+		break;
+	case FORM_HINT_VERT_SPLIT:
+		widget_set_cursor(widget, CURSOR_SIZEWE);
+		break;
+	case FORM_HINT_CROSS_SPLIT:
+		widget_set_cursor(widget, CURSOR_SIZEALL);
+		break;
 	case FORM_HINT_FIELD:
 		if (widget_key_state(widget, KEY_CONTROL))
 		{
@@ -2149,6 +2153,8 @@ void hand_form_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 		if (ptd->b_drag)
 		{
+			widget_set_cursor(widget, CURSOR_ARROW);
+
 			noti_form_field_drop(widget, pxp->x, pxp->y);
 			return;
 		}
@@ -2553,14 +2559,16 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			draw_shape(canv, &xp, NULL, &xr, ATTR_SHAPE_RECT);
 		}*/
 
-		xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
-		draw_corner(canv, &xc, (const xrect_t*)&cb);
-
 		if (b_design)
 		{
 			parse_xcolor(&xc, xp.color);
 			lighten_xcolor(&xc, DEF_SOFT_DARKEN);
 			draw_ruler(pif->canvas, &xc, (const xrect_t*)&cb);
+		}
+		else
+		{
+			xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
+			draw_corner(canv, &xc, (const xrect_t*)&cb);
 		}
 	}
 
@@ -2571,6 +2579,14 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	{
 		_formctrl_field_rect(widget, ptd->field, &xr);
 
+		if (b_design)
+		{
+			parse_xcolor(&xc, DEF_ENABLE_COLOR);
+
+			draw_sizing_raw(rdc, &xc, &xr, ALPHA_SOLID, SIZING_BOTTOMCENTER | SIZING_RIGHTCENTER | SIZING_BOTTOMRIGHT);
+		}
+		else
+		{
 			if (ptd->b_alarm)
 			{
 				parse_xcolor(&xc, DEF_ALARM_COLOR);
@@ -2586,6 +2602,7 @@ void hand_form_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 				draw_feed_raw(rdc, &xc, &xr, ALPHA_SOLID);
 			}
+		}
 	}
 
 	if (b_design)

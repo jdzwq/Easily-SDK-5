@@ -108,21 +108,6 @@ EXP_API void	set_canvas_vert_feed(canvas_t canv, float cy);
 EXP_API float	get_canvas_vert_feed(canvas_t canv);
 
 /*
-@FUNCTION set_canvas_scale: set the canvas scale ratio in millimeter.
-@INPUT canvas_t canv: the canvas object.
-@INPUT float sca: the scale ratio value.
-@RETURN void: none.
-*/
-EXP_API void	set_canvas_scale(canvas_t canv, float sca);
-
-/*
-@FUNCTION get_canvas_scale: get the canvas scale ratio in millimeter.
-@INPUT canvas_t canv: the canvas object.
-@RETURN float: return the canvas scale ratio.
-*/
-EXP_API float	get_canvas_scale(canvas_t canv);
-
-/*
 @FUNCTION get_canvas_ctx: get the canvas context resource handle.
 @INPUT canvas_t canv: the canvas object.
 @RETURN res_ctx_t: return the context resource handle if exists, otherwise return NULL.

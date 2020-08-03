@@ -139,7 +139,7 @@ link_t_ptr get_tree_next_visible_item(link_t_ptr ptr,link_t_ptr pos)
 	else if(pos == LINK_LAST)
 		return NULL;
 
-	if (get_tree_item_expanded(pos) && get_tree_child_item_count(pos))
+	if (!get_tree_item_collapsed(pos) && get_tree_child_item_count(pos))
 		return get_tree_first_child_item(pos);
 
 	while(pos && !get_tree_next_sibling_item(pos))
@@ -167,7 +167,7 @@ link_t_ptr get_tree_prev_visible_item(link_t_ptr ptr,link_t_ptr pos)
 	}
 
 	pos = get_tree_prev_sibling_item(pos);
-	while (pos && get_tree_item_expanded(pos))
+	while (pos && !get_tree_item_collapsed(pos))
 	{
 		if (get_tree_child_item_count(pos))
 			pos = get_tree_first_child_item(pos);

@@ -149,6 +149,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_statis_xaxbar_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_XAXBAR_HEIGHT,n)
 /*
+@PROPER printing: string.
+@SET set_statis_printing: set the statis printing oritation.
+*/
+#define set_statis_printing(ptr,val)					set_dom_node_attr(ptr,ATTR_PRINTING,-1,val,-1)
+/*
+@PROPER printing: string.
+@SET get_statis_printing: get the statis printing oritation.
+*/
+#define get_statis_printing_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_PRINTING,-1)
+/*
 @PROPER showCheck: boolean.
 @GET get_statis_showcheck: get the statis show check box.
 */

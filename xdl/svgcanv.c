@@ -145,13 +145,13 @@ int svg_tm_to_pt(canvas_t canv, float tm, bool_t horz)
 	{
 		htpermm = (float)((float)vb.w / get_svg_width(pcanv->g));
 
-		return (int)(tm * htpermm);
+		return (int)(tm * htpermm + 0.5);
 	}
 	else
 	{
 		vtpermm = (float)((float)vb.h / get_svg_height(pcanv->g));
 
-		return (int)(tm * vtpermm);
+		return (int)(tm * vtpermm + 0.5);
 	}
 }
 

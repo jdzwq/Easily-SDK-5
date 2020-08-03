@@ -76,15 +76,253 @@ typedef enum{
 #define SSL_HS_CLIENT_KEY_EXCHANGE     16
 #define SSL_HS_FINISHED                20
 
-#define SSL_RSA_RC4_128_MD5             0x04
-#define SSL_RSA_RC4_128_SHA             0x05
-#define SSL_RSA_DES_168_SHA             0x0A
-#define SSL_EDH_RSA_DES_168_SHA         0x16
-#define SSL_RSA_AES_128_SHA             0x2F
-#define SSL_RSA_AES_256_SHA             0x37
-#define SSL_EDH_RSA_AES_256_SHA         0x39
-#define SSL_RSA_AES_128_SHA256          0x3C   /* TLS 1.2 */
-#define SSL_RSA_AES_256_SHA256          0x3D   /* TLS 1.2 */
+/*
+Official IANA names
+*/
+#define SSL_RSA_WITH_NULL_MD5                    0x01   /**< Weak! */
+#define SSL_RSA_WITH_NULL_SHA                    0x02   /**< Weak! */
+
+#define SSL_RSA_WITH_RC4_128_MD5                 0x04
+#define SSL_RSA_WITH_RC4_128_SHA                 0x05
+#define SSL_RSA_WITH_DES_CBC_SHA                 0x09   /**< Weak! Not in TLS 1.2 */
+
+#define SSL_RSA_WITH_3DES_EDE_CBC_SHA            0x0A
+
+#define SSL_DHE_RSA_WITH_DES_CBC_SHA             0x15   /**< Weak! Not in TLS 1.2 */
+#define SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA        0x16
+
+#define SSL_PSK_WITH_NULL_SHA                    0x2C   /**< Weak! */
+#define SSL_DHE_PSK_WITH_NULL_SHA                0x2D   /**< Weak! */
+#define SSL_RSA_PSK_WITH_NULL_SHA                0x2E   /**< Weak! */
+#define SSL_RSA_WITH_AES_128_CBC_SHA             0x2F
+
+#define SSL_DHE_RSA_WITH_AES_128_CBC_SHA         0x33
+#define SSL_RSA_WITH_AES_256_CBC_SHA             0x35
+#define SSL_DHE_RSA_WITH_AES_256_CBC_SHA         0x39
+
+#define SSL_RSA_WITH_NULL_SHA256                 0x3B   /**< Weak! */
+#define SSL_RSA_WITH_AES_128_CBC_SHA256          0x3C   /**< TLS 1.2 */
+#define SSL_RSA_WITH_AES_256_CBC_SHA256          0x3D   /**< TLS 1.2 */
+
+#define SSL_RSA_WITH_CAMELLIA_128_CBC_SHA        0x41
+#define SSL_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA    0x45
+
+#define SSL_DHE_RSA_WITH_AES_128_CBC_SHA256      0x67   /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_256_CBC_SHA256      0x6B   /**< TLS 1.2 */
+
+#define SSL_RSA_WITH_CAMELLIA_256_CBC_SHA        0x84
+#define SSL_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA    0x88
+
+#define SSL_PSK_WITH_RC4_128_SHA                 0x8A
+#define SSL_PSK_WITH_3DES_EDE_CBC_SHA            0x8B
+#define SSL_PSK_WITH_AES_128_CBC_SHA             0x8C
+#define SSL_PSK_WITH_AES_256_CBC_SHA             0x8D
+
+#define SSL_DHE_PSK_WITH_RC4_128_SHA             0x8E
+#define SSL_DHE_PSK_WITH_3DES_EDE_CBC_SHA        0x8F
+#define SSL_DHE_PSK_WITH_AES_128_CBC_SHA         0x90
+#define SSL_DHE_PSK_WITH_AES_256_CBC_SHA         0x91
+
+#define SSL_RSA_PSK_WITH_RC4_128_SHA             0x92
+#define SSL_RSA_PSK_WITH_3DES_EDE_CBC_SHA        0x93
+#define SSL_RSA_PSK_WITH_AES_128_CBC_SHA         0x94
+#define SSL_RSA_PSK_WITH_AES_256_CBC_SHA         0x95
+
+#define SSL_RSA_WITH_AES_128_GCM_SHA256          0x9C   /**< TLS 1.2 */
+#define SSL_RSA_WITH_AES_256_GCM_SHA384          0x9D   /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_128_GCM_SHA256      0x9E   /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_256_GCM_SHA384      0x9F   /**< TLS 1.2 */
+
+#define SSL_PSK_WITH_AES_128_GCM_SHA256          0xA8   /**< TLS 1.2 */
+#define SSL_PSK_WITH_AES_256_GCM_SHA384          0xA9   /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_AES_128_GCM_SHA256      0xAA   /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_AES_256_GCM_SHA384      0xAB   /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_AES_128_GCM_SHA256      0xAC   /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_AES_256_GCM_SHA384      0xAD   /**< TLS 1.2 */
+
+#define SSL_PSK_WITH_AES_128_CBC_SHA256          0xAE
+#define SSL_PSK_WITH_AES_256_CBC_SHA384          0xAF
+#define SSL_PSK_WITH_NULL_SHA256                 0xB0   /**< Weak! */
+#define SSL_PSK_WITH_NULL_SHA384                 0xB1   /**< Weak! */
+
+#define SSL_DHE_PSK_WITH_AES_128_CBC_SHA256      0xB2
+#define SSL_DHE_PSK_WITH_AES_256_CBC_SHA384      0xB3
+#define SSL_DHE_PSK_WITH_NULL_SHA256             0xB4   /**< Weak! */
+#define SSL_DHE_PSK_WITH_NULL_SHA384             0xB5   /**< Weak! */
+
+#define SSL_RSA_PSK_WITH_AES_128_CBC_SHA256      0xB6
+#define SSL_RSA_PSK_WITH_AES_256_CBC_SHA384      0xB7
+#define SSL_RSA_PSK_WITH_NULL_SHA256             0xB8   /**< Weak! */
+#define SSL_RSA_PSK_WITH_NULL_SHA384             0xB9   /**< Weak! */
+
+#define SSL_RSA_WITH_CAMELLIA_128_CBC_SHA256     0xBA   /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256 0xBE   /**< TLS 1.2 */
+
+#define SSL_RSA_WITH_CAMELLIA_256_CBC_SHA256     0xC0   /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256 0xC4   /**< TLS 1.2 */
+
+#define SSL_ECDH_ECDSA_WITH_NULL_SHA             0xC001 /**< Weak! */
+#define SSL_ECDH_ECDSA_WITH_RC4_128_SHA          0xC002 /**< Not in SSL3! */
+#define SSL_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA     0xC003 /**< Not in SSL3! */
+#define SSL_ECDH_ECDSA_WITH_AES_128_CBC_SHA      0xC004 /**< Not in SSL3! */
+#define SSL_ECDH_ECDSA_WITH_AES_256_CBC_SHA      0xC005 /**< Not in SSL3! */
+
+#define SSL_ECDHE_ECDSA_WITH_NULL_SHA            0xC006 /**< Weak! */
+#define SSL_ECDHE_ECDSA_WITH_RC4_128_SHA         0xC007 /**< Not in SSL3! */
+#define SSL_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA    0xC008 /**< Not in SSL3! */
+#define SSL_ECDHE_ECDSA_WITH_AES_128_CBC_SHA     0xC009 /**< Not in SSL3! */
+#define SSL_ECDHE_ECDSA_WITH_AES_256_CBC_SHA     0xC00A /**< Not in SSL3! */
+
+#define SSL_ECDH_RSA_WITH_NULL_SHA               0xC00B /**< Weak! */
+#define SSL_ECDH_RSA_WITH_RC4_128_SHA            0xC00C /**< Not in SSL3! */
+#define SSL_ECDH_RSA_WITH_3DES_EDE_CBC_SHA       0xC00D /**< Not in SSL3! */
+#define SSL_ECDH_RSA_WITH_AES_128_CBC_SHA        0xC00E /**< Not in SSL3! */
+#define SSL_ECDH_RSA_WITH_AES_256_CBC_SHA        0xC00F /**< Not in SSL3! */
+
+#define SSL_ECDHE_RSA_WITH_NULL_SHA              0xC010 /**< Weak! */
+#define SSL_ECDHE_RSA_WITH_RC4_128_SHA           0xC011 /**< Not in SSL3! */
+#define SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA      0xC012 /**< Not in SSL3! */
+#define SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA       0xC013 /**< Not in SSL3! */
+#define SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA       0xC014 /**< Not in SSL3! */
+
+#define SSL_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256  0xC023 /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384  0xC024 /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_AES_128_CBC_SHA256   0xC025 /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_AES_256_CBC_SHA384   0xC026 /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256    0xC027 /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA384    0xC028 /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_AES_128_CBC_SHA256     0xC029 /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_AES_256_CBC_SHA384     0xC02A /**< TLS 1.2 */
+
+#define SSL_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256  0xC02B /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384  0xC02C /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_AES_128_GCM_SHA256   0xC02D /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_AES_256_GCM_SHA384   0xC02E /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256    0xC02F /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_AES_256_GCM_SHA384    0xC030 /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_AES_128_GCM_SHA256     0xC031 /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_AES_256_GCM_SHA384     0xC032 /**< TLS 1.2 */
+
+#define SSL_ECDHE_PSK_WITH_RC4_128_SHA           0xC033 /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA      0xC034 /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_AES_128_CBC_SHA       0xC035 /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_AES_256_CBC_SHA       0xC036 /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_AES_128_CBC_SHA256    0xC037 /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_AES_256_CBC_SHA384    0xC038 /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_NULL_SHA              0xC039 /**< Weak! No SSL3! */
+#define SSL_ECDHE_PSK_WITH_NULL_SHA256           0xC03A /**< Weak! No SSL3! */
+#define SSL_ECDHE_PSK_WITH_NULL_SHA384           0xC03B /**< Weak! No SSL3! */
+
+#define SSL_RSA_WITH_ARIA_128_CBC_SHA256         0xC03C /**< TLS 1.2 */
+#define SSL_RSA_WITH_ARIA_256_CBC_SHA384         0xC03D /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_ARIA_128_CBC_SHA256     0xC044 /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_ARIA_256_CBC_SHA384     0xC045 /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_ARIA_128_CBC_SHA256 0xC048 /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_ARIA_256_CBC_SHA384 0xC049 /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_ARIA_128_CBC_SHA256  0xC04A /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_ARIA_256_CBC_SHA384  0xC04B /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_ARIA_128_CBC_SHA256   0xC04C /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_ARIA_256_CBC_SHA384   0xC04D /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_ARIA_128_CBC_SHA256    0xC04E /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_ARIA_256_CBC_SHA384    0xC04F /**< TLS 1.2 */
+#define SSL_RSA_WITH_ARIA_128_GCM_SHA256         0xC050 /**< TLS 1.2 */
+#define SSL_RSA_WITH_ARIA_256_GCM_SHA384         0xC051 /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_ARIA_128_GCM_SHA256     0xC052 /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_ARIA_256_GCM_SHA384     0xC053 /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_ARIA_128_GCM_SHA256 0xC05C /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_ARIA_256_GCM_SHA384 0xC05D /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_ARIA_128_GCM_SHA256  0xC05E /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_ARIA_256_GCM_SHA384  0xC05F /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_ARIA_128_GCM_SHA256   0xC060 /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_ARIA_256_GCM_SHA384   0xC061 /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_ARIA_128_GCM_SHA256    0xC062 /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_ARIA_256_GCM_SHA384    0xC063 /**< TLS 1.2 */
+#define SSL_PSK_WITH_ARIA_128_CBC_SHA256         0xC064 /**< TLS 1.2 */
+#define SSL_PSK_WITH_ARIA_256_CBC_SHA384         0xC065 /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_ARIA_128_CBC_SHA256     0xC066 /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_ARIA_256_CBC_SHA384     0xC067 /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_ARIA_128_CBC_SHA256     0xC068 /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_ARIA_256_CBC_SHA384     0xC069 /**< TLS 1.2 */
+#define SSL_PSK_WITH_ARIA_128_GCM_SHA256         0xC06A /**< TLS 1.2 */
+#define SSL_PSK_WITH_ARIA_256_GCM_SHA384         0xC06B /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_ARIA_128_GCM_SHA256     0xC06C /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_ARIA_256_GCM_SHA384     0xC06D /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_ARIA_128_GCM_SHA256     0xC06E /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_ARIA_256_GCM_SHA384     0xC06F /**< TLS 1.2 */
+#define SSL_ECDHE_PSK_WITH_ARIA_128_CBC_SHA256   0xC070 /**< TLS 1.2 */
+#define SSL_ECDHE_PSK_WITH_ARIA_256_CBC_SHA384   0xC071 /**< TLS 1.2 */
+
+#define SSL_ECDHE_ECDSA_WITH_CAMELLIA_128_CBC_SHA256 0xC072 /**< Not in SSL3! */
+#define SSL_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384 0xC073 /**< Not in SSL3! */
+#define SSL_ECDH_ECDSA_WITH_CAMELLIA_128_CBC_SHA256  0xC074 /**< Not in SSL3! */
+#define SSL_ECDH_ECDSA_WITH_CAMELLIA_256_CBC_SHA384  0xC075 /**< Not in SSL3! */
+#define SSL_ECDHE_RSA_WITH_CAMELLIA_128_CBC_SHA256   0xC076 /**< Not in SSL3! */
+#define SSL_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384   0xC077 /**< Not in SSL3! */
+#define SSL_ECDH_RSA_WITH_CAMELLIA_128_CBC_SHA256    0xC078 /**< Not in SSL3! */
+#define SSL_ECDH_RSA_WITH_CAMELLIA_256_CBC_SHA384    0xC079 /**< Not in SSL3! */
+
+#define SSL_RSA_WITH_CAMELLIA_128_GCM_SHA256         0xC07A /**< TLS 1.2 */
+#define SSL_RSA_WITH_CAMELLIA_256_GCM_SHA384         0xC07B /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_CAMELLIA_128_GCM_SHA256     0xC07C /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_CAMELLIA_256_GCM_SHA384     0xC07D /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256 0xC086 /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 0xC087 /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_CAMELLIA_128_GCM_SHA256  0xC088 /**< TLS 1.2 */
+#define SSL_ECDH_ECDSA_WITH_CAMELLIA_256_GCM_SHA384  0xC089 /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256   0xC08A /**< TLS 1.2 */
+#define SSL_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384   0xC08B /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_CAMELLIA_128_GCM_SHA256    0xC08C /**< TLS 1.2 */
+#define SSL_ECDH_RSA_WITH_CAMELLIA_256_GCM_SHA384    0xC08D /**< TLS 1.2 */
+
+#define SSL_PSK_WITH_CAMELLIA_128_GCM_SHA256       0xC08E /**< TLS 1.2 */
+#define SSL_PSK_WITH_CAMELLIA_256_GCM_SHA384       0xC08F /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_CAMELLIA_128_GCM_SHA256   0xC090 /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_CAMELLIA_256_GCM_SHA384   0xC091 /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_CAMELLIA_128_GCM_SHA256   0xC092 /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_CAMELLIA_256_GCM_SHA384   0xC093 /**< TLS 1.2 */
+
+#define SSL_PSK_WITH_CAMELLIA_128_CBC_SHA256       0xC094
+#define SSL_PSK_WITH_CAMELLIA_256_CBC_SHA384       0xC095
+#define SSL_DHE_PSK_WITH_CAMELLIA_128_CBC_SHA256   0xC096
+#define SSL_DHE_PSK_WITH_CAMELLIA_256_CBC_SHA384   0xC097
+#define SSL_RSA_PSK_WITH_CAMELLIA_128_CBC_SHA256   0xC098
+#define SSL_RSA_PSK_WITH_CAMELLIA_256_CBC_SHA384   0xC099
+#define SSL_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256 0xC09A /**< Not in SSL3! */
+#define SSL_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384 0xC09B /**< Not in SSL3! */
+
+#define SSL_RSA_WITH_AES_128_CCM                0xC09C  /**< TLS 1.2 */
+#define SSL_RSA_WITH_AES_256_CCM                0xC09D  /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_128_CCM            0xC09E  /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_256_CCM            0xC09F  /**< TLS 1.2 */
+#define SSL_RSA_WITH_AES_128_CCM_8              0xC0A0  /**< TLS 1.2 */
+#define SSL_RSA_WITH_AES_256_CCM_8              0xC0A1  /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_128_CCM_8          0xC0A2  /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_AES_256_CCM_8          0xC0A3  /**< TLS 1.2 */
+#define SSL_PSK_WITH_AES_128_CCM                0xC0A4  /**< TLS 1.2 */
+#define SSL_PSK_WITH_AES_256_CCM                0xC0A5  /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_AES_128_CCM            0xC0A6  /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_AES_256_CCM            0xC0A7  /**< TLS 1.2 */
+#define SSL_PSK_WITH_AES_128_CCM_8              0xC0A8  /**< TLS 1.2 */
+#define SSL_PSK_WITH_AES_256_CCM_8              0xC0A9  /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_AES_128_CCM_8          0xC0AA  /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_AES_256_CCM_8          0xC0AB  /**< TLS 1.2 */
+/* The last two are named with PSK_DHE in the RFC, which looks like a typo */
+
+#define SSL_ECDHE_ECDSA_WITH_AES_128_CCM        0xC0AC  /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_AES_256_CCM        0xC0AD  /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_AES_128_CCM_8      0xC0AE  /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_AES_256_CCM_8      0xC0AF  /**< TLS 1.2 */
+
+#define SSL_ECJPAKE_WITH_AES_128_CCM_8          0xC0FF  /**< experimental */
+
+/* RFC 7905 */
+#define SSL_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256   0xCCA8 /**< TLS 1.2 */
+#define SSL_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 0xCCA9 /**< TLS 1.2 */
+#define SSL_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256     0xCCAA /**< TLS 1.2 */
+#define SSL_PSK_WITH_CHACHA20_POLY1305_SHA256         0xCCAB /**< TLS 1.2 */
+#define SSL_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256   0xCCAC /**< TLS 1.2 */
+#define SSL_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256     0xCCAD /**< TLS 1.2 */
+#define SSL_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256     0xCCAE /**< TLS 1.2 */
 
 typedef enum {
 	ALG_HASH_NONE = 0,

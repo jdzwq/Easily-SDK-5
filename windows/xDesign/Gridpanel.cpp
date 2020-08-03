@@ -1457,7 +1457,7 @@ void GridPanel_OnShow(res_win_t widget, bool_t bShow)
 
 		glk = insert_tool_group(ptrTool, LINK_LAST);
 		set_tool_group_name(glk, MAINFRAME_TOOLGROUP_STYLE);
-		set_tool_group_title(glk, _T("ÑùÊ½"));
+		set_tool_group_title(glk, _T("ÅÅ°æ"));
 		set_tool_group_item_width(glk, GRIDPANEL_GROUPITEM_WIDTH);
 		set_tool_group_item_height(glk, GRIDPANEL_GROUPITEM_HEIGHT);
 		set_tool_group_show(glk, ATTR_SHOW_IMAGEONLY);

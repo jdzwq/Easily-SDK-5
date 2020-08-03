@@ -101,7 +101,6 @@ link_t_ptr insert_section(link_t_ptr ptr,link_t_ptr pos)
 
 	slk = insert_dom_node(ptr,pos);
 	set_dom_node_name(slk,DOC_PROPER_SECTION,-1);
-	set_section_expanded(slk, 1);
 
 	return slk;
 }

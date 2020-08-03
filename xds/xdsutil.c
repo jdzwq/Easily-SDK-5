@@ -648,12 +648,20 @@ void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub)
 	}
 }
 
-void ft_cell_rect(xrect_t* pxr, int rows, int cols, int index)
+void ft_cell_rect(xrect_t* pxr, bool_t horz, int rows, int cols, int index)
 {
 	int row, col;
 
-	row = index / cols;
-	col = index % cols;
+	if (horz)
+	{
+		row = index / cols;
+		col = index % cols;
+	}
+	else
+	{
+		col = index / rows;
+		row = index % rows;
+	}
 
 	pxr->fx += pxr->fw * col / cols;
 	pxr->fw = pxr->fw / cols;
@@ -661,12 +669,20 @@ void ft_cell_rect(xrect_t* pxr, int rows, int cols, int index)
 	pxr->fh = pxr->fh / rows;
 }
 
-void pt_cell_rect(xrect_t* pxr, int rows, int cols, int index)
+void pt_cell_rect(xrect_t* pxr, bool_t horz, int rows, int cols, int index)
 {
 	int row, col;
 
-	row = index / cols;
-	col = index % cols;
+	if (horz)
+	{
+		row = index / cols;
+		col = index % cols;
+	}
+	else
+	{
+		col = index / rows;
+		row = index % rows;
+	}
 
 	pxr->x += pxr->w * col / cols;
 	pxr->w = pxr->w / cols;

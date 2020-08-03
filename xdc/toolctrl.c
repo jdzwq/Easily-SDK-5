@@ -56,6 +56,18 @@ static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 	widget_rect_to_pt(widget, pxr);
 }
 
+static void _toolctrl_group_rect(res_win_t widget, link_t_ptr glk, xrect_t* pxr)
+{
+	tool_delta_t* ptd = GETTOOLDELTA(widget);
+	canvbox_t cb;
+
+	widget_get_canv_rect(widget, &cb);
+
+	calc_tool_group_entire_rect(&cb, ptd->tool, glk, pxr);
+
+	widget_rect_to_pt(widget, pxr);
+}
+
 static void _toolctrl_reset_page(res_win_t widget)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
@@ -161,6 +173,27 @@ void noti_tool_item_changed(res_win_t widget, link_t_ptr plk)
 	widget_erase(widget, &xr);
 }
 
+void noti_tool_group_expand(res_win_t widget, link_t_ptr glk)
+{
+	tool_delta_t* ptd = GETTOOLDELTA(widget);
+	xrect_t xr_sec, xr;
+
+	if (get_tool_group_collapsed(glk))
+	{
+		set_tool_group_collapsed(glk, 0);
+	}
+	else
+	{
+		set_tool_group_collapsed(glk, 1);
+	}
+
+	_toolctrl_group_rect(widget, glk, &xr_sec);
+	widget_get_client_rect(widget, &xr);
+
+	pt_inter_rect(&xr, &xr_sec);
+	widget_erase(widget, &xr);
+}
+
 /*******************************************************************************/
 int hand_tool_create(res_win_t widget, void* data)
 {
@@ -203,7 +236,7 @@ void hand_tool_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
 	int nHint;
-	link_t_ptr plk;
+	link_t_ptr glk, plk;
 	bool_t bRe;
 	xpoint_t pt;
 	canvbox_t cb;
@@ -218,7 +251,7 @@ void hand_tool_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
+	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &glk, &plk);
 	bRe = (plk == ptd->hover) ? 1 : 0;
 
 	if (nHint == TOOL_HINT_ITEM && !ptd->hover && !bRe)
@@ -290,7 +323,7 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
 
 	int nHint;
-	link_t_ptr plk;
+	link_t_ptr plk, glk;
 	bool_t bRe;
 	xpoint_t pt;
 	xrect_t xr;
@@ -314,7 +347,7 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
+	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &glk, &plk);
 
 	bRe = (plk == ptd->item) ? 1 : 0;
 
@@ -327,6 +360,11 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (plk && !bRe)
 	{
 		noti_tool_item_changed(widget, plk);
+	}
+
+	if (nHint == TOOL_HINT_TITLE)
+	{
+		noti_tool_group_expand(widget, glk);
 	}
 
 	noti_tool_owner(widget, NC_TOOLLBCLK, ptd->tool, ptd->item, (void*)pxp);
@@ -345,7 +383,7 @@ void hand_tool_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
 
 	int nHint;
-	link_t_ptr plk;
+	link_t_ptr glk, plk;
 	xpoint_t pt;
 	canvbox_t cb;
 
@@ -359,7 +397,7 @@ void hand_tool_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &plk);
+	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &glk, &plk);
 
 	noti_tool_owner(widget, NC_TOOLRBCLK, ptd->tool, plk, (void*)pxp);
 }

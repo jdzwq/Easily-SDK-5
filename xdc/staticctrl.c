@@ -395,8 +395,16 @@ static void _statisctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_statis_width(ptd->statis);
-	xs.fy = get_statis_height(ptd->statis);
+	if (compare_text(get_statis_printing_ptr(ptd->statis), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
+	{
+		xs.fx = get_statis_height(ptd->statis);
+		xs.fy = get_statis_width(ptd->statis);
+	}
+	else
+	{
+		xs.fx = get_statis_width(ptd->statis);
+		xs.fy = get_statis_height(ptd->statis);
+	}
 
 	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;

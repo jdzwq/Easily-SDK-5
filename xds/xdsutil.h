@@ -111,10 +111,6 @@ EXP_API void ft_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
 
 EXP_API void pt_merge_rect(xrect_t* pxr, const xrect_t* pxr_nxt);
 
-EXP_API void ft_cell_rect(xrect_t* pxr, int rows, int cols, int index);
-
-EXP_API void pt_cell_rect(xrect_t* pxr, int rows, int cols, int index);
-
 EXP_API bool_t ft_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
 EXP_API bool_t pt_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
@@ -122,6 +118,10 @@ EXP_API bool_t pt_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 EXP_API void ft_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
 EXP_API void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
+
+EXP_API void ft_cell_rect(xrect_t* pxr, bool_t horz, int rows, int cols, int index);
+
+EXP_API void pt_cell_rect(xrect_t* pxr, bool_t horz, int rows, int cols, int index);
 
 EXP_API bool_t rect_is_empty(const xrect_t* pxr);
 

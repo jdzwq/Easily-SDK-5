@@ -8,9 +8,10 @@
 
 
 //#define URL		_T("http://localhost:8889/loc/mymovi.mp4")
-#define URL		_T("https://localhost:8888/loc/mymovi.mp4")
+//#define URL		_T("https://localhost:8888/loc/mymovi.mp4")
 //#define URL		_T("https://myssl.com:443/www.sspanda.com?status=q")
 //#define URL		_T("https://www.baidu.com:443")
+#define URL		_T("https://mp.weixin.qq.com:443")
 
 void set_ssl(xhand_t ssl)
 {
@@ -244,7 +245,7 @@ void test_ssl_srv()
 
 void test_ssl_cli()
 {
-    xhand_t ssl = xssl_cli(8888, _T("172.16.190.200"));
+    xhand_t ssl = xssl_cli(8888, _T("127.0.0.1"));
     
     if(!ssl)
         return;

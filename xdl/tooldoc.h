@@ -80,6 +80,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_tool_title_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_TITLE_HEIGHT,n)
 /*
+@PROPER collapsed: boolean.
+@SET set_tool_group_collapsed: set the tool group collapsed or expanded.
+*/
+#define set_tool_group_collapsed(glk,b)					set_dom_node_mask_check(glk,MSK_COLLAPSED,b)
+/*
+@PROPER collapsed: document.
+@GET get_tool_group_collapsed: get the tool group collapsed or expanded.
+*/
+#define get_tool_group_collapsed(glk)					get_dom_node_mask_check(glk,MSK_COLLAPSED)
+/*
 @PROPER groupName: string.
 @GET get_tool_group_name_ptr: get the tool group name.
 */

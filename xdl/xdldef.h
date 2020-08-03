@@ -276,7 +276,7 @@ typedef struct _calendar_t
 #define MSK_LOCKED		0x00010000 //node locked
 #define MSK_CHECKED		0x00020000 //node checked
 #define MSK_HIDDEN		0x00040000 //node not visible
-#define MSK_EXPANDED	0x00080000 //node expanded tag
+#define MSK_COLLAPSED	0x00080000 //node collapsed tag
 #define MSK_SKIPPED		0x00100000 //node will be skiped
 #define MSK_DELETED		0x00200000 //node will be deleted
 #define MSK_SORTED		0x00400000 //node has been sorted

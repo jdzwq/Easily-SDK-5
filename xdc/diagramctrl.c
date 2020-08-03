@@ -324,8 +324,16 @@ static void _diagramctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_diagram_width(ptd->diagram);
-	xs.fy = get_diagram_height(ptd->diagram);
+	if (compare_text(get_diagram_printing_ptr(ptd->diagram), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
+	{
+		xs.fx = get_diagram_height(ptd->diagram);
+		xs.fy = get_diagram_width(ptd->diagram);
+	}
+	else
+	{
+		xs.fx = get_diagram_width(ptd->diagram);
+		xs.fy = get_diagram_height(ptd->diagram);
+	}
 
 	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;

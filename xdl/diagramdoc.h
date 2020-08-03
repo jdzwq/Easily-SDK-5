@@ -58,6 +58,10 @@ LICENSE.GPL3 for more details.
 
 #define set_diagram_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
 
+#define set_diagram_printing(ptr,val)					set_dom_node_attr(ptr,ATTR_PRINTING,-1,val,-1)
+
+#define get_diagram_printing_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_PRINTING,-1)
+
 #define set_diagram_entity_name(ilk,token)					set_dom_node_attr(ilk,ATTR_NAME,-1,token,-1)
 
 #define get_diagram_entity_name_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_NAME,-1)

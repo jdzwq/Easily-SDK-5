@@ -1688,7 +1688,7 @@ void _MainFrame_CreateCateBar(res_win_t widget)
 	set_title_item_title(tlk, _T("对象"));
 	set_title_item_name(tlk, MAINFRAME_TREE_OBJECT);
 	set_title_item_locked(tlk, 1);
-	set_title_item_icon(tlk, GDI_ATTR_GIZMO_HERF);
+	set_title_item_icon(tlk, GDI_ATTR_GIZMO_LIST);
 
 	titlectrl_attach(pdt->hCateBar, ptrTitle);
 

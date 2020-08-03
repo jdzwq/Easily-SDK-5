@@ -99,6 +99,16 @@ LICENSE.GPL3 for more details.
 */
 #define set_rich_height(ptr,n)						set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
 /*
+@PROPER printing: string.
+@SET set_rich_printing: set the rich printing oritation.
+*/
+#define set_rich_printing(flk,val)					set_dom_node_attr(ptr,ATTR_PRINTING,-1,val,-1)
+/*
+@PROPER printing: string.
+@SET get_rich_printing: get the rich printing oritation.
+*/
+#define get_rich_printing_ptr(flk)					get_dom_node_attr_ptr(ptr,ATTR_PRINTING,-1)
+/*
 @PROPER name: string.
 @GET get_rich_anch_name_ptr: get the rich anchor name.
 */

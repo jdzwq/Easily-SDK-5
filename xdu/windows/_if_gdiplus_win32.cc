@@ -437,7 +437,7 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 		{
 			rx = pa[0].x;
 			ry = pa[0].y;
-			sflag = 1;
+			sflag = (rx >= 0 || ry >= 0)? 1 : 0;
 
 			pt[0].x = pt_p.x;
 			pt[0].y = pt_p.y;
@@ -609,7 +609,7 @@ void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, co
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -646,9 +646,9 @@ void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
-		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeForwardDiagonal);
 
 		gh.FillRectangle(&brush, Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
@@ -663,7 +663,7 @@ void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -747,9 +747,9 @@ void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
-		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeForwardDiagonal);
 
 		gh.FillPath(&brush, shadow);
 
@@ -773,7 +773,7 @@ void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -824,9 +824,9 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
-		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeForwardDiagonal);
 
 		gh.FillEllipse(&brush, Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 	}
@@ -836,7 +836,7 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -885,9 +885,9 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
-		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeHorizontal);
+		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeForwardDiagonal);
 
 		gh.FillPie(&brush, Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
 	}
@@ -897,7 +897,7 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -949,7 +949,7 @@ void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, i
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -1034,7 +1034,7 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
 		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeVertical);
 
@@ -1060,7 +1060,7 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -1129,7 +1129,7 @@ void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -1196,7 +1196,7 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
 		PathGradientBrush brush(shadow);
 		Color clr[3] = { Color(0, 0, 0, 0), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b) };
@@ -1225,7 +1225,7 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 
@@ -1342,7 +1342,7 @@ void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 		xcolor_t xc_near, xc_far;
 		parse_xcolor(&xc_near, pxb->color);
 		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -20);
+		lighten_xcolor(&xc_far, -10);
 
 		PathGradientBrush brush(shadow);
 		Color clr[3] = { Color(0, 0, 0, 0), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b) };
@@ -1371,7 +1371,7 @@ void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 		xcolor_t xc_gray;
 
 		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -20);
+		lighten_xcolor(&xc_gray, -10);
 
 		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
 

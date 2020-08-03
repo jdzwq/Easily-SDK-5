@@ -216,7 +216,7 @@ int _font_size(res_ctx_t rdc, int height)
 
 	GetTextMetrics(hDC, &tm);
 
-	size = (int)((height - tm.tmInternalLeading) * 72 / GetDeviceCaps(hDC, LOGPIXELSY));
+	size = (int)((float)(height - tm.tmInternalLeading) * 72.0 / (float)GetDeviceCaps(hDC, LOGPIXELSY) + 0.5);
 
 	if (!rdc)
 		ReleaseDC(NULL, hDC);
@@ -496,9 +496,9 @@ int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
 	if (horz)
-		pt = (int)(mm * htpermm);
+		pt = (int)(mm * htpermm + 0.5);
 	else
-		pt = (int)(mm * vtpermm);
+		pt = (int)(mm * vtpermm + 0.5);
 
 	if (!rdc)
 		ReleaseDC(NULL, hDC);

@@ -282,7 +282,7 @@
 #define ATTR_ITEM_WIDTH				_T("item-width")
 #define ATTR_ITEM_HEIGHT			_T("item-height")
 #define ATTR_ITEM_SPAN				_T("item-span")
-#define GDI_ATTR_GIZMO_SPAN					_T("icon-span")
+#define GDI_ATTR_GIZMO_SPAN			_T("icon-span")
 #define ATTR_TEXT_INDENT			_T("text-indent")
 #define ATTR_TEXT_PLACE				_T("text-place")
 #define ATTR_ENTITY_HEIGHT			_T("entity-height")
@@ -516,6 +516,11 @@
 #define ATTR_LAYER_VERT				_T("vert")
 #define ATTR_LAYER_CROSS			_T("cross")
 #define ATTR_LAYER_OPTIONS			_T("horz~Horz;vert~Vert;cross~Cross;")
+
+#define ATTR_PRINTING				_T("printing")
+#define ATTR_PRINTING_PORTRAIT		_T("portrait")
+#define ATTR_PRINTING_LANDSCAPE		_T("landscape")
+#define ATTR_PRINTING_OPTIONS		_T("portrait~Portrait;landscape~Landscape;")
 
 #define ATTR_POSITION				_T("position")
 #define ATTR_POSITION_LEFT			_T("left")

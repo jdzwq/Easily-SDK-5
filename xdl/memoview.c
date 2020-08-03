@@ -313,13 +313,13 @@ int call_memo_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 	case MEMOWORD_INDICATOR_NEXT_LINE:
 		*pins = 1;
 		*pdel = 1;
-		*psel = 0;
+		*psel = 1;
 		*patom = 0;
 		break;
 	case MEMOWORD_INDICATOR_NEXT_INDENT:
 		*pins = 1;
 		*pdel = 1;
-		*psel = 0;
+		*psel = 1;
 		*patom = 0;
 		break;
 	case MEMOWORD_INDICATOR_NEXT_WORD:

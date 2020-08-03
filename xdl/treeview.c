@@ -51,7 +51,7 @@ float _calc_tree_child_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr 
 	{
 		th += ih;
 
-		if (get_tree_item_expanded(ilk) && get_tree_first_child_item(ilk))
+		if (!get_tree_item_collapsed(ilk) && get_tree_first_child_item(ilk))
 		{
 			if (!st)
 				st = create_stack_table();
@@ -111,7 +111,7 @@ float calc_tree_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr
 		if (mw < iw + xs.fx)
 			mw = iw + xs.fx;
 
-		if (get_tree_item_expanded(ilk) && get_tree_first_child_item(ilk))
+		if (!get_tree_item_collapsed(ilk) && get_tree_first_child_item(ilk))
 		{
 			if (!st)
 				st = create_stack_table();
@@ -169,7 +169,7 @@ bool_t calc_tree_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr cur
 
 		pxr->fy += pxr->fh;
 
-		if (get_tree_item_expanded(ilk) && get_tree_first_child_item(ilk))
+		if (!get_tree_item_collapsed(ilk) && get_tree_first_child_item(ilk))
 		{
 			pxr->fx += ic / 2;
 			pxr->fw -= ic / 2;
@@ -313,7 +313,7 @@ int calc_tree_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 
 		total_h += ih;
 
-		if (get_tree_item_expanded(ilk))
+		if (!get_tree_item_collapsed(ilk))
 		{
 			if (!st)
 				st = create_stack_table();
@@ -474,7 +474,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		{
 			ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-			if (get_tree_item_expanded(ilk))
+			if (!get_tree_item_collapsed(ilk))
 			{
 				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ATTR_GIZMO_MINUS);
 			}
@@ -520,7 +520,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_tree_item_title_ptr(ilk), -1);
 
 		total_height += ih;
-		if (get_tree_item_expanded(ilk) && get_tree_first_child_item(ilk))
+		if (!get_tree_item_collapsed(ilk) && get_tree_first_child_item(ilk))
 		{
 			total_indent += ic / 2;
 

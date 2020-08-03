@@ -448,6 +448,16 @@ EXP_API void	draw_focus_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 EXP_API void	draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep);
 
 /*
+@FUNCTION draw_sizing_raw: draw feed frame in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xcolor_t* pxc: the color struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT int deep: the alphablend level: 0~255, the predefined value is ALPHA_SOLID, ALPHA_SOFT, ALPHA_TRANS.
+@RETURN void: none.
+*/
+EXP_API void draw_sizing_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos);
+
+/*
 @FUNCTION exclip_rect_raw: clip the rect outside in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xrect_t* pxr: the rect struct using integer member.

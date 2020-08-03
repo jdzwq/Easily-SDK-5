@@ -143,8 +143,20 @@ void print_form(const dev_prn_t* pdev, link_t_ptr form)
 	if_canvas_t* pic;
 	canvbox_t cb = { 0 };
 	int i, pages;
+	dev_prn_t dev = { 0 };
 
-	rdc = create_printer_context(pdev);
+	if (pdev)
+	{
+		xmem_copy((void*)&dev, (void*)pdev, sizeof(dev_prn_t));
+	}
+	else
+	{
+		dev.paper_height = (short)(get_form_height(form) * 10);
+		dev.paper_width = (short)(get_form_width(form) * 10);
+		dev.landscape = (compare_text(get_form_printing_ptr(form), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0) ? 1 : 0;
+	}
+
+	rdc = create_printer_context(&dev);
 	if (!rdc)
 		return;
 
@@ -184,9 +196,21 @@ void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 	if_canvas_t* pic;
 	canvbox_t cb = { 0 };
 	int i, pages;
+	dev_prn_t dev = { 0 };
 	xsize_t xs;
 
-	rdc = create_printer_context(pdev);
+	if (pdev)
+	{
+		xmem_copy((void*)&dev, (void*)pdev, sizeof(dev_prn_t));
+	}
+	else
+	{
+		dev.paper_height = (short)(get_grid_height(grid) * 10);
+		dev.paper_width = (short)(get_grid_width(grid) * 10);
+		dev.landscape = (compare_text(get_grid_printing_ptr(grid), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0) ? 1 : 0;
+	}
+
+	rdc = create_printer_context(&dev);
 	if (!rdc)
 		return;
 
@@ -228,7 +252,19 @@ void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 	canvas_t canv;
 	if_canvas_t* pic;
 	canvbox_t cb = { 0 };
+	dev_prn_t dev = { 0 };
 	int i, pages;
+
+	if (pdev)
+	{
+		xmem_copy((void*)&dev, (void*)pdev, sizeof(dev_prn_t));
+	}
+	else
+	{
+		dev.paper_height = (short)(get_statis_height(statis) * 10);
+		dev.paper_width = (short)(get_statis_width(statis) * 10);
+		dev.landscape = (compare_text(get_statis_printing_ptr(statis), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0) ? 1 : 0;
+	}
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -339,6 +375,18 @@ void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
 	canvas_t canv;
 	if_canvas_t* pic;
 	canvbox_t cb = { 0 };
+	dev_prn_t dev = { 0 };
+
+	if (pdev)
+	{
+		xmem_copy((void*)&dev, (void*)pdev, sizeof(dev_prn_t));
+	}
+	else
+	{
+		dev.paper_height = (short)(get_diagram_height(diagram) * 10);
+		dev.paper_width = (short)(get_diagram_width(diagram) * 10);
+		dev.landscape = (compare_text(get_diagram_printing_ptr(diagram), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0) ? 1 : 0;
+	}
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -375,6 +423,17 @@ void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 	if_canvas_t* pic;
 	xrect_t xr = { 0 };
 	int i, pages;
+	dev_prn_t dev = { 0 };
+
+	if (pdev)
+	{
+		xmem_copy((void*)&dev, (void*)pdev, sizeof(dev_prn_t));
+	}
+	else
+	{
+		dev.paper_height = (short)(get_memo_height(memo) * 10);
+		dev.paper_width = (short)(get_memo_width(memo) * 10);
+	}
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -416,6 +475,17 @@ void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 	if_canvas_t* pic;
 	xrect_t xr = { 0 };
 	int i, pages;
+	dev_prn_t dev = { 0 };
+
+	if (pdev)
+	{
+		xmem_copy((void*)&dev, (void*)pdev, sizeof(dev_prn_t));
+	}
+	else
+	{
+		dev.paper_height = (short)(get_rich_height(rich) * 10);
+		dev.paper_width = (short)(get_rich_width(rich) * 10);
+	}
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)

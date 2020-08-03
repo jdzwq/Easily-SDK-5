@@ -384,13 +384,26 @@ static void _gridctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = _gridctrl_page_width(widget);
-
-	if (xs.fx < get_grid_width(ptd->grid))
+	if (compare_text(get_grid_printing_ptr(ptd->grid), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
 	{
-		xs.fx = get_grid_width(ptd->grid);
+		xs.fx = _gridctrl_page_width(widget);
+
+		if (xs.fx < get_grid_height(ptd->grid))
+		{
+			xs.fx = get_grid_height(ptd->grid);
+		}
+		xs.fy = get_grid_width(ptd->grid);
 	}
-	xs.fy = get_grid_height(ptd->grid);
+	else
+	{
+		xs.fx = _gridctrl_page_width(widget);
+
+		if (xs.fx < get_grid_width(ptd->grid))
+		{
+			xs.fx = get_grid_width(ptd->grid);
+		}
+		xs.fy = get_grid_height(ptd->grid);
+	}
 
 	widget_size_to_pt(widget, &xs);
 	fw = xs.cx;
@@ -1923,14 +1936,16 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	if (widget_can_paging(widget))
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
-		draw_corner(canv, &xc, (const xrect_t*)&cb);
-
 		if (b_design)
 		{
 			parse_xcolor(&xc, xp.color);
 			lighten_xcolor(&xc, DEF_SOFT_DARKEN);
 			draw_ruler(pif->canvas, &xc, (const xrect_t*)&cb);
+		}
+		else
+		{
+			xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
+			draw_corner(canv, &xc, (const xrect_t*)&cb);
 		}
 	}
 
@@ -1963,7 +1978,14 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	else
 	{
 		//draw focus
-		if (ptd->row && ptd->col)
+		if (ptd->b_lock && ptd->row)
+		{
+			_gridctrl_row_rect(widget, ptd->row, &xr);
+
+			parse_xcolor(&xc, DEF_ALPHA_COLOR);
+			alphablend_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		}
+		else if (ptd->row && ptd->col)
 		{
 			_gridctrl_cell_rect(widget, ptd->row, ptd->col, &xr);
 
