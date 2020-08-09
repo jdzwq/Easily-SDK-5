@@ -2218,6 +2218,36 @@ int compare_time(const xdate_t* pmt1, const xdate_t* pmt2)
 		return 0;
 }
 
+bool_t get_param_item(const tchar_t* sz_param, const tchar_t* key, tchar_t* val, int max)
+{
+	const tchar_t* token;
+	int len;
+
+	len = xslen(key);
+
+	token = sz_param;
+	while ((token = xsstr(token, key)) != NULL)
+	{
+		if (*(token + len) == _T(':'))
+		{
+			token += len;
+			token++;
+
+			len = 0;
+			while (*(token + len) != _T(' ') && *(token + len) != _T('\0'))
+			{
+				len++;
+			}
+
+			xsncpy(val, token, len);
+			return 1;
+		}
+		token += len;
+	}
+
+	return 0;
+}
+
 int split_line(const tchar_t* token, int len)
 {
 	int tklen = 0, total = 0;

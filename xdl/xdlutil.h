@@ -168,6 +168,8 @@ EXP_API int verify_text(const tchar_t* str, const tchar_t* datatype, bool_t null
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+EXP_API bool_t get_param_item(const tchar_t* sz_param, const tchar_t* key, tchar_t* val, int max);
+
 EXP_API int split_line(const tchar_t* token, int len);
 
 EXP_API bool_t split_xmlns(tchar_t* str, int* kat, int* klen, int* vat, int* vlen);

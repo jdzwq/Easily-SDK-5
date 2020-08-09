@@ -27,7 +27,6 @@ LICENSE.GPL3 for more details.
 #define _OAUAPI_H
 
 #include <xdl.h>
-#include <oau.h>
 
 #ifdef	__cplusplus
 extern "C" {
@@ -38,5 +37,6 @@ extern "C" {
 #ifdef	__cplusplus
 }
 #endif
+
 
 #endif

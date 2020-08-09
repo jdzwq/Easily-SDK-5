@@ -57,8 +57,7 @@ EXP_API void destroy_timer_queue(res_queue_t rq);
 @FUNCTION create_timer: create timer and add into queue.
 @INPUT res_queue_t rq: the timer queue resource handle.
 @INPUT dword_t duetime: amount of time to elapse before the timer is signed for the first time in milliseconds.
-@INPUT dword_t period: period of the timer, in milliseconds. 
-if zero, the timer is signed once. the timer is periodic by the period value.
+@INPUT dword_t period: period of the timer, in milliseconds. if zero, the timer is signed once or the timer is periodic by the period value.
 @INPUT PF_TIMERFUNC pf: the worker timer function.
 @INPUT void* pa: the worker function parameter.
 @RETURN res_timer_t: if succeeds return timer resource hanle, fails return NULL.

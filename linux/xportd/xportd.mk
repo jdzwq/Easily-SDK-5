@@ -12,7 +12,7 @@ LOC_PATH = .
 OUT_PATH = ../sbin
 
 LIBS = -L $(API_PATH) -lxds -lxdl
-DIRS = $(wildcard $(LOC_PATH)/*.cc $(NET_PATH)/*.cc)
+DIRS = $(wildcard $(LOC_PATH)/xportdMain.cc $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xhttps.cc $(NET_PATH)/xudps.cc $(NET_PATH)/xpnps.cc $(NET_PATH)/xtcps.cc $(NET_PATH)/xportd.cc)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 MODULE = xportd

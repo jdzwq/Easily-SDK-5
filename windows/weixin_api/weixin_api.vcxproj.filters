@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\oau\weiapp\oau_weiapp.c">
+    <ClCompile Include="..\..\api\weixin_api\weixin_api.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="oau_weiapp.def">
-      <Filter>源文件</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\oau\oaudef.h">
+    <ClInclude Include="..\..\api\weixin_api\weixin_api.h">
       <Filter>头文件</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="weixin_api.def">
+      <Filter>源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

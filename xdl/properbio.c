@@ -118,7 +118,7 @@ void parse_proper_from_ini(link_t_ptr ptr, const tchar_t* str, int len)
 			sec = key;
 			seclen = keylen;
 			tmp = sec + keylen;
-			while (*tmp == _T(' ') || *tmp == _T('\t') || *tmp == _T('\0'))
+			while (*tmp == _T(' ') || *tmp == _T('\t'))
 			{
 				if (tmp == key)
 					break;
@@ -129,7 +129,7 @@ void parse_proper_from_ini(link_t_ptr ptr, const tchar_t* str, int len)
 		else if (rt == 3 && keylen)
 		{
 			tmp = key + keylen;
-			while (*tmp == _T(' ') || *tmp == _T('\t') || *tmp == _T('\0'))
+			while (*tmp == _T(' ') || *tmp == _T('\t'))
 			{
 				if (tmp == key)
 					break;
@@ -140,7 +140,7 @@ void parse_proper_from_ini(link_t_ptr ptr, const tchar_t* str, int len)
 			if (val && vallen)
 			{
 				tmp = val + vallen;
-				while (*tmp == _T(' ') || *tmp == _T('\t') || *tmp == _T('\0'))
+				while (*tmp == _T(' ') || *tmp == _T('\t'))
 				{
 					if (tmp == val)
 						break;

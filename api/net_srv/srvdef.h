@@ -35,5 +35,11 @@ LICENSE.GPL3 for more details.
 #define XPORTM_WAIT_TIMO         (1000)
 #define XPORTM_PIPE_NAME		_T("xportm")
 
+#define XPORTD_PORT_TYPE_HTTP		_T("HTTP")
+#define XPORTD_PORT_TYPE_TCP		_T("TCP")
+#define XPORTD_PORT_TYPE_UDP		_T("UDP")
+#define XPORTD_PORT_TYPE_PNP		_T("PNP")
+
+#define IS_THREAD_MODE(mode)		(compare_text(mode,-1,_T("thread"),-1,1) == 0)
 
 #endif //_SRVDEF_H

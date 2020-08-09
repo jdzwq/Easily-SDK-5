@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #ifndef _SRVLOG_H
 #define _SRVLOG_H
 
-#include "xportd.h"
+#include "srvdef.h"
 
 void _write_log_title(file_t log, const tchar_t* sz_title, int len);
 
@@ -48,6 +48,5 @@ void xportm_log_error(const tchar_t* errcode, const tchar_t* errtext);
 void xportm_log_data(const byte_t* data, dword_t size);
 
 /**********************************************************************************************/
-bool_t get_param_item(const tchar_t* sz_param, const tchar_t* key, tchar_t* val, int max);
 
 #endif //_SRVLOG_H

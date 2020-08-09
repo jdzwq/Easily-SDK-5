@@ -292,32 +292,4 @@ void xportm_log_data(const byte_t* data, dword_t size)
 	xpipe_free(pipe);
 }
 
-bool_t get_param_item(const tchar_t* sz_param, const tchar_t* key, tchar_t* val, int max)
-{
-	const tchar_t* token;
-	int len;
 
-	len = xslen(key);
-
-	token = sz_param;
-	while ((token = xsstr(token, key)) != NULL)
-	{
-		if (*(token + len) == _T(':'))
-		{
-			token += len;
-			token++;
-
-			len = 0;
-			while (*(token+len) != _T(' ') && *(token+len) != _T('\0'))
-			{
-				len++;
-			}
-
-			xsncpy(val, token, len);
-			return 1;
-		}
-		token += len;
-	}
-
-	return 0;
-}
