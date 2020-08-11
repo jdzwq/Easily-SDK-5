@@ -71,6 +71,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "weixin_api", "..\weixin_api
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "weiisp_api", "..\weiisp_api\weiisp_api.vcxproj", "{B98E2207-C833-4FD8-B93E-4E0E6304EF17}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xtimers", "..\xtimers\xtimers.vcxproj", "{49DEDBE4-FF41-4698-8AF1-A5C65811D528}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -489,6 +491,18 @@ Global
 		{B98E2207-C833-4FD8-B93E-4E0E6304EF17}.Release|Win32.Build.0 = Release|Win32
 		{B98E2207-C833-4FD8-B93E-4E0E6304EF17}.Release|x64.ActiveCfg = Release|x64
 		{B98E2207-C833-4FD8-B93E-4E0E6304EF17}.Release|x64.Build.0 = Release|x64
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Debug|Win32.ActiveCfg = Debug|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Debug|Win32.Build.0 = Debug|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Debug|x64.ActiveCfg = Debug|x64
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Debug|x64.Build.0 = Debug|x64
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|Win32.ActiveCfg = Release|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|Win32.Build.0 = Release|Win32
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|x64.ActiveCfg = Release|x64
+		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

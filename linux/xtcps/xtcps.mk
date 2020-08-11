@@ -8,11 +8,10 @@ LIB_PATH = ../lib
 API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 NET_PATH = ~/Easily-sdk-5/api/net_srv
-LOC_PATH = .
 OUT_PATH = ../sbin
 
 LIBS =  -lpthread -L $(API_PATH) -lxds -lxdl
-SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xtcps.cc $(LOC_PATH)/xtcpsMain.cc
+SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xtcps.cc $(NET_PATH)/xtcpsMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 MODULE = xtcps
 TARGET = $(OUT_PATH)/$(MODULE)

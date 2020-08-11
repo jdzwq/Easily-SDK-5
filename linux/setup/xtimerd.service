@@ -1,0 +1,13 @@
+[Unit]
+Description=xtimerd
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/xtimerd.pid
+ExecStart=/usr/local/xService/xSchedule.sh
+ExecStop=/usr/local/xService/xtimerd --shutdown
+ExecReload=/usr/local/xService/xtimerd
+
+[Install]
+WantedBy=multi-user.target

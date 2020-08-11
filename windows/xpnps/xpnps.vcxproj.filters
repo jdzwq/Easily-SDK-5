@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="xpnpsMain.cc">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\api\net_srv\srvlog.cc">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\api\net_srv\xpnps.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\api\net_srv\xpnpsMain.cc">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

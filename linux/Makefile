@@ -33,7 +33,9 @@ EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
 	$(EXE_PATH)/xhttps \
 	$(EXE_PATH)/xtcps \
-	$(EXE_PATH)/xudps
+	$(EXE_PATH)/xudps \
+	$(EXE_PATH)/xtimers \
+	$(EXE_PATH)/xtimerd
 
 all:
 	if ! test -d $(SRV_PATH); then \
@@ -71,6 +73,9 @@ all:
 	cd $(CUR_PATH)/xtcps && make -f xtcps.mk
 	cd $(CUR_PATH)/xudps && make -f xudps.mk
 	cd $(CUR_PATH)/xportd && make -f xportd.mk
+
+	cd $(CUR_PATH)/xtimers && make -f xtimers.mk
+	cd $(CUR_PATH)/xtimerd && make -f xtimerd.mk
 
 test:
 	@echo $(CUR_PATH)
@@ -143,9 +148,13 @@ install:
 
 	sudo cp -f $(INS_PATH)/readme.txt $(SRV_PATH);
 	sudo cp -f $(INS_PATH)/xportd.config $(SRV_PATH);
+	sudo cp -f $(INS_PATH)/xtimerd.config $(SRV_PATH);
 
 	sudo cp -f $(INS_PATH)/xService.sh $(SRV_PATH);
 	sudo chmod +x $(SRV_PATH)/xService.sh; 
+
+	sudo cp -f $(INS_PATH)/xSchedule.sh $(SRV_PATH);
+	sudo chmod +x $(SRV_PATH)/xSchedule.sh; 
 
 	if ! test -d $(VAR_PATH); then \
 	sudo mkdir $(VAR_PATH); \
@@ -153,7 +162,12 @@ install:
 	sudo cp -f $(INS_PATH)/xportd.pid $(VAR_PATH);
 	sudo chmod 777 $(VAR_PATH)/xportd.pid;
 
+	sudo cp -f $(INS_PATH)/xtimerd.pid $(VAR_PATH);
+	sudo chmod 777 $(VAR_PATH)/xtimerd.pid;
+
 	sudo cp -f $(INS_PATH)/xportd.service $(DAE_PATH);
+
+	sudo cp -f $(INS_PATH)/xtimerd.service $(DAE_PATH);
 
 	cd $(CUR_PATH)/xds && make install -f xds.so.mk
 	cd $(CUR_PATH)/xdk && make install -f xdk.so.mk
@@ -183,6 +197,8 @@ install:
 	cd $(CUR_PATH)/xtcps && make install -f xtcps.mk
 	cd $(CUR_PATH)/xudps && make install -f xudps.mk
 	cd $(CUR_PATH)/xportd && make install -f xportd.mk
+	cd $(CUR_PATH)/xtimers && make install -f xtimers.mk
+	cd $(CUR_PATH)/xtimerd && make install -f xtimerd.mk
 	cd $(CUR_PATH)
 
 uninstall:
@@ -214,6 +230,8 @@ uninstall:
 	cd $(CUR_PATH)/xtcps && make uninstall -f xtcps.mk
 	cd $(CUR_PATH)/xudps && make uninstall -f xudps.mk
 	cd $(CUR_PATH)/xportd && make uninstall -f xportd.mk
+	cd $(CUR_PATH)/xtimers && make uninstall -f xtimers.mk
+	cd $(CUR_PATH)/xtimerd && make uninstall -f xtimerd.mk
 	cd $(CUR_PATH)
 
 .PHONY : test

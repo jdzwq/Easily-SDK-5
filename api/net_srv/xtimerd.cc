@@ -26,15 +26,123 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xtimerd.h"
+#include "srvlog.h"
 
 res_queue_t g_queue = NULL;
 
 LINKPTR g_stack = NULL;
 
+static dword_t _calc_duetime(const tchar_t* sz_time)
+{
+	xdate_t dt, dt_cur;
+	dword_t ms;
+
+	if (is_null(sz_time))
+		return 0;
+
+	parse_datetime(&dt, sz_time);
+
+	get_loc_date(&dt_cur);
+
+	while (compare_datetime(&dt, &dt_cur) < 0)
+	{
+		plus_days(&dt, 1);
+	}
+
+	ms = diff_secs(&dt_cur, &dt) * 1000;
+
+	return ms;
+}
+
+void STDCALL thread_timer_proc(void* param, unsigned char wait)
+{
+	xtimerd_param_t* ptimer = (xtimerd_param_t*)param;
+
+	res_modu_t lib = NULL;
+	PF_TIMER_INVOKE pf_invoke = NULL;
+	int rt;
+	timer_block_t tb = { 0 };
+
+	tchar_t token[PATH_LEN] = { 0 };
+
+	xdate_t dt = { 0 };
+	tchar_t sz_date[DATE_LEN] = { 0 };
+	
+	xdl_thread_init(0);
+
+	get_loc_date(&dt);
+	format_datetime(&dt, sz_date);
+	xsprintf(token, _T("Thread timer attached at %s\r\n"), sz_date);
+	xportm_log_info(token, -1);
+	
+	xszero(token, PATH_LEN);
+	get_param_item(ptimer->param, _T("proc"), token, PATH_LEN);
+	printf_path(tb.path, token);
+
+	lib = load_library(tb.path);
+	if (!lib)
+	{
+		xsprintf(token, _T("Thread timer load %s failed\r\n"), tb.path);
+		xportm_log_info(token, -1);
+
+		xdl_thread_uninit(0);
+		return;
+	}
+
+	pf_invoke = (PF_TIMER_INVOKE)get_address(lib, "timer_invoke");
+	if (!pf_invoke)
+	{
+		free_library(lib);
+
+		xsprintf(token, _T("Thread timer get timer_invoke address failed\r\n"));
+		xportm_log_info(token, -1);
+
+		xdl_thread_uninit(0);
+		return;
+	}
+
+	xszero(tb.path, PATH_LEN);
+	get_param_item(ptimer->param, _T("path"), token, PATH_LEN);
+	printf_path(tb.path, token);
+	
+	get_param_item(ptimer->param, _T("task"), tb.task, RES_LEN);
+
+	rt = (*pf_invoke)(&tb);
+
+	free_library(lib);
+
+	get_loc_date(&dt);
+	format_datetime(&dt, sz_date);
+	if (rt)
+		xsprintf(token, _T("Thread timer detached at %s with invoke error\r\n"), sz_date);
+	else
+		xsprintf(token, _T("Thread timer detached at %s with invoke succeed\r\n"), sz_date);
+	xportm_log_info(token, -1);
+
+	xdl_thread_uninit(0);
+}
+
+void STDCALL process_timer_proc(void* param, unsigned char wait)
+{
+	xtimerd_param_t* ptimer = (xtimerd_param_t*)param;
+
+	proc_info_t pi = { 0 };
+
+	if (create_process(ptimer->module, (tchar_t*)ptimer->param, 0, &pi))
+	{
+		release_process(&pi);
+	}
+	else
+	{
+		xportm_log_info(_T("Process timer create falied\r\n"), -1);
+	}
+}
+
 void xtimerd_start()
 {
 	tchar_t sz_file[PATH_LEN] = { 0 };
 	tchar_t sz_path[PATH_LEN] = { 0 };
+	tchar_t sz_time[DATE_LEN] = { 0 };
 
 	if (g_stack)
 		return ;
@@ -54,6 +162,7 @@ void xtimerd_start()
 		destroy_xml_doc(ptr_cfg);
 
 		xsprintf(sz_path, _T("Read %s error ...\r\n"), sz_file);
+		xportm_log_info(sz_path, -1);
 		return ;
 	}
 
@@ -80,22 +189,23 @@ void xtimerd_start()
 			while (nlk_child)
 			{
 				if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_DUETIME, -1, 1) == 0)
-					ptimer->duetime = (dword_t)xstol(get_dom_node_text_ptr(nlk_child));
+				{
+					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
+					ptimer->duetime = _calc_duetime(sz_time);
+				}
 				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_PERIOD, -1, 1) == 0)
 					ptimer->period = (dword_t)xstol(get_dom_node_text_ptr(nlk_child));
+				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_MODE, -1, 1) == 0)
+					get_dom_node_text(nlk_child, ptimer->mode, INT_LEN);
 				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_PARAM, -1, 1) == 0)
-					get_dom_node_text(nlk_child, ptimer->param, PATH_LEN);
+					get_dom_node_text(nlk_child, ptimer->param, 4096);
 				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_MODULE, -1, 1) == 0)
+				{
 					get_dom_node_text(nlk_child, sz_path, PATH_LEN);
+					printf_path(ptimer->module, sz_path);
+				}
 				
 				nlk_child = get_dom_next_sibling_node(nlk_child);
-			}
-
-			if (!is_null(sz_path))
-			{
-				printf_path(sz_file, sz_path);
-
-				ptimer->module = load_library(sz_file);
 			}
 
 			push_stack_node(g_stack, (void*)ptimer);
@@ -106,19 +216,18 @@ void xtimerd_start()
 
 	destroy_xml_doc(ptr_cfg);
 
+	xsprintf(sz_file, _T("Timer Service Starting ...\r\n"));
+	xportm_log_info(sz_file, -1);
+
 	int n = get_stack_node_count(g_stack);
 	for (int i = 0; i < n; i++)
 	{
 		xtimerd_param_t* ptimer = (xtimerd_param_t*)peek_stack_node(g_stack, i);
 
-		if (ptimer->module)
-		{
-			PF_TIMERFUNC pf = (PF_TIMERFUNC)get_address(ptimer->module, "timer_invoke");
-			if (pf)
-			{
-				ptimer->timer = create_timer(g_queue, ptimer->duetime, ptimer->period, pf, (void*)ptimer->param);
-			}
-		}
+		if (compare_text(ptimer->mode,-1,_T("thread"),-1,1) == 0)
+			ptimer->timer = create_timer(g_queue, ptimer->duetime, ptimer->period, thread_timer_proc, (void*)ptimer);
+		else
+			ptimer->timer = create_timer(g_queue, ptimer->duetime, ptimer->period, process_timer_proc, (void*)ptimer);
 
 		thread_sleep(100);
 	}
@@ -139,11 +248,6 @@ void xtimerd_stop()
 			destroy_timer(g_queue, ptimer->timer);
 		}
 
-		if (ptimer->module)
-		{
-			free_library(ptimer->module);
-		}
-
 		xmem_free(ptimer);
 	}
 
@@ -152,6 +256,9 @@ void xtimerd_stop()
 
 	destroy_stack_table(g_stack);
 	g_stack = NULL;
+
+	xsprintf(sz_file, _T("Timer Service Exited!\r\n"));
+	xportm_log_info(sz_file, -1);
 }
 
 int	xtimerd_state(void)

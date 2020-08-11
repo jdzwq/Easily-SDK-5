@@ -160,7 +160,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
     <ClCompile Include="..\..\api\net_srv\xpnps.cc" />
-    <ClCompile Include="xpnpsMain.cc" />
+    <ClCompile Include="..\..\api\net_srv\xpnpsMain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvdef.h" />

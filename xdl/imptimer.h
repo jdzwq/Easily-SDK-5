@@ -87,6 +87,21 @@ EXP_API bool_t alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dwor
 }
 #endif
 
+typedef struct _timer_block_t{
+	tchar_t path[PATH_LEN];
+	tchar_t task[RES_LEN];
+}timer_block_t;
+
+typedef enum{
+	TIMER_INVOKE_SUCCEED = 0,
+	TIMER_INVOKE_WITHINFO = 1,
+	TIMER_INVOKE_WITHERROR = 2,
+	TIMER_INVOKE_PENDING = 100
+}TIMER_INVOKE_STATE;
+
+typedef int(STDCALL *PF_TIMER_INVOKE)(const timer_block_t* pt);
+
+
 #endif /*XDK_SUPPORT_TIMER*/
 
 #endif /*_IMPTIMER_H*/

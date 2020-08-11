@@ -10,10 +10,10 @@ INC_PATH = ~/Easily-sdk-5/include
 NET_PATH = ~/Easily-sdk-5/api/net_srv
 OUT_PATH = ../sbin
 
-LIBS = -lpthread -L $(API_PATH) -lxds -lxdl
-SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xhttps.cc $(NET_PATH)/xhttpsMain.cc
+LIBS =  -lpthread -L $(API_PATH) -lxds -lxdl
+SRCS = $(NET_PATH)/srvlog.cc $(NET_PATH)/xtimersMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
-MODULE = xhttps
+MODULE = xtimers
 TARGET = $(OUT_PATH)/$(MODULE)
 
 %.o : $(LOC_PATH)/%.cc

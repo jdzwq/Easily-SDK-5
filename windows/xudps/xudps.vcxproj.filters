@@ -21,10 +21,10 @@
     <ClCompile Include="..\..\api\net_srv\xudps.cc">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="xudpsMain.cc">
+    <ClCompile Include="..\..\api\net_srv\srvcrt.cc">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\api\net_srv\srvcrt.cc">
+    <ClCompile Include="..\..\api\net_srv\xudpsMain.cc">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

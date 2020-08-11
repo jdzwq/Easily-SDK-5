@@ -162,7 +162,7 @@
     <ClCompile Include="..\..\api\net_srv\srvcrt.cc" />
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
     <ClCompile Include="..\..\api\net_srv\xhttps.cc" />
-    <ClCompile Include="xhttpsMain.cc" />
+    <ClCompile Include="..\..\api\net_srv\xhttpsMain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvcrt.h" />

@@ -18,27 +18,12 @@
     <ClCompile Include="..\..\api\net_srv\srvlog.cc">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\api\net_srv\srvcrt.cc">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\api\net_srv\xtcps.cc">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="xtcpsMain.cc">
+    <ClCompile Include="..\..\api\net_srv\xtimersMain.cc">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\api\net_srv\srvdef.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\api\net_srv\srvlog.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\api\net_srv\srvcrt.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\api\net_srv\xtcps.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

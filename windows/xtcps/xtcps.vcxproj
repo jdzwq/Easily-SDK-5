@@ -161,7 +161,7 @@
     <ClCompile Include="..\..\api\net_srv\srvcrt.cc" />
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
     <ClCompile Include="..\..\api\net_srv\xtcps.cc" />
-    <ClCompile Include="xtcpsMain.cc" />
+    <ClCompile Include="..\..\api\net_srv\xtcpsMain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvcrt.h" />

@@ -37,18 +37,20 @@ LICENSE.GPL3 for more details.
 #define XTIMERD_STATE_PAUSED	2
 
 #define XTIMERD_ATTR_SCHEDULE	_T("schedule")
+#define XTIMERD_ATTR_MODE		_T("mode")
 #define XTIMERD_ATTR_MODULE		_T("module")
 #define XTIMERD_ATTR_PARAM		_T("param")
 #define XTIMERD_ATTR_DUETIME	_T("duetime")
 #define XTIMERD_ATTR_PERIOD		_T("period")
 
 typedef struct _xtimerd_param_t{
-	res_modu_t module;
 	dword_t duetime;
 	dword_t period;
 	res_timer_t timer;
 	
-	tchar_t param[PATH_LEN];
+	tchar_t mode[INT_LEN];
+	tchar_t module[PATH_LEN];
+	tchar_t param[4096];
 }xtimerd_param_t;
 
 void	xtimerd_start(void);
