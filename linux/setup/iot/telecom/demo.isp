@@ -1,7 +1,0 @@
-[ISP]
-SessionUrl=https://device.api.ct10649.com:8743/iocm/app/sec/v1.1.0/login
-CommandUrl=https://device.api.ct10649.com:8743/iocm/app/cmd/v1.4.0/deviceCommands
-AppId=
-Secret=
-ServiceId=
-Certify=

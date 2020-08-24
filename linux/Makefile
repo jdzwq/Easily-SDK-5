@@ -18,16 +18,8 @@ API_OBJS = $(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libwww_api.so.1.0 \
 	$(API_PATH)/libxdb_api.so.1.0 \
 	$(API_PATH)/libxdb_mysql.so.1.0 \
-	$(API_PATH)/libsms_api.so.1.0 \
-	$(API_PATH)/libsms_aliyun.so.1.0 \
 	$(API_PATH)/liboau_api.so.1.0 \
-	$(API_PATH)/liboss_api.so.1.0 \
-	$(API_PATH)/liboss_aliyun.so.1.0 \
-	$(API_PATH)/libiot_api.so.1.0 \
-	$(API_PATH)/libiot_telecom.so.1.0 \
-	$(API_PATH)/libpacs_api.so.1.0 \
-	$(API_PATH)/libweiisp_api.so.1.0 \
-	$(API_PATH)/libweixin_api.so.1.0
+	$(API_PATH)/libpacs_api.so.1.0
 
 EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
@@ -54,19 +46,11 @@ all:
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
-	cd $(CUR_PATH)/sms_aliyun && make -f sms_aliyun.so.mk
-	cd $(CUR_PATH)/sms_api && make -f sms_api.so.mk
 	cd $(CUR_PATH)/oau_api && make -f oau_api.so.mk
-	cd $(CUR_PATH)/oss_aliyun && make -f oss_aliyun.so.mk
-	cd $(CUR_PATH)/oss_api && make -f oss_api.so.mk
-	cd $(CUR_PATH)/iot_telecom && make -f iot_telecom.so.mk
-	cd $(CUR_PATH)/iot_api && make -f iot_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make -f mqtt_api.so.mk
 	cd $(CUR_PATH)/coap_api && make -f coap_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make -f tftp_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make -f pacs_api.so.mk
-	cd $(CUR_PATH)/weiisp_api && make -f weiisp_api.so.mk
-	cd $(CUR_PATH)/weixin_api && make -f weixin_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make -f xhttps.mk
@@ -111,17 +95,8 @@ install:
 	if ! test -d $(SRV_PATH)/xdb; then \
 	sudo mkdir $(SRV_PATH)/xdb; \
 	fi
-	if ! test -d $(SRV_PATH)/sms; then \
-	sudo mkdir $(SRV_PATH)/sms; \
-	fi
-	if ! test -d $(SRV_PATH)/iot; then \
-	sudo mkdir $(SRV_PATH)/iot; \
-	fi
 	if ! test -d $(SRV_PATH)/oau; then \
 	sudo mkdir $(SRV_PATH)/oau; \
-	fi
-	if ! test -d $(SRV_PATH)/oss; then \
-	sudo mkdir $(SRV_PATH)/oss; \
 	fi
 	if ! test -d $(SRV_PATH)/coap; then \
 	sudo mkdir $(SRV_PATH)/coap; \
@@ -134,12 +109,6 @@ install:
 	fi
 	if ! test -d $(SRV_PATH)/pacs; then \
 	sudo mkdir $(SRV_PATH)/pacs; \
-	fi
-	if ! test -d $(SRV_PATH)/weiisp; then \
-	sudo mkdir $(SRV_PATH)/weiisp; \
-	fi
-	if ! test -d $(SRV_PATH)/weixin; then \
-	sudo mkdir $(SRV_PATH)/weixin; \
 	fi
 
 	sudo cp -rf $(INS_PATH)/cfg $(SRV_PATH);
@@ -178,19 +147,11 @@ install:
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
-	cd $(CUR_PATH)/sms_aliyun && make install -f sms_aliyun.so.mk
-	cd $(CUR_PATH)/sms_api && make install -f sms_api.so.mk
-	cd $(CUR_PATH)/iot_telecom && make install -f iot_telecom.so.mk
-	cd $(CUR_PATH)/iot_api && make install -f iot_api.so.mk
 	cd $(CUR_PATH)/oau_api && make install -f oau_api.so.mk
-	cd $(CUR_PATH)/oss_aliyun && make install -f oss_aliyun.so.mk
-	cd $(CUR_PATH)/oss_api && make install -f oss_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make install -f tftp_api.so.mk
 	cd $(CUR_PATH)/coap_api && make install -f coap_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make install -f mqtt_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make install -f pacs_api.so.mk
-	cd $(CUR_PATH)/weiisp_api && make install -f weiisp_api.so.mk
-	cd $(CUR_PATH)/weixin_api && make install -f weixin_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make install -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
@@ -211,19 +172,11 @@ uninstall:
 	cd $(CUR_PATH)/www_api && make uninstall -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_mysql && make uninstall -f xdb_mysql.so.mk
 	cd $(CUR_PATH)/xdb_api && make uninstall -f xdb_api.so.mk
-	cd $(CUR_PATH)/sms_aliyun && make uninstall -f sms_aliyun.so.mk
-	cd $(CUR_PATH)/sms_api && make uninstall -f sms_api.so.mk
-	cd $(CUR_PATH)/iot_telecom && make uninstall -f iot_telecom.so.mk
-	cd $(CUR_PATH)/iot_api && make uninstall -f iot_api.so.mk
 	cd $(CUR_PATH)/oau_api && make uninstall -f oau_api.so.mk
-	cd $(CUR_PATH)/oss_aliyun && make uninstall -f oss_aliyun.so.mk
-	cd $(CUR_PATH)/oss_api && make uninstall -f oss_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make uninstall -f tftp_api.so.mk
 	cd $(CUR_PATH)/coap_api && make uninstall -f coap_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make uninstall -f mqtt_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make uninstall -f pacs_api.so.mk
-	cd $(CUR_PATH)/weiisp_api && make uninstall -f weiisp_api.so.mk
-	cd $(CUR_PATH)/weixin_api && make uninstall -f weixin_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make uninstall -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make uninstall -f xhttps.mk

@@ -1,7 +1,0 @@
-; sms_api.def : Declares the release module parameters for the DLL.
-
-LIBRARY      "sms_api"
-DESCRIPTION  'sms_api Windows Dynamic Link Library'
-EXPORTS
-    ; Explicit exports can go here
-	https_invoke

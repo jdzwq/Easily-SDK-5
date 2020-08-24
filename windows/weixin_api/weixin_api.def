@@ -1,7 +1,0 @@
-; weixin_api.def : Declares the release module parameters for the DLL.
-
-LIBRARY      "weixin_api"
-DESCRIPTION  'weixin_api Windows Dynamic Link Library'
-EXPORTS
-    ; Explicit exports can go here
-	https_invoke
