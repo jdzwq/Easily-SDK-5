@@ -82,8 +82,8 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	rad_hdr_t hdr = { 0 };
 
@@ -104,13 +104,13 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 	}
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_publish"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_publish"), _T("create kv entity falied"));
@@ -126,7 +126,7 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	hexkv_read(hkv, key, val);
+	tkkv_read(hkv, key, val);
 
 	get_utc_date(&dt);
 
@@ -136,15 +136,15 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	radobj_write(val, &hdr, pd->msg_buf, pd->msg_len);
 
-	hexkv_attach(hkv, key, val);
+	tkkv_attach(hkv, key, val);
 	val = NULL;
 
 	variant_to_null(&key);
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	xscpy(pd->code, _T("_invoke_publish"));
@@ -163,10 +163,10 @@ ONERROR:
 		object_free(val);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	return;
 }
@@ -176,8 +176,8 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	MQTT_PACKET_CTRL mc = { 0 };
 
@@ -201,16 +201,16 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	}
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_subcribe"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_subcribe"), _T("create hexdb kv entity falied"));
+		raise_user_error(_T("_invoke_subcribe"), _T("create tkdb kv entity falied"));
 	}
 
 	if (is_null(pid))
@@ -223,7 +223,7 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	hexkv_read(hkv, key, val);
+	tkkv_read(hkv, key, val);
 
 	while ((dw = radobj_read(val, &hdr, NULL, MAX_LONG)))
 	{
@@ -258,10 +258,10 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	object_free(val);
 	val = NULL;
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	xscpy(pd->code, _T("_invoke_subcribe"));
@@ -283,10 +283,10 @@ ONERROR:
 		object_free(val);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	return;
 }
@@ -295,8 +295,8 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
 	variant_t key = { 0 };
 
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -319,29 +319,29 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_unsubcribe"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_unsubcribe"), _T("create hexdb kv entity falied"));
+		raise_user_error(_T("_invoke_unsubcribe"), _T("create tkdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
 	variant_from_string(&key, pid, -1);
 
-	hexkv_delete(hkv, key);
+	tkkv_delete(hkv, key);
 
 	variant_to_null(&key);
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	xscpy(pd->code, _T("_invoke_unsubcribe"));
@@ -357,10 +357,10 @@ ONERROR:
 	variant_to_null(&key);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	return;
 }

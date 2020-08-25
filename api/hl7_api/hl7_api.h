@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #define _HL7API_H
 
 #include <xdl.h>
-#include <hdfs.h>
+#include <tkb.h>
 #include <mded.h>
 
 #ifdef	__cplusplus

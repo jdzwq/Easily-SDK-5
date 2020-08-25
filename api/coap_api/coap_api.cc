@@ -74,8 +74,8 @@ static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_
 
 static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 {
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -104,13 +104,13 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_get"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_get"), _T("create kv entity falied"));
@@ -126,12 +126,12 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	hexkv_read(hkv, key, val);
+	tkkv_read(hkv, key, val);
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	len = radobj_read(val, &hdr, NULL, MAX_LONG);
@@ -169,10 +169,10 @@ ONERROR:
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	if (buf)
 		xmem_free(buf);
@@ -187,8 +187,8 @@ ONERROR:
 
 static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 {
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -225,13 +225,13 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_get"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_get"), _T("create kv entity falied"));
@@ -254,15 +254,15 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	radobj_write(val, &hdr, payload, dw);
 
-	hexkv_attach(hkv, key, val);
+	tkkv_attach(hkv, key, val);
 	val = NULL;
 
 	variant_to_null(&key);
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_200_CODE);
@@ -281,10 +281,10 @@ ONERROR:
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	variant_to_null(&key);
 
@@ -296,8 +296,8 @@ ONERROR:
 
 static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 {
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -328,13 +328,13 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_put"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_put"), _T("create kv entity falied"));
@@ -368,7 +368,7 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	hexkv_read(hkv, key, val);
+	tkkv_read(hkv, key, val);
 
 	hdr.mid = xcoap_msgid(pd->coap);
 	xmem_copy((void*)hdr.ver, (void*)MSGVER_SENSOR, MSGVER_SIZE);
@@ -377,15 +377,15 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	radobj_write(val, &hdr, payload, total);
 
-	hexkv_attach(hkv, key, val);
+	tkkv_attach(hkv, key, val);
 	val = NULL;
 
 	variant_to_null(&key);
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	xscpy(pd->code, _T("_invoke_put"));
@@ -402,10 +402,10 @@ ONERROR:
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	variant_to_null(&key);
 
@@ -417,8 +417,8 @@ ONERROR:
 
 static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 {
-	hex_obj_t hdb = NULL;
-	hex_obj_t hkv = NULL;
+	tk_db_t hdb = NULL;
+	tk_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN] = { 0 };
 	tchar_t cid[UUID_LEN] = { 0 };
@@ -443,13 +443,13 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = hexdb_create(path, did);
+	hdb = tkdb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_delete"), _T("open kv database failed"));
 	}
 
-	hkv = hexkv_create(hdb);
+	hkv = tkkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_delete"), _T("create kv entity falied"));
@@ -463,14 +463,14 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 	key.vv = VV_STRING;
 	variant_from_string(&key, pid, -1);
 
-	hexkv_delete(hkv, key);
+	tkkv_delete(hkv, key);
 
 	variant_to_null(&key);
 
-	hexkv_destroy(hkv);
+	tkkv_destroy(hkv);
 	hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_200_CODE);
@@ -489,10 +489,10 @@ ONERROR:
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		hexkv_destroy(hkv);
+		tkkv_destroy(hkv);
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	variant_to_null(&key);
 

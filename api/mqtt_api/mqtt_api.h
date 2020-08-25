@@ -26,7 +26,7 @@ LICENSE.GPL3 for more details.
 #define _MQTTAPI_H
 
 #include <xdl.h>
-#include <hdfs.h>
+#include <tkb.h>
 
 
 #ifdef	__cplusplus

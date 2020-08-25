@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 
 #include <xdl.h>
 #include <rad.h>
-#include <hdfs.h>
+#include <tkb.h>
 
 #ifdef	__cplusplus
 extern "C" {

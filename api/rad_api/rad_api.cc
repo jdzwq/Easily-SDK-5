@@ -29,7 +29,7 @@ typedef struct _radnet_block_t{
 	dword_t request;
 	dword_t response;
 
-	hex_obj_t hkv;
+	tk_kv_t hkv;
 
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN];
@@ -82,7 +82,7 @@ void _invoke_insert(const slots_block_t* pb, radnet_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	hexkv_attach(pd->hkv, var, val);
+	tkkv_attach(pd->hkv, var, val);
 	val = NULL;
 
 	variant_to_null(&var);
@@ -160,7 +160,7 @@ void _invoke_update(const slots_block_t* pb, radnet_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	if (!hexkv_update(pd->hkv, var, val))
+	if (!tkkv_update(pd->hkv, var, val))
 	{
 		raise_user_error(_T("_invoke_update"), _T("update failed"));
 	}
@@ -234,7 +234,7 @@ void _invoke_delete(const slots_block_t* pb, radnet_block_t* pd)
 	stream_free(stm);
 	stm = NULL;
 
-	hexkv_delete(pd->hkv, var);
+	tkkv_delete(pd->hkv, var);
 
 	variant_to_null(&var);
 
@@ -299,7 +299,7 @@ void _invoke_trunca(const slots_block_t* pb, radnet_block_t* pd)
 	xmem_free(buf);
 	buf = NULL;
 
-	hexkv_write(pd->hkv, var, NULL);
+	tkkv_write(pd->hkv, var, NULL);
 
 	variant_to_null(&var);
 
@@ -366,7 +366,7 @@ void _invoke_select(const slots_block_t* pb, radnet_block_t* pd)
 
 	val = object_alloc(DEF_MBS);
 
-	hexkv_read(pd->hkv, var, val);
+	tkkv_read(pd->hkv, var, val);
 
 	dw = variant_encode(&var, NULL, MAX_LONG) + object_encode(val, NULL, MAX_LONG);
 	buf = (byte_t*)xmem_alloc(dw);
@@ -436,7 +436,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	tchar_t token[PATH_LEN] = { 0 };
 
-	hex_obj_t hdb = NULL;
+	tk_db_t hdb = NULL;
 
 	radnet_pdv_head_t pdv = { 0 };
 
@@ -475,7 +475,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 		raise_user_error(NULL, NULL);
 	}
 
-	hdb = hexdb_create(pd->local, pd->radnet->dbname);
+	hdb = tkdb_create(pd->local, pd->radnet->dbname);
 	if (!hdb)
 	{
 		radnet_abort(pd->radnet, RADNET_ERROR_OPEN);
@@ -483,7 +483,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 		raise_user_error(_T("-1"), _T("open database failed"));
 	}
 
-	pd->hkv = hexkv_create(hdb);
+	pd->hkv = tkkv_create(hdb);
 
 	while (radnet_status(pd->radnet) != _RADNET_STATUS_RELEASE)
 	{
@@ -517,12 +517,12 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 		}
 	}
 
-	hexkv_flush(pd->hkv);
+	tkkv_flush(pd->hkv);
 
-	hexkv_destroy(pd->hkv);
+	tkkv_destroy(pd->hkv);
 	pd->hkv = NULL;
 
-	hexdb_destroy(hdb);
+	tkdb_destroy(hdb);
 	hdb = NULL;
 
 	radnet_close(pd->radnet);
@@ -558,13 +558,13 @@ ONERROR:
 			radnet_close(pd->radnet);
 
 		if (pd->hkv)
-			hexkv_destroy(pd->hkv);
+			tkkv_destroy(pd->hkv);
 
 		xmem_free(pd);
 	}
 
 	if (hdb)
-		hexdb_destroy(hdb);
+		tkdb_destroy(hdb);
 
 	return SLOTS_INVOKE_WITHINFO;
 }
