@@ -95,6 +95,33 @@ void test_money()
 	format_money_chs(10.01, 0, token, NUM_LEN);
 }
 
+void test_conv()
+{
+	schar_t* mbs_token = "这是中文";
+	byte_t utf_buf[100] = {0};
+	schar_t mbs_buf[100] = {0};
+
+	mbs_byte_to_utf8(mbs_token, utf_buf);
+	utf8_byte_to_mbs(utf_buf, mbs_buf);
+
+	//dword_t n = mbs_to_utf8(mbs_token, -1, utf_buf, 100);
+	//utf8_to_mbs(utf_buf, n, mbs_buf, 100);
+
+	link_t_ptr json = create_json_doc();
+	link_t_ptr nlk = insert_json_item(json, LINK_LAST);
+	set_json_item_name(nlk, _T("demo"));
+	set_json_item_value(nlk, mbs_token);
+
+	dword_t n = format_json_doc_to_bytes(json, utf_buf, 100, _UTF8);
+
+	destroy_json_doc(json);
+
+	json = create_json_doc();
+	parse_json_doc_from_bytes(json, utf_buf, n, _UTF8);
+	format_json_doc_to_bytes(json, (byte_t*)mbs_buf, 100, _UTF8);
+	destroy_json_doc(json);
+}
+
 int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
@@ -103,7 +130,7 @@ int main(int argc, char* argv[])
 
 	//test_utc();
 
-	test_printf();
+	//test_printf();
 
 	//test_path2();
 
@@ -117,6 +144,7 @@ int main(int argc, char* argv[])
 
 	//test_object();
 
+	test_conv();
 
 	xdl_process_uninit();
 

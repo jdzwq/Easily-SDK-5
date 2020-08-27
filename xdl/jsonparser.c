@@ -298,7 +298,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 				string_empty(vs_name);
 				break;
 			case NEXT:
-				string_ins_chars(vs_name, -1, &ma.cur[0], 1);
+				string_cat(vs_name, ma.cur, -1);
 				break;
 			}
 		}else if(ma.ms == JSON_NAME_END)
@@ -334,7 +334,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 				string_empty(vs_val);
 				break;
 			case NEXT:
-				string_ins_chars(vs_val, -1, &ma.cur[0], 1);
+				string_cat(vs_val, ma.cur, -1);
 				break;
 			}
 		}else if(ma.ms == JSON_VALUE_END)
