@@ -225,13 +225,14 @@ int geohashDecodeToLongLatWGS84(const GeoHashBits hash, double *xy) {
 }
 
 static void geohash_move_x(GeoHashBits *hash, int8_t d) {
+	uint64_t x, y, zz;
+
 	if (d == 0)
 		return;
 
-	uint64_t x = hash->bits & 0xaaaaaaaaaaaaaaaaULL;
-	uint64_t y = hash->bits & 0x5555555555555555ULL;
-
-	uint64_t zz = 0x5555555555555555ULL >> (64 - hash->step * 2);
+	x = hash->bits & 0xaaaaaaaaaaaaaaaaULL;
+	y = hash->bits & 0x5555555555555555ULL;
+	zz = 0x5555555555555555ULL >> (64 - hash->step * 2);
 
 	if (d > 0) {
 		x = x + (zz + 1);
@@ -246,13 +247,15 @@ static void geohash_move_x(GeoHashBits *hash, int8_t d) {
 }
 
 static void geohash_move_y(GeoHashBits *hash, int8_t d) {
+	uint64_t x, y, zz;
+
 	if (d == 0)
 		return;
 
-	uint64_t x = hash->bits & 0xaaaaaaaaaaaaaaaaULL;
-	uint64_t y = hash->bits & 0x5555555555555555ULL;
+	x = hash->bits & 0xaaaaaaaaaaaaaaaaULL;
+	y = hash->bits & 0x5555555555555555ULL;
+	zz = 0xaaaaaaaaaaaaaaaaULL >> (64 - hash->step * 2);
 
-	uint64_t zz = 0xaaaaaaaaaaaaaaaaULL >> (64 - hash->step * 2);
 	if (d > 0) {
 		y = y + (zz + 1);
 	}

@@ -111,7 +111,7 @@ LOC_API bool_t	_mak_utc_date(xdate_t* pxd);
 LOC_API dword_t	_get_times(void);
 LOC_API clock_t _get_ticks(void);
 LOC_API stamp_t _get_timestamp(void);
-LOC_API void	_utc_date_from_times(xdate_t* pxd, dword_t ms);
+LOC_API void	_utc_date_from_times(xdate_t* pxd, dword_t s);
 LOC_API void	_utc_date_from_ticks(xdate_t* pxd, clock_t ts);
 LOC_API void	_utc_date_from_timestamp(xdate_t* pxd, stamp_t ts);
 #endif

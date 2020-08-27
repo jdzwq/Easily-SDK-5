@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdl_file_test", "..\test\xdl_file_test\xdl_file_test.vcxproj", "{D4390FE0-B063-4CF7-A025-374B03FC0AFB}"
 EndProject
@@ -52,8 +52,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdc_frame_test", "..\test\xdc_frame_test\xdc_frame_test.vcxproj", "{EE57987C-2288-4EE7-B25D-E1B9A97A0D4C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdu", "..\xdu\xdu.vcxproj", "{63B69F1F-D8F7-4814-AEB6-DAB9E63615DE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdu_lib_test", "..\xdu_lib_test\xdu_lib_test.vcxproj", "{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -225,12 +223,6 @@ Global
 		{63B69F1F-D8F7-4814-AEB6-DAB9E63615DE}.Release|Win32.Build.0 = Release|Win32
 		{63B69F1F-D8F7-4814-AEB6-DAB9E63615DE}.Release|x64.ActiveCfg = Release|x64
 		{63B69F1F-D8F7-4814-AEB6-DAB9E63615DE}.Release|x64.Build.0 = Release|x64
-		{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}.Debug|Win32.ActiveCfg = Debug|Win32
-		{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}.Debug|Win32.Build.0 = Debug|Win32
-		{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}.Debug|x64.ActiveCfg = Debug|Win32
-		{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}.Release|Win32.ActiveCfg = Release|Win32
-		{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}.Release|Win32.Build.0 = Release|Win32
-		{AFCD0C89-C53B-4F95-9F0C-E02D45D5AE24}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -138,7 +138,7 @@ dword_t _get_times()
 	time1 = mktime(&t);
 	time2 = time(NULL);
 
-	return (dword_t)(difftime(time1, time2) * 1000.0);
+	return (lword_t)(difftime(time1, time2));
 }
 
 clock_t _get_ticks()
@@ -168,7 +168,7 @@ stamp_t _get_timestamp()
     return (stamp_t)(t.tv_sec * 1000 + t.tv_usec / 1000);
 }
 
-void _utc_date_from_times(xdate_t* pxd, dword_t ms)
+void _utc_date_from_times(xdate_t* pxd, dword_t s)
 {
     struct tm t = { 0 };
 	time_t time1;
@@ -181,7 +181,7 @@ void _utc_date_from_times(xdate_t* pxd, dword_t ms)
 	t.tm_min = 0;
 	t.tm_sec = 0;
 
-	time1 = mktime(&t) + ms / 1000;
+	time1 = mktime(&t) + s;
 
 	p = gmtime(&time1);
 

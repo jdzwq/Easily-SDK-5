@@ -74,7 +74,7 @@
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);..\lib;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\x64;</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>D:\Easily-app-5\windows\sbin64\api\</OutDir>

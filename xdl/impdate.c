@@ -90,7 +90,7 @@ dword_t get_times()
 	return (*pif->pf_get_times)();
 }
 
-dword_t get_ticks()
+lword_t get_ticks()
 {
 	if_date_t* pif;
 
@@ -98,7 +98,7 @@ dword_t get_ticks()
 
 	XDL_ASSERT(pif != NULL);
 
-	return (dword_t)(*pif->pf_get_ticks)();
+	return (lword_t)(*pif->pf_get_ticks)();
 }
 
 lword_t get_timestamp()
@@ -112,7 +112,7 @@ lword_t get_timestamp()
 	return (lword_t)(*pif->pf_get_timestamp)();
 }
 
-void utc_date_from_times(xdate_t* pxd, dword_t ts)
+void utc_date_from_times(xdate_t* pxd, dword_t s)
 {
 	if_date_t* pif;
 
@@ -120,10 +120,10 @@ void utc_date_from_times(xdate_t* pxd, dword_t ts)
 
 	XDL_ASSERT(pif != NULL);
 
-	(*pif->pf_utc_date_from_times)(pxd, ts);
+	(*pif->pf_utc_date_from_times)(pxd, s);
 }
 
-void utc_date_from_ticks(xdate_t* pxd, dword_t ts)
+void utc_date_from_ticks(xdate_t* pxd, lword_t ts)
 {
 	if_date_t* pif;
 

@@ -35,6 +35,20 @@ void test_utc()
 	int rt = compare_datetime(&dt, &dt2);
 }
 
+void test_stamp()
+{
+	xdate_t dt;
+	tchar_t sz_date[UTC_LEN + 1] = { 0 };
+	dword_t ms;
+
+	ms = get_times();
+
+	ms += 24 * 60 * 60;
+
+	utc_date_from_times(&dt, ms);
+	format_utctime(&dt, sz_date);
+}
+
 void test_func(int a, ...)
 {
 	va_list args;
@@ -55,13 +69,13 @@ void test_printf()
 
 	tchar_t buf[20] = {0};
 
-	sprintf(buf,  _T("%c"),  _T('W'));
+	//sprintf(buf,  "%c",  'W');
 
 	//test_func(10, _T('0'), 10);
 
 	xsprintf(buf, _T("%s%"),  _T("hello"));
 
-	printf(buf);
+	//printf(buf);
 }
 
 void test_path()
@@ -110,7 +124,7 @@ void test_conv()
 	link_t_ptr json = create_json_doc();
 	link_t_ptr nlk = insert_json_item(json, LINK_LAST);
 	set_json_item_name(nlk, _T("demo"));
-	set_json_item_value(nlk, mbs_token);
+	//set_json_item_value(nlk, mbs_token);
 
 	dword_t n = format_json_doc_to_bytes(json, utf_buf, 100, _UTF8);
 
@@ -130,6 +144,8 @@ int main(int argc, char* argv[])
 
 	//test_utc();
 
+	test_stamp();
+
 	//test_printf();
 
 	//test_path2();
@@ -144,7 +160,7 @@ int main(int argc, char* argv[])
 
 	//test_object();
 
-	test_conv();
+	//test_conv();
 
 	xdl_process_uninit();
 

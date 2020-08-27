@@ -125,13 +125,13 @@ dword_t _get_times()
 	st.wMilliseconds = 0;
 
 	SystemTimeToFileTime(&st, &ft);
-	dif1 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	dif1 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime) / 10000;
 	
 	GetSystemTime(&st);
 	SystemTimeToFileTime(&st, &ft);
-	dif2 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	dif2 = MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime) / 10000;
 
-	dif = (double)(dif2 - dif1) / 10000.0;
+	dif = (double)(dif2 - dif1) / 1000.0;
 
 	return (dword_t)(dif);
 }
@@ -177,7 +177,7 @@ stamp_t _get_timestamp()
 	return (stamp_t)(MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime) / 10000);
 }
 
-void _utc_date_from_times(xdate_t* pxd, dword_t ms)
+void _utc_date_from_times(xdate_t* pxd, dword_t s)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
@@ -193,11 +193,13 @@ void _utc_date_from_times(xdate_t* pxd, dword_t ms)
 
 	SystemTimeToFileTime(&st, &ft);
 
-	ss = (ms * 10000) + MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
+	ss = (lword_t)s * 10000000;
+	ss += MAKELWORD(ft.dwLowDateTime, ft.dwHighDateTime);
 
 	ft.dwLowDateTime = GETLDWORD(ss);
 	ft.dwHighDateTime = GETHDWORD(ss);
 
+	ZeroMemory((void*)&st, sizeof(SYSTEMTIME));
 	FileTimeToSystemTime(&ft, &st);
 
 	pxd->year = st.wYear;

@@ -78,7 +78,7 @@ EXP_API dword_t get_times(void);
 @FUNCTION get_ticks: get system ticks elapse since 1970-01-01 00:00:00.
 @RETURN lword_t: if succeeds retur ticks, fails return zero.
 */
-EXP_API dword_t get_ticks(void);
+EXP_API lword_t get_ticks(void);
 
 /*
 @FUNCTION get_timestamp: get system timestamp.
@@ -89,18 +89,18 @@ EXP_API lword_t get_timestamp(void);
 /*
 @FUNCTION utc_date_from_times: convert time in seconds to UTC datetime.
 @OUTPUT xdate_t* pxd: datetime struct.
-@INPUT dword_t ts: time second value.
+@INPUT dword_t s: time second value.
 @RETURN void: none.
 */
-EXP_API void utc_date_from_times(xdate_t* pxd, dword_t ts);
+EXP_API void utc_date_from_times(xdate_t* pxd, dword_t s);
 
 /*
 @FUNCTION utc_date_from_ticks: convert ticks to UTC datetime.
 @OUTPUT xdate_t* pxd: datetime struct.
-@INPUT dword_t ts: tick value.
+@INPUT lword_t ts: tick value.
 @RETURN void: none.
 */
-EXP_API void utc_date_from_ticks(xdate_t* pxd, dword_t ts);
+EXP_API void utc_date_from_ticks(xdate_t* pxd, lword_t ts);
 
 /*
 @FUNCTION utc_date_from_ticks: convert timestamp to UTC datetime.
