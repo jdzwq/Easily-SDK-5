@@ -123,6 +123,9 @@
     <ClCompile Include="..\..\xds\xdsutil.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xds\strutil.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xds\oemaes.h">
@@ -237,6 +240,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xds\xdsutil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\strutil.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

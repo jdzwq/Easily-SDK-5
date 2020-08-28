@@ -37,6 +37,72 @@ LICENSE.GPL3 for more details.
 
 #define VARIANT_HDR_SIZE	8
 
+/*********************************************************************************************************************************************/
+
+static int _parse_string_array_count(const tchar_t* tokens)
+{
+	int count = 0;
+	int len;
+
+	len = xslen(tokens);
+	while (len)
+	{
+		count++;
+		tokens += (len + 1);
+		len = xslen(tokens);
+	}
+
+	return count;
+}
+
+static int _parse_string_array(const tchar_t* tokens, tchar_t** sa, int n)
+{
+	int len, i = 0;
+
+	len = xslen(tokens);
+	while (len && i < n)
+	{
+		sa[i++] = xsclone(tokens);
+		tokens += (len + 1);
+		len = xslen(tokens);
+	}
+
+	return i;
+}
+
+static int _format_string_array(const tchar_t** sa, int n, tchar_t* tokens, int max)
+{
+	int len, i, total = 0;
+
+	for (i = 0; i < n; i++)
+	{
+		len = xslen(sa[i]);
+		if (total + len + 1 > max)
+			break;
+
+		if (tokens)
+		{
+			xsncpy(tokens, sa[i], len);
+			tokens[len] = _T('\0');
+			tokens += (len + 1);
+		}
+		total += (len + 1);
+	}
+
+	if (total + 1 > max)
+		return total;
+
+	if (tokens)
+	{
+		tokens[0] = _T('\0');
+	}
+	total++;
+
+	return total;
+}
+
+/************************************************************************************************************************************************/
+
 variant_t* variant_alloc(int encode)
 {
 	variant_t* pnew;
@@ -153,7 +219,7 @@ void variant_copy(variant_t* pv1, const variant_t* pv2)
 		pv1->byte_ptr = (byte_t*)xmem_clone((void*)pv2->byte_ptr, pv2->size * sizeof(byte_t));
 		break;
 	case VV_SHORT_ARRAY:
-		pv1->short_ptr = (int*)xmem_clone((void*)pv2->short_ptr, pv2->size * sizeof(short));
+		pv1->short_ptr = (short*)xmem_clone((void*)pv2->short_ptr, pv2->size * sizeof(short));
 		break;
 	case VV_INT_ARRAY:
 		pv1->int_ptr = (int*)xmem_clone((void*)pv2->int_ptr, pv2->size * sizeof(int));
@@ -608,7 +674,7 @@ int variant_to_string(variant_t* pv, tchar_t* buf, int max)
 		}
 		return len;
 	case VV_STRING_ARRAY:
-		len = format_string_array(pv->string_ptr, pv->size, buf, max);
+		len = _format_string_array(pv->string_ptr, pv->size, buf, max);
 		return len;
 	}
 
@@ -709,7 +775,7 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		break;
 	case VV_SHORT_ARRAY:
 		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->short_ptr = (int*)xmem_alloc(pv->size * sizeof(short));
+		pv->short_ptr = (short*)xmem_alloc(pv->size * sizeof(short));
 		i = 0;
 		token = buf;
 		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
@@ -758,9 +824,9 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		}
 		break;
 	case VV_STRING_ARRAY:
-		pv->size = parse_string_array_count(buf);
+		pv->size = _parse_string_array_count(buf);
 		pv->string_ptr = (tchar_t**)xmem_alloc(pv->size * sizeof(tchar_t*));
-		parse_string_array(buf, pv->string_ptr, pv->size);
+		_parse_string_array(buf, pv->string_ptr, pv->size);
 		break;
 	}
 }

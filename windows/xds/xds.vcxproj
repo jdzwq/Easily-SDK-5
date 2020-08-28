@@ -201,6 +201,7 @@
     <ClCompile Include="..\..\xds\oemsha4.c" />
     <ClCompile Include="..\..\xds\oemsip.c" />
     <ClCompile Include="..\..\xds\oemzip.c" />
+    <ClCompile Include="..\..\xds\strutil.c" />
     <ClCompile Include="..\..\xds\xdsfont.c" />
     <ClCompile Include="..\..\xds\xdsstr.c" />
     <ClCompile Include="..\..\xds\xdsutil.c" />
@@ -239,6 +240,7 @@
     <ClInclude Include="..\..\xds\oemsha4.h" />
     <ClInclude Include="..\..\xds\oemsip.h" />
     <ClInclude Include="..\..\xds\oemzip.h" />
+    <ClInclude Include="..\..\xds\strutil.h" />
     <ClInclude Include="..\..\xds\xdsattr.h" />
     <ClInclude Include="..\..\xds\xdsdef.h" />
     <ClInclude Include="..\..\xds\xdsfont.h" />

@@ -1,4 +1,4 @@
-// xdl_oauth_test.cpp : ∂®“Âøÿ÷∆Ã®”¶”√≥Ã–Úµƒ»Îø⁄µ„°£
+Ôªø// xdl_oauth_test.cpp : ÂÆö‰πâÊéßÂà∂Âè∞Â∫îÁî®Á®ãÂ∫èÁöÑÂÖ•Âè£ÁÇπ„ÄÇ
 //
 
 #include "stdafx.h"
@@ -9,10 +9,6 @@
 #define AS_URL_AUTH_REQUEST		_T("http://172.16.190.190:8889/oau/auth_request?")
 #define AS_URL_AUTH_ACCESS		_T("http://172.16.190.190:8889/oau/auth_access?")
 #define AS_URL_AUTH_REFRESH		_T("http://127.0.0.1:8889/oau/auth_refresh?")
-
-#define AS_URL_AUTH_WEIAPP		_T("http://127.0.0.1:8889/oau/weiapp/fcv.isp")
-//#define AS_URL_AUTH_WEIAPP		_T("https://118.178.180.81/oau/weiapp/fcv.isp")
-//#define AS_URL_AUTH_WEIAPP		_T("https://www.biofolia.cn:8888/oau/weiapp/fcv.isp")
 
 void _test_implicit()
 {
@@ -141,175 +137,6 @@ void _test_refresh()
 	xhttp_close(xh);
 }
 
-//https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
-//https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
-void test_weixin_session()
-{
-	XHANDLE xh = xhttp_client(HTTP_METHOD_GET, _T("https://api.weixin.qq.com/sns/jscode2session"));
-
-	xhttp_set_request_default_header(xh);
-	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
-
-	xhttp_set_url_query_entity(xh, _T("appid"), -1, _T("APPID"), -1);
-	xhttp_set_url_query_entity(xh, _T("secret"), -1, _T("SECRET"), -1);
-	//xhttp_set_url_query_entity(xh, _T("code"), -1, _T("CODE"), -1);
-	xhttp_set_url_query_entity(xh, _T("js_code"), -1, _T("CODE"), -1);
-	xhttp_set_url_query_entity(xh, _T("grant_type"), -1, _T("authorization_code"), -1);
-
-	xhttp_send_request(xh);
-
-	byte_t** pp = bytes_alloc();
-	dword_t dw = 0;
-
-	xhttp_recv_full(xh, pp, &dw);
-
-	link_t_ptr ptr_json = create_json_doc();
-
-	parse_json_doc_from_bytes(ptr_json, *pp, dw, _UTF8);
-
-	link_t_ptr nlk = get_json_first_child_item(ptr_json);
-	while (nlk)
-	{
-		wprintf(_T("%s : %s\n"), get_json_item_name_ptr(nlk), get_json_item_value_ptr(nlk));
-
-		nlk = get_json_next_sibling_item(nlk);
-	}
-
-	destroy_json_doc(ptr_json);
-
-	bytes_free(pp);
-
-	xhttp_close(xh);
-}
-
-void test_auth_weiapp_session()
-{
-	XHANDLE xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_WEIAPP);
-
-	xhttp_set_request_default_header(xh);
-	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
-
-	tchar_t sz_auth[META_LEN + 1] = { 0 };
-	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
-
-	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
-	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
-
-	xhttp_set_url_query_entity(xh, _T("action"), -1, _T("session"), -1);
-	xhttp_set_url_query_entity(xh, _T("jscode"), -1, _T("CODE"), -1);
-
-	xhttp_send_request(xh);
-
-	byte_t** pp = bytes_alloc();
-	dword_t dw = 0;
-
-	xhttp_recv_full(xh, pp, &dw);
-
-	link_t_ptr ptr_json = create_json_doc();
-
-	parse_json_doc_from_bytes(ptr_json, *pp, dw, _UTF8);
-
-	link_t_ptr nlk = get_json_first_child_item(ptr_json);
-	while (nlk)
-	{
-		wprintf(_T("%s : %s\n"), get_json_item_name_ptr(nlk), get_json_item_value_ptr(nlk));
-
-		nlk = get_json_next_sibling_item(nlk);
-	}
-
-	destroy_json_doc(ptr_json);
-
-	bytes_free(pp);
-
-	xhttp_close(xh);
-}
-
-void test_auth_weiapp_access()
-{
-	XHANDLE xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_WEIAPP);
-
-	xhttp_set_request_default_header(xh);
-	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
-
-	tchar_t sz_auth[META_LEN + 1] = { 0 };
-	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
-
-	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
-	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
-
-	xhttp_set_url_query_entity(xh, _T("action"), -1, _T("access"), -1);
-
-	xhttp_send_request(xh);
-
-	byte_t** pp = bytes_alloc();
-	dword_t dw = 0;
-
-	xhttp_recv_full(xh, pp, &dw);
-
-	link_t_ptr ptr_json = create_json_doc();
-
-	parse_json_doc_from_bytes(ptr_json, *pp, dw, _UTF8);
-
-	link_t_ptr nlk = get_json_first_child_item(ptr_json);
-	while (nlk)
-	{
-		wprintf(_T("%s : %s\n"), get_json_item_name_ptr(nlk), get_json_item_value_ptr(nlk));
-
-		nlk = get_json_next_sibling_item(nlk);
-	}
-
-	destroy_json_doc(ptr_json);
-
-	bytes_free(pp);
-
-	xhttp_close(xh);
-}
-
-void test_auth_weiapp_phone()
-{
-	XHANDLE xh = xhttp_client(HTTP_METHOD_GET, AS_URL_AUTH_WEIAPP);
-
-	xhttp_set_request_default_header(xh);
-	xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
-
-	tchar_t sz_auth[META_LEN + 1] = { 0 };
-	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
-
-	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
-	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
-
-	xhttp_set_url_query_entity(xh, _T("action"), -1, _T("phone"), -1);
-	xhttp_set_url_query_entity(xh, _T("jscode"), -1, _T("CODE"), -1);
-
-	xhttp_send_request(xh);
-
-	byte_t** pp = bytes_alloc();
-	dword_t dw = 0;
-
-	xhttp_recv_full(xh, pp, &dw);
-
-	link_t_ptr ptr_json = create_json_doc();
-
-	parse_json_doc_from_bytes(ptr_json, *pp, dw, _UTF8);
-
-	link_t_ptr nlk = get_json_first_child_item(ptr_json);
-	while (nlk)
-	{
-		wprintf(_T("%s : %s\n"), get_json_item_name_ptr(nlk), get_json_item_value_ptr(nlk));
-
-		nlk = get_json_next_sibling_item(nlk);
-	}
-
-	destroy_json_doc(ptr_json);
-
-	bytes_free(pp);
-
-	xhttp_close(xh);
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
@@ -319,14 +146,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	//_test_explicit();
 
 	//_test_refresh();
-
-	//test_weixin_session();
-
-	//test_auth_weiapp_session();
-
-	//test_auth_weiapp_access();
-
-	test_auth_weiapp_phone();
 
 	xdl_process_uninit();
 

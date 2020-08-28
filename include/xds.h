@@ -7,6 +7,7 @@
 #include "../xds/xdsutil.h"
 #include "../xds/xdsfont.h"
 #include "../xds/xdsstr.h"
+#include "../xds/strutil.h"
 
 #include "../xds/oembas.h"
 #include "../xds/oembmp.h"
