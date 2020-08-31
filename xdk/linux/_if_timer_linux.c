@@ -33,27 +33,97 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_TIMER
 
+#define MAX_TIMER_LISTEN	64
+
+/*void* _timer_listen(void* param)
+{
+	int i,fd_cnt,fd;
+	struct epoll_event events[MAX_TIMER_LISTEN];    
+
+	memset(events, 0, sizeof(events));
+	while(1) 
+	 {   
+		fd_cnt = epoll_wait(g_epollfd, events, MAX_TIMER_LISTEN, 512); 
+		for(i = 0; i < fd_cnt; i++) 
+		{   
+			fd = events[i].data.fd;
+			if(events[i].events & EPOLLIN) 
+			{   
+				if (fd == g_timerfd) 
+				{
+					uint64_t exp = 0;
+101     
+102     read(fd, &exp, sizeof(uint64_t)); 
+				}   
+			}   
+		} 
+	 }  
+}*/
+
 res_queue_t _create_timer_queue()
 {
-	return (0);
+	int fd;
+
+	fd = epoll_create(MAX_TIMER_LISTEN); 
+
+	return (fd < 0)? (res_queue_t)0 : (res_queue_t)fd;
 }
 
 void _destroy_timer_queue(res_queue_t rq)
 {
-	return;
+	if(rq)
+		close((int)rq);
 }
 
-res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa)
+res_timer_t _create_timer(res_queue_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa)
 {
-    return NULL;
+	int fd;
+	struct itimerspec its;
+	struct epoll_event event;
+
+	its.it_value.tv_sec = 0;
+	its.it_value.tv_nsec = duetime * 1000000;
+	its.it_interval.tv_sec = 0;
+	its.it_interval.tv_nsec = period * 1000000;
+   
+	fd = timerfd_create(CLOCK_MONOTONIC, 0);
+	if (fd < 0) return (res_timer_t)0;
+
+	if (timerfd_settime(fd, 0, &its, NULL) < 0)
+	{
+		close(fd);
+		return (res_timer_t)0;
+	}
+
+	event.data.fd = fd;
+    event.events = EPOLLIN;
+    if (epoll_ctl(rq, EPOLL_CTL_ADD, fd, &event) < 0)
+    {
+        close(fd);
+		return (res_timer_t)0;
+    }
+
+	return (res_timer_t)fd;
 }
 
 void _destroy_timer(res_queue_t rq, res_timer_t rt)
 {
-    return;
+	struct epoll_event event;
+
+	if(rq && rt)
+	{
+		event.data.fd = rt;
+		event.events = EPOLLIN;
+    	epoll_ctl(rq, EPOLL_CTL_DEL, rt, &event);
+	}
+
+	if(rt)
+	{
+		close(rt);
+	}
 }
 
-bool_t _alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period)
+bool_t _alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period)
 {
     return 0;
 }

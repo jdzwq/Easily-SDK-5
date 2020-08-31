@@ -326,9 +326,10 @@ void xdk_impl_socket(if_socket_t* pif)
 void xdk_impl_date(if_date_t* pif)
 {
 	pif->pf_get_loc_date = _get_loc_date;
-	pif->pf_mak_loc_date = _mak_loc_date;
 	pif->pf_get_utc_date = _get_utc_date;
-	pif->pf_mak_utc_date = _mak_utc_date;
+	pif->pf_mak_week_date = _mak_week_date;
+	pif->pf_loc_date_to_utc = _loc_date_to_utc;
+	pif->pf_utc_date_to_loc = _utc_date_to_loc;
 	pif->pf_get_times = _get_times;
 	pif->pf_get_ticks = _get_ticks;
 	pif->pf_get_timestamp = _get_timestamp;

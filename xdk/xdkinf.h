@@ -258,9 +258,9 @@ typedef struct _if_thread_t{
 /*timer interface*/
 typedef res_queue_t(*PF_CREATE_TIMER_QUEUE)(void);
 typedef void(*PF_DESTROY_TIMER_QUEUE)(res_queue_t);
-typedef res_timer_t(*PF_CREATE_TIMER)(res_queue_t, clock_t, clock_t, PF_TIMERFUNC, void*);
+typedef res_timer_t(*PF_CREATE_TIMER)(res_queue_t, dword_t, dword_t, PF_TIMERFUNC, void*);
 typedef void(*PF_DESTROY_TIMER)(res_queue_t, res_timer_t);
-typedef bool_t(*PF_ALTER_TIMER)(res_queue_t, res_timer_t, clock_t, clock_t);
+typedef bool_t(*PF_ALTER_TIMER)(res_queue_t, res_timer_t, dword_t, dword_t);
 
 typedef struct _if_timer_t{
 	PF_CREATE_TIMER_QUEUE		pf_create_timer_queue;
@@ -494,9 +494,10 @@ typedef struct _if_cons_t{
 #ifdef XDK_SUPPORT_DATE
 /*date interface*/
 typedef void (*PF_GET_LOC_DATE)(xdate_t*);
-typedef bool_t(*PF_MAK_LOC_DATE)(xdate_t*);
 typedef void (*PF_GET_UTC_DATE)(xdate_t*);
-typedef bool_t(*PF_MAK_UTC_DATE)(xdate_t*);
+typedef bool_t(*PF_MAK_WEEK_DATE)(xdate_t*);
+typedef bool_t(*PF_LOC_DATE_TO_UTC)(xdate_t*);
+typedef bool_t(*PF_UTC_DATE_TO_LOC)(xdate_t*);
 typedef dword_t(*PF_GET_TIMES)(void);
 typedef clock_t(*PF_GET_TICKS)(void);
 typedef stamp_t(*PF_GET_TIMESTAMP)(void);
@@ -506,9 +507,10 @@ typedef void(*PF_UTC_DATE_FROM_TIMESTAMP)(xdate_t*, stamp_t);
 
 typedef struct _if_date_t{
 	PF_GET_LOC_DATE		pf_get_loc_date;
-	PF_MAK_LOC_DATE		pf_mak_loc_date;
 	PF_GET_UTC_DATE		pf_get_utc_date;
-	PF_MAK_UTC_DATE		pf_mak_utc_date;
+	PF_MAK_WEEK_DATE	pf_mak_week_date;
+	PF_LOC_DATE_TO_UTC	pf_loc_date_to_utc;
+	PF_UTC_DATE_TO_LOC	pf_utc_date_to_loc;
 	PF_GET_TIMES		pf_get_times;
 	PF_GET_TICKS		pf_get_ticks;
 	PF_GET_TIMESTAMP	pf_get_timestamp;

@@ -50,7 +50,24 @@ void _get_loc_date(xdate_t* pxd)
 	pxd->wday = st.wDayOfWeek;
 }
 
-bool_t _mak_loc_date(xdate_t* pxd)
+void _get_utc_date(xdate_t* pxd)
+{
+	SYSTEMTIME st = { 0 };
+
+	GetSystemTime(&st);
+
+	pxd->year = st.wYear;
+	pxd->mon = st.wMonth;
+	pxd->day = st.wDay;
+	pxd->hour = st.wHour;
+	pxd->min = st.wMinute;
+	pxd->sec = st.wSecond;
+	pxd->millsec = st.wMilliseconds;
+
+	pxd->wday = st.wDayOfWeek;
+}
+
+bool_t _mak_week_date(xdate_t* pxd)
 {
 	SYSTEMTIME st = {0};
 	FILETIME ft = {0};
@@ -71,11 +88,23 @@ bool_t _mak_loc_date(xdate_t* pxd)
 	return 1;
 }
 
-void _get_utc_date(xdate_t* pxd)
+bool_t _loc_date_to_utc(xdate_t* pxd)
 {
-	SYSTEMTIME st = {0};
+	SYSTEMTIME st = { 0 };
+	FILETIME ft = { 0 };
+	FILETIME ft_utc = { 0 };
 
-	GetSystemTime(&st);
+	st.wYear = pxd->year;
+	st.wMonth = pxd->mon;
+	st.wDay = pxd->day;
+	st.wHour = pxd->hour;
+	st.wMinute = pxd->min;
+	st.wSecond = pxd->sec;
+	st.wMilliseconds = pxd->millsec;
+
+	SystemTimeToFileTime(&st, &ft);
+	LocalFileTimeToFileTime(&ft, &ft_utc);
+	FileTimeToSystemTime(&ft_utc, &st);
 
 	pxd->year = st.wYear;
 	pxd->mon = st.wMonth;
@@ -86,12 +115,15 @@ void _get_utc_date(xdate_t* pxd)
 	pxd->millsec = st.wMilliseconds;
 
 	pxd->wday = st.wDayOfWeek;
+
+	return 1;
 }
 
-bool_t _mak_utc_date(xdate_t* pxd)
+bool_t _utc_date_to_loc(xdate_t* pxd)
 {
-	SYSTEMTIME st = {0};
-	FILETIME ft = {0};
+	SYSTEMTIME st = { 0 };
+	FILETIME ft = { 0 };
+	FILETIME ft_loc = { 0 };
 
 	st.wYear = pxd->year;
 	st.wMonth = pxd->mon;
@@ -101,9 +133,18 @@ bool_t _mak_utc_date(xdate_t* pxd)
 	st.wSecond = pxd->sec;
 	st.wMilliseconds = pxd->millsec;
 
-	SystemTimeToFileTime(&st,&ft);
-	FileTimeToSystemTime(&ft,&st);
-	
+	SystemTimeToFileTime(&st, &ft);
+	FileTimeToLocalFileTime(&ft, &ft_loc);
+	FileTimeToSystemTime(&ft_loc, &st);
+
+	pxd->year = st.wYear;
+	pxd->mon = st.wMonth;
+	pxd->day = st.wDay;
+	pxd->hour = st.wHour;
+	pxd->min = st.wMinute;
+	pxd->sec = st.wSecond;
+	pxd->millsec = st.wMilliseconds;
+
 	pxd->wday = st.wDayOfWeek;
 
 	return 1;
@@ -255,7 +296,7 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 	FILETIME ft = { 0 };
 	lword_t ss;
 
-	ss = ts * 10000;
+	ss = (lword_t)ts * 10000;
 	ft.dwLowDateTime = GETLDWORD(ss);
 	ft.dwHighDateTime = GETHDWORD(ss);
 

@@ -2062,7 +2062,7 @@ void fill_calendar(calendar_t* pca, const xdate_t* pdt)
 	xd.mon = pdt->mon;
 	xd.day = 1;
 
-	mak_loc_date(&xd);
+	mak_week_date(&xd);
 	max_day = max_mon_days(xd.year, xd.mon);
 
 	for (i = 0; i < CALENDAR_COL; i++)

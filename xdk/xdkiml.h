@@ -105,9 +105,10 @@ LOC_API int		_ucs_to_utf8(const wchar_t* ucs, int len, schar_t* utf, int max);
 
 #ifdef XDK_SUPPORT_DATE
 LOC_API void	_get_loc_date(xdate_t* pxd);
-LOC_API bool_t	_mak_loc_date(xdate_t* pxd);
 LOC_API void	_get_utc_date(xdate_t* pxd);
-LOC_API bool_t	_mak_utc_date(xdate_t* pxd);
+LOC_API bool_t	_mak_week_date(xdate_t* pxd);
+LOC_API bool_t	_loc_date_to_utc(xdate_t* pxd);
+LOC_API bool_t	_utc_date_to_loc(xdate_t* pxd);
 LOC_API dword_t	_get_times(void);
 LOC_API clock_t _get_ticks(void);
 LOC_API stamp_t _get_timestamp(void);
@@ -177,9 +178,9 @@ LOC_API wait_t		_queue_wait(res_queue_t ep, int ms);
 #ifdef XDK_SUPPORT_TIMER
 LOC_API res_queue_t _create_timer_queue(void);
 LOC_API void		_destroy_timer_queue(res_queue_t rq);
-LOC_API res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa);
+LOC_API res_timer_t _create_timer(res_queue_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa);
 LOC_API void		_destroy_timer(res_queue_t rq, res_timer_t rt);
-LOC_API bool_t		_alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period);
+LOC_API bool_t		_alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period);
 #endif
 
 #ifdef XDK_SUPPORT_SOCK

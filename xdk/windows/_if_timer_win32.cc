@@ -43,7 +43,7 @@ void _destroy_timer_queue(res_queue_t rq)
 	DeleteTimerQueue(rq);
 }
 
-res_timer_t _create_timer(res_queue_t rq, clock_t duetime, clock_t period, PF_TIMERFUNC pf, void* pa)
+res_timer_t _create_timer(res_queue_t rq, dword_t duetime, dword_t period, PF_TIMERFUNC pf, void* pa)
 {
 	res_timer_t hTimer = NULL;
 
@@ -58,7 +58,7 @@ void _destroy_timer(res_queue_t rq, res_timer_t rt)
 	DeleteTimerQueueTimer(rq, rt, INVALID_HANDLE_VALUE);
 }
 
-bool_t _alter_timer(res_queue_t rq, res_timer_t rt, clock_t duetime, clock_t period)
+bool_t _alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period)
 {
 	return (bool_t)ChangeTimerQueueTimer(rq, rt, duetime, period);
 }

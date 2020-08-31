@@ -46,17 +46,6 @@ void get_loc_date(xdate_t* pxd)
 	(*pif->pf_get_loc_date)(pxd);
 }
 
-bool_t mak_loc_date(xdate_t* pxd)
-{
-	if_date_t* pif;
-
-	pif = PROCESS_DATE_INTERFACE;
-
-	XDL_ASSERT(pif != NULL);
-
-	return (*pif->pf_mak_loc_date)(pxd);
-}
-
 void get_utc_date(xdate_t* pxd)
 {
 	if_date_t* pif;
@@ -68,7 +57,7 @@ void get_utc_date(xdate_t* pxd)
 	(*pif->pf_get_utc_date)(pxd);
 }
 
-bool_t mak_utc_date(xdate_t* pxd)
+bool_t mak_week_date(xdate_t* pxd)
 {
 	if_date_t* pif;
 
@@ -76,7 +65,29 @@ bool_t mak_utc_date(xdate_t* pxd)
 
 	XDL_ASSERT(pif != NULL);
 
-	return (*pif->pf_mak_utc_date)(pxd);
+	return (*pif->pf_mak_week_date)(pxd);
+}
+
+bool_t loc_date_to_utc(xdate_t* pxd)
+{
+	if_date_t* pif;
+
+	pif = PROCESS_DATE_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	return (*pif->pf_loc_date_to_utc)(pxd);
+}
+
+bool_t utc_date_to_loc(xdate_t* pxd)
+{
+	if_date_t* pif;
+
+	pif = PROCESS_DATE_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	return (*pif->pf_utc_date_to_loc)(pxd);
 }
 
 dword_t get_times()

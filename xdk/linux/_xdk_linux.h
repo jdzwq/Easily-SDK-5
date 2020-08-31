@@ -77,6 +77,7 @@ LICENSE.GPL3 for more details.
 #include <sys/socket.h>
 #include <sys/sysctl.h>
 #include <sys/epoll.h>
+#include <sys/timerfd.h>
 #include <semaphore.h>
 #include <signal.h>
 #include <time.h>
@@ -148,7 +149,7 @@ typedef void*		res_modu_t;
 #endif
 
 #ifdef XDK_SUPPORT_TIMER
-typedef void*		res_timer_t;
+typedef int			res_timer_t;
 typedef void(*GNU_TIMER_PROC)(void* param, unsigned char wait);
 #endif
 

@@ -48,13 +48,6 @@ extern "C" {
 EXP_API void get_loc_date(xdate_t* pxd);
 
 /*
-@FUNCTION mak_loc_date: make a locale datetime according to year, month, day, or and hour, minut, second member.
-@INOUTPUT xdate_t* pxd: the datetime struct for returning valid datetime, wday will be filled if member is valid.
-@RETURN bool_t: if succeeds retur nonzero, fails return zero.
-*/
-EXP_API bool_t mak_loc_date(xdate_t* pxd);
-
-/*
 @FUNCTION get_utc_date: get UTC datetime.
 @OUTPUT xdate_t* pxd: the datetime struct for returning.
 @RETURN void: none.
@@ -62,11 +55,25 @@ EXP_API bool_t mak_loc_date(xdate_t* pxd);
 EXP_API void get_utc_date(xdate_t* pxd);
 
 /*
-@FUNCTION mak_utc_date: make a UTC datetime according to year, month, day, or and hour, minut, second member.
+@FUNCTION mak_week_date: fill days of week according to year, month, day, or and hour, minut, second member.
 @INOUTPUT xdate_t* pxd: the datetime struct for returning valid datetime, wday will be filled if member is valid.
 @RETURN bool_t: if succeeds retur nonzero, fails return zero.
 */
-EXP_API bool_t mak_utc_date(xdate_t* pxd);
+EXP_API bool_t mak_week_date(xdate_t* pxd);
+
+/*
+@FUNCTION loc_date_to_utc: convert local date to utc date.
+@INOUTPUT xdate_t* pxd: the datetime struct of locale date.
+@RETURN bool_t: if succeeds retur nonzero, fails return zero.
+*/
+EXP_API bool_t loc_date_to_utc(xdate_t* pxd);
+
+/*
+@FUNCTION utc_date_to_loc: convert utc date to local date.
+@INOUTPUT xdate_t* pxd: the datetime struct of utc date.
+@RETURN bool_t: if succeeds retur nonzero, fails return zero.
+*/
+EXP_API bool_t utc_date_to_loc(xdate_t* pxd);
 
 /*
 @FUNCTION get_times: get seconds elapse since 1970-01-01 00:00:00.
