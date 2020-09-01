@@ -1,0 +1,48 @@
+@echo off
+ 
+:: 在这里更改你的设置
+:: setting
+set HOST="username@host.com"
+set KEY_FILE="id_rsa_private"
+set REMOTE_PORT=8180
+set MONITOR_PORT=8280
+set LOCAL_PORT=23
+ 
+ 
+echo ***
+ 
+:LOOP
+ 
+echo [%HOST%] [%date% %time%] Autossh running...
+set AUTOSSH_PATH=./ssh.exe
+set AUTOSSH_LOGLEVEL=7
+set "AUTOSSH_DEBUG="
+autossh.exe -M %MONITOR_PORT% %HOST% ^
+  -i %KEY_FILE% -R 0.0.0.0:%REMOTE_PORT%:127.0.0.1:%LOCAL_PORT% -N ^
+  -o "PubkeyAuthentication=yes" -o "StrictHostKeyChecking=false" -o "PasswordAuthentication=no" -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3"
+ 
+timeout 60 > NUL
+goto LOOP
+ 
+echo [%HOST%] [%date% %time%] exited
+
+查看端口: netstat -ano|findstr 22
+
+netstat |grep ssh
+netstat -an | grep LISTEN
+netstat isof -i:22
+
+SSH命令：
+登录：ssh usr@192.168.0.1
+拷贝：scp a.txt usr@192.168.0.1
+生成公钥：ssh-keygen -t rsa
+
+正向代理：ssh -L 127.0.0.1:8889:172.16.190.190:8889 usr2@192.168.0.103
+
+反向代理：ssh -R 192.168.0.103:8889:172.16.190.190:8889 usr2@192.168.0.103
+
+正向隧道：ssh -g -f -NL 192.168.0.103:8889:172.16.190.190:8889 usr2@192.168.0.103
+
+反向隧道：ssh -g -f -NR 192.168.0.103:8889:172.16.190.190:8889 usr2@192.168.0.103
+
+

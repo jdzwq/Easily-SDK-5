@@ -1,0 +1,25 @@
+apt-get install build-essential
+apt-get install libtool
+sudo apt-get install libpcre3 libpcre3-dev
+apt-get install zlib1g-dev
+apt-get install openssl libssl-dev
+wget http://nginx.org/download/nginx-1.11.3.tar.gz
+tar -zxvf nginx-1.11.3.tar.gz
+cd nginx-1.11.3
+./configure --prefix=/usr/local/nginx
+./configure --with-http_ssl_module
+make
+sudo make install
+sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+ps -ef|grep nginx
+
+/usr/local/nginx/sbin/nginx
+./sbin/nginx
+./sbin/nginx -s stop
+./sbin/nginx -s quit
+./sbin/nginx -s reload
+./sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+./sbin/nginx -v
+./sbin/nginx -t
+sudo ./sbin/nginx -t
+./sbin/nginx -h

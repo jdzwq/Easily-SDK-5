@@ -1,0 +1,10 @@
+--RSA私钥
+openssl genrsa -des3 -out server.key 2048
+--查看
+openssl rsa -text -in server.key
+－－创建证书签名请求CSR文件
+openssl req -new -key server.key -out server.csr
+--查看
+openssl req -text -in server.csr -noout
+--生成CA证书
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt

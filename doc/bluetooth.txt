@@ -1,0 +1,40 @@
+
+sudo apt-get install default-jre
+sudo apt-get install autoconf
+sudo apt-get install bluetooth blueman
+
+wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
+tar -xf bluez-5.50.tar.xz
+sudo apt install libdbus-1-dev libudev-dev libical-dev libreadline-dev
+./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var  --enable-experimental
+sudo make install
+cd /usr/libexec/bluetooth
+./bluetoothd --version
+cd /usr/lib/bluetooth
+./bluetoothd --version
+sudo vim /lib/systemd/system/bluetooth.service
+sudo mv /usr/lib/bluetooth/bluetoothd /usr/lib/bluetooth/bluetoothd-543.orig
+sudo ln -s /usr/libexec/bluetooth/bluetoothd /usr/lib/bluetooth/bluetoothd
+sudo systemctl daemon-reload
+sudo systemctl start bluetooth.service
+sudo systemctl enable bluetooth.service
+
+sudo rfkill list
+sudo rfkill unblock bluetooth
+
+hciconfig hci0 noauth
+sudo hciconfig hci0 up
+hcitool scan
+sdptool browse 28:ED:6A:A0:26:B7
+58:E2:8F:3B:C6:74
+
+sudo gedit /etc/bluetooth/main.conf
+AutoEnable=true
+sudo rm /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
+
+58:E2:8F:3B:C6:74
+ClinkBlood
+C6:05:04:03:52:96
+
+
+

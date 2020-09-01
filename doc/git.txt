@@ -1,0 +1,85 @@
+--ssh key
+cd ~/.ssh
+id_rsa.pub
+
+host github.com
+host codeload.github.com
+host github.global.ssl.fastly.net
+host assets-cdn.github.com
+
+sudo vi /etc/hosts
+sudo /etc/init.d/networking restart
+
+ssh-keygen -t rsa -C youremail@email.com
+ssh-agent bash
+ssh-add -l
+ssh-add ~/.ssh/id_rsa
+ssh-add -d ~/.ssh/id_rsa.pub
+vi ./.git/config  https://github.com/user-->git@github.com:user
+
+--git config
+git config --global user.name "user"
+git config --global user.email "user@mail.com"
+git config --global credential.helper store
+git config --list
+git config --global --unset user.name
+git config --global --edit
+
+--git create
+git init
+git add .
+git remote add origin https://github.com/user/file.git
+
+--git clone
+git clone https://github.com/user/file.git
+
+--git submit
+git add *
+git commit -a -m “******”
+git push -u origin master --force
+git push -f origin master
+
+--git pullback
+git fetch --all
+git reset --hard origin/master
+git pull --allow-unrelated-histories
+
+--git manage
+git remote -v
+git status
+git diff
+git log
+git reflog 
+git reset –hard [commit id]
+
+--git rollback
+git reset --hard <commit_id>
+git push origin HEAD --force
+
+or
+
+git reset --hard <commit_id>
+git checkout -b newmaster
+git push origin newmaster:newmaster
+git branch -d master
+git push --delete origin master
+git checkout -b master origin/newmaster
+git push master:master
+
+--git branch
+git checkout --orphan slave
+git merge master
+git branch -D master
+git branch -m master
+git ls-remote
+git push origin --delete [branch-name]
+
+--git restore
+git stash list
+git stash apply
+git stash pop
+
+--git remove
+rm -rf .git
+git rm --cached 文件路径
+git rm -r --cached 文件路径

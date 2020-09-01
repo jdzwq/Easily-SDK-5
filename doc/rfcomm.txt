@@ -1,0 +1,31 @@
+1. 配置/etc/bluetooth/rfcomm.conf
+rfcomm0 {
+#       # Automatically bind the device at startup
+        bind no;
+#
+#       # Bluetooth address of the device
+        device XX:XX:XX:XX:XX:XX;
+#
+#       # RFCOMM channel for the connection
+        channel 1;
+#
+#       # Description of the connection
+        comment "Example Bluetooth device";
+}
+
+2. 关闭本地pin验证
+hciconfig hci0 noauth ;
+
+3. 设置连接pin码 
+编辑/var/lib/bluetooth/XX:XX:XX:XX:XX:XX/pincodes （XX:XX:XX:XX:XX:XX为本地设备地址） 
+文件格式为： XX:XX:XX:XX:XX:XX 1234 （XX:XX:XX:XX:XX:XX为目标设备地址） 
+
+4. 运行
+mknod /dev/rfcomm0 c 216 0
+chmod 666 /dev/rfcomm0
+rfcomm connect 0;
+
+5. 输出字符到蓝牙串口
+echo y>/dev/rfcomm0
+
+E4:05:F8:05:6A:BD

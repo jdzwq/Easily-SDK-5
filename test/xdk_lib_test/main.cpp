@@ -638,6 +638,35 @@ void test_widget()
 }
 */
 
+static void _timer_proc(void* pa, bool_t b)
+{
+    int* pt = (int*)pa;
+    
+    *pt += 1;
+
+    printf("timer: %d\n", *pt);
+}
+
+void test_timer()
+{
+    if_timer_t if_timer = { 0 };
+    int count = 0;
+
+    xdk_impl_timer(&if_timer);
+
+    res_queue_t rq = (*if_timer.pf_create_timer_queue)();
+
+    res_timer_t rt = (*if_timer.pf_create_timer)(rq, 1000, 3000, (PF_TIMERFUNC)_timer_proc, (void*)&count);
+
+    if(rt)
+    {
+        sleep(10);
+
+        (*if_timer.pf_destroy_timer)(rq, rt);
+    }
+    (*if_timer.pf_destroy_timer_queue)(rq);
+}
+
 int main(int argc, const char * argv[]) {
     //struct sigaction sa = {0};
     //sa.sa_handler = SIG_IGN;
@@ -682,6 +711,8 @@ int main(int argc, const char * argv[]) {
     //test_bitmap();
     
     //test_widget();
+
+    test_timer();
     
     return 0;
 }

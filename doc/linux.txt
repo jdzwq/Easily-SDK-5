@@ -1,0 +1,52 @@
+
+查看守护进程
+ps -axj
+
+ps aux |grep blue
+
+查看动态库连接
+otool -L lib***.dylib
+ldd lib***.so
+
+查看符号表
+nm c.dylib
+readelf -s *.so
+
+查看端口使用
+lsof -i tcp:80
+windows: netstat -aon|findstr "80"
+linux: netstat -tlnp
+
+建立软链接
+ln -s source target
+
+taskkill /pid [port] /f
+
+ls -l /dir/file
+
+chmod 755 /dir/file
+chgrp gname /dir/file
+chown uname /dir/file
+
+查看文件编码
+file filename
+
+转换文件编码
+iconv -f utf-8 -t gb2312 aaa.txt >bbb.txt
+
+tar -zxvf FileName.tar.gz
+
+解压
+xz -d filename.tar.xz
+tar -xvf filename.tar
+or
+tar -xvJf filename
+压缩
+tar -cvf xxx.tar xxx1
+xz -z xxx.tar1
+
+
+
+
+
+

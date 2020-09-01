@@ -1,0 +1,11 @@
+curl -fsSL https://get.docker.com/ | sh
+sudo usermod -aG docker zwq
+docker version
+sudo service docker start
+ps -ef|grep docker
+docker ps
+docker pull centos
+docker images -a
+docker run centos echo 'hello world'
+docker run -t -i [-d] ****** /bin/bash
+
