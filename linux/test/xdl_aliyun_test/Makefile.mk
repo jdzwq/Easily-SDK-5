@@ -3,13 +3,13 @@ CFLAGS = -g -Wall
 
 LIB_PATH = /usr/local/lib
 INC_PATH = ~/Easily-sdk-5/include
-SRC_PATH = ~/Easily-sdk-5/test/xdl_pop_test
-OBJ_PATH = ~/Easily-sdk-5/test/xdl_pop_test
+SRC_PATH = ~/Easily-sdk-5/test/xdl_aliyun_test
+OBJ_PATH = ~/Easily-sdk-5/test/xdl_aliyun_test
 OUT_PATH = ~/Easily-sdk-5/linux/bin
 
 SRCS = $(SRC_PATH)/main.cpp
 OBJS = $(patsubst %.cpp, %.o, $(SRCS))
-TARGET = $(OUT_PATH)/xdl_pop_test
+TARGET = $(OUT_PATH)/xdl_aliyun_test
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_PATH)

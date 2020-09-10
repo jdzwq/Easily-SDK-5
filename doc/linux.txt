@@ -1,25 +1,26 @@
 
-查看守护进程
+--查看守护进程
 ps -axj
 
 ps aux |grep blue
 
-查看动态库连接
+--查看动态库连接
 otool -L lib***.dylib
 ldd lib***.so
 
-查看符号表
+--查看符号表
 nm c.dylib
 readelf -s *.so
 
-查看端口使用
+--查看端口使用
 lsof -i tcp:80
 windows: netstat -aon|findstr "80"
 linux: netstat -tlnp
 
-建立软链接
+--建立软链接
 ln -s source target
 
+--
 taskkill /pid [port] /f
 
 ls -l /dir/file

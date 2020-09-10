@@ -220,7 +220,7 @@ void set_canvas_ratio(canvas_t canv, float htpermm, float vtpermm)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	pcanv->htpermm = htpermm;
 	pcanv->vtpermm = vtpermm;
@@ -230,7 +230,7 @@ float get_canvas_horz_size(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	return pcanv->horz_size - 2 * pcanv->horz_feed;
 }
@@ -239,7 +239,7 @@ float get_canvas_vert_size(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	return pcanv->vert_size - 2 * pcanv->vert_feed;
 }
@@ -248,7 +248,7 @@ void set_canvas_horz_feed(canvas_t canv, float cx)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	pcanv->horz_feed = cx;
 }
@@ -257,7 +257,7 @@ float get_canvas_horz_feed(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	return pcanv->horz_feed;
 }
@@ -266,7 +266,7 @@ void set_canvas_vert_feed(canvas_t canv, float cx)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	pcanv->vert_feed = cx;
 }
@@ -275,7 +275,7 @@ float get_canvas_vert_feed(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	return pcanv->vert_feed;
 }
@@ -284,7 +284,7 @@ res_ctx_t get_canvas_ctx(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	return (res_ctx_t)pcanv->dc;
 }
@@ -295,7 +295,7 @@ res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height
 
 	dev_cap_t dev = { 0 };
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	pcanv->dc = create_compatible_context(rdc, width, height);
 
@@ -308,7 +308,7 @@ void end_canvas_paint(canvas_t canv, res_ctx_t rdc, const xrect_t* pxr)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	render_context(pcanv->dc, pxr->x, pxr->y, rdc, pxr->x, pxr->y, pxr->w, pxr->h);
 
@@ -351,7 +351,7 @@ void  destroy_printer_canvas(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
-	XDL_ASSERT(canv && canv->tag == _CANVAS_DISPLAY);
+	XDL_ASSERT(canv);
 
 	xmem_free(pcanv);
 }

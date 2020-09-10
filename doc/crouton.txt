@@ -6,18 +6,19 @@
 用 Ctrl + ALT + T 调出 crosh 窗口，输入 shell 回车。
 
 sh ~/Downloads/crouton -r list          查看 crouton 支持的 ubuntu 版本
-sudo sh -e ~/Downloads/crouton -r trusty -t core,audio,xorg,x11,gtk-extra,unity,keyboard,cli-extra                       下载 unity 14.04 ubuntu 
+sudo sh -e ~/Downloads/crouton -r trusty -t core,audio,xorg,x11,gtk-extra,unity,keyboard,cli-extra                       下载 unity 14.04 ubuntu
+安装xfce4
 sudo sh ~/Downloads/crouton -t xfce      或者下载 xfce
-最后要求输入用户名和密码。
 
-进入 unity桌面。
-在 Chromebook 里可以通过快捷键来切换系统，非常的方便快捷。
+sudo enter-chroot     不开启桌面在 Chromebook os 里使用 Ubuntu 的终端。
 
-sudo startunity
+startxfce4 启动xfce
+startunity 启动ubuntu
+
 在 Chrome os 和 Ubuntu 之间切换：
 从 C 到 U：shift + ctrl + alt + 前进键
 从 U 到 C：shift + ctrl + alt + 后退键
-sudo enter-chroot     不开启桌面在 Chromebook os 里使用 Ubuntu 的终端。
+
 Ubuntu 开发配置
 
 sudo apt-get install ubuntu-desktop  安装完整 Ubuntu
@@ -26,7 +27,6 @@ sudo apt-get install ubuntu-desktop  安装完整 Ubuntu
 sudo apt-get install language-pack-zh-hans language-pack-zh-hans-base language-pack-gnome-zh-hans language-pack-gnome-zh-hans-base
 sudo apt-get install `check-language-support -l zh`
 sudo localectl set-locale LANG=zh_CN.UTF-8
-之后安装的东西因人而异吧。
 
 Ubuntu 也可以卸载掉。
 sudo delete-chroot chrootname        chrootname: 所安装 Ubuntu 的版本代号

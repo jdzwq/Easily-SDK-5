@@ -88,7 +88,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);..\..\include;..\..\xdl\;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\lib\;</LibraryPath>
-    <OutDir>D:\Easily-app-5\windows\sbin\api\</OutDir>
+    <OutDir>D:\Easily-app-5\windows\bin\</OutDir>
     <IntDir>d:\easily-tmp\windows\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)55</TargetName>
   </PropertyGroup>

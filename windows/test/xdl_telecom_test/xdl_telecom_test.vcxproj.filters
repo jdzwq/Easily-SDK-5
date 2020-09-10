@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\test\xdl_pop_test\main.cpp">
+    <ClCompile Include="..\..\..\test\xdl_telecom_test\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,30 +1,11 @@
 ﻿
 #include <xdl.h>
 #include <xds.h>
-#include <sms.h>
 
 #ifdef _OS_WINDOWS
 #include <conio.h>
 #endif
 
-#define SECRET_ID		_T("2a2f69763c897300efe63c0c5c08d1c7")
-#define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
-
-//#define SMS_URL		_T("https://118.178.180.81")
-//#define SMS_URL		_T("http://127.0.0.1:8889")
-#define SMS_URL		_T("https://www.biofolia.cn:8888")
-
-#ifdef _OS_WINDOWS
-#define SMS_MODULE		_T("sms_aliyun.dll")
-#endif
-
-#ifdef _OS_LINUX
-#define SMS_MODULE		_T("libsms_aliyun.so")
-#endif
-
-#ifdef _OS_MACOS
-#define SMS_MODULE		_T("sms_aliyun.dylib")
-#endif
 
 void test_bytes()
 {
@@ -123,7 +104,7 @@ void aliyun_encode(byte_t** pbuf)
 //&Version=2017-05-25
 
 
-void test_aliyun()
+void test_encode()
 {
 	LINKPTR st = create_string_table(1);
 
@@ -216,7 +197,9 @@ void test_aliyun()
 
 //<?xml version='1.0' encoding='UTF-8'?><SendSmsResponse><Message>OK</Message><RequestId>6BAB9EEC-6CCF-4DF4-91BC-E874B6FB5280</RequestId><BizId>392807084177959405^0</BizId><Code>OK</Code></SendSmsResponse>
 
-void test_sms_aliyun()
+#define URL_ALIYUN_SMS		_T("http://dysmsapi.aliyuncs.com")
+
+void test_sms()
 {
 	lword_t ts = get_timestamp();
 
@@ -310,7 +293,7 @@ void test_sms_aliyun()
 
 	bytes_free(pp);
 
-	xhand_t xh = xhttp_client(_T("GET"), _T("http://dysmsapi.aliyuncs.com"));
+	xhand_t xh = xhttp_client(_T("GET"), URL_ALIYUN_SMS);
 
 	xhttp_set_request_default_header(xh);
 	xhttp_set_encoded_query(xh, *pbuf, bytes_size(pbuf));
@@ -367,119 +350,7 @@ void test_sms_aliyun()
 	ptr_xml = NULL;
 }
 
-void test_isp()
-{
-	PF_SMS_OPEN_ISP pf_open_isp;
-	PF_SMS_CLOSE pf_close;
-	PF_SMS_CODE pf_code;
-	PF_SMS_ERROR pf_error;
 
-	res_modu_t hLib = load_library(SMS_MODULE);
-	pf_open_isp = (PF_SMS_OPEN_ISP)get_address(hLib, "sms_open_isp");
-	pf_close = (PF_SMS_CLOSE)get_address(hLib, "sms_close");
-	pf_code = (PF_SMS_CODE)get_address(hLib, "sms_code");
-	pf_error = (PF_SMS_ERROR)get_address(hLib, "sms_error");
-
-	SMS sms = (*pf_open_isp)(_T("fcv.isp"));
-
-	(*pf_code)(sms, _T("13588368696"), _T("{\"code\":\"123456\"}"), -1);
-
-	tchar_t errtext[1024] = { 0 };
-	(*pf_error)(sms, errtext, 1024);
-
-	(*pf_close)(sms);
-
-	free_library(hLib);
-}
-
-void test_sms_code()
-{
-	tchar_t url[1024] = { 0 };
-
-	tchar_t sz_auth[META_LEN + 1] = { 0 };
-	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
-
-	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Code&Phone=13588368696"), SMS_URL);
-	xhand_t xh = xhttp_client(_T("GET"), url);
-
-	xhttp_set_request_default_header(xh);
-
-	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
-	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
-
-	if (!xhttp_send_request(xh))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	if (!xhttp_recv_response(xh))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	bool_t rt = xhttp_get_response_state(xh);
-
-	dword_t nlen = xhttp_get_response_content_length(xh);
-
-	byte_t** pb = bytes_alloc();
-	byte_t* pbuf = bytes_realloc(pb, nlen);
-
-	if (!xhttp_recv(xh, pbuf, &nlen))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	printf("%s\n", (char*)pbuf);
-
-	bytes_free(pb);
-
-	xhttp_close(xh);
-}
-
-void test_sms_verify()
-{
-	tchar_t url[1024] = { 0 };
-	tchar_t sz_auth[META_LEN + 1] = { 0 };
-	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
-
-	xsprintf(url, _T("%s/sms/aliyun/fcv.isp?Action=Verify&Phone=13588368696&Code=685530"), SMS_URL);
-	xhand_t xh = xhttp_client(_T("GET"), url);
-
-	xhttp_set_request_default_header(xh);
-
-	xhttp_request_signature(xh, HTTP_HEADER_AUTHORIZATION_XDS, SECRET_KEY, sz_hmac, HMAC_LEN);
-	xsprintf(sz_auth, _T("%s %s:%s"), HTTP_HEADER_AUTHORIZATION_XDS, SECRET_ID, sz_hmac);
-	xhttp_set_request_header(xh, HTTP_HEADER_AUTHORIZATION, -1, sz_auth, -1);
-
-	if (!xhttp_send_request(xh))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	if (!xhttp_recv_response(xh))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	bool_t rt = xhttp_get_response_state(xh);
-
-	dword_t nlen = xhttp_get_response_content_length(xh);
-
-	byte_t** pb = bytes_alloc();
-	byte_t* pbuf = bytes_realloc(pb, nlen);
-
-	if (!xhttp_recv(xh, pbuf, &nlen))
-	{
-		raise_user_error(NULL, NULL);
-	}
-
-	printf("%s\n", (char*)pbuf);
-
-	bytes_free(pb);
-
-	xhttp_close(xh);
-}
 
 int main(int argc, char* argv[])
 {
@@ -487,13 +358,8 @@ int main(int argc, char* argv[])
 
 	//test_bytes();
 
-	//test_sms_aliyun();
+	//test_sms();
 
-	//test_isp();
-
-	//test_sms_code();
-
-	test_sms_verify();
 
 	xdl_process_uninit();
 
