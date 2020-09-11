@@ -419,8 +419,11 @@ int _enum_blut_device(dev_blt_t* pdb, int max)
 	tchar_t sz_key[BLUETOOTH_MAX_PASSKEY_SIZE] = { 0 };
 	int err = 0;
 	GUID sp_guid = SerialPortServiceClass_UUID;
-	GUID srv_guids[2] = { OBEXFileTransferServiceClass_UUID, OBEXObjectPushServiceClass_UUID };
+	GUID srv_guids[2];
 	DWORD n = 2;
+
+	srv_guids[0] = OBEXFileTransferServiceClass_UUID;
+	srv_guids[1] = OBEXObjectPushServiceClass_UUID;
 
 	frp.dwSize = sizeof(BLUETOOTH_FIND_RADIO_PARAMS);
 	ri.dwSize = sizeof(BLUETOOTH_RADIO_INFO);
