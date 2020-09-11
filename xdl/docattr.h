@@ -282,7 +282,7 @@
 #define ATTR_ITEM_WIDTH				_T("item-width")
 #define ATTR_ITEM_HEIGHT			_T("item-height")
 #define ATTR_ITEM_SPAN				_T("item-span")
-#define GDI_ATTR_GIZMO_SPAN			_T("icon-span")
+#define ATTR_ICON_SPAN				_T("icon-span")
 #define ATTR_TEXT_INDENT			_T("text-indent")
 #define ATTR_TEXT_PLACE				_T("text-place")
 #define ATTR_ENTITY_HEIGHT			_T("entity-height")
@@ -312,11 +312,11 @@
 #define ATTR_XAXFMT					_T("xaxfmt")
 #define ATTR_XAXWRP					_T("xaxwrp")
 
-#define ATTR_STATIS_TYPE				_T("statis-type")
-#define ATTR_STATIS_TYPE_OPTIONS		_T("line~Line;rect~Rect;pie~Pie;")
+#define ATTR_STATIS_TYPE			_T("statis-type")
+#define ATTR_STATIS_TYPE_OPTIONS	_T("line~Line;rect~Rect;pie~Pie;")
 #define ATTR_STATIS_TYPE_LINE		_T("line")
 #define ATTR_STATIS_TYPE_RECT		_T("rect")
-#define ATTR_STATIS_TYPE_PIE			_T("pie")
+#define ATTR_STATIS_TYPE_PIE		_T("pie")
 
 #define ATTR_LINE_CAP				_T("line-cap")
 #define ATTR_LINE_CAP_OPTIONS		_T("ellipse~Ellipse;rect~Rect;cross~Cross;star~Star;diamond~Diamond;")
@@ -348,6 +348,8 @@
 #define ATTR_SHAPE_BOTTOMTRIANGLE		_T("bottom-triangle")
 #define ATTR_SHAPE_LEFTTRIANGLE			_T("left-triangle")
 #define ATTR_SHAPE_RIGHTTRIANGLE		_T("right-triangle")
+
+#define ATTR_ICONIC					_T("iconic")
 
 #define ATTR_CODEBAR					_T("codebar")
 #define ATTR_CODEBAR_OPTIONS			_T("CODE128~CODE128;PDF417~PDF417;QRCODE~QRCODE;")

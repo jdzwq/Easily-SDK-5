@@ -41,7 +41,7 @@ void default_tool_attr(link_t_ptr ptr)
 {
 	set_tool_style(ptr, _T("font-size:9;text-align:center;line-align:center;"));
 	set_tool_title_height(ptr, DEF_ITEM_HEIGHT);
-	set_tool_icon_span(ptr, DEF_GDI_ATTR_GIZMO_SPAN);
+	set_tool_icon_span(ptr, DEF_ATTR_ICON_SPAN);
 }
 
 void default_tool_group_attr(link_t_ptr glk)

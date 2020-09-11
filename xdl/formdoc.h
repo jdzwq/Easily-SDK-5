@@ -159,6 +159,16 @@ LICENSE.GPL3 for more details.
 */
 #define get_field_codebar_ptr(flk)							get_dom_node_attr_ptr(flk,ATTR_CODEBAR,-1)
 /*
+@PROPER iconic: boolean.
+@SET set_field_iconic: set the field is iconic.
+*/
+#define set_field_iconic(flk,b)								set_dom_node_attr_boolean(flk,ATTR_ICONIC,b)
+/*
+@PROPER iconic: boolean.
+@GET get_field_iconic: get the field is iconic.
+*/
+#define get_field_iconic(flk)								get_dom_node_attr_boolean(flk,ATTR_ICONIC)
+/*
 @PROPER dataType: string.
 @SET set_field_data_type: set the field data type.
 */

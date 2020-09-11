@@ -178,6 +178,7 @@ void point_pt_to_tm(canvas_t canv, xpoint_t* ppt)
 }
 
 /*******************************************************************************************/
+
 canvas_t create_display_canvas(res_ctx_t rdc)
 {
 	rdc_canvas_t* pcanv;

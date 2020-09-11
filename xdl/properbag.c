@@ -246,7 +246,7 @@ void properbag_write_images_attributes(link_t_ptr ptr, link_t_ptr imagelist)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, GDI_ATTR_GIZMO_SPAN, get_images_icon_span(imagelist));
+	ent = set_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_ICON_SPAN, get_images_icon_span(imagelist));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 }
@@ -262,7 +262,7 @@ void properbag_read_images_attributes(link_t_ptr ptr, link_t_ptr imagelist)
 
 	set_images_item_height(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_HEIGHT));
 
-	set_images_icon_span(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, GDI_ATTR_GIZMO_SPAN));
+	set_images_icon_span(imagelist, (float)get_proper_float(ptr, PROPERTY_BAG_BEHAVE, ATTR_ICON_SPAN));
 }
 
 void properbag_write_images_item_attributes(link_t_ptr ptr, link_t_ptr imageitem)
@@ -482,6 +482,14 @@ void properbag_write_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 		set_entity_options(ent, TF_OPTIONS, -1);
 	}
 
+	if (compare_text(sz_class, -1, DOC_FORM_LABEL, -1, 1) == 0)
+	{
+		ent = set_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_ICONIC, get_field_iconic(flk));
+		set_entity_editable(ent, 1);
+		set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+		set_entity_options(ent, TF_OPTIONS, -1);
+	}
+
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0)
 	{
 		ent = set_proper_boolean(ptr, PROPERTY_BAG_DATA, ATTR_NULLABLE, get_field_nullable(flk));
@@ -614,6 +622,11 @@ void properbag_read_field_attributes(link_t_ptr ptr, link_t_ptr flk)
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0)
 	{
 		set_field_zeronull(flk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_ZERONULL));
+	}
+
+	if (compare_text(sz_class, -1, DOC_FORM_LABEL, -1, 1) == 0)
+	{
+		set_field_iconic(flk, get_proper_boolean(ptr, PROPERTY_BAG_BEHAVE, ATTR_ICONIC));
 	}
 
 	if (compare_text(sz_class, -1, DOC_FORM_TEXT, -1, 1) == 0)

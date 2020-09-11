@@ -63,12 +63,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_tool_icon_span: set the tool icon span.
 */
-#define set_tool_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
+#define set_tool_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_tool_icon_span: get the tool icon span.
 */
-#define get_tool_icon_span(ptr)							get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
+#define get_tool_icon_span(ptr)							get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
 /*
 @PROPER titleHeight: numeric.
 @GET get_tool_title_height: get the tool title height.

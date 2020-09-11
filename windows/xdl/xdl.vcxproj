@@ -203,6 +203,7 @@
     <ClInclude Include="..\..\xdl\srvssl.h" />
     <ClInclude Include="..\..\xdl\srvtcp.h" />
     <ClInclude Include="..\..\xdl\srvudp.h" />
+    <ClInclude Include="..\..\xdl\svggizmo.h" />
     <ClInclude Include="..\..\xdl\textbio.h" />
     <ClInclude Include="..\..\xdl\varbytes.h" />
     <ClInclude Include="..\..\xdl\bufferopera.h" />
@@ -375,6 +376,7 @@
     <ClCompile Include="..\..\xdl\srvssl.c" />
     <ClCompile Include="..\..\xdl\srvtcp.c" />
     <ClCompile Include="..\..\xdl\srvudp.c" />
+    <ClCompile Include="..\..\xdl\svggizmo.c" />
     <ClCompile Include="..\..\xdl\textbio.c" />
     <ClCompile Include="..\..\xdl\varbytes.c" />
     <ClCompile Include="..\..\xdl\bufferopera.c" />

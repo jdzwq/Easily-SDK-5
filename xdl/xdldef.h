@@ -483,7 +483,7 @@ typedef struct _variant_t{
 
 #define DEF_SPLIT_SPAN			(float)1.5
 #define DEF_TOUCH_SPAN			(float)7
-#define DEF_GDI_ATTR_GIZMO_SPAN			(float)6.8
+#define DEF_ATTR_ICON_SPAN			(float)6.8
 #define DEF_TEXT_HEIGHT			(float)8
 #define DEF_TEXT_WIDTH			(float)20
 #define DEF_ITEM_HEIGHT			(float)7

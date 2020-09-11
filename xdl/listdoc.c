@@ -43,7 +43,7 @@ void default_list_attr(link_t_ptr ptr)
 
 	set_list_item_height(ptr,18); 
 	set_list_item_width(ptr,20); 
-	set_list_icon_span(ptr, DEF_GDI_ATTR_GIZMO_SPAN);
+	set_list_icon_span(ptr, DEF_ATTR_ICON_SPAN);
 }
 
 link_t_ptr create_list_doc()

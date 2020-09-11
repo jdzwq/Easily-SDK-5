@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_menu_icon_span: set the menu icon span.
 */
-#define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
+#define set_menu_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_menu_icon_span: get the menu icon span.
 */
-#define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
+#define get_menu_icon_span(ptr)								get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
 /*
 @PROPER name: string.
 @GET get_menu_item_name_ptr: get the menu name.

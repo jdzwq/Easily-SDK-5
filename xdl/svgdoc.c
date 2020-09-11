@@ -112,28 +112,32 @@ void set_svg_width(link_t_ptr ptr, float width)
 {
 	tchar_t token[NUM_LEN + 1] = { 0 };
 
-	xsprintf(token, _T("%.1fmm"), width);
+	//xsprintf(token, _T("%.1fmm"), width);
+
+	xsprintf(token, _T("%d"), (int)(width * 10));
 
 	set_dom_node_attr(ptr, SVG_ATTR_WIDTH, -1, token, -1);
 }
 
 float get_svg_width(link_t_ptr ptr)
 {
-	return (float)get_dom_node_attr_numeric(ptr, SVG_ATTR_WIDTH);
+	return (float)(get_dom_node_attr_numeric(ptr, SVG_ATTR_WIDTH) / 10.0);
 }
 
 void set_svg_height(link_t_ptr ptr, float height)
 {
 	tchar_t token[NUM_LEN + 1] = { 0 };
 
-	xsprintf(token, _T("%.1fmm"), height);
+	//xsprintf(token, _T("%.1fmm"), height);
+
+	xsprintf(token, _T("%d"), (int)(height * 10));
 
 	set_dom_node_attr(ptr, SVG_ATTR_HEIGHT, -1, token, -1);
 }
 
 float get_svg_height(link_t_ptr ptr)
 {
-	return (float)get_dom_node_attr_numeric(ptr, SVG_ATTR_HEIGHT);
+	return (float)(get_dom_node_attr_numeric(ptr, SVG_ATTR_HEIGHT) / 10.0);
 }
 
 void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox)

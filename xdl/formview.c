@@ -224,24 +224,31 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_LABEL, -1, 0) == 0)
 		{
-			if (!b_print)
+			if (get_field_iconic(flk))
 			{
-				xmem_copy((void*)&xc, (void*)(&pif->clr_frg), sizeof(xcolor_t));
+				if (!b_print)
+				{
+					xmem_copy((void*)&xc, (void*)(&pif->clr_frg), sizeof(xcolor_t));
+				}
+				else
+				{
+					parse_xfont_from_style(&xf, style);
+					parse_xcolor(&xc, xf.color);
+				}
+
+				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, get_field_text_ptr(flk));
 			}
 			else
 			{
 				parse_xfont_from_style(&xf, style);
-				parse_xcolor(&xc, xf.color);
-			}
+				parse_xface_from_style(&xa, style);
+				if (!b_print)
+				{
+					format_xcolor(&pif->clr_txt, xf.color);
+				}
 
-			parse_xfont_from_style(&xf, style);
-			parse_xface_from_style(&xa, style);
-			if (!b_print)
-			{
-				format_xcolor(&pif->clr_txt, xf.color);
-			}
-
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_field_text_ptr(flk), -1);
+				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_field_text_ptr(flk), -1);
+			}	
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_CODE, -1, 0) == 0)
 		{

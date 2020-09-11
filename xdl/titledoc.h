@@ -82,12 +82,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_title_icon_span: set the title icon span.
 */
-#define set_title_icon_span(ptr,n)						set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
+#define set_title_icon_span(ptr,n)						set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_title_icon_span: get the title icon span.
 */
-#define get_title_icon_span(ptr)						get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
+#define get_title_icon_span(ptr)						get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
 /*
 @PROPER itemHeight: numeric.
 @SET set_title_item_height: set the title item height.

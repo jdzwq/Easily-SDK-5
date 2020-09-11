@@ -72,12 +72,12 @@ LICENSE.GPL3 for more details.
 @PROPER iconSpan: numeric.
 @SET set_list_icon_span: set the list icon span.
 */
-#define set_list_icon_span(ptr,n)							set_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN,n)
+#define set_list_icon_span(ptr,n)							set_dom_node_attr_float(ptr,ATTR_ICON_SPAN,n)
 /*
 @PROPER iconSpan: numeric.
 @GET get_list_icon_span: get the list icon span.
 */
-#define get_list_icon_span(ptr)								get_dom_node_attr_float(ptr,GDI_ATTR_GIZMO_SPAN)
+#define get_list_icon_span(ptr)								get_dom_node_attr_float(ptr,ATTR_ICON_SPAN)
 /*
 @PROPER itemWidth: numeric.
 @SET set_list_item_width: set the list item width.

@@ -43,7 +43,7 @@ void default_tree_attr(link_t_ptr ptr)
 	set_tree_title_height(ptr, 8);
 
 	set_tree_item_height(ptr, DEF_ITEM_HEIGHT);
-	set_tree_icon_span(ptr,DEF_GDI_ATTR_GIZMO_SPAN);
+	set_tree_icon_span(ptr,DEF_ATTR_ICON_SPAN);
 }
 
 link_t_ptr create_tree_doc()
