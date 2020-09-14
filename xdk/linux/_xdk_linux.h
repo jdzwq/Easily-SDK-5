@@ -211,11 +211,6 @@ typedef struct OVERLAPPED{
         struct timeval tv;
         struct timespec tp;
     };
-    
-    union{
-        fd_set fd[MAX_EVENT];
-        struct epoll_event ev;
-    };
 }OVERLAPPED, *LPOVERLAPPED;
 
 #ifndef LPSIZE

@@ -38,7 +38,9 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API void font_metric_by_point(float pt, float* pm, float* px);
+EXP_API void font_metric_by_pt(float pt, float* pm, float* px);
+
+EXP_API void font_metric_by_px(float px, float* pt, float* pm);
 
 EXP_API int format_font_pattern(const xfont_t* pxf, tchar_t* buf);
 

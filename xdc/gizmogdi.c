@@ -1806,7 +1806,7 @@ void draw_numeric_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt;
-	int fs;
+	float fs;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1840,13 +1840,13 @@ void draw_numeric_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 
 	draw_ellipse_raw(rdc, &xp, &xb, prt);
 
-	fs = font_size(rdc, prt->h) - 2;
-	if (fs < 8)
-		fs = 8;
+	fs = font_size(prt->h);
+	if (fs < 8.0f)
+		fs = 8.0f;
 
 	default_xfont(&xf);
 	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	ltoxs(fs, xf.size, INT_LEN);
+	ftoxs(fs, xf.size, INT_LEN);
 	xscpy(xf.color, GDI_ATTR_RGB_WHITE);
 
 	default_xface(&xa);
@@ -1863,7 +1863,7 @@ void draw_omit_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt;
-	int fs;
+	float fs;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
@@ -1895,13 +1895,13 @@ void draw_omit_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt)
 
 	prt = &rt;
 
-	fs = font_size(rdc, prt->h) - 2;
-	if (fs < 8)
-		fs = 8;
+	fs = font_size(prt->h);
+	if (fs < 8.0f)
+		fs = 8.0f;
 
 	default_xfont(&xf);
 	xscpy(xf.family, GDI_ATTR_FONT_FAMILY_ARIA);
-	ltoxs(fs, xf.size, INT_LEN);
+	ftoxs(fs, xf.size, INT_LEN);
 	xscpy(xf.color, GDI_ATTR_RGB_WHITE);
 
 	default_xface(&xa);

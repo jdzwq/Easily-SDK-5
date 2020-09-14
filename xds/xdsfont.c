@@ -61,7 +61,7 @@ static font_map_t font_map[] = {
 	{ _T("八号"), 5.0f, 1.76f, 6.7f }
 };
 
-void font_metric_by_point(float pt, float* pm, float* px)
+void font_metric_by_pt(float pt, float* pm, float* px)
 {
 	int i, n;
 	
@@ -74,6 +74,23 @@ void font_metric_by_point(float pt, float* pm, float* px)
 		if (px) *px = font_map[i].px_font;
 
 		if (pt >= font_map[i].pt_font)
+			break;
+	}
+}
+
+void font_metric_by_px(float px, float* pt, float* pm)
+{
+	int i, n;
+
+	n = sizeof(font_map) / sizeof(font_map_t);
+
+	for (i = 0; i < n; i++)
+	{
+		if (pm) *pm = font_map[i].mm_font;
+
+		if (pt) *pt = font_map[i].pt_font;
+
+		if ((int)(px + 0.5) >= (int)(font_map[i].pt_font + 0.5))
 			break;
 	}
 }

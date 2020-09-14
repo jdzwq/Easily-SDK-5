@@ -84,7 +84,6 @@ void xdu_impl_context(if_context_t* pif)
 	pif->pf_text_pt_size = _text_pt_size;
 	pif->pf_cast_mm_to_pt = _cast_mm_to_pt;
 	pif->pf_cast_pt_to_mm = _cast_pt_to_mm;
-	pif->pf_font_size = _font_size;
 }
 
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP

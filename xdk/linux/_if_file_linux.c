@@ -82,14 +82,17 @@ bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 
     int rs, rt;
     struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLOUT;
-        pov->ev.data.fd = fh; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, fh, &(pov->ev)); 
-        
+        ev.events = EPOLLOUT;
+        ev.data.fd = fh; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, fh, &(ev));    
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, fh, &ev); 
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -104,13 +107,15 @@ bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[1]));
-        FD_SET(fh, &(pov->fd[1]));
+        FD_ZERO(&fs);
+        FD_SET(fh, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(fh + 1, NULL, &(pov->fd[1]), NULL, &(pov->tv));
+        rs = select(fh + 1, NULL, &(fs), NULL, &(pov->tv));
+        FD_CLR(fh, &fs);
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -159,14 +164,17 @@ bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 
     int rs, rt;
     struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLIN;
-        pov->ev.data.fd = fh; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, fh, &(pov->ev)); 
-        
+        ev.events = EPOLLIN;
+        ev.data.fd = fh; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, fh, &ev); 
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, fh, &ev); 
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -184,13 +192,15 @@ bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[0]));
-        FD_SET(fh, &(pov->fd[0]));
+        FD_ZERO(&fs);
+        FD_SET(fh, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(fh + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        rs = select(fh + 1, &(fs), NULL, NULL, &(pov->tv));
+        FD_CLR(fh, &fs);
+        
         if(rs < 0)
         {
             *pcb = 0;

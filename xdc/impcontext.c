@@ -34,15 +34,6 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_CONTEXT
 
-int font_size(res_ctx_t rdc, int height)
-{
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	return (*pif->pf_font_size)(rdc, height);
-}
-
 float pt_per_mm(res_ctx_t rdc, bool_t horz)
 {
 	if_context_t* pif;

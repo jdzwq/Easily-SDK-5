@@ -3002,6 +3002,24 @@ int format_ximage_to_source(const ximage_t* pxi, tchar_t* buf, int len)
 	return size;
 }
 
+float font_size(int px)
+{
+	float pt = 0;
+
+	font_metric_by_px((float)px, &pt, NULL);
+
+	return pt;
+}
+
+int font_points(float pt)
+{
+	float px = 0;
+
+	font_metric_by_pt(pt, NULL, &px);
+
+	return (int)(px + 0.5);
+}
+
 bool_t inside_rowcol(int row, int col, int from_row, int from_col, int to_row, int to_col)
 {
 	if (row < from_row || (row == from_row && col < from_col))

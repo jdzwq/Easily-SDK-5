@@ -207,6 +207,10 @@ EXP_API void parse_ximage_from_source(ximage_t* pxi, const tchar_t* token);
 
 EXP_API int format_ximage_to_source(const ximage_t* pxi, tchar_t* buf, int len);
 
+EXP_API float font_size(int px);
+
+EXP_API int font_points(float pt);
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 EXP_API bool_t inside_rowcol(int row, int col, int from_row, int from_col, int to_row, int to_col);
 

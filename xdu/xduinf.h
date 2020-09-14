@@ -95,7 +95,6 @@ typedef void(*PF_TEXT_MM_METRIC)(res_ctx_t, const xfont_t*, float*, float*);
 typedef void(*PF_TEXT_PT_METRIC)(res_ctx_t, const xfont_t*, int*, int*);
 typedef float(*PF_CAST_PT_TO_MM)(res_ctx_t, int, bool_t);
 typedef int(*PF_CAST_MM_TO_PT)(res_ctx_t, float, bool_t);
-typedef int(*PF_FONT_SIZE)(res_ctx_t, int);
 
 /*graphic interface*/
 typedef void(*PF_GDI_DRAW_LINE)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
@@ -180,7 +179,6 @@ typedef struct _if_context_t{
 	PF_CAST_PT_TO_MM	pf_cast_pt_to_mm;
 	PF_CAST_MM_TO_PT	pf_cast_mm_to_pt;
 	PF_PT_PER_MM		pf_pt_per_mm;
-	PF_FONT_SIZE		pf_font_size;
 
 	PF_GDI_DRAW_LINE		pf_gdi_draw_line;
 	PF_GDI_DRAW_POLYLINE	pf_gdi_draw_polyline;

@@ -75,8 +75,7 @@ LOC_API void	_text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt
 LOC_API void	_text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy);
 LOC_API void	_text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy);
 LOC_API float	_cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
-LOC_API int	_cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
-LOC_API int		_font_size(res_ctx_t rdc, int height);
+LOC_API int		_cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 LOC_API res_rgn_t _create_region(const tchar_t* shape, const xrect_t* pxr);
 LOC_API void	_delete_region(res_rgn_t rgn);

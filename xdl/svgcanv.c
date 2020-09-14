@@ -270,4 +270,5 @@ void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif)
 	pif->pf_text_size = (PF_TEXT_SIZE)svg_text_size;;
 }
 
+
 #endif /*XDL_SUPPORT_SVG*/

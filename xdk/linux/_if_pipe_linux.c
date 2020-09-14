@@ -77,14 +77,17 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
     
     int rs;
     struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLIN;
-        pov->ev.data.fd = pip; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, pip, &(pov->ev)); 
-        
+        ev.events = EPOLLIN;
+        ev.data.fd = pip; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, pip, &ev);       
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, pip, &ev); 
+
         if(rs <= 0)
         {
             return 0;
@@ -92,13 +95,15 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[0]));
-        FD_SET(pip, &(pov->fd[0]));
+        FD_ZERO(&fs);
+        FD_SET(pip, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(pip + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        rs = select(pip + 1, &(fs), NULL, NULL, &(pov->tv));
+        FD_CLR(pip, &fs);
+        
         if(rs <= 0)
         {
             return 0;

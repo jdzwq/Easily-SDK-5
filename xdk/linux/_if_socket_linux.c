@@ -230,14 +230,17 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
     
     int rs, rt;
     struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLOUT;
-        pov->ev.data.fd = so; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
-        
+        ev.events = EPOLLOUT;
+        ev.data.fd = so; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, so, &ev); 
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, so, &ev); 
+        
         if(rs < 0)
         {
             *pcb = 0;
@@ -252,13 +255,15 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[1]));
-        FD_SET(so, &(pov->fd[1]));
+        FD_ZERO(&fs);
+        FD_SET(so, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, NULL, &(pov->fd[1]), NULL, &(pov->tv));
+        rs = select(so + 1, NULL, &fs, NULL, &(pov->tv));
+        FD_CLR(so, &fs);
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -299,16 +304,19 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
+    socklen_t len = 0;    
     struct epoll_event ev = {0};
-    socklen_t len = 0;
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLIN;
-        pov->ev.data.fd = so; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
-        
+        ev.events = EPOLLIN;
+        ev.data.fd = so; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, so, &ev); 
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, so, &ev); 
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -326,13 +334,15 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[0]));
-        FD_SET(so, &(pov->fd[0]));
+        FD_ZERO(&fs);
+        FD_SET(so, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        rs = select(so + 1, &(fs), NULL, NULL, &(pov->tv));
+        FD_CLR(so, &fs);
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -381,14 +391,17 @@ bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)
     
     int rs, rt;
     struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLOUT;
-        pov->ev.data.fd = so; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
-        
+        ev.events = EPOLLOUT;
+        ev.data.fd = so; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, so, &ev); 
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, so, &ev); 
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -403,13 +416,15 @@ bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)
     }
     else  if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[1]));
-        FD_SET(so, &(pov->fd[1]));
+        FD_ZERO(&fs);
+        FD_SET(so, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, NULL, &(pov->fd[1]), NULL, &(pov->tv));
+        rs = select(so + 1, NULL, &(fs), NULL, &(pov->tv));
+        FD_CLR(so, &fs);
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -452,15 +467,18 @@ bool_t _socket_recv(res_file_t so, void* buf, dword_t size, async_t* pb)
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
     
     int rs, rt;
-   struct epoll_event ev = {0};
+    struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLIN;
-        pov->ev.data.fd = so; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
-        
+        ev.events = EPOLLIN;
+        ev.data.fd = so; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, so, &ev);      
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, so, &ev); 
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -478,13 +496,15 @@ bool_t _socket_recv(res_file_t so, void* buf, dword_t size, async_t* pb)
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[0]));
-        FD_SET(so, &(pov->fd[0]));
+        FD_ZERO(&fs);
+        FD_SET(so, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        rs = select(so + 1, &(fs), NULL, NULL, &(pov->tv));
+        FD_CLR(so, &fs);
+
         if(rs < 0)
         {
             *pcb = 0;
@@ -626,17 +646,20 @@ res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* p
     res_file_t po;
     LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     
-    int rs, rt;
-    struct epoll_event ev = {0};
+    int rs, rt;  
     socklen_t nlen = 0;
+     struct epoll_event ev = {0};
+    fd_set fs = {0};
 
     if (pb->type == ASYNC_QUEUE)
     {
-        pov->ev.events = EPOLLIN;
-        pov->ev.data.fd = so; 
-        epoll_ctl(pb->port, EPOLL_CTL_MOD, so, &(pov->ev)); 
-        
+        ev.events = EPOLLIN;
+        ev.data.fd = so; 
+
+        epoll_ctl(pb->port, EPOLL_CTL_ADD, so, &(ev)); 
         rs = epoll_wait(pb->port, &ev, 1, (int)pb->timo);
+        epoll_ctl(pb->port, EPOLL_CTL_DEL, so, &ev); 
+
         if(rs <= 0)
         {
             return INVALID_FILE;
@@ -644,13 +667,15 @@ res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* p
     }
     else if (pb->type == ASYNC_EVENT)
     {
-        FD_ZERO(&(pov->fd[0]));
-        FD_SET(so, &(pov->fd[0]));
+        FD_ZERO(&fs);
+        FD_SET(so, &fs);
         
         pov->tv.tv_sec = pb->timo / 1000;
         pov->tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+        rs = select(so + 1, &(fs), NULL, NULL, &(pov->tv));
+        FD_CLR(so, &fs);
+        
         if(rs <= 0)
         {
             return INVALID_FILE;

@@ -58,11 +58,10 @@
 #define GDI_ATTR_FONT_FAMILY_ARIA	_T("Arial")
 
 #define GDI_ATTR_FONT_FAMILY_OPTIONS	_T("Helvetica~Helvetica;Microsoft YaHei~Microsoft YaHei;")
-#define GDI_ATTR_FONT_SIZE_OPTIONS		_T("8~8px;9~9px;10.5~10.5px;12~12px;14~14px;16~16px;18~18px;21~21px;28~28px;36~36px;42~42px;54~54px;")
+#define GDI_ATTR_FONT_SIZE_OPTIONS		_T("5~5px;5.5~5.5px;6.5~6.5px;7.5~7.5px;9~9px;10.5~10.5px;12~12px;14~14px;16~16px;18~18px;24~24px;26~26px;36~36px;42~42px;54~54px;63~63px;72~72px;")
 #define GDI_ATTR_FONT_WEIGHT_OPTIONS	_T("100~Thin;300~Light;400~Normal;500~Medium;700~Bold;900~Black;")
 #define GDI_ATTR_FONT_WEIGHT_NORMAL		_T("400")
 #define GDI_ATTR_FONT_WEIGHT_BOLD		_T("700")
-
 
 #define GDI_ATTR_FONT_SIZE_FOOTER			_T("9")
 #define GDI_ATTR_FONT_SIZE_SYSTEM			_T("10")

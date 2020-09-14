@@ -429,7 +429,7 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 	else
 	{
 		n = sizeof(server_ciphers) / sizeof(ciphers_set);
-		pcs = client_ciphers;
+		pcs = server_ciphers;
 	}
 
 	for (i = 0; i < n; i++)

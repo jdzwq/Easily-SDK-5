@@ -143,6 +143,7 @@ EXP_API void svg_point_pt_to_tm(canvas_t canv, xpoint_t* ppt);
 */
 EXP_API void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif);
 
+
 #ifdef	__cplusplus
 }
 #endif

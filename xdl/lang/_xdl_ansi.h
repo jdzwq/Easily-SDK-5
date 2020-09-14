@@ -43,7 +43,7 @@ LICENSE.GPL3 for more details.
 /*redefine gdiattr*/
 #ifdef GDI_ATTR_FONT_SIZE_OPTIONS
 #undef GDI_ATTR_FONT_SIZE_OPTIONS
-#define GDI_ATTR_FONT_SIZE_OPTIONS		_T("28~一号;21~二号;16~三号;14~四号;12~小四号;10.5~五号;9~小五号;8~六号;36~小初号;42~初号;54~特号;")
+#define GDI_ATTR_FONT_SIZE_OPTIONS		_T("5~八号;5.5~七号;6.5~小六;7.5~六号;9~小五;10.5~五号;12~小四;14~四号;15~小三;16~三号;18~小二;24~小一;26~一号;36~小初;42~初号;54~特号;63~特大号;72~一英寸;")
 #endif
 
 #ifdef GDI_ATTR_FONT_FAMILY_OPTIONS

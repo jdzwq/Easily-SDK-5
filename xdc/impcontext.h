@@ -151,14 +151,6 @@ EXP_API float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
 */
 EXP_API int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
 
-/*
-@FUNCTION font_size: calc suitable font size by height in points.
-@INPUT res_ctx_t rdc: device context resource handle.
-@INPUT int height: the height value in points.
-@RETURN int: font size.
-*/
-EXP_API int font_size(res_ctx_t rdc, int height);
-
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 
 /*

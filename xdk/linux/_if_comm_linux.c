@@ -184,6 +184,7 @@ dword_t _comm_listen(res_file_t fd, async_t* pb)
     dword_t dwEvent = 0;
     int status;
     int rt;
+    fd_set fs = {0};
     
     if(!pov)
         return 0;
@@ -198,12 +199,12 @@ dword_t _comm_listen(res_file_t fd, async_t* pb)
     
     while(!dwEvent)
     {
-        FD_ZERO(&(pov->fd[0]));
-        FD_SET(fd, &(pov->fd[0]));
+        FD_ZERO(&fs);
+        FD_SET(fd, &fs);
         
-        if(FD_ISSET(fd, &(pov->fd[0])))
+        if(FD_ISSET(fd, &(fs)))
         {
-            rt = select(fd+1, &(pov->fd[0]), NULL, NULL, &(pov->tv));
+            rt = select(fd+1, &(fs), NULL, NULL, &(pov->tv));
             if(rt < 0)
             {
                 dwEvent = COMM_EVNET_ERROR;
@@ -258,6 +259,7 @@ dword_t _comm_listen(res_file_t fd, async_t* pb)
         {
             dwEvent = COMM_EVNET_BREAK;
         }
+        FD_CLR(fd, &fs);
     }
     
     return dwEvent;
