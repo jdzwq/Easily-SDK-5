@@ -1004,7 +1004,7 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
     
     if(!dw)
     {
-        raise_user_error(_T("_ssl_read_rcv_msg"), _T("ssl read msg failed"));
+        raise_user_error(_T("_ssl_read_rcv_msg"), _T("empty ssl message"));
     }
 
 	if (pssl->rcv_hdr[1] != SSL_MAJOR_VERSION_3)
@@ -3856,7 +3856,10 @@ void  xssl_close(xhand_t ssl)
 		_ssl_flush_data(pssl);
 	}
 
-	_ssl_write_close(pssl);
+	if(pssl->over == 1)
+	{
+		_ssl_write_close(pssl);
+	}
 
 	xtcp_close(pssl->tcp);
 
@@ -3894,11 +3897,13 @@ bool_t xssl_write(xhand_t ssl, const byte_t* buf, dword_t* pb)
 	{
 		if (pssl->type == SSL_TYPE_CLIENT && !_ssl_handshake_client(pssl))
 		{
+			_ssl_write_close(pssl);
 			return 0;
 		}
 
 		if (pssl->type == SSL_TYPE_SERVER && !_ssl_handshake_server(pssl))
 		{
+			_ssl_write_close(pssl);
 			return 0;
 		}
 
@@ -3955,11 +3960,13 @@ bool_t xssl_read(xhand_t ssl, byte_t* buf, dword_t* pb)
 	{
 		if (pssl->type == SSL_TYPE_CLIENT && !_ssl_handshake_client(pssl))
 		{
+			_ssl_write_close(pssl);
 			return 0;
 		}
 
 		if (pssl->type == SSL_TYPE_SERVER && !_ssl_handshake_server(pssl))
 		{
+			_ssl_write_close(pssl);
 			return 0;
 		}
 

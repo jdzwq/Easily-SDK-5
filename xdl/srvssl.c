@@ -194,7 +194,9 @@ static unsigned STDCALL wait_accept(void* param)
 	while (plis->act)
 	{
 		addr_len = sizeof(net_addr_t);
+
 		so = socket_accept(plis->so, (res_addr_t)&rmtaddr, &addr_len, pov);
+
 		if (so == INVALID_FILE)
 		{
             thread_yield();

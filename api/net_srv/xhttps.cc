@@ -215,7 +215,7 @@ static void _invoke_error(xhand_t http)
 
 	xhttp_get_url_method(http, sz_method, INT_LEN);
 
-	if (!xhttp_need_expect(http) && (compare_text(sz_method, -1, HTTP_METHOD_PUT, -1, 1) == 0 || compare_text(sz_method, -1, HTTP_METHOD_POST, -1, 1) == 0))
+	/*if (!xhttp_need_expect(http) && (compare_text(sz_method, -1, HTTP_METHOD_PUT, -1, 1) == 0 || compare_text(sz_method, -1, HTTP_METHOD_POST, -1, 1) == 0))
 	{
 		d_recv = bytes_alloc();
 		n_size = 0;
@@ -224,11 +224,14 @@ static void _invoke_error(xhand_t http)
 
 		bytes_free(d_recv);
 		d_recv = NULL;
+	}*/
+
+	if(xhttp_is_requested(http))
+	{
+		xhttp_set_response_default_header(http);
+
+		xhttp_send_error(http, NULL, NULL, sz_code, sz_error, -1);
 	}
-
-	xhttp_set_response_default_header(http);
-
-	xhttp_send_error(http, NULL, NULL, sz_code, sz_error, -1);
 }
 
 /**********************************************************************************************************************/
