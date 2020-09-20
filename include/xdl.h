@@ -17,6 +17,10 @@
 #include "../xdl/xdlview.h"
 #endif
 
+#ifdef XDL_SUPPORT_SVG
+#include "../xdl/xdlsvg.h"
+#endif
+
 #include "../xdl/xdlinit.h"
 
 typedef	link_t_ptr	LINKPTR;

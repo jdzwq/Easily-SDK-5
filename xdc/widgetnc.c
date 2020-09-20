@@ -260,7 +260,6 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
-	xgradi_t xg = { 0 };
 	xcolor_t xc_near, xc_center;
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
@@ -303,17 +302,6 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	widget_get_xpen(wt, &xp);
 	widget_get_xfont(wt, &xf);
 	widget_get_xface(wt, &xa);
-
-	/*lighten_xbrush(&xb, DEF_SOFT_DARKEN);
-	parse_xcolor(&xc_near, xb.color);
-	parse_xcolor(&xc_center, xb.color);
-	lighten_xcolor(&xc_near, DEF_HARD_DARKEN);
-	default_xgradi(&xg);
-	format_xcolor(&xc_near, xg.brim_color);
-	format_xcolor(&xc_center, xg.core_color);
-	xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);*/
-
-	//gradient_rect_raw(dc, &xg, &rtScr);
 
 	rtScr.x = rtWnd.x + edge;
 	rtScr.y = rtWnd.y + edge;

@@ -60,8 +60,4 @@
 #include "impcons.h"
 #endif
 
-#include "svgcanv.h"
-#include "svggdi.h"
-#include "svginf.h"
-
 #endif //_XDLIMP_H

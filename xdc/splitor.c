@@ -238,26 +238,18 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 	xrect_t xr;
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
-	xgradi_t xg_horz, xg_vert;
+	xcolor_t xc_brim, xc_core;
 
 	XDL_ASSERT(ptd != NULL);
 
 	widget_get_xbrush(ptd->widget, &xb);
 
-	default_xgradi(&xg_vert);
-	xscpy(xg_vert.brim_color, xb.color);
-	xscpy(xg_vert.core_color, xb.color);
-	lighten_xgradi(&xg_vert, DEF_MIDD_DARKEN);
-	xscpy(xg_vert.type, GDI_ATTR_GRADIENT_TYPE_VERT);
-
-	default_xgradi(&xg_horz);
-	xscpy(xg_horz.brim_color, xb.color);
-	xscpy(xg_horz.core_color, xb.color);
-	lighten_xgradi(&xg_horz, DEF_MIDD_DARKEN);
-	xscpy(xg_vert.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
+	parse_xcolor(&xc_brim, xb.color);
+	parse_xcolor(&xc_core, xb.color);
+	lighten_xcolor(&xc_brim, DEF_MIDD_DARKEN);
 
 	default_xpen(&xp);
-	xscpy(xp.color, xg_horz.brim_color);
+	format_xcolor(&xc_brim, xp.color);
 	xscpy(xp.size, _T("2"));
 
 	widget_get_client_rect(ptd->widget, &xr);
@@ -274,11 +266,11 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 
 			if (compare_text(get_split_item_layer_ptr(ilk), -1, ATTR_LAYER_HORZ, -1, 1) == 0)
 			{
-				gradient_rect_raw(rdc, &xg_horz, &xr);
+				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr);
 			}
 			else
 			{
-				gradient_rect_raw(rdc, &xg_vert, &xr);
+				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 			}
 		}
 

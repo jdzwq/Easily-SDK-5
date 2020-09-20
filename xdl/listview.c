@@ -301,6 +301,8 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	else
 		pi = calc_list_items_per_row(ptr, pw);
 
+	default_xpen(&xp);
+	default_xbrush(&xb);
 	default_xfont(&xf);
 	default_xface(&xa);
 

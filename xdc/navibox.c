@@ -133,6 +133,7 @@ void navibox_on_keyboard(res_win_t widget)
 }
 
 /*********************************************************************************/
+
 int hand_navibox_create(res_win_t widget, void* data)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
@@ -219,7 +220,7 @@ void hand_navibox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xfont_t xf;
 	xbrush_t xb;
 	xpen_t xp;
-	xgradi_t xg = { 0 };
+	xcolor_t xc_brim, xc_core;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xbrush(widget, &xb);
@@ -238,12 +239,11 @@ void hand_navibox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	xscpy(xg.brim_color, xb.color);
-	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
-	xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+	parse_xcolor(&xc_brim, xb.color);
+	parse_xcolor(&xc_core, xb.color);
+	lighten_xcolor(&xc_brim, DEF_SOFT_DARKEN);
 
-	gradient_rect_raw(rdc, &xg, &xr);
+	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 
 	widget_get_canv_rect(widget, &cb);
 

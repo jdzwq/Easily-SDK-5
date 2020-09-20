@@ -363,7 +363,6 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	ximage_t xi = { 0 };
-	xgradi_t xg = { 0 };
 	xcolor_t xc, xc_check = { 0 };
 	const tchar_t *style, *icon;
 	bool_t b_print;
@@ -376,9 +375,10 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 
+	default_xpen(&xp);
+	default_xbrush(&xb);
 	default_xfont(&xf);
 	default_xface(&xa);
-	default_xgradi(&xg);
 
 	style = get_tree_style_ptr(ptr);
 
@@ -416,9 +416,6 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		parse_xcolor(&xc, xp.color);
 	}
 
-	xmem_copy((void*)&xb_bar, (void*)&xb, sizeof(xbrush_t));
-	lighten_xbrush(&xb_bar, DEF_SOFT_DARKEN);
-
 	parse_xcolor(&xc_check, xp.color);
 
 	th = get_tree_title_height(ptr);
@@ -433,11 +430,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr_text.fy = total_height;
 	xr_text.fh = th;
 
-	xscpy(xg.brim_color, xb.color);
-	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
+	xmem_copy((void*)&xb_bar, (void*)&xb, sizeof(xbrush_t));
+	lighten_xbrush(&xb_bar, DEF_SOFT_DARKEN);
+	xscpy(xb_bar.gradient, GDI_ATTR_GRADIENT_HORZ);
 
-	(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_text);
+	(*pif->pf_draw_rect)(pif->canvas, NULL, &xb, &xr_text);
 
 	xr_image.fx = total_indent;
 	xr_image.fw = ic;

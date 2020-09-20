@@ -295,7 +295,7 @@ void SQLFetchDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	res_ctx_t rdc;
 	xbrush_t xb = { 0 };
-	xgradi_t xg = { 0 };
+	xcolor_t xc_brim, xc_core;
 	xrect_t xr, xr_bar;
 	xsize_t xs;
 
@@ -319,12 +319,11 @@ void SQLFetchDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xr_bar.w = xr.w;
 	xr_bar.h = xs.cy;
 
-	xscpy(xg.brim_color, xb.color);
-	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_MIDD_DARKEN);
-	xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+	parse_xcolor(&xc_brim, xb.color);
+	parse_xcolor(&xc_core, xb.color);
+	lighten_xcolor(&xc_core, DEF_MIDD_DARKEN);
 
-	gradient_rect_raw(rdc, &xg, &xr_bar);
+	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 
 	end_canvas_paint(canv, dc, pxr);
 }

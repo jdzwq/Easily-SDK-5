@@ -30,8 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "svggdi.h"
-#include "xdlimp.h"
+#include "svgcanv.h"
+#include "svggizmo.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
 #include "xdlview.h"
@@ -82,9 +84,9 @@ static int svg_tm_to_pt_raw(link_t_ptr g, float tm, bool_t horz)
 
 void svg_text_metric_raw(link_t_ptr g, const xfont_t* pxf, xsize_t* pxs)
 {
-	float mm = 0.0f;
+	float mm;
 
-	mm = (float)font_points(xstof(pxf->size));
+	mm = font_metric(xstof(pxf->size));
 
 	pxs->cx = svg_tm_to_pt_raw(g, mm, 1) - svg_tm_to_pt_raw(g, 0, 1);
 	pxs->cy = svg_tm_to_pt_raw(g, mm, 0) - svg_tm_to_pt_raw(g, 0, 0);
@@ -92,9 +94,9 @@ void svg_text_metric_raw(link_t_ptr g, const xfont_t* pxf, xsize_t* pxs)
 
 void svg_text_size_raw(link_t_ptr g, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	float mm = 0.0f;
+	float mm;
 
-	mm = (float)font_points(xstof(pxf->size));
+	mm = font_metric(xstof(pxf->size));
 
 	if (len < 0) len = xslen(txt);
 
@@ -151,6 +153,7 @@ void svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
 	pxs->fx = mm;
 	pxs->fy = mm;
 }
+
 /***************************************************************************************************************/
 
 void svg_draw_line_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
@@ -221,13 +224,11 @@ void svg_draw_polygon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, 
 
 void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
 {
-	link_t_ptr g, nlk;
+	link_t_ptr g;
 	xpoint_t* pa;
 	int i;
 
 	g = svg_get_canvas_doc(canv);
-
-	nlk = insert_svg_node(g);
 
 	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
 	for (i = 0; i < n; i++)
@@ -237,7 +238,7 @@ void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 		svg_point_tm_to_pt(canv, &pa[i]);
 	}
 
-	write_polygon_to_svg_node(nlk, pxp, pxb, pa, n);
+	svg_draw_polygon_raw(g, pxp, pxb, pa, n);
 
 	xmem_free(pa);
 }
@@ -329,26 +330,6 @@ void svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const 
 	svg_rect_tm_to_pt(canv, &xr);
 
 	svg_draw_rect_raw(g, pxp, pxb, &xr);
-}
-
-void svg_gradient_rect_raw(link_t_ptr g, const xgradi_t* pxg, const xrect_t* pxr)
-{
-
-}
-
-void svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
-{
-	
-}
-
-void svg_alphablend_rect_raw(link_t_ptr g, const xcolor_t* pxc, const xrect_t* prt, int opacity)
-{
-
-}
-
-void svg_alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opacity)
-{
-
 }
 
 void svg_draw_round_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
@@ -530,14 +511,34 @@ void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const
 	svg_multi_line_raw(g, pxf, pxa, pxp, &xr);
 }
 
-void svg_draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
-{
-
-}
-
 void svg_draw_path_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
 {
+	link_t_ptr nlk;
 
+	nlk = insert_svg_node(g);
+
+	write_path_to_svg_node(nlk, pxp, pxb, aa, -1, pa, n);
+}
+
+void svg_draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
+{
+	link_t_ptr g;
+	xpoint_t* ppt;
+	int i;
+
+	g = svg_get_canvas_doc(canv);
+
+	ppt = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
+	for (i = 0; i < n; i++)
+	{
+		ppt[i].fx = pa[i].fx;
+		ppt[i].fy = pa[i].fy;
+		svg_point_tm_to_pt(canv, &ppt[i]);
+	}
+
+	svg_draw_path_raw(g, pxp, pxb, aa, ppt, n);
+
+	xmem_free(ppt);
 }
 
 void svg_draw_image_raw(link_t_ptr g, const ximage_t* pxi, const xrect_t* pxr)
@@ -602,6 +603,41 @@ void svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const 
 	svg_text_out_raw(g, pxf, &pt, txt, len);
 }
 
+void svg_color_out_raw(link_t_ptr g, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+{
+	const tchar_t *pre, *nxt;
+	xrect_t xr;
+	xcolor_t xc;
+	xbrush_t xb;
+	tchar_t* val;
+	int vlen;
+	tchar_t clr[CLR_LEN + 1];
+
+	if (len < 0)
+		len = xslen(rgbstr);
+
+	default_xbrush(&xb);
+
+	pre = rgbstr;
+	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
+	{
+		xsncpy(clr, val, CLR_LEN);
+		parse_xcolor(&xc, clr);
+		format_xcolor(&xc, xb.color);
+
+		svg_draw_rect_raw(g, NULL, &xb, &xr);
+
+		len -= (nxt - pre);
+
+		if (horz)
+			xr.x += xr.w;
+		else
+			xr.y += xr.h;
+
+		pre = nxt;
+	}
+}
+
 void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
 {
 	const tchar_t *pre, *nxt;
@@ -653,6 +689,138 @@ void svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	len = format_password(txt, sz_pass, INT_LEN);
 
 	svg_draw_text(canv, pxf, pxa, pxr, sz_pass, len);
+}
+
+void svg_draw_data_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
+{
+	tchar_t sz_format[RES_LEN] = { 0 };
+	xdate_t dt = { 0 };
+	int lt;
+	double db;
+
+	xsize_t xs;
+	xface_t xa;
+
+	if (len < 0)
+		len = xslen(data);
+
+	xmem_copy((void*)&xa, (void*)pxa, sizeof(xface_t));
+
+	if (compare_text(type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
+	{
+		lt = xsntol(data, len);
+
+		if (zeronull && !lt)
+		{
+			xscpy(sz_format, _T(""));
+		}
+		else if (!is_null(fmt))
+		{
+			format_integer_ex(lt, fmt, sz_format, RES_LEN);
+		}
+		else
+		{
+			xsncpy(sz_format, data, len);
+		}
+
+		if (autowrap && pxa && is_null(xa.text_wrap))
+		{
+			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
+			if (xs.fx > pxr->fw)
+			{
+				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
+			}
+		}
+
+		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
+	}
+	else if (compare_text(type, -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
+	{
+		db = xsntonum(data, len);
+
+		if (zeronull && is_zero_numeric(db, dig))
+		{
+			xscpy(sz_format, _T(""));
+		}
+		else if (!is_null(fmt))
+		{
+			format_numeric(db, fmt, sz_format, RES_LEN);
+		}
+		else
+		{
+			xsncpy(sz_format, data, len);
+		}
+
+		if (autowrap && is_null(xa.text_wrap))
+		{
+			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
+			if (xs.fx > pxr->fw)
+			{
+				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
+			}
+		}
+
+		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
+	}
+	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATETIME, -1, 0) == 0)
+	{
+		if (!is_null(fmt) && !is_null(data))
+		{
+			parse_datetime(&dt, data);
+			format_datetime_ex(&dt, fmt, sz_format, RES_LEN);
+		}
+		else
+		{
+			xsncpy(sz_format, data, len);
+		}
+
+		if (autowrap && is_null(xa.text_wrap))
+		{
+			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
+			if (xs.fx > pxr->fw)
+			{
+				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
+			}
+		}
+
+		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
+	}
+	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATE, -1, 0) == 0)
+	{
+		if (!is_null(fmt) && !is_null(data))
+		{
+			parse_date(&dt, data);
+			format_datetime_ex(&dt, fmt, sz_format, RES_LEN);
+		}
+		else
+		{
+			xsncpy(sz_format, data, len);
+		}
+
+		if (autowrap && is_null(xa.text_wrap))
+		{
+			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
+			if (xs.fx > pxr->fw)
+			{
+				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
+			}
+		}
+
+		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
+	}
+	else if (compare_text(type, -1, ATTR_DATA_TYPE_STRING, -1, 0) == 0)
+	{
+		if (autowrap && is_null(xa.text_wrap))
+		{
+			svg_text_size_raw(g, pxf, data, len, &xs);
+			if (xs.fx > pxr->fw)
+			{
+				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
+			}
+		}
+
+		svg_draw_text_raw(g, pxf, &xa, pxr, data, len);
+	}
 }
 
 void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
@@ -787,7 +955,85 @@ void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 	}
 }
 
-void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+void svg_draw_code128_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+{
+	int black, span;
+	dword_t i;
+	int unit = 2;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	unit = svg_tm_to_pt_raw(g, 0.3f, 1);
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
+
+	xmem_free(buf);
+
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+		default_xpen(&xp);
+		format_xcolor(pxc, xp.color);
+	}
+
+	rt.x = prt->x + unit;
+	rt.y = prt->y + unit;
+	rt.w = unit;
+	rt.h = prt->h - 2 * unit;
+
+	black = 0;
+	for (i = 0; i < bar_len; i++)
+	{
+		span = (bar_buf[i] - '0');
+		rt.w = span * unit;
+
+		black = (black) ? 0 : 1;
+
+		if (black && pxc)
+		{
+			svg_draw_rect_raw(g, &xp, &xb, &rt);
+		}
+
+		rt.x += rt.w;
+	}
+
+	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+}
+
+void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	int black,span;
 	dword_t i;
@@ -829,10 +1075,13 @@ void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, co
 
 	xmem_free(buf);
 
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+		default_xpen(&xp);
+		format_xcolor(pxc, xp.color);
+	}
 
 	rt.fx = prt->fx + unit;
 	rt.fy = prt->fy + unit;
@@ -847,7 +1096,7 @@ void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, co
 
 		black = (black) ? 0 : 1;
 
-		if (black)
+		if (black && pxc)
 		{
 			svg_draw_rect(canv, &xp, &xb, &rt);
 		}
@@ -856,16 +1105,109 @@ void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, co
 	}
 
 	xmem_free(bar_buf);
+
+	prt->fw = rt.fx + unit - prt->fx;
 }
 
-void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+void svg_draw_pdf417_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+{
+	int black;
+	int rows, cols;
+	unsigned char b, c;
+	int i, j;
+
+	int unit = 4;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	unit = svg_tm_to_pt_raw(g, 0.5f, 1);
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+		default_xpen(&xp);
+		format_xcolor(pxc, xp.color);
+	}
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.x = prt->x + unit;
+		rt.w = unit;
+		rt.y = prt->y + unit + i * 2 * unit;
+		rt.h = 2 * unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.x += rt.w;
+
+				black = (c & b) ? 0 : 1;
+
+				if (black && pxc)
+				{
+					svg_draw_rect_raw(g, &xp, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
+		}
+	}
+
+	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+	prt->h = rt.y + rt.h + unit - prt->y;
+}
+
+void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	int black;
 	int rows,cols;
 	unsigned char b, c;
 	int i,j;
 
-	float unit = 0.5;
+	float unit = 0.5f;
 	xrect_t rt;
 	xbrush_t xb;
 	xpen_t xp;
@@ -902,11 +1244,14 @@ void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
 
 	xmem_free(buf);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
+	
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+		default_xpen(&xp);
+		format_xcolor(pxc, xp.color);
+	}
 
 	len = 0;
 	black = 0;
@@ -928,7 +1273,7 @@ void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 
 				black = (c & b) ? 0 : 1;
 
-				if (black)
+				if (black && pxc)
 				{
 					svg_draw_rect(canv, &xp, &xb, &rt);
 				}
@@ -939,17 +1284,111 @@ void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 	}
 
 	xmem_free(bar_buf);
+
+	prt->fw = rt.fx + unit - prt->fx;
+	prt->fh = rt.fy + rt.fh + unit - prt->fy;
 }
 
 #ifdef GPL_SUPPORT_QRCODE
-void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+void svg_draw_qrcode_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+{
+	int black;
+	int rows, cols;
+	unsigned char b, c;
+	int i, j;
+
+	int unit = 4;
+	xrect_t rt;
+	xbrush_t xb;
+	xpen_t xp;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	unit = svg_tm_to_pt_raw(g, 0.5f, 1);
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+		default_xpen(&xp);
+		format_xcolor(pxc, xp.color);
+	}
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.x = prt->x + unit;
+		rt.w = unit;
+		rt.y = prt->y + unit + i * unit;
+		rt.h = unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.x += rt.w;
+
+				black = (c & b) ? 1 : 0;
+
+				if (black && pxc)
+				{
+					svg_draw_rect_raw(g, &xp, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
+		}
+	}
+
+	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+	prt->h = rt.y + rt.h + unit - prt->y;
+}
+
+void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	int black;
 	int rows,cols;
 	unsigned char b, c;
 	int i,j;
 
-	float unit = 0.5;
+	float unit = 0.5f;
 	xrect_t rt;
 	xbrush_t xb;
 	xpen_t xp;
@@ -987,10 +1426,13 @@ void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 
 	xmem_free(buf);
 
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+		default_xpen(&xp);
+		format_xcolor(pxc, xp.color);
+	}
 
 	len = 0;
 	black = 0;
@@ -1012,7 +1454,7 @@ void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 
 				black = (c & b) ? 1 : 0;
 
-				if (black)
+				if (black && pxc)
 				{
 					svg_draw_rect(canv, &xp, &xb, &rt);
 				}
@@ -1023,11 +1465,32 @@ void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, con
 	}
 
 	xmem_free(bar_buf);
+
+	prt->fw = rt.fx + unit - prt->fx;
+	prt->fh = rt.fy + rt.fh + unit - prt->fy;
 }
 #endif
 
-void svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* gname)
+void svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* gname)
 {
+	xrect_t xr;
+	PF_SVG_GIZMO_MAKE pf;
+	link_t_ptr g;
+
+	xr.fx = pxr->fx;
+	xr.fy = pxr->fy;
+	xr.fw = pxr->fw;
+	xr.fh = pxr->fh;
+
+	svg_rect_tm_to_pt(canv, &xr);
+
+	g = svg_get_canvas_doc(canv);
+
+	pf = svg_find_gizmo_maker(gname);
+	if (pf)
+	{
+		(*pf)(g, pxc, &xr);
+	}
 }
 
 void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
@@ -1104,7 +1567,7 @@ void _svg_draw_single_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* 
 
 	nlk = insert_svg_node(g);
 
-	write_text_to_svg_node(g, pxf, pxa, pxr, txt, len);
+	write_text_to_svg_node(nlk, pxf, pxa, pxr, txt, len);
 }
 
 void _svg_draw_single_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)

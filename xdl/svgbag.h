@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc svg gizmo document
+	@doc xdl export document
 
-	@module	svggizmo.h | interface file
+	@module	svgbag.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,32 +29,38 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _SVGGIZMO_H
-#define _SVGGIZMO_H
+#ifndef _SVGBAG_H
+#define _SVGBAG_H
 
 #include "xdldef.h"
 
-#if defined(XDL_SUPPORT_SVG)
-
-typedef void(*PF_SVG_GIZMO_MAKE)(link_t_ptr g, const xcolor_t* pxc, const xrect_t* prt);
-
-typedef struct _SVG_GIZMO_DRAW_TABLE{
-	tchar_t gizmo_name[32];
-	PF_SVG_GIZMO_MAKE gizmo_func;
-}SVG_GIZMO_DRAW_TABLE;
+#ifdef XDL_SUPPORT_SVG
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	EXP_API PF_SVG_GIZMO_MAKE svg_find_gizmo_maker(const tchar_t* iname);
+EXP_API void svg_print_form(link_t_ptr svg, link_t_ptr form, int page);
+
+EXP_API void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page);
+
+EXP_API void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page);
+
+EXP_API void svg_print_topog(link_t_ptr svg, link_t_ptr topog);
+
+EXP_API void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog);
+
+EXP_API void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram);
+
+EXP_API void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo, int page);
+
+EXP_API void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr rich, int page);
 
 
 #ifdef	__cplusplus
 }
 #endif
 
+#endif
 
-#endif /*XDL_SUPPORT_SVG*/
-
-#endif /*SVGGDI_H*/
+#endif /*SVGBAG_H*/

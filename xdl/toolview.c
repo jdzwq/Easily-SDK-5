@@ -303,6 +303,8 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	style = get_tool_style_ptr(ptr);
 
+	default_xpen(&xp);
+	default_xbrush(&xb);
 	default_xfont(&xf);
 	default_xface(&xa);
 

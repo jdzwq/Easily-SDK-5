@@ -49,6 +49,8 @@ typedef enum{
 extern "C" {
 #endif
 
+	EXP_API int calc_form_pages(const canvbox_t* pbox, link_t_ptr form);;
+
 	EXP_API void calc_form_field_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr flk, xrect_t* pxr);
 
 	EXP_API void calc_form_group_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr alk, xrect_t* pxr);

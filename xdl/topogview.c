@@ -115,6 +115,9 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	b_print = (pif->canvas->tag == _CANVAS_PRINTER)? 1 : 0;
 	b_design = topog_is_design(ptr);
 
+	default_xpen(&xp);
+	default_xbrush(&xb);
+
 	style = get_topog_style_ptr(ptr);
 	
 	parse_xbrush_from_style(&xb, style);

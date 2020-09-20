@@ -2580,7 +2580,7 @@ void parse_url(const tchar_t* url,tchar_t** proat,int* prolen,tchar_t** addrat,i
 
 int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 {
-	tchar_t* tname;
+	const tchar_t* tname;
 	int tlen, total = 0;
 	const tchar_t* tk;
 
@@ -2737,6 +2737,10 @@ void parse_xbrush_from_style(xbrush_t* pxb, const tchar_t* style)
 			xsncpy(pxb->color, val, vlen);
 		else if (compare_text(GDI_ATTR_FILL_OPACITY, -1, key, klen, 1) == 0)
 			xsncpy(pxb->opacity, val, vlen);
+		else if (compare_text(GDI_ATTR_STOP_COLOR, -1, key, klen, 1) == 0)
+			xsncpy(pxb->linear, val, vlen);
+		else if (compare_text(GDI_ATTR_GRADIENT, -1, key, klen, 1) == 0)
+			xsncpy(pxb->gradient, val, vlen);
 	}
 }
 
@@ -2764,6 +2768,30 @@ int format_xbrush_to_style(const xbrush_t* pxb, tchar_t* buf, int max)
 		if (buf)
 		{
 			xsprintf(buf + total, _T("%s%c%s%c"), GDI_ATTR_FILL_COLOR, CSS_ITEMFEED, pxb->color, CSS_LINEFEED);
+		}
+		total += len;
+	}
+
+	if (!is_null(pxb->linear))
+	{
+		len = xslen(GDI_ATTR_STOP_COLOR) + xslen(pxb->linear) + 2;
+		if (total + len > max)
+			return -1;
+		if (buf)
+		{
+			xsprintf(buf + total, _T("%s%c%s%c"), GDI_ATTR_STOP_COLOR, CSS_ITEMFEED, pxb->linear, CSS_LINEFEED);
+		}
+		total += len;
+	}
+
+	if (!is_null(pxb->gradient))
+	{
+		len = xslen(GDI_ATTR_GRADIENT) + xslen(pxb->color) + 2;
+		if (total + len > max)
+			return -1;
+		if (buf)
+		{
+			xsprintf(buf + total, _T("%s%c%s%c"), GDI_ATTR_GRADIENT, CSS_ITEMFEED, pxb->gradient, CSS_LINEFEED);
 		}
 		total += len;
 	}
@@ -3009,6 +3037,15 @@ float font_size(int px)
 	font_metric_by_px((float)px, &pt, NULL);
 
 	return pt;
+}
+
+float font_metric(float pt)
+{
+	float pm = 0;
+
+	font_metric_by_pt(pt, &pm, NULL);
+
+	return pm;
 }
 
 int font_points(float pt)

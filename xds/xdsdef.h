@@ -471,14 +471,14 @@ typedef int				wait_t;
 //#define INCHPERTM	0.003937
 #define INCHPERMM	0.03937
 //#define TMPERINCH	254
-#define MMPERINCH	25.4
+#define MMPERINCH	25.4f
 //#define PTPERINCH	1440
-//#define PTPERMM	56.693
-#define MMPERLOGPT	0.1
-#define MMPERPD		0.35
-#define PDPERMM		2.835
+//#define PTPERMM	56.693f
+#define MMPERLOGPT	0.1f
+#define MMPERPD		0.35f
+#define PDPERMM		2.835f
 #define PDPERINCH	72
-#define SVGPTPERMM	10
+#define SVGPTPERMM	7.2f
 
 typedef enum{ _RGB_COLOR, HSL_COLOR, _HEX_COLOR }CLRFMT;
 
@@ -555,17 +555,19 @@ typedef struct _adorn_t{
 	int size;
 }adorn_t;
 
-typedef struct _xgradi_t{
+/*typedef struct _xgradi_t{
 	tchar_t type[RES_LEN];
 	tchar_t opacity[INT_LEN];
 	tchar_t brim_color[CLR_LEN];
 	tchar_t core_color[CLR_LEN];
-}xgradi_t;
+}xgradi_t;*/
 
 typedef struct _xbrush_t{
 	tchar_t style[RES_LEN];
 	tchar_t opacity[INT_LEN];
 	tchar_t color[CLR_LEN];
+	tchar_t linear[CLR_LEN];
+	tchar_t gradient[RES_LEN];
 	shadow_t shadow;
 }xbrush_t;
 

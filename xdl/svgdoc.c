@@ -107,7 +107,47 @@ link_t_ptr get_svg_prev_sibling_node(link_t_ptr nlk)
 	return get_dom_prev_sibling_node(nlk);
 }
 
+link_t_ptr svg_doc_from_node(link_t_ptr nlk)
+{
+	while (nlk)
+	{
+		if (compare_text(get_dom_node_name_ptr(nlk), -1, DOC_SVG, -1, 1) == 0)
+			return nlk;
+
+		nlk = get_dom_parent_node(nlk);
+	}
+
+	return nlk;
+}
+
+link_t_ptr get_svg_defs_node(link_t_ptr ptr, bool_t b_add, int* pn)
+{
+	link_t_ptr nlk;
+
+	if (pn) *pn = 0;
+
+	nlk = get_svg_first_child_node(ptr);
+	while (nlk)
+	{
+		*pn++;
+
+		if (compare_text(get_svg_node_name_ptr(nlk), -1, SVG_NODE_DEFS, -1, 1) == 0)
+			break;
+
+		nlk = get_svg_next_sibling_node(nlk);
+	}
+
+	if (!nlk && b_add)
+	{
+		nlk = insert_dom_node(ptr, LINK_FIRST);
+		set_dom_node_name(nlk, SVG_NODE_DEFS, -1);
+	}
+
+	return nlk;
+}
+
 /******************************************************************************************************/
+
 void set_svg_width(link_t_ptr ptr, float width)
 {
 	tchar_t token[NUM_LEN + 1] = { 0 };
@@ -196,26 +236,23 @@ void write_xpen_to_svg_node(link_t_ptr nlk, const xpen_t* pxp)
 {
 	tchar_t token[RES_LEN + 1] = { 0 };
 
-	if (pxp)
+	if (is_null_xpen(pxp))
+		return;
+
+	if (!is_null(pxp->color))
 	{
-		if (!is_null(pxp->color))
-			set_dom_node_attr(nlk, SVG_ATTR_STROKE_COLOR, -1, pxp->color, -1);
-		else
-			set_dom_node_attr(nlk, SVG_ATTR_STROKE_COLOR, -1, GDI_ATTR_RGB_GRAY, -1);
+		set_dom_node_attr(nlk, SVG_ATTR_STROKE_COLOR, -1, pxp->color, -1);
 	}
 
-	if (pxp && !is_null(pxp->opacity))
+	if (!is_null(pxp->opacity))
 	{
 		xsprintf(token, _T("%.2f"), xstonum(pxp->opacity) / 255.0);
 		set_dom_node_attr(nlk, SVG_ATTR_STROKE_OPACITY, -1, token, -1);
 	}
 
-	if (pxp)
+	if (!is_null(pxp->size))
 	{
-		if(!is_null(pxp->size))
-			set_dom_node_attr(nlk, SVG_ATTR_STROKE_WIDTH, -1, pxp->size, -1);
-		else
-			set_dom_node_attr(nlk, SVG_ATTR_STROKE_WIDTH, -1, _T("1"), -1);
+		set_dom_node_attr(nlk, SVG_ATTR_STROKE_WIDTH, -1, pxp->size, -1);
 	}
 }
 
@@ -245,20 +282,79 @@ void read_xpen_from_svg_node(link_t_ptr nlk, xpen_t* pxp)
 void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 {
 	tchar_t token[RES_LEN + 1] = { 0 };
+	tchar_t gid[RES_LEN + 1] = { 0 };
+	link_t_ptr ptr, nlk_defs, nlk_objs, nlk_sub;
+	int n = 0;
 
-	if (pxb)
+	if (is_null_xbrush(pxb))
 	{
-		if (!is_null(pxb->color))
-			set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, pxb->color, -1);
+		set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, GDI_ATTR_RGB_WHITE, -1);
+		return;
+	}
+
+	if (compare_text(pxb->style, -1, GDI_ATTR_FILL_STYLE_GRADIENT, -1, 0) == 0)
+	{
+		ptr = svg_doc_from_node(nlk);
+		nlk_defs = get_svg_defs_node(ptr, 1, &n);
+
+		xsprintf(gid, _T("gradient%d"), (n + 1));
+		xsprintf(token, _T("url(#%s)"), gid);
+		set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, token, -1);
+
+		nlk_objs = insert_dom_node(nlk_defs, LINK_LAST);
+		if (compare_text(pxb->gradient, -1, SVG_NODE_LINEARGRADIENT, -1, 0) == 0)
+		{
+			set_dom_node_name(nlk_objs, SVG_NODE_LINEARGRADIENT, -1);
+		}
 		else
-			set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, GDI_ATTR_RGB_WHITE, -1);
+		{
+			set_dom_node_name(nlk_objs, SVG_NODE_RADIALGRADIENT, -1);
+		}
+		set_dom_node_attr(nlk_objs, _T("id"), -1, gid, -1);
+
+		if (compare_text(pxb->gradient, -1, GDI_ATTR_GRADIENT_HORZ, -1, 0) == 0)
+		{
+			set_dom_node_attr(nlk_objs, _T("x1"), -1, _T("0%"), -1);
+			set_dom_node_attr(nlk_objs, _T("y1"), -1, _T("50%"), -1);
+			set_dom_node_attr(nlk_objs, _T("x2"), -1, _T("0%"), -1);
+			set_dom_node_attr(nlk_objs, _T("y2"), -1, _T("100%"), -1);
+		}
+		else if (compare_text(pxb->gradient, -1, GDI_ATTR_GRADIENT_VERT, -1, 0) == 0)
+		{
+			set_dom_node_attr(nlk_objs, _T("x1"), -1, _T("0%"), -1);
+			set_dom_node_attr(nlk_objs, _T("y1"), -1, _T("50%"), -1);
+			set_dom_node_attr(nlk_objs, _T("x2"), -1, _T("100%"), -1);
+			set_dom_node_attr(nlk_objs, _T("y2"), -1, _T("100%"), -1);
+		}
+		else
+		{
+			set_dom_node_attr(nlk_objs, _T("cx"), -1, _T("50%"), -1);
+			set_dom_node_attr(nlk_objs, _T("cy"), -1, _T("50%"), -1);
+			set_dom_node_attr(nlk_objs, _T("rx"), -1, _T("50%"), -1);
+			set_dom_node_attr(nlk_objs, _T("ry"), -1, _T("50%"), -1);
+		}
+
+		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
+		set_dom_node_name(nlk_sub, SVG_NODE_STOP, -1);
+		set_dom_node_attr(nlk_sub, _T("offset"), -1, _T("0%"), -1);
+		xsprintf(token, _T("stop-color:%s"), pxb->color);
+		set_dom_node_attr(nlk_sub, _T("style"), -1, token, -1);
+
+		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
+		set_dom_node_name(nlk_sub, SVG_NODE_STOP, -1);
+		set_dom_node_attr(nlk_sub, _T("offset"), -1, _T("100%"), -1);
+		xsprintf(token, _T("stop-color:%s"), pxb->linear);
+		set_dom_node_attr(nlk_sub, _T("style"), -1, token, -1);
 	}
 	else
 	{
-		set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, GDI_ATTR_RGB_WHITE, -1);
+		if (!is_null(pxb->color))
+		{
+			set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, pxb->color, -1);
+		}
 	}
 
-	if (pxb && !is_null(pxb->opacity))
+	if (!is_null(pxb->opacity))
 	{
 		xsprintf(token, _T("%.2f"), xstof(pxb->opacity) / 255.0);
 		set_dom_node_attr(nlk, SVG_ATTR_FILL_OPACITY, -1, token, -1);
@@ -267,15 +363,69 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 
 void read_xbrush_from_svg_node(link_t_ptr nlk, xbrush_t* pxb)
 {
-	const tchar_t* token;
+	tchar_t token[RES_LEN] = { 0 };
+	tchar_t gid[RES_LEN] = { 0 };
+	link_t_ptr ptr, nlk_defs, nlk_objs, nlk_sub;
 
-	token = get_dom_node_attr_ptr(nlk, SVG_ATTR_FILL_COLOR, -1);
-	if (!is_null(token))
+	get_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, token, RES_LEN);
+
+	if (compare_text(token, 5, _T("url(#"), 5, 1) == 0)
+	{
+		xsncpy(gid, (token + 5), xslen(token) - 6);
+
+		xscpy(pxb->style, GDI_ATTR_FILL_STYLE_GRADIENT);
+
+		ptr = svg_doc_from_node(nlk);
+		nlk_defs = get_svg_defs_node(ptr, 0, NULL);
+		if (nlk_defs)
+		{
+			nlk_objs = get_svg_first_child_node(nlk_defs);
+			while (nlk_objs)
+			{
+				if (compare_text(get_dom_node_attr_ptr(nlk_objs, _T("id"), -1), -1, gid, -1, 1) == 0)
+				{
+					break;
+				}
+
+				nlk_objs = get_svg_first_child_node(nlk_objs);
+			}
+
+			if (nlk_objs)
+			{
+				if (compare_text(get_dom_node_name_ptr(nlk_objs), -1, SVG_NODE_LINEARGRADIENT, -1, 1) == 0)
+				{
+					xscpy(pxb->gradient, GDI_ATTR_GRADIENT_HORZ);
+				}
+				else
+				{
+					xscpy(pxb->gradient, GDI_ATTR_GRADIENT_RADIAL);
+				}
+
+				nlk_sub = get_svg_first_child_node(nlk_objs);
+				while (nlk_sub)
+				{
+					if (compare_text(get_dom_node_name_ptr(nlk_sub), -1, SVG_NODE_STOP, -1, 1) == 0 && compare_text(get_dom_node_attr_ptr(nlk_sub, _T("offset"), -1), -1, _T("0%"), -1, 0) == 0)
+					{
+						get_dom_node_attr(nlk_sub, _T("style"), -1, token, RES_LEN);
+						xscpy(pxb->color, (token + 11)); //stop-color:
+					}
+					else if (compare_text(get_dom_node_name_ptr(nlk_sub), -1, SVG_NODE_STOP, -1, 1) == 0)
+					{
+						get_dom_node_attr(nlk_sub, _T("style"), -1, token, RES_LEN);
+						xscpy(pxb->linear, (token + 11)); //stop-color:
+					}
+
+					nlk_sub = get_svg_next_sibling_node(nlk_sub);
+				}
+			}
+		}
+	}
+	else if (!is_null(token))
 	{
 		xscpy(pxb->color, token);
 	}
 	
-	token = get_dom_node_attr_ptr(nlk, SVG_ATTR_FILL_OPACITY, -1);
+	get_dom_node_attr(nlk, SVG_ATTR_FILL_OPACITY, -1, token, RES_LEN);
 	if (!is_null(token))
 	{
 		xsprintf(pxb->opacity, _T("%d"), (int)(xstof(token) * 255.0));
@@ -284,26 +434,22 @@ void read_xbrush_from_svg_node(link_t_ptr nlk, xbrush_t* pxb)
 
 void write_xfont_to_svg_node(link_t_ptr nlk, const xfont_t* pxf)
 {
-	if (pxf)
+	if (is_null_xfont(pxf))
+		return;
+
+	if (!is_null(pxf->size))
 	{
-		if (!is_null(pxf->size))
-			set_dom_node_attr(nlk, SVG_ATTR_FONT_SIZE, -1, pxf->size, -1);
-		else
-			set_dom_node_attr(nlk, SVG_ATTR_FONT_SIZE, -1, GDI_ATTR_FONT_SIZE_TEXT, -1);
+		set_dom_node_attr(nlk, SVG_ATTR_FONT_SIZE, -1, pxf->size, -1);
 	}
 
-	if (pxf)
+	if (!is_null(pxf->family))
 	{
-		if (!is_null(pxf->family))
-			set_dom_node_attr(nlk, SVG_ATTR_FONT_FAMILY, -1, pxf->family, -1);
+		set_dom_node_attr(nlk, SVG_ATTR_FONT_FAMILY, -1, pxf->family, -1);
 	}
 
-	if (pxf)
+	if (!is_null(pxf->color))
 	{
-		if (!is_null(pxf->color))
-			set_dom_node_attr(nlk, SVG_ATTR_TEXT_COLOR, -1, pxf->color, -1);
-		else
-			set_dom_node_attr(nlk, SVG_ATTR_TEXT_COLOR, -1, GDI_ATTR_RGB_BLACK, -1);
+		set_dom_node_attr(nlk, SVG_ATTR_TEXT_COLOR, -1, pxf->color, -1);
 	}
 }
 
@@ -328,28 +474,24 @@ void read_xfont_from_svg_node(link_t_ptr nlk, xfont_t* pxf)
 	{
 		xscpy(pxf->color, token);
 	}
-
 }
 
 void write_xface_to_svg_node(link_t_ptr nlk, const xface_t* pxa)
 {
 	tchar_t token[RES_LEN + 1] = { 0 };
 
-	if (pxa)
+	if (is_null_xface(pxa))
+		return;
+
+	if (!is_null(pxa->text_align))
 	{
-		if (!is_null(pxa->text_align))
-		{
-			if (compare_text(pxa->text_align, -1, GDI_ATTR_TEXT_ALIGN_FAR, -1, 1) == 0)
-				xscpy(token, SVG_ATTR_TEXT_ALIGN_FAR);
-			else if (compare_text(pxa->text_align, -1, GDI_ATTR_TEXT_ALIGN_CENTER, -1, 1) == 0)
-				xscpy(token, SVG_ATTR_TEXT_ALIGN_CENTER);
-			else
-				xscpy(token, SVG_ATTR_TEXT_ALIGN_NEAR);
-		}
+		if (compare_text(pxa->text_align, -1, GDI_ATTR_TEXT_ALIGN_FAR, -1, 1) == 0)
+			xscpy(token, SVG_ATTR_TEXT_ALIGN_FAR);
+		else if (compare_text(pxa->text_align, -1, GDI_ATTR_TEXT_ALIGN_CENTER, -1, 1) == 0)
+			xscpy(token, SVG_ATTR_TEXT_ALIGN_CENTER);
 		else
-		{
 			xscpy(token, SVG_ATTR_TEXT_ALIGN_NEAR);
-		}
+
 		set_dom_node_attr(nlk, SVG_ATTR_TEXT_ALIGN, -1, token, -1);
 	}
 }
@@ -365,8 +507,6 @@ void read_xface_from_svg_node(link_t_ptr nlk, xface_t* pxa)
 			xscpy(pxa->text_align, GDI_ATTR_TEXT_ALIGN_FAR);
 		else if (compare_text(token, -1, SVG_ATTR_TEXT_ALIGN_CENTER, -1, 1) == 0)
 			xscpy(pxa->text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-		else
-			xscpy(pxa->text_align, GDI_ATTR_TEXT_ALIGN_NEAR);
 	}
 }
 
@@ -391,10 +531,13 @@ void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t
 	xsprintf(token, _T("%d"), prt->h);
 	set_dom_node_attr(glk, SVG_ATTR_HEIGHT, -1, token, -1);
 
-	len = format_ximage_to_source(pxi, NULL, MAX_LONG);
-	data = xsalloc(len + 1);
-	format_ximage_to_source(pxi, data, len);
-	attach_dom_node_attr(glk, SVG_ATTR_IMAGE_HREF, data);
+	if (pxi)
+	{
+		len = format_ximage_to_source(pxi, NULL, MAX_LONG);
+		data = xsalloc(len + 1);
+		format_ximage_to_source(pxi, data, len);
+		attach_dom_node_attr(glk, SVG_ATTR_IMAGE_HREF, data);
+	}
 }
 
 void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt)
@@ -1037,6 +1180,14 @@ void write_shape_to_svg_node(link_t_ptr glk,const xpen_t* pxp, const xbrush_t* p
 	}
 }
 
+static const tchar_t* _path_skip_num(const tchar_t* token)
+{
+	while (IS_SVG_NUM_CHAR(*token) || IS_SVG_SPACE_CHAR(*token))
+		token++;
+
+	return token;
+}
+
 bool_t svg_node_is_pie(link_t_ptr glk)
 {
 	const tchar_t* token;
@@ -1045,11 +1196,28 @@ bool_t svg_node_is_pie(link_t_ptr glk)
 		return 0;
 
 	token = get_dom_node_attr_ptr(glk, SVG_ATTR_D, -1);
-
-	if (xsstr(token, _T("A")))
-		return 1;
-	else
+	if (is_null(token))
 		return 0;
+
+	if (*token != _T('M'))
+		return 0;
+
+	token = _path_skip_num(token);
+
+	if (*token != _T('L'))
+		return 0;
+
+	token = _path_skip_num(token);
+
+	if (*token != _T('A'))
+		return 0;
+
+	token = _path_skip_num(token);
+
+	if (*token != _T('Z'))
+		return 0;
+
+	return 1;
 }
 
 void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
@@ -1115,5 +1283,874 @@ void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t
 		read_xbrush_from_svg_node(glk, pxb);
 }
 
+bool_t svg_node_is_arc(link_t_ptr glk)
+{
+	const tchar_t* token;
+
+	if (xsicmp(get_dom_node_name_ptr(glk), SVG_NODE_PATH) != 0)
+		return 0;
+
+	token = get_dom_node_attr_ptr(glk, SVG_ATTR_D, -1);
+	if (is_null(token))
+		return 0;
+
+	if (*token != _T('M'))
+		return 0;
+
+	token = _path_skip_num(token);
+
+	if (*token != _T('A'))
+		return 0;
+
+	token = _path_skip_num(token);
+
+	if (*token != _T('\0'))
+		return 0;
+
+	return 1;
+}
+
+void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+{
+	xpoint_t pt1, pt2;
+	tchar_t token[10 * INT_LEN];
+	int larg;
+
+	set_dom_node_name(glk, SVG_NODE_PATH, -1);
+
+	pt1.x = (int)((float)rx * cos(fang)) + ppt->x;
+	pt1.y = -(int)((float)ry * sin(fang)) + ppt->y;
+
+	pt2.x = (int)((float)rx * cos(tang)) + ppt->x;
+	pt2.y = -(int)((float)ry * sin(tang)) + ppt->y;
+
+	if (tang - fang > XPI)
+		larg = 1;
+	else
+		larg = 0;
+
+	xsprintf(token, _T("M%d %d A%d %d 0 %d 0 %d %d"), pt1.x, pt1.y, rx, ry, larg, pt2.x, pt2.y);
+
+	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
+
+	write_xpen_to_svg_node(glk, pxp);
+}
+
+void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang)
+{
+	const tchar_t* token;
+	int x1, y1, x2, y2, x3, y3, rx, ry;
+	int tan, lar, ccw;
+
+	if (xsicmp(get_dom_node_name_ptr(glk), SVG_NODE_PATH) != 0)
+		return;
+
+	token = get_dom_node_attr_ptr(glk, SVG_ATTR_D, -1);
+	if (is_null(token))
+		return;
+
+	xsscanf(token, _T("M%d %d A%d %d %d %d %d %d %d"), &x2, &y2, &rx, &ry, &tan, &lar, &ccw, &x3, &y3);
+
+	x1 = y1 = 0;
+	ppt->x = x1;
+	ppt->y = y1;
+	*prx = rx;
+	*pry = ry;
+
+	*pfang = acos((float)(x2 - x1) / (float)rx);
+	if (y1 < y2)
+		*pfang = 2 * XPI - *pfang;
+
+	*ptang = acos((float)(x3 - x1) / (float)rx);
+	if (y1 <= y3)
+		*ptang = 2 * XPI - *ptang;
+
+	if (pxp)
+		read_xpen_from_svg_node(glk, pxp);
+}
+
+void svg_parse_path(const tchar_t* token, int len, tchar_t* aa, int* an, xpoint_t* pp, int* pn)
+{
+	const tchar_t* str = token;
+	int a = 0, p = 0, n = 0;
+	int r, l, s;
+
+	if (len < 0) len = xslen(token);
+
+	while (str && n < len)
+	{
+		while (!IS_SVG_PATH_CHAR(*str))
+		{
+			str++;
+			n++;
+		}
+
+		switch (*str)
+		{
+		case _T('M'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			break;
+		case _T('L'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			break;
+		case _T('H'):
+			if (aa)
+			{
+				aa[a] = _T('L');
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+				pp[p].y = (p) ? pp[p - 1].y : 0;
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			break;
+		case _T('V'):
+			if (aa)
+			{
+				aa[a] = _T('L');
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = (p) ? pp[p - 1].x : 0;
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			break;
+		case _T('C'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//two point
+			p++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//three point
+			p++;
+
+			break;
+		case _T('S'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//two point
+			p++;
+
+			break;
+		case _T('Q'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//two point
+			p++;
+
+			break;
+		case _T('T'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//one point
+			p++;
+			break;
+		case _T('A'):
+			if (aa)
+			{
+				aa[a] = *str;
+			}
+			a++;
+
+			str++;
+			n++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//rx, ry
+			p++;
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			r = xstol(str);
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			l = xstol(str);
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			s = xstol(str);
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].x = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			while (IS_SVG_SPACE_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			if (pp)
+			{
+				pp[p].y = xstol(str);
+			}
+
+			while (IS_SVG_NUM_CHAR(*str))
+			{
+				str++;
+				n++;
+			}
+
+			//point
+			p++;
+
+			if (s && pp)
+			{
+				pp[p - 2].x = 0 - pp[p - 2].x;
+				pp[p - 2].y = 0 - pp[p - 2].y;
+			}
+
+			break;
+		case _T('Z'):
+			n = len;
+			break;
+		}
+	}
+
+	if (an) *an = a;
+	if (pn) *pn = p;
+}
+
+int svg_format_path(const tchar_t* aa, int an, const xpoint_t* pp, int pn, tchar_t* buf, int max)
+{
+	int a, p = 0, n, total = 0;
+	int r, l, s;
+
+	if (an < 0) an = xslen(aa);
+
+	for (a = 0; (a < an && p < pn); a++)
+	{
+		switch (aa[a])
+		{
+		case _T('M'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("M%d,%d "), pp[p].x, pp[p].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p++;
+			break;
+		case _T('L'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("L%d,%d "), pp[p].x, pp[p].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p++;
+			break;
+		case _T('H'):
+			break;
+		case _T('V'):
+			break;
+		case _T('C'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("C%d,%d %d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y, pp[p + 2].x, pp[p + 2].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 3;
+			break;
+		case _T('S'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("S%d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 2;
+			break;
+		case _T('Q'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("Q%d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 2;
+			break;
+		case _T('T'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("L%d,%d "), pp[p].x, pp[p].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p++;
+			break;
+		case _T('A'):
+			r = 0;
+			l = 0;
+			s = (pp[p].x < 0 || pp[p].y < 0) ? 1 : 0;
+
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("A%d,%d %d %d,%d %d,%d "), pp[p].x, pp[p].y, r, l, s, pp[p + 1].x, pp[p + 1].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 2;
+
+			break;
+		case _T('Z'):
+			if (buf)
+			{
+				buf[total] = _T('Z');
+			}
+			total++;
+
+			a = an;
+			break;
+		}
+	}
+
+	return total;
+}
+
+void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, int len, const xpoint_t* pa, int pn)
+{
+	tchar_t* buf;
+	int n;
+
+	n = svg_format_path(aa, len, pa, pn, NULL, MAX_LONG);
+	buf = xsalloc(n + 1);
+	svg_format_path(aa, len, pa, pn, buf, n);
+
+	set_dom_node_name(glk, SVG_NODE_PATH, -1);
+
+	set_dom_node_attr(glk, SVG_ATTR_D, -1, buf, n);
+
+	xsfree(buf);
+
+	write_xpen_to_svg_node(glk, pxp);
+
+	write_xbrush_to_svg_node(glk, pxb);
+}
+
+void read_path_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, tchar_t* aa, int* an, xpoint_t* pa, int* pn)
+{
+	const tchar_t* token;
+	
+	if (xsicmp(get_dom_node_name_ptr(glk), SVG_NODE_PATH) != 0)
+		return;
+
+	token = get_dom_node_attr_ptr(glk, SVG_ATTR_D, -1);
+	if (is_null(token))
+		return;
+
+	svg_parse_path(token, -1, aa, an, pa, pn);
+	
+	if (pxp)
+		read_xpen_from_svg_node(glk, pxp);
+
+	if (pxb)
+		read_xbrush_from_svg_node(glk, pxb);
+}
 
 #endif //XDLDLC

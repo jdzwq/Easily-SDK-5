@@ -104,7 +104,7 @@ typedef void(*PF_GDI_DRAW_BEZIER)(res_ctx_t, const xpen_t*, const xpoint_t*, con
 typedef void(*PF_GDI_DRAW_CURVE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_PATH)(res_ctx_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*);
-typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xgradi_t*, const xrect_t*);
+typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t*);
 typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);

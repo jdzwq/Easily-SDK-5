@@ -1357,7 +1357,7 @@ void reset_form_taborder(link_t_ptr ptr)
 	nlk = get_form_fieldset(ptr);
 	root = get_dom_child_node_root(nlk);
 
-	heap_sort_link(root, (CALLBACK_SORTLINK)_field_compare_func, 0, (void*)&cp);
+	bubble_sort_link(root, (CALLBACK_SORTLINK)_field_compare_func, 0, (void*)&cp);
 
 	flk = get_next_field(ptr,LINK_FIRST);
 	while(flk)

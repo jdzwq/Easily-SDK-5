@@ -38,8 +38,6 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API int calc_form_pages(canvas_t canv, link_t_ptr form);
-
 #if defined(XDU_SUPPORT_CONTEXT_PRINTER)
 
 EXP_API void print_form(const dev_prn_t* pdev, link_t_ptr form);
@@ -60,21 +58,7 @@ EXP_API void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t
 
 EXP_API void print_svg(const dev_prn_t* pdev, link_t_ptr svg);
 
-EXP_API void svg_print_form(link_t_ptr svg, link_t_ptr form, int page);
 
-EXP_API void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page);
-
-EXP_API void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page);
-
-EXP_API void svg_print_topog(link_t_ptr svg, link_t_ptr topog);
-
-EXP_API void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog);
-
-EXP_API void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram);
-
-EXP_API void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo, int page);
-
-EXP_API void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr rich, int page);
 
 #endif /*XDU_SUPPORT_CONTEXT_PRINTER*/
 

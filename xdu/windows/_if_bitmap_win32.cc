@@ -189,7 +189,7 @@ res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const
 	clr_brush = RGB(pxc_near->r, pxc_near->g, pxc_near->b);
 	clr_linear = RGB(pxc_center->r, pxc_center->g, pxc_center->b);
 
-	if (type && _tcsicmp(type, GDI_ATTR_GRADIENT_TYPE_VERT) == 0)
+	if (type && _tcsicmp(type, GDI_ATTR_GRADIENT_VERT) == 0)
 	{
 		tv[0].x = rt.left;
 		tv[0].y = rt.top;

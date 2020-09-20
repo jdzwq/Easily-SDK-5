@@ -379,6 +379,7 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	show = get_menu_show_ptr(ptr);
 
+	default_xpen(&xp);
 	default_xfont(&xf);
 	default_xface(&xa);
 

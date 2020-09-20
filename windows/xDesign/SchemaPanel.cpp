@@ -274,35 +274,55 @@ void SchemaPanel_OnSaveAs(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szType[RES_LEN] = { 0 };
+	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("data schema file(*.schema)\0*.schema\0"), _T("schema"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("xml sheet file(*.sheet)\0*.sheet\0svg image file(*.svg)\0*.svg\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
+	split_path(szFile, NULL, NULL, szType);
+
 	LINKPTR ptr_memo = memoctrl_fetch(pdt->hMemo);
 
-	LINKPTR ptr_xml = create_xml_doc();
-
-	if (!parse_xml_doc_from_memo(ptr_xml, ptr_memo))
+	if (compare_text(szType, -1, _T("svg"), -1, 1) == 0)
 	{
+		LINKPTR ptrSvg = create_svg_doc();
+
+		xfont_t xf;
+		xface_t xa;
+
+		widget_get_xfont(pdt->hMemo, &xf);
+		widget_get_xface(pdt->hMemo, &xa);
+
+		int page = memoctrl_get_cur_page(pdt->hMemo);
+
+		svg_print_memo(ptrSvg, &xf, &xa, ptr_memo, page);
+
+		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
+
+		destroy_svg_doc(ptrSvg);
+	}
+	else
+	{
+		LINKPTR ptr_xml = create_xml_doc();
+
+		rt = parse_xml_doc_from_memo(ptr_xml, ptr_memo);
+		if (rt)
+		{
+			rt = save_xml_doc_to_file(ptr_xml, NULL, szFile);
+		}
+		
 		destroy_xml_doc(ptr_xml);
-		ShowMsg(MSGICO_ERR, _T("解析XML文档失败！"));
-		return;
 	}
 
-	if (!save_xml_doc_to_file(ptr_xml, NULL, szFile))
-	{
-		destroy_xml_doc(ptr_xml);
-		ShowMsg(MSGICO_ERR, _T("保存XML文档失败！"));
-		return;
-	}
-
-	destroy_xml_doc(ptr_xml);
+	if (!rt)
+		ShowMsg(MSGICO_ERR, _T("保存文件错误！"));
 }
 
 void SchemaPanel_OnPrint(res_win_t widget)

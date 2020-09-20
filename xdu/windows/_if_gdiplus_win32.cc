@@ -126,9 +126,10 @@ static Pen* create_pen(const xpen_t* pxp)
 	return pp;
 }
 
-static Brush* create_brush(const xbrush_t* pxb)
+static Brush* create_brush(const xbrush_t* pxb, const xrect_t* pxr, GraphicsPath* pgp)
 {
 	xcolor_t brush_color = {0};
+	xcolor_t linear_color = { 0 };
 	short opacity;
 
 	if (is_null(pxb->color))
@@ -141,7 +142,54 @@ static Brush* create_brush(const xbrush_t* pxb)
 	else
 		opacity = xstol(pxb->opacity);
 
-	return new SolidBrush(Color((BYTE)opacity,brush_color.r,brush_color.g,brush_color.b));
+	if (xscmp(pxb->style, GDI_ATTR_FILL_STYLE_GRADIENT) == 0)
+	{
+		if (is_null(pxb->linear))
+			parse_xcolor(&linear_color, GDI_ATTR_RGB_SOFTWHITE);
+		else
+			parse_xcolor(&linear_color, pxb->linear);
+
+		if (pgp)
+		{
+			PathGradientBrush* pb = new PathGradientBrush(pgp);
+			pb->SetCenterColor(Color(255, brush_color.r, brush_color.g, brush_color.b));
+			Color clr(Color(255, linear_color.r, linear_color.g, linear_color.b));
+			int n = 1;
+			pb->SetSurroundColors(&clr, &n);
+
+			return (Brush*)pb;
+		}
+		else if (pxr)
+		{
+			if (xscmp(pxb->gradient, GDI_ATTR_GRADIENT_HORZ) == 0)
+				return 	new LinearGradientBrush(Rect(pxr->x, pxr->y, pxr->w, pxr->h), Color(255, brush_color.r, brush_color.g, brush_color.b), Color(255, linear_color.r, linear_color.g, linear_color.b), LinearGradientModeHorizontal);
+			else if (xscmp(pxb->gradient, GDI_ATTR_GRADIENT_VERT) == 0)
+				return 	new LinearGradientBrush(Rect(pxr->x, pxr->y, pxr->w, pxr->h), Color(255, brush_color.r, brush_color.g, brush_color.b), Color(255, linear_color.r, linear_color.g, linear_color.b), LinearGradientModeVertical);
+			else
+			{
+				GraphicsPath gp;
+				gp.AddRectangle(Rect(pxr->x, pxr->y, pxr->w, pxr->h));
+
+				PathGradientBrush* pb = new PathGradientBrush(&gp);
+				pb->SetCenterColor(Color(255, brush_color.r, brush_color.g, brush_color.b));
+				Color clr(Color(255, linear_color.r, linear_color.g, linear_color.b));
+				int n = 1;
+				pb->SetSurroundColors(&clr, &n);
+
+				return (Brush*)pb;
+			}
+		}
+	}
+	else if (xscmp(pxb->style, GDI_ATTR_FILL_STYLE_HATCH) == 0)
+	{
+		return new HatchBrush(HatchStyleCross, Color((BYTE)opacity, brush_color.r, brush_color.g, brush_color.b), Color(255, linear_color.r, linear_color.g, linear_color.b));
+	}
+	else
+	{
+		return new SolidBrush(Color((BYTE)opacity, brush_color.r, brush_color.g, brush_color.b));
+	}
+
+	return NULL;
 }
 
 static Font* create_font(const xfont_t* pxf)
@@ -675,7 +723,7 @@ void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = (Brush*)create_brush(pxb);
+		Brush* pb = (Brush*)create_brush(pxb, prt, NULL);
 		gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
 		delete pb;
@@ -787,7 +835,7 @@ void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = create_brush(pxb);
+		Brush* pb = create_brush(pxb, prt, &path);
 		gh.FillPath(pb, &path);
 
 		delete pb;
@@ -843,10 +891,9 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 		gh.DrawEllipse(&pen, Rect(pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 	}
 
-
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = (Brush*)create_brush(pxb);
+		Brush* pb = (Brush*)create_brush(pxb, prt, NULL);
 		gh.FillEllipse(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
 		delete pb;
@@ -907,7 +954,11 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = create_brush(pxb);
+		GraphicsPath gp;
+		
+		gp.AddPie(rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
+
+		Brush* pb = create_brush(pxb, NULL, &gp);
 
 		gh.FillPie(pb, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
 
@@ -1073,7 +1124,7 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = create_brush(pxb);
+		Brush* pb = create_brush(pxb, prt, &path);
 		gh.FillPath(pb, &path);
 
 		delete pb;
@@ -1238,7 +1289,7 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = create_brush(pxb);
+		Brush* pb = create_brush(pxb, NULL, &path);
 		gh.FillPath(pb, &path);
 
 		delete pb;
@@ -1384,7 +1435,7 @@ void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 
 	if (!is_null_xbrush(pxb))
 	{
-		Brush* pb = create_brush(pxb);
+		Brush* pb = create_brush(pxb, NULL, path);
 		gh.FillPath(pb, path);
 
 		delete pb;
@@ -1422,13 +1473,13 @@ void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 
 	gh.SetPageUnit(UnitPixel);
 
-	Brush* pb = (Brush*)create_brush(&xb);
+	Brush* pb = (Brush*)create_brush(&xb, prt, NULL);
 	gh.FillRectangle(pb, Rect(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 
 	delete pb;
 }
 
-void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
+void _gdiplus_gradient_rect(res_ctx_t rdc, const xcolor_t* clr_brim, const xcolor_t* clr_core, const tchar_t* gradient, const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -1440,11 +1491,7 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* p
 
 	DPtoLP(hDC, pt, 2);
 
-	xcolor_t xc1, xc2;
-	parse_xcolor(&xc1, pxg->brim_color);
-	parse_xcolor(&xc2, pxg->core_color);
-
-	HBITMAP hBmp = _create_gradient_bitmap(rdc, &xc1, &xc2, pt[1].x - pt[0].x, pt[1].y - pt[0].y, pxg->type);
+	HBITMAP hBmp = _create_gradient_bitmap(rdc, clr_brim, clr_core, pt[1].x - pt[0].x, pt[1].y - pt[0].y, gradient);
 	Bitmap* pbm = new Bitmap(hBmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	DeleteObject(hBmp);
 
@@ -1673,7 +1720,7 @@ void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 	HDC hDC = (HDC)(rdc->context);
 	Region gn(rgn);
 
-	Brush* pb = create_brush(pxb);
+	Brush* pb = create_brush(pxb, NULL, NULL);
 
 	Gdiplus::Graphics gh(hDC);
 

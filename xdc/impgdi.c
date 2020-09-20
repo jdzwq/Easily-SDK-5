@@ -107,13 +107,13 @@ void draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n
 	(*pif->pf_gdi_draw_curve)(rdc, pxp, ppt, n);
 }
 
-void gradient_rect_raw(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* pxr)
+void gradient_rect_raw(res_ctx_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_gradient_rect)(rdc, pxg, pxr);
+	(*pif->pf_gdi_gradient_rect)(rdc, xc_brim, xc_core, gradient, pxr);
 }
 
 void alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, int opacity)
@@ -272,7 +272,7 @@ void draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* pxr)
 	}
 }
 
-void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	if_context_t *pif;
 
@@ -319,8 +319,11 @@ void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, co
 
 	xmem_free(buf);
 
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+	}
 
 	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.3, 1);
 
@@ -337,7 +340,7 @@ void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, co
 
 		black = (black) ? 0 : 1;
 
-		if (black)
+		if (black && pxc)
 		{
 			(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
 		}
@@ -346,9 +349,11 @@ void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, co
 	}
 
 	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
 }
 
-void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	if_context_t *pif;
 
@@ -398,8 +403,11 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 	xmem_free(buf);
 
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+	}
 
 	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
 
@@ -423,7 +431,7 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 				black = (c & b) ? 0 : 1;
 
-				if (black)
+				if (black && pxc)
 				{
 					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
 				}
@@ -434,9 +442,12 @@ void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 	}
 
 	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+	prt->h = rt.y + rt.h + unit - prt->y;
 }
 
-void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len)
+void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	if_context_t *pif;
 
@@ -486,8 +497,11 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 	xmem_free(buf);
 
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+	}
 
 	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
 
@@ -511,7 +525,7 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 
 				black = (c & b) ? 1 : 0;
 
-				if (black)
+				if (black && pxc)
 				{
 					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
 				}
@@ -522,6 +536,9 @@ void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, con
 	}
 
 	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+	prt->h = rt.y + rt.h + unit - prt->y;
 }
 
 
@@ -1322,7 +1339,7 @@ void draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tcha
 	xmem_free(ppt);
 }
 
-void gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
+void gradient_rect(canvas_t canv, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1334,7 +1351,7 @@ void gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr)
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_gradient_rect)(rdc, pxg, &xr);
+	(*pif->pf_gdi_gradient_rect)(rdc, xc_brim, xc_core, gradient, &xr);
 }
 
 void alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int opa)
@@ -1685,7 +1702,7 @@ void draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 	draw_image_raw(rdc, pxi, &xr);
 }
 
-void draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len)
+void draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1698,9 +1715,12 @@ void draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const 
 	rect_tm_to_pt(canv, &xr);
 
 	draw_code128_raw(rdc, pxc, &xr, text, len);
+
+	rect_pt_to_tm(canv, &xr);
+	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
-void draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len)
+void draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1713,9 +1733,12 @@ void draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const t
 	rect_tm_to_pt(canv, &xr);
 
 	draw_pdf417_raw(rdc, pxc, &xr, text, len);
+
+	rect_pt_to_tm(canv, &xr);
+	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
-void draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len)
+void draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1728,6 +1751,9 @@ void draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const t
 	rect_tm_to_pt(canv, &xr);
 
 	draw_qrcode_raw(rdc, pxc, &xr, text, len);
+
+	rect_pt_to_tm(canv, &xr);
+	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
 void image_size(canvas_t canv, const ximage_t* pxi, xsize_t* pxs)
@@ -2414,6 +2440,10 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 
 	link_t_ptr st = NULL;
 
+	int an, pn;
+	tchar_t* aa = NULL;
+	xpoint_t* pa = NULL;
+
 	svgcanv = create_svg_canvas(ptr);
 
 	ilk = get_svg_first_child_node(ptr);
@@ -2423,7 +2453,7 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 
 		if (compare_text(sz_name, -1, SVG_NODE_LINE, -1, 1) == 0)
 		{
-			default_xpen(&xp);
+			xmem_zero((void*)&xp, sizeof(xpen_t));
 			read_line_from_svg_node(ilk, &xp, &pt[0], &pt[1]);
 			svg_point_pt_to_tm(svgcanv, &pt[0]);
 			svg_point_pt_to_tm(svgcanv, &pt[1]);
@@ -2436,8 +2466,8 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 		}
 		else if (compare_text(sz_name, -1, SVG_NODE_RECT, -1, 1) == 0)
 		{
-			default_xpen(&xp);
-			default_xbrush(&xb);
+			xmem_zero((void*)&xp, sizeof(xpen_t));
+			xmem_zero((void*)&xb, sizeof(xbrush_t));
 			b_round = svg_node_is_round(ilk);
 			if (b_round)
 				read_round_from_svg_node(ilk, &xp, &xb, &xr, &rx, &ry);
@@ -2455,8 +2485,8 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 		}
 		else if (compare_text(sz_name, -1, SVG_NODE_ELLIPSE, -1, 1) == 0)
 		{
-			default_xpen(&xp);
-			default_xbrush(&xb);
+			xmem_zero((void*)&xp, sizeof(xpen_t));
+			xmem_zero((void*)&xb, sizeof(xbrush_t));
 			read_ellipse_from_svg_node(ilk, &xp, &xb, &xr);
 			svg_rect_pt_to_tm(svgcanv, &xr);
 
@@ -2469,8 +2499,8 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 			count = read_polyline_from_svg_node(ilk, NULL, NULL, MAX_LONG);
 			if (count)
 			{
-				default_xpen(&xp);
-				default_xbrush(&xb);
+				xmem_zero((void*)&xp, sizeof(xpen_t));
+				xmem_zero((void*)&xb, sizeof(xbrush_t));
 
 				ppt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * count);
 				read_polyline_from_svg_node(ilk, &xp, ppt, count);
@@ -2491,8 +2521,8 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 			count = read_polygon_from_svg_node(ilk, NULL, NULL, NULL, MAX_LONG);
 			if (count)
 			{
-				default_xpen(&xp);
-				default_xbrush(&xb);
+				xmem_zero((void*)&xp, sizeof(xpen_t));
+				xmem_zero((void*)&xb, sizeof(xbrush_t));
 
 				ppt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * count);
 				read_polygon_from_svg_node(ilk, &xp, &xb, ppt, count);
@@ -2510,8 +2540,8 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 		}
 		else if (compare_text(sz_name, -1, SVG_NODE_TEXT, -1, 1) == 0)
 		{
-			default_xfont(&xf);
-			default_xface(&xa);
+			xmem_zero((void*)&xf, sizeof(xfont_t));
+			xmem_zero((void*)&xa, sizeof(xface_t));
 			sz_text = read_text_from_svg_node(ilk, &xf, &xa, &xr);
 			svg_rect_pt_to_tm(svgcanv, &xr);
 
@@ -2532,6 +2562,8 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 		{
 			if (svg_node_is_pie(ilk))
 			{
+				xmem_zero((void*)&xp, sizeof(xpen_t));
+				xmem_zero((void*)&xb, sizeof(xbrush_t));
 				read_pie_from_svg_node(ilk, &xp, &xb, RECTPOINT(&xr),&xr.w, &xr.h, &fang, &tang);
 
 				svg_rect_pt_to_tm(svgcanv, &xr);
@@ -2540,9 +2572,44 @@ void draw_svg(canvas_t canv, const xrect_t* pbox, link_t_ptr ptr)
 
 				draw_pie(canv, &xp, &xb, RECTPOINT(&xr), xr.fw, xr.fh, fang, tang);
 			}
+			else if (svg_node_is_arc(ilk))
+			{
+				xmem_zero((void*)&xp, sizeof(xpen_t));
+				read_arc_from_svg_node(ilk, &xp, RECTPOINT(&xr), &xr.w, &xr.h, &fang, &tang);
+
+				svg_rect_pt_to_tm(svgcanv, &xr);
+				xr.fx += pbox->fx;
+				xr.fy += pbox->fy;
+
+				draw_arc(canv, &xp, RECTPOINT(&xr), xr.fw, xr.fh, fang, tang);
+			}
+			else
+			{
+				xmem_zero((void*)&xp, sizeof(xpen_t));
+				xmem_zero((void*)&xb, sizeof(xbrush_t));
+				read_path_from_svg_node(ilk, &xp, &xb, NULL, &an, NULL, &pn);
+
+				svg_rect_pt_to_tm(svgcanv, &xr);
+				xr.fx += pbox->fx;
+				xr.fy += pbox->fy;
+
+				draw_path(canv, &xp, &xb, aa, pa, pn);
+			}
 		}
 		else if (compare_text(sz_name, -1, SVG_NODE_IMAGE, -1, 1) == 0)
 		{
+			xmem_zero((void*)&xi, sizeof(ximage_t));
+			read_ximage_from_svg_node(ilk, &xi, &xr);
+
+			svg_rect_pt_to_tm(svgcanv, &xr);
+			xr.fx += pbox->fx;
+			xr.fy += pbox->fy;
+
+			draw_image(canv, &xi, &xr);
+		}
+		else if (compare_text(sz_name, -1, SVG_NODE_IMAGE, -1, 1) == 0)
+		{
+			xmem_zero((void*)&xi, sizeof(ximage_t));
 			read_ximage_from_svg_node(ilk, &xi, &xr);
 
 			svg_rect_pt_to_tm(svgcanv, &xr);

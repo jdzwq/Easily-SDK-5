@@ -204,31 +204,50 @@ void StatisPanel_OnSaveAs(res_win_t widget)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
 	tchar_t szPath[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szType[RES_LEN] = { 0 };
+	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("xml sheet file(*.sheet)\0*.sheet\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("xml sheet file(*.sheet)\0*.sheet\0svg image file(*.svg)\0*.svg\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
+	split_path(szFile, NULL, NULL, szType);
+
 	LINKPTR ptrStatis = statisctrl_fetch(pdt->hStatis);
 
-	LINKPTR ptrMeta = create_meta_doc();
+	if (compare_text(szType, -1, _T("svg"), -1, 1) == 0)
+	{
+		LINKPTR ptrSvg = create_svg_doc();
 
-	set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
-	set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
+		int page = statisctrl_get_cur_page(pdt->hStatis);
 
-	attach_meta_body_node(ptrMeta, ptrStatis);
+		svg_print_statis(ptrSvg, ptrStatis, page);
 
-	bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
+		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
 
-	ptrStatis = detach_meta_body_node(ptrMeta);
-	destroy_meta_doc(ptrMeta);
+		destroy_svg_doc(ptrSvg);
+	}
+	else
+	{
+		LINKPTR ptrMeta = create_meta_doc();
+
+		set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
+		set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
+
+		attach_meta_body_node(ptrMeta, ptrStatis);
+
+		bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
+
+		ptrStatis = detach_meta_body_node(ptrMeta);
+		destroy_meta_doc(ptrMeta);
+	}
 
 	if (!rt)
 		ShowMsg(MSGICO_ERR, _T("±£´æÎÄ¼þ´íÎó£¡"));

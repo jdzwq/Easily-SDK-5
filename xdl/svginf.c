@@ -30,8 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "svginf.h"
-#include "xdlimp.h"
+#include "svggdi.h"
+#include "svgcanv.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdlview.h"
 
@@ -46,8 +48,6 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 	pic->canvas = canv;
 
 	pic->pf_draw_line = svg_draw_line;
-	pic->pf_gradient_rect = svg_gradient_rect;
-	pic->pf_alphablend_rect = svg_alphablend_rect;
 	pic->pf_draw_arrow = svg_draw_arrow;
 	pic->pf_draw_pie = svg_draw_pie;
 	pic->pf_draw_polygon = svg_draw_polygon;
@@ -65,6 +65,7 @@ if_canvas_t* create_svg_interface(canvas_t canv)
 
 	pic->pf_draw_shape = svg_draw_shape;
 	pic->pf_multi_line = svg_multi_line;
+	pic->pf_draw_path = svg_draw_path;
 
 	pic->pf_draw_var_text = svg_draw_var_text;
 	pic->pf_draw_tag_text = svg_draw_tag_text;

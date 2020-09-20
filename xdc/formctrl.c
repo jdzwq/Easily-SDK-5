@@ -2856,7 +2856,7 @@ void formctrl_redraw(res_win_t widget, bool_t bCalc)
 
 	if (bCalc)
 	{
-		ptd->max_page = calc_form_pages(widget_get_canvas(widget), ptd->form);
+		ptd->max_page = calc_form_pages(NULL, ptd->form);
 	}
 
 	widget_update(widget);
@@ -2881,7 +2881,7 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 	{
 		calc_form_field(ptd->form, flk);
 
-		ptd->max_page = (short)calc_form_pages(widget_get_canvas(widget), ptd->form);
+		ptd->max_page = (short)calc_form_pages(NULL, ptd->form);
 	}
 	
 	noti_form_owner(widget, NC_FIELDCALCED, ptd->form, flk, NULL);
@@ -3074,7 +3074,7 @@ int formctrl_get_max_page(res_win_t widget)
 	if (!ptd->form)
 		return 0;
 
-	return calc_form_pages(widget_get_canvas(widget), ptd->form);
+	return calc_form_pages(NULL, ptd->form);
 }
 
 void formctrl_move_to_page(res_win_t widget, int page)

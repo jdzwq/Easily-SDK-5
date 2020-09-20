@@ -243,8 +243,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	link_t_ptr sec, ent;
 	xrect_t xr, xr_draw;
 	xpen_t xp = { 0 };
-	xbrush_t xb = { 0 };
-	xgradi_t xg = { 0 };
+	xbrush_t xb_bar, xb = { 0 };
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	ximage_t xi = { 0 };
@@ -267,9 +266,10 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	pw = pbox->fw;
 	ph = pbox->fh;
 
+	default_xpen(&xp);
+	default_xbrush(&xb);
 	default_xfont(&xf);
 	default_xface(&xa);
-	default_xgradi(&xg);
 
 	style = get_proper_style_ptr(ptr);
 
@@ -307,9 +307,9 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		parse_xcolor(&xc, xp.color);
 	}
 
-	xscpy(xg.brim_color, xb.color);
-	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
+	xmem_copy((void*)&xb_bar, (void*)&xb, sizeof(xbrush_t));
+	lighten_xbrush(&xb_bar, DEF_SOFT_DARKEN);
+	xscpy(xb_bar.gradient, GDI_ATTR_GRADIENT_HORZ);
 
 	shape = get_proper_shape_ptr(ptr);
 
@@ -326,15 +326,13 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		xr_draw.fw = xr.fw;
 		xr_draw.fh = ih;
 
-		(*pif->pf_gradient_rect)(pif->canvas, &xg, &xr_draw);
-
 		if (is_null(shape))
 		{
-			(*pif->pf_draw_rect)(pif->canvas, NULL, NULL, &xr_draw);
+			(*pif->pf_draw_rect)(pif->canvas, NULL, &xb_bar, &xr_draw);
 		}
 		else
 		{
-			(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr_draw);
+			(*pif->pf_draw_rect)(pif->canvas, &xp, &xb_bar, &xr_draw);
 		}
 
 		xr_draw.fx = xr.fx;

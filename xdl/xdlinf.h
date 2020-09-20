@@ -178,8 +178,6 @@ typedef void(*PF_DRAW_BEZIER)(canvas_t, const xpen_t*, const xpoint_t*, const xp
 typedef void(*PF_DRAW_CURVE)(canvas_t, const xpen_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_RECT)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_PATH)(canvas_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*, int n);
-typedef void(*PF_GRADIENT_RECT)(canvas_t, const xgradi_t*, const xrect_t*);
-typedef void(*PF_ALPHABLEND_RECT)(canvas_t, const xcolor_t*, const xrect_t*, int);
 typedef void(*PF_DRAW_ROUND)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_ELLIPSE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_PIE)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, float, float, double, double);
@@ -191,9 +189,9 @@ typedef void(*PF_TEXT_OUT)(canvas_t, const xfont_t*, const xpoint_t*, const tcha
 typedef void(*PF_COLOR_OUT)(canvas_t, const xrect_t*, bool_t horz, const tchar_t*, int);
 typedef void(*PF_DRAW_DATA)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int, int, const tchar_t*, const tchar_t*, bool_t, bool_t);
 
-typedef void(*PF_DRAW_CODE128)(canvas_t, const xcolor_t*, const xrect_t*, const tchar_t*, int);
-typedef void(*PF_DRAW_PDF417)(canvas_t, const xcolor_t*, const xrect_t*, const tchar_t*, int);
-typedef void(*PF_DRAW_QRCODE)(canvas_t, const xcolor_t*, const xrect_t*, const tchar_t*, int);
+typedef void(*PF_DRAW_CODE128)(canvas_t, const xcolor_t*, xrect_t*, const tchar_t*, int);
+typedef void(*PF_DRAW_PDF417)(canvas_t, const xcolor_t*, xrect_t*, const tchar_t*, int);
+typedef void(*PF_DRAW_QRCODE)(canvas_t, const xcolor_t*, xrect_t*, const tchar_t*, int);
 
 typedef void(*PF_MULTI_LINE)(canvas_t, const xfont_t*, const xface_t*, const xpen_t*, const xrect_t*);
 typedef void(*PF_DRAW_SHAPE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
@@ -225,8 +223,6 @@ typedef struct _if_canvas_t{
 	PF_DRAW_CURVE		pf_draw_curve;
 	PF_DRAW_RECT		pf_draw_rect;
 	PF_DRAW_PATH		pf_draw_path;
-	PF_GRADIENT_RECT	pf_gradient_rect;
-	PF_ALPHABLEND_RECT	pf_alphablend_rect;
 	PF_DRAW_ROUND		pf_draw_round;
 	PF_DRAW_ELLIPSE		pf_draw_ellipse;
 	PF_DRAW_PIE			pf_draw_pie;

@@ -36,6 +36,12 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
+
+#define IS_SVG_PATH_CHAR(ch)	((ch == _T('M') || ch == _T('L') || ch == _T('H') || ch == _T('V') || ch == _T('C') || ch == _T('S') || ch == _T('Q') || ch == _T('T') || ch == _T('A') || ch == _T('Z'))? 1 : 0)
+#define IS_SVG_SPACE_CHAR(ch)	((ch == _T(' ') || ch == _T('\t') || ch == _T(','))? 1 : 0)
+#define IS_SVG_NUM_CHAR(ch)		(((ch >= _T('0') && ch <= _T('9')) || ch == _T('.'))? 1 : 0)
+
+
 /************************************************Properties***************************************************************************/
 
 /*
@@ -152,6 +158,12 @@ EXP_API link_t_ptr get_svg_next_sibling_node(link_t_ptr nlk);
 */
 EXP_API link_t_ptr get_svg_prev_sibling_node(link_t_ptr nlk);
 
+/*
+@FUNCTION svg_doc_from_node: get svg doc from node.
+@INPUT link_t_ptr nlk: the svg node link component.
+@RETURN link_t_ptr: return the svg link component if exists, otherwise return NULL.
+*/
+EXP_API link_t_ptr svg_doc_from_node(link_t_ptr nlk);
 /*****************************************************************************************************************/
 
 /*
@@ -377,7 +389,7 @@ EXP_API bool_t svg_node_is_pie(link_t_ptr glk);
 EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
 
 /*
-@FUNCTION read_ellipse_from_svg_node: read pie attributes from the svg node.
+@FUNCTION read_pie_from_svg_node: read pie attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
 @OUTPUT xbrush_t* pxb: the brush struct for returning.
@@ -389,6 +401,39 @@ EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbru
 @RETURN void: none
 */
 EXP_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
+
+/*
+@FUNCTION svg_node_is_arc: test the node is arc node.
+@INPUT link_t_ptr glk: the svg node component.
+@RETURN bool_t: return nonzero for arc node, otherwise return zero.
+*/
+EXP_API bool_t svg_node_is_arc(link_t_ptr glk);
+
+/*
+@FUNCTION write_arc_to_svg_node: write arc attributes to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint* prt: the rect struct using int member.
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
+@INPUT double fang: the start angle.
+@INPUT double tang: the end angle.
+@RETURN void: none.
+*/
+EXP_API void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+
+/*
+@FUNCTION read_arc_from_svg_node: read arc attributes from the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@OUTPUT xpen_t* pxp: the pen struct for returning.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
+@INPUT int* prx: the x-radius for returning
+@INPUT int* pry: the y-radius for returning
+@OUTPUT double* pfang: for returning start angle.
+@OUTPUT double* ptang: for returning end angle.
+@RETURN void: none
+*/
+EXP_API void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
 
 /*
 @FUNCTION write_text_to_svg_node: write text to the svg node.
@@ -440,6 +485,11 @@ EXP_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const
 @RETURN void: none.
 */
 EXP_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);
+
+
+EXP_API void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, int len, const xpoint_t* pa, int pn);
+
+EXP_API void read_path_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, tchar_t* aa, int* an, xpoint_t* pa, int* pn);
 
 #ifdef	__cplusplus
 }

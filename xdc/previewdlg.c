@@ -51,6 +51,7 @@ LICENSE.GPL3 for more details.
 #define IDN_PREVIEWDLG_STATUS_PAGE		_T("page")
 #define IDN_PREVIEWDLG_STATUS_NAVI		_T("navi")
 
+
 #define PREVIEWDLG_TOOL_HEIGHT		(float)8
 #define PREVIEWDLG_STATUS_HEIGHT	(float)8
 #define PREVIEWDLG_TREE_WIDTH		(float)50

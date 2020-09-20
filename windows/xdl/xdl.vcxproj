@@ -185,6 +185,7 @@
     <ClInclude Include="..\..\xdl\calendarview.h" />
     <ClInclude Include="..\..\xdl\diagramdoc.h" />
     <ClInclude Include="..\..\xdl\diagramview.h" />
+    <ClInclude Include="..\..\xdl\svgbag.h" />
     <ClInclude Include="..\..\xdl\formbio.h" />
     <ClInclude Include="..\..\xdl\gridbio.h" />
     <ClInclude Include="..\..\xdl\impcache.h" />
@@ -338,6 +339,7 @@
     <ClInclude Include="..\..\xdl\xdlstd.h" />
     <ClInclude Include="..\..\xdl\xdlstm.h" />
     <ClInclude Include="..\..\xdl\xdlstr.h" />
+    <ClInclude Include="..\..\xdl\xdlsvg.h" />
     <ClInclude Include="..\..\xdl\xdlutil.h" />
     <ClInclude Include="..\..\xdl\xdlview.h" />
     <ClInclude Include="..\..\xdl\xmlattr.h" />
@@ -358,6 +360,7 @@
     <ClCompile Include="..\..\xdl\calendarview.c" />
     <ClCompile Include="..\..\xdl\diagramdoc.c" />
     <ClCompile Include="..\..\xdl\diagramview.c" />
+    <ClCompile Include="..\..\xdl\svgbag.c" />
     <ClCompile Include="..\..\xdl\formbio.c" />
     <ClCompile Include="..\..\xdl\gridbio.c" />
     <ClCompile Include="..\..\xdl\impcache.c" />

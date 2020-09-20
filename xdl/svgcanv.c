@@ -30,8 +30,9 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "svgcanv.h"
-#include "xdlimp.h"
+#include "svggdi.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
 #include "xdlview.h"

@@ -134,6 +134,16 @@ void properbag_parse_stylesheet(link_t_ptr ptr,const tchar_t* str)
 	set_entity_editable(ent,1);
 	set_entity_editor(ent,ATTR_EDITOR_FIRELIST);
 
+	ent = write_proper(ptr, PROPERTY_BAG_BRUSHSTYLE, -1, GDI_ATTR_STOP_COLOR, -1, xb.linear, -1);
+	set_entity_options(ent, GDI_ATTR_RGB_OPTIONS, -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+
+	ent = write_proper(ptr, PROPERTY_BAG_BRUSHSTYLE, -1, GDI_ATTR_GRADIENT, -1, xb.gradient, -1);
+	set_entity_options(ent, GDI_ATTR_GRADIENT_OPTIONS, -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
+
 	ent = write_proper(ptr,PROPERTY_BAG_BRUSHSTYLE,-1,GDI_ATTR_FILL_OPACITY,-1,xb.opacity,-1);
 	set_entity_editable(ent,1);
 	set_entity_editor(ent,ATTR_EDITOR_FIREEDIT);
@@ -204,6 +214,8 @@ int properbag_format_stylesheet(link_t_ptr ptr,tchar_t* buf,int len)
 
 	read_proper(ptr,PROPERTY_BAG_BRUSHSTYLE,-1,GDI_ATTR_FILL_STYLE,-1,xb.style,RES_LEN);
 	read_proper(ptr,PROPERTY_BAG_BRUSHSTYLE,-1,GDI_ATTR_FILL_COLOR,-1,xb.color,CLR_LEN);
+	read_proper(ptr, PROPERTY_BAG_BRUSHSTYLE, -1, GDI_ATTR_STOP_COLOR, -1, xb.linear, CLR_LEN);
+	read_proper(ptr, PROPERTY_BAG_BRUSHSTYLE, -1, GDI_ATTR_GRADIENT, -1, xb.gradient, RES_LEN);
 	read_proper(ptr,PROPERTY_BAG_BRUSHSTYLE,-1,GDI_ATTR_FILL_OPACITY,-1,xb.opacity,NUM_LEN);
 
 	size += format_xbrush_to_style(&xb,buf + size,len - size);

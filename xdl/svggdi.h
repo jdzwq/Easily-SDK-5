@@ -105,25 +105,7 @@ EXP_API void	svg_draw_curve_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t*
 */
 EXP_API void	svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
 EXP_API void	svg_draw_rect_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
-/*
-@FUNCTION svg_gradient_rect: gradient a rect in svg canvas using milimeter coordinate.
-@INPUT canvas_t canv: the svg canvas object.
-@INPUT const xgradi_t* pxg the gradient struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@RETURN void: none.
-*/
-EXP_API void	svg_gradient_rect(canvas_t canv, const xgradi_t* pxg, const xrect_t* pxr);
-EXP_API void	svg_draw_round_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
-/*
-@FUNCTION svg_alphablend_rect: alphablend a rect in svg canvas using millimeter coordinate.
-@INPUT canvas_t canv: the svg canvas object.
-@INPUT const xcolor_t* pxc: the color struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT int opacity: the alphablend level: 0~255, or use predefined value: ALPHA_SOLID(250), ALPHA_SOFT(128), ALPHA_TRANS(64).
-@RETURN void: none.
-*/
-EXP_API void	svg_alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opacity);
-EXP_API void	svg_alphablend_rect_raw(link_t_ptr g, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+
 /*
 @FUNCTION svg_draw_round: draw round rect in svg canvas using millimeter coordinate.
 @INPUT canvas_t canv: the svg canvas object.
@@ -317,7 +299,8 @@ EXP_API void	svg_draw_rich_text_raw(link_t_ptr g, const xfont_t* pxf, const xfac
 @INPUT int len: text length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len);
+EXP_API void	svg_draw_code128_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len);
 
 /*
 @FUNCTION svg_draw_pdf417: draw PDF427 bar in svg canvas using millimeter coordinate.
@@ -328,7 +311,8 @@ EXP_API void 	svg_draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t
 @INPUT int len: text length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len);
+EXP_API void	svg_draw_pdf417_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len);
 
 #ifdef GPL_SUPPORT_QRCODE
 /*
@@ -340,7 +324,8 @@ EXP_API void 	svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t*
 @INPUT int len: text length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, const tchar_t* text, int len);
+EXP_API void 	svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len);
+EXP_API void	svg_draw_qrcode_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len);
 #endif
 
 /*

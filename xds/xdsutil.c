@@ -239,7 +239,7 @@ bool_t is_null_xpen(const xpen_t* pxp)
 	if (!pxp)
 		return 1;
 
-	return (is_null(pxp->color)) ? 1 : 0;
+	return (is_null(pxp->size)) ? 1 : 0;
 }
 
 bool_t is_null_xbrush(const xbrush_t* pxb)
@@ -306,16 +306,6 @@ void default_xface(xface_t* pxa)
 	xscpy(pxa->text_wrap, _T(""));
 }
 
-void default_xgradi(xgradi_t* pxg)
-{
-	a_xszero((schar_t*)pxg, sizeof(xgradi_t));
-
-	xscpy(pxg->type, GDI_ATTR_GRADIENT_TYPE_VERT);
-	xscpy(pxg->opacity, _T("250"));
-	xscpy(pxg->brim_color, GDI_ATTR_RGB_SOFTWHITE);
-	xscpy(pxg->core_color, GDI_ATTR_RGB_DARKWHITE);
-}
-
 void merge_xpen(xpen_t* pxp_dst, const xpen_t* pxp_src)
 {
 	if (is_null(pxp_dst->style))
@@ -336,6 +326,10 @@ void merge_xbrush(xbrush_t* pxb_dst, const xbrush_t* pxb_src)
 		xscpy(pxb_dst->color, pxb_src->color);
 	if (is_null(pxb_dst->opacity))
 		xscpy(pxb_dst->opacity, pxb_src->opacity);
+	if (is_null(pxb_dst->linear))
+		xscpy(pxb_dst->linear, pxb_src->linear);
+	if (is_null(pxb_dst->gradient))
+		xscpy(pxb_dst->gradient, pxb_src->gradient);
 }
 
 void merge_xfont(xfont_t* pxf_dst, const xfont_t* pxf_src)
@@ -404,15 +398,6 @@ void lighten_xfont(xfont_t* pxf, int n)
 	lighten_xcolor(&xc, n);
 
 	format_xcolor(&xc, pxf->color);
-}
-
-void lighten_xgradi(xgradi_t* pxg, int n)
-{
-	xcolor_t xc = { 0 };
-
-	parse_xcolor(&xc, pxg->core_color);
-	lighten_xcolor(&xc, n);
-	format_xcolor(&xc, pxg->core_color);
 }
 
 /************************************************************************************************/
@@ -698,6 +683,64 @@ void empty_rect(xrect_t* pxr)
 bool_t rect_is_empty(const xrect_t* pxr)
 {
 	return (!pxr->w || !pxr->h) ? 1 : 0;
+}
+
+void pt_adjust_rect(xrect_t* pxr, int src_width, int src_height, const tchar_t* horz_align, const tchar_t* vert_align)
+{
+	if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0)
+	{
+		pxr->w = (pxr->w < src_width) ? pxr->w : src_width;
+	}
+	else if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	{
+		pxr->x = (pxr->w < src_width) ? pxr->x : (pxr->x + (pxr->w - src_width) / 2);
+	}
+	else if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	{
+		pxr->x = (pxr->w < src_width) ? pxr->x : (pxr->x + pxr->w - src_width);
+	}
+
+	if (xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0)
+	{
+		pxr->h = (pxr->h < src_height) ? pxr->h : src_height;
+	}
+	else if(xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	{
+		pxr->y = (pxr->h < src_height) ? pxr->y : (pxr->y + (pxr->h - src_height) / 2);
+	}
+	else if (xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	{
+		pxr->y = (pxr->h < src_height) ? pxr->y : (pxr->y + pxr->h - src_height);
+	}
+}
+
+void ft_adjust_rect(xrect_t* pxr, float src_width, float src_height, const tchar_t* horz_align, const tchar_t* vert_align)
+{
+	if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0)
+	{
+		pxr->fw = (pxr->fw < src_width) ? pxr->fw : src_width;
+	}
+	else if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	{
+		pxr->fx = (pxr->fw < src_width) ? pxr->fx : (pxr->fx + (pxr->fw - src_width) / 2);
+	}
+	else if (xscmp(horz_align, GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	{
+		pxr->fx = (pxr->fw < src_width) ? pxr->fx : (pxr->fx + pxr->fw - src_width);
+	}
+
+	if (xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_NEAR) == 0)
+	{
+		pxr->fh = (pxr->fh < src_height) ? pxr->fh : src_height;
+	}
+	else if (xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_CENTER) == 0)
+	{
+		pxr->fy = (pxr->fh < src_height) ? pxr->fy : (pxr->fy + (pxr->fh - src_height) / 2);
+	}
+	else if (xscmp(vert_align, GDI_ATTR_TEXT_ALIGN_FAR) == 0)
+	{
+		pxr->fy = (pxr->fh < src_height) ? pxr->fy : (pxr->fy + pxr->fh - src_height);
+	}
 }
 
 /*********************************************************************************************/

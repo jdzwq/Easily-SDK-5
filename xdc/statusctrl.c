@@ -373,8 +373,9 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xface_t xa = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
-	xgradi_t xg = { 0 };
 	xcolor_t xc = { 0 };
+	xcolor_t xc_brim = { 0 };
+	xcolor_t xc_core = { 0 };
 	xrect_t xr_step,xr = { 0 };
 
 	canvas_t canv;
@@ -402,12 +403,11 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	default_xgradi(&xg);
-	xscpy(xg.brim_color, xb.color);
-	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_SOFT_DARKEN);
+	parse_xcolor(&xc_brim, xb.color);
+	parse_xcolor(&xc_core, xb.color);
+	lighten_xcolor(&xc_brim, DEF_SOFT_DARKEN);
 
-	gradient_rect_raw(rdc, &xg, &xr);
+	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 
 	widget_get_canv_rect(widget, &cb);
 

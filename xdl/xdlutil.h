@@ -166,8 +166,8 @@ EXP_API int compare_text(const tchar_t* src, int srclen, const tchar_t* dest, in
 
 EXP_API int verify_text(const tchar_t* str, const tchar_t* datatype, bool_t nullable, int len, const tchar_t* min, const tchar_t* max);
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 EXP_API bool_t get_param_item(const tchar_t* sz_param, const tchar_t* key, tchar_t* val, int max);
 
 EXP_API int split_line(const tchar_t* token, int len);
@@ -185,7 +185,8 @@ EXP_API byte_t parse_proto(const tchar_t* file);
 EXP_API void parse_url(const tchar_t* url, tchar_t** proat, int* prolen, tchar_t** addrat, int* addrlen, tchar_t** portat, int* portlen, tchar_t** objat, int* objlen, tchar_t** qryat, int* qrylen);
 
 EXP_API int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...);
-/***************************************************************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 EXP_API void parse_xpen_from_style(xpen_t* pxp, const tchar_t* token);
 
@@ -209,9 +210,12 @@ EXP_API int format_ximage_to_source(const ximage_t* pxi, tchar_t* buf, int len);
 
 EXP_API float font_size(int px);
 
+EXP_API float font_metric(float pt);
+
 EXP_API int font_points(float pt);
 
-///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 EXP_API bool_t inside_rowcol(int row, int col, int from_row, int from_col, int to_row, int to_col);
 
 EXP_API int compare_rowcol(int from_row, int from_col, int to_row, int to_col);

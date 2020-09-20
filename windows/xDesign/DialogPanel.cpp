@@ -229,29 +229,46 @@ void DialogPanel_OnSaveAs(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szType[RES_LEN] = { 0 };
+	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("Dialog file(*.dialog)\0*.dialog\0"), _T("dialog"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("xml sheet file(*.sheet)\0*.sheet\0svg image file(*.svg)\0*.svg\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));
 	xscat(szPath, szFile);
 	xscpy(szFile, szPath);
 
+	split_path(szFile, NULL, NULL, szType);
+
 	LINKPTR ptrDialog = dialogctrl_fetch(pdt->hDialog);
 
-	LINKPTR ptrMeta = create_meta_doc();
+	if (compare_text(szType, -1, _T("svg"), -1, 1) == 0)
+	{
+		LINKPTR ptrSvg = create_svg_doc();
 
-	set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
-	set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
+		svg_print_dialog(ptrSvg, ptrDialog);
 
-	attach_meta_body_node(ptrMeta, ptrDialog);
+		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
 
-	bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
+		destroy_svg_doc(ptrSvg);
+	}
+	else
+	{
+		LINKPTR ptrMeta = create_meta_doc();
 
-	ptrDialog = detach_meta_body_node(ptrMeta);
-	destroy_meta_doc(ptrMeta);
+		set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
+		set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
+
+		attach_meta_body_node(ptrMeta, ptrDialog);
+
+		bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
+
+		ptrDialog = detach_meta_body_node(ptrMeta);
+		destroy_meta_doc(ptrMeta);
+	}
 
 	if (!rt)
 		ShowMsg(MSGICO_ERR, _T("±£´æÎÄ¼þ´íÎó£¡"));

@@ -312,16 +312,14 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 	xrect_t xr, xr_cli, xr_bar;
 	int top, bottom, left, right, span;
 	xbrush_t xb = { 0 };
-	xgradi_t gi = { 0 };
-	xcolor_t xc = { 0 };
+	xcolor_t xc_brim, xc_core;
 	int i;
 
 	widget_get_xbrush(ptd->widget, &xb);
-	parse_xcolor(&xc, xb.color);
 
-	format_xcolor(&xc, gi.brim_color);
-	lighten_xcolor(&xc, DEF_SOFT_DARKEN);
-	format_xcolor(&xc, gi.core_color);
+	parse_xcolor(&xc_brim, xb.color);
+	parse_xcolor(&xc_core, xb.color);
+	lighten_xcolor(&xc_core, DEF_SOFT_DARKEN);
 
 	widget_get_client_rect(ptd->widget, &xr_cli);
 
@@ -351,8 +349,8 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = span;
 				xr_bar.y = xr.y;
 				xr_bar.h = xr.h;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
-				gradient_rect_raw(rdc, &gi, &xr_bar);
+
+				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -373,8 +371,8 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = xr.w;
 				xr_bar.y = xr.y + xr.h;
 				xr_bar.h = span;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_VERT);
-				gradient_rect_raw(rdc, &gi, &xr_bar);
+
+				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -395,8 +393,8 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = span;
 				xr_bar.y = xr.y;
 				xr_bar.h = xr.h;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_HORZ);
-				gradient_rect_raw(rdc, &gi, &xr_bar);
+
+				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -417,8 +415,8 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.w = xr.w;
 				xr_bar.y = xr.y - span;
 				xr_bar.h = span;
-				xscpy(gi.type, GDI_ATTR_GRADIENT_TYPE_VERT);
-				gradient_rect_raw(rdc, &gi, &xr_bar);
+
+				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))

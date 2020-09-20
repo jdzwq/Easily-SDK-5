@@ -467,7 +467,7 @@ void hand_msgdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xface_t xa = { 0 };
 	xpen_t xp = { 0 };
 	xbrush_t xb = { 0 };
-	xgradi_t xg = { 0 };
+	xcolor_t xc_brim, xc_core;
 	xrect_t xr,xr_txt,xr_bar;
 	xsize_t xs;
 	xpoint_t pt1, pt2;
@@ -498,12 +498,11 @@ void hand_msgdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xr_bar.w = xr.w;
 	xr_bar.h = xs.cy;
 
-	xscpy(xg.brim_color, xb.color);
-	xscpy(xg.core_color, xb.color);
-	lighten_xgradi(&xg, DEF_MIDD_DARKEN);
-	xscpy(xg.type, GDI_ATTR_GRADIENT_TYPE_VERT);
+	parse_xcolor(&xc_brim, xb.color);
+	parse_xcolor(&xc_core, xb.color);
+	lighten_xcolor(&xc_brim, DEF_MIDD_DARKEN);
 
-	gradient_rect_raw(rdc, &xg, &xr_bar);
+	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 
 	pt1.x = xr.x + MSGDLG_EDGE_FEED;
 	pt1.y = xr.y + xr.h - xs.cy;

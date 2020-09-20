@@ -64,8 +64,6 @@ EXP_API void default_xfont(xfont_t* pxf);
 
 EXP_API void default_xface(xface_t* pxa);
 
-EXP_API void default_xgradi(xgradi_t* pxg);
-
 EXP_API void lighten_xpen(xpen_t* pxp, int n);
 
 EXP_API void merge_xpen(xpen_t* pxp_dst, const xpen_t* pxp_src);
@@ -79,8 +77,6 @@ EXP_API void merge_xface(xface_t* pxa_dst, const xface_t* pxa_src);
 EXP_API void lighten_xbrush(xbrush_t* pxb, int n);
 
 EXP_API void lighten_xfont(xfont_t* pxf, int n);
-
-EXP_API void lighten_xgradi(xgradi_t* pxg, int n);
 
 /*****************************************************************************************/
 EXP_API bool_t ft_inside(float x, float y, float x1, float y1, float x2, float y2);
@@ -126,6 +122,10 @@ EXP_API void pt_cell_rect(xrect_t* pxr, bool_t horz, int rows, int cols, int ind
 EXP_API bool_t rect_is_empty(const xrect_t* pxr);
 
 EXP_API void empty_rect(xrect_t* pxr);
+
+EXP_API void pt_adjust_rect(xrect_t* pxr, int src_width, int src_height, const tchar_t* horz_align, const tchar_t* vert_align);
+
+EXP_API void ft_adjust_rect(xrect_t* pxr, float src_width, float src_height, const tchar_t* horz_align, const tchar_t* vert_align);
 
 /**************************************************************************************/
 EXP_API int mul_div_int(int m1, int m2, int d);

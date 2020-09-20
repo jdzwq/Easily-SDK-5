@@ -712,6 +712,118 @@ EXP_API void dropbox_find(res_win_t widget, const tchar_t* token);
 */
 EXP_API void dropbox_filter(res_win_t widget, const tchar_t* token);
 
+/******************************key box*****************************************************/
+
+/*
+@FUNCTION keybox_create: create a keybox widget.
+@INPUT res_win_t widget: the owner widget.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+EXP_API res_win_t keybox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
+
+/*
+@FUNCTION keybox_popup_size: calcing the keybox popup size according to client size.
+@INPUT res_win_t widget: the menubox widget.
+@INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
+@RETURN void: none.
+*/
+EXP_API void keybox_popup_size(res_win_t widget, xsize_t* pxs);
+
+/*
+@FUNCTION show_keybox: create and show keybox.
+@INPUT const xpoint_t* ppt: the left top position showing at.
+@RETURN res_win_t: return the new keybox widget.
+*/
+EXP_API res_win_t show_keybox(const xpoint_t* ppt);
+
+/******************************edit box*****************************************************/
+
+/*
+@FUNCTION editbox_create: create a editbox widget.
+@INPUT res_win_t widget: the owner widget.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+EXP_API res_win_t editbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
+
+/*
+@FUNCTION editbox_redraw: redraw the editbox.
+@INPUT res_win_t widget: the menubox widget.
+@RETURN void: none.
+*/
+EXP_API void editbox_redraw(res_win_t widget);
+
+/*
+@FUNCTION editbox_selectall: select all of the editbox text.
+@INPUT res_win_t widget: the menubox widget.
+@RETURN void: none.
+*/
+EXP_API void editbox_selectall(res_win_t widget);
+
+/*
+@FUNCTION editbox_set_text: set the editbox text.
+@INPUT res_win_t widget: the editbox widget.
+@INPUT const tchar_t* text: the text token.
+@RETURN void: none.
+*/
+EXP_API void editbox_set_text(res_win_t widget, const tchar_t* text);
+
+/*
+@FUNCTION editbox_get_text: copy the editbox text.
+@INPUT res_win_t widget: the editbox widget.
+@OUTPUT tchar_t* buf: the string buffer.
+@INPUT int max: the string buffer size in characters.
+@RETURN void: none.
+*/
+EXP_API int editbox_get_text(res_win_t widget, tchar_t* buf, int max);
+
+/*
+@FUNCTION editbox_get_text_ptr: get the editbox text.
+@INPUT res_win_t widget: the editbox widget.
+@RETURN const tchar_t*: return the editbox text token.
+*/
+EXP_API const tchar_t* editbox_get_text_ptr(res_win_t widget);
+
+/*
+@FUNCTION editbox_auto_size: enable or disable the editbox widget size adjusting.
+@INPUT res_win_t widget: the editbox widget.
+@INPUT bool_t b: nonzero for sizing widget automatic.
+@RETURN void: none.
+*/
+EXP_API void editbox_auto_size(res_win_t widget, bool_t b);
+
+/*
+@FUNCTION editbox_is_select: test the editbox text is in select mode.
+@INPUT res_win_t widget: the editbox widget.
+@RETURN bool_t: return  nonzero for being in select mode.
+*/
+EXP_API bool_t editbox_is_select(res_win_t widget);
+
+/*
+@FUNCTION editbox_is_multiline: test the editbox text is multiple line.
+@INPUT res_win_t widget: the editbox widget.
+@RETURN bool_t: return  nonzero for being multiple line.
+*/
+EXP_API bool_t editbox_is_multiline(res_win_t widget);
+
+/*
+@FUNCTION editbox_set_lock: enable or disable editing.
+@INPUT res_win_t widget: the editbox widget.
+@INPUT bool_t b: nonzero for enable, zero for disable.
+@RETURN void: none.
+*/
+EXP_API void editbox_set_lock(res_win_t widget, bool_t b);
+
+/*
+@FUNCTION editbox_get_lock: get editbox can be editing.
+@INPUT res_win_t widget: the editbox widget.
+@RETURN bool_t b: return nonzero for enable, zero for disable editing.
+*/
+EXP_API bool_t editbox_get_lock(res_win_t widget);
+
 /******************************words box*****************************************************/
 
 /*
@@ -933,118 +1045,88 @@ EXP_API void	menubox_get_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* px
 */
 EXP_API void	menubox_layout(res_win_t widget, const xpoint_t* ppt, int lay);
 
-/******************************key box*****************************************************/
+/******************************print box*****************************************************/
 
 /*
-@FUNCTION keybox_create: create a keybox widget.
+@FUNCTION printbox_create: create a printbox widget.
 @INPUT res_win_t widget: the owner widget.
 @INPUT dword_t style: the widget style.
 @INPUT const xrect_t* pxr: the widget rect.
 @RETURN res_win_t: return the new widget resource handle.
 */
-EXP_API res_win_t keybox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
+EXP_API res_win_t printbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
 
 /*
-@FUNCTION keybox_popup_size: calcing the keybox popup size according to client size.
-@INPUT res_win_t widget: the menubox widget.
-@INOUTPUT xsize_t* pxs: the size struct for inputing client size and outputing widget size.
+@FUNCTION printbox_set_data: set the printbox print table.
+@INPUT res_win_t widget: the printbox widget.
+@INPUT link_t_ptr ptr: the print table link component.
 @RETURN void: none.
 */
-EXP_API void keybox_popup_size(res_win_t widget, xsize_t* pxs);
+EXP_API void	printbox_set_data(res_win_t widget, link_t_ptr ptr);
 
 /*
-@FUNCTION show_keybox: create and show keybox.
-@INPUT const xpoint_t* ppt: the left top position showing at.
-@RETURN res_win_t: return the new keybox widget.
+@FUNCTION printbox_get_data: get the printbox print table.
+@INPUT res_win_t widget: the printbox widget.
+@RETURN link_t_ptr: return the print table link component if exists, otherwise return NULL.
 */
-EXP_API res_win_t show_keybox(const xpoint_t* ppt);
-
-/******************************edit box*****************************************************/
+EXP_API link_t_ptr printbox_get_data(res_win_t widget);
 
 /*
-@FUNCTION editbox_create: create a editbox widget.
-@INPUT res_win_t widget: the owner widget.
-@INPUT dword_t style: the widget style.
-@INPUT const xrect_t* pxr: the widget rect.
-@RETURN res_win_t: return the new widget resource handle.
-*/
-EXP_API res_win_t editbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
-
-/*
-@FUNCTION editbox_redraw: redraw the editbox.
-@INPUT res_win_t widget: the menubox widget.
+@FUNCTION printbox_redraw: redraw the printbox.
+@INPUT res_win_t widget: the printbox widget.
 @RETURN void: none.
 */
-EXP_API void editbox_redraw(res_win_t widget);
+EXP_API void	printbox_redraw(res_win_t widget);
 
 /*
-@FUNCTION editbox_selectall: select all of the editbox text.
-@INPUT res_win_t widget: the menubox widget.
+@FUNCTION printbox_move_first_page: move to the first page.
+@INPUT res_win_t widget: the printbox widget.
 @RETURN void: none.
 */
-EXP_API void editbox_selectall(res_win_t widget);
+EXP_API void	printbox_move_first_page(res_win_t widget);
 
 /*
-@FUNCTION editbox_set_text: set the editbox text.
-@INPUT res_win_t widget: the editbox widget.
-@INPUT const tchar_t* text: the text token.
+@FUNCTION printbox_move_prev_page: move to the previous page.
+@INPUT res_win_t widget: the printbox widget.
 @RETURN void: none.
 */
-EXP_API void editbox_set_text(res_win_t widget, const tchar_t* text);
+EXP_API void	printbox_move_prev_page(res_win_t widget);
 
 /*
-@FUNCTION editbox_get_text: copy the editbox text.
-@INPUT res_win_t widget: the editbox widget.
-@OUTPUT tchar_t* buf: the string buffer.
-@INPUT int max: the string buffer size in characters.
+@FUNCTION printbox_move_next_page: move to the next page.
+@INPUT res_win_t widget: the printbox widget.
 @RETURN void: none.
 */
-EXP_API int editbox_get_text(res_win_t widget, tchar_t* buf, int max);
+EXP_API void	printbox_move_next_page(res_win_t widget);
 
 /*
-@FUNCTION editbox_get_text_ptr: get the editbox text.
-@INPUT res_win_t widget: the editbox widget.
-@RETURN const tchar_t*: return the editbox text token.
-*/
-EXP_API const tchar_t* editbox_get_text_ptr(res_win_t widget);
-
-/*
-@FUNCTION editbox_auto_size: enable or disable the editbox widget size adjusting.
-@INPUT res_win_t widget: the editbox widget.
-@INPUT bool_t b: nonzero for sizing widget automatic.
+@FUNCTION printbox_move_last_page: move to the last page.
+@INPUT res_win_t widget: the printbox widget.
 @RETURN void: none.
 */
-EXP_API void editbox_auto_size(res_win_t widget, bool_t b);
+EXP_API void	printbox_move_last_page(res_win_t widget);
 
 /*
-@FUNCTION editbox_is_select: test the editbox text is in select mode.
-@INPUT res_win_t widget: the editbox widget.
-@RETURN bool_t: return  nonzero for being in select mode.
-*/
-EXP_API bool_t editbox_is_select(res_win_t widget);
-
-/*
-@FUNCTION editbox_is_multiline: test the editbox text is multiple line.
-@INPUT res_win_t widget: the editbox widget.
-@RETURN bool_t: return  nonzero for being multiple line.
-*/
-EXP_API bool_t editbox_is_multiline(res_win_t widget);
-
-/*
-@FUNCTION editbox_set_lock: enable or disable editing.
-@INPUT res_win_t widget: the editbox widget.
-@INPUT bool_t b: nonzero for enable, zero for disable.
+@FUNCTION printbox_move_to_page: move to the page.
+@INPUT res_win_t widget: the printbox widget.
+@INPUT int page: the 1-based page index.
 @RETURN void: none.
 */
-EXP_API void editbox_set_lock(res_win_t widget, bool_t b);
+EXP_API void	printbox_move_to_page(res_win_t widget, int page);
 
 /*
-@FUNCTION editbox_get_lock: get editbox can be editing.
-@INPUT res_win_t widget: the editbox widget.
-@RETURN bool_t b: return nonzero for enable, zero for disable editing.
+@FUNCTION printbox_get_cur_page: get the current page.
+@INPUT res_win_t widget: the printbox widget.
+@RETURN int: return the 1-based page index.
 */
-EXP_API bool_t editbox_get_lock(res_win_t widget);
+EXP_API int		printbox_get_cur_page(res_win_t widget);
 
+/*
+@FUNCTION printbox_get_max_page: get the maximized page.
+@INPUT res_win_t widget: the printbox widget.
+@RETURN int: return the 1-based page number.
+*/
+EXP_API int		printbox_get_max_page(res_win_t widget);
 
 #ifdef	__cplusplus
 }

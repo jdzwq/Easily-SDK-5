@@ -539,6 +539,8 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 
+	default_xpen(&xp);
+	default_xbrush(&xb);
 	default_xfont(&xf);
 	default_xface(&xa);
 

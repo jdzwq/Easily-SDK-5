@@ -273,6 +273,9 @@
     <ClCompile Include="..\..\xdc\shapegdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xdc\printbox.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xdc\textor.h">

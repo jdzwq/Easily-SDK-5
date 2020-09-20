@@ -144,7 +144,7 @@ int calc_form_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, int page)
 {
 	link_t_ptr flk,obj;
-	xrect_t xr;
+	xrect_t rt, xr;
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xfont_t xf = { 0 };
@@ -174,11 +174,11 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			goto skip;
 		}
 
+		default_xpen(&xp);
+		default_xbrush(&xb);
 		default_xfont(&xf);
 		default_xface(&xa);
 		memset((void*)&xi, 0, sizeof(ximage_t));
-
-		default_xpen(&xp);
 
 		style = get_field_style_ptr(flk);
 
@@ -188,15 +188,17 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		sz_shape = get_field_shape_ptr(flk);
 		if (!is_null(sz_shape))
 		{
-			parse_xpen_from_style(&xp, style);
+			/*parse_xpen_from_style(&xp, style);
 			if (!b_print)
 			{
 				format_xcolor(&pif->clr_frg, xp.color);
-			}
+			}*/
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, sz_shape);
+			parse_xpen_from_style(&xp, style);
+			parse_xbrush_from_style(&xb, style);
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb, &xr, sz_shape);
 		}
-		else if (b_design)
+		/*else if (b_design)
 		{
 			parse_xpen_from_style(&xp, style);
 			xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DASHED);
@@ -206,7 +208,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			}
 
 			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
-		}
+		}*/
 
 		sz_class = get_field_class_ptr(flk);
 
@@ -262,22 +264,35 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				parse_xcolor(&xc, xf.color);
 			}
 
+			parse_xface_from_style(&xa, style);
+
 			if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_CODE128, -1, 0) == 0)
 			{
+				xmem_copy((void*)&rt, (void*)&xr, sizeof(xrect_t));
+				(*pif->pf_draw_code128)(pif->canvas, NULL, &rt, get_field_text_ptr(flk), -1);
+				ft_adjust_rect(&xr, rt.fw, rt.fh, xa.text_align, xa.line_align);
+
 				(*pif->pf_draw_code128)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_PDF417, -1, 0) == 0)
 			{
+				xmem_copy((void*)&rt, (void*)&xr, sizeof(xrect_t));
+				(*pif->pf_draw_pdf417)(pif->canvas, NULL, &rt, get_field_text_ptr(flk), -1);
+				ft_adjust_rect(&xr, rt.fw, rt.fh, xa.text_align, xa.line_align);
+
 				(*pif->pf_draw_pdf417)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_QRCODE, -1, 0) == 0)
 			{
+				xmem_copy((void*)&rt, (void*)&xr, sizeof(xrect_t));
+				(*pif->pf_draw_qrcode)(pif->canvas, NULL, &rt, get_field_text_ptr(flk), -1);
+				ft_adjust_rect(&xr, rt.fw, rt.fh, xa.text_align, xa.line_align);
+
 				(*pif->pf_draw_qrcode)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else
 			{
 				parse_xfont_from_style(&xf, style);
-				parse_xface_from_style(&xa, style);
 				if (!b_print)
 				{
 					format_xcolor(&pif->clr_txt, xf.color);
@@ -523,6 +538,108 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		else
 			flk = get_next_visible_field(ptr, flk);
 	}
+}
+
+int calc_form_pages(const canvbox_t* pbox, link_t_ptr form)
+{
+	link_t_ptr flk, obj;
+	int pages = 0;
+	int max = 1;
+	const tchar_t* cls;
+	const tchar_t* txt;
+	canvbox_t cb = { 0 };
+	xrect_t xr = { 0 };
+	xfont_t xf = { 0 };
+	xface_t xa = { 0 };
+
+	flk = get_next_field(form, LINK_FIRST);
+	while (flk)
+	{
+		if (!get_field_visible(flk))
+		{
+			flk = get_next_field(form, flk);
+			continue;
+		}
+
+		cls = get_field_class_ptr(flk);
+		if (compare_text(cls, -1, DOC_FORM_GRID, -1, 0) == 0)
+		{
+			obj = get_field_embed_grid(flk);
+			if (obj)
+			{
+				cb.fx = 0;
+				cb.fy = 0;
+				cb.fw = get_field_width(flk);
+				cb.fh = get_field_height(flk);
+
+				pages = calc_grid_pages(&cb, obj);
+
+				max = (max > pages) ? max : pages;
+			}
+		}
+		else if (compare_text(cls, -1, DOC_FORM_STATIS, -1, 0) == 0)
+		{
+			obj = get_field_embed_statis(flk);
+			if (obj)
+			{
+				cb.fx = 0;
+				cb.fy = 0;
+				cb.fw = get_field_width(flk);
+				cb.fh = get_field_height(flk);
+
+				pages = calc_statis_pages(&cb, obj);
+
+				max = (max > pages) ? max : pages;
+			}
+		}
+#ifdef XDU_SUPPORT_CONTEXT
+		else if (compare_text(cls, -1, DOC_FORM_RICH, -1, 0) == 0)
+		{
+			obj = get_field_embed_rich(flk);
+			if (obj)
+			{
+				xr.fx = 0;
+				xr.fy = 0;
+				xr.fw = get_field_width(flk);
+				xr.fh = get_field_height(flk);
+
+				parse_xfont_from_style(&xf, get_field_style_ptr(flk));
+				parse_xface_from_style(&xa, get_field_style_ptr(flk));
+
+				pages = calc_rich_pages(canv, &xf, &xa, &xr, obj);
+
+				max = (max > pages) ? max : pages;
+			}
+		}
+		else if (compare_text(cls, -1, DOC_FORM_MEMO, -1, 0) == 0)
+		{
+			txt = get_field_text_ptr(flk);
+			if (!is_null(txt))
+			{
+				obj = create_memo_doc();
+				parse_memo_doc(obj, txt, -1);
+
+				xr.fx = 0;
+				xr.fy = 0;
+				xr.fw = get_field_width(flk);
+				xr.fh = get_field_height(flk);
+
+				parse_xfont_from_style(&xf, get_field_style_ptr(flk));
+				parse_xface_from_style(&xa, get_field_style_ptr(flk));
+
+				pages = calc_memo_pages(canv, &xf, &xa, &xr, obj);
+
+				destroy_memo_doc(obj);
+
+				max = (max > pages) ? max : pages;
+			}
+		}
+#endif
+
+		flk = get_next_field(form, flk);
+	}
+
+	return max;
 }
 
 

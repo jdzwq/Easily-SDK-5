@@ -53,6 +53,7 @@
     <ClCompile Include="..\..\xdc\plotbox.c" />
     <ClCompile Include="..\..\xdc\plotgdi.c" />
     <ClCompile Include="..\..\xdc\printbag.c" />
+    <ClCompile Include="..\..\xdc\printbox.c" />
     <ClCompile Include="..\..\xdc\shapegdi.c" />
     <ClCompile Include="..\..\xdc\staticctrl.c" />
     <ClCompile Include="..\..\xdc\gridctrl.c" />
