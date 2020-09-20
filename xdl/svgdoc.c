@@ -1369,7 +1369,112 @@ void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx
 		read_xpen_from_svg_node(glk, pxp);
 }
 
-void svg_parse_path(const tchar_t* token, int len, tchar_t* aa, int* an, xpoint_t* pp, int* pn)
+
+static int _svg_format_path(const tchar_t* aa, int an, const xpoint_t* pp, int pn, tchar_t* buf, int max)
+{
+	int a, p = 0, n, total = 0;
+	int r, l, s;
+
+	if (an < 0) an = xslen(aa);
+
+	for (a = 0; (a < an && p < pn); a++)
+	{
+		switch (aa[a])
+		{
+		case _T('M'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("M%d,%d "), pp[p].x, pp[p].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p++;
+			break;
+		case _T('L'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("L%d,%d "), pp[p].x, pp[p].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p++;
+			break;
+		case _T('H'):
+			break;
+		case _T('V'):
+			break;
+		case _T('C'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("C%d,%d %d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y, pp[p + 2].x, pp[p + 2].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 3;
+			break;
+		case _T('S'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("S%d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 2;
+			break;
+		case _T('Q'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("Q%d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 2;
+			break;
+		case _T('T'):
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("L%d,%d "), pp[p].x, pp[p].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p++;
+			break;
+		case _T('A'):
+			r = 0;
+			l = 0;
+			s = (pp[p].x < 0 || pp[p].y < 0) ? 0 : 1;
+
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("A%d,%d %d %d,%d %d,%d "), pp[p].x, pp[p].y, r, l, s, pp[p + 1].x, pp[p + 1].y);
+			if (total + n > max)
+				return total;
+			total += n;
+			p += 2;
+
+			break;
+		case _T('Z'):
+			if (buf)
+			{
+				buf[total] = _T('Z');
+			}
+			total++;
+
+			a = an;
+			break;
+		}
+	}
+
+	return total;
+}
+
+void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, int len, const xpoint_t* pa, int pn)
+{
+	tchar_t* buf;
+	int n;
+
+	n = _svg_format_path(aa, len, pa, pn, NULL, MAX_LONG);
+	buf = xsalloc(n + 1);
+	_svg_format_path(aa, len, pa, pn, buf, n);
+
+	set_dom_node_name(glk, SVG_NODE_PATH, -1);
+
+	set_dom_node_attr(glk, SVG_ATTR_D, -1, buf, n);
+
+	xsfree(buf);
+
+	write_xpen_to_svg_node(glk, pxp);
+
+	write_xbrush_to_svg_node(glk, pxb);
+}
+
+static void _svg_parse_path(const tchar_t* token, int len, tchar_t* aa, int* an, xpoint_t* pp, int* pn)
 {
 	const tchar_t* str = token;
 	int a = 0, p = 0, n = 0;
@@ -2029,110 +2134,6 @@ void svg_parse_path(const tchar_t* token, int len, tchar_t* aa, int* an, xpoint_
 	if (pn) *pn = p;
 }
 
-int svg_format_path(const tchar_t* aa, int an, const xpoint_t* pp, int pn, tchar_t* buf, int max)
-{
-	int a, p = 0, n, total = 0;
-	int r, l, s;
-
-	if (an < 0) an = xslen(aa);
-
-	for (a = 0; (a < an && p < pn); a++)
-	{
-		switch (aa[a])
-		{
-		case _T('M'):
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("M%d,%d "), pp[p].x, pp[p].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p++;
-			break;
-		case _T('L'):
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("L%d,%d "), pp[p].x, pp[p].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p++;
-			break;
-		case _T('H'):
-			break;
-		case _T('V'):
-			break;
-		case _T('C'):
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("C%d,%d %d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y, pp[p + 2].x, pp[p + 2].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p += 3;
-			break;
-		case _T('S'):
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("S%d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p += 2;
-			break;
-		case _T('Q'):
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("Q%d,%d %d,%d "), pp[p].x, pp[p].y, pp[p + 1].x, pp[p + 1].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p += 2;
-			break;
-		case _T('T'):
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("L%d,%d "), pp[p].x, pp[p].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p++;
-			break;
-		case _T('A'):
-			r = 0;
-			l = 0;
-			s = (pp[p].x < 0 || pp[p].y < 0) ? 1 : 0;
-
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("A%d,%d %d %d,%d %d,%d "), pp[p].x, pp[p].y, r, l, s, pp[p + 1].x, pp[p + 1].y);
-			if (total + n > max)
-				return total;
-			total += n;
-			p += 2;
-
-			break;
-		case _T('Z'):
-			if (buf)
-			{
-				buf[total] = _T('Z');
-			}
-			total++;
-
-			a = an;
-			break;
-		}
-	}
-
-	return total;
-}
-
-void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, int len, const xpoint_t* pa, int pn)
-{
-	tchar_t* buf;
-	int n;
-
-	n = svg_format_path(aa, len, pa, pn, NULL, MAX_LONG);
-	buf = xsalloc(n + 1);
-	svg_format_path(aa, len, pa, pn, buf, n);
-
-	set_dom_node_name(glk, SVG_NODE_PATH, -1);
-
-	set_dom_node_attr(glk, SVG_ATTR_D, -1, buf, n);
-
-	xsfree(buf);
-
-	write_xpen_to_svg_node(glk, pxp);
-
-	write_xbrush_to_svg_node(glk, pxb);
-}
-
 void read_path_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, tchar_t* aa, int* an, xpoint_t* pa, int* pn)
 {
 	const tchar_t* token;
@@ -2144,7 +2145,7 @@ void read_path_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, tchar_t
 	if (is_null(token))
 		return;
 
-	svg_parse_path(token, -1, aa, an, pa, pn);
+	_svg_parse_path(token, -1, aa, an, pa, pn);
 	
 	if (pxp)
 		read_xpen_from_svg_node(glk, pxp);

@@ -486,9 +486,30 @@ EXP_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const
 */
 EXP_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);
 
+/*
+@FUNCTION write_path_to_svg_node: write path attributes to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const tchar_t* aa: the command array.
+@INPUT int an: the command array size.
+@INPUT const xpoint_t* pa: the point array.
+@INPUT int pn: the point array size.
+@RETURN void: none.
+*/
+EXP_API void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, int an, const xpoint_t* pa, int pn);
 
-EXP_API void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, int len, const xpoint_t* pa, int pn);
-
+/*
+@FUNCTION read_path_from_svg_node: read path attributes fro svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@OUTPUT xpen_t* pxp: the pen struct.
+@OUTPUT xbrush_t* pxb: the brush struct.
+@OUTPUT tchar_t* aa: the command array.
+@OUTPUT int* an: the command array size.
+@OUTPUT xpoint_t* pa: the point array.
+@OUTPUT int* pn: the point array size.
+@RETURN void: none.
+*/
 EXP_API void read_path_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, tchar_t* aa, int* an, xpoint_t* pa, int* pn);
 
 #ifdef	__cplusplus

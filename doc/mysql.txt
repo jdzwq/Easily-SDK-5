@@ -1,5 +1,5 @@
 
-
+--linux
 安装mysql
 sudo apt-get install mysql-server mysql-client
 sudo apt-get install libmysqlclient-dev
@@ -13,17 +13,28 @@ dpkg -l | grep mysql*
 
 sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 
-注释掉bind-address = 127.0.0.1： 
+注释掉bind-address = 127.0.0.1：
 
 sudo service mysql restart
 
+--windows
+环境变量 MYSQL_HOME＝安装目录
+mysqld --initialize-insecure --user=mysql 
+mysqld -install
+net start mysql
+
+--connect
 mysql -h host -uroot -padmin
 
 use mysql;
 
 select host from user where user='root';
+localhost
 
 update user set host = '%' where user ='root'
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
+flush privileges;
 
 创建授权：grant select on 数据库.* to 用户名@登录主机 identified by \"密码\" 
 修改密码：mysqladmin -u用户名 -p旧密码 password 新密码 

@@ -34,6 +34,7 @@ LICENSE.GPL3 for more details.
 #include "svgcanv.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 
 #ifdef XDL_SUPPORT_SVG
 
