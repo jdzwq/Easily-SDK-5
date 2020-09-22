@@ -575,7 +575,11 @@ void TopogPanel_OnSaveAs(res_win_t widget)
 	{
 		LINKPTR ptrSvg = create_svg_doc();
 
+		set_topog_design(ptrTopog, 0);
+
 		svg_print_topog(ptrSvg, ptrTopog);
+
+		set_topog_design(ptrTopog, 1);
 
 		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
 

@@ -228,7 +228,11 @@ void StatisPanel_OnSaveAs(res_win_t widget)
 
 		int page = statisctrl_get_cur_page(pdt->hStatis);
 
+		set_statis_design(ptrStatis, 0);
+
 		svg_print_statis(ptrSvg, ptrStatis, page);
+
+		set_statis_design(ptrStatis, 1);
 
 		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
 

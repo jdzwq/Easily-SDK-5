@@ -233,7 +233,11 @@ void GridPanel_OnSaveAs(res_win_t widget)
 
 		int page = gridctrl_get_cur_page(pdt->hGrid);
 
+		set_grid_design(ptrGrid, 0);
+
 		svg_print_grid(ptrSvg, ptrGrid, page);
+
+		set_grid_design(ptrGrid, 1);
 
 		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
 

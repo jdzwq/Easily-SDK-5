@@ -293,7 +293,11 @@ void FormPanel_OnSaveAs(res_win_t widget)
 
 		int page = formctrl_get_cur_page(pdt->hForm);
 
+		set_form_design(ptrForm, 0);
+
 		svg_print_form(ptrSvg, ptrForm, page);
+
+		set_form_design(ptrForm, 1);
 
 		rt = save_dom_doc_to_file(ptrSvg, NULL, szFile);
 

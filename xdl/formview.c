@@ -188,17 +188,17 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		sz_shape = get_field_shape_ptr(flk);
 		if (!is_null(sz_shape))
 		{
-			/*parse_xpen_from_style(&xp, style);
+			parse_xpen_from_style(&xp, style);
 			if (!b_print)
 			{
 				format_xcolor(&pif->clr_frg, xp.color);
-			}*/
+			}
 
 			parse_xpen_from_style(&xp, style);
 			parse_xbrush_from_style(&xb, style);
 			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb, &xr, sz_shape);
 		}
-		/*else if (b_design)
+		else if (b_design)
 		{
 			parse_xpen_from_style(&xp, style);
 			xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DASHED);
@@ -208,7 +208,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			}
 
 			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
-		}*/
+		}
 
 		sz_class = get_field_class_ptr(flk);
 
