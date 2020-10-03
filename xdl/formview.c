@@ -195,8 +195,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			}
 
 			parse_xpen_from_style(&xp, style);
-			parse_xbrush_from_style(&xb, style);
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb, &xr, sz_shape);
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, sz_shape);
 		}
 		else if (b_design)
 		{
@@ -207,7 +206,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				format_xcolor(&pif->clr_frg, xp.color);
 			}
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, ATTR_SHAPE_RECT);
 		}
 
 		sz_class = get_field_class_ptr(flk);
@@ -529,6 +528,19 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				cb.fh = xr.fh;
 
 				draw_form_page(pif, &cb, obj, page);
+			}
+		}
+		else if (compare_text(sz_class, -1, DOC_FORM_PLOT, -1, 0) == 0)
+		{
+			obj = get_field_embed_plot(flk);
+			if (obj)
+			{
+				cb.fx = xr.fx;
+				cb.fy = xr.fy;
+				cb.fw = xr.fw;
+				cb.fh = xr.fh;
+
+				draw_plot(pif, &cb, obj);
 			}
 		}
 

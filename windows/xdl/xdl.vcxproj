@@ -185,6 +185,9 @@
     <ClInclude Include="..\..\xdl\calendarview.h" />
     <ClInclude Include="..\..\xdl\diagramdoc.h" />
     <ClInclude Include="..\..\xdl\diagramview.h" />
+    <ClInclude Include="..\..\xdl\plotdoc.h" />
+    <ClInclude Include="..\..\xdl\plotview.h" />
+    <ClInclude Include="..\..\xdl\stringarray.h" />
     <ClInclude Include="..\..\xdl\svgbag.h" />
     <ClInclude Include="..\..\xdl\formbio.h" />
     <ClInclude Include="..\..\xdl\gridbio.h" />
@@ -360,6 +363,9 @@
     <ClCompile Include="..\..\xdl\calendarview.c" />
     <ClCompile Include="..\..\xdl\diagramdoc.c" />
     <ClCompile Include="..\..\xdl\diagramview.c" />
+    <ClCompile Include="..\..\xdl\plotdoc.c" />
+    <ClCompile Include="..\..\xdl\plotview.c" />
+    <ClCompile Include="..\..\xdl\stringarray.c" />
     <ClCompile Include="..\..\xdl\svgbag.c" />
     <ClCompile Include="..\..\xdl\formbio.c" />
     <ClCompile Include="..\..\xdl\gridbio.c" />

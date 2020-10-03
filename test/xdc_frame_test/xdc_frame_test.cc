@@ -275,7 +275,7 @@ void _MainFrame_CreateTreeBar(res_win_t widget)
 
 	LINKPTR ptrTree = create_tree_doc();
 
-	set_tree_title(ptrTree, _T("��Դ�б�"));
+	set_tree_title(ptrTree, _T("tree"));
 	set_tree_title_icon(ptrTree, GDI_ATTR_GIZMO_PROPER);
 	treectrl_attach(pdt->hTreeBar, ptrTree);
 	treectrl_set_lock(pdt->hTreeBar, 0);
@@ -303,7 +303,7 @@ void _MainFrame_CreateStatusBar(res_win_t widget)
 
 	ilk = insert_status_item(ptrStatus, LINK_LAST);
 	set_status_item_name(ilk, _T("navibox"));
-	set_status_item_title(ilk, _T("������"));
+	set_status_item_title(ilk, _T("navibox"));
 	set_status_item_width(ilk, DEF_TOUCH_SPAN * 6 + 1);
 
 	statusctrl_attach(pdt->hStatusBar, ptrStatus);
@@ -414,17 +414,17 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		LINKPTR ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-25 10:00:00"));
-		set_notes_text(ptr_notes, _T("������Ϣ1"), -1);
+		set_notes_text(ptr_notes, _T("day1"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-26 10:00:00"));
-		set_notes_text(ptr_notes, _T("������Ϣ2"), -1);
+		set_notes_text(ptr_notes, _T("day2"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-27 10:00:00"));
-		set_notes_text(ptr_notes, _T("������Ϣ3"), -1);
+		set_notes_text(ptr_notes, _T("day3"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		notesctrl_attach(hPanel, ptr_arch);
@@ -443,17 +443,17 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		LINKPTR ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-25 10:00:00"));
-		set_notes_text(ptr_notes, _T("������Ϣ1"), -1);
+		set_notes_text(ptr_notes, _T("panel1"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-26 10:00:00"));
-		set_notes_text(ptr_notes, _T("������Ϣ2"), -1);
+		set_notes_text(ptr_notes, _T("panel2"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		ptr_notes = create_notes_doc();
 		set_notes_time(ptr_notes, _T("2019-11-27 10:00:00"));
-		set_notes_text(ptr_notes, _T("������Ϣ3"), -1);
+		set_notes_text(ptr_notes, _T("panel3"), -1);
 		insert_arch_document(ptr_arch, LINK_LAST, ptr_notes);
 
 		notesctrl_attach(hPanel, ptr_arch);
@@ -488,44 +488,36 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		if (is_null(wname))
 			xscpy(wname, _T("NewPlot"));
 
-		hPanel = plotbox_create(widget, WD_STYLE_CONTROL, &xr);
+		hPanel = plotctrl_create(_T("PlotPanel"), WD_STYLE_CONTROL, &xr, widget);
 		widget_set_user_id(hPanel, IDC_MAINFRAME_PLOTPANEL);
 		widget_set_owner(hPanel, widget);
 
-		xpen_t xp = { 0 };
-		widget_get_xpen(hPanel, &xp);
-		xp.adorn.feed = 2;
-		xp.adorn.size = 1;
-		//widget_set_xpen(hPanel, &xp);
+		LINKPTR ptr_plot = create_plot_doc();
 
-		xbrush_t xb = { 0 };
-		widget_get_xbrush(hPanel, &xb);
-		xb.shadow.offx = 3;
-		xb.shadow.offy = 3;
-		widget_set_xbrush(hPanel, &xb);
+		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_SCATTERGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_RADARGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_FUELGRAM, -1);
 
-		vector_t* pvt = vector_alloc(5, 2);
-		vector_parse(pvt, _T(" {(0,1) (2,3)(4, 5) (6, 7) (8,9)}"), -1);
-		plotbox_set_vetor(hPanel, *pvt);
-		vector_free(pvt);
+		set_plot_width(ptr_plot, 200);
+		set_plot_height(ptr_plot, 100);
 
-		plot_t plt = { 0 };
-		plt.y_base = 5;
-		plt.y_step = 1;
-		plt.x_step = 1;
-		parse_xcolor(&(plt.clr_argv[0]), GDI_ATTR_RGB_RED);
-		parse_xcolor(&(plt.clr_argv[1]), GDI_ATTR_RGB_GREEN);
-		parse_xcolor(&(plt.clr_argv[2]), GDI_ATTR_RGB_BLUE);
-		parse_xcolor(&(plt.clr_argv[3]), GDI_ATTR_RGB_GRAY);
-		parse_xcolor(&(plt.clr_argv[4]), GDI_ATTR_RGB_CYAN);
+		set_plot_title(ptr_plot, _T("plotgram"), -1);
 
-		xscpy(plt.x_unit, _T("mmHg"));
-		xscpy(plt.y_unit, _T("��"));
-		plotbox_set_title(hPanel, _T("Ѫѹ����ͼ"));
-		plotbox_set_plot(hPanel, &plt);
+		set_plot_y_bases(ptr_plot, _T("10, 1, 1, 1, 1"), -1);
+		set_plot_y_steps(ptr_plot, _T("20, 20, 20, 20, 20,"), -1);
+		set_plot_y_labels(ptr_plot, _T("label1,label2,label3,label4,label5,"), -1);
+		set_plot_y_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255),RGB(255,0,0),RGB(0,128,0),RGB(0,0,255)"), -1);
+		set_plot_x_labels(ptr_plot, _T("text1,text2"), -1);
+		set_plot_x_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255)"), -1);
 
-		plotbox_set_type(hPanel, ATTR_PLOT_TYPE_PANTOGRAM);
-		plotbox_calc_plot(hPanel);
+		set_plot_rows(ptr_plot, 5);
+		set_plot_cols(ptr_plot, 3);
+		set_plot_matrix(ptr_plot, _T(" [[30 1 1] [2 3 2][4 5 3] [6 7 4] [8 9 5]]"), -1);
+
+		plotctrl_attach(hPanel, ptr_plot);
+		plotctrl_redraw(hPanel);
 	}
 
 	if (!hPanel)
@@ -629,6 +621,10 @@ void MainFrame_TitleBar_OnItemDelete(res_win_t widget, NOTICE_TITLE* pnt)
 	{
 		ptrDoc = modelctrl_fetch(hPanel);
 	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PLOT, -1, 0) == 0)
+	{
+		ptrDoc = plotctrl_fetch(hPanel);
+	}
 
 	widget_close(hPanel, 0);
 
@@ -653,6 +649,10 @@ void MainFrame_TitleBar_OnItemDelete(res_win_t widget, NOTICE_TITLE* pnt)
 	else if (compare_text(wclass, -1, PANEL_CLASS_MODEL, -1, 0) == 0)
 	{
 		destroy_anno_doc(ptrDoc);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PLOT, -1, 0) == 0)
+	{
+		destroy_plot_doc(ptrDoc);
 	}
 }
 
@@ -896,6 +896,11 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	xb.shadow.offy = 5;
 	draw_arrow_raw(rdc, &xp, &xb, &xr, 20, XPI / 3);
 
+	xr.y = 100;
+	xr.x = 450;
+	xr.w = 50;
+	xr.h = 50;
+	draw_equalgon_raw(rdc, &xp, &xb, RECTPOINT(&xr), 20, 6);
 }
 
 /******************************************************************************************************/
@@ -932,11 +937,11 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	_MainFrame_CreateToolBar(widget);
 
-	//_MainFrame_CreateTitleBar(widget);
+	_MainFrame_CreateTitleBar(widget);
 
-	//_MainFrame_CreateStatusBar(widget);
+	_MainFrame_CreateStatusBar(widget);
 
-	//_MainFrame_CreateTreeBar(widget);
+	_MainFrame_CreateTreeBar(widget);
 
 	return 0;
 }

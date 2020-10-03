@@ -169,11 +169,14 @@ void xdu_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_ellipse = _gdiplus_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdiplus_draw_line;
 	pif->pf_gdi_draw_pie = _gdiplus_draw_pie;
+	pif->pf_gdi_draw_fan = _gdiplus_draw_fan;
+	pif->pf_gdi_calc_fan = _gdiplus_calc_fan;
 	pif->pf_gdi_draw_arc = _gdiplus_draw_arc;
 	pif->pf_gdi_draw_polygon = _gdiplus_draw_polygon;
 	pif->pf_gdi_draw_polyline = _gdiplus_draw_polyline;
 	pif->pf_gdi_draw_bezier = _gdiplus_draw_bezier;
 	pif->pf_gdi_draw_curve = _gdiplus_draw_curve;
+	pif->pf_gdi_draw_triangle = _gdiplus_draw_triangle;
 	pif->pf_gdi_draw_rect = _gdiplus_draw_rect;
 	pif->pf_gdi_draw_path = _gdiplus_draw_path;
 	pif->pf_gdi_draw_round = _gdiplus_draw_round;

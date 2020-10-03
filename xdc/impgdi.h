@@ -61,48 +61,6 @@ EXP_API void	draw_line_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt
 EXP_API void	draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
 
 /*
-@FUNCTION draw_polyline_raw: draw polyline in memory or device context using points coordinate
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* ppt: the point struct array using integer member.
-@INPUT int n: the point entity count.
-@RETURN void: none.
-*/
-EXP_API void	draw_polyline_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-
-/*
-@FUNCTION draw_polyline: draw polyline in canvas using milimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* ppt: the point struct array using float member.
-@INPUT int n: the point entity count.
-@RETURN void: none.
-*/
-EXP_API void	draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
-
-/*
-@FUNCTION draw_polygon_raw: draw polygon in memory or device context using points coordinate
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xpoint_t* ppt: the point struct array using integer member.
-@INPUT int n: the point entity count.
-@RETURN void: none.
-*/
-EXP_API void	draw_polygon_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
-
-/*
-@FUNCTION draw_polygon: draw polygon in canvas using milimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xpoint_t* ppt: the point struct array using float member.
-@INPUT int n: the point entity count.
-@RETURN void: none.
-*/
-EXP_API void	draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
-
-/*
 @FUNCTION draw_bezier_raw: draw bezier in memory or device context using points coordinate
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -147,6 +105,94 @@ EXP_API void	draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* pp
 EXP_API void	draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
 
 /*
+@FUNCTION draw_arc_raw: draw arc in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* pxr: the center point struct using integer member.
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
+@INPUT double fang: the from angle PI value.
+@INPUT double tang: the to angle PI value.
+@RETURN void: none.
+*/
+EXP_API void	draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+
+/*
+@FUNCTION draw_arc: draw arc in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* pxr: the center point struct using float member.
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
+@INPUT double fang: the from angle PI value.
+@INPUT double tang: the to angle PI value.
+@RETURN void: none.
+*/
+EXP_API void	draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
+
+/*
+@FUNCTION draw_polyline_raw: draw polyline in memory or device context using points coordinate
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt: the point struct array using integer member.
+@INPUT int n: the point entity count.
+@RETURN void: none.
+*/
+EXP_API void	draw_polyline_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+
+/*
+@FUNCTION draw_polyline: draw polyline in canvas using milimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint_t* ppt: the point struct array using float member.
+@INPUT int n: the point entity count.
+@RETURN void: none.
+*/
+EXP_API void	draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n);
+
+/*
+@FUNCTION draw_shape_raw: draw shape in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const tchar_t* shape: the shape name, eg: ATTR_SHAPE_*.
+@RETURN void: none.
+*/
+EXP_API void	draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* pxr, const tchar_t* shape);
+
+/*
+@FUNCTION draw_shape: draw shape in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* shape: the shape name, eg: ATTR_SHAPE_*.
+@RETURN void: none.
+*/
+EXP_API void	draw_shape(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, const tchar_t* shape);
+
+/*
+@FUNCTION draw_trangle_raw: draw triangle in memory or device context using points coordinate
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT const tchar_t* orient: the triangle orientation
+@RETURN void: none.
+*/
+EXP_API void	draw_triangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* orient);
+
+/*
+@FUNCTION draw_rect: draw triangle in canvas using milimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT const tchar_t* orient: the triangle orientation
+@RETURN void: none.
+*/
+EXP_API void	draw_triangle(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* orient);
+
+/*
 @FUNCTION draw_rect_raw: draw rect in memory or device context using points coordinate
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -165,30 +211,6 @@ EXP_API void	draw_rect_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 @RETURN void: none.
 */
 EXP_API void	draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr);
-
-/*
-@FUNCTION draw_path_raw: draw path in memory or device context using points coordinate
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const tchar_t* aa: the action stack.
-@INPUT const xpoint_t* pa: the points stack.
-@INPUT int n: the points stack size.
-@RETURN void: none.
-*/
-EXP_API void	draw_path_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n);
-
-/*
-@FUNCTION draw_path: draw path in canvas using milimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const tchar_t* aa: the action stack.
-@INPUT const xpoint_t* pa: the points stack.
-@INPUT int n: the points stack size.
-@RETURN void: none.
-*/
-EXP_API void	draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n);
 
 /*
 @FUNCTION draw_round_raw: draw round rect in memory or device context using points coordinate.
@@ -238,7 +260,7 @@ EXP_API void	draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb,
 @INPUT const xpoint_t* pxr: the center point struct using integer member.
 @INPUT int rx: the x-radius
 @INPUT int ry: the y-radius
-@INPUT double fang: the from angle PI value. 
+@INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
@@ -259,30 +281,60 @@ EXP_API void	draw_pie_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb,
 EXP_API void	draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
 
 /*
-@FUNCTION draw_arc_raw: draw arc in memory or device context using points coordinate.
+@FUNCTION draw_fan_raw: draw fan in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* pxr: the center point struct using integer member.
-@INPUT int rx: the x-radius
-@INPUT int ry: the y-radius
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xpoint_t* ppt: the point struct using integer member.
+@INPUT int r: the radius
+@INPUT int s: the span
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-EXP_API void	draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+EXP_API void	draw_fan_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang);
 
 /*
-@FUNCTION draw_arc: draw arc in canvas using millimeter coordinate.
+@FUNCTION draw_fan: draw fan in canvas using millimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint_t* pxr: the center point struct using float member.
-@INPUT int rx: the x-radius
-@INPUT int ry: the y-radius
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xpoint_t* ppt: the point struct using float member.
+@INPUT float r: the radius
+@INPUT float s: the span
 @INPUT double fang: the from angle PI value.
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-EXP_API void	draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang);
+EXP_API void	draw_fan(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float r, float s, double fang, double tang);
+
+/*
+@FUNCTION calc_fan_raw: calc fan points in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpont_t* ppt: the point struct using integer member.
+@INPUT int r: the radius
+@INPUT int s: the span
+@INPUT double fang: the from angle PI value.
+@INPUT double tang: the to angle PI value.
+@OUTPUT xpoint_t* pa: return the fan points.
+@INPUT int n: the point array size.
+@RETURN void: none.
+*/
+EXP_API void	calc_fan_raw(res_ctx_t rdc, const xpoint_t* ppt, int r, int s, double fang, double tang, xpoint_t* pa, int n);
+
+/*
+@FUNCTION calc_fan: draw fan in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const rect_t* ppt: the point struct using float member.
+@INPUT float r: the radius
+@INPUT float s: the span
+@INPUT double fang: the from angle PI value.
+@INPUT double tang: the to angle PI value.
+@OUTPUT xpoint_t* pa: return the fan points.
+@INPUT int n: the point array size.
+@RETURN void: none.
+*/
+EXP_API void	calc_fan(canvas_t canv, const xpoint_t* ppt, float r, float s, double fang, double tang, xpoint_t* pa, int n);
 
 /*
 @FUNCTION draw_arrow_raw: draw arrrow in memory or device context using points coordinate.
@@ -309,26 +361,96 @@ EXP_API void	draw_arrow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* px
 EXP_API void	draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc);
 
 /*
-@FUNCTION draw_shape_raw: draw shape in memory or device context using points coordinate.
+@FUNCTION draw_polygon_raw: draw polygon in memory or device context using points coordinate
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
-@INPUT const tchar_t* shape: the shape name, eg: ATTR_SHAPE_*.
+@INPUT const xpoint_t* ppt: the point struct array using integer member.
+@INPUT int n: the point entity count.
 @RETURN void: none.
 */
-EXP_API void	draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
+EXP_API void	draw_polygon_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
 
 /*
-@FUNCTION draw_shape: draw shape in canvas using millimeter coordinate.
+@FUNCTION draw_polygon: draw polygon in canvas using milimeter coordinate.
 @INPUT canvas_t canv: the canvas object.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT const tchar_t* shape: the shape name, eg: ATTR_SHAPE_*.
+@INPUT const xpoint_t* ppt: the point struct array using float member.
+@INPUT int n: the point entity count.
 @RETURN void: none.
 */
-EXP_API void	draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape);
+EXP_API void	draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
+
+/*
+@FUNCTION draw_equalgon_raw: draw equal polygon in memory or device context using points coordinate
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xpoint_t* ppt: the center point using integer member.
+@INPUT int r: the radius.
+@INPUT int n: the edge count.
+@RETURN void: none.
+*/
+EXP_API void	draw_equalgon_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int n);
+
+/*
+@FUNCTION draw_equalgon: draw equal polygon using milimeter coordinate
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xpoint_t* ppt: the center point using float member.
+@INPUT float fr: the radius.
+@INPUT int n: the edge count.
+@RETURN void: none.
+*/
+EXP_API void	draw_equalgon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float fr, int n);
+
+/*
+@FUNCTION calc_equalgon_raw: calc equal polygon in memory or device context using points coordinate
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpoint_t* ppt: the center point using integer member.
+@INPUT int r: the radius.
+@INPUT int n: the edge count.
+@OUTPUT int n: the point array for vertex.
+@RETURN void: none.
+*/
+EXP_API void	calc_equalgon_raw(res_ctx_t rdc, const xpoint_t* ppt, int r, int n, xpoint_t* pa);
+
+/*
+@FUNCTION calc_equalgon: calc equal polygon vertex using milimeter coordinate
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpoint_t* ppt: the center point using float member.
+@INPUT float fr: the radius.
+@INPUT int n: the edge count.
+@OUTPUT int n: the point array for vertex.
+@RETURN void: none.
+*/
+EXP_API void	calc_equalgon(canvas_t canv, const xpoint_t* ppt, float fr, int n, xpoint_t* pa);
+
+/*
+@FUNCTION draw_path_raw: draw path in memory or device context using points coordinate
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const tchar_t* aa: the action stack.
+@INPUT const xpoint_t* pa: the points stack.
+@INPUT int n: the points stack size.
+@RETURN void: none.
+*/
+EXP_API void	draw_path_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n);
+
+/*
+@FUNCTION draw_path: draw path in canvas using milimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const tchar_t* aa: the action stack.
+@INPUT const xpoint_t* pa: the points stack.
+@INPUT int n: the points stack size.
+@RETURN void: none.
+*/
+EXP_API void	draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n);
 
 /*
 @FUNCTION multi_line_raw: draw multiple base line in memory or device context using points coordinate, the line separated by line height of font and face.
@@ -462,28 +584,6 @@ EXP_API void	text_metric_raw(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
 @RETURN void: none.
 */
 EXP_API void	text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs);
-
-/*
-@FUNCTION color_out_raw: output color sequence in memory or device context using points coordinate.
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
-@INPUT bool_t horz: nonzero for horizon drawing, zero for vertical drawing.
-@INPUT const tchar_t* rgbstr: the rgb tokens, every rgb token separated by ';'.
-@INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
-@RETURN void: none.
-*/
-EXP_API void	color_out_raw(res_ctx_t rdc, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len);
-
-/*
-@FUNCTION color_out: output color sequence in canvas using millimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT bool_t horz: nonzero for horizon drawing, zero for vertical drawing.
-@INPUT const tchar_t* rgbstr: the rgb tokens, every rgb token separated by ';'.
-@INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
-@RETURN void: none.
-*/
-EXP_API void	color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len);
 
 /*
 @FUNCTION draw_var_text_raw: draw string object in memory or device context using points coordinate.
@@ -646,6 +746,28 @@ EXP_API int		calc_rich_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_
 EXP_API int		calc_rich_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich);
 
 /*
+@FUNCTION color_out_raw: output color sequence in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT bool_t horz: nonzero for horizon drawing, zero for vertical drawing.
+@INPUT const tchar_t* rgbstr: the rgb tokens, every rgb token separated by ';'.
+@INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
+@RETURN void: none.
+*/
+EXP_API void	color_out_raw(res_ctx_t rdc, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len);
+
+/*
+@FUNCTION color_out: output color sequence in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT bool_t horz: nonzero for horizon drawing, zero for vertical drawing.
+@INPUT const tchar_t* rgbstr: the rgb tokens, every rgb token separated by ';'.
+@INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
+@RETURN void: none.
+*/
+EXP_API void	color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len);
+
+/*
 @FUNCTION draw_thumn_raw: draw thumn image in memory or device context using points coordinate.
 @INPUT res_ctx_t rdc: the context resource handle.
 @INPUT const tchar_t* fname: the file name.
@@ -775,7 +897,7 @@ EXP_API void 	draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* pxr,
 @INPUT int len: the length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	draw_code128(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void 	draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
 
 /*
 @FUNCTION draw_pdf417_raw: draw PDF417 code in memory or device context using points coordinate.
@@ -797,7 +919,7 @@ EXP_API void 	draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* pxr, 
 @INPUT int len: the length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	draw_pdf417(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void 	draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
 
 /*
 @FUNCTION draw_qrcode_raw: draw QR code in memory or device context using points coordinate.
@@ -819,7 +941,48 @@ EXP_API void 	draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* pxr, 
 @INPUT int len: the length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	draw_qrcode(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void 	draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
+
+/*
+@FUNCTION gradient_rect_raw: gradient a rect in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xcolor_t* xc_brim: the brim color.
+@INPUT const xcolor_t* xc_core: the core color.
+@INPUT const tchar_t* gradient: the gradient type.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@RETURN void: none.
+*/
+EXP_API void	gradient_rect_raw(res_ctx_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr);
+
+/*
+@FUNCTION gradient_rect: gradient a rect in canvas using milimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xgradi_t* pxg the gradient struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@RETURN void: none.
+*/
+EXP_API void	gradient_rect(canvas_t canv, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr);
+
+/*
+@FUNCTION alphablend_rect_raw: alphablend a rect in memory or device context using points coordinate.
+@INPUT res_ctx_t rdc: the context resource handle.
+@INPUT const xcolor_t* pxc: the color struct.
+@INPUT const xrect_t* pxr: the rect struct using integer member.
+@INPUT int opacity: the alphablend level: 0~255, or use predefined value: ALPHA_SOLID(250), ALPHA_SOFT(128), ALPHA_TRANS(64).
+@RETURN void: none.
+*/
+EXP_API void	alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+
+/*
+@FUNCTION alphablend_rect: alphablend a rect in canvas using millimeter coordinate.
+@INPUT canvas_t canv: the canvas object.
+@INPUT const xcolor_t* pxc: the color struct.
+@INPUT const xrect_t* pxr: the rect struct using float member.
+@INPUT int opacity: the alphablend level: 0~255, or use predefined value: ALPHA_SOLID(250), ALPHA_SOFT(128), ALPHA_TRANS(64).
+@RETURN void: none.
+*/
+EXP_API void	alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opa);
+
 
 /*
 @FUNCTION exclip_rect_raw: clip the rect outside in memory or device context using points coordinate.
@@ -882,7 +1045,7 @@ EXP_API void	draw_select_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* 
 @INPUT int deep: the alphablend level: 0~255, the predefined value is ALPHA_SOLID, ALPHA_SOFT, ALPHA_TRANS.
 @RETURN void: none.
 */
-EXP_API void	draw_select(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep);
+//EXP_API void	draw_select(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep);
 
 /*
 @FUNCTION draw_focus_raw: draw focus frame in memory or device context using points coordinate.
@@ -902,7 +1065,7 @@ EXP_API void	draw_focus_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* p
 @INPUT int deep: the alphablend level: 0~255, the predefined value is ALPHA_SOLID, ALPHA_SOFT, ALPHA_TRANS.
 @RETURN void: none.
 */
-EXP_API void	draw_focus(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep);
+//EXP_API void	draw_focus(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep);
 
 /*
 @FUNCTION draw_feed_raw: draw feed frame in memory or device context using points coordinate.
@@ -922,7 +1085,7 @@ EXP_API void	draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pr
 @INPUT int deep: the alphablend level: 0~255, the predefined value is ALPHA_SOLID, ALPHA_SOFT, ALPHA_TRANS.
 @RETURN void: none.
 */
-EXP_API void	draw_feed(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep);
+//EXP_API void	draw_feed(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep);
 
 /*
 @FUNCTION draw_sizing_raw: draw feed frame in memory or device context using points coordinate.
@@ -935,50 +1098,6 @@ EXP_API void	draw_feed(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, i
 EXP_API void draw_sizing_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos);
 
 /*******************************************************************************************************************/
-
-
-/*
-@FUNCTION gradient_rect_raw: gradient a rect in memory or device context using points coordinate.
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xcolor_t* xc_brim: the brim color.
-@INPUT const xcolor_t* xc_core: the core color.
-@INPUT const tchar_t* gradient: the gradient type.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
-@RETURN void: none.
-*/
-EXP_API void	gradient_rect_raw(res_ctx_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr);
-
-/*
-@FUNCTION gradient_rect: gradient a rect in canvas using milimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xgradi_t* pxg the gradient struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@RETURN void: none.
-*/
-EXP_API void	gradient_rect(canvas_t canv, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr);
-
-/*
-@FUNCTION alphablend_rect_raw: alphablend a rect in memory or device context using points coordinate.
-@INPUT res_ctx_t rdc: the context resource handle.
-@INPUT const xcolor_t* pxc: the color struct.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
-@INPUT int opacity: the alphablend level: 0~255, or use predefined value: ALPHA_SOLID(250), ALPHA_SOFT(128), ALPHA_TRANS(64).
-@RETURN void: none.
-*/
-EXP_API void	alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
-
-/*
-@FUNCTION alphablend_rect: alphablend a rect in canvas using millimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xcolor_t* pxc: the color struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT int opacity: the alphablend level: 0~255, or use predefined value: ALPHA_SOLID(250), ALPHA_SOFT(128), ALPHA_TRANS(64).
-@RETURN void: none.
-*/
-EXP_API void	alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int opa);
-
-
-/***************************************************************************************************************/
 
 /*
 @FUNCTION draw_pass: draw the password in canvas using millimeter coordinate.

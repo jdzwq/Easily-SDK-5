@@ -106,6 +106,7 @@ LICENSE.GPL3 for more details.
 #define IDA_APPEND_EMBED_STATIS		5214
 #define IDA_APPEND_EMBED_IMAGES		5215
 #define IDA_APPEND_EMBED_FORM		5216
+#define IDA_APPEND_EMBED_PLOT		5217
 
 #define IDA_INSERT_COL			5210
 #define IDA_INSERT_ROW			5211
@@ -172,7 +173,7 @@ LICENSE.GPL3 for more details.
 #define PANEL_CLASS_SQL			_T("SQLPanel")
 #define PANEL_CLASS_XML			_T("XMLPanel")
 #define PANEL_CLASS_JSON		_T("JsonPanel")
-
+#define PANEL_CLASS_PLOT		_T("PlotPanel")
 
 #define MAINFRAME_TOOLGROUP_PROJECT		_T("group_project")
 #define MAINFRAME_TOOLGROUP_FILE		_T("group-file")

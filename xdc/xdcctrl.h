@@ -50,6 +50,64 @@ typedef struct _EDITDELTA{
 extern "C" {
 #endif
 
+
+/*************************************plot control*******************************************************/
+typedef struct _NOTICE_PLOT{
+	res_win_t widget;
+	unsigned int id;
+	unsigned int code;
+
+	link_t_ptr plot;
+	void* data;
+
+	int ret;
+}NOTICE_PLOT;
+
+typedef enum{
+	NC_PLOTLBCLK,
+	NC_PLOTRBCLK,
+	NC_PLOTDBCLK,
+}PLOT_NOTICE_CODE;
+
+/*
+@FUNCTION plotctrl_create: create a plot widget.
+@INPUT const tchar_t* wname: the widget title.
+@INPUT dword_t style: the widget style.
+@INPUT const xrect_t* pxr: the widget rect.
+@INPUT res_win_t owner: the owner widget.
+@RETURN res_win_t: return the new widget resource handle.
+*/
+EXP_API res_win_t plotctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t owner);
+
+/*
+@FUNCTION plotctrl_attach: attach a plot document to widget.
+@INPUT res_win_t widget: the plot widget.
+@INPUT link_t_ptr ptr: the plot document.
+@RETURN void: none.
+*/
+EXP_API void	plotctrl_attach(res_win_t widget, link_t_ptr ptr);
+
+/*
+@FUNCTION plotctrl_detach: detach the plot document from widget.
+@INPUT res_win_t widget: the plot widget.
+@RETURN link_t_ptr: the plot link component if exist, otherwise return NULL.
+*/
+EXP_API link_t_ptr plotctrl_detach(res_win_t widget);
+
+/*
+@FUNCTION plotctrl_fetch: get the plot document from widget.
+@INPUT res_win_t widget: the plot widget.
+@RETURN link_t_ptr: the plot link component if exist, otherwise return NULL.
+*/
+EXP_API link_t_ptr plotctrl_fetch(res_win_t widget);
+
+/*
+@FUNCTION plotctrl_redraw: redraw the plot widget.
+@INPUT res_win_t widget: the plot widget.
+@RETURN void: none.
+*/
+EXP_API void	plotctrl_redraw(res_win_t widget);
+
 /*************************************svg control*******************************************************/
 typedef struct _NOTICE_SVG{
 	res_win_t widget;

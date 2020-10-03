@@ -384,6 +384,7 @@ void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	}
 
 	end_canvas_paint(canv, dc, pxr);
+	destroy_canvas_interface(pif);
 }
 
 /************************************************************************************************/

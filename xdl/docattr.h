@@ -73,6 +73,22 @@
 #define DOC_SVC_CONTEXT_CLIENT		_T("client")
 #define DOC_SVC_PACKAGE				_T("package")
 
+#define DOC_PLOT					_T("plot")
+#define DOC_PLOT_WIDTH				_T("width")
+#define DOC_PLOT_HEIGHT				_T("height")
+#define DOC_PLOT_TYPE				_T("type")
+#define DOC_PLOT_TITLE				_T("title")
+#define DOC_PLOT_STYLE				_T("style")
+#define DOC_PLOT_Y_BASES			_T("y-bases")
+#define DOC_PLOT_Y_STEPS			_T("y-steps")
+#define DOC_PLOT_Y_LABELS			_T("y-labels")
+#define DOC_PLOT_Y_COLORS			_T("x-colors")
+#define DOC_PLOT_X_LABELS			_T("x-labels")
+#define DOC_PLOT_X_COLORS			_T("x-colors")
+#define DOC_PLOT_ROWS				_T("rows")
+#define DOC_PLOT_COLS				_T("cols")
+#define DOC_PLOT_MATRIX				_T("matrix")
+
 #define DOC_SCHEMA					_T("schema")
 #define DOC_SCHEMA_ELEMENT			_T("element")
 #define DOC_SCHEMA_ATTRIBUTE		_T("attribute")
@@ -99,6 +115,7 @@
 #define DOC_FORM_GRID			_T("grid-field")
 #define DOC_FORM_STATIS			_T("statis-field")
 #define DOC_FORM_FORM			_T("form-field")
+#define DOC_FORM_PLOT			_T("plot-field")
 #define DOC_FORM_IMAGES			_T("images-field")
 #define DOC_FORM_PAGENUM		_T("pagenum-field")
 
@@ -372,11 +389,15 @@
 #define ATTR_SPOT_TYPE_IMAGE		_T("image")
 
 #define ATTR_PLOT_TYPE				_T("plot-type")
-#define ATTR_PLOT_TYPE_GEOGRAM		_T("geogram") //地理图
+#define ATTR_PLOT_TYPE_OPTIONS		_T("topoggram~Topoggram;trendgram~Trendgram;scattergram~Scattergram;pantogram~Pantogram;histogram~Histogram;bargram~Bargram;radargram~Radargram;fuelgram~Fuelgram;")
+#define ATTR_PLOT_TYPE_TOPOGGGRAM	_T("topoggram") //地形图
 #define ATTR_PLOT_TYPE_TRENDGRAM	_T("trendgram") //趋势图
 #define ATTR_PLOT_TYPE_SCATTERGRAM	_T("scattergram") //密度图
 #define ATTR_PLOT_TYPE_PANTOGRAM	_T("pantogram") //比例图
 #define ATTR_PLOT_TYPE_HISTOGRAM	_T("histogram") //直方图
+#define ATTR_PLOT_TYPE_BARGRAM		_T("bargram") //条形图
+#define ATTR_PLOT_TYPE_RADARGRAM	_T("radargram") //雷达图
+#define ATTR_PLOT_TYPE_FUELGRAM		_T("fuelgram") //油量表
 
 #define ATTR_TEXT_TYPE					_T("text-type")
 #define ATTR_TEXT_TYPE_TEXT				_T("text")

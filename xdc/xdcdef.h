@@ -141,17 +141,6 @@ typedef struct _splitor_t{
 	long x, y;
 }splitor_t;
 
-typedef struct _plot_t{
-	double x_step;
-	double y_step;
-	double y_base;
-
-	tchar_t y_unit[8];
-	tchar_t x_unit[8];
-
-	xcolor_t clr_argv[8];
-}plot_t;
-
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;
 #ifdef XDU_SUPPORT_WIDGET_NC
 #define EVENT_ON_NCPAINT(proc)			pev->pf_on_nc_paint = proc;

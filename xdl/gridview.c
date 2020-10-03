@@ -617,7 +617,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		xrBar.fy = th + py;
 		xrBar.fh = ch;
 
-		(*pif->pf_draw_shape)(pif->canvas, &xp, &xb, &xrBar, shape);
+		(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
 
 		if (b_showcheck && get_rowset_checked(ptr))
 		{
@@ -654,7 +654,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 				xrBar.fw = get_col_width(clk);
 
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xb_bar, &xrBar, shape);
+				(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
 
 				token = get_col_title_ptr(clk);
 				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrBar, token, -1);
@@ -685,7 +685,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			}
 			i++;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb_bar, &xrBar, shape);
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
 
 			if (b_showcheck && get_row_checked(rlk))
 			{
@@ -707,7 +707,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	{
 		xrBar.fy += xrBar.fh;
 
-		(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xrBar, shape);
+		(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
 
 		xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 		ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
@@ -774,13 +774,13 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 			if (n_stepdraw && b_tag)
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xb_step, &xrCell, shape);
+				(*pif->pf_draw_shape)(pif->canvas, &xp, &xrCell, shape);
 				if (n_stepdraw == 1)
 					b_tag = 0;
 			}
 			else
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xrCell, shape);
+				(*pif->pf_draw_shape)(pif->canvas, &xp, &xrCell, shape);
 				if (n_stepdraw == 1)
 					b_tag = 1;
 			}
@@ -812,7 +812,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			xrCell.fy += xrCell.fh;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xb_step, &xrCell, shape);
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xrCell, shape);
 
 			token = get_col_sum_text_ptr(clk);
 

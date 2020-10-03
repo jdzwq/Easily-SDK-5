@@ -50,8 +50,7 @@
     <ClCompile Include="..\..\xdc\impwidget.c" />
     <ClCompile Include="..\..\xdc\modelctrl.c" />
     <ClCompile Include="..\..\xdc\panelctrl.c" />
-    <ClCompile Include="..\..\xdc\plotbox.c" />
-    <ClCompile Include="..\..\xdc\plotgdi.c" />
+    <ClCompile Include="..\..\xdc\plotctrl.c" />
     <ClCompile Include="..\..\xdc\printbag.c" />
     <ClCompile Include="..\..\xdc\printbox.c" />
     <ClCompile Include="..\..\xdc\shapegdi.c" />
@@ -118,7 +117,6 @@
     <ClInclude Include="..\..\xdc\impshell.h" />
     <ClInclude Include="..\..\xdc\impwidget.h" />
     <ClInclude Include="..\..\xdc\lang\_xdc_ansi.h" />
-    <ClInclude Include="..\..\xdc\plotgdi.h" />
     <ClInclude Include="..\..\xdc\printbag.h" />
     <ClInclude Include="..\..\xdc\shapegdi.h" />
     <ClInclude Include="..\..\xdc\splitor.h" />

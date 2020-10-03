@@ -326,11 +326,11 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 		xr_shape.fy = xr.fy + SHAPE_FEED;
 		xr_shape.fw = xr.fw - 2 * SHAPE_FEED;
 		xr_shape.fh = xr.fh - 2 * SHAPE_FEED;
-		(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr_shape, ATTR_SHAPE_ROUND);
+		(*pif->pf_draw_shape)(pif->canvas, &xp, &xr_shape, ATTR_SHAPE_ROUND);
 
 		xr_shape.fy = xr.fy + SHAPE_FEED + eh;
 		xr_shape.fh = xr.fh - 2 * SHAPE_FEED - eh;
-		(*pif->pf_draw_shape)(pif->canvas, &xp, &xb_shape, &xr_shape, ATTR_SHAPE_RECT);
+		(*pif->pf_draw_rect)(pif->canvas, &xp, &xb_shape, &xr_shape);
 
 		if (compare_text(type, -1, ATTR_TEXT_TYPE_TEXT, -1, 0) == 0)
 		{

@@ -78,6 +78,26 @@ EXP_API void lighten_xbrush(xbrush_t* pxb, int n);
 
 EXP_API void lighten_xfont(xfont_t* pxf, int n);
 
+EXP_API void parse_xpen_from_style(xpen_t* pxp, const tchar_t* token);
+
+EXP_API int format_xpen_to_style(const xpen_t* pxp, tchar_t* buf, int len);
+
+EXP_API void parse_xbrush_from_style(xbrush_t* pxb, const tchar_t* token);
+
+EXP_API int format_xbrush_to_style(const xbrush_t* pxb, tchar_t* buf, int len);
+
+EXP_API void parse_xfont_from_style(xfont_t* pxf, const tchar_t* token);
+
+EXP_API int format_xfont_to_style(const xfont_t* pxf, tchar_t* buf, int len);
+
+EXP_API void parse_xface_from_style(xface_t* pxa, const tchar_t* token);
+
+EXP_API int format_xface_to_style(const xface_t* pxa, tchar_t* buf, int len);
+
+EXP_API void parse_ximage_from_source(ximage_t* pxi, const tchar_t* token);
+
+EXP_API int format_ximage_to_source(const ximage_t* pxi, tchar_t* buf, int len);
+
 /*****************************************************************************************/
 EXP_API bool_t ft_inside(float x, float y, float x1, float y1, float x2, float y2);
 
@@ -114,6 +134,10 @@ EXP_API bool_t pt_clip_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 EXP_API void ft_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
 
 EXP_API void pt_inter_rect(xrect_t* pxr, const xrect_t* pxr_sub);
+
+EXP_API void pt_inter_square(xrect_t* pxr, const xrect_t* pxr_org);
+
+EXP_API void ft_inter_square(xrect_t* pxr, const xrect_t* pxr_org);
 
 EXP_API void ft_cell_rect(xrect_t* pxr, bool_t horz, int rows, int cols, int index);
 

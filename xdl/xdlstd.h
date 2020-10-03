@@ -15,6 +15,7 @@
 #include "dicttable.h"
 #include "stacktable.h"
 #include "stringtable.h"
+#include "stringarray.h"
 #include "wordstable.h"
 #include "actable.h"
 #include "varobj.h"

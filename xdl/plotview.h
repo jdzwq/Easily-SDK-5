@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc xdl export document
+	@doc plot view document
 
-	@module	svgbag.h | interface file
+	@module	plotview.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,40 +29,22 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _SVGBAG_H
-#define _SVGBAG_H
+#ifndef _PLOTVIEW_H
+#define _PLOTVIEW_H
 
 #include "xdldef.h"
-
-#ifdef XDL_SUPPORT_SVG
+#include "vector.h"
+#include "matrix.h"
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-EXP_API void svg_print_form(link_t_ptr svg, link_t_ptr form, int page);
-
-EXP_API void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page);
-
-EXP_API void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page);
-
-EXP_API void svg_print_topog(link_t_ptr svg, link_t_ptr topog);
-
-EXP_API void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog);
-
-EXP_API void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram);
-
-EXP_API void svg_print_plot(link_t_ptr svg, link_t_ptr plot);
-
-EXP_API void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo, int page);
-
-EXP_API void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr rich, int page);
-
+	EXP_API void draw_plot(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif
 
-#endif /*SVGBAG_H*/
+#endif /*PLOTVIEW_H*/

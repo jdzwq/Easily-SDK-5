@@ -213,6 +213,13 @@ EXP_API void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox);
 EXP_API void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox);
 
 /*
+@FUNCTION reset_svg_viewbox: set svg viewbox to default.
+@INPUT link_t_ptr ptr: the svg link component.
+@RETURN void: none.
+*/
+EXP_API void reset_svg_viewbox(link_t_ptr ptr);
+
+/*
 @FUNCTION write_line_to_svg_node: write line attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -253,28 +260,6 @@ EXP_API void write_polyline_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const
 EXP_API int read_polyline_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int n);
 
 /*
-@FUNCTION write_polygon_to_svg_node: write polygon attributes to the svg node.
-@INPUT link_t_ptr glk: the svg node component.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xpoint_t* ppt: the point struct array.
-@INPUT int n: the number of point in array.
-@RETURN void: none.
-*/
-EXP_API void write_polygon_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
-
-/*
-@FUNCTION read_polygon_from_svg_node: read ploygon attributes from the svg node.
-@INPUT link_t_ptr glk: the svg node component.
-@OUTPUT xpen_t* pxp: the pen struct for returning.
-@OUTPUT xbrush_t* pxb: the brush struct for returning.
-@OUTPUT xpoint_t* ppt: the point struct array for returning in int member, you can let it NULL to test the number of points beforehand.
-@INPUT int n: the array size.
-@RETURN int: return the number of points.
-*/
-EXP_API int read_polygon_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int n);
-
-/*
 @FUNCTION write_bezier_to_svg_node: write bezier attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
@@ -297,10 +282,53 @@ EXP_API void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const x
 EXP_API void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n);
 
 /*
-@FUNCTION write_rect_to_svg_node: write rect attributes to the svg node.
+@FUNCTION svg_node_is_arc: test the node is arc node.
+@INPUT link_t_ptr glk: the svg node component.
+@RETURN bool_t: return nonzero for arc node, otherwise return zero.
+*/
+EXP_API bool_t svg_node_is_arc(link_t_ptr glk);
+
+/*
+@FUNCTION write_arc_to_svg_node: write arc attributes to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const xpen_t* pxp: the pen struct.
+@INPUT const xpoint* prt: the rect struct using int member.
+@INPUT int rx: the x-radius
+@INPUT int ry: the y-radius
+@INPUT double fang: the start angle.
+@INPUT double tang: the end angle.
+@RETURN void: none.
+*/
+EXP_API void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+
+/*
+@FUNCTION read_arc_from_svg_node: read arc attributes from the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@OUTPUT xpen_t* pxp: the pen struct for returning.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
+@INPUT int* prx: the x-radius for returning
+@INPUT int* pry: the y-radius for returning
+@OUTPUT double* pfang: for returning start angle.
+@OUTPUT double* ptang: for returning end angle.
+@RETURN void: none
+*/
+EXP_API void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
+
+/*
+@FUNCTION write_shape_to_svg_node: write shape attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xrect_t* prt: the rect struct using int member.
+@INPUT const tchar_t* shape: the shape name.
+@RETURN void: none.
+*/
+EXP_API void write_shape_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xrect_t* prt, const tchar_t* shape);
+
+/*
+@FUNCTION write_rect_to_svg_node: write rect attributes to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xrect_t* prt: the rect struct using int member.
 @RETURN void: none.
 */
@@ -402,89 +430,63 @@ EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbru
 */
 EXP_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
 
-/*
-@FUNCTION svg_node_is_arc: test the node is arc node.
-@INPUT link_t_ptr glk: the svg node component.
-@RETURN bool_t: return nonzero for arc node, otherwise return zero.
-*/
-EXP_API bool_t svg_node_is_arc(link_t_ptr glk);
 
 /*
-@FUNCTION write_arc_to_svg_node: write arc attributes to the svg node.
+@FUNCTION svg_node_is_fan: test the node is fan node.
+@INPUT link_t_ptr glk: the svg node component.
+@RETURN bool_t: return nonzero for fan node, otherwise return zero.
+*/
+EXP_API bool_t svg_node_is_fan(link_t_ptr glk);
+
+/*
+@FUNCTION write_fan_to_svg_node: write fan attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint* prt: the rect struct using int member.
-@INPUT int rx: the x-radius
-@INPUT int ry: the y-radius
+@INPUT const xbrush_t* pxb: the brush struct.
+@INPUT const xpoint* ppt: the point struct using int member.
+@INPUT int r: the fan radius.
+@INPUT int s: the fan span.
 @INPUT double fang: the start angle.
 @INPUT double tang: the end angle.
 @RETURN void: none.
 */
-EXP_API void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+void write_fan_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang);
 
 /*
-@FUNCTION read_arc_from_svg_node: read arc attributes from the svg node.
+@FUNCTION read_fan_from_svg_node: read fan attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in int member.
-@INPUT int* prx: the x-radius for returning
-@INPUT int* pry: the y-radius for returning
+@OUTPUT xbrush_t* pxb: the brush struct for returning.
+@OUTPUT xpoint_t* ppt: the point struct for returning in int member.
+@INPUT int* pr: the fan radius for returning
+@INPUT int* ps: the fan span for returning
 @OUTPUT double* pfang: for returning start angle.
 @OUTPUT double* ptang: for returning end angle.
 @RETURN void: none
 */
-EXP_API void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
+EXP_API void read_fan_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* pr, int* ps, double* pfang, double* ptang);
 
 /*
-@FUNCTION write_text_to_svg_node: write text to the svg node.
-@INPUT link_t_ptr glk: the svg node component.
-@INPUT const xfont_t* pxf: the font struct.
-@INPUT const xface_t* pxa: the face struct.
-@INPUT const xrect_t* prt: the rect struct using int member.
-@INPUT const tchar_t* text: the text string token.
-@INPUT int len: the length of text token in characters.
-@RETURN void: none.
-*/
-EXP_API void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* text, int len);
-
-/*
-@FUNCTION read_text_from_svg_node: read text attributes from the svg node.
-@INPUT link_t_ptr glk: the svg node component.
-@OUTPUT xfont_t* pxf: the font struct for returning.
-@OUTPUT xface_t* pxa: the face struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in int member.
-@RETURN const tchar_t*: return text token.
-*/
-EXP_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xface_t* pxa, xrect_t* prt);
-
-/*
-@FUNCTION write_shape_to_svg_node: write shape attributes to the svg node.
+@FUNCTION write_polygon_to_svg_node: write polygon attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
 @INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* prt: the rect struct using int member.
-@INPUT const tchar_t* shape: the shape name.
+@INPUT const xpoint_t* ppt: the point struct array.
+@INPUT int n: the number of point in array.
 @RETURN void: none.
 */
-EXP_API void write_shape_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape);
+EXP_API void write_polygon_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n);
 
 /*
-@FUNCTION write_ximage_to_svg_node: write image attributes to the svg node.
+@FUNCTION read_polygon_from_svg_node: read ploygon attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
-@INPUT const ximage_t* pxi: the image struct.
-@INPUT const xrect_t* prt: the rect struct using int member.
-@RETURN void: none.
+@OUTPUT xpen_t* pxp: the pen struct for returning.
+@OUTPUT xbrush_t* pxb: the brush struct for returning.
+@OUTPUT xpoint_t* ppt: the point struct array for returning in int member, you can let it NULL to test the number of points beforehand.
+@INPUT int n: the array size.
+@RETURN int: return the number of points.
 */
-EXP_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t* prt);
-
-/*
-@FUNCTION read_ximage_from_svg_node: read image attributes from the svg node.
-@INPUT link_t_ptr glk: the svg node component.
-@OUTPUT ximage_t* pxi: the image struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in int member.
-@RETURN void: none.
-*/
-EXP_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);
+EXP_API int read_polygon_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int n);
 
 /*
 @FUNCTION write_path_to_svg_node: write path attributes to the svg node.
@@ -511,6 +513,47 @@ EXP_API void write_path_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbr
 @RETURN void: none.
 */
 EXP_API void read_path_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, tchar_t* aa, int* an, xpoint_t* pa, int* pn);
+
+/*
+@FUNCTION write_text_to_svg_node: write text to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const xfont_t* pxf: the font struct.
+@INPUT const xface_t* pxa: the face struct.
+@INPUT const xrect_t* prt: the rect struct using int member.
+@INPUT const tchar_t* text: the text string token.
+@INPUT int len: the length of text token in characters.
+@RETURN void: none.
+*/
+EXP_API void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* text, int len);
+
+/*
+@FUNCTION read_text_from_svg_node: read text attributes from the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@OUTPUT xfont_t* pxf: the font struct for returning.
+@OUTPUT xface_t* pxa: the face struct for returning.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
+@RETURN const tchar_t*: return text token.
+*/
+EXP_API const tchar_t* read_text_from_svg_node(link_t_ptr glk, xfont_t* pxf, xface_t* pxa, xrect_t* prt);
+
+/*
+@FUNCTION write_ximage_to_svg_node: write image attributes to the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@INPUT const ximage_t* pxi: the image struct.
+@INPUT const xrect_t* prt: the rect struct using int member.
+@RETURN void: none.
+*/
+EXP_API void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t* prt);
+
+/*
+@FUNCTION read_ximage_from_svg_node: read image attributes from the svg node.
+@INPUT link_t_ptr glk: the svg node component.
+@OUTPUT ximage_t* pxi: the image struct for returning.
+@OUTPUT xrect_t* prt: the rect struct for returning in int member.
+@RETURN void: none.
+*/
+EXP_API void read_ximage_from_svg_node(link_t_ptr glk, ximage_t* pxi, xrect_t* prt);
+
 
 #ifdef	__cplusplus
 }

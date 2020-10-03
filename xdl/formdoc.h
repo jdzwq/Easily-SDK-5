@@ -499,9 +499,9 @@ LICENSE.GPL3 for more details.
 #define get_field_dirty(flk)								(get_dom_node_mask(flk) & 0x0000000F)
 
 
-#define IS_STATIC_FIELD(token)	(compare_text(token,-1,DOC_FORM_SHAPE,-1,0) == 0 || compare_text(token,-1,DOC_FORM_LABEL,-1,0) == 0)
+#define IS_STATIC_FIELD(token)	(compare_text(token,-1,DOC_FORM_SHAPE,-1,0) == 0 || compare_text(token,-1,DOC_FORM_LABEL,-1,0) == 0 || compare_text(token,-1,DOC_FORM_PLOT,-1,0) == 0)
 #define IS_DATA_FIELD(token)	(compare_text(token,-1,DOC_FORM_TEXT,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CHECK,-1,0) == 0  ||  compare_text(token,-1,DOC_FORM_TAG,-1,0) == 0 || compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_PHOTO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CODE,-1,0) == 0 || compare_text(token,-1,DOC_FORM_HREF,-1,0) == 0 || compare_text(token,-1,DOC_FORM_TABLE,-1,0) == 0)
-#define IS_EMBED_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_STATIS,-1,0) == 0  ||  compare_text(token,-1,DOC_FORM_IMAGES,-1,0) == 0 || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 )
+#define IS_EMBED_FIELD(token)	(compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0 || compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_STATIS,-1,0) == 0  ||  compare_text(token,-1,DOC_FORM_IMAGES,-1,0) == 0 || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 || compare_text(token,-1,DOC_FORM_PLOT,-1,0) == 0)
 #define IS_PAGED_FIELD(token)	(compare_text(token,-1,DOC_FORM_GRID,-1,0) == 0 || compare_text(token,-1,DOC_FORM_STATIS,-1,0) == 0  || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 ||  compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0)
 #define IS_LARGE_FIELD(token)	(compare_text(token,-1,DOC_FORM_PHOTO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0)
 #define IS_EDITOR_FIELD(token)	(compare_text(token,-1,DOC_FORM_TEXT,-1,0) == 0 || compare_text(token,-1,DOC_FORM_CHECK,-1,0) == 0 || compare_text(token,-1,DOC_FORM_TAG,-1,0) == 0 || compare_text(token,-1,DOC_FORM_MEMO,-1,0) == 0 || compare_text(token,-1,DOC_FORM_RICH,-1,0) == 0 || compare_text(token,-1,DOC_FORM_FORM,-1,0) == 0)
@@ -896,6 +896,21 @@ EXP_API link_t_ptr get_field_embed_form(link_t_ptr flk);
 @RETURN void: none.
 */
 EXP_API void set_field_embed_form(link_t_ptr flk, link_t_ptr doc);
+
+/*
+@FUNCTION get_field_embed_plot: get the field embed plot document.
+@INPUT link_t_ptr flk: the field link component.
+@RETURN link_t_ptr: return the plot link component if exists, otherwise return NULL.
+*/
+EXP_API link_t_ptr get_field_embed_plot(link_t_ptr flk);
+
+/*
+@FUNCTION set_field_embed_plot: set the field embed plot document.
+@INPUT link_t_ptr flk: the field link component.
+@INPUT link_t_ptr doc: the plot link componet.
+@RETURN void: none.
+*/
+EXP_API void set_field_embed_plot(link_t_ptr flk, link_t_ptr doc);
 
 /*
 @FUNCTION clear_field_embed: clear the field embed document.

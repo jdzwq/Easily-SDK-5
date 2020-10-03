@@ -42,6 +42,7 @@
 #include "archdoc.h"
 #include "calendardoc.h"
 #include "taskdoc.h"
+#include "plotdoc.h"
 
 #include "gridsql.h"
 #include "gridbag.h"

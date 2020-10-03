@@ -48,8 +48,12 @@ void svg_print_form(link_t_ptr svg, link_t_ptr form, int page)
 
 	pif = create_svg_interface(canv);
 
-	cb.fw = get_svg_width(svg);
-	cb.fh = get_svg_height(svg);
+	cb.fw = get_form_width(form);
+	cb.fh = get_form_height(form);
+
+	set_svg_width(svg, cb.fw);
+	set_svg_height(svg, cb.fh);
+	reset_svg_viewbox(svg);
 
 	draw_form_page(pif, &cb, form, page);
 
@@ -67,8 +71,12 @@ void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page)
 
 	pif = create_svg_interface(canv);
 
-	cb.fw = get_svg_width(svg);
-	cb.fh = get_svg_height(svg);
+	cb.fw = get_grid_width(svg);
+	cb.fh = get_grid_height(svg);
+
+	set_svg_width(svg, cb.fw);
+	set_svg_height(svg, cb.fh);
+	reset_svg_viewbox(svg);
 
 	draw_grid_page(pif, &cb, grid, page);
 
@@ -86,8 +94,12 @@ void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page)
 
 	pif = create_svg_interface(canv);
 
-	cb.fw = get_svg_width(svg);
-	cb.fh = get_svg_height(svg);
+	cb.fw = get_statis_width(statis);
+	cb.fh = get_statis_height(statis);
+
+	set_svg_width(svg, cb.fw);
+	set_svg_height(svg, cb.fh);
+	reset_svg_viewbox(svg);
 
 	draw_statis_page(pif, &cb, statis, page);
 
@@ -143,10 +155,37 @@ void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram)
 
 	pif = create_svg_interface(canv);
 
-	cb.fw = get_svg_width(svg);
-	cb.fh = get_svg_height(svg);
+	cb.fw = get_diagram_width(diagram);
+	cb.fh = get_diagram_height(diagram);
+
+	set_svg_width(svg, cb.fw);
+	set_svg_height(svg, cb.fh);
+	reset_svg_viewbox(svg);
 
 	draw_diagram(pif, &cb, diagram);
+
+	destroy_svg_canvas(canv);
+	destroy_svg_interface(pif);
+}
+
+void svg_print_plot(link_t_ptr svg, link_t_ptr plot)
+{
+	canvas_t canv;
+	if_canvas_t* pif;
+	canvbox_t cb = { 0 };
+
+	canv = create_svg_canvas(svg);
+
+	pif = create_svg_interface(canv);
+
+	cb.fw = get_plot_width(plot);
+	cb.fh = get_plot_height(plot);
+
+	set_svg_width(svg, cb.fw);
+	set_svg_height(svg, cb.fh);
+	reset_svg_viewbox(svg);
+
+	draw_plot(pif, &cb, plot);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_interface(pif);
@@ -162,8 +201,12 @@ void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link
 
 	pif = create_svg_interface(canv);
 
-	xr.fw = get_svg_width(svg);
-	xr.fh = get_svg_height(svg);
+	xr.fw = get_memo_width(memo);
+	xr.fh = get_memo_height(memo);
+
+	set_svg_width(svg, xr.fw);
+	set_svg_height(svg, xr.fh);
+	reset_svg_viewbox(svg);
 
 	(*pif->pf_draw_memo_text)(pif->canvas, pxf, pxa, &xr, memo, page);
 
@@ -181,8 +224,12 @@ void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link
 
 	pif = create_svg_interface(canv);
 
-	xr.fw = get_svg_width(svg);
-	xr.fh = get_svg_height(svg);
+	xr.fw = get_rich_width(svg);
+	xr.fh = get_rich_height(svg);
+
+	set_svg_width(svg, xr.fw);
+	set_svg_height(svg, xr.fh);
+	reset_svg_viewbox(svg);
 
 	(*pif->pf_draw_rich_text)(pif->canvas, pxf, pxa, &xr, rich, page);
 

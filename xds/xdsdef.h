@@ -423,6 +423,29 @@ typedef int				wait_t;
 
 #define IS_CONTROL_CHAR(ch)		(((int)ch >= 0 && (int)ch <= 31) || (int)ch == 127)
 
+#define IS_NUM_FEED(ch)	 ((ch == _T(' ') || ch == _T('\t'))? 1 : 0)
+
+/*define options string token item feed and line feed*/
+#define OPT_ITEMFEED		_T('~')
+
+#define OPT_LINEFEED		_T(';')
+
+#define CSS_ITEMFEED		_T(':')
+
+#define CSS_LINEFEED		_T(';')
+
+#define TXT_ITEMFEED		_T('\t')
+
+#define TXT_LINEFEED		_T('\r')
+
+#define CSV_ITEMFEED		_T(',')
+
+#define CSV_LINEFEED		_T('\n')
+
+#define URL_ITEMFEED		_T('=')
+
+#define URL_LINEFEED		_T('&')
+
 
 /*define max integer value*/
 #define MAX_LONG        2147483647		//0x7fffffff
@@ -475,10 +498,10 @@ typedef int				wait_t;
 //#define PTPERINCH	1440
 //#define PTPERMM	56.693f
 #define MMPERLOGPT	0.1f
-#define MMPERPD		0.35f
+#define MMPERPD		0.3527f
 #define PDPERMM		2.835f
 #define PDPERINCH	72
-#define SVGPTPERMM	7.2f
+#define SVGPTPERMM	2.835f
 
 typedef enum{ _RGB_COLOR, HSL_COLOR, _HEX_COLOR }CLRFMT;
 

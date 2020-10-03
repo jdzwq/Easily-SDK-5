@@ -111,7 +111,7 @@ void hand_shapebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 	xr.w -= 1;
 	xr.h -= 1;
-	draw_shape_raw(rdc, &xp, &xb, &xr, ptd->shape);
+	draw_shape_raw(rdc, &xp, &xr, ptd->shape);
 
 	end_canvas_paint(canv, dc, pxr);
 }

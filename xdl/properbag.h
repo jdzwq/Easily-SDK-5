@@ -116,6 +116,10 @@ EXP_API void properbag_write_diagram_entity_attributes(link_t_ptr ptr, link_t_pt
 
 EXP_API void properbag_read_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk);
 
+EXP_API void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot);
+
+EXP_API void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot);
+
 #ifdef	__cplusplus
 }
 #endif

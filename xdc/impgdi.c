@@ -44,1102 +44,6 @@ void draw_line_raw(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const 
 	(*pif->pf_gdi_draw_line)(rdc, pxp, ppt1, ppt2);
 }
 
-void draw_polyline_raw(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-	
-	(*pif->pf_gdi_draw_polyline)(rdc,pxp,ppt,n);
-}
-
-void draw_polygon_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_polygon)(rdc,pxp,pxb,ppt,n);
-}
-
-void draw_rect_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_rect)(rdc,pxp,pxb,pxr);
-}
-
-void draw_path_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_path)(rdc, pxp, pxb, aa, pa);
-}
-
-void draw_round_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_round)(rdc, pxp, pxb, pxr);
-}
-
-void draw_bezier_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_bezier)(rdc, pxp, ppt1, ppt2, ppt3, ppt4);
-}
-
-void draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_curve)(rdc, pxp, ppt, n);
-}
-
-void gradient_rect_raw(res_ctx_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_gradient_rect)(rdc, xc_brim, xc_core, gradient, pxr);
-}
-
-void alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, int opacity)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_alphablend_rect)(rdc, pxc, pxr, opacity);
-}
-
-void draw_ellipse_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_ellipse)(rdc,pxp,pxb,pxr);
-}
-
-void draw_pie_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt, int rx, int ry, double fang,double tang)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_pie)(rdc,pxp,pxb,ppt,rx,ry,fang,tang);
-}
-
-void draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_arc)(rdc, pxp, ppt, rx, ry, fang, tang);
-}
-
-void draw_arrow_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr,int alen,double arc)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_arrow)(rdc,pxp,pxb,pxr,alen,arc);
-}
-
-void draw_text_raw(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* pxr,const tchar_t* txt,int len)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_text)(rdc,pxf,pxa,pxr,txt,len);
-}
-
-void text_out_raw(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_text_out)(rdc, pxf, ppt, txt, len);
-}
-
-void color_out_raw(res_ctx_t rdc, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
-{
-	const tchar_t *pre, *nxt;
-	xrect_t xr;
-	xcolor_t xc;
-	xbrush_t xb;
-	tchar_t* val;
-	int vlen;
-	tchar_t clr[CLR_LEN + 1];
-
-	if (len < 0)
-		len = xslen(rgbstr);
-
-	default_xbrush(&xb);
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-
-	pre = rgbstr;
-	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
-	{
-		xsncpy(clr, val, vlen);
-		parse_xcolor(&xc, clr);
-		format_xcolor(&xc, xb.color);
-
-		draw_rect_raw(rdc, NULL, &xb, &xr);
-
-		len -= (nxt - pre);
-
-		if (horz)
-			xr.x += xr.w;
-		else
-			xr.y += xr.h;
-		
-		pre = nxt;
-	}
-}
-
-void draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, ppt);
-}
-
-void draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* prt)
-{
-	if_context_t *pif;
-	res_bmp_t bmp;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	bmp = load_bitmap_from_icon(rdc, iname);
-
-	if (bmp)
-	{
-		(*pif->pf_gdi_draw_image)(rdc, bmp, NULL, prt);
-		destroy_bitmap(bmp);
-	}
-}
-
-void draw_thumb_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* prt)
-{
-	if_context_t *pif;
-	res_bmp_t bmp;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	bmp = load_bitmap_from_thumb(rdc, fname);
-
-	if (bmp)
-	{
-		(*pif->pf_gdi_draw_image)(rdc, bmp, NULL, prt);
-		destroy_bitmap(bmp);
-	}
-}
-
-void draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* pxr)
-{
-	if_context_t *pif;
-	res_bmp_t bmp;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	bmp = load_bitmap_from_ximage(rdc, (ximage_t*)pxi, pxr->w, pxr->h);
-
-	if (bmp)
-	{
-		(*pif->pf_gdi_draw_image)(rdc, bmp, pxi->color, pxr);
-		destroy_bitmap(bmp);
-	}
-}
-
-void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	if_context_t *pif;
-
-	link_t_ptr g, nlk;
-
-	int black,span;
-	dword_t i;
-	int unit;
-	xrect_t rt;
-	xbrush_t xb;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-	}
-
-	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.3, 1);
-
-	rt.x = prt->x + unit;
-	rt.y = prt->y + unit;
-	rt.w = unit;
-	rt.h = prt->h - 2 * unit;
-
-	black = 0;
-	for (i = 0; i < bar_len; i++)
-	{
-		span = (bar_buf[i] - '0');
-		rt.w = span * unit;
-
-		black = (black) ? 0 : 1;
-
-		if (black && pxc)
-		{
-			(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
-		}
-		
-		rt.x += rt.w;
-	}
-
-	xmem_free(bar_buf);
-
-	prt->w = rt.x + unit - prt->x;
-}
-
-void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	if_context_t *pif;
-
-	link_t_ptr g, nlk;
-
-	int black,span;
-	int rows,cols;
-	unsigned char b, c;
-	int i,j;
-	int unit;
-
-	xrect_t rt;
-	xbrush_t xb;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-	}
-
-	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
-
-	len = 0;
-	black = 0;
-	for (i = 0; i < rows; i++)
-	{
-		rt.x = prt->x + unit;
-		rt.w = unit;
-		rt.y = prt->y + unit + i * 2 * unit;
-		rt.h = 2 * unit;
-
-		for (j = 0; j < cols; j++)
-		{
-			c = *(bar_buf + i * cols + j);
-			b = 0x80;
-
-			while (b)
-			{
-				rt.x += rt.w;
-
-				black = (c & b) ? 0 : 1;
-
-				if (black && pxc)
-				{
-					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
-				}
-
-				b = b >> 1;
-			}
-		}
-	}
-
-	xmem_free(bar_buf);
-
-	prt->w = rt.x + unit - prt->x;
-	prt->h = rt.y + rt.h + unit - prt->y;
-}
-
-void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	if_context_t *pif;
-
-	link_t_ptr g, nlk;
-
-	int black,span;
-	int rows,cols;
-	unsigned char b, c;
-	int i,j;
-
-	float unit = 0.5;
-	xrect_t rt;
-	xbrush_t xb;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-	}
-
-	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
-
-	len = 0;
-	black = 0;
-	for (i = 0; i < rows; i++)
-	{
-		rt.x = prt->x + unit;
-		rt.w = unit;
-		rt.y = prt->y + unit + i * unit;
-		rt.h = unit;
-
-		for (j = 0; j < cols; j++)
-		{
-			c = *(bar_buf + i * cols + j);
-			b = 0x80;
-
-			while (b)
-			{
-				rt.x += rt.w;
-
-				black = (c & b) ? 1 : 0;
-
-				if (black && pxc)
-				{
-					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
-				}
-
-				b = b >> 1;
-			}
-		}
-	}
-
-	xmem_free(bar_buf);
-
-	prt->w = rt.x + unit - prt->x;
-	prt->h = rt.y + rt.h + unit - prt->y;
-}
-
-
-void image_size_raw(res_ctx_t rdc, const ximage_t* pxi, xsize_t* pxs)
-{
-	if_context_t *pif;
-	res_bmp_t bmp;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	bmp = load_bitmap_from_ximage(rdc, (ximage_t*)pxi,0, 0);
-	if (bmp)
-	{
-		get_bitmap_size(bmp, &pxs->cx, &pxs->cy);
-		destroy_bitmap(bmp);
-	}
-}
-
-void fill_region_raw(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_fill_region)(rdc, pxb, rgn);
-}
-
-
-void exclip_rect_raw(res_ctx_t rdc, const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_exclip_rect)(rdc, pxr);
-}
-
-void inclip_rect_raw(res_ctx_t rdc, const xrect_t* pxr)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_inclip_rect)(rdc, pxr);
-}
-
-void text_size_raw(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_text_size)(rdc, pxf, txt, len, pxs);
-}
-
-void text_metric_raw(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_text_metric)(rdc, pxf, pxs);
-}
-
-void draw_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
-{
-	PF_GIZMO_MAKE pf;
-
-	pf = find_gizmo_maker(iname);
-	if (pf)
-	{
-		(*pf)(rdc, pxc, pxr);
-	}
-}
-
-void draw_select_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
-{
-	xpen_t xp;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	xsprintf(xp.opacity, _T("%d"), deep);
-	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DOTTED);
-
-	draw_rect_raw(rdc, &xp,NULL, prt);
-}
-
-void draw_focus_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
-{
-	xpen_t xp;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	xsprintf(xp.opacity, _T("%d"), deep);
-
-	draw_rect_raw(rdc, &xp,NULL, prt);
-}
-
-void draw_sizing_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
-{
-	xrect_t xr;
-	xpen_t xp;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-	xsprintf(xp.opacity, _T("%d"), deep);
-	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DASHED);
-
-	if (pos & SIZING_TOPLEFT)
-	{
-		xr.x = prt->x;
-		xr.y = prt->y;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_TOPCENTER)
-	{
-		xr.x = prt->x + prt->w / 2 - 2;
-		xr.y = prt->y;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_TOPRIGHT)
-	{
-		xr.x = prt->x + prt->w - 4;
-		xr.y = prt->y;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_BOTTOMLEFT)
-	{
-		xr.x = prt->x;
-		xr.y = prt->y + prt->h - 2;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_BOTTOMCENTER)
-	{
-		xr.x = prt->x + prt->w / 2 - 2;
-		xr.y = prt->y + prt->h - 4;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_BOTTOMRIGHT)
-	{
-		xr.x = prt->x + prt->w - 4;
-		xr.y = prt->y + prt->h - 4;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_LEFTCENTER)
-	{
-		xr.x = prt->x;
-		xr.y = prt->y + prt->h / 2 - 2;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-
-	if (pos & SIZING_RIGHTCENTER)
-	{
-		xr.x = prt->x + prt->w - 4;
-		xr.y = prt->y + prt->h / 2 - 2;
-		xr.w = 4;
-		xr.h = 4;
-
-		draw_rect_raw(rdc, &xp, NULL, &xr);
-	}
-}
-
-void draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
-{
-	xpoint_t pt[2];
-	xpen_t xp;
-
-	default_xpen(&xp);
-	format_xcolor(pxc, xp.color);
-
-	xsprintf(xp.opacity, _T("%d"), deep);
-	//xp.adorn.feed = 2;
-	//xp.adorn.size = 2;
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x;
-	pt[1].y = prt->y + 5;
-	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + 5;
-	pt[1].y = prt->y;
-	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
-
-	pt[0].x = prt->x + prt->w;
-	pt[0].y = prt->y + prt->h;
-	pt[1].x = prt->x + prt->w - 5;
-	pt[1].y = prt->y + prt->h;
-	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
-
-	pt[0].x = prt->x + prt->w;
-	pt[0].y = prt->y + prt->h;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h - 5;
-	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
-}
-
-void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape)
-{
-	PF_SHAPE_MAKE pf;
-
-	pf = find_shape_maker(shape);
-	if (pf)
-	{
-		(*pf)(rdc, pxp, pxb, prt);
-	}
-}
-
-void multi_line_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
-{
-	float line_rati;
-	int lh, th;
-	int i, rows;
-	xpoint_t pt1, pt2;
-	xsize_t xs;
-
-	if (is_null(pxa->line_height))
-		line_rati = xstof(DEF_GDI_TEXT_LINE_HEIGHT);
-	else
-		line_rati = xstof(pxa->line_height);
-
-	if (line_rati < 1)
-		line_rati = 1.0;
-
-	text_metric_raw(rdc, pxf, &xs);
-
-	th = xs.cy;
-	lh = (int)((float)th * (line_rati - 1.0));
-
-	rows = pxr->h / (th + lh);
-
-	pt1.x = pxr->x;
-	pt1.y = pxr->y + th + lh;
-	pt2.x = pxr->x + pxr->w;
-	pt2.y = pxr->y + th + lh;
-
-	for (i = 0; i < rows; i++)
-	{
-		draw_line_raw(rdc, pxp, &pt1, &pt2);
-
-		pt1.y += (th + lh);
-		pt2.y += (th + lh);
-	}
-}
-
-typedef struct _FIXTEXT_SCAN{
-	xrect_t xr;
-}FIXTEXT_SCAN;
-
-static int _fix_text_calc_rect(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	FIXTEXT_SCAN* ptt = (FIXTEXT_SCAN*)pp;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_END:
-		ptt->xr.w = ptm->cur_x + ptm->cur_w - ptm->min_x;
-		ptt->xr.h = ptm->cur_y + ptm->cur_h - ptm->min_y;
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void text_rect_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* sz_text, int sz_len, xrect_t* pxr)
-{
-	FIXTEXT_SCAN tt = { 0 };
-	if_measure_t it = { 0 };
-
-	xmem_copy((void*)&tt.xr, (void*)pxr, sizeof(xrect_t));
-
-	it.ctx = (void*)rdc;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	if (sz_len < 0)
-		sz_len = xslen(sz_text);
-	if (sz_text)
-		sz_len++;
-
-	scan_fix_text((tchar_t*)sz_text, sz_len, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, MAX_LONG, 0, _fix_text_calc_rect, (void*)&tt);
-
-	xmem_copy((void*)pxr, (void*)&tt.xr, sizeof(xrect_t));
-}
-
-typedef struct _VARTEXT_DRAW{
-	res_ctx_t rdc;
-	int page;
-}VARTEXT_DRAW;
-
-static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	VARTEXT_DRAW* ptt = (VARTEXT_DRAW*)pp;
-	xpoint_t pt;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		pt.x = ptm->cur_x;
-		pt.y = ptm->cur_y;
-
-		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
-		break;
-	case _SCANNER_STATE_END:
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void draw_var_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t data)
-{
-	VARTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.rdc = rdc;
-	tt.page = 0;
-
-	it.ctx = (void*)rdc;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_var_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 0, _var_text_calc_draw, (void*)&tt);
-}
-
-typedef struct _TAGTEXT_DRAW{
-	res_ctx_t rdc;
-	int page;
-}TAGTEXT_DRAW;
-
-static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	TAGTEXT_DRAW* ptt = (TAGTEXT_DRAW*)pp;
-	xpoint_t pt;
-
-	if (page < ptt->page)
-		return _SCANNER_OPERA_PAGED;
-	else if (page > ptt->page)
-		return _SCANNER_OPERA_STOP;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		pt.x = ptm->cur_x;
-		pt.y = ptm->cur_y;
-
-		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
-		break;
-	case _SCANNER_STATE_NEWPAGE:
-	case _SCANNER_STATE_END:
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void draw_tag_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	TAGTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.rdc = rdc;
-	tt.page = page;
-
-	it.ctx = (void*)rdc;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_draw, (void*)&tt);
-}
-
-typedef struct _TAGTEXT_PAGE{
-	int pages;
-}TAGTEXT_PAGE;
-
-static int _tag_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	TAGTEXT_PAGE* ptt = (TAGTEXT_PAGE*)pp;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_END:
-		ptt->pages = page;
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-int calc_tag_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
-{
-	TAGTEXT_PAGE tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.pages = 1;
-
-	it.ctx = (void*)rdc;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_pages, (void*)&tt);
-
-	return tt.pages;
-}
-
-typedef struct _MEMOTEXT_DRAW{
-	res_ctx_t rdc;
-	int page;
-}MEMOTEXT_DRAW;
-
-static int _memo_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	MEMOTEXT_DRAW* ptt = (MEMOTEXT_DRAW*)pp;
-	xpoint_t pt;
-
-	if (page < ptt->page)
-		return _SCANNER_OPERA_PAGED;
-	else if (page > ptt->page)
-		return _SCANNER_OPERA_STOP;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		pt.x = ptm->cur_x;
-		pt.y = ptm->cur_y;
-
-		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
-		break;
-	case _SCANNER_STATE_NEWPAGE:
-	case _SCANNER_STATE_END:
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void draw_memo_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	MEMOTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.rdc = rdc;
-	tt.page = page;
-
-	it.ctx = (void*)rdc;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_memo_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _memo_text_calc_draw, (void*)&tt);
-}
-
-typedef struct _MEMOTEXT_PAGE{
-	int pages;
-}MEMOTEXT_PAGE;
-
-static int _memo_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	MEMOTEXT_PAGE* ptt = (MEMOTEXT_PAGE*)pp;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_END:
-		ptt->pages = page;
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-int calc_memo_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
-{
-	MEMOTEXT_PAGE tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.pages = 1;
-
-	it.ctx = (void*)rdc;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_memo_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _memo_text_calc_pages, (void*)&tt);
-
-	return tt.pages;
-}
-
-typedef struct _RICHTEXT_DRAW{
-	res_ctx_t rdc;
-	int page;
-}RICHTEXT_DRAW;
-
-static int _rich_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	RICHTEXT_DRAW* ptt = (RICHTEXT_DRAW*)pp;
-	xpoint_t pt;
-
-	if (page < ptt->page)
-		return _SCANNER_OPERA_PAGED;
-	else if (page > ptt->page)
-		return _SCANNER_OPERA_STOP;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		if (cur_char && *cur_char == _T('\n'))
-			break;
-
-		pt.x = ptm->cur_x;
-		pt.y = ptm->cur_y;
-
-		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
-		break;
-	case _SCANNER_STATE_NEWPAGE:
-	case _SCANNER_STATE_END:
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void draw_rich_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	RICHTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.rdc = rdc;
-	tt.page = page;
-
-	it.ctx = (void*)rdc;
-	it.pf_mm_points = (PF_PT_PER_MM)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_rich_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _rich_text_calc_draw, (void*)&tt);
-}
-
-typedef struct _RICHTEXT_PAGE{
-	int pages;
-}RICHTEXT_PAGE;
-
-static int _rich_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	RICHTEXT_PAGE* ptt = (RICHTEXT_PAGE*)pp;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_END:
-		ptt->pages = page;
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-int calc_rich_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
-{
-	RICHTEXT_PAGE tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.pages = 1;
-
-	it.ctx = (void*)rdc;
-	it.pf_mm_points = (PF_PT_PER_MM)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
-	scan_rich_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _rich_text_calc_pages, (void*)&tt);
-
-	return tt.pages;
-}
-
-/*******************************************************************************************************/
-
 void draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
 	res_ctx_t rdc;
@@ -1160,48 +64,13 @@ void draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpo
 	(*pif->pf_gdi_draw_line)(rdc, pxp, &pt1, &pt2);
 }
 
-void draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
+void draw_bezier_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xpoint_t* lpt;
-	int i;
-
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	lpt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * n);
-	for (i = 0; i < n; i++)
-	{
-		xmem_copy((void*)&lpt[i], (void*)&ppt[i], sizeof(xpoint_t));
-		point_tm_to_pt(canv, &lpt[i]);
-	}
-
-	(*pif->pf_gdi_draw_polyline)(rdc, pxp, lpt, n);
-
-	xmem_free(lpt);
-}
-
-void draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xpoint_t* lpt;
-	int i;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	lpt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * n);
-	for (i = 0; i < n; i++)
-	{
-		xmem_copy((void*)&lpt[i], (void*)&ppt[i], sizeof(xpoint_t));
-		point_tm_to_pt(canv, &lpt[i]);
-	}
-
-	(*pif->pf_gdi_draw_polygon)(rdc, pxp, pxb, lpt, n);
-
-	xmem_free(lpt);
+	(*pif->pf_gdi_draw_bezier)(rdc, pxp, ppt1, ppt2, ppt3, ppt4);
 }
 
 void draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
@@ -1228,6 +97,15 @@ void draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const x
 	(*pif->pf_gdi_draw_bezier)(rdc, pxp, &pt1, &pt2, &pt3, &pt4);
 }
 
+void draw_curve_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_curve)(rdc, pxp, ppt, n);
+}
+
 void draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
 	res_ctx_t rdc;
@@ -1252,6 +130,265 @@ void draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
 	xmem_free(pa);
 }
 
+void draw_arc_raw(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_arc)(rdc, pxp, ppt, rx, ry, fang, tang);
+}
+
+void draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = rx;
+	xr.fh = ry;
+	rect_tm_to_pt(canv, &xr);
+
+	(*pif->pf_gdi_draw_arc)(rdc, pxp, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
+}
+
+void draw_shape_raw(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt, const tchar_t* shape)
+{
+	PF_SHAPE_MAKE pf;
+
+	pf = find_shape_maker(shape);
+	if (pf)
+	{
+		(*pf)(rdc, pxp, prt);
+	}
+}
+
+void draw_shape(canvas_t canv, const xpen_t* pxp,  const xrect_t* pxr, const tchar_t* shape)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_shape_raw(rdc, pxp, &xr, shape);
+}
+
+void draw_polyline_raw(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+	
+	(*pif->pf_gdi_draw_polyline)(rdc,pxp,ppt,n);
+}
+
+void draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xpoint_t* lpt;
+	int i;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	lpt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)* n);
+	for (i = 0; i < n; i++)
+	{
+		xmem_copy((void*)&lpt[i], (void*)&ppt[i], sizeof(xpoint_t));
+		point_tm_to_pt(canv, &lpt[i]);
+	}
+
+	(*pif->pf_gdi_draw_polyline)(rdc, pxp, lpt, n);
+
+	xmem_free(lpt);
+}
+
+void draw_polygon_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_polygon)(rdc,pxp,pxb,ppt,n);
+}
+
+
+void draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xpoint_t* lpt;
+	int i;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	lpt = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)* n);
+	for (i = 0; i < n; i++)
+	{
+		xmem_copy((void*)&lpt[i], (void*)&ppt[i], sizeof(xpoint_t));
+		point_tm_to_pt(canv, &lpt[i]);
+	}
+
+	(*pif->pf_gdi_draw_polygon)(rdc, pxp, pxb, lpt, n);
+
+	xmem_free(lpt);
+}
+
+void calc_equalgon_raw(res_ctx_t rdc, const xpoint_t* ppt, int r, int n, xpoint_t* pa)
+{
+	double a;
+	int i, j;
+
+	if (n < 3) return;
+
+	a = 2 * XPI / n;
+
+	if (n % 2)
+	{
+		pa[0].x = ppt->x;
+		pa[0].y = ppt->y - r;
+
+		for (i = 1; i <= n / 2; i++)
+		{
+			pa[i].x = ppt->x + (int)(r * cos(a * i - XPI / 2));
+			pa[i].y = ppt->y + (int)(r * sin(a * i - XPI / 2));
+		}
+
+		for (j = i; j < n; j++)
+		{
+			pa[j].x = ppt->x - (pa[i - 1].x - ppt->x);
+			pa[j].y = pa[i - 1].y;
+			i--;
+		}
+	}
+	else
+	{
+		for (i = 0; i < n / 2; i++)
+		{
+			pa[i].x = ppt->x + (int)(r * cos(a * i + a / 2 - XPI / 2));
+			pa[i].y = ppt->y + (int)(r * sin(a * i + a / 2 - XPI / 2));
+		}
+
+		for (j = i; j < n; j++)
+		{
+			pa[j].x = ppt->x - (pa[i - 1].x - ppt->x);
+			pa[j].y = pa[i - 1].y;
+			i--;
+		}
+	}
+}
+
+void calc_equalgon(canvas_t canv, const xpoint_t* ppt, float fr, int n, xpoint_t* pa)
+{
+	res_ctx_t rdc;
+
+	xpoint_t pt;
+	xsize_t xs;
+	int i;
+
+	if (n < 3) return;
+
+	pt.fx = ppt->fx;
+	pt.fy = ppt->fy;
+
+	point_tm_to_pt(canv, &pt);
+
+	xs.fx = fr;
+	xs.fy = fr;
+	size_tm_to_pt(canv, &xs);
+
+	rdc = get_canvas_ctx(canv);
+
+	calc_equalgon_raw(rdc, &pt, xs.cx, n, pa);
+
+	for (i = 0; i < n; i++)
+	{
+		point_pt_to_tm(canv, &(pa[i]));
+	}
+}
+
+void draw_equalgon_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int n)
+{
+	xpoint_t* pa;
+	double a;
+	int i, j;
+
+	if (n < 3) return;
+
+	pa = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)* n);
+
+	calc_equalgon_raw(rdc, ppt, r, n, pa);
+
+	draw_polygon_raw(rdc, pxp, pxb, pa, n);
+
+	xmem_free(pa);
+}
+
+void draw_equalgon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float fr, int n)
+{
+	res_ctx_t rdc;
+
+	xpoint_t pt;
+	xsize_t xs;
+
+	if (n < 3) return;
+
+	pt.fx = ppt->fx;
+	pt.fy = ppt->fy;
+
+	point_tm_to_pt(canv, &pt);
+
+	xs.fx = fr;
+	xs.fy = fr;
+
+	size_tm_to_pt(canv, &xs);
+
+	rdc = get_canvas_ctx(canv);
+
+	draw_equalgon_raw(rdc, pxp, pxb, &pt, xs.cy, n);
+}
+
+void draw_triangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* orient)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_triangle)(rdc, pxp, pxb, pxr, orient);
+}
+
+void draw_triangle(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* orient)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	(*pif->pf_gdi_draw_triangle)(rdc, pxp, pxb, &xr, orient);
+}
+
+void draw_rect_raw(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* pxr)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_rect)(rdc,pxp,pxb,pxr);
+}
+
 void draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1265,6 +402,184 @@ void draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrec
 	rect_tm_to_pt(canv, &xr);
 
 	(*pif->pf_gdi_draw_rect)(rdc, pxp, pxb, &xr);
+}
+
+void draw_round_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_round)(rdc, pxp, pxb, pxr);
+}
+
+void draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	(*pif->pf_gdi_draw_round)(rdc, pxp, pxb, &xr);
+}
+
+void draw_ellipse_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_ellipse)(rdc, pxp, pxb, pxr);
+}
+
+void draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	if (xr.w < xr.h)
+		xr.w = xr.h;
+	else if (xr.w > xr.h)
+		xr.h = xr.w;
+
+	(*pif->pf_gdi_draw_ellipse)(rdc, pxp, pxb, &xr);
+}
+
+void draw_pie_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, ppt, rx, ry, fang, tang);
+}
+
+void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = rx;
+	xr.fh = ry;
+	rect_tm_to_pt(canv, &xr);
+
+	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
+}
+
+void draw_fan_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_fan)(rdc, pxp, pxb, ppt, r, s, fang, tang);
+}
+
+void draw_fan(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float r, float s, double fang, double tang)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = r;
+	xr.fh = s;
+	rect_tm_to_pt(canv, &xr);
+
+	(*pif->pf_gdi_draw_fan)(rdc, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
+}
+
+void calc_fan_raw(res_ctx_t rdc, const xpoint_t* ppt, int r, int s, double fang, double tang, xpoint_t* pa, int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_calc_fan)(rdc, ppt, r, s, fang, tang, pa, n);
+}
+
+void calc_fan(canvas_t canv, const xpoint_t* ppt, float r, float s, double fang, double tang, xpoint_t* pa, int n)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+	int i;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = r;
+	xr.fh = s;
+	rect_tm_to_pt(canv, &xr);
+
+	(*pif->pf_gdi_calc_fan)(rdc, RECTPOINT(&xr), xr.w, xr.h, fang, tang, pa, n);
+
+	for (i = 0; i < n; i++)
+	{
+		point_pt_to_tm(canv, &(pa[i]));
+	}
+}
+
+void draw_arrow_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, int alen, double arc)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, pxr, alen, arc);
+}
+
+void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+	xsize_t xs;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	xs.fx = alen;
+	xs.fy = alen;
+	size_tm_to_pt(canv, &xs);
+
+	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, &xr, xs.cx, arc);
+}
+
+void draw_path_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_path)(rdc, pxp, pxb, aa, pa);
 }
 
 void draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
@@ -1339,6 +654,15 @@ void draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tcha
 	xmem_free(ppt);
 }
 
+void gradient_rect_raw(res_ctx_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_gradient_rect)(rdc, xc_brim, xc_core, gradient, pxr);
+}
+
 void gradient_rect(canvas_t canv, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1352,6 +676,15 @@ void gradient_rect(canvas_t canv, const xcolor_t* xc_brim, const xcolor_t* xc_co
 	rect_tm_to_pt(canv, &xr);
 
 	(*pif->pf_gdi_gradient_rect)(rdc, xc_brim, xc_core, gradient, &xr);
+}
+
+void alphablend_rect_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, int opacity)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_alphablend_rect)(rdc, pxc, pxr, opacity);
 }
 
 void alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int opa)
@@ -1369,7 +702,17 @@ void alphablend_rect(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, int
 	(*pif->pf_gdi_alphablend_rect)(rdc, pxc, &xr, opa);
 }
 
-void draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+
+void exclip_rect_raw(res_ctx_t rdc, const xrect_t* pxr)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_exclip_rect)(rdc, pxr);
+}
+
+void exclip_rect(canvas_t canv, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1381,10 +724,19 @@ void draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xre
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_draw_round)(rdc, pxp, pxb, &xr);
+	(*pif->pf_gdi_exclip_rect)(rdc, &xr);
 }
 
-void draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+void inclip_rect_raw(res_ctx_t rdc, const xrect_t* pxr)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_inclip_rect)(rdc, pxr);
+}
+
+void inclip_rect(canvas_t canv, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
@@ -1396,68 +748,64 @@ void draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	if (xr.w < xr.h)
-		xr.w = xr.h;
-	else if (xr.w > xr.h)
-		xr.h = xr.w;
-
-	(*pif->pf_gdi_draw_ellipse)(rdc, pxp, pxb, &xr);
+	(*pif->pf_gdi_inclip_rect)(rdc, &xr);
 }
 
-void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+void multi_line_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xr.fx = ppt->fx;
-	xr.fy = ppt->fy;
-	xr.fw = rx;
-	xr.fh = ry;
-	rect_tm_to_pt(canv, &xr);
-
-	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
-}
-
-void draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xr.fx = ppt->fx;
-	xr.fy = ppt->fy;
-	xr.fw = rx;
-	xr.fh = ry;
-	rect_tm_to_pt(canv, &xr);
-
-	(*pif->pf_gdi_draw_arc)(rdc, pxp, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
-}
-
-void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
+	float line_rati;
+	int lh, th;
+	int i, rows;
+	xpoint_t pt1, pt2;
 	xsize_t xs;
 
-	if_context_t *pif;
+	if (is_null(pxa->line_height))
+		line_rati = xstof(DEF_GDI_TEXT_LINE_HEIGHT);
+	else
+		line_rati = xstof(pxa->line_height);
 
-	pif = PROCESS_CONTEXT_INTERFACE;
+	if (line_rati < 1)
+		line_rati = 1.0;
+
+	text_metric_raw(rdc, pxf, &xs);
+
+	th = xs.cy;
+	lh = (int)((float)th * (line_rati - 1.0));
+
+	rows = pxr->h / (th + lh);
+
+	pt1.x = pxr->x;
+	pt1.y = pxr->y + th + lh;
+	pt2.x = pxr->x + pxr->w;
+	pt2.y = pxr->y + th + lh;
+
+	for (i = 0; i < rows; i++)
+	{
+		draw_line_raw(rdc, pxp, &pt1, &pt2);
+
+		pt1.y += (th + lh);
+		pt2.y += (th + lh);
+	}
+}
+
+void multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
 
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	xs.fx = alen;
-	xs.fy = alen;
-	size_tm_to_pt(canv, &xs);
+	multi_line_raw(rdc, pxf, pxa, pxp, &xr);
+}
 
-	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, &xr, xs.cx, arc);
+void draw_text_raw(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* pxr,const tchar_t* txt,int len)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_text)(rdc,pxf,pxa,pxr,txt,len);
 }
 
 void draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
@@ -1475,6 +823,15 @@ void draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrec
 	(*pif->pf_gdi_draw_text)(rdc, pxf, pxa, &xr, txt, len);
 }
 
+void text_out_raw(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_text_out)(rdc, pxf, ppt, txt, len);
+}
+
 void text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1490,6 +847,15 @@ void text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tcha
 	(*pif->pf_gdi_text_out)(rdc, pxf, &pt, txt, len);
 }
 
+void text_size_raw(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_text_size)(rdc, pxf, txt, len, pxs);
+}
+
 void text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1501,6 +867,15 @@ void text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, x
 	(*pif->pf_gdi_text_size)(rdc, pxf, txt, len, pxs);
 
 	size_pt_to_tm(canv, pxs);
+}
+
+void text_metric_raw(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_text_metric)(rdc, pxf, pxs);
 }
 
 void text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
@@ -1515,6 +890,421 @@ void text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
 
 	size_pt_to_tm(canv, pxs);
 }
+
+typedef struct _FIXTEXT_SCAN{
+	xrect_t xr;
+}FIXTEXT_SCAN;
+
+static int _fix_text_calc_rect(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	FIXTEXT_SCAN* ptt = (FIXTEXT_SCAN*)pp;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_END:
+		ptt->xr.w = ptm->cur_x + ptm->cur_w - ptm->min_x;
+		ptt->xr.h = ptm->cur_y + ptm->cur_h - ptm->min_y;
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+void text_rect_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* sz_text, int sz_len, xrect_t* pxr)
+{
+	FIXTEXT_SCAN tt = { 0 };
+	if_measure_t it = { 0 };
+
+	xmem_copy((void*)&tt.xr, (void*)pxr, sizeof(xrect_t));
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	if (sz_len < 0)
+		sz_len = xslen(sz_text);
+	if (sz_text)
+		sz_len++;
+
+	scan_fix_text((tchar_t*)sz_text, sz_len, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, MAX_LONG, 0, _fix_text_calc_rect, (void*)&tt);
+
+	xmem_copy((void*)pxr, (void*)&tt.xr, sizeof(xrect_t));
+}
+
+void text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr = { 0 };
+
+	text_rect_raw(rdc, pxf, pxa, txt, len, &xr);
+
+	rect_pt_to_tm(canv, &xr);
+	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
+}
+
+typedef struct _VARTEXT_DRAW{
+	res_ctx_t rdc;
+	int page;
+}VARTEXT_DRAW;
+
+static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	VARTEXT_DRAW* ptt = (VARTEXT_DRAW*)pp;
+	xpoint_t pt;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_WORDS:
+		pt.x = ptm->cur_x;
+		pt.y = ptm->cur_y;
+
+		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
+		break;
+	case _SCANNER_STATE_END:
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+void draw_var_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t data)
+{
+	VARTEXT_DRAW tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.rdc = rdc;
+	tt.page = 0;
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_var_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 0, _var_text_calc_draw, (void*)&tt);
+}
+
+void draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_var_text_raw(rdc, pxf, pxa, &xr, var);
+}
+
+typedef struct _TAGTEXT_DRAW{
+	res_ctx_t rdc;
+	int page;
+}TAGTEXT_DRAW;
+
+static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	TAGTEXT_DRAW* ptt = (TAGTEXT_DRAW*)pp;
+	xpoint_t pt;
+
+	if (page < ptt->page)
+		return _SCANNER_OPERA_PAGED;
+	else if (page > ptt->page)
+		return _SCANNER_OPERA_STOP;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_WORDS:
+		pt.x = ptm->cur_x;
+		pt.y = ptm->cur_y;
+
+		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
+		break;
+	case _SCANNER_STATE_NEWPAGE:
+	case _SCANNER_STATE_END:
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+void draw_tag_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
+{
+	TAGTEXT_DRAW tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.rdc = rdc;
+	tt.page = page;
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_draw, (void*)&tt);
+}
+
+void draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr tag, int page)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_tag_text_raw(rdc, pxf, pxa, &xr, tag, page);
+}
+
+typedef struct _TAGTEXT_PAGE{
+	int pages;
+}TAGTEXT_PAGE;
+
+static int _tag_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	TAGTEXT_PAGE* ptt = (TAGTEXT_PAGE*)pp;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_END:
+		ptt->pages = page;
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+int calc_tag_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
+{
+	TAGTEXT_PAGE tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.pages = 1;
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_pages, (void*)&tt);
+
+	return tt.pages;
+}
+
+int calc_tag_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr tag)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	return calc_tag_pages_raw(rdc, pxf, pxa, &xr, tag);
+}
+
+typedef struct _MEMOTEXT_DRAW{
+	res_ctx_t rdc;
+	int page;
+}MEMOTEXT_DRAW;
+
+static int _memo_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	MEMOTEXT_DRAW* ptt = (MEMOTEXT_DRAW*)pp;
+	xpoint_t pt;
+
+	if (page < ptt->page)
+		return _SCANNER_OPERA_PAGED;
+	else if (page > ptt->page)
+		return _SCANNER_OPERA_STOP;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_WORDS:
+		pt.x = ptm->cur_x;
+		pt.y = ptm->cur_y;
+
+		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
+		break;
+	case _SCANNER_STATE_NEWPAGE:
+	case _SCANNER_STATE_END:
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+void draw_memo_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
+{
+	MEMOTEXT_DRAW tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.rdc = rdc;
+	tt.page = page;
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_memo_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _memo_text_calc_draw, (void*)&tt);
+}
+
+void draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr memo, int page)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_memo_text_raw(rdc, pxf, pxa, &xr, memo, page);
+}
+
+typedef struct _MEMOTEXT_PAGE{
+	int pages;
+}MEMOTEXT_PAGE;
+
+static int _memo_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	MEMOTEXT_PAGE* ptt = (MEMOTEXT_PAGE*)pp;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_END:
+		ptt->pages = page;
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+int calc_memo_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
+{
+	MEMOTEXT_PAGE tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.pages = 1;
+
+	it.ctx = (void*)rdc;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_memo_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _memo_text_calc_pages, (void*)&tt);
+
+	return tt.pages;
+}
+
+int calc_memo_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr memo)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	return calc_memo_pages_raw(rdc, pxf, pxa, &xr, memo);
+}
+
+typedef struct _RICHTEXT_DRAW{
+	res_ctx_t rdc;
+	int page;
+}RICHTEXT_DRAW;
+
+static int _rich_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	RICHTEXT_DRAW* ptt = (RICHTEXT_DRAW*)pp;
+	xpoint_t pt;
+
+	if (page < ptt->page)
+		return _SCANNER_OPERA_PAGED;
+	else if (page > ptt->page)
+		return _SCANNER_OPERA_STOP;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_WORDS:
+		if (cur_char && *cur_char == _T('\n'))
+			break;
+
+		pt.x = ptm->cur_x;
+		pt.y = ptm->cur_y;
+
+		text_out_raw(ptt->rdc, pxf, &pt, cur_char, cur_count);
+		break;
+	case _SCANNER_STATE_NEWPAGE:
+	case _SCANNER_STATE_END:
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+void draw_rich_text_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
+{
+	RICHTEXT_DRAW tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.rdc = rdc;
+	tt.page = page;
+
+	it.ctx = (void*)rdc;
+	it.pf_mm_points = (PF_PT_PER_MM)pt_per_mm;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_rich_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _rich_text_calc_draw, (void*)&tt);
+}
+
+void draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich, int page)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	draw_rich_text_raw(rdc, pxf, pxa, &xr, rich, page);
+}
+
+typedef struct _RICHTEXT_PAGE{
+	int pages;
+}RICHTEXT_PAGE;
+
+static int _rich_text_calc_pages(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+{
+	RICHTEXT_PAGE* ptt = (RICHTEXT_PAGE*)pp;
+
+	switch (scan)
+	{
+	case _SCANNER_STATE_END:
+		ptt->pages = page;
+		return _SCANNER_OPERA_STOP;
+	}
+
+	return _SCANNER_OPERA_NEXT;
+}
+
+int calc_rich_pages_raw(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data)
+{
+	RICHTEXT_PAGE tt = { 0 };
+	if_measure_t it = { 0 };
+
+	tt.pages = 1;
+
+	it.ctx = (void*)rdc;
+	it.pf_mm_points = (PF_PT_PER_MM)pt_per_mm;
+	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
+	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+
+	scan_rich_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _rich_text_calc_pages, (void*)&tt);
+
+	return tt.pages;
+}
+
+int calc_rich_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	return calc_rich_pages_raw(rdc, pxf, pxa, &xr, rich);
+}
+
+/*******************************************************************************************************/
 
 void draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
@@ -1657,6 +1447,93 @@ void draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrec
 	}
 }
 
+void color_out_raw(res_ctx_t rdc, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+{
+	const tchar_t *pre, *nxt;
+	xrect_t xr;
+	xcolor_t xc;
+	xbrush_t xb;
+	tchar_t* val;
+	int vlen;
+	tchar_t clr[CLR_LEN + 1];
+
+	if (len < 0)
+		len = xslen(rgbstr);
+
+	default_xbrush(&xb);
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+
+	pre = rgbstr;
+	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
+	{
+		xsncpy(clr, val, vlen);
+		parse_xcolor(&xc, clr);
+		format_xcolor(&xc, xb.color);
+
+		draw_rect_raw(rdc, NULL, &xb, &xr);
+
+		len -= (nxt - pre);
+
+		if (horz)
+			xr.x += xr.w;
+		else
+			xr.y += xr.h;
+
+		pre = nxt;
+	}
+}
+
+void color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	rect_tm_to_pt(canv, &xr);
+
+	color_out_raw(rdc, &xr, horz, rgbstr, len);
+}
+
+void draw_bitmap_raw(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
+{
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, ppt);
+}
+
+void draw_bitmap(canvas_t canv, res_bmp_t bmp, const xpoint_t* ppt)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+	xpoint_t pt;
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	xmem_copy((void*)&pt, (void*)ppt, sizeof(xpoint_t));
+	point_tm_to_pt(canv, &pt);
+
+	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, &pt);
+}
+
+void draw_icon_raw(res_ctx_t rdc, const tchar_t* iname, const xrect_t* prt)
+{
+	if_context_t *pif;
+	res_bmp_t bmp;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	bmp = load_bitmap_from_icon(rdc, iname);
+
+	if (bmp)
+	{
+		(*pif->pf_gdi_draw_image)(rdc, bmp, NULL, prt);
+		destroy_bitmap(bmp);
+	}
+}
+
 void draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1670,6 +1547,22 @@ void draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
 	rect_tm_to_pt(canv, &xr);
 
 	draw_icon_raw(rdc, iname, &xr);
+}
+
+void draw_thumb_raw(res_ctx_t rdc, const tchar_t* fname, const xrect_t* prt)
+{
+	if_context_t *pif;
+	res_bmp_t bmp;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	bmp = load_bitmap_from_thumb(rdc, fname);
+
+	if (bmp)
+	{
+		(*pif->pf_gdi_draw_image)(rdc, bmp, NULL, prt);
+		destroy_bitmap(bmp);
+	}
 }
 
 void draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
@@ -1687,6 +1580,22 @@ void draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
 	draw_thumb_raw(rdc, fname, &xr);
 }
 
+void draw_image_raw(res_ctx_t rdc, const ximage_t* pxi, const xrect_t* pxr)
+{
+	if_context_t *pif;
+	res_bmp_t bmp;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	bmp = load_bitmap_from_ximage(rdc, (ximage_t*)pxi, pxr->w, pxr->h);
+
+	if (bmp)
+	{
+		(*pif->pf_gdi_draw_image)(rdc, bmp, pxi->color, pxr);
+		destroy_bitmap(bmp);
+	}
+}
+
 void draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1700,6 +1609,115 @@ void draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 	rect_tm_to_pt(canv, &xr);
 
 	draw_image_raw(rdc, pxi, &xr);
+}
+
+void image_size_raw(res_ctx_t rdc, const ximage_t* pxi, xsize_t* pxs)
+{
+	if_context_t *pif;
+	res_bmp_t bmp;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	bmp = load_bitmap_from_ximage(rdc, (ximage_t*)pxi, 0, 0);
+	if (bmp)
+	{
+		get_bitmap_size(bmp, &pxs->cx, &pxs->cy);
+		destroy_bitmap(bmp);
+	}
+}
+
+void image_size(canvas_t canv, const ximage_t* pxi, xsize_t* pxs)
+{
+	res_ctx_t rdc = get_canvas_ctx(canv);
+
+	if_context_t *pif;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+	image_size_raw(rdc, pxi, pxs);
+
+	size_pt_to_tm(canv, pxs);
+}
+
+void draw_code128_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+{
+	if_context_t *pif;
+
+	link_t_ptr g, nlk;
+
+	int black, span;
+	dword_t i;
+	int unit;
+	xrect_t rt;
+	xbrush_t xb;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
+
+	xmem_free(buf);
+
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+	}
+
+	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.3, 1);
+
+	rt.x = prt->x + unit;
+	rt.y = prt->y + unit;
+	rt.w = unit;
+	rt.h = prt->h - 2 * unit;
+
+	black = 0;
+	for (i = 0; i < bar_len; i++)
+	{
+		span = (bar_buf[i] - '0');
+		rt.w = span * unit;
+
+		black = (black) ? 0 : 1;
+
+		if (black && pxc)
+		{
+			(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
+		}
+
+		rt.x += rt.w;
+	}
+
+	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
 }
 
 void draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len)
@@ -1720,6 +1738,100 @@ void draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_
 	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
+void draw_pdf417_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+{
+	if_context_t *pif;
+
+	link_t_ptr g, nlk;
+
+	int black, span;
+	int rows, cols;
+	unsigned char b, c;
+	int i, j;
+	int unit;
+
+	xrect_t rt;
+	xbrush_t xb;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+	}
+
+	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.x = prt->x + unit;
+		rt.w = unit;
+		rt.y = prt->y + unit + i * 2 * unit;
+		rt.h = 2 * unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.x += rt.w;
+
+				black = (c & b) ? 0 : 1;
+
+				if (black && pxc)
+				{
+					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
+		}
+	}
+
+	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+	prt->h = rt.y + rt.h + unit - prt->y;
+}
+
 void draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len)
 {
 	res_ctx_t rdc = get_canvas_ctx(canv);
@@ -1736,6 +1848,100 @@ void draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t
 
 	rect_pt_to_tm(canv, &xr);
 	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
+}
+
+void draw_qrcode_raw(res_ctx_t rdc, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+{
+	if_context_t *pif;
+
+	link_t_ptr g, nlk;
+
+	int black, span;
+	int rows, cols;
+	unsigned char b, c;
+	int i, j;
+
+	float unit = 0.5;
+	xrect_t rt;
+	xbrush_t xb;
+
+	byte_t* buf;
+	dword_t buf_len;
+
+	byte_t* bar_buf;
+	dword_t bar_len;
+
+	pif = PROCESS_CONTEXT_INTERFACE;
+
+#ifdef _UNICODE
+	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
+#else
+	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
+#endif
+
+	if (!buf_len) return;
+
+	buf = (byte_t*)xmem_alloc(buf_len + 1);
+#ifdef _UNICODE
+	ucs_to_utf8(text, len, buf, buf_len);
+#else
+	mbs_to_utf8(text, len, buf, buf_len);
+#endif
+
+	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
+	if (bar_len <= 0)
+	{
+		xmem_free(buf);
+		return;
+	}
+
+	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
+	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
+
+	xmem_free(buf);
+
+	if (pxc)
+	{
+		default_xbrush(&xb);
+		format_xcolor(pxc, xb.color);
+	}
+
+	unit = (*pif->pf_cast_mm_to_pt)(rdc, 0.5, 1);
+
+	len = 0;
+	black = 0;
+	for (i = 0; i < rows; i++)
+	{
+		rt.x = prt->x + unit;
+		rt.w = unit;
+		rt.y = prt->y + unit + i * unit;
+		rt.h = unit;
+
+		for (j = 0; j < cols; j++)
+		{
+			c = *(bar_buf + i * cols + j);
+			b = 0x80;
+
+			while (b)
+			{
+				rt.x += rt.w;
+
+				black = (c & b) ? 1 : 0;
+
+				if (black && pxc)
+				{
+					(*pif->pf_gdi_draw_rect)(rdc, NULL, &xb, &rt);
+				}
+
+				b = b >> 1;
+			}
+		}
+	}
+
+	xmem_free(bar_buf);
+
+	prt->w = rt.x + unit - prt->x;
+	prt->h = rt.y + rt.h + unit - prt->y;
 }
 
 void draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len)
@@ -1756,95 +1962,15 @@ void draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* pxr, const tchar_t
 	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
-void image_size(canvas_t canv, const ximage_t* pxi, xsize_t* pxs)
+void draw_gizmo_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
+	PF_GIZMO_MAKE pf;
 
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	image_size_raw(rdc, pxi, pxs);
-
-	size_pt_to_tm(canv, pxs);
-}
-
-void text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr = { 0 };
-
-	text_rect_raw(rdc, pxf, pxa, txt, len, &xr);
-
-	rect_pt_to_tm(canv, &xr);
-	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
-}
-
-void draw_bitmap(canvas_t canv, res_bmp_t bmp, const xpoint_t* ppt)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xpoint_t pt;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xmem_copy((void*)&pt, (void*)ppt, sizeof(xpoint_t));
-	point_tm_to_pt(canv, &pt);
-
-	(*pif->pf_gdi_draw_bitmap)(rdc, bmp, &pt);
-}
-
-void exclip_rect(canvas_t canv, const xrect_t* pxr)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	(*pif->pf_gdi_exclip_rect)(rdc, &xr);
-}
-
-void inclip_rect(canvas_t canv, const xrect_t* pxr)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	(*pif->pf_gdi_inclip_rect)(rdc, &xr);
-}
-
-void draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	draw_shape_raw(rdc, pxp, pxb, &xr, shape);
-}
-
-void multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	multi_line_raw(rdc, pxf, pxa, pxp, &xr);
+	pf = find_gizmo_maker(iname);
+	if (pf)
+	{
+		(*pf)(rdc, pxc, pxr);
+	}
 }
 
 void draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* iname)
@@ -1859,94 +1985,167 @@ void draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tc
 }
 
 
-
-void color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+void draw_select_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
+	xpen_t xp;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	xsprintf(xp.opacity, _T("%d"), deep);
+	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DOTTED);
 
-	color_out_raw(rdc, &xr, horz, rgbstr, len);
+	draw_rect_raw(rdc, &xp, NULL, prt);
 }
 
-void draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var)
+void draw_focus_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
+	xpen_t xp;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	xsprintf(xp.opacity, _T("%d"), deep);
 
-	draw_var_text_raw(rdc, pxf, pxa, &xr, var);
+	draw_rect_raw(rdc, &xp, NULL, prt);
 }
 
-void draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr tag, int page)
+void draw_sizing_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
 	xrect_t xr;
+	xpen_t xp;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	xsprintf(xp.opacity, _T("%d"), deep);
+	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DASHED);
 
-	draw_tag_text_raw(rdc, pxf, pxa, &xr, tag, page);
+	if (pos & SIZING_TOPLEFT)
+	{
+		xr.x = prt->x;
+		xr.y = prt->y;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_TOPCENTER)
+	{
+		xr.x = prt->x + prt->w / 2 - 2;
+		xr.y = prt->y;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_TOPRIGHT)
+	{
+		xr.x = prt->x + prt->w - 4;
+		xr.y = prt->y;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_BOTTOMLEFT)
+	{
+		xr.x = prt->x;
+		xr.y = prt->y + prt->h - 2;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_BOTTOMCENTER)
+	{
+		xr.x = prt->x + prt->w / 2 - 2;
+		xr.y = prt->y + prt->h - 4;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_BOTTOMRIGHT)
+	{
+		xr.x = prt->x + prt->w - 4;
+		xr.y = prt->y + prt->h - 4;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_LEFTCENTER)
+	{
+		xr.x = prt->x;
+		xr.y = prt->y + prt->h / 2 - 2;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
+
+	if (pos & SIZING_RIGHTCENTER)
+	{
+		xr.x = prt->x + prt->w - 4;
+		xr.y = prt->y + prt->h / 2 - 2;
+		xr.w = 4;
+		xr.h = 4;
+
+		draw_rect_raw(rdc, &xp, NULL, &xr);
+	}
 }
 
-int calc_tag_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr tag)
+void draw_feed_raw(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
+	xpoint_t pt[2];
+	xpen_t xp;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
 
-	return calc_tag_pages_raw(rdc, pxf, pxa, &xr, tag);
+	xsprintf(xp.opacity, _T("%d"), deep);
+	//xp.adorn.feed = 2;
+	//xp.adorn.size = 2;
+
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x;
+	pt[1].y = prt->y + 5;
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
+
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + 5;
+	pt[1].y = prt->y;
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
+
+	pt[0].x = prt->x + prt->w;
+	pt[0].y = prt->y + prt->h;
+	pt[1].x = prt->x + prt->w - 5;
+	pt[1].y = prt->y + prt->h;
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
+
+	pt[0].x = prt->x + prt->w;
+	pt[0].y = prt->y + prt->h;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h - 5;
+	draw_line_raw(rdc, &xp, &pt[0], &pt[1]);
 }
 
-void draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich, int page)
+
+void fill_region_raw(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 {
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
+	if_context_t *pif;
 
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
+	pif = PROCESS_CONTEXT_INTERFACE;
 
-	draw_rich_text_raw(rdc, pxf, pxa, &xr, rich, page);
+	(*pif->pf_gdi_fill_region)(rdc, pxb, rgn);
 }
 
-int calc_rich_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr rich)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	return calc_rich_pages_raw(rdc, pxf, pxa, &xr, rich);
-}
-
-void draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr memo, int page)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	draw_memo_text_raw(rdc, pxf, pxa, &xr, memo, page);
-}
-
-int calc_memo_pages(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr memo)
-{
-	res_ctx_t rdc = get_canvas_ctx(canv);
-	xrect_t xr;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	return calc_memo_pages_raw(rdc, pxf, pxa, &xr, memo);
-}
 
 void draw_select(canvas_t canv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {

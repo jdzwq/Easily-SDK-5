@@ -41,6 +41,7 @@ LICENSE.GPL3 for more details.
 #include "SQLPanel.h"
 #include "XMLPanel.h"
 #include "JsonPanel.h"
+#include "PlotPanel.h"
 
 #define MAINFRAME_TOOLBAR_HEIGHT	(float)25
 #define MAINFRAME_TREEBAR_WIDTH		(float)50
@@ -80,6 +81,7 @@ LICENSE.GPL3 for more details.
 #define IDC_MAINFRAME_SQLPANEL		121
 #define IDC_MAINFRAME_XMLPANEL		122
 #define IDC_MAINFRAME_JSONPANEL		123
+#define IDC_MAINFRAME_PLOTPANEL		124
 
 #define MAINFRAME_ACCEL_COUNT		4
 
@@ -358,6 +360,8 @@ static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
 		xscpy(szClass, PANEL_CLASS_DIALOG);
 	else if (is_diagram_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_DIAGRAM);
+	else if (is_plot_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_PLOT);
 
 	destroy_dom_doc(ptrDom);
 }
@@ -417,6 +421,12 @@ void MainFrame_CreateFile(res_win_t widget)
 	set_list_item_id(llk, szID);
 	set_list_item_title(llk, _T("图像列表"));
 	set_list_item_icon(llk, GDI_ATTR_GIZMO_IMAGES);
+
+	llk = insert_list_item(ptrList, LINK_LAST);
+	xsprintf(szID, _T("%d"), IDC_MAINFRAME_PLOTPANEL);
+	set_list_item_id(llk, szID);
+	set_list_item_title(llk, _T("空白图形"));
+	set_list_item_icon(llk, GDI_ATTR_GIZMO_PANTO);
 
 	llk = insert_list_item(ptrList, LINK_LAST);
 	xsprintf(szID, _T("%d"), IDC_MAINFRAME_DIALOGPANEL);
@@ -482,6 +492,9 @@ void MainFrame_CreateFile(res_win_t widget)
 	case IDC_MAINFRAME_IMAGESPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_IMAGE, NULL);
 		break;
+	case IDC_MAINFRAME_PLOTPANEL:
+		_MainFrame_CreatePanel(widget, PANEL_CLASS_PLOT, NULL);
+		break;
 	case IDC_MAINFRAME_DIALOGPANEL:
 		_MainFrame_CreatePanel(widget, PANEL_CLASS_DIALOG, NULL);
 		break;
@@ -509,7 +522,7 @@ void MainFrame_OpenFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\0JSON File(*.json)\0*.json\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Plot File(*.plot)\0*.plot0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\0JSON File(*.json)\0*.json\0");
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -582,7 +595,7 @@ void MainFrame_AppendFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN * 10] = { 0 };
 	tchar_t szFile[PATH_LEN * 10] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Plot File(*.plot)\0*.plot\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0");
 
 	split_path(pdt->szFile, szPath, NULL, NULL);
 
@@ -1836,6 +1849,15 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass, const 
 		hPanel = DiagramPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
 		if (hPanel)
 			widget_set_user_id(hPanel, IDC_MAINFRAME_DIAGRAMPANEL);
+	}
+	else if (compare_text(wclass, -1, PANEL_CLASS_PLOT, -1, 0) == 0)
+	{
+		if (is_null(wname))
+			xscpy(wname, _T("NewPlot"));
+
+		hPanel = PlotPanel_Create(wname, WD_STYLE_CONTROL, &xr, fpath);
+		if (hPanel)
+			widget_set_user_id(hPanel, IDC_MAINFRAME_PLOTPANEL);
 	}
 	else if (compare_text(wclass, -1, PANEL_CLASS_SQL, -1, 0) == 0)
 	{

@@ -46,6 +46,14 @@ EXP_API int w_parse_attrset_token_count(const wchar_t* attrset, int len);
 
 EXP_API int a_parse_attrset_token_count(const schar_t* attrset, int len);
 
+EXP_API const schar_t* a_parse_zero_token(const schar_t* tokens, schar_t** pkey, int* pkeylen);
+
+EXP_API const wchar_t* w_parse_zero_token(const wchar_t* tokens, wchar_t** pkey, int* pkeylen);
+
+EXP_API int w_parse_zero_token_count(const wchar_t* tokens);
+
+EXP_API int a_parse_zero_token_count(const schar_t* tokens);
+
 EXP_API const wchar_t* w_parse_options_token(const wchar_t* options,int len, wchar_t itemfeed, wchar_t linefeed, wchar_t** pkey, int* pkeylen, wchar_t** pval, int* pvallen);
 
 EXP_API const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed, schar_t** pkey, int* pkeylen, schar_t** pval, int* pvallen);
@@ -53,6 +61,7 @@ EXP_API const schar_t* a_parse_options_token(const schar_t* options, int len, sc
 EXP_API int w_parse_options_token_count(const wchar_t* options,int len,wchar_t itemfeed,wchar_t linefeed);
 
 EXP_API int a_parse_options_token_count(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed);
+
 
 EXP_API int w_get_options_value(const wchar_t* options, int len, wchar_t itemfeed, wchar_t linefeed, const wchar_t* key, wchar_t* buf, int max);
 
@@ -86,6 +95,8 @@ EXP_API int a_parse_param_name_count(const schar_t* param, int len, schar_t item
 #define get_options_value			w_get_options_value
 #define parse_string_token			w_parse_string_token
 #define parse_string_token_count	w_parse_string_token_count
+#define parse_zero_token			w_parse_zero_token
+#define parse_zero_token_count		w_parse_zero_token_count
 #define parse_param_name			w_parse_param_name
 #define parse_param_name_count		w_parse_param_name_count
 #else
@@ -96,6 +107,8 @@ EXP_API int a_parse_param_name_count(const schar_t* param, int len, schar_t item
 #define get_options_value			a_get_options_value
 #define parse_string_token			a_parse_string_token
 #define parse_string_token_count	a_parse_string_token_count
+#define parse_zero_token			a_parse_zero_token
+#define parse_zero_token_count		a_parse_zero_token_count
 #define parse_param_name			a_parse_param_name
 #define parse_param_name_count		a_parse_param_name_count
 #endif

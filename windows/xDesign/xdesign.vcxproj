@@ -170,6 +170,7 @@
     <ClInclude Include="DiagramPanel.h" />
     <ClInclude Include="DialogPanel.h" />
     <ClInclude Include="FormPanel.h" />
+    <ClInclude Include="PlotPanel.h" />
     <ClInclude Include="StatisPanel.h" />
     <ClInclude Include="GridPanel.h" />
     <ClInclude Include="ImagePanel.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="DiagramPanel.cpp" />
     <ClCompile Include="DialogPanel.cpp" />
     <ClCompile Include="FormPanel.cpp" />
+    <ClCompile Include="PlotPanel.cpp" />
     <ClCompile Include="StatisPanel.cpp" />
     <ClCompile Include="GridPanel.cpp" />
     <ClCompile Include="ImagePanel.cpp" />

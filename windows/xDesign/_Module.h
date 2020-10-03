@@ -81,7 +81,7 @@ static tchar_t COLOR_TABLE[COLOR_TABLE_SIZE][CLR_LEN] = {
 	GDI_ATTR_RGB_SOFTBLACK
 };
 
-#define IS_META_FILE(token) (compare_text(token,-1,_T("sheet"),-1,1) == 0 || compare_text(token,-1,_T("dialog"),-1,1) == 0 || compare_text(token,-1,_T("chart"),-1,1) == 0 || compare_text(token,-1,_T("schema"),-1,1) == 0 || compare_text(token,-1,_T("topog"),-1,1) == 0 || compare_text(token,-1,_T("images"),-1,1) == 0)
+#define IS_META_FILE(token) (compare_text(token,-1,_T("sheet"),-1,1) == 0 || compare_text(token,-1,_T("dialog"),-1,1) == 0 || compare_text(token,-1,_T("chart"),-1,1) == 0 || compare_text(token,-1,_T("schema"),-1,1) == 0 || compare_text(token,-1,_T("topog"),-1,1) == 0 || compare_text(token,-1,_T("images"),-1,1) == 0 || compare_text(token,-1,_T("plot"),-1,1) == 0)
 
 
 VOID	SavePreference(const tchar_t* sec, const tchar_t* key, const tchar_t* val);

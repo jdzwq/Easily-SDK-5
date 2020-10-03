@@ -67,7 +67,7 @@ void print_form(const dev_prn_t* pdev, link_t_ptr form)
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
 
-	pages = calc_form_pages(canv, form);
+	pages = calc_form_pages(&cb, form);
 
 	begin_doc(rdc, _T("FORM"));
 

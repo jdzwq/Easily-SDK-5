@@ -233,8 +233,8 @@ void FormPanel_SelectShape(res_win_t widget, const tchar_t* attr_val)
 	formctrl_redraw(pdt->hForm, 1);
 }
 
-
 /*********************************************************************************************************/
+
 void FormPanel_OnSave(res_win_t widget)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
@@ -618,6 +618,11 @@ void FormPanel_OnAttach(res_win_t widget)
 	{
 		szFilter = _T("Image List File(*.images)\0*.images\0");
 		xscpy(szExt, _T("images"));
+	}
+	else if (compare_text(fclass, -1, DOC_FORM_PLOT, -1, 0) == 0)
+	{
+		szFilter = _T("Plot XML File(*.plot)\0*.plot\0");
+		xscpy(szExt, _T("plot"));
 	}
 	else if (compare_text(fclass, -1, DOC_FORM_MEMO, -1, 0) == 0)
 	{
@@ -1529,6 +1534,29 @@ void FormPanel_OnEmbedForm(res_win_t widget)
 	formctrl_redraw_field(pdt->hForm, flk, 1);
 }
 
+void FormPanel_OnEmbedPlot(res_win_t widget)
+{
+	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
+
+	LINKPTR ptrForm = formctrl_fetch(pdt->hForm);
+
+	formctrl_set_dirty(pdt->hForm, 1);
+
+	LINKPTR flk = insert_field(ptrForm, DOC_FORM_PLOT);
+
+	set_field_x(flk, 10);
+	set_field_y(flk, 10);
+
+	int count = get_field_count_by_class(ptrForm, DOC_FORM_PLOT);
+
+	tchar_t token[RES_LEN + 1];
+	xsprintf(token, _T("plot%d"), count);
+
+	set_field_name(flk, token);
+
+	formctrl_redraw_field(pdt->hForm, flk, 1);
+}
+
 void FormPanel_OnAttributes(res_win_t widget)
 {
 	FormPanelDelta* pdt = GETFORMPANELDELTA(widget);
@@ -2091,7 +2119,7 @@ void FormPanel_OnShow(res_win_t widget, bool_t bShow)
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_CHECK);
 		set_tool_item_id(ilk, token);
-		set_tool_item_title(ilk, _T("可选字段"));
+		set_tool_item_title(ilk, _T("选项字段"));
 		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_CHECK);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
@@ -2151,7 +2179,7 @@ void FormPanel_OnShow(res_win_t widget, bool_t bShow)
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_EMBED_STATIS);
 		set_tool_item_id(ilk, token);
-		set_tool_item_title(ilk, _T("嵌入图形"));
+		set_tool_item_title(ilk, _T("嵌入统计"));
 		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_GRAPH);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
@@ -2159,6 +2187,12 @@ void FormPanel_OnShow(res_win_t widget, bool_t bShow)
 		set_tool_item_id(ilk, token);
 		set_tool_item_title(ilk, _T("嵌入表单"));
 		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_DOC);
+
+		ilk = insert_tool_group_item(glk, LINK_LAST);
+		xsprintf(token, _T("%d"), IDA_APPEND_EMBED_PLOT);
+		set_tool_item_id(ilk, token);
+		set_tool_item_title(ilk, _T("嵌入图表"));
+		set_tool_item_icon(ilk, GDI_ATTR_GIZMO_PANTO);
 
 		ilk = insert_tool_group_item(glk, LINK_LAST);
 		xsprintf(token, _T("%d"), IDA_APPEND_EMBED_IMAGES);
@@ -2403,6 +2437,9 @@ void FormPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 		break;
 	case IDA_APPEND_EMBED_FORM:
 		FormPanel_OnEmbedForm(widget);
+		break;
+	case IDA_APPEND_EMBED_PLOT:
+		FormPanel_OnEmbedPlot(widget);
 		break;
 
 	case IDA_ATTRIBUTES:

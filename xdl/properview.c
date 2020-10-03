@@ -385,7 +385,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (!is_null(shape))
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr_draw, shape);
+				(*pif->pf_draw_shape)(pif->canvas, &xp, &xr_draw, shape);
 			}
 
 			//val shape
@@ -396,7 +396,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (!is_null(shape))
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr_draw, shape);
+				(*pif->pf_draw_shape)(pif->canvas, &xp, &xr_draw, shape);
 			}
 
 			//key image

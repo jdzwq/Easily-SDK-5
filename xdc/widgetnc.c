@@ -187,7 +187,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	rtScr.h = bd.vscroll;
 	pt_expand_rect(&rtScr, -4, -6);
 
-	draw_shape_raw(dc, &xp, &xb, &rtScr, ATTR_SHAPE_TOPTRIANGLE);
+	draw_triangle_raw(dc, &xp, &xb, &rtScr, GDI_ATTR_ORIENT_TOP);
 
 	//down page button
 	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
@@ -196,7 +196,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	rtScr.h = bd.vscroll;
 	pt_expand_rect(&rtScr, -4, -6);
 
-	draw_shape_raw(dc, &xp, &xb, &rtScr, ATTR_SHAPE_BOTTOMTRIANGLE);
+	draw_triangle_raw(dc, &xp, &xb, &rtScr, GDI_ATTR_ORIENT_BOTTOM);
 
 	if (sl.max + sl.page / 2 <= sl.min)
 		return;

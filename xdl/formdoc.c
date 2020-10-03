@@ -263,6 +263,17 @@ void default_images_field_attr(link_t_ptr flk)
 	set_field_editable(flk, 1);
 }
 
+void default_plot_field_attr(link_t_ptr flk)
+{
+	set_field_shape(flk, ATTR_SHAPE_RECT);
+	set_field_x(flk, 0);
+	set_field_y(flk, 0);
+	set_field_width(flk, 100);
+	set_field_height(flk, 100);
+	set_field_visible(flk, 1);
+	set_field_printable(flk, 1);
+}
+
 static tchar_t* _field_calc_func(const tchar_t* token,void* parm)
 {
 	link_t_ptr ptr = (link_t_ptr)parm;
@@ -407,6 +418,14 @@ void reset_form_doc(link_t_ptr ptr)
 			if (sub)
 			{
 				reset_form_doc(sub);
+			}
+		}
+		else if (compare_text(cls, -1, DOC_FORM_PLOT, -1, 0) == 0)
+		{
+			sub = get_field_embed_plot(flk);
+			if (sub)
+			{
+				clear_plot_doc(sub);
 			}
 		}
 
@@ -657,6 +676,15 @@ link_t_ptr insert_field(link_t_ptr ptr,const tchar_t* sz_class)
 		default_form_field_attr(flk);
 
 		doc = create_form_doc();
+		attach_dom_node(flk, LINK_LAST, doc);
+	}
+	else if (compare_text(sz_class, -1, DOC_FORM_PLOT, -1, 0) == 0)
+	{
+		flk = insert_dom_node(get_form_fieldset(ptr), LINK_LAST);
+		set_dom_node_name(flk, sz_class, -1);
+		default_plot_field_attr(flk);
+
+		doc = create_plot_doc();
 		attach_dom_node(flk, LINK_LAST, doc);
 	}
 
@@ -1119,6 +1147,33 @@ void set_field_embed_form(link_t_ptr flk, link_t_ptr doc)
 	}
 }
 
+
+link_t_ptr get_field_embed_plot(link_t_ptr flk)
+{
+	const tchar_t *cls;
+
+	cls = get_field_class_ptr(flk);
+
+	return (compare_text(cls, -1, DOC_FORM_PLOT, -1, 0) == 0) ? get_dom_first_child_node(flk) : NULL;
+}
+
+void set_field_embed_plot(link_t_ptr flk, link_t_ptr doc)
+{
+	const tchar_t *cls;
+	link_t_ptr plk;
+
+	cls = get_field_class_ptr(flk);
+
+	if (compare_text(cls, -1, DOC_FORM_PLOT, -1, 0) == 0)
+	{
+		plk = detach_dom_node(flk, LINK_FIRST);
+		if (plk)
+			destroy_dom_doc(plk);
+
+		attach_dom_node(flk, LINK_LAST, doc);
+	}
+}
+
 void clear_field_embed(link_t_ptr flk)
 {
 	const tchar_t *cls;
@@ -1170,6 +1225,15 @@ void clear_field_embed(link_t_ptr flk)
 		if (plk)
 		{
 			clear_form_doc(plk);
+			attach_dom_node(flk, LINK_FIRST, plk);
+		}
+	}
+	else if (compare_text(cls, -1, DOC_FORM_PLOT, -1, 0) == 0)
+	{
+		plk = detach_dom_node(flk, LINK_FIRST);
+		if (plk)
+		{
+			clear_plot_doc(plk);
 			attach_dom_node(flk, LINK_FIRST, plk);
 		}
 	}

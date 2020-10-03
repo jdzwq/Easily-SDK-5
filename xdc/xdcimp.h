@@ -28,7 +28,6 @@
 
 #include "shapegdi.h"
 #include "gizmogdi.h"
-#include "plotgdi.h"
 #include "gdicanv.h"
 #include "gdiinf.h"
 #include "printbag.h"

@@ -161,29 +161,6 @@ typedef struct _link_t{
 #define IS_XML_DOC(ptr)		((ptr->tag == lkDoc)? 1 : 0)
 
 
-/*define options string token item feed and line feed*/
-#define OPT_ITEMFEED		_T('~')
-
-#define OPT_LINEFEED		_T(';')
-
-#define CSS_ITEMFEED		_T(':')
-
-#define CSS_LINEFEED		_T(';')
-
-#define TXT_ITEMFEED		_T('\t')
-
-#define TXT_LINEFEED		_T('\r')
-
-#define CSV_ITEMFEED		_T(',')
-
-#define CSV_LINEFEED		_T('\n')
-
-#define URL_ITEMFEED		_T('=')
-
-#define URL_LINEFEED		_T('&')
-
-#define IS_NUM_FEED(ch)	 ((ch == _T(' ') || ch == _T('\t'))? 1 : 0)
-
 #define TEXT_SOH			0x01 //start of headline
 #define TEXT_STX			0x02 //start of text
 #define TEXT_ETX			0x03 //end of text
@@ -535,6 +512,7 @@ typedef bool_t(*CALLBACK_ENUMLINK)(link_t_ptr plk, void* pv);
 
 /*list file node callback function*/
 typedef void(*CALLBACK_LISTFILE)(const file_info_t* pfi, void* pv);
+
 
 
 #if defined(_OS_WINDOWS)

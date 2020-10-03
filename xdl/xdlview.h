@@ -20,6 +20,7 @@
 #include "dialogview.h"
 #include "diagramview.h"
 #include "boxview.h"
+#include "plotview.h"
 #include "annoview.h"
 #include "calendarview.h"
 

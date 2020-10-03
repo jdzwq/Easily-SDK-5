@@ -35,7 +35,19 @@ LICENSE.GPL3 for more details.
 #if defined(XDU_SUPPORT_CONTEXT)
 
 
-void draw_backslash_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_forwardslash_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	xpoint_t pt[2];
+
+	pt[0].x = prt->x + prt->w;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x;
+	pt[1].y = prt->y + prt->h;
+
+	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+}
+
+void _draw_backslash_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -47,7 +59,43 @@ void draw_backslash_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
 }
 
-void draw_bottomline_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_leftline_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	xpoint_t pt[2];
+
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x;
+	pt[1].y = prt->y + prt->h;
+
+	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+}
+
+void _draw_rightline_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	xpoint_t pt[2];
+
+	pt[0].x = prt->x + prt->w;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
+
+	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+}
+
+void _draw_topline_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	xpoint_t pt[2];
+
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y;
+
+	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
+}
+
+void _draw_bottomline_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -59,47 +107,9 @@ void draw_bottomline_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
 }
 
-void draw_bottomtriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_lefttriangle_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
-	xpoint_t pt[3];
-
-	pt[0].x = prt->x + prt->w / 2;
-	pt[0].y = prt->y + prt->h - 1;
-	pt[1].x = prt->x;
-	pt[1].y = prt->y;
-	pt[2].x = prt->x + prt->w;
-	pt[2].y = prt->y;
-
-	draw_polygon_raw(rdc, pxp, pxb, pt, 3);
-}
-
-void draw_forwardslash_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
-{
-	xpoint_t pt[2];
-
-	pt[0].x = prt->x + prt->w;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x;
-	pt[1].y = prt->y + prt->h;
-
-	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-}
-
-void draw_leftline_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
-{
-	xpoint_t pt[2];
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x;
-	pt[1].y = prt->y + prt->h;
-
-	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-}
-
-void draw_lefttriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
-{
-	xpoint_t pt[3];
+	xpoint_t pt[4];
 
 	pt[0].x = prt->x + 1;
 	pt[0].y = prt->y + prt->h / 2;
@@ -107,23 +117,13 @@ void draw_lefttriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 	pt[1].y = prt->y;;
 	pt[2].x = prt->x + prt->w;
 	pt[2].y = prt->y + prt->h;
+	pt[3].x = pt[0].x;
+	pt[3].y = pt[0].y;
 
-	draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	draw_polyline_raw(rdc, pxp, pt, 4);
 }
 
-void draw_rightline_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
-{
-	xpoint_t pt[2];
-
-	pt[0].x = prt->x + prt->w;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-}
-
-void draw_righttriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_righttriangle_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
 	xpoint_t pt[3];
 
@@ -133,23 +133,13 @@ void draw_righttriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* px
 	pt[1].y = prt->y;
 	pt[2].x = prt->x;
 	pt[2].y = prt->y + prt->h;
+	pt[3].x = pt[0].x;
+	pt[3].y = pt[0].y;
 
-	draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	draw_polyline_raw(rdc, pxp, pt, 3);
 }
 
-void draw_topline_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
-{
-	xpoint_t pt[2];
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y;
-
-	draw_line_raw(rdc, pxp, &pt[0], &pt[1]);
-}
-
-void draw_toptriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_toptriangle_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
 	xpoint_t pt[3];
 
@@ -159,24 +149,57 @@ void draw_toptriangle_raw(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb,
 	pt[1].y = prt->y + prt->h;
 	pt[2].x = prt->x + prt->w;
 	pt[2].y = prt->y + prt->h;
+	pt[3].x = pt[0].x;
+	pt[3].y = pt[0].y;
 
-	draw_polygon_raw(rdc, pxp, pxb, pt, 3);
+	draw_polyline_raw(rdc, pxp, pt, 3);
+}
+
+void _draw_bottomtriangle_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	xpoint_t pt[4];
+
+	pt[0].x = prt->x + prt->w / 2;
+	pt[0].y = prt->y + prt->h - 1;
+	pt[1].x = prt->x;
+	pt[1].y = prt->y;
+	pt[2].x = prt->x + prt->w;
+	pt[2].y = prt->y;
+	pt[3].x = pt[0].x;
+	pt[3].y = pt[0].y;
+
+	draw_polyline_raw(rdc, pxp, pt, 4);
+}
+
+void _draw_rect_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	draw_rect_raw(rdc, pxp, NULL, prt);
+}
+
+void _draw_round_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	draw_round_raw(rdc, pxp, NULL, prt);
+}
+
+void _draw_ellipse_shape(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+{
+	draw_ellipse_raw(rdc, pxp, NULL, prt);
 }
 
 SHAPE_DRAW_TABLE g_shape_table[] = {
-	{ ATTR_SHAPE_BACKSLASH, draw_backslash_raw },
-	{ ATTR_SHAPE_BOTTOMLINE, draw_bottomline_raw },
-	{ ATTR_SHAPE_BOTTOMTRIANGLE, draw_bottomtriangle_raw },
-	{ ATTR_SHAPE_ELLIPSE, draw_ellipse_raw },
-	{ ATTR_SHAPE_FORWARDSLASH, draw_forwardslash_raw },
-	{ ATTR_SHAPE_LEFTLINE, draw_leftline_raw },
-	{ ATTR_SHAPE_LEFTTRIANGLE, draw_lefttriangle_raw },
-	{ ATTR_SHAPE_RECT, draw_rect_raw },
-	{ ATTR_SHAPE_RIGHTLINE, draw_rightline_raw },
-	{ ATTR_SHAPE_RIGHTTRIANGLE, draw_righttriangle_raw },
-	{ ATTR_SHAPE_ROUND, draw_round_raw },
-	{ ATTR_SHAPE_TOPLINE, draw_topline_raw },
-	{ ATTR_SHAPE_TOPTRIANGLE, draw_toptriangle_raw },
+	{ ATTR_SHAPE_BACKSLASH, _draw_backslash_shape },
+	{ ATTR_SHAPE_BOTTOMLINE, _draw_bottomline_shape },
+	{ ATTR_SHAPE_BOTTOMTRIANGLE, _draw_bottomtriangle_shape },
+	{ ATTR_SHAPE_ELLIPSE, _draw_ellipse_shape },
+	{ ATTR_SHAPE_FORWARDSLASH, _draw_forwardslash_shape },
+	{ ATTR_SHAPE_LEFTLINE, _draw_leftline_shape },
+	{ ATTR_SHAPE_LEFTTRIANGLE, _draw_lefttriangle_shape },
+	{ ATTR_SHAPE_RECT, _draw_rect_shape },
+	{ ATTR_SHAPE_RIGHTLINE, _draw_rightline_shape },
+	{ ATTR_SHAPE_RIGHTTRIANGLE, _draw_righttriangle_shape },
+	{ ATTR_SHAPE_ROUND, _draw_round_shape },
+	{ ATTR_SHAPE_TOPLINE, _draw_topline_shape },
+	{ ATTR_SHAPE_TOPTRIANGLE, _draw_toptriangle_shape },
 };
 
 static PF_SHAPE_MAKE _find_shape_maker(int i, int j, const tchar_t* iname)

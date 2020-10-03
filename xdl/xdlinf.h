@@ -172,35 +172,37 @@ typedef struct _if_measure_t{
 }if_measure_t;
 
 typedef void(*PF_DRAW_LINE)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_DRAW_POLYLINE)(canvas_t, const xpen_t*, const xpoint_t*, int);
-typedef void(*PF_DRAW_POLYGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
 typedef void(*PF_DRAW_BEZIER)(canvas_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
 typedef void(*PF_DRAW_CURVE)(canvas_t, const xpen_t*, const xpoint_t*, int);
+typedef void(*PF_DRAW_ARC)(canvas_t, const xpen_t*, const xpoint_t*, float, float, double, double);
+typedef void(*PF_DRAW_POLYLINE)(canvas_t, const xpen_t*, const xpoint_t*, int);
+typedef void(*PF_DRAW_SHAPE)(canvas_t, const xpen_t*, const xrect_t*, const tchar_t*);
+
 typedef void(*PF_DRAW_RECT)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_DRAW_PATH)(canvas_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*, int n);
 typedef void(*PF_DRAW_ROUND)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_ELLIPSE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_DRAW_PIE)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, float, float, double, double);
-typedef void(*PF_DRAW_ARC)(canvas_t, const xpen_t*, const xpoint_t*, float, float, double, double);
+typedef void(*PF_DRAW_FAN)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, float, float, double, double);
+typedef void(*PF_CALC_FAN)(canvas_t, const xpoint_t*, float, float, double, double, xpoint_t* pa, int n);
+typedef void(*PF_DRAW_TRIANGLE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
 typedef void(*PF_DRAW_ARROW)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, float, double);
-typedef void(*PF_DRAW_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
-typedef void(*PF_DRAW_PASS)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
-typedef void(*PF_TEXT_OUT)(canvas_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
-typedef void(*PF_COLOR_OUT)(canvas_t, const xrect_t*, bool_t horz, const tchar_t*, int);
-typedef void(*PF_DRAW_DATA)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int, int, const tchar_t*, const tchar_t*, bool_t, bool_t);
+typedef void(*PF_DRAW_POLYGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
+typedef void(*PF_DRAW_EQUALGON)(canvas_t, const xpen_t*, const xbrush_t*, const xpoint_t*, float, int);
+typedef void(*PF_CALC_EQUALGON)(canvas_t, const xpoint_t*, float, int, xpoint_t*);
+typedef void(*PF_DRAW_PATH)(canvas_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*, int n);
 
+typedef void(*PF_COLOR_OUT)(canvas_t, const xrect_t*, bool_t horz, const tchar_t*, int);
 typedef void(*PF_DRAW_CODE128)(canvas_t, const xcolor_t*, xrect_t*, const tchar_t*, int);
 typedef void(*PF_DRAW_PDF417)(canvas_t, const xcolor_t*, xrect_t*, const tchar_t*, int);
 typedef void(*PF_DRAW_QRCODE)(canvas_t, const xcolor_t*, xrect_t*, const tchar_t*, int);
-
-typedef void(*PF_MULTI_LINE)(canvas_t, const xfont_t*, const xface_t*, const xpen_t*, const xrect_t*);
-typedef void(*PF_DRAW_SHAPE)(canvas_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
 typedef void(*PF_DRAW_GIZMO)(canvas_t, const xcolor_t*, const xrect_t*, const tchar_t*);
-
 typedef void(*PF_DRAW_IMAGE)(canvas_t, const ximage_t*, const xrect_t*);
 typedef void(*PF_DRAW_ICON)(canvas_t, const tchar_t*, const xrect_t*);
 typedef void(*PF_DRAW_THUMB)(canvas_t, const tchar_t*, const xrect_t*);
 
+typedef void(*PF_MULTI_LINE)(canvas_t, const xfont_t*, const xface_t*, const xpen_t*, const xrect_t*);
+typedef void(*PF_DRAW_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
+typedef void(*PF_TEXT_OUT)(canvas_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
 typedef void(*PF_DRAW_VAR_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, string_t);
 typedef void(*PF_DRAW_TAG_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr, int);
 typedef int(*PF_CALC_TAG_PAGES)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr);
@@ -208,6 +210,9 @@ typedef void(*PF_DRAW_RICH_TEXT)(canvas_t, const xfont_t*, const xface_t*, const
 typedef int(*PF_CALC_RICH_PAGES)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr);
 typedef void(*PF_DRAW_MEMO_TEXT)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr, int);
 typedef int(*PF_CALC_MEMO_PAGES)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, link_t_ptr);
+
+typedef void(*PF_DRAW_PASS)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
+typedef void(*PF_DRAW_DATA)(canvas_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int, int, const tchar_t*, const tchar_t*, bool_t, bool_t);
 
 typedef void(*PF_MEASURE_RECT)(canvas_t, const xfont_t*, const xface_t*, const tchar_t*, int, xrect_t* ppr);
 typedef void(*PF_MEASURE_SIZE)(canvas_t, const xfont_t*, const tchar_t*, int, xsize_t* pps);
@@ -217,26 +222,32 @@ typedef struct _if_canvas_t{
 	canvas_t canvas;
 
 	PF_DRAW_LINE		pf_draw_line;
-	PF_DRAW_POLYLINE	pf_draw_polyline;
-	PF_DRAW_POLYGON		pf_draw_polygon;
 	PF_DRAW_BEZIER		pf_draw_bezier;
 	PF_DRAW_CURVE		pf_draw_curve;
+	PF_DRAW_ARC			pf_draw_arc;
+	PF_DRAW_POLYLINE	pf_draw_polyline;
+	PF_DRAW_SHAPE		pf_draw_shape;
+
 	PF_DRAW_RECT		pf_draw_rect;
-	PF_DRAW_PATH		pf_draw_path;
+	PF_DRAW_TRIANGLE	pf_draw_triangle;
 	PF_DRAW_ROUND		pf_draw_round;
 	PF_DRAW_ELLIPSE		pf_draw_ellipse;
 	PF_DRAW_PIE			pf_draw_pie;
-	PF_DRAW_ARC			pf_draw_arc;
+	PF_DRAW_FAN			pf_draw_fan;
+	PF_CALC_FAN			pf_calc_fan;
 	PF_DRAW_ARROW		pf_draw_arrow;
+	PF_DRAW_POLYGON		pf_draw_polygon;
+	PF_DRAW_EQUALGON	pf_draw_equalgon;
+	PF_CALC_EQUALGON	pf_calc_equalgon;
+	PF_DRAW_PATH		pf_draw_path;
+
+	PF_MEASURE_RECT		pf_measure_rect;
+	PF_MEASURE_SIZE		pf_measure_size;
+	PF_MEASURE_METRIC	pf_measure_metric;
+
+	PF_MULTI_LINE		pf_multi_line;
 	PF_DRAW_TEXT		pf_draw_text;
 	PF_TEXT_OUT			pf_text_out;
-	PF_COLOR_OUT		pf_color_out;
-	PF_DRAW_PASS		pf_draw_pass;
-	PF_DRAW_DATA		pf_draw_data;
-
-	PF_DRAW_SHAPE		pf_draw_shape;
-	PF_MULTI_LINE		pf_multi_line;
-
 	PF_DRAW_VAR_TEXT	pf_draw_var_text;
 	PF_DRAW_TAG_TEXT	pf_draw_tag_text;
 	PF_CALC_TAG_PAGES	pf_calc_tag_pages;
@@ -244,19 +255,17 @@ typedef struct _if_canvas_t{
 	PF_CALC_RICH_PAGES	pf_calc_rich_pages;
 	PF_DRAW_MEMO_TEXT	pf_draw_memo_text;
 	PF_CALC_MEMO_PAGES	pf_calc_memo_pages;
+	PF_DRAW_PASS		pf_draw_pass;
+	PF_DRAW_DATA		pf_draw_data;
 
-	PF_DRAW_IMAGE		pf_draw_image;
-	PF_DRAW_GIZMO		pf_draw_gizmo;
+	PF_COLOR_OUT		pf_color_out;
 	PF_DRAW_CODE128		pf_draw_code128;
 	PF_DRAW_PDF417		pf_draw_pdf417;
 	PF_DRAW_QRCODE		pf_draw_qrcode;
-
 	PF_DRAW_ICON		pf_draw_icon;
 	PF_DRAW_THUMB		pf_draw_thumb;
-
-	PF_MEASURE_RECT		pf_measure_rect;
-	PF_MEASURE_SIZE		pf_measure_size;
-	PF_MEASURE_METRIC	pf_measure_metric;
+	PF_DRAW_IMAGE		pf_draw_image;
+	PF_DRAW_GIZMO		pf_draw_gizmo;
 
 	xcolor_t clr_bkg;
 	xcolor_t clr_frg;

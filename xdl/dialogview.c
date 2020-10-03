@@ -142,7 +142,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
 	xr.fw = pbox->fw;
 	xr.fh = DIALOG_TITLE_HEIGHT;
-	(*pif->pf_draw_shape)(pif->canvas, &xp, &xb, &xr, ATTR_SHAPE_RECT);
+	(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, ATTR_SHAPE_RECT);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
@@ -174,7 +174,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr.fw = pbox->fw;
 	xr.fh = pbox->fh;
 
-	(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
+	(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, ATTR_SHAPE_RECT);
 
 	ilk = get_dialog_next_item(ptr, LINK_FIRST);
 	while (ilk)
@@ -203,7 +203,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			cb.fw = xr.fw;
 			cb.fh = xr.fh;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, get_dialog_item_text_ptr(ilk));
+			(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, get_dialog_item_text_ptr(ilk));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_STATICBOX, -1, 1) == 0)
 		{

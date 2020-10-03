@@ -188,26 +188,6 @@ EXP_API int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-EXP_API void parse_xpen_from_style(xpen_t* pxp, const tchar_t* token);
-
-EXP_API int format_xpen_to_style(const xpen_t* pxp, tchar_t* buf, int len);
-
-EXP_API void parse_xbrush_from_style(xbrush_t* pxb, const tchar_t* token);
-
-EXP_API int format_xbrush_to_style(const xbrush_t* pxb, tchar_t* buf, int len);
-
-EXP_API void parse_xfont_from_style(xfont_t* pxf, const tchar_t* token);
-
-EXP_API int format_xfont_to_style(const xfont_t* pxf, tchar_t* buf, int len);
-
-EXP_API void parse_xface_from_style(xface_t* pxa, const tchar_t* token);
-
-EXP_API int format_xface_to_style(const xface_t* pxa, tchar_t* buf, int len);
-
-EXP_API void parse_ximage_from_source(ximage_t* pxi, const tchar_t* token);
-
-EXP_API int format_ximage_to_source(const ximage_t* pxi, tchar_t* buf, int len);
-
 EXP_API float font_size(int px);
 
 EXP_API float font_metric(float pt);

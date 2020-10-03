@@ -40,8 +40,15 @@
 #define GDI_ATTR_LAYOUT					_T("layout")
 #define GDI_ATTR_LAYOUT_HORZ			_T("horz")
 #define GDI_ATTR_LAYOUT_VERT			_T("vert")
-#define GDI_ATTR_LAYOUT_RADIAL			_T("radial")
-#define GDI_ATTR_LAYOUT_OPTIONS			_T("horz~Horz;vert~Vert;radial~Radial;")
+#define GDI_ATTR_LAYOUT_CROSS			_T("cross")
+#define GDI_ATTR_LAYOUT_OPTIONS			_T("horz~Horz;vert~Vert;cross~Cross;")
+
+#define GDI_ATTR_ORIENT					_T("orient")
+#define GDI_ATTR_ORIENT_LEFT			_T("left")
+#define GDI_ATTR_ORIENT_RIGHT			_T("right")
+#define GDI_ATTR_ORIENT_TOP				_T("top")
+#define GDI_ATTR_ORIENT_BOTTOM			_T("bottom")
+#define GDI_ATTR_ORIENT_OPTIONS			_T("left~Left;right~Right;top~Top;bottom~Bottom;")
 
 #define GDI_ATTR_FONT_FAMILY		_T("font-family")
 #define GDI_ATTR_FONT_STYLE			_T("font-style")

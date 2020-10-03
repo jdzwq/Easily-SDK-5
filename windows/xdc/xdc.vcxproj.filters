@@ -210,9 +210,6 @@
     <ClCompile Include="..\..\xdc\horzbox.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\plotbox.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\calendarctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -249,9 +246,6 @@
     <ClCompile Include="..\..\xdc\impshell.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\plotgdi.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\impclip.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -274,6 +268,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\printbox.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdc\plotctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -330,9 +327,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdc\xdcimp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdc\plotgdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdc\impclip.h">

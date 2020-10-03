@@ -98,6 +98,24 @@ bool_t load_field_object_from_file(link_t_ptr flk, const secu_desc_t* psd, const
 
 		return 1;
 	}
+	else if (compare_text(fclass, -1, DOC_FORM_PLOT, -1, 0) == 0)
+	{
+		doc = create_dom_doc();
+		if (!load_dom_doc_from_file(doc, psd, fname))
+		{
+			destroy_dom_doc(doc);
+			return 0;
+		}
+		if (!is_plot_doc(doc))
+		{
+			destroy_dom_doc(doc);
+			return 0;
+		}
+
+		set_field_embed_plot(flk, doc);
+
+		return 1;
+	}
 	else if (compare_text(fclass, -1, DOC_FORM_PHOTO, -1, 0) == 0)
 	{
 		bsize = load_image_base64_from_file(psd, fname, NULL, MAX_LONG);

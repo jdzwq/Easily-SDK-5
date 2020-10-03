@@ -327,11 +327,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				{
 					ta[0] = _T('M');
 					pa[0].fx = xr.fx;
-					pa[0].fy = py - 0.5;
+					pa[0].fy = py - 0.5f;
 
 					ta[1] = _T('L');
 					pa[1].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pa[1].fy = py - 0.5;
+					pa[1].fy = py - 0.5f;
 
 					ta[2] = _T('L');
 					pa[2].fx = xr.fx + TITLE_EDGE_LIGHT;
@@ -363,11 +363,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					ta[8] = _T('L');
 					pa[10].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pa[10].fy = ph + 0.5;
+					pa[10].fy = ph + 0.5f;
 
 					ta[9] = _T('L');
 					pa[11].fx = xr.fx;
-					pa[11].fy = ph + 0.5;
+					pa[11].fy = ph + 0.5f;
 
 					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
 
@@ -398,11 +398,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				{
 					ta[0] = _T('M');
 					pa[0].fx = xr.fx + xr.fw;
-					pa[0].fy = py - 0.5;
+					pa[0].fy = py - 0.5f;
 
 					ta[1] = _T('L');
 					pa[1].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pa[1].fy = py - 0.5;
+					pa[1].fy = py - 0.5f;
 
 					ta[2] = _T('L');
 					pa[2].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
@@ -434,11 +434,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					ta[8] = _T('L');
 					pa[10].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pa[10].fy = ph + 0.5;
+					pa[10].fy = ph + 0.5f;
 
 					ta[9] = _T('L');
 					pa[11].fx = xr.fx + xr.fw;
-					pa[11].fy = ph + 0.5;
+					pa[11].fy = ph + 0.5f;
 
 					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
 
@@ -471,11 +471,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				if (compare_text(orita, -1, ATTR_ORITATION_TOP, -1, 0) == 0)
 				{
 					ta[0] = _T('M');
-					pa[0].fx = px - 0.5;
+					pa[0].fx = px - 0.5f;
 					pa[0].fy = xr.fy;
 
 					ta[1] = _T('L');
-					pa[1].fx = px - 0.5;
+					pa[1].fx = px - 0.5f;
 					pa[1].fy = xr.fy + TITLE_EDGE_LIGHT;
 					
 					ta[2] = _T('L');
@@ -507,11 +507,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pa[9].fy = xr.fy + TITLE_EDGE_LIGHT;
 
 					ta[8] = _T('L');
-					pa[10].fx = pw + 0.5;
+					pa[10].fx = pw + 0.5f;
 					pa[10].fy = xr.fy + TITLE_EDGE_LIGHT;
 
 					ta[9] = _T('L');
-					pa[11].fx = pw + 0.5;
+					pa[11].fx = pw + 0.5f;
 					pa[11].fy = xr.fy;
 
 					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
@@ -542,11 +542,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 				else if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
 				{
 					ta[0] = _T('M');
-					pa[0].fx = px - 0.5;
+					pa[0].fx = px - 0.5f;
 					pa[0].fy = xr.fy + xr.fh;
 
 					ta[1] = _T('L');
-					pa[1].fx = px - 0.5;
+					pa[1].fx = px - 0.5f;
 					pa[1].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
 					ta[2] = _T('L');
@@ -578,11 +578,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pa[9].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
 					ta[8] = _T('L');
-					pa[10].fx = pw + 0.5;
+					pa[10].fx = pw + 0.5f;
 					pa[10].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
 					ta[9] = _T('L');
-					pa[11].fx = pw + 0.5;
+					pa[11].fx = pw + 0.5f;
 					pa[11].fy = xr.fy + xr.fh;
 
 					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);

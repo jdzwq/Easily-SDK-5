@@ -42,35 +42,33 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 
 	pic->canvas = (canvas_t)canv;
 
-	pic->pf_draw_arrow = draw_arrow;
 	pic->pf_draw_line = draw_line;
-	pic->pf_draw_pie = draw_pie;
-	pic->pf_draw_arc = draw_arc;
-	pic->pf_draw_polygon = draw_polygon;
-	pic->pf_draw_polyline = draw_polyline;
 	pic->pf_draw_bezier = draw_bezier;
 	pic->pf_draw_curve = draw_curve;
+	pic->pf_draw_arc = draw_arc;
+	pic->pf_draw_polyline = draw_polyline;
+	pic->pf_draw_shape = draw_shape;
+
 	pic->pf_draw_rect = draw_rect;
-	pic->pf_draw_path = draw_path;
+	pic->pf_draw_triangle = draw_triangle;
 	pic->pf_draw_round = draw_round;
 	pic->pf_draw_ellipse = draw_ellipse;
+	pic->pf_draw_pie = draw_pie;
+	pic->pf_draw_fan = draw_fan;
+	pic->pf_calc_fan = calc_fan;
+	pic->pf_draw_arrow = draw_arrow;
+	pic->pf_draw_polygon = draw_polygon;
+	pic->pf_draw_equalgon = draw_equalgon;
+	pic->pf_calc_equalgon = calc_equalgon;
+	pic->pf_draw_path = draw_path;
+	
+	pic->pf_measure_metric = text_metric;
+	pic->pf_measure_rect = text_rect;
+	pic->pf_measure_size = text_size;
+
 	pic->pf_draw_text = draw_text;
 	pic->pf_text_out = text_out;
-	pic->pf_color_out = color_out;
-	pic->pf_draw_pass = draw_pass;
-	pic->pf_draw_data = draw_data;
-
-	pic->pf_draw_image = draw_image;
-	pic->pf_draw_icon = draw_icon;
-
-	pic->pf_draw_code128 = draw_code128;
-	pic->pf_draw_pdf417 = draw_pdf417;
-	pic->pf_draw_qrcode = draw_qrcode;
-
-	pic->pf_draw_gizmo = draw_gizmo;
-	pic->pf_draw_shape = draw_shape;
 	pic->pf_multi_line = multi_line;
-
 	pic->pf_draw_var_text = draw_var_text;
 	pic->pf_draw_tag_text = draw_tag_text;
 	pic->pf_calc_tag_pages = calc_tag_pages;
@@ -78,11 +76,16 @@ if_canvas_t* create_canvas_interface(canvas_t canv)
 	pic->pf_calc_memo_pages = calc_memo_pages;
 	pic->pf_draw_rich_text = draw_rich_text;
 	pic->pf_calc_rich_pages = calc_rich_pages;
+	pic->pf_draw_pass = draw_pass;
+	pic->pf_draw_data = draw_data;
 
-	pic->pf_measure_metric = text_metric;
-	pic->pf_measure_rect = text_rect;
-	pic->pf_measure_size = text_size;
-
+	pic->pf_draw_code128 = draw_code128;
+	pic->pf_draw_pdf417 = draw_pdf417;
+	pic->pf_draw_qrcode = draw_qrcode;
+	pic->pf_color_out = color_out;
+	pic->pf_draw_image = draw_image;
+	pic->pf_draw_icon = draw_icon;
+	pic->pf_draw_gizmo = draw_gizmo;
 
 	return pic;
 }

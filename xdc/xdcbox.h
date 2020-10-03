@@ -38,27 +38,6 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-/******************************plot box*****************************************************/
-
-EXP_API res_win_t plotbox_create(res_win_t widget, dword_t style, const xrect_t* pxr);
-
-EXP_API void plotbox_set_type(res_win_t widget, const tchar_t* type);
-
-EXP_API void plotbox_get_type(res_win_t widget, tchar_t* type);
-
-EXP_API void plotbox_set_vetor(res_win_t widget, vector_t vt);
-
-EXP_API void plotbox_get_vetor(res_win_t widget, vector_t* pvt);
-
-EXP_API void plotbox_set_plot(res_win_t widget, const plot_t* plt);
-
-EXP_API void plotbox_get_plot(res_win_t widget, plot_t* plt);
-
-EXP_API void plotbox_calc_plot(res_win_t widget);
-
-EXP_API void plotbox_set_title(res_win_t widget, const tchar_t* title);
-
-EXP_API int plotbox_get_title(res_win_t widget, tchar_t* title, int max);
 
 /******************************numeric box*****************************************************/
 

@@ -549,6 +549,88 @@ int a_parse_string_token_count(const schar_t* tokens, int len, schar_t itemfeed)
 	return count;
 }
 
+const schar_t* a_parse_zero_token(const schar_t* tokens, schar_t** pkey, int* pkeylen)
+{
+	const schar_t* token;
+
+	*pkey = NULL;
+	*pkeylen = 0;
+
+	if (!tokens)
+		return NULL;
+
+	token = tokens;
+
+	*pkey = (schar_t*)token;
+	*pkeylen = a_xslen(token);
+	
+	token += (*pkeylen + 1);
+
+	return (*token == '\0')? NULL : token;
+}
+
+int a_parse_zero_token_count(const schar_t* tokens)
+{
+	const schar_t* token;
+	int len, total = 0;
+
+	if (!tokens)
+		return 0;
+
+	token = tokens;
+
+	do
+	{
+		len = a_xslen(token);
+		token += (len + 1);
+		
+		total++;
+	} while (*token != '\0');
+
+	return total;
+}
+
+const wchar_t* w_parse_zero_token(const wchar_t* tokens, wchar_t** pkey, int* pkeylen)
+{
+	const wchar_t* token;
+
+	*pkey = NULL;
+	*pkeylen = 0;
+
+	if (!tokens)
+		return NULL;
+
+	token = tokens;
+
+	*pkey = (wchar_t*)token;
+	*pkeylen = w_xslen(token);
+
+	token += (*pkeylen + 1);
+
+	return (*token == L'\0') ? NULL : token;
+}
+
+int w_parse_zero_token_count(const wchar_t* tokens)
+{
+	const wchar_t* token;
+	int len, total = 0;
+
+	if (!tokens)
+		return 0;
+
+	token = tokens;
+
+	do
+	{
+		len = w_xslen(token);
+		token += (len + 1);
+
+		total++;
+	} while (*token != L'\0');
+
+	return total;
+}
+
 const wchar_t* w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot, int* plen)
 {
 	const wchar_t* token;

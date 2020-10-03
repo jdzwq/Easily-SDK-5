@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDU_SUPPORT_CONTEXT)
 
-typedef void(*PF_SHAPE_MAKE)(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
+typedef void(*PF_SHAPE_MAKE)(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt);
 
 typedef struct _SHAPE_DRAW_TABLE{
 	tchar_t shape_name[32];

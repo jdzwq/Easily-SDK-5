@@ -213,36 +213,6 @@ void svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, in
 	xmem_free(pa);
 }
 
-void svg_draw_polygon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
-{
-	link_t_ptr nlk;
-
-	nlk = insert_svg_node(g);
-
-	write_polygon_to_svg_node(nlk, pxp, pxb, ppt, n);
-}
-
-void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
-{
-	link_t_ptr g;
-	xpoint_t* pa;
-	int i;
-
-	g = svg_get_canvas_doc(canv);
-
-	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
-	for (i = 0; i < n; i++)
-	{
-		pa[i].fx = ppt[i].fx;
-		pa[i].fy = ppt[i].fy;
-		svg_point_tm_to_pt(canv, &pa[i]);
-	}
-
-	svg_draw_polygon_raw(g, pxp, pxb, pa, n);
-
-	xmem_free(pa);
-}
-
 void svg_draw_bezier_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
 	link_t_ptr nlk;
@@ -304,6 +274,146 @@ void svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n
 	svg_draw_curve_raw(g, pxp, pa, n);
 
 	xmem_free(pa);
+}
+
+
+void svg_draw_arc_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+{
+	link_t_ptr nlk;
+
+	nlk = insert_svg_node(g);
+
+	write_arc_to_svg_node(nlk, pxp, ppt, rx, ry, fang, tang);
+}
+
+void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+{
+	link_t_ptr g;
+	xpoint_t pt;
+	xsize_t xs;
+
+	g = svg_get_canvas_doc(canv);
+
+	pt.fx = ppt->fx;
+	pt.fy = ppt->fy;
+	svg_point_tm_to_pt(canv, &pt);
+
+	xs.fx = rx;
+	xs.fy = ry;
+	svg_size_tm_to_pt(canv, &xs);
+
+	svg_draw_arc_raw(g, pxp, &pt, xs.cx, xs.cy, fang, tang);
+}
+
+void svg_draw_arrow_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
+{
+
+}
+
+void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
+{
+
+}
+
+void svg_draw_shape_raw(link_t_ptr g, const xpen_t* pxp, const xrect_t* pxr, const tchar_t* shape)
+{
+	link_t_ptr nlk;
+
+	nlk = insert_svg_node(g);
+
+	write_shape_to_svg_node(nlk, pxp, pxr, shape);
+}
+
+void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, const tchar_t* shape)
+{
+	link_t_ptr g;
+	xrect_t xr;
+
+	g = svg_get_canvas_doc(canv);
+
+	xr.fx = pxr->fx;
+	xr.fy = pxr->fy;
+	xr.fw = pxr->fw;
+	xr.fh = pxr->fh;
+
+	svg_rect_tm_to_pt(canv, &xr);
+
+	svg_draw_shape_raw(g, pxp, &xr, shape);
+}
+
+void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
+{
+	xpoint_t pt[4] = { 0 };
+
+	if (xsicmp(orient, GDI_ATTR_ORIENT_TOP) == 0)
+	{
+		pt[0].x = prt->x + prt->w / 2;
+		pt[0].y = prt->y;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y + prt->h;
+		pt[2].x = prt->x;
+		pt[2].y = prt->y + prt->h;
+		pt[3].x = prt->x + prt->w / 2;
+		pt[3].y = prt->y;
+
+		write_polygon_to_svg_node(glk, pxp, pxb, pt, 3);
+	}
+	else if (xsicmp(orient, GDI_ATTR_ORIENT_BOTTOM) == 0)
+	{
+		pt[0].x = prt->x + prt->w / 2;
+		pt[0].y = prt->y + prt->h;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y;
+		pt[2].x = prt->x + prt->w;
+		pt[2].y = prt->y;
+		pt[3].x = prt->x + prt->w / 2;
+		pt[3].y = prt->y + prt->h;
+
+		write_polyline_to_svg_node(glk, pxp, pt, 3);
+	}
+	else if (xsicmp(orient, GDI_ATTR_ORIENT_LEFT) == 0)
+	{
+		pt[0].x = prt->x;
+		pt[0].y = prt->y + prt->h / 2;
+		pt[1].x = prt->x + prt->w;
+		pt[1].y = prt->y;
+		pt[2].x = prt->x + prt->w;
+		pt[2].y = prt->y + prt->h;
+		pt[3].x = prt->x;
+		pt[3].y = prt->y + prt->h / 2;
+
+		write_polyline_to_svg_node(glk, pxp, pt, 3);
+	}
+	else if (xsicmp(orient, GDI_ATTR_ORIENT_RIGHT) == 0)
+	{
+		pt[0].x = prt->x + prt->w;
+		pt[0].y = prt->y + prt->h / 2;
+		pt[1].x = prt->x;
+		pt[1].y = prt->y + prt->h;
+		pt[2].x = prt->x;
+		pt[2].y = prt->y;
+		pt[3].x = prt->x + prt->w;
+		pt[3].y = prt->y + prt->h / 2;
+
+		write_polyline_to_svg_node(glk, pxp, pt, 3);
+	}
+}
+
+void svg_draw_triangle(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* orient)
+{
+	link_t_ptr g;
+	xrect_t xr;
+
+	g = svg_get_canvas_doc(canv);
+
+	xr.fx = pxr->fx;
+	xr.fy = pxr->fy;
+	xr.fw = pxr->fw;
+	xr.fh = pxr->fh;
+
+	svg_rect_tm_to_pt(canv, &xr);
+
+	svg_draw_triangle_raw(g, pxp, pxb, &xr, orient);
 }
 
 void svg_draw_rect_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
@@ -397,7 +507,6 @@ void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 {
 	link_t_ptr g;
 	xrect_t xr;
-	tchar_t token[100] = { 0 };
 
 	g = svg_get_canvas_doc(canv);
 
@@ -411,105 +520,238 @@ void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 	svg_draw_pie_raw(g, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
 }
 
-void svg_draw_arc_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void svg_calc_fan_raw(link_t_ptr g, const xpoint_t* ppt, int r, int s, double fang, double tang, xpoint_t* pa, int n)
 {
+	int r1, r2;
+	r1 = r;
+	r2 = r - s;
 
+	if (n > 0)
+	{
+		pa[0].x = ppt->x + (int)((float)(r1)* cos(fang));
+		pa[0].y = ppt->y + (int)((float)(r1)* sin(fang));
+	}
+
+	if (n > 1)
+	{
+		pa[1].x = ppt->x + (int)((float)(r1)* cos(tang));
+		pa[1].y = ppt->y + (int)((float)(r1)* sin(tang));
+	}
+
+	if (n > 2)
+	{
+		pa[2].x = ppt->x + (int)((float)(r2)* cos(tang));
+		pa[2].y = ppt->y + (int)((float)(r2)* sin(tang));
+	}
+
+	if (n > 3)
+	{
+		pa[3].x = ppt->x + (int)((float)(r2)* cos(fang));
+		pa[3].y = ppt->y + (int)((float)(r2)* sin(fang));
+	}
 }
 
-void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+void svg_calc_fan(canvas_t canv, const xpoint_t* ppt, float r, float s, double fang, double tang, xpoint_t* pa, int n)
 {
+	float r1, r2;
+	r1 = r;
+	r2 = r - s;
 
+	if (n > 0)
+	{
+		pa[0].fx = ppt->fx + (float)(r1 * cos(fang));
+		pa[0].fy = ppt->fy + (float)(r1 * sin(fang));
+	}
+
+	if (n > 1)
+	{
+		pa[1].fx = ppt->fx + (float)(r1 * cos(tang));
+		pa[1].fy = ppt->fy + (float)(r1 * sin(tang));
+	}
+
+	if (n > 2)
+	{
+		pa[2].fx = ppt->fx + (float)(r2 * cos(tang));
+		pa[2].fy = ppt->fy + (float)(r2 * sin(tang));
+	}
+
+	if (n > 3)
+	{
+		pa[3].fx = ppt->fx + (float)(r2 * cos(fang));
+		pa[3].fy = ppt->fy + (float)(r2 * sin(fang));
+	}
 }
 
-void svg_draw_arrow_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
-{
-
-}
-
-void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
-{
-	
-}
-
-void svg_draw_shape_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape)
+void svg_draw_fan_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang)
 {
 	link_t_ptr nlk;
 
 	nlk = insert_svg_node(g);
 
-	write_shape_to_svg_node(nlk, pxp, pxb, pxr, shape);
+	write_fan_to_svg_node(nlk, pxp, pxb, ppt, r, s, fang, tang);
 }
 
-void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* shape)
+void svg_draw_fan(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float r, float s, double fang, double tang)
 {
 	link_t_ptr g;
 	xrect_t xr;
 
 	g = svg_get_canvas_doc(canv);
 
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
+	xr.fx = ppt->fx;
+	xr.fy = ppt->fy;
+	xr.fw = r;
+	xr.fh = s;
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_shape_raw(g, pxp, pxb, &xr, shape);
+	svg_draw_fan_raw(g, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
 }
 
-void svg_multi_line_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
+void svg_draw_polygon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
 {
 	link_t_ptr nlk;
 
-	float line_rati;
-	int th, lh;
-	int i, rows;
-	xpoint_t pt1, pt2;
-	xsize_t xs;
+	nlk = insert_svg_node(g);
 
-	if (is_null(pxa->line_height))
-		line_rati = xstof(DEF_GDI_TEXT_LINE_HEIGHT);
-	else
-		line_rati = xstof(pxa->line_height);
-
-	if (line_rati < 1.0)
-		line_rati = 1.0;
-
-	svg_text_metric_raw(g, pxf, &xs);
-
-	th = xs.cy;
-	lh = (int)((float)th * (line_rati - 1.0));
-
-	rows = pxr->h / (th + lh);
-
-	pt1.x = pxr->x;
-	pt1.y = pxr->y + th + lh;
-	pt2.x = pxr->x + pxr->w;
-	pt2.y = pxr->y + th + lh;
-
-	for (i = 0; i < rows; i++)
-	{
-		nlk = insert_svg_node(g);
-
-		write_line_to_svg_node(nlk, pxp, &pt1, &pt2);
-
-		pt1.y += (th + lh);
-		pt2.y += (th + lh);
-	}
+	write_polygon_to_svg_node(nlk, pxp, pxb, ppt, n);
 }
 
-void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
+void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
 {
 	link_t_ptr g;
-	xrect_t xr;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	svg_rect_tm_to_pt(canv, &xr);
+	xpoint_t* pa;
+	int i;
 
 	g = svg_get_canvas_doc(canv);
 
-	svg_multi_line_raw(g, pxf, pxa, pxp, &xr);
+	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
+	for (i = 0; i < n; i++)
+	{
+		pa[i].fx = ppt[i].fx;
+		pa[i].fy = ppt[i].fy;
+		svg_point_tm_to_pt(canv, &pa[i]);
+	}
+
+	svg_draw_polygon_raw(g, pxp, pxb, pa, n);
+
+	xmem_free(pa);
 }
+
+void svg_calc_equalgon_raw(link_t_ptr g, const xpoint_t* ppt, int r, int n, xpoint_t* pa)
+{
+	double a;
+	int i, j;
+
+	if (n < 3) return;
+
+	a = 2 * XPI / n;
+
+	if (n % 2)
+	{
+		pa[0].x = ppt->x;
+		pa[0].y = ppt->y - r;
+
+		for (i = 1; i <= n / 2; i++)
+		{
+			pa[i].x = ppt->x + (int)(r * cos(a * i - XPI / 2));
+			pa[i].y = ppt->y + (int)(r * sin(a * i - XPI / 2));
+		}
+
+		for (j = i; j < n; j++)
+		{
+			pa[j].x = ppt->x - (pa[i - 1].x - ppt->x);
+			pa[j].y = pa[i - 1].y;
+			i--;
+		}
+	}
+	else
+	{
+		for (i = 0; i < n / 2; i++)
+		{
+			pa[i].x = ppt->x + (int)(r * cos(a * i + a / 2 - XPI / 2));
+			pa[i].y = ppt->y + (int)(r * sin(a * i + a / 2 - XPI / 2));
+		}
+
+		for (j = i; j < n; j++)
+		{
+			pa[j].x = ppt->x - (pa[i - 1].x - ppt->x);
+			pa[j].y = pa[i - 1].y;
+			i--;
+		}
+	}
+}
+
+void svg_calc_equalgon(canvas_t canv, const xpoint_t* ppt, float fr, int n, xpoint_t* pa)
+{
+	link_t_ptr g;
+
+	xpoint_t pt;
+	xsize_t xs;
+	int i;
+
+	g = svg_get_canvas_doc(canv);
+
+	if (n < 3) return;
+
+	pt.fx = ppt->fx;
+	pt.fy = ppt->fy;
+
+	svg_point_tm_to_pt(canv, &pt);
+
+	xs.fx = fr;
+	xs.fy = fr;
+	svg_size_tm_to_pt(canv, &xs);
+
+	svg_calc_equalgon_raw(g, &pt, xs.cx, n, pa);
+
+	for (i = 0; i < n; i++)
+	{
+		svg_point_pt_to_tm(canv, &(pa[i]));
+	}
+}
+
+void svg_draw_equalgon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int n)
+{
+	xpoint_t* pa;
+	double a;
+	int i, j;
+
+	if (n < 3) return;
+
+	pa = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)* n);
+
+	svg_calc_equalgon_raw(g, ppt, r, n, pa);
+
+	svg_draw_polygon_raw(g, pxp, pxb, pa, n);
+
+	xmem_free(pa);
+}
+
+void svg_draw_equalgon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float fr, int n)
+{
+	link_t_ptr g;
+
+	xpoint_t pt;
+	xsize_t xs;
+
+	g = svg_get_canvas_doc(canv);
+
+	if (n < 3) return;
+
+	pt.fx = ppt->fx;
+	pt.fy = ppt->fy;
+
+	svg_point_tm_to_pt(canv, &pt);
+
+	xs.fx = fr;
+	xs.fy = fr;
+
+	svg_size_tm_to_pt(canv, &xs);
+
+	svg_draw_equalgon_raw(g, pxp, pxb, &pt, xs.cy, n);
+}
+
 
 void svg_draw_path_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
 {
@@ -570,6 +812,60 @@ void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
 	svg_draw_image_raw(g, pxi, &xr);
 }
 
+void svg_multi_line_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
+{
+	link_t_ptr nlk;
+
+	float line_rati;
+	int th, lh;
+	int i, rows;
+	xpoint_t pt1, pt2;
+	xsize_t xs;
+
+	if (is_null(pxa->line_height))
+		line_rati = xstof(DEF_GDI_TEXT_LINE_HEIGHT);
+	else
+		line_rati = xstof(pxa->line_height);
+
+	if (line_rati < 1.0)
+		line_rati = 1.0;
+
+	svg_text_metric_raw(g, pxf, &xs);
+
+	th = xs.cy;
+	lh = (int)((float)th * (line_rati - 1.0));
+
+	rows = pxr->h / (th + lh);
+
+	pt1.x = pxr->x;
+	pt1.y = pxr->y + th + lh;
+	pt2.x = pxr->x + pxr->w;
+	pt2.y = pxr->y + th + lh;
+
+	for (i = 0; i < rows; i++)
+	{
+		nlk = insert_svg_node(g);
+
+		write_line_to_svg_node(nlk, pxp, &pt1, &pt2);
+
+		pt1.y += (th + lh);
+		pt2.y += (th + lh);
+	}
+}
+
+void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
+{
+	link_t_ptr g;
+	xrect_t xr;
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	svg_rect_tm_to_pt(canv, &xr);
+
+	g = svg_get_canvas_doc(canv);
+
+	svg_multi_line_raw(g, pxf, pxa, pxp, &xr);
+}
+
 void svg_text_out_raw(link_t_ptr g, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
 	xrect_t xr;
@@ -580,8 +876,10 @@ void svg_text_out_raw(link_t_ptr g, const xfont_t* pxf, const xpoint_t* ppt, con
 
 	xr.x = ppt->x;
 	xr.y = ppt->y;
+	xr.w = 0;
+	xr.h = 0;
 
-	svg_text_size_raw(g, pxf, txt, len, RECTSIZE(&xr));
+	//svg_text_size_raw(g, pxf, txt, len, RECTSIZE(&xr));
 
 	default_xface(&xa);
 
