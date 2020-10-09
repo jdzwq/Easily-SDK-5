@@ -40,33 +40,23 @@ void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
 {
 #ifdef XDK_SUPPORT_ERROR
 	if_jump_t* pju;
-	byte_t* buf;
 
 	pju = THREAD_JUMP_INTERFACE;
 
 	if (!pju)
 		return;
 
-	if (!pju->err_buf)
+	if (!pju->if_error)
 		return;
 
-	if (pju->err_size == 4)
-	{
-		xmem_move((void*)((byte_t*)pju->err_buf + 1024), 3072, -1024);
-	}
-	else
-	{
-		pju->err_size++;
-	}
-
-	buf = (byte_t*)pju->err_buf + (pju->err_size - 1) * 1024;
+	xmem_zero((void*)pju->if_error, 1024);
 
 #if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(errcode, -1, buf, NUM_LEN);
-	ucs_to_utf8(errtext, len, (buf + NUM_LEN), (1024 - NUM_LEN));
+	ucs_to_utf8(errcode, -1, pju->if_error, NUM_LEN);
+	ucs_to_utf8(errtext, len, (pju->if_error + NUM_LEN), (1024 - NUM_LEN));
 #else
-	mbs_to_utf8(errcode, -1, buf, NUM_LEN);
-	mbs_to_utf8(errtext, len, (buf + NUM_LEN), (1024 - NUM_LEN));
+	mbs_to_utf8(errcode, -1, pju->if_error, NUM_LEN);
+	mbs_to_utf8(errtext, len, (pju->if_error + NUM_LEN), (1024 - NUM_LEN));
 #endif
 
 #endif
@@ -76,33 +66,27 @@ void get_last_error(tchar_t* code, tchar_t* text, int max)
 {
 #ifdef XDK_SUPPORT_ERROR
 	if_jump_t* pju;
-	byte_t* buf;
 
 	pju = THREAD_JUMP_INTERFACE;
 
 	if (!pju)
 		return;
 
-	if (!pju->err_buf || !pju->err_size)
-		return;
-
-	buf = (byte_t*)pju->err_buf + (pju->err_size - 1) * 1024;
-
 	if (code)
 	{
 #if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs(buf, NUM_LEN, code, NUM_LEN);
+		utf8_to_ucs(pju->if_error, NUM_LEN, code, NUM_LEN);
 #else
-		utf8_to_mbs(buf, NUM_LEN, code, NUM_LEN);
+		utf8_to_mbs(pju->if_error, NUM_LEN, code, NUM_LEN);
 #endif
 	}
 
 	if (text)
 	{
 #if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs((buf + NUM_LEN), (1024 - NUM_LEN), text, max);
+		utf8_to_ucs((pju->if_error + NUM_LEN), (1024 - NUM_LEN), text, max);
 #else
-		utf8_to_mbs((buf + NUM_LEN), (1024 - NUM_LEN), text, max);
+		utf8_to_mbs((pju->if_error + NUM_LEN), (1024 - NUM_LEN), text, max);
 #endif
 	}
 #endif
@@ -168,39 +152,17 @@ void xdl_trace_last()
 {
 #ifdef XDK_SUPPORT_ERROR
 	if_jump_t* pju;
-	byte_t* buf;
 
-	tchar_t errcode[NUM_LEN + 1];
-	tchar_t errtext[ERR_LEN + 1];
+	tchar_t errcode[NUM_LEN + 1] = { 0 };
+	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
 	pju = THREAD_JUMP_INTERFACE;
 
 	if (!pju)
 		return;
 
-	if (!pju->err_buf)
-		return;
+	get_last_error(errcode, errtext, ERR_LEN);
 
-	while (pju->err_size)
-	{
-		buf = (byte_t*)pju->err_buf + (pju->err_size - 1) * 1024;
-
-#if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs(buf, NUM_LEN, errcode, NUM_LEN);
-#else
-		utf8_to_mbs(buf, NUM_LEN, errcode, NUM_LEN);
-#endif
-
-#if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs((buf + NUM_LEN), (1024 - NUM_LEN), errtext, ERR_LEN);
-#else
-		utf8_to_mbs((buf + NUM_LEN), (1024 - NUM_LEN), errtext, ERR_LEN);
-#endif
-
-		xdl_trace(errcode, errtext);
-
-		pju->err_size--;
-	}
-
+	xdl_trace(errcode, errtext);
 #endif
 }

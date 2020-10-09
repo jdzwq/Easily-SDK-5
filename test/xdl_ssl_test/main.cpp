@@ -42,6 +42,7 @@ void set_ssl(xhand_t ssl)
     }
 
 	xssl_set_cert(ssl, buf_crt, dw_crt, buf_rsa, dw_key, _T("123456"), -1);
+	xssl_set_version(ssl, TLSv12);
 }
 
 void test_https_get()
@@ -245,7 +246,11 @@ void test_ssl_srv()
 
 void test_ssl_cli()
 {
-    xhand_t ssl = xssl_cli(8888, _T("127.0.0.1"));
+	tchar_t addr[ADDR_LEN + 1] = { 0 };
+
+	host_addr(_T("mp.weixin.qq.com"), addr);
+
+    xhand_t ssl = xssl_cli(443, addr);
     
     if(!ssl)
         return;

@@ -89,46 +89,7 @@ static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* 
 	destroy_xml_doc(ptr_cfg);
 }
 
-static void _xhttps_log_head(xhand_t http)
-{
-	tchar_t token[RES_LEN + 1] = { 0 };
-	int len;
-	byte_t* sz_buf = NULL;
-	dword_t size = 0;
-
-	xscpy(token, _T("["));
-	xhttp_peer_port(http, token + 1);
-	len = xslen(token);
-	len += xsprintf(token + len, _T(" :%d]\r\n"), thread_get_id());
-
-	xportm_log_info(token, len);
-
-	if (xhttp_is_requested(http))
-	{
-		size = xhttp_format_request(http, NULL, MAX_LONG);
-		sz_buf = (byte_t*)xmem_alloc(size + 1);
-		xhttp_format_request(http, sz_buf, size);
-
-		xportm_log_data(sz_buf, size);
-
-		xmem_free(sz_buf);
-		sz_buf = NULL;
-	}
-
-	if (xhttp_is_responsed(http))
-	{
-		size = xhttp_format_response(http, NULL, MAX_LONG);
-		sz_buf = (byte_t*)xmem_alloc(size + 1);
-		xhttp_format_response(http, sz_buf, size);
-
-		xportm_log_data(sz_buf, size);
-
-		xmem_free(sz_buf);
-		sz_buf = NULL;
-	}
-}
-
-static bool_t _xhttps_licence(xhand_t http, const tchar_t* site, tchar_t* hmac)
+static bool_t _xhttps_get_licence(xhand_t http, const tchar_t* site, tchar_t* hmac)
 {
 	tchar_t sz_auth[INT_LEN + 1] = { 0 };
 	tchar_t sz_sid[RES_LEN + 1] = { 0 };
@@ -139,17 +100,17 @@ static bool_t _xhttps_licence(xhand_t http, const tchar_t* site, tchar_t* hmac)
 
 	tchar_t sz_root[PATH_LEN] = { 0 };
 	tchar_t sz_file[PATH_LEN] = { 0 };
-	link_t_ptr nlk_root,nlk_lic, nlk_node, ptr_xml = NULL;
+	link_t_ptr nlk_root, nlk_lic, nlk_node, ptr_xml = NULL;
 
 	xhttp_get_authorization(http, sz_auth, sz_sid, RES_LEN, sz_sign, KEY_LEN);
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
-	if(is_null(sz_root))
+	if (is_null(sz_root))
 	{
 		//xscpy(sz_root,_T("."));
 		get_runpath((res_modu_t)0, sz_root, PATH_LEN);
 	}
-	
+
 	xsprintf(sz_file, _T("%s/lic/%s/%s.lic"), sz_root, site, sz_sid);
 
 	ptr_xml = create_xml_doc();
@@ -200,31 +161,63 @@ static bool_t _xhttps_licence(xhand_t http, const tchar_t* site, tchar_t* hmac)
 	return 0;
 }
 
-static void _invoke_error(xhand_t http)
+static void _xhttps_log_head(xhand_t http)
+{
+	tchar_t token[RES_LEN + 1] = { 0 };
+	int len;
+	byte_t* sz_buf = NULL;
+	dword_t size = 0;
+
+	xscpy(token, _T("["));
+	xhttp_peer_port(http, token + 1);
+	len = xslen(token);
+	len += xsprintf(token + len, _T(" :%d]\r\n"), thread_get_id());
+
+	if (xhttp_is_requested(http))
+	{
+		xportm_log_info(token, len);
+
+		size = xhttp_format_request(http, NULL, MAX_LONG);
+		sz_buf = (byte_t*)xmem_alloc(size + 1);
+		xhttp_format_request(http, sz_buf, size);
+
+		xportm_log_data(sz_buf, size);
+
+		xmem_free(sz_buf);
+		sz_buf = NULL;
+	}
+
+	if (xhttp_is_responsed(http))
+	{
+		xportm_log_info(token, len);
+
+		size = xhttp_format_response(http, NULL, MAX_LONG);
+		sz_buf = (byte_t*)xmem_alloc(size + 1);
+		xhttp_format_response(http, sz_buf, size);
+
+		xportm_log_data(sz_buf, size);
+
+		xmem_free(sz_buf);
+		sz_buf = NULL;
+	}
+}
+
+static void _xhttps_invoke_error(xhand_t http)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-	tchar_t sz_method[INT_LEN + 1] = { 0 };
 
-	byte_t** d_recv = NULL;
-	dword_t n_size = 0;
+	tchar_t token[2048] = { 0 };
+	int len;
 
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
-	xportm_log_error(sz_code, sz_error);
+	xscpy(token, _T("["));
+	xhttp_peer_port(http, token + 1);
+	len = xslen(token);
+	len += xsprintf(token + len, _T(" :%d]\t %s %s\r\n"), thread_get_id(), sz_code, sz_error);
 
-	xhttp_get_url_method(http, sz_method, INT_LEN);
-
-	/*if (!xhttp_need_expect(http) && (compare_text(sz_method, -1, HTTP_METHOD_PUT, -1, 1) == 0 || compare_text(sz_method, -1, HTTP_METHOD_POST, -1, 1) == 0))
-	{
-		d_recv = bytes_alloc();
-		n_size = 0;
-
-		xhttp_recv_full(http, d_recv, &n_size);
-
-		bytes_free(d_recv);
-		d_recv = NULL;
-	}*/
+	xportm_log_info(token, len);
 
 	if(xhttp_is_requested(http))
 	{
@@ -233,6 +226,7 @@ static void _invoke_error(xhand_t http)
 		xhttp_send_error(http, NULL, NULL, sz_code, sz_error, -1);
 	}
 }
+
 
 /**********************************************************************************************************************/
 void _xhttps_dispatch(xhand_t http, void* p)
@@ -278,7 +272,6 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	if (is_null(sz_path))
 	{
-		//xscpy(sz_path,_T("."));
 		get_runpath((res_modu_t)0, sz_path, PATH_LEN);
 	}
 
@@ -420,7 +413,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	if (compare_text(sz_auth,-1,HTTP_HEADER_AUTHORIZATION_XDS,-1,1) == 0)
 	{
-		if (!_xhttps_licence(http, sz_site + 1, signature))
+		if (!_xhttps_get_licence(http, sz_site + 1, signature))
 		{
 			xhttp_set_response_code(http, HTTP_CODE_401);
 			xhttp_set_response_message(http, HTTP_CODE_401_TEXT, -1);
@@ -524,7 +517,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 ONERROR:
 
-	_invoke_error(http);
+	_xhttps_invoke_error(http);
 
 	if (pb)
 	{

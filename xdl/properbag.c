@@ -1735,13 +1735,21 @@ void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_integer(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_WIDTH, get_plot_width(plot));
+	ent = set_proper_numeric(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_WIDTH, get_plot_width(plot));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_integer(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_HEIGHT, get_plot_height(plot));
+	ent = set_proper_numeric(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_HEIGHT, get_plot_height(plot));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = set_proper_integer(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_RULER, get_plot_ruler(plot));
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
+
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STAGES, -1, get_plot_y_stages_ptr(plot), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_BASES, -1, get_plot_y_bases_ptr(plot), -1);
 	set_entity_editable(ent, 1);
@@ -1756,6 +1764,10 @@ void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_COLORS, -1, get_plot_y_colors_ptr(plot), -1);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
+
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_SHAPES, -1, get_plot_y_shapes_ptr(plot), -1);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
@@ -1793,6 +1805,10 @@ void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 
 	set_plot_height(plot, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_HEIGHT));
 
+	set_plot_ruler(plot, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_RULER));
+
+	set_plot_y_stages(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STAGES), -1);
+
 	set_plot_y_bases(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_BASES), -1);
 
 	set_plot_y_steps(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STEPS), -1);
@@ -1800,6 +1816,8 @@ void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_plot_y_labels(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_LABELS), -1);
 
 	set_plot_y_colors(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_COLORS), -1);
+
+	set_plot_y_shapes(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_SHAPES), -1);
 
 	set_plot_x_labels(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_X_LABELS), -1);
 

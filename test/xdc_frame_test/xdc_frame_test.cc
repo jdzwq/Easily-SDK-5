@@ -494,27 +494,32 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		LINKPTR ptr_plot = create_plot_doc();
 
-		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
-		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_INDICATOR, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
+		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_HISTOGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_SCATTERGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_RADARGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_FUELGRAM, -1);
 
-		set_plot_width(ptr_plot, 200);
+		set_plot_width(ptr_plot, 100);
 		set_plot_height(ptr_plot, 100);
 
 		set_plot_title(ptr_plot, _T("plotgram"), -1);
-
-		set_plot_y_bases(ptr_plot, _T("10, 1, 1, 1, 1"), -1);
-		set_plot_y_steps(ptr_plot, _T("20, 20, 20, 20, 20,"), -1);
-		set_plot_y_labels(ptr_plot, _T("label1,label2,label3,label4,label5,"), -1);
+		set_plot_style(ptr_plot, _T("font-size:10;fill-color:RGB(0,0,0);stroke-color:RGB(131,139,139);fill-style:gradient;gradient:vert;"), -1);
+		set_plot_y_stages(ptr_plot, _T("3,5,6,7,1,2,4"), -1);
+		set_plot_y_bases(ptr_plot, _T("0,0,0,0,0,0,0"), -1);
+		set_plot_y_steps(ptr_plot, _T("2,2,4,4,4,2,8"), -1);
+		set_plot_y_labels(ptr_plot, _T("physi,habit,diet,motion,chronic,therapy,sympt"), -1);
 		set_plot_y_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255),RGB(255,0,0),RGB(0,128,0),RGB(0,0,255)"), -1);
+		set_plot_y_shapes(ptr_plot, _T("top-triangle,rect,left-triangle,round,right-triangle,ellipse,bottom-triangle"), -1);
 		set_plot_x_labels(ptr_plot, _T("text1,text2"), -1);
 		set_plot_x_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255)"), -1);
 
 		set_plot_rows(ptr_plot, 5);
 		set_plot_cols(ptr_plot, 3);
-		set_plot_matrix(ptr_plot, _T(" [[30 1 1] [2 3 2][4 5 3] [6 7 4] [8 9 5]]"), -1);
+		set_plot_matrix(ptr_plot, _T(" [[10 1 1] [2 3 2][4 5 3] [6 7 4] [8 9 5]]"), -1);
 
 		plotctrl_attach(hPanel, ptr_plot);
 		plotctrl_redraw(hPanel);

@@ -1753,6 +1753,44 @@ int format_password(const tchar_t* sz, tchar_t* buf, int max)
 	return max;
 }
 
+int format_shield(const tchar_t* sz, tchar_t* buf, int max)
+{
+	int bs, n = 0;
+
+	if (is_null(sz))
+		return 0;
+
+	while (n < max && *sz)
+	{
+#if defined(UNICODE) || defined(_UNICODE)
+		bs = ucs_sequence(*sz);
+#else
+		bs = mbs_sequence(*sz);
+#endif
+
+		if (buf)
+		{
+			if (!n)
+			{
+				xsncpy((buf + n), sz, bs);
+			}
+			else
+			{
+				xscpy((buf + n), _T("*"));
+			}
+		}
+
+		if (!n)
+			n += bs;
+		else
+			n++;
+
+		sz += bs;
+	}
+
+	return n;
+}
+
 int max_mon_days(int year, int mon)
 {
 	if (year < MIN_YEAR || year > MAX_YEAR)
@@ -2022,6 +2060,43 @@ void plus_millseconds(xdate_t* pdt, int ms)
 void get_min_date(xdate_t* pdt)
 {
 	parse_datetime(pdt, SYS_MINDATE);
+}
+
+void calc_period(const period_t* ptp, tchar_t* sz_time)
+{
+	xdate_t dt = { 0 };
+
+	parse_datetime(&dt, ptp->base);
+
+	switch (ptp->prec[0])
+	{
+	case _T('Y'):
+	case _T('y'):
+		plus_years(&dt, xstol(ptp->feed));
+		break;
+	case _T('M'):
+	case _T('m'):
+		plus_months(&dt, xstol(ptp->feed));
+		break;
+	case _T('D'):
+	case _T('d'):
+		plus_days(&dt, xstol(ptp->feed));
+		break;
+	case _T('H'):
+	case _T('h'):
+		plus_hours(&dt, xstol(ptp->feed));
+		break;
+	case _T('I'):
+	case _T('i'):
+		plus_minutes(&dt, xstol(ptp->feed));
+		break;
+	case _T('S'):
+	case _T('s'):
+		plus_seconds(&dt, xstol(ptp->feed));
+		break;
+	}
+
+	format_datetime(&dt, sz_time);
 }
 
 #ifdef XDK_SUPPORT_DATE

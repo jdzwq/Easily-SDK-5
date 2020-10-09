@@ -412,6 +412,8 @@ void parse_xpen_from_style(xpen_t* pxp, const tchar_t* style)
 	while (token)
 	{
 		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		if (!klen)
+			break;
 
 		if (xsnicmp(GDI_ATTR_STROKE_STYLE, key, klen) == 0)
 			xsncpy(pxp->style, val, vlen);
@@ -489,6 +491,8 @@ void parse_xbrush_from_style(xbrush_t* pxb, const tchar_t* style)
 	while (token)
 	{
 		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		if (!klen)
+			break;
 
 		if (xsnicmp(GDI_ATTR_FILL_STYLE, key, klen) == 0)
 			xsncpy(pxb->style, val, vlen);
@@ -580,6 +584,8 @@ void parse_xfont_from_style(xfont_t* pxf, const tchar_t* style)
 	while (token)
 	{
 		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		if (!klen)
+			break;
 
 		if (xsnicmp(GDI_ATTR_FONT_STYLE, key, klen) == 0)
 			xsncpy(pxf->style, val, vlen);
@@ -671,6 +677,8 @@ void parse_xface_from_style(xface_t* ptt, const tchar_t* style)
 	while (token)
 	{
 		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		if (!klen)
+			break;
 
 		if (xsnicmp(GDI_ATTR_TEXT_ALIGN, key, klen) == 0)
 			xsncpy(ptt->text_align, val, vlen);

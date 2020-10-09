@@ -240,6 +240,14 @@ typedef struct _calendar_t
 	int calen_days[CALENDAR_ROW][CALENDAR_COL];
 }calendar_t;
 
+
+typedef struct _period_t {
+	tchar_t base[DATE_LEN]; // base datetime
+	tchar_t prec[2]; //time ruler, eg: 'Y','M','D','H','I','S'
+	tchar_t feed[INT_LEN]; // 时效步长
+}period_t;
+
+
 #define UNIT_PT				_T("pt")
 #define UNIT_MM				_T("mm")
 

@@ -102,6 +102,21 @@ EXP_API float	get_plot_height(link_t_ptr ptr);
 EXP_API void set_plot_height(link_t_ptr ptr, float height);
 
 /*
+@PLOTTION get_plot_ruler: get plot ruler count.
+@INPUT link_t_ptr ptr: the plot link component.
+@RETURN int: return the ruler count.
+*/
+EXP_API int	get_plot_ruler(link_t_ptr ptr);
+
+/*
+@PLOTTION set_plot_ruler: set plot ruler count.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT int n: the rulers.
+@RETURN void: none.
+*/
+EXP_API void set_plot_ruler(link_t_ptr ptr, int n);
+
+/*
 @PLOTTION get_plot_type: get plot type.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT tchar_t* buf: the characters buffer for returning type.
@@ -175,6 +190,31 @@ EXP_API const tchar_t*	get_plot_style_ptr(link_t_ptr ptr);
 @RETURN void: none.
 */
 EXP_API void set_plot_style(link_t_ptr ptr, const tchar_t* style, int len);
+
+/*
+@PLOTTION get_plot_y_stages: get plot y-stages string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT tchar_t* buf: the characters buffer for returning y-stages string array.
+@INPUT int max: the buffer size.
+@RETURN int: return characters copied.
+*/
+EXP_API int	get_plot_y_stages(link_t_ptr ptr, tchar_t* buf, int max);
+
+/*
+@PLOTTION set_plot_y_stages: set plot y-stages string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT const tchar_t* y-stages: the plot y-stages string array.
+@INPUT int len: the y-stages string length.
+@RETURN void: none.
+*/
+EXP_API void set_plot_y_stages(link_t_ptr ptr, const tchar_t* y_stages, int len);
+
+/*
+@PLOTTION get_plot_y_stages_ptr: get plot y_stages string token.
+@INPUT link_t_ptr ptr: the plot link component.
+@RETURN const tchar_t*: return string pointer.
+*/
+EXP_API const tchar_t*	get_plot_y_stages_ptr(link_t_ptr ptr);
 
 /*
 @PLOTTION get_plot_y_bases: get plot y-bases string array.
@@ -275,6 +315,31 @@ EXP_API void set_plot_y_colors(link_t_ptr ptr, const tchar_t* y_colors, int len)
 @RETURN const tchar_t*: return string pointer.
 */
 EXP_API const tchar_t*	get_plot_y_colors_ptr(link_t_ptr ptr);
+
+/*
+@PLOTTION get_plot_y_shapes: get plot y-shapes string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT tchar_t* buf: the characters buffer for returning y-shapes string array.
+@INPUT int max: the buffer size.
+@RETURN int: return characters copied.
+*/
+EXP_API int	get_plot_y_shapes(link_t_ptr ptr, tchar_t* buf, int max);
+
+/*
+@PLOTTION set_plot_y_shapes: set plot y-shapes string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT const tchar_t* y-shapes: the plot y-shapes string array.
+@INPUT int len: the y-shapes string length.
+@RETURN void: none.
+*/
+EXP_API void set_plot_y_shapes(link_t_ptr ptr, const tchar_t* y_shapes, int len);
+
+/*
+@PLOTTION get_plot_y_shapes_ptr: get plot y_shapes string token.
+@INPUT link_t_ptr ptr: the plot link component.
+@RETURN const tchar_t*: return string pointer.
+*/
+EXP_API const tchar_t*	get_plot_y_shapes_ptr(link_t_ptr ptr);
 
 /*
 @PLOTTION get_plot_x_labels: get plot x-labels string arrax.

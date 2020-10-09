@@ -129,8 +129,6 @@ link_t_ptr get_svg_defs_node(link_t_ptr ptr, bool_t b_add, int* pn)
 	nlk = get_svg_first_child_node(ptr);
 	while (nlk)
 	{
-		*pn++;
-
 		if (compare_text(get_svg_node_name_ptr(nlk), -1, SVG_NODE_DEFS, -1, 1) == 0)
 			break;
 
@@ -142,6 +140,9 @@ link_t_ptr get_svg_defs_node(link_t_ptr ptr, bool_t b_add, int* pn)
 		nlk = insert_dom_node(ptr, LINK_FIRST);
 		set_dom_node_name(nlk, SVG_NODE_DEFS, -1);
 	}
+
+	if (pn)
+		*pn = get_dom_child_node_count(nlk);
 
 	return nlk;
 }
@@ -318,7 +319,7 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 		set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, token, -1);
 
 		nlk_objs = insert_dom_node(nlk_defs, LINK_LAST);
-		if (compare_text(pxb->gradient, -1, SVG_NODE_LINEARGRADIENT, -1, 0) == 0)
+		if (compare_text(pxb->gradient, -1, GDI_ATTR_GRADIENT_HORZ, -1, 0) == 0 || compare_text(pxb->gradient, -1, GDI_ATTR_GRADIENT_VERT, -1, 0) == 0)
 		{
 			set_dom_node_name(nlk_objs, SVG_NODE_LINEARGRADIENT, -1);
 		}
@@ -353,13 +354,19 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
 		set_dom_node_name(nlk_sub, SVG_NODE_STOP, -1);
 		set_dom_node_attr(nlk_sub, _T("offset"), -1, _T("0%"), -1);
-		xsprintf(token, _T("stop-color:%s"), pxb->color);
+		if (is_null(pxb->color))
+			xsprintf(token, _T("stop-color:%s"), GDI_ATTR_RGB_BLACK);
+		else
+			xsprintf(token, _T("stop-color:%s"), pxb->color);
 		set_dom_node_attr(nlk_sub, _T("style"), -1, token, -1);
 
 		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
 		set_dom_node_name(nlk_sub, SVG_NODE_STOP, -1);
 		set_dom_node_attr(nlk_sub, _T("offset"), -1, _T("100%"), -1);
-		xsprintf(token, _T("stop-color:%s"), pxb->linear);
+		if (is_null(pxb->linear))
+			xsprintf(token, _T("stop-color:%s"), GDI_ATTR_RGB_WHITE);
+		else
+			xsprintf(token, _T("stop-color:%s"), pxb->linear);
 		set_dom_node_attr(nlk_sub, _T("style"), -1, token, -1);
 	}
 	else

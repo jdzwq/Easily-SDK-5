@@ -35,6 +35,11 @@ LICENSE.GPL3 for more details.
 #define A_IS_TOKEN_SPLIT(ch) (ch == (' ') || ch == ('\t') || ch == ('\n') || ch == (',') || ch == (';') || ch == ('~') || ch == (':'))
 #define W_IS_TOKEN_SPLIT(ch) (ch == L' ' || ch == L'\t' || ch == L'\n' || ch == L',' || ch == L';' || ch == L'~' || ch == L':')
 
+#define A_IS_BRACKET_LEFT(ch) (ch == ('(') || ch == ('{') || ch == ('<') || ch == ('['))
+#define A_IS_BRACKET_RIGHT(ch) (ch == (')') || ch == ('}') || ch == ('>') || ch == (']'))
+#define W_IS_BRACKET_LEFT(ch) (ch == L'(' || ch == L'{' || ch == L'<' || ch == L'[')
+#define W_IS_BRACKET_RIGHT(ch) (ch == L')' || ch == L'}' || ch == L'>' || ch == L']')
+
 const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** keyptr, int* keylen, wchar_t** valptr, int* vallen)
 {
 	const wchar_t* token;
@@ -437,6 +442,7 @@ const wchar_t* w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemf
 {
 	const wchar_t* token;
 	int total = 0;
+	bool_t bracket = 0;
 
 	*pkey = NULL;
 	*pkeylen = 0;
@@ -450,8 +456,13 @@ const wchar_t* w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemf
 	token = tokens;
 
 	*pkey = (wchar_t*)token;
-	while((itemfeed && *token != itemfeed) || (!itemfeed && W_IS_TOKEN_SPLIT(*token)))
+	while((!bracket && *token != itemfeed) || bracket)
 	{
+		if (W_IS_BRACKET_LEFT(*token))
+			bracket = 1;
+		else if(W_IS_BRACKET_RIGHT(*token))
+			bracket = 0;
+
 		token ++;
 		total++;
 
@@ -473,6 +484,7 @@ const schar_t* a_parse_string_token(const schar_t* tokens, int len, schar_t item
 {
 	const schar_t* token;
 	int total = 0;
+	bool_t bracket = 0;
 
 	*pkey = NULL;
 	*pkeylen = 0;
@@ -486,8 +498,13 @@ const schar_t* a_parse_string_token(const schar_t* tokens, int len, schar_t item
 	token = tokens;
 
 	*pkey = (schar_t*)token;
-	while ((itemfeed && *token != itemfeed) || (!itemfeed && A_IS_TOKEN_SPLIT(*token)))
+	while ((!bracket && *token != itemfeed) || bracket)
 	{
+		if (A_IS_BRACKET_LEFT(*token))
+			bracket = 1;
+		else if (A_IS_BRACKET_RIGHT(*token))
+			bracket = 0;
+
 		token++;
 		total++;
 

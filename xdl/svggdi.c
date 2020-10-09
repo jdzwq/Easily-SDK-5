@@ -344,6 +344,9 @@ void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, const 
 void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
 {
 	xpoint_t pt[4] = { 0 };
+	link_t_ptr nlk;
+
+	nlk = insert_svg_node(glk);
 
 	if (xsicmp(orient, GDI_ATTR_ORIENT_TOP) == 0)
 	{
@@ -356,7 +359,7 @@ void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 		pt[3].x = prt->x + prt->w / 2;
 		pt[3].y = prt->y;
 
-		write_polygon_to_svg_node(glk, pxp, pxb, pt, 3);
+		write_polygon_to_svg_node(nlk, pxp, pxb, pt, 3);
 	}
 	else if (xsicmp(orient, GDI_ATTR_ORIENT_BOTTOM) == 0)
 	{
@@ -369,7 +372,7 @@ void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 		pt[3].x = prt->x + prt->w / 2;
 		pt[3].y = prt->y + prt->h;
 
-		write_polyline_to_svg_node(glk, pxp, pt, 3);
+		write_polygon_to_svg_node(nlk, pxp, pxb, pt, 3);
 	}
 	else if (xsicmp(orient, GDI_ATTR_ORIENT_LEFT) == 0)
 	{
@@ -382,7 +385,7 @@ void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 		pt[3].x = prt->x;
 		pt[3].y = prt->y + prt->h / 2;
 
-		write_polyline_to_svg_node(glk, pxp, pt, 3);
+		write_polygon_to_svg_node(nlk, pxp, pxb, pt, 3);
 	}
 	else if (xsicmp(orient, GDI_ATTR_ORIENT_RIGHT) == 0)
 	{
@@ -395,7 +398,7 @@ void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 		pt[3].x = prt->x + prt->w;
 		pt[3].y = prt->y + prt->h / 2;
 
-		write_polyline_to_svg_node(glk, pxp, pt, 3);
+		write_polygon_to_svg_node(nlk, pxp, pxb, pt, 3);
 	}
 }
 

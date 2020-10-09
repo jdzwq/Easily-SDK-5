@@ -144,6 +144,8 @@ EXP_API void plus_seconds(xdate_t* pdt, int seconds);
 
 EXP_API void plus_millseconds(xdate_t* pdt, int ms);
 
+EXP_API void calc_period(const period_t* ptp, tchar_t* sz_time);
+
 #ifdef XDK_SUPPORT_DATE
 EXP_API void default_calendar(calendar_t* pca);
 
@@ -151,6 +153,8 @@ EXP_API void fill_calendar(calendar_t* pca, const xdate_t* pdt);
 #endif
 
 EXP_API int format_password(const tchar_t* sz, tchar_t* buf, int max);
+
+EXP_API int format_shield(const tchar_t* sz, tchar_t* buf, int max);
 
 EXP_API int compare_date(const xdate_t* pmd1, const xdate_t* pmd2);
 
