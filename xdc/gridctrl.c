@@ -1749,73 +1749,78 @@ void hand_grid_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 void hand_grid_keydown(res_win_t widget, dword_t ks, int nKey)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
+	bool_t b_design;
 
 	if (!ptd->grid)
 		return;
 
-	if (grid_is_design(ptd->grid))
+	b_design = grid_is_design(ptd->grid);
+
+	if (b_design)
 	{
 		if ((nKey == _T('z') || nKey == _T('Z')) && widget_key_state(widget, KEY_CONTROL))
 		{
 			hand_grid_undo(widget);
+			return;
 		}
 		else if ((nKey == _T('c') || nKey == _T('C')) && widget_key_state(widget, KEY_CONTROL))
 		{
 			hand_grid_copy(widget);
+			return;
 		}
 		else if ((nKey == _T('x') || nKey == _T('X')) && widget_key_state(widget, KEY_CONTROL))
 		{
 			hand_grid_cut(widget);
+			return;
 		}
 		else if ((nKey == _T('v') || nKey == _T('V')) && widget_key_state(widget, KEY_CONTROL))
 		{
 			hand_grid_paste(widget);
+			return;
 		}
 	}
-	else
+
+	switch (nKey)
 	{
-		switch (nKey)
+	case KEY_ENTER:
+		if (!b_design && ptd->row && ptd->col)
 		{
-		case KEY_ENTER:
-			if (ptd->row && ptd->col)
-			{
-				noti_grid_begin_edit(widget);
-			}
-			break;
-		case KEY_SPACE:
-			if (ptd->row)
-			{
-				noti_grid_row_checked(widget, ptd->row);
-			}
-			break;
-		case KEY_TAB:
-			gridctrl_tabskip(widget, TABORDER_RIGHT);
-			break;
-		case KEY_LEFT:
-			gridctrl_tabskip(widget, TABORDER_LEFT);
-			break;
-		case KEY_RIGHT:
-			gridctrl_tabskip(widget, TABORDER_RIGHT);
-			break;
-		case KEY_UP:
-			gridctrl_tabskip(widget, TABORDER_UP);
-			break;
-		case KEY_DOWN:
-			gridctrl_tabskip(widget, TABORDER_DOWN);
-			break;
-		case KEY_END:
-			gridctrl_tabskip(widget, TABORDER_END);
-			break;
-		case KEY_HOME:
-			gridctrl_tabskip(widget, TABORDER_HOME);
-			break;
-		case KEY_PAGEUP:
-			gridctrl_tabskip(widget, TABORDER_PAGEUP);
-			break;
-		case KEY_PAGEDOWN:
-			gridctrl_tabskip(widget, TABORDER_PAGEDOWN);
-			break;
+			noti_grid_begin_edit(widget);
 		}
+		break;
+	case KEY_SPACE:
+		if (!b_design && ptd->row)
+		{
+			noti_grid_row_checked(widget, ptd->row);
+		}
+		break;
+	case KEY_TAB:
+		gridctrl_tabskip(widget, TABORDER_RIGHT);
+		break;
+	case KEY_LEFT:
+		gridctrl_tabskip(widget, TABORDER_LEFT);
+		break;
+	case KEY_RIGHT:
+		gridctrl_tabskip(widget, TABORDER_RIGHT);
+		break;
+	case KEY_UP:
+		gridctrl_tabskip(widget, TABORDER_UP);
+		break;
+	case KEY_DOWN:
+		gridctrl_tabskip(widget, TABORDER_DOWN);
+		break;
+	case KEY_END:
+		gridctrl_tabskip(widget, TABORDER_END);
+		break;
+	case KEY_HOME:
+		gridctrl_tabskip(widget, TABORDER_HOME);
+		break;
+	case KEY_PAGEUP:
+		gridctrl_tabskip(widget, TABORDER_PAGEUP);
+		break;
+	case KEY_PAGEDOWN:
+		gridctrl_tabskip(widget, TABORDER_PAGEDOWN);
+		break;
 	}
 }
 

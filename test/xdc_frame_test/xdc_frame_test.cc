@@ -519,7 +519,7 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		set_plot_rows(ptr_plot, 5);
 		set_plot_cols(ptr_plot, 3);
-		set_plot_matrix(ptr_plot, _T(" [[10 1 1] [2 3 2][4 5 3] [6 7 4] [8 9 5]]"), -1);
+		set_plot_matrix(ptr_plot, _T(" {[10, 1, 1] [2, 3, 2][4, 5, 3] [6, 7 4] [8, 9 5]}"), -1);
 
 		plotctrl_attach(hPanel, ptr_plot);
 		plotctrl_redraw(hPanel);

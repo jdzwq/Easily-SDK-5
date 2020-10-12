@@ -365,7 +365,7 @@ static void _plot_histogram(const if_canvas_t* pif, const canvbox_t* pbox, const
 	default_xpen(&xp);
 	parse_xpen_from_style(&xp, plt->style);
 	xmem_copy((void*)&xp_dot, (void*)&xp, sizeof(xpen_t));
-	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
+	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DOTTED);
 
 	default_xbrush(&xb);
 	parse_xbrush_from_style(&xb, plt->style);
@@ -1499,7 +1499,6 @@ static void _plot_radargram(const if_canvas_t* pif, const canvbox_t* pbox, const
 	default_xpen(&xp);
 	parse_xpen_from_style(&xp, plt->style);
 	xmem_copy((void*)&xp_dot, (void*)&xp, sizeof(xpen_t));
-	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
 
 	default_xbrush(&xb);
 	parse_xbrush_from_style(&xb, plt->style);
@@ -1745,7 +1744,6 @@ static void _plot_fuelgram(const if_canvas_t* pif, const canvbox_t* pbox, const 
 	default_xpen(&xp);
 	parse_xpen_from_style(&xp, plt->style);
 	xmem_copy((void*)&xp_dot, (void*)&xp, sizeof(xpen_t));
-	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
 
 	default_xbrush(&xb);
 	parse_xbrush_from_style(&xb, plt->style);

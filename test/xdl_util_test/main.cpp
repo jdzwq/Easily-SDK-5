@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 
 	//test_utc();
 
-	test_stamp();
+	//test_stamp();
 
 	//test_printf();
 
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 
 	//test_vector();
 
-	//test_matrix();
+	test_matrix();
 
 	//test_set();
 

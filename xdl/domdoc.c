@@ -1319,6 +1319,7 @@ void copy_dom_node(link_t_ptr dst, link_t_ptr src)
 
 	copy_hash_table(get_dom_node_attr_table(dst), get_dom_node_attr_table(src));
 	set_dom_node_name(dst, get_dom_node_name_ptr(src), -1);
+	set_dom_node_text(dst, get_dom_node_text_ptr(src), -1);
 
 	plk = dst;
 

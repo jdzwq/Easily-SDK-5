@@ -262,30 +262,30 @@ void matrix_parse(matrix_t* pmt, const tchar_t* str, int len)
 
 	token = str;
 
-	while (*token != _T('[') && *token != _T('\0'))
+	while (*token != _T('{') && *token != _T('\0'))
 		token++;
 
 	if (*token == _T('\0'))
 		return;
 
-	if (*token == _T('['))
+	if (*token == _T('{'))
 		token++;
 
 	for (i = 0; i < pmt->rows; i++)
 	{
-		while (*token != _T('[') && *token != _T('\0'))
+		while (*token != _T('[') && *token != _T('}') && *token != _T('\0'))
 			token++;
 
-		if (*token == _T('\0'))
+		if (*token == _T('}') || *token == _T('\0'))
 			break;
 
-		if (*token == _T('['))
-			token++;
+		//skip '['
+		token++;
 
 		for (j = 0; j < pmt->cols; j++)
 		{
 			n = 0;
-			while (*token != _T(' ') && *token != _T(']') && *token != _T('\0'))
+			while (*token != _T(',') && *token != _T(']') && *token != _T('}') && *token != _T('\0'))
 			{
 				n++;
 				token++;
@@ -293,18 +293,18 @@ void matrix_parse(matrix_t* pmt, const tchar_t* str, int len)
 
 			(pmt->data)[i * pmt->cols + j] = xsntonum(token - n, n);
 
-			if (*token == _T(' '))
+			if (*token == _T(','))
 				token++;
 
-			if (*token == _T(']') || *token == _T('\0'))
+			if (*token == _T(']') || *token == _T('}') || *token == _T('\0'))
 				break;
 		}
 
-		if (*token == _T('\0'))
+		if (*token == _T('}') || *token == _T('\0'))
 			break;
 
-		if (*token == _T(']'))
-			token++;
+		//skip ']'
+		token++;
 	}
 }
 
@@ -318,7 +318,7 @@ int matrix_format(matrix_t* pmt, tchar_t* buf, int max)
 
 	if (buf)
 	{
-		buf[total] = _T('[');
+		buf[total] = _T('{');
 	}
 	total++;
 
@@ -348,7 +348,7 @@ int matrix_format(matrix_t* pmt, tchar_t* buf, int max)
 
 				if (buf)
 				{
-					buf[total] = _T(' ');
+					buf[total] = _T(',');
 				}
 				total++;
 			}
@@ -381,7 +381,7 @@ int matrix_format(matrix_t* pmt, tchar_t* buf, int max)
 
 	if (buf)
 	{
-		xsncat(buf + total, _T("]"), 1);
+		xsncat(buf + total, _T("}"), 1);
 	}
 	total++;
 
@@ -396,7 +396,7 @@ void test_matrix(void)
 
 	matrix_t* pvt = matrix_alloc(2, 10);
 
-	matrix_parse(pvt, _T("[ [0 1 2 3 4 5 6 7 8 9],[9 8 7 6 5 4 3 2 1 0] ]"), -1);
+	matrix_parse(pvt, _T("{ [0, 1, 2,3, 4, 5, 6, 7, 8,9 ],[9,8,7,6,5,4,3,2,1,0] }"), -1);
 
 	len = matrix_format(pvt, NULL, MAX_LONG);
 	buf = xsalloc(len + 1);

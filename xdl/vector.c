@@ -310,7 +310,7 @@ void vector_parse(vector_t* pvt, const tchar_t* str, int len)
 			len--;
 		}
 
-		if (*token == _T('\0') || *token == _T('}'))
+		if (*token == _T('}') || *token == _T('\0'))
 			break;
 
 		token++; //skip '('
@@ -319,7 +319,7 @@ void vector_parse(vector_t* pvt, const tchar_t* str, int len)
 		for (j = 0; j < pvt->order; j++)
 		{
 			n = 0;
-			while (*token != _T(',') && *token != _T(')') && *token != _T('\0'))
+			while (*token != _T(',') && *token != _T(')') && *token != _T('}') && *token != _T('\0'))
 			{
 				n++;
 				token++;
@@ -328,14 +328,14 @@ void vector_parse(vector_t* pvt, const tchar_t* str, int len)
 
 			(pvt->data)[i * pvt->order + j] = xsntonum(token - n, n);
 
-			if (*token == _T(')') || *token == _T('\0'))
+			if (*token == _T(')') || *token == _T('}') || *token == _T('\0'))
 				break;
 
 			token++; //skip ','
 			len--;
 		}
 
-		if (*token == _T('\0'))
+		if (*token == _T('}') || *token == _T('\0'))
 			break;
 
 		token++; //skip ')'

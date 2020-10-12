@@ -265,11 +265,10 @@ void default_images_field_attr(link_t_ptr flk)
 
 void default_plot_field_attr(link_t_ptr flk)
 {
-	set_field_shape(flk, ATTR_SHAPE_RECT);
 	set_field_x(flk, 0);
 	set_field_y(flk, 0);
-	set_field_width(flk, 100);
-	set_field_height(flk, 100);
+	set_field_width(flk, 50);
+	set_field_height(flk, 50);
 	set_field_visible(flk, 1);
 	set_field_printable(flk, 1);
 }

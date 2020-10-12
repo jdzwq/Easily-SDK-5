@@ -271,6 +271,17 @@ void write_xpen_to_svg_node(link_t_ptr nlk, const xpen_t* pxp)
 	{
 		set_dom_node_attr(nlk, SVG_ATTR_STROKE_WIDTH, -1, pxp->size, -1);
 	}
+
+	if (compare_text(pxp->style, -1, GDI_ATTR_STROKE_STYLE_DOTTED, -1, 1) == 0)
+	{
+		xsprintf(token, _T("%d,%d"), xstol(pxp->size), xstol(pxp->size));
+		set_dom_node_attr(nlk, SVG_ATTR_STROKE_DASHARRAY, -1, token, -1);
+	}
+	else if (compare_text(pxp->style, -1, GDI_ATTR_STROKE_STYLE_DASHED, -1, 1) == 0)
+	{
+		xsprintf(token, _T("%d,%d"), 2 * xstol(pxp->size), xstol(pxp->size));
+		set_dom_node_attr(nlk, SVG_ATTR_STROKE_DASHARRAY, -1, token, -1);
+	}
 }
 
 void read_xpen_from_svg_node(link_t_ptr nlk, xpen_t* pxp)
@@ -293,6 +304,15 @@ void read_xpen_from_svg_node(link_t_ptr nlk, xpen_t* pxp)
 	if (!is_null(token))
 	{
 		xscpy(pxp->size, token);
+	}
+
+	token = get_dom_node_attr_ptr(nlk, SVG_ATTR_STROKE_DASHARRAY, -1);
+	if (!is_null(token))
+	{
+		if (xstol(pxp->size) == xstol(token))
+			xscpy(pxp->style, GDI_ATTR_STROKE_STYLE_DOTTED);
+		else
+			xscpy(pxp->style, GDI_ATTR_STROKE_STYLE_DASHED);
 	}
 }
 
