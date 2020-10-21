@@ -31,13 +31,13 @@ LICENSE.GPL3 for more details.
 
 #include "topogview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
-
 #include "xdlstd.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
-void calc_topog_spot_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_topog_spot_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	pxr->fx = get_topog_spot_col(ilk) * get_topog_rx(ptr);
 	pxr->fy = get_topog_spot_row(ilk) * get_topog_ry(ptr);
@@ -45,7 +45,7 @@ void calc_topog_spot_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk,
 	pxr->fh = get_topog_ry(ptr);
 }
 
-int calc_topog_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* prow, int* pcol)
+int calc_topog_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* prow, int* pcol)
 {
 	link_t_ptr ilk;
 	int nHit;
@@ -74,7 +74,7 @@ int calc_topog_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 	ilk = get_topog_prev_spot(ptr, LINK_LAST);
 	while (ilk)
 	{
-		calc_topog_spot_rect(pbox, ptr, ilk, &di);
+		calc_topog_spot_rect(ptr, ilk, &di);
 
 		if (ft_inside(xm, ym, di.fx, di.fy, di.fx + di.fw, di.fy + di.fh))
 		{
@@ -89,7 +89,7 @@ int calc_topog_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 	return nHit;
 }
 
-void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xrect_t xr;
@@ -109,6 +109,8 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	int rows,cols, i, j;
 	float rx, ry;
 	int dark;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	string_t vs = NULL;
 
@@ -193,11 +195,11 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		default_xface(&xa);
 		parse_xface_from_style(&xa, style);
 
-		(*pif->pf_measure_metric)(pif->canvas, &xf, &xs);
+		(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
 
-		calc_topog_spot_rect(pbox, ptr, ilk, &xr);
-		xr.fw = xs.fx;
-		xr.fh = xs.fy;
+		calc_topog_spot_rect(ptr, ilk, &xr);
+		xr.fw = xs.fw;
+		xr.fh = xs.fh;
 		ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
 		if (compare_text(type, -1, ATTR_SPOT_TYPE_COLORBAR, -1, 0) == 0)
@@ -207,7 +209,7 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_ICON, -1, 0) == 0)
 		{
 			parse_xcolor(&xc, xf.color);
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, get_topog_spot_title_ptr(ilk));
+			draw_gizmo(pif, &xc, &xr, get_topog_spot_title_ptr(ilk));
 		}
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_IMAGE, -1, 0) == 0)
 		{
@@ -218,7 +220,7 @@ void draw_topog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_TEXT, -1, 0) == 0)
 		{
 			string_cpy(vs, get_topog_spot_title_ptr(ilk), -1);
-			(*pif->pf_draw_var_text)(pif->canvas, &xf, &xa, &xr, vs);
+			draw_var_text(pif, &xf, &xa, &xr, vs);
 		}
 
 		ilk = get_topog_next_spot(ptr, ilk);

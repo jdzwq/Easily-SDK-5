@@ -200,13 +200,13 @@ int hand_keybox_create(res_win_t widget, void* data)
 	ptd = (keybox_delta_t*)xmem_alloc(sizeof(keybox_delta_t));
 	xmem_zero((void*)ptd, sizeof(keybox_delta_t));
 
-	xs.fx = DEF_TOUCH_SPAN;
-	xs.fy = DEF_TOUCH_SPAN;
+	xs.fw = DEF_TOUCH_SPAN;
+	xs.fh = DEF_TOUCH_SPAN;
 
 	widget_size_to_pt(widget, &xs);
 
-	ptd->bw = xs.cx;
-	ptd->bh = xs.cy;
+	ptd->bw = xs.w;
+	ptd->bh = xs.h;
 
 	ptd->index = -1;
 
@@ -377,17 +377,20 @@ void hand_keybox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_keybox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
-	canvas_t canv;
-	res_ctx_t rdc;
+
 	xbrush_t xb,xb_bark, xb_focus;
 	xrect_t xr, xr_focus;
 	xfont_t xf;
 	xface_t xa;
 	int i;
 	tchar_t tk[2] = { 0 };
+
+	canvas_t canv;
+	visual_t rdc;
+	if_visual_t* piv;
 
 	widget_get_xbrush(widget, &xb);
 	xmem_copy((void*)&xb_focus, (void*)&xb, sizeof(xbrush_t));
@@ -407,19 +410,21 @@ void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb_bark, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_bark, &xr);
 
 	xr.x = xr.w - ptd->bw;
 	xr.w = ptd->bw;
 	xr.y = 0;
 	xr.h = ptd->bh;
-	draw_text_raw(rdc, &xf, &xa, &xr, _T("×"), -1);
+	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("×"), -1);
 
 	xr.x = 0;
 	xr.w = ptd->bw;
 	xr.y = 0;
 	xr.h = ptd->bh;
-	draw_text_raw(rdc, &xf, &xa, &xr, _T("Esc"), -1);
+	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("Esc"), -1);
 
 	for (i = 0; i < KEYBOX_COUNT; i++)
 	{
@@ -434,9 +439,9 @@ void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_focus.h = xr.h - 4;
 
 		if (ptd->index == i)
-			draw_rect_raw(rdc, NULL, &xb_focus, &xr_focus);
+			(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_focus, &xr_focus);
 		else
-			draw_rect_raw(rdc, NULL, &xb, &xr_focus);
+			(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr_focus);
 
 		if (ptd->ca == _HCA)
 			tk[0] = KEYBOX_HCA[i];
@@ -446,30 +451,32 @@ void hand_keybox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			tk[0] = KEYBOX_SCA[i];
 
 		if (tk[0] == _T('\n'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("Ent"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("Ent"), -1);
 		else if (tk[0] == _T('\b'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("CE"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("CE"), -1);
 		else if (tk[0] == _T('\0'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("FN"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("FN"), -1);
 		else if (tk[0] == 0x1)
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("↑"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("↑"), -1);
 		else if (tk[0] == 0x3)
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("←"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("←"), -1);
 		else if (tk[0] == _T('\a'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("复制"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("复制"), -1);
 		else if (tk[0] == _T('\r'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("剪切"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("剪切"), -1);
 		else if (tk[0] == _T('\f'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("粘贴"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("粘贴"), -1);
 		else if (tk[0] == _T('\v'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("撤销"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("撤销"), -1);
 		else if (tk[0] == 0x2)
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("↓"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("↓"), -1);
 		else if (tk[0] == 0x4)
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("→"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("→"), -1);
 		else
-			draw_text_raw(rdc, &xf, &xa, &xr, tk, -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, tk, -1);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }
@@ -504,8 +511,8 @@ void keybox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	keybox_delta_t* ptd = GETKEYBOXDELTA(widget);
 
-	pxs->cx = ptd->bw * KEYBOX_COLS;
-	pxs->cy = ptd->bh * (KEYBOX_ROWS + 1);
+	pxs->w = ptd->bw * KEYBOX_COLS;
+	pxs->h = ptd->bh * (KEYBOX_ROWS + 1);
 	
 	widget_adjust_size(widget_get_style(widget), pxs);
 }
@@ -530,8 +537,8 @@ res_win_t show_keybox(const xpoint_t* ppt)
 	else
 	{
 		get_desktop_size(&xs);
-		xr.x = xs.cx - xr.w - 1;
-		xr.y = xs.cy - xr.h;
+		xr.x = xs.w - xr.w - 1;
+		xr.y = xs.h - xr.h;
 	}
 
 	widget_move(wt, RECTPOINT(&xr));

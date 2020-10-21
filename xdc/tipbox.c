@@ -107,10 +107,10 @@ void hand_tipbox_timer(res_win_t widget, var_long tid)
 	widget_close(widget, 0);
 }
 
-void hand_tipbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_tipbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	xrect_t xr;
 	const tchar_t *token;
@@ -122,6 +122,7 @@ void hand_tipbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -135,16 +136,19 @@ void hand_tipbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
+	piv = create_visual_interface(rdc);
+
 	xp.adorn.feed = 2;
 	xp.adorn.size = 2;
-	draw_rect_raw(rdc, &xp, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, &xp, &xb, &xr);
 
 	token = ptd->sz_text;
 
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	draw_text_raw(rdc, &xf, &xa, &xr, token, -1);
+	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, token, -1);
 
+	destroy_visual_interface(piv);
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
 }
@@ -196,20 +200,25 @@ void tipbox_popup_size(res_win_t widget, xsize_t* pxs)
 	tipbox_delta_t* ptd = GETTIPBOXDELTA(widget);
 	xfont_t xf;
 	xface_t xa;
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr = { 0 };
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
 
 	rdc = widget_client_ctx(widget);
 
-	text_rect_raw(rdc, &xf, &xa, ptd->sz_text, -1, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_text_rect_raw)(piv->visual, &xf, &xa, ptd->sz_text, -1, &xr);
+
+	destroy_visual_interface(piv);
 
 	widget_release_ctx(widget, rdc);
 
-	pxs->cx = xr.w + 10;
-	pxs->cy = xr.h + 4;
+	pxs->w = xr.w + 10;
+	pxs->h = xr.h + 4;
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }
@@ -236,8 +245,8 @@ res_win_t show_toolbox(const xpoint_t* ppt, const tchar_t* sz_text)
 	else
 	{
 		get_desktop_size(&xs);
-		xr.x = xs.cx - xr.w - 1;
-		xr.y = xs.cy - xr.h;
+		xr.x = xs.w - xr.w - 1;
+		xr.y = xs.h - xr.h;
 	}
 
 	widget_get_color_mode(wt, &clr);
@@ -281,8 +290,8 @@ bool_t reset_toolbox(res_win_t widget, const xpoint_t* ppt, const tchar_t* sz_te
 	else
 	{
 		get_desktop_size(&xs);
-		xr.x = xs.cx - xr.w - 1;
-		xr.y = xs.cy - xr.h;
+		xr.x = xs.w - xr.w - 1;
+		xr.y = xs.h - xr.h;
 	}
 
 	widget_move(widget, RECTPOINT(&xr));

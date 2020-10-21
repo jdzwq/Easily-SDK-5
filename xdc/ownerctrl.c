@@ -239,15 +239,17 @@ void hand_owner_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_owner_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_owner_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	owner_delta_t* ptd = GETOWNERDELTA(widget);
 
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	xrect_t xr = { 0 };
 	viewbox_t vb = { 0 };
 	xbrush_t xb = { 0 };
+
+	if_visual_t* piv;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -259,7 +261,11 @@ void hand_owner_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	destroy_visual_interface(piv);
 
 	widget_get_view_rect(widget, &vb);
 

@@ -88,12 +88,12 @@ int hand_griddlg_create(res_win_t widget, void* data)
 	xmem_zero((void*)ptd, sizeof(griddlg_delta_t));
 	ptd->grid = (link_t_ptr)data;
 
-	xs.fx = GRIDDLG_BUTTON_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_BUTTON_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.h -= xs.cy;
+	xr.h -= xs.h;
 
 	gridctrl = gridctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_VSCROLL, &xr, widget);
 	widget_set_owner(gridctrl, widget);
@@ -104,42 +104,42 @@ int hand_griddlg_create(res_win_t widget, void* data)
 
 	widget_show(gridctrl, WS_SHOW_NORMAL);
 
-	xs.fx = GRIDDLG_EDITBOX_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_EDITBOX_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
 	xr.x = xr.x;
-	xr.w = xs.cx;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = DEF_SPLIT_FEED;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = DEF_SPLIT_FEED;
 	widget_size_to_pt(widget, &xs);
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	editbox = editbox_create(widget, WD_STYLE_CONTROL | WD_STYLE_EDITOR, &xr);
 	widget_set_user_id(editbox, IDC_GRIDDLG_EDITBOX);
 	widget_set_owner(editbox, widget);
 	widget_show(editbox, WS_SHOW_NORMAL);
 
-	xs.fx = GRIDDLG_BUTTON_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_BUTTON_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.w = xs.cx;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = DEF_SPLIT_FEED;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = DEF_SPLIT_FEED;
 	widget_size_to_pt(widget, &xs);
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
 	widget_set_user_id(pushbox, IDC_GRIDDLG_PUSHBOX_OK);
@@ -187,12 +187,12 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 	xrect_t xr;
 	res_win_t ctrl;
 
-	xs.fx = GRIDDLG_BUTTON_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_BUTTON_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.h -= xs.cy;
+	xr.h -= xs.h;
 
 	ctrl = widget_get_child(widget, IDC_GRIDDLG_GRID);
 	if (widget_is_valid(ctrl))
@@ -202,21 +202,21 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	xs.fx = GRIDDLG_EDITBOX_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_EDITBOX_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
 	xr.x = xr.x;
-	xr.w = xs.cx;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = DEF_SPLIT_FEED;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = DEF_SPLIT_FEED;
 	widget_size_to_pt(widget, &xs);
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	ctrl = widget_get_child(widget, IDC_GRIDDLG_EDITBOX);
 	if (widget_is_valid(ctrl))
@@ -226,21 +226,21 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 		widget_update(ctrl);
 	}
 
-	xs.fx = GRIDDLG_BUTTON_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_BUTTON_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.w = xs.cx;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = DEF_SPLIT_FEED;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = DEF_SPLIT_FEED;
 	widget_size_to_pt(widget, &xs);
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	ctrl = widget_get_child(widget, IDC_GRIDDLG_PUSHBOX_OK);
 	if (widget_is_valid(ctrl))
@@ -253,18 +253,21 @@ void hand_griddlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_griddlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_griddlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	griddlg_delta_t* ptd = GETGRIDDLGDELTA(widget);
-	res_ctx_t rdc;
+
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xpen_t xp = { 0 };
 	xbrush_t xb = { 0 };
 	xcolor_t xc_brim, xc_core;
 	xrect_t xr,xr_bar;
-	xsize_t xs;
+	xsize_t xs;	
+	
+	visual_t rdc;
 	canvas_t canv;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -277,23 +280,26 @@ void hand_griddlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	canv = widget_get_canvas(widget);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	xs.fx = GRIDDLG_BUTTON_WIDTH;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = GRIDDLG_BUTTON_WIDTH;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
-	xr_bar.y = xr.y + xr.h - xs.cy;
+	xr_bar.y = xr.y + xr.h - xs.h;
 	xr_bar.w = xr.w;
-	xr_bar.h = xs.cy;
+	xr_bar.h = xs.h;
 
 	parse_xcolor(&xc_brim, xb.color);
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_brim, DEF_MIDD_DARKEN);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }
@@ -415,16 +421,16 @@ void griddlg_popup_size(res_win_t widget, xsize_t* pxs)
 
 	gridctrl_popup_size(ctrl, RECTSIZE(&xr));
 
-	xs.fx = 0;
-	xs.fy = GRIDDLG_BUTTON_HEIGHT;
+	xs.fw = 0;
+	xs.fh = GRIDDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
-	xs.cx = xr.w;
-	xs.cy += xr.h;
+	xs.w = xr.w;
+	xs.h += xr.h;
 
 	widget_adjust_size(widget_get_style(widget), &xs);
 
-	pxs->cx = xs.cx;
-	pxs->cy = xs.cy;
+	pxs->w = xs.w;
+	pxs->h = xs.h;
 }
 

@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "labelview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -58,11 +59,15 @@ int calc_label_items_per_col(link_t_ptr ptr, float ph)
 	return hs;
 }
 
-int calc_label_pages(const canvbox_t* pbox, link_t_ptr ptr)
+int calc_label_pages(link_t_ptr ptr)
 {
+	float fw, fh;
 	int itemsperpage, items;
 
-	itemsperpage = calc_label_items_per_row(ptr, pbox->fw) * calc_label_items_per_col(ptr, pbox->fh);
+	fw = get_label_width(ptr);
+	fh = get_label_height(ptr);
+
+	itemsperpage = calc_label_items_per_row(ptr, fw) * calc_label_items_per_col(ptr, fh);
 
 	items = get_label_item_count(ptr);
 	if (items == 0)
@@ -73,12 +78,16 @@ int calc_label_pages(const canvbox_t* pbox, link_t_ptr ptr)
 		return items / itemsperpage + 1;
 }
 
-void calc_label_item_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* firstitem, link_t_ptr* lastitem)
+void calc_label_item_scope(link_t_ptr ptr, int page, link_t_ptr* firstitem, link_t_ptr* lastitem)
 {
+	float fw, fh;
 	int itemsperpage;
 	link_t_ptr ilk;
 
-	itemsperpage = calc_label_items_per_row(ptr, pbox->fw) * calc_label_items_per_col(ptr, pbox->fh);
+	fw = get_label_width(ptr);
+	fh = get_label_height(ptr);
+
+	itemsperpage = calc_label_items_per_row(ptr, fw) * calc_label_items_per_col(ptr, fh);
 
 	*firstitem = get_label_item_at(ptr, (page - 1) * itemsperpage);
 	if (*firstitem == NULL)
@@ -95,15 +104,19 @@ void calc_label_item_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link
 	}
 }
 
-int calc_label_item_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk)
+int calc_label_item_page(link_t_ptr ptr, link_t_ptr ilk)
 {
+	float fw, fh;
 	int itemsperpage, page, count;
 	link_t_ptr plk;
 
 	if (ilk == NULL)
 		return 0;
 
-	itemsperpage = calc_label_items_per_row(ptr, pbox->fw) * calc_label_items_per_col(ptr, pbox->fh);
+	fw = get_label_width(ptr);
+	fh = get_label_height(ptr);
+
+	itemsperpage = calc_label_items_per_row(ptr, fw) * calc_label_items_per_col(ptr, fh);
 
 	page = 1;
 	count = itemsperpage;
@@ -121,20 +134,22 @@ int calc_label_item_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk)
 	return page;
 }
 
-bool_t calc_label_item_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr ilk, xrect_t* pxr)
+bool_t calc_label_item_rect(link_t_ptr ptr, int page, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr nlk,first,last;
 	int per, count;
-	float iw, ih;
+	float fw, fh, iw, ih;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
-	per = calc_label_items_per_row(ptr, pbox->fw);
-
+	fw = get_label_width(ptr);
+	fh = get_label_height(ptr);
 	iw = get_label_item_width(ptr);
 	ih = get_label_item_height(ptr);
 
-	calc_label_item_scope(pbox, ptr, page, &first, &last);
+	per = calc_label_items_per_row(ptr, fw);
+
+	calc_label_item_scope(ptr, page, &first, &last);
 
 	count = 0;
 	nlk = first;
@@ -160,26 +175,28 @@ bool_t calc_label_item_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, lin
 	return 0;
 }
 
-int	calc_label_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk)
+int	calc_label_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk)
 {
 	link_t_ptr nlk, first, last;
 	int per, count;
-	float iw, ih;
+	float fw, fh, iw, ih;
 	xrect_t xr;
 
 	*pilk = NULL;
 
+	fw = get_label_width(ptr);
+	fh = get_label_height(ptr);
 	iw = get_label_item_width(ptr);
 	ih = get_label_item_height(ptr);
 	
-	per = calc_label_items_per_row(ptr, pbox->fw);
+	per = calc_label_items_per_row(ptr, fw);
 
 	xr.fx = 0;
 	xr.fy = 0;
 	xr.fw = iw;
 	xr.fh = ih;
 
-	calc_label_item_scope(pbox, ptr, page, &first, &last);
+	calc_label_item_scope(ptr, page, &first, &last);
 
 	count = 0;
 	nlk = first;
@@ -205,7 +222,7 @@ int	calc_label_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 	return LABEL_HINT_NONE;
 }
 
-void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, int page)
+void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr nlk, first, last;
 	link_t_ptr ilk;
@@ -229,6 +246,8 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 	link_t_ptr st_array;
 	ximage_t xi_ico = { 0 };
 	ximage_t xi = { 0 };
+
+	const canvbox_t* pbox = &pif->rect;
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -284,11 +303,11 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 	xmem_copy((void*)&xb_shape, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_shape, DEF_SOFT_DARKEN);
 
-	(*pif->pf_measure_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
 
 	iw = get_label_item_width(ptr);
 	ih = get_label_item_height(ptr);
-	eh = (float)(xs.fy * 1.25);
+	eh = (float)(xs.fh * 1.25);
 	ew = (iw - 2 * SHAPE_FEED) / 2;
 
 	per = calc_label_items_per_row(ptr, pw);
@@ -296,7 +315,7 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 	xr.fw = iw;
 	xr.fh = ih;
 
-	calc_label_item_scope(pbox, ptr, page, &first, &last);
+	calc_label_item_scope(ptr, page, &first, &last);
 
 	count = 0;
 	nlk = first;
@@ -320,13 +339,13 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 		xr_text.fh = eh;
 
 		ft_center_rect(&xr_text, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_text, get_label_item_icon_ptr(nlk));
+		draw_gizmo(pif, &xc, &xr_text, get_label_item_icon_ptr(nlk));
 		
 		xr_shape.fx = xr.fx + SHAPE_FEED;
 		xr_shape.fy = xr.fy + SHAPE_FEED;
 		xr_shape.fw = xr.fw - 2 * SHAPE_FEED;
 		xr_shape.fh = xr.fh - 2 * SHAPE_FEED;
-		(*pif->pf_draw_shape)(pif->canvas, &xp, &xr_shape, ATTR_SHAPE_ROUND);
+		(*pif->pf_draw_round)(pif->canvas, &xp, NULL, &xr_shape);
 
 		xr_shape.fy = xr.fy + SHAPE_FEED + eh;
 		xr_shape.fh = xr.fh - 2 * SHAPE_FEED - eh;
@@ -342,7 +361,7 @@ void draw_label(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, i
 			vs_text = string_alloc();
 			string_cpy(vs_text, get_label_item_text_ptr(nlk), -1);
 
-			(*pif->pf_draw_var_text)(pif->canvas, &xf, &xa, &xr_text, vs_text);
+			draw_var_text(pif, &xf, &xa, &xr_text, vs_text);
 
 			string_free(vs_text);
 		}

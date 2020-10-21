@@ -103,22 +103,22 @@ void noti_splitor_item_sized(splitor_t* ptd, const xpoint_t* pxp)
 		if (pxp->y == ptd->y)
 			return;
 
-		xs.cx = 0;
-		xs.cy = pt_cur.y - pt_org.y;
+		xs.w = 0;
+		xs.h = pt_cur.y - pt_org.y;
 		widget_size_to_tm(ptd->widget, &xs);
 
-		adjust_split_item(ilk, xs.fy);
+		adjust_split_item(ilk, xs.fh);
 	}
 	else
 	{
 		if (pxp->x == ptd->x)
 			return;
 
-		xs.cx = pt_cur.x - pt_org.x;
-		xs.cy = 0;
+		xs.w = pt_cur.x - pt_org.x;
+		xs.h = 0;
 		widget_size_to_tm(ptd->widget, &xs);
 
-		adjust_split_item(ilk, xs.fx);
+		adjust_split_item(ilk, xs.fw);
 	}
 
 	calc_split_item_rect(ptd->split, ilk, &xr);
@@ -231,7 +231,7 @@ void hand_splitor_size(splitor_t* ptd, const xrect_t* pxr)
 	widget_erase(ptd->widget, pxr);
 }
 
-void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
+void hand_splitor_paint(splitor_t* ptd, visual_t rdc)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -239,6 +239,7 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc_brim, xc_core;
+	if_visual_t* piv;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -254,7 +255,9 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 
 	widget_get_client_rect(ptd->widget, &xr);
 
-	draw_rect_raw(rdc, &xp, NULL, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
 
 	ilk = ptd->split;
 	while (ilk)
@@ -266,11 +269,11 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 
 			if (compare_text(get_split_item_layer_ptr(ilk), -1, ATTR_LAYER_HORZ, -1, 1) == 0)
 			{
-				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr);
+				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr);
 			}
 			else
 			{
-				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
+				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 			}
 		}
 
@@ -299,5 +302,7 @@ void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc)
 
 	if (st)
 		destroy_stack_table(st);
+
+	destroy_visual_interface(piv);
 }
 

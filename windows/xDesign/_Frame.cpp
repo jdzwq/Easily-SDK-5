@@ -1423,12 +1423,12 @@ void _MainFrame_CalcResBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_CATEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
-	pxr->h -= xs.cy;
+	pxr->h -= xs.h;
 }
 
 void _MainFrame_CalcObjBar(res_win_t widget, xrect_t* pxr)
@@ -1436,12 +1436,12 @@ void _MainFrame_CalcObjBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_CATEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
-	pxr->h -= xs.cy;
+	pxr->h -= xs.h;
 }
 
 void _MainFrame_CalcCateBar(res_win_t widget, xrect_t* pxr)
@@ -1449,13 +1449,13 @@ void _MainFrame_CalcCateBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_CATEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_CATEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, WS_DOCK_LEFT, pxr);
-	pxr->y = pxr->y + pxr->h - xs.cy;
-	pxr->h = xs.cy;
+	pxr->y = pxr->y + pxr->h - xs.h;
+	pxr->h = xs.h;
 }
 
 void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
@@ -1463,12 +1463,12 @@ void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_TITLEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, 0, pxr);
-	pxr->h = xs.cy;
+	pxr->h = xs.h;
 }
 
 void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
@@ -1476,13 +1476,13 @@ void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_TITLEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, 0, pxr);
-	pxr->y += xs.cy;
-	pxr->h -= xs.cy;
+	pxr->y += xs.h;
+	pxr->h -= xs.h;
 }
 
 void _MainFrame_CreateToolBar(res_win_t widget)
@@ -2032,27 +2032,23 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_TOOLBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_TOP, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_TOP, 0, xs.h);
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_STATUSBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.h);
 
-	xs.fx = MAINFRAME_TREEBAR_WIDTH;
-	xs.fy = 0;
+	xs.fw = MAINFRAME_TREEBAR_WIDTH;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.cx, 0);
+	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.w, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, (var_long)pdt);
-
-	res_ctx_t rdc = widget_client_ctx(widget);
-
-	widget_release_ctx(widget, rdc);
 
 	_MainFrame_CreateToolBar(widget);
 

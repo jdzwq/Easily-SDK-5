@@ -54,13 +54,13 @@ int hand_staticbox_create(res_win_t widget, void* data)
 
 	SETSTATICBOXDELTA(widget, ptd);
 
-	xs.fx = DEF_TOUCH_SPAN;
-	xs.fy = DEF_TOUCH_SPAN;
+	xs.fw = DEF_TOUCH_SPAN;
+	xs.fh = DEF_TOUCH_SPAN;
 
 	widget_size_to_pt(widget, &xs);
 
-	ptd->bw = xs.cx;
-	ptd->bh = xs.cy;
+	ptd->bw = xs.w;
+	ptd->bh = xs.h;
 
 	return 0;
 }
@@ -100,10 +100,10 @@ void hand_staticbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_staticbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_staticbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	staticbox_delta_t* ptd = GETSTATICBOXDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	xrect_t xr;
 	xfont_t xf;
@@ -111,6 +111,7 @@ void hand_staticbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xbrush_t xb;
 
 	canvas_t canv;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -122,10 +123,14 @@ void hand_staticbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	widget_get_client_rect(widget, &xr);
-	draw_text_raw(rdc, &xf, &xa, &xr, ptd->text, -1);
+	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, ptd->text, -1);
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }
@@ -160,8 +165,8 @@ void staticbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	XDL_ASSERT(ptd != NULL);
 
-	pxs->cx = ptd->bw * 3;
-	pxs->cy = ptd->bh * 2;
+	pxs->w = ptd->bw * 3;
+	pxs->h = ptd->bh * 2;
 	
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

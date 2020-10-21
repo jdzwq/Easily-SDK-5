@@ -138,18 +138,19 @@ void hand_checkbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_checkbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_checkbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	checkbox_delta_t* ptd = GETCHECKBOXDELTA(widget);
-	res_ctx_t rdc;
-	xrect_t xr;
-	canvas_t canv;
-	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
 
+	xrect_t xr;	
 	xfont_t xf;
 	xbrush_t xb;
 	xpen_t xp;
+
+	visual_t rdc;
+	canvas_t canv;
+	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xbrush(widget, &xb);
@@ -157,6 +158,7 @@ void hand_checkbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -167,12 +169,13 @@ void hand_checkbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	draw_checkbox(pif, &xf, ptd->on);
 
-	draw_checkbox(pif, &cb, &xf, ptd->on);
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -214,9 +217,7 @@ void checkbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	calc_checkbox_size(&im, &xf, pxs);
 

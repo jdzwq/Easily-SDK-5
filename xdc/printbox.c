@@ -51,51 +51,43 @@ typedef struct _print_delta_t{
 static int _printbox_calc_pages(res_win_t widget)
 {
 	print_delta_t* ptd = GETPRINTDELTA(widget);
-	canvbox_t cb = { 0 };
-	canvas_t canv;
+
 	xrect_t xr;
 	int pages = 0;
-
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 
-	canv = widget_get_canvas(widget);
+	canvas_t canv;
+	if_canvas_t* pif;
 
-	widget_get_canv_rect(widget, &cb);
+	canv = widget_get_canvas(widget);
+	pif = create_canvas_interface(canv);
 
 	widget_get_xface(widget, &xa);
 	widget_get_xfont(widget, &xf);
 
 	if (is_form_doc(ptd->sheet))
 	{
-		pages = calc_form_pages(&cb, ptd->sheet);
+		pages = calc_form_pages(ptd->sheet);
 	}
 	else if (is_grid_doc(ptd->sheet))
 	{
-		pages = calc_grid_pages(&cb, ptd->sheet);
+		pages = calc_grid_pages(ptd->sheet);
 	}
 	else if (is_statis_doc(ptd->sheet))
 	{
-		pages = calc_statis_pages(&cb, ptd->sheet);
+		pages = calc_statis_pages(ptd->sheet);
 	}
 	else if (is_rich_doc(ptd->sheet))
 	{
-		xr.fx = cb.fx;
-		xr.fy = cb.fy;
-		xr.fw = cb.fw;
-		xr.fh = cb.fh;
-
-		pages = calc_rich_pages(canv, &xf, &xa, &xr, ptd->sheet);
+		pages = calc_rich_pages(pif, &xf, &xa, &xr, ptd->sheet);
 	}
 	else if (is_memo_doc(ptd->sheet))
 	{
-		xr.fx = cb.fx;
-		xr.fy = cb.fy;
-		xr.fw = cb.fw;
-		xr.fh = cb.fh;
-
-		pages = calc_rich_pages(canv, &xf, &xa, &xr, ptd->sheet);
+		pages = calc_rich_pages(pif, &xf, &xa, &xr, ptd->sheet);
 	}
+
+	destroy_canvas_interface(pif);
 
 	return pages;
 }
@@ -113,39 +105,39 @@ static void _printbox_reset_page(res_win_t widget)
 
 	if (is_form_doc(ptd->sheet))
 	{
-		xs.fx = get_form_width(ptd->sheet);
-		xs.fy = get_form_height(ptd->sheet);
+		xs.fw = get_form_width(ptd->sheet);
+		xs.fh = get_form_height(ptd->sheet);
 	}
 	else if (is_grid_doc(ptd->sheet))
 	{
-		xs.fx = get_grid_width(ptd->sheet);
-		xs.fy = get_grid_height(ptd->sheet);
+		xs.fw = get_grid_width(ptd->sheet);
+		xs.fh = get_grid_height(ptd->sheet);
 	}
 	else if (is_statis_doc(ptd->sheet))
 	{
-		xs.fx = get_statis_width(ptd->sheet);
-		xs.fy = get_statis_height(ptd->sheet);
+		xs.fw = get_statis_width(ptd->sheet);
+		xs.fh = get_statis_height(ptd->sheet);
 	}
 	else if (is_rich_doc(ptd->sheet))
 	{
-		xs.fx = get_rich_width(ptd->sheet);
-		xs.fy = get_rich_height(ptd->sheet);
+		xs.fw = get_rich_width(ptd->sheet);
+		xs.fh = get_rich_height(ptd->sheet);
 	}
 	else if (is_memo_doc(ptd->sheet))
 	{
-		xs.fx = get_memo_width(ptd->sheet);
-		xs.fy = get_memo_height(ptd->sheet);
+		xs.fw = get_memo_width(ptd->sheet);
+		xs.fh = get_memo_height(ptd->sheet);
 	}
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = (float)5;
-	xs.fy = (float)5;
+	xs.fw = (float)5;
+	xs.fh = (float)5;
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -305,10 +297,10 @@ void hand_print_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_print_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_print_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	print_delta_t* ptd = GETPRINTDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xbrush_t xb = { 0 };
@@ -318,7 +310,7 @@ void hand_print_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->sheet)
 		return;
@@ -331,6 +323,7 @@ void hand_print_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	canv = widget_get_canvas(widget);
 
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -342,51 +335,43 @@ void hand_print_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	if (widget_can_paging(widget))
 	{
 		parse_xcolor(&xc, xp.color);
 		lighten_xcolor(&xc, DEF_HARD_DARKEN);
 
-		draw_corner(canv, &xc, (const xrect_t*)&cb);
+		draw_corner(pif, &xc, (const xrect_t*)&(pif->rect));
 	}
 
 	if (ptd->sheet)
 	{
 		if (is_form_doc(ptd->sheet))
 		{
-			draw_form_page(pif, &cb, ptd->sheet, ptd->page);
+			draw_form_page(pif, ptd->sheet, ptd->page);
 		}
 		else if (is_grid_doc(ptd->sheet))
 		{
-			draw_grid_page(pif, &cb, ptd->sheet, ptd->page);
+			draw_grid_page(pif, ptd->sheet, ptd->page);
 		}
 		else if (is_statis_doc(ptd->sheet))
 		{
-			draw_statis_page(pif, &cb, ptd->sheet, ptd->page);
+			draw_statis_page(pif, ptd->sheet, ptd->page);
 		}
 		else if (is_rich_doc(ptd->sheet))
 		{
-			xr.fx = cb.fx;
-			xr.fy = cb.fy;
-			xr.fw = cb.fw;
-			xr.fh = cb.fh;
-
-			draw_rich_text(pif->canvas, &xf, &xa, &xr, ptd->sheet, ptd->page);
+			draw_rich_text(pif, &xf, &xa, (xrect_t*)&(pif->rect), ptd->sheet, ptd->page);
 		}
 		else if (is_memo_doc(ptd->sheet))
 		{
-			xr.fx = cb.fx;
-			xr.fy = cb.fy;
-			xr.fw = cb.fw;
-			xr.fh = cb.fh;
-
-			draw_memo_text(pif->canvas, &xf, &xa, &xr, ptd->sheet, ptd->page);
+			draw_memo_text(pif, &xf, &xa, (xrect_t*)&(pif->rect), ptd->sheet, ptd->page);
 		}
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);

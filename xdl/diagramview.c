@@ -94,7 +94,7 @@ int calc_diagram_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_diagram(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr obj,ilk;
 	xrect_t xr;
@@ -110,6 +110,8 @@ void draw_diagram(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	bool_t b_print;
 
 	xpoint_t pt[5] = { 0 };
+
+	const canvbox_t* pbox = &pif->rect;
 
 	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 

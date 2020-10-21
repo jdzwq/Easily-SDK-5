@@ -314,8 +314,8 @@ bool_t xbmp_get_size(xsize_t* ps, const unsigned char* src, unsigned long len)
 		return 0;
 
 	pb = BMPINFOHEADERPTR(src);
-	ps->cx = GET_UL(pb, 4);
-	ps->cy = GET_UL(pb, 8);
+	ps->w = GET_UL(pb, 4);
+	ps->w = GET_UL(pb, 8);
 	
 	return 1;
 }

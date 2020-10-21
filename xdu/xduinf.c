@@ -182,6 +182,7 @@ void xdu_impl_context_graphic(if_context_t* pif)
 	pif->pf_gdi_draw_round = _gdiplus_draw_round;
 	pif->pf_gdi_draw_text = _gdiplus_draw_text;
 	pif->pf_gdi_text_out = _gdiplus_text_out;
+	pif->pf_gdi_text_rect = _gdiplus_text_rect;
 	pif->pf_gdi_text_size = _gdiplus_text_size;
 	pif->pf_gdi_text_metric = _gdiplus_text_metric;
 	pif->pf_gdi_gradient_rect = _gdiplus_gradient_rect;

@@ -30,13 +30,14 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "properview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
-
 #include "xdlstd.h"
+
 
 #ifdef XDL_SUPPORT_VIEW
 
-float calc_proper_height(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_proper_height(link_t_ptr ptr)
 {
 	link_t_ptr slk, elk;
 	float th,total = 0;
@@ -64,7 +65,7 @@ float calc_proper_height(const canvbox_t* pbox, link_t_ptr ptr)
 	return total;
 }
 
-float calc_proper_width(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_proper_width(link_t_ptr ptr)
 {
 	float iw;
 
@@ -73,13 +74,14 @@ float calc_proper_width(const canvbox_t* pbox, link_t_ptr ptr)
 	return iw * 2;
 }
 
-void calc_proper_section_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr sec, xrect_t* pxr)
+void calc_proper_section_rect(link_t_ptr ptr, link_t_ptr sec, xrect_t* pxr)
 {
 	link_t_ptr slk, elk;
 	float pw, iw, th, total = 0;
 
-	pw = pbox->fw;
+	pw = get_proper_width(ptr);
 	iw = get_proper_item_span(ptr);
+
 	if (pw < 2 * iw)
 	{
 		pw = iw * 2;
@@ -87,7 +89,7 @@ void calc_proper_section_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr 
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
-	pw = pbox->fw;
+	pw = get_proper_width(ptr);
 	th = get_proper_item_height(ptr);
 
 	slk = get_next_section(ptr, LINK_FIRST);
@@ -115,14 +117,14 @@ void calc_proper_section_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr 
 	pxr->fh = th;
 }
 
-void calc_proper_entity_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr)
+void calc_proper_entity_rect(link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr)
 {
 	link_t_ptr slk, elk = NULL;
 	float pw, iw, th, total = 0;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
-	pw = pbox->fw;
+	pw = get_proper_width(ptr);
 	th = get_proper_item_height(ptr);
 	iw = get_proper_item_span(ptr);
 	if (pw < 2 * iw)
@@ -157,17 +159,17 @@ void calc_proper_entity_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr e
 	}
 }
 
-void calc_proper_entity_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr)
+void calc_proper_entity_text_rect(link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr)
 {
 	float ew;
 
 	ew = get_proper_item_span(ptr);
-	calc_proper_entity_rect( pbox, ptr,ent, pxr);
+	calc_proper_entity_rect(ptr,ent, pxr);
 	pxr->fx += ew;
 	pxr->fw -= ew;
 }
 
-int calc_proper_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link_t_ptr* pent)
+int calc_proper_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link_t_ptr* pent)
 {
 	int hint, b_find = 0;
 	float x1, y1, x2, y2, xp, yp;
@@ -181,7 +183,7 @@ int calc_proper_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 	*pent = NULL;
 	hint = PROPER_HINT_NONE;
 
-	pw = pbox->fw;
+	pw = get_proper_width(ptr);
 	th = get_proper_item_height(ptr);
 	ew = get_proper_item_span(ptr);
 	if (pw < 2 * ew)
@@ -238,7 +240,7 @@ int calc_proper_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 	return hint;
 }
 
-void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr sec, ent;
 	xrect_t xr, xr_draw;
@@ -252,6 +254,8 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t *style, *shape;
 	bool_t b_print;
 	float px, py, pw, ph;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	XDL_ASSERT(pif);
 
@@ -342,7 +346,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, get_section_icon_ptr(sec));
+		draw_gizmo(pif, &xc, &xr_draw, get_section_icon_ptr(sec));
 
 		xr_draw.fx = xr.fx + xr.fw - ic;
 		xr_draw.fw = ic;
@@ -352,11 +356,11 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		if (!get_section_collapsed(sec))
 		{
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, GDI_ATTR_GIZMO_EXPAND);
+			draw_gizmo(pif, &xc, &xr_draw, GDI_ATTR_GIZMO_EXPAND);
 		}
 		else
 		{
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, GDI_ATTR_GIZMO_COLLAPSE);
+			draw_gizmo(pif, &xc, &xr_draw, GDI_ATTR_GIZMO_COLLAPSE);
 		}
 
 		xr_draw.fx = xr.fx + ic;
@@ -385,7 +389,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (!is_null(shape))
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xr_draw, shape);
+				draw_shape(pif, &xp, &xr_draw, shape);
 			}
 
 			//val shape
@@ -396,7 +400,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (!is_null(shape))
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xr_draw, shape);
+				draw_shape(pif, &xp, &xr_draw, shape);
 			}
 
 			//key image
@@ -407,7 +411,7 @@ void draw_proper(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			ft_center_rect(&xr_draw, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_draw, get_entity_icon_ptr(ent));
+			draw_gizmo(pif, &xc, &xr_draw, get_entity_icon_ptr(ent));
 
 			//key text
 			xr_draw.fx = xr.fx + ic;

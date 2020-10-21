@@ -31,7 +31,7 @@ extern HINSTANCE	g_hInst;
 extern HWND			g_hMain;
 extern tchar_t		g_szRunPath[PATH_LEN];
 extern LINKPTR		g_imagelist;
-extern res_bmp_t	g_bmpThumb;
+extern bitmap_t		g_bmpThumb;
 
 
 typedef struct _FACE_STYLE{

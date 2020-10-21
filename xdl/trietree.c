@@ -153,17 +153,13 @@ static void _find_trie_node(link_t_ptr ilk, const tchar_t* key, int len, tchar_t
 	link_t_ptr child = NULL;
 	trie_node_t* ptc;
 
-	const tchar_t* token;
-	int tlen;
 	int rt;
+	int n, total = 0;
 
 	XDL_ASSERT(ilk && (ilk->tag == lkTrieNode || ilk->tag == lkTrieLeaf));
 
 	if (len < 0)
 		len = xslen(key);
-
-	token = key;
-	tlen = len;
 
 	pti->parent = ilk;
 	pti->child = NULL;
@@ -172,8 +168,9 @@ static void _find_trie_node(link_t_ptr ilk, const tchar_t* key, int len, tchar_t
 	{
 		pti->sub = NULL;
 		pti->len = 0;
-		tlen = len - (token - key);
-		token = parse_string_token(token, tlen, keyfeed, &(pti->sub), &(pti->len));
+
+		n = parse_string_token((key + total), (len - total), keyfeed, &(pti->sub), &(pti->len));
+		total += n;
 		if (!pti->len)
 			break;
 		

@@ -30,18 +30,19 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "gridview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
-
 #include "xdlstd.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
-static int _grid_rows_persubfield(const canvbox_t* pbox, link_t_ptr ptr)
+static int _grid_rows_persubfield(link_t_ptr ptr)
 {
 	int rowsperpage;
-	float ch, rh, th;
+	float fh, ch, rh, th;
 	bool_t b_sum;
 
+	fh = get_grid_height(ptr);
 	th = get_grid_title_height(ptr);
 	ch = get_grid_colbar_height(ptr);
 	rh = get_grid_rowbar_height(ptr);
@@ -50,20 +51,21 @@ static int _grid_rows_persubfield(const canvbox_t* pbox, link_t_ptr ptr)
 	if (b_sum)
 		th += rh;
 
-	rowsperpage = (int)((pbox->fh - th - ch) / rh);
+	rowsperpage = (int)((fh - th - ch) / rh);
 	if (rowsperpage <= 0)
 		rowsperpage = 0;
 
 	return rowsperpage;
 }
 
-static int _grid_rows_perpage(const canvbox_t* pbox, link_t_ptr ptr)
+static int _grid_rows_perpage(link_t_ptr ptr)
 {
 	int rowsperpage;
-	float ch, rh, th;
+	float fh, ch, rh, th;
 	bool_t b_sum;
 	int ns;
 
+	fh = get_grid_height(ptr);
 	th = get_grid_title_height(ptr);
 	ch = get_grid_colbar_height(ptr);
 	rh = get_grid_rowbar_height(ptr);
@@ -73,7 +75,7 @@ static int _grid_rows_perpage(const canvbox_t* pbox, link_t_ptr ptr)
 	if (b_sum)
 		th += rh;
 
-	rowsperpage = (int)((pbox->fh - th - ch) / rh);
+	rowsperpage = (int)((fh - th - ch) / rh);
 	if (rowsperpage <= 0)
 		rowsperpage = 0;
 
@@ -98,7 +100,7 @@ static float _grid_width_persubfield(link_t_ptr ptr)
 	return rw;
 }
 
-int calc_grid_row_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* pfirst, link_t_ptr* plast)
+int calc_grid_row_scope(link_t_ptr ptr, int page, link_t_ptr* pfirst, link_t_ptr* plast)
 {
 	int rowsperpage, rows;
 	link_t_ptr rlk;
@@ -108,7 +110,7 @@ int calc_grid_row_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_
 
 	*pfirst = *plast = NULL;
 
-	rowsperpage = _grid_rows_perpage(pbox, ptr);
+	rowsperpage = _grid_rows_perpage(ptr);
 	if (rowsperpage <= 0)
 		return 0;
 
@@ -128,7 +130,7 @@ int calc_grid_row_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_
 	return rows;
 }
 
-int calc_grid_row_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr rlk)
+int calc_grid_row_page(link_t_ptr ptr, link_t_ptr rlk)
 {
 	link_t_ptr plk;
 	int rowsperpage, count, page;
@@ -139,7 +141,7 @@ int calc_grid_row_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr rlk)
 	if (!get_row_visible(rlk))
 		return 0;
 
-	rowsperpage = _grid_rows_perpage(pbox, ptr);
+	rowsperpage = _grid_rows_perpage(ptr);
 	if (rowsperpage <= 0)
 		return 0;
 
@@ -159,11 +161,11 @@ int calc_grid_row_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr rlk)
 	return page;
 }
 
-int calc_grid_pages(const canvbox_t* pbox, link_t_ptr ptr)
+int calc_grid_pages(link_t_ptr ptr)
 {
 	int rowsperpage, rows;
 
-	rowsperpage = _grid_rows_perpage(pbox, ptr);
+	rowsperpage = _grid_rows_perpage(ptr);
 	if (rowsperpage <= 0)
 		return 1;
 
@@ -185,7 +187,7 @@ float calc_grid_page_width(link_t_ptr ptr)
 	return ns * _grid_width_persubfield(ptr);
 }
 
-float calc_grid_page_height(const canvbox_t* pbox, link_t_ptr ptr, int page)
+float calc_grid_page_height(link_t_ptr ptr, int page)
 {
 	link_t_ptr rlk, rlk_first, rlk_last;
 	float th, ch, rh;
@@ -195,18 +197,18 @@ float calc_grid_page_height(const canvbox_t* pbox, link_t_ptr ptr, int page)
 	ch = get_grid_colbar_height(ptr);
 	rh = get_grid_rowbar_height(ptr);
 
-	pages = calc_grid_pages(pbox, ptr);
+	pages = calc_grid_pages(ptr);
 
 	if (get_grid_showsum(ptr) && page == pages)
 		th += rh;
 
-	ns = _grid_rows_persubfield(pbox, ptr);
+	ns = _grid_rows_persubfield(ptr);
 
 	if (page < pages)
 		return ns * rh + th + ch;
 
 	rlk_first = rlk_last = NULL;
-	calc_grid_row_scope(pbox, ptr, page, &rlk_first, &rlk_last);
+	calc_grid_row_scope(ptr, page, &rlk_first, &rlk_last);
 
 	th += ch;
 	rlk = rlk_first;
@@ -227,7 +229,7 @@ float calc_grid_page_height(const canvbox_t* pbox, link_t_ptr ptr, int page)
 	return th;
 }
 
-int calc_grid_cell_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
+int calc_grid_cell_rect(link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
 {
 	link_t_ptr row, col;
 	link_t_ptr rlk_first, rlk_last;
@@ -264,14 +266,14 @@ int calc_grid_cell_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_
 		return 1;
 	}
 
-	ns = _grid_rows_persubfield(pbox, ptr);
+	ns = _grid_rows_persubfield(ptr);
 
 	sub = 0;
 
 	if (rlk)
 	{
 		rlk_first = rlk_last = NULL;
-		calc_grid_row_scope(pbox, ptr, page, &rlk_first, &rlk_last);
+		calc_grid_row_scope(ptr, page, &rlk_first, &rlk_last);
 
 		i = 0;
 		row = rlk_first;
@@ -337,13 +339,13 @@ int calc_grid_cell_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_
 	return 1;
 }
 
-int calc_grid_row_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, xrect_t* pxr)
+int calc_grid_row_rect(link_t_ptr ptr, int page, link_t_ptr rlk, xrect_t* pxr)
 {
 	link_t_ptr clk;
 
 	clk = get_next_visible_col(ptr, LINK_FIRST);
 
-	if (!calc_grid_cell_rect(pbox, ptr, page, rlk, clk, pxr))
+	if (!calc_grid_cell_rect(ptr, page, rlk, clk, pxr))
 		return 0;
 
 	pxr->fx -= get_grid_rowbar_width(ptr);
@@ -352,18 +354,18 @@ int calc_grid_row_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_p
 	return 1;
 }
 
-int calc_grid_col_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
+int calc_grid_col_rect(link_t_ptr ptr, int page, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
 {
-	if (!calc_grid_cell_rect(pbox, ptr, page, rlk, clk, pxr))
+	if (!calc_grid_cell_rect(ptr, page, rlk, clk, pxr))
 		return 0;
 
 	pxr->fy = get_grid_title_height(ptr);
-	pxr->fh = calc_grid_page_height(pbox, ptr, page) - get_grid_title_height(ptr);
+	pxr->fh = calc_grid_page_height(ptr, page) - get_grid_title_height(ptr);
 
 	return 1;
 }
 
-int calc_grid_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* prlk, link_t_ptr* pclk)
+int calc_grid_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* prlk, link_t_ptr* pclk)
 {
 	link_t_ptr row, col;
 	link_t_ptr rlk_first, rlk_last;
@@ -407,14 +409,14 @@ int calc_grid_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, i
 		return hint;
 	}
 
-	ns = _grid_rows_persubfield(pbox, ptr);
+	ns = _grid_rows_persubfield(ptr);
 	gw = _grid_width_persubfield(ptr);
 
 	h = th + ch;
 	w = 0;
 
 	rlk_first = rlk_last = NULL;
-	calc_grid_row_scope(pbox, ptr, page, &rlk_first, &rlk_last);
+	calc_grid_row_scope(ptr, page, &rlk_first, &rlk_last);
 
 	i = 0;
 	row = rlk_first;
@@ -498,7 +500,7 @@ int calc_grid_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, i
 	return hint;
 }
 
-void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, int page)
+void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr clk, rlk;
 	link_t_ptr rlk_first, rlk_last;
@@ -520,13 +522,15 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	float px, py, pw, ph, gw, cw, tw;
 	int i, ns, rs;
 
+	const canvbox_t* pbox = &pif->rect;
+
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
 	rlk_first = rlk_last = NULL;
-	calc_grid_row_scope(pbox, ptr, page, &rlk_first, &rlk_last);
+	calc_grid_row_scope(ptr, page, &rlk_first, &rlk_last);
 
 	if (rlk_last)
 		b_lastpage = (get_next_visible_row(ptr, rlk_last)) ? 0 : 1;
@@ -596,7 +600,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 	gw = _grid_width_persubfield(ptr);
 	ns = get_grid_subfield(ptr);
-	rs = _grid_rows_persubfield(pbox, ptr);
+	rs = _grid_rows_persubfield(ptr);
 
 	//draw title bar
 	if (th)
@@ -617,13 +621,13 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		xrBar.fy = th + py;
 		xrBar.fh = ch;
 
-		(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
+		draw_shape(pif, &xp, &xrBar, shape);
 
 		if (b_showcheck && get_rowset_checked(ptr))
 		{
 			xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 			ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, GDI_ATTR_GIZMO_CHECKED);
+			draw_gizmo(pif, &xc_check, &xrCheck, GDI_ATTR_GIZMO_CHECKED);
 		}
 	}
 
@@ -654,7 +658,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 				xrBar.fw = get_col_width(clk);
 
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
+				draw_shape(pif, &xp, &xrBar, shape);
 
 				token = get_col_title_ptr(clk);
 				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrBar, token, -1);
@@ -685,13 +689,13 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			}
 			i++;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
+			draw_shape(pif, &xp, &xrBar, shape);
 
 			if (b_showcheck && get_row_checked(rlk))
 			{
 				xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 				ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, GDI_ATTR_GIZMO_CHECKED);
+				draw_gizmo(pif, &xc_check, &xrCheck, GDI_ATTR_GIZMO_CHECKED);
 			}
 
 			if (rlk_last == rlk)
@@ -707,11 +711,11 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	{
 		xrBar.fy += xrBar.fh;
 
-		(*pif->pf_draw_shape)(pif->canvas, &xp, &xrBar, shape);
+		draw_shape(pif, &xp, &xrBar, shape);
 
 		xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 		ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xrCheck, GDI_ATTR_GIZMO_SUM);
+		draw_gizmo(pif, &xc_check, &xrCheck, GDI_ATTR_GIZMO_SUM);
 	}
 
 	//draw cell
@@ -774,20 +778,20 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 			if (n_stepdraw && b_tag)
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xrCell, shape);
+				draw_shape(pif, &xp, &xrCell, shape);
 				if (n_stepdraw == 1)
 					b_tag = 0;
 			}
 			else
 			{
-				(*pif->pf_draw_shape)(pif->canvas, &xp, &xrCell, shape);
+				draw_shape(pif, &xp, &xrCell, shape);
 				if (n_stepdraw == 1)
 					b_tag = 1;
 			}
 
 			if (get_col_password(clk))
 			{
-				(*pif->pf_draw_pass)(pif->canvas, &xf, &xa, &xrCell, get_cell_text_ptr(rlk, clk), -1);
+				draw_pass(pif, &xf, &xa, &xrCell, get_cell_text_ptr(rlk, clk), -1);
 			}
 			else if (compare_text(type, -1, ATTR_DATA_TYPE_BINARY, -1, 0) == 0)
 			{
@@ -798,7 +802,7 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			else
 			{
 				token = get_cell_options_text_ptr(rlk, clk);
-				(*pif->pf_draw_data)(pif->canvas, &xf, &xa, &xrCell, token, -1, get_col_data_dig(clk), type, colfmt, zeronull, wrapable);
+				draw_data(pif, &xf, &xa, &xrCell, token, -1, get_col_data_dig(clk), type, colfmt, zeronull, wrapable);
 			}
 
 			if (rlk_last == rlk)
@@ -812,11 +816,11 @@ void draw_grid_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 		{
 			xrCell.fy += xrCell.fh;
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xrCell, shape);
+			draw_shape(pif, &xp, &xrCell, shape);
 
 			token = get_col_sum_text_ptr(clk);
 
-			(*pif->pf_draw_data)(pif->canvas, &xf, &xa, &xrCell, token, -1, get_col_data_dig(clk), type, colfmt, zeronull, wrapable);
+			draw_data(pif, &xf, &xa, &xrCell, token, -1, get_col_data_dig(clk), type, colfmt, zeronull, wrapable);
 		}
 
 		tw += cw;

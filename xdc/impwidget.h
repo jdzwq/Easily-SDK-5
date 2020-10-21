@@ -201,25 +201,25 @@ EXP_API var_long	widget_del_user_prop(res_win_t wt, const tchar_t* pkey);
 @FUNCTION widget_client_ctx: reference a widget client device context, it clipped by widget client rectangle.
 client context used to draw user view.
 @INPUT res_win_t wt: the widget resource handle.
-@RETURN res_ctx_t: if succeeds return device context resource handle, fails return NULL.
+@RETURN visual_t: if succeeds return device context resource handle, fails return NULL.
 */
-EXP_API res_ctx_t widget_client_ctx(res_win_t wt);
+EXP_API visual_t widget_client_ctx(res_win_t wt);
 
 /*
 @FUNCTION widget_window_ctx: reference a widget window device context, it clipped by widget window rectangle.
 window context used to draw frame.
 @INPUT res_win_t wt: the widget resource handle.
-@RETURN res_ctx_t: if succeeds return device context resource handle, fails return NULL.
+@RETURN visual_t: if succeeds return device context resource handle, fails return NULL.
 */
-EXP_API res_ctx_t widget_window_ctx(res_win_t wt);
+EXP_API visual_t widget_window_ctx(res_win_t wt);
 
 /*
 @FUNCTION widget_release_ctx: release client or window device context.
 @INPUT res_win_t wt: the widget resource handle.
-@INPUT res_ctx_t dc: the device context handle.
+@INPUT visual_t dc: the device context handle.
 @RETURN void: none.
 */
-EXP_API void	widget_release_ctx(res_win_t wt, res_ctx_t dc);
+EXP_API void	widget_release_ctx(res_win_t wt, visual_t dc);
 
 /*
 @FUNCTION widget_get_client_rect: get client rectangle, the coordinate is window client based.

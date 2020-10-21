@@ -311,11 +311,8 @@ static bool_t _gridctrl_paste(res_win_t widget)
 static void _gridctrl_row_rect(res_win_t widget, link_t_ptr rlk, xrect_t* pxr)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_grid_row_rect(&cb, ptd->grid, ptd->cur_page, rlk, pxr);
+	calc_grid_row_rect(ptd->grid, ptd->cur_page, rlk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -323,11 +320,8 @@ static void _gridctrl_row_rect(res_win_t widget, link_t_ptr rlk, xrect_t* pxr)
 static void _gridctrl_col_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_grid_col_rect(&cb, ptd->grid, ptd->cur_page, rlk, clk, pxr);
+	calc_grid_col_rect(ptd->grid, ptd->cur_page, rlk, clk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -335,11 +329,8 @@ static void _gridctrl_col_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk,
 static void _gridctrl_cell_rect(res_win_t widget, link_t_ptr rlk, link_t_ptr clk, xrect_t* pxr)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_grid_cell_rect(&cb, ptd->grid, ptd->cur_page, rlk, clk, pxr);
+	calc_grid_cell_rect(ptd->grid, ptd->cur_page, rlk, clk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -386,34 +377,34 @@ static void _gridctrl_reset_page(res_win_t widget)
 
 	if (compare_text(get_grid_printing_ptr(ptd->grid), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
 	{
-		xs.fx = _gridctrl_page_width(widget);
+		xs.fw = _gridctrl_page_width(widget);
 
-		if (xs.fx < get_grid_height(ptd->grid))
+		if (xs.fw < get_grid_height(ptd->grid))
 		{
-			xs.fx = get_grid_height(ptd->grid);
+			xs.fw = get_grid_height(ptd->grid);
 		}
-		xs.fy = get_grid_width(ptd->grid);
+		xs.fh = get_grid_width(ptd->grid);
 	}
 	else
 	{
-		xs.fx = _gridctrl_page_width(widget);
+		xs.fw = _gridctrl_page_width(widget);
 
-		if (xs.fx < get_grid_width(ptd->grid))
+		if (xs.fw < get_grid_width(ptd->grid))
 		{
-			xs.fx = get_grid_width(ptd->grid);
+			xs.fw = get_grid_width(ptd->grid);
 		}
-		xs.fy = get_grid_height(ptd->grid);
+		xs.fh = get_grid_height(ptd->grid);
 	}
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = get_grid_rowbar_height(ptd->grid);
-	xs.fy = get_grid_rowbar_height(ptd->grid);
+	xs.fw = get_grid_rowbar_height(ptd->grid);
+	xs.fh = get_grid_rowbar_height(ptd->grid);
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -428,13 +419,10 @@ void _gridctrl_ensure_visible(res_win_t widget)
 
 	int page;
 	xrect_t xr = { 0 };
-	canvbox_t cb;
 
 	if (ptd->row)
 	{
-		widget_get_canv_rect(widget, &cb);
-
-		page = calc_grid_row_page( &cb, ptd->grid,ptd->row);
+		page = calc_grid_row_page(ptd->grid,ptd->row);
 		if (page && page != ptd->cur_page)
 		{
 			ptd->cur_page = page;
@@ -542,14 +530,14 @@ void noti_grid_col_sized(res_win_t widget, int x, int y)
 	}
 	widget_set_cursor(widget, CURSOR_ARROW);
 
-	xs.cx = x - ptd->org_x;
-	if (!xs.cx)
+	xs.w = x - ptd->org_x;
+	if (!xs.w)
 		return;
 
 	widget_size_to_tm(widget, &xs);
 
 	mw = get_col_width(ptd->col);
-	mw += xs.fx;
+	mw += xs.fw;
 	mw = (float)(int)mw;
 	if (mw < 2 * DEF_SPLIT_FEED)
 		mw = 2 * DEF_SPLIT_FEED;
@@ -610,14 +598,14 @@ void noti_grid_row_sized(res_win_t widget, int x, int y)
 	}
 	widget_set_cursor(widget, CURSOR_ARROW);
 
-	xs.cy = y - ptd->org_y;
-	if (!xs.cy)
+	xs.h = y - ptd->org_y;
+	if (!xs.h)
 		return;
 
 	widget_size_to_tm(widget, &xs);
 
 	mh = get_grid_rowbar_height(ptd->grid);
-	mh += xs.fy;
+	mh += xs.fh;
 	mh = (float)(int)mh;
 	if (mh < 2 * DEF_SPLIT_FEED)
 		mh = 2 * DEF_SPLIT_FEED;
@@ -661,7 +649,6 @@ void noti_grid_col_drop(res_win_t widget, int x, int y)
 	int nHint;
 	link_t_ptr root, rlk, clk;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd->col);
 
@@ -673,13 +660,11 @@ void noti_grid_col_drop(res_win_t widget, int x, int y)
 
 	ptd->b_drag_col = 0;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = x;
 	pt.y = y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
+	nHint = calc_grid_hint(&pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 	if (clk != ptd->col)
 	{
 		root = get_dom_child_node_root(get_grid_colset(ptd->grid));
@@ -1464,7 +1449,6 @@ void hand_grid_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	link_t_ptr row, col;
 	int nHint;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->grid)
 		return;
@@ -1476,13 +1460,11 @@ void hand_grid_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &row, &col);
+	nHint = calc_grid_hint(&pt, ptd->grid, ptd->cur_page, &row, &col);
 
 	if (nHint == GRID_HINT_HORZ_SPLIT && row == ptd->row && !(dw & KS_WITH_CONTROL))
 	{
@@ -1577,7 +1559,6 @@ void hand_grid_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	int nHint;
 	bool_t bReCol, bReRow;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->grid)
 		return;
@@ -1589,13 +1570,11 @@ void hand_grid_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_set_focus(widget);
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
+	nHint = calc_grid_hint(&pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 
 	bReRow = (rlk == ptd->row) ? 1 : 0;
 	bReCol = (clk == ptd->col) ? 1 : 0;
@@ -1643,7 +1622,6 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	int nHint;
 	bool_t bReCol, bReRow;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->grid)
 		return;
@@ -1672,13 +1650,11 @@ void hand_grid_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_grid_hint(&cb, &pt, ptd->grid, ptd->cur_page, &rlk, &clk);
+	nHint = calc_grid_hint(&pt, ptd->grid, ptd->cur_page, &rlk, &clk);
 
 	if (nHint == GRID_HINT_NULBAR || nHint == GRID_HINT_ROWBAR)
 	{
@@ -1897,12 +1873,11 @@ void hand_grid_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
-	xsize_t xs;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -1912,7 +1887,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->grid)
 		return;
@@ -1923,6 +1898,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -1932,10 +1908,10 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
-
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	b_design = grid_is_design(ptd->grid);
 
@@ -1945,16 +1921,16 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		{
 			parse_xcolor(&xc, xp.color);
 			lighten_xcolor(&xc, DEF_SOFT_DARKEN);
-			draw_ruler(pif->canvas, &xc, (const xrect_t*)&cb);
+			draw_ruler(pif, &xc, (const xrect_t*)&(pif->rect));
 		}
 		else
 		{
 			xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
-			draw_corner(canv, &xc, (const xrect_t*)&cb);
+			draw_corner(pif, &xc, (const xrect_t*)&(pif->rect));
 		}
 	}
 
-	draw_grid_page(pif, &cb, ptd->grid, ptd->cur_page);
+	draw_grid_page(pif, ptd->grid, ptd->cur_page);
 
 	if (b_design)
 	{
@@ -1967,7 +1943,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 				_gridctrl_cell_rect(widget, NULL, ptd->col, &xr);
 
-				draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+				draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
 			}
 
 			if (get_col_selected(clk))
@@ -1975,7 +1951,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 				_gridctrl_cell_rect(widget, NULL, clk, &xr);
 				pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
-				alphablend_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
+				(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_SOFT);
 			}
 			clk = get_next_col(ptd->grid, clk);
 		}
@@ -1988,7 +1964,7 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			_gridctrl_row_rect(widget, ptd->row, &xr);
 
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alphablend_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
+			(*piv->pf_alphablend_rect_raw)(rdc, &xc, &xr, ALPHA_SOFT);
 		}
 		else if (ptd->row && ptd->col)
 		{
@@ -2006,9 +1982,11 @@ void hand_grid_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 					parse_xcolor(&xc, DEF_DISABLE_COLOR);
 			}
 
-			draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+			draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
 		}
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -2719,7 +2697,6 @@ void gridctrl_move_next_page(res_win_t widget)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2728,10 +2705,8 @@ void gridctrl_move_next_page(res_win_t widget)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_grid_pages(&cb, ptd->grid);
+	nMaxPage = calc_grid_pages(ptd->grid);
 
 	if (nCurPage < nMaxPage)
 	{
@@ -2746,7 +2721,6 @@ void gridctrl_move_last_page(res_win_t widget)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2755,10 +2729,8 @@ void gridctrl_move_last_page(res_win_t widget)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_grid_pages(&cb, ptd->grid);
+	nMaxPage = calc_grid_pages(ptd->grid);
 
 	if (nCurPage != nMaxPage)
 	{
@@ -2773,7 +2745,6 @@ void gridctrl_move_to_page(res_win_t widget, int page)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2782,10 +2753,8 @@ void gridctrl_move_to_page(res_win_t widget, int page)
 
 	noti_grid_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_grid_pages(&cb, ptd->grid);
+	nMaxPage = calc_grid_pages(ptd->grid);
 
 	if (page > 0 && page != nCurPage && page <= nMaxPage)
 	{
@@ -2799,16 +2768,13 @@ void gridctrl_move_to_page(res_win_t widget, int page)
 int gridctrl_get_max_page(res_win_t widget)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->grid)
 		return 0;
 
-	widget_get_canv_rect(widget, &cb);
-
-	return calc_grid_pages(&cb, ptd->grid);
+	return calc_grid_pages(ptd->grid);
 }
 
 int gridctrl_get_cur_page(res_win_t widget)
@@ -2933,8 +2899,8 @@ void gridctrl_popup_size(res_win_t widget, xsize_t* pse)
 	if (count > 7)
 		count = 7;
 
-	pse->fx = _gridctrl_page_width(widget);
-	pse->fy = get_grid_title_height(ptd->grid) + get_grid_rowbar_height(ptd->grid) * count;
+	pse->fw = _gridctrl_page_width(widget);
+	pse->fh = get_grid_title_height(ptd->grid) + get_grid_rowbar_height(ptd->grid) * count;
 
 	widget_size_to_pt(widget, pse);
 

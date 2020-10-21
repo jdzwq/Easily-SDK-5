@@ -503,6 +503,31 @@ typedef int				wait_t;
 #define PDPERINCH	72
 #define SVGPTPERMM	2.835f
 
+//color darkeness
+#define DEF_SOFT_DARKEN		-3
+#define DEF_MIDD_DARKEN		-6
+#define DEF_HARD_DARKEN		-10
+#define DEF_SOFT_LIGHTEN	3
+#define DEF_MIDD_LIGHTEN	6
+#define DEF_HARD_LIGHTEN	10
+
+#define DEF_MIN_SHADOW		5
+#define DEF_MAX_SHADOW		10
+
+/*visual type*/
+#define _VIEWING_UNKNOWN		0x00
+#define _VIEWING_DISPLAY		0x01
+#define _VIEWING_PRINTER		0x02
+#define _VIEWING_SCRIPT			0x03
+
+typedef struct _visual_head{
+	byte_t tag;
+	byte_t lru[3];
+}visual_head;
+
+typedef visual_head*	 visual_t;
+typedef visual_head*	 bitmap_t;
+
 typedef enum{ _RGB_COLOR, HSL_COLOR, _HEX_COLOR }CLRFMT;
 
 #define RGB_GRAY(r,g,b) (unsigned char)(0.299 * r + 0.587 * g + 0.114 * b)
@@ -556,17 +581,41 @@ typedef struct _xpoint_t{
 
 typedef struct _xsize_t{
 	union{
-		int cx;
-		float fx;
+		int w;
+		float fw;
 	};
 	union{
-		int cy;
-		float fy;
+		int h;
+		float fh;
 	};
 }xsize_t;
 
+typedef struct _xspan_t{
+	union{
+		int r;
+		float fr;
+	};
+}xspan_t;
+
 #define RECTPOINT(pxr)	((xpoint_t*)pxr)
 #define RECTSIZE(pxr)	((xsize_t*)pxr + 1)
+
+typedef struct _border_t{
+	int title;
+	int edge;
+	int hscroll;
+	int vscroll;
+	int menu;
+	int icon;
+}border_t;
+
+typedef struct _scroll_t{
+	int pos;
+	int min;
+	int max;
+	int page;
+	int track;
+}scroll_t;
 
 typedef struct _shadow_t{
 	int offx;

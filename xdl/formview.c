@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-void calc_form_field_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr flk, xrect_t* pxr)
+void calc_form_field_rect(link_t_ptr ptr, link_t_ptr flk, xrect_t* pxr)
 {
 	pxr->fx = get_field_x(flk);
 	pxr->fy = get_field_y(flk);
@@ -45,7 +45,7 @@ void calc_form_field_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr flk,
 	pxr->fh = get_field_height(flk);
 }
 
-void calc_form_group_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr alk, xrect_t* pxr)
+void calc_form_group_rect(link_t_ptr ptr, link_t_ptr alk, xrect_t* pxr)
 {
 	link_t_ptr flk;
 	xrect_t di;
@@ -54,14 +54,14 @@ void calc_form_group_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr alk,
 
 	gid = get_field_group(alk);
 
-	calc_form_field_rect(pbox, ptr, alk, pxr);
+	calc_form_field_rect(ptr, alk, pxr);
 
 	flk = get_next_field(ptr, LINK_FIRST);
 	while (flk)
 	{
 		if ((!gid && get_field_selected(flk)) || (gid && gid == get_field_group(flk)))
 		{
-			calc_form_field_rect(pbox, ptr, flk, &di);
+			calc_form_field_rect(ptr, flk, &di);
 
 			x = pxr->fx;
 			y = pxr->fy;
@@ -88,7 +88,7 @@ void calc_form_group_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr alk,
 	}
 }
 
-int calc_form_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pflk)
+int calc_form_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pflk)
 {
 	link_t_ptr flk;
 	int nHit;
@@ -107,7 +107,7 @@ int calc_form_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	flk = get_prev_field(ptr, LINK_LAST);
 	while (flk)
 	{
-		calc_form_field_rect(pbox, ptr, flk, &di);
+		calc_form_field_rect(ptr, flk, &di);
 
 		if (ft_inside(xm, ym, di.fx, di.fy, di.fx + di.fw, di.fy + di.fh))
 		{
@@ -141,7 +141,7 @@ int calc_form_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	return nHit;
 }
 
-void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, int page)
+void draw_form_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr flk,obj;
 	xrect_t rt, xr;
@@ -158,6 +158,8 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	bool_t zeronull, wrapable;
 
 	tchar_t sz_token[PATH_LEN];
+
+	const canvbox_t* pbox = &pif->rect;
 
 	b_design = form_is_design(ptr);
 	b_print = (pif->canvas->tag == _CANVAS_PRINTER)? 1 : 0;
@@ -182,7 +184,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 		style = get_field_style_ptr(flk);
 
-		calc_form_field_rect(pbox, ptr, flk, &xr);
+		calc_form_field_rect(ptr, flk, &xr);
 		ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
 		sz_shape = get_field_shape_ptr(flk);
@@ -195,7 +197,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			}
 
 			parse_xpen_from_style(&xp, style);
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, sz_shape);
+			draw_shape(pif, &xp, &xr, sz_shape);
 		}
 		else if (b_design)
 		{
@@ -206,7 +208,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 				format_xcolor(&pif->clr_frg, xp.color);
 			}
 
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, ATTR_SHAPE_RECT);
+			(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
 		}
 
 		sz_class = get_field_class_ptr(flk);
@@ -237,7 +239,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 					parse_xcolor(&xc, xf.color);
 				}
 
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, get_field_text_ptr(flk));
+				draw_gizmo(pif, &xc, &xr, get_field_text_ptr(flk));
 			}
 			else
 			{
@@ -268,26 +270,26 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_CODE128, -1, 0) == 0)
 			{
 				xmem_copy((void*)&rt, (void*)&xr, sizeof(xrect_t));
-				(*pif->pf_draw_code128)(pif->canvas, NULL, &rt, get_field_text_ptr(flk), -1);
+				draw_code128(pif, NULL, &rt, get_field_text_ptr(flk), -1);
 				ft_adjust_rect(&xr, rt.fw, rt.fh, xa.text_align, xa.line_align);
 
-				(*pif->pf_draw_code128)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
+				draw_code128(pif, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_PDF417, -1, 0) == 0)
 			{
 				xmem_copy((void*)&rt, (void*)&xr, sizeof(xrect_t));
-				(*pif->pf_draw_pdf417)(pif->canvas, NULL, &rt, get_field_text_ptr(flk), -1);
+				draw_pdf417(pif, NULL, &rt, get_field_text_ptr(flk), -1);
 				ft_adjust_rect(&xr, rt.fw, rt.fh, xa.text_align, xa.line_align);
 
-				(*pif->pf_draw_pdf417)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
+				draw_pdf417(pif, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else if (compare_text(get_field_codebar_ptr(flk), -1, ATTR_CODEBAR_QRCODE, -1, 0) == 0)
 			{
 				xmem_copy((void*)&rt, (void*)&xr, sizeof(xrect_t));
-				(*pif->pf_draw_qrcode)(pif->canvas, NULL, &rt, get_field_text_ptr(flk), -1);
+				draw_qrcode(pif, NULL, &rt, get_field_text_ptr(flk), -1);
 				ft_adjust_rect(&xr, rt.fw, rt.fh, xa.text_align, xa.line_align);
 
-				(*pif->pf_draw_qrcode)(pif->canvas, &xc, &xr, get_field_text_ptr(flk), -1);
+				draw_qrcode(pif, &xc, &xr, get_field_text_ptr(flk), -1);
 			}
 			else
 			{
@@ -316,12 +318,12 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 			if (get_field_password(flk))
 			{
-				(*pif->pf_draw_pass)(pif->canvas, &xf, &xa, &xr, get_field_text_ptr(flk), -1);
+				draw_pass(pif, &xf, &xa, &xr, get_field_text_ptr(flk), -1);
 			}
 			else
 			{
 				sz_text = get_field_options_text_ptr(flk);
-				(*pif->pf_draw_data)(pif->canvas, &xf, &xa, &xr, sz_text, -1, get_field_data_dig(flk), type, fldfmt, zeronull, wrapable);
+				draw_data(pif, &xf, &xa, &xr, sz_text, -1, get_field_data_dig(flk), type, fldfmt, zeronull, wrapable);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_CHECK, -1, 0) == 0)
@@ -338,7 +340,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 
 				parse_xcolor(&xc, xf.color);
 				ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_CHECKED);
+				draw_gizmo(pif, &xc, &xr, GDI_ATTR_GIZMO_CHECKED);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 0) == 0)
@@ -401,15 +403,15 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			sz_text = get_field_text_ptr(flk);
 			if (!is_null(sz_text))
 			{
-				cb.fx = xr.fx;
-				cb.fy = xr.fy;
-				cb.fw = xr.fw;
-				cb.fh = xr.fh;
+				xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+				xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
 				obj = create_string_table(0);
 				string_table_parse_options(obj, sz_text, -1, OPT_ITEMFEED, OPT_LINEFEED);
-				draw_table(pif, &xf, &xa, &xp, &xb, &cb, obj, get_field_ratio(flk));
+				draw_table(pif, &xf, &xa, &xp, &xb, obj, get_field_ratio(flk));
 				destroy_string_table(obj);
+
+				xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_MEMO, -1, 0) == 0)
@@ -431,7 +433,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			{
 				obj = create_memo_doc();
 				parse_memo_doc(obj, sz_text, -1);
-				(*pif->pf_draw_memo_text)(pif->canvas, &xf, &xa, &xr, obj, page);
+				draw_memo_text(pif, &xf, &xa, &xr, obj, page);
 				destroy_memo_doc(obj);
 			}
 		}
@@ -454,7 +456,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			{
 				obj = create_tag_doc();
 				parse_tag_doc(obj, sz_text, -1);
-				(*pif->pf_draw_tag_text)(pif->canvas, &xf, &xa, &xr, obj, page);
+				draw_tag_text(pif, &xf, &xa, &xr, obj, page);
 				destroy_tag_doc(obj);
 			}
 		}
@@ -475,7 +477,7 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			obj = get_field_embed_rich(flk);
 			if (obj)
 			{
-				(*pif->pf_draw_rich_text)(pif->canvas, &xf, &xa, &xr, obj, page);
+				draw_rich_text(pif, &xf, &xa, &xr, obj, page);
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_GRID, -1, 0) == 0)
@@ -483,12 +485,12 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			obj = get_field_embed_grid(flk);
 			if (obj)
 			{
-				cb.fx = xr.fx;
-				cb.fy = xr.fy;
-				cb.fw = xr.fw;
-				cb.fh = xr.fh;
+				xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+				xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 				
-				draw_grid_page(pif, &cb, obj, page);
+				draw_grid_page(pif, obj, page);
+
+				xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_STATIS, -1, 0) == 0)
@@ -496,12 +498,12 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			obj = get_field_embed_statis(flk);
 			if (obj)
 			{
-				cb.fx = xr.fx;
-				cb.fy = xr.fy;
-				cb.fw = xr.fw;
-				cb.fh = xr.fh;
+				xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+				xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-				draw_statis_page(pif, &cb, obj, page);
+				draw_statis_page(pif, obj, page);
+
+				xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_IMAGES, -1, 0) == 0)
@@ -509,12 +511,12 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			obj = get_field_embed_images(flk);
 			if (obj)
 			{
-				cb.fx = xr.fx;
-				cb.fy = xr.fy;
-				cb.fw = xr.fw;
-				cb.fh = xr.fh;
+				xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+				xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-				draw_images(pif, &cb, obj);
+				draw_images(pif, obj);
+
+				xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_FORM, -1, 0) == 0)
@@ -522,12 +524,12 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			obj = get_field_embed_form(flk);
 			if (obj)
 			{
-				cb.fx = xr.fx;
-				cb.fy = xr.fy;
-				cb.fw = xr.fw;
-				cb.fh = xr.fh;
+				xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+				xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
+	
+				draw_form_page(pif, obj, page);
 
-				draw_form_page(pif, &cb, obj, page);
+				xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 			}
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_PLOT, -1, 0) == 0)
@@ -535,12 +537,12 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 			obj = get_field_embed_plot(flk);
 			if (obj)
 			{
-				cb.fx = xr.fx;
-				cb.fy = xr.fy;
-				cb.fw = xr.fw;
-				cb.fh = xr.fh;
+				xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+				xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-				draw_plot(pif, &cb, obj);
+				draw_plot(pif, obj);
+
+				xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 			}
 		}
 
@@ -552,14 +554,13 @@ void draw_form_page(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr pt
 	}
 }
 
-int calc_form_pages(const canvbox_t* pbox, link_t_ptr form)
+int calc_form_pages(link_t_ptr form)
 {
 	link_t_ptr flk, obj;
 	int pages = 0;
 	int max = 1;
 	const tchar_t* cls;
-	const tchar_t* txt;
-	canvbox_t cb = { 0 };
+	float fw, fh;
 	xrect_t xr = { 0 };
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
@@ -579,12 +580,16 @@ int calc_form_pages(const canvbox_t* pbox, link_t_ptr form)
 			obj = get_field_embed_grid(flk);
 			if (obj)
 			{
-				cb.fx = 0;
-				cb.fy = 0;
-				cb.fw = get_field_width(flk);
-				cb.fh = get_field_height(flk);
+				fw = get_grid_width(obj);
+				fh = get_grid_height(obj);
 
-				pages = calc_grid_pages(&cb, obj);
+				set_grid_width(obj, get_field_width(flk));
+				set_grid_height(obj, get_field_height(flk));
+
+				pages = calc_grid_pages(obj);
+
+				set_grid_width(obj, fw);
+				set_grid_height(obj, fh);
 
 				max = (max > pages) ? max : pages;
 			}
@@ -594,12 +599,16 @@ int calc_form_pages(const canvbox_t* pbox, link_t_ptr form)
 			obj = get_field_embed_statis(flk);
 			if (obj)
 			{
-				cb.fx = 0;
-				cb.fy = 0;
-				cb.fw = get_field_width(flk);
-				cb.fh = get_field_height(flk);
+				fw = get_statis_width(obj);
+				fh = get_statis_height(obj);
 
-				pages = calc_statis_pages(&cb, obj);
+				set_statis_width(obj, get_field_width(flk));
+				set_statis_height(obj, get_field_height(flk));
+
+				pages = calc_statis_pages(obj);
+
+				set_statis_width(obj, fw);
+				set_statis_height(obj, fh);
 
 				max = (max > pages) ? max : pages;
 			}

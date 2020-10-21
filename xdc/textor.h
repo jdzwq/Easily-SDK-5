@@ -67,7 +67,7 @@ typedef bool_t(*PF_GET_PAGING)(res_win_t wt, xsize_t* pse);
 
 typedef struct _textor_t{
 	res_win_t widget;
-	res_ctx_t dc;
+	visual_t cdc;
 	viewbox_t vb;
 
 	void* data;
@@ -113,7 +113,7 @@ EXP_API void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs);
 
 EXP_API bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, int nLine);
 
-EXP_API void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr);
+EXP_API void hand_textor_paint(textor_t* ptd, visual_t dc, const xrect_t* pxr);
 
 EXP_API void hand_textor_selectall(textor_t* ptd);
 

@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	EXP_API void draw_plot(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API void draw_plot(const if_canvas_t* pif, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

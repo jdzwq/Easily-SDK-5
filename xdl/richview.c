@@ -231,7 +231,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 			*psel = 0;
 			*patom = 0;
 
-			pse->cx = 0;
+			pse->w = 0;
 
 			return 0;
 		}
@@ -274,7 +274,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 			*ppch = pscan->pch;
 			n = 1;
 
-			pse->cx = (int)(pscan->indent * pscan->permm);
+			pse->w = (int)(pscan->indent * pscan->permm);
 		}
 	}
 
@@ -297,25 +297,25 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 
 			if (n == 1 && pscan->pch[0] == _T('\t'))
 			{
-				pse->cx *= 4;
+				pse->w *= 4;
 			}
 			else if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
 			{
-				pse->cx *= 1;
+				pse->w *= 1;
 			}
 			else
 			{
 				(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
 
-				if (xs.cx)
-					pse->cx = xs.cx;
-				if (xs.cy)
-					pse->cy = xs.cy;
+				if (xs.w)
+					pse->w = xs.w;
+				if (xs.h)
+					pse->h = xs.h;
 			}
 
 			if (pscan->place)
 			{
-				pscan->place -= pse->cx;
+				pscan->place -= pse->w;
 			}
 		}
 	}
@@ -344,7 +344,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 
 			if (pscan->place)
 			{
-				pscan->place -= pse->cx;
+				pscan->place -= pse->w;
 			}
 		}
 	}
@@ -368,7 +368,7 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 
 			if (pscan->place > 0)
 			{
-				pse->cx = pscan->place;
+				pse->w = pscan->place;
 			}
 
 			pscan->place = 0;
@@ -381,33 +381,33 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 			xsncpy(pscan->pch, pscan->text + pscan->pos, n);
 			*ppch = pscan->pch;
 
-			if (!get_dom_node_line_cator(pscan->nlk, pscan->point, &pse->cx, &pse->cy))
+			if (!get_dom_node_line_cator(pscan->nlk, pscan->point, &pse->w, &pse->h))
 			{
 				if (n == 1 && pscan->pch[0] == _T('\t'))
 				{
-					pse->cx *= 4;
+					pse->w *= 4;
 				}
 				else if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
 				{
-					pse->cx *= 1;
-					pse->cy *= 1;
+					pse->w *= 1;
+					pse->h *= 1;
 				}
 				else
 				{
 					(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
 
-					if (xs.cx)
-						pse->cx = xs.cx;
-					if (xs.cy)
-						pse->cy = xs.cy;
+					if (xs.w)
+						pse->w = xs.w;
+					if (xs.h)
+						pse->h = xs.h;
 				}
 
-				ins_dom_node_line_cator(pscan->nlk, pscan->point, pse->cx, pse->cy);
+				ins_dom_node_line_cator(pscan->nlk, pscan->point, pse->w, pse->h);
 			}
 
 			if (pscan->place)
 			{
-				pscan->place -= pse->cx;
+				pscan->place -= pse->w;
 			}
 		}
 	}
@@ -484,25 +484,25 @@ int call_rich_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 
 		if (n == 1 && pch[0] == _T('\t'))
 		{
-			xs.cx = pse->cx * 4;
-			xs.cy = pse->cy;
+			xs.w = pse->w * 4;
+			xs.h = pse->h;
 		}
 		else if (n == 1 && IS_CONTROL_CHAR(pch[0]))
 		{
-			xs.cx = pse->cx;
-			xs.cy = pse->cy;
+			xs.w = pse->w;
+			xs.h = pse->h;
 		}
 		else
 		{
 			(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pch, n, &xs);
 
-			if (!xs.cx)
-				xs.cx = pse->cx;
-			if (!xs.cy)
-				xs.cy = pse->cy;
+			if (!xs.w)
+				xs.w = pse->w;
+			if (!xs.h)
+				xs.h = pse->h;
 		}
 
-		ins_dom_node_line_cator(pscan->nlk, pscan->point, xs.cx, xs.cy);
+		ins_dom_node_line_cator(pscan->nlk, pscan->point, xs.w, xs.h);
 
 		xszero(pscan->pch, CHS_LEN + 1);
 		pscan->ind = RICHWORD_INDICATOR_NEXT_WORD;
@@ -555,16 +555,16 @@ void call_rich_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->nlk;
 }
 
-void scan_rich_text(link_t_ptr ptr, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_rich_text(link_t_ptr ptr, const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	RICHWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };
 
 	ro.rich = ptr;
-	ro.pf_text_size = pif->pf_text_size;
+	ro.pf_text_size = pif->pf_measure_size;
 	ro.ctx = pif->ctx;
 	ro.pxf = pxf;
-	ro.permm = (*pif->pf_mm_points)(pif->ctx, 1);
+	ro.permm = (*pif->pf_measure_pixel)(pif->ctx, 1);
 
 	it.param = (void*)&ro;
 	it.pf_is_paging = call_rich_is_paging;

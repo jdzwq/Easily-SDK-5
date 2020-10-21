@@ -683,8 +683,7 @@ int variant_to_string(variant_t* pv, tchar_t* buf, int max)
 
 void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 {
-	int i, n;
-	const tchar_t* token;
+	int i, n, total = 0;
 	tchar_t* key;
 
 	switch (pv->vv)
@@ -735,9 +734,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->bool_ptr = (bool_t*)xmem_alloc(pv->size * sizeof(bool_t));
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->bool_ptr[i] = (key[0] == _T('1')) ? 1 : 0;
 		}
 		break;
@@ -745,9 +745,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->byte_ptr = (byte_t*)xmem_alloc(pv->size);
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->byte_ptr[i] = (byte_t)parse_hexnum(key, 2);
 		}
 		break;
@@ -777,9 +778,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->short_ptr = (short*)xmem_alloc(pv->size * sizeof(short));
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->short_ptr[i] = xsntos(key, n);
 		}
 		break;
@@ -787,9 +789,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->int_ptr = (int*)xmem_alloc(pv->size * sizeof(int));
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->int_ptr[i] = xsntol(key, n);
 		}
 		break;
@@ -797,9 +800,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->long_ptr = (long long*)xmem_alloc(pv->size * sizeof(long long));
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->long_ptr[i] = xsntoll(key, n);
 		}
 		break;
@@ -807,9 +811,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->float_ptr = (float*)xmem_alloc(pv->size * sizeof(float));
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->float_ptr[i] = xsntof(key, n);
 		}
 		break;
@@ -817,9 +822,10 @@ void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
 		pv->size = parse_string_token_count(buf, len, _T(' '));
 		pv->double_ptr = (double*)xmem_alloc(pv->size * sizeof(double));
 		i = 0;
-		token = buf;
-		while (token = parse_string_token(token, -1, _T(' '), &key, &n))
+
+		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
 		{
+			total += n;
 			pv->double_ptr[i] = xsntonum(key, n);
 		}
 		break;

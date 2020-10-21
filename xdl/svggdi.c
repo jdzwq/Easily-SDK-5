@@ -31,7 +31,6 @@ LICENSE.GPL3 for more details.
 
 #include "svggdi.h"
 #include "svgcanv.h"
-#include "svggizmo.h"
 
 #include "xdlimp.h"
 #include "xdlstd.h"
@@ -40,125 +39,33 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_SVG)
 
-static float svg_pt_to_tm_raw(link_t_ptr g, int pt, bool_t horz)
+void svg_get_measure_raw(visual_t view, if_measure_t* pim)
 {
-	xrect_t vb;
-	float htpermm, vtpermm;
+	pim->ctx = (void*)view;
 
-	get_svg_viewbox(g, &vb);
-
-	if (horz)
-	{
-		htpermm = (float)((float)vb.w / get_svg_width(g));
-
-		return (float)((float)pt / htpermm);
-	}
-	else
-	{
-		vtpermm = (float)((float)vb.h / get_svg_height(g));
-
-		return (float)((float)pt / vtpermm);
-	}
+	pim->pf_measure_pixel = svg_pixel_metric_raw;
+	pim->pf_measure_font = svg_text_metric_raw;
+	pim->pf_measure_size = svg_text_size_raw;
+	pim->pf_measure_rect = svg_text_rect_raw;
 }
 
-static int svg_tm_to_pt_raw(link_t_ptr g, float tm, bool_t horz)
+void svg_get_measure(canvas_t canv, if_measure_t* pim)
 {
-	xrect_t vb;
-	float htpermm, vtpermm;
+	pim->ctx = (void*)canv;
 
-	get_svg_viewbox(g, &vb);
-
-	if (horz)
-	{
-		htpermm = (float)((float)vb.w / get_svg_width(g));
-
-		return (int)(tm * htpermm + 0.5);
-	}
-	else
-	{
-		vtpermm = (float)((float)vb.h / get_svg_height(g));
-
-		return (int)(tm * vtpermm + 0.5);
-	}
-}
-
-void svg_text_metric_raw(link_t_ptr g, const xfont_t* pxf, xsize_t* pxs)
-{
-	float mm;
-
-	mm = font_metric(xstof(pxf->size));
-
-	pxs->cx = svg_tm_to_pt_raw(g, mm, 1) - svg_tm_to_pt_raw(g, 0, 1);
-	pxs->cy = svg_tm_to_pt_raw(g, mm, 0) - svg_tm_to_pt_raw(g, 0, 0);
-}
-
-void svg_text_size_raw(link_t_ptr g, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
-{
-	float mm;
-
-	mm = font_metric(xstof(pxf->size));
-
-	if (len < 0) len = xslen(txt);
-
-	pxs->cx = svg_tm_to_pt_raw(g, mm * len, 1) - svg_tm_to_pt_raw(g, 0, 1);
-	pxs->cy = svg_tm_to_pt_raw(g, mm, 0) - svg_tm_to_pt_raw(g, 0, 0);
-}
-
-/*static void svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
-{
-	link_t_ptr g;
-	float mp = 0.0f;
-
-	g = svg_get_canvas_doc(canv);
-
-	font_metric_by_point(xstof(pxf->size), NULL, &mp);
-
-	pxs->fx = svg_pt_to_tm_raw(g, mp, 1) - svg_pt_to_tm_raw(g, 0, 1);
-	pxs->fy = svg_pt_to_tm_raw(g, mp, 0) - svg_pt_to_tm_raw(g, 0, 0);
-}
-
-static void svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
-{
-	link_t_ptr g;
-	float mp = 0.0f;
-
-	g = svg_get_canvas_doc(canv);
-
-	font_metric_by_point(xstof(pxf->size), NULL, &mp);
-
-	if (len < 0) len = xslen(txt);
-
-	pxs->fx = svg_pt_to_tm(canv, mp * len, 1) - svg_pt_to_tm(canv, 0, 1);
-	pxs->fy = svg_pt_to_tm(canv, mp, 0) - svg_pt_to_tm(canv, 0, 0);
-}*/
-
-void svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
-{
-	float mm = 0.0f;
-
-	mm = (float)font_points(xstof(pxf->size));
-
-	if (len < 0) len = xslen(txt);
-
-	pxs->fx = mm * len;
-	pxs->fy = mm;
-}
-
-void svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
-{
-	float mm = 0.0f;
-
-	mm = (float)font_points(xstof(pxf->size));
-
-	pxs->fx = mm;
-	pxs->fy = mm;
+	pim->pf_measure_pixel = svg_pixel_metric;
+	pim->pf_measure_font = svg_text_metric;
+	pim->pf_measure_size = svg_text_size;
+	pim->pf_measure_rect = svg_text_rect;
 }
 
 /***************************************************************************************************************/
 
-void svg_draw_line_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
+void svg_draw_line_raw(visual_t view, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -167,10 +74,10 @@ void svg_draw_line_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt1, co
 
 void svg_draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
-	link_t_ptr g;
+	visual_t view;
 	xpoint_t pt[2];
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	pt[0].fx = ppt1->fx;
 	pt[0].fy = ppt1->fy;
@@ -180,12 +87,14 @@ void svg_draw_line(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const
 	svg_point_tm_to_pt(canv, &pt[0]);
 	svg_point_tm_to_pt(canv, &pt[1]);
 
-	svg_draw_line_raw(g, pxp, &pt[0], &pt[1]);
+	svg_draw_line_raw(view, pxp, &pt[0], &pt[1]);
 }
 
-void svg_draw_polyline_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt, int n)
+void svg_draw_polyline_raw(visual_t view, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -194,11 +103,11 @@ void svg_draw_polyline_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt,
 
 void svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	link_t_ptr g;
+	visual_t view;
 	xpoint_t* pa;
 	int i;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
 	for (i = 0; i < n; i++)
@@ -208,14 +117,16 @@ void svg_draw_polyline(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, in
 		svg_point_tm_to_pt(canv, &pa[i]);
 	}
 
-	svg_draw_polyline_raw(g, pxp, pa, n);
+	svg_draw_polyline_raw(view, pxp, pa, n);
 
 	xmem_free(pa);
 }
 
-void svg_draw_bezier_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+void svg_draw_bezier_raw(visual_t view, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -224,10 +135,10 @@ void svg_draw_bezier_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt1, 
 
 void svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
-	link_t_ptr g;
+	visual_t view;
 	xpoint_t pt[4];
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	pt[0].fx = ppt1->fx;
 	pt[0].fy = ppt1->fy;
@@ -243,12 +154,14 @@ void svg_draw_bezier(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, con
 	svg_point_tm_to_pt(canv, &pt[2]);
 	svg_point_tm_to_pt(canv, &pt[3]);
 
-	svg_draw_bezier_raw(g, pxp, &pt[0], &pt[1], &pt[2], &pt[3]);
+	svg_draw_bezier_raw(view, pxp, &pt[0], &pt[1], &pt[2], &pt[3]);
 }
 
-void svg_draw_curve_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt, int n)
+void svg_draw_curve_raw(visual_t view, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -257,11 +170,11 @@ void svg_draw_curve_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt, in
 
 void svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	link_t_ptr g;
+	visual_t view;
 	xpoint_t* pa;
 	int i;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
 	
@@ -271,82 +184,64 @@ void svg_draw_curve(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, int n
 		svg_point_tm_to_pt(canv, &pa[i]);
 	}
 
-	svg_draw_curve_raw(g, pxp, pa, n);
+	svg_draw_curve_raw(view, pxp, pa, n);
 
 	xmem_free(pa);
 }
 
 
-void svg_draw_arc_raw(link_t_ptr g, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void svg_draw_arc_raw(visual_t view, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xsize_t* pxs, bool_t sflag, bool_t lflag)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
-	write_arc_to_svg_node(nlk, pxp, ppt, rx, ry, fang, tang);
+	write_arc_to_svg_node(nlk, pxp, ppt1, ppt2, pxs->w, pxs->h, sflag, lflag);
 }
 
-void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xsize_t* pxs, bool_t sflag, bool_t lflag)
 {
-	link_t_ptr g;
-	xpoint_t pt;
+	visual_t view;
+	xpoint_t pt1, pt2;
 	xsize_t xs;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
-	pt.fx = ppt->fx;
-	pt.fy = ppt->fy;
-	svg_point_tm_to_pt(canv, &pt);
+	pt1.fx = ppt1->fx;
+	pt1.fy = ppt1->fy;
+	svg_point_tm_to_pt(canv, &pt1);
 
-	xs.fx = rx;
-	xs.fy = ry;
+	pt2.fx = ppt2->fx;
+	pt2.fy = ppt2->fy;
+	svg_point_tm_to_pt(canv, &pt2);
+
+	xs.fw = pxs->fw;
+	xs.fh = pxs->fh;
 	svg_size_tm_to_pt(canv, &xs);
 
-	svg_draw_arc_raw(g, pxp, &pt, xs.cx, xs.cy, fang, tang);
+	svg_draw_arc_raw(view, pxp, &pt1, &pt2, &xs, sflag, lflag);
 }
 
-void svg_draw_arrow_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
+void svg_draw_arrow_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc)
 {
 
 }
 
-void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, float alen, double arc)
+void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc)
 {
 
 }
 
-void svg_draw_shape_raw(link_t_ptr g, const xpen_t* pxp, const xrect_t* pxr, const tchar_t* shape)
-{
-	link_t_ptr nlk;
-
-	nlk = insert_svg_node(g);
-
-	write_shape_to_svg_node(nlk, pxp, pxr, shape);
-}
-
-void svg_draw_shape(canvas_t canv, const xpen_t* pxp, const xrect_t* pxr, const tchar_t* shape)
-{
-	link_t_ptr g;
-	xrect_t xr;
-
-	g = svg_get_canvas_doc(canv);
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-
-	svg_rect_tm_to_pt(canv, &xr);
-
-	svg_draw_shape_raw(g, pxp, &xr, shape);
-}
-
-void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
+void svg_draw_triangle_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
 {
 	xpoint_t pt[4] = { 0 };
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
 
-	nlk = insert_svg_node(glk);
+	g = svg_get_visual_doc(view);
+
+	nlk = insert_svg_node(g);
 
 	if (xsicmp(orient, GDI_ATTR_ORIENT_TOP) == 0)
 	{
@@ -404,10 +299,10 @@ void svg_draw_triangle_raw(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 
 void svg_draw_triangle(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const tchar_t* orient)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = pxr->fx;
 	xr.fy = pxr->fy;
@@ -416,12 +311,14 @@ void svg_draw_triangle(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, co
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_triangle_raw(g, pxp, pxb, &xr, orient);
+	svg_draw_triangle_raw(view, pxp, pxb, &xr, orient);
 }
 
-void svg_draw_rect_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+void svg_draw_rect_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -430,10 +327,10 @@ void svg_draw_rect_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, con
 
 void svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = pxr->fx;
 	xr.fy = pxr->fy;
@@ -442,12 +339,14 @@ void svg_draw_rect(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const 
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_rect_raw(g, pxp, pxb, &xr);
+	svg_draw_rect_raw(view, pxp, pxb, &xr);
 }
 
-void svg_draw_round_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+void svg_draw_round_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -456,10 +355,10 @@ void svg_draw_round_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, co
 
 void svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = pxr->fx;
 	xr.fy = pxr->fy;
@@ -468,12 +367,14 @@ void svg_draw_round(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_round_raw(g, pxp, pxb, &xr);
+	svg_draw_round_raw(view, pxp, pxb, &xr);
 }
 
-void svg_draw_ellipse_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
+void svg_draw_ellipse_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -482,10 +383,10 @@ void svg_draw_ellipse_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, 
 
 void svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = pxr->fx;
 	xr.fy = pxr->fy;
@@ -494,40 +395,42 @@ void svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_ellipse_raw(g, pxp, pxb, &xr);
+	svg_draw_ellipse_raw(view, pxp, pxb, &xr);
 }
 
-void svg_draw_pie_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void svg_draw_pie_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
-	write_pie_to_svg_node(nlk, pxp, pxb, ppt, rx, ry, fang, tang);
+	write_pie_to_svg_node(nlk, pxp, pxb, ppt, pxs->w, pxs->h, fang, tang);
 }
 
-void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float rx, float ry, double fang, double tang)
+void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = ppt->fx;
 	xr.fy = ppt->fy;
-	xr.fw = rx;
-	xr.fh = ry;
+	xr.fw = pxs->fw;
+	xr.fh = pxs->fh;
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_pie_raw(g, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
+	svg_draw_pie_raw(view, pxp, pxb, RECTPOINT(&xr), RECTSIZE(&xr), fang, tang);
 }
 
-void svg_calc_fan_raw(link_t_ptr g, const xpoint_t* ppt, int r, int s, double fang, double tang, xpoint_t* pa, int n)
+void svg_calc_fan_raw(visual_t view, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang, xpoint_t* pa, int n)
 {
 	int r1, r2;
-	r1 = r;
-	r2 = r - s;
+	r1 = pxs->w;
+	r2 = pxs->w - pxs->h;
 
 	if (n > 0)
 	{
@@ -554,11 +457,11 @@ void svg_calc_fan_raw(link_t_ptr g, const xpoint_t* ppt, int r, int s, double fa
 	}
 }
 
-void svg_calc_fan(canvas_t canv, const xpoint_t* ppt, float r, float s, double fang, double tang, xpoint_t* pa, int n)
+void svg_calc_fan(canvas_t canv, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang, xpoint_t* pa, int n)
 {
 	float r1, r2;
-	r1 = r;
-	r2 = r - s;
+	r1 = pxs->fw;
+	r2 = pxs->fw - pxs->fh;
 
 	if (n > 0)
 	{
@@ -585,35 +488,39 @@ void svg_calc_fan(canvas_t canv, const xpoint_t* ppt, float r, float s, double f
 	}
 }
 
-void svg_draw_fan_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang)
+void svg_draw_fan_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
-	write_fan_to_svg_node(nlk, pxp, pxb, ppt, r, s, fang, tang);
+	write_fan_to_svg_node(nlk, pxp, pxb, ppt, pxs->w, pxs->h, fang, tang);
 }
 
-void svg_draw_fan(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float r, float s, double fang, double tang)
+void svg_draw_fan(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = ppt->fx;
 	xr.fy = ppt->fy;
-	xr.fw = r;
-	xr.fh = s;
+	xr.fw = pxs->fw;
+	xr.fh = pxs->fh;
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_fan_raw(g, pxp, pxb, RECTPOINT(&xr), xr.w, xr.h, fang, tang);
+	svg_draw_fan_raw(view, pxp, pxb, RECTPOINT(&xr), RECTSIZE(&xr), fang, tang);
 }
 
-void svg_draw_polygon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
+void svg_draw_polygon_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -622,11 +529,11 @@ void svg_draw_polygon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, 
 
 void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
 {
-	link_t_ptr g;
+	visual_t view;
 	xpoint_t* pa;
 	int i;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	pa = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
 	for (i = 0; i < n; i++)
@@ -636,12 +543,12 @@ void svg_draw_polygon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 		svg_point_tm_to_pt(canv, &pa[i]);
 	}
 
-	svg_draw_polygon_raw(g, pxp, pxb, pa, n);
+	svg_draw_polygon_raw(view, pxp, pxb, pa, n);
 
 	xmem_free(pa);
 }
 
-void svg_calc_equalgon_raw(link_t_ptr g, const xpoint_t* ppt, int r, int n, xpoint_t* pa)
+void svg_calc_equalgon_raw(visual_t view, const xpoint_t* ppt, const xspan_t* pxn, int n, xpoint_t* pa)
 {
 	double a;
 	int i, j;
@@ -653,12 +560,12 @@ void svg_calc_equalgon_raw(link_t_ptr g, const xpoint_t* ppt, int r, int n, xpoi
 	if (n % 2)
 	{
 		pa[0].x = ppt->x;
-		pa[0].y = ppt->y - r;
+		pa[0].y = ppt->y - pxn->r;
 
 		for (i = 1; i <= n / 2; i++)
 		{
-			pa[i].x = ppt->x + (int)(r * cos(a * i - XPI / 2));
-			pa[i].y = ppt->y + (int)(r * sin(a * i - XPI / 2));
+			pa[i].x = ppt->x + (int)(pxn->r * cos(a * i - XPI / 2));
+			pa[i].y = ppt->y + (int)(pxn->r * sin(a * i - XPI / 2));
 		}
 
 		for (j = i; j < n; j++)
@@ -672,8 +579,8 @@ void svg_calc_equalgon_raw(link_t_ptr g, const xpoint_t* ppt, int r, int n, xpoi
 	{
 		for (i = 0; i < n / 2; i++)
 		{
-			pa[i].x = ppt->x + (int)(r * cos(a * i + a / 2 - XPI / 2));
-			pa[i].y = ppt->y + (int)(r * sin(a * i + a / 2 - XPI / 2));
+			pa[i].x = ppt->x + (int)(pxn->r * cos(a * i + a / 2 - XPI / 2));
+			pa[i].y = ppt->y + (int)(pxn->r * sin(a * i + a / 2 - XPI / 2));
 		}
 
 		for (j = i; j < n; j++)
@@ -685,15 +592,15 @@ void svg_calc_equalgon_raw(link_t_ptr g, const xpoint_t* ppt, int r, int n, xpoi
 	}
 }
 
-void svg_calc_equalgon(canvas_t canv, const xpoint_t* ppt, float fr, int n, xpoint_t* pa)
+void svg_calc_equalgon(canvas_t canv, const xpoint_t* ppt, const xspan_t* pxn, int n, xpoint_t* pa)
 {
-	link_t_ptr g;
+	visual_t view;
 
 	xpoint_t pt;
-	xsize_t xs;
+	xspan_t xn;
 	int i;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	if (n < 3) return;
 
@@ -702,11 +609,10 @@ void svg_calc_equalgon(canvas_t canv, const xpoint_t* ppt, float fr, int n, xpoi
 
 	svg_point_tm_to_pt(canv, &pt);
 
-	xs.fx = fr;
-	xs.fy = fr;
-	svg_size_tm_to_pt(canv, &xs);
+	xn.fr = pxn->fr;
+	svg_span_tm_to_pt(canv, &xn);
 
-	svg_calc_equalgon_raw(g, &pt, xs.cx, n, pa);
+	svg_calc_equalgon_raw(view, &pt, &xn, n, pa);
 
 	for (i = 0; i < n; i++)
 	{
@@ -714,31 +620,29 @@ void svg_calc_equalgon(canvas_t canv, const xpoint_t* ppt, float fr, int n, xpoi
 	}
 }
 
-void svg_draw_equalgon_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int n)
+void svg_draw_equalgon_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xspan_t* pxn, int n)
 {
 	xpoint_t* pa;
-	double a;
-	int i, j;
 
 	if (n < 3) return;
 
 	pa = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)* n);
 
-	svg_calc_equalgon_raw(g, ppt, r, n, pa);
+	svg_calc_equalgon_raw(view, ppt, pxn, n, pa);
 
-	svg_draw_polygon_raw(g, pxp, pxb, pa, n);
+	svg_draw_polygon_raw(view, pxp, pxb, pa, n);
 
 	xmem_free(pa);
 }
 
-void svg_draw_equalgon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, float fr, int n)
+void svg_draw_equalgon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xspan_t* pxn, int n)
 {
-	link_t_ptr g;
+	visual_t view;
 
 	xpoint_t pt;
-	xsize_t xs;
+	xspan_t xn;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	if (n < 3) return;
 
@@ -747,18 +651,18 @@ void svg_draw_equalgon(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, co
 
 	svg_point_tm_to_pt(canv, &pt);
 
-	xs.fx = fr;
-	xs.fy = fr;
+	xn.fr = pxn->fr;
+	svg_span_tm_to_pt(canv, &xn);
 
-	svg_size_tm_to_pt(canv, &xs);
-
-	svg_draw_equalgon_raw(g, pxp, pxb, &pt, xs.cy, n);
+	svg_draw_equalgon_raw(view, pxp, pxb, &pt, &xn, n);
 }
 
 
-void svg_draw_path_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
+void svg_draw_path_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
 {
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -767,63 +671,87 @@ void svg_draw_path_raw(link_t_ptr g, const xpen_t* pxp, const xbrush_t* pxb, con
 
 void svg_draw_path(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)
 {
-	link_t_ptr g;
+	visual_t view;
 	xpoint_t* ppt;
-	int i;
+	int i,j;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
+
+	if (is_null(aa))
+		return;
 
 	ppt = (xpoint_t*)xmem_alloc(n * sizeof(xpoint_t));
-	for (i = 0; i < n; i++)
+
+	xmem_copy((void*)ppt, (void*)pa, n * sizeof(xpoint_t));
+
+	i = j = 0;
+	while (*(aa + j))
 	{
-		ppt[i].fx = pa[i].fx;
-		ppt[i].fy = pa[i].fy;
-		svg_point_tm_to_pt(canv, &ppt[i]);
+		if (*(aa + j) == _T('M') || *(aa + j) == _T('m'))
+		{
+			svg_point_tm_to_pt(canv, &ppt[i]);
+			i += 1;
+		}
+		else if (*(aa + j) == _T('L') || *(aa + j) == _T('l'))
+		{
+			svg_point_tm_to_pt(canv, &ppt[i]);
+			i += 1;
+		}
+		else if (*(aa + j) == _T('Q') || *(aa + j) == _T('q'))
+		{
+			svg_point_tm_to_pt(canv, &ppt[i]);
+			svg_point_tm_to_pt(canv, &ppt[i + 1]);
+			i += 2;
+		}
+		else if (*(aa + j) == _T('T') || *(aa + j) == _T('t'))
+		{
+			svg_point_tm_to_pt(canv, &ppt[i]);
+			i += 1;
+		}
+		else if (*(aa + j) == _T('C') || *(aa + j) == _T('c'))
+		{
+			svg_point_tm_to_pt(canv, &ppt[i]);
+			svg_point_tm_to_pt(canv, &ppt[i + 1]);
+			svg_point_tm_to_pt(canv, &ppt[i + 2]);
+			i += 3;
+		}
+		else if (*(aa + j) == _T('S') || *(aa + j) == _T('s'))
+		{
+			svg_point_tm_to_pt(canv, &ppt[i]);
+			svg_point_tm_to_pt(canv, &ppt[i + 1]);
+			i += 2;
+		}
+		else if (*(aa + j) == _T('A') || *(aa + j) == _T('a'))
+		{
+			svg_size_tm_to_pt(canv, (xsize_t*)(&ppt[i]));
+			svg_size_tm_to_pt(canv, (xsize_t*)(&ppt[i + 1]));
+			svg_point_tm_to_pt(canv, &ppt[i + 2]);
+			i += 3;
+		}
+		else if (*(aa + j) == _T('Z') || *(aa + j) == _T('z'))
+		{
+			break;
+		}
+
+		j++;
 	}
 
-	svg_draw_path_raw(g, pxp, pxb, aa, ppt, n);
+	svg_draw_path_raw(view, pxp, pxb, aa, ppt, n);
 
 	xmem_free(ppt);
 }
 
-void svg_draw_image_raw(link_t_ptr g, const ximage_t* pxi, const xrect_t* pxr)
+void svg_multi_line_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {
-	link_t_ptr nlk;
-
-	nlk = insert_svg_node(g);
-
-	write_ximage_to_svg_node(nlk, pxi, pxr);
-}
-
-void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
-{
-	link_t_ptr g;
-	xrect_t xr;
-
-	if (is_null(pxi->source))
-		return;
-
-	g = svg_get_canvas_doc(canv);
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-
-	svg_rect_tm_to_pt(canv, &xr);
-
-	svg_draw_image_raw(g, pxi, &xr);
-}
-
-void svg_multi_line_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
-{
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
 
 	float line_rati;
 	int th, lh;
 	int i, rows;
 	xpoint_t pt1, pt2;
 	xsize_t xs;
+
+	g = svg_get_visual_doc(view);
 
 	if (is_null(pxa->line_height))
 		line_rati = xstof(DEF_GDI_TEXT_LINE_HEIGHT);
@@ -833,9 +761,9 @@ void svg_multi_line_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, co
 	if (line_rati < 1.0)
 		line_rati = 1.0;
 
-	svg_text_metric_raw(g, pxf, &xs);
+	svg_text_metric_raw(view, pxf, &xs);
 
-	th = xs.cy;
+	th = xs.h;
 	lh = (int)((float)th * (line_rati - 1.0));
 
 	rows = pxr->h / (th + lh);
@@ -858,22 +786,24 @@ void svg_multi_line_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, co
 
 void svg_multi_line(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xrect_t* pxr)
 {
-	link_t_ptr g;
+	visual_t view;
 	xrect_t xr;
 
 	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
 	svg_rect_tm_to_pt(canv, &xr);
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
-	svg_multi_line_raw(g, pxf, pxa, pxp, &xr);
+	svg_multi_line_raw(view, pxf, pxa, pxp, &xr);
 }
 
-void svg_text_out_raw(link_t_ptr g, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
+void svg_text_out_raw(visual_t view, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
 	xrect_t xr;
 	xface_t xa;
-	link_t_ptr nlk;
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
@@ -882,7 +812,7 @@ void svg_text_out_raw(link_t_ptr g, const xfont_t* pxf, const xpoint_t* ppt, con
 	xr.w = 0;
 	xr.h = 0;
 
-	//svg_text_size_raw(g, pxf, txt, len, RECTSIZE(&xr));
+	//svg_text_size_raw(view, pxf, txt, len, RECTSIZE(&xr));
 
 	default_xface(&xa);
 
@@ -892,1418 +822,253 @@ void svg_text_out_raw(link_t_ptr g, const xfont_t* pxf, const xpoint_t* ppt, con
 void svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
 	xpoint_t pt = { 0 };
-	link_t_ptr g;
+	visual_t view;
 
-	g = svg_get_canvas_doc(canv);
+	view = svg_get_canvas_visual(canv);
 
 	pt.fx = ppt->fx;
 	pt.fy = ppt->fy;
 
 	svg_point_tm_to_pt(canv, &pt);
 
-	svg_text_out_raw(g, pxf, &pt, txt, len);
+	svg_text_out_raw(view, pxf, &pt, txt, len);
 }
 
-void svg_color_out_raw(link_t_ptr g, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+void svg_draw_text_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
-	const tchar_t *pre, *nxt;
-	xrect_t xr;
-	xcolor_t xc;
-	xbrush_t xb;
-	tchar_t* val;
-	int vlen;
-	tchar_t clr[CLR_LEN + 1];
+	link_t_ptr g, nlk;
 
-	if (len < 0)
-		len = xslen(rgbstr);
-
-	default_xbrush(&xb);
-
-	pre = rgbstr;
-	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
-	{
-		xsncpy(clr, val, CLR_LEN);
-		parse_xcolor(&xc, clr);
-		format_xcolor(&xc, xb.color);
-
-		svg_draw_rect_raw(g, NULL, &xb, &xr);
-
-		len -= (nxt - pre);
-
-		if (horz)
-			xr.x += xr.w;
-		else
-			xr.y += xr.h;
-
-		pre = nxt;
-	}
-}
-
-void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
-{
-	const tchar_t *pre, *nxt;
-	xrect_t xr;
-	xcolor_t xc;
-	xbrush_t xb;
-	tchar_t* val;
-	int vlen;
-	tchar_t clr[CLR_LEN + 1];
-
-	if (len < 0)
-		len = xslen(rgbstr);
-
-	default_xbrush(&xb);
-
-	pre = rgbstr;
-	while (nxt = parse_string_token(pre, len, _T(';'), &val, &vlen))
-	{
-		xsncpy(clr, val, CLR_LEN);
-		parse_xcolor(&xc, clr);
-		format_xcolor(&xc, xb.color);
-
-		svg_draw_rect(canv, NULL, &xb, &xr);
-
-		len -= (nxt - pre);
-
-		if (horz)
-			xr.fx += xr.fw;
-		else
-			xr.fy += xr.fh;
-
-		pre = nxt;
-	}
-}
-
-void svg_draw_pass_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
-{
-	tchar_t sz_pass[INT_LEN + 1] = { 0 };
-
-	len = format_password(txt, sz_pass, INT_LEN);
-
-	svg_draw_text_raw(g, pxf, pxa, pxr, sz_pass, len);
-}
-
-void svg_draw_pass(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
-{
-	tchar_t sz_pass[INT_LEN + 1] = { 0 };
-
-	len = format_password(txt, sz_pass, INT_LEN);
-
-	svg_draw_text(canv, pxf, pxa, pxr, sz_pass, len);
-}
-
-void svg_draw_data_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
-{
-	tchar_t sz_format[RES_LEN] = { 0 };
-	xdate_t dt = { 0 };
-	int lt;
-	double db;
-
-	xsize_t xs;
-	xface_t xa;
-
-	if (len < 0)
-		len = xslen(data);
-
-	xmem_copy((void*)&xa, (void*)pxa, sizeof(xface_t));
-
-	if (compare_text(type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
-	{
-		lt = xsntol(data, len);
-
-		if (zeronull && !lt)
-		{
-			xscpy(sz_format, _T(""));
-		}
-		else if (!is_null(fmt))
-		{
-			format_integer_ex(lt, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && pxa && is_null(xa.text_wrap))
-		{
-			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
-	{
-		db = xsntonum(data, len);
-
-		if (zeronull && is_zero_numeric(db, dig))
-		{
-			xscpy(sz_format, _T(""));
-		}
-		else if (!is_null(fmt))
-		{
-			format_numeric(db, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATETIME, -1, 0) == 0)
-	{
-		if (!is_null(fmt) && !is_null(data))
-		{
-			parse_datetime(&dt, data);
-			format_datetime_ex(&dt, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATE, -1, 0) == 0)
-	{
-		if (!is_null(fmt) && !is_null(data))
-		{
-			parse_date(&dt, data);
-			format_datetime_ex(&dt, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size_raw(g, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text_raw(g, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_STRING, -1, 0) == 0)
-	{
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size_raw(g, pxf, data, len, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text_raw(g, pxf, &xa, pxr, data, len);
-	}
-}
-
-void svg_draw_data(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
-{
-	tchar_t sz_format[RES_LEN] = { 0 };
-	xdate_t dt = { 0 };
-	int lt;
-	double db;
-
-	xsize_t xs;
-	xface_t xa;
-
-	if (len < 0)
-		len = xslen(data);
-
-	xmem_copy((void*)&xa, (void*)pxa, sizeof(xface_t));
-
-	if (compare_text(type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
-	{
-		lt = xsntol(data, len);
-
-		if (zeronull && !lt)
-		{
-			xscpy(sz_format, _T(""));
-		}
-		else if (!is_null(fmt))
-		{
-			format_integer_ex(lt, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && pxa && is_null(xa.text_wrap))
-		{
-			svg_text_size(canv, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text(canv, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
-	{
-		db = xsntonum(data, len);
-
-		if (zeronull && is_zero_numeric(db, dig))
-		{
-			xscpy(sz_format, _T(""));
-		}
-		else if (!is_null(fmt))
-		{
-			format_numeric(db, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size(canv, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text(canv, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATETIME, -1, 0) == 0)
-	{
-		if (!is_null(fmt) && !is_null(data))
-		{
-			parse_datetime(&dt, data);
-			format_datetime_ex(&dt, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size(canv, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text(canv, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATE, -1, 0) == 0)
-	{
-		if (!is_null(fmt) && !is_null(data))
-		{
-			parse_date(&dt, data);
-			format_datetime_ex(&dt, fmt, sz_format, RES_LEN);
-		}
-		else
-		{
-			xsncpy(sz_format, data, len);
-		}
-
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size(canv, pxf, sz_format, -1, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text(canv, pxf, &xa, pxr, sz_format, -1);
-	}
-	else if (compare_text(type, -1, ATTR_DATA_TYPE_STRING, -1, 0) == 0)
-	{
-		if (autowrap && is_null(xa.text_wrap))
-		{
-			svg_text_size(canv, pxf, data, len, &xs);
-			if (xs.fx > pxr->fw)
-			{
-				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
-			}
-		}
-
-		svg_draw_text(canv, pxf, &xa, pxr, data, len);
-	}
-}
-
-void svg_draw_code128_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	int black, span;
-	dword_t i;
-	int unit = 2;
-	xrect_t rt;
-	xbrush_t xb;
-	xpen_t xp;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-	unit = svg_tm_to_pt_raw(g, 0.3f, 1);
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-		default_xpen(&xp);
-		format_xcolor(pxc, xp.color);
-	}
-
-	rt.x = prt->x + unit;
-	rt.y = prt->y + unit;
-	rt.w = unit;
-	rt.h = prt->h - 2 * unit;
-
-	black = 0;
-	for (i = 0; i < bar_len; i++)
-	{
-		span = (bar_buf[i] - '0');
-		rt.w = span * unit;
-
-		black = (black) ? 0 : 1;
-
-		if (black && pxc)
-		{
-			svg_draw_rect_raw(g, &xp, &xb, &rt);
-		}
-
-		rt.x += rt.w;
-	}
-
-	xmem_free(bar_buf);
-
-	prt->w = rt.x + unit - prt->x;
-}
-
-void svg_draw_code128(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	int black,span;
-	dword_t i;
-	float unit = 0.3f;
-	xrect_t rt;
-	xbrush_t xb;
-	xpen_t xp;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = code128_encode(buf, buf_len, NULL, MAX_LONG);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = code128_encode(buf, buf_len, bar_buf, bar_len);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-		default_xpen(&xp);
-		format_xcolor(pxc, xp.color);
-	}
-
-	rt.fx = prt->fx + unit;
-	rt.fy = prt->fy + unit;
-	rt.fw = unit;
-	rt.fh = prt->fh - 2 * unit;
-
-	black = 0;
-	for (i = 0; i < bar_len; i++)
-	{
-		span = (bar_buf[i] - '0');
-		rt.fw = span * unit;
-
-		black = (black) ? 0 : 1;
-
-		if (black && pxc)
-		{
-			svg_draw_rect(canv, &xp, &xb, &rt);
-		}
-		
-		rt.fx += rt.fw;
-	}
-
-	xmem_free(bar_buf);
-
-	prt->fw = rt.fx + unit - prt->fx;
-}
-
-void svg_draw_pdf417_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	int black;
-	int rows, cols;
-	unsigned char b, c;
-	int i, j;
-
-	int unit = 4;
-	xrect_t rt;
-	xbrush_t xb;
-	xpen_t xp;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-	unit = svg_tm_to_pt_raw(g, 0.5f, 1);
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-		default_xpen(&xp);
-		format_xcolor(pxc, xp.color);
-	}
-
-	len = 0;
-	black = 0;
-	for (i = 0; i < rows; i++)
-	{
-		rt.x = prt->x + unit;
-		rt.w = unit;
-		rt.y = prt->y + unit + i * 2 * unit;
-		rt.h = 2 * unit;
-
-		for (j = 0; j < cols; j++)
-		{
-			c = *(bar_buf + i * cols + j);
-			b = 0x80;
-
-			while (b)
-			{
-				rt.x += rt.w;
-
-				black = (c & b) ? 0 : 1;
-
-				if (black && pxc)
-				{
-					svg_draw_rect_raw(g, &xp, &xb, &rt);
-				}
-
-				b = b >> 1;
-			}
-		}
-	}
-
-	xmem_free(bar_buf);
-
-	prt->w = rt.x + unit - prt->x;
-	prt->h = rt.y + rt.h + unit - prt->y;
-}
-
-void svg_draw_pdf417(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	int black;
-	int rows,cols;
-	unsigned char b, c;
-	int i,j;
-
-	float unit = 0.5f;
-	xrect_t rt;
-	xbrush_t xb;
-	xpen_t xp;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = pdf417_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = pdf417_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
-
-	xmem_free(buf);
-	
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-		default_xpen(&xp);
-		format_xcolor(pxc, xp.color);
-	}
-
-	len = 0;
-	black = 0;
-	for (i = 0; i < rows; i++)
-	{
-		rt.fx = prt->fx + unit;
-		rt.fw = unit;
-		rt.fy = prt->fy + unit + i * 2 * unit;
-		rt.fh = 2 * unit;
-
-		for (j = 0; j < cols; j++)
-		{
-			c = *(bar_buf + i * cols + j);
-			b = 0x80;
-
-			while (b)
-			{
-				rt.fx += rt.fw;
-
-				black = (c & b) ? 0 : 1;
-
-				if (black && pxc)
-				{
-					svg_draw_rect(canv, &xp, &xb, &rt);
-				}
-
-				b = b >> 1;
-			}
-		}
-	}
-
-	xmem_free(bar_buf);
-
-	prt->fw = rt.fx + unit - prt->fx;
-	prt->fh = rt.fy + rt.fh + unit - prt->fy;
-}
-
-#ifdef GPL_SUPPORT_QRCODE
-void svg_draw_qrcode_raw(link_t_ptr g, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	int black;
-	int rows, cols;
-	unsigned char b, c;
-	int i, j;
-
-	int unit = 4;
-	xrect_t rt;
-	xbrush_t xb;
-	xpen_t xp;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-	unit = svg_tm_to_pt_raw(g, 0.5f, 1);
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-		default_xpen(&xp);
-		format_xcolor(pxc, xp.color);
-	}
-
-	len = 0;
-	black = 0;
-	for (i = 0; i < rows; i++)
-	{
-		rt.x = prt->x + unit;
-		rt.w = unit;
-		rt.y = prt->y + unit + i * unit;
-		rt.h = unit;
-
-		for (j = 0; j < cols; j++)
-		{
-			c = *(bar_buf + i * cols + j);
-			b = 0x80;
-
-			while (b)
-			{
-				rt.x += rt.w;
-
-				black = (c & b) ? 1 : 0;
-
-				if (black && pxc)
-				{
-					svg_draw_rect_raw(g, &xp, &xb, &rt);
-				}
-
-				b = b >> 1;
-			}
-		}
-	}
-
-	xmem_free(bar_buf);
-
-	prt->w = rt.x + unit - prt->x;
-	prt->h = rt.y + rt.h + unit - prt->y;
-}
-
-void svg_draw_qrcode(canvas_t canv, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
-{
-	int black;
-	int rows,cols;
-	unsigned char b, c;
-	int i,j;
-
-	float unit = 0.5f;
-	xrect_t rt;
-	xbrush_t xb;
-	xpen_t xp;
-
-	byte_t* buf;
-	dword_t buf_len;
-
-	byte_t* bar_buf;
-	dword_t bar_len;
-
-#ifdef _UNICODE
-	buf_len = ucs_to_utf8(text, len, NULL, MAX_LONG);
-#else
-	buf_len = mbs_to_utf8(text, len, NULL, MAX_LONG);
-#endif
-
-	if (!buf_len) return;
-
-	buf = (byte_t*)xmem_alloc(buf_len + 1);
-#ifdef _UNICODE
-	ucs_to_utf8(text, len, buf, buf_len);
-#else
-	mbs_to_utf8(text, len, buf, buf_len);
-#endif
-
-	bar_len = qr_encode(buf, buf_len, NULL, MAX_LONG, NULL, NULL);
-	if (bar_len <= 0)
-	{
-		xmem_free(buf);
-		return;
-	}
-
-	bar_buf = (byte_t*)xmem_alloc(bar_len + 1);
-	bar_len = qr_encode(buf, buf_len, bar_buf, bar_len, &rows, &cols);
-
-	xmem_free(buf);
-
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-		default_xpen(&xp);
-		format_xcolor(pxc, xp.color);
-	}
-
-	len = 0;
-	black = 0;
-	for (i = 0; i < rows; i++)
-	{
-		rt.fx = prt->fx + unit;
-		rt.fw = unit;
-		rt.fy = prt->fy + unit + i * unit;
-		rt.fh = unit;
-
-		for (j = 0; j < cols; j++)
-		{
-			c = *(bar_buf + i * cols + j);
-			b = 0x80;
-
-			while (b)
-			{
-				rt.fx += rt.fw;
-
-				black = (c & b) ? 1 : 0;
-
-				if (black && pxc)
-				{
-					svg_draw_rect(canv, &xp, &xb, &rt);
-				}
-
-				b = b >> 1;
-			}
-		}
-	}
-
-	xmem_free(bar_buf);
-
-	prt->fw = rt.fx + unit - prt->fx;
-	prt->fh = rt.fy + rt.fh + unit - prt->fy;
-}
-#endif
-
-void svg_draw_gizmo(canvas_t canv, const xcolor_t* pxc, const xrect_t* pxr, const tchar_t* gname)
-{
-	xrect_t xr;
-	PF_SVG_GIZMO_MAKE pf;
-	link_t_ptr g;
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-
-	svg_rect_tm_to_pt(canv, &xr);
-
-	g = svg_get_canvas_doc(canv);
-
-	pf = svg_find_gizmo_maker(gname);
-	if (pf)
-	{
-		(*pf)(g, pxc, &xr);
-	}
-}
-
-void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
-{
-}
-
-void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
-{
-}
-
-typedef struct _FIXTEXT_SCAN{
-	link_t_ptr g;
-	xrect_t xr;
-}FIXTEXT_SCAN;
-
-static int _fix_text_calc_rect(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	FIXTEXT_SCAN* ptt = (FIXTEXT_SCAN*)pp;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_END:
-		ptt->xr.w = ptm->cur_x + ptm->cur_w - ptm->min_x + ptm->char_w;
-		ptt->xr.h = ptm->cur_y + ptm->cur_h - ptm->min_y + ptm->line_h;
-		return _SCANNER_OPERA_STOP;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void svg_text_rect_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const tchar_t* sz_text, int sz_len, xrect_t* pxr)
-{
-	FIXTEXT_SCAN tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.g = g;
-	xmem_copy((void*)(&tt.xr), (void*)pxr, sizeof(xrect_t));
-	
-	it.ctx = (void*)g;
-	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
-
-	if (sz_len < 0)
-		sz_len = xslen(sz_text);
-	if (sz_text)
-		sz_len++;
-
-	scan_fix_text((tchar_t*)sz_text, sz_len, &it, pxf, pxa, tt.xr.x, tt.xr.y, tt.xr.w, tt.xr.h, 0, _fix_text_calc_rect, (void*)&tt);
-
-}
-
-void svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* sz_text, int sz_len, xrect_t* pxr)
-{
-	xrect_t xr;
-	link_t_ptr g;
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = PAPER_MAX_HEIGHT;
-	svg_rect_tm_to_pt(canv, &xr);
-
-	g = svg_get_canvas_doc(canv);
-
-	svg_text_rect_raw(g, pxf, pxa, sz_text, sz_len, &xr);
-
-	pxr->fw = svg_pt_to_tm(canv, xr.w, 1) - svg_pt_to_tm(canv, 0, 1);
-	pxr->fh = svg_pt_to_tm(canv, xr.h, 0) - svg_pt_to_tm(canv, 0, 0);
-}
-
-void _svg_draw_single_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
-{
-	link_t_ptr nlk;
+	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
 	write_text_to_svg_node(nlk, pxf, pxa, pxr, txt, len);
 }
 
-void _svg_draw_single_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
-{
-	link_t_ptr g;
-	xrect_t xr;
-
-	g = svg_get_canvas_doc(canv);
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-
-	svg_rect_tm_to_pt(canv, &xr);
-
-	_svg_draw_single_text_raw(g, pxf, pxa, &xr, txt, len);
-}
-
-typedef struct _FIXTEXT_DRAW{
-	link_t_ptr g;
-	string_t vs;
-}FIXTEXT_DRAW;
-
-static int _fix_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	FIXTEXT_DRAW* ptt = (FIXTEXT_DRAW*)pp;
-	xrect_t xr;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		string_cat(ptt->vs, cur_char, -1);
-		break;
-	case _SCANNER_STATE_NEWLINE:
-	case _SCANNER_STATE_END:
-		xr.x = (ptm->min_x + ptm->char_w);
-		xr.y = (ptm->cur_y);
-		xr.w = (ptm->max_x - ptm->min_x);
-		xr.h = (ptm->cur_h);
-
-		_svg_draw_single_text_raw(ptt->g, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
-		string_empty(ptt->vs);
-		break;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void _svg_draw_fix_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* text, int len)
-{
-	FIXTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.g = g;
-	tt.vs = string_alloc();
-
-	it.ctx = (void*)g;
-	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
-
-	if (len < 0)
-		len = xslen(text);
-	if (text)
-		len++;
-
-	scan_fix_text((tchar_t*)text, len, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 0, _fix_text_calc_draw, (void*)&tt);
-
-	string_free(tt.vs);
-}
-
-void _svg_draw_fix_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* text, int len)
-{
-	xrect_t xr;
-	link_t_ptr g;
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = PAPER_MAX_HEIGHT;
-	svg_rect_tm_to_pt(canv, &xr);
-
-	g = svg_get_canvas_doc(canv);
-
-	_svg_draw_fix_text_raw(g, pxf, pxa, &xr, text, len);
-}
-
-void svg_draw_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
-{
-	xrect_t xr = { 0 };
-
-	if (pxa && !is_null(pxa->text_wrap))
-	{
-		if (compare_text(pxa->line_align, -1, GDI_ATTR_TEXT_ALIGN_FAR, -1, 0) == 0)
-		{
-			xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-			svg_text_rect_raw(g, pxf, pxa, txt, len, &xr);
-
-			xr.y = pxr->y + pxr->h - xr.h;
-		}
-		else if (compare_text(pxa->line_align, -1, GDI_ATTR_TEXT_ALIGN_CENTER, -1, 0) == 0)
-		{
-			xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-			svg_text_rect_raw(g, pxf, pxa, txt, len, &xr);
-
-			xr.y = pxr->y + (pxr->h - xr.h) / 2;
-		}
-		else
-		{
-			xr.y = pxr->y;
-		}
-
-		xr.x = pxr->x;
-		xr.w = pxr->w;
-
-		_svg_draw_fix_text_raw(g, pxf, pxa, &xr, txt, len);
-	}
-	else
-	{
-		_svg_draw_single_text_raw(g, pxf, pxa, pxr, txt, len);
-	}
-}
-
 void svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
-	xrect_t xr = { 0 };
+	visual_t view;
+	xrect_t xr;
 
-	if (pxa && !is_null(pxa->text_wrap))
+	view = svg_get_canvas_visual(canv);
+
+	xr.fx = pxr->fx;
+	xr.fy = pxr->fy;
+	xr.fw = pxr->fw;
+	xr.fh = pxr->fh;
+
+	svg_rect_tm_to_pt(canv, &xr);
+
+	svg_draw_text_raw(view, pxf, pxa, &xr, txt, len);
+}
+
+void svg_text_rect_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
+{
+	float px, pm;
+	int row;
+
+	if (len < 0) len = xslen(txt);
+
+	font_metric_by_pt(xstof(pxf->size), &pm, &px);
+	row = (int)(px * len / pxr->w + 0.5);
+
+	pxr->h = svg_tm_to_pt_raw(view, pm * row, 0) - svg_tm_to_pt_raw(view, 0, 0);
+}
+
+void svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
+{
+	float pm;
+	int row;
+
+	if (len < 0) len = xslen(txt);
+
+	font_metric_by_pt(xstof(pxf->size), &pm, NULL);
+	row = (int)(pm * len / pxr->fw);
+
+	pxr->fh = row * pm;
+}
+
+void svg_text_size_raw(visual_t view, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
+{
+	float mm;
+
+	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
+
+	if (len < 0) len = xslen(txt);
+
+	pxs->w = svg_tm_to_pt_raw(view, mm * len, 1) - svg_tm_to_pt_raw(view, 0, 1);
+	pxs->h = svg_tm_to_pt_raw(view, mm, 0) - svg_tm_to_pt_raw(view, 0, 0);
+}
+
+void svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
+{
+	float mm;
+
+	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
+
+	if (len < 0) len = xslen(txt);
+
+	pxs->fw = mm * len;
+	pxs->fh = mm;
+}
+
+void svg_text_metric_raw(visual_t view, const xfont_t* pxf, xsize_t* pxs)
+{
+	float mm;
+
+	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
+
+	pxs->w = svg_tm_to_pt_raw(view, mm, 1) - svg_tm_to_pt_raw(view, 0, 1);
+	pxs->h = svg_tm_to_pt_raw(view, mm, 0) - svg_tm_to_pt_raw(view, 0, 0);
+}
+
+void svg_text_metric(canvas_t canv, const xfont_t* pxf, xsize_t* pxs)
+{
+	float mm;
+
+	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
+
+	pxs->fw = mm;
+	pxs->fh = mm;
+}
+
+float svg_pixel_metric_raw(visual_t view, bool_t horz)
+{
+	link_t_ptr svg;
+	xrect_t vb;
+
+	svg = svg_get_visual_doc(view);
+
+	get_svg_viewbox(svg, &vb);
+
+	if (horz)
 	{
-		if (compare_text(pxa->line_align, -1, GDI_ATTR_TEXT_ALIGN_FAR, -1, 0) == 0)
-		{
-			xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-			svg_text_rect(canv, pxf, pxa, txt, len, &xr);
-
-			xr.fy = pxr->fy + pxr->fh - xr.fh;
-		}
-		else if (compare_text(pxa->line_align, -1, GDI_ATTR_TEXT_ALIGN_CENTER, -1, 0) == 0)
-		{
-			xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-			svg_text_rect(canv, pxf, pxa, txt, len, &xr);
-
-			xr.fy = pxr->fy + (pxr->fh - xr.fh) / 2;
-		}
-		else
-		{
-			xr.fy = pxr->fy;
-		}
-
-		xr.fx = pxr->fx;
-		xr.fw = pxr->fw;
-
-		_svg_draw_fix_text(canv, pxf, pxa, &xr, txt, len);
+		return (float)((float)vb.w / get_svg_width(svg));
 	}
 	else
 	{
-		_svg_draw_single_text(canv, pxf, pxa, pxr, txt, len);
+		return (float)((float)vb.h / get_svg_height(svg));
 	}
 }
 
-typedef struct _VARTEXT_DRAW{
-	link_t_ptr g;
-	int page;
-	string_t vs;
-}VARTEXT_DRAW;
-
-static int _var_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+float svg_pixel_metric(canvas_t canv, bool_t horz)
 {
-	VARTEXT_DRAW* ptt = (VARTEXT_DRAW*)pp;
-	xrect_t xr;
+	visual_t view;
 
-	switch (scan)
+	view = svg_get_canvas_visual(canv);
+
+	return svg_pixel_metric_raw(view, horz);
+}
+
+void svg_color_out_raw(visual_t view, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
+{
+	xrect_t xr;
+	xcolor_t xc;
+	xbrush_t xb;
+	tchar_t* val;
+	int vlen;
+	tchar_t clr[CLR_LEN + 1];
+	int n, total = 0;
+
+	if (len < 0)
+		len = xslen(rgbstr);
+
+	default_xbrush(&xb);
+
+	while (n = parse_string_token((rgbstr + total), (len - total), _T(';'), &val, &vlen))
 	{
-	case _SCANNER_STATE_WORDS:
-		string_cat(ptt->vs, cur_char, -1);
-		break;
-	case _SCANNER_STATE_NEWLINE:
-	case _SCANNER_STATE_END:
-		xr.x = (ptm->min_x + ptm->char_w);
-		xr.y = (ptm->cur_y);
-		xr.w = (ptm->max_x - ptm->min_x);
-		xr.h = (ptm->cur_h);
+		total += n;
 
-		_svg_draw_single_text_raw(ptt->g, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
-		string_empty(ptt->vs);
-		break;
+		xsncpy(clr, val, CLR_LEN);
+		parse_xcolor(&xc, clr);
+		format_xcolor(&xc, xb.color);
+
+		svg_draw_rect_raw(view, NULL, &xb, &xr);
+
+		if (horz)
+			xr.x += xr.w;
+		else
+			xr.y += xr.h;
 	}
-
-	return _SCANNER_OPERA_NEXT;
 }
 
-void svg_draw_var_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var)
-{
-	VARTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.g = g;
-	tt.page = 0;
-	tt.vs = string_alloc();
-
-	it.ctx = (void*)g;
-	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
-
-	scan_var_text(var, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 0, _var_text_calc_draw, (void*)&tt);
-
-	string_free(tt.vs);
-}
-
-void svg_draw_var_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, string_t var)
+void svg_color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tchar_t* rgbstr, int len)
 {
 	xrect_t xr;
-	link_t_ptr g;
+	xcolor_t xc;
+	xbrush_t xb;
+	tchar_t* val;
+	int vlen;
+	tchar_t clr[CLR_LEN + 1];
+	int n, total = 0;
+
+	if (len < 0)
+		len = xslen(rgbstr);
+
+	default_xbrush(&xb);
+
+	while (n = parse_string_token((rgbstr + total), (len - total), _T(';'), &val, &vlen))
+	{
+		total += n;
+
+		xsncpy(clr, val, CLR_LEN);
+		parse_xcolor(&xc, clr);
+		format_xcolor(&xc, xb.color);
+
+		svg_draw_rect(canv, NULL, &xb, &xr);
+
+		if (horz)
+			xr.fx += xr.fw;
+		else
+			xr.fy += xr.fh;
+	}
+}
+
+void svg_draw_image_raw(visual_t view, const ximage_t* pxi, const xrect_t* pxr)
+{
+	link_t_ptr g, nlk;
+
+	g = svg_get_visual_doc(view);
+
+	nlk = insert_svg_node(g);
+
+	write_ximage_to_svg_node(nlk, pxi, pxr);
+}
+
+void svg_draw_image(canvas_t canv, const ximage_t* pxi, const xrect_t* pxr)
+{
+	visual_t view;
+	xrect_t xr;
+
+	if (is_null(pxi->source))
+		return;
+
+	view = svg_get_canvas_visual(canv);
 
 	xr.fx = pxr->fx;
 	xr.fy = pxr->fy;
 	xr.fw = pxr->fw;
 	xr.fh = pxr->fh;
+
 	svg_rect_tm_to_pt(canv, &xr);
 
-	g = svg_get_canvas_doc(canv);
-
-	svg_draw_var_text_raw(g, pxf, pxa, &xr, var);
+	svg_draw_image_raw(view, pxi, &xr);
 }
 
-typedef struct _TAGTEXT_DRAW{
-	link_t_ptr g;
-	int page;
-	string_t vs;
-}TAGTEXT_DRAW;
-
-static int _tag_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+void svg_draw_icon_raw(visual_t view, const tchar_t* iname, const xrect_t* prt)
 {
-	TAGTEXT_DRAW* ptt = (TAGTEXT_DRAW*)pp;
-	xrect_t xr;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		string_cat(ptt->vs, cur_char, -1);
-		break;
-	case _SCANNER_STATE_NEWLINE:
-	case _SCANNER_STATE_END:
-		xr.x = ptm->min_x + ptm->char_w;
-		xr.y = ptm->cur_y;
-		xr.w = ptm->max_x - ptm->min_x;
-		xr.h = ptm->cur_h;
-
-		_svg_draw_single_text_raw(ptt->g, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
-		string_empty(ptt->vs);
-		break;
-	}
-
-	return _SCANNER_OPERA_NEXT;
 }
 
-void svg_draw_tag_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
+void svg_draw_icon(canvas_t canv, const tchar_t* iname, const xrect_t* prt)
 {
-	TAGTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.g = g;
-	tt.page = page;
-	tt.vs = string_alloc();
-
-	it.ctx = (void*)g;
-	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
-
-	scan_tag_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _tag_text_calc_draw, (void*)&tt);
-
-	string_free(tt.vs);
 }
 
-void svg_draw_tag_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
+void svg_draw_thumb_raw(visual_t view, const tchar_t* fname, const xrect_t* prt)
 {
-	xrect_t xr;
-	link_t_ptr g;
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-	svg_rect_tm_to_pt(canv, &xr);
-
-	g = svg_get_canvas_doc(canv);
-
-	svg_draw_tag_text_raw(g, pxf, pxa, &xr, data, page);
 }
 
-typedef struct _MEMOTEXT_DRAW{
-	link_t_ptr g;
-	int page;
-	string_t vs;
-}MEMOTEXT_DRAW;
-
-static int _memo_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
+void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
 {
-	MEMOTEXT_DRAW* ptt = (MEMOTEXT_DRAW*)pp;
-	xrect_t xr;
-
-	if (page < ptt->page)
-		return _SCANNER_OPERA_PAGED;
-	else if (page > ptt->page)
-		return _SCANNER_OPERA_STOP;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		string_cat(ptt->vs, cur_char, -1);
-		break;
-	case _SCANNER_STATE_LINEBREAK:
-	case _SCANNER_STATE_PAGEBREAK:
-	case _SCANNER_STATE_NEWLINE:
-	case _SCANNER_STATE_NEWPAGE:
-	case _SCANNER_STATE_END:
-		xr.x = (ptm->min_x + ptm->char_w);
-		xr.y = (ptm->cur_y);
-		xr.w = (ptm->max_x - ptm->min_x);
-		xr.h = (ptm->cur_h);
-
-		_svg_draw_single_text_raw(ptt->g, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
-		string_empty(ptt->vs);
-		break;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-
-void svg_draw_memo_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	MEMOTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.g = g;
-	tt.page = page;
-	tt.vs = string_alloc();
-
-	it.ctx = (void*)g;
-	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
-
-	scan_memo_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _memo_text_calc_draw, (void*)&tt);
-
-	string_free(tt.vs);
-}
-
-void svg_draw_memo_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	xrect_t xr;
-	link_t_ptr g;
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-	svg_rect_tm_to_pt(canv, &xr);
-
-	g = svg_get_canvas_doc(canv);
-
-	svg_draw_memo_text_raw(g, pxf, pxa, &xr, data, page);
-}
-
-typedef struct _RICHTEXT_DRAW{
-	link_t_ptr g;
-	int page;
-	string_t vs;
-}RICHTEXT_DRAW;
-
-static int _rich_text_calc_draw(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
-{
-	RICHTEXT_DRAW* ptt = (RICHTEXT_DRAW*)pp;
-	xrect_t xr;
-
-	if (page < ptt->page)
-		return _SCANNER_OPERA_PAGED;
-	else if (page > ptt->page)
-		return _SCANNER_OPERA_STOP;
-
-	switch (scan)
-	{
-	case _SCANNER_STATE_WORDS:
-		string_cat(ptt->vs, cur_char, -1);
-		break;
-	case _SCANNER_STATE_LINEBREAK:
-	case _SCANNER_STATE_PAGEBREAK:
-	case _SCANNER_STATE_NEWLINE:
-	case _SCANNER_STATE_NEWPAGE:
-	case _SCANNER_STATE_END:
-		xr.x = (ptm->min_x + ptm->char_w);
-		xr.y = (ptm->cur_y);
-		xr.w = (ptm->max_x - ptm->min_x);
-		xr.h = (ptm->cur_h);
-
-		_svg_draw_single_text_raw(ptt->g, pxf, pxa, &xr, string_ptr(ptt->vs), string_len(ptt->vs));
-		string_empty(ptt->vs);
-		break;
-	}
-
-	return _SCANNER_OPERA_NEXT;
-}
-
-void svg_draw_rich_text_raw(link_t_ptr g, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	RICHTEXT_DRAW tt = { 0 };
-	if_measure_t it = { 0 };
-
-	tt.g = g;
-	tt.page = page;
-	tt.vs = string_alloc();
-
-	it.ctx = (void*)g;
-	it.pf_mm_points = (PF_MM_POINTS)svg_pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)svg_text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)svg_text_size_raw;
-
-	scan_rich_text(data, &it, pxf, pxa, pxr->x, pxr->y, pxr->w, pxr->h, 1, _rich_text_calc_draw, (void*)&tt);
-
-	string_free(tt.vs);
-}
-
-void svg_draw_rich_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, link_t_ptr data, int page)
-{
-	xrect_t xr;
-	link_t_ptr g;
-
-	xr.fx = pxr->fx;
-	xr.fy = pxr->fy;
-	xr.fw = pxr->fw;
-	xr.fh = pxr->fh;
-	svg_rect_tm_to_pt(canv, &xr);
-
-	g = svg_get_canvas_doc(canv);
-
-	svg_draw_rich_text_raw(g, pxf, pxa, &xr, data, page);
 }
 
 

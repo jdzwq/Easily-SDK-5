@@ -230,6 +230,7 @@ res_glc_t	_widget_get_glctx(res_win_t wt)
 LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	win32_widget_t* pws = GETXDUSTRUCT(hWnd);
+
 	DWORD ds = (pws) ? pws->style : 0;
 
 	LPCREATESTRUCT lpcs;
@@ -258,7 +259,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			wct.device.widget = hWnd;
 			wct.type = CONTEXT_WIDGET;
 
-			(*pev->pf_on_nc_paint)(hWnd, &wct);
+			(*pev->pf_on_nc_paint)(hWnd, &(wct.head));
 
 			ReleaseDC(hWnd, hDC);
 			ZeroMemory((void*)&wct, sizeof(win32_context_t));
@@ -640,8 +641,8 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		{
 			xsize_t xs;
 			
-			xs.cx = (int)(short)LOWORD(lParam);
-			xs.cy = (int)(short)HIWORD(lParam);
+			xs.w = (int)(short)LOWORD(lParam);
+			xs.h = (int)(short)HIWORD(lParam);
 
 			(*pev->pf_on_size)(hWnd, (int)wParam, &xs);
 
@@ -860,7 +861,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 				wct.device.widget = hWnd;
 				wct.type = CONTEXT_WIDGET;
 
-				(*pev->pf_on_paint)(hWnd, &wct, &xrFront);
+				(*pev->pf_on_paint)(hWnd, &(wct.head), &xrFront);
 
 				ZeroMemory((void*)&wct, sizeof(win32_context_t));
 #ifdef XDU_SUPPORT_CONTEXT_OPENGL
@@ -1118,8 +1119,8 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		if (pev && pev->sub_on_size)
 		{
 			xsize_t xs = { 0 };
-			xs.cx = (int)(short)LOWORD(lParam);
-			xs.cy = (int)(short)HIWORD(lParam);
+			xs.w = (int)(short)LOWORD(lParam);
+			xs.h = (int)(short)HIWORD(lParam);
 
 			if ((*pev->sub_on_size)(hWnd, (int)wParam, &xs, (uid_t)uIdSubclass, pev->delta))
 				return 0;
@@ -1236,7 +1237,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 				wct.device.widget = hWnd;
 				wct.type = CONTEXT_WIDGET;
 
-				rt = (*pev->sub_on_paint)(hWnd, &wct, &xrFront, (uid_t)uIdSubclass, pev->delta);
+				rt = (*pev->sub_on_paint)(hWnd, &(wct.head), &xrFront, (uid_t)uIdSubclass, pev->delta);
 
 				ZeroMemory((void*)&wct, sizeof(win32_context_t));
 
@@ -1726,56 +1727,56 @@ void _widget_calc_border(dword_t ws, border_t* pbd)
 
 	if (ws & WD_STYLE_TITLE)
 	{
-		xs.fx = ZERO_WIDTH;
-		xs.fy = WIDGET_TITLE_SPAN;
+		xs.fw = ZERO_WIDTH;
+		xs.fh = WIDGET_TITLE_SPAN;
 		_screen_size_to_pt(&xs);
 
-		pbd->title = xs.cy;
+		pbd->title = xs.h;
 	}
 
 	if (ws & WD_STYLE_BORDER)
 	{
-		xs.fx = ZERO_WIDTH;
+		xs.fw = ZERO_WIDTH;
 		if (ws & WD_STYLE_CHILD)
-			xs.fy = WIDGET_CHILD_EDGE;
+			xs.fh = WIDGET_CHILD_EDGE;
 		else
-			xs.fy = WIDGET_FRAME_EDGE;
+			xs.fh = WIDGET_FRAME_EDGE;
 		_screen_size_to_pt(&xs);
 
-		pbd->edge = xs.cy;
+		pbd->edge = xs.h;
 	}
 
 	if (ws & WD_STYLE_HSCROLL)
 	{
-		xs.fx = ZERO_WIDTH;
-		xs.fy = WIDGET_SCROLL_SPAN;
+		xs.fw = ZERO_WIDTH;
+		xs.fh = WIDGET_SCROLL_SPAN;
 		_screen_size_to_pt(&xs);
 
-		pbd->hscroll = xs.cy;
+		pbd->hscroll = xs.h;
 	}
 
 	if (ws & WD_STYLE_VSCROLL)
 	{
-		xs.fx = WIDGET_SCROLL_SPAN;
-		xs.fy = ZERO_HEIGHT;
+		xs.fw = WIDGET_SCROLL_SPAN;
+		xs.fh = ZERO_HEIGHT;
 		_screen_size_to_pt(&xs);
 
-		pbd->vscroll = xs.cx;
+		pbd->vscroll = xs.w;
 	}
 
 	if (ws & WD_STYLE_MENUBAR)
 	{
-		xs.fx = ZERO_WIDTH;
-		xs.fy = WIDGET_MENU_SPAN;
+		xs.fw = ZERO_WIDTH;
+		xs.fh = WIDGET_MENU_SPAN;
 		_screen_size_to_pt(&xs);
 
-		pbd->menu = xs.cy;
+		pbd->menu = xs.h;
 	}
 
-	xs.fx = ZERO_WIDTH;
-	xs.fy = WIDGET_ICON_SPAN;
+	xs.fw = ZERO_WIDTH;
+	xs.fh = WIDGET_ICON_SPAN;
 	_screen_size_to_pt(&xs);
-	pbd->icon = xs.cy;
+	pbd->icon = xs.h;
 }
 
 void _widget_adjust_size(dword_t ws, xsize_t* pxs)
@@ -1785,8 +1786,8 @@ void _widget_adjust_size(dword_t ws, xsize_t* pxs)
 
 	AdjustWindowRectEx(&rt, _WindowStyle(ws), 0, 0);
 
-	pxs->cx = rt.right - rt.left;
-	pxs->cy = rt.bottom - rt.top;
+	pxs->w = rt.right - rt.left;
+	pxs->h = rt.bottom - rt.top;
 #else
 	if (ws & WD_STYLE_OWNERNC)
 	{
@@ -1794,24 +1795,24 @@ void _widget_adjust_size(dword_t ws, xsize_t* pxs)
 
 		_widget_calc_border(ws, &bd);
 
-		pxs->cx += (2 * bd.edge + bd.vscroll);
-		pxs->cy += (2 * bd.edge + bd.title + bd.hscroll + bd.menu);
+		pxs->w += (2 * bd.edge + bd.vscroll);
+		pxs->h += (2 * bd.edge + bd.title + bd.hscroll + bd.menu);
 	}
 	else
 	{
 		RECT rt = { 0 };
-		rt.right = pxs->cx;
-		rt.bottom = pxs->cy;
+		rt.right = pxs->w;
+		rt.bottom = pxs->h;
 
 		AdjustWindowRect(&rt, _WindowStyle(ws), FALSE);
 
-		pxs->cx = rt.right - rt.left;
-		pxs->cy = rt.bottom - rt.top;
+		pxs->w = rt.right - rt.left;
+		pxs->h = rt.bottom - rt.top;
 	}
 #endif
 
-	pxs->cx += 2;
-	pxs->cy += 2;
+	pxs->w += 2;
+	pxs->h += 2;
 }
 
 bool_t _widget_is_maximized(res_win_t wt)
@@ -1843,7 +1844,7 @@ bool_t _widget_enum_child(res_win_t widget, PF_ENUM_WINDOW_PROC pf, var_long pv)
 }
 
 
-res_ctx_t _widget_client_ctx(res_win_t wt)
+visual_t _widget_client_ctx(res_win_t wt)
 {
 	win32_context_t* pct;
 
@@ -1852,10 +1853,10 @@ res_ctx_t _widget_client_ctx(res_win_t wt)
 	pct->device.widget = wt;
 	pct->type = CONTEXT_WIDGET;
 	
-	return (res_ctx_t)pct;
+	return (visual_t)pct;
 }
 
-res_ctx_t _widget_window_ctx(res_win_t wt)
+visual_t _widget_window_ctx(res_win_t wt)
 {
 	win32_context_t* pct;
 
@@ -1864,10 +1865,10 @@ res_ctx_t _widget_window_ctx(res_win_t wt)
 	pct->device.widget = wt;
 	pct->type = CONTEXT_WIDGET;
 
-	return (res_ctx_t)pct;
+	return (visual_t)pct;
 }
 
-void _widget_release_ctx(res_win_t wt, res_ctx_t dc)
+void _widget_release_ctx(res_win_t wt, visual_t dc)
 {
 	win32_context_t* pct = (win32_context_t*)dc;
 
@@ -2204,8 +2205,8 @@ void _widget_size(res_win_t wt, const xsize_t* pxs)
 	RECT rt;
 
 	GetWindowRect(wt, &rt);
-	rt.right = rt.left + pxs->cx;
-	rt.bottom = rt.top + pxs->cy;
+	rt.right = rt.left + pxs->w;
+	rt.bottom = rt.top + pxs->h;
 
 #ifdef WINCE
 	SetWindowPos(wt, NULL, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
@@ -2903,8 +2904,8 @@ void _widget_do_trace(res_win_t hWnd)
 /*********************************************************************************************************/
 void _get_screen_size(xsize_t* pxs)
 {
-	pxs->cx = GetSystemMetrics(SM_CXFULLSCREEN);
-	pxs->cy = GetSystemMetrics(SM_CYFULLSCREEN);
+	pxs->w = GetSystemMetrics(SM_CXFULLSCREEN);
+	pxs->h = GetSystemMetrics(SM_CYFULLSCREEN);
 }
 
 void _get_desktop_size(xsize_t* pxs)
@@ -2912,8 +2913,8 @@ void _get_desktop_size(xsize_t* pxs)
 	RECT rt;
 
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &rt, 0);
-	pxs->cx = rt.right - rt.left;
-	pxs->cy = rt.bottom - rt.top;
+	pxs->w = rt.right - rt.left;
+	pxs->h = rt.bottom - rt.top;
 }
 
 void _screen_size_to_tm(xsize_t* pxs)
@@ -2927,11 +2928,11 @@ void _screen_size_to_tm(xsize_t* pxs)
 	htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
-	cx = (float)((float)pxs->cx / htpermm);
-	cy = (float)((float)pxs->cy / vtpermm);
+	cx = (float)((float)pxs->w / htpermm);
+	cy = (float)((float)pxs->h / vtpermm);
 
-	pxs->fx = cx;
-	pxs->fy = cy;
+	pxs->fw = cx;
+	pxs->fh = cy;
 
 	ReleaseDC(NULL, hDC);
 }
@@ -2947,11 +2948,11 @@ void _screen_size_to_pt(xsize_t* pxs)
 	htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
-	cx = (int)((float)pxs->fx * htpermm);
-	cy = (int)((float)pxs->fy * vtpermm);
+	cx = (int)((float)pxs->fw * htpermm);
+	cy = (int)((float)pxs->fh * vtpermm);
 
-	pxs->cx = cx;
-	pxs->cy = cy;
+	pxs->w = cx;
+	pxs->h = cy;
 
 	ReleaseDC(NULL, hDC);
 }

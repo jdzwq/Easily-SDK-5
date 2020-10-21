@@ -1721,6 +1721,8 @@ void properbag_read_diagram_entity_attributes(link_t_ptr ptr, link_t_ptr ilk)
 void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 {
 	link_t_ptr ent;
+	tchar_t* token;
+	int len;
 
 	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, ATTR_CLASS, -1, DOC_PLOT, -1);
 	set_entity_editable(ent, 0);
@@ -1730,10 +1732,6 @@ void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRELIST);
 	set_entity_options(ent, ATTR_PLOT_TYPE_OPTIONS, -1);
-
-	ent = write_proper(ptr, PROPERTY_BAG_IDENTIFY, -1, DOC_PLOT_TITLE, -1, get_plot_title_ptr(plot), -1);
-	set_entity_editable(ent, 1);
-	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
 	ent = set_proper_numeric(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_WIDTH, get_plot_width(plot));
 	set_entity_editable(ent, 1);
@@ -1747,47 +1745,83 @@ void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STAGES, -1, get_plot_y_stages_ptr(plot), -1);
+	len = get_plot_y_stages(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_stages(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STAGES, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_BASES, -1, get_plot_y_bases_ptr(plot), -1);
+	len = get_plot_y_bases(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_bases(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_BASES, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STEPS, -1, get_plot_y_steps_ptr(plot), -1);
+	len = get_plot_y_steps(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_steps(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STEPS, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_LABELS, -1, get_plot_y_labels_ptr(plot), -1);
+	len = get_plot_y_labels(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_labels(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_LABELS, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_COLORS, -1, get_plot_y_colors_ptr(plot), -1);
+	len = get_plot_y_colors(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_colors(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_COLORS, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_SHAPES, -1, get_plot_y_shapes_ptr(plot), -1);
+	len = get_plot_y_shapes(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_shapes(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_SHAPES, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_X_LABELS, -1, get_plot_x_labels_ptr(plot), -1);
+	len = get_plot_x_labels(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_x_labels(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_X_LABELS, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_X_COLORS, -1, get_plot_x_colors_ptr(plot), -1);
+	len = get_plot_x_colors(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_x_colors(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_X_COLORS, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	ent = set_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_PLOT_ROWS, get_plot_rows(plot));
+	ent = set_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_MATRIX_ROWS, get_plot_matrix_rows(plot));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = set_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_PLOT_COLS, get_plot_cols(plot));
+	ent = set_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_MATRIX_COLS, get_plot_matrix_cols(plot));
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, DOC_PLOT_MATRIX, -1, get_plot_matrix_ptr(plot), -1);
+	len = get_plot_matrix_data(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_matrix_data(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_DATA, -1, DOC_MATRIX, -1, token, len);
+	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 }
@@ -1798,8 +1832,6 @@ void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 		return;
 
 	set_plot_type(plot, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, DOC_PLOT_TYPE), -1);
-
-	set_plot_title(plot, get_proper_ptr(ptr, PROPERTY_BAG_IDENTIFY, DOC_PLOT_TITLE), -1);
 
 	set_plot_width(plot, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_WIDTH));
 
@@ -1823,11 +1855,11 @@ void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 
 	set_plot_x_colors(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_X_COLORS), -1);
 
-	set_plot_rows(plot, get_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_PLOT_ROWS));
+	set_plot_matrix_rows(plot, get_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_MATRIX_ROWS));
 
-	set_plot_cols(plot, get_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_PLOT_COLS));
+	set_plot_matrix_cols(plot, get_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_MATRIX_COLS));
 
-	set_plot_matrix(plot, get_proper_ptr(ptr, PROPERTY_BAG_DATA, DOC_PLOT_MATRIX), -1);
+	set_plot_matrix_data(plot, get_proper_ptr(ptr, PROPERTY_BAG_DATA, DOC_MATRIX), -1);
 }
 
 

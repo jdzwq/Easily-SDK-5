@@ -275,7 +275,7 @@ EXP_API void widget_splitor_on_lbuttonup(res_win_t widget, const xpoint_t* pxp);
 
 EXP_API void widget_splitor_on_size(res_win_t widget, int code, const xsize_t* pxs);
 
-EXP_API void widget_splitor_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
+EXP_API void widget_splitor_on_paint(res_win_t widget, visual_t rdc, const xrect_t* prt);
 
 EXP_API int widget_splitor_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
 
@@ -285,7 +285,7 @@ EXP_API int widget_splitor_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, 
 
 EXP_API int widget_splitor_sub_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
 
-EXP_API int widget_splitor_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+EXP_API int widget_splitor_sub_paint(res_win_t widget, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
 /******************************widget docker implement*****************************************************/
 
@@ -295,7 +295,7 @@ EXP_API void widget_docker_on_lbuttondown(res_win_t widget, const xpoint_t* pxp)
 
 EXP_API void widget_docker_on_lbuttonup(res_win_t widget, const xpoint_t* pxp);
 
-EXP_API void widget_docker_on_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt);
+EXP_API void widget_docker_on_paint(res_win_t widget, visual_t rdc, const xrect_t* prt);
 
 EXP_API int widget_docker_sub_mousemove(res_win_t widget, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta);
 
@@ -303,7 +303,7 @@ EXP_API int widget_docker_sub_lbuttondown(res_win_t widget, const xpoint_t* pxp,
 
 EXP_API int widget_docker_sub_lbuttonup(res_win_t widget, const xpoint_t* pxp, uid_t sid, var_long delta);
 
-EXP_API int widget_docker_sub_paint(res_win_t widget, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+EXP_API int widget_docker_sub_paint(res_win_t widget, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
 
 #ifdef	__cplusplus
 }

@@ -161,9 +161,9 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
-	_test_string();
+	//_test_string();
 
-	//_test_bytes();
+	_test_bytes();
 
 	//_test_stream();
 

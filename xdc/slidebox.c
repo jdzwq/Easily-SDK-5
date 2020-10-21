@@ -86,9 +86,7 @@ void slidebox_on_moved(res_win_t widget, const xpoint_t* pxp)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	hint = calc_slidebox_hint(&im, &xf, &pt);
 	if (hint == ptd->n_pos)
@@ -149,14 +147,14 @@ void hand_slidebox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_slidebox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	slidebox_delta_t* ptd = GETSLIDEBOXDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
+	if_visual_t* piv;
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -168,6 +166,7 @@ void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -179,11 +178,13 @@ void hand_slidebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	draw_slidebox(pif, &cb, &xf, ptd->n_pos);
+	draw_slidebox(pif, &xf, ptd->n_pos);
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -223,9 +224,7 @@ void slidebox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	calc_slidebox_size(&im, &xf, pxs);
 

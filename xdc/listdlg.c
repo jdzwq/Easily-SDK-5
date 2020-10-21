@@ -76,12 +76,12 @@ int hand_listdlg_create(res_win_t widget, void* data)
 	xmem_zero((void*)ptd, sizeof(listdlg_delta_t));
 	ptd->list = (link_t_ptr)data;
 
-	xs.fx = LISTDLG_BUTTON_WIDTH;
-	xs.fy = LISTDLG_BUTTON_HEIGHT;
+	xs.fw = LISTDLG_BUTTON_WIDTH;
+	xs.fh = LISTDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.h -= xs.cy;
+	xr.h -= xs.h;
 
 	listctrl = listctrl_create(NULL, WD_STYLE_CONTROL | WD_STYLE_OWNERNC | WD_STYLE_VSCROLL, &xr, widget);
 	widget_set_owner(listctrl, widget);
@@ -91,16 +91,16 @@ int hand_listdlg_create(res_win_t widget, void* data)
 	widget_show(listctrl, WS_SHOW_NORMAL);
 
 	widget_get_client_rect(widget, &xr);
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.w = xs.cx;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = DEF_SPLIT_FEED;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = DEF_SPLIT_FEED;
 	widget_size_to_pt(widget, &xs);
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr);
 	widget_set_user_id(pushbox, IDC_LISTDLG_PUSHBOX_OK);
@@ -142,12 +142,12 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	xrect_t xr;
 	res_win_t ctrl;
 
-	xs.fx = LISTDLG_BUTTON_WIDTH;
-	xs.fy = LISTDLG_BUTTON_HEIGHT;
+	xs.fw = LISTDLG_BUTTON_WIDTH;
+	xs.fh = LISTDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
-	xr.h -= xs.cy;
+	xr.h -= xs.h;
 
 	ctrl = widget_get_child(widget, IDC_LISTDLG_LIST);
 	if (widget_is_valid(ctrl))
@@ -158,16 +158,16 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	}
 
 	widget_get_client_rect(widget, &xr);
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.w = xs.cx;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = DEF_SPLIT_FEED;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = DEF_SPLIT_FEED;
 	widget_size_to_pt(widget, &xs);
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	ctrl = widget_get_child(widget, IDC_LISTDLG_PUSHBOX_OK);
 	if (widget_is_valid(ctrl))
@@ -180,18 +180,21 @@ void hand_listdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_listdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	listdlg_delta_t* ptd = GETLISTDLGDELTA(widget);
-	res_ctx_t rdc;
+
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xpen_t xp = { 0 };
 	xbrush_t xb = { 0 };
 	xcolor_t xc_brim, xc_core;
 	xrect_t xr,xr_bar;
-	xsize_t xs;
+	xsize_t xs;	
+	
+	visual_t rdc;
 	canvas_t canv;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -205,22 +208,26 @@ void hand_listdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	xs.fx = LISTDLG_BUTTON_WIDTH;
-	xs.fy = LISTDLG_BUTTON_HEIGHT;
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	xs.fw = LISTDLG_BUTTON_WIDTH;
+	xs.fh = LISTDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
-	xr_bar.y = xr.y + xr.h - xs.cy;
+	xr_bar.y = xr.y + xr.h - xs.h;
 	xr_bar.w = xr.w;
-	xr_bar.h = xs.cy;
+	xr_bar.h = xs.h;
 
 	parse_xcolor(&xc_brim, xb.color);
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_brim, DEF_MIDD_DARKEN);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }
@@ -301,8 +308,8 @@ void listdlg_popup_size(res_win_t widget, xsize_t* pxs)
 
 	XDL_ASSERT(ptd->list != NULL);
 
-	pxs->fx = get_list_item_width(ptd->list) * 5 + DEF_TOUCH_SPAN;
-	pxs->fy = get_list_item_height(ptd->list) * 3 + LISTDLG_BUTTON_HEIGHT;
+	pxs->fw = get_list_item_width(ptd->list) * 5 + DEF_TOUCH_SPAN;
+	pxs->fh = get_list_item_height(ptd->list) * 3 + LISTDLG_BUTTON_HEIGHT;
 	
 	widget_size_to_pt(widget, pxs);
 

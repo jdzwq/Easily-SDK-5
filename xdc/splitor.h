@@ -48,7 +48,7 @@ EXP_API bool_t hand_splitor_lbutton_up(splitor_t* ptd, const xpoint_t* pxp);
 
 EXP_API void hand_splitor_size(splitor_t* ptd, const xrect_t* pxr);
 
-EXP_API void hand_splitor_paint(splitor_t* ptd, res_ctx_t rdc);
+EXP_API void hand_splitor_paint(splitor_t* ptd, visual_t rdc);
 
 #ifdef	__cplusplus
 }

@@ -134,7 +134,7 @@ bool_t _setup_printer_mode(res_win_t wnd, dev_prn_t* pmod)
 	return 1;
 }
 
-res_ctx_t _create_printer_context(const dev_prn_t* pmod)
+visual_t _create_printer_context(const dev_prn_t* pmod)
 {
 	HDC hDC;
 	HANDLE hPrinter;
@@ -211,10 +211,10 @@ res_ctx_t _create_printer_context(const dev_prn_t* pmod)
 	pct->context = hDC;
 	pct->type = CONTEXT_PRINTER;
 
-	return (res_ctx_t)pct;
+	return (visual_t)pct;
 }
 
-void _destroy_printer_context(res_ctx_t rdc)
+void _destroy_printer_context(visual_t rdc)
 {
 	win32_context_t* pct = (win32_context_t*)rdc;
 
@@ -223,18 +223,23 @@ void _destroy_printer_context(res_ctx_t rdc)
 	HeapFree(GetProcessHeap(), 0, pct);
 }
 
-void _begin_page(res_ctx_t rdc)
+void _begin_page(visual_t rdc)
 {
-	StartPage(rdc->context);
+	win32_context_t* pct = (win32_context_t*)rdc;
+
+	StartPage(pct->context);
 }
 
-void _end_page(res_ctx_t rdc)
+void _end_page(visual_t rdc)
 {
-	EndPage(rdc->context);
+	win32_context_t* pct = (win32_context_t*)rdc;
+
+	EndPage(pct->context);
 }
 
-void _begin_doc(res_ctx_t rdc, const tchar_t* docname)
+void _begin_doc(visual_t rdc, const tchar_t* docname)
 {
+	win32_context_t* pct = (win32_context_t*)rdc;
 	DOCINFO df = { 0 };
 
 	df.cbSize = sizeof(df);
@@ -243,12 +248,14 @@ void _begin_doc(res_ctx_t rdc, const tchar_t* docname)
 	df.lpszDocName = (LPTSTR)docname;
 	df.lpszOutput = NULL;
 
-	StartDoc(rdc->context, &df);
+	StartDoc(pct->context, &df);
 }
 
-void _end_doc(res_ctx_t rdc)
+void _end_doc(visual_t rdc)
 {
-	EndDoc(rdc->context);
+	win32_context_t* pct = (win32_context_t*)rdc;
+
+	EndDoc(pct->context);
 }
 
 #endif //XDU_SUPPORT_CONTEXT_PRINTER

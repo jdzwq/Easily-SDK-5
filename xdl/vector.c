@@ -34,17 +34,17 @@ LICENSE.GPL3 for more details.
 
 #include "xdlstd.h"
 
-vector_t* vector_alloc(int size, int order)
+vector_t* vector_alloc(int size, int dimens)
 {
 	vector_t* pvt;
 
-	XDL_ASSERT(order > 0);
+	XDL_ASSERT(dimens > 0);
 
 	pvt = (vector_t*)xmem_alloc(sizeof(vector_t));
 
 	pvt->size = size;
-	pvt->order = order;
-	pvt->data = (double*)xmem_alloc(size * order * sizeof(double));
+	pvt->dimens = dimens;
+	pvt->data = (double*)xmem_alloc(size * dimens * sizeof(double));
 
 	return pvt;
 }
@@ -65,10 +65,10 @@ vector_t* vector_clone(const vector_t* src)
 	pvt = (vector_t*)xmem_alloc(sizeof(vector_t));
 
 	pvt->size = src->size;
-	pvt->order = src->order;
-	pvt->data = (double*)xmem_alloc(pvt->size * pvt->order * sizeof(double));
+	pvt->dimens = src->dimens;
+	pvt->data = (double*)xmem_alloc(pvt->size * pvt->dimens * sizeof(double));
 
-	xmem_copy((void*)pvt->data, (void*)src->data, pvt->size * pvt->order * sizeof(double));
+	xmem_copy((void*)pvt->data, (void*)src->data, pvt->size * pvt->dimens * sizeof(double));
 
 	return pvt;
 }
@@ -83,7 +83,7 @@ void vector_empty(vector_t* pvt)
 
 void vector_zero(vector_t* pvt)
 {
-	xmem_zero(pvt->data, pvt->size * pvt->order * sizeof(double));
+	xmem_zero(pvt->data, pvt->size * pvt->dimens * sizeof(double));
 }
 
 void vector_unit(vector_t* pvt)
@@ -91,7 +91,7 @@ void vector_unit(vector_t* pvt)
 	int i;
 	double* p;
 
-	i = pvt->size * pvt->order;
+	i = pvt->size * pvt->dimens;
 	p = pvt->data;
 
 	while (i--)
@@ -105,9 +105,9 @@ void vector_copy(vector_t* dest, const vector_t* src)
 	XDL_ASSERT(dest != NULL && src != NULL);
 
 	dest->size = src->size;
-	dest->order = src->order;
-	dest->data = (double*)xmem_realloc(dest->data, dest->size * dest->order * sizeof(double));
-	xmem_copy((void*)dest->data, (void*)src->data, dest->size * dest->order * sizeof(double));
+	dest->dimens = src->dimens;
+	dest->data = (double*)xmem_realloc(dest->data, dest->size * dest->dimens * sizeof(double));
+	xmem_copy((void*)dest->data, (void*)src->data, dest->size * dest->dimens * sizeof(double));
 }
 
 void vector_set_value(vector_t* pvt, int i, ...)
@@ -119,9 +119,9 @@ void vector_set_value(vector_t* pvt, int i, ...)
 
 	va_start(arg, i);
 
-	for (j = 0; j < pvt->order; j++)
+	for (j = 0; j < pvt->dimens; j++)
 	{
-		(pvt->data)[i * pvt->order + j] = va_arg(arg, double);
+		(pvt->data)[i * pvt->dimens + j] = va_arg(arg, double);
 	}
 
 	va_end(arg);
@@ -137,10 +137,10 @@ void vector_get_value(vector_t* pvt, int i, ...)
 
 	va_start(arg, i);
 
-	for (j = 0; j < pvt->order; j++)
+	for (j = 0; j < pvt->dimens; j++)
 	{
 		pd = va_arg(arg, double*);
-		*pd = (pvt->data)[i * pvt->order + j];
+		*pd = (pvt->data)[i * pvt->dimens + j];
 	}
 
 	va_end(arg);
@@ -155,14 +155,14 @@ vector_t* vector_shift(vector_t vt, ...)
 	int i,j;
 	va_list arg;
 
-	if (!vt.order)
+	if (!vt.dimens)
 		return NULL;
 
-	pb = (double*)xmem_alloc(vt.order * sizeof(double));
+	pb = (double*)xmem_alloc(vt.dimens * sizeof(double));
 
 	va_start(arg, vt);
 
-	for (i = 0; i < vt.order; i++)
+	for (i = 0; i < vt.dimens; i++)
 	{
 		pb[i] = va_arg(arg, double);
 	}
@@ -173,9 +173,9 @@ vector_t* vector_shift(vector_t vt, ...)
 
 	for (i = 0; i < pvt->size; i++)
 	{
-		for (j = 0; j < pvt->order; j++)
+		for (j = 0; j < pvt->dimens; j++)
 		{
-			(pvt->data)[i * pvt->order + j] += pb[j];
+			(pvt->data)[i * pvt->dimens + j] += pb[j];
 		}
 	}
 
@@ -192,14 +192,14 @@ vector_t* vector_rotate(vector_t vt, double ang)
 	matrix_t* pm;
 	int i;
 
-	pm = matrix_alloc(vt.order, vt.order);
+	pm = matrix_alloc(vt.dimens, vt.dimens);
 
 	matrix_set_value(pm, 0, 0, cos(ang));
 	matrix_set_value(pm, 0, 1, sin(ang));
 	matrix_set_value(pm, 1, 0, -sin(ang));
 	matrix_set_value(pm, 1, 1, cos(ang));
 
-	for (i = 2; i < vt.order; i++)
+	for (i = 2; i < vt.dimens; i++)
 	{
 		matrix_set_value(pm, i, i, 1.0);
 	}
@@ -220,20 +220,20 @@ vector_t* vector_scale(vector_t vt, ...)
 	int i;
 	va_list arg;
 
-	pb = (double*)xmem_alloc(vt.order * sizeof(double));
+	pb = (double*)xmem_alloc(vt.dimens * sizeof(double));
 
 	va_start(arg, vt);
 
-	for (i = 0; i < vt.order; i++)
+	for (i = 0; i < vt.dimens; i++)
 	{
 		pb[i] = va_arg(arg, double);
 	}
 
 	va_end(arg);
 
-	pm = matrix_alloc(vt.order, vt.order);
+	pm = matrix_alloc(vt.dimens, vt.dimens);
 
-	for (i = 0; i < vt.order; i++)
+	for (i = 0; i < vt.dimens; i++)
 	{
 		matrix_set_value(pm, i, i, pb[i]);
 	}
@@ -254,14 +254,14 @@ vector_t* vector_shear(vector_t vt, double sx, double sy)
 	matrix_t* pm;
 	int i;
 
-	pm = matrix_alloc(vt.order, vt.order);
+	pm = matrix_alloc(vt.dimens, vt.dimens);
 
 	matrix_set_value(pm, 0, 0, 1.0);
 	matrix_set_value(pm, 0, 1, sy);
 	matrix_set_value(pm, 1, 0, sx);
 	matrix_set_value(pm, 1, 1, 1.0);
 
-	for (i = 2; i < vt.order; i++)
+	for (i = 2; i < vt.dimens; i++)
 	{
 		matrix_set_value(pm, i, i, 1.0);
 	}
@@ -316,7 +316,7 @@ void vector_parse(vector_t* pvt, const tchar_t* str, int len)
 		token++; //skip '('
 		len--;
 
-		for (j = 0; j < pvt->order; j++)
+		for (j = 0; j < pvt->dimens; j++)
 		{
 			n = 0;
 			while (*token != _T(',') && *token != _T(')') && *token != _T('}') && *token != _T('\0'))
@@ -326,7 +326,7 @@ void vector_parse(vector_t* pvt, const tchar_t* str, int len)
 				len--;
 			}
 
-			(pvt->data)[i * pvt->order + j] = xsntonum(token - n, n);
+			(pvt->data)[i * pvt->dimens + j] = xsntonum(token - n, n);
 
 			if (*token == _T(')') || *token == _T('}') || *token == _T('\0'))
 				break;
@@ -377,9 +377,9 @@ int vector_format(vector_t* pvt, tchar_t* buf, int max)
 		}
 		total++;
 
-		for (j = 0; j < pvt->order; j++)
+		for (j = 0; j < pvt->dimens; j++)
 		{
-			n = numtoxs((pvt->data)[i * pvt->order + j], ((buf) ? (buf + total) : NULL), NUM_LEN);
+			n = numtoxs((pvt->data)[i * pvt->dimens + j], ((buf) ? (buf + total) : NULL), NUM_LEN);
 			if (total + n > max)
 				return total;
 			total += n;

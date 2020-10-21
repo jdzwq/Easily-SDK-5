@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr)
+float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr)
 {
 	float lr,lh, h;
 	xsize_t xs;
@@ -50,9 +50,9 @@ float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface
 	if (lr < 1)
 		lr = 1.0;
 
-	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
+	(*pif->pf_measure_font)(pif->ctx, pxf, &xs);
 
-	lh = (float)(xs.fy * lr);
+	lh = (float)(xs.fh * lr);
 
 	h = 0;
 	ilk = get_string_next_entity(ptr, LINK_FIRST);
@@ -66,7 +66,7 @@ float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface
 	return h;
 }
 
-float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr)
+float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr)
 {
 	float lw, w;
 	xsize_t xs;
@@ -77,11 +77,11 @@ float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_
 	while (ilk)
 	{
 		lw = 0;
-		(*pif->pf_text_size)(pif->ctx, pxf, get_string_entity_key_ptr(ilk), -1, &xs);
-		lw += xs.fx;
+		(*pif->pf_measure_size)(pif->ctx, pxf, get_string_entity_key_ptr(ilk), -1, &xs);
+		lw += xs.fw;
 
-		(*pif->pf_text_size)(pif->ctx, pxf, get_string_entity_val_ptr(ilk), -1, &xs);
-		lw += xs.fx;
+		(*pif->pf_measure_size)(pif->ctx, pxf, get_string_entity_val_ptr(ilk), -1, &xs);
+		lw += xs.fw;
 
 		if (w < lw)
 			w = lw;
@@ -92,9 +92,9 @@ float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_
 	return w;
 }
 
-void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
+void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
 {
-	float lr, lh, h;
+	float lr, lh, h, w;
 	xsize_t xs;
 	link_t_ptr ilk;
 
@@ -106,10 +106,11 @@ void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xfa
 	if (lr < 1)
 		lr = 1.0;
 
-	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
+	(*pif->pf_measure_font)(pif->ctx, pxf, &xs);
 
-	lh = (float)(xs.fy * lr);
+	lh = (float)(xs.fh * lr);
 
+	w = 0;
 	h = 0;
 	ilk = get_string_next_entity(ptr, LINK_FIRST);
 	while (ilk)
@@ -117,34 +118,46 @@ void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xfa
 		if (ilk == plk)
 			break;
 
+		(*pif->pf_measure_size)(pif->ctx, pxf, get_string_entity_key_ptr(ilk), -1, &xs);
+		if (w < xs.fw)
+			w = xs.fw;
+
 		h += lh;
 
-		ilk = get_menu_next_item(ptr, ilk);
+		ilk = get_string_next_entity(ptr, ilk);
 	}
 
 	pxr->fx = 0;
 	pxr->fy = h;
-	pxr->fw = pbox->fw;
+	pxr->fw = w;
 	pxr->fh = lh;
 }
 
-void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
+void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
 {
-	calc_table_item_rect(pif, pxf, pxa, pbox, ptr, plk, pxr);
-	pxr->fw = pbox->fw * ratio;
+	float fw;
+
+	fw = pif->rect.fw;
+
+	calc_table_item_rect(pif, pxf, pxa, ptr, plk, pxr);
+	pxr->fw = fw * ratio;
 }
 
-void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
+void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
 {
-	calc_table_item_rect(pif, pxf, pxa, pbox, ptr, plk, pxr);
-	pxr->fx = pbox->fw * ratio;
-	pxr->fw = pbox->fw * (1 - ratio);
+	float fw;
+
+	fw = pif->rect.fw;
+
+	calc_table_item_rect(pif, pxf, pxa, ptr, plk, pxr);
+	pxr->fx += fw * ratio;
+	pxr->fw -= fw * (1 - ratio);
 }
 
-int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk)
+int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk)
 {
 	float lr, lh, h;
-	float kw, vw;
+	float fw, kw, vw;
 	xrect_t xr;
 	xsize_t xs;
 	link_t_ptr ilk;
@@ -158,12 +171,14 @@ int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* 
 	if (lr < 1)
 		lr = 1.0;
 
-	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
+	(*pif->pf_measure_font)(pif->ctx, pxf, &xs);
 
-	lh = (float)(xs.fy * lr);
+	lh = (float)(xs.fh * lr);
 
-	kw = pbox->fw * ratio;
-	vw = pbox->fw - kw;
+	fw = pif->rect.fw;
+
+	kw = fw * ratio;
+	vw = fw - kw;
 
 	*pilk = NULL;
 	hint = TABLE_HINT_NONE;
@@ -215,7 +230,7 @@ int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* 
 	return hint;
 }
 
-void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, const canvbox_t* pbox, link_t_ptr ptr, float ratio)
+void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio)
 {
 	float lr, lh, h;
 	float kw, vw;
@@ -223,6 +238,8 @@ void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 	xsize_t xs;
 	link_t_ptr ilk;
 	int step;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	if (is_null(pxa->line_height))
 		lr = (float)xstof(DEF_GDI_TEXT_LINE_HEIGHT);
@@ -232,9 +249,9 @@ void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 	if (lr < 1)
 		lr = 1.0;
 
-	(*pif->pf_measure_metric)(pif->canvas, pxf, &xs);
+	(*pif->pf_text_metric)(pif->canvas, pxf, &xs);
 
-	lh = (float)(xs.fy * lr);
+	lh = (float)(xs.fh * lr);
 
 	kw = pbox->fw * ratio;
 	vw = pbox->fw - kw;

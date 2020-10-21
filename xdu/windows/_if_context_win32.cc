@@ -111,11 +111,12 @@ void _context_cleanup(void)
 #endif
 }
 
-res_ctx_t _create_display_context(res_win_t wt)
+visual_t _create_display_context(res_win_t wt)
 {
 	win32_context_t* ctx = NULL;
 
 	ctx = (win32_context_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_context_t));
+	ctx->head.tag = _VIEWING_DISPLAY;
 
 	if (wt)
 	{
@@ -133,71 +134,79 @@ res_ctx_t _create_display_context(res_win_t wt)
 		ctx->type = CONTEXT_SCREEN;
 	}
 
-	return ctx;
+	return (visual_t)&(ctx->head);
 }
 
-res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy)
+visual_t _create_compatible_context(visual_t rdc, int cx, int cy)
 {
+	win32_context_t* org = (win32_context_t*)rdc;
 	win32_context_t* ctx = NULL;
-	HBITMAP bmp = NULL;
+	HBITMAP bmp;
 
 	ctx = (win32_context_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_context_t));
 
-	ctx->context = CreateCompatibleDC(rdc->context);
+	ctx->context = CreateCompatibleDC(org->context);
 	if (ctx->context)
 		SetBkMode(ctx->context, TRANSPARENT);
 
-	bmp = CreateCompatibleBitmap(rdc->context, cx, cy);
+	bmp = CreateCompatibleBitmap(org->context, cx, cy);
+
 	ctx->device.bitmap = (HBITMAP)SelectObject(ctx->context, (HGDIOBJ)bmp);
 	ctx->type = CONTEXT_MEMORY;
 
-	return (res_ctx_t)ctx;
+	return (visual_t)&(ctx->head);
 }
 
-void _destroy_context(res_ctx_t rdc)
+void _destroy_context(visual_t rdc)
 {
+	win32_context_t* ctx = (win32_context_t*)rdc;
 	HBITMAP bmp;
 
-	switch (rdc->type)
+	switch (ctx->type)
 	{
 	case CONTEXT_WIDGET:
-		ReleaseDC(rdc->device.widget, rdc->context);
+		ReleaseDC(ctx->device.widget, ctx->context);
 		break;
 	case CONTEXT_MEMORY:
-		bmp = (HBITMAP)SelectObject(rdc->context, (HGDIOBJ)rdc->device.bitmap);
+		bmp = (HBITMAP)SelectObject(ctx->context, (HGDIOBJ)ctx->device.bitmap);
 		DeleteObject(bmp);
 
-		DeleteDC(rdc->context);
+		DeleteDC(ctx->context);
 		break;
 	case CONTEXT_SCREEN:
-		DeleteDC(rdc->context);
+		DeleteDC(ctx->context);
 		break;
 	case CONTEXT_PRINTER:
-		DeleteDC(rdc->context);
+		DeleteDC(ctx->context);
 		break;
 	}
 
 	HeapFree(GetProcessHeap(), 0, rdc);
 }
 
-void _get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
+void _get_device_caps(visual_t rdc, dev_cap_t* pcap)
 {
-	pcap->horz_res = GetDeviceCaps(rdc->context, HORZRES);
-	pcap->vert_res = GetDeviceCaps(rdc->context, VERTRES);
+	win32_context_t* ctx = (win32_context_t*)rdc;
 
-	pcap->horz_pixels = GetDeviceCaps(rdc->context, LOGPIXELSX);
-	pcap->vert_pixels = GetDeviceCaps(rdc->context, LOGPIXELSY);
+	pcap->horz_res = GetDeviceCaps(ctx->context, HORZRES);
+	pcap->vert_res = GetDeviceCaps(ctx->context, VERTRES);
 
-	pcap->horz_size = GetDeviceCaps(rdc->context, PHYSICALWIDTH);
-	pcap->vert_size = GetDeviceCaps(rdc->context, PHYSICALHEIGHT);
+	pcap->horz_pixels = GetDeviceCaps(ctx->context, LOGPIXELSX);
+	pcap->vert_pixels = GetDeviceCaps(ctx->context, LOGPIXELSY);
 
-	pcap->horz_feed = GetDeviceCaps(rdc->context, PHYSICALOFFSETX);
-	pcap->vert_feed = GetDeviceCaps(rdc->context, PHYSICALOFFSETY);
+	pcap->horz_size = GetDeviceCaps(ctx->context, PHYSICALWIDTH);
+	pcap->vert_size = GetDeviceCaps(ctx->context, PHYSICALHEIGHT);
+
+	pcap->horz_feed = GetDeviceCaps(ctx->context, PHYSICALOFFSETX);
+	pcap->vert_feed = GetDeviceCaps(ctx->context, PHYSICALOFFSETY);
 }
 
-void _render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
+void _render_context(visual_t src, int srcx, int srcy, visual_t dst, int dstx, int dsty, int dstw, int dsth)
 {
-	BitBlt(dst->context, dstx, dsty, dstw, dsth, src->context, srcx, srcy, SRCCOPY);
+	win32_context_t* src_ctx = (win32_context_t*)src;
+	win32_context_t* dst_ctx = (win32_context_t*)dst;
+
+	BitBlt(dst_ctx->context, dstx, dsty, dstw, dsth, src_ctx->context, srcx, srcy, SRCCOPY);
 }
 
 /*******************************************************************************************************************/
@@ -208,9 +217,10 @@ static int MulDiv(int a, int b, int c)
 }
 #endif
 
-int _font_size(res_ctx_t rdc, int height)
+int _font_size(visual_t rdc, int height)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	TEXTMETRIC tm = { 0 };
 	int size;
 
@@ -224,9 +234,10 @@ int _font_size(res_ctx_t rdc, int height)
 	return size;
 }
 
-float _pt_per_mm(res_ctx_t rdc, bool_t horz)
+float _pt_per_mm(visual_t rdc, bool_t horz)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	float fp;
 
 	if (horz)
@@ -240,9 +251,10 @@ float _pt_per_mm(res_ctx_t rdc, bool_t horz)
 	return fp;
 }
 
-void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy)
+void _text_mm_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	SIZE si;
@@ -250,8 +262,8 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 
 	if (!txt)
 	{
-		*pfx = ZERO_WIDTH;
-		*pfy = ZERO_HEIGHT;
+		pxs->fw = ZERO_WIDTH;
+		pxs->fh = ZERO_HEIGHT;
 	}
 	else
 	{
@@ -295,8 +307,8 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 		htpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSX) * INCHPERMM);
 		vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
-		*pfx = (float)((float)si.cx / htpermm);
-		*pfy = (float)((float)si.cy / vtpermm);
+		pxs->fw = (float)((float)si.cx / htpermm);
+		pxs->fh = (float)((float)si.cy / vtpermm);
 
 		hFont = (HFONT)SelectObject(hDC, orgFont);
 		DeleteObject(hFont);
@@ -306,9 +318,10 @@ void _text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 		ReleaseDC(NULL, hDC);
 }
 
-void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, int* pcx, int* pcy)
+void _text_pt_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	SIZE si;
@@ -350,8 +363,8 @@ void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 
 	GetTextExtentPoint32(hDC, txt, len, &si);
 
-	*pcx = si.cx;
-	*pcy = si.cy;
+	pxs->w = si.cx;
+	pxs->h = si.cy;
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
@@ -360,9 +373,10 @@ void _text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int le
 		ReleaseDC(NULL, hDC);
 }
 
-void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
+void _text_mm_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	TEXTMETRIC tm = { 0 };
@@ -405,8 +419,8 @@ void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
 	//*pfx = (float)((float)tm.tmAveCharWidth / htpermm);
-	*pfx = (float)((float)tm.tmMaxCharWidth / htpermm);
-	*pfy = (float)((float)tm.tmHeight / vtpermm);
+	pxs->fw = (float)((float)tm.tmMaxCharWidth / htpermm);
+	pxs->fh = (float)((float)tm.tmHeight / vtpermm);
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
@@ -415,9 +429,10 @@ void _text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy)
 		ReleaseDC(NULL, hDC);
 }
 
-void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
+void _text_pt_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	LOGFONT lf;
 	HFONT hFont, orgFont;
 	TEXTMETRIC tm = { 0 };
@@ -456,8 +471,8 @@ void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
 	GetTextMetrics(hDC, &tm);
 
 	//*pcx = tm.tmAveCharWidth;
-	*pcx = tm.tmMaxCharWidth;
-	*pcy = tm.tmHeight;
+	pxs->w = tm.tmMaxCharWidth;
+	pxs->h = tm.tmHeight;
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
@@ -466,9 +481,10 @@ void _text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy)
 		ReleaseDC(NULL, hDC);
 }
 
-float _cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
+void _cast_pt_to_mm(visual_t rdc, bool_t horz, xspan_t* pxn)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	float htpermm, vtpermm;
 	float mm;
 
@@ -476,19 +492,20 @@ float _cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
 	if (horz)
-		mm = (float)((float)pt / htpermm);
+		mm = (float)((float)pxn->r / htpermm);
 	else
-		mm = (float)((float)pt / vtpermm);
+		mm = (float)((float)pxn->r / vtpermm);
 
 	if (!rdc)
 		ReleaseDC(NULL, hDC);
 
-	return mm;
+	pxn->fr = mm;
 }
 
-int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
+void _cast_mm_to_pt(visual_t rdc, bool_t horz, xspan_t* pxn)
 {
-	HDC hDC = (rdc)? (HDC)(rdc->context) : GetDC(NULL);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (rdc)? (HDC)(ctx->context) : GetDC(NULL);
 	float htpermm, vtpermm;
 	int pt;
 
@@ -496,14 +513,14 @@ int _cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
 	vtpermm = (float)((float)GetDeviceCaps(hDC, LOGPIXELSY) * INCHPERMM);
 
 	if (horz)
-		pt = (int)(mm * htpermm + 0.5);
+		pt = (int)(pxn->fr * htpermm + 0.5);
 	else
-		pt = (int)(mm * vtpermm + 0.5);
+		pt = (int)(pxn->fr * vtpermm + 0.5);
 
 	if (!rdc)
 		ReleaseDC(NULL, hDC);
 
-	return pt;
+	pxn->r = pt;
 }
 
 #endif //XDU_SUPPORT_CONTEXT

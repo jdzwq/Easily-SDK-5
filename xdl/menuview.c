@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "menuview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -38,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 #define MENU_FEED  (float)2
 
-float calc_menu_height(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+float calc_menu_height(const if_measure_t* pif, link_t_ptr ptr)
 {
 	float ic, h;
 	xsize_t xs;
@@ -70,10 +71,10 @@ float calc_menu_height(const if_measure_t* pif, const canvbox_t* pbox, link_t_pt
 			else
 			{
 				h = ic;
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				if (h < xs.fy)
-					h = xs.fy;
+				if (h < xs.fh)
+					h = xs.fh;
 			}
 		}
 		else
@@ -84,9 +85,9 @@ float calc_menu_height(const if_measure_t* pif, const canvbox_t* pbox, link_t_pt
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				h += ((ic > xs.fy) ? ic : xs.fy);
+				h += ((ic > xs.fh) ? ic : xs.fh);
 			}
 		}
 
@@ -96,7 +97,7 @@ float calc_menu_height(const if_measure_t* pif, const canvbox_t* pbox, link_t_pt
 	return h;
 }
 
-float calc_menu_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+float calc_menu_width(const if_measure_t* pif, link_t_ptr ptr)
 {
 	float ic,w;
 	xsize_t xs;
@@ -127,9 +128,9 @@ float calc_menu_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				w += (xs.fx + MENU_FEED);
+				w += (xs.fw + MENU_FEED);
 
 				if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) != 0)
 					w += ic;
@@ -143,11 +144,11 @@ float calc_menu_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
-				xs.fx += (MENU_FEED + ic);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				xs.fw += (MENU_FEED + ic);
 
-				if (w < xs.fx)
-					w = xs.fx;
+				if (w < xs.fw)
+					w = xs.fw;
 			}
 		}
 
@@ -157,9 +158,9 @@ float calc_menu_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr
 	return w;
 }
 
-void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
+void calc_menu_item_rect(const if_measure_t* pif, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
 {
-	float ic, w, h;
+	float fw, fh, ic, w, h;
 	xsize_t xs;
 	bool_t b_horz;
 	const tchar_t* show;
@@ -177,15 +178,17 @@ void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_
 
 	show = get_menu_show_ptr(ptr);
 	ic = get_menu_icon_span(ptr);
+	fw = pif->rect.fw;
+	fh = pif->rect.fh;
 
 	if (b_horz)
 	{
 		w = 0;
-		h = pbox->fh;
+		h = fh;
 	}
 	else
 	{
-		w = pbox->fw;
+		w = fw;
 		h = 0;
 	}
 
@@ -214,9 +217,9 @@ void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				w += (xs.fx + MENU_FEED);
+				w += (xs.fw + MENU_FEED);
 
 				if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) != 0)
 					w += ic;
@@ -230,9 +233,9 @@ void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				h += ((ic > xs.fy) ? ic : xs.fy);
+				h += ((ic > xs.fh) ? ic : xs.fh);
 			}
 		}
 
@@ -256,10 +259,10 @@ void calc_menu_item_rect(const if_measure_t* pif, const canvbox_t* pbox, link_t_
 	}
 }
 
-int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
+int	calc_menu_hint(const if_measure_t* pif, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 {
 	int hint = MENU_HINT_NONE;
-	float ic, w, h;
+	float fw, fh, ic, w, h;
 	xsize_t xs;
 	bool_t b_horz;
 	const tchar_t* show;
@@ -278,15 +281,17 @@ int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_
 
 	show = get_menu_show_ptr(ptr);
 	ic = get_menu_icon_span(ptr);
+	fw = pif->rect.fw;
+	fh = pif->rect.fh;
 
 	if (b_horz)
 	{
 		w = 0;
-		h = pbox->fh;
+		h = fh;
 	}
 	else
 	{
-		w = pbox->fw;
+		w = fw;
 		h = 0;
 	}
 
@@ -312,9 +317,9 @@ int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				w += (xs.fx + MENU_FEED);
+				w += (xs.fw + MENU_FEED);
 
 				if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) != 0)
 					w += ic;
@@ -328,9 +333,9 @@ int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_measure_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				h += ((ic > xs.fy) ? ic : xs.fy);
+				h += ((ic > xs.fh) ? ic : xs.fh);
 			}
 		}
 
@@ -358,7 +363,7 @@ int	calc_menu_hint(const if_measure_t* pif, const canvbox_t* pbox, const xpoint_
 	return hint;
 }
 
-void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	float ic, w, h;
@@ -374,6 +379,8 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t* style;
 	bool_t b_horz;
 	const tchar_t* show;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	b_horz = (compare_text(get_menu_layer_ptr(ptr), -1, ATTR_LAYER_HORZ, -1, 0) == 0) ? 1 : 0;
 
@@ -432,9 +439,9 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			}
 			else
 			{
-				(*pif->pf_measure_size)(pif->canvas, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_text_size)(pif->canvas, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				w += (xs.fx + MENU_FEED);
+				w += (xs.fw + MENU_FEED);
 
 				if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) != 0)
 					w += ic;
@@ -448,9 +455,9 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			}
 			else
 			{
-				(*pif->pf_measure_size)(pif->canvas, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_text_size)(pif->canvas, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
-				h += ((ic > xs.fy) ? ic : xs.fy);
+				h += ((ic > xs.fh) ? ic : xs.fh);
 			}
 		}
 
@@ -478,11 +485,11 @@ void draw_menu(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (get_menu_item_checked(ilk))
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CHECKED);
+				draw_gizmo(pif, &xc, &xr_image, GDI_ATTR_GIZMO_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_menu_item_icon_ptr(ilk));
+				draw_gizmo(pif, &xc, &xr_image, get_menu_item_icon_ptr(ilk));
 			}
 		}
 		

@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 #define W_IS_BRACKET_LEFT(ch) (ch == L'(' || ch == L'{' || ch == L'<' || ch == L'[')
 #define W_IS_BRACKET_RIGHT(ch) (ch == L')' || ch == L'}' || ch == L'>' || ch == L']')
 
-const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** keyptr, int* keylen, wchar_t** valptr, int* vallen)
+int w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** keyptr, int* keylen, wchar_t** valptr, int* vallen)
 {
 	const wchar_t* token;
 	int total = 0;
@@ -48,11 +48,11 @@ const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** 
 	*keyptr = *valptr = NULL;
 	*keylen = *vallen = 0;
 
-	if (w_is_null(attrset) || !len)
-		return NULL;
-
 	if (len < 0)
 		len = w_xslen(attrset);
+
+	if (w_is_null(attrset) || !len)
+		return 0;
 
 	token = attrset;
 
@@ -65,7 +65,7 @@ const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** 
 	*keylen = (int)(token - *keyptr);
 
 	if (total == len)
-		return token;
+		return total;
 
 	//skip ' ','='
 	while (*token != L'\'' && *token != L'\"' && total < len)
@@ -75,7 +75,7 @@ const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** 
 	}
 
 	if (total == len)
-		return token;
+		return total;
 
 	//skip '\'','\"'
 	token++;
@@ -96,10 +96,10 @@ const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** 
 		total++;
 	}
 
-	return token;
+	return total;
 }
 
-const schar_t* a_parse_attrset_token(const schar_t* attrset, int len, schar_t** keyptr, int* keylen, schar_t** valptr, int* vallen)
+int a_parse_attrset_token(const schar_t* attrset, int len, schar_t** keyptr, int* keylen, schar_t** valptr, int* vallen)
 {
 	const schar_t* token;
 	int total = 0;
@@ -107,11 +107,11 @@ const schar_t* a_parse_attrset_token(const schar_t* attrset, int len, schar_t** 
 	*keyptr = *valptr = NULL;
 	*keylen = *vallen = 0;
 
-	if (a_is_null(attrset) || !len)
-		return NULL;
-
 	if (len < 0)
 		len = a_xslen(attrset);
+
+	if (a_is_null(attrset) || !len)
+		return 0;
 
 	token = attrset;
 
@@ -124,7 +124,7 @@ const schar_t* a_parse_attrset_token(const schar_t* attrset, int len, schar_t** 
 	*keylen = (int)(token - *keyptr);
 
 	if (total == len)
-		return token;
+		return total;
 
 	//skip ' ','='
 	while (*token != ('\'') && *token != ('\"') && total < len)
@@ -134,7 +134,7 @@ const schar_t* a_parse_attrset_token(const schar_t* attrset, int len, schar_t** 
 	}
 
 	if (total == len)
-		return token;
+		return total;
 
 	//skip '\'','\"'
 	token++;
@@ -155,25 +155,25 @@ const schar_t* a_parse_attrset_token(const schar_t* attrset, int len, schar_t** 
 		total++;
 	}
 
-	return token;
+	return total;
 }
 
 int w_parse_attrset_token_count(const wchar_t* attrset, int len)
 {
 	int count = 0;
 	wchar_t *key, *val;
-	const wchar_t* term;
 	int klen, vlen;
-
-	if (w_is_null(attrset) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = w_xslen(attrset);
 
-	term = attrset + len;
-	while (attrset = w_parse_attrset_token(attrset, (int)(term - attrset), &key, &klen, &val, &vlen))
+	if (w_is_null(attrset) || !len)
+		return 0;
+
+	while (n = w_parse_attrset_token((attrset + total), (len - total), &key, &klen, &val, &vlen))
 	{
+		total += n;
 		count++;
 	}
 
@@ -184,25 +184,25 @@ int a_parse_attrset_token_count(const schar_t* attrset, int len)
 {
 	int count = 0;
 	schar_t *key, *val;
-	const schar_t* term;
 	int klen, vlen;
-
-	if (a_is_null(attrset) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = a_xslen(attrset);
 
-	term = attrset + len;
-	while (attrset = a_parse_attrset_token(attrset, (int)(term - attrset), &key, &klen, &val, &vlen))
+	if (a_is_null(attrset) || !len)
+		return 0;
+
+	while (n = a_parse_attrset_token((attrset + total), (len - total), &key, &klen, &val, &vlen))
 	{
+		total += n;
 		count++;
 	}
 
 	return count;
 }
 
-const wchar_t* w_parse_options_token(const wchar_t* options, int len, wchar_t itemfeed, wchar_t linefeed, wchar_t** keyptr, int* keylen, wchar_t** valptr, int* vallen)
+int w_parse_options_token(const wchar_t* options, int len, wchar_t itemfeed, wchar_t linefeed, wchar_t** keyptr, int* keylen, wchar_t** valptr, int* vallen)
 {
 	const wchar_t* token;
 	int total = 0;
@@ -210,11 +210,11 @@ const wchar_t* w_parse_options_token(const wchar_t* options, int len, wchar_t it
 	*keyptr = *valptr = NULL;
 	*keylen = *vallen = 0;
 
-	if (w_is_null(options) || !len)
-		return NULL;
-
 	if (len < 0)
 		len = w_xslen(options);
+
+	if (w_is_null(options) || !len)
+		return 0;
 
 	token = options;
 	/*skip blank*/
@@ -233,7 +233,7 @@ const wchar_t* w_parse_options_token(const wchar_t* options, int len, wchar_t it
 	*keylen = (int)(token - *keyptr);
 
 	if (total == len)
-		return token;
+		return total;
 
 	if (*token == itemfeed)
 	{
@@ -249,7 +249,7 @@ const wchar_t* w_parse_options_token(const wchar_t* options, int len, wchar_t it
 	}
 
 	if (total == len)
-		return token;
+		return total;
 
 	*valptr = (wchar_t*)token;
 	while (*token != linefeed && *token != L'\0' && total < len)
@@ -265,10 +265,10 @@ const wchar_t* w_parse_options_token(const wchar_t* options, int len, wchar_t it
 		total++;
 	}
 
-	return token;
+	return total;
 }
 
-const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed, schar_t** keyptr, int* keylen, schar_t** valptr, int* vallen)
+int a_parse_options_token(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed, schar_t** keyptr, int* keylen, schar_t** valptr, int* vallen)
 {
 	const schar_t* token;
 	int total = 0;
@@ -276,11 +276,11 @@ const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t it
 	*keyptr = *valptr = NULL;
 	*keylen = *vallen = 0;
 
-	if (a_is_null(options) || !len)
-		return NULL;
-
 	if (len < 0)
 		len = a_xslen(options);
+
+	if (a_is_null(options) || !len)
+		return 0;
 
 	token = options;
 	/*skip blank*/
@@ -299,7 +299,7 @@ const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t it
 	*keylen = (int)(token - *keyptr);
 
 	if (total == len)
-		return token;
+		return total;
 
 	if (*token == itemfeed)
 	{
@@ -315,7 +315,7 @@ const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t it
 	}
 
 	if (total == len)
-		return token;
+		return total;
 
 	*valptr = (schar_t*)token;
 	while (*token != linefeed && *token != ('\0') && total < len)
@@ -331,25 +331,25 @@ const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t it
 		total++;
 	}
 
-	return token;
+	return total;
 }
 
 int w_parse_options_token_count(const wchar_t* options,int len,wchar_t itemfeed,wchar_t linefeed)
 {
 	int count = 0;
 	wchar_t *key,*val;
-	const wchar_t* term;
 	int klen,vlen;
-
-	if (w_is_null(options) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = w_xslen(options);
 
-	term = options + len;
-	while(options = w_parse_options_token(options,(int)(term - options),itemfeed,linefeed,&key,&klen,&val,&vlen))
+	if (w_is_null(options) || !len)
+		return 0;
+
+	while(n = w_parse_options_token((options + total),(len - total),itemfeed,linefeed,&key,&klen,&val,&vlen))
 	{
+		total += n;
 		count ++;
 	}
 
@@ -360,18 +360,18 @@ int a_parse_options_token_count(const schar_t* options, int len, schar_t itemfee
 {
 	int count = 0;
 	schar_t *key, *val;
-	const schar_t* term;
 	int klen, vlen;
-
-	if (a_is_null(options) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = a_xslen(options);
 
-	term = options + len;
-	while (options = a_parse_options_token(options, (int)(term - options), itemfeed, linefeed, &key, &klen, &val, &vlen))
+	if (a_is_null(options) || !len)
+		return 0;
+
+	while (n = a_parse_options_token((options + total), (len - total), itemfeed, linefeed, &key, &klen, &val, &vlen))
 	{
+		total += n;
 		count++;
 	}
 
@@ -382,18 +382,19 @@ int w_get_options_value(const wchar_t* options, int len, wchar_t itemfeed, wchar
 {
 	int count = 0;
 	wchar_t *key, *val;
-	const wchar_t* term;
 	int klen, vlen;
-
-	if (w_is_null(options) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = w_xslen(options);
 
-	term = options + len;
-	while (options = w_parse_options_token(options, (int)(term - options), itemfeed, linefeed, &key, &klen, &val, &vlen))
+	if (w_is_null(options) || !len)
+		return 0;
+
+	while (n = w_parse_options_token((options + total), (len - total), itemfeed, linefeed, &key, &klen, &val, &vlen))
 	{
+		total += n;
+
 		if (w_xsncmp(key, pkey, klen) == 0)
 		{
 			max = (max < vlen) ? max : vlen;
@@ -412,18 +413,19 @@ int a_get_options_value(const schar_t* options, int len, schar_t itemfeed, schar
 {
 	int count = 0;
 	schar_t *key, *val;
-	const schar_t* term;
 	int klen, vlen;
-
-	if (a_is_null(options) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = a_xslen(options);
 
-	term = options + len;
-	while (options = a_parse_options_token(options, (int)(term - options), itemfeed, linefeed, &key, &klen, &val, &vlen))
+	if (a_is_null(options) || !len)
+		return 0;
+
+	while (n = a_parse_options_token((options + total), (len - total), itemfeed, linefeed, &key, &klen, &val, &vlen))
 	{
+		total += n;
+
 		if (a_xsncmp(key, pkey, klen) == 0)
 		{
 			max = (max < vlen) ? max : vlen;
@@ -438,7 +440,7 @@ int a_get_options_value(const schar_t* options, int len, schar_t itemfeed, schar
 	return 0;
 }
 
-const wchar_t* w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemfeed, wchar_t** pkey, int* pkeylen)
+int w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemfeed, wchar_t** pkey, int* pkeylen)
 {
 	const wchar_t* token;
 	int total = 0;
@@ -447,11 +449,11 @@ const wchar_t* w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemf
 	*pkey = NULL;
 	*pkeylen = 0;
 
-	if(w_is_null(tokens) || !len)
-		return NULL;
-
-	if(len < 0)
+	if (len < 0)
 		len = w_xslen(tokens);
+
+	if(w_is_null(tokens) || !len)
+		return 0;
 
 	token = tokens;
 
@@ -472,15 +474,15 @@ const wchar_t* w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemf
 	*pkeylen = (int)(token - *pkey);
 
 	if(total == len)
-		return token;
+		return total;
 
 	token ++; //skip item feed
 	total++;
 
-	return token;
+	return total;
 }
 
-const schar_t* a_parse_string_token(const schar_t* tokens, int len, schar_t itemfeed, schar_t** pkey, int* pkeylen)
+int a_parse_string_token(const schar_t* tokens, int len, schar_t itemfeed, schar_t** pkey, int* pkeylen)
 {
 	const schar_t* token;
 	int total = 0;
@@ -489,11 +491,11 @@ const schar_t* a_parse_string_token(const schar_t* tokens, int len, schar_t item
 	*pkey = NULL;
 	*pkeylen = 0;
 
-	if (a_is_null(tokens) || !len)
-		return NULL;
-
 	if (len < 0)
 		len = a_xslen(tokens);
+
+	if (a_is_null(tokens) || !len)
+		return 0;
 
 	token = tokens;
 
@@ -514,12 +516,12 @@ const schar_t* a_parse_string_token(const schar_t* tokens, int len, schar_t item
 	*pkeylen = (int)(token - *pkey);
 
 	if (total == len)
-		return token;
+		return total;
 
 	token++; //skip item feed
 	total++;
 
-	return token;
+	return total;
 }
 
 int w_parse_string_token_count(const wchar_t* tokens, int len, wchar_t itemfeed)
@@ -527,17 +529,17 @@ int w_parse_string_token_count(const wchar_t* tokens, int len, wchar_t itemfeed)
 	int count = 0;
 	wchar_t *key;
 	int klen;
-	const wchar_t* term;
-
-	if (w_is_null(tokens) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = w_xslen(tokens);
 
-	term = tokens + len;
-	while(tokens = w_parse_string_token(tokens,(int)(term - tokens),itemfeed,&key,&klen))
+	if (w_is_null(tokens) || !len)
+		return 0;
+
+	while(n = w_parse_string_token((tokens + total),(len - total),itemfeed,&key,&klen))
 	{
+		total += n;
 		count ++;
 	}
 
@@ -549,41 +551,35 @@ int a_parse_string_token_count(const schar_t* tokens, int len, schar_t itemfeed)
 	int count = 0;
 	schar_t *key;
 	int klen;
-	const schar_t* term;
-
-	if (a_is_null(tokens) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = a_xslen(tokens);
 
-	term = tokens + len;
-	while (tokens = a_parse_string_token(tokens, (int)(term - tokens), itemfeed, &key, &klen))
+	if (a_is_null(tokens) || !len)
+		return 0;
+
+	while (n = a_parse_string_token((tokens + total), (len - total), itemfeed, &key, &klen))
 	{
+		total += n;
 		count++;
 	}
 
 	return count;
 }
 
-const schar_t* a_parse_zero_token(const schar_t* tokens, schar_t** pkey, int* pkeylen)
+int a_parse_zero_token(const schar_t* tokens, schar_t** pkey, int* pkeylen)
 {
-	const schar_t* token;
-
 	*pkey = NULL;
 	*pkeylen = 0;
 
 	if (!tokens)
-		return NULL;
+		return 0;
 
-	token = tokens;
+	*pkey = (schar_t*)tokens;
+	*pkeylen = a_xslen(tokens);
 
-	*pkey = (schar_t*)token;
-	*pkeylen = a_xslen(token);
-	
-	token += (*pkeylen + 1);
-
-	return (*token == '\0')? NULL : token;
+	return (*pkeylen + 1);
 }
 
 int a_parse_zero_token_count(const schar_t* tokens)
@@ -607,24 +603,18 @@ int a_parse_zero_token_count(const schar_t* tokens)
 	return total;
 }
 
-const wchar_t* w_parse_zero_token(const wchar_t* tokens, wchar_t** pkey, int* pkeylen)
+int w_parse_zero_token(const wchar_t* tokens, wchar_t** pkey, int* pkeylen)
 {
-	const wchar_t* token;
-
 	*pkey = NULL;
 	*pkeylen = 0;
 
 	if (!tokens)
-		return NULL;
+		return 0;
 
-	token = tokens;
+	*pkey = (wchar_t*)tokens;
+	*pkeylen = w_xslen(tokens);
 
-	*pkey = (wchar_t*)token;
-	*pkeylen = w_xslen(token);
-
-	token += (*pkeylen + 1);
-
-	return (*token == L'\0') ? NULL : token;
+	return (*pkeylen + 1);
 }
 
 int w_parse_zero_token_count(const wchar_t* tokens)
@@ -648,19 +638,20 @@ int w_parse_zero_token_count(const wchar_t* tokens)
 	return total;
 }
 
-const wchar_t* w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot, int* plen)
+int w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot, wchar_t** pkey, int* plen)
 {
 	const wchar_t* token;
 	int total = 0;
 	int tag = 0;
 
+	*pkey = NULL;
 	*plen = 0;
-
-	if (w_is_null(param) || !len)
-		return NULL;
 
 	if (len < 0)
 		len = w_xslen(param);
+
+	if (w_is_null(param) || !len)
+		return 0;
 
 	token = param;
 
@@ -677,7 +668,7 @@ const wchar_t* w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot
 	}
 
 	if (total == len)
-		return NULL;
+		return total;
 
 	if (*token == itemdot)
 	{//skip ':'
@@ -685,6 +676,7 @@ const wchar_t* w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot
 		total++;
 	}
 
+	*pkey = token;
 	while (*(token + *plen) != L' ' && total < len)
 	{
 		total++;
@@ -692,22 +684,23 @@ const wchar_t* w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot
 		*plen = *plen + 1;
 	}
 
-	return token;
+	return total;
 }
 
-const schar_t* a_parse_param_name(const schar_t* param, int len, schar_t itemdot, int* plen)
+int a_parse_param_name(const schar_t* param, int len, schar_t itemdot, schar_t** pkey, int* plen)
 {
 	const schar_t* token;
 	int total = 0;
 	int tag = 0;
 
+	*pkey = NULL;
 	*plen = 0;
-
-	if (a_is_null(param) || !len)
-		return NULL;
 
 	if (len < 0)
 		len = a_xslen(param);
+
+	if (a_is_null(param) || !len)
+		return 0;
 
 	token = param;
 
@@ -724,7 +717,7 @@ const schar_t* a_parse_param_name(const schar_t* param, int len, schar_t itemdot
 	}
 
 	if (total == len)
-		return NULL;
+		return total;
 
 	if (*token == itemdot)
 	{//skip ':'
@@ -732,6 +725,7 @@ const schar_t* a_parse_param_name(const schar_t* param, int len, schar_t itemdot
 		total++;
 	}
 
+	*pkey = token;
 	while (*(token + *plen) != (' ') && total < len)
 	{
 		total++;
@@ -739,24 +733,25 @@ const schar_t* a_parse_param_name(const schar_t* param, int len, schar_t itemdot
 		*plen = *plen + 1;
 	}
 
-	return token;
+	return total;
 }
 
 int w_parse_param_name_count(const wchar_t* param, int len, wchar_t itemdot)
 {
 	int count = 0;
+	wchar_t* pkey;
 	int plen;
-	const wchar_t* term;
-
-	if (w_is_null(param) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = w_xslen(param);
 
-	term = param + len;
-	while (param = w_parse_param_name(param, (int)(term - param), itemdot, &plen))
+	if (w_is_null(param) || !len)
+		return 0;
+
+	while (n = w_parse_param_name((param + total), (len - total), itemdot, &pkey, &plen))
 	{
+		total += n;
 		count++;
 	}
 
@@ -766,18 +761,19 @@ int w_parse_param_name_count(const wchar_t* param, int len, wchar_t itemdot)
 int a_parse_param_name_count(const schar_t* param, int len, schar_t itemdot)
 {
 	int count = 0;
+	schar_t* pkey;
 	int plen;
-	const schar_t* term;
-
-	if (a_is_null(param) || !len)
-		return 0;
+	int n, total = 0;
 
 	if (len < 0)
 		len = a_xslen(param);
 
-	term = param + len;
-	while (param = a_parse_param_name(param, (int)(term - param), itemdot, &plen))
+	if (a_is_null(param) || !len)
+		return 0;
+
+	while (n = a_parse_param_name((param + total), (len - total), itemdot, &pkey, &plen))
 	{
+		total += n;
 		count++;
 	}
 

@@ -38,9 +38,10 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 {
 	res_win_t dlg,box = NULL;
 	xrect_t xr = { 0 };
+	xspan_t xn;
 	link_t_ptr ilk;
 	const tchar_t* type;
-	res_ctx_t rdc;
+	visual_t rdc;
 	if_event_t ev = { 0 };
 
 	EVENT_BEGIN_DISPATH(&ev)
@@ -59,10 +60,21 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 	ilk = get_dialog_prev_item(ptr_dlg, LINK_LAST);
 	while (ilk)
 	{
-		xr.x = cast_mm_to_pt(rdc, get_dialog_item_x(ilk), 1);
-		xr.y = cast_mm_to_pt(rdc, get_dialog_item_y(ilk), 0);
-		xr.w = cast_mm_to_pt(rdc, get_dialog_item_width(ilk), 1);
-		xr.h = cast_mm_to_pt(rdc, get_dialog_item_height(ilk), 1);
+		xn.fr = get_dialog_item_x(ilk);
+		cast_mm_to_pt(rdc, 1, &xn);
+		xr.x = xn.r;
+
+		xn.fr = get_dialog_item_y(ilk);
+		cast_mm_to_pt(rdc, 0, &xn);
+		xr.y = xn.r;
+
+		xn.fr = get_dialog_item_width(ilk);
+		cast_mm_to_pt(rdc, 1, &xn);
+		xr.w = xn.r;
+
+		xn.fr = get_dialog_item_height(ilk);
+		cast_mm_to_pt(rdc, 1, &xn);
+		xr.h = xn.r;
 
 		type = get_dialog_item_class_ptr(ilk);
 
@@ -176,8 +188,13 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 		ilk = get_dialog_prev_item(ptr_dlg, ilk);
 	}
 
-	xr.w = cast_mm_to_pt(rdc, get_dialog_width(ptr_dlg), 1);
-	xr.h = cast_mm_to_pt(rdc, get_dialog_height(ptr_dlg), 0);
+	xn.fr = get_dialog_width(ptr_dlg);
+	cast_mm_to_pt(rdc, 1, &xn);
+	xr.w = xn.r;
+
+	xn.fr = get_dialog_height(ptr_dlg);
+	cast_mm_to_pt(rdc, 0, &xn);
+	xr.h = xn.r;
 
 	widget_release_ctx(owner, rdc);
 
@@ -190,15 +207,16 @@ res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner)
 }
 
 
-int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_t sid, var_long delta)
+int sub_dialog_on_paint(res_win_t widget, visual_t dc, const xrect_t* pxr, uid_t sid, var_long delta)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
 
 	xbrush_t xb = { 0 };
 
 	canvas_t canv;
 	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	widget_get_xbrush(widget, &xb);
 
@@ -217,7 +235,11 @@ int sub_dialog_on_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr, uid_
 		rdc = dc;
 	}
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	destroy_visual_interface(piv);
 
 	if (canv)
 	{

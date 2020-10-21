@@ -414,22 +414,22 @@ void _previewdlg_create_toolbar(res_win_t widget)
 
 	_previewdlg_calc_toolbar(widget, &xr);
 
-	xs.fx = PREVIEWDLG_BUTTON_WIDTH;
-	xs.fy = PREVIEWDLG_BUTTON_HEIGHT;
+	xs.fw = PREVIEWDLG_BUTTON_WIDTH;
+	xs.fh = PREVIEWDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 
-	xr.y += (xr.h - xs.cy) / 2;
-	xr.h = xs.cy;
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.w = xs.cx;
+	xr.y += (xr.h - xs.h) / 2;
+	xr.h = xs.h;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = 0;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	nSplit = xs.cx;
+	nSplit = xs.w;
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	pushbox = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_ICON, &xr);
 	widget_set_user_id(pushbox, IDC_PREVIEWDLG_PUSHBOX_CLOSE);
@@ -577,20 +577,20 @@ int hand_previewdlg_create(res_win_t widget, void* data)
 
 	ptd->arch = create_arch_doc();
 
-	xs.fx = 0;
-	xs.fy = PREVIEWDLG_TOOL_HEIGHT;
+	xs.fw = 0;
+	xs.fh = PREVIEWDLG_TOOL_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_TOP, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_TOP, 0, xs.h);
 
-	xs.fx = 0;
-	xs.fy = PREVIEWDLG_STATUS_HEIGHT;
+	xs.fw = 0;
+	xs.fh = PREVIEWDLG_STATUS_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.h);
 
-	xs.fx = PREVIEWDLG_TREE_WIDTH;
-	xs.fy = 0;
+	xs.fw = PREVIEWDLG_TREE_WIDTH;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.cx, 0);
+	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.w, 0);
 
 	_previewdlg_create_toolbar(widget);
 
@@ -720,21 +720,21 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 
 	_previewdlg_calc_toolbar(widget, &xr);
 
-	xs.fx = PREVIEWDLG_BUTTON_WIDTH;
-	xs.fy = PREVIEWDLG_BUTTON_HEIGHT;
+	xs.fw = PREVIEWDLG_BUTTON_WIDTH;
+	xs.fh = PREVIEWDLG_BUTTON_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
-	xr.y += (xr.h - xs.cy) / 2;
-	xr.h = xs.cy;
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.w = xs.cx;
+	xr.y += (xr.h - xs.h) / 2;
+	xr.h = xs.h;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.w = xs.w;
 
-	xs.fx = DEF_SPLIT_FEED;
-	xs.fy = 0;
+	xs.fw = DEF_SPLIT_FEED;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	nSplit = xs.cx;
+	nSplit = xs.w;
 
-	pt_expand_rect(&xr, -xs.cx, -xs.cy);
+	pt_expand_rect(&xr, -xs.w, -xs.h);
 
 	pushbox = widget_get_child(widget, IDC_PREVIEWDLG_PUSHBOX_CLOSE);
 	if (widget_is_valid(pushbox))

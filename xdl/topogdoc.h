@@ -69,6 +69,26 @@ LICENSE.GPL3 for more details.
 */
 #define get_topog_style_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
 /*
+@PROPER width: numeric.
+@SET set_topog_width: set the topog width.
+*/
+#define set_topog_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_topog_width: get the topog width.
+*/
+#define get_topog_width(ptr)							get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_topog_height: get the topog height.
+*/
+#define get_topog_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_topog_height: set the topog height.
+*/
+#define set_topog_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
 @PROPER rows: integer.
 @GET get_topog_rows: get the topog rows.
 */

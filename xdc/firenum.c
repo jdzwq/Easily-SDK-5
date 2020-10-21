@@ -167,12 +167,12 @@ res_win_t firenum_create(res_win_t widget, const xrect_t* pxr)
 
 	get_desktop_size(&xs);
 
-	if (xr.x + xr.w > xs.cx)
+	if (xr.x + xr.w > xs.w)
 	{
-		xr.x = xs.cx - xr.w;
+		xr.x = xs.w - xr.w;
 	}
 
-	if (xr.y + xr.h > xs.cy)
+	if (xr.y + xr.h > xs.h)
 	{
 		xr.y = xr_ed.y - xr.h;
 	}

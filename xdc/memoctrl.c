@@ -74,8 +74,8 @@ static bool_t _memoctrl_get_paging(res_win_t widget, xsize_t* pse)
 
 	if (widget_get_style(widget) & WD_STYLE_PAGING)
 	{
-		pse->fx = get_memo_width((link_t_ptr)(ptd->textor.data));
-		pse->fy = get_memo_height((link_t_ptr)(ptd->textor.data));
+		pse->fw = get_memo_width((link_t_ptr)(ptd->textor.data));
+		pse->fh = get_memo_height((link_t_ptr)(ptd->textor.data));
 
 		widget_size_to_pt(widget, pse);
 
@@ -84,8 +84,8 @@ static bool_t _memoctrl_get_paging(res_win_t widget, xsize_t* pse)
 	{
 		widget_get_client_rect(widget, &xr);
 
-		pse->cx = xr.w;
-		pse->cy = xr.h;
+		pse->w = xr.w;
+		pse->h = xr.h;
 
 		return 0;
 	}
@@ -124,7 +124,7 @@ int hand_memoctrl_create(res_win_t widget, void* data)
 	SETMEMOCTRLDELTA(widget, ptd);
 
 	ptd->textor.widget = widget;
-	ptd->textor.dc = widget_client_ctx(widget);
+	ptd->textor.cdc = widget_client_ctx(widget);
 	ptd->textor.data = NULL;
 	ptd->textor.pf_scan_text = (PF_SCAN_TEXT)scan_memo_text;
 	ptd->textor.pf_get_text = _memoctrl_get_text;
@@ -151,7 +151,7 @@ void hand_memoctrl_destroy(res_win_t widget)
 
 	hand_textor_clean(&ptd->textor);
 
-	widget_release_ctx(widget, ptd->textor.dc);
+	widget_release_ctx(widget, ptd->textor.cdc);
 
 	xmem_free(ptd);
 
@@ -676,7 +676,7 @@ void hand_memoctrl_menu_command(res_win_t widget, int code, int cid, var_long da
 	}
 }
 
-void hand_memoctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_memoctrl_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	memoctrl_delta_t* ptd = GETMEMOCTRLDELTA(widget);
 

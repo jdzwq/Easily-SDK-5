@@ -1386,9 +1386,9 @@ void xhttp_set_encoded_query(xhand_t xhttp, const byte_t* query, dword_t len)
 dword_t xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max)
 {
 	dword_t total = 0;
-	tchar_t *pre, *token = (tchar_t*)url;
 	tchar_t *kstr, *vstr;
 	int klen, vlen;
+	int n, m = 0;
 
 	byte_t* utf;
 	dword_t ulen;
@@ -1399,11 +1399,9 @@ dword_t xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max
 	if (len < 0)
 		len = xslen(url);
 
-	while (token && len)
+	while (n = parse_options_token((url + m), (len - m), _T('='), _T('&'), &kstr, &klen, &vstr, &vlen))
 	{
-		pre = token;
-		token = parse_options_token(token, len, _T('='), _T('&'), &kstr, &klen, &vstr, &vlen);
-		len -= (token - pre);
+		m += n;
 
 		//encoding the key
 #ifdef _UNICODE
@@ -1501,9 +1499,9 @@ dword_t xhttp_url_encoding(const tchar_t* url, int len, byte_t* buf, dword_t max
 int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 {
 	int total = 0;
-	schar_t *pre, *token = (schar_t*)url;
 	schar_t *kstr, *vstr;
 	int klen, vlen;
+	int n, m = 0;
 
 	tchar_t* ucs;
 	int ulen;
@@ -1511,11 +1509,9 @@ int xhttp_url_decoding(const byte_t* url, dword_t len, tchar_t* buf, int max)
 	byte_t* esc;
 	dword_t elen;
 
-	while (token && len)
+	while (n = a_parse_options_token((url + m), (len - m), ('='), ('&'), &kstr, &klen, &vstr, &vlen))
 	{
-		pre = token;
-		token = a_parse_options_token(token, len, ('='), ('&'), &kstr, &klen, &vstr, &vlen);
-		len -= (token - pre);
+		m += n;
 
 		//decoding the key
 		elen = url_byte_decode((byte_t*)kstr, klen, NULL, MAX_LONG);
@@ -1715,9 +1711,9 @@ int xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int len, tchar
 	tchar_t* url;
 	int url_len;
 
-	tchar_t* token;
 	tchar_t *kstr, *vstr;
 	int klen, vlen;
+	int n, total = 0;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -1731,15 +1727,9 @@ int xhttp_get_url_query_entity(xhand_t xhttp, const tchar_t* key, int len, tchar
 	url = xsalloc(url_len + 1);
 	xhttp_url_decoding(phttp->query, phttp->len_query, url, url_len);
 
-	kstr = vstr = NULL;
-	klen = vlen = 0;
-
-	token = url;
-	while (token)
+	while (n = parse_options_token((url + total), (url_len - total), _T('='), _T('&'), &kstr, &klen, &vstr, &vlen))
 	{
-		kstr = vstr = NULL;
-		klen = vlen = 0;
-		token = parse_options_token(token, -1, _T('='), _T('&'), &kstr, &klen, &vstr, &vlen);
+		total += n;
 
 		if (compare_text(key, len, kstr, klen, 1) == 0)
 		{

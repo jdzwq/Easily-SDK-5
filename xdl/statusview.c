@@ -30,13 +30,14 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "statusview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
-float calc_status_width(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_status_width(link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	float w = 0;
@@ -51,7 +52,7 @@ float calc_status_width(const canvbox_t* pbox, link_t_ptr ptr)
 	return w;
 }
 
-void calc_status_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_status_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr plk;
 	float pw, ph, iw, hw;
@@ -60,8 +61,8 @@ void calc_status_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk
 
 	ali_far = (compare_text(get_status_alignment_ptr(ptr), -1, ATTR_ALIGNMENT_FAR, -1, 0) == 0) ? 1 : 0;
 
-	pw = pbox->fw;
-	ph = pbox->fh;
+	pw = get_status_width(ptr);
+	ph = get_status_height(ptr);
 
 	if (ali_far)
 		hw = pw;
@@ -112,14 +113,18 @@ void calc_status_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-void calc_status_title_rect(const canvbox_t* pbox, link_t_ptr ptr, xrect_t* pxr)
+void calc_status_title_rect(link_t_ptr ptr, xrect_t* pxr)
 {
 	bool_t ali_far;
+	float pw, ph;
+
+	pw = get_status_width(ptr);
+	ph = get_status_height(ptr);
 
 	pxr->fx = 0;
 	pxr->fy = 0;
-	pxr->fw = pbox->fw;
-	pxr->fh = pbox->fh;
+	pxr->fw = pw;
+	pxr->fh = ph;
 
 	if (get_status_item_count(ptr) == 0)
 		return;
@@ -127,19 +132,19 @@ void calc_status_title_rect(const canvbox_t* pbox, link_t_ptr ptr, xrect_t* pxr)
 	ali_far = (compare_text(get_status_alignment_ptr(ptr), -1, ATTR_ALIGNMENT_FAR, -1, 0) == 0) ? 1 : 0;
 	if (ali_far)
 	{
-		calc_status_item_rect(pbox, ptr, get_status_next_item(ptr, LINK_FIRST), pxr);
+		calc_status_item_rect(ptr, get_status_next_item(ptr, LINK_FIRST), pxr);
 		pxr->fw = pxr->fx;
 		pxr->fx = 0;
 	}
 	else
 	{
-		calc_status_item_rect(pbox, ptr, get_status_prev_item(ptr, LINK_LAST), pxr);
+		calc_status_item_rect(ptr, get_status_prev_item(ptr, LINK_LAST), pxr);
 		pxr->fx = pxr->fx + pxr->fw;
-		pxr->fw = pbox->fw - pxr->fx;
+		pxr->fw = pw - pxr->fx;
 	}
 }
 
-int calc_status_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,link_t_ptr* pilk)
+int calc_status_hint(const xpoint_t* ppt, link_t_ptr ptr,link_t_ptr* pilk)
 {
 	link_t_ptr plk;
 	float pw, ph, iw, hw, xm, ym;
@@ -155,8 +160,8 @@ int calc_status_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 
 	ali_far = (compare_text(get_status_alignment_ptr(ptr), -1, ATTR_ALIGNMENT_FAR, -1, 0) == 0) ? 1 : 0;
 
-	pw = pbox->fw;
-	ph = pbox->fh;
+	pw = get_status_width(ptr);
+	ph = get_status_height(ptr);
 
 	if (ali_far)
 		hw = pw;
@@ -208,7 +213,7 @@ int calc_status_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 	return nHint;
 }
 
-void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_status(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr plk;
 	bool_t ali_far;
@@ -223,6 +228,8 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t *style;
 	bool_t b_print;
 	float px, py, pw, ph;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -316,7 +323,7 @@ void draw_status(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_status_item_icon_ptr(plk));
+		draw_gizmo(pif, &xc, &xr_image, get_status_item_icon_ptr(plk));
 
 		xr_text.fx = xr.fx + ic;
 		xr_text.fy = xr.fy;

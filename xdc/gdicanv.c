@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 typedef struct _rdc_canvas_t{
 	canvas_head head;
 
-	res_ctx_t dc;		// memory draw context 
+	visual_t view;
 
 	float htpermm, vtpermm;
 	float horz_feed, vert_feed;
@@ -45,6 +45,7 @@ typedef struct _rdc_canvas_t{
 }rdc_canvas_t;
 
 /*******************************************************************************************************************/
+
 float pt_to_tm(canvas_t canv, int pt, bool_t horz)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t,canv);
@@ -137,22 +138,22 @@ void size_tm_to_pt(canvas_t canv, xsize_t* pxs)
 {
 	int cx, cy;
 
-	cx = tm_to_pt(canv, pxs->fx, 1) - tm_to_pt(canv, 0, 1);
-	cy = tm_to_pt(canv, pxs->fy, 0) - tm_to_pt(canv, 0, 0);
+	cx = tm_to_pt(canv, pxs->fw, 1) - tm_to_pt(canv, 0, 1);
+	cy = tm_to_pt(canv, pxs->fh, 0) - tm_to_pt(canv, 0, 0);
 
-	pxs->cx = cx;
-	pxs->cy = cy;
+	pxs->w = cx;
+	pxs->h = cy;
 }
 
 void size_pt_to_tm(canvas_t canv, xsize_t* pxs)
 {
 	float cx, cy;
 
-	cx = pt_to_tm(canv, pxs->cx, 1) - pt_to_tm(canv, 0, 1);
-	cy = pt_to_tm(canv, pxs->cy, 0) - pt_to_tm(canv, 0, 0);
+	cx = pt_to_tm(canv, pxs->w, 1) - pt_to_tm(canv, 0, 1);
+	cy = pt_to_tm(canv, pxs->h, 0) - pt_to_tm(canv, 0, 0);
 
-	pxs->fx = cx;
-	pxs->fy = cy;
+	pxs->fw = cx;
+	pxs->fh = cy;
 }
 
 void point_tm_to_pt(canvas_t canv, xpoint_t* ppt)
@@ -177,9 +178,18 @@ void point_pt_to_tm(canvas_t canv, xpoint_t* ppt)
 	ppt->fy = y;
 }
 
+void span_tm_to_pt(canvas_t canv, xspan_t* pxn)
+{
+	pxn->r = tm_to_pt(canv, pxn->fr, 1) - tm_to_pt(canv, 0, 1);
+}
+
+void span_pt_to_tm(canvas_t canv, xspan_t* pxn)
+{
+	pxn->fr = pt_to_tm(canv, pxn->r, 1) - pt_to_tm(canv, 0, 1);
+}
 /*******************************************************************************************/
 
-canvas_t create_display_canvas(res_ctx_t rdc)
+canvas_t create_display_canvas(visual_t rdc)
 {
 	rdc_canvas_t* pcanv;
 	dev_cap_t cap = { 0 };
@@ -187,11 +197,11 @@ canvas_t create_display_canvas(res_ctx_t rdc)
 	pcanv = (rdc_canvas_t*)xmem_alloc(sizeof(rdc_canvas_t));
 
 	if (rdc)
-		pcanv->dc = create_compatible_context(rdc, 1, 1);
+		pcanv->view = create_compatible_context(rdc, 1, 1);
 	else
-		pcanv->dc = create_display_context(NULL);
+		pcanv->view = create_display_context(NULL);
 
-	get_device_caps(pcanv->dc, &cap);
+	get_device_caps(pcanv->view, &cap);
 
 	pcanv->htpermm = (float)((float)cap.horz_pixels * INCHPERMM);
 	pcanv->vtpermm = (float)((float)cap.vert_pixels * INCHPERMM);
@@ -200,8 +210,8 @@ canvas_t create_display_canvas(res_ctx_t rdc)
 	pcanv->horz_feed = 0.0;
 	pcanv->vert_feed = 0.0;
 
-	destroy_context(pcanv->dc);
-	pcanv->dc = NULL;
+	destroy_context(pcanv->view);
+	pcanv->view = NULL;
 
 	pcanv->head.tag = _CANVAS_DISPLAY;
 
@@ -281,16 +291,16 @@ float get_canvas_vert_feed(canvas_t canv)
 	return pcanv->vert_feed;
 }
 
-res_ctx_t get_canvas_ctx(canvas_t canv)
+visual_t get_canvas_visual(canvas_t canv)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
 	XDL_ASSERT(canv);
 
-	return (res_ctx_t)pcanv->dc;
+	return (visual_t)pcanv->view;
 }
 
-res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height)
+visual_t begin_canvas_paint(canvas_t canv, visual_t rdc, int width, int height)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
@@ -298,35 +308,28 @@ res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height
 
 	XDL_ASSERT(canv);
 
-	pcanv->dc = create_compatible_context(rdc, width, height);
+	pcanv->view = create_compatible_context(rdc, width, height);
 
-	XDL_ASSERT(pcanv->dc != NULL);
+	XDL_ASSERT(pcanv->view != NULL);
 
-	return pcanv->dc;
+	return pcanv->view;
 }
 
-void end_canvas_paint(canvas_t canv, res_ctx_t rdc, const xrect_t* pxr)
+void end_canvas_paint(canvas_t canv, visual_t rdc, const xrect_t* pxr)
 {
 	rdc_canvas_t* pcanv = TypePtrFromHead(rdc_canvas_t, canv);
 
 	XDL_ASSERT(canv);
 
-	render_context(pcanv->dc, pxr->x, pxr->y, rdc, pxr->x, pxr->y, pxr->w, pxr->h);
+	render_context(pcanv->view, pxr->x, pxr->y, rdc, pxr->x, pxr->y, pxr->w, pxr->h);
 
-	destroy_context(pcanv->dc);
-	pcanv->dc = NULL;
-}
-
-void get_canvas_measure(canvas_t canv, if_measure_t* pif)
-{
-	pif->ctx = (void*)canv;
-	pif->pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	pif->pf_text_size = (PF_TEXT_SIZE)text_size;
+	destroy_context(pcanv->view);
+	pcanv->view = NULL;
 }
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 
-canvas_t create_printer_canvas(res_ctx_t rdc)
+canvas_t create_printer_canvas(visual_t rdc)
 {
 	rdc_canvas_t* pcanv;
 	dev_cap_t cap = { 0 };
@@ -335,7 +338,7 @@ canvas_t create_printer_canvas(res_ctx_t rdc)
 
 	get_device_caps(rdc, &cap);
 
-	pcanv->dc = rdc;
+	pcanv->view = rdc;
 	pcanv->htpermm = (float)((float)cap.horz_pixels * INCHPERMM);
 	pcanv->vtpermm = (float)((float)cap.vert_pixels * INCHPERMM);
 	pcanv->horz_size = (float)((float)cap.horz_size / (float)cap.horz_pixels / INCHPERMM);

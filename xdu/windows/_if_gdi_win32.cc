@@ -53,7 +53,7 @@ static void DPtoLP(HDC hDC,POINT* pt,int n)
 }
 #endif
 
-static void _alphablend_rect(res_ctx_t rdc, const xbrush_t* pxb, const RECT* prt)
+static void _alphablend_rect(visual_t rdc, const xbrush_t* pxb, const RECT* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -212,7 +212,7 @@ void _gdi_uninit(void)
 	
 }
 
-void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
+void _gdi_draw_line(visual_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
 	HDC hDC = (HDC)(rdc->context);
 	
@@ -242,7 +242,7 @@ void _gdi_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t* ppt1, const
 	}
 }
 
-void _gdi_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
+void _gdi_draw_3dline(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -289,7 +289,7 @@ void _gdi_draw_3dline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, co
 	}
 }
 
-void _gdi_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
+void _gdi_draw_3drect(visual_t rdc, const xpen_t* pxp, const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -345,7 +345,7 @@ void _gdi_draw_3drect(res_ctx_t rdc, const xpen_t* pxp, const xrect_t* prt)
 	}
 }
 
-void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
+void _gdi_draw_polyline(visual_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -378,7 +378,7 @@ void _gdi_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int 
 	LocalFree(pt);
 }
 
-void _gdi_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
+void _gdi_draw_polygon(visual_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -424,7 +424,7 @@ void _gdi_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const
 	LocalFree(pt);
 }
 
-void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+void _gdi_draw_bezier(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -460,7 +460,7 @@ void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, co
 	LocalFree(pt);
 }
 
-void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
+void _gdi_draw_curve(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -493,7 +493,7 @@ void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int 
 	LocalFree(pt);
 }
 
-void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
+void _gdi_gradient_rect(visual_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -526,7 +526,7 @@ void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt)
 	DeleteDC(hComDC);
 }
 
-void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
+void _gdi_alphablend_rect(visual_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
 {
 	HDC hDC = (HDC)(rdc->context);
 	xbrush_t xb;
@@ -546,7 +546,7 @@ void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt
 	_alphablend_rect(rdc, &xb, &rt);
 }
 
-void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
+void _gdi_draw_rect(visual_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -600,7 +600,7 @@ void _gdi_draw_rect(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xr
 	}
 }
 
-void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
+void _gdi_draw_round(visual_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 	int r;
@@ -687,7 +687,7 @@ void _gdi_draw_round(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 	}
 }
 
-void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
+void _gdi_draw_ellipse(visual_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -745,7 +745,7 @@ void _gdi_draw_ellipse(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const
 
 }
 
-void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void _gdi_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
 #ifdef WINCE
 	return;
@@ -797,7 +797,7 @@ void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const x
 #endif
 }
 
-void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt,int alen,double arc)
+void _gdi_draw_arrow(visual_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xrect_t* prt,int alen,double arc)
 {
 	HDC hDC = (HDC)(rdc->context);
 	double a1;
@@ -867,7 +867,7 @@ void _gdi_draw_arrow(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const x
 	}
 }
 
-void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
+void _gdi_draw_text(visual_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
 {
 	HDC hDC = (HDC)(rdc->context);
 	
@@ -943,7 +943,7 @@ void _gdi_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xr
 	}
 }
 
-void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
+void _gdi_text_out(visual_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
 	HDC hDC = (HDC)(rdc->context);
 	HFONT hFont, orgFont;
@@ -978,7 +978,7 @@ void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const
 	DeleteObject(hFont);
 }
 
-void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hBmp,const tchar_t* clr,const xrect_t* prt)
+void _gdi_draw_image(visual_t rdc,bitmap_t hBmp,const tchar_t* clr,const xrect_t* prt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -1013,7 +1013,7 @@ void _gdi_draw_image(res_ctx_t rdc,res_bmp_t hBmp,const tchar_t* clr,const xrect
 	DeleteDC(hComDC);
 }
 
-void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xpoint_t* ppt)
+void _gdi_draw_bitmap(visual_t rdc, bitmap_t hbmp, const xpoint_t* ppt)
 {
 	HDC hDC = (HDC)(rdc->context);
 
@@ -1036,7 +1036,7 @@ void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t hbmp, const xpoint_t* ppt)
 	DeleteDC(hComDC);
 }
 
-void _gdi_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
+void _gdi_fill_region(visual_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 {
 	HDC hDC = (HDC)(rdc->context);
 	HBRUSH hBrush;
@@ -1048,21 +1048,21 @@ void _gdi_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 	DeleteObject(hBrush);
 }
 
-void _gdi_exclip_rect(res_ctx_t rdc, const xrect_t* pxr)
+void _gdi_exclip_rect(visual_t rdc, const xrect_t* pxr)
 {
 	HDC hDC = (HDC)(rdc->context);
 
 	ExcludeClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
-void _gdi_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
+void _gdi_inclip_rect(visual_t rdc, const xrect_t* pxr)
 {
 	HDC hDC = (HDC)(rdc->context);
 
 	IntersectClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
-void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* prt)
+void _gdi_text_rect(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* prt)
 {
 	BOOL bRef = 0;
 	HDC hDC;
@@ -1146,7 +1146,7 @@ void _gdi_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const
 		ReleaseDC(NULL, hDC);
 }
 
-void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
+void _gdi_text_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
 	BOOL bRef = 0;
 	LOGFONT lf;
@@ -1195,8 +1195,8 @@ void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int l
 		len = xslen(txt);
 
 	GetTextExtentPoint32(hDC, txt, len, &si);
-	pxs->cx = si.cx;
-	pxs->cy = si.cy;
+	pxs->w = si.cx;
+	pxs->h = si.cy;
 
 	hFont = (HFONT)SelectObject(hDC, orgFont);
 	DeleteObject(hFont);
@@ -1205,7 +1205,7 @@ void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int l
 		ReleaseDC(NULL, hDC);
 }
 
-void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
+void _gdi_text_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
 	BOOL bRef = 0;
 	HDC hDC;
@@ -1259,9 +1259,9 @@ void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	if (bRef)
 		ReleaseDC(NULL, hDC);
 
-	pxs->cy = tm.tmHeight;
-	pxs->cx = tm.tmMaxCharWidth;
-	//pxs->cx = tm.tmAveCharWidth;
+	pxs->h = tm.tmHeight;
+	pxs->w = tm.tmMaxCharWidth;
+	//pxs->w = tm.tmAveCharWidth;
 }
 
 #endif //XDU_SUPPORT_CONTEXT_GRAPHIC

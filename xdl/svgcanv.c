@@ -42,15 +42,17 @@ LICENSE.GPL3 for more details.
 typedef struct _svg_canvas_t{
 	canvas_head head;
 
-	link_t_ptr g;		// svg document 
+	visual_t view;
 }svg_canvas_t;
 
-
-canvas_t create_svg_canvas(link_t_ptr svg)
+canvas_t create_svg_canvas(visual_t view)
 {
 	svg_canvas_t* pcanv;
+	link_t_ptr svg;
 	float htpermm, vtpermm;
 	xrect_t vb;
+
+	svg = svg_get_visual_doc(view);
 
 	pcanv = (svg_canvas_t*)xmem_alloc(sizeof(svg_canvas_t));
 
@@ -63,7 +65,7 @@ canvas_t create_svg_canvas(link_t_ptr svg)
 	vb.h = (int)(get_svg_height(svg) * vtpermm);
 	set_svg_viewbox(svg, &vb);
 
-	pcanv->g = svg;
+	pcanv->view = view;
 	pcanv->head.tag = _CANVAS_PRINTER;
 
 	return &pcanv->head;
@@ -78,54 +80,66 @@ void destroy_svg_canvas(canvas_t canv)
 	xmem_free(pcanv);
 }
 
-link_t_ptr svg_get_canvas_doc(canvas_t canv)
+visual_t svg_get_canvas_visual(canvas_t canv)
 {
 	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
-	return pcanv->g;
+	return pcanv->view;
+}
+
+float svg_pt_per_in(canvas_t canv, bool_t horz)
+{
+	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+
+	return (float)PDPERINCH;
 }
 
 float svg_pt_per_mm(canvas_t canv, bool_t horz)
 {
 	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
+	link_t_ptr svg;
 	xrect_t vb;
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
-	get_svg_viewbox(pcanv->g, &vb);
+	svg = svg_get_visual_doc(pcanv->view);
+
+	get_svg_viewbox(svg, &vb);
 
 	if (horz)
 	{
-		return (float)((float)vb.w / get_svg_width(pcanv->g));
+		return (float)((float)vb.w / get_svg_width(svg));
 	}
 	else
 	{
-		return (float)((float)vb.h / get_svg_height(pcanv->g));
+		return (float)((float)vb.h / get_svg_height(svg));
 	}
 }
 
 float svg_pt_to_tm(canvas_t canv, int pt, bool_t horz)
 {
 	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
-
+	link_t_ptr svg;
 	xrect_t vb;
 	float htpermm, vtpermm;
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
-	get_svg_viewbox(pcanv->g, &vb);
+	svg = svg_get_visual_doc(pcanv->view);
+
+	get_svg_viewbox(svg, &vb);
 
 	if (horz)
 	{
-		htpermm = (float)((float)vb.w / get_svg_width(pcanv->g));
+		htpermm = (float)((float)vb.w / get_svg_width(svg));
 
 		return (float)((float)pt / htpermm);
 	}
 	else
 	{
-		vtpermm = (float)((float)vb.h / get_svg_height(pcanv->g));
+		vtpermm = (float)((float)vb.h / get_svg_height(svg));
 
 		return (float)((float)pt / vtpermm);
 	}
@@ -134,23 +148,25 @@ float svg_pt_to_tm(canvas_t canv, int pt, bool_t horz)
 int svg_tm_to_pt(canvas_t canv, float tm, bool_t horz)
 {
 	svg_canvas_t* pcanv = TypePtrFromHead(svg_canvas_t, canv);
-
+	link_t_ptr svg;
 	xrect_t vb;
 	float htpermm, vtpermm;
 
 	XDL_ASSERT(canv && canv->tag == _CANVAS_PRINTER);
 
-	get_svg_viewbox(pcanv->g, &vb);
+	svg = svg_get_visual_doc(pcanv->view);
+
+	get_svg_viewbox(svg, &vb);
 
 	if (horz)
 	{
-		htpermm = (float)((float)vb.w / get_svg_width(pcanv->g));
+		htpermm = (float)((float)vb.w / get_svg_width(svg));
 
 		return (int)(tm * htpermm + 0.5);
 	}
 	else
 	{
-		vtpermm = (float)((float)vb.h / get_svg_height(pcanv->g));
+		vtpermm = (float)((float)vb.h / get_svg_height(svg));
 
 		return (int)(tm * vtpermm + 0.5);
 	}
@@ -224,22 +240,22 @@ void svg_size_tm_to_pt(canvas_t canv, xsize_t* pxs)
 {
 	int cx, cy;
 
-	cx = svg_tm_to_pt(canv, pxs->fx, 1) - svg_tm_to_pt(canv, 0, 1);
-	cy = svg_tm_to_pt(canv, pxs->fy, 0) - svg_tm_to_pt(canv, 0, 0);
+	cx = svg_tm_to_pt(canv, pxs->fw, 1) - svg_tm_to_pt(canv, 0, 1);
+	cy = svg_tm_to_pt(canv, pxs->fh, 0) - svg_tm_to_pt(canv, 0, 0);
 
-	pxs->cx = cx;
-	pxs->cy = cy;
+	pxs->w = cx;
+	pxs->h = cy;
 }
 
 void svg_size_pt_to_tm(canvas_t canv, xsize_t* pxs)
 {
 	float cx, cy;
 
-	cx = svg_pt_to_tm(canv, pxs->cx, 1) - svg_pt_to_tm(canv, 0, 1);
-	cy = svg_pt_to_tm(canv, pxs->cy, 0) - svg_pt_to_tm(canv, 0, 0);
+	cx = svg_pt_to_tm(canv, pxs->w, 1) - svg_pt_to_tm(canv, 0, 1);
+	cy = svg_pt_to_tm(canv, pxs->h, 0) - svg_pt_to_tm(canv, 0, 0);
 
-	pxs->fx = cx;
-	pxs->fy = cy;
+	pxs->fw = cx;
+	pxs->fh = cy;
 }
 
 void svg_point_tm_to_pt(canvas_t canv, xpoint_t* ppt)
@@ -264,11 +280,105 @@ void svg_point_pt_to_tm(canvas_t canv, xpoint_t* ppt)
 	ppt->fy = y;
 }
 
-void svg_get_canvas_measure(canvas_t canv, if_measure_t* pif)
+void svg_span_tm_to_pt(canvas_t canv, xspan_t* ppn)
 {
-	pif->ctx = (void*)canv;
-	pif->pf_text_metric = (PF_TEXT_METRIC)svg_text_metric;
-	pif->pf_text_size = (PF_TEXT_SIZE)svg_text_size;;
+	ppn->r = svg_tm_to_pt(canv, ppn->fr, 1) - svg_tm_to_pt(canv, 0, 1);
+}
+
+void svg_span_pt_to_tm(canvas_t canv, xspan_t* ppn)
+{
+	ppn->fr = svg_pt_to_tm(canv, ppn->r, 1) - svg_pt_to_tm(canv, 0, 1);
+}
+
+typedef struct _svg_visual_t{
+	visual_head head;
+
+	link_t_ptr g;
+}svg_visual_t;
+
+visual_t create_svg_visual(link_t_ptr g)
+{
+	svg_visual_t* pview;
+	link_t_ptr svg;
+	xrect_t vb;
+
+	pview = (svg_visual_t*)xmem_alloc(sizeof(svg_visual_t));
+
+	pview->g = g;
+	pview->head.tag = _VIEWING_SCRIPT;
+
+	svg = svg_doc_from_node(g);
+	get_svg_viewbox(svg, &vb);
+
+	return &pview->head;
+}
+
+void destroy_svg_visual(visual_t view)
+{
+	svg_visual_t* pview = TypePtrFromHead(svg_visual_t, view);
+
+	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+
+	xmem_free(pview);
+}
+
+link_t_ptr svg_get_visual_doc(visual_t view)
+{
+	svg_visual_t* pview = TypePtrFromHead(svg_visual_t, view);
+
+	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+
+	return pview->g;
+}
+
+float svg_pt_to_tm_raw(visual_t view, int pt, bool_t horz)
+{
+	svg_visual_t* pview = TypePtrFromHead(svg_visual_t, view);
+
+	xrect_t vb;
+	float htpermm, vtpermm;
+
+	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+
+	get_svg_viewbox(pview->g, &vb);
+
+	if (horz)
+	{
+		htpermm = (float)((float)vb.w / get_svg_width(pview->g));
+
+		return (float)((float)pt / htpermm);
+	}
+	else
+	{
+		vtpermm = (float)((float)vb.h / get_svg_height(pview->g));
+
+		return (float)((float)pt / vtpermm);
+	}
+}
+
+int svg_tm_to_pt_raw(visual_t view, float tm, bool_t horz)
+{
+	svg_visual_t* pview = TypePtrFromHead(svg_visual_t, view);
+
+	xrect_t vb;
+	float htpermm, vtpermm;
+
+	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+
+	get_svg_viewbox(pview->g, &vb);
+
+	if (horz)
+	{
+		htpermm = (float)((float)vb.w / get_svg_width(pview->g));
+
+		return (int)(tm * htpermm + 0.5);
+	}
+	else
+	{
+		vtpermm = (float)((float)vb.h / get_svg_height(pview->g));
+
+		return (int)(tm * vtpermm + 0.5);
+	}
 }
 
 

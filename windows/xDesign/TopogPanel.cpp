@@ -232,9 +232,9 @@ void TopogPanel_OnAttach(res_win_t widget)
 	xscat(szPath, _T("\\"));
 	xscat(szPath, szFile);
 
-	res_ctx_t rdc = widget_client_ctx(widget);
+	visual_t rdc = widget_client_ctx(widget);
 
-	res_bmp_t bmp = load_bitmap_from_file(rdc, szPath);
+	bitmap_t bmp = load_bitmap_from_file(rdc, szPath);
 
 	widget_release_ctx(widget, rdc);
 

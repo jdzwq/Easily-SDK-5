@@ -383,38 +383,29 @@ int get_words_visible_item_count(link_t_ptr ptr)
 
 void words_table_parse_tokens(link_t_ptr ptr, const tchar_t* tokens, int len, tchar_t feed)
 {
-	const tchar_t* tmp;
 	tchar_t *key;
 	int keylen;
 	link_t_ptr ilk;
+	int n, total = 0;
 
 	XDL_ASSERT(ptr && ptr->tag == lkWordsTable);
 
 	clear_words_table(ptr);
 
-	if (is_null(tokens) || !len)
-		return;
-
 	if (len < 0)
 		len = xslen(tokens);
 
-	while (*tokens && len)
-	{
-		key = NULL;
-		keylen = 0;
+	if (is_null(tokens) || !len)
+		return;
 
-		tmp = parse_string_token(tokens, len, feed, &key, &keylen);
+	while (n = parse_string_token((tokens + total), (len - total), feed, &key, &keylen))
+	{
+		total += n;
 
 		if (keylen)
 		{
 			ilk = insert_words_item(ptr, key, keylen);
 		}
-
-		if (!tmp)
-			break;
-
-		len -= (int)(tmp - tokens);
-		tokens = tmp;
 	}
 }
 

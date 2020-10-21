@@ -252,19 +252,10 @@
     <ClCompile Include="..\..\xdc\gdicanv.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdc\gdiinf.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdc\printbag.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\impwidget.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdc\gizmogdi.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xdc\shapegdi.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdc\printbox.c">
@@ -342,12 +333,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdc\impwidget.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdc\gizmogdi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xdc\shapegdi.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

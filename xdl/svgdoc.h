@@ -292,27 +292,29 @@ EXP_API bool_t svg_node_is_arc(link_t_ptr glk);
 @FUNCTION write_arc_to_svg_node: write arc attributes to the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xpoint* prt: the rect struct using int member.
+@INPUT const xpoint* ppt1: the start point using int member.
+@INPUT const xpoint* ppt2: the end point using int member.
 @INPUT int rx: the x-radius
 @INPUT int ry: the y-radius
-@INPUT double fang: the start angle.
-@INPUT double tang: the end angle.
+@INPUT bool_t sflag: is close-wise drawing.
+@INPUT bool_t lflag: is large arc.
 @RETURN void: none.
 */
-EXP_API void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+EXP_API void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, int rx, int ry, bool_t sflag, bool_t lflag);
 
 /*
 @FUNCTION read_arc_from_svg_node: read arc attributes from the svg node.
 @INPUT link_t_ptr glk: the svg node component.
 @OUTPUT xpen_t* pxp: the pen struct for returning.
-@OUTPUT xrect_t* prt: the rect struct for returning in int member.
-@INPUT int* prx: the x-radius for returning
-@INPUT int* pry: the y-radius for returning
-@OUTPUT double* pfang: for returning start angle.
-@OUTPUT double* ptang: for returning end angle.
+@OUTPUT const xpoint* ppt1: the start point using int member.
+@OUTPUT const xpoint* ppt2: the end point using int member.
+@OUTPUT int* prx: the x-radius for returning
+@OUTPUT int* pry: the y-radius for returning
+@OUTPUT bool_t* psflag: is close-wise drawing.
+@OUTPUT bool_t* plflag: is large arc.
 @RETURN void: none
 */
-EXP_API void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
+EXP_API void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt1, xpoint_t* ppt2, int* prx, int* pry, bool_t* psflag, bool_t* plflag);
 
 /*
 @FUNCTION write_shape_to_svg_node: write shape attributes to the svg node.

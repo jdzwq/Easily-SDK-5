@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API void widgetnc_on_paint(res_win_t wt, res_ctx_t dc);
+EXP_API void widgetnc_on_paint(res_win_t wt, visual_t dc);
 
 EXP_API void widgetnc_on_calcsize(res_win_t wt, xrect_t* pxr);
 

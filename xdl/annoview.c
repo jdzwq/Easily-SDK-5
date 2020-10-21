@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "annoview.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -39,7 +40,7 @@ LICENSE.GPL3 for more details.
 
 #define DEF_ANNO_SPAN		6
 
-void calc_anno_arti_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_anno_arti_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	const tchar_t* type;
 	xpoint_t* ppt;
@@ -60,9 +61,9 @@ void calc_anno_arti_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, 
 	}
 	else if (compare_text(type, -1, ATTR_ANNO_TYPE_ANCHOR, -1, 0) == 0)
 	{
-		pxr->fx = ppt[0].fx - 1;
+		pxr->fx = ppt[0].fx - 1.0f;
 		pxr->fy = ppt[0].fy - DEF_ANNO_SPAN;
-		pxr->fw = 2;
+		pxr->fw = 2.0f;
 		pxr->fh = DEF_ANNO_SPAN;
 	}
 	else if (compare_text(type, -1, ATTR_ANNO_TYPE_CIRCLE, -1, 0) == 0)
@@ -79,15 +80,15 @@ void calc_anno_arti_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, 
 		pxr->fw = (ppt[0].fx < ppt[1].fx) ? ppt[1].fx - ppt[0].fx : ppt[0].fx - ppt[1].fx;
 		pxr->fh = (ppt[0].fy < ppt[1].fy) ? ppt[1].fy - ppt[0].fy : ppt[0].fy - ppt[1].fy;
 
-		if (pxr->fw < 2)
+		if (pxr->fw < 2.0f)
 		{
-			pxr->fx -= 1;
-			pxr->fw = 2;
+			pxr->fx -= 1.0f;
+			pxr->fw = 2.0f;
 		}
-		if (pxr->fh < 2)
+		if (pxr->fh < 2.0f)
 		{
-			pxr->fy -= 1;
-			pxr->fh = 2;
+			pxr->fy -= 1.0f;
+			pxr->fh = 2.0f;
 		}
 	}
 	else if (compare_text(type, -1, ATTR_ANNO_TYPE_ANGLE, -1, 0) == 0)
@@ -122,7 +123,7 @@ void calc_anno_arti_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, 
 	xmem_free(ppt);
 }
 
-int calc_anno_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pplk, int* pind)
+int calc_anno_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pplk, int* pind)
 {
 	link_t_ptr ilk;
 	xrect_t xr;
@@ -135,7 +136,7 @@ int calc_anno_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	ilk = get_anno_next_arti(ptr, LINK_FIRST);
 	while (ilk)
 	{
-		calc_anno_arti_rect(pbox, ptr, ilk, &xr);
+		calc_anno_arti_rect(ptr, ilk, &xr);
 
 		if (ft_in_rect(ppt, &xr))
 		{
@@ -165,7 +166,7 @@ int calc_anno_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	return ANNO_HINT_NONE;
 }
 
-void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_anno(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xbrush_t xb = { 0 };
@@ -182,6 +183,8 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t *style;
 	const tchar_t* type;
 	tchar_t token[RES_LEN];
+
+	const canvbox_t* pbox = &pif->rect;
 
 	ilk = get_anno_next_arti(ptr, LINK_FIRST);
 	while (ilk)
@@ -224,7 +227,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr.fw = ppt[1].fx - ppt[0].fx;
 			xr.fh = ppt[1].fy - ppt[0].fy;
 
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, get_anno_arti_text_ptr(ilk));
+			draw_gizmo(pif, &xc, &xr, get_anno_arti_text_ptr(ilk));
 		}
 		else if (compare_text(type, -1, ATTR_ANNO_TYPE_CIRCLE, -1, 0) == 0)
 		{
@@ -291,7 +294,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			a1 = (ppt[1].fx - ppt[0].fx);// *pdt->dblX;
 			a2 = (ppt[1].fy - ppt[0].fy);// *pdt->dblY;
 
-			calc_anno_arti_rect(pbox, ptr, ilk, &xr);
+			calc_anno_arti_rect(ptr, ilk, &xr);
 			ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
 			//pt1.fx = xr.fx + xr.fw / 2;
@@ -360,7 +363,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			if (ppt[0].fy < ppt[2].fy && ppt[2].fx < ppt[0].fx)
 				a2 = -XPI + a2;
 
-			(*pif->pf_draw_arc)(pif->canvas, &xp, &ppt[0], 2, 2, a1, a2);
+			//(*pif->pf_draw_arc)(pif->canvas, &xp, &ppt[0], 2, 2, a1, a2);
 
 			default_xfont(&xf);
 			parse_xfont_from_style(&xf, style);
@@ -371,7 +374,7 @@ void draw_anno(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 				a1 = 0 - a1;
 			xsprintf(token, _T("%.1f°"), a1);
 
-			calc_anno_arti_rect(pbox, ptr, ilk, &xr);
+			calc_anno_arti_rect(ptr, ilk, &xr);
 			ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
 			pt1.fx = xr.fx + xr.fw / 2;

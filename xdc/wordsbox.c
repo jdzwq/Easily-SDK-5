@@ -50,14 +50,16 @@ typedef struct _words_delta_t{
 void _wordsbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 {
 	words_delta_t* ptd = GETWORDSDELTA(widget);
+
+	canvas_t canv;
 	if_measure_t im = { 0 };
 	xfont_t xf = { 0 };
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	canv = widget_get_canvas(widget);
+	get_canvas_measure(canv, &im);
+	widget_get_canv_rect(widget, (canvbox_t*)&(im.rect));
 
 	calc_wordsbox_item_rect(&im, &xf, ptd->words, ptd->page, plk, pxr);
 	widget_rect_to_pt(widget, pxr);
@@ -73,16 +75,14 @@ void _wordsbox_reset_page(res_win_t widget)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	calc_wordsbox_size(&im, &xf, ptd->words, &xs);
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_client_rect(widget, &xr);
 
-	widget_reset_paging(widget, xr.w, xr.h, xs.cx, xs.cy, 0, 0);
+	widget_reset_paging(widget, xr.w, xr.h, xs.w, xs.h, 0, 0);
 }
 
 void _wordsbox_ensure_visible(res_win_t widget)
@@ -144,20 +144,23 @@ void wordsbox_on_item_changed(res_win_t widget, link_t_ptr elk)
 int hand_words_create(res_win_t widget, void* data)
 {
 	words_delta_t* ptd;
-	res_ctx_t rdc;
+
 	xfont_t xf = { 0 };
+	float pm = 0;
 	xsize_t xs;
 
 	ptd = (words_delta_t*)xmem_alloc(sizeof(words_delta_t));
 
 	widget_get_xfont(widget, &xf);
 
-	rdc = widget_client_ctx(widget);
-	text_metric_raw(rdc, &xf, &xs);
-	widget_release_ctx(widget, rdc);
+	font_metric_by_pt(xstof(xf.size), &pm, NULL);
+	xs.fw = pm;
+	xs.fh = pm;
 
-	ptd->bw = xs.cx;
-	ptd->bh = xs.cy;
+	widget_size_to_pt(widget, &xs);
+
+	ptd->bw = xs.w;
+	ptd->bh = xs.h;
 
 	ptd->page = 0;
 
@@ -244,9 +247,7 @@ void hand_words_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
@@ -286,14 +287,14 @@ void hand_words_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_words_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	words_delta_t* ptd = GETWORDSDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
+	if_visual_t* piv;
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -307,6 +308,7 @@ void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	canv = widget_get_canvas(widget);
 
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -317,27 +319,31 @@ void hand_words_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+		
+	piv = create_visual_interface(rdc);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
-
-	draw_wordsbox(pif, &cb, &xf, ptd->words, ptd->page);
+	draw_wordsbox(pif, &xf, ptd->words, ptd->page);
 
 	if (ptd->item)
 	{
+		widget_get_view_rect(widget, &piv->rect);
+
 		_wordsbox_item_rect(widget, ptd->item, &xr);
 
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
+
 	}
 
+	destroy_visual_interface(piv);
+	
 	end_canvas_paint(canv, dc, pxr);
 
 	destroy_canvas_interface(pif);
-
 }
 
 /************************************************************************************************/
@@ -800,9 +806,7 @@ void wordsbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	calc_wordsbox_size(&im, &xf, ptd->words, pxs);
 

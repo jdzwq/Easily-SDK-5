@@ -35,7 +35,7 @@ HWND		g_hMain = NULL;
 tchar_t		g_szRunPath[PATH_LEN] = { 0 };
 
 LINKPTR		g_imagelist = NULL;
-res_bmp_t	g_bmpThumb = NULL;
+bitmap_t	g_bmpThumb = NULL;
 
 int			g_indFace = 0;
 
@@ -166,7 +166,7 @@ VOID LoadResource()
 
 	GetModuleFileName(NULL, path, PATH_LEN);
 
-	res_ctx_t ctx = create_display_context(NULL);
+	visual_t ctx = create_display_context(NULL);
 	
 	g_bmpThumb = load_bitmap_from_thumb(ctx, path);
 

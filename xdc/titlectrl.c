@@ -46,11 +46,8 @@ typedef struct title_delta_t{
 static void _titlectrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_title_item_rect(&cb, ptd->title, ptd->item, pxr);
+	calc_title_item_rect(ptd->title, ptd->item, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -193,9 +190,16 @@ void hand_title_destroy(res_win_t widget)
 void hand_title_size(res_win_t widget, int code, const xsize_t* pxs)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
+	xrect_t xr;
 
 	if (!ptd->title)
 		return;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_title_width(ptd->title, xr.fw);
+	set_title_height(ptd->title, xr.fh);
 
 	titlectrl_redraw(widget);
 }
@@ -207,19 +211,16 @@ void hand_title_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	link_t_ptr plk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->title)
 		return;
-
-	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_title_hint(&cb, &pt, ptd->title, ptd->item, &plk);
+	nHint = calc_title_hint(&pt, ptd->title, ptd->item, &plk);
 	bRe = (plk == ptd->hover) ? 1 : 0;
 
 	if (nHint == TITLE_HINT_ITEM && !ptd->hover && !bRe)
@@ -282,20 +283,17 @@ void hand_title_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr plk;
 	int nHint;
 	xpoint_t pt;
-	canvbox_t cb;
 	bool_t bRe;
 
 	if (!ptd->title)
 		return;
-
-	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_title_hint(&cb, &pt, ptd->title, ptd->item, &plk);
+	nHint = calc_title_hint(&pt, ptd->title, ptd->item, &plk);
 
 	if (nHint == TITLE_HINT_CLOSE)
 	{
@@ -371,10 +369,10 @@ void hand_title_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_title_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -386,7 +384,7 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->title)
 		return;
@@ -397,6 +395,7 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -410,6 +409,8 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
+	piv = create_visual_interface(rdc);
+
 	parse_xcolor(&xc_brim, xb.color);
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	parse_xcolor(&xc_core, xb.color);
@@ -419,11 +420,11 @@ void hand_title_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	else
 		xscpy(token, GDI_ATTR_GRADIENT_HORZ);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, token, &xr);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, token, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	draw_title(pif, ptd->title, ptd->item);
 
-	draw_title(pif, &cb, ptd->title, ptd->item);
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -466,6 +467,7 @@ res_win_t titlectrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 void titlectrl_attach(res_win_t widget, link_t_ptr ptr)
 {
 	title_delta_t* ptd = GETTITLEDELTA(widget);
+	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -473,6 +475,12 @@ void titlectrl_attach(res_win_t widget, link_t_ptr ptr)
 
 	ptd->item = NULL;
 	ptd->title = ptr;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_title_width(ptd->title, xr.fw);
+	set_title_height(ptd->title, xr.fh);
 
 	titlectrl_redraw(widget);
 

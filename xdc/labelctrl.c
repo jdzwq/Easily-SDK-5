@@ -53,11 +53,8 @@ typedef struct label_delta_t{
 void _labelctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_label_item_rect(&cb, ptd->label, ptd->cur_page, ilk, pxr);
+	calc_label_item_rect(ptd->label, ptd->cur_page, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -74,17 +71,17 @@ void _labelctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_label_width(ptd->label);
-	xs.fy = get_label_height(ptd->label);
+	xs.fw = get_label_width(ptd->label);
+	xs.fh = get_label_height(ptd->label);
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = get_label_item_width(ptd->label);
-	xs.fy = get_label_item_height(ptd->label);
+	xs.fw = get_label_item_width(ptd->label);
+	xs.fh = get_label_item_height(ptd->label);
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, pw, ph, lw, lh);
 
@@ -351,7 +348,6 @@ void hand_label_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	int nHint;
 	link_t_ptr ilk;
-	canvbox_t cb;
 	xpoint_t pt;
 
 	if (!ptd->label)
@@ -360,13 +356,11 @@ void hand_label_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (ptd->b_drag)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_label_hint(&cb, &pt, ptd->label, ptd->cur_page, &ilk);
+	nHint = calc_label_hint(&pt, ptd->label, ptd->cur_page, &ilk);
 
 	if (nHint == LABEL_HINT_ITEM && ilk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
@@ -439,7 +433,6 @@ void hand_label_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
-	canvbox_t cb;
 	xpoint_t pt;
 	link_t_ptr plk;
 	int nHint;
@@ -454,14 +447,12 @@ void hand_label_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_label_hint(&cb, &pt, ptd->label, ptd->cur_page, &plk);
+	nHint = calc_label_hint(&pt, ptd->label, ptd->cur_page, &plk);
 
 	bRe = (plk == ptd->item) ? 1 : 0;
 
@@ -535,10 +526,10 @@ void hand_label_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_label_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr = { 0 };
 	xfont_t xf = { 0 };
 	xpen_t xp = { 0 };
@@ -547,7 +538,7 @@ void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->label)
 		return;
@@ -558,6 +549,7 @@ void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -569,11 +561,12 @@ void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	draw_label(pif, &cb, ptd->label, ptd->cur_page);
+	draw_label(pif, ptd->label, ptd->cur_page);
 
 	//draw focus
 	if (ptd->item)
@@ -581,8 +574,10 @@ void hand_label_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		_labelctrl_item_rect(widget, ptd->item, &xr);
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -890,17 +885,14 @@ void labelctrl_move_next_page(res_win_t widget)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->label)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_label_pages(&cb, ptd->label);
+	nMaxPage = calc_label_pages(ptd->label);
 
 	if (nCurPage < nMaxPage)
 	{
@@ -915,17 +907,14 @@ void labelctrl_move_last_page(res_win_t widget)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->label)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_label_pages(&cb, ptd->label);
+	nMaxPage = calc_label_pages(ptd->label);
 
 	if (nCurPage != nMaxPage)
 	{
@@ -940,17 +929,14 @@ void labelctrl_move_to_page(res_win_t widget, int page)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->label)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_label_pages(&cb, ptd->label);
+	nMaxPage = calc_label_pages(ptd->label);
 
 	if (page > 0 && page != nCurPage && page <= nMaxPage)
 	{
@@ -964,16 +950,13 @@ void labelctrl_move_to_page(res_win_t widget, int page)
 int labelctrl_get_max_page(res_win_t widget)
 {
 	label_delta_t* ptd = GETLABELDELTA(widget);
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->label)
 		return 0;
 
-	widget_get_canv_rect(widget, &cb);
-
-	return calc_label_pages(&cb, ptd->label);
+	return calc_label_pages(ptd->label);
 }
 
 int labelctrl_get_cur_page(res_win_t widget)
@@ -1000,18 +983,18 @@ void calc_label_suit_size(link_t_ptr ptr, xsize_t* pxs)
 
 	if (count > 10)
 	{
-		pxs->fx = 3 * iw;
-		pxs->fy = 5 * ih;
+		pxs->fw = 3 * iw;
+		pxs->fh = 5 * ih;
 	}
 	else if (count > 5)
 	{
-		pxs->fx = 2 * iw;
-		pxs->fy = 5 * ih;
+		pxs->fw = 2 * iw;
+		pxs->fh = 5 * ih;
 	}
 	else
 	{
-		pxs->fx = iw;
-		pxs->fy = count * ih;
+		pxs->fw = iw;
+		pxs->fh = count * ih;
 	}
 }
 
@@ -1033,18 +1016,18 @@ void labelctrl_popup_size(res_win_t widget, xsize_t* pse)
 
 	if (count > 10)
 	{
-		pse->fx = 3 * iw;
-		pse->fy = 5 * ih;
+		pse->fw = 3 * iw;
+		pse->fh = 5 * ih;
 	}
 	else if (count > 5)
 	{
-		pse->fx = 2 * iw;
-		pse->fy = 5 * ih;
+		pse->fw = 2 * iw;
+		pse->fh = 5 * ih;
 	}
 	else
 	{
-		pse->fx = iw;
-		pse->fy = count * ih;
+		pse->fw = iw;
+		pse->fh = count * ih;
 	}
 
 	widget_size_to_pt(widget, pse);

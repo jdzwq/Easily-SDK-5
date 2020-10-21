@@ -48,9 +48,7 @@ static void _dropbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	xfont_t xf;
 	if_measure_t im = { 0 };
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	widget_get_xfont(widget, &xf);
 
@@ -64,27 +62,35 @@ static void _dropbox_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 static void _dropbox_reset_page(res_win_t widget)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
+
 	int vw, vh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
 	xfont_t xf;
+
+	canvas_t canv;
+	if_canvas_t* pif;
 	if_measure_t im = { 0 };
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	canv = widget_get_canvas(widget);
+	pif = create_canvas_interface(canv);
+
+	(*pif->pf_get_measure)(pif->canvas, &im);
 
 	widget_get_xfont(widget, &xf);
 
-	text_metric((canvas_t)im.ctx, &xf, &xs);
+	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+
+	destroy_canvas_interface(pif);
+
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	calc_dropbox_size(&im, &xf, ptd->table, &xs);
 	widget_size_to_pt(widget, &xs);
-	vw = xs.cx;
-	vh = xs.cy;
+	vw = xs.w;
+	vh = xs.h;
 
 	widget_get_client_rect(widget, &xr);
 
@@ -287,9 +293,7 @@ void hand_dropbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->table)
 		return;
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	widget_get_xfont(widget, &xf);
 
@@ -331,19 +335,20 @@ void hand_dropbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_dropbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	dropbox_delta_t* ptd = GETDROPBOXDELTA(widget);
-	res_ctx_t rdc;
-	xrect_t xr;
-	canvas_t canv;
-	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
 
+	xrect_t xr;
 	xfont_t xf;
 	xbrush_t xb;
 	xpen_t xp;
 	xcolor_t xc;
+
+	visual_t rdc;
+	canvas_t canv;
+	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	if (!ptd->table)
 		return;
@@ -354,6 +359,7 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -364,12 +370,12 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
-
-	draw_dropbox(pif, &cb, &xf, ptd->table);
+	draw_dropbox(pif, &xf, ptd->table);
 
 	//draw focus
 	if (ptd->entity)
@@ -377,11 +383,12 @@ void hand_dropbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		_dropbox_item_rect(widget, ptd->entity, &xr);
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
-		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_SOFT);
 	}
 
-	end_canvas_paint(canv, dc, pxr);
+	destroy_visual_interface(piv);
 
+	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
 }
 
@@ -537,16 +544,14 @@ void dropbox_popup_size(res_win_t widget, xsize_t* pxs)
 	xfont_t xf;
 	if_measure_t im = { 0 };
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	widget_get_xfont(widget, &xf);
 
 	calc_dropbox_size(&im, &xf, ptd->table, pxs);
 
-	if (pxs->fy > 7 * DEF_TOUCH_SPAN)
-		pxs->fy = 7 * DEF_TOUCH_SPAN;
+	if (pxs->fh > 7 * DEF_TOUCH_SPAN)
+		pxs->fh = 7 * DEF_TOUCH_SPAN;
 
 	widget_size_to_pt(widget, pxs);
 

@@ -45,11 +45,11 @@ typedef enum{
 extern "C" {
 #endif
 
-EXP_API void calc_topog_spot_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_topog_spot_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API int calc_topog_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* prow, int* pcol);
+EXP_API int calc_topog_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* prow, int* pcol);
 
-EXP_API void draw_topog(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API void draw_topog(const if_canvas_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

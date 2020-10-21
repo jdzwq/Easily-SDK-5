@@ -29,6 +29,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "imagesview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -76,17 +77,18 @@ int calc_images_rows_per_page(link_t_ptr ptr, float ph)
 	return (int)(ph / ih);
 }
 
-float calc_images_height(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_images_height(link_t_ptr ptr)
 {
-	float ih;
+	float fw, ih;
 	int lines, re;
 	int count, per;
 
+	fw = get_images_width(ptr);
 	ih = get_images_item_height(ptr);
 
 	count = get_images_item_count(ptr);
 
-	per = calc_images_items_per_row(ptr, pbox->fw);
+	per = calc_images_items_per_row(ptr, fw);
 
 	re = count % per;
 	lines = count / per;
@@ -96,17 +98,18 @@ float calc_images_height(const canvbox_t* pbox, link_t_ptr ptr)
 	return ih * lines;
 }
 
-float calc_images_width(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_images_width(link_t_ptr ptr)
 {
-	float iw;
+	float fh, iw;
 	int lines, re;
 	int count, per;
 
+	fh = get_images_height(ptr);
 	iw = get_images_item_width(ptr);
 
 	count = get_images_item_count(ptr);
 
-	per = calc_images_items_per_col(ptr, pbox->fh);
+	per = calc_images_items_per_col(ptr, fh);
 
 	re = count % per;
 	lines = count / per;
@@ -116,27 +119,29 @@ float calc_images_width(const canvbox_t* pbox, link_t_ptr ptr)
 	return iw * lines;
 }
 
-bool_t calc_images_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+bool_t calc_images_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr nlk;
 	int pi, count;
-	float iw, ih;
+	float fw, fh, iw, ih;
 	const tchar_t* sz_lay;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
 	sz_lay = get_images_layer_ptr(ptr);
 
+	fw = get_images_width(ptr);
+	fh = get_images_height(ptr);
 	iw = get_images_item_width(ptr);
 	ih = get_images_item_height(ptr);
 
 	if (compare_text(sz_lay, -1, ATTR_LAYER_HORZ, -1, 0) == 0)
 	{
-		pi = calc_images_items_per_col(ptr, pbox->fh);
+		pi = calc_images_items_per_col(ptr, fh);
 	}
 	else
 	{
-		pi = calc_images_items_per_row(ptr, pbox->fw);
+		pi = calc_images_items_per_row(ptr, fw);
 	}
 
 	count = 0;
@@ -168,11 +173,11 @@ bool_t calc_images_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr i
 	return 0;
 }
 
-bool_t calc_images_image_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+bool_t calc_images_image_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	float ic;
 
-	if (!calc_images_item_rect(pbox, ptr, ilk, pxr))
+	if (!calc_images_item_rect(ptr, ilk, pxr))
 		return 0;
 
 	ic = get_images_icon_span(ptr);
@@ -181,11 +186,11 @@ bool_t calc_images_image_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr 
 	return 1;
 }
 
-bool_t calc_images_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+bool_t calc_images_text_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	float ic;
 
-	if (!calc_images_item_rect(pbox, ptr, ilk, pxr))
+	if (!calc_images_item_rect(ptr, ilk, pxr))
 		return 0;
 
 	ic = get_images_icon_span(ptr);
@@ -195,11 +200,11 @@ bool_t calc_images_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr i
 	return 1;
 }
 
-int	calc_images_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,  link_t_ptr* pilk)
+int	calc_images_hint(const xpoint_t* ppt, link_t_ptr ptr,  link_t_ptr* pilk)
 {
 	link_t_ptr nlk;
 	int pi, count;
-	float lw, lh, ic;
+	float fw, fh, lw, lh, ic;
 	float x1, y1, x2, y2;
 	const tchar_t* sz_lay;
 
@@ -208,14 +213,16 @@ int	calc_images_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 
 	sz_lay = get_images_layer_ptr(ptr);
 
+	fw = get_images_width(ptr);
+	fh = get_images_height(ptr);
 	lw = get_images_item_width(ptr);
 	lh = get_images_item_height(ptr);
 	ic = get_images_icon_span(ptr);
 
 	if (compare_text(sz_lay, -1, ATTR_LAYER_HORZ, -1, 0) == 0)
-		pi = calc_images_items_per_col(ptr, pbox->fh);
+		pi = calc_images_items_per_col(ptr, fh);
 	else
-		pi = calc_images_items_per_row(ptr, pbox->fw);
+		pi = calc_images_items_per_row(ptr, fw);
 
 	x1 = 0;
 	y1 = 0;
@@ -262,7 +269,7 @@ int	calc_images_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr,
 	return IMAGE_HINT_NONE;
 }
 
-void draw_images(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_images(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr nlk;
 	int pi, count;
@@ -276,7 +283,7 @@ void draw_images(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	bool_t b_print;
 	float px, py, pw, ph;
 
-	XDL_ASSERT( pif != NULL);
+	const canvbox_t* pbox = &pif->rect;
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -360,7 +367,7 @@ void draw_images(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xr_box.fh = ic;
 
 			ft_center_rect(&xr_box, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_box, GDI_ATTR_GIZMO_CHECKED);
+			draw_gizmo(pif, &xc, &xr_box, GDI_ATTR_GIZMO_CHECKED);
 		}
 
 		count++;

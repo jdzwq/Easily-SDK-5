@@ -298,11 +298,8 @@ static bool_t _topogctrl_paste(res_win_t widget)
 static void _topogctrl_spot_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_topog_spot_rect(&cb, ptd->topog, ilk, pxr);
+	calc_topog_spot_rect(ptd->topog, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -371,17 +368,17 @@ static void _topogctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_topog_cols(ptd->topog) * get_topog_rx(ptd->topog);
-	xs.fy = get_topog_rows(ptd->topog) * get_topog_ry(ptd->topog);
+	xs.fw = get_topog_cols(ptd->topog) * get_topog_rx(ptd->topog);
+	xs.fh = get_topog_rows(ptd->topog) * get_topog_ry(ptd->topog);
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = (float)10;
-	xs.fy = (float)10;
+	xs.fw = (float)10;
+	xs.fh = (float)10;
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -584,19 +581,19 @@ void noti_topog_spot_drop(res_win_t widget, int x, int y)
 	}
 	widget_set_cursor(widget, CURSOR_ARROW);
 
-	xs.fx = get_topog_rx(ptd->topog);
-	xs.fy = get_topog_ry(ptd->topog);
+	xs.fw = get_topog_rx(ptd->topog);
+	xs.fh = get_topog_ry(ptd->topog);
 
 	widget_size_to_pt(widget, &xs);
 
-	if (!xs.cx || !xs.cy)
+	if (!xs.w || !xs.h)
 		return;
 
 	cx = x - ptd->org_x;
 	cy = y - ptd->org_y;
 
-	cx /= xs.cx;
-	cy /= xs.cy;
+	cx /= xs.w;
+	cy /= xs.h;
 
 	if (!cx && !cy)
 		return;
@@ -673,7 +670,6 @@ void hand_topogctrl_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp
 	int nHint;
 	link_t_ptr ilk;
 	xpoint_t pt;
-	canvbox_t cb;
 	int row, col;
 
 	if (!ptd->topog)
@@ -686,11 +682,9 @@ void hand_topogctrl_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	widget_get_canv_rect(widget, &cb);
-
 	ilk = NULL;
 	row = col = -1;
-	nHint = calc_topog_hint(&cb, &pt, ptd->topog, &ilk, &row, &col);
+	nHint = calc_topog_hint(&pt, ptd->topog, &ilk, &row, &col);
 
 	if (nHint == TOPOG_HINT_SPOT && !ptd->hover && ilk)
 	{
@@ -740,7 +734,6 @@ void hand_topogctrl_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr ilk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 	int row, col;
 
 	if (!ptd->topog)
@@ -758,11 +751,9 @@ void hand_topogctrl_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	widget_get_canv_rect(widget, &cb);
-
 	ilk = NULL;
 	row = col = -1;
-	nHint = calc_topog_hint(&cb, &pt, ptd->topog, &ilk, &row, &col);
+	nHint = calc_topog_hint(&pt, ptd->topog, &ilk, &row, &col);
 	bRe = (ilk == ptd->spot) ? 1 : 0;
 
 	if (nHint == TOPOG_HINT_SPOT)
@@ -789,7 +780,6 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr ilk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 	int row, col;
 
 	if (!ptd->topog)
@@ -805,11 +795,9 @@ void hand_topogctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	widget_get_canv_rect(widget, &cb);
-
 	ilk = NULL;
 	row = col = -1;
-	nHint = calc_topog_hint(&cb, &pt, ptd->topog, &ilk, &row, &col);
+	nHint = calc_topog_hint(&pt, ptd->topog, &ilk, &row, &col);
 
 	if (topog_is_design(ptd->topog))
 	{
@@ -1049,29 +1037,34 @@ void hand_topogctrl_copy(res_win_t widget)
 void hand_topogctrl_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
+	xrect_t xr;
 
 	if (!ptd->topog)
 		return;
 
-	_topogctrl_reset_page(widget);
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
 
-	widget_erase(widget, NULL);
+	set_topog_width(ptd->topog, xr.fw);
+	set_topog_height(ptd->topog, xr.fh);
+
+	topogctrl_redraw(widget);
 }
 
-void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_topogctrl_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xpen_t xp = { 0 };
 	xbrush_t xb = { 0 };
 	xcolor_t xc = { 0 };
 	xrect_t xr;
-	if_canvas_t* pif;
-	canvbox_t cb;
 
 	canvas_t canv;
+	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -1080,7 +1073,9 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
+
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -1091,24 +1086,26 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
-
-	draw_rect_raw(rdc, NULL, &xb, &xr);
-
-	widget_get_canv_rect(widget, &cb);
+			
+	piv = create_visual_interface(rdc);
 	
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
 	if (ptd->img.source)
 	{
 		format_xcolor(&pif->clr_msk, ptd->img.color);
 
-		draw_image(pif->canvas, &(ptd->img), (xrect_t*)&cb);
+		(*pif->pf_draw_image)(pif->canvas, &(ptd->img), (xrect_t*)&(pif->rect));
 	}
 
 	if (ptd->topog)
 	{
-		draw_topog(pif, &cb, ptd->topog);
+		draw_topog(pif, ptd->topog);
 
 		if (topog_is_design(ptd->topog) && ptd->spot)
 		{
+			widget_get_view_rect(widget, &piv->rect);
+
 			_topogctrl_spot_rect(widget, ptd->spot, &xr);
 
 			pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
@@ -1116,15 +1113,17 @@ void hand_topogctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			if (get_topog_spot_selected(ptd->spot))
 			{
 				parse_xcolor(&xc, DEF_ALPHA_COLOR);
-				alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+				(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
 			}
 			else
 			{
 				parse_xcolor(&xc, DEF_ENABLE_COLOR);
-				draw_focus_raw(rdc, &xc, &xr, ALPHA_TRANS);
+				draw_focus_raw(piv, &xc, &xr, ALPHA_TRANS);
 			}
 		}
 	}
+			
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -1169,7 +1168,8 @@ res_win_t topogctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* 
 void topogctrl_attach(res_win_t widget, link_t_ptr data)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
-	
+	xrect_t xr;
+
 	XDL_ASSERT(ptd != NULL);
 
 	XDL_ASSERT(data && is_topog_doc(data));
@@ -1178,6 +1178,12 @@ void topogctrl_attach(res_win_t widget, link_t_ptr data)
 	ptd->spot = NULL;
 	ptd->row = -1;
 	ptd->col = -1;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_topog_width(ptd->topog, xr.fw);
+	set_topog_height(ptd->topog, xr.fh);
 
 	topogctrl_redraw(widget);
 }
@@ -1409,11 +1415,11 @@ void topogctrl_set_dirty(res_win_t widget, bool_t bDirty)
 		_topogctrl_clean(widget);
 }
 
-bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp)
+bool_t topogctrl_set_bitmap(res_win_t widget, bitmap_t bmp)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	bool_t rt;
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	XDL_ASSERT(ptd != NULL);
 

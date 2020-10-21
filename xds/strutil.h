@@ -38,27 +38,27 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API const wchar_t* w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** pkey, int* pkeylen, wchar_t** pval, int* pvallen);
+EXP_API int w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** pkey, int* pkeylen, wchar_t** pval, int* pvallen);
 
-EXP_API const schar_t* a_parse_attrset_token(const schar_t* attrset, int len, schar_t** pkey, int* pkeylen, schar_t** pval, int* pvallen);
+EXP_API int a_parse_attrset_token(const schar_t* attrset, int len, schar_t** pkey, int* pkeylen, schar_t** pval, int* pvallen);
 
 EXP_API int w_parse_attrset_token_count(const wchar_t* attrset, int len);
 
 EXP_API int a_parse_attrset_token_count(const schar_t* attrset, int len);
 
-EXP_API const schar_t* a_parse_zero_token(const schar_t* tokens, schar_t** pkey, int* pkeylen);
+EXP_API int a_parse_zero_token(const schar_t* tokens, schar_t** pkey, int* pkeylen);
 
-EXP_API const wchar_t* w_parse_zero_token(const wchar_t* tokens, wchar_t** pkey, int* pkeylen);
+EXP_API int w_parse_zero_token(const wchar_t* tokens, wchar_t** pkey, int* pkeylen);
 
 EXP_API int w_parse_zero_token_count(const wchar_t* tokens);
 
 EXP_API int a_parse_zero_token_count(const schar_t* tokens);
 
-EXP_API const wchar_t* w_parse_options_token(const wchar_t* options,int len, wchar_t itemfeed, wchar_t linefeed, wchar_t** pkey, int* pkeylen, wchar_t** pval, int* pvallen);
+EXP_API int w_parse_options_token(const wchar_t* options,int len, wchar_t itemfeed, wchar_t linefeed, wchar_t** pkey, int* pkeylen, wchar_t** pval, int* pvallen);
 
-EXP_API const schar_t* a_parse_options_token(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed, schar_t** pkey, int* pkeylen, schar_t** pval, int* pvallen);
+EXP_API int a_parse_options_token(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed, schar_t** pkey, int* pkeylen, schar_t** pval, int* pvallen);
 
-EXP_API int w_parse_options_token_count(const wchar_t* options,int len,wchar_t itemfeed,wchar_t linefeed);
+EXP_API int w_parse_options_token_count(const wchar_t* options,int len,wchar_t itemfeed, wchar_t linefeed);
 
 EXP_API int a_parse_options_token_count(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed);
 
@@ -67,17 +67,17 @@ EXP_API int w_get_options_value(const wchar_t* options, int len, wchar_t itemfee
 
 EXP_API int a_get_options_value(const schar_t* options, int len, schar_t itemfeed, schar_t linefeed, const schar_t* key, schar_t* buf, int max);
 
-EXP_API const wchar_t* w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemfeed, wchar_t** pkey, int* pkeylen);
+EXP_API int w_parse_string_token(const wchar_t* tokens,int len, wchar_t itemfeed, wchar_t** pkey, int* pkeylen);
 
-EXP_API const schar_t* a_parse_string_token(const schar_t* tokens, int len, schar_t itemfeed, schar_t** pkey, int* pkeylen);
+EXP_API int a_parse_string_token(const schar_t* tokens, int len, schar_t itemfeed, schar_t** pkey, int* pkeylen);
 
 EXP_API int w_parse_string_token_count(const wchar_t* tokens,int len,wchar_t itemfeed);
 
 EXP_API int a_parse_string_token_count(const schar_t* tokens, int len, schar_t itemfeed);
 
-EXP_API const wchar_t* w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot, int* plen);
+EXP_API int w_parse_param_name(const wchar_t* param, int len, wchar_t itemdot, wchar_t** pkey, int* plen);
 
-EXP_API const schar_t* a_parse_param_name(const schar_t* param, int len, schar_t itemdot, int* plen);
+EXP_API int a_parse_param_name(const schar_t* param, int len, schar_t itemdot, schar_t** pkey, int* plen);
 
 EXP_API int w_parse_param_name_count(const wchar_t* param, int len, wchar_t itemdot);
 

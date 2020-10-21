@@ -48,9 +48,7 @@ void _listbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 	xfont_t xf;
 	if_measure_t im = { 0 };
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	widget_get_xfont(widget, &xf);
 
@@ -68,29 +66,36 @@ void _listbox_reset_page(res_win_t widget)
 	xrect_t xr;
 	xsize_t xs;
 	xfont_t xf;
+
+	canvas_t canv;
+	if_canvas_t* pif;
 	if_measure_t im = { 0 };
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	canv = widget_get_canvas(widget);
+	pif = create_canvas_interface(canv);
+
+	(*pif->pf_get_measure)(pif->canvas, &im);
 
 	widget_get_xfont(widget, &xf);
 
-	text_metric((canvas_t)im.ctx, &xf, &xs);
+	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	calc_listbox_size(&im, &xf, ptd->string, &xs);
 	widget_size_to_pt(widget, &xs);
-	vw = xs.cx;
-	vh = xs.cy;
+	vw = xs.w;
+	vh = xs.h;
 
 	widget_get_client_rect(widget, &xr);
 
 	widget_reset_paging(widget, xr.w, xr.h, vw, vh, lw, lh);
 
 	widget_reset_scroll(widget, 0);
+
+	destroy_canvas_interface(pif);
 }
 
 void _listbox_reset_visible(res_win_t widget)
@@ -290,9 +295,7 @@ void hand_listbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (!ptd->string)
 		return;
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	widget_get_xfont(widget, &xf);
 
@@ -334,14 +337,14 @@ void hand_listbox_scroll(res_win_t widget, bool_t bHorz, int nLine)
 	widget_hand_scroll(widget, bHorz, nLine);
 }
 
-void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_listbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
+	if_visual_t* piv;
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -357,6 +360,7 @@ void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -368,11 +372,11 @@ void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	draw_listbox(pif, &cb, &xf, ptd->string);
+	draw_listbox(pif, &xf, ptd->string);
 
 	//draw focus
 	if (ptd->entity)
@@ -380,8 +384,10 @@ void hand_listbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		_listbox_item_rect(widget, ptd->entity, &xr);
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
-		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_SOFT);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -537,16 +543,14 @@ void listbox_popup_size(res_win_t widget, xsize_t* pxs)
 	xfont_t xf;
 	if_measure_t im = { 0 };
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	widget_get_xfont(widget, &xf);
 
 	calc_listbox_size(&im, &xf, ptd->string, pxs);
 
-	if (pxs->fy > 7 * DEF_TOUCH_SPAN)
-		pxs->fy = 7 * DEF_TOUCH_SPAN;
+	if (pxs->fh > 7 * DEF_TOUCH_SPAN)
+		pxs->fh = 7 * DEF_TOUCH_SPAN;
 
 	widget_size_to_pt(widget, pxs);
 

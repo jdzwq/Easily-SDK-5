@@ -110,9 +110,10 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 	xrect_t xrItem;
 	xsize_t xs;
 	const tchar_t* text;
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	widget_exten_t* pwt;
+	if_visual_t* piv;
 
 	pxr->x = pxr->w = pxr->y = pxr->h = 0;
 
@@ -136,12 +137,15 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 
 	rdc = widget_window_ctx(wt);
 
+	piv = create_visual_interface(rdc);
+
 	ilk = get_menu_next_item(pwt->menu, LINK_FIRST);
 	while (ilk)
 	{
 		text = get_menu_item_title_ptr(ilk);
-		text_size_raw(rdc, &xf, text, -1, &xs);
-		xrItem.w = bd.menu + xs.cx;
+		(*piv->pf_text_size_raw)(piv->visual, &xf, text, -1, &xs);
+
+		xrItem.w = bd.menu + xs.w;
 
 		if (ilk == plk)
 		{
@@ -158,6 +162,7 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 		ilk = get_menu_next_item(pwt->menu, ilk);
 	}
 
+	destroy_visual_interface(piv);
 	widget_release_ctx(wt, rdc);
 }
 
@@ -296,15 +301,15 @@ void widget_calc_scroll(res_win_t wt, bool_t bHorz, scroll_t* psl)
 	if (bHorz)
 	{
 		psl->max = (pwt->cb.w - pwt->vb.w);
-		psl->min = pwt->sc.cx;
-		psl->page = 2 * pwt->sc.cx;
+		psl->min = pwt->sc.w;
+		psl->page = 2 * pwt->sc.w;
 		psl->pos = (pwt->vb.x);
 	}
 	else
 	{
 		psl->max = (pwt->cb.h - pwt->vb.h);
-		psl->min = pwt->sc.cy;
-		psl->page = 2 * pwt->sc.cy;
+		psl->min = pwt->sc.h;
+		psl->page = 2 * pwt->sc.h;
 		psl->pos = (pwt->vb.y);
 	}
 }
@@ -322,15 +327,15 @@ void widget_reset_scroll(res_win_t wt, bool_t horz)
 	if (horz)
 	{
 		sc.max = (pwt->cb.w - pwt->vb.w);
-		sc.min = pwt->sc.cx;
-		sc.page = 2 * pwt->sc.cx;
+		sc.min = pwt->sc.w;
+		sc.page = 2 * pwt->sc.w;
 		sc.pos = pwt->vb.x;
 	}
 	else
 	{
 		sc.max = (pwt->cb.h - pwt->vb.h);
-		sc.min = pwt->sc.cy;
-		sc.page = 2 * pwt->sc.cy;
+		sc.min = pwt->sc.h;
+		sc.page = 2 * pwt->sc.h;
 		sc.pos = pwt->vb.y;
 	}
 
@@ -420,8 +425,8 @@ void widget_reset_paging(res_win_t wt, int ww, int wh, int vw, int vh, int lw, i
 	if (pwt->vb.y > cy)
 		pwt->vb.y = cy;
 
-	pwt->sc.cy = lh;
-	pwt->sc.cx = lw;
+	pwt->sc.h = lh;
+	pwt->sc.w = lw;
 }
 
 void widget_get_view_rect(res_win_t wt, viewbox_t* pbox)
@@ -480,8 +485,8 @@ void widget_get_canv_size(res_win_t wt, xsize_t* pps)
 
 	XDL_ASSERT(canv != NULL);
 
-	pps->cx = pwt->cb.w - 2 * pwt->cb.x;
-	pps->cy = pwt->cb.h - 2 * pwt->cb.y;
+	pps->w = pwt->cb.w - 2 * pwt->cb.x;
+	pps->h = pwt->cb.h - 2 * pwt->cb.y;
 
 	size_pt_to_tm(canv, pps);
 }
@@ -644,7 +649,7 @@ bool_t widget_point_corner(res_win_t wt, const xpoint_t* ppt)
 void widget_hand_create(res_win_t wt)
 {
 	widget_exten_t* pwt;
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	pwt = (widget_exten_t*)xmem_alloc(sizeof(widget_exten_t));
 
@@ -778,7 +783,7 @@ void widget_splitor_on_size(res_win_t wt, int code, const xsize_t* pxs)
 	}
 }
 
-void widget_splitor_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
+void widget_splitor_on_paint(res_win_t wt, visual_t rdc, const xrect_t* prt)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -854,7 +859,7 @@ int widget_splitor_sub_size(res_win_t wt, int code, const xsize_t* pxs, uid_t si
 	return 0;
 }
 
-int widget_splitor_sub_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
+int widget_splitor_sub_paint(res_win_t wt, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -908,7 +913,7 @@ void widget_docker_on_lbuttonup(res_win_t wt, const xpoint_t* pxp)
 	}
 }
 
-void widget_docker_on_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt)
+void widget_docker_on_paint(res_win_t wt, visual_t rdc, const xrect_t* prt)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -961,7 +966,7 @@ int widget_docker_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, va
 	return 1;
 }
 
-int widget_docker_sub_paint(res_win_t wt, res_ctx_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
+int widget_docker_sub_paint(res_win_t wt, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 

@@ -43,129 +43,98 @@ extern "C" {
 /*
 @FUNCTION create_display_context: create display device context.
 @INPUT wt: the widget, if NULL created for screen.
-@RETURN res_ctx_t: if succeeds return device context, fails return NULL.
+@RETURN visual_t: if succeeds return device context, fails return NULL.
 */
-EXP_API res_ctx_t create_display_context(res_win_t wt);
+EXP_API visual_t create_display_context(res_win_t wt);
 
 /*
 @FUNCTION create_compatible_context: create memory context compatiable with device context.
-@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT visual_t rdc: device context resource handle.
 @INPUT width: the memory context width in pixel.
 @INPUT height: the memory context height in pixel.
-@RETURN res_ctx_t: if succeeds return memory context, fails return NULL.
+@RETURN visual_t: if succeeds return memory context, fails return NULL.
 */
-EXP_API res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height);
+EXP_API visual_t create_compatible_context(visual_t rdc, int width, int height);
 
 /*
 @FUNCTION destroy_context: destroy device or memory context.
-@INPUT res_ctx_t rdc: device or memory context resource handle.
+@INPUT visual_t rdc: device or memory context resource handle.
 @RETURN void: none.
 */
-EXP_API void destroy_context(res_ctx_t rdc);
+EXP_API void destroy_context(visual_t rdc);
 
 /*
 @FUNCTION render_context: render source memory context bitmap into destination device context.
-@INPUT res_ctx_t src: source memory context resource handle.
+@INPUT visual_t src: source memory context resource handle.
 @INPUT int srcx: source bitmap start x coordinate.
 @INPUT int srcy: source bitmap start y coordinate.
-@INPUT res_ctx_t dst: destination device context resource handle.
+@INPUT visual_t dst: destination device context resource handle.
 @INPUT int dstx: destination bitmap start x coordinate.
 @INPUT int dsty: destination bitmap start y coordinate.
 @INPUT int dstw: destination bitmap width.
 @INPUT int dsth: destination bitmap height.
 @RETURN void: none.
 */
-EXP_API void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
+EXP_API void render_context(visual_t src, int srcx, int srcy, visual_t dst, int dstx, int dsty, int dstw, int dsth);
 
 /*
 @FUNCTION get_device_caps: get device context capabilities.
-@INPUT res_ctx_t rdc: device or memory context resource handle.
+@INPUT visual_t rdc: device or memory context resource handle.
 @OUTPUT dev_cap_t* pcap: device capabilities struct for returning information.
 @RETURN void: none.
 */
-EXP_API void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
-
-/*
-@FUNCTION text_mm_metric: get character millimeter metrics according to the font.
-@INPUT res_ctx_t rdc: device or memory context resource handle.
-@INPUT const xfont_t* pxf: the font struct.
-@OUTPUT xsize_t* pxs: the size struct for returning character millimeter metrics.
-@RETURN void: none.
-*/
-EXP_API void text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
-
-/*
-@FUNCTION text_pt_metric: get character points metrics according to the font.
-@INPUT res_ctx_t rdc: device or memory context resource handle.
-@INPUT const xfont_t* pxf: the font struct.
-@OUTPUT xsize_t* pxs: the size struct for returning character millimeter metrics.
-@RETURN void: none.
-*/
-EXP_API void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
-
-/*
-@FUNCTION text_mm_size: get text millimeter metrics according to the font.
-@INPUT res_ctx_t rdc: device or memory context resource handle.
-@INPUT const xfont_t* pxf: the font struct.
-@INPUT const tchar_t* txt: the string token.
-@INPUT int len: the string length in characters, not include terminate character.
-@OUTPUT xsize_t* pxs: the size struct for returning text millimeter metrics.
-@RETURN void: none.
-*/
-EXP_API void text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
-
-/*
-@FUNCTION text_pt_size: get text points metrics according to the font.
-@INPUT res_ctx_t rdc: device or memory context resource handle.
-@INPUT const xfont_t* pxf: the font struct.
-@INPUT const tchar_t* txt: the string token.
-@INPUT int len: the string length in characters, not include terminate character.
-@OUTPUT xsize_t* pxs: the size struct for returning text points metrics.
-@RETURN void: none.
-*/
-EXP_API void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+EXP_API void get_device_caps(visual_t rdc, dev_cap_t* pcap);
 
 /*
 @FUNCTION pt_per_mm: calc points per millimeter.
-@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT visual_t rdc: device context resource handle.
 @INPUT bool_t horz: nonzero for horizonal calcing, zero for vertical calcing.
-@RETURN float: float millimeter value.
+@RETURN float: millimeter points value.
 */
-EXP_API float pt_per_mm(res_ctx_t rdc, bool_t horz);
+EXP_API float pt_per_mm(visual_t rdc, bool_t horz);
+
+/*
+@FUNCTION pt_per_in: calc points per inch.
+@INPUT visual_t rdc: device context resource handle.
+@INPUT bool_t horz: nonzero for horizonal calcing, zero for vertical calcing.
+@RETURN float: millimeter points value.
+*/
+EXP_API float pt_per_in(visual_t rdc, bool_t horz);
+
 
 /*
 @FUNCTION cast_pt_to_mm: mapping points to millimeter.
-@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT visual_t rdc: device context resource handle.
 @INPUT int pt: the span value in points.
 @INPUT bool_t horz: nonzero for horizonal mapping, zero for vertical mapping.
 @RETURN float: float millimeter value.
 */
-EXP_API float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
+EXP_API void cast_pt_to_mm(visual_t rdc, bool_t horz, xspan_t* pxn);
 
 /*
 @FUNCTION cast_mm_to_pt: mapping millimeter to points.
-@INPUT res_ctx_t rdc: device context resource handle.
+@INPUT visual_t rdc: device context resource handle.
 @INPUT float mm: the span value in millimeter.
 @INPUT bool_t horz: nonzero for horizonal mapping, zero for vertical mapping.
 @RETURN float: float millimeter value.
 */
-EXP_API int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
+EXP_API void cast_mm_to_pt(visual_t rdc, bool_t horz, xspan_t* pxn);
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 
 /*
 @FUNCTION create_printer_context: create printer device context.
 @INPUT const dev_prn_t* pmod: the printer device mode.
-@RETURN res_ctx_t: if succeeds return device context, fails return NULL.
+@RETURN visual_t: if succeeds return device context, fails return NULL.
 */
-EXP_API res_ctx_t create_printer_context(const dev_prn_t* pmod);
+EXP_API visual_t create_printer_context(const dev_prn_t* pmod);
 
 /*
 @FUNCTION destroy_printer_context: destroy printer device context.
-@INPUT res_ctx_t rdc: the printer device context.
+@INPUT visual_t rdc: the printer device context.
 @RETURN void: none.
 */
-EXP_API void destroy_printer_context(res_ctx_t rdc);
+EXP_API void destroy_printer_context(visual_t rdc);
 
 /*
 @FUNCTION default_printer_mode: get default printer device mode.
@@ -184,32 +153,32 @@ EXP_API bool_t setup_printer_mode(res_win_t wnd, dev_prn_t* pmod);
 
 /*
 @FUNCTION begin_page: start printing a page.
-@INPUT res_ctx_t rdc: the printer device context.
+@INPUT visual_t rdc: the printer device context.
 @RETURN void: none.
 */
-EXP_API void  begin_page(res_ctx_t rdc);
+EXP_API void  begin_page(visual_t rdc);
 
 /*
 @FUNCTION end_page: end printing a page.
-@INPUT res_ctx_t rdc: the printer device context.
+@INPUT visual_t rdc: the printer device context.
 @RETURN void: none.
 */
-EXP_API void  end_page(res_ctx_t rdc);
+EXP_API void  end_page(visual_t rdc);
 
 /*
 @FUNCTION begin_doc: start printing a document.
-@INPUT res_ctx_t rdc: the printer device context.
+@INPUT visual_t rdc: the printer device context.
 @INPUT const tchar_t* docname: the document title.
 @RETURN void: none.
 */
-EXP_API void  begin_doc(res_ctx_t rdc, const tchar_t* docname);
+EXP_API void  begin_doc(visual_t rdc, const tchar_t* docname);
 
 /*
 @FUNCTION end_doc: end printing a document.
-@INPUT res_ctx_t rdc: the printer device context.
+@INPUT visual_t rdc: the printer device context.
 @RETURN void: none.
 */
-EXP_API void  end_doc(res_ctx_t rdc);
+EXP_API void  end_doc(visual_t rdc);
 
 #endif //XDU_SUPPORT_CONTEXT_PRINTER
 

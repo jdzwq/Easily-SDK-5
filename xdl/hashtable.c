@@ -1078,24 +1078,23 @@ const tchar_t* hash_attr_del_chars(link_t_ptr ptr, const tchar_t* key, int pos, 
 
 void hash_table_parse_attrset(link_t_ptr ptr, const tchar_t* attrs, int len)
 {
-	const tchar_t* term;
 	tchar_t *key, *val;
 	int keylen, vallen;
+	int n, total = 0;
 
 	XDL_ASSERT(ptr && ptr->tag == lkHashTable);
 
 	clear_hash_table(ptr);
 
-	if (is_null(attrs) || !len)
-		return;
-
 	if (len < 0)
 		len = xslen(attrs);
 
-	term = attrs + len;
-	while (attrs)
+	if (is_null(attrs) || !len)
+		return;
+
+	while (n = parse_attrset_token((attrs + total), (len - total), &key, &keylen, &val, &vallen))
 	{
-		attrs = parse_attrset_token(attrs, (int)(term - attrs), &key, &keylen, &val, &vallen);
+		total += n;
 
 		write_hash_attr(ptr, key, keylen, val, vallen);
 	}

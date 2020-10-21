@@ -47,11 +47,8 @@ typedef struct _tool_delta_t{
 static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_tool_group_item_rect(&cb, ptd->tool, ilk, pxr);
+	calc_tool_group_item_rect(ptd->tool, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -59,11 +56,8 @@ static void _toolctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 static void _toolctrl_group_rect(res_win_t widget, link_t_ptr glk, xrect_t* pxr)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_tool_group_entire_rect(&cb, ptd->tool, glk, pxr);
+	calc_tool_group_entire_rect(ptd->tool, glk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -225,9 +219,16 @@ void hand_tool_destroy(res_win_t widget)
 void hand_tool_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
+	xrect_t xr;
 
 	if (!ptd->tool)
 		return;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_tool_width(ptd->tool, xr.fw);
+	set_tool_height(ptd->tool, xr.fh);
 
 	toolctrl_redraw(widget);
 }
@@ -239,19 +240,16 @@ void hand_tool_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	link_t_ptr glk, plk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->tool)
 		return;
-
-	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &glk, &plk);
+	nHint = calc_tool_point_hint(&pt, ptd->tool, &glk, &plk);
 	bRe = (plk == ptd->hover) ? 1 : 0;
 
 	if (nHint == TOOL_HINT_ITEM && !ptd->hover && !bRe)
@@ -327,7 +325,6 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	bool_t bRe;
 	xpoint_t pt;
 	xrect_t xr;
-	canvbox_t cb;
 
 	if (!ptd->tool)
 		return;
@@ -340,14 +337,12 @@ void hand_tool_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		widget_erase(widget, &xr);
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &glk, &plk);
+	nHint = calc_tool_point_hint(&pt, ptd->tool, &glk, &plk);
 
 	bRe = (plk == ptd->item) ? 1 : 0;
 
@@ -385,19 +380,16 @@ void hand_tool_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 	int nHint;
 	link_t_ptr glk, plk;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->tool)
 		return;
-
-	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_tool_point_hint(&cb, &pt, ptd->tool, &glk, &plk);
+	nHint = calc_tool_point_hint(&pt, ptd->tool, &glk, &plk);
 
 	noti_tool_owner(widget, NC_TOOLRBCLK, ptd->tool, plk, (void*)pxp);
 }
@@ -428,10 +420,10 @@ void hand_tool_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_tool_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -442,7 +434,7 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->tool)
 		return;
@@ -453,6 +445,7 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -464,15 +457,15 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
+	piv = create_visual_interface(rdc);
+
 	parse_xcolor(&xc_brim, xb.color);
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	parse_xcolor(&xc_core, xb.color);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 
-	widget_get_canv_rect(widget, &cb);
-
-	draw_tool(pif, &cb, ptd->tool);
+	draw_tool(pif, ptd->tool);
 
 	//draw focus
 	if (ptd->hover && ptd->b_press)
@@ -482,8 +475,10 @@ void hand_tool_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
 
-		draw_rect_raw(rdc, &xp, NULL, &xr);
+		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -526,6 +521,7 @@ res_win_t toolctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 void toolctrl_attach(res_win_t widget, link_t_ptr ptr)
 {
 	tool_delta_t* ptd = GETTOOLDELTA(widget);
+	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -533,6 +529,12 @@ void toolctrl_attach(res_win_t widget, link_t_ptr ptr)
 
 	ptd->item = NULL;
 	ptd->tool = ptr;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_tool_width(ptd->tool, xr.fw);
+	set_tool_height(ptd->tool, xr.fh);
 
 	toolctrl_redraw(widget);
 }

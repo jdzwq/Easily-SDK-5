@@ -48,19 +48,19 @@ typedef enum{
 extern "C" {
 #endif
 
-	EXP_API float calc_proper_height(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_proper_height(link_t_ptr ptr);
 
-	EXP_API float calc_proper_width(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API float calc_proper_width(link_t_ptr ptr);
 
-	EXP_API void calc_proper_section_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr sec, xrect_t* pxr);
+	EXP_API void calc_proper_section_rect(link_t_ptr ptr, link_t_ptr sec, xrect_t* pxr);
 
-	EXP_API void calc_proper_entity_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr);
+	EXP_API void calc_proper_entity_rect(link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr);
 
-	EXP_API void calc_proper_entity_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr);
+	EXP_API void calc_proper_entity_text_rect(link_t_ptr ptr, link_t_ptr ent, xrect_t* pxr);
 
-	EXP_API int calc_proper_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link_t_ptr* pent);
+	EXP_API int calc_proper_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link_t_ptr* pent);
 
-	EXP_API void draw_proper(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API void draw_proper(const if_canvas_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_CONTEXT
 
-float pt_per_mm(res_ctx_t rdc, bool_t horz)
+float pt_per_mm(visual_t rdc, bool_t horz)
 {
 	if_context_t* pif;
 
@@ -43,75 +43,33 @@ float pt_per_mm(res_ctx_t rdc, bool_t horz)
 	return (*pif->pf_pt_per_mm)(rdc, horz);
 }
 
-float cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz)
+float pt_per_in(visual_t rdc, bool_t horz)
 {
-	if_context_t* pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	return (*pif->pf_cast_pt_to_mm)(rdc, pt, horz);
+	return (float)PDPERINCH;
 }
 
-int cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz)
+void cast_pt_to_mm(visual_t rdc, bool_t horz, xspan_t* pxn)
 {
 	if_context_t* pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	return (*pif->pf_cast_mm_to_pt)(rdc, mm, horz);
-
+	(*pif->pf_cast_pt_to_mm)(rdc, horz, pxn);
 }
 
-void text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
+void cast_mm_to_pt(visual_t rdc, bool_t horz, xspan_t* pxn)
 {
 	if_context_t* pif;
-	float fx, fy;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_text_mm_size)(rdc, pxf, txt, len, &fx, &fy);
-	pxs->fx = fx;
-	pxs->fy = fy;
-}
+	(*pif->pf_cast_mm_to_pt)(rdc, horz, pxn);
 
-void text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
-{
-	if_context_t* pif;
-	float fx, fy;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_text_mm_metric)(rdc, pxf, &fx, &fy);
-	pxs->fx = fx;
-	pxs->fy = fy;
-}
-
-void text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
-{
-	if_context_t* pif;
-	int cx, cy;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_text_pt_metric)(rdc, pxf, &cx, &cy);
-	pxs->cx = cx;
-	pxs->cy = cy;
-}
-
-void text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
-{
-	if_context_t* pif;
-	int cx, cy;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_text_pt_size)(rdc, pxf, txt, len, &cx, &cy);
-	pxs->cx = cx;
-	pxs->cy = cy;
 }
 
 /*************************************************************************************************/
-res_ctx_t create_display_context(res_win_t wt)
+
+visual_t create_display_context(res_win_t wt)
 {
 	if_context_t* pif;
 
@@ -120,7 +78,7 @@ res_ctx_t create_display_context(res_win_t wt)
 	return (*pif->pf_create_display_context)(wt);
 }
 
-res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height)
+visual_t create_compatible_context(visual_t rdc, int width, int height)
 {
 	if_context_t* pif;
 
@@ -129,7 +87,7 @@ res_ctx_t create_compatible_context(res_ctx_t rdc, int width, int height)
 	return (*pif->pf_create_compatible_context)(rdc, width, height);
 }
 
-void destroy_context(res_ctx_t rdc)
+void destroy_context(visual_t rdc)
 {
 	if_context_t* pif;
 
@@ -138,7 +96,7 @@ void destroy_context(res_ctx_t rdc)
 	(*pif->pf_destroy_context)(rdc);
 }
 
-void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth)
+void render_context(visual_t src, int srcx, int srcy, visual_t dst, int dstx, int dsty, int dstw, int dsth)
 {
 	if_context_t* pif;
 
@@ -147,7 +105,7 @@ void render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, 
 	(*pif->pf_render_context)(src, srcx, srcy, dst, dstx, dsty, dstw, dsth);
 }
 
-void get_device_caps(res_ctx_t rdc, dev_cap_t* pcap)
+void get_device_caps(visual_t rdc, dev_cap_t* pcap)
 {
 	if_context_t* pif;
 
@@ -187,7 +145,7 @@ bool_t pt_in_region(res_rgn_t rgn, const xpoint_t* ppt)
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 
-res_ctx_t create_printer_context(const dev_prn_t* pmod)
+visual_t create_printer_context(const dev_prn_t* pmod)
 {
 	if_context_t* pif;
 
@@ -196,7 +154,7 @@ res_ctx_t create_printer_context(const dev_prn_t* pmod)
 	return (*pif->pf_create_printer_context)(pmod);
 }
 
-void destroy_printer_context(res_ctx_t rdc)
+void destroy_printer_context(visual_t rdc)
 {
 	if_context_t* pif;
 
@@ -223,7 +181,7 @@ bool_t setup_printer_mode(res_win_t wnd, dev_prn_t* pmod)
 	return (*pif->pf_setup_printer_mode)(wnd, pmod);
 }
 
-void  begin_page(res_ctx_t rdc)
+void  begin_page(visual_t rdc)
 {
 	if_context_t* pif;
 
@@ -232,7 +190,7 @@ void  begin_page(res_ctx_t rdc)
 	(*pif->pf_begin_page)(rdc);
 }
 
-void  end_page(res_ctx_t rdc)
+void  end_page(visual_t rdc)
 {
 	if_context_t* pif;
 
@@ -241,7 +199,7 @@ void  end_page(res_ctx_t rdc)
 	(*pif->pf_end_page)(rdc);
 }
 
-void  begin_doc(res_ctx_t rdc, const tchar_t* docname)
+void  begin_doc(visual_t rdc, const tchar_t* docname)
 {
 	if_context_t* pif;
 
@@ -250,7 +208,7 @@ void  begin_doc(res_ctx_t rdc, const tchar_t* docname)
 	(*pif->pf_begin_doc)(rdc, docname);
 }
 
-void  end_doc(res_ctx_t rdc)
+void  end_doc(visual_t rdc)
 {
 	if_context_t* pif;
 

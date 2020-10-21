@@ -125,12 +125,12 @@ void _MainFrame_CalcTitleBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_TITLEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, 0, pxr);
-	pxr->h = xs.cy;
+	pxr->h = xs.h;
 }
 
 void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
@@ -138,13 +138,13 @@ void _MainFrame_CalcPanelBar(res_win_t widget, xrect_t* pxr)
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_TITLEBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_TITLEBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	widget_get_dock_rect(widget, 0, pxr);
-	pxr->y += xs.cy;
-	pxr->h -= xs.cy;
+	pxr->y += xs.h;
+	pxr->h -= xs.h;
 }
 
 void _MainFrame_CreateToolBar(res_win_t widget)
@@ -495,8 +495,11 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		LINKPTR ptr_plot = create_plot_doc();
 
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_INDICATOR, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_THERMOMETER, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
-		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_KPIGRAM, -1);
+		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TASKGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_HISTOGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_SCATTERGRAM, -1);
@@ -506,9 +509,8 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		set_plot_width(ptr_plot, 100);
 		set_plot_height(ptr_plot, 100);
 
-		set_plot_title(ptr_plot, _T("plotgram"), -1);
-		set_plot_style(ptr_plot, _T("font-size:10;fill-color:RGB(0,0,0);stroke-color:RGB(131,139,139);fill-style:gradient;gradient:vert;"), -1);
-		set_plot_y_stages(ptr_plot, _T("3,5,6,7,1,2,4"), -1);
+		set_plot_style(ptr_plot, _T("font-size:10;stroke-width:4;fill-color:RGB(0,0,0);stroke-color:RGB(131,139,139);fill-style:gradient;gradient:vert;"), -1);
+		//set_plot_y_stages(ptr_plot, _T("3,5,6,7,1,2,4"), -1);
 		set_plot_y_bases(ptr_plot, _T("0,0,0,0,0,0,0"), -1);
 		set_plot_y_steps(ptr_plot, _T("2,2,4,4,4,2,8"), -1);
 		set_plot_y_labels(ptr_plot, _T("physi,habit,diet,motion,chronic,therapy,sympt"), -1);
@@ -516,10 +518,10 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		set_plot_y_shapes(ptr_plot, _T("top-triangle,rect,left-triangle,round,right-triangle,ellipse,bottom-triangle"), -1);
 		set_plot_x_labels(ptr_plot, _T("text1,text2"), -1);
 		set_plot_x_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255)"), -1);
-
-		set_plot_rows(ptr_plot, 5);
-		set_plot_cols(ptr_plot, 3);
-		set_plot_matrix(ptr_plot, _T(" {[10, 1, 1] [2, 3, 2][4, 5, 3] [6, 7 4] [8, 9 5]}"), -1);
+		set_plot_ruler(ptr_plot, 10);
+		set_plot_matrix_rows(ptr_plot, 5);
+		set_plot_matrix_cols(ptr_plot, 3);
+		set_plot_matrix_data(ptr_plot, _T(" {[10 1, 1] [2, 3, 2][4, 5, 3] [6, 7 4] [8, 9 5]}"), -1);
 
 		plotctrl_attach(hPanel, ptr_plot);
 		plotctrl_redraw(hPanel);
@@ -716,18 +718,26 @@ void MainFrame_TitleBar_OnItemHover(res_win_t widget, NOTICE_TITLE* pnt)
 	ppc->line_width = 10;
 }*/
 
-void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
+void MainFrame_UserPanel_OnDraw(res_win_t win, visual_t rdc)
 {
-	viewbox_t vb;
+	canvbox_t cb;
 	xcolor_t xc;
 
-	widget_get_view_rect(win, &vb);
+	canvas_t canv;
+	if_canvas_t* pif;
 
-	//parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
+	canv = widget_get_canvas(win);
+	pif = create_canvas_interface(canv);
 
-	//test_icon_draw(hDC, &xc, (xrect_t*)&vb);
+	widget_get_canv_rect(win, &cb);
+	
+	parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
 
-	tchar_t aa[10] = { 0 };
+	test_gizmo(pif, &xc, (xrect_t*)&cb);
+
+	destroy_canvas_interface(pif);
+
+	/*tchar_t aa[10] = { 0 };
 	xpoint_t pa[20] = { 0 };
 
 	int i = 0;
@@ -753,12 +763,14 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	n++;
 
 	aa[i] = _T('A');
-	pa[n].x = feed;
-	pa[n].y = feed;
-	pa[n+1].x = xr.x + feed;
-	pa[n+1].y = xr.y;
+	pa[n].x = 1;
+	pa[n].y = 0;
+	pa[n+1].x = feed;
+	pa[n+1].y = feed;
+	pa[n+2].x = xr.x + feed;
+	pa[n+2].y = xr.y;
 	i++;
-	n+=2;
+	n+=3;
 
 	aa[i] = _T('L');
 	pa[n].x = xr.x + xr.w - feed;
@@ -767,12 +779,14 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	n++;
 
 	aa[i] = _T('A');
-	pa[n].x = feed;
-	pa[n].y = feed;
-	pa[n + 1].x = xr.x + xr.w;
-	pa[n + 1].y = xr.y + feed;
+	pa[n].x = 1;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x + xr.w;
+	pa[n + 2].y = xr.y + feed;
 	i++;
-	n += 2;
+	n += 3;
 
 	aa[i] = _T('L');
 	pa[n].x = xr.x + xr.w;
@@ -781,12 +795,14 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	n++;
 
 	aa[i] = _T('A');
-	pa[n].x = feed;
-	pa[n].y = feed;
-	pa[n + 1].x = xr.x + xr.w - feed;
-	pa[n + 1].y = xr.y + xr.h;
+	pa[n].x = 1;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x + xr.w - feed;
+	pa[n + 2].y = xr.y + xr.h;
 	i++;
-	n += 2;
+	n += 3;
 
 	aa[i] = _T('C');
 	pa[n].x = xr.x + xr.w / 8 * 7;
@@ -807,12 +823,14 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	n += 2;
 	
 	aa[i] = _T('A');
-	pa[n].x = feed;
-	pa[n].y = feed;
-	pa[n + 1].x = xr.x;
-	pa[n + 1].y = xr.y + xr.h - feed;
+	pa[n].x = 1;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x;
+	pa[n + 2].y = xr.y + xr.h - feed;
 	i++;
-	n += 2;
+	n += 3;
 
 	aa[i] = _T('Z');
 	i++;
@@ -879,8 +897,12 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	xr.w = 50;
 	xr.h = 50;
 
-	pt.x = xr.x + xr.w / 2;
+	xpoint_t pk;
+
+	pt.x = xr.x;
 	pt.y = xr.y + xr.h / 2;
+	pk.x = xr.x + xr.w;
+	pk.y = xr.y + xr.h / 2;
 	rx = xr.w / 2;
 	ry = xr.h / 2;
 
@@ -888,7 +910,62 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	xp.adorn.size = 1;
 	xb.shadow.offx = 0;
 	xb.shadow.offy = 0;
-	draw_arc_raw(rdc, &xp, &pt, rx, ry, 0, XPI);
+	draw_arc_raw(rdc, &xp, &pt, &pk, rx, ry, 0, 0);
+
+	xr.y += 50;
+	pt.x = xr.x;
+	pt.y = xr.y + xr.h / 2;
+	pk.x = xr.x + xr.w;
+	pk.y = xr.y + xr.h / 2;
+	rx = xr.w / 2;
+	ry = xr.h / 2;
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	xb.shadow.offx = 0;
+	xb.shadow.offy = 0;
+	draw_arc_raw(rdc, &xp, &pt, &pk, rx, ry, 1, 1);
+
+	xr.y += 20;
+	pt.x = xr.x;
+	pt.y = xr.y + xr.h / 2;
+	pk.x = xr.x + xr.w / 2;
+	pk.y = xr.y + xr.h;
+	rx = xr.w / 2;
+	ry = xr.h / 2;
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	xb.shadow.offx = 0;
+	xb.shadow.offy = 0;
+	draw_arc_raw(rdc, &xp, &pt, &pk, rx, ry, 1, 0);
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	xb.shadow.offx = 0;
+	xb.shadow.offy = 0;
+	draw_arc_raw(rdc, &xp, &pt, &pk, rx, ry, 1, 1);
+
+	xr.x += 100;
+	pt.x = xr.x;
+	pt.y = xr.y + xr.h / 2;
+	pk.x = xr.x + xr.w / 2;
+	pk.y = xr.y + xr.h;
+	rx = xr.w / 2;
+	ry = xr.h / 2;
+	draw_rect_raw(rdc, &xp, NULL, &xr);
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	xb.shadow.offx = 0;
+	xb.shadow.offy = 0;
+	draw_arc_raw(rdc, &xp, &pt, &pk, rx, ry, 0, 0);
+
+	xp.adorn.feed = 1;
+	xp.adorn.size = 1;
+	xb.shadow.offx = 0;
+	xb.shadow.offy = 0;
+	draw_arc_raw(rdc, &xp, &pt, &pk, rx, ry, 0, 1);
 
 	xr.y = 60;
 	xr.x = 340;
@@ -906,6 +983,89 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, res_ctx_t rdc)
 	xr.w = 50;
 	xr.h = 50;
 	draw_equalgon_raw(rdc, &xp, &xb, RECTPOINT(&xr), 20, 6);
+
+	widget_get_client_rect(win, &xr);
+
+	xr.y += 200;
+	xr.w -= 10;
+	xr.h = 50;
+
+	i = 0;
+	n = 0;
+
+	aa[i] = _T('M');
+	pa[n].x = xr.x + xr.w - feed;
+	pa[n].y = xr.y + xr.h;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = 0;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x + xr.w;
+	pa[n + 2].y = xr.y + xr.h - feed;
+	i++;
+	n += 3;
+
+	aa[i] = _T('L');
+	pa[n].x = xr.x + xr.w;
+	pa[n].y = xr.y + feed;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = 0;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x + xr.w - feed;
+	pa[n + 2].y = xr.y;
+	i++;
+	n += 3;
+
+	aa[i] = _T('L');
+	pa[n].x = xr.x + feed;
+	pa[n].y = xr.y;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = 0;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x;
+	pa[n + 2].y = xr.y + feed;
+	i++;
+	n += 3;
+
+	aa[i] = _T('L');
+	pa[n].x = xr.x;
+	pa[n].y = xr.y + xr.h - feed;
+	i++;
+	n++;
+
+	aa[i] = _T('A');
+	pa[n].x = 0;
+	pa[n].y = 0;
+	pa[n + 1].x = feed;
+	pa[n + 1].y = feed;
+	pa[n + 2].x = xr.x + feed;
+	pa[n + 2].y = xr.y + xr.h;
+	i++;
+	n += 3;
+
+	aa[i] = _T('Z');
+	i++;
+
+	xp.adorn.feed = 0;
+	xp.adorn.size = 0;
+	xb.shadow.offx = 10;
+	xb.shadow.offy = 10;
+
+	draw_path_raw(rdc, &xp, &xb, aa, pa, n);*/
 }
 
 /******************************************************************************************************/
@@ -922,20 +1082,20 @@ int MainFrame_OnCreate(res_win_t widget, void* data)
 
 	xsize_t xs;
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_TOOLBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_TOOLBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_TOP, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_TOP, 0, xs.h);
 
-	xs.fx = 0;
-	xs.fy = MAINFRAME_STATUSBAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = MAINFRAME_STATUSBAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.cy);
+	widget_dock(widget, WS_DOCK_BOTTOM, 0, xs.h);
 
-	xs.fx = MAINFRAME_TREEBAR_WIDTH;
-	xs.fy = 0;
+	xs.fw = MAINFRAME_TREEBAR_WIDTH;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.cx, 0);
+	widget_dock(widget, WS_DOCK_LEFT | WS_DOCK_DYNA, xs.w, 0);
 
 	pdt = (MainFrameDelta*)xmem_alloc(sizeof(MainFrameDelta));
 	SETMAINFRAMEDELTA(widget, pdt);
@@ -1181,7 +1341,7 @@ void MainFrame_OnNotice(res_win_t widget, LPNOTICE phdr)
 			//MainFrame_UserPanel_OnCalc(pnu->widget, (PAGE_CALC*)pnu->data);
 			break;
 		case NC_OWNERDRAW:
-			MainFrame_UserPanel_OnDraw(pnu->widget, (res_ctx_t)pnu->data);
+			MainFrame_UserPanel_OnDraw(pnu->widget, (visual_t)pnu->data);
 			break;
 		}
 	}

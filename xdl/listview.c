@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "listview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -67,16 +68,17 @@ int calc_list_cols_per_page(link_t_ptr ptr, float pw)
 	return (int)(pw / iw);
 }
 
-float calc_list_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
+float calc_list_height(link_t_ptr ptr, link_t_ptr plk)
 {
-	float ih;
+	float fw, ih;
 	int lines, re;
 	int count, per;
 	
+	fw = get_list_width(ptr);
 	ih = get_list_item_height(ptr);
 
 	count = get_list_child_item_count(plk) + 1;
-	per = calc_list_items_per_row(ptr, pbox->fw);
+	per = calc_list_items_per_row(ptr, fw);
 
 	re = count % per;
 	lines = count / per;
@@ -86,16 +88,17 @@ float calc_list_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
 	return ih * lines;
 }
 
-float calc_list_width(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
+float calc_list_width(link_t_ptr ptr, link_t_ptr plk)
 {
-	float iw;
+	float fh, iw;
 	int lines, re;
 	int count, per;
 
+	fh = get_list_height(ptr);
 	iw = get_list_item_width(ptr);
 
 	count = get_list_child_item_count(plk) + 1;
-	per = calc_list_items_per_col(ptr, pbox->fh);
+	per = calc_list_items_per_col(ptr, fh);
 
 	re = count % per;
 	lines = count / per;
@@ -105,11 +108,11 @@ float calc_list_width(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
 	return iw * lines;
 }
 
-bool_t calc_list_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr)
+bool_t calc_list_item_rect( link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr nlk;
 	int pi, count;
-	float iw, ih;
+	float fw, fh, iw, ih;
 	const tchar_t* sz_lay;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
@@ -119,16 +122,18 @@ bool_t calc_list_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk
 
 	sz_lay = get_list_layer_ptr(ptr);
 
+	fw = get_list_width(ptr);
+	fh = get_list_height(ptr);
 	iw = get_list_item_width(ptr);
 	ih = get_list_item_height(ptr);
 
 	if (compare_text(sz_lay, -1, ATTR_LAYER_HORZ, -1, 0) == 0)
 	{
-		pi = calc_list_items_per_col(ptr, pbox->fh);
+		pi = calc_list_items_per_col(ptr, fh);
 	}
 	else
 	{
-		pi = calc_list_items_per_row(ptr, pbox->fw);
+		pi = calc_list_items_per_row(ptr, fw);
 	}
 
 	count = 1;
@@ -160,15 +165,16 @@ bool_t calc_list_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk
 	return 0;
 }
 
-bool_t calc_list_item_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr)
+bool_t calc_list_item_text_rect(link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr)
 {
 	float ih, ic;
 	bool_t b_showcheck;
 
-	if (!calc_list_item_rect(pbox, ptr, plk, ilk, pxr))
+	if (!calc_list_item_rect(ptr, plk, ilk, pxr))
 		return 0;
 
 	b_showcheck = get_list_showcheck(ptr);
+
 	ih = get_list_item_height(ptr);
 	ic = get_list_icon_span(ptr);
 
@@ -184,11 +190,11 @@ bool_t calc_list_item_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_pt
 	return 1;
 }
 
-int	calc_list_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk, link_t_ptr* pilk)
+int	calc_list_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk, link_t_ptr* pilk)
 {
 	link_t_ptr nlk;
 	int pi, count;
-	float ic, lw, lh;
+	float fw, fh, ic, lw, lh;
 	float x1, y1, x2, y2;
 	bool_t b_showcheck;
 	const tchar_t* sz_lay;
@@ -199,14 +205,16 @@ int	calc_list_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	b_showcheck = get_list_showcheck(ptr);
 	sz_lay = get_list_layer_ptr(ptr);
 
+	fw = get_list_width(ptr);
+	fh = get_list_height(ptr);
 	ic = get_list_icon_span(ptr);
 	lw = get_list_item_width(ptr);
 	lh = get_list_item_height(ptr);
 
 	if (compare_text(sz_lay, -1, ATTR_LAYER_HORZ, -1, 0) == 0)
-		pi = calc_list_items_per_col(ptr, pbox->fh);
+		pi = calc_list_items_per_col(ptr, fh);
 	else
-		pi = calc_list_items_per_row(ptr, pbox->fw);
+		pi = calc_list_items_per_row(ptr, fw);
 
 	x1 = 0;
 	y1 = 0;
@@ -261,7 +269,7 @@ int	calc_list_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	return LIST_HINT_NONE;
 }
 
-void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
+void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
 {
 	link_t_ptr nlk;
 	int pi, count;
@@ -278,6 +286,8 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	const tchar_t* layer;
 	bool_t b_print;
 	float px, py, pw, ph;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	XDL_ASSERT( pif != NULL);
 
@@ -353,7 +363,7 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 	xr_img.fh = xr.fh - ic;
 	ft_center_rect(&xr_img, DEF_LARGE_ICON, DEF_LARGE_ICON);
 
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_img, GDI_ATTR_GIZMO_FOLDER);
+	draw_gizmo(pif, &xc, &xr_img, GDI_ATTR_GIZMO_FOLDER);
 
 	xr_text.fx = xr.fx;
 	xr_text.fy = xr.fy + xr.fh - ic;
@@ -388,7 +398,7 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 		xr_img.fh = xr.fh - ic;
 		ft_center_rect(&xr_img, DEF_LARGE_ICON, DEF_LARGE_ICON);
 
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_img, GDI_ATTR_GIZMO_FOLDER);
+		draw_gizmo(pif, &xc, &xr_img, GDI_ATTR_GIZMO_FOLDER);
 
 		xr_img.fx = xr.fx;
 		xr_img.fy = xr.fy;
@@ -400,7 +410,7 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 		ft_center_rect(&xr_img, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-		(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_img, get_list_item_icon_ptr(nlk));
+		draw_gizmo(pif, &xc, &xr_img, get_list_item_icon_ptr(nlk));
 
 		if (b_showcheck)
 		{
@@ -413,11 +423,11 @@ void draw_list_child(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr p
 
 			if (get_list_item_checked(nlk))
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_checkbox, GDI_ATTR_GIZMO_CHECKED);
+				draw_gizmo(pif, &xc, &xr_checkbox, GDI_ATTR_GIZMO_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_checkbox, GDI_ATTR_GIZMO_CHECKBOX);
+				draw_gizmo(pif, &xc, &xr_checkbox, GDI_ATTR_GIZMO_CHECKBOX);
 			}
 
 			xr_text.fx = xr.fx + ic;

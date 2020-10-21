@@ -40,30 +40,34 @@ LICENSE.GPL3 for more details.
 bool_t get_grid_next_param(link_t_ptr ptr, tchar_t* pname, int max)
 {
 	const tchar_t *token;
-	int tokenlen;
+	tchar_t* key;
+	int klen;
 	bool_t rt = 0;
+	int len, n, total = 0;
 
 	token = get_grid_where_clause_ptr(ptr);
+	len = xslen(token);
 
-	if (is_null(token))
+	if (!len)
 		return 0;
 
 	if (is_null(pname))
 		rt = 1;
 
-	while (token = parse_param_name(token, -1, _T(':'), &tokenlen))
+	while (n = parse_param_name((token + total), (len - total), _T(':'), &key, &klen))
 	{
-		if (tokenlen == 0)
-			continue;
+		total += n;
+		if (!klen)
+			break;
 
 		if (rt)
 		{
-			max = (max < tokenlen) ? max : tokenlen;
-			xsncpy(pname, token, max);
+			max = (max < klen) ? max : klen;
+			xsncpy(pname, key, max);
 			return 1;
 		}
 
-		if (compare_text(pname, -1, token, tokenlen, 0) == 0)
+		if (compare_text(pname, -1, key, klen, 0) == 0)
 		{
 			rt = 1;
 		}
@@ -736,30 +740,29 @@ skip:
 
 int format_grid_param_clause(link_t_ptr ptr,const tchar_t* clause, tchar_t* buf,int max)
 {
-	const tchar_t *token,*pre;
 	const tchar_t *val;
-	int tokenlen,len,total;
+	tchar_t* token;
+	int tokenlen;
+	int len, total;
+	int n, m = 0;
 
 	if (is_null(clause))
 		return 0;
 
 	total = 0;
-	pre = token = clause;
 
-	while(token = parse_param_name(token,-1,_T(':'),&tokenlen))
+	while(n = parse_param_name((clause + m),-1,_T(':'),&token, &tokenlen))
 	{
-		if(tokenlen == 0)
-			continue;
+		if (!tokenlen)
+			break;
 
-		val = get_grid_sql_param_ptr(ptr,token,tokenlen);
-		
-		len = (int)(token - pre) - 1;
+		len = n - (tokenlen + 1); //include ':'
 		if (total + len > max)
 			return total;
 
 		if (buf)
 		{
-			xsncpy(buf + total, pre, len);
+			xsncpy(buf + total, (clause + m), len);
 		}
 		total += len;
 
@@ -772,7 +775,9 @@ int format_grid_param_clause(link_t_ptr ptr,const tchar_t* clause, tchar_t* buf,
 		}
 		total++;
 
+		val = get_grid_sql_param_ptr(ptr, token, tokenlen);
 		len = xslen(val);
+
 		if(total + len > max)
 			return total;
 
@@ -791,16 +796,16 @@ int format_grid_param_clause(link_t_ptr ptr,const tchar_t* clause, tchar_t* buf,
 		}
 		total++;
 		
-		pre = token + tokenlen;
+		m += n;
 	}
 
-	len = xslen(pre); 
+	len = xslen((clause + m)); 
 	if(total + len > max)
 		return total;
 
 	if (buf)
 	{
-		xsncpy(buf + total, pre, len);
+		xsncpy(buf + total, (clause + m), len);
 	}
 	total += len;
 

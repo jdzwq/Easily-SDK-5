@@ -58,39 +58,54 @@ static void _CenterRect(RECT* pRect, int src_width, int src_height)
 	}
 }
 
-void _destroy_bitmap(res_bmp_t bmp)
+void _destroy_bitmap(bitmap_t bmp)
 {
-	DeleteObject(bmp);
+	win32_bitmap_t* pwb = (win32_bitmap_t*)bmp;
+
+	DeleteObject(pwb->bitmap);
+
+	HeapFree(GetProcessHeap(), 0, pwb);
 }
 
-void _get_bitmap_size(res_bmp_t rb, int* pw, int* ph)
+void _get_bitmap_size(bitmap_t rb, int* pw, int* ph)
 {
+	win32_bitmap_t* pwb = (win32_bitmap_t*)rb;
+
 	BITMAP bmp;
 
-	GetObject(rb, sizeof(bmp), (void*)&bmp);
+	GetObject(pwb->bitmap, sizeof(bmp), (void*)&bmp);
 
 	*pw = bmp.bmWidth;
 	*ph = bmp.bmHeight;
 }
 
-res_bmp_t _create_context_bitmap(res_ctx_t rdc)
+bitmap_t _create_context_bitmap(visual_t rdc)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	win32_bitmap_t* pwb;
+
+	HDC hDC = (HDC)(ctx->context);
 	HBITMAP hbmp;
 
-	if (rdc->type != CONTEXT_MEMORY)
+	if (ctx->type != CONTEXT_MEMORY)
 		return NULL;
 
 	hbmp = (HBITMAP)GetCurrentObject(hDC, OBJ_BITMAP);
 	if (!hbmp)
 		return NULL;
 
-	return (HBITMAP)CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_COPYRETURNORG);
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = (HBITMAP)CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_COPYRETURNORG);
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
+bitmap_t _create_color_bitmap(visual_t rdc, const xcolor_t* pxc, int w, int h)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HDC memDC;
 	HBRUSH hBrush;
 	HBITMAP newBmp, orgBmp;
@@ -111,12 +126,18 @@ res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 	SelectObject(memDC, orgBmp);
 	DeleteDC(memDC);
 
-	return (res_bmp_t)newBmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = newBmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
+bitmap_t _create_pattern_bitmap(visual_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HDC memDC;
 	HBRUSH hBrush;
 	HPEN newPen, orgPen;
@@ -163,12 +184,18 @@ res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const
 	SelectObject(memDC, orgBmp);
 	DeleteDC(memDC);
 
-	return (res_bmp_t)newBmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = newBmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* type)
+bitmap_t _create_gradient_bitmap(visual_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* type)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	RECT rt;
 	HBITMAP newBmp, orgBmp;
 	HDC memDC;
@@ -264,12 +291,18 @@ res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const
 	newBmp = (HBITMAP)SelectObject(memDC, orgBmp);
 	DeleteDC(memDC);
 
-	return (res_bmp_t)newBmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = newBmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text)
+bitmap_t _create_code128_bitmap(visual_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HDC winDC,memDC;
 	HBRUSH wBrush, bBrush;
 	HBITMAP newBmp, orgBmp;
@@ -344,12 +377,18 @@ res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned cha
 	DeleteObject(wBrush);
 	DeleteObject(bBrush);
 
-	return newBmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = newBmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
+bitmap_t _create_pdf417_bitmap(visual_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HDC winDC, memDC;
 	HBRUSH wBrush, bBrush;
 	HBITMAP newBmp, orgBmp;
@@ -419,12 +458,18 @@ res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 	DeleteObject(wBrush);
 	DeleteObject(bBrush);
 
-	return newBmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = newBmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
+bitmap_t _create_qrcode_bitmap(visual_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HDC winDC, memDC;
 	HBRUSH wBrush, bBrush;
 	HBITMAP newBmp, orgBmp;
@@ -499,12 +544,18 @@ res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char
 	DeleteObject(wBrush);
 	DeleteObject(bBrush);
 
-	return newBmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = newBmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
+bitmap_t _create_storage_bitmap(visual_t rdc, const tchar_t* filename)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HANDLE handle;
 	IPicture* p = NULL;
 	IStream* s = NULL;
@@ -570,19 +621,23 @@ res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename)
 
 	p->Release();
 
-	return (res_bmp_t)handle;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = (HBITMAP)handle;
+
+	return (bitmap_t)&pwb->head;
 }
 /*******************************************************************************/
 
-dword_t _get_bitmap_bytes(res_bmp_t rb)
+dword_t _get_bitmap_bytes(bitmap_t rb)
 {
+	win32_bitmap_t* pwb = (win32_bitmap_t*)rb;
 	BITMAP bmp;
 	WORD cClrBits;
 	DWORD dwClrUsed;
 	DWORD dwSizeImage;
 	DWORD dwTotal;
 
-	if (!GetObject(rb, sizeof(BITMAP), (LPSTR)&bmp))
+	if (!GetObject(pwb->bitmap, sizeof(BITMAP), (LPSTR)&bmp))
 		return 0;
 
 	cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
@@ -612,9 +667,12 @@ dword_t _get_bitmap_bytes(res_bmp_t rb)
 	return dwTotal;
 }
 
-res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_t bytes)
+bitmap_t _load_bitmap_from_bytes(visual_t rdc, const unsigned char* pb, dword_t bytes)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	PBITMAPINFO pbmi;
 	BITMAPFILEHEADER bfh;
 	LPBYTE lpBits;
@@ -635,16 +693,24 @@ res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_
 
 	pbmi = (PBITMAPINFO)(pb + sizeof(BITMAPFILEHEADER));
 	lpBits = (LPBYTE)(pb + bfh.bfOffBits);
+
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+
 #ifdef WINCE
-	return CreateDIBSection(hDC, pbmi, DIB_RGB_COLORS, NULL, NULL, bfh.bfOffBits);
+	pwb->bitmap = CreateDIBSection(hDC, pbmi, DIB_RGB_COLORS, NULL, NULL, bfh.bfOffBits);
 #else
-	return  CreateDIBitmap(hDC, (BITMAPINFOHEADER*)pbmi, CBM_INIT, lpBits, pbmi, DIB_RGB_COLORS);
+	pwb->bitmap = CreateDIBitmap(hDC, (BITMAPINFOHEADER*)pbmi, CBM_INIT, lpBits, pbmi, DIB_RGB_COLORS);
 #endif
+
+	return (bitmap_t)&pwb->head;
 }
 
-dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, dword_t max)
+dword_t _save_bitmap_to_bytes(visual_t rdc, bitmap_t rb, unsigned char* buf, dword_t max)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb = (win32_bitmap_t*)rb;
+
 	BITMAP bmp;
 	PBITMAPINFO pbmi;
 	WORD    cClrBits;
@@ -657,7 +723,7 @@ dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, d
 	void* pbuf;
 #endif
 
-	if (!GetObject(rb, sizeof(BITMAP), (LPSTR)&bmp))
+	if (!GetObject(pwb->bitmap, sizeof(BITMAP), (LPSTR)&bmp))
 		return 0;
 
 	cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
@@ -743,7 +809,7 @@ dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, d
 		CopyMemory((void*)lpBits, (void*)pbuf, pbih->biSizeImage);
 		DeleteObject(hSec);
 #else
-		if (!GetDIBits(hDC, rb, 0, (WORD)pbih->biHeight, lpBits, pbmi, DIB_RGB_COLORS))
+		if (!GetDIBits(hDC, pwb->bitmap, 0, (WORD)pbih->biHeight, lpBits, pbmi, DIB_RGB_COLORS))
 		{
 			LocalFree(pbmi);
 			return 0;
@@ -757,9 +823,12 @@ dword_t _save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* buf, d
 }
 
 #ifdef XDU_SUPPORT_SHELL
-res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
+bitmap_t _load_bitmap_from_icon(visual_t rdc, const tchar_t* iname)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	HICON hIcon;
 	ICONINFO ico = { 0 };
 
@@ -812,12 +881,18 @@ res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
 	DeleteObject(ico.hbmColor);
 	DeleteObject(ico.hbmMask);
 
-	return hbmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = (HBITMAP)hbmp;
+
+	return (bitmap_t)&pwb->head;
 }
 
-res_bmp_t _load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* file)
+bitmap_t _load_bitmap_from_thumb(visual_t rdc, const tchar_t* file)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb;
+
 	SHFILEINFO shi = { 0 };
 	ICONINFO ico = { 0 };
 
@@ -858,7 +933,10 @@ res_bmp_t _load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* file)
 	DeleteObject(ico.hbmColor);
 	DeleteObject(ico.hbmMask);
 
-	return hbmp;
+	pwb = (win32_bitmap_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_bitmap_t));
+	pwb->bitmap = (HBITMAP)hbmp;
+
+	return (bitmap_t)&pwb->head;
 }
 #endif //XDU_SUPPORT_SHELL
 

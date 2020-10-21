@@ -23,7 +23,6 @@
     <ClCompile Include="..\..\xdc\curvectrl.c" />
     <ClCompile Include="..\..\xdc\diagramctrl.c" />
     <ClCompile Include="..\..\xdc\gdicanv.c" />
-    <ClCompile Include="..\..\xdc\gdiinf.c" />
     <ClCompile Include="..\..\xdc\horzbox.c" />
     <ClCompile Include="..\..\xdc\calendarctrl.c" />
     <ClCompile Include="..\..\xdc\checkbox.c" />
@@ -41,7 +40,6 @@
     <ClCompile Include="..\..\xdc\firetime.c" />
     <ClCompile Include="..\..\xdc\firewords.c" />
     <ClCompile Include="..\..\xdc\formctrl.c" />
-    <ClCompile Include="..\..\xdc\gizmogdi.c" />
     <ClCompile Include="..\..\xdc\impbitmap.c" />
     <ClCompile Include="..\..\xdc\impclip.c" />
     <ClCompile Include="..\..\xdc\impcontext.c" />
@@ -53,7 +51,6 @@
     <ClCompile Include="..\..\xdc\plotctrl.c" />
     <ClCompile Include="..\..\xdc\printbag.c" />
     <ClCompile Include="..\..\xdc\printbox.c" />
-    <ClCompile Include="..\..\xdc\shapegdi.c" />
     <ClCompile Include="..\..\xdc\staticctrl.c" />
     <ClCompile Include="..\..\xdc\gridctrl.c" />
     <ClCompile Include="..\..\xdc\griddlg.c" />
@@ -109,7 +106,6 @@
     <ClInclude Include="..\..\xdc\docker.h" />
     <ClInclude Include="..\..\xdc\gdicanv.h" />
     <ClInclude Include="..\..\xdc\gdiinf.h" />
-    <ClInclude Include="..\..\xdc\gizmogdi.h" />
     <ClInclude Include="..\..\xdc\impbitmap.h" />
     <ClInclude Include="..\..\xdc\impclip.h" />
     <ClInclude Include="..\..\xdc\impcontext.h" />
@@ -118,7 +114,6 @@
     <ClInclude Include="..\..\xdc\impwidget.h" />
     <ClInclude Include="..\..\xdc\lang\_xdc_ansi.h" />
     <ClInclude Include="..\..\xdc\printbag.h" />
-    <ClInclude Include="..\..\xdc\shapegdi.h" />
     <ClInclude Include="..\..\xdc\splitor.h" />
     <ClInclude Include="..\..\xdc\textor.h" />
     <ClInclude Include="..\..\xdc\widgetex.h" />

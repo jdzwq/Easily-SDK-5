@@ -131,8 +131,8 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 
 	xsize_t xs;
 
-	xs.fx = SQLFETCHDLG_BAR_SPLIT;
-	xs.fy = SQLFETCHDLG_BAR_HEIGHT;
+	xs.fw = SQLFETCHDLG_BAR_SPLIT;
+	xs.fh = SQLFETCHDLG_BAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
@@ -140,7 +140,7 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 	xr_reg.x = xr.x;
 	xr_reg.w = xr.w;
 	xr_reg.y = xr.y;
-	xr_reg.h = xr.h - xs.cy;
+	xr_reg.h = xr.h - xs.h;
 
 	pdt->hEdit = editbox_create(widget, WD_STYLE_CONTROL, &xr_reg);
 	XDL_ASSERT(pdt->hEdit);
@@ -163,26 +163,26 @@ int SQLFetchDlg_OnCreate(res_win_t widget, void* data)
 
 	widget_show(pdt->hEdit, WS_SHOW_NORMAL);
 
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
 
-	xs.fx = SQLFETCHDLG_BTN_WIDTH;
-	xs.fy = SQLFETCHDLG_BAR_SPLIT;
+	xs.fw = SQLFETCHDLG_BTN_WIDTH;
+	xs.fh = SQLFETCHDLG_BAR_SPLIT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
-	xr_push.x = xr.x + xr.w - xs.cx - xs.cy;
-	xr_push.w = xs.cx;
-	xr_push.y = xr.y + xs.cy;
-	xr_push.h = xr.h - 2 * xs.cy;
+	xr_push.x = xr.x + xr.w - xs.w - xs.h;
+	xr_push.w = xs.w;
+	xr_push.y = xr.y + xs.h;
+	xr_push.h = xr.h - 2 * xs.h;
 	pdt->hPushCancel = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr_push);
 	widget_set_user_id(pdt->hPushCancel, IDC_SQLFETCHDLG_CANCEL);
 	widget_set_owner(pdt->hPushCancel, widget);
 	pushbox_set_text(pdt->hPushCancel, _T("È¡Ïû"), -1);
 	widget_show(pdt->hPushCancel, WS_SHOW_NORMAL);
 
-	xr_push.x -= (xs.cx + xs.cy);
+	xr_push.x -= (xs.w + xs.h);
 	pdt->hPushOK = pushbox_create(widget, WD_STYLE_CONTROL, &xr_push);
 	widget_set_owner(pdt->hPushOK, widget);
 	widget_set_user_id(pdt->hPushOK, IDC_SQLFETCHDLG_OK);
@@ -230,8 +230,8 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 
 	xsize_t xs;
 
-	xs.fx = SQLFETCHDLG_BAR_SPLIT;
-	xs.fy = SQLFETCHDLG_BAR_HEIGHT;
+	xs.fw = SQLFETCHDLG_BAR_SPLIT;
+	xs.fh = SQLFETCHDLG_BAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
@@ -239,30 +239,30 @@ void SQLFetchDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	xr_reg.x = xr.x;
 	xr_reg.w = xr.w;
 	xr_reg.y = xr.y;
-	xr_reg.h = xr.h - xs.cy;
+	xr_reg.h = xr.h - xs.h;
 
 	widget_move(pdt->hEdit, RECTPOINT(&xr_reg));
 	widget_size(pdt->hEdit, RECTSIZE(&xr_reg));
 	widget_update(pdt->hEdit);
 
-	xr.y = xr.y + xr.h - xs.cy;
-	xr.h = xs.cy;
+	xr.y = xr.y + xr.h - xs.h;
+	xr.h = xs.h;
 
-	xs.fx = SQLFETCHDLG_BTN_WIDTH;
-	xs.fy = SQLFETCHDLG_BAR_SPLIT;
+	xs.fw = SQLFETCHDLG_BTN_WIDTH;
+	xs.fh = SQLFETCHDLG_BAR_SPLIT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
-	xr_push.x = xr.x + xr.w - xs.cx - xs.cy;
-	xr_push.w = xs.cx;
-	xr_push.y = xr.y + xs.cy;
-	xr_push.h = xr.h - 2 * xs.cy;
+	xr_push.x = xr.x + xr.w - xs.w - xs.h;
+	xr_push.w = xs.w;
+	xr_push.y = xr.y + xs.h;
+	xr_push.h = xr.h - 2 * xs.h;
 
 	widget_move(pdt->hPushCancel, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushCancel);
 
-	xr_push.x -= (xs.cx + xs.cy);
+	xr_push.x -= (xs.w + xs.h);
 
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushOK);
@@ -287,19 +287,20 @@ void SQLFetchDlg_OnMenuCommand(res_win_t widget, int code, int cid, var_long dat
 	}
 }
 
-void SQLFetchDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void SQLFetchDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	SQLFetchDlgDelta* pdt = GETSQLFETCHDLGDELTA(widget);
 
 	XDL_ASSERT(pdt != NULL);
 
-	res_ctx_t rdc;
 	xbrush_t xb = { 0 };
 	xcolor_t xc_brim, xc_core;
 	xrect_t xr, xr_bar;
 	xsize_t xs;
 
+	visual_t rdc;
 	canvas_t canv;
+	if_visual_t* piv;
 
 	widget_get_xbrush(widget, &xb);
 
@@ -308,23 +309,25 @@ void SQLFetchDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	canv = widget_get_canvas(widget);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
 
-	xs.fx = SQLFETCHDLG_BAR_SPLIT;
-	xs.fy = SQLFETCHDLG_BAR_HEIGHT;
+	xs.fw = SQLFETCHDLG_BAR_SPLIT;
+	xs.fh = SQLFETCHDLG_BAR_HEIGHT;
 
 	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
-	xr_bar.y = xr.y + xr.h - xs.cy;
+	xr_bar.y = xr.y + xr.h - xs.h;
 	xr_bar.w = xr.w;
-	xr_bar.h = xs.cy;
+	xr_bar.h = xs.h;
 
 	parse_xcolor(&xc_brim, xb.color);
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_core, DEF_MIDD_DARKEN);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 
+	destroy_visual_interface(piv);
 	end_canvas_paint(canv, dc, pxr);
 }
 

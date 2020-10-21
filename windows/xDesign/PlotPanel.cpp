@@ -426,7 +426,6 @@ int PlotPanel_OnCreate(res_win_t widget, void* data)
 	LINKPTR ptrPlot = create_plot_doc();
 
 	set_plot_type(ptrPlot, ATTR_PLOT_TYPE_BARGRAM, -1);
-	set_plot_title(ptrPlot, _T("БъЬт"), -1);
 	set_plot_width(ptrPlot, 100);
 	set_plot_height(ptrPlot, 100);
 

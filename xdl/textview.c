@@ -81,17 +81,17 @@ int call_string_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 
 	if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
 	{
-		pse->cx *= 1;
-		pse->cy *= 1;
+		pse->w *= 1;
+		pse->h *= 1;
 	}
 	else
 	{
 		(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
 
-		if (xs.cx)
-			pse->cx = xs.cx;
-		if (xs.cy)
-			pse->cy = xs.cy;
+		if (xs.w)
+			pse->w = xs.w;
+		if (xs.h)
+			pse->h = xs.h;
 	}
 
 	*ppch = pscan->pch;
@@ -138,13 +138,13 @@ void call_string_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->vs;
 }
 
-void scan_var_text(string_t vs, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_var_text(string_t vs, const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	VARSTRWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };
 
 	ro.vs = vs;
-	ro.pf_text_size = pif->pf_text_size;
+	ro.pf_text_size = pif->pf_measure_size;
 	ro.ctx = pif->ctx;
 	ro.pxf = pxf;
 
@@ -210,7 +210,7 @@ int call_fixstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 		*psel = 0;
 		*patom = 0;
 
-		pse->cx = 0;
+		pse->w = 0;
 
 		return 0;
 	}
@@ -220,17 +220,17 @@ int call_fixstr_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pi
 
 	if (n == 1 && IS_CONTROL_CHAR(pscan->pch[0]))
 	{
-		pse->cx *= 1;
-		pse->cy *= 1;
+		pse->w *= 1;
+		pse->h *= 1;
 	}
 	else
 	{
 		(*pscan->pf_text_size)(pscan->ctx, pscan->pxf, pscan->pch, n, &xs);
 
-		if (xs.cx)
-			pse->cx = xs.cx;
-		if (xs.cy)
-			pse->cy = xs.cy;
+		if (xs.w)
+			pse->w = xs.w;
+		if (xs.h)
+			pse->h = xs.h;
 	}
 
 	*ppch = pscan->pch;
@@ -285,7 +285,7 @@ void call_fixstr_cur_object(void* param, void** pobj)
 	*pobj = (void*)pscan->buf;
 }
 
-void scan_fix_text(tchar_t* buf, int size, if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_fix_text(tchar_t* buf, int size, const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	FIXSTRWORDOPERATOR ro = { 0 };
 	if_wordscan_t it = { 0 };
@@ -293,7 +293,7 @@ void scan_fix_text(tchar_t* buf, int size, if_measure_t* pif, const xfont_t* pxf
 	ro.buf = buf;
 	ro.size = size;
 	ro.len = xslen(buf);
-	ro.pf_text_size = pif->pf_text_size;
+	ro.pf_text_size = pif->pf_measure_size;
 	ro.ctx = pif->ctx;
 	ro.pxf = pxf;
 

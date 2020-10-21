@@ -44,7 +44,7 @@ EXP_API void hand_docker_lbutton_down(docker_t* ptd, const xpoint_t* pxp);
 
 EXP_API void hand_docker_lbutton_up(docker_t* ptd, const xpoint_t* pxp);
 
-EXP_API void hand_docker_paint(docker_t* ptd, res_ctx_t rdc, const xrect_t* pxr);
+EXP_API void hand_docker_paint(docker_t* ptd, visual_t rdc, const xrect_t* pxr);
 
 EXP_API void hand_docker_calc_rect(docker_t* ptd, dword_t style, xrect_t* pxr);
 

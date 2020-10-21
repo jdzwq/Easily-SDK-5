@@ -73,18 +73,18 @@ static void _calendarctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_calendar_width(ptd->calendar);
-	xs.fy = get_calendar_height(ptd->calendar);
+	xs.fw = get_calendar_width(ptd->calendar);
+	xs.fh = get_calendar_height(ptd->calendar);
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = (float)10;
-	xs.fy = (float)10;
+	xs.fw = (float)10;
+	xs.fh = (float)10;
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -512,7 +512,7 @@ void hand_calendar_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_calendar_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
 	xrect_t xr = { 0 };
@@ -520,12 +520,12 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc = { 0 };
-	res_ctx_t rdc;
+	visual_t rdc;
 	link_t_ptr ilk;
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->calendar)
 		return;
@@ -536,6 +536,7 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -546,16 +547,15 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
 	widget_get_xbrush(widget, &xb);
-
 	widget_get_xpen(widget, &xp);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
-
-	draw_calendar(pif, &cb, ptd->calendar);
+	draw_calendar(pif, ptd->calendar);
 
 	//draw focus
 	if (ptd->daily)
@@ -564,7 +564,7 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
 	}
 
 	//draw check
@@ -576,10 +576,12 @@ void hand_calendar_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		if (get_calendar_daily_selected(ilk))
 		{
 			_calendarctrl_daily_rect(widget, ilk, &xr);
-			alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+			(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
 		}
 		ilk = get_calendar_next_daily(ptd->calendar, ilk);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);

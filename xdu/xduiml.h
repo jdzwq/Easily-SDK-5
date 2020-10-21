@@ -63,150 +63,151 @@ LOC_API bool_t	_shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool
 #ifdef XDU_SUPPORT_CONTEXT
 LOC_API int		_context_startup(void);
 LOC_API void	_context_cleanup(void);
-LOC_API res_ctx_t _create_display_context(res_win_t wt);
-LOC_API res_ctx_t _create_compatible_context(res_ctx_t rdc, int cx, int cy);
-LOC_API void	_destroy_context(res_ctx_t rdc);
-LOC_API void	_get_device_caps(res_ctx_t rdc, dev_cap_t* pcap);
-LOC_API void	_render_context(res_ctx_t src, int srcx, int srcy, res_ctx_t dst, int dstx, int dsty, int dstw, int dsth);
+LOC_API visual_t _create_display_context(res_win_t wt);
+LOC_API visual_t _create_compatible_context(visual_t rdc, int cx, int cy);
+LOC_API void	_destroy_context(visual_t rdc);
+LOC_API void	_get_device_caps(visual_t rdc, dev_cap_t* pcap);
+LOC_API void	_render_context(visual_t src, int srcx, int srcy, visual_t dst, int dstx, int dsty, int dstw, int dsth);
 
-LOC_API float	_pt_per_mm(res_ctx_t rdc, bool_t horz);
-LOC_API void	_text_mm_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, float* pfx, float* pfy);
-LOC_API void	_text_pt_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, int* pcx, int* pcy);
-LOC_API void	_text_mm_metric(res_ctx_t rdc, const xfont_t* pxf, float* pfx, float* pfy);
-LOC_API void	_text_pt_metric(res_ctx_t rdc, const xfont_t* pxf, int* pcx, int* pcy);
-LOC_API float	_cast_pt_to_mm(res_ctx_t rdc, int pt, bool_t horz);
-LOC_API int		_cast_mm_to_pt(res_ctx_t rdc, float mm, bool_t horz);
+LOC_API float	_pt_per_mm(visual_t rdc, bool_t horz);
+LOC_API void	_text_mm_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+LOC_API void	_text_pt_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+LOC_API void	_text_mm_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs);
+LOC_API void	_text_pt_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs);
+LOC_API void	_cast_pt_to_mm(visual_t rdc, bool_t horz, xspan_t* pxn);
+LOC_API void	_cast_mm_to_pt(visual_t rdc, bool_t horz, xspan_t* pxn);
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 LOC_API res_rgn_t _create_region(const tchar_t* shape, const xrect_t* pxr);
 LOC_API void	_delete_region(res_rgn_t rgn);
 LOC_API bool_t	_pt_in_region(res_rgn_t rgn, const xpoint_t* ppt);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
-LOC_API res_bmp_t _create_context_bitmap(res_ctx_t rdc);
-LOC_API res_bmp_t _create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h);
-LOC_API res_bmp_t _create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay);
-LOC_API res_bmp_t _create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay);
-LOC_API res_bmp_t _create_code128_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text);
-LOC_API res_bmp_t _create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols);
-LOC_API res_bmp_t _create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols);
-LOC_API res_bmp_t _create_storage_bitmap(res_ctx_t rdc, const tchar_t* filename);
-LOC_API res_bmp_t _load_bitmap_from_bytes(res_ctx_t rdc, const unsigned char* pb, dword_t len);
-LOC_API dword_t	_save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, unsigned char* pb, dword_t max);
-LOC_API dword_t	_get_bitmap_bytes(res_bmp_t rdc);
-LOC_API void	_get_bitmap_size(res_bmp_t rb, int* pw, int* ph);
-LOC_API void	_destroy_bitmap(res_bmp_t bmp);
+LOC_API bitmap_t _create_context_bitmap(visual_t rdc);
+LOC_API bitmap_t _create_color_bitmap(visual_t rdc, const xcolor_t* pxc, int w, int h);
+LOC_API bitmap_t _create_pattern_bitmap(visual_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay);
+LOC_API bitmap_t _create_gradient_bitmap(visual_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay);
+LOC_API bitmap_t _create_code128_bitmap(visual_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, const tchar_t* text);
+LOC_API bitmap_t _create_pdf417_bitmap(visual_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols);
+LOC_API bitmap_t _create_qrcode_bitmap(visual_t rdc, int w, int h, const unsigned char* bar_buf, dword_t bar_len, int rows, int cols);
+LOC_API bitmap_t _create_storage_bitmap(visual_t rdc, const tchar_t* filename);
+LOC_API bitmap_t _load_bitmap_from_bytes(visual_t rdc, const unsigned char* pb, dword_t len);
+LOC_API dword_t	_save_bitmap_to_bytes(visual_t rdc, bitmap_t rb, unsigned char* pb, dword_t max);
+LOC_API dword_t	_get_bitmap_bytes(bitmap_t rdc);
+LOC_API void	_get_bitmap_size(bitmap_t rb, int* pw, int* ph);
+LOC_API void	_destroy_bitmap(bitmap_t bmp);
 #ifdef XDU_SUPPORT_SHELL
-LOC_API res_bmp_t _load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname);
-LOC_API res_bmp_t _load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* fname);
+LOC_API bitmap_t _load_bitmap_from_icon(visual_t rdc, const tchar_t* iname);
+LOC_API bitmap_t _load_bitmap_from_thumb(visual_t rdc, const tchar_t* fname);
 #endif
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 LOC_API bool_t _default_printer_mode(dev_prn_t* pmod);
 LOC_API bool_t _setup_printer_mode(res_win_t wnd, dev_prn_t* pmod);
-LOC_API res_ctx_t _create_printer_context(const dev_prn_t* pmod);
-LOC_API void	_destroy_printer_context(res_ctx_t rdc);
-LOC_API void	_begin_page(res_ctx_t rdc);
-LOC_API void	_end_page(res_ctx_t rdc);
-LOC_API void	_begin_doc(res_ctx_t rdc, const tchar_t* docname);
-LOC_API void	_end_doc(res_ctx_t rdc);
+LOC_API visual_t _create_printer_context(const dev_prn_t* pmod);
+LOC_API void	_destroy_printer_context(visual_t rdc);
+LOC_API void	_begin_page(visual_t rdc);
+LOC_API void	_end_page(visual_t rdc);
+LOC_API void	_begin_doc(visual_t rdc, const tchar_t* docname);
+LOC_API void	_end_doc(visual_t rdc);
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_GDI
 LOC_API void _gdi_init(int osv);
 LOC_API void _gdi_uninit(void);
-LOC_API void _gdi_draw_line(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
-LOC_API void _gdi_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-LOC_API void _gdi_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
-LOC_API void _gdi_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
-LOC_API void _gdi_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-LOC_API void _gdi_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _gdi_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
-LOC_API void _gdi_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
-LOC_API void _gdi_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _gdi_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _gdi_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
-LOC_API void _gdi_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
-LOC_API void _gdi_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
-LOC_API void _gdi_draw_text(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
-LOC_API void _gdi_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
-LOC_API void _gdi_exclip_rect(res_ctx_t rdc, const xrect_t* pxr);
-LOC_API void _gdi_inclip_rect(res_ctx_t rdc, const xrect_t* pxr);
-LOC_API void _gdi_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
-LOC_API void _gdi_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
+LOC_API void _gdi_draw_line(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
+LOC_API void _gdi_draw_polyline(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+LOC_API void _gdi_draw_polygon(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
+LOC_API void _gdi_draw_bezier(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+LOC_API void _gdi_draw_curve(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+LOC_API void _gdi_draw_rect(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _gdi_gradient_rect(visual_t rdc, const xgradi_t* pxg, const xrect_t* prt);
+LOC_API void _gdi_alphablend_rect(visual_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+LOC_API void _gdi_draw_round(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _gdi_draw_ellipse(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _gdi_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+LOC_API void _gdi_draw_arc(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+LOC_API void _gdi_draw_arrow(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
+LOC_API void _gdi_draw_text(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
+LOC_API void _gdi_text_out(visual_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
+LOC_API void _gdi_exclip_rect(visual_t rdc, const xrect_t* pxr);
+LOC_API void _gdi_inclip_rect(visual_t rdc, const xrect_t* pxr);
+LOC_API void _gdi_text_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+LOC_API void _gdi_text_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs);
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
-LOC_API void _gdi_draw_image(res_ctx_t rdc, res_bmp_t bmp, const tchar_t* clr, const xrect_t* prt);
-LOC_API void _gdi_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt);
+LOC_API void _gdi_draw_image(visual_t rdc, bitmap_t bmp, const tchar_t* clr, const xrect_t* prt);
+LOC_API void _gdi_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* ppt);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_REGION
-LOC_API void _gdi_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn);
+LOC_API void _gdi_fill_region(visual_t rdc, const xbrush_t* pxb, res_rgn_t rgn);
 #endif
 #endif //XDU_SUPPORT_CONTEXT_GDI
 
 #ifdef XDU_SUPPORT_CONTEXT_GDIPLUS
 LOC_API void _gdiplus_init(int osv);
 LOC_API void _gdiplus_uninit(void);
-LOC_API void _gdiplus_draw_line(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
-LOC_API void _gdiplus_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-LOC_API void _gdiplus_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
-LOC_API void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
-LOC_API void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-LOC_API void _gdiplus_draw_triangle(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient);
-LOC_API void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa);
-LOC_API void _gdiplus_gradient_rect(res_ctx_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* prt);
-LOC_API void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
-LOC_API void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _gdiplus_calc_fan(res_ctx_t rdc, const xpoint_t* ppt, int r, int s, double fang, double tang, xpoint_t* pa, int n);
-LOC_API void _gdiplus_draw_fan(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang);
-LOC_API void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
-LOC_API void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
-LOC_API void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
-LOC_API void _gdiplus_draw_text(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
-LOC_API void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
+LOC_API void _gdiplus_draw_line(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
+LOC_API void _gdiplus_draw_arc(visual_t rdc, const xpen_t* pxp, const xpoint_t * ppt1, const xpoint_t* ppt2, const xsize_t* pxs, bool_t sflag, bool_t lflag);
+LOC_API void _gdiplus_draw_bezier(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+LOC_API void _gdiplus_draw_curve(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+LOC_API void _gdiplus_draw_polyline(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+LOC_API void _gdiplus_draw_polygon(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
+LOC_API void _gdiplus_draw_triangle(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient);
+LOC_API void _gdiplus_draw_rect(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _gdiplus_draw_path(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa);
+LOC_API void _gdiplus_gradient_rect(visual_t rdc, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t* prt);
+LOC_API void _gdiplus_alphablend_rect(visual_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+LOC_API void _gdiplus_draw_round(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _gdiplus_draw_ellipse(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _gdiplus_calc_fan(visual_t rdc, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang, xpoint_t* pa, int n);
+LOC_API void _gdiplus_draw_fan(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang);
+LOC_API void _gdiplus_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang);
+LOC_API void _gdiplus_draw_arrow(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, const xspan_t*, double arc);
+LOC_API void _gdiplus_draw_text(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
+LOC_API void _gdiplus_text_out(visual_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
-LOC_API void _gdiplus_draw_image(res_ctx_t rdc, res_bmp_t bmp, const tchar_t* clr, const xrect_t* prt);
-LOC_API void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt);
+LOC_API void _gdiplus_draw_image(visual_t rdc, bitmap_t bmp, const tchar_t* clr, const xrect_t* prt);
+LOC_API void _gdiplus_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* ppt);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_REGION
-LOC_API void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn);
+LOC_API void _gdiplus_fill_region(visual_t rdc, const xbrush_t* pxb, res_rgn_t rgn);
 #endif
-LOC_API void _gdiplus_exclip_rect(res_ctx_t rdc, const xrect_t* pxr);
-LOC_API void _gdiplus_inclip_rect(res_ctx_t rdc, const xrect_t* pxr);
-LOC_API void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
-LOC_API void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
+LOC_API void _gdiplus_exclip_rect(visual_t rdc, const xrect_t* pxr);
+LOC_API void _gdiplus_inclip_rect(visual_t rdc, const xrect_t* pxr);
+LOC_API void _gdiplus_text_rect(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr);
+LOC_API void _gdiplus_text_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+LOC_API void _gdiplus_text_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs);
 #endif //XDU_SUPPORT_CONTEXT_GDIPLUS
 
 #ifdef XDU_SUPPORT_CONTEXT_CAIRO
 LOC_API void _cairo_init(int osv);
 LOC_API void _cairo_uninit(void);
-LOC_API void _cairo_draw_line(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
-LOC_API void _cairo_draw_polyline(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-LOC_API void _cairo_draw_polygon(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
-LOC_API void _cairo_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
-LOC_API void _cairo_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
-LOC_API void _cairo_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _cairo_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa);
-LOC_API void _cairo_gradient_rect(res_ctx_t rdc, const xgradi_t* pxg, const xrect_t* prt);
-LOC_API void _cairo_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
-LOC_API void _cairo_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _cairo_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
-LOC_API void _cairo_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
-LOC_API void _cairo_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
-LOC_API void _cairo_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
-LOC_API void _cairo_draw_text(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
-LOC_API void _cairo_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
+LOC_API void _cairo_draw_line(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2);
+LOC_API void _cairo_draw_polyline(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+LOC_API void _cairo_draw_polygon(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int n);
+LOC_API void _cairo_draw_bezier(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4);
+LOC_API void _cairo_draw_curve(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n);
+LOC_API void _cairo_draw_rect(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _cairo_draw_path(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa);
+LOC_API void _cairo_gradient_rect(visual_t rdc, const xgradi_t* pxg, const xrect_t* prt);
+LOC_API void _cairo_alphablend_rect(visual_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity);
+LOC_API void _cairo_draw_round(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _cairo_draw_ellipse(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt);
+LOC_API void _cairo_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+LOC_API void _cairo_draw_arc(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+LOC_API void _cairo_draw_arrow(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, int alen, double arc);
+LOC_API void _cairo_draw_text(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
+LOC_API void _cairo_text_out(visual_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
-LOC_API void _cairo_draw_image(res_ctx_t rdc, res_bmp_t bmp, const tchar_t* clr, const xrect_t* prt);
-LOC_API void _cairo_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* prt);
+LOC_API void _cairo_draw_image(visual_t rdc, bitmap_t bmp, const tchar_t* clr, const xrect_t* prt);
+LOC_API void _cairo_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* prt);
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_REGION
-LOC_API void _cairo_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn);
+LOC_API void _cairo_fill_region(visual_t rdc, const xbrush_t* pxb, res_rgn_t rgn);
 #endif
-LOC_API void _cairo_exclip_rect(res_ctx_t rdc, const xrect_t* pxr);
-LOC_API void _cairo_inclip_rect(res_ctx_t rdc, const xrect_t* pxr);
-LOC_API void _cairo_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
-LOC_API void _cairo_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs);
+LOC_API void _cairo_exclip_rect(visual_t rdc, const xrect_t* pxr);
+LOC_API void _cairo_inclip_rect(visual_t rdc, const xrect_t* pxr);
+LOC_API void _cairo_text_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs);
+LOC_API void _cairo_text_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs);
 #endif //XDU_SUPPORT_CONTEXT_CAIRO
 
 #endif /*XDU_SUPPORT_CONTEXT*/
@@ -250,9 +251,9 @@ LOC_API void	_widget_create_caret(res_win_t wt, int w, int h);
 LOC_API void	_widget_destroy_caret(res_win_t wt);
 LOC_API void	_widget_show_caret(res_win_t wt, int x, int y, bool_t b);
 
-LOC_API res_ctx_t _widget_client_ctx(res_win_t wt);
-LOC_API res_ctx_t _widget_window_ctx(res_win_t wt);
-LOC_API void	_widget_release_ctx(res_win_t wt, res_ctx_t dc);
+LOC_API visual_t _widget_client_ctx(res_win_t wt);
+LOC_API visual_t _widget_window_ctx(res_win_t wt);
+LOC_API void	_widget_release_ctx(res_win_t wt, visual_t dc);
 LOC_API void	_widget_get_client_rect(res_win_t wt, xrect_t* prt);
 LOC_API void	_widget_get_window_rect(res_win_t wt, xrect_t* prt);
 LOC_API void	_widget_client_to_screen(res_win_t wt, xpoint_t* ppt);

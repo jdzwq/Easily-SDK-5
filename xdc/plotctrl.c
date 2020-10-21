@@ -58,17 +58,17 @@ static void _plotctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_plot_width(ptd->plot);
-	xs.fy = get_plot_height(ptd->plot);
+	xs.fw = get_plot_width(ptd->plot);
+	xs.fh = get_plot_height(ptd->plot);
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = (float)5;
-	xs.fy = (float)5;
+	xs.fw = (float)5;
+	xs.fh = (float)5;
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -251,10 +251,10 @@ void hand_plot_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_plot_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_plot_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	plot_delta_t* ptd = GETPLOTDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -263,7 +263,7 @@ void hand_plot_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->plot)
 		return;
@@ -274,6 +274,7 @@ void hand_plot_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -285,22 +286,24 @@ void hand_plot_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	if (widget_can_paging(widget))
 	{
 		parse_xcolor(&xc, xp.color);
 		lighten_xcolor(&xc, DEF_HARD_DARKEN);
 
-		draw_corner(canv, &xc, (const xrect_t*)&cb);
+		draw_corner(pif, &xc, (const xrect_t*)&(pif->rect));
 	}
 
 	if (ptd->plot)
 	{
-		draw_plot(pif, &cb, ptd->plot);
+		draw_plot(pif, ptd->plot);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);

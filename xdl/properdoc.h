@@ -79,6 +79,26 @@ LICENSE.GPL3 for more details.
 */
 #define set_proper_shape(ptr,token)					set_dom_node_attr(ptr,ATTR_SHAPE,-1,token,-1)
 /*
+@PROPER width: numeric.
+@SET set_proper_width: set the proper width.
+*/
+#define set_proper_width(ptr,n)						set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_proper_width: get the proper width.
+*/
+#define get_proper_width(ptr)						get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_proper_height: get the proper height.
+*/
+#define get_proper_height(ptr)						get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_proper_height: set the proper height.
+*/
+#define set_proper_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
 @PROPER iconSpan: numeric.
 @SET set_proper_icon_span: set the proper icon span.
 */

@@ -233,11 +233,11 @@ void hand_curve_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_curve_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	xrect_t xr = { 0 };
 	viewbox_t vb = { 0 };
@@ -247,6 +247,8 @@ void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xpoint_t pt[5];
 	int i;
 	int w;
+
+	if_visual_t* piv;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -259,7 +261,9 @@ void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	w = xr.w / 5;
 	for (i = 0; i < 10; i++)
@@ -278,8 +282,10 @@ void hand_curve_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		pt[4].x = xr.x + xr.w;
 		pt[4].y = xr.y + xr.h / 2;
 
-		draw_curve_raw(rdc, &xp, pt, 5);
+		(*piv->pf_draw_curve_raw)(piv->visual, &xp, pt, 5);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }

@@ -201,10 +201,10 @@ void hand_inputdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_inputdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_inputdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	inputdlg_delta_t* ptd = GETINPUTDLGDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xpen_t xp = { 0 };
@@ -212,6 +212,7 @@ void hand_inputdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xrect_t xr;
 
 	canvas_t canv;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -225,7 +226,11 @@ void hand_inputdlg_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }
@@ -283,23 +288,25 @@ res_win_t inputdlg_create(const tchar_t* title, tchar_t* buf, int max, res_win_t
 void inputdlg_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	inputdlg_delta_t* ptd = GETINPUTDLGDELTA(widget);
-	res_ctx_t rdc;
+
 	xfont_t xf = { 0 };
 	xsize_t xs;
+	float pm;
 
 	widget_get_xfont(widget, &xf);
 
-	rdc = widget_client_ctx(widget);
-	text_metric_raw(rdc, &xf, &xs);
-	widget_release_ctx(widget, rdc);
+	font_metric_by_pt(xstof(xf.size), &pm, NULL);
+	xs.fw = pm;
+	xs.fh = pm;
+	widget_size_to_pt(widget, &xs);
 
-	xs.cy = (int)((float)xs.cy * 1.25);
-	xs.cx = 15 * xs.cx;
+	xs.h = (int)((float)xs.h * 1.25);
+	xs.w = 15 * xs.w;
 
 	widget_adjust_size(widget_get_style(widget), &xs);
 
-	pxs->cx = xs.cx;
-	pxs->cy = xs.cy;
+	pxs->w = xs.w;
+	pxs->h = xs.h;
 }
 
 

@@ -78,19 +78,33 @@
 #define DOC_PLOT_HEIGHT				_T("height")
 #define DOC_PLOT_RULER				_T("ruler")
 #define DOC_PLOT_TYPE				_T("type")
-#define DOC_PLOT_TITLE				_T("title")
 #define DOC_PLOT_STYLE				_T("style")
 #define DOC_PLOT_Y_STAGES			_T("y-stages")
+#define DOC_PLOT_Y_STAGE			_T("y-stage")
 #define DOC_PLOT_Y_BASES			_T("y-bases")
+#define DOC_PLOT_Y_BASE				_T("y-base")
 #define DOC_PLOT_Y_STEPS			_T("y-steps")
+#define DOC_PLOT_Y_STEP				_T("y-step")
 #define DOC_PLOT_Y_LABELS			_T("y-labels")
+#define DOC_PLOT_Y_LABEL			_T("y-label")
 #define DOC_PLOT_Y_COLORS			_T("y-colors")
+#define DOC_PLOT_Y_COLOR			_T("y-color")
 #define DOC_PLOT_Y_SHAPES			_T("y-shapes")
+#define DOC_PLOT_Y_SHAPE			_T("y-shape")
 #define DOC_PLOT_X_LABELS			_T("x-labels")
+#define DOC_PLOT_X_LABEL			_T("x-label")
 #define DOC_PLOT_X_COLORS			_T("x-colors")
-#define DOC_PLOT_ROWS				_T("rows")
-#define DOC_PLOT_COLS				_T("cols")
-#define DOC_PLOT_MATRIX				_T("matrix")
+#define DOC_PLOT_X_COLOR			_T("x-color")
+
+#define DOC_MATRIX					_T("matrix")
+#define DOC_MATRIX_ROWS				_T("rows")
+#define DOC_MATRIX_COLS				_T("cols")
+#define DOC_MATRIX_DATA				_T("data")
+
+#define DOC_VECTOR					_T("vector")
+#define DOC_VECTOR_SIZE				_T("size")
+#define DOC_VECTOR_DIMENS			_T("dimens")
+#define DOC_VECTOR_DATA				_T("data")
 
 #define DOC_SCHEMA					_T("schema")
 #define DOC_SCHEMA_ELEMENT			_T("element")
@@ -392,16 +406,20 @@
 #define ATTR_SPOT_TYPE_IMAGE		_T("image")
 
 #define ATTR_PLOT_TYPE				_T("plot-type")
-#define ATTR_PLOT_TYPE_OPTIONS		_T("topoggram~Topoggram;trendgram~Trendgram;scattergram~Scattergram;pantogram~Pantogram;histogram~Histogram;bargram~Bargram;radargram~Radargram;fuelgram~Fuelgram;indicator~Indicator;")
+#define ATTR_PLOT_TYPE_OPTIONS		_T("topoggram~Topoggram;contourgram~Contourgram;trendgram~Trendgram;scattergram~Scattergram;pantogram~Pantogram;histogram~Histogram;bargram~Bargram;kpigram~Kpigram;radargram~Radargram;fuelgram~Fuelgram;taskgram~Taskgram;indicator~Indicator;thermometer~Thermometer;")
 #define ATTR_PLOT_TYPE_TOPOGGGRAM	_T("topoggram") //地形图
+#define ATTR_PLOT_TYPE_CONTOURGRAM	_T("contourgram") //等高线
 #define ATTR_PLOT_TYPE_TRENDGRAM	_T("trendgram") //趋势图
 #define ATTR_PLOT_TYPE_SCATTERGRAM	_T("scattergram") //密度图
 #define ATTR_PLOT_TYPE_PANTOGRAM	_T("pantogram") //比例图
 #define ATTR_PLOT_TYPE_HISTOGRAM	_T("histogram") //直方图
 #define ATTR_PLOT_TYPE_BARGRAM		_T("bargram") //条形图
+#define ATTR_PLOT_TYPE_KPIGRAM		_T("kpigram") //达标图
 #define ATTR_PLOT_TYPE_RADARGRAM	_T("radargram") //雷达图
 #define ATTR_PLOT_TYPE_FUELGRAM		_T("fuelgram") //油量表
+#define ATTR_PLOT_TYPE_TASKGRAM		_T("taskgram") //任务表
 #define ATTR_PLOT_TYPE_INDICATOR	_T("indicator") //指示器
+#define ATTR_PLOT_TYPE_THERMOMETER	_T("thermometer") //温度计
 
 #define ATTR_TEXT_TYPE					_T("text-type")
 #define ATTR_TEXT_TYPE_TEXT				_T("text")

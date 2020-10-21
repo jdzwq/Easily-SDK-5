@@ -29,6 +29,15 @@
 #include "richview.h"
 #include "tagview.h"
 #include "textview.h"
+#include "svgview.h"
+
+#include "shaping.h"
+#include "gizmoing.h"
+#include "coding.h"
+#include "texting.h"
+#include "dataing.h"
+#include "framing.h"
+#include "focusing.h"
 
 
 

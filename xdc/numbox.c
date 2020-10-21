@@ -77,13 +77,13 @@ int hand_numbox_create(res_win_t widget, void* data)
 	ptd = (numbox_delta_t*)xmem_alloc(sizeof(numbox_delta_t));
 	xmem_zero((void*)ptd, sizeof(numbox_delta_t));
 
-	xs.fx = DEF_TOUCH_SPAN;
-	xs.fy = DEF_TOUCH_SPAN;
+	xs.fw = DEF_TOUCH_SPAN;
+	xs.fh = DEF_TOUCH_SPAN;
 
 	widget_size_to_pt(widget, &xs);
 
-	ptd->bw = xs.cx;
-	ptd->bh = xs.cy;
+	ptd->bw = xs.w;
+	ptd->bh = xs.h;
 
 	ptd->index = -1;
 
@@ -179,17 +179,18 @@ void hand_numbox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_numbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_numbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	numbox_delta_t* ptd = GETNUMBOXDELTA(widget);
 	canvas_t canv;
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf;
 	xface_t xa;
 	xbrush_t xb, xb_bark, xb_focus;
 	xrect_t xr, xr_focus;
 	int i;
 	tchar_t tk[2] = { 0 };
+	if_visual_t* piv;
 
 	widget_get_xbrush(widget, &xb);
 	xmem_copy((void*)&xb_focus, (void*)&xb, sizeof(xbrush_t));
@@ -209,7 +210,9 @@ void hand_numbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb_bark, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_bark, &xr);
 
 	for (i = 0; i < NUMBOX_COUNT; i++)
 	{
@@ -224,19 +227,21 @@ void hand_numbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_focus.h = xr.h - 4;
 
 		if (ptd->index == i)
-			draw_rect_raw(rdc, NULL, &xb_focus, &xr_focus);
+			(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_focus, &xr_focus);
 		else
-			draw_rect_raw(rdc, NULL, &xb, &xr_focus);
+			(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr_focus);
 
 		tk[0] = NUMBOX_DATA[i];
 
 		if (tk[0] == _T('\n'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("√"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("√"), -1);
 		else if (tk[0] == _T('-'))
-			draw_text_raw(rdc, &xf, &xa, &xr, _T("CE"), -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("CE"), -1);
 		else
-			draw_text_raw(rdc, &xf, &xa, &xr, tk, -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, tk, -1);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }
@@ -269,8 +274,8 @@ void numbox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	numbox_delta_t* ptd = GETNUMBOXDELTA(widget);
 
-	pxs->cx = ptd->bw * NUMBOX_COLS;
-	pxs->cy = ptd->bh * NUMBOX_ROWS;
+	pxs->w = ptd->bw * NUMBOX_COLS;
+	pxs->h = ptd->bh * NUMBOX_ROWS;
 
 	widget_adjust_size(widget_get_style(widget), pxs);
 }

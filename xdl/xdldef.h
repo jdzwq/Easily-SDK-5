@@ -437,53 +437,56 @@ typedef struct _variant_t{
 	};
 }variant_t;
 
-//color darkeness
-#define DEF_SOFT_DARKEN		-3
-#define DEF_MIDD_DARKEN		-6
-#define DEF_HARD_DARKEN		-10
-#define DEF_SOFT_LIGHTEN	3
-#define DEF_MIDD_LIGHTEN	6
-#define DEF_HARD_LIGHTEN	10
 
-#define DEF_MIN_SHADOW		5
-#define DEF_MAX_SHADOW		10
+#define PAPER_A4_WIDTH			210.0f
+#define PAPER_A4_HEIGHT			297.0f
 
-#define PAPER_A4_WIDTH			(float)210
-#define PAPER_A4_HEIGHT			(float)297
+#define PAPER_A5_WIDTH			148.0f
+#define PAPER_A5_HEIGHT			210.0f
 
-#define PAPER_A5_WIDTH			(float)148
-#define PAPER_A5_HEIGHT			(float)210
+#define PAPER_LETTER_WIDTH		210.0f
+#define PAPER_LETTER_HEIGHT		280.0f
 
-#define PAPER_LETTER_WIDTH		(float)210
-#define PAPER_LETTER_HEIGHT		(float)280	
+#define PAPER_MIN_WIDTH			2.6f
+#define PAPER_MIN_HEIGHT		2.6f
 
-#define PAPER_MIN_WIDTH			(float)2.6
-#define PAPER_MIN_HEIGHT		(float)2.6
-
-#define PAPER_MAX_WIDTH			(float)280
-#define PAPER_MAX_HEIGHT		(float)558.7
+#define PAPER_MAX_WIDTH			280.0f
+#define PAPER_MAX_HEIGHT		558.7f
 
 #define DEF_PAPER_WIDTH			PAPER_A4_WIDTH
 #define DEF_PAPER_HEIGHT		PAPER_A4_HEIGHT
 
-#define DEF_SPLIT_SPAN			(float)1.5
-#define DEF_TOUCH_SPAN			(float)7
-#define DEF_ATTR_ICON_SPAN			(float)6.8
-#define DEF_TEXT_HEIGHT			(float)8
-#define DEF_TEXT_WIDTH			(float)20
-#define DEF_ITEM_HEIGHT			(float)7
-#define DEF_ITEM_WIDTH			(float)15
-#define DEF_PLOT_HEIGHT			(float)20
-#define DEF_PLOT_WIDTH			(float)30
+#define DEF_SPLIT_SPAN			1.5f
+#define DEF_TOUCH_SPAN			7.0f
+#define DEF_ATTR_ICON_SPAN		6.8f
+#define DEF_TEXT_HEIGHT			8.0f
+#define DEF_TEXT_WIDTH			20.0f
+#define DEF_ITEM_HEIGHT			7.0f
+#define DEF_ITEM_WIDTH			15.0f
+#define DEF_PLOT_HEIGHT			20.0f
+#define DEF_PLOT_WIDTH			30.0f
 
-#define DEF_SMALL_ICON		(float)3.8
-#define DEF_MIDD_ICON		(float)5.8
-#define DEF_LARGE_ICON		(float)8.6
+#define DEF_SMALL_ICON		3.8f
+#define DEF_MIDD_ICON		5.8f
+#define DEF_LARGE_ICON		8.6f
 
-#define DEF_PAGE_FEED		(float)10
-#define DEF_CORNER_FEED		(float)3
-#define DEF_SPLIT_FEED		(float)1
-#define DEF_SHADOW_FEED		(float)2
+#define DEF_PAGE_FEED		10.0f
+#define DEF_CORNER_FEED		3.0f
+#define DEF_SPLIT_FEED		1.0f
+#define DEF_SHADOW_FEED		2.0f
+
+#define DEF_INNER_FEED		-1
+#define DEF_OUTER_FEED		1
+#define DEF_FOCUS_SPAN		5
+
+#define SIZING_TOPLEFT			0x00000001
+#define SIZING_TOPCENTER		0x00000002
+#define SIZING_TOPRIGHT			0x00000004
+#define SIZING_BOTTOMLEFT		0x00000008
+#define SIZING_BOTTOMCENTER		0x00000010
+#define SIZING_BOTTOMRIGHT		0x00000020
+#define SIZING_LEFTCENTER		0x00000040
+#define SIZING_RIGHTCENTER		0x00000080
 
 
 #define WARNING_OPTIONS		_T("1~Red;2~Orange;3~Yellow;4~Blue;")

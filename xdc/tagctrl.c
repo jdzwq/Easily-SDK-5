@@ -72,8 +72,8 @@ static bool_t _tagctrl_get_paging(res_win_t widget, xsize_t* pse)
 
 	widget_get_client_rect(widget, &xr);
 
-	pse->cx = xr.w;
-	pse->cy = xr.h;
+	pse->w = xr.w;
+	pse->h = xr.h;
 
 	return 0;
 }
@@ -110,7 +110,7 @@ int hand_tagctrl_create(res_win_t widget, void* data)
 	SETTAGCTRLDELTA(widget, ptd);
 
 	ptd->textor.widget = widget;
-	ptd->textor.dc = widget_client_ctx(widget);
+	ptd->textor.cdc = widget_client_ctx(widget);
 	ptd->textor.data = NULL;
 	ptd->textor.pf_scan_text = (PF_SCAN_TEXT)scan_tag_text;
 	ptd->textor.pf_get_text = _tagctrl_get_text;
@@ -137,7 +137,7 @@ void hand_tagctrl_destroy(res_win_t widget)
 
 	hand_textor_clean(&ptd->textor);
 
-	widget_release_ctx(widget, ptd->textor.dc);
+	widget_release_ctx(widget, ptd->textor.cdc);
 
 	xmem_free(ptd);
 
@@ -642,7 +642,7 @@ void hand_tagctrl_menu_command(res_win_t widget, int code, int cid, var_long dat
 }
 
 
-void hand_tagctrl_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_tagctrl_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 

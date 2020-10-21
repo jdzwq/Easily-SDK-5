@@ -69,6 +69,26 @@ LICENSE.GPL3 for more details.
 */
 #define get_tree_title_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_TITLE,-1)
 /*
+@PROPER width: numeric.
+@SET set_tree_width: set the tree width.
+*/
+#define set_tree_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_tree_width: get the tree width.
+*/
+#define get_tree_width(ptr)								get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_tree_height: get the tree height.
+*/
+#define get_tree_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_tree_height: set the tree height.
+*/
+#define set_tree_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
 @PROPER titleHeight: numeric.
 @GET get_tree_title_height: get the tree title height.
 */

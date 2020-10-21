@@ -117,7 +117,10 @@ typedef unsigned int	uid_t;
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT
+
 typedef struct _win32_context_t{
+	visual_head head;
+
 	HDC context;
 	union
 	{
@@ -127,11 +130,14 @@ typedef struct _win32_context_t{
 	int type;
 }win32_context_t;
 
-typedef win32_context_t* res_ctx_t;
 typedef COLORREF	res_clr_t;
 typedef HFONT		res_font_t;
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
-typedef HBITMAP		res_bmp_t;
+typedef struct _win32_bitmap_t{
+	visual_head head;
+
+	HBITMAP bitmap;
+}win32_bitmap_t;
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 typedef HRGN		res_rgn_t;

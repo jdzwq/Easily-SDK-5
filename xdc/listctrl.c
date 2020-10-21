@@ -60,11 +60,8 @@ typedef struct _list_delta_t{
 static void _listctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_list_item_rect(&cb, ptd->list, ptd->parent, ilk, pxr);
+	calc_list_item_rect(ptd->list, ptd->parent, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -72,11 +69,8 @@ static void _listctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 static void _listctrl_item_text_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_list_item_text_rect(&cb, ptd->list, ptd->parent, ilk, pxr);
+	calc_list_item_text_rect(ptd->list, ptd->parent, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -87,7 +81,6 @@ static void _listctrl_reset_page(res_win_t widget)
 	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
-	canvbox_t cb = { 0 };
 	bool_t b_horz;
 
 	b_horz = (compare_text(get_list_layer_ptr(ptd->list), -1, ATTR_LAYER_HORZ, -1, 0) == 0) ? 1 : 0;
@@ -96,29 +89,27 @@ static void _listctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.cx = pw;
-	xs.cy = ph;
+	xs.w = pw;
+	xs.h = ph;
 	widget_size_to_tm(widget, &xs);
 
-	cb.fw = xs.fx;
-	cb.fh = xs.fy;
 	if (b_horz)
 	{
-		xs.fx = calc_list_width(&cb, ptd->list, ptd->parent);
+		xs.fw = calc_list_width(ptd->list, ptd->parent);
 	}
 	else
 	{
-		xs.fy = calc_list_height(&cb, ptd->list, ptd->parent);
+		xs.fh = calc_list_height(ptd->list, ptd->parent);
 	}
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = get_list_item_width(ptd->list);
-	xs.fy = get_list_item_height(ptd->list);
+	xs.fw = get_list_item_width(ptd->list);
+	xs.fh = get_list_item_height(ptd->list);
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -543,9 +534,16 @@ void hand_list_destroy(res_win_t widget)
 void hand_list_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
+	xrect_t xr;
 
 	if (!ptd->list)
 		return;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_list_width(ptd->list, xr.fw);
+	set_list_height(ptd->list, xr.fh);
 
 	listctrl_redraw(widget);
 }
@@ -619,7 +617,6 @@ void hand_list_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	int nHint;
 	link_t_ptr plk;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->list)
 		return;
@@ -627,14 +624,12 @@ void hand_list_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (ptd->b_drag)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
+	nHint = calc_list_hint(&pt, ptd->list, ptd->parent, &plk);
 
 	if (nHint == LIST_HINT_ITEM && plk == ptd->item && !(dw & KS_WITH_CONTROL))
 	{
@@ -687,7 +682,6 @@ void hand_list_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 	int nHint;
 	link_t_ptr plk;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->list)
 		return;
@@ -695,14 +689,12 @@ void hand_list_lbutton_dbclick(res_win_t widget, const xpoint_t* pxp)
 	if (widget_is_valid(ptd->editor))
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
+	nHint = calc_list_hint(&pt, ptd->list, ptd->parent, &plk);
 
 	if (nHint == LIST_HINT_ITEM && get_list_first_child_item(plk))
 	{
@@ -723,7 +715,6 @@ void hand_list_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr plk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->list)
 		return;
@@ -737,14 +728,12 @@ void hand_list_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_set_focus(widget);
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
+	nHint = calc_list_hint(&pt, ptd->list, ptd->parent, &plk);
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (nHint == LIST_HINT_CHECK)
@@ -769,7 +758,6 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr plk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->list)
 		return;
@@ -780,14 +768,12 @@ void hand_list_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_list_hint(&cb, &pt, ptd->list, ptd->parent, &plk);
+	nHint = calc_list_hint(&pt, ptd->list, ptd->parent, &plk);
 
 	bRe = (plk == ptd->item) ? 1 : 0;
 
@@ -909,10 +895,10 @@ void hand_list_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_list_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_list_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -921,7 +907,7 @@ void hand_list_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->list)
 		return;
@@ -932,6 +918,7 @@ void hand_list_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -943,11 +930,12 @@ void hand_list_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	draw_list_child(pif, &cb, ptd->list, ptd->parent);
+	draw_list_child(pif, ptd->list, ptd->parent);
 
 	if (ptd->item)
 	{
@@ -957,8 +945,10 @@ void hand_list_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_TRANS);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_TRANS);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -1007,6 +997,7 @@ res_win_t listctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t* p
 void listctrl_attach(res_win_t widget, link_t_ptr ptr)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
+	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -1016,6 +1007,13 @@ void listctrl_attach(res_win_t widget, link_t_ptr ptr)
 
 	ptd->list = ptr;
 	ptd->parent = ptr;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_list_width(ptd->list, xr.fw);
+	set_list_height(ptd->list, xr.fh);
+
 	listctrl_redraw(widget);
 }
 
@@ -1325,13 +1323,13 @@ void listctrl_popup_size(res_win_t widget, xsize_t* pse)
 
 	if (compare_text(get_list_layer_ptr(ptd->list), -1, ATTR_LAYER_HORZ, -1, 0) == 0)
 	{
-		pse->fx = iw * count;
-		pse->fy = 3 * ih;
+		pse->fw = iw * count;
+		pse->fh = 3 * ih;
 	}
 	else
 	{
-		pse->fx = iw * 3;
-		pse->fy = ih * count;
+		pse->fw = iw * 3;
+		pse->fh = ih * count;
 	}
 
 	widget_size_to_pt(widget, pse);

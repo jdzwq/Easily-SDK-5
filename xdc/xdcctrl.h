@@ -1739,10 +1739,10 @@ EXP_API void topogctrl_set_dirty(res_win_t widget, bool_t b_dirty);
 /*
 @FUNCTION topogctrl_set_bitmap: set a bitmap to topog widget.
 @INPUT res_win_t widget: the topog widget.
-@INPUT res_bmp_t bmp: the bitmap resource handle.
+@INPUT bitmap_t bmp: the bitmap resource handle.
 @RETURN bool_t: if succeeds return nonzero, otherwise return zero.
 */
-EXP_API bool_t topogctrl_set_bitmap(res_win_t widget, res_bmp_t bmp);
+EXP_API bool_t topogctrl_set_bitmap(res_win_t widget, bitmap_t bmp);
 
 /********************************photo control***************************************************************/
 typedef struct _NOTICE_PHOTO{
@@ -1753,7 +1753,7 @@ typedef struct _NOTICE_PHOTO{
 	link_t_ptr anno;
 	link_t_ptr arti;
 
-	res_ctx_t rdc;
+	visual_t rdc;
 	void* data;
 
 	int ret;
@@ -1897,7 +1897,7 @@ typedef struct _NOTICE_MODEL{
 	link_t_ptr anno;
 	link_t_ptr arti;
 
-	res_ctx_t rdc;
+	visual_t rdc;
 	void* data;
 
 	int ret;

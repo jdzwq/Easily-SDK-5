@@ -404,14 +404,15 @@ void lighten_xfont(xfont_t* pxf, int n)
 
 void parse_xpen_from_style(xpen_t* pxp, const tchar_t* style)
 {
-	const tchar_t* token;
 	tchar_t *key, *val;
 	int klen, vlen;
+	int len, n, total = 0;
 
-	token = style;
-	while (token)
+	len = xslen(style);
+	while (n = parse_options_token((style + total), (len - total), CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen))
 	{
-		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		total += n;
+
 		if (!klen)
 			break;
 
@@ -483,14 +484,15 @@ int format_xpen_to_style(const xpen_t* pxp, tchar_t* buf, int max)
 
 void parse_xbrush_from_style(xbrush_t* pxb, const tchar_t* style)
 {
-	const tchar_t* token;
 	tchar_t *key, *val;
 	int klen, vlen;
+	int len, n, total = 0;
 
-	token = style;
-	while (token)
+	len = xslen(style);
+	while (n = parse_options_token((style + total), (len - total), CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen))
 	{
-		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		total += n;
+
 		if (!klen)
 			break;
 
@@ -576,14 +578,14 @@ int format_xbrush_to_style(const xbrush_t* pxb, tchar_t* buf, int max)
 
 void parse_xfont_from_style(xfont_t* pxf, const tchar_t* style)
 {
-	const tchar_t* token;
 	tchar_t *key, *val;
 	int klen, vlen;
+	int len, n, total = 0;
 
-	token = style;
-	while (token)
+	len = xslen(style);
+	while (n = parse_options_token((style + total), (len - total), CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen))
 	{
-		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		total += n;
 		if (!klen)
 			break;
 
@@ -669,14 +671,15 @@ int format_xfont_to_style(const xfont_t* pfont, tchar_t* buf, int max)
 
 void parse_xface_from_style(xface_t* ptt, const tchar_t* style)
 {
-	const tchar_t* token;
 	tchar_t *key, *val;
 	int klen, vlen;
+	int n, len, total = 0;
 
-	token = style;
-	while (token)
+	len = xslen(style);
+	while (n = parse_options_token((style + total), (len - total), CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen))
 	{
-		token = parse_options_token(token, -1, CSS_ITEMFEED, CSS_LINEFEED, &key, &klen, &val, &vlen);
+		total += n;
+
 		if (!klen)
 			break;
 

@@ -58,7 +58,26 @@ LICENSE.GPL3 for more details.
 @GET get_tool_style_ptr: get the tool style.
 */
 #define get_tool_style_ptr(ptr)							get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
-
+/*
+@PROPER width: numeric.
+@SET set_tool_width: set the tool width.
+*/
+#define set_tool_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_tool_width: get the tool width.
+*/
+#define get_tool_width(ptr)								get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_tool_height: get the tool height.
+*/
+#define get_tool_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_tool_height: set the tool height.
+*/
+#define set_tool_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
 /*
 @PROPER iconSpan: numeric.
 @SET set_tool_icon_span: set the tool icon span.

@@ -45,7 +45,7 @@ extern "C" {
 @INPUT res_dc_t rdc: the device context resource handle.
 @RETURN canvas_t: if succeeds return canvas object, fails return NULL.
 */
-EXP_API canvas_t create_display_canvas(res_ctx_t rdc);
+EXP_API canvas_t create_display_canvas(visual_t rdc);
 
 /*
 @FUNCTION destroy_display_canvas: destroy the display context canvas.
@@ -53,6 +53,13 @@ EXP_API canvas_t create_display_canvas(res_ctx_t rdc);
 @RETURN void: none.
 */
 EXP_API void	destroy_display_canvas(canvas_t canv);
+
+/*
+@FUNCTION get_canvas_visual: get the visual object.
+@INPUT canvas_t canv: the svg canvas object.
+@RETURN visual_t: return the visual object if exists, otherwise return NULL.
+*/
+EXP_API visual_t get_canvas_visual(canvas_t canv);
 
 /*
 @FUNCTION set_canvas_ratio: set the canvas horizon and vertical ratio.
@@ -108,38 +115,23 @@ EXP_API void	set_canvas_vert_feed(canvas_t canv, float cy);
 EXP_API float	get_canvas_vert_feed(canvas_t canv);
 
 /*
-@FUNCTION get_canvas_ctx: get the canvas context resource handle.
-@INPUT canvas_t canv: the canvas object.
-@RETURN res_ctx_t: return the context resource handle if exists, otherwise return NULL.
-*/
-EXP_API res_ctx_t get_canvas_ctx(canvas_t canv);
-
-/*
 @FUNCTION begin_canvas_paint: begin canvas painting and return a memory context for drawing buffer.
 @INPUT canvas_t canv: the canvas object.
-@INPUT res_ctx_t rdc: the display or printer context resource handle.
+@INPUT visual_t rdc: the display or printer context resource handle.
 @INPUT int width: the client width in points.
 @INPUT int height: the client height in points.
-@RETURN res_ctx_t: if succeeds return memory context resource handle, fails return NULL.
+@RETURN visual_t: if succeeds return memory context resource handle, fails return NULL.
 */
-EXP_API res_ctx_t begin_canvas_paint(canvas_t canv, res_ctx_t rdc, int width, int height);
+EXP_API visual_t begin_canvas_paint(canvas_t canv, visual_t rdc, int width, int height);
 
 /*
 @FUNCTION end_canvas_paint: end canvas painting and free drawing buffer.
 @INPUT canvas_t canv: the canvas object.
-@INPUT res_ctx_t rdc: the display or printer context resource handle.
+@INPUT visual_t rdc: the display or printer context resource handle.
 @INPUT const xrect_t: the client rectangle for rendering context from buffer.
 @RETURN void: none.
 */
-EXP_API void	end_canvas_paint(canvas_t canv, res_ctx_t rdc, const xrect_t* pxr);
-
-/*
-@FUNCTION get_canvas_measure: fill the canvas measure functions.
-@INPUT canvas_t canv: the canvas object.
-@OUTPUT if_measure_t pif: the measure struct for returning inner function.
-@RETURN void: none.
-*/
-EXP_API void get_canvas_measure(canvas_t canv, if_measure_t* pif);
+EXP_API void	end_canvas_paint(canvas_t canv, visual_t rdc, const xrect_t* pxr);
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 /*
@@ -147,7 +139,7 @@ EXP_API void get_canvas_measure(canvas_t canv, if_measure_t* pif);
 @INPUT res_dc_t rdc: the display context resource handle.
 @RETURN canvas_t: if succeeds return canvas object, fails return NULL.
 */
-EXP_API canvas_t create_printer_canvas(res_ctx_t rdc);
+EXP_API canvas_t create_printer_canvas(visual_t rdc);
 
 /*
 @FUNCTION destroy_printer_canvas: destroy the printer context canvas.
@@ -223,6 +215,22 @@ EXP_API void point_tm_to_pt(canvas_t canv, xpoint_t* ppt);
 @RETURN void: none.
 */
 EXP_API void point_pt_to_tm(canvas_t canv, xpoint_t* ppt);
+
+/*
+@FUNCTION span_tm_to_pt: mapping span points to millimeter in canvas.
+@INPUT canvas_t canv: the canvas object.
+@INOUTPUT xspan_t* pxs: the span struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+EXP_API void span_tm_to_pt(canvas_t canv, xspan_t* pxs);
+
+/*
+@FUNCTION span_pt_to_tm: mapping span points to millimeter in canvas.
+@INPUT canvas_t canv: the canvas object.
+@INOUTPUT xspan_t* pxs: the span struct for inputing integer member and outputing float member.
+@RETURN void: none.
+*/
+EXP_API void span_pt_to_tm(canvas_t canv, xspan_t* pxs);
 
 #ifdef	__cplusplus
 }

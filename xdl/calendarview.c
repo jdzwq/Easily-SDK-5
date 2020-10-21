@@ -171,7 +171,7 @@ int calc_calendar_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_calendar(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_calendar(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xrect_t xr;
@@ -185,6 +185,8 @@ void draw_calendar(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr
 	const tchar_t* style;
 	const tchar_t* daily;
 	bool_t b_print;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	float pw, ph, ic, iw, ih, th;
 	tchar_t sz_token[DATE_LEN];
@@ -285,7 +287,7 @@ void draw_calendar(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr
 
 	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_PREV);
+	draw_gizmo(pif, &xc, &xr, GDI_ATTR_GIZMO_PREV);
 
 	xr.fx = pw - ic / 2;
 	xr.fy = th / 2 - CALENDAR_BAR_SPAN;
@@ -295,7 +297,7 @@ void draw_calendar(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr
 
 	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_NEXT);
+	draw_gizmo(pif, &xc, &xr, GDI_ATTR_GIZMO_NEXT);
 
 	xr.fx = pw - ic / 2 * 3;
 	xr.fy = th / 2 - CALENDAR_BAR_SPAN;

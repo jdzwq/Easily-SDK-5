@@ -45,15 +45,15 @@ typedef enum{
 extern "C" {
 #endif
 
-EXP_API float calc_status_width(const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API float calc_status_width(link_t_ptr ptr);
 
-EXP_API void calc_status_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_status_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API void calc_status_title_rect(const canvbox_t* pbox, link_t_ptr ptr, xrect_t* pxr);
+EXP_API void calc_status_title_rect(link_t_ptr ptr, xrect_t* pxr);
 
-EXP_API int calc_status_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
+EXP_API int calc_status_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-EXP_API void draw_status(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API void draw_status(const if_canvas_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

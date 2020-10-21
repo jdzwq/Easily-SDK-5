@@ -43,7 +43,7 @@ typedef struct _model_delta_t{
 	int org_x, org_y;
 	int index;
 
-	res_bmp_t bmp;
+	bitmap_t bmp;
 
 	res_win_t editor;
 	res_win_t hsc;
@@ -63,7 +63,7 @@ typedef struct _model_delta_t{
 #define GETMODELDELTA(ph) 	(model_delta_t*)widget_get_user_delta(ph)
 #define SETMODELDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
 
-int noti_model_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, res_ctx_t rdc);
+int noti_model_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, visual_t rdc);
 /*******************************************************************************************************/
 static void _modelctrl_done(res_win_t widget)
 {
@@ -297,45 +297,45 @@ static void _modelctrl_arti_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 
-	canvbox_t cb;
-
-	widget_get_canv_rect(widget, &cb);
-
-	calc_anno_arti_rect(&cb, ptd->anno, ilk, pxr);
+	calc_anno_arti_rect(ptd->anno, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
 
-static res_bmp_t _modelctrl_merge_anno(res_win_t widget)
+static bitmap_t _modelctrl_merge_anno(res_win_t widget)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 
-	res_ctx_t rdc, memdc;
-	res_bmp_t membm;
 	xcolor_t xc = { 0 };
 	xbrush_t xb = { 0 };
 	xrect_t xr = { 0 };
 	xsize_t xs;
 	link_t_ptr ilk;
 
+	visual_t rdc, memdc;
+	bitmap_t membm;
+	if_visual_t* piv;
+
 	if (!ptd->bmp && !ptd->anno)
 		return NULL;
 
 	rdc = widget_client_ctx(widget);
 
-	get_bitmap_size(ptd->bmp, &xs.cx, &xs.cy);
+	get_bitmap_size(ptd->bmp, &xs.w, &xs.h);
 
-	memdc = create_compatible_context(rdc, xs.cx, xs.cy);
+	memdc = create_compatible_context(rdc, xs.w, xs.h);
+	piv = create_visual_interface(memdc);
 
 	xr.x = 0;
 	xr.h = 0;
-	xr.w = xs.cx;
-	xr.h = xs.cy;
+	xr.w = xs.w;
+	xr.h = xs.h;
 
 	widget_get_xbrush(widget, &xb);
-	draw_rect_raw(memdc, NULL, &xb, &xr);
 
-	draw_bitmap_raw(memdc, ptd->bmp, RECTPOINT(&xr));
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	(*piv->pf_draw_bitmap_raw)(piv->visual, ptd->bmp, RECTPOINT(&xr));
 
 	ilk = get_anno_next_arti(ptd->anno, LINK_FIRST);
 	while (ilk)
@@ -344,6 +344,8 @@ static res_bmp_t _modelctrl_merge_anno(res_win_t widget)
 
 		//noti_model_owner(widget, NC_MODELANNODRAW, ilk, (void*)&xr, memdc);
 	}
+
+	destroy_visual_interface(piv);
 
 	membm = create_context_bitmap(memdc);
 
@@ -382,7 +384,7 @@ static void _modelctrl_reset_page(res_win_t widget)
 	widget_reset_scroll(widget, 0);
 }
 /*******************************************************************************************************/
-int noti_model_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, res_ctx_t rdc)
+int noti_model_owner(res_win_t widget, unsigned int code, link_t_ptr arti, void* data, visual_t rdc)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	NOTICE_MODEL nf = { 0 };
@@ -430,10 +432,10 @@ void noti_model_arti_drop(res_win_t widget, int x, int y)
 
 	widget_set_cursor(widget, CURSOR_ARROW);
 
-	xs.cx = x - ptd->org_x;
-	xs.cy = y - ptd->org_y;
+	xs.w = x - ptd->org_x;
+	xs.h = y - ptd->org_y;
 
-	if (!xs.cx && !xs.cy)
+	if (!xs.w && !xs.h)
 		return;
 
 	_modelctrl_done(widget);
@@ -448,8 +450,8 @@ void noti_model_arti_drop(res_win_t widget, int x, int y)
 
 	for (i = 0; i < count; i++)
 	{
-		ppt[i].fx += xs.fx;
-		ppt[i].fy += xs.fy;
+		ppt[i].fx += xs.fw;
+		ppt[i].fy += xs.fh;
 	}
 	
 	set_anno_arti_xpoint(ptd->arti, ppt, count);
@@ -494,10 +496,10 @@ void noti_model_arti_sized(res_win_t widget, int x, int y)
 
 	widget_set_cursor(widget, CURSOR_ARROW);
 
-	xs.cx = x - ptd->org_x;
-	xs.cy = y - ptd->org_y;
+	xs.w = x - ptd->org_x;
+	xs.h = y - ptd->org_y;
 
-	if (!xs.cx && !xs.cy)
+	if (!xs.w && !xs.h)
 	{
 		ptd->index = -1;
 		return;
@@ -513,8 +515,8 @@ void noti_model_arti_sized(res_win_t widget, int x, int y)
 
 	widget_size_to_tm(widget, &xs);
 
-	ppt[ptd->index].fx += xs.fx;
-	ppt[ptd->index].fy += xs.fy;
+	ppt[ptd->index].fx += xs.fw;
+	ppt[ptd->index].fy += xs.fh;
 
 	set_anno_arti_xpoint(ptd->arti, ppt, count);
 	xmem_free(ppt);
@@ -723,7 +725,6 @@ void hand_model_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	int ind = -1;
 	link_t_ptr ilk = NULL;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd)
 		return;
@@ -742,9 +743,7 @@ void hand_model_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		pt.y = pxp->y;
 		widget_point_to_tm(widget, &pt);
 
-		widget_get_canv_rect(widget, &cb);
-
-		hint = calc_anno_hint(&cb, &pt, ptd->anno, &ilk, &ind);
+		hint = calc_anno_hint(&pt, ptd->anno, &ilk, &ind);
 
 		if (hint == ANNO_HINT_SIZE && ilk == ptd->arti)
 		{
@@ -763,7 +762,6 @@ void hand_model_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	int hint;
 	int ind = -1;
 	link_t_ptr ilk = NULL;
-	canvbox_t cb;
 	xpoint_t pt;
 
 	if (!ptd)
@@ -785,9 +783,7 @@ void hand_model_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	widget_get_canv_rect(widget, &cb);
-
-	hint = calc_anno_hint(&cb, &pt, ptd->anno, &ilk, &ind);
+	hint = calc_anno_hint(&pt, ptd->anno, &ilk, &ind);
 
 	if (hint == ANNO_HINT_SIZE && ilk == ptd->arti)
 	{
@@ -816,7 +812,6 @@ void hand_model_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr ilk = NULL;
 	int ind = -1;
 	int hint;
-	canvbox_t cb;
 	xpoint_t pt;
 	bool_t bRe;
 
@@ -844,9 +839,7 @@ void hand_model_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	widget_get_canv_rect(widget, &cb);
-
-	hint = calc_anno_hint(&cb, &pt, ptd->anno, &ilk, &ind);
+	hint = calc_anno_hint(&pt, ptd->anno, &ilk, &ind);
 
 	bRe = (ilk == ptd->arti) ? 1 : 0;
 
@@ -1033,10 +1026,10 @@ void hand_model_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_model_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_model_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xpen_t xp = { 0 };
@@ -1046,7 +1039,7 @@ void hand_model_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -1058,22 +1051,24 @@ void hand_model_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &cb);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	widget_get_view_rect(widget, (viewbox_t*)&xr);
 
 	if (ptd->bmp)
 	{
-		draw_bitmap_raw(rdc, ptd->bmp, RECTPOINT(&xr));
+		(*piv->pf_draw_bitmap_raw)(piv->visual, ptd->bmp, RECTPOINT(&xr));
 	}
 
 	noti_model_owner(widget, NC_MODELFACEDRAW, NULL, (void*)&xr, rdc);
 
-	draw_anno(pif, &cb, ptd->anno);
+	draw_anno(pif, ptd->anno);
 
 	if (ptd->arti)
 	{
@@ -1081,8 +1076,10 @@ void hand_model_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		pt_expand_rect(&xr, 1, 1);
 
 		parse_xcolor(&xc, DEF_ALARM_COLOR);
-		draw_select_raw(rdc, &xc, &xr, ALPHA_SOLID);
+		draw_select_raw(piv, &xc, &xr, ALPHA_SOLID);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -1165,7 +1162,7 @@ link_t_ptr modelctrl_fetch(res_win_t widget)
 void modelctrl_set_object(res_win_t widget, const byte_t* data, dword_t size)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -1192,7 +1189,7 @@ dword_t modelctrl_get_object(res_win_t widget, byte_t* buf, dword_t max)
 {
 	model_delta_t* ptd = GETMODELDELTA(widget);
 	dword_t len_bmp;
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	XDL_ASSERT(ptd != NULL);
 

@@ -50,6 +50,26 @@ LICENSE.GPL3 for more details.
 #define get_images_layer_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_LAYER,-1)
 /*
 @PROPER width: numeric.
+@SET set_images_width: set the images width.
+*/
+#define set_images_width(ptr,n)					set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_images_width: get the images width.
+*/
+#define get_images_width(ptr)					get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_images_height: get the images height.
+*/
+#define get_images_height(ptr)					get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_images_height: set the images height.
+*/
+#define set_images_height(ptr,n)				set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
+@PROPER width: numeric.
 @SET set_images_item_width: set the images width.
 */
 #define set_images_item_width(ptr,n)				set_dom_node_attr_float(ptr,ATTR_ITEM_WIDTH,n)

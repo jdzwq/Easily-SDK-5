@@ -305,15 +305,17 @@ void hand_docker_lbutton_up(docker_t* ptd, const xpoint_t* pxp)
 	}
 }
 
-void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
+void hand_docker_paint(docker_t* ptd, visual_t dc, const xrect_t* pxr)
 {
-	res_ctx_t rdc;
-	canvas_t canv;
 	xrect_t xr, xr_cli, xr_bar;
 	int top, bottom, left, right, span;
 	xbrush_t xb = { 0 };
 	xcolor_t xc_brim, xc_core;
 	int i;
+
+	visual_t rdc;
+	canvas_t canv;
+	if_visual_t* piv;
 
 	widget_get_xbrush(ptd->widget, &xb);
 
@@ -329,7 +331,9 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr_cli.w, xr_cli.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr_cli);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr_cli);
 
 	span = DOCKER_SPLIT_SPAN;
 	top = bottom = left = right = 0;
@@ -350,7 +354,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.y = xr.y;
 				xr_bar.h = xr.h;
 
-				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr_bar);
+				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -372,7 +376,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.y = xr.y + xr.h;
 				xr_bar.h = span;
 
-				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -394,7 +398,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.y = xr.y;
 				xr_bar.h = xr.h;
 
-				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr_bar);
+				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -416,7 +420,7 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				xr_bar.y = xr.y - span;
 				xr_bar.h = span;
 
-				gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 			}
 
 			if ((ptd->dock[i].style & WS_DOCK_DYNA))
@@ -425,6 +429,8 @@ void hand_docker_paint(docker_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 				bottom += ptd->dock[i].cy;
 		}
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
 }

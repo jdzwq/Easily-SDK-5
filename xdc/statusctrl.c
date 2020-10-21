@@ -48,11 +48,8 @@ typedef struct _status_delta_t{
 static void _statusctrl_title_rect(res_win_t widget, xrect_t* pxr)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_status_title_rect(&cb, ptd->status, pxr);
+	calc_status_title_rect(ptd->status, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -60,11 +57,8 @@ static void _statusctrl_title_rect(res_win_t widget, xrect_t* pxr)
 static void _statusctrl_item_rect(res_win_t widget, link_t_ptr ilk, xrect_t* pxr)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_status_item_rect(&cb, ptd->status, ilk, pxr);
+	calc_status_item_rect(ptd->status, ilk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -207,9 +201,16 @@ void hand_status_destroy(res_win_t widget)
 void hand_status_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
+	xrect_t xr;
 
 	if (!ptd->status)
 		return;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_status_width(ptd->status, xr.fw);
+	set_status_height(ptd->status, xr.fh);
 
 	statusctrl_redraw(widget);
 }
@@ -220,19 +221,16 @@ void hand_status_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	int nHint;
 	link_t_ptr plk;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->status)
 		return;
-
-	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_status_hint(&cb, &pt, ptd->status, &plk);
+	nHint = calc_status_hint(&pt, ptd->status, &plk);
 
 	if (nHint == STATUS_HINT_ITEM && !ptd->hover && plk)
 	{
@@ -287,19 +285,16 @@ void hand_status_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr plk;
 	bool_t bRe;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->status)
 		return;
-
-	widget_get_canv_rect(widget, &cb);
 
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	plk = NULL;
-	nHint = calc_status_hint(&cb, &pt, ptd->status, &plk);
+	nHint = calc_status_hint(&pt, ptd->status, &plk);
 	bRe = (plk == ptd->item) ? 1 : 0;
 
 	if (bRe)
@@ -365,10 +360,10 @@ void hand_status_keydown(res_win_t widget, dword_t ks, int nKey)
 	}
 }
 
-void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_status_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 	xbrush_t xb = { 0 };
@@ -380,7 +375,7 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->status)
 		return;
@@ -392,6 +387,7 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -403,17 +399,17 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
+	piv = create_visual_interface(rdc);
+
 	parse_xcolor(&xc_brim, xb.color);
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_brim, DEF_SOFT_DARKEN);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	draw_status(pif, ptd->status);
 
-	draw_status(pif, &cb, ptd->status);
-
-	calc_status_title_rect(&cb, ptd->status, &xr);
+	calc_status_title_rect(ptd->status, &xr);
 
 	if (ptd->b_step)
 	{
@@ -423,24 +419,17 @@ void hand_status_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_step.fh = xr.fh;
 
 		parse_xcolor(&xc, xp.color);
-		draw_progress(pif->canvas, &xc, &xr_step, ptd->n_step);
+		draw_progress(pif, &xc, &xr_step, ptd->n_step);
 
 		xr.fx += xr_step.fw;
-		draw_text(pif->canvas, &xf, &xa, &xr, get_status_title_ptr(ptd->status), -1);
+		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_status_title_ptr(ptd->status), -1);
 	}
 	else
 	{
-		draw_text(pif->canvas, &xf, &xa, &xr, get_status_title_ptr(ptd->status), -1);
+		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_status_title_ptr(ptd->status), -1);
 	}
 
-	//draw focus
-	/*if (ptd->hover)
-	{
-		calc_status_item_rect(&vb, ptd->status, ptd->hover, &xr);
-
-		draw_line(widget_get_canvas(widget), &xp, xr.x + 10, xr.y + 20, xr.x + 10, xr.y + xr.h - 20);
-		draw_line(widget_get_canvas(widget), &xp, xr.x + xr.w - 10, xr.y + 20, xr.x + xr.w - 10, xr.y + xr.h - 20);
-	}*/
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -481,6 +470,7 @@ res_win_t statusctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 void statusctrl_attach(res_win_t widget, link_t_ptr ptr)
 {
 	status_delta_t* ptd = GETSTATUSDELTA(widget);
+	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -489,6 +479,12 @@ void statusctrl_attach(res_win_t widget, link_t_ptr ptr)
 	ptd->item = NULL;
 	ptd->status = ptr;
 	
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_status_width(ptd->status, xr.fw);
+	set_status_height(ptd->status, xr.fh);
+
 	statusctrl_redraw(widget);
 }
 

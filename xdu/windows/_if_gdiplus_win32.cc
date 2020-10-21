@@ -74,6 +74,202 @@ static void _calc_point(const POINT* pt, int r, double a, POINT* pp)
 	pp->y = pt->y + (int)((float)r * sin(a));
 }
 
+static void _calc_circle(int sflag, int lflag, const POINT* ppt1, const POINT* ppt2, int rr, POINT* ppt, int* arcf, int* arct)
+{
+	POINT pt;
+	double len, arc1, arc2, arc;
+	int n;
+
+	if (lflag)
+	{
+		pt.x = ppt1->x - ppt2->x;
+		pt.y = ppt1->y - ppt2->y;
+	}
+	else
+	{
+		pt.x = ppt2->x - ppt1->x;
+		pt.y = ppt2->y - ppt1->y;
+	}
+
+	if (sflag)
+	{
+		if (pt.x <= 0 && pt.y >= 0)
+			n = 1;
+		else if (pt.x <= 0 && pt.y <= 0)
+			n = 2;
+		else if (pt.x >= 0 && pt.y <= 0)
+			n = 3;
+		else if (pt.x >= 0 && pt.y >= 0)
+			n = 4;
+	}
+	else
+	{
+
+		if (pt.x <= 0 && pt.y <= 0)
+			n = 1;
+		else if (pt.x <= 0 && pt.y >= 0)
+			n = 2;
+		else if (pt.x >= 0 && pt.y >= 0)
+			n = 3;
+		else if (pt.x >= 0 && pt.y <= 0)
+			n = 4;
+	}
+
+	if (pt.x < 0)
+		pt.x = 0 - pt.x;
+	if (pt.y < 0)
+		pt.y = 0 - pt.y;
+
+	len = sqrt(pow((double)(pt.x), 2) + pow((double)(pt.y), 2)) / 2;
+	
+	switch (n)
+	{
+	case 1:
+		if (sflag)
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.x / (double)pt.y);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * sin(arc));
+			pt.y = (int)((float)rr * cos(arc));
+
+			ppt->x = -pt.x + ppt1->x;
+			ppt->y = -pt.y + ppt1->y;
+			*arcf = (int)((XPI / 2 - arc) * ((double)180 / XPI));
+			*arct = (int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		else
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.x / (double)pt.y);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * sin(arc));
+			pt.y = (int)((float)rr * cos(arc));
+
+			ppt->x = -pt.x + ppt1->x;
+			ppt->y = pt.y + ppt1->y;
+			*arcf = (int)((3 * XPI / 2 + arc) * ((double)180 / XPI));
+			*arct = -(int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		break;
+	case 2:
+		if (sflag)
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.y / (double)pt.x);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * cos(arc));
+			pt.y = (int)((float)rr * sin(arc));
+
+			ppt->x = pt.x + ppt1->x;
+			ppt->y = -pt.y + ppt1->y;
+			*arcf = (int)((XPI - arc) * ((double)180 / XPI));
+			*arct = (int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		else
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.y / (double)pt.x);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * cos(arc));
+			pt.y = (int)((float)rr * sin(arc));
+
+			ppt->x = pt.x + ppt1->x;
+			ppt->y = pt.y + ppt1->y;
+			*arcf = (int)((2 * XPI - arc) * ((double)180 / XPI));
+			*arct = -(int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		break;
+	case 3:
+		if (sflag)
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.x / (double)pt.y);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * sin(arc));
+			pt.y = (int)((float)rr * cos(arc));
+
+			ppt->x = pt.x + ppt1->x;
+			ppt->y = pt.y + ppt1->y;
+			*arcf = (int)((XPI * 3 / 2 - arc) * ((double)180 / XPI));
+			*arct = (int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		else
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.x / (double)pt.y);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * sin(arc));
+			pt.y = (int)((float)rr * cos(arc));
+
+			ppt->x = pt.x + ppt1->x;
+			ppt->y = -pt.y + ppt1->y;
+			*arcf = (int)((3 * XPI / 2 - arc) * ((double)180 / XPI));
+			*arct = -(int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		break;
+	case 4:
+		if (sflag)
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.y / (double)pt.x);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * cos(arc));
+			pt.y = (int)((float)rr * sin(arc));
+
+			ppt->x = -pt.x + ppt1->x;
+			ppt->y = pt.y + ppt1->y;
+			*arcf = (int)((2 * XPI - arc) * ((double)180 / XPI));
+			*arct = (int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		else
+		{
+			arc1 = acos(len / rr);
+			arc2 = atan((double)pt.y / (double)pt.x);
+			arc = XPI - (arc1 + arc2);
+
+			pt.x = (int)((float)rr * cos(arc));
+			pt.y = (int)((float)rr * sin(arc));
+
+			ppt->x = -pt.x + ppt1->x;
+			ppt->y = -pt.y + ppt1->y;
+			*arcf = (int)((arc)* ((double)180 / XPI));
+			*arct = -(int)((XPI - (arc1 * 2)) * ((double)180 / XPI));
+		}
+		break;
+	}
+
+	if (lflag)
+	{
+		if (sflag)
+		{
+			*arcf = *arcf + *arct;
+			if (*arcf >= 360)
+				*arcf = (*arcf - 360);
+
+			*arct = (360 - *arct);
+		}
+		else
+		{
+			*arcf = *arcf + *arct;
+			if (*arcf < 0)
+				*arcf = (360 + *arcf);
+
+			*arct = -(360 + *arct);
+		}
+
+		ppt->x -= (ppt1->x - ppt2->x);
+		ppt->y -= (ppt1->y - ppt2->y);
+	}
+}
+
 /************************************************************************************************/
 
 static Pen* create_pen(const xpen_t* pxp)
@@ -120,9 +316,14 @@ static Brush* create_brush(const xbrush_t* pxb, const xrect_t* pxr, GraphicsPath
 	if (xscmp(pxb->style, GDI_ATTR_FILL_STYLE_GRADIENT) == 0)
 	{
 		if (is_null(pxb->linear))
-			parse_xcolor(&linear_color, GDI_ATTR_RGB_SOFTWHITE);
+		{
+			parse_xcolor(&linear_color, pxb->color);
+			lighten_xcolor(&linear_color, 20);
+		}
 		else
+		{
 			parse_xcolor(&linear_color, pxb->linear);
+		}
 
 		if (pgp)
 		{
@@ -253,6 +454,8 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 	int sflag, lflag;
 	RECT rt;
 	int arcf, arct;
+	POINT pk = { 0 };
+	double arc, len;
 	int n = 0;
 
 	if (!aa)
@@ -427,8 +630,8 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 			pt[3].x = pa[1].x;
 			pt[3].y = pa[1].y;
 
-			pt_p.x = pt[2].x;
-			pt_p.y = pt[2].y;
+			pt_p.x = pt[3].x;
+			pt_p.y = pt[3].y;
 			pt_i.x = 2 * pt[2].x - pt[1].x;
 			pt_i.y = 2 * pt[2].y - pt[1].y;
 
@@ -458,23 +661,31 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 		}
 		else if (*aa == _T('A'))
 		{
-			rx = pa[0].x;
-			ry = pa[0].y;
-			sflag = (rx >= 0 || ry >= 0)? 1 : 0;
-
+			sflag = pa[0].x;
+			lflag = pa[0].y;
+			rx = pa[1].x;
+			ry = pa[1].y;
+			
 			pt[0].x = pt_p.x;
 			pt[0].y = pt_p.y;
-			pt[1].x = pa[1].x;
-			pt[1].y = pa[1].y;
+			pt[1].x = pa[2].x;
+			pt[1].y = pa[2].y;
 
 			pt_p.x = pt[1].x;
 			pt_p.y = pt[1].y;
 			pt_i.x = 2 * pt[1].x - pt[0].x;
 			pt_i.y = 2 * pt[1].y - pt[0].y;
 
-			if (sflag)
+			_calc_circle(sflag, lflag, &pt[0], &pt[1], rx, &pk, &arcf, &arct);
+			
+			rt.left = pk.x - rx;
+			rt.right = pk.x + rx;
+			rt.top = pk.y - ry;
+			rt.bottom = pk.y + ry;
+
+			/*if (sflag)
 			{
-				if (pt[0].x < pt[1].x && pt[0].y < pt[1].y)
+				if (pt[0].x <= pt[1].x && pt[0].y <= pt[1].y)
 				{
 					rt.left = pt[0].x - rx;
 					rt.right = pt[1].x;
@@ -484,7 +695,7 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 					arcf = 270;
 					arct = 90;
 				}
-				else if (pt[0].x < pt[1].x && pt[0].y > pt[1].y)
+				else if (pt[0].x <= pt[1].x && pt[0].y > pt[1].y)
 				{
 					rt.left = pt[0].x;
 					rt.right = pt[1].x + rx;
@@ -504,7 +715,7 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 					arcf = 90;
 					arct = 90;
 				}
-				else if (pt[0].x > pt[1].x && pt[0].y < pt[1].y)
+				else if (pt[0].x > pt[1].x && pt[0].y <= pt[1].y)
 				{
 					rt.left = pt[1].x - rx;
 					rt.right = pt[0].x;
@@ -557,11 +768,11 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 					arcf = 0;
 					arct = 90;
 				}
-			}
+			}*/
 
 			DPtoLP(hDC, (LPPOINT)&rt, 2);
 			path->AddArc(rt.left, rt.top, 2 * rx, 2 * ry, arcf, arct);
-			n = 2;
+			n = 3;
 		}
 		else if (*aa == _T('Z') || *aa == _T('z'))
 		{
@@ -609,9 +820,10 @@ void _gdiplus_uninit(void)
 	}
 }
 
-void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, const xpoint_t* ppt2)
+void _gdiplus_draw_line(visual_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, const xpoint_t* ppt2)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	POINT pt[2];
 	pt[0].x = ppt1->x;
@@ -645,9 +857,187 @@ void _gdiplus_draw_line(res_ctx_t rdc,const xpen_t* pxp, const xpoint_t*ppt1, co
 	delete pp;
 }
 
-void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+
+void _gdiplus_draw_arc(visual_t rdc, const xpen_t* pxp, const xpoint_t * ppt1, const xpoint_t* ppt2, const xsize_t* pxs, bool_t sflag, bool_t lflag)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
+	POINT pt[4] = { 0 };
+
+	pt[0].x = ppt1->x;
+	pt[0].y = ppt1->y;
+	pt[1].x = ppt2->x;
+	pt[1].y = ppt2->y;
+	pt[2].x = pxs->w;
+	pt[2].y = pxs->h;
+
+	DPtoLP(hDC, pt, 3);
+
+	int fang = 0;
+	int tang = 0;
+
+	_calc_circle(sflag, lflag, &pt[0], &pt[1], pt[2].x, &pt[3], &fang, &tang);
+
+	Rect rf(pt[3].x - pt[2].x, pt[3].y - pt[2].y, 2 * pt[2].x, 2 * pt[2].y);
+
+	Gdiplus::Graphics gh(hDC);
+
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeHighQuality);
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -10);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		Rect rf2 = rf;
+		rf2.X += pxp->adorn.feed;
+		rf2.Y += pxp->adorn.feed;
+		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+
+		gh.DrawArc(&pen, rf2, (float)fang, (float)(tang));
+	}
+
+	if (!is_null_xpen(pxp))
+	{
+		Pen* pp = create_pen(pxp);
+
+		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+		gh.DrawArc(pp, rf, (float)fang, (float)(tang));
+
+		delete pp;
+	}
+}
+
+void _gdiplus_draw_polyline(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
+	GraphicsPath path;
+	POINT pt[2];
+
+	for (int i = 0; i<n - 1; i++)
+	{
+		pt[0].x = ppt[i].x;
+		pt[0].y = ppt[i].y;
+		pt[1].x = ppt[i + 1].x;
+		pt[1].y = ppt[i + 1].y;
+
+		DPtoLP(hDC, pt, 2);
+
+		path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+	}
+
+	Pen* pp = create_pen(pxp);
+
+	Gdiplus::Graphics gh(hDC);
+
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+
+	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
+	{
+		GraphicsPath* adron = path.Clone();
+
+		Region region(&path);
+		gh.ExcludeClip(&region);
+
+		Matrix M;
+		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
+
+		adron->Transform(&M);
+
+		xcolor_t xc_gray;
+
+		parse_xcolor(&xc_gray, pxp->color);
+		lighten_xcolor(&xc_gray, -10);
+
+		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
+
+		gh.DrawPath(&pen, adron);
+
+		gh.ResetClip();
+
+		delete adron;
+	}
+
+	gh.DrawPath(pp, &path);
+
+	delete pp;
+}
+
+void _gdiplus_draw_bezier(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+{
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
+	POINT pt[4];
+	pt[0].x = ppt1->x;
+	pt[0].y = ppt1->y;
+	pt[1].x = ppt2->x;
+	pt[1].y = ppt2->y;
+	pt[2].x = ppt3->x;
+	pt[2].y = ppt3->y;
+	pt[3].x = ppt4->x;
+	pt[3].y = ppt4->y;
+
+	DPtoLP(hDC, pt, 4);
+
+	Gdiplus::Graphics gh(hDC);
+
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+
+	Pen* pp = (Pen*)create_pen(pxp);
+	gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+	gh.DrawBezier(pp, pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
+
+	delete pp;
+}
+
+void _gdiplus_draw_curve(visual_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
+{
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
+	Point* pa = new Point[n];
+	POINT pi;
+
+	for (int i = 0; i < n; i++)
+	{
+		pi.x = ppt[i].x;
+		pi.y = ppt[i].y;
+
+		DPtoLP(hDC, &pi, 1);
+
+		pa[i].X = pi.x;
+		pa[i].Y = pi.y;
+	}
+
+	Gdiplus::Graphics gh(hDC);
+
+	gh.SetPageUnit(UnitPixel);
+	gh.SetSmoothingMode(SmoothingModeAntiAlias);
+
+	Pen* pp = (Pen*)create_pen(pxp);
+	gh.SetCompositingQuality(CompositingQualityGammaCorrected);
+	gh.DrawCurve(pp, pa, n);
+
+	delete[]pa;
+
+	delete pp;
+}
+
+void _gdiplus_draw_rect(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+{
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -714,9 +1104,10 @@ void _gdiplus_draw_rect(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 	}
 }
 
-void _gdiplus_draw_triangle(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
+void _gdiplus_draw_triangle(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -830,9 +1221,10 @@ void _gdiplus_draw_triangle(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* px
 	}
 }
 
-void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _gdiplus_draw_round(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 	int r;
 
 	r = (prt->w) / 10;
@@ -937,11 +1329,16 @@ void _gdiplus_draw_round(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 	}
 }
 
-void _gdiplus_calc_fan(res_ctx_t rdc, const xpoint_t* ppt, int r, int s, double fang, double tang, xpoint_t* pa, int n)
+void _gdiplus_calc_fan(visual_t rdc, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang, xpoint_t* pa, int n)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
-	xrect_t xr = { 0 };;
+	xrect_t xr = { 0 };
+	int r, s;
+
+	r = pxs->w;
+	s = pxs->h;
 
 	xr.x = ppt->x - r;
 	xr.y = ppt->y - r;
@@ -1007,11 +1404,16 @@ void _gdiplus_calc_fan(res_ctx_t rdc, const xpoint_t* ppt, int r, int s, double 
 	}
 }
 
-void _gdiplus_draw_fan(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int r, int s, double fang, double tang)
+void _gdiplus_draw_fan(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	xrect_t xr = { 0 };;
+	int r, s;
+
+	r = pxs->w;
+	s = pxs->h;
 
 	xr.x = ppt->x - r;
 	xr.y = ppt->y - r;
@@ -1135,9 +1537,10 @@ void _gdiplus_draw_fan(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, co
 	}
 }
 
-void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _gdiplus_draw_ellipse(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -1193,15 +1596,16 @@ void _gdiplus_draw_ellipse(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb
 	}
 }
 
-void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void _gdiplus_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	POINT pt[2];
-	pt[0].x = ppt->x - rx;
-	pt[0].y = ppt->y - ry;
-	pt[1].x = ppt->x + rx;
-	pt[1].y = ppt->y + ry;
+	pt[0].x = ppt->x - pxs->w;
+	pt[0].y = ppt->y - pxs->h;
+	pt[1].x = ppt->x + pxs->w;
+	pt[1].y = ppt->y + pxs->h;
 
 	DPtoLP(hDC, pt, 2);
 
@@ -1261,56 +1665,18 @@ void _gdiplus_draw_pie(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t*pxb, con
 	}
 }
 
-void _gdiplus_draw_arc(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t * ppt, int rx, int ry, double fang, double tang)
+void _gdiplus_draw_arrow(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const xspan_t* pxn, double arc)
 {
-	HDC hDC = (HDC)(rdc->context);
-
-	POINT pt[2];
-	pt[0].x = ppt->x - rx;
-	pt[0].y = ppt->y - ry;
-	pt[1].x = ppt->x + rx;
-	pt[1].y = ppt->y + ry;
-
-	DPtoLP(hDC, pt, 2);
-
-	Rect rf(pt[0].x, pt[0].y, pt[1].x - pt[0].x, pt[1].y - pt[0].y);
-
-	Gdiplus::Graphics gh(hDC);
-
-	gh.SetPageUnit(UnitPixel);
-	gh.SetSmoothingMode(SmoothingModeHighQuality);
-
-	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
-	{
-		xcolor_t xc_gray;
-
-		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -10);
-
-		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
-
-		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
-		gh.DrawArc(&pen, Rect(pt[0].x + pxp->adorn.feed, pt[0].y + pxp->adorn.feed, pt[1].x - pt[0].x, pt[1].y - pt[0].y), -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
-	}
-
-	if (!is_null_xpen(pxp))
-	{
-		Pen* pp = create_pen(pxp);
-
-		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
-		gh.DrawArc(pp, rf, -(float)(fang / (2 * XPI) * 360), -(float)((tang - fang) / (2 * XPI) * 360));
-
-		delete pp;
-	}
-}
-
-void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, int alen, double arc)
-{
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 	double a1;
 	int x_line0, y_line0, x_line1, y_line1, x_line2, y_line2;
 	int x1, x2, y1, y2;
 	POINT pt[4];
+
+	int alen;
+
+	alen = pxn->r;
 
 	pt[0].x = prt->x;
 	pt[0].y = prt->y;
@@ -1424,92 +1790,36 @@ void _gdiplus_draw_arrow(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 	}
 }
 
-void _gdiplus_draw_polyline(res_ctx_t rdc,const xpen_t* pxp,const xpoint_t* ppt,int n)
+void _gdiplus_draw_polygon(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int n)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
-	GraphicsPath path;	
+	GraphicsPath path;
 	POINT pt[2];
-	
-	for(int i=0;i<n-1;i++)
+
+	for (int i = 0; i<n - 1; i++)
 	{
 		pt[0].x = ppt[i].x;
 		pt[0].y = ppt[i].y;
-		pt[1].x = ppt[i+1].x;
-		pt[1].y = ppt[i+1].y;
+		pt[1].x = ppt[i + 1].x;
+		pt[1].y = ppt[i + 1].y;
 
-		DPtoLP(hDC,pt,2);
+		DPtoLP(hDC, pt, 2);
 
-		path.AddLine(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
+		path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
 	}
 
-	Pen* pp = create_pen(pxp);
-
-	Gdiplus::Graphics gh(hDC);
-
-	gh.SetPageUnit(UnitPixel);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-
-	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
-	{
-		GraphicsPath* adron = path.Clone();
-
-		Region region(&path);
-		gh.ExcludeClip(&region);
-
-		Matrix M;
-		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
-
-		adron->Transform(&M);
-
-		xcolor_t xc_gray;
-
-		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -10);
-
-		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
-
-		gh.DrawPath(&pen, adron);
-
-		gh.ResetClip();
-
-		delete adron;
-	}
-
-	gh.DrawPath(pp,&path);
-
-	delete pp;
-}
-
-void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,const xpoint_t* ppt,int n)
-{
-	HDC hDC = (HDC)(rdc->context);
-
-	GraphicsPath path;	
-	POINT pt[2];
-	
-	for(int i=0;i<n-1;i++)
-	{
-		pt[0].x = ppt[i].x;
-		pt[0].y = ppt[i].y;
-		pt[1].x = ppt[i+1].x;
-		pt[1].y = ppt[i+1].y;
-
-		DPtoLP(hDC,pt,2);
-
-		path.AddLine(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
-	}
-
-	if(n > 1)
+	if (n > 1)
 	{
 		pt[0].x = ppt[0].x;
 		pt[0].y = ppt[0].y;
 		pt[1].x = ppt[1].x;
 		pt[1].y = ppt[1].y;
 
-		DPtoLP(hDC,pt,2);
+		DPtoLP(hDC, pt, 2);
 
-		path.AddLine(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
+		path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
 	}
 
 	Gdiplus::Graphics gh(hDC);
@@ -1589,69 +1899,10 @@ void _gdiplus_draw_polygon(res_ctx_t rdc,const xpen_t* pxp,const xbrush_t* pxb,c
 	}
 }
 
-void _gdiplus_draw_bezier(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, const xpoint_t* ppt3, const xpoint_t* ppt4)
+void _gdiplus_draw_path(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa)
 {
-	HDC hDC = (HDC)(rdc->context);
-
-	POINT pt[4];
-	pt[0].x = ppt1->x;
-	pt[0].y = ppt1->y;
-	pt[1].x = ppt2->x;
-	pt[1].y = ppt2->y;
-	pt[2].x = ppt3->x;
-	pt[2].y = ppt3->y;
-	pt[3].x = ppt4->x;
-	pt[3].y = ppt4->y;
-
-	DPtoLP(hDC, pt, 4);
-
-	Gdiplus::Graphics gh(hDC);
-
-	gh.SetPageUnit(UnitPixel);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-
-	Pen* pp = (Pen*)create_pen(pxp);
-	gh.SetCompositingQuality(CompositingQualityGammaCorrected);
-	gh.DrawBezier(pp, pt[0].x, pt[0].y, pt[1].x, pt[1].y, pt[2].x, pt[2].y, pt[3].x, pt[3].y);
-
-	delete pp;
-}
-
-void _gdiplus_draw_curve(res_ctx_t rdc, const xpen_t* pxp, const xpoint_t* ppt, int n)
-{
-	HDC hDC = (HDC)(rdc->context);
-
-	Point* pa = new Point[n];
-	POINT pi;
-
-	for (int i = 0; i < n; i++)
-	{
-		pi.x = ppt[i].x;
-		pi.y = ppt[i].y;
-
-		DPtoLP(hDC, &pi, 1);
-
-		pa[i].X = pi.x;
-		pa[i].Y = pi.y;
-	}
-
-	Gdiplus::Graphics gh(hDC);
-
-	gh.SetPageUnit(UnitPixel);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-
-	Pen* pp = (Pen*)create_pen(pxp);
-	gh.SetCompositingQuality(CompositingQualityGammaCorrected);
-	gh.DrawCurve(pp, pa, n);
-
-	delete []pa;
-
-	delete pp;
-}
-
-void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa)
-{
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	GraphicsPath* path = create_path(hDC, aa, pa);
 
@@ -1737,9 +1988,10 @@ void _gdiplus_draw_path(res_ctx_t rdc, const xpen_t* pxp, const xbrush_t* pxb, c
 	delete path;
 }
 
-void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
+void _gdiplus_alphablend_rect(visual_t rdc, const xcolor_t* pxc, const xrect_t* prt, int opacity)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 	xbrush_t xb;
 
 	POINT pt[2];
@@ -1764,9 +2016,12 @@ void _gdiplus_alphablend_rect(res_ctx_t rdc, const xcolor_t* pxc, const xrect_t*
 	delete pb;
 }
 
-void _gdiplus_gradient_rect(res_ctx_t rdc, const xcolor_t* clr_brim, const xcolor_t* clr_core, const tchar_t* gradient, const xrect_t* prt)
+void _gdiplus_gradient_rect(visual_t rdc, const xcolor_t* clr_brim, const xcolor_t* clr_core, const tchar_t* gradient, const xrect_t* prt)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+	bitmap_t bmp;
+	win32_bitmap_t* pwb;
 
 	POINT pt[2];
 	pt[0].x = prt->x;
@@ -1776,9 +2031,12 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xcolor_t* clr_brim, const xcolo
 
 	DPtoLP(hDC, pt, 2);
 
-	HBITMAP hBmp = _create_gradient_bitmap(rdc, clr_brim, clr_core, pt[1].x - pt[0].x, pt[1].y - pt[0].y, gradient);
-	Bitmap* pbm = new Bitmap(hBmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
-	DeleteObject(hBmp);
+	bmp = _create_gradient_bitmap(rdc, clr_brim, clr_core, pt[1].x - pt[0].x, pt[1].y - pt[0].y, gradient);
+	pwb = (win32_bitmap_t*)bmp;
+
+	Bitmap* pbm = new Bitmap(pwb->bitmap, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
+
+	_destroy_bitmap(bmp);
 
 	Brush* pb = new TextureBrush(pbm, Rect(0, 0, pt[1].x - pt[0].x, pt[1].y - pt[0].y));
 	delete pbm;
@@ -1792,9 +2050,10 @@ void _gdiplus_gradient_rect(res_ctx_t rdc, const xcolor_t* clr_brim, const xcolo
 	delete pb;
 }
 
-void _gdiplus_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
+void _gdiplus_draw_text(visual_t rdc,const xfont_t* pxf,const xface_t* pxa,const xrect_t* prt,const tchar_t* txt,int len)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	Font* pf = create_font(pxf);
 
@@ -1829,9 +2088,11 @@ void _gdiplus_draw_text(res_ctx_t rdc,const xfont_t* pxf,const xface_t* pxa,cons
 	delete ps;
 }
 
-void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
+void _gdiplus_text_out(visual_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
 	HFONT hFont, orgFont;
 	COLORREF clr, orgClr;
 	int fs;
@@ -1882,9 +2143,10 @@ void _gdiplus_text_out(res_ctx_t rdc, const xfont_t* pxf, const xpoint_t* ppt, c
 	DeleteObject(hFont);
 }
 
-void _gdiplus_draw_image(res_ctx_t rdc,res_bmp_t bmp,const tchar_t* clr,const xrect_t* prt)
+void _gdiplus_draw_image(visual_t rdc,bitmap_t bmp,const tchar_t* clr,const xrect_t* prt)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	Image* pi = new Bitmap((HBITMAP)bmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	if (!pi)
@@ -1925,9 +2187,10 @@ void _gdiplus_draw_image(res_ctx_t rdc,res_bmp_t bmp,const tchar_t* clr,const xr
 	delete pi;
 }
 
-void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
+void _gdiplus_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* ppt)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	Image* pi = new Bitmap((HBITMAP)bmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	if (!pi)
@@ -1954,9 +2217,9 @@ void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
 	delete pi;
 }
 
-/*void _gdiplus_draw_ico(res_ctx_t rdc, res_ico_t icon, const xrect_t* prt)
+/*void _gdiplus_draw_ico(visual_t rdc, res_ico_t icon, const xrect_t* prt)
 {
-	HDC hDC = (HDC)(rdc->context);
+	HDC hDC = (HDC)(ctx->context);
 
 	Image* pi = new Bitmap((HICON)icon);
 	if (!pi)
@@ -1986,23 +2249,27 @@ void _gdiplus_draw_bitmap(res_ctx_t rdc, res_bmp_t bmp, const xpoint_t* ppt)
 	delete pi;
 }*/
 
-void _gdiplus_exclip_rect(res_ctx_t rdc, const xrect_t* pxr)
+void _gdiplus_exclip_rect(visual_t rdc, const xrect_t* pxr)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	ExcludeClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
-void _gdiplus_inclip_rect(res_ctx_t rdc, const xrect_t* pxr)
+void _gdiplus_inclip_rect(visual_t rdc, const xrect_t* pxr)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
 
 	IntersectClipRect(hDC, pxr->x, pxr->y, pxr->x + pxr->w, pxr->y + pxr->h);
 }
 
-void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
+void _gdiplus_fill_region(visual_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 {
-	HDC hDC = (HDC)(rdc->context);
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
 	Region gn(rgn);
 
 	Brush* pb = create_brush(pxb, NULL, NULL);
@@ -2016,8 +2283,10 @@ void _gdiplus_fill_region(res_ctx_t rdc, const xbrush_t* pxb, res_rgn_t rgn)
 	delete pb;
 }
 
-void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
+void _gdiplus_text_rect(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
 {
+	win32_context_t* ctx = (win32_context_t*)rdc;
+
 	BOOL bRef = 0;
 	HDC hDC;
 
@@ -2028,7 +2297,7 @@ void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 	}
 	else
 	{
-		hDC = (HDC)(rdc->context);
+		hDC = (HDC)(ctx->context);
 	}
 
 	POINT pt[2];
@@ -2080,8 +2349,10 @@ void _gdiplus_text_rect(res_ctx_t rdc, const xfont_t* pxf, const xface_t* pxa, c
 		ReleaseDC(NULL, hDC);
 }
 
-void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
+void _gdiplus_text_size(visual_t rdc, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
+	win32_context_t* ctx = (win32_context_t*)rdc;
+
 	BOOL bRef = 0;
 	HDC hDC;
 
@@ -2092,7 +2363,7 @@ void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, i
 	}
 	else
 	{
-		hDC = (HDC)(rdc->context);
+		hDC = (HDC)(ctx->context);
 	}
 
 	LOGFONT lf;
@@ -2140,12 +2411,14 @@ void _gdiplus_text_size(res_ctx_t rdc, const xfont_t* pxf, const tchar_t* txt, i
 	if (bRef)
 		ReleaseDC(NULL, hDC);
 
-	pxs->cx = si.cx;
-	pxs->cy = si.cy;
+	pxs->w = si.cx;
+	pxs->h = si.cy;
 }
 
-void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
+void _gdiplus_text_metric(visual_t rdc, const xfont_t* pxf, xsize_t* pxs)
 {
+	win32_context_t* ctx = (win32_context_t*)rdc;
+
 	BOOL bRef = 0;
 	HDC hDC;
 
@@ -2156,7 +2429,7 @@ void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	}
 	else
 	{
-		hDC = (HDC)(rdc->context);
+		hDC = (HDC)(ctx->context);
 	}
 
 	LOGFONT lf;
@@ -2200,9 +2473,9 @@ void _gdiplus_text_metric(res_ctx_t rdc, const xfont_t* pxf, xsize_t* pxs)
 	if (bRef)
 		ReleaseDC(NULL, hDC);
 
-	//pxs->cx = tm.tmAveCharWidth;
-	pxs->cy = tm.tmHeight;
-	pxs->cx = tm.tmMaxCharWidth;
+	//pxs->w = tm.tmAveCharWidth;
+	pxs->h = tm.tmHeight;
+	pxs->w = tm.tmMaxCharWidth;
 }
 
 #endif //XDU_SUPPORT_CONTEXT_GRAPHICPLUS

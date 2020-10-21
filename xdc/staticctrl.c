@@ -312,11 +312,8 @@ static bool_t _statisctrl_paste(res_win_t widget)
 static void _statisctrl_xaxbar_rect(res_win_t widget, link_t_ptr xlk, xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_statis_coor_rect(&cb, ptd->statis, ptd->cur_page, xlk, NULL, pxr);
+	calc_statis_coor_rect(ptd->statis, ptd->cur_page, xlk, NULL, pxr);
 	
 	widget_rect_to_pt(widget, pxr);
 }
@@ -324,11 +321,8 @@ static void _statisctrl_xaxbar_rect(res_win_t widget, link_t_ptr xlk, xrect_t* p
 static void _statisctrl_xax_rect(res_win_t widget, link_t_ptr xlk, xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_statis_xax_rect(&cb, ptd->statis, ptd->cur_page, xlk, pxr);
+	calc_statis_xax_rect(ptd->statis, ptd->cur_page, xlk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -336,11 +330,8 @@ static void _statisctrl_xax_rect(res_win_t widget, link_t_ptr xlk, xrect_t* pxr)
 static void _statisctrl_gaxbar_rect(res_win_t widget, link_t_ptr glk, xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_statis_gax_rect(&cb, ptd->statis, glk, pxr);
+	calc_statis_gax_rect(ptd->statis, glk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -348,11 +339,8 @@ static void _statisctrl_gaxbar_rect(res_win_t widget, link_t_ptr glk, xrect_t* p
 static void _statisctrl_yax_rect(res_win_t widget, link_t_ptr ylk, xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_statis_yax_rect(&cb, ptd->statis, ylk, pxr);
+	calc_statis_yax_rect(ptd->statis, ylk, pxr);
 
 	pxr->fw = get_statis_width(ptd->statis);
 
@@ -362,11 +350,8 @@ static void _statisctrl_yax_rect(res_win_t widget, link_t_ptr ylk, xrect_t* pxr)
 static void _statisctrl_yaxbar_rect(res_win_t widget, link_t_ptr ylk, xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_statis_yax_rect(&cb, ptd->statis, ylk, pxr);
+	calc_statis_yax_rect(ptd->statis, ylk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -374,11 +359,8 @@ static void _statisctrl_yaxbar_rect(res_win_t widget, link_t_ptr ylk, xrect_t* p
 static void _statisctrl_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_statis_coor_rect(&cb, ptd->statis, ptd->cur_page, xlk, ylk, pxr);
+	calc_statis_coor_rect(ptd->statis, ptd->cur_page, xlk, ylk, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -397,25 +379,25 @@ static void _statisctrl_reset_page(res_win_t widget)
 
 	if (compare_text(get_statis_printing_ptr(ptd->statis), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
 	{
-		xs.fx = get_statis_height(ptd->statis);
-		xs.fy = get_statis_width(ptd->statis);
+		xs.fw = get_statis_height(ptd->statis);
+		xs.fh = get_statis_width(ptd->statis);
 	}
 	else
 	{
-		xs.fx = get_statis_width(ptd->statis);
-		xs.fy = get_statis_height(ptd->statis);
+		xs.fw = get_statis_width(ptd->statis);
+		xs.fh = get_statis_height(ptd->statis);
 	}
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = get_statis_yaxbar_height(ptd->statis);
-	xs.fy = get_statis_xaxbar_width(ptd->statis);
+	xs.fw = get_statis_yaxbar_height(ptd->statis);
+	xs.fh = get_statis_xaxbar_width(ptd->statis);
 
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -428,16 +410,13 @@ void _statisctrl_ensure_visible(res_win_t widget)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	xrect_t xr;
-	canvbox_t cb;
 
 	int page;
 
 	if (!ptd->xax || !ptd->yax)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
-	page = calc_statis_xax_page(&cb, ptd->statis, ptd->xax);
+	page = calc_statis_xax_page(ptd->statis, ptd->xax);
 	if (page != ptd->cur_page)
 	{
 		ptd->cur_page = page;
@@ -543,14 +522,14 @@ void noti_statis_xax_sized(res_win_t widget, int x, int y)
 
 	ptd->b_size_xax = (bool_t)0;
 
-	xs.cx = x - ptd->org_x;
-	if (!xs.cx)
+	xs.w = x - ptd->org_x;
+	if (!xs.w)
 		return;
 
 	widget_size_to_tm(widget, &xs);
 
 	mw = get_statis_xaxbar_width(ptd->statis);
-	mw += xs.fx;
+	mw += xs.fw;
 	if (mw < 2 * DEF_SPLIT_FEED)
 		mw = 2 * DEF_SPLIT_FEED;
 
@@ -593,14 +572,14 @@ void noti_statis_yax_sized(res_win_t widget, int x, int y)
 
 	ptd->b_size_yax = (bool_t)0;
 
-	xs.cy = y - ptd->org_y;
-	if (!xs.cy)
+	xs.h = y - ptd->org_y;
+	if (!xs.h)
 		return;
 
 	widget_size_to_tm(widget, &xs);
 
 	mh = get_statis_yaxbar_height(ptd->statis);
-	mh += xs.fy;
+	mh += xs.fh;
 	if (mh <  2 * DEF_SPLIT_FEED)
 		mh = 2 * DEF_SPLIT_FEED;
 
@@ -642,7 +621,6 @@ void noti_statis_yax_drop(res_win_t widget, int x, int y)
 	int nHint;
 	link_t_ptr root, xlk, ylk, glk;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd->yax);
 
@@ -654,13 +632,11 @@ void noti_statis_yax_drop(res_win_t widget, int x, int y)
 
 	ptd->b_drag_yax = (bool_t)0;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = x;
 	pt.y = y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_statis_hint(&cb, &pt, ptd->statis, ptd->cur_page, &xlk, &ylk, &glk);
+	nHint = calc_statis_hint(&pt, ptd->statis, ptd->cur_page, &xlk, &ylk, &glk);
 	if (ylk != ptd->yax)
 	{
 		root = get_dom_child_node_root(get_statis_yaxset(ptd->statis));
@@ -718,7 +694,6 @@ void noti_statis_xax_drop(res_win_t widget, int x, int y)
 	int nHint;
 	link_t_ptr root, xlk, ylk, glk, xlk_first, xlk_last;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd->xax);
 
@@ -730,13 +705,11 @@ void noti_statis_xax_drop(res_win_t widget, int x, int y)
 
 	ptd->b_drag_xax = (bool_t)0;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = x;
 	pt.y = y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_statis_hint(&cb, &pt, ptd->statis, ptd->cur_page, &xlk, &ylk, &glk);
+	nHint = calc_statis_hint(&pt, ptd->statis, ptd->cur_page, &xlk, &ylk, &glk);
 	if (xlk != ptd->xax)
 	{
 		root = get_dom_child_node_root(get_statis_xaxset(ptd->statis));
@@ -750,7 +723,7 @@ void noti_statis_xax_drop(res_win_t widget, int x, int y)
 		}
 		else
 		{
-			calc_statis_xax_scope(&cb, ptd->statis, ptd->cur_page, &xlk_first, &xlk_last);
+			calc_statis_xax_scope(ptd->statis, ptd->cur_page, &xlk_first, &xlk_last);
 
 			if (x < ptd->org_x)
 				switch_link_before(root, xlk_first, ptd->xax);
@@ -1282,7 +1255,6 @@ void hand_statis_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	link_t_ptr xax, yax, gax;
 	int nHint;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->statis)
 		return;
@@ -1294,13 +1266,11 @@ void hand_statis_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_statis_hint(&cb, &pt,ptd->statis, ptd->cur_page,  &xax, &yax, &gax);
+	nHint = calc_statis_hint(&pt,ptd->statis, ptd->cur_page,  &xax, &yax, &gax);
 
 	if (nHint == STATIS_HINT_HORZ_SPLIT && yax == ptd->yax && !(dw & KS_WITH_CONTROL))
 	{
@@ -1394,7 +1364,6 @@ void hand_statis_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	int nHint;
 	bool_t bReYax, bReXax;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->statis)
 		return;
@@ -1406,13 +1375,11 @@ void hand_statis_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_set_focus(widget);
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_statis_hint(&cb, &pt,ptd->statis, ptd->cur_page,  &xlk, &ylk, &glk);
+	nHint = calc_statis_hint(&pt,ptd->statis, ptd->cur_page,  &xlk, &ylk, &glk);
 
 	bReXax = (xlk == ptd->xax) ? (bool_t)1 : (bool_t)0;
 	bReYax = (ylk == ptd->yax) ? (bool_t)1 : (bool_t)0;
@@ -1447,7 +1414,6 @@ void hand_statis_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	int nHint;
 	bool_t bReGax, bReYax, bReXax;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->statis)
 		return;
@@ -1476,13 +1442,11 @@ void hand_statis_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
-	nHint = calc_statis_hint(&cb, &pt, ptd->statis, ptd->cur_page, &xlk, &ylk, &glk);
+	nHint = calc_statis_hint(&pt, ptd->statis, ptd->cur_page, &xlk, &ylk, &glk);
 
 	bReXax = (xlk == ptd->xax) ? 1 : 0;
 	bReYax = (ylk == ptd->yax) ? 1 : 0;
@@ -1685,10 +1649,10 @@ void hand_statis_menu_command(res_win_t widget, int code, int cid, var_long data
 	}
 }
 
-void hand_statis_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_statis_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xpen_t xp = { 0 };
 	xbrush_t xb = { 0 };
@@ -1697,7 +1661,7 @@ void hand_statis_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->statis)
 		return;
@@ -1708,6 +1672,7 @@ void hand_statis_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -1718,12 +1683,12 @@ void hand_statis_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
-
-	draw_statis_page(pif, &cb, ptd->statis, ptd->cur_page);
+	draw_statis_page(pif, ptd->statis, ptd->cur_page);
 
 	//draw focus
 	if (ptd->xax && ptd->yax)
@@ -1731,29 +1696,31 @@ void hand_statis_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		_statisctrl_coor_rect(widget, ptd->xax, ptd->yax, &xr);
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOFT);
 	}
 	else if (ptd->yax)
 	{
 		_statisctrl_yaxbar_rect(widget, ptd->yax, &xr);
 
 		parse_xcolor(&xc, DEF_DISABLE_COLOR);
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOFT);
 	}
 	else if (ptd->xax)
 	{
 		_statisctrl_xaxbar_rect(widget, ptd->xax, &xr);
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOFT);
 	}
 	else if (ptd->gax)
 	{
 		_statisctrl_gaxbar_rect(widget, ptd->gax, &xr);
 
 		parse_xcolor(&xc, DEF_DISABLE_COLOR);
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOFT);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOFT);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -2375,7 +2342,6 @@ void statisctrl_move_next_page(res_win_t widget)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2384,10 +2350,8 @@ void statisctrl_move_next_page(res_win_t widget)
 
 	noti_statis_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_statis_pages(&cb, ptd->statis);
+	nMaxPage = calc_statis_pages(ptd->statis);
 
 	if (nCurPage < nMaxPage)
 	{
@@ -2402,7 +2366,6 @@ void statisctrl_move_last_page(res_win_t widget)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2411,10 +2374,8 @@ void statisctrl_move_last_page(res_win_t widget)
 
 	noti_statis_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_statis_pages(&cb, ptd->statis);
+	nMaxPage = calc_statis_pages(ptd->statis);
 
 	if (nCurPage != nMaxPage)
 	{
@@ -2429,7 +2390,6 @@ void statisctrl_move_to_page(res_win_t widget, int page)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
 	int nCurPage, nMaxPage;
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2438,10 +2398,8 @@ void statisctrl_move_to_page(res_win_t widget, int page)
 
 	noti_statis_reset_editor(widget, 1);
 
-	widget_get_canv_rect(widget, &cb);
-
 	nCurPage = ptd->cur_page;
-	nMaxPage = calc_statis_pages(&cb, ptd->statis);
+	nMaxPage = calc_statis_pages(ptd->statis);
 
 	if (page > 0 && page != nCurPage && page <= nMaxPage)
 	{
@@ -2467,16 +2425,13 @@ int statisctrl_get_cur_page(res_win_t widget)
 int statisctrl_get_max_page(res_win_t widget)
 {
 	statis_delta_t* ptd = GETSTATISDELTA(widget);
-	canvbox_t cb;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->statis)
 		return 0;
 
-	widget_get_canv_rect(widget, &cb);
-
-	return calc_statis_pages(&cb, ptd->statis);
+	return calc_statis_pages(ptd->statis);
 }
 
 void statisctrl_get_coor_rect(res_win_t widget, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr)

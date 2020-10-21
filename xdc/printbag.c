@@ -36,10 +36,9 @@ LICENSE.GPL3 for more details.
 
 void print_form(const dev_prn_t* pdev, link_t_ptr form)
 {
-	res_ctx_t rdc; 
+	visual_t rdc; 
 	canvas_t canv;
 	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
 	int i, pages;
 	dev_prn_t dev = { 0 };
 
@@ -61,13 +60,15 @@ void print_form(const dev_prn_t* pdev, link_t_ptr form)
 	canv = create_printer_canvas(rdc);
 	XDL_ASSERT(canv != NULL);
 
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
 
-	pages = calc_form_pages(&cb, form);
+	pic->rect.fx = 0;
+	pic->rect.fy = 0;
+	pic->rect.fw = get_canvas_horz_size(canv);
+	pic->rect.fh = get_canvas_vert_size(canv);
+
+	pages = calc_form_pages(form);
 
 	begin_doc(rdc, _T("FORM"));
 
@@ -75,7 +76,7 @@ void print_form(const dev_prn_t* pdev, link_t_ptr form)
 	{
 		begin_page(rdc);
 
-		draw_form_page(pic, &cb, form, i+1);
+		draw_form_page(pic, form, i+1);
 
 		end_page(rdc);
 	}
@@ -89,13 +90,11 @@ void print_form(const dev_prn_t* pdev, link_t_ptr form)
 
 void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
 	int i, pages;
 	dev_prn_t dev = { 0 };
-	xsize_t xs;
 
 	if (pdev)
 	{
@@ -115,16 +114,15 @@ void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 	canv = create_printer_canvas(rdc);
 	XDL_ASSERT(canv != NULL);
 
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
 
-	xs.fx = get_canvas_horz_size(canv);
-	xs.fy = get_canvas_vert_size(canv);
+	pic->rect.fx = 0;
+	pic->rect.fy = 0;
+	pic->rect.fw = get_canvas_horz_size(canv);
+	pic->rect.fh = get_canvas_vert_size(canv);
 
-	pages = calc_grid_pages(&cb, grid);
+	pages = calc_grid_pages(grid);
 
 	begin_doc(rdc, _T("GRID"));
 
@@ -132,7 +130,7 @@ void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 	{
 		begin_page(rdc);
 
-		draw_grid_page(pic, &cb, grid, i+1);
+		draw_grid_page(pic, grid, i+1);
 
 		end_page(rdc);
 	}
@@ -146,10 +144,9 @@ void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 
 void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
 	dev_prn_t dev = { 0 };
 	int i, pages;
 
@@ -171,13 +168,15 @@ void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 	canv = create_printer_canvas(rdc);
 	XDL_ASSERT(canv != NULL);
 
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
 
-	pages = calc_statis_pages(&cb, statis);
+	pic->rect.fx = 0;
+	pic->rect.fy = 0;
+	pic->rect.fw = get_canvas_horz_size(canv);
+	pic->rect.fh = get_canvas_vert_size(canv);
+
+	pages = calc_statis_pages(statis);
 
 	begin_doc(rdc, _T("STATIS"));
 
@@ -185,7 +184,7 @@ void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 	{
 		begin_page(rdc);
 
-		draw_statis_page(pic, &cb, statis, i + 1);
+		draw_statis_page(pic, statis, i + 1);
 
 		end_page(rdc);
 	}
@@ -199,10 +198,9 @@ void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 
 void print_topog(const dev_prn_t* pdev, link_t_ptr topog)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -211,17 +209,19 @@ void print_topog(const dev_prn_t* pdev, link_t_ptr topog)
 	canv = create_printer_canvas(rdc);
 	XDL_ASSERT(canv != NULL);
 
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
+
+	pic->rect.fx = 0;
+	pic->rect.fy = 0;
+	pic->rect.fw = get_canvas_horz_size(canv);
+	pic->rect.fh = get_canvas_vert_size(canv);
 
 	begin_doc(rdc, _T("TOPOG"));
 
 	begin_page(rdc);
 
-	draw_topog(pic, &cb, topog);
+	draw_topog(pic, topog);
 
 	end_page(rdc);
 
@@ -234,10 +234,9 @@ void print_topog(const dev_prn_t* pdev, link_t_ptr topog)
 
 void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -246,17 +245,19 @@ void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog)
 	canv = create_printer_canvas(rdc);
 	XDL_ASSERT(canv != NULL);
 
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
+
+	pic->rect.fx = 0;
+	pic->rect.fy = 0;
+	pic->rect.fw = get_canvas_horz_size(canv);
+	pic->rect.fh = get_canvas_vert_size(canv);
 
 	begin_doc(rdc, _T("DIALOG"));
 
 	begin_page(rdc);
 
-	draw_dialog(pic, &cb, dialog);
+	draw_dialog(pic, dialog);
 
 	end_page(rdc);
 
@@ -269,10 +270,9 @@ void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog)
 
 void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
-	canvbox_t cb = { 0 };
 	dev_prn_t dev = { 0 };
 
 	if (pdev)
@@ -293,17 +293,19 @@ void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
 	canv = create_printer_canvas(rdc);
 	XDL_ASSERT(canv != NULL);
 
-	cb.fw = get_canvas_horz_size(canv);
-	cb.fh = get_canvas_vert_size(canv);
-
 	pic = create_canvas_interface(canv);
 	XDL_ASSERT(pic != NULL);
+
+	pic->rect.fx = 0; 
+	pic->rect.fy = 0;
+	pic->rect.fw = get_canvas_horz_size(canv);
+	pic->rect.fh = get_canvas_vert_size(canv);
 
 	begin_doc(rdc, _T("DIAGRAM"));
 
 	begin_page(rdc);
 
-	draw_diagram(pic, &cb, diagram);
+	draw_diagram(pic, diagram);
 
 	end_page(rdc);
 
@@ -316,7 +318,7 @@ void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
 
 void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
 	xrect_t xr = { 0 };
@@ -346,7 +348,7 @@ void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 	xr.fw = get_canvas_horz_size(canv);
 	xr.fh = get_canvas_vert_size(canv);
 
-	pages = (*pic->pf_calc_memo_pages)(pic->canvas, pxf, pxa, &xr, memo);
+	pages = calc_memo_pages(pic, pxf, pxa, &xr, memo);
 
 	begin_doc(rdc, _T("MEMO"));
 
@@ -354,7 +356,7 @@ void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 	{
 		begin_page(rdc);
 
-		(*pic->pf_draw_memo_text)(pic->canvas, pxf, pxa, &xr, memo, i + 1);
+		draw_memo_text(pic, pxf, pxa, &xr, memo, i + 1);
 
 		end_page(rdc);
 	}
@@ -368,7 +370,7 @@ void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 
 void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, link_t_ptr rich)
 {
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	if_canvas_t* pic;
 	xrect_t xr = { 0 };
@@ -398,7 +400,7 @@ void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 	xr.fw = get_canvas_horz_size(canv);
 	xr.fh = get_canvas_vert_size(canv);
 
-	pages = (*pic->pf_calc_rich_pages)(pic->canvas, pxf, pxa, &xr, rich);
+	pages = calc_rich_pages(pic, pxf, pxa, &xr, rich);
 
 	begin_doc(rdc, _T("RICH"));
 
@@ -406,7 +408,7 @@ void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 	{
 		begin_page(rdc);
 
-		(*pic->pf_draw_rich_text)(pic->canvas, pxf, pxa, &xr, rich, i + 1);
+		draw_rich_text(pic, pxf, pxa, &xr, rich, i + 1);
 
 		end_page(rdc);
 	}
@@ -420,16 +422,18 @@ void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 
 void print_svg(const dev_prn_t* pdev, link_t_ptr svg)
 {
-	res_ctx_t rdc;
-	canvas_t canv;
 	xrect_t xr = { 0 };
+	visual_t rdc;
+	canvas_t canv;
+	if_canvas_t* pif;
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
 		return;
 
 	canv = create_printer_canvas(rdc);
-	XDL_ASSERT(canv != NULL);
+	
+	pif = create_canvas_interface(canv);
 
 	xr.fw = get_canvas_horz_size(canv);
 	xr.fh = get_canvas_vert_size(canv);
@@ -438,12 +442,13 @@ void print_svg(const dev_prn_t* pdev, link_t_ptr svg)
 
 	begin_page(rdc);
 
-	draw_svg(canv, &xr, svg);
+	draw_svg(pif, &xr, svg);
 
 	end_page(rdc);
 
 	end_doc(rdc);
 
+	destroy_canvas_interface(pif);
 	destroy_printer_canvas(canv);
 	destroy_printer_context(rdc);
 }

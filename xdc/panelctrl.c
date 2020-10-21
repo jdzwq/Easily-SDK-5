@@ -66,9 +66,8 @@ static int _panelctrl_calc_width(res_win_t widget)
 	link_t_ptr ilk, doc;
 	xfont_t xf;
 	xface_t xa;
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
-	xsize_t xs;
 	int pw;
 
 	widget_get_xfont(widget, &xf);
@@ -102,7 +101,7 @@ static int _panelctrl_calc_height(res_win_t widget)
 	link_t_ptr ilk,doc;
 	xfont_t xf;
 	xface_t xa;
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
 	int pw, ph;
 
@@ -362,9 +361,10 @@ void noti_panel_item_hover(res_win_t widget, int x, int y)
 int hand_panel_create(res_win_t widget, void* data)
 {
 	panel_delta_t* ptd;
-	res_ctx_t rdc;
+
 	xfont_t xf = { 0 };
 	xsize_t xs;
+	float pm;
 
 	widget_hand_create(widget);
 
@@ -372,12 +372,13 @@ int hand_panel_create(res_win_t widget, void* data)
 
 	widget_get_xfont(widget, &xf);
 
-	rdc = widget_client_ctx(widget);
-	text_metric_raw(rdc, &xf, &xs);
-	widget_release_ctx(widget, rdc);
+	font_metric_by_pt(xstof(xf.size), &pm, NULL);
+	xs.fw = pm;
+	xs.fh = pm;
+	widget_size_to_pt(widget, &xs);
 
-	ptd->item_width = (int)((float)xs.cx * 8);
-	ptd->title_height = (int)((float)xs.cy * 1.25);
+	ptd->item_width = (int)((float)xs.w * 8.0f);
+	ptd->title_height = (int)((float)xs.h * 1.25f);
 
 	SETPANELDELTA(widget, ptd);
 
@@ -609,11 +610,13 @@ void hand_panel_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_panel_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
+	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	link_t_ptr ilk,doc;
 	xrect_t xr_icon,xr_view,xr;
@@ -655,10 +658,12 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
+	pif = create_canvas_interface(canv);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	widget_get_view_rect(widget, &vb);
 
@@ -690,7 +695,7 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			pt[8].x = 0;
 			pt[8].y = xr.y + ptd->title_height;
 
-			draw_polyline_raw(rdc, &xp, pt, 9);
+			(*piv->pf_draw_polyline_raw)(piv->visual, &xp, pt, 9);
 		}
 
 		xr_icon.x = xr.x;
@@ -698,20 +703,24 @@ void hand_panel_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr_icon.w = ptd->title_height;
 		xr_icon.h = ptd->title_height;
 		pt_center_rect(&xr_icon, 12, 12);
-		draw_gizmo_raw(rdc, &xc, &xr_icon, GDI_ATTR_GIZMO_BOOK);
+		rect_pt_to_tm(canv, &xr_icon);
+		draw_gizmo(pif, &xc, &xr_icon, GDI_ATTR_GIZMO_BOOK);
 
 		xr_icon.x = xr.x + 12;
 		xr_icon.y = xr.y;
 		xr_icon.w = ptd->item_width - 12;
 		xr_icon.h = ptd->title_height;
-		draw_text_raw(rdc, &xf, &xa, &xr_icon, title, -1);
+		(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr_icon, title, -1);
 
 		xr.x += ptd->item_width;
 
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
+	destroy_visual_interface(piv);
+
 	end_canvas_paint(canv, dc, pxr);
+	destroy_canvas_interface(pif);
 }
 
 /************************************************************************************************/

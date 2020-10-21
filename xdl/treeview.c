@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "treeview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -37,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-float _calc_tree_child_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk)
+float _calc_tree_child_height(link_t_ptr ptr, link_t_ptr plk)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -78,12 +79,12 @@ float _calc_tree_child_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr 
 	return th;
 }
 
-float calc_tree_height(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_tree_height(link_t_ptr ptr)
 {
-	return _calc_tree_child_height(pbox, ptr, ptr);
+	return _calc_tree_child_height(ptr, ptr);
 }
 
-float calc_tree_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+float calc_tree_width(const if_measure_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -103,13 +104,13 @@ float calc_tree_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr
 	{
 		token = get_tree_item_title_ptr(ilk);
 
-		(*pif->pf_text_size)(pif->ctx, &xf, token, -1, &xs);
+		(*pif->pf_measure_size)(pif->ctx, &xf, token, -1, &xs);
 
 		if (get_tree_item_showcheck(ilk))
-			xs.fx += ic;
+			xs.fw += ic;
 		
-		if (mw < iw + xs.fx)
-			mw = iw + xs.fx;
+		if (mw < iw + xs.fw)
+			mw = iw + xs.fw;
 
 		if (!get_tree_item_collapsed(ilk) && get_tree_first_child_item(ilk))
 		{
@@ -140,19 +141,21 @@ float calc_tree_width(const if_measure_t* pif, const canvbox_t* pbox, link_t_ptr
 	return mw;
 }
 
-bool_t calc_tree_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
+bool_t calc_tree_item_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
 {
 	link_t_ptr ilk;
-	float th, ic, ih;
+	float fw, fh, th, ic, ih;
 	link_t_ptr st = NULL;
 	bool_t b_find = 0;
 
+	fw = get_tree_width(ptr);
+	fh = get_tree_height(ptr);
 	th = get_tree_title_height(ptr);
 	ih = get_tree_item_height(ptr);
 	ic = get_tree_icon_span(ptr);
 
 	pxr->fx = ic;
-	pxr->fw = pbox->fw - ic;
+	pxr->fw = fw - ic;
 	pxr->fy = th;
 	pxr->fh = 0;
 
@@ -206,11 +209,11 @@ bool_t calc_tree_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr cur
 	return b_find;
 }
 
-bool_t calc_tree_item_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
+bool_t calc_tree_item_text_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
 {
 	float ic;
 
-	if (!calc_tree_item_rect(pbox, ptr, cur, pxr))
+	if (!calc_tree_item_rect(ptr, cur, pxr))
 		return 0;
 
 	if (get_tree_item_showcheck(cur))
@@ -223,34 +226,34 @@ bool_t calc_tree_item_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_pt
 	return 1;
 }
 
-bool_t calc_tree_item_entity_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
+bool_t calc_tree_item_entity_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
 {
-	if (!calc_tree_item_rect(pbox, ptr, cur, pxr))
+	if (!calc_tree_item_rect(ptr, cur, pxr))
 		return 0;
 
 	pxr->fx = 0;
-	pxr->fw = pbox->fw;
+	pxr->fw = get_tree_width(ptr);
 
 	return 1;
 }
 
-bool_t calc_tree_item_expand_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
+bool_t calc_tree_item_expand_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr)
 {
 	float ih;
 
-	if (!calc_tree_item_rect(pbox, ptr, cur, pxr))
+	if (!calc_tree_item_rect(ptr, cur, pxr))
 		return 0;
 
-	ih = _calc_tree_child_height(pbox, ptr, cur);
+	ih = _calc_tree_child_height(ptr, cur);
 
 	pxr->fh += ih;
 	pxr->fx = 0;
-	pxr->fw = pbox->fw;
+	pxr->fw = get_tree_width(ptr);
 
 	return 1;
 }
 
-int calc_tree_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
+int calc_tree_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -351,7 +354,7 @@ int calc_tree_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, l
 	return hint;
 }
 
-void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -367,6 +370,8 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	const tchar_t *style, *icon;
 	bool_t b_print;
 	float px, py, pw, ph;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -442,7 +447,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr_image.fh = th;
 
 	ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_tree_title_icon_ptr(ptr));
+	draw_gizmo(pif, &xc, &xr_image, get_tree_title_icon_ptr(ptr));
 
 	xr_text.fx = total_indent + ic;
 	xr_text.fw = pw - ic;
@@ -465,7 +470,7 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		if ( !is_null(icon))
 		{
 			ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
-			(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, get_tree_item_icon_ptr(ilk));
+			draw_gizmo(pif, &xc, &xr_image, get_tree_item_icon_ptr(ilk));
 		}
 		else
 		{
@@ -473,11 +478,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 			if (!get_tree_item_collapsed(ilk))
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ATTR_GIZMO_MINUS);
+				draw_gizmo(pif, &xc_check, &xr_image, GDI_ATTR_GIZMO_MINUS);
 			}
 			else
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_image, GDI_ATTR_GIZMO_PLUS);
+				draw_gizmo(pif, &xc_check, &xr_image, GDI_ATTR_GIZMO_PLUS);
 			}
 		}
 
@@ -494,11 +499,11 @@ void draw_tree(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			
 			if (get_tree_item_checked(ilk))
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ATTR_GIZMO_CHECKED);
+				draw_gizmo(pif, &xc_check, &xr_check, GDI_ATTR_GIZMO_CHECKED);
 			}
 			else
 			{
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc_check, &xr_check, GDI_ATTR_GIZMO_CHECKBOX);
+				draw_gizmo(pif, &xc_check, &xr_check, GDI_ATTR_GIZMO_CHECKBOX);
 			}
 
 			xr_text.fx = total_indent + ic * 2;

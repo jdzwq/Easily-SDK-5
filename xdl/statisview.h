@@ -54,25 +54,25 @@ typedef enum{
 extern "C" {
 #endif
 
-	EXP_API float calc_statis_page_width(const canvbox_t* pbox, link_t_ptr ptr, int page);
+	EXP_API float calc_statis_page_width(link_t_ptr ptr, int page);
 
-	EXP_API int calc_statis_pages(const canvbox_t* pbox, link_t_ptr ptr);
+	EXP_API int calc_statis_pages(link_t_ptr ptr);
 
-	EXP_API void calc_statis_xax_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* firstxax, link_t_ptr* lastxax);
+	EXP_API void calc_statis_xax_scope(link_t_ptr ptr, int page, link_t_ptr* firstxax, link_t_ptr* lastxax);
 
-	EXP_API int calc_statis_xax_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr xlk);
+	EXP_API int calc_statis_xax_page(link_t_ptr ptr, link_t_ptr xlk);
 
-	EXP_API void calc_statis_gax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ylk, xrect_t* pxr);
+	EXP_API void calc_statis_gax_rect(link_t_ptr ptr, link_t_ptr ylk, xrect_t* pxr);
 
-	EXP_API void calc_statis_yax_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr);
+	EXP_API void calc_statis_yax_rect(link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr);
 
-	EXP_API int calc_statis_coor_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
+	EXP_API int calc_statis_coor_rect(link_t_ptr ptr, int page, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr);
 
-	EXP_API void calc_statis_xax_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr xlk, xrect_t* pxr);
+	EXP_API void calc_statis_xax_rect(link_t_ptr ptr, int page, link_t_ptr xlk, xrect_t* pxr);
 
-	EXP_API int calc_statis_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pxlk, link_t_ptr* pylk, link_t_ptr* pglk);
+	EXP_API int calc_statis_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pxlk, link_t_ptr* pylk, link_t_ptr* pglk);
 
-	EXP_API void draw_statis_page(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, int page);
+	EXP_API void draw_statis_page(const if_canvas_t* pcanv, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

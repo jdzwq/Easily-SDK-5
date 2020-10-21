@@ -326,24 +326,24 @@ static void _diagramctrl_reset_page(res_win_t widget)
 
 	if (compare_text(get_diagram_printing_ptr(ptd->diagram), -1, ATTR_PRINTING_LANDSCAPE, -1, 0) == 0)
 	{
-		xs.fx = get_diagram_height(ptd->diagram);
-		xs.fy = get_diagram_width(ptd->diagram);
+		xs.fw = get_diagram_height(ptd->diagram);
+		xs.fh = get_diagram_width(ptd->diagram);
 	}
 	else
 	{
-		xs.fx = get_diagram_width(ptd->diagram);
-		xs.fy = get_diagram_height(ptd->diagram);
+		xs.fw = get_diagram_width(ptd->diagram);
+		xs.fh = get_diagram_height(ptd->diagram);
 	}
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = (float)10;
-	xs.fy = (float)10;
+	xs.fw = (float)10;
+	xs.fh = (float)10;
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -645,10 +645,10 @@ void noti_diagram_entity_sized(res_win_t widget, int x, int y)
 	minw = DIAGRAM_ENTITY_MIN_WIDTH;
 	minh = DIAGRAM_ENTITY_MIN_HEIGHT;
 
-	xs.cx = ptd->cur_x - ptd->org_x;
-	xs.cy = ptd->cur_y - ptd->org_y;
+	xs.w = ptd->cur_x - ptd->org_x;
+	xs.h = ptd->cur_y - ptd->org_y;
 
-	if (!xs.cx && !xs.cy)
+	if (!xs.w && !xs.h)
 		return;
 
 	widget_size_to_tm(widget, &xs);
@@ -662,8 +662,8 @@ void noti_diagram_entity_sized(res_win_t widget, int x, int y)
 	fw = get_diagram_entity_width(ptd->entity);
 	fh = get_diagram_entity_height(ptd->entity);
 
-	fw += xs.fx;
-	fh += xs.fy;
+	fw += xs.fw;
+	fh += xs.fh;
 
 	if (fw < minw)
 		fw = minw;
@@ -1161,7 +1161,7 @@ void hand_diagram_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_diagram_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	diagram_delta_t* ptd = GETDIAGRAMDELTA(widget);
 	xrect_t xr = { 0 };
@@ -1169,12 +1169,12 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc = { 0 };
-	res_ctx_t rdc;
+	visual_t rdc;
 	link_t_ptr ilk;
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->diagram)
 		return;
@@ -1185,6 +1185,7 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -1195,16 +1196,15 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
 
 	widget_get_xbrush(widget, &xb);
-
 	widget_get_xpen(widget, &xp);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
-
-	draw_diagram(pif, &cb, ptd->diagram);
+	draw_diagram(pif, ptd->diagram);
 
 	//draw focus
 	if (ptd->entity)
@@ -1213,7 +1213,7 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
 	}
 
 	//draw check
@@ -1225,7 +1225,7 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		if (get_diagram_entity_selected(ilk))
 		{
 			_diagramctrl_entity_rect(widget, ilk, &xr);
-			alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+			(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
 		}
 		ilk = get_diagram_next_entity(ptd->diagram, ilk);
 	}
@@ -1239,7 +1239,7 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr.x += (ptd->cur_x - ptd->org_x);
 		xr.y += (ptd->cur_y - ptd->org_y);
 
-		draw_rect_raw(rdc, &xp, NULL, &xr);
+		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
 	}
 	else if (ptd->b_size)
 	{
@@ -1261,8 +1261,10 @@ void hand_diagram_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			xr.h = (ptd->cur_y - xr.y);
 		}
 
-		draw_rect_raw(rdc, &xp, NULL, &xr);
+		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);

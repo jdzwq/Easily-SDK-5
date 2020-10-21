@@ -69,6 +69,26 @@ LICENSE.GPL3 for more details.
 */
 #define get_status_style_ptr(ptr)						get_dom_node_attr_ptr(ptr,ATTR_STYLE,-1)
 /*
+@PROPER width: numeric.
+@SET set_status_width: set the status width.
+*/
+#define set_status_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_status_width: get the status width.
+*/
+#define get_status_width(ptr)							get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_status_height: get the status height.
+*/
+#define get_status_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_status_height: set the status height.
+*/
+#define set_status_height(ptr,n)						set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
 @PROPER iconSpan: numeric.
 @SET set_status_icon_span: set the status icon span.
 */

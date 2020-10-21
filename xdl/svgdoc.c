@@ -321,6 +321,8 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 	tchar_t token[RES_LEN + 1] = { 0 };
 	tchar_t gid[RES_LEN + 1] = { 0 };
 	link_t_ptr ptr, nlk_defs, nlk_objs, nlk_sub;
+	xcolor_t xc = { 0 };
+	tchar_t clr[CLR_LEN + 1] = { 0 };
 	int n = 0;
 
 	if (is_null_xbrush(pxb))
@@ -375,7 +377,12 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 		set_dom_node_name(nlk_sub, SVG_NODE_STOP, -1);
 		set_dom_node_attr(nlk_sub, _T("offset"), -1, _T("0%"), -1);
 		if (is_null(pxb->color))
-			xsprintf(token, _T("stop-color:%s"), GDI_ATTR_RGB_BLACK);
+		{
+			parse_xcolor(&xc, pxb->color);
+			lighten_xcolor(&xc, -20);
+			format_xcolor(&xc, clr);
+			xsprintf(token, _T("stop-color:%s"), clr);
+		}
 		else
 			xsprintf(token, _T("stop-color:%s"), pxb->color);
 		set_dom_node_attr(nlk_sub, _T("style"), -1, token, -1);
@@ -384,7 +391,12 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 		set_dom_node_name(nlk_sub, SVG_NODE_STOP, -1);
 		set_dom_node_attr(nlk_sub, _T("offset"), -1, _T("100%"), -1);
 		if (is_null(pxb->linear))
-			xsprintf(token, _T("stop-color:%s"), GDI_ATTR_RGB_WHITE);
+		{
+			parse_xcolor(&xc, pxb->color);
+			lighten_xcolor(&xc, 20);
+			format_xcolor(&xc, clr);
+			xsprintf(token, _T("stop-color:%s"), clr);
+		}
 		else
 			xsprintf(token, _T("stop-color:%s"), pxb->linear);
 		set_dom_node_attr(nlk_sub, _T("style"), -1, token, -1);
@@ -818,6 +830,7 @@ void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t*
 	xsprintf(token, _T("M%d,%d C%d,%d %d,%d %d,%d"), ppt1->x, ppt1->y, ppt2->x, ppt2->y, ppt3->x, ppt3->y, ppt4->x, ppt4->y);
 
 	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
+	set_dom_node_attr(glk, SVG_ATTR_FILL_COLOR, -1, _T("none"), -1);
 
 	write_xpen_to_svg_node(glk, pxp);
 }
@@ -831,6 +844,7 @@ void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* 
 	//xsprintf(token, _T("M%d,%d C%d,%d %d,%d %d,%d"), ppt1->x, ppt1->y, ppt2->x, ppt2->y, ppt3->x, ppt3->y, ppt4->x, ppt4->y);
 
 	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
+	set_dom_node_attr(glk, SVG_ATTR_FILL_COLOR, -1, _T("none"), -1);
 
 	write_xpen_to_svg_node(glk, pxp);
 }
@@ -1440,30 +1454,24 @@ bool_t svg_node_is_arc(link_t_ptr glk)
 	return 1;
 }
 
-void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, int rx, int ry, bool_t sflag, bool_t lflag)
 {
-	xpoint_t pt1, pt2;
 	tchar_t token[10 * INT_LEN];
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
-	pt1.x = (int)((float)rx * cos(fang)) + ppt->x;
-	pt1.y = (int)((float)ry * sin(fang)) + ppt->y;
-
-	pt2.x = (int)((float)rx * cos(tang)) + ppt->x;
-	pt2.y = (int)((float)ry * sin(tang)) + ppt->y;
-
-	xsprintf(token, _T("M%d %d A%d %d 0 0 1 %d %d"), pt1.x, pt1.y, rx, ry, pt2.x, pt2.y);
+	xsprintf(token, _T("M%d %d A%d %d 0 %d %d %d %d"), ppt1->x, ppt1->y, rx, ry, (int)lflag, (int)sflag, ppt2->x, ppt2->y);
 
 	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
+	set_dom_node_attr(glk, SVG_ATTR_FILL_COLOR, -1, _T("none"), -1);
 
 	write_xpen_to_svg_node(glk, pxp);
 }
 
-void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang)
+void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt1, xpoint_t* ppt2, int* prx, int* pry, bool_t* psflag, bool_t* plflag)
 {
 	const tchar_t* token;
-	int x1, y1, x2, y2, x3, y3, rx, ry;
+	int x1, y1, x2, y2, rx, ry;
 	int tan, lar, ccw;
 
 	if (xsicmp(get_dom_node_name_ptr(glk), SVG_NODE_PATH) != 0)
@@ -1473,21 +1481,18 @@ void read_arc_from_svg_node(link_t_ptr glk, xpen_t* pxp, xpoint_t* ppt, int* prx
 	if (is_null(token))
 		return;
 
-	xsscanf(token, _T("M%d %d A%d %d %d %d %d %d %d"), &x2, &y2, &rx, &ry, &tan, &lar, &ccw, &x3, &y3);
+	xsscanf(token, _T("M%d %d A%d %d %d %d %d %d %d"), &x1, &y1, &rx, &ry, &tan, &lar, &ccw, &x2, &y2);
 
-	x1 = y1 = 0;
-	ppt->x = x1;
-	ppt->y = y1;
+	ppt1->x = x1;
+	ppt1->y = y1;
+	ppt2->x = x2;
+	ppt2->y = y2;
+
 	*prx = rx;
 	*pry = ry;
 
-	*pfang = acos((float)(x2 - x1) / (float)rx);
-	if (y1 < y2)
-		*pfang = 2 * XPI - *pfang;
-
-	*ptang = acos((float)(x3 - x1) / (float)rx);
-	if (y1 <= y3)
-		*ptang = 2 * XPI - *ptang;
+	*psflag = ccw;
+	*plflag = lar;
 
 	if (pxp)
 		read_xpen_from_svg_node(glk, pxp);
@@ -1553,14 +1558,14 @@ static int _svg_format_path(const tchar_t* aa, int an, const xpoint_t* pp, int p
 			break;
 		case _T('A'):
 			r = 0;
-			l = 0;
-			s = (pp[p].x < 0 || pp[p].y < 0) ? 0 : 1;
+			s = (pp[p].x) ? 1 : 0;
+			l = (pp[p].y) ? 1 : 0;
 
-			n = xsprintf(((buf) ? (buf + total) : NULL), _T("A%d,%d %d %d,%d %d,%d "), pp[p].x, pp[p].y, r, l, s, pp[p + 1].x, pp[p + 1].y);
+			n = xsprintf(((buf) ? (buf + total) : NULL), _T("A%d,%d %d %d,%d %d,%d "), pp[p+1].x, pp[p+1].y, r, l, s, pp[p + 2].x, pp[p + 2].y);
 			if (total + n > max)
 				return total;
 			total += n;
-			p += 2;
+			p += 3;
 
 			break;
 		case _T('Z'):

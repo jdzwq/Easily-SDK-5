@@ -86,16 +86,18 @@ void hand_shapebox_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_shapebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_shapebox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	shapebox_delta_t* ptd = GETSHAPEBOXDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 
 	xrect_t xr;
 	xpen_t xp;
 	xbrush_t xb;
 
 	canvas_t canv;
+	if_canvas_t* pif;
+	if_visual_t* piv;
 
 	widget_get_xpen(widget, &xp);
 	widget_get_xbrush(widget, &xb);
@@ -103,17 +105,21 @@ void hand_shapebox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
+	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	widget_get_client_rect(widget, &xr);
-	xr.w -= 1;
-	xr.h -= 1;
-	draw_shape_raw(rdc, &xp, &xr, ptd->shape);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	draw_shape(pif, &xp, (xrect_t*)&(pif->rect), ptd->shape);
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(canv, dc, pxr);
+	destroy_canvas_interface(pif);
 }
 
 /***************************************************************************************/

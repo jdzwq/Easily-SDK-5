@@ -62,7 +62,7 @@ typedef struct _TEXTOR_CALC{
 
 	int how;
 
-	res_ctx_t rdc;
+	if_visual_t* piv;
 }TEXTOR_CALC;
 
 static int _on_text_calc_paging(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char,int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col,  const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -113,10 +113,9 @@ void _textor_calc_paging(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_paging, (void*)&tt);
 
@@ -134,6 +133,8 @@ void _textor_calc_paging(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 		*max_obj = tt.to_obj;
 	if (max_atom)
 		*max_atom = tt.to_atom;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_maxing(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -195,10 +196,9 @@ void _textor_calc_maxing(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_maxing, (void*)&tt);
 
@@ -218,6 +218,8 @@ void _textor_calc_maxing(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 		*min_obj = tt.from_obj;
 	if (min_atom)
 		*min_atom = tt.from_atom;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_line(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -279,10 +281,9 @@ void _textor_calc_line(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_line, (void*)&tt);
 
@@ -302,6 +303,8 @@ void _textor_calc_line(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 		*min_obj = tt.from_obj;
 	if (min_atom)
 		*min_atom = tt.from_atom;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_object(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -360,10 +363,9 @@ void _textor_calc_object(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_object, (void*)&tt);
 
@@ -375,6 +377,8 @@ void _textor_calc_object(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 		*to_row = tt.to_row;
 	if (to_col)
 		*to_col = tt.to_col;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_texting(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -437,10 +441,9 @@ void _textor_calc_texting(textor_t* ptd, int px, int py, int pw, int ph, bool_t 
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_texting, (void*)&tt);
 
@@ -452,6 +455,8 @@ void _textor_calc_texting(textor_t* ptd, int px, int py, int pw, int ph, bool_t 
 		*to_row = tt.to_row;
 	if (to_col)
 		*to_col = tt.to_col;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_rect(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -508,10 +513,9 @@ void _textor_calc_rect(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 	pxf = widget_get_xfont_ptr(ptd->widget);
 	pxa = widget_get_xface_ptr(ptd->widget);
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	tt.from_obj = tt.to_obj = object;
 	tt.paged = ptd->paged;
@@ -526,6 +530,8 @@ void _textor_calc_rect(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 		pxr->w = tt.to_pt.x - tt.from_pt.x;
 		pxr->h = tt.to_pt.y - tt.from_pt.y;
 	}
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_hint(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -620,13 +626,12 @@ void _textor_calc_hint(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 	tt.x = x;
 	tt.y = y;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
+
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_hint, (void*)&tt);
 
@@ -638,6 +643,8 @@ void _textor_calc_hint(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 		*pobj = tt.from_obj;
 	if (patom)
 		*patom = tt.from_atom;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_point(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -695,13 +702,12 @@ void _textor_calc_point(textor_t* ptd, int px, int py, int pw, int ph, bool_t pa
 	tt.from_row = row;
 	tt.from_col = col;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
-
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
+
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_point, (void*)&tt);
 
@@ -715,6 +721,8 @@ void _textor_calc_point(textor_t* ptd, int px, int py, int pw, int ph, bool_t pa
 		ppt2->x = tt.to_pt.x;
 		ppt2->y = tt.to_pt.y;
 	}
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_rowcol(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -828,10 +836,9 @@ void _textor_calc_rowcol(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 	tt.from_row = row;
 	tt.from_col = col;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_rowcol, (void*)&tt);
 
@@ -843,6 +850,8 @@ void _textor_calc_rowcol(textor_t* ptd, int px, int py, int pw, int ph, bool_t p
 		*pobj = tt.to_obj;
 	if (patom)
 		*patom = tt.to_atom;
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_exec_select(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -907,12 +916,13 @@ int _textor_exec_select(textor_t* ptd, int px, int py, int pw, int ph, bool_t pa
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_exec_select, (void*)&tt);
+
+	destroy_visual_interface(tt.piv);
 
 	return tt.pos;
 }
@@ -977,12 +987,13 @@ int _textor_calc_count(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_count, (void*)&tt);
+
+	destroy_visual_interface(tt.piv);
 
 	return tt.max;
 }
@@ -1092,10 +1103,9 @@ bool_t _textor_exec_delete(textor_t* ptd, int px, int py, int pw, int ph, bool_t
 	if (!tt.max)
 		return 0;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_exec_delete, (void*)&tt);
 
@@ -1107,6 +1117,8 @@ bool_t _textor_exec_delete(textor_t* ptd, int px, int py, int pw, int ph, bool_t
 		*pobj = tt.to_obj;
 	if (patom)
 		*patom = tt.to_atom;
+
+	destroy_visual_interface(tt.piv);
 
 	return (tt.pos)? 1 : 0;
 }
@@ -1217,10 +1229,9 @@ bool_t _textor_exec_insert(textor_t* ptd, int px, int py, int pw, int ph, bool_t
 	tt.max = len;
 	tt.pos = 0;
 
-	it.ctx = (void*)ptd->dc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(ptd->cdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_exec_insert, (void*)&tt);
 
@@ -1231,6 +1242,8 @@ bool_t _textor_exec_insert(textor_t* ptd, int px, int py, int pw, int ph, bool_t
 		*pobj = tt.to_obj;
 	if (patom)
 		*patom = tt.to_atom;
+
+	destroy_visual_interface(tt.piv);
 
 	return (tt.pos) ? 1 : 0;
 }
@@ -1269,7 +1282,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_dot.w = DEF_FOCUS_SPAN;
 			xr_dot.h = DEF_FOCUS_SPAN;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alphablend_rect_raw(ptt->rdc, &xc, &xr_dot, ALPHA_SOLID);
+			(*(ptt->piv->pf_alphablend_rect_raw))(ptt->piv->visual, &xc, &xr_dot, ALPHA_SOLID);
 		}
 
 		if (ptt->done && ptt->to_row == cur_row && ptt->to_col == cur_col)
@@ -1282,14 +1295,14 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_reg.w = ptt->to_pt.x - ptt->from_pt.x;
 			xr_reg.h = ptt->to_pt.y - ptt->from_pt.y;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alphablend_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
+			(*(ptt->piv->pf_alphablend_rect_raw))(ptt->piv->visual, &xc, &xr_reg, ALPHA_SOFT);
 			
 			xr_dot.x = ptt->to_pt.x - DEF_FOCUS_SPAN;
 			xr_dot.y = ptt->to_pt.y;
 			xr_dot.w = DEF_FOCUS_SPAN;
 			xr_dot.h = DEF_FOCUS_SPAN;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alphablend_rect_raw(ptt->rdc, &xc, &xr_dot, ALPHA_SOLID);
+			(*(ptt->piv->pf_alphablend_rect_raw))(ptt->piv->visual, &xc, &xr_dot, ALPHA_SOLID);
 			return _SCANNER_OPERA_STOP;
 		}
 
@@ -1305,7 +1318,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_reg.w = ptt->to_pt.x - ptt->from_pt.x;
 			xr_reg.h = ptt->to_pt.y - ptt->from_pt.y;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alphablend_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
+			(*(ptt->piv->pf_alphablend_rect_raw))(ptt->piv->visual, &xc, &xr_reg, ALPHA_SOFT);
 
 			ptt->from_pt.x = ptm->min_x + ptm->char_w;
 			ptt->from_pt.y = ptm->cur_y + ptm->cur_h + ptm->line_h;
@@ -1322,7 +1335,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr_reg.w = ptt->to_pt.x - ptt->from_pt.x;
 			xr_reg.h = ptt->to_pt.y - ptt->from_pt.y;
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			alphablend_rect_raw(ptt->rdc, &xc, &xr_reg, ALPHA_SOFT);
+			(*(ptt->piv->pf_alphablend_rect_raw))(ptt->piv->visual, &xc, &xr_reg, ALPHA_SOFT);
 
 			ptt->from_pt.x = ptm->min_x + ptm->char_w;
 			ptt->from_pt.y = ptm->cur_y + ptm->cur_h + ptm->line_h;
@@ -1335,7 +1348,7 @@ static int _on_text_calc_focus(int scan, void* object, bool_t b_atom, bool_t b_i
 	return _SCANNER_OPERA_NEXT;
 }
 
-void _textor_draw_focus(textor_t* ptd, int px, int py, int pw, int ph, bool_t paged, res_ctx_t rdc)
+void _textor_draw_focus(textor_t* ptd, int px, int py, int pw, int ph, bool_t paged, visual_t rdc)
 {
 	TEXTOR_CALC tt = { 0 };
 	if_measure_t it = { 0 };
@@ -1350,16 +1363,16 @@ void _textor_draw_focus(textor_t* ptd, int px, int py, int pw, int ph, bool_t pa
 	tt.to_row = ptd->cur_row;
 	tt.to_col = ptd->cur_col;
 
-	tt.rdc = rdc;
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)rdc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(rdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_focus, (void*)&tt);
+
+	destroy_visual_interface(tt.piv);
 }
 
 static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_char, int cur_count, tchar_t* ret_char, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp)
@@ -1388,9 +1401,9 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 			pt1.y = ptm->cur_y;
 
 			if (cur_char && *cur_char == _T('\0'))
-				text_out_raw(ptt->rdc, pxf, &pt1, _T("."), 1);
+				(*(ptt->piv->pf_text_out_raw))(ptt->piv->visual, pxf, &pt1, _T("."), 1);
 			else
-				text_out_raw(ptt->rdc, pxf, &pt1, cur_char, cur_count);
+				(*(ptt->piv->pf_text_out_raw))(ptt->piv->visual, pxf, &pt1, cur_char, cur_count);
 		}
 		break;
 	case _SCANNER_STATE_LINEBREAK:
@@ -1404,7 +1417,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr.y = ptm->cur_y + ptm->cur_h - 3;
 			xr.w = 3;
 			xr.h = 3;
-			draw_rect_raw(ptt->rdc, &xp, NULL, &xr);
+			(*(ptt->piv->pf_draw_rect_raw))(ptt->piv->visual, &xp, NULL, &xr);
 		}
 		else
 		{
@@ -1412,11 +1425,11 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 			pt1.y = ptm->cur_y + ptm->cur_h;
 			pt2.x = pt1.x - 3;
 			pt2.y = pt1.y;
-			draw_line_raw(ptt->rdc, &xp, &pt1, &pt2);
+			(*(ptt->piv->pf_draw_line_raw))(ptt->piv->visual, &xp, &pt1, &pt2);
 
 			pt2.x = pt1.x;
 			pt2.y = pt1.y - 4;
-			draw_line_raw(ptt->rdc, &xp, &pt1, &pt2);
+			(*(ptt->piv->pf_draw_line_raw))(ptt->piv->visual, &xp, &pt1, &pt2);
 		}
 		break;
 	case _SCANNER_STATE_PAGEBREAK:
@@ -1431,7 +1444,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 		xr.y = ptm->cur_y + ptm->cur_h - 3;
 		xr.w = 3;
 		xr.h = 3;
-		draw_rect_raw(ptt->rdc, &xp, &xb, &xr);
+		(*(ptt->piv->pf_draw_rect_raw))(ptt->piv->visual, &xp, &xb, &xr);
 		break;
 	case _SCANNER_STATE_NEWPAGE:
 		return _SCANNER_OPERA_STOP;
@@ -1446,7 +1459,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 			xr.y = ptm->cur_y + ptm->cur_h - 3;
 			xr.w = 3;
 			xr.h = 3;
-			draw_rect_raw(ptt->rdc, NULL, &xb, &xr);
+			(*(ptt->piv->pf_draw_rect_raw))(ptt->piv->visual, NULL, &xb, &xr);
 		}
 		return _SCANNER_OPERA_STOP;
 	}
@@ -1454,7 +1467,7 @@ static int _on_text_calc_paint(int scan, void* object, bool_t b_atom, bool_t b_i
 	return _SCANNER_OPERA_NEXT;
 }
 
-void _textor_draw_text(textor_t* ptd, int px, int py, int pw, int ph, bool_t paged, res_ctx_t rdc)
+void _textor_draw_text(textor_t* ptd, int px, int py, int pw, int ph, bool_t paged, visual_t rdc)
 {
 	TEXTOR_CALC tt = { 0 };
 	if_measure_t it = { 0 };
@@ -1472,16 +1485,16 @@ void _textor_draw_text(textor_t* ptd, int px, int py, int pw, int ph, bool_t pag
 	tt.to_row = ptd->cur_row;
 	tt.to_col = ptd->cur_col;
 
-	tt.rdc = rdc;
 	tt.paged = ptd->paged;
 	tt.page = ptd->page;
 
-	it.ctx = (void*)rdc;
-	it.pf_mm_points = (PF_MM_POINTS)pt_per_mm;
-	it.pf_text_metric = (PF_TEXT_METRIC)text_metric_raw;
-	it.pf_text_size = (PF_TEXT_SIZE)text_size_raw;
+	tt.piv = create_visual_interface(rdc);
+
+	(*(tt.piv->pf_get_measure_raw))(tt.piv->visual, &it);
 
 	(*ptd->pf_scan_text)(ptd->data, &it, pxf, pxa, px, py, pw, ph, paged, _on_text_calc_paint, (void*)&tt);
+
+	destroy_visual_interface(tt.piv);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1507,6 +1520,8 @@ void _textor_reset_page(textor_t* ptd, bool_t repage)
 	const xfont_t* pxf;
 	const xface_t* pxa;
 
+	if_visual_t* piv;
+
 	pxf = widget_get_xfont_ptr(ptd->widget);
 	pxa = widget_get_xface_ptr(ptd->widget);
 
@@ -1514,9 +1529,13 @@ void _textor_reset_page(textor_t* ptd, bool_t repage)
 	if (!line_height)
 		line_height = 1.0;
 
-	text_metric_raw(ptd->dc, pxf, &xs);
+	piv = create_visual_interface(ptd->cdc);
 
-	line_feed = (int)(xs.cy * line_height);
+	(*piv->pf_text_metric_raw)(piv->visual, pxf, &xs);
+
+	destroy_visual_interface(piv);
+
+	line_feed = (int)(xs.h * line_height);
 
 	ptd->paged = (*ptd->pf_get_paging)(ptd->widget, &xs);
 
@@ -1524,18 +1543,18 @@ void _textor_reset_page(textor_t* ptd, bool_t repage)
 	{
 		if (repage)
 		{
-			_textor_calc_paging(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, &ptd->pages, &rows, &cols, NULL, NULL, NULL, NULL);
+			_textor_calc_paging(ptd, 0, 0, xs.w, xs.h, ptd->paged, &ptd->pages, &rows, &cols, NULL, NULL, NULL, NULL);
 			ptd->max_row = rows;
 			ptd->max_col = cols;
 		}
 
-		pw = xs.cx;
-		ph = xs.cy;
+		pw = xs.w;
+		ph = xs.h;
 	}
 	else
 	{
 		ptd->pages = 1;
-		_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy,ptd->paged, &pw, &ph, &rows, &cols, NULL, NULL, NULL, NULL);
+		_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h,ptd->paged, &pw, &ph, &rows, &cols, NULL, NULL, NULL, NULL);
 
 		if (repage)
 		{
@@ -1543,10 +1562,10 @@ void _textor_reset_page(textor_t* ptd, bool_t repage)
 			ptd->max_col = cols;
 		}
 
-		if (pw < xs.cx)
-			pw = xs.cx;
-		if (ph < xs.cy)
-			ph = xs.cy;
+		if (pw < xs.w)
+			pw = xs.w;
+		if (ph < xs.h)
+			ph = xs.h;
 	}
 
 	widget_get_client_rect(ptd->widget, &xr);
@@ -1662,15 +1681,19 @@ void _textor_clean(textor_t* ptd)
 void hand_textor_set_focus(textor_t* ptd, res_win_t wt)
 {
 	xsize_t xs;
+	float pm;
 	const xfont_t* pxf;
 
 	pxf = widget_get_xfont_ptr(ptd->widget);
 
 	XDL_ASSERT(ptd && ptd->widget);
 
-	text_metric_raw(ptd->dc, pxf, &xs);
+	font_metric_by_pt(xstof(pxf->size), &pm, NULL);
+	xs.fw = pm;
+	xs.fh = pm;
+	widget_size_to_pt(ptd->widget, &xs);
 
-	widget_create_caret(ptd->widget, 2, xs.cy);
+	widget_create_caret(ptd->widget, 2, xs.h);
 }
 
 void hand_textor_kill_focus(textor_t* ptd, res_win_t wt)
@@ -1887,15 +1910,16 @@ bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, int nLine)
 	return 1;
 }
 
-void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
+void hand_textor_paint(textor_t* ptd, visual_t dc, const xrect_t* pxr)
 {
 	xrect_t xr;
-	res_ctx_t rdc;
+	visual_t rdc;
 	canvas_t canv;
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc = { 0 };
 	canvbox_t cb;
+	if_visual_t* piv;
 
 	XDL_ASSERT(ptd && ptd->widget);
 
@@ -1910,7 +1934,11 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+
+	destroy_visual_interface(piv);
 
 	if (widget_can_paging(ptd->widget))
 	{
@@ -1919,7 +1947,7 @@ void hand_textor_paint(textor_t* ptd, res_ctx_t dc, const xrect_t* pxr)
 		parse_xcolor(&xc, xp.color);
 		lighten_xcolor(&xc, DEF_HARD_DARKEN);
 
-		draw_corner(canv, &xc, (const xrect_t*)&cb);
+		//draw_corner(canv, &xc, (const xrect_t*)&cb);
 	}
 
 	_textor_draw_text(ptd, ptd->vb.px, ptd->vb.py, ptd->vb.pw, ptd->vb.ph, ptd->paged, rdc);
@@ -1943,7 +1971,7 @@ void hand_textor_selectall(textor_t* ptd)
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &row, &col, NULL, NULL, &obj, &atom);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &row, &col, NULL, NULL, &obj, &atom);
 
 	if (!row && !col && !obj)
 	{
@@ -1975,7 +2003,7 @@ void hand_textor_selectline(textor_t* ptd)
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_line(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &row, &col, NULL, NULL, &obj, &atom);
+	_textor_calc_line(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &row, &col, NULL, NULL, &obj, &atom);
 
 	if (!row && !col && !obj)
 	{
@@ -2555,7 +2583,7 @@ int hand_textor_end(textor_t* ptd)
 	hand_textor_move_last_page(ptd);
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
 
 	ptd->cur_row = ptd->sel_row = ptd->max_row;
 	ptd->cur_col = ptd->sel_col = ptd->max_col + 1;
@@ -2578,7 +2606,7 @@ int hand_textor_move_to_page(textor_t* ptd, int page)
 	
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy,  ptd->paged, NULL, NULL,&ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h,  ptd->paged, NULL, NULL,&ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
 
 	ptd->sel_row = ptd->cur_row = 0;
 	ptd->sel_col = ptd->cur_col = 0;
@@ -2603,7 +2631,7 @@ int hand_textor_move_first_page(textor_t* ptd)
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
 
 	ptd->sel_row = ptd->cur_row = 0;
 	ptd->sel_col = ptd->cur_col = 0;
@@ -2628,7 +2656,7 @@ int hand_textor_move_prev_page(textor_t* ptd)
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, NULL, NULL, &ptd->object, &ptd->atom);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, NULL, NULL, &ptd->object, &ptd->atom);
 
 	ptd->sel_row = ptd->cur_row = ptd->max_row;
 	ptd->sel_col = ptd->cur_col = ptd->max_col;
@@ -2655,7 +2683,7 @@ int hand_textor_move_next_page(textor_t* ptd)
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
 
 	ptd->sel_row = ptd->cur_row = 0;
 	ptd->sel_col = ptd->cur_col = 0;
@@ -2680,7 +2708,7 @@ int hand_textor_move_last_page(textor_t* ptd)
 
 	(*ptd->pf_get_paging)(ptd->widget, &xs);
 
-	_textor_calc_maxing(ptd, 0, 0, xs.cx, xs.cy, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
+	_textor_calc_maxing(ptd, 0, 0, xs.w, xs.h, ptd->paged, NULL, NULL, &ptd->max_row, &ptd->max_col, &ptd->object, &ptd->atom, NULL, NULL);
 
 	ptd->sel_row = ptd->cur_row = 0;
 	ptd->sel_col = ptd->cur_col = 0;

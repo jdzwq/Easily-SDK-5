@@ -94,7 +94,7 @@ int calc_dialog_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr obj,ilk;
 	xrect_t xr;
@@ -109,6 +109,8 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	bool_t b_print;
 
 	xdate_t dt;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
 
@@ -142,7 +144,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
 	xr.fw = pbox->fw;
 	xr.fh = DIALOG_TITLE_HEIGHT;
-	(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, ATTR_SHAPE_RECT);
+	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
@@ -151,7 +153,7 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	parse_xcolor(&xc, xp.color);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_LOGO);
+	draw_gizmo(pif, &xc, &xr, GDI_ATTR_GIZMO_LOGO);
 
 	xr.fx = pbox->fx + DIALOG_TITLE_HEIGHT;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
@@ -167,14 +169,14 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 	parse_xcolor(&xc, xp.color);
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr, GDI_ATTR_GIZMO_CLOSE);
+	draw_gizmo(pif, &xc, &xr, GDI_ATTR_GIZMO_CLOSE);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy;
 	xr.fw = pbox->fw;
 	xr.fh = pbox->fh;
 
-	(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, ATTR_SHAPE_RECT);
+	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
 
 	ilk = get_dialog_next_item(ptr, LINK_FIRST);
 	while (ilk)
@@ -198,124 +200,106 @@ void draw_dialog(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 		if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_SHAPEBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
-
-			(*pif->pf_draw_shape)(pif->canvas, &xp, &xr, get_dialog_item_text_ptr(ilk));
+			draw_shape(pif, &xp, &xr, get_dialog_item_text_ptr(ilk));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_STATICBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
-
 			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_EDITBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
-
 			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_PUSHBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-			draw_pushbox(pif, &cb, &xf, get_dialog_item_text_ptr(ilk));
+			draw_pushbox(pif, &xf, get_dialog_item_text_ptr(ilk));
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_RADIOBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-			draw_radiobox(pif, &cb, &xf, (bool_t)xstol(get_dialog_item_text_ptr(ilk)));
+			draw_radiobox(pif, &xf, (bool_t)xstol(get_dialog_item_text_ptr(ilk)));
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_CHECKBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-			draw_checkbox(pif, &cb, &xf, (bool_t)xstol(get_dialog_item_text_ptr(ilk)));
+			draw_checkbox(pif, &xf, (bool_t)xstol(get_dialog_item_text_ptr(ilk)));
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_DATEBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
 			parse_date(&dt, get_dialog_item_text_ptr(ilk));
-			draw_datebox(pif, &cb, &xf, &dt);
+			draw_datebox(pif, &xf, &dt);
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_TIMEBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
 			parse_datetime(&dt, get_dialog_item_text_ptr(ilk));
-			draw_timebox(pif, &cb, &xf, &dt);
+			draw_timebox(pif, &xf, &dt);
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_LISTBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
 			obj = create_string_table(0);
 			string_table_parse_options(obj, get_dialog_item_text_ptr(ilk), -1, OPT_ITEMFEED, OPT_LINEFEED);
-			draw_listbox(pif, &cb, &xf, obj);
+
+			draw_listbox(pif, &xf, obj);
+
 			destroy_string_table(obj);
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_SLIDEBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-			draw_slidebox(pif, &cb, &xf, xstol(get_dialog_item_text_ptr(ilk)));
+			draw_slidebox(pif, &xf, xstol(get_dialog_item_text_ptr(ilk)));
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_SPINBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-			draw_spinbox(pif, &cb, &xf, xstol(get_dialog_item_text_ptr(ilk)));
+			draw_spinbox(pif, &xf, xstol(get_dialog_item_text_ptr(ilk)));
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_NAVIBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
+			xmem_copy((void*)&cb, (void*)&pif->rect, sizeof(canvbox_t));
+			xmem_copy((void*)&pif->rect, (void*)&xr, sizeof(canvbox_t));
 
-			draw_navibox(pif, &cb, &xf, NULL);
+			draw_navibox(pif, &xf, NULL);
+
+			xmem_copy((void*)&pif->rect, (void*)&cb, sizeof(canvbox_t));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_USERBOX, -1, 1) == 0)
 		{
-			cb.fx = xr.fx;
-			cb.fy = xr.fy;
-			cb.fw = xr.fw;
-			cb.fh = xr.fh;
-
 			(*pif->pf_draw_rect)(pif->canvas, &xp, &xb, &xr);
 			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
 		}

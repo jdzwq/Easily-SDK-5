@@ -142,22 +142,6 @@ EXP_API const tchar_t*	get_plot_type_ptr(link_t_ptr ptr);
 EXP_API void set_plot_type(link_t_ptr ptr, const tchar_t* type, int len);
 
 /*
-@PLOTTION get_plot_title: get plot title.
-@INPUT link_t_ptr ptr: the plot link component.
-@INPUT tchar_t* buf: the characters buffer for returning title.
-@INPUT int max: the buffer size.
-@RETURN int: return characters copied.
-*/
-EXP_API int	get_plot_title(link_t_ptr ptr, tchar_t* buf, int max);
-
-/*
-@PLOTTION get_plot_title_ptr: get plot title string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_title_ptr(link_t_ptr ptr);
-
-/*
 @PLOTTION set_plot_title: set plot title.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT const tchar_t* title: the plot title.
@@ -210,13 +194,6 @@ EXP_API int	get_plot_y_stages(link_t_ptr ptr, tchar_t* buf, int max);
 EXP_API void set_plot_y_stages(link_t_ptr ptr, const tchar_t* y_stages, int len);
 
 /*
-@PLOTTION get_plot_y_stages_ptr: get plot y_stages string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_y_stages_ptr(link_t_ptr ptr);
-
-/*
 @PLOTTION get_plot_y_bases: get plot y-bases string array.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT tchar_t* buf: the characters buffer for returning y-bases string array.
@@ -233,13 +210,6 @@ EXP_API int	get_plot_y_bases(link_t_ptr ptr, tchar_t* buf, int max);
 @RETURN void: none.
 */
 EXP_API void set_plot_y_bases(link_t_ptr ptr, const tchar_t* y_bases, int len);
-
-/*
-@PLOTTION get_plot_y_bases_ptr: get plot y_bases string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_y_bases_ptr(link_t_ptr ptr);
 
 /*
 @PLOTTION get_plot_y_steps: get plot y-steps string array.
@@ -260,13 +230,6 @@ EXP_API int	get_plot_y_steps(link_t_ptr ptr, tchar_t* buf, int max);
 EXP_API void set_plot_y_steps(link_t_ptr ptr, const tchar_t* y_steps, int len);
 
 /*
-@PLOTTION get_plot_y_steps_ptr: get plot y_steps string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_y_steps_ptr(link_t_ptr ptr);
-
-/*
 @PLOTTION get_plot_y_labels: get plot y-labels string array.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT tchar_t* buf: the characters buffer for returning y-labels string array.
@@ -283,13 +246,6 @@ EXP_API int	get_plot_y_labels(link_t_ptr ptr, tchar_t* buf, int max);
 @RETURN void: none.
 */
 EXP_API void set_plot_y_labels(link_t_ptr ptr, const tchar_t* y_labels, int len);
-
-/*
-@PLOTTION get_plot_y_labels_ptr: get plot y_labels string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_y_labels_ptr(link_t_ptr ptr);
 
 /*
 @PLOTTION get_plot_y_colors: get plot y-colors string array.
@@ -310,13 +266,6 @@ EXP_API int	get_plot_y_colors(link_t_ptr ptr, tchar_t* buf, int max);
 EXP_API void set_plot_y_colors(link_t_ptr ptr, const tchar_t* y_colors, int len);
 
 /*
-@PLOTTION get_plot_y_colors_ptr: get plot y_colors string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_y_colors_ptr(link_t_ptr ptr);
-
-/*
 @PLOTTION get_plot_y_shapes: get plot y-shapes string array.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT tchar_t* buf: the characters buffer for returning y-shapes string array.
@@ -333,13 +282,6 @@ EXP_API int	get_plot_y_shapes(link_t_ptr ptr, tchar_t* buf, int max);
 @RETURN void: none.
 */
 EXP_API void set_plot_y_shapes(link_t_ptr ptr, const tchar_t* y_shapes, int len);
-
-/*
-@PLOTTION get_plot_y_shapes_ptr: get plot y_shapes string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_y_shapes_ptr(link_t_ptr ptr);
 
 /*
 @PLOTTION get_plot_x_labels: get plot x-labels string arrax.
@@ -360,13 +302,6 @@ EXP_API int	get_plot_x_labels(link_t_ptr ptr, tchar_t* buf, int max);
 EXP_API void set_plot_x_labels(link_t_ptr ptr, const tchar_t* x_labels, int len);
 
 /*
-@PLOTTION get_plot_x_labels_ptr: get plot x_labels string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_x_labels_ptr(link_t_ptr ptr);
-
-/*
 @PLOTTION get_plot_x_colors: get plot x-colors string arrax.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT tchar_t* buf: the characters buffer for returning x-colors string arrax.
@@ -385,18 +320,11 @@ EXP_API int	get_plot_x_colors(link_t_ptr ptr, tchar_t* buf, int max);
 EXP_API void set_plot_x_colors(link_t_ptr ptr, const tchar_t* x_colors, int len);
 
 /*
-@PLOTTION get_plot_x_colors_ptr: get plot x_colors string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_x_colors_ptr(link_t_ptr ptr);
-
-/*
 @PLOTTION get_plot_rows: get plot matrix rows.
 @INPUT link_t_ptr ptr: the plot link component.
 @RETURN int: return matrix rows.
 */
-EXP_API int	get_plot_rows(link_t_ptr ptr);
+EXP_API int	get_plot_matrix_rows(link_t_ptr ptr);
 
 /*
 @PLOTTION set_plot_rows: set plot matrix rows.
@@ -404,14 +332,14 @@ EXP_API int	get_plot_rows(link_t_ptr ptr);
 @INPUT int rows: the matrix rows.
 @RETURN void: none.
 */
-EXP_API void set_plot_rows(link_t_ptr ptr, int rows);
+EXP_API void set_plot_matrix_rows(link_t_ptr ptr, int rows);
 
 /*
 @PLOTTION get_plot_cols: get plot matrix cols.
 @INPUT link_t_ptr ptr: the plot link component.
 @RETURN int: return matrix cols.
 */
-EXP_API int	get_plot_cols(link_t_ptr ptr);
+EXP_API int	get_plot_matrix_cols(link_t_ptr ptr);
 
 /*
 @PLOTTION set_plot_cols: set plot matrix cols.
@@ -419,7 +347,7 @@ EXP_API int	get_plot_cols(link_t_ptr ptr);
 @INPUT int cols: the matrix cols.
 @RETURN void: none.
 */
-EXP_API void set_plot_cols(link_t_ptr ptr, int cols);
+EXP_API void set_plot_matrix_cols(link_t_ptr ptr, int cols);
 
 /*
 @PLOTTION get_plot_matrix: get plot matrix string arrax.
@@ -428,7 +356,7 @@ EXP_API void set_plot_cols(link_t_ptr ptr, int cols);
 @INPUT int max: the buffer size.
 @RETURN int: return characters copied.
 */
-EXP_API int	get_plot_matrix(link_t_ptr ptr, tchar_t* buf, int max);
+EXP_API int	get_plot_matrix_data(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
 @PLOTTION set_plot_matrix: set plot matrix string arrax.
@@ -437,14 +365,8 @@ EXP_API int	get_plot_matrix(link_t_ptr ptr, tchar_t* buf, int max);
 @INPUT int len: the matrix string length.
 @RETURN void: none.
 */
-EXP_API void set_plot_matrix(link_t_ptr ptr, const tchar_t* matrix, int len);
+EXP_API void set_plot_matrix_data(link_t_ptr ptr, const tchar_t* data, int len);
 
-/*
-@PLOTTION get_plot_matrix_ptr: get plot matrix string token.
-@INPUT link_t_ptr ptr: the plot link component.
-@RETURN const tchar_t*: return string pointer.
-*/
-EXP_API const tchar_t*	get_plot_matrix_ptr(link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

@@ -54,6 +54,32 @@ EXP_API if_canvas_t* create_canvas_interface(canvas_t canv);
 */
 EXP_API void	destroy_canvas_interface(if_canvas_t* pic);
 
+/*
+@FUNCTION get_canvas_visual: fill the view functions.
+@INPUT canvas_t canv: the canvas object.
+@OUTPUT if_visual_t piv: the measure struct for returning inner function.
+@RETURN void: none.
+*/
+EXP_API void get_visual_interface(canvas_t canv, if_visual_t* piv);
+
+/*
+@FUNCTION create_visual_interface: create view interface.
+@INPUT visual_t ctx: the context object.
+@RETURN if_viewING_t*: if succeeds return view interface struct, fails return NULL.
+*/
+EXP_API if_visual_t* create_visual_interface(visual_t rdc);
+
+/*
+@FUNCTION destroy_view_interface: destroy view interface.
+@INPUT if_visual_t*: the view interface struct.
+@RETURN void: none.
+*/
+EXP_API void	destroy_visual_interface(if_visual_t* pic);
+
+LOC_API void	get_visual_measure(visual_t view, if_measure_t* pim);
+
+LOC_API void	get_canvas_measure(canvas_t canv, if_measure_t* pim);
+
 #ifdef	__cplusplus
 }
 #endif

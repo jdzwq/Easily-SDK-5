@@ -69,6 +69,26 @@ LICENSE.GPL3 for more details.
 */
 #define get_list_layer_ptr(ptr)								get_dom_node_attr_ptr(ptr,ATTR_LAYER,-1)
 /*
+@PROPER width: numeric.
+@SET set_list_width: set the list width.
+*/
+#define set_list_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_list_width: get the list width.
+*/
+#define get_list_width(ptr)								get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_list_height: get the list height.
+*/
+#define get_list_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_list_height: set the list height.
+*/
+#define set_list_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
 @PROPER iconSpan: numeric.
 @SET set_list_icon_span: set the list icon span.
 */

@@ -96,9 +96,7 @@ void hand_vertbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	hint = calc_vertbox_hint(&im, &xf, &pt);
 
@@ -164,14 +162,14 @@ void hand_vertbox_timer(res_win_t widget, var_long tid)
 	}
 }
 
-void hand_vertbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_vertbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	vertbox_delta_t* ptd = GETVERTBOXDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb = { 0 };
+	if_visual_t* piv;
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -183,6 +181,7 @@ void hand_vertbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -194,14 +193,15 @@ void hand_vertbox_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
+	piv = create_visual_interface(rdc);
+
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	widget_get_canv_rect(widget, &cb);
+	draw_vertbox(pif, &xf);
 
-	draw_vertbox(pif, &cb, &xf);
-
+	destroy_visual_interface(piv);
 	end_canvas_paint(canv, dc, pxr);
 	destroy_canvas_interface(pif);
 }
@@ -242,9 +242,7 @@ void vertbox_popup_size(res_win_t widget, xsize_t* pxs)
 
 	widget_get_xfont(widget, &xf);
 
-	im.ctx = widget_get_canvas(widget);
-	im.pf_text_metric = (PF_TEXT_METRIC)text_metric;
-	im.pf_text_size = (PF_TEXT_SIZE)text_size;
+	get_canvas_measure(widget_get_canvas(widget), &im);
 
 	calc_vertbox_size(&im, &xf, pxs);
 
@@ -282,10 +280,10 @@ res_win_t show_vertbox(res_win_t owner)
 	vertbox_popup_size(wt, &xs);
 	widget_get_client_rect(owner, &xr);
 
-	xr.x = xr.x + xr.w - xs.cx;
-	xr.y = xr.y + xr.h / 2 - xs.cy / 2;
-	xr.w = xs.cx;
-	xr.h = xs.cy;
+	xr.x = xr.x + xr.w - xs.w;
+	xr.y = xr.y + xr.h / 2 - xs.h / 2;
+	xr.w = xs.w;
+	xr.h = xs.h;
 
 	widget_client_to_screen(owner, RECTPOINT(&xr));
 

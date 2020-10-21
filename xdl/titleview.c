@@ -30,25 +30,29 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "titleview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
-#define TITLE_EDGE_DARK	 (float)1
-#define	TITLE_EDGE_LIGHT (float)2
-#define TITLE_EDGE_ARC	 (float)1
+#define TITLE_EDGE_DARK	 1.0f
+#define	TITLE_EDGE_LIGHT 2.0f
+#define TITLE_EDGE_ARC	 1.0f
 /*********************************************************************************************/
-float calc_title_width(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_title_width(link_t_ptr ptr)
 {
 	link_t_ptr plk;
 	bool_t b_vert;
-	float iw, w = 0;
+	float fw, fh, iw, w = 0;
+
+	fw = get_title_width(ptr);
+	fh = get_title_height(ptr);
 
 	b_vert = (compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_LEFT, -1, 0) == 0 || compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_RIGHT, -1, 0) == 0) ? 1 : 0;
 	if (b_vert)
-		return pbox->fw;
+		return fw;
 
 	iw = get_title_item_width(ptr);
 
@@ -62,15 +66,18 @@ float calc_title_width(const canvbox_t* pbox, link_t_ptr ptr)
 	return w;
 }
 
-float calc_title_height(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_title_height(link_t_ptr ptr)
 {
 	link_t_ptr plk;
 	bool_t b_vert;
-	float ih, h = 0;
+	float fw, fh, ih, h = 0;
+
+	fw = get_title_width(ptr);
+	fh = get_title_height(ptr);
 
 	b_vert = (compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_LEFT, -1, 0) == 0 || compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_RIGHT, -1, 0) == 0) ? 1 : 0;
 	if (!b_vert)
-		return pbox->fh;
+		return fh;
 
 	ih = get_title_item_height(ptr);
 
@@ -84,7 +91,7 @@ float calc_title_height(const canvbox_t* pbox, link_t_ptr ptr)
 	return h;
 }
 
-void calc_title_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_title_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr plk;
 	float pw, ph, iw, ih, hw = 0;
@@ -93,8 +100,8 @@ void calc_title_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk,
 
 	lay_vert = (compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_LEFT, -1, 0) == 0 || compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_RIGHT, -1, 0) == 0) ? 1 : 0;
 	
-	pw = pbox->fw;
-	ph = pbox->fh;
+	pw = get_title_width(ptr);
+	ph = get_title_height(ptr);
 	iw = get_title_item_width(ptr);
 	ih = get_title_item_height(ptr);
 
@@ -137,7 +144,7 @@ void calc_title_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk,
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-int calc_title_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk_focus, link_t_ptr* pilk)
+int calc_title_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk_focus, link_t_ptr* pilk)
 {
 	link_t_ptr plk;
 	float pw, ph, iw, ih, ic, hw = 0;
@@ -154,8 +161,8 @@ int calc_title_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 
 	lay_vert = (compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_LEFT, -1, 0) == 0 || compare_text(get_title_oritation_ptr(ptr), -1, ATTR_ORITATION_RIGHT, -1, 0) == 0) ? 1 : 0;
 	
-	pw = pbox->fw;
-	ph = pbox->fh;
+	pw = get_title_width(ptr);
+	ph = get_title_height(ptr);
 	iw = get_title_item_width(ptr);
 	ih = get_title_item_height(ptr);
 	ic = get_title_icon_span(ptr);
@@ -212,7 +219,7 @@ int calc_title_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, 
 	return nHint;
 }
 
-void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk_focus)
+void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 {
 	link_t_ptr plk;
 	bool_t lay_vert;
@@ -230,8 +237,9 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 	float px, py, pw, ph;
 
 	tchar_t ta[10] = { 0 };
-	xpoint_t pa[12] = { 0 };
+	xpoint_t pa[15] = { 0 };
 
+	const canvbox_t* pbox = &pif->rect;
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -342,34 +350,38 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pa[3].fy = xr.fy;
 
 					ta[4] = _T('A');
-					pa[4].fx = TITLE_EDGE_ARC;
-					pa[4].fy = TITLE_EDGE_ARC;
-					pa[5].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
-					pa[5].fy = xr.fy + TITLE_EDGE_ARC;
+					pa[4].fx = 1;
+					pa[4].fy = 0;
+					pa[5].fx = TITLE_EDGE_ARC;
+					pa[5].fy = TITLE_EDGE_ARC;
+					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
+					pa[6].fy = xr.fy + TITLE_EDGE_ARC;
 
 					ta[5] = _T('L');
-					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
-					pa[6].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
+					pa[7].fx = xr.fx + xr.fw - TITLE_EDGE_DARK;
+					pa[7].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
 
 					ta[6] = _T('A');
-					pa[7].fx = TITLE_EDGE_ARC;
-					pa[7].fy = TITLE_EDGE_ARC;
-					pa[8].fx = xr.fx + xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
-					pa[8].fy = xr.fy + xr.fh;
+					pa[8].fx = 1;
+					pa[8].fy = 0;
+					pa[9].fx = TITLE_EDGE_ARC;
+					pa[9].fy = TITLE_EDGE_ARC;
+					pa[10].fx = xr.fx + xr.fw - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
+					pa[10].fy = xr.fy + xr.fh;
 
 					ta[7] = _T('L');
-					pa[9].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pa[9].fy = xr.fy + xr.fh;
+					pa[11].fx = xr.fx + TITLE_EDGE_LIGHT;
+					pa[11].fy = xr.fy + xr.fh;
 
 					ta[8] = _T('L');
-					pa[10].fx = xr.fx + TITLE_EDGE_LIGHT;
-					pa[10].fy = ph + 0.5f;
+					pa[12].fx = xr.fx + TITLE_EDGE_LIGHT;
+					pa[12].fy = ph + 0.5f;
 
 					ta[9] = _T('L');
-					pa[11].fx = xr.fx;
-					pa[11].fy = ph + 0.5f;
+					pa[13].fx = xr.fx;
+					pa[13].fy = ph + 0.5f;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 - TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -380,11 +392,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					if (get_title_item_locked(plk))
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+						draw_gizmo(pif, &xc, &xr_image, icon);
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
+						draw_gizmo(pif, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx;
@@ -413,34 +425,38 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pa[3].fy = xr.fy;
 
 					ta[4] = _T('A');
-					pa[4].fx = -TITLE_EDGE_ARC;
-					pa[4].fy = -TITLE_EDGE_ARC;
-					pa[5].fx = xr.fx + TITLE_EDGE_DARK;
-					pa[5].fy = xr.fy + TITLE_EDGE_ARC;
+					pa[4].fx = 0;
+					pa[4].fy = 0;
+					pa[5].fx = TITLE_EDGE_ARC;
+					pa[5].fy = TITLE_EDGE_ARC;
+					pa[6].fx = xr.fx + TITLE_EDGE_DARK;
+					pa[6].fy = xr.fy + TITLE_EDGE_ARC;
 
 					ta[5] = _T('L');
-					pa[6].fx = xr.fx + TITLE_EDGE_DARK;
-					pa[6].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
+					pa[7].fx = xr.fx + TITLE_EDGE_DARK;
+					pa[7].fy = xr.fy + xr.fh - TITLE_EDGE_ARC;
 
 					ta[6] = _T('A');
-					pa[7].fx = -TITLE_EDGE_ARC;
-					pa[7].fy = -TITLE_EDGE_ARC;
-					pa[8].fx = xr.fx + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
-					pa[8].fy = xr.fy + xr.fh;
+					pa[8].fx = 0;
+					pa[8].fy = 0;
+					pa[9].fx = TITLE_EDGE_ARC;
+					pa[9].fy = TITLE_EDGE_ARC;
+					pa[10].fx = xr.fx + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
+					pa[10].fy = xr.fy + xr.fh;
 
 					ta[7] = _T('L');
-					pa[9].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pa[9].fy = xr.fy + xr.fh;
+					pa[11].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
+					pa[11].fy = xr.fy + xr.fh;
 
 					ta[8] = _T('L');
-					pa[10].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
-					pa[10].fy = ph + 0.5f;
+					pa[12].fx = xr.fx + xr.fw - TITLE_EDGE_LIGHT;
+					pa[12].fy = ph + 0.5f;
 
 					ta[9] = _T('L');
-					pa[11].fx = xr.fx + xr.fw;
-					pa[11].fy = ph + 0.5f;
+					pa[13].fx = xr.fx + xr.fw;
+					pa[13].fy = ph + 0.5f;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 + TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -451,11 +467,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					
 					if (get_title_item_locked(plk))
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+						draw_gizmo(pif, &xc, &xr_image, icon);
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
+						draw_gizmo(pif, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx + TITLE_EDGE_DARK;
@@ -487,34 +503,38 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pa[3].fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
 
 					ta[4] = _T('A');
-					pa[4].fx = -TITLE_EDGE_ARC;
-					pa[4].fy = -TITLE_EDGE_ARC;
-					pa[5].fx = xr.fx + TITLE_EDGE_ARC;
-					pa[5].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
-
-					ta[5] = _T('L');
-					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
+					pa[4].fx = 0;
+					pa[4].fy = 0;
+					pa[5].fx = TITLE_EDGE_ARC;
+					pa[5].fy = TITLE_EDGE_ARC;
+					pa[6].fx = xr.fx + TITLE_EDGE_ARC;
 					pa[6].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
 
+					ta[5] = _T('L');
+					pa[7].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
+					pa[7].fy = xr.fy + xr.fh - TITLE_EDGE_DARK;
+
 					ta[6] = _T('A');
-					pa[7].fx = -TITLE_EDGE_ARC;
-					pa[7].fy = -TITLE_EDGE_ARC;
-					pa[8].fx = xr.fx + xr.fw;
-					pa[8].fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
+					pa[8].fx = 0;
+					pa[8].fy = 0;
+					pa[9].fx = TITLE_EDGE_ARC;
+					pa[9].fy = TITLE_EDGE_ARC;
+					pa[10].fx = xr.fx + xr.fw;
+					pa[10].fy = xr.fy + xr.fh - TITLE_EDGE_DARK - TITLE_EDGE_ARC;
 
 					ta[7] = _T('L');
-					pa[9].fx = xr.fx + xr.fw;
-					pa[9].fy = xr.fy + TITLE_EDGE_LIGHT;
+					pa[11].fx = xr.fx + xr.fw;
+					pa[11].fy = xr.fy + TITLE_EDGE_LIGHT;
 
 					ta[8] = _T('L');
-					pa[10].fx = pw + 0.5f;
-					pa[10].fy = xr.fy + TITLE_EDGE_LIGHT;
+					pa[12].fx = pw + 0.5f;
+					pa[12].fy = xr.fy + TITLE_EDGE_LIGHT;
 
 					ta[9] = _T('L');
-					pa[11].fx = pw + 0.5f;
-					pa[11].fy = xr.fy;
+					pa[13].fx = pw + 0.5f;
+					pa[13].fy = xr.fy;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 - TITLE_EDGE_DARK / 2;
@@ -525,11 +545,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					
 					if (get_title_item_locked(plk))
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+						draw_gizmo(pif, &xc, &xr_image, icon);
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
+						draw_gizmo(pif, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx + ic;
@@ -558,34 +578,38 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					pa[3].fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
 
 					ta[4] = _T('A');
-					pa[4].fx = TITLE_EDGE_ARC;
-					pa[4].fy = TITLE_EDGE_ARC;
-					pa[5].fx = xr.fx + TITLE_EDGE_ARC;
-					pa[5].fy = xr.fy + TITLE_EDGE_DARK;
-
-					ta[5] = _T('L');
-					pa[6].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
+					pa[4].fx = 1;
+					pa[4].fy = 0;
+					pa[5].fx = TITLE_EDGE_ARC;
+					pa[5].fy = TITLE_EDGE_ARC;
+					pa[6].fx = xr.fx + TITLE_EDGE_ARC;
 					pa[6].fy = xr.fy + TITLE_EDGE_DARK;
 
+					ta[5] = _T('L');
+					pa[7].fx = xr.fx + xr.fw - TITLE_EDGE_ARC;
+					pa[7].fy = xr.fy + TITLE_EDGE_DARK;
+
 					ta[6] = _T('A');
-					pa[7].fx = TITLE_EDGE_ARC;
-					pa[7].fy = TITLE_EDGE_ARC;
-					pa[8].fx = xr.fx + xr.fw;
-					pa[8].fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
+					pa[8].fx = 1;
+					pa[8].fy = 0;
+					pa[9].fx = TITLE_EDGE_ARC;
+					pa[9].fy = TITLE_EDGE_ARC;
+					pa[10].fx = xr.fx + xr.fw;
+					pa[10].fy = xr.fy + TITLE_EDGE_DARK + TITLE_EDGE_ARC;
 
 					ta[7] = _T('L');
-					pa[9].fx = xr.fx + xr.fw;
-					pa[9].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
+					pa[11].fx = xr.fx + xr.fw;
+					pa[11].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
 					ta[8] = _T('L');
-					pa[10].fx = pw + 0.5f;
-					pa[10].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
+					pa[12].fx = pw + 0.5f;
+					pa[12].fy = xr.fy + xr.fh - TITLE_EDGE_LIGHT;
 
 					ta[9] = _T('L');
-					pa[11].fx = pw + 0.5f;
-					pa[11].fy = xr.fy + xr.fh;
+					pa[13].fx = pw + 0.5f;
+					pa[13].fy = xr.fy + xr.fh;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 12);
+					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 + TITLE_EDGE_DARK / 2;
@@ -596,11 +620,11 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 					
 					if (get_title_item_locked(plk))
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+						draw_gizmo(pif, &xc, &xr_image, icon);
 					}
 					else
 					{
-						(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
+						draw_gizmo(pif, &xc, &xr_image, GDI_ATTR_GIZMO_CLOSE);
 					}
 
 					xr_text.fx = xr.fx + ic;
@@ -625,7 +649,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-					(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+					draw_gizmo(pif, &xc, &xr_image, icon);
 
 					xr_text.fx = xr.fx + TITLE_EDGE_LIGHT;
 					xr_text.fy = xr.fy + ic;
@@ -643,7 +667,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-					(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+					draw_gizmo(pif, &xc, &xr_image, icon);
 
 					xr_text.fx = xr.fx;
 					xr_text.fy = xr.fy + ic;
@@ -664,7 +688,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-					(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+					draw_gizmo(pif, &xc, &xr_image, icon);
 
 					xr_text.fx = xr.fx + ic;
 					xr_text.fy = xr.fy + TITLE_EDGE_LIGHT;
@@ -682,7 +706,7 @@ void draw_title(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr, l
 
 					ft_center_rect(&xr_image, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-					(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xr_image, icon);
+					draw_gizmo(pif, &xc, &xr_image, icon);
 
 					xr_text.fx = xr.fx + ic;
 					xr_text.fy = xr.fy;

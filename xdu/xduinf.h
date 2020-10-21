@@ -83,49 +83,49 @@ typedef struct _if_shell_t {
 /*context interface*/
 typedef int(*PF_CONTEXT_STARTUP)(void);
 typedef void(*PF_CONTEXT_CLEANUP)(void);
-typedef res_ctx_t(*PF_CREATE_DISPLAY_CONTEXT)(res_win_t);
-typedef res_ctx_t(*PF_CREATE_COMPATIBLE_CONTEXT)(res_ctx_t, int, int);
-typedef void(*PF_DESTROY_CONTEXT)(res_ctx_t);
-typedef void(*PF_RENDER_CONTEXT)(res_ctx_t, int, int, res_ctx_t, int, int, int, int);
-typedef void(*PF_GET_DEVICE_CAPS)(res_ctx_t, dev_cap_t*);
-typedef float(*PF_PT_PER_MM)(res_ctx_t, bool_t);
-typedef void(*PF_TEXT_MM_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, float*, float*);
-typedef void(*PF_TEXT_PT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, int*, int*);
-typedef void(*PF_TEXT_MM_METRIC)(res_ctx_t, const xfont_t*, float*, float*);
-typedef void(*PF_TEXT_PT_METRIC)(res_ctx_t, const xfont_t*, int*, int*);
-typedef float(*PF_CAST_PT_TO_MM)(res_ctx_t, int, bool_t);
-typedef int(*PF_CAST_MM_TO_PT)(res_ctx_t, float, bool_t);
+typedef visual_t(*PF_CREATE_DISPLAY_CONTEXT)(res_win_t);
+typedef visual_t(*PF_CREATE_COMPATIBLE_CONTEXT)(visual_t, int, int);
+typedef void(*PF_DESTROY_CONTEXT)(visual_t);
+typedef void(*PF_RENDER_CONTEXT)(visual_t, int, int, visual_t, int, int, int, int);
+typedef void(*PF_GET_DEVICE_CAPS)(visual_t, dev_cap_t*);
+typedef float(*PF_PT_PER_MM)(visual_t, bool_t);
+typedef void(*PF_TEXT_MM_SIZE)(visual_t, const xfont_t*, const tchar_t*, int, xsize_t*);
+typedef void(*PF_TEXT_PT_SIZE)(visual_t, const xfont_t*, const tchar_t*, int, xsize_t*);
+typedef void(*PF_TEXT_MM_METRIC)(visual_t, const xfont_t*, xsize_t*);
+typedef void(*PF_TEXT_PT_METRIC)(visual_t, const xfont_t*, xsize_t*);
+typedef void(*PF_CAST_PT_TO_MM)(visual_t, bool_t, xspan_t*);
+typedef void(*PF_CAST_MM_TO_PT)(visual_t, bool_t, xspan_t*);
 
 /*graphic interface*/
-typedef void(*PF_GDI_DRAW_LINE)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_POLYLINE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_POLYGON)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_BEZIER)(res_ctx_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_CURVE)(res_ctx_t, const xpen_t*, const xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_RECT)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_TRIANGLE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
-typedef void(*PF_GDI_DRAW_PATH)(res_ctx_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*);
-typedef void(*PF_GDI_GRADIENT_RECT)(res_ctx_t, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t*);
-typedef void(*PF_GDI_ALPHABLEND_RECT)(res_ctx_t, const xcolor_t*, const xrect_t*, int);
-typedef void(*PF_GDI_DRAW_ROUND)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_ELLIPSE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_FAN)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int, int, double, double);
-typedef void(*PF_GDI_CALC_FAN)(res_ctx_t, const xpoint_t*, int, int, double, double, xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_PIE)(res_ctx_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int, int, double, double);
-typedef void(*PF_GDI_DRAW_ARC)(res_ctx_t, const xpen_t*, const xpoint_t*, int, int, double, double);
-typedef void(*PF_GDI_DRAW_ARROW)(res_ctx_t, const xpen_t*, const xbrush_t*, const xrect_t*, int, double);
-typedef void(*PF_GDI_DRAW_TEXT)(res_ctx_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
-typedef void(*PF_GDI_TEXT_OUT)(res_ctx_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
-typedef void(*PF_GDI_DRAW_IMAGE)(res_ctx_t, res_bmp_t, const tchar_t*, const xrect_t*);
-typedef void(*PF_GDI_DRAW_BITMAP)(res_ctx_t, res_bmp_t, const xpoint_t*);
-typedef void(*PF_GDI_DRAW_ICON)(res_ctx_t, const xcolor_t*, const xrect_t*, const tchar_t*);
-typedef void(*PF_GDI_FILL_REGION)(res_ctx_t, const xbrush_t*, res_rgn_t);
+typedef void(*PF_GDI_DRAW_LINE)(visual_t, const xpen_t*, const xpoint_t*, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_ARC)(visual_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xsize_t*, bool_t, bool_t);
+typedef void(*PF_GDI_DRAW_POLYLINE)(visual_t, const xpen_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_BEZIER)(visual_t, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_CURVE)(visual_t, const xpen_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_RECT)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_TRIANGLE)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*, const tchar_t*);
+typedef void(*PF_GDI_DRAW_PATH)(visual_t, const xpen_t*, const xbrush_t*, const tchar_t*, const xpoint_t*);
+typedef void(*PF_GDI_GRADIENT_RECT)(visual_t, const xcolor_t* xc_brim, const xcolor_t* xc_core, const tchar_t* gradient, const xrect_t*);
+typedef void(*PF_GDI_ALPHABLEND_RECT)(visual_t, const xcolor_t*, const xrect_t*, int);
+typedef void(*PF_GDI_DRAW_POLYGON)(visual_t, const xpen_t*, const xbrush_t*, const xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_ROUND)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_ELLIPSE)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_FAN)(visual_t, const xpen_t*, const xbrush_t*, const xpoint_t*, const xsize_t*, double, double);
+typedef void(*PF_GDI_CALC_FAN)(visual_t, const xpoint_t*, const xsize_t*, double, double, xpoint_t*, int);
+typedef void(*PF_GDI_DRAW_PIE)(visual_t, const xpen_t*, const xbrush_t*, const xpoint_t*, const xsize_t*, double, double);
+typedef void(*PF_GDI_DRAW_ARROW)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*, const xspan_t*, double);
+typedef void(*PF_GDI_DRAW_TEXT)(visual_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
+typedef void(*PF_GDI_TEXT_OUT)(visual_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
+typedef void(*PF_GDI_DRAW_IMAGE)(visual_t, bitmap_t, const tchar_t*, const xrect_t*);
+typedef void(*PF_GDI_DRAW_BITMAP)(visual_t, bitmap_t, const xpoint_t*);
+typedef void(*PF_GDI_DRAW_ICON)(visual_t, const xcolor_t*, const xrect_t*, const tchar_t*);
+typedef void(*PF_GDI_FILL_REGION)(visual_t, const xbrush_t*, res_rgn_t);
 
-typedef void(*PF_GDI_EXCLIP_RECT)(res_ctx_t, const xrect_t*);
-typedef void(*PF_GDI_INCLIP_RECT)(res_ctx_t, const xrect_t*);
-
-typedef void(*PF_GDI_TEXT_SIZE)(res_ctx_t, const xfont_t*, const tchar_t*, int, xsize_t*);
-typedef void(*PF_GDI_TEXT_METRIC)(res_ctx_t, const xfont_t*, xsize_t*);
+typedef void(*PF_GDI_EXCLIP_RECT)(visual_t, const xrect_t*);
+typedef void(*PF_GDI_INCLIP_RECT)(visual_t, const xrect_t*);
+typedef void(*PF_GDI_TEXT_RECT)(visual_t, const xfont_t*, const xface_t*, const tchar_t*, int, xrect_t*);
+typedef void(*PF_GDI_TEXT_SIZE)(visual_t, const xfont_t*, const tchar_t*, int, xsize_t*);
+typedef void(*PF_GDI_TEXT_METRIC)(visual_t, const xfont_t*, xsize_t*);
 
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 typedef res_rgn_t(*PF_CREATE_REGION)(const tchar_t*, const xrect_t*);
@@ -135,34 +135,34 @@ typedef bool_t(*PF_PT_IN_REGION)(res_rgn_t, const xpoint_t*);
 
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
 /*bitmap interface*/
-typedef void(*PF_DESTROY_BITMAP)(res_bmp_t);
-typedef void(*PF_GET_BITMAP_SIZE)(res_bmp_t, int*, int*);
+typedef void(*PF_DESTROY_BITMAP)(bitmap_t);
+typedef void(*PF_GET_BITMAP_SIZE)(bitmap_t, int*, int*);
 
-typedef res_bmp_t(*PF_CREATE_CONTEXT_BITMAP)(res_ctx_t);
-typedef res_bmp_t(*PF_CREATE_COLOR_BITMAP)(res_ctx_t, const xcolor_t*, int, int);
-typedef res_bmp_t(*PF_CREATE_PATTERN_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
-typedef res_bmp_t(*PF_CREATE_GRADIENT_BITMAP)(res_ctx_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
-typedef res_bmp_t(*PF_CREATE_CODE128_BITMAP)(res_ctx_t, int, int, const unsigned char*, dword_t, const tchar_t*);
-typedef res_bmp_t(*PF_CREATE_PDF417_BITMAP)(res_ctx_t, int, int, const unsigned char*, dword_t, int, int);
-typedef res_bmp_t(*PF_CREATE_QRCODE_BITMAP)(res_ctx_t, int, int, const unsigned char*, dword_t, int, int);
-typedef res_bmp_t(*PF_CREATE_STORAGE_BITMAP)(res_ctx_t, const tchar_t*);
-typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_BYTES)(res_ctx_t, const unsigned char*, dword_t);
-typedef dword_t(*PF_SAVE_BITMAP_TO_BYTES)(res_ctx_t, res_bmp_t, unsigned char*, dword_t);
-typedef dword_t(*PF_GET_BITMAP_BYTES)(res_bmp_t);
-typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_THUMB)(res_ctx_t, const tchar_t*);
-typedef res_bmp_t(*PF_LOAD_BITMAP_FROM_ICON)(res_ctx_t, const tchar_t*);
+typedef bitmap_t(*PF_CREATE_CONTEXT_BITMAP)(visual_t);
+typedef bitmap_t(*PF_CREATE_COLOR_BITMAP)(visual_t, const xcolor_t*, int, int);
+typedef bitmap_t(*PF_CREATE_PATTERN_BITMAP)(visual_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
+typedef bitmap_t(*PF_CREATE_GRADIENT_BITMAP)(visual_t, const xcolor_t*, const xcolor_t*, int, int, const tchar_t*);
+typedef bitmap_t(*PF_CREATE_CODE128_BITMAP)(visual_t, int, int, const unsigned char*, dword_t, const tchar_t*);
+typedef bitmap_t(*PF_CREATE_PDF417_BITMAP)(visual_t, int, int, const unsigned char*, dword_t, int, int);
+typedef bitmap_t(*PF_CREATE_QRCODE_BITMAP)(visual_t, int, int, const unsigned char*, dword_t, int, int);
+typedef bitmap_t(*PF_CREATE_STORAGE_BITMAP)(visual_t, const tchar_t*);
+typedef bitmap_t(*PF_LOAD_BITMAP_FROM_BYTES)(visual_t, const unsigned char*, dword_t);
+typedef dword_t(*PF_SAVE_BITMAP_TO_BYTES)(visual_t, bitmap_t, unsigned char*, dword_t);
+typedef dword_t(*PF_GET_BITMAP_BYTES)(bitmap_t);
+typedef bitmap_t(*PF_LOAD_BITMAP_FROM_THUMB)(visual_t, const tchar_t*);
+typedef bitmap_t(*PF_LOAD_BITMAP_FROM_ICON)(visual_t, const tchar_t*);
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_PRINTER
 /*printer interface*/
 typedef bool_t(*PF_DEFAULT_PRINTER_MODE)(dev_prn_t*);
 typedef bool_t(*PF_SETUP_PRINTER_MODE)(res_win_t, dev_prn_t*);
-typedef res_ctx_t(*PF_CREATE_PRINTER_CONTEXT)(const dev_prn_t*);
-typedef void(*PF_DESTROY_PRINTER_CONTEXT)(res_ctx_t);
-typedef void(*PF_BEGIN_PAGE)(res_ctx_t);
-typedef void(*PF_END_PAGE)(res_ctx_t);
-typedef void(*PF_BEGIN_DOC)(res_ctx_t, const tchar_t*);
-typedef void(*PF_END_DOC)(res_ctx_t);
+typedef visual_t(*PF_CREATE_PRINTER_CONTEXT)(const dev_prn_t*);
+typedef void(*PF_DESTROY_PRINTER_CONTEXT)(visual_t);
+typedef void(*PF_BEGIN_PAGE)(visual_t);
+typedef void(*PF_END_PAGE)(visual_t);
+typedef void(*PF_BEGIN_DOC)(visual_t, const tchar_t*);
+typedef void(*PF_END_DOC)(visual_t);
 #endif
 
 typedef struct _if_context_t{
@@ -206,6 +206,7 @@ typedef struct _if_context_t{
 	PF_GDI_DRAW_IMAGE		pf_gdi_draw_image;
 	PF_GDI_DRAW_BITMAP		pf_gdi_draw_bitmap;
 	PF_GDI_DRAW_ICON		pf_gdi_draw_icon;
+	PF_GDI_TEXT_RECT		pf_gdi_text_rect;
 	PF_GDI_TEXT_SIZE		pf_gdi_text_size;
 	PF_GDI_TEXT_METRIC		pf_gdi_text_metric;
 	PF_GDI_EXCLIP_RECT		pf_gdi_exclip_rect;
@@ -294,9 +295,9 @@ typedef var_long (*PF_WIDGET_GET_USER_PROP)(res_win_t, const tchar_t*);
 typedef var_long (*PF_WIDGET_DEL_USER_PROP)(res_win_t, const tchar_t*);
 typedef void(*PF_WIDGET_SET_USER_RESULT)(res_win_t, int);
 typedef int(*PF_WIDGET_GET_USER_RESULT)(res_win_t);
-typedef res_ctx_t(*PF_WIDGET_CLIENT_DC)(res_win_t);
-typedef res_ctx_t(*PF_WIDGET_WINDOW_DC)(res_win_t);
-typedef void(*PF_WIDGET_RELEASE_DC)(res_win_t, res_ctx_t);
+typedef visual_t(*PF_WIDGET_CLIENT_DC)(res_win_t);
+typedef visual_t(*PF_WIDGET_WINDOW_DC)(res_win_t);
+typedef void(*PF_WIDGET_RELEASE_DC)(res_win_t, visual_t);
 typedef res_win_t(*PF_WIDGET_GET_CHILD)(res_win_t, uid_t);
 typedef res_win_t(*PF_WIDGET_GET_PARENT)(res_win_t);
 typedef void(*PF_WIDGET_GET_CLIENT_RECT)(res_win_t, xrect_t*);

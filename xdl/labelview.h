@@ -45,17 +45,17 @@ typedef enum{
 extern "C" {
 #endif
 
-EXP_API int calc_label_pages(const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API int calc_label_pages(link_t_ptr ptr);
 
-EXP_API void calc_label_item_scope(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr* firstitem, link_t_ptr* lastitem);
+EXP_API void calc_label_item_scope(link_t_ptr ptr, int page, link_t_ptr* firstitem, link_t_ptr* lastitem);
 
-EXP_API int calc_label_item_page(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk);
+EXP_API int calc_label_item_page(link_t_ptr ptr, link_t_ptr ilk);
 
-EXP_API bool_t calc_label_item_rect(const canvbox_t* pbox, link_t_ptr ptr, int page, link_t_ptr ilk, xrect_t* pxr);
+EXP_API bool_t calc_label_item_rect(link_t_ptr ptr, int page, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API int	calc_label_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk);
+EXP_API int	calc_label_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk);
 
-EXP_API void draw_label(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, int page);
+EXP_API void draw_label(const if_canvas_t* pcanv, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "toolview.h"
 #include "xdldoc.h"
+#include "xdlview.h"
 #include "xdlimp.h"
 
 #include "xdlstd.h"
@@ -39,14 +40,16 @@ LICENSE.GPL3 for more details.
 #define TOOLGROUP_SPLIT		((float)0.8)
 
 /***************************************************************************************************/
-int _calc_tool_group_cols(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
+int _calc_tool_group_cols(link_t_ptr ptr, link_t_ptr glk)
 {
 	int n, count;
-	float th, ih;
+	float fw, fh, th, ih;
 	const tchar_t* show;
 
 	show = get_tool_group_show_ptr(glk);
 
+	fw = get_tool_width(ptr);
+	fh = get_tool_height(ptr);
 	ih = get_tool_group_item_height(glk);
 	th = get_tool_title_height(ptr);
 
@@ -57,7 +60,7 @@ int _calc_tool_group_cols(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
 		return count;
 	}
 
-	n = (int)((pbox->fh - th - 2 * TOOLGROUP_SPLIT) / ih);
+	n = (int)((fh - th - 2 * TOOLGROUP_SPLIT) / ih);
 
 	if (n < 1)
 		n = 1;
@@ -78,10 +81,10 @@ int _calc_tool_group_cols(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
 	return n;
 }
 
-int _calc_tool_group_rows(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
+int _calc_tool_group_rows(link_t_ptr ptr, link_t_ptr glk)
 {
 	int n, count;
-	float th, ih;
+	float fw, fh, th, ih;
 	const tchar_t* show;
 
 	show = get_tool_group_show_ptr(glk);
@@ -91,12 +94,14 @@ int _calc_tool_group_rows(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
 		return 1;
 	}
 
+	fw = get_tool_width(ptr);
+	fh = get_tool_height(ptr);
 	th = get_tool_title_height(ptr);
 	ih = get_tool_group_item_height(glk);
 
 	count = get_tool_group_item_count(glk);
 
-	n = (int)((pbox->fh - th - 2 * TOOLGROUP_SPLIT) / ih);
+	n = (int)((fh - th - 2 * TOOLGROUP_SPLIT) / ih);
 
 	if (n < 0)
 		n = 0;
@@ -106,18 +111,22 @@ int _calc_tool_group_rows(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
 	return n;
 }
 
-float calc_tool_group_width(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
+float calc_tool_group_width(link_t_ptr ptr, link_t_ptr glk)
 {
-	return _calc_tool_group_cols(pbox, ptr, glk) * get_tool_group_item_width(glk) + 2 * TOOLGROUP_SPLIT;
+	return _calc_tool_group_cols(ptr, glk) * get_tool_group_item_width(glk) + 2 * TOOLGROUP_SPLIT;
 }
 
-float calc_tool_group_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk)
+float calc_tool_group_height(link_t_ptr ptr, link_t_ptr glk)
 {
-	return pbox->fh - 2 * TOOLGROUP_SPLIT;
+	float fh;
+
+	fh = get_tool_height(ptr);
+
+	return fh - 2 * TOOLGROUP_SPLIT;
 	//return _calc_tool_group_rows(ptr, glk) * get_tool_group_item_height(glk) + get_tool_title_height(ptr) + 2 * TOOLGROUP_SPLIT;
 }
 
-float calc_tool_width(const canvbox_t* pbox, link_t_ptr ptr)
+float calc_tool_width(link_t_ptr ptr)
 {
 	link_t_ptr glk;
 	float w = 0;
@@ -125,7 +134,7 @@ float calc_tool_width(const canvbox_t* pbox, link_t_ptr ptr)
 	glk = get_tool_next_group(ptr, LINK_FIRST);
 	while (glk)
 	{
-		w += calc_tool_group_width(pbox, ptr, glk);
+		w += calc_tool_group_width(ptr, glk);
 		glk = get_tool_next_group(ptr, glk);
 	}
 
@@ -133,7 +142,7 @@ float calc_tool_width(const canvbox_t* pbox, link_t_ptr ptr)
 }
 
 
-void calc_tool_group_entire_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr)
+void calc_tool_group_entire_rect(link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr)
 {
 	link_t_ptr plk;
 
@@ -143,8 +152,8 @@ void calc_tool_group_entire_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_p
 	plk = get_tool_next_group(ptr, LINK_FIRST);
 	while (plk)
 	{
-		pxr->fw = calc_tool_group_width(pbox, ptr, plk);
-		pxr->fh = calc_tool_group_height(pbox, ptr, plk);
+		pxr->fw = calc_tool_group_width(ptr, plk);
+		pxr->fh = calc_tool_group_height(ptr, plk);
 
 		if (plk == glk)
 		{
@@ -157,15 +166,15 @@ void calc_tool_group_entire_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_p
 	}
 }
 
-void calc_tool_group_title_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr)
+void calc_tool_group_title_rect(link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr)
 {
-	calc_tool_group_entire_rect(pbox, ptr, glk, pxr);
+	calc_tool_group_entire_rect(ptr, glk, pxr);
 
 	pxr->fy = pxr->fy + pxr->fh - get_tool_title_height(ptr);
 	pxr->fh = get_tool_title_height(ptr);
 }
 
-void calc_tool_group_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_tool_group_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr plk, glk;
 	xrect_t xr = { 0 };
@@ -175,7 +184,7 @@ void calc_tool_group_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr
 
 	glk = get_dom_parent_node(ilk);
 
-	calc_tool_group_entire_rect(pbox, ptr, glk, &xr);
+	calc_tool_group_entire_rect(ptr, glk, &xr);
 	xr.fx += TOOLGROUP_SPLIT;
 	xr.fw -= 2 * TOOLGROUP_SPLIT;
 	xr.fy += TOOLGROUP_SPLIT;
@@ -199,14 +208,14 @@ void calc_tool_group_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr
 	if (index >= 4 && get_tool_group_collapsed(glk))
 		return;
 
-	rows = _calc_tool_group_rows(pbox, ptr, glk);
-	cols = _calc_tool_group_cols(pbox, ptr, glk);
+	rows = _calc_tool_group_rows(ptr, glk);
+	cols = _calc_tool_group_cols(ptr, glk);
 
 	ft_cell_rect(&xr, 0, rows, cols, index);
 	xmem_copy((void*)pxr, (void*)&xr, sizeof(xrect_t));
 }
 
-int calc_tool_point_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, link_t_ptr* pplk)
+int calc_tool_point_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, link_t_ptr* pplk)
 {
 	link_t_ptr glk, ilk;
 	int nHint;
@@ -227,11 +236,11 @@ int calc_tool_point_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr 
 	glk = get_tool_next_group(ptr, LINK_FIRST);
 	while (glk)
 	{
-		rows = _calc_tool_group_rows(pbox, ptr, glk);
-		cols = _calc_tool_group_cols(pbox, ptr, glk);
+		rows = _calc_tool_group_rows(ptr, glk);
+		cols = _calc_tool_group_cols(ptr, glk);
 
-		calc_tool_group_entire_rect(pbox, ptr, glk, &xrGroup);
-		calc_tool_group_title_rect(pbox, ptr, glk, &xrTitle);
+		calc_tool_group_entire_rect(ptr, glk, &xrGroup);
+		calc_tool_group_title_rect(ptr, glk, &xrTitle);
 
 		if (ft_inside(xm, ym, xrTitle.fx, xrTitle.fy, xrTitle.fx + xrTitle.fw, xrTitle.fy + xrTitle.fh))
 		{
@@ -249,7 +258,7 @@ int calc_tool_point_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr 
 			ilk = get_tool_group_next_item(glk, LINK_FIRST);
 			while (ilk)
 			{
-				calc_tool_group_item_rect(pbox, ptr, ilk, &xrItem);
+				calc_tool_group_item_rect(ptr, ilk, &xrItem);
 
 				if (ft_inside(xm, ym, xrItem.fx, xrItem.fy, xrItem.fx + xrItem.fw, xrItem.fy + xrItem.fh))
 				{
@@ -274,7 +283,7 @@ int calc_tool_point_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr 
 	return nHint;
 }
 
-void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
+void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr glk, ilk;
 	xrect_t xrGroup, xrTitle, xrItem, xrClip;
@@ -291,6 +300,8 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	float px, py, pw, ph;
 	const tchar_t* show;
 	int count;
+
+	const canvbox_t* pbox = &pif->rect;
 
 	XDL_ASSERT(pif != NULL);
 
@@ -352,7 +363,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 	{
 		if (get_tool_group_item_count(glk))
 		{
-			calc_tool_group_entire_rect(pbox, ptr, glk, &xrGroup);
+			calc_tool_group_entire_rect(ptr, glk, &xrGroup);
 			ft_offset_rect(&xrGroup, px, py);
 			ft_expand_rect(&xrGroup, -DEF_SPLIT_FEED, -DEF_SPLIT_FEED);
 
@@ -360,7 +371,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 			xb_group.shadow.offy = DEF_MIN_SHADOW;
 			(*pif->pf_draw_round)(pif->canvas, &xp, &xb_group, &xrGroup);
 
-			calc_tool_group_title_rect(pbox, ptr, glk, &xrTitle);
+			calc_tool_group_title_rect(ptr, glk, &xrTitle);
 			ft_offset_rect(&xrTitle, px, py);
 			ft_expand_rect(&xrTitle, -DEF_SPLIT_FEED, -DEF_SPLIT_FEED);
 			xrTitle.fy -= DEF_SPLIT_FEED;
@@ -379,7 +390,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 				xrTitle.fw = xrTitle.fh;
 
 				ft_center_rect(&xrTitle, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xrTitle, GDI_ATTR_GIZMO_OMIT);
+				draw_gizmo(pif, &xc, &xrTitle, GDI_ATTR_GIZMO_OMIT);
 			}
 		}
 
@@ -391,13 +402,13 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 		ilk = get_tool_group_next_item(glk, LINK_FIRST);
 		while (ilk)
 		{
-			calc_tool_group_item_rect(pbox, ptr, ilk, &xrItem);
+			calc_tool_group_item_rect(ptr, ilk, &xrItem);
 			ft_offset_rect(&xrItem, px, py);
 
 			if (compare_text(show, -1, ATTR_SHOW_IMAGEONLY, -1, 0) == 0)
 			{
 				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
+				draw_gizmo(pif, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
 			}
 			else if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) == 0)
 			{
@@ -411,7 +422,7 @@ void draw_tool(const if_canvas_t* pif, const canvbox_t* pbox, link_t_ptr ptr)
 
 				xrItem.fy -= xrItem.fh;
 				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);
-				(*pif->pf_draw_gizmo)(pif->canvas, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
+				draw_gizmo(pif, &xc, &xrItem, get_tool_item_icon_ptr(ilk));
 			}
 
 			count++;

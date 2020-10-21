@@ -303,23 +303,6 @@ typedef struct _dev_blt_t{
 	tchar_t addr[ADDR_LEN];
 }dev_blt_t;
 
-typedef struct _border_t{
-	int title;
-	int edge;
-	int hscroll;
-	int vscroll;
-	int menu;
-	int icon;
-}border_t;
-
-typedef struct _scroll_t{
-	int pos;
-	int min;
-	int max;
-	int page;
-	int track;
-}scroll_t;
-
 typedef struct _str_find_t{
 	bool_t b_case;
 	bool_t b_back;
@@ -364,7 +347,7 @@ typedef int(*SUB_ON_CHAR)(res_win_t, tchar_t, uid_t, var_long);
 typedef int(*SUB_ON_SIZE)(res_win_t, int, const xsize_t*, uid_t, var_long);
 typedef int(*SUB_ON_MOVE)(res_win_t, const xpoint_t*, uid_t, var_long);
 typedef int(*SUB_ON_SHOW)(res_win_t, bool_t, uid_t, var_long);
-typedef int(*SUB_ON_PAINT)(res_win_t, res_ctx_t, const xrect_t*, uid_t, var_long);
+typedef int(*SUB_ON_PAINT)(res_win_t, visual_t, const xrect_t*, uid_t, var_long);
 typedef int(*SUB_ON_SET_FOCUS)(res_win_t, res_win_t, uid_t, var_long);
 typedef int(*SUB_ON_KILL_FOCUS)(res_win_t, res_win_t, uid_t, var_long);
 typedef int(*SUB_ON_ENABLE)(res_win_t, bool_t, uid_t, var_long);
@@ -426,7 +409,7 @@ typedef struct _if_subproc_t{
 	var_long delta;
 }if_subproc_t;
 
-typedef void(*PF_ON_NCPAINT)(res_win_t, res_ctx_t);
+typedef void(*PF_ON_NCPAINT)(res_win_t, visual_t);
 typedef void(*PF_ON_NCCALCSIZE)(res_win_t, xrect_t*);
 typedef int(*PF_ON_NCHITTEST)(res_win_t, const xpoint_t*);
 typedef int(*PF_ON_NCCALCSCROLL)(res_win_t, bool_t, const xpoint_t*);
@@ -451,7 +434,7 @@ typedef void(*PF_ON_SIZE)(res_win_t, int, const xsize_t*);
 typedef void(*PF_ON_MOVE)(res_win_t, const xpoint_t*);
 typedef void(*PF_ON_SHOW)(res_win_t, bool_t);
 typedef void(*PF_ON_ACTIVATE)(res_win_t, int);
-typedef void(*PF_ON_PAINT)(res_win_t, res_ctx_t, const xrect_t*);
+typedef void(*PF_ON_PAINT)(res_win_t, visual_t, const xrect_t*);
 typedef void(*PF_ON_ENABLE)(res_win_t, bool_t);
 typedef void(*PF_ON_SET_FOCUS)(res_win_t, res_win_t);
 typedef void(*PF_ON_KILL_FOCUS)(res_win_t, res_win_t);

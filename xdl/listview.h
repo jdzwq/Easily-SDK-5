@@ -48,17 +48,17 @@ typedef enum{
 extern "C" {
 #endif
 
-	EXP_API float calc_list_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk);
+	EXP_API float calc_list_height(link_t_ptr ptr, link_t_ptr plk);
 
-	EXP_API float calc_list_width(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk);
+	EXP_API float calc_list_width(link_t_ptr ptr, link_t_ptr plk);
 
-	EXP_API bool_t calc_list_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API bool_t calc_list_item_rect(link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr);
 
-	EXP_API bool_t calc_list_item_text_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr);
+	EXP_API bool_t calc_list_item_text_rect(link_t_ptr ptr, link_t_ptr plk, link_t_ptr ilk, xrect_t* pxr);
 
-	EXP_API int	calc_list_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk, link_t_ptr* pilk);
+	EXP_API int	calc_list_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk, link_t_ptr* pilk);
 
-	EXP_API void draw_list_child(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr plk);
+	EXP_API void draw_list_child(const if_canvas_t* pcanv, link_t_ptr ptr, link_t_ptr plk);
 
 #ifdef	__cplusplus
 }

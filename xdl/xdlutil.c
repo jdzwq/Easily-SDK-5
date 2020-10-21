@@ -2715,35 +2715,7 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 	return total;
 }
 
-
 /************************************************************************************************/
-
-float font_size(int px)
-{
-	float pt = 0;
-
-	font_metric_by_px((float)px, &pt, NULL);
-
-	return pt;
-}
-
-float font_metric(float pt)
-{
-	float pm = 0;
-
-	font_metric_by_pt(pt, &pm, NULL);
-
-	return pm;
-}
-
-int font_points(float pt)
-{
-	float px = 0;
-
-	font_metric_by_pt(pt, NULL, &px);
-
-	return (int)(px + 0.5);
-}
 
 bool_t inside_rowcol(int row, int col, int from_row, int from_col, int to_row, int to_col)
 {
@@ -2777,9 +2749,15 @@ int ft_parse_points_from_token(xpoint_t* ppt, int max, const tchar_t* token, int
 	int klen = 0;
 	int vlen = 0;
 	int count = 0;
+	int n, total = 0;
 
-	while (token = parse_options_token(token, len, _T(' '), _T(','), &key, &klen, &val, &vlen))
+	if (len < 0)
+		len = xslen(token);
+
+	while (n = parse_options_token((token + total), (len - total), _T(' '), _T(','), &key, &klen, &val, &vlen))
 	{
+		total += n;
+
 		if (ppt)
 		{
 			ppt[count].fx = xsntof(key, klen);
@@ -2824,9 +2802,15 @@ int pt_parse_points_from_token(xpoint_t* ppt, int max, const tchar_t* token, int
 	int klen = 0;
 	int vlen = 0;
 	int count = 0;
+	int n, total = 0;
 
-	while (token = parse_options_token(token, len, _T(' '), _T(','), &key, &klen, &val, &vlen))
+	if (len < 0)
+		len = xslen(token);
+
+	while (n = parse_options_token((token + total), (len - total), _T(' '), _T(','), &key, &klen, &val, &vlen))
 	{
+		total += n;
+
 		if (ppt)
 		{
 			ppt[count].x = xsntol(key, klen);

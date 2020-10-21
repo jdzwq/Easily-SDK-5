@@ -35,12 +35,81 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_WIDGET_NC
 
-static void _WidgetDrawEdge(res_win_t wt, res_ctx_t dc)
+static void _WidgetDrawLogo(visual_t rdc, const xcolor_t* pxc, const xrect_t* prt)
+{
+	xpen_t xp;
+	xbrush_t xb;
+	xrect_t rt, xr;
+
+	if_visual_t* piv;
+
+	piv = create_visual_interface(rdc);
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
+	rt.x = prt->x;
+	rt.y = prt->y;
+
+	if (prt->w > 24 && prt->h > 24)
+	{
+		xscpy(xp.size, _T("3"));
+		rt.w = 36;
+		rt.h = 36;
+	}
+	else if (prt->w > 16 && prt->h > 16)
+	{
+		xscpy(xp.size, _T("2"));
+		rt.w = 24;
+		rt.h = 24;
+	}
+	else
+	{
+		xscpy(xp.size, _T("1"));
+		rt.w = 16;
+		rt.h = 16;
+	}
+
+	prt = &rt;
+
+	xr.x = prt->x;
+	xr.y = prt->y;
+	xr.w = prt->w / 2 - 2;
+	xr.h = prt->h / 2 - 2;
+	(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &xr);
+
+	xr.x = prt->x + prt->w / 2 + 1;
+	xr.y = prt->y;
+	xr.w = prt->w / 2 - 2;
+	xr.h = prt->h / 2 - 2;
+	(*piv->pf_draw_rect_raw)(piv->visual, &xp, &xb, &xr);
+
+	xr.x = prt->x;
+	xr.y = prt->y + prt->h / 2 + 1;
+	xr.w = prt->w / 2 - 2;
+	xr.h = prt->h / 2 - 2;
+	(*piv->pf_draw_rect_raw)(piv->visual, &xp, &xb, &xr);
+
+	xr.x = prt->x + prt->w / 2 + 1;
+	xr.y = prt->y + prt->h / 2 + 1;
+	xr.w = prt->w / 2 - 2;
+	xr.h = prt->h / 2 - 2;
+	(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &xr);
+
+	destroy_visual_interface(piv);
+}
+
+static void _WidgetDrawEdge(res_win_t wt, visual_t rdc)
 {
 	border_t bd = { 0 };
 	dword_t ws;
 	xbrush_t xb;
 	xrect_t rtWnd, rtScr;
+
+	if_visual_t* piv;
 
 	ws = widget_get_style(wt);
 	widget_calc_border(ws, &bd);
@@ -48,10 +117,12 @@ static void _WidgetDrawEdge(res_win_t wt, res_ctx_t dc)
 	if (!bd.edge)
 		return;
 
+	piv = create_visual_interface(rdc);
+
 	widget_get_client_rect(wt, &rtScr);
 	widget_client_to_window(wt, RECTPOINT(&rtScr));
 
-	exclip_rect_raw(dc, &rtScr);
+	(*piv->pf_exclip_rect_raw)(piv->visual, &rtScr);
 
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
@@ -59,10 +130,12 @@ static void _WidgetDrawEdge(res_win_t wt, res_ctx_t dc)
 	widget_get_xbrush(wt, &xb);
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
-	draw_rect_raw(dc, NULL, &xb, &rtWnd);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &rtWnd);
+
+	destroy_visual_interface(piv);
 }
 
-static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
+static void _WidgetDrawHScroll(res_win_t wt, visual_t rdc)
 {
 	border_t bd = { 0 };
 	xrect_t rtWnd, rtScr;
@@ -72,10 +145,14 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 
+	if_visual_t* piv;
+
 	widget_calc_border(widget_get_style(wt), &bd);
 
 	if (!bd.hscroll)
 		return;
+
+	piv = create_visual_interface(rdc);
 
 	widget_get_scroll_info(wt, 1, &sl);
 
@@ -92,60 +169,62 @@ static void _WidgetDrawHScroll(res_win_t wt, res_ctx_t dc)
 
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
-	draw_rect_raw(dc, NULL, &xb, &rtScr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &rtScr);
 
-	if (sl.max + sl.page / 2 <= sl.min)
-		return;
-
-	lighten_xbrush(&xb, DEF_HARD_DARKEN);
-	xscpy(xp.color, xb.color);
-
-	rtScr.x = rtWnd.x + bd.edge;
-	rtScr.w = bd.hscroll;
-	rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
-	rtScr.h = bd.hscroll;
-	pt_expand_rect(&rtScr, -3, -3);
-
-	draw_round_raw(dc, &xp, &xb, &rtScr);
-
-	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll - bd.hscroll;
-	rtScr.w = bd.hscroll;
-	rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
-	rtScr.h = bd.hscroll;
-	pt_expand_rect(&rtScr, -3, -3);
-
-	draw_round_raw(dc, &xp, &xb, &rtScr);
-
-	if (!sl.pos)
+	if (sl.max + sl.page / 2 > sl.min)
 	{
+		lighten_xbrush(&xb, DEF_HARD_DARKEN);
+		xscpy(xp.color, xb.color);
+
 		rtScr.x = rtWnd.x + bd.edge;
 		rtScr.w = bd.hscroll;
 		rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
 		rtScr.h = bd.hscroll;
-	}
-	else if (sl.pos == sl.max)
-	{
+		pt_expand_rect(&rtScr, -3, -3);
+
+		(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &rtScr);
+
 		rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll - bd.hscroll;
 		rtScr.w = bd.hscroll;
 		rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
 		rtScr.h = bd.hscroll;
-	}
-	else
-	{
-		ind = (int)((float)sl.pos / (float)sl.max * (float)(rtWnd.w - 2 * bd.edge - bd.vscroll - bd.hscroll));
-		rtScr.x = rtWnd.x + bd.edge + ind;
-		rtScr.w = bd.hscroll;
-		rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
-		rtScr.h = bd.hscroll;
-	}
-	pt_expand_rect(&rtScr, -4, -4);
+		pt_expand_rect(&rtScr, -3, -3);
 
-	lighten_xpen(&xp, DEF_SOFT_LIGHTEN);
-	lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
-	draw_ellipse_raw(dc, &xp, &xb, &rtScr);
+		(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &rtScr);
+
+		if (!sl.pos)
+		{
+			rtScr.x = rtWnd.x + bd.edge;
+			rtScr.w = bd.hscroll;
+			rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
+			rtScr.h = bd.hscroll;
+		}
+		else if (sl.pos == sl.max)
+		{
+			rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll - bd.hscroll;
+			rtScr.w = bd.hscroll;
+			rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
+			rtScr.h = bd.hscroll;
+		}
+		else
+		{
+			ind = (int)((float)sl.pos / (float)sl.max * (float)(rtWnd.w - 2 * bd.edge - bd.vscroll - bd.hscroll));
+			rtScr.x = rtWnd.x + bd.edge + ind;
+			rtScr.w = bd.hscroll;
+			rtScr.y = rtWnd.y + rtWnd.h - bd.edge - bd.hscroll;
+			rtScr.h = bd.hscroll;
+		}
+		pt_expand_rect(&rtScr, -4, -4);
+
+		lighten_xpen(&xp, DEF_SOFT_LIGHTEN);
+		lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
+		(*piv->pf_draw_ellipse_raw)(piv->visual, &xp, &xb, &rtScr);
+	}
+
+	destroy_visual_interface(piv);
 }
 
-static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
+static void _WidgetDrawVScroll(res_win_t wt, visual_t rdc)
 {
 	border_t bd = { 0 };
 	xrect_t rtWnd, rtScr;
@@ -155,10 +234,14 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 
+	if_visual_t* piv;
+
 	widget_calc_border(widget_get_style(wt), &bd);
 
 	if (!bd.vscroll)
 		return;
+
+	piv = create_visual_interface(rdc);
 
 	widget_get_scroll_info(wt, 0, &sl);
 
@@ -175,7 +258,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
-	draw_rect_raw(dc, NULL, &xb, &rtScr);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &rtScr);
 
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 	xscpy(xp.color, xb.color);
@@ -187,7 +270,7 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	rtScr.h = bd.vscroll;
 	pt_expand_rect(&rtScr, -4, -6);
 
-	draw_triangle_raw(dc, &xp, &xb, &rtScr, GDI_ATTR_ORIENT_TOP);
+	(*piv->pf_draw_triangle_raw)(piv->visual, &xp, &xb, &rtScr, GDI_ATTR_ORIENT_TOP);
 
 	//down page button
 	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
@@ -196,61 +279,63 @@ static void _WidgetDrawVScroll(res_win_t wt, res_ctx_t dc)
 	rtScr.h = bd.vscroll;
 	pt_expand_rect(&rtScr, -4, -6);
 
-	draw_triangle_raw(dc, &xp, &xb, &rtScr, GDI_ATTR_ORIENT_BOTTOM);
+	(*piv->pf_draw_triangle_raw)(piv->visual, &xp, &xb, &rtScr, GDI_ATTR_ORIENT_BOTTOM);
 
-	if (sl.max + sl.page / 2 <= sl.min)
-		return;
-
-	//up line button
-	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
-	rtScr.y = rtWnd.y + bd.edge + bd.title + bd.menu + bd.vscroll;
-	rtScr.w = bd.vscroll;
-	rtScr.h = bd.vscroll;
-	pt_expand_rect(&rtScr, -3, -3);
-
-	draw_round_raw(dc, &xp, &xb, &rtScr);
-
-	//down line button
-	rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
-	rtScr.y = rtWnd.y + rtWnd.h - bd.edge - 2 * bd.vscroll;
-	rtScr.w = bd.vscroll;
-	rtScr.h = bd.vscroll;
-	pt_expand_rect(&rtScr, -3, -3);
-
-	draw_round_raw(dc, &xp, &xb, &rtScr);
-
-	if (!sl.pos)
+	if (sl.max + sl.page / 2 > sl.min)
 	{
+		//up line button
 		rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
 		rtScr.y = rtWnd.y + bd.edge + bd.title + bd.menu + bd.vscroll;
 		rtScr.w = bd.vscroll;
 		rtScr.h = bd.vscroll;
-	}
-	else if (sl.pos == sl.max)
-	{
+		pt_expand_rect(&rtScr, -3, -3);
+
+		(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &rtScr);
+
+		//down line button
 		rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
 		rtScr.y = rtWnd.y + rtWnd.h - bd.edge - 2 * bd.vscroll;
 		rtScr.w = bd.vscroll;
 		rtScr.h = bd.vscroll;
+		pt_expand_rect(&rtScr, -3, -3);
+
+		(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &rtScr);
+
+		if (!sl.pos)
+		{
+			rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
+			rtScr.y = rtWnd.y + bd.edge + bd.title + bd.menu + bd.vscroll;
+			rtScr.w = bd.vscroll;
+			rtScr.h = bd.vscroll;
+		}
+		else if (sl.pos == sl.max)
+		{
+			rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
+			rtScr.y = rtWnd.y + rtWnd.h - bd.edge - 2 * bd.vscroll;
+			rtScr.w = bd.vscroll;
+			rtScr.h = bd.vscroll;
+		}
+		else
+		{
+			ind = (int)((float)sl.pos / (float)sl.max * (float)(rtWnd.h - bd.title - bd.menu - 2 * bd.edge - 3 * bd.vscroll));
+
+			rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
+			rtScr.y = rtWnd.y + bd.edge + bd.title + bd.menu + bd.vscroll + ind;
+			rtScr.w = bd.vscroll;
+			rtScr.h = bd.vscroll;
+		}
+
+		pt_expand_rect(&rtScr, -4, -4);
+
+		lighten_xpen(&xp, DEF_SOFT_LIGHTEN);
+		lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
+		(*piv->pf_draw_ellipse_raw)(piv->visual, &xp, &xb, &rtScr);
 	}
-	else
-	{
-		ind = (int)((float)sl.pos / (float)sl.max * (float)(rtWnd.h - bd.title - bd.menu - 2 * bd.edge - 3 * bd.vscroll));
 
-		rtScr.x = rtWnd.x + rtWnd.w - bd.edge - bd.vscroll;
-		rtScr.y = rtWnd.y + bd.edge + bd.title + bd.menu + bd.vscroll + ind;
-		rtScr.w = bd.vscroll;
-		rtScr.h = bd.vscroll;
-	}
-
-	pt_expand_rect(&rtScr, -4, -4);
-
-	lighten_xpen(&xp, DEF_SOFT_LIGHTEN);
-	lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
-	draw_ellipse_raw(dc, &xp, &xb, &rtScr);
+	destroy_visual_interface(piv);
 }
 
-static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
+static void _WidgetDrawTitleBar(res_win_t wt, visual_t rdc)
 {
 	int edge, title, hscr, vscr, menu, icon;
 	border_t bd = { 0 };
@@ -260,7 +345,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
-	xcolor_t xc_near, xc_center;
+	xcolor_t xc = { 0 };
 	xfont_t xf = { 0 };
 	xface_t xa = { 0 };
 
@@ -270,11 +355,13 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	xbrush_t xb_shadow = { 0 };
 	xpen_t xp_shadow = { 0 };
 	tchar_t aa[8] = { 0 };
-	xpoint_t pa[12] = { 0 };
+	xpoint_t pa[15] = { 0 };
 
 	int i = 0;
 	int n = 0;
 	int feed = 5;
+
+	if_visual_t* piv;
 
 	ws = widget_get_style(wt);
 
@@ -289,6 +376,8 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 	if (!title)
 		return;
+
+	piv = create_visual_interface(rdc);
 
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
@@ -327,20 +416,22 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	n++;
 
 	aa[i] = _T('A');
-	pa[n].x = feed;
-	pa[n].y = feed;
-	pa[n + 1].x = rtScr.x + rtScr.w - feed;
-	pa[n + 1].y = rtScr.y + rtScr.h - feed;
+	pa[n].x = 1;
+	pa[n].y = 0;
+	pa[n+1].x = feed;
+	pa[n+1].y = feed;
+	pa[n+2].x = rtScr.x + rtScr.w - feed;
+	pa[n+2].y = rtScr.y + rtScr.h - feed;
 	i++;
-	n += 2;
+	n += 3;
 
 	aa[i] = _T('C');
 	pa[n].x = rtScr.x + rtScr.w / 8 * 7;
 	pa[n].y = rtScr.y + rtScr.h - 2 * feed;
-	pa[n + 1].x = rtScr.x + rtScr.w / 4 * 3;
-	pa[n + 1].y = rtScr.y + rtScr.h - feed;
-	pa[n + 2].x = rtScr.x + rtScr.w / 2;
-	pa[n + 2].y = rtScr.y + rtScr.h;
+	pa[n+1].x = rtScr.x + rtScr.w / 4 * 3;
+	pa[n+1].y = rtScr.y + rtScr.h - feed;
+	pa[n+2].x = rtScr.x + rtScr.w / 2;
+	pa[n+2].y = rtScr.y + rtScr.h;
 	i++;
 	n += 3;
 
@@ -353,12 +444,14 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	n += 2;
 
 	aa[i] = _T('A');
-	pa[n].x = feed;
-	pa[n].y = feed;
-	pa[n + 1].x = rtScr.x;
-	pa[n + 1].y = rtScr.y + rtScr.h - feed;
+	pa[n].x = 1;
+	pa[n].y = 0;
+	pa[n+1].x = feed;
+	pa[n+1].y = feed;
+	pa[n+2].x = rtScr.x;
+	pa[n+2].y = rtScr.y + rtScr.h - feed;
 	i++;
-	n += 2;
+	n += 3;
 
 	aa[i] = _T('Z');
 	i++;
@@ -373,7 +466,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	xp_shadow.adorn.feed = 2;
 	xp_shadow.adorn.size = 2;
 
-	draw_path_raw(dc, &xp_shadow, &xb_shadow, aa, pa, n);
+	(*piv->pf_draw_path_raw)(piv->visual, &xp_shadow, &xb_shadow, aa, pa, n);
 
 	rtScr.x = rtWnd.x + edge;
 	rtScr.y = rtWnd.y + edge;
@@ -381,8 +474,9 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 	rtScr.h = title;
 
 	pt_center_rect(&rtScr, 16, 16);
-	parse_xcolor(&xc_center, xp.color);
-	draw_gizmo_raw(dc, &xc_center, &rtScr, GDI_ATTR_GIZMO_LOGO);
+	parse_xcolor(&xc, xp.color);
+
+	_WidgetDrawLogo(rdc, &xc, &rtScr);
 
 	/*caption*/
 	len = widget_get_title(wt, txt, RES_LEN);
@@ -393,7 +487,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 		rtScr.y = rtWnd.y + edge;
 		rtScr.h = title;
 
-		draw_text_raw(dc, &xf, &xa, &rtScr, txt, len);
+		(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &rtScr, txt, len);
 	}
 
 	if (ws & WD_STYLE_SIZEBOX)
@@ -409,7 +503,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 
 		rtScr.y += rtScr.h / 2;
 		rtScr.h /= 2;
-		draw_rect_raw(dc, &xp, &xb, &rtScr);
+		(*piv->pf_draw_rect_raw)(piv->visual, &xp, &xb, &rtScr);
 
 		/*zoom box*/
 		rtScr.x = rtWnd.x + rtWnd.w - edge - title;
@@ -418,12 +512,12 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 		rtScr.h = title * 2 / 3;
 		pt_center_rect(&rtScr, icon, icon);
 
-		draw_round_raw(dc, &xp, &xb, &rtScr);
+		(*piv->pf_draw_round_raw)(piv->visual, &xp, &xb, &rtScr);
 
 		if (widget_is_maximized(wt))
 		{
 			pt_expand_rect(&rtScr, -3, -3);
-			draw_rect_raw(dc, &xp, &xb, &rtScr);
+			(*piv->pf_draw_rect_raw)(piv->visual, &xp, &xb, &rtScr);
 		}
 	}
 
@@ -441,18 +535,19 @@ static void _WidgetDrawTitleBar(res_win_t wt, res_ctx_t dc)
 		pt1.y = rtScr.y;
 		pt2.x = rtScr.x + rtScr.w;
 		pt2.y = rtScr.y + rtScr.h;
-		draw_line_raw(dc, &xp, &pt1, &pt2);
+		(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt1, &pt2);
 		
 		pt1.x = rtScr.x;
 		pt1.y = rtScr.y + rtScr.h;
 		pt2.x = rtScr.x + rtScr.w;
 		pt2.y = rtScr.y;
-		draw_line_raw(dc, &xp, &pt1, &pt2);
+		(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt1, &pt2);
 	}
 	
+	destroy_visual_interface(piv);
 }
 
-static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
+static void _WidgetDrawMenuBar(res_win_t wt, visual_t rdc)
 {
 	int edge, title, vscr, hscr, menu;
 	dword_t ws;
@@ -470,6 +565,8 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 	link_t_ptr ptr, ilk;
 	const tchar_t* text;
 
+	if_visual_t* piv;
+
 	ws = widget_get_style(wt);
 	widget_calc_border(ws, &bd);
 
@@ -481,6 +578,8 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 
 	if (!menu)
 		return;
+
+	piv = create_visual_interface(rdc);
 
 	widget_get_window_rect(wt, &rtWnd);
 	rtWnd.x = rtWnd.y = 0;
@@ -504,7 +603,7 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 	rtMenu.y = rtWnd.y + edge + title;
 	rtMenu.h = menu;
 
-	draw_rect_raw(dc, NULL, &xb, &rtMenu);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &rtMenu);
 
 	ptr = widget_get_menu(wt);
 
@@ -521,25 +620,25 @@ static void _WidgetDrawMenuBar(res_win_t wt, res_ctx_t dc)
 
 		pt_center_rect(&rtImage, 16, 16);
 
-		draw_gizmo_raw(dc, &xc, &rtImage, get_menu_item_icon_ptr(ilk));
-		
 		text = get_menu_item_title_ptr(ilk);
 		if (!is_null(text))
 		{
-			text_size_raw(dc, &xf, text, -1, &xs);
+			(*piv->pf_text_size_raw)(piv->visual, &xf, text, -1, &xs);
 
 			rtImage.x += menu;
-			rtImage.w = xs.cx;
+			rtImage.w = xs.w;
 
-			draw_text_raw(dc, &xf, &xa, &rtImage, text, -1);
+			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &rtImage, text, -1);
 		}
 
 		ilk = get_menu_next_item(ptr, ilk);
 	}
+
+	destroy_visual_interface(piv);
 }
 /**************************************************************************************************/
 
-void widgetnc_on_paint(res_win_t wt, res_ctx_t dc)
+void widgetnc_on_paint(res_win_t wt, visual_t dc)
 {
 	border_t bd = { 0 };
 
@@ -925,7 +1024,7 @@ int widgetnc_on_calcscroll(res_win_t wt, bool_t horz, const xpoint_t* pxp)
 
 void widget_draw_scroll(res_win_t wt, bool_t horz)
 {
-	res_ctx_t dc;
+	visual_t dc;
 
 	dc = widget_window_ctx(wt);
 

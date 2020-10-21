@@ -79,6 +79,26 @@ LICENSE.GPL3 for more details.
 */
 #define get_title_oritation_ptr(ptr)					get_dom_node_attr_ptr(ptr,ATTR_ORITATION,-1)
 /*
+@PROPER width: numeric.
+@SET set_title_width: set the title width.
+*/
+#define set_title_width(ptr,n)							set_dom_node_attr_float(ptr,ATTR_WIDTH,n)
+/*
+@PROPER width: numeric.
+@GET get_title_width: get the title width.
+*/
+#define get_title_width(ptr)							get_dom_node_attr_float(ptr,ATTR_WIDTH)
+/*
+@PROPER height: numeric.
+@GET get_title_height: get the title height.
+*/
+#define get_title_height(ptr)							get_dom_node_attr_float(ptr,ATTR_HEIGHT)
+/*
+@PROPER height: numeric.
+@SET set_title_height: set the title height.
+*/
+#define set_title_height(ptr,n)							set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
+/*
 @PROPER iconSpan: numeric.
 @SET set_title_icon_span: set the title icon span.
 */

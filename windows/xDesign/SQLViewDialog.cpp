@@ -153,21 +153,21 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	widget_get_client_rect(widget, &xr);
 
 	xsize_t xs;
-	xs.fx = SQLVIEWDLG_BAR_SPLIT;
-	xs.fy = 0;
+	xs.fw = SQLVIEWDLG_BAR_SPLIT;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	int nSplit = xs.cx;
+	int nSplit = xs.w;
 
-	xs.fx = SQLVIEWDLG_BTN_WIDTH;
-	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
+	xs.fw = SQLVIEWDLG_BTN_WIDTH;
+	xs.fh = SQLVIEWDLG_BAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
-	xr_push.x = xr.x + xr.w - xs.cx - nSplit;
-	xr_push.w = xs.cx;
-	xr_push.y = xr.y + xr.h - xs.cy + nSplit;
-	xr_push.h = xs.cy - 2 * nSplit;
+	xr_push.x = xr.x + xr.w - xs.w - nSplit;
+	xr_push.w = xs.w;
+	xr_push.y = xr.y + xr.h - xs.h + nSplit;
+	xr_push.h = xs.h - 2 * nSplit;
 
 	pdt->hPushCancel = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr_push);
 	widget_set_user_id(pdt->hPushCancel, IDC_SQLVIEWDLG_CANCEL);
@@ -175,7 +175,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	pushbox_set_text(pdt->hPushCancel, _T("取消"), -1);
 	widget_show(pdt->hPushCancel, WS_SHOW_NORMAL);
 
-	xr_push.x -= (xs.cx + nSplit);
+	xr_push.x -= (xs.w + nSplit);
 
 	pdt->hPushOK = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr_push);
 	widget_set_owner(pdt->hPushOK, widget);
@@ -183,7 +183,7 @@ int SQLViewDlg_OnCreate(res_win_t widget, void* data)
 	pushbox_set_text(pdt->hPushOK, _T("确定"), -1);
 	widget_show(pdt->hPushOK, WS_SHOW_NORMAL);
 
-	xr_push.x -= (xs.cx + nSplit);
+	xr_push.x -= (xs.w + nSplit);
 
 	pdt->hPushExec = pushbox_create(widget, WD_STYLE_CONTROL | WD_PUSHBOX_TEXT, &xr_push);
 	widget_set_owner(pdt->hPushExec, widget);
@@ -277,8 +277,8 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_get_client_rect(widget, &xr);
 
 	xsize_t xs;
-	xs.fx = 0;
-	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
+	xs.fw = 0;
+	xs.fh = SQLVIEWDLG_BAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_reg;
@@ -286,35 +286,35 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	xr_reg.x = xr.x;
 	xr_reg.w = xr.w;
 	xr_reg.y = xr.y;
-	xr_reg.h = xr.h - xs.cy;
+	xr_reg.h = xr.h - xs.h;
 
 	hand_splitor_size(&pdt->sp, &xr_reg);
 
-	xs.fx = SQLVIEWDLG_BAR_SPLIT;
-	xs.fy = 0;
+	xs.fw = SQLVIEWDLG_BAR_SPLIT;
+	xs.fh = 0;
 	widget_size_to_pt(widget, &xs);
-	int nSplit = xs.cx;
+	int nSplit = xs.w;
 
-	xs.fx = SQLVIEWDLG_BTN_WIDTH;
-	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
+	xs.fw = SQLVIEWDLG_BTN_WIDTH;
+	xs.fh = SQLVIEWDLG_BAR_HEIGHT;
 	widget_size_to_pt(widget, &xs);
 
 	xrect_t xr_push;
 
-	xr_push.x = xr.x + xr.w - xs.cx - nSplit;
-	xr_push.w = xs.cx;
-	xr_push.y = xr.y + xr.h - xs.cy + nSplit;
-	xr_push.h = xs.cy - 2 * nSplit;
+	xr_push.x = xr.x + xr.w - xs.w - nSplit;
+	xr_push.w = xs.w;
+	xr_push.y = xr.y + xr.h - xs.h + nSplit;
+	xr_push.h = xs.h - 2 * nSplit;
 
 	widget_move(pdt->hPushCancel, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushCancel);
 
-	xr_push.x -= (xs.cx + nSplit);
+	xr_push.x -= (xs.w + nSplit);
 
 	widget_move(pdt->hPushOK, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushOK);
 
-	xr_push.x -= (xs.cx + nSplit);
+	xr_push.x -= (xs.w + nSplit);
 
 	widget_move(pdt->hPushExec, RECTPOINT(&xr_push));
 	widget_update(pdt->hPushExec);
@@ -322,18 +322,20 @@ void SQLViewDlg_OnSize(res_win_t widget, int code, const xsize_t* pxs)
 	widget_erase(widget, NULL);
 }
 
-void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void SQLViewDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	SQLVIEWDLGDELTA* pdt = GETSQLVIEWDLGDELTA(widget);
 
 	XDL_ASSERT(pdt != NULL);
 
-	canvas_t canv;
-	res_ctx_t rdc;
 	xbrush_t xb = { 0 };
 	xcolor_t xc_brim, xc_core;
 	xrect_t xr, xr_bar;
 	xsize_t xs;
+
+	canvas_t canv;
+	visual_t rdc;
+	if_visual_t* piv;
 
 	widget_get_xbrush(widget, &xb);
 
@@ -343,24 +345,27 @@ void SQLViewDlg_OnPaint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
+	piv = create_visual_interface(rdc);
+
 	hand_splitor_paint(&pdt->sp, rdc);
 
-	xs.fx = SQLVIEWDLG_BAR_SPLIT;
-	xs.fy = SQLVIEWDLG_BAR_HEIGHT;
+	xs.fw = SQLVIEWDLG_BAR_SPLIT;
+	xs.fh = SQLVIEWDLG_BAR_HEIGHT;
 
 	widget_size_to_pt(widget, &xs);
 
 	xr_bar.x = xr.x;
-	xr_bar.y = xr.y + xr.h - xs.cy;
+	xr_bar.y = xr.y + xr.h - xs.h;
 	xr_bar.w = xr.w;
-	xr_bar.h = xs.cy;
+	xr_bar.h = xs.h;
 
 	parse_xcolor(&xc_brim, xb.color);
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_core, DEF_MIDD_DARKEN);
 
-	gradient_rect_raw(rdc, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 
+	destroy_visual_interface(piv);
 	end_canvas_paint(canv, dc, pxr);
 }
 

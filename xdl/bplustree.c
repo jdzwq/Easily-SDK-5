@@ -2100,9 +2100,10 @@ void test_bplus_tree()
 
 	tchar_t* key;
 	int len;
-	const tchar_t *token = numset;
-	while (token = parse_string_token(token, -1, _T(' '), &key, &len))
+	int n, total = 0;
+	while (n = parse_string_token((numset + total), -1, _T(' '), &key, &len))
 	{
+		total += n;
 		v.int_one = xsntol(key, len);
 		_tprintf(_T("INS %d: "), v.int_one);
 

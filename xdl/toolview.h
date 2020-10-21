@@ -47,21 +47,21 @@ typedef enum{
 extern "C" {
 #endif
 
-EXP_API float calc_tool_group_width(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk);
+EXP_API float calc_tool_group_width(link_t_ptr ptr, link_t_ptr glk);
 
-EXP_API float calc_tool_group_height(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk);
+EXP_API float calc_tool_group_height(link_t_ptr ptr, link_t_ptr glk);
 
-EXP_API float calc_tool_width(const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API float calc_tool_width(link_t_ptr ptr);
 
-EXP_API void calc_tool_group_entire_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr);
+EXP_API void calc_tool_group_entire_rect(link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr);
 
-EXP_API void calc_tool_group_title_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr);
+EXP_API void calc_tool_group_title_rect(link_t_ptr ptr, link_t_ptr glk, xrect_t* pxr);
 
-EXP_API void calc_tool_group_item_rect(const canvbox_t* pbox, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_tool_group_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API int calc_tool_point_hint(const canvbox_t* pbox, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, link_t_ptr* pplk);
+EXP_API int calc_tool_point_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, link_t_ptr* pplk);
 
-EXP_API void draw_tool(const if_canvas_t* pcanv, const canvbox_t* pbox, link_t_ptr ptr);
+EXP_API void draw_tool(const if_canvas_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

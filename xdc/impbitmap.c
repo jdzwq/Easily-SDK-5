@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
 
-void destroy_bitmap(res_bmp_t bmp)
+void destroy_bitmap(bitmap_t bmp)
 {
 	if_context_t* pif;
 
@@ -43,7 +43,7 @@ void destroy_bitmap(res_bmp_t bmp)
 	(*pif->pf_destroy_bitmap)(bmp);
 }
 
-void get_bitmap_size(res_bmp_t rdc, int* pw, int* ph)
+void get_bitmap_size(bitmap_t rdc, int* pw, int* ph)
 {
 	if_context_t* pif;
 
@@ -52,7 +52,7 @@ void get_bitmap_size(res_bmp_t rdc, int* pw, int* ph)
 	(*pif->pf_get_bitmap_size)(rdc, pw, ph);
 }
 
-res_bmp_t create_context_bitmap(res_ctx_t rdc)
+bitmap_t create_context_bitmap(visual_t rdc)
 {
 	if_context_t* pif;
 
@@ -61,7 +61,7 @@ res_bmp_t create_context_bitmap(res_ctx_t rdc)
 	return (*pif->pf_create_context_bitmap)(rdc);
 }
 
-res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
+bitmap_t create_color_bitmap(visual_t rdc, const xcolor_t* pxc, int w, int h)
 {
 	if_context_t* pif;
 
@@ -70,7 +70,7 @@ res_bmp_t create_color_bitmap(res_ctx_t rdc, const xcolor_t* pxc, int w, int h)
 	return (*pif->pf_create_color_bitmap)(rdc, pxc, w, h);
 }
 
-res_bmp_t create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
+bitmap_t create_pattern_bitmap(visual_t rdc, const xcolor_t* pxc_front, const xcolor_t* pxc_back, int w, int h, const tchar_t* lay)
 {
 	if_context_t* pif;
 
@@ -79,7 +79,7 @@ res_bmp_t create_pattern_bitmap(res_ctx_t rdc, const xcolor_t* pxc_front, const 
 	return (*pif->pf_create_pattern_bitmap)(rdc, pxc_front, pxc_back, w, h, lay);
 }
 
-res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay)
+bitmap_t create_gradient_bitmap(visual_t rdc, const xcolor_t* pxc_near, const xcolor_t* pxc_center, int w, int h, const tchar_t* lay)
 {
 	if_context_t* pif;
 
@@ -88,7 +88,7 @@ res_bmp_t create_gradient_bitmap(res_ctx_t rdc, const xcolor_t* pxc_near, const 
 	return (*pif->pf_create_gradient_bitmap)(rdc, pxc_near, pxc_center, w, h, lay);
 }
 
-res_bmp_t create_code128_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
+bitmap_t create_code128_bitmap(visual_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
 
@@ -97,7 +97,7 @@ res_bmp_t create_code128_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text
 
 	byte_t* bar_buf;
 	dword_t bar_len;
-	res_bmp_t bmp;
+	bitmap_t bmp;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
@@ -136,7 +136,7 @@ res_bmp_t create_code128_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text
 	return bmp;
 }
 
-res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
+bitmap_t create_pdf417_bitmap(visual_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
 
@@ -146,7 +146,7 @@ res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 	byte_t* bar_buf;
 	int cols, rows;
 	dword_t bar_len;
-	res_bmp_t bmp;
+	bitmap_t bmp;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
@@ -185,7 +185,7 @@ res_bmp_t create_pdf417_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 	return bmp;
 }
 
-res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
+bitmap_t create_qrcode_bitmap(visual_t rdc, int w, int h, const tchar_t* text)
 {
 	if_context_t* pif;
 
@@ -195,7 +195,7 @@ res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 	byte_t* bar_buf;
 	int cols, rows;
 	dword_t bar_len;
-	res_bmp_t bmp;
+	bitmap_t bmp;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
@@ -234,7 +234,7 @@ res_bmp_t create_qrcode_bitmap(res_ctx_t rdc, int w, int h, const tchar_t* text)
 	return bmp;
 }
 
-res_bmp_t load_bitmap_from_bytes(res_ctx_t rdc, const byte_t* pb, dword_t len)
+bitmap_t load_bitmap_from_bytes(visual_t rdc, const byte_t* pb, dword_t len)
 {
 	if_context_t* pif;
 
@@ -243,7 +243,7 @@ res_bmp_t load_bitmap_from_bytes(res_ctx_t rdc, const byte_t* pb, dword_t len)
 	return (*pif->pf_load_bitmap_from_bytes)(rdc, pb, len);
 }
 
-dword_t	save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, byte_t* pb, dword_t max)
+dword_t	save_bitmap_to_bytes(visual_t rdc, bitmap_t rb, byte_t* pb, dword_t max)
 {
 	if_context_t* pif;
 
@@ -252,7 +252,7 @@ dword_t	save_bitmap_to_bytes(res_ctx_t rdc, res_bmp_t rb, byte_t* pb, dword_t ma
 	return (dword_t)(*pif->pf_save_bitmap_to_bytes)(rdc, rb, pb, max);
 }
 
-dword_t	get_bitmap_bytes(res_bmp_t rdc)
+dword_t	get_bitmap_bytes(bitmap_t rdc)
 {
 	if_context_t* pif;
 
@@ -263,7 +263,7 @@ dword_t	get_bitmap_bytes(res_bmp_t rdc)
 
 #ifdef XDU_SUPPORT_SHELL
 
-res_bmp_t load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* fname)
+bitmap_t load_bitmap_from_thumb(visual_t rdc, const tchar_t* fname)
 {
 	if_context_t* pif;
 
@@ -272,7 +272,7 @@ res_bmp_t load_bitmap_from_thumb(res_ctx_t rdc, const tchar_t* fname)
 	return (*pif->pf_load_bitmap_from_thumb)(rdc, fname);
 }
 
-res_bmp_t load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
+bitmap_t load_bitmap_from_icon(visual_t rdc, const tchar_t* iname)
 {
 	if_context_t* pif;
 
@@ -285,7 +285,7 @@ res_bmp_t load_bitmap_from_icon(res_ctx_t rdc, const tchar_t* iname)
 
 /***********************************************************************************************/
 
-bool_t save_bitmap_to_ximage(res_ctx_t rdc, res_bmp_t bmp, ximage_t* pmi)
+bool_t save_bitmap_to_ximage(visual_t rdc, bitmap_t bmp, ximage_t* pmi)
 {
 	byte_t* bmp_buf = NULL;
 	dword_t bmp_len = 0;
@@ -316,9 +316,9 @@ bool_t save_bitmap_to_ximage(res_ctx_t rdc, res_bmp_t bmp, ximage_t* pmi)
 	return 1;
 }
 
-res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, int cy)
+bitmap_t load_bitmap_from_ximage(visual_t rdc, const ximage_t* pmi, int cx, int cy)
 {
-	res_bmp_t ih = NULL;
+	bitmap_t ih = NULL;
 	int len, len_bmp, len_zip;
 	byte_t *buf_bmp, *buf_zip;
 	xcolor_t xc;
@@ -420,7 +420,7 @@ res_bmp_t load_bitmap_from_ximage(res_ctx_t rdc, const ximage_t* pmi, int cx, in
 	return ih;
 }
 
-res_bmp_t load_bitmap_from_file(res_ctx_t rdc, const tchar_t* fname)
+bitmap_t load_bitmap_from_file(visual_t rdc, const tchar_t* fname)
 {
 	tchar_t type[RES_LEN] = { 0 };
 
@@ -430,7 +430,7 @@ res_bmp_t load_bitmap_from_file(res_ctx_t rdc, const tchar_t* fname)
 	byte_t* bmp_buf = NULL;
 	dword_t bmp_len;
 
-	res_bmp_t bmp;
+	bitmap_t bmp;
 
 	file_len = load_image_bytes_from_file(NULL, fname, type, NULL, MAX_LONG);
 	if (!file_len)
@@ -495,7 +495,7 @@ res_bmp_t load_bitmap_from_file(res_ctx_t rdc, const tchar_t* fname)
 	return bmp;
 }
 
-bool_t save_bitmap_to_file(res_ctx_t rdc, res_bmp_t rb, const tchar_t* type, const tchar_t* fname)
+bool_t save_bitmap_to_file(visual_t rdc, bitmap_t rb, const tchar_t* type, const tchar_t* fname)
 {
 	byte_t* bmp_buf = NULL;
 	dword_t bmp_len = 0;

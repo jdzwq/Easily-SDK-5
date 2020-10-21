@@ -99,37 +99,24 @@ LICENSE.GPL3 for more details.
 
 #define DEF_TIPTIME		1500
 
-#define DEF_INNER_FEED		(long)-1
-#define DEF_OUTER_FEED		(long)1
-#define DEF_FOCUS_SPAN		(long)5
-
-#define SIZING_TOPLEFT		0x00000001
-#define SIZING_TOPCENTER	0x00000002
-#define SIZING_TOPRIGHT		0x00000004
-#define SIZING_BOTTOMLEFT		0x00000008
-#define SIZING_BOTTOMCENTER		0x00000010
-#define SIZING_BOTTOMRIGHT		0x00000020
-#define SIZING_LEFTCENTER		0x00000040
-#define SIZING_RIGHTCENTER		0x00000080
-
 typedef struct _PAGEINFO{
-	long total_width;
-	long total_height;
-	long page_width;
-	long page_height;
-	long line_width;
-	long line_height;
+	int total_width;
+	int total_height;
+	int page_width;
+	int page_height;
+	int line_width;
+	int line_height;
 }PAGEINFO;
 
 typedef struct _DOCKINFO{
 	dword_t style;
-	long cx, cy;
+	int cx, cy;
 }DOCKINFO;
 
 typedef struct _docker_t{
 	res_win_t widget;
 	DOCKINFO dock[4];
-	long x, y;
+	int x, y;
 	int ind;
 	bool_t drag;
 }docker_t;
@@ -138,7 +125,7 @@ typedef struct _splitor_t{
 	res_win_t widget;
 	link_t_ptr split;
 	link_t_ptr item;
-	long x, y;
+	int x, y;
 }splitor_t;
 
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;

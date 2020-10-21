@@ -320,18 +320,18 @@ static void _dialogctrl_reset_page(res_win_t widget)
 	pw = xr.w;
 	ph = xr.h;
 
-	xs.fx = get_dialog_width(ptd->dialog);
-	xs.fy = get_dialog_height(ptd->dialog);
+	xs.fw = get_dialog_width(ptd->dialog);
+	xs.fh = get_dialog_height(ptd->dialog);
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
-	fh = xs.cy;
+	fw = xs.w;
+	fh = xs.h;
 
-	xs.fx = (float)10;
-	xs.fy = (float)10;
+	xs.fw = (float)10;
+	xs.fh = (float)10;
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -633,10 +633,10 @@ void noti_dialog_item_sized(res_win_t widget, int x, int y)
 	minw = DIALOG_ITEM_MIN_WIDTH;
 	minh = DIALOG_ITEM_MIN_HEIGHT;
 
-	xs.cx = ptd->cur_x - ptd->org_x;
-	xs.cy = ptd->cur_y - ptd->org_y;
+	xs.w = ptd->cur_x - ptd->org_x;
+	xs.h = ptd->cur_y - ptd->org_y;
 
-	if (!xs.cx && !xs.cy)
+	if (!xs.w && !xs.h)
 		return;
 
 	widget_size_to_tm(widget, &xs);
@@ -650,8 +650,8 @@ void noti_dialog_item_sized(res_win_t widget, int x, int y)
 	fw = get_dialog_item_width(ptd->item);
 	fh = get_dialog_item_height(ptd->item);
 
-	fw += xs.fx;
-	fh += xs.fy;
+	fw += xs.fw;
+	fh += xs.fh;
 
 	if (fw < minw)
 		fw = minw;
@@ -1096,7 +1096,7 @@ void hand_dialog_notice(res_win_t widget, NOTICE* pnt)
 		return;
 }
 
-void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_dialog_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	dialog_delta_t* ptd = GETDIALOGDELTA(widget);
 	xrect_t xr = { 0 };
@@ -1104,12 +1104,12 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc = { 0 };
-	res_ctx_t rdc;
+	visual_t rdc;
 	link_t_ptr ilk;
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->dialog)
 		return;
@@ -1120,6 +1120,7 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -1130,16 +1131,15 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	piv = create_visual_interface(rdc);
+	widget_get_view_rect(widget, &piv->rect);
+
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
 	widget_get_xbrush(widget, &xb);
-
 	widget_get_xpen(widget, &xp);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
-
-	widget_get_canv_rect(widget, &cb);
-
-	draw_dialog(pif, &cb, ptd->dialog);
+	draw_dialog(pif, ptd->dialog);
 
 	//draw focus
 	if (ptd->item)
@@ -1148,7 +1148,7 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-		draw_focus_raw(rdc, &xc, &xr, ALPHA_SOLID);
+		draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
 	}
 
 	//draw check
@@ -1160,7 +1160,7 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		if (get_dialog_item_selected(ilk))
 		{
 			_dialogctrl_item_rect(widget, ilk, &xr);
-			alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+			(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
 		}
 		ilk = get_dialog_next_item(ptd->dialog, ilk);
 	}
@@ -1174,7 +1174,7 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		xr.x += (ptd->cur_x - ptd->org_x);
 		xr.y += (ptd->cur_y - ptd->org_y);
 
-		draw_rect_raw(rdc, &xp, NULL, &xr);
+		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
 	}
 	else if (ptd->b_size)
 	{
@@ -1196,8 +1196,10 @@ void hand_dialog_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 			xr.h = (ptd->cur_y - xr.y);
 		}
 
-		draw_rect_raw(rdc, &xp, NULL, &xr);
+		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);

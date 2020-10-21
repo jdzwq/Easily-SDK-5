@@ -101,59 +101,58 @@ void nuid_to_md5(nuid_t* pu, byte_t buf[16])
 
 void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 {
-	const tchar_t* token = buf;
 	tchar_t* num;
-	int n, k;
+	int k;
 	unsigned short us;
 	unsigned long ul;
+	int n, total = 0;
 
 	if (len < 0)
 		len = xslen(buf);
 
 	num = NULL;
-	n = len - (token - buf);
-	token = parse_string_token(token, n, _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
 	if (k)
 	{
 		pu->data1 = parse_hexnum(num, k);
 	}
-	if (!token)
+	total += n;
+	if (!n)
 		return;
 
 	num = NULL;
-	n = len - (token - buf);
-	token = parse_string_token(token, n, _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
 	if (k)
 	{
 		pu->data2 = (unsigned short)parse_hexnum(num, k);
 	}
-	if (!token)
+	total += n;
+	if (!n)
 		return;
 
 	num = NULL;
-	n = len - (token - buf);
-	token = parse_string_token(token, n, _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
 	if (k)
 	{
 		pu->data3 = (unsigned short)parse_hexnum(num, k);
 	}
-	if (!token)
+	total += n;
+	if (!n)
 		return;
 
 	num = NULL;
-	n = len - (token - buf);
-	token = parse_string_token(token, n, _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
 	if (k)
 	{
 		us = (unsigned short)parse_hexnum(num, k);
 		PUT_SWORD_LOC(pu->data4, 6, us);
 	}
-	if (!token)
+	total += n;
+	if (!n)
 		return;
 
 	num = NULL;
-	n = len - (token - buf);
-	token = parse_string_token(token, n, _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
 	if (k >= 4)
 	{
 		us = (unsigned short)parse_hexnum(num, 4);
@@ -164,6 +163,7 @@ void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 			PUT_DWORD_LOC(pu->data4, 0, ul);
 		}
 	}
+	total += n;
 }
 
 int nuid_format_string(nuid_t* pu, tchar_t* buf, int max)

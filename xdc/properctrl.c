@@ -55,11 +55,8 @@ typedef struct _proper_delta_t{
 static void _properctrl_section_rect(res_win_t widget, link_t_ptr sec, xrect_t* pxr)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_proper_section_rect( &cb, ptd->proper,sec, pxr);
+	calc_proper_section_rect(ptd->proper,sec, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -67,11 +64,8 @@ static void _properctrl_section_rect(res_win_t widget, link_t_ptr sec, xrect_t* 
 static void _properctrl_entity_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_proper_entity_rect(&cb, ptd->proper, ent, pxr);
+	calc_proper_entity_rect(ptd->proper, ent, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -79,11 +73,8 @@ static void _properctrl_entity_rect(res_win_t widget, link_t_ptr ent, xrect_t* p
 static void _properctrl_entity_text_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
-	canvbox_t cb;
 
-	widget_get_canv_rect(widget, &cb);
-
-	calc_proper_entity_text_rect(&cb, ptd->proper, ent, pxr);
+	calc_proper_entity_text_rect(ptd->proper, ent, pxr);
 
 	widget_rect_to_pt(widget, pxr);
 }
@@ -94,28 +85,25 @@ static void _properctrl_reset_page(res_win_t widget)
 	int pw, ph, fw, fh, lw, lh;
 	xrect_t xr;
 	xsize_t xs;
-	canvbox_t cb;
 
 	widget_get_client_rect(widget, &xr);
 	pw = xr.w;
 	ph = xr.h;
 
-	widget_get_canv_rect(widget, &cb);
-
-	xs.fx = calc_proper_width(&cb, ptd->proper);
-	xs.fy = calc_proper_height(&cb, ptd->proper);
+	xs.fw = calc_proper_width(ptd->proper);
+	xs.fh = calc_proper_height(ptd->proper);
 
 	widget_size_to_pt(widget, &xs);
-	fw = xs.cx;
+	fw = xs.w;
 	if (fw < pw)
 		fw = pw;
-	fh = xs.cy;
+	fh = xs.h;
 
-	xs.fx = get_proper_item_height(ptd->proper);
-	xs.fy = get_proper_item_height(ptd->proper);
+	xs.fw = get_proper_item_height(ptd->proper);
+	xs.fh = get_proper_item_height(ptd->proper);
 	widget_size_to_pt(widget, &xs);
-	lw = xs.cx;
-	lh = xs.cy;
+	lw = xs.w;
+	lh = xs.h;
 
 	widget_reset_paging(widget, pw, ph, fw, fh, lw, lh);
 
@@ -178,7 +166,6 @@ void noti_proper_end_size(res_win_t widget, int x, int y)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	float pw, iw, ew;
-	canvbox_t vb;
 	xsize_t xs = { 0 };
 
 	ptd->b_size = 0;
@@ -189,16 +176,14 @@ void noti_proper_end_size(res_win_t widget, int x, int y)
 	}
 	widget_set_cursor(widget, CURSOR_ARROW);
 
-	widget_get_canv_rect(widget, &vb);
-
-	pw = vb.fw;
+	pw = get_proper_width(ptd->proper);
 	ew = get_proper_item_span(ptd->proper);
 	iw = get_proper_icon_span(ptd->proper);
 
-	xs.cx = x - ptd->org_x;
+	xs.w = x - ptd->org_x;
 	widget_size_to_tm(widget, &xs);
 
-	ew += xs.fx;
+	ew += xs.fw;
 	if (ew < iw)
 		ew = iw;
 	else if (ew > pw)
@@ -660,9 +645,16 @@ void hand_proper_destroy(res_win_t widget)
 void hand_proper_size(res_win_t widget, int code, const xsize_t* prs)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
+	xrect_t xr;
 
 	if (!ptd->proper)
 		return;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_proper_width(ptd->proper, xr.fw);
+	set_proper_height(ptd->proper, xr.fh);
 
 	properctrl_redraw(widget);
 }
@@ -729,7 +721,6 @@ void hand_proper_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	link_t_ptr slk, elk;
 	int nHint;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->proper)
 		return;
@@ -737,14 +728,12 @@ void hand_proper_mouse_move(res_win_t widget, dword_t dw, const xpoint_t* pxp)
 	if (ptd->b_size)
 		return;
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	slk = elk = NULL;
-	nHint = calc_proper_hint(&cb, &pt, ptd->proper, &slk, &elk);
+	nHint = calc_proper_hint(&pt, ptd->proper, &slk, &elk);
 
 	if (nHint == PROPER_HINT_VERT_SPLIT && !(dw & KS_WITH_CONTROL))
 	{
@@ -812,7 +801,6 @@ void hand_proper_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	link_t_ptr slk, elk;
 	int nHint;
 	xpoint_t pt;
-	canvbox_t cb;
 
 	if (!ptd->proper)
 		return;
@@ -824,14 +812,12 @@ void hand_proper_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 		widget_set_focus(widget);
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	slk = elk = NULL;
-	nHint = calc_proper_hint(&cb, &pt, ptd->proper, &slk, &elk);
+	nHint = calc_proper_hint(&pt, ptd->proper, &slk, &elk);
 
 	if (nHint == PROPER_HINT_SECTION)
 	{
@@ -845,7 +831,6 @@ void hand_proper_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 	link_t_ptr slk, elk;
 	xpoint_t pt;
-	canvbox_t cb;
 	int nHint;
 	bool_t bRe;
 
@@ -858,14 +843,12 @@ void hand_proper_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		return;
 	}
 
-	widget_get_canv_rect(widget, &cb);
-
 	pt.x = pxp->x;
 	pt.y = pxp->y;
 	widget_point_to_tm(widget, &pt);
 
 	slk = elk = NULL;
-	nHint = calc_proper_hint(&cb, &pt, ptd->proper, &slk, &elk);
+	nHint = calc_proper_hint(&pt, ptd->proper, &slk, &elk);
 
 	bRe = (elk == ptd->entity) ? 1 : 0;
 
@@ -985,10 +968,10 @@ void hand_proper_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
+void hand_proper_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
-	res_ctx_t rdc;
+	visual_t rdc;
 	xfont_t xf = { 0 };
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -997,7 +980,7 @@ void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	if_canvas_t* pif;
-	canvbox_t cb;
+	if_visual_t* piv;
 
 	if (!ptd->proper)
 		return;
@@ -1008,6 +991,7 @@ void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 	pif = create_canvas_interface(canv);
+	widget_get_canv_rect(widget, &pif->rect);
 
 	parse_xcolor(&pif->clr_bkg, xb.color);
 	parse_xcolor(&pif->clr_frg, xp.color);
@@ -1019,11 +1003,11 @@ void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
 
-	draw_rect_raw(rdc, NULL, &xb, &xr);
+	piv = create_visual_interface(rdc);
 
-	widget_get_canv_rect(widget, &cb);
+	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
 
-	draw_proper(pif, &cb, ptd->proper);
+	draw_proper(pif, ptd->proper);
 
 	//draw focus
 	if (ptd->entity)
@@ -1032,8 +1016,10 @@ void hand_proper_paint(res_win_t widget, res_ctx_t dc, const xrect_t* pxr)
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
-		alphablend_rect_raw(rdc, &xc, &xr, ALPHA_TRANS);
+		(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
 	}
+
+	destroy_visual_interface(piv);
 
 	end_canvas_paint(pif->canvas, dc, pxr);
 	destroy_canvas_interface(pif);
@@ -1083,12 +1069,20 @@ res_win_t properctrl_create(const tchar_t* wname, dword_t wstyle, const xrect_t*
 void properctrl_attach(res_win_t widget, link_t_ptr ptr)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
+	xrect_t xr;
 
 	XDL_ASSERT(ptd != NULL);
 
 	XDL_ASSERT(ptr && is_proper_doc(ptr));
 
 	ptd->proper = ptr;
+
+	widget_get_client_rect(widget, &xr);
+	widget_rect_to_tm(widget, &xr);
+
+	set_proper_width(ptd->proper, xr.fw);
+	set_proper_height(ptd->proper, xr.fh);
+
 	properctrl_redraw(widget);
 }
 

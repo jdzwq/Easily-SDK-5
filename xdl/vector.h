@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _vector_t{
 	int size;
-	int order;
+	int dimens;
 	double* data;
 }vector_t;
 
@@ -48,10 +48,10 @@ extern "C" {
 /*
 @FUNCTION vector_alloc: alloc a vector.
 @INPUT int size: the vector size.
-@INPUT int order: the vector order, 1-order like: (x), 2-order like: (x,y), 3-order like (x,y,z).
+@INPUT int dimens: the vector dimens, 1-dimens like: (x), 2-dimens like: (x,y), 3-dimens like (x,y,z).
 @RETURN vector_t*: return vector struct.
 */
-EXP_API vector_t* vector_alloc(int size, int order);
+EXP_API vector_t* vector_alloc(int size, int dimens);
 
 /*
 @FUNCTION vector_free: free the vector.
@@ -101,7 +101,7 @@ EXP_API void vector_copy(vector_t* dest, const vector_t* src);
 @INPUT vector_t*: the vector struct.
 @INPUT int i: the vector element zero based index.
 @INPUT double A: the A value to set.
-@INPUT ...: variant double value to set according to vector order.
+@INPUT ...: variant double value to set according to vector dimens.
 @RETURN void: none.
 */
 EXP_API void vector_set_value(vector_t* pvt, int i, ...);
@@ -111,7 +111,7 @@ EXP_API void vector_set_value(vector_t* pvt, int i, ...);
 @INPUT vector_t*: the vector struct.
 @INPUT int i: the vector element zero based index.
 @INPUT double* pA: the buffer for return A value.
-@INPUT ...: variant double value buffer for return more, according to vector order.
+@INPUT ...: variant double value buffer for return more, according to vector dimens.
 @RETURN void: none.
 */
 EXP_API void vector_get_value(vector_t* pvt, int i, ...);

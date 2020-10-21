@@ -413,7 +413,7 @@ var_long widget_del_user_prop(res_win_t wt, const tchar_t* pname)
 	return (*pif->pf_widget_del_user_prop)(wt, pname);
 }
 
-res_ctx_t widget_client_ctx(res_win_t wt)
+visual_t widget_client_ctx(res_win_t wt)
 {
 	if_widget_t* pif;
 
@@ -422,7 +422,7 @@ res_ctx_t widget_client_ctx(res_win_t wt)
 	return (*pif->pf_widget_client_ctx)(wt);
 }
 
-res_ctx_t widget_window_ctx(res_win_t wt)
+visual_t widget_window_ctx(res_win_t wt)
 {
 	if_widget_t* pif;
 
@@ -431,7 +431,7 @@ res_ctx_t widget_window_ctx(res_win_t wt)
 	return (*pif->pf_widget_window_ctx)(wt);
 }
 
-void widget_release_ctx(res_win_t wt, res_ctx_t dc)
+void widget_release_ctx(res_win_t wt, visual_t dc)
 {
 	if_widget_t* pif;
 
@@ -479,8 +479,8 @@ void widget_get_window_edge(res_win_t wt, xsize_t* pxs)
 	xr2.w = xp2.x - xp1.x;
 	xr2.h = xp2.y - xp1.y;
 
-	pxs->cx = xr1.w - xr2.w;
-	pxs->cy = xr1.h - xr2.h;
+	pxs->w = xr1.w - xr2.w;
+	pxs->h = xr1.h - xr2.h;
 }
 
 void widget_client_to_screen(res_win_t wt, xpoint_t* ppt)
