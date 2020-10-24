@@ -29,10 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "boxview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
+#include "gizmoing.h"
 
+#include "docattr.h"
+
+#include "xdlimp.h"
 #include "xdlstd.h"
 
 
@@ -163,7 +164,7 @@ int	calc_datebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return DATEBOX_HINT_NONE;
 }
 
-void draw_datebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* pdt)
+void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pdt)
 {
 	xface_t xa;
 	xpen_t xp;
@@ -177,19 +178,19 @@ void draw_datebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* pdt
 	float mx, my;
 	calendar_t ca = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
-	(*pif->pf_text_metric)(pif->canvas, pxf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -199,27 +200,27 @@ void draw_datebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* pdt
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T("<"), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T("<"), -1);
 
 	xr.fx = pbox->fx + mx;
 	xr.fw = mx * (CALENDAR_COL - 2);
 	xr.fy = pbox->fy;
 	xr.fh = my;
 	xsprintf(token, CB_FORMAT_YEARMONTH, pdt->year, pdt->mon);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = pbox->fx + mx * (CALENDAR_COL -1);
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T(">"), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T(">"), -1);
 
 #ifdef XDK_SUPPORT_DATE
 	fill_calendar(&ca, pdt);
@@ -232,7 +233,7 @@ void draw_datebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* pdt
 		xr.fy = pbox->fy + my;
 		xr.fh = my;
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, ca.calen_week[i], -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, ca.calen_week[i], -1);
 	}
 
 	for (i = 0; i < CALENDAR_ROW; i++)
@@ -247,13 +248,13 @@ void draw_datebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* pdt
 			if (ca.calen_days[i][j])
 			{
 				xsprintf(token, _T("%d"), ca.calen_days[i][j]);
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 			}
 
 			if (pdt->day && pdt->day == ca.calen_days[i][j])
 			{
 				ft_expand_rect(&xr, -1, -1);
-				(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+				(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 			}
 		}
 	}
@@ -423,7 +424,7 @@ int	calc_timebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return TIMEBOX_HINT_NONE;
 }
 
-void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt)
+void draw_timebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* ptt)
 {
 	xfont_t xf;
 	xface_t xa;
@@ -437,7 +438,7 @@ void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
@@ -445,21 +446,21 @@ void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -469,60 +470,60 @@ void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt
 	xr.fw = mx;
 	xr.fh = my;
 	xsprintf(token, _T("%02d"), ptt->year - 2000);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy + my;
 	xr.fw = mx;
 	xr.fh = my;
 	xsprintf(token, _T("%02d"), ptt->hour);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = pbox->fx;
 	xr.fy = (float)(pbox->fy + my * 2);
 	xr.fw = mx;
 	xr.fh = my;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T("时"), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T("时"), -1);
 
 	xr.fx = (float)(pbox->fx + mx * 1.5);
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	xsprintf(token, _T("%02d"), ptt->mon);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = (float)(pbox->fx + mx * 1.5);
 	xr.fy = pbox->fy + my;
 	xr.fw = mx;
 	xr.fh = my;
 	xsprintf(token, _T("%02d"), ptt->min);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = (float)(pbox->fx + mx * 1.5);
 	xr.fy = (float)(pbox->fy + my * 2);
 	xr.fw = mx;
 	xr.fh = my;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T("分"), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T("分"), -1);
 
 	xr.fx = (float)(pbox->fx + mx * 3);
 	xr.fy = pbox->fy;
 	xr.fw = mx;
 	xr.fh = my;
 	xsprintf(token, _T("%02d"), ptt->day);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = (float)(pbox->fx + mx * 3);
 	xr.fy = (float)(pbox->fy + my);
 	xr.fw = mx;
 	xr.fh = my;
 	xsprintf(token, _T("%02d"), ptt->sec);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = (float)(pbox->fx + mx * 3);
 	xr.fy = (float)(pbox->fy + my * 2);
 	xr.fw = mx;
 	xr.fh = my;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T("秒"), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T("秒"), -1);
 
 	xr.fx = (float)(pbox->fx + mx);
 	xr.fy = pbox->fy;
@@ -557,7 +558,7 @@ void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt
 	xr.fw = (float)(mx / 2);
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
 	xr.fx = (float)(pbox->fx + mx * 2.5);
 	xr.fy = pbox->fy;
@@ -592,7 +593,7 @@ void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt
 	xr.fw = (float)(mx / 2);
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
 	xr.fx = (float)(pbox->fx + mx * 4);
 	xr.fy = pbox->fy;
@@ -627,7 +628,7 @@ void draw_timebox(const if_canvas_t* pif, const xfont_t* pxf, const xdate_t* ptt
 	xr.fw = (float)mx / 2;
 	xr.fh = my;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 void calc_listbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
@@ -754,7 +755,7 @@ void calc_listbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-void draw_listbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr)
+void draw_listbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 {
 	link_t_ptr ent;
 	xface_t xa;
@@ -765,19 +766,19 @@ void draw_listbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
-	(*pif->pf_text_metric)(pif->canvas, pxf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -798,7 +799,7 @@ void draw_listbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 			continue;
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_string_entity_val_ptr(ent), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_string_entity_val_ptr(ent), -1);
 
 		xr.fy += my;
 		ent = get_string_next_entity(ptr, ent);
@@ -932,7 +933,7 @@ void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-void draw_dropbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr)
+void draw_dropbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 {
 	link_t_ptr ent;
 	xface_t xa;
@@ -943,19 +944,19 @@ void draw_dropbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
-	(*pif->pf_text_metric)(pif->canvas, pxf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -976,14 +977,14 @@ void draw_dropbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 			continue;
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_string_entity_val_ptr(ent), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_string_entity_val_ptr(ent), -1);
 
 		xr.fy += my;
 		ent = get_string_next_entity(ptr, ent);
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void draw_pushbox(const if_canvas_t* pif, const xfont_t* pxf, const tchar_t* text)
+void draw_pushbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* text)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -991,14 +992,14 @@ void draw_pushbox(const if_canvas_t* pif, const xfont_t* pxf, const tchar_t* tex
 	xrect_t xr;
 	bool_t b_print;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -1008,7 +1009,7 @@ void draw_pushbox(const if_canvas_t* pif, const xfont_t* pxf, const tchar_t* tex
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	xr.fx = pbox->fx;
@@ -1018,9 +1019,9 @@ void draw_pushbox(const if_canvas_t* pif, const xfont_t* pxf, const tchar_t* tex
 
 	xp.adorn.feed = 2;
 	xp.adorn.size = 2;
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, text, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, text, -1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1068,7 +1069,7 @@ int calc_radiobox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint
 	return RADIOBOX_HINT_NONE;
 }
 
-void draw_radiobox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
+void draw_radiobox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1080,14 +1081,14 @@ void draw_radiobox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -1097,13 +1098,13 @@ void draw_radiobox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	default_xbrush(&xb);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	xmem_copy((void*)&xb_on, (void*)&xb, sizeof(xbrush_t));
@@ -1111,7 +1112,7 @@ void draw_radiobox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	lighten_xbrush(&xb_on, DEF_HARD_DARKEN);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -1122,21 +1123,21 @@ void draw_radiobox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my;
-		(*pif->pf_draw_rect)(pif->canvas, NULL, &xb_on, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, NULL, &xb_on, &xr);
 
 		xr.fx = pbox->fx;
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my;
-		(*pif->pf_draw_ellipse)(pif->canvas, NULL, &xb_on, &xr);
+		(*pif->pf_draw_ellipse)(pif->ctx, NULL, &xb_on, &xr);
 
 		xr.fx = pbox->fx + mx;
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my;
-		(*pif->pf_draw_ellipse)(pif->canvas, &xp, &xb, &xr);
+		(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T("开"), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T("开"), -1);
 	}
 	else
 	{
@@ -1144,21 +1145,21 @@ void draw_radiobox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my;
-		(*pif->pf_draw_rect)(pif->canvas, NULL, &xb, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, NULL, &xb, &xr);
 
 		xr.fx = pbox->fx + mx;
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my;
-		(*pif->pf_draw_ellipse)(pif->canvas, NULL, &xb, &xr);
+		(*pif->pf_draw_ellipse)(pif->ctx, NULL, &xb, &xr);
 
 		xr.fx = pbox->fx;
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my;
-		(*pif->pf_draw_ellipse)(pif->canvas, &xp, &xb, &xr);
+		(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, _T("关"), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, _T("关"), -1);
 	}
 }
 
@@ -1177,7 +1178,7 @@ void calc_checkbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* px
 	pxs->fh = my;
 }
 
-void draw_checkbox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
+void draw_checkbox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1190,14 +1191,14 @@ void draw_checkbox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -1207,18 +1208,18 @@ void draw_checkbox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	default_xbrush(&xb);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -1229,7 +1230,7 @@ void draw_checkbox(const if_canvas_t* pif, const xfont_t* pxf, bool_t b_on)
 	xr.fh = pbox->fh;
 	ft_center_rect(&xr, DEF_SMALL_ICON, DEF_SMALL_ICON);
 
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
 	if (b_on)
 	{
@@ -1289,7 +1290,7 @@ void calc_slidebox_button_rect(const if_measure_t* pim, const xfont_t* pxf, int 
 	pxr->fh = my;
 }
 
-void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
+void draw_slidebox(const if_drawing_t* pif, const xfont_t* pxf, int pos)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1303,23 +1304,23 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 	xsize_t xs;
 	float mx, my, cur;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	default_xface(&xa);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xcolor(&xc, xp.color);
@@ -1327,7 +1328,7 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 	default_xbrush(&xb);
 	xscpy(xb.color, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -1338,7 +1339,7 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 	xr.fy = pbox->fy + my / 2 - 2;
 	xr.fw = mx * 10;
 	xr.fh = 2;
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
 	xscpy(xf.size, _T("8"));
 
@@ -1348,7 +1349,7 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 		xr.fy = pbox->fy + my / 2 - 2;
 		xr.fw = cur;
 		xr.fh = 2;
-		(*pif->pf_draw_rect)(pif->canvas, &xp, &xb, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xr);
 
 		xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 		ltoxs(pos, token, INT_LEN);
@@ -1356,7 +1357,7 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 		xr.fy = pbox->fy;
 		xr.fw = mx;
 		xr.fh = my / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 	}
 
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_NEAR);
@@ -1365,7 +1366,7 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 	xr.fy = pbox->fy + my / 2;
 	xr.fw = mx;
 	xr.fh = my / 2;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_FAR);
 	ltoxs(100, token, INT_LEN);
@@ -1373,7 +1374,7 @@ void draw_slidebox(const if_canvas_t* pif, const xfont_t* pxf, int pos)
 	xr.fy = pbox->fy + my / 2;
 	xr.fw = mx;
 	xr.fh = my / 2;
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = pbox->fx + cur - mx / 4;
 	xr.fy = pbox->fy + my / 2;
@@ -1427,7 +1428,7 @@ int calc_spinbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return SPINBOX_HINT_NONE;
 }
 
-void draw_spinbox(const if_canvas_t* pif, const xfont_t* pxf, int cur)
+void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur)
 {
 	xfont_t xf;
 	xface_t xa;
@@ -1440,14 +1441,14 @@ void draw_spinbox(const if_canvas_t* pif, const xfont_t* pxf, int cur)
 	float mx, my;
 	tchar_t token[INT_LEN];
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -1457,12 +1458,12 @@ void draw_spinbox(const if_canvas_t* pif, const xfont_t* pxf, int cur)
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -1472,7 +1473,7 @@ void draw_spinbox(const if_canvas_t* pif, const xfont_t* pxf, int cur)
 	xr.fw = mx;
 	xr.fh = my;
 	ltoxs(cur, token, INT_LEN);
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 	xr.fx = pbox->fx + mx;
 	xr.fy = pbox->fy;
@@ -1559,7 +1560,7 @@ int calc_navibox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return NAVIBOX_HINT_NONE;
 }
 
-void draw_navibox(const if_canvas_t* pif, const xfont_t* pxf, const NAVISTATE* pns)
+void draw_navibox(const if_drawing_t* pif, const xfont_t* pxf, const NAVISTATE* pns)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -1570,24 +1571,24 @@ void draw_navibox(const if_canvas_t* pif, const xfont_t* pxf, const NAVISTATE* p
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -1693,7 +1694,7 @@ int calc_vertbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return VERTBOX_HINT_NONE;
 }
 
-void draw_vertbox(const if_canvas_t* pif, const xfont_t* pxf)
+void draw_vertbox(const if_drawing_t* pif, const xfont_t* pxf)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -1704,24 +1705,24 @@ void draw_vertbox(const if_canvas_t* pif, const xfont_t* pxf)
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -1817,7 +1818,7 @@ int calc_horzbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return HORZBOX_HINT_NONE;
 }
 
-void draw_horzbox(const if_canvas_t* pif, const xfont_t* pxf)
+void draw_horzbox(const if_drawing_t* pif, const xfont_t* pxf)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -1828,24 +1829,24 @@ void draw_horzbox(const if_canvas_t* pif, const xfont_t* pxf)
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -2082,7 +2083,7 @@ int calc_iconbox_hint(const if_measure_t* pim, const xfont_t* pxf, const tchar_t
 	return ICONBOX_HINT_NONE;
 }
 
-void draw_iconbox(const if_canvas_t* pif, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str)
+void draw_iconbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -2095,24 +2096,24 @@ void draw_iconbox(const if_canvas_t* pif, const xfont_t* pxf, const tchar_t* lay
 
 	link_t_ptr ent;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 	parse_xcolor(&xc, xp.color);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
@@ -2407,7 +2408,7 @@ int calc_wordsbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint
 	return WORDSBOX_HINT_NONE;
 }
 
-void draw_wordsbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr, int page)
+void draw_wordsbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr, int page)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -2421,19 +2422,19 @@ void draw_wordsbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr, i
 	xsize_t xs;
 	float mx, my;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
-	(*pif->pf_text_metric)(pif->canvas, pxf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
 
 	mx = (xs.fw > DEF_TOUCH_SPAN) ? xs.fw : DEF_TOUCH_SPAN;
 	my = (xs.fh > DEF_TOUCH_SPAN) ? xs.fh : DEF_TOUCH_SPAN;
 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xface(&xa);
@@ -2453,12 +2454,12 @@ void draw_wordsbox(const if_canvas_t* pif, const xfont_t* pxf, link_t_ptr ptr, i
 		xr.fw = mx;
 		xsprintf(token, _T("%d. "), ++index);
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, token, -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, token, -1);
 
 		xr.fx = pbox->fx + mx;
 		xr.fw = pbox->fw - mx;
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_words_item_text_ptr(ilk), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_words_item_text_ptr(ilk), -1);
 
 		if (ilk == lilk)
 			break;

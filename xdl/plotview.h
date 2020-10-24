@@ -36,15 +36,18 @@ LICENSE.GPL3 for more details.
 #include "vector.h"
 #include "matrix.h"
 
+#if defined(XDL_SUPPORT_VIEW)
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	EXP_API void draw_plot(const if_canvas_t* pif, link_t_ptr ptr);
+	EXP_API void draw_plot(const if_drawing_t* pif, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }
 #endif
 
+#endif /*XDL_SUPPORT_VIEW*/
 
 #endif /*PLOTVIEW_H*/

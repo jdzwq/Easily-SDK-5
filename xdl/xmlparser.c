@@ -30,8 +30,9 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xmlparser.h"
-#include "xdlimp.h"
+#include "xmlopera.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
 

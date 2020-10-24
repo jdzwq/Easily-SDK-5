@@ -190,7 +190,7 @@ void hand_numbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr, xr_focus;
 	int i;
 	tchar_t tk[2] = { 0 };
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	widget_get_xbrush(widget, &xb);
 	xmem_copy((void*)&xb_focus, (void*)&xb, sizeof(xbrush_t));
@@ -210,9 +210,9 @@ void hand_numbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_bark, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb_bark, &xr);
 
 	for (i = 0; i < NUMBOX_COUNT; i++)
 	{
@@ -227,21 +227,21 @@ void hand_numbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		xr_focus.h = xr.h - 4;
 
 		if (ptd->index == i)
-			(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_focus, &xr_focus);
+			(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb_focus, &xr_focus);
 		else
-			(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr_focus);
+			(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr_focus);
 
 		tk[0] = NUMBOX_DATA[i];
 
 		if (tk[0] == _T('\n'))
-			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("√"), -1);
+			(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr, _T("√"), -1);
 		else if (tk[0] == _T('-'))
-			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, _T("CE"), -1);
+			(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr, _T("CE"), -1);
 		else
-			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, tk, -1);
+			(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr, tk, -1);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
 }

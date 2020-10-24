@@ -474,7 +474,7 @@ void hand_msgdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	visual_t rdc;
 	canvas_t canv;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -488,9 +488,9 @@ void hand_msgdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	xs.fw = MSGDLG_TITLE_HEIGHT;
 	xs.fh = MSGDLG_TITLE_HEIGHT;
@@ -506,14 +506,14 @@ void hand_msgdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_brim, DEF_MIDD_DARKEN);
 
-	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+	(*ifv.pf_gradient_rect)(ifv.ctx, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 
 	pt1.x = xr.x + MSGDLG_EDGE_FEED;
 	pt1.y = xr.y + xr.h - xs.h;
 	pt2.x = xr.x + xr.w - MSGDLG_EDGE_FEED;
 	pt2.y = xr.y + xr.h - xs.h;
 
-	(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt1, &pt2);
+	(*ifv.pf_draw_line)(ifv.ctx, &xp, &pt1, &pt2);
 
 	xr_txt.x = xr.x + xs.w;
 	xr_txt.y = xr.y;
@@ -524,9 +524,9 @@ void hand_msgdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 
-	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr_txt, ptd->text, -1);
+	(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr_txt, ptd->text, -1);
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
 }

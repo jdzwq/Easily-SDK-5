@@ -29,11 +29,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "statusview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -213,7 +214,7 @@ int calc_status_hint(const xpoint_t* ppt, link_t_ptr ptr,link_t_ptr* pilk)
 	return nHint;
 }
 
-void draw_status(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_status(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr plk;
 	bool_t ali_far;
@@ -229,14 +230,14 @@ void draw_status(const if_canvas_t* pif, link_t_ptr ptr)
 	bool_t b_print;
 	float px, py, pw, ph;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xpen(&xp);
 	default_xbrush(&xb);
@@ -250,29 +251,29 @@ void draw_status(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -330,7 +331,7 @@ void draw_status(const if_canvas_t* pif, link_t_ptr ptr)
 		xr_text.fw = xr.fw - ic;
 		xr_text.fh = xr.fh;
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_status_item_title_ptr(plk), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_status_item_title_ptr(plk), -1);
 
 		if (ali_far)
 			hw -= iw;

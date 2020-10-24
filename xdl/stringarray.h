@@ -59,48 +59,53 @@ EXP_API void free_string_array(tchar_t** sa);
 EXP_API void clear_string_array(tchar_t** sa);
 
 /*
-@FUNCTION get_string_token_count: get string array tokenes.
+@FUNCTION get_string_array_size: get string array tokenes.
 @INPUT tchar_t** sa: the string array address.
 @RETURN int: return the count of string tokens.
 */
-EXP_API int get_string_token_count(tchar_t** sa);
+EXP_API int get_string_array_size(tchar_t** sa);
 
 /*
-@FUNCTION get_string_token_ptr: get string token value string pointer.
+@FUNCTION get_string_ptr: get string token value string pointer.
 @INPUT tchar_t** sa: the string array address.
 @INPUT int index: the zero based array index.
 @RETURN const tchar_t*: return token value string pointer if exists, otherwise return NULL.
 */
-EXP_API const tchar_t* get_string_token_ptr(tchar_t** sa, int index);
+EXP_API const tchar_t* get_string_ptr(tchar_t** sa, int index);
 
 /*
-@FUNCTION get_string_token: copy the string token by index.
+@FUNCTION get_string: copy the string token by index.
 @INPUT tchar_t** sa: the string array address.
 @INPUT int index: the zero based array index.
 @INPUT tchar_t* buf: the string buf for copying.
 @INPUT int max: the size of buffer.
 @RETURN int: return characters copyed.
 */
-EXP_API int get_string_token(tchar_t** sa, int index, tchar_t* buf, int max);
+EXP_API int get_string(tchar_t** sa, int index, tchar_t* buf, int max);
 
 /*
-@FUNCTION insert_string_token: insert the string token before the position.
+@FUNCTION insert_string: insert the string token before the position.
 @INPUT tchar_t** sa: the string array address.
 @INPUT int index: the zero based array index, -1 indicate insertting at last.
 @INPUT const tchar_t* token: the string token to be inserted.
 @INPUT int len: the length of token.
 @RETURN void: none.
 */
-EXP_API void insert_string_token(tchar_t** sa, int index, const tchar_t* token, int len);
+EXP_API void insert_string(tchar_t** sa, int index, const tchar_t* token, int len);
 
 /*
-@FUNCTION delete_string_token: delete the string token.
+@FUNCTION delete_string: delete the string token.
 @INPUT tchar_t** sa: the string array address.
 @INPUT int index: the zero based array index, -1 indicate delete the last token.
 @RETURN void: none.
 */
-EXP_API void delete_string_token(tchar_t** sa, int index);
+EXP_API void delete_string(tchar_t** sa, int index);
 
+#if defined(_DEBUG) || defined(DEBUG)
+
+EXP_API void test_string_array(void);
+
+#endif
 
 #ifdef	__cplusplus
 }

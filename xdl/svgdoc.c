@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "svgdoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_DOC
 
@@ -192,42 +193,47 @@ void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox)
 
 void get_svg_viewbox(link_t_ptr ptr, xrect_t* pbox)
 {
-	tchar_t* str;
+	const tchar_t* str;
 	tchar_t* key;
 	int klen;
+	int n, total = 0;
 
 	xmem_zero((void*)pbox, sizeof(xrect_t));
 
-	str = (tchar_t*)get_dom_node_attr_ptr(ptr, SVG_ATTR_VIEWBOX, -1);
+	str = get_dom_node_attr_ptr(ptr, SVG_ATTR_VIEWBOX, -1);
 	if (is_null(str))
 		return;
 
-	str = (tchar_t*)parse_string_token(str, -1, _T(' '), &key, &klen);
-	if (str)
+	n = parse_string_token((str + total), -1, _T(' '), &key, &klen);
+	total += n;
+	if (n)
 	{
 		pbox->x = xsntol(key, klen);
 	}
 	else
 		return;
 
-	str = (tchar_t*)parse_string_token(str, -1, _T(' '), &key, &klen);
-	if (str)
+	n = parse_string_token((str + total), -1, _T(' '), &key, &klen);
+	total += n;
+	if (n)
 	{
 		pbox->y = xsntol(key, klen);
 	}
 	else
 		return;
 
-	str = (tchar_t*)parse_string_token(str, -1, _T(' '), &key, &klen);
-	if (str)
+	n = parse_string_token((str + total), -1, _T(' '), &key, &klen);
+	total += n;
+	if (n)
 	{
 		pbox->w = xsntol(key, klen);
 	}
 	else
 		return;
 
-	str = (tchar_t*)parse_string_token(str, -1, _T(' '), &key, &klen);
-	if (str)
+	n = parse_string_token((str + total), -1, _T(' '), &key, &klen);
+	total += n;
+	if (n)
 	{
 		pbox->h = xsntol(key, klen);
 	}

@@ -137,6 +137,7 @@ EXP_API void object_set_variant(object_t obj, variant_t val);
 */
 EXP_API bool_t object_get_variant(object_t obj, variant_t* pval);
 
+#if defined(XDL_SUPPORT_DOC)
 /*
 @FUNCTION object_set_domdoc: save dom document to object.
 @INPUT object_t obj: the object.
@@ -152,6 +153,7 @@ EXP_API void object_set_domdoc(object_t obj, link_t_ptr dom);
 @RETURN bool_t: return nonzero if the object type is _OBJECT_DOMDOC, otherwise return zero.
 */
 EXP_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
+#endif
 
 /*
 @FUNCTION object_set_bytes: save bytes to object.

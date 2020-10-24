@@ -29,15 +29,15 @@ LICENSE.GPL3 for more details.
 
 #include "srvdef.h"
 
-void _write_log_title(file_t log, const tchar_t* sz_title, int len);
+void _write_log_title(const if_fio_t* log, const tchar_t* sz_title, int len);
 
-void _write_log_error(file_t log, const tchar_t* sz_code, const tchar_t* sz_error, int len);
+void _write_log_error(const if_fio_t* log, const tchar_t* sz_code, const tchar_t* sz_error, int len);
 
-void _write_log_data(file_t log, const byte_t* data, dword_t size);
+void _write_log_data(const if_fio_t* log, const byte_t* data, dword_t size);
 
-void _write_log_xml(file_t log, link_t_ptr ptr_xml);
+void _write_log_xml(const if_fio_t* log, link_t_ptr ptr_xml);
 
-void _write_log_json(file_t log, link_t_ptr ptr_json);
+void _write_log_json(const if_fio_t* log, link_t_ptr ptr_json);
 
 /**********************************************************************************************/
 

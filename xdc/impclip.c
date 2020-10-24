@@ -40,7 +40,7 @@ bool_t clipboard_open()
 
 	pif = PROCESS_CLIPBOARD_INTERFACE;
 
-	return (*pif->pf_clipboard_open)();
+	return (pif->pf_clipboard_open)();
 }
 
 void clipboard_close()
@@ -49,7 +49,7 @@ void clipboard_close()
 
 	pif = PROCESS_CLIPBOARD_INTERFACE;
 
-	(*pif->pf_clipboard_close)();
+	(pif->pf_clipboard_close)();
 }
 
 void clipboard_clean()
@@ -58,7 +58,7 @@ void clipboard_clean()
 
 	pif = PROCESS_CLIPBOARD_INTERFACE;
 
-	(*pif->pf_clipboard_clean)();
+	(pif->pf_clipboard_clean)();
 }
 
 bool_t clipboard_put(int fmt, res_glob_t gb)
@@ -67,7 +67,7 @@ bool_t clipboard_put(int fmt, res_glob_t gb)
 
 	pif = PROCESS_CLIPBOARD_INTERFACE;
 
-	return (*pif->pf_clipboard_put)(fmt, gb);
+	return (pif->pf_clipboard_put)(fmt, gb);
 }
 
 res_glob_t clipboard_get(int fmt)
@@ -76,7 +76,7 @@ res_glob_t clipboard_get(int fmt)
 
 	pif = PROCESS_CLIPBOARD_INTERFACE;
 
-	return (*pif->pf_clipboard_get)(fmt);
+	return (pif->pf_clipboard_get)(fmt);
 }
 
 #endif //XDU_SUPPORT_CLIPBOARD

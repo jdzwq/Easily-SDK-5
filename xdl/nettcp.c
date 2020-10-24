@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "nettcp.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdlinit.h"
 
 #ifdef XDK_SUPPORT_SOCK
 

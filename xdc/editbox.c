@@ -88,7 +88,7 @@ void _editbox_auto_resize(res_win_t widget)
 	xrect_t xr;
 	int cx;
 	const xfont_t* pxf;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -98,13 +98,11 @@ void _editbox_auto_resize(res_win_t widget)
 
 	vs = (string_t)ptd->textor.data;
 
-	piv = create_visual_interface(ptd->textor.cdc);
+	get_visual_interface(ptd->textor.cdc, &ifv);
 
-	(*piv->pf_text_metric_raw)(piv->visual, pxf, &xs);
+	(*ifv.pf_text_metric)(ifv.ctx, pxf, &xs);
 	cx = xs.w;
-	(*piv->pf_text_size_raw)(piv->visual, pxf, string_ptr(vs), string_len(vs), &xs);
-
-	destroy_visual_interface(piv);
+	(*ifv.pf_text_size)(ifv.ctx, pxf, string_ptr(vs), string_len(vs), &xs);
 
 	if (xs.w + cx > xr.w)
 	{
@@ -495,21 +493,19 @@ void hand_editbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
 	xrect_t xr;
 	xcolor_t xc;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	hand_textor_paint(&ptd->textor, dc, pxr);
 
 	if (ptd->b_auto)
 	{
-		piv = create_visual_interface(dc);
-		widget_get_view_rect(widget, &piv->rect);
+		get_visual_interface(dc, &ifv);
+		widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
 		widget_get_client_rect(widget, &xr);
 
 		parse_xcolor(&xc, DEF_DISABLE_COLOR);
-		draw_feed_raw(piv, &xc, &xr, ALPHA_SOLID);
-
-		destroy_visual_interface(piv);
+		draw_feed_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 	}
 }
 

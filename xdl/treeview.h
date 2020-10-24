@@ -62,7 +62,7 @@ extern "C" {
 
 	EXP_API int calc_tree_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-	EXP_API void draw_tree(const if_canvas_t* pcanv, link_t_ptr ptr);
+	EXP_API void draw_tree(const if_drawing_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

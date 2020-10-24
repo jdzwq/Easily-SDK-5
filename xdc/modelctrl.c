@@ -314,7 +314,7 @@ static bitmap_t _modelctrl_merge_anno(res_win_t widget)
 
 	visual_t rdc, memdc;
 	bitmap_t membm;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->bmp && !ptd->anno)
 		return NULL;
@@ -324,7 +324,7 @@ static bitmap_t _modelctrl_merge_anno(res_win_t widget)
 	get_bitmap_size(ptd->bmp, &xs.w, &xs.h);
 
 	memdc = create_compatible_context(rdc, xs.w, xs.h);
-	piv = create_visual_interface(memdc);
+	get_visual_interface(memdc, &ifv);
 
 	xr.x = 0;
 	xr.h = 0;
@@ -333,9 +333,9 @@ static bitmap_t _modelctrl_merge_anno(res_win_t widget)
 
 	widget_get_xbrush(widget, &xb);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
-	(*piv->pf_draw_bitmap_raw)(piv->visual, ptd->bmp, RECTPOINT(&xr));
+	(*ifv.pf_draw_bitmap)(ifv.ctx, ptd->bmp, RECTPOINT(&xr));
 
 	ilk = get_anno_next_arti(ptd->anno, LINK_FIRST);
 	while (ilk)
@@ -344,8 +344,6 @@ static bitmap_t _modelctrl_merge_anno(res_win_t widget)
 
 		//noti_model_owner(widget, NC_MODELANNODRAW, ilk, (void*)&xr, memdc);
 	}
-
-	destroy_visual_interface(piv);
 
 	membm = create_context_bitmap(memdc);
 
@@ -1038,8 +1036,8 @@ void hand_model_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr;
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -1050,20 +1048,20 @@ void hand_model_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	widget_get_view_rect(widget, (viewbox_t*)&xr);
 
 	if (ptd->bmp)
 	{
-		(*piv->pf_draw_bitmap_raw)(piv->visual, ptd->bmp, RECTPOINT(&xr));
+		(*ifv.pf_draw_bitmap)(ifv.ctx, ptd->bmp, RECTPOINT(&xr));
 	}
 
 	noti_model_owner(widget, NC_MODELFACEDRAW, NULL, (void*)&xr, rdc);
@@ -1076,13 +1074,13 @@ void hand_model_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		pt_expand_rect(&xr, 1, 1);
 
 		parse_xcolor(&xc, DEF_ALARM_COLOR);
-		draw_select_raw(piv, &xc, &xr, ALPHA_SOLID);
+		draw_select_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
-	destroy_canvas_interface(pif);
+	
 }
 
 /***************************************************************************************/

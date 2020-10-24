@@ -42,7 +42,7 @@ extern "C" {
 
 /*
 @FUNCTION draw_pass: draw the password in canvas using millimeter coordinate.
-@INPUT if_canvas_t* pif: the canvas interface.
+@INPUT if_drawing_t* pif: the canvas interface.
 @INPUT cont xfont_t* pxf: the font struct.
 @INPUT cont xface_t* pxa: the face struct.
 @INPUT const xrect_t* prt: the rect struct using float member.
@@ -50,11 +50,11 @@ extern "C" {
 @INPUT int len: the text length in characters, -1 indicate the text is terminated by zero.
 @RETURN void: none.
 */
-EXP_API void	draw_pass(const if_canvas_t* pif,  const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
+EXP_API void	draw_pass(const if_drawing_t* pif,  const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len);
 
 /*
 @FUNCTION draw_data: draw the formated data in canvas using millimeter coordinate.
-@INPUT if_canvas_t* pif: the canvas interface.
+@INPUT if_drawing_t* pif: the canvas interface.
 @INPUT cont xfont_t* pxf: the font struct.
 @INPUT cont xface_t* pxa: the face struct.
 @INPUT const xrect_t* prt: the rect struct using float member.
@@ -67,7 +67,7 @@ EXP_API void	draw_pass(const if_canvas_t* pif,  const xfont_t* pxf, const xface_
 @INPUT bool_t autowap: if nonzero, the text will auto
 @RETURN void: none.
 */
-EXP_API void	draw_data(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap);
+EXP_API void	draw_data(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap);
 
 
 #ifdef	__cplusplus

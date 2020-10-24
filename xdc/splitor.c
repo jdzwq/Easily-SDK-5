@@ -239,7 +239,7 @@ void hand_splitor_paint(splitor_t* ptd, visual_t rdc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc_brim, xc_core;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -255,9 +255,9 @@ void hand_splitor_paint(splitor_t* ptd, visual_t rdc)
 
 	widget_get_client_rect(ptd->widget, &xr);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 
 	ilk = ptd->split;
 	while (ilk)
@@ -269,11 +269,11 @@ void hand_splitor_paint(splitor_t* ptd, visual_t rdc)
 
 			if (compare_text(get_split_item_layer_ptr(ilk), -1, ATTR_LAYER_HORZ, -1, 1) == 0)
 			{
-				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr);
+				(*ifv.pf_gradient_rect)(ifv.ctx, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_HORZ, &xr);
 			}
 			else
 			{
-				(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
+				(*ifv.pf_gradient_rect)(ifv.ctx, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 			}
 		}
 
@@ -303,6 +303,6 @@ void hand_splitor_paint(splitor_t* ptd, visual_t rdc)
 	if (st)
 		destroy_stack_table(st);
 
-	destroy_visual_interface(piv);
+	
 }
 

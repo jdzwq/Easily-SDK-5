@@ -29,11 +29,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "labelview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+
+#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -222,7 +224,7 @@ int	calc_label_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* p
 	return LABEL_HINT_NONE;
 }
 
-void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
+void draw_label(const if_drawing_t* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr nlk, first, last;
 	link_t_ptr ilk;
@@ -247,14 +249,14 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 	ximage_t xi_ico = { 0 };
 	ximage_t xi = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xpen(&xp);
 	default_xbrush(&xb);
@@ -268,30 +270,30 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
-		format_xcolor(&pif->clr_msk, xi_ico.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi_ico.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, &pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -303,7 +305,7 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 	xmem_copy((void*)&xb_shape, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_shape, DEF_SOFT_DARKEN);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 	iw = get_label_item_width(ptr);
 	ih = get_label_item_height(ptr);
@@ -331,7 +333,7 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 		xr_text.fy = xr.fy + SHAPE_FEED;
 		xr_text.fw = xr.fw - 2 * eh - 2 * SHAPE_FEED;
 		xr_text.fh = eh;
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa_title, &xr_text, get_label_item_title_ptr(nlk), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa_title, &xr_text, get_label_item_title_ptr(nlk), -1);
 
 		xr_text.fx = xr.fx + xr.fw - SHAPE_FEED - eh;
 		xr_text.fy = xr.fy + SHAPE_FEED;
@@ -345,11 +347,11 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 		xr_shape.fy = xr.fy + SHAPE_FEED;
 		xr_shape.fw = xr.fw - 2 * SHAPE_FEED;
 		xr_shape.fh = xr.fh - 2 * SHAPE_FEED;
-		(*pif->pf_draw_round)(pif->canvas, &xp, NULL, &xr_shape);
+		(*pif->pf_draw_round)(pif->ctx, &xp, NULL, &xr_shape);
 
 		xr_shape.fy = xr.fy + SHAPE_FEED + eh;
 		xr_shape.fh = xr.fh - 2 * SHAPE_FEED - eh;
-		(*pif->pf_draw_rect)(pif->canvas, &xp, &xb_shape, &xr_shape);
+		(*pif->pf_draw_rect)(pif->ctx, &xp, &xb_shape, &xr_shape);
 
 		if (compare_text(type, -1, ATTR_TEXT_TYPE_TEXT, -1, 0) == 0)
 		{
@@ -376,7 +378,7 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 
 			parse_ximage_from_source(&xi, get_label_item_text_ptr(nlk));
 
-			(*pif->pf_draw_image)(pif->canvas, &xi, &xr_image);
+			(*pif->pf_draw_image)(pif->ctx, &xi, &xr_image);
 		}
 		else if (compare_text(type, -1, ATTR_TEXT_TYPE_WORDSTABLE, -1, 0) == 0)
 		{
@@ -391,7 +393,7 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 				xr_text.fw = iw - 2 * SHAPE_FEED;
 				xr_text.fh = eh;
 
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_words_item_text_ptr(ilk), -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_words_item_text_ptr(ilk), -1);
 
 				xr_text.fy += eh;
 				ilk = get_words_next_item(st_array, ilk);
@@ -415,13 +417,13 @@ void draw_label(const if_canvas_t* pif, link_t_ptr ptr, int page)
 				xr_text.fw = ew;
 				xr_text.fh = eh;
 
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_string_entity_key_ptr(ilk), -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_string_entity_key_ptr(ilk), -1);
 
 				xr_text.fx = xr.fx + SHAPE_FEED + ew;
 				xr_text.fw = ew;
 				xr_text.fh = eh;
 
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa_title, &xr_text, get_string_entity_val_ptr(ilk), -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa_title, &xr_text, get_string_entity_val_ptr(ilk), -1);
 
 				xr_text.fy += eh;
 				ilk = get_string_next_entity(st_table, ilk);

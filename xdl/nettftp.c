@@ -30,10 +30,13 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "nettftp.h"
-#include "xdlimp.h"
+#include "netudp.h"
+#include "bioinf.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdlnet.h"
+
 #include "xdlinit.h"
 
 #if defined(XDK_SUPPORT_SOCK)
@@ -62,9 +65,9 @@ typedef struct _tftp_pdu_t{
 typedef struct _xtftp_t{
 	xhand_head head;		//head for xhand_t
 
-	int type;
-	xhand_t bio;
+	if_bio_t* pif;
 
+	int type;
 	havege_state havs;
 
 	tftp_pdu_t snd_pdu;
@@ -400,12 +403,12 @@ bool_t _tftp_send_request(xtftp_t* ppt)
 
 	len = _tftp_format_pdu(pkg_buf, TFTP_PKG_SIZE, pdu);
 
-	if (!xudp_write(ppt->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_write)(ppt->pif->bio, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xudp_flush(ppt->bio);
+	(*ppt->pif->pf_flush)(ppt->pif->bio);
 
 	if (pdu->type == TFTP_PDU_DATA)
 	{
@@ -435,7 +438,7 @@ bool_t _tftp_recv_request(xtftp_t* ppt)
 	TRY_CATCH;
 
 	len = TFTP_PKG_SIZE;
-	if (!xudp_read(ppt->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_read)(ppt->pif->bio, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -511,12 +514,12 @@ bool_t _tftp_send_response(xtftp_t* ppt)
 
 	len = _tftp_format_pdu(pkg_buf, TFTP_PKG_SIZE, pdu);
 
-	if (!xudp_write(ppt->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_write)(ppt->pif->bio, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xudp_flush(ppt->bio);
+	(*ppt->pif->pf_flush)(ppt->pif->bio);
 
 	if (pdu->type == TFTP_PDU_DATA)
 	{
@@ -545,7 +548,7 @@ bool_t _tftp_recv_response(xtftp_t* ppt)
 	TRY_CATCH;
 
 	len = TFTP_PKG_SIZE;
-	if (!xudp_read(ppt->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_read)(ppt->pif->bio, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -596,7 +599,8 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 	tchar_t addr[ADDR_LEN] = { 0 };
 	unsigned short port, bind;
 
-	tftp_pdu_t* pdu;
+	tftp_pdu_t* pdu = NULL;
+	xhand_t bio = NULL;
 
 	TRY_CATCH;
 
@@ -624,18 +628,22 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 	if (!port)
 		port = DEF_TFTP_PORT;
 
-	pftp->bio = xudp_cli(port, addr);
-	if (!pftp->bio)
+	bio = xudp_cli(port, addr);
+	if (!bio)
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (!xudp_bind(pftp->bio, bind))
+	if (!xudp_bind(bio, bind))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xudp_set_package(pftp->bio, TFTP_PKG_SIZE);
+	xudp_set_package(bio, TFTP_PKG_SIZE);
+
+	pftp->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, pftp->pif);
+	bio = NULL;
 
 	pftp->serial = 0;
 
@@ -652,10 +660,13 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 ONERROR:
 	XDL_TRACE_LAST;
 
+	if (bio)
+		xudp_close(bio);
+
 	if (pftp)
 	{
-		if (pftp->bio)
-			xudp_close(pftp->bio);
+		if (pftp->pif)
+			xmem_free(pftp->pif);
 
 		xmem_free(pftp);
 	}
@@ -667,6 +678,7 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 {
 	xtftp_t* pftp = NULL;
 	unsigned short bind;
+	xhand_t bio = NULL;
 
 	TRY_CATCH;
 
@@ -678,24 +690,27 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 	havege_init(&pftp->havs);
 	bind = _tftp_port(pftp);
 
-	pftp->bio = xudp_srv(port, addr, pack, size);
-	if (!pftp->bio)
+	bio = xudp_srv(port, addr, pack, size);
+	if (!bio)
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (!xudp_bind(pftp->bio, bind))
+	if (!xudp_bind(bio, bind))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	if (!xudp_connect(pftp->bio, port, addr))
+	if (!xudp_connect(bio, port, addr))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xudp_set_package(pftp->bio, TFTP_PKG_SIZE);
+	xudp_set_package(bio, TFTP_PKG_SIZE);
 
+	pftp->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, pftp->pif);
+	bio = NULL;
 
 	END_CATCH;
 
@@ -703,10 +718,13 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 ONERROR:
 	XDL_TRACE_LAST;
 
+	if (bio)
+		xudp_close(bio);
+
 	if (pftp)
 	{
-		if (pftp->bio)
-			xudp_close(pftp->bio);
+		if (pftp->pif)
+			xmem_free(pftp->pif);
 
 		xmem_free(pftp);
 	}
@@ -720,7 +738,7 @@ xhand_t xtftp_bio(xhand_t tftp)
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
-	return pftp->bio;
+	return (pftp->pif)? pftp->pif->bio : NULL;
 }
 
 void xtftp_close(xhand_t tftp)
@@ -729,8 +747,11 @@ void xtftp_close(xhand_t tftp)
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
-	if (pftp->bio)
-		xudp_close(pftp->bio);
+	if (pftp->pif)
+	{
+		xudp_close(pftp->pif->bio);
+		xmem_free(pftp->pif);
+	}
 
 	xmem_free(pftp);
 }
@@ -1231,12 +1252,12 @@ void xtftp_abort(xhand_t tftp, int errcode)
 
 	len = _tftp_format_pdu(pkg_buf, TFTP_PKG_SIZE, pdu);
 
-	if (!xudp_write(ppt->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_write)(ppt->pif->bio, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	xudp_flush(ppt->bio);
+	(*ppt->pif->pf_flush)(ppt->pif->bio);
 
 	END_CATCH;
 

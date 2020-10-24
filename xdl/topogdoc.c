@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "topogdoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+#include "xdlmath.h"
 
 #ifdef XDL_SUPPORT_DOC
 

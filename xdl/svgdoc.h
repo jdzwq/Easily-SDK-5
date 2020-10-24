@@ -33,6 +33,8 @@ LICENSE.GPL3 for more details.
 #define _SVGDOC_H
 
 #include "xdldef.h"
+#include "svgattr.h"
+#include "xmlattr.h"
 
 #ifdef XDL_SUPPORT_DOC
 

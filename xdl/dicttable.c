@@ -30,9 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "dicttable.h"
+#include "dblink.h"
+#include "varobj.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 
 typedef struct _dict_entity_t{
 	link_t lk;			/* entity self link component*/

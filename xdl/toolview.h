@@ -61,7 +61,7 @@ EXP_API void calc_tool_group_item_rect(link_t_ptr ptr, link_t_ptr ilk, xrect_t* 
 
 EXP_API int calc_tool_point_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, link_t_ptr* pplk);
 
-EXP_API void draw_tool(const if_canvas_t* pcanv, link_t_ptr ptr);
+EXP_API void draw_tool(const if_drawing_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

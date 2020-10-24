@@ -52,7 +52,7 @@ void _invoke_insert(const slots_block_t* pb, radnet_block_t* pd)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pd->radnet->bio);
+	stm = stream_alloc(pd->radnet->pbo);
 
 	dw = pd->request;
 	buf = (byte_t*)xmem_alloc(dw);
@@ -130,7 +130,7 @@ void _invoke_update(const slots_block_t* pb, radnet_block_t* pd)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pd->radnet->bio);
+	stm = stream_alloc(pd->radnet->pbo);
 
 	dw = pd->request;
 	buf = (byte_t*)xmem_alloc(dw);
@@ -212,7 +212,7 @@ void _invoke_delete(const slots_block_t* pb, radnet_block_t* pd)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pd->radnet->bio);
+	stm = stream_alloc(pd->radnet->pbo);
 
 	dw = pd->request;
 	buf = (byte_t*)xmem_alloc(dw);
@@ -277,7 +277,7 @@ void _invoke_trunca(const slots_block_t* pb, radnet_block_t* pd)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pd->radnet->bio);
+	stm = stream_alloc(pd->radnet->pbo);
 
 	dw = pd->request;
 	buf = (byte_t*)xmem_alloc(dw);
@@ -345,7 +345,7 @@ void _invoke_select(const slots_block_t* pb, radnet_block_t* pd)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pd->radnet->bio);
+	stm = stream_alloc(pd->radnet->pbo);
 
 	dw = pd->request;
 	buf = (byte_t*)xmem_alloc(dw);

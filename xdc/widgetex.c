@@ -47,6 +47,8 @@ typedef struct _widget_exten_t{
 		splitor_t splitor;
 		docker_t docker;
 	};
+
+	if_drawing_t* pif;
 }widget_exten_t;
 
 #define GETEXTENSTRUCT(wt)			(widget_exten_t*)widget_get_core_delta(wt)
@@ -54,6 +56,24 @@ typedef struct _widget_exten_t{
 
 
 /***********************************************************************************************************************/
+
+const if_drawing_t* widget_get_canvas_interface(res_win_t wt)
+{
+	widget_exten_t* pwt;
+
+	pwt = GETEXTENSTRUCT(wt);
+
+	XDL_ASSERT(pwt != NULL);
+
+	if (pwt->pif)
+	{
+		widget_get_canv_rect(wt, (canvbox_t*)&(pwt->pif->rect));
+
+		widget_get_color_mode(wt, &(pwt->pif->mode));
+	}
+
+	return pwt->pif;
+}
 
 canvas_t widget_get_canvas(res_win_t wt)
 {
@@ -113,7 +133,7 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 	visual_t rdc;
 	xfont_t xf = { 0 };
 	widget_exten_t* pwt;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	pxr->x = pxr->w = pxr->y = pxr->h = 0;
 
@@ -137,13 +157,13 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 
 	rdc = widget_window_ctx(wt);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	ilk = get_menu_next_item(pwt->menu, LINK_FIRST);
 	while (ilk)
 	{
 		text = get_menu_item_title_ptr(ilk);
-		(*piv->pf_text_size_raw)(piv->visual, &xf, text, -1, &xs);
+		(*ifv.pf_text_size)(ifv.ctx, &xf, text, -1, &xs);
 
 		xrItem.w = bd.menu + xs.w;
 
@@ -162,7 +182,7 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 		ilk = get_menu_next_item(pwt->menu, ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 	widget_release_ctx(wt, rdc);
 }
 
@@ -657,6 +677,9 @@ void widget_hand_create(res_win_t wt)
 	pwt->canv = create_display_canvas(rdc);
 	widget_release_ctx(wt, rdc);
 
+	pwt->pif = (if_drawing_t*)xmem_alloc(sizeof(if_drawing_t));
+	get_canvas_interface(pwt->canv, pwt->pif);
+
 	SETEXTENSTRUCT(wt, pwt);
 }
 
@@ -667,6 +690,9 @@ void widget_hand_destroy(res_win_t wt)
 	if (pwt)
 	{
 		destroy_display_canvas(pwt->canv);
+
+		if (pwt->pif)
+			xmem_free(pwt->pif);
 
 		xmem_free(pwt);
 	}

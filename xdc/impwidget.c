@@ -41,7 +41,7 @@ void send_quit_message(int code)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_send_quit_message)(code);
+	(pif->pf_send_quit_message)(code);
 }
 
 void message_fetch(msg_t* pmsg, res_win_t wt)
@@ -50,7 +50,7 @@ void message_fetch(msg_t* pmsg, res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_message_fetch)(pmsg, wt);
+	(pif->pf_message_fetch)(pmsg, wt);
 }
 
 bool_t message_peek(msg_t* pmsg)
@@ -59,7 +59,7 @@ bool_t message_peek(msg_t* pmsg)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_message_peek)(pmsg);
+	return (pif->pf_message_peek)(pmsg);
 }
 
 
@@ -69,7 +69,7 @@ bool_t	message_translate(const msg_t* pmsg)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_message_translate)(pmsg);
+	return (pif->pf_message_translate)(pmsg);
 }
 
 result_t message_dispatch(const msg_t* pmsg)
@@ -78,7 +78,7 @@ result_t message_dispatch(const msg_t* pmsg)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_message_dispatch)(pmsg);
+	return (pif->pf_message_dispatch)(pmsg);
 }
 
 bool_t	message_is_quit(const msg_t* pmsg)
@@ -87,7 +87,7 @@ bool_t	message_is_quit(const msg_t* pmsg)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_message_is_quit)(pmsg);
+	return (pif->pf_message_is_quit)(pmsg);
 }
 
 void message_position(xpoint_t* ppt)
@@ -96,7 +96,7 @@ void message_position(xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_message_position)(ppt);
+	(pif->pf_message_position)(ppt);
 }
 
 void widget_set_alpha(res_win_t wt, byte_t b)
@@ -105,7 +105,7 @@ void widget_set_alpha(res_win_t wt, byte_t b)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_alpha)(wt, b);
+	(pif->pf_widget_set_alpha)(wt, b);
 }
 
 byte_t widget_get_alpha(res_win_t wt)
@@ -114,7 +114,7 @@ byte_t widget_get_alpha(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_alpha)(wt);
+	return (pif->pf_widget_get_alpha)(wt);
 }
 
 void widget_track_mouse(res_win_t wt, dword_t mask)
@@ -123,7 +123,7 @@ void widget_track_mouse(res_win_t wt, dword_t mask)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_track_mouse)(wt, mask);
+	(pif->pf_widget_track_mouse)(wt, mask);
 }
 
 #ifdef XDU_SUPPORT_WIDGET_REGION
@@ -133,7 +133,7 @@ void widget_set_region(res_win_t wt, res_rgn_t rgn)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_region)(wt, rgn);
+	(pif->pf_widget_set_region)(wt, rgn);
 }
 
 #endif //XDU_SUPPORT_WIDGET_REGION
@@ -144,7 +144,7 @@ void get_screen_size(xsize_t* pxs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_get_screen_size)(pxs);
+	(pif->pf_get_screen_size)(pxs);
 }
 
 void get_desktop_size(xsize_t* pxs)
@@ -153,7 +153,7 @@ void get_desktop_size(xsize_t* pxs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_get_desktop_size)(pxs);
+	(pif->pf_get_desktop_size)(pxs);
 }
 
 void screen_size_to_pt(xsize_t* pxs)
@@ -162,7 +162,7 @@ void screen_size_to_pt(xsize_t* pxs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_screen_size_to_pt)(pxs);
+	(pif->pf_screen_size_to_pt)(pxs);
 }
 
 void screen_size_to_tm(xsize_t* pxs)
@@ -171,7 +171,7 @@ void screen_size_to_tm(xsize_t* pxs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_screen_size_to_tm)(pxs);
+	(pif->pf_screen_size_to_tm)(pxs);
 }
 
 res_acl_t create_accel_table(const accel_t* pac, int n)
@@ -180,7 +180,7 @@ res_acl_t create_accel_table(const accel_t* pac, int n)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_create_accel_table)(pac, n);
+	return (pif->pf_create_accel_table)(pac, n);
 }
 
 void destroy_accel_table(res_acl_t hac)
@@ -189,7 +189,7 @@ void destroy_accel_table(res_acl_t hac)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_destroy_accel_table)(hac);
+	(pif->pf_destroy_accel_table)(hac);
 }
 
 bool_t	widget_is_maximized(res_win_t wt)
@@ -198,7 +198,7 @@ bool_t	widget_is_maximized(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_is_maximized)(wt);
+	return (pif->pf_widget_is_maximized)(wt);
 }
 
 bool_t	widget_is_minimized(res_win_t wt)
@@ -207,7 +207,7 @@ bool_t	widget_is_minimized(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_is_minimized)(wt);
+	return (pif->pf_widget_is_minimized)(wt);
 }
 
 bool_t	widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv)
@@ -216,7 +216,7 @@ bool_t	widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_enum_child)(wt, pf, pv);
+	return (pif->pf_widget_enum_child)(wt, pf, pv);
 }
 
 if_event_t* widget_get_dispatch(res_win_t wt)
@@ -225,7 +225,7 @@ if_event_t* widget_get_dispatch(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_dispatch)(wt);
+	return (pif->pf_widget_get_dispatch)(wt);
 }
 
 res_win_t widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr, res_win_t wparent, if_event_t* pev)
@@ -234,7 +234,7 @@ res_win_t widget_create(const tchar_t* wname, dword_t wstyle, const xrect_t* pxr
 	
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_create)(wname, wstyle, pxr, wparent, pev);
+	return (pif->pf_widget_create)(wname, wstyle, pxr, wparent, pev);
 }
 
 void widget_set_style(res_win_t wt, dword_t ws)
@@ -243,7 +243,7 @@ void widget_set_style(res_win_t wt, dword_t ws)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_style)(wt, ws);
+	(pif->pf_widget_set_style)(wt, ws);
 }
 
 dword_t widget_get_style(res_win_t wt)
@@ -252,7 +252,7 @@ dword_t widget_get_style(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_style)(wt);
+	return (pif->pf_widget_get_style)(wt);
 }
 
 void widget_set_owner(res_win_t wt, res_win_t owner)
@@ -261,7 +261,7 @@ void widget_set_owner(res_win_t wt, res_win_t owner)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_owner)(wt, owner);
+	(pif->pf_widget_set_owner)(wt, owner);
 }
 
 res_win_t widget_get_owner(res_win_t wt)
@@ -270,7 +270,7 @@ res_win_t widget_get_owner(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_owner)(wt);
+	return (pif->pf_widget_get_owner)(wt);
 }
 
 void widget_attach_accel(res_win_t wt, res_acl_t acl)
@@ -279,7 +279,7 @@ void widget_attach_accel(res_win_t wt, res_acl_t acl)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_accel)(wt, acl);
+	(pif->pf_widget_set_accel)(wt, acl);
 }
 
 res_acl_t widget_get_accel(res_win_t wt)
@@ -288,7 +288,7 @@ res_acl_t widget_get_accel(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_accel)(wt);
+	return (pif->pf_widget_get_accel)(wt);
 }
 
 res_acl_t widget_detach_accel(res_win_t wt)
@@ -298,9 +298,9 @@ res_acl_t widget_detach_accel(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	acl = (*pif->pf_widget_get_accel)(wt);
+	acl = (pif->pf_widget_get_accel)(wt);
 
-	(*pif->pf_widget_set_accel)(wt, NULL);
+	(pif->pf_widget_set_accel)(wt, NULL);
 
 	return acl;
 }
@@ -311,7 +311,7 @@ void widget_set_core_delta(res_win_t wt, var_long pd)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_core_delta)(wt, pd);
+	(pif->pf_widget_set_core_delta)(wt, pd);
 }
 
 var_long widget_get_core_delta(res_win_t wt)
@@ -320,7 +320,7 @@ var_long widget_get_core_delta(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_core_delta)(wt);
+	return (pif->pf_widget_get_core_delta)(wt);
 }
 
 void widget_set_user_delta(res_win_t wt, var_long pd)
@@ -329,7 +329,7 @@ void widget_set_user_delta(res_win_t wt, var_long pd)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 	
-	(*pif->pf_widget_set_user_delta)(wt, pd);
+	(pif->pf_widget_set_user_delta)(wt, pd);
 }
 
 var_long widget_get_user_delta(res_win_t wt)
@@ -338,7 +338,7 @@ var_long widget_get_user_delta(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_user_delta)(wt);
+	return (pif->pf_widget_get_user_delta)(wt);
 }
 
 void widget_set_user_id(res_win_t wt, dword_t uid)
@@ -347,7 +347,7 @@ void widget_set_user_id(res_win_t wt, dword_t uid)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_user_id)(wt, uid);
+	(pif->pf_widget_set_user_id)(wt, uid);
 }
 
 dword_t widget_get_user_id(res_win_t wt)
@@ -356,7 +356,7 @@ dword_t widget_get_user_id(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_user_id)(wt);
+	return (pif->pf_widget_get_user_id)(wt);
 }
 
 res_win_t widget_get_child(res_win_t wt, dword_t uid)
@@ -365,7 +365,7 @@ res_win_t widget_get_child(res_win_t wt, dword_t uid)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_child)(wt, uid);
+	return (pif->pf_widget_get_child)(wt, uid);
 }
 
 res_win_t widget_get_parent(res_win_t wt)
@@ -374,7 +374,7 @@ res_win_t widget_get_parent(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_parent)(wt);
+	return (pif->pf_widget_get_parent)(wt);
 }
 
 void widget_set_user_prop(res_win_t wt, const tchar_t* pname,var_long pval)
@@ -383,7 +383,7 @@ void widget_set_user_prop(res_win_t wt, const tchar_t* pname,var_long pval)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_user_prop)(wt, pname, pval);
+	(pif->pf_widget_set_user_prop)(wt, pname, pval);
 }
 
 var_long widget_get_user_prop(res_win_t wt, const tchar_t* pname)
@@ -392,7 +392,7 @@ var_long widget_get_user_prop(res_win_t wt, const tchar_t* pname)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_user_prop)(wt, pname);
+	return (pif->pf_widget_get_user_prop)(wt, pname);
 }
 
 int widget_get_return(res_win_t wt)
@@ -401,7 +401,7 @@ int widget_get_return(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_user_result)(wt);
+	return (pif->pf_widget_get_user_result)(wt);
 }
 
 var_long widget_del_user_prop(res_win_t wt, const tchar_t* pname)
@@ -410,7 +410,7 @@ var_long widget_del_user_prop(res_win_t wt, const tchar_t* pname)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_del_user_prop)(wt, pname);
+	return (pif->pf_widget_del_user_prop)(wt, pname);
 }
 
 visual_t widget_client_ctx(res_win_t wt)
@@ -419,7 +419,7 @@ visual_t widget_client_ctx(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_client_ctx)(wt);
+	return (pif->pf_widget_client_ctx)(wt);
 }
 
 visual_t widget_window_ctx(res_win_t wt)
@@ -428,7 +428,7 @@ visual_t widget_window_ctx(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_window_ctx)(wt);
+	return (pif->pf_widget_window_ctx)(wt);
 }
 
 void widget_release_ctx(res_win_t wt, visual_t dc)
@@ -437,7 +437,7 @@ void widget_release_ctx(res_win_t wt, visual_t dc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_release_ctx)(wt, dc);
+	(pif->pf_widget_release_ctx)(wt, dc);
 }
 
 void widget_get_client_rect(res_win_t wt, xrect_t* prt)
@@ -446,7 +446,7 @@ void widget_get_client_rect(res_win_t wt, xrect_t* prt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_client_rect)(wt, prt);
+	(pif->pf_widget_get_client_rect)(wt, prt);
 }
 
 void widget_get_window_rect(res_win_t wt, xrect_t* prt)
@@ -455,7 +455,7 @@ void widget_get_window_rect(res_win_t wt, xrect_t* prt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_window_rect)(wt, prt);
+	(pif->pf_widget_get_window_rect)(wt, prt);
 }
 
 void widget_get_window_edge(res_win_t wt, xsize_t* pxs)
@@ -489,7 +489,7 @@ void widget_client_to_screen(res_win_t wt, xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_client_to_screen)(wt, ppt);
+	(pif->pf_widget_client_to_screen)(wt, ppt);
 }
 
 void widget_screen_to_client(res_win_t wt, xpoint_t* ppt)
@@ -498,7 +498,7 @@ void widget_screen_to_client(res_win_t wt, xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_screen_to_client)(wt, ppt);
+	(pif->pf_widget_screen_to_client)(wt, ppt);
 }
 
 void widget_client_to_window(res_win_t wt, xpoint_t* ppt)
@@ -507,7 +507,7 @@ void widget_client_to_window(res_win_t wt, xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_client_to_window)(wt, ppt);
+	(pif->pf_widget_client_to_window)(wt, ppt);
 }
 
 void widget_window_to_client(res_win_t wt, xpoint_t* ppt)
@@ -516,7 +516,7 @@ void widget_window_to_client(res_win_t wt, xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_window_to_client)(wt, ppt);
+	(pif->pf_widget_window_to_client)(wt, ppt);
 }
 
 void widget_center_window(res_win_t wt, res_win_t owner)
@@ -525,7 +525,7 @@ void widget_center_window(res_win_t wt, res_win_t owner)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_center_window)(wt, owner);
+	(pif->pf_widget_center_window)(wt, owner);
 }
 
 void widget_calc_border(dword_t ws, border_t* pbd)
@@ -534,7 +534,7 @@ void widget_calc_border(dword_t ws, border_t* pbd)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_calc_border)(ws, pbd);
+	(pif->pf_widget_calc_border)(ws, pbd);
 }
 
 void widget_adjust_size(dword_t ws, xsize_t* pxs)
@@ -543,7 +543,7 @@ void widget_adjust_size(dword_t ws, xsize_t* pxs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_adjust_size)(ws, pxs);
+	(pif->pf_widget_adjust_size)(ws, pxs);
 }
 
 void widget_set_cursor(res_win_t wt, int curs)
@@ -552,7 +552,7 @@ void widget_set_cursor(res_win_t wt, int curs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_cursor)(wt, curs);
+	(pif->pf_widget_set_cursor)(wt, curs);
 }
 
 void widget_set_capture(res_win_t wt, bool_t b)
@@ -561,7 +561,7 @@ void widget_set_capture(res_win_t wt, bool_t b)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_capture)(wt, b);
+	(pif->pf_widget_set_capture)(wt, b);
 }
 
 void widget_create_caret(res_win_t wt, int w, int h)
@@ -570,7 +570,7 @@ void widget_create_caret(res_win_t wt, int w, int h)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_create_caret)(wt, w, h);
+	(pif->pf_widget_create_caret)(wt, w, h);
 }
 
 void widget_destroy_caret(res_win_t wt)
@@ -579,7 +579,7 @@ void widget_destroy_caret(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_destroy_caret)(wt);
+	(pif->pf_widget_destroy_caret)(wt);
 }
 
 void widget_show_caret(res_win_t wt, int x, int y, bool_t b)
@@ -588,7 +588,7 @@ void widget_show_caret(res_win_t wt, int x, int y, bool_t b)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_show_caret)(wt, x, y, b);
+	(pif->pf_widget_show_caret)(wt, x, y, b);
 }
 
 void widget_set_focus(res_win_t wt)
@@ -597,7 +597,7 @@ void widget_set_focus(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_focus)(wt);
+	(pif->pf_widget_set_focus)(wt);
 }
 
 bool_t widget_key_state(res_win_t wt, byte_t key)
@@ -606,7 +606,7 @@ bool_t widget_key_state(res_win_t wt, byte_t key)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_key_state)(wt, key);
+	return (pif->pf_widget_key_state)(wt, key);
 }
 
 bool_t widget_is_hotvoer(res_win_t wt)
@@ -625,7 +625,7 @@ bool_t	widget_is_valid(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_is_valid)(wt);
+	return (pif->pf_widget_is_valid)(wt);
 }
 
 bool_t	widget_is_child(res_win_t wt)
@@ -634,7 +634,7 @@ bool_t	widget_is_child(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_is_child)(wt);
+	return (pif->pf_widget_is_child)(wt);
 }
 
 bool_t	widget_is_focus(res_win_t wt)
@@ -643,7 +643,7 @@ bool_t	widget_is_focus(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_is_focus)(wt);
+	return (pif->pf_widget_is_focus)(wt);
 }
 
 bool_t	widget_can_focus(res_win_t wt)
@@ -653,7 +653,7 @@ bool_t	widget_can_focus(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	dw = (*pif->pf_widget_get_style)(wt);
+	dw = (pif->pf_widget_get_style)(wt);
 
 	return (dw & WD_STYLE_NOACTIVE) ? 0 : 1;
 }
@@ -665,7 +665,7 @@ bool_t	widget_can_paging(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	dw = (*pif->pf_widget_get_style)(wt);
+	dw = (pif->pf_widget_get_style)(wt);
 
 	return (dw & WD_STYLE_PAGING) ? 1 : 0;
 }
@@ -677,7 +677,7 @@ bool_t widget_has_close(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	dw = (*pif->pf_widget_get_style)(wt);
+	dw = (pif->pf_widget_get_style)(wt);
 
 	return (dw & WD_STYLE_CLOSEBOX) ? 1 : 0;
 }
@@ -689,7 +689,7 @@ bool_t widget_has_size(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	dw = (*pif->pf_widget_get_style)(wt);
+	dw = (pif->pf_widget_get_style)(wt);
 
 	return (dw & WD_STYLE_SIZEBOX) ? 1 : 0;
 }
@@ -701,7 +701,7 @@ bool_t widget_has_border(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	dw = (*pif->pf_widget_get_style)(wt);
+	dw = (pif->pf_widget_get_style)(wt);
 
 	return (dw & WD_STYLE_BORDER) ? 1 : 0;
 }
@@ -712,7 +712,7 @@ void widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_scroll_info)(wt, horz, psc);
+	(pif->pf_widget_get_scroll_info)(wt, horz, psc);
 }
 
 void widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psc)
@@ -721,7 +721,7 @@ void widget_set_scroll_info(res_win_t wt, bool_t horz, const scroll_t* psc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_scroll_info)(wt, horz, psc);
+	(pif->pf_widget_set_scroll_info)(wt, horz, psc);
 }
 
 void widget_scroll(res_win_t wt, bool_t horz, int line)
@@ -730,7 +730,7 @@ void widget_scroll(res_win_t wt, bool_t horz, int line)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_scroll)(wt, horz, line);
+	(pif->pf_widget_scroll)(wt, horz, line);
 }
 
 void widget_post_char(res_win_t wt, tchar_t ch)
@@ -739,7 +739,7 @@ void widget_post_char(res_win_t wt, tchar_t ch)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_post_char)(wt, ch);
+	(pif->pf_widget_post_char)(wt, ch);
 }
 
 void widget_post_key(res_win_t wt, int key)
@@ -748,7 +748,7 @@ void widget_post_key(res_win_t wt, int key)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_post_key)(wt, key);
+	(pif->pf_widget_post_key)(wt, key);
 }
 
 void widget_post_notice(res_win_t wt, NOTICE* pnt)
@@ -757,7 +757,7 @@ void widget_post_notice(res_win_t wt, NOTICE* pnt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_post_notice)(wt, pnt);
+	(pif->pf_widget_post_notice)(wt, pnt);
 }
 
 int widget_send_notice(res_win_t wt, NOTICE* pnt)
@@ -766,7 +766,7 @@ int widget_send_notice(res_win_t wt, NOTICE* pnt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_send_notice)(wt, pnt);
+	return (pif->pf_widget_send_notice)(wt, pnt);
 }
 
 void widget_post_command(res_win_t wt, int code, int cid, var_long data)
@@ -775,7 +775,7 @@ void widget_post_command(res_win_t wt, int code, int cid, var_long data)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_post_command)(wt, code, cid, data);
+	(pif->pf_widget_post_command)(wt, code, cid, data);
 }
 
 int widget_send_command(res_win_t wt, int code, int cid, var_long data)
@@ -784,7 +784,7 @@ int widget_send_command(res_win_t wt, int code, int cid, var_long data)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_send_command)(wt, code, cid, data);
+	return (pif->pf_widget_send_command)(wt, code, cid, data);
 }
 
 void widget_size(res_win_t wt, const xsize_t* pxs)
@@ -793,7 +793,7 @@ void widget_size(res_win_t wt, const xsize_t* pxs)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_size)(wt, pxs);
+	(pif->pf_widget_size)(wt, pxs);
 }
 
 void widget_move(res_win_t wt, const xpoint_t* ppt)
@@ -802,7 +802,7 @@ void widget_move(res_win_t wt, const xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_move)(wt, ppt);
+	(pif->pf_widget_move)(wt, ppt);
 }
 
 void widget_take(res_win_t wt, int zor)
@@ -811,7 +811,7 @@ void widget_take(res_win_t wt, int zor)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_take)(wt, zor);
+	(pif->pf_widget_take)(wt, zor);
 }
 
 void widget_show(res_win_t wt, dword_t sw)
@@ -820,7 +820,7 @@ void widget_show(res_win_t wt, dword_t sw)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_show)(wt, sw);
+	(pif->pf_widget_show)(wt, sw);
 }
 
 void widget_layout(res_win_t wt)
@@ -829,7 +829,7 @@ void widget_layout(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_layout)(wt);
+	(pif->pf_widget_layout)(wt);
 }
 
 void widget_paint(res_win_t wt)
@@ -838,7 +838,7 @@ void widget_paint(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_paint)(wt);
+	(pif->pf_widget_paint)(wt);
 }
 
 void widget_update(res_win_t wt)
@@ -847,7 +847,7 @@ void widget_update(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_update)(wt);
+	(pif->pf_widget_update)(wt);
 }
 
 void widget_erase(res_win_t wt, const xrect_t* prt)
@@ -856,7 +856,7 @@ void widget_erase(res_win_t wt, const xrect_t* prt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_erase)(wt, prt);
+	(pif->pf_widget_erase)(wt, prt);
 }
 
 void widget_enable(res_win_t wt, bool_t b)
@@ -865,7 +865,7 @@ void widget_enable(res_win_t wt, bool_t b)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_enable)(wt, b);
+	(pif->pf_widget_enable)(wt, b);
 }
 
 void widget_active(res_win_t wt)
@@ -874,7 +874,7 @@ void widget_active(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_active)(wt);
+	(pif->pf_widget_active)(wt);
 }
 
 void widget_close(res_win_t wt, int ret)
@@ -883,7 +883,7 @@ void widget_close(res_win_t wt, int ret)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_close)(wt, ret);
+	(pif->pf_widget_close)(wt, ret);
 }
 
 void widget_destroy(res_win_t wt)
@@ -892,7 +892,7 @@ void widget_destroy(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_destroy)(wt);
+	(pif->pf_widget_destroy)(wt);
 }
 
 void widget_set_title(res_win_t wt, const tchar_t* token)
@@ -901,7 +901,7 @@ void widget_set_title(res_win_t wt, const tchar_t* token)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_title)(wt, token);
+	(pif->pf_widget_set_title)(wt, token);
 }
 
 int	widget_get_title(res_win_t wt, tchar_t* buf, int max)
@@ -910,7 +910,7 @@ int	widget_get_title(res_win_t wt, tchar_t* buf, int max)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_title)(wt, buf, max);
+	return (pif->pf_widget_get_title)(wt, buf, max);
 }
 
 bool_t	widget_set_subproc(res_win_t wt, dword_t sid, if_subproc_t* sub)
@@ -919,7 +919,7 @@ bool_t	widget_set_subproc(res_win_t wt, dword_t sid, if_subproc_t* sub)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_set_subproc)(wt, sid, sub);
+	return (pif->pf_widget_set_subproc)(wt, sid, sub);
 }
 
 void widget_del_subproc(res_win_t wt, dword_t sid)
@@ -928,7 +928,7 @@ void widget_del_subproc(res_win_t wt, dword_t sid)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_del_subproc)(wt, sid);
+	(pif->pf_widget_del_subproc)(wt, sid);
 }
 
 var_long widget_get_subproc_delta(res_win_t wt, dword_t sid)
@@ -937,7 +937,7 @@ var_long widget_get_subproc_delta(res_win_t wt, dword_t sid)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_subproc_delta)(wt, sid);
+	return (pif->pf_widget_get_subproc_delta)(wt, sid);
 }
 
 bool_t widget_set_subproc_delta(res_win_t wt, dword_t sid, var_long delta)
@@ -946,7 +946,7 @@ bool_t widget_set_subproc_delta(res_win_t wt, dword_t sid, var_long delta)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_set_subproc_delta)(wt, sid, delta);
+	return (pif->pf_widget_set_subproc_delta)(wt, sid, delta);
 }
 
 bool_t widget_has_subproc(res_win_t wt)
@@ -955,7 +955,7 @@ bool_t widget_has_subproc(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_has_subproc)(wt);
+	return (pif->pf_widget_has_subproc)(wt);
 }
 
 var_long widget_set_timer(res_win_t wt, int ms)
@@ -964,7 +964,7 @@ var_long widget_set_timer(res_win_t wt, int ms)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_set_timer)(wt, ms);
+	return (pif->pf_widget_set_timer)(wt, ms);
 }
 
 void widget_kill_timer(res_win_t wt, var_long tid)
@@ -973,7 +973,7 @@ void widget_kill_timer(res_win_t wt, var_long tid)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_kill_timer)(wt, tid);
+	(pif->pf_widget_kill_timer)(wt, tid);
 }
 
 
@@ -983,7 +983,7 @@ bool_t	widget_has_struct(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_has_struct)(wt);
+	return (pif->pf_widget_has_struct)(wt);
 }
 
 void  widget_set_xfont(res_win_t wt, const xfont_t* pxf)
@@ -992,7 +992,7 @@ void  widget_set_xfont(res_win_t wt, const xfont_t* pxf)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_xfont)(wt, pxf);
+	(pif->pf_widget_set_xfont)(wt, pxf);
 }
 
 void  widget_get_xfont(res_win_t wt, xfont_t* pxf)
@@ -1001,7 +1001,7 @@ void  widget_get_xfont(res_win_t wt, xfont_t* pxf)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_xfont)(wt, pxf);
+	(pif->pf_widget_get_xfont)(wt, pxf);
 }
 
 const xfont_t*  widget_get_xfont_ptr(res_win_t wt)
@@ -1010,7 +1010,7 @@ const xfont_t*  widget_get_xfont_ptr(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_xfont_ptr)(wt);
+	return (pif->pf_widget_get_xfont_ptr)(wt);
 }
 
 void widget_set_xface(res_win_t wt, const xface_t* pxa)
@@ -1019,7 +1019,7 @@ void widget_set_xface(res_win_t wt, const xface_t* pxa)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_xface)(wt, pxa);
+	(pif->pf_widget_set_xface)(wt, pxa);
 }
 
 void  widget_get_xface(res_win_t wt, xface_t* pxa)
@@ -1028,7 +1028,7 @@ void  widget_get_xface(res_win_t wt, xface_t* pxa)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_xface)(wt, pxa);
+	(pif->pf_widget_get_xface)(wt, pxa);
 }
 
 const xface_t*  widget_get_xface_ptr(res_win_t wt)
@@ -1037,7 +1037,7 @@ const xface_t*  widget_get_xface_ptr(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_xface_ptr)(wt);
+	return (pif->pf_widget_get_xface_ptr)(wt);
 }
 
 void  widget_set_xbrush(res_win_t wt, const xbrush_t* pxb)
@@ -1046,7 +1046,7 @@ void  widget_set_xbrush(res_win_t wt, const xbrush_t* pxb)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_xbrush)(wt, pxb);
+	(pif->pf_widget_set_xbrush)(wt, pxb);
 }
 
 void  widget_get_xbrush(res_win_t wt, xbrush_t* pxb)
@@ -1055,7 +1055,7 @@ void  widget_get_xbrush(res_win_t wt, xbrush_t* pxb)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_xbrush)(wt, pxb);
+	(pif->pf_widget_get_xbrush)(wt, pxb);
 }
 
 const xbrush_t*  widget_get_xbrush_ptr(res_win_t wt)
@@ -1064,7 +1064,7 @@ const xbrush_t*  widget_get_xbrush_ptr(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_xbrush_ptr)(wt);
+	return (pif->pf_widget_get_xbrush_ptr)(wt);
 }
 
 void  widget_set_xpen(res_win_t wt, const xpen_t* pxp)
@@ -1073,7 +1073,7 @@ void  widget_set_xpen(res_win_t wt, const xpen_t* pxp)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_xpen)(wt, pxp);
+	(pif->pf_widget_set_xpen)(wt, pxp);
 }
 
 void  widget_get_xpen(res_win_t wt, xpen_t* pxp)
@@ -1082,7 +1082,7 @@ void  widget_get_xpen(res_win_t wt, xpen_t* pxp)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_xpen)(wt, pxp);
+	(pif->pf_widget_get_xpen)(wt, pxp);
 }
 
 const xpen_t*  widget_get_xpen_ptr(res_win_t wt)
@@ -1091,7 +1091,7 @@ const xpen_t*  widget_get_xpen_ptr(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_xpen_ptr)(wt);
+	return (pif->pf_widget_get_xpen_ptr)(wt);
 }
 
 void  widget_set_mask(res_win_t wt, const xcolor_t* pxc)
@@ -1100,7 +1100,7 @@ void  widget_set_mask(res_win_t wt, const xcolor_t* pxc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_mask)(wt, pxc);
+	(pif->pf_widget_set_mask)(wt, pxc);
 }
 
 void  widget_get_mask(res_win_t wt, xcolor_t* pxc)
@@ -1109,7 +1109,7 @@ void  widget_get_mask(res_win_t wt, xcolor_t* pxc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_mask)(wt, pxc);
+	(pif->pf_widget_get_mask)(wt, pxc);
 }
 
 const xcolor_t*  widget_get_mask_ptr(res_win_t wt)
@@ -1118,7 +1118,7 @@ const xcolor_t*  widget_get_mask_ptr(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_mask_ptr)(wt);
+	return (pif->pf_widget_get_mask_ptr)(wt);
 }
 
 void  widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
@@ -1127,7 +1127,7 @@ void  widget_set_iconic(res_win_t wt, const xcolor_t* pxc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_iconic)(wt, pxc);
+	(pif->pf_widget_set_iconic)(wt, pxc);
 }
 
 void  widget_get_iconic(res_win_t wt, xcolor_t* pxc)
@@ -1136,7 +1136,7 @@ void  widget_get_iconic(res_win_t wt, xcolor_t* pxc)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_iconic)(wt, pxc);
+	(pif->pf_widget_get_iconic)(wt, pxc);
 }
 
 const xcolor_t*  widget_get_iconic_ptr(res_win_t wt)
@@ -1145,7 +1145,7 @@ const xcolor_t*  widget_get_iconic_ptr(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_iconic_ptr)(wt);
+	return (pif->pf_widget_get_iconic_ptr)(wt);
 }
 
 void  widget_set_point(res_win_t wt, const xpoint_t* ppt)
@@ -1154,7 +1154,7 @@ void  widget_set_point(res_win_t wt, const xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_point)(wt, ppt);
+	(pif->pf_widget_set_point)(wt, ppt);
 }
 
 void  widget_get_point(res_win_t wt, xpoint_t* ppt)
@@ -1163,7 +1163,7 @@ void  widget_get_point(res_win_t wt, xpoint_t* ppt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_point)(wt, ppt);
+	(pif->pf_widget_get_point)(wt, ppt);
 }
 
 void widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
@@ -1172,7 +1172,7 @@ void widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_set_color_mode)(wt, pclr);
+	(pif->pf_widget_set_color_mode)(wt, pclr);
 }
 
 void widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
@@ -1181,7 +1181,7 @@ void widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_get_color_mode)(wt, pclr);
+	(pif->pf_widget_get_color_mode)(wt, pclr);
 }
 
 
@@ -1191,7 +1191,7 @@ int widget_do_modal(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_do_modal)(wt);
+	return (pif->pf_widget_do_modal)(wt);
 }
 
 void widget_do_trace(res_win_t wt)
@@ -1200,7 +1200,7 @@ void widget_do_trace(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	(*pif->pf_widget_do_trace)(wt);
+	(pif->pf_widget_do_trace)(wt);
 }
 
 #ifdef XDU_SUPPORT_CONTEXT_OPENGL
@@ -1210,7 +1210,7 @@ res_glc_t widget_get_glctx(res_win_t wt)
 
 	pif = PROCESS_WIDGET_INTERFACE;
 
-	return (*pif->pf_widget_get_glctx)(wt);
+	return (pif->pf_widget_get_glctx)(wt);
 }
 #endif
 

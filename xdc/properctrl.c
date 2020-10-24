@@ -979,8 +979,8 @@ void hand_proper_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xcolor_t xc = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->proper)
 		return;
@@ -990,22 +990,22 @@ void hand_proper_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	draw_proper(pif, ptd->proper);
 
@@ -1016,13 +1016,13 @@ void hand_proper_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
-		(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
+		(*ifv.pf_alphablend_rect)(ifv.ctx, &xc, &xr, ALPHA_TRANS);
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /*************************************************************************************************/

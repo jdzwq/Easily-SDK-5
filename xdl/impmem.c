@@ -32,6 +32,7 @@ LICENSE.GPL3 for more details.
 #include "impmem.h"
 #include "imperr.h"
 #include "impassert.h"
+
 #include "xdlinit.h"
 
 void* xmem_alloc(dword_t size)

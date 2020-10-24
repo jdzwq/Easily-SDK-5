@@ -121,8 +121,8 @@ void hand_tipbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xpen_t xp = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -132,25 +132,25 @@ void hand_tipbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
+	pif = widget_get_canvas_interface(widget);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	xp.adorn.feed = 2;
 	xp.adorn.size = 2;
-	(*piv->pf_draw_rect_raw)(piv->visual, &xp, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, &xp, &xb, &xr);
 
 	token = ptd->sz_text;
 
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, token, -1);
+	(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr, token, -1);
 
-	destroy_visual_interface(piv);
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /***************************************************************************************/
@@ -202,18 +202,18 @@ void tipbox_popup_size(res_win_t widget, xsize_t* pxs)
 	xface_t xa;
 	visual_t rdc;
 	xrect_t xr = { 0 };
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
 
 	rdc = widget_client_ctx(widget);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_text_rect_raw)(piv->visual, &xf, &xa, ptd->sz_text, -1, &xr);
+	(*ifv.pf_text_rect)(ifv.ctx, &xf, &xa, ptd->sz_text, -1, &xr);
 
-	destroy_visual_interface(piv);
+	
 
 	widget_release_ctx(widget, rdc);
 

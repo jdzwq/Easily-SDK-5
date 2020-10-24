@@ -44,30 +44,6 @@
 #include "taskdoc.h"
 #include "plotdoc.h"
 
-#include "gridsql.h"
-#include "gridbag.h"
-#include "gridbio.h"
-#include "properbag.h"
-#include "properbio.h"
-#include "textbio.h"
-#include "formbio.h"
-#include "memobio.h"
-#include "schemabag.h"
-#include "imagesbag.h"
-#include "docmeta.h"
-
-#include "memoopera.h"
-#include "bufferopera.h"
-#include "stringopera.h"
-#include "streamopera.h"
-#include "xmlopera.h"
-
-#include "xmlbio.h"
-#include "jsonbio.h"
-
-#include "xmlparser.h"
-#include "ubbparser.h"
-#include "jsonparser.h"
 
 
 #endif //XDLDOC_H

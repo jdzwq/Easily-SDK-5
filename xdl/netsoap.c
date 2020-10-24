@@ -34,7 +34,10 @@ LICENSE.GPL3 for more details.
 
 #include "xdlstd.h"
 #include "xdlnet.h"
+#include "xdloop.h"
 #include "xdldoc.h"
+
+#include "xdlutil.h"
 
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
 

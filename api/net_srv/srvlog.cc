@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 
 
-void _write_log_title(file_t log, const tchar_t* sz_title, int len)
+void _write_log_title(const if_fio_t* log, const tchar_t* sz_title, int len)
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br;
@@ -60,7 +60,7 @@ void _write_log_title(file_t log, const tchar_t* sz_title, int len)
 	sz_log = NULL;
 }
 
-void _write_log_error(file_t log, const tchar_t* sz_code, const tchar_t* sz_error, int len)
+void _write_log_error(const if_fio_t* log, const tchar_t* sz_code, const tchar_t* sz_error, int len)
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br, n_log = 0;
@@ -84,7 +84,7 @@ void _write_log_error(file_t log, const tchar_t* sz_code, const tchar_t* sz_erro
 	sz_log = NULL;
 }
 
-void _write_log_data(file_t log, const byte_t* data, dword_t size)
+void _write_log_data(const if_fio_t* log, const byte_t* data, dword_t size)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
@@ -96,7 +96,7 @@ void _write_log_data(file_t log, const byte_t* data, dword_t size)
 	xfile_write(log, ba, dw);
 }
 
-void _write_log_xml(file_t log, link_t_ptr ptr_xml)
+void _write_log_xml(const if_fio_t* log, link_t_ptr ptr_xml)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
@@ -113,7 +113,7 @@ void _write_log_xml(file_t log, link_t_ptr ptr_xml)
 	xfile_write(log, ba, dw);
 }
 
-void _write_log_json(file_t log, link_t_ptr ptr_json)
+void _write_log_json(const if_fio_t* log, link_t_ptr ptr_json)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
@@ -139,6 +139,7 @@ void xportm_log_info(const tchar_t* str, int len)
 
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
+	if_bio_t bio = { 0 };
 
 	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
@@ -148,7 +149,9 @@ void xportm_log_info(const tchar_t* str, int len)
 		return;
 	}
 
-	stm = stream_alloc(pipe);
+	get_bio_interface(pipe, &bio);
+
+	stm = stream_alloc(&bio);
 	if (!stm)
 	{
 		xpipe_free(pipe);
@@ -194,6 +197,7 @@ void xportm_log_error(const tchar_t* errcode, const tchar_t* errtext)
 
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
+	if_bio_t bio = { 0 };
 
 	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
@@ -203,7 +207,9 @@ void xportm_log_error(const tchar_t* errcode, const tchar_t* errtext)
 		return;
 	}
 
-	stm = stream_alloc(pipe);
+	get_bio_interface(pipe, &bio);
+
+	stm = stream_alloc(&bio);
 	if (!stm)
 	{
 		xpipe_free(pipe);
@@ -261,7 +267,8 @@ void xportm_log_data(const byte_t* data, dword_t size)
 {
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
-    
+	if_bio_t bio = { 0 };
+
 	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
 	pipe = xpipe_cli(XPORTM_PIPE_NAME, FILE_OPEN_WRITE | FILE_OPEN_OVERLAP);
@@ -270,7 +277,9 @@ void xportm_log_data(const byte_t* data, dword_t size)
 		return;
 	}
 
-	stm = stream_alloc(pipe);
+	get_bio_interface(pipe, &bio);
+
+	stm = stream_alloc(&bio);
 	if (!stm)
 	{
 		xpipe_free(pipe);

@@ -29,9 +29,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "memoview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
 #include "xdldoc.h"
 
 

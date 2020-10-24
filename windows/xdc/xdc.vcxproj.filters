@@ -264,6 +264,9 @@
     <ClCompile Include="..\..\xdc\plotctrl.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xdc\gdiinf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xdc\textor.h">

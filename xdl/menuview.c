@@ -29,11 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "menuview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -363,7 +363,7 @@ int	calc_menu_hint(const if_measure_t* pif, const xpoint_t* ppt, link_t_ptr ptr,
 	return hint;
 }
 
-void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_menu(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	float ic, w, h;
@@ -380,7 +380,7 @@ void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
 	bool_t b_horz;
 	const tchar_t* show;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	b_horz = (compare_text(get_menu_layer_ptr(ptr), -1, ATTR_LAYER_HORZ, -1, 0) == 0) ? 1 : 0;
 
@@ -395,14 +395,14 @@ void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xface_from_style(&xa, style);
 
 	parse_xfont_from_style(&xf, style);
-	format_xcolor(&pif->clr_txt, xf.color);
+	format_xcolor(&pif->mode.clr_txt, xf.color);
 
 	parse_xpen_from_style(&xp, style);
-	format_xcolor(&pif->clr_frg, xp.color);
+	format_xcolor(&pif->mode.clr_frg, xp.color);
 
-	format_xcolor(&pif->clr_msk, xi.color);
+	format_xcolor(&pif->mode.clr_msk, xi.color);
 
-	xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+	xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 
 	ic = get_menu_icon_span(ptr);
 	
@@ -439,7 +439,7 @@ void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->canvas, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
 				w += (xs.fw + MENU_FEED);
 
@@ -455,7 +455,7 @@ void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
 			}
 			else
 			{
-				(*pif->pf_text_size)(pif->canvas, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
+				(*pif->pf_text_size)(pif->ctx, &xf, get_menu_item_title_ptr(ilk), -1, &xs);
 
 				h += ((ic > xs.fh) ? ic : xs.fh);
 			}
@@ -510,7 +510,7 @@ void draw_menu(const if_canvas_t* pif, link_t_ptr ptr)
 				xr_text.fh = xr.fh;
 			}
 
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_menu_item_title_ptr(ilk), -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_menu_item_title_ptr(ilk), -1);
 		}
 
 		ilk = get_menu_next_item(ptr, ilk);

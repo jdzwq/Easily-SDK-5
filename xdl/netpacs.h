@@ -105,9 +105,10 @@ typedef struct _pacs_pdv_head_t{
 }pacs_pdv_head_t;
 
 typedef struct _pacs_t{
-	int type;
-	xhand_t bio;
 
+	if_bio_t* pif;
+
+	int type;	/*connect type*/
 	bool_t status;		/*connect status*/
 	dword_t n_request;	/*request pdu bytes*/
 	dword_t n_response;	/*response pdu bytes*/

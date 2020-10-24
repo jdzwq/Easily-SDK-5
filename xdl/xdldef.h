@@ -297,7 +297,7 @@ typedef enum{
 #define _HANDLE_PIPE		0x05
 #define _HANDLE_SHARE		0x06
 #define _HANDLE_CACHE		0x07
-#define _HANDLE_UNC			0x08
+#define _HANDLE_UNCF		0x08
 #define _HANDLE_UDP			0x09
 #define _HANDLE_TCP			0x0A
 #define _HANDLE_SSL			0x0B
@@ -354,11 +354,6 @@ typedef struct _canvas_head{
 #define _PROTO_COAP			0x09
 
 #define IS_INET_FILE(n)	(n == _PROTO_HTTP || n == _PROTO_SSH || n == _PROTO_TFTP || n == _PROTO_COAP)
-
-typedef struct _file_head{
-	byte_t tag;
-	byte_t lru[3];
-}file_head, *file_t;
 
 typedef struct _acp_head{
 	sword_t base;
@@ -466,8 +461,8 @@ typedef struct _variant_t{
 #define DEF_PLOT_HEIGHT			20.0f
 #define DEF_PLOT_WIDTH			30.0f
 
-#define DEF_SMALL_ICON		3.8f
-#define DEF_MIDD_ICON		5.8f
+#define DEF_SMALL_ICON		3.2f
+#define DEF_MIDD_ICON		6.4f
 #define DEF_LARGE_ICON		8.6f
 
 #define DEF_PAGE_FEED		10.0f
@@ -524,7 +519,11 @@ typedef bool_t(*CALLBACK_ENUMLINK)(link_t_ptr plk, void* pv);
 /*list file node callback function*/
 typedef void(*CALLBACK_LISTFILE)(const file_info_t* pfi, void* pv);
 
-
+typedef enum{
+	ORDER_NONE = 0,
+	ORDER_ASCEND = 1,
+	ORDER_DESCEND = -1
+}SORT_ORDER;
 
 #if defined(_OS_WINDOWS)
 #include "lang/_xdl_ansi.h"

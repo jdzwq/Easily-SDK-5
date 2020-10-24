@@ -30,13 +30,15 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "properbio.h"
-#include "xdlimp.h"
+#include "fileinf.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
+
 #include "xdlinit.h"
 
-#if defined(XDL_SUPPORT_DOC) && defined(XDL_SUPPORT_BIO)
+#if defined(XDL_SUPPORT_BIO)
 
 tchar_t* _parse_ini_line(tchar_t* str, tchar_t** pkey, int* pkeylen, tchar_t** pval, int* pvallen, int* prt)
 {
@@ -261,7 +263,7 @@ bool_t load_proper_from_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const t
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	int encode, skip;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 
@@ -398,7 +400,7 @@ bool_t save_proper_to_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const tch
 	dword_t size;
 	int skip;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 

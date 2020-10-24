@@ -30,17 +30,21 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "textbio.h"
-#include "xdlimp.h"
+#include "memobio.h"
+#include "jsonbio.h"
+#include "fileinf.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
 #include "xdldoc.h"
 #include "xdlinit.h"
 
-#if defined(XDL_SUPPORT_DOC) && defined(XDL_SUPPORT_BIO)
+#if defined(XDL_SUPPORT_BIO)
 
 int save_text_to_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* buf, int len)
 {
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t* data = NULL;
 	dword_t size;
 	int skip;
@@ -109,7 +113,7 @@ int load_text_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* b
 	dword_t dw, size;
 	int skip, encode;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t* data = NULL;
 
 	TRY_CATCH;

@@ -30,11 +30,13 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "srvpnp.h"
-#include "xdlinit.h"
 
 #include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdlnet.h"
+#include "xdlutil.h"
+
+#include "xdlinit.h"
 
 typedef struct _pnp_accept_t{
 	unsigned short port;
@@ -140,7 +142,8 @@ static unsigned STDCALL process_dispatch(void* param)
 
 	xhand_t pipe = NULL;
 	stream_t stm = NULL;
-	byte_t num[2];
+	byte_t num[2] = { 0 };
+	if_bio_t bio = { 0 };
 
 	xdl_thread_init(0);
 
@@ -166,7 +169,9 @@ static unsigned STDCALL process_dispatch(void* param)
 			pipe = xpipe_attach(pi.pip_write);
 			if (pipe)
 			{
-				stm = stream_alloc(pipe);
+				get_bio_interface(pipe, &bio);
+
+				stm = stream_alloc(&bio);
 				if (stm)
 				{
 					stream_set_mode(stm, CHUNK_OPERA);

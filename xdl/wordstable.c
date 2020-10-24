@@ -30,9 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "wordstable.h"
+#include "dblink.h"
+#include "miscell.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 
 typedef struct _words_table{
 	link_t lk;			/* str table self link component*/

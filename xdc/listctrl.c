@@ -906,8 +906,8 @@ void hand_list_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->list)
 		return;
@@ -917,23 +917,23 @@ void hand_list_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
-	widget_get_view_rect(widget, &piv->rect);
+	get_visual_interface(rdc, &ifv);
+	widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	draw_list_child(pif, ptd->list, ptd->parent);
 
@@ -945,13 +945,13 @@ void hand_list_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-		draw_focus_raw(piv, &xc, &xr, ALPHA_TRANS);
+		draw_focus_raw(&ifv, &xc, &xr, ALPHA_TRANS);
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /**************************************************************************************************/

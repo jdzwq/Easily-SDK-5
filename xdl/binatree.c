@@ -30,9 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "binatree.h"
-#include "xdlimp.h"
+#include "dblink.h"
+#include "varobj.h"
+#include "stacktable.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
 
 typedef struct _bina_node_t{
 	link_t lkSibling;	/*the self link component linked to parent*/

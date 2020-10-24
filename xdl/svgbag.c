@@ -32,218 +32,220 @@ LICENSE.GPL3 for more details.
 #include "svgbag.h"
 #include "svginf.h"
 #include "svgcanv.h"
+
 #include "xdlstd.h"
+#include "xdlgdi.h"
 #include "xdldoc.h"
 #include "xdlview.h"
 
-#ifdef XDL_SUPPORT_SVG
+#ifdef XDL_SUPPORT_VIEW
 
 void svg_print_form(link_t_ptr svg, link_t_ptr form, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_form_width(form);
-	pif->rect.fh = get_form_height(form);
+	svg_get_canvas_interface(canv, &ifd);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_form_width(form);
+	ifd.rect.fh = get_form_height(form);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_form_page(pif, form, page);
+	draw_form_page(&ifd, form, page);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_grid_width(grid);
-	pif->rect.fh = get_grid_height(grid);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_grid_width(grid);
+	ifd.rect.fh = get_grid_height(grid);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_grid_page(pif, grid, page);
+	draw_grid_page(&ifd, grid, page);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_statis_width(statis);
-	pif->rect.fh = get_statis_height(statis);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_statis_width(statis);
+	ifd.rect.fh = get_statis_height(statis);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_statis_page(pif, statis, page);
+	draw_statis_page(&ifd, statis, page);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_topog(link_t_ptr svg, link_t_ptr topog)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_topog_width(topog);
-	pif->rect.fh = get_topog_height(topog);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_topog_width(topog);
+	ifd.rect.fh = get_topog_height(topog);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_topog(pif, topog);
+	draw_topog(&ifd, topog);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_dialog_width(dialog);
-	pif->rect.fh = get_dialog_height(dialog);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_dialog_width(dialog);
+	ifd.rect.fh = get_dialog_height(dialog);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_dialog(pif, dialog);
+	draw_dialog(&ifd, dialog);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_diagram_width(diagram);
-	pif->rect.fh = get_diagram_height(diagram);
+	svg_get_canvas_interface(canv, &ifd);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_diagram_width(diagram);
+	ifd.rect.fh = get_diagram_height(diagram);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_diagram(pif, diagram);
+	draw_diagram(&ifd, diagram);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_plot(link_t_ptr svg, link_t_ptr plot)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
-	pif->rect.fx = 0;
-	pif->rect.fy = 0;
-	pif->rect.fw = get_plot_width(plot);
-	pif->rect.fh = get_plot_height(plot);
+	ifd.rect.fx = 0;
+	ifd.rect.fy = 0;
+	ifd.rect.fw = get_plot_width(plot);
+	ifd.rect.fh = get_plot_height(plot);
 
-	set_svg_width(svg, pif->rect.fw);
-	set_svg_height(svg, pif->rect.fh);
+	set_svg_width(svg, ifd.rect.fw);
+	set_svg_height(svg, ifd.rect.fh);
 	reset_svg_viewbox(svg);
 
-	draw_plot(pif, plot);
+	draw_plot(&ifd, plot);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr memo, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 	xrect_t xr = { 0 };
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
 	xr.fw = get_memo_width(memo);
 	xr.fh = get_memo_height(memo);
@@ -252,25 +254,25 @@ void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link
 	set_svg_height(svg, xr.fh);
 	reset_svg_viewbox(svg);
 
-	draw_memo_text(pif, pxf, pxa, &xr, memo, page);
+	draw_memo_text(&ifd, pxf, pxa, &xr, memo, page);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link_t_ptr rich, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_canvas_t* pif;
+	if_drawing_t ifd = {0};
 	xrect_t xr = { 0 };
 
 	view = create_svg_visual(svg);
 
 	canv = create_svg_canvas(view);
 
-	pif = svg_create_canvas_interface(canv);
+	svg_get_canvas_interface(canv, &ifd);
 
 	xr.fw = get_rich_width(svg);
 	xr.fh = get_rich_height(svg);
@@ -279,11 +281,11 @@ void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link
 	set_svg_height(svg, xr.fh);
 	reset_svg_viewbox(svg);
 
-	draw_rich_text(pif, pxf, pxa, &xr, rich, page);
+	draw_rich_text(&ifd, pxf, pxa, &xr, rich, page);
 
 	destroy_svg_canvas(canv);
 	destroy_svg_visual(view);
-	svg_destroy_canvas_interface(pif);
+	
 }
 
 

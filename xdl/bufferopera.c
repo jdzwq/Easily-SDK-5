@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "bufferopera.h"
+
+#include "escape.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
-#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_DOC
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loc_api", "..\loc_api\loc_api.vcxproj", "{76DA06A8-014A-4920-A433-E09DD74DA7C4}"
 EndProject
@@ -56,6 +56,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xtimerd", "..\xtimerd\xtimerd.vcxproj", "{7E7891C0-15ED-4C5C-844E-22FB17FA86DD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xtimers", "..\xtimers\xtimers.vcxproj", "{49DEDBE4-FF41-4698-8AF1-A5C65811D528}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plot_api", "..\plot_api\plot_api.vcxproj", "{777A445F-6555-473C-A0E5-9036E4EEEB30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -391,6 +393,18 @@ Global
 		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|Win32.Build.0 = Release|Win32
 		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|x64.ActiveCfg = Release|x64
 		{49DEDBE4-FF41-4698-8AF1-A5C65811D528}.Release|x64.Build.0 = Release|x64
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Debug|Win32.ActiveCfg = Debug|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Debug|Win32.Build.0 = Debug|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Debug|x64.ActiveCfg = Debug|x64
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Debug|x64.Build.0 = Debug|x64
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|Win32.ActiveCfg = Release|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|Win32.Build.0 = Release|Win32
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|x64.ActiveCfg = Release|x64
+		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

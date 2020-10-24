@@ -30,11 +30,15 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "impcons.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
-#include "xdlimp.h"
+#include "impmem.h"
+#include "imperr.h"
+#include "impassert.h"
+#include "impasync.h"
+#include "impstr.h"
 
 #include "xdlstd.h"
+
+#include "xdlinit.h"
 
 #ifdef XDK_SUPPORT_CONS
 

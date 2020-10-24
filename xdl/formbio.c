@@ -30,13 +30,17 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "formbio.h"
+#include "metabio.h"
+#include "miscell.h"
+#include "textbio.h"
+#include "imagesbio.h"
+
 #include "xdlimp.h"
-
 #include "xdlstd.h"
-#include "xdldoc.h"
-#include "xdlinit.h"
 
-#if defined(XDL_SUPPORT_DOC) && defined(XDL_SUPPORT_BIO)
+#include "xdldoc.h"
+
+#if defined(XDL_SUPPORT_BIO)
 
 bool_t load_field_object_from_file(link_t_ptr flk, const secu_desc_t* psd, const tchar_t* fname)
 {

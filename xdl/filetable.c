@@ -30,9 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "filetable.h"
-#include "xdlimp.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
+#include "xdlmath.h"
+
 #include "xdlinit.h"
 
 #define TABLEGUID_MAPBITS		1

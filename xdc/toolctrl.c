@@ -433,8 +433,8 @@ void hand_tool_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xcolor_t xc_core = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->tool)
 		return;
@@ -444,26 +444,26 @@ void hand_tool_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	parse_xcolor(&xc_brim, xb.color);
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	parse_xcolor(&xc_core, xb.color);
 
-	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
+	(*ifv.pf_gradient_rect)(ifv.ctx, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr);
 
 	draw_tool(pif, ptd->tool);
 
@@ -475,13 +475,13 @@ void hand_tool_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ALPHA_COLOR);
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /*******************************************************************************************/

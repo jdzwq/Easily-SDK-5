@@ -30,13 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "focusing.h"
-#include "xdlimp.h"
-#include "xdlstd.h"
-#include "xdlview.h"
 
 #if defined(XDL_SUPPORT_VIEW)
 
-void draw_select_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
+void draw_select_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
 	xpen_t xp;
 
@@ -45,10 +42,10 @@ void draw_select_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 	xsprintf(xp.opacity, _T("%d"), deep);
 	xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DOTTED);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, prt);
+	(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, prt);
 }
 
-void draw_focus_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
+void draw_focus_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
 	xpen_t xp;
 
@@ -56,10 +53,10 @@ void draw_focus_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t* 
 	format_xcolor(pxc, xp.color);
 	xsprintf(xp.opacity, _T("%d"), deep);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, prt);
+	(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, prt);
 }
 
-void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
+void draw_sizing_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
 {
 	xrect_t xr;
 	xpen_t xp;
@@ -76,7 +73,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_TOPCENTER)
@@ -86,7 +83,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_TOPRIGHT)
@@ -96,7 +93,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_BOTTOMLEFT)
@@ -106,7 +103,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_BOTTOMCENTER)
@@ -116,7 +113,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_BOTTOMRIGHT)
@@ -126,7 +123,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_LEFTCENTER)
@@ -136,7 +133,7 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 
 	if (pos & SIZING_RIGHTCENTER)
@@ -146,11 +143,11 @@ void draw_sizing_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t*
 		xr.w = 4;
 		xr.h = 4;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+		(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, &xr);
 	}
 }
 
-void draw_feed_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
+void draw_feed_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
 	xpoint_t pt[2];
 	xpen_t xp;
@@ -166,25 +163,25 @@ void draw_feed_raw(const if_visual_t* piv, const xcolor_t* pxc, const xrect_t* p
 	pt[0].y = prt->y;
 	pt[1].x = prt->x;
 	pt[1].y = prt->y + 5;
-	(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt[0], &pt[1]);
+	(*piv->pf_draw_line)(piv->ctx, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x;
 	pt[0].y = prt->y;
 	pt[1].x = prt->x + 5;
 	pt[1].y = prt->y;
-	(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt[0], &pt[1]);
+	(*piv->pf_draw_line)(piv->ctx, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x + prt->w;
 	pt[0].y = prt->y + prt->h;
 	pt[1].x = prt->x + prt->w - 5;
 	pt[1].y = prt->y + prt->h;
-	(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt[0], &pt[1]);
+	(*piv->pf_draw_line)(piv->ctx, &xp, &pt[0], &pt[1]);
 
 	pt[0].x = prt->x + prt->w;
 	pt[0].y = prt->y + prt->h;
 	pt[1].x = prt->x + prt->w;
 	pt[1].y = prt->y + prt->h - 5;
-	(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt[0], &pt[1]);
+	(*piv->pf_draw_line)(piv->ctx, &xp, &pt[0], &pt[1]);
 }
 
 #endif /*XDL_SUPPORT_VIEW*/

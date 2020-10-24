@@ -30,12 +30,14 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "memobio.h"
-#include "xdlimp.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
 #include "xdldoc.h"
 
-#if defined(XDL_SUPPORT_DOC) && defined(XDL_SUPPORT_BIO)
+#if defined(XDL_SUPPORT_BIO)
 
 int format_memo_doc(link_t_ptr ptr, tchar_t* buf, int max)
 {

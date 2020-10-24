@@ -30,9 +30,9 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "jsondoc.h"
-#include "xdldoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 
 #ifdef XDL_SUPPORT_DOC

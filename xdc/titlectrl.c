@@ -383,8 +383,8 @@ void hand_title_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	const tchar_t* orita;
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->title)
 		return;
@@ -394,14 +394,14 @@ void hand_title_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	orita = get_title_oritation_ptr(ptd->title);
 
@@ -409,7 +409,7 @@ void hand_title_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	parse_xcolor(&xc_brim, xb.color);
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
@@ -420,14 +420,14 @@ void hand_title_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	else
 		xscpy(token, GDI_ATTR_GRADIENT_HORZ);
 
-	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, token, &xr);
+	(*ifv.pf_gradient_rect)(ifv.ctx, &xc_brim, &xc_core, token, &xr);
 
 	draw_title(pif, ptd->title, ptd->item);
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /************************************************************************************************/

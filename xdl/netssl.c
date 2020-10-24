@@ -30,10 +30,13 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "netssl.h"
-#include "xdlimp.h"
+#include "nettcp.h"
+#include "stream.h"
+#include "bioinf.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdlnet.h"
+
 #include "xdlinit.h"
 
 #if defined(XDK_SUPPORT_SOCK)
@@ -88,7 +91,7 @@ static char label_key_expansion[] = "key expansion";
 typedef struct _ssl_t{
 	xhand_head head;
 
-	xhand_t tcp;
+	if_bio_t* pif;
 
 	//SecurityParameters
 	int type;		//ConnectionEnd: { server, client }
@@ -870,7 +873,6 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 static int _ssl_write_snd_msg(ssl_t *pssl)
 {
 	dword_t dw;
-	stream_t stm = NULL;
 	int haslen;
 	byte_t* token;
 	int total;
@@ -911,17 +913,12 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 		}
 	}
 
-	stm = stream_alloc(pssl->tcp);
-
 	dw = SSL_HDR_SIZE + pssl->snd_msg_len;
 
-	if (!stream_write_bytes(stm, pssl->snd_hdr, dw))
+	if (!(*pssl->pif->pf_write)(pssl->pif->bio, pssl->snd_hdr, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
-
-	stream_free(stm);
-	stm = NULL;
 
 	pssl->snd_msg_pop = 0;
 
@@ -929,9 +926,6 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 
 	return C_OK;
 ONERROR:
-
-	if (stm)
-		stream_free(stm);
 
 	return C_ERR;
 }
@@ -986,7 +980,6 @@ static bool_t _ssl_write_close(ssl_t* pssl)
 
 static int _ssl_read_rcv_msg(ssl_t *pssl)
 {
-	stream_t stm = NULL;
 	dword_t dw;
 	int haslen;
 	byte_t* token;
@@ -994,10 +987,8 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pssl->tcp);
-
 	dw = SSL_HDR_SIZE;
-	if (!stream_read_bytes(stm, pssl->rcv_hdr, &dw))
+	if (!(pssl->pif->pf_read)(pssl->pif->bio, pssl->rcv_hdr, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -1026,13 +1017,10 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 	}
 
 	dw = pssl->rcv_msg_len;
-	if (!stream_read_bytes(stm, pssl->rcv_msg, &dw))
+	if (!(*pssl->pif->pf_read)(pssl->pif->bio, pssl->rcv_msg, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
-
-	stream_free(stm);
-	stm = NULL;
 
 	if (pssl->rcv_msg_type == SSL_MSG_ALERT)
 	{
@@ -1082,9 +1070,6 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 
 	return C_OK;
 ONERROR:
-
-	if (stm)
-		stream_free(stm);
 
 	return C_ERR;
 }
@@ -1327,9 +1312,7 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 
 	dword_t t;
 	int ciph;
-	int msglen, haslen, seslen, extlen, lstlen;
-	int type;
-	int alg_hash, alg_sign;
+	int msglen, haslen, seslen, extlen;
 
 	//0:	handshake type
 	//1~3:	handshake length
@@ -3246,7 +3229,6 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 	int haslen, i, n, msglen = SSL_HSH_SIZE;
 	byte_t premaster[SSL_BLK_SIZE] = { 0 };
 	int prelen = SSL_MST_SIZE;
-	int alg_hash, alg_sign;
 
 	if (pssl->rcv_msg[0] != SSL_HS_CLIENT_KEY_EXCHANGE)
 	{
@@ -3815,10 +3797,13 @@ xhand_t xssl_cli(unsigned short port, const tchar_t* addr)
 	pssl = (ssl_t*)xmem_alloc(sizeof(ssl_t));
 	pssl->head.tag = _HANDLE_SSL;
 
-	pssl->tcp = tcp;
 	pssl->type = SSL_TYPE_CLIENT;
 
 	_ssl_init(pssl);
+
+	pssl->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+
+	get_bio_interface(tcp, pssl->pif);
 
 	return &pssl->head;
 }
@@ -3835,10 +3820,13 @@ xhand_t xssl_srv(res_file_t so)
 	pssl = (ssl_t*)xmem_alloc(sizeof(ssl_t));
 	pssl->head.tag = _HANDLE_SSL;
 
-	pssl->tcp = tcp;
 	pssl->type = SSL_TYPE_SERVER;
 
 	_ssl_init(pssl);
+
+	pssl->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+
+	get_bio_interface(tcp, pssl->pif);
 
 	return &pssl->head;
 }
@@ -3861,9 +3849,13 @@ void  xssl_close(xhand_t ssl)
 		_ssl_write_close(pssl);
 	}
 
-	xtcp_close(pssl->tcp);
+	if (pssl->pif)
+		xtcp_close(pssl->pif->bio);
 
 	_ssl_uninit(pssl);
+
+	if (pssl->pif)
+		xmem_free(pssl->pif);
 
 	xmem_free(pssl);
 }
@@ -3874,7 +3866,7 @@ res_file_t xssl_socket(xhand_t ssl)
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
-	return (pssl->tcp) ? xtcp_socket(pssl->tcp) : INVALID_FILE;
+	return (pssl->pif->bio) ? xtcp_socket(pssl->pif->bio) : INVALID_FILE;
 }
 
 int xssl_type(xhand_t ssl)

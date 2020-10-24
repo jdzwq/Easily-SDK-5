@@ -30,16 +30,14 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "coding.h"
+
 #include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
 
 #if defined(XDL_SUPPORT_VIEW)
 
-void draw_code128(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+void draw_code128(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
-	link_t_ptr g, nlk;
-
 	int black, span;
 	dword_t i;
 	float unit;
@@ -102,7 +100,7 @@ void draw_code128(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, con
 
 		if (black && pxc)
 		{
-			(*pif->pf_draw_rect)(pif->canvas, NULL, &xb, &rt);
+			(*pif->pf_draw_rect)(pif->ctx, NULL, &xb, &rt);
 		}
 
 		rt.fx += rt.fw;
@@ -113,11 +111,9 @@ void draw_code128(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, con
 	prt->fw = rt.fx + unit - prt->fx;
 }
 
-void draw_pdf417(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+void draw_pdf417(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
-	link_t_ptr g, nlk;
-
-	int black, span;
+	int black;
 	int rows, cols;
 	unsigned char b, c;
 	int i, j;
@@ -189,7 +185,7 @@ void draw_pdf417(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, cons
 
 				if (black && pxc)
 				{
-					(*pif->pf_draw_rect)(pif->canvas, NULL, &xb, &rt);
+					(*pif->pf_draw_rect)(pif->ctx, NULL, &xb, &rt);
 				}
 
 				b = b >> 1;
@@ -203,11 +199,9 @@ void draw_pdf417(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, cons
 	prt->fh = rt.fy + rt.fh + unit - prt->fy;
 }
 
-void draw_qrcode(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+void draw_qrcode(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
-	link_t_ptr g, nlk;
-
-	int black, span;
+	int black;
 	int rows, cols;
 	unsigned char b, c;
 	int i, j;
@@ -293,4 +287,4 @@ void draw_qrcode(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* prt, cons
 	prt->fh = rt.fy + rt.fh + unit - prt->fy;
 }
 
-#endif /*XDU_SUPPORT_CODING*/
+#endif /*XDL_SUPPORT_VIEW*/

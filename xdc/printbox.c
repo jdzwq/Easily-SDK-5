@@ -58,17 +58,17 @@ static int _printbox_calc_pages(res_win_t widget)
 	xface_t xa = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
+	const if_drawing_t* pif = NULL;
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
+	pif = widget_get_canvas_interface(widget);
 
 	widget_get_xface(widget, &xa);
 	widget_get_xfont(widget, &xf);
 
 	if (is_form_doc(ptd->sheet))
 	{
-		pages = calc_form_pages(ptd->sheet);
+		pages = calc_form_pages(pif, ptd->sheet);
 	}
 	else if (is_grid_doc(ptd->sheet))
 	{
@@ -87,7 +87,7 @@ static int _printbox_calc_pages(res_win_t widget)
 		pages = calc_rich_pages(pif, &xf, &xa, &xr, ptd->sheet);
 	}
 
-	destroy_canvas_interface(pif);
+	
 
 	return pages;
 }
@@ -309,8 +309,8 @@ void hand_print_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->sheet)
 		return;
@@ -322,22 +322,22 @@ void hand_print_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	canv = widget_get_canvas(widget);
 
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	if (widget_can_paging(widget))
 	{
@@ -371,10 +371,10 @@ void hand_print_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		}
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /*****************************************************************************************************/

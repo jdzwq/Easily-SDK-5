@@ -30,9 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "stringtable.h"
+#include "dblink.h"
+#include "miscell.h"
+#include "optparser.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 
 typedef struct _string_table{
 	link_t lk;			/* str table self link component*/

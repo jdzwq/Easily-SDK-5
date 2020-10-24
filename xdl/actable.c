@@ -32,7 +32,6 @@ LICENSE.GPL3 for more details.
 #include "actable.h"
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 
 #define AC_CHAR_INDEX(ch)		((ch >= _T('A') && ch <= _T('Z'))? (ch - 64) : 0)
 #define AC_BASE_INC			127

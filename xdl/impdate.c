@@ -30,8 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "impdate.h"
+#include "impmem.h"
+#include "imperr.h"
+#include "impassert.h"
+
 #include "xdlinit.h"
-#include "xdlimp.h"
 
 #ifdef XDK_SUPPORT_DATE
 

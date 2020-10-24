@@ -97,7 +97,7 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 	tchar_t ftime[DATE_LEN] = { 0 };
 	tchar_t fsize[NUM_LEN] = { 0 };
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	bool_t rt;
 
 	byte_t pack[TFTP_PDV_SIZE] = { 0 };
@@ -179,7 +179,7 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 
 	tchar_t fname[512] = { 0 };
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	bool_t rt;
 
 	byte_t pack[TFTP_PDV_SIZE] = { 0 };

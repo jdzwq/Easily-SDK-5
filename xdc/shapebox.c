@@ -96,8 +96,8 @@ void hand_shapebox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xbrush_t xb;
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	widget_get_xpen(widget, &xp);
 	widget_get_xbrush(widget, &xb);
@@ -105,21 +105,21 @@ void hand_shapebox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	draw_shape(pif, &xp, (xrect_t*)&(pif->rect), ptd->shape);
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
-	destroy_canvas_interface(pif);
+	
 }
 
 /***************************************************************************************/

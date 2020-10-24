@@ -70,7 +70,7 @@ EXP_API int calc_grid_col_rect(link_t_ptr ptr, int page, link_t_ptr rlk, link_t_
 
 EXP_API int calc_grid_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* prlk, link_t_ptr* pclk);
 
-EXP_API void draw_grid_page(const if_canvas_t* pcanv, link_t_ptr ptr, int page);
+EXP_API void draw_grid_page(const if_drawing_t* pcanv, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

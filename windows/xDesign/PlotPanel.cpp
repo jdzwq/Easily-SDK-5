@@ -251,22 +251,28 @@ bool_t PlotPanel_OpenFile(res_win_t widget, const tchar_t* szFile)
 {
 	PlotPanelDelta* pdt = GETPLOTPANELDELTA(widget);
 
-	LINKPTR newPlot = create_dom_doc();
-	if (!load_dom_doc_from_file(newPlot, NULL, szFile))
+	LINKPTR ptrMeta = create_meta_doc();
+	if (!load_dom_doc_from_file(ptrMeta, NULL, szFile))
 	{
-		destroy_dom_doc(newPlot);
+		destroy_meta_doc(ptrMeta);
 		ShowMsg(MSGICO_ERR, _T("导入文档失败！"));
 
 		return 0;
 	}
 
-	if (!is_plot_doc(newPlot))
+	if (compare_text(get_meta_doc_name_ptr(ptrMeta), -1, DOC_PLOT, -1, 1) != 0)
 	{
-		destroy_dom_doc(newPlot);
+		destroy_meta_doc(ptrMeta);
 		ShowMsg(MSGICO_ERR, _T("非矢量图文档！"));
 
 		return 0;
 	}
+
+	get_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, RES_LEN);
+	get_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, RES_LEN);
+
+	LINKPTR newPlot = detach_meta_body_node(ptrMeta);
+	destroy_meta_doc(ptrMeta);
 
 	LINKPTR orgPlot = plotctrl_detach(pdt->hPlot);
 	destroy_plot_doc(orgPlot);
@@ -284,7 +290,17 @@ bool_t PlotPanel_SaveFile(res_win_t widget, const tchar_t* szFile)
 
 	LINKPTR ptrPlot = plotctrl_fetch(pdt->hPlot);
 
-	bool_t rt = save_dom_doc_to_file(ptrPlot, NULL, szFile);
+	LINKPTR ptrMeta = create_meta_doc();
+
+	set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
+	set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
+
+	attach_meta_body_node(ptrMeta, ptrPlot);
+
+	bool_t rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
+
+	ptrPlot = detach_meta_body_node(ptrMeta);
+	destroy_meta_doc(ptrMeta);
 
 	if (!rt)
 	{
@@ -316,7 +332,7 @@ void PlotPanel_OnSave(res_win_t widget)
 
 		shell_get_curpath(szPath, PATH_LEN);
 
-		if (!shell_get_filename(widget, szPath, _T("Plot file(*.plot)\0*.plot\0"), _T("plot"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+		if (!shell_get_filename(widget, szPath, _T("plot meta file(*.plot)\0*.plot\0"), _T("plot"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 			return;
 
 		xscat(szPath, _T("\\"));
@@ -342,7 +358,7 @@ void PlotPanel_OnSaveAs(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("Plot file(*.plot)\0*.plot\0svg image file(*.svg)\0*.svg\0"), _T("plot"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("plot meta file(*.plot)\0*.plot\0SVG image file(*.svg)\0*.svg\0"), _T("plot"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));
@@ -365,7 +381,17 @@ void PlotPanel_OnSaveAs(res_win_t widget)
 	}
 	else
 	{
-		bool_t rt = save_dom_doc_to_file(ptrPlot, NULL, szFile);
+		LINKPTR ptrMeta = create_meta_doc();
+
+		set_meta_head_meta(ptrMeta, ATTR_AUTHOR, -1, pdt->meta.Author, -1);
+		set_meta_head_meta(ptrMeta, ATTR_COMPANY, -1, pdt->meta.Company, -1);
+
+		attach_meta_body_node(ptrMeta, ptrPlot);
+
+		rt = save_dom_doc_to_file(ptrMeta, NULL, szFile);
+
+		ptrPlot = detach_meta_body_node(ptrMeta);
+		destroy_meta_doc(ptrMeta);
 	}
 
 	if (!rt)

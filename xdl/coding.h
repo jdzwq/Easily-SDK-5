@@ -43,36 +43,36 @@ extern "C" {
 	
 /*
 @FUNCTION draw_code128: draw CODE128 code in canvas using millimeter coordinate.
-@INPUT if_canvas_t* pif: the canvas interface.
+@INPUT if_drawing_t* pif: the canvas interface.
 @INPUT const xcolor_t* pxc: the foreground color struct.
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @INPUT const tchar_t* text: the text for coding.
 @INPUT int len: the length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	draw_code128(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void 	draw_code128(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
 
 /*
 @FUNCTION draw_pdf417: draw PDF417 code in canvas using millimeter coordinate.
-@INPUT if_canvas_t* pif: the canvas interface.
+@INPUT if_drawing_t* pif: the canvas interface.
 @INPUT const xcolor_t* pxc: the foreground color struct.
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @INPUT const tchar_t* text: the text for coding.
 @INPUT int len: the length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	draw_pdf417(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void 	draw_pdf417(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
 
 /*
 @FUNCTION draw_qrcode: draw QR code in canvas using millimeter coordinate.
-@INPUT if_canvas_t* pif: the canvas interface.
+@INPUT if_drawing_t* pif: the canvas interface.
 @INPUT const xcolor_t* pxc: the foreground color struct.
 @INPUT const xrect_t* pxr: the rect struct using float member.
 @INPUT const tchar_t* text: the text for coding.
 @INPUT int len: the length in characters, -1 indicate zero terminated.
 @RETURN void: none.
 */
-EXP_API void 	draw_qrcode(const if_canvas_t* pif, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
+EXP_API void 	draw_qrcode(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* pxr, const tchar_t* text, int len);
 
 
 

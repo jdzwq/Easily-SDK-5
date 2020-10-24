@@ -488,8 +488,6 @@ void hand_calendar_rbutton_up(res_win_t widget, const xpoint_t* pxp)
 void hand_calendar_keydown(res_win_t widget, dword_t ks, int key)
 {
 	calendar_delta_t* ptd = GETCALENDARDELTA(widget);
-	float x, y, w, h, m;
-	link_t_ptr ilk;
 
 	if (!ptd->calendar)
 		return;
@@ -524,8 +522,8 @@ void hand_calendar_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	link_t_ptr ilk;
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->calendar)
 		return;
@@ -535,25 +533,25 @@ void hand_calendar_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
-	piv = create_visual_interface(rdc);
-	widget_get_view_rect(widget, &piv->rect);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
+	get_visual_interface(rdc, &ifv);
+	widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
 	widget_get_xbrush(widget, &xb);
 	widget_get_xpen(widget, &xp);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	draw_calendar(pif, ptd->calendar);
 
@@ -564,7 +562,7 @@ void hand_calendar_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 		parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-		draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
+		draw_focus_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 	}
 
 	//draw check
@@ -576,15 +574,15 @@ void hand_calendar_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		if (get_calendar_daily_selected(ilk))
 		{
 			_calendarctrl_daily_rect(widget, ilk, &xr);
-			(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
+			(*ifv.pf_alphablend_rect)(ifv.ctx, &xc, &xr, ALPHA_TRANS);
 		}
 		ilk = get_calendar_next_daily(ptd->calendar, ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /***********************************************function********************************************************/

@@ -30,9 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "impmbcs.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
+#include "impmem.h"
+#include "imperr.h"
+#include "impassert.h"
 
+#include "xdlinit.h"
 
 #ifdef XDK_SUPPORT_MBCS
 

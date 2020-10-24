@@ -156,6 +156,9 @@ EXP_API int mul_div_int(int m1, int m2, int d);
 
 EXP_API short mul_div_short(short m1, short m2, short d);
 
+EXP_API bool_t is_zero_float(float f);
+
+EXP_API bool_t is_zero_double(double d);
 /**************************************************************************************/
 
 EXP_API void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext);

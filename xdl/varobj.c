@@ -30,11 +30,13 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "varobj.h"
+#include "variant.h"
+#include "varbytes.h"
+#include "xmlbio.h"
+
 #include "xdlimp.h"
+#include "domdoc.h"
 
-#include "xdlstd.h"
-
-#include "xdldoc.h"
 
 /***********************************
 object struct{
@@ -548,6 +550,8 @@ void object_set_variant(object_t obj, variant_t val)
 	OBJECT_SET_ENCODE_SIZE(*pobj, dw);
 }
 
+#if defined(XDL_SUPPORT_DOC)
+
 void object_set_domdoc(object_t obj, link_t_ptr dom)
 {
 	byte_t** pobj = (byte_t**)obj;
@@ -610,6 +614,8 @@ bool_t object_get_domdoc(object_t obj, link_t_ptr dom)
 
 	return parse_dom_doc_from_bytes(dom, OBJECT_ENCODE_BUFFER(*pobj), dw, encode);
 }
+
+#endif
 
 void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len)
 {

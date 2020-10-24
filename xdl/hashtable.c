@@ -30,8 +30,9 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "hashtable.h"
-#include "xdlimp.h"
+#include "optparser.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 
 typedef struct _hash_entity_t{

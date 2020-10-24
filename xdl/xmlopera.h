@@ -36,6 +36,29 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
+
+//定义注解符
+#define A_CMTOKEN			"--"
+#define W_CMTOKEN			L"--"
+#define CMTOKEN				_T("--")
+#define CMTOKEN_LEN			2
+
+//定义界段符前缀
+#define A_CDATA_HEAD		"[CDATA["
+#define W_CDATA_HEAD		L"[CDATA["
+#define CDATA_HEAD			_T("[CDATA[")
+#define CDATA_HEAD_LEN		7
+//定义界段符尾缀
+#define A_CDATA_TAIL		"]]"
+#define W_CDATA_TAIL		L"]]"
+#define CDATA_TAIL			_T("]]")
+#define CDATA_TAIL_LEN		2
+
+
+//判断是否需转义的字符
+//#define _IsEscapeChar(ch) ((ch == _T('<') || ch == _T('>') || ch == _T('&') || ch == _T('\"') || ch == _T('\'') || ch == _T('/') || ch == _T('\f'))? 1 : 0)
+#define _IsEscapeChar(ch) ((ch == _T('<') || ch == _T('>') || ch == _T('&') || ch == _T('\"') || ch == _T('\''))? 1 : 0)
+
 typedef struct _XMLOBJECT{
 	link_t_ptr doc;
 	link_t_ptr nlk;
@@ -47,52 +70,52 @@ typedef struct _XMLOBJECT{
 extern "C" {
 #endif
 
-	void call_write_xml_begin(void* p_obj);
+LOC_API void call_write_xml_begin(void* p_obj);
 
-	bool_t call_write_xml_head_attr(void* p_obj, const tchar_t* key, int klen, const tchar_t* val, int vlen);
+LOC_API bool_t call_write_xml_head_attr(void* p_obj, const tchar_t* key, int klen, const tchar_t* val, int vlen);
 
-	bool_t call_write_xml_node_begin(void* p_obj);
+LOC_API bool_t call_write_xml_node_begin(void* p_obj);
 
-	bool_t call_write_xml_node_retain(void* pv);
+LOC_API bool_t call_write_xml_node_retain(void* pv);
 
-	bool_t call_write_xml_node_end(void* p_obj);
+LOC_API bool_t call_write_xml_node_end(void* p_obj);
 
-	bool_t call_write_xml_node_name(void* p_obj, const tchar_t* ns, int nslen, const tchar_t* na, int nalen);
+LOC_API bool_t call_write_xml_node_name(void* p_obj, const tchar_t* ns, int nslen, const tchar_t* na, int nalen);
 
-	bool_t call_write_xml_node_attr(void* p_obj, const tchar_t* key, int klen, const tchar_t* val, int vlen);
+LOC_API bool_t call_write_xml_node_attr(void* p_obj, const tchar_t* key, int klen, const tchar_t* val, int vlen);
 
-	bool_t call_write_xml_node_xmlns(void* p_obj, const tchar_t* key, int klen, const tchar_t* val, int vlen);
+LOC_API bool_t call_write_xml_node_xmlns(void* p_obj, const tchar_t* key, int klen, const tchar_t* val, int vlen);
 
-	bool_t call_write_xml_node_text(void* p_obj, bool_t b_cdata, const tchar_t* text, int len);
+LOC_API bool_t call_write_xml_node_text(void* p_obj, bool_t b_cdata, const tchar_t* text, int len);
 
-	bool_t call_write_xml_node_mask(void* pv, dword_t mask, bool_t b_check);
+LOC_API bool_t call_write_xml_node_mask(void* pv, dword_t mask, bool_t b_check);
 
-	link_t_ptr call_peek_xml_node(void* pv);
+LOC_API link_t_ptr call_peek_xml_node(void* pv);
 
-	bool_t call_peek_xml_node_mask(void* pv, dword_t mask);
+LOC_API bool_t call_peek_xml_node_mask(void* pv, dword_t mask);
 
-	const tchar_t* call_peek_xml_node_name(void* pv);
+LOC_API const tchar_t* call_peek_xml_node_name(void* pv);
 
-	void call_write_xml_end(void* p_obj, int code);
+LOC_API void call_write_xml_end(void* p_obj, int code);
 
-	bool_t call_write_xml_has_node(void* p_obj);
+LOC_API bool_t call_write_xml_has_node(void* p_obj);
 
 
-	bool_t call_read_xml_head_begin(void* pv);
+LOC_API bool_t call_read_xml_head_begin(void* pv);
 
-	bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val);
+LOC_API bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val);
 
-	bool_t call_read_xml_head_end(void* pv);
+LOC_API bool_t call_read_xml_head_end(void* pv);
 
-	bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val);
+LOC_API bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val);
 
-	bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tchar_t* ns, const tchar_t* nn);
+LOC_API bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tchar_t* ns, const tchar_t* nn);
 
-	bool_t call_read_xml_node_close(void* pv, int indent, bool_t b_parent);
+LOC_API bool_t call_read_xml_node_close(void* pv, int indent, bool_t b_parent);
 
-	bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, int len);
+LOC_API bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, int len);
 
-	bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_close, const tchar_t* ns, const tchar_t* nn);
+LOC_API bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_close, const tchar_t* ns, const tchar_t* nn);
 
 #ifdef	__cplusplus
 }

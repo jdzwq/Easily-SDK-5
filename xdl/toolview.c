@@ -29,11 +29,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "toolview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -283,7 +284,7 @@ int calc_tool_point_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, 
 	return nHint;
 }
 
-void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_tool(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr glk, ilk;
 	xrect_t xrGroup, xrTitle, xrItem, xrClip;
@@ -301,7 +302,7 @@ void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 	const tchar_t* show;
 	int count;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	XDL_ASSERT(pif != NULL);
 
@@ -310,7 +311,7 @@ void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	style = get_tool_style_ptr(ptr);
 
@@ -324,29 +325,29 @@ void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -369,7 +370,7 @@ void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 
 			xb_group.shadow.offx = DEF_MIN_SHADOW;
 			xb_group.shadow.offy = DEF_MIN_SHADOW;
-			(*pif->pf_draw_round)(pif->canvas, &xp, &xb_group, &xrGroup);
+			(*pif->pf_draw_round)(pif->ctx, &xp, &xb_group, &xrGroup);
 
 			calc_tool_group_title_rect(ptr, glk, &xrTitle);
 			ft_offset_rect(&xrTitle, px, py);
@@ -380,9 +381,9 @@ void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 			xmem_copy((void*)&xrClip, (void*)&xrGroup, sizeof(xrect_t));
 			ft_clip_rect(&xrClip, &xrTitle);
 
-			(*pif->pf_draw_rect)(pif->canvas, &xp, &xb, &xrClip);
+			(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xrClip);
 
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrTitle, get_tool_group_title_ptr(glk), -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xrTitle, get_tool_group_title_ptr(glk), -1);
 
 			if (get_tool_group_collapsed(glk))
 			{
@@ -412,13 +413,13 @@ void draw_tool(const if_canvas_t* pif, link_t_ptr ptr)
 			}
 			else if (compare_text(show, -1, ATTR_SHOW_TEXTONLY, -1, 0) == 0)
 			{
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrItem, get_tool_item_title_ptr(ilk), -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xrItem, get_tool_item_title_ptr(ilk), -1);
 			}
 			else
 			{
 				xrItem.fh /= 2;
 				xrItem.fy += xrItem.fh;
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrItem, get_tool_item_title_ptr(ilk), -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xrItem, get_tool_item_title_ptr(ilk), -1);
 
 				xrItem.fy -= xrItem.fh;
 				ft_center_rect(&xrItem, DEF_SMALL_ICON, DEF_SMALL_ICON);

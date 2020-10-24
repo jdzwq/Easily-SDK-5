@@ -59,7 +59,7 @@ extern "C" {
 
 	EXP_API int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk);
 
-	EXP_API void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio);
+	EXP_API void draw_table(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio);
 
 #ifdef	__cplusplus
 }

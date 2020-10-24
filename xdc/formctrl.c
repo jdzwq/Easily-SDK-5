@@ -2498,8 +2498,8 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	link_t_ptr flk;
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->form)
 		return;
@@ -2511,27 +2511,27 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
-	widget_get_view_rect(widget, &piv->rect);
+	get_visual_interface(rdc, &ifv);
+	widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
 	widget_get_xbrush(widget, &xb);
 
 	widget_get_xpen(widget, &xp);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	if (widget_can_paging(widget))
 	{
@@ -2551,7 +2551,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		}
 		else
 		{
-			xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
+			xmem_copy((void*)&xc, (void*)&(pif->mode.clr_frg), sizeof(xcolor_t));
 			draw_corner(pif, &xc, (const xrect_t*)&(pif->rect));
 		}
 	}
@@ -2567,7 +2567,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		{
 			parse_xcolor(&xc, DEF_ENABLE_COLOR);
 
-			draw_sizing_raw(piv, &xc, &xr, ALPHA_SOLID, SIZING_BOTTOMCENTER | SIZING_RIGHTCENTER | SIZING_BOTTOMRIGHT);
+			draw_sizing_raw(&ifv, &xc, &xr, ALPHA_SOLID, SIZING_BOTTOMCENTER | SIZING_RIGHTCENTER | SIZING_BOTTOMRIGHT);
 		}
 		else
 		{
@@ -2575,7 +2575,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			{
 				parse_xcolor(&xc, DEF_ALARM_COLOR);
 
-				draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
+				draw_focus_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 			}
 			else
 			{
@@ -2584,7 +2584,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 				else
 					parse_xcolor(&xc, DEF_DISABLE_COLOR);
 
-				draw_feed_raw(piv, &xc, &xr, ALPHA_SOLID);
+				draw_feed_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 			}
 		}
 	}
@@ -2602,7 +2602,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 				_formctrl_field_rect(widget, flk, &xr);
 				pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
-				(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_TRANS);
+				(*ifv.pf_alphablend_rect)(ifv.ctx, &xc, &xr, ALPHA_TRANS);
 			}
 			flk = get_next_field(ptd->form, flk);
 		}
@@ -2616,7 +2616,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			xr.x += (ptd->cur_x - ptd->org_x);
 			xr.y += (ptd->cur_y - ptd->org_y);
 
-			(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+			(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 		}
 		else if (ptd->b_size)
 		{
@@ -2638,7 +2638,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 				xr.h = (ptd->cur_y - xr.y);
 			}
 
-			(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+			(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 		}
 		else if (ptd->b_group)
 		{
@@ -2649,7 +2649,7 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			xr.y = ptd->org_y;
 			xr.h = ptd->cur_y - ptd->org_y;
 
-			(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+			(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 		}
 
 		if (ptd->field && get_field_group(ptd->field))
@@ -2658,14 +2658,14 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 			_formctrl_group_rect(widget, ptd->field, &xr);
 
-			(*piv->pf_draw_rect_raw)(piv->visual, &xp, NULL, &xr);
+			(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 		}
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /***********************************************function********************************************************/
@@ -2805,6 +2805,7 @@ void formctrl_redraw(res_win_t widget, bool_t bCalc)
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	link_t_ptr flk;
 	bool_t b_valid;
+	const if_drawing_t* pif;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2842,7 +2843,8 @@ void formctrl_redraw(res_win_t widget, bool_t bCalc)
 
 	if (bCalc)
 	{
-		ptd->max_page = calc_form_pages(ptd->form);
+		pif = widget_get_canvas_interface(widget);
+		ptd->max_page = calc_form_pages(pif, ptd->form);
 	}
 
 	widget_update(widget);
@@ -2852,6 +2854,7 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	xrect_t xr;
+	const if_drawing_t* pif;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2867,7 +2870,9 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 	{
 		calc_form_field(ptd->form, flk);
 
-		ptd->max_page = (short)calc_form_pages(ptd->form);
+		pif = widget_get_canvas_interface(widget);
+
+		ptd->max_page = (short)calc_form_pages(pif, ptd->form);
 	}
 	
 	noti_form_owner(widget, NC_FIELDCALCED, ptd->form, flk, NULL);
@@ -3054,13 +3059,16 @@ int formctrl_get_cur_page(res_win_t widget)
 int formctrl_get_max_page(res_win_t widget)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
+	const if_drawing_t* pif;
 
 	XDL_ASSERT(ptd != NULL);
 
 	if (!ptd->form)
 		return 0;
 
-	return calc_form_pages(ptd->form);
+	pif = widget_get_canvas_interface(widget);
+
+	return calc_form_pages(pif, ptd->form);
 }
 
 void formctrl_move_to_page(res_win_t widget, int page)

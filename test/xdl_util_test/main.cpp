@@ -154,13 +154,19 @@ int main(int argc, char* argv[])
 
 	//test_vector();
 
-	test_matrix();
+	//test_matrix();
 
 	//test_set();
 
 	//test_object();
 
 	//test_conv();
+
+	//test_string_array();
+
+	test_integer_array();
+
+	test_numeric_array();
 
 	xdl_process_uninit();
 

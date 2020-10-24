@@ -262,7 +262,7 @@ void SQLUpdateDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	visual_t rdc;
 	canvas_t canv;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	widget_get_xbrush(widget, &xb);
 
@@ -272,7 +272,7 @@ void SQLUpdateDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	xs.fw = SQLUPDATEDLG_BAR_SPLIT;
 	xs.fh = SQLUPDATEDLG_BAR_HEIGHT;
@@ -288,9 +288,9 @@ void SQLUpdateDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	parse_xcolor(&xc_core, xb.color);
 	lighten_xcolor(&xc_core, DEF_MIDD_DARKEN);
 
-	(*piv->pf_gradient_rect_raw)(piv->visual, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
+	(*ifv.pf_gradient_rect)(ifv.ctx, &xc_brim, &xc_core, GDI_ATTR_GRADIENT_VERT, &xr_bar);
 
-	destroy_visual_interface(piv);
+	
 	end_canvas_paint(canv, dc, pxr);
 }
 

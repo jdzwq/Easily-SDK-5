@@ -12,6 +12,7 @@ int main(int argc, char* argv[])
 {
 	xhand_t pipe = NULL;
 	stream_t stm = NULL;
+	if_bio_t bio = { 0 };
 
 	unsigned short port = 0;
 	byte_t addr[ADDR_LEN] = { 0 };
@@ -53,7 +54,9 @@ int main(int argc, char* argv[])
 		raise_user_error(_T("-1"), _T("child process create std pipe failed"));
 	}
 
-	stm = stream_alloc(pipe);
+	get_bio_interface(pipe, &bio);
+
+	stm = stream_alloc(&bio);
 	if (!stm)
 	{
 		raise_user_error(_T("-1"), _T("child process create steam failed"));

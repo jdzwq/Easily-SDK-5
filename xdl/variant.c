@@ -30,9 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "variant.h"
+#include "miscell.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 
 
 #define VARIANT_HDR_SIZE	8

@@ -5,6 +5,7 @@ void* STDCALL wait_thread(void* param)
 {
 	xportm_param_t* pxm = (xportm_param_t*)param;
 	stream_t stm;
+	if_bio_t bio = { 0 };
 	dword_t size;
 	byte_t* buf;
 
@@ -19,7 +20,9 @@ void* STDCALL wait_thread(void* param)
 			continue;
 		}
 
-		stm = stream_alloc(pxm->pip);
+		get_bio_interface(pxm->pip, &bio);
+
+		stm = stream_alloc(&bio);
 		if (!stm)
 		{
 			break;
@@ -73,6 +76,7 @@ void* STDCALL wait_thread(void* param)
 void _xportm_start(xportm_param_t* pxm)
 {
 	dword_t dw;
+	if_bio_t bio = { 0 };
 
 	XDL_ASSERT(pxm != NULL);
 
@@ -89,7 +93,9 @@ void _xportm_start(xportm_param_t* pxm)
         raise_user_error(_T("-1"), _T("service alloc console failed"));
     }
     
-    pxm->stm = stream_alloc(pxm->std);
+	get_bio_interface(pxm->std, &bio);
+
+    pxm->stm = stream_alloc(&bio);
     if (pxm->stm)
     {
         stream_set_encode(pxm->stm, DEF_MBS);

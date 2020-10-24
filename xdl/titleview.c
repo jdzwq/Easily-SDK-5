@@ -29,11 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "titleview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -219,7 +219,7 @@ int calc_title_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk_focus, l
 	return nHint;
 }
 
-void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
+void draw_title(const if_drawing_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 {
 	link_t_ptr plk;
 	bool_t lay_vert;
@@ -239,14 +239,14 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 	tchar_t ta[10] = { 0 };
 	xpoint_t pa[15] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xpen(&xp);
 	default_xbrush(&xb);
@@ -261,29 +261,29 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -381,7 +381,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					pa[13].fx = xr.fx;
 					pa[13].fy = ph + 0.5f;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
+					(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 - TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -404,7 +404,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - TITLE_EDGE_DARK;
 					xr_text.fh = xr.fh - ic;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_RIGHT, -1, 0) == 0)
 				{
@@ -456,7 +456,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					pa[13].fx = xr.fx + xr.fw;
 					pa[13].fy = ph + 0.5f;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
+					(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx + (xr.fw - ic) / 2 + TITLE_EDGE_DARK / 2;
 					xr_image.fy = xr.fy;
@@ -479,7 +479,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - TITLE_EDGE_DARK;
 					xr_text.fh = xr.fh - ic;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 			}
 			else
@@ -534,7 +534,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					pa[13].fx = pw + 0.5f;
 					pa[13].fy = xr.fy;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
+					(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 - TITLE_EDGE_DARK / 2;
@@ -557,7 +557,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - ic;
 					xr_text.fh = xr.fh - TITLE_EDGE_DARK;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
 				{
@@ -609,7 +609,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					pa[13].fx = pw + 0.5f;
 					pa[13].fy = xr.fy + xr.fh;
 
-					(*pif->pf_draw_path)(pif->canvas, &xp, &xb, ta, pa, 14);
+					(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 14);
 
 					xr_image.fx = xr.fx;
 					xr_image.fy = xr.fy + (xr.fh - ic) / 2 + TITLE_EDGE_DARK / 2;
@@ -632,7 +632,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - ic;
 					xr_text.fh = xr.fh - TITLE_EDGE_DARK;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf_focus, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 			}
 		}
@@ -656,7 +656,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - TITLE_EDGE_LIGHT;
 					xr_text.fh = xr.fh - ic;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_RIGHT, -1, 0) == 0)
 				{
@@ -674,7 +674,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - TITLE_EDGE_LIGHT;
 					xr_text.fh = xr.fh - ic;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 			}
 			else
@@ -695,7 +695,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - ic;
 					xr_text.fh = xr.fh - TITLE_EDGE_LIGHT;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 				else if (compare_text(orita, -1, ATTR_ORITATION_BOTTOM, -1, 0) == 0)
 				{
@@ -713,7 +713,7 @@ void draw_title(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 					xr_text.fw = xr.fw - ic;
 					xr_text.fh = xr.fh - TITLE_EDGE_LIGHT;
 
-					(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
+					(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_title_item_title_ptr(plk), -1);
 				}
 			}
 		}

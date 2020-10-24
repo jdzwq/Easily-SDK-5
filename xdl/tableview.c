@@ -29,10 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "tableview.h"
-#include "xdldoc.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -230,7 +231,7 @@ int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* 
 	return hint;
 }
 
-void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio)
+void draw_table(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio)
 {
 	float lr, lh, h;
 	float kw, vw;
@@ -239,7 +240,7 @@ void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 	link_t_ptr ilk;
 	int step;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	if (is_null(pxa->line_height))
 		lr = (float)xstof(DEF_GDI_TEXT_LINE_HEIGHT);
@@ -249,7 +250,7 @@ void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 	if (lr < 1)
 		lr = 1.0;
 
-	(*pif->pf_text_metric)(pif->canvas, pxf, &xs);
+	(*pif->pf_text_metric)(pif->ctx, pxf, &xs);
 
 	lh = (float)(xs.fh * lr);
 
@@ -267,20 +268,20 @@ void draw_table(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 		xr.fh = lh;
 
 		if (step % 2)
-			(*pif->pf_draw_rect)(pif->canvas, pxp, pxb, &xr);
+			(*pif->pf_draw_rect)(pif->ctx, pxp, pxb, &xr);
 		else
-			(*pif->pf_draw_rect)(pif->canvas, pxp, NULL, &xr);
+			(*pif->pf_draw_rect)(pif->ctx, pxp, NULL, &xr);
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, pxa, &xr, get_string_entity_key_ptr(ilk), -1);
+		(*pif->pf_draw_text)(pif->ctx, pxf, pxa, &xr, get_string_entity_key_ptr(ilk), -1);
 
 		xr.fx = kw + pbox->fx;
 		xr.fy = h + pbox->fy;
 		xr.fw = vw;
 		xr.fh = lh;
 
-		(*pif->pf_draw_rect)(pif->canvas, pxp, NULL, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, pxp, NULL, &xr);
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, pxa, &xr, get_string_entity_val_ptr(ilk), -1);
+		(*pif->pf_draw_text)(pif->ctx, pxf, pxa, &xr, get_string_entity_val_ptr(ilk), -1);
 
 		h += lh;
 

@@ -1886,8 +1886,8 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	bool_t b_design;
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	if (!ptd->grid)
 		return;
@@ -1897,21 +1897,15 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
-
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
+	pif = widget_get_canvas_interface(widget);
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
-	piv = create_visual_interface(rdc);
-	widget_get_view_rect(widget, &piv->rect);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
+	get_visual_interface(rdc, &ifv);
+	widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	b_design = grid_is_design(ptd->grid);
 
@@ -1925,7 +1919,7 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		}
 		else
 		{
-			xmem_copy((void*)&xc, (void*)&pif->clr_frg, sizeof(xcolor_t));
+			xmem_copy((void*)&xc, (void*)&(pif->mode.clr_frg), sizeof(xcolor_t));
 			draw_corner(pif, &xc, (const xrect_t*)&(pif->rect));
 		}
 	}
@@ -1943,7 +1937,7 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 				_gridctrl_cell_rect(widget, NULL, ptd->col, &xr);
 
-				draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
+				draw_focus_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 			}
 
 			if (get_col_selected(clk))
@@ -1951,7 +1945,7 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 				_gridctrl_cell_rect(widget, NULL, clk, &xr);
 				pt_expand_rect(&xr, DEF_INNER_FEED, DEF_INNER_FEED);
 
-				(*piv->pf_alphablend_rect_raw)(piv->visual, &xc, &xr, ALPHA_SOFT);
+				(*ifv.pf_alphablend_rect)(ifv.ctx, &xc, &xr, ALPHA_SOFT);
 			}
 			clk = get_next_col(ptd->grid, clk);
 		}
@@ -1964,7 +1958,7 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			_gridctrl_row_rect(widget, ptd->row, &xr);
 
 			parse_xcolor(&xc, DEF_ALPHA_COLOR);
-			(*piv->pf_alphablend_rect_raw)(rdc, &xc, &xr, ALPHA_SOFT);
+			(*ifv.pf_alphablend_rect)(ifv.ctx, &xc, &xr, ALPHA_SOFT);
 		}
 		else if (ptd->row && ptd->col)
 		{
@@ -1982,14 +1976,14 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 					parse_xcolor(&xc, DEF_DISABLE_COLOR);
 			}
 
-			draw_focus_raw(piv, &xc, &xr, ALPHA_SOLID);
+			draw_focus_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 		}
 	}
 
-	destroy_visual_interface(piv);
+	
 
-	end_canvas_paint(pif->canvas, dc, pxr);
-	destroy_canvas_interface(pif);
+	end_canvas_paint(canv, dc, pxr);
+	
 }
 
 /******************************************************************************************/

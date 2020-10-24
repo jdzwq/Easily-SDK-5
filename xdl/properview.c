@@ -29,10 +29,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "properview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
+
 #include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 
 #ifdef XDL_SUPPORT_VIEW
@@ -240,7 +242,7 @@ int calc_proper_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link
 	return hint;
 }
 
-void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_proper(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr sec, ent;
 	xrect_t xr, xr_draw;
@@ -255,11 +257,11 @@ void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 	bool_t b_print;
 	float px, py, pw, ph;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	XDL_ASSERT(pif);
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	ih = get_proper_item_height(ptr);
 	iw = get_proper_item_span(ptr);
@@ -282,29 +284,29 @@ void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -332,11 +334,11 @@ void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 
 		if (is_null(shape))
 		{
-			(*pif->pf_draw_rect)(pif->canvas, NULL, &xb_bar, &xr_draw);
+			(*pif->pf_draw_rect)(pif->ctx, NULL, &xb_bar, &xr_draw);
 		}
 		else
 		{
-			(*pif->pf_draw_rect)(pif->canvas, &xp, &xb_bar, &xr_draw);
+			(*pif->pf_draw_rect)(pif->ctx, &xp, &xb_bar, &xr_draw);
 		}
 
 		xr_draw.fx = xr.fx;
@@ -368,7 +370,7 @@ void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 		xr_draw.fy = xr.fy;
 		xr_draw.fh = ih;
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_draw, get_section_name_ptr(sec), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_draw, get_section_name_ptr(sec), -1);
 
 		xr.fy += ih;
 
@@ -419,7 +421,7 @@ void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 			xr_draw.fy = xr.fy;
 			xr_draw.fh = ih;
 
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_draw, get_entity_name_ptr(ent), -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_draw, get_entity_name_ptr(ent), -1);
 
 			//val text
 			xr_draw.fx = xr.fx + iw;
@@ -427,7 +429,7 @@ void draw_proper(const if_canvas_t* pif, link_t_ptr ptr)
 			xr_draw.fy = xr.fy;
 			xr_draw.fh = ih;
 
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_draw, get_entity_options_text_ptr(ent), -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_draw, get_entity_options_text_ptr(ent), -1);
 
 			xr.fy += ih;
 			ent = get_next_entity(sec, ent);

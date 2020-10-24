@@ -77,7 +77,7 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 		//is command set
 		if (pd->pdv.ctl & 0x01)
 		{
-			stm = stream_alloc(pacs_bio(pacs));
+			stm = stream_alloc(pacs->pif);
 
 			if (!parse_dicm_command_from_stream(&pd->cmd, b_big, n_max, stm))
 			{

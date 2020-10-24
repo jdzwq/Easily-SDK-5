@@ -30,9 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "trietree.h"
+#include "dblink.h"
+#include "stacktable.h"
+#include "miscell.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 
 typedef struct _trie_node_t{
 	link_t lkSibling;	/*the self link component, linked to parent*/

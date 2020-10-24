@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_MEMO_DUMP
 #include "dblink.h"
-#include "xdlstr.h"
+#include "impstr.h"
 #endif
 
 xdl_mou_t g_xdl_mou = { 0 };

@@ -1188,6 +1188,21 @@ short mul_div_short(short m1, short m2, short d)
 	return (short)((float)(m1 * m2) / (float)d);
 }
 
+bool_t is_zero_float(float f)
+{
+	f -= (int)f;
+	f *= 1000;
+
+	return ((int)f) ? 1 : 0;
+}
+
+bool_t is_zero_double(double d)
+{
+	d -= (int)d;
+	d *= 1000000;
+
+	return ((int)d) ? 1 : 0;
+}
 /*********************************************************************************************/
 
 void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext)

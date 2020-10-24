@@ -30,9 +30,8 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "stacktable.h"
-#include "xdlimp.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
 
 #define STACKTABLE_INC		32
 

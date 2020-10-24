@@ -249,7 +249,7 @@ void hand_owner_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	viewbox_t vb = { 0 };
 	xbrush_t xb = { 0 };
 
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -261,11 +261,11 @@ void hand_owner_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
-	destroy_visual_interface(piv);
+	
 
 	widget_get_view_rect(widget, &vb);
 

@@ -30,11 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "tagview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdldoc.h"
 
 #if defined(XDL_SUPPORT_VIEW) 
 

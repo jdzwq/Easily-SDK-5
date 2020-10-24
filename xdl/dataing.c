@@ -30,22 +30,26 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "dataing.h"
+#include "docattr.h"
+#include "miscell.h"
+
 #include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
+
 
 #if defined(XDL_SUPPORT_VIEW)
 
-void draw_pass(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+void draw_pass(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
 	tchar_t sz_pass[INT_LEN + 1] = { 0 };
 
 	len = format_password(txt, sz_pass, INT_LEN);
 
-	(*pif->pf_draw_text)(pif->canvas, pxf, pxa, pxr, sz_pass, len);
+	(*pif->pf_draw_text)(pif->ctx, pxf, pxa, pxr, sz_pass, len);
 }
 
-void draw_data(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
+void draw_data(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
 {
 	tchar_t sz_format[RES_LEN] = { 0 };
 	xdate_t dt = { 0 };
@@ -79,14 +83,14 @@ void draw_data(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, c
 
 		if (autowrap && pxa && is_null(xa.text_wrap))
 		{
-			(*pif->pf_text_size)(pif->canvas, pxf, sz_format, -1, &xs);
+			(*pif->pf_text_size)(pif->ctx, pxf, sz_format, -1, &xs);
 			if (xs.fw > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 			}
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, &xa, pxr, sz_format, -1);
+		(*pif->pf_draw_text)(pif->ctx, pxf, &xa, pxr, sz_format, -1);
 	}
 	else if (compare_text(type, -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
 	{
@@ -107,14 +111,14 @@ void draw_data(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, c
 
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			(*pif->pf_text_size)(pif->canvas, pxf, sz_format, -1, &xs);
+			(*pif->pf_text_size)(pif->ctx, pxf, sz_format, -1, &xs);
 			if (xs.fw > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 			}
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, &xa, pxr, sz_format, -1);
+		(*pif->pf_draw_text)(pif->ctx, pxf, &xa, pxr, sz_format, -1);
 	}
 	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATETIME, -1, 0) == 0)
 	{
@@ -130,14 +134,14 @@ void draw_data(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, c
 
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			(*pif->pf_text_size)(pif->canvas, pxf, sz_format, -1, &xs);
+			(*pif->pf_text_size)(pif->ctx, pxf, sz_format, -1, &xs);
 			if (xs.fw > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 			}
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, &xa, pxr, sz_format, -1);
+		(*pif->pf_draw_text)(pif->ctx, pxf, &xa, pxr, sz_format, -1);
 	}
 	else if (compare_text(type, -1, ATTR_DATA_TYPE_DATE, -1, 0) == 0)
 	{
@@ -153,27 +157,27 @@ void draw_data(const if_canvas_t* pif, const xfont_t* pxf, const xface_t* pxa, c
 
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			(*pif->pf_text_size)(pif->canvas, pxf, sz_format, -1, &xs);
+			(*pif->pf_text_size)(pif->ctx, pxf, sz_format, -1, &xs);
 			if (xs.fw > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 			}
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, &xa, pxr, sz_format, -1);
+		(*pif->pf_draw_text)(pif->ctx, pxf, &xa, pxr, sz_format, -1);
 	}
 	else
 	{
 		if (autowrap && is_null(xa.text_wrap))
 		{
-			(*pif->pf_text_size)(pif->canvas, pxf, data, len, &xs);
+			(*pif->pf_text_size)(pif->ctx, pxf, data, len, &xs);
 			if (xs.fw > pxr->fw)
 			{
 				xscpy(xa.text_wrap, GDI_ATTR_TEXT_WRAP_WORDBREAK);
 			}
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, pxf, &xa, pxr, data, len);
+		(*pif->pf_draw_text)(pif->ctx, pxf, &xa, pxr, data, len);
 	}
 }
 

@@ -29,10 +29,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "gridview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
+
 #include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
+
+
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -500,7 +503,7 @@ int calc_grid_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pr
 	return hint;
 }
 
-void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
+void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr clk, rlk;
 	link_t_ptr rlk_first, rlk_last;
@@ -522,7 +525,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 	float px, py, pw, ph, gw, cw, tw;
 	int i, ns, rs;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	px = pbox->fx;
 	py = pbox->fy;
@@ -541,7 +544,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 
 	b_design = grid_is_design(ptr);
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xpen(&xp);
 	default_xbrush(&xb);
@@ -553,13 +556,13 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xface_from_style(&xa, style);
@@ -567,12 +570,12 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	xmem_copy((void*)&xb_bar, (void*)&xb, sizeof(xbrush_t));
@@ -610,7 +613,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 		xrBar.fw = pw - rw;
 		xrBar.fh = th;
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrBar, get_grid_title_ptr(ptr), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xrBar, get_grid_title_ptr(ptr), -1);
 	}
 
 	//draw null bar
@@ -653,7 +656,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 				parse_xfont_from_style(&xf, style);
 				if (!b_print)
 				{
-					format_xcolor(&pif->clr_txt, xf.color);
+					format_xcolor(&pif->mode.clr_txt, xf.color);
 				}
 
 				xrBar.fw = get_col_width(clk);
@@ -661,7 +664,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 				draw_shape(pif, &xp, &xrBar, shape);
 
 				token = get_col_title_ptr(clk);
-				(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xrBar, token, -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xrBar, token, -1);
 
 				xrBar.fx += xrBar.fw;
 				clk = get_next_visible_col(ptr, clk);
@@ -756,7 +759,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 			parse_xfont_from_style(&xf, style);
 			if (!b_print)
 			{
-				format_xcolor(&pif->clr_txt, xf.color);
+				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
 
 			rstyle = get_row_style_ptr(rlk);
@@ -797,7 +800,7 @@ void draw_grid_page(const if_canvas_t* pif, link_t_ptr ptr, int page)
 			{
 				parse_ximage_from_source(&xi, get_cell_text_ptr(rlk,clk));
 
-				(*pif->pf_draw_image)(pif->canvas, &xi, &xrCell);
+				(*pif->pf_draw_image)(pif->ctx, &xi, &xrCell);
 			}
 			else
 			{

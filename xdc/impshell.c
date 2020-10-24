@@ -40,7 +40,7 @@ bool_t shell_get_curpath(tchar_t* pathbuf, int pathlen)
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_curpath)(pathbuf, pathlen);
+	return (pif->pf_shell_get_curpath)(pathbuf, pathlen);
 }
 
 bool_t shell_get_runpath(tchar_t* pathbuf, int pathlen)
@@ -49,7 +49,7 @@ bool_t shell_get_runpath(tchar_t* pathbuf, int pathlen)
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_runpath)(pathbuf, pathlen);
+	return (pif->pf_shell_get_runpath)(pathbuf, pathlen);
 }
 
 bool_t shell_get_tmppath(tchar_t* pathbuf, int pathlen)
@@ -58,7 +58,7 @@ bool_t shell_get_tmppath(tchar_t* pathbuf, int pathlen)
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_tmppath)(pathbuf, pathlen);
+	return (pif->pf_shell_get_tmppath)(pathbuf, pathlen);
 }
 
 bool_t shell_get_docpath(tchar_t* pathbuf, int pathlen)
@@ -67,7 +67,7 @@ bool_t shell_get_docpath(tchar_t* pathbuf, int pathlen)
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_docpath)(pathbuf, pathlen);
+	return (pif->pf_shell_get_docpath)(pathbuf, pathlen);
 }
 
 bool_t shell_get_apppath(tchar_t* pathbuf, int pathlen)
@@ -76,7 +76,7 @@ bool_t shell_get_apppath(tchar_t* pathbuf, int pathlen)
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_apppath)(pathbuf, pathlen);
+	return (pif->pf_shell_get_apppath)(pathbuf, pathlen);
 }
 
 #ifdef XDU_SUPPORT_SHELL_DIALOG
@@ -86,7 +86,7 @@ bool_t shell_get_filename(res_win_t owner, const tchar_t* defpath, const tchar_t
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_filename)(owner, defpath, filter, defext, saveit, pathbuf, pathlen, filebuf, filelen);
+	return (pif->pf_shell_get_filename)(owner, defpath, filter, defext, saveit, pathbuf, pathlen, filebuf, filelen);
 }
 
 bool_t shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t createit, tchar_t* pathbuf, int pathlen)
@@ -95,7 +95,7 @@ bool_t shell_get_pathname(res_win_t owner, const tchar_t* defpath, bool_t create
 
 	pif = PROCESS_SHELL_INTERFACE;
 
-	return (*pif->pf_shell_get_pathname)(owner, defpath, createit, pathbuf, pathlen);
+	return (pif->pf_shell_get_pathname)(owner, defpath, createit, pathbuf, pathlen);
 }
 #endif
 

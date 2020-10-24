@@ -215,8 +215,8 @@ int sub_dialog_on_paint(res_win_t widget, visual_t dc, const xrect_t* pxr, uid_t
 	xbrush_t xb = { 0 };
 
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	widget_get_xbrush(widget, &xb);
 
@@ -225,26 +225,23 @@ int sub_dialog_on_paint(res_win_t widget, visual_t dc, const xrect_t* pxr, uid_t
 	canv = widget_get_canvas(widget);
 	if (canv)
 	{
-		pif = create_canvas_interface(canv);
+		pif = widget_get_canvas_interface(widget);
 
-		rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+		rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 	}
 	else
 	{
-		pif = NULL;
 		rdc = dc;
 	}
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
-
-	destroy_visual_interface(piv);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	if (canv)
 	{
-		end_canvas_paint(pif->canvas, dc, pxr);
-		destroy_canvas_interface(pif);
+		end_canvas_paint(canv, dc, pxr);
+		
 	}
 
 	return 1;

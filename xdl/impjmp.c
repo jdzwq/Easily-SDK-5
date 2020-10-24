@@ -30,8 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "impjmp.h"
+#include "impmem.h"
+#include "imperr.h"
+#include "impassert.h"
+
 #include "xdlinit.h"
-#include "xdlimp.h"
+
 
 //#define ONERROR		setjmp(thread_jump_interface()->if_buf)
 

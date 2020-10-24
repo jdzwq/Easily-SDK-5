@@ -99,11 +99,9 @@ static int _panelctrl_calc_height(res_win_t widget)
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	link_t_ptr ilk,doc;
-	xfont_t xf;
-	xface_t xa;
 	visual_t rdc;
 	xrect_t xr;
-	int pw, ph;
+	int ph;
 
 	rdc = widget_client_ctx(widget);
 
@@ -128,7 +126,7 @@ static int _panelctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 {
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	link_t_ptr ilk,doc;
-	int hint, n;
+	int hint;
 	int total = 0;
 
 	xrect_t xr;
@@ -195,11 +193,10 @@ static void _panelctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 
 	link_t_ptr ilk,doc;
 
-	xrect_t xr;
 	xfont_t xf;
 	xface_t xa;
 	viewbox_t vb;
-	int n,total = 0;
+	int total = 0;
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
@@ -615,13 +612,12 @@ void hand_panel_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	visual_t rdc;
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	link_t_ptr ilk,doc;
-	xrect_t xr_icon,xr_view,xr;
+	xrect_t xr_icon,xr;
 	xpoint_t pt[9];
-	xsize_t xs;
 	int total = 0;;
 
 	viewbox_t vb = { 0 };
@@ -658,12 +654,12 @@ void hand_panel_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
+	pif = widget_get_canvas_interface(widget);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	widget_get_view_rect(widget, &vb);
 
@@ -695,7 +691,7 @@ void hand_panel_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			pt[8].x = 0;
 			pt[8].y = xr.y + ptd->title_height;
 
-			(*piv->pf_draw_polyline_raw)(piv->visual, &xp, pt, 9);
+			(*ifv.pf_draw_polyline)(ifv.ctx, &xp, pt, 9);
 		}
 
 		xr_icon.x = xr.x;
@@ -710,17 +706,17 @@ void hand_panel_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		xr_icon.y = xr.y;
 		xr_icon.w = ptd->item_width - 12;
 		xr_icon.h = ptd->title_height;
-		(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr_icon, title, -1);
+		(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr_icon, title, -1);
 
 		xr.x += ptd->item_width;
 
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
-	destroy_canvas_interface(pif);
+	
 }
 
 /************************************************************************************************/

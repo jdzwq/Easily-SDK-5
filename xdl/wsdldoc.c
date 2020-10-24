@@ -30,10 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "wsdldoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
+#include "schemadoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_DOC
 

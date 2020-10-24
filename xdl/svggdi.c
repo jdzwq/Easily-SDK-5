@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 #include "xdlview.h"
 
-#if defined(XDL_SUPPORT_SVG)
+#if defined(XDL_SUPPORT_VIEW)
 
 void svg_get_measure_raw(visual_t view, if_measure_t* pim)
 {
@@ -1072,5 +1072,5 @@ void svg_draw_thumb(canvas_t canv, const tchar_t* fname, const xrect_t* prt)
 }
 
 
-#endif /*XDL_SUPPORT_SVG*/
+#endif /*XDL_SUPPORT_VIEW*/
 

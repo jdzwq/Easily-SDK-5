@@ -30,12 +30,15 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xmlbio.h"
-#include "xdlimp.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdloop.h"
+
 #include "xdldoc.h"
 
-#ifdef XDL_SUPPORT_DOC
+#if defined(XDL_SUPPORT_BIO)
 
 bool_t parse_xml_doc_from_memo(link_t_ptr xml, link_t_ptr txt)
 {

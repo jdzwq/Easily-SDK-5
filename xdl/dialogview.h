@@ -52,7 +52,7 @@ extern "C" {
 
 	EXP_API int calc_dialog_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk);
 
-	EXP_API void draw_dialog(const if_canvas_t* pcanv, link_t_ptr ptr);
+	EXP_API void draw_dialog(const if_drawing_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

@@ -30,14 +30,19 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "nethttp.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
+#include "nettcp.h"
+#include "netssl.h"
+#include "netssh.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdlnet.h"
 #include "xdldoc.h"
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
+#include "xdlutil.h"
+#include "xdlinit.h"
+
+
+#if defined(XDK_SUPPORT_SOCK)
 
 typedef struct _xhttp_t{
 	xhand_head head;		//head for xhand_t
@@ -45,7 +50,7 @@ typedef struct _xhttp_t{
 
 	int secu;
 	
-	if_bio_t inf;
+	if_bio_t* pif;
 
 	stream_t send_stream;
 	stream_t recv_stream;
@@ -1013,37 +1018,22 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		xhttp_url_encoding(qryat, qrylen, phttp->query, phttp->len_query);
 	}
 
+	phttp->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+
 	switch (phttp->secu)
 	{
 	case _SECU_SSL:
-		phttp->inf.bio = xssl_cli(phttp->port, phttp->addr);
-
-		phttp->inf.pf_write = xssl_write;
-		phttp->inf.pf_flush = xssl_flush;
-		phttp->inf.pf_read = xssl_read;
-		phttp->inf.pf_close = xssl_close;
-		phttp->inf.pf_setopt = xssl_setopt;
+		phttp->pif->bio = xssl_cli(phttp->port, phttp->addr);
 		break;
 	case _SECU_SSH:
-		phttp->inf.bio = xssh_cli(phttp->port, phttp->addr);
-
-		phttp->inf.pf_write = xssh_write;
-		phttp->inf.pf_read = xssh_read;
-		phttp->inf.pf_flush = xssh_flush;
-		phttp->inf.pf_close = xssh_close;
-		phttp->inf.pf_setopt = xssh_setopt;
+		phttp->pif->bio = xssh_cli(phttp->port, phttp->addr);
 		break;
 	default:
-		phttp->inf.bio = xtcp_cli(phttp->port, phttp->addr);
-
-		phttp->inf.pf_write = xtcp_write;
-		phttp->inf.pf_read = xtcp_read;
-		phttp->inf.pf_close = xtcp_close;
-		phttp->inf.pf_setopt = xtcp_setopt;
+		phttp->pif->bio = xtcp_cli(phttp->port, phttp->addr);
 		break;
 	}
 	
-	if(!phttp->inf.bio)
+	if(!phttp->pif->bio)
 	{
 		raise_user_error(_T("xhttp_client"), _T("create bio failed"));
 	}
@@ -1057,6 +1047,7 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 ONERROR:
 	XDL_TRACE_LAST;
 
+
 	if (phttp)
 	{
 		xhttp_close(&phttp->head);
@@ -1067,7 +1058,6 @@ ONERROR:
 
 xhand_t xhttp_server(xhand_t bio)
 {
-	net_addr_t na;
 	unsigned short port;
 	
 	xhttp_t* phttp = NULL;
@@ -1083,7 +1073,9 @@ xhand_t xhttp_server(xhand_t bio)
 	phttp->head.tag = _HANDLE_INET;
 	phttp->type = _XHTTP_TYPE_SRV;
 
-	phttp->inf.bio = bio;
+	phttp->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+
+	get_bio_interface(bio, phttp->pif);
 
 	switch (bio->tag)
 	{
@@ -1098,34 +1090,8 @@ xhand_t xhttp_server(xhand_t bio)
 		break;
 	}
 
-	switch(phttp->secu)
-	{
-	case _SECU_SSL:
-		phttp->inf.pf_write = xssl_write;
-		phttp->inf.pf_flush = xssl_flush;
-		phttp->inf.pf_read = xssl_read;
-		phttp->inf.pf_setopt = xssl_setopt;
+	port = (*(phttp->pif->pf_peer))(phttp->pif->bio, phttp->addr);
 
-		socket_peer(xssl_socket(bio), &na);
-		break;
-	case _SECU_SSH:
-		phttp->inf.pf_write = xssh_write;
-		phttp->inf.pf_read = xssh_read;
-		phttp->inf.pf_flush = xssh_flush;
-		phttp->inf.pf_setopt = xssh_setopt;
-
-		socket_peer(xssh_socket(bio), &na);
-		break;
-	default:
-		phttp->inf.pf_write = xtcp_write;
-		phttp->inf.pf_read = xtcp_read;
-		phttp->inf.pf_setopt = xtcp_setopt;
-
-		socket_peer(xtcp_socket(bio), &na);
-		break;
-	}
-	
-	conv_addr(&na, &port, phttp->addr);
 	xscpy(phttp->poto, _T("HTTP"));
 	xscpy(phttp->version, _T("1.1"));
 
@@ -1172,13 +1138,18 @@ void xhttp_close(xhand_t xhttp)
 		stream_free(phttp->recv_stream);
 	}
 
-	if (phttp->inf.bio && phttp->type == _XHTTP_TYPE_CLI)
+	if (phttp->pif)
 	{
-		if (phttp->inf.pf_close)
+		if (phttp->pif->bio && phttp->type == _XHTTP_TYPE_CLI)
 		{
-			(*phttp->inf.pf_close)(phttp->inf.bio);
-			phttp->inf.bio = NULL;
+			if (phttp->pif->pf_close)
+			{
+				(*phttp->pif->pf_close)(phttp->pif->bio);
+				phttp->pif->bio = NULL;
+			}
 		}
+
+		xmem_free(phttp->pif);
 	}
 
 	xmem_free(phttp);
@@ -1209,69 +1180,35 @@ xhand_t xhttp_bio(xhand_t xhttp)
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	return phttp->inf.bio;
+	return (phttp->pif)? phttp->pif->bio : NULL;
 }
 
 unsigned short xhttp_addr_port(xhand_t xhttp, tchar_t* addr)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	res_file_t so;
-	net_addr_t na = { 0 };
-	unsigned short port = 0;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	switch (phttp->secu)
+	if (phttp->pif)
 	{
-	case _SECU_SSL:
-		so = xssl_socket(phttp->inf.bio);
-		break;
-	case _SECU_SSH:
-		so = xssh_socket(phttp->inf.bio);
-		break;
-	default:
-		so = xtcp_socket(phttp->inf.bio);
-		break;
+		return (*(phttp->pif->pf_addr))(phttp->pif->bio, addr);
 	}
 
-	if (so == INVALID_FILE)
-		return 0;
-
-	socket_addr(so, &na);
-	conv_addr(&na, &port, addr);
-
-	return port;
+	return 0;
 }
 
 unsigned short xhttp_peer_port(xhand_t xhttp, tchar_t* addr)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	res_file_t so;
-	net_addr_t na = { 0 };
-	unsigned short port = 0;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
-	switch (phttp->secu)
+	if (phttp->pif)
 	{
-	case _SECU_SSL:
-		so = xssl_socket(phttp->inf.bio);
-		break;
-	case _SECU_SSH:
-		so = xssh_socket(phttp->inf.bio);
-		break;
-	default:
-		so = xtcp_socket(phttp->inf.bio);
-		break;
+		return (*(phttp->pif->pf_peer))(phttp->pif->bio, addr);
 	}
 
-	if (so == INVALID_FILE)
-		return 0;
-
-	socket_peer(so, &na);
-	conv_addr(&na, &port, addr);
-
-	return port;
+	return 0;
 }
 
 dword_t xhttp_format_request(xhand_t xhttp, byte_t* buf, dword_t max)
@@ -2389,114 +2326,6 @@ int xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* s
 	return bas_len;
 }
 
-dword_t xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
-{
-	link_t_ptr ptr_xml, ptr_dom;
-	link_t_ptr nlk;
-
-	dword_t nlen = 0;
-	byte_t* sz_buf = NULL;
-
-	if (b_json)
-	{
-		ptr_dom = create_json_doc();
-	}
-	else
-	{
-		ptr_xml = create_xml_doc();
-
-		if (!is_null(encoding))
-			set_xml_encoding(ptr_xml, encoding, -1);
-
-		ptr_dom = get_xml_dom_node(ptr_xml);
-		set_dom_node_name(ptr_dom, HTTP_FAULT, -1);
-	}
-
-	nlk = insert_dom_node(ptr_dom, LINK_LAST);
-	set_dom_node_name(nlk, HTTP_FAULT_CODE, -1);
-	set_dom_node_text(nlk, errcode, -1);
-
-	nlk = insert_dom_node(ptr_dom, LINK_LAST);
-	set_dom_node_name(nlk, HTTP_FAULT_STRING, -1);
-	set_dom_node_text(nlk, errtext, slen);
-
-	if (b_json)
-	{
-		nlen = format_json_doc_to_bytes(ptr_dom, buf, max, parse_charset(encoding));
-
-		destroy_json_doc(ptr_dom);
-	}
-	else
-	{
-		nlen = format_xml_doc_to_bytes(ptr_xml, buf, max);
-
-		destroy_xml_doc(ptr_xml);
-	}
-
-	return nlen;
-}
-
-bool_t xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max)
-{
-	link_t_ptr nlk,ptr_dom,ptr_xml;
-	bool_t b_rt;
-
-	if (b_json)
-	{
-		ptr_dom = create_json_doc();
-		b_rt = parse_json_doc_from_bytes(ptr_dom, buf, len, parse_charset(encoding));
-		if (!b_rt)
-		{
-			destroy_json_doc(ptr_dom);
-			return 0;
-		}
-	}
-	else
-	{
-		ptr_xml = create_xml_doc();
-		b_rt = parse_xml_doc_from_bytes(ptr_xml, buf, len);
-		if (!b_rt)
-		{
-			destroy_xml_doc(ptr_xml);
-			return 0;
-		}
-
-		ptr_dom = get_xml_dom_node(ptr_xml);
-		if (compare_text(get_dom_node_name_ptr(ptr_dom), -1, HTTP_FAULT, -1, 1) != 0)
-		{
-			destroy_xml_doc(ptr_xml);
-			return 0;
-		}
-	}
-
-	nlk = get_dom_first_child_node(ptr_dom);
-	while (nlk)
-	{
-		if (compare_text(get_dom_node_name_ptr(nlk), -1, HTTP_FAULT_CODE, -1, 1) == 0)
-		{
-			if (errcode)
-			{
-				get_dom_node_text(nlk, errcode, NUM_LEN);
-			}
-		}
-		else if (compare_text(get_dom_node_name_ptr(nlk), -1, HTTP_FAULT_STRING, -1, 1) == 0)
-		{
-			if (errtext)
-			{
-				get_dom_node_text(nlk, errtext, max);
-			}
-		}
-		nlk = get_dom_next_sibling_node(nlk);
-	}
-
-	if (b_json)
-		destroy_json_doc(ptr_dom);
-	else
-		destroy_xml_doc(ptr_xml);
-
-	return 1;
-}
-
 bool_t	xhttp_is_requested(xhand_t xhttp)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
@@ -2576,23 +2405,23 @@ void xhttp_send_continue(xhand_t xhttp)
 
 	len_response = _xhttp_format_continue(phttp, buf_response, len_response);
 
-	if (phttp->inf.pf_setopt)
+	if (phttp->pif->pf_setopt)
 	{
 		opt = 0;
-		(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
+		(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 	}
 
-	if (phttp->inf.pf_write)
+	if (phttp->pif->pf_write)
 	{
-		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_response, &len_response))
+		if (!(*phttp->pif->pf_write)(phttp->pif->bio, buf_response, &len_response))
 		{
 			raise_user_error(NULL, NULL);
 		}
 	}
 
-	if (phttp->inf.pf_flush)
+	if (phttp->pif->pf_flush)
 	{
-		if (!(*phttp->inf.pf_flush)(phttp->inf.bio))
+		if (!(*phttp->pif->pf_flush)(phttp->pif->bio))
 		{
 			raise_user_error(NULL, NULL);
 		}
@@ -2635,20 +2464,20 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 		len_response = _xhttp_format_response(phttp, buf_response, len_response);
 
-		if (phttp->inf.pf_setopt)
+		if (phttp->pif->pf_setopt)
 		{
 			opt = TCP_MIN_SNDBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
+			(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 		}
 
-		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_response, &len_response))
+		if (!(*phttp->pif->pf_write)(phttp->pif->bio, buf_response, &len_response))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		if (phttp->inf.pf_flush)
+		if (phttp->pif->pf_flush)
 		{
-			if (!(*phttp->inf.pf_flush)(phttp->inf.bio))
+			if (!(*phttp->pif->pf_flush)(phttp->pif->bio))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -2658,7 +2487,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 		if (phttp->b_response)
 		{
-			phttp->send_stream = stream_alloc(phttp->inf.bio);
+			phttp->send_stream = stream_alloc(phttp->pif);
 
 			xhttp_get_response_content_type_charset(xhttp, token, INT_LEN);
 			if (!is_null(token))
@@ -2685,9 +2514,9 @@ bool_t xhttp_send_response(xhand_t xhttp)
 				opt = ((len_response) ? len_response : TCP_MAX_SNDBUFF);
 			}
 
-			if (phttp->inf.pf_setopt)
+			if (phttp->pif->pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
+				(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -2723,10 +2552,10 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 
 	if (!phttp->b_response)
 	{
-		if (phttp->inf.pf_setopt)
+		if (phttp->pif->pf_setopt)
 		{
 			opt = TCP_MIN_RCVBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
+			(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 		}
 
 		len_header = XHTTP_HEADER_SIZE;
@@ -2736,7 +2565,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 		while (1)
 		{
 			len_one = 1;
-			if (!(*phttp->inf.pf_read)(phttp->inf.bio, buf_response + len_response, &len_one))
+			if (!(*phttp->pif->pf_read)(phttp->pif->bio, buf_response + len_response, &len_one))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -2771,7 +2600,7 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 
 		if (phttp->b_response)
 		{
-			phttp->recv_stream = stream_alloc(phttp->inf.bio);
+			phttp->recv_stream = stream_alloc(phttp->pif);
 
 			_xhttp_parse_response(phttp, buf_response, len_response);
 
@@ -2800,9 +2629,9 @@ bool_t xhttp_recv_response(xhand_t xhttp)
 				opt = ((len_one) ? len_one : TCP_MAX_RCVBUFF);
 			}
 
-			if (phttp->inf.pf_setopt)
+			if (phttp->pif->pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
+				(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -2844,20 +2673,20 @@ bool_t xhttp_send_request(xhand_t xhttp)
 
 		len_request = _xhttp_format_request(phttp, buf_request, len_request);
 
-		if (phttp->inf.pf_setopt)
+		if (phttp->pif->pf_setopt)
 		{			
 			opt = TCP_MIN_SNDBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
+			(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 		}
 
-		if (!(*phttp->inf.pf_write)(phttp->inf.bio, buf_request, &len_request))
+		if (!(*phttp->pif->pf_write)(phttp->pif->bio, buf_request, &len_request))
 		{
 			raise_user_error(NULL, NULL);
 		}
 
-		if (phttp->inf.pf_flush)
+		if (phttp->pif->pf_flush)
 		{
-			if (!(*phttp->inf.pf_flush)(phttp->inf.bio))
+			if (!(*phttp->pif->pf_flush)(phttp->pif->bio))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -2867,7 +2696,7 @@ bool_t xhttp_send_request(xhand_t xhttp)
 
 		if (phttp->b_request)
 		{
-			phttp->send_stream = stream_alloc(phttp->inf.bio);
+			phttp->send_stream = stream_alloc(phttp->pif);
 
 			xhttp_get_request_content_type_charset(xhttp, charset, INT_LEN);
 			if (!is_null(charset))
@@ -2894,9 +2723,9 @@ bool_t xhttp_send_request(xhand_t xhttp)
 				opt = ((len_request) ? len_request : TCP_MAX_SNDBUFF);
 			}
 
-			if (phttp->inf.pf_setopt)
+			if (phttp->pif->pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
+				(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -2932,10 +2761,10 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 
 	if (!phttp->b_request)
 	{
-		if (phttp->inf.pf_setopt)
+		if (phttp->pif->pf_setopt)
 		{			
 			opt = TCP_MIN_RCVBUFF;
-			(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
+			(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 		}
 
 		len_header = XHTTP_HEADER_SIZE;
@@ -2945,7 +2774,7 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 		while (1)
 		{
 			len_one = 1;
-			if (!(*phttp->inf.pf_read)(phttp->inf.bio, buf_request + len_request, &len_one))
+			if (!(*phttp->pif->pf_read)(phttp->pif->bio, buf_request + len_request, &len_one))
 			{
 				raise_user_error(NULL, NULL);
 			}
@@ -2988,7 +2817,7 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 
 		if (phttp->b_request)
 		{
-			phttp->recv_stream = stream_alloc(phttp->inf.bio);
+			phttp->recv_stream = stream_alloc(phttp->pif);
 
 			_xhttp_parse_request(phttp, buf_request, len_request);
 
@@ -3017,9 +2846,9 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 				opt = ((len_one) ? len_one : TCP_MAX_RCVBUFF);
 			}
 
-			if (phttp->inf.pf_setopt)
+			if (phttp->pif->pf_setopt)
 			{
-				(*phttp->inf.pf_setopt)(phttp->inf.bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
+				(*phttp->pif->pf_setopt)(phttp->pif->bio, SOCK_OPTION_RCVBUF, (void*)&opt, sizeof(int));
 			}
 		}
 
@@ -3382,6 +3211,131 @@ bool_t xhttp_recv_full(xhand_t xhttp, byte_t** pbuf, dword_t* plen)
 	}
 }
 
+#if defined(XDL_SUPPORT_DOC)
+
+dword_t xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
+{
+	link_t_ptr ptr_xml, ptr_dom;
+	link_t_ptr nlk;
+
+	dword_t nlen = 0;
+	byte_t* sz_buf = NULL;
+
+	if (b_json)
+	{
+		ptr_dom = create_json_doc();
+	}
+	else
+	{
+		ptr_xml = create_xml_doc();
+
+		if (!is_null(encoding))
+			set_xml_encoding(ptr_xml, encoding, -1);
+
+		ptr_dom = get_xml_dom_node(ptr_xml);
+		set_dom_node_name(ptr_dom, HTTP_FAULT, -1);
+	}
+
+	nlk = insert_dom_node(ptr_dom, LINK_LAST);
+	set_dom_node_name(nlk, HTTP_FAULT_CODE, -1);
+	set_dom_node_text(nlk, errcode, -1);
+
+	nlk = insert_dom_node(ptr_dom, LINK_LAST);
+	set_dom_node_name(nlk, HTTP_FAULT_STRING, -1);
+	set_dom_node_text(nlk, errtext, slen);
+
+	if (b_json)
+	{
+		nlen = format_json_doc_to_bytes(ptr_dom, buf, max, parse_charset(encoding));
+
+		destroy_json_doc(ptr_dom);
+	}
+	else
+	{
+		nlen = format_xml_doc_to_bytes(ptr_xml, buf, max);
+
+		destroy_xml_doc(ptr_xml);
+	}
+
+	return nlen;
+}
+#else
+dword_t xhttp_format_error(bool_t b_json, const tchar_t* encoding, const tchar_t* errcode, const tchar_t* errtext, int slen, byte_t* buf, dword_t max)
+{
+	return 0;
+}
+#endif
+
+#if defined(XDL_SUPPORT_DOC)
+bool_t xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max)
+{
+	link_t_ptr nlk, ptr_dom, ptr_xml;
+	bool_t b_rt;
+
+	if (b_json)
+	{
+		ptr_dom = create_json_doc();
+		b_rt = parse_json_doc_from_bytes(ptr_dom, buf, len, parse_charset(encoding));
+		if (!b_rt)
+		{
+			destroy_json_doc(ptr_dom);
+			return 0;
+		}
+	}
+	else
+	{
+		ptr_xml = create_xml_doc();
+		b_rt = parse_xml_doc_from_bytes(ptr_xml, buf, len);
+		if (!b_rt)
+		{
+			destroy_xml_doc(ptr_xml);
+			return 0;
+		}
+
+		ptr_dom = get_xml_dom_node(ptr_xml);
+		if (compare_text(get_dom_node_name_ptr(ptr_dom), -1, HTTP_FAULT, -1, 1) != 0)
+		{
+			destroy_xml_doc(ptr_xml);
+			return 0;
+		}
+	}
+
+	nlk = get_dom_first_child_node(ptr_dom);
+	while (nlk)
+	{
+		if (compare_text(get_dom_node_name_ptr(nlk), -1, HTTP_FAULT_CODE, -1, 1) == 0)
+		{
+			if (errcode)
+			{
+				get_dom_node_text(nlk, errcode, NUM_LEN);
+			}
+		}
+		else if (compare_text(get_dom_node_name_ptr(nlk), -1, HTTP_FAULT_STRING, -1, 1) == 0)
+		{
+			if (errtext)
+			{
+				get_dom_node_text(nlk, errtext, max);
+			}
+		}
+		nlk = get_dom_next_sibling_node(nlk);
+	}
+
+	if (b_json)
+		destroy_json_doc(ptr_dom);
+	else
+		destroy_xml_doc(ptr_xml);
+
+	return 1;
+}
+#else
+bool_t xhttp_parse_error(bool_t b_json, const tchar_t* encoding, const byte_t* buf, dword_t len, tchar_t* errcode, tchar_t* errtext, int max)
+{
+	return 0;
+}
+#endif
+
+#if defined(XDL_SUPPORT_DOC)
+
 bool_t xhttp_send_xml(xhand_t xhttp,link_t_ptr xml)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
@@ -3540,6 +3494,8 @@ bool_t xhttp_recv_json(xhand_t xhttp, link_t_ptr json)
 
 	return parse_json_doc_from_stream(json, phttp->recv_stream);
 }
+
+#endif
 
 bool_t xhttp_send_string(xhand_t xhttp, string_t var)
 {

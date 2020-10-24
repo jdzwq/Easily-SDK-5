@@ -83,7 +83,8 @@ typedef enum{
 
 typedef struct _radnet_t{
 	int type;
-	xhand_t bio;
+
+	if_bio_t* pbo;
 
 	int encode;
 	int status;

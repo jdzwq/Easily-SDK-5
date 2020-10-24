@@ -25,9 +25,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "radobj.h"
+#include "varobj.h"
+#include "miscell.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
 #include "xdlinit.h"
 
 dword_t radobj_write(object_t val, const rad_hdr_t* phr, const byte_t* msg, dword_t len)
@@ -146,7 +148,7 @@ dword_t radobj_write(object_t val, const rad_hdr_t* phr, const byte_t* msg, dwor
 	PUT_DWORD_NET((msg_buf - 4), 0, msg_len);
 	total += 4;
 	//the object message
-	xmem_copy((void*)(msg_buf), msg, len);
+	xmem_copy((void*)(msg_buf), (void*)msg, len);
 	total += len;
 
 	total += obj_len;

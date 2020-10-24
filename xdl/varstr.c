@@ -30,9 +30,8 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "varstr.h"
-#include "xdlimp.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
 
 #define VARSTR_INC	512
 

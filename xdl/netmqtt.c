@@ -25,17 +25,20 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "netmqtt.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
+#include "bioinf.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdlnet.h"
+
+#include "xdlinit.h"
 
 typedef struct _mqtt_t{
 	xhand_head head;	/*head for xhand_t*/
-	int type;
-	xhand_t bio;
 
+	if_bio_t* pif;
+
+	int type; /*connect type*/
 	int status;	/*connect status*/
 	byte_t packet; /*current pdu type*/
 
@@ -398,7 +401,7 @@ static bool_t _mqtt_write_pdu(mqtt_t* mqtt, byte_t pdu_type, dword_t pdv_size)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(mqtt->bio);
+	stm = stream_alloc(mqtt->pif);
 
 	switch (pdu_type)
 	{
@@ -1099,7 +1102,7 @@ static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 	//PDU USE NETWORK BYTES ORDERS (BigEndian)
 	//PDU: {CONTROL | VARIABLE | PAYLOAD}
 
-	stm = stream_alloc(mqtt->bio);
+	stm = stream_alloc(mqtt->pif);
 
 	//1: pdu type
 	n = 1;
@@ -1618,7 +1621,9 @@ xhand_t xmqtt_scu(xhand_t bio, int scu)
 	pmqtt = (mqtt_t*)xmem_alloc(sizeof(mqtt_t));
 	pmqtt->head.tag = _HANDLE_MQTT;
 	pmqtt->type = scu;
-	pmqtt->bio = bio;
+
+	pmqtt->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, pmqtt->pif);
 
 	pmqtt->session_ver = MQTT_VER;
 
@@ -1635,7 +1640,9 @@ xhand_t xmqtt_scp(xhand_t bio, int scp)
 	pmqtt = (mqtt_t*)xmem_alloc(sizeof(mqtt_t));
 	pmqtt->head.tag = _HANDLE_MQTT;
 	pmqtt->type = scp;
-	pmqtt->bio = bio;
+
+	pmqtt->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, pmqtt->pif);
 
 	pmqtt->session_ver = MQTT_VER;
 
@@ -1648,7 +1655,7 @@ xhand_t xmqtt_bio(xhand_t mqtt)
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
-	return pmqtt->bio;
+	return (pmqtt->pif)? pmqtt->pif->bio : NULL;
 }
 
 int xmqtt_type(xhand_t mqtt)
@@ -2339,13 +2346,13 @@ bool_t xmqtt_accept(xhand_t mqtt)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pmqtt->bio);
-
 	//read CONNECT PDU
 	if (!xmqtt_recv(mqtt, &pdv_size))
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	stm = stream_alloc(pmqtt->pif);
 
 	//read CONNECT payload
 	pdv_buf = (byte_t*)xmem_alloc(pdv_size);
@@ -2353,6 +2360,9 @@ bool_t xmqtt_accept(xhand_t mqtt)
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	stream_free(stm);
+	stm = NULL;
 
 	//initialize or restore session
 	if (!_mqtt_parse_session(pmqtt, pdv_buf, pdv_size))
@@ -2368,9 +2378,6 @@ bool_t xmqtt_accept(xhand_t mqtt)
 	{
 		raise_user_error(NULL, NULL);
 	}
-
-	stream_free(stm);
-	stm = NULL;
 
 	END_CATCH;
 
@@ -2404,8 +2411,6 @@ bool_t xmqtt_connect(xhand_t mqtt)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pmqtt->bio);
-
 	pdv_size = _mqtt_format_session(pmqtt, NULL, MAX_LONG);
 	pdv_buf = (byte_t*)xmem_alloc(pdv_size);
 	_mqtt_format_session(pmqtt, pdv_buf, pdv_size);
@@ -2416,11 +2421,16 @@ bool_t xmqtt_connect(xhand_t mqtt)
 		raise_user_error(NULL, NULL);
 	}
 
+	stm = stream_alloc(pmqtt->pif);
+
 	//write CONNECT payload 
 	if (!stream_write_bytes(stm, pdv_buf, pdv_size))
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	stream_free(stm);
+	stm = NULL;
 
 	xmem_free(pdv_buf);
 	pdv_buf = NULL;
@@ -2431,9 +2441,6 @@ bool_t xmqtt_connect(xhand_t mqtt)
 		raise_user_error(NULL, NULL);
 	}
 	
-	stream_free(stm);
-	stm = NULL;
-
 	END_CATCH;
 
 	return 1;
@@ -2477,14 +2484,14 @@ bool_t xmqtt_subcribe(xhand_t mqtt, const tchar_t* topic, int len)
 	pmqtt->topic_size = mbs_to_utf8(topic, len, pmqtt->topic_name, pmqtt->topic_size);
 #endif
 
-	stm = stream_alloc(pmqtt->bio);
-
 	pdv_size = _mqtt_format_subcribe(pmqtt, NULL, MAX_LONG);
 	pdv_buf = (byte_t*)xmem_alloc(pdv_size);
 	_mqtt_format_subcribe(pmqtt, pdv_buf, pdv_size);
 
 	//ensure send SUBSCRIBE
 	pmqtt->packet_qos = 1;
+
+	stm = stream_alloc(pmqtt->pif);
 
 	//write SUBSCRIBE PDU
 	if (!xmqtt_send(mqtt, pdv_size))
@@ -2498,6 +2505,9 @@ bool_t xmqtt_subcribe(xhand_t mqtt, const tchar_t* topic, int len)
 		raise_user_error(NULL, NULL);
 	}
 
+	stream_free(stm);
+	stm = NULL;
+
 	xmem_free(pdv_buf);
 	pdv_buf = NULL;
 
@@ -2506,9 +2516,6 @@ bool_t xmqtt_subcribe(xhand_t mqtt, const tchar_t* topic, int len)
 	{
 		raise_user_error(NULL, NULL);
 	}
-
-	stream_free(stm);
-	stm = NULL;
 
 	END_CATCH;
 	
@@ -2551,8 +2558,6 @@ bool_t xmqtt_unsubcribe(xhand_t mqtt, const tchar_t* topic, int len)
 	pmqtt->topic_size = mbs_to_utf8(topic, len, pmqtt->topic_name, pmqtt->topic_size);
 #endif
 
-	stm = stream_alloc(pmqtt->bio);
-
 	pdv_size = _mqtt_format_subcribe(pmqtt, NULL, MAX_LONG);
 	pdv_buf = (byte_t*)xmem_alloc(pdv_size);
 	_mqtt_format_subcribe(pmqtt, pdv_buf, pdv_size);
@@ -2566,11 +2571,16 @@ bool_t xmqtt_unsubcribe(xhand_t mqtt, const tchar_t* topic, int len)
 		raise_user_error(NULL, NULL);
 	}
 
+	stm = stream_alloc(pmqtt->pif);
+
 	//write UNSUBSCRIBE payload
 	if (!stream_write_bytes(stm, pdv_buf, pdv_size))
 	{
 		raise_user_error(NULL, NULL);
 	}
+
+	stream_free(stm);
+	stm = NULL;
 
 	xmem_free(pdv_buf);
 	pdv_buf = NULL;
@@ -2580,9 +2590,6 @@ bool_t xmqtt_unsubcribe(xhand_t mqtt, const tchar_t* topic, int len)
 	{
 		raise_user_error(NULL, NULL);
 	}
-
-	stream_free(stm);
-	stm = NULL;
 
 	END_CATCH;
 
@@ -2631,7 +2638,7 @@ bool_t xmqtt_poll_message(xhand_t mqtt, byte_t** pbuf, dword_t* plen)
 	*pbuf = NULL;
 	*plen = 0;
 
-	stm = stream_alloc(pmqtt->bio);
+	stm = stream_alloc(pmqtt->pif);
 
 	if (pmqtt->type == _MQTT_TYPE_SCU_SUB)
 	{
@@ -2831,7 +2838,7 @@ bool_t xmqtt_push_message(xhand_t mqtt, const byte_t* buf, dword_t len)
 
 	TRY_CATCH;
 
-	stm = stream_alloc(pmqtt->bio);
+	stm = stream_alloc(pmqtt->pif);
 
 	if (pmqtt->type == _MQTT_TYPE_SCU_PUB)
 	{
@@ -2939,6 +2946,9 @@ void xmqtt_close(xhand_t mqtt)
 	}
 
 	_mqtt_clean_session(pmqtt);
+
+	if (pmqtt->pif)
+		xmem_free(pmqtt->pif);
 
 	xmem_free(mqtt);
 }

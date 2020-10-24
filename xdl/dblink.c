@@ -30,10 +30,8 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "dblink.h"
-#include "xdlimp.h"
 
-#include "xdlstd.h"
-#include "xdlinit.h"
+#include "xdlimp.h"
 
 void init_root_link(link_t_ptr root)
 {

@@ -40,12 +40,6 @@ LICENSE.GPL3 for more details.
 #define get_words_item_hidden(ilk)			(bool_t)get_words_item_delta(ilk)
 /*********************************************************************************/
 
-typedef enum{
-	ORDER_NONE = 0,
-	ORDER_ASCEND = 1,
-	ORDER_DESCEND = -1
-}SORT_ORDER;
-
 #ifdef	__cplusplus
 extern "C" {
 #endif

@@ -29,10 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "metadoc.h"
-#include "xdlimp.h"
+#include "metabio.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
 #include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_DOC

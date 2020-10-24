@@ -29,11 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "textview.h"
-#include "xdlview.h"
-#include "xdldoc.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdldoc.h"
 
 #if defined(XDL_SUPPORT_VIEW) 
 

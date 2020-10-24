@@ -30,28 +30,32 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "plotview.h"
-#include "plotdoc.h"
 
 #include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdlgdi.h"
 #include "xdldoc.h"
+
+#if defined(XDL_SUPPORT_VIEW)
 
 typedef struct _plot_t{
 	tchar_t* style;
 	int ruler;
 
-	tchar_t* y_stages;
-	tchar_t* y_bases;
-	tchar_t* y_steps;
-	tchar_t* y_labels;
-	tchar_t* y_colors;
-	tchar_t* y_shapes;
+	double** y_stages;
+	double** y_bases;
+	double** y_steps;
 
-	tchar_t* x_labels;
-	tchar_t* x_colors;
+	tchar_t** y_labels;
+	tchar_t** y_colors;
+	tchar_t** y_shapes;
+
+	tchar_t** x_labels;
+	tchar_t** x_colors;
 }plot_t;
 
-static void _plot_indicator(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_indicator(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -60,19 +64,17 @@ static void _plot_indicator(const if_canvas_t* pif, const plot_t* plt, const mat
 
 	xrect_t xr;
 
-	int i, j, n;
+	int i;
 	float dx, dy;
 	float middy, zerox;
 
 	int y_label_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -92,7 +94,7 @@ static void _plot_indicator(const if_canvas_t* pif, const plot_t* plt, const mat
 	parse_xbrush_from_style(&xb, plt->style);
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 1;
 
@@ -112,17 +114,13 @@ static void _plot_indicator(const if_canvas_t* pif, const plot_t* plt, const mat
 	zerox = pbox->fx;
 
 	//bar
-	token = plt->y_labels;
-	color = plt->y_colors;
-
 	for (i = 0; i < y_label_count; i++)
 	{
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -132,57 +130,52 @@ static void _plot_indicator(const if_canvas_t* pif, const plot_t* plt, const mat
 			lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 		}
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox + i * dx;
 		xr.fw = dx;
 		xr.fy = middy - dy;
 		xr.fh = dy;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 
 		xr.fx = zerox + i * dx + 1.0f;
 		xr.fw = dx - 2.0f;
 		xr.fy = middy;
 		xr.fh = dy;
-		(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
 	}
 }
 
-static void _plot_thermometer(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_thermometer(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt1, pt2;
 	xrect_t xr;
 	xpoint_t pa[15] = { 0 };
 	tchar_t sa[10] = { 0 };
 
-	int i, j, n;
+	int i, j;
 	float dd, dx, dy;
 	float zeroy, zerox, middx, middy;
 
-	double* y_step;
-	int y_step_count;
-	double* y_base;
 	int y_base_count;
-
-	int x_label_count;
 	int y_label_count;
 	int y_ruler_count;
 
-	const tchar_t* token;
+	int x_label_count;
+
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* shape;
-	const tchar_t* key;
-	int klen, slen;
+
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
+	double y_base, y_step;
 	double dbl;
 
 	default_xface(&xa);
@@ -205,39 +198,15 @@ static void _plot_thermometer(const if_canvas_t* pif, const plot_t* plt, const m
 	parse_xbrush_from_style(&xb, plt->style);
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
-	if (!y_step_count)
-		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
-
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 1;
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 
 	//ruler count
 	y_ruler_count = (plt->ruler) ? plt->ruler : 10;
@@ -261,55 +230,50 @@ static void _plot_thermometer(const if_canvas_t* pif, const plot_t* plt, const m
 	zerox = pbox->fx;
 
 	//vert ruler and labels
-	token = plt->y_labels;
-
 	for (i = 0; i < y_label_count; i++)
 	{
 		//y labels
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox + i * dx;
 		xr.fw = dx;
 		xr.fy = zeroy + dx - dd / 2;
 		xr.fh = dy;
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, label, -1);
 
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i);
+
 		for (j = 1; j < y_ruler_count; j++)
 		{
 			pt1.fx = zerox + i * dx + dd - 2.5f;
 			pt1.fy = zeroy - j * dy;
 			pt2.fx = zerox + i * dx + dd - 0.5f;
 			pt2.fy = zeroy - j * dy;
-			(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+			(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
-			dbl += y_step[i];
+			dbl += get_numeric(plt->y_steps, i);
 
 			xr.fx = zerox + i * dx + 2 * dd + 0.5f;
 			xr.fw = dd;
 			xr.fy = zeroy - j * dy - dy / 2;
 			xr.fh = dy;
 			xsprintf(numstr, _T("%.2f"), dbl);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 		}
 	}
 
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 	xscpy(xp.color, xb.color);
-
-	color = plt->y_colors;
 	default_xpen(&xp_dot);
 	default_xbrush(&xb_dot);
 
 	for (i = 0; i < y_label_count; i++)
 	{
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -349,15 +313,18 @@ static void _plot_thermometer(const if_canvas_t* pif, const plot_t* plt, const m
 
 		sa[5] = _T('Z');
 
-		(*pif->pf_draw_path)(pif->canvas, &xp, &xb, sa, pa, 9);
+		(*pif->pf_draw_path)(pif->ctx, &xp, &xb, sa, pa, 9);
 
 		if (i < pmt->cols && pmt->rows)
 		{
 			middx = zerox + i * dx + dx / 2;
 
+			y_step = get_numeric(plt->y_steps, i);
+			y_base = get_numeric(plt->y_bases, i);
 			dbl = matrix_get_value(pmt, 0, i);
-			if (y_step[i] > 0)
-				middy = zeroy - (dbl - y_base[i]) / (y_step[i]) * dy;
+
+			if (!is_zero_double(y_step))
+				middy = zeroy - (float)((dbl - y_base) / (y_step) * dy);
 			else
 				middy = 0;
 
@@ -391,43 +358,37 @@ static void _plot_thermometer(const if_canvas_t* pif, const plot_t* plt, const m
 
 			sa[5] = _T('Z');
 
-			(*pif->pf_draw_path)(pif->canvas, &xp_dot, &xb_dot, sa, pa, 9);
+			(*pif->pf_draw_path)(pif->ctx, &xp_dot, &xb_dot, sa, pa, 9);
 		}
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
-static void _plot_bargram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt, pk;
 	xrect_t xr;
 	xsize_t xs;
 
-	int i, j, n;
+	int i;
 	float dd, dx, dy, dr;
 	float zeroy, zerox;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen,slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl, dbr;
+	double y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -447,33 +408,13 @@ static void _plot_bargram(const if_canvas_t* pif, const plot_t* plt, const matri
 	parse_xbrush_from_style(&xb, plt->style);
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
 	//ruler height
 	dy = pbox->fh / y_base_count;
@@ -508,17 +449,13 @@ static void _plot_bargram(const if_canvas_t* pif, const plot_t* plt, const matri
 	zerox = pbox->fx;
 
 	//bar
-	token = plt->y_labels;
-	color = plt->y_colors;
-
 	for (i = 0; i < pmt->rows; i++)
 	{
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -528,8 +465,7 @@ static void _plot_bargram(const if_canvas_t* pif, const plot_t* plt, const matri
 			lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 		}
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->x_labels, i);
 
 		xr.fx = zerox + dr + dd;
 		xr.fw = dx - 2 * dd - 2 * dr;
@@ -538,88 +474,85 @@ static void _plot_bargram(const if_canvas_t* pif, const plot_t* plt, const matri
 
 		pk.fx = xr.fx;
 		pk.fy = xr.fy - dd;
-		(*pif->pf_text_out)(pif->canvas, &xf, &pk, key, klen);
+		(*pif->pf_text_out)(pif->ctx, &xf, &pk, label, -1);
 
 		pt.fx = xr.fx;
 		pt.fy = xr.fy + dd;
 		xs.fw = dd;
 		xs.fh = dd;
-		(*pif->pf_draw_pie)(pif->canvas, &xp, &xb, &pt, &xs, XPI / 2, 3 * XPI / 2);
+		(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, &pt, &xs, XPI / 2, 3 * XPI / 2);
 
-		(*pif->pf_draw_rect)(pif->canvas, &xp, &xb, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xr);
 
 		pt.fx = xr.fx + xr.fw;
 		pt.fy = xr.fy + dd;
 		xs.fw = dd;
 		xs.fh = dd;
-		(*pif->pf_draw_pie)(pif->canvas, &xp, &xb, &pt, &xs, 3 * XPI / 2, 5 * XPI / 2);
+		(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, &pt, &xs, 3 * XPI / 2, 5 * XPI / 2);
 
+		y_base = get_numeric(plt->y_bases, i);
+		y_step = get_numeric(plt->y_steps, i);
 		dbl = matrix_get_value(pmt, i, 0);
-		if (y_step[i] == 0)
+
+		if (is_zero_double(y_step))
 			dbr = 0;
 		else
-			dbr = ((dbl - y_base[i]) / y_step[i]);
+			dbr = ((dbl - y_base) / y_step);
 
 		ft_expand_rect(&xr, -dr, -dr);
-		xr.fw *= dbr;
+		xr.fw = (float)(xr.fw * dbr);
 
 		pt.fx = xr.fx;
 		pt.fy = xr.fy + dd - dr;
 		xs.fw = dd - dr;
 		xs.fh = dd - dr;
-		(*pif->pf_draw_pie)(pif->canvas, &xp_dot, &xb_dot, &pt, &xs, XPI / 2, 3 * XPI / 2);
+		(*pif->pf_draw_pie)(pif->ctx, &xp_dot, &xb_dot, &pt, &xs, XPI / 2, 3 * XPI / 2);
 
-		(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
 
 		pt.fx = xr.fx + xr.fw;
 		pt.fy = xr.fy + dd - dr;
 		xs.fw = dd - dr;
 		xs.fh = dd - dr;
-		(*pif->pf_draw_pie)(pif->canvas, &xp_dot, &xb_dot, &pt, &xs, 3 * XPI / 2, 5 * XPI / 2);
+		(*pif->pf_draw_pie)(pif->ctx, &xp_dot, &xb_dot, &pt, &xs, 3 * XPI / 2, 5 * XPI / 2);
 
 		xsprintf(numstr, _T("%.2f%"), dbr * 100);
 		xr.fx += (xr.fw + dd);
 		xr.fw = dx - xr.fw;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
-static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_kpigram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt1, pt2;
 	xrect_t xr;
 	xpoint_t pa[15] = { 0 };
 	tchar_t sa[10] = { 0 };
 
-	int i, j, n;
-	float dx, dy, dd;
+	int i;
+	float dx, dy;
 	float datay, zeroy, zerox;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
 
 	int x_label_count;
 	int y_label_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
+	double y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -640,39 +573,19 @@ static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matri
 	parse_xbrush_from_style(&xb, plt->style);
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 3;
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 	if (!x_label_count)
 		x_label_count = 1;
 
@@ -690,28 +603,25 @@ static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matri
 	zerox = pbox->fx + dy;
 
 	//vert ruler and labels
-	token = plt->y_labels;
-	color = plt->y_colors;
 	xscpy(xa_dot.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
+
 	for (i = 0; i<y_base_count; i++)
 	{
 		//y labels
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox - dy;
 		xr.fw = dy;
 		xr.fy = zeroy - (i + 1) * dy;
 		xr.fh = dy;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if(klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if(!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -723,25 +633,22 @@ static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matri
 		pt1.fy = zeroy - (i + 1) * dy;
 		pt2.fx = zerox + x_label_count * dx;
 		pt2.fy = zeroy - (i + 1) * dy;
-		(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pt1, &pt2);
+		(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pt1, &pt2);
 	}
 
 	//horz ruler 
-	token = plt->x_labels;
 	for (i = 1; i <= x_label_count; i++)
 	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-
+		label = get_string_ptr(plt->x_labels, i - 1);
+		
 		xr.fx = zerox + (i - 1) * dx;
 		xr.fw = dx;
 		xr.fy = zeroy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 	}
 
 	//kpi lines
-	token = plt->x_colors;
 	default_xpen(&xp_dot);
 	default_xbrush(&xb_dot);
 	for (i = 0; i < x_label_count; i++)
@@ -749,12 +656,11 @@ static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matri
 		if (i >= pmt->rows)
 			break;
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		if (klen)
+		color = get_string_ptr(plt->x_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -762,8 +668,14 @@ static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matri
 			lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 		}
 
+		y_base = get_numeric(plt->y_bases, i);
+		y_step = get_numeric(plt->y_steps, i);
 		dbl = matrix_get_value(pmt, i, 0);
-		datay = (float)((dbl - y_base[i]) / y_step[i]) * dy;
+
+		if (is_zero_double(y_step))
+			datay = 0;
+		else
+			datay = (float)((dbl - y_base) / y_step) * dy;
 
 		sa[0] = _T('M');
 		pa[0].fx = zerox + i * dx;
@@ -801,51 +713,44 @@ static void _plot_kpigram(const if_canvas_t* pif, const plot_t* plt, const matri
 		pa[10].fx = zerox + (i + 1) * dx;
 		pa[10].fy = zeroy;
 
-		(*pif->pf_draw_path)(pif->canvas, &xp_dot, &xb_dot, sa, pa, 11);
+		(*pif->pf_draw_path)(pif->ctx, &xp_dot, &xb_dot, sa, pa, 11);
 
 		xsprintf(numstr, _T("%f"), dbl);
 		xr.fx = zerox + i * dx;
 		xr.fw = dx;
 		xr.fy = zeroy - datay - dy / 2;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
-static void _plot_taskgram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_taskgram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt1, pt2;
 	xrect_t xr;
 	xpoint_t pa[15] = { 0 };
 	tchar_t sa[10] = { 0 };
 
-	int i, j, n;
-	float dx, dy, dd;
-	float datay, zeroy, zerox;
+	int i, j;
+	float dx, dy;
+	float zeroy, zerox;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
 
 	int x_label_count;
 	int y_label_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
 
@@ -868,39 +773,19 @@ static void _plot_taskgram(const if_canvas_t* pif, const plot_t* plt, const matr
 	parse_xbrush_from_style(&xb, plt->style);
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 3;
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 	if (!x_label_count)
 		x_label_count = 1;
 
@@ -918,28 +803,25 @@ static void _plot_taskgram(const if_canvas_t* pif, const plot_t* plt, const matr
 	zerox = pbox->fx + dy;
 
 	//vert ruler and labels
-	token = plt->y_labels;
-	color = plt->y_colors;
 	xscpy(xa_dot.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
+
 	for (i = 0; i<y_base_count; i++)
 	{
 		//y labels
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox - dy;
 		xr.fw = dy;
 		xr.fy = zeroy - (i + 1) * dy;
 		xr.fh = dy;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -951,31 +833,27 @@ static void _plot_taskgram(const if_canvas_t* pif, const plot_t* plt, const matr
 		pt1.fy = zeroy - (i + 1) * dy;
 		pt2.fx = zerox + x_label_count * dx;
 		pt2.fy = zeroy - (i + 1) * dy;
-		//(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pt1, &pt2);
+		//(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pt1, &pt2);
 	}
 
 	//task rect
-	token = plt->x_labels;
-	color = plt->x_colors;
 	default_xpen(&xp_dot);
 	default_xbrush(&xb_dot);
 	for (i = 0; i < x_label_count; i++)
 	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->x_labels, i);
 
 		xr.fx = zerox + i * dx;
 		xr.fw = dx;
 		xr.fy = zeroy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if (klen)
+		color = get_string_ptr(plt->x_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -999,52 +877,46 @@ static void _plot_taskgram(const if_canvas_t* pif, const plot_t* plt, const matr
 
 			if ((int)dbl)
 			{
-				(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
+				(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
 			}
 			else
 			{
-				(*pif->pf_draw_rect)(pif->canvas, &xp_dot, NULL, &xr);
+				(*pif->pf_draw_rect)(pif->ctx, &xp_dot, NULL, &xr);
 			}
 		}
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
-static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt1, pt2;
 	xrect_t xr;
 
-	int i, j, n;
+	int i, j;
 	float dd, dx, cx, dy, fr;
 	float middy, zeroy, zerox;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
-
-	int x_label_count;
-	int x_ruler_count;
 	int y_label_count;
 	int y_ruler_count;
 
-	const tchar_t* token;
+	int x_label_count;
+	int x_ruler_count;
+
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
+	double y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -1066,39 +938,19 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 1;
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 	if (!x_label_count)
 		x_label_count = 5;
 
@@ -1132,24 +984,21 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 	pt1.fy = zeroy - y_ruler_count * dy;
 	pt2.fx = zerox;
 	pt2.fy = zeroy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//y ruler and labels
-	token = plt->y_labels;
-
 	for (i = 0; i<y_base_count; i++)
 	{
 		//y labels
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox - (i + 1) * dd;
 		xr.fw = dd;
 		xr.fy = zeroy - y_ruler_count * dy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 		
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i);
 		for (j = y_ruler_count / 2 + 1; j < y_ruler_count; j++)
 		{
 			if (!i)
@@ -1158,10 +1007,10 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 				pt1.fy = zeroy - j * dy;
 				pt2.fx = zerox;
 				pt2.fy = zeroy - j * dy;
-				(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 			}
 
-			dbl += y_step[i];
+			dbl += get_numeric(plt->y_steps, i);
 
 			xr.fx = zerox - (i + 1) * dd;
 			xr.fw = dd;
@@ -1169,10 +1018,10 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 			xr.fh = dd / 2;
 			xsprintf(numstr, _T("%.2f"), dbl);
 
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 		}
 
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i);
 		for (j = y_ruler_count / 2; j > 0; j--)
 		{
 			if (!i)
@@ -1181,7 +1030,7 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 				pt1.fy = zeroy - j * dy;
 				pt2.fx = zerox;
 				pt2.fy = zeroy - j * dy;
-				(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 			}
 
 			xr.fx = zerox - (i + 1) * dd;
@@ -1189,24 +1038,21 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 			xr.fy = zeroy - j * dy - dd / 2;
 			xr.fh = dd / 2;
 			xsprintf(numstr, _T("%.2f"), dbl);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 
-			dbl -= y_step[i];
+			dbl -= get_numeric(plt->y_steps, i);
 		}
 	}
 
 	//vert line color
-	token = plt->y_colors;
-
 	for (i = 0; i < y_base_count; i++)
 	{
 		//y colors
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 
 		xr.fx = zerox - (i + 1) * dd + 0.5f;
@@ -1214,7 +1060,7 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 		xr.fy = zeroy - dy;
 		xr.fh = dy;
 		ft_center_rect(&xr, 3, 3);
-		(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
 	}
 
 	//x axis
@@ -1222,17 +1068,16 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 	pt1.fy = zeroy;
 	pt2.fx = zerox + x_ruler_count * dx;
 	pt2.fy = zeroy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//x middle axis
 	pt1.fx = zerox;
 	pt1.fy = middy;
 	pt2.fx = zerox + x_ruler_count * dx;
 	pt2.fy = middy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//x ruler and labels
-	token = plt->x_labels;
 	for (i = 1; i <= x_ruler_count; i++)
 	{
 		if (i < x_ruler_count)
@@ -1241,37 +1086,38 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 			pt1.fy = zeroy;
 			pt2.fx = zerox + i * dx;
 			pt2.fy = zeroy + 2.0f;
-			(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+			(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 		}
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->x_labels, i - 1);
 
 		xr.fx = zerox + (i - 1) * dx;
 		xr.fw = dx;
 		xr.fy = zeroy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa, &xr, label, -1);
 	}
 
 	//histo rect
 	for (i = 0; i < pmt->rows; i++)
 	{
-		color = plt->y_colors;
-
 		for (j = 0; j < pmt->cols; j++)
 		{
-			slen = parse_string_token(color, -1, _T(','), &key, &klen);
-			color += slen;
-			if (klen)
+			color = get_string_ptr(plt->y_colors, j);
+			if (!is_null(color))
 			{
-				xsncpy(xp_dot.color, key, klen);
-				xsncpy(xb_dot.color, key, klen);
+				xscpy(xp_dot.color, color);
+				xscpy(xb_dot.color, color);
 			}
 
+			y_base = get_numeric(plt->y_bases, j);
+			y_step = get_numeric(plt->y_steps, j);
 			dbl = matrix_get_value(pmt, i, j);
 
-			fr = (dbl - y_base[j]) / (y_step[j]);
+			if (is_zero_double(y_step))
+				fr = 0;
+			else
+				fr = (float)((dbl - y_base) / (y_step));
 
 			xr.fx = zerox + dx * i + cx * j;
 			xr.fw = cx;
@@ -1293,7 +1139,7 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 
 			ft_expand_rect(&xr, -0.5f, 0);
 
-			(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
+			(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
 
 			if (fr >= 0)
 			{
@@ -1307,49 +1153,41 @@ static void _plot_histogram(const if_canvas_t* pif, const plot_t* plt, const mat
 			}
 
 			xsprintf(numstr, _T("%f"), dbl);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa, &xr, numstr, -1);
 		}
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
 
-static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt1, pt2;
 	xrect_t xr;
-	xsize_t xs;
 
-	int i, j, n;
-	float dd, dx, dy, fr;
+	int i, j;
+	float dd, dx, dy;
 	float middy, zeroy, zerox;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
-
-	int x_label_count;
-	int x_ruler_count;
 	int y_label_count;
 	int y_ruler_count;
+	int x_label_count;
+	int x_ruler_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
+	double y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -1371,39 +1209,19 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 1;
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 	if (!x_label_count)
 		x_label_count = 5;
 
@@ -1433,24 +1251,21 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 	pt1.fy = zeroy - y_ruler_count * dy;
 	pt2.fx = zerox;
 	pt2.fy = zeroy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//y ruler and labels
-	token = plt->y_labels;
-
 	for (i = 0; i<y_base_count; i++)
 	{
 		//y labels
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox - (i + 1) * dd;
 		xr.fw = dd;
 		xr.fy = zeroy - y_ruler_count * dy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i); 
 		for (j = y_ruler_count / 2 + 1; j < y_ruler_count; j++)
 		{
 			if (!i)
@@ -1459,10 +1274,10 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 				pt1.fy = zeroy - j * dy;
 				pt2.fx = zerox;
 				pt2.fy = zeroy - j * dy;
-				(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 			}
 
-			dbl += y_step[i];
+			dbl += get_numeric(plt->y_steps, i);
 
 			xr.fx = zerox - (i + 1) * dd;
 			xr.fw = dd;
@@ -1470,10 +1285,10 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 			xr.fh = dd / 2;
 			xsprintf(numstr, _T("%.2f"), dbl);
 
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 		}
 
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i);
 		for (j = y_ruler_count / 2; j > 0; j--)
 		{
 			if (!i)
@@ -1482,7 +1297,7 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 				pt1.fy = zeroy - j * dy;
 				pt2.fx = zerox;
 				pt2.fy = zeroy - j * dy;
-				(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 			}
 
 			xr.fx = zerox - (i + 1) * dd;
@@ -1490,25 +1305,21 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 			xr.fy = zeroy - j * dy - dd / 2;
 			xr.fh = dd / 2;
 			xsprintf(numstr, _T("%.2f"), dbl);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 
-			dbl -= y_step[i];
+			dbl -= get_numeric(plt->y_steps, i);
 		}
 	}
 
 	//vert line color
-	token = plt->y_colors;
-
 	for (i = 0; i < y_base_count; i++)
 	{
 		//y colors
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 
 		xr.fx = zerox - (i + 1) * dd + 0.5f;
@@ -1516,7 +1327,7 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 		xr.fy = zeroy - dy;
 		xr.fh = dy;
 		ft_center_rect(&xr, 3, 3);
-		(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
+		(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
 	}
 
 	//x axis
@@ -1524,17 +1335,16 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 	pt1.fy = zeroy;
 	pt2.fx = zerox + x_ruler_count * dx;
 	pt2.fy = zeroy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//x middle axis
 	pt1.fx = zerox;
 	pt1.fy = middy;
 	pt2.fx = zerox + x_ruler_count * dx;
 	pt2.fy = middy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//x ruler and labels
-	token = plt->x_labels;
 	for (i = 1; i <= x_ruler_count; i++)
 	{
 		if (i < x_ruler_count)
@@ -1543,51 +1353,49 @@ static void _plot_scattergram(const if_canvas_t* pif, const plot_t* plt, const m
 			pt1.fy = zeroy;
 			pt2.fx = zerox + i * dx;
 			pt2.fy = zeroy + 2.0f;
-			(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+			(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 		}
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-
+		label = get_string_ptr(plt->x_labels, i - 1);
+	
 		xr.fx = zerox + (i - 1) * dx;
 		xr.fw = dx;
 		xr.fy = zeroy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa, &xr, label, -1);
 	}
 
 	//scatter dot
-	token = plt->y_colors;
-
 	for (i = 0; i < pmt->cols; i++)
 	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xb_dot.color, color);
 		}
 
 		for (j = 0; j < pmt->rows; j++)
 		{
+			y_base = get_numeric(plt->y_bases, i);
+			y_step = get_numeric(plt->y_steps, i);
 			dbl = matrix_get_value(pmt, j, i);
 
 			pt1.fx = zerox + (j + 1) * dx - dx / 2;
-			pt1.fy = middy - (float)((dbl - y_base[i]) / y_step[i]) * dy;
+			if (is_zero_double(y_step))
+				pt1.fy = 0;
+			else
+				pt1.fy = middy - (float)((dbl - y_base) / y_step) * dy;
 
 			xr.fx = pt1.fx - 1.0f;
 			xr.fy = pt1.fy - 1.0f;
 			xr.fw = 2.0f;
 			xr.fh = 2.0f;
-			(*pif->pf_draw_ellipse)(pif->canvas, NULL, &xb_dot, &xr);
+			(*pif->pf_draw_ellipse)(pif->ctx, NULL, &xb_dot, &xr);
 		}
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
-static void _plot_pantogram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -1598,17 +1406,15 @@ static void _plot_pantogram(const if_canvas_t* pif, const plot_t* plt, const mat
 	xrect_t xr;
 	xsize_t xs;
 
-	int i, j, n;
+	int i, j;
 	float dd, rr, fr;
-	float middy, middx, zerox, zeroy;
+	float middy, middx;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double nxtd, pred;
 	double dbl;
@@ -1657,16 +1463,12 @@ static void _plot_pantogram(const if_canvas_t* pif, const plot_t* plt, const mat
 	nxtd = 0.0;
 	for (i = 0; i < pmt->rows; i++)
 	{
-		token = plt->x_labels;
-		color = plt->x_colors;
-
 		for (j = 0; j < pmt->cols; j++)
 		{
-			slen = parse_string_token(color, -1, _T(','), &key, &klen);
-			color += slen;
-
-			if (klen)
-				xsncpy(xb_dot.color, key, klen);
+			color = get_string_ptr(plt->x_colors, j);
+			
+			if (!is_null(color))
+				xscpy(xb_dot.color, color);
 			else
 				lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 
@@ -1684,13 +1486,13 @@ static void _plot_pantogram(const if_canvas_t* pif, const plot_t* plt, const mat
 			{
 				xs.fw = rr - 2 * dd;
 				xs.fh = rr - 2 * dd;
-				(*pif->pf_draw_pie)(pif->canvas, &xp_dot, &xb_dot, &pt, &xs, pred, nxtd);
+				(*pif->pf_draw_pie)(pif->ctx, &xp_dot, &xb_dot, &pt, &xs, pred, nxtd);
 
 				xs.fw = rr - dd;
 				xs.fh = dd;
-				(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, (pred + nxtd) / 2, (pred + nxtd) / 2, pa, 4);
+				(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, (pred + nxtd) / 2, (pred + nxtd) / 2, pa, 4);
 
-				(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pa[0], &pa[2]);
+				(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pa[0], &pa[2]);
 
 				if (pa[0].fx > pt.fx)
 				{
@@ -1715,62 +1517,58 @@ static void _plot_pantogram(const if_canvas_t* pif, const plot_t* plt, const mat
 					pa[3].fy = pa[0].fy;
 				}
 
-				(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pa[0], &pa[1]);
+				(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pa[0], &pa[1]);
 
 				xr.fx = pa[2].fx;
 				xr.fw = 2 * dd;
 				xr.fy = pa[2].fy;
 				xr.fh = dd;
 				xsprintf(numstr, _T("%.2f%"), fr * 100);
-				(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+				(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
+
+				label = get_string_ptr(plt->x_labels, j);
 
 				xr.fx = pa[3].fx;
 				xr.fw = 2 * dd;
 				xr.fy = pa[3].fy;
 				xr.fh = dd;
-				token = parse_string_token(token, -1, _T(','), &key, &klen);
-				(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+				(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 			}
 		}
 	}
 }
 
-static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk, pt1, pt2;
+	xpoint_t pt1, pt2;
 	xrect_t xr;
 
 	int i, j, n;
-	float dd, dx, dy, fr;
+	float dd, dx, dy;
 	float miny, maxy, middy, zeroy, zerox;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
-	double* y_stage;
 	int y_stage_count;
-
-	int x_label_count;
-	int x_ruler_count;
 	int y_label_count;
 	int y_ruler_count;
+	int x_label_count;
+	int x_ruler_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
 	const tchar_t* shape;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
+	double y_stage, y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -1792,51 +1590,21 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 	parse_xbrush_from_style(&xb, plt->style);
 	default_xbrush(&xb_dot);
 
-	y_stage_count = parse_string_token_count(plt->y_stages, -1, _T(','));
+	y_stage_count = get_numeric_array_size(plt->y_stages);
 	if (!y_stage_count)
 		y_stage_count = 1;
-	y_stage = (double*)xmem_alloc(y_stage_count * sizeof(double));
-	i = 0;
-	token = plt->y_stages;
-	while (token && i < y_stage_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_stage[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 
 	//ruler count
 	y_ruler_count = (plt->ruler) ? plt->ruler : 10;
@@ -1868,24 +1636,21 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 	pt1.fy = zeroy - y_ruler_count * dy;
 	pt2.fx = zerox;
 	pt2.fy = zeroy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//vert ruler and labels
-	token = plt->y_labels;
-
 	for (i = 0; i<y_base_count; i++)
 	{
 		//y labels
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		xr.fx = zerox - (i + 1) * dd;
 		xr.fw = dd;
 		xr.fy = zeroy - y_ruler_count * dy - dy / 2;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i);
 		for (j = y_ruler_count / 2 + 1; j < y_ruler_count; j++)
 		{
 			if (!i)
@@ -1894,20 +1659,20 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 				pt1.fy = zeroy - j * dy;
 				pt2.fx = zerox;
 				pt2.fy = zeroy - j * dy;
-				(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 			}
 
-			dbl += y_step[i];
+			dbl += get_numeric(plt->y_steps, i);
 
 			xr.fx = zerox - (i + 1) * dd;
 			xr.fw = dd;
 			xr.fy = zeroy - j * dy -dd / 2;
 			xr.fh = dd / 2;
 			xsprintf(numstr, _T("%.2f"), dbl);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 		}
 
-		dbl = y_base[i];
+		dbl = get_numeric(plt->y_bases, i);
 		for (j = y_ruler_count / 2; j > 0; j--)
 		{
 			if (!i)
@@ -1916,7 +1681,7 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 				pt1.fy = zeroy - j * dy;
 				pt2.fx = zerox;
 				pt2.fy = zeroy - j * dy;
-				(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 			}
 
 			xr.fx = zerox - (i + 1) * dd;
@@ -1924,27 +1689,23 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 			xr.fy = zeroy - j * dy - dd / 2;
 			xr.fh = dd / 2;
 			xsprintf(numstr, _T("%.2f"), dbl);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 
-			dbl -= y_step[i];
+			dbl -= get_numeric(plt->y_steps, i);
 		}
 	}
 
 	//vert line color
-	shape = plt->y_shapes;
-	token = plt->y_colors;
 	default_xpen(&xp_dot);
 	default_xbrush(&xb_dot);
 	for (i = 0; i < y_base_count; i++)
 	{
 		//y colors
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -1958,23 +1719,24 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 		xr.fh = dy;
 		ft_center_rect(&xr, 2, 2);
 
-		shape = parse_string_token(shape, -1, _T(','), &key, &klen);
-		if (compare_text(key, klen, _T("ellipse"),-1,1) == 0)
-			(*pif->pf_draw_ellipse)(pif->canvas, &xp_dot, &xb_dot, &xr);
-		else if (compare_text(key, klen, _T("rect"), -1, 1) == 0)
-			(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
-		else if (compare_text(key, klen, _T("round"), -1, 1) == 0)
-			(*pif->pf_draw_round)(pif->canvas, &xp_dot, &xb_dot, &xr);
-		else if (compare_text(key, klen, _T("left-triangle"), -1, 1) == 0)
-			(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_LEFT);
-		else if (compare_text(key, klen, _T("right-triangle"), -1, 1) == 0)
-			(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_RIGHT);
-		else if (compare_text(key, klen, _T("top-triangle"), -1, 1) == 0)
-			(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_TOP);
-		else if (compare_text(key, klen, _T("bottom-triangle"), -1, 1) == 0)
-			(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_BOTTOM);
+		shape = get_string_ptr(plt->y_shapes, i);
+
+		if (compare_text(shape, -1, _T("ellipse"),-1,1) == 0)
+			(*pif->pf_draw_ellipse)(pif->ctx, &xp_dot, &xb_dot, &xr);
+		else if (compare_text(shape, -1, _T("rect"), -1, 1) == 0)
+			(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
+		else if (compare_text(shape, -1, _T("round"), -1, 1) == 0)
+			(*pif->pf_draw_round)(pif->ctx, &xp_dot, &xb_dot, &xr);
+		else if (compare_text(shape, -1, _T("left-triangle"), -1, 1) == 0)
+			(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_LEFT);
+		else if (compare_text(shape, -1, _T("right-triangle"), -1, 1) == 0)
+			(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_RIGHT);
+		else if (compare_text(shape, -1, _T("top-triangle"), -1, 1) == 0)
+			(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_TOP);
+		else if (compare_text(shape, -1, _T("bottom-triangle"), -1, 1) == 0)
+			(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_BOTTOM);
 		else
-			(*pif->pf_draw_ellipse)(pif->canvas, &xp_dot, &xb_dot, &xr);
+			(*pif->pf_draw_ellipse)(pif->ctx, &xp_dot, &xb_dot, &xr);
 	}
 
 	//horz axis
@@ -1982,14 +1744,14 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 	pt1.fy = zeroy;
 	pt2.fx = zerox + x_ruler_count * dx;
 	pt2.fy = zeroy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//horz middle axis
 	pt1.fx = zerox;
 	pt1.fy = middy;
 	pt2.fx = zerox + x_ruler_count * dx;
 	pt2.fy = middy;
-	(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 
 	//horz ruler and area
 	miny = zeroy;
@@ -1997,11 +1759,18 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 
 	for (i = 0; i < y_stage_count; i++)
 	{
+		y_stage = get_numeric(plt->y_stages, i);
+		y_base = get_numeric(plt->y_bases, i);
+		y_step = get_numeric(plt->y_steps, i);
+
 		pt1.fx = zerox;
-		pt1.fy = middy - (float)((y_stage[i] - y_base[i]) / y_step[i]) * dy;
+		if (is_zero_double(y_step))
+			pt1.fy = 0;
+		else
+			pt1.fy = middy - (float)((y_stage - y_base) / y_step) * dy;
 		pt2.fx = zerox + x_ruler_count * dx;
 		pt2.fy = pt1.fy;
-		(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pt1, &pt2);
+		(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pt1, &pt2);
 
 		if (miny > pt1.fy)
 			miny = pt1.fy;
@@ -2009,24 +1778,21 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 			maxy = pt1.fy;
 	}
 
-	token = plt->x_labels;
-	color = plt->x_colors;
 	xscpy(xb.opacity, _T("128"));
 	xscpy(xa_dot.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	for (i = 1; i <= x_ruler_count; i++)
 	{
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-
-		if (klen && maxy > miny)
+		color = get_string_ptr(plt->x_colors, i - 1);
+		
+		if (!is_null(color) && maxy > miny)
 		{
-			xsncpy(xb.color, key, klen);
+			xscpy(xb.color, color);
 
 			xr.fx = zerox + (i - 1) * dx;
 			xr.fw = dx;
 			xr.fy = miny;
 			xr.fh = maxy - miny;
-			(*pif->pf_draw_rect)(pif->canvas, NULL, &xb, &xr);
+			(*pif->pf_draw_rect)(pif->ctx, NULL, &xb, &xr);
 		}
 
 		if (i < x_ruler_count)
@@ -2035,15 +1801,16 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 			pt1.fy = zeroy;
 			pt2.fx = zerox + i * dx;
 			pt2.fy = zeroy + 2.0f;
-			(*pif->pf_draw_line)(pif->canvas, &xp, &pt1, &pt2);
+			(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 		}
 
-		token = parse_string_token(token, -1, _T(','), &key, &klen);
+		label = get_string_ptr(plt->x_labels, i - 1);
+
 		xr.fx = zerox + (i - 1) * dx;
 		xr.fw = dx;
 		xr.fy = zeroy;
 		xr.fh = dy / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 	}
 
 	//horz stage axis
@@ -2053,23 +1820,26 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 	default_xpen(&xp_dot);
 	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
 	xscpy(xa_dot.text_align, GDI_ATTR_TEXT_ALIGN_FAR);
-	color = plt->y_colors;
-	token = plt->y_labels;
 	for (i = 0; i < y_stage_count; i++)
 	{
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-
-		if (klen)
-			xsncpy(xp_dot.color, key, klen);
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
+			xscpy(xp_dot.color, color);
 		else
 			xscpy(xp_dot.color, xp.color);
 
+		y_stage = get_numeric(plt->y_stages, i);
+		y_base = get_numeric(plt->y_bases, i);
+		y_step = get_numeric(plt->y_steps, i);
+
 		pt1.fx = zerox;
-		pt1.fy = middy - (float)((y_stage[i] - y_base[i]) / y_step[i]) * dy;
+		if (is_zero_double(y_step))
+			pt1.fy = 0;
+		else
+			pt1.fy = middy - (float)((y_stage - y_base) / y_step) * dy;
 		pt2.fx = zerox + x_ruler_count * dx;
 		pt2.fy = pt1.fy;
-		(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pt1, &pt2);
+		(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pt1, &pt2);
 
 		if (miny > pt1.fy)
 			miny = pt1.fy;
@@ -2080,30 +1850,28 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 		xr.fw = 2 * dx;
 		xr.fy = pt2.fy - dy / 2;
 		xr.fh = dy / 2;
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		if (klen)
+
+		label = get_string_ptr(plt->y_labels, i);
+		if (!is_null(label))
 		{
-			xsncpy(numstr, key, klen);
-			xsprintf((numstr + klen), _T(" %f"), y_stage[i]);
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, numstr, -1);
+			xscpy(numstr, label);
+			n = xslen(numstr);
+			xsprintf((numstr + n), _T(" %f"), y_stage);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, numstr, -1);
 		}
 	}
 
 
 	//trend lines
-	token = plt->y_colors;
-	shape = plt->y_shapes;
 	default_xpen(&xp_dot);
 	default_xbrush(&xb_dot);
 	for (i = 0; i < pmt->cols; i++)
 	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		if (klen)
+		color = get_string_ptr(plt->y_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
-			xsncpy(xb_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
+			xscpy(xb_dot.color, color);
 		}
 		else
 		{
@@ -2111,8 +1879,8 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 			lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 		}
 
-		slen = parse_string_token(shape, -1, _T(','), &key, &klen);
-		token += slen;
+		shape = get_string_ptr(plt->y_shapes, i);
+		
 		for (j = 0; j < pmt->rows; j++)
 		{
 			if (j)
@@ -2121,14 +1889,19 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 				pt2.fy = pt1.fy;
 			}
 
+			y_base = get_numeric(plt->y_bases, i);
+			y_step = get_numeric(plt->y_steps, i);
 			dbl = matrix_get_value(pmt, j, i);
 
 			pt1.fx = zerox + (j + 1) * dx - dx / 2;
-			pt1.fy = middy - (float)((dbl - y_base[i]) / y_step[i]) * dy;
+			if (is_zero_double(y_step))
+				pt1.fy = 0;	
+			else
+				pt1.fy = middy - (float)((dbl - y_base) / y_step) * dy;
 
 			if (j)
 			{
-				(*pif->pf_draw_line)(pif->canvas, &xp_dot, &pt1, &pt2);
+				(*pif->pf_draw_line)(pif->ctx, &xp_dot, &pt1, &pt2);
 			}
 
 			xr.fx = pt1.fx - 1.0f;
@@ -2136,31 +1909,27 @@ static void _plot_trendgram(const if_canvas_t* pif, const plot_t* plt, const mat
 			xr.fw = 2.0f;
 			xr.fh = 2.0f;
 
-			if (compare_text(key, klen, _T("ellipse"), -1, 1) == 0)
-				(*pif->pf_draw_ellipse)(pif->canvas, &xp_dot, &xb_dot, &xr);
-			else if (compare_text(key, klen, _T("rect"), -1, 1) == 0)
-				(*pif->pf_draw_rect)(pif->canvas, &xp_dot, &xb_dot, &xr);
-			else if (compare_text(key, klen, _T("round"), -1, 1) == 0)
-				(*pif->pf_draw_round)(pif->canvas, &xp_dot, &xb_dot, &xr);
-			else if (compare_text(key, klen, _T("left-triangle"), -1, 1) == 0)
-				(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_LEFT);
-			else if (compare_text(key, klen, _T("right-triangle"), -1, 1) == 0)
-				(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_RIGHT);
-			else if (compare_text(key, klen, _T("top-triangle"), -1, 1) == 0)
-				(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_TOP);
-			else if (compare_text(key, klen, _T("bottom-triangle"), -1, 1) == 0)
-				(*pif->pf_draw_triangle)(pif->canvas, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_BOTTOM);
+			if (compare_text(shape, -1, _T("ellipse"), -1, 1) == 0)
+				(*pif->pf_draw_ellipse)(pif->ctx, &xp_dot, &xb_dot, &xr);
+			else if (compare_text(shape, -1, _T("rect"), -1, 1) == 0)
+				(*pif->pf_draw_rect)(pif->ctx, &xp_dot, &xb_dot, &xr);
+			else if (compare_text(shape, -1, _T("round"), -1, 1) == 0)
+				(*pif->pf_draw_round)(pif->ctx, &xp_dot, &xb_dot, &xr);
+			else if (compare_text(shape, -1, _T("left-triangle"), -1, 1) == 0)
+				(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_LEFT);
+			else if (compare_text(shape, -1, _T("right-triangle"), -1, 1) == 0)
+				(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_RIGHT);
+			else if (compare_text(shape, -1, _T("top-triangle"), -1, 1) == 0)
+				(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_TOP);
+			else if (compare_text(shape, -1, _T("bottom-triangle"), -1, 1) == 0)
+				(*pif->pf_draw_triangle)(pif->ctx, &xp_dot, &xb_dot, &xr, ATTR_ORITATION_BOTTOM);
 			else
-				(*pif->pf_draw_ellipse)(pif->canvas, &xp_dot, &xb_dot, &xr);
+				(*pif->pf_draw_ellipse)(pif->ctx, &xp_dot, &xb_dot, &xr);
 		}
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
-	xmem_free(y_stage);
 }
 
-static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -2172,27 +1941,24 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 	xrect_t xr;
 	xspan_t xn;
 
-	int i, j, n;
+	int i, j;
 	float rr, dd, dx, dy, fr;
 	float middx, middy;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
 	int y_ruler_count;
 	int y_label_count;
 	int x_label_count;
 
-	const tchar_t* token;
+	const tchar_t* label;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
+	double y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -2214,39 +1980,19 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 5;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 5;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 5;
 
-	x_label_count = parse_string_token_count(plt->x_labels, -1, _T(','));
+	x_label_count = get_string_array_size(plt->x_labels);
 	
 	//ruler count
 	y_ruler_count = (plt->ruler) ? plt->ruler : 5;
@@ -2261,33 +2007,29 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 		dd = 2.0f;
 
 	//x labels
-	token = plt->x_labels;
-	color = plt->x_colors;
 	for (i = 0; i < x_label_count; i++)
 	{
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-		if (klen)
+		color = get_string_ptr(plt->x_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
 		}
 		else
 		{
 			lighten_xpen(&xp_dot, DEF_SOFT_DARKEN);
 		}
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-
+		label = get_string_ptr(plt->x_labels, i);
+	
 		xr.fx = middx - dd * (y_ruler_count + 1);
 		xr.fy = middy - dd * (y_ruler_count + 1) + (i + 1) * (dd / 2);
 		pk.fx = xr.fx + dd / 2;
 		pk.fy = xr.fy;
-		(*pif->pf_draw_line)(pif->canvas, &xp_dot, RECTPOINT(&xr), &pk);
+		(*pif->pf_draw_line)(pif->ctx, &xp_dot, RECTPOINT(&xr), &pk);
 
 		xr.fx += (dd / 2 + 0.5f);
 		xr.fy -= dd / 2;
-		(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa_dot, &xr, key, klen);
+		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa_dot, &xr, label, -1);
 		xr.fx -= (dd / 2 + 0.5f);
 		xr.fy += dd / 2;
 	}
@@ -2304,22 +2046,20 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 		lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 
 		xn.fr = dd * i;
-		(*pif->pf_draw_equalgon)(pif->canvas, &xp_dot, &xb_dot, &pt, &xn, y_label_count);
+		(*pif->pf_draw_equalgon)(pif->ctx, &xp_dot, &xb_dot, &pt, &xn, y_label_count);
 	}
 
 	//vectex labels
 	xn.fr = dd * y_ruler_count;
 	pa = (xpoint_t*)xmem_alloc(sizeof(xpoint_t)* (y_label_count + 1));
-	(*pif->pf_calc_equalgon)(pif->canvas, &pt, &xn, y_label_count, pa);
+	(*pif->pf_calc_equalgon)(pif->ctx, &pt, &xn, y_label_count, pa);
 
-	token = plt->y_labels;
 
 	for (i = 0; i < y_label_count; i++)
 	{
-		(*pif->pf_draw_line)(pif->canvas, &xp, &pt, &(pa[i]));
+		(*pif->pf_draw_line)(pif->ctx, &xp, &pt, &(pa[i]));
 
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
+		label = get_string_ptr(plt->y_labels, i);
 
 		if (pa[i].fx >= pt.fx && pa[i].fy <= pt.fy)
 		{
@@ -2342,7 +2082,7 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 			pk.fy = pa[i].fy - 5.0f;
 		}
 
-		(*pif->pf_text_out)(pif->canvas, &xf_dot, &pk, key, klen);
+		(*pif->pf_text_out)(pif->ctx, &xf_dot, &pk, label, -1);
 
 		for (j = 1; j <= y_ruler_count; j++)
 		{
@@ -2352,32 +2092,36 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 			pk.fx = pt.fx + dx;
 			pk.fy = pt.fy + dy;
 
+			y_base = get_numeric(plt->y_bases, i);
+			y_step = get_numeric(plt->y_steps, i);
+
 			if (plt->ruler || j == y_ruler_count)
 			{
-				xsprintf(numstr, _T("%f"), y_base[i] + y_step[i] * j);
-				(*pif->pf_text_out)(pif->canvas, &xf_dot, &pk, numstr, -1);
+				xsprintf(numstr, _T("%f"), y_base + y_step * j);
+				(*pif->pf_text_out)(pif->ctx, &xf_dot, &pk, numstr, -1);
 			}
 		}
 	}
 
 	//radar line
-	color = plt->x_colors;
 	xmem_copy((void*)&xp_dot, (void*)&xp, sizeof(xpen_t));
 	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
 	for (i = 0; i < pmt->rows; i++)
 	{
 		xn.fr = dd * y_ruler_count;
-		(*pif->pf_calc_equalgon)(pif->canvas, &pt, &xn, y_label_count, pa);
+		(*pif->pf_calc_equalgon)(pif->ctx, &pt, &xn, y_label_count, pa);
 
 		for (j = 0; j < pmt->cols; j++)
 		{
+			y_base = get_numeric(plt->y_bases, j);
+			y_step = get_numeric(plt->y_steps, j);
 			dbl = matrix_get_value(pmt, i, j);
 
-			if (y_step[j] != 0.0)
-				fr = (float)((dbl - y_base[j]) / (y_step[j] * y_ruler_count));
-			else
+			if (is_zero_double(y_step))
 				fr = 0;
-
+			else
+				fr = (float)((dbl - y_base) / (y_step * y_ruler_count));
+			
 			if (fr < 0)
 				fr = 0;
 
@@ -2391,59 +2135,51 @@ static void _plot_radargram(const if_canvas_t* pif, const plot_t* plt, const mat
 		pa[j].fx = pa[0].fx;
 		pa[j].fy = pa[0].fy;
 
-		slen = parse_string_token(color, -1, _T(','), &key, &klen);
-		color += slen;
-
-		if (klen)
+		color = get_string_ptr(plt->x_colors, i);
+		if (!is_null(color))
 		{
-			xsncpy(xp_dot.color, key, klen);
+			xscpy(xp_dot.color, color);
 		}
 		else
 		{
 			lighten_xpen(&xp_dot, DEF_SOFT_DARKEN);
 		}
 
-		(*pif->pf_draw_polyline)(pif->canvas, &xp_dot, pa, j + 1);
+		(*pif->pf_draw_polyline)(pif->ctx, &xp_dot, pa, j + 1);
 	}
 
-	xmem_free(y_step);
-	xmem_free(y_base);
 	xmem_free(pa);
 }
 
-static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* pmt)
+static void _plot_fuelgram(const if_drawing_t* pif, const plot_t* plt, matrix_t* pmt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
 	xfont_t xf, xf_dot;
 	xface_t xa, xa_dot;
 
-	xpoint_t pt, pk;
+	xpoint_t pt;
 	xpoint_t pa[4];
 	xrect_t xr;
 	xsize_t xs;
 
-	int i, j, k, n;
-	float dd, dr, rr;
+	int i, j, k;
+	float dd, rr;
 	float middx, middy;
-	double fang, tang;
+	double dr, fang, tang;
 
-	double* y_step;
 	int y_step_count;
-	double* y_base;
 	int y_base_count;
 	int y_ruler_count;
 	int y_label_count;
 
-	const tchar_t* token;
 	const tchar_t* color;
-	const tchar_t* key;
-	int klen, slen;
 	tchar_t numstr[NUM_LEN] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	double dbl;
+	double y_base, y_step;
 
 	default_xface(&xa);
 	parse_xface_from_style(&xa, plt->style);
@@ -2464,35 +2200,15 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 
-	y_base_count = parse_string_token_count(plt->y_bases, -1, _T(','));
+	y_base_count = get_numeric_array_size(plt->y_bases);
 	if (!y_base_count)
 		y_base_count = 1;
-	y_base = (double*)xmem_alloc(y_base_count * sizeof(double));
-	i = 0;
-	token = plt->y_bases;
-	while (token && i < y_base_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_base[i] = (klen) ? xsntonum(key, klen) : 0.0f;
-		i++;
-	}
 
-	y_step_count = parse_string_token_count(plt->y_steps, -1, _T(','));
+	y_step_count = get_numeric_array_size(plt->y_steps);
 	if (!y_step_count)
 		y_step_count = 1;
-	y_step = (double*)xmem_alloc(y_step_count * sizeof(double));
-	i = 0;
-	token = plt->y_steps;
-	while (token && i < y_step_count)
-	{
-		slen = parse_string_token(token, -1, _T(','), &key, &klen);
-		token += slen;
-		y_step[i] = (klen) ? xsntonum(key, klen) : 1.0f;
-		i++;
-	}
 
-	y_label_count = parse_string_token_count(plt->y_labels, -1, _T(','));
+	y_label_count = get_string_array_size(plt->y_labels);
 	if (!y_label_count)
 		y_label_count = 1;
 
@@ -2523,7 +2239,7 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 	xs.fw = xr.fw / 2;
 	xs.fh = rr - dd;
 	fang = XPI / 2;
-	(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang, fang, pa, 1);
+	(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang, fang, pa, 1);
 
 	xr.fx = middx - rr;
 	xr.fy = middy - rr;
@@ -2535,21 +2251,19 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 	{
 		ft_expand_rect(&xr, -dd, -dd);
 
-		color = plt->y_colors;
 		for (j = 0; j < 7; j++)
 		{
-			slen = parse_string_token(color, -1, _T(','), &key, &klen);
-			color += slen;
-			if (klen)
+			color = get_string_ptr(plt->y_colors, j);
+			if (!is_null(color))
 			{
-				xsncpy(xb_dot.color, key, klen);
+				xscpy(xb_dot.color, color);
 			}
 
 			xs.fw = xr.fw / 2;
 			xs.fh = dd;
 			fang = 4 * XPI / 5 + j * dr;
 			tang = fang + dr;
-			(*pif->pf_draw_fan)(pif->canvas, &xp, &xb_dot, &pt, &xs, fang, tang);
+			(*pif->pf_draw_fan)(pif->ctx, &xp, &xb_dot, &pt, &xs, fang, tang);
 
 			for (k = 0; k < 5; k++)
 			{
@@ -2557,10 +2271,10 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 				{
 					xs.fw = xr.fw / 2;
 					xs.fh = dd / 2;
-					(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
+					(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
 					xsprintf(xp_dot.size, _T("%d"), (int)(dd / 5));
 
-					(*pif->pf_draw_line)(pif->canvas, &xp_dot, &(pa[1]), &(pa[2]));
+					(*pif->pf_draw_line)(pif->ctx, &xp_dot, &(pa[1]), &(pa[2]));
 				}
 				else
 				{
@@ -2568,49 +2282,54 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 					{
 						xs.fw = xr.fw / 2;
 						xs.fh = 5 * dd / 4;
-						(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
+						(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
 					}
 					else if (j < 2)
 					{
 						xs.fw = xr.fw / 2;
 						xs.fh = 3 * dd / 2;
-						(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
+						(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
 					}
 					else if (j < 4)
 					{
 						xs.fw = xr.fw / 2;
 						xs.fh = 7 * dd / 4;
-						(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
+						(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
 					}
 					else
 					{
 						xs.fw = xr.fw / 2;
 						xs.fh = 2 * dd;
-						(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
+						(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang + k * (dr / 5), fang + (k + 1) * (dr / 5), pa, 4);
 					}
 
 					xsprintf(xp_dot.size, _T("%d"), (int)(dd / 5) + 1);
 				}
 			}
 
-			xsprintf(numstr, _T("%f"), y_base[i] + y_step[i] * (j + 1));
-			(*pif->pf_text_out)(pif->canvas, &xf_dot, &(pa[2]), numstr, -1);
+			y_base = get_numeric(plt->y_bases, i);
+			y_step = get_numeric(plt->y_steps, i);
+
+			xsprintf(numstr, _T("%f"), y_base + y_step * (j + 1));
+			(*pif->pf_text_out)(pif->ctx, &xf_dot, &(pa[2]), numstr, -1);
 		}
 
 		//pointer
 		ft_expand_rect(&xr, -2 * dd, -2 * dd);
 
+		y_base = get_numeric(plt->y_bases, i);
+		y_step = get_numeric(plt->y_steps, i);
 		dbl = matrix_get_value(pmt, i, 0);
 
 		xs.fw = xr.fw / 2;
 		xs.fh = rr;
 
-		if (y_step[i] != 0.0f)
-			fang = 4 * XPI / 5 + ((dbl - y_base[i]) / y_step[i]) * dr;
+		if (!is_zero_double(y_step))
+			fang = 4 * XPI / 5 + ((dbl - y_base) / y_step) * dr;
 		else
 			fang = 4 * XPI / 5;
 
-		(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, fang, fang, pa, 1);
+		(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, fang, fang, pa, 1);
 
 		ft_expand_rect(&xr, -2 * dd, -2 * dd);
 
@@ -2625,7 +2344,7 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 		xs.fw = xr.fw / 2;
 		xs.fh = dd;
 		tang = (fang - XPI / 20);
-		(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, tang, tang, pa + 1, 1);
+		(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, tang, tang, pa + 1, 1);
 
 		pa[2].fx = pt.fx;
 		pa[2].fy = pt.fy;
@@ -2633,15 +2352,15 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 		xs.fw = xr.fw / 2;
 		xs.fh = dd;
 		tang = fang + XPI / 20;
-		(*pif->pf_calc_fan)(pif->canvas, &pt, &xs, tang, tang, pa + 3, 1);
+		(*pif->pf_calc_fan)(pif->ctx, &pt, &xs, tang, tang, pa + 3, 1);
 
-		(*pif->pf_draw_polygon)(pif->canvas, &xp, &xb, pa, 4);
+		(*pif->pf_draw_polygon)(pif->ctx, &xp, &xb, pa, 4);
 
 		xr.fx = middx - 2.0f;
 		xr.fy = middy - 2.0f;
 		xr.fw = 4.0f;
 		xr.fh = 4.0f;
-		(*pif->pf_draw_ellipse)(pif->canvas, &xp, &xb, &xr);
+		(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 
 		xsprintf(numstr, _T("%04d"), (int)dbl);
 
@@ -2651,29 +2370,26 @@ static void _plot_fuelgram(const if_canvas_t* pif, const plot_t* plt, matrix_t* 
 			xr.fw = dd / 2;
 			xr.fy = middy + dd;
 			xr.fh = dd / 2;
-			(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+			(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
-			(*pif->pf_draw_text)(pif->canvas, &xf_dot, &xa, &xr, (numstr + k + 2), 1);
+			(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa, &xr, (numstr + k + 2), 1);
 		}
 	}
-
-	xmem_free(y_step);
-	xmem_free(y_base);
 }
 
-static void _plot_topoggram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_topoggram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 
 }
 
 
-static void _plot_contourgram(const if_canvas_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_contourgram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
 {
 
 }
 /********************************************************************************************************************/
 
-void draw_plot(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_plot(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	plot_t po = { 0 };
 	int rows, cols;
@@ -2690,37 +2406,29 @@ void draw_plot(const if_canvas_t* pif, link_t_ptr ptr)
 
 	po.ruler = get_plot_ruler(ptr);
 
-	len = get_plot_y_stages(ptr, NULL, MAX_LONG);
-	po.y_stages = xsalloc(len + 1);
-	get_plot_y_stages(ptr, po.y_stages, len);
+	po.y_stages = alloc_numeric_array();
+	get_plot_y_stages(ptr, po.y_stages);
 
-	len = get_plot_y_bases(ptr, NULL, MAX_LONG);
-	po.y_bases = xsalloc(len + 1);
-	get_plot_y_bases(ptr, po.y_bases, len);
+	po.y_bases = alloc_numeric_array();
+	get_plot_y_bases(ptr, po.y_bases);
 
-	len = get_plot_y_steps(ptr, NULL, MAX_LONG);
-	po.y_steps = xsalloc(len + 1);
-	get_plot_y_steps(ptr, po.y_steps, len);
+	po.y_steps = alloc_numeric_array();
+	get_plot_y_steps(ptr, po.y_steps);
 
-	len = get_plot_y_labels(ptr, NULL, MAX_LONG);
-	po.y_labels = xsalloc(len + 1);
-	get_plot_y_labels(ptr, po.y_labels, len);
+	po.y_labels = alloc_string_array();
+	get_plot_y_labels(ptr, po.y_labels);
 
-	len = get_plot_y_colors(ptr, NULL, MAX_LONG);
-	po.y_colors = xsalloc(len + 1);
-	get_plot_y_colors(ptr, po.y_colors, len);
+	po.y_colors = alloc_string_array();
+	get_plot_y_colors(ptr, po.y_colors);
 
-	len = get_plot_y_shapes(ptr, NULL, MAX_LONG);
-	po.y_shapes = xsalloc(len + 1);
-	get_plot_y_shapes(ptr, po.y_shapes, len);
+	po.y_shapes = alloc_string_array();
+	get_plot_y_shapes(ptr, po.y_shapes);
 
-	len = get_plot_x_labels(ptr, NULL, MAX_LONG);
-	po.x_labels = xsalloc(len + 1);
-	get_plot_x_labels(ptr, po.x_labels, len);
+	po.x_labels = alloc_string_array();
+	get_plot_x_labels(ptr, po.x_labels);
 
-	len = get_plot_x_colors(ptr, NULL, MAX_LONG);
-	po.x_colors = xsalloc(len + 1);
-	get_plot_x_colors(ptr, po.x_colors, len);
+	po.x_colors = alloc_string_array();
+	get_plot_x_colors(ptr, po.x_colors);
 
 	len = get_plot_matrix_data(ptr, NULL, MAX_LONG);
 	matrix = xsalloc(len + 1);
@@ -2766,12 +2474,14 @@ void draw_plot(const if_canvas_t* pif, link_t_ptr ptr)
 	matrix_free(pmt);
 
 	xsfree(po.style);
-	xsfree(po.x_colors);
-	xsfree(po.x_labels);
-	xsfree(po.y_bases);
-	xsfree(po.y_colors);
-	xsfree(po.y_labels);
-	xsfree(po.y_shapes);
-	xsfree(po.y_stages);
-	xsfree(po.y_steps);
+	free_string_array(po.x_colors);
+	free_string_array(po.x_labels);
+	free_string_array(po.y_colors);
+	free_string_array(po.y_labels);
+	free_string_array(po.y_shapes);
+	free_numeric_array(po.y_stages);
+	free_numeric_array(po.y_bases);
+	free_numeric_array(po.y_steps);
 }
+
+#endif /*XDL_SUPPORT_VIEW*/

@@ -120,7 +120,7 @@ static bool_t _radnet_write_pdu(radnet_t* radnet, byte_t pdu_type, byte_t pdv_ty
 
 	TRY_CATCH;
 
-	stm = stream_alloc(radnet->bio);
+	stm = stream_alloc(radnet->pbo);
 
 	//HDR: {ENCODE:3 PDUTYPE:1 PDUSIZE:4}
 	n = 3;
@@ -300,7 +300,7 @@ static bool_t _radnet_read_pdu(radnet_t* radnet, byte_t* pdu_type, byte_t* pdv_t
 
 	TRY_CATCH;
 
-	stm = stream_alloc(radnet->bio);
+	stm = stream_alloc(radnet->pbo);
 
 	//HDR: {ENCODE:3 PDUTYPE:1 PDUSIZE:4}
 	*pdv_type = 0;
@@ -410,7 +410,9 @@ radnet_t* radnet_scu(xhand_t bio)
 
 	radnet = (radnet_t*)xmem_alloc(sizeof(radnet_t));
 	radnet->type = _RADNET_TYPE_SCU;
-	radnet->bio = bio;
+
+	radnet->pbo = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, radnet->pbo);
 
 	radnet->encode = DEF_MBS;
 	radnet->status = _RADNET_STATUS_ASSOCIATE;
@@ -427,7 +429,9 @@ radnet_t* radnet_scp(xhand_t bio)
 
 	radnet = (radnet_t*)xmem_alloc(sizeof(radnet_t));
 	radnet->type = _RADNET_TYPE_SCP;
-	radnet->bio = bio;
+
+	radnet->pbo = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, radnet->pbo);
 
 	radnet->encode = DEF_MBS;
 	radnet->status = _RADNET_STATUS_ASSOCIATE;
@@ -559,6 +563,9 @@ void radnet_close(radnet_t* radnet)
 	{
 		_radnet_write_pdu(radnet, RADNET_PDU_DISCONN, 0, 0);
 	}
+
+	if (radnet->pbo)
+		xmem_free(radnet->pbo);
 
 	xmem_free(radnet);
 }
@@ -737,7 +744,7 @@ bool_t radnet_set(radnet_t* radnet, variant_t key, object_t val)
 	n = object_encode(val, buf + total, MAX_LONG);
 	total += n;
 
-	stm = stream_alloc(radnet->bio);
+	stm = stream_alloc(radnet->pbo);
 
 	if (!stream_write_bytes(stm, buf, total))
 	{
@@ -796,7 +803,7 @@ bool_t radnet_get(radnet_t* radnet, variant_t key, object_t val)
 	n = variant_encode(&key, buf + total, MAX_LONG);
 	total += n;
 
-	stm = stream_alloc(radnet->bio);
+	stm = stream_alloc(radnet->pbo);
 
 	if (!stream_write_bytes(stm, buf, total))
 	{
@@ -872,7 +879,7 @@ bool_t radnet_del(radnet_t* radnet, variant_t key)
 	n = variant_encode(&key, buf + total, MAX_LONG);
 	total += n;
 
-	stm = stream_alloc(radnet->bio);
+	stm = stream_alloc(radnet->pbo);
 
 	if (!stream_write_bytes(stm, buf, total))
 	{

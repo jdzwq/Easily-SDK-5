@@ -30,9 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "gridsql.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
 #include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_DOC

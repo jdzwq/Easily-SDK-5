@@ -30,13 +30,16 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "gridbio.h"
-#include "xdlimp.h"
+#include "fileinf.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
 #include "xdldoc.h"
+
 #include "xdlinit.h"
 
-#if defined(XDL_SUPPORT_DOC) && defined(XDL_SUPPORT_BIO)
+#if defined(XDL_SUPPORT_BIO)
 
 int format_grid_colset_to_csv(link_t_ptr ptr, tchar_t* buf, int max)
 {
@@ -293,7 +296,7 @@ bool_t save_grid_to_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* psd
 	tchar_t* str;
 	dword_t size;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t* buf = NULL;
 
 	TRY_CATCH;
@@ -379,7 +382,7 @@ bool_t load_grid_from_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* p
 	int encode = 0;
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 

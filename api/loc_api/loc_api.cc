@@ -183,7 +183,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 
 	xdate_t dt_since, dt_time;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t *sz_buf = NULL;
 	byte_t *sz_zip = NULL;
 	dword_t n_zip,n_size = 0;
@@ -445,7 +445,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 
 	xdate_t dt_since, dt_time;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t** pbuf = NULL;
 	byte_t* sz_zip = NULL;
 	dword_t n_zip,n_size = 0;

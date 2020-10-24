@@ -30,10 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "netssh.h"
-#include "xdlimp.h"
+#include "nettcp.h"
+#include "bioinf.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdlnet.h"
 #include "xdlinit.h"
 
 #if defined(XDK_SUPPORT_SOCK)
@@ -349,9 +351,9 @@ static const schar_t* ssh_algo_client[SSH_ALGO_NAMETABLE_SIZE] = {
 typedef struct _ssh_t{
 	xhand_head head;
 
-	int type;
-	xhand_t tcp;
+	if_bio_t* pif;
 
+	int type;
 	//server or client handshake state
 	int state;
 
@@ -631,7 +633,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, num_buf, num_buf);
 	}
 	
-	if (!xtcp_write(pssh->tcp, num_buf, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->bio, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -657,7 +659,8 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 	{
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, num_buf, num_buf);
 	}
-	if (!xtcp_write(pssh->tcp, num_buf, &n))
+
+	if (!(*pssh->pif->pf_write)(pssh->pif->bio, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -683,7 +686,8 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 	{
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, payload, payload);
 	}
-	if (!xtcp_write(pssh->tcp, payload, &n))
+
+	if (!(pssh->pif->pf_write)(pssh->pif->bio, payload, &n))
 	{
 		return C_ERR;
 	}
@@ -712,7 +716,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 	{
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, rng_buf, rng_buf);
 	}
-	if (!xtcp_write(pssh->tcp, rng_buf, &n))
+	if (!(pssh->pif->pf_write)(pssh->pif->bio, rng_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -733,7 +737,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 
 	//(5+n1+n2)~(5+n1+n2+k-1): mac
 	n = hmac_len;
-	if (!xtcp_write(pssh->tcp, mac_buf, &n))
+	if (!(pssh->pif->pf_write)(pssh->pif->bio, mac_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -813,7 +817,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//0~3: packet length
 	n = 4;
-	if (!xtcp_read(pssh->tcp, num_buf, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->bio, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -844,7 +848,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//4: padding length
 	n = 1;
-	if (!xtcp_read(pssh->tcp, num_buf, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->bio, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -874,7 +878,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//5~(5+n1-1): payload
 	n = payload_len;
-	if (!xtcp_read(pssh->tcp, payload, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->bio, payload, &n))
 	{
 		*psize = 0;
 		return C_ERR;
@@ -901,7 +905,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//(5+n1)~(5+n1+n2-1): padding
 	n = padding_len;
-	if (!xtcp_read(pssh->tcp, rng_buf, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->bio, rng_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -942,7 +946,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//(5+n1+n2)~(5+n1+n2+k-1): mac
 	n = hmac_len;
-	if (!xtcp_read(pssh->tcp, rcv_mac, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->bio, rcv_mac, &n))
 	{
 		return C_ERR;
 	}
@@ -1270,13 +1274,13 @@ static int _ssh_send_banner(ssh_t* pssh)
 		buf = pssh->kex_VC;
 	}
 
-	if (!xtcp_write(pssh->tcp, buf, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->bio, buf, &n))
 	{
 		return C_ERR;
 	}
 
 	n = 2;
-	if (!xtcp_write(pssh->tcp, (byte_t*)bs, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->bio, (byte_t*)bs, &n))
 	{
 		return C_ERR;
 	}
@@ -1302,7 +1306,7 @@ static int _ssh_recv_banner(ssh_t* pssh)
 	for (i = 0; i < SSH_BANNER_SIZE; i++)
 	{
 		n = 1;
-		if (!xtcp_read(pssh->tcp, (byte_t*)(buf + i), &n))
+		if (!(*pssh->pif->pf_read)(pssh->pif->bio, (byte_t*)(buf + i), &n))
 			return C_ERR;
 
 		if (buf[i] == '\r')
@@ -3330,8 +3334,10 @@ xhand_t xssh_cli(unsigned short port, const tchar_t* addr)
 	pso = (ssh_t*)xmem_alloc(sizeof(ssh_t));
 	pso->head.tag = _HANDLE_SSH;
 
-	pso->tcp = tcp;
 	pso->type = SSH_TYPE_CLIENT;
+
+	pso->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(tcp, pso->pif);
 
 	_ssh_init(pso);
 
@@ -3350,8 +3356,10 @@ xhand_t xssh_srv(res_file_t so)
 	pso = (ssh_t*)xmem_alloc(sizeof(ssh_t));
 	pso->head.tag = _HANDLE_SSH;
 
-	pso->tcp = tcp;
 	pso->type = SSH_TYPE_SERVER;
+
+	pso->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(tcp, pso->pif);
 
 	_ssh_init(pso);
 
@@ -3366,9 +3374,13 @@ void  xssh_close(xhand_t ssh)
 
 	XDL_ASSERT(pso->type == SSH_TYPE_CLIENT || pso->type == SSH_TYPE_SERVER);
 
-	xtcp_close(pso->tcp);
+	if (pso->pif)
+		xtcp_close(pso->pif->bio);
 
 	_ssh_uninit(pso);
+
+	if (pso->pif)
+		xmem_free(pso->pif);
 
 	xmem_free(pso);
 }
@@ -3379,7 +3391,7 @@ res_file_t xssh_socket(xhand_t ssh)
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
-	return (pso->tcp) ? xtcp_socket(pso->tcp) : INVALID_FILE;
+	return (pso->pif) ? xtcp_socket(pso->pif->bio) : INVALID_FILE;
 }
 
 int xssh_type(xhand_t ssh)

@@ -30,9 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "multitree.h"
-#include "xdlimp.h"
+#include "dblink.h"
+#include "hashtable.h"
+#include "stacktable.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
 
 typedef struct _multi_node_t{
 	link_t lkSibling;		// the sibling node link component also as self link component

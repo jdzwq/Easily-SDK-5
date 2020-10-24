@@ -30,10 +30,19 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "formdoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
+#include "griddoc.h"
+#include "statisdoc.h"
+#include "imagesdoc.h"
+#include "richdoc.h"
+#include "memodoc.h"
+#include "tagdoc.h"
+#include "plotdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
+
 
 #ifdef XDL_SUPPORT_DOC
 

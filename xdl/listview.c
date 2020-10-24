@@ -29,11 +29,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "listview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -269,7 +270,7 @@ int	calc_list_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk, link_t_p
 	return LIST_HINT_NONE;
 }
 
-void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
+void draw_list_child(const if_drawing_t* pif, link_t_ptr ptr, link_t_ptr plk)
 {
 	link_t_ptr nlk;
 	int pi, count;
@@ -287,7 +288,7 @@ void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
 	bool_t b_print;
 	float px, py, pw, ph;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	XDL_ASSERT( pif != NULL);
 
@@ -296,7 +297,7 @@ void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	b_showcheck = get_list_showcheck(ptr);
 
@@ -323,29 +324,29 @@ void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -371,7 +372,7 @@ void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
 	xr_text.fh = ic;
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, _T(". ."), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, _T(". ."), -1);
 
 	count = 1;
 	nlk = get_list_first_child_item(plk);
@@ -444,7 +445,7 @@ void draw_list_child(const if_canvas_t* pif, link_t_ptr ptr, link_t_ptr plk)
 		}
 
 		xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_list_item_title_ptr(nlk), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_list_item_title_ptr(nlk), -1);
 
 		count++;
 		nlk = get_list_next_sibling_item(nlk);

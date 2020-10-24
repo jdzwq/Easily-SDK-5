@@ -54,7 +54,7 @@ extern "C" {
 
 	EXP_API int	calc_menu_hint(const if_measure_t* pif, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-	EXP_API void draw_menu(const if_canvas_t* pcanv, link_t_ptr ptr);
+	EXP_API void draw_menu(const if_drawing_t* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

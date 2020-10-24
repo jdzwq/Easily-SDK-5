@@ -37,140 +37,82 @@ LICENSE.GPL3 for more details.
 #include "xdlstd.h"
 #include "xdlview.h"
 
-#if defined(XDL_SUPPORT_SVG)
+#if defined(XDL_SUPPORT_VIEW)
 
-if_canvas_t* svg_create_canvas_interface(canvas_t canv)
+void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 {
-	if_canvas_t* pic;
-	
-	pic = (if_canvas_t*)xmem_alloc(sizeof(if_canvas_t));
+	pif->ctx = (void*)canv;
 
-	pic->canvas = canv;
+	pif->pf_get_measure = svg_get_measure;
 
-	pic->pf_get_visual_interface = svg_get_visual_interface;
-	pic->pf_get_measure = svg_get_measure;
-	pic->pf_get_canvas_visual = svg_get_canvas_visual;
+	pif->pf_draw_line = svg_draw_line;
+	pif->pf_draw_bezier = svg_draw_bezier;
+	pif->pf_draw_curve = svg_draw_curve;
+	pif->pf_draw_arc = svg_draw_arc;
+	pif->pf_draw_polyline = svg_draw_polyline;
 
-	pic->pf_draw_line = svg_draw_line;
-	pic->pf_draw_bezier = svg_draw_bezier;
-	pic->pf_draw_curve = svg_draw_curve;
-	pic->pf_draw_arc = svg_draw_arc;
-	pic->pf_draw_polyline = svg_draw_polyline;
+	pif->pf_calc_fan = svg_calc_fan;
+	pif->pf_draw_fan = svg_draw_fan;
+	pif->pf_draw_pie = svg_draw_pie;
+	pif->pf_draw_arrow = svg_draw_arrow;
+	pif->pf_draw_triangle = svg_draw_triangle;
+	pif->pf_draw_rect = svg_draw_rect;
+	pif->pf_draw_round = svg_draw_round;
+	pif->pf_draw_ellipse = svg_draw_ellipse;
+	pif->pf_draw_polygon = svg_draw_polygon;
+	pif->pf_calc_equalgon = svg_calc_equalgon;
+	pif->pf_draw_equalgon = svg_draw_equalgon;
+	pif->pf_draw_path = svg_draw_path;
 
-	pic->pf_calc_fan = svg_calc_fan;
-	pic->pf_draw_fan = svg_draw_fan;
-	pic->pf_draw_pie = svg_draw_pie;
-	pic->pf_draw_arrow = svg_draw_arrow;
-	pic->pf_draw_triangle = svg_draw_triangle;
-	pic->pf_draw_rect = svg_draw_rect;
-	pic->pf_draw_round = svg_draw_round;
-	pic->pf_draw_ellipse = svg_draw_ellipse;
-	pic->pf_draw_polygon = svg_draw_polygon;
-	pic->pf_calc_equalgon = svg_calc_equalgon;
-	pic->pf_draw_equalgon = svg_draw_equalgon;
-	pic->pf_draw_path = svg_draw_path;
+	pif->pf_text_metric = svg_text_metric;
+	pif->pf_text_size = svg_text_size;
+	pif->pf_draw_text = svg_draw_text;
+	pif->pf_text_out = svg_text_out;
+	pif->pf_multi_line = svg_multi_line;
 
-	pic->pf_text_metric = svg_text_metric;
-	pic->pf_text_size = svg_text_size;
-	pic->pf_draw_text = svg_draw_text;
-	pic->pf_text_out = svg_text_out;
-	pic->pf_multi_line = svg_multi_line;
+	pif->pf_color_out = svg_color_out;
+	pif->pf_draw_image = svg_draw_image;
+	pif->pf_draw_icon = svg_draw_icon;
+	pif->pf_draw_thumb = svg_draw_thumb;
 
-	pic->pf_color_out = svg_color_out;
-	pic->pf_draw_image = svg_draw_image;
-	pic->pf_draw_icon = svg_draw_icon;
-	pic->pf_draw_thumb = svg_draw_thumb;
-
-	return pic;
+	pif->pf_get_visual_interface = svg_get_visual_interface;
+	pif->pf_get_visual_handle = svg_get_canvas_visual;
 }
 
-void svg_destroy_canvas_interface(if_canvas_t* pic)
+void svg_get_visual_interface(visual_t visual, if_drawing_t* pif)
 {
-	xmem_free(pic);
+	pif->ctx = (void*)visual;
+
+	pif->pf_get_measure = svg_get_measure_raw;
+
+	pif->pf_draw_line = svg_draw_line_raw;
+	pif->pf_draw_bezier = svg_draw_bezier_raw;
+	pif->pf_draw_curve = svg_draw_curve_raw;
+	pif->pf_draw_arc = svg_draw_arc_raw;
+	pif->pf_draw_polyline = svg_draw_polyline_raw;
+
+	pif->pf_draw_rect = svg_draw_rect_raw;
+	pif->pf_draw_triangle = svg_draw_triangle_raw;
+	pif->pf_draw_round = svg_draw_round_raw;
+	pif->pf_draw_ellipse = svg_draw_ellipse_raw;
+	pif->pf_draw_pie = svg_draw_pie_raw;
+	pif->pf_draw_fan = svg_draw_fan_raw;
+	pif->pf_calc_fan = svg_calc_fan_raw;
+	pif->pf_draw_arrow = svg_draw_arrow_raw;
+	pif->pf_draw_polygon = svg_draw_polygon_raw;
+	pif->pf_draw_equalgon = svg_draw_equalgon_raw;
+	pif->pf_calc_equalgon = svg_calc_equalgon_raw;
+	pif->pf_draw_path = svg_draw_path_raw;
+
+	pif->pf_text_metric = svg_text_metric_raw;
+	pif->pf_text_size = svg_text_size_raw;
+	pif->pf_draw_text = svg_draw_text_raw;
+	pif->pf_text_out = svg_text_out_raw;
+	pif->pf_multi_line = svg_multi_line_raw;
+
+	pif->pf_color_out = svg_color_out_raw;
+	pif->pf_draw_image = svg_draw_image_raw;
+	pif->pf_draw_icon = svg_draw_icon_raw;
 }
 
-
-void svg_get_visual_interface(canvas_t canv, if_visual_t* piv)
-{
-	piv->visual = svg_get_canvas_visual(canv);
-
-	piv->pf_get_measure_raw = svg_get_measure_raw;
-
-	piv->pf_draw_line_raw = svg_draw_line_raw;
-	piv->pf_draw_bezier_raw = svg_draw_bezier_raw;
-	piv->pf_draw_curve_raw = svg_draw_curve_raw;
-	piv->pf_draw_arc_raw = svg_draw_arc_raw;
-	piv->pf_draw_polyline_raw = svg_draw_polyline_raw;
-
-	piv->pf_draw_rect_raw = svg_draw_rect_raw;
-	piv->pf_draw_triangle_raw = svg_draw_triangle_raw;
-	piv->pf_draw_round_raw = svg_draw_round_raw;
-	piv->pf_draw_ellipse_raw = svg_draw_ellipse_raw;
-	piv->pf_draw_pie_raw = svg_draw_pie_raw;
-	piv->pf_draw_fan_raw = svg_draw_fan_raw;
-	piv->pf_calc_fan_raw = svg_calc_fan_raw;
-	piv->pf_draw_arrow_raw = svg_draw_arrow_raw;
-	piv->pf_draw_polygon_raw = svg_draw_polygon_raw;
-	piv->pf_draw_equalgon_raw = svg_draw_equalgon_raw;
-	piv->pf_calc_equalgon_raw = svg_calc_equalgon_raw;
-	piv->pf_draw_path_raw = svg_draw_path_raw;
-
-	piv->pf_text_metric_raw = svg_text_metric_raw;
-	piv->pf_text_size_raw = svg_text_size_raw;
-	piv->pf_draw_text_raw = svg_draw_text_raw;
-	piv->pf_text_out_raw = svg_text_out_raw;
-	piv->pf_multi_line_raw = svg_multi_line_raw;
-
-	piv->pf_color_out_raw = svg_color_out_raw;
-	piv->pf_draw_image_raw = svg_draw_image_raw;
-	piv->pf_draw_icon_raw = svg_draw_icon_raw;
-}
-
-if_visual_t* svg_create_visual_interface(visual_t view)
-{
-	if_visual_t* piv;
-
-	piv = (if_visual_t*)xmem_alloc(sizeof(if_visual_t));
-
-	piv->visual = view;
-
-	piv->pf_get_measure_raw = svg_get_measure_raw;
-
-	piv->pf_draw_line_raw = svg_draw_line_raw;
-	piv->pf_draw_bezier_raw = svg_draw_bezier_raw;
-	piv->pf_draw_curve_raw = svg_draw_curve_raw;
-	piv->pf_draw_arc_raw = svg_draw_arc_raw;
-	piv->pf_draw_polyline_raw = svg_draw_polyline_raw;
-
-	piv->pf_draw_rect_raw = svg_draw_rect_raw;
-	piv->pf_draw_triangle_raw = svg_draw_triangle_raw;
-	piv->pf_draw_round_raw = svg_draw_round_raw;
-	piv->pf_draw_ellipse_raw = svg_draw_ellipse_raw;
-	piv->pf_draw_pie_raw = svg_draw_pie_raw;
-	piv->pf_draw_fan_raw = svg_draw_fan_raw;
-	piv->pf_calc_fan_raw = svg_calc_fan_raw;
-	piv->pf_draw_arrow_raw = svg_draw_arrow_raw;
-	piv->pf_draw_polygon_raw = svg_draw_polygon_raw;
-	piv->pf_draw_equalgon_raw = svg_draw_equalgon_raw;
-	piv->pf_calc_equalgon_raw = svg_calc_equalgon_raw;
-	piv->pf_draw_path_raw = svg_draw_path_raw;
-
-	piv->pf_text_metric_raw = svg_text_metric_raw;
-	piv->pf_text_size_raw = svg_text_size_raw;
-	piv->pf_draw_text_raw = svg_draw_text_raw;
-	piv->pf_text_out_raw = svg_text_out_raw;
-	piv->pf_multi_line_raw = svg_multi_line_raw;
-
-	piv->pf_color_out_raw = svg_color_out_raw;
-	piv->pf_draw_image_raw = svg_draw_image_raw;
-	piv->pf_draw_icon_raw = svg_draw_icon_raw;
-
-	return piv;
-}
-
-void svg_destroy_visual_interface(if_visual_t* pic)
-{
-	xmem_free(pic);
-}
-
-#endif /*XDL_SUPPORT_SVG*/
+#endif /*XDL_SUPPORT_VIEW*/

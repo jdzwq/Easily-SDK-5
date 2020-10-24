@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#if defined(XDL_SUPPORT_SVG)
+#if defined(XDL_SUPPORT_VIEW)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -43,43 +43,22 @@ extern "C" {
 /*
 @FUNCTION create_svg_interface: create svg canvas interface.
 @INPUT canvas_t canv: the svg canvas object.
-@RETURN if_canvas_t*: if succeeds return svg canvas interface struct, fails return NULL.
+@RETURN if_drawing_t*: if succeeds return svg canvas interface struct, fails return NULL.
 */
-EXP_API if_canvas_t* svg_create_canvas_interface(canvas_t canv);
-
-/*
-@FUNCTION destroy_svg_interface: destroy svg canvas interface.
-@INPUT if_canvas_t*: the svg canvas interface struct.
-@RETURN void: none.
-*/
-EXP_API void svg_destroy_canvas_interface(if_canvas_t* pic);
-
-/*
-@FUNCTION svg_get_visual_interface: fill the svg canvas measure functions.
-@INPUT canvas_t canv: the svg canvas object.
-@OUTPUT if_measure_t pif: the measure struct for returning inner function.
-@RETURN void: none.
-*/
-EXP_API void svg_get_visual_interface(canvas_t canv, if_visual_t* piv);
+EXP_API void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif);
 
 /*
 @FUNCTION create_visual_interface: create svg view interface.
 @INPUT visual_t view: the context object.
 @RETURN if_viewING_t*: if succeeds return view interface struct, fails return NULL.
 */
-EXP_API if_visual_t* svg_create_visual_interface(visual_t view);
+EXP_API void svg_get_visual_interface(visual_t visu, if_drawing_t* pif);
 
-/*
-@FUNCTION destroy_view_interface: destroy svg view interface.
-@INPUT if_visual_t*: the view interface struct.
-@RETURN void: none.
-*/
-EXP_API void	svg_destroy_visual_interface(if_visual_t* pic);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /*XDL_SUPPORT_SVG*/
+#endif /*XDL_SUPPORT_VIEW*/
 
 #endif /*SVGINF_H*/

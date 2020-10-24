@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "funcdoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_DOC
 

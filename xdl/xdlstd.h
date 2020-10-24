@@ -4,18 +4,14 @@
 
 #include "xdlinf.h"
 
-#include "set.h"
-#include "vector.h"
-#include "matrix.h"
-#include "map.h"
-#include "nuid.h"
-
 #include "dblink.h"
 #include "hashtable.h"
 #include "dicttable.h"
 #include "stacktable.h"
 #include "stringtable.h"
 #include "stringarray.h"
+#include "integerarray.h"
+#include "numericarray.h"
 #include "wordstable.h"
 #include "actable.h"
 #include "varobj.h"
@@ -29,22 +25,16 @@
 #include "binatree.h"
 #include "trietree.h"
 #include "filetable.h"
-#include "optparser.h"
+#include "escape.h"
+#include "expres.h"
+#include "macro.h"
 
-#include "xdlstr.h"
-#include "xdlesc.h"
-#include "xdlmac.h"
-#include "xdlexp.h"
+#include "nuid.h"
+#include "sort.h"
 
-#include "xdlconv.h"
-#include "xdlblock.h"
-#include "xdlinet.h"
-#include "xdlfile.h"
-#include "xdlstm.h"
+#include "filetag.h"
+#include "miscell.h"
 
-#include "xdlsort.h"
-#include "xdletag.h"
-#include "xdlutil.h"
 
 
 #endif //_XDLSTD_H

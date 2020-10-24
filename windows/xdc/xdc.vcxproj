@@ -23,6 +23,7 @@
     <ClCompile Include="..\..\xdc\curvectrl.c" />
     <ClCompile Include="..\..\xdc\diagramctrl.c" />
     <ClCompile Include="..\..\xdc\gdicanv.c" />
+    <ClCompile Include="..\..\xdc\gdiinf.c" />
     <ClCompile Include="..\..\xdc\horzbox.c" />
     <ClCompile Include="..\..\xdc\calendarctrl.c" />
     <ClCompile Include="..\..\xdc\checkbox.c" />

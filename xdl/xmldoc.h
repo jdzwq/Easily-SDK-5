@@ -33,6 +33,7 @@ LICENSE.GPL3 for more details.
 #define _XMLDOC_H
 
 #include "xdldef.h"
+#include "xmlattr.h"
 
 #ifdef XDL_SUPPORT_DOC
 

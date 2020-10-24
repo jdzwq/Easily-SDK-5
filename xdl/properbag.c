@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "properbag.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_DOC
 
@@ -1745,65 +1746,65 @@ void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
-	len = get_plot_y_stages(plot, NULL, MAX_LONG);
+	len = get_plot_y_stages_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_y_stages(plot, token, len);
+	get_plot_y_stages_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STAGES, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_y_bases(plot, NULL, MAX_LONG);
+	len = get_plot_y_bases_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_y_bases(plot, token, len);
+	get_plot_y_bases_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_BASES, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_y_steps(plot, NULL, MAX_LONG);
+	len = get_plot_y_steps_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_y_steps(plot, token, len);
+	get_plot_y_steps_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_STEPS, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_y_labels(plot, NULL, MAX_LONG);
+	len = get_plot_y_labels_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_y_labels(plot, token, len);
+	get_plot_y_labels_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_LABELS, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_y_colors(plot, NULL, MAX_LONG);
+	len = get_plot_y_colors_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_y_colors(plot, token, len);
+	get_plot_y_colors_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_COLORS, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_y_shapes(plot, NULL, MAX_LONG);
+	len = get_plot_y_shapes_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_y_shapes(plot, token, len);
+	get_plot_y_shapes_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_SHAPES, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_x_labels(plot, NULL, MAX_LONG);
+	len = get_plot_x_labels_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_x_labels(plot, token, len);
+	get_plot_x_labels_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_X_LABELS, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
 
-	len = get_plot_x_colors(plot, NULL, MAX_LONG);
+	len = get_plot_x_colors_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
-	get_plot_x_colors(plot, token, len);
+	get_plot_x_colors_token(plot, token, len);
 	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_X_COLORS, -1, token, len);
 	xsfree(token);
 	set_entity_editable(ent, 1);
@@ -1839,21 +1840,21 @@ void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 
 	set_plot_ruler(plot, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_RULER));
 
-	set_plot_y_stages(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STAGES), -1);
+	set_plot_y_stages_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STAGES), -1);
 
-	set_plot_y_bases(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_BASES), -1);
+	set_plot_y_bases_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_BASES), -1);
 
-	set_plot_y_steps(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STEPS), -1);
+	set_plot_y_steps_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STEPS), -1);
 
-	set_plot_y_labels(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_LABELS), -1);
+	set_plot_y_labels_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_LABELS), -1);
 
-	set_plot_y_colors(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_COLORS), -1);
+	set_plot_y_colors_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_COLORS), -1);
 
-	set_plot_y_shapes(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_SHAPES), -1);
+	set_plot_y_shapes_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_SHAPES), -1);
 
-	set_plot_x_labels(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_X_LABELS), -1);
+	set_plot_x_labels_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_X_LABELS), -1);
 
-	set_plot_x_colors(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_X_COLORS), -1);
+	set_plot_x_colors_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_X_COLORS), -1);
 
 	set_plot_matrix_rows(plot, get_proper_integer(ptr, PROPERTY_BAG_DATA, DOC_MATRIX_ROWS));
 

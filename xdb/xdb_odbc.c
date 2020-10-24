@@ -2546,6 +2546,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlstr)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
+	if_bio_t bio = { 0 };
 
 	XDL_ASSERT(db && db->dbt == _DB_ODBC);
 
@@ -2604,8 +2605,11 @@ bool_t _stdcall db_read_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlstr)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			d_stream = stream_alloc(NULL);
-			stream_attach(d_stream, &ob.head, _lob_read, NULL, NULL);
+			bio.bio = &ob.head;
+			bio.pf_read = _lob_read;
+
+			d_stream = stream_alloc(&bio);
+			
 			stream_set_size(d_stream, dlen);
 			stream_set_encode(d_stream, _UTF16_LIT);
 
@@ -2659,6 +2663,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
+	if_bio_t bio = { 0 };
 
 	XDL_ASSERT(db && db->dbt == _DB_ODBC);
 
@@ -2699,8 +2704,11 @@ bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			d_stream = stream_alloc(NULL);
-			stream_attach(d_stream, &ob.head, NULL, _lob_write, NULL);
+			bio.bio = &ob.head;
+			bio.pf_write = _lob_write;
+
+			d_stream = stream_alloc(&bio);
+
 			stream_set_size(d_stream, size);
 			stream_set_encode(d_stream, _UTF16_LIT);
 
@@ -2762,6 +2770,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
+	if_bio_t bio = { 0 };
 
 	XDL_ASSERT(db && db->dbt == _DB_ODBC);
 
@@ -2819,8 +2828,11 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			d_stream = stream_alloc(NULL);
-			stream_attach(d_stream, &ob.head, _lob_read, NULL, NULL);
+			bio.bio = &ob.head;
+			bio.pf_read = _lob_read;
+
+			d_stream = stream_alloc(&bio);
+
 			stream_set_size(d_stream, dlen);
 
 			stream_copy(d_stream, stream);
@@ -2869,6 +2881,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
+	if_bio_t bio = { 0 };
 	dword_t size = 0;
 
 	XDL_ASSERT(db && db->dbt == _DB_ODBC);
@@ -2915,8 +2928,11 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			d_stream = stream_alloc(NULL);
-			stream_attach(d_stream, &ob.head, NULL, _lob_write, NULL);
+			bio.bio = &ob.head;
+			bio.pf_write = _lob_write;
+
+			d_stream = stream_alloc(&bio);
+
 			stream_set_size(d_stream, size);
 
 			stream_copy(stream, d_stream);

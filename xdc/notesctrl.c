@@ -66,7 +66,7 @@ static int _notesctrl_calc_width(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 	visual_t rdc;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 	xsize_t xs;
 	int pw;
 
@@ -76,7 +76,7 @@ static int _notesctrl_calc_width(res_win_t widget)
 
 	rdc = widget_client_ctx(widget);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	pw = 0;
 	ilk = get_arch_first_child_item(ptd->arch);
@@ -88,7 +88,7 @@ static int _notesctrl_calc_width(res_win_t widget)
 
 		if (compare_text(get_notes_type_ptr(doc),-1,ATTR_NOTES_TEXT,-1,0) == 0)
 		{
-			(*piv->pf_text_size_raw)(piv->visual, &xf, get_notes_text_ptr(doc), -1, &xs);
+			(*ifv.pf_text_size)(ifv.ctx, &xf, get_notes_text_ptr(doc), -1, &xs);
 			if (pw < xs.w)
 				pw = xs.w;
 		}
@@ -101,7 +101,7 @@ static int _notesctrl_calc_width(res_win_t widget)
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	widget_release_ctx(widget, rdc);
 
@@ -115,7 +115,7 @@ static int _notesctrl_calc_height(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 	visual_t rdc;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 	xrect_t xr;
 	int pw,ph;
 	int n;
@@ -129,7 +129,7 @@ static int _notesctrl_calc_height(res_win_t widget)
 
 	rdc = widget_client_ctx(widget);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	ph = 0;
 	ilk = get_arch_first_child_item(ptd->arch);
@@ -144,7 +144,7 @@ static int _notesctrl_calc_height(res_win_t widget)
 			xr.x = xr.y = 0;
 			xr.w = pw;
 			xr.h = ptd->th;
-			(*piv->pf_text_rect_raw)(piv->visual, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
+			(*ifv.pf_text_rect)(ifv.ctx, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
 
 			n = xr.h / ptd->th;
 			if (xr.h % ptd->th)
@@ -160,7 +160,7 @@ static int _notesctrl_calc_height(res_win_t widget)
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	widget_release_ctx(widget, rdc);
 
@@ -179,7 +179,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 	xfont_t xf;
 	xface_t xa;
 	viewbox_t vb;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -189,8 +189,8 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 
 	rdc = widget_client_ctx(widget);
 
-	piv = create_visual_interface(rdc);
-	widget_get_view_rect(widget, &piv->rect);
+	get_visual_interface(rdc, &ifv);
+	widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
 	*pplk = NULL;
 	hint = _NOTES_HINT_NONE;
@@ -240,7 +240,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 			xr.x = xr.y = 0;
 			xr.w = vb.pw - ptd->tw;
 			xr.h = ptd->th;
-			(*piv->pf_text_rect_raw)(piv->visual, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
+			(*ifv.pf_text_rect)(ifv.ctx, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
 
 			n = xr.h / ptd->th;
 			if (xr.h % ptd->th)
@@ -267,7 +267,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	widget_release_ctx(widget, rdc);
 
@@ -285,7 +285,7 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	xface_t xa;
 	viewbox_t vb;
 	int n,total = 0;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
@@ -297,8 +297,8 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 
 	rdc = widget_client_ctx(widget);
 
-	piv = create_visual_interface(rdc);
-	widget_get_view_rect(widget, &piv->rect);
+	get_visual_interface(rdc, &ifv);
+	widget_get_view_rect(widget, (viewbox_t*)(&ifv.rect));
 
 	ilk = get_arch_first_child_item(ptd->arch);
 	while (ilk)
@@ -312,7 +312,7 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 			xr.x = xr.y = 0;
 			xr.w = vb.pw - ptd->tw;
 			xr.h = ptd->th;
-			(*piv->pf_text_rect_raw)(piv->visual, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
+			(*ifv.pf_text_rect)(ifv.ctx, &xf, &xa, get_notes_text_ptr(doc), -1, &xr);
 
 			n = xr.h / ptd->th;
 			if (xr.h % ptd->th)
@@ -337,7 +337,7 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 	widget_release_ctx(widget, rdc);
 }
 
@@ -474,7 +474,7 @@ int hand_notes_create(res_win_t widget, void* data)
 {
 	notes_delta_t* ptd;
 	visual_t rdc;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 	xfont_t xf = { 0 };
 	xsize_t xs;
 
@@ -486,11 +486,11 @@ int hand_notes_create(res_win_t widget, void* data)
 
 	rdc = widget_client_ctx(widget);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_text_metric_raw)(piv->visual, &xf, &xs);
+	(*ifv.pf_text_metric)(ifv.ctx, &xf, &xs);
 
-	destroy_visual_interface(piv);
+	
 
 	widget_release_ctx(widget, rdc);
 
@@ -732,8 +732,8 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	visual_t rdc;
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	link_t_ptr ilk,doc;
 	xrect_t xr_btn,xr_txt,xr;
@@ -779,14 +779,14 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_client_rect(widget, &xr);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	widget_get_view_rect(widget, &vb);
 
@@ -806,7 +806,7 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		xr_btn.w = vb.pw;
 		xr_btn.h = ptd->th;
 
-		(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb_bar, &xr_btn);
+		(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb_bar, &xr_btn);
 
 		xr_btn.x = xr.x;
 		xr_btn.y = xr.y;
@@ -838,19 +838,19 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 				xsprintf(token, _T("%d/%d %02d:%02d"), dt.day,dt.mon,dt.hour, dt.min);
 			}
 
-			(*piv->pf_text_size_raw)(piv->visual, &xf_top, token, -1, &xs);
+			(*ifv.pf_text_size)(ifv.ctx, &xf_top, token, -1, &xs);
 
 			xr_txt.x = xr.x + ptd->th;
 			xr_txt.y = xr.y;
 			xr_txt.w = vb.pw - 2 * ptd->th;
 			xr_txt.h = ptd->th;
 
-			(*piv->pf_draw_text_raw)(piv->visual, &xf_top, &xa_top, &xr_txt, token, -1);
+			(*ifv.pf_draw_text)(ifv.ctx, &xf_top, &xa_top, &xr_txt, token, -1);
 		}
 		else
 		{
 			xsprintf(token, _T("今天 %02d:%02d"), td.hour, td.min);
-			(*piv->pf_text_size_raw)(piv->visual, &xf_top, token, -1, &xs);
+			(*ifv.pf_text_size)(ifv.ctx, &xf_top, token, -1, &xs);
 		}
 
 		if (compare_text(get_notes_type_ptr(doc), -1, ATTR_NOTES_TEXT, -1, 0) == 0)
@@ -860,7 +860,7 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			xr_txt.w = vb.pw - xs.w - 3 * ptd->th;
 			xr_txt.h = ptd->th;
 
-			(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr_txt, get_notes_text_ptr(doc), -1);
+			(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr_txt, get_notes_text_ptr(doc), -1);
 		}
 		else
 		{
@@ -879,7 +879,7 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 		if (!is_first_link(ilk))
 		{
-			(*piv->pf_draw_line_raw)(piv->visual, &xp, &pt_cur, &pt_org);
+			(*ifv.pf_draw_line)(ifv.ctx, &xp, &pt_cur, &pt_org);
 		}
 
 		if (ptd->b_delete)
@@ -900,7 +900,7 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			xr_txt.y = 0;
 			xr_txt.w = vb.pw - ptd->tw;
 			xr_txt.h = ptd->tw;
-			(piv->pf_text_rect_raw)(piv->visual, &xf, &xa, get_notes_text_ptr(doc), -1, &xr_txt);
+			(*ifv.pf_text_rect)(ifv.ctx, &xf, &xa, get_notes_text_ptr(doc), -1, &xr_txt);
 
 			n = xr_txt.h / ptd->tw;
 			if (xr_txt.h % ptd->tw)
@@ -916,7 +916,7 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		xr_txt.w = vb.pw - ptd->th;
 		xr_txt.h = n * ptd->th;
 
-		(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr_txt, get_notes_text_ptr(doc), -1);
+		(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr_txt, get_notes_text_ptr(doc), -1);
 
 		pt_org.x = pt_cur.x;
 		pt_org.y = pt_cur.y;
@@ -926,10 +926,10 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		ilk = get_arch_next_sibling_item(ilk);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
-	destroy_canvas_interface(pif);
+	
 }
 
 /************************************************************************************************/

@@ -30,9 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "richview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdlgdi.h"
 #include "xdldoc.h"
 
 #if defined(XDL_SUPPORT_VIEW)

@@ -455,7 +455,6 @@ static GraphicsPath* create_path(HDC hDC, const tchar_t* aa, const xpoint_t* pa)
 	RECT rt;
 	int arcf, arct;
 	POINT pk = { 0 };
-	double arc, len;
 	int n = 0;
 
 	if (!aa)

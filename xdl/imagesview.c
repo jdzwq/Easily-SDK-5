@@ -28,11 +28,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "imagesview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -269,7 +269,7 @@ int	calc_images_hint(const xpoint_t* ppt, link_t_ptr ptr,  link_t_ptr* pilk)
 	return IMAGE_HINT_NONE;
 }
 
-void draw_images(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_images(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr nlk;
 	int pi, count;
@@ -283,14 +283,14 @@ void draw_images(const if_canvas_t* pif, link_t_ptr ptr)
 	bool_t b_print;
 	float px, py, pw, ph;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -299,7 +299,7 @@ void draw_images(const if_canvas_t* pif, link_t_ptr ptr)
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xcolor(&xc, xf.color);
@@ -317,7 +317,7 @@ void draw_images(const if_canvas_t* pif, link_t_ptr ptr)
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	xr.fx = px;
@@ -350,14 +350,14 @@ void draw_images(const if_canvas_t* pif, link_t_ptr ptr)
 		xr_box.fh = xr.fh - ic;
 
 		parse_ximage_from_source(&xi, get_images_item_src_ptr(nlk));
-		(*pif->pf_draw_image)(pif->canvas, &xi, &xr_box);
+		(*pif->pf_draw_image)(pif->ctx, &xi, &xr_box);
 
 		xr_box.fx = xr.fx;
 		xr_box.fy = xr.fy + xr.fh - ic;
 		xr_box.fw = xr.fw;
 		xr_box.fh = ic;
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_box, get_images_item_alt_ptr(nlk), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_box, get_images_item_alt_ptr(nlk), -1);
 			
 		if (get_images_item_checked(nlk))
 		{

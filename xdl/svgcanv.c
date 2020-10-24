@@ -35,9 +35,9 @@ LICENSE.GPL3 for more details.
 #include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdldoc.h"
-#include "xdlview.h"
 
-#if defined(XDL_SUPPORT_SVG)
+
+#if defined(XDL_SUPPORT_VIEW)
 
 typedef struct _svg_canvas_t{
 	canvas_head head;
@@ -382,4 +382,4 @@ int svg_tm_to_pt_raw(visual_t view, float tm, bool_t horz)
 }
 
 
-#endif /*XDL_SUPPORT_SVG*/
+#endif /*XDL_SUPPORT_VIEW*/

@@ -248,7 +248,7 @@ void hand_curve_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	int i;
 	int w;
 
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -261,9 +261,9 @@ void hand_curve_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	w = xr.w / 5;
 	for (i = 0; i < 10; i++)
@@ -282,10 +282,10 @@ void hand_curve_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 		pt[4].x = xr.x + xr.w;
 		pt[4].y = xr.y + xr.h / 2;
 
-		(*piv->pf_draw_curve_raw)(piv->visual, &xp, pt, 5);
+		(*ifv.pf_draw_curve)(ifv.ctx, &xp, pt, 5);
 	}
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
 }

@@ -30,12 +30,15 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "jsonbio.h"
-#include "xdlimp.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdloop.h"
+
 #include "xdldoc.h"
 
-#ifdef XDL_SUPPORT_DOC
+#if defined(XDL_SUPPORT_BIO)
 
 bool_t parse_json_doc_from_memo(link_t_ptr json, link_t_ptr txt)
 {

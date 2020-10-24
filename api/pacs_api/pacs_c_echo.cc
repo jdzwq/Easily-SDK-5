@@ -80,7 +80,7 @@ bool_t _invoke_c_echo(pacs_t* pacs, pacs_block_t* pd)
 	pacs_get_options(pacs, PACS_OPT_DATA_MAXINUM, (void*)&n_max, sizeof(long));
 	b_big = sop_is_bigendian(syntax);
 
-	stm = stream_alloc(pacs_bio(pacs));
+	stm = stream_alloc(pacs->pif);
 
 	if (!format_dicm_command_to_stream(&cmd, b_big, n_max, stm))
 	{

@@ -588,7 +588,7 @@ LOC_API void	color_out(canvas_t canv, const xrect_t* pxr, bool_t horz, const tch
 @INPUT const xrect_t* pxr: the rect struct using integer member.
 @RETURN void: none.
 */
-LOC_API void	draw_thumn_raw(visual_t rdc, const tchar_t* fname, const xrect_t* prt);
+LOC_API void	draw_thumb_raw(visual_t rdc, const tchar_t* fname, const xrect_t* prt);
 
 /*
 @FUNCTION draw_thumb: draw file thumb in canvas using millimeter coordinate.

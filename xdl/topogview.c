@@ -30,10 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "topogview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
+
 #include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlmath.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -89,7 +91,7 @@ int calc_topog_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* 
 	return nHit;
 }
 
-void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_topog(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xrect_t xr;
@@ -110,11 +112,11 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 	float rx, ry;
 	int dark;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	string_t vs = NULL;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER)? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER)? 1 : 0;
 	b_design = topog_is_design(ptr);
 
 	default_xpen(&xp);
@@ -125,7 +127,7 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
@@ -137,7 +139,7 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 	else
 	{
@@ -170,11 +172,11 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 			{
 				xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 				lighten_xbrush(&xb_dot, dark + DEF_SOFT_LIGHTEN);
-				(*pif->pf_draw_rect)(pif->canvas, ((b_design)? &xp : NULL), &xb_dot, &xr);
+				(*pif->pf_draw_rect)(pif->ctx, ((b_design)? &xp : NULL), &xb_dot, &xr);
 			}
 			else if (b_design)
 			{
-				(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+				(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 			}
 		}
 	}
@@ -195,7 +197,7 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 		default_xface(&xa);
 		parse_xface_from_style(&xa, style);
 
-		(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+		(*pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
 		calc_topog_spot_rect(ptr, ilk, &xr);
 		xr.fw = xs.fw;
@@ -204,7 +206,7 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 
 		if (compare_text(type, -1, ATTR_SPOT_TYPE_COLORBAR, -1, 0) == 0)
 		{
-			(*pif->pf_color_out)(pif->canvas, &xr, 1, get_topog_spot_title_ptr(ilk), -1);
+			(*pif->pf_color_out)(pif->ctx, &xr, 1, get_topog_spot_title_ptr(ilk), -1);
 		}
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_ICON, -1, 0) == 0)
 		{
@@ -214,7 +216,7 @@ void draw_topog(const if_canvas_t* pif, link_t_ptr ptr)
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_IMAGE, -1, 0) == 0)
 		{
 			parse_ximage_from_source(&xi, get_topog_spot_title_ptr(ilk));
-			(*pif->pf_draw_image)(pif->canvas, &xi, &xr);
+			(*pif->pf_draw_image)(pif->ctx, &xi, &xr);
 			xi.source = NULL;
 		}
 		else if (compare_text(type, -1, ATTR_SPOT_TYPE_TEXT, -1, 0) == 0)

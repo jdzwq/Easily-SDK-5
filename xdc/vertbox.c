@@ -168,8 +168,8 @@ void hand_vertbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -180,30 +180,23 @@ void hand_vertbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
-
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
-
+	pif = widget_get_canvas_interface(widget);
+	
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	draw_vertbox(pif, &xf);
 
-	destroy_visual_interface(piv);
+	
 	end_canvas_paint(canv, dc, pxr);
-	destroy_canvas_interface(pif);
+	
 }
 
 /***************************************************************************************/

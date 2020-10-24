@@ -498,10 +498,10 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_THERMOMETER, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_KPIGRAM, -1);
-		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TASKGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TASKGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_HISTOGRAM, -1);
-		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
+		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_SCATTERGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_RADARGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_FUELGRAM, -1);
@@ -509,15 +509,15 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		set_plot_width(ptr_plot, 100);
 		set_plot_height(ptr_plot, 100);
 
-		set_plot_style(ptr_plot, _T("font-size:10;stroke-width:4;fill-color:RGB(0,0,0);stroke-color:RGB(131,139,139);fill-style:gradient;gradient:vert;"), -1);
-		//set_plot_y_stages(ptr_plot, _T("3,5,6,7,1,2,4"), -1);
-		set_plot_y_bases(ptr_plot, _T("0,0,0,0,0,0,0"), -1);
-		set_plot_y_steps(ptr_plot, _T("2,2,4,4,4,2,8"), -1);
-		set_plot_y_labels(ptr_plot, _T("physi,habit,diet,motion,chronic,therapy,sympt"), -1);
-		set_plot_y_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255),RGB(255,0,0),RGB(0,128,0),RGB(0,0,255)"), -1);
-		set_plot_y_shapes(ptr_plot, _T("top-triangle,rect,left-triangle,round,right-triangle,ellipse,bottom-triangle"), -1);
-		set_plot_x_labels(ptr_plot, _T("text1,text2"), -1);
-		set_plot_x_colors(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255)"), -1);
+		set_plot_style(ptr_plot, _T("font-size:10;stroke-width:1;fill-color:RGB(0,0,0);stroke-color:RGB(131,139,139);fill-style:gradient;gradient:vert;"), -1);
+		//set_plot_y_stages_token(ptr_plot, _T("3,5,6,7,1,2,4"), -1);
+		set_plot_y_bases_token(ptr_plot, _T("0,0,0,0,0,0,0"), -1);
+		set_plot_y_steps_token(ptr_plot, _T("2,2,4,4,4,2,8"), -1);
+		set_plot_y_labels_token(ptr_plot, _T("physi,habit,diet,motion,chronic,therapy,sympt"), -1);
+		set_plot_y_colors_token(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255),RGB(255,0,0),RGB(0,128,0),RGB(0,0,255)"), -1);
+		set_plot_y_shapes_token(ptr_plot, _T("top-triangle,rect,left-triangle,round,right-triangle,ellipse,bottom-triangle"), -1);
+		set_plot_x_labels_token(ptr_plot, _T("text1,text2"), -1);
+		set_plot_x_colors_token(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255)"), -1);
 		set_plot_ruler(ptr_plot, 10);
 		set_plot_matrix_rows(ptr_plot, 5);
 		set_plot_matrix_cols(ptr_plot, 3);
@@ -724,18 +724,16 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, visual_t rdc)
 	xcolor_t xc;
 
 	canvas_t canv;
-	if_canvas_t* pif;
+	const if_drawing_t* pif;
 
 	canv = widget_get_canvas(win);
-	pif = create_canvas_interface(canv);
+	pif = widget_get_canvas_interface(win);
 
 	widget_get_canv_rect(win, &cb);
 	
 	parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
 
 	test_gizmo(pif, &xc, (xrect_t*)&cb);
-
-	destroy_canvas_interface(pif);
 
 	/*tchar_t aa[10] = { 0 };
 	xpoint_t pa[20] = { 0 };

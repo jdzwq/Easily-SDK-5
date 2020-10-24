@@ -42,7 +42,7 @@ LICENSE.GPL3 for more details.
 #define XHTTP_HEADER_MAX	(64 * 1024)
 #define XHTTP_ZIPED_SIZE	(4 * 1024 * 1024)
 
-#if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
+#if defined(XDK_SUPPORT_SOCK)
 
 typedef enum{
 	_XHTTP_TYPE_LIS = 0,
@@ -571,6 +571,7 @@ EXP_API bool_t		xhttp_send_error(xhand_t xhttp, const tchar_t* http_code, const 
 */
 EXP_API bool_t		xhttp_recv_error(xhand_t xhttp, tchar_t* http_code, tchar_t* http_info, tchar_t* errcode, tchar_t* errtext, int max);
 
+#if defined(XDL_SUPPORT_DOC)
 /*
 @FUNCTION xhttp_send_xml: send a http xml document.
 @INPUT xhand_t xhttp: the http handle.
@@ -602,6 +603,8 @@ EXP_API bool_t		xhttp_send_json(xhand_t xhttp, link_t_ptr json);
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
 EXP_API bool_t		xhttp_recv_json(xhand_t xhttp, link_t_ptr json);
+
+#endif
 
 /*
 @FUNCTION xhttp_send_string: send a http string object.

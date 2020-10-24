@@ -49,7 +49,7 @@ typedef enum{
 extern "C" {
 #endif
 
-	EXP_API int calc_form_pages(link_t_ptr form);;
+	EXP_API int calc_form_pages(const if_drawing_t* pif, link_t_ptr form);;
 
 	EXP_API void calc_form_field_rect(link_t_ptr ptr, link_t_ptr flk, xrect_t* pxr);
 
@@ -57,7 +57,7 @@ extern "C" {
 
 	EXP_API int calc_form_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pflk);
 
-	EXP_API void draw_form_page(const if_canvas_t* pcanv, link_t_ptr ptr, int page);
+	EXP_API void draw_form_page(const if_drawing_t* pcanv, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

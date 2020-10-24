@@ -30,10 +30,14 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "bplustree.h"
+
+#include "dblink.h"
+#include "varobj.h"
+#include "stacktable.h"
+#include "filetable.h"
+
 #include "xdlimp.h"
 
-#include "xdlstd.h"
-#include "xdlinit.h"
 
 #define BPLUS_ENTITY_INDEX	1
 #define BPLUS_ENTITY_DATA	0

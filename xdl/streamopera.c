@@ -30,10 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "streamopera.h"
-#include "xdlimp.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_DOC
 

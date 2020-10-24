@@ -6,7 +6,7 @@
 #include "impmem.h"
 #include "impassert.h"
 #include "imperr.h"
-
+#include "impstr.h"
 
 #ifdef XDK_SUPPORT_MBCS
 #include "impmbcs.h"
@@ -59,5 +59,13 @@
 #ifdef XDK_SUPPORT_CONS
 #include "impcons.h"
 #endif
+
+#if defined(XDK_SUPPORT_FILE) && defined(XDK_SUPPORT_SOCK)
+#include "impinet.h"
+#endif
+
+
+#include "impblock.h"
+#include "impconv.h"
 
 #endif //_XDLIMP_H

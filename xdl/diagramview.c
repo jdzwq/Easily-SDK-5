@@ -29,11 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "diagramview.h"
-#include "xdlview.h"
-#include "xdldoc.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -94,9 +94,9 @@ int calc_diagram_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_diagram(const if_drawing_t* pif, link_t_ptr ptr)
 {
-	link_t_ptr obj,ilk;
+	link_t_ptr ilk;
 	xrect_t xr;
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
@@ -111,9 +111,9 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 
 	xpoint_t pt[5] = { 0 };
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -126,19 +126,19 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xface_from_style(&xa, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 	lighten_xbrush(&xb, DEF_SOFT_DARKEN);
 
@@ -158,14 +158,14 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 		parse_xface_from_style(&xa, style);
 		if (!b_print)
 		{
-			format_xcolor(&pif->clr_txt, xf.color);
+			format_xcolor(&pif->mode.clr_txt, xf.color);
 		}
 
 		entity = get_diagram_entity_class_ptr(ilk);
 
 		if (compare_text(entity, -1, DOC_DIAGRAM_PROCESS, -1, 0) == 0)
 		{
-			(*pif->pf_draw_rect)(pif->canvas, &xp,NULL, &xr);
+			(*pif->pf_draw_rect)(pif->ctx, &xp,NULL, &xr);
 		}
 		else if (compare_text(entity, -1, DOC_DIAGRAM_JOINT, -1, 0) == 0)
 		{
@@ -180,7 +180,7 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 			pt[4].fx = xr.fx + xr.fw;
 			pt[4].fy = xr.fy + xr.fh / 2;
 
-			(*pif->pf_draw_curve)(pif->canvas, &xp, pt, 5);
+			(*pif->pf_draw_curve)(pif->ctx, &xp, pt, 5);
 		}
 		/*else if (compare_text(entity, -1, DOC_DIAGRAM_DOT, -1, 0) == 0)
 		{
@@ -195,14 +195,14 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 				pmt = matrix_alloc(rows, cols);
 				matrix_parse(pmt, get_diagram_entity_text_ptr(ilk), -1);
 
-				//draw_dot_entity(pif->canvas, &xp, &xb, &xf, &xr, rx, ry, pmt);
+				//draw_dot_entity(pif->ctx, &xp, &xb, &xf, &xr, rx, ry, pmt);
 
 				matrix_free(pmt);
 			}
 		}
 		else if (compare_text(entity, -1, DOC_DIAGRAM_COUNTER, -1, 0) == 0)
 		{
-			//draw_counter_entity(pif->canvas, &xp, &xb, &xf, &xr, get_diagram_counter_entity_layer_ptr(ilk), get_diagram_entity_text_ptr(ilk), get_diagram_counter_entity_size(ilk));
+			//draw_counter_entity(pif->ctx, &xp, &xb, &xf, &xr, get_diagram_counter_entity_layer_ptr(ilk), get_diagram_entity_text_ptr(ilk), get_diagram_counter_entity_size(ilk));
 		}
 		else if (compare_text(entity, -1, DOC_DIAGRAM_LINE, -1, 0) == 0)
 		{
@@ -210,7 +210,7 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 			pvt = vector_alloc(n);
 			if (n)
 			{
-				//draw_line_entity(pif->canvas, &xp, &xb, &xf, &xr, get_diagram_line_entity_base(ilk), get_diagram_line_entity_span(ilk), pvt);
+				//draw_line_entity(pif->ctx, &xp, &xb, &xf, &xr, get_diagram_line_entity_base(ilk), get_diagram_line_entity_span(ilk), pvt);
 			}
 			vector_free(pvt);
 		}
@@ -220,7 +220,7 @@ void draw_diagram(const if_canvas_t* pif, link_t_ptr ptr)
 			pvt = vector_alloc(n);
 			if (n)
 			{
-				//draw_bar_entity(pif->canvas, &xp, &xb, &xf, &xr, get_diagram_bar_entity_base(ilk), get_diagram_bar_entity_span(ilk), pvt);
+				//draw_bar_entity(pif->ctx, &xp, &xb, &xf, &xr, get_diagram_bar_entity_base(ilk), get_diagram_bar_entity_span(ilk), pvt);
 			}
 			vector_free(pvt);
 		}*/

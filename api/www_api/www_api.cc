@@ -46,7 +46,7 @@ bool_t _invoke_get(const https_block_t* pb)
     xdate_t dt_since = {0};
     xdate_t dt_time = {0};
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	byte_t *sz_buf = NULL;
 	byte_t *sz_zip = NULL;
 	dword_t n_zip,n_size = 0;

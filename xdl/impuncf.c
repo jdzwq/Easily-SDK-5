@@ -30,10 +30,16 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "impuncf.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
+#include "impmem.h"
+#include "imperr.h"
+#include "impassert.h"
+#include "impasync.h"
+#include "impstr.h"
+#include "impproc.h"
 
 #include "xdlstd.h"
+
+#include "xdlinit.h"
 
 #ifdef XDK_SUPPORT_FILE
 
@@ -264,7 +270,7 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 	}
 
 	pcf = (xuncf_t*)xmem_alloc(sizeof(xuncf_t));
-	pcf->head.tag = _HANDLE_UNC;
+	pcf->head.tag = _HANDLE_UNCF;
 	pcf->file = fh;
 
 	pcf->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), FILE_BASE_TIMO, INVALID_FILE);
@@ -277,7 +283,7 @@ bool_t xuncf_file_size(xhand_t unc, dword_t* ph, dword_t* pl)
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -291,7 +297,7 @@ void xuncf_close_file(xhand_t unc)
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -313,7 +319,7 @@ bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 	if_file_t* pif;
 	dword_t size, pos = 0;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -346,7 +352,7 @@ bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 	if_file_t* pif;
 	dword_t size, pos = 0;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -378,7 +384,7 @@ bool_t xuncf_flush_file(xhand_t unc)
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -392,7 +398,7 @@ bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* bu
 	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
 	if_file_t* pif;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -431,7 +437,7 @@ bool_t xuncf_truncate(xhand_t unc, dword_t hoff, dword_t loff)
 
 	if_file_t* pif;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -452,7 +458,7 @@ bool_t xuncf_set_filetime(xhand_t unc, const tchar_t* ftime)
 	if_file_t* pif;
 	xdate_t xd;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 
@@ -475,7 +481,7 @@ bool_t xuncf_get_filetime(xhand_t unc, tchar_t* ftime)
 	if_file_t* pif;
 	xdate_t xd;
 
-	XDL_ASSERT(unc && unc->tag == _HANDLE_UNC);
+	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
 
 	pif = PROCESS_FILE_INTERFACE;
 

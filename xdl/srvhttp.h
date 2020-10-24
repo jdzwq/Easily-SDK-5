@@ -92,7 +92,7 @@ typedef struct _https_block_t{
 	bool_t is_thread;
 	xhand_t http;
 
-	file_t log;
+	if_fio_t* log;
 	PF_LOG_TITLE	pf_log_title;
 	PF_LOG_ERROR	pf_log_error;
 	PF_LOG_DATA		pf_log_data;

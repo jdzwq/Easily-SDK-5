@@ -30,10 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "netpnp.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdlnet.h"
+
 #include "xdlinit.h"
 
 #if defined(XDK_SUPPORT_SOCK)

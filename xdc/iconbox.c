@@ -72,19 +72,19 @@ void _iconbox_reset_page(res_win_t widget)
 	xfont_t xf;
 
 	canvas_t canv;
-	if_canvas_t* pif;
+	const if_drawing_t* pif = NULL;
 	if_measure_t im = { 0 };
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
+	pif = widget_get_canvas_interface(widget);
 
-	(*pif->pf_get_measure)(pif->canvas, &im);
+	(pif->pf_get_measure)(pif->ctx, &im);
 
 	widget_get_xfont(widget, &xf);
 
-	(*pif->pf_text_metric)(pif->canvas, &xf, &xs);
+	(pif->pf_text_metric)(pif->ctx, &xf, &xs);
 
-	destroy_canvas_interface(pif);
+	
 
 	widget_size_to_pt(widget, &xs);
 	lw = xs.w;
@@ -204,8 +204,8 @@ void hand_iconbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
-	if_canvas_t* pif;
-	if_visual_t* piv;
+	const if_drawing_t* pif = NULL;
+	if_drawing_t ifv = {0};
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -216,28 +216,28 @@ void hand_iconbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	widget_get_xpen(widget, &xp);
 
 	canv = widget_get_canvas(widget);
-	pif = create_canvas_interface(canv);
-	widget_get_canv_rect(widget, &pif->rect);
+	pif = widget_get_canvas_interface(widget);
+	
 
-	parse_xcolor(&pif->clr_bkg, xb.color);
-	parse_xcolor(&pif->clr_frg, xp.color);
-	parse_xcolor(&pif->clr_txt, xf.color);
-	widget_get_mask(widget, &pif->clr_msk);
-	widget_get_iconic(widget, &pif->clr_ico);
+	
+	
+	
+	
+	
 
 	widget_get_client_rect(widget, &xr);
 
-	rdc = begin_canvas_paint(pif->canvas, dc, xr.w, xr.h);
-	piv = create_visual_interface(rdc);
+	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	draw_iconbox(pif, &xf, ptd->layer, ptd->align, ptd->string);
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
-	destroy_canvas_interface(pif);
+	
 }
 
 /***************************************************************************************/

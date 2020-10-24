@@ -30,9 +30,8 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "linebuf.h"
-#include "xdlimp.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
 
 #define BUFFERTAG_ROOT		0xFFFFFFFF
 

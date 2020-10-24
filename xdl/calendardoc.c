@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "calendardoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_DOC
 
@@ -131,7 +132,6 @@ link_t_ptr get_calendar_daily(link_t_ptr ptr, const tchar_t* sz_today)
 {
 	link_t_ptr tlk;
 	xdate_t dt1, dt2;
-	tchar_t sz_date[DATE_LEN];
 
 	parse_date(&dt1, sz_today);
 
@@ -163,7 +163,6 @@ int get_calendar_daily_count_by_today(link_t_ptr ptr, const tchar_t* sz_today)
 	link_t_ptr ilk;
 	int count = 0;
 	xdate_t dt1, dt2;
-	tchar_t sz_date[DATE_LEN];
 
 	parse_date(&dt1, sz_today);
 

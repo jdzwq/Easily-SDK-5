@@ -324,7 +324,11 @@ void SQLPanel_OnExecute(res_win_t widget)
 		return;
 	}
 
-	stream_t stm = stream_alloc(cah);
+	if_bio_t bio = { 0 };
+	get_bio_interface(cah, &bio);
+
+	stream_t stm = stream_alloc(&bio);
+
 	stream_set_encode(stm, _UTF16_LIT);
 	stream_set_mode(stm, LINE_OPERA);
 

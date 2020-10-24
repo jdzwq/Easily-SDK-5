@@ -33,6 +33,7 @@ LICENSE.GPL3 for more details.
 #define _DOMDOC_H
 
 #include "xdldef.h"
+#include "docattr.h"
 
 #ifdef XDL_SUPPORT_DOC
 

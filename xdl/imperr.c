@@ -30,11 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "imperr.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
-#include "xdlconv.h"
+#include "impmem.h"
+#include "imperr.h"
+#include "impassert.h"
+#include "impconv.h"
 
-#include "xdlstr.h"
+#include "xdlinit.h"
 
 void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
 {

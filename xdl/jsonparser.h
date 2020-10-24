@@ -40,9 +40,9 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo);
+LOC_API bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo);
 
-EXP_API bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo);
+LOC_API bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo);
 
 #ifdef	__cplusplus
 }

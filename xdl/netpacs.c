@@ -25,10 +25,13 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "netpacs.h"
-#include "xdlinit.h"
-#include "xdlimp.h"
+#include "bioinf.h"
+#include "stream.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdlinit.h"
 
 /***********************************************************************************************/
 
@@ -44,7 +47,9 @@ pacs_t* pacs_scu(xhand_t bio)
 	pacs = (pacs_t*)xmem_alloc(sizeof(pacs_t));
 
 	pacs->type = _PACS_TYPE_SCU;
-	pacs->bio = bio;
+
+	pacs->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, pacs->pif);
 
 	pacs->ver = 0x0001;
 	pacs->udm = PACS_USER_DATA_MAXINUM;
@@ -70,7 +75,9 @@ pacs_t* pacs_scp(xhand_t bio)
 	pacs = (pacs_t*)xmem_alloc(sizeof(pacs_t));
 
 	pacs->type = _PACS_TYPE_SCP;
-	pacs->bio = bio;
+
+	pacs->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	get_bio_interface(bio, pacs->pif);
 
 	pacs->udm = PACS_USER_DATA_MAXINUM;
 
@@ -84,7 +91,7 @@ pacs_t* pacs_scp(xhand_t bio)
 
 xhand_t pacs_bio(pacs_t* pacs)
 {
-	return pacs->bio;
+	return (pacs->pif)? pacs->pif->bio : NULL;
 }
 
 static dword_t _pacs_format_pdu(pacs_t* pacs, byte_t pdu_type, dword_t pdv_size, byte_t* buf, dword_t max)
@@ -1442,7 +1449,7 @@ static bool_t _pacs_write_pdu(pacs_t* pacs, byte_t pdu_type, dword_t pdv_size)
 
 	_pacs_format_pdu(pacs, pdu_type, pdv_size, buf, len);
 
-	stm = stream_alloc(pacs->bio);
+	stm = stream_alloc(pacs->pif);
 
 	if (!stream_write_bytes(stm, buf, len))
 	{
@@ -1488,7 +1495,7 @@ static bool_t _pacs_read_pdu(pacs_t* pacs, byte_t* pdu_type, dword_t* pdv_size)
 
 	//PDU USE NETWORK BYTES ORDERS (BigEndian)
 
-	stm = stream_alloc(pacs->bio);
+	stm = stream_alloc(pacs->pif);
 
 	//1: pdu type
 	n = 1;
@@ -2315,7 +2322,7 @@ static bool_t _pacs_write_pdv(pacs_t* pacs, dword_t* psize, pacs_pdv_head_t* pdv
 	//	}
 	//}
 
-	stm = stream_alloc(pacs->bio);
+	stm = stream_alloc(pacs->pif);
 
 	ul = *psize;
 	uw = 0;
@@ -2398,7 +2405,7 @@ static bool_t _pacs_read_pdv(pacs_t* pacs, dword_t* psize, pacs_pdv_head_t* pdv)
 	//	}
 	//}
 
-	stm = stream_alloc(pacs->bio);
+	stm = stream_alloc(pacs->pif);
 
 	ul = *psize;
 
@@ -2814,6 +2821,9 @@ void pacs_close(pacs_t* pacs)
 	xmem_free(pacs->uid);
 	xmem_free(pacs->asn);
 	xmem_free(pacs->tsn);
+
+	if (pacs->pif)
+		xmem_free(pacs->pif);
 
 	xmem_free(pacs);
 }

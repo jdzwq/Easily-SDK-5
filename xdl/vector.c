@@ -30,9 +30,8 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "vector.h"
-#include "xdlimp.h"
 
-#include "xdlstd.h"
+#include "xdlimp.h"
 
 vector_t* vector_alloc(int size, int dimens)
 {

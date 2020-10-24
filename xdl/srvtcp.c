@@ -30,11 +30,12 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "srvtcp.h"
-#include "xdlinit.h"
 
 #include "xdlimp.h"
 #include "xdlstd.h"
 #include "xdlnet.h"
+
+#include "xdlinit.h"
 
 typedef struct _tcp_accept_t{
 	res_file_t so;

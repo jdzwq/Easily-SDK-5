@@ -111,7 +111,7 @@ void hand_staticbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xbrush_t xb;
 
 	canvas_t canv;
-	if_visual_t* piv;
+	if_drawing_t ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -123,14 +123,14 @@ void hand_staticbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
 
-	piv = create_visual_interface(rdc);
+	get_visual_interface(rdc, &ifv);
 
-	(*piv->pf_draw_rect_raw)(piv->visual, NULL, &xb, &xr);
+	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
 	widget_get_client_rect(widget, &xr);
-	(*piv->pf_draw_text_raw)(piv->visual, &xf, &xa, &xr, ptd->text, -1);
+	(*ifv.pf_draw_text)(ifv.ctx, &xf, &xa, &xr, ptd->text, -1);
 
-	destroy_visual_interface(piv);
+	
 
 	end_canvas_paint(canv, dc, pxr);
 }

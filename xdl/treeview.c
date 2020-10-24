@@ -29,11 +29,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "treeview.h"
-#include "xdldoc.h"
-#include "xdlview.h"
-#include "xdlimp.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
+#include "xdlgdi.h"
+#include "xdldoc.h"
 
 
 #ifdef XDL_SUPPORT_VIEW
@@ -354,7 +354,7 @@ int calc_tree_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 	return hint;
 }
 
-void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_tree(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -371,14 +371,14 @@ void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
 	bool_t b_print;
 	float px, py, pw, ph;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	px = pbox->fx;
 	py = pbox->fy;
 	pw = pbox->fw;
 	ph = pbox->fh;
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xpen(&xp);
 	default_xbrush(&xb);
@@ -392,29 +392,29 @@ void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xfont_from_style(&xf, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_msk, xi.color);
+		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
 	if (!b_print)
 	{
-		xmem_copy((void*)&xc, (void*)&pif->clr_ico, sizeof(xcolor_t));
+		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
@@ -439,7 +439,7 @@ void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
 	lighten_xbrush(&xb_bar, DEF_SOFT_DARKEN);
 	xscpy(xb_bar.gradient, GDI_ATTR_GRADIENT_HORZ);
 
-	(*pif->pf_draw_rect)(pif->canvas, NULL, &xb, &xr_text);
+	(*pif->pf_draw_rect)(pif->ctx, NULL, &xb, &xr_text);
 
 	xr_image.fx = total_indent;
 	xr_image.fw = ic;
@@ -454,7 +454,7 @@ void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
 	xr_text.fy = total_height;
 	xr_text.fh = th;
 
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_tree_title_ptr(ptr), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_tree_title_ptr(ptr), -1);
 
 	total_height += th;
 
@@ -519,7 +519,7 @@ void draw_tree(const if_canvas_t* pif, link_t_ptr ptr)
 			xr_text.fh = ih;
 		}
 
-		(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr_text, get_tree_item_title_ptr(ilk), -1);
+		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr_text, get_tree_item_title_ptr(ilk), -1);
 
 		total_height += ih;
 		if (!get_tree_item_collapsed(ilk) && get_tree_first_child_item(ilk))

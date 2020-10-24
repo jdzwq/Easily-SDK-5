@@ -30,10 +30,11 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "plotdoc.h"
-#include "xdlimp.h"
+#include "domdoc.h"
 
+#include "xdlimp.h"
 #include "xdlstd.h"
-#include "xdldoc.h"
+
 
 #ifdef XDL_SUPPORT_DOC
 
@@ -62,6 +63,165 @@ bool_t is_plot_doc(link_t_ptr ptr)
 void clear_plot_doc(link_t_ptr ptr)
 {
 	delete_dom_child_nodes(ptr);
+}
+
+void merge_plot_doc(link_t_ptr dst, link_t_ptr src)
+{
+	link_t_ptr nlk;
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_WIDTH, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_WIDTH, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_HEIGHT, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_HEIGHT, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_TYPE, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_TYPE, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_RULER, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_RULER, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_STYLE, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_STYLE, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_Y_STAGES, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_Y_STAGES, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_Y_BASES, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_Y_BASES, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_Y_STEPS, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_Y_STEPS, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_Y_LABELS, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_Y_LABELS, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_Y_COLORS, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_Y_COLORS, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_Y_SHAPES, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_Y_SHAPES, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_X_LABELS, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_X_LABELS, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_PLOT_X_COLORS, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_PLOT_X_COLORS, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
+
+	nlk = find_dom_node_by_name(dst, 0, DOC_MATRIX, -1);
+	if (!nlk)
+	{
+		nlk = find_dom_node_by_name(src, 0, DOC_MATRIX, -1);
+		if (nlk)
+		{
+			nlk = detach_dom_node(src, nlk);
+			attach_dom_node(dst, LINK_FIRST, nlk);
+		}
+	}
 }
 
 float	get_plot_width(link_t_ptr ptr)
@@ -203,7 +363,56 @@ void set_plot_style(link_t_ptr ptr, const tchar_t* style, int len)
 	set_dom_node_text(nlk, style, len);
 }
 
-int	get_plot_y_stages(link_t_ptr ptr, tchar_t* buf, int max)
+int	get_plot_y_stages(link_t_ptr ptr, double** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_STAGES, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_Y_STAGE, -1, 1) == 0)
+		{
+			insert_numeric(sa, n, xstonum(get_dom_node_text_ptr(sub)));
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_y_stages(link_t_ptr ptr, double** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+	tchar_t numstr[NUM_LEN] = { 0 };
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_STAGES, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_Y_STAGES, -1);
+	}
+
+	n = get_numeric_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_Y_STAGE, -1);
+
+		numtoxs(get_numeric(sa, i), numstr, NUM_LEN);
+		set_dom_node_text(sub, numstr, -1);
+	}
+}
+
+int	get_plot_y_stages_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -235,7 +444,7 @@ int	get_plot_y_stages(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_y_stages(link_t_ptr ptr, const tchar_t* y_stages, int len)
+void set_plot_y_stages_token(link_t_ptr ptr, const tchar_t* y_stages, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -265,7 +474,56 @@ void set_plot_y_stages(link_t_ptr ptr, const tchar_t* y_stages, int len)
 	}
 }
 
-int	get_plot_y_bases(link_t_ptr ptr, tchar_t* buf, int max)
+int	get_plot_y_bases(link_t_ptr ptr, double** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_BASES, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_Y_BASE, -1, 1) == 0)
+		{
+			insert_numeric(sa, n, xstonum(get_dom_node_text_ptr(sub)));
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_y_bases(link_t_ptr ptr, double** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+	tchar_t numstr[NUM_LEN] = { 0 };
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_BASES, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_Y_BASES, -1);
+	}
+
+	n = get_numeric_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_Y_BASE, -1);
+
+		numtoxs(get_numeric(sa, i), numstr, NUM_LEN);
+		set_dom_node_text(sub, numstr, -1);
+	}
+}
+
+int	get_plot_y_bases_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -297,7 +555,7 @@ int	get_plot_y_bases(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_y_bases(link_t_ptr ptr, const tchar_t* y_bases, int len)
+void set_plot_y_bases_token(link_t_ptr ptr, const tchar_t* y_bases, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -327,8 +585,56 @@ void set_plot_y_bases(link_t_ptr ptr, const tchar_t* y_bases, int len)
 	}
 }
 
+int	get_plot_y_steps(link_t_ptr ptr, double** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
 
-int	get_plot_y_steps(link_t_ptr ptr, tchar_t* buf, int max)
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_STEPS, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_Y_STEP, -1, 1) == 0)
+		{
+			insert_numeric(sa, n, xstonum(get_dom_node_text_ptr(sub)));
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_y_steps(link_t_ptr ptr, double** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+	tchar_t numstr[NUM_LEN] = { 0 };
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_STEPS, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_Y_STEPS, -1);
+	}
+
+	n = get_numeric_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_Y_STEP, -1);
+
+		numtoxs(get_numeric(sa, i), numstr, NUM_LEN);
+		set_dom_node_text(sub, numstr, -1);
+	}
+}
+
+int	get_plot_y_steps_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -360,7 +666,7 @@ int	get_plot_y_steps(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_y_steps(link_t_ptr ptr, const tchar_t* y_steps, int len)
+void set_plot_y_steps_token(link_t_ptr ptr, const tchar_t* y_steps, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -390,8 +696,53 @@ void set_plot_y_steps(link_t_ptr ptr, const tchar_t* y_steps, int len)
 	}
 }
 
+int	get_plot_y_labels(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
 
-int	get_plot_y_labels(link_t_ptr ptr, tchar_t* buf, int max)
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_LABELS, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_Y_LABEL, -1, 1) == 0)
+		{
+			insert_string(sa, n, get_dom_node_text_ptr(sub), -1);
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_y_labels(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_LABELS, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_Y_LABELS, -1);
+	}
+
+	n = get_string_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_Y_LABEL, -1);
+		set_dom_node_text(sub, get_string_ptr(sa, i), -1);
+	}
+}
+
+int	get_plot_y_labels_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -423,7 +774,7 @@ int	get_plot_y_labels(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_y_labels(link_t_ptr ptr, const tchar_t* y_labels, int len)
+void set_plot_y_labels_token(link_t_ptr ptr, const tchar_t* y_labels, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -453,7 +804,53 @@ void set_plot_y_labels(link_t_ptr ptr, const tchar_t* y_labels, int len)
 	}
 }
 
-int	get_plot_y_colors(link_t_ptr ptr, tchar_t* buf, int max)
+int	get_plot_y_colors(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_COLORS, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_Y_COLOR, -1, 1) == 0)
+		{
+			insert_string(sa, n, get_dom_node_text_ptr(sub), -1);
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_y_colors(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_COLORS, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_Y_COLORS, -1);
+	}
+
+	n = get_string_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_Y_COLOR, -1);
+		set_dom_node_text(sub, get_string_ptr(sa, i), -1);
+	}
+}
+
+int	get_plot_y_colors_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -485,7 +882,7 @@ int	get_plot_y_colors(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_y_colors(link_t_ptr ptr, const tchar_t* y_colors, int len)
+void set_plot_y_colors_token(link_t_ptr ptr, const tchar_t* y_colors, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -515,8 +912,53 @@ void set_plot_y_colors(link_t_ptr ptr, const tchar_t* y_colors, int len)
 	}
 }
 
+int	get_plot_y_shapes(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
 
-int	get_plot_y_shapes(link_t_ptr ptr, tchar_t* buf, int max)
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_SHAPES, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_Y_SHAPE, -1, 1) == 0)
+		{
+			insert_string(sa, n, get_dom_node_text_ptr(sub), -1);
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_y_shapes(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_SHAPES, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_Y_SHAPES, -1);
+	}
+
+	n = get_string_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_Y_SHAPE, -1);
+		set_dom_node_text(sub, get_string_ptr(sa, i), -1);
+	}
+}
+
+int	get_plot_y_shapes_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -548,7 +990,7 @@ int	get_plot_y_shapes(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_y_shapes(link_t_ptr ptr, const tchar_t* y_shapes, int len)
+void set_plot_y_shapes_token(link_t_ptr ptr, const tchar_t* y_shapes, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -578,7 +1020,53 @@ void set_plot_y_shapes(link_t_ptr ptr, const tchar_t* y_shapes, int len)
 	}
 }
 
-int	get_plot_x_labels(link_t_ptr ptr, tchar_t* buf, int max)
+int	get_plot_x_labels(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_X_LABELS, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_X_LABEL, -1, 1) == 0)
+		{
+			insert_string(sa, n, get_dom_node_text_ptr(sub), -1);
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_x_labels(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_X_LABELS, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_X_LABELS, -1);
+	}
+
+	n = get_string_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_X_LABEL, -1);
+		set_dom_node_text(sub, get_string_ptr(sa, i), -1);
+	}
+}
+
+int	get_plot_x_labels_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -610,7 +1098,7 @@ int	get_plot_x_labels(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_x_labels(link_t_ptr ptr, const tchar_t* x_labels, int len)
+void set_plot_x_labels_token(link_t_ptr ptr, const tchar_t* x_labels, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -640,7 +1128,53 @@ void set_plot_x_labels(link_t_ptr ptr, const tchar_t* x_labels, int len)
 	}
 }
 
-int	get_plot_x_colors(link_t_ptr ptr, tchar_t* buf, int max)
+int	get_plot_x_colors(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int n = 0;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_X_COLORS, -1);
+	if (!nlk)
+		return 0;
+
+	sub = get_dom_first_child_node(nlk);
+	while (sub)
+	{
+		if (compare_text(get_dom_node_name_ptr(sub), -1, DOC_PLOT_X_COLOR, -1, 1) == 0)
+		{
+			insert_string(sa, n, get_dom_node_text_ptr(sub), -1);
+
+			n++;
+		}
+
+		sub = get_dom_next_sibling_node(sub);
+	}
+
+	return n;
+}
+
+void set_plot_x_colors(link_t_ptr ptr, tchar_t** sa)
+{
+	link_t_ptr nlk, sub;
+	int i, n;
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_X_COLORS, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_PLOT_X_COLORS, -1);
+	}
+
+	n = get_string_array_size(sa);
+	for (i = 0; i < n; i++)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_PLOT_X_COLOR, -1);
+		set_dom_node_text(sub, get_string_ptr(sa, i), -1);
+	}
+}
+
+int	get_plot_x_colors_token(link_t_ptr ptr, tchar_t* buf, int max)
 {
 	link_t_ptr nlk, sub;
 	int total = 0;
@@ -672,7 +1206,7 @@ int	get_plot_x_colors(link_t_ptr ptr, tchar_t* buf, int max)
 	return total;
 }
 
-void set_plot_x_colors(link_t_ptr ptr, const tchar_t* x_colors, int len)
+void set_plot_x_colors_token(link_t_ptr ptr, const tchar_t* x_colors, int len)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* key;
@@ -771,7 +1305,7 @@ void set_plot_matrix_cols(link_t_ptr ptr, int cols)
 	if (!sub)
 	{
 		sub = insert_dom_node(nlk, LINK_LAST);
-		set_dom_node_name(sub, DOC_MATRIX_ROWS, -1);
+		set_dom_node_name(sub, DOC_MATRIX_COLS, -1);
 	}
 
 	ltoxs(cols, num, NUM_LEN);

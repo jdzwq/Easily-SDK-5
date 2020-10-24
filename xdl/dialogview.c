@@ -29,11 +29,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 #include "dialogview.h"
-#include "xdlview.h"
-#include "xdldoc.h"
-#include "xdlimp.h"
+#include "boxview.h"
 
+#include "xdlgdi.h"
+#include "xdlimp.h"
 #include "xdlstd.h"
+
+#include "xdldoc.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -94,7 +96,7 @@ int calc_dialog_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
+void draw_dialog(const if_drawing_t* pif, link_t_ptr ptr)
 {
 	link_t_ptr obj,ilk;
 	xrect_t xr;
@@ -110,9 +112,9 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 
 	xdate_t dt;
 
-	const canvbox_t* pbox = &pif->rect;
+	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
-	b_print = (pif->canvas->tag == _CANVAS_PRINTER) ? 1 : 0;
+	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -125,26 +127,26 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 	parse_xface_from_style(&xa, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_txt, xf.color);
+		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_frg, xp.color);
+		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
 	if (!b_print)
 	{
-		format_xcolor(&pif->clr_bkg, xb.color);
+		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
 	xr.fw = pbox->fw;
 	xr.fh = DIALOG_TITLE_HEIGHT;
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
 	xr.fx = pbox->fx;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT;
@@ -160,7 +162,7 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 	xr.fw = pbox->fw - DIALOG_TITLE_HEIGHT;
 	xr.fh = DIALOG_TITLE_HEIGHT;
 	xscpy(xa.text_wrap, _T(""));
-	(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_title_ptr(ptr), -1);
+	(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_dialog_title_ptr(ptr), -1);
 
 	xr.fx = pbox->fx + pbox->fw - 2 * DEF_SMALL_ICON;
 	xr.fy = pbox->fy - DIALOG_TITLE_HEIGHT + DEF_SMALL_ICON;
@@ -176,7 +178,7 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 	xr.fw = pbox->fw;
 	xr.fh = pbox->fh;
 
-	(*pif->pf_draw_rect)(pif->canvas, &xp, NULL, &xr);
+	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
 	ilk = get_dialog_next_item(ptr, LINK_FIRST);
 	while (ilk)
@@ -189,13 +191,13 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 		calc_dialog_item_rect(ptr, ilk, &xr);
 		ft_offset_rect(&xr, pbox->fx, pbox->fy);
 
-		//(*pif->pf_draw_shape)(pif->canvas, &xp, NULL, &xr, ATTR_SHAPE_RECT);
+		//(*pif->pf_draw_shape)(pif->ctx, &xp, NULL, &xr, ATTR_SHAPE_RECT);
 
 		parse_xfont_from_style(&xf, style);
 		parse_xface_from_style(&xa, style);
 		if (!b_print)
 		{
-			format_xcolor(&pif->clr_txt, xf.color);
+			format_xcolor(&pif->mode.clr_txt, xf.color);
 		}
 
 		if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_SHAPEBOX, -1, 1) == 0)
@@ -204,11 +206,11 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_STATICBOX, -1, 1) == 0)
 		{
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_EDITBOX, -1, 1) == 0)
 		{
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_PUSHBOX, -1, 1) == 0)
 		{
@@ -300,8 +302,8 @@ void draw_dialog(const if_canvas_t* pif, link_t_ptr ptr)
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_USERBOX, -1, 1) == 0)
 		{
-			(*pif->pf_draw_rect)(pif->canvas, &xp, &xb, &xr);
-			(*pif->pf_draw_text)(pif->canvas, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
+			(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xr);
+			(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, get_dialog_item_text_ptr(ilk), -1);
 		}
 
 		ilk = get_dialog_next_item(ptr, ilk);
