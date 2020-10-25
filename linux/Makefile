@@ -19,7 +19,8 @@ API_OBJS = $(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libxdb_api.so.1.0 \
 	$(API_PATH)/libxdb_mysql.so.1.0 \
 	$(API_PATH)/liboau_api.so.1.0 \
-	$(API_PATH)/libpacs_api.so.1.0
+	$(API_PATH)/libpacs_api.so.1.0 \
+	$(API_PATH)/libplot_api.so.1.0
 
 EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xportd \
@@ -51,6 +52,7 @@ all:
 	cd $(CUR_PATH)/coap_api && make -f coap_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make -f tftp_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make -f pacs_api.so.mk
+	cd $(CUR_PATH)/plot_api && make -f plot_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make -f xhttps.mk
@@ -110,6 +112,9 @@ install:
 	if ! test -d $(SRV_PATH)/pacs; then \
 	sudo mkdir $(SRV_PATH)/pacs; \
 	fi
+	if ! test -d $(SRV_PATH)/plot; then \
+	sudo mkdir $(SRV_PATH)/plot; \
+	fi
 
 	sudo cp -rf $(INS_PATH)/cfg $(SRV_PATH);
 	sudo cp -rf $(INS_PATH)/lic $(SRV_PATH);
@@ -152,6 +157,7 @@ install:
 	cd $(CUR_PATH)/coap_api && make install -f coap_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make install -f mqtt_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make install -f pacs_api.so.mk
+	cd $(CUR_PATH)/plot_api && make install -f plot_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make install -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make install -f xhttps.mk
@@ -177,6 +183,7 @@ uninstall:
 	cd $(CUR_PATH)/coap_api && make uninstall -f coap_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make uninstall -f mqtt_api.so.mk
 	cd $(CUR_PATH)/pacs_api && make uninstall -f pacs_api.so.mk
+	cd $(CUR_PATH)/plot_api && make uninstall -f plot_api.so.mk
 
 	cd $(CUR_PATH)/xportm && make uninstall -f xportm.mk
 	cd $(CUR_PATH)/xhttps && make uninstall -f xhttps.mk
