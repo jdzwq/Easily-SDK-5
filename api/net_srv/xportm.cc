@@ -6,10 +6,16 @@ void* STDCALL wait_thread(void* param)
 	xportm_param_t* pxm = (xportm_param_t*)param;
 	stream_t stm;
 	if_bio_t bio = { 0 };
+	stream_t stm_std;
+	if_bio_t bio_std = { 0 };
 	dword_t size;
 	byte_t* buf;
 
 	xdl_thread_init(0);
+
+	get_bio_interface(pxm->std, &bio_std);
+
+	stm_std = stream_alloc(&bio_std);
 
 	while (pxm->act)
 	{
@@ -46,7 +52,10 @@ void* STDCALL wait_thread(void* param)
 					criti_enter(pxm->cr);
 				}
 
-				stream_write_bytes(pxm->stm, buf, size);
+				if (stm_std)
+				{
+					stream_write_bytes(stm_std, buf, size);
+				}
 
 				if (pxm->cr)
 				{
@@ -64,6 +73,8 @@ void* STDCALL wait_thread(void* param)
 		xpipe_stop(pxm->pip);
 	}
 
+	stream_free(stm_std);
+
 	event_sign(pxm->ev, 1);
 
 	xdl_thread_uninit(0);
@@ -76,6 +87,7 @@ void* STDCALL wait_thread(void* param)
 void _xportm_start(xportm_param_t* pxm)
 {
 	dword_t dw;
+	stream_t stm;
 	if_bio_t bio = { 0 };
 
 	XDL_ASSERT(pxm != NULL);
@@ -95,10 +107,10 @@ void _xportm_start(xportm_param_t* pxm)
     
 	get_bio_interface(pxm->std, &bio);
 
-    pxm->stm = stream_alloc(&bio);
-    if (pxm->stm)
+    stm = stream_alloc(&bio);
+    if (stm)
     {
-        stream_set_encode(pxm->stm, DEF_MBS);
+        stream_set_encode(stm, DEF_MBS);
     }
 
 	pxm->pip = xpipe_srv(pxm->pname, FILE_OPEN_READ | FILE_OPEN_OVERLAP);
@@ -113,9 +125,12 @@ void _xportm_start(xportm_param_t* pxm)
 	pxm->act = 1;
 	thread_start(NULL, (PF_THREADFUNC)wait_thread, (void*)pxm);
 
-	if (pxm->stm)
+	if (stm)
 	{
-		stream_write(pxm->stm, _T("xportm start monitoring...\n"), -1, &dw);
+		stream_write(stm, _T("xportm start monitoring...\n"), -1, &dw);
+
+		stream_free(stm);
+		stm = NULL;
 	}
 
 	END_CATCH;
@@ -123,6 +138,9 @@ void _xportm_start(xportm_param_t* pxm)
 	return;
 
 ONERROR:
+
+	if (stm)
+		stream_free(stm);
 
 	if (pxm->ev)
 	{
@@ -140,10 +158,6 @@ ONERROR:
 	if (pxm->pip)
 		xpipe_free(pxm->pip);
     
-    if (pxm->stm)
-        stream_free(pxm->stm);
-    pxm->stm = NULL;
-    
     if (pxm->std)
         xcons_free(pxm->std);
     pxm->std = NULL;
@@ -153,19 +167,30 @@ ONERROR:
 
 void _xportm_stop(xportm_param_t* pxm)
 {
-	if (pxm->stm)
+	stream_t stm;
+	if_bio_t bio = { 0 };
+
+	if (pxm->std)
 	{
+		get_bio_interface(pxm->std, &bio);
+
+		stm = stream_alloc(&bio);
+
+		stream_set_encode(stm, DEF_MBS);
+
 		if (pxm->cr)
 		{
 			criti_enter(pxm->cr);
 		}
 
-		stream_write(pxm->stm, _T("xportm try to stop...\n"), -1, NULL);
+		stream_write(stm, _T("xportm try to stop...\n"), -1, NULL);
 
 		if (pxm->cr)
 		{
 			criti_leave(pxm->cr);
 		}
+
+		stream_free(stm);
 	}
 
 	pxm->act = 0;
@@ -178,10 +203,6 @@ void _xportm_stop(xportm_param_t* pxm)
 	if (pxm->std)
 		xcons_free(pxm->std);
 	pxm->std = NULL;
-
-	if (pxm->stm)
-		stream_free(pxm->stm);
-	pxm->stm = NULL;
 
 	if (pxm->ev)
 		event_destroy(pxm->ev);

@@ -140,7 +140,7 @@ typedef unsigned short(*PF_BIO_ADDR)(xhand_t, tchar_t*);
 typedef unsigned short(*PF_BIO_PEER)(xhand_t, tchar_t*);
 
 typedef struct _if_bio_t{
-	xhand_t		bio;
+	xhand_t		fd;
 
 	PF_BIO_WRITE		pf_write;
 	PF_BIO_FLUSH		pf_flush;

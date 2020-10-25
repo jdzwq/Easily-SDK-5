@@ -403,12 +403,12 @@ bool_t _tftp_send_request(xtftp_t* ppt)
 
 	len = _tftp_format_pdu(pkg_buf, TFTP_PKG_SIZE, pdu);
 
-	if (!(*ppt->pif->pf_write)(ppt->pif->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_write)(ppt->pif->fd, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	(*ppt->pif->pf_flush)(ppt->pif->bio);
+	(*ppt->pif->pf_flush)(ppt->pif->fd);
 
 	if (pdu->type == TFTP_PDU_DATA)
 	{
@@ -438,7 +438,7 @@ bool_t _tftp_recv_request(xtftp_t* ppt)
 	TRY_CATCH;
 
 	len = TFTP_PKG_SIZE;
-	if (!(*ppt->pif->pf_read)(ppt->pif->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_read)(ppt->pif->fd, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -514,12 +514,12 @@ bool_t _tftp_send_response(xtftp_t* ppt)
 
 	len = _tftp_format_pdu(pkg_buf, TFTP_PKG_SIZE, pdu);
 
-	if (!(*ppt->pif->pf_write)(ppt->pif->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_write)(ppt->pif->fd, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	(*ppt->pif->pf_flush)(ppt->pif->bio);
+	(*ppt->pif->pf_flush)(ppt->pif->fd);
 
 	if (pdu->type == TFTP_PDU_DATA)
 	{
@@ -548,7 +548,7 @@ bool_t _tftp_recv_response(xtftp_t* ppt)
 	TRY_CATCH;
 
 	len = TFTP_PKG_SIZE;
-	if (!(*ppt->pif->pf_read)(ppt->pif->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_read)(ppt->pif->fd, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -738,7 +738,7 @@ xhand_t xtftp_bio(xhand_t tftp)
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
-	return (pftp->pif)? pftp->pif->bio : NULL;
+	return (pftp->pif)? pftp->pif->fd : NULL;
 }
 
 void xtftp_close(xhand_t tftp)
@@ -749,7 +749,7 @@ void xtftp_close(xhand_t tftp)
 
 	if (pftp->pif)
 	{
-		xudp_close(pftp->pif->bio);
+		xudp_close(pftp->pif->fd);
 		xmem_free(pftp->pif);
 	}
 
@@ -1252,12 +1252,12 @@ void xtftp_abort(xhand_t tftp, int errcode)
 
 	len = _tftp_format_pdu(pkg_buf, TFTP_PKG_SIZE, pdu);
 
-	if (!(*ppt->pif->pf_write)(ppt->pif->bio, pkg_buf, &len))
+	if (!(*ppt->pif->pf_write)(ppt->pif->fd, pkg_buf, &len))
 	{
 		raise_user_error(NULL, NULL);
 	}
 
-	(*ppt->pif->pf_flush)(ppt->pif->bio);
+	(*ppt->pif->pf_flush)(ppt->pif->fd);
 
 	END_CATCH;
 

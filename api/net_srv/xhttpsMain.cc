@@ -99,8 +99,6 @@ int main(int argc, char* argv[])
 	socket_close(sok);
 	sok = INVALID_FILE;
 
-	xportm_log_error(_T("xhttps"), _T("process terminated"));
-
 	END_CATCH;
 
 	xdl_process_uninit();

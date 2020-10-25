@@ -2605,7 +2605,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlstr)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			bio.bio = &ob.head;
+			bio.fd = &ob.head;
 			bio.pf_read = _lob_read;
 
 			d_stream = stream_alloc(&bio);
@@ -2704,7 +2704,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			bio.bio = &ob.head;
+			bio.fd = &ob.head;
 			bio.pf_write = _lob_write;
 
 			d_stream = stream_alloc(&bio);
@@ -2828,7 +2828,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			bio.bio = &ob.head;
+			bio.fd = &ob.head;
 			bio.pf_read = _lob_read;
 
 			d_stream = stream_alloc(&bio);
@@ -2928,7 +2928,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 			ob.type = SQL_C_BINARY;
 			ob.stmt = pdb->stm;
 
-			bio.bio = &ob.head;
+			bio.fd = &ob.head;
 			bio.pf_write = _lob_write;
 
 			d_stream = stream_alloc(&bio);

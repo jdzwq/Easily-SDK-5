@@ -91,7 +91,7 @@ pacs_t* pacs_scp(xhand_t bio)
 
 xhand_t pacs_bio(pacs_t* pacs)
 {
-	return (pacs->pif)? pacs->pif->bio : NULL;
+	return (pacs->pif)? pacs->pif->fd : NULL;
 }
 
 static dword_t _pacs_format_pdu(pacs_t* pacs, byte_t pdu_type, dword_t pdv_size, byte_t* buf, dword_t max)

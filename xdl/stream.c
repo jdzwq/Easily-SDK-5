@@ -66,7 +66,7 @@ bool_t _stream_write_chunk_head(radstm_t* pxt, dword_t dw)
 	len += 2;
 
 	bys = len;
-	if (!(*pxt->pif->pf_write)(pxt->pif->bio, bsize, &bys))
+	if (!(*pxt->pif->pf_write)(pxt->pif->fd, bsize, &bys))
 	{
 		return 0;
 	}
@@ -83,7 +83,7 @@ bool_t _stream_write_chunk_tail(radstm_t* pxt)
 	bsize[1] = '\n';
 
 	bys = 2;
-	if (!(*pxt->pif->pf_write)(pxt->pif->bio, bsize, &bys))
+	if (!(*pxt->pif->pf_write)(pxt->pif->fd, bsize, &bys))
 	{
 		return 0;
 	}
@@ -152,7 +152,7 @@ bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		_stream_begin_write(pxt, &dw);
 
-		if (!(*pxt->pif->pf_write)(pxt->pif->bio, buf + pos, &dw))
+		if (!(*pxt->pif->pf_write)(pxt->pif->fd, buf + pos, &dw))
 		{
 			*pb = pos;
 			return 0;
@@ -180,7 +180,7 @@ bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
 	while (pos < INT_LEN)
 	{
 		bys = 1;
-		b_rt = (*pxt->pif->pf_read)(pxt->pif->bio, bsize + pos, &bys);
+		b_rt = (*pxt->pif->pf_read)(pxt->pif->fd, bsize + pos, &bys);
 
 		if (pos && bsize[pos - 1] == '\r' && bsize[pos] == '\n')
 		{
@@ -221,7 +221,7 @@ bool_t _stream_read_chunk_tail(radstm_t* pxt)
 	while (pos < 2)
 	{
 		bys = 1;
-		b_rt = (*pxt->pif->pf_read)(pxt->pif->bio, bsize + pos, &bys);
+		b_rt = (*pxt->pif->pf_read)(pxt->pif->fd, bsize + pos, &bys);
 		//last \r\n
 		if (bsize[0] == '\r' && bsize[1] == '\n')
 		{
@@ -301,7 +301,7 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 
 		_stream_begin_read(pxt, &dw);
 
-		if (!(*pxt->pif->pf_read)(pxt->pif->bio, buf + pos, &dw))
+		if (!(*pxt->pif->pf_read)(pxt->pif->fd, buf + pos, &dw))
 		{
 			*pb = pos;
 			return 0;
@@ -349,10 +349,10 @@ bool_t stream_flush(stream_t xs)
 {
 	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
 
-	if (pxt->pif->bio && pxt->pif->pf_flush)
-		return (*pxt->pif->pf_flush)(pxt->pif->bio);
+	if (pxt->pif->fd && pxt->pif->pf_flush)
+		return (*pxt->pif->pf_flush)(pxt->pif->fd);
 	else
-		return (pxt->pif->bio)? 1 : 0;
+		return (pxt->pif->fd)? 1 : 0;
 }
 
 xhand_t stream_free(stream_t xs)
@@ -362,7 +362,7 @@ xhand_t stream_free(stream_t xs)
 
 	XDL_ASSERT(xs);
 
-	io = pxt->pif->bio;
+	io = pxt->pif->fd;
 
 	xmem_free(pxt);
 	return io;
@@ -374,7 +374,7 @@ xhand_t stream_fetch(stream_t xs)
 
 	XDL_ASSERT(xs);
 
-	return pxt->pif->bio;
+	return pxt->pif->fd;
 }
 
 void stream_set_encode(stream_t xs, int encode)
@@ -459,7 +459,7 @@ bool_t stream_write_char(stream_t xs, const tchar_t* buf, dword_t* pch)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	if (pxt->encode == _UTF8)
 	{
@@ -566,7 +566,7 @@ bool_t stream_read_char(stream_t xs, tchar_t* buf, dword_t* pb)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	bs = 1;
 	rt = _stream_read(pxt, ba, &bs);
@@ -833,7 +833,7 @@ bool_t stream_write_sword_lit(stream_t xs, sword_t sw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	dw = 2;
 	if (!_stream_write(pxt, (byte_t*)&sw, &dw))
@@ -850,7 +850,7 @@ bool_t stream_write_sword_big(stream_t xs, sword_t sw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	PUT_SWORD_BIG(ba, 0, sw);
 	dw = 2;
@@ -868,7 +868,7 @@ bool_t stream_read_sword_lit(stream_t xs, sword_t* psw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	dw = 2;
 
@@ -886,7 +886,7 @@ bool_t stream_read_sword_big(stream_t xs, sword_t* psw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	dw = 2;
 	if (!_stream_read(pxt, ba, &dw))
@@ -904,7 +904,7 @@ bool_t stream_write_dword_lit(stream_t xs, dword_t dw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	n = 4;
 	if (!_stream_write(pxt, (byte_t*)&dw, &n))
@@ -921,7 +921,7 @@ bool_t stream_write_dword_big(stream_t xs, dword_t dw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	PUT_DWORD_BIG(ba, 0, dw);
 
@@ -939,7 +939,7 @@ bool_t stream_read_dword_lit(stream_t xs, dword_t* pdw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	n = 4;
 	if (!_stream_read(pxt, (byte_t*)pdw, &n))
@@ -956,7 +956,7 @@ bool_t stream_read_dword_big(stream_t xs, dword_t* pdw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 	
 	n = 4;
 	if (!_stream_read(pxt, ba, &n))
@@ -973,7 +973,7 @@ bool_t stream_read_chunk_size(stream_t xs, dword_t* pb)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	if (pxt->mode != CHUNK_OPERA)
 	{
@@ -1011,7 +1011,7 @@ bool_t stream_write_chunk_size(stream_t xs, dword_t dw)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	if (pxt->mode != CHUNK_OPERA)
 	{
@@ -1128,7 +1128,7 @@ bool_t stream_write_bytes(stream_t xs, const byte_t* buf, dword_t len)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	if (!buf || !len)
 	{
@@ -1144,7 +1144,7 @@ bool_t stream_read_bytes(stream_t xs, byte_t* buf, dword_t *pb)
 
 	XDL_ASSERT(xs);
 
-	XDL_ASSERT(pxt->pif->bio != NULL);
+	XDL_ASSERT(pxt->pif->fd != NULL);
 
 	if (!buf || !(*pb))
 	{

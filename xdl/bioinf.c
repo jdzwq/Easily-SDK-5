@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 bool_t get_bio_interface(xhand_t io, if_bio_t* pio)
 {
-	pio->bio = io;
+	pio->fd = io;
 
 	switch (io->tag)
 	{

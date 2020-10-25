@@ -1655,7 +1655,7 @@ xhand_t xmqtt_bio(xhand_t mqtt)
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
-	return (pmqtt->pif)? pmqtt->pif->bio : NULL;
+	return (pmqtt->pif)? pmqtt->pif->fd : NULL;
 }
 
 int xmqtt_type(xhand_t mqtt)

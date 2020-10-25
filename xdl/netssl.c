@@ -915,7 +915,7 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 
 	dw = SSL_HDR_SIZE + pssl->snd_msg_len;
 
-	if (!(*pssl->pif->pf_write)(pssl->pif->bio, pssl->snd_hdr, &dw))
+	if (!(*pssl->pif->pf_write)(pssl->pif->fd, pssl->snd_hdr, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -988,7 +988,7 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 	TRY_CATCH;
 
 	dw = SSL_HDR_SIZE;
-	if (!(pssl->pif->pf_read)(pssl->pif->bio, pssl->rcv_hdr, &dw))
+	if (!(pssl->pif->pf_read)(pssl->pif->fd, pssl->rcv_hdr, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -1017,7 +1017,7 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 	}
 
 	dw = pssl->rcv_msg_len;
-	if (!(*pssl->pif->pf_read)(pssl->pif->bio, pssl->rcv_msg, &dw))
+	if (!(*pssl->pif->pf_read)(pssl->pif->fd, pssl->rcv_msg, &dw))
 	{
 		raise_user_error(NULL, NULL);
 	}
@@ -3850,7 +3850,7 @@ void  xssl_close(xhand_t ssl)
 	}
 
 	if (pssl->pif)
-		xtcp_close(pssl->pif->bio);
+		xtcp_close(pssl->pif->fd);
 
 	_ssl_uninit(pssl);
 
@@ -3866,7 +3866,7 @@ res_file_t xssl_socket(xhand_t ssl)
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
-	return (pssl->pif->bio) ? xtcp_socket(pssl->pif->bio) : INVALID_FILE;
+	return (pssl->pif->fd) ? xtcp_socket(pssl->pif->fd) : INVALID_FILE;
 }
 
 int xssl_type(xhand_t ssl)

@@ -633,7 +633,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, num_buf, num_buf);
 	}
 	
-	if (!(*pssh->pif->pf_write)(pssh->pif->bio, num_buf, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->fd, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -660,7 +660,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, num_buf, num_buf);
 	}
 
-	if (!(*pssh->pif->pf_write)(pssh->pif->bio, num_buf, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->fd, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -687,7 +687,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, payload, payload);
 	}
 
-	if (!(pssh->pif->pf_write)(pssh->pif->bio, payload, &n))
+	if (!(pssh->pif->pf_write)(pssh->pif->fd, payload, &n))
 	{
 		return C_ERR;
 	}
@@ -716,7 +716,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 	{
 		arc4_crypt((arc4_context*)pssh->snd_ciph, (int)n, rng_buf, rng_buf);
 	}
-	if (!(pssh->pif->pf_write)(pssh->pif->bio, rng_buf, &n))
+	if (!(pssh->pif->pf_write)(pssh->pif->fd, rng_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -737,7 +737,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 
 	//(5+n1+n2)~(5+n1+n2+k-1): mac
 	n = hmac_len;
-	if (!(pssh->pif->pf_write)(pssh->pif->bio, mac_buf, &n))
+	if (!(pssh->pif->pf_write)(pssh->pif->fd, mac_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -817,7 +817,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//0~3: packet length
 	n = 4;
-	if (!(*pssh->pif->pf_read)(pssh->pif->bio, num_buf, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->fd, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -848,7 +848,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//4: padding length
 	n = 1;
-	if (!(*pssh->pif->pf_read)(pssh->pif->bio, num_buf, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->fd, num_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -878,7 +878,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//5~(5+n1-1): payload
 	n = payload_len;
-	if (!(*pssh->pif->pf_read)(pssh->pif->bio, payload, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->fd, payload, &n))
 	{
 		*psize = 0;
 		return C_ERR;
@@ -905,7 +905,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//(5+n1)~(5+n1+n2-1): padding
 	n = padding_len;
-	if (!(*pssh->pif->pf_read)(pssh->pif->bio, rng_buf, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->fd, rng_buf, &n))
 	{
 		return C_ERR;
 	}
@@ -946,7 +946,7 @@ static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
 
 	//(5+n1+n2)~(5+n1+n2+k-1): mac
 	n = hmac_len;
-	if (!(*pssh->pif->pf_read)(pssh->pif->bio, rcv_mac, &n))
+	if (!(*pssh->pif->pf_read)(pssh->pif->fd, rcv_mac, &n))
 	{
 		return C_ERR;
 	}
@@ -1274,13 +1274,13 @@ static int _ssh_send_banner(ssh_t* pssh)
 		buf = pssh->kex_VC;
 	}
 
-	if (!(*pssh->pif->pf_write)(pssh->pif->bio, buf, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->fd, buf, &n))
 	{
 		return C_ERR;
 	}
 
 	n = 2;
-	if (!(*pssh->pif->pf_write)(pssh->pif->bio, (byte_t*)bs, &n))
+	if (!(*pssh->pif->pf_write)(pssh->pif->fd, (byte_t*)bs, &n))
 	{
 		return C_ERR;
 	}
@@ -1306,7 +1306,7 @@ static int _ssh_recv_banner(ssh_t* pssh)
 	for (i = 0; i < SSH_BANNER_SIZE; i++)
 	{
 		n = 1;
-		if (!(*pssh->pif->pf_read)(pssh->pif->bio, (byte_t*)(buf + i), &n))
+		if (!(*pssh->pif->pf_read)(pssh->pif->fd, (byte_t*)(buf + i), &n))
 			return C_ERR;
 
 		if (buf[i] == '\r')
@@ -3375,7 +3375,7 @@ void  xssh_close(xhand_t ssh)
 	XDL_ASSERT(pso->type == SSH_TYPE_CLIENT || pso->type == SSH_TYPE_SERVER);
 
 	if (pso->pif)
-		xtcp_close(pso->pif->bio);
+		xtcp_close(pso->pif->fd);
 
 	_ssh_uninit(pso);
 
@@ -3391,7 +3391,7 @@ res_file_t xssh_socket(xhand_t ssh)
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
-	return (pso->pif) ? xtcp_socket(pso->pif->bio) : INVALID_FILE;
+	return (pso->pif) ? xtcp_socket(pso->pif->fd) : INVALID_FILE;
 }
 
 int xssh_type(xhand_t ssh)

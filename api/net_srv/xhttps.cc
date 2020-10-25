@@ -492,6 +492,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	n_state = (*pf_invoke)(sz_method, pb);
 
+	free_library(api);
+	api = NULL;
+
 	if (pb->log)
 	{
 		xfile_close(pb->log);
@@ -503,13 +506,15 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		}
 	}
 
+	_xhttps_log_head(http);
+
+	if (pb->is_thread)
+		xportm_log_error(_T("xhttps"), _T("thread terminated"));
+	else
+		xportm_log_error(_T("xhttps"), _T("process terminated"));
+
 	xmem_free(pb);
 	pb = NULL;
-
-	free_library(api);
-	api = NULL;
-
-	_xhttps_log_head(http);
 
 	END_CATCH;
 

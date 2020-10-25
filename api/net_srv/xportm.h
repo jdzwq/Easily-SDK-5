@@ -36,7 +36,6 @@ typedef struct _xportm_param_t
 	bool_t act;
 
 	xhand_t std;
-	stream_t stm;
 	xhand_t pip;
 	tchar_t pname[RES_LEN + 1];
 }xportm_param_t;
