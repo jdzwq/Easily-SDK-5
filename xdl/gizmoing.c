@@ -43,7 +43,7 @@ LICENSE.GPL3 for more details.
 #define THREE_SPAN		3 //(float)(3.0f / PDPERMM)
 #define FOUR_SPAN		4 //(float)(4.0f / PDPERMM)
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 void draw_logo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
 {

@@ -6,6 +6,7 @@
 #include "../xdc/docker.h"
 #include "../xdc/splitor.h"
 #include "../xdc/textor.h"
+#include "../xdc/designer.h"
 #include "../xdc/xdcbox.h"
 #include "../xdc/xdcmenu.h"
 #include "../xdc/xdcfire.h"

@@ -34,54 +34,44 @@ LICENSE.GPL3 for more details.
 #include "xdlimp.h"
 #include "xdlstd.h"
 
+#ifdef XDL_SUPPORT_GDI
 
-
-#ifdef XDL_SUPPORT_VIEW
-
-void hint_test(if_hint_t* pit, PF_HINT_CALLBACK pf, void* pp)
+void hint_object_item(if_itemhint_t* pit, PF_HINT_DESIGNER_CALLBACK pf, void* pp)
 {
 	bool_t b_focus = 0;
 	bool_t b_drag = 0;
 	bool_t b_sizew = 0;
 	bool_t b_sizeh = 0;
 
-	xrect_t xr;
+	xrect_t xr = { 0 };
 	link_t_ptr xlk, ylk;
-	int to = 0, ts = 0;
+	int opera = 0;
+	int state = 0;
 	
-	typedef int(*PF_HINT_CALLBACK)(int state, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr, bool_t focus, bool_t drag, bool_t sizew, bool_t sizeh, void* pp);
+	opera = (*pf)(_HINTNER_STATE_FULL, NULL, NULL, &xr, 0, 0, 0, 0, pp);
 
-	typedef int(*PF_HINT_NEXT)(void* param, link_t_ptr* p_xlk, link_t_ptr* p_ylk, xrect_t* p_rect, bool_t* p_focus, bool_t* p_drag, bool_t* p_sizew, bool_t* p_sizeh);
-
-	to = (*pf)(_HINTNER_STATE_BEGIN, NULL, NULL, &xr, 0, 0, 0, 0, pp);
-
-	if (to != _HINTNER_OPERA_STOP)
+	while (opera != _HINTNER_OPERA_STOP)
 	{
-		to = _HINTNER_OPERA_NEXT;
-	}
-
-	while (to != _HINTNER_OPERA_STOP)
-	{
-		switch (to)
+		switch (opera)
 		{
 		case _HINTNER_OPERA_NEXT:
 
-			(*pit->pf_hint_next)(pit->param, &xlk, &ylk, &xr, &b_focus, &b_drag, &b_sizew, &b_sizeh);
-			ts = _HINTNER_STATE_OBJECT;
+			(*pit->pf_next_item)(pit->param, &xlk, &ylk, &xr, &b_focus, &b_drag, &b_sizew, &b_sizeh);
+
+			state = (xlk == LINK_LAST || ylk == LINK_LAST)? _HINTNER_STATE_NONE : _HINTNER_STATE_ITEM;
 			break;
 		}
 
-		switch (ts)
+		switch (state)
 		{
-		case _HINTNER_STATE_OBJECT:
-			to = (*pf)(_HINTNER_STATE_BEGIN, NULL, NULL, &xr, b_focus, b_drag, b_sizew, b_sizeh, pp);
+		case _HINTNER_STATE_ITEM:
+			opera = (*pf)(_HINTNER_STATE_ITEM, xlk, ylk, &xr, b_focus, b_drag, b_sizew, b_sizeh, pp);
+			break;
+		case _HINTNER_STATE_NONE:
+			opera = (*pf)(_HINTNER_STATE_NONE, NULL, NULL, &xr, b_focus, b_drag, b_sizew, b_sizeh, pp);
 			break;
 		}
-
-		if (to != _HINTNER_OPERA_NEXT)
-			continue;
 	}
-
 }
 
 #endif

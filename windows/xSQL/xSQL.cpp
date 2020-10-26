@@ -45,7 +45,8 @@ bool_t _export_file(xdb_t xdb, const tchar_t* sql, const tchar_t* fname)
 		return 0;
 
 	xhand_t con = NULL;
-	file_t xf = NULL;
+	if_bio_t bio = { 0 };
+	if_fio_t* xf = NULL;
 	stream_t xs = NULL;
 	bool_t rt = 0;
 
@@ -58,7 +59,9 @@ bool_t _export_file(xdb_t xdb, const tchar_t* sql, const tchar_t* fname)
 		if (!con)
 			return 0;
 
-		xs = stream_alloc(con);
+		get_bio_interface(con, &bio);
+
+		xs = stream_alloc(&bio);
 		if (!xs)
 		{
 			xcons_free(con);
@@ -79,7 +82,9 @@ bool_t _export_file(xdb_t xdb, const tchar_t* sql, const tchar_t* fname)
 		if (!xf)
 			return 0;
 
-		xs = stream_alloc(xfile_bio(xf));
+		get_bio_interface(xf->fd, &bio);
+
+		xs = stream_alloc(&bio);
 		if (!xs)
 		{
 			xfile_close(xf);
@@ -107,8 +112,9 @@ bool_t _import_file(xdb_t xdb, const tchar_t* table, const tchar_t* fname)
 	if (!pf_db_import)
 		return 0;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	stream_t xs = NULL;
+	if_bio_t bio = { 0 };
 	bool_t rt = 0;
 	tchar_t fenc[INT_LEN + 1] = { 0 };
 	int encode = 0;
@@ -125,7 +131,9 @@ bool_t _import_file(xdb_t xdb, const tchar_t* table, const tchar_t* fname)
 	if (!xf)
 		return 0;
 
-	xs = stream_alloc(xfile_bio(xf));
+	get_bio_interface(xf->fd, &bio);
+
+	xs = stream_alloc(&bio);
 	if (!xs)
 	{
 		xfile_close(xf);
@@ -153,8 +161,9 @@ bool_t _batch_file(xdb_t xdb, const tchar_t* fname)
 	if (!pf_db_batch)
 		return 0;
 
-	file_t xf = NULL;
+	if_fio_t* xf = NULL;
 	stream_t xs = NULL;
+	if_bio_t bio = { 0 };
 	bool_t rt = 0;
 	tchar_t fenc[INT_LEN + 1] = { 0 };
 	int encode = 0;
@@ -171,7 +180,9 @@ bool_t _batch_file(xdb_t xdb, const tchar_t* fname)
 	if (!xf)
 		return 0;
 
-	xs = stream_alloc(xfile_bio(xf));
+	get_bio_interface(xf->fd, &bio);
+
+	xs = stream_alloc(&bio);
 	if (!xs)
 	{
 		xfile_close(xf);

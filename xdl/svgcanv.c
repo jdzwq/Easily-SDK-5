@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 typedef struct _svg_canvas_t{
 	canvas_head head;

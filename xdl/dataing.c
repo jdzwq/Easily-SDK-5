@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 void draw_pass(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {

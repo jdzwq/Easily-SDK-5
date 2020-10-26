@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#ifdef XDL_SUPPORT_VIEW
+#ifdef XDL_SUPPORT_GDI
 
 #ifdef	__cplusplus
 extern "C" {

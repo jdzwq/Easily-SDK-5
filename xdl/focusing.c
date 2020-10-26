@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "focusing.h"
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 void draw_select_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {

@@ -33,6 +33,7 @@ LICENSE.GPL3 for more details.
 #define _GRIDVIEW_H
 
 #include "xdldef.h"
+#include "hintner.h"
 
 #ifdef XDL_SUPPORT_VIEW
 
@@ -51,6 +52,8 @@ typedef enum{
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
+EXP_API void hint_grid_item(link_t_ptr ptr, int page, PF_HINT_DESIGNER_CALLBACK pf, void* pp);
 
 EXP_API float calc_grid_page_width(link_t_ptr ptr);
 

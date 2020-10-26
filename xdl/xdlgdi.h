@@ -3,6 +3,7 @@
 #define _XDLGDI_H
 
 #include "scanner.h"
+#include "hintner.h"
 
 #include "shaping.h"
 #include "gizmoing.h"

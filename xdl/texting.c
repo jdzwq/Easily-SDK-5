@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 #include "xdlview.h"
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 typedef struct _FIXTEXT_SCAN{
 	xrect_t xr;

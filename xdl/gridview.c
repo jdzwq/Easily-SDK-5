@@ -35,10 +35,105 @@ LICENSE.GPL3 for more details.
 #include "xdlgdi.h"
 #include "xdldoc.h"
 
-
-
 #ifdef XDL_SUPPORT_VIEW
 
+
+#define GRIDITEM_INDICATOR_NEXT_GRID	0
+#define GRIDITEM_INDICATOR_NEXT_ITEM	1
+
+typedef struct _GRIDITEMOPERATOR{
+	int ind;
+
+	int page;
+	link_t_ptr grid;
+	link_t_ptr rlk;
+	link_t_ptr clk;
+}GRIDITEMOPERATOR;
+
+void call_grid_next_item(void* param, link_t_ptr* p_xlk, link_t_ptr* p_ylk, xrect_t* p_rect, bool_t* p_focus, bool_t* p_drag, bool_t* p_sizew, bool_t* p_sizeh)
+{
+	GRIDITEMOPERATOR* poo = (GRIDITEMOPERATOR*)param;
+
+	XDL_ASSERT(poo && poo->grid);
+
+	switch (poo->ind)
+	{
+	case GRIDITEM_INDICATOR_NEXT_GRID:
+		poo->clk = NULL;
+		poo->rlk = NULL;
+
+		*p_xlk = NULL;
+		*p_ylk = NULL;
+		calc_grid_cell_rect(poo->grid, poo->page, poo->rlk, poo->clk, p_rect);
+
+		*p_focus = 1;
+		*p_drag = 0;
+		*p_sizew = 1;
+		*p_sizeh = 0;
+
+		poo->ind = GRIDITEM_INDICATOR_NEXT_ITEM;
+		break;
+	case GRIDITEM_INDICATOR_NEXT_ITEM:
+		poo->clk = (poo->clk == NULL) ? get_next_visible_col(poo->grid, LINK_FIRST) : get_next_visible_col(poo->grid, poo->clk);
+		if (poo->clk == NULL)
+		{
+			poo->rlk = (poo->rlk == NULL) ? get_next_visible_row(poo->grid, LINK_FIRST) : get_next_visible_row(poo->grid, poo->rlk);
+		}
+
+		if (!poo->rlk && !poo->clk)
+		{
+			*p_xlk = LINK_LAST;
+			*p_ylk = LINK_LAST;
+			xmem_zero((void*)p_rect, sizeof(xrect_t));
+
+			*p_focus = 1;
+			*p_drag = 0;
+			*p_sizew = 0;
+			*p_sizeh = 0;
+		}
+		else
+		{
+			*p_xlk = poo->rlk;
+			*p_ylk = poo->clk;
+			calc_grid_cell_rect(poo->grid, poo->page, poo->rlk, poo->clk, p_rect);
+
+			*p_focus = 1;
+			*p_drag = 0;
+			*p_sizew = 1;
+			*p_sizeh = 0;
+		}
+		poo->ind = (poo->rlk == LINK_LAST && poo->clk == LINK_LAST) ? GRIDITEM_INDICATOR_NEXT_GRID : GRIDITEM_INDICATOR_NEXT_ITEM;
+		break;
+	}
+}
+
+void call_grid_cur_item(void* param, link_t_ptr* p_xlk, link_t_ptr* p_ylk)
+{
+	GRIDITEMOPERATOR* poo = (GRIDITEMOPERATOR*)param;
+
+	XDL_ASSERT(poo && poo->grid);
+
+	*p_xlk = poo->rlk;
+	*p_ylk = poo->clk;
+}
+
+
+void hint_grid_item(link_t_ptr ptr, int page, PF_HINT_DESIGNER_CALLBACK pf, void* pp)
+{
+	GRIDITEMOPERATOR ro = { 0 };
+	if_itemhint_t it = { 0 };
+
+	ro.grid = ptr;
+	ro.page = page;
+
+	it.param = (void*)&ro;
+	it.pf_next_item = call_grid_next_item;
+	it.pf_cur_item = call_grid_cur_item;
+	
+	hint_object_item(&it, pf, pp);
+}
+
+/******************************************************************************************************************************************/
 static int _grid_rows_persubfield(link_t_ptr ptr)
 {
 	int rowsperpage;

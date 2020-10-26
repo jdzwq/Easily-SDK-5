@@ -35,6 +35,26 @@ LICENSE.GPL3 for more details.
 #include "xdcdef.h"
 
 
+typedef void(*PF_HINT_TEST)(void* data, int page, PF_HINT_DESIGNER_CALLBACK pf, void* pp);
+
+typedef struct _designer_t{
+	res_win_t widget;
+	
+	link_t_ptr data;
+	bool_t paged;
+	int page;
+
+	link_t_ptr xlk;
+	link_t_ptr ylk;
+	xrect_t rect;
+	bool_t focus;
+	bool_t drag;
+	bool_t sizew;
+	bool_t sizeh;
+
+	PF_HINT_TEST pf_hint_test;
+}designer_t;
+
 
 #ifdef	__cplusplus
 extern "C" {

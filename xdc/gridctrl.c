@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdcctrl.h"
+
 #include "xdcimp.h"
 #include "xdcfire.h"
 #include "xdcbox.h"
@@ -1979,8 +1980,6 @@ void hand_grid_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			draw_focus_raw(&ifv, &xc, &xr, ALPHA_SOLID);
 		}
 	}
-
-	
 
 	end_canvas_paint(canv, dc, pxr);
 	

@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "xdlimp.h"
 #include "xdlstd.h"
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 
 void _draw_forwardslash_shape(const if_drawing_t* pif, const xpen_t* pxp, const xrect_t* prt)

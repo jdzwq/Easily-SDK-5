@@ -35,8 +35,7 @@ LICENSE.GPL3 for more details.
 #include "xdlstd.h"
 
 
-
-#ifdef XDL_SUPPORT_VIEW
+#ifdef XDL_SUPPORT_GDI
 
 void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {

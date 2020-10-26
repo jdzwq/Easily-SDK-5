@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 
 /*

@@ -37,13 +37,20 @@ LICENSE.GPL3 for more details.
 #include "xdlstd.h"
 #include "xdlview.h"
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 {
 	pif->ctx = (void*)canv;
 
 	pif->pf_get_measure = svg_get_measure;
+
+	pif->pf_rect_tm_to_pt = svg_rect_tm_to_pt;
+	pif->pf_rect_pt_to_tm = svg_rect_pt_to_tm;
+	pif->pf_size_tm_to_pt = svg_size_tm_to_pt;
+	pif->pf_size_pt_to_tm = svg_size_pt_to_tm;
+	pif->pf_point_tm_to_pt = svg_point_tm_to_pt;
+	pif->pf_point_pt_to_tm = svg_point_pt_to_tm;
 
 	pif->pf_draw_line = svg_draw_line;
 	pif->pf_draw_bezier = svg_draw_bezier;

@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdlimp.h"
 #include "xdlstd.h"
 
-#if defined(XDL_SUPPORT_VIEW)
+#if defined(XDL_SUPPORT_GDI)
 
 void draw_code128(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {

@@ -37,8 +37,10 @@ LICENSE.GPL3 for more details.
 #endif
 
 #define XDL_SUPPORT_DOC
-#define XDL_SUPPORT_VIEW
 #define XDL_SUPPORT_BIO
+
+#define XDL_SUPPORT_GDI
+#define XDL_SUPPORT_VIEW
 
 /*CHINA LANGUAGE*/
 #define LANG_CN

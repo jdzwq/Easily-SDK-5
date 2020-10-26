@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 #include "xdlview.h"
 
-#ifdef XDL_SUPPORT_VIEW
+#ifdef XDL_SUPPORT_GDI
 
 void svg_print_form(link_t_ptr svg, link_t_ptr form, int page)
 {

@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-#ifdef XDL_SUPPORT_VIEW
+#ifdef XDL_SUPPORT_GDI
 
 typedef enum{
 	HINT_NONE,
@@ -53,27 +53,29 @@ typedef enum{
 }HINTNER_OPERA;
 
 typedef enum{
-	_HINTNER_STATE_BEGIN = 0,
-	_HINTNER_STATE_OBJECT = 1,
-	_HINTNER_STATE_END = -1,
+	_HINTNER_STATE_FULL = 0,
+	_HINTNER_STATE_ITEM = 1,
+	_HINTNER_STATE_NONE = -1,
 }HINTNER_STATE;
 
-typedef int(*PF_HINT_CALLBACK)(int state, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr, bool_t focus, bool_t drag, bool_t sizew, bool_t sizeh, void* pp);
+typedef int(*PF_HINT_DESIGNER_CALLBACK)(int state, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr, bool_t focus, bool_t drag, bool_t sizew, bool_t sizeh, void* pp);
 
 
-typedef int(*PF_HINT_NEXT)(void* param, link_t_ptr* p_xlk, link_t_ptr* p_ylk, xrect_t* p_rect, bool_t* p_focus, bool_t* p_drag, bool_t* p_sizew, bool_t* p_sizeh);
+typedef void(*PF_HINT_NEXT_ITEM)(void* param, link_t_ptr* p_xlk, link_t_ptr* p_ylk, xrect_t* p_rect, bool_t* p_focus, bool_t* p_drag, bool_t* p_sizew, bool_t* p_sizeh);
+typedef void(*PF_HINT_CUR_ITEM)(void* param, link_t_ptr* p_xlk, link_t_ptr* p_ylk);
 
-typedef struct _if_hint_t{
-	PF_HINT_NEXT	pf_hint_next;
+typedef struct _if_itemhint_t{
+	PF_HINT_NEXT_ITEM	pf_next_item;
+	PF_HINT_CUR_ITEM	pf_cur_item;
 	void* param;
-}if_hint_t;
+}if_itemhint_t;
 
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	EXP_API void hint_test(if_hint_t* pit, PF_HINT_CALLBACK pf, void* pp);
+	EXP_API void hint_object_item(if_itemhint_t* pit, PF_HINT_DESIGNER_CALLBACK pf, void* pp);
 
 
 #ifdef	__cplusplus
