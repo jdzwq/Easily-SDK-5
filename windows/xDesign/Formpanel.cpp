@@ -247,7 +247,7 @@ void FormPanel_OnSave(res_win_t widget)
 
 		shell_get_curpath(szPath, PATH_LEN);
 
-		if (!shell_get_filename(widget, szPath, _T("xml sheet file(*.sheet)\0*.sheet\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+		if (!shell_get_filename(widget, szPath, _T("Form Meta File(*.sheet)\0*.sheet\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 			return;
 
 		xscat(szPath, _T("\\"));
@@ -276,7 +276,7 @@ void FormPanel_OnSaveAs(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("xml sheet file(*.sheet)\0*.sheet\0svg image file(*.svg)\0*.svg\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("Form Meta File(*.sheet)\0*.sheet\0svg image file(*.svg)\0*.svg\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));

@@ -184,7 +184,7 @@ void ImagePanel_OnAttach(res_win_t widget)
 	tchar_t szFile[PATH_LEN] = { 0 };
 	tchar_t szExt[10] = { 0 };
 
-	const tchar_t* szFilter = _T("JPG File(*.jpg)\0*.jpg\0PNG File(*.png)\0*.png\0Bitmap File(*.bmp)\0*.bmp\0");
+	const tchar_t* szFilter = _T("JPG File(*.jpg)\0*.jpg\0PNG File(*.png)\0*.png\0BMP File(*.bmp)\0*.bmp\0");
 	xscpy(szExt, _T("jpg"));
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -450,7 +450,7 @@ void ImagePanel_OnSave(res_win_t widget)
 
 		shell_get_curpath(szPath, PATH_LEN);
 
-		if (!shell_get_filename(widget, szPath, _T("ImageList file(*.images)\0*.images\0"), _T("images"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+		if (!shell_get_filename(widget, szPath, _T("Images Meta File(*.sheet)\0*.sheet\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 			return;
 
 		xscat(szPath, _T("\\"));
@@ -474,7 +474,7 @@ void ImagePanel_OnSaveAs(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("ImageList file(*.images)\0*.images\0"), _T("images"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("Images Meta File(*.sheet)\0*.sheet\0"), _T("sheet"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));

@@ -128,6 +128,14 @@ typedef struct _splitor_t{
 	int x, y;
 }splitor_t;
 
+typedef struct _designer_t{
+	res_win_t widget;
+	link_t_ptr doc;
+	link_t_ptr xlk;
+	link_t_ptr ylk;
+	xrect_t clip;
+}designer_t;
+
 #define EVENT_BEGIN_DISPATH(pv)			{if_event_t* pev = pv;
 #ifdef XDU_SUPPORT_WIDGET_NC
 #define EVENT_ON_NCPAINT(proc)			pev->pf_on_nc_paint = proc;

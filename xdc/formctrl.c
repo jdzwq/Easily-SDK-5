@@ -2513,13 +2513,6 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	canv = widget_get_canvas(widget);
 	pif = widget_get_canvas_interface(widget);
 	
-
-	
-	
-	
-	
-	
-
 	widget_get_client_rect(widget, &xr);
 
 	rdc = begin_canvas_paint(canv, dc, xr.w, xr.h);
@@ -2661,8 +2654,6 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 			(*ifv.pf_draw_rect)(ifv.ctx, &xp, NULL, &xr);
 		}
 	}
-
-	
 
 	end_canvas_paint(canv, dc, pxr);
 	

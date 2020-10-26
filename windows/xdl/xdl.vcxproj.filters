@@ -588,6 +588,9 @@
     <ClInclude Include="..\..\xdl\xdloop.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\hintner.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -1095,6 +1098,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\miscell.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\hintner.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

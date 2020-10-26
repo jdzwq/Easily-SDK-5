@@ -267,6 +267,9 @@
     <ClCompile Include="..\..\xdc\gdiinf.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xdc\designer.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xdc\textor.h">
@@ -336,6 +339,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdc\impwidget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdc\designer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

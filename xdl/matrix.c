@@ -89,13 +89,13 @@ void matrix_unit(matrix_t* pmt)
 	}
 }
 
-void matrix_empty(matrix_t* pmt)
+void matrix_reset(matrix_t* pmt, int rows, int cols)
 {
 	xmem_free(pmt->data);
 
-	pmt->data = NULL;
-	pmt->rows = 0;
-	pmt->cols = 0;
+	pmt->data = (double*)xmem_alloc(rows * cols * sizeof(double));
+	pmt->rows = rows;
+	pmt->cols = cols;
 }
 
 void matrix_copy(matrix_t* dest, const matrix_t* src)

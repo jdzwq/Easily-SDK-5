@@ -186,7 +186,7 @@ void SQLPanel_OnSave(res_win_t widget)
 
 		shell_get_curpath(szPath, PATH_LEN);
 
-		if (!shell_get_filename(widget, szPath, _T("SQL file(*.sql)\0*.sql\0"), _T("sql"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+		if (!shell_get_filename(widget, szPath, _T("SQL Text File(*.sql)\0*.sql\0"), _T("sql"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 			return;
 
 		xscat(szPath, _T("\\"));
@@ -211,7 +211,7 @@ void SQLPanel_OnSaveAs(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("SQL file(*.sql)\0*.sql\0"), _T("sql"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("SQL Text File(*.sql)\0*.sql\0"), _T("sql"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));

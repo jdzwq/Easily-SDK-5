@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\xdc\annodlg.c" />
     <ClCompile Include="..\..\xdc\curvectrl.c" />
+    <ClCompile Include="..\..\xdc\designer.c" />
     <ClCompile Include="..\..\xdc\diagramctrl.c" />
     <ClCompile Include="..\..\xdc\gdicanv.c" />
     <ClCompile Include="..\..\xdc\gdiinf.c" />
@@ -104,6 +105,7 @@
     <ClCompile Include="..\..\xdc\xdcmenu.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\xdc\designer.h" />
     <ClInclude Include="..\..\xdc\docker.h" />
     <ClInclude Include="..\..\xdc\gdicanv.h" />
     <ClInclude Include="..\..\xdc\gdiinf.h" />

@@ -34,6 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 #include "variant.h"
+#include "matrix.h"
 
 #ifdef XDL_SUPPORT_DOC
 
@@ -488,6 +489,21 @@ EXP_API int	get_plot_matrix_data(link_t_ptr ptr, tchar_t* buf, int max);
 */
 EXP_API void set_plot_matrix_data(link_t_ptr ptr, const tchar_t* data, int len);
 
+/*
+@FUNCTION get_plot_matrix: get plot matrix string arrax.
+@INPUT link_t_ptr ptr: the plot link component.
+@OUTPUT matrix_t* pm: the matrix struct.
+@RETURN void: none.
+*/
+EXP_API void get_plot_matrix(link_t_ptr ptr, matrix_t* pm);
+
+/*
+@FUNCTION set_plot_matrix: set plot matrix string arrax.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT const matrix_t* pm: the matrix struct.
+@RETURN void: none.
+*/
+EXP_API void set_plot_matrix(link_t_ptr ptr, matrix_t* pm);
 
 #ifdef	__cplusplus
 }

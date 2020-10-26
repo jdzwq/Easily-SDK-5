@@ -48,7 +48,7 @@ set_t* set_alloc()
 
 void set_free(set_t* pv)
 {
-	set_empty(pv);
+	set_reset(pv);
 
 	xmem_free(pv);
 }
@@ -76,7 +76,7 @@ void set_copy(set_t* pset, const set_t* psrc)
 	}
 }
 
-void set_empty(set_t* pset)
+void set_reset(set_t* pset)
 {
 	int i;
 
@@ -84,7 +84,7 @@ void set_empty(set_t* pset)
 	{
 		for (i = 0; i < pset->size; i++)
 		{
-			set_empty(&(pset->pset[i]));
+			set_reset(&(pset->pset[i]));
 		}
 		xmem_free(pset->pset);
 	}
@@ -202,7 +202,7 @@ void set_del(set_t* pset, const set_t* pv)
 	if (set_comp(&(pset->pset[i]), pv) != 0)
 		return;
 	
-	set_empty(&(pset->pset[i]));
+	set_reset(&(pset->pset[i]));
 
 	for (j = i; j < pset->size - 1; j++)
 	{
@@ -365,7 +365,7 @@ void set_parse(set_t* pset, const tchar_t* token, int len)
 {
 	int size = 0;
 
-	set_empty(pset);
+	set_reset(pset);
 
 	_set_parse(&(pset->pset), &size, token, len);
 	pset->size = size;
@@ -397,7 +397,7 @@ void test_set()
 
 		set_add(pset, &ve);
 
-		set_empty(&ve);
+		set_reset(&ve);
 	}
 
 	int len = set_format(pset, NULL, MAX_LONG);
@@ -408,7 +408,7 @@ void test_set()
 
 	xsfree(buf);
 
-	set_empty(pset);
+	set_reset(pset);
 
 	set_parse(pset, _T("{1,2 ,3,{1,2},{1 2 3}, {1, 2, {1 2 3 4}}}"), -1);
 
@@ -432,7 +432,7 @@ void test_set()
 
 		xsfree(buf);
 
-		set_empty(&ve);
+		set_reset(&ve);
 	}
 
 	set_free(pset);

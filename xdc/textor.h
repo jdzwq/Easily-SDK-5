@@ -97,95 +97,95 @@ typedef struct _textor_t{
 extern "C" {
 #endif
 
-EXP_API void hand_textor_set_focus(textor_t* ptd, res_win_t wt);
+LOC_API void hand_textor_set_focus(textor_t* ptd, res_win_t wt);
 
-EXP_API void hand_textor_kill_focus(textor_t* ptd, res_win_t wt);
+LOC_API void hand_textor_kill_focus(textor_t* ptd, res_win_t wt);
 
-EXP_API int hand_textor_word(textor_t* ptd, tchar_t* pch);
+LOC_API int hand_textor_word(textor_t* ptd, tchar_t* pch);
 
-EXP_API void hand_textor_lbutton_down(textor_t* ptd, const xpoint_t* pxp);
+LOC_API void hand_textor_lbutton_down(textor_t* ptd, const xpoint_t* pxp);
 
-EXP_API void hand_textor_lbutton_up(textor_t* ptd, const xpoint_t* pxp);
+LOC_API void hand_textor_lbutton_up(textor_t* ptd, const xpoint_t* pxp);
 
-EXP_API void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt);
+LOC_API void hand_textor_mousemove(textor_t* ptd, dword_t mk, const xpoint_t* ppt);
 
-EXP_API void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs);
+LOC_API void hand_textor_size(textor_t* ptd, int code, const xsize_t* prs);
 
-EXP_API bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, int nLine);
+LOC_API bool_t hand_textor_scroll(textor_t* ptd, bool_t bHorz, int nLine);
 
-EXP_API void hand_textor_paint(textor_t* ptd, visual_t dc, const xrect_t* pxr);
+LOC_API void hand_textor_paint(textor_t* ptd, visual_t dc, const xrect_t* pxr);
 
-EXP_API void hand_textor_selectall(textor_t* ptd);
+LOC_API void hand_textor_selectall(textor_t* ptd);
 
-EXP_API void hand_textor_selectline(textor_t* ptd);
+LOC_API void hand_textor_selectline(textor_t* ptd);
 
-EXP_API void hand_textor_selectcur(textor_t* ptd);
+LOC_API void hand_textor_selectcur(textor_t* ptd);
 
-EXP_API void hand_textor_selectobj(textor_t* ptd);
+LOC_API void hand_textor_selectobj(textor_t* ptd);
 
-EXP_API void hand_textor_findobj(textor_t* ptd, void* obj);
+LOC_API void hand_textor_findobj(textor_t* ptd, void* obj);
 
-EXP_API void hand_textor_redraw(textor_t* ptd);
+LOC_API void hand_textor_redraw(textor_t* ptd);
 
-EXP_API int hand_textor_back(textor_t* ptd);
+LOC_API int hand_textor_back(textor_t* ptd);
 
-EXP_API int hand_textor_delete(textor_t* ptd);
+LOC_API int hand_textor_delete(textor_t* ptd);
 
-EXP_API int hand_textor_escape(textor_t* ptd);
+LOC_API int hand_textor_escape(textor_t* ptd);
 
-EXP_API int hand_textor_left(textor_t* ptd);
+LOC_API int hand_textor_left(textor_t* ptd);
 
-EXP_API int hand_textor_right(textor_t* ptd);
+LOC_API int hand_textor_right(textor_t* ptd);
 
-EXP_API int hand_textor_up(textor_t* ptd);
+LOC_API int hand_textor_up(textor_t* ptd);
 
-EXP_API int hand_textor_down(textor_t* ptd);
+LOC_API int hand_textor_down(textor_t* ptd);
 
-EXP_API int hand_textor_home(textor_t* ptd);
+LOC_API int hand_textor_home(textor_t* ptd);
 
-EXP_API int hand_textor_end(textor_t* ptd);
+LOC_API int hand_textor_end(textor_t* ptd);
 
-EXP_API int hand_textor_move_to_page(textor_t* ptd, int page);
+LOC_API int hand_textor_move_to_page(textor_t* ptd, int page);
 
-EXP_API int hand_textor_move_first_page(textor_t* ptd);
+LOC_API int hand_textor_move_first_page(textor_t* ptd);
 
-EXP_API int hand_textor_move_prev_page(textor_t* ptd);
+LOC_API int hand_textor_move_prev_page(textor_t* ptd);
 
-EXP_API int hand_textor_move_next_page(textor_t* ptd);
+LOC_API int hand_textor_move_next_page(textor_t* ptd);
 
-EXP_API int hand_textor_move_last_page(textor_t* ptd);
+LOC_API int hand_textor_move_last_page(textor_t* ptd);
 
-EXP_API int hand_textor_undo(textor_t* ptd);
+LOC_API int hand_textor_undo(textor_t* ptd);
 
-EXP_API int hand_textor_copy(textor_t* ptd);
+LOC_API int hand_textor_copy(textor_t* ptd);
 
-EXP_API int hand_textor_cut(textor_t* ptd);
+LOC_API int hand_textor_cut(textor_t* ptd);
 
-EXP_API int hand_textor_paste(textor_t* ptd);
+LOC_API int hand_textor_paste(textor_t* ptd);
 
-EXP_API void hand_textor_clean(textor_t* ptd);
+LOC_API void hand_textor_clean(textor_t* ptd);
 
-EXP_API void hand_textor_done(textor_t* ptd);
+LOC_API void hand_textor_done(textor_t* ptd);
 
-EXP_API void hand_textor_discard(textor_t* ptd);
+LOC_API void hand_textor_discard(textor_t* ptd);
 
-EXP_API int hand_textor_selected_text(textor_t* ptd, tchar_t* buf, int max);
+LOC_API int hand_textor_selected_text(textor_t* ptd, tchar_t* buf, int max);
 
-EXP_API int hand_textor_replace_text(textor_t* ptd, const tchar_t* token, int len);
+LOC_API int hand_textor_replace_text(textor_t* ptd, const tchar_t* token, int len);
 
-EXP_API int textor_cur_page(textor_t* ptd);
+LOC_API int textor_cur_page(textor_t* ptd);
 
-EXP_API int textor_max_page(textor_t* ptd);
+LOC_API int textor_max_page(textor_t* ptd);
 
-EXP_API void textor_object_rect(textor_t* ptd, void* object, xrect_t* pxr);
+LOC_API void textor_object_rect(textor_t* ptd, void* object, xrect_t* pxr);
 
-EXP_API void textor_cursor_point(textor_t* ptd, xpoint_t* ppt);
+LOC_API void textor_cursor_point(textor_t* ptd, xpoint_t* ppt);
 
-EXP_API void textor_cursor_rect(textor_t* ptd, xrect_t* pxr);
+LOC_API void textor_cursor_rect(textor_t* ptd, xrect_t* pxr);
 
-EXP_API bool_t textor_is_select(textor_t* ptd);
+LOC_API bool_t textor_is_select(textor_t* ptd);
 
-EXP_API bool_t textor_at_atom(textor_t* ptd);
+LOC_API bool_t textor_at_atom(textor_t* ptd);
 
 #ifdef	__cplusplus
 }

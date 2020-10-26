@@ -1349,4 +1349,51 @@ void set_plot_matrix_data(link_t_ptr ptr, const tchar_t* data, int len)
 	set_dom_node_text(sub, data, len);
 }
 
+void get_plot_matrix(link_t_ptr ptr, matrix_t* pm)
+{
+	link_t_ptr nlk, sub;
+
+	matrix_reset(pm, get_plot_matrix_rows(ptr), get_plot_matrix_cols(ptr));
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
+	if (!nlk)
+		return;
+
+	sub = find_dom_node_by_name(nlk, 0, DOC_MATRIX_DATA, -1);
+	if (!sub)
+		return;
+
+	matrix_parse(pm, get_dom_node_text_ptr(sub), -1);
+}
+
+void set_plot_matrix(link_t_ptr ptr, matrix_t* pm)
+{
+	link_t_ptr nlk, sub;
+	tchar_t* buf;
+	int len;
+
+	set_plot_matrix_rows(ptr, pm->rows);
+	set_plot_matrix_cols(ptr, pm->cols);
+
+	len = matrix_format(pm, NULL, MAX_LONG);
+	buf = xsalloc(len + 1);
+	matrix_format(pm, buf, len);
+
+	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
+	if (!nlk)
+	{
+		nlk = insert_dom_node(ptr, LINK_LAST);
+		set_dom_node_name(nlk, DOC_MATRIX, -1);
+	}
+
+	sub = find_dom_node_by_name(nlk, 0, DOC_MATRIX_DATA, -1);
+	if (!sub)
+	{
+		sub = insert_dom_node(nlk, LINK_LAST);
+		set_dom_node_name(sub, DOC_MATRIX_DATA, -1);
+	}
+
+	attach_dom_node_text(sub, buf);
+}
+
 #endif /*XDL_SUPPORT_DOC*/

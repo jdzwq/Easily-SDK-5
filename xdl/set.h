@@ -84,11 +84,11 @@ EXP_API void set_copy(set_t* pdst, const set_t* psrc);
 EXP_API int set_comp(const set_t* p1, const set_t* p2);
 
 /*
-@FUNCTION set_empty: set the set elements to zero.
+@FUNCTION set_reset: empty the set elements.
 @OUTPUT set_t* pset: the set struct.
 @RETURN void: none.
 */
-EXP_API void set_empty(set_t* pset);
+EXP_API void set_reset(set_t* pset);
 
 /*
 @FUNCTION set_add: append set to a set as its sub element.

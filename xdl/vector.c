@@ -72,12 +72,13 @@ vector_t* vector_clone(const vector_t* src)
 	return pvt;
 }
 
-void vector_empty(vector_t* pvt)
+void vector_reset(vector_t* pvt, int size, int dimens)
 {
 	xmem_free(pvt->data);
 	
-	pvt->data = NULL;
-	pvt->size = 0;
+	pvt->size = size;
+	pvt->dimens = dimens;
+	pvt->data = (double*)xmem_alloc(size * dimens * sizeof(double));
 }
 
 void vector_zero(vector_t* pvt)

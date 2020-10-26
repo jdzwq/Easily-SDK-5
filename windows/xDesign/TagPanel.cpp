@@ -255,7 +255,7 @@ void TagPanel_OnSave(res_win_t widget)
 
 		shell_get_curpath(szPath, PATH_LEN);
 
-		if (!shell_get_filename(widget, szPath, _T("Text file(*.txt)\0*.txt\0"), _T("txt"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+		if (!shell_get_filename(widget, szPath, _T("Tag Text file(*.txt)\0*.txt\0"), _T("txt"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 			return;
 
 		xscat(szPath, _T("\\"));
@@ -279,7 +279,7 @@ void TagPanel_OnSaveAs(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("Text file(*.txt)\0*.txt\0"), _T("txt"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("Tag Text file(*.txt)\0*.txt\0"), _T("txt"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));

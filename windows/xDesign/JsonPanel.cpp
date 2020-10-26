@@ -277,7 +277,7 @@ void JsonPanel_OnSave(res_win_t widget)
 
 		shell_get_curpath(szPath, PATH_LEN);
 
-		if (!shell_get_filename(widget, szPath, _T("json file(*.json)\0*.json\0"), _T("json"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+		if (!shell_get_filename(widget, szPath, _T("Json Text File(*.json)\0*.json\0"), _T("json"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 			return;
 
 		xscat(szPath, _T("\\"));
@@ -302,7 +302,7 @@ void JsonPanel_OnSaveAs(res_win_t widget)
 
 	shell_get_curpath(szPath, PATH_LEN);
 
-	if (!shell_get_filename(widget, szPath, _T("json file(*.json)\0*.json\0"), _T("json"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
+	if (!shell_get_filename(widget, szPath, _T("Json Text File(*.json)\0*.json\0"), _T("json"), 1, szPath, PATH_LEN, szFile, PATH_LEN))
 		return;
 
 	xscat(szPath, _T("\\"));

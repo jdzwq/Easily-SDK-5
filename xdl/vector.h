@@ -70,9 +70,11 @@ EXP_API vector_t* vector_clone(const vector_t* pvt);
 /*
 @FUNCTION vector_clear: clear vector elements.
 @INPUT vector_t*: the vector struct.
+@INPUT int size: the vector size.
+@INPUT int dimens: the vector dimens, 1-dimens like: (x), 2-dimens like: (x,y), 3-dimens like (x,y,z).
 @RETURN void: none.
 */
-EXP_API void vector_empty(vector_t* pvt);
+EXP_API void vector_reset(vector_t* pvt, int size, int dimens);
 
 /*
 @FUNCTION vector_zero: set vector elements value to zero.

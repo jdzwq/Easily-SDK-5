@@ -191,6 +191,7 @@
     <ClInclude Include="..\..\xdl\focusing.h" />
     <ClInclude Include="..\..\xdl\gizmoing.h" />
     <ClInclude Include="..\..\xdl\framing.h" />
+    <ClInclude Include="..\..\xdl\hintner.h" />
     <ClInclude Include="..\..\xdl\integerarray.h" />
     <ClInclude Include="..\..\xdl\numericarray.h" />
     <ClInclude Include="..\..\xdl\plotdoc.h" />
@@ -379,6 +380,7 @@
     <ClCompile Include="..\..\xdl\dataing.c" />
     <ClCompile Include="..\..\xdl\diagramdoc.c" />
     <ClCompile Include="..\..\xdl\diagramview.c" />
+    <ClCompile Include="..\..\xdl\hintner.c" />
     <ClCompile Include="..\..\xdl\metabio.c" />
     <ClCompile Include="..\..\xdl\focusing.c" />
     <ClCompile Include="..\..\xdl\gizmoing.c" />

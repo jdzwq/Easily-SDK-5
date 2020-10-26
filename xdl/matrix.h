@@ -67,11 +67,13 @@ EXP_API void matrix_free(matrix_t* pmt);
 EXP_API matrix_t* matrix_clone(const matrix_t* pvt);
 
 /*
-@FUNCTION matrix_clear: clear matrix elements.
+@FUNCTION matrix_reset: realloc matrix elements.
 @INPUT matrix_t*: the matrix struct.
+@INPUT int rows: rows of matrix.
+@INPUT int cols: cols of matrix.
 @RETURN void: none.
 */
-EXP_API void matrix_empty(matrix_t* pvt);
+EXP_API void matrix_reset(matrix_t* pvt, int rows, int cols);
 
 /*
 @FUNCTION matrix_zero: set the matrix elements value to zero.

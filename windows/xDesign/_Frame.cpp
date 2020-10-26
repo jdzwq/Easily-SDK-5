@@ -350,8 +350,6 @@ static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
 		xscpy(szClass, PANEL_CLASS_STATIS);
 	else if (is_rich_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_RICH);
-	else if (is_schema_doc(ptrDom))
-		xscpy(szClass, PANEL_CLASS_SCHEMA);
 	else if (is_topog_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_TOPOG);
 	else if (is_images_doc(ptrDom))
@@ -362,6 +360,8 @@ static void _MainFrame_FileClass(const tchar_t* szPath, tchar_t* szClass)
 		xscpy(szClass, PANEL_CLASS_DIAGRAM);
 	else if (is_plot_doc(ptrDom))
 		xscpy(szClass, PANEL_CLASS_PLOT);
+	else if (is_schema_doc(ptrDom))
+		xscpy(szClass, PANEL_CLASS_SCHEMA);
 
 	destroy_dom_doc(ptrDom);
 }
@@ -522,7 +522,7 @@ void MainFrame_OpenFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN] = { 0 };
 	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Plot File(*.plot)\0*.plot\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\0JSON File(*.json)\0*.json\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Schema File(*.schema)\0*.schema\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\Json File(*.json)\0*.json\0");
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -536,7 +536,7 @@ void MainFrame_OpenFile(res_win_t widget)
 
 	split_path(szPath, NULL, NULL, szClass);
 
-	if (IS_META_FILE(szClass))
+	if (compare_text(szClass, -1, _T("sheet"), -1, 1) == 0 || compare_text(szClass, -1, _T("schema"), -1, 1) == 0)
 	{
 		xszero(szClass, RES_LEN);
 		_MainFrame_FileClass(szPath, szClass);
