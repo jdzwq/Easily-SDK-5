@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
 
 	//test_conv();
 
-	//test_string_array();
+	test_string_array();
 
 	test_integer_array();
 

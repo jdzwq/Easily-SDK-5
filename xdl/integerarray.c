@@ -37,11 +37,11 @@ LICENSE.GPL3 for more details.
 
 int** alloc_integer_array(void)
 {
-	int** ptr;
+	int** sa;
 
-	ptr = (int**)xmem_alloc(sizeof(int*) + sizeof(var_long));
+	sa = (int**)xmem_alloc(2 * sizeof(int*));
 
-	return ptr;
+	return sa;
 }
 
 void free_integer_array(int** sa)
@@ -55,12 +55,12 @@ void clear_integer_array(int** sa)
 {
 	xmem_free(*sa);
 
-	xmem_zero((void*)sa, sizeof(int*) + sizeof(var_long));
+	xmem_zero((void*)sa, 2 * sizeof(int*));
 }
 
 int get_integer_array_size(int** sa)
 {
-	return (int)(*(var_long*)(sa + 1));
+	return (int)(*(long*)(sa + 1));
 }
 
 int get_integer(int** sa, int index)
@@ -68,7 +68,7 @@ int get_integer(int** sa, int index)
 	int* pa = *sa;
 	int size;
 
-	size = (int)(*(var_long*)(sa + 1));
+	size = (int)(*(long*)(sa + 1));
 
 	if (index < 0 || index >= size)
 		return 0;
@@ -80,7 +80,7 @@ void insert_integer(int** sa, int index, int val)
 {
 	int size;
 
-	size = (int)(*(var_long*)(sa + 1));
+	size = (int)(*(long*)(sa + 1));
 
 	XDL_ASSERT(index >= 0 && index <= size);
 
@@ -89,14 +89,14 @@ void insert_integer(int** sa, int index, int val)
 	xmem_move((void*)(*sa + index), ((size - index) * sizeof(int)), (int)sizeof(int));
 	xmem_copy((void*)(*sa + index), (void*)&val, sizeof(int));
 
-	*(var_long*)(sa + 1) = (size + 1);
+	*(long*)(sa + 1) = (size + 1);
 }
 
 void delete_integer(int** sa, int index)
 {
 	int size;
 
-	size = (int)(*(var_long*)(sa + 1));
+	size = (int)(*(long*)(sa + 1));
 
 	XDL_ASSERT(index >= 0 && index < size);
 
@@ -104,7 +104,7 @@ void delete_integer(int** sa, int index)
 
 	*sa = xmem_realloc(*sa, (size - 1) * sizeof(int));
 
-	*(var_long*)(sa + 1) = (size - 1);
+	*(long*)(sa + 1) = (size - 1);
 }
 
 

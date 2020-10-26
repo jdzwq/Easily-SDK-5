@@ -36,25 +36,28 @@ LICENSE.GPL3 for more details.
 
 tchar_t** alloc_string_array(void)
 {
-	tchar_t** ptr;
+	tchar_t** sa;
 
-	ptr = (tchar_t**)xmem_alloc(sizeof(tchar_t*) + sizeof(var_long));
+	sa = (tchar_t**)xmem_alloc(2 * sizeof(tchar_t*));
 
-	return ptr;
+	*sa = (tchar_t*)xmem_alloc(sizeof(tchar_t));
+	*(long*)(sa + 1) = 0;
+
+	return sa;
 }
 
 void free_string_array(tchar_t** sa)
 {
-	xsfree(*sa);
+	xmem_free(*sa);
 
 	xmem_free(sa);
 }
 
 void clear_string_array(tchar_t** sa)
 {
-	xsfree(*sa);
-
-	xmem_zero((void*)sa, sizeof(tchar_t*) + sizeof(var_long));
+	*sa = (tchar_t*)xmem_realloc(*sa, sizeof(tchar_t));
+	xmem_zero((void*)(*sa), sizeof(tchar_t));
+	*(long*)(sa + 1) = 0;
 }
 
 int get_string_array_size(tchar_t** sa)
@@ -116,7 +119,7 @@ void insert_string(tchar_t** sa, int index, const tchar_t* tk, int len)
 {
 	tchar_t* token = *sa;
 	int k, n = 0;
-	var_long size;
+	long size;
 
 	if (len < 0)
 		len = xslen(tk);
@@ -135,23 +138,24 @@ void insert_string(tchar_t** sa, int index, const tchar_t* tk, int len)
 			break;
 	}
 
-	size = *(var_long*)(sa + 1);
+	size = *(long*)(sa + 1);
 	k = (len + 1) * sizeof(tchar_t);
 
-	*sa = xmem_realloc(*sa, (size + k + sizeof(tchar_t)));
-	xmem_zero(((byte_t*)(*sa) + size + k), sizeof(tchar_t));
+	*sa = xmem_realloc((void*)(*sa), (size + k + sizeof(tchar_t)));
+	xmem_zero((void*)((byte_t*)(*sa) + size), (k + sizeof(tchar_t)));
 
 	xmem_move((void*)(*sa + n), (size - n * sizeof(tchar_t)), k);
 	xmem_copy((void*)(*sa + n), (void*)tk, (k - sizeof(tchar_t)));
+	xmem_zero((void*)(*sa + n + (k - 1) / sizeof(tchar_t)), sizeof(tchar_t));
 
-	*(var_long*)(sa + 1) = (size + k);
+	*(long*)(sa + 1) = (size + k);
 }
 
 void delete_string(tchar_t** sa, int index)
 {
 	tchar_t* token = *sa;
 	int k, n = 0;
-	var_long size;
+	long size;
 
 	if (!token)
 		return;
@@ -167,14 +171,16 @@ void delete_string(tchar_t** sa, int index)
 			return;
 	}
 
-	size = *(var_long*)(sa + 1);
+	size = *(long*)(sa + 1);
 	k = (xslen(token) + 1) * sizeof(tchar_t);
 
 	xmem_move((void*)(*sa + n + k / sizeof(tchar_t)), (size - n * sizeof(tchar_t) - k), -k);
 	*sa = xmem_realloc((void*)(*sa), (size - k + sizeof(tchar_t)));
-	xmem_zero(((byte_t*)(*sa) + size - k), sizeof(tchar_t));
 
-	*(var_long*)(sa + 1) = (size - k);
+	size -= k;
+	xmem_zero((void*)((byte_t*)(*sa) + size), sizeof(tchar_t));
+
+	*(long*)(sa + 1) = size;
 }
 
 #if defined(_DEBUG) || defined(DEBUG)

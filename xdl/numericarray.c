@@ -39,7 +39,7 @@ double** alloc_numeric_array(void)
 {
 	double** ptr;
 
-	ptr = (double**)xmem_alloc(sizeof(double*) + sizeof(var_long));
+	ptr = (double**)xmem_alloc(2 * sizeof(double*));
 
 	return ptr;
 }
@@ -55,12 +55,12 @@ void clear_numeric_array(double** sa)
 {
 	xmem_free(*sa);
 
-	xmem_zero((void*)sa, sizeof(double*) + sizeof(var_long));
+	xmem_zero((void*)sa, 2 * sizeof(double*));
 }
 
 int get_numeric_array_size(double** sa)
 {
-	return (int)(*(var_long*)(sa + 1));
+	return (int)(*(long*)(sa + 1));
 }
 
 double get_numeric(double** sa, int index)
@@ -68,7 +68,7 @@ double get_numeric(double** sa, int index)
 	double* pa = *sa;
 	int size;
 
-	size = (int)(*(var_long*)(sa + 1));
+	size = (int)(*(long*)(sa + 1));
 
 	if (index < 0 || index >= size)
 		return 0;
@@ -80,7 +80,7 @@ void insert_numeric(double** sa, int index, double val)
 {
 	int size;
 
-	size = (int)(*(var_long*)(sa + 1));
+	size = (int)(*(long*)(sa + 1));
 
 	XDL_ASSERT(index >= 0 && index <= size);
 
@@ -89,14 +89,14 @@ void insert_numeric(double** sa, int index, double val)
 	xmem_move((void*)(*sa + index), ((size - index) * sizeof(double)), (int)sizeof(double));
 	xmem_copy((void*)(*sa + index), (void*)&val, sizeof(double));
 
-	*(var_long*)(sa + 1) = (size + 1);
+	*(long*)(sa + 1) = (size + 1);
 }
 
 void delete_numeric(double** sa, int index)
 {
 	int size;
 
-	size = (int)(*(var_long*)(sa + 1));
+	size = (int)(*(long*)(sa + 1));
 
 	XDL_ASSERT(index >= 0 && index < size);
 
@@ -104,7 +104,7 @@ void delete_numeric(double** sa, int index)
 
 	*sa = xmem_realloc(*sa, (size - 1) * sizeof(double));
 
-	*(var_long*)(sa + 1) = (size - 1);
+	*(long*)(sa + 1) = (size - 1);
 }
 
 
@@ -121,7 +121,7 @@ void test_numeric_array()
 
 	for (int i = 0; i < 10; i++)
 	{
-		_tprintf(_T("%.f\n"), get_numeric(sa, i));
+		_tprintf(_T("%f\n"), get_numeric(sa, i));
 	}
 
 	while (get_numeric_array_size(sa))
