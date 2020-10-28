@@ -59,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xtimers", "..\xtimers\xtime
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plot_api", "..\plot_api\plot_api.vcxproj", "{777A445F-6555-473C-A0E5-9036E4EEEB30}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tdb", "..\tdb\tdb.vcxproj", "{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -405,6 +407,16 @@ Global
 		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|Win32.Build.0 = Release|Win32
 		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|x64.ActiveCfg = Release|x64
 		{777A445F-6555-473C-A0E5-9036E4EEEB30}.Release|x64.Build.0 = Release|x64
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Debug|Win32.Build.0 = Debug|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Debug|x64.ActiveCfg = Debug|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Release|Win32.ActiveCfg = Release|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Release|Win32.Build.0 = Release|Win32
+		{5BA7486B-8C41-4CB8-A075-EF51C9C00DD0}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
