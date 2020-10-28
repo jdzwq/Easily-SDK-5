@@ -107,7 +107,7 @@ typedef struct _xcoap_t{
 	int pdv_eof;
 
 	sword_t errcode;
-	tchar_t errtext[ERR_LEN];
+	tchar_t errtext[ERR_LEN + 1];
 }xcoap_t;
 
 /***********************************************************************************************/
@@ -858,9 +858,9 @@ xhand_t xcoap_client(const tchar_t* method, const tchar_t* url)
 	tchar_t *potoat, *hostat, *portat, *objat, *qryat;
 	int potolen, hostlen, portlen, objlen, qrylen;
 
-	tchar_t host[META_LEN] = { 0 };
-	tchar_t addr[ADDR_LEN] = { 0 };
-	tchar_t sport[INT_LEN] = { 0 };
+	tchar_t host[META_LEN + 1] = { 0 };
+	tchar_t addr[ADDR_LEN + 1] = { 0 };
+	tchar_t sport[INT_LEN + 1] = { 0 };
 	unsigned short port, bind;
 
 	int i, code = 0;

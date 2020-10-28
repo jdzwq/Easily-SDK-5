@@ -15,17 +15,17 @@ int main(int argc, char* argv[])
 	if_bio_t bio = { 0 };
 
 	unsigned short port = 0;
-	byte_t addr[ADDR_LEN] = { 0 };
+	byte_t addr[ADDR_LEN + 1] = { 0 };
 	dword_t alen = 0;
 	byte_t pack[PNP_PDU_SIZE] = { 0 };
 	dword_t size = 0;
 	dword_t dw;
 	byte_t num[2] = { 0 };
-	tchar_t tddr[ADDR_LEN] = { 0 };
+	tchar_t tddr[ADDR_LEN + 1] = { 0 };
 
 	int i, len;
 
-	tchar_t sz_cert[RES_LEN] = { 0 };
+	tchar_t sz_cert[RES_LEN + 1] = { 0 };
 
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };

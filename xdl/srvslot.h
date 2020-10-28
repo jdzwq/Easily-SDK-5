@@ -92,8 +92,8 @@ typedef struct _slots_block_t{
 	bool_t is_thread;
 	xhand_t slot;
 
-	tchar_t site[RES_LEN];
-	tchar_t path[PATH_LEN];
+	tchar_t site[RES_LEN + 1];
+	tchar_t path[PATH_LEN + 1];
 
 	void* hand;
 	PF_TRACK_ERROR pf_track_eror;

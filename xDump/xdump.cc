@@ -21,10 +21,10 @@ int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char* argv[])
 #endif
 {
-	tchar_t sz_src[PATH_LEN] = { 0 };
-	tchar_t sz_tag[INT_LEN] = { 0 };
-	tchar_t sz_dst[PATH_LEN] = { 0 };
-	tchar_t sz_ext[INT_LEN] = { 0 };
+	tchar_t sz_src[PATH_LEN + 1] = { 0 };
+	tchar_t sz_tag[INT_LEN + 1] = { 0 };
+	tchar_t sz_dst[PATH_LEN + 1] = { 0 };
+	tchar_t sz_ext[INT_LEN + 1] = { 0 };
 
 	if (argc < 2)
 	{

@@ -167,7 +167,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	const tchar_t *sz_class,*sz_text, *sz_shape, *style, *type, *fldfmt;
 	bool_t zeronull, wrapable;
 
-	tchar_t sz_token[PATH_LEN];
+	tchar_t sz_token[PATH_LEN + 1];
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 

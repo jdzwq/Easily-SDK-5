@@ -49,7 +49,7 @@ typedef struct tagStatisPanelDelta{
 	res_win_t hTitle;
 	res_win_t hStatis;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 	METADATA meta;
 }StatisPanelDelta;
 
@@ -174,11 +174,11 @@ void StatisPanel_OnSave(res_win_t widget)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -204,9 +204,9 @@ void StatisPanel_OnSaveAs(res_win_t widget)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szType[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szType[RES_LEN + 1] = { 0 };
 	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -292,8 +292,8 @@ void StatisPanel_OnSchema(res_win_t widget)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -321,8 +321,8 @@ void StatisPanel_OnExport(res_win_t widget)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -354,8 +354,8 @@ void StatisPanel_OnImport(res_win_t widget)
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -522,7 +522,7 @@ void StatisPanel_OnSelectAttr(res_win_t widget, const tchar_t* attr_name, const 
 
 	statisctrl_set_dirty(pdt->hStatis, 1);
 
-	tchar_t style[CSS_LEN] = { 0 };
+	tchar_t style[CSS_LEN + 1] = { 0 };
 
 	LINKPTR ylk = get_next_yax(ptrStatis, LINK_FIRST);
 	while (ylk)
@@ -834,7 +834,7 @@ void StatisPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	LINKPTR ptrYax = statisctrl_get_focus_yax(pdt->hStatis);
 	LINKPTR ptrGax = statisctrl_get_focus_gax(pdt->hStatis);
 
-	tchar_t sz_style[CSS_LEN] = { 0 };
+	tchar_t sz_style[CSS_LEN + 1] = { 0 };
 
 	if (ptrGax)
 	{
@@ -1259,7 +1259,7 @@ void StatisPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))
@@ -1278,7 +1278,7 @@ void StatisPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long dat
 {
 	StatisPanelDelta* pdt = GETSTATISPANELDELTA(widget);
 
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 
 	switch (cid)
 	{

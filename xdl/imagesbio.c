@@ -244,7 +244,7 @@ bool_t save_image_base64_to_file(const secu_desc_t* psd, const tchar_t* fname, c
 
 dword_t load_bitmap_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname, byte_t* buf, dword_t max)
 {
-	tchar_t type[RES_LEN] = { 0 };
+	tchar_t type[RES_LEN + 1] = { 0 };
 
 	byte_t* file_buf = NULL;
 	dword_t file_len;

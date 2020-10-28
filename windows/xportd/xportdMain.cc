@@ -172,7 +172,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	HWND hWnd;
 #ifdef _DEBUG
-	TCHAR szFile[PATH_LEN] = { 0 };
+	TCHAR szFile[PATH_LEN + 1] = { 0 };
 #endif
 
 	proc_info_t pi = { 0 };

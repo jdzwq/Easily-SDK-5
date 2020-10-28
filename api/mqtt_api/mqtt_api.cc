@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 typedef struct _mqtt_block_t{
 	xhand_t mqtt;
 
-	tchar_t topic_name[PATH_LEN];
+	tchar_t topic_name[PATH_LEN + 1];
 
 	byte_t msg_qos;
 	sword_t msg_pid;
@@ -35,7 +35,7 @@ typedef struct _mqtt_block_t{
 	byte_t* msg_buf;
 
 	secu_desc_t sd;
-	tchar_t local[PATH_LEN];
+	tchar_t local[PATH_LEN + 1];
 
 	tchar_t code[NUM_LEN + 1];
 	tchar_t text[ERR_LEN + 1];
@@ -87,10 +87,10 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	rad_hdr_t hdr = { 0 };
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	xdate_t dt;
 
@@ -186,10 +186,10 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	dword_t dw = 0;
 	byte_t* buf = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -298,10 +298,10 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	tk_db_t hdb = NULL;
 	tk_kv_t hkv = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -371,8 +371,8 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 
 	LINKPTR ptr_prop = NULL;
 
-	tchar_t file[PATH_LEN] = { 0 };
-	tchar_t token[RES_LEN] = { 0 };
+	tchar_t file[PATH_LEN + 1] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 
 	int type;
 	MQTT_PACKET_CTRL mc = { 0 };

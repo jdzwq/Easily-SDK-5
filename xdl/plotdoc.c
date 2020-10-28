@@ -236,7 +236,7 @@ float	get_plot_width(link_t_ptr ptr)
 void set_plot_width(link_t_ptr ptr, float width)
 {
 	link_t_ptr nlk;
-	tchar_t num[NUM_LEN] = { 0 };
+	tchar_t num[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_WIDTH, -1);
 	if (!nlk)
@@ -261,7 +261,7 @@ float	get_plot_height(link_t_ptr ptr)
 void set_plot_height(link_t_ptr ptr, float height)
 {
 	link_t_ptr nlk;
-	tchar_t num[NUM_LEN] = { 0 };
+	tchar_t num[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_HEIGHT, -1);
 	if (!nlk)
@@ -286,7 +286,7 @@ int	get_plot_ruler(link_t_ptr ptr)
 void set_plot_ruler(link_t_ptr ptr, int n)
 {
 	link_t_ptr nlk;
-	tchar_t num[NUM_LEN] = { 0 };
+	tchar_t num[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_RULER, -1);
 	if (!nlk)
@@ -392,7 +392,7 @@ void set_plot_y_stages(link_t_ptr ptr, double** sa)
 {
 	link_t_ptr nlk, sub;
 	int i, n;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_STAGES, -1);
 	if (!nlk)
@@ -503,7 +503,7 @@ void set_plot_y_bases(link_t_ptr ptr, double** sa)
 {
 	link_t_ptr nlk, sub;
 	int i, n;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_BASES, -1);
 	if (!nlk)
@@ -614,7 +614,7 @@ void set_plot_y_steps(link_t_ptr ptr, double** sa)
 {
 	link_t_ptr nlk, sub;
 	int i, n;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_PLOT_Y_STEPS, -1);
 	if (!nlk)
@@ -1254,7 +1254,7 @@ int	get_plot_matrix_rows(link_t_ptr ptr)
 void set_plot_matrix_rows(link_t_ptr ptr, int rows)
 {
 	link_t_ptr nlk, sub;
-	tchar_t num[NUM_LEN] = { 0 };
+	tchar_t num[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
 	if (!nlk)
@@ -1292,7 +1292,7 @@ int	get_plot_matrix_cols(link_t_ptr ptr)
 void set_plot_matrix_cols(link_t_ptr ptr, int cols)
 {
 	link_t_ptr nlk, sub;
-	tchar_t num[NUM_LEN] = { 0 };
+	tchar_t num[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
 	if (!nlk)
@@ -1330,7 +1330,7 @@ int	get_plot_matrix_data(link_t_ptr ptr, tchar_t* buf, int max)
 void set_plot_matrix_data(link_t_ptr ptr, const tchar_t* data, int len)
 {
 	link_t_ptr nlk, sub;
-	tchar_t num[NUM_LEN] = { 0 };
+	tchar_t num[NUM_LEN + 1] = { 0 };
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
 	if (!nlk)

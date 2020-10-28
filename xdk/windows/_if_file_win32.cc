@@ -441,7 +441,7 @@ bool_t	_directory_open(const tchar_t* path, dword_t mode)
 {
 	WIN32_FIND_DATA wfd;
 	HANDLE hFind;
-	tchar_t cur_path[PATH_LEN];
+	tchar_t cur_path[PATH_LEN + 1];
 	tchar_t* token = (tchar_t*)path;
 	bool_t b_add;
 	int len;

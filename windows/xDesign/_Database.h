@@ -48,10 +48,10 @@ typedef struct _DBCTX{
 	PF_DB_WRITE_XDOC	pf_db_write_xdoc;
 	PF_DB_READ_XDOC		pf_db_read_xdoc;
 
-	tchar_t szRDS[PATH_LEN];
-	tchar_t szDBN[RES_LEN];
-	tchar_t szSID[KEY_LEN];
-	tchar_t szKEY[KEY_LEN];
+	tchar_t szRDS[PATH_LEN + 1];
+	tchar_t szDBN[RES_LEN + 1];
+	tchar_t szSID[KEY_LEN + 1];
+	tchar_t szKEY[KEY_LEN + 1];
 }DBCTX;
 
 DBCTX*		DBOpen(const tchar_t* conn);

@@ -183,7 +183,7 @@ void draw_anno(const if_drawing_t* pif, link_t_ptr ptr)
 
 	const tchar_t *style;
 	const tchar_t* type;
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 

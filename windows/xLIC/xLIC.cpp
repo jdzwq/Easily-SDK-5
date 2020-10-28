@@ -178,17 +178,17 @@ int _tmain(int argc, _TCHAR* argv[])
 	xdl_process_init(0);
 
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
-	tchar_t sz_verb[RES_LEN] = { 0 };
+	tchar_t sz_verb[RES_LEN + 1] = { 0 };
 
-	tchar_t sz_organization_code[NUM_LEN] = { 0 };
-	tchar_t sz_organization_name[RES_LEN] = { 0 };
-	tchar_t sz_vender_code[NUM_LEN] = { 0 };
-	tchar_t sz_vender_name[RES_LEN] = { 0 };
-	tchar_t sz_expired_date[DATE_LEN] = { 0 };
+	tchar_t sz_organization_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_organization_name[RES_LEN + 1] = { 0 };
+	tchar_t sz_vender_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_vender_name[RES_LEN + 1] = { 0 };
+	tchar_t sz_expired_date[DATE_LEN + 1] = { 0 };
 
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
-	schar_t sz_temp[RES_LEN] = { 0 };
+	schar_t sz_temp[RES_LEN + 1] = { 0 };
 
 	int step;
 

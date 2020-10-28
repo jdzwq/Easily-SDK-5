@@ -379,7 +379,7 @@ void hand_title_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr = { 0 };
 	xcolor_t xc_brim = { 0 };
 	xcolor_t xc_core = { 0 };
-	tchar_t token[RES_LEN] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 	const tchar_t* orita;
 
 	canvas_t canv;

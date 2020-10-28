@@ -189,7 +189,7 @@ void draw_calendar(const if_drawing_t* pif, link_t_ptr ptr)
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
 	float pw, ph, ic, iw, ih, th;
-	tchar_t sz_token[DATE_LEN];
+	tchar_t sz_token[DATE_LEN + 1];
 
 	xdate_t dt;
 	calendar_t ca = { 0 };

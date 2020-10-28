@@ -47,7 +47,7 @@ typedef struct tagImagePanelDelta{
 
 	bool_t bDirty;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 	METADATA meta;
 }ImagePanelDelta;
 
@@ -180,8 +180,8 @@ void ImagePanel_OnAttach(res_win_t widget)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 	tchar_t szExt[10] = { 0 };
 
 	const tchar_t* szFilter = _T("JPG File(*.jpg)\0*.jpg\0PNG File(*.png)\0*.png\0BMP File(*.bmp)\0*.bmp\0");
@@ -194,7 +194,7 @@ void ImagePanel_OnAttach(res_win_t widget)
 
 	LINKPTR ptrImage = imagesctrl_fetch(pdt->hImage);
 
-	tchar_t szName[PATH_LEN],szImage[RES_LEN];
+	tchar_t szName[PATH_LEN + 1],szImage[RES_LEN + 1];
 
 	tchar_t* szToken = szFile;
 	while (*szToken)
@@ -345,7 +345,7 @@ void ImagePanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	LINKPTR ptrImages = imagesctrl_fetch(pdt->hImage);
 	LINKPTR ptrItem = imagesctrl_get_focus_item(pdt->hImage);
 
-	tchar_t sz_style[CSS_LEN] = { 0 };
+	tchar_t sz_style[CSS_LEN + 1] = { 0 };
 
 	if (ptrItem)
 	{
@@ -442,11 +442,11 @@ void ImagePanel_OnSave(res_win_t widget)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -469,8 +469,8 @@ void ImagePanel_OnSaveAs(res_win_t widget)
 {
 	ImagePanelDelta* pdt = GETIMAGEPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szPath[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -805,7 +805,7 @@ void ImagePanel_OnParentCommand(res_win_t widget, int code, var_long data)
 
 	if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))

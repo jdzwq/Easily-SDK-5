@@ -727,7 +727,7 @@ const tchar_t* get_dom_node_ns_ptr(link_t_ptr ilk)
 void set_dom_node_nsurl(link_t_ptr ilk, const tchar_t* sz_url, int len)
 {
 	dom_node_t* pti;
-	tchar_t nkey[PATH_LEN];
+	tchar_t nkey[PATH_LEN + 1];
 
 	XDL_ASSERT(ilk && ilk->tag == lkNode);
 
@@ -747,7 +747,7 @@ void set_dom_node_nsurl(link_t_ptr ilk, const tchar_t* sz_url, int len)
 const tchar_t* get_dom_node_nsurl_ptr(link_t_ptr ilk)
 {
 	dom_node_t* pti;
-	tchar_t nkey[PATH_LEN];
+	tchar_t nkey[PATH_LEN + 1];
 
 	XDL_ASSERT(ilk && ilk->tag == lkNode);
 

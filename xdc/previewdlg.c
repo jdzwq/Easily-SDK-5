@@ -141,7 +141,7 @@ void _previewdlg_fresh_tree(res_win_t widget)
 void _previewdlg_fresh_info(res_win_t widget)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
-	tchar_t title[RES_LEN] = { 0 };
+	tchar_t title[RES_LEN + 1] = { 0 };
 	link_t_ptr svg, plk;
 	link_t_ptr status, ilk;
 	int page, count = 0;
@@ -288,9 +288,9 @@ void previewdlg_on_saveas(res_win_t widget)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szName[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szName[RES_LEN + 1] = { 0 };
 
 	link_t_ptr svg;
 
@@ -313,9 +313,9 @@ void previewdlg_on_save(res_win_t widget)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szName[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szName[RES_LEN + 1] = { 0 };
 
 	if(!get_arch_item_count(ptd->arch))
 		return;
@@ -335,9 +335,9 @@ void previewdlg_on_open(res_win_t widget)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
 	tchar_t szFile[PATH_LEN * 10] = { 0 };
-	tchar_t szName[RES_LEN] = { 0 };
+	tchar_t szName[RES_LEN + 1] = { 0 };
 
 	res_win_t svgctrl;
 

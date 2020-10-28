@@ -30,8 +30,8 @@ LICENSE.GPL3 for more details.
 
 static void _xtcps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_proc)
 {
-	tchar_t sz_root[PATH_LEN] = { 0 };
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_root[PATH_LEN + 1] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
 	if (is_null(sz_root))
@@ -95,11 +95,11 @@ static void _xtcps_track_error(void* hand, const tchar_t* code, const tchar_t* t
 /**********************************************************************************************************************/
 void _xtcps_dispatch(xhand_t tcp, void* p)
 {
-	tchar_t sz_path[PATH_LEN] = { 0 };
-	tchar_t sz_proc[PATH_LEN] = { 0 };
-	tchar_t sz_site[RES_LEN] = { 0 };
-	tchar_t sz_timo[INT_LEN] = { 0 };
-    tchar_t sz_name[RES_LEN] = { 0 };
+	tchar_t sz_path[PATH_LEN + 1] = { 0 };
+	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
+	tchar_t sz_site[RES_LEN + 1] = { 0 };
+	tchar_t sz_timo[INT_LEN + 1] = { 0 };
+    tchar_t sz_name[RES_LEN + 1] = { 0 };
 
 	int n_state = 0;
 
@@ -200,8 +200,8 @@ ONERROR:
 
 void _xtcps_start(xtcps_param_t* pxp)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_token[RES_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_token[RES_LEN + 1] = { 0 };
 	unsigned short port;
 
 	if (pxp->lis_tcp)
@@ -237,8 +237,8 @@ void _xtcps_start(xtcps_param_t* pxp)
 
 void _xtcps_stop(xtcps_param_t* pxp)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_token[RES_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_token[RES_LEN + 1] = { 0 };
 
 	if (pxp->lis_tcp)
 	{

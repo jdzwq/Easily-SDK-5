@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	xhand_t pipe = NULL;
 
 	int i, len;
-	tchar_t sz_cert[RES_LEN] = { 0 };
+	tchar_t sz_cert[RES_LEN + 1] = { 0 };
 
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };

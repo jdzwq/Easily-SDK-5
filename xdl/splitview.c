@@ -269,7 +269,7 @@ void adjust_split_item(link_t_ptr ilk, float off)
 {
 	float w, h, m;
 	float r;
-	tchar_t token[NUM_LEN];
+	tchar_t token[NUM_LEN + 1];
 
 	if (!get_split_item_splited(ilk))
 		return;

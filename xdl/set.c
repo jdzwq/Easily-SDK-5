@@ -382,7 +382,7 @@ int set_format(const set_t* pset, tchar_t* buf, int max)
 #if defined(_DEBUG) || defined(DEBUG)
 void test_set()
 {
-	tchar_t num[NUM_LEN];
+	tchar_t num[NUM_LEN + 1];
 
 	set_t* pset = set_alloc();
 	set_t ve;

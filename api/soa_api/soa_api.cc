@@ -63,8 +63,8 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	
-	tchar_t token[PATH_LEN] = { 0 };
-	tchar_t file[PATH_LEN] = { 0 };
+	tchar_t token[PATH_LEN + 1] = { 0 };
+	tchar_t file[PATH_LEN + 1] = { 0 };
 	int k,len;
 
 	HMODULE h_modu = NULL;

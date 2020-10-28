@@ -8,7 +8,7 @@
 int main(int argc, char* argv[])
 {
 	tchar_t param[4096] = { 0 };
-	tchar_t token[PATH_LEN] = { 0 };
+	tchar_t token[PATH_LEN + 1] = { 0 };
 	timer_block_t tb = { 0 };
 
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	PF_TIMER_INVOKE pf_invoke = NULL;
 
 	xdate_t dt;
-	tchar_t sz_date[DATE_LEN] = { 0 };
+	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 
 	xdl_process_init(XDL_APARTMENT_PROCESS | XDL_INITIALIZE_SERVER);
 

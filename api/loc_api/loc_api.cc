@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _loc_block_t{
 	secu_desc_t sd;
-	tchar_t local[PATH_LEN];
+	tchar_t local[PATH_LEN + 1];
 }loc_block_t;
 
 
@@ -36,7 +36,7 @@ bool_t _invoke_head(const https_block_t* pb, loc_block_t* pos)
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	tchar_t fetag[ETAG_LEN + 1] = { 0 };
@@ -97,7 +97,7 @@ ONERROR:
 
 bool_t _invoke_list(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_enc[RES_LEN + 1] = { 0 };
@@ -169,7 +169,7 @@ ONERROR:
 
 bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t fsince[DATE_LEN + 1] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -429,7 +429,7 @@ ONERROR:
 
 bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t frange[RES_LEN + 1] = { 0 };
@@ -652,7 +652,7 @@ ONERROR:
 
 bool_t _invoke_delete(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -737,7 +737,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	loc_block_t* pos = NULL;
 
-	tchar_t sz_local[PATH_LEN] = { 0 };
+	tchar_t sz_local[PATH_LEN + 1] = { 0 };
 
 	bool_t rt = 1;
 

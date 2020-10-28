@@ -126,6 +126,9 @@
     <ClCompile Include="..\..\xds\strutil.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xds\xdscolor.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xds\oemaes.h">
@@ -227,9 +230,6 @@
     <ClInclude Include="..\..\xds\oemzip.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xds\xdsattr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xds\xdsdef.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -243,6 +243,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xds\strutil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\gdiattr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\xdscolor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

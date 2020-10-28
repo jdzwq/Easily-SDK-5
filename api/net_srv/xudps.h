@@ -32,10 +32,10 @@ LICENSE.GPL3 for more details.
 typedef struct _xudps_param_t{
 	udp_listen_t*	lis_udp;
 
-	tchar_t		sz_mode[INT_LEN];
-	tchar_t		sz_port[INT_LEN];
-	tchar_t		sz_module[PATH_LEN];
-	tchar_t		sz_param[PATH_LEN];
+	tchar_t		sz_mode[INT_LEN + 1];
+	tchar_t		sz_port[INT_LEN + 1];
+	tchar_t		sz_module[PATH_LEN + 1];
+	tchar_t		sz_param[PATH_LEN + 1];
 }xudps_param_t;
 
 void	_xudps_start(xudps_param_t* pxs);

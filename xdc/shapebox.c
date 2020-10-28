@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 #include "xdcimp.h"
 
 typedef struct _shapebox_delta_t{
-	tchar_t shape[INT_LEN];
+	tchar_t shape[INT_LEN + 1];
 }shapebox_delta_t;
 
 #define GETSHAPEBOXDELTA(ph) 	(shapebox_delta_t*)widget_get_user_delta(ph)

@@ -439,8 +439,8 @@ bool_t	socket_get_nonblk(res_file_t so)
 bool_t host_addr(const tchar_t* host, tchar_t* addr)
 {
 	if_socket_t* pif_so;
-	schar_t shost[META_LEN] = { 0 };
-	schar_t saddr[ADDR_LEN] = { 0 };
+	schar_t shost[META_LEN + 1] = { 0 };
+	schar_t saddr[ADDR_LEN + 1] = { 0 };
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);
@@ -469,7 +469,7 @@ bool_t host_addr(const tchar_t* host, tchar_t* addr)
 void fill_addr(net_addr_t* paddr, unsigned short port, const tchar_t* addr)
 {
 	if_socket_t* pif_so;
-	schar_t saddr[ADDR_LEN] = { 0 };
+	schar_t saddr[ADDR_LEN + 1] = { 0 };
 
 	pif_so = PROCESS_SOCKET_INTERFACE;
 	XDL_ASSERT(pif_so != NULL);

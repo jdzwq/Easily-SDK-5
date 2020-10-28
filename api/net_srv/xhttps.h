@@ -37,10 +37,10 @@ typedef struct _xhttps_param_t{
 
 	int			n_secu;
 
-	tchar_t		sz_mode[INT_LEN];
-	tchar_t		sz_port[INT_LEN];
-	tchar_t		sz_module[PATH_LEN];
-	tchar_t		sz_param[PATH_LEN];
+	tchar_t		sz_mode[INT_LEN + 1];
+	tchar_t		sz_port[INT_LEN + 1];
+	tchar_t		sz_module[PATH_LEN + 1];
+	tchar_t		sz_param[PATH_LEN + 1];
 }xhttps_param_t;
 
 void	_xhttps_start(xhttps_param_t* pxs);

@@ -46,8 +46,8 @@ bool_t xhttp_invoke_soap(xhand_t xhttp, link_t_ptr send_soap, link_t_ptr recv_so
 	link_t_ptr xml;
 	link_t_ptr nlk_req;
 
-	tchar_t sz_action[PATH_LEN] = { 0 };
-	tchar_t sz_xmlns[PATH_LEN] = { 0 };
+	tchar_t sz_action[PATH_LEN + 1] = { 0 };
+	tchar_t sz_xmlns[PATH_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_text[ERR_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };

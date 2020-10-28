@@ -54,7 +54,7 @@ xhand_t xcons_alloc()
 	console_t* pst;
 	if_cons_t* pif;
 	res_file_t fd;
-	tchar_t cname[PATH_LEN] = { 0 };
+	tchar_t cname[PATH_LEN + 1] = { 0 };
 
 	pif = PROCESS_CONS_INTERFACE;
 

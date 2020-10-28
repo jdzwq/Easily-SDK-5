@@ -64,7 +64,7 @@ void _write_log_error(const if_fio_t* log, const tchar_t* sz_code, const tchar_t
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br, n_log = 0;
-	tchar_t token[INT_LEN] = { 0 };
+	tchar_t token[INT_LEN + 1] = { 0 };
     byte_t br[2] = { '\r', '\n' };
     
 	format_charset(DEF_MBS, token);

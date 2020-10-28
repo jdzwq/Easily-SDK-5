@@ -35,8 +35,8 @@ LICENSE.GPL3 for more details.
 typedef struct _iconbox_delta_t{
 	link_t_ptr string;
 
-	tchar_t layer[RES_LEN];
-	tchar_t align[RES_LEN];
+	tchar_t layer[RES_LEN + 1];
+	tchar_t align[RES_LEN + 1];
 }iconbox_delta_t;
 
 #define GETICONBOXDELTA(ph) 	(iconbox_delta_t*)widget_get_user_delta(ph)

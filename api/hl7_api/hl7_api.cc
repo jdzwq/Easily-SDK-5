@@ -26,10 +26,10 @@ LICENSE.GPL3 for more details.
 #include "hl7_api.h"
 
 typedef struct _hl7_block_t{
-	tchar_t topic_name[PATH_LEN];
+	tchar_t topic_name[PATH_LEN + 1];
 
 	secu_desc_t sd;
-	tchar_t local[PATH_LEN];
+	tchar_t local[PATH_LEN + 1];
 }hl7_block_t;
 
 static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_t* pid)
@@ -87,10 +87,10 @@ bool_t _invoke_head(const https_block_t* pb, hl7_block_t* pd)
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -223,17 +223,17 @@ bool_t _invoke_list(const https_block_t* pb, hl7_block_t* pd)
 	tk_kv_t hkv = NULL;
 
 	rad_hdr_t hdr = { 0 };
-	tchar_t fsince[DATE_LEN] = { 0 };
+	tchar_t fsince[DATE_LEN + 1] = { 0 };
 	xdate_t dt_first, dt = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
-	tchar_t sz_encoding[RES_LEN] = { 0 };
+	tchar_t sz_encoding[RES_LEN + 1] = { 0 };
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
@@ -414,19 +414,19 @@ bool_t _invoke_get(const https_block_t* pb, hl7_block_t* pd)
 	tk_kv_t hkv = NULL;
 
 	rad_hdr_t hdr = { 0 };
-	tchar_t fsince[DATE_LEN] = { 0 };
+	tchar_t fsince[DATE_LEN + 1] = { 0 };
 	xdate_t dt_first, dt = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	byte_t** pp = NULL;
 
-	tchar_t sz_encoding[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t sz_encoding[RES_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
@@ -622,16 +622,16 @@ bool_t _invoke_put(const https_block_t* pb, hl7_block_t* pd)
 	xdate_t dt = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	byte_t** pp = NULL;
 	dword_t size;
 
-	tchar_t sz_encoding[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t sz_encoding[RES_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	bool_t b_json = 0;
 
 	LINKPTR ptr_json = NULL;
@@ -805,10 +805,10 @@ bool_t _invoke_delete(const https_block_t* pb, hl7_block_t* pd)
 	tk_db_t hdb = NULL;
 	tk_kv_t hkv = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -930,8 +930,8 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	hl7_block_t* pd = NULL;
 
-	tchar_t token[RES_LEN] = {0};
-	tchar_t file[PATH_LEN] = { 0 };
+	tchar_t token[RES_LEN + 1] = {0};
+	tchar_t file[PATH_LEN + 1] = { 0 };
 
 	bool_t rt = 1;
 

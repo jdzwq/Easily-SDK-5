@@ -41,8 +41,8 @@ static void _xpnps_track_error(void* hand, const tchar_t* code, const tchar_t* t
 
 static void _xpnps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_proc)
 {
-	tchar_t sz_root[PATH_LEN] = { 0 };
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_root[PATH_LEN + 1] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
 	if (is_null(sz_root))
@@ -102,9 +102,9 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
-	tchar_t sz_site[RES_LEN] = { 0 };
-	tchar_t sz_proc[PATH_LEN] = { 0 };
-	tchar_t sz_path[PATH_LEN] = { 0 };
+	tchar_t sz_site[RES_LEN + 1] = { 0 };
+	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
+	tchar_t sz_path[PATH_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -181,8 +181,8 @@ ONERROR:
 
 void _xpnps_start(xpnps_param_t* pxp)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_token[RES_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_token[RES_LEN + 1] = { 0 };
 
 	unsigned short port;
 
@@ -224,8 +224,8 @@ void _xpnps_start(xpnps_param_t* pxp)
 
 void _xpnps_stop(xpnps_param_t* pxp)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_token[RES_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_token[RES_LEN + 1] = { 0 };
 
 	if (pxp->lis_pnp)
 	{

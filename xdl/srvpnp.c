@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _pnp_accept_t{
 	unsigned short port;
-	tchar_t addr[ADDR_LEN];
+	tchar_t addr[ADDR_LEN + 1];
 
 	res_even_t ev;
 
@@ -85,7 +85,8 @@ static pnp_listen_t*  _xpnp_listen(unsigned short port)
 	plis->so = so;
 	plis->port = port;
 	plis->act = 1;
-	
+	plis->cri = criti_create();
+
 	system_info(&si);
 	plis->res = si.processor_number;
 
@@ -100,7 +101,7 @@ static unsigned STDCALL thread_dispatch(void* param)
 	void* pf_param = NULL;
 	res_even_t ev = NULL;
 	unsigned short port;
-	tchar_t addr[ADDR_LEN];
+	tchar_t addr[ADDR_LEN + 1];
 	byte_t pack[PNP_PKG_SIZE];
 
 	xdl_thread_init(0);
@@ -129,7 +130,7 @@ static unsigned STDCALL process_dispatch(void* param)
 	pnp_accept_t* pxa = (pnp_accept_t*)param;
 
 	unsigned short port;
-	byte_t addr[ADDR_LEN];
+	byte_t addr[ADDR_LEN + 1];
 	dword_t alen;
 	byte_t pack[PNP_PKG_SIZE];
 	dword_t size;
@@ -239,9 +240,22 @@ static unsigned STDCALL wait_accept(void* param)
 	{
 		addr_len = sizeof(net_addr_t);
 		dw = PNP_PKG_SIZE;
-		if (!socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, pov))
+
+		if (plis->cri)
 		{
-            thread_yield();
+			criti_enter(plis->cri);
+		}
+
+		socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, pov);
+
+		if (plis->cri)
+		{
+			criti_leave(plis->cri);
+		}
+
+		if (!pov->size)
+		{
+			thread_yield();
 			continue;
 		}
 		
@@ -344,8 +358,14 @@ void  xpnp_stop(pnp_listen_t* plis)
 
 	for (i = 0; i < plis->res; i++)
 	{
-		thread_join(plis->thr[i]);
+		if (plis->thr[i])
+		{
+			thread_join(plis->thr[i]);
+		}
 	}
+
+	if (plis->cri)
+		criti_destroy(plis->cri);
 
 	xmem_free(plis->thr);
 

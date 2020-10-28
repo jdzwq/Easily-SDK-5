@@ -494,14 +494,14 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 
 		LINKPTR ptr_plot = create_plot_doc();
 
-		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_INDICATOR, -1);
+		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_INDICATOR, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_THERMOMETER, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_KPIGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TASKGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_HISTOGRAM, -1);
-		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_SCATTERGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_RADARGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_FUELGRAM, -1);
@@ -514,10 +514,10 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		set_plot_y_bases_token(ptr_plot, _T("0,0,0,0,0,0,0"), -1);
 		set_plot_y_steps_token(ptr_plot, _T("2,2,4,4,4,2,8"), -1);
 		set_plot_y_labels_token(ptr_plot, _T("physi,habit,diet,motion,chronic,therapy,sympt"), -1);
-		set_plot_y_colors_token(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255),RGB(255,0,0),RGB(0,128,0),RGB(0,0,255)"), -1);
+		set_plot_y_colors_token(ptr_plot, _T("LightSlateGray,CornflowerBlue,DarkSalmon,ForestGreen,Indigo,LightSteelBlue,Orange,PapayaWhip"), -1);
 		set_plot_y_shapes_token(ptr_plot, _T("top-triangle,rect,left-triangle,round,right-triangle,ellipse,bottom-triangle"), -1);
 		set_plot_x_labels_token(ptr_plot, _T("text1,text2"), -1);
-		set_plot_x_colors_token(ptr_plot, _T("RGB(255,0,0),RGB(0,128,0),RGB(0,0,255),RGB(169,169,169),RGB(0,255,255)"), -1);
+		set_plot_x_colors_token(ptr_plot, _T("LightSlateGray,CornflowerBlue,DarkSalmon,ForestGreen,Indigo,LightSteelBlue,Orange,PapayaWhip"), -1);
 		set_plot_ruler(ptr_plot, 10);
 		set_plot_matrix_rows(ptr_plot, 5);
 		set_plot_matrix_cols(ptr_plot, 3);
@@ -733,7 +733,9 @@ void MainFrame_UserPanel_OnDraw(res_win_t win, visual_t rdc)
 	
 	parse_xcolor(&xc, GDI_ATTR_RGB_BLUE);
 
-	test_gizmo(pif, &xc, (xrect_t*)&cb);
+	//test_gizmo(pif, &xc, (xrect_t*)&cb);
+
+	test_color(pif, (xrect_t*)&cb);
 
 	/*tchar_t aa[10] = { 0 };
 	xpoint_t pa[20] = { 0 };

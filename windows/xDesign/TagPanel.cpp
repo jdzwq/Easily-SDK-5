@@ -41,7 +41,7 @@ typedef struct tagTagPanelDelta{
 	res_win_t hProper;
 	res_win_t hTag;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 }TagPanelDelta;
 
 #define GETTAGPANELDELTA(ph) 		(TagPanelDelta*)widget_get_user_delta(ph)
@@ -247,11 +247,11 @@ void TagPanel_OnSave(res_win_t widget)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -274,8 +274,8 @@ void TagPanel_OnSaveAs(res_win_t widget)
 {
 	TagPanelDelta* pdt = GETTAGPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szPath[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -554,7 +554,7 @@ void TagPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))

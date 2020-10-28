@@ -44,13 +44,13 @@ LICENSE.GPL3 for more details.
 typedef struct _tftp_pdu_t{
 	int type;
 
-	tchar_t method[INT_LEN];
-	tchar_t file[PATH_LEN];
-	tchar_t mode[NUM_LEN];
+	tchar_t method[INT_LEN + 1];
+	tchar_t file[PATH_LEN + 1];
+	tchar_t mode[NUM_LEN + 1];
 
 	dword_t size;
 	sword_t isdir;
-	tchar_t ftime[DATE_LEN];
+	tchar_t ftime[DATE_LEN + 1];
 
 	int errcode;
 	tchar_t errtext[ERR_LEN + 1];
@@ -76,7 +76,7 @@ typedef struct _xtftp_t{
 	int serial;
 
 	sword_t errcode;
-	tchar_t errtext[ERR_LEN];
+	tchar_t errtext[ERR_LEN + 1];
 }xtftp_t;
 
 /***********************************************************************************************/
@@ -595,8 +595,8 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 	tchar_t *potoat, *hostat, *portat, *objat, *qryat;
 	int potolen, hostlen, portlen, objlen, qrylen;
 
-	tchar_t host[META_LEN] = { 0 };
-	tchar_t addr[ADDR_LEN] = { 0 };
+	tchar_t host[META_LEN + 1] = { 0 };
+	tchar_t addr[ADDR_LEN + 1] = { 0 };
 	unsigned short port, bind;
 
 	tftp_pdu_t* pdu = NULL;

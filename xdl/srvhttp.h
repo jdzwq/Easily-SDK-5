@@ -99,10 +99,10 @@ typedef struct _https_block_t{
 	PF_LOG_XML		pf_log_xml;
 	PF_LOG_JSON		pf_log_json;
 
-	tchar_t site[RES_LEN];
-	tchar_t space[RES_LEN];
-	tchar_t object[PATH_LEN];
-	tchar_t path[PATH_LEN];
+	tchar_t site[RES_LEN + 1];
+	tchar_t space[RES_LEN + 1];
+	tchar_t object[PATH_LEN + 1];
+	tchar_t path[PATH_LEN + 1];
 }https_block_t;
 
 typedef enum{
@@ -118,8 +118,8 @@ typedef struct _soap_block_t{
 	link_t_ptr soap_request;
 	link_t_ptr soap_response;
 
-	tchar_t soap_action[PATH_LEN];
-	tchar_t soap_path[PATH_LEN];
+	tchar_t soap_action[PATH_LEN + 1];
+	tchar_t soap_path[PATH_LEN + 1];
 }soap_block_t;
 
 typedef int(STDCALL *PF_SOAP_INVOKE)(const soap_block_t* pb);
@@ -127,7 +127,7 @@ typedef int(STDCALL *PF_SOAP_INVOKE)(const soap_block_t* pb);
 typedef struct _wsdl_block_t{
 	link_t_ptr soap_wsdl;
 
-	tchar_t soap_path[PATH_LEN];
+	tchar_t soap_path[PATH_LEN + 1];
 }wsdl_block_t;
 
 typedef int(STDCALL *PF_WSDL_INVOKE)(const wsdl_block_t* pb);

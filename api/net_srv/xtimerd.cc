@@ -63,10 +63,10 @@ void STDCALL thread_timer_proc(void* param, unsigned char wait)
 	int rt;
 	timer_block_t tb = { 0 };
 
-	tchar_t token[PATH_LEN] = { 0 };
+	tchar_t token[PATH_LEN + 1] = { 0 };
 
 	xdate_t dt = { 0 };
-	tchar_t sz_date[DATE_LEN] = { 0 };
+	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 	
 	xdl_thread_init(0);
 
@@ -140,9 +140,9 @@ void STDCALL process_timer_proc(void* param, unsigned char wait)
 
 void xtimerd_start()
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_path[PATH_LEN] = { 0 };
-	tchar_t sz_time[DATE_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_path[PATH_LEN + 1] = { 0 };
+	tchar_t sz_time[DATE_LEN + 1] = { 0 };
 
 	if (g_stack)
 		return ;
@@ -236,7 +236,7 @@ void xtimerd_start()
 void xtimerd_stop()
 {
 	xtimerd_param_t* ptimer;
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	if (!g_stack)
 		return;

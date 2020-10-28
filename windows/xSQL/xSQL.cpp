@@ -232,9 +232,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_verb[100] = { 0 };
 	
-	tchar_t sz_type[INT_LEN] = { 0 };
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_cmd[RES_LEN] = { 0 };
+	tchar_t sz_type[INT_LEN + 1] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_cmd[RES_LEN + 1] = { 0 };
 	tchar_t sz_sql[8192] = { 0 };
 	int len;
 	int step;

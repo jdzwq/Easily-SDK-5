@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 HINSTANCE	g_hInst = NULL;		// 当前实例
 HWND		g_hMain = NULL;
 
-tchar_t		g_szRunPath[PATH_LEN] = { 0 };
+tchar_t		g_szRunPath[PATH_LEN + 1] = { 0 };
 
 LINKPTR		g_imagelist = NULL;
 bitmap_t	g_bmpThumb = NULL;
@@ -124,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    g_hInst = hInstance; 
 
-   tchar_t szPath[PATH_LEN] = { 0 };
+   tchar_t szPath[PATH_LEN + 1] = { 0 };
    GetModuleFileName(NULL, szPath, PATH_LEN);
 
    split_path(szPath, g_szRunPath, NULL, NULL);
@@ -135,7 +135,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    LoadResource();
 
-   tchar_t szFace[INT_LEN] = { 0 };
+   tchar_t szFace[INT_LEN + 1] = { 0 };
 
    LoadPreference(_T("Default"), PERFERENCE_FACE, szFace);
 
@@ -150,7 +150,7 @@ VOID UnInitInstance(HINSTANCE hInstance)
 {
 	FreeResource();
 
-	tchar_t szFace[INT_LEN] = { 0 };
+	tchar_t szFace[INT_LEN + 1] = { 0 };
 	ltoxs(g_indFace, szFace, INT_LEN);
 
 	SavePreference(_T("Default"), PERFERENCE_FACE, szFace);
@@ -162,7 +162,7 @@ VOID UnInitInstance(HINSTANCE hInstance)
 
 VOID LoadResource()
 {
-	tchar_t path[PATH_LEN];
+	tchar_t path[PATH_LEN + 1];
 
 	GetModuleFileName(NULL, path, PATH_LEN);
 
@@ -480,7 +480,7 @@ VOID FreeResource()
 
 VOID LoadPreference(const tchar_t* sec, const tchar_t* key, tchar_t* val)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	xsprintf(sz_file, _T("%s\\xProfile.ini"), g_szRunPath);
 
@@ -489,7 +489,7 @@ VOID LoadPreference(const tchar_t* sec, const tchar_t* key, tchar_t* val)
 
 VOID SavePreference(const tchar_t* sec, const tchar_t* key, const tchar_t* val)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	xsprintf(sz_file, _T("%s\\xProfile.ini"), g_szRunPath);
 

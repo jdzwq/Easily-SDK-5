@@ -469,7 +469,7 @@ bool_t xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr)
 void xfile_tree(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr)
 {
 	link_t_ptr nlk;
-	tchar_t file[PATH_LEN] = { 0 };
+	tchar_t file[PATH_LEN + 1] = { 0 };
 	tchar_t* token;
 
 	xsncpy(file, path, PATH_LEN);

@@ -50,7 +50,7 @@ typedef struct tagDialogPanelDelta{
 	res_win_t hTitle;
 	res_win_t hDialog;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 	METADATA meta;
 }DialogPanelDelta;
 
@@ -172,7 +172,7 @@ void DialogPanel_SelectAttr(res_win_t widget, const tchar_t* attr_name, const tc
 	LINKPTR ptrDialog = dialogctrl_fetch(pdt->hDialog);
 	LINKPTR ptrItem = dialogctrl_get_focus_item(pdt->hDialog);
 
-	tchar_t style[CSS_LEN];
+	tchar_t style[CSS_LEN + 1];
 
 	DialogPanel_SetDirty(widget, 1);
 
@@ -197,11 +197,11 @@ void DialogPanel_OnSave(res_win_t widget)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -227,9 +227,9 @@ void DialogPanel_OnSaveAs(res_win_t widget)
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szType[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szType[RES_LEN + 1] = { 0 };
 	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -462,7 +462,7 @@ void DialogPanel_OnCSSProper(res_win_t widget)
 
 	if (nRet)
 	{
-		tchar_t sz_style[CSS_LEN] = { 0 };
+		tchar_t sz_style[CSS_LEN + 1] = { 0 };
 		properbag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
 
 		if (flk)
@@ -1213,7 +1213,7 @@ void DialogPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	LINKPTR ptrDialog = dialogctrl_fetch(pdt->hDialog);
 	LINKPTR ptrItem = dialogctrl_get_focus_item(pdt->hDialog);
 
-	tchar_t sz_style[CSS_LEN] = { 0 };
+	tchar_t sz_style[CSS_LEN + 1] = { 0 };
 
 	if (ptrItem)
 	{
@@ -1798,7 +1798,7 @@ void DialogPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))
@@ -1817,7 +1817,7 @@ void DialogPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long dat
 {
 	DialogPanelDelta* pdt = GETDIALOGPANELDELTA(widget);
 
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 
 	switch (cid)
 	{

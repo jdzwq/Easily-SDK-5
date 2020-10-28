@@ -109,7 +109,7 @@ typedef struct tagMainFrameDelta{
 	bool_t bMode;
 
 	LINKPTR ptrProject;
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 }MainFrameDelta;
 
 #define GETMAINFRAMEDELTA(widget) 			(MainFrameDelta*)widget_get_user_delta(widget)
@@ -180,8 +180,8 @@ void MainFrame_SaveProject(res_win_t widget)
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
-		tchar_t szFile[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
+		tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -248,8 +248,8 @@ void MainFrame_CreateProject(res_win_t widget)
 	if (pdt->bDirty)
 		return;
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -294,8 +294,8 @@ void MainFrame_OpenProject(res_win_t widget)
 	if (pdt->bDirty)
 		return;
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -520,8 +520,8 @@ void MainFrame_OpenFile(res_win_t widget)
 {
 	MainFrameDelta* pdt = GETMAINFRAMEDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Schema File(*.schema)\0*.schema\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\Json File(*.json)\0*.json\0");
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -532,7 +532,7 @@ void MainFrame_OpenFile(res_win_t widget)
 	xscat(szPath, _T("\\"));
 	xscat(szPath, szFile);
 
-	tchar_t szClass[RES_LEN] = { 0 };
+	tchar_t szClass[RES_LEN + 1] = { 0 };
 
 	split_path(szPath, NULL, NULL, szClass);
 
@@ -605,7 +605,7 @@ void MainFrame_AppendFile(res_win_t widget)
 	LINKPTR ptr_tree = treectrl_fetch(pdt->hResBar);
 	LINKPTR tlk_parent = NULL;
 
-	tchar_t szName[PATH_LEN], szTitle[PATH_LEN], szType[RES_LEN];
+	tchar_t szName[PATH_LEN + 1], szTitle[PATH_LEN + 1], szType[RES_LEN + 1];
 
 	tchar_t* szToken = szFile;
 	while (*szToken)
@@ -649,8 +649,8 @@ bool_t MainFrame_RenameFile(res_win_t widget, const tchar_t* nname)
 
 	LINKPTR tlk = treectrl_get_focus_item(pdt->hResBar);
 
-	tchar_t szNew[PATH_LEN], szOrg[PATH_LEN], szExt[INT_LEN];
-	tchar_t szClass[RES_LEN] = { 0 };
+	tchar_t szNew[PATH_LEN + 1], szOrg[PATH_LEN + 1], szExt[INT_LEN + 1];
+	tchar_t szClass[RES_LEN + 1] = { 0 };
 
 	split_path(pdt->szFile, szOrg, NULL, NULL);
 	xscat(szOrg, _T("\\"));
@@ -713,9 +713,9 @@ void MainFrame_ShowFile(res_win_t widget)
 	if (is_tree_doc(get_tree_parent_item(tlk)))
 		return;
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szClass[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szClass[RES_LEN + 1] = { 0 };
 
 	xscpy(szFile, get_tree_item_name_ptr(tlk));
 
@@ -744,7 +744,7 @@ void MainFrame_SyncFile(res_win_t widget)
 	if (!pdt->ptrProject)
 		return;
 
-	tchar_t szSYN[PATH_LEN] = { 0 };
+	tchar_t szSYN[PATH_LEN + 1] = { 0 };
 
 	secu_desc_t sd = { 0 };
 
@@ -785,11 +785,11 @@ void MainFrame_SyncFile(res_win_t widget)
 	if (!(rt & MSGBTN_YES))
 		return;
 
-	tchar_t szSrv[PATH_LEN] = { 0 };
-	tchar_t szLoc[PATH_LEN] = { 0 };
+	tchar_t szSrv[PATH_LEN + 1] = { 0 };
+	tchar_t szLoc[PATH_LEN + 1] = { 0 };
 
-	tchar_t locTime[DATE_LEN] = { 0 };
-	tchar_t srvTime[DATE_LEN] = { 0 };
+	tchar_t locTime[DATE_LEN + 1] = { 0 };
+	tchar_t srvTime[DATE_LEN + 1] = { 0 };
 
 	statusctrl_show_step(pdt->hStatusBar, 1);
 	widget_set_cursor(g_hMain, CURSOR_WAIT);
@@ -1017,7 +1017,7 @@ void MainFrame_SetDataSource(res_win_t widget)
 	if (!pdt->ptrProject)
 		return;
 
-	tchar_t szRDS[PATH_LEN] = { 0 };
+	tchar_t szRDS[PATH_LEN + 1] = { 0 };
 
 	Project_GetConfig(pdt->ptrProject, _T("RDS"), szRDS, PATH_LEN);
 
@@ -1069,7 +1069,7 @@ void MainFrame_SetDocServer(res_win_t widget)
 	if (!pdt->ptrProject)
 		return;
 
-	tchar_t szSYN[PATH_LEN] = { 0 };
+	tchar_t szSYN[PATH_LEN + 1] = { 0 };
 
 	Project_GetConfig(pdt->ptrProject, _T("SYN"), szSYN, PATH_LEN);
 

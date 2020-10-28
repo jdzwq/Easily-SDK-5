@@ -89,10 +89,10 @@ typedef struct _radnet_t{
 	int encode;
 	int status;
 
-	tchar_t dbname[PATH_LEN];
+	tchar_t dbname[PATH_LEN + 1];
 
 	int errcode;
-	tchar_t errtext[ERR_LEN];
+	tchar_t errtext[ERR_LEN + 1];
 }radnet_t;
 
 typedef struct _radnet_pdv_head_t{

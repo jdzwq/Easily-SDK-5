@@ -424,8 +424,8 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 
 void read_xbrush_from_svg_node(link_t_ptr nlk, xbrush_t* pxb)
 {
-	tchar_t token[RES_LEN] = { 0 };
-	tchar_t gid[RES_LEN] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
+	tchar_t gid[RES_LEN + 1] = { 0 };
 	link_t_ptr ptr, nlk_defs, nlk_objs, nlk_sub;
 
 	get_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, token, RES_LEN);
@@ -1281,7 +1281,7 @@ bool_t svg_node_is_pie(link_t_ptr glk)
 void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
 {
 	xpoint_t pt1, pt2;
-	tchar_t token[10 * INT_LEN];
+	tchar_t token[10 * INT_LEN + 1];
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
@@ -1372,7 +1372,7 @@ void write_fan_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 {
 	xpoint_t pa[4] = { 0 };
 	int r1, r2;
-	tchar_t token[12 * INT_LEN];
+	tchar_t token[12 * INT_LEN + 1];
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
@@ -1462,7 +1462,7 @@ bool_t svg_node_is_arc(link_t_ptr glk)
 
 void write_arc_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt1, const xpoint_t* ppt2, int rx, int ry, bool_t sflag, bool_t lflag)
 {
-	tchar_t token[10 * INT_LEN];
+	tchar_t token[10 * INT_LEN + 1];
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 

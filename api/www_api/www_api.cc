@@ -27,9 +27,9 @@ LICENSE.GPL3 for more details.
 
 bool_t _invoke_get(const https_block_t* pb)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
-	tchar_t sz_filter[RES_LEN] = { 0 };
-	tchar_t sz_content[RES_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
+	tchar_t sz_filter[RES_LEN + 1] = { 0 };
+	tchar_t sz_content[RES_LEN + 1] = { 0 };
 
 	tchar_t fsince[DATE_LEN + 1] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };

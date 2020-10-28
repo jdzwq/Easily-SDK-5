@@ -1038,6 +1038,8 @@ xhand_t xhttp_client(const tchar_t* method,const tchar_t* url)
 		raise_user_error(_T("xhttp_client"), _T("create bio failed"));
 	}
 
+	get_bio_interface(phttp->pif->fd, phttp->pif);
+
 	phttp->st_request = create_string_table(ORDER_ASCEND);
 	phttp->st_response = create_string_table(ORDER_ASCEND);
 
@@ -2238,7 +2240,7 @@ int xhttp_request_signature(xhand_t xhttp, const tchar_t* auth, const tchar_t* s
 	tchar_t sz_verb[RES_LEN + 1] = { 0 };
 	tchar_t sz_type[RES_LEN + 1] = { 0 };
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t sz_signature[HMAC_LEN + 1] = { 0 };
 
 	int acc_len, utf8_len, bas_len;
@@ -3106,8 +3108,8 @@ ONERROR:
 bool_t xhttp_send_full(xhand_t xhttp, const byte_t* buf, dword_t size)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
-	tchar_t trans[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t trans[RES_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -3340,8 +3342,8 @@ bool_t xhttp_send_xml(xhand_t xhttp,link_t_ptr xml)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
-	tchar_t trans[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t trans[RES_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	dword_t size = 0;
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
@@ -3418,10 +3420,10 @@ bool_t xhttp_send_json(xhand_t xhttp, link_t_ptr json)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
-	tchar_t trans[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t trans[RES_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	dword_t size = 0;
-	tchar_t charset[RES_LEN] = { 0 };
+	tchar_t charset[RES_LEN + 1] = { 0 };
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 
@@ -3501,10 +3503,10 @@ bool_t xhttp_send_string(xhand_t xhttp, string_t var)
 {
 	xhttp_t* phttp = TypePtrFromHead(xhttp_t, xhttp);
 	int type;
-	tchar_t trans[RES_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t trans[RES_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	dword_t size = 0;
-	tchar_t charset[RES_LEN] = { 0 };
+	tchar_t charset[RES_LEN + 1] = { 0 };
 
 	XDL_ASSERT(xhttp && xhttp->tag == _HANDLE_INET);
 

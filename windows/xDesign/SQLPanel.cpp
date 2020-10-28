@@ -42,7 +42,7 @@ typedef struct tagSQLPanelDelta{
 	res_win_t hGrid;
 	res_win_t hMemo;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 	METADATA meta;
 }SQLPanelDelta;
 
@@ -178,11 +178,11 @@ void SQLPanel_OnSave(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -205,9 +205,9 @@ void SQLPanel_OnSaveAs(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
-	tchar_t szPath[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -232,8 +232,8 @@ void SQLPanel_OnSheet(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -268,8 +268,8 @@ void SQLPanel_OnExport(res_win_t widget)
 {
 	SQLPanelDelta* pdt = GETSQLPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -300,7 +300,7 @@ void SQLPanel_OnExecute(res_win_t widget)
 		return;
 	}
 
-	tchar_t sz_conn[PATH_LEN] = { 0 };
+	tchar_t sz_conn[PATH_LEN + 1] = { 0 };
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
 	if (is_null(sz_conn))
 	{
@@ -390,7 +390,7 @@ void SQLPanel_OnSelect(res_win_t widget)
 		return;
 	}
 
-	tchar_t sz_conn[PATH_LEN] = { 0 };
+	tchar_t sz_conn[PATH_LEN + 1] = { 0 };
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
 	if (is_null(sz_conn))
 	{
@@ -680,7 +680,7 @@ void SQLPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))

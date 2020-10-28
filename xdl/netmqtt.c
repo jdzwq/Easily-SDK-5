@@ -391,7 +391,7 @@ static bool_t _mqtt_write_pdu(mqtt_t* mqtt, byte_t pdu_type, dword_t pdv_size)
 	dword_t ctl_size = 0, var_size = 0, pdu_size = 0;
 	dword_t n, total = 0;
 	byte_t flags,c;
-	byte_t ctl[INT_LEN] = { 0 };
+	byte_t ctl[INT_LEN + 1] = { 0 };
 	byte_t* buf = NULL;
 
 	stream_t stm = NULL;
@@ -1092,7 +1092,7 @@ static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 	dword_t pdu_size, var_size, n;
 	byte_t flags;
 
-	byte_t buf[INT_LEN] = { 0 };
+	byte_t buf[INT_LEN + 1] = { 0 };
 	dword_t pos;
 
 	stream_t stm = NULL;

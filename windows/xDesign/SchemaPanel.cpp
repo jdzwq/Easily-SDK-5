@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct tagSchemaPanelDelta{
 	res_win_t hMemo;
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 }SchemaPanelDelta;
 
 #define GETSCHEMAPANELDELTA(ph) 		(SchemaPanelDelta*)widget_get_user_delta(ph)
@@ -242,11 +242,11 @@ void SchemaPanel_OnSave(res_win_t widget)
 {
 	SchemaPanelDelta* pdt = GETSCHEMAPANELDELTA(widget);
 	
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -272,9 +272,9 @@ void SchemaPanel_OnSaveAs(res_win_t widget)
 {
 	SchemaPanelDelta* pdt = GETSCHEMAPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szType[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szType[RES_LEN + 1] = { 0 };
 	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -559,7 +559,7 @@ void SchemaPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 
 	if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))

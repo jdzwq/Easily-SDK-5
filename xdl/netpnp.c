@@ -49,7 +49,7 @@ typedef struct _pnp_t{
 
 	unsigned short bind;
 	unsigned short port;
-	tchar_t addr[ADDR_LEN];
+	tchar_t addr[ADDR_LEN + 1];
 
 	byte_t* snd_pkg;
 	dword_t snd_bys;

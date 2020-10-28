@@ -332,8 +332,8 @@ static bool_t _get_blut_device(const tchar_t *addr, SOCKADDR_BTH* paddr)
 	BOOL done = FALSE;
 	SOCKADDR_BTH *pa = NULL;
 	int error = 0;
-	tchar_t rmt_addr[RES_LEN] = { 0 };
-	tchar_t cur_addr[RES_LEN] = { 0 };
+	tchar_t rmt_addr[RES_LEN + 1] = { 0 };
+	tchar_t cur_addr[RES_LEN + 1] = { 0 };
 	DWORD len_addr = 0;
 
 	pbuf = (WSAQUERYSET*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dw);
@@ -506,7 +506,7 @@ res_file_t _blut_open(const tchar_t* devaddr, int channel, dword_t fmode)
 	SOCKADDR_BTH rmt_addr = { 0 };
 	int addr_len;
 	socklen_t optlen;
-	tchar_t sz_addr[RES_LEN] = {0};
+	tchar_t sz_addr[RES_LEN + 1] = {0};
 	int err;
 	u_long u_mode = 1;
 

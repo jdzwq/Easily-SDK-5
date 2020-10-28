@@ -47,8 +47,8 @@ typedef struct _xinet_t{
 	
 	byte_t proto;
 	int fmode, fsince;
-	tchar_t path[PATH_LEN];
-	tchar_t ftime[DATE_LEN];
+	tchar_t path[PATH_LEN + 1];
+	tchar_t ftime[DATE_LEN + 1];
 	secu_desc_t fsecu;
 }xinet_t;
 

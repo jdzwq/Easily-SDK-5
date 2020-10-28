@@ -106,7 +106,7 @@ static int _radnet_parse_text(radnet_t* radnet, const byte_t* buf, dword_t len, 
 
 static bool_t _radnet_write_pdu(radnet_t* radnet, byte_t pdu_type, byte_t pdv_type, dword_t pdv_size)
 {
-	byte_t hdr[INT_LEN] = { 0 };
+	byte_t hdr[INT_LEN + 1] = { 0 };
 	byte_t* buf = NULL;
 	dword_t len;
 
@@ -288,7 +288,7 @@ ONERROR:
 
 static bool_t _radnet_read_pdu(radnet_t* radnet, byte_t* pdu_type, byte_t* pdv_type, dword_t* pdv_size)
 {
-	byte_t hdr[INT_LEN] = { 0 };
+	byte_t hdr[INT_LEN + 1] = { 0 };
 	byte_t* buf = NULL;
 	dword_t len;
 	dword_t pdu_size, n;

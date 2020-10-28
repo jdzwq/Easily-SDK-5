@@ -47,6 +47,8 @@ EXP_API void	draw_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 EXP_API void test_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr);
 
+EXP_API void test_color(const if_drawing_t* pif, const xrect_t* pxr);
+
 #endif 
 
 

@@ -65,7 +65,7 @@ void griddlg_on_ok(res_win_t widget)
 void griddlg_on_find(res_win_t widget)
 {
 	res_win_t ctrl;
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 
 	ctrl = widget_get_child(widget, IDC_GRIDDLG_EDITBOX);
 	editbox_get_text(ctrl, token, RES_LEN);

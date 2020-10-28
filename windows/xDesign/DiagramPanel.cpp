@@ -51,7 +51,7 @@ typedef struct tagDiagramPanelDelta{
 	res_win_t hTitle;
 	res_win_t hDiagram;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 	METADATA meta;
 }DiagramPanelDelta;
 
@@ -173,7 +173,7 @@ void DiagramPanel_SelectAttr(res_win_t widget, const tchar_t* attr_name, const t
 	LINKPTR ptrDiagram = diagramctrl_fetch(pdt->hDiagram);
 	LINKPTR ptrItem = diagramctrl_get_focus_entity(pdt->hDiagram);
 
-	tchar_t style[CSS_LEN];
+	tchar_t style[CSS_LEN + 1];
 
 	DiagramPanel_SetDirty(widget, 1);
 
@@ -198,11 +198,11 @@ void DiagramPanel_OnSave(res_win_t widget)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -228,9 +228,9 @@ void DiagramPanel_OnSaveAs(res_win_t widget)
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szType[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szType[RES_LEN + 1] = { 0 };
 	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -440,7 +440,7 @@ void DiagramPanel_OnCSSProper(res_win_t widget)
 
 	if (nRet)
 	{
-		tchar_t sz_style[CSS_LEN] = { 0 };
+		tchar_t sz_style[CSS_LEN + 1] = { 0 };
 		properbag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
 
 		if (flk)
@@ -988,7 +988,7 @@ void DiagramPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	LINKPTR ptrDiagram = diagramctrl_fetch(pdt->hDiagram);
 	LINKPTR ptrItem = diagramctrl_get_focus_entity(pdt->hDiagram);
 
-	tchar_t sz_style[CSS_LEN] = { 0 };
+	tchar_t sz_style[CSS_LEN + 1] = { 0 };
 
 	if (ptrItem)
 	{
@@ -1525,7 +1525,7 @@ void DiagramPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))
@@ -1544,7 +1544,7 @@ void DiagramPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long da
 {
 	DiagramPanelDelta* pdt = GETDIAGRAMPANELDELTA(widget);
 
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 
 	switch (cid)
 	{

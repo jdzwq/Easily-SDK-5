@@ -8813,6 +8813,61 @@ void test_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr
 	}
 }
 
+
+void test_color(const if_drawing_t* pif, const xrect_t* pxr)
+{
+	xfont_t xf;
+	xpen_t xp;
+	xbrush_t xb;
+	xrect_t xr;
+
+	int i, j, k;
+	int rect = 50;
+	int feed = 10;
+	int split =200;
+
+	if_drawing_t it = { 0 };
+	visual_t visu;
+
+	tchar_t rgb_clr[CLR_LEN + 1] = { 0 };
+	tchar_t en_clr[32] = { 0 };
+	tchar_t cn_clr[32] = { 0 };
+
+	visu = (*pif->pf_get_visual_handle)(pif->ctx);
+	(*pif->pf_get_visual_interface)(visu, &it);
+
+	default_xfont(&xf);
+	default_xpen(&xp);
+	default_xbrush(&xb);
+
+	i = j = 0;
+	k = 0;
+	while (next_color(en_clr, en_clr, cn_clr, rgb_clr, NULL))
+	{
+		k++;
+		xr.x = pxr->x + j * split + feed;
+		xr.y = pxr->y + i * (rect + feed);
+		xr.w = rect;
+		xr.h = rect;
+
+		xscpy(xp.color, rgb_clr);
+		xscpy(xb.color, rgb_clr);
+
+		(*(it.pf_draw_rect))(it.ctx, &xp, &xb, &xr);
+
+		xr.x += xr.w;
+		(*it.pf_text_out)(it.ctx, &xf, RECTPOINT(&xr), cn_clr, -1);
+
+		if (++i > 15)
+		{
+			i = 0;
+			j++;
+		}
+	}
+
+	i = 1;
+}
+
 #endif
 
 #endif

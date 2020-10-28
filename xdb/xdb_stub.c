@@ -265,10 +265,10 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_date)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
-	tchar_t sz_diff[INT_LEN] = { 0 };
+	tchar_t sz_diff[INT_LEN + 1] = { 0 };
 
 	XDL_ASSERT(db && db->dbt == _DB_STUB);
 
@@ -343,7 +343,7 @@ bool_t STDCALL db_schema(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -486,7 +486,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
@@ -620,7 +620,7 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
@@ -775,7 +775,7 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
@@ -928,7 +928,7 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 	dword_t len;
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
@@ -1081,7 +1081,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	stream_t stm_http;
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1197,7 +1197,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	stream_t stm_http;
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1315,7 +1315,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	stream_t stm_http;
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1412,7 +1412,7 @@ bool_t STDCALL db_call_func(xdb_t db, link_t_ptr func)
 
 	xhand_t xhttp = NULL;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1527,7 +1527,7 @@ bool_t STDCALL db_call_json(xdb_t db, const tchar_t* procname, link_t_ptr json)
 
 	xhand_t xhttp = NULL;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t frange[META_LEN + 1] = { 0 };
@@ -1641,7 +1641,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1752,7 +1752,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1842,7 +1842,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -1970,7 +1970,7 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -2074,7 +2074,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 
@@ -2193,7 +2193,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
 
 	bool_t rt;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
 	tchar_t sz_auth[META_LEN + 1] = { 0 };
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 

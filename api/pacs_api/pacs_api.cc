@@ -35,7 +35,7 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 
 	bool_t b_big = 0;
 	dword_t n_max = 0;
-	byte_t syntax[RES_LEN] = { 0 };
+	byte_t syntax[RES_LEN + 1] = { 0 };
 
 	stream_t stm = NULL;
 	bool_t rt = 1;

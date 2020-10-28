@@ -28,7 +28,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _SQLVIEWDLG_PARAM{
 	string_t vs_sql;
-	tchar_t sz_conn[PATH_LEN];
+	tchar_t sz_conn[PATH_LEN + 1];
 }SQLVIEWDLG_PARAM;
 
 res_win_t SQLViewDlg_Create(const tchar_t* title, SQLVIEWDLG_PARAM* ppd);

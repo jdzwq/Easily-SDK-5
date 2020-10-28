@@ -46,7 +46,7 @@ typedef struct _udp_t{
 	async_t* pov;
 
 	unsigned short port;
-	tchar_t addr[ADDR_LEN];
+	tchar_t addr[ADDR_LEN + 1];
 
 	dword_t pkg_size;
 

@@ -51,7 +51,7 @@ void draw_pass(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 
 void draw_data(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
 {
-	tchar_t sz_format[RES_LEN] = { 0 };
+	tchar_t sz_format[RES_LEN + 1] = { 0 };
 	xdate_t dt = { 0 };
 	int lt;
 	double db;

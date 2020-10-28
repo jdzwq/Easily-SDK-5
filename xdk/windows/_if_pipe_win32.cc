@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 {
-	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
 	HANDLE hp = NULL;
 	DWORD dwAccess;
 	SECURITY_ATTRIBUTES saAttr;
@@ -103,7 +103,7 @@ void _pipe_close(const tchar_t* pname, res_file_t pip)
 
 res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 {
-	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
 	HANDLE hp = NULL;
 	DWORD dwAccess;
 
@@ -134,7 +134,7 @@ res_file_t _pipe_cli(const tchar_t* pname, dword_t fmode)
 
 wait_t _pipe_wait(const tchar_t* pname, int ms)
 {
-	tchar_t path[PATH_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
 	DWORD dw;
 
 	if (is_null(pname))

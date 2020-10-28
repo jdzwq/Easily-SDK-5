@@ -183,8 +183,8 @@ typedef enum{
 #define dsNone		0
 
 typedef struct _secu_desc_t {
-	tchar_t scr_uid[KEY_LEN];	/*user id or public key*/
-	tchar_t scr_key[KEY_LEN];	/*user key or private key*/
+	tchar_t scr_uid[KEY_LEN + 1];	/*user id or public key*/
+	tchar_t scr_key[KEY_LEN + 1];	/*user key or private key*/
 }secu_desc_t;
 
 
@@ -226,9 +226,9 @@ typedef enum{
 #define UDP_PDU_SIZE		(UDP_PKG_SIZE - UDP_HDR_SIZE)
 
 typedef struct _datadef_t{
-	tchar_t data_type[INT_LEN];
-	tchar_t data_len[INT_LEN];
-	tchar_t data_dig[INT_LEN];
+	tchar_t data_type[INT_LEN + 1];
+	tchar_t data_len[INT_LEN + 1];
+	tchar_t data_dig[INT_LEN + 1];
 }datadef_t;
 
 #define CALENDAR_COL	7
@@ -242,9 +242,9 @@ typedef struct _calendar_t
 
 
 typedef struct _period_t {
-	tchar_t base[DATE_LEN]; // base datetime
+	tchar_t base[DATE_LEN + 1]; // base datetime
 	tchar_t prec[2]; //time ruler, eg: 'Y','M','D','H','I','S'
-	tchar_t feed[INT_LEN]; // 时效步长
+	tchar_t feed[INT_LEN + 1]; // 时效步长
 }period_t;
 
 
@@ -458,8 +458,8 @@ typedef struct _variant_t{
 #define DEF_TEXT_WIDTH			20.0f
 #define DEF_ITEM_HEIGHT			7.0f
 #define DEF_ITEM_WIDTH			15.0f
-#define DEF_PLOT_HEIGHT			20.0f
-#define DEF_PLOT_WIDTH			30.0f
+#define DEF_PLOT_HEIGHT			50.0f
+#define DEF_PLOT_WIDTH			50.0f
 
 #define DEF_SMALL_ICON		3.2f
 #define DEF_MIDD_ICON		6.4f

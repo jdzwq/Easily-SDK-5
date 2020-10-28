@@ -296,11 +296,11 @@ typedef struct _dev_prn_t{
 
 //bluetooth device
 typedef struct _dev_blt_t{
-	tchar_t major_class[RES_LEN];
-	tchar_t minor_class[RES_LEN];
-	tchar_t name[META_LEN];
-	tchar_t uuid[UUID_LEN];
-	tchar_t addr[ADDR_LEN];
+	tchar_t major_class[RES_LEN + 1];
+	tchar_t minor_class[RES_LEN + 1];
+	tchar_t name[META_LEN + 1];
+	tchar_t uuid[UUID_LEN + 1];
+	tchar_t addr[ADDR_LEN + 1];
 }dev_blt_t;
 
 typedef struct _str_find_t{

@@ -170,7 +170,7 @@ void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pd
 	xpen_t xp;
 	xfont_t xf;
 	xrect_t xr;
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 	int i, j;
 	bool_t b_print;
 
@@ -433,7 +433,7 @@ void draw_timebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pt
 	xrect_t xr;
 	bool_t b_print;
 
-	tchar_t token[INT_LEN];
+	tchar_t token[INT_LEN + 1];
 
 	xsize_t xs;
 	float mx, my;
@@ -1299,7 +1299,7 @@ void draw_slidebox(const if_drawing_t* pif, const xfont_t* pxf, int pos)
 	xcolor_t xc;
 	xrect_t xr;
 	bool_t b_print;
-	tchar_t token[INT_LEN];
+	tchar_t token[INT_LEN + 1];
 
 	xsize_t xs;
 	float mx, my, cur;
@@ -1439,7 +1439,7 @@ void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur)
 
 	xsize_t xs;
 	float mx, my;
-	tchar_t token[INT_LEN];
+	tchar_t token[INT_LEN + 1];
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -2415,7 +2415,7 @@ void draw_wordsbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr, 
 	xrect_t xr;
 	bool_t b_print;
 
-	tchar_t token[INT_LEN];
+	tchar_t token[INT_LEN + 1];
 	link_t_ptr ilk, filk, lilk;
 	int index;
 

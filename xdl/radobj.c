@@ -45,7 +45,7 @@ dword_t radobj_write(object_t val, const rad_hdr_t* phr, const byte_t* msg, dwor
 	dword_t msg_len;
 
 	dword_t new_len = 0;
-	tchar_t sz_date[DATE_LEN] = { 0 };
+	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 	xdate_t dt_cur, dt_org;
 
 	TRY_CATCH;
@@ -181,7 +181,7 @@ dword_t radobj_read(object_t val, rad_hdr_t* phr, byte_t* msg, dword_t max)
 	byte_t* msg_buf;
 	dword_t msg_len;
 
-	tchar_t sz_date[DATE_LEN] = { 0 };
+	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 	xdate_t dt_cur, dt_org;
 
 	TRY_CATCH;

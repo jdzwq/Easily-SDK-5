@@ -41,6 +41,8 @@ typedef struct _tcp_listen_t{
 
 	int act;
 	
+	res_crit_t cri;
+
 	int res;
 	res_thread_t* thr;
 
@@ -94,8 +96,8 @@ typedef struct _tcps_block_t{
 	xhand_t tcp;
 
 	dword_t timo;
-	tchar_t site[RES_LEN];
-	tchar_t path[PATH_LEN];
+	tchar_t site[RES_LEN + 1];
+	tchar_t path[PATH_LEN + 1];
 
 	void* hand;
 	PF_TRACK_ERROR pf_track_eror;

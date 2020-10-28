@@ -1212,7 +1212,7 @@ void test_variant(void)
 	v1.vv = VV_INT;
 	variant_from_string(&v1, _T("123456789"), -1);
 
-	tchar_t token[NUM_LEN];
+	tchar_t token[NUM_LEN + 1];
 	variant_to_string(&v1, token, NUM_LEN);
 
 	v2.vv = VV_INT;

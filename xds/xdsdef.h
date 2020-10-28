@@ -627,49 +627,42 @@ typedef struct _adorn_t{
 	int size;
 }adorn_t;
 
-/*typedef struct _xgradi_t{
-	tchar_t type[RES_LEN];
-	tchar_t opacity[INT_LEN];
-	tchar_t brim_color[CLR_LEN];
-	tchar_t core_color[CLR_LEN];
-}xgradi_t;*/
-
 typedef struct _xbrush_t{
-	tchar_t style[RES_LEN];
-	tchar_t opacity[INT_LEN];
-	tchar_t color[CLR_LEN];
-	tchar_t linear[CLR_LEN];
-	tchar_t gradient[RES_LEN];
+	tchar_t style[RES_LEN + 1];
+	tchar_t opacity[INT_LEN + 1];
+	tchar_t color[CLR_LEN + 1];
+	tchar_t linear[CLR_LEN + 1];
+	tchar_t gradient[RES_LEN + 1];
 	shadow_t shadow;
 }xbrush_t;
 
 typedef struct _xpen_t{
-	tchar_t style[RES_LEN];
-	tchar_t size[INT_LEN];
-	tchar_t opacity[INT_LEN];
-	tchar_t color[CLR_LEN];
+	tchar_t style[RES_LEN + 1];
+	tchar_t size[INT_LEN + 1];
+	tchar_t opacity[INT_LEN + 1];
+	tchar_t color[CLR_LEN + 1];
 	adorn_t adorn;
 }xpen_t;
 
 typedef struct _xfont_t{
-	tchar_t style[RES_LEN];
-	tchar_t size[INT_LEN];
-	tchar_t weight[INT_LEN];
-	tchar_t family[RES_LEN];
-	tchar_t color[CLR_LEN];
+	tchar_t style[RES_LEN + 1];
+	tchar_t size[INT_LEN + 1];
+	tchar_t weight[INT_LEN + 1];
+	tchar_t family[RES_LEN + 1];
+	tchar_t color[CLR_LEN + 1];
 }xfont_t;
 
 typedef struct _xface_t{
-	tchar_t text_wrap[RES_LEN];
-	tchar_t text_align[RES_LEN];
-	tchar_t line_align[RES_LEN];
-	tchar_t line_height[INT_LEN];
+	tchar_t text_wrap[RES_LEN + 1];
+	tchar_t text_align[RES_LEN + 1];
+	tchar_t line_align[RES_LEN + 1];
+	tchar_t line_height[INT_LEN + 1];
 }xface_t;
 
 typedef struct _ximage_t{
-	tchar_t style[RES_LEN];
-	tchar_t type[RES_LEN];
-	tchar_t color[CLR_LEN];
+	tchar_t style[RES_LEN + 1];
+	tchar_t type[RES_LEN + 1];
+	tchar_t color[CLR_LEN + 1];
 
 	const tchar_t* source;
 }ximage_t;

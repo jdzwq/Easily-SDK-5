@@ -46,8 +46,8 @@ typedef struct tagJsonPanelDelta{
 	res_win_t hResponse;
 	res_win_t hProper;
 
-	tchar_t szType[RES_LEN];
-	tchar_t szFile[PATH_LEN];
+	tchar_t szType[RES_LEN + 1];
+	tchar_t szFile[PATH_LEN + 1];
 }JsonPanelDelta;
 
 #define GETJSONPANELDELTA(ph) 		(JsonPanelDelta*)widget_get_user_delta(ph)
@@ -269,11 +269,11 @@ void JsonPanel_OnSave(res_win_t widget)
 {
 	JsonPanelDelta* pdt = GETJSONPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -296,9 +296,9 @@ void JsonPanel_OnSaveAs(res_win_t widget)
 {
 	JsonPanelDelta* pdt = GETJSONPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
-	tchar_t szPath[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -346,9 +346,9 @@ void JsonPanel_OnExecute(res_win_t widget)
 {
 	JsonPanelDelta* pdt = GETJSONPANELDELTA(widget);
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
-	tchar_t sz_id[RES_LEN] = { 0 };
-	tchar_t sz_key[RES_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
+	tchar_t sz_id[RES_LEN + 1] = { 0 };
+	tchar_t sz_key[RES_LEN + 1] = { 0 };
 
 	LINKPTR ptrProper = properctrl_fetch(pdt->hProper);
 
@@ -386,8 +386,8 @@ void JsonPanel_OnExecute(res_win_t widget)
 	}
 	else
 	{
-		tchar_t err_code[NUM_LEN] = { 0 };
-		tchar_t err_text[ERR_LEN] = { 0 };
+		tchar_t err_code[NUM_LEN + 1] = { 0 };
+		tchar_t err_text[ERR_LEN + 1] = { 0 };
 
 		get_last_error(err_code, err_text, ERR_LEN);
 
@@ -461,9 +461,9 @@ int JsonPanel_OnCreate(res_win_t widget, void* data)
 	LINKPTR ptrProper = create_proper_doc();
 	LINKPTR ent;
 
-	tchar_t sz_url[PATH_LEN] = { 0 };
-	tchar_t sz_id[RES_LEN] = { 0 };
-	tchar_t sz_key[RES_LEN] = { 0 };
+	tchar_t sz_url[PATH_LEN + 1] = { 0 };
+	tchar_t sz_id[RES_LEN + 1] = { 0 };
+	tchar_t sz_key[RES_LEN + 1] = { 0 };
 
 	LoadPreference(_T("JSON"), _T("URL"), sz_url);
 	LoadPreference(_T("JSON"), _T("SECRET-ID"), sz_id);
@@ -565,9 +565,9 @@ int JsonPanel_OnClose(res_win_t widget)
 
 	if (!rt)
 	{
-		tchar_t sz_url[PATH_LEN] = { 0 };
-		tchar_t sz_id[RES_LEN] = { 0 };
-		tchar_t sz_key[RES_LEN] = { 0 };
+		tchar_t sz_url[PATH_LEN + 1] = { 0 };
+		tchar_t sz_id[RES_LEN + 1] = { 0 };
+		tchar_t sz_key[RES_LEN + 1] = { 0 };
 
 		LINKPTR ptrProper = properctrl_fetch(pdt->hProper);
 

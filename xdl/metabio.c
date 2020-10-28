@@ -96,7 +96,7 @@ bool_t load_xml_doc_from_file(link_t_ptr xml, const secu_desc_t* psd, const tcha
 	if_fio_t* xf = NULL;
 	byte_t* buf = NULL;
 
-	tchar_t fsize[INT_LEN] = { 0 };
+	tchar_t fsize[INT_LEN + 1] = { 0 };
 	dword_t size;
 
 	TRY_CATCH;

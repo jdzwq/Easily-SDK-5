@@ -72,7 +72,7 @@ static void _plot_indicator(const if_drawing_t* pif, const plot_t* plt, const ma
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -171,7 +171,7 @@ static void _plot_thermometer(const if_drawing_t* pif, const plot_t* plt, const 
 	const tchar_t* label;
 	const tchar_t* color;
 
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -383,7 +383,7 @@ static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matr
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -547,7 +547,7 @@ static void _plot_kpigram(const if_drawing_t* pif, const plot_t* plt, const matr
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -748,7 +748,7 @@ static void _plot_taskgram(const if_drawing_t* pif, const plot_t* plt, const mat
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -911,7 +911,7 @@ static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -1182,7 +1182,7 @@ static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const 
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -1412,7 +1412,7 @@ static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -1563,7 +1563,7 @@ static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const ma
 	const tchar_t* label;
 	const tchar_t* color;
 	const tchar_t* shape;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -1953,7 +1953,7 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 	const tchar_t* label;
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -2174,7 +2174,7 @@ static void _plot_fuelgram(const if_drawing_t* pif, const plot_t* plt, matrix_t*
 	int y_label_count;
 
 	const tchar_t* color;
-	tchar_t numstr[NUM_LEN] = { 0 };
+	tchar_t numstr[NUM_LEN + 1] = { 0 };
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 

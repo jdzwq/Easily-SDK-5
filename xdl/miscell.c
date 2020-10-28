@@ -2660,9 +2660,9 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 	int tlen, total = 0;
 	const tchar_t* tk;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t ekey[RES_LEN];
-	tchar_t eval[PATH_LEN];
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t ekey[RES_LEN + 1];
+	tchar_t eval[PATH_LEN + 1];
 	int elen;
 
 	va_list arg;

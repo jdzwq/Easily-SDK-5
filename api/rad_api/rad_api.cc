@@ -32,7 +32,7 @@ typedef struct _radnet_block_t{
 	tk_kv_t hkv;
 
 	secu_desc_t sd;
-	tchar_t local[PATH_LEN];
+	tchar_t local[PATH_LEN + 1];
 
 	tchar_t code[NUM_LEN + 1];
 	tchar_t text[ERR_LEN + 1];
@@ -434,7 +434,7 @@ int STDCALL slots_invoke(const slots_block_t* pb)
 
 	LINKPTR ptr_prop = NULL;
 
-	tchar_t token[PATH_LEN] = { 0 };
+	tchar_t token[PATH_LEN + 1] = { 0 };
 
 	tk_db_t hdb = NULL;
 

@@ -41,6 +41,8 @@ typedef struct _ssl_listen_t{
 
 	int act;
 
+	res_crit_t cri;
+
 	int res;
 	res_thread_t* thr;
 

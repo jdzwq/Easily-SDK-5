@@ -29,7 +29,7 @@ LICENSE.GPL3 for more details.
 
 extern HINSTANCE	g_hInst;
 extern HWND			g_hMain;
-extern tchar_t		g_szRunPath[PATH_LEN];
+extern tchar_t		g_szRunPath[PATH_LEN + 1];
 extern LINKPTR		g_imagelist;
 extern bitmap_t		g_bmpThumb;
 
@@ -61,7 +61,7 @@ extern int g_indFace;
 
 #define COLOR_TABLE_SIZE	17
 
-static tchar_t COLOR_TABLE[COLOR_TABLE_SIZE][CLR_LEN] = {
+static tchar_t COLOR_TABLE[COLOR_TABLE_SIZE][CLR_LEN + 1] = {
 	GDI_ATTR_RGB_WHITE,
 	GDI_ATTR_RGB_GRAY,
 	GDI_ATTR_RGB_RED,

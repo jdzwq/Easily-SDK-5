@@ -127,7 +127,7 @@ typedef struct _xdate_t{
 #define PROCESSOR_TYPE_X8664	8664
 
 typedef struct _sys_info_t{
-	tchar_t architecture[INT_LEN];
+	tchar_t architecture[INT_LEN + 1];
 	int processor_type;
 	int processor_number;
 	int page_size;
@@ -162,8 +162,8 @@ typedef struct _file_info_t {
 	xdate_t access_time;
 	xdate_t write_time;
 
-	tchar_t file_etag[ETAG_LEN];
-	tchar_t file_name[META_LEN];
+	tchar_t file_etag[ETAG_LEN + 1];
+	tchar_t file_name[META_LEN + 1];
 }file_info_t;
 
 //comm device
@@ -173,7 +173,7 @@ typedef struct _dev_com_t{
 	short byte_size;	/*numbers of bits in a byte, eg: 8*/
 	short stop_bits;	/*numbers of stop bits used, eg: 0-ONESTOPBIT, 1-ONE5STOPBIT, 2-TWOSTOPBIT*/
 	short timeout;		/*timeout value*/
-	tchar_t devname[INT_LEN];
+	tchar_t devname[INT_LEN + 1];
 }dev_com_t;
 
 

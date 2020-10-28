@@ -28,7 +28,7 @@ LICENSE.GPL3 for more details.
 typedef struct _oau_block_t{
 	secu_desc_t sd;
 
-	tchar_t path[PATH_LEN];
+	tchar_t path[PATH_LEN + 1];
 }oau_block_t;
 
 bool_t _invoke_auth_request(const https_block_t* pb, oau_block_t* pos)
@@ -36,10 +36,10 @@ bool_t _invoke_auth_request(const https_block_t* pb, oau_block_t* pos)
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
 
-	tchar_t sz_response_type[INT_LEN] = { 0 };
-	tchar_t sz_redirect_uri[PATH_LEN] = { 0 };
-	tchar_t sz_scope[PATH_LEN] = { 0 };
-	tchar_t sz_client_id[RES_LEN] = { 0 };
+	tchar_t sz_response_type[INT_LEN + 1] = { 0 };
+	tchar_t sz_redirect_uri[PATH_LEN + 1] = { 0 };
+	tchar_t sz_scope[PATH_LEN + 1] = { 0 };
+	tchar_t sz_client_id[RES_LEN + 1] = { 0 };
 	tchar_t sz_state[NUM_LEN + 1] = { 0 };
 
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
@@ -141,9 +141,9 @@ bool_t _invoke_auth_access(const https_block_t* pb, oau_block_t* pos)
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
 
-	tchar_t sz_grant_type[RES_LEN] = { 0 };
-	tchar_t sz_redirect_uri[PATH_LEN] = { 0 };
-	tchar_t sz_client_id[RES_LEN] = { 0 };
+	tchar_t sz_grant_type[RES_LEN + 1] = { 0 };
+	tchar_t sz_redirect_uri[PATH_LEN + 1] = { 0 };
+	tchar_t sz_client_id[RES_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 
 	tchar_t sz_token[NUM_LEN + 1] = { 0 };
@@ -248,8 +248,8 @@ bool_t _invoke_auth_refresh(const https_block_t* pb, oau_block_t* pos)
 	tchar_t sz_err[ERR_LEN + 1] = { 0 };
 	tchar_t sz_num[NUM_LEN + 1] = { 0 };
 
-	tchar_t sz_grant_type[RES_LEN] = { 0 };
-	tchar_t sz_refresh_token[RES_LEN] = { 0 };
+	tchar_t sz_grant_type[RES_LEN + 1] = { 0 };
+	tchar_t sz_refresh_token[RES_LEN + 1] = { 0 };
 	tchar_t sz_scope[PATH_LEN + 1] = { 0 };
 
 	tchar_t sz_token[NUM_LEN + 1] = { 0 };

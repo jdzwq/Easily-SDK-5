@@ -28,7 +28,7 @@ LICENSE.GPL3 for more details.
 typedef struct _coap_block_t{
 	xhand_t coap;
 
-	tchar_t loca[PATH_LEN];
+	tchar_t loca[PATH_LEN + 1];
 
 	tchar_t code[NUM_LEN + 1];
 	tchar_t text[ERR_LEN + 1];
@@ -77,10 +77,10 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	tk_db_t hdb = NULL;
 	tk_kv_t hkv = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	variant_t key = { 0 };
 	object_t val = NULL;
@@ -190,10 +190,10 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 	tk_db_t hdb = NULL;
 	tk_kv_t hkv = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	rad_hdr_t hdr = { 0 };
 	xdate_t dt = { 0 };
@@ -299,10 +299,10 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 	tk_db_t hdb = NULL;
 	tk_kv_t hkv = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	xdate_t dt;
 	rad_hdr_t hdr = { 0 };
@@ -420,10 +420,10 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 	tk_db_t hdb = NULL;
 	tk_kv_t hkv = NULL;
 
-	tchar_t path[PATH_LEN] = { 0 };
-	tchar_t cid[UUID_LEN] = { 0 };
-	tchar_t did[UUID_LEN] = { 0 };
-	tchar_t pid[UUID_LEN] = { 0 };
+	tchar_t path[PATH_LEN + 1] = { 0 };
+	tchar_t cid[UUID_LEN + 1] = { 0 };
+	tchar_t did[UUID_LEN + 1] = { 0 };
+	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	variant_t key = { 0 };
 
@@ -505,8 +505,8 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 {
 	coap_block_t* pd = NULL;
 
-	tchar_t file[PATH_LEN] = { 0 };
-	tchar_t token[RES_LEN] = { 0 };
+	tchar_t file[PATH_LEN + 1] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 
 	link_t_ptr ptr_prop = NULL;
 	bool_t rt = 1;

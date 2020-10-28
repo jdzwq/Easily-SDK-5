@@ -3,9 +3,10 @@
 #define _XDS_H
 
 #include "../xds/xdsdef.h"
-#include "../xds/xdsattr.h"
+#include "../xds/gdiattr.h"
 #include "../xds/xdsutil.h"
 #include "../xds/xdsfont.h"
+#include "../xds/xdscolor.h"
 #include "../xds/xdsstr.h"
 #include "../xds/strutil.h"
 

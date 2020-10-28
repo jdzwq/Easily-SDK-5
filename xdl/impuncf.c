@@ -72,7 +72,7 @@ bool_t xuncf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 	tchar_t sz_size[NUM_LEN + 1] = { 0 };
 	int encode = 0;
 
-	tchar_t fpath[PATH_LEN] = {0};
+	tchar_t fpath[PATH_LEN + 1] = {0};
 	int pos;
 
 	bool_t rt;
@@ -132,7 +132,7 @@ int xuncf_file_encode(const secu_desc_t* psd, const tchar_t* fname)
 	byte_t ba[4] = { 0 };
 	dword_t dw = 0;
 
-	tchar_t fpath[PATH_LEN] = {0};
+	tchar_t fpath[PATH_LEN + 1] = {0};
 	int pos;
 
 	pos = _split_path_len(fname);
@@ -232,7 +232,7 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 	res_file_t fh;
 	int pos;
 	bool_t b_add;
-	tchar_t fpath[PATH_LEN] = {0};
+	tchar_t fpath[PATH_LEN + 1] = {0};
 	if_file_t* pif;
 
 	pif = PROCESS_FILE_INTERFACE;
@@ -502,7 +502,7 @@ bool_t xuncf_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 {
 	if_file_t* pif;
 
-	tchar_t fpath[PATH_LEN] = {0};
+	tchar_t fpath[PATH_LEN + 1] = {0};
 	int pos;
 
 	pif = PROCESS_FILE_INTERFACE;

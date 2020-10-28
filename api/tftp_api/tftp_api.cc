@@ -29,7 +29,7 @@ typedef struct _tftp_block_t{
 	xhand_t tftp;
 
 	secu_desc_t sd;
-	tchar_t local[PATH_LEN];
+	tchar_t local[PATH_LEN + 1];
 
 	tchar_t code[NUM_LEN + 1];
 	tchar_t text[ERR_LEN + 1];
@@ -38,11 +38,11 @@ typedef struct _tftp_block_t{
 /*********************************************************************************/
 static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
-	tchar_t ftime[DATE_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
 	res_find_t fd = NULL;
 	file_info_t fi = { 0 };
@@ -91,11 +91,11 @@ ONERROR:
 
 static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
-	tchar_t ftime[DATE_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
 	if_fio_t* xf = NULL;
 	bool_t rt;
@@ -175,7 +175,7 @@ ONERROR:
 
 static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
 
@@ -242,11 +242,11 @@ ONERROR:
 
 static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_object[PATH_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
-	tchar_t ftime[DATE_LEN] = { 0 };
-	tchar_t fsize[NUM_LEN] = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
+	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
 	res_find_t fd = NULL;
 	file_info_t fi = { 0 };
@@ -281,8 +281,8 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 {
 	tftp_block_t* pd = NULL;
 
-	tchar_t file[PATH_LEN] = { 0 };
-	tchar_t token[RES_LEN] = { 0 };
+	tchar_t file[PATH_LEN + 1] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 
 	link_t_ptr ptr_prop = NULL;
 	bool_t rt = 1;

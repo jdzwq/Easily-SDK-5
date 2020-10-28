@@ -28,7 +28,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _SQLUPDATEDLG_PARAM{
 	LINKPTR ptrGrid;
-	tchar_t sz_conn[PATH_LEN];
+	tchar_t sz_conn[PATH_LEN + 1];
 }SQLUPDATEDLG_PARAM;
 
 res_win_t SQLUpdateDlg_Create(const tchar_t* title, SQLUPDATEDLG_PARAM* ppd);

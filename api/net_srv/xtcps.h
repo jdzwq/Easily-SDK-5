@@ -32,10 +32,10 @@ LICENSE.GPL3 for more details.
 typedef struct _xtcps_param_t{
 	tcp_listen_t* lis_tcp;
 
-	tchar_t		sz_mode[INT_LEN];
-	tchar_t		sz_port[INT_LEN];
-	tchar_t		sz_module[PATH_LEN];
-	tchar_t		sz_param[PATH_LEN];
+	tchar_t		sz_mode[INT_LEN + 1];
+	tchar_t		sz_port[INT_LEN + 1];
+	tchar_t		sz_module[PATH_LEN + 1];
+	tchar_t		sz_param[PATH_LEN + 1];
 }xtcps_param_t;
 
 void	_xtcps_start(xtcps_param_t* pxs);

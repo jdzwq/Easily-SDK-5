@@ -89,7 +89,7 @@ bool_t _invoke_datetime(const https_block_t* pb, xdb_block_t* pxb)
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
 	bool_t rt;
-	tchar_t sz_diff[INT_LEN] = { 0 };
+	tchar_t sz_diff[INT_LEN + 1] = { 0 };
 	tchar_t sz_date[DATE_LEN + 1] = { 0 };
 
 	TRY_CATCH;
@@ -1404,7 +1404,7 @@ bool_t _invoke_call_json(const https_block_t* pb, xdb_block_t* pxb)
 
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-	tchar_t sz_enc[INT_LEN] = { 0 };
+	tchar_t sz_enc[INT_LEN + 1] = { 0 };
 	int encode;
 
 	xhand_t xhttp = NULL;

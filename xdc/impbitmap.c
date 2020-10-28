@@ -422,7 +422,7 @@ bitmap_t load_bitmap_from_ximage(visual_t rdc, const ximage_t* pmi, int cx, int 
 
 bitmap_t load_bitmap_from_file(visual_t rdc, const tchar_t* fname)
 {
-	tchar_t type[RES_LEN] = { 0 };
+	tchar_t type[RES_LEN + 1] = { 0 };
 
 	byte_t* file_buf = NULL;
 	dword_t file_len;

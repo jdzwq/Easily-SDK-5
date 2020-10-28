@@ -97,7 +97,7 @@ link_t_ptr insert_calendar_daily(link_t_ptr ptr,const tchar_t* sz_today)
 {
 	link_t_ptr ilk;
 	xdate_t dt1, dt2;
-	tchar_t sz_date[DATE_LEN];
+	tchar_t sz_date[DATE_LEN + 1];
 
 	ptr = get_calendar_dailyset(ptr);
 

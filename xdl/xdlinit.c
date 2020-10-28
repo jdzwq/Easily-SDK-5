@@ -514,7 +514,7 @@ void xdl_process_clean()
 void thread_dump()
 {
 	link_t_ptr plk, nlk;
-	schar_t token[ERR_LEN];
+	schar_t token[ERR_LEN + 1];
 	dword_t dw;
 
 	if_error_t* pie;
@@ -542,7 +542,7 @@ void xmem_dump()
 {
 	link_t_ptr plk, nlk;
 	dword_t size,tid,len;
-	schar_t token[ERR_LEN];
+	schar_t token[ERR_LEN + 1];
 
 	if_thread_t* pit;
 	if_error_t* pie;

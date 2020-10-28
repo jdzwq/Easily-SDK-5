@@ -431,7 +431,7 @@ typedef struct _ssh_t{
 	//session id length
 	dword_t len_sess;
 	//session id
-	byte_t pid_sess[KEY_LEN];
+	byte_t pid_sess[KEY_LEN + 1];
 
 	//the send pdv (user data)
 	byte_t snd_pdv[SSH_PDV_SIZE];
@@ -1894,7 +1894,7 @@ static dword_t _ssh_format_pubkey(ssh_t* pssh, byte_t* buf, dword_t max)
 static bool_t _ssh_parse_pubkey(ssh_t* pssh, const byte_t* buf, dword_t size)
 {
 	dword_t n, total = 0;
-	schar_t kex_type[RES_LEN] = { 0 };
+	schar_t kex_type[RES_LEN + 1] = { 0 };
 	byte_t key_data[1024] = { 0 };
 
 	//string	certificate or public key format identifier
@@ -1997,7 +1997,7 @@ static dword_t _ssh_format_pubsig(ssh_t* pssh, byte_t* buf, dword_t max)
 static bool_t _ssh_parse_pubsig(ssh_t* pssh, const byte_t* buf, dword_t size)
 {
 	dword_t n, total = 0;
-	schar_t sig_type[RES_LEN] = { 0 };
+	schar_t sig_type[RES_LEN + 1] = { 0 };
 
 	//string	signature format identifier (as specified by the public key / certificate format)
 	//byte[n]	signature blob in format specific encoding.

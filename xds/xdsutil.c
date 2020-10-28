@@ -30,9 +30,10 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdsutil.h"
-#include "xdsattr.h"
+#include "gdiattr.h"
 #include "xdsstr.h"
 #include "strutil.h"
+#include "xdscolor.h"
 
 void rgb_to_hsl(unsigned char r, unsigned char g, unsigned char b, short* ph, short* ps, short* pl)
 {
@@ -171,15 +172,35 @@ void parse_xcolor(xcolor_t* pxc, const tchar_t* color)
 	int len;
 	tchar_t* token;
 	tchar_t val[10];
+	tchar_t clr[CLR_LEN + 1] = { 0 };
 
 	pxc->r = pxc->g = pxc->b = 0;
 	if (is_null(color))
 		return;
 
 	if (xsncmp(color, _T("RGB("), 4) == 0)
+	{
 		token = (tchar_t*)color + 4;
-	else
+	}
+	else if (*color == _T('#'))
+	{
 		token = (tchar_t*)color;
+		len = xslen(token);
+		
+		if (len >= 2)
+			pxc->r = (unsigned char)hexntol(token, 2);
+		if (len >= 4)
+			pxc->g = (unsigned char)hexntol((token + 2), 2);
+		if (len >= 6)
+			pxc->b = (unsigned char)hexntol((token + 4), 2);
+
+		return;
+	}
+	else
+	{
+		find_color(color, NULL, clr, NULL);
+		token = clr;
+	}
 
 	len = 0;
 	while (*token != _T(' ') && *token != _T('.') && *token != _T(',') && *token != _T('\0'))
@@ -1193,7 +1214,7 @@ bool_t is_zero_float(float f)
 	f -= (int)f;
 	f *= 1000;
 
-	return ((int)f) ? 1 : 0;
+	return ((int)f) ? 0 : 1;
 }
 
 bool_t is_zero_double(double d)
@@ -1201,7 +1222,7 @@ bool_t is_zero_double(double d)
 	d -= (int)d;
 	d *= 1000000;
 
-	return ((int)d) ? 1 : 0;
+	return ((int)d) ? 0 : 1;
 }
 /*********************************************************************************************/
 

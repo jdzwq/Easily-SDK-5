@@ -1957,7 +1957,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	SQLRETURN rt;
 
 	tchar_t colname[MAX_SQL_NAME];
-	tchar_t datatype[RES_LEN];
+	tchar_t datatype[RES_LEN + 1];
 	dword_t pos;
 	int len;
 	bindguid_t* pbind = NULL;

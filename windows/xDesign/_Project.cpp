@@ -132,7 +132,7 @@ bool_t Project_GetResource(LINKPTR ptr_prj, LINKPTR ptr_tree)
 		return 0;
 
 	LINKPTR tlk_parent = NULL;
-	tchar_t fname[RES_LEN] = { 0 };
+	tchar_t fname[RES_LEN + 1] = { 0 };
 
 	LINKPTR nlk = get_dom_first_child_node(nlk_resource);
 	while (nlk)

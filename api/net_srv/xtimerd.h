@@ -48,8 +48,8 @@ typedef struct _xtimerd_param_t{
 	dword_t period;
 	res_timer_t timer;
 	
-	tchar_t mode[INT_LEN];
-	tchar_t module[PATH_LEN];
+	tchar_t mode[INT_LEN + 1];
+	tchar_t module[PATH_LEN + 1];
 	tchar_t param[4096];
 }xtimerd_param_t;
 

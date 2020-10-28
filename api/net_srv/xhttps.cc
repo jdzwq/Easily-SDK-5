@@ -30,8 +30,8 @@ LICENSE.GPL3 for more details.
 
 static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_track, tchar_t* sz_trace, tchar_t* sz_proc)
 {
-	tchar_t sz_root[PATH_LEN] = { 0 };
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_root[PATH_LEN + 1] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	get_envvar(XSERVICE_ROOT, sz_root, PATH_LEN);
 	if(is_null(sz_root))
@@ -98,8 +98,8 @@ static bool_t _xhttps_get_licence(xhand_t http, const tchar_t* site, tchar_t* hm
 	tchar_t sz_hmac[KEY_LEN + 1] = { 0 };
 	int count = 0;
 
-	tchar_t sz_root[PATH_LEN] = { 0 };
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_root[PATH_LEN + 1] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 	link_t_ptr nlk_root, nlk_lic, nlk_node, ptr_xml = NULL;
 
 	xhttp_get_authorization(http, sz_auth, sz_sid, RES_LEN, sz_sign, KEY_LEN);
@@ -232,19 +232,19 @@ static void _xhttps_invoke_error(xhand_t http)
 void _xhttps_dispatch(xhand_t http, void* p)
 {
 	tchar_t sz_method[RES_LEN + 1] = { 0 };
-	tchar_t sz_object[PATH_LEN] = { 0 };
-	tchar_t sz_site[RES_LEN] = { 0 };
-	tchar_t sz_res[PATH_LEN] = { 0 };
-	tchar_t sz_path[PATH_LEN] = { 0 };
-	tchar_t sz_proc[PATH_LEN] = { 0 };
-	tchar_t sz_track[PATH_LEN] = { 0 };
-	tchar_t sz_trace[NUM_LEN] = { 0 };
-	tchar_t sz_space[RES_LEN] = { 0 };
-	tchar_t sz_auth[INT_LEN] = { 0 };
-	tchar_t sz_cert[RES_LEN] = { 0 };
-    tchar_t sz_name[RES_LEN] = { 0 };
-	tchar_t sz_pass[NUM_LEN] = { 0 };
-	tchar_t sz_ca[RES_LEN] = { 0 };
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
+	tchar_t sz_site[RES_LEN + 1] = { 0 };
+	tchar_t sz_res[PATH_LEN + 1] = { 0 };
+	tchar_t sz_path[PATH_LEN + 1] = { 0 };
+	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
+	tchar_t sz_track[PATH_LEN + 1] = { 0 };
+	tchar_t sz_trace[NUM_LEN + 1] = { 0 };
+	tchar_t sz_space[RES_LEN + 1] = { 0 };
+	tchar_t sz_auth[INT_LEN + 1] = { 0 };
+	tchar_t sz_cert[RES_LEN + 1] = { 0 };
+    tchar_t sz_name[RES_LEN + 1] = { 0 };
+	tchar_t sz_pass[NUM_LEN + 1] = { 0 };
+	tchar_t sz_ca[RES_LEN + 1] = { 0 };
 	int n_state = 0;
 	int n_trace = 0;
 
@@ -551,8 +551,8 @@ ONERROR:
 
 void _xhttps_start(xhttps_param_t* pxp)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_auth[INT_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_auth[INT_LEN + 1] = { 0 };
 	unsigned short port;
 
 	if (pxp->lis_http)
@@ -606,7 +606,7 @@ void _xhttps_start(xhttps_param_t* pxp)
 
 void _xhttps_stop(xhttps_param_t* pxp)
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	if (pxp->lis_http)
 	{

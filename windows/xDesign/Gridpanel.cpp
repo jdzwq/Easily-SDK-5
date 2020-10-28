@@ -55,7 +55,7 @@ typedef struct tagGridPanelDelta{
 	res_win_t hTitle;
 	res_win_t hGrid;
 
-	tchar_t szFile[PATH_LEN];
+	tchar_t szFile[PATH_LEN + 1];
 	METADATA meta;
 }GridPanelDelta;
 
@@ -179,11 +179,11 @@ void GridPanel_OnSave(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	if (is_null(pdt->szFile))
 	{
-		tchar_t szPath[PATH_LEN] = { 0 };
+		tchar_t szPath[PATH_LEN + 1] = { 0 };
 
 		shell_get_curpath(szPath, PATH_LEN);
 
@@ -209,9 +209,9 @@ void GridPanel_OnSaveAs(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
-	tchar_t szType[RES_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
+	tchar_t szType[RES_LEN + 1] = { 0 };
 	bool_t rt;
 
 	shell_get_curpath(szPath, PATH_LEN);
@@ -304,8 +304,8 @@ void GridPanel_OnSchema(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -333,8 +333,8 @@ void GridPanel_OnExport(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -359,8 +359,8 @@ void GridPanel_OnImport(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -535,7 +535,7 @@ void GridPanel_OnCSSProper(res_win_t widget)
 
 	if (nRet)
 	{
-		tchar_t sz_style[CSS_LEN] = { 0 };
+		tchar_t sz_style[CSS_LEN + 1] = { 0 };
 		properbag_format_stylesheet(ptrProper, sz_style, CSS_LEN);
 
 		if (clk)
@@ -564,7 +564,7 @@ void GridPanel_OnSelectAttr(res_win_t widget, const tchar_t* attr_name, const tc
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 	LINKPTR ptrCol = gridctrl_get_focus_col(pdt->hGrid);
 
-	tchar_t style[CSS_LEN];
+	tchar_t style[CSS_LEN + 1];
 
 	LINKPTR clk = get_next_col(ptrGrid, LINK_FIRST);
 	while (clk)
@@ -749,8 +749,8 @@ void GridPanel_OnImportCols(res_win_t widget)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t szPath[PATH_LEN] = { 0 };
-	tchar_t szFile[PATH_LEN] = { 0 };
+	tchar_t szPath[PATH_LEN + 1] = { 0 };
+	tchar_t szFile[PATH_LEN + 1] = { 0 };
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -882,7 +882,7 @@ void GridPanel_OnFreshRows(res_win_t widget)
 
 	destroy_proper_doc(ptrProper);*/
 
-	tchar_t sz_conn[PATH_LEN] = { 0 };
+	tchar_t sz_conn[PATH_LEN + 1] = { 0 };
 
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
 
@@ -933,7 +933,7 @@ void GridPanel_OnUpdateRows(res_win_t widget)
 	if (ShowMsg(MSGICO_TIP | MSGBTN_YES | MSGBTN_NO, _T("您确定提交当期网格更改的数据吗？")) != MSGBTN_YES)
 		return;
 
-	tchar_t sz_conn[PATH_LEN] = { 0 };
+	tchar_t sz_conn[PATH_LEN + 1] = { 0 };
 
 	Project_GetConfig(ptr_prj, _T("RDS"), sz_conn, PATH_LEN);
 
@@ -1228,7 +1228,7 @@ void GridPanel_Proper_OnEntityUpdate(res_win_t widget, NOTICE_PROPER* pnp)
 	LINKPTR ptrGrid = gridctrl_fetch(pdt->hGrid);
 	LINKPTR ptrCol = gridctrl_get_focus_col(pdt->hGrid);
 
-	tchar_t sz_style[CSS_LEN] = { 0 };
+	tchar_t sz_style[CSS_LEN + 1] = { 0 };
 
 	if (ptrCol)
 	{
@@ -1645,7 +1645,7 @@ void GridPanel_OnParentCommand(res_win_t widget, int code, var_long data)
 	}
 	else if (code == COMMAND_RENAME)
 	{
-		tchar_t szPath[PATH_LEN], szExt[INT_LEN];
+		tchar_t szPath[PATH_LEN + 1], szExt[INT_LEN + 1];
 		const tchar_t* nname = (const tchar_t*)data;
 
 		if (!is_null(pdt->szFile) && !is_null(nname))
@@ -1664,7 +1664,7 @@ void GridPanel_OnMenuCommand(res_win_t widget, int code, int cid, var_long data)
 {
 	GridPanelDelta* pdt = GETGRIDPANELDELTA(widget);
 
-	tchar_t token[RES_LEN];
+	tchar_t token[RES_LEN + 1];
 
 	switch (cid)
 	{

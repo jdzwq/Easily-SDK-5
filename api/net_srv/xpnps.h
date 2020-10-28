@@ -32,10 +32,10 @@ LICENSE.GPL3 for more details.
 typedef struct _xpnps_param_t{
 	pnp_listen_t*	lis_pnp;
 
-	tchar_t		sz_mode[INT_LEN];
-	tchar_t		sz_port[INT_LEN];
-	tchar_t		sz_module[PATH_LEN];
-	tchar_t		sz_param[PATH_LEN];
+	tchar_t		sz_mode[INT_LEN + 1];
+	tchar_t		sz_port[INT_LEN + 1];
+	tchar_t		sz_module[PATH_LEN + 1];
+	tchar_t		sz_param[PATH_LEN + 1];
 }xpnps_param_t;
 
 void	_xpnps_start(xpnps_param_t* pxs);

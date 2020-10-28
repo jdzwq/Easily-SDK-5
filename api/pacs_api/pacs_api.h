@@ -37,7 +37,7 @@ typedef struct _pacs_block_t{
 	dicm_command_t cmd;
 
 	secu_desc_t sd;
-	tchar_t local[PATH_LEN];
+	tchar_t local[PATH_LEN + 1];
 
 	tchar_t code[NUM_LEN + 1];
 	tchar_t text[ERR_LEN + 1];

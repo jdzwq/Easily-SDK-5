@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily xdl v5.5
+	Easily xds v5.5
 
 	(c) 2013-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, JianDe HangZhou ZheJiang China, Mail: powersuite@hotmaol.com
 
-	@doc file etag document
+	@doc xds color document
 
-	@module	filetag.h | interface file
+	@module	xdscolor.h | interface file
 
 	@devnote 张文权 2005.01 - 2007.12	v3.0
 	@devnote 张文权 2008.01 - 2009.12	v3.5
@@ -29,32 +29,22 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _FILETAG_H
-#define _FILETAG_H
+#ifndef _XDSCOLOR_H
+#define _XDSCOLOR_H
 
-#include "xdldef.h"
+#include "xdsdef.h"
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
+	EXP_API bool_t find_color(const tchar_t* en_clr, tchar_t* cn_clr, tchar_t* rgb_clr, tchar_t* bin_clr);
 
-EXP_API	void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN + 1]);
-
-EXP_API	void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN + 1]);
-
-EXP_API void file_info_etag(const tchar_t* fname, const tchar_t* ftime, const tchar_t* fsize, tchar_t* buf);
-
-#if defined(UNICODE) || defined(_UNICODE)
-#define md5_token		w_md5_token
-#else
-#define md5_token		a_md5_token
-#endif
-
+	EXP_API bool_t next_color(const tchar_t* en, tchar_t* en_clr, tchar_t* cn_clr, tchar_t* rgb_clr, tchar_t* bin_clr);
 
 #ifdef	__cplusplus
 }
 #endif
 
 
-#endif /*_XDLETAG_H*/
+#endif

@@ -133,7 +133,7 @@ link_t_ptr get_soap_body_node(link_t_ptr ptr)
 link_t_ptr set_soap_request_node(link_t_ptr ptr, const tchar_t* sz_req, const tchar_t* sz_ns, const tchar_t* sz_url)
 {
 	link_t_ptr nlk_body,nlk_req;
-	tchar_t sz_token[PATH_LEN] = { 0 };
+	tchar_t sz_token[PATH_LEN + 1] = { 0 };
 
 	nlk_body = get_soap_body_node(ptr);
 	if(!nlk_body)
@@ -338,7 +338,7 @@ link_t_ptr get_soap_response_node(link_t_ptr ptr)
 link_t_ptr set_soap_response_node(link_t_ptr ptr, const tchar_t* sz_res, const tchar_t* sz_ns, const tchar_t* sz_url)
 {
 	link_t_ptr nlk_body, nlk_res;
-	tchar_t sz_token[PATH_LEN] = { 0 };
+	tchar_t sz_token[PATH_LEN + 1] = { 0 };
 
 	nlk_body = get_soap_body_node(ptr);
 	if (!nlk_body)

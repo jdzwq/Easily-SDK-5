@@ -30,7 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "xdsfont.h"
-#include "xdsattr.h"
+#include "gdiattr.h"
 #include "xdsstr.h"
 
 typedef struct _font_map_t{

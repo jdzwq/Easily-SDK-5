@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdlimp.h"
 
 
-void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN])
+void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN + 1])
 {
 	int i;
 	for (i = 0; i < MD5_SIZE; i++)
@@ -43,7 +43,7 @@ void a_md5_token(const byte_t dig_buf[MD5_SIZE], schar_t str_buf[MD5_LEN])
 	}
 }
 
-void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN])
+void w_md5_token(const byte_t dig_buf[MD5_SIZE], wchar_t str_buf[MD5_LEN + 1])
 {
 	int i;
 	for (i = 0; i < MD5_SIZE; i++)

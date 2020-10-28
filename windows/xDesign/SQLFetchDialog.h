@@ -28,7 +28,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _SQLFETCHDLG_PARAM{
 	LINKPTR ptrGrid;
-	tchar_t sz_conn[PATH_LEN];
+	tchar_t sz_conn[PATH_LEN + 1];
 }SQLFETCHDLG_PARAM;
 
 res_win_t SQLFetchDlg_Create(const tchar_t* title, SQLFETCHDLG_PARAM* ppd);

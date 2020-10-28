@@ -84,7 +84,8 @@ static ssh_listen_t*  _xssh_listen(unsigned short port)
 
 	plis->so = so;
 	plis->act = 1;
-	
+	plis->cri = criti_create();
+
 	system_info(&si);
 	plis->res = si.processor_number;
 
@@ -195,7 +196,19 @@ static unsigned STDCALL wait_accept(void* param)
 	while (plis->act)
 	{
 		addr_len = sizeof(net_addr_t);
+
+		if (plis->cri)
+		{
+			criti_enter(plis->cri);
+		}
+
 		so = socket_accept(plis->so, (res_addr_t)&rmtaddr, &addr_len, pov);
+
+		if (plis->cri)
+		{
+			criti_leave(plis->cri);
+		}
+
 		if (so == INVALID_FILE)
 		{
             thread_yield();
@@ -301,8 +314,14 @@ void xssh_stop(ssh_listen_t* plis)
 
 	for (i = 0; i < plis->res; i++)
 	{
-		thread_join(plis->thr[i]);
+		if (plis->thr[i])
+		{
+			thread_join(plis->thr[i]);
+		}
 	}
+
+	if (plis->cri)
+		criti_destroy(plis->cri);
 
 	xmem_free(plis->thr);
 

@@ -946,7 +946,7 @@ void format_xml(xml_reader_t* pxp, if_operator_t* pbo)
 	bool_t b_cdata, b_close, b_parent;
 	int n_indent = 0;
 
-	tchar_t encoding[RES_LEN], version[RES_LEN];
+	tchar_t encoding[RES_LEN + 1], version[RES_LEN + 1];
 
 	doc = ((XMLOBJECT*)pxp->obj)->doc;
 

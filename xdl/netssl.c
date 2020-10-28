@@ -4088,7 +4088,7 @@ void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn)
 bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int len)
 {
 	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
-	byte_t buf_pwd[RES_LEN] = { 0 };
+	byte_t buf_pwd[RES_LEN + 1] = { 0 };
 	dword_t dw;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -4140,7 +4140,7 @@ bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_
 bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int len)
 {
 	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
-	byte_t buf_pwd[RES_LEN] = { 0 };
+	byte_t buf_pwd[RES_LEN + 1] = { 0 };
 	dword_t dw;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);

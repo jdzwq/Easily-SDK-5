@@ -36,8 +36,8 @@ LINKPTR g_stack = NULL;
 
 void xportd_start()
 {
-	tchar_t sz_file[PATH_LEN] = { 0 };
-	tchar_t sz_root[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+	tchar_t sz_root[PATH_LEN + 1] = { 0 };
 
 	if (g_stack)
 		return ;
@@ -250,7 +250,7 @@ void xportd_start()
 void xportd_stop()
 {
 	xportd_param_t* phttpd;
-	tchar_t sz_file[PATH_LEN] = { 0 };
+	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
 	if (!g_stack)
 		return;
