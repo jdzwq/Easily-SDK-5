@@ -11,7 +11,7 @@ NET_PATH = ~/Easily-sdk-5/api/net_srv
 OUT_PATH = ../sbin
 
 LIBS =  -lpthread -L $(API_PATH) -lxds -lxdl
-SRCS = $(NET_PATH)/srvlog.cc $(NET_PATH)/xtimersMain.cc
+SRCS = $(NET_PATH)/srvlog.cc $(NET_PATH)/xtimers.cc $(NET_PATH)/xtimersMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 MODULE = xtimers
 TARGET = $(OUT_PATH)/$(MODULE)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<task>
+<name>demo_func</name>
+<proc>libdemo_api.so</proc>
+<path>/usr/local/xService/demo</path>
+</task>

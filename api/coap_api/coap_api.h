@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #define _COAPAPI_H
 
 #include <xdl.h>
-#include <tkb.h>
+#include <tdb.h>
 
 #ifdef	__cplusplus
 extern "C" {

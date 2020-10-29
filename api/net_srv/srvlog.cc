@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 
 
-void _write_log_title(const if_fio_t* log, const tchar_t* sz_title, int len)
+void _write_log_title(stream_t log, const tchar_t* sz_title, int len)
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br;
@@ -49,18 +49,18 @@ void _write_log_title(const if_fio_t* log, const tchar_t* sz_title, int len)
 #endif
 
 	n_br = 2;
-	xfile_write(log, br, n_br);
+	stream_write_bytes(log, br, n_br);
 
-	xfile_write(log, sz_log, n_log);
+	stream_write_bytes(log, sz_log, n_log);
 
 	n_br = 2;
-	xfile_write(log, br, n_br);
+	stream_write_bytes(log, br, n_br);
 
 	xmem_free(sz_log);
 	sz_log = NULL;
 }
 
-void _write_log_error(const if_fio_t* log, const tchar_t* sz_code, const tchar_t* sz_error, int len)
+void _write_log_error(stream_t log, const tchar_t* sz_code, const tchar_t* sz_error, int len)
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br, n_log = 0;
@@ -75,28 +75,28 @@ void _write_log_error(const if_fio_t* log, const tchar_t* sz_code, const tchar_t
 
 	n_log = xhttp_format_error(0, token, sz_code, sz_error, len, sz_log, n_log);
 
-	xfile_write(log, sz_log, n_log);
+	stream_write_bytes(log, sz_log, n_log);
 
     n_br = 2;
-    xfile_write(log, br, n_br);
+	stream_write_bytes(log, br, n_br);
     
 	xmem_free(sz_log);
 	sz_log = NULL;
 }
 
-void _write_log_data(const if_fio_t* log, const byte_t* data, dword_t size)
+void _write_log_data(stream_t log, const byte_t* data, dword_t size)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
 
 	dw = size;
-	xfile_write(log, data, dw);
+	stream_write_bytes(log, data, dw);
 
 	dw = 2;
-	xfile_write(log, ba, dw);
+	stream_write_bytes(log, ba, dw);
 }
 
-void _write_log_xml(const if_fio_t* log, link_t_ptr ptr_xml)
+void _write_log_xml(stream_t log, link_t_ptr ptr_xml)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
@@ -106,14 +106,14 @@ void _write_log_xml(const if_fio_t* log, link_t_ptr ptr_xml)
 	sz_log = (byte_t*)xmem_alloc(dw + 1);
 	format_xml_doc_to_bytes(ptr_xml, sz_log, dw);
 
-	xfile_write(log, sz_log, dw);
+	stream_write_bytes(log, sz_log, dw);
 	xmem_free(sz_log);
 
 	dw = 2;
-	xfile_write(log, ba, dw);
+	stream_write_bytes(log, ba, dw);
 }
 
-void _write_log_json(const if_fio_t* log, link_t_ptr ptr_json)
+void _write_log_json(stream_t log, link_t_ptr ptr_json)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
@@ -123,11 +123,121 @@ void _write_log_json(const if_fio_t* log, link_t_ptr ptr_json)
 	sz_log = (byte_t*)xmem_alloc(dw + 1);
 	format_json_doc_to_bytes(ptr_json, sz_log, dw, DEF_MBS);
 
-	xfile_write(log, sz_log, dw);
+	stream_write_bytes(log, sz_log, dw);
 	xmem_free(sz_log);
 
 	dw = 2;
-	xfile_write(log, ba, dw);
+	stream_write_bytes(log, ba, dw);
+}
+
+void get_log_interface(stream_t log, if_log_t* plog)
+{
+	plog->stm = log;
+
+	plog->pf_log_title = _write_log_title;
+	plog->pf_log_error = _write_log_error;
+	plog->pf_log_data = _write_log_data;
+	plog->pf_log_xml = _write_log_xml;
+	plog->pf_log_json = _write_log_json;
+}
+
+/***********************************************************************************/
+
+bool_t _send_event(const tchar_t* url, bool_t json, link_t_ptr doc)
+{
+	xhand_t xh = NULL;
+	bool_t rt = 0;
+	link_t_ptr xml;
+
+	xh = xhttp_client(HTTP_METHOD_POST, url);
+
+	if (!xh)
+		return 0;
+
+	xhttp_set_request_default_header(xh);
+
+	if (json)
+	{
+		xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+
+		rt = xhttp_send_json(xh, doc);
+	}
+	else
+	{
+		xhttp_set_request_content_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+
+		xml = upcast_dom_to_xml(doc);
+		rt = xhttp_send_xml(xh, xml);
+		doc = downcast_xml_to_dom(xml);
+	}
+
+	xhttp_close(xh);
+
+	return rt;
+}
+
+bool_t _query_event(const tchar_t* url, bool_t json, link_t_ptr doc)
+{
+	xhand_t xh = NULL;
+	bool_t rt = 0;
+	link_t_ptr xml;
+	tchar_t sz_type[RES_LEN + 1] = { 0 };
+
+	xh = xhttp_client(HTTP_METHOD_GET, url);
+
+	if (!xh)
+		return 0;
+
+	xhttp_set_request_default_header(xh);
+	if (json)
+		xhttp_get_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPJSON_UTF8, -1);
+	else
+		xhttp_get_request_accept_type(xh, HTTP_HEADER_CONTENTTYPE_APPXML, -1);
+
+	if (!xhttp_send_request(xh))
+	{
+		xhttp_close(xh);
+		return 0;
+	}
+
+	if (!xhttp_recv_response(xh))
+	{
+		xhttp_close(xh);
+		return 0;
+	}
+
+	if (!xhttp_get_response_state(xh))
+	{
+		xhttp_close(xh);
+		return 0;
+	}
+
+	xhttp_get_response_content_type(xh, sz_type, RES_LEN);
+	
+	json = (compare_text(sz_type, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0) ? 1 : 0;
+
+	if (json)
+	{
+		rt = xhttp_recv_json(xh, doc);
+	}
+	else
+	{
+		xml = upcast_dom_to_xml(doc);
+		rt = xhttp_recv_xml(xh, xml);
+		doc = downcast_xml_to_dom(xml);
+	}
+
+	xhttp_close(xh);
+
+	return rt;
+}
+
+void get_event_interface(const tchar_t* url, if_post_t* pev)
+{
+	xsncpy(pev->url, url, PATH_LEN);
+
+	pev->pf_send_event = _send_event;
+	pev->pf_query_event = _query_event;
 }
 
 /***********************************************************************************/

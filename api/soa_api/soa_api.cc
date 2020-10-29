@@ -145,9 +145,9 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 		encode = get_xml_encode(ptr_xml);
 
-		if (pb->log)
+		if (pb->plog)
 		{
-			(*pb->pf_log_xml)(pb->log, ptr_xml);
+			(*pb->plog->pf_log_xml)(pb->plog->stm, ptr_xml);
 		}
 
 		psb->soap_request = downcast_xml_to_dom(ptr_xml);
@@ -220,9 +220,9 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	xhttp_send_xml(pb->http, ptr_xml);
 
-	if (pb->log)
+	if (pb->plog)
 	{
-		(*pb->pf_log_xml)(pb->log, ptr_xml);
+		(*pb->plog->pf_log_xml)(pb->plog->stm, ptr_xml);
 	}
 
 	if (b_wsdl)
@@ -261,11 +261,11 @@ ONERROR:
 
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
-	if (pb->log)
+	if (pb->plog)
 	{
-		(*pb->pf_log_title)(pb->log, _T("[SOAP: 错误]"), -1);
+		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[SOAP: 错误]"), -1);
 
-		(*pb->pf_log_error)(pb->log, sz_code, sz_error, -1);
+		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
 	}
 
 	if (h_modu)

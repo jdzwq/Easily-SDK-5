@@ -31,35 +31,35 @@ LICENSE.GPL3 for more details.
 #include "dicmdef.h"
 
 typedef struct _dicm_summary_t{
-	tchar_t PatientID[RES_LEN];
-	tchar_t PatientName[RES_LEN];
-	tchar_t PatientSex[INT_LEN];
-	tchar_t PatientAge[INT_LEN];
+	tchar_t PatientID[RES_LEN + 1];
+	tchar_t PatientName[RES_LEN + 1];
+	tchar_t PatientSex[INT_LEN + 1];
+	tchar_t PatientAge[INT_LEN + 1];
 
-	tchar_t StudyInstanceUID[KEY_LEN];
-	tchar_t StudyID[KEY_LEN];
-	tchar_t StudyDate[DATE_LEN];
+	tchar_t StudyInstanceUID[KEY_LEN + 1];
+	tchar_t StudyID[KEY_LEN + 1];
+	tchar_t StudyDate[DATE_LEN + 1];
 
-	tchar_t SeriesInstanceUID[KEY_LEN];
-	tchar_t SeriesDate[DATE_LEN];
-	tchar_t SeriesNumber[NUM_LEN];
+	tchar_t SeriesInstanceUID[KEY_LEN + 1];
+	tchar_t SeriesDate[DATE_LEN + 1];
+	tchar_t SeriesNumber[NUM_LEN + 1];
 
-	tchar_t AcquisitionDate[DATE_LEN];
+	tchar_t AcquisitionDate[DATE_LEN + 1];
 
-	tchar_t Modality[KEY_LEN];
-	tchar_t Manufacturer[KEY_LEN];
-	tchar_t InstitutionName[KEY_LEN];
-	tchar_t StationName[KEY_LEN];
-	tchar_t ManufacturersModelName[KEY_LEN];
+	tchar_t Modality[KEY_LEN + 1];
+	tchar_t Manufacturer[KEY_LEN + 1];
+	tchar_t InstitutionName[KEY_LEN + 1];
+	tchar_t StationName[KEY_LEN + 1];
+	tchar_t ManufacturersModelName[KEY_LEN + 1];
 
-	tchar_t SliceThickness[NUM_LEN];
-	tchar_t KVP[NUM_LEN];
-	tchar_t GantryDetectorTilt[NUM_LEN];
-	tchar_t ExposureTime[NUM_LEN];
-	tchar_t XRayTubeCurrent[NUM_LEN];
+	tchar_t SliceThickness[NUM_LEN + 1];
+	tchar_t KVP[NUM_LEN + 1];
+	tchar_t GantryDetectorTilt[NUM_LEN + 1];
+	tchar_t ExposureTime[NUM_LEN + 1];
+	tchar_t XRayTubeCurrent[NUM_LEN + 1];
 
-	tchar_t WindowCenter[NUM_LEN];
-	tchar_t WindowWidth[NUM_LEN];
+	tchar_t WindowCenter[NUM_LEN + 1];
+	tchar_t WindowWidth[NUM_LEN + 1];
 }dicm_summary_t;
 
 #ifdef	__cplusplus

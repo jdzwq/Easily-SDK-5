@@ -67,7 +67,7 @@ void _get_utc_date(xdate_t* pxd)
 	pxd->wday = st.wDayOfWeek;
 }
 
-bool_t _mak_week_date(xdate_t* pxd)
+bool_t _mak_utc_week(xdate_t* pxd)
 {
 	SYSTEMTIME st = {0};
 	FILETIME ft = {0};
@@ -83,6 +83,29 @@ bool_t _mak_week_date(xdate_t* pxd)
 	SystemTimeToFileTime(&st,&ft);
 	FileTimeToSystemTime(&ft,&st);
 	
+	pxd->wday = st.wDayOfWeek;
+
+	return 1;
+}
+
+bool_t _mak_loc_week(xdate_t* pxd)
+{
+	SYSTEMTIME st = { 0 };
+	FILETIME ft = { 0 };
+	FILETIME ft_utc = { 0 };
+
+	st.wYear = pxd->year;
+	st.wMonth = pxd->mon;
+	st.wDay = pxd->day;
+	st.wHour = pxd->hour;
+	st.wMinute = pxd->min;
+	st.wSecond = pxd->sec;
+	st.wMilliseconds = pxd->millsec;
+
+	SystemTimeToFileTime(&st, &ft);
+	LocalFileTimeToFileTime(&ft, &ft_utc);
+	FileTimeToSystemTime(&ft_utc, &st);
+
 	pxd->wday = st.wDayOfWeek;
 
 	return 1;

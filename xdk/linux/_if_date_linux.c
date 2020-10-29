@@ -73,7 +73,49 @@ void _get_utc_date(xdate_t* pxd)
 	pxd->wday = p->tm_wday;
 }
 
-bool_t _mak_week_date(xdate_t* pxd)
+bool_t _mak_utc_week(xdate_t* pxd)
+{
+	time_t timep;
+	struct tm t = { 0 };
+	struct tm *p;
+
+	t.tm_year = pxd->year - 1900;
+	t.tm_mon = pxd->mon - 1;
+	t.tm_mday = pxd->day;
+	t.tm_hour = pxd->hour;
+	t.tm_min = pxd->min;
+	t.tm_sec = pxd->sec;
+
+	timep = mktime(&t);
+	p = gmtime(&timep);
+
+	pxd->wday = p->tm_wday;
+
+	return 1;
+}
+
+bool_t _mak_loc_week(xdate_t* pxd)
+{
+	time_t timep;
+	struct tm t = { 0 };
+	struct tm *p;
+
+	t.tm_year = pxd->year - 1900;
+	t.tm_mon = pxd->mon - 1;
+	t.tm_mday = pxd->day;
+	t.tm_hour = pxd->hour;
+	t.tm_min = pxd->min;
+	t.tm_sec = pxd->sec;
+
+	timep = mktime(&t);
+	p = localtime(&timep);
+
+	pxd->wday = p->tm_wday;
+
+	return 1;
+}
+
+bool_t _loc_date_to_utc(xdate_t* pxd)
 {
 	time_t timep;
 	struct tm t = { 0 };
@@ -100,11 +142,6 @@ bool_t _mak_week_date(xdate_t* pxd)
 	pxd->wday = p->tm_wday;
 
 	return 1;
-}
-
-bool_t _loc_date_to_utc(xdate_t* pxd)
-{
-	return 0;
 }
 
 bool_t _utc_date_to_loc(xdate_t* pxd)

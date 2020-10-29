@@ -34,15 +34,15 @@ LICENSE.GPL3 for more details.
 #define DICM_MAX_POINTS		16
 
 typedef struct _dicm_graphic_anno_t{
-	tchar_t type[RES_LEN];
+	tchar_t type[RES_LEN + 1];
 	bool_t fill;
 	int count;
 	xpoint_t points[DICM_MAX_POINTS];
 }dicm_graphic_anno_t;
 
 typedef struct _dicm_text_anno_t{
-	tchar_t text[RES_LEN];
-	tchar_t align[INT_LEN];
+	tchar_t text[RES_LEN + 1];
+	tchar_t align[INT_LEN + 1];
 	xpoint_t points[3];
 }dicm_text_anno_t;
 

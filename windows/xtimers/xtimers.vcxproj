@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
+    <ClCompile Include="..\..\api\net_srv\xtimers.cc" />
     <ClCompile Include="..\..\api\net_srv\xtimersMain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvlog.h" />
+    <ClInclude Include="..\..\api\net_srv\xtimers.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{49DEDBE4-FF41-4698-8AF1-A5C65811D528}</ProjectGuid>

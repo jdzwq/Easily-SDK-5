@@ -106,7 +106,8 @@ LOC_API int		_ucs_to_utf8(const wchar_t* ucs, int len, schar_t* utf, int max);
 #ifdef XDK_SUPPORT_DATE
 LOC_API void	_get_loc_date(xdate_t* pxd);
 LOC_API void	_get_utc_date(xdate_t* pxd);
-LOC_API bool_t	_mak_week_date(xdate_t* pxd);
+LOC_API bool_t	_mak_loc_week(xdate_t* pxd);
+LOC_API bool_t	_mak_utc_week(xdate_t* pxd);
 LOC_API bool_t	_loc_date_to_utc(xdate_t* pxd);
 LOC_API bool_t	_utc_date_to_loc(xdate_t* pxd);
 LOC_API dword_t	_get_times(void);

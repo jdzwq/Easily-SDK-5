@@ -188,6 +188,7 @@
     <ClInclude Include="..\..\xdl\dataing.h" />
     <ClInclude Include="..\..\xdl\diagramdoc.h" />
     <ClInclude Include="..\..\xdl\diagramview.h" />
+    <ClInclude Include="..\..\xdl\eventdoc.h" />
     <ClInclude Include="..\..\xdl\focusing.h" />
     <ClInclude Include="..\..\xdl\gizmoing.h" />
     <ClInclude Include="..\..\xdl\framing.h" />
@@ -204,7 +205,6 @@
     <ClInclude Include="..\..\xdl\impcache.h" />
     <ClInclude Include="..\..\xdl\memobio.h" />
     <ClInclude Include="..\..\xdl\netcoap.h" />
-    <ClInclude Include="..\..\xdl\netpacs.h" />
     <ClInclude Include="..\..\xdl\netmqtt.h" />
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
@@ -380,6 +380,7 @@
     <ClCompile Include="..\..\xdl\dataing.c" />
     <ClCompile Include="..\..\xdl\diagramdoc.c" />
     <ClCompile Include="..\..\xdl\diagramview.c" />
+    <ClCompile Include="..\..\xdl\eventdoc.c" />
     <ClCompile Include="..\..\xdl\hintner.c" />
     <ClCompile Include="..\..\xdl\metabio.c" />
     <ClCompile Include="..\..\xdl\focusing.c" />
@@ -397,7 +398,6 @@
     <ClCompile Include="..\..\xdl\impcache.c" />
     <ClCompile Include="..\..\xdl\memobio.c" />
     <ClCompile Include="..\..\xdl\netcoap.c" />
-    <ClCompile Include="..\..\xdl\netpacs.c" />
     <ClCompile Include="..\..\xdl\netmqtt.c" />
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />

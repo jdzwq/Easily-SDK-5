@@ -2,11 +2,11 @@
 #ifndef _RAD_H
 #define _RAD_H
 
-#include "../radnet/raddef.h"
-#include "../radnet/radnet.h"
+#include "../rnet/rdef.h"
+#include "../rnet/rnet.h"
 
 #ifdef _OS_WINDOWS
-#pragma comment(lib,"radnet.lib")
+#pragma comment(lib,"rnet.lib")
 #endif
 
-#endif //_RADHEX_H
+#endif //_RAD_H

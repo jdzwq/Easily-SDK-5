@@ -576,6 +576,75 @@ int fill_integer(int ln, tchar_t* buf, int max)
 	}
 }
 
+int parse_intset(const tchar_t* str, int len, int* sa, int max)
+{
+	const tchar_t* key;
+	int klen;
+	int n = 0, total = 0;
+	int k1, k2;
+	bool_t b = 0;
+
+	if (len < 0)
+		len = xslen(str);
+
+	if (*str == _T('['))
+	{
+		str++;
+		total++;
+	}
+
+	while (*str != _T('\0') && (*str < _T('0') || *str > _T('9')) && total < len)
+	{
+		str++;
+		total++;
+	}
+	
+	k1 = k2 = 0;
+	while (*str != _T(']') && *str != _T('\0') && total < len)
+	{
+		key = str;
+		klen = 0;
+		while (*str >= _T('0') && *str <= _T('9'))
+		{
+			str++;
+			total++;
+			klen++;
+		}
+
+		if (klen)
+		{
+			k2 = xsntol(key, klen);
+			if (!b)
+				k1 = k2;
+			
+			for (; k1 <= k2;k1++)
+			{
+				if (n + 1 > max)
+					return n;
+
+				if (sa)
+				{
+					sa[n] = k1;
+				}
+				n++;
+			}
+		}
+
+		if (*str == _T('-'))
+			b = 1;
+		else
+			b = 0;
+
+		while (*str == _T('-') || *str == _T(' ') || *str == _T(','))
+		{
+			str++;
+			total++;
+		}
+	}
+
+	return n;
+}
+
 int format_integer_ex(int ln, const tchar_t* fmt, tchar_t* buf, int max)
 {
 	int n_split, b_negat;
@@ -2138,7 +2207,7 @@ void fill_calendar(calendar_t* pca, const xdate_t* pdt)
 	xd.mon = pdt->mon;
 	xd.day = 1;
 
-	mak_week_date(&xd);
+	mak_loc_week(&xd);
 	max_day = max_mon_days(xd.year, xd.mon);
 
 	for (i = 0; i < CALENDAR_COL; i++)

@@ -224,6 +224,20 @@
 #define DOC_DIALOG_PUSHBOX		_T("PushBox")
 #define DOC_DIALOG_USERBOX		_T("UserBox")
 
+#define DOC_EVENT				_T("event")
+#define DOC_EVENT_ID			_T("ID")
+#define DOC_EVENT_FROM			_T("From")
+#define DOC_EVENT_SENDER		_T("Sender")
+#define DOC_EVENT_SENDTIME		_T("SendTime")
+#define DOC_EVENT_CODE			_T("Code")
+#define DOC_EVENT_DESCRIBE		_T("Describe")
+#define DOC_EVENT_MEDIUM		_T("Medium")
+#define DOC_EVENT_CONTENT		_T("Content")
+#define DOC_EVENT_TO			_T("To")
+#define DOC_EVENT_RECEIPTOR		_T("Receiptor")
+#define DOC_EVENT_RECEIPTTIME	_T("ReceiptTime")
+#define DOC_EVENT_RECEIPTSTATE	_T("ReceiptState")
+
 /**************************************property bag attributes***********************************/
 #define PROPERTY_BAG_IDENTIFY		_T("Identify")
 #define PROPERTY_BAG_POSITION		_T("Position")

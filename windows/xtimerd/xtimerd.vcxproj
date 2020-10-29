@@ -161,11 +161,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\api\net_srv\srvlog.cc" />
     <ClCompile Include="..\..\api\net_srv\xtimerd.cc" />
+    <ClCompile Include="..\..\api\net_srv\xtimers.cc" />
     <ClCompile Include="xtimerdMain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvlog.h" />
     <ClInclude Include="..\..\api\net_srv\xtimerd.h" />
+    <ClInclude Include="..\..\api\net_srv\xtimers.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

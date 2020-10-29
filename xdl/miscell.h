@@ -72,6 +72,8 @@ EXP_API int fill_integer(int ln, tchar_t* buf, int max);
 
 EXP_API int format_integer_ex(int n, const tchar_t* fmt, tchar_t* buf, int max);
 
+EXP_API int parse_intset(const tchar_t* str, int len, int* sa, int max);
+
 EXP_API bool_t is_zero_numeric(double dbl, int scale);
 
 EXP_API double parse_numeric(const tchar_t* token, int len);

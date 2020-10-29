@@ -31,13 +31,13 @@ typedef struct _tftp_block_t{
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN + 1];
 
-	tchar_t code[NUM_LEN + 1];
-	tchar_t text[ERR_LEN + 1];
 }tftp_block_t;
 
 /*********************************************************************************/
 static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -72,25 +72,29 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 		xtftp_head(pd->tftp);
 	}
 
-	xscpy(pd->code, _T("_invoke_head"));
-	xscpy(pd->text, _T("Succeeded"));
-
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (fd)
 		xuncf_find_close(fd);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return 0;
 }
 
 static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -156,25 +160,29 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 	xfile_close(xf);
 	xf = NULL;
 
-	xscpy(pd->code, _T("_invoke_get"));
-	xscpy(pd->text, _T("Succeeded"));
-
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (xf)
 		xfile_close(xf);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return 0;
 }
 
 static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -223,25 +231,29 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 	xfile_close(xf);
 	xf = NULL;
 
-	xscpy(pd->code, _T("_invoke_put"));
-	xscpy(pd->text, _T("Succeeded"));
-
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (xf)
 		xfile_close(xf);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return 0;
 }
 
 static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -261,16 +273,18 @@ static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 	else
 		xtftp_delete(pd->tftp);
 
-	xscpy(pd->code, _T("_invoke_delete"));
-	xscpy(pd->text, _T("Succeeded"));
-
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return 0;
 }
@@ -280,6 +294,9 @@ ONERROR:
 int STDCALL udps_invoke(const udps_block_t* pb)
 {
 	tftp_block_t* pd = NULL;
+
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
 	tchar_t file[PATH_LEN + 1] = { 0 };
 	tchar_t token[RES_LEN + 1] = { 0 };
@@ -341,11 +358,6 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	xtftp_close(pd->tftp);
 	pd->tftp = NULL;
 
-	if (pb->pf_track_eror)
-	{
-		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
-	}
-
 	xmem_free(pd);
 	pd = NULL;
 
@@ -354,23 +366,22 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	return (rt) ? UDPS_INVOKE_SUCCEED : UDPS_INVOKE_WITHINFO;
 
 ONERROR:
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
 	if (pd)
 	{
-		get_last_error(pd->code, pd->text, ERR_LEN);
-
-		if (pb->pf_track_eror)
-		{
-			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
-		}
-
 		if (pd->tftp)
 			xtftp_close(pd->tftp);
 
 		xmem_free(pd);
+	}
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
 	}
 
 	return UDPS_INVOKE_WITHINFO;

@@ -37,6 +37,23 @@ void test_heap()
     (*if_heap.pf_heap_destroy)(heap);
 }
 
+void test_thread()
+{
+    if_thread_t if_thread = { 0 };
+    
+    xdk_impl_thread(&if_thread);
+    xdk_impl_thread_criti(&if_thread);
+
+    res_crit_t cri = (*if_thread.pf_criti_create)();
+    (*if_thread.pf_criti_enter)(cri);
+    //bool_t b = (*if_thread.pf_criti_query)(cri);
+    (*if_thread.pf_criti_leave)(cri);
+    
+    //b = (*if_thread.pf_criti_query)(cri);
+    (*if_thread.pf_criti_enter)(cri);
+    (*if_thread.pf_criti_destroy)(cri);
+}
+
 /*void test_date()
 {
     if_date_t if_date = { 0 };
@@ -638,25 +655,36 @@ void test_widget()
 }
 */
 
+typedef struct _timer_param{
+    res_queue_t rq;
+    res_timer_t rt;
+    int count;
+}timer_param;
+
+    if_timer_t if_timer = { 0 };
+
 static void _timer_proc(void* pa, bool_t b)
 {
-    int* pt = (int*)pa;
+    timer_param* ptp = (timer_param*)pa;
     
-    *pt += 1;
+    bool_t rt = (*if_timer.pf_alter_timer)(ptp->rq,ptp->rt,2000,1000);
 
-    printf("timer: %d\n", *pt);
+    ptp->count += 1;
+
+    printf("timer: %d\n", ptp->count);
 }
 
 void test_timer()
 {
-    if_timer_t if_timer = { 0 };
-    int count = 0;
+
+    timer_param tp = {0};
 
     xdk_impl_timer(&if_timer);
 
     res_queue_t rq = (*if_timer.pf_create_timer_queue)();
-
-    res_timer_t rt = (*if_timer.pf_create_timer)(rq, 1000, 3000, (PF_TIMERFUNC)_timer_proc, (void*)&count);
+    tp.rq = rq;
+    res_timer_t rt = (*if_timer.pf_create_timer)(rq, 1000, 3000, (PF_TIMERFUNC)_timer_proc, (void*)&tp);
+    tp.rt = rt;
 
     if(rt)
     {
@@ -674,6 +702,8 @@ int main(int argc, const char * argv[]) {
     
     // insert code here...
     
+    //test_thread();
+
     //test_date();
     
     //test_file();

@@ -27,31 +27,18 @@ LICENSE.GPL3 for more details.
 #ifndef _XTIMERD_H
 #define _XTIMERD_H
 
-#include <xdl.h>
-
-#define XSERVICE_ROOT			_T("XSERVICE_ROOT")
-#define XSERVICE_DATA			_T("XSERVICE_DATA")
-
-#define XTIMERD_STATE_STOPPED	0
-#define XTIMERD_STATE_RUNNING	1
-#define XTIMERD_STATE_PAUSED	2
-
-#define XTIMERD_ATTR_SCHEDULE	_T("schedule")
-#define XTIMERD_ATTR_MODE		_T("mode")
-#define XTIMERD_ATTR_MODULE		_T("module")
-#define XTIMERD_ATTR_PARAM		_T("param")
-#define XTIMERD_ATTR_DUETIME	_T("duetime")
-#define XTIMERD_ATTR_PERIOD		_T("period")
+#include "srvdef.h"
 
 typedef struct _xtimerd_param_t{
-	dword_t duetime;
-	dword_t period;
 	res_timer_t timer;
 	
+	timer_hint hint;
 	tchar_t mode[INT_LEN + 1];
 	tchar_t module[PATH_LEN + 1];
-	tchar_t param[4096];
+	tchar_t task[RES_LEN + 1];
 }xtimerd_param_t;
+
+EXP_API res_queue_t g_queue;
 
 void	xtimerd_start(void);
 

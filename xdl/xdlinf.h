@@ -175,13 +175,39 @@ typedef struct _if_fio_t{
 	PF_FIO_GETOPT		pf_getopt;
 }if_fio_t;
 
-typedef void(*PF_LOG_TITLE)(const if_fio_t*, const tchar_t*, int);
-typedef void(*PF_LOG_ERROR)(const if_fio_t*, const tchar_t*, const tchar_t*, int);
-typedef void(*PF_LOG_DATA)(const if_fio_t*, const byte_t*, dword_t);
-typedef void(*PF_LOG_XML)(const if_fio_t*, link_t_ptr);
-typedef void(*PF_LOG_JSON)(const if_fio_t*, link_t_ptr);
+typedef void(*PF_LOG_TITLE)(stream_t, const tchar_t*, int);
+typedef void(*PF_LOG_ERROR)(stream_t, const tchar_t*, const tchar_t*, int);
+typedef void(*PF_LOG_DATA)(stream_t, const byte_t*, dword_t);
+typedef void(*PF_LOG_XML)(stream_t, link_t_ptr);
+typedef void(*PF_LOG_JSON)(stream_t, link_t_ptr);
+
+typedef struct _if_log_t{
+	stream_t stm;
+
+	PF_LOG_TITLE	pf_log_title;
+	PF_LOG_ERROR	pf_log_error;
+	PF_LOG_DATA		pf_log_data;
+	PF_LOG_XML		pf_log_xml;
+	PF_LOG_JSON		pf_log_json;
+}if_log_t;
+
+typedef bool_t(*PF_SEND_EVENT)(const tchar_t*, bool_t, link_t_ptr);
+typedef bool_t(*PF_QUERY_EVENT)(const tchar_t*, bool_t , link_t_ptr);
+
+typedef struct _if_post_t{
+	tchar_t url[PATH_LEN + 1];
+
+	PF_SEND_EVENT	pf_send_event;
+	PF_QUERY_EVENT	pf_query_event;
+}if_post_t;
 
 typedef void(*PF_TRACK_ERROR)(void* hand, const tchar_t* code, const tchar_t* text);
+
+typedef struct _if_track_t{
+	void* hand;
+
+	PF_TRACK_ERROR	pf_track_error;
+}if_track_t;
 
 #if defined(XDL_SUPPORT_VIEW)
 

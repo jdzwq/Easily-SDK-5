@@ -8,11 +8,12 @@ LIB_PATH = ../lib
 API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 NET_PATH = ~/Easily-sdk-5/api/net_srv
+INI_PATH = ~/Easily-sdk-5/linux/setup
 LOC_PATH = .
 OUT_PATH = ../sbin
 
 LIBS = -L $(API_PATH) -lxds -lxdl
-DIRS = $(wildcard $(LOC_PATH)/xtimerdMain.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xtimerd.cc)
+DIRS = $(wildcard $(LOC_PATH)/xtimerdMain.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xtimerd.cc $(NET_PATH)/xtimers.cc)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 MODULE = xtimerd
@@ -41,7 +42,7 @@ install:
 
 	sudo cp -f $(TARGET) $(SRV_PATH);
 	sudo chmod +x $(SRV_PATH)/$(MODULE);
-
+	
 uninstall:
 	sudo rm -f $(SRV_PATH)/$(MODULE)
 

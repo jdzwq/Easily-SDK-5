@@ -52,11 +52,11 @@ typedef struct _dicm_command_t{
 	dword_t mask;
 
 	dword_t GroupLength;
-	byte_t AffectedSOPClassUID[NUM_LEN];
+	byte_t AffectedSOPClassUID[NUM_LEN + 1];
 	sword_t CommandField;
 	sword_t MessageID;
 	sword_t MessageIDBeingRespondedTo;
-	byte_t MoveDestination[RES_LEN];
+	byte_t MoveDestination[RES_LEN + 1];
 	sword_t Priority;
 	sword_t DataSetType;
 	sword_t Status;

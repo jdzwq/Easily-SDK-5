@@ -198,14 +198,15 @@ void _destroy_timer(res_queue_t rq, res_timer_t rt)
 
 bool_t _alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dword_t period)
 {
+	timer_token_t* ptt = (timer_token_t*)rt;
 	struct itimerspec its = {0};
 
-	its.it_value.tv_sec = 0;
-	its.it_value.tv_nsec = duetime * 1000000;
-	its.it_interval.tv_sec = 0;
-	its.it_interval.tv_nsec = period * 1000000;
+	its.it_value.tv_sec = duetime / 1000;
+	its.it_value.tv_nsec = 0;
+	its.it_interval.tv_sec = period / 1000;
+	its.it_interval.tv_nsec = 0;
 
-	return (timerfd_settime((int)rt, 0, &its, NULL) < 0)? 0 : 1;
+	return (timerfd_settime((int)(ptt->fd), 0, &its, NULL) < 0)? 0 : 1;
 }
 
 #endif //XDK_SUPPORT_TIMER

@@ -60,7 +60,7 @@ void get_utc_date(xdate_t* pxd)
 	(*pif->pf_get_utc_date)(pxd);
 }
 
-bool_t mak_week_date(xdate_t* pxd)
+bool_t mak_loc_week(xdate_t* pxd)
 {
 	if_date_t* pif;
 
@@ -68,7 +68,18 @@ bool_t mak_week_date(xdate_t* pxd)
 
 	XDL_ASSERT(pif != NULL);
 
-	return (*pif->pf_mak_week_date)(pxd);
+	return (*pif->pf_mak_loc_week)(pxd);
+}
+
+bool_t mak_utc_week(xdate_t* pxd)
+{
+	if_date_t* pif;
+
+	pif = PROCESS_DATE_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	return (*pif->pf_mak_utc_week)(pxd);
 }
 
 bool_t loc_date_to_utc(xdate_t* pxd)

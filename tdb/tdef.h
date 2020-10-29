@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily HexDFS 1.0
+	Easily tkb 1.0
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, China ZheJiang HangZhou JianDe, Mail: powersuite@hotmaol.com
 
-	@doc tkdfs defination document
+	@doc tdfs defination document
 
-	@module	tkdef.h | definition interface file
+	@module	tdef.h | definition interface file
 
 	@devnote 张文权 2018.01 - 2018.12	v1.0
 ***********************************************************************/
@@ -25,29 +25,29 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 
-#ifndef _TKDEF_H
-#define	_TKDEF_H
+#ifndef _TDEF_H
+#define	_TDEF_H
 
 #include <xdl.h>
 
 
 typedef enum{
-	TK_OBJ_KV = 1,
-	TK_OBJ_DB = 2
-}TKOBJ;
+	T_OBJ_KV = 1,
+	T_OBJ_DB = 2
+}TOBJ;
 
-typedef struct _tk_db_hdr{
+typedef struct _t_kb_hdr{
 	sword_t tag;
 	sword_t lru;
-}tk_db_hdr;
+}t_kb_hdr;
 
-typedef struct _tk_kv_hdr{
+typedef struct _t_kv_hdr{
 	sword_t tag;
 	sword_t lru;
-}tk_kv_hdr;
+}t_kv_hdr;
 
-typedef tk_db_hdr*	tk_db_t;
-typedef tk_kv_hdr*	tk_kv_t;
+typedef t_kb_hdr*	t_kb_t;
+typedef t_kv_hdr*	t_kv_t;
 
-#endif	/* _TKDEF_H */
+#endif	/* _TDEF_H */
 

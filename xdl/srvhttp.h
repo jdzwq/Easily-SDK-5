@@ -92,17 +92,13 @@ typedef struct _https_block_t{
 	bool_t is_thread;
 	xhand_t http;
 
-	if_fio_t* log;
-	PF_LOG_TITLE	pf_log_title;
-	PF_LOG_ERROR	pf_log_error;
-	PF_LOG_DATA		pf_log_data;
-	PF_LOG_XML		pf_log_xml;
-	PF_LOG_JSON		pf_log_json;
-
 	tchar_t site[RES_LEN + 1];
 	tchar_t space[RES_LEN + 1];
 	tchar_t object[PATH_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
+
+	if_log_t* plog;
+	if_post_t* pev;
 }https_block_t;
 
 typedef enum{

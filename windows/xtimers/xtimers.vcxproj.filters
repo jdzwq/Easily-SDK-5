@@ -21,9 +21,15 @@
     <ClCompile Include="..\..\api\net_srv\xtimersMain.cc">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\api\net_srv\xtimers.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\api\net_srv\srvlog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\api\net_srv\xtimers.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

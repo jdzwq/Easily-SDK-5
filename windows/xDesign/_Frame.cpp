@@ -522,7 +522,7 @@ void MainFrame_OpenFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN + 1] = { 0 };
 	tchar_t szFile[PATH_LEN + 1] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Schema File(*.schema)\0*.schema\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\Json File(*.json)\0*.json\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Schema File(*.schema)\0*.schema\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\0Json File(*.json)\0*.json\0");
 
 	shell_get_curpath(szPath, PATH_LEN);
 
@@ -595,7 +595,7 @@ void MainFrame_AppendFile(res_win_t widget)
 
 	tchar_t szPath[PATH_LEN * 10] = { 0 };
 	tchar_t szFile[PATH_LEN * 10] = { 0 };
-	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Dialog File(*.dialog)\0*.dialog\0Panorama File(*.panorama)\0*.panorama\0Diagram File(*.diagram)\0*.diagram\0Plot File(*.plot)\0*.plot\0Schema File(*.schema)\0*.schema\0ImageList File(*.images)\0*.images\0");
+	tchar_t szFilter[] = _T("Sheet File(*.sheet)\0*.sheet\0Schema File(*.schema)\0*.schema\0Text File(*.txt)\0*.txt\0SQL File(*.sql)\0*.sql\0Xml File(*.xml)\0*.xml\0Json File(*.json)\0*.json\0");
 
 	split_path(pdt->szFile, szPath, NULL, NULL);
 

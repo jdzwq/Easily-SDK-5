@@ -1,13 +1,13 @@
 ﻿/***********************************************************************
-	Easily HexDFS 1.0
+	Easily tkb 1.0
 
 	(c) 2005-2016 JianDe LiFang Technology Corporation.  All Rights Reserved.
 
 	@author ZhangWenQuan, China ZheJiang HangZhou JianDe, Mail: powersuite@hotmaol.com
 
-	@doc tkdb defination document
+	@doc tkb defination document
 
-	@module	tkkv.h | definition interface file
+	@module	tkv.h | definition interface file
 
 	@devnote 张文权 2018.01 - 2018.12	v1.0
 ***********************************************************************/
@@ -25,36 +25,36 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 
-#ifndef _TKKV_H
-#define	_TKKV_H
+#ifndef _TKV_H
+#define	_TKV_H
 
-#include "tkdef.h"
+#include "tdef.h"
 
-#define TKKV_MASK_PERSIST		0x00000001
-#define TKKV_MASK_UPDATED		0x00000002
-#define TKKV_MASK_DELETED		0x00000004
+#define TKV_MASK_PERSIST		0x00000001
+#define TKV_MASK_UPDATED		0x00000002
+#define TKV_MASK_DELETED		0x00000004
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-EXP_API tk_kv_t tkkv_create(tk_db_t hdb);
+EXP_API t_kv_t tkv_create(t_kb_t hdb);
 
-EXP_API void tkkv_destroy(tk_kv_t hkv);
+EXP_API void tkv_destroy(t_kv_t hkv);
 
-EXP_API void tkkv_write(tk_kv_t hkv, variant_t key, object_t val);
+EXP_API void tkv_write(t_kv_t hkv, variant_t key, object_t val);
 
-EXP_API bool_t tkkv_read(tk_kv_t hkv, variant_t key, object_t val);
+EXP_API bool_t tkv_read(t_kv_t hkv, variant_t key, object_t val);
 
-EXP_API bool_t tkkv_update(tk_kv_t hkv, variant_t key, object_t val);
+EXP_API bool_t tkv_update(t_kv_t hkv, variant_t key, object_t val);
 
-EXP_API void tkkv_attach(tk_kv_t hkv, variant_t key, object_t val);
+EXP_API void tkv_attach(t_kv_t hkv, variant_t key, object_t val);
 
-EXP_API object_t tkkv_detach(tk_kv_t hkv, variant_t key);
+EXP_API object_t tkv_detach(t_kv_t hkv, variant_t key);
 
-EXP_API void tkkv_delete(tk_kv_t hkv, variant_t key);
+EXP_API void tkv_delete(t_kv_t hkv, variant_t key);
 
-EXP_API void tkkv_flush(tk_kv_t hkv);
+EXP_API void tkv_flush(t_kv_t hkv);
 
 
 #ifdef	__cplusplus
@@ -62,5 +62,5 @@ EXP_API void tkkv_flush(tk_kv_t hkv);
 #endif
 
 
-#endif	/* _TKKV_H */
+#endif	/* _TKV_H */
 

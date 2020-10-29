@@ -29,9 +29,6 @@ typedef struct _coap_block_t{
 	xhand_t coap;
 
 	tchar_t loca[PATH_LEN + 1];
-
-	tchar_t code[NUM_LEN + 1];
-	tchar_t text[ERR_LEN + 1];
 }coap_block_t;
 
 /*********************************************************************************/
@@ -74,8 +71,11 @@ static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_
 
 static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 {
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
@@ -104,13 +104,13 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkdb_create(path, did);
+	hdb = tkb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_get"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_get"), _T("create kv entity falied"));
@@ -126,12 +126,12 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	tkkv_read(hkv, key, val);
+	tkv_read(hkv, key, val);
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
+	tkb_destroy(hdb);
 	hdb = NULL;
 
 	len = radobj_read(val, &hdr, NULL, MAX_LONG);
@@ -155,24 +155,21 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 
 	xcoap_flush(pd->coap);
 
-	xscpy(pd->code, _T("_invoke_get"));
-	xscpy(pd->text, _T("Succeeded"));
-
 	END_CATCH;
 
 	return 1;
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
 	if (hdb)
-		tkdb_destroy(hdb);
+		tkb_destroy(hdb);
 
 	if (buf)
 		xmem_free(buf);
@@ -182,13 +179,21 @@ ONERROR:
 	if (val)
 		object_free(val);
 
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
+
 	return 0;
 }
 
 static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 {
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
@@ -225,13 +230,13 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkdb_create(path, did);
+	hdb = tkb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_get"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_get"), _T("create kv entity falied"));
@@ -254,21 +259,18 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	radobj_write(val, &hdr, payload, dw);
 
-	tkkv_attach(hkv, key, val);
+	tkv_attach(hkv, key, val);
 	val = NULL;
 
 	variant_to_null(&key);
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
+	tkb_destroy(hdb);
 	hdb = NULL;
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_200_CODE);
-
-	xscpy(pd->code, _T("_invoke_post"));
-	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -276,28 +278,36 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
 	if (hdb)
-		tkdb_destroy(hdb);
+		tkb_destroy(hdb);
 
 	variant_to_null(&key);
 
 	if (val)
 		object_free(val);
 
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
+
 	return 0;
 }
 
 static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 {
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
@@ -328,13 +338,13 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkdb_create(path, did);
+	hdb = tkb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_put"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_put"), _T("create kv entity falied"));
@@ -368,7 +378,7 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	tkkv_read(hkv, key, val);
+	tkv_read(hkv, key, val);
 
 	hdr.mid = xcoap_msgid(pd->coap);
 	xmem_copy((void*)hdr.ver, (void*)MSGVER_SENSOR, MSGVER_SIZE);
@@ -377,19 +387,16 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	radobj_write(val, &hdr, payload, total);
 
-	tkkv_attach(hkv, key, val);
+	tkv_attach(hkv, key, val);
 	val = NULL;
 
 	variant_to_null(&key);
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
+	tkb_destroy(hdb);
 	hdb = NULL;
-
-	xscpy(pd->code, _T("_invoke_put"));
-	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -397,28 +404,36 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
 	if (hdb)
-		tkdb_destroy(hdb);
+		tkb_destroy(hdb);
 
 	variant_to_null(&key);
 
 	if (val)
 		object_free(val);
 
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
+
 	return 0;
 }
 
 static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 {
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
@@ -443,13 +458,13 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkdb_create(path, did);
+	hdb = tkb_create(path, did);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_delete"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hdb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_delete"), _T("create kv entity falied"));
@@ -463,20 +478,17 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 	key.vv = VV_STRING;
 	variant_from_string(&key, pid, -1);
 
-	tkkv_delete(hkv, key);
+	tkv_delete(hkv, key);
 
 	variant_to_null(&key);
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
+	tkb_destroy(hdb);
 	hdb = NULL;
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_200_CODE);
-
-	xscpy(pd->code, _T("_invoke_delete"));
-	xscpy(pd->text, _T("Succeeded"));
 
 	END_CATCH;
 
@@ -484,17 +496,22 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
 	if (hdb)
-		tkdb_destroy(hdb);
+		tkb_destroy(hdb);
 
 	variant_to_null(&key);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return 0;
 }
@@ -503,6 +520,9 @@ ONERROR:
 
 int STDCALL udps_invoke(const udps_block_t* pb)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	coap_block_t* pd = NULL;
 
 	tchar_t file[PATH_LEN + 1] = { 0 };
@@ -567,11 +587,6 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	xcoap_close(pd->coap);
 	pd->coap = NULL;
 
-	if (pb->pf_track_eror)
-	{
-		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
-	}
-
 	xmem_free(pd);
 	pd = NULL;
 
@@ -580,22 +595,22 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	return (rt) ? UDPS_INVOKE_SUCCEED : UDPS_INVOKE_WITHINFO;
 
 ONERROR:
-	XDL_TRACE_LAST;
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
 	if (pd)
 	{
-		if (pb->pf_track_eror)
-		{
-			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
-		}
-
 		if (pd->coap)
 			xcoap_close(pd->coap);
 
 		xmem_free(pd);
+	}
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
 	}
 
 	return UDPS_INVOKE_WITHINFO;

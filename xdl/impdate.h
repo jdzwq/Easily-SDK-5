@@ -55,11 +55,18 @@ EXP_API void get_loc_date(xdate_t* pxd);
 EXP_API void get_utc_date(xdate_t* pxd);
 
 /*
-@FUNCTION mak_week_date: fill days of week according to year, month, day, or and hour, minut, second member.
-@INOUTPUT xdate_t* pxd: the datetime struct for returning valid datetime, wday will be filled if member is valid.
+@FUNCTION mak_loc_week: fill local days of week according to year, month, day, or and hour, minut, second member.
+@INOUTPUT xdate_t* pxd: the local datetime struct for returning valid datetime, wday will be filled if member is valid.
 @RETURN bool_t: if succeeds retur nonzero, fails return zero.
 */
-EXP_API bool_t mak_week_date(xdate_t* pxd);
+EXP_API bool_t mak_loc_week(xdate_t* pxd);
+
+/*
+@FUNCTION mak_week_date: fill utc days of week according to year, month, day, or and hour, minut, second member.
+@INOUTPUT xdate_t* pxd: the utc datetime struct for returning valid datetime, wday will be filled if member is valid.
+@RETURN bool_t: if succeeds retur nonzero, fails return zero.
+*/
+EXP_API bool_t mak_utc_week(xdate_t* pxd);
 
 /*
 @FUNCTION loc_date_to_utc: convert local date to utc date.

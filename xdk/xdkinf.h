@@ -495,7 +495,8 @@ typedef struct _if_cons_t{
 /*date interface*/
 typedef void (*PF_GET_LOC_DATE)(xdate_t*);
 typedef void (*PF_GET_UTC_DATE)(xdate_t*);
-typedef bool_t(*PF_MAK_WEEK_DATE)(xdate_t*);
+typedef bool_t(*PF_MAK_LOC_WEEK)(xdate_t*);
+typedef bool_t(*PF_MAK_UTC_WEEK)(xdate_t*);
 typedef bool_t(*PF_LOC_DATE_TO_UTC)(xdate_t*);
 typedef bool_t(*PF_UTC_DATE_TO_LOC)(xdate_t*);
 typedef dword_t(*PF_GET_TIMES)(void);
@@ -508,7 +509,8 @@ typedef void(*PF_UTC_DATE_FROM_TIMESTAMP)(xdate_t*, stamp_t);
 typedef struct _if_date_t{
 	PF_GET_LOC_DATE		pf_get_loc_date;
 	PF_GET_UTC_DATE		pf_get_utc_date;
-	PF_MAK_WEEK_DATE	pf_mak_week_date;
+	PF_MAK_LOC_WEEK		pf_mak_loc_week;
+	PF_MAK_UTC_WEEK		pf_mak_utc_week;
 	PF_LOC_DATE_TO_UTC	pf_loc_date_to_utc;
 	PF_UTC_DATE_TO_LOC	pf_utc_date_to_loc;
 	PF_GET_TIMES		pf_get_times;

@@ -43,7 +43,7 @@
 #include "calendardoc.h"
 #include "taskdoc.h"
 #include "plotdoc.h"
-
+#include "eventdoc.h"
 
 
 #endif //XDLDOC_H

@@ -37,8 +37,6 @@ typedef struct _mqtt_block_t{
 	secu_desc_t sd;
 	tchar_t local[PATH_LEN + 1];
 
-	tchar_t code[NUM_LEN + 1];
-	tchar_t text[ERR_LEN + 1];
 }mqtt_block_t;
 
 static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_t* pid)
@@ -79,11 +77,14 @@ static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_
 
 void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	t_kb_t hkb = NULL;
+	t_kv_t hkv = NULL;
 
 	rad_hdr_t hdr = { 0 };
 
@@ -104,13 +105,13 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 	}
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hdb = tkdb_create(path, did);
-	if (!hdb)
+	hkb = tkb_create(path, did);
+	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_publish"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hkb);
 	if (!hkv)
 	{
 		raise_user_error(_T("_invoke_publish"), _T("create kv entity falied"));
@@ -126,7 +127,7 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	tkkv_read(hkv, key, val);
+	tkv_read(hkv, key, val);
 
 	get_utc_date(&dt);
 
@@ -136,26 +137,23 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	radobj_write(val, &hdr, pd->msg_buf, pd->msg_len);
 
-	tkkv_attach(hkv, key, val);
+	tkv_attach(hkv, key, val);
 	val = NULL;
 
 	variant_to_null(&key);
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
-	hdb = NULL;
-
-	xscpy(pd->code, _T("_invoke_publish"));
-	xscpy(pd->text, _T("Succeeded"));
+	tkb_destroy(hkb);
+	hkb = NULL;
 
 	END_CATCH;
 
 	return;
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	variant_to_null(&key);
 
@@ -163,21 +161,29 @@ ONERROR:
 		object_free(val);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
-	if (hdb)
-		tkdb_destroy(hdb);
+	if (hkb)
+		tkb_destroy(hkb);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return;
 }
 
 void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	variant_t key = { 0 };
 	object_t val = NULL;
 
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	t_kb_t hkb = NULL;
+	t_kv_t hkv = NULL;
 
 	MQTT_PACKET_CTRL mc = { 0 };
 
@@ -201,16 +207,16 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	}
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hdb = tkdb_create(path, did);
-	if (!hdb)
+	hkb = tkb_create(path, did);
+	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_subcribe"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hkb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_subcribe"), _T("create tkdb kv entity falied"));
+		raise_user_error(_T("_invoke_subcribe"), _T("create tdb kv entity falied"));
 	}
 
 	if (is_null(pid))
@@ -223,7 +229,7 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	val = object_alloc(_UTF8);
 
-	tkkv_read(hkv, key, val);
+	tkv_read(hkv, key, val);
 
 	while ((dw = radobj_read(val, &hdr, NULL, MAX_LONG)))
 	{
@@ -258,21 +264,18 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	object_free(val);
 	val = NULL;
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
-	hdb = NULL;
-
-	xscpy(pd->code, _T("_invoke_subcribe"));
-	xscpy(pd->text, _T("Succeeded"));
+	tkb_destroy(hkb);
+	hkb = NULL;
 
 	END_CATCH;
 
 	return;
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (buf)
 		xmem_free(buf);
@@ -283,20 +286,28 @@ ONERROR:
 		object_free(val);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
-	if (hdb)
-		tkdb_destroy(hdb);
+	if (hkb)
+		tkb_destroy(hkb);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return;
 }
 
 void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	variant_t key = { 0 };
 
-	tk_db_t hdb = NULL;
-	tk_kv_t hkv = NULL;
+	t_kb_t hkb = NULL;
+	t_kv_t hkv = NULL;
 
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
@@ -319,54 +330,60 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hdb = tkdb_create(path, did);
-	if (!hdb)
+	hkb = tkb_create(path, did);
+	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_unsubcribe"), _T("open kv database failed"));
 	}
 
-	hkv = tkkv_create(hdb);
+	hkv = tkv_create(hkb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_unsubcribe"), _T("create tkdb kv entity falied"));
+		raise_user_error(_T("_invoke_unsubcribe"), _T("create tdb kv entity falied"));
 	}
 
 	key.vv = VV_STRING;
 	variant_from_string(&key, pid, -1);
 
-	tkkv_delete(hkv, key);
+	tkv_delete(hkv, key);
 
 	variant_to_null(&key);
 
-	tkkv_destroy(hkv);
+	tkv_destroy(hkv);
 	hkv = NULL;
 
-	tkdb_destroy(hdb);
-	hdb = NULL;
-
-	xscpy(pd->code, _T("_invoke_unsubcribe"));
-	xscpy(pd->text, _T("Succeeded"));
+	tkb_destroy(hkb);
+	hkb = NULL;
 
 	END_CATCH;
 
 	return;
 ONERROR:
 
-	get_last_error(pd->code, pd->text, ERR_LEN);
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	variant_to_null(&key);
 
 	if (hkv)
-		tkkv_destroy(hkv);
+		tkv_destroy(hkv);
 
-	if (hdb)
-		tkdb_destroy(hdb);
+	if (hkb)
+		tkb_destroy(hkb);
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+	}
 
 	return;
 }
 
+/*******************************************************************************************************/
 int STDCALL tcps_invoke(const tcps_block_t* pb)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	mqtt_block_t* pd = NULL;
 
 	LINKPTR ptr_prop = NULL;
@@ -460,11 +477,6 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 	xmqtt_close(pd->mqtt);
 	pd->mqtt = NULL;
 
-	if (pb->pf_track_eror)
-	{
-		(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
-	}
-
 	xmem_free(pd);
 	pd = NULL;
 
@@ -473,23 +485,22 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 	return TCPS_INVOKE_SUCCEED;
 
 ONERROR:
+	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
 	if (pd)
 	{
-		get_last_error(pd->code, pd->text, ERR_LEN);
-
-		if (pb->pf_track_eror)
-		{
-			(*pb->pf_track_eror)(pb->hand, pd->code, pd->text);
-		}
-
 		if (pd->mqtt)
 			xmqtt_close(pd->mqtt);
 
 		xmem_free(pd);
+	}
+
+	if (pb->ptt)
+	{
+		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
 	}
 
 	return TCPS_INVOKE_WITHINFO;

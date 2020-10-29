@@ -486,9 +486,6 @@
     <ClInclude Include="..\..\xdl\radobj.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\netpacs.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\svgbag.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -589,6 +586,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\hintner.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\eventdoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1007,9 +1007,6 @@
     <ClCompile Include="..\..\xdl\radobj.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\netpacs.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\svgbag.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1101,6 +1098,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\hintner.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\eventdoc.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

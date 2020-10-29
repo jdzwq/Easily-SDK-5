@@ -327,7 +327,8 @@ void xdk_impl_date(if_date_t* pif)
 {
 	pif->pf_get_loc_date = _get_loc_date;
 	pif->pf_get_utc_date = _get_utc_date;
-	pif->pf_mak_week_date = _mak_week_date;
+	pif->pf_mak_loc_week = _mak_loc_week;
+	pif->pf_mak_utc_week = _mak_utc_week;
 	pif->pf_loc_date_to_utc = _loc_date_to_utc;
 	pif->pf_utc_date_to_loc = _utc_date_to_loc;
 	pif->pf_get_times = _get_times;

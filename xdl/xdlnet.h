@@ -15,6 +15,5 @@
 #include "nettftp.h"
 #include "netmqtt.h"
 #include "netsoap.h"
-#include "netpacs.h"
 
 #endif //_XDLNET_H

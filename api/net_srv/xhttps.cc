@@ -252,6 +252,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	https_block_t *pb = NULL;
 	res_modu_t api = NULL;
 	PF_HTTPS_INVOKE pf_invoke = NULL;
+	if_fio_t* xf = NULL;
+	if_bio_t bf = { 0 };
+	stream_t log = NULL;
 
 	xdate_t xdt = { 0 };
 
@@ -434,12 +437,6 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	pb->http = http;
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
 
-	pb->pf_log_title = _write_log_title;
-	pb->pf_log_error = _write_log_error;
-	pb->pf_log_data = _write_log_data;
-	pb->pf_log_xml = _write_log_xml;
-	pb->pf_log_json = _write_log_json;
-
 	xsncpy(pb->site, sz_site + 1, RES_LEN);
 	xsncpy(pb->space, sz_space, RES_LEN);
 	xsncpy(pb->object, sz_res, PATH_LEN);
@@ -478,27 +475,46 @@ void _xhttps_dispatch(xhand_t http, void* p)
         printf_path(sz_path, sz_track);
 		xsappend(sz_path, _T("/%s.log"), sz_trace);
 
-		pb->log = xfile_open(NULL, sz_path, FILE_OPEN_CREATE);
+		xf = xfile_open(NULL, sz_path, FILE_OPEN_CREATE);
+		if (xf)
+		{
+			get_bio_interface(xf->fd, &bf);
+			log = stream_alloc(&bf);
 
-		if (pb->log)
+			pb->plog = (if_log_t*)xmem_alloc(sizeof(if_log_t));
+			get_log_interface(log, pb->plog);
+		}
+
+		if (pb->plog)
 		{
 			xscpy(sz_res, _T("["));
 			xhttp_addr_port(http, sz_res + 1);
 			xscat(sz_res, _T("]"));
 
-			(*pb->pf_log_title)(pb->log, sz_res, -1);
+			(*(pb->plog->pf_log_title))(pb->plog->stm, sz_res, -1);
 		}
 	}
+
+	pb->pev = (if_post_t*)xmem_alloc(sizeof(if_post_t));
 
 	n_state = (*pf_invoke)(sz_method, pb);
 
 	free_library(api);
 	api = NULL;
 
-	if (pb->log)
+	xmem_free(pb->pev);
+	pb->pev = NULL;
+
+	if (pb->plog)
 	{
-		xfile_close(pb->log);
-		pb->log = NULL;
+		xfile_close(xf);
+		xf = NULL;
+
+		stream_free(log);
+		log = NULL;
+
+		xmem_free(pb->plog);
+		pb->plog = NULL;
 
 		if (n_state < n_trace)
 		{
@@ -526,10 +542,19 @@ ONERROR:
 
 	if (pb)
 	{
-		if (pb->log)
+		if (pb->pev)
+			xmem_free(pb->pev);
+
+		if (pb->plog)
 		{
-			xfile_close(pb->log);
-			pb->log = NULL;
+			xfile_close(xf);
+			xf = NULL;
+
+			stream_free(log);
+			log = NULL;
+
+			xmem_free(pb->plog);
+			pb->plog = NULL;
 		}
 
 		xmem_free(pb);
