@@ -166,9 +166,9 @@ ONERROR:
 	if (hkb)
 		tkb_destroy(hkb);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -291,9 +291,9 @@ ONERROR:
 	if (hkb)
 		tkb_destroy(hkb);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -370,9 +370,9 @@ ONERROR:
 	if (hkb)
 		tkb_destroy(hkb);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -498,9 +498,9 @@ ONERROR:
 		xmem_free(pd);
 	}
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return TCPS_INVOKE_WITHINFO;

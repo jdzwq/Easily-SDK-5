@@ -77,11 +77,11 @@ bool_t _invoke_get(const https_block_t* pb)
 		xsprintf(sz_object, _T("%s%s"), pb->path, pb->object);
 	}
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[WWW: GET]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[WWW: GET]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
 	}
 
 	if (!xfile_info(NULL, sz_object, ftime, fsize, fetag, NULL))
@@ -295,11 +295,11 @@ ONERROR:
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[WWW: GET]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[WWW: GET]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -325,11 +325,11 @@ void _invoke_error(const https_block_t* pb)
 
 	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[WWW: ERROR]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[WWW: ERROR]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 }
 

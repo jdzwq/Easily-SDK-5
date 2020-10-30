@@ -179,9 +179,9 @@ ONERROR:
 	if (val)
 		object_free(val);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -293,9 +293,9 @@ ONERROR:
 	if (val)
 		object_free(val);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -419,9 +419,9 @@ ONERROR:
 	if (val)
 		object_free(val);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -508,9 +508,9 @@ ONERROR:
 
 	variant_to_null(&key);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -608,9 +608,9 @@ ONERROR:
 		xmem_free(pd);
 	}
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return UDPS_INVOKE_WITHINFO;

@@ -175,11 +175,11 @@ bool_t _invoke_ploting(const https_block_t* pb, plot_block_t* pd)
 				get_last_error(sz_code, sz_error, ERR_LEN);
 			}
 
-			if (pb->plog)
+			if (pb->plg)
 			{
-				(*pb->plog->pf_log_title)(pb->plog->stm, _T("[PLOT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT]"), -1);
 
-				(*pb->plog->pf_log_json)(pb->plog->stm, ptr_json);
+				(*pb->plg->pf_log_json)(pb->plg->log, ptr_json);
 			}
 
 			if (!rt)
@@ -197,11 +197,11 @@ bool_t _invoke_ploting(const https_block_t* pb, plot_block_t* pd)
 				get_last_error(sz_code, sz_error, ERR_LEN);
 			}
 
-			if (pb->plog)
+			if (pb->plg)
 			{
-				(*pb->plog->pf_log_title)(pb->plog->stm, _T("[PLOT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT]"), -1);
 
-				(*pb->plog->pf_log_xml)(pb->plog->stm, ptr_xml);
+				(*pb->plg->pf_log_xml)(pb->plg->log, ptr_xml);
 			}
 
 			if (!rt)
@@ -332,11 +332,11 @@ ONERROR:
 	if (ptr_org)
 		destroy_plot_doc(ptr_org);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[PLOT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -361,11 +361,11 @@ void _invoke_error(const https_block_t* pb, plot_block_t* pd)
 
 	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[PLOT: 错误]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT: 错误]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 }
 

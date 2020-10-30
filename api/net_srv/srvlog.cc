@@ -132,7 +132,7 @@ void _write_log_json(stream_t log, link_t_ptr ptr_json)
 
 void get_log_interface(stream_t log, if_log_t* plog)
 {
-	plog->stm = log;
+	plog->log = log;
 
 	plog->pf_log_title = _write_log_title;
 	plog->pf_log_error = _write_log_error;

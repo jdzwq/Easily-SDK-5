@@ -83,9 +83,9 @@ ONERROR:
 	if (fd)
 		xuncf_find_close(fd);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -171,9 +171,9 @@ ONERROR:
 	if (xf)
 		xfile_close(xf);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -242,9 +242,9 @@ ONERROR:
 	if (xf)
 		xfile_close(xf);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -281,9 +281,9 @@ ONERROR:
 
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return 0;
@@ -379,9 +379,9 @@ ONERROR:
 		xmem_free(pd);
 	}
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return UDPS_INVOKE_WITHINFO;

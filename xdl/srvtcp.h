@@ -99,7 +99,7 @@ typedef struct _tcps_block_t{
 	tchar_t site[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
 
-	if_track_t* ptt;
+	if_track_t* ptk;
 }tcps_block_t;
 
 typedef enum{

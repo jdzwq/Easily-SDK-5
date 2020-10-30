@@ -481,31 +481,31 @@ void _xhttps_dispatch(xhand_t http, void* p)
 			get_bio_interface(xf->fd, &bf);
 			log = stream_alloc(&bf);
 
-			pb->plog = (if_log_t*)xmem_alloc(sizeof(if_log_t));
-			get_log_interface(log, pb->plog);
+			pb->plg = (if_log_t*)xmem_alloc(sizeof(if_log_t));
+			get_log_interface(log, pb->plg);
 		}
 
-		if (pb->plog)
+		if (pb->plg)
 		{
 			xscpy(sz_res, _T("["));
 			xhttp_addr_port(http, sz_res + 1);
 			xscat(sz_res, _T("]"));
 
-			(*(pb->plog->pf_log_title))(pb->plog->stm, sz_res, -1);
+			(*(pb->plg->pf_log_title))(pb->plg->log, sz_res, -1);
 		}
 	}
 
-	pb->pev = (if_post_t*)xmem_alloc(sizeof(if_post_t));
+	pb->pst = (if_post_t*)xmem_alloc(sizeof(if_post_t));
 
 	n_state = (*pf_invoke)(sz_method, pb);
 
 	free_library(api);
 	api = NULL;
 
-	xmem_free(pb->pev);
-	pb->pev = NULL;
+	xmem_free(pb->pst);
+	pb->pst = NULL;
 
-	if (pb->plog)
+	if (pb->plg)
 	{
 		xfile_close(xf);
 		xf = NULL;
@@ -513,8 +513,8 @@ void _xhttps_dispatch(xhand_t http, void* p)
 		stream_free(log);
 		log = NULL;
 
-		xmem_free(pb->plog);
-		pb->plog = NULL;
+		xmem_free(pb->plg);
+		pb->plg = NULL;
 
 		if (n_state < n_trace)
 		{
@@ -542,10 +542,10 @@ ONERROR:
 
 	if (pb)
 	{
-		if (pb->pev)
-			xmem_free(pb->pev);
+		if (pb->pst)
+			xmem_free(pb->pst);
 
-		if (pb->plog)
+		if (pb->plg)
 		{
 			xfile_close(xf);
 			xf = NULL;
@@ -553,8 +553,8 @@ ONERROR:
 			stream_free(log);
 			log = NULL;
 
-			xmem_free(pb->plog);
-			pb->plog = NULL;
+			xmem_free(pb->plg);
+			pb->plg = NULL;
 		}
 
 		xmem_free(pb);

@@ -167,17 +167,17 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 		raise_user_error(_T("_tcps_invoke"), _T("website load invoke function failed\n"));
 	}
 
-	pb->ptt = (if_track_t*)xmem_alloc(sizeof(if_track_t));
-	pb->ptt->hand = (void*)pb;
-	pb->ptt->pf_track_error = (PF_TRACK_ERROR)_xtcps_track_error;
+	pb->ptk = (if_track_t*)xmem_alloc(sizeof(if_track_t));
+	pb->ptk->param = (void*)pb;
+	pb->ptk->pf_track_error = (PF_TRACK_ERROR)_xtcps_track_error;
 
 	n_state = (*pf_invoke)(pb);
 
 	free_library(api);
 	api = NULL;
 
-	xmem_free(pb->ptt);
-	pb->ptt = NULL;
+	xmem_free(pb->ptk);
+	pb->ptk = NULL;
 
 	xmem_free(pb);
 	pb = NULL;
@@ -198,8 +198,8 @@ ONERROR:
 	{
 		_xtcps_track_error((void*)pb, errcode, errtext);
 
-		if (pb->ptt)
-			xmem_free(pb->ptt);
+		if (pb->ptk)
+			xmem_free(pb->ptk);
 
 		xmem_free(pb);
 	}

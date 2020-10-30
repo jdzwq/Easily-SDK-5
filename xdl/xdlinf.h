@@ -182,7 +182,7 @@ typedef void(*PF_LOG_XML)(stream_t, link_t_ptr);
 typedef void(*PF_LOG_JSON)(stream_t, link_t_ptr);
 
 typedef struct _if_log_t{
-	stream_t stm;
+	stream_t log;
 
 	PF_LOG_TITLE	pf_log_title;
 	PF_LOG_ERROR	pf_log_error;
@@ -201,10 +201,10 @@ typedef struct _if_post_t{
 	PF_QUERY_EVENT	pf_query_event;
 }if_post_t;
 
-typedef void(*PF_TRACK_ERROR)(void* hand, const tchar_t* code, const tchar_t* text);
+typedef void(*PF_TRACK_ERROR)(void* param, const tchar_t* code, const tchar_t* text);
 
 typedef struct _if_track_t{
-	void* hand;
+	void* param;
 
 	PF_TRACK_ERROR	pf_track_error;
 }if_track_t;

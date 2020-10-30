@@ -165,11 +165,11 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 				get_last_error(sz_code, sz_error, ERR_LEN);
 			}
 
-			if (pb->plog)
+			if (pb->plg)
 			{
-				(*pb->plog->pf_log_title)(pb->plog->stm, _T("[EVENT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
 
-				(*pb->plog->pf_log_json)(pb->plog->stm, ptr_json);
+				(*pb->plg->pf_log_json)(pb->plg->log, ptr_json);
 			}
 
 			if (!rt)
@@ -187,11 +187,11 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 				get_last_error(sz_code, sz_error, ERR_LEN);
 			}
 
-			if (pb->plog)
+			if (pb->plg)
 			{
-				(*pb->plog->pf_log_title)(pb->plog->stm, _T("[EVENT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
 
-				(*pb->plog->pf_log_xml)(pb->plog->stm, ptr_xml);
+				(*pb->plg->pf_log_xml)(pb->plg->log, ptr_xml);
 			}
 
 			if (!rt)
@@ -321,11 +321,11 @@ ONERROR:
 	if (hkb)
 		tkb_destroy(hkb);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[EVENT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -427,11 +427,11 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 			raise_user_error(NULL, NULL);
 		}
 
-		if (pb->plog)
+		if (pb->plg)
 		{
-			(*pb->plog->pf_log_title)(pb->plog->stm, _T("[response]"), -1);
+			(*pb->plg->pf_log_title)(pb->plg->log, _T("[response]"), -1);
 
-			(*pb->plog->pf_log_json)(pb->plog->stm, ptr_event);
+			(*pb->plg->pf_log_json)(pb->plg->log, ptr_event);
 		}
 	}
 	else
@@ -447,11 +447,11 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 			raise_user_error(NULL, NULL);
 		}
 
-		if (pb->plog)
+		if (pb->plg)
 		{
-			(*pb->plog->pf_log_title)(pb->plog->stm, _T("[response]"), -1);
+			(*pb->plg->pf_log_title)(pb->plg->log, _T("[response]"), -1);
 
-			(*pb->plog->pf_log_json)(pb->plog->stm, ptr_event);
+			(*pb->plg->pf_log_json)(pb->plg->log, ptr_event);
 		}
 	}
 
@@ -485,11 +485,11 @@ ONERROR:
 	if (hkb)
 		tkb_destroy(hkb);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[EVENT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -514,11 +514,11 @@ void _invoke_error(const https_block_t* pb, event_block_t* pd)
 
 	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[EVENT:]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT:]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 }
 

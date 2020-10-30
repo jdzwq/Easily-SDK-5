@@ -111,9 +111,9 @@ ONERROR:
 	if (stm)
 		stream_free(stm);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 	
 	return;
@@ -199,9 +199,9 @@ ONERROR:
 	if (stm)
 		stream_free(stm);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -269,9 +269,9 @@ ONERROR:
 	if (stm)
 		stream_free(stm);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -339,9 +339,9 @@ ONERROR:
 	if (stm)
 		stream_free(stm);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -443,9 +443,9 @@ ONERROR:
 	if (stm)
 		stream_free(stm);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return;
@@ -584,9 +584,9 @@ ONERROR:
 	if (hdb)
 		tkb_destroy(hdb);
 
-	if (pb->ptt)
+	if (pb->ptk)
 	{
-		(*pb->ptt->pf_track_error)(pb->ptt->hand, sz_code, sz_error);
+		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return SLOTS_INVOKE_WITHINFO;

@@ -50,15 +50,15 @@ bool_t _invoke_auth_request(const https_block_t* pb, oau_block_t* pos)
 
 	TRY_CATCH;
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: AUTH]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: AUTH]"), -1);
 
 		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
 		sz_qry = xsalloc(len + 1);
 		len = xhttp_get_url_query(pb->http, sz_qry, len);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, _T(""), sz_qry, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_qry, -1);
 
 		xsfree(sz_qry);
 		sz_qry = NULL;
@@ -126,11 +126,11 @@ ONERROR:
 	if (sz_qry)
 		xsfree(sz_qry);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: 错误]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: 错误]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_num, sz_err, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_num, sz_err, -1);
 	}
 
 	return 0;
@@ -157,15 +157,15 @@ bool_t _invoke_auth_access(const https_block_t* pb, oau_block_t* pos)
 
 	TRY_CATCH;
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: AUTH]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: AUTH]"), -1);
 
 		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
 		sz_qry = xsalloc(len + 1);
 		len = xhttp_get_url_query(pb->http, sz_qry, len);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, _T(""), sz_qry, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_qry, -1);
 
 		xsfree(sz_qry);
 		sz_qry = NULL;
@@ -233,11 +233,11 @@ ONERROR:
 	if (sz_qry)
 		xsfree(sz_qry);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: 错误]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: 错误]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_num, sz_err, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_num, sz_err, -1);
 	}
 
 	return 0;
@@ -263,15 +263,15 @@ bool_t _invoke_auth_refresh(const https_block_t* pb, oau_block_t* pos)
 
 	TRY_CATCH;
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: AUTH]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: AUTH]"), -1);
 
 		len = xhttp_get_url_query(pb->http, NULL, MAX_LONG);
 		sz_qry = xsalloc(len + 1);
 		len = xhttp_get_url_query(pb->http, sz_qry, len);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, _T(""), sz_qry, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_qry, -1);
 
 		xsfree(sz_qry);
 		sz_qry = NULL;
@@ -334,11 +334,11 @@ ONERROR:
 	if (sz_qry)
 		xsfree(sz_qry);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: 错误]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: 错误]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_num, sz_err, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_num, sz_err, -1);
 	}
 
 	return 0;
@@ -363,11 +363,11 @@ void _invoke_error(const https_block_t* pb, oau_block_t* pos)
 
 	xhttp_send_error(pb->http, HTTP_CODE_500, HTTP_CODE_500_TEXT, sz_code, sz_error, -1);
 
-	if (pb->plog)
+	if (pb->plg)
 	{
-		(*pb->plog->pf_log_title)(pb->plog->stm, _T("[OAUTH: 错误]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->log, _T("[OAUTH: 错误]"), -1);
 
-		(*pb->plog->pf_log_error)(pb->plog->stm, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
 	}
 }
 
