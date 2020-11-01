@@ -42,6 +42,8 @@ LICENSE.GPL3 for more details.
 
 #define IS_THREAD_MODE(mode)		(compare_text(mode,-1,_T("thread"),-1,1) == 0)
 
+#define XTIMERD_WAIT_TIMO         (500)
+#define XTIMERD_MUTEX_NAME		_T("xtimerd")
 
 #define XTIMERD_STATE_STOPPED	0
 #define XTIMERD_STATE_RUNNING	1
@@ -51,14 +53,15 @@ LICENSE.GPL3 for more details.
 #define XTIMERD_ATTR_MODE		_T("mode")
 #define XTIMERD_ATTR_MODULE		_T("module")
 #define XTIMERD_ATTR_TASK		_T("task")
+#define XTIMERD_ATTR_HINT		_T("hint")
 #define XTIMERD_ATTR_FIRSTTIME	_T("first-time")
 #define XTIMERD_ATTR_LASTTIME	_T("last-time")
-#define XTIMERD_ATTR_MONTHHINT	_T("month-hint")
-#define XTIMERD_ATTR_WEEKHINT	_T("week-hint")
-#define XTIMERD_ATTR_DAYHINT	_T("day-hint")
-#define XTIMERD_ATTR_HOURHINT	_T("hour-hint")
-#define XTIMERD_ATTR_MINUTEHINT	_T("minute-hint")
-#define XTIMERD_ATTR_SECONDHINT	_T("second-hint")
+#define XTIMERD_ATTR_MONTH		_T("month")
+#define XTIMERD_ATTR_WEEK		_T("week")
+#define XTIMERD_ATTR_DAY		_T("day")
+#define XTIMERD_ATTR_HOUR		_T("hour")
+#define XTIMERD_ATTR_MINUTE		_T("minute")
+#define XTIMERD_ATTR_SECOND		_T("second")
 
 typedef struct _timer_hint{
 	xdate_t fdate;

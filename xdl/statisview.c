@@ -516,13 +516,13 @@ void draw_statis_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	gw = (gn) ? (float)((yw - yh)/ gn) : 0;
 
 	parse_xpen_from_style(&xp, style);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
@@ -532,12 +532,12 @@ void draw_statis_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	parse_xface_from_style(&xa, style);
 
 	parse_xfont_from_style(&xf, style);
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_msk))
 	{
 		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}

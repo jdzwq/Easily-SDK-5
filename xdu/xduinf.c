@@ -192,6 +192,7 @@ void xdu_impl_context_graphic(if_context_t* pif)
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
 	pif->pf_gdi_draw_bitmap = _gdiplus_draw_bitmap;
 	pif->pf_gdi_draw_image = _gdiplus_draw_image;
+	pif->pf_gdi_draw_picture = _gdiplus_draw_picture;
 #endif
 #ifdef XDU_SUPPORT_CONTEXT_REGION
 	pif->pf_gdi_fill_region = _gdiplus_fill_region;

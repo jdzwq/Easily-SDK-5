@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 typedef struct _xtimerd_param_t{
 	res_timer_t timer;
-	
+
 	timer_hint hint;
 	tchar_t mode[INT_LEN + 1];
 	tchar_t module[PATH_LEN + 1];
@@ -39,6 +39,7 @@ typedef struct _xtimerd_param_t{
 }xtimerd_param_t;
 
 EXP_API res_queue_t g_queue;
+EXP_API res_mutx_t	g_mutex;
 
 void	xtimerd_start(void);
 

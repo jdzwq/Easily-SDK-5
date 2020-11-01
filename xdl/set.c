@@ -264,7 +264,7 @@ static const tchar_t* _set_parse(set_t** ppv, dword_t* psize, const tchar_t* tok
 			size = 0;
 			tmp = token;
 			token = _set_parse(&pa, &size, token, len - total);
-			total += (token - tmp);
+			total += (int)(token - tmp);
 			b = 1;
 			break;
 		case _T(' '):

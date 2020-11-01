@@ -108,7 +108,7 @@ bool_t _mak_loc_week(xdate_t* pxd)
 	t.tm_sec = pxd->sec;
 
 	timep = mktime(&t);
-	p = localtime(&timep);
+	p = gmtime(&timep);
 
 	pxd->wday = p->tm_wday;
 

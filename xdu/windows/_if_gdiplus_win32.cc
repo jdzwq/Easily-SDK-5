@@ -2216,6 +2216,50 @@ void _gdiplus_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* ppt)
 	delete pi;
 }
 
+void _gdiplus_draw_picture(visual_t rdc, const tchar_t* fname, const tchar_t* clr, const xrect_t* prt)
+{
+	win32_context_t* ctx = (win32_context_t*)rdc;
+	HDC hDC = (HDC)(ctx->context);
+
+	Image* pi = new Image(fname);
+	if (!pi)
+		return;
+
+	int srcw = pi->GetWidth();
+	int srch = pi->GetHeight();
+
+	ImageAttributes iab;
+
+	if (!is_null(clr))
+	{
+		xcolor_t xc_high, xc_low;
+
+		parse_xcolor(&xc_high, GDI_ATTR_RGB_WHITE);
+
+		parse_xcolor(&xc_low, clr);
+
+		iab.SetColorKey(Color(xc_low.r, xc_low.g, xc_low.b), Color(xc_high.r, xc_high.g, xc_high.b));
+	}
+
+	RECT rt;
+	rt.left = prt->x;
+	rt.top = prt->y;
+	rt.right = prt->x + prt->w;
+	rt.bottom = prt->y + prt->h;
+
+	_adjust_rect(&rt, srcw, srch, GDI_ATTR_TEXT_ALIGN_CENTER, GDI_ATTR_TEXT_ALIGN_CENTER);
+
+	DPtoLP(hDC, (LPPOINT)&rt, 2);
+
+	Gdiplus::Graphics gh(hDC);
+
+	gh.SetPageUnit(UnitPixel);
+
+	gh.DrawImage(pi, Rect(rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top), 0, 0, srcw, srch, UnitPixel, &iab);
+
+	delete pi;
+}
+
 /*void _gdiplus_draw_ico(visual_t rdc, res_ico_t icon, const xrect_t* prt)
 {
 	HDC hDC = (HDC)(ctx->context);

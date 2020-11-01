@@ -311,8 +311,7 @@ xdb_t STDCALL db_open_dsn(const tchar_t* dsnfile)
 	}
 
 	pdb = (db_t*)xmem_alloc(sizeof(db_t));
-	pdb->head.dbt = _DB_ODBC;
-	pdb->head.cbs = sizeof(db_t);
+	pdb->head.tag = _DB_ODBC;
 	pdb->env = d_env;
 	pdb->dbc = d_dbc;
 
@@ -368,8 +367,7 @@ xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid
 	}
 
 	pdb = (db_t*)xmem_alloc(sizeof(db_t));
-	pdb->head.dbt = _DB_ODBC;
-	pdb->head.cbs = sizeof(db_t);
+	pdb->head.tag = _DB_ODBC;
 	pdb->env = d_env;
 	pdb->dbc = d_dbc;
 
@@ -392,7 +390,7 @@ void STDCALL db_close(xdb_t db)
 {
 	db_t* pdb = (db_t*)db;
 	
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	if (pdb->stm)
 	{
@@ -463,7 +461,7 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 	else
 		xsprintf(sqlstr, _T("SELECT CONVERT(varchar(24),DATEADD(day, %d, GETDATE()) ,120) as DT"), diff);
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 
@@ -533,7 +531,7 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 	int tklen;
 	bool_t uni = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	if (sqllen < 0)
 		sqllen = xslen(sqlstr);
@@ -635,7 +633,7 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 	LINKPTR rlk;
 	int len,rs;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 
@@ -887,7 +885,7 @@ bool_t STDCALL db_fetch(xdb_t db, LINKPTR grid)
 	SQLINTEGER len;
 	SQLRETURN rt;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 
@@ -982,7 +980,7 @@ bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 	tchar_t token[MAX_SQL_NAME];
 	int nRet;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 	
@@ -1097,7 +1095,7 @@ bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 
 	LINKPTR clk;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 
@@ -1485,7 +1483,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 	int ind = 0;
 	int len;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 
@@ -1738,7 +1736,7 @@ bool_t STDCALL db_call_json(xdb_t db, const tchar_t* pname, LINKPTR json)
 	int ind = 0;
 	int len;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	TRY_CATCH;
 
@@ -1970,7 +1968,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	int len_esc = 0;
 	int len_buf = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	if (!pdb->stm)
 	{
@@ -2179,7 +2177,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	tchar_t* sz_esc = NULL;
 	int len_esc = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(stream != NULL);
 
@@ -2414,7 +2412,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	string_t vs = NULL;
 	string_t vs_sql = NULL;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(stream != NULL);
 
@@ -2548,7 +2546,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlstr)
 	stream_t d_stream = NULL;
 	if_bio_t bio = { 0 };
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(dom != NULL);
 
@@ -2665,7 +2663,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 	stream_t d_stream = NULL;
 	if_bio_t bio = { 0 };
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(dom != NULL);
 
@@ -2772,7 +2770,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	stream_t d_stream = NULL;
 	if_bio_t bio = { 0 };
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(stream != NULL);
 
@@ -2884,7 +2882,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 	if_bio_t bio = { 0 };
 	dword_t size = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(stream != NULL);
 
@@ -3000,7 +2998,7 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 	dword_t size = 0;
 	tchar_t* buf = NULL;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(varstr != NULL);
 
@@ -3124,7 +3122,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 
 	int size = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	XDL_ASSERT(varstr != NULL);
 
@@ -3207,7 +3205,7 @@ int STDCALL db_rows(xdb_t db)
 {
 	db_t* pdb = (db_t*)db;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	return pdb->rows;
 }
@@ -3216,7 +3214,7 @@ int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 {
 	db_t* pdb = (db_t*)db;
 
-	XDL_ASSERT(db && db->dbt == _DB_ODBC);
+	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
 	max = (max < ERR_LEN) ? max : ERR_LEN;
 	if (buf)

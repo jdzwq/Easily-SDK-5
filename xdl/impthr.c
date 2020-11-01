@@ -280,6 +280,17 @@ res_mutx_t	mutex_open(const tchar_t* mname)
 	return mx;
 }
 
+void mutex_close(res_mutx_t mx)
+{
+	if_thread_t* pit;
+
+	pit = PROCESS_THREAD_INTERFACE;
+
+	XDL_ASSERT(pit != NULL);
+
+	(*pit->pf_mutex_close)(mx);
+}
+
 wait_t mutex_lock(res_mutx_t mx, int ms)
 {
 	if_thread_t* pit;
@@ -353,6 +364,17 @@ res_sema_t	semap_open(const tchar_t* mname)
 	}
 
 	return mx;
+}
+
+void semap_close(res_sema_t mx)
+{
+	if_thread_t* pit;
+
+	pit = PROCESS_THREAD_INTERFACE;
+
+	XDL_ASSERT(pit != NULL);
+
+	(*pit->pf_semap_close)(mx);
 }
 
 wait_t semap_lock(res_sema_t mx, int ms)

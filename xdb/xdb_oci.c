@@ -325,8 +325,7 @@ xdb_t STDCALL db_open(const tchar_t* svc, const tchar_t* dbn, const tchar_t* uid
 	}
 
 	pdb = (db_t*)xmem_alloc(sizeof(db_t));
-	pdb->head.dbt = _DB_OCI;
-	pdb->head.cbs = sizeof(db_t);
+	pdb->head.tag = _DB_OCI;
 
 	pdb->env = env;
 	pdb->srv = srv;

@@ -22,11 +22,6 @@ int main(int argc, char* argv[])
 
 	TRY_CATCH;
 
-	get_loc_date(&dt);
-	format_datetime(&dt, sz_date);
-	xsprintf(token, _T("Process timer attached at %s\r\n"), sz_date);
-	xportm_log_info(token, -1);
-
 	for (i = 1; i < argc; i++)
 	{
 		if (a_is_null(argv[i]))
@@ -43,12 +38,17 @@ int main(int argc, char* argv[])
 
 	get_param_item(param, _T("task"), xp.task, RES_LEN);
 
+	get_loc_date(&dt);
+	format_datetime(&dt, sz_date);
+	xsprintf(token, _T("Process timer %s attached at %s\r\n"), xp.task, sz_date);
+	xportm_log_info(token, -1);
+
 	xtimers_dispatch(&xp);
 
 	get_loc_date(&dt);
 	format_datetime(&dt, sz_date);
 
-	xsprintf(token, _T("Process timer detached at %s \r\n"), sz_date);
+	xsprintf(token, _T("Process timer %s detached at %s \r\n"), xp.task, sz_date);
 	xportm_log_info(token, -1);
 
 	END_CATCH;
@@ -61,7 +61,7 @@ ONERROR:
 
 	get_last_error(errcode, errtext, ERR_LEN);
 
-	xsprintf(token, _T("Process timer detached at %s with error %s\r\n"), sz_date, errtext);
+	xsprintf(token, _T("Process timer %s detached at %s with error %s\r\n"),xp.task, sz_date, errtext);
 	xportm_log_info(token, -1);
 
 	xdl_process_uninit();

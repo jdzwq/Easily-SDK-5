@@ -114,9 +114,7 @@ void hand_shapebox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	(*ifv.pf_draw_rect)(ifv.ctx, NULL, &xb, &xr);
 
-	draw_shape(pif, &xp, (xrect_t*)&(pif->rect), ptd->shape);
-
-	
+	draw_shape(pif, &xp, &xb, (xrect_t*)&(pif->rect), ptd->shape);
 
 	end_canvas_paint(canv, dc, pxr);
 	

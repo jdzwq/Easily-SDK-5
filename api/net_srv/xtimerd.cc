@@ -30,6 +30,7 @@ LICENSE.GPL3 for more details.
 #include "xtimers.h"
 
 res_queue_t g_queue = NULL;
+res_mutx_t g_mutex = NULL;
 
 LINKPTR g_stack = NULL;
 
@@ -51,18 +52,16 @@ void STDCALL thread_timer_proc(void* param, unsigned char wait)
 	xtimers_dispatch(&xp);
 
 	_calc_duretime(&ptimer->hint, &dt, &dure);
-	if (!dure)
-		dure = 1000;
 
 	alter_timer(g_queue, ptimer->timer, dure, dure);
 
 	format_datetime(&dt, sz_date);
-	xsprintf(token, _T("Thread timer attached at %s\r\n"), sz_date);
+	xsprintf(token, _T("Thread timer %s attached at %s\r\n"), xp.task, sz_date);
 	xportm_log_info(token, -1);
 
 	get_loc_date(&dt);
 	format_datetime(&dt, sz_date);
-	xsprintf(token, _T("Thread timer detached at %s\r\n"), sz_date);
+	xsprintf(token, _T("Thread timer %s detached at %s\r\n"), xp.task, sz_date);
 	xportm_log_info(token, -1);
 
 	xdl_thread_uninit(0);
@@ -87,12 +86,11 @@ void STDCALL process_timer_proc(void* param, unsigned char wait)
 	}
 	else
 	{
-		xportm_log_info(_T("Process timer create falied\r\n"), -1);
+		xsprintf(cmdline, _T("Process timer %s create falied\r\n"), ptimer->task);
+		xportm_log_info(cmdline, -1);
 	}
 
 	_calc_duretime(&ptimer->hint, &dt, &dure);
-	if (!dure)
-		dure = 1000;
 
 	alter_timer(g_queue, ptimer->timer, dure, dure);
 
@@ -136,6 +134,16 @@ void xtimerd_start()
 		return;
 	}
 
+	g_mutex = mutex_create(XTIMERD_MUTEX_NAME);
+	if (!g_mutex)
+	{
+		destroy_xml_doc(ptr_cfg);
+
+		destroy_timer_queue(g_queue);
+		g_queue = NULL;
+		return;
+	}
+
 	g_stack = create_stack_table();
 
 	LINKPTR nlk_config = get_xml_dom_node(ptr_cfg);
@@ -148,69 +156,79 @@ void xtimerd_start()
 			
 			xszero(sz_file, PATH_LEN);
 
-			LINKPTR nlk_child = get_dom_first_child_node(nlk_timer);
+			LINKPTR nlk_hint, nlk_child = get_dom_first_child_node(nlk_timer);
 			while (nlk_child)
 			{
-				if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_FIRSTTIME, -1, 1) == 0)
+				if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_HINT, -1, 1) == 0)
 				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					if (is_null(sz_time))
-						get_loc_date(&(ptimer->hint.fdate));
-					else
-						parse_datetime(&(ptimer->hint.fdate), sz_time);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_LASTTIME, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					if (is_null(sz_time))
+					nlk_hint = get_dom_first_child_node(nlk_child);
+
+					while (nlk_hint)
 					{
-						get_loc_date(&(ptimer->hint.ldate));
-						plus_years(&(ptimer->hint.ldate), 1);
+						if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_FIRSTTIME, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							if (is_null(sz_time))
+								get_loc_date(&(ptimer->hint.fdate));
+							else
+								parse_datetime(&(ptimer->hint.fdate), sz_time);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_LASTTIME, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							if (is_null(sz_time))
+							{
+								get_loc_date(&(ptimer->hint.ldate));
+								plus_years(&(ptimer->hint.ldate), 1);
+							}
+							else
+								parse_datetime(&(ptimer->hint.ldate), sz_time);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_MONTH, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							ptimer->hint.n_mon = parse_intset(sz_time, -1, NULL, MAX_LONG);
+							ptimer->hint.p_mon = (int*)xmem_alloc(ptimer->hint.n_mon * sizeof(int));
+							parse_intset(sz_time, -1, ptimer->hint.p_mon, ptimer->hint.n_mon);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_WEEK, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							ptimer->hint.n_week = parse_intset(sz_time, -1, NULL, MAX_LONG);
+							ptimer->hint.p_week = (int*)xmem_alloc(ptimer->hint.n_week * sizeof(int));
+							parse_intset(sz_time, -1, ptimer->hint.p_week, ptimer->hint.n_week);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_DAY, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							ptimer->hint.n_day = parse_intset(sz_time, -1, NULL, MAX_LONG);
+							ptimer->hint.p_day = (int*)xmem_alloc(ptimer->hint.n_day * sizeof(int));
+							parse_intset(sz_time, -1, ptimer->hint.p_day, ptimer->hint.n_day);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_HOUR, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							ptimer->hint.n_hour = parse_intset(sz_time, -1, NULL, MAX_LONG);
+							ptimer->hint.p_hour = (int*)xmem_alloc(ptimer->hint.n_hour * sizeof(int));
+							parse_intset(sz_time, -1, ptimer->hint.p_hour, ptimer->hint.n_hour);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_MINUTE, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							ptimer->hint.n_min = parse_intset(sz_time, -1, NULL, MAX_LONG);
+							ptimer->hint.p_min = (int*)xmem_alloc(ptimer->hint.n_min * sizeof(int));
+							parse_intset(sz_time, -1, ptimer->hint.p_min, ptimer->hint.n_min);
+						}
+						else if (compare_text(get_dom_node_name_ptr(nlk_hint), -1, XTIMERD_ATTR_SECOND, -1, 1) == 0)
+						{
+							get_dom_node_text(nlk_hint, sz_time, DATE_LEN);
+							ptimer->hint.n_sec = parse_intset(sz_time, -1, NULL, MAX_LONG);
+							ptimer->hint.p_sec = (int*)xmem_alloc(ptimer->hint.n_sec * sizeof(int));
+							parse_intset(sz_time, -1, ptimer->hint.p_sec, ptimer->hint.n_sec);
+						}
+
+						nlk_hint = get_dom_next_sibling_node(nlk_hint);
 					}
-					else
-						parse_datetime(&(ptimer->hint.ldate), sz_time);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_MONTHHINT, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					ptimer->hint.n_mon = parse_intset(sz_time, -1, NULL, MAX_LONG);
-					ptimer->hint.p_mon = (int*)xmem_alloc(ptimer->hint.n_mon * sizeof(int));
-					parse_intset(sz_time, -1, ptimer->hint.p_mon, ptimer->hint.n_mon);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_WEEKHINT, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					ptimer->hint.n_week = parse_intset(sz_time, -1, NULL, MAX_LONG);
-					ptimer->hint.p_week = (int*)xmem_alloc(ptimer->hint.n_week * sizeof(int));
-					parse_intset(sz_time, -1, ptimer->hint.p_week, ptimer->hint.n_week);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_DAYHINT, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					ptimer->hint.n_day = parse_intset(sz_time, -1, NULL, MAX_LONG);
-					ptimer->hint.p_day = (int*)xmem_alloc(ptimer->hint.n_day * sizeof(int));
-					parse_intset(sz_time, -1, ptimer->hint.p_day, ptimer->hint.n_day);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_HOURHINT, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					ptimer->hint.n_hour = parse_intset(sz_time, -1, NULL, MAX_LONG);
-					ptimer->hint.p_hour = (int*)xmem_alloc(ptimer->hint.n_hour * sizeof(int));
-					parse_intset(sz_time, -1, ptimer->hint.p_hour, ptimer->hint.n_hour);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_MINUTEHINT, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					ptimer->hint.n_min = parse_intset(sz_time, -1, NULL, MAX_LONG);
-					ptimer->hint.p_min = (int*)xmem_alloc(ptimer->hint.n_min * sizeof(int));
-					parse_intset(sz_time, -1, ptimer->hint.p_min, ptimer->hint.n_min);
-				}
-				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_SECONDHINT, -1, 1) == 0)
-				{
-					get_dom_node_text(nlk_child, sz_time, DATE_LEN);
-					ptimer->hint.n_sec = parse_intset(sz_time, -1, NULL, MAX_LONG);
-					ptimer->hint.p_sec = (int*)xmem_alloc(ptimer->hint.n_sec * sizeof(int));
-					parse_intset(sz_time, -1, ptimer->hint.p_sec, ptimer->hint.n_sec);
 				}
 				else if (compare_text(get_dom_node_name_ptr(nlk_child), -1, XTIMERD_ATTR_MODE, -1, 1) == 0)
 					get_dom_node_text(nlk_child, ptimer->mode, INT_LEN);
@@ -241,14 +259,20 @@ void xtimerd_start()
 	{
 		xtimerd_param_t* ptimer = (xtimerd_param_t*)peek_stack_node(g_stack, i);
 
+		dure = 0;
 		_calc_duretime(&ptimer->hint, &dt, &dure);
-		if (!dure)
-			dure = 1000;
 
-		if (compare_text(ptimer->mode,-1,_T("thread"),-1,1) == 0)
-			ptimer->timer = create_timer(g_queue, dure, dure, thread_timer_proc, (void*)ptimer);
+		if (dure)
+		{
+			if (compare_text(ptimer->mode, -1, _T("thread"), -1, 1) == 0)
+				ptimer->timer = create_timer(g_queue, dure, dure, thread_timer_proc, (void*)ptimer);
+			else
+				ptimer->timer = create_timer(g_queue, dure, dure, process_timer_proc, (void*)ptimer);
+		}
 		else
-			ptimer->timer = create_timer(g_queue, dure, dure, process_timer_proc, (void*)ptimer);
+		{
+			ptimer->timer = NULL;
+		}
 
 		thread_sleep(100);
 	}
@@ -287,6 +311,9 @@ void xtimerd_stop()
 
 	destroy_timer_queue(g_queue);
 	g_queue = NULL;
+
+	mutex_destroy(XTIMERD_MUTEX_NAME, g_mutex);
+	g_mutex = NULL;
 
 	destroy_stack_table(g_stack);
 	g_stack = NULL;

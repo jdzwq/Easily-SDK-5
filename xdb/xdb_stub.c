@@ -231,8 +231,7 @@ xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid
 	db_stub_t* pdb;
 
 	pdb = (db_stub_t*)xmem_alloc(sizeof(db_stub_t));
-	pdb->head.dbt = _DB_STUB;
-	pdb->head.cbs = sizeof(db_stub_t);
+	pdb->head.tag = _DB_STUB;
 
 	xsncpy(pdb->sz_srv, srv, PATH_LEN);
 	xsncpy(pdb->sz_dbn, dbn, RES_LEN);
@@ -246,7 +245,7 @@ void STDCALL db_close(xdb_t db)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 	
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 	
 	if (pdb->http)
 	{
@@ -270,7 +269,7 @@ bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_date)
 	tchar_t sz_hmac[HMAC_LEN + 1] = { 0 };
 	tchar_t sz_diff[INT_LEN + 1] = { 0 };
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -355,7 +354,7 @@ bool_t STDCALL db_schema(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	link_t_ptr slk_row,slk,clk;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -498,7 +497,7 @@ bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 
 	stream_t stream;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -631,7 +630,7 @@ bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 	string_t vs = NULL;
 	dword_t size;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -787,7 +786,7 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 	byte_t* buf = NULL;
 	dword_t dw;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	if (sqllen < 0)
 		sqllen = xslen(sqlstr);
@@ -937,7 +936,7 @@ bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 	int n_from, n_to, n_all;
 	bool_t b_continue = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1092,7 +1091,7 @@ bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 	int n_from, n_to, n_all;
 	bool_t b_continue = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1208,7 +1207,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 	int n_from, n_to, n_all;
 	bool_t b_continue = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1324,7 +1323,7 @@ bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	tchar_t frange[META_LEN + 1] = { 0 };
 	int n_from, n_to, n_all;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1424,7 +1423,7 @@ bool_t STDCALL db_call_func(xdb_t db, link_t_ptr func)
 	link_t_ptr ptr_func = NULL;
 	link_t_ptr ptr_xml = NULL;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1539,7 +1538,7 @@ bool_t STDCALL db_call_json(xdb_t db, const tchar_t* procname, link_t_ptr json)
 	byte_t* buf = NULL;
 	dword_t len;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1652,7 +1651,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 	stream_t stm_http = NULL;
 	bool_t b_continue = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1763,7 +1762,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 	stream_t stm_http = NULL;
 	bool_t b_continue = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1857,7 +1856,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 
 	stream_t stm = NULL;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -1982,7 +1981,7 @@ bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 
 	stream_t stm = NULL;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -2086,7 +2085,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
 	link_t_ptr ptr_xml = NULL;
 	dword_t n_size = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -2204,7 +2203,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
 	link_t_ptr ptr_xml = NULL;
 	bool_t b_continue = 0;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	TRY_CATCH;
 
@@ -2282,7 +2281,7 @@ int STDCALL db_rows(xdb_t db)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	return pdb->rows;
 }
@@ -2291,7 +2290,7 @@ int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
-	XDL_ASSERT(db && db->dbt == _DB_STUB);
+	XDL_ASSERT(db && db->tag == _DB_STUB);
 
 	max = (max < ERR_LEN) ? max : ERR_LEN;
 	if (buf)

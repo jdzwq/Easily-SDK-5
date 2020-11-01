@@ -42,6 +42,12 @@ EXP_API void rgb_to_hsl(unsigned char r, unsigned char g, unsigned char b, short
 
 EXP_API void hsl_to_rgb(short h, short s, short l, unsigned char* pr, unsigned char* pg, unsigned char* pb);
 
+EXP_API bool_t is_whiteness_xcolor(const xcolor_t* pxc);
+
+EXP_API bool_t is_blackness_xcolor(const xcolor_t* pxc);
+
+EXP_API bool_t is_grayness_xcolor(const xcolor_t* pxc);
+
 EXP_API void parse_xcolor(xcolor_t* pxc, const tchar_t* token);
 
 EXP_API void format_xcolor(const xcolor_t* pxc, tchar_t* buf);

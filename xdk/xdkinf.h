@@ -192,6 +192,7 @@ typedef void (*PF_CRITI_LEAVE)(res_crit_t);
 typedef res_mutx_t	(*PF_MUTEX_CREATE)(const tchar_t*);
 typedef void		(*PF_MUTEX_DESTROY)(const tchar_t*, res_mutx_t);
 typedef res_mutx_t	(*PF_MUTEX_OPEN)(const tchar_t*);
+typedef void		(*PF_MUTEX_CLOSE)(res_mutx_t);
 typedef wait_t(*PF_MUTEX_LOCK)(res_mutx_t, int);
 typedef void		(*PF_MUTEX_UNLOCK)(res_mutx_t);
 #endif
@@ -199,6 +200,7 @@ typedef void		(*PF_MUTEX_UNLOCK)(res_mutx_t);
 typedef res_sema_t(*PF_SEMAP_CREATE)(const tchar_t*, int max);
 typedef void(*PF_SEMAP_DESTROY)(const tchar_t*, res_sema_t);
 typedef res_sema_t(*PF_SEMAP_OPEN)(const tchar_t*);
+typedef void(*PF_SEMAP_CLOSE)(res_sema_t);
 typedef wait_t(*PF_SEMAP_LOCK)(res_sema_t, int);
 typedef void(*PF_SEMAP_UNLOCK)(res_sema_t);
 #endif
@@ -236,6 +238,7 @@ typedef struct _if_thread_t{
 	PF_MUTEX_CREATE		pf_mutex_create;
 	PF_MUTEX_DESTROY	pf_mutex_destroy;
 	PF_MUTEX_OPEN		pf_mutex_open;
+	PF_MUTEX_CLOSE		pf_mutex_close;
 	PF_MUTEX_LOCK		pf_mutex_lock;
 	PF_MUTEX_UNLOCK		pf_mutex_unlock;
 #endif
@@ -243,6 +246,7 @@ typedef struct _if_thread_t{
 	PF_SEMAP_CREATE		pf_semap_create;
 	PF_SEMAP_DESTROY	pf_semap_destroy;
 	PF_SEMAP_OPEN		pf_semap_open;
+	PF_SEMAP_CLOSE		pf_semap_close;
 	PF_SEMAP_LOCK		pf_semap_lock;
 	PF_SEMAP_UNLOCK		pf_semap_unlock;
 #endif

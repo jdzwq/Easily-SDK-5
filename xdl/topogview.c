@@ -125,7 +125,7 @@ void draw_topog(const if_drawing_t* pif, link_t_ptr ptr)
 	style = get_topog_style_ptr(ptr);
 	
 	parse_xbrush_from_style(&xb, style);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
@@ -137,7 +137,7 @@ void draw_topog(const if_drawing_t* pif, link_t_ptr ptr)
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 	lighten_xbrush(&xb_dot, DEF_SOFT_LIGHTEN);
 
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_msk))
 	{
 		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}

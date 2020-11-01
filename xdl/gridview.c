@@ -649,13 +649,13 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	style = get_grid_style_ptr(ptr);
 
 	parse_xbrush_from_style(&xb, style);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -663,12 +663,12 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	parse_xface_from_style(&xa, style);
 
 	parse_xfont_from_style(&xf, style);
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_msk))
 	{
 		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
@@ -719,7 +719,7 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		xrBar.fy = th + py;
 		xrBar.fh = ch;
 
-		draw_shape(pif, &xp, &xrBar, shape);
+		draw_shape(pif, &xp, &xb_bar, &xrBar, shape);
 
 		if (b_showcheck && get_rowset_checked(ptr))
 		{
@@ -749,14 +749,14 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 				parse_xface_from_style(&xa, style);
 
 				parse_xfont_from_style(&xf, style);
-				if (!b_print)
+				if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 				{
 					format_xcolor(&pif->mode.clr_txt, xf.color);
 				}
 
 				xrBar.fw = get_col_width(clk);
 
-				draw_shape(pif, &xp, &xrBar, shape);
+				draw_shape(pif, &xp, &xb_bar, &xrBar, shape);
 
 				token = get_col_title_ptr(clk);
 				(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xrBar, token, -1);
@@ -787,7 +787,7 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 			}
 			i++;
 
-			draw_shape(pif, &xp, &xrBar, shape);
+			draw_shape(pif, &xp, &xb_bar, &xrBar, shape);
 
 			if (b_showcheck && get_row_checked(rlk))
 			{
@@ -809,7 +809,7 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	{
 		xrBar.fy += xrBar.fh;
 
-		draw_shape(pif, &xp, &xrBar, shape);
+		draw_shape(pif, &xp, &xb_bar, &xrBar, shape);
 
 		xmem_copy((void*)&xrCheck, (void*)&xrBar, sizeof(xrect_t));
 		ft_center_rect(&xrCheck, DEF_SMALL_ICON, DEF_SMALL_ICON);
@@ -852,7 +852,7 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			default_xfont(&xf);
 			parse_xfont_from_style(&xf, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
@@ -876,13 +876,13 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 
 			if (n_stepdraw && b_tag)
 			{
-				draw_shape(pif, &xp, &xrCell, shape);
+				draw_shape(pif, &xp, &xb_step, &xrCell, shape);
 				if (n_stepdraw == 1)
 					b_tag = 0;
 			}
 			else
 			{
-				draw_shape(pif, &xp, &xrCell, shape);
+				draw_shape(pif, &xp, NULL, &xrCell, shape);
 				if (n_stepdraw == 1)
 					b_tag = 1;
 			}
@@ -914,7 +914,7 @@ void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			xrCell.fy += xrCell.fh;
 
-			draw_shape(pif, &xp, &xrCell, shape);
+			draw_shape(pif, &xp, &xb_bar, &xrCell, shape);
 
 			token = get_col_sum_text_ptr(clk);
 

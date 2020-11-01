@@ -156,6 +156,7 @@ LOC_API void		_criti_leave(res_crit_t cr);
 LOC_API res_mutx_t	_mutex_create(const tchar_t* mname);
 LOC_API void		_mutex_destroy(const tchar_t* mname, res_mutx_t mtx);
 LOC_API res_mutx_t	_mutex_open(const tchar_t* mname);
+LOC_API void		_mutex_close(res_mutx_t mtx);
 LOC_API wait_t		_mutex_lock(res_mutx_t mtx, int milsec);
 LOC_API void		_mutex_unlock(res_mutx_t mtx);
 #endif
@@ -164,6 +165,7 @@ LOC_API void		_mutex_unlock(res_mutx_t mtx);
 LOC_API res_sema_t	_semap_create(const tchar_t* sname, int max);
 LOC_API void		_semap_destroy(const tchar_t* sname, res_sema_t sem);
 LOC_API res_sema_t	_semap_open(const tchar_t* sname);
+LOC_API void		_semap_close(res_sema_t sem);
 LOC_API wait_t		_semap_lock(res_sema_t sem, int milsec);
 LOC_API void		_semap_unlock(res_sema_t sem);
 #endif

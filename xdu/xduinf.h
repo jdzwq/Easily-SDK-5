@@ -116,6 +116,7 @@ typedef void(*PF_GDI_DRAW_PIE)(visual_t, const xpen_t*, const xbrush_t*, const x
 typedef void(*PF_GDI_DRAW_ARROW)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*, const xspan_t*, double);
 typedef void(*PF_GDI_DRAW_TEXT)(visual_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
 typedef void(*PF_GDI_TEXT_OUT)(visual_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
+typedef void(*PF_GDI_DRAW_PICTURE)(visual_t, const tchar_t*, const tchar_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_IMAGE)(visual_t, bitmap_t, const tchar_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_BITMAP)(visual_t, bitmap_t, const xpoint_t*);
 typedef void(*PF_GDI_DRAW_ICON)(visual_t, const xcolor_t*, const xrect_t*, const tchar_t*);
@@ -203,6 +204,7 @@ typedef struct _if_context_t{
 	PF_GDI_DRAW_TEXT		pf_gdi_draw_text;
 	PF_GDI_TEXT_OUT			pf_gdi_text_out;
 	PF_GDI_FILL_REGION		pf_gdi_fill_region;
+	PF_GDI_DRAW_PICTURE		pf_gdi_draw_picture;
 	PF_GDI_DRAW_IMAGE		pf_gdi_draw_image;
 	PF_GDI_DRAW_BITMAP		pf_gdi_draw_bitmap;
 	PF_GDI_DRAW_ICON		pf_gdi_draw_icon;

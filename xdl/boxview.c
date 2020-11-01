@@ -188,7 +188,7 @@ void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pd
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -198,7 +198,7 @@ void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pd
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -447,13 +447,13 @@ void draw_timebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pt
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -776,7 +776,7 @@ void draw_listbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -954,7 +954,7 @@ void draw_dropbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -997,7 +997,7 @@ void draw_pushbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* te
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -1007,7 +1007,7 @@ void draw_pushbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* te
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -1086,7 +1086,7 @@ void draw_radiobox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -1096,13 +1096,13 @@ void draw_radiobox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	default_xbrush(&xb);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
@@ -1196,7 +1196,7 @@ void draw_checkbox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -1206,13 +1206,13 @@ void draw_checkbox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	default_xbrush(&xb);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
@@ -1312,13 +1312,13 @@ void draw_slidebox(const if_drawing_t* pif, const xfont_t* pxf, int pos)
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -1446,7 +1446,7 @@ void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -1456,7 +1456,7 @@ void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur)
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -1576,13 +1576,13 @@ void draw_navibox(const if_drawing_t* pif, const xfont_t* pxf, const NAVISTATE* 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -1710,13 +1710,13 @@ void draw_vertbox(const if_drawing_t* pif, const xfont_t* pxf)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -1834,13 +1834,13 @@ void draw_horzbox(const if_drawing_t* pif, const xfont_t* pxf)
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -2101,13 +2101,13 @@ void draw_iconbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* la
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	default_xpen(&xp);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
@@ -2432,7 +2432,7 @@ void draw_wordsbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr, 
 	xmem_copy((void*)&xf, (void*)pxf, sizeof(xfont_t));
 
 	b_print = (pif->tag == _CANVAS_PRINTER) ? 1 : 0;
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}

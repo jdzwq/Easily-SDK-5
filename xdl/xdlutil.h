@@ -23,5 +23,7 @@
 #include "fileinf.h"
 #include "stream.h"
 
+#include "dbinf.h"
+
 
 #endif //_XDLUTIL_H

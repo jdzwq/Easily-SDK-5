@@ -25,9 +25,6 @@ LICENSE.GPL3 for more details.
 
 #include "plot_api.h"
 
-#define CONENTYPE_IS_JSON(token)	((compare_text(token, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0)? 1 : 0)
-#define CONENTYPE_IS_UNKNOWN(token)	((is_null(token) || compare_text(token, 3, _T("*/*"), -1, 1) == 0)? 1 : 0)
-
 #define DEF_COLOR_TABLE		_T("LightSlateGray,CornflowerBlue,DarkSalmon,ForestGreen,Indigo,LightSteelBlue,Orange,PapayaWhip")
 #define DEF_PLOT_STYLE		_T("font-size:10;stroke-width:1;fill-color:WhiteSmoke;stroke-color:DimGray;fill-style:gradient;gradient:vert;")
 
@@ -159,11 +156,11 @@ bool_t _invoke_ploting(const https_block_t* pb, plot_block_t* pd)
 	else
 	{
 		xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
-		if (CONENTYPE_IS_UNKNOWN(sz_encoding))
+		if (CONTENTTYPE_IS_ANY(sz_encoding))
 		{
 			xhttp_get_request_content_type(pb->http, sz_encoding, RES_LEN);
 		}
-		b_json = CONENTYPE_IS_JSON(sz_encoding);
+		b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
 		if (b_json)
 		{

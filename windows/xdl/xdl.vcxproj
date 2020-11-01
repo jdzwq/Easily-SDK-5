@@ -186,6 +186,7 @@
     <ClInclude Include="..\..\xdl\calendarview.h" />
     <ClInclude Include="..\..\xdl\coding.h" />
     <ClInclude Include="..\..\xdl\dataing.h" />
+    <ClInclude Include="..\..\xdl\dbinf.h" />
     <ClInclude Include="..\..\xdl\diagramdoc.h" />
     <ClInclude Include="..\..\xdl\diagramview.h" />
     <ClInclude Include="..\..\xdl\eventdoc.h" />
@@ -378,6 +379,7 @@
     <ClCompile Include="..\..\xdl\calendarview.c" />
     <ClCompile Include="..\..\xdl\coding.c" />
     <ClCompile Include="..\..\xdl\dataing.c" />
+    <ClCompile Include="..\..\xdl\dbinf.c" />
     <ClCompile Include="..\..\xdl\diagramdoc.c" />
     <ClCompile Include="..\..\xdl\diagramview.c" />
     <ClCompile Include="..\..\xdl\eventdoc.c" />

@@ -247,7 +247,7 @@ link_t_ptr insert_trie_node(link_t_ptr ptr, const tchar_t* key, int len, tchar_t
 		if (*(ti.sub) == kfeed)
 			ti.sub++;
 
-		len -= (ti.sub - key);
+		len -= (int)(ti.sub - key);
 		key = ti.sub;
 		_find_trie_node(&(ptc->lkSibling), key, len, kfeed, &ti);
 	}

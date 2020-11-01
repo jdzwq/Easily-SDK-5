@@ -958,12 +958,21 @@ void draw_image_raw(visual_t rdc, const ximage_t* pxi, const xrect_t* pxr)
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	bmp = load_bitmap_from_ximage(rdc, (ximage_t*)pxi, pxr->w, pxr->h);
-
-	if (bmp)
+	if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_URL, -1, 1) == 0)
 	{
-		(*pif->pf_gdi_draw_image)(rdc, bmp, pxi->color, pxr);
-		destroy_bitmap(bmp);
+		if (!is_null(pxi->source))
+		{
+			(*pif->pf_gdi_draw_picture)(rdc, pxi->source, pxi->color, pxr);
+		}
+	}
+	else
+	{
+		bmp = load_bitmap_from_ximage(rdc, (ximage_t*)pxi, pxr->w, pxr->h);
+		if (bmp)
+		{
+			(*pif->pf_gdi_draw_image)(rdc, bmp, pxi->color, pxr);
+			destroy_bitmap(bmp);
+		}
 	}
 }
 

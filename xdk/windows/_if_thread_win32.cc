@@ -205,6 +205,11 @@ res_mutx_t _mutex_open(const tchar_t* mname)
 	return OpenMutex(MUTEX_ALL_ACCESS, FALSE, mname);
 }
 
+void _mutex_close(res_mutx_t mtx)
+{
+	CloseHandle(mtx);
+}
+
 wait_t _mutex_lock(res_mutx_t mtx, int milsec)
 {
 	DWORD dw;
@@ -250,6 +255,11 @@ void _semap_destroy(const tchar_t* sname, res_sema_t sem)
 res_sema_t _semap_open(const tchar_t* sname)
 {
 	return OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, sname);
+}
+
+void _semap_close(res_sema_t sem)
+{
+	CloseHandle(sem);
 }
 
 wait_t _semap_lock(res_sema_t sem, int milsec)

@@ -2749,6 +2749,9 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 				tk++;
 				tlen++;
 			}
+			if (tlen > RES_LEN)
+				return 0;
+
 			xsncpy(ekey, tname, tlen);
 			ekey[tlen] = _T('\0');
 
@@ -2772,6 +2775,9 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 			
 			tk++;
 		}
+
+		if (total > PATH_LEN)
+			return 0;
 	}
 
 	path[total] = _T('\0');

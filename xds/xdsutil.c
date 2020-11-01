@@ -167,6 +167,21 @@ void lighten_xcolor(xcolor_t* clr, int n)
 	hsl_to_rgb(h, s, l, &clr->r, &clr->g, &clr->b);
 }
 
+bool_t is_whiteness_xcolor(const xcolor_t* pxc)
+{
+	return (pxc->r == 255 && pxc->g == 255 && pxc->b == 255) ? 1 : 0;
+}
+
+bool_t is_blackness_xcolor(const xcolor_t* pxc)
+{
+	return (pxc->r == 0 && pxc->g == 0 && pxc->b == 0) ? 1 : 0;
+}
+
+bool_t is_grayness_xcolor(const xcolor_t* pxc)
+{
+	return (pxc->r == 169 && pxc->g == 169 && pxc->b == 169) ? 1 : 0;
+}
+
 void parse_xcolor(xcolor_t* pxc, const tchar_t* color)
 {
 	int len;
@@ -293,7 +308,7 @@ void default_xpen(xpen_t* pxp)
 	a_xszero((schar_t*)pxp, sizeof(xpen_t));
 	
 	xscpy(pxp->style, GDI_ATTR_STROKE_STYLE_SOLID);
-	xscpy(pxp->color, GDI_ATTR_RGB_LIGHTGRAY);
+	xscpy(pxp->color, GDI_ATTR_RGB_GRAY);
 	xscpy(pxp->size, _T("1"));
 	xscpy(pxp->opacity, GDI_ATTR_OPACITY_SOFT);
 }
@@ -312,7 +327,7 @@ void default_xfont(xfont_t* pxf)
 	a_xszero((schar_t*)pxf, sizeof(xfont_t));
 
 	xscpy(pxf->style, GDI_ATTR_FONT_STYLE_NORMAL);
-	xscpy(pxf->size, GDI_ATTR_FONT_SIZE_TEXT);
+	xscpy(pxf->size, GDI_ATTR_FONT_SIZE_SYSTEM);
 	xscpy(pxf->weight, GDI_ATTR_FONT_WEIGHT_NORMAL);
 	xscpy(pxf->color, GDI_ATTR_RGB_DARKBLACK);
 	xscpy(pxf->family, _T(""));
@@ -787,6 +802,11 @@ void parse_ximage_from_source(ximage_t* pxi, const tchar_t* token)
 		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_BMP);
 		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_BMP);
 	}
+	else if (xsnicmp(token, GDI_ATTR_IMAGE_TYPE_URL, xslen(GDI_ATTR_IMAGE_TYPE_URL)) == 0)
+	{
+		xscpy(pxi->type, GDI_ATTR_IMAGE_TYPE_URL);
+		pxi->source = token + xslen(GDI_ATTR_IMAGE_TYPE_URL);
+	}
 	else
 	{
 		xscpy(pxi->type, _T(""));
@@ -1229,7 +1249,7 @@ bool_t is_zero_double(double d)
 void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext)
 {
 	const tchar_t* token;
-	int extlen = 0;
+	int n, extlen = 0;
 
 	if (is_null(pathfile))
 		return;
@@ -1241,9 +1261,12 @@ void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* 
 
 		if (*token == _T('.'))
 		{
-			if (ext)
-				xscpy(ext, token + 1);
 			extlen = xslen(token);
+			if (ext)
+			{
+				n = (extlen - 1 < RES_LEN) ? (extlen - 1) : RES_LEN;
+				xsncpy(ext, token + 1, n);
+			}
 			break;
 		}
 	}
@@ -1256,21 +1279,34 @@ void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* 
 	if (file)
 	{
 		if (*token == _T('\\') || *token == _T('/'))
-			xsncpy(file, token + 1, xslen(token + 1) - extlen);
+		{
+			n = xslen(token + 1) - extlen;
+			if (n > PATH_LEN) n = PATH_LEN;
+
+			xsncpy(file, token + 1, n);
+		}
 		else
-			xsncpy(file, token, xslen(token) - extlen);
+		{
+			n = xslen(token) - extlen;
+			if (n > PATH_LEN) n = PATH_LEN;
+
+			xsncpy(file, token, n);
+		}
 	}
 
 	if (path)
 	{
-		xsncpy(path, pathfile, (int)(token - pathfile));
+		n = (int)(token - pathfile);
+		if (n > PATH_LEN) n = PATH_LEN;
+
+		xsncpy(path, pathfile, n);
 	}
 }
 
 void split_file(const tchar_t* pathfile, tchar_t* path, tchar_t* file)
 {
 	const tchar_t* token;
-	int extlen = 0;
+	int n;
 
 	if (is_null(pathfile))
 		return;
@@ -1285,13 +1321,26 @@ void split_file(const tchar_t* pathfile, tchar_t* path, tchar_t* file)
 	if (file)
 	{
 		if (*token == _T('\\') || *token == _T('/'))
-			xsncpy(file, token + 1, xslen(token + 1) - extlen);
+		{
+			n = xslen(token + 1);
+			if (n > PATH_LEN) n = PATH_LEN;
+
+			xsncpy(file, token + 1, n);
+		}
 		else
-			xsncpy(file, token, xslen(token) - extlen);
+		{
+			n = xslen(token);
+			if (n > PATH_LEN) n = PATH_LEN;
+
+			xsncpy(file, token, n);
+		}
 	}
 
 	if (path)
 	{
-		xsncpy(path, pathfile, (int)(token - pathfile));
+		n = (int)(token - pathfile);
+		if (n > PATH_LEN) n = PATH_LEN;
+
+		xsncpy(path, pathfile, n);
 	}
 }

@@ -175,6 +175,13 @@ EXP_API void mutex_destroy(const tchar_t* mname, res_mutx_t mx);
 EXP_API res_mutx_t	mutex_open(const tchar_t* mname);
 
 /*
+@FUNCTION mutex_close: close meutex system object.
+@INPUT res_mutx_t mx: the mutex system resource handle.
+@RETURN void: none.
+*/
+EXP_API void mutex_close(res_mutx_t mx);
+
+/*
 @FUNCTION mutex_lock: occupy a mutex object.
 @INPUT res_mutx_t mx: the mutex system resource handle.
 @INPUT int ms: millisecond for wait,it can be negative, if so, waiting will be infinity untill mutex object occupied.
@@ -215,6 +222,13 @@ EXP_API void semap_destroy(const tchar_t* mname, res_sema_t mx);
 @RETURN res_sema_t: if the semaphone exists then return sytem resource handle, otherwise return NULL.
 */
 EXP_API res_sema_t	semap_open(const tchar_t* mname);
+
+/*
+@FUNCTION semap_close: close semaphone system object.
+@INPUT res_sema_t mx: the semaphone system resource handle.
+@RETURN void: none.
+*/
+EXP_API void semap_close(res_sema_t mx);
 
 /*
 @FUNCTION semap_lock: the semaphone P operation.

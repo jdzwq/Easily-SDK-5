@@ -343,6 +343,64 @@ typedef struct _if_drawing_t{
 }if_drawing_t;
 
 
+typedef bool_t(STDCALL *PF_DB_PARSE_DSN)(const tchar_t*, tchar_t*, int, tchar_t*, int, tchar_t*, int, tchar_t*, int);
+typedef xdb_t(STDCALL *PF_DB_OPEN)(const tchar_t*, const tchar_t*, const tchar_t*, const tchar_t*);
+typedef xdb_t(STDCALL *PF_DB_OPEN_DSN)(const tchar_t*);
+typedef void(STDCALL *PF_DB_CLOSE)(xdb_t);
+typedef bool_t(STDCALL *PF_DB_EXEC)(xdb_t, const tchar_t*, int);
+typedef bool_t(STDCALL *PF_DB_SELECT)(xdb_t, link_t_ptr, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_SCHEMA)(xdb_t, link_t_ptr, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_FETCH)(xdb_t, link_t_ptr);
+typedef bool_t(STDCALL *PF_DB_UPDATE)(xdb_t, link_t_ptr);
+typedef bool_t(STDCALL *PF_DB_DATETIME)(xdb_t, int, tchar_t*);
+typedef int(STDCALL *PF_DB_ROWS)(xdb_t);
+typedef int(STDCALL *PF_DB_ERROR)(xdb_t, tchar_t*, int);
+typedef bool_t(STDCALL *PF_DB_CALL_FUNC)(xdb_t, link_t_ptr);
+typedef bool_t(STDCALL *PF_DB_CALL_JSON)(xdb_t, const tchar_t*, link_t_ptr);
+typedef bool_t(STDCALL *PF_DB_EXPORT)(xdb_t, stream_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_IMPORT)(xdb_t, stream_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_BATCH)(xdb_t, stream_t);
+typedef bool_t(STDCALL *PF_DB_WRITE_BLOB)(xdb_t, stream_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_READ_BLOB)(xdb_t, stream_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_WRITE_CLOB)(xdb_t, string_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_READ_CLOB)(xdb_t, string_t, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_WRITE_XDOC)(xdb_t, link_t_ptr, const tchar_t*);
+typedef bool_t(STDCALL *PF_DB_READ_XDOC)(xdb_t, link_t_ptr, const tchar_t*);
+
+typedef int(*PF_DB_CALL_ARGV)(xdb_t, const tchar_t*, const tchar_t*, ...);
+
+typedef struct _if_xdb_t{
+	res_modu_t lib;
+	xdb_t xdb;
+
+	PF_DB_PARSE_DSN	pf_db_parse_dsn;
+	PF_DB_OPEN_DSN	pf_db_open_dsn;
+	PF_DB_OPEN		pf_db_open;
+	PF_DB_CLOSE		pf_db_close;
+
+	PF_DB_EXEC		pf_db_exec;
+	PF_DB_SELECT	pf_db_select;
+	PF_DB_SCHEMA	pf_db_schema;
+	PF_DB_FETCH		pf_db_fetch;
+	PF_DB_UPDATE	pf_db_update;
+	PF_DB_CALL_FUNC	pf_db_call_func;
+	PF_DB_CALL_JSON	pf_db_call_json;
+	PF_DB_EXPORT	pf_db_export;
+	PF_DB_IMPORT	pf_db_import;
+	PF_DB_BATCH		pf_db_batch;
+	PF_DB_WRITE_BLOB	pf_db_write_blob;
+	PF_DB_READ_BLOB		pf_db_read_blob;
+	PF_DB_WRITE_CLOB	pf_db_write_clob;
+	PF_DB_READ_CLOB		pf_db_read_clob;
+	PF_DB_WRITE_XDOC	pf_db_write_xdoc;
+	PF_DB_READ_XDOC		pf_db_read_xdoc;
+
+	PF_DB_DATETIME	pf_db_datetime;
+	PF_DB_ROWS		pf_db_rows;
+	PF_DB_ERROR		pf_db_error;
+
+}if_xdb_t;
+
 #endif /*XDL_SUPPORT_VIEW*/
 
 #endif	/* _XDLINF_H */

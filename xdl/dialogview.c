@@ -125,19 +125,19 @@ void draw_dialog(const if_drawing_t* pif, link_t_ptr ptr)
 
 	parse_xfont_from_style(&xf, style);
 	parse_xface_from_style(&xa, style);
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
@@ -195,14 +195,14 @@ void draw_dialog(const if_drawing_t* pif, link_t_ptr ptr)
 
 		parse_xfont_from_style(&xf, style);
 		parse_xface_from_style(&xa, style);
-		if (!b_print)
+		if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 		{
 			format_xcolor(&pif->mode.clr_txt, xf.color);
 		}
 
 		if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_SHAPEBOX, -1, 1) == 0)
 		{
-			draw_shape(pif, &xp, &xr, get_dialog_item_text_ptr(ilk));
+			draw_shape(pif, &xp, &xb, &xr, get_dialog_item_text_ptr(ilk));
 		}
 		else if (compare_text(get_dialog_item_class_ptr(ilk), -1, DOC_DIALOG_STATICBOX, -1, 1) == 0)
 		{

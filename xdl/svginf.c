@@ -84,6 +84,12 @@ void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 
 	pif->pf_get_visual_interface = svg_get_visual_interface;
 	pif->pf_get_visual_handle = svg_get_canvas_visual;
+
+	parse_xcolor(&pif->mode.clr_bkg, GDI_ATTR_RGB_WHITE);
+	parse_xcolor(&pif->mode.clr_frg, GDI_ATTR_RGB_GRAY);
+	parse_xcolor(&pif->mode.clr_txt, GDI_ATTR_RGB_BLACK);
+	parse_xcolor(&pif->mode.clr_msk, GDI_ATTR_RGB_WHITE);
+	parse_xcolor(&pif->mode.clr_ico, GDI_ATTR_RGB_BLACK);
 }
 
 void svg_get_visual_interface(visual_t visual, if_drawing_t* pif)

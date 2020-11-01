@@ -282,35 +282,35 @@ void draw_proper(const if_drawing_t* pif, link_t_ptr ptr)
 	parse_xface_from_style(&xa, style);
 
 	parse_xfont_from_style(&xf, style);
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
 
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_msk))
 	{
 		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}
 
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_ico))
 	{
 		xmem_copy((void*)&xc, (void*)&pif->mode.clr_ico, sizeof(xcolor_t));
 	}
 	else
 	{
-		parse_xcolor(&xc, xp.color);
+		parse_xcolor(&xc, xf.color);
 	}
 
 	xmem_copy((void*)&xb_bar, (void*)&xb, sizeof(xbrush_t));
@@ -391,7 +391,7 @@ void draw_proper(const if_drawing_t* pif, link_t_ptr ptr)
 
 			if (!is_null(shape))
 			{
-				draw_shape(pif, &xp, &xr_draw, shape);
+				draw_shape(pif, &xp, NULL, &xr_draw, shape);
 			}
 
 			//val shape
@@ -402,7 +402,7 @@ void draw_proper(const if_drawing_t* pif, link_t_ptr ptr)
 
 			if (!is_null(shape))
 			{
-				draw_shape(pif, &xp, &xr_draw, shape);
+				draw_shape(pif, &xp, NULL, &xr_draw, shape);
 			}
 
 			//key image

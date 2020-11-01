@@ -359,6 +359,18 @@ typedef struct _acp_head{
 	sword_t base;
 }acp_head, *acp_t;
 
+/*define db type*/
+#define _DB_UNKNOWN		0x00
+#define _DB_STUB		0x01
+#define _DB_ODBC		0x02
+#define _DB_OCI			0x03
+#define _DB_MYSQL		0x04
+
+typedef struct _db_head{
+	byte_t tag;
+	byte_t lru[3];
+}xdb_head, *xdb_t;
+
 #define VV_NULL			0x00
 #define VV_BOOL			0x01
 #define VV_BYTE			0x02

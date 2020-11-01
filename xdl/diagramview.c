@@ -124,19 +124,19 @@ void draw_diagram(const if_drawing_t* pif, link_t_ptr ptr)
 
 	parse_xfont_from_style(&xf, style);
 	parse_xface_from_style(&xa, style);
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
 
 	parse_xpen_from_style(&xp, style);
-	if (!b_print)
+	if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 	{
 		format_xcolor(&pif->mode.clr_frg, xp.color);
 	}
 
 	parse_xbrush_from_style(&xb, style);
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 	{
 		format_xcolor(&pif->mode.clr_bkg, xb.color);
 	}
@@ -156,7 +156,7 @@ void draw_diagram(const if_drawing_t* pif, link_t_ptr ptr)
 
 		parse_xfont_from_style(&xf, style);
 		parse_xface_from_style(&xa, style);
-		if (!b_print)
+		if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 		{
 			format_xcolor(&pif->mode.clr_txt, xf.color);
 		}

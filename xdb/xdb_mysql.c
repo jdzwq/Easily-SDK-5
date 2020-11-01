@@ -374,8 +374,7 @@ xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid
 	mysql_set_character_set(ctx, "utf8");
 
 	pdb = (db_t*)xmem_alloc(sizeof(db_t));
-	pdb->head.dbt = _DB_MYSQL;
-	pdb->head.cbs = sizeof(db_t);
+	pdb->head.tag = _DB_MYSQL;
 
 	pdb->ctx = ctx;
 
@@ -1663,7 +1662,7 @@ bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
     
     LINKPTR flk;
     
-    XDL_ASSERT(db && db->dbt == _DB_ODBC);
+    XDL_ASSERT(db && db->tag == _DB_MYSQL);
     
     TRY_CATCH;
     

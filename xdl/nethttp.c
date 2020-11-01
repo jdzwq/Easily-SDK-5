@@ -804,7 +804,7 @@ void xhttp_split_object(const tchar_t* sz_object, tchar_t* sz_site, tchar_t* sz_
 
 		if (sz_file)
 		{
-			xscpy(sz_file, sz_object);
+			xsncpy(sz_file, sz_object, PATH_LEN);
 			if (sz_file[0] == _T('\\'))
 				sz_file[0] = _T('/');
 		}
@@ -813,6 +813,7 @@ void xhttp_split_object(const tchar_t* sz_object, tchar_t* sz_site, tchar_t* sz_
 	
 	if (sz_site)
 	{
+		len = (len < RES_LEN) ? len : RES_LEN;
 		xsncpy(sz_site, sz_object, len);
 		if (sz_site[0] == _T('\\'))
 			sz_site[0] = _T('/');

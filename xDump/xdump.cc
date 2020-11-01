@@ -1,4 +1,4 @@
-// dicmdump.cpp : 定义控制台应用程序的入口点。
+﻿// dicmdump.cpp : 定义控制台应用程序的入口点。
 //
 
 #include <stdio.h>
@@ -44,8 +44,11 @@ int main(int argc, char* argv[])
 			xscpy(sz_dst, argv[i]);
 	}
 
-	stream_t stm_src;
-	file_t xf_src = xfile_open(NULL, sz_src, FILE_OPEN_READ);
+	stream_t stm_src = NULL;
+	if_bio_t bio_src = { 0 };
+	if_bio_t bio_dst = { 0 };
+
+	if_fio_t* xf_src = xfile_open(NULL, sz_src, FILE_OPEN_READ);
 	if (xf_src)
 	{
 		if (is_null(sz_tag))
@@ -53,7 +56,8 @@ int main(int argc, char* argv[])
 			split_path(sz_src, NULL, NULL, sz_tag);
 		}
 
-		stm_src = stream_alloc(xfile_bio(xf_src));
+		get_bio_interface(xf_src->fd, &bio_src);
+		stm_src = stream_alloc(&bio_src);
 
 		if (is_null(sz_dst))
 		{
@@ -61,7 +65,8 @@ int main(int argc, char* argv[])
 
 			if (std)
 			{
-				stream_t stm_dst = stream_alloc(std);
+				get_bio_interface(std, &bio_dst);
+				stream_t stm_dst = stream_alloc(&bio_dst);
 				stream_set_encode(stm_dst, DEF_MBS);
 
 				if (compare_text(sz_tag, -1, _T("med"), -1, 1) == 0)
@@ -92,10 +97,11 @@ int main(int argc, char* argv[])
 			}
 			else if (compare_text(sz_ext, -1, _T("txt"), -1, 1) == 0)
 			{
-				file_t xf_dst = xfile_open(NULL, sz_dst, FILE_OPEN_CREATE);
+				if_fio_t* xf_dst = xfile_open(NULL, sz_dst, FILE_OPEN_CREATE);
 				if (xf_dst)
 				{
-					stream_t stm_dst = stream_alloc(xfile_bio(xf_dst));
+					get_bio_interface(xf_dst->fd, &bio_dst);
+					stream_t stm_dst = stream_alloc(&bio_dst);
 					stream_set_encode(stm_dst, DEF_MBS);
 
 					if (compare_text(sz_tag, -1, _T("med"), -1, 1) == 0)

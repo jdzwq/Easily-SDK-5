@@ -37,7 +37,7 @@ void test_heap()
     (*if_heap.pf_heap_destroy)(heap);
 }
 
-void test_thread()
+void test_thread_criti()
 {
     if_thread_t if_thread = { 0 };
     
@@ -45,13 +45,42 @@ void test_thread()
     xdk_impl_thread_criti(&if_thread);
 
     res_crit_t cri = (*if_thread.pf_criti_create)();
+
     (*if_thread.pf_criti_enter)(cri);
-    //bool_t b = (*if_thread.pf_criti_query)(cri);
     (*if_thread.pf_criti_leave)(cri);
-    
-    //b = (*if_thread.pf_criti_query)(cri);
-    (*if_thread.pf_criti_enter)(cri);
+
+    (*if_thread.pf_criti_query)(cri);
+    (*if_thread.pf_criti_leave)(cri);
+
     (*if_thread.pf_criti_destroy)(cri);
+}
+
+void test_thread_mutex()
+{
+    if_thread_t if_thread = { 0 };
+    
+    xdk_impl_thread(&if_thread);
+    xdk_impl_thread_mutex(&if_thread);
+
+    res_mutx_t mux1 = (*if_thread.pf_mutex_create)(_T("mutex"));
+
+    res_mutx_t mux2 = (*if_thread.pf_mutex_open)(_T("mutex"));
+
+    int rt = (*if_thread.pf_mutex_lock)(mux2, 500);
+    if(rt == WAIT_RET)
+        (*if_thread.pf_mutex_unlock)(mux2);
+
+    rt = (*if_thread.pf_mutex_lock)(mux2, 500);
+    if(rt == WAIT_RET)
+     (*if_thread.pf_mutex_unlock)(mux2);
+
+    (*if_thread.pf_mutex_close)(mux2);
+
+    rt = (*if_thread.pf_mutex_lock)(mux1, 500);
+    if(rt == WAIT_RET)
+     (*if_thread.pf_mutex_unlock)(mux1);
+
+    (*if_thread.pf_mutex_destroy)(_T("mutex"), mux1);
 }
 
 /*void test_date()
@@ -702,7 +731,9 @@ int main(int argc, const char * argv[]) {
     
     // insert code here...
     
-    //test_thread();
+    //test_thread_criti();
+
+    test_thread_mutex();
 
     //test_date();
     
@@ -742,7 +773,7 @@ int main(int argc, const char * argv[]) {
     
     //test_widget();
 
-    test_timer();
+    //test_timer();
     
     return 0;
 }

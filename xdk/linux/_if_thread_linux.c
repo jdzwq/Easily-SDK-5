@@ -272,6 +272,13 @@ void _mutex_destroy(const tchar_t* mname, res_mutx_t mtx)
     sem_unlink(mname);
 }
 
+void _mutex_close(res_mutx_t mtx)
+{
+    sem_t* psem = (sem_t*)mtx;
+    
+    sem_close(psem);
+}
+
 res_mutx_t _mutex_open(const tchar_t* mname)
 {
     sem_t* psem;
@@ -286,8 +293,18 @@ res_mutx_t _mutex_open(const tchar_t* mname)
 wait_t _mutex_lock(res_mutx_t mtx, int milsec)
 {
     sem_t* psem = (sem_t*)mtx;
-    
-    return (sem_wait(psem) < 0)? WAIT_TMO : WAIT_RET;
+    struct timespec ts = {0};
+    int rt;
+
+    ts.tv_nsec = milsec * 1000 * 1000;
+
+    rt = sem_timedwait(psem, &ts);
+    if(!rt)
+        return WAIT_RET;
+    else if(rt == ETIMEDOUT)
+        return WAIT_TMO;
+    else
+        return WAIT_ERR;
 }
 
 void _mutex_unlock(res_mutx_t mtx)
@@ -317,6 +334,13 @@ void _semap_destroy(const tchar_t* sname, res_sema_t sem)
     
     sem_close(psem);
     sem_unlink(sname);
+}
+
+void _semap_close(res_sema_t sem)
+{
+    sem_t* psem = (sem_t*)sem;
+    
+    sem_close(psem);
 }
 
 res_sema_t _semap_open(const tchar_t* sname)

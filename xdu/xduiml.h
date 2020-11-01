@@ -165,6 +165,7 @@ LOC_API void _gdiplus_draw_arrow(visual_t rdc, const xpen_t* pxp, const xbrush_t
 LOC_API void _gdiplus_draw_text(visual_t rdc, const xfont_t* pxf, const xface_t* pxa, const xrect_t* prt, const tchar_t* txt, int len);
 LOC_API void _gdiplus_text_out(visual_t rdc, const xfont_t* pxf, const xpoint_t* ppt, const tchar_t* txt, int len);
 #ifdef XDU_SUPPORT_CONTEXT_BITMAP
+LOC_API void _gdiplus_draw_picture(visual_t rdc, const tchar_t* fname, const tchar_t* clr, const xrect_t* prt);
 LOC_API void _gdiplus_draw_image(visual_t rdc, bitmap_t bmp, const tchar_t* clr, const xrect_t* prt);
 LOC_API void _gdiplus_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* ppt);
 #endif

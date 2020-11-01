@@ -297,7 +297,7 @@ void draw_images(const if_drawing_t* pif, link_t_ptr ptr)
 	xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 	xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 
-	if (!b_print)
+	if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 	{
 		format_xcolor(&pif->mode.clr_txt, xf.color);
 	}
@@ -315,7 +315,7 @@ void draw_images(const if_drawing_t* pif, link_t_ptr ptr)
 	else
 		pi = calc_images_items_per_row(ptr, pw);
 
-	if (!b_print)
+	if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_msk))
 	{
 		format_xcolor(&pif->mode.clr_msk, xi.color);
 	}

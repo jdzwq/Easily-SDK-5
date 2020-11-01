@@ -73,7 +73,7 @@
 #define GDI_ATTR_FONT_WEIGHT_BOLD		_T("700")
 
 #define GDI_ATTR_FONT_SIZE_FOOTER			_T("9")
-#define GDI_ATTR_FONT_SIZE_SYSTEM			_T("10")
+#define GDI_ATTR_FONT_SIZE_SYSTEM			_T("10.5")
 #define GDI_ATTR_FONT_SIZE_TEXT				_T("12")
 #define GDI_ATTR_FONT_SIZE_TITLE			_T("14")
 
@@ -115,6 +115,7 @@
 #define GDI_ATTR_IMAGE_TYPE_JPG		_T("data:image/jpg;base64,")
 #define GDI_ATTR_IMAGE_TYPE_PNG		_T("data:image/png;base64,")
 #define GDI_ATTR_IMAGE_TYPE_BMP		_T("data:image/bmp;base64,")
+#define GDI_ATTR_IMAGE_TYPE_URL		_T("url:")
 
 #define GDI_ATTR_REGION				_T("region")
 #define GDI_ATTR_REGION_RECT		_T("rect")

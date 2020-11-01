@@ -25,10 +25,6 @@ LICENSE.GPL3 for more details.
 
 #include "event_api.h"
 
-#define CONENTYPE_IS_JSON(token)	((compare_text(token, xslen(HTTP_HEADER_CONTENTTYPE_APPJSON), HTTP_HEADER_CONTENTTYPE_APPJSON, -1, 1) == 0)? 1 : 0)
-#define CONENTYPE_IS_UNKNOWN(token)	((is_null(token) || compare_text(token, 3, _T("*/*"), -1, 1) == 0)? 1 : 0)
-
-
 typedef struct _event_block_t{
 	secu_desc_t sd;
 
@@ -149,11 +145,11 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 	else
 	{
 		xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
-		if (CONENTYPE_IS_UNKNOWN(sz_encoding))
+		if (CONTENTTYPE_IS_ANY(sz_encoding))
 		{
 			xhttp_get_request_content_type(pb->http, sz_encoding, RES_LEN);
 		}
-		b_json = CONENTYPE_IS_JSON(sz_encoding);
+		b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
 		if (b_json)
 		{
@@ -366,11 +362,11 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 	}
 
 	xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
-	if (CONENTYPE_IS_UNKNOWN(sz_encoding))
+	if (CONTENTTYPE_IS_ANY(sz_encoding))
 	{
 		xhttp_get_request_content_type(pb->http, sz_encoding, RES_LEN);
 	}
-	b_json = CONENTYPE_IS_JSON(sz_encoding);
+	b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
 	hkb = tkb_create(pd->path, pd->topic);
 	if (!hkb)

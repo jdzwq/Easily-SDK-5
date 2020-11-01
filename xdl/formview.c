@@ -201,19 +201,24 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		if (!is_null(sz_shape))
 		{
 			parse_xpen_from_style(&xp, style);
-			if (!b_print)
+			if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 			{
 				format_xcolor(&pif->mode.clr_frg, xp.color);
 			}
 
-			parse_xpen_from_style(&xp, style);
-			draw_shape(pif, &xp, &xr, sz_shape);
+			parse_xbrush_from_style(&xb, style);
+			if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
+			{
+				format_xcolor(&pif->mode.clr_bkg, xb.color);
+			}
+
+			draw_shape(pif, &xp, &xb, &xr, sz_shape);
 		}
 		else if (b_design)
 		{
 			parse_xpen_from_style(&xp, style);
 			xscpy(xp.style, GDI_ATTR_STROKE_STYLE_DASHED);
-			if (!b_print)
+			if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 			{
 				format_xcolor(&pif->mode.clr_frg, xp.color);
 			}
@@ -228,7 +233,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 			xsprintf(sz_token, PAGENUM_GUID, page);
 			parse_xfont_from_style(&xf, style);
 			parse_xface_from_style(&xa, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
@@ -239,7 +244,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			if (get_field_iconic(flk))
 			{
-				if (!b_print)
+				if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 				{
 					xmem_copy((void*)&xc, (void*)(&pif->mode.clr_frg), sizeof(xcolor_t));
 				}
@@ -255,7 +260,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 			{
 				parse_xfont_from_style(&xf, style);
 				parse_xface_from_style(&xa, style);
-				if (!b_print)
+				if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 				{
 					format_xcolor(&pif->mode.clr_txt, xf.color);
 				}
@@ -265,7 +270,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_CODE, -1, 0) == 0)
 		{
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				xmem_copy((void*)&xc, (void*)(&pif->mode.clr_txt), sizeof(xcolor_t));
 			}
@@ -304,7 +309,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 			else
 			{
 				parse_xfont_from_style(&xf, style);
-				if (!b_print)
+				if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 				{
 					format_xcolor(&pif->mode.clr_txt, xf.color);
 				}
@@ -316,7 +321,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			parse_xfont_from_style(&xf, style);
 			parse_xface_from_style(&xa, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
@@ -343,7 +348,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 			if (!is_null(sz_text) && compare_text(sz_text, -1, get_field_value_ptr(flk), -1, 0) == 0)
 			{
 				parse_xfont_from_style(&xf, style);
-				if (!b_print)
+				if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 				{
 					format_xcolor(&pif->mode.clr_txt, xf.color);
 				}
@@ -355,7 +360,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		}
 		else if (compare_text(sz_class, -1, DOC_FORM_PHOTO, -1, 0) == 0)
 		{
-			if (!b_print && get_field_transparent(flk))
+			if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_msk) && get_field_transparent(flk))
 			{
 				format_xcolor(&pif->mode.clr_msk, xi.color);
 			}
@@ -379,7 +384,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 				parse_xface_from_style(&xa, style);
 				xscpy(xa.line_align, GDI_ATTR_TEXT_ALIGN_FAR);
 				xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
-				if (!b_print)
+				if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 				{
 					format_xcolor(&pif->mode.clr_txt, xf.color);
 				}
@@ -392,19 +397,19 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			parse_xfont_from_style(&xf, style);
 			parse_xface_from_style(&xa, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
 
 			parse_xpen_from_style(&xp, style);
-			if (!b_print)
+			if (!b_print && !is_grayness_xcolor(&pif->mode.clr_frg))
 			{
 				format_xcolor(&pif->mode.clr_frg, xp.color);
 			}
 
 			parse_xbrush_from_style(&xb, style);
-			if (!b_print)
+			if (!b_print && !is_whiteness_xcolor(&pif->mode.clr_bkg))
 			{
 				format_xcolor(&pif->mode.clr_bkg, xb.color);
 			}
@@ -428,7 +433,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			parse_xfont_from_style(&xf, style);
 			parse_xface_from_style(&xa, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
@@ -451,7 +456,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			parse_xfont_from_style(&xf, style);
 			parse_xface_from_style(&xa, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}
@@ -474,7 +479,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 		{
 			parse_xfont_from_style(&xf, style);
 			parse_xface_from_style(&xa, style);
-			if (!b_print)
+			if (!b_print && !is_blackness_xcolor(&pif->mode.clr_txt))
 			{
 				format_xcolor(&pif->mode.clr_txt, xf.color);
 			}

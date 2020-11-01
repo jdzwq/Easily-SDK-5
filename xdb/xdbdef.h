@@ -115,20 +115,6 @@ LICENSE.GPL3 for more details.
 
 #endif
 
-/*define db type*/
-typedef enum{
-	_DB_UNKNOWN = 0,
-	_DB_STUB = 1,
-	_DB_ODBC = 2,
-	_DB_OCI = 3,
-	_DB_MYSQL = 4
-}DB_TYPE;
-
-typedef struct _db_head{
-	sword_t dbt;
-	sword_t cbs;
-}xdb_head, *xdb_t;
-
 typedef xdb_t	XDB;
 
 #endif	/* _XDBDEF_H */

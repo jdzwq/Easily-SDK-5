@@ -594,10 +594,17 @@ void write_ximage_to_svg_node(link_t_ptr glk, const ximage_t* pxi, const xrect_t
 
 	if (pxi)
 	{
-		len = format_ximage_to_source(pxi, NULL, MAX_LONG);
-		data = xsalloc(len + 1);
-		format_ximage_to_source(pxi, data, len);
-		attach_dom_node_attr(glk, SVG_ATTR_IMAGE_HREF, data);
+		if (compare_text(pxi->type, -1, GDI_ATTR_IMAGE_TYPE_URL, -1, 1) == 0)
+		{
+			set_dom_node_attr(glk, SVG_ATTR_IMAGE_HREF, -1, pxi->source, -1);
+		}
+		else
+		{
+			len = format_ximage_to_source(pxi, NULL, MAX_LONG);
+			data = xsalloc(len + 1);
+			format_ximage_to_source(pxi, data, len);
+			attach_dom_node_attr(glk, SVG_ATTR_IMAGE_HREF, data);
+		}
 	}
 }
 

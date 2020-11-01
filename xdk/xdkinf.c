@@ -158,6 +158,7 @@ void xdk_impl_thread_mutex(if_thread_t* pif)
 	pif->pf_mutex_create = _mutex_create;
 	pif->pf_mutex_destroy = _mutex_destroy;
 	pif->pf_mutex_open = _mutex_open;
+	pif->pf_mutex_close = _mutex_close;
 	pif->pf_mutex_lock = _mutex_lock;
 	pif->pf_mutex_unlock = _mutex_unlock;
 }
@@ -168,6 +169,7 @@ void xdk_impl_thread_semap(if_thread_t* pif)
 	pif->pf_semap_create = _semap_create;
 	pif->pf_semap_destroy = _semap_destroy;
 	pif->pf_semap_open = _semap_open;
+	pif->pf_semap_close = _semap_close;
 	pif->pf_semap_lock = _semap_lock;
 	pif->pf_semap_unlock = _semap_unlock;
 }

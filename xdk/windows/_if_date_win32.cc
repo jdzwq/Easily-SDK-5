@@ -92,7 +92,6 @@ bool_t _mak_loc_week(xdate_t* pxd)
 {
 	SYSTEMTIME st = { 0 };
 	FILETIME ft = { 0 };
-	FILETIME ft_utc = { 0 };
 
 	st.wYear = pxd->year;
 	st.wMonth = pxd->mon;
@@ -103,8 +102,7 @@ bool_t _mak_loc_week(xdate_t* pxd)
 	st.wMilliseconds = pxd->millsec;
 
 	SystemTimeToFileTime(&st, &ft);
-	LocalFileTimeToFileTime(&ft, &ft_utc);
-	FileTimeToSystemTime(&ft_utc, &st);
+	FileTimeToSystemTime(&ft, &st);
 
 	pxd->wday = st.wDayOfWeek;
 
