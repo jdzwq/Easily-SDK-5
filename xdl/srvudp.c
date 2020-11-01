@@ -366,6 +366,8 @@ void  xudp_stop(udp_listen_t* plis)
 	//disiable recive and send
 	socket_shutdown(plis->so, 2);
 
+	thread_yield();
+
 	socket_close(plis->so);
 
 	for (i = 0; i < plis->res; i++)
