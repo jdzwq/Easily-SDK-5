@@ -19,6 +19,7 @@ API_OBJS = $(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libwww_api.so.1.0 \
 	$(API_PATH)/libxdb_api.so.1.0 \
 	$(API_PATH)/libxdb_mysql.so.1.0 \
+	$(API_PATH)/libxdb_stub.so.1.0 \
 	$(API_PATH)/liboau_api.so.1.0 \
 	$(API_PATH)/libplot_api.so.1.0 \
 	$(API_PATH)/libevent_api.so.1.0
@@ -49,6 +50,7 @@ all:
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_mysql && make -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/xdb_stub && make -f xdb_stub.so.mk
 	cd $(CUR_PATH)/xdb_api && make -f xdb_api.so.mk
 	cd $(CUR_PATH)/oau_api && make -f oau_api.so.mk
 	cd $(CUR_PATH)/mqtt_api && make -f mqtt_api.so.mk
@@ -157,6 +159,7 @@ install:
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_mysql && make install -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/xdb_stub && make install -f xdb_stub.so.mk
 	cd $(CUR_PATH)/xdb_api && make install -f xdb_api.so.mk
 	cd $(CUR_PATH)/oau_api && make install -f oau_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make install -f tftp_api.so.mk
@@ -185,6 +188,7 @@ uninstall:
 	cd $(CUR_PATH)/loc_api && make uninstall -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make uninstall -f www_api.so.mk
 	cd $(CUR_PATH)/xdb_mysql && make uninstall -f xdb_mysql.so.mk
+	cd $(CUR_PATH)/xdb_stub && make uninstall -f xdb_stub.so.mk
 	cd $(CUR_PATH)/xdb_api && make uninstall -f xdb_api.so.mk
 	cd $(CUR_PATH)/oau_api && make uninstall -f oau_api.so.mk
 	cd $(CUR_PATH)/tftp_api && make uninstall -f tftp_api.so.mk

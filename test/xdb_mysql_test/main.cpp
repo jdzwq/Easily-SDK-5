@@ -26,10 +26,11 @@ PF_DB_IMPORT pf_db_import;
 PF_DB_EXPORT pf_db_export;
 PF_DB_CALL_FUNC pf_db_call_func;
 
-//#define dsnfile _T("./demo_stub.dsn")
+#define dsnfile _T("./demo_stub.dsn")
 //#define dsnfile _T("./demo_odbc.dsn")
-#define dsnfile _T("./demo_mysql.dsn")
+//#define dsnfile _T("./demo_mysql.dsn")
 //#define dsnfile _T("./demo_oci.dsn")
+
 
 #if defined(_OS_WINDOWS)
 #define xdblib	_T("xdb_stub.dll")
@@ -40,10 +41,10 @@ PF_DB_CALL_FUNC pf_db_call_func;
 //#define xdblib	_T("libxdb_mysql.dylib")
 #define xdblib	_T("../sbin/api/libxdb_mysql.dylib")
 #elif defined(_OS_LINUX)
-//#define xdblib	_T("libxdb_mysql.so")
-#define xdblib	_T("/usr/local/lib/libxdb_mysql.so")
+//#define xdblib	_T("libxdb_stub.so")
+#define xdblib	_T("/usr/local/lib/libxdb_stub.so")
+//#define xdblib	_T("/usr/local/lib/libxdb_mysql.so")
 #endif
-
 
 unsigned int STDCALL test_xdb_datetime(void* param)
 {
@@ -502,7 +503,8 @@ unsigned int STDCALL test_xdb_batch(void* param)
     int rows;
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
-    file_t file = NULL;
+    if_fio_t* file = NULL;
+    if_bio_t bio = {0};
     stream_t stream = NULL;
     dword_t size = 0;
     bool_t rt;
@@ -532,7 +534,8 @@ unsigned int STDCALL test_xdb_batch(void* param)
     
     size = xstol(fsize);
     
-    stream = stream_alloc(xfile_bio(file));
+    get_bio_interface(file->fd, &bio);
+    stream = stream_alloc(&bio);
     stream_set_encode(stream, parse_charset(enc));
 	stream_read_utfbom(stream, NULL);
 
@@ -602,7 +605,8 @@ unsigned int STDCALL test_xdb_export(void* param)
     int rows;
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
-    file_t file = NULL;
+    if_fio_t* file = NULL;
+    if_bio_t bio = {0};
     stream_t stream = NULL;
     dword_t size = 0;
     bool_t rt;
@@ -633,7 +637,8 @@ unsigned int STDCALL test_xdb_export(void* param)
         raise_user_error(_T("-1"), errtext);
     }
     
-    stream = stream_alloc(xfile_bio(file));
+    get_bio_interface(file->fd, &bio);
+    stream = stream_alloc(&bio);
     stream_set_encode(stream, _UTF8);
 	stream_write_utfbom(stream, NULL);
     
@@ -701,7 +706,8 @@ unsigned int STDCALL test_xdb_import(void* param)
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
     tchar_t enc[INT_LEN] = { 0 };
-    file_t file = NULL;
+    if_fio_t* file = NULL;
+    if_bio_t bio = {0};
     stream_t stream = NULL;
     dword_t size = 0;
     bool_t rt;
@@ -729,7 +735,8 @@ unsigned int STDCALL test_xdb_import(void* param)
         raise_user_error(_T("-1"), _T("open file falied\n"));
     }
     
-    stream = stream_alloc(xfile_bio(file));
+    get_bio_interface(file->fd, &bio);
+    stream = stream_alloc(&bio);
     stream_set_encode(stream, parse_charset(enc));
 
     stream_set_mode(stream, LINE_OPERA);
@@ -797,7 +804,8 @@ unsigned int STDCALL test_xdb_write_blob(void* param)
     xdb_t xdb = NULL;
     int rows;
     
-    file_t file = NULL;
+    if_fio_t* file = NULL;
+    if_bio_t bio = {0};
     stream_t stream = NULL;
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -826,7 +834,8 @@ unsigned int STDCALL test_xdb_write_blob(void* param)
         raise_user_error(_T("-1"), _T("open pig.jpeg falied"));
     }
     
-    stream = stream_alloc(xfile_bio(file));
+    get_bio_interface(file->fd, &bio);
+    stream = stream_alloc(&bio);
     stream_set_size(stream, xstol(fsize));
     
     rt = (*pf_db_write_blob)(xdb, stream, _T("insert into pigs (pid,pdoc) values ('1',?)"));
@@ -890,7 +899,8 @@ unsigned int STDCALL test_xdb_read_blob(void* param)
     xdb_t xdb = NULL;
     int rows;
     
-    file_t file = NULL;
+    if_fio_t* file = NULL;
+    if_bio_t bio = {0};
     stream_t stream = NULL;
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -914,7 +924,8 @@ unsigned int STDCALL test_xdb_read_blob(void* param)
         raise_user_error(_T("-1"), _T("open pig2.jpg falied"));
     }
     
-    stream = stream_alloc(xfile_bio(file));
+    get_bio_interface(file->fd, &bio);
+    stream = stream_alloc(&bio);
     
     rt = (*pf_db_read_blob)(xdb, stream, _T("select pdoc from pigs where pid = '1'"));
     if (!rt)
@@ -977,7 +988,7 @@ unsigned int STDCALL test_xdb_write_clob(void* param)
     xdb_t xdb = NULL;
     int rows;
     
-    file_t file = NULL;
+    if_fio_t* file = NULL;
     string_t vs = NULL;
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -1095,7 +1106,7 @@ unsigned int STDCALL test_xdb_read_clob(void* param)
     xdb_t xdb = NULL;
     int rows;
     
-    file_t file = NULL;
+    if_fio_t* file = NULL;
     string_t vs = NULL;
     
     tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -1386,7 +1397,7 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < maxt; i++)
     {
-        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_datetime, (void*)0);
+        thread_start(&pth[i], (PF_THREADFUNC)test_xdb_datetime, (void*)0);
         
         //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_schema, (void*)0);
                       
@@ -1398,7 +1409,7 @@ int main(int argc, char* argv[])
         
         //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_export, (void*)0);
         
-        thread_start(&pth[i], (PF_THREADFUNC)test_xdb_import, (void*)0);
+        //thread_start(&pth[i], (PF_THREADFUNC)test_xdb_import, (void*)0);
         
         thread_sleep(10);
     }

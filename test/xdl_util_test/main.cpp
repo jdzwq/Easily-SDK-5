@@ -153,6 +153,22 @@ void test_intset()
 	xmem_free(sa);
 }
 
+void test_words()
+{
+	const tchar_t* str = _T("这是ABC一段字体测试 文字");
+	int n,total = 0;
+
+	int len = xslen(str);
+
+	while(n = next_word((str + total), (len - total)))
+	{
+		_tprintf(_T("%d\n"), n);
+		total += n;
+	}
+
+	_tprintf(_T("len:%d total:%d\n"), len, total);
+}
+
 typedef struct _time_hint{
 	int n_mon;
 	int* p_mon;
@@ -360,7 +376,9 @@ int main(int argc, char* argv[])
 
 	//test_intset();
 
-	test_time_hint();
+	test_words();
+
+	//test_time_hint();
 
 	xdl_process_uninit();
 

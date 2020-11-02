@@ -865,8 +865,9 @@ static void _draw_multi_text_raw(visual_t view, const xfont_t* pxf, const xface_
 
 	g = svg_get_visual_doc(view);
 	m = 0;
-	while ((total < len) && (n = next_word((txt + total), (len - total)) >= 0))
+	while (total < len)
 	{
+		n = next_word((txt + total), (len - total));
 		m += n;
 		total += n;
 		w += (int)(px);
@@ -920,9 +921,10 @@ void svg_text_rect_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, co
 
 	font_metric_by_pt(xstof(pxf->size), &pm, &px);
 	h = (int)(px + 0.5);
-
-	while ((total < len) && (n = next_word((txt + total), (len - total)) >= 0))
+	m = 0;
+	while (total < len)
 	{
+		n = next_word((txt + total), (len - total));
 		m += n;
 		total += n;
 		w += (int)(px);
@@ -953,9 +955,10 @@ void svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 	font_metric_by_pt(xstof(pxf->size), &pm, &px);
 	fh = px;
-
-	while ((total < len) && (n = next_word((txt + total), (len - total)) >= 0))
+	m = 0;
+	while (total < len)
 	{
+		n = next_word((txt + total), (len - total));
 		m += n;
 		total += n;
 		fw += px;

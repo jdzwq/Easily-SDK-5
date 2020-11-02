@@ -1,9 +1,0 @@
-[MYSQL]
-DRIVER=MYSQL
-UID=root
-PWD=admin
-DATABASE=DEMO
-WSID=WORKSTATION
-APP=Operating System
-SERVER=172.16.190.190
-Description=demo

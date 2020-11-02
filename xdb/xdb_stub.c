@@ -1632,7 +1632,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
+bool_t STDCALL db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
@@ -1743,7 +1743,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
+bool_t STDCALL db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
@@ -1833,7 +1833,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
+bool_t STDCALL db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
@@ -1961,7 +1961,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
+bool_t STDCALL db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
@@ -2065,7 +2065,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _stdcall db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
+bool_t STDCALL db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
@@ -2184,7 +2184,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _stdcall db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
+bool_t STDCALL db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
 {
 	db_stub_t* pdb = (db_stub_t*)db;
 
