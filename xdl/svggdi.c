@@ -834,15 +834,60 @@ void svg_text_out(canvas_t canv, const xfont_t* pxf, const xpoint_t* ppt, const 
 	svg_text_out_raw(view, pxf, &pt, txt, len);
 }
 
-void svg_draw_text_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+static void _draw_single_text_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
 	link_t_ptr g, nlk;
-
+	
 	g = svg_get_visual_doc(view);
 
 	nlk = insert_svg_node(g);
 
 	write_text_to_svg_node(nlk, pxf, pxa, pxr, txt, len);
+}
+
+static void _draw_multi_text_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+{
+	link_t_ptr g, nlk;
+	int n, m = 0, total = 0, w = 0;
+	float px, pm;
+	xrect_t xr;
+
+	if (len < 0)
+		len = xslen(txt);
+
+	if (is_null(txt) || !len)
+		return;
+
+	font_metric_by_pt(xstof(pxf->size), &pm, &px);
+
+	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
+	xr.h = (int)(px + 0.5);
+
+	g = svg_get_visual_doc(view);
+	m = 0;
+	while ((total < len) && (n = next_word((txt + total), (len - total)) >= 0))
+	{
+		m += n;
+		total += n;
+		w += (int)(px);
+		if ((w >= pxr->w) || (total == len && w))
+		{
+			nlk = insert_svg_node(g);
+			write_text_to_svg_node(nlk, pxf, pxa, &xr, (txt + total - m), m);
+
+			m = 0;
+			w = 0;
+			xr.y += xr.h;
+		}
+	}
+}
+
+void svg_draw_text_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+{
+	if (is_null(pxa->text_wrap))
+		_draw_single_text_raw(view, pxf, pxa, pxr, txt, len);
+	else
+		_draw_multi_text_raw(view, pxf, pxa, pxr, txt, len);
 }
 
 void svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
@@ -864,28 +909,67 @@ void svg_draw_text(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 void svg_text_rect_raw(visual_t view, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
 {
+	int n, m = 0, total = 0, w = 0, h = 0;
 	float px, pm;
-	int row;
 
-	if (len < 0) len = xslen(txt);
+	if (len < 0)
+		len = xslen(txt);
+
+	if (is_null(txt) || !len)
+		return;
 
 	font_metric_by_pt(xstof(pxf->size), &pm, &px);
-	row = (int)(px * len / pxr->w + 0.5);
+	h = (int)(px + 0.5);
 
-	pxr->h = svg_tm_to_pt_raw(view, pm * row, 0) - svg_tm_to_pt_raw(view, 0, 0);
+	while ((total < len) && (n = next_word((txt + total), (len - total)) >= 0))
+	{
+		m += n;
+		total += n;
+		w += (int)(px);
+		if ((w >= pxr->w) || (total == len && w))
+		{
+			m = 0;
+			w = 0;
+
+			if (n)
+				h += (int)(px + 0.5);
+		}
+	}
+
+	pxr->h = h;
 }
 
 void svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const tchar_t* txt, int len, xrect_t* pxr)
 {
-	float pm;
-	int row;
+	int n, m = 0, total = 0;
+	float fw = 0.0f, fh = 0.0f;
+	float px, pm;
 
-	if (len < 0) len = xslen(txt);
+	if (len < 0)
+		len = xslen(txt);
 
-	font_metric_by_pt(xstof(pxf->size), &pm, NULL);
-	row = (int)(pm * len / pxr->fw);
+	if (is_null(txt) || !len)
+		return;
 
-	pxr->fh = row * pm;
+	font_metric_by_pt(xstof(pxf->size), &pm, &px);
+	fh = px;
+
+	while ((total < len) && (n = next_word((txt + total), (len - total)) >= 0))
+	{
+		m += n;
+		total += n;
+		fw += px;
+		if ((fw >= pxr->fw) || (total == len && (int)fw))
+		{
+			m = 0;
+			fw = 0.0f;
+
+			if (n)
+				fh += px;
+		}
+	}
+
+	pxr->fh = fh;
 }
 
 void svg_text_size_raw(visual_t view, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
@@ -894,7 +978,7 @@ void svg_text_size_raw(visual_t view, const xfont_t* pxf, const tchar_t* txt, in
 
 	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
 
-	if (len < 0) len = xslen(txt);
+	len = words_count(txt, len);
 
 	pxs->w = svg_tm_to_pt_raw(view, mm * len, 1) - svg_tm_to_pt_raw(view, 0, 1);
 	pxs->h = svg_tm_to_pt_raw(view, mm, 0) - svg_tm_to_pt_raw(view, 0, 0);
@@ -906,7 +990,7 @@ void svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int le
 
 	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
 
-	if (len < 0) len = xslen(txt);
+	len = words_count(txt, len);
 
 	pxs->fw = mm * len;
 	pxs->fh = mm;

@@ -83,7 +83,7 @@ void draw_code128(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, co
 		format_xcolor(pxc, xb.color);
 	}
 
-	unit = 0.3f;
+	unit = MMPERPD;
 
 	rt.fx = prt->fx + unit;
 	rt.fy = prt->fy + unit;
@@ -161,7 +161,7 @@ void draw_pdf417(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, con
 		format_xcolor(pxc, xb.color);
 	}
 
-	unit = 0.5f;
+	unit = MMPERPD * 2;
 
 	len = 0;
 	black = 0;
@@ -243,13 +243,14 @@ void draw_qrcode(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, con
 
 	xmem_free(buf);
 
-	if (pxc)
-	{
-		default_xbrush(&xb);
-		format_xcolor(pxc, xb.color);
-	}
+	default_xbrush(&xb);
 
-	unit = 0.5f;
+	if (pxc)
+		format_xcolor(pxc, xb.color);
+	else
+		xscpy(xb.color, GDI_ATTR_RGB_BLACK);
+
+	unit = MMPERPD * 2;
 
 	len = 0;
 	black = 0;
@@ -273,7 +274,7 @@ void draw_qrcode(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, con
 
 				if (black && pxc)
 				{
-					(*pif->pf_draw_rect)(pif, NULL, &xb, &rt);
+					(*pif->pf_draw_rect)(pif->ctx, NULL, &xb, &rt);
 				}
 
 				b = b >> 1;

@@ -172,6 +172,9 @@ EXP_API int compare_text(const tchar_t* src, int srclen, const tchar_t* dest, in
 
 EXP_API int verify_text(const tchar_t* str, const tchar_t* datatype, bool_t nullable, int len, const tchar_t* min, const tchar_t* max);
 
+EXP_API int next_word(const tchar_t* str, int len);
+
+EXP_API int words_count(const tchar_t* str, int len);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 EXP_API bool_t get_param_item(const tchar_t* sz_param, const tchar_t* key, tchar_t* val, int max);

@@ -2791,6 +2791,39 @@ int printf_path(tchar_t* fpath, const tchar_t* strfmt, ...)
 	return total;
 }
 
+int next_word(const tchar_t* str, int len)
+{
+#if defined(_UNICODE) || defined(UNICODE)
+	if (len < 0)
+		len = xslen(str);
+	if (is_null(str) || !len)
+		return 0;
+	return 1;
+#else
+	if (len < 0)
+		len = xslen(str);
+	if (is_null(str) || !len)
+		return 0;
+	return (int)mbs_sequence(*str);
+#endif
+}
+
+int words_count(const tchar_t* str, int len)
+{
+	int n, total = 0;
+
+	if (len < 0)
+		len = xslen(str);
+	if (is_null(str) || !len)
+		return 0;
+
+	while (n = next_word((str + total), (len - total)))
+	{
+		total += n;
+	}
+
+	return total;
+}
 /************************************************************************************************/
 
 bool_t inside_rowcol(int row, int col, int from_row, int from_col, int to_row, int to_col)

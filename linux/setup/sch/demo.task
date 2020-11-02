@@ -3,4 +3,5 @@
 <name>demo_func</name>
 <proc>libdemo_api.so</proc>
 <path>/usr/local/xService/demo</path>
+<track>/usr/local/xService/nfs/log/task</track>
 </task>
