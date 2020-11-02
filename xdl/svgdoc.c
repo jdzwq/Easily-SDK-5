@@ -45,6 +45,8 @@ link_t_ptr create_svg_doc()
 	ptr = create_dom_doc();
 	set_dom_node_name(ptr,DOC_SVG,-1);
 	set_dom_node_xmlns(ptr, XMLNS, -1, XMLNS_SVG_INSTANCE,-1);
+	set_dom_node_xmlns(ptr, XMLNS_XLINK, -1, XMLNS_XLINK_INSTANCE, -1);
+
 	set_dom_node_attr(ptr, XML_ATTR_VERSION, -1, _T("1.1"), -1);
 
 	set_svg_width(ptr, DEF_PAPER_WIDTH);

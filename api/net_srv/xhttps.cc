@@ -28,6 +28,8 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 #include "srvcrt.h"
 
+#define IS_NULL_SITE(site)		(*site == _T('/') && *(site + 1) == _T('\0'))
+
 static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_track, tchar_t* sz_trace, tchar_t* sz_proc)
 {
 	tchar_t sz_root[PATH_LEN + 1] = { 0 };
@@ -388,11 +390,15 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	if (is_null(sz_site))
 	{
 		xhttp_split_object(sz_object, sz_site, sz_res);
+		if (IS_NULL_SITE(sz_site))
+		{
+			xscat(sz_site, XHTTPS_DEFAULT_SITE);
+		}
 		_xhttps_get_config(sz_site + 1, sz_space, sz_path, sz_track, sz_trace, sz_proc);
 	}
 	else
 	{
-		xscpy(sz_res, sz_object);
+		xsncpy(sz_res, sz_object, PATH_LEN);
 		_xhttps_get_config(sz_site, sz_space, sz_path, sz_track, sz_trace, sz_proc);
 	}
 

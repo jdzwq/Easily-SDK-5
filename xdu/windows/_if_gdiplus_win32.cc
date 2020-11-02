@@ -2146,8 +2146,9 @@ void _gdiplus_draw_image(visual_t rdc,bitmap_t bmp,const tchar_t* clr,const xrec
 {
 	win32_context_t* ctx = (win32_context_t*)rdc;
 	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb = (win32_bitmap_t*)bmp;
 
-	Image* pi = new Bitmap((HBITMAP)bmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
+	Image* pi = new Bitmap((HBITMAP)(pwb->bitmap), (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	if (!pi)
 		return;
 
@@ -2190,8 +2191,9 @@ void _gdiplus_draw_bitmap(visual_t rdc, bitmap_t bmp, const xpoint_t* ppt)
 {
 	win32_context_t* ctx = (win32_context_t*)rdc;
 	HDC hDC = (HDC)(ctx->context);
+	win32_bitmap_t* pwb = (win32_bitmap_t*)bmp;
 
-	Image* pi = new Bitmap((HBITMAP)bmp, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
+	Image* pi = new Bitmap((HBITMAP)pwb->bitmap, (HPALETTE)GetStockObject(DEFAULT_PALETTE));
 	if (!pi)
 		return;
 

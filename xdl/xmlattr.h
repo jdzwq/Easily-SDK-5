@@ -13,6 +13,7 @@
 #define XMLNS_ENCODINGSTYLE_INSTANCE	_T("http://schemas.xmlsoap.org/soap/encoding/")
 
 #define XMLNS_SVG_INSTANCE		_T("http://www.w3.org/2000/svg")
+#define XMLNS_XLINK_INSTANCE	_T("http://www.w3.org/1999/xlink")
 #define XMLNS_STREAM_INSTANCE	_T("http://etherx.jabber.org/streams")
 
 #define SOAP_TRANSPORT_HTTP		_T("http://schemas.xmlsoap.org/soap/http")
@@ -26,6 +27,7 @@
 #define XMLNS_XDL		_T("xmlns:xdl")
 #define XMLNS_STREAM	_T("xmlns:stream")
 #define XMLNS_TNS		_T("xmlns:tns")
+#define XMLNS_XLINK		_T("xmlns:xlink")
 
 #define NSSOAP			_T("soap")
 #define NSWSDL			_T("wsdl")
@@ -33,6 +35,7 @@
 #define NSXSD			_T("xsd")
 #define NSXDL			_T("xdl")
 #define NSTNS			_T("tns")
+#define NSXLINK			_T("xlink")
 
 /*********************************************************SOAP ATTRIBUTES**************************************************/
 #define SOAP_ATTR_ENCODINGSTYLE		_T("soap:encodingStyle")

@@ -70,7 +70,7 @@
 #define SVG_ATTR_FONT_STYLE_UNDERLINE	_T("underline")
 #define SVG_ATTR_FONT_STYLE_STRIKOUT	_T("strikout")
 
-#define SVG_ATTR_IMAGE_HREF			_T("href")
+#define SVG_ATTR_IMAGE_HREF			_T("xlink:href")
 #define SVG_ATTR_VIEWBOX			_T("viewBox")
 
 #define SVG_ATTR_ID					_T("id")
