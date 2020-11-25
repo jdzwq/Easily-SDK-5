@@ -485,8 +485,6 @@ void draw_statis_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	ximage_t xi = { 0 };
 	xrect_t xr_bar, xr = { 0 };
 	xpoint_t pt[2];
-	xpoint_t pt_pie;
-	xsize_t xs;
 
 	const canvbox_t* pbox = (canvbox_t*)(&pif->rect);
 
@@ -981,15 +979,15 @@ void draw_statis_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 				nxtd = pred + (float)(2 * XPI *  dby);
 				if (pred != nxtd)
 				{
-					/*xr.fx = x1 + STATIS_MINFEED;
+					xr.fx = x1 + STATIS_MINFEED;
 					xr.fw = xw - 2 * STATIS_MINFEED;
 					xr.fy = cury - xw + STATIS_MINFEED;
-					xr.fh = xw - 2 * STATIS_MINFEED;*/
-					pt_pie.fx = x1 + xw / 2;
+					xr.fh = xw - 2 * STATIS_MINFEED;
+					/*pt_pie.fx = x1 + xw / 2;
 					pt_pie.fy = cury - xw / 2;
 					xs.fw = xw / 2 - STATIS_MINFEED;
-					xs.fh = xw / 2 - STATIS_MINFEED;
-					(*pif->pf_draw_pie)(pif->ctx, &xp_shape, &xb_shape, &pt_pie, &xs, pred, nxtd);
+					xs.fh = xw / 2 - STATIS_MINFEED;*/
+					(*pif->pf_draw_pie)(pif->ctx, &xp_shape, &xb_shape, &xr, pred, nxtd);
 				}
 
 				if (ylk == get_prev_yax(ptr, LINK_LAST))

@@ -243,7 +243,7 @@ LOC_API void	draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb,
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-LOC_API void	draw_pie_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang);
+LOC_API void	draw_pie_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang);
 
 /*
 @FUNCTION draw_pie: draw pie in canvas using millimeter coordinate.
@@ -256,7 +256,7 @@ LOC_API void	draw_pie_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, 
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-LOC_API void	draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang);
+LOC_API void	draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang);
 
 /*
 @FUNCTION draw_fan_raw: draw fan in memory or device context using points coordinate.
@@ -309,30 +309,6 @@ LOC_API void	calc_fan_raw(visual_t rdc, const xpoint_t* ppt, const xsize_t* pxs,
 @RETURN void: none.
 */
 LOC_API void	calc_fan(canvas_t canv, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang, xpoint_t* pa, int n);
-
-/*
-@FUNCTION draw_arrow_raw: draw arrrow in memory or device context using points coordinate.
-@INPUT visual_t rdc: the context resource handle.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using integer member.
-@INPUT const xspan_t* pxn: the arrow length in integer..
-@INPUT double arc: the arrow angle PI value.
-@RETURN void: none.
-*/
-LOC_API void	draw_arrow_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc);
-
-/*
-@FUNCTION draw_arrow: draw arrrow in canvas using millimeter coordinate.
-@INPUT canvas_t canv: the canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT const xspan_t* pxn: the arrow length in millimeter.
-@INPUT double arc: the arrow angle PI value.
-@RETURN void: none.
-*/
-LOC_API void	draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc);
 
 /*
 @FUNCTION draw_polygon_raw: draw polygon in memory or device context using points coordinate

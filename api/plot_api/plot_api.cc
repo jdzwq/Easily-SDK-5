@@ -26,7 +26,17 @@ LICENSE.GPL3 for more details.
 #include "plot_api.h"
 
 #define DEF_COLOR_TABLE		_T("LightSlateGray,CornflowerBlue,DarkSalmon,ForestGreen,Indigo,LightSteelBlue,Orange,PapayaWhip")
-#define DEF_PLOT_STYLE		_T("font-size:10;stroke-width:1;fill-color:WhiteSmoke;stroke-color:DimGray;fill-style:gradient;gradient:vert;")
+#define DEF_INDICATOR_STYLE		_T("font-size:9;stroke-color:Azure;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_THERMOMETER_STYLE	_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_BARGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_KPIGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_TASKGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_HISTOGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_PANTOGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_SCATTERGRAM_STYLE	_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_TRENDGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_RADARGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
+#define DEF_FUELGRAM_STYLE		_T("font-size:9;stroke-color:Gray;fill-color:Gray;fill-style:gradient;gradient:radial")
 
 typedef struct _plot_block_t{
 	secu_desc_t sd;
@@ -240,14 +250,39 @@ bool_t _invoke_ploting(const https_block_t* pb, plot_block_t* pd)
 		raise_user_error(_T("-1"), _T("unknown plot type"));
 	}
 
-	if (is_zero_float(get_plot_width(ptr_plot)))
+	if (IS_ZERO_FLOAT(get_plot_width(ptr_plot)))
 		set_plot_width(ptr_plot, DEF_PLOT_WIDTH);
-	if (is_zero_float(get_plot_height(ptr_plot)))
+	if (IS_ZERO_FLOAT(get_plot_height(ptr_plot)))
 		set_plot_height(ptr_plot, DEF_PLOT_HEIGHT);
 
 	if (is_null(get_plot_style_ptr(ptr_plot)))
 	{
-		set_plot_style(ptr_plot, DEF_PLOT_STYLE, -1);
+		if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_INDICATOR, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_INDICATOR_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_THERMOMETER, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_THERMOMETER_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_BARGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_BARGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_KPIGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_KPIGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_TRENDGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_TRENDGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_SCATTERGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_SCATTERGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_PANTOGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_PANTOGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_HISTOGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_HISTOGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_RADARGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_RADARGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_FUELGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_FUELGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_TASKGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_TASKGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_TOPOGGGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_BARGRAM_STYLE, -1);
+		else if (compare_text(sz_name, -1, ATTR_PLOT_TYPE_CONTOURGRAM, -1, 1) == 0)
+			set_plot_style(ptr_plot, DEF_BARGRAM_STYLE, -1);
 	}
 
 	if (!get_plot_y_colors_token(ptr_plot, NULL, MAX_LONG))

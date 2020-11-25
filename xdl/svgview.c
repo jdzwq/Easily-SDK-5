@@ -193,13 +193,13 @@ void draw_svg(const if_drawing_t* pif, const xrect_t* pbox, link_t_ptr ptr)
 			{
 				xmem_zero((void*)&xp, sizeof(xpen_t));
 				xmem_zero((void*)&xb, sizeof(xbrush_t));
-				read_pie_from_svg_node(ilk, &xp, &xb, RECTPOINT(&xr),&xr.w, &xr.h, &fang, &tang);
+				read_pie_from_svg_node(ilk, &xp, &xb, &xr, &fang, &tang);
 
 				svg_rect_pt_to_tm(canv, &xr);
 				xr.fx += pbox->fx;
 				xr.fy += pbox->fy;
 
-				(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, RECTPOINT(&xr), RECTSIZE(&xr), fang, tang);
+				(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, &xr, fang, tang);
 			}
 			else if (svg_node_is_arc(ilk))
 			{

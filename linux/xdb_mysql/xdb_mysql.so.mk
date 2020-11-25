@@ -8,12 +8,11 @@ INC_MYSQL = /usr/include/mysql
 LIB_MYSQL = /usr/lib
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/xdb
-OUT_PATH = ../sbin/api
+OUT_PATH = ~/Easily-app-5/linux/sbin/api
 
-LIBS = -L $(API_PATH) -lxds -lxdl -L $(LIB_MYSQL) -lmysqlclient
+LIBS = -L $(LIB_PATH) -lxds -lxdl -L $(LIB_MYSQL) -lmysqlclient
 DIRS = $(wildcard $(SRC_PATH)/xdb_mysql.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

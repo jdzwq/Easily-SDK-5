@@ -117,7 +117,8 @@ void matrix_set_value(matrix_t* pmt, int i, int j, double db)
 
 double matrix_get_value(matrix_t* pmt, int i, int j)
 {
-	XDL_ASSERT(i >= 0 && i < pmt->rows && j >= 0 && j < pmt->cols);
+	if (i < 0 || i >= pmt->rows || j < 0 || j >= pmt->cols)
+		return MAXDBL;
 
 	return (pmt->data)[i * pmt->cols + j];
 }

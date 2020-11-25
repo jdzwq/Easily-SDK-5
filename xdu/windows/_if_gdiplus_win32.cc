@@ -121,6 +121,8 @@ static void _calc_circle(int sflag, int lflag, const POINT* ppt1, const POINT* p
 		pt.y = 0 - pt.y;
 
 	len = sqrt(pow((double)(pt.x), 2) + pow((double)(pt.y), 2)) / 2;
+	if (len > (float)rr)
+		len = rr;
 	
 	switch (n)
 	{
@@ -328,8 +330,8 @@ static Brush* create_brush(const xbrush_t* pxb, const xrect_t* pxr, GraphicsPath
 		if (pgp)
 		{
 			PathGradientBrush* pb = new PathGradientBrush(pgp);
-			pb->SetCenterColor(Color(255, brush_color.r, brush_color.g, brush_color.b));
-			Color clr(Color(255, linear_color.r, linear_color.g, linear_color.b));
+			pb->SetCenterColor(Color(opacity, brush_color.r, brush_color.g, brush_color.b));
+			Color clr(Color(opacity, linear_color.r, linear_color.g, linear_color.b));
 			int n = 1;
 			pb->SetSurroundColors(&clr, &n);
 
@@ -338,17 +340,17 @@ static Brush* create_brush(const xbrush_t* pxb, const xrect_t* pxr, GraphicsPath
 		else if (pxr)
 		{
 			if (xscmp(pxb->gradient, GDI_ATTR_GRADIENT_HORZ) == 0)
-				return 	new LinearGradientBrush(Rect(pxr->x, pxr->y, pxr->w, pxr->h), Color(255, brush_color.r, brush_color.g, brush_color.b), Color(255, linear_color.r, linear_color.g, linear_color.b), LinearGradientModeHorizontal);
+				return 	new LinearGradientBrush(Rect(pxr->x, pxr->y, pxr->w, pxr->h), Color(opacity, brush_color.r, brush_color.g, brush_color.b), Color(opacity, linear_color.r, linear_color.g, linear_color.b), LinearGradientModeHorizontal);
 			else if (xscmp(pxb->gradient, GDI_ATTR_GRADIENT_VERT) == 0)
-				return 	new LinearGradientBrush(Rect(pxr->x, pxr->y, pxr->w, pxr->h), Color(255, brush_color.r, brush_color.g, brush_color.b), Color(255, linear_color.r, linear_color.g, linear_color.b), LinearGradientModeVertical);
+				return 	new LinearGradientBrush(Rect(pxr->x, pxr->y, pxr->w, pxr->h), Color(opacity, brush_color.r, brush_color.g, brush_color.b), Color(opacity, linear_color.r, linear_color.g, linear_color.b), LinearGradientModeVertical);
 			else
 			{
 				GraphicsPath gp;
 				gp.AddRectangle(Rect(pxr->x, pxr->y, pxr->w, pxr->h));
 
 				PathGradientBrush* pb = new PathGradientBrush(&gp);
-				pb->SetCenterColor(Color(255, brush_color.r, brush_color.g, brush_color.b));
-				Color clr(Color(255, linear_color.r, linear_color.g, linear_color.b));
+				pb->SetCenterColor(Color(opacity, brush_color.r, brush_color.g, brush_color.b));
+				Color clr(Color(opacity, linear_color.r, linear_color.g, linear_color.b));
 				int n = 1;
 				pb->SetSurroundColors(&clr, &n);
 
@@ -1595,16 +1597,16 @@ void _gdiplus_draw_ellipse(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb,
 	}
 }
 
-void _gdiplus_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
+void _gdiplus_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, const xrect_t* prt, double fang, double tang)
 {
 	win32_context_t* ctx = (win32_context_t*)rdc;
 	HDC hDC = (HDC)(ctx->context);
 
 	POINT pt[2];
-	pt[0].x = ppt->x - pxs->w;
-	pt[0].y = ppt->y - pxs->h;
-	pt[1].x = ppt->x + pxs->w;
-	pt[1].y = ppt->y + pxs->h;
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x + prt->w;
+	pt[1].y = prt->y + prt->h;
 
 	DPtoLP(hDC, pt, 2);
 
@@ -1659,131 +1661,6 @@ void _gdiplus_draw_pie(visual_t rdc, const xpen_t* pxp, const xbrush_t*pxb, cons
 
 		gh.SetCompositingQuality(CompositingQualityGammaCorrected);
 		gh.DrawPie(pp, rf, (float)(fang / (2 * XPI) * 360), (float)((tang - fang) / (2 * XPI) * 360));
-
-		delete pp;
-	}
-}
-
-void _gdiplus_draw_arrow(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const xspan_t* pxn, double arc)
-{
-	win32_context_t* ctx = (win32_context_t*)rdc;
-	HDC hDC = (HDC)(ctx->context);
-	double a1;
-	int x_line0, y_line0, x_line1, y_line1, x_line2, y_line2;
-	int x1, x2, y1, y2;
-	POINT pt[4];
-
-	int alen;
-
-	alen = pxn->r;
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
-
-	DPtoLP(hDC, pt, 2);
-
-	x1 = pt[0].x;
-	y1 = pt[0].y;
-	x2 = pt[1].x;
-	y2 = pt[1].y;
-
-	pt[0].x = x2;
-	pt[0].y = y2;
-
-	a1 = atan2((float)(y2 - y1), (float)(x2 - x1));
-	x_line0 = (int)((float)x2 - (float)alen * cos(a1));
-	y_line0 = (int)((float)y2 - (float)alen * sin(a1));
-
-	x_line1 = x2 + (int)((float)(x_line0 - x2) * cos(arc) - (float)(y_line0 - y2) * sin(arc));
-	y_line1 = y2 + (int)((float)(x_line0 - x2) * sin(arc) + (float)(y_line0 - y2) * cos(arc));
-	pt[1].x = x_line1;
-	pt[1].y = y_line1;
-
-	x_line2 = x2 + (int)((float)(x_line0 - x2) * cos(-arc) - (float)(y_line0 - y2) * sin(-arc));
-	y_line2 = y2 + (int)((float)(x_line0 - x2) * sin(-arc) + (float)(y_line0 - y2) * cos(-arc));
-	pt[2].x = x_line2;
-	pt[2].y = y_line2;
-
-	pt[3].x = x2;
-	pt[3].y = y2;
-
-	GraphicsPath path;
-
-	path.AddLine(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
-	path.AddLine(pt[1].x, pt[1].y, pt[2].x, pt[2].y);
-	path.AddLine(pt[2].x, pt[2].y, pt[3].x, pt[3].y);
-
-	Gdiplus::Graphics gh(hDC);
-
-	gh.SetPageUnit(UnitPixel);
-	gh.SetSmoothingMode(SmoothingModeAntiAlias);
-
-	if (pxb && (pxb->shadow.offx || pxb->shadow.offy))
-	{
-		GraphicsPath* shadow = path.Clone();
-
-		Region region(&path);
-		gh.ExcludeClip(&region);
-
-		Matrix M;
-		M.Translate(pxb->shadow.offx, pxb->shadow.offy);
-
-		shadow->Transform(&M);
-
-		xcolor_t xc_near, xc_far;
-		parse_xcolor(&xc_near, pxb->color);
-		memcpy((void*)&xc_far, (void*)&xc_near, sizeof(xcolor_t));
-		lighten_xcolor(&xc_far, -10);
-
-		LinearGradientBrush brush(Rect(pt[0].x + pxb->shadow.offx, pt[0].y + pxb->shadow.offy, pt[1].x - pt[0].x, pt[1].y - pt[0].y), Color(255, xc_near.r, xc_near.g, xc_near.b), Color(255, xc_far.r, xc_far.g, xc_far.b), LinearGradientModeVertical);
-
-		gh.FillPath(&brush, shadow);
-
-		gh.ResetClip();
-
-		delete shadow;
-	}
-
-	if (pxp && (pxp->adorn.feed || pxp->adorn.size))
-	{
-		GraphicsPath* adron = path.Clone();
-
-		Region region(&path);
-		gh.ExcludeClip(&region);
-
-		Matrix M;
-		M.Translate(pxp->adorn.feed, pxp->adorn.feed);
-
-		adron->Transform(&M);
-
-		xcolor_t xc_gray;
-
-		parse_xcolor(&xc_gray, pxp->color);
-		lighten_xcolor(&xc_gray, -10);
-
-		Pen pen(Color(xc_gray.r, xc_gray.g, xc_gray.b), (REAL)pxp->adorn.size);
-
-		gh.DrawPath(&pen, adron);
-
-		gh.ResetClip();
-
-		delete adron;
-	}
-
-	if (!is_null_xbrush(pxb))
-	{
-		Brush* pb = create_brush(pxb, prt, &path);
-		gh.FillPath(pb, &path);
-
-		delete pb;
-	}
-
-	if (!is_null_xpen(pxp))
-	{
-		Pen* pp = create_pen(pxp);
-		gh.DrawPath(pp, &path);
 
 		delete pp;
 	}

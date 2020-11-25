@@ -1217,6 +1217,46 @@ void ft_adjust_rect(xrect_t* pxr, float src_width, float src_height, const tchar
 	}
 }
 
+int ft_quadrant(const xpoint_t* ppo, const xpoint_t* ppt, bool_t sflag)
+{
+	float dx, dy;
+
+	dx = ppt->fx - ppo->fx;
+	dy = ppt->fy - ppo->fy;
+
+	if (IS_ZERO_FLOAT(dx) && IS_ZERO_FLOAT(dy))
+		return 0;
+
+	if (dx >= 0.0f && dy >= 0.0f)
+		return (sflag) ? 1 : 4;
+	else if (dx <= 0.0f && dy >= 0.0f)
+		return (sflag) ? 2 : 3;
+	else if (dx <= 0.0f && dy <= 0.0f)
+		return (sflag) ? 3 : 2;
+	else
+		return (sflag) ? 4 : 1;
+}
+
+int pt_quadrant(const xpoint_t* ppo, const xpoint_t* ppt, bool_t sflag)
+{
+	int dx, dy;
+
+	dx = ppt->x - ppo->x;
+	dy = ppt->y - ppo->y;
+
+	if (!dx && !dy)
+		return 0;
+
+	if (dx >= 0 && dy >= 0)
+		return (sflag) ? 1 : 4;
+	else if (dx <= 0 && dy >= 0)
+		return (sflag) ? 2 : 3;
+	else if (dx <= 0 && dy <= 0)
+		return (sflag) ? 3 : 2;
+	else
+		return (sflag) ? 4 : 1;
+}
+
 /*********************************************************************************************/
 
 int mul_div_int(int m1, int m2, int d)
@@ -1229,21 +1269,6 @@ short mul_div_short(short m1, short m2, short d)
 	return (short)((float)(m1 * m2) / (float)d);
 }
 
-bool_t is_zero_float(float f)
-{
-	f -= (int)f;
-	f *= 1000;
-
-	return ((int)f) ? 0 : 1;
-}
-
-bool_t is_zero_double(double d)
-{
-	d -= (int)d;
-	d *= 1000000;
-
-	return ((int)d) ? 0 : 1;
-}
 /*********************************************************************************************/
 
 void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext)

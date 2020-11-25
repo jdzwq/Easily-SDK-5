@@ -79,6 +79,8 @@
 #define DOC_PLOT_RULER				_T("ruler")
 #define DOC_PLOT_TYPE				_T("type")
 #define DOC_PLOT_STYLE				_T("style")
+#define DOC_PLOT_Y_GRADES			_T("y-grades")
+#define DOC_PLOT_Y_GRADE			_T("y-grade")
 #define DOC_PLOT_Y_STAGES			_T("y-stages")
 #define DOC_PLOT_Y_STAGE			_T("y-stage")
 #define DOC_PLOT_Y_BASES			_T("y-bases")
@@ -420,20 +422,24 @@
 #define ATTR_SPOT_TYPE_IMAGE		_T("image")
 
 #define ATTR_PLOT_TYPE				_T("plot-type")
-#define ATTR_PLOT_TYPE_OPTIONS		_T("topoggram~Topoggram;contourgram~Contourgram;trendgram~Trendgram;scattergram~Scattergram;pantogram~Pantogram;histogram~Histogram;bargram~Bargram;kpigram~Kpigram;radargram~Radargram;fuelgram~Fuelgram;taskgram~Taskgram;indicator~Indicator;thermometer~Thermometer;")
+#define ATTR_PLOT_TYPE_OPTIONS		_T("topoggram~TopogGram;contourgram~ContourGram;trendgram~TrendGram;scattergram~ScatterGram;pantogram~PantoGram;histogram~HistoGram;mediangram~MedianGram;bargram~BarGram;kpigram~KpiGram;radargram~RadarGram;fuelgram~FuelGram;taskgram~TaskGram;contragram~ContraGram;balancegram~BalanceGram;indicator~Indicator;thermometer~Thermometer;calendar~Calendar;")
 #define ATTR_PLOT_TYPE_TOPOGGGRAM	_T("topoggram") //地形图
 #define ATTR_PLOT_TYPE_CONTOURGRAM	_T("contourgram") //等高线
 #define ATTR_PLOT_TYPE_TRENDGRAM	_T("trendgram") //趋势图
 #define ATTR_PLOT_TYPE_SCATTERGRAM	_T("scattergram") //密度图
 #define ATTR_PLOT_TYPE_PANTOGRAM	_T("pantogram") //比例图
 #define ATTR_PLOT_TYPE_HISTOGRAM	_T("histogram") //直方图
+#define ATTR_PLOT_TYPE_MEDIANGRAM	_T("mediangram") //中位图
 #define ATTR_PLOT_TYPE_BARGRAM		_T("bargram") //条形图
 #define ATTR_PLOT_TYPE_KPIGRAM		_T("kpigram") //达标图
 #define ATTR_PLOT_TYPE_RADARGRAM	_T("radargram") //雷达图
 #define ATTR_PLOT_TYPE_FUELGRAM		_T("fuelgram") //油量表
 #define ATTR_PLOT_TYPE_TASKGRAM		_T("taskgram") //任务表
+#define ATTR_PLOT_TYPE_CONTRAGRAM	_T("contragram") //对比图
+#define ATTR_PLOT_TYPE_BALANCEGRAM	_T("balancegram") //平衡图
 #define ATTR_PLOT_TYPE_INDICATOR	_T("indicator") //指示器
 #define ATTR_PLOT_TYPE_THERMOMETER	_T("thermometer") //温度计
+#define ATTR_PLOT_TYPE_CALENDAR		_T("calendar") //日历
 
 #define ATTR_TEXT_TYPE					_T("text-type")
 #define ATTR_TEXT_TYPE_TEXT				_T("text")

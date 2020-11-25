@@ -5,7 +5,7 @@ LIB_PATH = /usr/local/lib
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/test/xdc_frame_test
 OBJ_PATH = ~/Easily-sdk-5/test/xdc_frame_test
-OUT_PATH = ~/Easily-sdk-5/linux/bin
+OUT_PATH = ~/Easily-app-5/linux/bin
 
 SRCS = $(SRC_PATH)/xdc_frame_test.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))

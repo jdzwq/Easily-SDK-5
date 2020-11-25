@@ -63,11 +63,17 @@ void clear_string_array(tchar_t** sa)
 int get_string_array_size(tchar_t** sa)
 {
 	tchar_t* token = *sa;
-	int n = 0;
+	int k, n = 0;
+	long size;
 
-	while (*token != _T('\0'))
+	size = *(long*)(sa + 1);
+
+	while (size)
 	{
-		token += (xslen(token) + 1);
+		k = xslen(token) + 1;
+		token += k;
+
+		size -= (k * sizeof(tchar_t));
 		n++;
 	}
 
@@ -77,14 +83,18 @@ int get_string_array_size(tchar_t** sa)
 const tchar_t* get_string_ptr(tchar_t** sa, int index)
 {
 	tchar_t* token = *sa;
+	int k;
+	long size;
 
-	while (token && index)
+	size = *(long*)(sa + 1);
+
+	while (size && index)
 	{
-		token += (xslen(token) + 1);
-		index--;
+		k = xslen(token) + 1;
+		token += k;
 
-		if (*token == _T('\0'))
-			break;
+		size -= (k * sizeof(tchar_t));
+		index--;
 	}
 
 	return token;
@@ -93,15 +103,18 @@ const tchar_t* get_string_ptr(tchar_t** sa, int index)
 int get_string(tchar_t** sa, int index, tchar_t* buf, int max)
 {
 	tchar_t* token = *sa;
-	int n;
+	int n, k;
+	long size;
 
-	while (token && index)
+	size = *(long*)(sa + 1);
+
+	while (size && index)
 	{
-		token += (xslen(token) + 1);
-		index--;
+		k = xslen(token) + 1;
+		token += k;
 
-		if (*token == _T('\0'))
-			break;
+		size -= (k * sizeof(tchar_t));
+		index--;
 	}
 
 	n = xslen(token);
@@ -124,21 +137,19 @@ void insert_string(tchar_t** sa, int index, const tchar_t* tk, int len)
 	if (len < 0)
 		len = xslen(tk);
 
-	if (!len)
-		return;
+	size = *(long*)(sa + 1);
 
-	while (token && index)
+	while (size && index)
 	{
-		k = xslen(token);
-		token += (k + 1);
+		k = xslen(token) + 1;
+		token += k;
 		index--;
-		n += (k + 1);
-
-		if (*token == _T('\0'))
-			break;
+		n += k;
+		size -= (k * sizeof(tchar_t));
 	}
 
 	size = *(long*)(sa + 1);
+
 	k = (len + 1) * sizeof(tchar_t);
 
 	*sa = xmem_realloc((void*)(*sa), (size + k + sizeof(tchar_t)));
@@ -160,15 +171,15 @@ void delete_string(tchar_t** sa, int index)
 	if (!token)
 		return;
 
-	while (token && index)
-	{
-		k = xslen(token);
-		token += (k + 1);
-		index--;
-		n += (k + 1);
+	size = *(long*)(sa + 1);
 
-		if (*token == _T('\0'))
-			return;
+	while (size && index)
+	{
+		k = xslen(token) + 1;
+		token += k;
+		index--;
+		n += k;
+		size -= (k * sizeof(tchar_t));
 	}
 
 	size = *(long*)(sa + 1);

@@ -8,12 +8,11 @@ INC_TDB = /usr/include/tdb
 LIB_TDB = /usr/lib
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/tdb
-OUT_PATH = ../sbin/api
+OUT_PATH = ~/Easily-app-5/linux/sbin/api
 
-LIBS = -L $(API_PATH) -lxds -lxdl
+LIBS = -L $(LIB_PATH) -lxds -lxdl
 DIRS = $(wildcard $(SRC_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

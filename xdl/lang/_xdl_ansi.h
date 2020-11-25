@@ -77,6 +77,7 @@ LICENSE.GPL3 for more details.
 #define WARNING_OPTIONS		_T("1~红色预警;2~橙色预警;3~黄色预警;4~蓝色预警;")
 #endif
 
+
 #endif /*LANG_CN*/
 
 

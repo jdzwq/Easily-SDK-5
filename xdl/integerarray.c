@@ -71,7 +71,7 @@ int get_integer(int** sa, int index)
 	size = (int)(*(long*)(sa + 1));
 
 	if (index < 0 || index >= size)
-		return 0;
+		return MAX_LONG;
 
 	return pa[index];
 }

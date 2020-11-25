@@ -2,12 +2,11 @@ CC = g++
 CFLAGS = -g -Wall
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/xDump
-OUT_PATH = ../bin
+OUT_PATH = ~/Easily-app-5/linux/bin
 
-LIBS = -L $(LIB_PATH) -lmded -ldicm -L $(API_PATH) -lxds -lxdl
+LIBS = -L $(LIB_PATH) -lmded -ldicm -L $(LIB_PATH) -lxds -lxdl
 DIRS = $(SRC_PATH)/*.cc
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.cc, %.o, $(SRCS))

@@ -368,7 +368,7 @@ int main(int argc, char* argv[])
 
 	//test_conv();
 
-	//test_string_array();
+	test_string_array();
 
 	//test_integer_array();
 
@@ -376,7 +376,7 @@ int main(int argc, char* argv[])
 
 	//test_intset();
 
-	test_words();
+	//test_words();
 
 	//test_time_hint();
 

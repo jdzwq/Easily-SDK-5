@@ -139,7 +139,7 @@ static void _tablectrl_reset_page(res_win_t widget)
 
 	(*im.pf_measure_font)(im.ctx, &xf, &xs);
 	xs.fw = xs.fh;
-	xs.fw = calc_table_height(&im, &xf, &xa, ptd->table);
+	xs.fh = calc_table_height(&im, &xf, &xa, ptd->table);
 
 	widget_size_to_pt(widget, &xs);
 

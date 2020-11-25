@@ -441,16 +441,16 @@ void draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const x
 	(*pif->pf_gdi_draw_ellipse)(rdc, pxp, pxb, &xr);
 }
 
-void draw_pie_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
+void draw_pie_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang)
 {
 	if_context_t *pif;
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, ppt, pxs, fang, tang);
+	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, prt, fang, tang);
 }
 
-void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
+void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang)
 {
 	visual_t rdc = get_canvas_visual(canv);
 	xrect_t xr;
@@ -459,13 +459,10 @@ void draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoin
 
 	pif = PROCESS_CONTEXT_INTERFACE;
 
-	xr.fx = ppt->fx;
-	xr.fy = ppt->fy;
-	xr.fw = pxs->fw;
-	xr.fh = pxs->fh;
+	xmem_copy((void*)&xr, (void*)prt, sizeof(xrect_t));
 	rect_tm_to_pt(canv, &xr);
 
-	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, RECTPOINT(&xr), RECTSIZE(&xr), fang, tang);
+	(*pif->pf_gdi_draw_pie)(rdc, pxp, pxb, &xr, fang, tang);
 }
 
 void draw_fan_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
@@ -526,34 +523,6 @@ void calc_fan(canvas_t canv, const xpoint_t* ppt, const xsize_t* pxs, double fan
 	{
 		point_pt_to_tm(canv, &(pa[i]));
 	}
-}
-
-void draw_arrow_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc)
-{
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, pxr, pxn, arc);
-}
-
-void draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc)
-{
-	visual_t rdc = get_canvas_visual(canv);
-	xrect_t xr;
-	xspan_t xn;
-
-	if_context_t *pif;
-
-	pif = PROCESS_CONTEXT_INTERFACE;
-
-	xmem_copy((void*)&xr, (void*)pxr, sizeof(xrect_t));
-	rect_tm_to_pt(canv, &xr);
-
-	xn.fr = pxn->fr;
-	span_tm_to_pt(canv, &xn);
-
-	(*pif->pf_gdi_draw_arrow)(rdc, pxp, pxb, &xr, &xn, arc);
 }
 
 void draw_path_raw(visual_t rdc, const xpen_t* pxp, const xbrush_t* pxb, const tchar_t* aa, const xpoint_t* pa, int n)

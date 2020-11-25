@@ -35,10 +35,10 @@ LICENSE.GPL3 for more details.
 #define A_IS_TOKEN_SPLIT(ch) (ch == (' ') || ch == ('\t') || ch == ('\n') || ch == (',') || ch == (';') || ch == ('~') || ch == (':'))
 #define W_IS_TOKEN_SPLIT(ch) (ch == L' ' || ch == L'\t' || ch == L'\n' || ch == L',' || ch == L';' || ch == L'~' || ch == L':')
 
-#define A_IS_BRACKET_LEFT(ch) (ch == ('(') || ch == ('{') || ch == ('<') || ch == ('['))
-#define A_IS_BRACKET_RIGHT(ch) (ch == (')') || ch == ('}') || ch == ('>') || ch == (']'))
-#define W_IS_BRACKET_LEFT(ch) (ch == L'(' || ch == L'{' || ch == L'<' || ch == L'[')
-#define W_IS_BRACKET_RIGHT(ch) (ch == L')' || ch == L'}' || ch == L'>' || ch == L']')
+#define A_IS_BRACKET_LEFT(ch) (ch == ('(') || ch == ('{') || ch == ('['))
+#define A_IS_BRACKET_RIGHT(ch) (ch == (')') || ch == ('}') || ch == (']'))
+#define W_IS_BRACKET_LEFT(ch) (ch == L'(' || ch == L'{' || ch == L'[')
+#define W_IS_BRACKET_RIGHT(ch) (ch == L')' || ch == L'}' || ch == L']')
 
 int w_parse_attrset_token(const wchar_t* attrset, int len, wchar_t** keyptr, int* keylen, wchar_t** valptr, int* vallen)
 {

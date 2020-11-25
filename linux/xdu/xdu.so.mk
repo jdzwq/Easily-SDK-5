@@ -6,13 +6,12 @@ LNK_PATH = /usr/local/lib
 SYS_PATH = /usr/include
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
 INC_PATH = ../../include
 SRC_PATH = ../../xdu
 SUB_PATH = ../../xdu/linux
-OUT_PATH = ../sbin/api
+OUT_PATH = ~/Easily-app-5/linux/sbin/api
 
-LIBS = -lm -ldl -lutil -lrt -lbluetooth -lX11 -lcairo -L $(API_PATH) -lxds -xdk
+LIBS = -lm -ldl -lutil -lrt -lbluetooth -lX11 -lcairo -L $(LIB_PATH) -lxds -xdk
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

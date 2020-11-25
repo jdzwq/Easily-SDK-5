@@ -165,7 +165,6 @@ void xdu_impl_context_graphic(if_context_t* pif)
 #endif
 
 #ifdef XDU_SUPPORT_CONTEXT_GDIPLUS
-	pif->pf_gdi_draw_arrow = _gdiplus_draw_arrow;
 	pif->pf_gdi_draw_ellipse = _gdiplus_draw_ellipse;
 	pif->pf_gdi_draw_line = _gdiplus_draw_line;
 	pif->pf_gdi_draw_pie = _gdiplus_draw_pie;

@@ -447,6 +447,16 @@ typedef int				wait_t;
 #define URL_LINEFEED		_T('&')
 
 
+#define MAXDBL      1.7976931348623158e+308
+#define MINDBL      2.2250738585072014e-308
+#define MAXFLT      3.402823466e+38F
+#define MINFLT      1.175494351e-38F
+
+#define IS_ZERO_FLOAT(f)	((-MINFLT <= f && f <= MINFLT)? 1 : 0)
+#define IS_ZERO_DOUBLE(d)	((-MINDBL <= d && d <= MINDBL)? 1 : 0)
+#define IS_VALID_FLOAT(f)	((-MAXFLT < f && f < MAXFLT)? 1 : 0)
+#define IS_VALID_DOUBLE(d)	((-MAXDBL < d && d < MAXDBL)? 1 : 0)
+
 /*define max integer value*/
 #define MAX_LONG        2147483647		//0x7fffffff
 #define MIN_LONG		-2147483648		//0x80000000
@@ -492,7 +502,7 @@ typedef int				wait_t;
 
 #define XPI			3.1415926535
 //#define INCHPERTM	0.003937
-#define INCHPERMM	0.03937
+#define INCHPERMM	0.03937f
 //#define TMPERINCH	254
 #define MMPERINCH	25.4f
 //#define PTPERINCH	1440
@@ -501,7 +511,8 @@ typedef int				wait_t;
 #define MMPERPD		0.3527f
 #define PDPERMM		2.835f
 #define PDPERINCH	72
-#define SVGPTPERMM	2.835f
+#define PTPERMM		3.779f
+#define MMPERPT		0.2646f
 
 //color darkeness
 #define DEF_SOFT_DARKEN		-3

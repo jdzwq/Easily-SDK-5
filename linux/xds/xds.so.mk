@@ -8,7 +8,7 @@ LIB_PATH = ../lib
 INC_PATH = ../../include
 SRC_PATH = ../../xds
 SUB_PATH = ../../xds/linux
-OUT_PATH = ../sbin/api
+OUT_PATH = ~/Easily-app-5/linux/sbin/api
 
 LIBS = -lm -ldl -lutil -lrt -L $(LIB_PATH) -ljpg -lzlib -lpng -lqrcode
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)

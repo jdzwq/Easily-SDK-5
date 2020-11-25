@@ -5,13 +5,12 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
 INC_PATH = ../../include
 SRC_PATH = ../../xdk
 SUB_PATH = ../../xdk/linux
-OUT_PATH = ../sbin/api
+OUT_PATH = ~/Easily-app-5/linux/sbin/api
 
-LIBS = -lm -ldl -lutil -lrt -L $(API_PATH) -lxds
+LIBS = -lm -ldl -lutil -lrt -L $(LIB_PATH) -lxds
 DIRS = $(wildcard $(SRC_PATH)/*.c $(SUB_PATH)/*.c)
 SRCS = $(notdir $(DIRS))
 OBJS = $(patsubst %.c, %.o, $(SRCS))

@@ -1694,16 +1694,19 @@ void _textor_clean(textor_t* ptd)
 void hand_textor_set_focus(textor_t* ptd, res_win_t wt)
 {
 	xsize_t xs;
-	float pm;
+	float pm, lh;
 	const xfont_t* pxf;
-
-	pxf = widget_get_xfont_ptr(ptd->widget);
+	const xface_t* pxa;
 
 	XDL_ASSERT(ptd && ptd->widget);
 
+	pxf = widget_get_xfont_ptr(ptd->widget);
+	pxa = widget_get_xface_ptr(ptd->widget);
+	lh = (pxa) ? xstof(pxa->line_height) : 1.0f;
+
 	font_metric_by_pt(xstof(pxf->size), &pm, NULL);
 	xs.fw = pm;
-	xs.fh = pm;
+	xs.fh = pm * lh;
 	widget_size_to_pt(ptd->widget, &xs);
 
 	widget_create_caret(ptd->widget, 2, xs.h);

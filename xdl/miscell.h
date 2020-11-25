@@ -148,6 +148,8 @@ EXP_API void plus_millseconds(xdate_t* pdt, int ms);
 
 EXP_API void calc_period(const period_t* ptp, tchar_t* sz_time);
 
+EXP_API void cn_date_token(const xdate_t* pdt, tchar_t* year, tchar_t* month, tchar_t* day, tchar_t* week, tchar_t* solar);
+
 #ifdef XDK_SUPPORT_DATE
 EXP_API void default_calendar(calendar_t* pca);
 

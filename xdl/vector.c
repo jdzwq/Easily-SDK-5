@@ -131,16 +131,21 @@ void vector_get_value(vector_t* pvt, int i, ...)
 {
 	double* pd;
 	int j;
+	bool_t b = 0;
 	va_list arg;
 
-	XDL_ASSERT(i >= 0 && i < pvt->size);
+	if (i < 0 || i >= pvt->size)
+		b = 1;
 
 	va_start(arg, i);
 
 	for (j = 0; j < pvt->dimens; j++)
 	{
 		pd = va_arg(arg, double*);
-		*pd = (pvt->data)[i * pvt->dimens + j];
+		if (b)
+			*pd = MAXDBL;
+		else
+			*pd = (pvt->data)[i * pvt->dimens + j];
 	}
 
 	va_end(arg);

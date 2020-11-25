@@ -189,6 +189,7 @@ void _draw_ellipse_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrus
 	(*pif->pf_draw_ellipse)(pif->ctx, pxp, pxb, prt);
 }
 
+
 /*******************************************************************************************************/
 
 typedef void(*PF_SHAPE_MAKE)(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);

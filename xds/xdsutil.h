@@ -157,14 +157,15 @@ EXP_API void pt_adjust_rect(xrect_t* pxr, int src_width, int src_height, const t
 
 EXP_API void ft_adjust_rect(xrect_t* pxr, float src_width, float src_height, const tchar_t* horz_align, const tchar_t* vert_align);
 
+EXP_API int ft_quadrant(const xpoint_t* ppo, const xpoint_t* ppt, bool_t sflag);
+
+EXP_API int pt_quadrant(const xpoint_t* ppo, const xpoint_t* ppt, bool_t sflag);
+
 /**************************************************************************************/
 EXP_API int mul_div_int(int m1, int m2, int d);
 
 EXP_API short mul_div_short(short m1, short m2, short d);
 
-EXP_API bool_t is_zero_float(float f);
-
-EXP_API bool_t is_zero_double(double d);
 /**************************************************************************************/
 
 EXP_API void split_path(const tchar_t* pathfile, tchar_t* path, tchar_t* file, tchar_t* ext);

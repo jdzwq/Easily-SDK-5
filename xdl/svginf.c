@@ -61,7 +61,6 @@ void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 	pif->pf_calc_fan = svg_calc_fan;
 	pif->pf_draw_fan = svg_draw_fan;
 	pif->pf_draw_pie = svg_draw_pie;
-	pif->pf_draw_arrow = svg_draw_arrow;
 	pif->pf_draw_triangle = svg_draw_triangle;
 	pif->pf_draw_rect = svg_draw_rect;
 	pif->pf_draw_round = svg_draw_round;
@@ -111,7 +110,6 @@ void svg_get_visual_interface(visual_t visual, if_drawing_t* pif)
 	pif->pf_draw_pie = svg_draw_pie_raw;
 	pif->pf_draw_fan = svg_draw_fan_raw;
 	pif->pf_calc_fan = svg_calc_fan_raw;
-	pif->pf_draw_arrow = svg_draw_arrow_raw;
 	pif->pf_draw_polygon = svg_draw_polygon_raw;
 	pif->pf_draw_equalgon = svg_draw_equalgon_raw;
 	pif->pf_calc_equalgon = svg_calc_equalgon_raw;

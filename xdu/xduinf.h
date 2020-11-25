@@ -112,8 +112,7 @@ typedef void(*PF_GDI_DRAW_ROUND)(visual_t, const xpen_t*, const xbrush_t*, const
 typedef void(*PF_GDI_DRAW_ELLIPSE)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*);
 typedef void(*PF_GDI_DRAW_FAN)(visual_t, const xpen_t*, const xbrush_t*, const xpoint_t*, const xsize_t*, double, double);
 typedef void(*PF_GDI_CALC_FAN)(visual_t, const xpoint_t*, const xsize_t*, double, double, xpoint_t*, int);
-typedef void(*PF_GDI_DRAW_PIE)(visual_t, const xpen_t*, const xbrush_t*, const xpoint_t*, const xsize_t*, double, double);
-typedef void(*PF_GDI_DRAW_ARROW)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*, const xspan_t*, double);
+typedef void(*PF_GDI_DRAW_PIE)(visual_t, const xpen_t*, const xbrush_t*, const xrect_t*, double, double);
 typedef void(*PF_GDI_DRAW_TEXT)(visual_t, const xfont_t*, const xface_t*, const xrect_t*, const tchar_t*, int);
 typedef void(*PF_GDI_TEXT_OUT)(visual_t, const xfont_t*, const xpoint_t*, const tchar_t*, int);
 typedef void(*PF_GDI_DRAW_PICTURE)(visual_t, const tchar_t*, const tchar_t*, const xrect_t*);
@@ -200,7 +199,6 @@ typedef struct _if_context_t{
 	PF_GDI_CALC_FAN			pf_gdi_calc_fan;
 	PF_GDI_DRAW_PIE			pf_gdi_draw_pie;
 	PF_GDI_DRAW_ARC			pf_gdi_draw_arc;
-	PF_GDI_DRAW_ARROW		pf_gdi_draw_arrow;
 	PF_GDI_DRAW_TEXT		pf_gdi_draw_text;
 	PF_GDI_TEXT_OUT			pf_gdi_text_out;
 	PF_GDI_FILL_REGION		pf_gdi_fill_region;

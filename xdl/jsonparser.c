@@ -631,7 +631,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 					pbo->pos += pos;
 				}
 
-				n = indent--;
+				n = --indent;
 				while (n-- && pbo->pf_write_indent)
 				{
 					pos = (*pbo->pf_write_indent)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
@@ -724,7 +724,8 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 		pbo->pos += pos;
 	}
 
-	while (indent-- && pbo->pf_write_indent)
+	n = --indent;
+	while (n-- && pbo->pf_write_indent)
 	{
 		pos = (*pbo->pf_write_indent)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
 		if (pos == C_ERR)

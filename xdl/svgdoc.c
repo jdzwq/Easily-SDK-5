@@ -158,14 +158,14 @@ void set_svg_width(link_t_ptr ptr, float width)
 
 	//xsprintf(token, _T("%.1fmm"), width);
 
-	xsprintf(token, _T("%d"), (int)(width * SVGPTPERMM));
+	xsprintf(token, _T("%d"), (int)(width * PTPERMM));
 
 	set_dom_node_attr(ptr, SVG_ATTR_WIDTH, -1, token, -1);
 }
 
 float get_svg_width(link_t_ptr ptr)
 {
-	return (float)(get_dom_node_attr_numeric(ptr, SVG_ATTR_WIDTH) / SVGPTPERMM);
+	return (float)(get_dom_node_attr_numeric(ptr, SVG_ATTR_WIDTH) / PTPERMM);
 }
 
 void set_svg_height(link_t_ptr ptr, float height)
@@ -174,14 +174,14 @@ void set_svg_height(link_t_ptr ptr, float height)
 
 	//xsprintf(token, _T("%.1fmm"), height);
 
-	xsprintf(token, _T("%d"), (int)(height * SVGPTPERMM));
+	xsprintf(token, _T("%d"), (int)(height * PTPERMM));
 
 	set_dom_node_attr(ptr, SVG_ATTR_HEIGHT, -1, token, -1);
 }
 
 float get_svg_height(link_t_ptr ptr)
 {
-	return (float)(get_dom_node_attr_numeric(ptr, SVG_ATTR_HEIGHT) / SVGPTPERMM);
+	return (float)(get_dom_node_attr_numeric(ptr, SVG_ATTR_HEIGHT) / PTPERMM);
 }
 
 void set_svg_viewbox(link_t_ptr ptr, const xrect_t* pbox)
@@ -246,8 +246,8 @@ void reset_svg_viewbox(link_t_ptr ptr)
 	xrect_t vb = { 0 };
 	float htpermm, vtpermm;
 
-	htpermm = SVGPTPERMM;
-	vtpermm = SVGPTPERMM;
+	htpermm = PTPERMM;
+	vtpermm = PTPERMM;
 
 	vb.x = 0;
 	vb.y = 0;
@@ -415,6 +415,45 @@ void write_xbrush_to_svg_node(link_t_ptr nlk, const xbrush_t* pxb)
 		{
 			set_dom_node_attr(nlk, SVG_ATTR_FILL_COLOR, -1, pxb->color, -1);
 		}
+	}
+
+	if (pxb->shadow.offx || pxb->shadow.offy)
+	{
+		ptr = svg_doc_from_node(nlk);
+		nlk_defs = get_svg_defs_node(ptr, 1, &n);
+
+		xsprintf(gid, _T("filter%d"), (n + 1));
+		xsprintf(token, _T("url(#%s)"), gid);
+		set_dom_node_attr(nlk, _T("filter"), -1, token, -1);
+
+		nlk_objs = insert_dom_node(nlk_defs, LINK_LAST);
+		set_dom_node_name(nlk_objs, _T("filter"), -1);
+		set_dom_node_attr(nlk_objs, _T("id"), -1, gid, -1);
+		set_dom_node_attr(nlk_objs, _T("x"), -1, _T("0"), -1);
+		set_dom_node_attr(nlk_objs, _T("y"), -1, _T("0"), -1);
+		set_dom_node_attr(nlk_objs, _T("width"), -1, _T("200%"), -1);
+		set_dom_node_attr(nlk_objs, _T("height"), -1, _T("200%"), -1);
+
+		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
+		set_dom_node_name(nlk_sub, _T("feOffset"), -1);
+		set_dom_node_attr(nlk_sub, _T("result"), -1, _T("offOut"), -1);
+		set_dom_node_attr(nlk_sub, _T("in"), -1, _T("SourceAlpha"), -1);
+		xsprintf(token, _T("%d"), pxb->shadow.offx);
+		set_dom_node_attr(nlk_sub, _T("dx"), -1, token, -1);
+		xsprintf(token, _T("%d"), pxb->shadow.offy);
+		set_dom_node_attr(nlk_sub, _T("dy"), -1, token, -1);
+
+		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
+		set_dom_node_name(nlk_sub, _T("feGaussianBlur"), -1);
+		set_dom_node_attr(nlk_sub, _T("result"), -1, _T("blurOut"), -1);
+		set_dom_node_attr(nlk_sub, _T("in"), -1, _T("offOut"), -1);
+		set_dom_node_attr(nlk_sub, _T("stdDeviation"), -1, _T("5"), -1);
+
+		nlk_sub = insert_dom_node(nlk_objs, LINK_LAST);
+		set_dom_node_name(nlk_sub, _T("feBlend"), -1);
+		set_dom_node_attr(nlk_sub, _T("in"), -1, _T("SourceGraphic"), -1);
+		set_dom_node_attr(nlk_sub, _T("in2"), -1, _T("blurOut"), -1);
+		set_dom_node_attr(nlk_sub, _T("mode"), -1, _T("normal"), -1);
 	}
 
 	if (!is_null(pxb->opacity))
@@ -852,14 +891,25 @@ void write_bezier_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t*
 
 void write_curve_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xpoint_t* ppt, int n)
 {
-	tchar_t token[2 * 4 * NUM_LEN + 1] = { 0 };
+	tchar_t* token;
+	int i = 0;
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
-	//xsprintf(token, _T("M%d,%d C%d,%d %d,%d %d,%d"), ppt1->x, ppt1->y, ppt2->x, ppt2->y, ppt3->x, ppt3->y, ppt4->x, ppt4->y);
+	token = xsalloc(2 * NUM_LEN * n);
+
+	xsprintf(token, _T("M%d,%d "), ppt[i].x, ppt[i].y);
+	i++;
+
+	for (i = 1; i < n; i++)
+	{
+		xsappend(token, _T("S%d,%d %d,%d "), (ppt[i - 1].x + ppt[i].x) / 2, (ppt[i - 1].y + ppt[i].y) / 2, ppt[i].x, ppt[i].y);
+	}
 
 	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
 	set_dom_node_attr(glk, SVG_ATTR_FILL_COLOR, -1, _T("none"), -1);
+
+	xsfree(token);
 
 	write_xpen_to_svg_node(glk, pxp);
 }
@@ -1013,7 +1063,7 @@ void write_text_to_svg_node(link_t_ptr glk, const xfont_t* pxf, const xface_t* p
 	set_dom_node_attr(glk,SVG_ATTR_X,-1,token,-1);
 
 	if (compare_text(pxa->line_align, -1, GDI_ATTR_TEXT_ALIGN_NEAR, -1, 1) == 0)
-		xsprintf(token,_T("%d"),(prt->y + prt->h / 2));
+		xsprintf(token,_T("%d"),(prt->y));
 	else if (compare_text(pxa->line_align, -1, GDI_ATTR_TEXT_ALIGN_FAR, -1, 1) == 0)
 		xsprintf(token, _T("%d"), (prt->y + prt->h));
 	else
@@ -1287,20 +1337,32 @@ bool_t svg_node_is_pie(link_t_ptr glk)
 	return 1;
 }
 
-void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang)
+void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang)
 {
 	xpoint_t pt1, pt2;
+	int tag = 0;
+	double rx, ry;
+	float x0, y0;
 	tchar_t token[10 * INT_LEN + 1];
 
 	set_dom_node_name(glk, SVG_NODE_PATH, -1);
 
-	pt1.x = (int)((float)rx * cos(fang)) + ppt->x;
-	pt1.y = (int)((float)ry * sin(fang)) + ppt->y;
+	rx = (float)prt->w / 2.0f;
+	ry = (float)prt->h / 2.0f;
 
-	pt2.x = (int)((float)rx * cos(tang)) + ppt->x;
-	pt2.y = (int)((float)ry * sin(tang)) + ppt->y;
+	x0 = (float)prt->x + (float)prt->w / 2.0f;
+	y0 = (float)prt->y + (float)prt->h / 2.0f;
 
-	xsprintf(token, _T("M%d %d L%d %d A%d %d 0 0 1 %d %d Z"), ppt->x, ppt->y, pt1.x, pt1.y, rx, ry, pt2.x, pt2.y);
+	pt1.x = (int)((float)rx * cos(fang) + x0);
+	pt1.y = (int)((float)ry * sin(fang) + y0);
+
+	pt2.x = (int)((float)rx * cos(tang) + x0);
+	pt2.y = (int)((float)ry * sin(tang) + y0);
+
+	if (tang - fang >= XPI)
+		tag = 1;
+
+	xsprintf(token, _T("M%d %d L%d %d A%d %d 0 %d 1 %d %d Z"), (int)x0, (int)y0, pt1.x, pt1.y, (int)rx, (int)ry, tag, pt2.x, pt2.y);
 	
 	set_dom_node_attr(glk, SVG_ATTR_D, -1, token, -1);
 
@@ -1309,7 +1371,7 @@ void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* px
 	write_xbrush_to_svg_node(glk, pxb);
 }
 
-void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang)
+void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* prt, double* pfang, double* ptang)
 {
 	const tchar_t* token;
 	int x1, y1, x2, y2, x3, y3, rx, ry;
@@ -1324,10 +1386,10 @@ void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t
 
 	xsscanf(token, _T("M%d %d L%d %d A%d %d %d %d %d %d %d Z"), &x1, &y1, &x2, &y2, &rx, &ry, &tan, &lar, &ccw, &x3, &y3);
 
-	ppt->x = x1;
-	ppt->y = y1;
-	*prx = rx;
-	*pry = ry;
+	prt->x = x1 - rx;
+	prt->y = y1 - ry;
+	prt->w = 2 * rx;
+	prt->h = 2 * ry;
 
 	*pfang = acos((float)(x2 - x1) / (float)rx);
 	if (y1 < y2)

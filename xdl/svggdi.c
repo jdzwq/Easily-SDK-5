@@ -224,16 +224,6 @@ void svg_draw_arc(canvas_t canv, const xpen_t* pxp, const xpoint_t* ppt1, const 
 	svg_draw_arc_raw(view, pxp, &pt1, &pt2, &xs, sflag, lflag);
 }
 
-void svg_draw_arrow_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc)
-{
-
-}
-
-void svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc)
-{
-
-}
-
 void svg_draw_triangle_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* orient)
 {
 	xpoint_t pt[4] = { 0 };
@@ -398,7 +388,7 @@ void svg_draw_ellipse(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, con
 	svg_draw_ellipse_raw(view, pxp, pxb, &xr);
 }
 
-void svg_draw_pie_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
+void svg_draw_pie_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang)
 {
 	link_t_ptr g, nlk;
 
@@ -406,24 +396,24 @@ void svg_draw_pie_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, con
 
 	nlk = insert_svg_node(g);
 
-	write_pie_to_svg_node(nlk, pxp, pxb, ppt, pxs->w, pxs->h, fang, tang);
+	write_pie_to_svg_node(nlk, pxp, pxb, prt, fang, tang);
 }
 
-void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang)
+void svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang)
 {
 	visual_t view;
 	xrect_t xr;
 
 	view = svg_get_canvas_visual(canv);
 
-	xr.fx = ppt->fx;
-	xr.fy = ppt->fy;
-	xr.fw = pxs->fw;
-	xr.fh = pxs->fh;
+	xr.fx = prt->fx;
+	xr.fy = prt->fy;
+	xr.fw = prt->fw;
+	xr.fh = prt->fh;
 
 	svg_rect_tm_to_pt(canv, &xr);
 
-	svg_draw_pie_raw(view, pxp, pxb, RECTPOINT(&xr), RECTSIZE(&xr), fang, tang);
+	svg_draw_pie_raw(view, pxp, pxb, &xr, fang, tang);
 }
 
 void svg_calc_fan_raw(visual_t view, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang, xpoint_t* pa, int n)
@@ -812,8 +802,7 @@ void svg_text_out_raw(visual_t view, const xfont_t* pxf, const xpoint_t* ppt, co
 	xr.w = 0;
 	xr.h = 0;
 
-	//svg_text_size_raw(view, pxf, txt, len, RECTSIZE(&xr));
-
+	svg_text_size_raw(view, pxf, txt, len, RECTSIZE(&xr));
 	default_xface(&xa);
 
 	write_text_to_svg_node(nlk, pxf, &xa, &xr, txt, len);
@@ -977,26 +966,86 @@ void svg_text_rect(canvas_t canv, const xfont_t* pxf, const xface_t* pxa, const 
 
 void svg_text_size_raw(visual_t view, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	float mm;
+	float pm, mm = 0.0f;
+	int n, total = 0;
+	byte_t chs[5];
 
-	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
+	font_metric_by_pt(xstof(pxf->size), &pm, NULL);
 
-	len = words_count(txt, len);
+	if (len < 0)
+		len = xslen(txt);
+	if (is_null(txt) || !len)
+	{
+		pxs->w = 0;
+		pxs->h = 0;
+		return ;
+	}
 
-	pxs->w = svg_tm_to_pt_raw(view, mm * len, 1) - svg_tm_to_pt_raw(view, 0, 1);
-	pxs->h = svg_tm_to_pt_raw(view, mm, 0) - svg_tm_to_pt_raw(view, 0, 0);
+	while (n = next_word((txt + total), (len - total)))
+	{
+		if (n > 1)
+		{
+			mm += pm;
+		}
+		else if (n > 0)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			if(ucs_byte_to_utf(*(txt + total), chs) > 1)
+				mm += pm;
+			else
+				mm += (float)(pm * 0.75);
+#else
+			mm += (float)(pm * 0.75);
+#endif
+		}
+
+		total += n;
+	}
+
+	pxs->w = svg_tm_to_pt_raw(view, mm, 1) - svg_tm_to_pt_raw(view, 0, 1);
+	pxs->h = svg_tm_to_pt_raw(view, pm * 1.2f, 0) - svg_tm_to_pt_raw(view, 0, 0);
 }
 
 void svg_text_size(canvas_t canv, const xfont_t* pxf, const tchar_t* txt, int len, xsize_t* pxs)
 {
-	float mm;
+	float pm, mm = 0.0f;
+	int n, total = 0;
+	byte_t chs[5];
 
-	font_metric_by_pt(xstof(pxf->size), &mm, NULL);
+	font_metric_by_pt(xstof(pxf->size), &pm, NULL);
 
-	len = words_count(txt, len);
+	if (len < 0)
+		len = xslen(txt);
+	if (is_null(txt) || !len)
+	{
+		pxs->w = 0;
+		pxs->h = 0;
+		return;
+	}
 
-	pxs->fw = mm * len;
-	pxs->fh = mm;
+	while (n = next_word((txt + total), (len - total)))
+	{
+		if (n > 1)
+		{
+			mm += pm;
+		}
+		else if (n > 0)
+		{
+#if defined(_UNICODE) || defined(UNICODE)
+			if (ucs_byte_to_utf(*(txt + total), chs) > 1)
+				mm += pm;
+			else
+				mm += (float)(pm * 0.75);
+#else
+			mm += (float)(pm * 0.75);
+#endif
+		}
+
+		total += n;
+	}
+
+	pxs->fw = mm;
+	pxs->fh = pm * 1.2f;
 }
 
 void svg_text_metric_raw(visual_t view, const xfont_t* pxf, xsize_t* pxs)

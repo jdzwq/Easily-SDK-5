@@ -2,6 +2,7 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 VAR_PATH = /var/run
 DAE_PATH = /lib/systemd/system
+BIN_PATH = ~/Easily-app-5/linux/bin
 EXE_PATH = ~/Easily-app-5/linux/sbin
 API_PATH = ~/Easily-app-5/linux/sbin/api
 INS_PATH = ~/Easily-sdk-5/linux/setup
@@ -33,6 +34,16 @@ EXE_OBJS = $(EXE_PATH)/xportm \
 	$(EXE_PATH)/xtimerd
 
 all:
+	if ! test -d $(BIN_PATH); then \
+	sudo mkdir -p $(BIN_PATH); \
+	fi
+	if ! test -d $(EXE_PATH); then \
+	sudo mkdir -p $(EXE_PATH); \
+	fi
+	if ! test -d $(API_PATH); then \
+	sudo mkdir -p $(API_PATH); \
+	fi
+
 	if ! test -d $(SRV_PATH); then \
 	sudo mkdir $(SRV_PATH); \
 	fi

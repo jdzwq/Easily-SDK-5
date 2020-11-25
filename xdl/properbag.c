@@ -1746,6 +1746,14 @@ void properbag_write_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_entity_editable(ent, 1);
 	set_entity_editor(ent, ATTR_EDITOR_FIRENUM);
 
+	len = get_plot_y_grades_token(plot, NULL, MAX_LONG);
+	token = xsalloc(len + 1);
+	get_plot_y_grades_token(plot, token, len);
+	ent = write_proper(ptr, PROPERTY_BAG_BEHAVE, -1, DOC_PLOT_Y_GRADES, -1, token, len);
+	xsfree(token);
+	set_entity_editable(ent, 1);
+	set_entity_editor(ent, ATTR_EDITOR_FIREEDIT);
+
 	len = get_plot_y_stages_token(plot, NULL, MAX_LONG);
 	token = xsalloc(len + 1);
 	get_plot_y_stages_token(plot, token, len);
@@ -1839,6 +1847,8 @@ void properbag_read_plot_attributes(link_t_ptr ptr, link_t_ptr plot)
 	set_plot_height(plot, (float)get_proper_float(ptr, PROPERTY_BAG_POSITION, DOC_PLOT_HEIGHT));
 
 	set_plot_ruler(plot, get_proper_integer(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_RULER));
+
+	set_plot_y_grades_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_GRADES), -1);
 
 	set_plot_y_stages_token(plot, get_proper_ptr(ptr, PROPERTY_BAG_BEHAVE, DOC_PLOT_Y_STAGES), -1);
 

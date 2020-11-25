@@ -56,8 +56,8 @@ canvas_t create_svg_canvas(visual_t view)
 
 	pcanv = (svg_canvas_t*)xmem_alloc(sizeof(svg_canvas_t));
 
-	htpermm = SVGPTPERMM;
-	vtpermm = SVGPTPERMM;
+	htpermm = PTPERMM;
+	vtpermm = PTPERMM;
 
 	vb.x = 0;
 	vb.y = 0;

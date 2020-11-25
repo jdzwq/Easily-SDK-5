@@ -66,7 +66,6 @@ void get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 	pif->pf_draw_pie = draw_pie;
 	pif->pf_draw_fan = draw_fan;
 	pif->pf_calc_fan = calc_fan;
-	pif->pf_draw_arrow = draw_arrow;
 	pif->pf_draw_polygon = draw_polygon;
 	pif->pf_draw_equalgon = draw_equalgon;
 	pif->pf_calc_equalgon = calc_equalgon;
@@ -105,7 +104,6 @@ void get_visual_interface(visual_t visu, if_drawing_t* piv)
 	piv->pf_draw_pie = draw_pie_raw;
 	piv->pf_draw_fan = draw_fan_raw;
 	piv->pf_calc_fan = calc_fan_raw;
-	piv->pf_draw_arrow = draw_arrow_raw;
 	piv->pf_draw_polygon = draw_polygon_raw;
 	piv->pf_draw_equalgon = draw_equalgon_raw;
 	piv->pf_calc_equalgon = calc_equalgon_raw;

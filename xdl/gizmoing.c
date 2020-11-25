@@ -53,6 +53,7 @@ void draw_logo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -114,6 +115,7 @@ void draw_plus_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -165,6 +167,7 @@ void draw_minus_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -209,6 +212,7 @@ void draw_collapse_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -264,6 +268,7 @@ void draw_expand_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -320,6 +325,7 @@ void draw_begin_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -377,6 +383,7 @@ void draw_up_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* 
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -427,6 +434,7 @@ void draw_down_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -477,6 +485,7 @@ void draw_end_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t*
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -534,6 +543,7 @@ void draw_first_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -591,6 +601,7 @@ void draw_prev_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -641,6 +652,7 @@ void draw_next_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -691,6 +703,7 @@ void draw_last_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -738,6 +751,313 @@ void draw_last_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	(*pif->pf_draw_line)(pif->ctx, &xp, &pt[0], &pt[1]);
 }
 
+void draw_motion_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
+{
+	xpen_t xp;
+	xrect_t rt, xr;
+	xpoint_t pa[4];
+	int ps;
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	rt.x = prt->x;
+	rt.y = prt->y;
+
+	if (prt->w > MIDD_GIZMO && prt->h > MIDD_GIZMO)
+	{
+		xscpy(xp.size, _T("3"));
+		rt.w = LARGE_GIZMO;
+		rt.h = LARGE_GIZMO;
+	}
+	else if (prt->w > SMALL_GIZMO && prt->h > SMALL_GIZMO)
+	{
+		xscpy(xp.size, _T("2"));
+		rt.w = MIDD_GIZMO;
+		rt.h = MIDD_GIZMO;
+	}
+	else
+	{
+		xscpy(xp.size, _T("1"));
+		rt.w = SMALL_GIZMO;
+		rt.h = SMALL_GIZMO;
+	}
+
+	prt = &rt;
+
+	ps = xstol(xp.size);
+
+	xr.x = prt->x + prt->w / 2 + ps;
+	xr.y = prt->y;
+	xr.w = prt->w / 2 - 2 * ps;
+	xr.h = prt->h / 2 - 2 * ps;
+
+	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
+
+	pa[0].x = prt->x + prt->w / 4;
+	pa[0].y = prt->y + prt->h / 2;
+	pa[1].x = prt->x + prt->w * 3 / 8;
+	pa[1].y = prt->y + prt->h/ 8;
+	pa[2].x = prt->x + prt->w * 3 / 4;
+	pa[2].y = prt->y + prt->h * 5 / 8;
+	pa[3].x = prt->x + prt->w;
+	pa[3].y = prt->y + prt->h / 2;
+
+	(*pif->pf_draw_bezier)(pif->ctx, &xp, &pa[0], &pa[1], &pa[2], &pa[3]);
+
+	pa[0].x = prt->x;
+	pa[0].y = prt->y + prt->h;
+	pa[1].x = prt->x + prt->w / 2;
+	pa[1].y = prt->y + prt->h / 2;
+	pa[2].x = prt->x + prt->w * 3 / 4;
+	pa[2].y = prt->y + prt->h * 3 / 4;
+	pa[3].x = prt->x + prt->w / 2;
+	pa[3].y = prt->y + prt->h * 3 / 4 + ps;
+
+	(*pif->pf_draw_polyline)(pif->ctx, &xp, pa, 4);
+}
+
+void draw_drug_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
+{
+	xpen_t xp;
+	xbrush_t xb;
+	xrect_t rt, xr;
+	xpoint_t pa[10];
+	tchar_t ta[10];
+	int ps;
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
+	rt.x = prt->x;
+	rt.y = prt->y;
+
+	if (prt->w > MIDD_GIZMO && prt->h > MIDD_GIZMO)
+	{
+		xscpy(xp.size, _T("3"));
+		rt.w = LARGE_GIZMO;
+		rt.h = LARGE_GIZMO;
+	}
+	else if (prt->w > SMALL_GIZMO && prt->h > SMALL_GIZMO)
+	{
+		xscpy(xp.size, _T("2"));
+		rt.w = MIDD_GIZMO;
+		rt.h = MIDD_GIZMO;
+	}
+	else
+	{
+		xscpy(xp.size, _T("1"));
+		rt.w = SMALL_GIZMO;
+		rt.h = SMALL_GIZMO;
+	}
+
+	prt = &rt;
+
+	ps = xstol(xp.size);
+
+	ta[0] = _T('M');
+	pa[0].x = prt->x;
+	pa[0].y = prt->y + prt->h / 4;
+
+	ta[1] = _T('A');
+	pa[1].x = 1;
+	pa[1].y = 0;
+	pa[2].x = prt->h / 4;
+	pa[2].y = prt->h / 4;
+	pa[3].x = prt->x + prt->w / 4;
+	pa[3].y = prt->y;
+
+	ta[2] = _T('L');
+	pa[4].x = prt->x + prt->w;
+	pa[4].y = prt->y + prt->h * 3 / 4;
+
+	ta[3] = _T('A');
+	pa[5].x = 1;
+	pa[5].y = 0;
+	pa[6].x = prt->h / 4;
+	pa[6].y = prt->h / 4;
+	pa[7].x = prt->x + prt->w * 3 / 4;
+	pa[7].y = prt->y + prt->h;
+
+	ta[4] = _T('L');
+	pa[8].x = prt->x;
+	pa[8].y = prt->y + prt->h / 4;
+
+	ta[5] = _T('Z');
+
+	lighten_xbrush(&xb, DEF_HARD_DARKEN);
+
+	(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 9);
+
+	ta[0] = _T('M');
+	pa[0].x = prt->x;
+	pa[0].y = prt->y + prt->h / 4;
+
+	ta[1] = _T('A');
+	pa[1].x = 1;
+	pa[1].y = 0;
+	pa[2].x = prt->h / 2;
+	pa[2].y = prt->h / 2;
+	pa[3].x = prt->x + prt->w / 2;
+	pa[3].y = prt->y + prt->h / 4;
+
+	ta[2] = _T('L');
+	pa[4].x = prt->x + prt->w;
+	pa[4].y = prt->y + prt->h * 3 / 4;
+
+	ta[3] = _T('L');
+	pa[5].x = prt->x + prt->w * 3 / 4;
+	pa[5].y = prt->y + prt->h;
+
+	ta[4] = _T('L');
+	pa[6].x = prt->x;
+	pa[6].y = prt->y + prt->h / 4;
+
+	ta[5] = _T('Z');
+
+	format_xcolor(pxc, xb.color);
+
+	(*pif->pf_draw_path)(pif->ctx, NULL, &xb, ta, pa, 7);
+}
+
+void draw_male_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
+{
+	xpen_t xp;
+	xbrush_t xb;
+	xrect_t rt, xr;
+	xpoint_t pt1, pt2;
+	int ps;
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
+	rt.x = prt->x;
+	rt.y = prt->y;
+
+	if (prt->w > MIDD_GIZMO && prt->h > MIDD_GIZMO)
+	{
+		xscpy(xp.size, _T("3"));
+		rt.w = LARGE_GIZMO;
+		rt.h = LARGE_GIZMO;
+	}
+	else if (prt->w > SMALL_GIZMO && prt->h > SMALL_GIZMO)
+	{
+		xscpy(xp.size, _T("2"));
+		rt.w = MIDD_GIZMO;
+		rt.h = MIDD_GIZMO;
+	}
+	else
+	{
+		xscpy(xp.size, _T("1"));
+		rt.w = SMALL_GIZMO;
+		rt.h = SMALL_GIZMO;
+	}
+
+	prt = &rt;
+
+	ps = xstol(xp.size);
+
+	xr.x = prt->x;
+	xr.y = prt->y + prt->h / 2;
+	xr.w = prt->w / 2;
+	xr.h = prt->h / 2;
+
+	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
+
+	pt1.x = prt->x + prt->w / 2 - ps;
+	pt1.y = prt->y + prt->h / 2 + ps;
+	pt2.x = prt->x + prt->w - ps;
+	pt2.y = prt->y + ps;
+
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
+
+	pt1.x = prt->x + prt->w / 2;
+	pt1.y = prt->y + prt->h / 4;
+	pt2.x = prt->x + prt->w - ps;
+	pt2.y = prt->y + ps;
+
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
+
+	pt1.x = prt->x + prt->w * 3 / 4;
+	pt1.y = prt->y + prt->h / 2;
+	pt2.x = prt->x + prt->w - ps;
+	pt2.y = prt->y + ps;
+
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
+}
+
+void draw_female_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
+{
+	xpen_t xp;
+	xbrush_t xb;
+	xrect_t rt, xr;
+	xpoint_t pt1, pt2;
+	int ps;
+
+	default_xpen(&xp);
+	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
+	rt.x = prt->x;
+	rt.y = prt->y;
+
+	if (prt->w > MIDD_GIZMO && prt->h > MIDD_GIZMO)
+	{
+		xscpy(xp.size, _T("3"));
+		rt.w = LARGE_GIZMO;
+		rt.h = LARGE_GIZMO;
+	}
+	else if (prt->w > SMALL_GIZMO && prt->h > SMALL_GIZMO)
+	{
+		xscpy(xp.size, _T("2"));
+		rt.w = MIDD_GIZMO;
+		rt.h = MIDD_GIZMO;
+	}
+	else
+	{
+		xscpy(xp.size, _T("1"));
+		rt.w = SMALL_GIZMO;
+		rt.h = SMALL_GIZMO;
+	}
+
+	prt = &rt;
+
+	ps = xstol(xp.size);
+
+	xr.x = prt->x + prt->w / 4;
+	xr.y = prt->y;
+	xr.w = prt->w / 2;
+	xr.h = prt->h / 2;
+
+	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
+
+	pt1.x = prt->x + prt->w / 2;
+	pt1.y = prt->y + prt->h / 2;
+	pt2.x = prt->x + prt->w / 2;
+	pt2.y = prt->y + prt->h;
+
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
+
+	pt1.x = prt->x + prt->w / 4 + ps;
+	pt1.y = prt->y + prt->h * 3 / 4;
+	pt2.x = prt->x + prt->w - prt->w / 4 - ps;
+	pt2.y = prt->y + prt->h * 3 / 4;
+
+	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
+}
+
 void draw_zoomin_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
@@ -747,6 +1067,7 @@ void draw_zoomin_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -805,6 +1126,7 @@ void draw_zoomout_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -870,6 +1192,7 @@ void draw_keybox_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -900,8 +1223,6 @@ void draw_keybox_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	ps = xstol(xp.size);
 
-	lighten_xpen(&xp, DEF_HARD_DARKEN);
-
 	xr.x = prt->x;
 	xr.y = prt->y + ps;
 	xr.w = prt->w;
@@ -926,6 +1247,7 @@ void draw_keyboxed_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -953,8 +1275,6 @@ void draw_keyboxed_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 	}
 
 	prt = &rt;
-
-	lighten_xpen(&xp, -20);
 
 	xr.x = prt->x - SINGLE_SPAN;
 	xr.y = prt->y + SINGLE_SPAN;
@@ -1001,6 +1321,7 @@ void draw_touch_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1028,8 +1349,6 @@ void draw_touch_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	}
 
 	prt = &rt;
-
-	lighten_xpen(&xp, -20);
 
 	xr.x = prt->x - SINGLE_SPAN;
 	xr.y = prt->y - SINGLE_SPAN;
@@ -1062,6 +1381,7 @@ void draw_touched_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1093,8 +1413,6 @@ void draw_touched_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	prt = &rt;
 
-	lighten_xpen(&xp, -20);
-
 	xr.x = prt->x - SINGLE_SPAN;
 	xr.y = prt->y - SINGLE_SPAN;
 	xr.w = prt->w + DOUBLE_SPAN;
@@ -1118,6 +1436,7 @@ void draw_close_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1176,6 +1495,7 @@ void draw_minimize_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1215,9 +1535,11 @@ void draw_maximize_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 {
 	xpen_t xp;
 	xrect_t rt, xr;
+	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1243,17 +1565,19 @@ void draw_maximize_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	prt = &rt;
 
+	ps = xstol(xp.size);
+
 	xr.x = prt->x;
-	xr.w = prt->w - DOUBLE_SPAN;
+	xr.w = prt->w - (ps + 1);
 	xr.y = prt->y;
-	xr.h = prt->h - DOUBLE_SPAN;
+	xr.h = prt->h - (ps + 1);
 
 	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 
-	xr.x = prt->x + DOUBLE_SPAN;
-	xr.w = prt->w - DOUBLE_SPAN;
-	xr.y = prt->y + DOUBLE_SPAN;
-	xr.h = prt->h - DOUBLE_SPAN;
+	xr.x = prt->x + (ps + 1);
+	xr.w = prt->w - (ps + 1);
+	xr.y = prt->y + (ps + 1);
+	xr.h = prt->h - (ps + 1);
 
 	if (xr.w < xr.h)
 		xr.w = xr.h;
@@ -1270,6 +1594,7 @@ void draw_restore_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1312,6 +1637,7 @@ void draw_sum_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t*
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1372,6 +1698,7 @@ void draw_checkbox_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1418,10 +1745,10 @@ void draw_checked_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
-	lighten_xbrush(&xb, DEF_SOFT_LIGHTEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1484,6 +1811,7 @@ void draw_radiobox_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1528,6 +1856,7 @@ void draw_radioed_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1574,6 +1903,7 @@ void draw_selected_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1632,6 +1962,7 @@ void draw_folder_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1696,6 +2027,7 @@ void draw_guider_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1758,6 +2090,7 @@ void draw_fixed_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1816,6 +2149,7 @@ void draw_numeric_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1874,6 +2208,7 @@ void draw_omit_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -1928,6 +2263,7 @@ void draw_doc_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t*
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -1990,6 +2326,7 @@ void draw_new(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2073,6 +2410,10 @@ void draw_open_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2099,9 +2440,6 @@ void draw_open_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y + ps;
@@ -2133,6 +2471,7 @@ void draw_save_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -2281,6 +2620,10 @@ void draw_schema_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2307,9 +2650,6 @@ void draw_schema_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -2356,6 +2696,10 @@ void draw_output_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2382,9 +2726,6 @@ void draw_output_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	pt[0].x = prt->x + prt->w / 2;
 	pt[0].y = prt->y + prt->h / 4;
@@ -2419,6 +2760,10 @@ void draw_input_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2445,9 +2790,6 @@ void draw_input_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	pt[0].x = prt->x + prt->w;
 	pt[0].y = prt->y + prt->h / 4;
@@ -2488,6 +2830,9 @@ void draw_print_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	format_xcolor(pxc, xp.color);
 	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
 	rt.x = prt->x;
 	rt.y = prt->y;
 
@@ -2513,9 +2858,6 @@ void draw_print_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	pt[0].x = prt->x + prt->w / 4 + ps;
 	pt[0].y = prt->y;
@@ -2556,6 +2898,10 @@ void draw_preview_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2582,10 +2928,6 @@ void draw_preview_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
-	lighten_xbrush(&xb, DEF_HARD_LIGHTEN);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -2607,6 +2949,9 @@ void draw_screen_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	format_xcolor(pxc, xp.color);
 	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
+
 	rt.x = prt->x;
 	rt.y = prt->y;
 
@@ -2632,9 +2977,6 @@ void draw_screen_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -2674,6 +3016,10 @@ void draw_execute_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2700,9 +3046,6 @@ void draw_execute_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	pt[0].x = prt->x + prt->w / 2 - 2 * ps;
 	pt[0].y = prt->y + prt->h / 4 * 3;
@@ -2755,6 +3098,10 @@ void draw_selectall_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2781,9 +3128,6 @@ void draw_selectall_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -2826,6 +3170,7 @@ void draw_delete_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2878,6 +3223,10 @@ void draw_insert_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2904,9 +3253,6 @@ void draw_insert_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -2956,6 +3302,10 @@ void draw_remove_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -2983,8 +3333,6 @@ void draw_remove_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	ps = xstol(xp.size);
 
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -3039,6 +3387,10 @@ void draw_clear_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3065,9 +3417,6 @@ void draw_clear_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -3136,6 +3485,10 @@ void draw_append_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3162,9 +3515,6 @@ void draw_append_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -3219,6 +3569,10 @@ void draw_copy_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3245,9 +3599,6 @@ void draw_copy_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -3289,6 +3640,10 @@ void draw_cut_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t*
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3315,9 +3670,6 @@ void draw_cut_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t*
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	pt[0].x = prt->x + prt->w / 4;
 	pt[0].y = prt->y;
@@ -3360,6 +3712,10 @@ void draw_paste_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3386,9 +3742,6 @@ void draw_paste_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -3422,6 +3775,10 @@ void draw_undo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3448,9 +3805,6 @@ void draw_undo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y + prt->h / 4 * 3;
@@ -3497,6 +3851,10 @@ void draw_redo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3523,9 +3881,6 @@ void draw_redo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y + prt->h / 4 * 3;
@@ -3579,6 +3934,10 @@ void draw_fontname_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3608,9 +3967,6 @@ void draw_fontname_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -3643,6 +3999,7 @@ void draw_fontsize_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3718,6 +4075,7 @@ void draw_fontweight_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3775,6 +4133,7 @@ void draw_fontcolor_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -3843,6 +4202,7 @@ void draw_fontstyle_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3902,6 +4262,10 @@ void draw_foreground_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3928,9 +4292,6 @@ void draw_foreground_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 	ps = xstol(xp.size);
 
 	prt = &rt;
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 4 * 3 - 2 * ps;
 	xr.y = prt->y;
@@ -3966,6 +4327,10 @@ void draw_background_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -3992,9 +4357,6 @@ void draw_background_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 	ps = xstol(xp.size);
 
 	prt = &rt;
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 2 - 2 * ps;
 	xr.y = prt->y;
@@ -4029,6 +4391,7 @@ void draw_alignnear_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4089,6 +4452,7 @@ void draw_aligncenter_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const 
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4149,6 +4513,7 @@ void draw_alignfar_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4209,6 +4574,7 @@ void draw_arrangelept_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const 
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4276,6 +4642,7 @@ void draw_arrangecenter_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, cons
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4343,6 +4710,7 @@ void draw_arrangeright_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4411,6 +4779,10 @@ void draw_sizehorz_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4437,9 +4809,6 @@ void draw_sizehorz_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -4487,6 +4856,10 @@ void draw_sizevert_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4513,9 +4886,6 @@ void draw_sizevert_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 4 * 3;
 	xr.y = prt->y;
@@ -4563,6 +4933,10 @@ void draw_spacehorz_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4589,9 +4963,6 @@ void draw_spacehorz_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y + prt->h / 4;
@@ -4650,6 +5021,10 @@ void draw_spacevert_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4676,9 +5051,6 @@ void draw_spacevert_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 4;
 	xr.y = prt->y;
@@ -4737,6 +5109,10 @@ void draw_edit_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4763,9 +5139,6 @@ void draw_edit_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 2 - 2 * ps;
 	xr.y = prt->y;
@@ -4793,6 +5166,10 @@ void draw_group_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4819,9 +5196,6 @@ void draw_group_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 4;
 	xr.y = prt->y + prt->h / 4;
@@ -4857,6 +5231,10 @@ void draw_order_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4883,9 +5261,6 @@ void draw_order_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 4 - (int)(1.5 * (float)ps);
 	xr.y = prt->y + prt->h / 4 - (int)(1.5 * (float)ps);
@@ -4920,6 +5295,7 @@ void draw_border_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -4980,6 +5356,10 @@ void draw_shape_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5006,9 +5386,6 @@ void draw_shape_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + ps;
 	xr.y = prt->y + ps;
@@ -5096,6 +5473,7 @@ void draw_check_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5151,6 +5529,10 @@ void draw_singletext_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5177,9 +5559,6 @@ void draw_singletext_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const x
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y + prt->h / 2 - 3 * ps;
@@ -5212,6 +5591,7 @@ void draw_multitext_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xr
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5282,6 +5662,7 @@ void draw_tag_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t*
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5338,6 +5719,7 @@ void draw_memo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5403,6 +5785,10 @@ void draw_photo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5429,9 +5815,6 @@ void draw_photo_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -5472,6 +5855,10 @@ void draw_herf_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5498,9 +5885,6 @@ void draw_herf_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xscpy(xp.size, _T("1"));
 
@@ -5535,6 +5919,7 @@ void draw_code_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -5596,6 +5981,10 @@ void draw_table_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5622,9 +6011,6 @@ void draw_table_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -5689,6 +6075,7 @@ void draw_rich_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5765,6 +6152,7 @@ void draw_grid_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -5854,6 +6242,7 @@ void draw_graph_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5880,15 +6269,6 @@ void draw_graph_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	pt[0].x = prt->x;
-	pt[0].y = prt->y;
-	pt[1].x = prt->x;
-	pt[1].y = prt->y + prt->h;
-	pt[2].x = prt->x + prt->w;
-	pt[2].y = prt->y + prt->h;
-
-	(*pif->pf_draw_polyline)(pif->ctx, &xp, pt, 3);
 
 	pt[0].x = prt->x + ps;
 	pt[0].y = prt->y + prt->h / 2;
@@ -5902,6 +6282,16 @@ void draw_graph_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	pt[4].y = prt->y + prt->h / 2;
 
 	(*pif->pf_draw_curve)(pif->ctx, &xp, pt, 5);
+
+	pt[0].x = prt->x;
+	pt[0].y = prt->y;
+	pt[1].x = prt->x;
+	pt[1].y = prt->y + prt->h;
+	pt[2].x = prt->x + prt->w;
+	pt[2].y = prt->y + prt->h;
+
+	xscpy(xp.size, _T("1"));
+	(*pif->pf_draw_polyline)(pif->ctx, &xp, pt, 3);
 }
 
 void draw_images_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
@@ -5914,6 +6304,10 @@ void draw_images_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -5940,9 +6334,6 @@ void draw_images_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x;
 	xr.y = prt->y;
@@ -5996,6 +6387,10 @@ void draw_update_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -6022,9 +6417,6 @@ void draw_update_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 2 - prt->w / 4;
 	xr.y = prt->y + prt->h / 4;
@@ -6063,6 +6455,10 @@ void draw_fetch_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -6089,9 +6485,6 @@ void draw_fetch_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	xr.x = prt->x + prt->w / 2 - prt->w / 4;
 	xr.y = prt->y + prt->h / 4;
@@ -6129,6 +6522,10 @@ void draw_fresh_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -6155,9 +6552,6 @@ void draw_fresh_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	prt = &rt;
 
 	ps = xstol(xp.size);
-
-	default_xbrush(&xb);
-	format_xcolor(pxc, xb.color);
 
 	pt[0].x = prt->x + prt->w / 2 + 2 * ps;
 	pt[0].y = prt->y + prt->h / 4;
@@ -6204,6 +6598,7 @@ void draw_helpc_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -6263,6 +6658,7 @@ void draw_helpp_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -6316,6 +6712,7 @@ void draw_start_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6372,6 +6769,7 @@ void draw_stop_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6427,6 +6825,7 @@ void draw_pause_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6489,6 +6888,7 @@ void draw_find_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6545,6 +6945,7 @@ void draw_proper_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6609,6 +7010,7 @@ void draw_style_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6658,8 +7060,7 @@ void draw_style_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 	xr.w = 2 * ps;
 	xr.h = 2 * ps;
 
-	lighten_xpen(&xp, -20);
-	lighten_xbrush(&xb, -20);
+	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
 	(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 }
@@ -6674,6 +7075,7 @@ void draw_note_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6732,6 +7134,7 @@ void draw_book_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6761,32 +7164,33 @@ void draw_book_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	prt = &rt;
 
 	ps = xstol(xp.size);
+	pt_expand_rect(&rt, 0, -ps);
 
 	pt[0].x = prt->x;
-	pt[0].y = prt->y + 1 * ps;
+	pt[0].y = prt->y + ps;
 	pt[1].x = prt->x + prt->w / 4;
 	pt[1].y = prt->y;
 	pt[2].x = prt->x + prt->w / 2;
-	pt[2].y = prt->y + +1 * ps;
+	pt[2].y = prt->y + ps;
 	pt[3].x = prt->x + prt->w / 4 * 3;
 	pt[3].y = prt->y;
 	pt[4].x = prt->x + prt->w;
-	pt[4].y = prt->y + 1 * ps;
+	pt[4].y = prt->y + ps;
 	pt[5].x = prt->x + prt->w;
 	pt[5].y = prt->y + prt->h;
 	pt[6].x = prt->x + prt->w / 4 * 3;
-	pt[6].y = prt->y + prt->h - 1 * ps;
+	pt[6].y = prt->y + prt->h - ps;
 	pt[7].x = prt->x + prt->w / 2;
 	pt[7].y = prt->y + prt->h;
 	pt[8].x = prt->x + prt->w / 4;
-	pt[8].y = prt->y + prt->h - 1 * ps;
+	pt[8].y = prt->y + prt->h - ps;
 	pt[9].x = prt->x;
 	pt[9].y = prt->y + prt->h;
 
 	(*pif->pf_draw_polygon)(pif->ctx, &xp, NULL, pt, 10);
 
 	pt[0].x = prt->x + prt->w / 2;
-	pt[0].y = prt->y + 1 * ps;
+	pt[0].y = prt->y + ps;
 	pt[1].x = prt->x + prt->w / 2;
 	pt[1].y = prt->y + prt->h;
 
@@ -6803,6 +7207,7 @@ void draw_import_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6838,12 +7243,7 @@ void draw_import_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	xr.w = prt->w / 2;
 	xr.h = prt->h / 4;
 
-	lighten_xpen(&xp, DEF_HARD_DARKEN);
-	lighten_xbrush(&xb, DEF_HARD_DARKEN);
-
 	(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xr);
-
-	lighten_xpen(&xp, DEF_HARD_LIGHTEN);
 
 	pt[0].x = prt->x + prt->w / 4 - 1 * ps;
 	pt[0].y = prt->y + prt->h / 2;
@@ -6883,6 +7283,7 @@ void draw_export_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -6918,12 +7319,7 @@ void draw_export_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	xr.w = prt->w / 2;
 	xr.h = prt->h / 4;
 
-	lighten_xpen(&xp, DEF_HARD_DARKEN);
-	lighten_xbrush(&xb, DEF_HARD_DARKEN);
-
 	(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xr);
-
-	lighten_xpen(&xp, DEF_HARD_LIGHTEN);
 
 	pt[0].x = prt->x + prt->w / 4 - 1 * ps;
 	pt[0].y = prt->y + prt->h / 2;
@@ -6963,6 +7359,7 @@ void draw_dialog_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7012,8 +7409,6 @@ void draw_dialog_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	xr.w = ps;
 	xr.h = ps;
 
-	lighten_xbrush(&xb, DEF_HARD_DARKEN);
-
 	(*pif->pf_draw_rect)(pif->ctx, &xp, &xb, &xr);
 }
 
@@ -7024,6 +7419,7 @@ void draw_calendar_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -7087,6 +7483,7 @@ void draw_diagram_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -7191,6 +7588,7 @@ void draw_list_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7274,6 +7672,7 @@ void draw_navi_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7336,6 +7735,7 @@ void draw_spin_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7413,6 +7813,7 @@ void draw_slide_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -7466,6 +7867,7 @@ void draw_radio_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7496,17 +7898,14 @@ void draw_radio_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	ps = xstol(xp.size);
 
-	xr.x = prt->x + prt->w / 4;
-	xr.y = prt->y + prt->h / 4;
-	xr.w = prt->w / 2;
-	xr.h = prt->h / 2;
+	xr.x = prt->x + ps;
+	xr.y = prt->y + ps;
+	xr.w = prt->w - 2 * ps;
+	xr.h = prt->h - 2 * ps;
 
 	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
 
-	xr.x = prt->x + prt->w / 2 - ps;
-	xr.y = prt->y + prt->h / 2 - ps;
-	xr.w = 2 * ps;
-	xr.h = 2 * ps;
+	pt_expand_rect(&xr, - 2 * ps, - 2 * ps);
 
 	(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 }
@@ -7523,6 +7922,7 @@ void draw_date_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7601,6 +8001,7 @@ void draw_time_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -7653,6 +8054,7 @@ void draw_push_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -7693,13 +8095,18 @@ void draw_push_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 void draw_person_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
+	xbrush_t xb;
 	xrect_t rt, xr;
 	int ps;
-	tchar_t ta[10] = { 0 };
-	xpoint_t pa[12] = { 0 };
+	tchar_t ta[5] = { 0 };
+	xpoint_t pa[5] = { 0 };
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -7733,70 +8140,58 @@ void draw_person_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 	xr.w = prt->w / 2;
 	xr.h = prt->h / 2;
 
-	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
+	(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 
 	ta[0] = _T('M');
 	pa[0].x = prt->x;
 	pa[0].y = prt->y + prt->h;
 
-	ta[1] = _T('L');
-	pa[1].x = prt->x;
-	pa[1].y = prt->y + prt->h / 2 + 2 * ps;
+	ta[1] = _T('A');
+	pa[1].x = 1;
+	pa[1].y = 0;
+	pa[2].x = prt->h / 2;
+	pa[2].y = prt->h / 2;
+	pa[3].x = prt->x + prt->w;
+	pa[3].y = prt->y + prt->h;
 
-	ta[2] = _T('A');
-	pa[2].x = 1;
-	pa[2].y = 0;
-	pa[3].x = 2 * ps;
-	pa[3].y = 2 * ps;
-	pa[4].x = prt->x + 2 * ps;
-	pa[4].y = prt->y + prt->h / 2;
+	ta[2] = _T('L');
+	pa[4].x = prt->x;
+	pa[4].y = prt->y + prt->h;
 
-	ta[3] = _T('L');
-	pa[5].x = prt->x + prt->w - 2 * ps;
-	pa[5].y = prt->y + prt->h / 2;
+	ta[3] = _T('Z');
 
-	ta[4] = _T('A');
-	pa[6].x = 1;
-	pa[6].y = 0;
-	pa[7].x = 2 * ps;
-	pa[7].y = 2 * ps;
-	pa[8].x = prt->x + prt->w;
-	pa[8].y = prt->y + prt->h / 2 + 2 * ps;
-
-	ta[5] = _T('L');
-	pa[9].x = prt->x + prt->w;
-	pa[9].y = prt->y + prt->h;
-
-	ta[6] = _T('L');
-	pa[10].x = prt->x;
-	pa[10].y = prt->y + prt->h;
-
-	(*pif->pf_draw_path)(pif->ctx, &xp, NULL, ta, pa, 11);
+	(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 5);
 }
 
 void draw_user_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xpen_t xp;
+	xbrush_t xb;
 	xrect_t rt, xr;
 	xsize_t xs;
-	xpoint_t pt[3];
+	tchar_t ta[5] = { 0 };
+	xpoint_t pa[5] = { 0 };
 	int ps;
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
+
+	default_xbrush(&xb);
+	format_xcolor(pxc, xb.color);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
 
 	if (prt->w > MIDD_GIZMO && prt->h > MIDD_GIZMO)
 	{
-		xscpy(xp.size, _T("3"));
+		xscpy(xp.size, _T("2"));
 		rt.w = LARGE_GIZMO;
 		rt.h = LARGE_GIZMO;
 	}
 	else if (prt->w > SMALL_GIZMO && prt->h > SMALL_GIZMO)
 	{
-		xscpy(xp.size, _T("2"));
+		xscpy(xp.size, _T("1"));
 		rt.w = MIDD_GIZMO;
 		rt.h = MIDD_GIZMO;
 	}
@@ -7811,35 +8206,59 @@ void draw_user_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	ps = xstol(xp.size);
 
-	xr.x = prt->x + prt->w / 2 - 2 * ps;
+	xr.x = prt->x + prt->w / 2;
 	xr.y = prt->y + prt->h / 4;
-	xr.w = 4 * ps;
+	xr.w = prt->w / 4;
 	xr.h = prt->h / 4;
 
 	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
 
-	xr.x = prt->x;
+	ta[0] = _T('M');
+	pa[0].x = prt->x + prt->w / 4;
+	pa[0].y = prt->y + prt->h * 3 / 4;
+
+	ta[1] = _T('A');
+	pa[1].x = 1;
+	pa[1].y = 0;
+	pa[2].x = prt->h / 2;
+	pa[2].y = prt->h / 2;
+	pa[3].x = prt->x + prt->w;
+	pa[3].y = prt->y + prt->h * 3 / 4;
+
+	ta[2] = _T('L');
+	pa[4].x = prt->x + prt->w / 4;
+	pa[4].y = prt->y + prt->h * 3 / 4;
+
+	ta[3] = _T('Z');
+
+	(*pif->pf_draw_path)(pif->ctx, &xp, NULL, ta, pa, 5);
+
+	xr.x = prt->x + prt->w / 4;
 	xr.y = prt->y + prt->h / 2;
-	xr.w = prt->w;
-	xr.h = prt->h;
+	xr.w = prt->w / 4;
+	xr.h = prt->h / 4;
 
-	pt[0].x = xr.x;
-	pt[0].y = xr.y + xr.h / 2;
-	pt[1].x = xr.x + xr.w;
-	pt[1].y = xr.y + xr.h / 2;
+	(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb, &xr);
 
-	xs.w = xr.w / 2;
-	xs.h = xr.h / 2;
+	ta[0] = _T('M');
+	pa[0].x = prt->x;
+	pa[0].y = prt->y + prt->h;
 
-	//XPI ~ 0
-	(*pif->pf_draw_arc)(pif->ctx, &xp, &pt[0], &pt[1], &xs, 1, 0);
+	ta[1] = _T('A');
+	pa[1].x = 1;
+	pa[1].y = 0;
+	pa[2].x = prt->h / 2;
+	pa[2].y = prt->h / 2;
+	pa[3].x = prt->x + prt->w * 3 / 4;
+	pa[3].y = prt->y + prt->h;
 
-	pt[0].x = prt->x;
-	pt[0].y = prt->y + prt->h;
-	pt[1].x = prt->x + prt->w;
-	pt[1].y = prt->y + prt->h;
+	ta[2] = _T('L');
+	pa[4].x = prt->x;
+	pa[4].y = prt->y + prt->h;
 
-	(*pif->pf_draw_line)(pif->ctx, &xp, &pt[0], &pt[1]);
+	ta[3] = _T('Z');
+
+	(*pif->pf_draw_path)(pif->ctx, &xp, &xb, ta, pa, 5);
 }
 
 void draw_location_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
@@ -7853,6 +8272,7 @@ void draw_location_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xre
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7928,6 +8348,7 @@ void draw_trends_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -7979,6 +8400,7 @@ void draw_panto_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -8016,16 +8438,11 @@ void draw_panto_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	(*pif->pf_draw_ellipse)(pif->ctx, &xp, NULL, &xr);
 
-	xr.x = prt->x + prt->w / 2;
-	xr.y = prt->y + prt->h / 2;
-	xr.w = prt->w / 2;
-	xr.h = prt->h / 2;
-
-	(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, RECTPOINT(&xr), RECTSIZE(&xr), 0, XPI / 2);
+	(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, &xr, 0, XPI / 2);
 
 	lighten_xbrush(&xb, DEF_HARD_DARKEN);
 
-	(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, RECTPOINT(&xr), RECTSIZE(&xr), XPI, XPI / 2 * 3);
+	(*pif->pf_draw_pie)(pif->ctx, &xp, &xb, &xr, XPI, XPI / 2 * 3);
 }
 
 void draw_scatter_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
@@ -8037,6 +8454,7 @@ void draw_scatter_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -8108,6 +8526,7 @@ void draw_density_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -8179,6 +8598,7 @@ void draw_counter_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -8233,6 +8653,7 @@ void draw_process_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrec
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -8294,6 +8715,7 @@ void draw_judge_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xfont(&xf);
 	default_xface(&xa);
@@ -8357,6 +8779,7 @@ void draw_lock_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -8424,6 +8847,7 @@ void draw_unlock_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	rt.x = prt->x;
 	rt.y = prt->y;
@@ -8485,6 +8909,7 @@ void draw_home_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 
 	default_xpen(&xp);
 	format_xcolor(pxc, xp.color);
+	lighten_xpen(&xp, DEF_HARD_DARKEN);
 
 	default_xbrush(&xb);
 	format_xcolor(pxc, xb.color);
@@ -8581,11 +9006,13 @@ GIZMO_DRAW_TABLE g_gizmo_table[] = {
 	{ GDI_ATTR_GIZMO_DIALOG, draw_dialog_gizmo },
 	{ GDI_ATTR_GIZMO_DOC, draw_doc_gizmo },
 	{ GDI_ATTR_GIZMO_DOWN, draw_down_gizmo },
+	{ GDI_ATTR_GIZMO_DRUG, draw_drug_gizmo },
 	{ GDI_ATTR_GIZMO_EDIT, draw_edit_gizmo },
 	{ GDI_ATTR_GIZMO_END, draw_end_gizmo },
 	{ GDI_ATTR_GIZMO_EXECUTE, draw_execute_gizmo },
 	{ GDI_ATTR_GIZMO_EXPAND, draw_expand_gizmo },
 	{ GDI_ATTR_GIZMO_EXPORT, draw_export_gizmo },
+	{ GDI_ATTR_GIZMO_FEMALE, draw_female_gizmo },
 	{ GDI_ATTR_GIZMO_FETCH, draw_fetch_gizmo },
 	{ GDI_ATTR_GIZMO_FIND, draw_find_gizmo },
 	{ GDI_ATTR_GIZMO_FIRST, draw_first_gizmo },
@@ -8619,10 +9046,12 @@ GIZMO_DRAW_TABLE g_gizmo_table[] = {
 	{ GDI_ATTR_GIZMO_LOCATION, draw_location_gizmo },
 	{ GDI_ATTR_GIZMO_LOCK, draw_lock_gizmo },
 	{ GDI_ATTR_GIZMO_LOGO, draw_logo_gizmo },
+	{ GDI_ATTR_GIZMO_MALE, draw_male_gizmo },
 	{ GDI_ATTR_GIZMO_MAXIMIZE, draw_maximize_gizmo },
 	{ GDI_ATTR_GIZMO_MEMO, draw_memo_gizmo },
 	{ GDI_ATTR_GIZMO_MINIMIZE, draw_minimize_gizmo },
 	{ GDI_ATTR_GIZMO_MINUS, draw_minus_gizmo },
+	{ GDI_ATTR_GIZMO_MOTION, draw_motion_gizmo },
 	{ GDI_ATTR_GIZMO_MULTITEXT, draw_multitext_gizmo },
 	{ GDI_ATTR_GIZMO_NAVI, draw_navi_gizmo },
 	{ GDI_ATTR_GIZMO_NEW, draw_new },
@@ -8754,12 +9183,11 @@ void draw_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr
 void test_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr)
 {
 	xfont_t xf;
-	xface_t xa;
 	xrect_t xr;
 
 	int i, j, k;
-	int feed = 10;
-	int split = 200;
+	int feed = 8;
+	int split = 100;
 
 	if_drawing_t it = { 0 };
 	visual_t visu;
@@ -8770,9 +9198,6 @@ void test_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr
 	k = sizeof(g_gizmo_table) / sizeof(GIZMO_DRAW_TABLE);
 
 	default_xfont(&xf);
-	format_xcolor(pxc, xf.color);
-
-	default_xface(&xa);
 
 	j = 0;
 	for (i = 0; k--; i++)
@@ -8798,16 +9223,16 @@ void test_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr
 
 		(*(g_gizmo_table[k].gizmo_func))(&it, pxc, &xr);
 
-		xr.x = pxr->x + j * split + SMALL_GIZMO + MIDD_GIZMO + LARGE_GIZMO + 4 * feed;
+		xr.x = pxr->x + j * split + SMALL_GIZMO + MIDD_GIZMO + 3 * feed;
 		xr.y = pxr->y + i * (LARGE_GIZMO + feed);
 		xr.w = LARGE_GIZMO;
 		xr.h = LARGE_GIZMO;
 
 		(*it.pf_text_out)(it.ctx, &xf, RECTPOINT(&xr), g_gizmo_table[k].gizmo_name, -1);
 
-		if (i > 15)
+		if (i > 11)
 		{
-			i = 0;
+			i = -1;
 			j++;
 		}
 	}

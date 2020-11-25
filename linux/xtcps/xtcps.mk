@@ -5,12 +5,11 @@ SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib
 
 LIB_PATH = ../lib
-API_PATH = ../sbin/api
 INC_PATH = ~/Easily-sdk-5/include
 NET_PATH = ~/Easily-sdk-5/api/net_srv
-OUT_PATH = ../sbin
+OUT_PATH = ~/Easily-app-5/linux/sbin
 
-LIBS =  -lpthread -L $(API_PATH) -lxds -lxdl
+LIBS =  -lpthread -L $(LIB_PATH) -lxds -lxdl
 SRCS = $(NET_PATH)/srvcrt.cc $(NET_PATH)/srvlog.cc $(NET_PATH)/xtcps.cc $(NET_PATH)/xtcpsMain.cc
 OBJS = $(patsubst %.cc, %.o, $(SRCS))
 MODULE = xtcps

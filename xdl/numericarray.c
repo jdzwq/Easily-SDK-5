@@ -71,7 +71,7 @@ double get_numeric(double** sa, int index)
 	size = (int)(*(long*)(sa + 1));
 
 	if (index < 0 || index >= size)
-		return 0;
+		return MAXDBL;
 
 	return pa[index];
 }

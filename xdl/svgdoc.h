@@ -418,7 +418,7 @@ EXP_API bool_t svg_node_is_pie(link_t_ptr glk);
 @INPUT double tang: the end angle.
 @RETURN void: none.
 */
-EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, int rx, int ry, double fang, double tang);
+EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang);
 
 /*
 @FUNCTION read_pie_from_svg_node: read pie attributes from the svg node.
@@ -432,7 +432,7 @@ EXP_API void write_pie_to_svg_node(link_t_ptr glk, const xpen_t* pxp, const xbru
 @OUTPUT double* ptang: for returning end angle.
 @RETURN void: none
 */
-EXP_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xpoint_t* ppt, int* prx, int* pry, double* pfang, double* ptang);
+EXP_API void read_pie_from_svg_node(link_t_ptr glk, xpen_t* pxp, xbrush_t* pxb, xrect_t* ppt, double* pfang, double* ptang);
 
 
 /*

@@ -170,38 +170,72 @@ EXP_API const tchar_t*	get_plot_style_ptr(link_t_ptr ptr);
 EXP_API void set_plot_style(link_t_ptr ptr, const tchar_t* style, int len);
 
 /*
-@FUNCTION get_plot_y_stages: get plot y-stages string array.
+@FUNCTION get_plot_y_stages: get plot x-stages string array.
 @INPUT link_t_ptr ptr: the plot link component.
 @OUTPUT tchar_t** sa: the string array.
 @RETURN int: return token count.
 */
-EXP_API int	get_plot_y_stages(link_t_ptr ptr, double** sa);
+EXP_API int	get_plot_y_stages(link_t_ptr ptr, tchar_t** sa);
 
 /*
-@FUNCTION set_plot_y_stages: get plot y-stages string array.
+@FUNCTION set_plot_y_stages: get plot x-stages string array.
 @INPUT link_t_ptr ptr: the plot link component.
 @INPUT tchar_t** sa: the string array.
 @RETURN void: none.
 */
-EXP_API void	set_plot_y_stages(link_t_ptr ptr, double** sa);
+EXP_API void set_plot_y_stages(link_t_ptr ptr, tchar_t** sa);
 
 /*
-@FUNCTION get_plot_y_stages: get plot y-stages string array.
+@FUNCTION get_plot_y_stages: get plot x-stages string arrax.
 @INPUT link_t_ptr ptr: the plot link component.
-@INPUT tchar_t* buf: the characters buffer for returning y-stages string array.
+@INPUT tchar_t* buf: the characters buffer for returning x-stages string arrax.
 @INPUT int max: the buffer size.
 @RETURN int: return characters copied.
 */
 EXP_API int	get_plot_y_stages_token(link_t_ptr ptr, tchar_t* buf, int max);
 
 /*
-@FUNCTION set_plot_y_stages: set plot y-stages string array.
+@FUNCTION set_plot_y_stages: set plot x-stages string arrax.
 @INPUT link_t_ptr ptr: the plot link component.
-@INPUT const tchar_t* y-stages: the plot y-stages string array.
-@INPUT int len: the y-stages string length.
+@INPUT const tchar_t* x-stages: the plot x-stages string arrax.
+@INPUT int len: the x-stages string length.
 @RETURN void: none.
 */
 EXP_API void set_plot_y_stages_token(link_t_ptr ptr, const tchar_t* y_stages, int len);
+
+/*
+@FUNCTION get_plot_y_grades: get plot y-grades string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@OUTPUT tchar_t** sa: the string array.
+@RETURN int: return token count.
+*/
+EXP_API int	get_plot_y_grades(link_t_ptr ptr, double** sa);
+
+/*
+@FUNCTION set_plot_y_grades: get plot y-grades string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT tchar_t** sa: the string array.
+@RETURN void: none.
+*/
+EXP_API void	set_plot_y_grades(link_t_ptr ptr, double** sa);
+
+/*
+@FUNCTION get_plot_y_grades: get plot y-grades string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT tchar_t* buf: the characters buffer for returning y-grades string array.
+@INPUT int max: the buffer size.
+@RETURN int: return characters copied.
+*/
+EXP_API int	get_plot_y_grades_token(link_t_ptr ptr, tchar_t* buf, int max);
+
+/*
+@FUNCTION set_plot_y_grades: set plot y-grades string array.
+@INPUT link_t_ptr ptr: the plot link component.
+@INPUT const tchar_t* y-grades: the plot y-grades string array.
+@INPUT int len: the y-grades string length.
+@RETURN void: none.
+*/
+EXP_API void set_plot_y_grades_token(link_t_ptr ptr, const tchar_t* y_grades, int len);
 
 /*
 @FUNCTION get_plot_y_bases: get plot y-bases string array.

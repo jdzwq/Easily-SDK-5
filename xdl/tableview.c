@@ -111,7 +111,7 @@ void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xfa
 
 	lh = (float)(xs.fh * lr);
 
-	w = 0;
+	w = pif->rect.fw;
 	h = 0;
 	ilk = get_string_next_entity(ptr, LINK_FIRST);
 	while (ilk)
@@ -152,7 +152,7 @@ void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const
 
 	calc_table_item_rect(pif, pxf, pxa, ptr, plk, pxr);
 	pxr->fx += fw * ratio;
-	pxr->fw -= fw * (1 - ratio);
+	pxr->fw = fw * (1 - ratio);
 }
 
 int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk)

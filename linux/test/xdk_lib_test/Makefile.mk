@@ -4,7 +4,7 @@ CFLAGS = -g -Wall
 LIB_PATH = /usr/local/lib
 INC_PATH = ~/Easily-sdk-5/include
 SRC_PATH = ~/Easily-sdk-5/test/xdk_lib_test
-OUT_PATH = ~/Easily-sdk-5/linux/bin
+OUT_PATH = ~/Easily-app-5/linux/bin
 
 SRCS = $(SRC_PATH)/main.cpp
 OBJS = $(patsubst %.cpp, %.o, $(SRCS))

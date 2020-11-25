@@ -3796,7 +3796,7 @@ int a_xsprintf_arg(schar_t* buf,const schar_t* fmt,va_list* parg)
 			break;
 		}
 
-		if(xo == XO_CONTINUE)
+		if(xo == XO_CONTINUE && *token != '\0')
 		{
 			token ++;
 			tk_count ++;
@@ -3970,7 +3970,7 @@ int w_xsprintf_arg(wchar_t* buf,const wchar_t* fmt,va_list* parg)
 			break;
 		}
 
-		if(xo == XO_CONTINUE)
+		if(xo == XO_CONTINUE && *token != L'\0')
 		{
 			token ++;
 			tk_count ++;

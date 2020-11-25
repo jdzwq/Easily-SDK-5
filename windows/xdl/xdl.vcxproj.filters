@@ -594,6 +594,9 @@
     <ClInclude Include="..\..\xdl\dbinf.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xdl\jioning.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xdl\actable.c">
@@ -1107,6 +1110,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\dbinf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\jioning.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

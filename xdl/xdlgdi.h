@@ -7,6 +7,7 @@
 
 #include "shaping.h"
 #include "gizmoing.h"
+#include "jioning.h"
 #include "coding.h"
 #include "texting.h"
 #include "dataing.h"

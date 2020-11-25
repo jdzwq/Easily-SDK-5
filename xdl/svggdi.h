@@ -156,21 +156,8 @@ LOC_API void	svg_draw_ellipse_raw(visual_t view, const xpen_t* pxp, const xbrush
 @INPUT double tang: the to angle PI value.
 @RETURN void: none.
 */
-LOC_API void	svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang);
-LOC_API void	svg_draw_pie_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xpoint_t* ppt, const xsize_t* pxs, double fang, double tang);
-
-/*
-@FUNCTION svg_draw_arrow: draw arrrow in svg canvas using millimeter coordinate.
-@INPUT canvas_t canv: the svg canvas object.
-@INPUT const xpen_t* pxp: the pen struct.
-@INPUT const xbrush_t* pxb: the brush struct.
-@INPUT const xrect_t* pxr: the rect struct using float member.
-@INPUT const xspan_t* pxn: the arrow length in millimeter.
-@INPUT double arc: the arrow angle PI value.
-@RETURN void: none.
-*/
-LOC_API void	svg_draw_arrow(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc);
-LOC_API void	svg_draw_arrow_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pxr, const xspan_t* pxn, double arc);
+LOC_API void	svg_draw_pie(canvas_t canv, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, double fang, double tang);
+LOC_API void	svg_draw_pie_raw(visual_t view, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* pt, double fang, double tang);
 
 /*
 @FUNCTION svg_calc_fan: draw fan in svg canvas using millimeter coordinate.
