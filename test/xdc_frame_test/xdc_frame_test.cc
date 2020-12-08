@@ -500,7 +500,7 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_CONTRAGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BALANCEGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_BARGRAM, -1);
-		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_KPIGRAM, -1);
+		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_KPIGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TASKGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_SCATTERGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_MEDIANGRAM, -1);
@@ -508,7 +508,7 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_TRENDGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_PANTOGRAM, -1);
 		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_RADARGRAM, -1);
-		set_plot_type(ptr_plot, ATTR_PLOT_TYPE_FUELGRAM, -1);
+		//set_plot_type(ptr_plot, ATTR_PLOT_TYPE_FUELGRAM, -1);
 
 		set_plot_width(ptr_plot, 100);
 		set_plot_height(ptr_plot, 50);
@@ -523,7 +523,7 @@ res_win_t _MainFrame_CreatePanel(res_win_t widget, const tchar_t* wclass)
 		set_plot_y_shapes_token(ptr_plot, _T("top-triangle,rect,left-triangle,round,right-triangle,ellipse,bottom-triangle"), -1);
 		set_plot_x_labels_token(ptr_plot, _T("text1,text2,text3"), -1);
 		set_plot_x_colors_token(ptr_plot, _T("LightSlateGray,CornflowerBlue,DarkSalmon,ForestGreen,Indigo,LightSteelBlue,Orange,PapayaWhip"), -1);
-		set_plot_ruler(ptr_plot, 10);
+		set_plot_ruler(ptr_plot, 5);
 		set_plot_matrix_rows(ptr_plot, 5);
 		set_plot_matrix_cols(ptr_plot, 3);
 		set_plot_matrix_data(ptr_plot, _T(" {[2, 1, 3, 5] [2, 1,3, 4][4, 3, 5, 7] [6, 5, 7, 8] [8, 5, 8, 10]}"), -1);

@@ -763,7 +763,7 @@ static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matr
 
 		y_base = get_numeric(plt->y_bases, i);
 		y_step = get_numeric(plt->y_steps, i);
-		dbl = matrix_get_value(pmt, 0, i);
+		dbl = matrix_get_value(pmt, i, 0);
 
 		if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 			dbr = ((dbl - y_base) / y_step);
@@ -3412,10 +3412,10 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 			if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 				fr = (float)((dbl - y_base) / (y_step * y_ruler));
 			else
-				fr = 0;
+				fr = 0.0f;
 
-			if (fr < 0)
-				fr = 0;
+			if (fr < 0.0f)
+				fr = 0.0f;
 
 			dx = (pa[j].fx - pt.fx) * fr;
 			dy = (pa[j].fy - pt.fy) * fr;
@@ -3423,7 +3423,7 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 			pa[j].fx = pt.fx + dx;
 			pa[j].fy = pt.fy + dy;
 
-			if (IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step))
+			if (!IS_ZERO_FLOAT(fr) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step))
 				xsprintf(numstr, _T("%.f"), dbl);
 			else
 				xscpy(numstr, _T(""));
