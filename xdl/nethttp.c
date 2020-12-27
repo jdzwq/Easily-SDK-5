@@ -2469,7 +2469,7 @@ bool_t xhttp_send_response(xhand_t xhttp)
 
 		if (phttp->pif->pf_setopt)
 		{
-			opt = TCP_MIN_SNDBUFF;
+			opt = len_response;
 			(*phttp->pif->pf_setopt)(phttp->pif->fd, SOCK_OPTION_SNDBUF, (void*)&opt, sizeof(int));
 		}
 

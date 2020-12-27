@@ -78,8 +78,10 @@ static ciphers_set server_ciphers[] = {
 	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
 	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
 	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
+	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 8, 20, 24 },
+	{ SSL_RSA_WITH_RC4_128_SHA, 16, 0, 20, 16 },
+	{ SSL_RSA_WITH_RC4_128_MD5, 16, 0, 16, 16 },
 };
-
 
 #define IS_DHE_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA || cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA)? 1 : 0)
 
@@ -174,22 +176,27 @@ typedef struct _ssl_t{
 }ssl_t;
 
 /***********************************************************************************************************************************/
+//hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
+//pad_1:  The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
+//pad_2 : The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
+//seq_num : The sequence number for this message.
+//hash : Hashing algorithm derived from the cipher suite.
 
 static void _ssl_mac_md5(byte_t *secret, byte_t *ctr, byte_t *msg, int len, int type, byte_t out[16])
 {
-	byte_t header[11];
-	byte_t padding[48];
-	md5_context md5;
+	byte_t header[SSL_CTR_SIZE + 3] = { 0 };
+	byte_t padding[48] = { 0 };
+	md5_context md5 = { 0 };
 
-	xmem_copy(header, ctr, 8);
-	PUT_BYTE(header, 8, (byte_t)type);
-	PUT_SWORD_NET(header, 9, (unsigned short)len);
+	xmem_copy(header, ctr, SSL_CTR_SIZE);
+	PUT_BYTE(header, SSL_CTR_SIZE, (byte_t)type);
+	PUT_SWORD_NET(header, (SSL_CTR_SIZE + 1), (unsigned short)len);
 
 	xmem_set(padding, 0x36, 48);
 	md5_starts(&md5);
 	md5_update(&md5, secret, 16);
 	md5_update(&md5, padding, 48);
-	md5_update(&md5, header, 11);
+	md5_update(&md5, header, SSL_CTR_SIZE + 3);
 	md5_update(&md5, msg, len);
 	md5_finish(&md5, out);
 
@@ -203,19 +210,19 @@ static void _ssl_mac_md5(byte_t *secret, byte_t *ctr, byte_t *msg, int len, int 
 
 static void _ssl_mac_sha1(byte_t *secret, byte_t *ctr, byte_t *buf, int len, int type, byte_t out[20])
 {
-	byte_t header[11];
-	byte_t padding[40];
-	sha1_context sha1;
+	byte_t header[SSL_CTR_SIZE + 3] = { 0 };
+	byte_t padding[40] = { 0 };
+	sha1_context sha1 = { 0 };
 
-	xmem_copy(header, ctr, 8);
-	PUT_BYTE(header, 8, (byte_t)type);
-	PUT_SWORD_NET(header, 9, (unsigned short)len);
+	xmem_copy(header, ctr, SSL_CTR_SIZE);
+	PUT_BYTE(header, SSL_CTR_SIZE, (byte_t)type);
+	PUT_SWORD_NET(header, (SSL_CTR_SIZE + 1), (unsigned short)len);
 
 	xmem_set(padding, 0x36, 40);
 	sha1_starts(&sha1);
 	sha1_update(&sha1, secret, 20);
 	sha1_update(&sha1, padding, 40);
-	sha1_update(&sha1, header, 11);
+	sha1_update(&sha1, header, SSL_CTR_SIZE + 3);
 	sha1_update(&sha1, buf, len);
 	sha1_finish(&sha1, out);
 
@@ -227,8 +234,39 @@ static void _ssl_mac_sha1(byte_t *secret, byte_t *ctr, byte_t *buf, int len, int
 	sha1_finish(&sha1, out);
 }
 
+//master_secret =
+//MD5(pre_master_secret + SHA('A' + pre_master_secret + ClientHello.random + ServerHello.random)) +
+//MD5(pre_master_secret + SHA('BB' + pre_master_secret + ClientHello.random + ServerHello.random)) +
+//MD5(pre_master_secret + SHA('CCC' + pre_master_secret + ClientHello.random + ServerHello.random));
+static void _ssl_prf0(byte_t *secret, int slen, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
+{
+	int i, mul;
+	byte_t padding[16] = { 0 };
+	byte_t sha1sum[20] = { 0 };
+
+	sha1_context sha1 = { 0 };
+	md5_context md5 = { 0 };
+
+	mul = dlen / 16;
+	for (i = 0; i < mul; i++)
+	{
+		xmem_set((void*)padding, 'A' + i, 1 + i);
+
+		sha1_starts(&sha1);
+		sha1_update(&sha1, padding, 1 + i);
+		sha1_update(&sha1, secret, slen);
+		sha1_update(&sha1, random, rlen);
+		sha1_finish(&sha1, sha1sum);
+
+		md5_starts(&md5);
+		md5_update(&md5, secret, slen);
+		md5_update(&md5, sha1sum, 20);
+		md5_finish(&md5, dstbuf + i * 16);
+	}
+}
+
 /*
-PRF(secret, label, seed) = P_MD5(S1, label + seed) XOR P_SHA-1(S2, label + seed);
+PRF1(secret, label, seed) = P_MD5(S1, label + seed) XOR P_SHA-1(S2, label + seed);
 L_S = length in bytes of secret;
 L_S1 = L_S2 = ceil(L_S / 2);
 
@@ -237,7 +275,7 @@ A(0) = seed
 A(i) = HMAC_hash(secret, A(i-1))
 */
 
-static void _ssl_prf(byte_t *secret, int slen, char *label, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
+static void _ssl_prf1(byte_t *secret, int slen, char *label, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
 {
 	int nb, hs;
 	int i, j, k;
@@ -298,7 +336,7 @@ A(0) = seed
 A(i) = HMAC_hash(secret, A(i-1))
 */
 
-static void _ssl_prf2(byte_t *secret, int slen, char *label, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
+static void _ssl_prf3(byte_t *secret, int slen, char *label, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
 {
 	int nb, hs;
 	int i, j, k;
@@ -459,13 +497,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	byte_t rndb[SSL_RND_SIZE * 2] = { 0 };
 	byte_t keyblk[SSL_BLK_SIZE] = { 0 };
 
-	byte_t padding[16] = { 0 };
-	byte_t sha1sum[20] = { 0 };
-	int i;
 	byte_t *key_enc, *key_dec;
-
-	sha1_context sha1 = { 0 };
-	md5_context md5 = {0};
 
 	//generating master security
 	if (!pssl->resumed)
@@ -475,28 +507,15 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 
 		if (pssl->minor_ver == SSL_MINOR_VERSION_0)
 		{
-			for (i = 0; i < 3; i++)
-			{
-				xmem_set((void*)padding, 'A' + i, 1 + i);
-
-				sha1_starts(&sha1);
-				sha1_update(&sha1, padding, 1 + i);
-				sha1_update(&sha1, premaster, prelen);
-				sha1_update(&sha1, rndb, SSL_RND_SIZE * 2);
-				sha1_finish(&sha1, sha1sum);
-
-				md5_starts(&md5);
-				md5_update(&md5, premaster, prelen);
-				md5_update(&md5, sha1sum, 20);
-				md5_finish(&md5, pssl->master_secret + i * 16);
-			}
+			_ssl_prf0(premaster, prelen, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
+		}
+		else if (pssl->minor_ver == SSL_MINOR_VERSION_3)
+		{
+			_ssl_prf3(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
 		}
 		else
 		{
-			if (pssl->minor_ver == SSL_MINOR_VERSION_3)
-				_ssl_prf2(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
-			else
-				_ssl_prf(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
+			_ssl_prf1(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
 		}
 	}
 
@@ -510,47 +529,38 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	// generate key block
 	if (pssl->minor_ver == SSL_MINOR_VERSION_0)
 	{
-		xmem_zero(&md5, sizeof(md5_context));
-		xmem_zero(&sha1, sizeof(sha1_context));
-
-		for (i = 0; i < 16; i++)
-		{
-			xmem_set(padding, 'A' + i, 1 + i);
-
-			sha1_starts(&sha1);
-			sha1_update(&sha1, padding, 1 + i);
-			sha1_update(&sha1, pssl->master_secret, SSL_MST_SIZE);
-			sha1_update(&sha1, rndb, SSL_RND_SIZE * 2);
-			sha1_finish(&sha1, sha1sum);
-
-			md5_starts(&md5);
-			md5_update(&md5, pssl->master_secret, SSL_MST_SIZE);
-			md5_update(&md5, sha1sum, 20);
-			md5_finish(&md5, keyblk + i * 16);
-		}
+		//key_block =
+		//MD5(master_secret + SHA(`A' + master_secret + ServerHello.random + ClientHello.random)) +
+		//MD5(master_secret + SHA(`BB' + master_secret + ServerHello.random + ClientHello.random)) +
+		//MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random + ClientHello.random)) + [...];
+		_ssl_prf0(pssl->master_secret, SSL_MST_SIZE, rndb, SSL_RND_SIZE * 2, keyblk, SSL_BLK_SIZE);
+	}
+	else if (pssl->minor_ver == SSL_MINOR_VERSION_3)
+	{
+		//key_block = 
+		//PRF(SecurityParameters.master_secret,
+		//"key expansion",
+		//SecurityParameters.server_random +
+		//SecurityParameters.client_random);
+		_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, SSL_BLK_SIZE);
 	}
 	else
 	{
-		/*
-		key_block = PRF(SecurityParameters.master_secret,
-		"key expansion",
-		SecurityParameters.server_random +
-		SecurityParameters.client_random);
-		*/
-		if (pssl->minor_ver == SSL_MINOR_VERSION_3)
-			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, 256);
-		else
-			_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, 256);
+		//key_block = 
+		//PRF(SecurityParameters.master_secret,
+		//"key expansion",
+		//SecurityParameters.server_random +
+		//SecurityParameters.client_random);
+		_ssl_prf1(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, SSL_BLK_SIZE);
 	}
 
-	/* the key_block is partitioned as follows:
-		client_write_MAC_secret[SecurityParameters.hash_size]
-		server_write_MAC_secret[SecurityParameters.hash_size]
-		client_write_key[SecurityParameters.key_material_length]
-		server_write_key[SecurityParameters.key_material_length]
-		client_write_IV[SecurityParameters.IV_size]
-		server_write_IV[SecurityParameters.IV_size]
-	*/
+	//the key_block is partitioned as follows:
+	//client_write_MAC_secret[SecurityParameters.hash_size]
+	//server_write_MAC_secret[SecurityParameters.hash_size]
+	//client_write_key[SecurityParameters.key_material_length]
+	//server_write_key[SecurityParameters.key_material_length]
+	//client_write_IV[SecurityParameters.IV_size]
+	//server_write_IV[SecurityParameters.IV_size]
 	if (pssl->type == SSL_TYPE_CLIENT)
 	{
 		//client_write_MAC_secret for client encrypting record
@@ -632,17 +642,13 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 	byte_t* mac_buf;
 	byte_t iv_pre[SSL_MAX_IVC] = {0};
 
-	/*
-	The MAC is generated as:
-       HMAC_hash(MAC_write_secret, seq_num + TLSCompressed.type +
-                     TLSCompressed.version + TLSCompressed.length +
-                     TLSCompressed.fragment));
-	*/
-
 	mac_buf = pssl->snd_msg + pssl->snd_msg_len;
 
 	if (pssl->minor_ver == SSL_MINOR_VERSION_0)
 	{
+		//The MAC is generated as :
+		//hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
+		
 		if (pssl->hash_size == 16)
 		{
 			_ssl_mac_md5(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
@@ -660,6 +666,9 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 	}
 	else
 	{
+		//The MAC is generated as:
+		//HMAC_hash(MAC_write_secret, seq_num + TLSCompressed.type + TLSCompressed.version + TLSCompressed.length + TLSCompressed.fragment));
+
 		if (pssl->hash_size == 16)
 		{
 			md5_hmac(pssl->mac_enc, pssl->hash_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
@@ -745,13 +754,6 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 
 	//reset message length
 	PUT_SWORD_NET(pssl->snd_hdr, 3, (unsigned short)pssl->snd_msg_len);
-
-	//incre out message control bits
-	for (i = 7; i >= 0; i--)
-	{
-		if (++pssl->snd_ctr[i] != 0)
-			break;
-	}
 
 	return C_OK;
 }
@@ -840,7 +842,7 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	{
 		if (pssl->hash_size == 16)
 			_ssl_mac_md5(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
-		else
+		else if (pssl->hash_size == 20)
 			_ssl_mac_sha1(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
 	}
 	else
@@ -860,20 +862,13 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 		return C_ERR;
 	}
 
-	//incres in message control bits
-	for (i = 7; i >= 0; i--)
-	{
-		if (++pssl->rcv_ctr[i] != 0)
-			break;
-	}
-
 	return C_OK;
 }
 
 static int _ssl_write_snd_msg(ssl_t *pssl)
 {
 	dword_t dw;
-	int haslen;
+	int i, haslen;
 	byte_t* token;
 	int total;
 
@@ -910,6 +905,13 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 		if (C_OK != _ssl_encrypt_snd_msg(pssl))
 		{
 			raise_user_error(NULL, NULL);
+		}
+
+		//incre send message control bits
+		for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
+		{
+			if (++pssl->snd_ctr[i] != 0)
+				break;
 		}
 	}
 
@@ -981,7 +983,7 @@ static bool_t _ssl_write_close(ssl_t* pssl)
 static int _ssl_read_rcv_msg(ssl_t *pssl)
 {
 	dword_t dw;
-	int haslen;
+	int i, haslen;
 	byte_t* token;
 	int total;
 
@@ -1044,6 +1046,13 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 		if (C_OK != _ssl_decrypt_rcv_msg(pssl))
 		{
 			raise_user_error(NULL, NULL);
+		}
+
+		//incre recv message control bits
+		for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
+		{
+			if (++pssl->rcv_ctr[i] != 0)
+				break;
 		}
 	}
 
@@ -2149,6 +2158,7 @@ static int _ssl_write_client_certificate_verify(ssl_t *pssl)
 
 static handshake_states _ssl_write_client_change_cipher_spec(ssl_t *pssl)
 {
+	int i;
 	/*
 	struct {
 		enum { change_cipher_spec(1), (255) } type;
@@ -2161,6 +2171,12 @@ static handshake_states _ssl_write_client_change_cipher_spec(ssl_t *pssl)
 
 	//may not crypted sending
 	pssl->crypted = 0;
+
+	//clear send message control bits
+	for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
+	{
+		pssl->snd_ctr[i] = 0;
+	}
 
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_CLIENT_FINISHED : SSL_HANDSHAKE_ERROR;
 }
@@ -2229,14 +2245,14 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 		{
 			sha2_finish(&sha2, padbuf); //32 bytes
 
-			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
 			md5_finish(&md5, padbuf); //16 bytes
 			sha1_finish(&sha1, padbuf + 16); //20 bytes
 
-			_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 36, mac_buf, 12);
+			_ssl_prf1(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 36, mac_buf, 12);
 		}
 
 		msglen += 12;
@@ -2262,6 +2278,7 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 
 static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
 {
+	int i;
 	/*
 	struct {
 	enum { change_cipher_spec(1), (255) } type;
@@ -2286,6 +2303,12 @@ static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
 	{
 		set_last_error(_T("_ssl_parse_server_change_cipher_spec"), _T("invalid change cipher spec message context"), -1);
 		return SSL_HANDSHAKE_ERROR;
+	}
+
+	//clear recv message control bits
+	for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
+	{
+		pssl->rcv_ctr[i] = 0;
 	}
 
 	return SSL_SERVER_FINISHED;
@@ -2349,14 +2372,14 @@ static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
 		{
 			sha2_finish(&sha2, padbuf);
 
-			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
 			md5_finish(&md5, padbuf);
 			sha1_finish(&sha1, padbuf + 16);
 
-			_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 36, mac_buf, 12);
+			_ssl_prf1(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 36, mac_buf, 12);
 		}
 
 		hash_len = 12;
@@ -3462,6 +3485,7 @@ static handshake_states _ssl_parse_client_certificate_verify(ssl_t *pssl)
 
 static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
 {
+	int i;
 	/*
 	struct {
 		enum { change_cipher_spec(1), (255) } type;
@@ -3486,6 +3510,12 @@ static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
 	{
 		set_last_error(_T("_ssl_parse_client_change_cipher_spec"), _T("invalid change cipher spec message context"), -1);
 		return SSL_HANDSHAKE_ERROR;
+	}
+
+	//clear recv message control bits
+	for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
+	{
+		pssl->rcv_ctr[i] = 0;
 	}
 
 	return SSL_CLIENT_FINISHED;
@@ -3548,13 +3578,13 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 		if (pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
 			sha2_finish(&sha2, padbuf);
-			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
 			md5_finish(&md5, padbuf);
 			sha1_finish(&sha1, padbuf + 16);
-			_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 36, mac_buf, 12);
+			_ssl_prf1(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 36, mac_buf, 12);
 		}
 
 		hash_len = 12;
@@ -3583,6 +3613,7 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 
 static handshake_states _ssl_write_server_change_cipher_spec(ssl_t *pssl)
 {
+	int i;
 	/*
 	struct {
 		enum { change_cipher_spec(1), (255) } type;
@@ -3595,6 +3626,12 @@ static handshake_states _ssl_write_server_change_cipher_spec(ssl_t *pssl)
 
 	//the change cipher spec message may not be crypted sended
 	pssl->crypted = 0;
+
+	//clear send message control bits
+	for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
+	{
+		pssl->snd_ctr[i] = 0;
+	}
 
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_SERVER_FINISHED : SSL_HANDSHAKE_ERROR;
 }
@@ -3625,6 +3662,16 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 
 	if (pssl->minor_ver == SSL_MINOR_VERSION_0)
 	{
+		//struct {
+		//	opaque md5_hash[16];
+		//	opaque sha_hash[20];
+		//} Finished;
+		//md5_hash:  MD5(master_secret + pad2 + MD5(handshake_messages + Sender + master_secret + pad1));
+		//sha_hash:  SHA(master_secret + pad2 + SHA(handshake_messages + Sender + master_secret + pad1));
+		//pad_1:  The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
+		//pad_2 : The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
+		//enum { client(0x434C4E54), server(0x53525652) } Sender;
+
 		xmem_set(padbuf, 0x36, 48);
 
 		md5_update(&md5, "SRVR", 4);
@@ -3658,13 +3705,13 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 		if (pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
 			sha2_finish(&sha2, padbuf);
-			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
 			md5_finish(&md5, padbuf);
 			sha1_finish(&sha1, padbuf + 16);
-			_ssl_prf(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 36, mac_buf, 12);
+			_ssl_prf1(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 36, mac_buf, 12);
 		}
 
 		msglen += 12;
