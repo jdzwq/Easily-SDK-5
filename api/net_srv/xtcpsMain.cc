@@ -71,6 +71,10 @@ int main(int argc, char* argv[])
 
 	bio = NULL;
 
+	socket_shutdown(sok, 2);
+
+	thread_sleep(500);
+
 	socket_close(sok);
 	sok = INVALID_FILE;
 

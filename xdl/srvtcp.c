@@ -122,6 +122,10 @@ static unsigned STDCALL thread_dispatch(void* param)
 	if (tcp)
 		xtcp_close(tcp);
 
+	socket_shutdown(so, 2);
+
+	thread_yield();
+
 	socket_close(so);
 
 	xdl_thread_uninit(0);
@@ -159,6 +163,10 @@ static unsigned STDCALL process_dispatch(void* param)
         thread_yield();
         
         release_process(&pi);
+	}
+	else
+	{
+		thread_yield();
 	}
 
 	socket_close(so);
