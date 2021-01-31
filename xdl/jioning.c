@@ -30,7 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "jioning.h"
-#include "miscell.h"
+#include "miscella.h"
 
 #if defined(XDL_SUPPORT_GDI)
 

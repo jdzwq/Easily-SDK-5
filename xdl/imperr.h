@@ -85,11 +85,11 @@ EXP_API void xdl_trace(const tchar_t* code, const tchar_t* info);
 */
 EXP_API void xdl_trace_last(void);
 
-#define XDL_TRACE(code, token)	xdl_trace(code, token)
-
 #if defined(DEBUG) || defined(_DEBUG)
-#define XDL_TRACE_LAST		xdl_trace_last()
+#define XDL_TRACE(code, token)	xdl_trace(code, token)
+#define XDL_TRACE_LAST			xdl_trace_last()
 #else
+#define XDL_TRACE(code, token)	
 #define XDL_TRACE_LAST
 #endif
 

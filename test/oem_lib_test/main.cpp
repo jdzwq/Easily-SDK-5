@@ -1,7 +1,5 @@
-
-#include <xdl.h>
 #include <xds.h>
-
+#include <assert.h>
 #ifdef _OS_WINDOWS
 #include <conio.h>
 #endif
@@ -19,18 +17,18 @@ void test_siphash()
 		siphash64((uint8_t*)"sip hash", 8, (uint8_t*)&k2);
 		siphash64((uint8_t*)"sip hash ", 9, (uint8_t*)&k3);
 
-		XDL_ASSERT(k1 == k2);
-		XDL_ASSERT(k1 != k3);
+		assert(k1 == k2);
+		assert(k1 != k3);
 	}
 }
 
 int main(int argc, char* argv[])
 {
-	xdl_process_init(XDL_APARTMENT_PROCESS);
+	//test_siphash();
 
-	test_siphash();
+	//ecp_self_test(0);
 
-	xdl_process_uninit();
+	ecp_self_test(1);
 
 #ifdef _OS_WINDOWS
 	getch();

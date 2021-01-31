@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "trietree.h"
 #include "dblink.h"
 #include "stacktable.h"
-#include "miscell.h"
+#include "miscella.h"
 
 #include "xdlimp.h"
 

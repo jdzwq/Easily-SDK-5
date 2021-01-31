@@ -87,6 +87,10 @@ LICENSE.GPL3 for more details.
 #endif
 #endif
 
+#ifndef CHAR_BIT
+#define CHAR_BIT  __CHAR_BIT__
+#endif
+
 #ifndef BYTE_ORDER
 
 #define	LIT_ENDIAN	1234	/* least-significant byte first (vax, pc) */
@@ -699,6 +703,12 @@ typedef struct _ximage_t{
     __typeof__(y) _max2 = (y);               \
     (void) (&_max1 == &_max2);               \
     _max1 > _max2 ? _max1 : _max2; })
+#endif
+#endif
+
+#ifdef _OS_WINDOWS
+#ifndef snprintf
+#define snprintf	_snprintf
 #endif
 #endif
 

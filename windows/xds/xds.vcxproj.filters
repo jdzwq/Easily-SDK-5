@@ -51,9 +51,6 @@
     <ClCompile Include="..\..\xds\oemgeo.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xds\oemhave.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xds\oemhll.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -129,6 +126,15 @@
     <ClCompile Include="..\..\xds\xdscolor.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xds\oemecp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xds\oemecdh.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xds\oemhav.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xds\oemaes.h">
@@ -165,9 +171,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xds\oemgeo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xds\oemhave.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xds\oemhll.h">
@@ -249,6 +252,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xds\xdscolor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\oemecp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\oemecdh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xds\oemhav.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

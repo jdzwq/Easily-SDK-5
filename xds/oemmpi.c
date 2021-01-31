@@ -42,34 +42,34 @@
 /*
 * Initialize one or more mpi
 */
-void mpi_init(mpi *X, ...)
+void mpi_init(mpi *X)
 {
-	va_list args;
+	//va_list args;
 
-	va_start(args, X);
+	//va_start(args, X);
 
-	while (X != NULL)
+	//while (X != NULL)
 	{
 		X->s = 1;
 		X->n = 0;
 		X->p = NULL;
 
-		X = va_arg(args, mpi*);
+		//X = va_arg(args, mpi*);
 	}
 
-	va_end(args);
+	//va_end(args);
 }
 
 /*
 * Unallocate one or more mpi
 */
-void mpi_free(mpi *X, ...)
+void mpi_free(mpi *X)
 {
-	va_list args;
+	//va_list args;
 
-	va_start(args, X);
+	//va_start(args, X);
 
-	while (X != NULL)
+	//while (X != NULL)
 	{
 		if (X->p != NULL)
 		{
@@ -81,10 +81,10 @@ void mpi_free(mpi *X, ...)
 		X->n = 0;
 		X->p = NULL;
 
-		X = va_arg(args, mpi*);
+		//X = va_arg(args, mpi*);
 	}
 
-	va_end(args);
+	//va_end(args);
 }
 
 /*
@@ -118,7 +118,7 @@ int mpi_grow(mpi *X, int nblimbs)
 /*
 * Copy the contents of Y into X
 */
-int mpi_copy(mpi *X, mpi *Y)
+int mpi_copy(mpi *X, const mpi *Y)
 {
 	int ret, i;
 
@@ -208,7 +208,7 @@ int mpi_msb(mpi *X)
 /*
 * Return the total size in bytes
 */
-int mpi_size(mpi *X)
+int mpi_size(const mpi *X)
 {
 	return((mpi_msb(X) + 7) >> 3);
 }
@@ -233,7 +233,7 @@ static int mpi_get_digit(t_int *d, int radix, char c)
 /*
 * Import from an ASCII string
 */
-int mpi_read_string(mpi *X, int radix, char *s, int slen)
+int mpi_read_string(mpi *X, int radix, const char *s, int slen)
 {
 	int ret, i, j, n;
 	t_int d;
@@ -245,7 +245,7 @@ int mpi_read_string(mpi *X, int radix, char *s, int slen)
 	if (slen < 0)
 		slen = strlen(s);
 
-	mpi_init(&T, NULL);
+	mpi_init(&T);
 
 	if (radix == 16)
 	{
@@ -286,7 +286,7 @@ int mpi_read_string(mpi *X, int radix, char *s, int slen)
 
 cleanup:
 
-	mpi_free(&T, NULL);
+	mpi_free(&T);
 
 	return(ret);
 }
@@ -342,7 +342,7 @@ int mpi_write_string(mpi *X, int radix, char *s, int *slen)
 	}
 
 	p = s;
-	mpi_init(&T, NULL);
+	mpi_init(&T);
 
 	if (X->s == -1)
 		*p++ = '-';
@@ -376,7 +376,7 @@ int mpi_write_string(mpi *X, int radix, char *s, int *slen)
 
 cleanup:
 
-	mpi_free(&T, NULL);
+	mpi_free(&T);
 
 	return(ret);
 }
@@ -447,7 +447,7 @@ cleanup:
 /*
 * Import X from unsigned binary data, big endian
 */
-int mpi_read_binary(mpi *X, unsigned char *buf, int buflen)
+int mpi_read_binary(mpi *X, const unsigned char *buf, int buflen)
 {
 	int ret, i, j, n;
 
@@ -469,7 +469,7 @@ cleanup:
 /*
 * Export X into unsigned binary data, big endian
 */
-int mpi_write_binary(mpi *X, unsigned char *buf, int buflen)
+int mpi_write_binary(const mpi *X, unsigned char *buf, int buflen)
 {
 	int i, j, n;
 
@@ -608,7 +608,7 @@ int mpi_cmp_abs(mpi *X, mpi *Y)
 /*
 * Compare signed values
 */
-int mpi_cmp_mpi(mpi *X, mpi *Y)
+int mpi_cmp_mpi(const mpi *X, const mpi *Y)
 {
 	int i, j;
 
@@ -641,7 +641,7 @@ int mpi_cmp_mpi(mpi *X, mpi *Y)
 /*
 * Compare signed values
 */
-int mpi_cmp_int(mpi *X, int z)
+int mpi_cmp_int(const mpi *X, int z)
 {
 	mpi Y;
 	t_int p[1];
@@ -724,7 +724,7 @@ static void mpi_sub_hlp(int n, t_int *s, t_int *d)
 /*
 * Unsigned substraction: X = |A| - |B|  (HAC 14.9)
 */
-int mpi_sub_abs(mpi *X, mpi *A, mpi *B)
+int mpi_sub_abs(mpi *X, const mpi *A, const mpi *B)
 {
 	mpi TB;
 	int ret, n;
@@ -732,7 +732,7 @@ int mpi_sub_abs(mpi *X, mpi *A, mpi *B)
 	if (mpi_cmp_abs(A, B) < 0)
 		return(ERR_MPI_NEGATIVE_VALUE);
 
-	mpi_init(&TB, NULL);
+	mpi_init(&TB);
 
 	if (X == B)
 	{
@@ -753,7 +753,7 @@ int mpi_sub_abs(mpi *X, mpi *A, mpi *B)
 
 cleanup:
 
-	mpi_free(&TB, NULL);
+	mpi_free(&TB);
 
 	return(ret);
 }
@@ -761,7 +761,7 @@ cleanup:
 /*
 * Signed addition: X = A + B
 */
-int mpi_add_mpi(mpi *X, mpi *A, mpi *B)
+int mpi_add_mpi(mpi *X, const mpi *A, const mpi *B)
 {
 	int ret, s = A->s;
 
@@ -792,7 +792,7 @@ cleanup:
 /*
 * Signed substraction: X = A - B
 */
-int mpi_sub_mpi(mpi *X, mpi *A, mpi *B)
+int mpi_sub_mpi(mpi *X, const mpi *A, const mpi *B)
 {
 	int ret, s = A->s;
 
@@ -918,12 +918,13 @@ static void mpi_mul_hlp(int i, t_int *s, t_int *d, t_int b)
 /*
 * Baseline multiplication: X = A * B  (HAC 14.12)
 */
-int mpi_mul_mpi(mpi *X, mpi *A, mpi *B)
+int mpi_mul_mpi(mpi *X, const mpi *A, const mpi *B)
 {
 	int ret, i, j;
 	mpi TA, TB;
 
-	mpi_init(&TA, &TB, NULL);
+	mpi_init(&TA);
+	mpi_init(&TB);
 
 	if (X == A) { MPI_CHK(mpi_copy(&TA, A)); A = &TA; }
 	if (X == B) { MPI_CHK(mpi_copy(&TB, B)); B = &TB; }
@@ -946,7 +947,8 @@ int mpi_mul_mpi(mpi *X, mpi *A, mpi *B)
 
 cleanup:
 
-	mpi_free(&TB, &TA, NULL);
+	mpi_free(&TB);
+	mpi_free(&TA);
 
 	return(ret);
 }
@@ -978,7 +980,11 @@ int mpi_div_mpi(mpi *Q, mpi *R, mpi *A, mpi *B)
 	if (mpi_cmp_int(B, 0) == 0)
 		return(ERR_MPI_DIVISION_BY_ZERO);
 
-	mpi_init(&X, &Y, &Z, &T1, &T2, NULL);
+	mpi_init(&X);
+	mpi_init(&Y);
+	mpi_init(&Z);
+	mpi_init(&T1);
+	mpi_init(&T2);
 
 	if (mpi_cmp_abs(A, B) < 0)
 	{
@@ -1122,7 +1128,11 @@ int mpi_div_mpi(mpi *Q, mpi *R, mpi *A, mpi *B)
 
 cleanup:
 
-	mpi_free(&X, &Y, &Z, &T1, &T2, NULL);
+	mpi_free(&X);
+	mpi_free(&Y);
+	mpi_free(&Z);
+	mpi_free(&T1);
+	mpi_free(&T2);
 
 	return(ret);
 }
@@ -1150,7 +1160,7 @@ int mpi_div_int(mpi *Q, mpi *R, mpi *A, int b)
 /*
 * Modulo: R = A mod B
 */
-int mpi_mod_mpi(mpi *R, mpi *A, mpi *B)
+int mpi_mod_mpi(mpi *R, const mpi *A, const mpi *B)
 {
 	int ret;
 
@@ -1303,7 +1313,8 @@ int mpi_exp_mod(mpi *X, mpi *A, mpi *E, mpi *N, mpi *_RR)
 	* Init temps and window size
 	*/
 	mpi_montg_init(&mm, N);
-	mpi_init(&RR, &T, NULL);
+	mpi_init(&RR);
+	mpi_init(&T);
 	memset(W, 0, sizeof(W));
 
 	i = mpi_msb(E);
@@ -1454,11 +1465,19 @@ int mpi_exp_mod(mpi *X, mpi *A, mpi *E, mpi *N, mpi *_RR)
 cleanup:
 
 	for (i = (1 << (wsize - 1)); i < (1 << wsize); i++)
-		mpi_free(&W[i], NULL);
+		mpi_free(&W[i]);
 
 	if (_RR != NULL)
-		mpi_free(&W[1], &T, NULL);
-	else mpi_free(&W[1], &T, &RR, NULL);
+	{
+		mpi_free(&W[1]);
+		mpi_free(&T);
+	}
+	else
+	{
+		mpi_free(&W[1]);
+		mpi_free(&T);
+		mpi_free(&RR);
+	}
 
 	return(ret);
 }
@@ -1473,7 +1492,9 @@ int mpi_gcd(mpi *G, mpi *A, mpi *B)
 	int ret;
 	mpi TG, TA, TB;
 
-	mpi_init(&TG, &TA, &TB, NULL);
+	mpi_init(&TG);
+	mpi_init(&TA);
+	mpi_init(&TB);
 
 	MPI_CHK(mpi_lset(&TG, 1));
 	MPI_CHK(mpi_copy(&TA, A));
@@ -1502,7 +1523,9 @@ int mpi_gcd(mpi *G, mpi *A, mpi *B)
 
 cleanup:
 
-	mpi_free(&TB, &TA, &TG, NULL);
+	mpi_free(&TB);
+	mpi_free(&TA);
+	mpi_free(&TG);
 
 	return(ret);
 }
@@ -1510,7 +1533,7 @@ cleanup:
 /*
 * Modular inverse: X = A^-1 mod N  (HAC 14.61 / 14.64)
 */
-int mpi_inv_mod(mpi *X, mpi *A, mpi *N)
+int mpi_inv_mod(mpi *X, const mpi *A, const mpi *N)
 {
 	int ret;
 	mpi G, TA, TU, U1, U2, TB, TV, V1, V2;
@@ -1518,8 +1541,15 @@ int mpi_inv_mod(mpi *X, mpi *A, mpi *N)
 	if (mpi_cmp_int(N, 0) <= 0)
 		return(ERR_MPI_BAD_INPUT_DATA);
 
-	mpi_init(&TA, &TU, &U1, &U2, &G,
-		&TB, &TV, &V1, &V2, NULL);
+	mpi_init(&TA);
+	mpi_init(&TU);
+	mpi_init(&U1);
+	mpi_init(&U2);
+	mpi_init(&G);
+	mpi_init(&TB);
+	mpi_init(&TV);
+	mpi_init(&V1);
+	mpi_init(&V2);
 
 	MPI_CHK(mpi_gcd(&G, A, N));
 
@@ -1593,8 +1623,15 @@ int mpi_inv_mod(mpi *X, mpi *A, mpi *N)
 
 cleanup:
 
-	mpi_free(&V2, &V1, &TV, &TB, &G,
-		&U2, &U1, &TU, &TA, NULL);
+	mpi_free(&V2);
+	mpi_free(&V1);
+	mpi_free(&TV);
+	mpi_free(&TB);
+	mpi_free(&G);
+	mpi_free(&U2);
+	mpi_free(&U1);
+	mpi_free(&TU);
+	mpi_free(&TA);
 
 	return(ret);
 }
@@ -1636,7 +1673,11 @@ int mpi_is_prime(mpi *X, int(*f_rng)(void *), void *p_rng)
 	if (mpi_cmp_int(X, 0) == 0)
 		return(0);
 
-	mpi_init(&W, &R, &T, &A, &RR, NULL);
+	mpi_init(&W);
+	mpi_init(&R);
+	mpi_init(&T);
+	mpi_init(&A);
+	mpi_init(&RR);
 
 	xs = X->s; X->s = 1;
 
@@ -1730,7 +1771,11 @@ cleanup:
 
 	X->s = xs;
 
-	mpi_free(&RR, &A, &T, &R, &W, NULL);
+	mpi_free(&RR);
+	mpi_free(&A);
+	mpi_free(&T);
+	mpi_free(&R);
+	mpi_free(&W);
 
 	return(ret);
 }
@@ -1748,7 +1793,7 @@ int mpi_gen_prime(mpi *X, int nbits, int dh_flag,
 	if (nbits < 3)
 		return(ERR_MPI_BAD_INPUT_DATA);
 
-	mpi_init(&Y, NULL);
+	mpi_init(&Y);
 
 	n = BITS_TO_LIMBS(nbits);
 
@@ -1802,9 +1847,421 @@ int mpi_gen_prime(mpi *X, int nbits, int dh_flag,
 
 cleanup:
 
-	mpi_free(&Y, NULL);
+	mpi_free(&Y);
 
 	return(ret);
 }
 
 #endif
+
+/*
+* Get a specific bit
+*/
+int mpi_get_bit(const mpi *X, size_t pos)
+{
+	if (X->n * biL <= pos)
+		return(0);
+
+	return((X->p[pos / biL] >> (pos % biL)) & 0x01);
+}
+
+/* Get a specific byte, without range checks. */
+#define MPI_GET_BYTE( X, i )                                \
+    ( ( ( X )->p[( i ) / ciL] >> ( ( ( i ) % ciL ) * 8 ) ) & 0xff )
+
+/*
+* Set a bit to a specific value of 0 or 1
+*/
+int mpi_set_bit(mpi *X, size_t pos, unsigned char val)
+{
+	int ret = 0;
+	size_t off = pos / biL;
+	size_t idx = pos % biL;
+
+	if (val != 0 && val != 1)
+		return(ERR_MPI_BAD_INPUT_DATA);
+
+	if (X->n * biL <= pos)
+	{
+		if (val == 0)
+			return(0);
+
+		MPI_CHK(mpi_grow(X, off + 1));
+	}
+
+	X->p[off] &= ~((mpi_uint)0x01 << idx);
+	X->p[off] |= (mpi_uint)val << idx;
+
+cleanup:
+
+	return(ret);
+}
+
+/*
+* Count leading zero bits in a given integer
+*/
+static size_t _clz(const mpi_uint x)
+{
+	size_t j;
+	mpi_uint mask = (mpi_uint)1 << (biL - 1);
+
+	for (j = 0; j < biL; j++)
+	{
+		if (x & mask) break;
+
+		mask >>= 1;
+	}
+
+	return j;
+}
+
+/*
+* Return the number of bits
+*/
+size_t mpi_bitlen(const mpi *X)
+{
+	size_t i, j;
+
+	if (X->n == 0)
+		return(0);
+
+	for (i = X->n - 1; i > 0; i--)
+		if (X->p[i] != 0)
+			break;
+
+	j = biL - _clz(X->p[i]);
+
+	return((i * biL) + j);
+}
+
+/* Implementation that should never be optimized out by the compiler */
+static void mpi_zeroize(mpi_uint *v, size_t n)
+{
+	memset(v, 0, ciL * n);
+}
+
+/*
+* Resize down as much as possible,
+* while keeping at least the specified number of limbs
+*/
+int mpi_shrink(mpi *X, size_t nblimbs)
+{
+	mpi_uint *p;
+	size_t i;
+
+	if (nblimbs > MPI_MAX_LIMBS)
+		return(ERR_MPI_ALLOC_FAILED);
+
+	/* Actually resize up if there are currently fewer than nblimbs limbs. */
+	if (X->n <= nblimbs)
+		return(mpi_grow(X, nblimbs));
+	/* After this point, then X->n > nblimbs and in particular X->n > 0. */
+
+	for (i = X->n - 1; i > 0; i--)
+		if (X->p[i] != 0)
+			break;
+	i++;
+
+	if (i < nblimbs)
+		i = nblimbs;
+
+	if ((p = (mpi_uint*)calloc(i, ciL)) == NULL)
+		return(ERR_MPI_ALLOC_FAILED);
+
+	if (X->p != NULL)
+	{
+		memcpy(p, X->p, i * ciL);
+		mpi_zeroize(X->p, X->n);
+		free(X->p);
+	}
+
+	X->n = i;
+	X->p = p;
+
+	return(0);
+}
+
+/*
+* Conditionally assign X = Y, without leaking information
+* about whether the assignment was made or not.
+* (Leaking information about the respective sizes of X and Y is ok however.)
+*/
+int mpi_safe_cond_assign(mpi *X, const mpi *Y, unsigned char assign)
+{
+	int ret = 0;
+	size_t i;
+
+	/* make sure assign is 0 or 1 in a time-constant manner */
+	assign = (assign | (unsigned char)-assign) >> 7;
+
+	MPI_CHK(mpi_grow(X, Y->n));
+
+	X->s = X->s * (1 - assign) + Y->s * assign;
+
+	for (i = 0; i < Y->n; i++)
+		X->p[i] = X->p[i] * (1 - assign) + Y->p[i] * assign;
+
+	for (; i < X->n; i++)
+		X->p[i] *= (1 - assign);
+
+cleanup:
+	return(ret);
+}
+
+/* Convert a big-endian byte array aligned to the size of mbedtls_mpi_uint
+* into the storage form used by mbedtls_mpi. */
+
+static mpi_uint mpi_uint_bigendian_to_host_c(mpi_uint x)
+{
+	uint8_t i;
+	unsigned char *x_ptr;
+	mpi_uint tmp = 0;
+
+	for (i = 0, x_ptr = (unsigned char*)&x; i < ciL; i++, x_ptr++)
+	{
+		tmp <<= CHAR_BIT;
+		tmp |= (mpi_uint)*x_ptr;
+	}
+
+	return(tmp);
+}
+
+static mpi_uint mpi_uint_bigendian_to_host(mpi_uint x)
+{
+#if defined(BYTE_ORDER)
+
+	/* Nothing to do on bigendian systems. */
+#if ( BYTE_ORDER == BIG_ENDIAN )
+	return(x);
+#endif /* __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ */
+
+#if ( BYTE_ORDER == LIT_ENDIAN )
+
+	/* For GCC and Clang, have builtins for byte swapping. */
+#if defined(__GNUC__) && defined(__GNUC_PREREQ)
+#if __GNUC_PREREQ(4,3)
+#define have_bswap
+#endif
+#endif
+
+#if defined(__clang__) && defined(__has_builtin)
+#if __has_builtin(__builtin_bswap32)  &&                 \
+    __has_builtin(__builtin_bswap64)
+#define have_bswap
+#endif
+#endif
+
+#if defined(have_bswap)
+	/* The compiler is hopefully able to statically evaluate this! */
+	switch (sizeof(mpi_uint))
+	{
+	case 4:
+		return(__builtin_bswap32(x));
+	case 8:
+		return(__builtin_bswap64(x));
+	}
+#endif
+#endif /* __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ */
+#endif /* __BYTE_ORDER__ */
+
+	/* Fall back to C-based reordering if we don't know the byte order
+	* or we couldn't use a compiler-specific builtin. */
+	return(mpi_uint_bigendian_to_host_c(x));
+}
+
+static void mpi_bigendian_to_host(mpi_uint * const p, size_t limbs)
+{
+	mpi_uint *cur_limb_left;
+	mpi_uint *cur_limb_right;
+	if (limbs == 0)
+		return;
+
+	/*
+	* Traverse limbs and
+	* - adapt byte-order in each limb
+	* - swap the limbs themselves.
+	* For that, simultaneously traverse the limbs from left to right
+	* and from right to left, as long as the left index is not bigger
+	* than the right index (it's not a problem if limbs is odd and the
+	* indices coincide in the last iteration).
+	*/
+	for (cur_limb_left = p, cur_limb_right = p + (limbs - 1);
+		cur_limb_left <= cur_limb_right;
+		cur_limb_left++, cur_limb_right--)
+	{
+		mpi_uint tmp;
+		/* Note that if cur_limb_left == cur_limb_right,
+		* this code effectively swaps the bytes only once. */
+		tmp = mpi_uint_bigendian_to_host(*cur_limb_left);
+		*cur_limb_left = mpi_uint_bigendian_to_host(*cur_limb_right);
+		*cur_limb_right = tmp;
+	}
+}
+
+/*
+* Fill X with size bytes of random.
+*
+* Use a temporary bytes representation to make sure the result is the same
+* regardless of the platform endianness (useful when f_rng is actually
+* deterministic, eg for tests).
+*/
+int mpi_fill_random(mpi *X, size_t size,
+	int(*f_rng)(void *, unsigned char *, size_t),
+	void *p_rng)
+{
+	int ret;
+	size_t const limbs = CHARS_TO_LIMBS(size);
+	size_t const overhead = (limbs * ciL) - size;
+	unsigned char *Xp;
+
+	/* Ensure that target MPI has exactly the necessary number of limbs */
+	if (X->n != limbs)
+	{
+		mpi_free(X);
+		mpi_init(X);
+		MPI_CHK(mpi_grow(X, limbs));
+	}
+	MPI_CHK(mpi_lset(X, 0));
+
+	Xp = (unsigned char*)X->p;
+	f_rng(p_rng, Xp + overhead, size);
+
+	mpi_bigendian_to_host(X->p, limbs);
+
+cleanup:
+	return(ret);
+}
+
+/*
+* Conditionally swap X and Y, without leaking information
+* about whether the swap was made or not.
+* Here it is not ok to simply swap the pointers, which whould lead to
+* different memory access patterns when X and Y are used afterwards.
+*/
+int mpi_safe_cond_swap(mpi *X, mpi *Y, unsigned char swap)
+{
+	int ret, s;
+	size_t i;
+	mpi_uint tmp;
+
+	if (X == Y)
+		return(0);
+
+	/* make sure swap is 0 or 1 in a time-constant manner */
+	swap = (swap | (unsigned char)-swap) >> 7;
+
+	MPI_CHK(mpi_grow(X, Y->n));
+	MPI_CHK(mpi_grow(Y, X->n));
+
+	s = X->s;
+	X->s = X->s * (1 - swap) + Y->s * swap;
+	Y->s = Y->s * (1 - swap) + s * swap;
+
+
+	for (i = 0; i < X->n; i++)
+	{
+		tmp = X->p[i];
+		X->p[i] = X->p[i] * (1 - swap) + Y->p[i] * swap;
+		Y->p[i] = Y->p[i] * (1 - swap) + tmp * swap;
+	}
+
+cleanup:
+	return(ret);
+}
+
+/** Decide if an integer is less than the other, without branches.
+*
+* \param x         First integer.
+* \param y         Second integer.
+*
+* \return          1 if \p x is less than \p y, 0 otherwise
+*/
+static unsigned ct_lt_mpi_uint(const mpi_uint x,
+	const mpi_uint y)
+{
+	mpi_uint ret;
+	mpi_uint cond;
+
+	/*
+	* Check if the most significant bits (MSB) of the operands are different.
+	*/
+	cond = (x ^ y);
+	/*
+	* If the MSB are the same then the difference x-y will be negative (and
+	* have its MSB set to 1 during conversion to unsigned) if and only if x<y.
+	*/
+	ret = (x - y) & ~cond;
+	/*
+	* If the MSB are different, then the operand with the MSB of 1 is the
+	* bigger. (That is if y has MSB of 1, then x<y is true and it is false if
+	* the MSB of y is 0.)
+	*/
+	ret |= y & cond;
+
+
+	ret = ret >> (biL - 1);
+
+	return (unsigned)ret;
+}
+
+/*
+* Compare signed values in constant time
+*/
+int mpi_lt_mpi_ct(const mpi *X, const mpi *Y,
+	unsigned *ret)
+{
+	size_t i;
+	/* The value of any of these variables is either 0 or 1 at all times. */
+	unsigned cond, done, X_is_negative, Y_is_negative;
+
+	if (X->n != Y->n)
+		return ERR_MPI_BAD_INPUT_DATA;
+
+	/*
+	* Set sign_N to 1 if N >= 0, 0 if N < 0.
+	* We know that N->s == 1 if N >= 0 and N->s == -1 if N < 0.
+	*/
+	X_is_negative = (X->s & 2) >> 1;
+	Y_is_negative = (Y->s & 2) >> 1;
+
+	/*
+	* If the signs are different, then the positive operand is the bigger.
+	* That is if X is negative (X_is_negative == 1), then X < Y is true and it
+	* is false if X is positive (X_is_negative == 0).
+	*/
+	cond = (X_is_negative ^ Y_is_negative);
+	*ret = cond & X_is_negative;
+
+	/*
+	* This is a constant-time function. We might have the result, but we still
+	* need to go through the loop. Record if we have the result already.
+	*/
+	done = cond;
+
+	for (i = X->n; i > 0; i--)
+	{
+		/*
+		* If Y->p[i - 1] < X->p[i - 1] then X < Y is true if and only if both
+		* X and Y are negative.
+		*
+		* Again even if we can make a decision, we just mark the result and
+		* the fact that we are done and continue looping.
+		*/
+		cond = ct_lt_mpi_uint(Y->p[i - 1], X->p[i - 1]);
+		*ret |= cond & (1 - done) & X_is_negative;
+		done |= cond;
+
+		/*
+		* If X->p[i - 1] < Y->p[i - 1] then X < Y is true if and only if both
+		* X and Y are positive.
+		*
+		* Again even if we can make a decision, we just mark the result and
+		* the fact that we are done and continue looping.
+		*/
+		cond = ct_lt_mpi_uint(X->p[i - 1], Y->p[i - 1]);
+		*ret |= cond & (1 - done) & (1 - X_is_negative);
+		done |= cond;
+	}
+
+	return(0);
+}

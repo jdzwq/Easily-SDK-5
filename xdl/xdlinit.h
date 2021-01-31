@@ -38,6 +38,9 @@ LICENSE.GPL3 for more details.
 #include "dblink.h"
 #endif
 
+#define ERR_BUFF_SIZE		1024
+#define ERR_ITEM_COUNT		4
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -47,7 +50,8 @@ extern "C" {
 		int			if_size;	//jmp buffer array size
 		int			if_index;  // top jmp buffer index
 
-		byte_t*		if_error; //thread error buffer
+		byte_t*		err_buf; //thread error buffer
+		int			err_index; //error item count
 	}if_jump_t;
 
 	typedef struct _if_zone_t{

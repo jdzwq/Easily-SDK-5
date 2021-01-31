@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "miscell.h"
+#include "miscella.h"
 #include "docattr.h"
 
 #include "xdlimp.h"

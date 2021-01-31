@@ -29,8 +29,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#ifndef _MISCELL_H
-#define _MISSCEL_H
+#ifndef _MISCELLA_H
+#define _MISCELLA_H
 
 #include "xdldef.h"
 

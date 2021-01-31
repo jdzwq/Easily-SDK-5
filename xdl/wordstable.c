@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "wordstable.h"
 #include "dblink.h"
-#include "miscell.h"
+#include "miscella.h"
 
 #include "xdlimp.h"
 

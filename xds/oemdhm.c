@@ -252,7 +252,11 @@ cleanup:
 */
 void dhm_free(dhm_context *ctx)
 {
-	mpi_free(&ctx->RP, &ctx->K, &ctx->GY,
-		&ctx->GX, &ctx->X, &ctx->G,
-		&ctx->P, NULL);
+	mpi_free(&ctx->RP);
+	mpi_free(&ctx->K);
+	mpi_free(&ctx->GY);
+	mpi_free(&ctx->GX);
+	mpi_free(&ctx->X);
+	mpi_free(&ctx->G);
+	mpi_free(&ctx->P);
 }

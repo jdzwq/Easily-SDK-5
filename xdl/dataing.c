@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "dataing.h"
 #include "docattr.h"
-#include "miscell.h"
+#include "miscella.h"
 
 #include "xdlimp.h"
 #include "xdlstd.h"

@@ -41,23 +41,27 @@ void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
 {
 #ifdef XDK_SUPPORT_ERROR
 	if_jump_t* pju;
+	byte_t* err_buf;
 
 	pju = THREAD_JUMP_INTERFACE;
 
 	if (!pju)
 		return;
 
-	if (!pju->if_error)
+	if (!pju->err_buf)
 		return;
 
-	xmem_zero((void*)pju->if_error, 1024);
+	pju->err_index ++;
+
+	err_buf = pju->err_buf + (pju->err_index % 4) * ERR_BUFF_SIZE;
+	xmem_zero((void*)err_buf, ERR_BUFF_SIZE);
 
 #if defined(_UNICODE) || defined(UNICODE)
-	ucs_to_utf8(errcode, -1, pju->if_error, NUM_LEN);
-	ucs_to_utf8(errtext, len, (pju->if_error + NUM_LEN), (1024 - NUM_LEN));
+	ucs_to_utf8(errcode, -1, err_buf, NUM_LEN);
+	ucs_to_utf8(errtext, len, (err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN));
 #else
-	mbs_to_utf8(errcode, -1, pju->if_error, NUM_LEN);
-	mbs_to_utf8(errtext, len, (pju->if_error + NUM_LEN), (1024 - NUM_LEN));
+	mbs_to_utf8(errcode, -1, err_buf, NUM_LEN);
+	mbs_to_utf8(errtext, len, (err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN));
 #endif
 
 #endif
@@ -67,27 +71,33 @@ void get_last_error(tchar_t* code, tchar_t* text, int max)
 {
 #ifdef XDK_SUPPORT_ERROR
 	if_jump_t* pju;
+	byte_t* err_buf;
 
 	pju = THREAD_JUMP_INTERFACE;
 
 	if (!pju)
 		return;
 
+	if (!pju->err_buf || pju->err_index < 0)
+		return;
+
+	err_buf = pju->err_buf + (pju->err_index % 4) * ERR_BUFF_SIZE;
+
 	if (code)
 	{
 #if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs(pju->if_error, NUM_LEN, code, NUM_LEN);
+		utf8_to_ucs(err_buf, NUM_LEN, code, NUM_LEN);
 #else
-		utf8_to_mbs(pju->if_error, NUM_LEN, code, NUM_LEN);
+		utf8_to_mbs(err_buf, NUM_LEN, code, NUM_LEN);
 #endif
 	}
 
 	if (text)
 	{
 #if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs((pju->if_error + NUM_LEN), (1024 - NUM_LEN), text, max);
+		utf8_to_ucs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), text, max);
 #else
-		utf8_to_mbs((pju->if_error + NUM_LEN), (1024 - NUM_LEN), text, max);
+		utf8_to_mbs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), text, max);
 #endif
 	}
 #endif
@@ -153,6 +163,8 @@ void xdl_trace_last()
 {
 #ifdef XDK_SUPPORT_ERROR
 	if_jump_t* pju;
+	byte_t* err_buf;
+	int i;
 
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
@@ -162,8 +174,25 @@ void xdl_trace_last()
 	if (!pju)
 		return;
 
-	get_last_error(errcode, errtext, ERR_LEN);
+	if (!pju->err_buf || pju->err_index < 0)
+		return;
 
-	xdl_trace(errcode, errtext);
+	for (i = pju->err_index; i >= 0; i--)
+	{
+		err_buf = pju->err_buf + (pju->err_index % 4) * ERR_BUFF_SIZE;
+
+#if defined(_UNICODE) || defined(UNICODE)
+		utf8_to_ucs(err_buf, NUM_LEN, errcode, NUM_LEN);
+		utf8_to_ucs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), errtext, ERR_LEN);
+#else
+		utf8_to_mbs(err_buf, NUM_LEN, errcode, NUM_LEN);
+		utf8_to_mbs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), errtext, ERR_LEN);
 #endif
+
+		xdl_trace(errcode, errtext);
+	}
+#endif
+
+	xmem_zero((void*)pju->err_buf, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
+	pju->err_index = -1;
 }

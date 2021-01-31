@@ -25,7 +25,7 @@
 *  Contact: seznec(at)irisa_dot_fr - orocheco(at)irisa_dot_fr
 */
 
-#include "oemhave.h"
+#include "oemhav.h"
 #include "oemlock.h"
 #include <stdlib.h>
 #include <string.h>
@@ -141,7 +141,7 @@
     PT1 ^= (PT2 ^ 0x10) & 0x10;                         \
                                                         \
     for( n++, i = 0; i < 16; i++ )                      \
-        hs->pool[n % COLLECT_SIZE] ^= RES[i];
+        hs->pool[n % HAVEGE_COLLECT_SIZE] ^= RES[i];
 
 /*
 * Entropy gathering function
@@ -162,7 +162,7 @@ static void havege_fill(havege_state *hs)
 
 	memset(RES, 0, sizeof(RES));
 
-	while (n < COLLECT_SIZE * 4)
+	while (n < HAVEGE_COLLECT_SIZE * 4)
 	{
 			ONE_ITERATION
 			ONE_ITERATION
@@ -174,7 +174,7 @@ static void havege_fill(havege_state *hs)
 	hs->PT2 = PT2;
 
 	hs->offset[0] = 0;
-	hs->offset[1] = COLLECT_SIZE / 2;
+	hs->offset[1] = HAVEGE_COLLECT_SIZE / 2;
 }
 
 /*
@@ -195,7 +195,7 @@ int havege_rand(void *p_rng)
 	int ret;
 	havege_state *hs = (havege_state *)p_rng;
 
-	if (hs->offset[1] >= COLLECT_SIZE)
+	if (hs->offset[1] >= HAVEGE_COLLECT_SIZE)
 		havege_fill(hs);
 
 	ret = hs->pool[hs->offset[0]++];
@@ -204,4 +204,33 @@ int havege_rand(void *p_rng)
 	return(ret);
 }
 
+/*
+* HAVEGE rand function
+*/
+int havege_rand_bytes(void *p_rng, unsigned char *buf, size_t len)
+{
+	int val;
+	size_t use_len;
+	havege_state *hs = (havege_state *)p_rng;
+	unsigned char *p = buf;
 
+	while (len > 0)
+	{
+		use_len = len;
+		if (use_len > sizeof(int))
+			use_len = sizeof(int);
+
+		if (hs->offset[1] >= HAVEGE_COLLECT_SIZE)
+			havege_fill(hs);
+
+		val = hs->pool[hs->offset[0]++];
+		val ^= hs->pool[hs->offset[1]++];
+
+		memcpy(p, &val, use_len);
+
+		len -= use_len;
+		p += use_len;
+	}
+
+	return(0);
+}

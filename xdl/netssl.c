@@ -54,36 +54,58 @@ static char dhm_P[] = "E4004C1F94182000103D883A448B3F802CE4B44A83301270002C20D03
 typedef struct _ciphers_set{
 	int cipher;
 	int key_size;
+	int mac_size;
 	int iv_size;
-	int hash_size;
-	int mate_size;
 }ciphers_set;
 
 static ciphers_set client_ciphers[] = {
-	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
-	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
-	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 8, 20, 24 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA256,	16, 16, 32, 128 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA256,	32, 16, 32, 256 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA,		16, 16, 20, 128 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA,		32, 16, 20, 256 },
-	{ SSL_RSA_WITH_RC4_128_SHA,		16, 0, 20, 16 },
-	{ SSL_RSA_WITH_RC4_128_MD5,		16, 0, 16, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0 },
+	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0 },
 };
 
 static ciphers_set server_ciphers[] = {
-	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 16, 32, 256 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 16, 32, 128 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
-	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 16, 20, 256 },
-	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 16, 20, 128 },
-	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 8, 20, 24 },
-	{ SSL_RSA_WITH_RC4_128_SHA, 16, 0, 20, 16 },
-	{ SSL_RSA_WITH_RC4_128_MD5, 16, 0, 16, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0 },
+	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0 },
 };
 
-#define IS_DHE_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA || cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA)? 1 : 0)
+#define IS_DHE_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA256 || \
+								cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA || \
+								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA256 || \
+								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || \
+								cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA) ? 1 : 0)
+#define IS_ECDHE_CIPHER(cipher) ((cipher == SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA384 || \
+								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256 || \
+								cipher == SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA || \
+								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA || \
+								cipher == SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA)? 1 : 0)
 
 static char label_client_finished[] = "client finished";
 static char label_server_finished[] = "server finished";
@@ -102,14 +124,15 @@ typedef struct _ssl_t{
 	int cipher_type; //CipherType: { stream, block }
 	int cipher; //the selected cipher
 	int key_size; //the encrypt decrypt key size
-	int mate_size; //key material length
+	int mac_size; //hash length
 	int iv_size;
 	int exportable; //IsExportable: { true, false } 
 	int alg_mac; //MACAlgorithm: enum { null, hmac_md5, hmac_sha1, hmac_sha256, hmac_sha384, hmac_sha512 }
-	int hash_size; //
 	int compress_method; //CompressionMethod: { null, (0), (255) }
 	int alg_hash; 
 	int alg_sign;
+	int ecp_group;
+	int ecp_format;
 	byte_t master_secret[SSL_MST_SIZE]; 
 	byte_t rnd_srv[SSL_RND_SIZE]; //server_random
 	byte_t rnd_cli[SSL_RND_SIZE]; //client_random
@@ -147,6 +170,7 @@ typedef struct _ssl_t{
 	rsa_context* rsa_ca;
 	rsa_context* rsa_ow;
 	dhm_context* dhm_ow;
+	ecdh_context* ecdh_ow;
 
 	//Record
 	int major_ver;
@@ -336,7 +360,7 @@ A(0) = seed
 A(i) = HMAC_hash(secret, A(i-1))
 */
 
-static void _ssl_prf3(byte_t *secret, int slen, char *label, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
+static void _ssl_prf2(byte_t *secret, int slen, char *label, byte_t *random, int rlen, byte_t *dstbuf, int dlen)
 {
 	int nb, hs;
 	int i, j, k;
@@ -388,7 +412,7 @@ static void _ssl_init(ssl_t* pssl)
 
 	if (pssl->type == SSL_TYPE_CLIENT)
 	{
-		pssl->alg_hash = ALG_HASH_SHA256;
+		pssl->alg_hash = ALG_HASH_SHA1;
 		pssl->alg_sign = ALG_SIGN_RSA;
 
 		pssl->major_ver = pssl->cli_major_ver = SSL_MAJOR_VERSION_3;
@@ -455,6 +479,12 @@ static void _ssl_uninit(ssl_t* pssl)
 		dhm_free(pssl->dhm_ow);
 		xmem_free(pssl->dhm_ow);
 	}
+
+	if (pssl->ecdh_ow)
+	{
+		ecdh_free(pssl->ecdh_ow);
+		xmem_free(pssl->ecdh_ow);
+	}
 }
 
 static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
@@ -480,8 +510,7 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 			pssl->cipher = pcs[i].cipher;
 			pssl->key_size = pcs[i].key_size;
 			pssl->iv_size = pcs[i].iv_size;
-			pssl->hash_size = pcs[i].hash_size;
-			pssl->mate_size = pcs[i].mate_size;
+			pssl->mac_size = pcs[i].mac_size;
 
 			return 1;
 		}
@@ -511,7 +540,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		}
 		else if (pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
-			_ssl_prf3(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
+			_ssl_prf2(premaster, prelen, label_master_secret, rndb, SSL_RND_SIZE * 2, pssl->master_secret, SSL_MST_SIZE);
 		}
 		else
 		{
@@ -542,7 +571,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		//"key expansion",
 		//SecurityParameters.server_random +
 		//SecurityParameters.client_random);
-		_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, SSL_BLK_SIZE);
+		_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, SSL_BLK_SIZE);
 	}
 	else
 	{
@@ -564,32 +593,32 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	if (pssl->type == SSL_TYPE_CLIENT)
 	{
 		//client_write_MAC_secret for client encrypting record
-		xmem_copy(pssl->mac_enc, keyblk, pssl->hash_size);
+		xmem_copy(pssl->mac_enc, keyblk, pssl->mac_size);
 		//server_write_MAC_secret for client decrypting record
-		xmem_copy(pssl->mac_dec, keyblk + pssl->hash_size, pssl->hash_size);
+		xmem_copy(pssl->mac_dec, keyblk + pssl->mac_size, pssl->mac_size);
 		//client_write_key for client setup encrypting context
-		key_enc = keyblk + pssl->hash_size * 2;
+		key_enc = keyblk + pssl->mac_size * 2;
 		//server_write_key for client setup decrypting context
-		key_dec = keyblk + pssl->hash_size * 2 + pssl->key_size;
+		key_dec = keyblk + pssl->mac_size * 2 + pssl->key_size;
 		//client_write_IV for client encrypting IV
-		xmem_copy(pssl->iv_enc, keyblk + pssl->hash_size * 2 + pssl->key_size * 2, pssl->iv_size);
+		xmem_copy(pssl->iv_enc, keyblk + pssl->mac_size * 2 + pssl->key_size * 2, pssl->iv_size);
 		//server_write_IV for client decrypting IV
-		xmem_copy(pssl->iv_dec, keyblk + pssl->hash_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
+		xmem_copy(pssl->iv_dec, keyblk + pssl->mac_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
 	}
 	else
 	{
 		//client_write_MAC_secret for server decrypting record
-		xmem_copy(pssl->mac_dec, keyblk, pssl->hash_size);
+		xmem_copy(pssl->mac_dec, keyblk, pssl->mac_size);
 		//server_write_MAC_secret for server encrypting record
-		xmem_copy(pssl->mac_enc, keyblk + pssl->hash_size, pssl->hash_size);
+		xmem_copy(pssl->mac_enc, keyblk + pssl->mac_size, pssl->mac_size);
 		//client_write_key for server decrypting context
-		key_dec = keyblk + pssl->hash_size * 2;
+		key_dec = keyblk + pssl->mac_size * 2;
 		//server_write_key for server encrypting context
-		key_enc = keyblk + pssl->hash_size * 2 + pssl->key_size;	
+		key_enc = keyblk + pssl->mac_size * 2 + pssl->key_size;	
 		//client_write_IV for server decrypting IV
-		xmem_copy(pssl->iv_dec, keyblk + pssl->hash_size * 2 + pssl->key_size * 2, pssl->iv_size);
+		xmem_copy(pssl->iv_dec, keyblk + pssl->mac_size * 2 + pssl->key_size * 2, pssl->iv_size);
 		//server_write_IV for server encrypting IV
-		xmem_copy(pssl->iv_enc, keyblk + pssl->hash_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
+		xmem_copy(pssl->iv_enc, keyblk + pssl->mac_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
 	}
 
 	//initialize encrypt and decrypt context
@@ -597,22 +626,29 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	{
 	case SSL_RSA_WITH_RC4_128_MD5:
 	case SSL_RSA_WITH_RC4_128_SHA:
-		arc4_setup((arc4_context *)pssl->ctx_enc, key_enc, pssl->mate_size);
-		arc4_setup((arc4_context *)pssl->ctx_dec, key_dec, pssl->mate_size);
+		arc4_setup((arc4_context *)pssl->ctx_enc, key_enc, pssl->key_size); //the material size is bytes
+		arc4_setup((arc4_context *)pssl->ctx_dec, key_dec, pssl->key_size); //the material size is bytes
 		break;
 	case SSL_RSA_WITH_3DES_EDE_CBC_SHA:
 	case SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA:
-		des3_set3key_enc((des3_context *)pssl->ctx_enc, key_enc); //the material size is 24
-		des3_set3key_dec((des3_context *)pssl->ctx_dec, key_dec); //the material size is 24
+	case SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA:
+		des3_set3key_enc((des3_context *)pssl->ctx_enc, key_enc); //the material size is 24 bytes
+		des3_set3key_dec((des3_context *)pssl->ctx_dec, key_dec); //the material size is 24 bytes
 		break;
 	case SSL_RSA_WITH_AES_128_CBC_SHA:
 	case SSL_RSA_WITH_AES_256_CBC_SHA:
-	case SSL_DHE_RSA_WITH_AES_128_CBC_SHA:
-	case SSL_DHE_RSA_WITH_AES_256_CBC_SHA:
 	case SSL_RSA_WITH_AES_128_CBC_SHA256:
 	case SSL_RSA_WITH_AES_256_CBC_SHA256:
-		aes_setkey_enc((aes_context *)pssl->ctx_enc, key_enc, pssl->mate_size);
-		aes_setkey_dec((aes_context *)pssl->ctx_dec, key_dec, pssl->mate_size);
+	case SSL_DHE_RSA_WITH_AES_128_CBC_SHA:
+	case SSL_DHE_RSA_WITH_AES_256_CBC_SHA:
+	case SSL_DHE_RSA_WITH_AES_256_CBC_SHA256:
+	case SSL_DHE_RSA_WITH_AES_128_CBC_SHA256:
+	case SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA384:
+	case SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256:
+	case SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA:
+	case SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA:
+		aes_setkey_enc((aes_context *)pssl->ctx_enc, key_enc, (pssl->key_size * 8)); //the material size is bits
+		aes_setkey_dec((aes_context *)pssl->ctx_dec, key_dec, (pssl->key_size * 8)); //the material size is bits
 		break;
 	}
 }
@@ -649,11 +685,11 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		//The MAC is generated as :
 		//hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
 		
-		if (pssl->hash_size == 16)
+		if (pssl->mac_size == 16)
 		{
 			_ssl_mac_md5(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
 		}
-		else if (pssl->hash_size == 20)
+		else if (pssl->mac_size == 20)
 		{
 			_ssl_mac_sha1(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
 		}
@@ -669,17 +705,17 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		//The MAC is generated as:
 		//HMAC_hash(MAC_write_secret, seq_num + TLSCompressed.type + TLSCompressed.version + TLSCompressed.length + TLSCompressed.fragment));
 
-		if (pssl->hash_size == 16)
+		if (pssl->mac_size == 16)
 		{
-			md5_hmac(pssl->mac_enc, pssl->hash_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
+			md5_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
 		}
-		else if (pssl->hash_size == 20)
+		else if (pssl->mac_size == 20)
 		{
-			sha1_hmac(pssl->mac_enc, pssl->hash_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
+			sha1_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
 		}
-		else if (pssl->hash_size == 32) //TLS 1.2
+		else if (pssl->mac_size == 32) //TLS 1.2
 		{
-			sha2_hmac(pssl->mac_enc, pssl->hash_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf, 0);
+			sha2_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf, 0);
 		}
 		else
 		{
@@ -689,7 +725,7 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		}
 	}
 
-	pssl->snd_msg_len += pssl->hash_size;
+	pssl->snd_msg_len += pssl->mac_size;
 
 	if (pssl->iv_size == 0)
 	{
@@ -764,7 +800,7 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	byte_t* mac_buf;
 	byte_t mac_tmp[32];
 
-	n = (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3) ? (pssl->hash_size + pssl->iv_size) : pssl->hash_size;
+	n = (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3) ? (pssl->mac_size + pssl->iv_size) : pssl->mac_size;
 
 	if (pssl->rcv_msg_len < n)
 	{
@@ -833,29 +869,29 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	}
 
 	//reset message length
-	pssl->rcv_msg_len -= (pssl->hash_size + padlen);
+	pssl->rcv_msg_len -= (pssl->mac_size + padlen);
 	PUT_SWORD_NET(pssl->rcv_hdr, 3, (unsigned short)pssl->rcv_msg_len);
 
 	mac_buf = pssl->rcv_msg + pssl->rcv_msg_len;
 
 	if (pssl->minor_ver == SSL_MINOR_VERSION_0)
 	{
-		if (pssl->hash_size == 16)
+		if (pssl->mac_size == 16)
 			_ssl_mac_md5(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
-		else if (pssl->hash_size == 20)
+		else if (pssl->mac_size == 20)
 			_ssl_mac_sha1(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
 	}
 	else
 	{
-		if (pssl->hash_size == 16)
-			md5_hmac(pssl->mac_dec, pssl->hash_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp);
-		else if (pssl->hash_size == 20)
-			sha1_hmac(pssl->mac_dec, pssl->hash_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp);
-		else if (pssl->hash_size == 32) //TLS 1.2
-			sha2_hmac(pssl->mac_dec, pssl->hash_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp, 0);
+		if (pssl->mac_size == 16)
+			md5_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp);
+		else if (pssl->mac_size == 20)
+			sha1_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp);
+		else if (pssl->mac_size == 32) //TLS 1.2
+			sha2_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp, 0);
 	}
 
-	if (xmem_comp(mac_tmp, pssl->hash_size, mac_buf, pssl->hash_size) != 0)
+	if (xmem_comp(mac_tmp, pssl->mac_size, mac_buf, pssl->mac_size) != 0)
 	{
 		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message signature hash not matched"), -1);
 
@@ -1240,6 +1276,59 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 	
 	if (pssl->minor_ver == SSL_MINOR_VERSION_3) //TLS 1.2
 	{
+		/*struct {
+			NamedCurve elliptic_curve_list<1..2 ^ 16 - 1>
+		} EllipticCurveList;
+		*/
+		// Extension type: supported_groups (10)
+		PUT_SWORD_NET(pssl->snd_msg, msglen, SSL_EXTENSION_SUPPORTEDGROUPS);
+		msglen += 2;
+		extlen += 2;
+
+		// supported_groups extension length
+		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(6));
+		msglen += 2;
+		extlen += 2;
+
+		// Elliptic curve list length
+		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(4));
+		msglen += 2;
+		extlen += 2;
+
+		// Supported Group: secp256r1 (0x0017)
+		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(23));
+		msglen += 2;
+		extlen += 2;
+
+		// Supported Group: secp384r1 (0x0018)
+		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(24));
+		msglen += 2;
+		extlen += 2;
+
+		/*struct {
+			ECPointFormat ec_point_format_list<1..2 ^ 8 - 1>
+		} ECPointFormatList;
+		*/
+		// Extension type: ec_point_formats (11)
+		PUT_SWORD_NET(pssl->snd_msg, msglen, SSL_EXTENSION_ECPOINTFORMATS);
+		msglen += 2;
+		extlen += 2;
+
+		// ec_point_format extension length
+		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(2));
+		msglen += 2;
+		extlen += 2;
+
+		//EC point formats Length: 1
+		PUT_BYTE(pssl->snd_msg, msglen, (1));
+		msglen++;
+		extlen++;
+
+		//EC point format: uncompressed (0)
+		PUT_BYTE(pssl->snd_msg, msglen, (0));
+		msglen++;
+		extlen++;
+
 		/*
 		struct {
 			ExtensionType extension_type;
@@ -1267,12 +1356,12 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 		extlen += 2;
 
 		//HashAlgorithm
-		PUT_BYTE(pssl->snd_msg, msglen, pssl->alg_hash);
+		PUT_BYTE(pssl->snd_msg, msglen, ALG_HASH_SHA1);
 		msglen++;
 		extlen++;
 
 		//SignatureAlgorithm
-		PUT_BYTE(pssl->snd_msg, msglen, pssl->alg_sign);
+		PUT_BYTE(pssl->snd_msg, msglen, ALG_SIGN_RSA);
 		msglen++;
 		extlen++;
 	}
@@ -1531,7 +1620,7 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 		}
 	}
 
-	return IS_DHE_CIPHER(pssl->cipher) ? SSL_SERVER_KEY_EXCHANGE : SSL_CERTIFICATE_REQUEST;
+	return (IS_DHE_CIPHER(pssl->cipher) || IS_ECDHE_CIPHER(pssl->cipher)) ? SSL_SERVER_KEY_EXCHANGE : SSL_CERTIFICATE_REQUEST;
 }
 
 static int _ssl_parse_server_key_exchange(ssl_t *pssl)
@@ -1603,20 +1692,43 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 	p = pssl->rcv_msg + SSL_HSH_SIZE;
 	end = p + haslen;
 
-	if (!pssl->dhm_ow)
+	if (IS_DHE_CIPHER(pssl->cipher))
 	{
-		pssl->dhm_ow = (dhm_context*)xmem_alloc(sizeof(dhm_context));
-	}
+		if (!pssl->dhm_ow)
+		{
+			pssl->dhm_ow = (dhm_context*)xmem_alloc(sizeof(dhm_context));
+		}
 
-	if (C_OK != dhm_read_params(pssl->dhm_ow, &p, end) != 0)
-	{
-		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context"), -1);
-		return SSL_HANDSHAKE_ERROR;
-	}
+		if (C_OK != dhm_read_params(pssl->dhm_ow, &p, end))
+		{
+			set_last_error(_T("_ssl_parse_server_key_exchange"), _T("server key exchange read dhm params error"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
 
-	if (pssl->dhm_ow->len < 64 || pssl->dhm_ow->len > 256)
+		if (pssl->dhm_ow->len < 64 || pssl->dhm_ow->len > 256)
+		{
+			set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context length"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+	}
+	else if (IS_ECDHE_CIPHER(pssl->cipher))
 	{
-		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context length"), -1);
+		if (!pssl->ecdh_ow)
+		{
+			pssl->ecdh_ow = (ecdh_context*)xmem_alloc(sizeof(ecdh_context));
+			
+			ecdh_init(pssl->ecdh_ow);
+
+			if (C_OK != ecdh_read_params(pssl->ecdh_ow, (const unsigned char **)&p, end))
+			{
+				set_last_error(_T("_ssl_parse_server_key_exchange"), _T("server key exchange read ecdh params error"), -1);
+				return SSL_HANDSHAKE_ERROR;
+			}
+		}
+	}
+	else
+	{
+		set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange cipher"), -1);
 		return SSL_HANDSHAKE_ERROR;
 	}
 
@@ -1651,16 +1763,33 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 	{
 		n = haslen - (end - p) - 2 - 2;
 
-		sha2_starts(&sha2, 0);
-		sha2_update(&sha2, pssl->rnd_cli, SSL_RND_SIZE);
-		sha2_update(&sha2, pssl->rnd_srv, SSL_RND_SIZE);
-		sha2_update(&sha2, pssl->rcv_msg + SSL_HSH_SIZE, n);
-		sha2_finish(&sha2, hash);
-
-		if (C_OK != rsa_pkcs1_verify(&pssl->crt_pe->rsa, RSA_PUBLIC, RSA_RAW, 32, hash, p))
+		if (alg_hash == RSA_SHA256)
 		{
-			set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context verify"), -1);
-			return SSL_HANDSHAKE_ERROR;
+			sha2_starts(&sha2, 0);
+			sha2_update(&sha2, pssl->rnd_cli, SSL_RND_SIZE);
+			sha2_update(&sha2, pssl->rnd_srv, SSL_RND_SIZE);
+			sha2_update(&sha2, pssl->rcv_msg + SSL_HSH_SIZE, n);
+			sha2_finish(&sha2, hash);
+
+			if (C_OK != rsa_pkcs1_verify(&pssl->crt_pe->rsa, RSA_PUBLIC, RSA_SHA256, 32, hash, p))
+			{
+				set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context verify"), -1);
+				return SSL_HANDSHAKE_ERROR;
+			}
+		}
+		else
+		{
+			sha1_starts(&sha1);
+			sha1_update(&sha1, pssl->rnd_cli, SSL_RND_SIZE);
+			sha1_update(&sha1, pssl->rnd_srv, SSL_RND_SIZE);
+			sha1_update(&sha1, pssl->rcv_msg + SSL_HSH_SIZE, n);
+			sha1_finish(&sha1, hash);
+
+			if (C_OK != rsa_pkcs1_verify(&pssl->crt_pe->rsa, RSA_PUBLIC, RSA_SHA1, 20, hash, p))
+			{
+				set_last_error(_T("_ssl_parse_server_key_exchange"), _T("invalid server key exchange message context verify"), -1);
+				return SSL_HANDSHAKE_ERROR;
+			}
 		}
 	}
 	else
@@ -1950,6 +2079,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 	int pos, n, msglen = SSL_HSH_SIZE;
 	byte_t premaster[SSL_BLK_SIZE] = {0};
 	int prelen = SSL_MST_SIZE;
+	size_t m;
 
 	//0:	handshake type
 	//1~3:	handshake length
@@ -1974,7 +2104,8 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)n);
 		msglen += 2;
 
-		if (C_OK != dhm_make_public(pssl->dhm_ow, 256, pssl->snd_msg + msglen, &n, havege_rand, &pssl->rng))
+		m = mpi_size(&(pssl->dhm_ow->P)); //256
+		if (C_OK != dhm_make_public(pssl->dhm_ow, (int)m, pssl->snd_msg + msglen, &n, havege_rand, &pssl->rng))
 		{
 			set_last_error(_T("_ssl_write_client_key_exchange"), _T("make public dhm error"), -1);
 			return SSL_HANDSHAKE_ERROR;
@@ -1991,6 +2122,24 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 			set_last_error(_T("_ssl_write_client_key_exchange"), _T("cacl dhm secret error"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
+	}
+	else if (IS_ECDHE_CIPHER(pssl->cipher))
+	{
+		m = 0;
+		if (C_OK != ecdh_make_public(pssl->ecdh_ow, &m, pssl->snd_msg + msglen, 4096, havege_rand_bytes, &pssl->rng))
+		{
+			set_last_error(_T("_ssl_write_client_key_exchange"), _T("make public ecdh error"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+		msglen += (int)m;
+
+		m = 0;
+		if (C_OK != ecdh_calc_secret(pssl->ecdh_ow, &m, premaster, 256, havege_rand_bytes, &pssl->rng))
+		{
+			set_last_error(_T("_ssl_write_client_key_exchange"), _T("cacl ecdh secret error"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+		prelen = (int)m;
 	}
 	else
 	{
@@ -2245,7 +2394,7 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 		{
 			sha2_finish(&sha2, padbuf); //32 bytes
 
-			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
@@ -2372,7 +2521,7 @@ static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
 		{
 			sha2_finish(&sha2, padbuf);
 
-			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
@@ -2518,7 +2667,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 	}Client Hello
 	*/
 
-	int msglen, haslen, seslen, ciphlen, complen, comped, extlen, lstlen;
+	int msglen, haslen, seslen, ciphlen, complen, comped, extlen, lstlen, grplen;
 	int i, j, n;
 	int ciph;
 	int type;
@@ -2656,23 +2805,59 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 			msglen += lstlen;
 			extlen -= lstlen;
 			break;
-		case SSL_EXTENSION_SIGNATUREANDHASHALGORITHM:
-			//Algorithm list length
-			lstlen = GET_SWORD_NET(pssl->rcv_msg, msglen);
+		case SSL_EXTENSION_SUPPORTEDGROUPS:
+			//Elliptic curve list length
+			grplen = GET_SWORD_NET(pssl->rcv_msg, msglen);
 			msglen += 2;
 			extlen -= 2;
+			lstlen -= 2;
 
-			while (lstlen)
+			while (grplen)
 			{
-				pssl->alg_hash = GET_BYTE(pssl->rcv_msg, msglen);
-				msglen++;
-				lstlen--;
-				extlen--;
+				if (!pssl->ecp_group)
+					pssl->ecp_group = GET_SWORD_NET(pssl->rcv_msg, msglen);
+				msglen += 2;
+				extlen -= 2;
+				lstlen -= 2;
+				grplen -= 2;
+			}
+			msglen += lstlen;
+			extlen -= lstlen;
+			break;
+		case SSL_EXTENSION_ECPOINTFORMATS:
+			//Elliptic curve list length
+			grplen = GET_BYTE(pssl->rcv_msg, msglen);
+			msglen ++;
+			extlen --;
+			lstlen--;
 
-				pssl->alg_sign = GET_BYTE(pssl->rcv_msg, msglen);
+			if (!pssl->ecp_format)
+				pssl->ecp_format = GET_BYTE(pssl->rcv_msg, msglen);
+			msglen += lstlen;
+			extlen -= lstlen;
+			break;
+		case SSL_EXTENSION_SIGNATUREANDHASHALGORITHM:
+			//Algorithm list length
+			grplen = GET_SWORD_NET(pssl->rcv_msg, msglen);
+			msglen += 2;
+			extlen -= 2;
+			lstlen -= 2;
+
+			while (grplen)
+			{
+				if (!pssl->alg_hash)
+					pssl->alg_hash = GET_BYTE(pssl->rcv_msg, msglen);
 				msglen++;
-				lstlen--;
 				extlen--;
+				lstlen--;
+				grplen--;
+
+				if (!pssl->alg_sign)
+					pssl->alg_sign = GET_BYTE(pssl->rcv_msg, msglen);
+				msglen++;
+				extlen--;
+				lstlen--;
+				grplen--;
 			}
 			break;
 		default:
@@ -2680,6 +2865,12 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 			msglen += lstlen;
 			extlen -= lstlen;
 			break;
+		}
+
+		if (extlen < 0)
+		{
+			set_last_error(_T("_ssl_parse_client_hello"), _T("invalid client hello extension"), -1);
+			return SSL_HANDSHAKE_ERROR;
 		}
 	}
 
@@ -2698,10 +2889,16 @@ static handshake_states _ssl_write_server_hello(ssl_t *pssl)
 		SessionID session_id;
 		CipherSuite cipher_suite;
 		CompressionMethod compression_method;
+
+		//tls 1.2
+		struct {
+		ExtensionType extension_type;
+		opaque extension_data<0..2^16-1>;
+		} Extension;
 	} ServerHello;
 	*/
 
-	int i, msglen = SSL_HSH_SIZE;
+	int i, extlen, msglen = SSL_HSH_SIZE;
 	dword_t t;
 
 	//gen server random bits
@@ -2748,6 +2945,53 @@ static handshake_states _ssl_write_server_hello(ssl_t *pssl)
 	//SSL_COMPRESS_NULL
 	PUT_BYTE(pssl->snd_msg, msglen, 0);
 	msglen++;
+
+	if (pssl->minor_ver == SSL_MINOR_VERSION_3)
+	{
+		// preset Extensions length to zero
+		PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(0));
+		msglen += 2;
+		extlen = 0;
+
+		/*if (pssl->ecp_group)
+		{
+			//struct {
+			//NamedCurve elliptic_curve_list<1..2 ^ 16 - 1>
+			//} EllipticCurveList;
+			
+			// Extension type: supported_groups (10)
+			PUT_SWORD_NET(pssl->snd_msg, msglen, SSL_EXTENSION_SUPPORTEDGROUPS);
+			msglen += 2;
+			extlen += 2;
+
+			// supported_groups length
+			PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(4));
+			msglen += 2;
+			extlen += 2;
+
+			// list length
+			PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(2));
+			msglen += 2;
+			extlen += 2;
+
+			// Supported Group: secp256r1 (0x0017)
+			PUT_SWORD_NET(pssl->snd_msg, msglen, (unsigned short)(pssl->ecp_group));
+			msglen += 2;
+			extlen += 2;
+
+		}*/
+
+		if (extlen)
+		{
+			//reset Extensions length
+			PUT_SWORD_NET(pssl->snd_msg, (msglen - extlen - 2), (unsigned short)(extlen));
+		}
+		else
+		{
+			//remove Extensions length
+			msglen -= 2;
+		}
+	}
 
 	pssl->snd_msg_len = msglen;
 	pssl->snd_msg_type = SSL_MSG_HANDSHAKE;
@@ -2830,7 +3074,7 @@ static handshake_states _ssl_write_server_certificate(ssl_t *pssl)
 		return SSL_HANDSHAKE_ERROR;
 	}
 
-	if (IS_DHE_CIPHER(pssl->cipher))
+	if (IS_DHE_CIPHER(pssl->cipher) || IS_ECDHE_CIPHER(pssl->cipher))
 		return SSL_SERVER_KEY_EXCHANGE;
 	else
 		return (pssl->verify_server == SSL_VERIFY_NONE) ? SSL_SERVER_HELLO_DONE : SSL_CERTIFICATE_REQUEST;
@@ -2872,17 +3116,12 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	*/
 
 	int n, msglen = SSL_HSH_SIZE;
+	size_t m;
 	byte_t hash[36] = { 0 };
 	md5_context md5;
 	sha1_context sha1;
 	sha2_context sha2;
-
-	if (!pssl->dhm_ow)
-	{
-		pssl->dhm_ow = (dhm_context*)xmem_alloc(sizeof(dhm_context));
-		mpi_read_string(&(pssl->dhm_ow->P), 16, dhm_P, -1);
-		mpi_read_string(&(pssl->dhm_ow->G), 16, dhm_G, -1);
-	}
+	ecp_curve_info* pec;
 
 	//0:	handshake type
 	//1~3:	handshake length
@@ -2890,14 +3129,49 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	//4+n~5+n:	rsa key length
 	//6+n:` rsa key sign
 
-	// Ephemeral DH parameters:
-	n = 0;
-	if (C_OK != dhm_make_params(pssl->dhm_ow, 256, pssl->snd_msg + msglen, &n, havege_rand, &pssl->rng))
+	if (IS_DHE_CIPHER(pssl->cipher))
 	{
-		set_last_error(_T("_ssl_write_server_key_exchange"), _T("make dhm params faild"), -1);
-		return SSL_HANDSHAKE_ERROR;
+		if (!pssl->dhm_ow)
+		{
+			pssl->dhm_ow = (dhm_context*)xmem_alloc(sizeof(dhm_context));
+			mpi_read_string(&(pssl->dhm_ow->P), 16, dhm_P, -1);
+			mpi_read_string(&(pssl->dhm_ow->G), 16, dhm_G, -1);
+		}
+
+		// Ephemeral DH parameters:
+		n = 0;
+		m = mpi_size(&(pssl->dhm_ow->P)); //256
+		if (C_OK != dhm_make_params(pssl->dhm_ow, (int)m, pssl->snd_msg + msglen, &n, havege_rand, &pssl->rng))
+		{
+			set_last_error(_T("_ssl_write_server_key_exchange"), _T("make dhm params faild"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+		msglen += n;
 	}
-	msglen += n;
+	else if(IS_ECDHE_CIPHER(pssl->cipher))
+	{
+		if (!pssl->ecdh_ow)
+		{
+			pssl->ecdh_ow = (ecdh_context*)xmem_alloc(sizeof(ecdh_context));
+			pec = ecp_curve_info_from_tls_id(TLS_ECP_GROUP_SECP256R1);
+			if (!pec)
+			{
+				set_last_error(_T("_ssl_write_server_key_exchange"), _T("unknow ecdh group id"), -1);
+				return SSL_HANDSHAKE_ERROR;
+			}
+			ecdh_setup(pssl->ecdh_ow, pec->grp_id);
+		}
+
+		//
+		m = 0;
+		if (C_OK != ecdh_make_params(pssl->ecdh_ow, &m, pssl->snd_msg + msglen, 4096, havege_rand_bytes, &pssl->rng))
+		{
+			set_last_error(_T("_ssl_write_server_key_exchange"), _T("make ecdh params faild"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+		n = (int)m;
+		msglen += n;
+	}
 
 	/* TLS 1.0/1.1
 	* digitally-signed struct {
@@ -2920,13 +3194,22 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	*/
 	if (pssl->minor_ver == SSL_MINOR_VERSION_3)
 	{
-		sha2_starts(&sha2, 0);
+		/*sha2_starts(&sha2, 0);
 		sha2_update(&sha2, pssl->rnd_cli, SSL_RND_SIZE);
 		sha2_update(&sha2, pssl->rnd_srv, SSL_RND_SIZE);
 		sha2_update(&sha2, pssl->snd_msg + SSL_HSH_SIZE, n);
 		sha2_finish(&sha2, hash);
 
 		PUT_BYTE(pssl->snd_msg, msglen, ALG_HASH_SHA256);
+		msglen++;*/
+
+		sha1_starts(&sha1);
+		sha1_update(&sha1, pssl->rnd_cli, SSL_RND_SIZE);
+		sha1_update(&sha1, pssl->rnd_srv, SSL_RND_SIZE);
+		sha1_update(&sha1, pssl->snd_msg + SSL_HSH_SIZE, n);
+		sha1_finish(&sha1, hash);
+
+		PUT_BYTE(pssl->snd_msg, msglen, ALG_HASH_SHA1);
 		msglen++;
 
 		PUT_BYTE(pssl->snd_msg, msglen, ALG_SIGN_RSA);
@@ -2935,7 +3218,8 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 		PUT_SWORD_NET(pssl->snd_msg, msglen, pssl->rsa_ow->len);
 		msglen += 2;
 
-		if (C_OK != rsa_pkcs1_sign(pssl->rsa_ow, RSA_PRIVATE, RSA_RAW, 32, hash, pssl->snd_msg + msglen))
+		//if (C_OK != rsa_pkcs1_sign(pssl->rsa_ow, RSA_PRIVATE, RSA_RAW, 32, hash, pssl->snd_msg + msglen))
+		if (C_OK != rsa_pkcs1_sign(pssl->rsa_ow, RSA_PRIVATE, RSA_SHA1, 20, hash, pssl->snd_msg + msglen))
 		{
 			set_last_error(_T("_ssl_write_server_key_exchange"), _T("rsa pkcs1 sign failed"), -1);
 			return SSL_HANDSHAKE_ERROR;
@@ -2964,7 +3248,7 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 			set_last_error(_T("_ssl_write_server_key_exchange"), _T("rsa pkcs1 sign failed"), -1);
 			return SSL_HANDSHAKE_ERROR;
 		}
-		msglen += pssl->rsa_ow->len;
+		msglen += (pssl->rsa_ow->len);
 	}
 
 	pssl->snd_msg_len = msglen;
@@ -3252,6 +3536,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 	int haslen, i, n, msglen = SSL_HSH_SIZE;
 	byte_t premaster[SSL_BLK_SIZE] = { 0 };
 	int prelen = SSL_MST_SIZE;
+	size_t m;
 
 	if (pssl->rcv_msg[0] != SSL_HS_CLIENT_KEY_EXCHANGE)
 	{
@@ -3297,6 +3582,34 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 		}
 
 		msglen += n;
+	}
+	else if (IS_ECDHE_CIPHER(pssl->cipher))
+	{
+		/*n = GET_SWORD_NET(pssl->rcv_msg, msglen);
+		msglen += 2;
+
+		//if (n < 1 || n > pssl->dhm_ow->len || n + 2 != haslen) //key size maybe changed
+		if (n < 1 || n + 2 != haslen)
+		{
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange length"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}*/
+
+		if (C_OK != ecdh_read_public(pssl->ecdh_ow, pssl->rcv_msg + msglen, haslen))
+		{
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("invalid client key exchange context"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+
+		m = 0;
+		if (C_OK != ecdh_calc_secret(pssl->ecdh_ow, &m, premaster, 256, havege_rand_bytes, &pssl->rng))
+		{
+			set_last_error(_T("_ssl_parse_client_key_exchange"), _T("create premaster failed"), -1);
+			return SSL_HANDSHAKE_ERROR;
+		}
+		prelen = (int)m;
+
+		msglen += haslen;
 	}
 	else
 	{
@@ -3578,7 +3891,7 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 		if (pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
 			sha2_finish(&sha2, padbuf);
-			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_client_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{
@@ -3705,7 +4018,7 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 		if (pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
 			sha2_finish(&sha2, padbuf);
-			_ssl_prf3(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
+			_ssl_prf2(pssl->master_secret, SSL_MST_SIZE, label_server_finished, padbuf, 32, mac_buf, 12);
 		}
 		else
 		{

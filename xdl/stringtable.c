@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "stringtable.h"
 #include "dblink.h"
-#include "miscell.h"
+#include "miscella.h"
 #include "optparser.h"
 
 #include "xdlimp.h"

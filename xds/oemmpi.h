@@ -4,6 +4,7 @@
 #ifndef BIGNUM_H
 #define BIGNUM_H
 
+#include <stdint.h>
 #include "xdsdef.h"
 
 #define BIGNUM_C
@@ -18,8 +19,14 @@
 #define ERR_MPI_NEGATIVE_VALUE                    -0x000A
 #define ERR_MPI_DIVISION_BY_ZERO                  -0x000C
 #define ERR_MPI_NOT_ACCEPTABLE                    -0x000E
+#define ERR_MPI_ALLOC_FAILED                      -0x0010 
 
-#define MPI_CHK(f) if( ( ret = f ) != 0 ) goto cleanup
+#define MPI_CHK(f) do{ if( ( ret = f ) != 0 ) goto cleanup; }while(0)
+
+/*
+* Maximum size MPIs are allowed to grow to in number of limbs.
+*/
+#define MPI_MAX_LIMBS                             10000
 
 /*
 * Define the base integer type, architecture-wise
@@ -47,16 +54,25 @@ typedef unsigned long long t_dbl;
 #endif
 #endif
 
+#ifdef _OS_64
+typedef  int64_t mpi_sint;
+typedef uint64_t mpi_uint;
+typedef __uint128_t t_udbl;
+#else
+typedef  int32_t mpi_sint;
+typedef uint32_t mpi_uint;
+typedef uint64_t t_udbl;
+#endif
+
 /**
 * \brief          MPI structure
 */
-typedef struct
+typedef struct _mpi
 {
 	int s;              /*!<  integer sign      */
 	int n;              /*!<  total # of limbs  */
 	t_int *p;           /*!<  pointer to limbs  */
-}
-mpi;
+}mpi;
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,12 +81,12 @@ extern "C" {
 	/**
 	* \brief          Initialize one or more mpi
 	*/
-	EXP_API void mpi_init(mpi *X, ...);
+	EXP_API void mpi_init(mpi *X);
 
 	/**
 	* \brief          Unallocate one or more mpi
 	*/
-	EXP_API void mpi_free(mpi *X, ...);
+	EXP_API void mpi_free(mpi *X);
 
 	/**
 	* \brief          Enlarge to the specified number of limbs
@@ -86,7 +102,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	EXP_API int mpi_copy(mpi *X, mpi *Y);
+	EXP_API int mpi_copy(mpi *X, const mpi *Y);
 
 	/**
 	* \brief          Swap the contents of X and Y
@@ -114,7 +130,7 @@ extern "C" {
 	/**
 	* \brief          Return the total size in bytes
 	*/
-	EXP_API int mpi_size(mpi *X);
+	EXP_API int mpi_size(const mpi *X);
 
 	/**
 	* \brief          Import from an ASCII string
@@ -125,7 +141,7 @@ extern "C" {
 	*
 	* \return         0 if successful, or an ERR_MPI_XXX error code
 	*/
-	EXP_API int mpi_read_string(mpi *X, int radix, char *s, int slen);
+	EXP_API int mpi_read_string(mpi *X, int radix, const char *s, int slen);
 
 	/**
 	* \brief          Export into an ASCII string
@@ -177,7 +193,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	EXP_API int mpi_read_binary(mpi *X, unsigned char *buf, int buflen);
+	EXP_API int mpi_read_binary(mpi *X, const unsigned char *buf, int buflen);
 
 	/**
 	* \brief          Export X into unsigned binary data, big endian
@@ -192,7 +208,7 @@ extern "C" {
 	* \note           Call this function with *buflen = 0 to obtain the
 	*                 minimum required buffer size in *buflen.
 	*/
-	EXP_API int mpi_write_binary(mpi *X, unsigned char *buf, int buflen);
+	EXP_API int mpi_write_binary(const mpi *X, unsigned char *buf, int buflen);
 
 	/**
 	* \brief          Left-shift: X <<= count
@@ -226,7 +242,7 @@ extern "C" {
 	*                -1 if X is lesser  than Y or
 	*                 0 if X is equal to Y
 	*/
-	EXP_API int mpi_cmp_mpi(mpi *X, mpi *Y);
+	EXP_API int mpi_cmp_mpi(const mpi *X, const mpi *Y);
 
 	/**
 	* \brief          Compare signed values
@@ -235,7 +251,25 @@ extern "C" {
 	*                -1 if X is lesser  than z or
 	*                 0 if X is equal to z
 	*/
-	EXP_API int mpi_cmp_int(mpi *X, int z);
+	EXP_API int mpi_cmp_int(const mpi *X, int z);
+
+	/**
+	* \brief          Check if an MPI is less than the other in constant time.
+	*
+	* \param X        The left-hand MPI. This must point to an initialized MPI
+	*                 with the same allocated length as Y.
+	* \param Y        The right-hand MPI. This must point to an initialized MPI
+	*                 with the same allocated length as X.
+	* \param ret      The result of the comparison:
+	*                 \c 1 if \p X is less than \p Y.
+	*                 \c 0 if \p X is greater than or equal to \p Y.
+	*
+	* \return         0 on success.
+	* \return         MBEDTLS_ERR_MPI_BAD_INPUT_DATA if the allocated length of
+	*                 the two input MPIs is not the same.
+	*/
+	EXP_API int mpi_lt_mpi_ct(const mpi *X, const mpi *Y,
+		unsigned *ret);
 
 	/**
 	* \brief          Unsigned addition: X = |A| + |B|
@@ -251,7 +285,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 ERR_MPI_NEGATIVE_VALUE if B is greater than A
 	*/
-	EXP_API int mpi_sub_abs(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_sub_abs(mpi *X, const mpi *A, const mpi *B);
 
 	/**
 	* \brief          Signed addition: X = A + B
@@ -259,7 +293,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	EXP_API int mpi_add_mpi(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_add_mpi(mpi *X, const mpi *A, const mpi *B);
 
 	/**
 	* \brief          Signed substraction: X = A - B
@@ -267,7 +301,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	EXP_API int mpi_sub_mpi(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_sub_mpi(mpi *X, const mpi *A, const mpi *B);
 
 	/**
 	* \brief          Signed addition: X = A + b
@@ -291,7 +325,7 @@ extern "C" {
 	* \return         0 if successful,
 	*                 1 if memory allocation failed
 	*/
-	EXP_API int mpi_mul_mpi(mpi *X, mpi *A, mpi *B);
+	EXP_API int mpi_mul_mpi(mpi *X, const mpi *A, const mpi *B);
 
 	/**
 	* \brief          Baseline multiplication: X = A * b
@@ -330,7 +364,7 @@ extern "C" {
 	*                 1 if memory allocation failed,
 	*                 ERR_MPI_DIVISION_BY_ZERO if B == 0
 	*/
-	EXP_API int mpi_mod_mpi(mpi *R, mpi *A, mpi *B);
+	EXP_API int mpi_mod_mpi(mpi *R, const mpi *A, const mpi *B);
 
 	/**
 	* \brief          Modulo: r = A mod b
@@ -370,7 +404,7 @@ extern "C" {
 	*                 ERR_MPI_BAD_INPUT_DATA if N is negative or nil
 	*                 ERR_MPI_NOT_ACCEPTABLE if A has no inverse mod N
 	*/
-	EXP_API int mpi_inv_mod(mpi *X, mpi *A, mpi *N);
+	EXP_API int mpi_inv_mod(mpi *X, const mpi *A, const mpi *N);
 
 	/**
 	* \brief          Miller-Rabin primality test
@@ -403,6 +437,138 @@ extern "C" {
 	* \return         0 if successful, or 1 if the test failed
 	*/
 	EXP_API int mpi_self_test(int verbose);
+
+	/**
+	* \brief          Return the number of bits up to and including the most
+	*                 significant bit of value \c 1.
+	*
+	* * \note         This is same as the one-based index of the most
+	*                 significant bit of value \c 1.
+	*
+	* \param X        The MPI to query. This must point to an initialized MPI.
+	*
+	* \return         The number of bits up to and including the most
+	*                 significant bit of value \c 1.
+	*/
+	EXP_API size_t mpi_bitlen(const mpi *X);
+
+	/**
+	* \brief          Get a specific bit from an MPI.
+	*
+	* \param X        The MPI to query. This must be initialized.
+	* \param pos      Zero-based index of the bit to query.
+	*
+	* \return         \c 0 or \c 1 on success, depending on whether bit \c pos
+	*                 of \c X is unset or set.
+	* \return         A negative error code on failure.
+	*/
+	EXP_API int mpi_get_bit(const mpi *X, size_t pos);
+
+	/**
+	* \brief          Modify a specific bit in an MPI.
+	*
+	* \note           This function will grow the target MPI if necessary to set a
+	*                 bit to \c 1 in a not yet existing limb. It will not grow if
+	*                 the bit should be set to \c 0.
+	*
+	* \param X        The MPI to modify. This must be initialized.
+	* \param pos      Zero-based index of the bit to modify.
+	* \param val      The desired value of bit \c pos: \c 0 or \c 1.
+	*
+	* \return         \c 0 if successful.
+	* \return         #MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed.
+	* \return         Another negative error code on other kinds of failure.
+	*/
+	EXP_API int mpi_set_bit(mpi *X, size_t pos, unsigned char val);
+
+	/**
+	* \brief          This function resizes an MPI downwards, keeping at least the
+	*                 specified number of limbs.
+	*
+	*                 If \c X is smaller than \c nblimbs, it is resized up
+	*                 instead.
+	*
+	* \param X        The MPI to shrink. This must point to an initialized MPI.
+	* \param nblimbs  The minimum number of limbs to keep.
+	*
+	* \return         \c 0 if successful.
+	* \return         #MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed
+	*                 (this can only happen when resizing up).
+	* \return         Another negative error code on other kinds of failure.
+	*/
+	EXP_API int mpi_shrink(mpi *X, size_t nblimbs);
+
+	/**
+	* \brief          Perform a safe conditional copy of MPI which doesn't
+	*                 reveal whether the condition was true or not.
+	*
+	* \param X        The MPI to conditionally assign to. This must point
+	*                 to an initialized MPI.
+	* \param Y        The MPI to be assigned from. This must point to an
+	*                 initialized MPI.
+	* \param assign   The condition deciding whether to perform the
+	*                 assignment or not. Possible values:
+	*                 * \c 1: Perform the assignment `X = Y`.
+	*                 * \c 0: Keep the original value of \p X.
+	*
+	* \note           This function is equivalent to
+	*                      `if( assign ) mbedtls_mpi_copy( X, Y );`
+	*                 except that it avoids leaking any information about whether
+	*                 the assignment was done or not (the above code may leak
+	*                 information through branch prediction and/or memory access
+	*                 patterns analysis).
+	*
+	* \return         \c 0 if successful.
+	* \return         #MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed.
+	* \return         Another negative error code on other kinds of failure.
+	*/
+	EXP_API int mpi_safe_cond_assign(mpi *X, const mpi *Y, unsigned char assign);
+
+	/**
+	* \brief          Perform a safe conditional swap which doesn't
+	*                 reveal whether the condition was true or not.
+	*
+	* \param X        The first MPI. This must be initialized.
+	* \param Y        The second MPI. This must be initialized.
+	* \param assign   The condition deciding whether to perform
+	*                 the swap or not. Possible values:
+	*                 * \c 1: Swap the values of \p X and \p Y.
+	*                 * \c 0: Keep the original values of \p X and \p Y.
+	*
+	* \note           This function is equivalent to
+	*                      if( assign ) mbedtls_mpi_swap( X, Y );
+	*                 except that it avoids leaking any information about whether
+	*                 the assignment was done or not (the above code may leak
+	*                 information through branch prediction and/or memory access
+	*                 patterns analysis).
+	*
+	* \return         \c 0 if successful.
+	* \return         #MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed.
+	* \return         Another negative error code on other kinds of failure.
+	*
+	*/
+	EXP_API int mpi_safe_cond_swap(mpi *X, mpi *Y, unsigned char assign);
+
+	/**
+	* \brief          Fill an MPI with a number of random bytes.
+	*
+	* \param X        The destination MPI. This must point to an initialized MPI.
+	* \param size     The number of random bytes to generate.
+	* \param f_rng    The RNG function to use. This must not be \c NULL.
+	* \param p_rng    The RNG parameter to be passed to \p f_rng. This may be
+	*                 \c NULL if \p f_rng doesn't need a context argument.
+	*
+	* \return         \c 0 if successful.
+	* \return         #MBEDTLS_ERR_MPI_ALLOC_FAILED if a memory allocation failed.
+	* \return         Another negative error code on failure.
+	*
+	* \note           The bytes obtained from the RNG are interpreted
+	*                 as a big-endian representation of an MPI; this can
+	*                 be relevant in applications like deterministic ECDSA.
+	*/
+	EXP_API int mpi_fill_random(mpi *X, size_t size,
+		int(*f_rng)(void *, unsigned char *, size_t),
+		void *p_rng);
 
 #ifdef __cplusplus
 }

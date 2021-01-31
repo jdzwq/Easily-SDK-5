@@ -26,7 +26,7 @@ LICENSE.GPL3 for more details.
 
 #include "radobj.h"
 #include "varobj.h"
-#include "miscell.h"
+#include "miscella.h"
 
 #include "xdlimp.h"
 

@@ -579,9 +579,6 @@
     <ClInclude Include="..\..\xdl\fileinf.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\miscell.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\xdloop.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -595,6 +592,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\jioning.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\miscella.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1100,9 +1100,6 @@
     <ClCompile Include="..\..\xdl\fileinf.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\miscell.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\hintner.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1113,6 +1110,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\jioning.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\miscella.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

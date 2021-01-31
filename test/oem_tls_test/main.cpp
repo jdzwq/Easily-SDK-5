@@ -1,7 +1,11 @@
 // oem_tls_test.cpp : 定义控制台应用程序的入口点。
 //
 
-#include "stdafx.h"
+#include <xdl.h>
+
+#ifdef _OS_WINDOWS
+#include <conio.h>
+#endif
 
 char test_ca_crt[] =
 "-----BEGIN CERTIFICATE-----\r\n"
@@ -195,19 +199,24 @@ static char dhm_P[] = "E4004C1F94182000103D883A448B3F802CE4B44A83301270002C20D03
 "01F76949A60BB7F00A40B1EAB64BDD48E8A700D60B7F1200FA8E77B0A979DABF";
 
 
-byte_t in_msg[1024] = { 0 };
-dword_t in_len = 0;
-byte_t out_msg[1024] = { 0 };
-dword_t out_len = 0;
+byte_t msg_buf[4096] = { 0 };
+dword_t msg_len = 0;
 
 x509_cert* ca_chan = NULL;
 x509_cert* ca_srv = NULL;
 x509_cert* ca_cli = NULL;
 rsa_context* rsa_srv = NULL;
 rsa_context* rsa_cli = NULL;
+havege_state rng = { 0 };
+
 dhm_context* dhm_srv = NULL;
 dhm_context* dhm_cli = NULL;
-havege_state rng = { 0 };
+
+ecdh_context* ecdh_srv = NULL;
+ecdh_context* ecdh_cli = NULL;
+
+byte_t pre_mst[256] = { 0 };
+int pre_len = 0;
 
 byte_t mst_srv[48] = { 0 };
 byte_t mst_cli[48] = { 0 };
@@ -339,161 +348,247 @@ static void _tls_derive_keys(bool_t cli)
 	}
 }
 
-void server_key_exchange()
+void server_key_exchange_dhe()
 {
-	int ds = 1024;
-	byte_t* buf = (byte_t*)xmem_alloc(ds);
+	/*
+	struct {
+		ServerDHParams params;
+		Signature signed_params;
+	} ServerKeyExchange;
+	*/
 
-	bool_t rt = dhm_make_params(dhm_srv, 256, buf, &ds, havege_rand, &rng);
+	//server write key exchange
+	dhm_srv = (dhm_context*)calloc(1, sizeof(dhm_context));
+	int n = 0;
+
+	mpi_read_string(&(dhm_srv->P), 16, dhm_P, -1);
+	mpi_read_string(&(dhm_srv->G), 16, dhm_G, -1);
+
+	msg_len = 0;
+	bool_t rt = dhm_make_params(dhm_srv, 256, msg_buf, &n, havege_rand, &rng);
+	msg_len += n;
 
 	unsigned char randb[64];
 	xmem_copy((void*)randb, (void*)rnd_cli, 32);
 	xmem_copy((void*)(randb + 32), (void*)rnd_srv, 32);
 
-	unsigned char hash[36];
+	unsigned char hash[36] = { 0 };
 
 	md5_context md5 = { 0 };
 	md5_starts(&md5);
 	md5_update(&md5, randb, 64);
-	md5_update(&md5, buf, ds);
+	md5_update(&md5, msg_buf, n);
 	md5_finish(&md5, hash);
 	
 	sha1_context sha = { 0 };
 	sha1_starts(&sha);
 	sha1_update(&sha, randb, 64);
-	sha1_update(&sha, buf, ds);
+	sha1_update(&sha, msg_buf, n);
 	sha1_finish(&sha, hash + MD5_SIZE);
 
-	dword_t dw = rsa_srv->len;
+	PUT_SWORD_NET(msg_buf, msg_len, rsa_srv->len);
+	msg_len += 2;
 
-	byte_t* key = (byte_t*)xmem_alloc(dw);
-	rt = rsa_pkcs1_sign(rsa_srv, RSA_PRIVATE, RSA_RAW, 36, hash, key);
+	rt = rsa_pkcs1_sign(rsa_srv, RSA_PRIVATE, RSA_RAW, 36, hash, (msg_buf + msg_len));
+	msg_len += rsa_srv->len;
 
-	dhm_cli = (dhm_context*)xmem_alloc(sizeof(dhm_context));
+	//client read key exchange
+	dhm_cli = (dhm_context*)calloc(1, sizeof(dhm_context));
 
-	byte_t* ps = buf;
-	byte_t* pe = buf + ds;
-
+	byte_t* ps = msg_buf;
+	byte_t* pe = msg_buf + msg_len;
+	
 	rt = dhm_read_params(dhm_cli, &ps, pe);
+
+	n = GET_SWORD_NET(ps, 0);
+	ps += 2;
+
+	rt = ((int)(pe - ps) == rsa_srv->len) ? 1 : 0;
+
+	n = msg_len - (pe - ps) - 2;
+
+	memset((void*)&md5, 0, sizeof(md5_context));
+	md5_starts(&md5);
+	md5_update(&md5, randb, 64);
+	md5_update(&md5, msg_buf, n);
+	md5_finish(&md5, hash);
+
+	memset((void*)&sha, 0, sizeof(sha1_context));
+	sha1_starts(&sha);
+	sha1_update(&sha, randb, 64);
+	sha1_update(&sha, msg_buf, n);
+	sha1_finish(&sha, hash + MD5_SIZE);
+
+	rt = rsa_pkcs1_verify(&ca_srv->rsa, RSA_PUBLIC, RSA_RAW, 36, hash, ps);
+}
+
+void client_key_exchange_dhe()
+{
+	/*
+	struct {
+	ServerDHParams params;
+	Signature signed_params;
+	} ServerKeyExchange;
+	*/
+
+	//client write key exchange
+	int n;
+	n = dhm_cli->len;
+
+	msg_len = 0;
+	PUT_SWORD_NET(msg_buf, msg_len, (unsigned short)n);
+	msg_len += 2;
+
+	int rt = dhm_make_public(dhm_cli, 256, msg_buf + msg_len, &n, havege_rand, &rng);
+	msg_len += n;
+
+	//if n changed, reset key len
+	PUT_SWORD_NET(msg_buf, 0, (unsigned short)n);
+
+	pre_len = dhm_cli->len;
+
+	rt = dhm_calc_secret(dhm_cli, pre_mst, &pre_len);
+	
+	//server read key exchange
+	//Receive G^Y mod P, premaster = (G^Y)^X mod P
+	msg_len = 0;
+	n = GET_SWORD_NET(msg_buf, msg_len);
+	msg_len += 2;
+
+	rt = dhm_read_public(dhm_srv, msg_buf + msg_len, n);
+	msg_len += n;
+
+	byte_t premaster[256] = { 0 };
+	int prelen = dhm_srv->len;
+
+	rt = dhm_calc_secret(dhm_srv, premaster, &prelen);
+
+	rt = memcmp((void*)pre_mst, (void*)premaster, prelen);
+}
+
+void server_key_exchange_ecdh()
+{
+	/*
+	* Ephemeral ECDH parameters:
+	*
+	* struct {
+	*     ECParameters curve_params;
+	*     ECPoint      public;
+	* } ServerECDHParams;
+	*/
+
+	//server write key exchange
+	ecdh_srv = (ecdh_context*)calloc(1, sizeof(ecdh_context));
+	size_t n = 0;
+
+	ecdh_init(ecdh_srv);
+
+	ecdh_setup(ecdh_srv, ECP_DP_SECP192R1);
+
+	int rt = ecdh_make_params(ecdh_srv, &n, msg_buf, 4096, havege_rand_bytes, &rng);
+
+	msg_len += n;
+
+	unsigned char randb[64];
+	xmem_copy((void*)randb, (void*)rnd_cli, 32);
+	xmem_copy((void*)(randb + 32), (void*)rnd_srv, 32);
+
+	unsigned char hash[36] = { 0 };
+
+	md5_context md5 = { 0 };
+	md5_starts(&md5);
+	md5_update(&md5, randb, 64);
+	md5_update(&md5, msg_buf, n);
+	md5_finish(&md5, hash);
+
+	sha1_context sha = { 0 };
+	sha1_starts(&sha);
+	sha1_update(&sha, randb, 64);
+	sha1_update(&sha, msg_buf, n);
+	sha1_finish(&sha, hash + MD5_SIZE);
+
+	PUT_SWORD_NET(msg_buf, msg_len, rsa_srv->len);
+	msg_len += 2;
+
+	rt = rsa_pkcs1_sign(rsa_srv, RSA_PRIVATE, RSA_RAW, 36, hash, (msg_buf + msg_len));
+	msg_len += rsa_srv->len;
+
+	//client read key exchange
+	ecdh_cli = (ecdh_context*)calloc(1, sizeof(ecdh_context));
+
+	ecdh_init(ecdh_cli);
+
+	byte_t* ps = msg_buf;
+	byte_t* pe = msg_buf + msg_len;
+	
+	rt = ecdh_read_params(ecdh_cli, (const unsigned char **)&ps, pe);
+
+	n = GET_SWORD_NET(ps, 0);
+	ps += 2;
+
+	rt = ((int)(pe - ps) == rsa_srv->len) ? 1 : 0;
 
 	xmem_copy((void*)randb, (void*)rnd_cli, 32);
 	xmem_copy((void*)(randb + 32), (void*)rnd_srv, 32);
 
-	xmem_zero((void*)hash, 36);
+	n = msg_len - (pe - ps) - 2;
 
-	xmem_zero(&md5, sizeof(md5_context));
+	memset((void*)&md5, 0, sizeof(md5_context));
 	md5_starts(&md5);
 	md5_update(&md5, randb, 64);
-	md5_update(&md5, buf, ds);
+	md5_update(&md5, msg_buf, n);
 	md5_finish(&md5, hash);
 
-	xmem_zero(&sha, sizeof(sha1_context));
+	memset((void*)&sha, 0, sizeof(sha1_context));
 	sha1_starts(&sha);
 	sha1_update(&sha, randb, 64);
-	sha1_update(&sha, buf, ds);
+	sha1_update(&sha, msg_buf, n);
 	sha1_finish(&sha, hash + MD5_SIZE);
 
-	rt = rsa_pkcs1_verify(&ca_srv->rsa, RSA_PUBLIC, RSA_RAW, 36, hash, key);
-
-	unsigned char rndb[64];
-
-	xmem_copy((void*)rndb, (void*)rnd_cli, 32);
-	xmem_copy((void*)(rndb + 32), (void*)rnd_srv, 32);
-
-	_tls_prf(mst_cli, 48, "master secret", rndb, 64, cli_mdb, 48);
-
-	/* Swap the client and server random values.*/
-	xmem_copy((void*)rndb, (void*)rnd_srv, 32);
-	xmem_copy((void*)(rndb + 32), (void*)rnd_cli, 32);
-
-	_tls_prf(cli_mdb, 48, "key expansion", rndb, 64, cli_blk, 256);
-
-	xmem_copy(cli_enc, cli_blk, mac_len);
-	xmem_copy(cli_dec, cli_blk + mac_len, mac_len);
-
-	cli_arc_enc = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
-	arc4_setup(cli_arc_enc, cli_blk + mac_len * 2, key_len);
-	cli_arc_dec = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
-	arc4_setup(cli_arc_dec, cli_blk + mac_len * 2 + key_len, key_len);
+	rt = rsa_pkcs1_verify(&ca_srv->rsa, RSA_PUBLIC, RSA_RAW, 36, hash, ps);
 }
 
-void client_key_exchange()
+void client_key_exchange_ecdh()
 {
-	int dw = rsa_srv->len;
-	byte_t* key = (byte_t*)xmem_alloc(dw);
+	/*
+	struct {
+	ServerDHParams params;
+	Signature signed_params;
+	} ServerKeyExchange;
+	*/
 
-	bool_t rt = rsa_pkcs1_encrypt(rsa_srv, RSA_PUBLIC, 48, mst_cli, key);
+	//client write key exchange
+	size_t n = 0;
 
-	rt = rsa_pkcs1_decrypt(rsa_srv, RSA_PRIVATE, &dw, key, mst_srv);
+	msg_len = 0;
+	PUT_SWORD_NET(msg_buf, msg_len, (unsigned short)n);
+	msg_len += 2;
 
-	rt = xmem_comp(mst_cli, dw, mst_srv, dw);
+	int rt = ecdh_make_public(ecdh_cli, &n, msg_buf + msg_len, 4096, havege_rand_bytes, &rng);
+	msg_len += n;
 
-	unsigned char rndb[64];
+	//if n changed, reset key len
+	PUT_SWORD_NET(msg_buf, 0, (unsigned short)n);
 
-	xmem_copy((void*)rndb, (void*)rnd_cli, 32);
-	xmem_copy((void*)(rndb + 32), (void*)rnd_srv, 32);
+	rt = ecdh_calc_secret(ecdh_cli, &n, pre_mst, 1024, havege_rand_bytes, &rng);
+	pre_len = (int)n;
 
-	/* generate session master secret*/
-	_tls_prf(mst_srv, 48, "master secret", rndb, 64, srv_mdb, 48);
+	//server read key exchange
+	msg_len = 0;
+	n = GET_SWORD_NET(msg_buf, msg_len);
+	msg_len += 2;
 
-	/* Swap the client and server random values.*/
-	xmem_copy((void*)rndb, (void*)rnd_srv, 32);
-	xmem_copy((void*)(rndb + 32), (void*)rnd_cli, 32);
+	rt = ecdh_read_public(ecdh_srv, msg_buf + msg_len, n);
+	msg_len += n;
 
-	_tls_prf(srv_mdb, 48, "key expansion", rndb, 64, srv_blk, 256);
+	byte_t premaster[256] = { 0 };
 
-	xmem_copy(srv_enc, srv_blk + mac_len, mac_len);
-	xmem_copy(srv_dec, srv_blk, mac_len);
+	rt = ecdh_calc_secret(ecdh_srv, &n, premaster, 1024, havege_rand_bytes, &rng);
 
-	srv_arc_enc = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
-	arc4_setup(srv_arc_enc, srv_blk + mac_len * 2 + key_len, key_len);
-	srv_arc_dec = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
-	arc4_setup(srv_arc_dec, srv_blk + mac_len * 2, key_len);
+	rt = memcmp((void*)pre_mst, (void*)premaster, n);
 }
 
-void test_write()
-{
-	for (int i = 0; i < 1024; i++)
-	{
-		in_msg[i] = (unsigned char)havege_rand(&rng);
-	}
-
-	unsigned char buf[1024];
-	unsigned char cli_hash[20];
-	unsigned char srv_hash[20];
-
-	sha1_hmac((byte_t*)cli_enc, 20, in_msg, 1024, cli_hash);
-	arc4_crypt(cli_arc_enc, 1024, in_msg, buf);
-
-	arc4_crypt(srv_arc_dec, 1024, buf, out_msg);
-	sha1_hmac((byte_t*)srv_dec, 20, out_msg, 1024, srv_hash);
-
-	int rt = xmem_comp(in_msg, 1024, out_msg, 1024);
-	rt = xmem_comp(cli_hash, 20, srv_hash, 20);
-}
-
-void test_read()
-{
-	for (int i = 0; i < 1024; i++)
-	{
-		out_msg[i] = (unsigned char)havege_rand(&rng);
-	}
-
-	unsigned char buf[1024];
-	unsigned char cli_hash[20];
-	unsigned char srv_hash[20];
-
-	sha1_hmac((byte_t*)srv_enc, 20, out_msg, 1024, srv_hash);
-	arc4_crypt(srv_arc_enc, 1024, out_msg, buf);
-
-	arc4_crypt(cli_arc_dec, 1024, buf, in_msg);
-	sha1_hmac((byte_t*)cli_dec, 20, in_msg, 1024, cli_hash);
-
-	int rt = xmem_comp(in_msg, 1024, out_msg, 1024);
-	rt = xmem_comp(cli_hash, 20, srv_hash, 20);
-}
-
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_THREAD);
 
@@ -529,22 +624,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	for (int i = 0; i < 48; i++)
 		mst_cli[i] = (unsigned char)havege_rand(&rng);
 
-	dhm_srv = (dhm_context*)xmem_alloc(sizeof(dhm_context));
-	mpi_read_string(&dhm_srv->P, 16, dhm_P, -1);
-	mpi_read_string(&dhm_srv->G, 16, dhm_G, -1);
+	//server_key_exchange_dhe();
 
-	server_key_exchange();
+	//client_key_exchange_dhe();
 
-	client_key_exchange();
+	server_key_exchange_ecdh();
 
-	rt = xmem_comp(srv_mdb, 48, cli_mdb, 48);
-	rt = xmem_comp(srv_blk, 256, cli_blk, 256);
-	rt = xmem_comp(srv_enc, 20, cli_dec, 20);
-	rt = xmem_comp(srv_dec, 20, cli_enc, 20);
-
-	test_write();
-
-	test_read();
+	client_key_exchange_ecdh();
 
 	xdl_process_uninit();
 

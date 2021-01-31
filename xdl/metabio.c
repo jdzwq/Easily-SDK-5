@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "metabio.h"
 #include "xmlbio.h"
-#include "miscell.h"
+#include "miscella.h"
 #include "fileinf.h"
 
 #include "xdlimp.h"

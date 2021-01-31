@@ -30,7 +30,7 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 #include "variant.h"
-#include "miscell.h"
+#include "miscella.h"
 
 #include "xdlimp.h"
 

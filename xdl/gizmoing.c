@@ -822,7 +822,7 @@ void draw_drug_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 {
 	xpen_t xp;
 	xbrush_t xb;
-	xrect_t rt, xr;
+	xrect_t rt;
 	xpoint_t pa[10];
 	tchar_t ta[10];
 	int ps;
@@ -8168,7 +8168,6 @@ void draw_user_gizmo(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t
 	xpen_t xp;
 	xbrush_t xb;
 	xrect_t rt, xr;
-	xsize_t xs;
 	tchar_t ta[5] = { 0 };
 	xpoint_t pa[5] = { 0 };
 	int ps;

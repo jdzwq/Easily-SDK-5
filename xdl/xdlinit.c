@@ -129,9 +129,11 @@ void xdl_thread_init(int master)
 	pju->if_size = 0;
 	
 #ifdef XDK_SUPPORT_MEMO_HEAP
-	pju->if_error = (byte_t*)(*piv->pf_heap_alloc)(heap, 1024);
+	pju->err_buf = (byte_t*)(*piv->pf_heap_alloc)(heap, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
+	pju->err_index = -1;
 #else
-	pju->if_error = (byte_t*)(*piv->pf_local_alloc)(1024);
+	pju->err_buf = (byte_t*)(*piv->pf_local_alloc)((ERR_BUFF_SIZE * ERR_ITEM_COUNT));
+	pju->err_index = -1;
 #endif
 
 	XDL_ASSERT(g_xdl_mou.tls_thr_jump != 0);
@@ -204,13 +206,13 @@ void xdl_thread_uninit(int error)
 		}
 
 #ifdef XDK_SUPPORT_MEMO_HEAP
-		if (pju->if_error)
-			(*piv->pf_heap_free)(heap, (void*)pju->if_error);
+		if (pju->err_buf)
+			(*piv->pf_heap_free)(heap, (void*)pju->err_buf);
 		if(pju)
 			(*piv->pf_heap_free)(heap, (void*)pju);
 #else
-		if (pju->if_error)
-			(*piv->pf_local_free)((void*)pju->if_error);
+		if (pju->err_buf)
+			(*piv->pf_local_free)((void*)pju->err_buf);
 		if(pju)
 			(*piv->pf_local_free)((void*)pju);
 #endif

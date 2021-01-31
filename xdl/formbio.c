@@ -31,7 +31,7 @@ LICENSE.GPL3 for more details.
 
 #include "formbio.h"
 #include "metabio.h"
-#include "miscell.h"
+#include "miscella.h"
 #include "textbio.h"
 #include "imagesbio.h"
 

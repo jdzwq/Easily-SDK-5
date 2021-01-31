@@ -358,7 +358,7 @@
     <ClInclude Include="..\..\xdl\stream.h" />
     <ClInclude Include="..\..\xdl\impstr.h" />
     <ClInclude Include="..\..\xdl\xdlgdi.h" />
-    <ClInclude Include="..\..\xdl\miscell.h" />
+    <ClInclude Include="..\..\xdl\miscella.h" />
     <ClInclude Include="..\..\xdl\xdlutil.h" />
     <ClInclude Include="..\..\xdl\xdlview.h" />
     <ClInclude Include="..\..\xdl\xmlattr.h" />
@@ -535,7 +535,7 @@
     <ClCompile Include="..\..\xdl\sort.c" />
     <ClCompile Include="..\..\xdl\stream.c" />
     <ClCompile Include="..\..\xdl\impstr.c" />
-    <ClCompile Include="..\..\xdl\miscell.c" />
+    <ClCompile Include="..\..\xdl\miscella.c" />
     <ClCompile Include="..\..\xdl\xmlbio.c" />
     <ClCompile Include="..\..\xdl\xmldoc.c" />
     <ClCompile Include="..\..\xdl\xmlopera.c" />
