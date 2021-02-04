@@ -388,7 +388,7 @@ typedef enum
 #define SSL_MST_SIZE		48	//master scret byte size
 #define SSL_SES_SIZE		32	//session id size
 #define SSL_CTX_SIZE		512	//encrypt/decrypt context size
-#define SSL_BLK_SIZE		192	//key block size
+#define SSL_BLK_SIZE		256	//key block size
 #define SSL_FIN_SIZE		12 //finished hash size
 #define SSL_MAX_MAC			64	//mac byte size(16, 20 , 32, 64)
 #define SSL_MAX_IVC			16	//iv code size(8, 16)

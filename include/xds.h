@@ -21,6 +21,7 @@
 #include "../xds/oemzip.h"
 #include "../xds/oemasn.h"
 #include "../xds/oemaes.h"
+#include "../xds/oemgcm.h"
 #include "../xds/oemarc.h"
 #include "../xds/oemcrc.h"
 #include "../xds/oemdes.h"

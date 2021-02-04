@@ -181,6 +181,7 @@
     <ClCompile Include="..\..\xds\oemdhm.c" />
     <ClCompile Include="..\..\xds\oemecdh.c" />
     <ClCompile Include="..\..\xds\oemecp.c" />
+    <ClCompile Include="..\..\xds\oemgcm.c" />
     <ClCompile Include="..\..\xds\oemgeo.c" />
     <ClCompile Include="..\..\xds\oemhav.c" />
     <ClCompile Include="..\..\xds\oemhll.c" />
@@ -223,6 +224,7 @@
     <ClInclude Include="..\..\xds\oemdhm.h" />
     <ClInclude Include="..\..\xds\oemecdh.h" />
     <ClInclude Include="..\..\xds\oemecp.h" />
+    <ClInclude Include="..\..\xds\oemgcm.h" />
     <ClInclude Include="..\..\xds\oemgeo.h" />
     <ClInclude Include="..\..\xds\oemhav.h" />
     <ClInclude Include="..\..\xds\oemhll.h" />

@@ -56,48 +56,45 @@ typedef struct _ciphers_set{
 	int key_size;
 	int mac_size;
 	int iv_size;
-	int iv_impl; //implicit iv
 }ciphers_set;
 
-
 static ciphers_set client_ciphers[] = {
-	//{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 32, 12, 4 },
-	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
-	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16, 0 },
-	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
-	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
-	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16, 0 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
-	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0, 0 },
-	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0, 0 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0 },
+	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0 },
 };
 
 static ciphers_set server_ciphers[] = {
-	//{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 32, 12, 4 },
-	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
-	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16, 0 },
-	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
-	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
-	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16, 0 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
-	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
-	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
-	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0, 0 },
-	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0, 0 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 32, 12 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16 },
+	{ SSL_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16 },
+	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16 },
+	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8 },
+	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0 },
+	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0 },
 };
 
 #define IS_DHE_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA256 || \
@@ -105,47 +102,11 @@ static ciphers_set server_ciphers[] = {
 								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA256 || \
 								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || \
 								cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA) ? 1 : 0)
-#define IS_ECDHE_CIPHER(cipher) ((cipher == SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256 || \
+#define IS_ECDHE_CIPHER(cipher) ((cipher == SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA384 || \
 								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256 || \
 								cipher == SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA || \
 								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA || \
 								cipher == SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA)? 1 : 0)
-
-#define IS_BLOCK_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA256 || \
-								cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA || \
-								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA256 || \
-								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || \
-								cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA || \
-								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256 || \
-								cipher == SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA || \
-								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA || \
-								cipher == SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA || \
-								cipher == SSL_RSA_WITH_AES_256_CBC_SHA256 || \
-								cipher == SSL_RSA_WITH_AES_128_CBC_SHA256 || \
-								cipher == SSL_RSA_WITH_AES_256_CBC_SHA || \
-								cipher == SSL_RSA_WITH_AES_128_CBC_SHA || \
-								cipher == SSL_RSA_WITH_3DES_EDE_CBC_SHA)? 1 : 0)
-#define IS_STREAM_CIPHER(cipher) ((cipher == SSL_RSA_WITH_RC4_128_SHA || \
-								cipher == SSL_RSA_WITH_RC4_128_MD5)? 1 : 0)
-#define IS_AEAD_CIPHER(cipher) ((cipher == SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256)? 1 : 0)
-
-#define IS_AES_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA256 || \
-								cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA || \
-								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA256 || \
-								cipher == SSL_DHE_RSA_WITH_AES_128_CBC_SHA || \
-								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256 || \
-								cipher == SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA || \
-								cipher == SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA || \
-								cipher == SSL_RSA_WITH_AES_256_CBC_SHA256 || \
-								cipher == SSL_RSA_WITH_AES_128_CBC_SHA256 || \
-								cipher == SSL_RSA_WITH_AES_256_CBC_SHA || \
-								cipher == SSL_RSA_WITH_AES_128_CBC_SHA)? 1 : 0)
-#define IS_DES_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA || \
-								cipher == SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA || \
-								cipher == SSL_RSA_WITH_3DES_EDE_CBC_SHA)? 1 : 0)
-#define IS_GCM_CIPHER(cipher) ((cipher == SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256)? 1 : 0)
-#define IS_ARC_CIPHER(cipher) ((cipher == SSL_RSA_WITH_RC4_128_SHA || \
-								cipher == SSL_RSA_WITH_RC4_128_MD5)? 1 : 0)
 
 static char label_client_finished[] = "client finished";
 static char label_server_finished[] = "server finished";
@@ -166,7 +127,6 @@ typedef struct _ssl_t{
 	int key_size; //the encrypt decrypt key size
 	int mac_size; //hash length
 	int iv_size;
-	int iv_implicit;
 	int exportable; //IsExportable: { true, false } 
 	int alg_mac; //MACAlgorithm: enum { null, hmac_md5, hmac_sha1, hmac_sha256, hmac_sha384, hmac_sha512 }
 	int compress_method; //CompressionMethod: { null, (0), (255) }
@@ -550,9 +510,8 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 		{
 			pssl->cipher = pcs[i].cipher;
 			pssl->key_size = pcs[i].key_size;
-			pssl->mac_size = pcs[i].mac_size;
 			pssl->iv_size = pcs[i].iv_size;
-			pssl->iv_implicit = pcs[i].iv_impl;
+			pssl->mac_size = pcs[i].mac_size;
 
 			return 1;
 		}
@@ -569,7 +528,6 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	byte_t keyblk[SSL_BLK_SIZE] = { 0 };
 
 	byte_t *key_enc, *key_dec;
-	int iv_copy;
 
 	//generating master security
 	if (!pssl->resumed)
@@ -626,11 +584,6 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		_ssl_prf1(pssl->master_secret, SSL_MST_SIZE, label_key_expansion, rndb, SSL_RND_SIZE * 2, keyblk, SSL_BLK_SIZE);
 	}
 
-	if (IS_AEAD_CIPHER(pssl->cipher))
-		iv_copy = (pssl->iv_implicit) ? pssl->iv_implicit : pssl->iv_size;
-	else
-		iv_copy = pssl->iv_size;
-
 	//the key_block is partitioned as follows:
 	//client_write_MAC_secret[SecurityParameters.hash_size]
 	//server_write_MAC_secret[SecurityParameters.hash_size]
@@ -649,9 +602,9 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		//server_write_key for client setup decrypting context
 		key_dec = keyblk + pssl->mac_size * 2 + pssl->key_size;
 		//client_write_IV for client encrypting IV
-		xmem_copy(pssl->iv_enc, keyblk + pssl->mac_size * 2 + pssl->key_size * 2, iv_copy);
+		xmem_copy(pssl->iv_enc, keyblk + pssl->mac_size * 2 + pssl->key_size * 2, pssl->iv_size);
 		//server_write_IV for client decrypting IV
-		xmem_copy(pssl->iv_dec, keyblk + pssl->mac_size * 2 + pssl->key_size * 2 + iv_copy, iv_copy);
+		xmem_copy(pssl->iv_dec, keyblk + pssl->mac_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
 	}
 	else
 	{
@@ -664,9 +617,9 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		//server_write_key for server encrypting context
 		key_enc = keyblk + pssl->mac_size * 2 + pssl->key_size;	
 		//client_write_IV for server decrypting IV
-		xmem_copy(pssl->iv_dec, keyblk + pssl->mac_size * 2 + pssl->key_size * 2, iv_copy);
+		xmem_copy(pssl->iv_dec, keyblk + pssl->mac_size * 2 + pssl->key_size * 2, pssl->iv_size);
 		//server_write_IV for server encrypting IV
-		xmem_copy(pssl->iv_enc, keyblk + pssl->mac_size * 2 + pssl->key_size * 2 + iv_copy, iv_copy);
+		xmem_copy(pssl->iv_enc, keyblk + pssl->mac_size * 2 + pssl->key_size * 2 + pssl->iv_size, pssl->iv_size);
 	}
 
 	//initialize encrypt and decrypt context
@@ -691,6 +644,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	case SSL_DHE_RSA_WITH_AES_256_CBC_SHA:
 	case SSL_DHE_RSA_WITH_AES_256_CBC_SHA256:
 	case SSL_DHE_RSA_WITH_AES_128_CBC_SHA256:
+	case SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA384:
 	case SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256:
 	case SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA:
 	case SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA:
@@ -698,7 +652,9 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 		aes_setkey_dec((aes_context *)pssl->ctx_dec, key_dec, (pssl->key_size * 8)); //the material size is bits
 		break;
 	case SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256:
+		gcm_init((gcm_context *)pssl->ctx_enc);
 		gcm_setkey((gcm_context *)pssl->ctx_enc, key_enc, (pssl->key_size * 8));
+		gcm_init((gcm_context *)pssl->ctx_dec);
 		gcm_setkey((gcm_context *)pssl->ctx_dec, key_dec, (pssl->key_size * 8));
 		break;
 	}
@@ -727,167 +683,115 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 {
 	int i, padlen;
 	byte_t* mac_buf;
-	byte_t iv_pre[16] = { 0 };
-	int iv_copy;
+	byte_t iv_pre[SSL_MAX_IVC] = {0};
 
-	byte_t gcm_add[13] = { 0 };
-	byte_t gcm_iv[12] = { 0 };
-	int taglen;
-	int addlen;
+	mac_buf = pssl->snd_msg + pssl->snd_msg_len;
 
-	if (IS_BLOCK_CIPHER(pssl->cipher) || IS_STREAM_CIPHER(pssl->cipher))
+	if (pssl->minor_ver == SSL_MINOR_VERSION_0)
 	{
-		mac_buf = pssl->snd_msg + pssl->snd_msg_len;
-
-		if (pssl->minor_ver == SSL_MINOR_VERSION_0)
+		//The MAC is generated as :
+		//hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
+		
+		if (pssl->mac_size == 16)
 		{
-			//The MAC is generated as :
-			//hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
-
-			if (pssl->mac_size == 16)
-			{
-				_ssl_mac_md5(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
-			}
-			else if (pssl->mac_size == 20)
-			{
-				_ssl_mac_sha1(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
-			}
-			else
-			{
-				set_last_error(_T("_ssl_encrypt_snd_msg"), _T("unknown hmac function"), -1);
-
-				return C_ERR;
-			}
+			_ssl_mac_md5(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
+		}
+		else if (pssl->mac_size == 20)
+		{
+			_ssl_mac_sha1(pssl->mac_enc, pssl->snd_ctr, pssl->snd_msg, pssl->snd_msg_len, pssl->snd_msg_type, mac_buf);
 		}
 		else
 		{
-			//The MAC is generated as:
-			//HMAC_hash(MAC_write_secret, seq_num + TLSCompressed.type + TLSCompressed.version + TLSCompressed.length + TLSCompressed.fragment));
+			set_last_error(_T("_ssl_encrypt_snd_msg"), _T("unknown hmac function"), -1);
 
-			if (pssl->mac_size == 16)
-			{
-				md5_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
-			}
-			else if (pssl->mac_size == 20)
-			{
-				sha1_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
-			}
-			else if (pssl->mac_size == 32) //TLS 1.2
-			{
-				sha2_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf, 0);
-			}
-			else
-			{
-				set_last_error(_T("_ssl_encrypt_snd_msg"), _T("unknown hmac function"), -1);
-
-				return C_ERR;
-			}
-		}
-
-		pssl->snd_msg_len += pssl->mac_size;
-	}
-
-	if (IS_STREAM_CIPHER(pssl->cipher))
-	{
-		if (IS_ARC_CIPHER(pssl->cipher))
-		{
-			arc4_crypt((arc4_context *)pssl->ctx_enc, pssl->snd_msg_len, pssl->snd_msg, pssl->snd_msg);
+			return C_ERR;
 		}
 	}
 	else
 	{
-		if (IS_BLOCK_CIPHER(pssl->cipher))
+		//The MAC is generated as:
+		//HMAC_hash(MAC_write_secret, seq_num + TLSCompressed.type + TLSCompressed.version + TLSCompressed.length + TLSCompressed.fragment));
+
+		if (pssl->mac_size == 16)
 		{
-			padlen = pssl->iv_size - (pssl->snd_msg_len + 1) % pssl->iv_size;
-			if (padlen == pssl->iv_size)
-				padlen = 0;
-
-			padlen++;
-			for (i = 0; i < padlen; i++)
-				pssl->snd_msg[pssl->snd_msg_len + i] = (byte_t)(padlen - 1);
-
-			pssl->snd_msg_len += (padlen);
+			md5_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
 		}
-
-		// TLS 1.1~1.2
-		if (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3)
+		else if (pssl->mac_size == 20)
 		{
-			/* 
-			block-ciphered struct {
-			opaque IV[CipherSpec.block_length];
-			opaque content[TLSCompressed.length];
-			opaque MAC[CipherSpec.hash_size];
-			uint8 padding[GenericBlockCipher.padding_length];
-			uint8 padding_length;
-			} GenericBlockCipher;
-			*/
-			if (IS_AEAD_CIPHER(pssl->cipher))
-			{
-				if (pssl->iv_implicit)
-				{
-					xmem_copy((void*)(pssl->iv_enc + pssl->iv_implicit), (void*)pssl->snd_ctr, (pssl->iv_size - pssl->iv_implicit));
-				}
-				iv_copy = (pssl->iv_implicit) ? (pssl->iv_size - pssl->iv_implicit) : pssl->iv_size;
-				xmem_copy((void*)(iv_pre), (void*)(pssl->iv_enc + pssl->iv_implicit), iv_copy);
-			}
-			else
-			{
-				iv_copy = pssl->iv_size;
-				xmem_copy((void*)(iv_pre), (void*)(pssl->iv_enc), iv_copy);
-			}
+			sha1_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf);
+		}
+		else if (pssl->mac_size == 32) //TLS 1.2
+		{
+			sha2_hmac(pssl->mac_enc, pssl->mac_size, pssl->snd_ctr, pssl->snd_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_buf, 0);
 		}
 		else
 		{
+			set_last_error(_T("_ssl_encrypt_snd_msg"), _T("unknown hmac function"), -1);
+
+			return C_ERR;
+		}
+	}
+
+	pssl->snd_msg_len += pssl->mac_size;
+
+	if (pssl->iv_size == 0)
+	{
+		arc4_crypt((arc4_context *)pssl->ctx_enc, pssl->snd_msg_len, pssl->snd_msg, pssl->snd_msg);
+	}
+	else
+	{
+		padlen = pssl->iv_size - (pssl->snd_msg_len + 1) % pssl->iv_size;
+		if (padlen == pssl->iv_size)
+			padlen = 0;
+
+		padlen ++;
+		for (i = 0; i < padlen; i++)
+			pssl->snd_msg[pssl->snd_msg_len + i] = (byte_t)(padlen - 1);
+
+		pssl->snd_msg_len += (padlen);
+
+		if (pssl->minor_ver == SSL_MINOR_VERSION_0 || pssl->minor_ver == SSL_MINOR_VERSION_1)
+		{
 			/*
 			block-ciphered struct {
-			opaque content[TLSCompressed.length];
-			opaque MAC[CipherSpec.hash_size];
-			uint8 padding[GenericBlockCipher.padding_length];
-			uint8 padding_length;
+				opaque content[TLSCompressed.length];
+				opaque MAC[CipherSpec.hash_size];
+				uint8 padding[GenericBlockCipher.padding_length];
+				uint8 padding_length;
 			} GenericBlockCipher;
 			*/
-			iv_copy = 0;
-			xmem_zero((void*)iv_pre, 16);
+		}
+		else if (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3)
+		{
+			/*
+			block-ciphered struct {
+				opaque IV[CipherSpec.block_length];
+				opaque content[TLSCompressed.length];
+				opaque MAC[CipherSpec.hash_size];
+				uint8 padding[GenericBlockCipher.padding_length];
+				uint8 padding_length;
+			} GenericBlockCipher;
+			*/
+
+			xmem_copy((void*)iv_pre, (void*)pssl->iv_enc, pssl->iv_size);
 		}
 
-		if (IS_DES_CIPHER(pssl->cipher))
+		switch (pssl->iv_size)
 		{
+		case  8:
 			des3_crypt_cbc((des3_context *)pssl->ctx_enc, DES_ENCRYPT, pssl->snd_msg_len, pssl->iv_enc, pssl->snd_msg, pssl->snd_msg);
-		}
-		else if (IS_AES_CIPHER(pssl->cipher))
-		{
+			break;
+		case 16:
 			aes_crypt_cbc((aes_context *)pssl->ctx_enc, AES_ENCRYPT, pssl->snd_msg_len, pssl->iv_enc, pssl->snd_msg, pssl->snd_msg);
-		}
-		else if (IS_GCM_CIPHER(pssl->cipher))
-		{
-			/*addlen = 0;
-			xmem_copy((void*)gcm_add, pssl->snd_ctr, SSL_CTR_SIZE);
-			addlen += SSL_CTR_SIZE;
-			gcm_add[addlen] = pssl->snd_msg_type;
-			gcm_add[addlen + 1] = (byte_t)(pssl->major_ver);
-			gcm_add[addlen + 2] = (byte_t)(pssl->minor_ver);
-			addlen += 3;
-			PUT_SWORD_NET(gcm_add, addlen, (unsigned short)pssl->snd_msg_len);
-			addlen += 2;*/
-
-			xmem_copy((void*)gcm_iv, (void*)pssl->iv_enc, pssl->iv_size);
-
-			taglen = 16;
-			if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_enc, AES_ENCRYPT, pssl->snd_msg_len, gcm_iv, pssl->iv_size, pssl->snd_ctr, (SSL_CTR_SIZE + SSL_HDR_SIZE), pssl->snd_msg, pssl->snd_msg, taglen, (pssl->snd_msg + pssl->snd_msg_len)))
-			{
-				set_last_error(_T("_ssl_encrypt_snd_msg"), _T("gcm_crypt_and_tag falied"), -1);
-
-				return C_ERR;
-			}
-			pssl->snd_msg_len += taglen;
+			break;
 		}
 
-		// TLS 1.1~1.2
+		// > TLS 1.2
 		if (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
-			xmem_move((void*)(pssl->snd_msg), pssl->snd_msg_len, iv_copy);
-			xmem_copy((void*)(pssl->snd_msg), (void*)(iv_pre), iv_copy);
-			pssl->snd_msg_len += iv_copy;
+			xmem_move((void*)(pssl->snd_msg), pssl->snd_msg_len, pssl->iv_size);
+			xmem_copy((void*)(pssl->snd_msg), (void*)(iv_pre), pssl->iv_size);
+			pssl->snd_msg_len += pssl->iv_size;
 		}
 	}
 
@@ -899,27 +803,11 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 
 static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 {
-	int i, n, padlen = 0;
+	int i, n, padlen;
 	byte_t* mac_buf;
 	byte_t mac_tmp[32];
-	int iv_copy;
 
-	byte_t gcm_add[13] = { 0 };
-	byte_t gcm_iv[12] = { 0 };
-	byte_t gcm_tag[16] = { 0 };
-	byte_t* tag_buf;
-	int taglen = 16;
-	int addlen;
-
-	if (IS_AEAD_CIPHER(pssl->cipher))
-		iv_copy = (pssl->iv_implicit) ? (pssl->iv_size - pssl->iv_implicit) : pssl->iv_size;
-	else
-		iv_copy = pssl->iv_size;
-
-	if (IS_BLOCK_CIPHER(pssl->cipher) || IS_STREAM_CIPHER(pssl->cipher))
-		n = (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3) ? (pssl->mac_size + iv_copy) : pssl->mac_size;
-	else
-		n = (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3) ? (taglen + iv_copy) : taglen;
+	n = (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3) ? (pssl->mac_size + pssl->iv_size) : pssl->mac_size;
 
 	if (pssl->rcv_msg_len < n)
 	{
@@ -928,149 +816,93 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 		return C_ERR;
 	}
 
-	if (IS_STREAM_CIPHER(pssl->cipher))
+	if (pssl->iv_size == 0)
 	{
-		if (IS_ARC_CIPHER(pssl->cipher))
-		{
-			arc4_crypt((arc4_context *)pssl->ctx_dec, pssl->rcv_msg_len, pssl->rcv_msg, pssl->rcv_msg);
-		}
+		padlen = 0;
+		arc4_crypt((arc4_context *)pssl->ctx_dec, pssl->rcv_msg_len, pssl->rcv_msg, pssl->rcv_msg);
 	}
 	else
 	{
+		if (pssl->rcv_msg_len % pssl->iv_size != 0)
+		{
+			set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message length not multiple of IV size"), -1);
+
+			return C_ERR;
+		}
+
 		if (pssl->minor_ver == SSL_MINOR_VERSION_2 || pssl->minor_ver == SSL_MINOR_VERSION_3)
 		{
-			if (IS_AEAD_CIPHER(pssl->cipher))
-				xmem_copy((void*)(pssl->iv_dec + pssl->iv_implicit), (void*)pssl->rcv_msg, iv_copy);
-			else
-				xmem_copy((void*)(pssl->iv_dec), (void*)pssl->rcv_msg, iv_copy);
-
-			xmem_move((void*)(pssl->rcv_msg + iv_copy), pssl->rcv_msg_len - iv_copy, 0 - iv_copy);
-
-			pssl->rcv_msg_len -= iv_copy;
+			xmem_copy((void*)pssl->iv_dec, (void*)pssl->rcv_msg, pssl->iv_size);
+			xmem_move((void*)(pssl->rcv_msg + pssl->iv_size), pssl->rcv_msg_len - pssl->iv_size, 0 - pssl->iv_size);
+			pssl->rcv_msg_len -= pssl->iv_size;
 		}
 
-		if (IS_BLOCK_CIPHER(pssl->cipher))
+		switch (pssl->iv_size)
 		{
-			if (pssl->rcv_msg_len % pssl->iv_size != 0)
-			{
-				set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message length not multiple of IV size"), -1);
-
-				return C_ERR;
-			}
-		}
-
-		if (IS_DES_CIPHER(pssl->cipher))
-		{
+		case  8:
 			des3_crypt_cbc((des3_context *)pssl->ctx_dec, DES_DECRYPT, pssl->rcv_msg_len, pssl->iv_dec, pssl->rcv_msg, pssl->rcv_msg);
-		}
-		else if (IS_AES_CIPHER(pssl->cipher))
-		{
+			break;
+		case 16:
 			aes_crypt_cbc((aes_context *)pssl->ctx_dec, AES_DECRYPT, pssl->rcv_msg_len, pssl->iv_dec, pssl->rcv_msg, pssl->rcv_msg);
-		}
-		else if (IS_GCM_CIPHER(pssl->cipher))
-		{
-			taglen = 16;
-			pssl->rcv_msg_len -= taglen;
-			tag_buf = pssl->rcv_msg + pssl->rcv_msg_len;
-
-			//reset message length
-			PUT_SWORD_NET(pssl->rcv_hdr, 3, (unsigned short)pssl->rcv_msg_len);
-
-			/*addlen = 0;
-			xmem_copy((void*)gcm_add, pssl->rcv_ctr, SSL_CTR_SIZE);
-			addlen += SSL_CTR_SIZE;
-			gcm_add[addlen] = pssl->rcv_msg_type;
-			gcm_add[addlen + 1] = (byte_t)(pssl->major_ver);
-			gcm_add[addlen + 2] = (byte_t)(pssl->minor_ver);
-			addlen += 3;
-			PUT_SWORD_NET(gcm_add, addlen, (unsigned short)(pssl->rcv_msg_len));
-			addlen += 2;*/
-
-			xmem_copy((void*)gcm_iv, (void*)pssl->iv_dec, pssl->iv_size);
-
-			if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_dec, AES_DECRYPT, pssl->rcv_msg_len, gcm_iv, pssl->iv_size, pssl->rcv_ctr, (SSL_CTR_SIZE + SSL_HDR_SIZE), pssl->rcv_msg, pssl->rcv_msg, taglen, gcm_tag))
-			{
-				set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("gcm_crypt_and_tag falied"), -1);
-
-				return C_ERR;
-			}
-
-			if (xmem_comp((void*)gcm_tag, taglen, (void*)tag_buf, taglen) != 0)
-			{
-				set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("gcm tag checked falied"), -1);
-
-				return C_ERR;
-			}
+			break;
 		}
 
-		if (IS_BLOCK_CIPHER(pssl->cipher))
-		{
-			padlen = pssl->rcv_msg[pssl->rcv_msg_len - 1] + 1;
+		padlen = pssl->rcv_msg[pssl->rcv_msg_len - 1] + 1;
 
-			if (pssl->minor_ver == SSL_MINOR_VERSION_0)
+		if (pssl->minor_ver == SSL_MINOR_VERSION_0)
+		{
+			if (padlen > pssl->iv_size)
 			{
-				if (padlen > pssl->iv_size)
+				padlen = 0;
+			}
+		}
+		else
+		{
+			for (i = 1; i <= padlen; i++)
+			{
+				if (pssl->rcv_msg[pssl->rcv_msg_len - i] != (padlen - 1))
 				{
 					padlen = 0;
 				}
 			}
-			else
-			{
-				for (i = 1; i <= padlen; i++)
-				{
-					if (pssl->rcv_msg[pssl->rcv_msg_len - i] != (padlen - 1))
-					{
-						padlen = 0;
-					}
-				}
-			}
-
-			if (pssl->iv_size != 0 && padlen == 0)
-			{
-				set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("invalid message pading length"), -1);
-
-				return C_ERR;
-			}
 		}
-		else
-		{
-			padlen = 0;
-		}
-
-		pssl->rcv_msg_len -= padlen;
 	}
 
-	if (IS_BLOCK_CIPHER(pssl->cipher) || IS_STREAM_CIPHER(pssl->cipher))
+	if (pssl->iv_size != 0 && padlen == 0)
 	{
-		pssl->rcv_msg_len -= pssl->mac_size;
-		mac_buf = pssl->rcv_msg + pssl->rcv_msg_len;
+		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("invalid message pading length"), -1);
 
-		//reset message length
-		PUT_SWORD_NET(pssl->rcv_hdr, 3, (unsigned short)pssl->rcv_msg_len);
+		return C_ERR;
+	}
 
-		if (pssl->minor_ver == SSL_MINOR_VERSION_0)
-		{
-			if (pssl->mac_size == 16)
-				_ssl_mac_md5(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
-			else if (pssl->mac_size == 20)
-				_ssl_mac_sha1(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
-		}
-		else
-		{
-			if (pssl->mac_size == 16)
-				md5_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, (pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE), mac_tmp);
-			else if (pssl->mac_size == 20)
-				sha1_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, (pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE), mac_tmp);
-			else if (pssl->mac_size == 32) //TLS 1.2
-				sha2_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, (pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE), mac_tmp, 0);
-		}
+	//reset message length
+	pssl->rcv_msg_len -= (pssl->mac_size + padlen);
+	PUT_SWORD_NET(pssl->rcv_hdr, 3, (unsigned short)pssl->rcv_msg_len);
 
-		if (xmem_comp((void*)mac_tmp, pssl->mac_size, (void*)mac_buf, pssl->mac_size) != 0)
-		{
-			set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message signature hash not matched"), -1);
+	mac_buf = pssl->rcv_msg + pssl->rcv_msg_len;
 
-			return C_ERR;
-		}
+	if (pssl->minor_ver == SSL_MINOR_VERSION_0)
+	{
+		if (pssl->mac_size == 16)
+			_ssl_mac_md5(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
+		else if (pssl->mac_size == 20)
+			_ssl_mac_sha1(pssl->mac_dec, pssl->rcv_ctr, pssl->rcv_msg, pssl->rcv_msg_len, pssl->rcv_msg_type, mac_tmp);
+	}
+	else
+	{
+		if (pssl->mac_size == 16)
+			md5_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp);
+		else if (pssl->mac_size == 20)
+			sha1_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp);
+		else if (pssl->mac_size == 32) //TLS 1.2
+			sha2_hmac(pssl->mac_dec, pssl->mac_size, pssl->rcv_ctr, pssl->rcv_msg_len + SSL_CTR_SIZE + SSL_HDR_SIZE, mac_tmp, 0);
+	}
+
+	if (xmem_comp(mac_tmp, pssl->mac_size, mac_buf, pssl->mac_size) != 0)
+	{
+		set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("message signature hash not matched"), -1);
+
+		return C_ERR;
 	}
 
 	return C_OK;
@@ -4137,9 +3969,9 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 	md5_context  md5;
 	sha1_context sha1;
 	sha2_context sha2;
-	byte_t padbuf[48] = { 0 };
-	byte_t md5sum[16] = { 0 };
-	byte_t sha1sum[20] = { 0 };
+	byte_t padbuf[48];
+	byte_t md5sum[16];
+	byte_t sha1sum[20];
 	byte_t* mac_buf;
 
 	xmem_copy(&md5, &pssl->md5, sizeof(md5_context));

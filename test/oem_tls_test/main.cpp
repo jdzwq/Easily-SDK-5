@@ -225,11 +225,17 @@ byte_t rnd_cli[32] = { 0 };
 
 int key_len = 16;
 int mac_len = 20;
+int iv_len = 12;
 
-byte_t cli_enc[20];
-byte_t cli_dec[20];
-byte_t srv_enc[20];
-byte_t srv_dec[20];
+byte_t cli_mac_enc[20] = { 0 };
+byte_t cli_mac_dec[20] = { 0 };
+byte_t srv_mac_enc[20] = { 0 };
+byte_t srv_mac_dec[20];
+
+byte_t cli_iv_enc[16] = { 0 };
+byte_t cli_iv_dec[16] = { 0 };
+byte_t srv_iv_enc[16] = { 0 };
+byte_t srv_iv_dec[16] = { 0 };
 
 byte_t srv_blk[256] = { 0 };
 byte_t cli_blk[256] = { 0 };
@@ -241,6 +247,11 @@ arc4_context* cli_arc_enc = NULL;
 arc4_context* cli_arc_dec = NULL;
 arc4_context* srv_arc_enc = NULL;
 arc4_context* srv_arc_dec = NULL;
+
+gcm_context* cli_gcm_enc = NULL;
+gcm_context* cli_gcm_dec = NULL;
+gcm_context* srv_gcm_enc = NULL;
+gcm_context* srv_gcm_dec = NULL;
 
 static void _tls_prf(unsigned char *secret, int slen, char *label, unsigned char *random, int rlen, unsigned char *dstbuf, int dlen)
 {
@@ -325,26 +336,42 @@ static void _tls_derive_keys(bool_t cli)
 		key1 = keyblk + mac_len * 2;
 		key2 = keyblk + mac_len * 2 + key_len;
 
-		xmem_copy(cli_enc, keyblk, mac_len);
-		xmem_copy(cli_dec, keyblk + mac_len, mac_len);
+		xmem_copy(cli_mac_enc, keyblk, mac_len);
+		xmem_copy(cli_mac_dec, keyblk + mac_len, mac_len);
+
+		xmem_copy(cli_iv_enc, keyblk + mac_len * 2 + key_len * 2, iv_len);
+		xmem_copy(cli_iv_dec, keyblk + mac_len * 2 + key_len * 2 + iv_len, iv_len);
 
 		cli_arc_enc = (arc4_context*)xmem_alloc(sizeof(arc4_context));
 		arc4_setup(cli_arc_enc, key1, key_len);
 		cli_arc_dec = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
 		arc4_setup(cli_arc_dec, key2, key_len);
+
+		cli_gcm_enc = (gcm_context*)xmem_alloc(sizeof(gcm_context));
+		gcm_setkey(cli_gcm_enc, key1, key_len * 8);
+		cli_gcm_dec = (gcm_context*)xmem_alloc(sizeof(gcm_context));
+		gcm_setkey(cli_gcm_dec, key2, key_len * 8);
 	}
 	else
 	{
 		key1 = keyblk + mac_len * 2 + key_len;
 		key2 = keyblk + mac_len * 2;
 
-		xmem_copy(srv_dec, keyblk, mac_len);
-		xmem_copy(srv_enc, keyblk + mac_len, mac_len);
+		xmem_copy(srv_mac_dec, keyblk, mac_len);
+		xmem_copy(srv_mac_enc, keyblk + mac_len, mac_len);
+
+		xmem_copy(srv_iv_dec, keyblk + mac_len * 2 + key_len * 2, iv_len);
+		xmem_copy(srv_iv_enc, keyblk + mac_len * 2 + key_len * 2 + iv_len, iv_len);
 
 		srv_arc_enc = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
 		arc4_setup(srv_arc_enc, key1, key_len);
 		srv_arc_dec = (arc4_context*)xmem_alloc(sizeof(arc4_context)); 
 		arc4_setup(srv_arc_dec, key2, key_len);
+
+		srv_gcm_enc = (gcm_context*)xmem_alloc(sizeof(gcm_context));
+		gcm_setkey(srv_gcm_enc, key1, key_len * 8);
+		srv_gcm_dec = (gcm_context*)xmem_alloc(sizeof(gcm_context));
+		gcm_setkey(srv_gcm_dec, key2, key_len * 8);
 	}
 }
 
@@ -588,6 +615,41 @@ void client_key_exchange_ecdh()
 	rt = memcmp((void*)pre_mst, (void*)premaster, n);
 }
 
+void client_finish_ecdh()
+{
+	byte_t gcm_ctr[8] = { '1', '1', '1', '1', '1', '1', '1', '1' };
+	byte_t gcm_add[13];
+	byte_t gcm_iv[12];
+	byte_t gcm_tag[16];
+	byte_t rcv_tag[16];
+	int taglen = 16;
+
+	memset((void*)msg_buf, 0x01, 16);
+	msg_len = 16;
+
+	xmem_copy((void*)gcm_add, gcm_ctr, SSL_CTR_SIZE);
+	gcm_add[SSL_CTR_SIZE] = 22;
+	PUT_BYTE(gcm_add, SSL_CTR_SIZE + 1, (byte_t)(0x03));
+	PUT_BYTE(gcm_add, SSL_CTR_SIZE + 2, (byte_t)(0x03));
+	PUT_SWORD_NET(gcm_add, SSL_CTR_SIZE + 3, (unsigned short)msg_len);
+
+	xmem_copy((void*)gcm_iv, (void*)cli_iv_enc, iv_len);
+
+	gcm_crypt_and_tag(cli_gcm_enc, AES_ENCRYPT, msg_len, gcm_iv, iv_len, gcm_add, 13, msg_buf, msg_buf, taglen, gcm_tag);
+	
+	xmem_copy((void*)gcm_add, gcm_ctr, SSL_CTR_SIZE);
+	gcm_add[SSL_CTR_SIZE] = 22;
+	PUT_BYTE(gcm_add, SSL_CTR_SIZE + 1, (byte_t)(0x03));
+	PUT_BYTE(gcm_add, SSL_CTR_SIZE + 2, (byte_t)(0x03));
+	PUT_SWORD_NET(gcm_add, SSL_CTR_SIZE + 3, (unsigned short)msg_len);
+
+	xmem_copy((void*)gcm_iv, (void*)srv_iv_dec, iv_len);
+
+	gcm_crypt_and_tag(srv_gcm_dec, AES_DECRYPT, msg_len, gcm_iv, iv_len, gcm_add, 13, msg_buf, msg_buf, taglen, rcv_tag);
+
+	int rt = xmem_comp((void*)gcm_tag, 16, rcv_tag, 16);
+}
+
 int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_THREAD);
@@ -628,9 +690,15 @@ int main(int argc, char* argv[])
 
 	//client_key_exchange_dhe();
 
-	server_key_exchange_ecdh();
+	//server_key_exchange_ecdh();
 
-	client_key_exchange_ecdh();
+	//client_key_exchange_ecdh();
+
+	_tls_derive_keys(0);
+
+	_tls_derive_keys(1);
+
+	client_finish_ecdh();
 
 	xdl_process_uninit();
 

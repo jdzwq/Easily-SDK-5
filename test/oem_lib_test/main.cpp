@@ -28,7 +28,9 @@ int main(int argc, char* argv[])
 
 	//ecp_self_test(0);
 
-	ecp_self_test(1);
+	//ecp_self_test(1);
+
+	gcm_self_test(1);
 
 #ifdef _OS_WINDOWS
 	getch();

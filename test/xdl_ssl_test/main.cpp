@@ -118,7 +118,7 @@ void test_ssl_cli()
 
 	host_addr(_T("mp.weixin.qq.com"), addr);
 
-    xhand_t ssl = xssl_cli(443, addr);
+    xhand_t ssl = xssl_cli(443, _T("127.0.0.1"));
     
     if(!ssl)
         return;
