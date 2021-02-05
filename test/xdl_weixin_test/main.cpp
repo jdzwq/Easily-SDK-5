@@ -97,6 +97,8 @@ int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
 
+	//test_weixin_session();
+
 	test_decrypt();
 
 	xdl_process_uninit();

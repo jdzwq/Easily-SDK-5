@@ -72,6 +72,20 @@ void gcm_free(gcm_context *ctx)
 	memset(ctx, 0, sizeof(gcm_context));
 }
 
+static int gcm_update_ecp(gcm_context *ctx, const unsigned char *input, size_t ilen, unsigned char *output, size_t *olen)
+{
+	size_t block_size = MAX_ECB_BLOCK_SIZE;
+
+	if (ilen != block_size)
+		return(ERR_GCM_BAD_INPUT);
+
+	*olen = ilen;
+
+	aes_crypt_ecb(&(ctx->aes_ctx), AES_ENCRYPT, (unsigned char*)input, output);
+	
+	return(0);
+}
+
 /*
 * Precompute small multiples of H, that is set
 *      HH[i] || HL[i] = H times i,
@@ -82,15 +96,15 @@ void gcm_free(gcm_context *ctx)
 */
 static int gcm_gen_table(gcm_context *ctx)
 {
-	int i, j;
+	int ret, i, j;
 	uint64_t hi, lo;
 	uint64_t vl, vh;
 	unsigned char h[16];
 	size_t olen = 0;
 
 	memset(h, 0, 16);
-
-	aes_crypt_ecb(&(ctx->aes_ctx), AES_ENCRYPT, h, h);
+	if ((ret = gcm_update_ecp(ctx, h, 16, h, &olen)) != 0)
+		return(ret);
 
 	/* pack h as two 64-bits ints, big-endian */
 	GET_UINT32_BE(hi, h, 0);
@@ -264,7 +278,7 @@ int gcm_starts(gcm_context *ctx,
 		gcm_mult(ctx, ctx->y, ctx->y);
 	}
 
-	aes_crypt_ecb(&(ctx->aes_ctx), AES_ENCRYPT, ctx->y, ctx->base_ectr);
+	gcm_update_ecp(ctx, ctx->y, 16, ctx->base_ectr, &olen);
 
 	ctx->add_len = add_len;
 	p = add;
@@ -317,7 +331,7 @@ int gcm_update(gcm_context *ctx,
 			if (++ctx->y[i - 1] != 0)
 				break;
 
-		aes_crypt_ecb(&(ctx->aes_ctx), AES_ENCRYPT, ctx->y, ectr);
+		gcm_update_ecp(ctx, ctx->y, 16, ectr, &olen);
 
 		for (i = 0; i < use_len; i++)
 		{

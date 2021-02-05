@@ -61,9 +61,9 @@ typedef struct _ciphers_set{
 
 
 static ciphers_set client_ciphers[] = {
-	//{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 32, 12, 4 },
-	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 0, 12, 4 },
 	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
 	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
 	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
 	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16, 0 },
@@ -81,11 +81,11 @@ static ciphers_set client_ciphers[] = {
 };
 
 static ciphers_set server_ciphers[] = {
-	//{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 32, 12, 4 },
-	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256, 16, 0, 12, 4 },
 	{ SSL_ECDHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
+	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
 	{ SSL_ECDHE_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
-	{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
+	/*{ SSL_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
 	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA256, 32, 32, 16, 0 },
 	{ SSL_DHE_RSA_WITH_AES_256_CBC_SHA, 32, 20, 16, 0 },
 	{ SSL_DHE_RSA_WITH_AES_128_CBC_SHA256, 16, 32, 16, 0 },
@@ -97,7 +97,7 @@ static ciphers_set server_ciphers[] = {
 	{ SSL_RSA_WITH_AES_128_CBC_SHA, 16, 20, 16, 0 },
 	{ SSL_RSA_WITH_3DES_EDE_CBC_SHA, 24, 20, 8, 0 },
 	{ SSL_RSA_WITH_RC4_128_SHA, 16, 20, 0, 0 },
-	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0, 0 },
+	{ SSL_RSA_WITH_RC4_128_MD5, 16, 16, 0, 0 },*/
 };
 
 #define IS_DHE_CIPHER(cipher) ((cipher == SSL_DHE_RSA_WITH_AES_256_CBC_SHA256 || \
@@ -730,10 +730,10 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 	byte_t iv_pre[16] = { 0 };
 	int iv_copy;
 
-	byte_t gcm_add[13] = { 0 };
-	byte_t gcm_iv[12] = { 0 };
+	//byte_t gcm_add[13] = { 0 };
+	//byte_t gcm_iv[12] = { 0 };
+	//int addlen;
 	int taglen;
-	int addlen;
 
 	if (IS_BLOCK_CIPHER(pssl->cipher) || IS_STREAM_CIPHER(pssl->cipher))
 	{
@@ -860,7 +860,8 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 		}
 		else if (IS_GCM_CIPHER(pssl->cipher))
 		{
-			/*addlen = 0;
+			/*
+			addlen = 0;
 			xmem_copy((void*)gcm_add, pssl->snd_ctr, SSL_CTR_SIZE);
 			addlen += SSL_CTR_SIZE;
 			gcm_add[addlen] = pssl->snd_msg_type;
@@ -868,12 +869,16 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 			gcm_add[addlen + 2] = (byte_t)(pssl->minor_ver);
 			addlen += 3;
 			PUT_SWORD_NET(gcm_add, addlen, (unsigned short)pssl->snd_msg_len);
-			addlen += 2;*/
+			addlen += 2;
 
 			xmem_copy((void*)gcm_iv, (void*)pssl->iv_enc, pssl->iv_size);
+			*/
 
 			taglen = 16;
-			if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_enc, AES_ENCRYPT, pssl->snd_msg_len, gcm_iv, pssl->iv_size, pssl->snd_ctr, (SSL_CTR_SIZE + SSL_HDR_SIZE), pssl->snd_msg, pssl->snd_msg, taglen, (pssl->snd_msg + pssl->snd_msg_len)))
+			mac_buf = pssl->snd_msg + pssl->snd_msg_len;
+
+			//if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_enc, AES_ENCRYPT, pssl->snd_msg_len, gcm_iv, pssl->iv_size, gcm_add, addlen, pssl->snd_msg, pssl->snd_msg, taglen, mac_buf))
+			if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_enc, AES_ENCRYPT, pssl->snd_msg_len, pssl->iv_enc, pssl->iv_size, pssl->snd_ctr, (SSL_CTR_SIZE + SSL_HDR_SIZE), pssl->snd_msg, pssl->snd_msg, taglen, mac_buf))
 			{
 				set_last_error(_T("_ssl_encrypt_snd_msg"), _T("gcm_crypt_and_tag falied"), -1);
 
@@ -904,12 +909,10 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	byte_t mac_tmp[32];
 	int iv_copy;
 
-	byte_t gcm_add[13] = { 0 };
-	byte_t gcm_iv[12] = { 0 };
-	byte_t gcm_tag[16] = { 0 };
-	byte_t* tag_buf;
+	//byte_t gcm_add[13] = { 0 };
+	//byte_t gcm_iv[12] = { 0 };
+	//int addlen;
 	int taglen = 16;
-	int addlen;
 
 	if (IS_AEAD_CIPHER(pssl->cipher))
 		iv_copy = (pssl->iv_implicit) ? (pssl->iv_size - pssl->iv_implicit) : pssl->iv_size;
@@ -971,12 +974,13 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 		{
 			taglen = 16;
 			pssl->rcv_msg_len -= taglen;
-			tag_buf = pssl->rcv_msg + pssl->rcv_msg_len;
+			mac_buf = pssl->rcv_msg + pssl->rcv_msg_len;
 
 			//reset message length
 			PUT_SWORD_NET(pssl->rcv_hdr, 3, (unsigned short)pssl->rcv_msg_len);
 
-			/*addlen = 0;
+			/*
+			addlen = 0;
 			xmem_copy((void*)gcm_add, pssl->rcv_ctr, SSL_CTR_SIZE);
 			addlen += SSL_CTR_SIZE;
 			gcm_add[addlen] = pssl->rcv_msg_type;
@@ -984,18 +988,20 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 			gcm_add[addlen + 2] = (byte_t)(pssl->minor_ver);
 			addlen += 3;
 			PUT_SWORD_NET(gcm_add, addlen, (unsigned short)(pssl->rcv_msg_len));
-			addlen += 2;*/
+			addlen += 2;
 
 			xmem_copy((void*)gcm_iv, (void*)pssl->iv_dec, pssl->iv_size);
+			*/
 
-			if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_dec, AES_DECRYPT, pssl->rcv_msg_len, gcm_iv, pssl->iv_size, pssl->rcv_ctr, (SSL_CTR_SIZE + SSL_HDR_SIZE), pssl->rcv_msg, pssl->rcv_msg, taglen, gcm_tag))
+			//if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_dec, AES_DECRYPT, pssl->rcv_msg_len, gcm_iv, pssl->iv_size, gcm_add, addlen, pssl->rcv_msg, pssl->rcv_msg, taglen, mac_tmp))
+			if (C_OK != gcm_crypt_and_tag((gcm_context *)pssl->ctx_dec, AES_DECRYPT, pssl->rcv_msg_len, pssl->iv_dec, pssl->iv_size, pssl->rcv_ctr, (SSL_CTR_SIZE + SSL_HDR_SIZE), pssl->rcv_msg, pssl->rcv_msg, taglen, mac_tmp))
 			{
 				set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("gcm_crypt_and_tag falied"), -1);
 
 				return C_ERR;
 			}
 
-			if (xmem_comp((void*)gcm_tag, taglen, (void*)tag_buf, taglen) != 0)
+			if (xmem_comp((void*)mac_tmp, taglen, (void*)mac_buf, taglen) != 0)
 			{
 				set_last_error(_T("_ssl_decrypt_rcv_msg"), _T("gcm tag checked falied"), -1);
 

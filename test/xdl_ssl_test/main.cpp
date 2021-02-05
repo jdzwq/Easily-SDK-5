@@ -118,14 +118,14 @@ void test_ssl_cli()
 
 	host_addr(_T("mp.weixin.qq.com"), addr);
 
-    xhand_t ssl = xssl_cli(443, _T("127.0.0.1"));
+    xhand_t ssl = xssl_cli(443, addr);
     
     if(!ssl)
         return;
     
 	set_ssl(ssl);
 
-    byte_t buf[100] = {0};
+    byte_t buf[10] = {'0','1','2','3','4','5','6','7','8','9'};
     dword_t dw = 100;
     xssl_write(ssl, buf, &dw);
     
