@@ -2897,6 +2897,12 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 		return SSL_HANDSHAKE_ERROR;
 	}
 
+	if (pssl->cli_minor_ver < SSL_MINOR_VERSION_1)
+	{
+		set_last_error(_T("_ssl_parse_client_hello"), _T("handshake minor version unsupported"), -1);
+		return SSL_HANDSHAKE_ERROR;
+	}
+
 	pssl->major_ver = pssl->cli_major_ver;
 	pssl->minor_ver = (pssl->srv_minor_ver < pssl->cli_minor_ver) ? pssl->srv_minor_ver : pssl->cli_minor_ver;
 
