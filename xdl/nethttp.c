@@ -2808,7 +2808,16 @@ bool_t xhttp_recv_request(xhand_t xhttp)
 				}
 			}
 
-			if (len_request > 6)
+			if (len_request == 2)
+			{
+				if ((buf_request[len_request - 1] == '\n' && buf_request[len_request - 2] == '\r') || (buf_request[len_request - 1] == '\n' && buf_request[len_request - 2] == '\n'))
+				{
+					phttp->b_request = 1;
+					break;
+				}
+			}
+
+			if (len_request >= 4)
 			{
 				if (buf_request[len_request - 1] == '\n' && buf_request[len_request - 2] == '\r' && buf_request[len_request - 3] == '\n' && buf_request[len_request - 4] == '\r')
 				{

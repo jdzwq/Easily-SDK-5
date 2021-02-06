@@ -192,7 +192,6 @@ typedef struct _ssl_t{
 	int over; //handshake step
 	int resumed; //session is resumed
 	int compressed; //record is compressed
-	int crypted; //record is crypted
 	int ses_size; //session id size
 	byte_t ses_id[SSL_SES_SIZE]; //session id
 
@@ -237,6 +236,8 @@ typedef struct _ssl_t{
 	byte_t* rcv_hdr;
 	byte_t* rcv_msg;
 
+	int snd_crypted; //record is crypted sending
+	int rcv_crypted; //record is crypted recving
 	int nb_zero;
 }ssl_t;
 
@@ -449,7 +450,6 @@ static void _ssl_init(ssl_t* pssl)
 	pssl->resumed = 0;
 	pssl->cipher = 0;
 	pssl->compressed = 0;
-	pssl->crypted = 0;
 
 	if (pssl->type == SSL_TYPE_CLIENT)
 	{
@@ -478,6 +478,9 @@ static void _ssl_init(ssl_t* pssl)
 	pssl->snd_ctr = pssl->snd_pkg;
 	pssl->snd_hdr = pssl->snd_pkg + SSL_CTR_SIZE;
 	pssl->snd_msg = pssl->snd_pkg + SSL_CTR_SIZE + SSL_HDR_SIZE;
+
+	pssl->rcv_crypted = 0;
+	pssl->snd_crypted = 0;
 }
 
 static void _ssl_uninit(ssl_t* pssl)
@@ -1089,8 +1092,6 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 	byte_t* token;
 	int total;
 
-	TRY_CATCH;
-
 	//ssl header: 5 bytes
 	//0: message type
 	//1-2: version
@@ -1117,11 +1118,12 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 		}
 	}
 
-	if (pssl->crypted)
+	if (pssl->snd_crypted)
 	{
 		if (C_OK != _ssl_encrypt_snd_msg(pssl))
 		{
-			raise_user_error(NULL, NULL);
+			set_last_error(_T("_ssl_write_snd_msg"), _T("encrypt message block failed"), -1);
+			return C_ERR;
 		}
 
 		//incre send message control bits
@@ -1136,17 +1138,13 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 
 	if (!(*pssl->pif->pf_write)(pssl->pif->fd, pssl->snd_hdr, &dw))
 	{
-		raise_user_error(NULL, NULL);
+		set_last_error(_T("_ssl_write_snd_msg"), _T("write message block failed"), -1);
+		return C_ERR;
 	}
 
 	pssl->snd_msg_pop = 0;
 
-	END_CATCH;
-
 	return C_OK;
-ONERROR:
-
-	return C_ERR;
 }
 
 static bool_t _ssl_write_data(ssl_t* pssl, byte_t* buf, int* need)
@@ -1191,9 +1189,6 @@ static bool_t _ssl_write_close(ssl_t* pssl)
 	pssl->snd_msg[0] = SSL_ALERT_WARNING;
 	pssl->snd_msg[1] = SSL_ALERT_CLOSE_NOTIFY;
 
-	//alter message will not be crypted sending
-	pssl->crypted = 0;
-
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? 1 : 0;
 }
 
@@ -1204,27 +1199,29 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 	byte_t* token;
 	int total;
 
-	TRY_CATCH;
-
 	dw = SSL_HDR_SIZE;
 	if (!(pssl->pif->pf_read)(pssl->pif->fd, pssl->rcv_hdr, &dw))
 	{
-		raise_user_error(NULL, NULL);
+		set_last_error(_T("_ssl_read_rcv_msg"), _T("read message head failed"), -1);
+		return C_ERR;
 	}
     
     if(!dw)
     {
-        raise_user_error(_T("_ssl_read_rcv_msg"), _T("empty ssl message"));
+		xmem_zero((void*)pssl->rcv_hdr, SSL_HDR_SIZE);
+		return C_OK;
     }
 
 	if (pssl->rcv_hdr[1] != SSL_MAJOR_VERSION_3)
 	{
-		raise_user_error(_T("_ssl_read_rcv_msg"), _T("major version mismatch"));
+		set_last_error(_T("_ssl_read_rcv_msg"), _T("major version mismatch"), -1);
+		return C_ERR;
 	}
 
 	if (pssl->rcv_hdr[2] > SSL_MINOR_VERSION_3)
 	{
-		raise_user_error(_T("_ssl_read_rcv_msg"), _T("minor version mismatch"));
+		set_last_error(_T("_ssl_read_rcv_msg"), _T("minor version mismatch"), -1);
+		return C_ERR;
 	}
 
 	pssl->rcv_msg_type = GET_BYTE(pssl->rcv_hdr, 0);
@@ -1232,37 +1229,23 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 
 	if (pssl->rcv_msg_len < 1 || pssl->rcv_msg_len > SSL_MAX_SIZE)
 	{
-		raise_user_error(_T("_ssl_read_rcv_msg"), _T("invalid message block length"));
+		set_last_error(_T("_ssl_read_rcv_msg"), _T("invalid message block length"), -1);
+		return C_ERR;
 	}
 
 	dw = pssl->rcv_msg_len;
 	if (!(*pssl->pif->pf_read)(pssl->pif->fd, pssl->rcv_msg, &dw))
 	{
-		raise_user_error(NULL, NULL);
+		set_last_error(_T("_ssl_read_rcv_msg"), _T("read message block failed"), -1);
+		return C_ERR;
 	}
 
-	if (pssl->rcv_msg_type == SSL_MSG_ALERT)
-	{
-		//alter message will not be crypted recieved
-		pssl->crypted = 0;
-
-		if (pssl->rcv_msg[0] == SSL_ALERT_FATAL)
-		{
-			raise_user_error(_T("_ssl_read_rcv_msg"), _T("fatal alert message"));
-		}
-
-		if (pssl->rcv_msg[0] == SSL_ALERT_WARNING && pssl->rcv_msg[1] == SSL_ALERT_CLOSE_NOTIFY)
-		{
-			pssl->over = -1;
-			pssl->rcv_msg_len = 0;
-		}
-	}
-
-	if (pssl->crypted)
+	if (pssl->rcv_crypted)
 	{
 		if (C_OK != _ssl_decrypt_rcv_msg(pssl))
 		{
-			raise_user_error(NULL, NULL);
+			set_last_error(_T("_ssl_read_rcv_msg"), _T("decrypt message block failed"), -1);
+			return C_ERR;
 		}
 
 		//incre recv message control bits
@@ -1289,15 +1272,24 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 			token += (SSL_HSH_SIZE + haslen);
 		}
 	}
+	else if (pssl->rcv_msg_type == SSL_MSG_ALERT)
+	{
+		if (pssl->rcv_msg[0] == SSL_ALERT_FATAL)
+		{
+			set_last_error(_T("_ssl_read_rcv_msg"), _T("fatal alert message"), -1);
+			return C_ERR;
+		}
+
+		if (pssl->rcv_msg[0] == SSL_ALERT_WARNING && pssl->rcv_msg[1] == SSL_ALERT_CLOSE_NOTIFY)
+		{
+			pssl->over = -1;
+			pssl->rcv_msg_len = 0;
+		}
+	}
 
 	pssl->rcv_msg_pop = 0;
 
-	END_CATCH;
-
 	return C_OK;
-ONERROR:
-
-	return C_ERR;
 }
 
 static bool_t _ssl_read_data(ssl_t* pssl, byte_t* buf, int* need)
@@ -2499,16 +2491,21 @@ static handshake_states _ssl_write_client_change_cipher_spec(ssl_t *pssl)
 	pssl->snd_msg_len = 1;
 	pssl->snd_msg[0] = 1;
 
-	//may not crypted sending
-	pssl->crypted = 0;
-
 	//clear send message control bits
 	for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
 	{
 		pssl->snd_ctr[i] = 0;
 	}
 
-	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_CLIENT_FINISHED : SSL_HANDSHAKE_ERROR;
+	if (C_OK != _ssl_write_snd_msg(pssl))
+	{
+		return SSL_HANDSHAKE_ERROR;
+	}
+
+	//after send change cipher all record must be crypted sending
+	pssl->snd_crypted = 1;
+
+	return SSL_CLIENT_FINISHED;
 }
 
 static handshake_states _ssl_write_client_finished(ssl_t *pssl)
@@ -2595,9 +2592,6 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 	//handshake length
 	PUT_THREEBYTE_LEN(pssl->snd_msg, 1, msglen - SSL_HSH_SIZE);
 
-	//the finished message must crypted sending
-	pssl->crypted = 1;
-
 	if (C_OK != _ssl_write_snd_msg(pssl))
 	{
 		return SSL_HANDSHAKE_ERROR;
@@ -2614,9 +2608,6 @@ static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
 	enum { change_cipher_spec(1), (255) } type;
 	} ChangeCipherSpec;
 	*/
-
-	//change cipher spec may not crypted receiving
-	pssl->crypted = 0;
 
 	if (C_OK != _ssl_read_rcv_msg(pssl))
 	{
@@ -2640,6 +2631,9 @@ static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
 	{
 		pssl->rcv_ctr[i] = 0;
 	}
+
+	//after recv change cipher all record must be crypted recving
+	pssl->rcv_crypted = 1;
 
 	return SSL_SERVER_FINISHED;
 }
@@ -2714,9 +2708,6 @@ static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
 
 		hash_len = 12;
 	}
-
-	//the finished message must be crypted received
-	pssl->crypted = 1;
 
 	if (C_OK != _ssl_read_rcv_msg(pssl))
 		return SSL_HANDSHAKE_ERROR;
@@ -3992,9 +3983,6 @@ static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
 	} ChangeCipherSpec;
 	*/
 
-	//the change cipher spec message may not crypted received
-	pssl->crypted = 0;
-
 	if (C_OK != _ssl_read_rcv_msg(pssl))
 	{
 		return SSL_HANDSHAKE_ERROR;
@@ -4017,6 +4005,9 @@ static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
 	{
 		pssl->rcv_ctr[i] = 0;
 	}
+
+	//after read change cipher all record must be crypted recving
+	pssl->rcv_crypted = 1;
 
 	return SSL_CLIENT_FINISHED;
 }
@@ -4090,9 +4081,6 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 		hash_len = 12;
 	}
 
-	//the finished message must be crypted received
-	pssl->crypted = 1;
-
 	if (C_OK != _ssl_read_rcv_msg(pssl))
 		return SSL_HANDSHAKE_ERROR;
 
@@ -4124,16 +4112,21 @@ static handshake_states _ssl_write_server_change_cipher_spec(ssl_t *pssl)
 	pssl->snd_msg_len = 1;
 	pssl->snd_msg[0] = 1;
 
-	//the change cipher spec message may not be crypted sended
-	pssl->crypted = 0;
-
 	//clear send message control bits
 	for (i = SSL_CTR_SIZE - 1; i >= 0; i--)
 	{
 		pssl->snd_ctr[i] = 0;
 	}
 
-	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_SERVER_FINISHED : SSL_HANDSHAKE_ERROR;
+	if (C_OK != _ssl_write_snd_msg(pssl))
+	{
+		return SSL_HANDSHAKE_ERROR;
+	}
+
+	//after write change cipher all record must be crypted sending
+	pssl->snd_crypted = 1;
+
+	return SSL_SERVER_FINISHED;
 }
 
 static handshake_states _ssl_write_server_finished(ssl_t *pssl)
@@ -4223,9 +4216,6 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 	pssl->snd_msg[0] = SSL_HS_FINISHED;
 	//handshake length
 	PUT_THREEBYTE_LEN(pssl->snd_msg, 1, msglen - SSL_HSH_SIZE);
-
-	//the finished message must be crypted sended
-	pssl->crypted = 1;
 
 	if (C_OK != _ssl_write_snd_msg(pssl))
 	{
