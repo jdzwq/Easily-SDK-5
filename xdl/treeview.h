@@ -50,7 +50,7 @@ extern "C" {
 
 	EXP_API float calc_tree_height(link_t_ptr ptr);
 
-	EXP_API float calc_tree_width(const if_measure_t* pif, link_t_ptr ptr);
+	EXP_API float calc_tree_width(const measure_interface* pif, link_t_ptr ptr);
 
 	EXP_API bool_t calc_tree_item_rect(link_t_ptr ptr, link_t_ptr cur, xrect_t* pxr);
 
@@ -62,7 +62,7 @@ extern "C" {
 
 	EXP_API int calc_tree_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-	EXP_API void draw_tree(const if_drawing_t* pcanv, link_t_ptr ptr);
+	EXP_API void draw_tree(const drawing_interface* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

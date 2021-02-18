@@ -84,7 +84,7 @@ float calc_tree_height(link_t_ptr ptr)
 	return _calc_tree_child_height(ptr, ptr);
 }
 
-float calc_tree_width(const if_measure_t* pif, link_t_ptr ptr)
+float calc_tree_width(const measure_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;
@@ -354,7 +354,7 @@ int calc_tree_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 	return hint;
 }
 
-void draw_tree(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_tree(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	link_t_ptr st = NULL;

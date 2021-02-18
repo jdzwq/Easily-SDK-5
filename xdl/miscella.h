@@ -170,6 +170,10 @@ EXP_API int compare_time(const xdate_t* pmd1, const xdate_t* pmd2);
 
 EXP_API int compare_numeric(const tchar_t* szSrc, const tchar_t* szDes, int digi);
 
+EXP_API int compare_float(float f1, float f2, int prec);
+
+EXP_API int compare_double(double f1, double f2, int prec);
+
 EXP_API int compare_text(const tchar_t* src, int srclen, const tchar_t* dest, int destlen, int nocase);
 
 EXP_API int verify_text(const tchar_t* str, const tchar_t* datatype, bool_t nullable, int len, const tchar_t* min, const tchar_t* max);

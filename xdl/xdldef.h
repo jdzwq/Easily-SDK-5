@@ -114,6 +114,12 @@ typedef struct _link_t{
 #endif
 
 
+#ifdef _OS_64
+#define TypePtrFromHead(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->head))) 
+#else
+#define TypePtrFromHead(type,p) ((type*)((unsigned int)p - (unsigned int)&(((type*)0)->head))) 
+#endif
+
 /*define root link tag*/
 #define lkRoot			0xFF
 /*define free link tag*/
@@ -156,6 +162,7 @@ typedef struct _link_t{
 #define lkMultiTree		0x16
 
 #define lkFileTable		0x17
+#define lkLockTable		0x18
 
 #define IS_DOM_DOC(ptr)		((ptr->tag == lkNode)? 1 : 0)
 #define IS_XML_DOC(ptr)		((ptr->tag == lkDoc)? 1 : 0)
@@ -243,8 +250,8 @@ typedef struct _calendar_t
 
 typedef struct _period_t {
 	tchar_t base[DATE_LEN + 1]; // base datetime
-	tchar_t prec[2]; //time ruler, eg: 'Y','M','D','H','I','S'
-	tchar_t feed[INT_LEN + 1]; // 时效步长
+	tchar_t prec[2];			//time ruler, eg: 'Y','M','D','H','I','S'
+	tchar_t feed[INT_LEN + 1]; // increasing step, according to time ruler
 }period_t;
 
 
@@ -282,11 +289,37 @@ typedef enum{
 	veUserReject = 7 
 }VERIFY_CODE;
 
-#ifdef _OS_64
-#define TypePtrFromHead(type,p) ((type*)((unsigned long long)p - (unsigned long long)&(((type*)0)->head))) 
-#else
-#define TypePtrFromHead(type,p) ((type*)((unsigned int)p - (unsigned int)&(((type*)0)->head))) 
-#endif
+typedef struct _memobj_head{
+	byte_t tag; //memo object type
+	byte_t len[3]; //memo object size in bytes
+}memobj_head;
+
+#define MEMOBJ_SIZE(obj)		(GET_THREEBYTE_LOC(((obj)->len), 0) + sizeof(memobj_head))
+
+#define MEM_BINARY	0x00
+#define MEM_VARIANT	0x01
+#define MEM_STRING	0x02
+#define MEM_MAP		0x03
+#define MEM_VECTOR	0x04
+#define MEM_MATRIX	0x04 //equal to vector
+#define MEM_DOMDOC	0x05
+#define MEM_MESSAGE	0x06
+#define MEM_QUEUE	0x07
+
+#define MEMENC_MASK	0x10
+
+#define IS_OBJECT_TYPE(tag)		((tag == 0x10 || tag == 0x11 || tag == 0x12 || tag == 0x13 || tag == 0x14 || tag == 0x15 || tag == 0x16 || tag == 0x17)? 1 : 0)
+
+typedef struct _memobj_head **object_t;
+typedef struct _memobj_head **message_t;
+typedef struct _memobj_head **queue_t;
+
+typedef struct _memobj_head *variant_t;
+typedef struct _memobj_head *string_t;
+typedef struct _memobj_head *map_t;
+typedef struct _memobj_head *vector_t;
+typedef struct _memobj_head *matrix_t;
+
 
 /*define handle type*/
 #define _HANDLE_UNKNOWN		0x00
@@ -307,42 +340,16 @@ typedef enum{
 #define _HANDLE_MQTT		0x0F
 #define _HANDLE_COAP		0x10
 
-typedef struct _xhand_head{
-	byte_t tag;
-	byte_t lru[3];
-}xhand_head, *xhand_t;
+typedef struct _handle_head *xhand_t;
 
-/*define object type*/
-#define _OBJECT_UNKNOWN		0x00
-#define _OBJECT_STRING		0x01
-#define _OBJECT_VARIANT		0x02
-#define _OBJECT_DOMDOC		0x03
-#define _OBJECT_BINARY		0x04
-
-typedef struct _object_head{
-	byte_t tag;
-	byte_t lru[3];
-}object_head, *object_t;
-
-typedef struct _string_head{
-	byte_t tag;
-	byte_t lru[3];
-}string_head, *string_t;
-
-typedef struct _stream_head{
-	byte_t tag;
-	byte_t lru[3];
-}stream_head, *stream_t;
+typedef struct _handle_head *stream_t;
 
 /*canvas type*/
 #define _CANVAS_UNKNOWN		0x00
 #define _CANVAS_DISPLAY		0x01
 #define _CANVAS_PRINTER		0x02
 
-typedef struct _canvas_head{
-	byte_t tag;
-	byte_t lru[3];
-}canvas_head, *canvas_t;
+typedef struct _handle_head *canvas_t;
 
 //define file proto type
 #define _PROTO_UNKNOWN		0x00
@@ -359,90 +366,14 @@ typedef struct _acp_head{
 	sword_t base;
 }acp_head, *acp_t;
 
-/*define db type*/
+/*define xdb type*/
 #define _DB_UNKNOWN		0x00
 #define _DB_STUB		0x01
 #define _DB_ODBC		0x02
 #define _DB_OCI			0x03
 #define _DB_MYSQL		0x04
 
-typedef struct _db_head{
-	byte_t tag;
-	byte_t lru[3];
-}xdb_head, *xdb_t;
-
-#define VV_NULL			0x00
-#define VV_BOOL			0x01
-#define VV_BYTE			0x02
-#define VV_SCHAR		0x03
-#define VV_WCHAR		0x04
-#define VV_SHORT		0x05
-#define VV_INT			0x06
-#define VV_LONG			0x07
-#define VV_FLOAT		0x08
-#define VV_DOUBLE		0x09
-#define VV_STRING		0x0A
-
-#define VV_BOOL_ARRAY	(VV_BOOL | 0x40)
-#define VV_BYTE_ARRAY	(VV_BYTE | 0x40)
-#define VV_SCHAR_ARRAY	(VV_SCHAR | 0x40)
-#define VV_WCHAR_ARRAY	(VV_WCHAR | 0x40)
-#define VV_SHORT_ARRAY	(VV_SHORT | 0x40)
-#define VV_INT_ARRAY	(VV_INT | 0x40)
-#define VV_LONG_ARRAY	(VV_LONG | 0x40)
-#define VV_FLOAT_ARRAY	(VV_FLOAT | 0x40)
-#define VV_DOUBLE_ARRAY	(VV_DOUBLE | 0x40)
-#define VV_STRING_ARRAY	(VV_STRING | 0x40)
-
-#define VV_STRING_REF		(VV_STRING | 0x80)
-#define VV_BOOL_ARRAY_REF	(VV_BOOL_ARRAY | 0x80)
-#define VV_BYTE_ARRAY_REF	(VV_BYTE_ARRAY | 0x80)
-#define VV_SCHAR_ARRAY_REF	(VV_SCHAR_ARRAY | 0x80)
-#define VV_WCHAR_ARRAY_REF	(VV_WCHAR_ARRAY | 0x80)
-#define VV_SHORT_ARRAY_REF	(VV_SHORT_ARRAY | 0x80)
-#define VV_INT_ARRAY_REF	(VV_INT_ARRAY | 0x80)
-#define VV_LONG_ARRAY_REF	(VV_LONG_ARRAY | 0x80)
-#define VV_FLOAT_ARRAY_REF	(VV_FLOAT_ARRAY | 0x80)
-#define VV_DOUBLE_ARRAY_REF	(VV_DOUBLE_ARRAY | 0x80)
-#define VV_STRING_ARRAY_REF	(VV_STRING_ARRAY | 0x80)
-
-typedef enum{
-	IO_IN = 0,
-	IO_OUT = 1,
-	IO_INOUT = 2
-}VARIANT_IO;
-
-typedef struct _variant_t{
-	byte_t io;
-	byte_t vv;
-	int size;
-	int prec;
-	int encode;
-
-	union{
-		bool_t bool_one;
-		byte_t byte_one;
-		schar_t schar_one;
-		wchar_t wchar_one;
-		short short_one;
-		int int_one;
-		long long long_one;
-		float float_one;
-		double double_one;
-		tchar_t* string_one;
-
-		bool_t* bool_ptr;
-		byte_t* byte_ptr;
-		schar_t* schar_ptr;
-		wchar_t* wchar_ptr;
-		short* short_ptr;
-		int* int_ptr;
-		long long* long_ptr;
-		float* float_ptr;
-		double* double_ptr;
-		tchar_t** string_ptr;
-	};
-}variant_t;
+typedef struct _handle_head	*xdb_t;
 
 
 #define PAPER_A4_WIDTH			210.0f
@@ -465,7 +396,7 @@ typedef struct _variant_t{
 
 #define DEF_SPLIT_SPAN			1.5f
 #define DEF_TOUCH_SPAN			7.0f
-#define DEF_ATTR_ICON_SPAN		6.8f
+#define DEF_ICON_SPAN			6.8f
 #define DEF_TEXT_HEIGHT			8.0f
 #define DEF_TEXT_WIDTH			20.0f
 #define DEF_ITEM_HEIGHT			7.0f
@@ -486,6 +417,7 @@ typedef struct _variant_t{
 #define DEF_OUTER_FEED		1
 #define DEF_FOCUS_SPAN		5
 
+/*define object sizing type*/
 #define SIZING_TOPLEFT			0x00000001
 #define SIZING_TOPCENTER		0x00000002
 #define SIZING_TOPRIGHT			0x00000004

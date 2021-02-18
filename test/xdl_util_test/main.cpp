@@ -35,7 +35,7 @@ void test_utc()
 	int rt = compare_datetime(&dt, &dt2);
 }
 
-void test_stamp()
+void test_times()
 {
 	xdate_t dt;
 	tchar_t sz_date[UTC_LEN + 1] = { 0 };
@@ -47,6 +47,21 @@ void test_stamp()
 
 	utc_date_from_times(&dt, ms);
 	format_utctime(&dt, sz_date);
+}
+
+void test_stamp()
+{
+	xdate_t dt;
+	tchar_t sz_date[UTC_LEN + 1] = { 0 };
+	lword_t ms;
+
+	ms = get_timestamp();
+
+	utc_date_from_timestamp(&dt, ms);
+
+	format_utctime(&dt, sz_date);
+
+	_tprintf(_T("%s\n"), sz_date);
 }
 
 void test_func(int a, ...)
@@ -342,6 +357,35 @@ void test_time_hint()
 	xmem_free(th.p_sec);
 }
 
+void test_dict()
+{
+	link_t_ptr dict = create_dict_table();
+
+	variant_t var = variant_alloc(VV_STRING);
+	object_t val = object_alloc(_UTF8);
+	tchar_t str[100] = { 0 };
+	for (int i = 0; i < 100; i++)
+	{
+		xsprintf(str, _T("string%d"), i);
+		variant_from_string(var, str, -1);
+		object_set_variant(val, var);
+
+		link_t_ptr ent = write_dict_item(dict, var, val);
+
+		ent = get_dict_entity(dict, var);
+		XDL_ASSERT(ent != NULL);
+
+		bool_t rt = read_dict_item(dict, var, val);
+		object_get_variant(val, var);
+		xszero(str, 100);
+		variant_to_string(var, str, 100);
+	}
+
+	variant_free(var);
+	object_free(val);
+	destroy_dict_table(dict);
+}
+
 int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_PROCESS);
@@ -351,6 +395,8 @@ int main(int argc, char* argv[])
 	//test_utc();
 
 	//test_stamp();
+
+	//test_nuid();
 
 	//test_printf();
 
@@ -364,11 +410,13 @@ int main(int argc, char* argv[])
 
 	//test_set();
 
-	//test_object();
+	//test_map();
 
 	//test_conv();
 
-	test_string_array();
+	test_dict();
+
+	//test_string_array();
 
 	//test_integer_array();
 
@@ -379,6 +427,24 @@ int main(int argc, char* argv[])
 	//test_words();
 
 	//test_time_hint();
+
+	//test_variant();
+
+	//test_message();
+
+	//test_queue();
+
+	//test_object();
+
+	//test_dict_table();
+
+	//test_lock_table();
+
+	//test_file_table(_T("demo"), 1);
+
+	//test_bplus_tree();
+
+	//test_bplus_tree_file_table(_T("demo.ind"), _T("demo.dat"));
 
 	xdl_process_uninit();
 

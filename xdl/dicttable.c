@@ -86,7 +86,7 @@ static int _insert_dict_entity(link_t_ptr root, link_t_ptr elk)
 		if (phe->index > pnew->index)
 			break;
 
-		if (variant_comp(&phe->key, &pnew->key) > 0)
+		if (variant_comp(phe->key, pnew->key) > 0)
 			break;
 
 		count++;
@@ -139,7 +139,7 @@ void _expand_dict_table(dict_table_t* pht)
 		{
 			phe = DictEntityFromLink(plk);
 
-			variant_hash32(&phe->key, &code);
+			variant_hash32(phe->key, &code);
 			index = DICTINDEX(code, prim);
 
 			_insert_dict_entity(&(pnew[index]), plk);
@@ -201,7 +201,7 @@ void clear_dict_table(link_t_ptr ptr)
 		{
 			phe = DictEntityFromLink(plk);
 
-			variant_to_null(&phe->key);
+			variant_free(phe->key);
 
 			object_free(phe->val);
 
@@ -433,7 +433,7 @@ link_t_ptr	write_dict_item(link_t_ptr ptr, variant_t key, object_t val)
 
 	XDL_ASSERT(ptr && ptr->tag == lkDictTable);
 
-	if (variant_is_null(&key))
+	if (variant_is_null(key))
 		return NULL;
 
 	pht = DictTableFromLink(ptr);
@@ -450,14 +450,13 @@ link_t_ptr	write_dict_item(link_t_ptr ptr, variant_t key, object_t val)
 	}
 	else	/*if not exist then to add new entity with key and value*/
 	{
-		variant_hash32(&key, &code);
+		variant_hash32(key, &code);
 
 		phe = (dict_entity_t*)xmem_alloc(sizeof(dict_entity_t));
 		phe->lk.tag = lkDictEntity;
 		phe->index = ENTITYINDEX(code);
 
-		variant_copy(&phe->key, &key);
-
+		phe->key = variant_clone(key);
 		phe->val = (val)? object_clone(val) : object_alloc(DEF_MBS);
 
 		plk = &((pht->pp)[DICTINDEX(code, pht->size)]);
@@ -509,13 +508,13 @@ link_t_ptr get_dict_entity(link_t_ptr ptr, variant_t key)
 
 	XDL_ASSERT(ptr && ptr->tag == lkDictTable);
 
-	if (variant_is_null(&key))
+	if (variant_is_null(key))
 		return NULL;
 
 	pht = DictTableFromLink(ptr);
 
 	/*first to calc master root link ptr array position by the key's dict code */
-	variant_hash32(&key, &code);
+	variant_hash32(key, &code);
 	/*then to compare the entity key in the ordered list*/
 	plk = get_first_link(&((pht->pp)[DICTINDEX(code, pht->size)]));
 	while (plk != NULL)
@@ -524,7 +523,7 @@ link_t_ptr get_dict_entity(link_t_ptr ptr, variant_t key)
 		
 		if (phe->index == ENTITYINDEX(code))
 		{
-			rt = variant_comp(&phe->key, &key);
+			rt = variant_comp(phe->key, key);
 			if (rt == 0)
 				return plk;
 			else if (rt > 0)
@@ -552,7 +551,7 @@ void delete_dict_entity(link_t_ptr elk)
 	/*delete link ptr from list*/
 	delete_link(NULL, elk);
 
-	variant_to_null(&phe->key);
+	variant_free(phe->key);
 		
 	object_free(phe->val);
 
@@ -590,7 +589,7 @@ const object_t* get_dict_entity_val_ptr(link_t_ptr elk)
 	return &phe->val;
 }
 
-void get_dict_entity_key(link_t_ptr elk, variant_t* pkey)
+void get_dict_entity_key(link_t_ptr elk, variant_t key)
 {
 	dict_entity_t* phe;
 
@@ -598,7 +597,7 @@ void get_dict_entity_key(link_t_ptr elk, variant_t* pkey)
 
 	phe = DictEntityFromLink(elk);
 
-	variant_copy(pkey, &phe->key);
+	variant_copy(key, phe->key);
 }
 
 void get_dict_entity_val(link_t_ptr elk, object_t val)
@@ -620,7 +619,7 @@ void set_dict_entity_key(link_t_ptr elk, variant_t key)
 
 	phe = DictEntityFromLink(elk);
 
-	variant_copy(&phe->key, &key);
+	variant_copy(phe->key, key);
 }
 
 void set_dict_entity_val(link_t_ptr elk, object_t val)
@@ -725,7 +724,7 @@ int enum_dict_entity(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* pv)
 	return count;
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 void test_dict_table()
 {
 	dword_t i,count,total = 0;
@@ -735,18 +734,32 @@ void test_dict_table()
 
 	ptr = create_dict_table();
 
-	variant_t key;
-	key.vv = VV_INT;
+	variant_t key = variant_alloc(VV_INT);
 
 	object_t val = object_alloc(_UTF8);
 
 	for (i = 0x4E00; i <= 0x9FA5; i++)
 	{
-		key.int_one = i;
+		variant_set_int(key, i);
 
 		object_set_variant(val, key);
 		write_dict_item(ptr, key, val);
 	}
+
+	variant_t key2 = variant_alloc(VV_INT);
+
+	for (i = 0x4E00; i <= 0x9FA5; i++)
+	{
+		variant_set_int(key, i);
+
+		read_dict_item(ptr, key, val);
+		object_get_variant(val, key2);
+
+		int rt = variant_comp(key, key2);
+		XDL_ASSERT(rt == 0);
+	}
+
+	variant_free(key2);
 
 	pht = DictTableFromLink(ptr);
 	min = pht->size;
@@ -772,6 +785,7 @@ void test_dict_table()
 
 	destroy_dict_table(ptr);
 
+	variant_free(key);
 	object_free(val);
 }
 #endif

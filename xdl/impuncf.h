@@ -93,7 +93,7 @@ EXP_API void xuncf_find_close(res_find_t fd);
 local file: "d:/somepath/somefile"
 network file: "127.0.0.1//share/somepath/somefile"
 @INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE, FILE_OPEN_APPEND or combined.
-@RETURN if_fio_t*: if succeeds return file handle, fails return NULL.
+@RETURN file_interface*: if succeeds return file handle, fails return NULL.
 */
 EXP_API xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode);
 

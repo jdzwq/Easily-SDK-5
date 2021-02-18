@@ -37,16 +37,16 @@ LICENSE.GPL3 for more details.
 #include "xdlnet.h"
 #include "xdldoc.h"
 
-if_xdb_t* alloc_xdb_interface(const tchar_t* libfile)
+xdb_interface* alloc_xdb_interface(const tchar_t* libfile)
 {
 	res_modu_t lib;
-	if_xdb_t* pdb;
+	xdb_interface* pdb;
 
 	lib = load_library(libfile);
 	if (!lib)
 		return NULL;
 
-	pdb = (if_xdb_t*)xmem_alloc(sizeof(if_xdb_t));
+	pdb = (xdb_interface*)xmem_alloc(sizeof(xdb_interface));
 
 	pdb->lib = lib;
 	pdb->pf_db_parse_dsn = (PF_DB_PARSE_DSN)get_address(pdb->lib, "db_parse_dsn");
@@ -78,7 +78,7 @@ if_xdb_t* alloc_xdb_interface(const tchar_t* libfile)
 	return pdb;
 }
 
-void free_xdb_interface(if_xdb_t* pdb)
+void free_xdb_interface(xdb_interface* pdb)
 {
 	if (pdb->xdb)
 	{
@@ -93,14 +93,14 @@ void free_xdb_interface(if_xdb_t* pdb)
 	xmem_free(pdb);
 }
 
-bool_t xdb_parse_dsn(if_xdb_t* pdb, const tchar_t* dsnfile, tchar_t* srv_buf, int srv_len, tchar_t* dbn_buf, int dbn_len, tchar_t* uid_buf, int uid_len, tchar_t* pwd_buf, int pwd_len)
+bool_t xdb_parse_dsn(xdb_interface* pdb, const tchar_t* dsnfile, tchar_t* srv_buf, int srv_len, tchar_t* dbn_buf, int dbn_len, tchar_t* uid_buf, int uid_len, tchar_t* pwd_buf, int pwd_len)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_parse_dsn);
 
 	return (*pdb->pf_db_parse_dsn)(dsnfile, srv_buf, srv_len, dbn_buf, dbn_len, uid_buf, uid_len, pwd_buf, pwd_len);
 }
 
-bool_t xdb_open_dsn(if_xdb_t* pdb, const tchar_t* dsnfile)
+bool_t xdb_open_dsn(xdb_interface* pdb, const tchar_t* dsnfile)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_open_dsn);
 
@@ -112,7 +112,7 @@ bool_t xdb_open_dsn(if_xdb_t* pdb, const tchar_t* dsnfile)
 	return (pdb->xdb) ? 1 : 0;
 }
 
-bool_t xdb_open(if_xdb_t* pdb, const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid, const tchar_t* pwd)
+bool_t xdb_open(xdb_interface* pdb, const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid, const tchar_t* pwd)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_open);
 
@@ -124,7 +124,7 @@ bool_t xdb_open(if_xdb_t* pdb, const tchar_t* srv, const tchar_t* dbn, const tch
 	return (pdb->xdb) ? 1 : 0;
 }
 
-void xdb_close(if_xdb_t* pdb)
+void xdb_close(xdb_interface* pdb)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_close);
 
@@ -135,7 +135,7 @@ void xdb_close(if_xdb_t* pdb)
 	pdb->xdb = NULL;
 }
 
-bool_t xdb_exec(if_xdb_t* pdb, const tchar_t* sqlstr, int len)
+bool_t xdb_exec(xdb_interface* pdb, const tchar_t* sqlstr, int len)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_exec);
 
@@ -145,7 +145,7 @@ bool_t xdb_exec(if_xdb_t* pdb, const tchar_t* sqlstr, int len)
 	return (*pdb->pf_db_exec)(pdb->xdb, sqlstr, len);
 }
 
-bool_t xdb_select(if_xdb_t* pdb, link_t_ptr grid, const tchar_t* sqlstr)
+bool_t xdb_select(xdb_interface* pdb, link_t_ptr grid, const tchar_t* sqlstr)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_select);
 
@@ -155,7 +155,7 @@ bool_t xdb_select(if_xdb_t* pdb, link_t_ptr grid, const tchar_t* sqlstr)
 	return (*pdb->pf_db_select)(pdb->xdb, grid, sqlstr);
 }
 
-bool_t xdb_schema(if_xdb_t* pdb, link_t_ptr grid, const tchar_t* sqlstr)
+bool_t xdb_schema(xdb_interface* pdb, link_t_ptr grid, const tchar_t* sqlstr)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_schema);
 
@@ -165,7 +165,7 @@ bool_t xdb_schema(if_xdb_t* pdb, link_t_ptr grid, const tchar_t* sqlstr)
 	return (*pdb->pf_db_schema)(pdb->xdb, grid, sqlstr);
 }
 
-bool_t xdb_fetch(if_xdb_t* pdb, link_t_ptr grid)
+bool_t xdb_fetch(xdb_interface* pdb, link_t_ptr grid)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_fetch);
 
@@ -175,7 +175,7 @@ bool_t xdb_fetch(if_xdb_t* pdb, link_t_ptr grid)
 	return (*pdb->pf_db_fetch)(pdb->xdb, grid);
 }
 
-bool_t xdb_update(if_xdb_t* pdb, link_t_ptr grid)
+bool_t xdb_update(xdb_interface* pdb, link_t_ptr grid)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_update);
 
@@ -185,7 +185,7 @@ bool_t xdb_update(if_xdb_t* pdb, link_t_ptr grid)
 	return (*pdb->pf_db_update)(pdb->xdb, grid);
 }
 
-bool_t xdb_datetime(if_xdb_t* pdb, int diff, tchar_t* sz_date)
+bool_t xdb_datetime(xdb_interface* pdb, int diff, tchar_t* sz_date)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_datetime);
 
@@ -195,7 +195,7 @@ bool_t xdb_datetime(if_xdb_t* pdb, int diff, tchar_t* sz_date)
 	return (*pdb->pf_db_datetime)(pdb->xdb, diff, sz_date);
 }
 
-int xdb_rows(if_xdb_t* pdb)
+int xdb_rows(xdb_interface* pdb)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_rows);
 
@@ -205,7 +205,7 @@ int xdb_rows(if_xdb_t* pdb)
 	return (*pdb->pf_db_rows)(pdb->xdb);
 }
 
-int xdb_error(if_xdb_t* pdb, tchar_t* buf, int max)
+int xdb_error(xdb_interface* pdb, tchar_t* buf, int max)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_error);
 
@@ -215,7 +215,7 @@ int xdb_error(if_xdb_t* pdb, tchar_t* buf, int max)
 	return (*pdb->pf_db_error)(pdb->xdb, buf, max);
 }
 
-bool_t xdb_call_json(if_xdb_t* pdb, const tchar_t* procname, link_t_ptr json)
+bool_t xdb_call_json(xdb_interface* pdb, const tchar_t* procname, link_t_ptr json)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_call_json);
 
@@ -225,7 +225,7 @@ bool_t xdb_call_json(if_xdb_t* pdb, const tchar_t* procname, link_t_ptr json)
 	return (*pdb->pf_db_call_json)(pdb->xdb, procname, json);
 }
 
-bool_t xdb_call_func(if_xdb_t* pdb, link_t_ptr func)
+bool_t xdb_call_func(xdb_interface* pdb, link_t_ptr func)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_call_func);
 
@@ -235,7 +235,7 @@ bool_t xdb_call_func(if_xdb_t* pdb, link_t_ptr func)
 	return (*pdb->pf_db_call_func)(pdb->xdb, func);
 }
 
-bool_t xdb_export(if_xdb_t* pdb, stream_t stream, const tchar_t* sqlstr)
+bool_t xdb_export(xdb_interface* pdb, stream_t stream, const tchar_t* sqlstr)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_export);
 
@@ -245,7 +245,7 @@ bool_t xdb_export(if_xdb_t* pdb, stream_t stream, const tchar_t* sqlstr)
 	return (*pdb->pf_db_export)(pdb->xdb, stream, sqlstr);
 }
 
-bool_t xdb_import(if_xdb_t* pdb, stream_t stream, const tchar_t* table)
+bool_t xdb_import(xdb_interface* pdb, stream_t stream, const tchar_t* table)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_import);
 
@@ -255,7 +255,7 @@ bool_t xdb_import(if_xdb_t* pdb, stream_t stream, const tchar_t* table)
 	return (*pdb->pf_db_import)(pdb->xdb, stream, table);
 }
 
-bool_t xdb_batch(if_xdb_t* pdb, stream_t stream)
+bool_t xdb_batch(xdb_interface* pdb, stream_t stream)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_batch);
 
@@ -265,7 +265,7 @@ bool_t xdb_batch(if_xdb_t* pdb, stream_t stream)
 	return (*pdb->pf_db_batch)(pdb->xdb, stream);
 }
 
-bool_t xdb_read_blob(if_xdb_t* pdb, stream_t stream, const tchar_t* sqlstr)
+bool_t xdb_read_blob(xdb_interface* pdb, stream_t stream, const tchar_t* sqlstr)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_read_blob);
 
@@ -275,7 +275,7 @@ bool_t xdb_read_blob(if_xdb_t* pdb, stream_t stream, const tchar_t* sqlstr)
 	return (*pdb->pf_db_read_blob)(pdb->xdb, stream, sqlstr);
 }
 
-bool_t xdb_write_blob(if_xdb_t* pdb, stream_t stream, const tchar_t* sqlfmt)
+bool_t xdb_write_blob(xdb_interface* pdb, stream_t stream, const tchar_t* sqlfmt)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_write_blob);
 
@@ -285,7 +285,7 @@ bool_t xdb_write_blob(if_xdb_t* pdb, stream_t stream, const tchar_t* sqlfmt)
 	return (*pdb->pf_db_write_blob)(pdb->xdb, stream, sqlfmt);
 }
 
-bool_t xdb_read_clob(if_xdb_t* pdb, string_t varstr, const tchar_t* sqlstr)
+bool_t xdb_read_clob(xdb_interface* pdb, string_t varstr, const tchar_t* sqlstr)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_read_clob);
 
@@ -295,7 +295,7 @@ bool_t xdb_read_clob(if_xdb_t* pdb, string_t varstr, const tchar_t* sqlstr)
 	return (*pdb->pf_db_read_clob)(pdb->xdb, varstr, sqlstr);
 }
 
-bool_t xdb_write_clob(if_xdb_t* pdb, string_t varstr, const tchar_t* sqlfmt)
+bool_t xdb_write_clob(xdb_interface* pdb, string_t varstr, const tchar_t* sqlfmt)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_write_clob);
 
@@ -305,7 +305,7 @@ bool_t xdb_write_clob(if_xdb_t* pdb, string_t varstr, const tchar_t* sqlfmt)
 	return (*pdb->pf_db_write_clob)(pdb->xdb, varstr, sqlfmt);
 }
 
-bool_t xdb_read_xdoc(if_xdb_t* pdb, link_t_ptr domdoc, const tchar_t* sqlstr)
+bool_t xdb_read_xdoc(xdb_interface* pdb, link_t_ptr domdoc, const tchar_t* sqlstr)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_read_xdoc);
 
@@ -315,7 +315,7 @@ bool_t xdb_read_xdoc(if_xdb_t* pdb, link_t_ptr domdoc, const tchar_t* sqlstr)
 	return (*pdb->pf_db_read_xdoc)(pdb->xdb, domdoc, sqlstr);
 }
 
-bool_t xdb_write_xdoc(if_xdb_t* pdb, link_t_ptr domdoc, const tchar_t* sqlfmt)
+bool_t xdb_write_xdoc(xdb_interface* pdb, link_t_ptr domdoc, const tchar_t* sqlfmt)
 {
 	XDL_ASSERT(pdb && pdb->pf_db_write_xdoc);
 

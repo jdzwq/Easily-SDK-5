@@ -46,7 +46,7 @@ bool_t _invoke_get(const https_block_t* pb)
     xdate_t dt_since = {0};
     xdate_t dt_time = {0};
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t *sz_buf = NULL;
 	byte_t *sz_zip = NULL;
 	dword_t n_zip,n_size = 0;
@@ -79,9 +79,9 @@ bool_t _invoke_get(const https_block_t* pb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[WWW: GET]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[WWW: GET]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T(""), sz_object, -1);
 	}
 
 	if (!xfile_info(NULL, sz_object, ftime, fsize, fetag, NULL))
@@ -297,9 +297,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[WWW: GET]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[WWW: GET]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -327,9 +327,9 @@ void _invoke_error(const https_block_t* pb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[WWW: ERROR]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[WWW: ERROR]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 }
 

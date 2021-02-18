@@ -60,7 +60,7 @@ extern "C" {
 
 	EXP_API int calc_proper_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link_t_ptr* pent);
 
-	EXP_API void draw_proper(const if_drawing_t* pcanv, link_t_ptr ptr);
+	EXP_API void draw_proper(const drawing_interface* pcanv, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

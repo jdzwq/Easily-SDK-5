@@ -95,7 +95,7 @@ static void _treectrl_reset_page(res_win_t widget)
 	xrect_t xr;
 	xsize_t xs;
 	canvas_t canv;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	widget_get_client_rect(widget, &xr);
 	pw = xr.w;
@@ -839,8 +839,8 @@ void hand_tree_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr = { 0 };
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	if (!ptd->tree)
 		return;
@@ -1274,7 +1274,7 @@ void treectrl_popup_size(res_win_t widget, xsize_t* pse)
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 	int count;
 	canvas_t canv;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	XDL_ASSERT(ptd != NULL);
 

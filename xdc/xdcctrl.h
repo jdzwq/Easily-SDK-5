@@ -3132,7 +3132,7 @@ EXP_API void curvectrl_redraw(res_win_t widget);
 
 EXP_API void curvectrl_set_vector(res_win_t widget, vector_t vt);
 
-EXP_API void curvectrl_get_vector(res_win_t widget, vector_t* pvt);
+EXP_API void curvectrl_get_vector(res_win_t widget, vector_t vt);
 
 /*************************************title control***********************************************************/
 

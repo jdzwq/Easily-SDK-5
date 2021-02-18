@@ -5,9 +5,9 @@
 
 	@author ZhangWenQuan, China ZheJiang HangZhou JianDe, Mail: powersuite@hotmaol.com
 
-	@doc rednet defination document
+	@doc queue defination document
 
-	@module	radobj.h | rad network definition interface file
+	@module	queue.h | queue definition interface file
 
 	@devnote 张文权 2018.01 - 2018.12	v1.0
 ***********************************************************************/
@@ -25,38 +25,41 @@ LICENSE.GPL3 for more details.
 ***********************************************************************/
 
 
-#ifndef _RADOBJ_H
-#define	_RADOBJ_H
+#ifndef _QUEUE_H
+#define	_QUEUE_H
 
 #include "xdldef.h"
-
-#define MSGVER_SIZE		4
-#define MSGHAN_SIZE		32
-
-#define MSGVER_SENSOR		"\x00\x00\x01\x00"
-#define MSGVER_DECTOR		"\x00\x01\x00\x00"
-#define MSGVER_APPLICATION	"\x01\x00\x00\x00"
-#define MSG_CONFIG		_T("config")
-
-typedef struct _rad_hdr_t{
-	byte_t ver[MSGVER_SIZE];
-	sword_t qos;
-	sword_t mid;
-	tchar_t utc[UTC_LEN+1];
-}rad_hdr_t;
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-	EXP_API	dword_t radobj_write(object_t val, const rad_hdr_t* phr, const byte_t* msg, dword_t len);
+	EXP_API queue_t queue_alloc(void);
 
-	EXP_API dword_t radobj_read(object_t val, rad_hdr_t* phr, byte_t* msg, dword_t max);
+	EXP_API void queue_free(queue_t que);
+
+	EXP_API dword_t queue_size(queue_t que);
+
+	EXP_API void queue_copy(queue_t dst, queue_t src);
+
+	EXP_API	dword_t queue_write(queue_t que, message_t msg);
+
+	EXP_API dword_t queue_read(queue_t que, message_t msg);
+
+	EXP_API dword_t queue_peek(queue_t que, message_t msg);
+
+	EXP_API dword_t queue_encode(queue_t que, byte_t* buf, dword_t max);
+
+	EXP_API dword_t queue_decode(queue_t que, const byte_t* data);
+
+#if defined(XDL_SUPPORT_TEST)
+	EXP_API void test_queue(void);
+#endif
 
 #ifdef	__cplusplus
 }
 #endif
 
 
-#endif	/* _RADOBJ_H */
+#endif	/* _QUEUE_H */
 

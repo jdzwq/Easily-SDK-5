@@ -42,8 +42,8 @@ LICENSE.GPL3 for more details.
 
 #define MYSQL_FIELD_SIZE(n)			(n / 3)
 
-typedef struct _db_t{
-	xdb_head head;
+typedef struct _xdb_mysql_context{
+	handle_head head;
 
 	int chs;
 	MYSQL* ctx;
@@ -53,7 +53,7 @@ typedef struct _db_t{
 	int rows;
 	tchar_t err_code[NUM_LEN + 1];
 	tchar_t err_text[ERR_LEN + 1];
-}db_t;
+}xdb_mysql_context;
 
 static void sqltodt(int type, tchar_t* dt)
 {
@@ -198,7 +198,7 @@ static void _raise_stm_error(MYSQL_STMT* stm)
     raise_user_error(err_code, err_text);
 }
 
-static void _db_reset(db_t* pdb)
+static void _db_reset(xdb_mysql_context* pdb)
 {
 	xscpy(pdb->err_code, _T(""));
 	xscpy(pdb->err_text, _T(""));
@@ -206,7 +206,7 @@ static void _db_reset(db_t* pdb)
 	pdb->rows = 0;
 }
 
-static void _db_tran(db_t* pdb)
+static void _xdb_mysql_contextran(xdb_mysql_context* pdb)
 {
 	/*char sql[MIN_SQL_LEN] = { 0 };
 	int len;
@@ -241,7 +241,7 @@ static void _db_tran(db_t* pdb)
 	pdb->trans = 1;
 }
 
-static void _db_commit(db_t* pdb)
+static void _db_commit(xdb_mysql_context* pdb)
 {
 	/*char sql[MIN_SQL_LEN] = { 0 };
 	int len;
@@ -265,7 +265,7 @@ static void _db_commit(db_t* pdb)
 	pdb->trans = 0;
 }
 
-static void _db_rollback(db_t* pdb)
+static void _db_rollback(xdb_mysql_context* pdb)
 {
 	/*char sql[MIN_SQL_LEN] = { 0 };
 	int len;
@@ -337,7 +337,7 @@ xdb_t STDCALL db_open_dsn(const tchar_t* dsnfile)
 
 xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid, const tchar_t* pwd)
 {
-	db_t* pdb = NULL;
+	xdb_mysql_context* pdb = NULL;
 	MYSQL *ctx = NULL;
 
 	char sdrv[MAX_SQL_TOKEN + 1] = { 0 };
@@ -373,7 +373,7 @@ xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid
     
 	mysql_set_character_set(ctx, "utf8");
 
-	pdb = (db_t*)xmem_alloc(sizeof(db_t));
+	pdb = (xdb_mysql_context*)xmem_alloc(sizeof(xdb_mysql_context));
 	pdb->head.tag = _DB_MYSQL;
 
 	pdb->ctx = ctx;
@@ -392,7 +392,7 @@ ONERROR:
 
 void STDCALL db_close(xdb_t db)
 {
-    db_t* pdb = (db_t*)db;
+    xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 	
 	XDL_ASSERT(pdb != NULL);
 
@@ -410,7 +410,7 @@ void STDCALL db_close(xdb_t db)
 
 bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 
 	MYSQL_STMT *stm = NULL;
     MYSQL_BIND bind[1] = {0};
@@ -507,7 +507,7 @@ ONERROR:
 
 bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 
 	MYSQL_STMT *stm = NULL;
     my_ulonglong row;
@@ -539,7 +539,7 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
         raise_user_error(_T("-1"), _T("Alloc stm handle failed"));
     }
 
-	_db_tran(pdb);
+	_xdb_mysql_contextran(pdb);
 
 	rows = 0;
 	total = 0;
@@ -640,7 +640,7 @@ ONERROR:
 
 bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 	
     MYSQL_STMT *stm = NULL;
     my_ulonglong row;
@@ -667,7 +667,7 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
         raise_user_error(_T("-1"), _T("Alloc stm handle failed"));
     }
 	
-	_db_tran(pdb);
+	_xdb_mysql_contextran(pdb);
 
 	rows = 0;
 	rlk = get_next_row(grid,LINK_FIRST);
@@ -790,7 +790,7 @@ ONERROR:
 	return 0;
 }
 
-int STDCALL _db_fetch_row(db_t* pdb, MYSQL_STMT* stm, LINKPTR grid)
+int STDCALL _db_fetch_row(xdb_mysql_context* pdb, MYSQL_STMT* stm, LINKPTR grid)
 {
 	LINKPTR clk,rlk;
 	
@@ -964,7 +964,7 @@ int STDCALL _db_fetch_row(db_t* pdb, MYSQL_STMT* stm, LINKPTR grid)
 
 bool_t STDCALL db_fetch(xdb_t db, LINKPTR grid)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 	
 	MYSQL_STMT *stm = NULL;
 	int rt;
@@ -1067,7 +1067,7 @@ ONERROR:
 
 bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
     
 	LINKPTR clk;
     int sqllen;
@@ -1233,7 +1233,7 @@ ONERROR:
 
 bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 {
-    db_t* pdb = (db_t*)db;
+    xdb_mysql_context* pdb = (xdb_mysql_context*)db;
     
     LINKPTR clk;
     int sqllen;
@@ -1383,7 +1383,7 @@ ONERROR:
     return 0;
 }
 
-int _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_list* parg)
+int _db_call_argv(xdb_mysql_context* pdb, const tchar_t* procname, const tchar_t* fmt, va_list* parg)
 {
     MYSQL_STMT *stm = NULL;
     MYSQL_BIND *bind = NULL;
@@ -1631,7 +1631,7 @@ ONERROR:
 
 int db_call_argv(xdb_t db, const tchar_t* procname, const tchar_t* fmt, ...)
 {
-    db_t* pdb = (db_t*)db;
+    xdb_mysql_context* pdb = (xdb_mysql_context*)db;
     
     va_list arg;
     int rt;
@@ -1645,7 +1645,7 @@ int db_call_argv(xdb_t db, const tchar_t* procname, const tchar_t* fmt, ...)
 
 bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 {
-    db_t* pdb = (db_t*)db;
+    xdb_mysql_context* pdb = (xdb_mysql_context*)db;
     
     MYSQL_STMT *stm = NULL;
     MYSQL_BIND *bind = NULL;
@@ -1883,7 +1883,7 @@ ONERROR:
     return 0;
 }
 //////////////////////////////////////////////////////////////////////////////////////
-bool_t STDCALL _db_prepare(db_t* pdb, const tchar_t* sqlstr)
+bool_t STDCALL _db_prepare(xdb_mysql_context* pdb, const tchar_t* sqlstr)
 {
     int sqllen;
 	char* d_sql = NULL;
@@ -1959,7 +1959,7 @@ ONERROR:
 
 bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
     
     MYSQL_RES  *meta = NULL;
     MYSQL_FIELD *field = NULL;
@@ -2212,7 +2212,7 @@ ONERROR:
 
 bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 
     MYSQL_STMT *stm = NULL;
     MYSQL_BIND *bind = NULL;
@@ -2250,7 +2250,7 @@ bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
         raise_user_error(_T("-1"), _T("Alloc stm handle failed"));
     }
 
-	_db_tran(pdb);
+	_xdb_mysql_contextran(pdb);
 
 	stream_read_utfbom(stream, NULL);
 
@@ -2535,7 +2535,7 @@ ONERROR:
 
 bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
     
     my_ulonglong rows;
     
@@ -2683,7 +2683,7 @@ ONERROR:
 
 int STDCALL db_rows(xdb_t db)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 
 	XDL_ASSERT(pdb != NULL);
 
@@ -2692,7 +2692,7 @@ int STDCALL db_rows(xdb_t db)
 
 int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_mysql_context* pdb = (xdb_mysql_context*)db;
 
 	XDL_ASSERT(pdb != NULL);
 

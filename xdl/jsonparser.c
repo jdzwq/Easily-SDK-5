@@ -101,7 +101,7 @@ typedef struct _MATA{
 
 
 //解析JSON文本
-bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
+bool_t parse_json_doc_from_object(link_t_ptr ptr, opera_interface* pbo)
 {
 	string_t vs_name, vs_val;
 	JSONMATA ma = { 0 };
@@ -138,7 +138,7 @@ bool_t parse_json_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 			xmem_zero((void*)ma.cur, sizeof(ma.cur));
 
 			//读取下一字符
-			pos = (*pbo->pf_read_char)(pbo->obj, pbo->max, ma.bytes, pbo->encode, ma.cur);
+			pos = (*pbo->pf_read_char)(pbo->ctx, pbo->max, ma.bytes, pbo->encode, ma.cur);
 			if (pos <= 0)
 			{
 				ma.cur[0] = _T('\0');
@@ -431,7 +431,7 @@ static int _test_json_item(link_t_ptr nlk)
 		return get_json_item_array(nlk)? JSON_ARRAY_ONCE : JSON_ARRAY_NONE;
 }
 
-bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
+bool_t format_json_doc_to_object(link_t_ptr ptr, opera_interface* pbo)
 {
 	link_t_ptr nlk;
 	link_t_ptr st = NULL;
@@ -444,7 +444,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 	st = create_stack_table();
 
 	pch[0] = _T('{');
-	pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+	pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 	if (pos == C_ERR)
 	{
 		pbo->pos = C_ERR;
@@ -456,7 +456,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 
 	if (pbo->pf_write_carriage)
 	{
-		pos = (*pbo->pf_write_carriage)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+		pos = (*pbo->pf_write_carriage)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -470,7 +470,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 	n = ++indent;
 	while (n-- && pbo->pf_write_indent)
 	{
-		pos = (*pbo->pf_write_indent)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+		pos = (*pbo->pf_write_indent)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -490,7 +490,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			sz_name = get_json_item_name_ptr(nlk);
 
 			pch[0] = _T('\"');
-			pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+			pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 			if (pos == C_ERR)
 			{
 				pbo->pos = C_ERR;
@@ -500,7 +500,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			}
 			pbo->pos += pos;
 
-			pos = (*pbo->pf_write_token)(pbo->obj, pbo->max, pbo->pos, pbo->encode, sz_name, -1);
+			pos = (*pbo->pf_write_token)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, sz_name, -1);
 			if (pos == C_ERR)
 			{
 				pbo->pos = C_ERR;
@@ -510,7 +510,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			}
 			pbo->pos += pos;
 
-			pos = (*pbo->pf_write_token)(pbo->obj, pbo->max, pbo->pos, pbo->encode, _T("\" : "), -1);
+			pos = (*pbo->pf_write_token)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, _T("\" : "), -1);
 			if (pos == C_ERR)
 			{
 				pbo->pos = C_ERR;
@@ -524,7 +524,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 		if (b_ret == JSON_ARRAY_FIRST || b_ret == JSON_ARRAY_ONCE)
 		{
 			pch[0] = _T('[');
-			pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+			pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 			if (pos == C_ERR)
 			{
 				pbo->pos = C_ERR;
@@ -538,7 +538,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 		if (get_dom_first_child_node(nlk))
 		{
 			pch[0] = _T('{');
-			pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+			pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 			if (pos == C_ERR)
 			{
 				pbo->pos = C_ERR;
@@ -550,7 +550,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 
 			if (pbo->pf_write_carriage)
 			{
-				pos = (*pbo->pf_write_carriage)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+				pos = (*pbo->pf_write_carriage)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 				if (pos == C_ERR)
 				{
 					pbo->pos = C_ERR;
@@ -564,7 +564,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			n = ++indent;
 			while (n-- && pbo->pf_write_indent)
 			{
-				pos = (*pbo->pf_write_indent)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+				pos = (*pbo->pf_write_indent)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 				if (pos == C_ERR)
 				{
 					pbo->pos = C_ERR;
@@ -583,7 +583,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 		sz_val = get_json_item_value_ptr(nlk);
 
 		pch[0] = _T('\"');
-		pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+		pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -593,7 +593,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 		}
 		pbo->pos += pos;
 
-		pos = (*pbo->pf_write_token)(pbo->obj, pbo->max, pbo->pos, pbo->encode, sz_val, -1);
+		pos = (*pbo->pf_write_token)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, sz_val, -1);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -604,7 +604,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 		pbo->pos += pos;
 
 		pch[0] = _T('\"');
-		pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+		pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -620,7 +620,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			{
 				if (pbo->pf_write_carriage)
 				{
-					pos = (*pbo->pf_write_carriage)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+					pos = (*pbo->pf_write_carriage)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 					if (pos == C_ERR)
 					{
 						pbo->pos = C_ERR;
@@ -634,7 +634,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 				n = --indent;
 				while (n-- && pbo->pf_write_indent)
 				{
-					pos = (*pbo->pf_write_indent)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+					pos = (*pbo->pf_write_indent)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 					if (pos == C_ERR)
 					{
 						pbo->pos = C_ERR;
@@ -646,7 +646,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 				}
 
 				pch[0] = _T('}');
-				pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+				pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 				if (pos == C_ERR)
 				{
 					pbo->pos = C_ERR;
@@ -663,7 +663,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 				if (get_dom_next_sibling_node(nlk))
 				{
 					pch[0] = _T(',');
-					pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+					pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 					if (pos == C_ERR)
 					{
 						pbo->pos = C_ERR;
@@ -677,7 +677,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			else if (b_ret == JSON_ARRAY_NEXT || b_ret == JSON_ARRAY_FIRST)
 			{
 				pch[0] = _T(',');
-				pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+				pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 				if (pos == C_ERR)
 				{
 					pbo->pos = C_ERR;
@@ -690,7 +690,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 			else if (b_ret == JSON_ARRAY_LAST || b_ret == JSON_ARRAY_ONCE)
 			{
 				pch[0] = _T(']');
-				pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+				pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 				if (pos == C_ERR)
 				{
 					pbo->pos = C_ERR;
@@ -713,7 +713,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 
 	if (pbo->pf_write_carriage)
 	{
-		pos = (*pbo->pf_write_carriage)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+		pos = (*pbo->pf_write_carriage)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -727,7 +727,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 	n = --indent;
 	while (n-- && pbo->pf_write_indent)
 	{
-		pos = (*pbo->pf_write_indent)(pbo->obj, pbo->max, pbo->pos, pbo->encode);
+		pos = (*pbo->pf_write_indent)(pbo->ctx, pbo->max, pbo->pos, pbo->encode);
 		if (pos == C_ERR)
 		{
 			pbo->pos = C_ERR;
@@ -739,7 +739,7 @@ bool_t format_json_doc_to_object(link_t_ptr ptr, if_operator_t* pbo)
 	}
 
 	pch[0] = _T('}');
-	pos = (*pbo->pf_write_char)(pbo->obj, pbo->max, pbo->pos, pbo->encode, pch);
+	pos = (*pbo->pf_write_char)(pbo->ctx, pbo->max, pbo->pos, pbo->encode, pch);
 	if (pos == C_ERR)
 	{
 		pbo->pos = C_ERR;

@@ -217,7 +217,7 @@ void merge_func_return(link_t_ptr dst, link_t_ptr src)
 void import_func_param(link_t_ptr ptr, const variant_t* pv, int n)
 {
 	link_t_ptr nlk;
-	int i;
+	int i, vv;
 
 	clear_func_doc(ptr);
 
@@ -225,42 +225,30 @@ void import_func_param(link_t_ptr ptr, const variant_t* pv, int n)
 	{
 		nlk = insert_func_param(ptr, LINK_LAST);
 
-		switch (pv->vv)
+		vv = variant_get_type(pv[i]);
+
+		switch (vv)
 		{
 		case VV_STRING:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_STRING);
-			set_func_param_text(nlk, pv->string_one, -1);
+			set_func_param_text(nlk, variant_get_string_ptr(pv[i]), -1);
 			break;
 		case VV_BOOL:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_BOOLEAN);
-			set_func_param_boolean(nlk, pv->bool_one);
+			set_func_param_boolean(nlk, variant_get_bool(pv[i]));
 			break;
 		case VV_INT:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_INTEGER);
-			set_func_param_integer(nlk, pv->int_one);
+			set_func_param_integer(nlk, variant_get_int(pv[i]));
 			break;
 		case VV_FLOAT:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_NUMERIC);
-			set_func_param_data_dig(nlk, pv->prec);
-			set_func_param_numeric(nlk, pv->float_one);
+			set_func_param_numeric(nlk, variant_get_float(pv[i]));
 			break;
 		case VV_DOUBLE:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_NUMERIC);
-			set_func_param_data_dig(nlk, pv->prec);
-			set_func_param_numeric(nlk, pv->double_one);
+			set_func_param_numeric(nlk, variant_get_double(pv[i]));
 			break;
-		}
-
-		switch (pv->io)
-		{
-		case IO_INOUT:
-			set_func_param_type(nlk, ATTR_PARAM_TYPE_INPUTOUTPUT);
-			break;
-		case IO_OUT:
-			set_func_param_type(nlk, ATTR_PARAM_TYPE_OUTPUT);
-			break;
-		default:
-			set_func_param_type(nlk, ATTR_PARAM_TYPE_INPUT);
 		}
 	}
 }
@@ -281,39 +269,27 @@ int export_func_param(link_t_ptr ptr, variant_t* pv, int n)
 
 		if (pv && (compare_text(param_type, -1, ATTR_PARAM_TYPE_OUTPUT, -1, 0) == 0 || compare_text(param_type, -1, ATTR_PARAM_TYPE_INPUTOUTPUT, -1, 0) == 0))
 		{
-			variant_to_null(&pv[count]);
-
 			data_type = get_func_param_data_type_ptr(nlk);
 			if (compare_text(data_type, -1, ATTR_DATA_TYPE_STRING, -1, 0) == 0)
 			{
 				len = get_func_param_data_len(nlk);
-				if (len <= 0)
-				{
-					pv[count].string_one = xsclone(get_func_param_text_ptr(nlk));
-					pv[count].size = -1;
-					pv[count].vv = VV_STRING;
-				}
-				else
-				{
-					pv[count].string_one = xsalloc(len + 1);
-					pv[count].size = get_func_param_text(nlk, pv[count].string_one, len);
-					pv[count].vv = VV_STRING;
-				}
+				variant_to_null(pv[count], VV_STRING);
+				variant_from_string(pv[count], get_func_param_text_ptr(nlk), len);
 			}
 			else if (compare_text(data_type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)
 			{
-				pv[count].int_one = get_func_param_integer(nlk);
-				pv[count].vv = VV_INT;
+				variant_to_null(pv[count], VV_INT);
+				variant_set_int(pv[count], get_func_param_integer(nlk));
 			}
 			else if (compare_text(data_type, -1, ATTR_DATA_TYPE_BOOLEAN, -1, 0) == 0)
 			{
-				pv[count].bool_one = get_func_param_boolean(nlk);
-				pv[count].vv = VV_BOOL;
+				variant_to_null(pv[count], VV_BOOL);
+				variant_set_bool(pv[count], get_func_param_boolean(nlk));
 			}
 			else if (compare_text(data_type, -1, ATTR_DATA_TYPE_NUMERIC, -1, 0) == 0)
 			{
-				pv[count].double_one = get_func_param_numeric(nlk);
-				pv[count].vv = VV_DOUBLE;
+				variant_to_null(pv[count], VV_DOUBLE);
+				variant_set_double(pv[count], get_func_param_numeric(nlk));
 			}
 		}
 

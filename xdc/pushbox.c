@@ -157,8 +157,8 @@ void hand_pushbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	ximage_t xi = { 0 };
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -356,7 +356,7 @@ void pushbox_popup_size(res_win_t widget, xsize_t* pxs)
 	pushbox_delta_t* ptd = GETPUSHBOXDELTA(widget);
 	xfont_t xf = { 0 };
 	xsize_t xs;
-	const if_drawing_t* pif = NULL;
+	const drawing_interface* pif = NULL;
 
 	XDL_ASSERT(ptd != NULL);
 

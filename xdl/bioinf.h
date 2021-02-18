@@ -41,9 +41,9 @@ extern "C" {
 /*
 @FUNCTION get_bio_interface: get bio interface.
 @INPUT xhand_t io: the io object.
-@RETURN if_bio_t*: if succeeds return bio interface struct.
+@RETURN bio_interface*: if succeeds return bio interface struct.
 */
-EXP_API bool_t get_bio_interface(xhand_t io, if_bio_t* pio);
+EXP_API bool_t get_bio_interface(xhand_t io, bio_interface* pio);
 
 
 #ifdef	__cplusplus

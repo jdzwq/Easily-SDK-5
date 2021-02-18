@@ -44,7 +44,7 @@ void svg_print_form(link_t_ptr svg, link_t_ptr form, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -71,7 +71,7 @@ void svg_print_grid(link_t_ptr svg, link_t_ptr grid, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -99,7 +99,7 @@ void svg_print_statis(link_t_ptr svg, link_t_ptr statis, int page)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -127,7 +127,7 @@ void svg_print_topog(link_t_ptr svg, link_t_ptr topog)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -155,7 +155,7 @@ void svg_print_dialog(link_t_ptr svg, link_t_ptr dialog)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -183,7 +183,7 @@ void svg_print_diagram(link_t_ptr svg, link_t_ptr diagram)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -210,7 +210,7 @@ void svg_print_plot(link_t_ptr svg, link_t_ptr plot)
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 
 	view = create_svg_visual(svg);
 
@@ -238,7 +238,7 @@ void svg_print_memo(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 	xrect_t xr = { 0 };
 
 	view = create_svg_visual(svg);
@@ -265,7 +265,7 @@ void svg_print_rich(link_t_ptr svg, const xfont_t* pxf, const xface_t* pxa, link
 {
 	visual_t view;
 	canvas_t canv;
-	if_drawing_t ifd = {0};
+	drawing_interface ifd = {0};
 	xrect_t xr = { 0 };
 
 	view = create_svg_visual(svg);

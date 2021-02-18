@@ -1239,7 +1239,7 @@ int hash_table_format_options(link_t_ptr ptr, tchar_t* buf, int max, tchar_t ite
 }
 
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 void test_hash_table()
 {
 	uint32_t i,total = 0;

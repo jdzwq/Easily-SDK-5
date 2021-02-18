@@ -108,7 +108,7 @@ void delete_integer(int** sa, int index)
 }
 
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 
 void test_integer_array()
 {

@@ -42,16 +42,16 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_CONS
 
-typedef struct _console_t{
-	xhand_head head;		//reserved for xhand_t
+typedef struct _cons_context{
+	handle_head head;		//reserved for xhand_t
 
 	res_file_t cons;
 	tchar_t *cname;
-}console_t;
+}cons_context;
 
 xhand_t xcons_alloc()
 {
-	console_t* pst;
+	cons_context* pst;
 	if_cons_t* pif;
 	res_file_t fd;
 	tchar_t cname[PATH_LEN + 1] = { 0 };
@@ -67,7 +67,7 @@ xhand_t xcons_alloc()
 		return NULL;
 	}
 
-	pst = (console_t*)xmem_alloc(sizeof(console_t));
+	pst = (cons_context*)xmem_alloc(sizeof(cons_context));
 	pst->head.tag = _HANDLE_CONS;
 	pst->cons = fd;
 	pst->cname = xsclone(cname);
@@ -77,7 +77,7 @@ xhand_t xcons_alloc()
 
 const tchar_t* xcons_name(xhand_t con)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 
 	XDL_ASSERT(con && con->tag == _HANDLE_CONS);
 
@@ -86,7 +86,7 @@ const tchar_t* xcons_name(xhand_t con)
 
 res_file_t xcons_stdin(xhand_t con)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 
 	XDL_ASSERT(con && con->tag == _HANDLE_CONS);
@@ -100,7 +100,7 @@ res_file_t xcons_stdin(xhand_t con)
 
 res_file_t xcons_stdout(xhand_t con)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 
 	XDL_ASSERT(con && con->tag == _HANDLE_CONS);
@@ -114,7 +114,7 @@ res_file_t xcons_stdout(xhand_t con)
 
 void xcons_free(xhand_t con)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 
 	pif = PROCESS_CONS_INTERFACE;
@@ -138,7 +138,7 @@ void xcons_free(xhand_t con)
 
 bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 
 	pif = PROCESS_CONS_INTERFACE;
@@ -152,7 +152,7 @@ bool_t xcons_sigaction(xhand_t con, PF_SIGHANDLER pf)
 
 bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 	dword_t size;
 
@@ -179,7 +179,7 @@ bool_t xcons_write(xhand_t con, const byte_t* buf, dword_t* pb)
 
 bool_t xcons_flush(xhand_t con)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 
 	pif = PROCESS_CONS_INTERFACE;
@@ -193,7 +193,7 @@ bool_t xcons_flush(xhand_t con)
 
 bool_t xcons_read(xhand_t con, byte_t* buf, dword_t* pb)
 {
-	console_t* pst = TypePtrFromHead(console_t, con);
+	cons_context* pst = TypePtrFromHead(cons_context, con);
 	if_cons_t* pif;
 	dword_t size;
 

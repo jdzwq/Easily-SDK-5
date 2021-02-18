@@ -42,9 +42,9 @@ void default_title_attr(link_t_ptr ptr)
 {
 	set_title_style(ptr, _T("font-size:9;text-align:near;line-align:center;"));
 
-	set_title_item_width(ptr, DEF_TEXT_WIDTH + DEF_ATTR_ICON_SPAN);
+	set_title_item_width(ptr, DEF_TEXT_WIDTH + DEF_ICON_SPAN);
 	set_title_item_height(ptr, 25);
-	set_title_icon_span(ptr, DEF_ATTR_ICON_SPAN);
+	set_title_icon_span(ptr, DEF_ICON_SPAN);
 	set_title_oritation(ptr,ATTR_ORITATION_TOP);
 }
 

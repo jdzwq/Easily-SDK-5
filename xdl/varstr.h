@@ -52,6 +52,21 @@ EXP_API string_t string_alloc(void);
 EXP_API void string_free(string_t vs);
 
 /*
+@FUNCTION string_attach: attach string data buffer.
+@INPUT string_t vs: the string object.
+@INPUT tchar_t* data: the data buffer.
+@RETURN void*: the data buffer.
+*/
+EXP_API void string_attach(string_t vs, tchar_t* data);
+
+/*
+@FUNCTION string_detach: detach string data buffer.
+@INPUT string_t vs: the string object.
+@RETURN tchar_t*: the data buffer.
+*/
+EXP_API tchar_t* string_detach(string_t vs);
+
+/*
 @FUNCTION string_incre: increase string object buffer size.
 @INPUT string_t vs: the string object.
 @INPUT int len: length in characters to increased.
@@ -165,22 +180,6 @@ EXP_API int string_decode(string_t vs, int encode, const byte_t* buf, dword_t si
 @RETURN tchar_t: return string buffer pointer.
 */
 EXP_API tchar_t* string_ensure_buf(string_t vs, int len);
-
-/*
-@FUNCTION string_attach_buf: repleace buffer of the string object
-@INPUT string_t vs: the string object.
-@INPUT tchar_t* buf: the buffer pointer.
-@INPUT int size: the buffer size, not include terminate character.
-@RETURN void: none.
-*/
-EXP_API void string_attach_buf(string_t vs, tchar_t* buf, int size);
-
-/*
-@FUNCTION string_detach_buf: detach buffer of the string object, then the string object is empty.
-@INPUT string_t vs: the string object.
-@RETURN tchar_t*: the buffer pointer if exists, otherwise return NULL.
-*/
-EXP_API tchar_t* string_detach_buf(string_t vs);
 
 /*
 @FUNCTION string_get_char: get a character at position of the string object.

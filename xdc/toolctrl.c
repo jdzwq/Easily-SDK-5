@@ -433,8 +433,8 @@ void hand_tool_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xcolor_t xc_core = { 0 };
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	if (!ptd->tool)
 		return;

@@ -324,7 +324,7 @@ void SQLPanel_OnExecute(res_win_t widget)
 		return;
 	}
 
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 	get_bio_interface(cah, &bio);
 
 	stream_t stm = stream_alloc(&bio);

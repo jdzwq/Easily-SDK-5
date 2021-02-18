@@ -40,18 +40,18 @@ LICENSE.GPL3 for more details.
 /////////////////////////////////////////////////////////////////////////////////////////
 #ifdef XDK_SUPPORT_MEMO_CACHE
 
-typedef struct _cache_t{
-	xhand_head head;		//reserved for xhand_t
+typedef struct _cache_context{
+	handle_head head;		//reserved for xhand_t
 
 	void* cache;
 	dword_t write_bytes;
 	dword_t read_bytes;
-}cache_t;
+}cache_context;
 
 
 xhand_t xcache_open()
 {
-	cache_t* ppi;
+	cache_context* ppi;
 	if_memo_t* pif;
 	void* bh;
 
@@ -67,7 +67,7 @@ xhand_t xcache_open()
 		return NULL;
 	}
 
-	ppi = (cache_t*)xmem_alloc(sizeof(cache_t));
+	ppi = (cache_context*)xmem_alloc(sizeof(cache_context));
 	ppi->head.tag = _HANDLE_CACHE;
 	ppi->cache = bh;
 	ppi->read_bytes = 0;
@@ -78,7 +78,7 @@ xhand_t xcache_open()
 
 void* xcache_handle(xhand_t cache)
 {
-	cache_t* ppi = TypePtrFromHead(cache_t, cache);
+	cache_context* ppi = TypePtrFromHead(cache_context, cache);
 
 	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
 
@@ -87,7 +87,7 @@ void* xcache_handle(xhand_t cache)
 
 void xcache_close(xhand_t cache)
 {
-	cache_t* ppi = TypePtrFromHead(cache_t, cache);
+	cache_context* ppi = TypePtrFromHead(cache_context, cache);
 	if_memo_t* pif;
 
 	XDL_ASSERT(cache && cache->tag == _HANDLE_CACHE);
@@ -103,7 +103,7 @@ void xcache_close(xhand_t cache)
 
 bool_t xcache_read(xhand_t cache, byte_t* buf, dword_t* pb)
 {
-	cache_t* ppt = TypePtrFromHead(cache_t, cache);
+	cache_context* ppt = TypePtrFromHead(cache_context, cache);
 	if_memo_t* pif;
 	dword_t size;
 	bool_t rt;
@@ -137,7 +137,7 @@ bool_t xcache_read(xhand_t cache, byte_t* buf, dword_t* pb)
 
 bool_t xcache_write(xhand_t cache, const byte_t* buf, dword_t* pb)
 {
-	cache_t* ppt = TypePtrFromHead(cache_t, cache);
+	cache_context* ppt = TypePtrFromHead(cache_context, cache);
 	if_memo_t* pif;
 	dword_t size;
 	bool_t rt;

@@ -113,8 +113,8 @@ void xdk_impl_mbcs(if_mbcs_t* pif)
 #ifdef XDK_SUPPORT_ASYNC
 void xdk_impl_async(if_async_t* pif)
 {
-	pif->pf_async_alloc_lapp = _async_alloc_lapp;
-	pif->pf_async_free_lapp = _async_free_lapp;
+	pif->pf_async_init = _async_init;
+	pif->pf_async_uninit = _async_uninit;
 }
 #endif
 

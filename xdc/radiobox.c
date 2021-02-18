@@ -87,7 +87,7 @@ void hand_radiobox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
 	
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 	xpoint_t pt;
 	int hint;
@@ -132,8 +132,8 @@ void hand_radiobox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -196,7 +196,7 @@ res_win_t radiobox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 void radiobox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	radiobox_delta_t* ptd = GETRADIOBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd != NULL);

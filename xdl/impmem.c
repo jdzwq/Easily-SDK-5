@@ -197,29 +197,27 @@ void xmem_free(void* p)
 
 void xmem_zero(void* p, dword_t size)
 {
+	byte_t* pb = (byte_t*)p;
+
 	if(!p || !size)
 		return;
 
-//#ifdef XDL_SUPPORT_MEMO_DUMP
-//	XDL_ASSERT(((link_t_ptr)((byte_t*)p - sizeof(dword_t) - sizeof(link_t)))->tag == lkDebug);
-//#endif
-
 	while (size--)
 	{
-		*(byte_t*)p = 0;
-		p = (byte_t*)p + 1;
+		*(pb++) = 0;
 	}
 }
 
 void xmem_set(void* p, byte_t c, dword_t size)
 {
+	byte_t* pb = (byte_t*)p;
+
 	if (!p || !size)
 		return;
 
 	while (size--)
 	{
-		*(byte_t*)p = c;
-		p = (byte_t*)p + 1;
+		*(pb++) = c;
 	}
 }
 
@@ -239,14 +237,15 @@ void* xmem_clone(void* src,dword_t bytes)
 
 void xmem_copy(void* dest, void* src, dword_t size)
 {
+	byte_t* ps = (byte_t*)src;
+	byte_t* pd = (byte_t*)dest;
+
 	if (!dest || !src)
 		return;
 
 	while (size--)
 	{
-		*(byte_t*)dest = *(byte_t*)src;
-		dest = (byte_t*)dest + 1;
-		src = (byte_t*)src + 1;
+		*(pd++) = *(ps++);
 	}
 }
 

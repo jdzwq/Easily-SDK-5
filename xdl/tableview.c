@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_VIEW
 
-float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr)
+float calc_table_height(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr)
 {
 	float lr,lh, h;
 	xsize_t xs;
@@ -67,7 +67,7 @@ float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface
 	return h;
 }
 
-float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr)
+float calc_table_width(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr)
 {
 	float lw, w;
 	xsize_t xs;
@@ -93,7 +93,7 @@ float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_
 	return w;
 }
 
-void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
+void calc_table_item_rect(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
 {
 	float lr, lh, h, w;
 	xsize_t xs;
@@ -134,7 +134,7 @@ void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xfa
 	pxr->fh = lh;
 }
 
-void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
+void calc_table_item_key_rect(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
 {
 	float fw;
 
@@ -144,7 +144,7 @@ void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const
 	pxr->fw = fw * ratio;
 }
 
-void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
+void calc_table_item_val_rect(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr)
 {
 	float fw;
 
@@ -155,7 +155,7 @@ void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const
 	pxr->fw = fw * (1 - ratio);
 }
 
-int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk)
+int	calc_table_hint(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk)
 {
 	float lr, lh, h;
 	float fw, kw, vw;
@@ -231,7 +231,7 @@ int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* 
 	return hint;
 }
 
-void draw_table(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio)
+void draw_table(const drawing_interface* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio)
 {
 	float lr, lh, h;
 	float kw, vw;

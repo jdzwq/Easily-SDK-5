@@ -88,7 +88,7 @@ EXP_API var_long find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
 */
 EXP_API void enum_ac_table(link_t_ptr ptr, PF_ENUM_AC_TABLE pf, void* pa);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_ac_table();
 #endif
 

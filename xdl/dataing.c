@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_GDI)
 
-void draw_pass(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
+void draw_pass(const drawing_interface* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* txt, int len)
 {
 	tchar_t sz_pass[INT_LEN + 1] = { 0 };
 
@@ -49,7 +49,7 @@ void draw_pass(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, 
 	(*pif->pf_draw_text)(pif->ctx, pxf, pxa, pxr, sz_pass, len);
 }
 
-void draw_data(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
+void draw_data(const drawing_interface* pif, const xfont_t* pxf, const xface_t* pxa, const xrect_t* pxr, const tchar_t* data, int len, int dig, const tchar_t* type, const tchar_t* fmt, bool_t zeronull, bool_t autowrap)
 {
 	tchar_t sz_format[RES_LEN + 1] = { 0 };
 	xdate_t dt = { 0 };

@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 {
 	xhand_t pipe = NULL;
 	stream_t stm = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	unsigned short port = 0;
 	byte_t addr[ADDR_LEN + 1] = { 0 };

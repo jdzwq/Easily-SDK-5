@@ -196,9 +196,11 @@
     <ClInclude Include="..\..\xdl\hintner.h" />
     <ClInclude Include="..\..\xdl\integerarray.h" />
     <ClInclude Include="..\..\xdl\jioning.h" />
+    <ClInclude Include="..\..\xdl\locktable.h" />
     <ClInclude Include="..\..\xdl\numericarray.h" />
     <ClInclude Include="..\..\xdl\plotdoc.h" />
     <ClInclude Include="..\..\xdl\plotview.h" />
+    <ClInclude Include="..\..\xdl\queue.h" />
     <ClInclude Include="..\..\xdl\shaping.h" />
     <ClInclude Include="..\..\xdl\stringarray.h" />
     <ClInclude Include="..\..\xdl\svgbag.h" />
@@ -211,7 +213,7 @@
     <ClInclude Include="..\..\xdl\netssh.h" />
     <ClInclude Include="..\..\xdl\netudp.h" />
     <ClInclude Include="..\..\xdl\properbio.h" />
-    <ClInclude Include="..\..\xdl\radobj.h" />
+    <ClInclude Include="..\..\xdl\message.h" />
     <ClInclude Include="..\..\xdl\srvhttp.h" />
     <ClInclude Include="..\..\xdl\srvpnp.h" />
     <ClInclude Include="..\..\xdl\srvslot.h" />
@@ -345,7 +347,7 @@
     <ClInclude Include="..\..\xdl\expres.h" />
     <ClInclude Include="..\..\xdl\fileinf.h" />
     <ClInclude Include="..\..\xdl\xdlimp.h" />
-    <ClInclude Include="..\..\xdl\impinet.h" />
+    <ClInclude Include="..\..\xdl\impnetf.h" />
     <ClInclude Include="..\..\xdl\xdlinf.h" />
     <ClInclude Include="..\..\xdl\xdlinit.h" />
     <ClInclude Include="..\..\xdl\macro.h" />
@@ -386,6 +388,7 @@
     <ClCompile Include="..\..\xdl\eventdoc.c" />
     <ClCompile Include="..\..\xdl\hintner.c" />
     <ClCompile Include="..\..\xdl\jioning.c" />
+    <ClCompile Include="..\..\xdl\locktable.c" />
     <ClCompile Include="..\..\xdl\metabio.c" />
     <ClCompile Include="..\..\xdl\focusing.c" />
     <ClCompile Include="..\..\xdl\gizmoing.c" />
@@ -394,6 +397,7 @@
     <ClCompile Include="..\..\xdl\numericarray.c" />
     <ClCompile Include="..\..\xdl\plotdoc.c" />
     <ClCompile Include="..\..\xdl\plotview.c" />
+    <ClCompile Include="..\..\xdl\queue.c" />
     <ClCompile Include="..\..\xdl\shaping.c" />
     <ClCompile Include="..\..\xdl\stringarray.c" />
     <ClCompile Include="..\..\xdl\svgbag.c" />
@@ -406,7 +410,7 @@
     <ClCompile Include="..\..\xdl\netssh.c" />
     <ClCompile Include="..\..\xdl\netudp.c" />
     <ClCompile Include="..\..\xdl\properbio.c" />
-    <ClCompile Include="..\..\xdl\radobj.c" />
+    <ClCompile Include="..\..\xdl\message.c" />
     <ClCompile Include="..\..\xdl\srvhttp.c" />
     <ClCompile Include="..\..\xdl\srvpnp.c" />
     <ClCompile Include="..\..\xdl\srvslot.c" />
@@ -529,7 +533,7 @@
     <ClCompile Include="..\..\xdl\filetag.c" />
     <ClCompile Include="..\..\xdl\expres.c" />
     <ClCompile Include="..\..\xdl\fileinf.c" />
-    <ClCompile Include="..\..\xdl\impinet.c" />
+    <ClCompile Include="..\..\xdl\impnetf.c" />
     <ClCompile Include="..\..\xdl\xdlinit.c" />
     <ClCompile Include="..\..\xdl\macro.c" />
     <ClCompile Include="..\..\xdl\sort.c" />

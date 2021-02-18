@@ -483,9 +483,6 @@
     <ClInclude Include="..\..\xdl\netcoap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\radobj.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\svgbag.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -555,9 +552,6 @@
     <ClInclude Include="..\..\xdl\sort.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xdl\impinet.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xdl\xdlutil.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -595,6 +589,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xdl\miscella.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\impnetf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\locktable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\queue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xdl\message.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1010,9 +1016,6 @@
     <ClCompile Include="..\..\xdl\netcoap.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\radobj.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\svgbag.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1079,9 +1082,6 @@
     <ClCompile Include="..\..\xdl\sort.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xdl\impinet.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xdl\imagesbio.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1113,6 +1113,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xdl\miscella.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\impnetf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\locktable.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\queue.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xdl\message.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

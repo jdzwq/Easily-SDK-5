@@ -309,7 +309,7 @@ bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
 
 bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dword_t size, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
@@ -366,7 +366,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
 		}
 	}
 
-	if (pov) WSAResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) WSAResetEvent(pov->hEvent);
 
 	if (pcb) *pcb = dw;
 	
@@ -375,7 +375,7 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
 
 bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, dword_t size, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
@@ -435,7 +435,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
 		}
 	}
 
-	if (pov) WSAResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) WSAResetEvent(pov->hEvent);
 
 	if (pcb) *pcb = dw;
 
@@ -444,7 +444,7 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
 
 bool_t _socket_send(res_file_t so, void* buf, dword_t len, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
@@ -497,7 +497,7 @@ bool_t _socket_send(res_file_t so, void* buf, dword_t len, async_t* pb)
 		}
 	}
 
-	if (pov) WSAResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) WSAResetEvent(pov->hEvent);
 
 	if (pcb) *pcb = dw;
 
@@ -506,7 +506,7 @@ bool_t _socket_send(res_file_t so, void* buf, dword_t len, async_t* pb)
 
 bool_t _socket_recv(res_file_t so, void* buf, dword_t len, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	ULONG_PTR up = NULL;
@@ -559,7 +559,7 @@ bool_t _socket_recv(res_file_t so, void* buf, dword_t len, async_t* pb)
 		}
 	}
 
-	if (pov) WSAResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) WSAResetEvent(pov->hEvent);
 
 	if (pcb) *pcb = dw;
 
@@ -577,7 +577,7 @@ return (po == INVALID_SOCKET) ? INVALID_FILE : (res_file_t)po;
 
 res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 
 	res_file_t so;
 
@@ -667,7 +667,7 @@ res_file_t _socket_accept(res_file_t ls, res_addr_t saddr, int *plen, async_t* p
 		}
 	}
 
-	if(pov) ResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) ResetEvent(pov->hEvent);
 
 	setsockopt((SOCKET)so, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, (char *)&ls, sizeof(SOCKET));
 

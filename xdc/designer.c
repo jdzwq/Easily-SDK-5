@@ -46,7 +46,7 @@ typedef struct _DESIGNER_CALC{
 	bool_t sizeh;
 	xrect_t rect;
 
-	const if_drawing_t* piv;
+	const drawing_interface* piv;
 }DESIGNER_CALC;
 
 static int _on_hint_calc_focus(int state, link_t_ptr xlk, link_t_ptr ylk, xrect_t* pxr, bool_t focus, bool_t drag, bool_t sizew, bool_t sizeh, void* pp)
@@ -134,8 +134,8 @@ void hand_designer_paint(designer_t* ptd, visual_t rdc)
 	xpen_t xp = { 0 };
 	xcolor_t xc = { 0 };
 
-	if_drawing_t ifv = {0};
-	const if_drawing_t* pif = NULL;
+	drawing_interface ifv = {0};
+	const drawing_interface* pif = NULL;
 
 	widget_get_xpen(ptd->widget, &xp);
 

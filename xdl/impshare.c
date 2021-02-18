@@ -40,8 +40,8 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_SHARE
 
-typedef struct _share_t{
-	xhand_head head;
+typedef struct _share_context{
+	handle_head head;
 
 	res_file_t block;
     
@@ -50,11 +50,11 @@ typedef struct _share_t{
 
     bool_t b_srv;
 	tchar_t* sname;
-}share_t;
+}share_context;
 
 xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size)
 {
-	share_t* ppi;
+	share_context* ppi;
 	if_share_t* pif;
 	res_file_t bh;
 
@@ -70,7 +70,7 @@ xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t hoff, dwo
 		return NULL;
 	}
 
-	ppi = (share_t*)xmem_alloc(sizeof(share_t));
+	ppi = (share_context*)xmem_alloc(sizeof(share_context));
 	ppi->head.tag = _HANDLE_SHARE;
 	ppi->block = bh;
 	ppi->write_bytes = 0;
@@ -81,9 +81,9 @@ xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t hoff, dwo
 	return &ppi->head;
 }
 
-xhand_t xshare_cli(const tchar_t* pname, dword_t size)
+xhand_t xshare_cli(const tchar_t* pname, dword_t size, dword_t fmode)
 {
-	share_t* ppi;
+	share_context* ppi;
 	if_share_t* pif;
 	res_file_t bh;
 
@@ -91,7 +91,7 @@ xhand_t xshare_cli(const tchar_t* pname, dword_t size)
 
 	XDL_ASSERT(pif != NULL);
 
-	bh = (*pif->pf_share_cli)(pname, size);
+	bh = (*pif->pf_share_cli)(pname, size, fmode);
 
 	if (bh == INVALID_FILE)
 	{
@@ -99,7 +99,7 @@ xhand_t xshare_cli(const tchar_t* pname, dword_t size)
 		return NULL;
 	}
 
-	ppi = (share_t*)xmem_alloc(sizeof(share_t));
+	ppi = (share_context*)xmem_alloc(sizeof(share_context));
 	ppi->head.tag = _HANDLE_SHARE;
 	ppi->block = bh;
 	ppi->write_bytes = 0;
@@ -112,7 +112,7 @@ xhand_t xshare_cli(const tchar_t* pname, dword_t size)
 
 res_file_t xshare_handle(xhand_t block)
 {
-	share_t* ppi = TypePtrFromHead(share_t, block);
+	share_context* ppi = TypePtrFromHead(share_context, block);
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);
 
@@ -121,7 +121,7 @@ res_file_t xshare_handle(xhand_t block)
 
 void xshare_close(xhand_t block)
 {
-	share_t* ppi = TypePtrFromHead(share_t, block);
+	share_context* ppi = TypePtrFromHead(share_context, block);
 	if_share_t* pif;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);
@@ -142,7 +142,7 @@ void xshare_close(xhand_t block)
 
 bool_t xshare_read(xhand_t block, byte_t* buf, dword_t* pcb)
 {
-	share_t* ppt = TypePtrFromHead(share_t, block);
+	share_context* ppt = TypePtrFromHead(share_context, block);
 	if_share_t* pif;
 	dword_t size;
 
@@ -168,7 +168,7 @@ bool_t xshare_read(xhand_t block, byte_t* buf, dword_t* pcb)
 
 bool_t xshare_write(xhand_t block, const byte_t* buf, dword_t* pcb)
 {
-	share_t* ppt = TypePtrFromHead(share_t, block);
+	share_context* ppt = TypePtrFromHead(share_context, block);
 	if_share_t* pif;
 	dword_t size;
 
@@ -194,7 +194,7 @@ bool_t xshare_write(xhand_t block, const byte_t* buf, dword_t* pcb)
 
 void* xshare_lock(xhand_t block, dword_t offset, dword_t size)
 {
-	share_t* ppt = TypePtrFromHead(share_t, block);
+	share_context* ppt = TypePtrFromHead(share_context, block);
 	if_share_t* pif;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);
@@ -208,7 +208,7 @@ void* xshare_lock(xhand_t block, dword_t offset, dword_t size)
 
 void xshare_unlock(xhand_t block, dword_t offset, dword_t size, void* p)
 {
-	share_t* ppt = TypePtrFromHead(share_t, block);
+	share_context* ppt = TypePtrFromHead(share_context, block);
 	if_share_t* pif;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_SHARE);

@@ -181,6 +181,49 @@ void format_charset(int encode, tchar_t* buf)
 	}
 }
 
+int compare_float(float f1, float f2, int prec)
+{
+	int c1, c2;
+	int n = 1;
+
+	while (prec >= 0)
+	{
+		n *= 10;
+		prec--;
+	}
+
+	c1 = (int)(f1 * n);
+	c2 = (int)(f2 * n);
+
+	if (c1 > c2)
+		return 1;
+	else if (c1 < c2)
+		return -1;
+	else
+		return 0;
+}
+
+int compare_double(double f1, double f2, int prec)
+{
+	long long c1, c2;
+	int n = 1;
+
+	while (prec >= 0)
+	{
+		n *= 10;
+		prec--;
+	}
+
+	c1 = (long long)(f1 * n);
+	c2 = (long long)(f2 * n);
+
+	if (c1 > c2)
+		return 1;
+	else if (c1 < c2)
+		return -1;
+	else
+		return 0;
+}
 
 int compare_data(const tchar_t* szSrc, const tchar_t* szDes, const tchar_t* datatype)
 {

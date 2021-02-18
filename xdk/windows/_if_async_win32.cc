@@ -33,24 +33,19 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_ASYNC
 
-async_t* _async_alloc_lapp(int type, int ms, res_file_t fd)
+void _async_init(async_t* pas, int type, int ms, res_file_t fd)
 {
-	async_t* pas;
-	LPOVERLAPPED lp;
-
-	pas = (async_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(async_t));
+	LPOVERLAPPED lp = (LPOVERLAPPED)(pas->lapp);
 
 	if (type == ASYNC_EVENT || type == ASYNC_QUEUE)
 	{
-		lp = (LPOVERLAPPED)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(OVERLAPPED));
 		lp->hEvent = CreateEvent(NULL, 1, 0, NULL);
 	}
 	else
 	{
-		lp = NULL;
+		ZeroMemory((void*)lp, sizeof(OVERLAPPED));
 	}
 
-	pas->lapp = (void*)lp;
 	pas->type = type;
 	pas->timo = (ms < 0) ? INFINITE : ms;
 
@@ -60,23 +55,14 @@ async_t* _async_alloc_lapp(int type, int ms, res_file_t fd)
 		pas->port = _queue_create(NULL, fd, 0);
 	}
 #endif
-
-	return pas;
 }
 
-void _async_free_lapp(async_t* pas)
+void _async_uninit(async_t* pas)
 {
-	LPOVERLAPPED lp;
+	LPOVERLAPPED lp = (LPOVERLAPPED)pas->lapp;
 
-	if (pas->lapp)
-	{
-		lp = (LPOVERLAPPED)pas->lapp;
-
-		if (lp->hEvent)
-			CloseHandle(lp->hEvent);
-
-		HeapFree(GetProcessHeap(), 0, pas->lapp);
-	}
+	if (lp->hEvent)
+		CloseHandle(lp->hEvent);
 
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 	if (pas->port)
@@ -84,8 +70,6 @@ void _async_free_lapp(async_t* pas)
 		_queue_destroy(pas->port);
 	}
 #endif
-
-	HeapFree(GetProcessHeap(), 0, pas);
 }
 
 #endif //XDK_SUPPORT_ASYNC

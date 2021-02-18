@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_GDI)
 
-static void _draw_round(const if_drawing_t* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle)
+static void _draw_round(const drawing_interface* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle)
 {
 	xbrush_t xb;
 	xrect_t xr;
@@ -53,7 +53,7 @@ static void _draw_round(const if_drawing_t* pif, const xpen_t* pxp, const xpoint
 	(*pif->pf_draw_ellipse)(pif->ctx, pxp, &xb, &xr);
 }
 
-static void _draw_arrow(const if_drawing_t* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle)
+static void _draw_arrow(const drawing_interface* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle)
 {
 	xbrush_t xb;
 
@@ -123,7 +123,7 @@ static void _draw_arrow(const if_drawing_t* pif, const xpen_t* pxp, const xpoint
 	(*pif->pf_draw_path)(pif->ctx, pxp, &xb, sa, pa, 5);
 }
 
-static void _draw_square(const if_drawing_t* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle)
+static void _draw_square(const drawing_interface* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle)
 {
 	xbrush_t xb;
 
@@ -197,7 +197,7 @@ static void _draw_square(const if_drawing_t* pif, const xpen_t* pxp, const xpoin
 	(*pif->pf_draw_path)(pif->ctx, pxp, &xb, sa, pa, 4);
 }
 
-void draw_linecap(const if_drawing_t* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle, const tchar_t* cap)
+void draw_linecap(const drawing_interface* pif, const xpen_t* pxp, const xpoint_t* pps, const xpoint_t* ppt, double angle, const tchar_t* cap)
 {
 	if (compare_text(cap, -1, GDI_ATTR_STROKE_LINECAP_ARROW, -1, 1) == 0)
 	{

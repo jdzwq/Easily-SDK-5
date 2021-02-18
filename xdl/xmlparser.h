@@ -40,13 +40,13 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	LOC_API bool_t parse_xml_doc_from_object(link_t_ptr ptr, if_operator_t* pbo);
+	LOC_API bool_t parse_xml_doc_from_object(link_t_ptr ptr, opera_interface* pbo);
 
-	LOC_API bool_t parse_dom_doc_from_object(link_t_ptr ptr, if_operator_t* pbo);
+	LOC_API bool_t parse_dom_doc_from_object(link_t_ptr ptr, opera_interface* pbo);
 
-	LOC_API bool_t format_xml_doc_to_object(link_t_ptr ptr, if_operator_t* pbo);
+	LOC_API bool_t format_xml_doc_to_object(link_t_ptr ptr, opera_interface* pbo);
 
-	LOC_API bool_t format_dom_doc_to_object(link_t_ptr ptr, if_operator_t* pbo);
+	LOC_API bool_t format_dom_doc_to_object(link_t_ptr ptr, opera_interface* pbo);
 
 #ifdef	__cplusplus
 }

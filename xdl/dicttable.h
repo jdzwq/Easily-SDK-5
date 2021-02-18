@@ -33,7 +33,6 @@ LICENSE.GPL3 for more details.
 #define _DICTTABLE_H
 
 #include "xdldef.h"
-#include "variant.h"
 
 typedef struct _dict_enum_t{
 	int index;
@@ -98,10 +97,10 @@ EXP_API const variant_t* get_dict_entity_key_ptr(link_t_ptr elk);
 /*
 @FUNCTION get_dict_entity_key: get the dictionary entity key.
 @INPUT link_t_ptr elk: the dictionary entity link component.
-@OUTPUT variant_t* pkey: the variant struct for returning key.
+@OUTPUT variant_t key: the variant struct for returning key.
 @RETURN void: none.
 */
-EXP_API void get_dict_entity_key(link_t_ptr elk, variant_t* pkey);
+EXP_API void get_dict_entity_key(link_t_ptr elk, variant_t key);
 
 /*
 @FUNCTION set_dict_entity_key: set the dictionary entity key.
@@ -245,7 +244,7 @@ EXP_API bool_t read_dict_item(link_t_ptr ptr, variant_t key, object_t val);
 */
 EXP_API const object_t* get_dict_item_ptr(link_t_ptr ptr, variant_t key);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_dict_table();
 #endif
 

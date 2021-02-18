@@ -48,7 +48,7 @@ typedef struct _widget_exten_t{
 		docker_t docker;
 	};
 
-	if_drawing_t* pif;
+	drawing_interface* pif;
 }widget_exten_t;
 
 #define GETEXTENSTRUCT(wt)			(widget_exten_t*)widget_get_core_delta(wt)
@@ -57,7 +57,7 @@ typedef struct _widget_exten_t{
 
 /***********************************************************************************************************************/
 
-const if_drawing_t* widget_get_canvas_interface(res_win_t wt)
+const drawing_interface* widget_get_canvas_interface(res_win_t wt)
 {
 	widget_exten_t* pwt;
 
@@ -133,7 +133,7 @@ void  widget_menu_item_rect(res_win_t wt, int iid, xrect_t* pxr)
 	visual_t rdc;
 	xfont_t xf = { 0 };
 	widget_exten_t* pwt;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	pxr->x = pxr->w = pxr->y = pxr->h = 0;
 
@@ -677,7 +677,7 @@ void widget_hand_create(res_win_t wt)
 	pwt->canv = create_display_canvas(rdc);
 	widget_release_ctx(wt, rdc);
 
-	pwt->pif = (if_drawing_t*)xmem_alloc(sizeof(if_drawing_t));
+	pwt->pif = (drawing_interface*)xmem_alloc(sizeof(drawing_interface));
 	get_canvas_interface(pwt->canv, pwt->pif);
 
 	SETEXTENSTRUCT(wt, pwt);

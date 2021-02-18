@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_GDI
 
-void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_object_text(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, wordscan_interface* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
 	float line_rati;
 	bool_t b_wordbreak = 0;
@@ -65,7 +65,7 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 	int col_at = 0;
 	int page = 0;
 
-	WORDPLACE tm = { 0 };
+	word_place_t tm = { 0 };
 
 	b_wordbreak = (compare_text(pxa->text_wrap, -1, GDI_ATTR_TEXT_WRAP_WORDBREAK, -1, 0) == 0) ? 1 : 0;
 
@@ -96,7 +96,7 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 	tm.cur_x = tm.min_x + tm.char_w;
 	tm.cur_y = tm.min_y + tm.line_h;
 
-	b_paging = (*pit->pf_is_paging)(pit->param);
+	b_paging = (*pit->pf_is_paging)(pit->ctx);
 
 	to = (*pf)(_SCANNER_STATE_BEGIN, NULL, 0, 0, 0, 0, NULL, 0, NULL, 0, -1, 0, &tm, pxf, pxa, pp);
 
@@ -115,7 +115,7 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 		case _SCANNER_OPERA_PAGED:
 			while (to == _SCANNER_OPERA_PAGED)
 			{
-				page = (*pit->pf_next_page)(pit->param);
+				page = (*pit->pf_next_page)(pit->ctx);
 				if (!page)
 				{
 					to = _SCANNER_OPERA_STOP;
@@ -143,7 +143,7 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 			pch = NULL;
 			xs.w = tm.char_w;
 			xs.h = tm.char_h;
-			chs = (*pit->pf_next_word)(pit->param, &pch, &xs, &b_ins, &b_del, &b_sel, &b_atom);
+			chs = (*pit->pf_next_word)(pit->ctx, &pch, &xs, &b_ins, &b_del, &b_sel, &b_atom);
 			if (!chs)
 			{
 				b_cancel = 1;
@@ -155,13 +155,13 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 				chs = xslen(pch);
 			}
 
-			(*pit->pf_cur_object)(pit->param, &obj);
+			(*pit->pf_cur_object)(pit->ctx, &obj);
 
 			break;
 		case _SCANNER_OPERA_INS:
 			xs.w = tm.char_w;
 			xs.h = tm.char_h;
-			if ((*pit->pf_insert_word)(pit->param, sch, &xs))
+			if ((*pit->pf_insert_word)(pit->ctx, sch, &xs))
 			{
 				to = _SCANNER_OPERA_NEXT;
 			}
@@ -171,7 +171,7 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 			}
 			continue;
 		case _SCANNER_OPERA_DEL:
-			if((*pit->pf_delete_word)(pit->param))
+			if((*pit->pf_delete_word)(pit->ctx))
 			{
 				to = _SCANNER_OPERA_NEXT;
 			}
@@ -362,9 +362,9 @@ void scan_object_text(const if_measure_t* pif, const xfont_t* pxf, const xface_t
 
 			break;
 		case _SCANNER_STATE_NEWPAGE:
-			if ((*pit->pf_break_page)(pit->param))
+			if ((*pit->pf_break_page)(pit->ctx))
 			{
-				page = (*pit->pf_next_page)(pit->param);
+				page = (*pit->pf_next_page)(pit->ctx);
 				
 				tm.cur_x = tm.min_x + tm.char_w;
 				tm.cur_y = tm.min_y + tm.line_h;

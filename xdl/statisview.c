@@ -460,7 +460,7 @@ int calc_statis_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* 
 	return hint;
 }
 
-void draw_statis_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
+void draw_statis_page(const drawing_interface* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr xlk_first, xlk_last, ylk, xlk, xlk_pre, glk;
 	float px, py, pw, ph;

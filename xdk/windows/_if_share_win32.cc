@@ -108,11 +108,34 @@ void _share_close(const tchar_t* fname, res_file_t fh)
 	CloseHandle(fh);
 }
 
-res_file_t _share_cli(const tchar_t* fname, dword_t size)
+res_file_t _share_cli(const tchar_t* fname, dword_t size, dword_t fmode)
 {
 	HANDLE hp;
+	dword_t dwAccess = 0;
 
-	hp = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, size, fname);
+	if (fmode & FILE_OPEN_APPEND)
+	{
+		dwAccess = FILE_MAP_READ | FILE_MAP_WRITE;
+	}
+	else if (fmode & FILE_OPEN_CREATE)
+	{
+		dwAccess = FILE_MAP_READ | FILE_MAP_WRITE;
+	}
+	else if (fmode & FILE_OPEN_WRITE)
+	{
+		dwAccess = FILE_MAP_READ | FILE_MAP_WRITE;
+	}
+	else
+	{
+		dwAccess = FILE_MAP_READ;
+	}
+
+	hp = OpenFileMapping(dwAccess, FALSE, fname);
+
+	if (!hp && ((fmode & FILE_OPEN_CREATE) || (fmode & FILE_OPEN_APPEND)))
+	{
+		hp = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_RESERVE, 0, size, fname);
+	}
 
 	return (hp) ? hp : INVALID_FILE;
 }
@@ -141,7 +164,11 @@ bool_t _share_write(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t
 		return 0;
 	}
 
+	VirtualAlloc(pBase, dlen, MEM_COMMIT, PAGE_READWRITE);
+
 	CopyMemory((void*)((char*)pBase + poff), buf, (SIZE_T)size);
+
+	VirtualFree(pBase, dlen, MEM_DECOMMIT);
 
 	UnmapViewOfFile(pBase);
 
@@ -174,9 +201,13 @@ bool_t _share_read(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t*
 		return 0;
 	}
 
+	VirtualAlloc(pBase, dlen, MEM_COMMIT, PAGE_READWRITE);
+
 	CopyMemory(buf, (void*)((char*)pBase + poff), (SIZE_T)size);
 
 	UnmapViewOfFile(pBase);
+
+	VirtualFree(pBase, dlen, MEM_DECOMMIT);
 
 	if (pcb) *pcb = size;
 
@@ -199,13 +230,18 @@ void* _share_lock(res_file_t fh, dword_t off, dword_t size)
 	loff = (off / page_gran) * page_gran;
 	dlen = poff + size;
 
-	pBase = MapViewOfFile(fh, FILE_MAP_READ, 0, loff, dlen);
+	pBase = MapViewOfFile(fh, FILE_MAP_WRITE, 0, loff, dlen);
+	if (!pBase)
+		return NULL;
+
+	VirtualAlloc(pBase, dlen, MEM_COMMIT, PAGE_READWRITE);
 
 	return (pBase) ? (void*)((char*)pBase + poff) : NULL;
 }
 
 void _share_unlock(res_file_t fh, dword_t off, dword_t size, void* p)
 {
+	void* pBase = NULL;
 	DWORD poff,loff;
 	SIZE_T dlen;
 	DWORD page_gran;
@@ -218,8 +254,11 @@ void _share_unlock(res_file_t fh, dword_t off, dword_t size, void* p)
 	poff = (off % page_gran);
 	loff = (off / page_gran) * page_gran;
 	dlen = poff + size;
+	pBase = (void*)((char*)p - poff);
 
-	UnmapViewOfFile((void*)((char*)p - poff));
+	VirtualFree(pBase, dlen, MEM_DECOMMIT);
+
+	UnmapViewOfFile(pBase);
 }
 
 #endif //XDK_SUPPORT_SHARE

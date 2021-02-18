@@ -28,6 +28,7 @@ LICENSE.GPL3 for more details.
 typedef struct _coap_block_t{
 	xhand_t coap;
 
+	bool_t share;
 	tchar_t loca[PATH_LEN + 1];
 }coap_block_t;
 
@@ -82,11 +83,13 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	tchar_t did[UUID_LEN + 1] = { 0 };
 	tchar_t pid[UUID_LEN + 1] = { 0 };
 
-	variant_t key = { 0 };
+	variant_t key = NULL;
 	object_t val = NULL;
 	dword_t len;
 	byte_t* buf = NULL;
-	rad_hdr_t hdr = { 0 };
+	queue_t que = NULL;
+	message_t msg = NULL;
+	msg_hdr_t hdr = { 0 };
 
 	TRY_CATCH;
 
@@ -104,7 +107,7 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkb_create(path, did);
+	hdb = tkb_create(path, did, pd->share);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_get"), _T("open kv database failed"));
@@ -118,15 +121,39 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 
 	if (is_null(pid))
 	{
-		xscpy(pid, MSG_CONFIG);
+		xscpy(pid, ZERO_NUID);
 	}
 
-	key.vv = VV_STRING;
-	variant_from_string(&key, pid, -1);
+	key = variant_alloc(VV_STRING);
+	variant_from_string(key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	tkv_read(hkv, key, val);
+
+	que = queue_alloc();
+
+	if (object_size(val) > 0)
+	{
+		if (!object_get_queue(val, que))
+		{
+			raise_user_error(_T("_invoke_get"), _T("get queue failed"));
+		}
+	}
+
+	msg = message_alloc();
+	queue_read(que, msg);
+
+	object_set_queue(val, que);
+	queue_free(que);
+	que = NULL;
+
+	object_set_commpress(val, 1);
+	tkv_attach(hkv, key, val);
+	val = NULL;
+
+	variant_free(key);
+	key = NULL;
 
 	tkv_destroy(hkv);
 	hkv = NULL;
@@ -134,16 +161,12 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	tkb_destroy(hdb);
 	hdb = NULL;
 
-	len = radobj_read(val, &hdr, NULL, MAX_LONG);
-	
-	buf = (byte_t*)xmem_alloc(len);
+	len = message_read(msg, &hdr, NULL, MAX_LONG);
+	buf = (byte_t*)xmem_alloc(len + 1);
+	message_read(msg, NULL, buf, len);
 
-	radobj_read(val, &hdr, buf, len);
-
-	variant_to_null(&key);
-
-	object_free(val);
-	val = NULL;
+	message_free(msg);
+	msg = NULL;
 
 	if (!xcoap_send(pd->coap, buf, &len))
 	{
@@ -171,13 +194,20 @@ ONERROR:
 	if (hdb)
 		tkb_destroy(hdb);
 
-	if (buf)
-		xmem_free(buf);
-
-	variant_to_null(&key);
+	if (key)
+		variant_free(key);
 
 	if (val)
 		object_free(val);
+
+	if (que)
+		queue_free(que);
+
+	if (msg)
+		message_free(msg);
+
+	if (buf)
+		xmem_free(buf);
 
 	if (pb->ptk)
 	{
@@ -200,13 +230,14 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 	tchar_t did[UUID_LEN + 1] = { 0 };
 	tchar_t pid[UUID_LEN + 1] = { 0 };
 
-	rad_hdr_t hdr = { 0 };
-	xdate_t dt = { 0 };
 	byte_t payload[COAP_PDV_SIZE] = { 0 };
 	dword_t dw;
 
-	variant_t key = { 0 };
+	variant_t key = NULL;
 	object_t val = NULL;
+	queue_t que = NULL;
+	message_t msg = NULL;
+	msg_hdr_t hdr = { 0 };
 
 	TRY_CATCH;
 
@@ -230,7 +261,7 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkb_create(path, did);
+	hdb = tkb_create(path, did, pd->share);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_get"), _T("open kv database failed"));
@@ -244,25 +275,38 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	if (is_null(pid))
 	{
-		xscpy(pid, MSG_CONFIG);
+		xscpy(pid, ZERO_NUID);
 	}
 
-	key.vv = VV_STRING;
-	variant_from_string(&key, pid, -1);
+	hdr.ver = MSGVER_SENSOR;
+	hdr.qos = 1;
+	hdr.seq = xcoap_msgid(pd->coap);
+	hdr.utc = get_timestamp();
+
+	msg = message_alloc();
+	message_write(msg, &hdr, payload, dw);
+
+	que = queue_alloc();
+	queue_write(que, msg);
+
+	message_free(msg);
+	msg = NULL;
+	
+	key = variant_alloc(VV_STRING);
+	variant_from_string(key, pid, -1);
 
 	val = object_alloc(_UTF8);
+	object_set_queue(val, que);
 
-	hdr.mid = xcoap_msgid(pd->coap);
-	xmem_copy((void*)hdr.ver, (void*)MSGVER_SENSOR, MSGVER_SIZE);
-	get_utc_date(&dt);
-	format_utctime(&dt, hdr.utc);
+	queue_free(que);
+	que = NULL;
 
-	radobj_write(val, &hdr, payload, dw);
-
+	object_set_commpress(val, 1);
 	tkv_attach(hkv, key, val);
 	val = NULL;
 
-	variant_to_null(&key);
+	variant_free(key);
+	key = NULL;
 
 	tkv_destroy(hkv);
 	hkv = NULL;
@@ -288,10 +332,17 @@ ONERROR:
 	if (hdb)
 		tkb_destroy(hdb);
 
-	variant_to_null(&key);
+	if (key)
+		variant_free(key);
 
 	if (val)
 		object_free(val);
+
+	if (que)
+		queue_free(que);
+
+	if (msg)
+		message_free(msg);
 
 	if (pb->ptk)
 	{
@@ -314,13 +365,14 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 	tchar_t did[UUID_LEN + 1] = { 0 };
 	tchar_t pid[UUID_LEN + 1] = { 0 };
 
-	xdate_t dt;
-	rad_hdr_t hdr = { 0 };
 	byte_t* payload = NULL;
 	dword_t dw, total = 0;
 
-	variant_t key = { 0 };
+	variant_t key = NULL;
 	object_t val = NULL;
+	queue_t que = NULL;
+	message_t msg = NULL;
+	msg_hdr_t hdr = { 0 };
 
 	TRY_CATCH;
 
@@ -338,7 +390,7 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkb_create(path, did);
+	hdb = tkb_create(path, did, pd->share);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_put"), _T("open kv database failed"));
@@ -352,7 +404,7 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	if (is_null(pid))
 	{
-		xscpy(pid, MSG_CONFIG);
+		xscpy(pid, ZERO_NUID);
 	}
 
 	total = 0;
@@ -373,24 +425,46 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 		payload = (byte_t*)xmem_realloc(payload, total + COAP_PDV_SIZE);
 	}
 
-	key.vv = VV_STRING;
-	variant_from_string(&key, pid, -1);
+	key = variant_alloc(VV_STRING);
+	variant_from_string(key, pid, -1);
 
 	val = object_alloc(_UTF8);
 
 	tkv_read(hkv, key, val);
 
-	hdr.mid = xcoap_msgid(pd->coap);
-	xmem_copy((void*)hdr.ver, (void*)MSGVER_SENSOR, MSGVER_SIZE);
-	get_utc_date(&dt);
-	format_utctime(&dt, hdr.utc);
+	que = queue_alloc();
 
-	radobj_write(val, &hdr, payload, total);
+	if (object_size(val) > 0)
+	{
+		if (!object_get_queue(val, que))
+		{
+			raise_user_error(_T("_invoke_put"), _T("read queue falied"));
+		}
+	}
 
+	hdr.ver = MSGVER_SENSOR;
+	hdr.qos = 1;
+	hdr.seq = xcoap_msgid(pd->coap);
+	hdr.utc = get_timestamp();
+
+	msg = message_alloc();
+	message_write(msg, &hdr, payload, total);
+
+	queue_write(que, msg);
+
+	message_free(msg);
+	msg = NULL;
+
+	object_set_queue(val, que);
+	queue_free(que);
+	que = NULL;
+	
+	object_set_commpress(val, 1);
 	tkv_attach(hkv, key, val);
 	val = NULL;
 
-	variant_to_null(&key);
+	variant_free(key);
+	key = NULL;
 
 	tkv_destroy(hkv);
 	hkv = NULL;
@@ -414,10 +488,17 @@ ONERROR:
 	if (hdb)
 		tkb_destroy(hdb);
 
-	variant_to_null(&key);
+	if (key)
+		variant_free(key);
 
 	if (val)
 		object_free(val);
+
+	if (que)
+		queue_free(que);
+
+	if (msg)
+		message_free(msg);
 
 	if (pb->ptk)
 	{
@@ -458,7 +539,7 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->loca, cid);
 
-	hdb = tkb_create(path, did);
+	hdb = tkb_create(path, did, pd->share);
 	if (!hdb)
 	{
 		raise_user_error(_T("_invoke_delete"), _T("open kv database failed"));
@@ -472,15 +553,16 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 
 	if (is_null(pid))
 	{
-		xscpy(pid, MSG_CONFIG);
+		xscpy(pid, ZERO_NUID);
 	}
 
-	key.vv = VV_STRING;
-	variant_from_string(&key, pid, -1);
+	key = variant_alloc(VV_STRING);
+	variant_from_string(key, pid, -1);
 
 	tkv_delete(hkv, key);
 
-	variant_to_null(&key);
+	variant_free(key);
+	key = NULL;
 
 	tkv_destroy(hkv);
 	hkv = NULL;
@@ -506,7 +588,8 @@ ONERROR:
 	if (hdb)
 		tkb_destroy(hdb);
 
-	variant_to_null(&key);
+	if (key)
+		variant_free(key);
 
 	if (pb->ptk)
 	{
@@ -545,11 +628,13 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	}
 
 	read_proper(ptr_prop, _T("COAP"), -1, _T("LOCATION"), -1, file, PATH_LEN);
+	read_proper(ptr_prop, _T("COAP"), -1, _T("EXCLUSIVE"), -1, token, INT_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
 	printf_path(pd->loca, file);
+	pd->share = (xstol(token)) ? 0 : 1;
 
 	pd->coap = xcoap_server(pb->port, pb->addr, pb->pack, pb->size);
 	if (!pd->coap)

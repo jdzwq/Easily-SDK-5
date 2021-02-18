@@ -58,7 +58,7 @@ static int _printbox_calc_pages(res_win_t widget)
 	xface_t xa = { 0 };
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
+	const drawing_interface* pif = NULL;
 
 	canv = widget_get_canvas(widget);
 	pif = widget_get_canvas_interface(widget);
@@ -309,8 +309,8 @@ void hand_print_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr = { 0 };
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	if (!ptd->sheet)
 		return;

@@ -153,12 +153,12 @@ typedef struct _if_mbcs_t{
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-typedef async_t*(*PF_ASYNC_ALLOC_LAPP)(int, int, res_file_t);
-typedef void(*PF_ASYNC_FREE_LAPP)(async_t*);
+typedef void(*PF_ASYNC_INIT)(async_t*, int, int, res_file_t);
+typedef void(*PF_ASYNC_UNINIT)(async_t*);
 
 typedef struct _if_async_t{
-	PF_ASYNC_ALLOC_LAPP	pf_async_alloc_lapp;
-	PF_ASYNC_FREE_LAPP	pf_async_free_lapp;
+	PF_ASYNC_INIT	pf_async_init;
+	PF_ASYNC_UNINIT	pf_async_uninit;
 }if_async_t;
 #endif
 
@@ -406,7 +406,7 @@ typedef struct _if_file_t{
 #ifdef XDK_SUPPORT_SHARE
 typedef res_file_t(*PF_SHARE_SRV)(const tchar_t*, const tchar_t*, dword_t, dword_t, dword_t);
 typedef void(*PF_SHARE_CLOSE)(const tchar_t*, res_file_t);
-typedef res_file_t(*PF_SHARE_CLI)(const tchar_t*, dword_t);
+typedef res_file_t(*PF_SHARE_CLI)(const tchar_t*, dword_t, dword_t);
 typedef bool_t(*PF_SHARE_WRITE)(res_file_t, dword_t, void*, dword_t, dword_t*);
 typedef bool_t(*PF_SHARE_READ)(res_file_t, dword_t, void*, dword_t, dword_t*);
 typedef void*(*PF_SHARE_LOCK)(res_file_t, dword_t, dword_t);

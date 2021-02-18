@@ -62,7 +62,7 @@ extern "C" {
 
 	EXP_API void set_trie_node_delta(link_t_ptr node, var_long delta);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_trie_tree();
 #endif
 

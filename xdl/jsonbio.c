@@ -42,14 +42,14 @@ LICENSE.GPL3 for more details.
 
 bool_t parse_json_doc_from_memo(link_t_ptr json, link_t_ptr txt)
 {
-	if_operator_t bo = { 0 };
-	MEMOOBJECT to = { 0 };
+	opera_interface bo = { 0 };
+	memo_opera_context to = { 0 };
 
 	to.txt = txt;
 	to.nlk = NULL;
 	to.len = to.pos = 0;
 
-	bo.obj = (void*)&to;
+	bo.ctx = (void*)&to;
 	bo.max = 0;
 	bo.encode = DEF_UCS;
 	bo.pf_read_char = call_memo_read_char;
@@ -61,14 +61,14 @@ bool_t parse_json_doc_from_memo(link_t_ptr json, link_t_ptr txt)
 
 bool_t format_json_doc_to_memo(link_t_ptr json, link_t_ptr txt)
 {
-	if_operator_t bo = { 0 };
-	MEMOOBJECT to = { 0 };
+	opera_interface bo = { 0 };
+	memo_opera_context to = { 0 };
 
 	to.txt = txt;
 	to.nlk = NULL;
 	to.len = to.pos = 0;
 
-	bo.obj = (void*)&to;
+	bo.ctx = (void*)&to;
 	bo.max = 0;
 	bo.pos = 0;
 	bo.encode = DEF_UCS;
@@ -83,13 +83,13 @@ bool_t format_json_doc_to_memo(link_t_ptr json, link_t_ptr txt)
 
 bool_t parse_json_doc_from_string(link_t_ptr json, string_t vs)
 {
-	if_operator_t bo = { 0 };
+	opera_interface bo = { 0 };
 	STRINGOBJECT to = { 0 };
 
 	to.var = vs;
 	to.pos = 0;
 
-	bo.obj = (void*)&to;
+	bo.ctx = (void*)&to;
 	bo.max = 0;
 	bo.encode = DEF_UCS;
 	bo.pf_read_char = call_string_read_char;
@@ -101,13 +101,13 @@ bool_t parse_json_doc_from_string(link_t_ptr json, string_t vs)
 
 bool_t format_json_doc_to_string(link_t_ptr json, string_t vs)
 {
-	if_operator_t bo = { 0 };
+	opera_interface bo = { 0 };
 	STRINGOBJECT to = { 0 };
 
 	to.var = vs;
 	to.pos = 0;
 
-	bo.obj = (void*)&to;
+	bo.ctx = (void*)&to;
 	bo.max = 0;
 	bo.pos = 0;
 	bo.encode = DEF_UCS;
@@ -120,7 +120,7 @@ bool_t format_json_doc_to_string(link_t_ptr json, string_t vs)
 
 bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t xs)
 {
-	if_operator_t bo = { 0 };
+	opera_interface bo = { 0 };
 	int encode;
 
 	encode = stream_get_encode(xs);
@@ -136,7 +136,7 @@ bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t xs)
 		stream_read_utfbom(xs, NULL);
 	}
 
-	bo.obj = (void*)xs;
+	bo.ctx = (void*)xs;
 	bo.max = 0;
 	bo.encode = encode;
 	bo.pf_read_char = call_stream_read_char;
@@ -150,7 +150,7 @@ bool_t parse_json_doc_from_stream(link_t_ptr json, stream_t xs)
 
 bool_t format_json_doc_to_stream(link_t_ptr json, stream_t xs)
 {
-	if_operator_t bo = { 0 };
+	opera_interface bo = { 0 };
 	int encode;
 
 	encode = stream_get_encode(xs);
@@ -160,7 +160,7 @@ bool_t format_json_doc_to_stream(link_t_ptr json, stream_t xs)
 		stream_write_utfbom(xs, NULL);
 	}
 
-	bo.obj = (void*)xs;
+	bo.ctx = (void*)xs;
 	bo.max = 0;
 	bo.pos = 0;
 	bo.encode = stream_get_encode(xs);
@@ -174,7 +174,7 @@ bool_t format_json_doc_to_stream(link_t_ptr json, stream_t xs)
 
 bool_t parse_json_doc_from_bytes(link_t_ptr json, const byte_t* str, dword_t len, int encode)
 {
-	if_operator_t bo = { 0 };
+	opera_interface bo = { 0 };
 
 	int bytes = 0;
 
@@ -185,7 +185,7 @@ bool_t parse_json_doc_from_bytes(link_t_ptr json, const byte_t* str, dword_t len
 	str += bytes;
 	len -= bytes;
 
-	bo.obj = (void*)str;
+	bo.ctx = (void*)str;
 	bo.max = len;
 	bo.encode = encode;
 	bo.isdom = 1;
@@ -199,7 +199,7 @@ bool_t parse_json_doc_from_bytes(link_t_ptr json, const byte_t* str, dword_t len
 
 dword_t format_json_doc_to_bytes(link_t_ptr json, byte_t* buf, dword_t max, int encode)
 {
-	if_operator_t bo = { 0 };
+	opera_interface bo = { 0 };
 
 	dword_t total = 0;
 
@@ -216,7 +216,7 @@ dword_t format_json_doc_to_bytes(link_t_ptr json, byte_t* buf, dword_t max, int 
 		}
 	}
 
-	bo.obj = (void*)buf;
+	bo.ctx = (void*)buf;
 	bo.max = max;
 	bo.pos = 0;
 	bo.encode = encode;

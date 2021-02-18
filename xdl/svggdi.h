@@ -301,8 +301,8 @@ LOC_API void	svg_text_rect_raw(visual_t view, const xfont_t* pxf, const xface_t*
 LOC_API float	svg_pixel_metric(canvas_t canv, bool_t horz);
 LOC_API float	svg_pixel_metric_raw(visual_t view, bool_t horz);
 
-LOC_API void	svg_get_measure_raw(visual_t view, if_measure_t* pim);
-LOC_API void	svg_get_measure(canvas_t canv, if_measure_t* pim);
+LOC_API void	svg_get_measure_raw(visual_t view, measure_interface* pim);
+LOC_API void	svg_get_measure(canvas_t canv, measure_interface* pim);
 
 /*
 @FUNCTION svg_color_out: output color sequence in svg canvas using millimeter coordinate.

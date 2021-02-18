@@ -46,7 +46,7 @@ typedef struct _iconbox_delta_t{
 void _iconbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 	xsize_t xs;
 	canvbox_t cb;
@@ -72,8 +72,8 @@ void _iconbox_reset_page(res_win_t widget)
 	xfont_t xf;
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_measure_t im = { 0 };
+	const drawing_interface* pif = NULL;
+	measure_interface im = { 0 };
 
 	canv = widget_get_canvas(widget);
 	pif = widget_get_canvas_interface(widget);
@@ -159,7 +159,7 @@ void hand_iconbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 void hand_iconbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 	xpoint_t pt;
 	xsize_t xs;
@@ -204,8 +204,8 @@ void hand_iconbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -314,7 +314,7 @@ void iconbox_get_item_rect(res_win_t widget, const tchar_t* key, xrect_t* pxr)
 void iconbox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	iconbox_delta_t* ptd = GETICONBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd != NULL);

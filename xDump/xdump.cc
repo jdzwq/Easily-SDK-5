@@ -45,10 +45,10 @@ int main(int argc, char* argv[])
 	}
 
 	stream_t stm_src = NULL;
-	if_bio_t bio_src = { 0 };
-	if_bio_t bio_dst = { 0 };
+	bio_interface bio_src = { 0 };
+	bio_interface bio_dst = { 0 };
 
-	if_fio_t* xf_src = xfile_open(NULL, sz_src, FILE_OPEN_READ);
+	file_t xf_src = xfile_open(NULL, sz_src, FILE_OPEN_READ);
 	if (xf_src)
 	{
 		if (is_null(sz_tag))
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 			}
 			else if (compare_text(sz_ext, -1, _T("txt"), -1, 1) == 0)
 			{
-				if_fio_t* xf_dst = xfile_open(NULL, sz_dst, FILE_OPEN_CREATE);
+				file_t xf_dst = xfile_open(NULL, sz_dst, FILE_OPEN_CREATE);
 				if (xf_dst)
 				{
 					get_bio_interface(xf_dst->fd, &bio_dst);

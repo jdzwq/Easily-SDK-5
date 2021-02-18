@@ -195,7 +195,7 @@ link_t_ptr topog_doc_from_spot(link_t_ptr ilk)
 bool_t set_topog_matrix_value(link_t_ptr ptr, int row, int col, double v)
 {
 	int rows, cols;
-	matrix_t* mt;
+	matrix_t mt;
 	int len;
 	tchar_t* buf;
 
@@ -229,7 +229,7 @@ bool_t set_topog_matrix_value(link_t_ptr ptr, int row, int col, double v)
 double get_topog_matrix_value(link_t_ptr ptr, int row, int col)
 {
 	int rows, cols;
-	matrix_t* mt;
+	matrix_t mt;
 	double v;
 
 	rows = get_topog_rows(ptr);

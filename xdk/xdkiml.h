@@ -119,8 +119,8 @@ LOC_API void	_utc_date_from_timestamp(xdate_t* pxd, stamp_t ts);
 #endif
 
 #ifdef XDK_SUPPORT_ASYNC
-LOC_API async_t* _async_alloc_lapp(int type, int ms, res_file_t fd);
-LOC_API void	_async_free_lapp(async_t* pas);
+LOC_API void _async_init(async_t* pas, int type, int ms, res_file_t fd);
+LOC_API void _async_uninit(async_t* pas);
 #endif
 
 #ifdef XDK_SUPPORT_THREAD
@@ -250,7 +250,7 @@ LOC_API void _file_find_close(res_find_t ff);
 #ifdef XDK_SUPPORT_SHARE
 LOC_API res_file_t _share_srv(const tchar_t* sname, const tchar_t* fpath, dword_t hoff, dword_t loff, dword_t size);
 LOC_API void	_share_close(const tchar_t* sname, res_file_t bh);
-LOC_API res_file_t	_share_cli(const tchar_t* fname, dword_t size);
+LOC_API res_file_t	_share_cli(const tchar_t* fname, dword_t size, dword_t fmode);
 LOC_API bool_t	_share_write(res_file_t bh, dword_t off, void* buf, dword_t size, dword_t* pcb);
 LOC_API bool_t	_share_read(res_file_t bh, dword_t off, void* buf, dword_t size, dword_t* pcb);
 LOC_API void*	_share_lock(res_file_t fh, dword_t off, dword_t size);

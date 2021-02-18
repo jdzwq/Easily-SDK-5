@@ -348,10 +348,10 @@ static const schar_t* ssh_algo_client[SSH_ALGO_NAMETABLE_SIZE] = {
 #define SSH_METHOD_INDEX_LANGCLIENT		8
 #define SSH_METHOD_INDEX_LANGSERVER		9
 
-typedef struct _ssh_t{
-	xhand_head head;
+typedef struct _ssh_context{
+	handle_head head;
 
-	if_bio_t* pif;
+	bio_interface* pif;
 
 	int type;
 	//server or client handshake state
@@ -442,7 +442,7 @@ typedef struct _ssh_t{
 	byte_t rcv_pdv[SSH_PDV_SIZE];
 	dword_t rcv_pdv_len;
 	dword_t rcv_pdv_pop;
-}ssh_t;
+}ssh_context;
 
 #define SSH_SERVER_STATE_ERROR		-1
 #define SSH_SERVER_STATE_INIT		0
@@ -530,7 +530,7 @@ static int _ssh_ciph_blk_size(const schar_t* ciph_name)
 		return 0;
 }
 
-static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
+static int _ssh_write_packet(ssh_context* pssh, byte_t* payload, dword_t size)
 {
 	dword_t block_len, packet_len, padding_len, payload_len, hmac_len;
 	byte_t num_buf[8], rng_buf[32], mac_buf[128];
@@ -748,7 +748,7 @@ static int _ssh_write_packet(ssh_t* pssh, byte_t* payload, dword_t size)
 
 }
 
-static int _ssh_read_packet(ssh_t* pssh, byte_t** pbuf, dword_t* psize)
+static int _ssh_read_packet(ssh_context* pssh, byte_t** pbuf, dword_t* psize)
 {
 	dword_t packet_len, padding_len, payload_len, hmac_len;
 	byte_t num_buf[8], rng_buf[256], mac_buf[128], rcv_mac[128];
@@ -972,7 +972,7 @@ static byte_t _ssh_packet_msg(const byte_t* payload, dword_t size)
 	return GET_BYTE(payload, 0);
 }
 
-static int _ssh_compress_payload(ssh_t* pssh, byte_t* payload, dword_t* psize)
+static int _ssh_compress_payload(ssh_context* pssh, byte_t* payload, dword_t* psize)
 {
 	dword_t src_len, zip_len;
 	byte_t* zip_buf;
@@ -1012,7 +1012,7 @@ static int _ssh_compress_payload(ssh_t* pssh, byte_t* payload, dword_t* psize)
 	return C_OK;
 }
 
-static int _ssh_uncompress_payload(ssh_t* pssh, byte_t* payload, dword_t* psize)
+static int _ssh_uncompress_payload(ssh_context* pssh, byte_t* payload, dword_t* psize)
 {
 	dword_t src_len, unzip_len;
 	byte_t* unzip_buf;
@@ -1055,7 +1055,7 @@ static int _ssh_uncompress_payload(ssh_t* pssh, byte_t* payload, dword_t* psize)
 
 /*******************************************TRANSPORT PROTOCOL********************************************/
 
-static void _ssh_start_kex_secret(ssh_t* pssh)
+static void _ssh_start_kex_secret(ssh_context* pssh)
 {
 	const schar_t* kex_dh = pssh->alg_method[SSH_METHOD_INDEX_KEXDH];
 
@@ -1085,7 +1085,7 @@ static void _ssh_start_kex_secret(ssh_t* pssh)
 	}
 }
 
-static void _ssh_update_kex_secret(ssh_t* pssh, const byte_t* buf, dword_t len)
+static void _ssh_update_kex_secret(ssh_context* pssh, const byte_t* buf, dword_t len)
 {
 	const schar_t* kex_dh = pssh->alg_method[SSH_METHOD_INDEX_KEXDH];
 
@@ -1107,7 +1107,7 @@ static void _ssh_update_kex_secret(ssh_t* pssh, const byte_t* buf, dword_t len)
 	}
 }
 
-static void _ssh_finish_kex_secret(ssh_t* pssh)
+static void _ssh_finish_kex_secret(ssh_context* pssh)
 {
 	const schar_t* kex_dh = pssh->alg_method[SSH_METHOD_INDEX_KEXDH];
 
@@ -1143,12 +1143,12 @@ static void _ssh_finish_kex_secret(ssh_t* pssh)
 	}
 }
 
-static void _ssh_init(ssh_t* pssh)
+static void _ssh_init(ssh_context* pssh)
 {
 	havege_init(&pssh->rng);
 }
 
-static void _ssh_reset(ssh_t* pssh)
+static void _ssh_reset(ssh_context* pssh)
 {
 	const schar_t* kex_type;
 
@@ -1226,7 +1226,7 @@ static void _ssh_reset(ssh_t* pssh)
 	xmem_zero((void*)&(pssh->kex_dhm), sizeof(dhm_context));
 }
 
-static void _ssh_uninit(ssh_t* pssh)
+static void _ssh_uninit(ssh_context* pssh)
 {
 	_ssh_reset(pssh);
 
@@ -1255,7 +1255,7 @@ static void _ssh_uninit(ssh_t* pssh)
 	}
 }
 
-static int _ssh_send_banner(ssh_t* pssh)
+static int _ssh_send_banner(ssh_context* pssh)
 {
 	dword_t n;
 	byte_t* buf;
@@ -1288,7 +1288,7 @@ static int _ssh_send_banner(ssh_t* pssh)
 	return C_OK;
 }
 
-static int _ssh_recv_banner(ssh_t* pssh)
+static int _ssh_recv_banner(ssh_context* pssh)
 {
 	dword_t n;
 	byte_t* buf;
@@ -1322,7 +1322,7 @@ static int _ssh_recv_banner(ssh_t* pssh)
 	return C_OK;
 }
 
-static dword_t _ssh_format_kexinit(ssh_t* pssh, byte_t* buf, dword_t max)
+static dword_t _ssh_format_kexinit(ssh_context* pssh, byte_t* buf, dword_t max)
 {
 	dword_t n, total = 0;
 	schar_t** nametable;
@@ -1397,7 +1397,7 @@ static dword_t _ssh_format_kexinit(ssh_t* pssh, byte_t* buf, dword_t max)
 	return total;
 }
 
-static bool_t _ssh_parse_kexinit(ssh_t* pssh, const byte_t* buf, dword_t len)
+static bool_t _ssh_parse_kexinit(ssh_context* pssh, const byte_t* buf, dword_t len)
 {
 	byte_t msg;
 	dword_t n, total = 0;
@@ -1538,7 +1538,7 @@ static bool_t _ssh_parse_kexinit(ssh_t* pssh, const byte_t* buf, dword_t len)
 	return (total == len)? 1 : 0;
 }
 
-static int _ssh_send_kexinit(ssh_t* pssh)
+static int _ssh_send_kexinit(ssh_context* pssh)
 {
 	dword_t n;
 	byte_t* buf;
@@ -1569,7 +1569,7 @@ static int _ssh_send_kexinit(ssh_t* pssh)
 	return C_OK;
 }
 
-static int _ssh_recv_kexinit(ssh_t* pssh)
+static int _ssh_recv_kexinit(ssh_context* pssh)
 {
 	byte_t** pp = NULL;
 	dword_t n = 0;
@@ -1617,7 +1617,7 @@ static int _ssh_recv_kexinit(ssh_t* pssh)
 	return C_OK;
 }
 
-static bool_t _ssh_make_dh(ssh_t* pssh)
+static bool_t _ssh_make_dh(ssh_context* pssh)
 {
 	const schar_t* kex_dh;
 	const schar_t* kex_sec;
@@ -1697,7 +1697,7 @@ static bool_t _ssh_make_dh(ssh_t* pssh)
 	return 1;
 }
 
-static dword_t _ssh_format_dhinit(ssh_t* pssh, byte_t* buf, dword_t max)
+static dword_t _ssh_format_dhinit(ssh_context* pssh, byte_t* buf, dword_t max)
 {
 	dword_t n, total = 0;
 
@@ -1731,7 +1731,7 @@ static dword_t _ssh_format_dhinit(ssh_t* pssh, byte_t* buf, dword_t max)
 	return total;
 }
 
-static bool_t _ssh_parse_dhinit(ssh_t* pssh, const byte_t* buf, dword_t len)
+static bool_t _ssh_parse_dhinit(ssh_context* pssh, const byte_t* buf, dword_t len)
 {
 	byte_t msg;
 	dword_t n, total = 0;
@@ -1772,7 +1772,7 @@ static bool_t _ssh_parse_dhinit(ssh_t* pssh, const byte_t* buf, dword_t len)
 	return (total == len)? 1 : 0;
 }
 
-static int _ssh_send_dhinit(ssh_t* pssh)
+static int _ssh_send_dhinit(ssh_context* pssh)
 {
 	byte_t* payload;
 	dword_t n;
@@ -1801,7 +1801,7 @@ static int _ssh_send_dhinit(ssh_t* pssh)
 	return C_OK;
 }
 
-static int _ssh_recv_dhinit(ssh_t* pssh)
+static int _ssh_recv_dhinit(ssh_context* pssh)
 {
 	byte_t** pp = NULL;
 	dword_t n = 0;
@@ -1842,7 +1842,7 @@ static int _ssh_recv_dhinit(ssh_t* pssh)
 }
 
 
-static dword_t _ssh_format_pubkey(ssh_t* pssh, byte_t* buf, dword_t max)
+static dword_t _ssh_format_pubkey(ssh_context* pssh, byte_t* buf, dword_t max)
 {
 	dword_t n, total = 0;
 	const schar_t* kex_type;
@@ -1891,7 +1891,7 @@ static dword_t _ssh_format_pubkey(ssh_t* pssh, byte_t* buf, dword_t max)
 	return total;
 }
 
-static bool_t _ssh_parse_pubkey(ssh_t* pssh, const byte_t* buf, dword_t size)
+static bool_t _ssh_parse_pubkey(ssh_context* pssh, const byte_t* buf, dword_t size)
 {
 	dword_t n, total = 0;
 	schar_t kex_type[RES_LEN + 1] = { 0 };
@@ -1935,7 +1935,7 @@ static bool_t _ssh_parse_pubkey(ssh_t* pssh, const byte_t* buf, dword_t size)
 	return (total == size) ? 1 : 0;
 }
 
-static dword_t _ssh_format_pubsig(ssh_t* pssh, byte_t* buf, dword_t max)
+static dword_t _ssh_format_pubsig(ssh_context* pssh, byte_t* buf, dword_t max)
 {
 	dword_t n, total = 0;
 	const schar_t* kex_type;
@@ -1994,7 +1994,7 @@ static dword_t _ssh_format_pubsig(ssh_t* pssh, byte_t* buf, dword_t max)
 	return total;
 }
 
-static bool_t _ssh_parse_pubsig(ssh_t* pssh, const byte_t* buf, dword_t size)
+static bool_t _ssh_parse_pubsig(ssh_context* pssh, const byte_t* buf, dword_t size)
 {
 	dword_t n, total = 0;
 	schar_t sig_type[RES_LEN + 1] = { 0 };
@@ -2026,7 +2026,7 @@ static bool_t _ssh_parse_pubsig(ssh_t* pssh, const byte_t* buf, dword_t size)
 	return (total == size) ? 1 : 0;
 }
 
-static bool_t _ssh_make_session(ssh_t* pssh)
+static bool_t _ssh_make_session(ssh_context* pssh)
 {
 	byte_t num[4];
 	dword_t n;
@@ -2815,7 +2815,7 @@ static bool_t _ssh_make_session(ssh_t* pssh)
 	return 1;
 }
 
-static dword_t _ssh_format_dhreply(ssh_t* pssh, byte_t* buf, dword_t max)
+static dword_t _ssh_format_dhreply(ssh_context* pssh, byte_t* buf, dword_t max)
 {
 	dword_t n, total = 0;
 
@@ -2898,7 +2898,7 @@ static dword_t _ssh_format_dhreply(ssh_t* pssh, byte_t* buf, dword_t max)
 	return total;
 }
 
-static bool_t _ssh_parse_dhreply(ssh_t* pssh, const byte_t* buf, dword_t len)
+static bool_t _ssh_parse_dhreply(ssh_context* pssh, const byte_t* buf, dword_t len)
 {
 	byte_t msg;
 	dword_t n, total = 0;
@@ -2978,7 +2978,7 @@ static bool_t _ssh_parse_dhreply(ssh_t* pssh, const byte_t* buf, dword_t len)
 	return 1;
 }
 
-static int _ssh_send_dhreply(ssh_t* pssh)
+static int _ssh_send_dhreply(ssh_context* pssh)
 {
 	byte_t* payload;
 	dword_t n;
@@ -3007,7 +3007,7 @@ static int _ssh_send_dhreply(ssh_t* pssh)
 	return C_OK;
 }
 
-static int _ssh_recv_dhreply(ssh_t* pssh)
+static int _ssh_recv_dhreply(ssh_context* pssh)
 {
 	byte_t** pp = NULL;
 	dword_t n = 0;
@@ -3047,7 +3047,7 @@ static int _ssh_recv_dhreply(ssh_t* pssh)
 	return C_OK;
 }
 
-static int _ssh_send_newkeys(ssh_t* pssh)
+static int _ssh_send_newkeys(ssh_context* pssh)
 {
 	byte_t payload[1];
 	dword_t n;
@@ -3063,7 +3063,7 @@ static int _ssh_send_newkeys(ssh_t* pssh)
 	return C_OK;
 }
 
-static int _ssh_recv_newkeys(ssh_t* pssh)
+static int _ssh_recv_newkeys(ssh_context* pssh)
 {
 	byte_t** pp = NULL;
 	dword_t n = 0;
@@ -3090,7 +3090,7 @@ static int _ssh_recv_newkeys(ssh_t* pssh)
 	return (pkt == SSH2_MSG_NEWKEYS)? C_OK : C_ERR;
 }
 
-static bool_t _ssh_handshake_server(ssh_t* pssh)
+static bool_t _ssh_handshake_server(ssh_context* pssh)
 {
 	while (pssh->state != SSH_SERVER_STATE_ERROR && pssh->state != SSH_SERVER_STATE_OK)
 	{
@@ -3167,7 +3167,7 @@ static bool_t _ssh_handshake_server(ssh_t* pssh)
 	return (pssh->state == SSH_SERVER_STATE_OK)? 1 : 0;
 }
 
-static bool_t _ssh_handshake_client(ssh_t* pssh)
+static bool_t _ssh_handshake_client(ssh_context* pssh)
 {
 	while (pssh->state != SSH_CLIENT_STATE_ERROR && pssh->state != SSH_CLIENT_STATE_OK)
 	{
@@ -3247,7 +3247,7 @@ static bool_t _ssh_handshake_client(ssh_t* pssh)
 }
 
 /*********************************************************************************************************/
-static bool_t _ssh_read_data(ssh_t* pssh, byte_t* buf, int* need)
+static bool_t _ssh_read_data(ssh_context* pssh, byte_t* buf, int* need)
 {
 	byte_t** pbuf = NULL;
 	dword_t size = 0;
@@ -3280,7 +3280,7 @@ static bool_t _ssh_read_data(ssh_t* pssh, byte_t* buf, int* need)
 	return 1;
 }
 
-static bool_t _ssh_write_data(ssh_t* pssh, byte_t* buf, int* need)
+static bool_t _ssh_write_data(ssh_context* pssh, byte_t* buf, int* need)
 {
 	if (!(*need))
 		return 1;
@@ -3304,7 +3304,7 @@ static bool_t _ssh_write_data(ssh_t* pssh, byte_t* buf, int* need)
 	return 1;
 }
 
-static bool_t _ssh_flush_data(ssh_t* pssh)
+static bool_t _ssh_flush_data(ssh_context* pssh)
 {
 	if (!pssh->snd_pdv_pop)
 		return 1;
@@ -3324,19 +3324,19 @@ static bool_t _ssh_flush_data(ssh_t* pssh)
 
 xhand_t xssh_cli(unsigned short port, const tchar_t* addr)
 {
-	ssh_t* pso = NULL;
+	ssh_context* pso = NULL;
 	xhand_t tcp;
 
 	tcp = xtcp_cli(port, addr);
 	if (!tcp)
 		return NULL;
 
-	pso = (ssh_t*)xmem_alloc(sizeof(ssh_t));
+	pso = (ssh_context*)xmem_alloc(sizeof(ssh_context));
 	pso->head.tag = _HANDLE_SSH;
 
 	pso->type = SSH_TYPE_CLIENT;
 
-	pso->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pso->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(tcp, pso->pif);
 
 	_ssh_init(pso);
@@ -3346,19 +3346,19 @@ xhand_t xssh_cli(unsigned short port, const tchar_t* addr)
 
 xhand_t xssh_srv(res_file_t so)
 {
-	ssh_t* pso = NULL;
+	ssh_context* pso = NULL;
 	xhand_t tcp;
 
 	tcp = xtcp_srv(so);
 	if (!tcp)
 		return NULL;
 
-	pso = (ssh_t*)xmem_alloc(sizeof(ssh_t));
+	pso = (ssh_context*)xmem_alloc(sizeof(ssh_context));
 	pso->head.tag = _HANDLE_SSH;
 
 	pso->type = SSH_TYPE_SERVER;
 
-	pso->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pso->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(tcp, pso->pif);
 
 	_ssh_init(pso);
@@ -3368,7 +3368,7 @@ xhand_t xssh_srv(res_file_t so)
 
 void  xssh_close(xhand_t ssh)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3387,7 +3387,7 @@ void  xssh_close(xhand_t ssh)
 
 res_file_t xssh_socket(xhand_t ssh)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3396,7 +3396,7 @@ res_file_t xssh_socket(xhand_t ssh)
 
 int xssh_type(xhand_t ssh)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3405,7 +3405,7 @@ int xssh_type(xhand_t ssh)
 
 bool_t xssh_write(xhand_t ssh, const byte_t* buf, dword_t* pb)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 	int bys, pos;
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
@@ -3438,7 +3438,7 @@ bool_t xssh_write(xhand_t ssh, const byte_t* buf, dword_t* pb)
 
 bool_t xssh_flush(xhand_t ssh)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 
@@ -3447,7 +3447,7 @@ bool_t xssh_flush(xhand_t ssh)
 
 bool_t xssh_read(xhand_t ssh, byte_t* buf, dword_t* pb)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 	int bys, pos;
 	bool_t rt = 1;
 
@@ -3484,7 +3484,7 @@ bool_t xssh_read(xhand_t ssh, byte_t* buf, dword_t* pb)
 
 unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
@@ -3498,7 +3498,7 @@ unsigned short xssh_addr_port(xhand_t ssh, tchar_t* addr)
 
 unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
@@ -3512,7 +3512,7 @@ unsigned short xssh_peer_port(xhand_t ssh, tchar_t* addr)
 
 bool_t xssh_setopt(xhand_t ssh, int oid, void* opt, int len)
 {
-	ssh_t* pso = TypePtrFromHead(ssh_t, ssh);
+	ssh_context* pso = TypePtrFromHead(ssh_context, ssh);
 
 	XDL_ASSERT(ssh && ssh->tag == _HANDLE_SSH);
 

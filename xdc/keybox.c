@@ -390,7 +390,7 @@ void hand_keybox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	visual_t rdc;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_get_xbrush(widget, &xb);
 	xmem_copy((void*)&xb_focus, (void*)&xb, sizeof(xbrush_t));

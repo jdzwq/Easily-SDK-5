@@ -41,6 +41,8 @@ LICENSE.GPL3 for more details.
 #define XDL_SUPPORT_GDI
 #define XDL_SUPPORT_VIEW
 
+#define XDL_SUPPORT_TEST
+
 /*CHINA LANGUAGE*/
 #define LANG_CN
 

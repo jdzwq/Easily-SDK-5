@@ -36,11 +36,11 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDL_SUPPORT_DOC
 
-typedef struct _MEMOOBJECT{
+typedef struct _memo_opera_context{
 	link_t_ptr txt, nlk;
 	int len, pos;
 	bool_t eof;
-}MEMOOBJECT;
+}memo_opera_context;
 
 #ifdef	__cplusplus
 extern "C" {

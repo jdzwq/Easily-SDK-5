@@ -116,7 +116,7 @@ visual_t _create_display_context(res_win_t wt)
 	win32_context_t* ctx = NULL;
 
 	ctx = (win32_context_t*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(win32_context_t));
-	ctx->head.tag = _VIEWING_DISPLAY;
+	ctx->head.tag = _VISUAL_DISPLAY;
 
 	if (wt)
 	{

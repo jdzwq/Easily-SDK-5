@@ -38,8 +38,8 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_SOCK)
 
-typedef struct _udp_t{
-	xhand_head head;		//head for xhand_t
+typedef struct _udp_context{
+	handle_head head;		//head for xhand_t
 
 	int type;
 	res_file_t so;
@@ -56,16 +56,16 @@ typedef struct _udp_t{
 	byte_t* rcv_pdu;
 	dword_t rcv_bys;
 	dword_t rcv_ret;
-}udp_t;
+}udp_context;
 
 /*********************************************************************************************/
 
 xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 {
-	udp_t* pudp = NULL;
+	udp_context* pudp = NULL;
 	int zo;
 
-	pudp = (udp_t*)xmem_alloc(sizeof(udp_t));
+	pudp = (udp_context*)xmem_alloc(sizeof(udp_context));
 	pudp->head.tag = _HANDLE_UDP;
 	pudp->type = _XUDP_TYPE_CLI;
 
@@ -84,7 +84,8 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 	zo = 1;
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
-	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
+	pudp->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(pudp->pov, ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->snd_bys = 0;
@@ -98,7 +99,7 @@ xhand_t xudp_cli(unsigned short port, const tchar_t* addr)
 
 xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size)
 {
-	udp_t* pudp = NULL;
+	udp_context* pudp = NULL;
 	int zo;
 
 	if (size > MTU_MAX_SIZE)
@@ -107,7 +108,7 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 		return NULL;
 	}
 
-	pudp = (udp_t*)xmem_alloc(sizeof(udp_t));
+	pudp = (udp_context*)xmem_alloc(sizeof(udp_context));
 	pudp->head.tag = _HANDLE_UDP;
 	pudp->type = _XUDP_TYPE_SRV;
 
@@ -126,7 +127,8 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 	zo = 1;
 	socket_setopt(pudp->so, SO_REUSEADDR, (const char*)&zo, sizeof(int));
 
-	pudp->pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
+	pudp->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(pudp->pov, ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
 
 	pudp->snd_pdu = (byte_t*)xmem_alloc(pudp->pkg_size);
 	pudp->snd_bys = 0;
@@ -147,7 +149,7 @@ xhand_t xudp_srv(unsigned short port, const tchar_t* addr, const byte_t* pack, d
 
 bool_t  xudp_connect(xhand_t udp, unsigned short port, const tchar_t* addr)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	net_addr_t sin = { 0 };
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
@@ -162,7 +164,7 @@ bool_t  xudp_connect(xhand_t udp, unsigned short port, const tchar_t* addr)
 
 bool_t  xudp_bind(xhand_t udp, unsigned short bind)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	net_addr_t sin = { 0 };
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
@@ -174,9 +176,14 @@ bool_t  xudp_bind(xhand_t udp, unsigned short bind)
 
 void  xudp_close(xhand_t udp)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
+
+	if (pudp->so)
+	{
+		socket_close(pudp->so);
+	}
 
 	if (pudp->rcv_pdu)
 		xmem_free(pudp->rcv_pdu);
@@ -184,14 +191,10 @@ void  xudp_close(xhand_t udp)
 	if (pudp->snd_pdu)
 		xmem_free(pudp->snd_pdu);
 
-	if (pudp->so)
-	{
-		socket_close(pudp->so);
-	}
-
 	if (pudp->pov)
 	{
-		async_free_lapp(pudp->pov);
+		async_uninit(pudp->pov);
+		xmem_free(pudp->pov);
 	}
 
 	xmem_free(pudp);
@@ -199,7 +202,7 @@ void  xudp_close(xhand_t udp)
 
 int xudp_type(xhand_t udp)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -208,7 +211,7 @@ int xudp_type(xhand_t udp)
 
 res_file_t xudp_socket(xhand_t udp)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -217,7 +220,7 @@ res_file_t xudp_socket(xhand_t udp)
 
 void xudp_set_package(xhand_t udp, dword_t size)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -233,7 +236,7 @@ void xudp_set_package(xhand_t udp, dword_t size)
 
 dword_t xudp_get_package(xhand_t udp)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -242,7 +245,7 @@ dword_t xudp_get_package(xhand_t udp)
 
 bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	dword_t bys, dw;
 	net_addr_t sin = { 0 };
 	int addr_len;
@@ -290,7 +293,7 @@ bool_t xudp_write(xhand_t udp, const byte_t* buf, dword_t* pb)
 
 bool_t xudp_flush(xhand_t udp)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	dword_t dw;
 	net_addr_t sin = { 0 };
 	int addr_len;
@@ -319,7 +322,7 @@ bool_t xudp_flush(xhand_t udp)
 
 bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	dword_t bys, dw;
 	net_addr_t na = { 0 };
 	int addr_len;
@@ -380,7 +383,7 @@ bool_t xudp_read(xhand_t udp, byte_t* buf, dword_t* pb)
 
 unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
@@ -394,7 +397,7 @@ unsigned short xudp_addr_port(xhand_t udp, tchar_t* addr)
 
 unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
@@ -408,7 +411,7 @@ unsigned short xudp_peer_port(xhand_t udp, tchar_t* addr)
 
 bool_t xudp_setopt(xhand_t udp, int oid, void* opt, int len)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 
@@ -430,7 +433,7 @@ bool_t xudp_setopt(xhand_t udp, int oid, void* opt, int len)
 
 void xudp_settmo(xhand_t udp, dword_t tmo)
 {
-	udp_t* pudp = TypePtrFromHead(udp_t, udp);
+	udp_context* pudp = TypePtrFromHead(udp_context, udp);
 
 	XDL_ASSERT(udp && udp->tag == _HANDLE_UDP);
 

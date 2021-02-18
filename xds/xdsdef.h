@@ -241,6 +241,12 @@ typedef int				wait_t;
 #define GETHBYTE			LIT_GETHBYTE
 #endif
 
+#define GET_THREEBYTE_BIG(buf,off)		(((unsigned int)(buf[off]) << 16) | ((unsigned int)(buf[off+1]) << 8) | (unsigned int)(buf[off+2]))
+#define PUT_THREEBYTE_BIG(buf,off,n)	{buf[off] = (unsigned char)((n) >> 16);buf[off+1] = (unsigned char)((n) >> 8);buf[off+2] = (unsigned char)((n));}
+
+#define GET_THREEBYTE_LIT(buf,off)		(((unsigned int)(buf[off+2]) << 16) | ((unsigned int)(buf[off+1]) << 8) | (unsigned int)(buf[off]))
+#define PUT_THREEBYTE_LIT(buf,off,n)	{buf[off] = (unsigned char)((n));buf[off+1] = (unsigned char)((n) >> 8);buf[off+2] = (unsigned char)((n)>>16);}
+
 #define PUT_BYTE(buf,off,n)			(buf[off] = (unsigned char)((n) & 0xFF))
 #define PUT_SWORD_LIT(buf,off,n)	(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF))
 #define PUT_DWORD_LIT(buf,off,n)	(buf[off] = (unsigned char) ((n) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+3] = (unsigned char) (((n) >> 24) & 0xFF))
@@ -249,7 +255,7 @@ typedef int				wait_t;
 #define PUT_DWORD_BIG(buf,off,n)	(buf[off] = (unsigned char) (((n) >> 24) & 0xFF), buf[off+1] = (unsigned char) (((n) >> 16) & 0xFF), buf[off+2] = (unsigned char) (((n) >> 8) & 0xFF), buf[off+3] = (unsigned char) ((n) & 0xFF))
 #define PUT_LWORD_BIG(buf,off,n)    (PUT_DWORD_BIG(buf,off,BIG_GETLDWORD(n)),PUT_DWORD_BIG(buf,(off+4),BIG_GETHDWORD(n)))
 
-#define GET_BYTE(buf,off)			((unsigned char)(buf[off] & 0xFF))
+#define GET_BYTE(buf,off)			((unsigned char)((buf[off]) & 0xFF))
 #define GET_SWORD_LIT(buf,off)		((((unsigned short)(buf[off + 1]) << 8) & 0xFF00) | ((unsigned short)(buf[off]) & 0x00FF))
 #define GET_DWORD_LIT(buf,off)		((((unsigned int)(buf[off + 3]) << 24) & 0xFF000000) | (((unsigned int)(buf[off + 2]) << 16) & 0x00FF0000)  | (((unsigned int)(buf[off + 1]) << 8) & 0x0000FF00) | ((unsigned int)(buf[off]) & 0x000000FF))
 #define GET_LWORD_LIT(buf,off)      LIT_MAKELWORD(GET_DWORD_LIT(buf,off),GET_DWORD_LIT(buf,(off + 4)))
@@ -263,6 +269,8 @@ typedef int				wait_t;
 #define GET_DWORD_NET		GET_DWORD_BIG
 #define PUT_LWORD_NET		PUT_LWORD_BIG
 #define GET_LWORD_NET		GET_LWORD_BIG
+#define PUT_THREEBYTE_NET	PUT_THREEBYTE_BIG
+#define GET_THREEBYTE_NET	GET_THREEBYTE_BIG
 
 #if BYTE_ORDER == BIG_ENDIAN
 #define PUT_SWORD_LOC		PUT_SWORD_BIG
@@ -271,6 +279,8 @@ typedef int				wait_t;
 #define GET_DWORD_LOC		GET_DWORD_BIG
 #define PUT_LWORD_LOC		PUT_LWORD_BIG
 #define GET_LWORD_LOC		GET_LWORD_BIG
+#define PUT_THREEBYTE_LOC	PUT_THREEBYTE_BIG
+#define GET_THREEBYTE_LOC	GET_THREEBYTE_BIG
 #else
 #define PUT_SWORD_LOC		PUT_SWORD_LIT
 #define GET_SWORD_LOC		GET_SWORD_LIT
@@ -278,6 +288,8 @@ typedef int				wait_t;
 #define GET_DWORD_LOC		GET_DWORD_LIT
 #define PUT_LWORD_LOC		PUT_LWORD_LIT
 #define GET_LWORD_LOC		GET_LWORD_LIT
+#define PUT_THREEBYTE_LOC	PUT_THREEBYTE_LIT
+#define GET_THREEBYTE_LOC	GET_THREEBYTE_LIT
 #endif
 
 #ifdef _OS_64
@@ -480,8 +492,11 @@ typedef int				wait_t;
 /*define max numeric precision*/
 #define MAX_DOUBLE_PREC	18
 #define MAX_DOUBLE_DIGI	6
+#define DEF_DOUBLE_PREC 8
 #define MAX_FLOAT_PREC	12
 #define MAX_FLOAT_DIGI	4
+#define DEF_FLOAT_PREC	6
+
 
 /*define some string token length*/
 #define INT_LEN			16
@@ -529,19 +544,19 @@ typedef int				wait_t;
 #define DEF_MIN_SHADOW		5
 #define DEF_MAX_SHADOW		10
 
+typedef struct _handle_head{
+	byte_t tag; //handle object type
+	byte_t lru[3]; //handle object counter
+}handle_head;
+
 /*visual type*/
-#define _VIEWING_UNKNOWN		0x00
-#define _VIEWING_DISPLAY		0x01
-#define _VIEWING_PRINTER		0x02
-#define _VIEWING_SCRIPT			0x03
+#define _VISUAL_UNKNOWN		0x00
+#define _VISUAL_DISPLAY		0x01
+#define _VISUAL_PRINTER		0x02
+#define _VISUAL_SCRIPT		0x03
 
-typedef struct _visual_head{
-	byte_t tag;
-	byte_t lru[3];
-}visual_head;
-
-typedef visual_head*	 visual_t;
-typedef visual_head*	 bitmap_t;
+typedef struct _handle_head	 *visual_t;
+typedef struct _handle_head	 *bitmap_t;
 
 typedef enum{ _RGB_COLOR, HSL_COLOR, _HEX_COLOR }CLRFMT;
 

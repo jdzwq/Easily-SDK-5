@@ -39,17 +39,17 @@ LICENSE.GPL3 for more details.
 #include "xdldoc.h"
 
 
-if_fio_t* xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
+file_t xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 {
-	if_fio_t* pfn;
+	file_t pfn;
 	byte_t proto;
 
 	proto = parse_proto(file);
 	
-	pfn = (if_fio_t*)xmem_alloc(sizeof(if_fio_t));
+	pfn = (file_t)xmem_alloc(sizeof(file_interface));
 
 	if (IS_INET_FILE(proto))
-		pfn->fd = xinet_open_file(psd, file, mode);
+		pfn->fd = xnetf_open_file(psd, file, mode);
 	else
 		pfn->fd = xuncf_open_file(psd, file, mode);
 
@@ -61,13 +61,13 @@ if_fio_t* xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 
 	if (IS_INET_FILE(proto))
 	{
-		pfn->pf_close = xinet_close_file;
-		pfn->pf_read = xinet_read_file;
-		pfn->pf_read_range = xinet_read_file_range;
-		pfn->pf_write = xinet_write_file;
-		pfn->pf_write_range = xinet_write_file_range;
+		pfn->pf_close = xnetf_close_file;
+		pfn->pf_read = xnetf_read_file;
+		pfn->pf_read_range = xnetf_read_file_range;
+		pfn->pf_write = xnetf_write_file;
+		pfn->pf_write_range = xnetf_write_file_range;
 		pfn->pf_flush = NULL;
-		pfn->pf_setopt = xinet_setopt;
+		pfn->pf_setopt = xnetf_setopt;
 	}
 	else
 	{
@@ -83,7 +83,7 @@ if_fio_t* xfile_open(const secu_desc_t* psd, const tchar_t* file, dword_t mode)
 	return pfn;
 }
 
-bool_t	xfile_read(const if_fio_t* pfn, byte_t* buf, dword_t size)
+bool_t	xfile_read(file_t pfn, byte_t* buf, dword_t size)
 {
 	dword_t nbys, npos = 0;
 	bool_t rt = 1;
@@ -103,7 +103,7 @@ bool_t	xfile_read(const if_fio_t* pfn, byte_t* buf, dword_t size)
 	return rt;
 }
 
-bool_t xfile_write(const if_fio_t* pfn, const byte_t* buf, dword_t size)
+bool_t xfile_write(file_t pfn, const byte_t* buf, dword_t size)
 {
 	dword_t nbys, npos = 0;
 	bool_t rt = 1;
@@ -123,17 +123,17 @@ bool_t xfile_write(const if_fio_t* pfn, const byte_t* buf, dword_t size)
 	return rt;
 }
 
-bool_t xfile_read_range(const if_fio_t* pfn, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
+bool_t xfile_read_range(file_t pfn, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
 	return (*pfn->pf_read_range)(pfn->fd, hoff, loff, buf, size);
 }
 
-bool_t	xfile_write_range(const if_fio_t* pfn, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
+bool_t	xfile_write_range(file_t pfn, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
 	return (*pfn->pf_write_range)(pfn->fd, hoff, loff, buf, size);
 }
 
-bool_t xfile_flush(const if_fio_t* pfn)
+bool_t xfile_flush(file_t pfn)
 {
 	if (pfn->pf_flush)
 	{
@@ -145,7 +145,7 @@ bool_t xfile_flush(const if_fio_t* pfn)
 	}
 }
 
-bool_t xfile_setsince(const if_fio_t* pfn, int fs)
+bool_t xfile_setsince(file_t pfn, int fs)
 {
 	if (pfn->pf_setopt)
 	{
@@ -155,7 +155,7 @@ bool_t xfile_setsince(const if_fio_t* pfn, int fs)
 	return 0;
 }
 
-bool_t xfile_settime(const if_fio_t* pfn, const tchar_t* ftime)
+bool_t xfile_settime(file_t pfn, const tchar_t* ftime)
 {
 	if (pfn->pf_setopt)
 	{
@@ -165,7 +165,7 @@ bool_t xfile_settime(const if_fio_t* pfn, const tchar_t* ftime)
 	return 0;
 }
 
-void xfile_close(if_fio_t* pfn)
+void xfile_close(file_t pfn)
 {
 	if (pfn->fd)
 	{
@@ -187,7 +187,7 @@ bool_t xfile_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, 
 	if (IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_SOCK)
-		return xinet_file_info(psd, fname, ftime, fsize, fetag, fencode);
+		return xnetf_file_info(psd, fname, ftime, fsize, fetag, fencode);
 #else
 		return 0;
 #endif
@@ -216,7 +216,7 @@ bool_t xfile_delete(const secu_desc_t* psd, const tchar_t* fname)
 	if (IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_SOCK)
-		return xinet_delete_file(psd, fname);
+		return xnetf_delete_file(psd, fname);
 #else
 		return 0;
 #endif
@@ -315,8 +315,8 @@ bool_t xfile_copy(const secu_desc_t* psd, const tchar_t* srcfile, const tchar_t*
 	long long l_bytes, l_total = 0;
 
 	byte_t* d_buf = NULL;
-	if_fio_t* d_src = NULL;
-	if_fio_t* d_dest = NULL;
+	file_t d_src = NULL;
+	file_t d_dest = NULL;
 
 	if (!xfile_info(psd, srcfile, ftime, fsize, NULL, NULL))
 		return 0;
@@ -449,7 +449,7 @@ bool_t xfile_list(const secu_desc_t* psd, const tchar_t* path, link_t_ptr ptr)
 	if (IS_INET_FILE(proto))
 	{
 #if defined(XDK_SUPPORT_SOCK) 
-		return xinet_list_file(psd, path, _list_file, (void*)ptr);
+		return xnetf_list_file(psd, path, _list_file, (void*)ptr);
 #else
 		return 0;
 #endif
@@ -571,7 +571,7 @@ bool_t xfile_dump(const secu_desc_t* psd, const tchar_t* path, stream_t stm)
 		if (IS_INET_FILE(proto))
 		{
 #if defined(XDK_SUPPORT_SOCK)
-			b = xinet_list_file(psd, path, _dump_file, (void*)stm);
+			b = xnetf_list_file(psd, path, _dump_file, (void*)stm);
 #endif
 		}
 		if (!IS_INET_FILE(proto))

@@ -612,8 +612,8 @@ void hand_panel_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	panel_delta_t* ptd = GETPANELDELTA(widget);
 	visual_t rdc;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	link_t_ptr ilk,doc;
 	xrect_t xr_icon,xr;

@@ -65,6 +65,8 @@ void xdl_thread_init(int master)
 {
 	if_zone_t* pzn;
 	if_jump_t* pju;
+	if_dump_t* pdu;
+
 	if_memo_t* piv;
 	if_thread_t* pit;
 #ifdef XDK_SUPPORT_MEMO_HEAP
@@ -120,30 +122,37 @@ void xdl_thread_init(int master)
 #endif
 #ifdef XDK_SUPPORT_MEMO_HEAP
 	pju = (if_jump_t*)(*piv->pf_heap_alloc)(heap, sizeof(if_jump_t));
+	pdu = (if_dump_t*)(*piv->pf_heap_alloc)(heap, sizeof(if_dump_t));
 #else
 	pju = (if_jump_t*)(*piv->pf_local_alloc)(sizeof(if_jump_t));
+	pdu = (if_dump_t*)(*piv->pf_local_alloc)(sizeof(if_dump_t));
 #endif
 
 	pju->if_buf = NULL;
 	pju->if_index = -1;
 	pju->if_size = 0;
-	
-#ifdef XDK_SUPPORT_MEMO_HEAP
-	pju->err_buf = (byte_t*)(*piv->pf_heap_alloc)(heap, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
-	pju->err_index = -1;
-#else
-	pju->err_buf = (byte_t*)(*piv->pf_local_alloc)((ERR_BUFF_SIZE * ERR_ITEM_COUNT));
-	pju->err_index = -1;
-#endif
 
 	XDL_ASSERT(g_xdl_mou.tls_thr_jump != 0);
 	(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_jump, (void*)pju);
+	
+#ifdef XDK_SUPPORT_MEMO_HEAP
+	pdu->err_buf = (byte_t*)(*piv->pf_heap_alloc)(heap, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
+	pdu->err_index = -1;
+#else
+	pdu->err_buf = (byte_t*)(*piv->pf_local_alloc)((ERR_BUFF_SIZE * ERR_ITEM_COUNT));
+	pdu->err_index = -1;
+#endif
+
+	XDL_ASSERT(g_xdl_mou.tls_thr_dump != 0);
+	(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_dump, (void*)pdu);
 }
 
 void xdl_thread_uninit(int error)
 {
 	if_zone_t* pzn;
 	if_jump_t* pju;
+	if_dump_t* pdu;
+
 	if_memo_t* piv;
 	if_thread_t* pit;
 #ifdef XDK_SUPPORT_MEMO_HEAP
@@ -191,6 +200,25 @@ void xdl_thread_uninit(int error)
 		return;
 #endif /*XDK_SUPPORT_MEMO_HEAP*/
 
+	if (g_xdl_mou.tls_thr_dump != 0)
+	{
+		pdu = (if_dump_t*)(*pit->pf_thread_get_tls)(g_xdl_mou.tls_thr_dump);
+
+#ifdef XDK_SUPPORT_MEMO_HEAP
+		if (pdu && pdu->err_buf)
+			(*piv->pf_heap_free)(heap, (void*)pdu->err_buf);
+		if (pdu)
+			(*piv->pf_heap_free)(heap, (void*)pdu);
+#else
+		if (pdu && pdu->err_buf)
+			(*piv->pf_local_free)((void*)pdu->err_buf);
+		if (pdu)
+			(*piv->pf_local_free)((void*)pdu);
+#endif
+
+		(*pit->pf_thread_set_tls)(g_xdl_mou.tls_thr_dump, 0);
+	}
+
 	if (g_xdl_mou.tls_thr_jump != 0)
 	{
 		pju = (if_jump_t*)(*pit->pf_thread_get_tls)(g_xdl_mou.tls_thr_jump);
@@ -206,13 +234,9 @@ void xdl_thread_uninit(int error)
 		}
 
 #ifdef XDK_SUPPORT_MEMO_HEAP
-		if (pju->err_buf)
-			(*piv->pf_heap_free)(heap, (void*)pju->err_buf);
 		if(pju)
 			(*piv->pf_heap_free)(heap, (void*)pju);
 #else
-		if (pju->err_buf)
-			(*piv->pf_local_free)((void*)pju->err_buf);
 		if(pju)
 			(*piv->pf_local_free)((void*)pju);
 #endif
@@ -393,6 +417,7 @@ void xdl_process_init(dword_t opt)
 	(*pit->pf_thread_create_tls)(&g_xdl_mou.tls_thr_zero);
 	(*pit->pf_thread_create_tls)(&g_xdl_mou.tls_thr_zone);
 	(*pit->pf_thread_create_tls)(&g_xdl_mou.tls_thr_jump);
+	(*pit->pf_thread_create_tls)(&g_xdl_mou.tls_thr_dump);
 #else
 	pim = PROCESS_MEMO_INTERFACE;
 
@@ -403,10 +428,12 @@ void xdl_process_init(dword_t opt)
 	g_xdl_mou.pif_zone->if_heap = heap;
 
 	g_xdl_mou.pif_jump = (if_jump_t*)(*pim->pf_heap_alloc)(heap, sizeof(if_jump_t));
+	g_xdl_mou.pif_dump = (if_dump_t*)(*pim->pf_heap_alloc)(heap, sizeof(if_dump_t));
 #else
 	g_xdl_mou.pif_zone = (if_zone_t*)(*pim->pf_local_alloc)(sizeof(if_heap_t));
 
 	g_xdl_mou.pif_jump = (if_jump_t*)(*pim->pf_local_alloc)(sizeof(if_jump_t));
+	g_xdl_mou.pif_dump = (if_dump_t*)(*pim->pf_local_alloc)(sizeof(if_dump_t));
 #endif //XDK_SUPPORT_MEMO_HEAP
 
 	g_xdl_mou.pif_jump->if_buf = NULL;
@@ -456,9 +483,13 @@ void xdl_process_uninit()
 
 	//destroy thread id, heap, jump local storage index
 	(*pit->pf_thread_destroy_tls)(g_xdl_mou.tls_thr_zero);
+	g_xdl_mou.tls_thr_zero = 0;
 	(*pit->pf_thread_destroy_tls)(g_xdl_mou.tls_thr_zone);
+	g_xdl_mou.tls_thr_zone = 0;
 	(*pit->pf_thread_destroy_tls)(g_xdl_mou.tls_thr_jump);
-
+	g_xdl_mou.tls_thr_jump = 0;
+	(*pit->pf_thread_destroy_tls)(g_xdl_mou.tls_thr_dump);
+	g_xdl_mou.tls_thr_dump = 0;
 #ifdef XDL_SUPPORT_MEMO_DUMP
 	(*pit->pf_criti_enter)(g_xdl_mou.dump_crit);
 
@@ -474,14 +505,18 @@ void xdl_process_uninit()
 	pim = PROCESS_MEMO_INTERFACE;
 
 #ifdef XDK_SUPPORT_MEMO_HEAP
+	(*pim->pf_heap_free)(g_xdl_mou.pif_zone->if_heap, g_xdl_mou.pif_dump);
+	g_xdl_mou.pif_dump = NULL;
 	(*pim->pf_heap_free)(g_xdl_mou.pif_zone->if_heap, g_xdl_mou.pif_jump);
-	(*pim->pf_heap_free)(g_xdl_mou.pif_zone->if_heap, g_xdl_mou.pif_zone);
 	g_xdl_mou.pif_jump = NULL;
+	(*pim->pf_heap_free)(g_xdl_mou.pif_zone->if_heap, g_xdl_mou.pif_zone);
 	g_xdl_mou.pif_zone = NULL;
 #else
+	(*pim->pf_local_free)(g_xdl_mou.pif_dump);
+	g_xdl_mou.pif_dump = NULL;
 	(*pim->pf_local_free)(g_xdl_mou.pif_jump);
-	(*pim->pf_local_free)(g_xdl_mou.pif_zone);
 	g_xdl_mou.pif_jump = NULL;
+	(*pim->pf_local_free)(g_xdl_mou.pif_zone);
 	g_xdl_mou.pif_heap = NULL;
 #endif //XDK_SUPPORT_MEMO_HEAP
 

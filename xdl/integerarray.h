@@ -94,7 +94,7 @@ EXP_API void insert_integer(int** sa, int index, int val);
 EXP_API void delete_integer(int** sa, int index);
 
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 
 EXP_API void test_integer_array(void);
 

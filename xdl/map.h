@@ -34,81 +34,157 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-typedef struct _map_t{	
-	int bits, rows, cols;
-	dword_t* data;
-}map_t;
-
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
 /*
-@FUNCTION map_size: calc map bytes needed.
-@INPUT int nums: count of number.
-@INPUT int bits: the flag bits.
-@RETURN dword_t: return the bytes needed.
-*/
-EXP_API dword_t map_size(int nums, int bits);
-
-/*
 @FUNCTION map_alloc: alloc a map.
 @INPUT int nums: count of number.
 @INPUT int bits: the flag bits.
-@RETURN map_t*: return map struct.
+@RETURN map_t: return map object.
 */
-EXP_API map_t* map_alloc(int nums, int bits);
+EXP_API map_t map_alloc(int nums, int bits);
 
 /*
 @FUNCTION map_free: free a map.
-@INPUT map_t* pmm: the map struct.
+@INPUT map_t map: the map object.
 @RETURN void: none.
 */
-EXP_API void map_free(map_t* pmm);
+EXP_API void map_free(map_t map);
+
+/*
+@FUNCTION map_clone: clone a map from souce.
+@INPUT const map_t: the source map struct.
+@RETURN map_t: return map struct.
+*/
+EXP_API map_t map_clone(map_t map);
 
 /*
 @FUNCTION map_zero: set flag to zero in map.
-@INPUT map_t* pmm: the map struct.
+@INPUT map_t map: the map object.
 @RETURN void: none.
 */
-EXP_API void map_zero(map_t* pmm);
+EXP_API void map_zero(map_t map);
+
+/*
+@FUNCTION map_calc_size: calc map bytes needed.
+@INPUT int nums: count of number.
+@INPUT int bits: the flag bits.
+@RETURN int: return the bytes needed.
+*/
+EXP_API int map_calc_size(int nums, int bits);
+
+/*
+@FUNCTION map_get_size: get map bytes.
+@INPUT map_t map: the map object.
+@RETURN int: size in bytes.
+*/
+EXP_API int map_size(map_t map);
+
+/*
+@FUNCTION map_get_bits: get map bits.
+@INPUT map_t map: the map object.
+@RETURN int: bits.
+*/
+EXP_API int map_bits(map_t map);
+
+/*
+@FUNCTION map_data: get map data buffer.
+@INPUT map_t map: the map object.
+@RETURN void*: the data buffer.
+*/
+EXP_API void* map_data(map_t map);
+
+/*
+@FUNCTION map_attach: attach map data buffer.
+@INPUT map_t map: the map object.
+@INPUT void* data: the data buffer.
+@RETURN void*: the data buffer.
+*/
+EXP_API void map_attach(map_t map, void* data);
+
+/*
+@FUNCTION map_detach: detach map data buffer.
+@INPUT map_t map: the map object.
+@RETURN void*: the data buffer.
+*/
+EXP_API void* map_detach(map_t map);
 
 /*
 @FUNCTION map_set_bits: set flag.
-@INPUT map_t* pmm: the map struct.
+@INPUT map_t map: the map struct.
 @INPUT int i: the index of number.
-@INPUT byte_t b: the flag value.
+@INPUT byte_t tag: the flag value.
 @RETURN void: none.
 */
-EXP_API void map_set_bits(map_t* pmm, int i, byte_t b);
+EXP_API void map_set_bit(map_t map, int i, byte_t tag);
 
 /*
-@FUNCTION map_get_bits: get flag.
-@INPUT map_t* pmm: the map struct.
+@FUNCTION map_get_bit: get flag.
+@INPUT map_t map: the map struct.
 @INPUT int i: the index of number.
 @RETURN byte_t: return the flag value if exists, otherwise return zero.
 */
-EXP_API byte_t map_get_bits(map_t* pmm, int i);
+EXP_API byte_t map_get_bit(map_t map, int i);
 
 /*
-@FUNCTION map_find_bits: find the flag in map.
-@INPUT map_t* pmm: the map struct.
+@FUNCTION map_find_bit: find the flag in map.
+@INPUT map_t map: the map struct.
 @INPUT int i: the start position.
+@INPUT byte tag: the tag value to seek.
 @RETURN int: return the index if exists, otherwise return C_ERR(-1).
 */
-EXP_API int map_find_bits(map_t* pmm, int i, byte_t b);
+EXP_API int map_find_bit(map_t map, int i, byte_t tag);
 
 /*
-@FUNCTION map_test_bits: find the flag not setted in map.
-@INPUT map_t* pmm: the map struct.
+@FUNCTION map_test_bit: find the flag not setted in map.
+@INPUT map_t map: the map struct.
 @INPUT int i: the start position.
-@INPUT byte_t b: the flag value.
+@INPUT byte_t tag: the flag value.
 @INPUT int n: the find step.
 @RETURN int: return the index if exists, otherwise return C_ERR(-1).
 */
-EXP_API int map_test_bits(map_t* pmm, int i, byte_t b, int n);
+EXP_API int map_test_bit(map_t map, int i, byte_t tag, int n);
 
-#if defined(_DEBUG) || defined(DEBUG)
+/*
+@FUNCTION map_parse: parse map element value from string.
+@INPUT map_t map: the map struct.
+@INPUT const tchar_t* str: string token, number separated by space.
+@INPUT int len: length of string token.
+@RETURN void: none.
+*/
+EXP_API void map_parse(map_t map, const tchar_t* str, int len);
+
+/*
+@FUNCTION map_formap: formap map element to string.
+@INPUT map_t map: the map struct.
+@OUTPUT tchar_t* buf: buffer for formaping.
+@INPUT int max: the buffer size in characters, not include terminate character.
+@RETURN int: return the formaped string token length.
+*/
+EXP_API int map_formap(map_t map, tchar_t* buf, int max);
+
+/*
+@FUNCTION map_encode: encode map object to bytes buffer.
+@INPUT map map: the map object.
+@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
+@OUTPUT byte_t* buf: the bytes buffer.
+@INPUT dword_t max: the buffer size in bytes.
+@RETURN dword_t: return encoded bytes.
+*/
+EXP_API dword_t map_encode(map_t map, int encode, byte_t* buf, dword_t max);
+
+/*
+@FUNCTION map_decode: decode map object from bytes buffer.
+@INPUT map map: the map object.
+@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
+@INPUT const byte_t* buf: the data buffer.
+@INPUT dword_t n: the data size in bytes.
+*/
+EXP_API void map_decode(map_t map, int encode, const byte_t* buf, dword_t n);
+
+#if defined(XDL_SUPPORT_TEST)
 EXP_API void test_map(void);
 #endif
 

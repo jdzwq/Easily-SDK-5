@@ -461,7 +461,7 @@ EXP_API int hash_table_parse_options(link_t_ptr ptr, const tchar_t* str, int len
 */
 EXP_API int hash_table_format_options(link_t_ptr ptr, tchar_t* buf, int max, tchar_t itemfeed, tchar_t linefeed);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_hash_table();
 #endif
 

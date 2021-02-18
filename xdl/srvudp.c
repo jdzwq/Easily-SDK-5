@@ -85,7 +85,6 @@ static udp_listen_t*  _xudp_listen(unsigned short port)
 	plis->so = so;
 	plis->port = port;
 	plis->act = 1;
-	plis->cri = criti_create();
 
 	system_info(&si);
 	plis->res = si.processor_number;
@@ -149,7 +148,7 @@ static unsigned STDCALL process_dispatch(void* param)
 	xhand_t pipe = NULL;
 	stream_t stm = NULL;
 	byte_t num[2] = { 0 };
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	xdl_thread_init(0);
 
@@ -229,17 +228,16 @@ static unsigned STDCALL wait_accept(void* param)
 	int addr_len;
 	udp_accept_t xa = { 0 };
 	dword_t dw;
-
-	async_t* pov = NULL;
+	async_t asy = { 0 };
 
 	xdl_thread_init(0);
 
 	if (plis->res == 1)
 	{
-		pov = async_alloc_lapp(ASYNC_QUEUE, UDP_BASE_TIMO, plis->so);
+		async_init(&asy, ASYNC_QUEUE, UDP_BASE_TIMO, plis->so);
 	}else
 	{
-		pov = async_alloc_lapp(ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
+		async_init(&asy, ASYNC_EVENT, UDP_BASE_TIMO, INVALID_FILE);
 	}
 
 	socket_addr(plis->so, &locaddr);
@@ -248,28 +246,18 @@ static unsigned STDCALL wait_accept(void* param)
 	{
 		addr_len = sizeof(net_addr_t);
 		dw = MTU_MAX_SIZE;
-		pov->size = 0;
+		asy.size = 0;
 
-		if (plis->cri)
-		{
-			criti_enter(plis->cri);
-		}
+		socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, &asy);
 
-		socket_recvfrom(plis->so, (res_addr_t)&rmtaddr, &addr_len, xa.pack, dw, pov);
-
-		if (plis->cri)
-		{
-			criti_leave(plis->cri);
-		}
-
-		if (!pov->size)
+		if (!asy.size)
 		{
             thread_yield();
 			continue;
 		}
 
 		conv_addr(&rmtaddr, &xa.port, xa.addr);
-		xa.size = (dword_t)pov->size;
+		xa.size = (dword_t)asy.size;
 
 		xa.pf_param = plis->pf_param;
 
@@ -301,7 +289,7 @@ static unsigned STDCALL wait_accept(void* param)
 		xmem_zero((void*)&xa, sizeof(udp_accept_t));
 	}
 
-	async_free_lapp(pov);
+	async_uninit(&asy);
 
 	xdl_thread_uninit(0);
 
@@ -377,9 +365,6 @@ void  xudp_stop(udp_listen_t* plis)
 			thread_join(plis->thr[i]);
 		}
 	}
-
-	if (plis->cri)
-		criti_destroy(plis->cri);
 
 	xmem_free(plis->thr);
 

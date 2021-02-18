@@ -1442,11 +1442,11 @@ void set_plot_matrix_data(link_t_ptr ptr, const tchar_t* data, int len)
 	set_dom_node_text(sub, data, len);
 }
 
-void get_plot_matrix(link_t_ptr ptr, matrix_t* pm)
+void get_plot_matrix(link_t_ptr ptr, matrix_t mt)
 {
 	link_t_ptr nlk, sub;
 
-	matrix_reset(pm, get_plot_matrix_rows(ptr), get_plot_matrix_cols(ptr));
+	matrix_reset(mt, get_plot_matrix_rows(ptr), get_plot_matrix_cols(ptr));
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
 	if (!nlk)
@@ -1456,21 +1456,21 @@ void get_plot_matrix(link_t_ptr ptr, matrix_t* pm)
 	if (!sub)
 		return;
 
-	matrix_parse(pm, get_dom_node_text_ptr(sub), -1);
+	matrix_parse(mt, get_dom_node_text_ptr(sub), -1);
 }
 
-void set_plot_matrix(link_t_ptr ptr, matrix_t* pm)
+void set_plot_matrix(link_t_ptr ptr, matrix_t mt)
 {
 	link_t_ptr nlk, sub;
 	tchar_t* buf;
 	int len;
 
-	set_plot_matrix_rows(ptr, pm->rows);
-	set_plot_matrix_cols(ptr, pm->cols);
+	set_plot_matrix_rows(ptr, matrix_get_rows(mt));
+	set_plot_matrix_cols(ptr, matrix_get_cols(mt));
 
-	len = matrix_format(pm, NULL, MAX_LONG);
+	len = matrix_format(mt, NULL, MAX_LONG);
 	buf = xsalloc(len + 1);
-	matrix_format(pm, buf, len);
+	matrix_format(mt, buf, len);
 
 	nlk = find_dom_node_by_name(ptr, 0, DOC_MATRIX, -1);
 	if (!nlk)

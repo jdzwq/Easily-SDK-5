@@ -108,7 +108,7 @@ void delete_numeric(double** sa, int index)
 }
 
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 
 void test_numeric_array()
 {

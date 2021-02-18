@@ -249,7 +249,7 @@ void hand_owner_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	viewbox_t vb = { 0 };
 	xbrush_t xb = { 0 };
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 

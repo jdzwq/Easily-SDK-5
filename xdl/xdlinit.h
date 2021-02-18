@@ -49,10 +49,12 @@ extern "C" {
 		jmp_buf*	if_buf;		//thread int jmp buffer
 		int			if_size;	//jmp buffer array size
 		int			if_index;  // top jmp buffer index
+	}if_jump_t;
 
+	typedef struct _if_dump_t{
 		byte_t*		err_buf; //thread error buffer
 		int			err_index; //error item count
-	}if_jump_t;
+	}if_dump_t;
 
 	typedef struct _if_zone_t{
 #ifdef XDK_SUPPORT_MEMO_HEAP
@@ -83,9 +85,11 @@ extern "C" {
 		tls_key_t	tls_thr_zero;
 		tls_key_t	tls_thr_zone;
 		tls_key_t	tls_thr_jump;
+		tls_key_t	tls_thr_dump;
 #else
 		if_zone_t* pif_zone;
 		if_jump_t* pif_jump;
+		if_dump_t* pif_dump;
 #endif /*XDK_SUPPORT_THREAD*/
 
 #ifdef XDK_SUPPORT_ERROR
@@ -153,9 +157,11 @@ extern "C" {
 #ifdef XDK_SUPPORT_THREAD
 #define THREAD_ZONE_INTERFACE ((g_xdl_mou.tls_thr_zone)? (if_zone_t*)(*(g_xdl_mou.if_thread.pf_thread_get_tls))(g_xdl_mou.tls_thr_zone) : NULL)
 #define THREAD_JUMP_INTERFACE ((g_xdl_mou.tls_thr_jump)? (if_jump_t*)(*(g_xdl_mou.if_thread.pf_thread_get_tls))(g_xdl_mou.tls_thr_jump) : NULL)
+#define THREAD_DUMP_INTERFACE ((g_xdl_mou.tls_thr_dump)? (if_dump_t*)(*(g_xdl_mou.if_thread.pf_thread_get_tls))(g_xdl_mou.tls_thr_dump) : NULL)
 #else
 #define THREAD_ZONE_INTERFACE (g_xdl_mou.pif_zone)
 #define THREAD_JUMP_INTERFACE (g_xdl_mou.pif_jump)
+#define THREAD_DUMP_INTERFACE (g_xdl_mou.pif_dump)
 #endif
 
 	EXP_API jmp_buf*	thread_jump_buff(void);

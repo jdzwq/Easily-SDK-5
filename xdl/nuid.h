@@ -35,11 +35,21 @@ LICENSE.GPL3 for more details.
 #include "xdldef.h"
 
 typedef struct _nuid_t {
-	unsigned long data1;  
+	unsigned int data1;  
 	unsigned short data2;  
 	unsigned short data3;  
 	unsigned char data4[8];
 } nuid_t;
+
+#define NUID_TOKEN_SIZE		36
+#define A_ZERO_NUID		"00000000-0000-0000-0000-000000000000"
+#define W_ZERO_NUID		L"00000000-0000-0000-0000-000000000000"
+
+#if defined(_UNICODE) || defined(UNICODE)
+#define ZERO_NUID	W_ZERO_NUID
+#else
+#define ZERO_NUID	A_ZERO_NUID
+#endif
 
 #ifdef	__cplusplus
 extern "C" {
@@ -55,11 +65,11 @@ extern "C" {
 
 	EXP_API void nuid_to_md5(nuid_t* pu, byte_t buf[16]);
 
-	EXP_API void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len);
+	EXP_API void nuid_parse_string(nuid_t* pu, const tchar_t buf[36]);
 
-	EXP_API int nuid_format_string(nuid_t* pu, tchar_t* buf, int max);
+	EXP_API int nuid_format_string(nuid_t* pu, tchar_t buf[36]);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_nuid(void);
 #endif
 

@@ -66,7 +66,7 @@ static int _notesctrl_calc_width(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 	visual_t rdc;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 	xsize_t xs;
 	int pw;
 
@@ -115,7 +115,7 @@ static int _notesctrl_calc_height(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 	visual_t rdc;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 	xrect_t xr;
 	int pw,ph;
 	int n;
@@ -179,7 +179,7 @@ static int _notesctrl_calc_hint(res_win_t widget, const xpoint_t* ppt, link_t_pt
 	xfont_t xf;
 	xface_t xa;
 	viewbox_t vb;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -285,7 +285,7 @@ static void _notesctrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	xface_t xa;
 	viewbox_t vb;
 	int n,total = 0;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 
@@ -474,7 +474,7 @@ int hand_notes_create(res_win_t widget, void* data)
 {
 	notes_delta_t* ptd;
 	visual_t rdc;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 	xfont_t xf = { 0 };
 	xsize_t xs;
 
@@ -732,8 +732,8 @@ void hand_notes_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	notes_delta_t* ptd = GETNOTESDELTA(widget);
 	visual_t rdc;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	link_t_ptr ilk,doc;
 	xrect_t xr_btn,xr_txt,xr;

@@ -41,7 +41,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	EXP_API void scan_memo_text(link_t_ptr ptr, const if_measure_t* pim, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+	EXP_API void scan_memo_text(link_t_ptr ptr, const measure_interface* pim, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 
 #ifdef	__cplusplus
 }

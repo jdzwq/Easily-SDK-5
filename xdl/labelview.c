@@ -224,7 +224,7 @@ int	calc_label_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* p
 	return LABEL_HINT_NONE;
 }
 
-void draw_label(const if_drawing_t* pif, link_t_ptr ptr, int page)
+void draw_label(const drawing_interface* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr nlk, first, last;
 	link_t_ptr ilk;

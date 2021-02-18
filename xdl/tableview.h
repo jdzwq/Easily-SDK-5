@@ -47,19 +47,19 @@ typedef enum{
 extern "C" {
 #endif
 
-	EXP_API float calc_table_height(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr);
+	EXP_API float calc_table_height(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr);
 
-	EXP_API float calc_table_width(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa,  link_t_ptr ptr);
+	EXP_API float calc_table_width(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa,  link_t_ptr ptr);
 
-	EXP_API void calc_table_item_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr);
+	EXP_API void calc_table_item_rect(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr);
 
-	EXP_API void calc_table_item_key_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
+	EXP_API void calc_table_item_key_rect(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
 
-	EXP_API void calc_table_item_val_rect(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
+	EXP_API void calc_table_item_val_rect(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, link_t_ptr ptr, float ratio, link_t_ptr plk, xrect_t* pxr);
 
-	EXP_API int	calc_table_hint(const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk);
+	EXP_API int	calc_table_hint(const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, const xpoint_t* ppt, link_t_ptr ptr, float ratio, link_t_ptr* pilk);
 
-	EXP_API void draw_table(const if_drawing_t* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio);
+	EXP_API void draw_table(const drawing_interface* pif, const xfont_t* pxf, const xface_t* pxa, const xpen_t* pxp, const xbrush_t* pxb, link_t_ptr ptr, float ratio);
 
 #ifdef	__cplusplus
 }

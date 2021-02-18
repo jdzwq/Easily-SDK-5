@@ -173,7 +173,7 @@ int calc_calendar_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_calendar(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_calendar(const drawing_interface* pif, link_t_ptr ptr)
 {
 	xrect_t xr;
 	xbrush_t xb = { 0 };

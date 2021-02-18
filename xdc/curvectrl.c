@@ -248,7 +248,7 @@ void hand_curve_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	int i;
 	int w;
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -345,7 +345,7 @@ void curvectrl_set_vector(res_win_t widget, vector_t vt)
 
 }
 
-void curvectrl_get_vector(res_win_t widget, vector_t* pvt)
+void curvectrl_get_vector(res_win_t widget, vector_t vt)
 {
 	curve_delta_t* ptd = GETCURVEDELTA(widget);
 

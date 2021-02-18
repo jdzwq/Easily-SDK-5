@@ -5,9 +5,9 @@ void* STDCALL wait_thread(void* param)
 {
 	xportm_param_t* pxm = (xportm_param_t*)param;
 	stream_t stm;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 	stream_t stm_std;
-	if_bio_t bio_std = { 0 };
+	bio_interface bio_std = { 0 };
 	dword_t size;
 	byte_t* buf;
 
@@ -88,7 +88,7 @@ void _xportm_start(xportm_param_t* pxm)
 {
 	dword_t dw;
 	stream_t stm;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	XDL_ASSERT(pxm != NULL);
 
@@ -168,7 +168,7 @@ ONERROR:
 void _xportm_stop(xportm_param_t* pxm)
 {
 	stream_t stm;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	if (pxm->std)
 	{

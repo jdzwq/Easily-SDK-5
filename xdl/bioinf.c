@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_SOCK)
 
-bool_t get_bio_interface(xhand_t io, if_bio_t* pio)
+bool_t get_bio_interface(xhand_t io, bio_interface* pio)
 {
 	pio->fd = io;
 
@@ -141,8 +141,8 @@ bool_t get_bio_interface(xhand_t io, if_bio_t* pio)
 		break;
 	case _HANDLE_INET:
 #if defined(XDK_SUPPORT_SOCK) && defined(XDL_SUPPORT_DOC)
-		pio->pf_read = xinet_read_file;
-		pio->pf_write = xinet_write_file;
+		pio->pf_read = xnetf_read_file;
+		pio->pf_write = xnetf_write_file;
 		return 1;
 #endif
 		break;

@@ -35,851 +35,1174 @@ LICENSE.GPL3 for more details.
 #include "xdlimp.h"
 
 
+typedef struct _variant_context{
+	memobj_head head;
 
-#define VARIANT_HDR_SIZE	8
+	int type;
+	int count;
+	void* data;
+}variant_context;
 
-/*********************************************************************************************************************************************/
 
-static int _parse_string_array_count(const tchar_t* tokens)
+static int variant_realloc(variant_t var, byte_t type, int count)
 {
-	int count = 0;
-	int len;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	int sw = 0;
 
-	len = xslen(tokens);
-	while (len)
+	switch ((type & 0x7F))
 	{
-		count++;
-		tokens += (len + 1);
-		len = xslen(tokens);
+	case VV_BOOL:
+		sw = sizeof(bool_t);
+		break;
+	case VV_BYTE:
+		sw = sizeof(byte_t);
+		break;
+	case VV_SCHAR:
+		sw = sizeof(schar_t);
+		break;
+	case VV_WCHAR:
+		sw = sizeof(wchar_t);
+		break;
+	case VV_SHORT:
+		sw = sizeof(short);
+		break;
+	case VV_INT:
+		sw = sizeof(int);
+		break;
+	case VV_LONG:
+		sw = sizeof(long long);
+		break;
+	case VV_FLOAT:
+		sw = sizeof(float);
+		break;
+	case VV_DOUBLE:
+		sw = sizeof(double);
+		break;
+	case VV_STRING:
+		sw = sizeof(tchar_t) * count;
+		break;
+	case VV_BOOL_ARRAY:
+		sw = sizeof(bool_t) * count;
+		break;
+	case VV_BYTE_ARRAY:
+		sw = sizeof(byte_t) * count;
+		break;
+	case VV_SHORT_ARRAY:
+		sw = sizeof(short) * count;
+		break;
+	case VV_INT_ARRAY:
+		sw = sizeof(int) * count;
+		break;
+	case VV_LONG_ARRAY:
+		sw = sizeof(long long) * count;
+		break;
+	case VV_SCHAR_ARRAY:
+		sw = sizeof(schar_t) * count;
+		break;
+	case VV_WCHAR_ARRAY:
+		sw = sizeof(wchar_t) * count;
+		break;
+	case VV_FLOAT_ARRAY:
+		sw = sizeof(float) * count;
+		break;
+	case VV_DOUBLE_ARRAY:
+		sw = sizeof(double) * count;
+		break;
+	case VV_STRING_ARRAY:
+		sw = sizeof(tchar_t) * count;
+		break;
+	default:
+		type = VV_NULL;
+		sw = 0;
+		break;
 	}
 
-	return count;
-}
-
-static int _parse_string_array(const tchar_t* tokens, tchar_t** sa, int n)
-{
-	int len, i = 0;
-
-	len = xslen(tokens);
-	while (len && i < n)
-	{
-		sa[i++] = xsclone(tokens);
-		tokens += (len + 1);
-		len = xslen(tokens);
-	}
-
-	return i;
-}
-
-static int _format_string_array(const tchar_t** sa, int n, tchar_t* tokens, int max)
-{
-	int len, i, total = 0;
-
-	for (i = 0; i < n; i++)
-	{
-		len = xslen(sa[i]);
-		if (total + len + 1 > max)
-			break;
-
-		if (tokens)
-		{
-			xsncpy(tokens, sa[i], len);
-			tokens[len] = _T('\0');
-			tokens += (len + 1);
-		}
-		total += (len + 1);
-	}
-
-	if (total + 1 > max)
-		return total;
-
-	if (tokens)
-	{
-		tokens[0] = _T('\0');
-	}
-	total++;
-
-	return total;
+	pvar->data = xmem_realloc(pvar->data, sw);
+	pvar->type = type;
+	pvar->count = count;
+	
+	return sw;
 }
 
 /************************************************************************************************************************************************/
 
-variant_t* variant_alloc(int encode)
+variant_t variant_alloc(int type)
 {
-	variant_t* pnew;
+	variant_context* pvar;
 
-	pnew = (variant_t*)xmem_alloc(sizeof(variant_t));
-	pnew->vv = VV_NULL;
-	pnew->encode = encode;
+	pvar = (variant_context*)xmem_alloc(sizeof(variant_context));
+	pvar->head.tag = MEM_VARIANT;
+	PUT_THREEBYTE_LOC(pvar->head.len, 0, (sizeof(variant_context) - 4));
 
-	return pnew;
+	variant_realloc((variant_t)&(pvar->head), type, 0);
+
+	return (variant_t)&(pvar->head);
 }
 
-variant_t* variant_clone(const variant_t* pv)
+variant_t variant_clone(variant_t var)
 {
-	variant_t* pnew;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	variant_context* pnew;
+	int n;
 
-	pnew = (variant_t*)xmem_alloc(sizeof(variant_t));
-	pnew->vv = VV_NULL;
-	pnew->encode = DEF_MBS;
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
 
-	if (pv)
-	{
-		variant_copy(pnew, pv);
-	}
+	pnew = (variant_context*)variant_alloc(pvar->type);
+	n = variant_realloc((variant_t)&(pnew->head), pvar->type, pvar->count);
+	
+	xmem_copy(pnew->data, pvar->data, n);
 
-	return pnew;
+	return (variant_t)&(pnew->head);
 }
 
-void variant_free(variant_t* pv)
+void variant_free(variant_t var)
 {
-	variant_to_null(pv);
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
 
-	xmem_free(pv);
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	if (pvar->data)
+		xmem_free(pvar->data);
+
+	xmem_free(pvar);
 }
 
-void variant_to_null(variant_t* pv)
+int variant_get_type(variant_t var)
 {
-	int i;
-	int encode;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
 
-	switch (pv->vv)
-	{
-	case VV_STRING:
-		xmem_free(pv->string_one);
-		break;
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
 
-	case VV_BOOL_ARRAY:
-		xmem_free(pv->bool_ptr);
-		break;
-	case VV_BYTE_ARRAY:
-		xmem_free(pv->byte_ptr);
-		break;
-	case VV_SHORT_ARRAY:
-		xmem_free(pv->short_ptr);
-		break;
-	case VV_INT_ARRAY:
-		xmem_free(pv->int_ptr);
-		break;
-	case VV_LONG_ARRAY:
-		xmem_free(pv->long_ptr);
-		break;
-	case VV_SCHAR_ARRAY:
-		xmem_free(pv->schar_ptr);
-		break;
-	case VV_WCHAR_ARRAY:
-		xmem_free(pv->wchar_ptr);
-		break;
-	case VV_FLOAT_ARRAY:
-		xmem_free(pv->float_ptr);
-		break;
-	case VV_DOUBLE_ARRAY:
-		xmem_free(pv->double_ptr);
-		break;
-	case VV_STRING_ARRAY:
-		for (i = 0; i < pv->size; i++)
-		{
-			xmem_free(pv->string_ptr[i]);
-		}
-		xmem_free(pv->string_ptr);
-		break;
-	}
-
-	encode = pv->encode;
-	xmem_zero((void*)pv, sizeof(variant_t));
-	pv->encode = encode;
+	return pvar->type;
 }
 
-
-bool_t variant_is_null(variant_t* pv)
+int variant_get_count(variant_t var)
 {
-	return (pv->vv == VV_NULL) ? 1 : 0;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	return pvar->count;
 }
 
-void variant_copy(variant_t* pv1, const variant_t* pv2)
+void* variant_data(variant_t var)
 {
-	int i;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
 
-	variant_to_null(pv1);
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
 
-	if (!pv2) return;
-
-	xmem_copy((void*)pv1, (void*)pv2, sizeof(variant_t));
-
-	pv1->vv = (pv2->vv & 0x7F);
-
-	switch (pv1->vv)
-	{
-	case VV_STRING:
-		pv1->string_one = xsclone(pv2->string_one);
-		break;
-	case VV_BOOL_ARRAY:
-		pv1->bool_ptr = (bool_t*)xmem_clone((void*)pv2->bool_ptr, pv2->size * sizeof(bool_t));
-		break;
-	case VV_BYTE_ARRAY:
-		pv1->byte_ptr = (byte_t*)xmem_clone((void*)pv2->byte_ptr, pv2->size * sizeof(byte_t));
-		break;
-	case VV_SHORT_ARRAY:
-		pv1->short_ptr = (short*)xmem_clone((void*)pv2->short_ptr, pv2->size * sizeof(short));
-		break;
-	case VV_INT_ARRAY:
-		pv1->int_ptr = (int*)xmem_clone((void*)pv2->int_ptr, pv2->size * sizeof(int));
-		break;
-	case VV_LONG_ARRAY:
-		pv1->long_ptr = (long long*)xmem_clone((void*)pv2->long_ptr, pv2->size * sizeof(long long));
-		break;
-	case VV_SCHAR_ARRAY:
-		pv1->schar_ptr = (schar_t*)xmem_clone((void*)pv2->schar_ptr, pv2->size * sizeof(schar_t));
-		break;
-	case VV_WCHAR_ARRAY:
-		pv1->wchar_ptr = (wchar_t*)xmem_clone((void*)pv2->wchar_ptr, pv2->size * sizeof(wchar_t));
-		break;
-	case VV_FLOAT_ARRAY:
-		pv1->float_ptr = (float*)xmem_clone((void*)pv2->float_ptr, pv2->size * sizeof(float));
-		break;
-	case VV_DOUBLE_ARRAY:
-		pv1->double_ptr = (double*)xmem_clone((void*)pv2->double_ptr, pv2->size * sizeof(double));
-		break;
-	case VV_STRING_ARRAY:
-		pv1->string_ptr = (tchar_t**)xmem_alloc(pv2->size * sizeof(tchar_t*));
-		for (i = 0; i < pv2->size; i++)
-		{
-			pv1->string_ptr[i] = xsclone(pv2->string_ptr[i]);
-		}
-		break;
-	}
+	return pvar->data;
 }
 
-int variant_comp(const variant_t* pv1, const variant_t* pv2)
+void variant_attach(variant_t var, void* data)
 {
-	int n1, n2, rt;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
 
-	if (pv1->vv == VV_NULL && pv2->vv == VV_NULL)
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	if (pvar->data)
+		xmem_free(pvar->data);
+
+	pvar->data = data;
+}
+
+void* variant_detach(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void* d;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	d = pvar->data;
+	pvar->data = NULL;
+
+	return d;
+}
+
+void variant_to_null(variant_t var, int type)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	variant_realloc(var, type, 0);
+}
+
+bool_t variant_is_null(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	return (pvar->type == VV_NULL) ? 1 : 0;
+}
+
+void variant_copy(variant_t dst, variant_t src)
+{
+	variant_context* psrc = TypePtrFromHead(variant_context, src);
+	variant_context* pdst = TypePtrFromHead(variant_context, dst);
+	
+	int sw;
+
+	XDL_ASSERT(src != NULL && src->tag == MEM_VARIANT && dst != NULL && dst->tag == MEM_VARIANT);
+
+	sw = variant_realloc(dst, psrc->type, psrc->count);
+
+	xmem_copy(pdst->data, psrc->data, sw);
+}
+
+int variant_comp(variant_t var1, variant_t var2)
+{
+	variant_context* pvar1 = TypePtrFromHead(variant_context, var1);
+	variant_context* pvar2 = TypePtrFromHead(variant_context, var2);
+	byte_t t1, t2;
+	void *d1, *d2;
+	int n1, n2, i;
+
+	XDL_ASSERT(var1 != NULL && var1->tag == MEM_VARIANT && var2 != NULL && var2->tag == MEM_VARIANT);
+
+	t1 = pvar1->type;
+	t2 = pvar2->type;
+
+	if (t1 == VV_NULL && t2 == VV_NULL)
 		return 0;
-	else if (pv1->vv == VV_NULL)
+	else if (t1 == VV_NULL)
 		return -1;
-	else if (pv2->vv == VV_NULL)
+	else if (t2 == VV_NULL)
 		return 1;
 
-	if ((pv1->vv & 0x7F) != (pv2->vv & 0x7F))
-		return (pv1->vv < pv2->vv) ? -1 : 1;
+	if ((t1 & 0x7F) != (t2 & 0x7F))
+		return (t1 < t2) ? -1 : 1;
 
-	switch ((pv2->vv & 0x7F))
+	n1 = pvar1->count;
+	n2 = pvar2->count;
+	d1 = pvar1->data;
+	d2 = pvar2->data;
+
+	switch ((t2 & 0x7F))
 	{
 	case VV_BOOL:
-		if (pv1->bool_one > pv2->bool_one)
+		if ((*(bool_t*)d1) >(*(bool_t*)d2))
 			return 1;
-		else if (pv1->bool_one < pv2->bool_one)
+		else if ((*(bool_t*)d1) < (*(bool_t*)d2))
 			return -1;
 		else
 			return 0;
 	case VV_BYTE:
-		if (pv1->byte_one > pv2->byte_one)
+		if ((*(byte_t*)d1) >(*(byte_t*)d2))
 			return 1;
-		else if (pv1->byte_one < pv2->byte_one)
+		else if ((*(byte_t*)d1) < (*(byte_t*)d2))
 			return -1;
 		else
 			return 0;
 	case VV_SCHAR:
-		if (pv1->schar_one > pv2->schar_one)
+		if ((*((schar_t*)d1)) > (*((schar_t*)d2)))
 			return 1;
-		else if (pv1->schar_one < pv2->schar_one)
+		else if ((*((schar_t*)d1)) < (*((schar_t*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_WCHAR:
-		if (pv1->wchar_one > pv2->wchar_one)
+		if ((*((wchar_t*)d1)) > (*((wchar_t*)d2)))
 			return 1;
-		else if (pv1->wchar_one < pv2->wchar_one)
+		else if ((*((wchar_t*)d1)) < (*((wchar_t*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_SHORT:
-		if (pv1->short_one > pv2->short_one)
+		if ((*((short*)d1)) > (*((short*)d2)))
 			return 1;
-		else if (pv1->short_one < pv2->short_one)
+		else if((*((short*)d1)) < (*((short*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_INT:
-		if (pv1->int_one > pv2->int_one)
+		if ((*((int*)d1)) > (*((int*)d2)))
 			return 1;
-		else if (pv1->int_one < pv2->int_one)
+		else if ((*((int*)d1)) < (*((int*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_LONG:
-		if (pv1->long_one > pv2->long_one)
+		if ((*((long*)d1)) > (*((long*)d2)))
 			return 1;
-		else if (pv1->long_one < pv2->long_one)
+		else if ((*((long*)d1)) < (*((long*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_FLOAT:
-		if (pv1->float_one > pv2->float_one)
+		if ((*((float*)d1)) > (*((float*)d2)))
 			return 1;
-		else if (pv1->float_one < pv2->float_one)
+		else if ((*((float*)d1)) < (*((float*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_DOUBLE:
-		if (pv1->double_one > pv2->double_one)
+		if ((*((double*)d1)) > (*((double*)d2)))
 			return 1;
-		else if (pv1->double_one < pv2->double_one)
+		else if ((*((double*)d1)) < (*((double*)d2)))
 			return -1;
 		else
 			return 0;
 	case VV_STRING:
-		return compare_text(pv1->string_one, pv1->size, pv2->string_one, pv2->size, 0);
+		return compare_text((tchar_t*)d1, n1, (tchar_t*)d2, n2, 0);
 	case VV_BOOL_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->bool_ptr[n1] > pv2->bool_ptr[n2])
+			if (((bool_t*)d1)[i] > ((bool_t*)d2)[i])
 				return 1;
-			else if (pv1->bool_ptr[n1] < pv2->bool_ptr[n2])
+			else if (((bool_t*)d1)[i] < ((bool_t*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_BYTE_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->byte_ptr[n1] > pv2->byte_ptr[n2])
+			if (((byte_t*)d1)[i] >((byte_t*)d2)[i])
 				return 1;
-			else if (pv1->byte_ptr[n1] < pv2->byte_ptr[n2])
+			else if (((byte_t*)d1)[i] < ((byte_t*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_SHORT_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->short_ptr[n1] > pv2->short_ptr[n2])
+			if (((short*)d1)[i] >((short*)d2)[i])
 				return 1;
-			else if (pv1->short_ptr[n1] < pv2->short_ptr[n2])
+			else if (((short*)d1)[i] < ((short*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_INT_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->int_ptr[n1] > pv2->int_ptr[n2])
+			if (((int*)d1)[i] >((int*)d2)[i])
 				return 1;
-			else if (pv1->int_ptr[n1] < pv2->int_ptr[n2])
+			else if (((int*)d1)[i] < ((int*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_LONG_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->long_ptr[n1] > pv2->long_ptr[n2])
+			if (((long long*)d1)[i] >((long long*)d2)[i])
 				return 1;
-			else if (pv1->long_ptr[n1] < pv2->long_ptr[n2])
+			else if (((long long*)d1)[i] < ((long long*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_SCHAR_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->schar_ptr[n1] > pv2->schar_ptr[n2])
+			if (((schar_t*)d1)[i] >((schar_t*)d2)[i])
 				return 1;
-			else if (pv1->schar_ptr[n1] < pv2->schar_ptr[n2])
+			else if (((schar_t*)d1)[i] < ((schar_t*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_WCHAR_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->wchar_ptr[n1] > pv2->wchar_ptr[n2])
+			if (((wchar_t*)d1)[i] >((wchar_t*)d2)[i])
 				return 1;
-			else if (pv1->wchar_ptr[n1] < pv2->wchar_ptr[n2])
+			else if (((wchar_t*)d1)[i] < ((wchar_t*)d2)[i])
 				return -1;
 
-			n1++;
-			n2++;
+			i++;
 		}
-		if (n1 < pv1->size)
+		if (i < n1)
 			return 1;
-		else if (n2 < pv2->size)
+		else if (i < n2)
 			return -1;
 		else
 			return 0;
 	case VV_FLOAT_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
+		i = 0;
+		while (i < n1 && i < n2)
 		{
-			if (pv1->float_ptr[n1] > pv2->float_ptr[n2])
+			if (((float*)d1)[i] >((float*)d2)[i])
 				return 1;
-			else if (pv1->float_ptr[n1] < pv2->float_ptr[n2])
+			else if (((float*)d1)[i] < ((float*)d2)[i])
 				return -1;
-
-			n1++;
-			n2++;
-		}
-		if (n1 < pv1->size)
-			return 1;
-		else if (n2 < pv2->size)
-			return -1;
-		else
-			return 0;
-	case VV_DOUBLE_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
-		{
-			if (pv1->double_ptr[n1] > pv2->double_ptr[n2])
-				return 1;
-			else if (pv1->double_ptr[n1] < pv2->double_ptr[n2])
-				return -1;
-
-			n1++;
-			n2++;
-		}
-		if (n1 < pv1->size)
-			return 1;
-		else if (n2 < pv2->size)
-			return -1;
-		else
-			return 0;
-	case VV_STRING_ARRAY:
-		n1 = n2 = 0;
-		while (n1 < pv1->size && n2 < pv2->size)
-		{
-			rt = compare_text(pv1->string_ptr[n1], -1, pv2->string_ptr[n2], -1, 0);
-			if (rt)
-				return rt;
 			
-			n1++;
-			n2++;
+			i++;
 		}
-		return 0;
+		if (i < n1)
+			return 1;
+		else if (i < n2)
+			return -1;
+		else
+			return 0;
+	case VV_DOUBLE_ARRAY:
+		i = 0;
+		while (i < n1 && i < n2)
+		{
+			if (((double*)d1)[i] >((double*)d2)[i])
+				return 1;
+			else if (((double*)d1)[i] < ((double*)d2)[i])
+				return -1;
+
+			i++;
+		}
+		if (i < n1)
+			return 1;
+		else if (i < n2)
+			return -1;
+		else
+			return 0;
+	case VV_STRING_ARRAY:
+		i = 0;
+		while (i < n1 && i < n2)
+		{
+			if (((tchar_t*)d1)[i] >((tchar_t*)d2)[i])
+				return 1;
+			else if (((tchar_t*)d1)[i] < ((tchar_t*)d2)[i])
+				return -1;
+
+			i++;
+		}
+		if (i < n1)
+			return 1;
+		else if (i < n2)
+			return -1;
+		else
+			return 0;
 	}
 
 	return 0;
 }
 
-int variant_to_string(variant_t* pv, tchar_t* buf, int max)
+int variant_to_string(variant_t var, tchar_t* buf, int max)
 {
-	int i, n, len;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t, i, n, k, j;
 
-	switch (pv->vv & 0x7F)
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	n = pvar->count;
+	d = pvar->data;
+
+	switch (t & 0x7F)
 	{
 	case VV_NULL:
+		if (buf)
+		{
+			buf[0] = _T('\0');
+		}
 		return 0;
 	case VV_BOOL:
 		if (buf)
 		{
-			buf[0] = (pv->bool_one) ? _T('1') : _T('0');
+			buf[0] = (*((bool_t*)d)) ? _T('1') : _T('0');
+			buf[1] = _T('\0');
 		}
 		return 1;
 	case VV_BYTE:
 		if (buf)
 		{
-			buf[0] = pv->byte_one;
+			format_hexnum(*((byte_t*)d), buf, 2);
 		}
 		return 1;
 	case VV_SCHAR:
 		if (buf)
 		{
-			buf[0] = pv->schar_one;
+			buf[0] = *((schar_t*)d);
+			buf[1] = _T('\0');
 		}
 		return 1;
 	case VV_WCHAR:
 		if (buf)
 		{
-			buf[0] = pv->wchar_one;
+			buf[0] = *((wchar_t*)d);
+			buf[1] = _T('\0');
 		}
 		return 1;
 	case VV_SHORT:
-		return stoxs(pv->short_one, buf, max);
+		return stoxs(*((short*)d), buf, max);
 	case VV_INT:
-		return ltoxs(pv->int_one, buf, max);
+		return ltoxs(*((int*)d), buf, max);
 	case VV_LONG:
-		return lltoxs(pv->long_one, buf, max);
+		return lltoxs(*((long long*)d), buf, max);
 	case VV_FLOAT:
-		return ftoxs(pv->float_one, buf, max);
+		return ftoxs(*((float*)d), buf, max);
 	case VV_DOUBLE:
-		return numtoxs(pv->double_one, buf, max);
+		return numtoxs(*((double*)d), buf, max);
 	case VV_STRING:
-		len = pv->size;
-		if (len < 0)
-			len = xslen(pv->string_one);
-		len = (len < max) ? len : max;
+		n = (n < max) ? n : max;
 		if (buf)
 		{
-			xsncpy(buf, pv->string_one, len);
+			xmem_copy((void*)buf, d, n * sizeof(tchar_t));
+			buf[n] = _T('\0');
 		}
-		return len;
+		return n;
 	case VV_BOOL_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		for (i = 0; i < n; i++)
 		{
 			if (buf)
 			{
-				buf[len] = (pv->bool_ptr[i]) ? _T('1') : _T('0');
-				buf[len + 1] = _T(' ');
+				buf[i] = (((bool_t*)d)[i]) ? _T('1') : _T('0');
+				buf[i + 1] = _T('\0');
 			}
-			len += 2;
 		}
-		return len;
+		return (i);
 	case VV_BYTE_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		for (i = 0; i < n; i++)
 		{
-			n = format_hexnum((unsigned int)(pv->byte_ptr[i]), ((buf)? buf + len : NULL), 2);
-			if (buf)
-			{
-				buf[len + n] = _T(' ');
-			}
-			len += (n + 1);
+			format_hexnum((unsigned int)(((byte_t*)d)[i]), ((buf) ? buf + i * 3 : NULL), 2);
 		}
-		return len;
+		return (i * 2);
 	case VV_SCHAR_ARRAY:
 #ifdef _UNICODE
-		return mbs_to_ucs(pv->schar_ptr, pv->size, buf, max);
+		return mbs_to_ucs((schar_t*)(d), n, buf, max);
 #else
-		len = pv->size;
-		if (len < 0)
-			len = a_xslen(pv->schar_ptr);
-		len = (len < max) ? len : max;
+		n = (n < max) ? n : max;
 		if (buf)
 		{
-			a_xsncpy(buf, pv->schar_ptr, len);
+			xmem_copy((void*)buf, d, n * sizeof(schar_t));
+			buf[n] = '\0';
 		}
-		return len;
+		return n;
 #endif
 	case VV_WCHAR_ARRAY:
-		len = pv->size;
-		if (len < 0)
-			len = w_xslen(pv->wchar_ptr);
 #ifdef _UNICODE
-		len = (len < max) ? len : max;
+		n = (n < max) ? n : max;
 		if (buf)
 		{
-			w_xsncpy(buf, pv->wchar_ptr, len);
+			xmem_copy((void*)buf, (void*)(d), n * sizeof(wchar_t));
+			buf[n] = L'\0';
 		}
-		return len;
+		return n;
 #else
-		return ucs_to_mbs(pv->wchar_ptr, len, buf, max);
+		return ucs_to_mbs((wchar_t*)(d), n, buf, max);
 #endif
 	case VV_SHORT_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		k = 0;
+		for (i = 0; i < n; i++)
 		{
-			n = stoxs(pv->short_ptr[i], ((buf) ? buf + len : NULL), NUM_LEN);
+			j = stoxs(((short*)d)[i], ((buf) ? (buf + k) : NULL), NUM_LEN);
+			k += j;
+
 			if (buf)
 			{
-				buf[len + n] = _T(' ');
+				buf[k] = _T(' ');
 			}
-			len += (n + 1);
+			k++;
 		}
-		return len;
+		return k;
 	case VV_INT_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		k = 0;
+		for (i = 0; i < n; i++)
 		{
-			n = ltoxs(pv->int_ptr[i], ((buf)? buf + len : NULL), NUM_LEN);
+			j = ltoxs(((int*)d)[i], ((buf) ? (buf + k) : NULL), NUM_LEN);
+			k += j;
+
 			if (buf)
 			{
-				buf[len + n] = _T(' ');
+				buf[k] = _T(' ');
 			}
-			len += (n + 1);
+			k++;
 		}
-		return len;
+		return k;
 	case VV_LONG_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		k = 0;
+		for (i = 0; i < n; i++)
 		{
-			n = format_long(GETHDWORD(pv->long_ptr[i]), GETLDWORD(pv->long_ptr[i]), ((buf) ? buf + len : NULL));
+			j = lltoxs(((long long*)d)[i], ((buf) ? (buf + k) : NULL), NUM_LEN);
+			k += j;
+
 			if (buf)
 			{
-				buf[len + n] = _T(' ');
+				buf[k] = _T(' ');
 			}
-			len += (n + 1);
+			k++;
 		}
-		return len;
+		return k;
 	case VV_FLOAT_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		k = 0;
+		for (i = 0; i < n; i++)
 		{
-			n = ftoxs(pv->float_ptr[i], ((buf) ? buf + len : NULL), NUM_LEN);
+			j = ftoxs(((float*)d)[i], ((buf) ? (buf + k) : NULL), NUM_LEN);
+			k += j;
+
 			if (buf)
 			{
-				buf[len + n] = _T(' ');
+				buf[k] = _T(' ');
 			}
-			len += (n + 1);
+			k++;
 		}
-		return len;
+		return k;
 	case VV_DOUBLE_ARRAY:
-		len = 0;
-		for (i = 0; i < pv->size; i++)
+		k = 0;
+		for (i = 0; i < n; i++)
 		{
-			n = numtoxs(pv->double_ptr[i], ((buf) ? buf + len : NULL), NUM_LEN);
+			j = numtoxs(((double*)d)[i], ((buf) ? (buf + k) : NULL), NUM_LEN);
+			k += j;
+
 			if (buf)
 			{
-				buf[len + n] = _T(' ');
+				buf[k] = _T(' ');
 			}
-			len += (n + 1);
+			k++;
 		}
-		return len;
+		return k;
 	case VV_STRING_ARRAY:
-		len = _format_string_array(pv->string_ptr, pv->size, buf, max);
-		return len;
+		n = (n < max) ? n : max;
+		if (buf)
+		{
+			xmem_copy((void*)buf, (void*)d, n * sizeof(tchar_t));
+		}
+		return n;
 	}
 
 	return 0;
 }
 
-void variant_from_string(variant_t* pv, const tchar_t* buf, int len)
+void variant_from_string(variant_t var, const tchar_t* buf, int len)
 {
-	int i, n, total = 0;
-	tchar_t* key;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t, i, n, k, j;
+	tchar_t *key;
 
-	switch (pv->vv)
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT); 
+
+	if (len < 0)
+		len = xslen(buf);
+
+	t = pvar->type;
+	n = pvar->count;
+	d = pvar->data;
+
+	switch (t & 0x7F)
 	{
 	case VV_NULL:
+		variant_realloc(var, VV_STRING, len);
+		d = pvar->data;
+		xmem_copy(d, (void*)buf, len * sizeof(tchar_t));
 		break;
 	case VV_BOOL:
-		pv->bool_one = (buf[0] == _T('1')) ? 1 : 0;
+		*((bool_t*)d) = (buf[0] == _T('1')) ? 1 : 0;
 		break;
 	case VV_BYTE:
-		pv->byte_one = (byte_t)(buf[0]);
+		*((byte_t*)d) = (byte_t)parse_hexnum(buf, 2);
 		break;
 	case VV_SCHAR:
 #ifdef _UNICODE
-		ucs_byte_to_mbs(buf[0], &(pv->schar_one));
+		ucs_byte_to_mbs(buf[0], (schar_t*)d);
 #else
-		pv->schar_one = buf[0];
+		*((schar_t*)d) = buf[0];
 #endif
 		break;
 	case VV_WCHAR:
 #ifdef _UNICODE
-		pv->wchar_one = buf[0];
+		*((wchar_t*)d) = buf[0];
 #else
-		mbs_byte_to_ucs(buf[0], &(pv->wchar_one));
+		mbs_byte_to_ucs(buf[0], (wchar_t*)d);
 #endif
 		break;
 	case VV_SHORT:
-		pv->short_one = xsntos(buf, len);
+		*((short*)d) = xsntos(buf, len);
 		break;
 	case VV_INT:
-		pv->int_one = xsntol(buf, len);
+		*((int*)d) = xsntol(buf, len);
 		break;
 	case VV_LONG:
-		pv->long_one = xsntoll(buf, len);
+		*((long long*)d) = xsntoll(buf, len);
 		break;
 	case VV_FLOAT:
-		pv->float_one = xsntof(buf, len);
+		*((float*)d) = xsntof(buf, len);
 		break;
 	case VV_DOUBLE:
-		pv->double_one = xsntonum(buf, len);
+		*((double*)d) = xsntonum(buf, len);
 		break;
 	case VV_STRING:
-		pv->size = (len < 0) ? xslen(buf) : len;
-		pv->string_one = xsalloc(pv->size + 1);
-		xsncpy(pv->string_one, buf, pv->size);
+		variant_realloc(var, VV_STRING, len);
+		d = pvar->data;
+		xmem_copy(d, (void*)buf, len * sizeof(tchar_t));
 		break;
 	case VV_BOOL_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->bool_ptr = (bool_t*)xmem_alloc(pv->size * sizeof(bool_t));
-		i = 0;
-
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		variant_realloc(var, VV_BOOL_ARRAY, len);
+		d = pvar->data;
+		for (i = 0; i < len;i++)
 		{
-			total += n;
-			pv->bool_ptr[i] = (key[0] == _T('1')) ? 1 : 0;
+			((bool_t*)d)[i] = (buf[i] == _T('1')) ? 1 : 0;
 		}
 		break;
 	case VV_BYTE_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->byte_ptr = (byte_t*)xmem_alloc(pv->size);
-		i = 0;
-
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		variant_realloc(var, VV_BYTE_ARRAY, len / 2);
+		d = pvar->data;
+		for (i = 0; i < len / 2; i++)
 		{
-			total += n;
-			pv->byte_ptr[i] = (byte_t)parse_hexnum(key, 2);
+			((byte_t*)d)[i] = (byte_t)parse_hexnum(&(buf[i*2]), 2);
 		}
 		break;
 	case VV_SCHAR_ARRAY:
 #ifdef _UNICODE
-		pv->size = ucs_to_mbs(buf, len, NULL, MAX_LONG);
-		pv->schar_ptr = a_xsalloc(pv->size + 1);
-		ucs_to_mbs(buf, len, pv->schar_ptr, pv->size);
+		n = ucs_to_mbs(buf, len, NULL, MAX_LONG);
+		variant_realloc(var, VV_SCHAR_ARRAY, n);
+		d = pvar->data;
+		ucs_to_mbs(buf, len, (schar_t*)d, n);
 #else
-		pv->size = (len < 0)? xslen(buf) : len;
-		pv->schar_ptr = xsalloc(pv->size + 1);
-		xsncpy(pv->schar_ptr, buf, pv->size);
+		variant_realloc(var, VV_SCHAR_ARRAY, len);
+		d = pvar->data;
+		xmem_copy((void*)d, (void*)buf, len * sizeof(schar_t));
 #endif
 		break;
 	case VV_WCHAR_ARRAY:
 #ifdef _UNICODE
-		pv->size = (len < 0) ? xslen(buf) : len;
-		pv->wchar_ptr = xsalloc(pv->size + 1);
-		xsncpy(pv->wchar_ptr, buf, pv->size);
+		variant_realloc(var, VV_WCHAR_ARRAY, len);
+		d = pvar->data;
+		xmem_copy((void*)d, (void*)buf, len * sizeof(wchar_t));
 #else
-		pv->size = mbs_to_ucs(buf, len, NULL, MAX_LONG);
-		pv->wchar_ptr = w_xsalloc(pv->size + 1);
-		mbs_to_ucs(buf, len, pv->wchar_ptr, pv->size);
+		n = mbs_to_ucs(buf, len, NULL, MAX_LONG);
+		variant_realloc(var, VV_WCHAR_ARRAY, n);
+		d = pvar->data;
+		mbs_to_ucs(buf, len, (wchar_t*)d, n);
 #endif
 		break;
 	case VV_SHORT_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->short_ptr = (short*)xmem_alloc(pv->size * sizeof(short));
-		i = 0;
+		n = parse_string_token_count(buf, len, _T(' '));
+		variant_realloc(var, VV_SHORT_ARRAY, n);
+		d = pvar->data;
 
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		k = 0;
+		i = 0;
+		while (n = parse_string_token((buf + k), (len - k), _T(' '), &key, &j))
 		{
-			total += n;
-			pv->short_ptr[i] = xsntos(key, n);
+			((short*)d)[i] = xsntos(key, j);
+			k += n;
+			i++;
 		}
 		break;
 	case VV_INT_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->int_ptr = (int*)xmem_alloc(pv->size * sizeof(int));
-		i = 0;
+		n = parse_string_token_count(buf, len, _T(' '));
+		variant_realloc(var, VV_INT_ARRAY, n);
+		d = pvar->data;
 
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		k = 0;
+		i = 0;
+		while (n = parse_string_token((buf + k), (len - k), _T(' '), &key, &j))
 		{
-			total += n;
-			pv->int_ptr[i] = xsntol(key, n);
+			((int*)d)[i] = xsntol(key, j);
+			k += n;
+			i++;
 		}
 		break;
 	case VV_LONG_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->long_ptr = (long long*)xmem_alloc(pv->size * sizeof(long long));
-		i = 0;
+		n = parse_string_token_count(buf, len, _T(' '));
+		variant_realloc(var, VV_LONG_ARRAY, n);
+		d = pvar->data;
 
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		k = 0;
+		i = 0;
+		while (n = parse_string_token((buf + k), (len - k), _T(' '), &key, &j))
 		{
-			total += n;
-			pv->long_ptr[i] = xsntoll(key, n);
+			((long long*)d)[i] = xsntoll(key, j);
+			k += n;
+			i++;
 		}
 		break;
 	case VV_FLOAT_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->float_ptr = (float*)xmem_alloc(pv->size * sizeof(float));
-		i = 0;
+		n = parse_string_token_count(buf, len, _T(' '));
+		variant_realloc(var, VV_FLOAT_ARRAY, n);
+		d = pvar->data;
 
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		k = 0;
+		i = 0;
+		while (n = parse_string_token((buf + k), (len - k), _T(' '), &key, &j))
 		{
-			total += n;
-			pv->float_ptr[i] = xsntof(key, n);
+			((float*)d)[i] = xsntof(key, j);
+			k += n;
+			i++;
 		}
 		break;
 	case VV_DOUBLE_ARRAY:
-		pv->size = parse_string_token_count(buf, len, _T(' '));
-		pv->double_ptr = (double*)xmem_alloc(pv->size * sizeof(double));
-		i = 0;
+		n = parse_string_token_count(buf, len, _T(' '));
+		variant_realloc(var, VV_DOUBLE_ARRAY, n);
+		d = pvar->data;
 
-		while (n = parse_string_token((buf + total), -1, _T(' '), &key, &n))
+		k = 0;
+		i = 0;
+		while (n = parse_string_token((buf + k), (len - k), _T(' '), &key, &j))
 		{
-			total += n;
-			pv->double_ptr[i] = xsntonum(key, n);
+			((double*)d)[i] = xsntonum(key, j);
+			k += n;
+			i++;
 		}
 		break;
 	case VV_STRING_ARRAY:
-		pv->size = _parse_string_array_count(buf);
-		pv->string_ptr = (tchar_t**)xmem_alloc(pv->size * sizeof(tchar_t*));
-		_parse_string_array(buf, pv->string_ptr, pv->size);
+		variant_realloc(var, VV_STRING_ARRAY, len);
+		d = pvar->data;
+
+		xmem_copy((void*)d, (void*)buf, len * sizeof(tchar_t));
 		break;
 	}
 }
 
-dword_t variant_encode(variant_t* pv, byte_t* buf, dword_t max)
+void variant_set_bool(variant_t var, bool_t b)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT); 
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_BOOL);
+
+	*((bool_t*)d) = ((b)? 1 : 0);
+}
+
+bool_t variant_get_bool(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT); 
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_BOOL);
+
+	return (*((bool_t*)d));
+}
+
+void variant_set_schar(variant_t var, schar_t c)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_SCHAR);
+
+	*((schar_t*)d) = c;
+}
+
+schar_t variant_get_schar(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_SCHAR);
+
+	return (*((schar_t*)d));
+}
+
+void variant_set_wchar(variant_t var, wchar_t w)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT); 
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_WCHAR);
+
+	*((wchar_t*)d) = w;
+}
+
+wchar_t variant_get_wchar(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_WCHAR);
+
+	return (*((wchar_t*)d));
+}
+
+void variant_set_short(variant_t var, short c)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_SHORT);
+
+	*((short*)d) = c;
+}
+
+short variant_get_short(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_SHORT);
+
+	return (*((short*)d));
+}
+
+void variant_set_int(variant_t var, int c)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_INT);
+
+	*((int*)d) = c;
+}
+
+int variant_get_int(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_INT);
+
+	return (*((int*)d));
+}
+
+void variant_set_long(variant_t var, long long c)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_LONG);
+
+	*((long long*)d) = c;
+}
+
+long long variant_get_long(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_LONG);
+
+	return (*((long long*)d));
+}
+
+void variant_set_float(variant_t var, float c)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_FLOAT);
+
+	*((float*)d) = c;
+}
+
+float variant_get_float(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_FLOAT);
+
+	return (*((float*)d));
+}
+
+void variant_set_double(variant_t var, double c)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_DOUBLE);
+
+	*((double*)d) = c;
+}
+
+double variant_get_double(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_DOUBLE);
+
+	return (*((double*)d));
+}
+
+const tchar_t* variant_get_string_ptr(variant_t var)
+{
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	d = pvar->data;
+
+	XDL_ASSERT(t == VV_STRING);
+
+	return (tchar_t*)(d);
+}
+
+
+dword_t variant_encode(variant_t var, int encode, byte_t* buf, dword_t max)
 {
 	dword_t n = 0;
 	tchar_t* str;
 	int len;
-	short vv;
-	int encode;
 
-	len = variant_to_string(pv, NULL, MAX_LONG);
+	XDL_ASSERT(var != NULL);
+
+	len = variant_to_string(var, NULL, MAX_LONG);
 	str = xsalloc(len + 1);
-	variant_to_string(pv, str, len);
-
-	encode = (pv->encode) ? pv->encode : DEF_MBS;
+	variant_to_string(var, str, len);
 
 	switch (encode)
 	{
 	case _GB2312:
 #ifdef _UNICODE
-		n = ucs_to_gb2312(str, len, ((buf) ? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = ucs_to_gb2312(str, len, ((buf) ? (buf + 1) : NULL), max);
 #else
-		n = mbs_to_gb2312(str, len, ((buf)? buf + VARIANT_HDR_SIZE: NULL), max - VARIANT_HDR_SIZE);
+		n = mbs_to_gb2312(str, len, ((buf)? (buf + 1): NULL), max);
 #endif
 		break;
 	case _UTF8:
 #ifdef _UNICODE
-		n = ucs_to_utf8(str, len, ((buf) ? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = ucs_to_utf8(str, len, ((buf) ? (buf + 1) : NULL), max);
 #else
-		n = mbs_to_utf8(str, len, ((buf)? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = mbs_to_utf8(str, len, ((buf)? (buf + 1) : NULL), max);
 #endif
 		break;
 	case _UTF16_LIT:
 #ifdef _UNICODE
-		n = ucs_to_utf16lit(str, len, ((buf) ? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = ucs_to_utf16lit(str, len, ((buf) ? (buf + 1) : NULL), max);
 #else
-		n = mbs_to_utf16lit(str, len, ((buf)? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = mbs_to_utf16lit(str, len, ((buf)? (buf + 1) : NULL), max);
 #endif
 		break;
 	case _UTF16_BIG:
 #ifdef _UNICODE
-		n = ucs_to_utf16big(str, len, ((buf) ? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = ucs_to_utf16big(str, len, ((buf) ? (buf + 1) : NULL), max);
 #else
-		n = mbs_to_utf16big(str, len, ((buf)? buf + VARIANT_HDR_SIZE : NULL), max - VARIANT_HDR_SIZE);
+		n = mbs_to_utf16big(str, len, ((buf)? (buf + 1) : NULL), max);
 #endif
 		break;
 	}
@@ -888,352 +1211,403 @@ dword_t variant_encode(variant_t* pv, byte_t* buf, dword_t max)
 
 	if (buf)
 	{
-		//variant HDR
-		vv = (pv->vv & 0x7F);
-		PUT_BYTE(buf, 0, vv);
-		PUT_ENCODE(buf, 1, encode);
-		PUT_DWORD_LOC(buf, 4, n);
+		buf[0] = (byte_t)variant_get_type(var);
 	}
 
-	return (n + VARIANT_HDR_SIZE);
+	return (n + 1);
 }
 
-dword_t variant_decode(variant_t* pv, const byte_t* buf)
+void variant_decode(variant_t var, int encode, const byte_t* buf, dword_t len)
 {
-	dword_t len;
 	int n;
 	tchar_t* str;
-	int encode;
+	byte_t type;
 
-	if (!buf) return 0;
-
-	if (pv)
+	if (!buf || !len)
 	{
-		variant_to_null(pv);
-
-		pv->vv = GET_BYTE(buf, 0);
-		pv->encode = GET_ENCODE(buf, 1);
+		if (var)
+		{
+			type = variant_get_type(var);
+			variant_to_null(var, type);
+		}
+		return;
 	}
 
-	encode = GET_ENCODE(buf, 1);
-	len = GET_DWORD_LOC(buf, 4);
-
-	if (pv)
+	if (var)
 	{
-		switch (encode)
-		{
-		case _GB2312:
-#ifdef _UNICODE
-			n = gb2312_to_ucs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#else
-			n = gb2312_to_mbs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#endif
-			break;
-		case _UTF8:
-#ifdef _UNICODE
-			n = utf8_to_ucs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#else
-			n = utf8_to_mbs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#endif
-			break;
-		case _UTF16_LIT:
-#ifdef _UNICODE
-			n = utf16lit_to_ucs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#else
-			n = utf16lit_to_mbs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#endif
-			break;
-		case _UTF16_BIG:
-#ifdef _UNICODE
-			n = utf16big_to_ucs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#else
-			n = utf16big_to_mbs(buf + VARIANT_HDR_SIZE, len, NULL, MAX_LONG);
-#endif
-			break;
-		}
-
-		str = xsalloc(n + 1);
-
-		switch (encode)
-		{
-		case _GB2312:
-#ifdef _UNICODE
-			n = gb2312_to_ucs(buf + VARIANT_HDR_SIZE, len, str, n);
-#else
-			n = gb2312_to_mbs(buf + VARIANT_HDR_SIZE, len, str, n);
-#endif
-			break;
-		case _UTF8:
-#ifdef _UNICODE
-			n = utf8_to_ucs(buf + VARIANT_HDR_SIZE, len, str, n);
-#else
-			n = utf8_to_mbs(buf + VARIANT_HDR_SIZE, len, str, n);
-#endif
-			break;
-		case _UTF16_LIT:
-#ifdef _UNICODE
-			n = utf16lit_to_ucs(buf + VARIANT_HDR_SIZE, len, str, n);
-#else
-			n = utf16lit_to_mbs(buf + VARIANT_HDR_SIZE, len, str, n);
-#endif
-			break;
-		case _UTF16_BIG:
-#ifdef _UNICODE
-			n = utf16big_to_ucs(buf + VARIANT_HDR_SIZE, len, str, n);
-#else
-			n = utf16big_to_mbs(buf + VARIANT_HDR_SIZE, len, str, n);
-#endif
-			break;
-		}
-
-		variant_from_string(pv, str, n);
-
-		xsfree(str);
+		type = buf[0];
+		variant_realloc(var, type, 0);
 	}
 
-	return (len + VARIANT_HDR_SIZE);
+	switch (encode)
+	{
+	case _GB2312:
+#ifdef _UNICODE
+		n = gb2312_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
+#else
+		n = gb2312_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
+#endif
+		break;
+	case _UTF8:
+#ifdef _UNICODE
+		n = utf8_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
+#else
+		n = utf8_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
+#endif
+		break;
+	case _UTF16_LIT:
+#ifdef _UNICODE
+		n = utf16lit_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
+#else
+		n = utf16lit_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
+#endif
+		break;
+	case _UTF16_BIG:
+#ifdef _UNICODE
+		n = utf16big_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
+#else
+		n = utf16big_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
+#endif
+		break;
+	}
+
+	str = xsalloc(n + 1);
+
+	switch (encode)
+	{
+	case _GB2312:
+#ifdef _UNICODE
+		n = gb2312_to_ucs((buf + 1), (len - 1), str, n);
+#else
+		n = gb2312_to_mbs((buf + 1), (len - 1), str, n);
+#endif
+		break;
+	case _UTF8:
+#ifdef _UNICODE
+		n = utf8_to_ucs((buf + 1), (len - 1), str, n);
+#else
+		n = utf8_to_mbs((buf + 1), (len - 1), str, n);
+#endif
+		break;
+	case _UTF16_LIT:
+#ifdef _UNICODE
+		n = utf16lit_to_ucs((buf + 1), (len - 1), str, n);
+#else
+		n = utf16lit_to_mbs((buf + 1), (len - 1), str, n);
+#endif
+		break;
+	case _UTF16_BIG:
+#ifdef _UNICODE
+		n = utf16big_to_ucs((buf + 1), (len - 1), str, n);
+#else
+		n = utf16big_to_mbs((buf + 1), (len - 1), str, n);
+#endif
+		break;
+	}
+
+	if (var)
+	{
+		variant_from_string(var, str, n);
+	}
+
+	xsfree(str);
 }
 
-void variant_hash32(variant_t* pv, key32_t* pkey)
+void variant_hash32(variant_t var, key32_t* pkey)
 {
-	switch (pv->vv & 0x7F)
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t, n, sw;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	n = pvar->count;
+	d = pvar->data;
+
+	switch (t & 0x7F)
 	{
-	case VV_NULL:
-		xmem_zero((void*)pkey, sizeof(key32_t));
-		break;
 	case VV_BOOL:
-		murhash32((byte_t*)&pv->bool_one, sizeof(bool_t), (byte_t*)pkey);
+		sw = sizeof(bool_t);
 		break;
 	case VV_BYTE:
-		murhash32((byte_t*)&pv->byte_one, 1, (byte_t*)pkey);
+		sw = sizeof(byte_t);
 		break;
 	case VV_SCHAR:
-		murhash32((byte_t*)&pv->schar_one, sizeof(schar_t), (byte_t*)pkey);
+		sw = sizeof(schar_t);
 		break;
 	case VV_WCHAR:
-		murhash32((byte_t*)&pv->wchar_one, sizeof(wchar_t), (byte_t*)pkey);
+		sw = sizeof(wchar_t);
 		break;
 	case VV_SHORT:
-		murhash32((byte_t*)&pv->short_one, sizeof(short), (byte_t*)pkey);
+		sw = sizeof(short);
 		break;
 	case VV_INT:
-		murhash32((byte_t*)&pv->int_one, sizeof(int), (byte_t*)pkey);
+		sw = sizeof(int);
 		break;
 	case VV_LONG:
-		murhash32((byte_t*)&pv->long_one, sizeof(long long), (byte_t*)pkey);
+		sw = sizeof(long long);
 		break;
 	case VV_FLOAT:
-		murhash32((byte_t*)&pv->float_one, sizeof(float), (byte_t*)pkey);
+		sw = sizeof(float);
 		break;
 	case VV_DOUBLE:
-		murhash32((byte_t*)&pv->double_one, sizeof(double), (byte_t*)pkey);
+		sw = sizeof(double);
 		break;
 	case VV_STRING:
-		murhash32((byte_t*)pv->string_one, pv->size * sizeof(tchar_t), (byte_t*)pkey);
+		sw = sizeof(tchar_t) * n;
 		break;
 	case VV_BOOL_ARRAY:
-		murhash32((byte_t*)pv->bool_ptr, pv->size * sizeof(bool_t), (byte_t*)pkey);
+		sw = sizeof(bool_t) * n;
 		break;
 	case VV_BYTE_ARRAY:
-		murhash32((byte_t*)pv->byte_ptr, pv->size, (byte_t*)pkey);
+		sw = sizeof(byte_t) * n;
 		break;
 	case VV_SHORT_ARRAY:
-		murhash32((byte_t*)pv->short_ptr, pv->size * sizeof(short), (byte_t*)pkey);
+		sw = sizeof(short) * n;
 		break;
 	case VV_INT_ARRAY:
-		murhash32((byte_t*)pv->int_ptr, pv->size * sizeof(int), (byte_t*)pkey);
+		sw = sizeof(int) * n;
 		break;
 	case VV_LONG_ARRAY:
-		murhash32((byte_t*)pv->long_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
+		sw = sizeof(long long) * n;
 		break;
 	case VV_SCHAR_ARRAY:
-		murhash32((byte_t*)pv->schar_ptr, pv->size * sizeof(schar_t), (byte_t*)pkey);
+		sw = sizeof(schar_t) * n;
 		break;
 	case VV_WCHAR_ARRAY:
-		murhash32((byte_t*)pv->wchar_ptr, pv->size * sizeof(wchar_t), (byte_t*)pkey);
+		sw = sizeof(wchar_t) * n;
 		break;
 	case VV_FLOAT_ARRAY:
-		murhash32((byte_t*)pv->float_ptr, pv->size * sizeof(float), (byte_t*)pkey);
+		sw = sizeof(float) * n;
 		break;
 	case VV_DOUBLE_ARRAY:
-		murhash32((byte_t*)pv->double_ptr, pv->size * sizeof(double), (byte_t*)pkey);
+		sw = sizeof(double) * n;
+		break;
+	case VV_STRING_ARRAY:
+		sw = sizeof(tchar_t) * n;
+		break;
+	default:
+		sw = 0;
 		break;
 	}
+
+	if (sw)
+		murhash32((byte_t*)d, sw, (byte_t*)pkey);
+	else
+		xmem_zero((void*)pkey, sizeof(key32_t));
 }
 
-void variant_hash64(variant_t* pv, key64_t* pkey)
+void variant_hash64(variant_t var, key64_t* pkey)
 {
-	switch (pv->vv & 0x7F)
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t, n, sw;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	n = pvar->count;
+	d = pvar->data;
+
+	switch (t & 0x7F)
 	{
-	case VV_NULL:
+	case VV_BOOL:
+		sw = sizeof(bool_t);
+		break;
+	case VV_BYTE:
+		sw = sizeof(byte_t);
+		break;
+	case VV_SCHAR:
+		sw = sizeof(schar_t);
+		break;
+	case VV_WCHAR:
+		sw = sizeof(wchar_t);
+		break;
+	case VV_SHORT:
+		sw = sizeof(short);
+		break;
+	case VV_INT:
+		sw = sizeof(int);
+		break;
+	case VV_LONG:
+		sw = sizeof(long long);
+		break;
+	case VV_FLOAT:
+		sw = sizeof(float);
+		break;
+	case VV_DOUBLE:
+		sw = sizeof(double);
+		break;
+	case VV_STRING:
+		sw = sizeof(tchar_t) * n;
+		break;
+	case VV_BOOL_ARRAY:
+		sw = sizeof(bool_t) * n;
+		break;
+	case VV_BYTE_ARRAY:
+		sw = sizeof(byte_t) * n;
+		break;
+	case VV_SHORT_ARRAY:
+		sw = sizeof(short) * n;
+		break;
+	case VV_INT_ARRAY:
+		sw = sizeof(int) * n;
+		break;
+	case VV_LONG_ARRAY:
+		sw = sizeof(long long) * n;
+		break;
+	case VV_SCHAR_ARRAY:
+		sw = sizeof(schar_t) * n;
+		break;
+	case VV_WCHAR_ARRAY:
+		sw = sizeof(wchar_t) * n;
+		break;
+	case VV_FLOAT_ARRAY:
+		sw = sizeof(float) * n;
+		break;
+	case VV_DOUBLE_ARRAY:
+		sw = sizeof(double) * n;
+		break;
+	case VV_STRING_ARRAY:
+		sw = sizeof(tchar_t) * n;
+		break;
+	default:
+		sw = 0;
+		break;
+	}
+
+	if (sw)
+		siphash64((byte_t*)d, sw, (byte_t*)pkey);
+	else
 		xmem_zero((void*)pkey, sizeof(key64_t));
-		break;
-	case VV_BOOL:
-		siphash64((byte_t*)&pv->bool_one, sizeof(bool_t), (byte_t*)pkey);
-		break;
-	case VV_BYTE:
-		siphash64((byte_t*)&pv->byte_one, 1, (byte_t*)pkey);
-		break;
-	case VV_SCHAR:
-		siphash64((byte_t*)&pv->schar_one, sizeof(schar_t), (byte_t*)pkey);
-		break;
-	case VV_WCHAR:
-		siphash64((byte_t*)&pv->wchar_one, sizeof(wchar_t), (byte_t*)pkey);
-		break;
-	case VV_SHORT:
-		siphash64((byte_t*)&pv->short_one, sizeof(short), (byte_t*)pkey);
-		break;
-	case VV_INT:
-		siphash64((byte_t*)&pv->int_one, sizeof(int), (byte_t*)pkey);
-		break;
-	case VV_LONG:
-		siphash64((byte_t*)&pv->long_one, sizeof(long long), (byte_t*)pkey);
-		break;
-	case VV_FLOAT:
-		siphash64((byte_t*)&pv->float_one, sizeof(float), (byte_t*)pkey);
-		break;
-	case VV_DOUBLE:
-		siphash64((byte_t*)&pv->double_one, sizeof(double), (byte_t*)pkey);
-		break;
-	case VV_STRING:
-		siphash64((byte_t*)pv->string_one, pv->size * sizeof(tchar_t), (byte_t*)pkey);
-		break;
-	case VV_BOOL_ARRAY:
-		siphash64((byte_t*)pv->bool_ptr, pv->size * sizeof(bool_t), (byte_t*)pkey);
-		break;
-	case VV_BYTE_ARRAY:
-		siphash64((byte_t*)pv->byte_ptr, pv->size, (byte_t*)pkey);
-		break;
-	case VV_INT_ARRAY:
-		siphash64((byte_t*)pv->int_ptr, pv->size * sizeof(int), (byte_t*)pkey);
-		break;
-	case VV_LONG_ARRAY:
-		siphash64((byte_t*)pv->long_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
-		break;
-	case VV_SCHAR_ARRAY:
-		siphash64((byte_t*)pv->schar_ptr, pv->size * sizeof(schar_t), (byte_t*)pkey);
-		break;
-	case VV_WCHAR_ARRAY:
-		siphash64((byte_t*)pv->wchar_ptr, pv->size * sizeof(wchar_t), (byte_t*)pkey);
-		break;
-	case VV_FLOAT_ARRAY:
-		siphash64((byte_t*)pv->float_ptr, pv->size * sizeof(float), (byte_t*)pkey);
-		break;
-	case VV_DOUBLE_ARRAY:
-		siphash64((byte_t*)pv->double_ptr, pv->size * sizeof(double), (byte_t*)pkey);
-		break;
-	}
 }
 
-void variant_hash128(variant_t* pv, key128_t* pkey)
+void variant_hash128(variant_t var, key128_t* pkey)
 {
-	switch (pv->vv & 0x7F)
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	void *d;
+	int t, n, sw;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
+
+	t = pvar->type;
+	n = pvar->count;
+	d = pvar->data;
+
+	switch (t & 0x7F)
 	{
-	case VV_NULL:
-		xmem_zero((void*)pkey, sizeof(key128_t));
-		break;
 	case VV_BOOL:
-		murhash128((byte_t*)&pv->bool_one, sizeof(bool_t), (byte_t*)pkey);
+		sw = sizeof(bool_t);
 		break;
 	case VV_BYTE:
-		murhash128((byte_t*)&pv->byte_one, 1, (byte_t*)pkey);
+		sw = sizeof(byte_t);
 		break;
 	case VV_SCHAR:
-		murhash128((byte_t*)&pv->schar_one, sizeof(schar_t), (byte_t*)pkey);
+		sw = sizeof(schar_t);
 		break;
 	case VV_WCHAR:
-		murhash128((byte_t*)&pv->wchar_one, sizeof(wchar_t), (byte_t*)pkey);
+		sw = sizeof(wchar_t);
 		break;
 	case VV_SHORT:
-		murhash128((byte_t*)&pv->short_one, sizeof(short), (byte_t*)pkey);
+		sw = sizeof(short);
 		break;
 	case VV_INT:
-		murhash128((byte_t*)&pv->int_one, sizeof(int), (byte_t*)pkey);
+		sw = sizeof(int);
 		break;
 	case VV_LONG:
-		murhash128((byte_t*)&pv->long_one, sizeof(long long), (byte_t*)pkey);
+		sw = sizeof(long long);
 		break;
 	case VV_FLOAT:
-		murhash128((byte_t*)&pv->float_one, sizeof(float), (byte_t*)pkey);
+		sw = sizeof(float);
 		break;
 	case VV_DOUBLE:
-		murhash128((byte_t*)&pv->double_one, sizeof(double), (byte_t*)pkey);
+		sw = sizeof(double);
 		break;
 	case VV_STRING:
-		murhash128((byte_t*)pv->string_one, pv->size * sizeof(tchar_t), (byte_t*)pkey);
+		sw = sizeof(tchar_t) * n;
 		break;
 	case VV_BOOL_ARRAY:
-		murhash128((byte_t*)pv->bool_ptr, pv->size * sizeof(bool_t), (byte_t*)pkey);
+		sw = sizeof(bool_t) * n;
 		break;
 	case VV_BYTE_ARRAY:
-		murhash128((byte_t*)pv->byte_ptr, pv->size, (byte_t*)pkey);
+		sw = sizeof(byte_t) * n;
+		break;
+	case VV_SHORT_ARRAY:
+		sw = sizeof(short) * n;
 		break;
 	case VV_INT_ARRAY:
-		murhash128((byte_t*)pv->int_ptr, pv->size * sizeof(int), (byte_t*)pkey);
+		sw = sizeof(int) * n;
 		break;
 	case VV_LONG_ARRAY:
-		murhash128((byte_t*)pv->long_ptr, pv->size * sizeof(long long), (byte_t*)pkey);
+		sw = sizeof(long long) * n;
 		break;
 	case VV_SCHAR_ARRAY:
-		murhash128((byte_t*)pv->schar_ptr, pv->size * sizeof(schar_t), (byte_t*)pkey);
+		sw = sizeof(schar_t) * n;
 		break;
 	case VV_WCHAR_ARRAY:
-		murhash128((byte_t*)pv->wchar_ptr, pv->size * sizeof(wchar_t), (byte_t*)pkey);
+		sw = sizeof(wchar_t) * n;
 		break;
 	case VV_FLOAT_ARRAY:
-		murhash128((byte_t*)pv->float_ptr, pv->size * sizeof(float), (byte_t*)pkey);
+		sw = sizeof(float) * n;
 		break;
 	case VV_DOUBLE_ARRAY:
-		murhash128((byte_t*)pv->double_ptr, pv->size * sizeof(double), (byte_t*)pkey);
+		sw = sizeof(double) * n;
+		break;
+	case VV_STRING_ARRAY:
+		sw = sizeof(tchar_t) * n;
+		break;
+	default:
+		sw = 0;
 		break;
 	}
+
+	if (sw)
+		murhash128((byte_t*)d, sw, (byte_t*)pkey);
+	else
+		xmem_zero((void*)pkey, sizeof(key128_t));
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 void test_variant(void)
 {
-	variant_t v1 = { 0 };
-	variant_t v2 = { 0 };
+	variant_t v1 = variant_alloc(VV_STRING);
+	variant_t v2 = variant_alloc(VV_STRING);
 
-	XDL_ASSERT(variant_comp(&v1, &v2) == 0);
+	XDL_ASSERT(variant_comp(v1, v2) == 0);
 
-	v1.vv = VV_SCHAR_ARRAY;
-	v1.encode = DEF_MBS;
-	variant_from_string(&v1, _T("test1"), -1);
-	v2.vv = VV_SCHAR_ARRAY;
-	v2.encode = DEF_MBS;
-	variant_from_string(&v2, _T("test2"), -1);
+	variant_from_string(v1, _T("test1"), -1);
+	variant_from_string(v2, _T("test2"), -1);
 
-	XDL_ASSERT(variant_comp(&v1, &v2) < 0);
+	XDL_ASSERT(variant_comp(v1, v2) < 0);
 
-	variant_to_null(&v1);
-	variant_to_null(&v2);
+	variant_free(v1);
+	variant_free(v2);
 
-	v1.vv = VV_INT;
-	variant_from_string(&v1, _T("123456789"), -1);
+	v1 = variant_alloc(VV_INT);
+	v2 = variant_alloc(VV_INT);
+	variant_from_string(v1, _T("123456789"), -1);
 
 	tchar_t token[NUM_LEN + 1];
-	variant_to_string(&v1, token, NUM_LEN);
+	variant_to_string(v1, token, NUM_LEN);
 
-	v2.vv = VV_INT;
-	variant_from_string(&v2, token, -1);
+	variant_from_string(v2, token, -1);
 
-	XDL_ASSERT(variant_comp(&v1, &v2) == 0);
+	XDL_ASSERT(variant_comp(v1, v2) == 0);
 
 	byte_t* buf;
 	dword_t len;
-	len = variant_encode(&v1, NULL, MAX_LONG);
+	len = variant_encode(v1, _UTF8, NULL, MAX_LONG);
 	buf = (byte_t*)xmem_alloc(len);
-	variant_encode(&v1, buf, len);
+	variant_encode(v1, _UTF8, buf, len);
 
-	len = variant_decode(NULL, buf);
-	variant_decode(&v2, buf);
+	variant_decode(v2, _UTF8, buf, len);
 
-	XDL_ASSERT(variant_comp(&v1, &v2) == 0);
+	XDL_ASSERT(variant_comp(v1, v2) == 0);
 
 	xmem_free(buf);
 
-	variant_to_null(&v1);
-	variant_to_null(&v2);
+	variant_free(v1);
+	variant_free(v2);
 }
 #endif

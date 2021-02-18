@@ -37,22 +37,22 @@ LICENSE.GPL3 for more details.
 #include "xdlstd.h"
 
 
-typedef struct _block_t{
-	xhand_head head;		//reserved for xhand_t
+typedef struct _block_context{
+	handle_head head;		//reserved for xhand_t
 
 	byte_t** block;
 	dword_t write_bytes;
 	dword_t read_bytes;
-}block_t;
+}block_context;
 
 
 xhand_t xblock_open(byte_t** pp)
 {
-	block_t* ppi;
+	block_context* ppi;
 
 	XDL_ASSERT(pp != NULL);
 
-	ppi = (block_t*)xmem_alloc(sizeof(block_t));
+	ppi = (block_context*)xmem_alloc(sizeof(block_context));
 	ppi->head.tag = _HANDLE_BLOCK;
 	ppi->block = pp;
 	ppi->read_bytes = 0;
@@ -63,7 +63,7 @@ xhand_t xblock_open(byte_t** pp)
 
 byte_t** xblock_handle(xhand_t block)
 {
-	block_t* ppi = TypePtrFromHead(block_t, block);
+	block_context* ppi = TypePtrFromHead(block_context, block);
 
 	XDL_ASSERT(block && block->tag == _HANDLE_BLOCK);
 
@@ -72,7 +72,7 @@ byte_t** xblock_handle(xhand_t block)
 
 byte_t** xblock_close(xhand_t block)
 {
-	block_t* ppi = TypePtrFromHead(block_t, block);
+	block_context* ppi = TypePtrFromHead(block_context, block);
 	byte_t** pp;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_BLOCK);
@@ -86,7 +86,7 @@ byte_t** xblock_close(xhand_t block)
 
 bool_t xblock_read(xhand_t block, byte_t* buf, dword_t* pb)
 {
-	block_t* ppt = TypePtrFromHead(block_t, block);
+	block_context* ppt = TypePtrFromHead(block_context, block);
 	dword_t size;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_BLOCK);
@@ -103,7 +103,7 @@ bool_t xblock_read(xhand_t block, byte_t* buf, dword_t* pb)
 
 bool_t xblock_write(xhand_t block, const byte_t* buf, dword_t* pb)
 {
-	block_t* ppt = TypePtrFromHead(block_t, block);
+	block_context* ppt = TypePtrFromHead(block_context, block);
 	dword_t size;
 
 	XDL_ASSERT(block && block->tag == _HANDLE_BLOCK);

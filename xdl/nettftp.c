@@ -62,10 +62,10 @@ typedef struct _tftp_pdu_t{
 	byte_t payload[TFTP_PDV_SIZE];
 }tftp_pdu_t;
 
-typedef struct _xtftp_t{
-	xhand_head head;		//head for xhand_t
+typedef struct _tftp_context{
+	handle_head head;		//head for xhand_t
 
-	if_bio_t* pif;
+	bio_interface* pif;
 
 	int type;
 	havege_state havs;
@@ -77,11 +77,11 @@ typedef struct _xtftp_t{
 
 	sword_t errcode;
 	tchar_t errtext[ERR_LEN + 1];
-}xtftp_t;
+}tftp_context;
 
 /***********************************************************************************************/
 
-static unsigned short _tftp_port(xtftp_t* pftp)
+static unsigned short _tftp_port(tftp_context* pftp)
 {
 	unsigned short port = 0;
 
@@ -383,7 +383,7 @@ static void _tftp_clear_pdu(tftp_pdu_t* pdu)
 
 /****************************************************************************************************/
 
-bool_t _tftp_send_request(xtftp_t* ppt)
+bool_t _tftp_send_request(tftp_context* ppt)
 {
 	tftp_pdu_t* pdu;
 
@@ -426,7 +426,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _tftp_recv_request(xtftp_t* ppt)
+bool_t _tftp_recv_request(tftp_context* ppt)
 {
 	tftp_pdu_t* pdu;
 
@@ -494,7 +494,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _tftp_send_response(xtftp_t* ppt)
+bool_t _tftp_send_response(tftp_context* ppt)
 {
 	tftp_pdu_t* pdu;
 
@@ -536,7 +536,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _tftp_recv_response(xtftp_t* ppt)
+bool_t _tftp_recv_response(tftp_context* ppt)
 {
 	tftp_pdu_t* pdu;
 
@@ -590,7 +590,7 @@ ONERROR:
 
 xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 {
-	xtftp_t* pftp = NULL;
+	tftp_context* pftp = NULL;
 
 	tchar_t *potoat, *hostat, *portat, *objat, *qryat;
 	int potolen, hostlen, portlen, objlen, qrylen;
@@ -604,7 +604,7 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 
 	TRY_CATCH;
 
-	pftp = (xtftp_t*)xmem_alloc(sizeof(xtftp_t));
+	pftp = (tftp_context*)xmem_alloc(sizeof(tftp_context));
 	pftp->head.tag = _HANDLE_TFTP;
 
 	havege_init(&pftp->havs);
@@ -641,7 +641,7 @@ xhand_t xtftp_client(const tchar_t* method, const tchar_t* url)
 
 	xudp_set_package(bio, TFTP_PKG_SIZE);
 
-	pftp->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pftp->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(bio, pftp->pif);
 	bio = NULL;
 
@@ -676,13 +676,13 @@ ONERROR:
 
 xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size)
 {
-	xtftp_t* pftp = NULL;
+	tftp_context* pftp = NULL;
 	unsigned short bind;
 	xhand_t bio = NULL;
 
 	TRY_CATCH;
 
-	pftp = (xtftp_t*)xmem_alloc(sizeof(xtftp_t));
+	pftp = (tftp_context*)xmem_alloc(sizeof(tftp_context));
 	pftp->head.tag = _HANDLE_TFTP;
 
 	pftp->type = _XTFTP_TYPE_SRV;
@@ -708,7 +708,7 @@ xhand_t	xtftp_server(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	xudp_set_package(bio, TFTP_PKG_SIZE);
 
-	pftp->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pftp->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(bio, pftp->pif);
 	bio = NULL;
 
@@ -734,7 +734,7 @@ ONERROR:
 
 xhand_t xtftp_bio(xhand_t tftp)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -743,7 +743,7 @@ xhand_t xtftp_bio(xhand_t tftp)
 
 void xtftp_close(xhand_t tftp)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -758,7 +758,7 @@ void xtftp_close(xhand_t tftp)
 
 int xtftp_method(xhand_t tftp, tchar_t* buf, int max)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	int len;
 	tftp_pdu_t* pdu;
 
@@ -782,7 +782,7 @@ int xtftp_method(xhand_t tftp, tchar_t* buf, int max)
 
 void xtftp_set_isdir(xhand_t tftp, bool_t isdir)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -794,7 +794,7 @@ void xtftp_set_isdir(xhand_t tftp, bool_t isdir)
 
 bool_t xtftp_get_isdir(xhand_t tftp)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -809,7 +809,7 @@ bool_t xtftp_get_isdir(xhand_t tftp)
 
 void xtftp_set_filesize(xhand_t tftp, dword_t size)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -821,7 +821,7 @@ void xtftp_set_filesize(xhand_t tftp, dword_t size)
 
 dword_t xtftp_get_filesize(xhand_t tftp)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -836,7 +836,7 @@ dword_t xtftp_get_filesize(xhand_t tftp)
 
 void xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -848,7 +848,7 @@ void xtftp_set_filetime(xhand_t tftp, const tchar_t* ftime)
 
 void xtftp_get_filetime(xhand_t tftp, tchar_t* ftime)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -863,7 +863,7 @@ void xtftp_get_filetime(xhand_t tftp, tchar_t* ftime)
 
 void xtftp_set_filename(xhand_t tftp, const tchar_t* fname)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -875,7 +875,7 @@ void xtftp_set_filename(xhand_t tftp, const tchar_t* fname)
 
 void xtftp_get_filename(xhand_t tftp, tchar_t* fname)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
@@ -890,7 +890,7 @@ void xtftp_get_filename(xhand_t tftp, tchar_t* fname)
 
 bool_t xtftp_connect(xhand_t tftp)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 
 	XDL_ASSERT(tftp && tftp->tag == _HANDLE_TFTP);
 
@@ -961,7 +961,7 @@ ONERROR:
 
 bool_t	xtftp_accept(xhand_t tftp)
 {
-	xtftp_t* pftp = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* pftp = TypePtrFromHead(tftp_context, tftp);
 
 	tftp_pdu_t* pdu;
 	int pdu_type;
@@ -1001,7 +1001,7 @@ ONERROR:
 
 bool_t xtftp_recv(xhand_t tftp, byte_t* buf, dword_t* pch)
 {
-	xtftp_t* ppt = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* ppt = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	byte_t pkg_buf[TFTP_PKG_SIZE] = { 0 };
@@ -1088,7 +1088,7 @@ ONERROR:
 
 bool_t xtftp_send(xhand_t tftp, const byte_t* buf, dword_t *pch)
 {
-	xtftp_t* ppt = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* ppt = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 
 	byte_t pkg_buf[TFTP_PKG_SIZE] = { 0 };
@@ -1165,7 +1165,7 @@ ONERROR:
 
 bool_t xtftp_flush(xhand_t tftp)
 {
-	xtftp_t* ppt = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* ppt = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 	byte_t pkg_buf[TFTP_PKG_SIZE] = { 0 };
 	dword_t pos = 0;
@@ -1229,7 +1229,7 @@ ONERROR:
 
 void xtftp_abort(xhand_t tftp, int errcode)
 {
-	xtftp_t* ppt = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* ppt = TypePtrFromHead(tftp_context, tftp);
 
 	tftp_pdu_t* pdu;
 
@@ -1269,7 +1269,7 @@ ONERROR:
 
 bool_t xtftp_head(xhand_t tftp)
 {
-	xtftp_t* ppt = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* ppt = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 	byte_t pkg_buf[TFTP_PKG_SIZE] = { 0 };
 	dword_t pos = 0;
@@ -1313,7 +1313,7 @@ ONERROR:
 
 bool_t xtftp_delete(xhand_t tftp)
 {
-	xtftp_t* ppt = TypePtrFromHead(xtftp_t, tftp);
+	tftp_context* ppt = TypePtrFromHead(tftp_context, tftp);
 	tftp_pdu_t* pdu;
 	byte_t pkg_buf[TFTP_PKG_SIZE] = { 0 };
 	dword_t pos = 0;

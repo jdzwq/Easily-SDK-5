@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_VIEW) 
 
-typedef struct _MEMOWORDOPERATOR{
+typedef struct _memo_scan_context{
 	bool_t paged;
 	int page;
 
@@ -54,23 +54,23 @@ typedef struct _MEMOWORDOPERATOR{
 	PF_TEXT_SIZE pf_text_size;
 	void* ctx;
 	const xfont_t* pxf;
-}MEMOWORDOPERATOR;
+}memo_scan_context;
 
 //#define MEMOWORD_INDICATOR_NEXT_RETURN	-3
 #define MEMOWORD_INDICATOR_NEXT_LINE	-2
 #define MEMOWORD_INDICATOR_NEXT_INDENT	-1
 #define MEMOWORD_INDICATOR_NEXT_WORD	0
 
-bool_t call_memo_is_paging(void* param)
+bool_t call_memo_is_paging(void* ctx)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 
 	return pscan->paged;
 }
 
-bool_t call_memo_break_page(void* param)
+bool_t call_memo_break_page(void* ctx)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 	page_cator_t cat = { 0 };
 	int i, pages = 0;
 	link_t_ptr nlk;
@@ -125,9 +125,9 @@ bool_t call_memo_break_page(void* param)
 	return 1;
 }
 
-int call_memo_next_page(void* param)
+int call_memo_next_page(void* ctx)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 
 	page_cator_t cat = { 0 };
 	int pages;
@@ -204,9 +204,9 @@ int call_memo_next_page(void* param)
 }
 
 
-int call_memo_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom)
+int call_memo_next_words(void* ctx, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 	int n;
 	xsize_t xs;
 
@@ -340,9 +340,9 @@ int call_memo_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 	return n;
 }
 
-int call_memo_insert_words(void* param, tchar_t* pch, xsize_t* pse)
+int call_memo_insert_words(void* ctx, tchar_t* pch, xsize_t* pse)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 	int n;
 	xsize_t xs = { 0 };
 	link_t_ptr plk;
@@ -533,9 +533,9 @@ int call_memo_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 	return n;
 }
 
-int call_memo_delete_words(void* param)
+int call_memo_delete_words(void* ctx)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 	int n;
 	link_t_ptr nxt;
 
@@ -611,24 +611,24 @@ int call_memo_delete_words(void* param)
 	return 0;
 }
 
-void call_memo_cur_object(void* param, void** pobj)
+void call_memo_cur_object(void* ctx, void** pobj)
 {
-	MEMOWORDOPERATOR* pscan = (MEMOWORDOPERATOR*)param;
+	memo_scan_context* pscan = (memo_scan_context*)ctx;
 
 	*pobj = (void*)pscan->nlk;
 }
 
-void scan_memo_text(link_t_ptr ptr, const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_memo_text(link_t_ptr ptr, const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
-	MEMOWORDOPERATOR ro = { 0 };
-	if_wordscan_t it = { 0 };
+	memo_scan_context ro = { 0 };
+	wordscan_interface it = { 0 };
 
 	ro.memo = ptr;
 	ro.pf_text_size = pif->pf_measure_size;
 	ro.ctx = pif->ctx;
 	ro.pxf = pxf;
 
-	it.param = (void*)&ro;
+	it.ctx = (void*)&ro;
 	it.pf_is_paging = call_memo_is_paging;
 	it.pf_cur_object = call_memo_cur_object;
 	it.pf_delete_word = call_memo_delete_words;

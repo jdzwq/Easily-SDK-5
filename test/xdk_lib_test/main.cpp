@@ -159,11 +159,11 @@ void test_dir()
         printf("find file: %s\n", fi.file_name);
     }
 
-    _tstrcat(path,_T("/test/mydir"));
+    xscat(path,_T("/test/mydir"));
     (*if_file.pf_directory_open)(path, FILE_OPEN_CREATE);
 
 }*/
-/*
+
 void test_name_pipe()
 {
     if_pipe_t if_pipe = { 0 };
@@ -230,7 +230,7 @@ void test_process()
     (*if_proc.pf_get_envvar)(_T("XSERVICE_ROOT"), path, PATH_LEN);
     printf("service path: %s\n", path);
 
-    _tstrcat(path, _T("/../sbin/api/libwww_api.dylib"));
+    xscat(path, _T("/../sbin/api/libwww_api.dylib"));
     
     typedef void (*PF_DEFAULT_XPEN)(xpen_t* pxp);
     res_modu_t dl = (*if_proc.pf_load_library)(path);
@@ -252,11 +252,11 @@ void test_pipe()
     (*if_proc.pf_create_process)(_T("./xdk_child_test"), _T("pipe"), 1, &pi);
     
     tchar_t buf[20] = {0};
-    _tstrcpy(buf,_T("hello word!"));
+    xscpy(buf,_T("hello word!"));
     
     async_t over = {0};
     
-    dword_t dw = _tstrlen(buf);
+    dword_t dw = xslen(buf);
     if(!(*if_pipe.pf_pipe_write)(pi.pip_write, buf, dw, &over))
         printf("parent error : %s\n", strerror(errno));
     else
@@ -343,7 +343,37 @@ void test_cache()
     (*if_memo.pf_cache_close)(p);
 }
 
-void test_share()
+void test_share_cli()
+{
+    if_share_t if_share = { 0 };
+    
+    xdk_impl_share(&if_share);
+
+    res_file_t ch = (*if_share.pf_share_cli)(_T("mytest"),MAX_LONG, FILE_OPEN_CREATE);
+    if(!ch)
+        printf("child error : %s\n", strerror(errno));
+
+    char buf[4096] = {0};
+    dword_t dw = 0;
+    
+    strcpy(buf, "hello word!");
+    if(!(*if_share.pf_share_write)(ch, 0, buf, 4096, &dw))
+        printf("child error : %s\n", strerror(errno));
+    else
+        printf("child write : %s\n", buf);
+
+    memset((void*)buf,0,4096);
+    dw = 0;
+        
+    if(!(*if_share.pf_share_read)(ch, 0, buf, 4096, &dw))
+        printf("child error : %s\n", strerror(errno));
+    else
+        printf("child read : %s\n", buf);
+    
+    (*if_share.pf_share_close)(_T("mytest"), ch);
+}
+
+void test_share_srv()
 {
     if_share_t if_share = { 0 };
     
@@ -371,7 +401,7 @@ void test_share()
     
     if(pid == 0)
     {
-        res_file_t ch = (*if_share.pf_share_cli)(_T("mytest"),1024);
+        res_file_t ch = (*if_share.pf_share_cli)(_T("mytest"),1024, FILE_OPEN_CREATE);
         if(!ch)
             printf("child error : %s\n", strerror(errno));
         
@@ -475,8 +505,8 @@ void test_cons()
     else
         printf("device : %s\n", cname);
     
-    _tstrcat(cname,_T("\n"));
-    dword_t len = _tstrlen(cname);
+    xscat(cname,_T("\n"));
+    dword_t len = xslen(cname);
     
     if((*if_cons.pf_cons_write)(con, cname, len, &len))
         printf("master write : %s\n", cname);
@@ -581,7 +611,7 @@ void test_comm()
     (*if_comm.pf_comm_close)(com);
     
 }
-
+/*
 void test_context()
 {
     if_context_t if_context = { 0 };
@@ -694,9 +724,11 @@ typedef struct _timer_param{
 
 static void _timer_proc(void* pa, bool_t b)
 {
+    bool_t rt;
+
     timer_param* ptp = (timer_param*)pa;
     
-    bool_t rt = (*if_timer.pf_alter_timer)(ptp->rq,ptp->rt,2000,1000);
+    rt = (*if_timer.pf_alter_timer)(ptp->rq,ptp->rt,2000,1000);
 
     ptp->count += 1;
 
@@ -733,7 +765,7 @@ int main(int argc, const char * argv[]) {
     
     //test_thread_criti();
 
-    test_thread_mutex();
+    //test_thread_mutex();
 
     //test_date();
     
@@ -759,7 +791,7 @@ int main(int argc, const char * argv[]) {
     
     //test_block();
     
-    //test_share();
+    test_share_cli();
     
     //test_mbcs();
     

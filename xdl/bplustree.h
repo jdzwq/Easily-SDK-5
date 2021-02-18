@@ -35,6 +35,8 @@ LICENSE.GPL3 for more details.
 #include "xdldef.h"
 #include "variant.h"
 
+/*enum bplus node callback function*/
+typedef bool_t(*CALLBACK_ENUMBPLUSENTITY)(variant_t key, object_t val, void* pv);
 
 #ifdef	__cplusplus
 extern "C" {
@@ -100,7 +102,7 @@ EXP_API bool_t find_bplus_entity(link_t_ptr ptr, variant_t var, object_t val);
 @INPUT void* param: the parameter translate into callback function.
 @RETURN void: none.
 */
-EXP_API void enum_bplus_entity(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* param);
+EXP_API void enum_bplus_entity(link_t_ptr ptr, CALLBACK_ENUMBPLUSENTITY pf, void* param);
 
 /*
 @FUNCTION attach_bplus_index_table: attach a index file table to bplus tree.
@@ -126,7 +128,7 @@ EXP_API link_t_ptr attach_bplus_data_table(link_t_ptr ptr, link_t_ptr ft);
 */
 EXP_API void update_bplus_index_table(link_t_ptr ptr, bool_t b_save);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_bplus_tree();
 	EXP_API void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname);
 #endif

@@ -214,7 +214,7 @@ int calc_status_hint(const xpoint_t* ppt, link_t_ptr ptr,link_t_ptr* pilk)
 	return nHint;
 }
 
-void draw_status(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_status(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr plk;
 	bool_t ali_far;

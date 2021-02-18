@@ -254,9 +254,8 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	https_block_t *pb = NULL;
 	res_modu_t api = NULL;
 	PF_HTTPS_INVOKE pf_invoke = NULL;
-	if_fio_t* xf = NULL;
-	if_bio_t bf = { 0 };
-	stream_t log = NULL;
+
+	loged_interface log = { 0 };
 
 	xdate_t xdt = { 0 };
 
@@ -481,50 +480,26 @@ void _xhttps_dispatch(xhand_t http, void* p)
         printf_path(sz_path, sz_track);
 		xsappend(sz_path, _T("/%s.log"), sz_trace);
 
-		xf = xfile_open(NULL, sz_path, FILE_OPEN_CREATE);
-		if (xf)
-		{
-			get_bio_interface(xf->fd, &bf);
-			log = stream_alloc(&bf);
+		get_loged_interface(sz_path, &log);
+		pb->plg = &log;
 
-			pb->plg = (if_log_t*)xmem_alloc(sizeof(if_log_t));
-			get_log_interface(log, pb->plg);
-		}
+		xscpy(sz_res, _T("["));
+		xhttp_addr_port(http, sz_res + 1);
+		xscat(sz_res, _T("]"));
 
-		if (pb->plg)
-		{
-			xscpy(sz_res, _T("["));
-			xhttp_addr_port(http, sz_res + 1);
-			xscat(sz_res, _T("]"));
-
-			(*(pb->plg->pf_log_title))(pb->plg->log, sz_res, -1);
-		}
+		(*(pb->plg->pf_log_title))(pb->plg->unc, sz_res, -1);
 	}
-
-	pb->pst = (if_post_t*)xmem_alloc(sizeof(if_post_t));
 
 	n_state = (*pf_invoke)(sz_method, pb);
 
 	free_library(api);
 	api = NULL;
 
-	xmem_free(pb->pst);
-	pb->pst = NULL;
-
 	if (pb->plg)
 	{
-		xfile_close(xf);
-		xf = NULL;
-
-		stream_free(log);
-		log = NULL;
-
-		xmem_free(pb->plg);
-		pb->plg = NULL;
-
 		if (n_state < n_trace)
 		{
-			xfile_delete(NULL, sz_path);
+			xfile_delete(NULL, pb->plg->unc);
 		}
 	}
 
@@ -547,24 +522,7 @@ ONERROR:
 	_xhttps_invoke_error(http);
 
 	if (pb)
-	{
-		if (pb->pst)
-			xmem_free(pb->pst);
-
-		if (pb->plg)
-		{
-			xfile_close(xf);
-			xf = NULL;
-
-			stream_free(log);
-			log = NULL;
-
-			xmem_free(pb->plg);
-			pb->plg = NULL;
-		}
-
 		xmem_free(pb);
-	}
     
     if(buf_crt)
         xmem_free(buf_crt);

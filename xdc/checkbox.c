@@ -149,8 +149,8 @@ void hand_checkbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	visual_t rdc;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xbrush(widget, &xb);
@@ -210,7 +210,7 @@ res_win_t checkbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 void checkbox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	checkbox_delta_t* ptd = GETCHECKBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd != NULL);

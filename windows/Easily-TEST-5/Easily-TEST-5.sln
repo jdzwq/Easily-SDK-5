@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdl_file_test", "..\test\xdl_file_test\xdl_file_test.vcxproj", "{D4390FE0-B063-4CF7-A025-374B03FC0AFB}"
 EndProject
@@ -56,6 +56,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdl_telecom_test", "..\test\xdl_telecom_test\xdl_telecom_test.vcxproj", "{126595FF-7ED6-4217-A017-5EF404D6914B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xds", "..\xds\xds.vcxproj", "{21C72CC3-E029-4031-96DB-7EAA23EB58A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xdl_thread_test", "..\test\xdl_thread_test\xdl_thread_test.vcxproj", "{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,6 +243,12 @@ Global
 		{21C72CC3-E029-4031-96DB-7EAA23EB58A5}.Release|Win32.Build.0 = Release|Win32
 		{21C72CC3-E029-4031-96DB-7EAA23EB58A5}.Release|x64.ActiveCfg = Release|x64
 		{21C72CC3-E029-4031-96DB-7EAA23EB58A5}.Release|x64.Build.0 = Release|x64
+		{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}.Debug|Win32.Build.0 = Debug|Win32
+		{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}.Debug|x64.ActiveCfg = Debug|Win32
+		{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}.Release|Win32.ActiveCfg = Release|Win32
+		{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}.Release|Win32.Build.0 = Release|Win32
+		{C6BBE799-2BFF-4F7F-A901-3648F3BFFE67}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

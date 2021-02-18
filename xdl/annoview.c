@@ -167,7 +167,7 @@ int calc_anno_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pplk, int* p
 	return ANNO_HINT_NONE;
 }
 
-void draw_anno(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_anno(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xbrush_t xb = { 0 };

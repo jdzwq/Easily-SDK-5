@@ -94,7 +94,7 @@ int calc_diagram_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_diagram(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_diagram(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xrect_t xr;

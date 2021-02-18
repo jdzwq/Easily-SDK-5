@@ -242,7 +242,7 @@ int calc_proper_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* psec, link
 	return hint;
 }
 
-void draw_proper(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_proper(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr sec, ent;
 	xrect_t xr, xr_draw;

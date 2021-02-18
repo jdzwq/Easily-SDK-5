@@ -284,7 +284,7 @@ int calc_tool_point_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pglk, 
 	return nHint;
 }
 
-void draw_tool(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_tool(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr glk, ilk;
 	xrect_t xrGroup, xrTitle, xrItem, xrClip;

@@ -151,7 +151,7 @@ int calc_form_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pflk)
 	return nHit;
 }
 
-void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
+void draw_form_page(const drawing_interface* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr flk,obj;
 	xrect_t rt, xr;
@@ -569,7 +569,7 @@ void draw_form_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
 	}
 }
 
-int calc_form_pages(const if_drawing_t* pif, link_t_ptr form)
+int calc_form_pages(const drawing_interface* pif, link_t_ptr form)
 {
 	link_t_ptr flk, obj;
 	int pages = 0;

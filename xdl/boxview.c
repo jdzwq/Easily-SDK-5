@@ -45,7 +45,7 @@ LICENSE.GPL3 for more details.
 #define CB_FORMAT_YEARMONTH		_T("Year %d Month %d")
 #endif
 
-void calc_datebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_datebox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float fx, fy;
@@ -59,7 +59,7 @@ void calc_datebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs
 	pxs->fh = fy * (CALENDAR_ROW + 2);
 }
 
-void calc_datebox_day_rect(const if_measure_t* pim, const xfont_t* pxf, const xdate_t* pdt, xrect_t* pxr)
+void calc_datebox_day_rect(const measure_interface* pim, const xfont_t* pxf, const xdate_t* pdt, xrect_t* pxr)
 {
 	int i, j;
 	xsize_t xs;
@@ -98,7 +98,7 @@ void calc_datebox_day_rect(const if_measure_t* pim, const xfont_t* pxf, const xd
 	}
 }
 
-int	calc_datebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, const xdate_t* pdt, int* pday)
+int	calc_datebox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, const xdate_t* pdt, int* pday)
 {
 	xrect_t xr;
 	int i, j;
@@ -164,7 +164,7 @@ int	calc_datebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return DATEBOX_HINT_NONE;
 }
 
-void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pdt)
+void draw_datebox(const drawing_interface* pif, const xfont_t* pxf, const xdate_t* pdt)
 {
 	xface_t xa;
 	xpen_t xp;
@@ -261,7 +261,7 @@ void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pd
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void calc_timebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_timebox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float fx, fy;
@@ -275,7 +275,7 @@ void calc_timebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs
 	pxs->fh = (float)(fy * 3);
 }
 
-int	calc_timebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int	calc_timebox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xrect_t xr;
 	xsize_t xs;
@@ -424,7 +424,7 @@ int	calc_timebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return TIMEBOX_HINT_NONE;
 }
 
-void draw_timebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* ptt)
+void draw_timebox(const drawing_interface* pif, const xfont_t* pxf, const xdate_t* ptt)
 {
 	xfont_t xf;
 	xface_t xa;
@@ -631,7 +631,7 @@ void draw_timebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* pt
 	(*pif->pf_draw_rect)(pif->ctx, &xp, NULL, &xr);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-void calc_listbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
+void calc_listbox_size(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
 {
 	link_t_ptr ent;
 
@@ -665,7 +665,7 @@ void calc_listbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr p
 	}
 }
 
-int calc_listbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
+int calc_listbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 {
 	link_t_ptr ent;
 	xrect_t xr;
@@ -711,7 +711,7 @@ int calc_listbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return LISTBOX_HINT_NONE;
 }
 
-void calc_listbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_listbox_item_rect(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr ent;
 	xrect_t xr;
@@ -755,7 +755,7 @@ void calc_listbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-void draw_listbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
+void draw_listbox(const drawing_interface* pif, const xfont_t* pxf, link_t_ptr ptr)
 {
 	link_t_ptr ent;
 	xface_t xa;
@@ -807,7 +807,7 @@ void draw_listbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void calc_dropbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
+void calc_dropbox_size(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
 {
 	link_t_ptr ent;
 	xsize_t xs;
@@ -843,7 +843,7 @@ void calc_dropbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr p
 	pxs->fw += mx;
 }
 
-int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
+int calc_dropbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 {
 	link_t_ptr ent;
 	xrect_t xr;
@@ -889,7 +889,7 @@ int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return DROPBOX_HINT_NONE;
 }
 
-void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
+void calc_dropbox_item_rect(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr)
 {
 	link_t_ptr ent;
 	xrect_t xr;
@@ -933,7 +933,7 @@ void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-void draw_dropbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
+void draw_dropbox(const drawing_interface* pif, const xfont_t* pxf, link_t_ptr ptr)
 {
 	link_t_ptr ent;
 	xface_t xa;
@@ -984,7 +984,7 @@ void draw_dropbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr)
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void draw_pushbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* text)
+void draw_pushbox(const drawing_interface* pif, const xfont_t* pxf, const tchar_t* text)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1025,7 +1025,7 @@ void draw_pushbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* te
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void calc_radiobox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_radiobox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1039,7 +1039,7 @@ void calc_radiobox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* px
 	pxs->fh = my;
 }
 
-int calc_radiobox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int calc_radiobox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xrect_t xr;
 	xsize_t xs;
@@ -1069,7 +1069,7 @@ int calc_radiobox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint
 	return RADIOBOX_HINT_NONE;
 }
 
-void draw_radiobox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
+void draw_radiobox(const drawing_interface* pif, const xfont_t* pxf, bool_t b_on)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1164,7 +1164,7 @@ void draw_radiobox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-void calc_checkbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_checkbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1178,7 +1178,7 @@ void calc_checkbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* px
 	pxs->fh = my;
 }
 
-void draw_checkbox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
+void draw_checkbox(const drawing_interface* pif, const xfont_t* pxf, bool_t b_on)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1239,7 +1239,7 @@ void draw_checkbox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-void calc_slidebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_slidebox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1253,7 +1253,7 @@ void calc_slidebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* px
 	pxs->fh = my;
 }
 
-int calc_slidebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int calc_slidebox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1274,7 +1274,7 @@ int calc_slidebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint
 	return pos;
 }
 
-void calc_slidebox_button_rect(const if_measure_t* pim, const xfont_t* pxf, int pos, xrect_t* pxr)
+void calc_slidebox_button_rect(const measure_interface* pim, const xfont_t* pxf, int pos, xrect_t* pxr)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1290,7 +1290,7 @@ void calc_slidebox_button_rect(const if_measure_t* pim, const xfont_t* pxf, int 
 	pxr->fh = my;
 }
 
-void draw_slidebox(const if_drawing_t* pif, const xfont_t* pxf, int pos)
+void draw_slidebox(const drawing_interface* pif, const xfont_t* pxf, int pos)
 {
 	xface_t xa;
 	xfont_t xf;
@@ -1384,7 +1384,7 @@ void draw_slidebox(const if_drawing_t* pif, const xfont_t* pxf, int pos)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
-void calc_spinbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_spinbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1398,7 +1398,7 @@ void calc_spinbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs
 	pxs->fh = my;
 }
 
-int calc_spinbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int calc_spinbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1428,7 +1428,7 @@ int calc_spinbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return SPINBOX_HINT_NONE;
 }
 
-void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur)
+void draw_spinbox(const drawing_interface* pif, const xfont_t* pxf, int cur)
 {
 	xfont_t xf;
 	xface_t xa;
@@ -1491,7 +1491,7 @@ void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void calc_navibox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_navibox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1505,7 +1505,7 @@ void calc_navibox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs
 	pxs->fh = my;
 }
 
-int calc_navibox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int calc_navibox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xsize_t xs = { 0 };
 	xrect_t xr = { 0 };
@@ -1560,7 +1560,7 @@ int calc_navibox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return NAVIBOX_HINT_NONE;
 }
 
-void draw_navibox(const if_drawing_t* pif, const xfont_t* pxf, const NAVISTATE* pns)
+void draw_navibox(const drawing_interface* pif, const xfont_t* pxf, const NAVISTATE* pns)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -1633,7 +1633,7 @@ void draw_navibox(const if_drawing_t* pif, const xfont_t* pxf, const NAVISTATE* 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void calc_vertbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_vertbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1647,7 +1647,7 @@ void calc_vertbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs
 	pxs->fh = my * 4;
 }
 
-int calc_vertbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int calc_vertbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xsize_t xs = { 0 };
 	xrect_t xr = { 0 };
@@ -1694,7 +1694,7 @@ int calc_vertbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return VERTBOX_HINT_NONE;
 }
 
-void draw_vertbox(const if_drawing_t* pif, const xfont_t* pxf)
+void draw_vertbox(const drawing_interface* pif, const xfont_t* pxf)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -1757,7 +1757,7 @@ void draw_vertbox(const if_drawing_t* pif, const xfont_t* pxf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void calc_horzbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs)
+void calc_horzbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1771,7 +1771,7 @@ void calc_horzbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs
 	pxs->fh = my;
 }
 
-int calc_horzbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt)
+int calc_horzbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt)
 {
 	xsize_t xs = { 0 };
 	xrect_t xr = { 0 };
@@ -1818,7 +1818,7 @@ int calc_horzbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_
 	return HORZBOX_HINT_NONE;
 }
 
-void draw_horzbox(const if_drawing_t* pif, const xfont_t* pxf)
+void draw_horzbox(const drawing_interface* pif, const xfont_t* pxf)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -1881,7 +1881,7 @@ void draw_horzbox(const if_drawing_t* pif, const xfont_t* pxf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void calc_iconbox_size(const if_measure_t* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str, xsize_t* pxs)
+void calc_iconbox_size(const measure_interface* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my;
@@ -1906,7 +1906,7 @@ void calc_iconbox_size(const if_measure_t* pim, const xfont_t* pxf, const tchar_
 	}
 }
 
-void calc_iconbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, link_t_ptr str, link_t_ptr ilk, xrect_t* pxr)
+void calc_iconbox_item_rect(const measure_interface* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, link_t_ptr str, link_t_ptr ilk, xrect_t* pxr)
 {
 	xsize_t xs;
 	float mx, my, span;
@@ -1994,7 +1994,7 @@ void calc_iconbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, const t
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-int calc_iconbox_hint(const if_measure_t* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, const xpoint_t* ppt, link_t_ptr str, link_t_ptr* pilk)
+int calc_iconbox_hint(const measure_interface* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, const xpoint_t* ppt, link_t_ptr str, link_t_ptr* pilk)
 {
 	xsize_t xs;
 	float mx, my, span;
@@ -2083,7 +2083,7 @@ int calc_iconbox_hint(const if_measure_t* pim, const xfont_t* pxf, const tchar_t
 	return ICONBOX_HINT_NONE;
 }
 
-void draw_iconbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str)
+void draw_iconbox(const drawing_interface* pif, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str)
 {
 	xfont_t xf;
 	xpen_t xp;
@@ -2296,7 +2296,7 @@ link_t_ptr calc_wordsbox_item(link_t_ptr ptr, int page, int index)
 	return (index) ? NULL : ilk;
 }
 
-void calc_wordsbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
+void calc_wordsbox_size(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs)
 {
 	xsize_t xs;
 	float mx, my, mw = 0;
@@ -2327,7 +2327,7 @@ void calc_wordsbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr 
 	pxs->fh = n * my;
 }
 
-void calc_wordsbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, int page, link_t_ptr plk, xrect_t* pxr)
+void calc_wordsbox_item_rect(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, int page, link_t_ptr plk, xrect_t* pxr)
 {
 	link_t_ptr ilk, filk, lilk;
 	xrect_t xr;
@@ -2367,7 +2367,7 @@ void calc_wordsbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t
 	xmem_zero((void*)pxr, sizeof(xrect_t));
 }
 
-int calc_wordsbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk)
+int calc_wordsbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk)
 {
 	link_t_ptr ilk, filk, lilk;
 	xrect_t xr;
@@ -2408,7 +2408,7 @@ int calc_wordsbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint
 	return WORDSBOX_HINT_NONE;
 }
 
-void draw_wordsbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr, int page)
+void draw_wordsbox(const drawing_interface* pif, const xfont_t* pxf, link_t_ptr ptr, int page)
 {
 	xface_t xa;
 	xfont_t xf;

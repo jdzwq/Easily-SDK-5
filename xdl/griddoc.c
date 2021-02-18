@@ -60,7 +60,7 @@ void default_grid_attr(link_t_ptr ptr)
 	set_grid_height(ptr, DEF_PAPER_HEIGHT);
 
 	set_grid_colbar_height(ptr, DEF_ITEM_HEIGHT);
-	set_grid_rowbar_width(ptr,DEF_ATTR_ICON_SPAN);
+	set_grid_rowbar_width(ptr,DEF_ICON_SPAN);
 	set_grid_rowbar_height(ptr,DEF_ITEM_HEIGHT);
 
 	set_grid_shape(ptr,ATTR_SHAPE_RECT);

@@ -91,7 +91,7 @@ int calc_topog_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk, int* 
 	return nHit;
 }
 
-void draw_topog(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_topog(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	xrect_t xr;
@@ -107,7 +107,7 @@ void draw_topog(const if_drawing_t* pif, link_t_ptr ptr)
 	const tchar_t *style;
 	const tchar_t *type;
 
-	matrix_t* mt = NULL;
+	matrix_t mt = NULL;
 	int rows,cols, i, j;
 	float rx, ry;
 	int dark;

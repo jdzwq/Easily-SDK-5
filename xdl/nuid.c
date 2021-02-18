@@ -50,8 +50,8 @@ void nuid_from_timestamp(nuid_t* pu, lword_t tms)
 	nl = Lrand48();
 
 	pu->data1 = (dword_t)(tms & 0xffffffff);
-	pu->data2 = (dword_t)((tms >> 32) & 0xffff);
-	pu->data3 = (dword_t)(((tms >> 48) & 0x0ffff) | 0x1000);
+	pu->data2 = (sword_t)((tms >> 32) & 0xffff);
+	pu->data3 = (sword_t)(((tms >> 48) & 0x0ffff) | 0x1000);
 	
 	PUT_SWORD_LOC(pu->data4, 6, (sword_t)((r & 0x3fff) | 0x8000));
 	PUT_SWORD_LOC(pu->data4, 4, (sword_t)(nh));
@@ -99,19 +99,16 @@ void nuid_to_md5(nuid_t* pu, byte_t buf[16])
 	buf[15] = (byte_t)(GET_DWORD_LOC(pu->data4, 0));
 }
 
-void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
+void nuid_parse_string(nuid_t* pu, const tchar_t buf[36])
 {
 	tchar_t* num;
 	int k;
-	unsigned short us;
-	unsigned long ul;
+	sword_t us;
+	dword_t ul;
 	int n, total = 0;
 
-	if (len < 0)
-		len = xslen(buf);
-
 	num = NULL;
-	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (36 - total), _T('-'), &num, &k);
 	if (k)
 	{
 		pu->data1 = parse_hexnum(num, k);
@@ -121,7 +118,7 @@ void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 		return;
 
 	num = NULL;
-	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (36 - total), _T('-'), &num, &k);
 	if (k)
 	{
 		pu->data2 = (unsigned short)parse_hexnum(num, k);
@@ -131,7 +128,7 @@ void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 		return;
 
 	num = NULL;
-	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (36 - total), _T('-'), &num, &k);
 	if (k)
 	{
 		pu->data3 = (unsigned short)parse_hexnum(num, k);
@@ -141,7 +138,7 @@ void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 		return;
 
 	num = NULL;
-	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (36 - total), _T('-'), &num, &k);
 	if (k)
 	{
 		us = (unsigned short)parse_hexnum(num, k);
@@ -152,7 +149,7 @@ void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 		return;
 
 	num = NULL;
-	n = parse_string_token((buf + total), (len - total), _T('-'), &num, &k);
+	n = parse_string_token((buf + total), (36 - total), _T('-'), &num, &k);
 	if (k >= 4)
 	{
 		us = (unsigned short)parse_hexnum(num, 4);
@@ -166,50 +163,50 @@ void nuid_parse_string(nuid_t* pu, const tchar_t* buf, int len)
 	total += n;
 }
 
-int nuid_format_string(nuid_t* pu, tchar_t* buf, int max)
+int nuid_format_string(nuid_t* pu, tchar_t buf[36])
 {
-	unsigned long a, b, c;
+	dword_t a, b, c;
 
 	a = GET_SWORD_LOC(pu->data4, 6);
 	b = GET_SWORD_LOC(pu->data4, 4);
 	c = GET_DWORD_LOC(pu->data4, 0);
 
-	return xsprintf(buf, _T("%08x-%04x-%04x-%04x-%04x%08x"), pu->data1, pu->data2, pu->data3, a, b, c);
+	return xsprintf(buf, _T("%08x-%04x-%04x-%04x-%04x%08x"), (dword_t)pu->data1, (dword_t)pu->data2, (dword_t)pu->data3, a, b, c);
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 void test_nuid(void)
 {
 	lword_t ts = get_timestamp();
-	printf("timestamp: %llu\n", ts);
+	_tprintf(_T("timestamp: %llu\n"), ts);
 
 	xdate_t dt = { 0 };
 	utc_date_from_timestamp(&dt, ts);
-	printf("%d-%d-%d %d:%d:%d %d\n", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
+	_tprintf(_T("%d-%d-%d %d:%d:%d %d\n"), dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
 
 	nuid_t ui = { 0 };
 	nuid_from_timestamp(&ui, ts);
 
 	lword_t ms = nuid_to_timestamp(&ui);
 
-	tchar_t us[50] = { 0 };
-	int len = nuid_format_string(&ui, us, 50);
+	tchar_t us[NUID_TOKEN_SIZE + 1] = { 0 };
+	int len = nuid_format_string(&ui, us);
 
-	wprintf(_T("%s\n"), us);
+	_tprintf(_T("%s\n"), us);
 
 	nuid_zero(&ui);
-	nuid_parse_string(&ui, us, len);
+	nuid_parse_string(&ui, us);
 
-	wprintf(_T("%s\n"), us);
+	_tprintf(_T("%s\n"), us);
 
 	ts = nuid_to_timestamp(&ui);
-	printf("timestamp: %llu\n", ts);
+	_tprintf(_T("timestamp: %llu\n"), ts);
 
 	utc_date_from_timestamp(&dt, ts);
-	printf("%d-%d-%d %d:%d:%d %d\n", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
+	_tprintf(_T("%d-%d-%d %d:%d:%d %d\n"), dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
 
 	ts = get_times();
 	utc_date_from_times(&dt, ts);
-	printf("%d-%d-%d %d:%d:%d %d\n", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
+	_tprintf(_T("%d-%d-%d %d:%d:%d %d\n"), dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
 }
 #endif

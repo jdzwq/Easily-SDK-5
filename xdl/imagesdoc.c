@@ -47,7 +47,7 @@ link_t_ptr create_images_doc()
 
 	set_images_item_width(ptr, 18);
 	set_images_item_height(ptr, 24);
-	set_images_icon_span(ptr, DEF_ATTR_ICON_SPAN);
+	set_images_icon_span(ptr, DEF_ICON_SPAN);
 
 	return ptr;
 }

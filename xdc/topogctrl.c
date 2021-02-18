@@ -321,7 +321,7 @@ static void _topogctrl_reset_matrix(res_win_t widget, int row, int col)
 {
 	topog_delta_t* ptd = GETTOPOGDELTA(widget);
 	int rows, cols;
-	matrix_t* mt = NULL;
+	matrix_t mt = NULL;
 	bool_t b;
 	tchar_t* buf;
 	int len;
@@ -1063,8 +1063,8 @@ void hand_topogctrl_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr;
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);

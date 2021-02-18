@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #if defined(XDL_SUPPORT_VIEW)
 
 
-void draw_progress(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt, int steps)
+void draw_progress(const drawing_interface* pif, const xcolor_t* pxc, const xrect_t* prt, int steps)
 {
 	int i,index;
 	float iw;
@@ -71,7 +71,7 @@ void draw_progress(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* 
 	}
 }
 
-void draw_corner(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* pxr)
+void draw_corner(const drawing_interface* pif, const xcolor_t* pxc, const xrect_t* pxr)
 {
 	xrect_t xr;
 	xpoint_t pt1, pt2;
@@ -140,7 +140,7 @@ void draw_corner(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* px
 	(*pif->pf_draw_line)(pif->ctx, &xp, &pt1, &pt2);
 }
 
-void draw_ruler(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt)
+void draw_ruler(const drawing_interface* pif, const xcolor_t* pxc, const xrect_t* prt)
 {
 	xrect_t xr;
 	xpoint_t pt1, pt2;

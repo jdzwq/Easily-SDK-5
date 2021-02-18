@@ -56,7 +56,7 @@ typedef struct _plot_t{
 	tchar_t** x_colors;
 }plot_t;
 
-static void _plot_calendar(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_calendar(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -108,11 +108,11 @@ static void _plot_calendar(const if_drawing_t* pif, const plot_t* plt, const mat
 
 	xmem_copy((void*)&xf_dot, (void*)&xf, sizeof(xfont_t));
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -335,7 +335,7 @@ static void _plot_calendar(const if_drawing_t* pif, const plot_t* plt, const mat
 	(*pif->pf_draw_ellipse)(pif->ctx, &xp, &xb_dot, &xr_dot);
 }
 
-static void _plot_indicator(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_indicator(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -375,11 +375,11 @@ static void _plot_indicator(const if_drawing_t* pif, const plot_t* plt, const ma
 
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 	
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -432,7 +432,7 @@ static void _plot_indicator(const if_drawing_t* pif, const plot_t* plt, const ma
 	}
 }
 
-static void _plot_thermometer(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_thermometer(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -484,11 +484,11 @@ static void _plot_thermometer(const if_drawing_t* pif, const plot_t* plt, const 
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xb.color);
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -604,7 +604,7 @@ static void _plot_thermometer(const if_drawing_t* pif, const plot_t* plt, const 
 
 		y_step = get_numeric(plt->y_steps, i);
 		y_base = get_numeric(plt->y_bases, i);
-		dbl = matrix_get_value(pmt, 0, i);
+		dbl = matrix_get_value(mt, 0, i);
 
 		if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 			middy = zeroy - (float)((dbl - y_base) / (y_step)* dr);
@@ -646,7 +646,7 @@ static void _plot_thermometer(const if_drawing_t* pif, const plot_t* plt, const 
 	}
 }
 
-static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_bargram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -697,11 +697,11 @@ static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matr
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xp.color);
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -763,7 +763,7 @@ static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matr
 
 		y_base = get_numeric(plt->y_bases, i);
 		y_step = get_numeric(plt->y_steps, i);
-		dbl = matrix_get_value(pmt, i, 0);
+		dbl = matrix_get_value(mt, i, 0);
 
 		if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 			dbr = ((dbl - y_base) / y_step);
@@ -797,7 +797,7 @@ static void _plot_bargram(const if_drawing_t* pif, const plot_t* plt, const matr
 	}
 }
 
-static void _plot_contragram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_contragram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -850,7 +850,7 @@ static void _plot_contragram(const if_drawing_t* pif, const plot_t* plt, const m
 
 	y_count = 2;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -949,8 +949,8 @@ static void _plot_contragram(const if_drawing_t* pif, const plot_t* plt, const m
 			lighten_xbrush(&xb_dot, DEF_SOFT_DARKEN);
 		}
 
-		db1 = matrix_get_value(pmt, i, 0);
-		db2 = matrix_get_value(pmt, i, 1);
+		db1 = matrix_get_value(mt, i, 0);
+		db2 = matrix_get_value(mt, i, 1);
 
 		if (IS_VALID_DOUBLE(db1) && IS_VALID_DOUBLE(db2) && (!IS_ZERO_DOUBLE(db1) || !IS_ZERO_DOUBLE(db2)))
 			dbr = ((db1) / (db1 + db2));
@@ -1048,7 +1048,7 @@ static void _plot_contragram(const if_drawing_t* pif, const plot_t* plt, const m
 	}
 }
 
-static void _plot_balancegram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_balancegram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -1106,7 +1106,7 @@ static void _plot_balancegram(const if_drawing_t* pif, const plot_t* plt, const 
 
 	y_count = 2;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -1139,8 +1139,8 @@ static void _plot_balancegram(const if_drawing_t* pif, const plot_t* plt, const 
 		xscpy(xa.text_align, GDI_ATTR_TEXT_ALIGN_CENTER);
 		(*pif->pf_draw_text)(pif->ctx, &xf, &xa, &xr, label, -1);
 
-		db1 = matrix_get_value(pmt, i, 0);
-		db2 = matrix_get_value(pmt, i, 1);
+		db1 = matrix_get_value(mt, i, 0);
+		db2 = matrix_get_value(mt, i, 1);
 
 		if (IS_ZERO_DOUBLE(db1) && IS_ZERO_DOUBLE(db2))
 			dbr = 0;
@@ -1342,7 +1342,7 @@ static void _plot_balancegram(const if_drawing_t* pif, const plot_t* plt, const 
 	}
 }
 
-static void _plot_kpigram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_kpigram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -1407,11 +1407,11 @@ static void _plot_kpigram(const if_drawing_t* pif, const plot_t* plt, const matr
 	xscpy(xb_dot.gradient, _T("vert"));
 	xscpy(xb_dot.opacity, _T("100"));
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 1;
 
@@ -1487,7 +1487,7 @@ static void _plot_kpigram(const if_drawing_t* pif, const plot_t* plt, const matr
 
 		y_base = get_numeric(plt->y_bases, j);
 		y_step = get_numeric(plt->y_steps, j);
-		dbl = matrix_get_value(pmt, 0, j);
+		dbl = matrix_get_value(mt, 0, j);
 
 		if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 			datay = (float)((dbl - y_base) / y_step) * dy;
@@ -1572,7 +1572,7 @@ static void _plot_kpigram(const if_drawing_t* pif, const plot_t* plt, const matr
 	}
 }
 
-static void _plot_taskgram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_taskgram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -1622,11 +1622,11 @@ static void _plot_taskgram(const if_drawing_t* pif, const plot_t* plt, const mat
 
 	xmem_copy((void*)&xb_dot, (void*)&xb, sizeof(xbrush_t));
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 3;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 7;
 
@@ -1705,7 +1705,7 @@ static void _plot_taskgram(const if_drawing_t* pif, const plot_t* plt, const mat
 
 		for (j = 0; j < y_count; j++)
 		{
-			dbl = matrix_get_value(pmt, i, j);
+			dbl = matrix_get_value(mt, i, j);
 			if (!IS_VALID_DOUBLE(dbl))
 				dbl = 0;
 
@@ -1728,7 +1728,7 @@ static void _plot_taskgram(const if_drawing_t* pif, const plot_t* plt, const mat
 	}
 }
 
-static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_scattergram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -1781,11 +1781,11 @@ static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const 
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xp.color);
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 5;
 
@@ -1952,7 +1952,7 @@ static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const 
 	}
 
 	//scatter dot
-	for (i = 0; i < pmt->cols; i++)
+	for (i = 0; i < matrix_get_cols(mt); i++)
 	{
 		color = get_string_ptr(plt->y_colors, i);
 		if (!is_null(color))
@@ -1964,11 +1964,11 @@ static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const 
 			xscpy(xb_dot.color, xb.color);
 		}
 
-		for (j = 0; j < pmt->rows; j++)
+		for (j = 0; j < matrix_get_rows(mt); j++)
 		{
 			y_base = get_numeric(plt->y_bases, i);
 			y_step = get_numeric(plt->y_steps, i);
-			dbl = matrix_get_value(pmt, j, i);
+			dbl = matrix_get_value(mt, j, i);
 
 			pt1.fx = zerox + (j + 1) * dx - dx / 2;
 			if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
@@ -1985,7 +1985,7 @@ static void _plot_scattergram(const if_drawing_t* pif, const plot_t* plt, const 
 	}
 }
 
-static void _plot_mediangram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_mediangram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -2044,7 +2044,7 @@ static void _plot_mediangram(const if_drawing_t* pif, const plot_t* plt, const m
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xp.color);
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 7;
 
@@ -2165,18 +2165,18 @@ static void _plot_mediangram(const if_drawing_t* pif, const plot_t* plt, const m
 		(*pif->pf_draw_text)(pif->ctx, &xf_dot, &xa, &xr, label, -1);
 	}
 
-	pa1 = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * pmt->rows);
-	pa2 = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * pmt->rows);
+	pa1 = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * matrix_get_rows(mt));
+	pa2 = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * matrix_get_rows(mt));
 	//median rect
-	for (i = 0; i < pmt->rows; i++)
+	for (i = 0; i < matrix_get_rows(mt); i++)
 	{
 		y_base = get_numeric(plt->y_bases, 0);
 		y_step = get_numeric(plt->y_steps, 0);
 
-		db_val = matrix_get_value(pmt, i, 0);
-		db_min = matrix_get_value(pmt, i, 1);
-		db_mid = matrix_get_value(pmt, i, 2);
-		db_max = matrix_get_value(pmt, i, 3);
+		db_val = matrix_get_value(mt, i, 0);
+		db_min = matrix_get_value(mt, i, 1);
+		db_mid = matrix_get_value(mt, i, 2);
+		db_max = matrix_get_value(mt, i, 3);
 
 		if (IS_VALID_DOUBLE(db_max) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 			fr = (float)((db_val - y_base) / (y_step));
@@ -2253,9 +2253,9 @@ static void _plot_mediangram(const if_drawing_t* pif, const plot_t* plt, const m
 		xscpy(xb_dot.color, xb.color);
 	}
 
-	(*pif->pf_draw_curve)(pif->ctx, &xp_dot, pa1, pmt->rows);
+	(*pif->pf_draw_curve)(pif->ctx, &xp_dot, pa1, matrix_get_rows(mt));
 
-	for (i = 0; i < pmt->rows; i++)
+	for (i = 0; i < matrix_get_rows(mt); i++)
 	{
 		xr.fx = pa1[i].fx - 1.0f;
 		xr.fy = pa1[i].fy - 1.0f;
@@ -2291,9 +2291,9 @@ static void _plot_mediangram(const if_drawing_t* pif, const plot_t* plt, const m
 		xscpy(xb_dot.color, xb.color);
 	}
 
-	(*pif->pf_draw_curve)(pif->ctx, &xp_dot, pa2, pmt->rows);
+	(*pif->pf_draw_curve)(pif->ctx, &xp_dot, pa2, matrix_get_rows(mt));
 
-	for (i = 0; i < pmt->rows; i++)
+	for (i = 0; i < matrix_get_rows(mt); i++)
 	{
 		xr.fx = pa2[i].fx - 1.0f;
 		xr.fy = pa2[i].fy - 1.0f;
@@ -2320,7 +2320,7 @@ static void _plot_mediangram(const if_drawing_t* pif, const plot_t* plt, const m
 	xmem_free(pa2);
 }
 
-static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_histogram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -2378,11 +2378,11 @@ static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const ma
 	xscpy(xb_dot.color, xp.color);
 	xscpy(xb_dot.opacity, _T("100"));
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	if (!x_count)
 		x_count = 5;
 
@@ -2583,9 +2583,9 @@ static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const ma
 	}
 
 	//histo rect
-	for (i = 0; i < pmt->rows; i++)
+	for (i = 0; i < matrix_get_rows(mt); i++)
 	{
-		for (j = 0; j < pmt->cols; j++)
+		for (j = 0; j < matrix_get_cols(mt); j++)
 		{
 			color = get_string_ptr(plt->y_colors, j);
 			if (!is_null(color))
@@ -2602,7 +2602,7 @@ static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 			y_base = get_numeric(plt->y_bases, j);
 			y_step = get_numeric(plt->y_steps, j);
-			dbl = matrix_get_value(pmt, i, j);
+			dbl = matrix_get_value(mt, i, j);
 
 			if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 				fr = (float)((dbl - y_base) / (y_step));
@@ -2651,7 +2651,7 @@ static void _plot_histogram(const if_drawing_t* pif, const plot_t* plt, const ma
 	}
 }
 
-static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_trendgram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -2709,11 +2709,11 @@ static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const ma
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xb.color);
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 
 	g_count = get_numeric_array_size(plt->y_grades);
 
@@ -2923,9 +2923,9 @@ static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const ma
 	//xb_dot.shadow.offx = 1;
 	//xb_dot.shadow.offy = 1;
 
-	pa = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * pmt->rows);
+	pa = (xpoint_t*)xmem_alloc(sizeof(xpoint_t) * matrix_get_rows(mt));
 
-	for (i = 0; i < pmt->cols; i++)
+	for (i = 0; i < matrix_get_cols(mt); i++)
 	{
 		color = get_string_ptr(plt->y_colors, i);
 		if (!is_null(color))
@@ -2943,11 +2943,11 @@ static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 		shape = get_string_ptr(plt->y_shapes, i);
 
-		for (j = 0; j < pmt->rows; j++)
+		for (j = 0; j < matrix_get_rows(mt); j++)
 		{
 			y_base = get_numeric(plt->y_bases, i);
 			y_step = get_numeric(plt->y_steps, i);
-			dbl = matrix_get_value(pmt, j, i);
+			dbl = matrix_get_value(mt, j, i);
 
 			pa[j].fx = zerox + (j + 1) * dx - dx / 2;
 			if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
@@ -2956,9 +2956,9 @@ static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const ma
 				pa[j].fy = middy;
 		}
 
-		(*pif->pf_draw_curve)(pif->ctx, &xp_dot, pa, pmt->rows);
+		(*pif->pf_draw_curve)(pif->ctx, &xp_dot, pa, matrix_get_rows(mt));
 
-		for (j = 0; j < pmt->rows;j++)
+		for (j = 0; j < matrix_get_rows(mt);j++)
 		{
 			xr.fx = pa[j].fx - 1.0f;
 			xr.fy = pa[j].fy - 1.0f;
@@ -3019,7 +3019,7 @@ static void _plot_trendgram(const if_drawing_t* pif, const plot_t* plt, const ma
 	}
 }
 
-static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_pantogram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -3089,9 +3089,9 @@ static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 	for (i = 0; i < 1; i ++)
 	{
-		for (j = 0; j < pmt->cols; j++)
+		for (j = 0; j < matrix_get_cols(mt); j++)
 		{
-			total += matrix_get_value(pmt, i, j);
+			total += matrix_get_value(mt, i, j);
 		}
 	}
 
@@ -3104,12 +3104,12 @@ static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const ma
 	for (i = 0; i < 1; i++)
 	{
 		total = 0;
-		for (j = 0; j < pmt->cols; j++)
+		for (j = 0; j < matrix_get_cols(mt); j++)
 		{
-			total += matrix_get_value(pmt, i, j);
+			total += matrix_get_value(mt, i, j);
 		}
 
-		for (j = 0; j < pmt->cols; j++)
+		for (j = 0; j < matrix_get_cols(mt); j++)
 		{
 			color = get_string_ptr(plt->y_colors, j);
 			
@@ -3120,7 +3120,7 @@ static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const ma
 
 			pred = nxtd;
 
-			dbl = matrix_get_value(pmt, i, j);
+			dbl = matrix_get_value(mt, i, j);
 
 			if (IS_VALID_DOUBLE(dbl) && !IS_ZERO_DOUBLE(total))
 				fr = (float)(dbl / total);
@@ -3183,7 +3183,7 @@ static void _plot_pantogram(const if_drawing_t* pif, const plot_t* plt, const ma
 }
 
 
-static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_radargram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -3240,11 +3240,11 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xb.color);
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (y_count < 3)
 		y_count = 3;
 
-	x_count = pmt->rows;
+	x_count = matrix_get_rows(mt);
 	
 	//ruler count
 	y_ruler = (plt->ruler) ? plt->ruler : 5;
@@ -3382,7 +3382,7 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 	//radar line
 	xmem_copy((void*)&xp_dot, (void*)&xp, sizeof(xpen_t));
 	xscpy(xp_dot.style, GDI_ATTR_STROKE_STYLE_DASHED);
-	for (i = 0; i < pmt->rows; i++)
+	for (i = 0; i < matrix_get_rows(mt); i++)
 	{
 		color = get_string_ptr(plt->x_colors, i);
 		if (!is_null(color))
@@ -3403,11 +3403,11 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 		xn.fr = dd * y_ruler;
 		(*pif->pf_calc_equalgon)(pif->ctx, &pt, &xn, y_count, pa);
 
-		for (j = 0; j < pmt->cols; j++)
+		for (j = 0; j < matrix_get_cols(mt); j++)
 		{
 			y_base = get_numeric(plt->y_bases, j);
 			y_step = get_numeric(plt->y_steps, j);
-			dbl = matrix_get_value(pmt, i, j);
+			dbl = matrix_get_value(mt, i, j);
 
 			if (IS_VALID_DOUBLE(dbl) && IS_VALID_DOUBLE(y_base) && IS_VALID_DOUBLE(y_step) && !IS_ZERO_DOUBLE(y_step))
 				fr = (float)((dbl - y_base) / (y_step * y_ruler));
@@ -3464,7 +3464,7 @@ static void _plot_radargram(const if_drawing_t* pif, const plot_t* plt, const ma
 	xmem_free(pa);
 }
 
-static void _plot_fuelgram(const if_drawing_t* pif, const plot_t* plt, matrix_t* pmt)
+static void _plot_fuelgram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 	xbrush_t xb, xb_dot;
 	xpen_t xp, xp_dot;
@@ -3519,7 +3519,7 @@ static void _plot_fuelgram(const if_drawing_t* pif, const plot_t* plt, matrix_t*
 	default_xbrush(&xb_dot);
 	xscpy(xb_dot.color, xp.color);
 
-	y_count = pmt->cols;
+	y_count = matrix_get_cols(mt);
 	if (!y_count)
 		y_count = 1;
 
@@ -3641,7 +3641,7 @@ static void _plot_fuelgram(const if_drawing_t* pif, const plot_t* plt, matrix_t*
 
 		y_base = get_numeric(plt->y_bases, i);
 		y_step = get_numeric(plt->y_steps, i);
-		dbl = matrix_get_value(pmt, i, 0);
+		dbl = matrix_get_value(mt, i, 0);
 
 		xs.fw = xr.fw / 2;
 		xs.fh = rr;
@@ -3710,23 +3710,23 @@ static void _plot_fuelgram(const if_drawing_t* pif, const plot_t* plt, matrix_t*
 	}
 }
 
-static void _plot_topoggram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_topoggram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 
 }
 
 
-static void _plot_contourgram(const if_drawing_t* pif, const plot_t* plt, const matrix_t* pmt)
+static void _plot_contourgram(const drawing_interface* pif, const plot_t* plt, matrix_t mt)
 {
 
 }
 /********************************************************************************************************************/
 
-void draw_plot(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_plot(const drawing_interface* pif, link_t_ptr ptr)
 {
 	plot_t po = { 0 };
 	int rows, cols;
-	matrix_t* pmt = { 0 };
+	matrix_t mt;
 	const tchar_t* type;
 	tchar_t* matrix;
 	int len;
@@ -3776,46 +3776,46 @@ void draw_plot(const if_drawing_t* pif, link_t_ptr ptr)
 	cols = get_plot_matrix_cols(ptr);
 	if (!cols) cols = 1;
 
-	pmt = matrix_alloc(rows, cols);
-	matrix_parse(pmt, matrix, -1);
+	mt = matrix_alloc(rows, cols);
+	matrix_parse(mt, matrix, -1);
 	xsfree(matrix);
 
 	if (compare_text(type, -1, ATTR_PLOT_TYPE_CALENDAR, -1, 1) == 0)
-		_plot_calendar(pif, &po, pmt);
+		_plot_calendar(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_INDICATOR, -1, 1) == 0)
-		_plot_indicator(pif, &po, pmt);
+		_plot_indicator(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_THERMOMETER, -1, 1) == 0)
-		_plot_thermometer(pif, &po, pmt);
+		_plot_thermometer(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_CONTRAGRAM, -1, 1) == 0)
-		_plot_contragram(pif, &po, pmt);
+		_plot_contragram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_BALANCEGRAM, -1, 1) == 0)
-		_plot_balancegram(pif, &po, pmt);
+		_plot_balancegram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_BARGRAM, -1, 1) == 0)
-		_plot_bargram(pif, &po, pmt);
+		_plot_bargram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_KPIGRAM, -1, 1) == 0)
-		_plot_kpigram(pif, &po, pmt);
+		_plot_kpigram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_TRENDGRAM, -1, 1) == 0)
-		_plot_trendgram(pif, &po, pmt);
+		_plot_trendgram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_SCATTERGRAM, -1, 1) == 0)
-		_plot_scattergram(pif, &po, pmt);
+		_plot_scattergram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_PANTOGRAM, -1, 1) == 0)
-		_plot_pantogram(pif, &po, pmt);
+		_plot_pantogram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_HISTOGRAM, -1, 1) == 0)
-		_plot_histogram(pif, &po, pmt);
+		_plot_histogram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_MEDIANGRAM, -1, 1) == 0)
-		_plot_mediangram(pif, &po, pmt);
+		_plot_mediangram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_RADARGRAM, -1, 1) == 0)
-		_plot_radargram(pif, &po, pmt);
+		_plot_radargram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_FUELGRAM, -1, 1) == 0)
-		_plot_fuelgram(pif, &po, pmt);
+		_plot_fuelgram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_TASKGRAM, -1, 1) == 0)
-		_plot_taskgram(pif, &po, pmt);
+		_plot_taskgram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_TOPOGGGRAM, -1, 1) == 0)
-		_plot_topoggram(pif, &po, pmt);
+		_plot_topoggram(pif, &po, mt);
 	else if (compare_text(type, -1, ATTR_PLOT_TYPE_CONTOURGRAM, -1, 1) == 0)
-		_plot_contourgram(pif, &po, pmt);
+		_plot_contourgram(pif, &po, mt);
 
-	matrix_free(pmt);
+	matrix_free(mt);
 
 	xsfree(po.style);
 	free_string_array(po.x_colors);

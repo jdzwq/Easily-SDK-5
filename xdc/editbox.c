@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "textor.h"
 
 typedef struct _editbox_delta_t{
-	textor_t textor;
+	textor_context textor;
 
 	int chs;
 	tchar_t pch[CHS_LEN + 1];
@@ -88,7 +88,7 @@ void _editbox_auto_resize(res_win_t widget)
 	xrect_t xr;
 	int cx;
 	const xfont_t* pxf;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -493,7 +493,7 @@ void hand_editbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	editbox_delta_t* ptd = GETEDITBOXDELTA(widget);
 	xrect_t xr;
 	xcolor_t xc;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	hand_textor_paint(&ptd->textor, dc, pxr);
 

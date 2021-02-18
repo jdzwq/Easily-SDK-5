@@ -270,7 +270,7 @@ int	calc_list_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk, link_t_p
 	return LIST_HINT_NONE;
 }
 
-void draw_list_child(const if_drawing_t* pif, link_t_ptr ptr, link_t_ptr plk)
+void draw_list_child(const drawing_interface* pif, link_t_ptr ptr, link_t_ptr plk)
 {
 	link_t_ptr nlk;
 	int pi, count;

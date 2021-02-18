@@ -59,12 +59,12 @@ LICENSE.GPL3 for more details.
 //#define _IsEscapeChar(ch) ((ch == _T('<') || ch == _T('>') || ch == _T('&') || ch == _T('\"') || ch == _T('\'') || ch == _T('/') || ch == _T('\f'))? 1 : 0)
 #define _IsEscapeChar(ch) ((ch == _T('<') || ch == _T('>') || ch == _T('&') || ch == _T('\"') || ch == _T('\''))? 1 : 0)
 
-typedef struct _XMLOBJECT{
+typedef struct _xml_opera_context{
 	link_t_ptr doc;
 	link_t_ptr nlk;
 
 	link_t_ptr stack;
-}XMLOBJECT;
+}xml_opera_context;
 
 #ifdef	__cplusplus
 extern "C" {

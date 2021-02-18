@@ -379,7 +379,7 @@ int set_format(const set_t* pset, tchar_t* buf, int max)
 		return _set_format(pset, 1, buf, max);
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 void test_set()
 {
 	tchar_t num[NUM_LEN + 1];

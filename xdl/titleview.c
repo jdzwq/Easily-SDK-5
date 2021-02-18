@@ -219,7 +219,7 @@ int calc_title_hint(const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr plk_focus, l
 	return nHint;
 }
 
-void draw_title(const if_drawing_t* pif, link_t_ptr ptr, link_t_ptr plk_focus)
+void draw_title(const drawing_interface* pif, link_t_ptr ptr, link_t_ptr plk_focus)
 {
 	link_t_ptr plk;
 	bool_t lay_vert;

@@ -29,9 +29,9 @@ LICENSE.GPL3 for more details.
 
 #include "srvdef.h"
 
-void get_log_interface(stream_t stm, if_log_t* plog);
+void get_loged_interface(const tchar_t* unc, loged_interface* plog);
 
-void get_event_interface(const tchar_t* url, if_post_t* pev);
+void get_event_interface(const tchar_t* url, event_interface* pev);
 
 /**********************************************************************************************/
 

@@ -55,24 +55,26 @@ typedef enum{
 	_SCANNER_STATE_END = -1,
 }SCANNER_STATE;
 
-typedef struct _WORDPLACE
+typedef struct _word_place_t
 {
 	int char_w, char_h, line_h;
 	int cur_x, cur_y, cur_w, cur_h;
 	int min_x, min_y, max_x, max_y;
-}WORDPLACE;
+}word_place_t;
 
-typedef int(*PF_SCAN_TEXTOR_CALLBACK)(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_word, int cur_count, tchar_t* ret_word, int page, int cur_row, int cur_col, const WORDPLACE* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp);
+typedef int(*PF_SCAN_TEXTOR_CALLBACK)(int scan, void* object, bool_t b_atom, bool_t b_ins, bool_t b_del, bool_t b_sel, const tchar_t* cur_word, int cur_count, tchar_t* ret_word, int page, int cur_row, int cur_col, const word_place_t* ptm, const xfont_t* pxf, const xface_t* pxa, void* pp);
 
-typedef bool_t(*PF_SCAN_IS_PAGING)(void* param);
-typedef bool_t(*PF_SCAN_BREAK_PAGE)(void* param);
-typedef int(*PF_SCAN_NEXT_PAGE)(void* param);
-typedef int(*PF_SCAN_NEXT_WORD)(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom);
-typedef int(*PF_SCAN_INSERT_WORD)(void* param, tchar_t* pch, xsize_t* pse);
-typedef int(*PF_SCAN_DELETE_WORD)(void* param);
-typedef void(*PF_SCAN_CUR_OBJECT)(void* param, void** pobj);
+typedef bool_t(*PF_SCAN_IS_PAGING)(void* ctx);
+typedef bool_t(*PF_SCAN_BREAK_PAGE)(void* ctx);
+typedef int(*PF_SCAN_NEXT_PAGE)(void* ctx);
+typedef int(*PF_SCAN_NEXT_WORD)(void* ctx, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom);
+typedef int(*PF_SCAN_INSERT_WORD)(void* ctx, tchar_t* pch, xsize_t* pse);
+typedef int(*PF_SCAN_DELETE_WORD)(void* ctx);
+typedef void(*PF_SCAN_CUR_OBJECT)(void* ctx, void** pobj);
 
-typedef struct _if_wordscan_t{
+typedef struct _wordscan_interface{
+	void* ctx;
+
 	PF_SCAN_IS_PAGING	pf_is_paging;
 	PF_SCAN_BREAK_PAGE	pf_break_page;
 	PF_SCAN_NEXT_PAGE	pf_next_page;
@@ -80,14 +82,13 @@ typedef struct _if_wordscan_t{
 	PF_SCAN_INSERT_WORD	pf_insert_word;
 	PF_SCAN_DELETE_WORD	pf_delete_word;
 	PF_SCAN_CUR_OBJECT	pf_cur_object;
-	void* param;
-}if_wordscan_t;
+}wordscan_interface;
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-EXP_API void scan_object_text(const if_measure_t* pim, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, if_wordscan_t* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
+EXP_API void scan_object_text(const measure_interface* pim, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, wordscan_interface* pit, PF_SCAN_TEXTOR_CALLBACK pf, void* pp);
 
 #ifdef	__cplusplus
 }

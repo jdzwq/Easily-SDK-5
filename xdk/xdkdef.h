@@ -90,11 +90,10 @@ typedef struct async_t{
 	int type;		/*the async type, can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE*/
 	dword_t timo;		/*the timeout value in millisecond*/
 	dword_t size;	/*async operation data bytes*/
-
-	void* lapp;		/*inner overlapped struct*/
 #ifdef XDK_SUPPORT_THREAD_QUEUE
 	res_queue_t port;	/*inner port resource handle*/
 #endif
+	byte_t lapp[256];	/*inner overlapped struct*/
 }async_t;
 
 /*async type*/

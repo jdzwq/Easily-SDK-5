@@ -37,7 +37,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDU_SUPPORT_CONTEXT)
 
-void get_canvas_interface(canvas_t canv, if_drawing_t* pif)
+void get_canvas_interface(canvas_t canv, drawing_interface* pif)
 {
 	pif->ctx = (void*)canv;
 
@@ -85,7 +85,7 @@ void get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 	pif->pf_draw_bitmap = draw_bitmap;
 }
 
-void get_visual_interface(visual_t visu, if_drawing_t* piv)
+void get_visual_interface(visual_t visu, drawing_interface* piv)
 {
 	piv->ctx = (void*)visu;
 
@@ -127,7 +127,7 @@ void get_visual_interface(visual_t visu, if_drawing_t* piv)
 	piv->pf_alphablend_rect = alphablend_rect_raw;
 }
 
-void get_visual_measure(visual_t view, if_measure_t* pim)
+void get_visual_measure(visual_t view, measure_interface* pim)
 {
 	pim->ctx = (void*)view;
 
@@ -137,7 +137,7 @@ void get_visual_measure(visual_t view, if_measure_t* pim)
 	pim->pf_measure_rect = text_rect_raw;
 }
 
-void get_canvas_measure(canvas_t canv, if_measure_t* pim)
+void get_canvas_measure(canvas_t canv, measure_interface* pim)
 {
 	pim->ctx = (void*)canv;
 

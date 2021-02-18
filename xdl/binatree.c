@@ -86,8 +86,7 @@ static bina_node_t* _alloc_bina_node(variant_t key, byte_t clr, byte_t pos)
 	pbn->mask = (byte_t)pos;
 	pbn->mask |= clr;
 
-	variant_to_null(&pbn->key);
-
+	pbn->key = variant_alloc(VV_NULL);
 	pbn->val = object_alloc(DEF_MBS);
 
 	return pbn;
@@ -95,8 +94,7 @@ static bina_node_t* _alloc_bina_node(variant_t key, byte_t clr, byte_t pos)
 
 static void _free_bina_node(bina_node_t* pbn)
 {
-	variant_to_null(&pbn->key);
-
+	variant_free(pbn->key);
 	object_free(pbn->val);
 
 	xmem_free(pbn);
@@ -858,7 +856,7 @@ link_t_ptr find_bina_node(link_t_ptr ptr, variant_t key, object_t val)
 	{
 		pbn = BinaNodeFromLink(nlk);
 
-		rt = variant_comp(&key, &pbn->key);
+		rt = variant_comp(key, pbn->key);
 
 		if (!rt)
 		{
@@ -903,7 +901,7 @@ link_t_ptr insert_bina_node(link_t_ptr ptr, variant_t key, object_t val)
 	{
 		pbn = BinaNodeFromLink(nlk);
 
-		rt = variant_comp(&key, &pbn->key);
+		rt = variant_comp(key, pbn->key);
 
 		if (!rt)
 			break;
@@ -924,7 +922,7 @@ link_t_ptr insert_bina_node(link_t_ptr ptr, variant_t key, object_t val)
 	{
 		pbn = BinaNodeFromLink(plk);
 
-		rt = variant_comp(&key, &pbn->key);
+		rt = variant_comp(key, pbn->key);
 
 		if (rt < 0)
 		{
@@ -1112,7 +1110,7 @@ bool_t delete_bina_node(link_t_ptr ptr, variant_t key)
 	return 1;
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 #include <time.h>
 
 static bool_t print_node(link_t_ptr nlk, void* pa)
@@ -1122,7 +1120,7 @@ static bool_t print_node(link_t_ptr nlk, void* pa)
 
 	pbn = BinaNodeFromLink(nlk);
 
-	variant_to_string(&pbn->key, buf, 100);
+	variant_to_string(pbn->key, buf, 100);
 
 	_tprintf(_T("%s-%c "), buf, (IS_BINA_RED_NODE(pbn->mask) ? _T('R') : _T('B')));
 
@@ -1212,9 +1210,9 @@ void _test_bina_tree(int level)
 	int count_1 = 0;
 	float max_0 = 0;
 	float max_1 = 0;
+	int rnd;
 
-	variant_t v = { 0 };
-	v.vv = VV_INT;
+	variant_t key = variant_alloc(VV_INT);
 
 	object_t val = object_alloc(_UTF8);
 
@@ -1234,28 +1232,29 @@ void _test_bina_tree(int level)
 
 		for (int i = 0; i < n; i++)
 		{
-			v.int_one =  (level)? (Lrand48() % n) : i;
+			rnd =  (level)? (Lrand48() % n) : i;
+			variant_set_int(key, rnd);
 
-			object_set_variant(val, v);
+			object_set_variant(val, key);
 
-			insert_bina_node(ptr_0, v, val);
+			insert_bina_node(ptr_0, key, val);
 
-			insert_bina_node(ptr_1, v, val);
+			insert_bina_node(ptr_1, key, val);
 		}
 
 		n0 = n1 = 0;
 		for (int i = 0; i < n; i++)
 		{
-			v.int_one = i;
+			variant_set_int(key, i);
 
-			nlk = find_bina_node(ptr_0, v, val);
+			nlk = find_bina_node(ptr_0, key, val);
 			if (nlk)
 			{
 				n0++;
 				total_0 += calc_bina_step(nlk);
 			}
 
-			nlk = find_bina_node(ptr_1, v, val);
+			nlk = find_bina_node(ptr_1, key, val);
 			if (nlk)
 			{
 				n1++;
@@ -1286,6 +1285,7 @@ void _test_bina_tree(int level)
 	_tprintf(_T("nm total step %d, count node %d, max step %.2f, aveage step %.4f\n"), sum_0, count_0, max_0, (float)sum_0 / count_0);
 	_tprintf(_T("bd total step %d, count node %d, max step %.2f, aveage step %.4f\n"), sum_1, count_1, max_1, (float)sum_1 / count_1);
 
+	variant_free(key);
 	object_free(val);
 }
 

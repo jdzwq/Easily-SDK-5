@@ -41,7 +41,7 @@ LICENSE.GPL3 for more details.
 #if defined(XDL_SUPPORT_VIEW)
 
 
-void draw_svg(const if_drawing_t* pif, const xrect_t* pbox, link_t_ptr ptr)
+void draw_svg(const drawing_interface* pif, const xrect_t* pbox, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	int count;

@@ -33,6 +33,8 @@ LICENSE.GPL3 for more details.
 #define _VAROBJ_H
 
 #include "xdldef.h"
+#include "variant.h"
+
 
 #ifdef	__cplusplus
 extern "C" {
@@ -75,6 +77,13 @@ EXP_API void object_copy(object_t dst, object_t src);
 EXP_API void object_empty(object_t obj);
 
 /*
+@FUNCTION object_size: get object size in bytes.
+@INPUT object_t obj: the object.
+@RETURN dword_t: bites.
+*/
+EXP_API dword_t object_size(object_t obj);
+
+/*
 @FUNCTION object_get_type: get the object type, it can be _OBJECT_UNKNOWN, _OBJECT_STRING, _OBJECT_VARIANT, _OBJECT_DOMDOC, _OBJECT_BINARY.
 @INPUT object_t obj: the object.
 @RETURN int: return the object type, default is _OBJECT_UNKNOWN.
@@ -104,22 +113,100 @@ EXP_API bool_t object_get_commpress(object_t obj);
 EXP_API void object_set_commpress(object_t obj, bool_t b);
 
 /*
-@FUNCTION object_set_string: save string token to object.
+@FUNCTION object_set_message: save message to object.
 @INPUT object_t obj: the object.
-@INPUT const tchar_t* str: the string token.
-@INPUT int len: the string token length in characters.
+@INPUT message_t val: the message object.
 @RETURN void: none.
 */
-EXP_API void object_set_string(object_t obj, const tchar_t* str, int len);
+EXP_API void object_set_message(object_t obj, message_t val);
 
 /*
-@FUNCTION object_get_string: get string token from object.
+@FUNCTION object_get_message: get message from object.
 @INPUT object_t obj: the object.
-@OUTPUT tchar_t* str: the string buffer.
-@INPUT int max: the string buffer size in characters, not include terminate character.
-@RETURN int: return the length of string token.
+@OUTPUT message_t val: the message object.
+@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
 */
-EXP_API int object_get_string(object_t obj, tchar_t* str, int max);
+EXP_API bool_t object_get_message(object_t obj, message_t val);
+
+/*
+@FUNCTION object_set_queue: save queue to object.
+@INPUT object_t obj: the object.
+@INPUT queue_t val: the queue object.
+@RETURN void: none.
+*/
+EXP_API void object_set_queue(object_t obj, queue_t val);
+
+/*
+@FUNCTION object_get_queue: get queue from object.
+@INPUT object_t obj: the object.
+@OUTPUT queue_t val: the queue object.
+@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+*/
+EXP_API bool_t object_get_queue(object_t obj, queue_t val);
+
+/*
+@FUNCTION object_set_vector: save vector to object.
+@INPUT object_t obj: the object.
+@INPUT vector_t val: the vector object.
+@RETURN void: none.
+*/
+EXP_API void object_set_vector(object_t obj, vector_t val);
+
+/*
+@FUNCTION object_get_vector: get vector from object.
+@INPUT object_t obj: the object.
+@OUTPUT vector_t val: the vector object.
+@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+*/
+EXP_API bool_t object_get_vector(object_t obj, vector_t val);
+
+/*
+@FUNCTION object_set_matrix: save matrix to object.
+@INPUT object_t obj: the object.
+@INPUT matrix_t val: the matrix object.
+@RETURN void: none.
+*/
+EXP_API void object_set_matrix(object_t obj, matrix_t val);
+
+/*
+@FUNCTION object_get_matrix: get matrix from object.
+@INPUT object_t obj: the object.
+@OUTPUT matrix_t val: the matrix object.
+@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+*/
+EXP_API bool_t object_get_matrix(object_t obj, matrix_t val);
+
+/*
+@FUNCTION object_set_map: save map to object.
+@INPUT object_t obj: the object.
+@INPUT map_t val: the map object.
+@RETURN void: none.
+*/
+EXP_API void object_set_map(object_t obj, map_t val);
+
+/*
+@FUNCTION object_get_map: get map from object.
+@INPUT object_t obj: the object.
+@OUTPUT map_t val: the map object.
+@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+*/
+EXP_API bool_t object_get_map(object_t obj, map_t val);
+
+/*
+@FUNCTION object_set_string: save string to object.
+@INPUT object_t obj: the object.
+@INPUT string_t val: the string object.
+@RETURN void: none.
+*/
+EXP_API void object_set_string(object_t obj, string_t val);
+
+/*
+@FUNCTION object_get_string: get string from object.
+@INPUT object_t obj: the object.
+@OUTPUT string_t val: the string object.
+@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+*/
+EXP_API bool_t object_get_string(object_t obj, string_t val);
 
 /*
 @FUNCTION object_set_variant: save variant to object.
@@ -132,10 +219,10 @@ EXP_API void object_set_variant(object_t obj, variant_t val);
 /*
 @FUNCTION object_get_variant: get variant from object.
 @INPUT object_t obj: the object.
-@OUTPUT variant_t* pval: the variant object.
+@OUTPUT variant_t val: the variant object.
 @RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
 */
-EXP_API bool_t object_get_variant(object_t obj, variant_t* pval);
+EXP_API bool_t object_get_variant(object_t obj, variant_t val);
 
 #if defined(XDL_SUPPORT_DOC)
 /*
@@ -208,7 +295,7 @@ EXP_API dword_t object_encode(object_t obj, byte_t* buf, dword_t max);
 */
 EXP_API dword_t object_decode(object_t obj, const byte_t* data);
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_object(void);
 #endif
 

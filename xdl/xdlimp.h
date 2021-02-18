@@ -61,7 +61,7 @@
 #endif
 
 #if defined(XDK_SUPPORT_FILE) && defined(XDK_SUPPORT_SOCK)
-#include "impinet.h"
+#include "impnetf.h"
 #endif
 
 

@@ -118,7 +118,7 @@ void test_tftp_write()
 
 	//xfile_close(f_loc);
 
-	file_t f_rmt = xfile_open(NULL, _T("tftp://127.0.0.1/body.bmp"), FILE_OPEN_CREATE);
+	if_fio_t* f_rmt = xfile_open(NULL, _T("tftp://127.0.0.1/body.bmp"), FILE_OPEN_CREATE);
 
 	byte_t buf[100];
 	dword_t dw = 100;

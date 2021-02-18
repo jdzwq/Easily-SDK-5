@@ -186,17 +186,17 @@ static unsigned STDCALL wait_accept(void* param)
 	net_addr_t locaddr, rmtaddr;
 	int addr_len;
 	tcp_accept_t xa = { 0 };
-	async_t* pov = NULL;
+	async_t asy = { 0 };
 
 	xdl_thread_init(0);
 
 	if (plis->res == 1)
 	{
-		pov = async_alloc_lapp(ASYNC_QUEUE, TCP_BASE_TIMO, plis->so);
+		async_init(&asy, ASYNC_QUEUE, TCP_BASE_TIMO, plis->so);
 	}
 	else
 	{
-		pov = async_alloc_lapp(ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
+		async_init(&asy, ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
 	}
 
 	socket_addr(plis->so, &locaddr);
@@ -210,7 +210,7 @@ static unsigned STDCALL wait_accept(void* param)
 			criti_enter(plis->cri);
 		}
 
-		so = socket_accept(plis->so, (res_addr_t)&rmtaddr, &addr_len, pov);
+		so = socket_accept(plis->so, (res_addr_t)&rmtaddr, &addr_len, &asy);
 
 		if (plis->cri)
 		{
@@ -255,7 +255,7 @@ static unsigned STDCALL wait_accept(void* param)
 		xmem_zero((void*)&xa, sizeof(tcp_accept_t));
 	}
 
-	async_free_lapp(pov);
+	async_uninit(&asy);
 
 	xdl_thread_uninit(0);
 

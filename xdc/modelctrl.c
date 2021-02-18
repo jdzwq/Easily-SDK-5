@@ -314,7 +314,7 @@ static bitmap_t _modelctrl_merge_anno(res_win_t widget)
 
 	visual_t rdc, memdc;
 	bitmap_t membm;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	if (!ptd->bmp && !ptd->anno)
 		return NULL;
@@ -1036,8 +1036,8 @@ void hand_model_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xrect_t xr;
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);

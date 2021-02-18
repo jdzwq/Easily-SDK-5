@@ -184,9 +184,9 @@ bool_t _invoke_ploting(const https_block_t* pb, plot_block_t* pd)
 
 			if (pb->plg)
 			{
-				(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->unc, _T("[PLOT]"), -1);
 
-				(*pb->plg->pf_log_json)(pb->plg->log, ptr_json);
+				(*pb->plg->pf_log_json)(pb->plg->unc, ptr_json);
 			}
 
 			if (!rt)
@@ -206,9 +206,9 @@ bool_t _invoke_ploting(const https_block_t* pb, plot_block_t* pd)
 
 			if (pb->plg)
 			{
-				(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->unc, _T("[PLOT]"), -1);
 
-				(*pb->plg->pf_log_xml)(pb->plg->log, ptr_xml);
+				(*pb->plg->pf_log_xml)(pb->plg->unc, ptr_xml);
 			}
 
 			if (!rt)
@@ -366,9 +366,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[PLOT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -395,9 +395,9 @@ void _invoke_error(const https_block_t* pb, plot_block_t* pd)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[PLOT: 错误]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[PLOT: 错误]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 }
 

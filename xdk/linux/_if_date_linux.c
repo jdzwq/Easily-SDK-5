@@ -129,7 +129,7 @@ bool_t _loc_date_to_utc(xdate_t* pxd)
 	t.tm_sec = pxd->sec;
 
 	timep = mktime(&t);
-	p = gmtime(&timep);
+	p = localtime(&timep);
 
 	pxd->year = 1900 + p->tm_year;
 	pxd->mon = 1 + p->tm_mon;
@@ -167,33 +167,6 @@ dword_t _get_times()
 	return (lword_t)(difftime(time1, time2));
 }
 
-clock_t _get_ticks()
-{
-	struct tm t = { 0 };
-	time_t time1,time2;
-
-	t.tm_year = 70;
-	t.tm_mon = 0;
-	t.tm_mday = 1;
-	t.tm_hour = 0;
-	t.tm_min = 0;
-	t.tm_sec = 0;
-
-	time1 = mktime(&t);
-	time2 = time(NULL);
-
-	return (clock_t)(difftime(time1, time2) * CLOCKS_PER_SEC);
-}
-
-stamp_t _get_timestamp()
-{
-    struct timeval t = {0};
-    
-    gettimeofday (&t, NULL);
-    
-    return (stamp_t)(t.tv_sec * 1000 + t.tv_usec / 1000);
-}
-
 void _utc_date_from_times(xdate_t* pxd, dword_t s)
 {
     struct tm t = { 0 };
@@ -220,6 +193,24 @@ void _utc_date_from_times(xdate_t* pxd, dword_t s)
 	pxd->millsec = 0;
 
 	pxd->wday = p->tm_wday;
+}
+
+clock_t _get_ticks()
+{
+	struct tm t = { 0 };
+	time_t time1,time2;
+
+	t.tm_year = 70;
+	t.tm_mon = 0;
+	t.tm_mday = 1;
+	t.tm_hour = 0;
+	t.tm_min = 0;
+	t.tm_sec = 0;
+
+	time1 = mktime(&t);
+	time2 = time(NULL);
+
+	return (clock_t)(difftime(time1, time2) * CLOCKS_PER_SEC);
 }
 
 void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
@@ -250,6 +241,15 @@ void _utc_date_from_ticks(xdate_t* pxd, clock_t ts)
 	pxd->wday = p->tm_wday;
 }
 
+stamp_t _get_timestamp()
+{
+    struct timeval t = {0};
+    
+    gettimeofday (&t, NULL);
+    
+    return (stamp_t)(t.tv_sec * 1000 + t.tv_usec / 1000);
+}
+
 void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 {
     struct tm t = { 0 };
@@ -273,7 +273,7 @@ void _utc_date_from_timestamp(xdate_t* pxd, stamp_t ts)
 	pxd->hour = p->tm_hour;
 	pxd->min = p->tm_min;
 	pxd->sec = p->tm_sec;
-	pxd->millsec = 0;
+	pxd->millsec = (unsigned short)(ts % 1000);
 
 	pxd->wday = p->tm_wday;
 }

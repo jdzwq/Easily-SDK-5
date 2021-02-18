@@ -25,8 +25,8 @@ LICENSE.GPL3 for more details.
 
 #include "xdbpro.h"
 
-typedef struct _db_stub_t{
-	xdb_head head;
+typedef struct _xdb_stub_context{
+	handle_head head;
 
 	tchar_t sz_srv[RES_LEN + 1];
 	tchar_t sz_dbn[RES_LEN + 1];
@@ -38,7 +38,7 @@ typedef struct _db_stub_t{
 
 	int rows;
 	xhand_t http;
-}db_stub_t;
+}xdb_stub_context;
 
 static tchar_t stub_esc[] = { _T('%'), _T('\t'), _T('\r'), _T('\n'), _T('\0') };
 
@@ -228,9 +228,9 @@ xdb_t STDCALL db_open_dsn(const tchar_t* dsnfile)
 
 xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid, const tchar_t* pwd)
 {
-	db_stub_t* pdb;
+	xdb_stub_context* pdb;
 
-	pdb = (db_stub_t*)xmem_alloc(sizeof(db_stub_t));
+	pdb = (xdb_stub_context*)xmem_alloc(sizeof(xdb_stub_context));
 	pdb->head.tag = _DB_STUB;
 
 	xsncpy(pdb->sz_srv, srv, PATH_LEN);
@@ -243,7 +243,7 @@ xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid
 
 void STDCALL db_close(xdb_t db)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 	
 	XDL_ASSERT(db && db->tag == _DB_STUB);
 	
@@ -258,7 +258,7 @@ void STDCALL db_close(xdb_t db)
 
 bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_date)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -336,7 +336,7 @@ ONERROR:
 
 bool_t STDCALL db_schema(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -479,7 +479,7 @@ ONERROR:
 
 bool_t STDCALL db_select(xdb_t db, link_t_ptr grid, const tchar_t* sqlstr)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -611,7 +611,7 @@ ONERROR:
 
 bool_t STDCALL db_fetch(xdb_t db, link_t_ptr grid)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -768,7 +768,7 @@ ONERROR:
 
 bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -913,7 +913,7 @@ ONERROR:
 
 bool_t STDCALL db_update(xdb_t db, link_t_ptr grid)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	LINKPTR rlk;
 
@@ -1074,7 +1074,7 @@ ONERROR:
 
 bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 	stream_t stm_http;
@@ -1190,7 +1190,7 @@ ONERROR:
 
 bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 	stream_t stm_http;
@@ -1308,7 +1308,7 @@ ONERROR:
 
 bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 	stream_t stm_http;
@@ -1407,7 +1407,7 @@ ONERROR:
 
 bool_t STDCALL db_call_func(xdb_t db, link_t_ptr func)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -1522,7 +1522,7 @@ ONERROR:
 
 bool_t STDCALL db_call_json(xdb_t db, const tchar_t* procname, link_t_ptr json)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -1634,7 +1634,7 @@ ONERROR:
 
 bool_t STDCALL db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -1745,7 +1745,7 @@ ONERROR:
 
 bool_t STDCALL db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -1835,7 +1835,7 @@ ONERROR:
 
 bool_t STDCALL db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -1963,7 +1963,7 @@ ONERROR:
 
 bool_t STDCALL db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -2067,7 +2067,7 @@ ONERROR:
 
 bool_t STDCALL db_write_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlfmt)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -2186,7 +2186,7 @@ ONERROR:
 
 bool_t STDCALL db_read_xdoc(xdb_t db, link_t_ptr dom, const tchar_t* sqlstr)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	xhand_t xhttp = NULL;
 
@@ -2279,7 +2279,7 @@ ONERROR:
 }
 int STDCALL db_rows(xdb_t db)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	XDL_ASSERT(db && db->tag == _DB_STUB);
 
@@ -2288,7 +2288,7 @@ int STDCALL db_rows(xdb_t db)
 
 int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 {
-	db_stub_t* pdb = (db_stub_t*)db;
+	xdb_stub_context* pdb = (xdb_stub_context*)db;
 
 	XDL_ASSERT(db && db->tag == _DB_STUB);
 

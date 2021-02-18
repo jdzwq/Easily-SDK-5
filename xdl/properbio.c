@@ -263,7 +263,7 @@ bool_t load_proper_from_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const t
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 	int encode, skip;
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 
@@ -400,7 +400,7 @@ bool_t save_proper_to_ini_file(link_t_ptr ptr, const secu_desc_t* psd, const tch
 	dword_t size;
 	int skip;
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 

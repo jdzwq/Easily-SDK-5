@@ -44,7 +44,7 @@ LICENSE.GPL3 for more details.
 
 bool_t save_xml_doc_to_file(link_t_ptr xml, const secu_desc_t* psd, const tchar_t* fname)
 {
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 	dword_t size;
 
@@ -93,7 +93,7 @@ ONERROR:
 
 bool_t load_xml_doc_from_file(link_t_ptr xml, const secu_desc_t* psd, const tchar_t* fname)
 {
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 
 	tchar_t fsize[INT_LEN + 1] = { 0 };

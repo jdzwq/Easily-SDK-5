@@ -37,7 +37,7 @@ typedef struct _t_kb_ctx
 
 }t_kb_ctx;
 
-t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname)
+t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname, bool_t share)
 {
 	t_kb_ctx* pobj;
 	link_t_ptr table;
@@ -51,7 +51,7 @@ t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname)
 	pobj->tree = create_bplus_tree();
 
 	xsprintf(fpath, _T("%s/%s.ind"), pobj->dpath, pobj->dname);
-	table = create_file_table(fpath);
+	table = create_file_table(fpath, share);
 	if (!table)
 	{
 		destroy_bplus_tree(pobj->tree);
@@ -61,7 +61,7 @@ t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname)
 	attach_bplus_index_table(pobj->tree, table);
 
 	xsprintf(fpath, _T("%s/%s.dat"), pobj->dpath, pobj->dname);
-	table = create_file_table(fpath);
+	table = create_file_table(fpath, share);
 	if (!table)
 	{
 		table = attach_bplus_index_table(pobj->tree, NULL);
@@ -122,4 +122,11 @@ bool_t tkb_clean(t_kb_t hdb, variant_t key)
 	return delete_bplus_entity(pobj->tree, key);
 }
 
+void tkb_enum(t_kb_t hdb, CALLBACK_ENUMBPLUSENTITY pf, void* param)
+{
+	t_kb_ctx* pobj = (t_kb_ctx*)hdb;
 
+	XDL_ASSERT(hdb && hdb->tag == T_OBJ_DB);
+
+	enum_bplus_entity(pobj->tree, pf, param);
+}

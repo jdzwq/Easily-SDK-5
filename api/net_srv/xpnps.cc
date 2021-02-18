@@ -106,6 +106,8 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
 	tchar_t sz_path[PATH_LEN + 1] = { 0 };
 
+	trace_interface tra = { 0 };
+
 	TRY_CATCH;
 
 	get_param_item(pxp->sz_param, _T("SITE"), sz_site, RES_LEN);
@@ -149,17 +151,14 @@ void _xpnps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(_T("_pnps_invoke"), _T("site invoke module function failed\n"));
 	}
 
-	pb->ptk = (if_track_t*)xmem_alloc(sizeof(if_track_t));
-	pb->ptk->param = (void*)pb;
-	pb->ptk->pf_track_error = (PF_TRACK_ERROR)_xpnps_track_error;
+	tra.param = (void*)pb;
+	tra.pf_track_error = (PF_TRACK_ERROR)_xpnps_track_error;
+	pb->ptk = &tra;
 
 	n_state = (*pf_invoke)(pb);
 
 	free_library(api);
 	api = NULL;
-
-	xmem_free(pb->ptk);
-	pb->ptk = NULL;
 
 	xmem_free(pb);
 	pb = NULL;
@@ -178,9 +177,6 @@ ONERROR:
 	if (pb)
 	{
 		_xpnps_track_error((void*)pb, errcode, errtext);
-
-		if (pb->ptk)
-			xmem_free(pb->ptk);
 
 		xmem_free(pb);
 	}

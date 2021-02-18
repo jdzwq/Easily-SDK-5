@@ -333,8 +333,7 @@ void enum_ac_table(link_t_ptr tt, PF_ENUM_AC_TABLE pf, void* pa)
 	}
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
-
+#if defined(XDL_SUPPORT_TEST)
 void trace_ac_table(link_t_ptr tt, const tchar_t* key, int len)
 {
 	ac_table_t* ptt = ACTableFromLink(tt);

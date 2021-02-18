@@ -115,10 +115,10 @@ bool_t _invoke_datetime(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: DATETIME]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: DATETIME]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), 1);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -133,9 +133,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: DATETIEM]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: DATETIEM]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -237,10 +237,10 @@ bool_t _invoke_schema(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: SCHEMA]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: SCHEMA]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -264,9 +264,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: SCHEMA]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: SCHEMA]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -343,10 +343,10 @@ bool_t _invoke_export(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: EXPORT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: EXPORT]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -367,9 +367,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: EXPORT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: EXPORT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -433,10 +433,10 @@ bool_t _invoke_import(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: IMPORT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: IMPORT]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -457,9 +457,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: IMPORT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: IMPORT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -591,10 +591,10 @@ bool_t _invoke_execute(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: EXECUTE]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: EXECUTE]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -621,9 +621,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: EXECUTE]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: EXECUTE]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -670,10 +670,10 @@ bool_t _invoke_batch(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: BATCH]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: BATCH]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -688,9 +688,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: BATCH]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: BATCH]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -755,10 +755,10 @@ bool_t _invoke_write_blob(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: BLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: BLOB]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -776,9 +776,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: BLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: BLOB]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -831,10 +831,10 @@ bool_t _invoke_read_blob(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: BLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: BLOB]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -855,9 +855,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: BLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: BLOB]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -937,10 +937,10 @@ bool_t _invoke_write_clob(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: CLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: CLOB]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -961,9 +961,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: CLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: CLOB]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -1052,10 +1052,10 @@ bool_t _invoke_read_clob(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: CLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: CLOB]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -1079,9 +1079,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: CLOB]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: CLOB]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -1161,10 +1161,10 @@ bool_t _invoke_write_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: XDOC]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: XDOC]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -1185,9 +1185,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: XDOC]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: XDOC]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -1261,10 +1261,10 @@ bool_t _invoke_read_xdoc(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: XDOC]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: XDOC]"), -1);
 
 		xsprintf(sz_error, _T("ODBC succeed, %d rows affected"), n_rows);
-		(*pb->plg->pf_log_error)(pb->plg->log, _T("0"), sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T("0"), sz_error, -1);
 	}
 
 	END_CATCH;
@@ -1288,9 +1288,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: XDOC]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: XDOC]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -1366,9 +1366,9 @@ bool_t _invoke_call_func(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: FUNC]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: FUNC]"), -1);
 
-		(*pb->plg->pf_log_xml)(pb->plg->log, d_xml);
+		(*pb->plg->pf_log_xml)(pb->plg->unc, d_xml);
 	}
 
 	destroy_xml_doc(d_xml);
@@ -1389,9 +1389,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: FUNC]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: FUNC]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -1477,9 +1477,9 @@ bool_t _invoke_call_json(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: JSON]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: JSON]"), -1);
 
-		(*pb->plg->pf_log_data)(pb->plg->log, buf, len);
+		(*pb->plg->pf_log_data)(pb->plg->unc, buf, len);
 	}
 
 	xmem_free(buf);
@@ -1503,9 +1503,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: JSON]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: JSON]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -1532,9 +1532,9 @@ void _invoke_error(const https_block_t* pb, xdb_block_t* pxb)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[ODBC: ERROR]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[ODBC: ERROR]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 }
 

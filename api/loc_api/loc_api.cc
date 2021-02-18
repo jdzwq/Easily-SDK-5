@@ -48,9 +48,9 @@ bool_t _invoke_head(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: HEAD]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: HEAD]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T(""), sz_object, -1);
 	}
 
 	if (!xfile_info(&pos->sd, sz_object, ftime, fsize, fetag, fencode))
@@ -87,9 +87,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: HEAD]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: HEAD]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -113,9 +113,9 @@ bool_t _invoke_list(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: LIST]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: LIST]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T(""), sz_object, -1);
 	}
 
 	xhttp_get_request_accept_charset(pb->http, sz_enc, RES_LEN);
@@ -159,9 +159,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: LIST]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: LIST]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -183,7 +183,7 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 
 	xdate_t dt_since, dt_time;
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t *sz_buf = NULL;
 	byte_t *sz_zip = NULL;
 	dword_t n_zip,n_size = 0;
@@ -205,9 +205,9 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: GET]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: GET]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T(""), sz_object, -1);
 	}
 
 	if (!xfile_info(&pos->sd, sz_object, ftime, fsize, fetag, NULL))
@@ -419,9 +419,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: GET]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: GET]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -445,7 +445,7 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 
 	xdate_t dt_since, dt_time;
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t** pbuf = NULL;
 	byte_t* sz_zip = NULL;
 	dword_t n_zip,n_size = 0;
@@ -467,9 +467,9 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: PUT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: PUT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T(""), sz_object, -1);
 	}
 
 	xhttp_get_request_header(pb->http, HTTP_HEADER_IFMODIFIEDSINCE, -1, fsince, DATE_LEN);
@@ -642,9 +642,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: PUT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: PUT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -663,9 +663,9 @@ bool_t _invoke_delete(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: DELETE]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: DELETE]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, _T(""), sz_object, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, _T(""), sz_object, -1);
 	}
 
 	if (!xfile_info(&pos->sd, sz_object, ftime, NULL, NULL, NULL))
@@ -698,9 +698,9 @@ ONERROR:
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: DELETE]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: DELETE]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -727,9 +727,9 @@ void _invoke_error(const https_block_t* pb, loc_block_t* pos)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[LOC: ERROR]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: ERROR]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 }
 

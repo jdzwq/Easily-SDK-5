@@ -42,14 +42,14 @@ LICENSE.GPL3 for more details.
 
 void call_write_xml_begin(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	pop->stack = create_stack_table();
 }
 
 bool_t call_write_xml_head_attr(void* pv, const tchar_t* key, int klen, const tchar_t* val, int vlen)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->doc)
 		return 0;
@@ -67,7 +67,7 @@ bool_t call_write_xml_head_attr(void* pv, const tchar_t* key, int klen, const tc
 
 bool_t call_write_xml_node_begin(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	push_stack_node(pop->stack, (void*)pop->nlk);
 
@@ -81,7 +81,7 @@ bool_t call_write_xml_node_begin(void* pv)
 
 bool_t call_write_xml_node_retain(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 	link_t_ptr plk;
 
 	plk = (link_t_ptr)peek_stack_node(pop->stack, -1);
@@ -95,7 +95,7 @@ bool_t call_write_xml_node_retain(void* pv)
 
 bool_t call_write_xml_node_end(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	pop->nlk = (pop->stack) ? (link_t_ptr)pop_stack_node(pop->stack) : NULL;
 
@@ -107,7 +107,7 @@ bool_t call_write_xml_node_end(void* pv)
 
 link_t_ptr call_peek_xml_node(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->stack)
 		return NULL;
@@ -117,7 +117,7 @@ link_t_ptr call_peek_xml_node(void* pv)
 
 bool_t call_write_xml_node_name(void* pv, const tchar_t* ns, int nslen, const tchar_t* na, int nalen)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return 0;
@@ -137,7 +137,7 @@ bool_t call_write_xml_node_name(void* pv, const tchar_t* ns, int nslen, const tc
 
 bool_t call_write_xml_node_attr(void* pv, const tchar_t* key, int klen, const tchar_t* val, int vlen)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return 0;
@@ -149,7 +149,7 @@ bool_t call_write_xml_node_attr(void* pv, const tchar_t* key, int klen, const tc
 
 bool_t call_write_xml_node_xmlns(void* pv, const tchar_t* key, int klen, const tchar_t* val, int vlen)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return 0;
@@ -161,7 +161,7 @@ bool_t call_write_xml_node_xmlns(void* pv, const tchar_t* key, int klen, const t
 
 bool_t call_write_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, int len)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return 0;
@@ -178,7 +178,7 @@ bool_t call_write_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, i
 
 bool_t call_write_xml_node_mask(void* pv, dword_t mask, bool_t b_check)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return 0;
@@ -190,7 +190,7 @@ bool_t call_write_xml_node_mask(void* pv, dword_t mask, bool_t b_check)
 
 bool_t call_peek_xml_node_mask(void* pv, dword_t mask)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return 0;
@@ -200,7 +200,7 @@ bool_t call_peek_xml_node_mask(void* pv, dword_t mask)
 
 const tchar_t* call_peek_xml_node_name(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (!pop->nlk)
 		return NULL;
@@ -210,7 +210,7 @@ const tchar_t* call_peek_xml_node_name(void* pv)
 
 void call_write_xml_end(void* pv, int code)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	if (pop->stack)
 	{
@@ -221,7 +221,7 @@ void call_write_xml_end(void* pv, int code)
 
 bool_t call_write_xml_has_node(void* pv)
 {
-	XMLOBJECT* pop = (XMLOBJECT*)pv;
+	xml_opera_context* pop = (xml_opera_context*)pv;
 
 	return (pop->nlk) ? 1 : 0;
 }
@@ -230,11 +230,11 @@ bool_t call_write_xml_has_node(void* pv)
 
 bool_t call_read_xml_head_begin(void* pv)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	int pos = 0;
 	bool_t b_ns = 0;
 
-	pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, _T("<?xml "), -1);
+	pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, _T("<?xml "), -1);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -247,11 +247,11 @@ bool_t call_read_xml_head_begin(void* pv)
 
 bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	tchar_t pch[2] = { 0 };
 	int pos = 0;
 
-	pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, key, -1);
+	pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, key, -1);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -260,7 +260,7 @@ bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	pb->pos += pos;
 
 	pch[0] = _T('=');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -269,7 +269,7 @@ bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	pb->pos += pos;
 
 	pch[0] = _T('\"');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -279,7 +279,7 @@ bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 
 	while (val && *val)
 	{
-		pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, val);
+		pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, val);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -290,7 +290,7 @@ bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	}
 
 	pch[0] = _T('\"');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -299,7 +299,7 @@ bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	pb->pos += pos;
 
 	pch[0] = _T(' ');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -312,10 +312,10 @@ bool_t call_read_xml_head_attr(void* pv, const tchar_t* key, const tchar_t* val)
 
 bool_t call_read_xml_head_end(void* pv)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	int pos = 0;
 
-	pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, _T("?>"), -1);
+	pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, _T("?>"), -1);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -328,15 +328,15 @@ bool_t call_read_xml_head_end(void* pv)
 
 bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	bool_t b_esc;
 	tchar_t pch[2] = { 0 };
 	int pos = 0;
 
-	b_esc = (*pb->pf_can_escape)(pb->obj);
+	b_esc = (*pb->pf_can_escape)(pb->ctx);
 
 	pch[0] = _T(' ');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -344,7 +344,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	}
 	pb->pos += pos;
 
-	pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, key, -1);
+	pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, key, -1);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -353,7 +353,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	pb->pos += pos;
 
 	pch[0] = _T('=');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -362,7 +362,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	pb->pos += pos;
 
 	pch[0] = _T('\"');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -375,7 +375,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 		if (b_esc && _IsEscapeChar(*val))
 		{
 			pch[0] = _T('&');
-			pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+			pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -383,7 +383,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 			}
 			pb->pos += pos;
 
-			pos = (*pb->pf_write_escape)(pb->obj, pb->max, pb->pos, pb->encode, *val);
+			pos = (*pb->pf_write_escape)(pb->ctx, pb->max, pb->pos, pb->encode, *val);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -395,7 +395,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 		}
 		else
 		{
-			pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, val);
+			pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, val);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -411,7 +411,7 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 	}
 
 	pch[0] = _T('\"');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -424,14 +424,14 @@ bool_t call_read_xml_node_attr(void* pv, const tchar_t* key, const tchar_t* val)
 
 bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tchar_t* ns, const tchar_t* nn)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	tchar_t pch[2] = { 0 };
 	int pos = 0;
 	bool_t b_ns = 0;
 
 	if (pb->pf_write_carriage)
 	{
-		pos = (*pb->pf_write_carriage)(pb->obj, pb->max, pb->pos, pb->encode);
+		pos = (*pb->pf_write_carriage)(pb->ctx, pb->max, pb->pos, pb->encode);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -442,7 +442,7 @@ bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tch
 
 	while (indent && pb->pf_write_indent)
 	{
-		pos = (*pb->pf_write_indent)(pb->obj, pb->max, pb->pos, pb->encode);
+		pos = (*pb->pf_write_indent)(pb->ctx, pb->max, pb->pos, pb->encode);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -454,7 +454,7 @@ bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tch
 	}
 
 	pch[0] = _T('<');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -467,7 +467,7 @@ bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tch
 
 	if (b_ns)
 	{
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, ns, -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, ns, -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -476,7 +476,7 @@ bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tch
 		pb->pos += pos;
 
 		pch[0] = _T(':');
-		pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+		pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -485,7 +485,7 @@ bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tch
 		pb->pos += pos;
 	}
 
-	pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, nn, -1);
+	pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, nn, -1);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -498,12 +498,12 @@ bool_t call_read_xml_node_begin(void* pv, int indent, bool_t b_parent, const tch
 
 bool_t call_read_xml_node_close(void* pv, int indent, bool_t b_parent)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	tchar_t pch[2] = { 0 };
 	int pos = 0;
 
 	pch[0] = _T('>');
-	pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+	pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 	if (pos == C_ERR)
 	{
 		pb->pos = C_ERR;
@@ -516,7 +516,7 @@ bool_t call_read_xml_node_close(void* pv, int indent, bool_t b_parent)
 
 bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, int len)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	tchar_t pch[2] = { 0 };
 	bool_t b_esc;
 	int i, pos = 0;
@@ -529,7 +529,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 
 	if (b_cdata)
 	{
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, _T("<!"), -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, _T("<!"), -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -537,7 +537,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 		}
 		pb->pos += pos;
 
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, CDATA_HEAD, -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, CDATA_HEAD, -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -548,7 +548,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 
 	if (b_cdata)
 	{
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, text, len);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, text, len);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -556,7 +556,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 		}
 		pb->pos += pos;
 
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, CDATA_TAIL, -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, CDATA_TAIL, -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -565,7 +565,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 		pb->pos += pos;
 
 		pch[0] = _T('>');
-		pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+		pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -575,14 +575,14 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 	}
 	else
 	{
-		b_esc = (*pb->pf_can_escape)(pb->obj);
+		b_esc = (*pb->pf_can_escape)(pb->ctx);
 
 		for (i = 0; i < len;)
 		{
 			if (b_esc && _IsEscapeChar(text[i]))
 			{
 				pch[0] = _T('&');
-				pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+				pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 				if (pos == C_ERR)
 				{
 					pb->pos = C_ERR;
@@ -590,7 +590,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 				}
 				pb->pos += pos;
 
-				pos = (*pb->pf_write_escape)(pb->obj, pb->max, pb->pos, pb->encode, text[i]);
+				pos = (*pb->pf_write_escape)(pb->ctx, pb->max, pb->pos, pb->encode, text[i]);
 				if (pos == C_ERR)
 				{
 					pb->pos = C_ERR;
@@ -601,7 +601,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 			}
 			else
 			{
-				pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, text + i);
+				pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, text + i);
 				if (pos == C_ERR)
 				{
 					pb->pos = C_ERR;
@@ -622,7 +622,7 @@ bool_t call_read_xml_node_text(void* pv, bool_t b_cdata, const tchar_t* text, in
 
 bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_close, const tchar_t* ns, const tchar_t* nn)
 {
-	if_operator_t* pb = (if_operator_t*)pv;
+	opera_interface* pb = (opera_interface*)pv;
 	tchar_t pch[2] = { 0 };
 	int pos = 0;
 	bool_t b_ns = 0;
@@ -631,7 +631,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 	{
 		if (b_parent && pb->pf_write_carriage)
 		{
-			pos = (*pb->pf_write_carriage)(pb->obj, pb->max, pb->pos, pb->encode);
+			pos = (*pb->pf_write_carriage)(pb->ctx, pb->max, pb->pos, pb->encode);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -642,7 +642,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 
 		while (b_parent && indent && pb->pf_write_indent)
 		{
-			pos = (*pb->pf_write_indent)(pb->obj, pb->max, pb->pos, pb->encode);
+			pos = (*pb->pf_write_indent)(pb->ctx, pb->max, pb->pos, pb->encode);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -653,7 +653,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 			indent--;
 		}
 
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, _T("</"), -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, _T("</"), -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -666,7 +666,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 
 		if (b_ns)
 		{
-			pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, ns, -1);
+			pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, ns, -1);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -675,7 +675,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 			pb->pos += pos;
 
 			pch[0] = _T(':');
-			pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+			pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 			if (pos == C_ERR)
 			{
 				pb->pos = C_ERR;
@@ -684,7 +684,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 			pb->pos += pos;
 		}
 
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, nn, -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, nn, -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -693,7 +693,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 		pb->pos += pos;
 
 		pch[0] = _T('>');
-		pos = (*pb->pf_write_char)(pb->obj, pb->max, pb->pos, pb->encode, pch);
+		pos = (*pb->pf_write_char)(pb->ctx, pb->max, pb->pos, pb->encode, pch);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;
@@ -703,7 +703,7 @@ bool_t call_read_xml_node_end(void* pv, int indent, bool_t b_parent, bool_t b_cl
 	}
 	else
 	{
-		pos = (*pb->pf_write_token)(pb->obj, pb->max, pb->pos, pb->encode, _T("/>"), -1);
+		pos = (*pb->pf_write_token)(pb->ctx, pb->max, pb->pos, pb->encode, _T("/>"), -1);
 		if (pos == C_ERR)
 		{
 			pb->pos = C_ERR;

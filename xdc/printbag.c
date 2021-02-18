@@ -38,7 +38,7 @@ void print_form(const dev_prn_t* pdev, link_t_ptr form)
 {
 	visual_t rdc; 
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 	int i, pages;
 	dev_prn_t dev = { 0 };
 
@@ -91,7 +91,7 @@ void print_grid(const dev_prn_t* pdev, link_t_ptr grid)
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 	int i, pages;
 	dev_prn_t dev = { 0 };
 
@@ -145,7 +145,7 @@ void print_statis(const dev_prn_t* pdev, link_t_ptr statis)
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 	dev_prn_t dev = { 0 };
 	int i, pages;
 
@@ -199,7 +199,7 @@ void print_topog(const dev_prn_t* pdev, link_t_ptr topog)
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -235,7 +235,7 @@ void print_dialog(const dev_prn_t* pdev, link_t_ptr dialog)
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)
@@ -271,7 +271,7 @@ void print_diagram(const dev_prn_t* pdev, link_t_ptr diagram)
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 	dev_prn_t dev = { 0 };
 
 	if (pdev)
@@ -319,7 +319,7 @@ void print_memo(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 	xrect_t xr = { 0 };
 	int i, pages;
 	dev_prn_t dev = { 0 };
@@ -371,7 +371,7 @@ void print_rich(const dev_prn_t* pdev, const xfont_t* pxf, const xface_t* pxa, l
 {
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 	xrect_t xr = { 0 };
 	int i, pages;
 	dev_prn_t dev = { 0 };
@@ -424,7 +424,7 @@ void print_svg(const dev_prn_t* pdev, link_t_ptr svg)
 	xrect_t xr = { 0 };
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifc = {0};
+	drawing_interface ifc = {0};
 
 	rdc = create_printer_context(pdev);
 	if (!rdc)

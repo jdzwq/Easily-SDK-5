@@ -239,7 +239,7 @@ void hand_splitor_paint(splitor_t* ptd, visual_t rdc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 	xcolor_t xc_brim, xc_core;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	XDL_ASSERT(ptd != NULL);
 

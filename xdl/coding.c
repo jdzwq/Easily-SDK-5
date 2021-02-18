@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_GDI)
 
-void draw_code128(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+void draw_code128(const drawing_interface* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	int black, span;
 	dword_t i;
@@ -111,7 +111,7 @@ void draw_code128(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, co
 	prt->fw = rt.fx + unit - prt->fx;
 }
 
-void draw_pdf417(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+void draw_pdf417(const drawing_interface* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	int black;
 	int rows, cols;
@@ -199,7 +199,7 @@ void draw_pdf417(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, con
 	prt->fh = rt.fy + rt.fh + unit - prt->fy;
 }
 
-void draw_qrcode(const if_drawing_t* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
+void draw_qrcode(const drawing_interface* pif, const xcolor_t* pxc, xrect_t* prt, const tchar_t* text, int len)
 {
 	int black;
 	int rows, cols;

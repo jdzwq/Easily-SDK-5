@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #if defined(XDU_SUPPORT_CONTEXT)
 
 typedef struct _rdc_canvas_t{
-	canvas_head head;
+	handle_head head;
 
 	visual_t view;
 

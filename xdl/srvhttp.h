@@ -97,8 +97,7 @@ typedef struct _https_block_t{
 	tchar_t object[PATH_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
 
-	if_log_t* plg;
-	if_post_t* pst;
+	const loged_interface* plg;
 }https_block_t;
 
 typedef enum{

@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_GDI)
 
-void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif)
+void svg_get_canvas_interface(canvas_t canv, drawing_interface* pif)
 {
 	pif->ctx = (void*)canv;
 
@@ -91,7 +91,7 @@ void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif)
 	parse_xcolor(&pif->mode.clr_ico, GDI_ATTR_RGB_BLACK);
 }
 
-void svg_get_visual_interface(visual_t visual, if_drawing_t* pif)
+void svg_get_visual_interface(visual_t visual, drawing_interface* pif)
 {
 	pif->ctx = (void*)visual;
 

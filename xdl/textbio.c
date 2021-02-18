@@ -44,7 +44,7 @@ LICENSE.GPL3 for more details.
 
 int save_text_to_file(const secu_desc_t* psd, const tchar_t* fname, const tchar_t* buf, int len)
 {
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* data = NULL;
 	dword_t size;
 	int skip;
@@ -113,7 +113,7 @@ int load_text_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* b
 	dword_t dw, size;
 	int skip, encode;
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* data = NULL;
 
 	TRY_CATCH;

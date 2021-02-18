@@ -10,9 +10,9 @@
 #define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
 
 //#define HL7_URL		_T("http://172.16.190.190:8889")
-//#define HL7_URL		_T("http://127.0.0.1:8889")
+#define HL7_URL		_T("http://127.0.0.1")
 //#define HL7_URL		_T("http://118.178.180.81")
-#define HL7_URL		_T("https://www.biofolia.cn:8888")
+//#define HL7_URL		_T("https://www.biofolia.cn:8888")
 
 void test_hl7_head()
 {
@@ -295,11 +295,11 @@ int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-	//test_hl7_head();
-
 	//test_hl7_put();
 
-	test_hl7_list();
+	//test_hl7_head();
+
+	//test_hl7_list();
 
 	//test_hl7_get();
 

@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_ASYNC
 
-async_t* async_alloc_lapp(int type, int ms, res_file_t fd)
+void async_init(async_t* pas, int type, int ms, res_file_t fd)
 {
 	if_async_t *pif;
 
@@ -46,10 +46,10 @@ async_t* async_alloc_lapp(int type, int ms, res_file_t fd)
 
 	XDL_ASSERT(pif != NULL);
 
-	return (*pif->pf_async_alloc_lapp)(type, ms, fd);
+	(*pif->pf_async_init)(pas, type, ms, fd);
 }
 
-void async_free_lapp(async_t* pas)
+void async_uninit(async_t* pas)
 {
 	if_async_t *pif;
 
@@ -57,7 +57,7 @@ void async_free_lapp(async_t* pas)
 
 	XDL_ASSERT(pif != NULL);
 
-	(*pif->pf_async_free_lapp)(pas);
+	(*pif->pf_async_uninit)(pas);
 }
 
 

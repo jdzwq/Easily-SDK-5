@@ -43,8 +43,6 @@ typedef struct _udp_listen_t{
 
 	int act;
 
-	res_crit_t cri;
-
 	int res;
 	res_thread_t* thr;
 
@@ -107,7 +105,7 @@ typedef struct _udps_block_t{
 	tchar_t site[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
 
-	if_track_t* ptk;
+	const trace_interface* ptk;
 }udps_block_t;
 
 typedef enum{

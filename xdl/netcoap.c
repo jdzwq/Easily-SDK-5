@@ -88,8 +88,8 @@ typedef struct _coap_pdu_t{
 	byte_t payload[COAP_PDV_SIZE];
 }coap_pdu_t;
 
-typedef struct _xcoap_t{
-	xhand_head head;		//head for xhand_t
+typedef struct _coap_context{
+	handle_head head;		//head for xhand_t
 
 	int type;
 	xhand_t bio;
@@ -108,7 +108,7 @@ typedef struct _xcoap_t{
 
 	sword_t errcode;
 	tchar_t errtext[ERR_LEN + 1];
-}xcoap_t;
+}coap_context;
 
 /***********************************************************************************************/
 
@@ -511,7 +511,7 @@ static void _coap_clear_pdu(coap_pdu_t* pdu)
 	xmem_zero((void*)pdu, sizeof(coap_pdu_t));
 }
 
-bool_t _coap_send_request(xcoap_t* ppt)
+bool_t _coap_send_request(coap_context* ppt)
 {
 	coap_pdu_t* pdu;
 
@@ -581,7 +581,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _coap_recv_request(xcoap_t* ppt)
+bool_t _coap_recv_request(coap_context* ppt)
 {
 	coap_pdu_t* pdu;
 
@@ -671,7 +671,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _coap_send_response(xcoap_t* ppt)
+bool_t _coap_send_response(coap_context* ppt)
 {
 	coap_pdu_t* pdu;
 
@@ -748,7 +748,7 @@ ONERROR:
 	return 0;
 }
 
-bool_t _coap_recv_response(xcoap_t* ppt)
+bool_t _coap_recv_response(coap_context* ppt)
 {
 	coap_pdu_t* pdu;
 
@@ -853,7 +853,7 @@ ONERROR:
 
 xhand_t xcoap_client(const tchar_t* method, const tchar_t* url)
 {
-	xcoap_t* ppt = NULL;
+	coap_context* ppt = NULL;
 
 	tchar_t *potoat, *hostat, *portat, *objat, *qryat;
 	int potolen, hostlen, portlen, objlen, qrylen;
@@ -871,7 +871,7 @@ xhand_t xcoap_client(const tchar_t* method, const tchar_t* url)
 
 	TRY_CATCH;
 
-	ppt = (xcoap_t*)xmem_alloc(sizeof(xcoap_t));
+	ppt = (coap_context*)xmem_alloc(sizeof(coap_context));
 	ppt->head.tag = _HANDLE_COAP;
 
 	ppt->type = _XCOAP_TYPE_CLI;
@@ -992,14 +992,14 @@ ONERROR:
 
 xhand_t	xcoap_server(unsigned short port, const tchar_t* addr, const byte_t* pack, dword_t size)
 {
-	xcoap_t* ppt = NULL;
+	coap_context* ppt = NULL;
 	unsigned short bind;
 
 	int i = 0;
 
 	TRY_CATCH;
 
-	ppt = (xcoap_t*)xmem_alloc(sizeof(xcoap_t));
+	ppt = (coap_context*)xmem_alloc(sizeof(coap_context));
 	ppt->head.tag = _HANDLE_COAP;
 
 	ppt->type = _XCOAP_TYPE_SRV;
@@ -1051,7 +1051,7 @@ ONERROR:
 
 xhand_t xcoap_bio(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 
 	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
 
@@ -1060,7 +1060,7 @@ xhand_t xcoap_bio(xhand_t coap)
 
 void xcoap_close(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 
 	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
 
@@ -1076,7 +1076,7 @@ void xcoap_close(xhand_t coap)
 
 int xcoap_method(xhand_t coap, tchar_t* buf, int max)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int len;
 	coap_pdu_t* pdu;
 
@@ -1120,7 +1120,7 @@ int xcoap_method(xhand_t coap, tchar_t* buf, int max)
 
 sword_t xcoap_msgid(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	coap_pdu_t* pdu;
 
 	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
@@ -1135,7 +1135,7 @@ sword_t xcoap_msgid(xhand_t coap)
 
 int xcoap_get_object(xhand_t coap, tchar_t* buf, int max)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i, len = 0;
 	coap_pdu_t* pdu;
 
@@ -1165,7 +1165,7 @@ int xcoap_get_object(xhand_t coap, tchar_t* buf, int max)
 
 void xcoap_set_object(xhand_t coap, const tchar_t* obj, int len)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1207,7 +1207,7 @@ void xcoap_set_object(xhand_t coap, const tchar_t* obj, int len)
 
 int xcoap_get_query(xhand_t coap, tchar_t* buf, int max)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i, len = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1238,7 +1238,7 @@ int xcoap_get_query(xhand_t coap, tchar_t* buf, int max)
 
 void xcoap_set_query(xhand_t coap, const tchar_t* qry, int len)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1280,7 +1280,7 @@ void xcoap_set_query(xhand_t coap, const tchar_t* qry, int len)
 
 int xcoap_get_content_type(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i, len = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1308,7 +1308,7 @@ int xcoap_get_content_type(xhand_t coap)
 
 void xcoap_set_content_type(xhand_t coap, int type)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1336,7 +1336,7 @@ void xcoap_set_content_type(xhand_t coap, int type)
 
 int xcoap_get_content_size(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i, len = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1373,7 +1373,7 @@ int xcoap_get_content_size(xhand_t coap)
 
 void xcoap_set_content_size(xhand_t coap, int type)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i = 0;
 	coap_pdu_t* pdu;
 	int opd = 0;
@@ -1410,7 +1410,7 @@ void xcoap_set_content_size(xhand_t coap, int type)
 
 int xcoap_get_option(xhand_t coap, int opd, tchar_t* buf, int max)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i, len = 0;
 	coap_pdu_t* pdu;
 
@@ -1438,7 +1438,7 @@ int xcoap_get_option(xhand_t coap, int opd, tchar_t* buf, int max)
 
 void xcoap_set_option(xhand_t coap, int opd, const tchar_t* opt, int len)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	int i = 0;
 	coap_pdu_t* pdu;
 
@@ -1477,7 +1477,7 @@ void xcoap_set_option(xhand_t coap, int opd, const tchar_t* opt, int len)
 
 void xcoap_set_blockwise(xhand_t coap, int szx)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 
 	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
 
@@ -1490,7 +1490,7 @@ void xcoap_set_blockwise(xhand_t coap, int szx)
 
 bool_t xcoap_connect(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	coap_pdu_t* pdu;
 
 	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
@@ -1513,7 +1513,7 @@ bool_t xcoap_connect(xhand_t coap)
 
 bool_t xcoap_accept(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	coap_pdu_t* pdu;
 
 	XDL_ASSERT(coap && coap->tag == _HANDLE_COAP);
@@ -1531,7 +1531,7 @@ bool_t xcoap_accept(xhand_t coap)
 
 void xcoap_abort(xhand_t coap, int errcode)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 
 	coap_pdu_t* pdu;
 
@@ -1580,7 +1580,7 @@ ONERROR:
 
 bool_t xcoap_recv(xhand_t coap, byte_t* buf, dword_t* pch)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	coap_pdu_t* pdu;
 
 	byte_t pkg_buf[COAP_PKG_SIZE] = { 0 };
@@ -1651,7 +1651,7 @@ ONERROR:
 
 bool_t xcoap_send(xhand_t coap, const byte_t* buf, dword_t *pch)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	coap_pdu_t* pdu;
 
 	byte_t pkg_buf[COAP_PKG_SIZE] = { 0 };
@@ -1716,7 +1716,7 @@ ONERROR:
 
 bool_t xcoap_flush(xhand_t coap)
 {
-	xcoap_t* ppt = TypePtrFromHead(xcoap_t, coap);
+	coap_context* ppt = TypePtrFromHead(coap_context, coap);
 	coap_pdu_t* pdu;
 	byte_t pkg_buf[COAP_PKG_SIZE] = { 0 };
 	dword_t pos = 0;

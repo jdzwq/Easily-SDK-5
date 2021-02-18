@@ -27,12 +27,18 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 
 
-void _write_log_title(stream_t log, const tchar_t* sz_title, int len)
+void _write_log_title(const tchar_t* fname, const tchar_t* sz_title, int len)
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br;
 	byte_t br[2] = { '\r', '\n' };
     int n_log = 0;
+
+	file_t xf = NULL;
+
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if(!xf)
+		return;
 
 #ifdef _UNICODE
 	n_log = ucs_to_mbs(sz_title, -1, NULL, MAX_LONG);
@@ -49,24 +55,31 @@ void _write_log_title(stream_t log, const tchar_t* sz_title, int len)
 #endif
 
 	n_br = 2;
-	stream_write_bytes(log, br, n_br);
-
-	stream_write_bytes(log, sz_log, n_log);
+	xfile_write(xf, br, n_br);;
+	
+	xfile_write(xf, sz_log, n_log);
 
 	n_br = 2;
-	stream_write_bytes(log, br, n_br);
+	xfile_write(xf, br, n_br);;
 
 	xmem_free(sz_log);
-	sz_log = NULL;
+
+	xfile_close(xf);
 }
 
-void _write_log_error(stream_t log, const tchar_t* sz_code, const tchar_t* sz_error, int len)
+void _write_log_error(const tchar_t* fname, const tchar_t* sz_code, const tchar_t* sz_error, int len)
 {
 	byte_t* sz_log = NULL;
 	dword_t n_br, n_log = 0;
 	tchar_t token[INT_LEN + 1] = { 0 };
     byte_t br[2] = { '\r', '\n' };
     
+	file_t xf = NULL;
+
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if (!xf)
+		return;
+
 	format_charset(DEF_MBS, token);
 
 	n_log = xhttp_format_error(0, token, sz_code, sz_error, len, NULL, MAX_LONG);
@@ -75,64 +88,89 @@ void _write_log_error(stream_t log, const tchar_t* sz_code, const tchar_t* sz_er
 
 	n_log = xhttp_format_error(0, token, sz_code, sz_error, len, sz_log, n_log);
 
-	stream_write_bytes(log, sz_log, n_log);
+	xfile_write(xf, sz_log, n_log);
 
     n_br = 2;
-	stream_write_bytes(log, br, n_br);
+	xfile_write(xf, br, n_br);
     
 	xmem_free(sz_log);
-	sz_log = NULL;
+	
+	xfile_close(xf);
 }
 
-void _write_log_data(stream_t log, const byte_t* data, dword_t size)
+void _write_log_data(const tchar_t* fname, const byte_t* data, dword_t size)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
 
+	file_t xf = NULL;
+
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if (!xf)
+		return;
+
 	dw = size;
-	stream_write_bytes(log, data, dw);
+	xfile_write(xf, data, dw);
 
 	dw = 2;
-	stream_write_bytes(log, ba, dw);
+	xfile_write(xf, ba, dw);
+
+	xfile_close(xf);
 }
 
-void _write_log_xml(stream_t log, link_t_ptr ptr_xml)
+void _write_log_xml(const tchar_t* fname, link_t_ptr ptr_xml)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
 	byte_t* sz_log = NULL;
+
+	file_t xf = NULL;
+
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if (!xf)
+		return;
 
 	dw = format_xml_doc_to_bytes(ptr_xml, NULL, MAX_LONG);
 	sz_log = (byte_t*)xmem_alloc(dw + 1);
 	format_xml_doc_to_bytes(ptr_xml, sz_log, dw);
 
-	stream_write_bytes(log, sz_log, dw);
+	xfile_write(xf, sz_log, dw);
 	xmem_free(sz_log);
 
 	dw = 2;
-	stream_write_bytes(log, ba, dw);
+	xfile_write(xf, ba, dw);
+
+	xfile_close(xf);
 }
 
-void _write_log_json(stream_t log, link_t_ptr ptr_json)
+void _write_log_json(const tchar_t* fname, link_t_ptr ptr_json)
 {
 	dword_t dw;
 	byte_t ba[2] = { '\r', '\n' };
 	byte_t* sz_log = NULL;
 
+	file_t xf = NULL;
+
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if (!xf)
+		return;
+
 	dw = format_json_doc_to_bytes(ptr_json, NULL, MAX_LONG, DEF_MBS);
 	sz_log = (byte_t*)xmem_alloc(dw + 1);
 	format_json_doc_to_bytes(ptr_json, sz_log, dw, DEF_MBS);
 
-	stream_write_bytes(log, sz_log, dw);
+	xfile_write(xf, sz_log, dw);
 	xmem_free(sz_log);
 
 	dw = 2;
-	stream_write_bytes(log, ba, dw);
+	xfile_write(xf, ba, dw);
+
+	xfile_close(xf);
 }
 
-void get_log_interface(stream_t log, if_log_t* plog)
+void get_loged_interface(const tchar_t* fname, loged_interface* plog)
 {
-	plog->log = log;
+	xsncpy(plog->unc, fname, PATH_LEN);
 
 	plog->pf_log_title = _write_log_title;
 	plog->pf_log_error = _write_log_error;
@@ -143,7 +181,7 @@ void get_log_interface(stream_t log, if_log_t* plog)
 
 /***********************************************************************************/
 
-bool_t _send_event(const tchar_t* url, bool_t json, link_t_ptr doc)
+bool_t _pubs_event(const tchar_t* url, bool_t json, link_t_ptr doc)
 {
 	xhand_t xh = NULL;
 	bool_t rt = 0;
@@ -176,7 +214,7 @@ bool_t _send_event(const tchar_t* url, bool_t json, link_t_ptr doc)
 	return rt;
 }
 
-bool_t _query_event(const tchar_t* url, bool_t json, link_t_ptr doc)
+bool_t _subs_event(const tchar_t* url, bool_t json, link_t_ptr doc)
 {
 	xhand_t xh = NULL;
 	bool_t rt = 0;
@@ -232,12 +270,12 @@ bool_t _query_event(const tchar_t* url, bool_t json, link_t_ptr doc)
 	return rt;
 }
 
-void get_event_interface(const tchar_t* url, if_post_t* pev)
+void get_event_interface(const tchar_t* url, event_interface* pev)
 {
 	xsncpy(pev->url, url, PATH_LEN);
 
-	pev->pf_send_event = _send_event;
-	pev->pf_query_event = _query_event;
+	pev->pf_pubs_event = _pubs_event;
+	pev->pf_subs_event = _subs_event;
 }
 
 /***********************************************************************************/
@@ -249,7 +287,7 @@ void xportm_log_info(const tchar_t* str, int len)
 
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
@@ -307,7 +345,7 @@ void xportm_log_error(const tchar_t* errcode, const tchar_t* errtext)
 
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 
@@ -377,7 +415,7 @@ void xportm_log_data(const byte_t* data, dword_t size)
 {
 	stream_t stm = NULL;
 	xhand_t pipe = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	xpipe_wait(XPORTM_PIPE_NAME, XPORTM_WAIT_TIMO);
 

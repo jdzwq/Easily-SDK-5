@@ -40,20 +40,20 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_PIPE
 
-typedef struct _pipe_t{
-	xhand_head head;
+typedef struct _pipe_context{
+	handle_head head;
 
 	res_file_t pipe;
 	bool_t b_srv;
 	tchar_t* pname;
 
 	async_t* pov;
-}pipe_t;
+}pipe_context;
 
 xhand_t xpipe_srv(const tchar_t* pname, dword_t fmode)
 {
 	res_file_t pd;
-	pipe_t* ppi;
+	pipe_context* ppi;
 	if_pipe_t* pif;
 
 	pif = PROCESS_PIPE_INTERFACE;
@@ -68,20 +68,21 @@ xhand_t xpipe_srv(const tchar_t* pname, dword_t fmode)
 		return NULL;
 	}
 
-	ppi = (pipe_t*)xmem_alloc(sizeof(pipe_t));
+	ppi = (pipe_context*)xmem_alloc(sizeof(pipe_context));
 	ppi->head.tag = _HANDLE_PIPE;
 	ppi->pipe = pd;
 	ppi->b_srv = 1;
 	ppi->pname = xsclone(pname);
 
-	ppi->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), PIPE_BASE_TIMO, INVALID_FILE);
+	ppi->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(ppi->pov, ((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), PIPE_BASE_TIMO, INVALID_FILE);
 
 	return &ppi->head;
 }
 
 bool_t xpipe_listen(xhand_t pip)
 {
-	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
+	pipe_context* ppi = TypePtrFromHead(pipe_context, pip);
 	if_pipe_t* pif;
     bool_t rt;
 
@@ -98,7 +99,7 @@ bool_t xpipe_listen(xhand_t pip)
 
 void xpipe_stop(xhand_t pip)
 {
-	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
+	pipe_context* ppi = TypePtrFromHead(pipe_context, pip);
 	if_pipe_t* pif;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -113,7 +114,7 @@ void xpipe_stop(xhand_t pip)
 xhand_t xpipe_cli(const tchar_t* pname, dword_t fmode)
 {
 	res_file_t pd;
-	pipe_t* ppi;
+	pipe_context* ppi;
 	if_pipe_t* pif;
 
 	pif = PROCESS_PIPE_INTERFACE;
@@ -128,38 +129,40 @@ xhand_t xpipe_cli(const tchar_t* pname, dword_t fmode)
 		return NULL;
 	}
 
-	ppi = (pipe_t*)xmem_alloc(sizeof(pipe_t));
+	ppi = (pipe_context*)xmem_alloc(sizeof(pipe_context));
 	ppi->head.tag = _HANDLE_PIPE;
 	ppi->pipe = pd;
 	ppi->b_srv = 0;
 	ppi->pname = xsclone(pname);
 
-	ppi->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), PIPE_BASE_TIMO, INVALID_FILE);
+	ppi->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(ppi->pov, ((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), PIPE_BASE_TIMO, INVALID_FILE);
 
 	return &ppi->head;
 }
 
 xhand_t xpipe_attach(res_file_t hp)
 {
-	pipe_t* ppi;
+	pipe_context* ppi;
 	if_pipe_t* pif;
 
 	pif = PROCESS_PIPE_INTERFACE;
 
 	XDL_ASSERT(pif != NULL);
 
-	ppi = (pipe_t*)xmem_alloc(sizeof(pipe_t));
+	ppi = (pipe_context*)xmem_alloc(sizeof(pipe_context));
 	ppi->head.tag = _HANDLE_PIPE;
 	ppi->pipe = hp;
 
-	ppi->pov = async_alloc_lapp(ASYNC_BLOCK, PIPE_BASE_TIMO, INVALID_FILE);
+	ppi->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(ppi->pov, ASYNC_BLOCK, PIPE_BASE_TIMO, INVALID_FILE);
 
 	return &ppi->head;
 }
 
 res_file_t xpipe_detach(xhand_t pip)
 {
-	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
+	pipe_context* ppi = TypePtrFromHead(pipe_context, pip);
 	res_file_t hp;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -168,7 +171,8 @@ res_file_t xpipe_detach(xhand_t pip)
 
 	if (ppi->pov)
 	{
-		async_free_lapp(ppi->pov);
+		async_uninit(ppi->pov);
+		xmem_free(ppi->pov);
 	}
 
 	xmem_free(ppi);
@@ -178,7 +182,7 @@ res_file_t xpipe_detach(xhand_t pip)
 
 res_file_t xpipe_handle(xhand_t pip)
 {
-	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
+	pipe_context* ppi = TypePtrFromHead(pipe_context, pip);
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
 
@@ -198,7 +202,7 @@ bool_t xpipe_wait(const tchar_t* pname, int ms)
 
 bool_t xpipe_flush(xhand_t pip)
 {
-	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
+	pipe_context* ppi = TypePtrFromHead(pipe_context, pip);
 	if_pipe_t* pif;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -215,7 +219,7 @@ bool_t xpipe_flush(xhand_t pip)
 
 void xpipe_free(xhand_t pip)
 {
-	pipe_t* ppi = TypePtrFromHead(pipe_t, pip);
+	pipe_context* ppi = TypePtrFromHead(pipe_context, pip);
 	if_pipe_t* pif;
 
 	XDL_ASSERT(pip && pip->tag == _HANDLE_PIPE);
@@ -239,7 +243,8 @@ void xpipe_free(xhand_t pip)
 
 	if (ppi->pov)
 	{
-		async_free_lapp(ppi->pov);
+		async_uninit(ppi->pov);
+		xmem_free(ppi->pov);
 	}
 
 	xsfree(ppi->pname);
@@ -248,7 +253,7 @@ void xpipe_free(xhand_t pip)
 
 bool_t xpipe_write(xhand_t pip, const byte_t* buf, dword_t* pcb)
 {
-	pipe_t* ppt = (pipe_t*)pip;
+	pipe_context* ppt = (pipe_context*)pip;
 	if_pipe_t* pif;
 	dword_t size, pos = 0;;
 
@@ -282,7 +287,7 @@ bool_t xpipe_write(xhand_t pip, const byte_t* buf, dword_t* pcb)
 
 bool_t xpipe_read(xhand_t pip, byte_t* buf, dword_t* pcb)
 {
-	pipe_t* ppt = (pipe_t*)pip;
+	pipe_context* ppt = (pipe_context*)pip;
 	if_pipe_t* pif;
 	dword_t size, pos = 0;
 

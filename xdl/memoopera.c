@@ -51,7 +51,7 @@ bool_t call_memo_with_eof(void* p_obj)
 
 int call_memo_read_char(void* p_obj, int max, int pos, int encode, tchar_t* pch)
 {
-	MEMOOBJECT* ptt = (MEMOOBJECT*)p_obj;
+	memo_opera_context* ptt = (memo_opera_context*)p_obj;
 	const tchar_t* sz_memo;
 	int chs;
 
@@ -122,7 +122,7 @@ int call_memo_read_token(void* p_obj, int max, int pos, int encode, tchar_t* pch
 
 int call_memo_write_char(void* p_obj, int max, int pos, int encode, const tchar_t* pch)
 {
-	MEMOOBJECT* ptt = (MEMOOBJECT*)p_obj;
+	memo_opera_context* ptt = (memo_opera_context*)p_obj;
 	int chs;
 
 	if (!ptt->nlk || *pch == _T('\n'))

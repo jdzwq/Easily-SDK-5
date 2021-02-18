@@ -537,8 +537,8 @@ void hand_label_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xcolor_t xc = { 0 };
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	if (!ptd->label)
 		return;

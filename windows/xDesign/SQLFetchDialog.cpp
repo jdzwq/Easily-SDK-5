@@ -300,7 +300,7 @@ void SQLFetchDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	visual_t rdc;
 	canvas_t canv;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_get_xbrush(widget, &xb);
 

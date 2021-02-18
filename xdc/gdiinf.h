@@ -45,18 +45,18 @@ extern "C" {
 @INPUT canvas_t canv: the canvas object.
 @RETURN if_canvas_t*: if succeeds return canvas interface struct, fails return NULL.
 */
-EXP_API void get_canvas_interface(canvas_t canv, if_drawing_t* pif);
+EXP_API void get_canvas_interface(canvas_t canv, drawing_interface* pif);
 
 /*
 @FUNCTION create_visual_interface: create view interface.
 @INPUT visual_t ctx: the context object.
 @RETURN if_viewING_t*: if succeeds return view interface struct, fails return NULL.
 */
-EXP_API void get_visual_interface(visual_t visu, if_drawing_t* piv);
+EXP_API void get_visual_interface(visual_t visu, drawing_interface* piv);
 
-LOC_API void	get_visual_measure(visual_t view, if_measure_t* pim);
+LOC_API void	get_visual_measure(visual_t view, measure_interface* pim);
 
-LOC_API void	get_canvas_measure(canvas_t canv, if_measure_t* pim);
+LOC_API void	get_canvas_measure(canvas_t canv, measure_interface* pim);
 
 #ifdef	__cplusplus
 }

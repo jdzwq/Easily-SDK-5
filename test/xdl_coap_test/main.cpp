@@ -5,11 +5,11 @@
 #include <conio.h>
 #endif
 
-//#define URL_GET			_T("coap://127.0.0.1:5683/temperature/device/person")
-#define URL_GET			_T("coap://118.178.180.81:5683/temperature/device/person")
-//#define URL_GET			_T("coap://49.234.135.113:5683/temperature/device/person")
-//#define URL_GET			_T("coap://172.16.190.190:5683/temperature/device/person")
-//#define URL_GET			_T("coap://172.16.190.200:5683/temperature/device/person")
+#define URL_GET			_T("coap://127.0.0.1:5683/test/device/person")
+//#define URL_GET			_T("coap://118.178.180.81:5683/test/device/person")
+//#define URL_GET			_T("coap://49.234.135.113:5683/test/device/person")
+//#define URL_GET			_T("coap://172.16.190.190:5683/test/device/person")
+//#define URL_GET			_T("coap://172.16.190.200:5683/test/device/person")
 
 void test_coap_put()
 {
@@ -61,11 +61,11 @@ int main(int argc, char* argv[])
     
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-	test_coap_put();
+	//test_coap_put();
 
 	//test_coap_get();
 
-	//test_coap_del();
+	test_coap_del();
 
 	xdl_process_uninit();
 

@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 typedef struct _tagctrl_delta_t{
-	textor_t textor;
+	textor_context textor;
 	link_t_ptr joint;
 	
 	res_win_t hsc;

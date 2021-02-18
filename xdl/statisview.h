@@ -72,7 +72,7 @@ extern "C" {
 
 	EXP_API int calc_statis_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pxlk, link_t_ptr* pylk, link_t_ptr* pglk);
 
-	EXP_API void draw_statis_page(const if_drawing_t* pcanv, link_t_ptr ptr, int page);
+	EXP_API void draw_statis_page(const drawing_interface* pcanv, link_t_ptr ptr, int page);
 
 #ifdef	__cplusplus
 }

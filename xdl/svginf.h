@@ -43,16 +43,16 @@ extern "C" {
 /*
 @FUNCTION create_svg_interface: create svg canvas interface.
 @INPUT canvas_t canv: the svg canvas object.
-@RETURN if_drawing_t*: if succeeds return svg canvas interface struct, fails return NULL.
+@RETURN drawing_interface*: if succeeds return svg canvas interface struct, fails return NULL.
 */
-EXP_API void svg_get_canvas_interface(canvas_t canv, if_drawing_t* pif);
+EXP_API void svg_get_canvas_interface(canvas_t canv, drawing_interface* pif);
 
 /*
 @FUNCTION create_visual_interface: create svg view interface.
 @INPUT visual_t view: the context object.
 @RETURN if_viewING_t*: if succeeds return view interface struct, fails return NULL.
 */
-EXP_API void svg_get_visual_interface(visual_t visu, if_drawing_t* pif);
+EXP_API void svg_get_visual_interface(visual_t visu, drawing_interface* pif);
 
 
 #ifdef	__cplusplus

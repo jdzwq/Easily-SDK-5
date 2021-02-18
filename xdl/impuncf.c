@@ -43,13 +43,13 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_FILE
 
-typedef struct _xuncf_t{
-	xhand_head head;		//reserved for xhand_t
+typedef struct _uncf_context{
+	handle_head head;		//reserved for xhand_t
 
 	res_file_t file;
 
 	async_t* pov;
-}xuncf_t;
+}uncf_context;
 
 static int _split_path_len(const tchar_t* file)
 {
@@ -228,7 +228,7 @@ bool_t xuncf_open_directory(const secu_desc_t* psd, const tchar_t* path, dword_t
 
 xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fmode)
 {
-	xuncf_t *pcf;
+	uncf_context *pcf;
 	res_file_t fh;
 	int pos;
 	bool_t b_add;
@@ -269,18 +269,19 @@ xhand_t xuncf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t fm
 		return NULL;
 	}
 
-	pcf = (xuncf_t*)xmem_alloc(sizeof(xuncf_t));
+	pcf = (uncf_context*)xmem_alloc(sizeof(uncf_context));
 	pcf->head.tag = _HANDLE_UNCF;
 	pcf->file = fh;
 
-	pcf->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), FILE_BASE_TIMO, INVALID_FILE);
+	pcf->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(pcf->pov, ((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), FILE_BASE_TIMO, INVALID_FILE);
 
 	return &pcf->head;
 }
 
 bool_t xuncf_file_size(xhand_t unc, dword_t* ph, dword_t* pl)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
@@ -294,7 +295,7 @@ bool_t xuncf_file_size(xhand_t unc, dword_t* ph, dword_t* pl)
 
 void xuncf_close_file(xhand_t unc)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
@@ -307,7 +308,8 @@ void xuncf_close_file(xhand_t unc)
 
 	if (pcf->pov)
 	{
-		async_free_lapp(pcf->pov);
+		async_uninit(pcf->pov);
+		xmem_free(pcf->pov);
 	}
 
 	xmem_free(pcf);
@@ -315,7 +317,7 @@ void xuncf_close_file(xhand_t unc)
 
 bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 	dword_t size, pos = 0;
 
@@ -348,7 +350,7 @@ bool_t xuncf_read_file(xhand_t unc, byte_t* buf, dword_t* pcb)
 
 bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 	dword_t size, pos = 0;
 
@@ -381,7 +383,7 @@ bool_t xuncf_write_file(xhand_t unc, const byte_t* buf, dword_t* pcb)
 
 bool_t xuncf_flush_file(xhand_t unc)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
@@ -395,7 +397,7 @@ bool_t xuncf_flush_file(xhand_t unc)
 
 bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* buf, dword_t dw)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 
 	XDL_ASSERT(unc && unc->tag == _HANDLE_UNCF);
@@ -415,7 +417,7 @@ bool_t xuncf_read_file_range(xhand_t unc, dword_t hoff, dword_t loff, byte_t* bu
 
 bool_t xuncf_write_file_range(xhand_t unc, dword_t hoff, dword_t loff, const byte_t* buf, dword_t dw)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 
 	pif = PROCESS_FILE_INTERFACE;
@@ -431,9 +433,9 @@ bool_t xuncf_write_file_range(xhand_t unc, dword_t hoff, dword_t loff, const byt
 	return 1;
 }
 
-bool_t xuncf_truncate(xhand_t unc, dword_t hoff, dword_t loff)
+bool_t uncf_contextruncate(xhand_t unc, dword_t hoff, dword_t loff)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 
 	if_file_t* pif;
 
@@ -445,7 +447,7 @@ bool_t xuncf_truncate(xhand_t unc, dword_t hoff, dword_t loff)
 
 	if (!(*pif->pf_file_truncate)(pcf->file, hoff, loff))
 	{
-		set_system_error(_T("xuncf_truncate"));
+		set_system_error(_T("uncf_contextruncate"));
 		return 0;
 	}
 
@@ -454,7 +456,7 @@ bool_t xuncf_truncate(xhand_t unc, dword_t hoff, dword_t loff)
 
 bool_t xuncf_set_filetime(xhand_t unc, const tchar_t* ftime)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 	xdate_t xd;
 
@@ -477,7 +479,7 @@ bool_t xuncf_set_filetime(xhand_t unc, const tchar_t* ftime)
 
 bool_t xuncf_get_filetime(xhand_t unc, tchar_t* ftime)
 {
-	xuncf_t* pcf = TypePtrFromHead(xuncf_t, unc);
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
 	if_file_t* pif;
 	xdate_t xd;
 

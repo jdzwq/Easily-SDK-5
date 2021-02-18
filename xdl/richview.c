@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_VIEW)
 
-typedef struct _RICHWORDOPERATOR{
+typedef struct _rich_scan_context{
 	bool_t paged;
 	int page;
 
@@ -59,7 +59,7 @@ typedef struct _RICHWORDOPERATOR{
 	PF_TEXT_SIZE pf_text_size;
 	void* ctx;
 	const xfont_t* pxf;
-}RICHWORDOPERATOR;
+}rich_scan_context;
 
 #define RICHWORD_INDICATOR_NEXT_NODE	-4
 #define RICHWORD_INDICATOR_NEXT_INDENT	-3
@@ -67,16 +67,16 @@ typedef struct _RICHWORDOPERATOR{
 #define RICHWORD_INDICATOR_NEXT_BREAK	-1
 #define RICHWORD_INDICATOR_NEXT_WORD	0
 
-bool_t call_rich_is_paging(void* param)
+bool_t call_rich_is_paging(void* ctx)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 
 	return pscan->paged;
 }
 
-bool_t call_rich_break_page(void* param)
+bool_t call_rich_break_page(void* ctx)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 	page_cator_t cat = { 0 };
 	int i, pages = 0;
 	link_t_ptr nlk;
@@ -132,9 +132,9 @@ bool_t call_rich_break_page(void* param)
 	return 1;
 }
 
-int call_rich_next_page(void* param)
+int call_rich_next_page(void* ctx)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 
 	page_cator_t cat = { 0 };
 	int pages;
@@ -217,9 +217,9 @@ int call_rich_next_page(void* param)
 	return pscan->page;
 }
 
-int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom)
+int call_rich_next_words(void* ctx, tchar_t** ppch, xsize_t* pse, bool_t* pins, bool_t* pdel, bool_t* psel, bool_t* patom)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 	int n;
 	xsize_t xs = { 0 };
 
@@ -457,9 +457,9 @@ int call_rich_next_words(void* param, tchar_t** ppch, xsize_t* pse, bool_t* pins
 	return n;
 }
 
-int call_rich_insert_words(void* param, tchar_t* pch, xsize_t* pse)
+int call_rich_insert_words(void* ctx, tchar_t* pch, xsize_t* pse)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 	int n = 0;
 	xsize_t xs = { 0 };
 
@@ -514,9 +514,9 @@ int call_rich_insert_words(void* param, tchar_t* pch, xsize_t* pse)
 	return n;
 }
 
-int call_rich_delete_words(void* param)
+int call_rich_delete_words(void* ctx)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 	int n = 0;
 
 	if (!pscan->nlk)
@@ -550,17 +550,17 @@ int call_rich_delete_words(void* param)
 	return n;
 }
 
-void call_rich_cur_object(void* param, void** pobj)
+void call_rich_cur_object(void* ctx, void** pobj)
 {
-	RICHWORDOPERATOR* pscan = (RICHWORDOPERATOR*)param;
+	rich_scan_context* pscan = (rich_scan_context*)ctx;
 
 	*pobj = (void*)pscan->nlk;
 }
 
-void scan_rich_text(link_t_ptr ptr, const if_measure_t* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
+void scan_rich_text(link_t_ptr ptr, const measure_interface* pif, const xfont_t* pxf, const xface_t* pxa, int bx, int by, int bw, int bh, bool_t paged, PF_SCAN_TEXTOR_CALLBACK pf, void* pp)
 {
-	RICHWORDOPERATOR ro = { 0 };
-	if_wordscan_t it = { 0 };
+	rich_scan_context ro = { 0 };
+	wordscan_interface it = { 0 };
 
 	ro.rich = ptr;
 	ro.pf_text_size = pif->pf_measure_size;
@@ -568,7 +568,7 @@ void scan_rich_text(link_t_ptr ptr, const if_measure_t* pif, const xfont_t* pxf,
 	ro.pxf = pxf;
 	ro.permm = (*pif->pf_measure_pixel)(pif->ctx, 1);
 
-	it.param = (void*)&ro;
+	it.ctx = (void*)&ro;
 	it.pf_is_paging = call_rich_is_paging;
 	it.pf_cur_object = call_rich_cur_object;
 	it.pf_delete_word = call_rich_delete_words;

@@ -41,20 +41,20 @@ extern "C" {
 #endif
 
 /*
-@FUNCTION async_alloc_lapp: alloc async operation resource.
+@FUNCTION async_init: init async operation resource.
 @INOUTPUT int type: the async mode, it can be ASYNC_BLOCK, ASYNC_EVENT, ASYNC_QUEUE.
 @INPUT int ms: timeout in millisecond, -1 indicate INFINITE
 @INPUT res_file_t fd: if type is ASYNC_QUEUE, this param is the input output handle for creating queue.
-@RETURN  async_t*: the async struct for allocing background resource.
+@RETURN  void: none.
 */
-EXP_API async_t* async_alloc_lapp(int type, int ms, res_file_t fd);
+EXP_API void async_init(async_t* pas, int type, int ms, res_file_t fd);
 
 /*
-@FUNCTION async_free_lapp: free async operation resource.
+@FUNCTION async_uninit: uninit async operation resource.
 @INPUT async_t* pas: the async struct for releasing background resource.
 @RETURN void: none.
 */
-EXP_API void async_free_lapp(async_t* pas);
+EXP_API void async_uninit(async_t* pas);
 
 
 #ifdef	__cplusplus

@@ -55,6 +55,11 @@ void bytes_free(byte_t** pp)
 
 	pb = (bytes_t*)(pp);
 
+	if (pb->memo)
+	{
+		XDL_ASSERT(pb->size > 0);
+	}
+
 	xmem_free(pb->memo);
 	xmem_free(pp);
 }

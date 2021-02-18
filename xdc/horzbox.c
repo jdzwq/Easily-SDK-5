@@ -78,7 +78,7 @@ void hand_horzbox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 void hand_horzbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	horzbox_delta_t* ptd = GETHORZBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 	xpoint_t pt;
 	xrect_t xr;
@@ -159,8 +159,8 @@ void hand_horzbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	visual_t rdc;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xbrush(widget, &xb);
@@ -222,7 +222,7 @@ res_win_t horzbox_create(res_win_t widget, dword_t style, const xrect_t* pxr)
 void horzbox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	horzbox_delta_t* ptd = GETHORZBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd != NULL);

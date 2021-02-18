@@ -12,7 +12,6 @@ API_OBJS = $(API_PATH)/libxds.so.1.0 \
 	$(API_PATH)/libxdk.so.1.0 \
 	$(API_PATH)/libxdl.so.1.0 \
 	$(API_PATH)/libtdb.so.1.0 \
-	$(API_PATH)/librnet.so.1.0 \
 	$(API_PATH)/libmqtt_api.so.1.0 \
 	$(API_PATH)/libcoap_api.so.1.0 \
 	$(API_PATH)/libtftp_api.so.1.0 \
@@ -56,7 +55,6 @@ all:
 	cd $(CUR_PATH)/xdl && make -f xdl.so.mk
 
 	cd $(CUR_PATH)/tdb && make -f tdb.so.mk
-	cd $(CUR_PATH)/rnet && make -f rnet.so.mk
 	
 	cd $(CUR_PATH)/loc_api && make -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make -f www_api.so.mk
@@ -165,7 +163,6 @@ install:
 	cd $(CUR_PATH)/xdl && make install -f xdl.so.mk
 
 	cd $(CUR_PATH)/tdb && make install -f tdb.so.mk
-	cd $(CUR_PATH)/rnet && make install -f rnet.so.mk
 
 	cd $(CUR_PATH)/loc_api && make install -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make install -f www_api.so.mk
@@ -194,7 +191,6 @@ uninstall:
 	cd $(CUR_PATH)/xdl && make uninstall -f xdl.so.mk
 
 	cd $(CUR_PATH)/tdb && make uninstall -f tdb.so.mk
-	cd $(CUR_PATH)/rnet && make uninstall -f rnet.so.mk
 
 	cd $(CUR_PATH)/loc_api && make uninstall -f loc_api.so.mk
 	cd $(CUR_PATH)/www_api && make uninstall -f www_api.so.mk

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -fPIC
+CFLAGS = -g -Wall -fPIC -std=c99
 
 SRV_PATH = /usr/local/xService
 LNK_PATH = /usr/local/lib

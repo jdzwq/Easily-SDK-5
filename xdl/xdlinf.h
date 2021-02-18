@@ -33,8 +33,6 @@ LICENSE.GPL3 for more details.
 #ifndef _XDLINF_H
 #define	_XDLINF_H
 
-#include "xdldef.h"
-
 typedef bool_t(*PF_CAN_ESCAPE)(void* p_obj);
 typedef bool_t(*PF_WITH_EOF)(void* p_obj);
 
@@ -52,8 +50,8 @@ typedef int(*PF_WRITE_CARRIAGE)(void* p_obj, int max, int pos, int encode);
 
 typedef void(*PF_SET_ENCODE)(void* p_obj, int encode);
 
-typedef struct _if_operator_t{
-	void* obj;
+typedef struct _opera_interface{
+	void* ctx;
 	dword_t max, pos;
 	int encode;
 	bool_t isdom;
@@ -73,7 +71,7 @@ typedef struct _if_operator_t{
 
 	PF_CAN_ESCAPE		pf_can_escape;
 	PF_WITH_EOF			pf_with_eof;
-}if_operator_t;
+}opera_interface;
 
 typedef void(*PF_XML_WRITE_BEGIN)(void* pv);
 typedef bool_t(*PF_XML_HEAD_WRITE_ATTR)(void* pv, const tchar_t* key, int klen, const tchar_t* val, int vlen);
@@ -86,7 +84,9 @@ typedef bool_t(*PF_XML_NODE_WRITE_TEXT)(void* pv, bool_t b_cdata, const tchar_t*
 typedef void(*PF_XML_WRITE_END)(void* pv, int code);
 typedef bool_t(*PF_XML_HAS_NODE)(void* pv);
 
-typedef struct _xml_writer_t{
+typedef struct _xml_write_interface{
+	void* ctx;
+
 	PF_XML_WRITE_BEGIN		pf_write_begin;
 	PF_XML_HEAD_WRITE_ATTR	pf_head_write_attr;
 	PF_XML_NODE_WRITE_BEGIN	pf_node_write_begin;
@@ -97,8 +97,7 @@ typedef struct _xml_writer_t{
 	PF_XML_NODE_WRITE_END	pf_node_write_end;
 	PF_XML_WRITE_END		pf_write_end;
 	PF_XML_HAS_NODE			pf_has_node;
-	void* obj;
-}xml_writer_t;
+}xml_write_interface;
 
 typedef bool_t(*PF_XML_HEAD_READ_BEGIN)(void* pv);
 typedef bool_t(*PF_XML_HEAD_READ_ATTR)(void* pv, const tchar_t* key, const tchar_t* val);
@@ -110,7 +109,9 @@ typedef bool_t(*PF_XML_NODE_READ_XMLNS)(void* pv, const tchar_t* ns, const tchar
 typedef bool_t(*PF_XML_NODE_READ_ATTR)(void* pv, const tchar_t* key, const tchar_t* val);
 typedef bool_t(*PF_XML_NODE_READ_TEXT)(void* pv, bool_t b_cdata, const tchar_t* text, int len);
 
-typedef struct _xml_reader_t{
+typedef struct _xml_read_interface{
+	void* ctx;
+
 	PF_XML_HEAD_READ_BEGIN		pf_head_read_begin;
 	PF_XML_HEAD_READ_ATTR		pf_head_read_attr;
 	PF_XML_HEAD_READ_END		pf_head_read_end;
@@ -120,8 +121,7 @@ typedef struct _xml_reader_t{
 	PF_XML_NODE_READ_ATTR		pf_node_read_attr;
 	PF_XML_NODE_READ_TEXT		pf_node_read_text;
 	PF_XML_NODE_READ_END		pf_node_read_end;
-	void* obj;
-}xml_reader_t;
+}xml_read_interface;
 
 #define SOCK_OPTION_SNDBUF		1
 #define SOCK_OPTION_RCVBUF		2
@@ -139,7 +139,7 @@ typedef bool_t(*PF_BIO_GETOPT)(xhand_t, int, void*, int);
 typedef unsigned short(*PF_BIO_ADDR)(xhand_t, tchar_t*);
 typedef unsigned short(*PF_BIO_PEER)(xhand_t, tchar_t*);
 
-typedef struct _if_bio_t{
+typedef struct _bio_interface{
 	xhand_t		fd;
 
 	PF_BIO_WRITE		pf_write;
@@ -150,7 +150,7 @@ typedef struct _if_bio_t{
 	PF_BIO_GETOPT		pf_getopt;
 	PF_BIO_ADDR			pf_addr;
 	PF_BIO_PEER			pf_peer;
-}if_bio_t;
+}bio_interface;
 
 typedef xhand_t(*PF_FIO_OPEN)(const secu_desc_t*, const tchar_t*, dword_t);
 typedef bool_t(*PF_FIO_READ)(xhand_t, byte_t*, dword_t*);
@@ -162,7 +162,7 @@ typedef void(*PF_FIO_CLOSE)(xhand_t);
 typedef bool_t(*PF_FIO_SETOPT)(xhand_t, int, void*, int);
 typedef bool_t(*PF_FIO_GETOPT)(xhand_t, int, void*, int);
 
-typedef struct _if_fio_t{
+typedef struct _file_interface{
 	xhand_t		fd;
 
 	PF_FIO_WRITE		pf_write;
@@ -173,41 +173,41 @@ typedef struct _if_fio_t{
 	PF_FIO_CLOSE		pf_close;
 	PF_FIO_SETOPT		pf_setopt;
 	PF_FIO_GETOPT		pf_getopt;
-}if_fio_t;
+}file_interface, *file_t;
 
-typedef void(*PF_LOG_TITLE)(stream_t, const tchar_t*, int);
-typedef void(*PF_LOG_ERROR)(stream_t, const tchar_t*, const tchar_t*, int);
-typedef void(*PF_LOG_DATA)(stream_t, const byte_t*, dword_t);
-typedef void(*PF_LOG_XML)(stream_t, link_t_ptr);
-typedef void(*PF_LOG_JSON)(stream_t, link_t_ptr);
+typedef void(*PF_LOGED_TITLE)(const tchar_t*, const tchar_t*, int);
+typedef void(*PF_LOGED_ERROR)(const tchar_t*, const tchar_t*, const tchar_t*, int);
+typedef void(*PF_LOGED_DATA)(const tchar_t*, const byte_t*, dword_t);
+typedef void(*PF_LOGED_XML)(const tchar_t*, link_t_ptr);
+typedef void(*PF_LOGED_JSON)(const tchar_t*, link_t_ptr);
 
-typedef struct _if_log_t{
-	stream_t log;
+typedef struct _loged_interface{
+	tchar_t unc[PATH_LEN + 1];
 
-	PF_LOG_TITLE	pf_log_title;
-	PF_LOG_ERROR	pf_log_error;
-	PF_LOG_DATA		pf_log_data;
-	PF_LOG_XML		pf_log_xml;
-	PF_LOG_JSON		pf_log_json;
-}if_log_t;
+	PF_LOGED_TITLE	pf_log_title;
+	PF_LOGED_ERROR	pf_log_error;
+	PF_LOGED_DATA	pf_log_data;
+	PF_LOGED_XML	pf_log_xml;
+	PF_LOGED_JSON	pf_log_json;
+}loged_interface;
 
-typedef bool_t(*PF_SEND_EVENT)(const tchar_t*, bool_t, link_t_ptr);
-typedef bool_t(*PF_QUERY_EVENT)(const tchar_t*, bool_t , link_t_ptr);
+typedef bool_t(*PF_PUBS_EVENT)(const tchar_t*, bool_t, link_t_ptr);
+typedef bool_t(*PF_SUBS_EVENT)(const tchar_t*, bool_t , link_t_ptr);
 
-typedef struct _if_post_t{
+typedef struct _event_interface{
 	tchar_t url[PATH_LEN + 1];
 
-	PF_SEND_EVENT	pf_send_event;
-	PF_QUERY_EVENT	pf_query_event;
-}if_post_t;
+	PF_PUBS_EVENT	pf_pubs_event;
+	PF_SUBS_EVENT	pf_subs_event;
+}event_interface;
 
 typedef void(*PF_TRACK_ERROR)(void* param, const tchar_t* code, const tchar_t* text);
 
-typedef struct _if_track_t{
+typedef struct _trace_interface{
 	void* param;
 
 	PF_TRACK_ERROR	pf_track_error;
-}if_track_t;
+}trace_interface;
 
 #if defined(XDL_SUPPORT_VIEW)
 
@@ -216,7 +216,7 @@ typedef void(*PF_MEASURE_RECT)(void*, const xfont_t*, const xface_t*, const tcha
 typedef void(*PF_MEASURE_SIZE)(void*, const xfont_t*, const tchar_t*, int, xsize_t* pxs);
 typedef void(*PF_MEASURE_FONT)(void*, const xfont_t*, xsize_t* pxs);
 
-typedef struct _if_measure_t{
+typedef struct _measure_interface{
 	void* ctx; //visual_t or canvas_t
 
 	PF_MEASURE_PIXEL	pf_measure_pixel;
@@ -225,7 +225,7 @@ typedef struct _if_measure_t{
 	PF_MEASURE_FONT		pf_measure_font;
 
 	xrect_t rect;
-}if_measure_t;
+}measure_interface;
 
 
 typedef void(*PF_RECT_PT_TO_TM)(void*, xrect_t*);
@@ -235,7 +235,7 @@ typedef void(*PF_SIZE_TM_TO_PT)(void*, xsize_t*);
 typedef void(*PF_POINT_PT_TO_TM)(void*, xpoint_t*);
 typedef void(*PF_POINT_TM_TO_PT)(void*, xpoint_t*);
 
-typedef void(*PF_GET_MEASURE)(void*, if_measure_t*);
+typedef void(*PF_GET_MEASURE)(void*, measure_interface*);
 
 typedef void(*PF_DRAW_LINE)(void*, const xpen_t*, const xpoint_t*, const xpoint_t*);
 typedef void(*PF_DRAW_BEZIER)(void*, const xpen_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*, const xpoint_t*);
@@ -275,11 +275,11 @@ typedef void(*PF_ALPHABLEND_RECT)(void*, const xcolor_t*, const xrect_t*, int);
 
 typedef visual_t(*PF_GET_VISUAL)(void*);
 
-typedef struct _if_drawing_t* if_drawing_ptr;
+typedef struct _drawing_interface* drawing_interface_ptr;
 
-typedef void(*PF_GET_INTERFACE)(void*, if_drawing_ptr);
+typedef void(*PF_GET_INTERFACE)(void*, drawing_interface_ptr);
 
-typedef struct _if_drawing_t{
+typedef struct _drawing_interface{
 	int tag;
 
 	void* ctx;
@@ -338,7 +338,7 @@ typedef struct _if_drawing_t{
 	clr_mod_t mode;
 
 	xrect_t rect;
-}if_drawing_t;
+}drawing_interface;
 
 
 typedef bool_t(STDCALL *PF_DB_PARSE_DSN)(const tchar_t*, tchar_t*, int, tchar_t*, int, tchar_t*, int, tchar_t*, int);
@@ -367,7 +367,7 @@ typedef bool_t(STDCALL *PF_DB_READ_XDOC)(xdb_t, link_t_ptr, const tchar_t*);
 
 typedef int(*PF_DB_CALL_ARGV)(xdb_t, const tchar_t*, const tchar_t*, ...);
 
-typedef struct _if_xdb_t{
+typedef struct _xdb_interface{
 	res_modu_t lib;
 	xdb_t xdb;
 
@@ -397,7 +397,7 @@ typedef struct _if_xdb_t{
 	PF_DB_ROWS		pf_db_rows;
 	PF_DB_ERROR		pf_db_error;
 
-}if_xdb_t;
+}xdb_interface;
 
 #endif /*XDL_SUPPORT_VIEW*/
 

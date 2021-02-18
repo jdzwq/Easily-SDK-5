@@ -42,12 +42,12 @@ extern "C" {
 
 /*
 @FUNCTION draw_svg: draw the svg document in canvas using millimeter coordinate.
-@INPUT if_drawing_t* pif: the canvas interface.
+@INPUT drawing_interface* pif: the canvas interface.
 @INPUT const xrect_t* prt: the rect struct using float member.
 @INPUT link_t_ptr svg: the svg document.
 @RETURN void: none.
 */
-EXP_API void	draw_svg(const if_drawing_t* pif, const xrect_t* prt, link_t_ptr svg);
+EXP_API void	draw_svg(const drawing_interface* pif, const xrect_t* prt, link_t_ptr svg);
 
 
 #endif /*XDL_SUPPORT_VIEW*/

@@ -33,7 +33,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_GDI)
 
-void draw_select_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
+void draw_select_raw(const drawing_interface* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
 	xpen_t xp;
 
@@ -45,7 +45,7 @@ void draw_select_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t
 	(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, prt);
 }
 
-void draw_focus_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
+void draw_focus_raw(const drawing_interface* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
 	xpen_t xp;
 
@@ -56,7 +56,7 @@ void draw_focus_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t*
 	(*piv->pf_draw_rect)(piv->ctx, &xp, NULL, prt);
 }
 
-void draw_sizing_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
+void draw_sizing_raw(const drawing_interface* piv, const xcolor_t* pxc, const xrect_t* prt, int deep, dword_t pos)
 {
 	xrect_t xr;
 	xpen_t xp;
@@ -147,7 +147,7 @@ void draw_sizing_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t
 	}
 }
 
-void draw_feed_raw(const if_drawing_t* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
+void draw_feed_raw(const drawing_interface* piv, const xcolor_t* pxc, const xrect_t* prt, int deep)
 {
 	xpoint_t pt[2];
 	xpen_t xp;

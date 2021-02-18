@@ -35,6 +35,17 @@ typedef struct _t_kv_ctx
 	t_kb_t hdb;
 }t_kv_ctx;
 
+static bool_t _load_tdb_node(variant_t key, object_t val, void* pv)
+{
+	link_t_ptr dict = (link_t_ptr)pv;
+	link_t_ptr ent;
+
+	ent = write_dict_item(dict, key, val);
+	set_dict_entity_delta(ent, TKV_MASK_PERSIST);
+
+	return 1;
+}
+
 t_kv_t tkv_create(t_kb_t hdb)
 {
 	t_kv_ctx* pobj;
@@ -45,6 +56,12 @@ t_kv_t tkv_create(t_kb_t hdb)
 	pobj->hdb = hdb;
 
 	pobj->hdr.tag = T_OBJ_KV;
+
+	if (hdb)
+	{
+		tkb_enum(hdb, _load_tdb_node, (void*)pobj->dict);
+	}
+
 	return &(pobj->hdr);
 }
 
@@ -130,9 +147,6 @@ bool_t tkv_read(t_kv_t hkv, variant_t key, object_t val)
 		return 1;
 	}
 
-	if (!pobj->hdb)
-		return 0;
-
 	if (pobj->hdb && tkb_load(pobj->hdb, key, val))
 	{
 		ent = write_dict_item(pobj->dict, key, val);
@@ -165,8 +179,15 @@ void tkv_delete(t_kv_t hkv, variant_t key)
 		return;
 	}
 
-	set_dict_entity_val(ent, NULL);
-	set_dict_entity_delta(ent, mask | TKV_MASK_DELETED);
+	if (pobj->hdb && tkb_clean(pobj->hdb, key))
+	{
+		delete_dict_entity(ent);
+	}
+	else
+	{
+		set_dict_entity_val(ent, NULL);
+		set_dict_entity_delta(ent, mask | TKV_MASK_DELETED);
+	}
 }
 
 void tkv_attach(t_kv_t hkv, variant_t key, object_t val)
@@ -204,7 +225,10 @@ object_t tkv_detach(t_kv_t hkv, variant_t key)
 
 	ent = get_dict_entity(pobj->dict, key);
 	if (!ent)
+	{
+		if (pobj->hdb) tkb_clean(pobj->hdb, key);
 		return NULL;
+	}
 
 	val = detach_dict_entity_val(ent);
 
@@ -215,8 +239,15 @@ object_t tkv_detach(t_kv_t hkv, variant_t key)
 		return val;
 	}
 
-	set_dict_entity_val(ent, NULL);
-	set_dict_entity_delta(ent, mask | TKV_MASK_DELETED);
+	if (pobj->hdb && tkb_clean(pobj->hdb, key))
+	{
+		delete_dict_entity(ent);
+	}
+	else
+	{
+		set_dict_entity_val(ent, NULL);
+		set_dict_entity_delta(ent, mask | TKV_MASK_DELETED);
+	}
 
 	return val;
 }

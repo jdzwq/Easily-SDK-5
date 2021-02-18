@@ -152,10 +152,10 @@ static char label_server_finished[] = "server finished";
 static char label_master_secret[] = "master secret";
 static char label_key_expansion[] = "key expansion";
 
-typedef struct _ssl_t{
-	xhand_head head;
+typedef struct _ssl_context{
+	handle_head head;
 
-	if_bio_t* pif;
+	bio_interface* pif;
 
 	//SecurityParameters
 	int type;		//ConnectionEnd: { server, client }
@@ -239,7 +239,7 @@ typedef struct _ssl_t{
 	int snd_crypted; //record is crypted sending
 	int rcv_crypted; //record is crypted recving
 	int nb_zero;
-}ssl_t;
+}ssl_context;
 
 /***********************************************************************************************************************************/
 //hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
@@ -436,7 +436,7 @@ static void _ssl_prf2(byte_t *secret, int slen, char *label, byte_t *random, int
 	}
 }
 
-static void _ssl_init(ssl_t* pssl)
+static void _ssl_init(ssl_context* pssl)
 {
 	//initialize tools
 	havege_init(&pssl->rng);
@@ -483,7 +483,7 @@ static void _ssl_init(ssl_t* pssl)
 	pssl->snd_crypted = 0;
 }
 
-static void _ssl_uninit(ssl_t* pssl)
+static void _ssl_uninit(ssl_context* pssl)
 {
 	if (pssl->rcv_pkg)
 	{
@@ -531,7 +531,7 @@ static void _ssl_uninit(ssl_t* pssl)
 	}
 }
 
-static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
+static bool_t _ssl_choose_cipher(ssl_context* pssl, int ciph)
 {
 	int i, n;
 	ciphers_set* pcs;
@@ -566,7 +566,7 @@ static bool_t _ssl_choose_cipher(ssl_t* pssl, int ciph)
 	return 0;
 }
 
-static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
+static void _ssl_derive_keys(ssl_context *pssl, byte_t* premaster, int prelen)
 {
 	byte_t rndb[SSL_RND_SIZE * 2] = { 0 };
 	byte_t keyblk[SSL_BLK_SIZE] = { 0 };
@@ -707,7 +707,7 @@ static void _ssl_derive_keys(ssl_t *pssl, byte_t* premaster, int prelen)
 	}
 }
 
-static int _ssl_check_rcv_msg(ssl_t* pssl)
+static int _ssl_check_rcv_msg(ssl_context* pssl)
 {
 	if (pssl->rcv_msg_len == 0)
 	{
@@ -726,7 +726,7 @@ static int _ssl_check_rcv_msg(ssl_t* pssl)
 	return C_OK;
 }
 
-static int _ssl_encrypt_snd_msg(ssl_t *pssl)
+static int _ssl_encrypt_snd_msg(ssl_context *pssl)
 {
 	int i, padlen;
 	byte_t* mac_buf;
@@ -905,7 +905,7 @@ static int _ssl_encrypt_snd_msg(ssl_t *pssl)
 	return C_OK;
 }
 
-static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
+static int _ssl_decrypt_rcv_msg(ssl_context *pssl)
 {
 	int i, n, padlen = 0;
 	byte_t* mac_buf;
@@ -1085,7 +1085,7 @@ static int _ssl_decrypt_rcv_msg(ssl_t *pssl)
 	return C_OK;
 }
 
-static int _ssl_write_snd_msg(ssl_t *pssl)
+static int _ssl_write_snd_msg(ssl_context *pssl)
 {
 	dword_t dw;
 	int i, haslen;
@@ -1147,7 +1147,7 @@ static int _ssl_write_snd_msg(ssl_t *pssl)
 	return C_OK;
 }
 
-static bool_t _ssl_write_data(ssl_t* pssl, byte_t* buf, int* need)
+static bool_t _ssl_write_data(ssl_context* pssl, byte_t* buf, int* need)
 {
 	if (!(*need))
 		return 1;
@@ -1169,7 +1169,7 @@ static bool_t _ssl_write_data(ssl_t* pssl, byte_t* buf, int* need)
 	return 1;
 }
 
-static bool_t _ssl_flush_data(ssl_t* pssl)
+static bool_t _ssl_flush_data(ssl_context* pssl)
 {
 	if (!pssl->snd_msg_pop)
 		return 1;
@@ -1180,7 +1180,7 @@ static bool_t _ssl_flush_data(ssl_t* pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? 1 : 0;
 }
 
-static bool_t _ssl_write_close(ssl_t* pssl)
+static bool_t _ssl_write_close(ssl_context* pssl)
 {
 	pssl->over = -1;
 
@@ -1192,7 +1192,7 @@ static bool_t _ssl_write_close(ssl_t* pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? 1 : 0;
 }
 
-static int _ssl_read_rcv_msg(ssl_t *pssl)
+static int _ssl_read_rcv_msg(ssl_context *pssl)
 {
 	dword_t dw;
 	int i, haslen;
@@ -1292,7 +1292,7 @@ static int _ssl_read_rcv_msg(ssl_t *pssl)
 	return C_OK;
 }
 
-static bool_t _ssl_read_data(ssl_t* pssl, byte_t* buf, int* need)
+static bool_t _ssl_read_data(ssl_context* pssl, byte_t* buf, int* need)
 {
 	if (!(*need))
 		return 1;
@@ -1321,7 +1321,7 @@ static bool_t _ssl_read_data(ssl_t* pssl, byte_t* buf, int* need)
 
 /***************************************client routing************************************************************/
 
-static handshake_states _ssl_write_client_hello(ssl_t *pssl)
+static handshake_states _ssl_write_client_hello(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -1560,7 +1560,7 @@ static handshake_states _ssl_write_client_hello(ssl_t *pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_SERVER_HELLO : SSL_HANDSHAKE_ERROR;
 }
 
-static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
+static handshake_states _ssl_parse_server_hello(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -1695,7 +1695,7 @@ static handshake_states _ssl_parse_server_hello(ssl_t *pssl)
 	return SSL_SERVER_CERTIFICATE;
 }
 
-handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
+handshake_states _ssl_parse_server_certificate(ssl_context *pssl)
 {
 	/*
 	opaque ASN.1Cert<1..2 ^ 24 - 1>;
@@ -1796,7 +1796,7 @@ handshake_states _ssl_parse_server_certificate(ssl_t *pssl)
 	return (IS_DHE_CIPHER(pssl->cipher) || IS_ECDHE_CIPHER(pssl->cipher)) ? SSL_SERVER_KEY_EXCHANGE : SSL_CERTIFICATE_REQUEST;
 }
 
-static int _ssl_parse_server_key_exchange(ssl_t *pssl)
+static int _ssl_parse_server_key_exchange(ssl_context *pssl)
 {
 	/* TLS 1.0/1.1
 	struct {
@@ -2000,7 +2000,7 @@ static int _ssl_parse_server_key_exchange(ssl_t *pssl)
 	return SSL_CERTIFICATE_REQUEST;
 }
 
-static int _ssl_parse_server_certificate_request(ssl_t *pssl)
+static int _ssl_parse_server_certificate_request(ssl_context *pssl)
 {
 	/*
 	enum { rsa_sign(1), dss_sign(2), rsa_fixed_dh(3), dss_fixed_dh(4), (255) } ClientCertificateType;
@@ -2112,7 +2112,7 @@ static int _ssl_parse_server_certificate_request(ssl_t *pssl)
 	return SSL_SERVER_HELLO_DONE;
 }
 
-static int _ssl_parse_server_hello_done(ssl_t *pssl)
+static int _ssl_parse_server_hello_done(ssl_context *pssl)
 {
 	/*
 	struct { } ServerHelloDone;
@@ -2147,7 +2147,7 @@ static int _ssl_parse_server_hello_done(ssl_t *pssl)
 	return (pssl->authen_client) ? SSL_CLIENT_CERTIFICATE : SSL_CLIENT_KEY_EXCHANGE;
 }
 
-static handshake_states _ssl_write_client_certificate(ssl_t *pssl)
+static handshake_states _ssl_write_client_certificate(ssl_context *pssl)
 {
 	/*
 	opaque ASN.1Cert<1..2 ^ 24 - 1>;
@@ -2222,7 +2222,7 @@ static handshake_states _ssl_write_client_certificate(ssl_t *pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_CLIENT_KEY_EXCHANGE : SSL_HANDSHAKE_ERROR;
 }
 
-static int _ssl_write_client_key_exchange(ssl_t *pssl)
+static int _ssl_write_client_key_exchange(ssl_context *pssl)
 {
 	/* TLS 1.0/1.1
 	struct {
@@ -2365,7 +2365,7 @@ static int _ssl_write_client_key_exchange(ssl_t *pssl)
 	return (pssl->authen_client) ? SSL_CERTIFICATE_VERIFY : SSL_CLIENT_CHANGE_CIPHER_SPEC;
 }
 
-static int _ssl_write_client_certificate_verify(ssl_t *pssl)
+static int _ssl_write_client_certificate_verify(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -2478,7 +2478,7 @@ static int _ssl_write_client_certificate_verify(ssl_t *pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_CLIENT_CHANGE_CIPHER_SPEC : SSL_HANDSHAKE_ERROR;
 }
 
-static handshake_states _ssl_write_client_change_cipher_spec(ssl_t *pssl)
+static handshake_states _ssl_write_client_change_cipher_spec(ssl_context *pssl)
 {
 	int i;
 	/*
@@ -2508,7 +2508,7 @@ static handshake_states _ssl_write_client_change_cipher_spec(ssl_t *pssl)
 	return SSL_CLIENT_FINISHED;
 }
 
-static handshake_states _ssl_write_client_finished(ssl_t *pssl)
+static handshake_states _ssl_write_client_finished(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -2600,7 +2600,7 @@ static handshake_states _ssl_write_client_finished(ssl_t *pssl)
 	return (pssl->resumed) ? SSL_HANDSHAKE_OVER : SSL_SERVER_CHANGE_CIPHER_SPEC;
 }
 
-static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
+static handshake_states _ssl_parse_server_change_cipher_spec(ssl_context *pssl)
 {
 	int i;
 	/*
@@ -2638,7 +2638,7 @@ static handshake_states _ssl_parse_server_change_cipher_spec(ssl_t *pssl)
 	return SSL_SERVER_FINISHED;
 }
 
-static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
+static handshake_states _ssl_parse_server_finished(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -2727,7 +2727,7 @@ static handshake_states _ssl_parse_server_finished(ssl_t *pssl)
 	return (pssl->resumed) ? SSL_CLIENT_CHANGE_CIPHER_SPEC : SSL_HANDSHAKE_OVER;
 }
 
-static bool_t _ssl_handshake_client(ssl_t *pssl)
+static bool_t _ssl_handshake_client(ssl_context *pssl)
 {
 	handshake_states state = SSL_HELLO_REQUEST;
 
@@ -2824,7 +2824,7 @@ static bool_t _ssl_handshake_client(ssl_t *pssl)
 
 /***************************************server routing************************************************************/
 
-static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
+static handshake_states _ssl_parse_client_hello(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -3055,7 +3055,7 @@ static handshake_states _ssl_parse_client_hello(ssl_t *pssl)
 	return SSL_SERVER_HELLO;
 }
 
-static handshake_states _ssl_write_server_hello(ssl_t *pssl)
+static handshake_states _ssl_write_server_hello(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -3181,7 +3181,7 @@ static handshake_states _ssl_write_server_hello(ssl_t *pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_SERVER_CERTIFICATE : SSL_HANDSHAKE_ERROR;
 }
 
-static handshake_states _ssl_write_server_certificate(ssl_t *pssl)
+static handshake_states _ssl_write_server_certificate(ssl_context *pssl)
 {
 	/*
 	opaque ASN.1Cert<1..2 ^ 24 - 1>;
@@ -3258,7 +3258,7 @@ static handshake_states _ssl_write_server_certificate(ssl_t *pssl)
 		return (pssl->verify_server == SSL_VERIFY_NONE) ? SSL_SERVER_HELLO_DONE : SSL_CERTIFICATE_REQUEST;
 }
 
-static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
+static handshake_states _ssl_write_server_key_exchange(ssl_context *pssl)
 {
 	/* TLS 1.0/1.1
 	struct {
@@ -3444,7 +3444,7 @@ static handshake_states _ssl_write_server_key_exchange(ssl_t *pssl)
 	return (pssl->verify_server == SSL_VERIFY_NONE) ? SSL_SERVER_HELLO_DONE : SSL_CERTIFICATE_REQUEST;
 }
 
-static handshake_states _ssl_write_server_certificate_request(ssl_t *pssl)
+static handshake_states _ssl_write_server_certificate_request(ssl_context *pssl)
 {
 	/*
 	enum { rsa_sign(1), dss_sign(2), rsa_fixed_dh(3), dss_fixed_dh(4), (255) } ClientCertificateType;
@@ -3535,7 +3535,7 @@ static handshake_states _ssl_write_server_certificate_request(ssl_t *pssl)
 	return (C_OK == _ssl_write_snd_msg(pssl)) ? SSL_SERVER_HELLO_DONE : SSL_HANDSHAKE_ERROR;
 }
 
-static handshake_states _ssl_write_server_hello_done(ssl_t *pssl)
+static handshake_states _ssl_write_server_hello_done(ssl_context *pssl)
 {
 	/*
 	struct { } ServerHelloDone;
@@ -3555,7 +3555,7 @@ static handshake_states _ssl_write_server_hello_done(ssl_t *pssl)
 	return (pssl->verify_server == SSL_VERIFY_NONE) ? SSL_CLIENT_KEY_EXCHANGE : SSL_CLIENT_CERTIFICATE;
 }
 
-static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
+static handshake_states _ssl_parse_client_certificate(ssl_context *pssl)
 {
 	/*
 	opaque ASN.1Cert<1..2 ^ 24 - 1>;
@@ -3685,7 +3685,7 @@ static handshake_states _ssl_parse_client_certificate(ssl_t *pssl)
 	return SSL_CLIENT_KEY_EXCHANGE;
 }
 
-static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
+static handshake_states _ssl_parse_client_key_exchange(ssl_context *pssl)
 {
 	/* TLS 1.0/1.1
 	struct {
@@ -3849,7 +3849,7 @@ static handshake_states _ssl_parse_client_key_exchange(ssl_t *pssl)
 	return (pssl->crt_pe) ? SSL_CERTIFICATE_VERIFY : SSL_CLIENT_CHANGE_CIPHER_SPEC;
 }
 
-static handshake_states _ssl_parse_client_certificate_verify(ssl_t *pssl)
+static handshake_states _ssl_parse_client_certificate_verify(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -3974,7 +3974,7 @@ static handshake_states _ssl_parse_client_certificate_verify(ssl_t *pssl)
 	return SSL_CLIENT_CHANGE_CIPHER_SPEC;
 }
 
-static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
+static handshake_states _ssl_parse_client_change_cipher_spec(ssl_context *pssl)
 {
 	int i;
 	/*
@@ -4012,7 +4012,7 @@ static handshake_states _ssl_parse_client_change_cipher_spec(ssl_t *pssl)
 	return SSL_CLIENT_FINISHED;
 }
 
-static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
+static handshake_states _ssl_parse_client_finished(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -4099,7 +4099,7 @@ static handshake_states _ssl_parse_client_finished(ssl_t *pssl)
 	return (pssl->resumed) ? SSL_HANDSHAKE_OVER : SSL_SERVER_CHANGE_CIPHER_SPEC;
 }
 
-static handshake_states _ssl_write_server_change_cipher_spec(ssl_t *pssl)
+static handshake_states _ssl_write_server_change_cipher_spec(ssl_context *pssl)
 {
 	int i;
 	/*
@@ -4129,7 +4129,7 @@ static handshake_states _ssl_write_server_change_cipher_spec(ssl_t *pssl)
 	return SSL_SERVER_FINISHED;
 }
 
-static handshake_states _ssl_write_server_finished(ssl_t *pssl)
+static handshake_states _ssl_write_server_finished(ssl_context *pssl)
 {
 	/*
 	struct {
@@ -4225,7 +4225,7 @@ static handshake_states _ssl_write_server_finished(ssl_t *pssl)
 	return (pssl->resumed) ? SSL_CLIENT_CHANGE_CIPHER_SPEC : SSL_HANDSHAKE_OVER;
 }
 
-static bool_t _ssl_handshake_server(ssl_t *pssl)
+static bool_t _ssl_handshake_server(ssl_context *pssl)
 {
 	handshake_states state = SSL_HELLO_REQUEST;
 
@@ -4324,21 +4324,21 @@ static bool_t _ssl_handshake_server(ssl_t *pssl)
 
 xhand_t xssl_cli(unsigned short port, const tchar_t* addr)
 {
-	ssl_t* pssl;
+	ssl_context* pssl;
 	xhand_t tcp;
 	
 	tcp = xtcp_cli(port, addr);
 	if (!tcp)
 		return NULL;
 
-	pssl = (ssl_t*)xmem_alloc(sizeof(ssl_t));
+	pssl = (ssl_context*)xmem_alloc(sizeof(ssl_context));
 	pssl->head.tag = _HANDLE_SSL;
 
 	pssl->type = SSL_TYPE_CLIENT;
 
 	_ssl_init(pssl);
 
-	pssl->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pssl->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 
 	get_bio_interface(tcp, pssl->pif);
 
@@ -4347,21 +4347,21 @@ xhand_t xssl_cli(unsigned short port, const tchar_t* addr)
 
 xhand_t xssl_srv(res_file_t so)
 {
-	ssl_t* pssl;
+	ssl_context* pssl;
 	xhand_t tcp;
 
 	tcp = xtcp_srv(so);
 	if (!tcp)
 		return NULL;
 
-	pssl = (ssl_t*)xmem_alloc(sizeof(ssl_t));
+	pssl = (ssl_context*)xmem_alloc(sizeof(ssl_context));
 	pssl->head.tag = _HANDLE_SSL;
 
 	pssl->type = SSL_TYPE_SERVER;
 
 	_ssl_init(pssl);
 
-	pssl->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pssl->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 
 	get_bio_interface(tcp, pssl->pif);
 
@@ -4370,7 +4370,7 @@ xhand_t xssl_srv(res_file_t so)
 
 void  xssl_close(xhand_t ssl)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4399,7 +4399,7 @@ void  xssl_close(xhand_t ssl)
 
 res_file_t xssl_socket(xhand_t ssl)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4408,7 +4408,7 @@ res_file_t xssl_socket(xhand_t ssl)
 
 int xssl_type(xhand_t ssl)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4417,7 +4417,7 @@ int xssl_type(xhand_t ssl)
 
 bool_t xssl_write(xhand_t ssl, const byte_t* buf, dword_t* pb)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	int bys, pos;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -4470,7 +4470,7 @@ bool_t xssl_write(xhand_t ssl, const byte_t* buf, dword_t* pb)
 
 bool_t xssl_flush(xhand_t ssl)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4479,7 +4479,7 @@ bool_t xssl_flush(xhand_t ssl)
 
 bool_t xssl_read(xhand_t ssl, byte_t* buf, dword_t* pb)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	int bys, pos;
 	bool_t rt = 1;
 
@@ -4536,7 +4536,7 @@ bool_t xssl_read(xhand_t ssl, byte_t* buf, dword_t* pb)
 
 unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
@@ -4550,7 +4550,7 @@ unsigned short xssl_addr_port(xhand_t ssl, tchar_t* addr)
 
 unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	net_addr_t na = { 0 };
 	unsigned short port;
 
@@ -4564,7 +4564,7 @@ unsigned short xssl_peer_port(xhand_t ssl, tchar_t* addr)
 
 bool_t xssl_setopt(xhand_t ssl, int oid, void* opt, int len)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4586,7 +4586,7 @@ bool_t xssl_setopt(xhand_t ssl, int oid, void* opt, int len)
 
 void xssl_set_host(xhand_t ssl, const tchar_t* host_cn)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	int len;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -4605,7 +4605,7 @@ void xssl_set_host(xhand_t ssl, const tchar_t* host_cn)
 
 void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	int len;
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
@@ -4624,7 +4624,7 @@ void xssl_set_peer(xhand_t ssl, const tchar_t* peer_cn)
 
 bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int len)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	byte_t buf_pwd[RES_LEN + 1] = { 0 };
 	dword_t dw;
 
@@ -4676,7 +4676,7 @@ bool_t xssl_set_ca(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_
 
 bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byte_t* sz_rsa, dword_t rlen, const tchar_t* sz_pwd, int len)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 	byte_t buf_pwd[RES_LEN + 1] = { 0 };
 	dword_t dw;
 
@@ -4729,7 +4729,7 @@ bool_t xssl_set_cert(xhand_t ssl, const byte_t* sz_cert, dword_t clen, const byt
 
 bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_p, const byte_t *dhm_g)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4745,7 +4745,7 @@ bool_t xssl_set_dhm(xhand_t ssl, const byte_t *dhm_p, const byte_t *dhm_g)
 
 void xssl_set_verify(xhand_t ssl, int srv_verify)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 
@@ -4756,7 +4756,7 @@ void xssl_set_verify(xhand_t ssl, int srv_verify)
 
 void xssl_set_version(xhand_t ssl, int cli_ver)
 {
-	ssl_t* pssl = TypePtrFromHead(ssl_t, ssl);
+	ssl_context* pssl = TypePtrFromHead(ssl_context, ssl);
 
 	XDL_ASSERT(ssl && ssl->tag == _HANDLE_SSL);
 

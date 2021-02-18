@@ -296,7 +296,7 @@ bool_t save_grid_to_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* psd
 	tchar_t* str;
 	dword_t size;
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 
 	TRY_CATCH;
@@ -382,7 +382,7 @@ bool_t load_grid_from_csv_file(link_t_ptr ptr, bool_t head, const secu_desc_t* p
 	int encode = 0;
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
 
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	byte_t* buf = NULL;
 	tchar_t* str = NULL;
 

@@ -42,7 +42,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-	EXP_API void draw_plot(const if_drawing_t* pif, link_t_ptr ptr);
+	EXP_API void draw_plot(const drawing_interface* pif, link_t_ptr ptr);
 
 #ifdef	__cplusplus
 }

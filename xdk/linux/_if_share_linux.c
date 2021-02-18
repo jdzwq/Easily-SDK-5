@@ -108,12 +108,27 @@ void _share_close(const tchar_t* sname, res_file_t fh)
     }
 }
 
-res_file_t _share_cli(const tchar_t* sname, dword_t size)
+res_file_t _share_cli(const tchar_t* sname, dword_t size, dword_t fmode)
 {
     int sd = 0;
     struct stat st = {0};
-    
-    sd = shm_open(sname, O_RDWR, S_IRWXU | S_IXGRP | S_IROTH | S_IXOTH);
+    int flag = 0;
+
+	if (fmode & FILE_OPEN_APPEND)
+        flag = O_CREAT | O_RDWR | O_APPEND;
+	else if(fmode & FILE_OPEN_CREATE)
+		flag = O_CREAT | O_RDWR;
+    else if(fmode & FILE_OPEN_WRITE)
+        flag = O_RDWR;
+	else
+		flag = O_RDONLY;
+
+    sd = shm_open(sname, flag, S_IRWXU | S_IXGRP | S_IROTH | S_IXOTH);
+
+    if(sd < 0)
+    {
+        return INVALID_FILE;
+    }
     
     if(fstat(sd, &st) < 0)
     {
@@ -220,7 +235,7 @@ void* _share_lock(res_file_t fh, dword_t off, dword_t size)
     loff = (off / PAGE_GRAN) * PAGE_GRAN;
     dlen = poff + size;
     
-    p = mmap(NULL, dlen, PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, 0));
+    p = mmap(NULL, dlen, PROT_WRITE | PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, 0));
     if(p == MAP_FAILED)
         return NULL;
 

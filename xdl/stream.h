@@ -50,21 +50,21 @@ extern "C" {
 @INPUT xhand_t io: the io handle, it can be pnp, tcp, ssl, pipe, comm, cons, share, file, http, tftp handle.
 @RETURN stream_t: the new stream object.
 */
-EXP_API stream_t stream_alloc(const if_bio_t* pif);
+EXP_API stream_t stream_alloc(const bio_interface* pif);
 
 /*
 @FUNCTION stream_free: free the stream object.
 @INPUT stream_t xs: the stream object.
 @RETURN void: none.
 */
-EXP_API xhand_t stream_free(stream_t xs);
+EXP_API void stream_free(stream_t xs);
 
 /*
-@FUNCTION stream_fetch: get the io handle from stream object.
+@FUNCTION stream_handle: get the io handle from stream object.
 @INPUT stream_t xs: the stream object.
 @RETURN xhand_t: return the io handle if exists, otherwise return NULL.
 */
-EXP_API xhand_t stream_fetch(stream_t xs);
+EXP_API xhand_t stream_handle(stream_t xs);
 
 /*
 @FUNCTION stream_set_encode: set the stream object encode.

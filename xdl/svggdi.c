@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDL_SUPPORT_VIEW)
 
-void svg_get_measure_raw(visual_t view, if_measure_t* pim)
+void svg_get_measure_raw(visual_t view, measure_interface* pim)
 {
 	pim->ctx = (void*)view;
 
@@ -49,7 +49,7 @@ void svg_get_measure_raw(visual_t view, if_measure_t* pim)
 	pim->pf_measure_rect = svg_text_rect_raw;
 }
 
-void svg_get_measure(canvas_t canv, if_measure_t* pim)
+void svg_get_measure(canvas_t canv, measure_interface* pim)
 {
 	pim->ctx = (void*)canv;
 

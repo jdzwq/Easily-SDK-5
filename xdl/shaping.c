@@ -38,7 +38,7 @@ LICENSE.GPL3 for more details.
 #if defined(XDL_SUPPORT_GDI)
 
 
-void _draw_forwardslash_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_forwardslash_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -50,7 +50,7 @@ void _draw_forwardslash_shape(const if_drawing_t* pif, const xpen_t* pxp, const 
 	(*pif->pf_draw_line)(pif->ctx, pxp, &pt[0], &pt[1]);
 }
 
-void _draw_backslash_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_backslash_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -62,7 +62,7 @@ void _draw_backslash_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbr
 	(*pif->pf_draw_line)(pif->ctx, pxp, &pt[0], &pt[1]);
 }
 
-void _draw_leftline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_leftline_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -74,7 +74,7 @@ void _draw_leftline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbru
 	(*pif->pf_draw_line)(pif->ctx, pxp, &pt[0], &pt[1]);
 }
 
-void _draw_rightline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_rightline_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -86,7 +86,7 @@ void _draw_rightline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbr
 	(*pif->pf_draw_line)(pif->ctx, pxp, &pt[0], &pt[1]);
 }
 
-void _draw_topline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_topline_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -98,7 +98,7 @@ void _draw_topline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrus
 	(*pif->pf_draw_line)(pif->ctx, pxp, &pt[0], &pt[1]);
 }
 
-void _draw_bottomline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_bottomline_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[2];
 
@@ -110,7 +110,7 @@ void _draw_bottomline_shape(const if_drawing_t* pif, const xpen_t* pxp, const xb
 	(*pif->pf_draw_line)(pif->ctx, pxp, &pt[0], &pt[1]);
 }
 
-void _draw_lefttriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_lefttriangle_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[4];
 
@@ -126,7 +126,7 @@ void _draw_lefttriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const 
 	(*pif->pf_draw_polygon)(pif->ctx, pxp, pxb, pt, 4);
 }
 
-void _draw_righttriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_righttriangle_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[4];
 
@@ -142,7 +142,7 @@ void _draw_righttriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const
 	(*pif->pf_draw_polygon)(pif->ctx, pxp, pxb, pt, 4);
 }
 
-void _draw_toptriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_toptriangle_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[4];
 
@@ -158,7 +158,7 @@ void _draw_toptriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const x
 	(*pif->pf_draw_polygon)(pif->ctx, pxp, pxb, pt, 4);
 }
 
-void _draw_bottomtriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_bottomtriangle_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	xpoint_t pt[4];
 
@@ -174,17 +174,17 @@ void _draw_bottomtriangle_shape(const if_drawing_t* pif, const xpen_t* pxp, cons
 	(*pif->pf_draw_polygon)(pif->ctx, pxp, pxb, pt, 4);
 }
 
-void _draw_rect_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_rect_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	(*pif->pf_draw_rect)(pif->ctx, pxp, pxb, prt);
 }
 
-void _draw_round_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_round_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	(*pif->pf_draw_round)(pif->ctx, pxp, pxb, prt);
 }
 
-void _draw_ellipse_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
+void _draw_ellipse_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt)
 {
 	(*pif->pf_draw_ellipse)(pif->ctx, pxp, pxb, prt);
 }
@@ -192,7 +192,7 @@ void _draw_ellipse_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrus
 
 /*******************************************************************************************************/
 
-typedef void(*PF_SHAPE_MAKE)(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
+typedef void(*PF_SHAPE_MAKE)(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt);
 
 typedef struct _SHAPE_DRAW_TABLE{
 	tchar_t shape_name[32];
@@ -257,7 +257,7 @@ PF_SHAPE_MAKE find_shape_maker(const tchar_t* iname)
 }
 
 
-void draw_shape(const if_drawing_t* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape)
+void draw_shape(const drawing_interface* pif, const xpen_t* pxp, const xbrush_t* pxb, const xrect_t* prt, const tchar_t* shape)
 {
 	PF_SHAPE_MAKE pf;
 

@@ -63,7 +63,7 @@ static void _tablectrl_item_rect(res_win_t widget, link_t_ptr plk, xrect_t* pxr)
 	xfont_t xf;
 	xface_t xa;
 	canvas_t canv;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -84,7 +84,7 @@ static void _tablectrl_item_key_rect(res_win_t widget, link_t_ptr plk, xrect_t* 
 	xfont_t xf;
 	xface_t xa;
 	canvas_t canv;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -105,7 +105,7 @@ static void _tablectrl_item_val_rect(res_win_t widget, link_t_ptr plk, xrect_t* 
 	xfont_t xf;
 	xface_t xa;
 	canvas_t canv;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -128,7 +128,7 @@ static void _tablectrl_reset_page(res_win_t widget)
 	xfont_t xf;
 	xface_t xa;
 
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);
@@ -532,7 +532,7 @@ void hand_tablectrl_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 	int hint;
 	link_t_ptr ilk = NULL;
 	canvas_t canv;
-	if_measure_t im;
+	measure_interface im;
 	xfont_t xf;
 	xface_t xa;
 
@@ -573,7 +573,7 @@ void hand_tablectrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	xpoint_t pt;
 	int hint;
 	link_t_ptr ilk = NULL;
-	if_measure_t im;
+	measure_interface im;
 	canvas_t canv;
 	xfont_t xf;
 	xface_t xa;
@@ -730,8 +730,8 @@ void hand_tablectrl_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	tablectrl_delta_t* ptd = GETTABLECTRLDELTA(widget);
 	visual_t rdc;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 	xrect_t xr;
 
 	xfont_t xf = { 0 };

@@ -48,79 +48,79 @@ http file: "http://127.0.0.1/virdir/somefile"
 tftp file: "tftp://127.0.0.1/virdir/somefile"
 oss file: "oss://127.0.0.1/virdir/somefile"
 @INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE, FILE_OPEN_APPEND or combined.
-@RETURN if_fio_t*: if succeeds return file object, fails return NULL.
+@RETURN file_t: if succeeds return file object, fails return NULL.
 */
-EXP_API if_fio_t*	xfile_open(const secu_desc_t* psd, const tchar_t* fname, dword_t fmode);
+EXP_API file_t	xfile_open(const secu_desc_t* psd, const tchar_t* fname, dword_t fmode);
 
 /*
 @FUNCTION xfile_read: read data from file.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @OUTPUT byte_t* buf: the bytes buffer for reading.
 @INPUT dword_t size: the request size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t		xfile_read(const if_fio_t* pfn, byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_read(file_t xf, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_write: write data to file.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @INPUT const byte_t* buf: the data buffer for writing.
 @INPUT dword_t size: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t		xfile_write(const if_fio_t* pfn, const byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_write(file_t xf, const byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_flush: flush file, ensure data writing come to end.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @RETURN bool_t: if succeeds return nonezero, fails return zero.
 */
-EXP_API bool_t		xfile_flush(const if_fio_t* pfn);
+EXP_API bool_t		xfile_flush(file_t xf);
 
 /*
 @FUNCTION xfile_read_range: random read file data at the start position.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @INPUT dword_t hoff: the high value of 64bits position.
 @INPUT dword_t loff: the low value of 64bits position.
 @OUTPUT byte_t* buf: the data buffer for reading.
 @INPUT dword_t size: the request size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t		xfile_read_range(const if_fio_t* pfn, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_read_range(file_t xf, dword_t hoff, dword_t loff, byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_write_range: random write file data at the start position.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @INPUT dword_t hoff: the high value of 64bits position.
 @INPUT dword_t loff: the low value of 64bits position.
 @INPUT const byte_t* buf: the data for writing.
 @INPUT dword_t size: the data size in bytes.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t		xfile_write_range(const if_fio_t* pfn, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
+EXP_API bool_t		xfile_write_range(file_t xf, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
 
 /*
 @FUNCTION xfile_close: close file and free file object.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @RETURN void: none.
 */
-EXP_API void		xfile_close(if_fio_t* pfn);
+EXP_API void		xfile_close(file_t xf);
 
 /*
 @FUNCTION xfile_settime: set the file write time.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @INPUT const tchar_t* ftime: string GMT time, eg: "Wed, 4 Jul 2001 12:08:56"
 @RETURN bool_t: return nonzero if supported.
 */
-EXP_API bool_t		xfile_settime(const if_fio_t* pfn, const tchar_t* ftime);
+EXP_API bool_t		xfile_settime(file_t xf, const tchar_t* ftime);
 
 /*
 @FUNCTION xfile_setsince: set the file write since.
-@INPUT if_fio_t* fh: the file object.
+@INPUT file_t fh: the file object.
 @INPUT int fs: file since tag, eg: FILE_SINCE_TIME, FILE_SINCE_ETAG.
 @RETURN bool_t: return nonzero if supported.
 */
-EXP_API bool_t		xfile_setsince(const if_fio_t* pfn, int fs);
+EXP_API bool_t		xfile_setsince(file_t xf, int fs);
 
 /*
 @FUNCTION xfile_info: get the file information.

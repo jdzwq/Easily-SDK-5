@@ -33,10 +33,10 @@ LICENSE.GPL3 for more details.
 
 #include "xdlinit.h"
 
-typedef struct _mqtt_t{
-	xhand_head head;	/*head for xhand_t*/
+typedef struct _mqtt_context{
+	handle_head head;	/*head for xhand_t*/
 
-	if_bio_t* pif;
+	bio_interface* pif;
 
 	int type; /*connect type*/
 	int status;	/*connect status*/
@@ -76,7 +76,7 @@ typedef struct _mqtt_t{
 
 	dword_t message_size;
 	byte_t* message_data;
-}mqtt_t;
+}mqtt_context;
 
 static dword_t _encode_remain_length(byte_t* buf, int len)
 {
@@ -123,7 +123,7 @@ static dword_t _decode_remain_length(byte_t* buf, int* plen)
 	return (pos + 1);
 }
 
-static dword_t _mqtt_format_session(mqtt_t* mqtt, byte_t* pdv_data, dword_t pdv_size)
+static dword_t _mqtt_format_session(mqtt_context* mqtt, byte_t* pdv_data, dword_t pdv_size)
 {
 	dword_t pos;
 
@@ -211,7 +211,7 @@ static dword_t _mqtt_format_session(mqtt_t* mqtt, byte_t* pdv_data, dword_t pdv_
 	return pos;
 }
 
-static bool_t _mqtt_parse_session(mqtt_t* mqtt, const byte_t* pdv_data, dword_t pdv_size)
+static bool_t _mqtt_parse_session(mqtt_context* mqtt, const byte_t* pdv_data, dword_t pdv_size)
 {
 	lword_t tms;
 	nuid_t nid;
@@ -288,7 +288,7 @@ static bool_t _mqtt_parse_session(mqtt_t* mqtt, const byte_t* pdv_data, dword_t 
 	{
 		tms = get_timestamp();
 		nuid_from_timestamp(&nid, tms);
-		nuid_format_string(&nid, buf, UUID_LEN);
+		nuid_format_string(&nid, buf);
 
 		mqtt->session_cid = (byte_t*)xmem_realloc(mqtt->session_cid, UUID_LEN);
 
@@ -303,7 +303,7 @@ static bool_t _mqtt_parse_session(mqtt_t* mqtt, const byte_t* pdv_data, dword_t 
 	return 1;
 }
 
-static void _mqtt_clean_session(mqtt_t* mqtt)
+static void _mqtt_clean_session(mqtt_context* mqtt)
 {
 	if (mqtt->session_cid)
 	{
@@ -348,7 +348,7 @@ static void _mqtt_clean_session(mqtt_t* mqtt)
 	}
 }
 
-static dword_t _mqtt_format_subcribe(mqtt_t* mqtt, byte_t* pdv_data, dword_t pdv_size)
+static dword_t _mqtt_format_subcribe(mqtt_context* mqtt, byte_t* pdv_data, dword_t pdv_size)
 {
 	dword_t n, total = 0;
 
@@ -371,7 +371,7 @@ static dword_t _mqtt_format_subcribe(mqtt_t* mqtt, byte_t* pdv_data, dword_t pdv
 	return total;
 }
 
-static bool_t _mqtt_parse_subcribe(mqtt_t* mqtt, const byte_t* pdv_data, dword_t pdv_size)
+static bool_t _mqtt_parse_subcribe(mqtt_context* mqtt, const byte_t* pdv_data, dword_t pdv_size)
 {
 	dword_t total = 0;
 
@@ -386,7 +386,7 @@ static bool_t _mqtt_parse_subcribe(mqtt_t* mqtt, const byte_t* pdv_data, dword_t
 	return 1;
 }
 
-static bool_t _mqtt_write_pdu(mqtt_t* mqtt, byte_t pdu_type, dword_t pdv_size)
+static bool_t _mqtt_write_pdu(mqtt_context* mqtt, byte_t pdu_type, dword_t pdv_size)
 {
 	dword_t ctl_size = 0, var_size = 0, pdu_size = 0;
 	dword_t n, total = 0;
@@ -1087,7 +1087,7 @@ ONERROR:
 	return 0;
 }
 
-static bool_t _mqtt_read_pdu(mqtt_t* mqtt, byte_t* pdu_type, dword_t* pdv_size)
+static bool_t _mqtt_read_pdu(mqtt_context* mqtt, byte_t* pdu_type, dword_t* pdv_size)
 {
 	dword_t pdu_size, var_size, n;
 	byte_t flags;
@@ -1611,18 +1611,18 @@ ONERROR:
 
 xhand_t xmqtt_scu(xhand_t bio, int scu)
 {
-	mqtt_t* pmqtt = NULL;
+	mqtt_context* pmqtt = NULL;
 
 	XDL_ASSERT(scu == _MQTT_TYPE_SCU_PUB || scu == _MQTT_TYPE_SCU_SUB);
 
 	if (!bio)
 		return NULL;
 
-	pmqtt = (mqtt_t*)xmem_alloc(sizeof(mqtt_t));
+	pmqtt = (mqtt_context*)xmem_alloc(sizeof(mqtt_context));
 	pmqtt->head.tag = _HANDLE_MQTT;
 	pmqtt->type = scu;
 
-	pmqtt->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pmqtt->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(bio, pmqtt->pif);
 
 	pmqtt->session_ver = MQTT_VER;
@@ -1632,16 +1632,16 @@ xhand_t xmqtt_scu(xhand_t bio, int scu)
 
 xhand_t xmqtt_scp(xhand_t bio, int scp)
 {
-	mqtt_t* pmqtt = NULL;
+	mqtt_context* pmqtt = NULL;
 
 	if (!bio)
 		return NULL;
 
-	pmqtt = (mqtt_t*)xmem_alloc(sizeof(mqtt_t));
+	pmqtt = (mqtt_context*)xmem_alloc(sizeof(mqtt_context));
 	pmqtt->head.tag = _HANDLE_MQTT;
 	pmqtt->type = scp;
 
-	pmqtt->pif = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	pmqtt->pif = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(bio, pmqtt->pif);
 
 	pmqtt->session_ver = MQTT_VER;
@@ -1651,7 +1651,7 @@ xhand_t xmqtt_scp(xhand_t bio, int scp)
 
 xhand_t xmqtt_bio(xhand_t mqtt)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -1660,7 +1660,7 @@ xhand_t xmqtt_bio(xhand_t mqtt)
 
 int xmqtt_type(xhand_t mqtt)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -1669,7 +1669,7 @@ int xmqtt_type(xhand_t mqtt)
 
 int xmqtt_status(xhand_t mqtt)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -1678,7 +1678,7 @@ int xmqtt_status(xhand_t mqtt)
 
 bool_t xmqtt_recv(xhand_t mqtt, dword_t* size)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2043,7 +2043,7 @@ ONERROR:
 
 bool_t xmqtt_send(xhand_t mqtt, dword_t pdv_size)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2332,7 +2332,7 @@ ONERROR:
 
 bool_t xmqtt_accept(xhand_t mqtt)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2397,7 +2397,7 @@ ONERROR:
 
 bool_t xmqtt_connect(xhand_t mqtt)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2459,7 +2459,7 @@ ONERROR:
 
 bool_t xmqtt_subcribe(xhand_t mqtt, const tchar_t* topic, int len)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2533,7 +2533,7 @@ ONERROR:
 
 bool_t xmqtt_unsubcribe(xhand_t mqtt, const tchar_t* topic, int len)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2607,7 +2607,7 @@ ONERROR:
 
 bool_t xmqtt_poll_subscribe(xhand_t mqtt, tchar_t* topic, int len)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2624,7 +2624,7 @@ bool_t xmqtt_poll_subscribe(xhand_t mqtt, tchar_t* topic, int len)
 
 bool_t xmqtt_poll_message(xhand_t mqtt, byte_t** pbuf, dword_t* plen)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2803,7 +2803,7 @@ ONERROR:
 
 bool_t xmqtt_publish(xhand_t mqtt, const tchar_t* topic, int len)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2826,7 +2826,7 @@ bool_t xmqtt_publish(xhand_t mqtt, const tchar_t* topic, int len)
 
 bool_t xmqtt_push_message(xhand_t mqtt, const byte_t* buf, dword_t len)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2933,7 +2933,7 @@ ONERROR:
 
 void xmqtt_close(xhand_t mqtt)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2955,7 +2955,7 @@ void xmqtt_close(xhand_t mqtt)
 
 void xmqtt_set_packet_ctrl(xhand_t mqtt, const MQTT_PACKET_CTRL* pmc)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 
@@ -2967,7 +2967,7 @@ void xmqtt_set_packet_ctrl(xhand_t mqtt, const MQTT_PACKET_CTRL* pmc)
 
 void xmqtt_get_packet_ctrl(xhand_t mqtt, MQTT_PACKET_CTRL* pmc)
 {
-	mqtt_t* pmqtt = TypePtrFromHead(mqtt_t, mqtt);
+	mqtt_context* pmqtt = TypePtrFromHead(mqtt_context, mqtt);
 
 	XDL_ASSERT(mqtt && mqtt->tag == _HANDLE_MQTT);
 

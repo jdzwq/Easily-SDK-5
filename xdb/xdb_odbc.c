@@ -32,8 +32,8 @@ LICENSE.GPL3 for more details.
 
 #define SQL_BREAK	_T("GO")
 
-typedef struct _db_t{
-	xdb_head head;
+typedef struct _xdb_odbc_context{
+	handle_head head;
 
 	SQLHENV env;
 	SQLHDBC dbc;
@@ -44,7 +44,7 @@ typedef struct _db_t{
 	int rows;
 	tchar_t err_code[NUM_LEN + 1];
 	tchar_t err_text[ERR_LEN + 1];
-}db_t;
+}xdb_odbc_context;
 
 typedef struct _bindguid_t{
 	SQLLEN ind;
@@ -54,7 +54,8 @@ typedef struct _bindguid_t{
 }bindguid_t;
 
 typedef struct _lob_t{
-	xhand_head head;
+	handle_head head;
+
 	SQLHSTMT stmt;
 	SQLSMALLINT type;
 	SQLUSMALLINT col;
@@ -162,7 +163,7 @@ static void _raise_stmt_error(HSTMT stmt)
 	raise_user_error(err_code, err_text);
 }
 
-static void _db_reset(db_t* pdb)
+static void _db_reset(xdb_odbc_context* pdb)
 {
 	xscpy(pdb->err_code, _T(""));
 	xscpy(pdb->err_text, _T(""));
@@ -244,7 +245,7 @@ ONERROR:
 
 xdb_t STDCALL db_open_dsn(const tchar_t* dsnfile)
 {
-	db_t* pdb = NULL;
+	xdb_odbc_context* pdb = NULL;
 
 	SQLRETURN rt;
 	SQLSMALLINT si;
@@ -310,7 +311,7 @@ xdb_t STDCALL db_open_dsn(const tchar_t* dsnfile)
 		_raise_dbc_error(d_dbc);
 	}
 
-	pdb = (db_t*)xmem_alloc(sizeof(db_t));
+	pdb = (xdb_odbc_context*)xmem_alloc(sizeof(xdb_odbc_context));
 	pdb->head.tag = _DB_ODBC;
 	pdb->env = d_env;
 	pdb->dbc = d_dbc;
@@ -336,7 +337,7 @@ ONERROR:
 
 xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid, const tchar_t* pwd)
 {
-	db_t* pdb = NULL;
+	xdb_odbc_context* pdb = NULL;
 
 	SQLRETURN rt;
 
@@ -366,7 +367,7 @@ xdb_t STDCALL db_open(const tchar_t* srv, const tchar_t* dbn, const tchar_t* uid
 		_raise_dbc_error(d_dbc);
 	}
 
-	pdb = (db_t*)xmem_alloc(sizeof(db_t));
+	pdb = (xdb_odbc_context*)xmem_alloc(sizeof(xdb_odbc_context));
 	pdb->head.tag = _DB_ODBC;
 	pdb->env = d_env;
 	pdb->dbc = d_dbc;
@@ -388,7 +389,7 @@ ONERROR:
 
 void STDCALL db_close(xdb_t db)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 	
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
@@ -412,13 +413,13 @@ void STDCALL db_close(xdb_t db)
 	//CoUninitialize();
 }
 
-void _db_tran(db_t* pdb)
+void _xdb_odbc_contextran(xdb_odbc_context* pdb)
 {
 	pdb->tran = 1;
 	SQLSetConnectAttr(pdb->dbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_OFF, SQL_NTS);
 }
 
-void _db_commit(db_t* pdb)
+void _db_commit(xdb_odbc_context* pdb)
 {
 	if (pdb->tran)
 	{
@@ -428,7 +429,7 @@ void _db_commit(db_t* pdb)
 	SQLSetConnectAttr(pdb->dbc,SQL_ATTR_AUTOCOMMIT,(SQLPOINTER)SQL_AUTOCOMMIT_ON,0);
 }
 
-void _db_rollback(db_t* pdb)
+void _db_rollback(xdb_odbc_context* pdb)
 {
 	if (pdb->tran)
 	{
@@ -438,7 +439,7 @@ void _db_rollback(db_t* pdb)
 	SQLSetConnectAttr(pdb->dbc,SQL_ATTR_AUTOCOMMIT,(SQLPOINTER)SQL_AUTOCOMMIT_ON,0);
 }
 
-bool_t _db_need_data_len(db_t* pdb)
+bool_t _db_need_data_len(xdb_odbc_context* pdb)
 {
 	tchar_t token[3] = { 0 };
 	SQLSMALLINT len = 0;
@@ -450,7 +451,7 @@ bool_t _db_need_data_len(db_t* pdb)
 
 bool_t STDCALL db_datetime(xdb_t db, int diff, tchar_t* sz_time)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLLEN len;
 	SQLRETURN rt;
@@ -522,7 +523,7 @@ ONERROR:
 
 bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLRETURN rt;
 	SQLLEN ne;
@@ -550,7 +551,7 @@ bool_t STDCALL db_exec(xdb_t db, const tchar_t* sqlstr, int sqllen)
 		_raise_dbc_error(pdb->dbc);
 	}
 
-	_db_tran(pdb);
+	_xdb_odbc_contextran(pdb);
 
 	tkcur = (tchar_t*)sqlstr;
 	while(sqllen)
@@ -623,7 +624,7 @@ ONERROR:
 
 bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	tchar_t* d_sql = NULL;
 
@@ -644,7 +645,7 @@ bool_t STDCALL db_update(xdb_t db, LINKPTR grid)
 		_raise_dbc_error(pdb->dbc);
 	}
 
-	_db_tran(pdb);
+	_xdb_odbc_contextran(pdb);
 	
 	rt = SQL_SUCCESS;
 	d_sql = NULL;
@@ -748,7 +749,7 @@ ONERROR:
 	return 0;
 }
 
-int _db_fetch_row(db_t* pdb, LINKPTR grid)
+int _db_fetch_row(xdb_odbc_context* pdb, LINKPTR grid)
 {
 	SQLSMALLINT cols = 0;
 	SQLSMALLINT namelen;
@@ -877,7 +878,7 @@ int _db_fetch_row(db_t* pdb, LINKPTR grid)
 
 bool_t STDCALL db_fetch(xdb_t db, LINKPTR grid)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	tchar_t* d_sql = NULL;
 	int nRet;
@@ -964,7 +965,7 @@ ONERROR:
 
 bool_t STDCALL db_select(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLSMALLINT cols;
 	SQLSMALLINT namelen;
@@ -1083,7 +1084,7 @@ ONERROR:
 
 bool_t STDCALL db_schema(xdb_t db, LINKPTR grid, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLSMALLINT si;
 	SQLSMALLINT cols;
@@ -1198,7 +1199,7 @@ ONERROR:
 	return 0;
 }
 
-int __cdecl _db_call_argv(db_t* pdb, const tchar_t* procname, const tchar_t* fmt, va_list* parg)
+int __cdecl _db_call_argv(xdb_odbc_context* pdb, const tchar_t* procname, const tchar_t* fmt, va_list* parg)
 {
 	SQLUINTEGER collen = 0;
 	SQLSMALLINT colprec = 0;
@@ -1453,7 +1454,7 @@ ONERROR:
 
 int db_call_argv(xdb_t db, const tchar_t* procname, const tchar_t* fmt, ...)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	va_list arg;
 	int rt;
@@ -1467,7 +1468,7 @@ int db_call_argv(xdb_t db, const tchar_t* procname, const tchar_t* fmt, ...)
 
 bool_t STDCALL db_call_func(xdb_t db, LINKPTR func)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	tchar_t* d_sql = NULL;
 
@@ -1720,7 +1721,7 @@ ONERROR:
 
 bool_t STDCALL db_call_json(xdb_t db, const tchar_t* pname, LINKPTR json)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	tchar_t* d_sql = NULL;
 
@@ -1889,7 +1890,7 @@ ONERROR:
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-bool_t STDCALL _db_prepare(db_t* pdb, const tchar_t* sqlstr)
+bool_t STDCALL _db_prepare(xdb_odbc_context* pdb, const tchar_t* sqlstr)
 {
 	SQLLEN rows;
 	SQLRETURN rt;
@@ -1943,7 +1944,7 @@ ONERROR:
 
 bool_t STDCALL db_export(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLSMALLINT cols;
 	SQLSMALLINT namelen;
@@ -2160,7 +2161,7 @@ ONERROR:
 
 bool_t STDCALL db_import(xdb_t db, stream_t stream, const tchar_t* table)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLLEN rows = 0;
 	SQLPOINTER ind = 0;
@@ -2400,7 +2401,7 @@ ONERROR:
 
 bool_t STDCALL db_batch(xdb_t db, stream_t stream)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLRETURN rt;
 	SQLLEN rows;
@@ -2535,7 +2536,7 @@ ONERROR:
 
 bool_t _stdcall db_read_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLRETURN rt;
 	SQLSMALLINT cols = 0;
@@ -2544,7 +2545,7 @@ bool_t _stdcall db_read_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlstr)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
@@ -2651,7 +2652,7 @@ ONERROR:
 
 bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLLEN rows = 0;
 	SQLPOINTER pid = 0;
@@ -2661,7 +2662,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
@@ -2686,7 +2687,7 @@ bool_t _stdcall db_write_xdoc(xdb_t db, LINKPTR dom, const tchar_t* sqlfmt)
 	ne = SQL_LEN_DATA_AT_EXEC(0);
 	SQLBindParameter(pdb->stm, 1, SQL_PARAM_INPUT, SQL_C_BINARY, SQL_WLONGVARCHAR, size, 0, (SQLPOINTER)1, 0, &ne);
 
-	_db_tran(pdb);
+	_xdb_odbc_contextran(pdb);
 
 	rt = SQLExecute(pdb->stm);
 	if (rt == SQL_ERROR)
@@ -2759,7 +2760,7 @@ ONERROR:
 
 bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLRETURN rt;
 	SQLSMALLINT cols = 0;
@@ -2768,7 +2769,7 @@ bool_t _stdcall db_read_blob(xdb_t db, stream_t stream, const tchar_t* sqlstr)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
@@ -2870,7 +2871,7 @@ ONERROR:
 
 bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLLEN ne = 0;
 	SQLLEN rows = 0;
@@ -2879,7 +2880,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 
 	lob_t ob = { 0 };
 	stream_t d_stream = NULL;
-	if_bio_t bio = { 0 };
+	bio_interface bio = { 0 };
 	dword_t size = 0;
 
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
@@ -2909,7 +2910,7 @@ bool_t _stdcall db_write_blob(xdb_t db, stream_t stream, const tchar_t* sqlfmt)
 	ne = SQL_LEN_DATA_AT_EXEC(0);
 	SQLBindParameter(pdb->stm, 1, SQL_PARAM_INPUT, SQL_C_BINARY, SQL_LONGVARBINARY, size, 0, (SQLPOINTER)1, 0, &ne);
 
-	_db_tran(pdb);
+	_xdb_odbc_contextran(pdb);
 
 	rt = SQLExecute(pdb->stm);
 
@@ -2979,7 +2980,7 @@ ONERROR:
 
 bool_t _stdcall db_read_clob(xdb_t db, string_t varstr, const tchar_t* sqlstr)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLRETURN rt;
 	SQLSMALLINT cols = 0;
@@ -3113,7 +3114,7 @@ ONERROR:
 
 bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	SQLLEN ne = 0;
 	SQLLEN rows = 0;
@@ -3145,7 +3146,7 @@ bool_t _stdcall db_write_clob(xdb_t db, string_t varstr, const tchar_t* sqlfmt)
 	ne = SQL_LEN_DATA_AT_EXEC(0);
 	SQLBindParameter(pdb->stm, 1, SQL_PARAM_INPUT, SQL_C_TCHAR, SQL_LONGVARCHAR, size, 0, (SQLPOINTER)1, 0, &ne);
 
-	_db_tran(pdb);
+	_xdb_odbc_contextran(pdb);
 
 	rt = SQLExecute(pdb->stm);
 
@@ -3203,7 +3204,7 @@ ONERROR:
 
 int STDCALL db_rows(xdb_t db)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
 
@@ -3212,7 +3213,7 @@ int STDCALL db_rows(xdb_t db)
 
 int STDCALL db_error(xdb_t db, tchar_t* buf, int max)
 {
-	db_t* pdb = (db_t*)db;
+	xdb_odbc_context* pdb = (xdb_odbc_context*)db;
 
 	XDL_ASSERT(db && db->tag == _DB_ODBC);
 

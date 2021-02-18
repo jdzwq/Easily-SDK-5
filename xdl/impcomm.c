@@ -39,13 +39,13 @@ LICENSE.GPL3 for more details.
 
 #ifdef XDK_SUPPORT_COMM
 
-typedef struct _comport_t{
-	xhand_head head;		//reserved for xhand_t
+typedef struct _comm_context{
+	handle_head head;		//reserved for xhand_t
 
 	res_file_t comm;
 
 	async_t* pov;
-}comport_t;
+}comm_context;
 
 void xcomm_default_mode(dev_com_t* pmod)
 {
@@ -60,7 +60,7 @@ void xcomm_default_mode(dev_com_t* pmod)
 
 bool_t xcomm_set_mode(xhand_t com, const dev_com_t* pmod)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 
 	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
@@ -73,7 +73,7 @@ bool_t xcomm_set_mode(xhand_t com, const dev_com_t* pmod)
 
 bool_t xcomm_get_mode(xhand_t com, dev_com_t* pmod)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 
 	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
@@ -86,7 +86,7 @@ bool_t xcomm_get_mode(xhand_t com, dev_com_t* pmod)
 
 xhand_t xcomm_open(const tchar_t* pname, dword_t fmode)
 {
-	comport_t* pst;
+	comm_context* pst;
 	if_comm_t* pif;
 	res_file_t fh;
 
@@ -101,18 +101,19 @@ xhand_t xcomm_open(const tchar_t* pname, dword_t fmode)
 		return NULL;
 	}
 
-	pst = (comport_t*)xmem_alloc(sizeof(comport_t));
+	pst = (comm_context*)xmem_alloc(sizeof(comm_context));
 	pst->head.tag = _HANDLE_COMM;
 	pst->comm = fh;
 
-	pst->pov = async_alloc_lapp(((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), COMM_BASE_TIMO, INVALID_FILE);
+	pst->pov = (async_t*)xmem_alloc(sizeof(async_t));
+	async_init(pst->pov, ((fmode & FILE_OPEN_OVERLAP) ? ASYNC_EVENT : ASYNC_BLOCK), COMM_BASE_TIMO, INVALID_FILE);
 
 	return &pst->head;
 }
 
 void xcomm_close(xhand_t com)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 
 	XDL_ASSERT(com && com->tag == _HANDLE_COMM);
@@ -125,7 +126,8 @@ void xcomm_close(xhand_t com)
 
 	if (pst->pov)
 	{
-		async_free_lapp(pst->pov);
+		async_uninit(pst->pov);
+		xmem_free(pst->pov);
 	}
 
 	xmem_free(pst);
@@ -133,7 +135,7 @@ void xcomm_close(xhand_t com)
 
 dword_t xcomm_listen(xhand_t com, dword_t* pcb)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 	dword_t even;
 
@@ -152,7 +154,7 @@ dword_t xcomm_listen(xhand_t com, dword_t* pcb)
 
 bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pcb)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 	dword_t size, pos = 0;
 
@@ -185,7 +187,7 @@ bool_t xcomm_write(xhand_t com, const byte_t* buf, dword_t* pcb)
 
 bool_t xcomm_flush(xhand_t com)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 
 	pif = PROCESS_COMM_INTERFACE;
@@ -199,7 +201,7 @@ bool_t xcomm_flush(xhand_t com)
 
 bool_t xcomm_read(xhand_t com, byte_t* buf, dword_t* pcb)
 {
-	comport_t* pst = TypePtrFromHead(comport_t, com);
+	comm_context* pst = TypePtrFromHead(comm_context, com);
 	if_comm_t* pif;
 	dword_t size, pos = 0;
 

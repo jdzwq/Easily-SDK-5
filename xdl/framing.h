@@ -42,31 +42,31 @@ extern "C" {
 
 /*
 @FUNCTION draw_progress: draw the progress in canvas using millimeter coordinate.
-@INPUT if_drawing_t* pif: the canvas interface.
+@INPUT drawing_interface* pif: the canvas interface.
 @INPUT cont xcolor_t* pxc: the color struct.
 @INPUT const xrect_t* prt: the rect struct using float member.
 @INPUT int steps: the steps of progress.
 @RETURN void: none.
 */
-EXP_API void	draw_progress(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt, int steps);
+EXP_API void	draw_progress(const drawing_interface* pif, const xcolor_t* pxc, const xrect_t* prt, int steps);
 
 /*
 @FUNCTION draw_ruler: draw the ruler in canvas using millimeter coordinate.
-@INPUT if_drawing_t* pif: the canvas interface.
+@INPUT drawing_interface* pif: the canvas interface.
 @INPUT cont xcolor_t* pxc: the color struct.
 @INPUT const xrect_t* prt: the rect struct using float member.
 @RETURN void: none.
 */
-EXP_API void	draw_ruler(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt);
+EXP_API void	draw_ruler(const drawing_interface* pif, const xcolor_t* pxc, const xrect_t* prt);
 
 /*
 @FUNCTION draw_corner: draw the conner in canvas using millimeter coordinate.
-@INPUT if_drawing_t* pif: the canvas interface.
+@INPUT drawing_interface* pif: the canvas interface.
 @INPUT cont xcolor_t* pxc: the color struct.
 @INPUT const xrect_t* prt: the rect struct using float member.
 @RETURN void: none.
 */
-EXP_API void	draw_corner(const if_drawing_t* pif, const xcolor_t* pxc, const xrect_t* prt);
+EXP_API void	draw_corner(const drawing_interface* pif, const xcolor_t* pxc, const xrect_t* prt);
 
 
 

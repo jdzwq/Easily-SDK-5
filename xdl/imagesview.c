@@ -269,7 +269,7 @@ int	calc_images_hint(const xpoint_t* ppt, link_t_ptr ptr,  link_t_ptr* pilk)
 	return IMAGE_HINT_NONE;
 }
 
-void draw_images(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_images(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr nlk;
 	int pi, count;

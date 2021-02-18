@@ -94,7 +94,7 @@ EXP_API void insert_numeric(double** sa, int index, double val);
 EXP_API void delete_numeric(double** sa, int index);
 
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 
 EXP_API void test_numeric_array(void);
 

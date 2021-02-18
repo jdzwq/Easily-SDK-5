@@ -96,7 +96,7 @@ int calc_dialog_hint(link_t_ptr ptr, const xpoint_t* ppt, link_t_ptr* pilk)
 	return nHit;
 }
 
-void draw_dialog(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_dialog(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr obj,ilk;
 	xrect_t xr;

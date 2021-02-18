@@ -40,28 +40,28 @@ LICENSE.GPL3 for more details.
 void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
 {
 #ifdef XDK_SUPPORT_ERROR
-	if_jump_t* pju;
+	if_dump_t* pdu;
 	byte_t* err_buf;
 
-	pju = THREAD_JUMP_INTERFACE;
+	pdu = THREAD_DUMP_INTERFACE;
 
-	if (!pju)
+	if (!pdu)
 		return;
 
-	if (!pju->err_buf)
+	if (!pdu->err_buf)
 		return;
 
-	pju->err_index ++;
+	pdu->err_index ++;
 
-	err_buf = pju->err_buf + (pju->err_index % 4) * ERR_BUFF_SIZE;
+	err_buf = pdu->err_buf + (pdu->err_index % ERR_ITEM_COUNT) * ERR_BUFF_SIZE;
 	xmem_zero((void*)err_buf, ERR_BUFF_SIZE);
 
 #if defined(_UNICODE) || defined(UNICODE)
 	ucs_to_utf8(errcode, -1, err_buf, NUM_LEN);
-	ucs_to_utf8(errtext, len, (err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN));
+	ucs_to_utf8(errtext, len, (err_buf + NUM_LEN), ERR_LEN);
 #else
 	mbs_to_utf8(errcode, -1, err_buf, NUM_LEN);
-	mbs_to_utf8(errtext, len, (err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN));
+	mbs_to_utf8(errtext, len, (err_buf + NUM_LEN), ERR_LEN);
 #endif
 
 #endif
@@ -70,18 +70,18 @@ void set_last_error(const tchar_t* errcode, const tchar_t* errtext, int len)
 void get_last_error(tchar_t* code, tchar_t* text, int max)
 {
 #ifdef XDK_SUPPORT_ERROR
-	if_jump_t* pju;
+	if_dump_t* pdu;
 	byte_t* err_buf;
 
-	pju = THREAD_JUMP_INTERFACE;
+	pdu = THREAD_DUMP_INTERFACE;
 
-	if (!pju)
+	if (!pdu)
 		return;
 
-	if (!pju->err_buf || pju->err_index < 0)
+	if (!pdu->err_buf || pdu->err_index < 0)
 		return;
 
-	err_buf = pju->err_buf + (pju->err_index % 4) * ERR_BUFF_SIZE;
+	err_buf = pdu->err_buf + (pdu->err_index % ERR_ITEM_COUNT) * ERR_BUFF_SIZE;
 
 	if (code)
 	{
@@ -95,9 +95,9 @@ void get_last_error(tchar_t* code, tchar_t* text, int max)
 	if (text)
 	{
 #if defined(_UNICODE) || defined(UNICODE)
-		utf8_to_ucs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), text, max);
+		utf8_to_ucs((err_buf + NUM_LEN), ERR_LEN, text, max);
 #else
-		utf8_to_mbs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), text, max);
+		utf8_to_mbs((err_buf + NUM_LEN), ERR_LEN, text, max);
 #endif
 	}
 #endif
@@ -162,37 +162,37 @@ void xdl_trace(const tchar_t* code, const tchar_t* info)
 void xdl_trace_last()
 {
 #ifdef XDK_SUPPORT_ERROR
-	if_jump_t* pju;
+	if_dump_t* pdu;
 	byte_t* err_buf;
 	int i;
 
 	tchar_t errcode[NUM_LEN + 1] = { 0 };
 	tchar_t errtext[ERR_LEN + 1] = { 0 };
 
-	pju = THREAD_JUMP_INTERFACE;
+	pdu = THREAD_DUMP_INTERFACE;
 
-	if (!pju)
+	if (!pdu)
 		return;
 
-	if (!pju->err_buf || pju->err_index < 0)
+	if (!pdu->err_buf || pdu->err_index < 0)
 		return;
 
-	for (i = pju->err_index; i >= 0; i--)
+	for (i = pdu->err_index; i >= 0; i--)
 	{
-		err_buf = pju->err_buf + (pju->err_index % 4) * ERR_BUFF_SIZE;
+		err_buf = pdu->err_buf + (pdu->err_index % ERR_ITEM_COUNT) * ERR_BUFF_SIZE;
 
 #if defined(_UNICODE) || defined(UNICODE)
 		utf8_to_ucs(err_buf, NUM_LEN, errcode, NUM_LEN);
-		utf8_to_ucs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), errtext, ERR_LEN);
+		utf8_to_ucs((err_buf + NUM_LEN), ERR_LEN, errtext, ERR_LEN);
 #else
 		utf8_to_mbs(err_buf, NUM_LEN, errcode, NUM_LEN);
-		utf8_to_mbs((err_buf + NUM_LEN), (ERR_BUFF_SIZE - NUM_LEN), errtext, ERR_LEN);
+		utf8_to_mbs((err_buf + NUM_LEN), ERR_LEN, errtext, ERR_LEN);
 #endif
 
 		xdl_trace(errcode, errtext);
 	}
 #endif
 
-	xmem_zero((void*)pju->err_buf, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
-	pju->err_index = -1;
+	xmem_zero((void*)pdu->err_buf, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
+	pdu->err_index = -1;
 }

@@ -31,7 +31,7 @@ bool_t get_ssl_crt(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_
 	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 	tchar_t sz_size[NUM_LEN + 1] = { 0 };
 
-	if_fio_t* xf;
+	file_t xf;
 	dword_t n_size;
 
 	xsprintf(sz_file, _T("%s/ssl/%s.crt"), path, name);
@@ -70,7 +70,7 @@ bool_t get_ssl_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_
 	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 	tchar_t sz_size[NUM_LEN + 1] = { 0 };
 
-	if_fio_t* xf;
+	file_t xf;
 	dword_t n_size;
 
 	xsprintf(sz_file, _T("%s/ssl/%s.key"), path, name);
@@ -109,7 +109,7 @@ bool_t get_ssh_key(const tchar_t* path, const tchar_t* name, byte_t* buf, dword_
 	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 	tchar_t sz_size[NUM_LEN + 1] = { 0 };
 
-	if_fio_t* xf;
+	file_t xf;
 	dword_t n_size;
 
 	xsprintf(sz_file, _T("%s/ssh/%s.key"), path, name);

@@ -46,7 +46,7 @@ void _listbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 	xrect_t xr;
 	xfont_t xf;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 
@@ -68,8 +68,8 @@ void _listbox_reset_page(res_win_t widget)
 	xfont_t xf;
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_measure_t im = { 0 };
+	const drawing_interface* pif = NULL;
+	measure_interface im = { 0 };
 
 	canv = widget_get_canvas(widget);
 	pif = widget_get_canvas_interface(widget);
@@ -287,7 +287,7 @@ void hand_listbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 	xfont_t xf = { 0 };
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	link_t_ptr ilk = NULL;
 	int hint;
 	xpoint_t pt;
@@ -343,8 +343,8 @@ void hand_listbox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	xfont_t xf;
 	xbrush_t xb;
@@ -541,7 +541,7 @@ void listbox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 	xfont_t xf;
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 
 	get_canvas_measure(widget_get_canvas(widget), &im);
 

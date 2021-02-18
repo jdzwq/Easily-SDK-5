@@ -1108,8 +1108,8 @@ void hand_dialog_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	link_t_ptr ilk;
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	if (!ptd->dialog)
 		return;

@@ -39,7 +39,7 @@ LICENSE.GPL3 for more details.
 
 #define MENU_FEED  (float)2
 
-float calc_menu_height(const if_measure_t* pif, link_t_ptr ptr)
+float calc_menu_height(const measure_interface* pif, link_t_ptr ptr)
 {
 	float ic, h;
 	xsize_t xs;
@@ -97,7 +97,7 @@ float calc_menu_height(const if_measure_t* pif, link_t_ptr ptr)
 	return h;
 }
 
-float calc_menu_width(const if_measure_t* pif, link_t_ptr ptr)
+float calc_menu_width(const measure_interface* pif, link_t_ptr ptr)
 {
 	float ic,w;
 	xsize_t xs;
@@ -158,7 +158,7 @@ float calc_menu_width(const if_measure_t* pif, link_t_ptr ptr)
 	return w;
 }
 
-void calc_menu_item_rect(const if_measure_t* pif, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
+void calc_menu_item_rect(const measure_interface* pif, link_t_ptr ptr, link_t_ptr plk, xrect_t* pxr)
 {
 	float fw, fh, ic, w, h;
 	xsize_t xs;
@@ -259,7 +259,7 @@ void calc_menu_item_rect(const if_measure_t* pif, link_t_ptr ptr, link_t_ptr plk
 	}
 }
 
-int	calc_menu_hint(const if_measure_t* pif, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
+int	calc_menu_hint(const measure_interface* pif, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk)
 {
 	int hint = MENU_HINT_NONE;
 	float fw, fh, ic, w, h;
@@ -363,7 +363,7 @@ int	calc_menu_hint(const if_measure_t* pif, const xpoint_t* ppt, link_t_ptr ptr,
 	return hint;
 }
 
-void draw_menu(const if_drawing_t* pif, link_t_ptr ptr)
+void draw_menu(const drawing_interface* pif, link_t_ptr ptr)
 {
 	link_t_ptr ilk;
 	float ic, w, h;

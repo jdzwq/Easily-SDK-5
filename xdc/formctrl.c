@@ -2498,8 +2498,8 @@ void hand_form_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	link_t_ptr flk;
 
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	if (!ptd->form)
 		return;
@@ -2796,7 +2796,7 @@ void formctrl_redraw(res_win_t widget, bool_t bCalc)
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	link_t_ptr flk;
 	bool_t b_valid;
-	const if_drawing_t* pif;
+	const drawing_interface* pif;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -2845,7 +2845,7 @@ void formctrl_redraw_field(res_win_t widget, link_t_ptr flk, bool_t bCalc)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
 	xrect_t xr;
-	const if_drawing_t* pif;
+	const drawing_interface* pif;
 
 	XDL_ASSERT(ptd != NULL);
 
@@ -3050,7 +3050,7 @@ int formctrl_get_cur_page(res_win_t widget)
 int formctrl_get_max_page(res_win_t widget)
 {
 	form_delta_t* ptd = GETFORMDELTA(widget);
-	const if_drawing_t* pif;
+	const drawing_interface* pif;
 
 	XDL_ASSERT(ptd != NULL);
 

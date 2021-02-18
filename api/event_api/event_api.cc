@@ -26,13 +26,12 @@ LICENSE.GPL3 for more details.
 #include "event_api.h"
 
 typedef struct _event_block_t{
-	secu_desc_t sd;
-
+	bool_t share;
 	tchar_t topic[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
 }event_block_t;
 
-bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
+bool_t _invoke_event_pubs(const https_block_t* pb, event_block_t* pd)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -51,14 +50,14 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 	byte_t* msg_buf = NULL;
 	dword_t msg_len = 0;
 
-	variant_t key = { 0 };
-	object_t val = NULL;
-
 	t_kb_t hkb = NULL;
 	t_kv_t hkv = NULL;
 
-	rad_hdr_t hdr = { 0 };
-	xdate_t dt = { 0 };
+	variant_t key = NULL;
+	object_t val = NULL;
+	queue_t que = NULL;
+	message_t msg = NULL;
+	msg_hdr_t hdr = { 0 };
 
 	bool_t rt;
 
@@ -163,9 +162,9 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 
 			if (pb->plg)
 			{
-				(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT]"), -1);
 
-				(*pb->plg->pf_log_json)(pb->plg->log, ptr_json);
+				(*pb->plg->pf_log_json)(pb->plg->unc, ptr_json);
 			}
 
 			if (!rt)
@@ -185,9 +184,9 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 
 			if (pb->plg)
 			{
-				(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
+				(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT]"), -1);
 
-				(*pb->plg->pf_log_xml)(pb->plg->log, ptr_xml);
+				(*pb->plg->pf_log_xml)(pb->plg->unc, ptr_xml);
 			}
 
 			if (!rt)
@@ -209,7 +208,7 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 	get_event_id(ptr_event, sz_name, RES_LEN);
 	if (is_null(sz_name))
 	{
-		raise_user_error(_T("_invoke_event_send"), _T("empty event id"));
+		raise_user_error(_T("_invoke_event_pubs"), _T("empty event id"));
 	}
 
 	msg_len = format_json_doc_to_bytes(ptr_event, NULL, MAX_LONG, _UTF8);
@@ -236,40 +235,58 @@ bool_t _invoke_event_send(const https_block_t* pb, event_block_t* pd)
 		ptr_event = NULL;
 	}
 
-	hkb = tkb_create(pd->path, pd->topic);
+	hkb = tkb_create(pd->path, pd->topic, pd->share);
 	if (!hkb)
 	{
-		raise_user_error(_T("_invoke_event_send"), _T("open kv database failed"));
+		raise_user_error(_T("_invoke_event_pubs"), _T("open kv database failed"));
 	}
 
 	hkv = tkv_create(hkb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_event_send"), _T("create kv entity falied"));
+		raise_user_error(_T("_invoke_event_pubs"), _T("create kv entity falied"));
 	}
 
-	key.vv = VV_STRING;
-	variant_from_string(&key, sz_name, -1);
+	key = variant_alloc(VV_STRING);
+	variant_from_string(key, sz_name, -1);
 
 	val = object_alloc(_UTF8);
 
 	tkv_read(hkv, key, val);
 
-	get_utc_date(&dt);
+	que = queue_alloc();
 
-	xmem_copy((void*)hdr.ver, (void*)MSGVER_APPLICATION, MSGVER_SIZE);
+	if (object_size(val) > 0)
+	{
+		if (!object_get_queue(val, que))
+		{
+			raise_user_error(_T("_invoke_put"), _T("read queue falied"));
+		}
+	}
+
+	hdr.ver = MSGVER_VENDOR;
 	hdr.qos = 0;
-	format_utctime(&dt, hdr.utc);
+	hdr.seq = 0;
+	hdr.utc = get_timestamp();
 
-	radobj_write(val, &hdr, msg_buf, msg_len);
+	msg = message_alloc();
+	message_write(msg, &hdr, msg_buf, msg_len);
 
-	xmem_free(msg_buf);
-	msg_buf = NULL;
+	queue_write(que, msg);
 
+	message_free(msg);
+	msg = NULL;
+
+	object_set_queue(val, que);
+	queue_free(que);
+	que = NULL;
+
+	object_set_commpress(val, 1);
 	tkv_attach(hkv, key, val);
 	val = NULL;
 
-	variant_to_null(&key);
+	variant_free(key);
+	key = NULL;
 
 	tkv_destroy(hkv);
 	hkv = NULL;
@@ -303,31 +320,35 @@ ONERROR:
 			destroy_xml_doc(ptr_xml);
 	}
 
-	if (msg_buf)
-		xmem_free(msg_buf);
-
-	variant_to_null(&key);
-
-	if (val)
-		object_free(val);
-
 	if (hkv)
 		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
 
+	if (key)
+		variant_free(key);
+
+	if (val)
+		object_free(val);
+
+	if (que)
+		queue_free(que);
+
+	if (msg)
+		message_free(msg);
+
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
 }
 
-bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
+bool_t _invoke_event_subs(const https_block_t* pb, event_block_t* pd)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -342,14 +363,14 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 	byte_t* msg_buf = NULL;
 	dword_t msg_len = 0;
 
-	variant_t key = { 0 };
-	object_t val = NULL;
-
 	t_kb_t hkb = NULL;
 	t_kv_t hkv = NULL;
 
-	rad_hdr_t hdr = { 0 };
-	xdate_t dt = { 0 };
+	variant_t key = NULL;
+	object_t val = NULL;
+	queue_t que = NULL;
+	message_t msg = NULL;
+	msg_hdr_t hdr = { 0 };
 
 	bool_t rt;
 
@@ -358,7 +379,7 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 	xhttp_get_url_query_entity(pb->http, DOC_EVENT_ID, -1, sz_name, RES_LEN);
 	if (is_null(sz_name))
 	{
-		raise_user_error(_T("_invoke_event_query"), _T("unknown event id"));
+		raise_user_error(_T("_invoke_event_subs"), _T("unknown event id"));
 	}
 
 	xhttp_get_request_accept_type(pb->http, sz_encoding, RES_LEN);
@@ -368,34 +389,48 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 	}
 	b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
-	hkb = tkb_create(pd->path, pd->topic);
+	hkb = tkb_create(pd->path, pd->topic, pd->share);
 	if (!hkb)
 	{
-		raise_user_error(_T("_invoke_event_query"), _T("open kv database failed"));
+		raise_user_error(_T("_invoke_event_subs"), _T("open kv database failed"));
 	}
 
 	hkv = tkv_create(hkb);
 	if (!hkv)
 	{
-		raise_user_error(_T("_invoke_event_query"), _T("create kv entity falied"));
+		raise_user_error(_T("_invoke_event_subs"), _T("create kv entity falied"));
 	}
 
-	key.vv = VV_STRING;
-	variant_from_string(&key, sz_name, -1);
+	key = variant_alloc(VV_STRING);
+	variant_from_string(key, sz_name, -1);
 
 	val = object_alloc(_UTF8);
 
 	tkv_read(hkv, key, val);
 
-	msg_len = radobj_read(val, &hdr, NULL, MAX_LONG);
-	
-	msg_buf = (byte_t*)xmem_alloc(msg_len + 1);
-	radobj_read(val, &hdr, msg_buf, msg_len);
+	que = queue_alloc();
 
-	variant_to_null(&key);
+	if (object_size(val) > 0)
+	{
+		if (!object_get_queue(val, que))
+		{
+			raise_user_error(_T("_invoke_event_subs"), _T("get queue failed"));
+		}
+	}
 
-	object_free(val);
+	msg = message_alloc();
+	queue_read(que, msg);
+
+	object_set_queue(val, que);
+	queue_free(que);
+	que = NULL;
+
+	object_set_commpress(val, 1);
+	tkv_attach(hkv, key, val);
 	val = NULL;
+
+	variant_free(key);
+	key = NULL;
 
 	tkv_destroy(hkv);
 	hkv = NULL;
@@ -403,11 +438,18 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 	tkb_destroy(hkb);
 	hkb = NULL;
 
+	msg_len = message_read(msg, &hdr, NULL, MAX_LONG);
+	msg_buf = (byte_t*)xmem_alloc(msg_len + 1);
+	message_read(msg, NULL, msg_buf, msg_len);
+
+	message_free(msg);
+	msg = NULL;
+
 	ptr_event = create_event_doc();
 
 	if (!parse_json_doc_from_bytes(ptr_event, msg_buf, msg_len, _UTF8))
 	{
-		raise_user_error(_T("_invoke_event_query"), _T("parse event failed"));
+		raise_user_error(_T("_invoke_event_subs"), _T("parse event failed"));
 	}
 
 	xmem_free(msg_buf);
@@ -425,9 +467,9 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 
 		if (pb->plg)
 		{
-			(*pb->plg->pf_log_title)(pb->plg->log, _T("[response]"), -1);
+			(*pb->plg->pf_log_title)(pb->plg->unc, _T("[response]"), -1);
 
-			(*pb->plg->pf_log_json)(pb->plg->log, ptr_event);
+			(*pb->plg->pf_log_json)(pb->plg->unc, ptr_event);
 		}
 	}
 	else
@@ -445,9 +487,9 @@ bool_t _invoke_event_query(const https_block_t* pb, event_block_t* pd)
 
 		if (pb->plg)
 		{
-			(*pb->plg->pf_log_title)(pb->plg->log, _T("[response]"), -1);
+			(*pb->plg->pf_log_title)(pb->plg->unc, _T("[response]"), -1);
 
-			(*pb->plg->pf_log_json)(pb->plg->log, ptr_event);
+			(*pb->plg->pf_log_json)(pb->plg->unc, ptr_event);
 		}
 	}
 
@@ -470,22 +512,29 @@ ONERROR:
 	if (msg_buf)
 		xmem_free(msg_buf);
 
-	variant_to_null(&key);
-
-	if (val)
-		object_free(val);
-
 	if (hkv)
 		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
 
+	if (key)
+		variant_free(key);
+
+	if (val)
+		object_free(val);
+
+	if (que)
+		queue_free(que);
+
+	if (msg)
+		message_free(msg);
+
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
 	return 0;
@@ -512,9 +561,9 @@ void _invoke_error(const https_block_t* pb, event_block_t* pd)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->log, _T("[EVENT:]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT:]"), -1);
 
-		(*pb->plg->pf_log_error)(pb->plg->log, sz_code, sz_error, -1);
+		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 }
 
@@ -524,7 +573,8 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 {
 	event_block_t* pd = NULL;
 
-	tchar_t token[PATH_LEN + 1] = { 0 };
+	tchar_t file[PATH_LEN + 1] = { 0 };
+	tchar_t token[RES_LEN + 1] = { 0 };
 
 	bool_t rt = 1;
 
@@ -541,39 +591,39 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 	ptr_prop = create_proper_doc();
 
-	xsprintf(token, _T("%s/event.ini"), pb->path);
+	xsprintf(file, _T("%s/event.ini"), pb->path);
 
-	if (!load_proper_from_ini_file(ptr_prop, NULL, token))
+	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
 	{
 		raise_user_error(_T("-1"), _T("load loc config falied\n"));
 	}
 
-	read_proper(ptr_prop, _T("EVENT"), -1, _T("LOCATION"), -1, token, PATH_LEN);
-	read_proper(ptr_prop, _T("EVENT"), -1, _T("PUBLICKEY"), -1, pd->sd.scr_uid, KEY_LEN);
-	read_proper(ptr_prop, _T("EVENT"), -1, _T("PRIVATEKEY"), -1, pd->sd.scr_key, KEY_LEN);
+	read_proper(ptr_prop, _T("EVENT"), -1, _T("LOCATION"), -1, file, PATH_LEN);
+	read_proper(ptr_prop, _T("EVENT"), -1, _T("EXCLUSIVE"), -1, token, RES_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
-	printf_path(pd->path, token);
+	printf_path(pd->path, file);
+	pd->share = (xstol(token)) ? 0 : 1;
 	
-	if (compare_text((pb->object + 1), 4, _T("send"), 4, 1) == 0)
+	if (compare_text((pb->object + 1), 4, _T("pubs"), 4, 1) == 0)
 	{
 		xsncpy(pd->topic, (pb->object + 1 + 4 + 1), RES_LEN);
 		if (is_null(pd->topic))
 		{
 			raise_user_error(_T("-1"), _T("unknown event topic\n"));
 		}
-		rt = _invoke_event_send(pb, pd);
+		rt = _invoke_event_pubs(pb, pd);
 	}
-	else if (compare_text((pb->object + 1), 5, _T("query"), 5, 1) == 0)
+	else if (compare_text((pb->object + 1), 5, _T("subs"), 5, 1) == 0)
 	{
 		xsncpy(pd->topic, (pb->object + 1 + 5 + 1), RES_LEN);
 		if (is_null(pd->topic))
 		{
 			raise_user_error(_T("-1"), _T("unknown event topic\n"));
 		}
-		rt = _invoke_event_query(pb, pd);
+		rt = _invoke_event_subs(pb, pd);
 	}
 	else
 	{

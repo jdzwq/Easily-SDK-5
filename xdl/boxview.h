@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API void draw_pushbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* text);
+EXP_API void draw_pushbox(const drawing_interface* pif, const xfont_t* pxf, const tchar_t* text);
 
 typedef enum{
 	DATEBOX_HINT_NONE = 0,
@@ -49,13 +49,13 @@ typedef enum{
 	DATEBOX_HINT_DAYS = 3,
 }DATEBOX_HINT_CODE;
 
-EXP_API void calc_datebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_datebox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API void calc_datebox_day_rect(const if_measure_t* pim, const xfont_t* pxf, const xdate_t* pdt, xrect_t* pxr);
+EXP_API void calc_datebox_day_rect(const measure_interface* pim, const xfont_t* pxf, const xdate_t* pdt, xrect_t* pxr);
 
-EXP_API int	calc_datebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, const xdate_t* pdt, int* pday);
+EXP_API int	calc_datebox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, const xdate_t* pdt, int* pday);
 
-EXP_API void draw_datebox(const if_drawing_t* pif, const xfont_t* pxf,  const xdate_t* pdt);
+EXP_API void draw_datebox(const drawing_interface* pif, const xfont_t* pxf,  const xdate_t* pdt);
 
 typedef enum{
 	TIMEBOX_HINT_NONE = 0,
@@ -76,37 +76,37 @@ typedef enum{
 	TIMEBOX_HINT_SEC_ZERO = 15,
 }TIMEBOX_HINT_CODE;
 
-EXP_API void calc_timebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_timebox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API int	calc_timebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+EXP_API int	calc_timebox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_timebox(const if_drawing_t* pif, const xfont_t* pxf, const xdate_t* ptt);
+EXP_API void draw_timebox(const drawing_interface* pif, const xfont_t* pxf, const xdate_t* ptt);
 
 typedef enum{
 	LISTBOX_HINT_NONE = 0,
 	LISTBOX_HINT_ITEM = 1,
 }LISTBOX_HINT_CODE;
 
-EXP_API void calc_listbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs);
+EXP_API void calc_listbox_size(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs);
 
-EXP_API int calc_listbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
+EXP_API int calc_listbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-EXP_API void calc_listbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_listbox_item_rect(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API void draw_listbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr);
+EXP_API void draw_listbox(const drawing_interface* pif, const xfont_t* pxf, link_t_ptr ptr);
 
 typedef enum{
 	DROPBOX_HINT_NONE = 0,
 	DROPBOX_HINT_ITEM = 1,
 }DROPBOX_HINT_CODE;
 
-EXP_API void calc_dropbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs);
+EXP_API void calc_dropbox_size(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs);
 
-EXP_API int calc_dropbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
+EXP_API int calc_dropbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, link_t_ptr* pilk);
 
-EXP_API void calc_dropbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_dropbox_item_rect(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API void draw_dropbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr);
+EXP_API void draw_dropbox(const drawing_interface* pif, const xfont_t* pxf, link_t_ptr ptr);
 
 
 typedef enum{
@@ -115,25 +115,25 @@ typedef enum{
 	RADIOBOX_HINT_OFF = 2,
 }RADIOBOX_HINT_CODE;
 
-EXP_API void calc_radiobox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_radiobox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API int	calc_radiobox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+EXP_API int	calc_radiobox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_radiobox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on);
-
-
-EXP_API void calc_checkbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
-
-EXP_API void draw_checkbox(const if_drawing_t* pif, const xfont_t* pxf, bool_t b_on);
+EXP_API void draw_radiobox(const drawing_interface* pif, const xfont_t* pxf, bool_t b_on);
 
 
-EXP_API void calc_slidebox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_checkbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API void calc_slidebox_button_rect(const if_measure_t* pim, const xfont_t* pxf, int pos, xrect_t* pxr);
+EXP_API void draw_checkbox(const drawing_interface* pif, const xfont_t* pxf, bool_t b_on);
 
-EXP_API int	calc_slidebox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_slidebox(const if_drawing_t* pif, const xfont_t* pxf, int pos);
+EXP_API void calc_slidebox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
+
+EXP_API void calc_slidebox_button_rect(const measure_interface* pim, const xfont_t* pxf, int pos, xrect_t* pxr);
+
+EXP_API int	calc_slidebox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
+
+EXP_API void draw_slidebox(const drawing_interface* pif, const xfont_t* pxf, int pos);
 
 
 typedef enum{
@@ -142,11 +142,11 @@ typedef enum{
 	SPINBOX_HINT_MINUS = 2,
 }SPINBOX_HINT_CODE;
 
-EXP_API void calc_spinbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_spinbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API int	calc_spinbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+EXP_API int	calc_spinbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_spinbox(const if_drawing_t* pif, const xfont_t* pxf, int cur);
+EXP_API void draw_spinbox(const drawing_interface* pif, const xfont_t* pxf, int cur);
 
 typedef enum{
 	NAVIBOX_HINT_NONE = 0,
@@ -161,11 +161,11 @@ typedef struct _NAVISTATE{
 	bool_t keyboxed;
 }NAVISTATE;
 
-EXP_API void calc_navibox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_navibox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API int	calc_navibox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+EXP_API int	calc_navibox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_navibox(const if_drawing_t* pif, const xfont_t* pxf, const NAVISTATE* pns);
+EXP_API void draw_navibox(const drawing_interface* pif, const xfont_t* pxf, const NAVISTATE* pns);
 
 
 typedef enum{
@@ -173,13 +173,13 @@ typedef enum{
 	ICONBOX_HINT_ITEM = 1,
 }ICONBOX_HINT_CODE;
 
-EXP_API void calc_iconbox_size(const if_measure_t* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str, xsize_t* pxs);
+EXP_API void calc_iconbox_size(const measure_interface* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str, xsize_t* pxs);
 
-EXP_API void calc_iconbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, link_t_ptr str, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_iconbox_item_rect(const measure_interface* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, link_t_ptr str, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API int calc_iconbox_hint(const if_measure_t* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, const xpoint_t* ppt, link_t_ptr str, link_t_ptr* pilk);
+EXP_API int calc_iconbox_hint(const measure_interface* pim, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, const xsize_t* pxs, const xpoint_t* ppt, link_t_ptr str, link_t_ptr* pilk);
 
-EXP_API void draw_iconbox(const if_drawing_t* pif, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str);
+EXP_API void draw_iconbox(const drawing_interface* pif, const xfont_t* pxf, const tchar_t* layer, const tchar_t* align, link_t_ptr str);
 
 
 typedef enum{
@@ -195,13 +195,13 @@ EXP_API void calc_wordsbox_item_scope(link_t_ptr ptr, int page, link_t_ptr* pfir
 
 EXP_API link_t_ptr calc_wordsbox_item(link_t_ptr ptr, int page, int index);
 
-EXP_API void calc_wordsbox_size(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs);
+EXP_API void calc_wordsbox_size(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, xsize_t* pxs);
 
-EXP_API void calc_wordsbox_item_rect(const if_measure_t* pim, const xfont_t* pxf, link_t_ptr ptr, int page, link_t_ptr ilk, xrect_t* pxr);
+EXP_API void calc_wordsbox_item_rect(const measure_interface* pim, const xfont_t* pxf, link_t_ptr ptr, int page, link_t_ptr ilk, xrect_t* pxr);
 
-EXP_API int calc_wordsbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk);
+EXP_API int calc_wordsbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pilk);
 
-EXP_API void draw_wordsbox(const if_drawing_t* pif, const xfont_t* pxf, link_t_ptr ptr, int page);
+EXP_API void draw_wordsbox(const drawing_interface* pif, const xfont_t* pxf, link_t_ptr ptr, int page);
 
 typedef enum{
 	VERTBOX_HINT_NONE = 0,
@@ -211,11 +211,11 @@ typedef enum{
 	VERTBOX_HINT_PAGEDOWN = 4,
 }VERTBOX_HINT_CODE;
 
-EXP_API void calc_vertbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_vertbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API int	calc_vertbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+EXP_API int	calc_vertbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_vertbox(const if_drawing_t* pif, const xfont_t* pxf);
+EXP_API void draw_vertbox(const drawing_interface* pif, const xfont_t* pxf);
 
 typedef enum{
 	HORZBOX_HINT_NONE = 0,
@@ -225,11 +225,11 @@ typedef enum{
 	HORZBOX_HINT_PAGERIGHT = 4,
 }HORZBOX_HINT_CODE;
 
-EXP_API void calc_horzbox_size(const if_measure_t* pim, const xfont_t* pxf, xsize_t* pxs);
+EXP_API void calc_horzbox_size(const measure_interface* pim, const xfont_t* pxf, xsize_t* pxs);
 
-EXP_API int	calc_horzbox_hint(const if_measure_t* pim, const xfont_t* pxf, const xpoint_t* ppt);
+EXP_API int	calc_horzbox_hint(const measure_interface* pim, const xfont_t* pxf, const xpoint_t* ppt);
 
-EXP_API void draw_horzbox(const if_drawing_t* pif, const xfont_t* pxf);
+EXP_API void draw_horzbox(const drawing_interface* pif, const xfont_t* pxf);
 
 #ifdef	__cplusplus
 }

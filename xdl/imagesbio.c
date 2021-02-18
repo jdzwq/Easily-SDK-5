@@ -110,7 +110,7 @@ link_t_ptr insert_images_item_from_file(link_t_ptr ptr, const tchar_t* iname, co
 dword_t load_image_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname, tchar_t* itype, byte_t* buf, dword_t max)
 {
 	dword_t size;
-	if_fio_t* xf;
+	file_t xf;
 	int len;
 
 	tchar_t fsize[NUM_LEN + 1] = { 0 };
@@ -165,7 +165,7 @@ dword_t load_image_bytes_from_file(const secu_desc_t* psd, const tchar_t* fname,
 bool_t save_image_bytes_to_file(const secu_desc_t* psd, const tchar_t* fname, const byte_t* buf, dword_t len)
 {
 	bool_t rt = 0;
-	if_fio_t* xf = NULL;
+	file_t xf = NULL;
 	dword_t size;
 
 	xf = xfile_open(psd, fname, FILE_OPEN_CREATE);

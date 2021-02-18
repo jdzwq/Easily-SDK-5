@@ -41,7 +41,7 @@ static void _WidgetDrawLogo(visual_t rdc, const xcolor_t* pxc, const xrect_t* pr
 	xbrush_t xb;
 	xrect_t rt, xr;
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	get_visual_interface(rdc, &ifv);
 
@@ -109,7 +109,7 @@ static void _WidgetDrawEdge(res_win_t wt, visual_t rdc)
 	xbrush_t xb;
 	xrect_t rtWnd, rtScr;
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	ws = widget_get_style(wt);
 	widget_calc_border(ws, &bd);
@@ -145,7 +145,7 @@ static void _WidgetDrawHScroll(res_win_t wt, visual_t rdc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_calc_border(widget_get_style(wt), &bd);
 
@@ -234,7 +234,7 @@ static void _WidgetDrawVScroll(res_win_t wt, visual_t rdc)
 	xbrush_t xb = { 0 };
 	xpen_t xp = { 0 };
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_calc_border(widget_get_style(wt), &bd);
 
@@ -361,7 +361,7 @@ static void _WidgetDrawTitleBar(res_win_t wt, visual_t rdc)
 	int n = 0;
 	int feed = 5;
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	ws = widget_get_style(wt);
 
@@ -565,7 +565,7 @@ static void _WidgetDrawMenuBar(res_win_t wt, visual_t rdc)
 	link_t_ptr ptr, ilk;
 	const tchar_t* text;
 
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	ws = widget_get_style(wt);
 	widget_calc_border(ws, &bd);

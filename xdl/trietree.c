@@ -423,7 +423,7 @@ link_t_ptr enum_trie_tree(link_t_ptr ptr, tchar_t kfeed, PF_ENUM_TRIE_TREE pf, v
 	return nlk;
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(XDL_SUPPORT_TEST)
 static bool_t print_leaf(const tchar_t* key, int len, var_long delta, void* p)
 {
 	_tprintf(_T("%s\n"), key);

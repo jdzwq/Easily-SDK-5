@@ -54,10 +54,11 @@ EXP_API xhand_t xshare_srv(const tchar_t* pname, const tchar_t* fpath, dword_t h
 /*
 @FUNCTION xshare_cli: create a share memory client, and connect to named pipe server.
 @INPUT const tchar_t* bname: share memory server name to connect.
-@INPUT dword_t size: the share memory size.
+@INPUT dword_t size: the share memory size, to open exist name object, then size can be zero, otherwise to create new name object, the size must not be zero.
+@INPUT dword_t fmode: the file open mode, can be FILE_OPEN_READ, FILE_OPEN_WRITE, FILE_OPEN_APPEND or combined.
 @RETURN xhand_t: if succeeds return pipe handle, fails return NULL.
 */
-EXP_API xhand_t xshare_cli(const tchar_t* bname, dword_t size);
+EXP_API xhand_t xshare_cli(const tchar_t* bname, dword_t size, dword_t fmode);
 
 /*
 @FUNCTION xshare_close: free share memory server or client handle.

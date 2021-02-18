@@ -223,10 +223,9 @@ bool_t xtimers_config(const tchar_t* task, tchar_t* tname, tchar_t* tpath, tchar
 	return 1;
 }
 
-void xtimers_track_error(void* hand, const tchar_t* code, const tchar_t* text)
+void xtimers_track_error(void* param, const tchar_t* code, const tchar_t* text)
 {
-	if_fio_t* xf = (if_fio_t*)hand;
-
+	const tchar_t* fname = (const tchar_t*)param;
 	tchar_t sz_title[NUM_LEN + ERR_LEN + 2] = { 0 };
 
 	byte_t* sz_log = NULL;
@@ -235,15 +234,22 @@ void xtimers_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 	int n_log = 0;
 
 	res_mutx_t mux;
+	file_t xf;
 
-	XDL_ASSERT(xf != NULL);
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if (!xf)
+		return;
 
 	mux = mutex_open(XTIMERD_MUTEX_NAME);
 	if (!mux)
+	{
+		xfile_close(xf);
 		return;
+	}
 
 	if (WAIT_RET != mutex_lock(mux, XTIMERD_WAIT_TIMO))
 	{
+		xfile_close(xf);
 		mutex_close(mux);
 		return;
 	}
@@ -272,6 +278,8 @@ void xtimers_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 	xmem_free(sz_log);
 	sz_log = NULL;
 
+	xfile_close(xf);
+
 	mutex_unlock(mux);
 	mutex_close(mux);
 }
@@ -287,14 +295,15 @@ void xtimers_dispatch(xtimers_param_t* pts)
 	
 	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
 	timer_block_t* ptb = { 0 };
-	if_fio_t* xf = NULL;
-
+	
 	link_t_ptr ptr_cfg = NULL;
 
 	xdate_t dt = { 0 };
 	tchar_t sz_trace[NUM_LEN + 1] = { 0 };
 	tchar_t sz_track[PATH_LEN + 1] = { 0 };
 	tchar_t sz_file[PATH_LEN + 1] = { 0 };
+
+	trace_interface tra = { 0 };
 
 	TRY_CATCH;
 
@@ -318,19 +327,12 @@ void xtimers_dispatch(xtimers_param_t* pts)
 		printf_path(sz_file, sz_track);
 		xsappend(sz_file, _T("/%s.log"), sz_trace);
 
-		xf = xfile_open(NULL, sz_file, FILE_OPEN_APPEND);
-		if (xf)
-		{
-			ptb->ptk = (if_track_t*)xmem_alloc(sizeof(if_track_t));
-			ptb->ptk->param = (void*)xf;
-			ptb->ptk->pf_track_error = xtimers_track_error;
-		}
+		tra.param = (void*)sz_file;
+		tra.pf_track_error = xtimers_track_error;
+		ptb->ptk = &tra;
 
-		if (ptb->ptk)
-		{
-			format_datetime(&dt, sz_trace);
-			(*ptb->ptk->pf_track_error)(ptb->ptk->param, sz_trace, _T("xtimers_dispatch"));
-		}
+		format_datetime(&dt, sz_trace);
+		(*ptb->ptk->pf_track_error)(ptb->ptk->param, sz_trace, _T("xtimers_dispatch"));
 	}
 
 	lib = load_library(sz_proc);
@@ -350,15 +352,6 @@ void xtimers_dispatch(xtimers_param_t* pts)
 	free_library(lib);
 	lib = NULL;
 
-	if (xf)
-	{
-		xmem_free(ptb->ptk);
-		ptb->ptk = NULL;
-
-		xfile_close(xf);
-		xf = NULL;
-	}
-
 	xmem_free(ptb);
 	ptb = NULL;
 
@@ -377,15 +370,10 @@ ONERROR:
 		if (ptb->ptk)
 		{
 			(*ptb->ptk->pf_track_error)(ptb->ptk->param, sz_code, sz_error);
-
-			xmem_free(ptb->ptk);
 		}
 
 		xmem_free(ptb);
 	}
-
-	if (xf)
-		xfile_close(xf);
 
 	return;
 }

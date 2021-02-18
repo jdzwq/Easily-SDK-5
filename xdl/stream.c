@@ -35,8 +35,8 @@ LICENSE.GPL3 for more details.
 #include "xdlstd.h"
 #include "xdlnet.h"
 
-typedef struct _radstm_t{
-	stream_head head;
+typedef struct _stream_context{
+	handle_head head;
 
 	int encode;
 	int mode;
@@ -49,12 +49,12 @@ typedef struct _radstm_t{
 	bool_t write_bomed;
 	bool_t read_bomed;
 
-	const if_bio_t* pif;
-}radstm_t;
+	const bio_interface* pif;
+}stream_context;
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-bool_t _stream_write_chunk_head(radstm_t* pxt, dword_t dw)
+bool_t _stream_write_chunk_head(stream_context* pxt, dword_t dw)
 {
 	byte_t bsize[INT_LEN + 1] = { 0 };
 	dword_t len, bys;
@@ -74,7 +74,7 @@ bool_t _stream_write_chunk_head(radstm_t* pxt, dword_t dw)
     return (bys == len)? 1 : 0;
 }
 
-bool_t _stream_write_chunk_tail(radstm_t* pxt)
+bool_t _stream_write_chunk_tail(stream_context* pxt)
 {
 	byte_t bsize[3] = { 0 };
 	dword_t bys;
@@ -91,7 +91,7 @@ bool_t _stream_write_chunk_tail(radstm_t* pxt)
     return (bys == 2)? 1 : 0;
 }
 
-void _stream_begin_write(radstm_t* pxt, dword_t* pd)
+void _stream_begin_write(stream_context* pxt, dword_t* pd)
 {
 	dword_t dw = 0;
 
@@ -114,7 +114,7 @@ void _stream_begin_write(radstm_t* pxt, dword_t* pd)
 	}
 }
 
-void _stream_end_write(radstm_t* pxt, dword_t dw)
+void _stream_end_write(stream_context* pxt, dword_t dw)
 {
 	if (pxt->opera_limit || pxt->mode == LINE_OPERA)
 	{
@@ -135,7 +135,7 @@ void _stream_end_write(radstm_t* pxt, dword_t dw)
 	}
 }
 
-bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
+bool_t _stream_write(stream_context* pxt, byte_t* buf, dword_t* pb)
 {
 	dword_t size, dw, pos = 0;
 
@@ -171,7 +171,7 @@ bool_t _stream_write(radstm_t* pxt, byte_t* buf, dword_t* pb)
 	return (size == pos) ? 1 : 0;
 }
 
-bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
+bool_t _stream_read_chunk_head(stream_context* pxt, dword_t* pb)
 {
 	byte_t bsize[INT_LEN + 1] = { 0 };
 	dword_t bys, pos = 0;
@@ -212,7 +212,7 @@ bool_t _stream_read_chunk_head(radstm_t* pxt, dword_t* pb)
 	return b_rt;
 }
 
-bool_t _stream_read_chunk_tail(radstm_t* pxt)
+bool_t _stream_read_chunk_tail(stream_context* pxt)
 {
 	byte_t bsize[3] = { 0 };
 	dword_t bys, pos = 0;
@@ -241,7 +241,7 @@ bool_t _stream_read_chunk_tail(radstm_t* pxt)
 	return b_rt;
 }
 
-void _stream_begin_read(radstm_t* pxt, dword_t* pd)
+void _stream_begin_read(stream_context* pxt, dword_t* pd)
 {
 	dword_t dw = 0;
 
@@ -263,7 +263,7 @@ void _stream_begin_read(radstm_t* pxt, dword_t* pd)
 	}
 }
 
-void _stream_end_read(radstm_t* pxt, dword_t dw)
+void _stream_end_read(stream_context* pxt, dword_t dw)
 {
 	if (pxt->opera_limit || pxt->mode == LINE_OPERA)
 	{
@@ -284,7 +284,7 @@ void _stream_end_read(radstm_t* pxt, dword_t dw)
 	}
 }
 
-bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
+bool_t _stream_read(stream_context* pxt, byte_t* buf, dword_t* pb)
 {
 	dword_t size, dw, pos = 0;
 
@@ -324,11 +324,11 @@ bool_t _stream_read(radstm_t* pxt, byte_t* buf, dword_t* pb)
 }
 
 /************************************************************************************/
-stream_t stream_alloc(const if_bio_t* pif)
+stream_t stream_alloc(const bio_interface* pif)
 {
-	radstm_t* pxt;
+	stream_context* pxt;
 
-	pxt = (radstm_t*)xmem_alloc(sizeof(radstm_t));
+	pxt = (stream_context*)xmem_alloc(sizeof(stream_context));
 
 	pxt->mode = 0;
 
@@ -347,7 +347,7 @@ stream_t stream_alloc(const if_bio_t* pif)
 
 bool_t stream_flush(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	if (pxt->pif->fd && pxt->pif->pf_flush)
 		return (*pxt->pif->pf_flush)(pxt->pif->fd);
@@ -355,22 +355,18 @@ bool_t stream_flush(stream_t xs)
 		return (pxt->pif->fd)? 1 : 0;
 }
 
-xhand_t stream_free(stream_t xs)
+void stream_free(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
-	xhand_t io;
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
-	io = pxt->pif->fd;
-
 	xmem_free(pxt);
-	return io;
 }
 
-xhand_t stream_fetch(stream_t xs)
+xhand_t stream_handle(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -379,7 +375,7 @@ xhand_t stream_fetch(stream_t xs)
 
 void stream_set_encode(stream_t xs, int encode)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -388,7 +384,7 @@ void stream_set_encode(stream_t xs, int encode)
 
 int stream_get_encode(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -397,7 +393,7 @@ int stream_get_encode(stream_t xs)
 
 void stream_set_mode(stream_t xs, int mode)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -406,7 +402,7 @@ void stream_set_mode(stream_t xs, int mode)
 
 int stream_get_mode(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -415,7 +411,7 @@ int stream_get_mode(stream_t xs)
 
 void stream_set_size(stream_t xs, dword_t dw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -427,7 +423,7 @@ void stream_set_size(stream_t xs, dword_t dw)
 
 dword_t stream_get_size(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -436,7 +432,7 @@ dword_t stream_get_size(stream_t xs)
 
 void stream_opera_reset(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -451,7 +447,7 @@ void stream_opera_reset(stream_t xs)
 
 bool_t stream_write_char(stream_t xs, const tchar_t* buf, dword_t* pch)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	byte_t ba[4] = { 0 };
 	dword_t bs;
@@ -557,7 +553,7 @@ bool_t	stream_write(stream_t xs,const tchar_t* buf,int len,dword_t* pch)
 
 bool_t stream_read_char(stream_t xs, tchar_t* buf, dword_t* pb)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	byte_t ba[4] = { 0 };
 	dword_t bs;
@@ -828,7 +824,7 @@ bool_t stream_read_escape(stream_t xs, tchar_t* buf, dword_t* pb)
 
 bool_t stream_write_sword_lit(stream_t xs, sword_t sw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t dw;
 
 	XDL_ASSERT(xs);
@@ -844,7 +840,7 @@ bool_t stream_write_sword_lit(stream_t xs, sword_t sw)
 
 bool_t stream_write_sword_big(stream_t xs, sword_t sw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t dw;
 	byte_t ba[2] = { 0 };
 
@@ -863,7 +859,7 @@ bool_t stream_write_sword_big(stream_t xs, sword_t sw)
 
 bool_t stream_read_sword_lit(stream_t xs, sword_t* psw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t dw;
 
 	XDL_ASSERT(xs);
@@ -880,7 +876,7 @@ bool_t stream_read_sword_lit(stream_t xs, sword_t* psw)
 
 bool_t stream_read_sword_big(stream_t xs, sword_t* psw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t dw;
 	byte_t ba[2] = { 0 };
 
@@ -899,7 +895,7 @@ bool_t stream_read_sword_big(stream_t xs, sword_t* psw)
 
 bool_t stream_write_dword_lit(stream_t xs, dword_t dw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t n;
 
 	XDL_ASSERT(xs);
@@ -915,7 +911,7 @@ bool_t stream_write_dword_lit(stream_t xs, dword_t dw)
 
 bool_t stream_write_dword_big(stream_t xs, dword_t dw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t n;
 	byte_t ba[4] = { 0 };
 
@@ -934,7 +930,7 @@ bool_t stream_write_dword_big(stream_t xs, dword_t dw)
 
 bool_t stream_read_dword_lit(stream_t xs, dword_t* pdw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t n;
 
 	XDL_ASSERT(xs);
@@ -950,7 +946,7 @@ bool_t stream_read_dword_lit(stream_t xs, dword_t* pdw)
 
 bool_t stream_read_dword_big(stream_t xs, dword_t* pdw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 	dword_t n;
 	byte_t ba[4] = { 0 };
 
@@ -969,7 +965,7 @@ bool_t stream_read_dword_big(stream_t xs, dword_t* pdw)
 
 bool_t stream_read_chunk_size(stream_t xs, dword_t* pb)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -1007,7 +1003,7 @@ bool_t stream_read_chunk_size(stream_t xs, dword_t* pb)
 
 bool_t stream_write_chunk_size(stream_t xs, dword_t dw)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -1037,7 +1033,7 @@ bool_t stream_write_chunk_size(stream_t xs, dword_t dw)
 
 bool_t stream_write_utfbom(stream_t xs, dword_t* pb)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	byte_t ba[4] = { 0 };
 	dword_t len = 0;
@@ -1070,7 +1066,7 @@ bool_t stream_write_utfbom(stream_t xs, dword_t* pb)
 
 bool_t stream_read_utfbom(stream_t xs, dword_t* pb)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	byte_t ba[4] = { 0 };
 	dword_t len = 0;
@@ -1124,7 +1120,7 @@ bool_t stream_read_utfbom(stream_t xs, dword_t* pb)
 
 bool_t stream_write_bytes(stream_t xs, const byte_t* buf, dword_t len)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -1140,7 +1136,7 @@ bool_t stream_write_bytes(stream_t xs, const byte_t* buf, dword_t len)
 
 bool_t stream_read_bytes(stream_t xs, byte_t* buf, dword_t *pb)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	XDL_ASSERT(xs);
 
@@ -1156,7 +1152,7 @@ bool_t stream_read_bytes(stream_t xs, byte_t* buf, dword_t *pb)
 
 void stream_read_line_end(stream_t xs)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	if (pxt->mode != LINE_OPERA)
 		return;
@@ -1268,7 +1264,7 @@ bool_t stream_read_line(stream_t xs, string_t vs, dword_t* pb)
 
 bool_t stream_write_line_end(stream_t xs, dword_t* pb)
 {
-	radstm_t* pxt = TypePtrFromHead(radstm_t, xs);
+	stream_context* pxt = TypePtrFromHead(stream_context, xs);
 
 	byte_t ba[4] = { 0 };
 	dword_t len = 0;

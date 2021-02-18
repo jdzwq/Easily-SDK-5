@@ -598,7 +598,7 @@ int calc_grid_hint(const xpoint_t* ppt, link_t_ptr ptr, int page, link_t_ptr* pr
 	return hint;
 }
 
-void draw_grid_page(const if_drawing_t* pif, link_t_ptr ptr, int page)
+void draw_grid_page(const drawing_interface* pif, link_t_ptr ptr, int page)
 {
 	link_t_ptr clk, rlk;
 	link_t_ptr rlk_first, rlk_last;

@@ -184,7 +184,7 @@ void _string_clean_head_tail(string_t vs)
 }
 
 //解析XML文本
-bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
+bool_t parse_xml(xml_write_interface* pxp, int encode, opera_interface* pbo)
 {
 	MATA ma = { 0 };
 	int pos;
@@ -210,7 +210,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 
 	if (pxp->pf_write_begin)
 	{
-		(*pxp->pf_write_begin)(pxp->obj);
+		(*pxp->pf_write_begin)(pxp->ctx);
 	}
 
 	ret = 1;
@@ -222,7 +222,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 	ma.esc = 1;
 	ma.bytes = 0;
 	ma.enc = (encode)? encode : _UTF8;
-	ma.eof = (*pbo->pf_with_eof)(pbo->obj);
+	ma.eof = (*pbo->pf_with_eof)(pbo->ctx);
 
 	pos = 0;
 	while(ma.ma != STOP)
@@ -245,7 +245,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 		}
 
 		//是否支持转义
-		if (!(*pbo->pf_can_escape)(pbo->obj))
+		if (!(*pbo->pf_can_escape)(pbo->ctx))
 		{
 			ma.esc = 0;
 		}
@@ -258,7 +258,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			xmem_zero((void*)ma.cur, sizeof(ma.cur));
 
 			//读取下一字符
-			pos = (*pbo->pf_read_char)(pbo->obj, pbo->max, ma.bytes, ma.enc, ma.cur);
+			pos = (*pbo->pf_read_char)(pbo->ctx, pbo->max, ma.bytes, ma.enc, ma.cur);
 			if (pos <= 0)
 			{
 				ma.cur[0] = _T('\0');
@@ -275,7 +275,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			//处理转义字符
 			if (ma.esc && ma.cur[0] == CH_ESC)
 			{
-				nesc = (*pbo->pf_read_escape)(pbo->obj, pbo->max, ma.bytes + pos, ma.enc, ma.org);
+				nesc = (*pbo->pf_read_escape)(pbo->ctx, pbo->max, ma.bytes + pos, ma.enc, ma.org);
 				if (nesc)
 				{
 					ma.bytes += pos;
@@ -298,7 +298,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			{
 				//读取下一字符
 				ma.bytes += pos;
-				pos = (*pbo->pf_read_char)(pbo->obj, pbo->max, ma.bytes, ma.enc, ma.cur);
+				pos = (*pbo->pf_read_char)(pbo->ctx, pbo->max, ma.bytes, ma.enc, ma.cur);
 				if (pos <= 0)
 				{
 					pos = 0;
@@ -596,7 +596,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 					{
 						if (pxp->pf_head_write_attr)
 						{
-							ret = (*pxp->pf_head_write_attr)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
+							ret = (*pxp->pf_head_write_attr)(pxp->ctx, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 						}
 
 						if (xsicmp(CHARSET_UTF8, string_ptr(vs_val)) == 0)
@@ -604,7 +604,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 							ma.enc = _UTF8;
 							if (pbo->pf_set_encode)
 							{
-								(*pbo->pf_set_encode)(pbo->obj, ma.enc);
+								(*pbo->pf_set_encode)(pbo->ctx, ma.enc);
 							}
 						}
 						else if (xsicmp(CHARSET_GB2312, string_ptr(vs_val)) == 0)
@@ -612,7 +612,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 							ma.enc = _GB2312;
 							if (pbo->pf_set_encode)
 							{
-								(*pbo->pf_set_encode)(pbo->obj, ma.enc);
+								(*pbo->pf_set_encode)(pbo->ctx, ma.enc);
 							}
 						}
 					}
@@ -620,7 +620,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 					{
 						if (pxp->pf_head_write_attr)
 						{
-							ret = (*pxp->pf_head_write_attr)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
+							ret = (*pxp->pf_head_write_attr)(pxp->ctx, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 						}
 					}
 				}
@@ -658,14 +658,14 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 				{
 					if (pxp->pf_node_write_name)
 					{
-						ret = (*pxp->pf_node_write_name)(pxp->obj, nsstr + nsat, nslen, nsstr + vsat, vslen);
+						ret = (*pxp->pf_node_write_name)(pxp->ctx, nsstr + nsat, nslen, nsstr + vsat, vslen);
 					}
 				}
 				else
 				{
 					if (pxp->pf_node_write_name)
 					{
-						ret = (*pxp->pf_node_write_name)(pxp->obj, NULL, 0, string_ptr(vs_name), string_len(vs_name));
+						ret = (*pxp->pf_node_write_name)(pxp->ctx, NULL, 0, string_ptr(vs_name), string_len(vs_name));
 					}
 				}
 				break;
@@ -710,14 +710,14 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 				{
 					if (pxp->pf_node_write_xmlns)
 					{
-						ret = (*pxp->pf_node_write_xmlns)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
+						ret = (*pxp->pf_node_write_xmlns)(pxp->ctx, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 					}
 				}
 				else
 				{
 					if (pxp->pf_node_write_attr)
 					{
-						ret = (*pxp->pf_node_write_attr)(pxp->obj, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
+						ret = (*pxp->pf_node_write_attr)(pxp->ctx, string_ptr(vs_key), string_len(vs_key), string_ptr(vs_val), string_len(vs_val));
 					}
 				}
 				break;
@@ -742,7 +742,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			case PAUSE:
 				if (pxp->pf_node_write_text)
 				{
-					ret = (*pxp->pf_node_write_text)(pxp->obj, 0, string_ptr(vs_text), string_len(vs_text));
+					ret = (*pxp->pf_node_write_text)(pxp->ctx, 0, string_ptr(vs_text), string_len(vs_text));
 				}
 				break;
 			case NEXT:
@@ -777,14 +777,14 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch (ma.ma)
 			{
 			case PAUSE:
-				if (!(*pxp->pf_has_node)(pxp->obj))
+				if (!(*pxp->pf_has_node)(pxp->ctx))
 					break;
 
 				string_del_chars(vs_text, string_len(vs_text)-1, 1);
 
 				if (pxp->pf_node_write_text)
 				{
-					ret = (*pxp->pf_node_write_text)(pxp->obj, 1, string_ptr(vs_text), string_len(vs_text));
+					ret = (*pxp->pf_node_write_text)(pxp->ctx, 1, string_ptr(vs_text), string_len(vs_text));
 				}
 				break;
 			case NEXT:
@@ -805,7 +805,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			switch(ma.ma)
 			{
 			case PAUSE:
-				if (!(*pxp->pf_has_node)(pxp->obj))
+				if (!(*pxp->pf_has_node)(pxp->ctx))
 				{
 					ma.ms = NIL_FAILED;
 				}
@@ -822,7 +822,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 		{
 			if (pxp->pf_node_write_begin)
 			{
-				ret = (*pxp->pf_node_write_begin)(pxp->obj);
+				ret = (*pxp->pf_node_write_begin)(pxp->ctx);
 			}
 
 			ma.sa = NOP;
@@ -830,7 +830,7 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 		{
 			if (pxp->pf_node_write_end)
 			{
-				ret = (*pxp->pf_node_write_end)(pxp->obj);
+				ret = (*pxp->pf_node_write_end)(pxp->ctx);
 			}
 
 			if (!ret)
@@ -858,14 +858,14 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 			break;
 	}
 
-	if (ma.ms == NIL_SUCCEED && (*pxp->pf_has_node)(pxp->obj))
+	if (ma.ms == NIL_SUCCEED && (*pxp->pf_has_node)(pxp->ctx))
 	{
 		ma.ms = NIL_FAILED;
 	}
 
 	if (pxp->pf_write_end)
 	{
-		(*pxp->pf_write_end)(pxp->obj, ma.ms);
+		(*pxp->pf_write_end)(pxp->ctx, ma.ms);
 	}
 
 	string_free(vs_name);
@@ -886,15 +886,15 @@ bool_t parse_xml(xml_writer_t* pxp, int encode, if_operator_t* pbo)
 
 /***************************************************************************************************************/
 
-bool_t parse_xml_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
+bool_t parse_xml_doc_from_object(link_t_ptr ptr, opera_interface* pbo)
 {
-	xml_writer_t xp = { 0 };
-	XMLOBJECT xo = { 0 };
+	xml_write_interface xp = { 0 };
+	xml_opera_context xo = { 0 };
 
 	clear_xml_doc(ptr);
 	xo.doc = ptr;
 
-	xp.obj = (void*)&xo;
+	xp.ctx = (void*)&xo;
 	xp.pf_write_begin = call_write_xml_begin;
 	xp.pf_write_end = call_write_xml_end;
 	xp.pf_head_write_attr = call_write_xml_head_attr;
@@ -909,15 +909,15 @@ bool_t parse_xml_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 	return parse_xml(&xp, pbo->encode, pbo);
 }
 
-bool_t parse_dom_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
+bool_t parse_dom_doc_from_object(link_t_ptr ptr, opera_interface* pbo)
 {
-	xml_writer_t xp = { 0 };
-	XMLOBJECT xo = { 0 };
+	xml_write_interface xp = { 0 };
+	xml_opera_context xo = { 0 };
 
 	delete_dom_child_nodes(ptr);
 	xo.doc = ptr;
 
-	xp.obj = (void*)&xo;
+	xp.ctx = (void*)&xo;
 	xp.pf_write_begin = call_write_xml_begin;
 	xp.pf_write_end = call_write_xml_end;
 	xp.pf_node_write_attr = call_write_xml_node_attr;
@@ -933,7 +933,7 @@ bool_t parse_dom_doc_from_object(link_t_ptr ptr, if_operator_t* pbo)
 
 /***************************************************************************************************************************/
 
-void format_xml(xml_reader_t* pxp, if_operator_t* pbo)
+void format_xml(xml_read_interface* pxp, opera_interface* pbo)
 {
 	link_t_ptr doc, nlk;
 	link_t_ptr st, slk;
@@ -948,7 +948,7 @@ void format_xml(xml_reader_t* pxp, if_operator_t* pbo)
 
 	tchar_t encoding[RES_LEN + 1], version[RES_LEN + 1];
 
-	doc = ((XMLOBJECT*)pxp->obj)->doc;
+	doc = ((xml_opera_context*)pxp->ctx)->doc;
 
 	if (IS_XML_DOC(doc))
 	{
@@ -1092,13 +1092,13 @@ void format_xml(xml_reader_t* pxp, if_operator_t* pbo)
 		destroy_stack_table(stk);
 }
 
-bool_t format_dom_doc_to_object(link_t_ptr dom, if_operator_t* pbo)
+bool_t format_dom_doc_to_object(link_t_ptr dom, opera_interface* pbo)
 {
-	xml_reader_t xr = { 0 };
-	XMLOBJECT xo = { 0 };
+	xml_read_interface xr = { 0 };
+	xml_opera_context xo = { 0 };
 
 	xo.doc = dom;
-	xr.obj = (void*)&xo;
+	xr.ctx = (void*)&xo;
 
 	xr.pf_node_read_begin = call_read_xml_node_begin;
 	xr.pf_node_read_close = call_read_xml_node_close;
@@ -1112,13 +1112,13 @@ bool_t format_dom_doc_to_object(link_t_ptr dom, if_operator_t* pbo)
 	return (pbo->pos < 0) ? 0 : 1;
 }
 
-bool_t format_xml_doc_to_object(link_t_ptr dom, if_operator_t* pbo)
+bool_t format_xml_doc_to_object(link_t_ptr dom, opera_interface* pbo)
 {
-	xml_reader_t xr = { 0 };
-	XMLOBJECT xo = { 0 };
+	xml_read_interface xr = { 0 };
+	xml_opera_context xo = { 0 };
 
 	xo.doc = dom;
-	xr.obj = (void*)&xo;
+	xr.ctx = (void*)&xo;
 
 	xr.pf_head_read_begin = call_read_xml_head_begin;
 	xr.pf_head_read_attr = call_read_xml_head_attr;

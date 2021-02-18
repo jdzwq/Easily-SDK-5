@@ -40,7 +40,7 @@ LICENSE.GPL3 for more details.
 #if defined(XDL_SUPPORT_GDI)
 
 typedef struct _svg_canvas_t{
-	canvas_head head;
+	handle_head head;
 
 	visual_t view;
 }svg_canvas_t;
@@ -291,7 +291,7 @@ void svg_span_pt_to_tm(canvas_t canv, xspan_t* ppn)
 }
 
 typedef struct _svg_visual_t{
-	visual_head head;
+	handle_head head;
 
 	link_t_ptr g;
 }svg_visual_t;
@@ -305,7 +305,7 @@ visual_t create_svg_visual(link_t_ptr g)
 	pview = (svg_visual_t*)xmem_alloc(sizeof(svg_visual_t));
 
 	pview->g = g;
-	pview->head.tag = _VIEWING_SCRIPT;
+	pview->head.tag = _VISUAL_SCRIPT;
 
 	svg = svg_doc_from_node(g);
 	get_svg_viewbox(svg, &vb);
@@ -317,7 +317,7 @@ void destroy_svg_visual(visual_t view)
 {
 	svg_visual_t* pview = TypePtrFromHead(svg_visual_t, view);
 
-	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+	XDL_ASSERT(view && view->tag == _VISUAL_SCRIPT);
 
 	xmem_free(pview);
 }
@@ -326,7 +326,7 @@ link_t_ptr svg_get_visual_doc(visual_t view)
 {
 	svg_visual_t* pview = TypePtrFromHead(svg_visual_t, view);
 
-	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+	XDL_ASSERT(view && view->tag == _VISUAL_SCRIPT);
 
 	return pview->g;
 }
@@ -338,7 +338,7 @@ float svg_pt_to_tm_raw(visual_t view, int pt, bool_t horz)
 	xrect_t vb;
 	float htpermm, vtpermm;
 
-	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+	XDL_ASSERT(view && view->tag == _VISUAL_SCRIPT);
 
 	get_svg_viewbox(pview->g, &vb);
 
@@ -363,7 +363,7 @@ int svg_tm_to_pt_raw(visual_t view, float tm, bool_t horz)
 	xrect_t vb;
 	float htpermm, vtpermm;
 
-	XDL_ASSERT(view && view->tag == _VIEWING_SCRIPT);
+	XDL_ASSERT(view && view->tag == _VISUAL_SCRIPT);
 
 	get_svg_viewbox(pview->g, &vb);
 

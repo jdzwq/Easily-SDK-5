@@ -526,18 +526,18 @@ EXP_API void set_plot_matrix_data(link_t_ptr ptr, const tchar_t* data, int len);
 /*
 @FUNCTION get_plot_matrix: get plot matrix string arrax.
 @INPUT link_t_ptr ptr: the plot link component.
-@OUTPUT matrix_t* pm: the matrix struct.
+@OUTPUT matrix_t mt: the matrix struct.
 @RETURN void: none.
 */
-EXP_API void get_plot_matrix(link_t_ptr ptr, matrix_t* pm);
+EXP_API void get_plot_matrix(link_t_ptr ptr, matrix_t mt);
 
 /*
 @FUNCTION set_plot_matrix: set plot matrix string arrax.
 @INPUT link_t_ptr ptr: the plot link component.
-@INPUT const matrix_t* pm: the matrix struct.
+@INPUT const matrix_t mt: the matrix struct.
 @RETURN void: none.
 */
-EXP_API void set_plot_matrix(link_t_ptr ptr, matrix_t* pm);
+EXP_API void set_plot_matrix(link_t_ptr ptr, matrix_t mt);
 
 #ifdef	__cplusplus
 }

@@ -29,7 +29,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 LICENSE.GPL3 for more details.
 ***********************************************************************/
 
-#include "impinet.h"
+#include "impnetf.h"
 #include "impmem.h"
 #include "impassert.h"
 #include "imperr.h"
@@ -42,47 +42,47 @@ LICENSE.GPL3 for more details.
 
 #if defined(XDK_SUPPORT_SOCK)
 
-typedef struct _xinet_t{
-	xhand_head head;		//reserved for xhand_t
+typedef struct _netf_context{
+	handle_head head;		//reserved for xhand_t
 	
 	byte_t proto;
 	int fmode, fsince;
 	tchar_t path[PATH_LEN + 1];
 	tchar_t ftime[DATE_LEN + 1];
 	secu_desc_t fsecu;
-}xinet_t;
+}netf_context;
 
 /*************************************************************************************************/
-static void _xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
+static void _xnetf_set_filetime(xhand_t inet, const tchar_t* ftime)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	xsncpy(pfn->ftime, ftime, DATE_LEN);
 }
 
-static void _xinet_get_filetime(xhand_t inet, tchar_t* ftime)
+static void _xnetf_get_filetime(xhand_t inet, tchar_t* ftime)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	xsncpy(ftime, pfn->ftime, DATE_LEN);
 }
 
-static void _xinet_set_filesince(xhand_t inet, int since)
+static void _xnetf_set_filesince(xhand_t inet, int since)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	pfn->fsince = since;
 }
 
-static void _xinet_get_filesince(xhand_t inet, int* psince)
+static void _xnetf_get_filesince(xhand_t inet, int* psince)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -185,7 +185,7 @@ static void _parse_fileinfo_from_line(file_info_t* pfi, string_t vs)
 	}
 }
 
-static bool_t _http_read_file(xinet_t* pfn, byte_t* buf, dword_t* pb, const tchar_t* range)
+static bool_t _http_read_file(netf_context* pfn, byte_t* buf, dword_t* pb, const tchar_t* range)
 {
 	tchar_t code[NUM_LEN + 1] = { 0 };
 	tchar_t text[ERR_LEN + 1] = { 0 };
@@ -355,7 +355,7 @@ static bool_t _http_read_file(xinet_t* pfn, byte_t* buf, dword_t* pb, const tcha
 	return 1;
 }
 
-static bool_t _http_write_file(xinet_t* pfn, const byte_t* buf, dword_t* pb, const tchar_t* range)
+static bool_t _http_write_file(netf_context* pfn, const byte_t* buf, dword_t* pb, const tchar_t* range)
 {
 	tchar_t code[NUM_LEN + 1] = { 0 };
 	tchar_t text[ERR_LEN + 1] = { 0 };
@@ -494,12 +494,12 @@ static bool_t _http_write_file(xinet_t* pfn, const byte_t* buf, dword_t* pb, con
 
 static xhand_t http_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
 {
-	xinet_t* pfn;
+	netf_context* pfn;
 
 	if (is_null(fname))
 		return NULL;
 
-	pfn = (xinet_t*)xmem_alloc(sizeof(xinet_t));
+	pfn = (netf_context*)xmem_alloc(sizeof(netf_context));
 	pfn->head.tag = _HANDLE_INET;
 	pfn->proto = _PROTO_HTTP;
 
@@ -516,7 +516,7 @@ static xhand_t http_open_file(const secu_desc_t* psd, const tchar_t* fname, dwor
 
 static void http_close_file(xhand_t inet)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -525,7 +525,7 @@ static void http_close_file(xhand_t inet)
 
 static bool_t http_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -534,7 +534,7 @@ static bool_t http_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 
 static bool_t http_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -543,7 +543,7 @@ static bool_t http_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 
 static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	tchar_t sz_range[RES_LEN + 1] = { 0 };
 	tchar_t sz_from[NUM_LEN + 1] = { 0 };
@@ -566,7 +566,7 @@ static bool_t http_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byt
 
 static bool_t http_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	tchar_t sz_range[RES_LEN + 1] = { 0 };
 	tchar_t sz_from[NUM_LEN + 1] = { 0 };
@@ -800,12 +800,12 @@ static bool_t http_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 
 static xhand_t tftp_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
 {
-	xinet_t* pfn;
+	netf_context* pfn;
 
 	if (is_null(fname))
 		return NULL;
 
-	pfn = (xinet_t*)xmem_alloc(sizeof(xinet_t));
+	pfn = (netf_context*)xmem_alloc(sizeof(netf_context));
 	pfn->head.tag = _HANDLE_INET;
 
 	pfn->proto = _PROTO_TFTP;
@@ -822,7 +822,7 @@ static xhand_t tftp_open_file(const secu_desc_t* psd, const tchar_t* fname, dwor
 
 static bool_t tftp_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 	xhand_t xh;
 	bool_t rt = 0;
 	dword_t bys, size, pos = 0;
@@ -861,7 +861,7 @@ static bool_t tftp_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 
 static bool_t tftp_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 	xhand_t xh;
 	bool_t rt;
 	dword_t bys, size, pos = 0;
@@ -896,7 +896,7 @@ static bool_t tftp_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 
 static void tftp_close_file(xhand_t inet)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -959,7 +959,7 @@ static bool_t tftp_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar
 
 /*************************************************************************************************/
 
-xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
+xhand_t xnetf_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mode)
 {
 	byte_t proto;
 
@@ -973,9 +973,9 @@ xhand_t xinet_open_file(const secu_desc_t* psd, const tchar_t* fname, dword_t mo
 		return NULL;
 }
 
-void xinet_close_file(xhand_t inet)
+void xnetf_close_file(xhand_t inet)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -985,9 +985,9 @@ void xinet_close_file(xhand_t inet)
 		tftp_close_file(inet);
 }
 
-bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
+bool_t xnetf_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -999,9 +999,9 @@ bool_t xinet_read_file(xhand_t inet, byte_t* buf, dword_t* pb)
 		return 0;
 }
 
-bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
+bool_t xnetf_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1013,9 +1013,9 @@ bool_t xinet_write_file(xhand_t inet, const byte_t* buf, dword_t* pb)
 		return 0;
 }
 
-bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
+bool_t xnetf_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1025,9 +1025,9 @@ bool_t xinet_read_file_range(xhand_t inet, dword_t hoff, dword_t loff, byte_t* b
 		return 0;
 }
 
-bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
+bool_t xnetf_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
@@ -1037,47 +1037,47 @@ bool_t xinet_write_file_range(xhand_t inet, dword_t hoff, dword_t loff, const by
 		return 0;
 }
 
-void xinet_set_filetime(xhand_t inet, const tchar_t* ftime)
+void xnetf_set_filetime(xhand_t inet, const tchar_t* ftime)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	if (pfn->proto == _PROTO_HTTP)
-		_xinet_set_filetime(inet, ftime);
+		_xnetf_set_filetime(inet, ftime);
 }
 
-void xinet_get_filetime(xhand_t inet, tchar_t* ftime)
+void xnetf_get_filetime(xhand_t inet, tchar_t* ftime)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	if (pfn->proto == _PROTO_HTTP)
-		_xinet_get_filetime(inet, ftime);
+		_xnetf_get_filetime(inet, ftime);
 }
 
-void xinet_set_filesince(xhand_t inet, int since)
+void xnetf_set_filesince(xhand_t inet, int since)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	if (pfn->proto == _PROTO_HTTP)
-		_xinet_set_filesince(inet, since);
+		_xnetf_set_filesince(inet, since);
 }
 
-void xinet_get_filesince(xhand_t inet, int* psince)
+void xnetf_get_filesince(xhand_t inet, int* psince)
 {
-	xinet_t* pfn = TypePtrFromHead(xinet_t, inet);
+	netf_context* pfn = TypePtrFromHead(netf_context, inet);
 
 	XDL_ASSERT(pfn && pfn->head.tag == _HANDLE_INET);
 
 	if (pfn->proto == _PROTO_HTTP)
-		_xinet_get_filesince(inet, psince);
+		_xnetf_get_filesince(inet, psince);
 }
 
-bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname)
+bool_t xnetf_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 {
 	byte_t proto;
 
@@ -1091,7 +1091,7 @@ bool_t xinet_delete_file(const secu_desc_t* psd, const tchar_t* fname)
 		return 0;
 }
 
-bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa)
+bool_t xnetf_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LISTFILE pf, void* pa)
 {
 	byte_t proto;
 
@@ -1105,7 +1105,7 @@ bool_t xinet_list_file(const secu_desc_t* psd, const tchar_t* path, CALLBACK_LIS
 		return 0;
 }
 
-bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode)
+bool_t xnetf_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ftime, tchar_t* fsize, tchar_t* fetag, tchar_t* fencode)
 {
 	byte_t proto;
 
@@ -1119,30 +1119,30 @@ bool_t xinet_file_info(const secu_desc_t* psd, const tchar_t* fname, tchar_t* ft
 		return 0;
 }
 
-bool_t xinet_setopt(xhand_t inet, int oid, void* opt, int len)
+bool_t xnetf_setopt(xhand_t inet, int oid, void* opt, int len)
 {
 	switch (oid)
 	{
 	case FILE_OPTION_SINCE:
-		xinet_set_filesince(inet, *(int*)(opt));
+		xnetf_set_filesince(inet, *(int*)(opt));
 		return 1;
 	case FILE_OPTION_TIME:
-		xinet_set_filetime(inet, (tchar_t*)opt);
+		xnetf_set_filetime(inet, (tchar_t*)opt);
 		return 1;
 	}
 
 	return 0;
 }
 
-bool_t xinet_getopt(xhand_t inet, int oid, void* opt, int len)
+bool_t xnetf_getopt(xhand_t inet, int oid, void* opt, int len)
 {
 	switch (oid)
 	{
 	case FILE_OPTION_SINCE:
-		xinet_get_filesince(inet, (int*)(opt));
+		xnetf_get_filesince(inet, (int*)(opt));
 		return 1;
 	case FILE_OPTION_TIME:
-		xinet_get_filetime(inet, (tchar_t*)opt);
+		xnetf_get_filetime(inet, (tchar_t*)opt);
 		return 1;
 	}
 

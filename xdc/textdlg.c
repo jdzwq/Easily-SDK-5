@@ -211,7 +211,7 @@ void hand_textdlg_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	xsize_t xs;
 
 	canvas_t canv;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_get_xfont(widget, &xf);
 	widget_get_xface(widget, &xa);

@@ -35,62 +35,95 @@ LICENSE.GPL3 for more details.
 
 #define VARSTR_INC	512
 
-typedef struct _redstr_t{
-	string_head head;
+typedef struct _string_context{
+	memobj_head head;
 
-	int size;
 	int count;
-	tchar_t* vbuf;
-}redstr_t;
+	int size;
+	void* data;
+}string_context;
+
+/*******************************************************************************************/
 
 string_t string_alloc()
 {
-	redstr_t* pvs;
+	string_context* pvs;
 
-	pvs = (redstr_t*)xmem_alloc(sizeof(redstr_t));
+	pvs = (string_context*)xmem_alloc(sizeof(string_context));
+	pvs->head.tag = MEM_STRING;
+	PUT_THREEBYTE_LOC(pvs->head.len, 0, (sizeof(string_context) - 4));
 
-	pvs->size = 0;
-	pvs->vbuf = NULL;
 	pvs->count = 0;
+	pvs->size = 0;
+	pvs->data = NULL;
 
-	return &pvs->head;
+	return (string_t)&(pvs->head);
 }
 
 void string_free(string_t vs)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	if (pvs->vbuf)
-		xmem_free(pvs->vbuf);
+	if (pvs->data)
+		xmem_free(pvs->data);
 
 	xmem_free(pvs);
 }
 
+void string_attach(string_t var, tchar_t* data)
+{
+	string_context* pvs = TypePtrFromHead(string_context, var);
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_STRING);
+
+	if (pvs->data)
+		xmem_free(pvs->data);
+
+	pvs->data = (void*)data;
+	pvs->count = xslen(data);
+	pvs->size = pvs->count + 1;
+}
+
+tchar_t* string_detach(string_t var)
+{
+	string_context* pvs = TypePtrFromHead(string_context, var);
+	void* d;
+
+	XDL_ASSERT(var != NULL && var->tag == MEM_STRING);
+
+	d = pvs->data;
+	pvs->data = NULL;
+	pvs->count = 0;
+	pvs->size = 0;
+
+	return (tchar_t*)d;
+}
+
 void string_incre(string_t vs,int len)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
-	int org_size;
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int s;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	org_size = pvs->size;
-	while(len + pvs->count + 1 > org_size)
-		org_size += VARSTR_INC;
+	s = pvs->size;
+	while(len + pvs->count + 1 > s)
+		s += VARSTR_INC;
 
-	if (org_size > pvs->size)
+	if (s > pvs->size)
 	{
-		pvs->size = org_size;
-		pvs->vbuf = (tchar_t*)xmem_realloc(pvs->vbuf, pvs->size * sizeof(tchar_t));
+		pvs->data = xmem_realloc(pvs->data, s * sizeof(tchar_t));
+		pvs->size = s;
 	}
 }
 
 tchar_t* string_ensure_buf(string_t vs, int len)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
 	pvs->count = 0;
 
@@ -98,60 +131,27 @@ tchar_t* string_ensure_buf(string_t vs, int len)
 
 	pvs->count = len;
 
-	return pvs->vbuf;
-}
-
-void string_attach_buf(string_t vs, tchar_t* buf, int size)
-{
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
-
-	int len;
-
-	XDL_ASSERT(vs);
-
-	if (pvs->vbuf)
-		xmem_free(pvs->vbuf);
-
-	len = xslen(buf);
-
-	if (size < 0)
-		size = (buf)? (len + 1) : 0;
-
-	pvs->vbuf = buf;
-	pvs->size = size;
-	pvs->count = len;
-}
-
-tchar_t* string_detach_buf(string_t vs)
-{
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
-
-	tchar_t* buf;
-
-	XDL_ASSERT(vs);
-
-	buf = pvs->vbuf;
-
-	pvs->vbuf = NULL;
-	pvs->size = 0;
-	pvs->count = 0;
-
-	return buf;
+	return (tchar_t*)pvs->data;
 }
 
 int string_resize(string_t vs, int len)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
 	if (len < 0)
 	{
-		while (pvs->count)
+		while (count)
 		{
-			if (pvs->vbuf[pvs->count - 1] == _T('\0'))
+			if (vbuf[count - 1] == _T('\0'))
 			{
-				pvs->count--;
+				count--;
 			}
 			else
 			{
@@ -161,141 +161,159 @@ int string_resize(string_t vs, int len)
 	}
 	else
 	{
-		if (pvs->count < len)
-			string_incre(vs, len - pvs->count);
-
-		while (pvs->count < len)
+		if (count < len)
 		{
-			pvs->vbuf[pvs->count] = _T(' ');
-			pvs->count++;
+			string_incre(vs, len - count);
+			vbuf = (tchar_t*)pvs->data;
 		}
 
-		if (pvs->vbuf)
+		while (count < len)
 		{
-			pvs->vbuf[len] = _T('\0');
+			vbuf[count] = _T(' ');
+			count++;
 		}
-		pvs->count = len;
+
+		if (vbuf)
+		{
+			vbuf[len] = _T('\0');
+		}
+		count = len;
 	}
 
-	return pvs->count;
+	pvs->count = count;
+
+	return count;
 }
 
 int	string_cat(string_t vs, const tchar_t* str, int len)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count, dlen;
+	tchar_t* vbuf;
 
-	int dlen;
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	XDL_ASSERT(vs);
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
 	if (is_null(str))
-		return pvs->count;
+		return count;
 
 	dlen = (len < 0) ? xslen(str) : len;
 
 	if (!dlen)
-		return pvs->count;
+		return count;
 
-	if (dlen + pvs->count + 1 > pvs->size)
+	if (dlen + count + 1 > pvs->size)
 	{
 		string_incre(vs, dlen);
+		vbuf = (tchar_t*)pvs->data;
 	}
 
-	if (pvs->vbuf)
+	if (vbuf)
 	{
-		xsncpy(pvs->vbuf + pvs->count, str, dlen);
+		xsncpy(vbuf + count, str, dlen);
 	}
 
-	pvs->count += dlen;
+	count += dlen;
+	pvs->count = count;
 
-	return pvs->count;
+	return count;
 }
 
 int	string_cpy(string_t vs, const tchar_t* str, int len)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count, dlen;
+	tchar_t* vbuf;
 
-	int dlen;
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	XDL_ASSERT(vs);
-
-	if (len < 0)
-		len = xslen(str);
-
-	if (!len)
-	{
-		string_empty(vs);
-		return pvs->count;
-	}
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
 	dlen = (len < 0) ? xslen(str) : len;
 
 	if (!dlen)
 	{
 		string_empty(vs);
-		return pvs->count;
+		return 0;
 	}
 
 	if (dlen + 1 > pvs->size)
 	{
 		string_incre(vs, dlen);
+		vbuf = (tchar_t*)pvs->data;
 	}
 
-	if (pvs->vbuf)
+	if (vbuf)
 	{
-		xsncpy(pvs->vbuf, str, dlen);
+		xsncpy(vbuf, str, dlen);
 	}
 
-	pvs->count = len;
+	count = dlen;
+	pvs->count = count;
 
-	return pvs->count;
+	return count;
 }
 
 tchar_t string_get_char(string_t vs, int pos)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	if (pos < 0 || pos >= pvs->count)
-		return 0;
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
-	return pvs->vbuf[pos];
+	XDL_ASSERT(pos >= 0 && pos < count);
+
+	return vbuf[pos];
 }
 
 bool_t string_set_char(string_t vs, int pos, tchar_t ch)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	if (pos < 0 || pos >= pvs->count)
-		return 0;
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
-	pvs->vbuf[pos] = ch;
+	XDL_ASSERT(pos >= 0 && pos < count);
+
+	vbuf[pos] = ch;
 
 	return 1;
 }
 
 int string_get_chars(string_t vs, int pos, tchar_t* pch, int n)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
+
+	XDL_ASSERT(pos >= 0 && pos < count);
 
 	if (pch)
 	{
 		xszero(pch, n + 1);
 	}
 
-	if (pos < 0 || pos >= pvs->count)
-		return 0;
-
-	n = (n < pvs->count - pos) ? n : (pvs->count - pos);
+	n = (n < count - pos) ? n : (count - pos);
 
 	if (pch)
 	{
-		xsncpy(pch, pvs->vbuf + pos, n);
+		xsncpy(pch, vbuf + pos, n);
 	}
 
 	return n;
@@ -303,197 +321,235 @@ int string_get_chars(string_t vs, int pos, tchar_t* pch, int n)
 
 void string_set_chars(string_t vs,int pos,const tchar_t* pch,int n)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
+
+	XDL_ASSERT(pos <= count);
 
 	if (pos < 0)
-		pos = pvs->count;
-
-	if (pos > pvs->count)
-		return;
+		pos = count;
 
 	if (n < 0)
 		n = xslen(pch);
 
 	if (pos + n + 1 > pvs->size)
+	{
 		string_incre(vs, pos + n - pvs->size);
+		vbuf = (tchar_t*)pvs->data;
+	}
 
-	xsnset(pvs->vbuf, pos, pch, n);
+	xsnset(vbuf, pos, pch, n);
 
-	pvs->count = (pvs->count > pos + n) ? pvs->count : (pos + n);
+	count = (count > pos + n) ? count : (pos + n);
+	pvs->count = count;
 }
 
 void string_ins_chars(string_t vs,int pos,const tchar_t* pch,int n)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
+
+	XDL_ASSERT(pos <= count);
 
 	if(pos < 0)
-		pos = pvs->count;
-
-	if (pos > pvs->count)
-		return;
+		pos = count;
 
 	if (n < 0)
 		n = xslen(pch);
 
-	if(pvs->count + n + 1 > pvs->size)
-		string_incre(vs,n);
+	if (count + n + 1 > pvs->size)
+	{
+		string_incre(vs, n);
+		vbuf = (tchar_t*)pvs->data;
+	}
 
 	if (n)
 	{
-		xsnins(pvs->vbuf, pos, pch, n);
-		pvs->count += n;
+		xsnins(vbuf, pos, pch, n);
+		count += n;
+		pvs->count = count;
 	}
 }
 
 void string_del_chars(string_t vs,int pos,int n)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	if (pos < 0 || pos >= pvs->count)
-		return;
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
-	xsndel(pvs->vbuf, pos, n);
+	XDL_ASSERT(pos >= 0 && pos < count);
+
+	xsndel(vbuf, pos, n);
 	
-	pvs->count = (pvs->count > pos + n) ? (pvs->count - n) : pos;
+	count = (count > pos + n) ? (count - n) : pos;
+	pvs->count = count;
 }
 
 const tchar_t* string_ptr(string_t vs)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	return pvs->vbuf;
+	return (tchar_t*)pvs->data;
 }
 
 int string_len(string_t vs)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
 	return pvs->count;
 }
 
 void string_empty(string_t vs)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
 	if (pvs->size > VARSTR_INC)
 	{
-		xmem_free(pvs->vbuf);
-
+		xmem_free(pvs->data);
 		pvs->size = 0;
-		pvs->vbuf = NULL;
-		pvs->count = 0;
 	}
 	else
 	{
-		xmem_zero((void*)pvs->vbuf, pvs->size * sizeof(tchar_t));
-		pvs->count = 0;
+		xmem_zero((void*)pvs->data, pvs->size * sizeof(tchar_t));
 	}
+
+	pvs->count = 0;
 }
 
 bool_t string_is_empty(string_t vs)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
-	if (!pvs->vbuf)
-		return 1;
-	else
-		return (pvs->count) ? 0 : 1;
+	return (pvs->count) ? 0 : 1;
 }
 
 int string_append(string_t vs, const tchar_t* fmt, ...)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
-
-	va_list arg;
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 	int len;
 
-	XDL_ASSERT(vs);
+	va_list arg;
+
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
 	va_start(arg, fmt);
 	len = xsprintf_arg(NULL, fmt, &arg);
 	va_end(arg);
 
 	if (!len)
-		return pvs->count;
+		return count;
 
-	if (pvs->count + len + 1 > pvs->size)
+	if (count + len + 1 > pvs->size)
+	{
 		string_incre(vs, len);
+		vbuf = (tchar_t*)pvs->data;
+	}
 
 	va_start(arg, fmt);
-	xsprintf_arg(pvs->vbuf + pvs->count, fmt, &arg);
+	xsprintf_arg(vbuf + count, fmt, &arg);
 	va_end(arg);
 
-	pvs->count += len;
+	count += len;
+	pvs->count = count;
 
-	return pvs->count;
+	return count;
 }
 
 int string_printf(string_t vs,const tchar_t* fmt,...)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int len, count;
+	tchar_t* vbuf;
 
 	va_list arg;
-	int len;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
 	string_empty(vs);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
 	va_start(arg,fmt);
 	len = xsprintf_arg(NULL,fmt,&arg);
 	va_end(arg);
 
 	if(!len)
-		return pvs->count;
+		return count;
 
-	if(pvs->count + len + 1 > pvs->size)
-		string_incre(vs,len);
+	if (count + len + 1 > pvs->size)
+	{
+		string_incre(vs, len);
+		vbuf = (tchar_t*)pvs->data;
+	}
 
 	va_start(arg,fmt);
-	xsprintf_arg(pvs->vbuf + pvs->count, fmt, &arg);
+	xsprintf_arg(vbuf + count, fmt, &arg);
 	va_end(arg);
 
-	pvs->count += len;
+	count += len;
+	pvs->count = count;
 
-	return pvs->count;
+	return count;
 }
 
 string_t string_clone(string_t vs)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
+	int count;
+	tchar_t* vbuf;
 
 	string_t pvs_new;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
+
+	count = pvs->count;
+	vbuf = (tchar_t*)pvs->data;
 
 	pvs_new = string_alloc();
-	string_cpy(pvs_new, pvs->vbuf, pvs->count);
+	string_cpy(pvs_new, vbuf, count);
 
 	return pvs_new;
 }
 
 dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
 	dword_t i;
 	const tchar_t* str;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
 	if (encode == _UTF8)
 	{
@@ -557,12 +613,12 @@ dword_t string_encode(string_t vs, int encode, byte_t* buf, dword_t max)
 
 int string_decode(string_t vs, int encode, const byte_t* buf, dword_t size)
 {
-	redstr_t* pvs = TypePtrFromHead(redstr_t, vs);
+	string_context* pvs = TypePtrFromHead(string_context, vs);
 
-	int i,len = 0;
+	int i, len = 0;
 	tchar_t* str = NULL;
 
-	XDL_ASSERT(vs);
+	XDL_ASSERT(vs != NULL && vs->tag == MEM_STRING);
 
 	if (encode == _UTF8)
 	{

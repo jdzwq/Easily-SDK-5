@@ -170,7 +170,7 @@ void hand_navibox_lbutton_down(res_win_t widget, const xpoint_t* pxp)
 void hand_navibox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 	xpoint_t pt;
 	int hint;
@@ -211,8 +211,8 @@ void hand_navibox_paint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 	visual_t rdc;
 	xrect_t xr;
 	canvas_t canv;
-	const if_drawing_t* pif = NULL;
-	if_drawing_t ifv = {0};
+	const drawing_interface* pif = NULL;
+	drawing_interface ifv = {0};
 
 	NAVISTATE ns = { 0 };
 	xfont_t xf;
@@ -290,7 +290,7 @@ void navibox_set_target(res_win_t widget, res_win_t target)
 void navibox_popup_size(res_win_t widget, xsize_t* pxs)
 {
 	navibox_delta_t* ptd = GETNAVIBOXDELTA(widget);
-	if_measure_t im = { 0 };
+	measure_interface im = { 0 };
 	xfont_t xf = { 0 };
 
 	XDL_ASSERT(ptd != NULL);

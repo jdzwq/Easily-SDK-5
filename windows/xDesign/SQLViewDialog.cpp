@@ -335,7 +335,7 @@ void SQLViewDlg_OnPaint(res_win_t widget, visual_t dc, const xrect_t* pxr)
 
 	canvas_t canv;
 	visual_t rdc;
-	if_drawing_t ifv = {0};
+	drawing_interface ifv = {0};
 
 	widget_get_xbrush(widget, &xb);
 

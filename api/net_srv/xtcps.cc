@@ -115,6 +115,8 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 	tchar_t sz_hmac[KEY_LEN + 1] = { 0 };
 	byte_t textbom[4] = { 0 };
 
+	trace_interface tra = { 0 };
+
 	TRY_CATCH;
 
 	get_envvar(XSERVICE_ROOT, sz_path, PATH_LEN);
@@ -167,17 +169,14 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 		raise_user_error(_T("_tcps_invoke"), _T("website load invoke function failed\n"));
 	}
 
-	pb->ptk = (if_track_t*)xmem_alloc(sizeof(if_track_t));
-	pb->ptk->param = (void*)pb;
-	pb->ptk->pf_track_error = (PF_TRACK_ERROR)_xtcps_track_error;
+	tra.param = (void*)pb;
+	tra.pf_track_error = (PF_TRACK_ERROR)_xtcps_track_error;
+	pb->ptk = &tra;
 
 	n_state = (*pf_invoke)(pb);
 
 	free_library(api);
 	api = NULL;
-
-	xmem_free(pb->ptk);
-	pb->ptk = NULL;
 
 	xmem_free(pb);
 	pb = NULL;
@@ -197,9 +196,6 @@ ONERROR:
 	if (pb)
 	{
 		_xtcps_track_error((void*)pb, errcode, errtext);
-
-		if (pb->ptk)
-			xmem_free(pb->ptk);
 
 		xmem_free(pb);
 	}
