@@ -35,11 +35,6 @@ LICENSE.GPL3 for more details.
 
 void _async_init(async_t* pas, int type, int ms, res_file_t fd)
 {
-	if (type == ASYNC_EVENT || type == ASYNC_QUEUE)
-	{
-    	memset((void*)(pas->lapp), 0, sizeof(OVERLAPPED));
-	}
-
 #ifdef XDK_SUPPORT_THREAD_QUEUE
     if (type == ASYNC_QUEUE)
     {

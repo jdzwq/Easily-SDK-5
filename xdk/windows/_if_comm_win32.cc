@@ -165,7 +165,7 @@ void _comm_close(res_file_t fh)
 
 dword_t _comm_listen(res_file_t fh, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	DWORD dwCount, dwError, dwLine, dwEvent = 0;

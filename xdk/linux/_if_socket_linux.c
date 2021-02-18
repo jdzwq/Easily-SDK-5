@@ -225,9 +225,9 @@ bool_t _socket_connect(res_file_t so, res_addr_t saddr, int slen)
 
 bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dword_t size, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
-    
+    struct timeval tv = {0};
+
     int rs, rt;
     struct epoll_event ev = {0};
     fd_set fs = {0};
@@ -258,10 +258,10 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
         FD_ZERO(&fs);
         FD_SET(so, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, NULL, &fs, NULL, &(pov->tv));
+        rs = select(so + 1, NULL, &fs, NULL, &tv);
         FD_CLR(so, &fs);
 
         if(rs < 0)
@@ -300,9 +300,9 @@ bool_t _socket_sendto(res_file_t so, res_addr_t saddr, int alen, void* buf, dwor
 
 bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, dword_t size, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
-    
+    struct timeval tv = {0};
+
     int rs, rt;
     socklen_t len = 0;    
     struct epoll_event ev = {0};
@@ -337,10 +337,10 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
         FD_ZERO(&fs);
         FD_SET(so, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(fs), NULL, NULL, &(pov->tv));
+        rs = select(so + 1, &(fs), NULL, NULL, &tv);
         FD_CLR(so, &fs);
 
         if(rs < 0)
@@ -386,8 +386,8 @@ bool_t _socket_recvfrom(res_file_t so, res_addr_t saddr, int* plen, void* buf, d
 
 bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
+    struct timeval tv = {0};
     
     int rs, rt;
     struct epoll_event ev = {0};
@@ -419,10 +419,10 @@ bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)
         FD_ZERO(&fs);
         FD_SET(so, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, NULL, &(fs), NULL, &(pov->tv));
+        rs = select(so + 1, NULL, &(fs), NULL, &tv);
         FD_CLR(so, &fs);
 
         if(rs < 0)
@@ -463,9 +463,9 @@ bool_t _socket_send(res_file_t so, void* buf, dword_t size, async_t* pb)
 
 bool_t _socket_recv(res_file_t so, void* buf, dword_t size, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
-    
+    struct timeval tv = {0};
+
     int rs, rt;
     struct epoll_event ev = {0};
     fd_set fs = {0};
@@ -499,10 +499,10 @@ bool_t _socket_recv(res_file_t so, void* buf, dword_t size, async_t* pb)
         FD_ZERO(&fs);
         FD_SET(so, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(fs), NULL, NULL, &(pov->tv));
+        rs = select(so + 1, &(fs), NULL, NULL, &tv);
         FD_CLR(so, &fs);
 
         if(rs < 0)
@@ -644,7 +644,7 @@ bool_t _socket_listen(res_file_t so, int max)
 res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* pb)
 {
     res_file_t po;
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
+    struct timeval tv = {0};
     
     int rs, rt;  
     socklen_t nlen = 0;
@@ -670,10 +670,10 @@ res_file_t _socket_accept(res_file_t so, res_addr_t saddr, int *plen, async_t* p
         FD_ZERO(&fs);
         FD_SET(so, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(so + 1, &(fs), NULL, NULL, &(pov->tv));
+        rs = select(so + 1, &(fs), NULL, NULL, &tv);
         FD_CLR(so, &fs);
         
         if(rs <= 0)

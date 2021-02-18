@@ -73,7 +73,7 @@ res_file_t _pipe_srv(const tchar_t* pname, dword_t fmode)
 
 bool_t _pipe_listen(res_file_t pip, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
+    struct timeval tv = {0};
     
     int rs;
     struct epoll_event ev = {0};
@@ -98,10 +98,10 @@ bool_t _pipe_listen(res_file_t pip, async_t* pb)
         FD_ZERO(&fs);
         FD_SET(pip, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(pip + 1, &(fs), NULL, NULL, &(pov->tv));
+        rs = select(pip + 1, &(fs), NULL, NULL, &tv);
         FD_CLR(pip, &fs);
         
         if(rs <= 0)

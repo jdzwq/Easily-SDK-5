@@ -77,8 +77,8 @@ bool_t _file_size(res_file_t fh, dword_t* ph, dword_t* pl)
 
 bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
+    struct timeval tv = {0};
 
     int rs, rt;
     struct epoll_event ev = {0};
@@ -110,10 +110,10 @@ bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
         FD_ZERO(&fs);
         FD_SET(fh, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(fh + 1, NULL, &(fs), NULL, &(pov->tv));
+        rs = select(fh + 1, NULL, &(fs), NULL, &tv);
         FD_CLR(fh, &fs);
 
         if(rs < 0)
@@ -159,8 +159,8 @@ bool_t _file_flush(res_file_t fh)
 
 bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
+    struct timeval tv = {0};
 
     int rs, rt;
     struct epoll_event ev = {0};
@@ -195,10 +195,10 @@ bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
         FD_ZERO(&fs);
         FD_SET(fh, &fs);
         
-        pov->tv.tv_sec = pb->timo / 1000;
-        pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+        tv.tv_sec = pb->timo / 1000;
+        tv.tv_usec = (pb->timo % 1000) * 1000;
         
-        rs = select(fh + 1, &(fs), NULL, NULL, &(pov->tv));
+        rs = select(fh + 1, &(fs), NULL, NULL, &tv);
         FD_CLR(fh, &fs);
         
         if(rs < 0)

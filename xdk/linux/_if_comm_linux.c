@@ -178,22 +178,19 @@ void _comm_close(res_file_t fh)
 
 dword_t _comm_listen(res_file_t fd, async_t* pb)
 {
-    LPOVERLAPPED pov = (pb)? (LPOVERLAPPED)pb->lapp : NULL;
     dword_t* pcb = (pb) ? &(pb->size) : NULL;
-    
+    struct timeval tv = {0};
+
     dword_t dwEvent = 0;
     int status;
     int rt;
     fd_set fs = {0};
     
-    if(!pov)
-        return 0;
-    
     if(fcntl(fd,F_SETFL,FNDELAY) < 0)
         return 0;
     
-    pov->tv.tv_sec = pb->timo / 1000;
-    pov->tv.tv_usec = (pb->timo % 1000) * 1000;
+    tv.tv_sec = pb->timo / 1000;
+    tv.tv_usec = (pb->timo % 1000) * 1000;
     
     if(pcb) *pcb = 0;
     
@@ -204,7 +201,7 @@ dword_t _comm_listen(res_file_t fd, async_t* pb)
         
         if(FD_ISSET(fd, &(fs)))
         {
-            rt = select(fd+1, &(fs), NULL, NULL, &(pov->tv));
+            rt = select(fd+1, &(fs), NULL, NULL, &tv);
             if(rt < 0)
             {
                 dwEvent = COMM_EVNET_ERROR;

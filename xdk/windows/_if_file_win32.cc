@@ -96,7 +96,7 @@ bool_t _file_size(res_file_t fh, dword_t* ph, dword_t* pl)
 
 bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	DWORD err, dw = 0;
@@ -150,7 +150,7 @@ bool_t _file_write(res_file_t fh, void* buf, dword_t size, async_t* pb)
 		}
 	}
 
-	if (pov) ResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) ResetEvent(pov->hEvent);
 
 	if (pcb) *pcb = dw;
 
@@ -164,7 +164,7 @@ bool_t _file_flush(res_file_t fh)
 
 bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 {
-	LPOVERLAPPED pov = (pb) ? (LPOVERLAPPED)pb->lapp : NULL;
+	LPOVERLAPPED pov = (pb && pb->type != ASYNC_BLOCK) ? (LPOVERLAPPED)pb->lapp : NULL;
 	dword_t* pcb = (pb) ? &(pb->size) : NULL;
 
 	DWORD err, dw = 0;
@@ -219,7 +219,7 @@ bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 		}
 	}
 
-	if (pov) ResetEvent(pov->hEvent);
+	if (pov && pov->hEvent) ResetEvent(pov->hEvent);
 	
 	if (pcb) *pcb = dw;
 

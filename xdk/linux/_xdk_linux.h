@@ -206,12 +206,6 @@ typedef void(*GNU_TIMER_PROC)(void* param, unsigned char wait);
 #define INFINITE        0xFFFFFFFF
 #endif
 
-typedef struct OVERLAPPED{
-    union{
-        struct timeval tv;
-        struct timespec tp;
-    };
-}OVERLAPPED, *LPOVERLAPPED;
 
 #ifndef LPSIZE
 typedef size_t*     LPSIZE;
