@@ -386,8 +386,9 @@ void test_set()
 
 	set_t* pset = set_alloc();
 	set_t ve;
+	int i;
 
-	for (int i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		xsprintf(num, _T("%d"), i);
 
@@ -420,7 +421,7 @@ void test_set()
 
 	xsfree(buf);
 
-	for (int i = 0; i < pset->size; i++)
+	for (i = 0; i < pset->size; i++)
 	{
 		set_get(pset, i, &ve);
 

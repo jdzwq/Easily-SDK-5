@@ -559,12 +559,13 @@ void test_file_table(const tchar_t* fname, bool_t share)
 	Srand48(time(NULL));
 
 	#define ARS 1000
+	int i, k;
 
-	for (int k = 0; k < 10; k++)
+	for (k = 0; k < 10; k++)
 	{
 		int ind[ARS];
 		int ext[ARS];
-		for (int i = 0; i < ARS; i++)
+		for (i = 0; i < ARS; i++)
 		{
 			ext[i] = Lrand48() % 1000;
 			ind[i] = alloc_file_table_block(pt, ext[i] * PAGE_SIZE);
@@ -574,7 +575,7 @@ void test_file_table(const tchar_t* fname, bool_t share)
 
 		_tprintf(_T("\n"));
 
-		for (int i = 0; i < ARS; i++)
+		for (i = 0; i < ARS; i++)
 		{
 			free_file_table_block(pt, ind[i], ext[i] * PAGE_SIZE);
 

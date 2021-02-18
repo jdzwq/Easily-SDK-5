@@ -2074,7 +2074,7 @@ static bool_t print_node(link_t_ptr nlk, void* pa)
 	bplus_tree_t* pbt = (bplus_tree_t*)pp->p1;
 	bplus_data_t* pbd = BplusDataFromLink(nlk);
 	bplus_index_t* pbi;
-	dword_t n;
+	dword_t i,n;
 	key128_t* pkey;
 	key128_t* porg = (key128_t*)pp->p2;
 
@@ -2101,7 +2101,7 @@ static bool_t print_node(link_t_ptr nlk, void* pa)
 		pbi = BplusIndexFromLink(plk);
 
 		_tprintf(_T("("));
-		for (dword_t i = 0; i < pbi->count; i++)
+		for (i = 0; i < pbi->count; i++)
 		{
 			pkey = &(pbi->indices[i].key);
 
@@ -2171,7 +2171,7 @@ void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname)
 	key128_t org = { 0 };
 	print_param pa;
 
-	int j = 100;
+	int i, j = 100;
 	while (j--)
 	{
 		link_t_ptr ptr = create_bplus_tree();
@@ -2193,7 +2193,7 @@ void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname)
 		int n = 1000;
 		int m;
 
-		for (int i = 0; i < n; i++)
+		for (i = 0; i < n; i++)
 		{
 			m = Lrand48() % n;
 			//_tprintf(_T("04d "), m);
@@ -2216,7 +2216,7 @@ void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname)
 
 		Srand48(time(NULL));
 
-		for (int i = 0; i < n; i++)
+		for (i = 0; i < n; i++)
 		{
 			m = Lrand48() % n;
 			//_tprintf(_T("04d "), m);

@@ -1216,7 +1216,7 @@ void _test_bina_tree(int level)
 
 	object_t val = object_alloc(_UTF8);
 
-	int j = (level)? 100 : 1;
+	int i, j = (level)? 100 : 1;
 	while (j--)
 	{
 		link_t_ptr ptr_0 = create_bina_tree(0);
@@ -1230,7 +1230,7 @@ void _test_bina_tree(int level)
 		float max;
 		int n0, n1, n = 1000;
 
-		for (int i = 0; i < n; i++)
+		for (i = 0; i < n; i++)
 		{
 			rnd =  (level)? (Lrand48() % n) : i;
 			variant_set_int(key, rnd);
@@ -1243,7 +1243,7 @@ void _test_bina_tree(int level)
 		}
 
 		n0 = n1 = 0;
-		for (int i = 0; i < n; i++)
+		for (i = 0; i < n; i++)
 		{
 			variant_set_int(key, i);
 

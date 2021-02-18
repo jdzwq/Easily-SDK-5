@@ -629,24 +629,26 @@ void test_map(void)
 {
 	int items = 128;
 	int b = 0x01;
+	int i, k, j, size, len;
+	map_t pvt;
+	tchar_t* buf;
 
-	for (int k = 1; k <= 8; k <<= 1)
+	for (k = 1; k <= 8; k <<= 1)
 	{
-		map_t pvt = map_alloc(items, k);
-		int size = map_size(pvt);
+		pvt = map_alloc(items, k);
+		size = map_size(pvt);
 
 		_tprintf(_T("items:%d bits:%d size:%d mask:%d\n"), items, k, size, b);
 
-		for (int i = 0; i < items; i++)
+		for (i = 0; i < items; i++)
 			map_set_bit(pvt, i, b);
 
 		int rows = items / (32 / k);
 
-		for (int i = 0; i < rows; i++)
+		for (i = 0; i < rows; i++)
 			map_set_bit(pvt, i * (32 / k) + i % (32 / k), 0);
 
-		tchar_t* buf;
-		int len = map_format(pvt, NULL, MAX_LONG);
+		len = map_format(pvt, NULL, MAX_LONG);
 		buf = xsalloc(len + 1);
 		map_format(pvt, buf, len);
 
@@ -654,7 +656,7 @@ void test_map(void)
 		map_parse(pvt, buf, len);
 		xsfree(buf);
 
-		for (int i = 0; i < items; i++)
+		for (i = 0; i < items; i++)
 		{
 			if (map_get_bit(pvt, i) == b)
 				_tprintf(_T("1"));

@@ -286,8 +286,9 @@ void test_message(void)
 	hdr.qos = 0x02;
 	
 	byte_t tmp[100] = { 0 };
+	int i;
 
-	for (int i = 0; i < 100; i++)
+	for (i = 0; i < 100; i++)
 	{
 		hdr.seq = i;
 		hdr.utc = get_timestamp();

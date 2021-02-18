@@ -113,13 +113,14 @@ void delete_integer(int** sa, int index)
 void test_integer_array()
 {
 	int** sa = alloc_integer_array();
+	int i;
 
-	for (int i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		insert_integer(sa, i, i);
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		_tprintf(_T("%d\n"), get_integer(sa, i));
 	}

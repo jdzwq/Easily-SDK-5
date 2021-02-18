@@ -213,12 +213,13 @@ void test_lock_table()
 	int nums = 4096;
 	link_t_ptr lt = create_lock_table(token, nums);
 	bool_t rt;
+	int i, k, j;
 
-	for (int k = 0; k < 1024; k++)
+	for (k = 0; k < 1024; k++)
 	{
-		for (int i = 0; i < nums; i++)
+		for (i = 0; i < nums; i++)
 		{
-			for (int j = 0; j < 2; j++)
+			for (j = 0; j < 2; j++)
 			{
 				rt = enter_lock_table(lt, k, i);
 				_tprintf(_T("map:%d pos:%d return:%d\n"), k, i, rt);

@@ -113,13 +113,14 @@ void delete_numeric(double** sa, int index)
 void test_numeric_array()
 {
 	double** sa = alloc_numeric_array();
+	int i;
 
-	for (int i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		insert_numeric(sa, i, i);
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		_tprintf(_T("%f\n"), get_numeric(sa, i));
 	}

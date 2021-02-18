@@ -291,8 +291,9 @@ void test_queue(void)
 	byte_t tmp[100] = { 0 };
 
 	queue_t que = queue_alloc();
+	int i;
 
-	for (int i = 0; i < 100; i++)
+	for (i = 0; i < 100; i++)
 	{
 		hdr.seq = i;
 		hdr.utc = get_timestamp();
