@@ -252,10 +252,10 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	xhttps_param_t* pxp = (xhttps_param_t*)p;
 	https_block_t *pb = NULL;
+	loged_interface* plog = NULL;
+
 	res_modu_t api = NULL;
 	PF_HTTPS_INVOKE pf_invoke = NULL;
-
-	loged_interface log = { 0 };
 
 	xdate_t xdt = { 0 };
 
@@ -480,8 +480,9 @@ void _xhttps_dispatch(xhand_t http, void* p)
         printf_path(sz_path, sz_track);
 		xsappend(sz_path, _T("/%s.log"), sz_trace);
 
-		get_loged_interface(sz_path, &log);
-		pb->plg = &log;
+		plog = (loged_interface*)xmem_alloc(sizeof(loged_interface));
+		get_loged_interface(sz_path, plog);
+		pb->plg = plog;
 
 		xscpy(sz_res, _T("["));
 		xhttp_addr_port(http, sz_res + 1);
@@ -495,12 +496,15 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	free_library(api);
 	api = NULL;
 
-	if (pb->plg)
+	if (pb->plg && n_state < n_trace)
 	{
-		if (n_state < n_trace)
-		{
-			xfile_delete(NULL, pb->plg->unc);
-		}
+		xfile_delete(NULL, pb->plg->unc);
+	}
+
+	if (plog)
+	{
+		xmem_free(plog);
+		plog = NULL;
 	}
 
 	_xhttps_log_head(http);
@@ -523,6 +527,9 @@ ONERROR:
 
 	if (pb)
 		xmem_free(pb);
+
+	if (plog)
+		xmem_free(plog);
     
     if(buf_crt)
         xmem_free(buf_crt);

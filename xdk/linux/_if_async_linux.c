@@ -44,8 +44,6 @@ void _async_init(async_t* pas, int type, int ms, res_file_t fd)
 	
 	pas->type = type;
     pas->timo = (ms < 0)? INFINITE : ms;
-
-	return pas;
 }
 
 void _async_uninit(async_t* pas)
