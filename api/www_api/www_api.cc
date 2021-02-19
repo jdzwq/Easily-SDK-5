@@ -284,6 +284,8 @@ ONERROR:
 
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
+	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
+
 	if (xf)
 		xfile_close(xf);
 
@@ -293,14 +295,14 @@ ONERROR:
 	if (sz_buf)
 		xmem_free(sz_buf);
 
-	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
-
 	if (pb->plg)
 	{
 		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[WWW: GET]"), -1);
 
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
+
+	XDL_TRACE_LAST;
 
 	return 0;
 }
@@ -331,6 +333,8 @@ void _invoke_error(const https_block_t* pb)
 
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
+
+	XDL_TRACE_LAST;
 }
 
 int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)

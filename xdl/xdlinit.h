@@ -54,6 +54,9 @@ extern "C" {
 	typedef struct _if_dump_t{
 		byte_t*		err_buf; //thread error buffer
 		int			err_index; //error item count
+
+		PF_TRACK_ERROR err_track; //error track callback function
+		void* err_param; //error track callback param
 	}if_dump_t;
 
 	typedef struct _if_zone_t{

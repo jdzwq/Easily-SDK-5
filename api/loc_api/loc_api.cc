@@ -92,14 +92,17 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
 bool_t _invoke_list(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t sz_enc[RES_LEN + 1] = { 0 };
 
 	tchar_t feed[3] = { TXT_ITEMFEED, TXT_LINEFEED, _T('\n') };
@@ -164,11 +167,16 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
 bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 {
+	tchar_t sz_code[NUM_LEN + 1] = { 0 };
+	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t fsince[DATE_LEN + 1] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
@@ -178,8 +186,6 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	tchar_t yes_etag[ETAG_LEN + 1] = { 0 };
 	tchar_t fencode[INT_LEN + 1] = { 0 };
 	tchar_t frange[RES_LEN + 1] = { 0 };
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
 	xdate_t dt_since, dt_time;
 
@@ -403,8 +409,9 @@ bool_t _invoke_get(const https_block_t* pb, loc_block_t* pos)
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
+
+	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
 
 	if (xf)
 		xfile_close(xf);
@@ -415,8 +422,6 @@ ONERROR:
 	if (sz_buf)
 		xmem_free(sz_buf);
 
-	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
-
 	if (pb->plg)
 	{
 		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[LOC: GET]"), -1);
@@ -424,14 +429,17 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
 bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 	tchar_t frange[RES_LEN + 1] = { 0 };
 	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t fetag[ETAG_LEN + 1] = { 0 };
@@ -626,7 +634,6 @@ bool_t _invoke_put(const https_block_t* pb, loc_block_t* pos)
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
@@ -647,15 +654,18 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
 bool_t _invoke_delete(const https_block_t* pb, loc_block_t* pos)
 {
-	tchar_t sz_object[PATH_LEN + 1] = { 0 };
-	tchar_t ftime[DATE_LEN + 1] = { 0 };
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
+	tchar_t sz_object[PATH_LEN + 1] = { 0 };
+	tchar_t ftime[DATE_LEN + 1] = { 0 };
 
 	TRY_CATCH;
 
@@ -691,7 +701,6 @@ bool_t _invoke_delete(const https_block_t* pb, loc_block_t* pos)
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
@@ -702,6 +711,8 @@ ONERROR:
 
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
+
+	XDL_TRACE_LAST;
 
 	return 0;
 }
@@ -731,6 +742,8 @@ void _invoke_error(const https_block_t* pb, loc_block_t* pos)
 
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
+
+	XDL_TRACE_LAST;
 }
 
 int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)

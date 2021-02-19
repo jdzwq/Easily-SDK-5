@@ -72,16 +72,13 @@ static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_
 
 static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	t_kb_t hdb = NULL;
-	t_kv_t hkv = NULL;
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
 	tchar_t pid[UUID_LEN + 1] = { 0 };
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 	object_t val = NULL;
@@ -183,9 +180,6 @@ static bool_t _invoke_get(const udps_block_t* pb, coap_block_t* pd)
 	return 1;
 
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
@@ -209,22 +203,13 @@ ONERROR:
 	if (buf)
 		xmem_free(buf);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
+	XDL_TRACE_LAST;
 
 	return 0;
 }
 
 static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	t_kb_t hdb = NULL;
-	t_kv_t hkv = NULL;
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
@@ -232,6 +217,9 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 	byte_t payload[COAP_PDV_SIZE] = { 0 };
 	dword_t dw;
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 	object_t val = NULL;
@@ -322,8 +310,6 @@ static bool_t _invoke_post(const udps_block_t* pb, coap_block_t* pd)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
@@ -344,22 +330,13 @@ ONERROR:
 	if (msg)
 		message_free(msg);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
+	XDL_TRACE_LAST;
 
 	return 0;
 }
 
 static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	t_kb_t hdb = NULL;
-	t_kv_t hkv = NULL;
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
@@ -367,6 +344,9 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 	byte_t* payload = NULL;
 	dword_t dw, total = 0;
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 	object_t val = NULL;
@@ -478,8 +458,6 @@ static bool_t _invoke_put(const udps_block_t* pb, coap_block_t* pd)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
@@ -500,26 +478,20 @@ ONERROR:
 	if (msg)
 		message_free(msg);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
+	XDL_TRACE_LAST;
 
 	return 0;
 }
 
 static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
-	t_kb_t hdb = NULL;
-	t_kv_t hkv = NULL;
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
 	tchar_t pid[UUID_LEN + 1] = { 0 };
+
+	t_kb_t hdb = NULL;
+	t_kv_t hkv = NULL;
 
 	variant_t key = { 0 };
 
@@ -578,8 +550,6 @@ static bool_t _invoke_delete(const udps_block_t* pb, coap_block_t* pd)
 
 ONERROR:
 
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
 	xcoap_abort(pd->coap, COAP_RESPONSE_500_CODE);
 
 	if (hkv)
@@ -591,10 +561,7 @@ ONERROR:
 	if (key)
 		variant_free(key);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
+	XDL_TRACE_LAST;
 
 	return 0;
 }
@@ -603,9 +570,6 @@ ONERROR:
 
 int STDCALL udps_invoke(const udps_block_t* pb)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	coap_block_t* pd = NULL;
 
 	tchar_t file[PATH_LEN + 1] = { 0 };
@@ -680,8 +644,6 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	return (rt) ? UDPS_INVOKE_SUCCEED : UDPS_INVOKE_WITHINFO;
 
 ONERROR:
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
 
@@ -693,10 +655,7 @@ ONERROR:
 		xmem_free(pd);
 	}
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
+	XDL_TRACE_LAST;
 
 	return UDPS_INVOKE_WITHINFO;
 }

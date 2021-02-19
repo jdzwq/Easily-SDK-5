@@ -159,6 +159,21 @@ void xdl_trace(const tchar_t* code, const tchar_t* info)
 #endif
 }
 
+void xdl_set_track(PF_TRACK_ERROR pf, void* pa)
+{
+#ifdef XDK_SUPPORT_ERROR
+	if_dump_t* pdu;
+
+	pdu = THREAD_DUMP_INTERFACE;
+
+	if (!pdu)
+		return;
+
+	pdu->err_track = pf;
+	pdu->err_param = pa;
+#endif
+}
+
 void xdl_trace_last()
 {
 #ifdef XDK_SUPPORT_ERROR
@@ -189,10 +204,13 @@ void xdl_trace_last()
 		utf8_to_mbs((err_buf + NUM_LEN), ERR_LEN, errtext, ERR_LEN);
 #endif
 
-		xdl_trace(errcode, errtext);
+		if (pdu->err_track)
+			(*pdu->err_track)(pdu->err_param, errcode, errtext);
+		else
+			xdl_trace(errcode, errtext);
 	}
-#endif
 
 	xmem_zero((void*)pdu->err_buf, (ERR_BUFF_SIZE * ERR_ITEM_COUNT));
 	pdu->err_index = -1;
+#endif
 }

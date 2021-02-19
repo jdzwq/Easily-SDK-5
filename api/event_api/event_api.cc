@@ -35,6 +35,7 @@ bool_t _invoke_event_pubs(const https_block_t* pb, event_block_t* pd)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	tchar_t sz_method[RES_LEN + 1] = { 0 };
 	tchar_t sz_encoding[RES_LEN + 1] = { 0 };
 	bool_t b_json = 0;
@@ -301,7 +302,6 @@ bool_t _invoke_event_pubs(const https_block_t* pb, event_block_t* pd)
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
@@ -345,6 +345,8 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
@@ -352,6 +354,7 @@ bool_t _invoke_event_subs(const https_block_t* pb, event_block_t* pd)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
+
 	tchar_t sz_encoding[RES_LEN + 1] = { 0 };
 	bool_t b_json = 0;
 
@@ -501,7 +504,6 @@ bool_t _invoke_event_subs(const https_block_t* pb, event_block_t* pd)
 	return 1;
 
 ONERROR:
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
 
 	xhttp_send_error(pb->http, NULL, NULL, sz_code, sz_error, -1);
@@ -537,10 +539,12 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
-void _invoke_error(const https_block_t* pb, event_block_t* pd)
+void _invoke_event_error(const https_block_t* pb, event_block_t* pd)
 {
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
@@ -561,10 +565,12 @@ void _invoke_error(const https_block_t* pb, event_block_t* pd)
 
 	if (pb->plg)
 	{
-		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT:]"), -1);
+		(*pb->plg->pf_log_title)(pb->plg->unc, _T("[EVENT]"), -1);
 
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
+
+	XDL_TRACE_LAST;
 }
 
 /**********************************************************************************************/
@@ -639,7 +645,7 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 
 ONERROR:
 
-	_invoke_error(pb, pd);
+	_invoke_event_error(pb, pd);
 
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);

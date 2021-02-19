@@ -30,6 +30,25 @@ LICENSE.GPL3 for more details.
 
 #define IS_NULL_SITE(site)		(*site == _T('/') && *(site + 1) == _T('\0'))
 
+void CALLBACK _xhttps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
+{
+	https_block_t* pb = (https_block_t*)hand;
+
+	tchar_t addr[ADDR_LEN + 1] = { 0 };
+	tchar_t token[PATH_LEN + 1] = { 0 };
+	int len;
+	int port = 0;
+
+	if (pb->http)
+	{
+		port = (int)xhttp_peer_port(pb->http, addr);
+	}
+
+	len = xsprintf(token, _T("HTTP-SCP: [%s : %d] %s %s\r\n"), addr, port, code, text);
+
+	xportm_log_info(token, len);
+}
+
 static void _xhttps_get_config(const tchar_t* site, tchar_t* sz_space, tchar_t* sz_path, tchar_t* sz_track, tchar_t* sz_trace, tchar_t* sz_proc)
 {
 	tchar_t sz_root[PATH_LEN + 1] = { 0 };
@@ -209,17 +228,7 @@ static void _xhttps_invoke_error(xhand_t http)
 	tchar_t sz_code[NUM_LEN + 1] = { 0 };
 	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
-	tchar_t token[2048] = { 0 };
-	int len;
-
 	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	xscpy(token, _T("["));
-	xhttp_peer_port(http, token + 1);
-	len = xslen(token);
-	len += xsprintf(token + len, _T(" :%d]\t %s %s\r\n"), thread_get_id(), sz_code, sz_error);
-
-	xportm_log_info(token, len);
 
 	if(xhttp_is_requested(http))
 	{
@@ -259,7 +268,6 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	xdate_t xdt = { 0 };
 
-	tchar_t errtext[ERR_LEN + 1] = { 0 };
 	tchar_t signature[KEY_LEN + 1] = { 0 };
 
     byte_t* buf_crt = NULL;
@@ -269,6 +277,12 @@ void _xhttps_dispatch(xhand_t http, void* p)
 	xhand_t bio = NULL;
 
 	TRY_CATCH;
+
+	pb = (https_block_t*)xmem_alloc(sizeof(https_block_t));
+	pb->cbs = sizeof(https_block_t);
+	pb->http = http;
+
+	xdl_set_track((PF_TRACK_ERROR)_xhttps_track_error, (void*)pb);
 
 	bio = xhttp_bio(http);
 
@@ -426,22 +440,13 @@ void _xhttps_dispatch(xhand_t http, void* p)
 			xhttp_set_response_code(http, HTTP_CODE_401);
 			xhttp_set_response_message(http, HTTP_CODE_401_TEXT, -1);
 			 
-			if (is_null(signature))
-				xscpy(errtext, _T("request header signature is invalid"));
-			else
-				xsprintf(errtext, _T("request header signature is %s"), signature);
-
-			raise_user_error(sz_site, errtext);
+			raise_user_error(_T("valid signature is "), signature);
 		}
 	}
 
 	n_trace = xstol(sz_trace);
 
-	pb = (https_block_t*)xmem_alloc(sizeof(https_block_t));
-	pb->cbs = sizeof(https_block_t);
-	pb->http = http;
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
-
 	xsncpy(pb->site, sz_site + 1, RES_LEN);
 	xsncpy(pb->space, sz_space, RES_LEN);
 	xsncpy(pb->object, sz_res, PATH_LEN);
@@ -493,8 +498,7 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	n_state = (*pf_invoke)(sz_method, pb);
 
-	free_library(api);
-	api = NULL;
+	xdl_set_track(NULL, NULL);
 
 	if (pb->plg && n_state < n_trace)
 	{
@@ -509,10 +513,13 @@ void _xhttps_dispatch(xhand_t http, void* p)
 
 	_xhttps_log_head(http);
 
+	free_library(api);
+	api = NULL;
+
 	if (pb->is_thread)
-		xportm_log_error(_T("xhttps"), _T("thread terminated"));
+		xportm_log_error(_T("xhttps"), _T("thread normal terminated"));
 	else
-		xportm_log_error(_T("xhttps"), _T("process terminated"));
+		xportm_log_error(_T("xhttps"), _T("process normal terminated"));
 
 	xmem_free(pb);
 	pb = NULL;
@@ -524,6 +531,10 @@ void _xhttps_dispatch(xhand_t http, void* p)
 ONERROR:
 
 	_xhttps_invoke_error(http);
+
+	XDL_TRACE_LAST;
+
+	xdl_set_track(NULL, NULL);
 
 	if (pb)
 		xmem_free(pb);
@@ -541,6 +552,8 @@ ONERROR:
 		free_library(api);
 
 	_xhttps_log_head(http);
+
+	xportm_log_error(_T("xhttps"), _T("xhttps error exited"));
 
 	return;
 }

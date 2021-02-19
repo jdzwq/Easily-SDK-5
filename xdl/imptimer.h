@@ -88,10 +88,10 @@ EXP_API bool_t alter_timer(res_queue_t rq, res_timer_t rt, dword_t duetime, dwor
 #endif
 
 typedef struct _timer_block_t{
-	trace_interface* ptk;
-
 	tchar_t name[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
+
+	const loged_interface* plg;
 }timer_block_t;
 
 typedef enum{

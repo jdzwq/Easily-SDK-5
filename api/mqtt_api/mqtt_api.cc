@@ -77,9 +77,6 @@ static void split_topic(const tchar_t* topic, tchar_t* cid, tchar_t* did, tchar_
 
 void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
@@ -174,8 +171,7 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	return;
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (hkv)
 		tkv_destroy(hkv);
@@ -195,19 +191,11 @@ ONERROR:
 	if (msg)
 		message_free(msg);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
-
 	return;
 }
 
 void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
@@ -319,8 +307,7 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	return;
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (buf)
 		xmem_free(buf);
@@ -343,19 +330,11 @@ ONERROR:
 	if (msg)
 		message_free(msg);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
-
 	return;
 }
 
 void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	tchar_t path[PATH_LEN + 1] = { 0 };
 	tchar_t cid[UUID_LEN + 1] = { 0 };
 	tchar_t did[UUID_LEN + 1] = { 0 };
@@ -412,8 +391,7 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	return;
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (hkv)
 		tkv_destroy(hkv);
@@ -424,20 +402,12 @@ ONERROR:
 	if (key)
 		variant_free(key);
 
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
-
 	return;
 }
 
 /*******************************************************************************************************/
 int STDCALL tcps_invoke(const tcps_block_t* pb)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	mqtt_block_t* pd = NULL;
 
 	LINKPTR ptr_prop = NULL;
@@ -539,7 +509,7 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 	return TCPS_INVOKE_SUCCEED;
 
 ONERROR:
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
@@ -550,11 +520,6 @@ ONERROR:
 			xmqtt_close(pd->mqtt);
 
 		xmem_free(pd);
-	}
-
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return TCPS_INVOKE_WITHINFO;

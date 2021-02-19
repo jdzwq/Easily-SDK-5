@@ -57,7 +57,9 @@ typedef unsigned long long t_dbl;
 #ifdef _OS_64
 typedef  int64_t mpi_sint;
 typedef uint64_t mpi_uint;
+#ifndef _OS_WINDOWS
 typedef __uint128_t t_udbl;
+#endif
 #else
 typedef  int32_t mpi_sint;
 typedef uint32_t mpi_uint;

@@ -28,6 +28,67 @@ LICENSE.GPL3 for more details.
 #include "xtimers.h"
 #include "srvlog.h"
 
+void CALLBACK _xtimers_track_error(void* param, const tchar_t* code, const tchar_t* text)
+{
+	const tchar_t* fname = (const tchar_t*)param;
+	tchar_t sz_title[NUM_LEN + ERR_LEN + 2] = { 0 };
+
+	byte_t* sz_log = NULL;
+	dword_t n_br;
+	byte_t br[2] = { '\r', '\n' };
+	int n_log = 0;
+
+	res_mutx_t mux;
+	file_t xf;
+
+	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+	if (!xf)
+		return;
+
+	mux = mutex_open(XTIMERD_MUTEX_NAME);
+	if (!mux)
+	{
+		xfile_close(xf);
+		return;
+	}
+
+	if (WAIT_RET != mutex_lock(mux, XTIMERD_WAIT_TIMO))
+	{
+		xfile_close(xf);
+		mutex_close(mux);
+		return;
+	}
+
+	xsprintf(sz_title, _T("%s %s"), code, text);
+
+#ifdef _UNICODE
+	n_log = ucs_to_mbs(sz_title, -1, NULL, MAX_LONG);
+#else
+	n_log = mbs_to_mbs(sz_title, -1, NULL, MAX_LONG);
+#endif
+
+	sz_log = (byte_t*)xmem_alloc(n_log + 1);
+
+#ifdef _UNICODE
+	n_log = ucs_to_mbs(sz_title, -1, (schar_t*)sz_log, n_log);
+#else
+	n_log = mbs_to_mbs(sz_title, -1, (schar_t*)sz_log, n_log);
+#endif
+
+	xfile_write(xf, sz_log, n_log);
+
+	n_br = 2;
+	xfile_write(xf, br, n_br);
+
+	xmem_free(sz_log);
+	sz_log = NULL;
+
+	xfile_close(xf);
+
+	mutex_unlock(mux);
+	mutex_close(mux);
+}
+
 void _calc_duretime(timer_hint* pth, xdate_t* pdate, dword_t* pdure)
 {
 	bool_t b = 0;
@@ -223,79 +284,17 @@ bool_t xtimers_config(const tchar_t* task, tchar_t* tname, tchar_t* tpath, tchar
 	return 1;
 }
 
-void xtimers_track_error(void* param, const tchar_t* code, const tchar_t* text)
-{
-	const tchar_t* fname = (const tchar_t*)param;
-	tchar_t sz_title[NUM_LEN + ERR_LEN + 2] = { 0 };
-
-	byte_t* sz_log = NULL;
-	dword_t n_br;
-	byte_t br[2] = { '\r', '\n' };
-	int n_log = 0;
-
-	res_mutx_t mux;
-	file_t xf;
-
-	xf = xfile_open(NULL, fname, FILE_OPEN_CREATE | FILE_OPEN_APPEND);
-	if (!xf)
-		return;
-
-	mux = mutex_open(XTIMERD_MUTEX_NAME);
-	if (!mux)
-	{
-		xfile_close(xf);
-		return;
-	}
-
-	if (WAIT_RET != mutex_lock(mux, XTIMERD_WAIT_TIMO))
-	{
-		xfile_close(xf);
-		mutex_close(mux);
-		return;
-	}
-
-	xsprintf(sz_title, _T("%s %s"), code, text);
-
-#ifdef _UNICODE
-	n_log = ucs_to_mbs(sz_title, -1, NULL, MAX_LONG);
-#else
-	n_log = mbs_to_mbs(sz_title, -1, NULL, MAX_LONG);
-#endif
-
-	sz_log = (byte_t*)xmem_alloc(n_log + 1);
-
-#ifdef _UNICODE
-	n_log = ucs_to_mbs(sz_title, -1, (schar_t*)sz_log, n_log);
-#else
-	n_log = mbs_to_mbs(sz_title, -1, (schar_t*)sz_log, n_log);
-#endif
-
-	xfile_write(xf, sz_log, n_log);
-	
-	n_br = 2;
-	xfile_write(xf, br, n_br);
-
-	xmem_free(sz_log);
-	sz_log = NULL;
-
-	xfile_close(xf);
-
-	mutex_unlock(mux);
-	mutex_close(mux);
-}
-
 void xtimers_dispatch(xtimers_param_t* pts)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
-
 	res_modu_t lib = NULL;
 	PF_TIMER_INVOKE pf_invoke = NULL;
 	int rt;
 	
 	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
-	timer_block_t* ptb = { 0 };
-	
+
+	timer_block_t* ptb = NULL;
+	loged_interface* plog = NULL;
+
 	link_t_ptr ptr_cfg = NULL;
 
 	xdate_t dt = { 0 };
@@ -303,20 +302,20 @@ void xtimers_dispatch(xtimers_param_t* pts)
 	tchar_t sz_track[PATH_LEN + 1] = { 0 };
 	tchar_t sz_file[PATH_LEN + 1] = { 0 };
 
-	trace_interface tra = { 0 };
-
 	TRY_CATCH;
 
 	ptb = (timer_block_t*)xmem_alloc(sizeof(timer_block_t));
 
+	xdl_set_track((PF_TRACK_ERROR)_xtimers_track_error, (void*)ptb);
+
 	if (!xtimers_config(pts->task, ptb->name, ptb->path, sz_proc, sz_track))
 	{
-		raise_user_error(_T("-1"), _T("timer load configure failed"));
+		raise_user_error(_T("xtimers_dispatch"), _T("timer load configure failed"));
 	}
 
 	if (is_null(ptb->name))
 	{
-		raise_user_error(_T("-1"), _T("timer unknown task"));
+		raise_user_error(_T("xtimers_dispatch"), _T("timer unknown task"));
 	}
 
 	if (!is_null(sz_track))
@@ -327,27 +326,35 @@ void xtimers_dispatch(xtimers_param_t* pts)
 		printf_path(sz_file, sz_track);
 		xsappend(sz_file, _T("/%s.log"), sz_trace);
 
-		tra.param = (void*)sz_file;
-		tra.pf_track_error = xtimers_track_error;
-		ptb->ptk = &tra;
+		plog = (loged_interface*)xmem_alloc(sizeof(loged_interface));
+		get_loged_interface(sz_file, plog);
+		ptb->plg = plog;
 
 		format_datetime(&dt, sz_trace);
-		(*ptb->ptk->pf_track_error)(ptb->ptk->param, sz_trace, _T("xtimers_dispatch"));
+		(*(ptb->plg->pf_log_title))(ptb->plg->unc, sz_trace, -1);
 	}
 
 	lib = load_library(sz_proc);
 	if (!lib)
 	{
-		raise_user_error(_T("-1"), _T("timer load module failed"));
+		raise_user_error(_T("xtimers_dispatch"), _T("timer load module failed"));
 	}
 
 	pf_invoke = (PF_TIMER_INVOKE)get_address(lib, "timer_invoke");
 	if (!pf_invoke)
 	{
-		raise_user_error(_T("-1"), _T("timer get function failed"));
+		raise_user_error(_T("xtimers_dispatch"), _T("timer get function failed"));
 	}
 
 	rt = (*pf_invoke)(ptb);
+
+	if (plog)
+	{
+		xmem_free(plog);
+		plog = NULL;
+	}
+
+	xdl_set_track(NULL, NULL);
 
 	free_library(lib);
 	lib = NULL;
@@ -355,25 +362,24 @@ void xtimers_dispatch(xtimers_param_t* pts)
 	xmem_free(ptb);
 	ptb = NULL;
 
+	xportm_log_error(_T("xtimers"), _T("xtimers normal terminated"));
+
 	END_CATCH;
 
 	return;
 
 ONERROR:
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
+
+	xdl_set_track(NULL, NULL);
 
 	if (lib)
 		free_library(lib);
 
 	if (ptb)
-	{
-		if (ptb->ptk)
-		{
-			(*ptb->ptk->pf_track_error)(ptb->ptk->param, sz_code, sz_error);
-		}
-
 		xmem_free(ptb);
-	}
+
+	xportm_log_error(_T("xtimers"), _T("xtimers error exited"));
 
 	return;
 }

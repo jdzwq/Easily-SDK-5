@@ -103,8 +103,6 @@ typedef struct _pnps_block_t{
 
 	tchar_t site[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
-
-	const trace_interface* ptk;
 }pnps_block_t;
 
 typedef enum{

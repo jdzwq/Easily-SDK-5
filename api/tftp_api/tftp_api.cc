@@ -36,8 +36,6 @@ typedef struct _tftp_block_t{
 /*********************************************************************************/
 static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -77,24 +75,16 @@ static bool_t _invoke_head(const udps_block_t* pb, tftp_block_t* pd)
 	return 1;
 
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (fd)
 		xuncf_find_close(fd);
-
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
 
 	return 0;
 }
 
 static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -165,24 +155,16 @@ static bool_t _invoke_get(const udps_block_t* pb, tftp_block_t* pd)
 	return 1;
 
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (xf)
 		xfile_close(xf);
-
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
 
 	return 0;
 }
 
 static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -236,24 +218,16 @@ static bool_t _invoke_put(const udps_block_t* pb, tftp_block_t* pd)
 	return 1;
 
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (xf)
 		xfile_close(xf);
-
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
 
 	return 0;
 }
 
 static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 {
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 	tchar_t sz_object[PATH_LEN + 1] = { 0 };
 
 	tchar_t fname[512] = { 0 };
@@ -278,13 +252,7 @@ static bool_t _invoke_delete(const udps_block_t* pb, tftp_block_t* pd)
 	return 1;
 
 ONERROR:
-
-	get_last_error(sz_code, sz_error, ERR_LEN);
-
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
-	}
+	XDL_TRACE_LAST;
 
 	return 0;
 }
@@ -294,9 +262,6 @@ ONERROR:
 int STDCALL udps_invoke(const udps_block_t* pb)
 {
 	tftp_block_t* pd = NULL;
-
-	tchar_t sz_code[NUM_LEN + 1] = { 0 };
-	tchar_t sz_error[ERR_LEN + 1] = { 0 };
 
 	tchar_t file[PATH_LEN + 1] = { 0 };
 	tchar_t token[RES_LEN + 1] = { 0 };
@@ -314,7 +279,7 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 
 	if (!load_proper_from_ini_file(ptr_prop, NULL, file))
 	{
-		raise_user_error(_T("-1"), _T("load tftp config falied\n"));
+		raise_user_error(_T("tftp_api"), _T("load tftp config falied\n"));
 	}
 
 	read_proper(ptr_prop, _T("TFTP"), -1, _T("LOCATION"), -1, file, PATH_LEN);
@@ -366,7 +331,7 @@ int STDCALL udps_invoke(const udps_block_t* pb)
 	return (rt) ? UDPS_INVOKE_SUCCEED : UDPS_INVOKE_WITHINFO;
 
 ONERROR:
-	get_last_error(sz_code, sz_error, ERR_LEN);
+	XDL_TRACE_LAST;
 
 	if (ptr_prop)
 		destroy_proper_doc(ptr_prop);
@@ -377,11 +342,6 @@ ONERROR:
 			xtftp_close(pd->tftp);
 
 		xmem_free(pd);
-	}
-
-	if (pb->ptk)
-	{
-		(*pb->ptk->pf_track_error)(pb->ptk->param, sz_code, sz_error);
 	}
 
 	return UDPS_INVOKE_WITHINFO;

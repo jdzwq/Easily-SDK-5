@@ -104,8 +104,6 @@ typedef struct _udps_block_t{
 	dword_t timo;
 	tchar_t site[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
-
-	const trace_interface* ptk;
 }udps_block_t;
 
 typedef enum{

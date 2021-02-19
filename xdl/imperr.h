@@ -79,6 +79,8 @@ EXP_API void trace_error(void* param, PF_ERROR_TRACE pf);
 */
 EXP_API void xdl_trace(const tchar_t* code, const tchar_t* info);
 
+EXP_API void xdl_set_track(PF_TRACK_ERROR pf, void* pa);
+
 /*
 @FUNCTION xdl_trace_last: trace last error.
 @RETURN void: none.

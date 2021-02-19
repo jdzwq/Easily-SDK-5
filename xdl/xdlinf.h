@@ -201,14 +201,6 @@ typedef struct _event_interface{
 	PF_SUBS_EVENT	pf_subs_event;
 }event_interface;
 
-typedef void(*PF_TRACK_ERROR)(void* param, const tchar_t* code, const tchar_t* text);
-
-typedef struct _trace_interface{
-	void* param;
-
-	PF_TRACK_ERROR	pf_track_error;
-}trace_interface;
-
 #if defined(XDL_SUPPORT_VIEW)
 
 typedef float(*PF_MEASURE_PIXEL)(void*, bool_t);

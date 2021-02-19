@@ -469,6 +469,8 @@ typedef enum{
 	ORDER_DESCEND = -1
 }SORT_ORDER;
 
+typedef void(CALLBACK *PF_TRACK_ERROR)(void* param, const tchar_t* code, const tchar_t* text);
+
 #if defined(_OS_WINDOWS)
 #include "lang/_xdl_ansi.h"
 #else

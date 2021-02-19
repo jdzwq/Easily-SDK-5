@@ -28,6 +28,26 @@ LICENSE.GPL3 for more details.
 #include "srvlog.h"
 #include "srvcrt.h"
 
+
+void CALLBACK _xtcps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
+{
+	tcps_block_t* pb = (tcps_block_t*)hand;
+
+	tchar_t addr[ADDR_LEN + 1] = { 0 };
+	tchar_t token[PATH_LEN + 1] = { 0 };
+	int len;
+	int port = 0;
+
+	if (pb->tcp)
+	{
+		port = (int)xtcp_peer_port(pb->tcp, addr);
+	}
+
+	len = xsprintf(token, _T("TCP-SCP: [%s : %d] %s %s\r\n"), addr, port, code, text);
+
+	xportm_log_info(token, len);
+}
+
 static void _xtcps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz_proc)
 {
 	tchar_t sz_root[PATH_LEN + 1] = { 0 };
@@ -76,22 +96,6 @@ static void _xtcps_get_config(const tchar_t* site, tchar_t* sz_path, tchar_t* sz
 	destroy_xml_doc(ptr_cfg);
 }
 
-static void _xtcps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
-{
-	tcps_block_t* pb = (tcps_block_t*)hand;
-
-	tchar_t addr[ADDR_LEN + 1] = { 0 };
-	tchar_t token[PATH_LEN + 1] = { 0 };
-	int len;
-	int port;
-
-	port = (int)xtcp_peer_port(pb->tcp, addr);
-
-	len = xsprintf(token, _T("TCP-SCP: [%s : %d] %s %s\r\n"), addr, port, code, text);
-
-	xportm_log_info(token, len);
-}
-
 /**********************************************************************************************************************/
 void _xtcps_dispatch(xhand_t tcp, void* p)
 {
@@ -110,14 +114,16 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 
 	xdate_t xdt = { 0 };
 
-	tchar_t errcode[NUM_LEN + 1] = { 0 };
-	tchar_t errtext[ERR_LEN + 1] = { 0 };
 	tchar_t sz_hmac[KEY_LEN + 1] = { 0 };
 	byte_t textbom[4] = { 0 };
 
-	trace_interface tra = { 0 };
-
 	TRY_CATCH;
+
+	pb = (tcps_block_t*)xmem_alloc(sizeof(tcps_block_t));
+	pb->cbs = sizeof(tcps_block_t);
+	pb->tcp = tcp;
+
+	xdl_set_track((PF_TRACK_ERROR)_xtcps_track_error, (void*)pb);
 
 	get_envvar(XSERVICE_ROOT, sz_path, PATH_LEN);
 
@@ -144,10 +150,6 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 		raise_user_error(_T("_tcps_invoke"), _T("website not define service module\n"));
 	}
 
-	pb = (tcps_block_t*)xmem_alloc(sizeof(tcps_block_t));
-	pb->cbs = sizeof(tcps_block_t);
-
-	pb->tcp = tcp;
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
 	pb->timo = xstol(sz_timo);
 
@@ -169,11 +171,9 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 		raise_user_error(_T("_tcps_invoke"), _T("website load invoke function failed\n"));
 	}
 
-	tra.param = (void*)pb;
-	tra.pf_track_error = (PF_TRACK_ERROR)_xtcps_track_error;
-	pb->ptk = &tra;
-
 	n_state = (*pf_invoke)(pb);
+
+	xdl_set_track(NULL, NULL);
 
 	free_library(api);
 	api = NULL;
@@ -186,19 +186,15 @@ void _xtcps_dispatch(xhand_t tcp, void* p)
 	return;
 
 ONERROR:
-	get_last_error(errcode, errtext, ERR_LEN);
+	XDL_TRACE_LAST;
+
+	xdl_set_track(NULL, NULL);
 
 	if (api)
-	{
 		free_library(api);
-	}
 
 	if (pb)
-	{
-		_xtcps_track_error((void*)pb, errcode, errtext);
-
 		xmem_free(pb);
-	}
 
 	return;
 }

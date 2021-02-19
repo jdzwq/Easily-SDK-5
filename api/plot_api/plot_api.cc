@@ -371,6 +371,8 @@ ONERROR:
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
 
+	XDL_TRACE_LAST;
+
 	return 0;
 }
 
@@ -399,6 +401,8 @@ void _invoke_error(const https_block_t* pb, plot_block_t* pd)
 
 		(*pb->plg->pf_log_error)(pb->plg->unc, sz_code, sz_error, -1);
 	}
+
+	XDL_TRACE_LAST;
 }
 
 /**********************************************************************************************/

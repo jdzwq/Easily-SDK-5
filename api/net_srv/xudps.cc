@@ -27,7 +27,7 @@ LICENSE.GPL3 for more details.
 #include "xudps.h"
 #include "srvlog.h"
 
-static void _xudps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
+void CALLBACK _xudps_track_error(void* hand, const tchar_t* code, const tchar_t* text)
 {
 	udps_block_t* pb = (udps_block_t*)hand;
 
@@ -99,17 +99,19 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 
 	xdate_t xdt = { 0 };
 
-	tchar_t errcode[NUM_LEN + 1] = { 0 };
-	tchar_t errtext[ERR_LEN + 1] = { 0 };
-
 	tchar_t sz_timo[INT_LEN + 1] = { 0 };
 	tchar_t sz_site[RES_LEN + 1] = { 0 };
 	tchar_t sz_proc[PATH_LEN + 1] = { 0 };
 	tchar_t sz_path[PATH_LEN + 1] = { 0 };
 
-	trace_interface tra = { 0 };
-
 	TRY_CATCH;
+
+	pb = (udps_block_t*)xmem_alloc(sizeof(udps_block_t));
+	pb->cbs = sizeof(udps_block_t);
+	pb->port = port;
+	xsncpy(pb->addr, addr, ADDR_LEN);
+
+	xdl_set_track((PF_TRACK_ERROR)_xudps_track_error, (void*)pb);
 
 	if (!port)
 	{
@@ -136,14 +138,9 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(_T("_xudps_invoke"), _T("website not define service module\n"));
 	}
 
-	pb = (udps_block_t*)xmem_alloc(sizeof(udps_block_t));
-	pb->cbs = sizeof(udps_block_t);
-
 	pb->is_thread = IS_THREAD_MODE(pxp->sz_mode);
-
 	pb->timo = xstol(sz_timo);
-	pb->port = port;
-	xsncpy(pb->addr, addr, ADDR_LEN);
+
 	if (pack)
 	{
 		xmem_copy((void*)pb->pack, (void*)pack, size);
@@ -167,11 +164,9 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 		raise_user_error(_T("_udps_invoke"), _T("website invoke module function failed\n"));
 	}
 
-	tra.param = (void*)pb;
-	tra.pf_track_error = (PF_TRACK_ERROR)_xudps_track_error;
-	pb->ptk = &tra;
-
 	n_state = (*pf_invoke)(pb);
+
+	xdl_set_track(NULL, NULL);
 
 	free_library(api);
 	api = NULL;
@@ -184,18 +179,15 @@ void _xudps_dispatch(unsigned short port, const tchar_t* addr, const byte_t* pac
 	return;
 
 ONERROR:
-
-	get_last_error(errcode, errtext, ERR_LEN);
+	XDL_TRACE_LAST;
+	
+	xdl_set_track(NULL, NULL);
 
 	if (api)
 		free_library(api);
 
 	if (pb)
-	{
-		_xudps_track_error((void*)pb, errcode, errtext);
-
 		xmem_free(pb);
-	}
 
 	return;
 }
