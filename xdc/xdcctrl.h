@@ -3088,9 +3088,9 @@ EXP_API res_win_t ownerctrl_create(const tchar_t* wname, dword_t wstyle, const x
 */
 EXP_API void	ownerctrl_redraw(res_win_t widget);
 
-EXP_API void ownerctrl_set_delta(res_win_t widget, var_long var);
+EXP_API void ownerctrl_set_delta(res_win_t widget, vword_t var);
 
-EXP_API var_long ownerctrl_get_delta(res_win_t widget);
+EXP_API vword_t ownerctrl_get_delta(res_win_t widget);
 
 /*******************************curve control************************************************************/
 typedef struct _NOTICE_CURVE{

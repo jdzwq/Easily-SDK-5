@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, vword_t delta)
 {
 	if (subid != IDS_EDITBOX)
 		return 0;
@@ -42,13 +42,13 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 	switch (nKey)
 	{
 	case KEY_TAB:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case KEY_ENTER:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case KEY_ESC:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case KEY_DOWN:
 		dropbox_tabskip((res_win_t)delta,TABORDER_DOWN);
@@ -58,14 +58,14 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 		return 1;
 	case KEY_SPACE:
 		editbox_set_text(widget, NULL);
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t subid, var_long delta)
+static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t subid, vword_t delta)
 {
 	res_win_t dropbox;
 
@@ -88,7 +88,7 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t s
 	return 1;
 }
 
-static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
+static int sub_editbox_self_command(res_win_t widget, int code, vword_t data, uid_t subid, vword_t delta)
 {
 	res_win_t dropbox;
 	//res_win_t keybox;
@@ -117,17 +117,17 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		}*/
 		return 1;
 	case COMMAND_COMMIT:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case COMMAND_ROLLBACK:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, vword_t delta)
 {
 	res_win_t dropbox;
 
@@ -143,7 +143,7 @@ static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 	widget_del_subproc(widget, IDS_EDITBOX);
 }
 
-static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long delta)
+static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, vword_t delta)
 {
 	res_win_t dropbox;
 	//res_win_t keybox;
@@ -174,7 +174,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static int sub_dropbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
+static int sub_dropbox_self_command(res_win_t widget, int code, vword_t data, uid_t subid, vword_t delta)
 {
 	res_win_t editbox;
 	link_t_ptr ent;
@@ -208,7 +208,7 @@ static int sub_dropbox_self_command(res_win_t widget, int code, var_long data, u
 	return 0;
 }
 
-static void sub_dropbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_dropbox_unsubbing(res_win_t widget, uid_t subid, vword_t delta)
 {
 	if (subid != IDS_DROPBOX)
 		return;
@@ -260,8 +260,8 @@ res_win_t firelist_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data)
 	ev.sub_on_unsubbing = sub_dropbox_unsubbing;
 
 	widget_set_subproc(dropbox, IDS_DROPBOX, &ev);
-	widget_set_subproc_delta(dropbox, IDS_DROPBOX, (var_long)editor);
-	widget_set_subproc_delta(editor, IDS_EDITBOX, (var_long)dropbox);
+	widget_set_subproc_delta(dropbox, IDS_DROPBOX, (vword_t)editor);
+	widget_set_subproc_delta(editor, IDS_EDITBOX, (vword_t)dropbox);
 
 	widget_get_window_rect(dropbox, &xr);
 	dropbox_popup_size(dropbox, RECTSIZE(&xr));

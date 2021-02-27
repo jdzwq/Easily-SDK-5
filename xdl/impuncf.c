@@ -433,6 +433,38 @@ bool_t xuncf_write_file_range(xhand_t unc, dword_t hoff, dword_t loff, const byt
 	return 1;
 }
 
+void* xuncf_lock_file_range(xhand_t unc, dword_t hoff, dword_t loff, dword_t dw, bool_t write, res_file_t* pmh)
+{
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
+	if_file_t* pif;
+	void* p;
+
+	pif = PROCESS_FILE_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	p = (*pif->pf_file_lock_range)(pcf->file, hoff, loff, dw, write, pmh);
+	if (!p)
+	{
+		set_system_error(_T("xuncf_lock_file_range"));
+		return NULL;
+	}
+
+	return p;
+}
+
+void xuncf_unlock_file_range(xhand_t unc, dword_t hoff, dword_t loff, dword_t dw, res_file_t mh, void* p)
+{
+	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);
+	if_file_t* pif;
+
+	pif = PROCESS_FILE_INTERFACE;
+
+	XDL_ASSERT(pif != NULL);
+
+	(*pif->pf_file_unlock_range)(mh, hoff, loff, dw, p);
+}
+
 bool_t uncf_contextruncate(xhand_t unc, dword_t hoff, dword_t loff)
 {
 	uncf_context* pcf = TypePtrFromHead(uncf_context, unc);

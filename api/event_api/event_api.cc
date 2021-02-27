@@ -26,7 +26,6 @@ LICENSE.GPL3 for more details.
 #include "event_api.h"
 
 typedef struct _event_block_t{
-	bool_t share;
 	tchar_t topic[RES_LEN + 1];
 	tchar_t path[PATH_LEN + 1];
 }event_block_t;
@@ -52,7 +51,6 @@ bool_t _invoke_event_pubs(const https_block_t* pb, event_block_t* pd)
 	dword_t msg_len = 0;
 
 	t_kb_t hkb = NULL;
-	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 	object_t val = NULL;
@@ -236,24 +234,18 @@ bool_t _invoke_event_pubs(const https_block_t* pb, event_block_t* pd)
 		ptr_event = NULL;
 	}
 
-	hkb = tkb_create(pd->path, pd->topic, pd->share);
+	hkb = tkb_create(pd->path, pd->topic, FILETABLE_SHARE | FILETABLE_DIRECT);
 	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_event_pubs"), _T("open kv database failed"));
 	}
 
-	hkv = tkv_create(hkb);
-	if (!hkv)
-	{
-		raise_user_error(_T("_invoke_event_pubs"), _T("create kv entity falied"));
-	}
-
-	key = variant_alloc(VV_STRING);
+	key = variant_alloc(VV_STRING_UTF8);
 	variant_from_string(key, sz_name, -1);
 
-	val = object_alloc(_UTF8);
+	val = object_alloc();
 
-	tkv_read(hkv, key, val);
+	tkb_load(hkb, key, val);
 
 	que = queue_alloc();
 
@@ -283,14 +275,13 @@ bool_t _invoke_event_pubs(const https_block_t* pb, event_block_t* pd)
 	que = NULL;
 
 	object_set_commpress(val, 1);
-	tkv_attach(hkv, key, val);
-	val = NULL;
+	tkb_save(hkb, key, val);
 
 	variant_free(key);
 	key = NULL;
 
-	tkv_destroy(hkv);
-	hkv = NULL;
+	object_free(val);
+	val = NULL;
 
 	tkb_destroy(hkb);
 	hkb = NULL;
@@ -319,9 +310,6 @@ ONERROR:
 		if (ptr_xml)
 			destroy_xml_doc(ptr_xml);
 	}
-
-	if (hkv)
-		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
@@ -367,7 +355,6 @@ bool_t _invoke_event_subs(const https_block_t* pb, event_block_t* pd)
 	dword_t msg_len = 0;
 
 	t_kb_t hkb = NULL;
-	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 	object_t val = NULL;
@@ -392,24 +379,18 @@ bool_t _invoke_event_subs(const https_block_t* pb, event_block_t* pd)
 	}
 	b_json = CONTENTTYPE_IS_JSON(sz_encoding);
 
-	hkb = tkb_create(pd->path, pd->topic, pd->share);
+	hkb = tkb_create(pd->path, pd->topic, FILETABLE_SHARE | FILETABLE_DIRECT);
 	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_event_subs"), _T("open kv database failed"));
 	}
 
-	hkv = tkv_create(hkb);
-	if (!hkv)
-	{
-		raise_user_error(_T("_invoke_event_subs"), _T("create kv entity falied"));
-	}
-
-	key = variant_alloc(VV_STRING);
+	key = variant_alloc(VV_STRING_UTF8);
 	variant_from_string(key, sz_name, -1);
 
-	val = object_alloc(_UTF8);
+	val = object_alloc();
 
-	tkv_read(hkv, key, val);
+	tkb_load(hkb, key, val);
 
 	que = queue_alloc();
 
@@ -429,14 +410,13 @@ bool_t _invoke_event_subs(const https_block_t* pb, event_block_t* pd)
 	que = NULL;
 
 	object_set_commpress(val, 1);
-	tkv_attach(hkv, key, val);
-	val = NULL;
+	tkb_save(hkb, key, val);
 
 	variant_free(key);
 	key = NULL;
 
-	tkv_destroy(hkv);
-	hkv = NULL;
+	object_free(val);
+	val = NULL;
 
 	tkb_destroy(hkb);
 	hkb = NULL;
@@ -513,9 +493,6 @@ ONERROR:
 
 	if (msg_buf)
 		xmem_free(msg_buf);
-
-	if (hkv)
-		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
@@ -605,13 +582,11 @@ int STDCALL https_invoke(const tchar_t* method, const https_block_t* pb)
 	}
 
 	read_proper(ptr_prop, _T("EVENT"), -1, _T("LOCATION"), -1, file, PATH_LEN);
-	read_proper(ptr_prop, _T("EVENT"), -1, _T("EXCLUSIVE"), -1, token, RES_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
 	printf_path(pd->path, file);
-	pd->share = (xstol(token)) ? 0 : 1;
 	
 	if (compare_text((pb->object + 1), 4, _T("pubs"), 4, 1) == 0)
 	{

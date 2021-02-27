@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcimp.h"
 #include "xdcbox.h"
 
-static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -45,17 +45,17 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 
 	if (nKey == KEY_TAB)
 	{
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 	else if (nKey == KEY_ENTER)
 	{
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 	else if (nKey == KEY_ESC)
 	{
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 	else if (nKey == KEY_DOWN)
@@ -78,7 +78,7 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 	return 0;
 }
 
-static int sub_editbox_char(res_win_t widget, tchar_t ch, uid_t subid, var_long delta)
+static int sub_editbox_char(res_win_t widget, tchar_t ch, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 	int index;
@@ -97,7 +97,7 @@ static int sub_editbox_char(res_win_t widget, tchar_t ch, uid_t subid, var_long 
 			plk = wordsbox_seek(ctrl, index);
 			if (plk)
 			{
-				widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+				widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 				return 1;
 			}
 		}
@@ -106,7 +106,7 @@ static int sub_editbox_char(res_win_t widget, tchar_t ch, uid_t subid, var_long 
 	return 0;
 }
 
-static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t subid, var_long delta)
+static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -133,7 +133,7 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t s
 	return 1;
 }
 
-static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
+static int sub_editbox_self_command(res_win_t widget, int code, vword_t data, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 	const tchar_t* text;
@@ -165,17 +165,17 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		}
 		return 1;
 	case COMMAND_COMMIT:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case COMMAND_ROLLBACK:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long delta)
+static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 	//res_win_t keybox;
@@ -204,7 +204,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	return 1;
 }
 
-static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -221,7 +221,7 @@ static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
 	widget_del_subproc(widget, IDS_EDITBOX);
 }
 /***************************************************************************************************/
-static int sub_wordsbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
+static int sub_wordsbox_self_command(res_win_t widget, int code, vword_t data, uid_t subid, vword_t delta)
 {
 	res_win_t editbox;
 
@@ -245,7 +245,7 @@ static int sub_wordsbox_self_command(res_win_t widget, int code, var_long data, 
 	return 0;
 }
 
-static void sub_wordsbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_wordsbox_unsubbing(res_win_t widget, uid_t subid, vword_t delta)
 {
 	if (subid != IDS_WORDSBOX)
 		return;
@@ -306,8 +306,8 @@ res_win_t firewords_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data
 		ev.sub_on_unsubbing = sub_wordsbox_unsubbing;
 
 		widget_set_subproc(ctrlbox, IDS_WORDSBOX, &ev);
-		widget_set_subproc_delta(ctrlbox, IDS_WORDSBOX, (var_long)editor);
-		widget_set_subproc_delta(editor, IDS_EDITBOX, (var_long)ctrlbox);
+		widget_set_subproc_delta(ctrlbox, IDS_WORDSBOX, (vword_t)editor);
+		widget_set_subproc_delta(editor, IDS_EDITBOX, (vword_t)ctrlbox);
 
 		widget_get_window_rect(ctrlbox, &xr);
 		wordsbox_popup_size(ctrlbox, RECTSIZE(&xr));

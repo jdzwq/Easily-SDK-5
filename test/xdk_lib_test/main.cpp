@@ -17,16 +17,16 @@ void test_heap()
 
     res_heap_t heap = (*if_heap.pf_heap_create)();
 
-    var_long ar[100];
+    vword_t ar[100];
 
     for(int i=0;i<100;i++)
     {
-        ar[i] = (var_long)(*if_heap.pf_heap_alloc)(heap, (i) * 10);
+        ar[i] = (vword_t)(*if_heap.pf_heap_alloc)(heap, (i) * 10);
     }
 
     for(int i=0;i<100;i++)
     {
-        ar[i] = (var_long)(*if_heap.pf_heap_realloc)(heap, (void*)ar[i], (i) * 100);
+        ar[i] = (vword_t)(*if_heap.pf_heap_realloc)(heap, (void*)ar[i], (i) * 100);
     }
 
     for(int i=0;i<10;i++)
@@ -83,7 +83,7 @@ void test_thread_mutex()
     (*if_thread.pf_mutex_destroy)(_T("mutex"), mux1);
 }
 
-/*void test_date()
+void test_date()
 {
     if_date_t if_date = { 0 };
     
@@ -95,7 +95,7 @@ void test_thread_mutex()
     printf("%d-%02d-%02d %02d %02d:%02d:%02d\n", dt.year, dt.mon, dt.day, dt.wday, dt.hour, dt.min, dt.sec);
     
     dt.day += 1;
-    (*if_date.pf_mak_loc_date)(&dt);
+    (*if_date.pf_mak_loc_week)(&dt);
     printf("%d-%02d-%02d %02d %02d:%02d:%02d\n", dt.year, dt.mon, dt.day, dt.wday,dt.hour, dt.min, dt.sec);
     (*if_date.pf_get_loc_date)(&dt);
     
@@ -136,6 +136,92 @@ void test_file()
      (*if_file.pf_file_delete)(_T("./body3.bmp"));
 }
 
+void test_file_range()
+{
+    if_file_t if_file = { 0 };
+    
+    xdk_impl_file(&if_file);
+
+    res_file_t fh = (*if_file.pf_file_open)(_T("./demo"), FILE_OPEN_CREATE);
+
+    dword_t n = PAGE_SIZE + 1;
+    void* buf = calloc(1, n);
+    
+    async_t over = {0};
+
+    int i;
+    dword_t dw = 0;
+    for(i = 0;i<256;i++)
+    {
+        *((byte_t*)buf + PAGE_SIZE) = i;
+       (*if_file.pf_file_write_range)(fh, 0, dw, buf, n);
+       dw += n;
+    }
+    
+    dw = 0;
+    for(i = 0;i<256;i++)
+    {
+        memset(buf, 0, n);
+        (*if_file.pf_file_read_range)(fh, 0, dw, buf, n);
+
+        if(*((byte_t*)buf + PAGE_SIZE) == i)
+            printf("%d passed\n");
+        else
+            printf("%d falied\n");
+        
+       dw += n;
+    }
+
+    free(buf);
+    (*if_file.pf_file_close)(fh);
+    
+    (*if_file.pf_file_delete)(_T("./demo"));
+}
+
+void test_file_block()
+{
+    if_file_t if_file = { 0 };
+    
+    xdk_impl_file(&if_file);
+
+    res_file_t fh = (*if_file.pf_file_open)(_T("./demo"), FILE_OPEN_CREATE);
+
+    dword_t n = PAGE_SIZE + 1;
+    void* buf;
+    
+    res_file_t mh;
+    async_t over = {0};
+
+    int i;
+    dword_t dw = 0;
+    for(i = 0;i<256;i++)
+    {
+       buf = (*if_file.pf_file_lock_range)(fh, 0, dw, n, 1, &mh);
+        *((byte_t*)buf + PAGE_SIZE) = i;
+        (*if_file.pf_file_unlock_range)(mh, 0, dw, n, buf);
+       dw += n;
+    }
+    
+    dw = 0;
+    for(i = 0;i<256;i++)
+    {
+        buf = (*if_file.pf_file_lock_range)(fh, 0, dw, n, 0, &mh);
+
+        if(*((byte_t*)buf + PAGE_SIZE) == i)
+            printf("%d passed\n");
+        else
+            printf("%d falied\n");
+
+        (*if_file.pf_file_unlock_range)(mh, 0, dw, n, buf);
+        
+       dw += n;
+    }
+
+    (*if_file.pf_file_close)(fh);
+    
+    (*if_file.pf_file_delete)(_T("./demo"));
+}
+
 void test_dir()
 {
     if_process_t if_proc = { 0 };
@@ -162,7 +248,7 @@ void test_dir()
     xscat(path,_T("/test/mydir"));
     (*if_file.pf_directory_open)(path, FILE_OPEN_CREATE);
 
-}*/
+}
 
 void test_name_pipe()
 {
@@ -770,6 +856,10 @@ int main(int argc, const char * argv[]) {
     //test_date();
     
     //test_file();
+
+    //test_file_range();
+
+    test_file_block();
     
     //test_dir();
     
@@ -791,7 +881,7 @@ int main(int argc, const char * argv[]) {
     
     //test_block();
     
-    test_share_cli();
+    //test_share_cli();
     
     //test_mbcs();
     

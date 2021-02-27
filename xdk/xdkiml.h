@@ -231,6 +231,8 @@ LOC_API bool_t	_file_flush(res_file_t fl);
 LOC_API bool_t	_file_read(res_file_t fl, void* buf, dword_t size, async_t* pb);
 LOC_API bool_t	_file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size);
 LOC_API bool_t	_file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size);
+LOC_API void*	_file_lock_range(res_file_t fh, dword_t hoff, dword_t loff, dword_t size, bool_t write, res_file_t* ph);
+LOC_API void	_file_unlock_range(res_file_t mh, dword_t hoff, dword_t loff, dword_t size, void* p);
 LOC_API bool_t	_file_truncate(res_file_t fh, dword_t hoff, dword_t loff);
 LOC_API bool_t	_file_delete(const tchar_t* fname);
 LOC_API bool_t	_file_rename(const tchar_t* fname, const tchar_t* nname);

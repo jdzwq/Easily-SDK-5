@@ -321,7 +321,7 @@ typedef struct _str_replace_t
 
 #ifdef XDU_SUPPORT_WIDGET
 
-typedef int(STDCALL *PF_ENUM_WINDOW_PROC)(res_win_t widget, var_long pv);
+typedef int(STDCALL *PF_ENUM_WINDOW_PROC)(res_win_t widget, vword_t pv);
 
 /*define widget notify header*/
 typedef struct _NOTICE{
@@ -331,41 +331,41 @@ typedef struct _NOTICE{
 }NOTICE, *LPNOTICE;
 
 /*subclass widget event*/
-typedef int(*SUB_ON_LBUTTON_DOWN)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_LBUTTON_UP)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_LBUTTON_DBCLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_RBUTTON_DOWN)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_RBUTTON_UP)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOUSE_MOVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOUSE_HOVER)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOUSE_LEAVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_WHEEL)(res_win_t, bool_t, int, uid_t, var_long);
-typedef int(*SUB_ON_SCROLL)(res_win_t, bool_t, int, uid_t, var_long);
-typedef int(*SUB_ON_KEYDOWN)(res_win_t, dword_t, int, uid_t, var_long);
-typedef int(*SUB_ON_KEYUP)(res_win_t, dword_t, int, uid_t, var_long);
-typedef int(*SUB_ON_CHAR)(res_win_t, tchar_t, uid_t, var_long);
-typedef int(*SUB_ON_SIZE)(res_win_t, int, const xsize_t*, uid_t, var_long);
-typedef int(*SUB_ON_MOVE)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_SHOW)(res_win_t, bool_t, uid_t, var_long);
-typedef int(*SUB_ON_PAINT)(res_win_t, visual_t, const xrect_t*, uid_t, var_long);
-typedef int(*SUB_ON_SET_FOCUS)(res_win_t, res_win_t, uid_t, var_long);
-typedef int(*SUB_ON_KILL_FOCUS)(res_win_t, res_win_t, uid_t, var_long);
-typedef int(*SUB_ON_ENABLE)(res_win_t, bool_t, uid_t, var_long);
-typedef int(*SUB_ON_NOTICE)(res_win_t, NOTICE*, uid_t, var_long);
-typedef int(*SUB_ON_MENU_COMMAND)(res_win_t, int, int, var_long, uid_t, var_long);
-typedef int(*SUB_ON_PARENT_COMMAND)(res_win_t, int, var_long, uid_t, var_long);
-typedef int(*SUB_ON_CHILD_COMMAND)(res_win_t, int, var_long, uid_t, var_long);
-typedef int(*SUB_ON_SELF_COMMAND)(res_win_t, int, var_long, uid_t, var_long);
-typedef int(*SUB_ON_COMMAND_FIND)(res_win_t, str_find_t*, uid_t, var_long);
-typedef int(*SUB_ON_COMMAND_REPLACE)(res_win_t, str_replace_t*, uid_t, var_long);
-typedef int(*SUB_ON_TIMER)(res_win_t, var_long, uid_t, var_long);
+typedef int(*SUB_ON_LBUTTON_DOWN)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_LBUTTON_UP)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_LBUTTON_DBCLICK)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_RBUTTON_DOWN)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_RBUTTON_UP)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_MOUSE_MOVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_MOUSE_HOVER)(res_win_t, unsigned int, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_MOUSE_LEAVE)(res_win_t, unsigned int, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_WHEEL)(res_win_t, bool_t, int, uid_t, vword_t);
+typedef int(*SUB_ON_SCROLL)(res_win_t, bool_t, int, uid_t, vword_t);
+typedef int(*SUB_ON_KEYDOWN)(res_win_t, dword_t, int, uid_t, vword_t);
+typedef int(*SUB_ON_KEYUP)(res_win_t, dword_t, int, uid_t, vword_t);
+typedef int(*SUB_ON_CHAR)(res_win_t, tchar_t, uid_t, vword_t);
+typedef int(*SUB_ON_SIZE)(res_win_t, int, const xsize_t*, uid_t, vword_t);
+typedef int(*SUB_ON_MOVE)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_SHOW)(res_win_t, bool_t, uid_t, vword_t);
+typedef int(*SUB_ON_PAINT)(res_win_t, visual_t, const xrect_t*, uid_t, vword_t);
+typedef int(*SUB_ON_SET_FOCUS)(res_win_t, res_win_t, uid_t, vword_t);
+typedef int(*SUB_ON_KILL_FOCUS)(res_win_t, res_win_t, uid_t, vword_t);
+typedef int(*SUB_ON_ENABLE)(res_win_t, bool_t, uid_t, vword_t);
+typedef int(*SUB_ON_NOTICE)(res_win_t, NOTICE*, uid_t, vword_t);
+typedef int(*SUB_ON_MENU_COMMAND)(res_win_t, int, int, vword_t, uid_t, vword_t);
+typedef int(*SUB_ON_PARENT_COMMAND)(res_win_t, int, vword_t, uid_t, vword_t);
+typedef int(*SUB_ON_CHILD_COMMAND)(res_win_t, int, vword_t, uid_t, vword_t);
+typedef int(*SUB_ON_SELF_COMMAND)(res_win_t, int, vword_t, uid_t, vword_t);
+typedef int(*SUB_ON_COMMAND_FIND)(res_win_t, str_find_t*, uid_t, vword_t);
+typedef int(*SUB_ON_COMMAND_REPLACE)(res_win_t, str_replace_t*, uid_t, vword_t);
+typedef int(*SUB_ON_TIMER)(res_win_t, vword_t, uid_t, vword_t);
 
-typedef int(*SUB_ON_SYSCLR_CLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
-typedef int(*SUB_ON_SYSLOG_CLICK)(res_win_t, const xpoint_t*, uid_t, var_long);
+typedef int(*SUB_ON_SYSCLR_CLICK)(res_win_t, const xpoint_t*, uid_t, vword_t);
+typedef int(*SUB_ON_SYSLOG_CLICK)(res_win_t, const xpoint_t*, uid_t, vword_t);
 
-typedef int(*SUB_ON_CLOSE)(res_win_t, uid_t, var_long);
-typedef void(*SUB_ON_SUBBING)(res_win_t, uid_t, var_long);
-typedef void(*SUB_ON_UNSUBBING)(res_win_t, uid_t, var_long);
+typedef int(*SUB_ON_CLOSE)(res_win_t, uid_t, vword_t);
+typedef void(*SUB_ON_SUBBING)(res_win_t, uid_t, vword_t);
+typedef void(*SUB_ON_UNSUBBING)(res_win_t, uid_t, vword_t);
 
 typedef struct _if_subproc_t{
 	SUB_ON_SUBBING		sub_on_subbing;
@@ -406,7 +406,7 @@ typedef struct _if_subproc_t{
 
 	void* proc;
 	uid_t sid;
-	var_long delta;
+	vword_t delta;
 }if_subproc_t;
 
 typedef void(*PF_ON_NCPAINT)(res_win_t, visual_t);
@@ -439,14 +439,14 @@ typedef void(*PF_ON_ENABLE)(res_win_t, bool_t);
 typedef void(*PF_ON_SET_FOCUS)(res_win_t, res_win_t);
 typedef void(*PF_ON_KILL_FOCUS)(res_win_t, res_win_t);
 typedef void(*PF_ON_NOTICE)(res_win_t, NOTICE*);
-typedef void(*PF_ON_MENU_COMMAND)(res_win_t, int, int, var_long);
-typedef void(*PF_ON_PARENT_COMMAND)(res_win_t, int, var_long);
-typedef void(*PF_ON_CHILD_COMMAND)(res_win_t, int, var_long);
-typedef void(*PF_ON_SELF_COMMAND)(res_win_t, int, var_long);
+typedef void(*PF_ON_MENU_COMMAND)(res_win_t, int, int, vword_t);
+typedef void(*PF_ON_PARENT_COMMAND)(res_win_t, int, vword_t);
+typedef void(*PF_ON_CHILD_COMMAND)(res_win_t, int, vword_t);
+typedef void(*PF_ON_SELF_COMMAND)(res_win_t, int, vword_t);
 typedef void(*PF_ON_COMMAND_FIND)(res_win_t, str_find_t*);
 typedef void(*PF_ON_COMMAND_REPLACE)(res_win_t, str_replace_t*);
 typedef void(*PF_ON_SYSCMD_CLICK)(res_win_t, const xpoint_t*);
-typedef void(*PF_ON_TIMER)(res_win_t, var_long);
+typedef void(*PF_ON_TIMER)(res_win_t, vword_t);
 
 /*widget event*/
 typedef struct _if_event_t{

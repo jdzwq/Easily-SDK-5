@@ -358,6 +358,8 @@ typedef bool_t(*PF_FILE_FLUSH)(res_file_t);
 typedef bool_t(*PF_FILE_READ)(res_file_t, void*, dword_t, async_t*);
 typedef bool_t(*PF_FILE_READ_RANGE)(res_file_t, dword_t, dword_t, void*, dword_t);
 typedef bool_t(*PF_FILE_WRITE_RANGE)(res_file_t, dword_t, dword_t, void*, dword_t);
+typedef void*(*PF_FILE_LOCK_RANGE)(res_file_t, dword_t, dword_t, dword_t, bool_t, res_file_t*);
+typedef void(*PF_FILE_UNLOCK_RANGE)(res_file_t, dword_t, dword_t, dword_t, void*);
 typedef bool_t(*PF_FILE_TRUNCATE)(res_file_t, dword_t, dword_t);
 typedef bool_t (*PF_FILE_DELETE)(const tchar_t*);
 typedef bool_t(*PF_FILE_RENAME)(const tchar_t*, const tchar_t*);
@@ -383,6 +385,8 @@ typedef struct _if_file_t{
 	PF_FILE_READ		pf_file_read;
 	PF_FILE_READ_RANGE	pf_file_read_range;
 	PF_FILE_WRITE_RANGE	pf_file_write_range;
+	PF_FILE_LOCK_RANGE	pf_file_lock_range;
+	PF_FILE_UNLOCK_RANGE pf_file_unlock_range;
 	PF_FILE_TRUNCATE	pf_file_truncate;
 	PF_FILE_DELETE		pf_file_delete;
 	PF_FILE_RENAME		pf_file_rename;

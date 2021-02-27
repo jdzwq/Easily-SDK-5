@@ -411,10 +411,10 @@ rnet_t* rnet_scu(xhand_t bio)
 	rnet = (rnet_t*)xmem_alloc(sizeof(rnet_t));
 	rnet->type = _RNET_TYPE_SCU;
 
-	rnet->pbo = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	rnet->pbo = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(bio, rnet->pbo);
 
-	rnet->encode = DEF_MBS;
+	rnet->encode = _UTF8;
 	rnet->status = _RNET_STATUS_ASSOCIATE;
 
 	return rnet;
@@ -430,10 +430,10 @@ rnet_t* rnet_scp(xhand_t bio)
 	rnet = (rnet_t*)xmem_alloc(sizeof(rnet_t));
 	rnet->type = _RNET_TYPE_SCP;
 
-	rnet->pbo = (if_bio_t*)xmem_alloc(sizeof(if_bio_t));
+	rnet->pbo = (bio_interface*)xmem_alloc(sizeof(bio_interface));
 	get_bio_interface(bio, rnet->pbo);
 
-	rnet->encode = DEF_MBS;
+	rnet->encode = _UTF8;
 	rnet->status = _RNET_STATUS_ASSOCIATE;
 
 	return rnet;
@@ -729,7 +729,7 @@ bool_t rnet_set(rnet_t* rnet, variant_t key, object_t val)
 	TRY_CATCH;
 
 	pdv.type = RNET_COMMAND_INSERT;
-	pdv.size = variant_encode(&key, NULL, MAX_LONG) + object_encode(val, NULL, MAX_LONG);
+	pdv.size = object_encode(val, NULL, MAX_LONG) + variant_encode(key, rnet->encode, NULL, MAX_LONG);
 
 	if (!rnet_send(rnet, &pdv))
 	{
@@ -738,10 +738,10 @@ bool_t rnet_set(rnet_t* rnet, variant_t key, object_t val)
 
 	buf = (byte_t*)xmem_alloc(pdv.size);
 
-	n = variant_encode(&key, buf + total, MAX_LONG);
+	n = object_encode(val, buf + total, MAX_LONG);
 	total += n;
 
-	n = object_encode(val, buf + total, MAX_LONG);
+	n = variant_encode(key, rnet->encode, buf + total, MAX_LONG);
 	total += n;
 
 	stm = stream_alloc(rnet->pbo);
@@ -791,7 +791,7 @@ bool_t rnet_get(rnet_t* rnet, variant_t key, object_t val)
 	TRY_CATCH;
 
 	pdv.type = RNET_COMMAND_SELECT;
-	pdv.size = variant_encode(&key, NULL, MAX_LONG);
+	pdv.size = variant_encode(key, rnet->encode, NULL, MAX_LONG);
 
 	if (!rnet_send(rnet, &pdv))
 	{
@@ -800,7 +800,7 @@ bool_t rnet_get(rnet_t* rnet, variant_t key, object_t val)
 
 	buf = (byte_t*)xmem_alloc(pdv.size);
 
-	n = variant_encode(&key, buf + total, MAX_LONG);
+	n = variant_encode(key, rnet->encode, buf + total, MAX_LONG);
 	total += n;
 
 	stm = stream_alloc(rnet->pbo);
@@ -824,13 +824,14 @@ bool_t rnet_get(rnet_t* rnet, variant_t key, object_t val)
 		raise_user_error(NULL, NULL);
 	}
 
-	n = variant_decode(NULL, buf);
-	if (n > pdv.size)
+	total = 0;
+	n = object_decode(val, buf + total);
+	total += n;
+
+	if (total > pdv.size)
 	{
 		raise_user_error(_T("rnet_read"), _T("invalid dataset"));
 	}
-
-	n = object_decode(val, buf + n);
 
 	xmem_free(buf);
 	buf = NULL;
@@ -867,7 +868,7 @@ bool_t rnet_del(rnet_t* rnet, variant_t key)
 	TRY_CATCH;
 
 	pdv.type = RNET_COMMAND_DELETE;
-	pdv.size = variant_encode(&key, NULL, MAX_LONG);
+	pdv.size = variant_encode(key, rnet->encode, NULL, MAX_LONG);
 
 	if (!rnet_send(rnet, &pdv))
 	{
@@ -876,7 +877,7 @@ bool_t rnet_del(rnet_t* rnet, variant_t key)
 
 	buf = (byte_t*)xmem_alloc(pdv.size);
 
-	n = variant_encode(&key, buf + total, MAX_LONG);
+	n = variant_encode(key, rnet->encode, buf + total, MAX_LONG);
 	total += n;
 
 	stm = stream_alloc(rnet->pbo);

@@ -70,7 +70,7 @@ typedef struct _previewdlg_delta_t{
 }previewdlg_delta_t;
 
 #define GETPREVIEWDLGDELTA(ph) 	(previewdlg_delta_t*)widget_get_user_delta(ph)
-#define SETPREVIEWDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPREVIEWDLGDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /************************************************************************************/
 
@@ -100,7 +100,7 @@ void _previewdlg_fresh_tree(res_win_t widget)
 		set_tree_item_showcheck(ilk, 1);
 		if (is_arch_document(ptd->arch,nlk))
 		{
-			set_tree_item_delta(ilk, (var_long)fetch_arch_document(nlk));
+			set_tree_item_delta(ilk, (vword_t)fetch_arch_document(nlk));
 		}
 
 		if (is_arch_catalog(ptd->arch, nlk) && get_dom_first_child_node(nlk))
@@ -810,7 +810,7 @@ void hand_previewdlg_size(res_win_t widget, int code, const xsize_t* prs)
 	widget_erase(widget, NULL);
 }
 
-void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_previewdlg_menu_command(res_win_t widget, int code, int cid, vword_t data)
 {
 	previewdlg_delta_t* ptd = GETPREVIEWDLGDELTA(widget);
 

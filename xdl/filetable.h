@@ -34,6 +34,14 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
+#define FILETABLE_SHARE		0x01
+#define FILETABLE_DIRECT	0x02
+
+#define BLOCK_SIZE_512		512
+#define BLOCK_SIZE_1024		1024
+#define BLOCK_SIZE_2048		2048
+#define BLOCK_SIZE_4096		4096
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -41,10 +49,11 @@ extern "C" {
 /*
 @FUNCTION create_file_table: create a file table.
 @INPUT const tchar_t* fname: the file path name.
-@INPUT bool_t share: if share, the file table will create lock table inner for ReadWrite.
+@INPUT int block: the block allocing size, must be BLOCK_SIZE_512, BLOCK_SIZE_1024, BLOCK_SIZE_2048, BLOCK_SIZE_4096.
+@INPUT dword_t mask: the mask can be FILETABLE_SHARE, FILETABLE_DIRECT or combined.
 @RETURN link_t_ptr: return the file table link component.
 */
-EXP_API link_t_ptr create_file_table(const tchar_t* fname, bool_t share);
+EXP_API link_t_ptr create_file_table(const tchar_t* fname, int block, dword_t mask);
 
 /*
 @FUNCTION destroy_file_table: destroy a file table.
@@ -54,12 +63,33 @@ EXP_API link_t_ptr create_file_table(const tchar_t* fname, bool_t share);
 EXP_API void destroy_file_table(link_t_ptr pt);
 
 /*
+@FUNCTION get_file_table_block: get the file table block type.
+@INPUT link_t_ptr pt: the file table link component.
+@RETURN dword_t: return the block type.
+*/
+EXP_API int get_file_table_block(link_t_ptr pt);
+
+/*
+@FUNCTION get_file_table_mask: get the file table mask.
+@INPUT link_t_ptr pt: the file table link component.
+@RETURN dword_t: return the mask.
+*/
+EXP_API dword_t get_file_table_mask(link_t_ptr pt);
+
+/*
+@FUNCTION get_file_table_block: get the file table block type.
+@INPUT link_t_ptr pt: the file table link component.
+@RETURN dword_t: return the block type.
+*/
+EXP_API int get_file_table_block(link_t_ptr pt);
+
+/*
 @FUNCTION set_file_table_root: set the file table root block index.
 @INPUT link_t_ptr pt: the file table link component.
 @INPUT dword_t pos: the zero based index.
-@RETURN void: none.
+@RETURN bool_t: return nonzero for alloced, otherwise return zero.
 */
-EXP_API void set_file_table_root(link_t_ptr pt, dword_t pos);
+EXP_API bool_t set_file_table_root(link_t_ptr pt, dword_t pos);
 
 /*
 @FUNCTION get_file_table_root: get the file table root block index.
@@ -94,27 +124,34 @@ EXP_API void free_file_table_block(link_t_ptr pt, dword_t pos, dword_t size);
 EXP_API bool_t get_file_table_block_alloced(link_t_ptr pt, dword_t pos);
 
 /*
-@FUNCTION read_file_table_block: read a file block into buffer.
+@FUNCTION lock_file_table_block: lock a file block for read/write
 @INPUT link_t_ptr pt: the file table link component.
 @INPUT dword_t pos: the file block index.
-@OUTPUT byte_t* buf: the bytes buffer.
 @INPUT dword_t size: the buffer size.
+@INPUT bool_t write: none zero indicate the block for writing.
+@OUTPUT res_file_t* pmh: if succeed file mapping handle returned.
+@OUTPUT void** pbuf: if succeed block buffer returned.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t read_file_table_block(link_t_ptr pt, dword_t pos, byte_t* buf, dword_t size);
+EXP_API bool_t lock_file_table_block(link_t_ptr pt, dword_t pos, dword_t size, bool_t write, res_file_t* pmh, void** pbuf);
 
 /*
-@FUNCTION write_file_table_block: write a file block from buffer.
+@FUNCTION unlock_file_table_block: unlock a file block for ending read or write
 @INPUT link_t_ptr pt: the file table link component.
 @INPUT dword_t pos: the file block index.
-@INPUT byte_t* buf: the bytes buffer.
 @INPUT dword_t size: the buffer size.
+@INPUT bool_t write: none zero indicate the block for writing.
+@INPUT res_file_t mh: the file mapping handle.
+@INPUT void* buf: the block buffer.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t write_file_table_block(link_t_ptr pt, dword_t pos, byte_t* buf, dword_t size);
+EXP_API bool_t unlock_file_table_block(link_t_ptr pt, dword_t pos, dword_t size, bool_t write, res_file_t mh, void* buf);
+
 
 #if defined(XDL_SUPPORT_TEST)
-EXP_API void test_file_table(const tchar_t* fname, bool_t share);
+EXP_API void test_file_table_alloc(const tchar_t* fname, dword_t mask);
+
+EXP_API void test_file_table_write(const tchar_t* fname, dword_t mask);
 #endif
 
 #ifdef	__cplusplus

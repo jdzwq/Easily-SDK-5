@@ -41,10 +41,10 @@ extern "C" {
 /*
 @FUNCTION create_lock_table: create a lock table.
 @INPUT const tchar_t* guid: the lock global id.
-@INPUT int map_nums: the single map items count.
+@INPUT int nums_permap: the single map items count.
 @RETURN link_t_ptr: return the lock table link component.
 */
-EXP_API link_t_ptr create_lock_table(const tchar_t* guid, int map_nums);
+EXP_API link_t_ptr create_lock_table(const tchar_t* guid, int nums_permap);
 
 /*
 @FUNCTION destroy_lock_table: destroy a lock table.

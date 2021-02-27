@@ -55,7 +55,7 @@ typedef struct _tree_redraw_param{
 }tree_redraw_param;
 
 #define GETTREEDELTA(ph) 		(tree_delta_t*)widget_get_user_delta(ph)
-#define SETTREEDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETTREEDELTA(ph,ptd)	widget_set_user_delta(ph,(vword_t)ptd)
 
 
 /*********************************************control event**************************************/
@@ -813,7 +813,7 @@ void hand_tree_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_tree_child_command(res_win_t widget, int code, var_long data)
+void hand_tree_child_command(res_win_t widget, int code, vword_t data)
 {
 	tree_delta_t* ptd = GETTREEDELTA(widget);
 

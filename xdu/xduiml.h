@@ -225,15 +225,15 @@ LOC_API res_win_t _widget_create(const tchar_t* wname, dword_t wstyle, const xre
 LOC_API void	_widget_destroy(res_win_t wt);
 LOC_API void	_widget_close(res_win_t wt, int ret);
 LOC_API if_event_t* _widget_get_dispatch(res_win_t wt);
-LOC_API void	_widget_set_core_delta(res_win_t wt, var_long pd);
-LOC_API var_long	_widget_get_core_delta(res_win_t wt);
-LOC_API void	_widget_set_user_delta(res_win_t wt, var_long pd);
-LOC_API var_long	_widget_get_user_delta(res_win_t wt);
+LOC_API void	_widget_set_core_delta(res_win_t wt, vword_t pd);
+LOC_API vword_t	_widget_get_core_delta(res_win_t wt);
+LOC_API void	_widget_set_user_delta(res_win_t wt, vword_t pd);
+LOC_API vword_t	_widget_get_user_delta(res_win_t wt);
 LOC_API void	_widget_set_user_id(res_win_t wt, uid_t uid);
 LOC_API uid_t	_widget_get_user_id(res_win_t wt);
-LOC_API void	_widget_set_user_prop(res_win_t wt, const tchar_t* pname, var_long pval);
-LOC_API var_long	_widget_get_user_prop(res_win_t wt, const tchar_t* pname);
-LOC_API var_long	_widget_del_user_prop(res_win_t wt, const tchar_t* pname);
+LOC_API void	_widget_set_user_prop(res_win_t wt, const tchar_t* pname, vword_t pval);
+LOC_API vword_t	_widget_get_user_prop(res_win_t wt, const tchar_t* pname);
+LOC_API vword_t	_widget_del_user_prop(res_win_t wt, const tchar_t* pname);
 LOC_API void	_widget_set_user_result(res_win_t wt, int code);
 LOC_API int		_widget_get_user_result(res_win_t wt);
 LOC_API void	_widget_set_style(res_win_t wt, dword_t ws);
@@ -284,7 +284,7 @@ LOC_API void	_widget_set_title(res_win_t wt, const tchar_t* token);
 LOC_API int		_widget_get_title(res_win_t wt, tchar_t* buf, int max);
 LOC_API void	_widget_calc_border(dword_t ws, border_t* pbd);
 LOC_API void	_widget_adjust_size(dword_t ws, xsize_t* pxs);
-LOC_API bool_t	_widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv);
+LOC_API bool_t	_widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, vword_t pv);
 
 LOC_API bool_t	_widget_is_maximized(res_win_t wt);
 LOC_API bool_t	_widget_is_minimized(res_win_t wt);
@@ -292,19 +292,19 @@ LOC_API bool_t	_widget_is_minimized(res_win_t wt);
 LOC_API if_subproc_t* _widget_get_subproc(res_win_t wt, uid_t sid);
 LOC_API bool_t	_widget_set_subproc(res_win_t wt, uid_t sid, if_subproc_t* sub);
 LOC_API void	_widget_del_subproc(res_win_t wt, uid_t sid);
-LOC_API bool_t	_widget_set_subproc_delta(res_win_t wt, uid_t sid, var_long delta);
-LOC_API var_long _widget_get_subproc_delta(res_win_t wt, uid_t sid);
+LOC_API bool_t	_widget_set_subproc_delta(res_win_t wt, uid_t sid, vword_t delta);
+LOC_API vword_t _widget_get_subproc_delta(res_win_t wt, uid_t sid);
 LOC_API bool_t	_widget_has_subproc(res_win_t wt);
 
 LOC_API void	_widget_post_char(res_win_t wt, tchar_t ch);
 LOC_API void	_widget_post_key(res_win_t wt, int key);
 LOC_API void	_widget_post_notice(res_win_t wt, NOTICE* pnc);
 LOC_API int		_widget_send_notice(res_win_t wt, NOTICE* pnc);
-LOC_API void	_widget_post_command(res_win_t wt, int code, uid_t cid, var_long data);
-LOC_API int		_widget_send_command(res_win_t wt, int code, uid_t cid, var_long data);
+LOC_API void	_widget_post_command(res_win_t wt, int code, uid_t cid, vword_t data);
+LOC_API int		_widget_send_command(res_win_t wt, int code, uid_t cid, vword_t data);
 
-LOC_API var_long _widget_set_timer(res_win_t wt, int ms);
-LOC_API void	_widget_kill_timer(res_win_t wt, var_long tid);
+LOC_API vword_t _widget_set_timer(res_win_t wt, int ms);
+LOC_API void	_widget_kill_timer(res_win_t wt, vword_t tid);
 
 LOC_API void	_widget_scroll(res_win_t wt, bool_t horz, int line);
 LOC_API void	_widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl);

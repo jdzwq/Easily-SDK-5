@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcbox.h"
 
 
-static int sub_checkbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
+static int sub_checkbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, vword_t delta)
 {
 	if (subid != IDS_CHECKBOX)
 		return 0;
@@ -42,20 +42,20 @@ static int sub_checkbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t su
 	switch (nKey)
 	{
 	case KEY_TAB:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case KEY_ENTER:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case KEY_ESC:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static void sub_checkbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_checkbox_unsubbing(res_win_t widget, uid_t subid, vword_t delta)
 {
 	if (subid != IDS_CHECKBOX)
 		return ;

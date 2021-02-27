@@ -87,7 +87,7 @@ static bina_node_t* _alloc_bina_node(variant_t key, byte_t clr, byte_t pos)
 	pbn->mask |= clr;
 
 	pbn->key = variant_alloc(VV_NULL);
-	pbn->val = object_alloc(DEF_MBS);
+	pbn->val = object_alloc();
 
 	return pbn;
 }
@@ -978,7 +978,7 @@ object_t detach_bina_leaf_object(link_t_ptr nlk)
 	pbn = BinaNodeFromLink(nlk);
 
 	val = pbn->val;
-	pbn->val = object_alloc(DEF_MBS);
+	pbn->val = object_alloc();
 
 	return val;
 }
@@ -1214,7 +1214,7 @@ void _test_bina_tree(int level)
 
 	variant_t key = variant_alloc(VV_INT);
 
-	object_t val = object_alloc(_UTF8);
+	object_t val = object_alloc();
 
 	int i, j = (level)? 100 : 1;
 	while (j--)

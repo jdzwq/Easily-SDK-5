@@ -49,7 +49,7 @@ typedef struct _proper_delta_t{
 }proper_delta_t;
 
 #define GETPROPERDELTA(ph) 	(proper_delta_t*)widget_get_user_delta(ph)
-#define SETPROPERDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPROPERDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /*****************************************************************************************************/
 static void _properctrl_section_rect(res_win_t widget, link_t_ptr sec, xrect_t* pxr)
@@ -953,7 +953,7 @@ void hand_proper_char(res_win_t widget, tchar_t nChar)
 
 }
 
-void hand_proper_child_command(res_win_t widget, int code, var_long data)
+void hand_proper_child_command(res_win_t widget, int code, vword_t data)
 {
 	proper_delta_t* ptd = GETPROPERDELTA(widget);
 

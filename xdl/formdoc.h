@@ -349,12 +349,12 @@ LICENSE.GPL3 for more details.
 */
 #define set_field_wrapable(flk,b)							set_dom_node_attr_boolean(flk,ATTR_WRAPABLE,b)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @SET set_field_delta: set the field extract value.
 */
 #define set_field_delta(flk,data)							set_dom_node_delta(flk,data)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @GET get_field_delta: get the field extract value.
 */
 #define get_field_delta(flk)								get_dom_node_delta(flk)

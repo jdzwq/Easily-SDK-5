@@ -37,7 +37,7 @@ typedef struct _checkbox_delta_t{
 }checkbox_delta_t;
 
 #define GETCHECKBOXDELTA(ph) 	(checkbox_delta_t*)widget_get_user_delta(ph)
-#define SETCHECKBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETCHECKBOXDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /********************************************************************************/
 void _checkbox_reset_page(res_win_t widget)
@@ -52,7 +52,7 @@ void _checkbox_reset_page(res_win_t widget)
 	widget_reset_scroll(widget, 0);
 }
 ////////////////////////////////////////////////////////////////////////////////////////
-void noti_checkbox_command(res_win_t widget, int code, var_long data)
+void noti_checkbox_command(res_win_t widget, int code, vword_t data)
 {
 	checkbox_delta_t* ptd = GETCHECKBOXDELTA(widget);
 
@@ -73,7 +73,7 @@ void checkbox_on_switch(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_checkbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_checkbox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 /*********************************************************************************/

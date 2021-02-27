@@ -52,34 +52,44 @@ static int variant_realloc(variant_t var, byte_t type, int count)
 	switch ((type & 0x7F))
 	{
 	case VV_BOOL:
+		count = 1;
 		sw = sizeof(bool_t);
 		break;
 	case VV_BYTE:
+		count = 1;
 		sw = sizeof(byte_t);
 		break;
-	case VV_SCHAR:
-		sw = sizeof(schar_t);
-		break;
-	case VV_WCHAR:
-		sw = sizeof(wchar_t);
-		break;
 	case VV_SHORT:
+		count = 1;
 		sw = sizeof(short);
 		break;
 	case VV_INT:
+		count = 1;
 		sw = sizeof(int);
 		break;
 	case VV_LONG:
+		count = 1;
 		sw = sizeof(long long);
 		break;
 	case VV_FLOAT:
+		count = 1;
 		sw = sizeof(float);
 		break;
 	case VV_DOUBLE:
+		count = 1;
 		sw = sizeof(double);
 		break;
-	case VV_STRING:
-		sw = sizeof(tchar_t) * count;
+	case VV_STRING_GB2312:
+		sw = sizeof(byte_t) * count;
+		break;
+	case VV_STRING_UTF8:
+		sw = sizeof(byte_t) * count;
+		break;
+	case VV_STRING_UTF16LIT:
+		sw = sizeof(byte_t) * count;
+		break;
+	case VV_STRING_UTF16BIG:
+		sw = sizeof(byte_t) * count;
 		break;
 	case VV_BOOL_ARRAY:
 		sw = sizeof(bool_t) * count;
@@ -96,23 +106,15 @@ static int variant_realloc(variant_t var, byte_t type, int count)
 	case VV_LONG_ARRAY:
 		sw = sizeof(long long) * count;
 		break;
-	case VV_SCHAR_ARRAY:
-		sw = sizeof(schar_t) * count;
-		break;
-	case VV_WCHAR_ARRAY:
-		sw = sizeof(wchar_t) * count;
-		break;
 	case VV_FLOAT_ARRAY:
 		sw = sizeof(float) * count;
 		break;
 	case VV_DOUBLE_ARRAY:
 		sw = sizeof(double) * count;
 		break;
-	case VV_STRING_ARRAY:
-		sw = sizeof(tchar_t) * count;
-		break;
 	default:
 		type = VV_NULL;
+		count = 0;
 		sw = 0;
 		break;
 	}
@@ -206,7 +208,7 @@ void variant_attach(variant_t var, void* data)
 	pvar->data = data;
 }
 
-void* variant_detach(variant_t var)
+const void* variant_detach(variant_t var)
 {
 	variant_context* pvar = TypePtrFromHead(variant_context, var);
 	void* d;
@@ -295,20 +297,6 @@ int variant_comp(variant_t var1, variant_t var2)
 			return -1;
 		else
 			return 0;
-	case VV_SCHAR:
-		if ((*((schar_t*)d1)) > (*((schar_t*)d2)))
-			return 1;
-		else if ((*((schar_t*)d1)) < (*((schar_t*)d2)))
-			return -1;
-		else
-			return 0;
-	case VV_WCHAR:
-		if ((*((wchar_t*)d1)) > (*((wchar_t*)d2)))
-			return 1;
-		else if ((*((wchar_t*)d1)) < (*((wchar_t*)d2)))
-			return -1;
-		else
-			return 0;
 	case VV_SHORT:
 		if ((*((short*)d1)) > (*((short*)d2)))
 			return 1;
@@ -344,8 +332,6 @@ int variant_comp(variant_t var1, variant_t var2)
 			return -1;
 		else
 			return 0;
-	case VV_STRING:
-		return compare_text((tchar_t*)d1, n1, (tchar_t*)d2, n2, 0);
 	case VV_BOOL_ARRAY:
 		i = 0;
 		while (i < n1 && i < n2)
@@ -431,40 +417,6 @@ int variant_comp(variant_t var1, variant_t var2)
 			return -1;
 		else
 			return 0;
-	case VV_SCHAR_ARRAY:
-		i = 0;
-		while (i < n1 && i < n2)
-		{
-			if (((schar_t*)d1)[i] >((schar_t*)d2)[i])
-				return 1;
-			else if (((schar_t*)d1)[i] < ((schar_t*)d2)[i])
-				return -1;
-
-			i++;
-		}
-		if (i < n1)
-			return 1;
-		else if (i < n2)
-			return -1;
-		else
-			return 0;
-	case VV_WCHAR_ARRAY:
-		i = 0;
-		while (i < n1 && i < n2)
-		{
-			if (((wchar_t*)d1)[i] >((wchar_t*)d2)[i])
-				return 1;
-			else if (((wchar_t*)d1)[i] < ((wchar_t*)d2)[i])
-				return -1;
-
-			i++;
-		}
-		if (i < n1)
-			return 1;
-		else if (i < n2)
-			return -1;
-		else
-			return 0;
 	case VV_FLOAT_ARRAY:
 		i = 0;
 		while (i < n1 && i < n2)
@@ -499,13 +451,16 @@ int variant_comp(variant_t var1, variant_t var2)
 			return -1;
 		else
 			return 0;
-	case VV_STRING_ARRAY:
+	case VV_STRING_GB2312:
+	case VV_STRING_UTF8:
+	case VV_STRING_UTF16LIT:
+	case VV_STRING_UTF16BIG:
 		i = 0;
 		while (i < n1 && i < n2)
 		{
-			if (((tchar_t*)d1)[i] >((tchar_t*)d2)[i])
+			if (((byte_t*)d1)[i] >((byte_t*)d2)[i])
 				return 1;
-			else if (((tchar_t*)d1)[i] < ((tchar_t*)d2)[i])
+			else if (((byte_t*)d1)[i] < ((byte_t*)d2)[i])
 				return -1;
 
 			i++;
@@ -554,20 +509,6 @@ int variant_to_string(variant_t var, tchar_t* buf, int max)
 			format_hexnum(*((byte_t*)d), buf, 2);
 		}
 		return 1;
-	case VV_SCHAR:
-		if (buf)
-		{
-			buf[0] = *((schar_t*)d);
-			buf[1] = _T('\0');
-		}
-		return 1;
-	case VV_WCHAR:
-		if (buf)
-		{
-			buf[0] = *((wchar_t*)d);
-			buf[1] = _T('\0');
-		}
-		return 1;
 	case VV_SHORT:
 		return stoxs(*((short*)d), buf, max);
 	case VV_INT:
@@ -578,14 +519,6 @@ int variant_to_string(variant_t var, tchar_t* buf, int max)
 		return ftoxs(*((float*)d), buf, max);
 	case VV_DOUBLE:
 		return numtoxs(*((double*)d), buf, max);
-	case VV_STRING:
-		n = (n < max) ? n : max;
-		if (buf)
-		{
-			xmem_copy((void*)buf, d, n * sizeof(tchar_t));
-			buf[n] = _T('\0');
-		}
-		return n;
 	case VV_BOOL_ARRAY:
 		for (i = 0; i < n; i++)
 		{
@@ -602,30 +535,6 @@ int variant_to_string(variant_t var, tchar_t* buf, int max)
 			format_hexnum((unsigned int)(((byte_t*)d)[i]), ((buf) ? buf + i * 3 : NULL), 2);
 		}
 		return (i * 2);
-	case VV_SCHAR_ARRAY:
-#ifdef _UNICODE
-		return mbs_to_ucs((schar_t*)(d), n, buf, max);
-#else
-		n = (n < max) ? n : max;
-		if (buf)
-		{
-			xmem_copy((void*)buf, d, n * sizeof(schar_t));
-			buf[n] = '\0';
-		}
-		return n;
-#endif
-	case VV_WCHAR_ARRAY:
-#ifdef _UNICODE
-		n = (n < max) ? n : max;
-		if (buf)
-		{
-			xmem_copy((void*)buf, (void*)(d), n * sizeof(wchar_t));
-			buf[n] = L'\0';
-		}
-		return n;
-#else
-		return ucs_to_mbs((wchar_t*)(d), n, buf, max);
-#endif
 	case VV_SHORT_ARRAY:
 		k = 0;
 		for (i = 0; i < n; i++)
@@ -696,13 +605,30 @@ int variant_to_string(variant_t var, tchar_t* buf, int max)
 			k++;
 		}
 		return k;
-	case VV_STRING_ARRAY:
-		n = (n < max) ? n : max;
-		if (buf)
-		{
-			xmem_copy((void*)buf, (void*)d, n * sizeof(tchar_t));
-		}
-		return n;
+	case VV_STRING_GB2312:
+#ifdef _UNICODE
+		return gb2312_to_ucs((byte_t*)(d), n, buf, max);
+#else
+		return gb2312_to_mbs((byte_t*)(d), n, buf, max);
+#endif
+	case VV_STRING_UTF8:
+#ifdef _UNICODE
+		return utf8_to_ucs((byte_t*)(d), n, buf, max);
+#else
+		return utf8_to_mbs((byte_t*)(d), n, buf, max);
+#endif
+	case VV_STRING_UTF16LIT:
+#ifdef _UNICODE
+		return utf16lit_to_ucs((byte_t*)(d), n, buf, max);
+#else
+		return utf16lit_to_mbs((byte_t*)(d), n, buf, max);
+#endif
+	case VV_STRING_UTF16BIG:
+#ifdef _UNICODE
+		return utf16big_to_ucs((byte_t*)(d), n, buf, max);
+#else
+		return utf16big_to_mbs((byte_t*)(d), n, buf, max);
+#endif
 	}
 
 	return 0;
@@ -727,29 +653,24 @@ void variant_from_string(variant_t var, const tchar_t* buf, int len)
 	switch (t & 0x7F)
 	{
 	case VV_NULL:
-		variant_realloc(var, VV_STRING, len);
+#ifdef _UNICODE
+		n = ucs_to_utf8(buf, len, NULL, MAX_LONG);
+#else
+		n = mbs_to_utf8(buf, len, NULL, MAX_LONG);
+#endif
+		variant_realloc(var, VV_STRING_UTF8, n);
 		d = pvar->data;
-		xmem_copy(d, (void*)buf, len * sizeof(tchar_t));
+#ifdef _UNICODE
+		n = ucs_to_utf8(buf, len, (byte_t*)d, n);
+#else
+		n = mbs_to_utf8(buf, len, (byte_t*)d, n);
+#endif
 		break;
 	case VV_BOOL:
 		*((bool_t*)d) = (buf[0] == _T('1')) ? 1 : 0;
 		break;
 	case VV_BYTE:
 		*((byte_t*)d) = (byte_t)parse_hexnum(buf, 2);
-		break;
-	case VV_SCHAR:
-#ifdef _UNICODE
-		ucs_byte_to_mbs(buf[0], (schar_t*)d);
-#else
-		*((schar_t*)d) = buf[0];
-#endif
-		break;
-	case VV_WCHAR:
-#ifdef _UNICODE
-		*((wchar_t*)d) = buf[0];
-#else
-		mbs_byte_to_ucs(buf[0], (wchar_t*)d);
-#endif
 		break;
 	case VV_SHORT:
 		*((short*)d) = xsntos(buf, len);
@@ -766,11 +687,6 @@ void variant_from_string(variant_t var, const tchar_t* buf, int len)
 	case VV_DOUBLE:
 		*((double*)d) = xsntonum(buf, len);
 		break;
-	case VV_STRING:
-		variant_realloc(var, VV_STRING, len);
-		d = pvar->data;
-		xmem_copy(d, (void*)buf, len * sizeof(tchar_t));
-		break;
 	case VV_BOOL_ARRAY:
 		variant_realloc(var, VV_BOOL_ARRAY, len);
 		d = pvar->data;
@@ -786,30 +702,6 @@ void variant_from_string(variant_t var, const tchar_t* buf, int len)
 		{
 			((byte_t*)d)[i] = (byte_t)parse_hexnum(&(buf[i*2]), 2);
 		}
-		break;
-	case VV_SCHAR_ARRAY:
-#ifdef _UNICODE
-		n = ucs_to_mbs(buf, len, NULL, MAX_LONG);
-		variant_realloc(var, VV_SCHAR_ARRAY, n);
-		d = pvar->data;
-		ucs_to_mbs(buf, len, (schar_t*)d, n);
-#else
-		variant_realloc(var, VV_SCHAR_ARRAY, len);
-		d = pvar->data;
-		xmem_copy((void*)d, (void*)buf, len * sizeof(schar_t));
-#endif
-		break;
-	case VV_WCHAR_ARRAY:
-#ifdef _UNICODE
-		variant_realloc(var, VV_WCHAR_ARRAY, len);
-		d = pvar->data;
-		xmem_copy((void*)d, (void*)buf, len * sizeof(wchar_t));
-#else
-		n = mbs_to_ucs(buf, len, NULL, MAX_LONG);
-		variant_realloc(var, VV_WCHAR_ARRAY, n);
-		d = pvar->data;
-		mbs_to_ucs(buf, len, (wchar_t*)d, n);
-#endif
 		break;
 	case VV_SHORT_ARRAY:
 		n = parse_string_token_count(buf, len, _T(' '));
@@ -881,11 +773,61 @@ void variant_from_string(variant_t var, const tchar_t* buf, int len)
 			i++;
 		}
 		break;
-	case VV_STRING_ARRAY:
-		variant_realloc(var, VV_STRING_ARRAY, len);
+	case VV_STRING_GB2312:
+#ifdef _UNICODE
+		n = ucs_to_gb2312(buf, len, NULL, MAX_LONG);
+#else
+		n = mbs_to_gb2312(buf, len, NULL, MAX_LONG);
+#endif
+		variant_realloc(var, VV_STRING_GB2312, n);
 		d = pvar->data;
-
-		xmem_copy((void*)d, (void*)buf, len * sizeof(tchar_t));
+#ifdef _UNICODE
+		ucs_to_gb2312(buf, len, (byte_t*)d, n);
+#else
+		mbs_to_gb2312(buf, len, (byte_t*)d, n);
+#endif
+		break;
+	case VV_STRING_UTF8:
+#ifdef _UNICODE
+		n = ucs_to_utf8(buf, len, NULL, MAX_LONG);
+#else
+		n = mbs_to_utf8(buf, len, NULL, MAX_LONG);
+#endif
+		variant_realloc(var, VV_STRING_UTF8, n);
+		d = pvar->data;
+#ifdef _UNICODE
+		ucs_to_utf8(buf, len, (byte_t*)d, n);
+#else
+		mbs_to_utf8(buf, len, (byte_t*)d, n);
+#endif
+		break;
+	case VV_STRING_UTF16LIT:
+#ifdef _UNICODE
+		n = ucs_to_utf16lit(buf, len, NULL, MAX_LONG);
+#else
+		n = mbs_to_utf16lit(buf, len, NULL, MAX_LONG);
+#endif
+		variant_realloc(var, VV_STRING_UTF16LIT, n);
+		d = pvar->data;
+#ifdef _UNICODE
+		ucs_to_utf16lit(buf, len, (byte_t*)d, n);
+#else
+		mbs_to_utf16lit(buf, len, (byte_t*)d, n);
+#endif
+		break;
+	case VV_STRING_UTF16BIG:
+#ifdef _UNICODE
+		n = ucs_to_utf16big(buf, len, NULL, MAX_LONG);
+#else
+		n = mbs_to_utf16big(buf, len, NULL, MAX_LONG);
+#endif
+		variant_realloc(var, VV_STRING_UTF16BIG, n);
+		d = pvar->data;
+#ifdef _UNICODE
+		ucs_to_utf16big(buf, len, (byte_t*)d, n);
+#else
+		mbs_to_utf16big(buf, len, (byte_t*)d, n);
+#endif
 		break;
 	}
 }
@@ -920,70 +862,6 @@ bool_t variant_get_bool(variant_t var)
 	XDL_ASSERT(t == VV_BOOL);
 
 	return (*((bool_t*)d));
-}
-
-void variant_set_schar(variant_t var, schar_t c)
-{
-	variant_context* pvar = TypePtrFromHead(variant_context, var);
-	void *d;
-	int t;
-
-	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
-
-	t = pvar->type;
-	d = pvar->data;
-
-	XDL_ASSERT(t == VV_SCHAR);
-
-	*((schar_t*)d) = c;
-}
-
-schar_t variant_get_schar(variant_t var)
-{
-	variant_context* pvar = TypePtrFromHead(variant_context, var);
-	void *d;
-	int t;
-
-	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
-
-	t = pvar->type;
-	d = pvar->data;
-
-	XDL_ASSERT(t == VV_SCHAR);
-
-	return (*((schar_t*)d));
-}
-
-void variant_set_wchar(variant_t var, wchar_t w)
-{
-	variant_context* pvar = TypePtrFromHead(variant_context, var);
-	void *d;
-	int t;
-
-	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT); 
-
-	t = pvar->type;
-	d = pvar->data;
-
-	XDL_ASSERT(t == VV_WCHAR);
-
-	*((wchar_t*)d) = w;
-}
-
-wchar_t variant_get_wchar(variant_t var)
-{
-	variant_context* pvar = TypePtrFromHead(variant_context, var);
-	void *d;
-	int t;
-
-	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
-
-	t = pvar->type;
-	d = pvar->data;
-
-	XDL_ASSERT(t == VV_WCHAR);
-
-	return (*((wchar_t*)d));
 }
 
 void variant_set_short(variant_t var, short c)
@@ -1146,171 +1024,305 @@ double variant_get_double(variant_t var)
 	return (*((double*)d));
 }
 
-const tchar_t* variant_get_string_ptr(variant_t var)
+/*
+struct{
+	byte[1]: type
+	byte[3]: count
+	byte[]: data
+*/
+
+dword_t variant_encode(variant_t var, byte_t* buf, dword_t max)
 {
 	variant_context* pvar = TypePtrFromHead(variant_context, var);
-	void *d;
-	int t;
+	dword_t total = 0;
+	int i;
+	bool_t b;
+	byte_t c;
+	short s;
+	int l;
+	long long ll;
+	float f;
+	double d;
 
 	XDL_ASSERT(var != NULL && var->tag == MEM_VARIANT);
 
-	t = pvar->type;
-	d = pvar->data;
-
-	XDL_ASSERT(t == VV_STRING);
-
-	return (tchar_t*)(d);
-}
-
-
-dword_t variant_encode(variant_t var, int encode, byte_t* buf, dword_t max)
-{
-	dword_t n = 0;
-	tchar_t* str;
-	int len;
-
-	XDL_ASSERT(var != NULL);
-
-	len = variant_to_string(var, NULL, MAX_LONG);
-	str = xsalloc(len + 1);
-	variant_to_string(var, str, len);
-
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = ucs_to_gb2312(str, len, ((buf) ? (buf + 1) : NULL), max);
-#else
-		n = mbs_to_gb2312(str, len, ((buf)? (buf + 1): NULL), max);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = ucs_to_utf8(str, len, ((buf) ? (buf + 1) : NULL), max);
-#else
-		n = mbs_to_utf8(str, len, ((buf)? (buf + 1) : NULL), max);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = ucs_to_utf16lit(str, len, ((buf) ? (buf + 1) : NULL), max);
-#else
-		n = mbs_to_utf16lit(str, len, ((buf)? (buf + 1) : NULL), max);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = ucs_to_utf16big(str, len, ((buf) ? (buf + 1) : NULL), max);
-#else
-		n = mbs_to_utf16big(str, len, ((buf)? (buf + 1) : NULL), max);
-#endif
-		break;
-	}
-
-	xsfree(str);
-
+	if (total + 1 > max) return total;
 	if (buf)
 	{
-		buf[0] = (byte_t)variant_get_type(var);
+		PUT_BYTE(buf, total, (byte_t)pvar->type);
+	}
+	total++;
+
+	if (total + 3 > max) return total;
+	if (buf)
+	{
+		PUT_THREEBYTE_LIT(buf, total, pvar->count);
+	}
+	total += 3;
+
+	switch (pvar->type & 0x7F)
+	{
+	case VV_BOOL:
+		pvar->count = 1;
+	case VV_BOOL_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 1 > max) return total;
+			if (buf)
+			{
+				b = *((bool_t*)pvar->data + i);
+				PUT_BYTE(buf, total, (byte_t)b);
+			}
+			total ++;
+		}
+		break;
+	case VV_BYTE:
+		pvar->count = 1;
+	case VV_BYTE_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 1 > max) return total;
+			if (buf)
+			{
+				c = *((byte_t*)pvar->data + i);
+				PUT_BYTE(buf, total, c);
+			}
+			total++;
+		}
+		break;
+	case VV_SHORT:
+		pvar->count = 1;
+	case VV_SHORT_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 2 > max) return total;
+			if (buf)
+			{
+				s = *((short*)pvar->data + i);
+				PUT_SWORD_LOC(buf, total, s);
+			}
+			total += 2;
+		}
+		break;
+	case VV_INT:
+		pvar->count = 1;
+	case VV_INT_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 4 > max) return total;
+			if (buf)
+			{
+				l = *((int*)pvar->data + i);
+				PUT_DWORD_LOC(buf, total, l);
+			}
+			total += 4;
+		}
+		break;
+	case VV_LONG:
+		pvar->count = 1;
+	case VV_LONG_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 8 > max) return total;
+			if (buf)
+			{
+				ll = *((long long*)pvar->data + i);
+				PUT_LWORD_LOC(buf, total, ll);
+			}
+			total += 8;
+		}
+		break;
+	case VV_FLOAT:
+		pvar->count = 1;
+	case VV_FLOAT_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 4 > max) return total;
+			if (buf)
+			{
+				f = *((float*)pvar->data + i);
+				PUT_DWORD_LOC(buf, total, (dword_t)f);
+			}
+			total += 4;
+		}
+		break;
+	case VV_DOUBLE:
+		pvar->count = 1;
+	case VV_DOUBLE_ARRAY:
+		for (i = 0; i < pvar->count; i++)
+		{
+			if (total + 8 > max) return total;
+			if (buf)
+			{
+				d = *((double*)pvar->data + i);
+				PUT_LWORD_LOC(buf, total, (lword_t)d);
+			}
+			total += 8;
+		}
+		break;
+	case VV_STRING_GB2312:
+	case VV_STRING_UTF8:
+	case VV_STRING_UTF16LIT:
+	case VV_STRING_UTF16BIG:
+		if (total + pvar->count > max) return total;
+		if (buf)
+		{
+			xmem_copy((void*)(buf+ total), (void*)(pvar->data), pvar->count);
+		}
+		total += pvar->count;
+		break;
+	default:
+		break;
 	}
 
-	return (n + 1);
+	return total;
 }
 
-void variant_decode(variant_t var, int encode, const byte_t* buf, dword_t len)
+dword_t variant_decode(variant_t var, const byte_t* buf)
 {
-	int n;
-	tchar_t* str;
-	byte_t type;
+	variant_context* pvar = TypePtrFromHead(variant_context, var);
+	dword_t total = 0;
+	int i, n, t;
+	bool_t b;
+	byte_t c;
+	short s;
+	int l;
+	long long ll;
+	float f;
+	double d;
 
-	if (!buf || !len)
+	if (!buf)
 	{
 		if (var)
 		{
-			type = variant_get_type(var);
-			variant_to_null(var, type);
+			t = variant_get_type(var);
+			variant_to_null(var, t);
+			return 0;
 		}
-		return;
 	}
+
+	t = GET_BYTE(buf, total);
+	total++;
+
+	if (!IS_VARIANT_TYPE(t))
+		return 0;
+
+	n = GET_THREEBYTE_LOC(buf, total);
+	total += 3;
 
 	if (var)
 	{
-		type = buf[0];
-		variant_realloc(var, type, 0);
+		variant_realloc(var, t, n);
 	}
 
-	switch (encode)
+	switch (t & 0x7F)
 	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
-#else
-		n = gb2312_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
-#endif
+	case VV_BOOL:
+		n = 1;
+	case VV_BOOL_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				b = GET_BYTE(buf, total);
+				*((bool_t*)pvar->data + i) = b;
+			}
+			total++;
+		}
 		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
-#else
-		n = utf8_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
-#endif
+	case VV_BYTE:
+		n = 1;
+	case VV_BYTE_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				c = GET_BYTE(buf, total);
+				*((byte_t*)pvar->data + i) = c;
+			}
+			total++;
+		}
 		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
-#else
-		n = utf16lit_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
-#endif
+	case VV_SHORT:
+		n = 1;
+	case VV_SHORT_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				s = GET_SWORD_LOC(buf, total);
+				*((short*)pvar->data + i) = s;
+			}
+			total += 2;
+			}
 		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs((buf + 1), (len - 1), NULL, MAX_LONG);
-#else
-		n = utf16big_to_mbs((buf + 1), (len - 1), NULL, MAX_LONG);
-#endif
+	case VV_INT:
+		n = 1;
+	case VV_INT_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				l = GET_DWORD_LOC(buf, total);
+				*((int*)pvar->data + i) = l;
+			}
+			total += 4;
+			}
+		break;
+	case VV_LONG:
+		n = 1;
+	case VV_LONG_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				ll = GET_LWORD_LOC(buf, total);
+				*((long long*)pvar->data + i) = ll;
+			}
+			total += 8;
+		}
+		break;
+	case VV_FLOAT:
+		n = 1;
+	case VV_FLOAT_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				f = (float)GET_DWORD_LOC(buf, total);
+				*((float*)pvar->data + i) = f;
+			}
+			total += 4;
+		}
+		break;
+	case VV_DOUBLE:
+		n = 1;
+	case VV_DOUBLE_ARRAY:
+		for (i = 0; i < n; i++)
+		{
+			if (var)
+			{
+				d = (double)GET_LWORD_LOC(buf, total);
+				*((double*)pvar->data + i) = d;
+			}
+			total += 8;
+		}
+		break;
+	case VV_STRING_GB2312:
+	case VV_STRING_UTF8:
+	case VV_STRING_UTF16LIT:
+	case VV_STRING_UTF16BIG:
+		if (var)
+		{
+			xmem_copy((void*)(pvar->data), (void*)(buf + total), n);
+		}
+		total += n;
+		break;
+	default:
 		break;
 	}
 
-	str = xsalloc(n + 1);
-
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs((buf + 1), (len - 1), str, n);
-#else
-		n = gb2312_to_mbs((buf + 1), (len - 1), str, n);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs((buf + 1), (len - 1), str, n);
-#else
-		n = utf8_to_mbs((buf + 1), (len - 1), str, n);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs((buf + 1), (len - 1), str, n);
-#else
-		n = utf16lit_to_mbs((buf + 1), (len - 1), str, n);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs((buf + 1), (len - 1), str, n);
-#else
-		n = utf16big_to_mbs((buf + 1), (len - 1), str, n);
-#endif
-		break;
-	}
-
-	if (var)
-	{
-		variant_from_string(var, str, n);
-	}
-
-	xsfree(str);
+	return total;
 }
 
 void variant_hash32(variant_t var, key32_t* pkey)
@@ -1333,12 +1345,6 @@ void variant_hash32(variant_t var, key32_t* pkey)
 	case VV_BYTE:
 		sw = sizeof(byte_t);
 		break;
-	case VV_SCHAR:
-		sw = sizeof(schar_t);
-		break;
-	case VV_WCHAR:
-		sw = sizeof(wchar_t);
-		break;
 	case VV_SHORT:
 		sw = sizeof(short);
 		break;
@@ -1353,9 +1359,6 @@ void variant_hash32(variant_t var, key32_t* pkey)
 		break;
 	case VV_DOUBLE:
 		sw = sizeof(double);
-		break;
-	case VV_STRING:
-		sw = sizeof(tchar_t) * n;
 		break;
 	case VV_BOOL_ARRAY:
 		sw = sizeof(bool_t) * n;
@@ -1372,20 +1375,17 @@ void variant_hash32(variant_t var, key32_t* pkey)
 	case VV_LONG_ARRAY:
 		sw = sizeof(long long) * n;
 		break;
-	case VV_SCHAR_ARRAY:
-		sw = sizeof(schar_t) * n;
-		break;
-	case VV_WCHAR_ARRAY:
-		sw = sizeof(wchar_t) * n;
-		break;
 	case VV_FLOAT_ARRAY:
 		sw = sizeof(float) * n;
 		break;
 	case VV_DOUBLE_ARRAY:
 		sw = sizeof(double) * n;
 		break;
-	case VV_STRING_ARRAY:
-		sw = sizeof(tchar_t) * n;
+	case VV_STRING_GB2312:
+	case VV_STRING_UTF8:
+	case VV_STRING_UTF16LIT:
+	case VV_STRING_UTF16BIG:
+		sw = sizeof(byte_t) * n;
 		break;
 	default:
 		sw = 0;
@@ -1418,12 +1418,6 @@ void variant_hash64(variant_t var, key64_t* pkey)
 	case VV_BYTE:
 		sw = sizeof(byte_t);
 		break;
-	case VV_SCHAR:
-		sw = sizeof(schar_t);
-		break;
-	case VV_WCHAR:
-		sw = sizeof(wchar_t);
-		break;
 	case VV_SHORT:
 		sw = sizeof(short);
 		break;
@@ -1438,9 +1432,6 @@ void variant_hash64(variant_t var, key64_t* pkey)
 		break;
 	case VV_DOUBLE:
 		sw = sizeof(double);
-		break;
-	case VV_STRING:
-		sw = sizeof(tchar_t) * n;
 		break;
 	case VV_BOOL_ARRAY:
 		sw = sizeof(bool_t) * n;
@@ -1457,20 +1448,17 @@ void variant_hash64(variant_t var, key64_t* pkey)
 	case VV_LONG_ARRAY:
 		sw = sizeof(long long) * n;
 		break;
-	case VV_SCHAR_ARRAY:
-		sw = sizeof(schar_t) * n;
-		break;
-	case VV_WCHAR_ARRAY:
-		sw = sizeof(wchar_t) * n;
-		break;
 	case VV_FLOAT_ARRAY:
 		sw = sizeof(float) * n;
 		break;
 	case VV_DOUBLE_ARRAY:
 		sw = sizeof(double) * n;
 		break;
-	case VV_STRING_ARRAY:
-		sw = sizeof(tchar_t) * n;
+	case VV_STRING_GB2312:
+	case VV_STRING_UTF8:
+	case VV_STRING_UTF16LIT:
+	case VV_STRING_UTF16BIG:
+		sw = sizeof(byte_t) * n;
 		break;
 	default:
 		sw = 0;
@@ -1503,12 +1491,6 @@ void variant_hash128(variant_t var, key128_t* pkey)
 	case VV_BYTE:
 		sw = sizeof(byte_t);
 		break;
-	case VV_SCHAR:
-		sw = sizeof(schar_t);
-		break;
-	case VV_WCHAR:
-		sw = sizeof(wchar_t);
-		break;
 	case VV_SHORT:
 		sw = sizeof(short);
 		break;
@@ -1523,9 +1505,6 @@ void variant_hash128(variant_t var, key128_t* pkey)
 		break;
 	case VV_DOUBLE:
 		sw = sizeof(double);
-		break;
-	case VV_STRING:
-		sw = sizeof(tchar_t) * n;
 		break;
 	case VV_BOOL_ARRAY:
 		sw = sizeof(bool_t) * n;
@@ -1542,20 +1521,17 @@ void variant_hash128(variant_t var, key128_t* pkey)
 	case VV_LONG_ARRAY:
 		sw = sizeof(long long) * n;
 		break;
-	case VV_SCHAR_ARRAY:
-		sw = sizeof(schar_t) * n;
-		break;
-	case VV_WCHAR_ARRAY:
-		sw = sizeof(wchar_t) * n;
-		break;
 	case VV_FLOAT_ARRAY:
 		sw = sizeof(float) * n;
 		break;
 	case VV_DOUBLE_ARRAY:
 		sw = sizeof(double) * n;
 		break;
-	case VV_STRING_ARRAY:
-		sw = sizeof(tchar_t) * n;
+	case VV_STRING_GB2312:
+	case VV_STRING_UTF8:
+	case VV_STRING_UTF16LIT:
+	case VV_STRING_UTF16BIG:
+		sw = sizeof(byte_t) * n;
 		break;
 	default:
 		sw = 0;
@@ -1571,8 +1547,8 @@ void variant_hash128(variant_t var, key128_t* pkey)
 #if defined(XDL_SUPPORT_TEST)
 void test_variant(void)
 {
-	variant_t v1 = variant_alloc(VV_STRING);
-	variant_t v2 = variant_alloc(VV_STRING);
+	variant_t v1 = variant_alloc(VV_STRING_UTF8);
+	variant_t v2 = variant_alloc(VV_STRING_UTF8);
 
 	XDL_ASSERT(variant_comp(v1, v2) == 0);
 
@@ -1597,11 +1573,11 @@ void test_variant(void)
 
 	byte_t* buf;
 	dword_t len;
-	len = variant_encode(v1, _UTF8, NULL, MAX_LONG);
+	len = variant_encode(v1, NULL, MAX_LONG);
 	buf = (byte_t*)xmem_alloc(len);
-	variant_encode(v1, _UTF8, buf, len);
+	variant_encode(v1, buf, len);
 
-	variant_decode(v2, _UTF8, buf, len);
+	variant_decode(v2, buf);
 
 	XDL_ASSERT(variant_comp(v1, v2) == 0);
 

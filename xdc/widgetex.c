@@ -52,7 +52,7 @@ typedef struct _widget_exten_t{
 }widget_exten_t;
 
 #define GETEXTENSTRUCT(wt)			(widget_exten_t*)widget_get_core_delta(wt)
-#define SETEXTENSTRUCT(wt, lp)		widget_set_core_delta(wt, (var_long)lp)
+#define SETEXTENSTRUCT(wt, lp)		widget_set_core_delta(wt, (vword_t)lp)
 
 
 /***********************************************************************************************************************/
@@ -821,7 +821,7 @@ void widget_splitor_on_paint(res_win_t wt, visual_t rdc, const xrect_t* prt)
 	}
 }
 
-int widget_splitor_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta)
+int widget_splitor_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -836,7 +836,7 @@ int widget_splitor_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, 
 	return 0;
 }
 
-int widget_splitor_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+int widget_splitor_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -851,7 +851,7 @@ int widget_splitor_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid,
 	return 0;
 }
 
-int widget_splitor_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+int widget_splitor_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -867,7 +867,7 @@ int widget_splitor_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, v
 	return 0;
 }
 
-int widget_splitor_sub_size(res_win_t wt, int code, const xsize_t* pxs, uid_t sid, var_long delta)
+int widget_splitor_sub_size(res_win_t wt, int code, const xsize_t* pxs, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 	xrect_t xr;
@@ -885,7 +885,7 @@ int widget_splitor_sub_size(res_win_t wt, int code, const xsize_t* pxs, uid_t si
 	return 0;
 }
 
-int widget_splitor_sub_paint(res_win_t wt, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
+int widget_splitor_sub_paint(res_win_t wt, visual_t rdc, const xrect_t* prt, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -951,7 +951,7 @@ void widget_docker_on_paint(res_win_t wt, visual_t rdc, const xrect_t* prt)
 	}
 }
 
-int widget_docker_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, uid_t sid, var_long delta)
+int widget_docker_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -965,7 +965,7 @@ int widget_docker_sub_mousemove(res_win_t wt, dword_t dw, const xpoint_t* pxp, u
 	return 1;
 }
 
-int widget_docker_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+int widget_docker_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -978,7 +978,7 @@ int widget_docker_sub_lbuttondown(res_win_t wt, const xpoint_t* pxp, uid_t sid, 
 	return 1;
 }
 
-int widget_docker_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, var_long delta)
+int widget_docker_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 
@@ -992,7 +992,7 @@ int widget_docker_sub_lbuttonup(res_win_t wt, const xpoint_t* pxp, uid_t sid, va
 	return 1;
 }
 
-int widget_docker_sub_paint(res_win_t wt, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta)
+int widget_docker_sub_paint(res_win_t wt, visual_t rdc, const xrect_t* prt, uid_t sid, vword_t delta)
 {
 	widget_exten_t* pwt = GETEXTENSTRUCT(wt);
 

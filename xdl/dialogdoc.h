@@ -199,7 +199,7 @@ LICENSE.GPL3 for more details.
 @PROPER delta: var int.
 @SET set_dialog_item_delta: set the dialog item extract data.
 */
-#define set_dialog_item_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
+#define set_dialog_item_delta(ilk,ul)					set_dom_node_delta(ilk,(vword_t)ul)
 /*
 @PROPER delta: var int.
 @GET get_dialog_item_delta: get the dialog item extract data.

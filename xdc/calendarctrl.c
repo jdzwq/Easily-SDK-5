@@ -48,7 +48,7 @@ typedef struct _calendar_delta_t{
 }calendar_delta_t;
 
 #define GETCALENDARDELTA(ph) 	(calendar_delta_t*)widget_get_user_delta(ph)
-#define SETCALENDARDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETCALENDARDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /******************************************calendar event********************************************************/
 

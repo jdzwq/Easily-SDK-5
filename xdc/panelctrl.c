@@ -47,7 +47,7 @@ typedef struct _panel_delta_t{
 }panel_delta_t;
 
 #define GETPANELDELTA(ph) 	(panel_delta_t*)widget_get_user_delta(ph)
-#define SETPANELDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETPANELDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 #define PANELCTRL_GUID_SPAN		(float)6
 #define PANELCTRL_SPAN_PLUS		(int)10

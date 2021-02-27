@@ -84,7 +84,7 @@ typedef enum{
 typedef struct _rnet_t{
 	int type;
 
-	if_bio_t* pbo;
+	bio_interface* pbo;
 
 	int encode;
 	int status;

@@ -1,5 +1,6 @@
 ﻿
 #include <xdl.h>
+#include <tdb.h>
 
 #ifdef _OS_WINDOWS
 #include <conio.h>
@@ -54,8 +55,20 @@ void test_stamp()
 	xdate_t dt;
 	tchar_t sz_date[UTC_LEN + 1] = { 0 };
 	lword_t ms;
+	dword_t m, s, k;
 
 	ms = get_timestamp();
+	m = ms / (1000 * 100);
+	s = ms % (1000 * 100);
+	k = m & 0x0FFFFFFF;
+
+	utc_date_from_timestamp(&dt, ms);
+
+	format_utctime(&dt, sz_date);
+
+	_tprintf(_T("%s\n"), sz_date);
+
+	ms = (lword_t)m * 100000 + (lword_t)s;
 
 	utc_date_from_timestamp(&dt, ms);
 
@@ -184,6 +197,18 @@ void test_words()
 	_tprintf(_T("len:%d total:%d\n"), len, total);
 }
 
+void test_nums()
+{
+	dword_t dl = 0xFFFFFFFF;
+	dword_t dh = 0;
+	lword_t ll = MAKELWORD(dl, dh) + 4096;
+
+	dword_t h = GETHDWORD(ll);
+	dword_t l = GETLDWORD(ll);
+
+	XDL_ASSERT(dl == l && dh == h);
+}
+
 typedef struct _time_hint{
 	int n_mon;
 	int* p_mon;
@@ -276,77 +301,77 @@ void test_time_hint()
 			continue;
 		}
 
-		b = 0;
-		for (i = 0; i < th.n_day; i++)
-		{
-			if (dt1.day == th.p_day[i])
-			{
-				b = 1;
-				break;
-			}
-		}
-		if (!b && th.n_day)
-		{
-			plus_days(&dt1, 1);
-			dt1.hour = 0;
-			dt1.min = 0;
-			dt1.sec = 0;
-			continue;
-		}
+b = 0;
+for (i = 0; i < th.n_day; i++)
+{
+	if (dt1.day == th.p_day[i])
+	{
+		b = 1;
+		break;
+	}
+}
+if (!b && th.n_day)
+{
+	plus_days(&dt1, 1);
+	dt1.hour = 0;
+	dt1.min = 0;
+	dt1.sec = 0;
+	continue;
+}
 
-		b = 0;
-		for (i = 0; i < th.n_hour; i++)
-		{
-			if (dt1.hour == th.p_hour[i])
-			{
-				b = 1;
-				break;
-			}
-		}
-		if (!b && th.n_hour)
-		{
-			plus_hours(&dt1, 1);
-			dt1.min = 0;
-			dt1.sec = 0;
-			continue;
-		}
+b = 0;
+for (i = 0; i < th.n_hour; i++)
+{
+	if (dt1.hour == th.p_hour[i])
+	{
+		b = 1;
+		break;
+	}
+}
+if (!b && th.n_hour)
+{
+	plus_hours(&dt1, 1);
+	dt1.min = 0;
+	dt1.sec = 0;
+	continue;
+}
 
-		b = 0;
-		for (i = 0; i < th.n_min; i++)
-		{
-			if (dt1.min == th.p_min[i])
-			{
-				b = 1;
-				break;
-			}
-		}
-		if (!b && th.n_min)
-		{
-			plus_minutes(&dt1, 1);
-			dt1.sec = 0;
-			continue;
-		}
+b = 0;
+for (i = 0; i < th.n_min; i++)
+{
+	if (dt1.min == th.p_min[i])
+	{
+		b = 1;
+		break;
+	}
+}
+if (!b && th.n_min)
+{
+	plus_minutes(&dt1, 1);
+	dt1.sec = 0;
+	continue;
+}
 
-		b = 0;
-		for (i = 0; i < th.n_sec; i++)
-		{
-			if (dt1.sec == th.p_sec[i])
-			{
-				b = 1;
-				break;
-			}
-		}
-		if (!b && th.n_sec)
-		{
-			plus_seconds(&dt1, 1);
-			continue;
-		}
+b = 0;
+for (i = 0; i < th.n_sec; i++)
+{
+	if (dt1.sec == th.p_sec[i])
+	{
+		b = 1;
+		break;
+	}
+}
+if (!b && th.n_sec)
+{
+	plus_seconds(&dt1, 1);
+	continue;
+}
 
-		mak_loc_week(&dt1);
-		format_datetime(&dt1, token);
-		_tprintf(_T("%s W%d\n"), token, dt1.wday);
+mak_loc_week(&dt1);
+format_datetime(&dt1, token);
+_tprintf(_T("%s W%d\n"), token, dt1.wday);
 
-		plus_seconds(&dt1, 1);
+plus_seconds(&dt1, 1);
 	}
 
 	xmem_free(th.p_mon);
@@ -357,12 +382,81 @@ void test_time_hint()
 	xmem_free(th.p_sec);
 }
 
+
+void test_hash32()
+{
+	int i, j, k =0, n = 100000;
+	tchar_t kid[NUM_LEN + 1] = { 0 };
+
+	variant_t key = variant_alloc(VV_STRING_UTF8);
+
+	key32_t* pka = (key32_t*)xmem_alloc(sizeof(key32_t) * n);
+
+	_tprintf(_T("hash32 test case:%d\n"), n);
+
+	for (i = 0; i < n; i++)
+	{
+		xsprintf(kid, _T("key%d"), i);
+		variant_from_string(key, kid, -1);
+
+		variant_hash32(key, pka + i);
+
+		for (j = i-1; j >= 0; j--)
+		{
+			if (pka[j] == pka[i])
+			{
+				k++;
+				_tprintf(_T("key%d collide with key%d\n"), i, j);
+			}
+		}
+	}
+
+	variant_free(key);
+	xmem_free(pka);
+
+	_tprintf(_T("hash32 collide:%f percent\n"), (double)k / (double)n * 100.0);
+}
+
+void test_hash64()
+{
+	int i, j, k = 0, n = 1000000;
+	tchar_t kid[NUM_LEN + 1] = { 0 };
+
+	variant_t key = variant_alloc(VV_STRING_UTF8);
+
+	key64_t* pka = (key64_t*)xmem_alloc(sizeof(key64_t) * n);
+
+	_tprintf(_T("hash64 test case:%d\n"), n);
+
+	for (i = 0; i < n; i++)
+	{
+		xsprintf(kid, _T("key%d"), i);
+		variant_from_string(key, kid, -1);
+
+		variant_hash64(key, pka + i);
+
+		for (j = i - 1; j >= 0; j--)
+		{
+			if (pka[j] == pka[i])
+			{
+				k++;
+				_tprintf(_T("key%d collide with key%d\n"), i, j);
+			}
+		}
+	}
+
+	variant_free(key);
+	xmem_free(pka);
+
+	_tprintf(_T("hash64 collide:%f percent\n"), (double)k / (double)n * 100.0);
+}
+
 void test_dict()
 {
 	link_t_ptr dict = create_dict_table();
 
-	variant_t var = variant_alloc(VV_STRING);
-	object_t val = object_alloc(_UTF8);
+	variant_t var = variant_alloc(VV_STRING_UTF8);
+	object_t val = object_alloc();
 	tchar_t str[100] = { 0 };
 	for (int i = 0; i < 100; i++)
 	{
@@ -414,7 +508,7 @@ int main(int argc, char* argv[])
 
 	//test_conv();
 
-	test_dict();
+	//test_dict();
 
 	//test_string_array();
 
@@ -425,6 +519,8 @@ int main(int argc, char* argv[])
 	//test_intset();
 
 	//test_words();
+
+	//test_nums();
 
 	//test_time_hint();
 
@@ -440,11 +536,19 @@ int main(int argc, char* argv[])
 
 	//test_lock_table();
 
-	//test_file_table(_T("demo"), 1);
+	//test_file_table_alloc(_T("demo"), FILETABLE_SHARE);
 
-	//test_bplus_tree();
+	//test_file_table_write(_T("demo"), FILETABLE_SHARE | FILETABLE_DIRECT);
 
-	//test_bplus_tree_file_table(_T("demo.ind"), _T("demo.dat"));
+	//test_bplus_tree_none_table();
+
+	//test_bplus_tree_file_table(_T("demo"), FILETABLE_SHARE);
+
+	test_tkv();
+
+	//test_hash32();
+
+	//test_hash64();
 
 	xdl_process_uninit();
 

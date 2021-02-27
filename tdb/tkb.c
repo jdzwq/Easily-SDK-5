@@ -30,6 +30,9 @@ typedef struct _t_kb_ctx
 {
 	t_kb_hdr hdr;
 
+	link_t_ptr ind_table;
+	link_t_ptr dat_table;
+
 	link_t_ptr tree;
 
 	tchar_t dpath[PATH_LEN + 1];
@@ -37,60 +40,72 @@ typedef struct _t_kb_ctx
 
 }t_kb_ctx;
 
-t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname, bool_t share)
+t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname, dword_t dmode)
 {
-	t_kb_ctx* pobj;
-	link_t_ptr table;
+	t_kb_ctx* pobj = NULL;
 	tchar_t fpath[PATH_LEN + 1] = { 0 };
+
+	TRY_CATCH;
 
 	pobj = (t_kb_ctx*)xmem_alloc(sizeof(t_kb_ctx));
 
 	xsncpy(pobj->dpath, dpath, PATH_LEN);
 	xsncpy(pobj->dname, dname, KEY_LEN);
 
-	pobj->tree = create_bplus_tree();
-
 	xsprintf(fpath, _T("%s/%s.ind"), pobj->dpath, pobj->dname);
-	table = create_file_table(fpath, share);
-	if (!table)
+	pobj->ind_table = create_file_table(fpath, BLOCK_SIZE_4096, dmode);
+	if (!(pobj->ind_table))
 	{
-		destroy_bplus_tree(pobj->tree);
-		xmem_free(pobj);
-		return NULL;
+		raise_user_error(_T("tkb_create"), fpath);
 	}
-	attach_bplus_index_table(pobj->tree, table);
 
 	xsprintf(fpath, _T("%s/%s.dat"), pobj->dpath, pobj->dname);
-	table = create_file_table(fpath, share);
-	if (!table)
+	pobj->dat_table = create_file_table(fpath, BLOCK_SIZE_512, dmode);
+	if (!(pobj->dat_table))
 	{
-		table = attach_bplus_index_table(pobj->tree, NULL);
-		destroy_file_table(table);
-
-		destroy_bplus_tree(pobj->tree);
-		xmem_free(pobj);
-		return NULL;
+		raise_user_error(_T("tkb_create"), fpath);
 	}
-	attach_bplus_data_table(pobj->tree, table);
+	
+	pobj->tree = create_bplus_file_table(pobj->ind_table, pobj->dat_table);
+	if (!(pobj->tree))
+	{
+		raise_user_error(_T("tkb_create"), _T("create bplus tree failed"));
+	}
+
+	END_CATCH;
 
 	pobj->hdr.tag = T_OBJ_DB;
 	return &(pobj->hdr);
+
+ONERROR:
+	XDL_TRACE_LAST;
+
+	if (pobj)
+	{
+		if (pobj->ind_table)
+			destroy_file_table(pobj->ind_table);
+		if (pobj->dat_table)
+			destroy_file_table(pobj->dat_table);
+		if (pobj->tree)
+			destroy_bplus_tree(pobj->tree);
+
+		xmem_free(pobj);
+	}
+
+	return NULL;
 }
 
 void tkb_destroy(t_kb_t hdb)
 {
 	t_kb_ctx* pobj = (t_kb_ctx*)hdb;
-	link_t_ptr table;
 
 	XDL_ASSERT(hdb && hdb->tag == T_OBJ_DB);
 
-	table = attach_bplus_data_table(pobj->tree, NULL);
-	destroy_file_table(table);
-
-	table = attach_bplus_index_table(pobj->tree, NULL);
-	destroy_file_table(table);
-
 	destroy_bplus_tree(pobj->tree);
+
+	destroy_file_table(pobj->ind_table);
+
+	destroy_file_table(pobj->dat_table);
 
 	xmem_free(pobj);
 }

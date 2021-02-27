@@ -204,17 +204,17 @@ EXP_API void set_string_entity_val(link_t_ptr elk,const tchar_t* val,int vallen)
 /*
 @FUNCTION set_string_entity_delta: set the string entity extract data.
 @INPUT link_t_ptr elk: the string entity link component.
-@INPUT var_long data: the extract data.
+@INPUT vword_t data: the extract data.
 @RETURN void: none.
 */
-EXP_API void set_string_entity_delta(link_t_ptr elk, var_long data);
+EXP_API void set_string_entity_delta(link_t_ptr elk, vword_t data);
 
 /*
 @FUNCTION get_string_entity_delta: get the string entity extract data.
 @INPUT link_t_ptr elk: the string entity link component.
-@RETURN var_long: return the extract data.
+@RETURN vword_t: return the extract data.
 */
-EXP_API var_long get_string_entity_delta(link_t_ptr elk);
+EXP_API vword_t get_string_entity_delta(link_t_ptr elk);
 
 /*
 @FUNCTION set_string_entity_mask: set the string entity mask.

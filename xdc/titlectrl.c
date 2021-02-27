@@ -39,7 +39,7 @@ typedef struct title_delta_t{
 }title_delta_t;
 
 #define GETTITLEDELTA(ph) 	(title_delta_t*)widget_get_user_delta(ph)
-#define SETTITLEDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTITLEDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /****************************************************************************************************/
 

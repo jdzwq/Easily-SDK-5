@@ -10,8 +10,8 @@
 #define SECRET_KEY		_T("902a3a42fce117906909b889b90ebae6")
 
 //#define HL7_URL		_T("https://172.16.220.131:8889")
-//#define HL7_URL		_T("https://127.0.0.1")
-#define HL7_URL		_T("http://139.196.196.107")
+#define HL7_URL		_T("https://127.0.0.1")
+//#define HL7_URL		_T("https://139.196.196.107")
 //#define HL7_URL		_T("https://www.homekit.bio")
 
 void test_hl7_head()
@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
 {
 	xdl_process_init(XDL_APARTMENT_THREAD | XDL_INITIALIZE_CONSOLE);
     
-	test_hl7_put();
+	//test_hl7_put();
 
 	//test_hl7_head();
 
@@ -303,7 +303,7 @@ int main(int argc, char* argv[])
 
 	//test_hl7_get();
 
-	//test_hl7_delete();
+	test_hl7_delete();
 
 	xdl_process_uninit();
 

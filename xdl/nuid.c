@@ -205,8 +205,8 @@ void test_nuid(void)
 	utc_date_from_timestamp(&dt, ts);
 	_tprintf(_T("%d-%d-%d %d:%d:%d %d\n"), dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
 
-	ts = get_times();
-	utc_date_from_times(&dt, ts);
+	dword_t t = get_times();
+	utc_date_from_times(&dt, t);
 	_tprintf(_T("%d-%d-%d %d:%d:%d %d\n"), dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec, dt.millsec);
 }
 #endif

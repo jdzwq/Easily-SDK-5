@@ -42,7 +42,7 @@ typedef struct _status_delta_t{
 }status_delta_t;
 
 #define GETSTATUSDELTA(ph) 		(status_delta_t*)widget_get_user_delta(ph)
-#define SETSTATUSDELTA(ph,ptd)	 widget_set_user_delta(ph,(var_long)ptd)
+#define SETSTATUSDELTA(ph,ptd)	 widget_set_user_delta(ph,(vword_t)ptd)
 
 /**************************************************************************************************/
 static void _statusctrl_title_rect(res_win_t widget, xrect_t* pxr)

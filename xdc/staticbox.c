@@ -39,7 +39,7 @@ typedef struct _staticbox_delta_t{
 }staticbox_delta_t;
 
 #define GETSTATICBOXDELTA(ph) 	(staticbox_delta_t*)widget_get_user_delta(ph)
-#define SETSTATICBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETSTATICBOXDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /*********************************************************************************/
 int hand_staticbox_create(res_win_t widget, void* data)
@@ -88,9 +88,9 @@ void hand_staticbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 {
 	staticbox_delta_t* ptd = GETSTATICBOXDELTA(widget);
 	
-	widget_send_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+	widget_send_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 
-	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 }
 
 void hand_staticbox_size(res_win_t widget, int code, const xsize_t* prs)

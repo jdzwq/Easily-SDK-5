@@ -49,7 +49,7 @@ typedef struct _tagctrl_delta_t{
 }tagctrl_delta_t;
 
 #define GETTAGCTRLDELTA(ph) 	(tagctrl_delta_t*)widget_get_user_delta(ph)
-#define SETTAGCTRLDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTAGCTRLDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /********************************************************************************************/
 static int _tagctrl_get_text(void* data, tchar_t* buf, int max)
@@ -175,12 +175,12 @@ void hand_tagctrl_cut(res_win_t widget)
 	if (_TEXTOR_PRESS_ACCEPT != hand_textor_cut(&ptd->textor))
 		return;
 
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -200,12 +200,12 @@ void hand_tagctrl_paste(res_win_t widget)
 	if (_TEXTOR_PRESS_ACCEPT != hand_textor_paste(&ptd->textor))
 		return;
 
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -225,12 +225,12 @@ void hand_tagctrl_undo(res_win_t widget)
 	if (_TEXTOR_PRESS_ACCEPT != hand_textor_undo(&ptd->textor))
 		return;
 
-	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+	widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -262,9 +262,9 @@ void hand_tagctrl_kill_focus(res_win_t widget, res_win_t wt)
 	if (widget_is_editor(widget))
 	{
 		if (tagctrl_get_dirty(widget))
-			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		else
-			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+			widget_send_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 	}
 }
 
@@ -286,12 +286,12 @@ void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 
 		if (_TEXTOR_PRESS_ACCEPT == hand_textor_back(&ptd->textor))
 		{
-			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 
 			if (ptd->joint != (link_t_ptr)ptd->textor.object)
 			{
 				ptd->joint = (link_t_ptr)ptd->textor.object;
-				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 			}
 		}
 		break;
@@ -301,12 +301,12 @@ void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 
 		if (_TEXTOR_PRESS_ACCEPT == hand_textor_delete(&ptd->textor))
 		{
-			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+			widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 
 			if (ptd->joint != (link_t_ptr)ptd->textor.object)
 			{
 				ptd->joint = (link_t_ptr)ptd->textor.object;
-				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+				widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 			}
 		}
 		break;
@@ -324,7 +324,7 @@ void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->joint = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 		}
 		break;
 	case KEY_RIGHT:
@@ -333,7 +333,7 @@ void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->joint = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 		}
 		break;
 	case KEY_UP:
@@ -342,7 +342,7 @@ void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->joint = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 		}
 		break;
 	case KEY_DOWN:
@@ -351,7 +351,7 @@ void hand_tagctrl_keydown(res_win_t widget, dword_t ks, int key)
 		if (ptd->joint != (link_t_ptr)ptd->textor.object)
 		{
 			ptd->joint = (link_t_ptr)ptd->textor.object;
-			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+			widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 		}
 		break;
 	case _T('c'):
@@ -428,7 +428,7 @@ void hand_tagctrl_char(res_win_t widget, tchar_t ch)
 
 	if (_TEXTOR_PRESS_ACCEPT == hand_textor_word(&ptd->textor, ptd->pch))
 	{
-		widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_UPDATE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -460,7 +460,7 @@ void hand_tagctrl_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -595,7 +595,7 @@ void hand_tagctrl_wheel(res_win_t widget, bool_t bHorz, int nDelta)
 	}
 }
 
-void hand_tagctrl_self_command(res_win_t widget, int code, var_long data)
+void hand_tagctrl_self_command(res_win_t widget, int code, vword_t data)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 
@@ -615,7 +615,7 @@ void hand_tagctrl_self_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_tagctrl_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_tagctrl_menu_command(res_win_t widget, int code, int cid, vword_t data)
 {
 	tagctrl_delta_t* ptd = GETTAGCTRLDELTA(widget);
 	
@@ -708,7 +708,7 @@ void tagctrl_redraw(res_win_t widget)
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -726,7 +726,7 @@ void tagctrl_select_all(res_win_t widget)
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -744,7 +744,7 @@ void tagctrl_select_cur(res_win_t widget)
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 
@@ -861,7 +861,7 @@ void tagctrl_attach(res_win_t widget, link_t_ptr data)
 
 	tagctrl_redraw(widget);
 
-	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+	widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 }
 
 link_t_ptr tagctrl_fetch(res_win_t widget)
@@ -917,7 +917,7 @@ void tagctrl_set_focus_joint(res_win_t widget, link_t_ptr nlk)
 	if (ptd->joint != (link_t_ptr)ptd->textor.object)
 	{
 		ptd->joint = (link_t_ptr)ptd->textor.object;
-		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (var_long)NULL);
+		widget_post_command(widget, COMMAND_CHANGE, IDC_SELF, (vword_t)NULL);
 	}
 }
 

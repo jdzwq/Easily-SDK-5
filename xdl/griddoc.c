@@ -660,7 +660,7 @@ link_t_ptr set_row_delete(link_t_ptr rlk)
 void set_cell_dirty(link_t_ptr rlk,link_t_ptr clk,bool_t b)
 {
 	link_t_ptr ent;
-	var_long msk;
+	vword_t msk;
 
 	const tchar_t* sz_col;
 
@@ -685,7 +685,7 @@ bool_t get_cell_dirty(link_t_ptr rlk,link_t_ptr clk)
 {
 	link_t_ptr ent;
 	const tchar_t* sz_col;
-	var_long msk;
+	vword_t msk;
 
 	sz_col = get_col_name_ptr(clk);
 	if(is_null(sz_col))

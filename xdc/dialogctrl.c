@@ -55,7 +55,7 @@ typedef struct _dialog_delta_t{
 }dialog_delta_t;
 
 #define GETDIALOGDELTA(ph) 	(dialog_delta_t*)widget_get_user_delta(ph)
-#define SETDIALOGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETDIALOGDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /******************************************dialog event********************************************************/
 static void _dialogctrl_done(res_win_t widget)

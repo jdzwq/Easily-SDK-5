@@ -42,7 +42,7 @@ typedef struct _multi_node_t{
 	int count;				// child node count
 
 	dword_t mask;			// runtime multi node mask
-	var_long delta;			// runtime user value
+	vword_t delta;			// runtime user value
 
 	link_t_ptr attr;		// hash table for node to properties 
 }multi_node_t;
@@ -400,7 +400,7 @@ int set_multi_child_node_mask_check(link_t_ptr ilk,dword_t ul, bool_t b)
 	return nd.count;
 }
 
-var_long get_multi_node_delta(link_t_ptr ilk)
+vword_t get_multi_node_delta(link_t_ptr ilk)
 {
 	multi_node_t* ptt;
 
@@ -411,7 +411,7 @@ var_long get_multi_node_delta(link_t_ptr ilk)
 	return ptt->delta;
 }
 
-void set_multi_node_delta(link_t_ptr ilk,var_long delta)
+void set_multi_node_delta(link_t_ptr ilk,vword_t delta)
 {
 	multi_node_t* ptt;
 

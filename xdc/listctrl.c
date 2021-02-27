@@ -53,7 +53,7 @@ typedef struct _list_delta_t{
 }list_delta_t;
 
 #define GETLISTDELTA(widget) 	((list_delta_t*)widget_get_user_delta(widget))
-#define SETLISTDELTA(widget,ptd) widget_set_user_delta(widget,(var_long)ptd)
+#define SETLISTDELTA(widget,ptd) widget_set_user_delta(widget,(vword_t)ptd)
 
 /******************************************************************************************************/
 
@@ -880,7 +880,7 @@ void hand_list_char(res_win_t widget, tchar_t ch)
 	}
 }
 
-void hand_list_child_command(res_win_t widget, int code, var_long data)
+void hand_list_child_command(res_win_t widget, int code, vword_t data)
 {
 	list_delta_t* ptd = GETLISTDELTA(widget);
 

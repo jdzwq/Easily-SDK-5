@@ -45,7 +45,7 @@ typedef struct _ac_leaf_t{
 	bool_t leaf;
 	union{
 		dword_t fail; /*failed pointer*/
-		var_long delta; /*user key delta*/
+		vword_t delta; /*user key delta*/
 	};
 }ac_leaf_t;
 
@@ -93,7 +93,7 @@ void destroy_ac_table(link_t_ptr tt)
 	xmem_free(ptt);
 }
 
-void insert_ac_table(link_t_ptr tt, const tchar_t* key, int len, var_long delta)
+void insert_ac_table(link_t_ptr tt, const tchar_t* key, int len, vword_t delta)
 {
 	ac_table_t* ptt = ACTableFromLink(tt);
 	int i;
@@ -189,7 +189,7 @@ static dword_t _next_state(ac_table_t* ptt, dword_t sta, sword_t ind)
 }
 
 
-var_long find_ac_table(link_t_ptr tt, const tchar_t* key, int len)
+vword_t find_ac_table(link_t_ptr tt, const tchar_t* key, int len)
 {
 	ac_table_t* ptt = ACTableFromLink(tt);
 	int i;
@@ -400,7 +400,7 @@ void trace_ac_table(link_t_ptr tt, const tchar_t* key, int len)
 	_tprintf(_T("\n"));
 }
 
-static bool_t printf_ac_node(const tchar_t* key, int len, var_long delta, void* p)
+static bool_t printf_ac_node(const tchar_t* key, int len, vword_t delta, void* p)
 {
 	_tprintf(_T("%s\t%d\n"), key, (int)delta);
 

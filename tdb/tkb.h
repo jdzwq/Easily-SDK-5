@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 extern "C" {
 #endif
 
-EXP_API t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname, bool_t share);
+EXP_API t_kb_t tkb_create(const tchar_t* dpath, const tchar_t* dname, dword_t tmode);
 
 EXP_API void tkb_destroy(t_kb_t hdb);
 

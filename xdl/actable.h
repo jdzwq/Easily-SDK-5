@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 
 #include "xdldef.h"
 
-typedef bool_t(*PF_ENUM_AC_TABLE)(const tchar_t* key, int len, var_long delta, void* p);
+typedef bool_t(*PF_ENUM_AC_TABLE)(const tchar_t* key, int len, vword_t delta, void* p);
 
 #ifdef	__cplusplus
 extern "C" {
@@ -58,10 +58,10 @@ EXP_API void destroy_ac_table(link_t_ptr ptr);
 @INPUT link_t_ptr ptr: the ac table link component.
 @INPUT const tchar_t* key: the key string token.
 @INPUT int len: the key string token length in characters.
-@INPUT var_long val: the int val.
+@INPUT vword_t val: the int val.
 @RETURN void: none.
 */
-EXP_API void insert_ac_table(link_t_ptr ptr, const tchar_t* key, int len, var_long val);
+EXP_API void insert_ac_table(link_t_ptr ptr, const tchar_t* key, int len, vword_t val);
 
 /*
 @FUNCTION build_ac_table: build failure transfer table of the ac table .
@@ -75,9 +75,9 @@ EXP_API void build_ac_table(link_t_ptr ptr);
 @INPUT link_t_ptr ptr: the ac table link component.
 @INPUT const tchar_t* key: the key string token.
 @INPUT int len: the key string token length in characters.
-@RETURN var_long: return the data if finded, otherwise return zero.
+@RETURN vword_t: return the data if finded, otherwise return zero.
 */
-EXP_API var_long find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
+EXP_API vword_t find_ac_table(link_t_ptr ptr, const tchar_t* key, int len);
 
 /*
 @FUNCTION enum_ac_table: enum ac table key and value.

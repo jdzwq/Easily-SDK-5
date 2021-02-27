@@ -43,10 +43,11 @@ typedef struct _vector_context{
 	void* data;
 }vector_context;
 
+#define VECTOR_CALC_SIZE(count, dimen)		(count * dimen * sizeof(double))
+
 vector_t vector_alloc(int count, int dimen)
 {
 	vector_context* pmv;
-	int n;
 
 	XDL_ASSERT(count >= 0 && dimen >= 0);
 
@@ -56,8 +57,7 @@ vector_t vector_alloc(int count, int dimen)
 
 	pmv->count = count;
 	pmv->dimen = dimen;
-	n = pmv->count * pmv->dimen * sizeof(double);
-	pmv->data = xmem_alloc(n);
+	pmv->data = NULL;
 
 	return (vector_t)&(pmv->head);
 }
@@ -84,8 +84,12 @@ vector_t vector_clone(vector_t vec)
 
 	pnew = (vector_context*)vector_alloc(pmv->count, pmv->dimen);
 
-	n = pmv->count * pmv->dimen * sizeof(double);
-	xmem_copy(pnew->data, pmv->data, n);
+	if (pmv->data)
+	{
+		n = VECTOR_CALC_SIZE(pmv->count, pmv->dimen);
+		pnew->data = xmem_realloc(pnew->data, n);
+		xmem_copy(pnew->data, pmv->data, n);
+	}
 
 	return (vector_t)&(pnew->head);
 }
@@ -93,18 +97,18 @@ vector_t vector_clone(vector_t vec)
 void vector_reset(vector_t vec, int count, int dimen)
 {
 	vector_context* pmv = TypePtrFromHead(vector_context, vec);
-	int n;
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
 
-	n = count * dimen * sizeof(double);
-	pmv->data = xmem_realloc(pmv->data, n);
-	xmem_zero(pmv->data, n);
+	if (pmv->data)
+		xmem_free(pmv->data);
+
+	pmv->data = NULL;
 	pmv->count = count;
 	pmv->dimen = dimen;
 }
 
-void* vector_data(vector_t vec)
+const void* vector_data(vector_t vec)
 {
 	vector_context* pmv = TypePtrFromHead(vector_context, vec);
 
@@ -138,34 +142,6 @@ void* vector_detach(vector_t vec)
 	return d;
 }
 
-void vector_zero(vector_t vec)
-{
-	vector_context* pmv = TypePtrFromHead(vector_context, vec);
-	int n;
-
-	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
-
-	n = pmv->count * pmv->dimen * sizeof(double);
-	xmem_zero(pmv->data, n);
-}
-
-void vector_unit(vector_t vec)
-{
-	vector_context* pmv = TypePtrFromHead(vector_context, vec);
-	double* pd;
-	int i;
-
-	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
-
-	pd = (double*)pmv->data;
-
-	i = pmv->count * pmv->dimen;
-	while (i--)
-	{
-		*pd++ = 1.0;
-	}
-}
-
 void vector_copy(vector_t dst, vector_t src)
 {
 	vector_context* psrc = TypePtrFromHead(vector_context, src);
@@ -174,9 +150,13 @@ void vector_copy(vector_t dst, vector_t src)
 
 	XDL_ASSERT(psrc && psrc->head.tag == MEM_VECTOR && pdst && pdst->head.tag == MEM_VECTOR);
 
-	n = psrc->count * psrc->dimen * sizeof(double);
 	vector_reset(dst, psrc->count, psrc->dimen);
-	xmem_copy(pdst->data, psrc->data, n);
+	if (psrc->data)
+	{
+		n = VECTOR_CALC_SIZE(psrc->count, psrc->dimen);
+		pdst->data = xmem_realloc(pdst->data, n);
+		xmem_copy(pdst->data, psrc->data, n);
+	}
 }
 
 int vector_get_count(vector_t vec)
@@ -197,16 +177,62 @@ int vector_get_dimen(vector_t vec)
 	return pmv->dimen;
 }
 
+void vector_zero(vector_t vec)
+{
+	vector_context* pmv = TypePtrFromHead(vector_context, vec);
+	int n;
+
+	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
+
+	n = VECTOR_CALC_SIZE(pmv->count, pmv->dimen);
+
+	if (!pmv->data)
+	{
+		pmv->data = xmem_alloc(n);
+	}
+
+	xmem_zero(pmv->data, n);
+}
+
+void vector_unit(vector_t vec)
+{
+	vector_context* pmv = TypePtrFromHead(vector_context, vec);
+	double* pd;
+	int n, i;
+
+	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
+
+	if (!pmv->data)
+	{
+		n = VECTOR_CALC_SIZE(pmv->count, pmv->dimen);
+		pmv->data = xmem_alloc(n);
+	}
+
+	pd = (double*)pmv->data;
+
+	i = pmv->count * pmv->dimen;
+	while (i--)
+	{
+		*pd++ = 1.0;
+	}
+}
+
 void vector_set_value(vector_t vec, int i, ...)
 {
 	vector_context* pmv = TypePtrFromHead(vector_context, vec);
 	double* pd;
-	int j;
+	int n, j;
 	va_list arg;
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
 
 	XDL_ASSERT(i >= 0 && i < pmv->count);
+
+	if (!pmv->data)
+	{
+		n = VECTOR_CALC_SIZE(pmv->count, pmv->dimen);
+		pmv->data = xmem_alloc(n);
+	}
 
 	va_start(arg, i);
 
@@ -230,6 +256,11 @@ void vector_get_value(vector_t vec, int i, ...)
 	va_list arg;
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
+
+	if (!pmv->data)
+	{
+		return;
+	}
 
 	va_start(arg, i);
 
@@ -263,6 +294,11 @@ vector_t vector_shift(vector_t vec, ...)
 	va_list arg;
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
+
+	if (!pmv->data)
+	{
+		return NULL;
+	}
 
 	pb = (double*)xmem_alloc(pmv->dimen * sizeof(double));
 
@@ -303,6 +339,11 @@ vector_t vector_rotate(vector_t vec, double ang)
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
 
+	if (!pmv->data)
+	{
+		return NULL;
+	}
+
 	mat = matrix_alloc(pmv->dimen, pmv->dimen);
 
 	matrix_set_value(mat, 0, 0, cos(ang));
@@ -335,6 +376,11 @@ vector_t vector_scale(vector_t vec, ...)
 	va_list arg;
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
+
+	if (!pmv->data)
+	{
+		return NULL;
+	}
 
 	pb = (double*)xmem_alloc(pmv->dimen * sizeof(double));
 
@@ -374,6 +420,11 @@ vector_t vector_shear(vector_t vec, double sx, double sy)
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
 
+	if (!pmv->data)
+	{
+		return NULL;
+	}
+
 	mat = matrix_alloc(pmv->dimen, pmv->dimen);
 
 	matrix_set_value(mat, 0, 0, 1.0);
@@ -407,13 +458,19 @@ void vector_parse(vector_t vec, const tchar_t* str, int len)
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
 
-	pd = (double*)pmv->data;
-
-	if (is_null(str) || !len)
-		return;
-
 	if (len < 0)
 		len = xslen(str);
+
+	if (!len)
+		return;
+
+	if (!pmv->data)
+	{
+		n = VECTOR_CALC_SIZE(pmv->count, pmv->dimen);
+		pmv->data = xmem_alloc(n);
+	}
+
+	pd = (double*)pmv->data;
 
 	token = str;
 	
@@ -478,6 +535,11 @@ int vector_format(vector_t vec, tchar_t* buf, int max)
 	int total = 0;
 
 	XDL_ASSERT(pmv && pmv->head.tag == MEM_VECTOR);
+
+	if (!pmv->data)
+	{
+		return 0;
+	}
 
 	pd = (double*)pmv->data;
 
@@ -553,141 +615,59 @@ int vector_format(vector_t vec, tchar_t* buf, int max)
 	return total;
 }
 
-dword_t vector_encode(vector_t vec, int encode, byte_t* buf, dword_t max)
+/*
+struct{
+byte[2]: count
+byte[2]: dimen
+byte[]: data
+}vector_dump
+*/
+dword_t vector_encode(vector_t vec, byte_t* buf, dword_t max)
 {
+	vector_context* pmv = TypePtrFromHead(vector_context, vec);
 	dword_t n = 0;
-	tchar_t* str;
-	int len;
 
-	XDL_ASSERT(vec != NULL);
+	XDL_ASSERT(vec != NULL && vec->tag == MEM_VECTOR);
 
-	len = vector_format(vec, NULL, MAX_LONG);
-	str = xsalloc(len + 1);
-	vector_format(vec, str, len);
-
-	switch (encode)
+	if (buf)
 	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = ucs_to_gb2312(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_gb2312(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = ucs_to_utf8(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf8(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = ucs_to_utf16lit(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf16lit(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = ucs_to_utf16big(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf16big(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
+		PUT_SWORD_LOC(buf, 0, pmv->count);
+		PUT_SWORD_LOC(buf, 2, pmv->dimen);
 	}
 
-	xsfree(str);
+	n = VECTOR_CALC_SIZE(pmv->count, pmv->dimen);
+	n = (n < max) ? n : max;
+	if (buf && pmv->data)
+	{
+		xmem_copy((void*)(buf + 4), (void*)pmv->data, n);
+	}
 
-	return (n);
+	return (n + 4);
 }
 
-void vector_decode(vector_t vec, int encode, const byte_t* buf, dword_t len)
+dword_t vector_decode(vector_t vec, const byte_t* buf)
 {
-	int n;
-	tchar_t* str;
+	vector_context* pmv = TypePtrFromHead(vector_context, vec);
+	dword_t n = 0;
+	int count, dimen;
 
-	if (!buf || !len)
+	if (!buf)
 	{
-		if (vec)
-		{
-			vector_zero(vec);
-		}
-		return;
+		return 0;
 	}
 
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = gb2312_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf8_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf16lit_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf16big_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	}
+	count = GET_SWORD_LOC(buf, 0);
+	dimen = GET_SWORD_LOC(buf, 2);
 
-	str = xsalloc(n + 1);
-
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs(buf, len, str, n);
-#else
-		n = gb2312_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs(buf, len, str, n);
-#else
-		n = utf8_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs(buf, len, str, n);
-#else
-		n = utf16lit_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs(buf, len, str, n);
-#else
-		n = utf16big_to_mbs(buf, len, str, n);
-#endif
-		break;
-	}
-
+	n = VECTOR_CALC_SIZE(count, dimen);
 	if (vec)
 	{
-		vector_parse(vec, str, n);
+		vector_reset(vec, count, dimen);
+		pmv->data = xmem_realloc(pmv->data, n);
+		xmem_copy((void*)pmv->data, (void*)(buf + 4), n);
 	}
 
-	xsfree(str);
+	return (n + 4);
 }
 
 #if defined(XDL_SUPPORT_TEST)

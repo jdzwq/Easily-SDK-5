@@ -230,7 +230,7 @@ void test_lock_table()
 		}
 	}
 
-err:
+//err:
 
 	destroy_lock_table(lt);
 }

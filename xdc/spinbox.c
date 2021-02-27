@@ -37,10 +37,10 @@ typedef struct _spinbox_delta_t{
 }spinbox_delta_t;
 
 #define GETSPINBOXDELTA(ph) 	(spinbox_delta_t*)widget_get_user_delta(ph)
-#define SETSPINBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETSPINBOXDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /*********************************************************************************/
-void noti_spinbox_command(res_win_t widget, int code, var_long data)
+void noti_spinbox_command(res_win_t widget, int code, vword_t data)
 {
 	spinbox_delta_t* ptd = GETSPINBOXDELTA(widget);
 
@@ -58,7 +58,7 @@ void spinbox_on_plus(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_spinbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_spinbox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void spinbox_on_minus(res_win_t widget)
@@ -69,7 +69,7 @@ void spinbox_on_minus(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_spinbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_spinbox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 /*********************************************************************************/

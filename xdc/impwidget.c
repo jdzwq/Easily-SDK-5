@@ -210,7 +210,7 @@ bool_t	widget_is_minimized(res_win_t wt)
 	return (pif->pf_widget_is_minimized)(wt);
 }
 
-bool_t	widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv)
+bool_t	widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, vword_t pv)
 {
 	if_widget_t* pif;
 
@@ -305,7 +305,7 @@ res_acl_t widget_detach_accel(res_win_t wt)
 	return acl;
 }
 
-void widget_set_core_delta(res_win_t wt, var_long pd)
+void widget_set_core_delta(res_win_t wt, vword_t pd)
 {
 	if_widget_t* pif;
 
@@ -314,7 +314,7 @@ void widget_set_core_delta(res_win_t wt, var_long pd)
 	(pif->pf_widget_set_core_delta)(wt, pd);
 }
 
-var_long widget_get_core_delta(res_win_t wt)
+vword_t widget_get_core_delta(res_win_t wt)
 {
 	if_widget_t* pif;
 
@@ -323,7 +323,7 @@ var_long widget_get_core_delta(res_win_t wt)
 	return (pif->pf_widget_get_core_delta)(wt);
 }
 
-void widget_set_user_delta(res_win_t wt, var_long pd)
+void widget_set_user_delta(res_win_t wt, vword_t pd)
 {
 	if_widget_t* pif;
 
@@ -332,7 +332,7 @@ void widget_set_user_delta(res_win_t wt, var_long pd)
 	(pif->pf_widget_set_user_delta)(wt, pd);
 }
 
-var_long widget_get_user_delta(res_win_t wt)
+vword_t widget_get_user_delta(res_win_t wt)
 {
 	if_widget_t* pif;
 
@@ -377,7 +377,7 @@ res_win_t widget_get_parent(res_win_t wt)
 	return (pif->pf_widget_get_parent)(wt);
 }
 
-void widget_set_user_prop(res_win_t wt, const tchar_t* pname,var_long pval)
+void widget_set_user_prop(res_win_t wt, const tchar_t* pname,vword_t pval)
 {
 	if_widget_t* pif;
 
@@ -386,7 +386,7 @@ void widget_set_user_prop(res_win_t wt, const tchar_t* pname,var_long pval)
 	(pif->pf_widget_set_user_prop)(wt, pname, pval);
 }
 
-var_long widget_get_user_prop(res_win_t wt, const tchar_t* pname)
+vword_t widget_get_user_prop(res_win_t wt, const tchar_t* pname)
 {
 	if_widget_t* pif;
 
@@ -404,7 +404,7 @@ int widget_get_return(res_win_t wt)
 	return (pif->pf_widget_get_user_result)(wt);
 }
 
-var_long widget_del_user_prop(res_win_t wt, const tchar_t* pname)
+vword_t widget_del_user_prop(res_win_t wt, const tchar_t* pname)
 {
 	if_widget_t* pif;
 
@@ -769,7 +769,7 @@ int widget_send_notice(res_win_t wt, NOTICE* pnt)
 	return (pif->pf_widget_send_notice)(wt, pnt);
 }
 
-void widget_post_command(res_win_t wt, int code, int cid, var_long data)
+void widget_post_command(res_win_t wt, int code, int cid, vword_t data)
 {
 	if_widget_t* pif;
 
@@ -778,7 +778,7 @@ void widget_post_command(res_win_t wt, int code, int cid, var_long data)
 	(pif->pf_widget_post_command)(wt, code, cid, data);
 }
 
-int widget_send_command(res_win_t wt, int code, int cid, var_long data)
+int widget_send_command(res_win_t wt, int code, int cid, vword_t data)
 {
 	if_widget_t* pif;
 
@@ -931,7 +931,7 @@ void widget_del_subproc(res_win_t wt, dword_t sid)
 	(pif->pf_widget_del_subproc)(wt, sid);
 }
 
-var_long widget_get_subproc_delta(res_win_t wt, dword_t sid)
+vword_t widget_get_subproc_delta(res_win_t wt, dword_t sid)
 {
 	if_widget_t* pif;
 
@@ -940,7 +940,7 @@ var_long widget_get_subproc_delta(res_win_t wt, dword_t sid)
 	return (pif->pf_widget_get_subproc_delta)(wt, sid);
 }
 
-bool_t widget_set_subproc_delta(res_win_t wt, dword_t sid, var_long delta)
+bool_t widget_set_subproc_delta(res_win_t wt, dword_t sid, vword_t delta)
 {
 	if_widget_t* pif;
 
@@ -958,7 +958,7 @@ bool_t widget_has_subproc(res_win_t wt)
 	return (pif->pf_widget_has_subproc)(wt);
 }
 
-var_long widget_set_timer(res_win_t wt, int ms)
+vword_t widget_set_timer(res_win_t wt, int ms)
 {
 	if_widget_t* pif;
 
@@ -967,7 +967,7 @@ var_long widget_set_timer(res_win_t wt, int ms)
 	return (pif->pf_widget_set_timer)(wt, ms);
 }
 
-void widget_kill_timer(res_win_t wt, var_long tid)
+void widget_kill_timer(res_win_t wt, vword_t tid)
 {
 	if_widget_t* pif;
 

@@ -209,12 +209,12 @@ LICENSE.GPL3 for more details.
 */
 #define get_tree_item_checked(ilk)						get_dom_node_mask_check(ilk,MSK_CHECKED)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @SET set_tree_item_delta: set the tree item extract data.
 */
-#define set_tree_item_delta(ilk,ul)						set_dom_node_delta(ilk,(var_long)ul)
+#define set_tree_item_delta(ilk,ul)						set_dom_node_delta(ilk,(vword_t)ul)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @GET get_tree_item_delta: get the tree item extract data.
 */
 #define get_tree_item_delta(ilk)						get_dom_node_delta(ilk)

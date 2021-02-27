@@ -32,7 +32,7 @@ LICENSE.GPL3 for more details.
 #include "dicttable.h"
 #include "dblink.h"
 #include "varobj.h"
-
+#include "stacktable.h"
 #include "xdlimp.h"
 
 
@@ -42,7 +42,7 @@ typedef struct _dict_entity_t{
 	dword_t index;
 	variant_t key;
 	object_t val;
-	var_long delta;
+	vword_t delta;
 }dict_entity_t;
 
 typedef struct _dict_table_t{
@@ -457,7 +457,7 @@ link_t_ptr	write_dict_item(link_t_ptr ptr, variant_t key, object_t val)
 		phe->index = ENTITYINDEX(code);
 
 		phe->key = variant_clone(key);
-		phe->val = (val)? object_clone(val) : object_alloc(DEF_MBS);
+		phe->val = (val)? object_clone(val) : object_alloc();
 
 		plk = &((pht->pp)[DICTINDEX(code, pht->size)]);
 
@@ -662,12 +662,12 @@ object_t detach_dict_entity_val(link_t_ptr elk)
 
 	val = phe->val;
 
-	phe->val = object_alloc(DEF_MBS);
+	phe->val = object_alloc();
 
 	return val;
 }
 
-var_long get_dict_entity_delta(link_t_ptr elk)
+vword_t get_dict_entity_delta(link_t_ptr elk)
 {
 	dict_entity_t* phe;
 
@@ -678,7 +678,7 @@ var_long get_dict_entity_delta(link_t_ptr elk)
 	return phe->delta;
 }
 
-void set_dict_entity_delta(link_t_ptr elk, var_long delta)
+void set_dict_entity_delta(link_t_ptr elk, vword_t delta)
 {
 	dict_entity_t* phe;
 
@@ -724,6 +724,7 @@ int enum_dict_entity(link_t_ptr ptr, CALLBACK_ENUMLINK pf, void* pv)
 	return count;
 }
 
+
 #if defined(XDL_SUPPORT_TEST)
 void test_dict_table()
 {
@@ -736,7 +737,7 @@ void test_dict_table()
 
 	variant_t key = variant_alloc(VV_INT);
 
-	object_t val = object_alloc(_UTF8);
+	object_t val = object_alloc();
 
 	for (i = 0x4E00; i <= 0x9FA5; i++)
 	{

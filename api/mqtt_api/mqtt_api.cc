@@ -34,7 +34,6 @@ typedef struct _mqtt_block_t{
 	dword_t msg_len;
 	byte_t* msg_buf;
 
-	bool_t share;
 	tchar_t local[PATH_LEN + 1];
 
 }mqtt_block_t;
@@ -101,16 +100,10 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 	}
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hkb = tkb_create(path, did, pd->share);
+	hkb = tkb_create(path, did, FILETABLE_DIRECT);
 	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_publish"), _T("open kv database failed"));
-	}
-
-	hkv = tkv_create(hkb);
-	if (!hkv)
-	{
-		raise_user_error(_T("_invoke_publish"), _T("create kv entity falied"));
 	}
 
 	if (is_null(pid))
@@ -118,12 +111,12 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 		xscpy(pid, ZERO_NUID);
 	}
 
-	key = variant_alloc(VV_STRING);
+	key = variant_alloc(VV_STRING_UTF8);
 	variant_from_string(key, pid, -1);
 
-	val = object_alloc(_UTF8);
+	val = object_alloc();
 
-	tkv_read(hkv, key, val);
+	tkb_load(hkb, key, val);
 
 	que = queue_alloc();
 
@@ -154,27 +147,22 @@ void _invoke_publish(const tcps_block_t* pb, mqtt_block_t* pd)
 	que = NULL;
 
 	object_set_commpress(val, 1);
-	tkv_attach(hkv, key, val);
-	val = NULL;
+	tkb_save(hkb, key, val);
 
 	variant_free(key);
 	key = NULL;
 
-	tkv_destroy(hkv);
-	hkv = NULL;
+	object_free(val);
+	val = NULL;
 
 	tkb_destroy(hkb);
 	hkb = NULL;
-
 
 	END_CATCH;
 
 	return;
 ONERROR:
 	XDL_TRACE_LAST;
-
-	if (hkv)
-		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
@@ -202,7 +190,6 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	t_kb_t hkb = NULL;
-	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 	object_t val = NULL;
@@ -225,16 +212,10 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	}
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hkb = tkb_create(path, did, pd->share);
+	hkb = tkb_create(path, did, FILETABLE_DIRECT);
 	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_subcribe"), _T("open kv database failed"));
-	}
-
-	hkv = tkv_create(hkb);
-	if (!hkv)
-	{
-		raise_user_error(_T("_invoke_subcribe"), _T("create tdb kv entity falied"));
 	}
 
 	if (is_null(pid))
@@ -242,12 +223,12 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 		xscpy(pid, ZERO_NUID);
 	}
 
-	key = variant_alloc(VV_STRING);
+	key = variant_alloc(VV_STRING_UTF8);
 	variant_from_string(key, pid, -1);
 
-	val = object_alloc(_UTF8);
+	val = object_alloc();
 
-	tkv_read(hkv, key, val);
+	tkb_load(hkb, key, val);
 
 	que = queue_alloc();
 
@@ -291,14 +272,13 @@ void _invoke_subcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	que = NULL;
 
 	object_set_commpress(val, 1);
-	tkv_attach(hkv, key, val);
-	val = NULL;
+	tkb_save(hkb, key, val);
 
 	variant_free(key);
 	key = NULL;
 
-	tkv_destroy(hkv);
-	hkv = NULL;
+	object_free(val);
+	val = NULL;
 
 	tkb_destroy(hkb);
 	hkb = NULL;
@@ -311,9 +291,6 @@ ONERROR:
 
 	if (buf)
 		xmem_free(buf);
-
-	if (hkv)
-		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
@@ -341,7 +318,6 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	tchar_t pid[UUID_LEN + 1] = { 0 };
 
 	t_kb_t hkb = NULL;
-	t_kv_t hkv = NULL;
 
 	variant_t key = NULL;
 
@@ -361,28 +337,19 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 
 	xsprintf(path, _T("%s/%s"), pd->local, cid);
 
-	hkb = tkb_create(path, did, pd->share);
+	hkb = tkb_create(path, did, FILETABLE_DIRECT);
 	if (!hkb)
 	{
 		raise_user_error(_T("_invoke_unsubcribe"), _T("open kv database failed"));
 	}
 
-	hkv = tkv_create(hkb);
-	if (!hkv)
-	{
-		raise_user_error(_T("_invoke_unsubcribe"), _T("create tdb kv entity falied"));
-	}
-
-	key = variant_alloc(VV_STRING);
+	key = variant_alloc(VV_STRING_UTF8);
 	variant_from_string(key, pid, -1);
 
-	tkv_delete(hkv, key);
+	tkb_clean(hkb, key);
 
 	variant_free(key);
 	key = NULL;
-
-	tkv_destroy(hkv);
-	hkv = NULL;
 
 	tkb_destroy(hkb);
 	hkb = NULL;
@@ -392,9 +359,6 @@ void _invoke_unsubcribe(const tcps_block_t* pb, mqtt_block_t* pd)
 	return;
 ONERROR:
 	XDL_TRACE_LAST;
-
-	if (hkv)
-		tkv_destroy(hkv);
 
 	if (hkb)
 		tkb_destroy(hkb);
@@ -434,13 +398,11 @@ int STDCALL tcps_invoke(const tcps_block_t* pb)
 	xszero(file, PATH_LEN);
 
 	read_proper(ptr_prop, _T("MQTT"), -1, _T("LOCATION"), -1, file, PATH_LEN);
-	read_proper(ptr_prop, _T("MQTT"), -1, _T("EXCLUSIVE"), -1, token, RES_LEN);
 
 	destroy_proper_doc(ptr_prop);
 	ptr_prop = NULL;
 
 	printf_path(pd->local, file);
-	pd->share = (xstol(token)) ? 0 : 1;
 
 	pd->mqtt = xmqtt_scp(pb->tcp, _MQTT_TYPE_SCP_UNK);
 

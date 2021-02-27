@@ -37,10 +37,10 @@ typedef struct _timebox_delta_t{
 }timebox_delta_t;
 
 #define GETTIMEBOXDELTA(ph) 	(timebox_delta_t*)widget_get_user_delta(ph)
-#define SETTIMEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTIMEBOXDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /*********************************************************************************/
-void noti_timebox_command(res_win_t widget, int code, var_long data)
+void noti_timebox_command(res_win_t widget, int code, vword_t data)
 {
 	timebox_delta_t* ptd = GETTIMEBOXDELTA(widget);
 
@@ -60,7 +60,7 @@ void timebox_on_year_up(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_year_down(res_win_t widget)
@@ -73,7 +73,7 @@ void timebox_on_year_down(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_mon_up(res_win_t widget)
@@ -86,7 +86,7 @@ void timebox_on_mon_up(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_mon_down(res_win_t widget)
@@ -99,7 +99,7 @@ void timebox_on_mon_down(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_day_up(res_win_t widget)
@@ -112,7 +112,7 @@ void timebox_on_day_up(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_day_down(res_win_t widget)
@@ -125,7 +125,7 @@ void timebox_on_day_down(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_hour_up(res_win_t widget)
@@ -138,7 +138,7 @@ void timebox_on_hour_up(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_hour_down(res_win_t widget)
@@ -151,7 +151,7 @@ void timebox_on_hour_down(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_hour_zero(res_win_t widget)
@@ -162,7 +162,7 @@ void timebox_on_hour_zero(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_minute_up(res_win_t widget)
@@ -175,7 +175,7 @@ void timebox_on_minute_up(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_minute_down(res_win_t widget)
@@ -188,7 +188,7 @@ void timebox_on_minute_down(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_minute_zero(res_win_t widget)
@@ -199,7 +199,7 @@ void timebox_on_minute_zero(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_second_up(res_win_t widget)
@@ -212,7 +212,7 @@ void timebox_on_second_up(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_second_down(res_win_t widget)
@@ -225,7 +225,7 @@ void timebox_on_second_down(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 void timebox_on_second_zero(res_win_t widget)
@@ -236,7 +236,7 @@ void timebox_on_second_zero(res_win_t widget)
 
 	widget_erase(widget, NULL);
 
-	noti_timebox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_timebox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 /*********************************************************************************/
 int hand_timebox_create(res_win_t widget, void* data)
@@ -326,7 +326,7 @@ void hand_timebox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 		timebox_on_second_zero(widget);
 	else
 	{
-		noti_timebox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_timebox_command(widget, COMMAND_CHANGE, (vword_t)NULL);
 	}
 }
 

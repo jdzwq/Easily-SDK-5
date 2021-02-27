@@ -583,17 +583,17 @@ EXP_API int get_dom_node_xmlns(link_t_ptr ilk, const tchar_t* nsname, int len, t
 /*
 @FUNCTION get_dom_node_delta: get dom node extract data.
 @INPUT link_t_ptr ilk: the dom node link component.
-@RETURN var_long: return the extract data if exists, otherwise return zero.
+@RETURN vword_t: return the extract data if exists, otherwise return zero.
 */
-EXP_API var_long get_dom_node_delta(link_t_ptr ilk);
+EXP_API vword_t get_dom_node_delta(link_t_ptr ilk);
 
 /*
 @FUNCTION set_dom_node_delta: set dom node extract data.
 @INPUT link_t_ptr ilk: the dom node link component.
-@INPUT var_long delta: the extract data.
+@INPUT vword_t delta: the extract data.
 @RETURN void: none.
 */
-EXP_API void set_dom_node_delta(link_t_ptr ilk, var_long delta);
+EXP_API void set_dom_node_delta(link_t_ptr ilk, vword_t delta);
 
 /*
 @FUNCTION get_dom_node_mask: get dom node mask value.

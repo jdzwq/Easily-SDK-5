@@ -48,7 +48,7 @@ typedef struct _string_entity_t{
 	unsigned int mask; /* endtity runtime state*/
 	tchar_t* key;		/* entity key, can not be null*/
 	tchar_t* val;		/* entity value*/
-	var_long data;			/* entiry data for runtime use*/
+	vword_t data;			/* entiry data for runtime use*/
 }string_entity_t;
 
 /* restore str table struct ptr from link ptr*/
@@ -443,7 +443,7 @@ void set_string_entity_val(link_t_ptr elk, const tchar_t* val, int len)
 	}
 }
 
-void set_string_entity_delta(link_t_ptr elk, var_long data)
+void set_string_entity_delta(link_t_ptr elk, vword_t data)
 {
 	string_entity_t* phe;
 
@@ -453,7 +453,7 @@ void set_string_entity_delta(link_t_ptr elk, var_long data)
 	phe->data = data;
 }
 
-var_long get_string_entity_delta(link_t_ptr elk)
+vword_t get_string_entity_delta(link_t_ptr elk)
 {
 	string_entity_t* phe;
 

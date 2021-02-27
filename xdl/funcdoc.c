@@ -218,6 +218,8 @@ void import_func_param(link_t_ptr ptr, const variant_t* pv, int n)
 {
 	link_t_ptr nlk;
 	int i, vv;
+	tchar_t* buf;
+	int len;
 
 	clear_func_doc(ptr);
 
@@ -229,9 +231,16 @@ void import_func_param(link_t_ptr ptr, const variant_t* pv, int n)
 
 		switch (vv)
 		{
-		case VV_STRING:
+		case VV_STRING_GB2312:
+		case VV_STRING_UTF8:
+		case VV_STRING_UTF16LIT:
+		case VV_STRING_UTF16BIG:
+			len = variant_to_string(pv[i], NULL, MAX_LONG);
+			buf = xsalloc(len + 1);
+			variant_to_string(pv[i], buf, len);
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_STRING);
-			set_func_param_text(nlk, variant_get_string_ptr(pv[i]), -1);
+			set_func_param_text(nlk, buf, len);
+			xsfree(buf);
 			break;
 		case VV_BOOL:
 			set_func_param_data_type(nlk, ATTR_DATA_TYPE_BOOLEAN);
@@ -273,7 +282,7 @@ int export_func_param(link_t_ptr ptr, variant_t* pv, int n)
 			if (compare_text(data_type, -1, ATTR_DATA_TYPE_STRING, -1, 0) == 0)
 			{
 				len = get_func_param_data_len(nlk);
-				variant_to_null(pv[count], VV_STRING);
+				variant_to_null(pv[count], VV_STRING_UTF8);
 				variant_from_string(pv[count], get_func_param_text_ptr(nlk), len);
 			}
 			else if (compare_text(data_type, -1, ATTR_DATA_TYPE_INTEGER, -1, 0) == 0)

@@ -61,11 +61,28 @@ EXP_API void map_free(map_t map);
 EXP_API map_t map_clone(map_t map);
 
 /*
+@FUNCTION map_copy: copy the map.
+@INPUT map_t dst: the destent map struct.
+@INPUT map_t src: the srource map struct.
+@RETURN void: none.
+*/
+EXP_API void map_copy(map_t dst, map_t src);
+
+/*
 @FUNCTION map_zero: set flag to zero in map.
 @INPUT map_t map: the map object.
 @RETURN void: none.
 */
 EXP_API void map_zero(map_t map);
+
+/*
+@FUNCTION map_reset: realloc map elements.
+@INPUT map_t: the map struct.
+@INPUT int nums: count of number.
+@INPUT int bits: the flag bits.
+@RETURN void: none.
+*/
+EXP_API void map_reset(map_t map, int nums, int bits);
 
 /*
 @FUNCTION map_calc_size: calc map bytes needed.
@@ -94,7 +111,7 @@ EXP_API int map_bits(map_t map);
 @INPUT map_t map: the map object.
 @RETURN void*: the data buffer.
 */
-EXP_API void* map_data(map_t map);
+EXP_API const void* map_data(map_t map);
 
 /*
 @FUNCTION map_attach: attach map data buffer.
@@ -168,21 +185,19 @@ EXP_API int map_formap(map_t map, tchar_t* buf, int max);
 /*
 @FUNCTION map_encode: encode map object to bytes buffer.
 @INPUT map map: the map object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @OUTPUT byte_t* buf: the bytes buffer.
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return encoded bytes.
 */
-EXP_API dword_t map_encode(map_t map, int encode, byte_t* buf, dword_t max);
+EXP_API dword_t map_encode(map_t map, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION map_decode: decode map object from bytes buffer.
 @INPUT map map: the map object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @INPUT const byte_t* buf: the data buffer.
-@INPUT dword_t n: the data size in bytes.
+@RETURN dword_t: return decoded bytes.
 */
-EXP_API void map_decode(map_t map, int encode, const byte_t* buf, dword_t n);
+EXP_API dword_t map_decode(map_t map, const byte_t* buf);
 
 #if defined(XDL_SUPPORT_TEST)
 EXP_API void test_map(void);

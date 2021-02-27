@@ -950,73 +950,73 @@ bool_t macro_parse(link_t_ptr ptr,const tchar_t* str,int len)
 
 	/*add some common macro function*/
 	elk = write_hash_attr(ht, FN_PLUS, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_plus);
+	set_hash_entity_delta(elk,(vword_t)macro_plus);
 
 	elk = write_hash_attr(ht, FN_SUB, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_sub);
+	set_hash_entity_delta(elk,(vword_t)macro_sub);
 
 	elk = write_hash_attr(ht, FN_DIV, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_div);
+	set_hash_entity_delta(elk,(vword_t)macro_div);
 
 	elk = write_hash_attr(ht, FN_MUL, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_mul);
+	set_hash_entity_delta(elk,(vword_t)macro_mul);
 
 	elk = write_hash_attr(ht, FN_AVG, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_avg);
+	set_hash_entity_delta(elk,(vword_t)macro_avg);
 
 	elk = write_hash_attr(ht, FN_MIN, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_min);
+	set_hash_entity_delta(elk,(vword_t)macro_min);
 
 	elk = write_hash_attr(ht, FN_MAX, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_max);
+	set_hash_entity_delta(elk,(vword_t)macro_max);
 
 	elk = write_hash_attr(ht, FN_ROUND, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_row_und);
+	set_hash_entity_delta(elk,(vword_t)macro_row_und);
 
 	elk = write_hash_attr(ht, FN_ABS, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_abs);
+	set_hash_entity_delta(elk,(vword_t)macro_abs);
 
 	elk = write_hash_attr(ht, FN_LEN, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_len);
+	set_hash_entity_delta(elk,(vword_t)macro_len);
 
 	elk = write_hash_attr(ht, FN_MID, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_mid);
+	set_hash_entity_delta(elk,(vword_t)macro_mid);
 
 	elk = write_hash_attr(ht, FN_CAT, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_cat);
+	set_hash_entity_delta(elk,(vword_t)macro_cat);
 
 	elk = write_hash_attr(ht, FN_FMT, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_fmt);
+	set_hash_entity_delta(elk,(vword_t)macro_fmt);
 
 	elk = write_hash_attr(ht, FN_EMPTY, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_empty);
+	set_hash_entity_delta(elk,(vword_t)macro_empty);
 
 	elk = write_hash_attr(ht, FN_IF, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_if);
+	set_hash_entity_delta(elk,(vword_t)macro_if);
 
 	elk = write_hash_attr(ht, FN_LTR, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_ltr);
+	set_hash_entity_delta(elk,(vword_t)macro_ltr);
 
 	elk = write_hash_attr(ht, FN_RTR, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_rtr);
+	set_hash_entity_delta(elk,(vword_t)macro_rtr);
 
 	elk = write_hash_attr(ht, FN_CTR, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_ctr);
+	set_hash_entity_delta(elk,(vword_t)macro_ctr);
 
 	elk = write_hash_attr(ht, FN_SCMP, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_scmp);
+	set_hash_entity_delta(elk,(vword_t)macro_scmp);
 
 	elk = write_hash_attr(ht, FN_NCMP, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_ncmp);
+	set_hash_entity_delta(elk,(vword_t)macro_ncmp);
 
 	elk = write_hash_attr(ht, FN_ZERO, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_zero);
+	set_hash_entity_delta(elk,(vword_t)macro_zero);
 
 	elk = write_hash_attr(ht, FN_LEZE, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_leze);
+	set_hash_entity_delta(elk,(vword_t)macro_leze);
 
 	elk = write_hash_attr(ht, FN_GRZE, -1, NULL, 0);
-	set_hash_entity_delta(elk,(var_long)macro_grze);
+	set_hash_entity_delta(elk,(vword_t)macro_grze);
 	
 	root = insert_multi_node(ptr,LINK_LAST);
 	MacroNodeParse(ptr,root,(tchar_t*)str,len);
@@ -1060,7 +1060,7 @@ void macro_set_func(link_t_ptr ptr,const tchar_t* funcname,macro_func_ptr pf)
 
 	ht = get_multi_node_attr_table(ptr);
 	elk = write_hash_attr(ht,funcname,-1,NULL,0);
-	set_hash_entity_delta(elk,(var_long)pf);
+	set_hash_entity_delta(elk,(vword_t)pf);
 }
 
 macro_func_ptr macro_get_func(link_t_ptr ptr,const tchar_t* funcname)

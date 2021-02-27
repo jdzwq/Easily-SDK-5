@@ -67,7 +67,7 @@ extern "C" {
 		link_t		if_dump;
 		link_t		if_trak;
 #endif
-		var_long	resv;
+		vword_t	resv;
 	}if_zone_t;
 
 	typedef struct _xdl_mou_t{

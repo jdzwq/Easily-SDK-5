@@ -38,27 +38,26 @@ LICENSE.GPL3 for more details.
 #define VV_NULL			0x00
 #define VV_BOOL			0x01
 #define VV_BYTE			0x02
-#define VV_SCHAR		0x03
-#define VV_WCHAR		0x04
-#define VV_SHORT		0x05
-#define VV_INT			0x06
-#define VV_LONG			0x07
-#define VV_FLOAT		0x08
-#define VV_DOUBLE		0x09
-#define VV_STRING		0x0A
+#define VV_SHORT		0x03
+#define VV_INT			0x04
+#define VV_LONG			0x05
+#define VV_FLOAT		0x06
+#define VV_DOUBLE		0x07
+#define VV_STRING_GB2312	0x0A
+#define VV_STRING_UTF8		0x0B
+#define VV_STRING_UTF16LIT	0x0C
+#define VV_STRING_UTF16BIG	0x0D
 
 #define VV_BOOL_ARRAY	(VV_BOOL | 0x10)
 #define VV_BYTE_ARRAY	(VV_BYTE | 0x10)
-#define VV_SCHAR_ARRAY	(VV_SCHAR | 0x10)
-#define VV_WCHAR_ARRAY	(VV_WCHAR | 0x10)
 #define VV_SHORT_ARRAY	(VV_SHORT | 0x10)
 #define VV_INT_ARRAY	(VV_INT | 0x10)
 #define VV_LONG_ARRAY	(VV_LONG | 0x10)
 #define VV_FLOAT_ARRAY	(VV_FLOAT | 0x10)
 #define VV_DOUBLE_ARRAY	(VV_DOUBLE | 0x10)
-#define VV_STRING_ARRAY	(VV_STRING | 0x10)
 
-#define IS_VARIANT_TYPE(tag) (((tag | 0x10) >= 0x10 && (tag | 0x10) <= 0x1A)? 1 : 0)
+
+#define IS_VARIANT_TYPE(tag) (((tag | 0x10) >= 0x10 && (tag | 0x10) <= 0x1D)? 1 : 0)
 
 #ifdef	__cplusplus
 extern "C" {
@@ -112,7 +111,7 @@ EXP_API void variant_attach(variant_t var, void* data);
 @INPUT variant_t var: the variant object.
 @RETURN void*: the data buffer.
 */
-EXP_API void* variant_detach(variant_t var);
+EXP_API const void* variant_detach(variant_t var);
 
 /*
 @FUNCTION variant_copy: copy a variant object.
@@ -169,36 +168,6 @@ EXP_API void variant_set_bool(variant_t var, bool_t c);
 @RETURN bool_t: the bool value..
 */
 EXP_API bool_t variant_get_bool(variant_t var);
-
-/*
-@FUNCTION variant_set_schar: set variant schar value, the variant type must be VV_SCHAR.
-@INPUT variant var: the variant object.
-@INPUT schar_t c: the schar value.
-@RETURN void: none.
-*/
-EXP_API void variant_set_schar(variant_t var, schar_t c);
-
-/*
-@FUNCTION variant_get_schar: get variant schar value, the variant type must be VV_SCHAR.
-@INPUT variant var: the variant object.
-@RETURN schar_t: the schar value..
-*/
-EXP_API schar_t variant_get_schar(variant_t var);
-
-/*
-@FUNCTION variant_set_wchar: set variant wchar value, the variant type must be VV_WCHAR.
-@INPUT variant var: the variant object.
-@INPUT wchar_t c: the wchar value.
-@RETURN void: none.
-*/
-EXP_API void variant_set_wchar(variant_t var, wchar_t c);
-
-/*
-@FUNCTION variant_get_wchar: get variant wchar value, the variant type must be VV_WCHAR.
-@INPUT variant var: the variant object.
-@RETURN wchar_t: the wchar value..
-*/
-EXP_API wchar_t variant_get_wchar(variant_t var);
 
 /*
 @FUNCTION variant_set_short: set variant short value, the variant type must be VV_SHORT.
@@ -276,30 +245,21 @@ EXP_API void variant_set_double(variant_t var, double c);
 EXP_API double variant_get_double(variant_t var);
 
 /*
-@FUNCTION variant_get_float: get variant string buffer, the variant type must be VV_STRING.
-@INPUT variant var: the variant object.
-@RETURN const tchar_t*: the string buffer.
-*/
-EXP_API const tchar_t* variant_get_string_ptr(variant_t var);
-
-/*
 @FUNCTION variant_encode: encode variant object to bytes buffer.
 @INPUT variant var: the variant object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @OUTPUT byte_t* buf: the bytes buffer.
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return encoded bytes.
 */
-EXP_API dword_t variant_encode(variant_t var, int encode, byte_t* buf, dword_t max);
+EXP_API dword_t variant_encode(variant_t var, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION variant_decode: decode variant object from bytes buffer.
 @INPUT variant var: the variant object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @INPUT const byte_t* buf: the data buffer.
-@INPUT dword_t n: the data size in bytes.
+@RETURN dword_t: the decoded size in bytes.
 */
-EXP_API void variant_decode(variant_t var, int encode, const byte_t* buf, dword_t n);
+EXP_API dword_t variant_decode(variant_t var, const byte_t* buf);
 
 /*
 @FUNCTION variant_comp: compare two variant object, 

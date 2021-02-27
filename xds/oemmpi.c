@@ -1889,8 +1889,8 @@ int mpi_set_bit(mpi *X, size_t pos, unsigned char val)
 		MPI_CHK(mpi_grow(X, off + 1));
 	}
 
-	X->p[off] &= ~((mpi_uint)0x01 << idx);
-	X->p[off] |= (mpi_uint)val << idx;
+	X->p[off] &= ~((t_int)0x01 << idx);
+	X->p[off] |= (t_int)val << idx;
 
 cleanup:
 
@@ -1900,10 +1900,10 @@ cleanup:
 /*
 * Count leading zero bits in a given integer
 */
-static size_t _clz(const mpi_uint x)
+static size_t _clz(const t_int x)
 {
 	size_t j;
-	mpi_uint mask = (mpi_uint)1 << (biL - 1);
+	t_int mask = (t_int)1 << (biL - 1);
 
 	for (j = 0; j < biL; j++)
 	{
@@ -1935,7 +1935,7 @@ size_t mpi_bitlen(const mpi *X)
 }
 
 /* Implementation that should never be optimized out by the compiler */
-static void mpi_zeroize(mpi_uint *v, size_t n)
+static void mpi_zeroize(t_int *v, size_t n)
 {
 	memset(v, 0, ciL * n);
 }
@@ -1946,7 +1946,7 @@ static void mpi_zeroize(mpi_uint *v, size_t n)
 */
 int mpi_shrink(mpi *X, size_t nblimbs)
 {
-	mpi_uint *p;
+	t_int *p;
 	size_t i;
 
 	if (nblimbs > MPI_MAX_LIMBS)
@@ -1965,7 +1965,7 @@ int mpi_shrink(mpi *X, size_t nblimbs)
 	if (i < nblimbs)
 		i = nblimbs;
 
-	if ((p = (mpi_uint*)calloc(i, ciL)) == NULL)
+	if ((p = (t_int*)calloc(i, ciL)) == NULL)
 		return(ERR_MPI_ALLOC_FAILED);
 
 	if (X->p != NULL)
@@ -2011,22 +2011,22 @@ cleanup:
 /* Convert a big-endian byte array aligned to the size of mbedtls_mpi_uint
 * into the storage form used by mbedtls_mpi. */
 
-static mpi_uint mpi_uint_bigendian_to_host_c(mpi_uint x)
+static t_int mpi_uint_bigendian_to_host_c(t_int x)
 {
 	uint8_t i;
 	unsigned char *x_ptr;
-	mpi_uint tmp = 0;
+	t_int tmp = 0;
 
 	for (i = 0, x_ptr = (unsigned char*)&x; i < ciL; i++, x_ptr++)
 	{
 		tmp <<= CHAR_BIT;
-		tmp |= (mpi_uint)*x_ptr;
+		tmp |= (t_int)*x_ptr;
 	}
 
 	return(tmp);
 }
 
-static mpi_uint mpi_uint_bigendian_to_host(mpi_uint x)
+static t_int mpi_uint_bigendian_to_host(t_int x)
 {
 #if defined(BYTE_ORDER)
 
@@ -2069,10 +2069,10 @@ static mpi_uint mpi_uint_bigendian_to_host(mpi_uint x)
 	return(mpi_uint_bigendian_to_host_c(x));
 }
 
-static void mpi_bigendian_to_host(mpi_uint * const p, size_t limbs)
+static void mpi_bigendian_to_host(t_int * const p, size_t limbs)
 {
-	mpi_uint *cur_limb_left;
-	mpi_uint *cur_limb_right;
+	t_int *cur_limb_left;
+	t_int *cur_limb_right;
 	if (limbs == 0)
 		return;
 
@@ -2089,7 +2089,7 @@ static void mpi_bigendian_to_host(mpi_uint * const p, size_t limbs)
 		cur_limb_left <= cur_limb_right;
 		cur_limb_left++, cur_limb_right--)
 	{
-		mpi_uint tmp;
+		t_int tmp;
 		/* Note that if cur_limb_left == cur_limb_right,
 		* this code effectively swaps the bytes only once. */
 		tmp = mpi_uint_bigendian_to_host(*cur_limb_left);
@@ -2142,7 +2142,7 @@ int mpi_safe_cond_swap(mpi *X, mpi *Y, unsigned char swap)
 {
 	int ret, s;
 	size_t i;
-	mpi_uint tmp;
+	t_int tmp;
 
 	if (X == Y)
 		return(0);
@@ -2176,11 +2176,11 @@ cleanup:
 *
 * \return          1 if \p x is less than \p y, 0 otherwise
 */
-static unsigned ct_lt_mpi_uint(const mpi_uint x,
-	const mpi_uint y)
+static unsigned ct_lt_mpi_uint(const t_int x,
+	const t_int y)
 {
-	mpi_uint ret;
-	mpi_uint cond;
+	t_int ret;
+	t_int cond;
 
 	/*
 	* Check if the most significant bits (MSB) of the operands are different.

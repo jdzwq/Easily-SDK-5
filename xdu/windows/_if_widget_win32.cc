@@ -75,10 +75,10 @@ typedef struct _win32_widget_t{
 #define GETXDUSUBPROC(hWnd)			(if_subproc_t*)GetProp(hWnd, XDUSUBPROC)
 #define SETXDUSUBPROC(hWnd, lp)		SetProp(hWnd, XDUSUBPROC, (HANDLE)lp)
 
-#define GETXDUCOREDELTA(hWnd)		(var_long)GetProp(hWnd, XDUCOREDELTA)
+#define GETXDUCOREDELTA(hWnd)		(vword_t)GetProp(hWnd, XDUCOREDELTA)
 #define SETXDUCOREDELTA(hWnd, lp)	SetProp(hWnd, XDUCOREDELTA, (HANDLE)lp)
 
-#define GETXDUUSERDELTA(hWnd)		(var_long)GetProp(hWnd, XDUUSERDELTA)
+#define GETXDUUSERDELTA(hWnd)		(vword_t)GetProp(hWnd, XDUUSERDELTA)
 #define SETXDUUSERDELTA(hWnd, lp)	SetProp(hWnd, XDUUSERDELTA, (HANDLE)lp)
 
 LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -944,7 +944,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 				}
 				else if (pev->pf_on_parent_command)
 				{
-					(*pev->pf_on_parent_command)(hWnd, (int)(short)HIWORD(wParam), (var_long)lParam);
+					(*pev->pf_on_parent_command)(hWnd, (int)(short)HIWORD(wParam), (vword_t)lParam);
 					return 0;
 				}
 			}
@@ -952,7 +952,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			{
 				if (pev->pf_on_child_command)
 				{
-					(*pev->pf_on_child_command)(hWnd, (int)(short)HIWORD(wParam), (var_long)lParam);
+					(*pev->pf_on_child_command)(hWnd, (int)(short)HIWORD(wParam), (vword_t)lParam);
 					return 0;
 				}
 			}
@@ -960,7 +960,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			{
 				if (pev->pf_on_self_command)
 				{
-					(*pev->pf_on_self_command)(hWnd, (int)(short)HIWORD(wParam), (var_long)lParam);
+					(*pev->pf_on_self_command)(hWnd, (int)(short)HIWORD(wParam), (vword_t)lParam);
 					return 0;
 				}
 			}
@@ -968,7 +968,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			{
 				if (pev->pf_on_menu_command)
 				{
-					(*pev->pf_on_menu_command)(hWnd, (int)(short)HIWORD(wParam), (uid_t)(short)LOWORD(wParam), (var_long)lParam);
+					(*pev->pf_on_menu_command)(hWnd, (int)(short)HIWORD(wParam), (uid_t)(short)LOWORD(wParam), (vword_t)lParam);
 					return 0;
 				}
 			}
@@ -991,7 +991,7 @@ LRESULT CALLBACK XdcWidgetProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		pev = GETXDUDISPATCH(hWnd);
 		if (pev && pev->pf_on_timer)
 		{
-			(*pev->pf_on_timer)(hWnd, (var_long)(wParam));
+			(*pev->pf_on_timer)(hWnd, (vword_t)(wParam));
 			return 0;
 		}
 		break;
@@ -1326,7 +1326,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 				}
 				else if (pev->sub_on_parent_command)
 				{
-					if ((*pev->sub_on_parent_command)(hWnd, (int)HIWORD(wParam), (var_long)lParam, (uid_t)uIdSubclass, pev->delta))
+					if ((*pev->sub_on_parent_command)(hWnd, (int)HIWORD(wParam), (vword_t)lParam, (uid_t)uIdSubclass, pev->delta))
 						return 0;
 				}
 			}
@@ -1334,7 +1334,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			{
 				if (pev->sub_on_child_command)
 				{
-					if ((*pev->sub_on_child_command)(hWnd, (int)HIWORD(wParam), (var_long)lParam, (uid_t)uIdSubclass, pev->delta))
+					if ((*pev->sub_on_child_command)(hWnd, (int)HIWORD(wParam), (vword_t)lParam, (uid_t)uIdSubclass, pev->delta))
 						return 0;
 				}
 			}
@@ -1342,7 +1342,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			{
 				if (pev->sub_on_self_command)
 				{
-					if ((*pev->sub_on_self_command)(hWnd, (int)HIWORD(wParam), (var_long)lParam, (uid_t)uIdSubclass, pev->delta))
+					if ((*pev->sub_on_self_command)(hWnd, (int)HIWORD(wParam), (vword_t)lParam, (uid_t)uIdSubclass, pev->delta))
 						return 0;
 				}
 			}
@@ -1350,7 +1350,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			{
 				if (pev->sub_on_menu_command)
 				{
-					if ((*pev->sub_on_menu_command)(hWnd, (int)HIWORD(wParam), (int)LOWORD(wParam), (var_long)lParam, (uid_t)uIdSubclass, pev->delta))
+					if ((*pev->sub_on_menu_command)(hWnd, (int)HIWORD(wParam), (int)LOWORD(wParam), (vword_t)lParam, (uid_t)uIdSubclass, pev->delta))
 						return 0;
 				}
 			}
@@ -1379,7 +1379,7 @@ LRESULT CALLBACK XdcSubclassProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	case WM_TIMER:
 		if (pev && pev->sub_on_timer)
 		{
-			if ((*pev->sub_on_timer)(hWnd, (var_long)wParam, (uid_t)uIdSubclass, pev->delta))
+			if ((*pev->sub_on_timer)(hWnd, (vword_t)wParam, (uid_t)uIdSubclass, pev->delta))
 				return 0;
 		}
 		break;
@@ -1557,7 +1557,7 @@ void _widget_del_subproc(res_win_t wt, uid_t sid)
 	SETXDUSUBPROC(wt, NULL);
 }
 
-bool_t _widget_set_subproc_delta(res_win_t wt, uid_t sid, var_long delta)
+bool_t _widget_set_subproc_delta(res_win_t wt, uid_t sid, vword_t delta)
 {
 	if_subproc_t* psub;
 
@@ -1567,7 +1567,7 @@ bool_t _widget_set_subproc_delta(res_win_t wt, uid_t sid, var_long delta)
 	return 1;
 }
 
-var_long _widget_get_subproc_delta(res_win_t wt, uid_t sid)
+vword_t _widget_get_subproc_delta(res_win_t wt, uid_t sid)
 {
 	if_subproc_t* psub;
 
@@ -1623,22 +1623,22 @@ res_win_t _widget_get_owner(res_win_t wt)
 	return (pws) ? pws->owner : NULL;
 }
 
-void _widget_set_core_delta(res_win_t wt, var_long pd)
+void _widget_set_core_delta(res_win_t wt, vword_t pd)
 {
 	SETXDUCOREDELTA(wt, pd);
 }
 
-var_long _widget_get_core_delta(res_win_t wt)
+vword_t _widget_get_core_delta(res_win_t wt)
 {
 	return GETXDUCOREDELTA(wt);
 }
 
-void _widget_set_user_delta(res_win_t wt, var_long pd)
+void _widget_set_user_delta(res_win_t wt, vword_t pd)
 {
 	SETXDUUSERDELTA(wt, pd);
 }
 
-var_long _widget_get_user_delta(res_win_t wt)
+vword_t _widget_get_user_delta(res_win_t wt)
 {
 	return GETXDUUSERDELTA(wt);
 }
@@ -1699,19 +1699,19 @@ res_win_t _widget_get_parent(res_win_t wt)
 	return (res_win_t)GetParent(wt);
 }
 
-void _widget_set_user_prop(res_win_t wt, const tchar_t* pname, var_long pval)
+void _widget_set_user_prop(res_win_t wt, const tchar_t* pname, vword_t pval)
 {
 	SetProp(wt, pname, (HANDLE)pval);
 }
 
-var_long _widget_get_user_prop(res_win_t wt, const tchar_t* pname)
+vword_t _widget_get_user_prop(res_win_t wt, const tchar_t* pname)
 {
-	return (var_long)GetProp(wt, pname);
+	return (vword_t)GetProp(wt, pname);
 }
 
-var_long _widget_del_user_prop(res_win_t wt, const tchar_t* pname)
+vword_t _widget_del_user_prop(res_win_t wt, const tchar_t* pname)
 {
-	return (var_long)RemoveProp(wt, pname);
+	return (vword_t)RemoveProp(wt, pname);
 }
 
 if_event_t* _widget_get_dispatch(res_win_t wt)
@@ -1825,7 +1825,7 @@ bool_t _widget_is_minimized(res_win_t wt)
 	return (IsIconic((HWND)wt)) ? 1 : 0;
 }
 
-bool_t _widget_enum_child(res_win_t widget, PF_ENUM_WINDOW_PROC pf, var_long pv)
+bool_t _widget_enum_child(res_win_t widget, PF_ENUM_WINDOW_PROC pf, vword_t pv)
 {
 #ifdef WINCE
 	HWND hWnd;
@@ -2036,12 +2036,12 @@ void _widget_set_capture(res_win_t wt, bool_t b)
 }
 
 
-var_long _widget_set_timer(res_win_t wt, int ms)
+vword_t _widget_set_timer(res_win_t wt, int ms)
 {
-	return (var_long)SetTimer(wt, IDC_TIMER, ms, NULL);
+	return (vword_t)SetTimer(wt, IDC_TIMER, ms, NULL);
 }
 
-void _widget_kill_timer(res_win_t wt, var_long tid)
+void _widget_kill_timer(res_win_t wt, vword_t tid)
 {
 	if (tid)
 		KillTimer(wt, (UINT_PTR)tid);
@@ -2354,12 +2354,12 @@ int _widget_send_notice(res_win_t wt, NOTICE* pnt)
 	return (int)SendMessage((HWND)wt, WM_NOTICE, (WPARAM)pnt->id, (LPARAM)pnt);
 }
 
-void _widget_post_command(res_win_t wt, int code, uid_t cid, var_long data)
+void _widget_post_command(res_win_t wt, int code, uid_t cid, vword_t data)
 {
 	PostMessage((HWND)wt, WM_COMMAND, MAKEWPARAM(cid,code), (LPARAM)data);
 }
 
-int _widget_send_command(res_win_t wt, int code, uid_t cid, var_long data)
+int _widget_send_command(res_win_t wt, int code, uid_t cid, vword_t data)
 {
 	return (int)SendMessage((HWND)wt, WM_COMMAND, MAKEWPARAM(cid, code), (LPARAM)data);
 }
@@ -2406,7 +2406,7 @@ int _widget_get_title(res_win_t wt, tchar_t* buf, int max)
 
 void _widget_scroll(res_win_t wt, bool_t horz, int line)
 {
-	PostMessage(wt, WM_SCROLL, (var_long)horz, (var_long)line);
+	PostMessage(wt, WM_SCROLL, (vword_t)horz, (vword_t)line);
 }
 
 void _widget_get_scroll_info(res_win_t wt, bool_t horz, scroll_t* psl)
@@ -2667,7 +2667,7 @@ void _widget_get_size(res_win_t wt, xsize_t* pst)
 	}
 }
 
-static int STDCALL _widget_set_child_color_mode(res_win_t wt, var_long pv)
+static int STDCALL _widget_set_child_color_mode(res_win_t wt, vword_t pv)
 {
 	dword_t dw;
 
@@ -2703,13 +2703,13 @@ void _widget_set_color_mode(res_win_t wt, const clr_mod_t* pclr)
 
 	if (_widget_has_subproc(wt))
 	{
-		_widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (var_long)pclr);
+		_widget_send_command(wt, COMMAND_COLOR, IDC_SELF, (vword_t)pclr);
 	}
 
 	if (dw & WD_STYLE_NOCHANGE)
 		return;
 
-	_widget_enum_child(wt, _widget_set_child_color_mode, (var_long)pclr);
+	_widget_enum_child(wt, _widget_set_child_color_mode, (vword_t)pclr);
 }
 
 void _widget_get_color_mode(res_win_t wt, clr_mod_t* pclr)

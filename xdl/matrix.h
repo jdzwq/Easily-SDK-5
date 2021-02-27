@@ -74,7 +74,7 @@ EXP_API void matrix_reset(matrix_t mat, int rows, int cols);
 @INPUT matrix_t mat: the matrix object.
 @RETURN void*: the data buffer.
 */
-EXP_API void* matrix_data(matrix_t mat);
+EXP_API const void* matrix_data(matrix_t mat);
 
 /*
 @FUNCTION matrix_attach: attach matrix data buffer.
@@ -90,20 +90,6 @@ EXP_API void matrix_attach(matrix_t mat, void* data);
 @RETURN void*: the data buffer.
 */
 EXP_API void* matrix_detach(matrix_t mat);
-
-/*
-@FUNCTION matrix_zero: set the matrix elements value to zero.
-@INPUT matrix_t mat: the matrix struct.
-@RETURN void: none.
-*/
-EXP_API void matrix_zero(matrix_t mat);
-
-/*
-@FUNCTION matrix_unit: set the matrix elements value to 1.
-@INPUT matrix_t mat: the matrix struct.
-@RETURN void: none.
-*/
-EXP_API void matrix_unit(matrix_t mat);
 
 /*
 @FUNCTION matrix_copy: copy the matrix.
@@ -126,6 +112,13 @@ EXP_API int matrix_get_rows(matrix_t mat);
 @RETURN int: col count.
 */
 EXP_API int matrix_get_cols(matrix_t mat);
+
+/*
+@FUNCTION matrix_zero: set the matrix elements value to zero.
+@INPUT matrix_t mat: the matrix struct.
+@RETURN void: none.
+*/
+EXP_API void matrix_zero(matrix_t mat);
 
 /*
 @FUNCTION matrix_set_value: set the matrix element value.
@@ -167,21 +160,26 @@ EXP_API int matrix_format(matrix_t mat, tchar_t* buf, int max);
 /*
 @FUNCTION matrix_encode: encode matrix object to bytes buffer.
 @INPUT matrix mat: the matrix object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @OUTPUT byte_t* buf: the bytes buffer.
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return encoded bytes.
 */
-EXP_API dword_t matrix_encode(matrix_t mat, int encode, byte_t* buf, dword_t max);
+EXP_API dword_t matrix_encode(matrix_t mat, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION matrix_decode: decode matrix object from bytes buffer.
 @INPUT matrix mat: the matrix object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @INPUT const byte_t* buf: the data buffer.
-@INPUT dword_t n: the data size in bytes.
+@RETURN dword_t: return decoded bytes.
 */
-EXP_API void matrix_decode(matrix_t mat, int encode, const byte_t* buf, dword_t n);
+EXP_API dword_t matrix_decode(matrix_t mat, const byte_t* buf);
+
+/*
+@FUNCTION matrix_unit: set the matrix elements value to 1.
+@INPUT matrix_t mat: the matrix struct.
+@RETURN void: none.
+*/
+EXP_API void matrix_unit(matrix_t mat);
 
 EXP_API matrix_t matrix_trans(matrix_t mt);
 

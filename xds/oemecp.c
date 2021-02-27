@@ -379,7 +379,7 @@ static int _ecp_group_load(ecp_group *grp,
 	return(0);
 }
 
-#if defined(_OS_32)
+#if defined(_OS_32) || defined(_OS_WINDOWS)
 
 #define BYTES_TO_T_UINT_4( a, b, c, d )                       \
     ( (mpi_uint) (a) <<  0 ) |                        \
@@ -994,7 +994,7 @@ cleanup:
 
 #define LOAD32      cur = A( i );
 
-#if defined(_OS_32)  /* 32 bit */
+#if defined(_OS_32) || defined(_OS_WINDOWS)  /* 32 bit */
 
 #define MAX32       N->n
 #define A( j )      N->p[j]

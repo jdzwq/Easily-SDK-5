@@ -91,7 +91,7 @@ LICENSE.GPL3 for more details.
 #define get_calendar_daily_style_ptr(ilk)					get_dom_node_attr_ptr(ilk,ATTR_STYLE,-1)
 
 /**********************************************************************************************************/
-#define set_calendar_daily_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
+#define set_calendar_daily_delta(ilk,ul)					set_dom_node_delta(ilk,(vword_t)ul)
 
 #define get_calendar_daily_delta(ilk)						get_dom_node_delta(ilk)
 

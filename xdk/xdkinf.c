@@ -204,6 +204,8 @@ void xdk_impl_file(if_file_t* pif)
 	pif->pf_file_read = _file_read;
 	pif->pf_file_read_range = _file_read_range;
 	pif->pf_file_write_range = _file_write_range;
+	pif->pf_file_lock_range = _file_lock_range;
+	pif->pf_file_unlock_range = _file_unlock_range;
 	pif->pf_file_write = _file_write;
 	pif->pf_file_flush = _file_flush;
 	pif->pf_file_truncate = _file_truncate;

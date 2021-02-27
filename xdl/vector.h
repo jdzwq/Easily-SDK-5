@@ -74,7 +74,7 @@ EXP_API void vector_reset(vector_t vec, int count, int dimen);
 @INPUT vector_t vec: the vector object.
 @RETURN void*: the data buffer.
 */
-EXP_API void* vector_data(vector_t vec);
+EXP_API const void* vector_data(vector_t vec);
 
 /*
 @FUNCTION vector_attach: attach vector data buffer.
@@ -168,21 +168,19 @@ EXP_API int vector_format(vector_t vec, tchar_t* buf, int max);
 /*
 @FUNCTION vector_encode: encode vector object to bytes buffer.
 @INPUT vector vec: the vector object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @OUTPUT byte_t* buf: the bytes buffer.
 @INPUT dword_t max: the buffer size in bytes.
 @RETURN dword_t: return encoded bytes.
 */
-EXP_API dword_t vector_encode(vector_t vec, int encode, byte_t* buf, dword_t max);
+EXP_API dword_t vector_encode(vector_t vec, byte_t* buf, dword_t max);
 
 /*
 @FUNCTION vector_decode: decode vector object from bytes buffer.
 @INPUT vector vec: the vector object.
-@INPUT int encode: the encoding type eg: _UTF8, _GB2312, _UTF16_LIT, _UTF16_BIG.
 @INPUT const byte_t* buf: the data buffer.
 @INPUT dword_t n: the data size in bytes.
 */
-EXP_API void vector_decode(vector_t vec, int encode, const byte_t* buf, dword_t n);
+EXP_API dword_t vector_decode(vector_t vec, const byte_t* buf);
 
 EXP_API vector_t vector_shift(vector_t vt, ...);
 

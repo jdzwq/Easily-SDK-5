@@ -25,6 +25,11 @@ void test_coap_put()
 	if (xcoap_send(coap, data, &dw))
 	{
 		xcoap_flush(coap);
+		_tprintf(_T("coap put succeed\n"));
+	}
+	else
+	{
+		_tprintf(_T("coap put falied\n"));
 	}
 
 	xcoap_close(coap);
@@ -41,7 +46,10 @@ void test_coap_get()
 	byte_t data[4096] = { 0 };
 	dword_t dw = 4096;
 
-	xcoap_recv(coap, data, &dw);
+	if(xcoap_recv(coap, data, &dw))
+		_tprintf(_T("coap get succeed\n"));
+	else
+		_tprintf(_T("coap get failed\n"));
 	
 	xcoap_close(coap);
 }
@@ -50,7 +58,10 @@ void test_coap_del()
 {
 	xhand_t coap = xcoap_client(_T("DELETE"), URL_GET);
 
-	xcoap_connect(coap);
+	if(xcoap_connect(coap))
+		_tprintf(_T("coap del succeed\n"));
+	else
+		_tprintf(_T("coap del failed\n"));
 
 	xcoap_close(coap);
 }

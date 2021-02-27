@@ -176,17 +176,17 @@ EXP_API link_t_ptr get_multi_node_attr_table(link_t_ptr ilk);
 /*
 @FUNCTION get_multi_node_delta: get the node extract data.
 @INPUT link_t_ptr ilk: the node link component.
-@RETURN var_long: return the extract data if exists, otherwise return zero.
+@RETURN vword_t: return the extract data if exists, otherwise return zero.
 */
-EXP_API var_long get_multi_node_delta(link_t_ptr ilk);
+EXP_API vword_t get_multi_node_delta(link_t_ptr ilk);
 
 /*
 @FUNCTION set_multi_node_delta: set the node extract data.
 @INPUT link_t_ptr ilk: the node link component.
-@INPUT var_long delta: the extract data.
+@INPUT vword_t delta: the extract data.
 @RETURN void: none.
 */
-EXP_API void set_multi_node_delta(link_t_ptr ilk,var_long delta);
+EXP_API void set_multi_node_delta(link_t_ptr ilk,vword_t delta);
 
 /*
 @FUNCTION get_multi_node_mask: get the node mask.

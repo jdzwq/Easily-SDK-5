@@ -45,7 +45,7 @@ typedef struct _print_delta_t{
 }print_delta_t;
 
 #define GETPRINTDELTA(ph) 		(print_delta_t*)widget_get_user_delta(ph)
-#define SETPRINTDELTA(ph,ptd)	widget_set_user_delta(ph,(var_long)ptd)
+#define SETPRINTDELTA(ph,ptd)	widget_set_user_delta(ph,(vword_t)ptd)
 
 /************************************************************************************************/
 static int _printbox_calc_pages(res_win_t widget)

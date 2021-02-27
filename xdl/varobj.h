@@ -42,10 +42,9 @@ extern "C" {
 
 /*
 @FUNCTION object_alloc: alloc a object.
-@INPUT int encode: the encode, it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
 @RETURN object_t: return the object.
 */
-EXP_API object_t object_alloc(int encode);
+EXP_API object_t object_alloc(void);
 
 /*
 @FUNCTION object_free: free a object.
@@ -91,13 +90,6 @@ EXP_API dword_t object_size(object_t obj);
 EXP_API int object_get_type(object_t obj);
 
 /*
-@FUNCTION object_get_encode: get the object encode, it can be it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
-@INPUT object_t obj: the object.
-@RETURN int: return the object encode.
-*/
-EXP_API int object_get_encode(object_t obj);
-
-/*
 @FUNCTION object_get_commpress: test the object is compressed.
 @INPUT object_t obj: the object.
 @RETURN boo_t: return nonzero if compressed, otherwise return zero.
@@ -124,7 +116,7 @@ EXP_API void object_set_message(object_t obj, message_t val);
 @FUNCTION object_get_message: get message from object.
 @INPUT object_t obj: the object.
 @OUTPUT message_t val: the message object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeed
 */
 EXP_API bool_t object_get_message(object_t obj, message_t val);
 
@@ -140,7 +132,7 @@ EXP_API void object_set_queue(object_t obj, queue_t val);
 @FUNCTION object_get_queue: get queue from object.
 @INPUT object_t obj: the object.
 @OUTPUT queue_t val: the queue object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeed.
 */
 EXP_API bool_t object_get_queue(object_t obj, queue_t val);
 
@@ -156,7 +148,7 @@ EXP_API void object_set_vector(object_t obj, vector_t val);
 @FUNCTION object_get_vector: get vector from object.
 @INPUT object_t obj: the object.
 @OUTPUT vector_t val: the vector object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeeded.
 */
 EXP_API bool_t object_get_vector(object_t obj, vector_t val);
 
@@ -172,7 +164,7 @@ EXP_API void object_set_matrix(object_t obj, matrix_t val);
 @FUNCTION object_get_matrix: get matrix from object.
 @INPUT object_t obj: the object.
 @OUTPUT matrix_t val: the matrix object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeeded.
 */
 EXP_API bool_t object_get_matrix(object_t obj, matrix_t val);
 
@@ -188,7 +180,7 @@ EXP_API void object_set_map(object_t obj, map_t val);
 @FUNCTION object_get_map: get map from object.
 @INPUT object_t obj: the object.
 @OUTPUT map_t val: the map object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeeded.
 */
 EXP_API bool_t object_get_map(object_t obj, map_t val);
 
@@ -204,7 +196,7 @@ EXP_API void object_set_string(object_t obj, string_t val);
 @FUNCTION object_get_string: get string from object.
 @INPUT object_t obj: the object.
 @OUTPUT string_t val: the string object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeeded.
 */
 EXP_API bool_t object_get_string(object_t obj, string_t val);
 
@@ -220,7 +212,7 @@ EXP_API void object_set_variant(object_t obj, variant_t val);
 @FUNCTION object_get_variant: get variant from object.
 @INPUT object_t obj: the object.
 @OUTPUT variant_t val: the variant object.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_VARIANT, otherwise return zero.
+@RETURN bool_t: return nonzero if succeeded.
 */
 EXP_API bool_t object_get_variant(object_t obj, variant_t val);
 
@@ -237,7 +229,7 @@ EXP_API void object_set_domdoc(object_t obj, link_t_ptr dom);
 @FUNCTION object_get_domdoc: get dom document from object.
 @INPUT object_t obj: the object.
 @OUTPUT link_t_ptr dom: the dom document.
-@RETURN bool_t: return nonzero if the object type is _OBJECT_DOMDOC, otherwise return zero.
+@RETURN bool_t: return nonzero if succeeded.
 */
 EXP_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
 #endif
@@ -245,12 +237,11 @@ EXP_API bool_t object_get_domdoc(object_t obj, link_t_ptr dom);
 /*
 @FUNCTION object_set_bytes: save bytes to object.
 @INPUT object_t obj: the object.
-@INPUT int encode: the encode it can be _UTF8, _UTF16_BIG, _UTF16_LIT, _GB2312.
 @INPUT const byte_t* buf: the bytes buffer.
 @INPUT dword_t len: the buffer size in bytes.
 @RETURN void: none.
 */
-EXP_API void object_set_bytes(object_t obj, int encode, const byte_t* buf, dword_t len);
+EXP_API void object_set_bytes(object_t obj, const byte_t* buf, dword_t len);
 
 /*
 @FUNCTION object_add_bytes: append bytes to object.
@@ -294,6 +285,30 @@ EXP_API dword_t object_encode(object_t obj, byte_t* buf, dword_t max);
 @RETURN dword_t: return the bytes decoded.
 */
 EXP_API dword_t object_decode(object_t obj, const byte_t* data);
+
+/*
+@FUNCTION object_hash32: get object object 32bits hash code.
+@INPUT object var: the object object.
+@OUTPUT key32_t* pkey: the 32bits key buffer.
+@RETURN void: none.
+*/
+EXP_API void object_hash32(object_t obj, key32_t* pkey);
+
+/*
+@FUNCTION object_hash64: get object object 64bits hash code.
+@INPUT object var: the object object.
+@OUTPUT key64_t* pkey: the 64bits key buffer.
+@RETURN void: none.
+*/
+EXP_API void object_hash64(object_t obj, key64_t* pkey);
+
+/*
+@FUNCTION object_hash128: get object object 128bits hash code.
+@INPUT object var: the object object.
+@OUTPUT key128_t* pkey: the 128bits key buffer.
+@RETURN void: none.
+*/
+EXP_API void object_hash128(object_t obj, key128_t* pkey);
 
 #if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_object(void);

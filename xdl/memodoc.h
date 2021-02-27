@@ -59,12 +59,12 @@ LICENSE.GPL3 for more details.
 */
 #define set_memo_height(ptr,n)					set_dom_node_attr_float(ptr,ATTR_HEIGHT,n)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @SET set_memo_line_delta: set the line extract data.
 */
-#define set_memo_line_delta(ilk,ul)				set_dom_node_delta(ilk,(var_long)ul)
+#define set_memo_line_delta(ilk,ul)				set_dom_node_delta(ilk,(vword_t)ul)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @GET get_memo_line_delta: get the memo extract data.
 */
 #define get_memo_line_delta(ilk)				get_dom_node_delta(ilk)

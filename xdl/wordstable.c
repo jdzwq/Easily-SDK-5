@@ -45,7 +45,7 @@ typedef struct _words_table{
 typedef struct _words_item_t{
 	link_t lk;			/* item self link component*/
 	tchar_t* text;		/* item text*/
-	var_long data;		/* entiry data for runtime use*/
+	vword_t data;		/* entiry data for runtime use*/
 }words_item_t;
 
 /* restore str table struct ptr from link ptr*/
@@ -239,7 +239,7 @@ const tchar_t* get_words_item_text_ptr(link_t_ptr ilk)
 	return phe->text;
 }
 
-void set_words_item_delta(link_t_ptr ilk, var_long data)
+void set_words_item_delta(link_t_ptr ilk, vword_t data)
 {
 	words_item_t* phe;
 
@@ -249,7 +249,7 @@ void set_words_item_delta(link_t_ptr ilk, var_long data)
 	phe->data = data;
 }
 
-var_long get_words_item_delta(link_t_ptr ilk)
+vword_t get_words_item_delta(link_t_ptr ilk)
 {
 	words_item_t* phe;
 

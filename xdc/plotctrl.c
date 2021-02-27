@@ -43,7 +43,7 @@ typedef struct _plot_delta_t{
 }plot_delta_t;
 
 #define GETPLOTDELTA(ph) 		(plot_delta_t*)widget_get_user_delta(ph)
-#define SETPLOTDELTA(ph,ptd)		widget_set_user_delta(ph,(var_long)ptd)
+#define SETPLOTDELTA(ph,ptd)		widget_set_user_delta(ph,(vword_t)ptd)
 
 /************************************************************************************************/
 

@@ -44,7 +44,7 @@ typedef struct _hash_entity_t{
 		void* vval;
 	};
 	dword_t vlen;	/* entity value bytes*/
-	var_long data;		/* entiry data for runtime use*/
+	vword_t data;		/* entiry data for runtime use*/
 }hash_entity_t;
 
 typedef struct _hash_table_t{
@@ -929,7 +929,7 @@ dword_t get_hash_entity_bytes_size(link_t_ptr elk)
 	return phe->vlen;
 }
 
-void set_hash_entity_delta(link_t_ptr elk,var_long data)
+void set_hash_entity_delta(link_t_ptr elk,vword_t data)
 {
 	hash_entity_t* phe;
 
@@ -939,7 +939,7 @@ void set_hash_entity_delta(link_t_ptr elk,var_long data)
 	phe->data = data;
 }
 
-var_long get_hash_entity_delta(link_t_ptr elk)
+vword_t get_hash_entity_delta(link_t_ptr elk)
 {
 	hash_entity_t* phe;
 

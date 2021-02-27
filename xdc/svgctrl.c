@@ -43,7 +43,7 @@ typedef struct _svg_delta_t{
 }svg_delta_t;
 
 #define GETSVGDELTA(ph) 		(svg_delta_t*)widget_get_user_delta(ph)
-#define SETSVGDELTA(ph,ptd)		widget_set_user_delta(ph,(var_long)ptd)
+#define SETSVGDELTA(ph,ptd)		widget_set_user_delta(ph,(vword_t)ptd)
 
 /************************************************************************************************/
 

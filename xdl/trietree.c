@@ -44,7 +44,7 @@ typedef struct _trie_node_t{
 	tchar_t* key;		/*trie key*/
 	int len;			/*key length*/
 
-	var_long delta;		/*runtime value*/
+	vword_t delta;		/*runtime value*/
 }trie_node_t;
 
 /*restore trie_treenode from self link ptr*/
@@ -331,7 +331,7 @@ link_t_ptr get_trie_from_node(link_t_ptr ilk)
 	return ilk;
 }
 
-var_long get_trie_node_delta(link_t_ptr ilk)
+vword_t get_trie_node_delta(link_t_ptr ilk)
 {
 	trie_node_t* ptt;
 
@@ -342,7 +342,7 @@ var_long get_trie_node_delta(link_t_ptr ilk)
 	return ptt->delta;
 }
 
-void set_trie_node_delta(link_t_ptr ilk,var_long delta)
+void set_trie_node_delta(link_t_ptr ilk,vword_t delta)
 {
 	trie_node_t* ptt;
 
@@ -424,7 +424,7 @@ link_t_ptr enum_trie_tree(link_t_ptr ptr, tchar_t kfeed, PF_ENUM_TRIE_TREE pf, v
 }
 
 #if defined(XDL_SUPPORT_TEST)
-static bool_t print_leaf(const tchar_t* key, int len, var_long delta, void* p)
+static bool_t print_leaf(const tchar_t* key, int len, vword_t delta, void* p)
 {
 	_tprintf(_T("%s\n"), key);
 

@@ -145,6 +145,30 @@ EXP_API bool_t xuncf_read_file_range(xhand_t fh, dword_t hoff, dword_t loff, byt
 EXP_API bool_t xuncf_write_file_range(xhand_t fh, dword_t hoff, dword_t loff, const byte_t* buf, dword_t size);
 
 /*
+@FUNCTION xuncf_lock_file_range: lock file range for read/write.
+@INPUT xhand_t fh: the file handle.
+@INPUT dword_t hoff: the high value of 64bits position.
+@INPUT dword_t loff: the low value of 64bits position.
+@INPUT dword_t size: the request size in bytes.
+@INPUT bool_t write: if none zero for writing, zero for reading.
+@OUTPUT res_file_t* pmh: the mapping handle returned.
+@RETURN void*: if succeeds return the buffer address, otherwise return NULL.
+*/
+EXP_API void* xuncf_lock_file_range(xhand_t fh, dword_t hoff, dword_t loff, dword_t size, bool_t write, res_file_t* pmh);
+
+/*
+@FUNCTION xuncf_unlock_file_range: unlock file range after read/write.
+@INPUT xhand_t fh: the file handle.
+@INPUT dword_t hoff: the high value of 64bits position.
+@INPUT dword_t loff: the low value of 64bits position.
+@INPUT dword_t size: the data size in bytes.
+@INPUT res_file_t mh: the mapping handle.
+@INPUT void* buf: the buffer, returned by lock file range.
+@RETURN void: none.
+*/
+EXP_API void xuncf_unlock_file_range(xhand_t fh, dword_t hoff, dword_t loff, dword_t size, res_file_t mh, void* pbuf);
+
+/*
 @FUNCTION xuncf_setopt: set the file options.
 @INPUT xhand_t fh: the file handle.
 @INPUT int oid: the option id, eg: FILE_OPTION_TIME, FILE_OPTION_SINCE.

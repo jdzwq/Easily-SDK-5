@@ -11,11 +11,12 @@
 //#define URL		_T("https://localhost:8888/loc/mymovi.mp4")
 //#define URL		_T("https://myssl.com:443/www.sspanda.com?status=q")
 //#define URL		_T("https://www.baidu.com:443")
-#define URL		_T("https://mp.weixin.qq.com:443")
+//#define URL		_T("https://mp.weixin.qq.com:443")
+#define URL		_T("https:/139.196.196.107:443")
 
 void set_ssl(xhand_t ssl)
 {
-	if_fio_t* pxf = { 0 };
+	file_t pxf = { 0 };
     byte_t buf_crt[X509_CERT_SIZE] = { 0 };
     byte_t buf_rsa[RSA_KEY_SIZE] = { 0 };
 	dword_t dw_crt = 0;
@@ -76,13 +77,14 @@ void test_ssl_srv()
     net_addr_t locaddr, rmtaddr;
     int addr_len;
     res_file_t ao;
-    async_t* over = async_alloc_lapp(ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
+	async_t over = { 0 };
+	async_init(&over, ASYNC_EVENT, TCP_BASE_TIMO, INVALID_FILE);
     
     addr_len = sizeof(net_addr_t);
-    ao = socket_accept(so, (res_addr_t)&rmtaddr, &addr_len, over);
+    ao = socket_accept(so, (res_addr_t)&rmtaddr, &addr_len, &over);
     if (ao == INVALID_FILE)
     {
-        async_free_lapp(over);
+        async_uninit(&over);
         socket_close(so);
         return;
     }
@@ -90,7 +92,7 @@ void test_ssl_srv()
     xhand_t ssl = xssl_srv(ao);
     if(!ssl)
     {
-        async_free_lapp(over);
+		async_uninit(&over);
         socket_close(ao);
         socket_close(so);
         return;
@@ -109,14 +111,16 @@ void test_ssl_srv()
     socket_close(ao);
     socket_close(so);
 
-    async_free_lapp(over);
+	async_uninit(&over);
 }
 
 void test_ssl_cli()
 {
 	tchar_t addr[ADDR_LEN + 1] = { 0 };
 
-	host_addr(_T("mp.weixin.qq.com"), addr);
+	//host_addr(_T("mp.weixin.qq.com"), addr);
+	xscpy(addr, _T("139.196.196.107"));
+	//xscpy(addr, _T("127.0.0.1"));
 
     xhand_t ssl = xssl_cli(443, addr);
     

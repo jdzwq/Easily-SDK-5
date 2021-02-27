@@ -44,7 +44,7 @@ typedef struct _textdlg_delta_t{
 }textdlg_delta_t;
 
 #define GETTEXTDLGDELTA(ph) 	(textdlg_delta_t*)widget_get_user_delta(ph)
-#define SETTEXTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTEXTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /**********************************************************************************/
 void textdlg_on_ok(res_win_t widget)
@@ -142,7 +142,7 @@ void hand_textdlg_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_textdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_textdlg_menu_command(res_win_t widget, int code, int cid, vword_t data)
 {
 	textdlg_delta_t* ptd = GETTEXTDLGDELTA(widget);
 

@@ -61,7 +61,7 @@ typedef struct _grid_delta_t{
 }grid_delta_t;
 
 #define GETGRIDDELTA(ph) 	(grid_delta_t*)widget_get_user_delta(ph)
-#define SETGRIDDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETGRIDDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /**********************************************************************************************/
 static void _gridctrl_done(res_win_t widget)
@@ -1819,7 +1819,7 @@ void hand_grid_char(res_win_t widget, tchar_t nChar)
 	}
 }
 
-void hand_grid_child_command(res_win_t widget, int code, var_long data)
+void hand_grid_child_command(res_win_t widget, int code, vword_t data)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 
@@ -1834,7 +1834,7 @@ void hand_grid_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_grid_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_grid_menu_command(res_win_t widget, int code, int cid, vword_t data)
 {
 	grid_delta_t* ptd = GETGRIDDELTA(widget);
 

@@ -54,17 +54,10 @@ typedef unsigned long long t_dbl;
 #endif
 #endif
 
-#ifdef _OS_64
-typedef  int64_t mpi_sint;
-typedef uint64_t mpi_uint;
-#ifndef _OS_WINDOWS
-typedef __uint128_t t_udbl;
+#ifndef mpi_uint
+#define mpi_uint t_int
 #endif
-#else
-typedef  int32_t mpi_sint;
-typedef uint32_t mpi_uint;
-typedef uint64_t t_udbl;
-#endif
+
 
 /**
 * \brief          MPI structure

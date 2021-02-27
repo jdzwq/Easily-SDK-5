@@ -524,12 +524,12 @@ LICENSE.GPL3 for more details.
 */
 #define get_col_sum_mode_ptr(clk)							get_dom_node_attr_ptr(clk,ATTR_SUM_MODE,-1)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @SET set_col_delta: set the col extract value.
 */
 #define set_col_delta(clk,data)								set_dom_node_delta(clk,data)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @GET get_col_delta: get the col extract value.
 */
 #define get_col_delta(clk)									get_dom_node_delta(clk)
@@ -598,12 +598,12 @@ LICENSE.GPL3 for more details.
 */
 #define get_col_table_name_ptr(clk)							get_dom_node_attr_ptr(clk,ATTR_TABLE_NAME,-1)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @SET set_row_delta: set the col extract value.
 */
 #define set_row_delta(rlk,data)								set_dom_node_delta(rlk,data)
 /*
-@PROPER delta: var_long.
+@PROPER delta: vword_t.
 @GET get_row_delta: get the col extract value.
 */
 #define get_row_delta(rlk)									get_dom_node_delta(rlk)

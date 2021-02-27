@@ -50,7 +50,7 @@ typedef struct _INPUTPARAM{
 
 
 #define GETINPUTDLGDELTA(ph) 	(inputdlg_delta_t*)widget_get_user_delta(ph)
-#define SETINPUTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETINPUTDLGDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 /*********************************************************************************/
 void noti_inputdlg_commit_edit(res_win_t widget)
 {
@@ -150,7 +150,7 @@ void hand_inputdlg_destroy(res_win_t widget)
 	widget_hand_destroy(widget);
 }
 
-void hand_inputdlg_child_command(res_win_t widget, int code, var_long data)
+void hand_inputdlg_child_command(res_win_t widget, int code, vword_t data)
 {
 	inputdlg_delta_t* ptd = GETINPUTDLGDELTA(widget);
 
@@ -165,7 +165,7 @@ void hand_inputdlg_child_command(res_win_t widget, int code, var_long data)
 	}
 }
 
-void hand_inputdlg_menu_command(res_win_t widget, int code, int cid, var_long data)
+void hand_inputdlg_menu_command(res_win_t widget, int code, int cid, vword_t data)
 {
 	inputdlg_delta_t* ptd = GETINPUTDLGDELTA(widget);
 

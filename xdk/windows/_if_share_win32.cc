@@ -143,9 +143,9 @@ res_file_t _share_cli(const tchar_t* fname, dword_t size, dword_t fmode)
 bool_t _share_write(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t* pcb)
 {
 	void* pBase = NULL;
-	DWORD poff, loff;
-	SIZE_T dlen;
-	DWORD page_gran;
+	dword_t poff, loff;
+	vword_t dlen;
+	dword_t page_gran;
 
 	SYSTEM_INFO si = { 0 };
 
@@ -180,9 +180,9 @@ bool_t _share_write(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t
 bool_t _share_read(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t* pcb)
 {
 	void* pBase = NULL;
-	DWORD poff, loff;
-	SIZE_T dlen;
-	DWORD page_gran;
+	dword_t poff, loff;
+	vword_t dlen;
+	dword_t page_gran;
 
 	SYSTEM_INFO si = { 0 };
 
@@ -217,9 +217,9 @@ bool_t _share_read(res_file_t fh, dword_t off, void* buf, dword_t size, dword_t*
 void* _share_lock(res_file_t fh, dword_t off, dword_t size)
 {
 	void* pBase = NULL;
-	DWORD poff, loff;
-	SIZE_T dlen;
-	DWORD page_gran;
+	dword_t poff, loff;
+	vword_t dlen;
+	dword_t page_gran;
 
 	SYSTEM_INFO si = { 0 };
 
@@ -242,9 +242,9 @@ void* _share_lock(res_file_t fh, dword_t off, dword_t size)
 void _share_unlock(res_file_t fh, dword_t off, dword_t size, void* p)
 {
 	void* pBase = NULL;
-	DWORD poff,loff;
-	SIZE_T dlen;
-	DWORD page_gran;
+	dword_t poff, loff;
+	vword_t dlen;
+	dword_t page_gran;
 
 	SYSTEM_INFO si = { 0 };
 

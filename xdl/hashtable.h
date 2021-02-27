@@ -123,17 +123,17 @@ EXP_API int get_hash_entity_val(link_t_ptr elk, tchar_t* buf, int max);
 /*
 @FUNCTION set_hash_entity_delta: set the hash entity extract data.
 @INPUT link_t_ptr elk: the hash entity link component.
-@INPUT var_long data: the extract data.
+@INPUT vword_t data: the extract data.
 @RETURN void: none.
 */
-EXP_API void set_hash_entity_delta(link_t_ptr elk, var_long data);
+EXP_API void set_hash_entity_delta(link_t_ptr elk, vword_t data);
 
 /*
 @FUNCTION get_hash_entity_delta: get the hash entity extract data.
 @INPUT link_t_ptr elk: the hash entity link component.
-@RETURN var_long: return the hash entity extract data.
+@RETURN vword_t: return the hash entity extract data.
 */
-EXP_API var_long get_hash_entity_delta(link_t_ptr elk);
+EXP_API vword_t get_hash_entity_delta(link_t_ptr elk);
 
 /*
 @FUNCTION attach_hash_entity_val: attach a value buffer to the hash entity.

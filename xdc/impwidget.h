@@ -100,32 +100,32 @@ EXP_API dword_t widget_get_style(res_win_t wt);
 /*
 @FUNCTION widget_set_core_delta: set the widget defined data.
 @INPUT res_win_t wt: widget resource handle.
-@INPUT var_long pd: the widget defined data.
+@INPUT vword_t pd: the widget defined data.
 @RETURN void: none.
 */
-EXP_API void	widget_set_core_delta(res_win_t wt, var_long pd);
+EXP_API void	widget_set_core_delta(res_win_t wt, vword_t pd);
 
 /*
 @FUNCTION widget_get_core_delta: get the widget defined data.
 @INPUT res_win_t wt: widget resource handle.
-@RETURN var_long: widget defined data.
+@RETURN vword_t: widget defined data.
 */
-EXP_API var_long	widget_get_core_delta(res_win_t wt);
+EXP_API vword_t	widget_get_core_delta(res_win_t wt);
 
 /*
 @FUNCTION widget_set_user_delta: set the user defined data.
 @INPUT res_win_t wt: widget resource handle.
-@INPUT var_long pd: the user defined data.
+@INPUT vword_t pd: the user defined data.
 @RETURN void: none.
 */
-EXP_API void	widget_set_user_delta(res_win_t wt, var_long pd);
+EXP_API void	widget_set_user_delta(res_win_t wt, vword_t pd);
 
 /*
 @FUNCTION widget_get_user_delta: get the user defined data.
 @INPUT res_win_t wt: widget resource handle.
-@RETURN var_long: user defined data.
+@RETURN vword_t: user defined data.
 */
-EXP_API var_long	widget_get_user_delta(res_win_t wt);
+EXP_API vword_t	widget_get_user_delta(res_win_t wt);
 
 /*
 @FUNCTION widget_set_user_id: set the user control id.
@@ -176,26 +176,26 @@ EXP_API res_win_t widget_get_parent(res_win_t wt);
 @FUNCTION widget_set_user_prop: set widget property.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT const tchar_t* pkey: the property key token.
-@INPUT var_long pval: the property value.
+@INPUT vword_t pval: the property value.
 @RETURN void: none.
 */
-EXP_API void	widget_set_user_prop(res_win_t wt, const tchar_t* pkey, var_long pval);
+EXP_API void	widget_set_user_prop(res_win_t wt, const tchar_t* pkey, vword_t pval);
 
 /*
 @FUNCTION widget_get_user_prop: get widget property value by key.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT const tchar_t* pkey: the property key token.
-@RETURN var_long: return the property value if exists, otherwise return zero.
+@RETURN vword_t: return the property value if exists, otherwise return zero.
 */
-EXP_API var_long	widget_get_user_prop(res_win_t wt, const tchar_t* pkey);
+EXP_API vword_t	widget_get_user_prop(res_win_t wt, const tchar_t* pkey);
 
 /*
 @FUNCTION widget_get_user_prop: delete widget property by key and return the value stored.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT const tchar_t* pkey: the property key token.
-@RETURN var_long: return the property value if exists, otherwise return zero.
+@RETURN vword_t: return the property value if exists, otherwise return zero.
 */
-EXP_API var_long	widget_del_user_prop(res_win_t wt, const tchar_t* pkey);
+EXP_API vword_t	widget_del_user_prop(res_win_t wt, const tchar_t* pkey);
 
 /*
 @FUNCTION widget_client_ctx: reference a widget client device context, it clipped by widget client rectangle.
@@ -568,20 +568,20 @@ EXP_API int		widget_send_notice(res_win_t wt, NOTICE* pnt);
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT int code: the command message code.
 @INPUT int cid: the control id of the widget.
-@INPUT var_long data: the extract data posed with command message.
+@INPUT vword_t data: the extract data posed with command message.
 @RETURN void: none.
 */
-EXP_API void	widget_post_command(res_win_t wt, int code, int cid, var_long data);
+EXP_API void	widget_post_command(res_win_t wt, int code, int cid, vword_t data);
 
 /*
 @FUNCTION widget_send_command: send command message to owner window, and wait the message processed.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT int code: the command message code.
 @INPUT int cid: the control id of the widget.
-@INPUT var_long data: the extract data posed with command message.
+@INPUT vword_t data: the extract data posed with command message.
 @RETURN int: return nonzero if message precessed.
 */
-EXP_API int		widget_send_command(res_win_t wt, int code, int cid, var_long data);
+EXP_API int		widget_send_command(res_win_t wt, int code, int cid, vword_t data);
 
 /*
 @FUNCTION widget_set_title: set widget title.
@@ -635,18 +635,18 @@ EXP_API void	widget_del_subproc(res_win_t wt, dword_t sid);
 @FUNCTION widget_set_subproc_delta: set widget subclass routing extract data.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT dword_t sid: the subclass id.
-@INPUT var_long delta: the subclass extract data.
+@INPUT vword_t delta: the subclass extract data.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t	widget_set_subproc_delta(res_win_t wt, dword_t sid, var_long delta);
+EXP_API bool_t	widget_set_subproc_delta(res_win_t wt, dword_t sid, vword_t delta);
 
 /*
 @FUNCTION widget_get_subproc_delta: get widget subclass routing extract data.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT dword_t sid: the subclass id.
-@RETURN var_long: return the subclass extract data if exists, otherwise return zero.
+@RETURN vword_t: return the subclass extract data if exists, otherwise return zero.
 */
-EXP_API var_long widget_get_subproc_delta(res_win_t wt, dword_t sid);
+EXP_API vword_t widget_get_subproc_delta(res_win_t wt, dword_t sid);
 
 /*
 @FUNCTION widget_has_subproc: test widget has subclass routing.
@@ -659,17 +659,17 @@ EXP_API bool_t	widget_has_subproc(res_win_t wt);
 @FUNCTION widget_set_timer: set widget timer routing.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT int ms: the time period in millisecond.
-@RETURN var_long: if succeeds return timer id, otherwise return zero.
+@RETURN vword_t: if succeeds return timer id, otherwise return zero.
 */
-EXP_API var_long widget_set_timer(res_win_t wt, int ms);
+EXP_API vword_t widget_set_timer(res_win_t wt, int ms);
 
 /*
 @FUNCTION widget_kill_timer: remove widget timer routing.
 @INPUT res_win_t wt: the widget resource handle.
-@INPUT var_long tid: the timer id.
+@INPUT vword_t tid: the timer id.
 @RETURN void: none.
 */
-EXP_API void	widget_kill_timer(res_win_t wt, var_long tid);
+EXP_API void	widget_kill_timer(res_win_t wt, vword_t tid);
 
 /*
 @FUNCTION widget_attach_accel: attach a accelerator to widget.
@@ -697,10 +697,10 @@ EXP_API res_acl_t widget_detach_accel(res_win_t wt);
 @FUNCTION widget_enum_child: enumerate child widgets.
 @INPUT res_win_t wt: the widget resource handle.
 @INPUT PF_ENUM_WINDOW_PROC pf: the callback function for every child widget enumerated.
-@INPUT var_long pv: the parameter translated into PF_ENUM_WINDOW_PROC function.
+@INPUT vword_t pv: the parameter translated into PF_ENUM_WINDOW_PROC function.
 @RETURN bool_t: if succeeds return nonzero, fails return zero.
 */
-EXP_API bool_t	widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, var_long pv);
+EXP_API bool_t	widget_enum_child(res_win_t wt, PF_ENUM_WINDOW_PROC pf, vword_t pv);
 
 /*
 @FUNCTION widget_has_struct: test is a xdc widget.

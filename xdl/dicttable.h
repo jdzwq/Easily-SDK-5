@@ -151,17 +151,17 @@ EXP_API object_t detach_dict_entity_val(link_t_ptr elk);
 /*
 @FUNCTION get_dict_entity_delta: get the dictionary entity extract value.
 @INPUT link_t_ptr elk: the dictionary entity link component.
-@RETURN var_long: return extract value if exists, otherwise return zero.
+@RETURN vword_t: return extract value if exists, otherwise return zero.
 */
-EXP_API var_long get_dict_entity_delta(link_t_ptr elk);
+EXP_API vword_t get_dict_entity_delta(link_t_ptr elk);
 
 /*
 @FUNCTION set_dict_entity_delta: set the dictionary entity extract value.
 @INPUT link_t_ptr elk: the dictionary entity link component.
-@INPUT var_long val: the extract value.
+@INPUT vword_t val: the extract value.
 @RETURN void: none.
 */
-EXP_API void set_dict_entity_delta(link_t_ptr elk, var_long val);
+EXP_API void set_dict_entity_delta(link_t_ptr elk, vword_t val);
 
 /*
 @FUNCTION enum_dict_entity: enum the dictionary entites.

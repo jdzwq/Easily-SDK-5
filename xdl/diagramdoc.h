@@ -101,7 +101,7 @@ LICENSE.GPL3 for more details.
 #define set_diagram_entity_taborder(ilk,n)					set_dom_node_attr_integer(ilk,ATTR_TABORDER,n)
 
 /**********************************************************************************************************/
-#define set_diagram_entity_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
+#define set_diagram_entity_delta(ilk,ul)					set_dom_node_delta(ilk,(vword_t)ul)
 
 #define get_diagram_entity_delta(ilk)						get_dom_node_delta(ilk)
 

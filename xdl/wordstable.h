@@ -35,7 +35,7 @@ LICENSE.GPL3 for more details.
 #include "xdldef.h"
 
 /********************************************************************************/
-#define set_words_item_hidden(ilk, b)		set_words_item_delta(ilk, (var_long)b)
+#define set_words_item_hidden(ilk, b)		set_words_item_delta(ilk, (vword_t)b)
 
 #define get_words_item_hidden(ilk)			(bool_t)get_words_item_delta(ilk)
 /*********************************************************************************/
@@ -64,9 +64,9 @@ EXP_API void delete_words_item(link_t_ptr ptr, link_t_ptr pos);
 
 EXP_API const tchar_t* get_words_item_text_ptr(link_t_ptr ilk);
 
-EXP_API void set_words_item_delta(link_t_ptr ilk, var_long data);
+EXP_API void set_words_item_delta(link_t_ptr ilk, vword_t data);
 
-EXP_API var_long get_words_item_delta(link_t_ptr ilk);
+EXP_API vword_t get_words_item_delta(link_t_ptr ilk);
 
 EXP_API link_t_ptr get_words_next_item(link_t_ptr ptr,link_t_ptr pos);
 

@@ -36,7 +36,7 @@ LICENSE.GPL3 for more details.
 
 /**********************************************************************************************************************/
 
-typedef bool_t(*PF_ENUM_TRIE_TREE)(const tchar_t* key, int len, var_long delta, void* p);
+typedef bool_t(*PF_ENUM_TRIE_TREE)(const tchar_t* key, int len, vword_t delta, void* p);
 
 #ifdef	__cplusplus
 extern "C" {
@@ -58,9 +58,9 @@ extern "C" {
 
 	EXP_API link_t_ptr enum_trie_tree(link_t_ptr trie, tchar_t kfeed, PF_ENUM_TRIE_TREE pf, void* param);
 
-	EXP_API var_long get_trie_node_delta(link_t_ptr node);
+	EXP_API vword_t get_trie_node_delta(link_t_ptr node);
 
-	EXP_API void set_trie_node_delta(link_t_ptr node, var_long delta);
+	EXP_API void set_trie_node_delta(link_t_ptr node, vword_t delta);
 
 #if defined(XDL_SUPPORT_TEST)
 	EXP_API void test_trie_tree();

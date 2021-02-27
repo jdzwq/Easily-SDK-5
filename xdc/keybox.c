@@ -114,7 +114,7 @@ static KEYBOX_RECT KEYBOX_POS[KEYBOX_COUNT] = {
 
 
 #define GETKEYBOXDELTA(ph) 	(keybox_delta_t*)widget_get_user_delta(ph)
-#define SETKEYBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETKEYBOXDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /***********************************************************************************/
 static int _keybox_calc_hint(res_win_t widget, int x, int y, tchar_t* pch)

@@ -34,7 +34,7 @@ LICENSE.GPL3 for more details.
 #include "xdcctrl.h"
 #include "xdcbox.h"
 
-static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, var_long delta)
+static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -47,11 +47,11 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 	{
 		if (widget_is_valid(ctrl))
 		{
-			widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+			widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		}
 		else
 		{
-			widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+			widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		}
 		
 		return 1;
@@ -60,17 +60,17 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 	{
 		if (widget_is_valid(ctrl))
 		{
-			widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+			widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		}
 		else
 		{
-			widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+			widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		}
 		return 1;
 	}
 	else if (nKey == KEY_ESC)
 	{
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 	else if (nKey == KEY_DOWN)
@@ -93,7 +93,7 @@ static int sub_editbox_keydown(res_win_t widget, dword_t ks, int nKey, uid_t sub
 	return 0;
 }
 
-static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t subid, var_long delta)
+static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -120,7 +120,7 @@ static int sub_editbox_scroll(res_win_t widget, bool_t bHorz, int nLine, uid_t s
 	return 1;
 }
 
-static int sub_editbox_self_command(res_win_t widget, int code, var_long data, uid_t subid, var_long delta)
+static int sub_editbox_self_command(res_win_t widget, int code, vword_t data, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 	const tchar_t* text;
@@ -152,17 +152,17 @@ static int sub_editbox_self_command(res_win_t widget, int code, var_long data, u
 		}
 		return 1;
 	case COMMAND_COMMIT:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	case COMMAND_ROLLBACK:
-		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_ROLLBACK, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_notice(res_win_t widget, NOTICE* pnt, uid_t subid, var_long delta)
+static int sub_editbox_notice(res_win_t widget, NOTICE* pnt, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -174,14 +174,14 @@ static int sub_editbox_notice(res_win_t widget, NOTICE* pnt, uid_t subid, var_lo
 	switch (pnt->code)
 	{
 	case NC_GRIDLBCLK:
-		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (var_long)NULL);
+		widget_post_command(widget_get_owner(widget), COMMAND_COMMIT, IDC_CHILD, (vword_t)NULL);
 		return 1;
 	}
 
 	return 0;
 }
 
-static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long delta)
+static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 	//res_win_t keybox;
@@ -210,7 +210,7 @@ static int sub_editbox_show(res_win_t widget, bool_t show, uid_t subid, var_long
 	return 1;
 }
 
-static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, var_long delta)
+static void sub_editbox_unsubbing(res_win_t widget, uid_t subid, vword_t delta)
 {
 	res_win_t ctrl;
 
@@ -273,7 +273,7 @@ res_win_t firegrid_create(res_win_t widget, const xrect_t* pxr, link_t_ptr data)
 	gridctrl_attach(ctrlbox, data);
 	gridctrl_set_lock(ctrlbox, 1);
 
-	widget_set_subproc_delta(editor, IDS_EDITBOX, (var_long)ctrlbox);
+	widget_set_subproc_delta(editor, IDS_EDITBOX, (vword_t)ctrlbox);
 
 	widget_get_window_rect(ctrlbox, &xr);
 	gridctrl_popup_size(ctrlbox, RECTSIZE(&xr));

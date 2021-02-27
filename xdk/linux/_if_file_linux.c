@@ -243,14 +243,23 @@ bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
     void* pBase = NULL;
-    dword_t poff;
-    size_t dlen;
+    dword_t dwh, dwl, poff;
+    size_t dlen, flen;
     
+    _file_size(fh, &dwh, &dwl);
+
+    flen = MAKESIZE(loff, hoff) + size;
+
+    if(MAKESIZE(dwl,dwh) < flen)
+    {
+        return 0;
+    }
+
     poff = (loff % PAGE_GRAN);
     loff = (loff / PAGE_GRAN) * PAGE_GRAN;
     dlen = poff + size;
-    
-    pBase = mmap(NULL, dlen, PROT_WRITE | PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
+
+    pBase = mmap(NULL, dlen, PROT_READ, MAP_SHARED, fh, MAKESIZE(loff, hoff));
     if(pBase == MAP_FAILED)
     {
         return 0;
@@ -299,6 +308,65 @@ bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, d
 
     return 1;
 }
+
+void* _file_lock_range(res_file_t fh, dword_t hoff, dword_t loff, dword_t size, bool_t write, res_file_t* ph)
+{
+    void* pBase = NULL;
+    dword_t dwh, dwl, poff;
+    size_t dlen, flen;
+    int prot;
+
+    *ph = NULL;
+
+    _file_size(fh, &dwh, &dwl);
+    
+    flen = MAKESIZE(loff, hoff) + size;
+    
+    if(MAKESIZE(dwl,dwh) < flen)
+    {
+        if(!write)
+        {
+            return NULL;
+        }
+       if(ftruncate(fh, flen) < 0)
+        {
+            return NULL;
+        }
+    }
+    
+    poff = (loff % PAGE_GRAN);
+    loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+    dlen = poff + size;
+    
+    prot = (write)? (PROT_WRITE | PROT_READ) : PROT_READ;
+    pBase = mmap(NULL, dlen, prot, MAP_SHARED, fh, MAKESIZE(loff, hoff));
+    if(pBase == MAP_FAILED)
+    {
+        return NULL;
+    }
+    
+    *ph = fh;
+
+    return (void*)((char*)pBase + poff);
+}
+
+void _file_unlock_range(res_file_t mh, dword_t hoff, dword_t loff, dword_t size, void* p)
+{
+    void* pBase = NULL;
+    dword_t poff;
+    size_t dlen;
+    
+    poff = (loff % PAGE_GRAN);
+    loff = (loff / PAGE_GRAN) * PAGE_GRAN;
+    dlen = poff + size;
+
+    pBase = (void*)((char*)p - poff);
+    
+    msync(pBase, dlen, MS_SYNC);
+    
+    munmap(pBase, dlen);
+}
+
 
 bool_t _file_truncate(res_file_t fh, dword_t hoff, dword_t loff)
 {

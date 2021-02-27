@@ -229,23 +229,23 @@ bool_t _file_read(res_file_t fh, void* buf, dword_t size, async_t* pb)
 bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
 	HANDLE mh;
-	void* pBase = NULL;
-	DWORD dwh, dwl, poff;
-	SIZE_T dlen, flen;
-	DWORD page_gran;
+	void* pBase;
+	dword_t gran, dwh, dwl, poff;
+	lword_t flen;
+	vword_t dlen;
 
 	SYSTEM_INFO si = { 0 };
 
 	GetSystemInfo(&si);
-	page_gran = si.dwAllocationGranularity;
+	gran = si.dwAllocationGranularity;
 
-	poff = (loff % page_gran);
-	loff = (loff / page_gran) * page_gran;
-	dlen = poff + size;
+	poff = (loff % gran);
+	loff = (loff / gran) * gran;
+	dlen = (vword_t)poff + (vword_t)size;
 
-	flen = MAKESIZE(loff, hoff) + dlen;
-	dwh = GETSIZEH(flen);
-	dwl = GETSIZEL(flen);
+	flen = MAKELWORD(loff, hoff) + (lword_t)dlen;
+	dwh = GETHDWORD(flen);
+	dwl = GETLDWORD(flen);
 
 	mh = CreateFileMapping(fh, NULL, PAGE_READONLY, dwh, dwl, NULL);
 	if (!mh)
@@ -271,23 +271,23 @@ bool_t _file_read_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dw
 bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, dword_t size)
 {
 	HANDLE mh;
-	void* pBase = NULL;
-	DWORD dwh, dwl, poff;
-	SIZE_T dlen, flen;
-	DWORD page_gran;
+	void* pBase;
+	dword_t gran, dwh, dwl, poff;
+	lword_t flen;
+	vword_t dlen;
 
 	SYSTEM_INFO si = { 0 };
 
 	GetSystemInfo(&si);
-	page_gran = si.dwAllocationGranularity;
+	gran = si.dwAllocationGranularity;
 
-	poff = (loff % page_gran);
-	loff = (loff / page_gran) * page_gran;
-	dlen = poff + size;
+	poff = (loff % gran);
+	loff = (loff / gran) * gran;
+	dlen = (vword_t)poff + (vword_t)size;
 
-	flen = MAKESIZE(loff, hoff) + dlen;
-	dwh = GETSIZEH(flen);
-	dwl = GETSIZEL(flen);
+	flen = MAKELWORD(loff, hoff) + (lword_t)dlen;
+	dwh = GETHDWORD(flen);
+	dwl = GETLDWORD(flen);
 
 	mh = CreateFileMapping(fh, NULL, PAGE_READWRITE, dwh, dwl, NULL);
 	if (!mh)
@@ -310,6 +310,78 @@ bool_t _file_write_range(res_file_t fh, dword_t hoff, dword_t loff, void* buf, d
 	CloseHandle(mh);
 
 	return 1;
+}
+
+void* _file_lock_range(res_file_t fh, dword_t hoff, dword_t loff, dword_t size, bool_t write, res_file_t* ph)
+{
+	HANDLE mh;
+	void* pBase;
+	dword_t mask, gran, dwh, dwl, poff;
+	lword_t flen;
+	vword_t dlen;
+
+	SYSTEM_INFO si = { 0 };
+
+	*ph = NULL;
+
+	GetSystemInfo(&si);
+	gran = si.dwAllocationGranularity;
+
+	poff = (loff % gran);
+	loff = (loff / gran) * gran;
+	dlen = (vword_t)poff + (vword_t)size;
+
+	flen = MAKELWORD(loff, hoff) + (lword_t)dlen;
+	dwh = GETHDWORD(flen);
+	dwl = GETLDWORD(flen);
+
+	mask = (write)? PAGE_READWRITE : PAGE_READONLY;
+
+	mh = CreateFileMapping(fh, NULL, mask, dwh, dwl, NULL);
+	if (!mh)
+	{
+		return NULL;
+	}
+
+	mask = (write)? (FILE_MAP_READ | FILE_MAP_WRITE) : FILE_MAP_READ;
+
+	pBase = MapViewOfFile(mh, mask, hoff, loff, dlen);
+	if (!pBase)
+	{
+		CloseHandle(mh);
+		return NULL;
+	}
+
+	*ph = mh;
+	return (void*)((char*)pBase + poff);
+}
+
+void _file_unlock_range(res_file_t mh, dword_t hoff, dword_t loff, dword_t size, void* p)
+{
+	void* pBase;
+	dword_t gran, dwh, dwl, poff;
+	lword_t flen;
+	vword_t dlen;
+
+	SYSTEM_INFO si = { 0 };
+
+	GetSystemInfo(&si);
+	gran = si.dwAllocationGranularity;
+
+	poff = (loff % gran);
+	loff = (loff / gran) * gran;
+	dlen = (vword_t)poff + (vword_t)size;
+
+	flen = MAKELWORD(loff, hoff) + (lword_t)dlen;
+	dwh = GETHDWORD(flen);
+	dwl = GETLDWORD(flen);
+
+	pBase = (void*)((BYTE*)p - poff);
+
+	FlushViewOfFile(pBase, dlen);
+
+	UnmapViewOfFile(pBase);
+	CloseHandle(mh);
 }
 
 bool_t _file_truncate(res_file_t fh, dword_t hoff, dword_t loff)

@@ -133,7 +133,7 @@ LICENSE.GPL3 for more details.
 @PROPER delta: var int.
 @SET set_split_item_delta: set the splitor extract data.
 */
-#define set_split_item_delta(ilk,ul)					set_dom_node_delta(ilk,(var_long)ul)
+#define set_split_item_delta(ilk,ul)					set_dom_node_delta(ilk,(vword_t)ul)
 /*
 @PROPER delta: var int.
 @GET get_split_item_delta: get the splitor extract data.

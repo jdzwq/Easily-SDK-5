@@ -52,7 +52,7 @@ typedef struct _topog_delta_t{
 
 
 #define GETTOPOGDELTA(ph) 	(topog_delta_t*)widget_get_user_delta(ph)
-#define SETTOPOGDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETTOPOGDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /*****************************************************************************/
 static void _topogctrl_done(res_win_t widget)

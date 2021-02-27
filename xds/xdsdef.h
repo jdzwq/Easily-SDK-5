@@ -68,6 +68,9 @@ LICENSE.GPL3 for more details.
 #define STDCALL __stdcall
 #else
 #define STDCALL
+#ifndef CALLBACK
+#define CALLBACK
+#endif
 #endif
 
 #if defined(_OS_WINDOWS)
@@ -153,8 +156,8 @@ typedef unsigned char	byte_t;
 #ifndef bool_t
 typedef unsigned int	bool_t;
 
-#define BOOL_TRUE		((bool_t)1)
-#define BOOL_FALSE		((bool_t)0)
+#define C_TRUE		((bool_t)1)
+#define C_FALSE		((bool_t)0)
 #endif
 
 #ifndef sword_t
@@ -170,9 +173,9 @@ typedef unsigned long long lword_t;
 #endif
 
 #ifdef _OS_64
-typedef long long		var_long;
+typedef unsigned long long	vword_t;
 #else
-typedef int				var_long;
+typedef unsigned int		vword_t;
 #endif
 
 #ifndef stamp_t
@@ -316,14 +319,6 @@ typedef int				wait_t;
 #define GETSIZEH(ll)		((unsigned int)0)
 #define GETSIZEL(ll)		((unsigned int)(ll))
 #endif /*_OS_64*/
-
-#ifdef _OS_64
-#define PUT_VAR_LONG_NET(buf,p)     PUT_LWORD_NET(buf,0,(var_long)p)
-#define GET_VAR_LONG_NET(buf)       (var_long)GET_LWORD_NET(buf,0)
-#else
-#define PUT_VAR_LONG_NET(buf,p)     PUT_DWORD_NET(buf,0,(var_long)p)
-#define GET_VAR_LONG_NET(buf)       (var_long)GET_DWORD_NET(buf,0)
-#endif
 
 #ifdef _OS_64
 #define VOID_SIZE       8

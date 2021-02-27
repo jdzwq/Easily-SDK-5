@@ -43,11 +43,11 @@ typedef struct _matrix_context{
 }matrix_context;
 
 
+#define MATRIX_CALC_SIZE(rows, cols)	(rows * cols * sizeof(double))
 
 matrix_t matrix_alloc(int rows, int cols)
 {
 	matrix_context* pmt;
-	int n;
 
 	XDL_ASSERT(rows >= 0 && cols >= 0);
 
@@ -57,8 +57,7 @@ matrix_t matrix_alloc(int rows, int cols)
 
 	pmt->rows = rows;
 	pmt->cols = cols;
-	n = rows * cols * sizeof(double);
-	pmt->data = xmem_alloc(n);
+	pmt->data = NULL;
 
 	return (matrix_t)&(pmt->head);
 }
@@ -85,57 +84,26 @@ matrix_t matrix_clone(matrix_t mat)
 
 	pnew = (matrix_context*)matrix_alloc(pmt->rows, pmt->cols);
 	
-	n = pmt->rows * pmt->cols * sizeof(double);
-	pnew->data = xmem_alloc(n);
-	xmem_copy((void*)pnew->data, (void*)pmt->data, n);
-
-	return (matrix_t)&(pnew->head);
-}
-
-void matrix_zero(matrix_t mat)
-{
-	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
-	int n;
-
-	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
-
-	n = pmt->rows * pmt->cols * sizeof(double);
-
 	if (pmt->data)
 	{
-		xmem_zero((void*)pmt->data, n);
+		n = MATRIX_CALC_SIZE(pmt->rows, pmt->cols);
+		pnew->data = xmem_realloc(pnew->data, n);
+		xmem_copy((void*)pnew->data, (void*)pmt->data, n);
 	}
-}
 
-void matrix_unit(matrix_t mat)
-{
-	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
-	double* pd;
-	int i;
-
-	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
-
-	pd = (double*)pmt->data;
-
-	XDL_ASSERT(pd != NULL);
-
-	i = pmt->rows * pmt->cols;
-	while (i--)
-	{
-		*pd++ = 1.0;
-	}
+	return (matrix_t)&(pnew->head);
 }
 
 void matrix_reset(matrix_t mat, int rows, int cols)
 {
 	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
-	int n;
-
+	
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
 
-	n = rows * cols * sizeof(double);
-	pmt->data = xmem_realloc(pmt->data, n);
-	xmem_zero(pmt->data, n);
+	if (pmt->data)
+		xmem_free(pmt->data);
+
+	pmt->data = NULL;
 	pmt->rows = rows;
 	pmt->cols = cols;
 }
@@ -148,9 +116,14 @@ void matrix_copy(matrix_t dst, matrix_t src)
 
 	XDL_ASSERT(psrc && psrc->head.tag == MEM_MATRIX && pdst && pdst->head.tag == MEM_MATRIX);
 
-	n = psrc->rows * psrc->cols * sizeof(double);
 	matrix_reset(dst, psrc->rows, psrc->cols);
-	xmem_copy(pdst->data, psrc->data, n);
+
+	if (psrc->data)
+	{
+		n = MATRIX_CALC_SIZE(psrc->rows, psrc->cols);
+		pdst->data = xmem_realloc(pdst->data, n);
+		xmem_copy(pdst->data, psrc->data, n);
+	}
 }
 
 int matrix_get_rows(matrix_t mat)
@@ -171,7 +144,7 @@ int matrix_get_cols(matrix_t mat)
 	return pmt->cols;
 }
 
-void* matrix_data(matrix_t mat)
+const void* matrix_data(matrix_t mat)
 {
 	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
 
@@ -205,12 +178,36 @@ void* matrix_detach(matrix_t mat)
 	return d;
 }
 
+void matrix_zero(matrix_t mat)
+{
+	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
+	int n;
+
+	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
+
+	n = MATRIX_CALC_SIZE(pmt->rows, pmt->cols);
+
+	if (!pmt->data)
+	{
+		pmt->data = xmem_alloc(n);
+	}
+
+	xmem_zero((void*)pmt->data, n);
+}
+
 void matrix_set_value(matrix_t mat, int i, int j, double db)
 {
 	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
 	double* pd;
+	int n;
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
+
+	if (!pmt->data)
+	{
+		n = MATRIX_CALC_SIZE(pmt->rows, pmt->cols);
+		pmt->data = xmem_alloc(n);
+	}
 
 	pd = (double*)pmt->data;
 
@@ -226,12 +223,42 @@ double matrix_get_value(matrix_t mat, int i, int j)
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
 
+	if (!pmt->data)
+	{
+		return MAXDBL;
+	}
+
 	pd = (double*)pmt->data;
 
 	if (i < 0 || i >= pmt->rows || j < 0 || j >= pmt->cols)
 		return MAXDBL;
 
 	return pd[i * pmt->cols + j];
+}
+
+void matrix_unit(matrix_t mat)
+{
+	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
+	double* pd;
+	int n, i;
+
+	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
+
+	if (!pmt->data)
+	{
+		n = MATRIX_CALC_SIZE(pmt->rows, pmt->cols);
+		pmt->data = xmem_alloc(n);
+	}
+
+	pd = (double*)pmt->data;
+
+	XDL_ASSERT(pd != NULL);
+
+	i = pmt->rows * pmt->cols;
+	while (i--)
+	{
+		*pd++ = 1.0;
+	}
 }
 
 matrix_t matrix_trans(matrix_t mat)
@@ -242,6 +269,11 @@ matrix_t matrix_trans(matrix_t mat)
 	matrix_t pnew;
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
+
+	if (!pmt->data)
+	{
+		return NULL;
+	}
 
 	pnew = matrix_alloc(pmt->cols, pmt->rows);
 
@@ -265,6 +297,11 @@ matrix_t matrix_plus(matrix_t mat, double n)
 	matrix_t pnew;
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
+
+	if (!pmt->data)
+	{
+		return NULL;
+	}
 
 	pnew = matrix_alloc(pmt->rows, pmt->cols);
 
@@ -292,6 +329,11 @@ matrix_t matrix_add(matrix_t mat1, matrix_t mat2)
 
 	XDL_ASSERT(pmt1->rows == pmt2->rows && pmt1->cols == pmt2->cols);
 
+	if (!pmt1->data || !pmt2->data)
+	{
+		return NULL;
+	}
+
 	pnew = matrix_alloc(pmt1->rows, pmt2->cols);
 
 	for (i = 0; i < pmt1->rows; i++)
@@ -318,6 +360,11 @@ matrix_t matrix_mul(matrix_t mat1, matrix_t mat2)
 
 	XDL_ASSERT(pmt1->cols == pmt2->rows);
 
+	if (!pmt1->data || !pmt2->data)
+	{
+		return NULL;
+	}
+
 	pnew = matrix_alloc(pmt1->rows, pmt2->cols);
 
 	for (i = 0; i < pmt1->rows; i++)
@@ -343,6 +390,11 @@ double matrix_det(matrix_t mat)
 	int i, j, k;
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
+
+	if (!pmt->data)
+	{
+		return MAXDBL;
+	}
 
 	n1 = 0.0;
 	for (k = 0; k < pmt->cols; k++)
@@ -381,16 +433,20 @@ void matrix_parse(matrix_t mat, const tchar_t* str, int len)
 	int i, j, n;
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
-	
-	pd = (double*)pmt->data;
-
-	XDL_ASSERT(pd != NULL);
-
-	if (is_null(str) || !len)
-		return;
 
 	if (len < 0)
 		len = xslen(str);
+
+	if (!len)
+		return;
+
+	if (!pmt->data)
+	{
+		n = MATRIX_CALC_SIZE(pmt->rows, pmt->cols);
+		pmt->data = xmem_alloc(n);
+	}
+
+	pd = (double*)pmt->data;
 
 	token = str;
 
@@ -449,9 +505,10 @@ int matrix_format(matrix_t mat, tchar_t* buf, int max)
 
 	XDL_ASSERT(pmt && pmt->head.tag == MEM_MATRIX);
 
-	pd = (double*)pmt->data;
+	if (!pmt->data)
+		return 0;
 
-	XDL_ASSERT(pd != NULL);
+	pd = (double*)pmt->data;
 
 	if (total + 1 > max)
 		return total;
@@ -528,141 +585,59 @@ int matrix_format(matrix_t mat, tchar_t* buf, int max)
 	return total;
 }
 
-dword_t matrix_encode(matrix_t mat, int encode, byte_t* buf, dword_t max)
+/*
+struct{
+	byte[2]: rows
+	byte[2]: cols
+	byte[]: data
+}matrix_dump
+*/
+dword_t matrix_encode(matrix_t mat, byte_t* buf, dword_t max)
 {
+	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
 	dword_t n = 0;
-	tchar_t* str;
-	int len;
+	
+	XDL_ASSERT(mat != NULL && mat->tag == MEM_MATRIX);
 
-	XDL_ASSERT(mat != NULL);
-
-	len = matrix_format(mat, NULL, MAX_LONG);
-	str = xsalloc(len + 1);
-	matrix_format(mat, str, len);
-
-	switch (encode)
+	if (buf)
 	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = ucs_to_gb2312(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_gb2312(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = ucs_to_utf8(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf8(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = ucs_to_utf16lit(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf16lit(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = ucs_to_utf16big(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf16big(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
+		PUT_SWORD_LOC(buf, 0, pmt->rows);
+		PUT_SWORD_LOC(buf, 2, pmt->cols);
 	}
 
-	xsfree(str);
+	n = MATRIX_CALC_SIZE(pmt->rows, pmt->cols);
+	n = (n < max) ? n : max;
+	if (buf && pmt->data)
+	{
+		xmem_copy((void*)(buf + 4), (void*)pmt->data, n);
+	}
 
-	return (n);
+	return (n + 4);
 }
 
-void matrix_decode(matrix_t mat, int encode, const byte_t* buf, dword_t len)
+dword_t matrix_decode(matrix_t mat, const byte_t* buf)
 {
-	int n;
-	tchar_t* str;
+	matrix_context* pmt = TypePtrFromHead(matrix_context, mat);
+	dword_t n = 0;
+	int rows, cols;
 
-	if (!buf || !len)
+	if (!buf)
 	{
-		if (mat)
-		{
-			matrix_zero(mat);
-		}
-		return;
+		return 0;
 	}
 
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = gb2312_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf8_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf16lit_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf16big_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	}
+	rows = GET_SWORD_LOC(buf, 0);
+	cols = GET_SWORD_LOC(buf, 2);
 
-	str = xsalloc(n + 1);
-
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs(buf, len, str, n);
-#else
-		n = gb2312_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs(buf, len, str, n);
-#else
-		n = utf8_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs(buf, len, str, n);
-#else
-		n = utf16lit_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs(buf, len, str, n);
-#else
-		n = utf16big_to_mbs(buf, len, str, n);
-#endif
-		break;
-	}
-
+	n = rows * cols * sizeof(double);
 	if (mat)
 	{
-		matrix_parse(mat, str, n);
+		matrix_reset(mat, rows, cols);
+		pmt->data = xmem_realloc(pmt->data, n);
+		xmem_copy((void*)pmt->data, (void*)(buf + 4), n);
 	}
 
-	xsfree(str);
+	return (n + 4);
 }
 
 #if defined(XDL_SUPPORT_TEST)

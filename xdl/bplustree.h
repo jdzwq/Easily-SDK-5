@@ -49,6 +49,14 @@ extern "C" {
 EXP_API link_t_ptr create_bplus_tree(void);
 
 /*
+@FUNCTION create_bplus_file_table: create a bplus tree with index and data file table.
+@INPUT link_t_ptr index_table: the index file table.
+@INPUT link_t_ptr data_table: the data file table.
+@RETURN link_t_ptr: return the bplus tree link component.
+*/
+EXP_API link_t_ptr create_bplus_file_table(link_t_ptr index_table, link_t_ptr data_table);
+
+/*
 @FUNCTION destroy_bplus_tree: destroy a bplus tree.
 @INPUT link_t_ptr ptr: the bplus tree link component.
 @RETURN void: none.
@@ -104,33 +112,10 @@ EXP_API bool_t find_bplus_entity(link_t_ptr ptr, variant_t var, object_t val);
 */
 EXP_API void enum_bplus_entity(link_t_ptr ptr, CALLBACK_ENUMBPLUSENTITY pf, void* param);
 
-/*
-@FUNCTION attach_bplus_index_table: attach a index file table to bplus tree.
-@INPUT link_t_ptr ptr: the bplus tree link component.
-@INPUT link_t_ptr ft: the index file table link component.
-@RETURN link_t_ptr: retur the original file table link component if exists, otherwise return NULL.
-*/
-EXP_API link_t_ptr attach_bplus_index_table(link_t_ptr ptr, link_t_ptr ft);
-
-/*
-@FUNCTION attach_bplus_data_table: attach a data file table to bplus tree.
-@INPUT link_t_ptr ptr: the bplus tree link component.
-@INPUT link_t_ptr ft: the data file table link component.
-@RETURN link_t_ptr: retur the original file table link component if exists, otherwise return NULL.
-*/
-EXP_API link_t_ptr attach_bplus_data_table(link_t_ptr ptr, link_t_ptr ft);
-
-/*
-@FUNCTION update_bplus_index_table: save or load index entities from file table.
-@INPUT link_t_ptr ptr: the bplus tree link component.
-@INPUT bool_t b_save: nonzero for saving, zero for loading.
-@RETURN void: none.
-*/
-EXP_API void update_bplus_index_table(link_t_ptr ptr, bool_t b_save);
 
 #if defined(XDL_SUPPORT_TEST)
-	EXP_API void test_bplus_tree();
-	EXP_API void test_bplus_tree_file_table(const tchar_t* iname, const tchar_t* dname);
+	EXP_API void test_bplus_tree_none_table();
+	EXP_API void test_bplus_tree_file_table(const tchar_t* tname, dword_t tmask);
 #endif
 
 #ifdef	__cplusplus

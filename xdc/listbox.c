@@ -38,7 +38,7 @@ typedef struct _listbox_delta_t{
 }listbox_delta_t;
 
 #define GETLISTBOXDELTA(ph) 	(listbox_delta_t*)widget_get_user_delta(ph)
-#define SETLISTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(var_long)ptd)
+#define SETLISTBOXDELTA(ph,ptd) widget_set_user_delta(ph,(vword_t)ptd)
 
 /***************************************************************************************/
 void _listbox_item_rect(res_win_t widget, link_t_ptr ent, xrect_t* pxr)
@@ -168,7 +168,7 @@ static link_t_ptr _listbox_get_prev_entity(res_win_t widget, link_t_ptr pos)
 }
 /*************************************************************************/
 
-void noti_listbox_command(res_win_t widget, int code, var_long data)
+void noti_listbox_command(res_win_t widget, int code, vword_t data)
 {
 	listbox_delta_t* ptd = GETLISTBOXDELTA(widget);
 
@@ -209,7 +209,7 @@ void listbox_on_item_changed(res_win_t widget, link_t_ptr ent)
 
 	widget_erase(widget, &xr);
 
-	noti_listbox_command(widget, COMMAND_UPDATE, (var_long)NULL);
+	noti_listbox_command(widget, COMMAND_UPDATE, (vword_t)NULL);
 }
 
 /********************************************************************************************/
@@ -254,10 +254,10 @@ void hand_listbox_keydown(res_win_t widget, dword_t ks, int key)
 	switch (key)
 	{
 	case KEY_ENTER:
-		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_listbox_command(widget, COMMAND_CHANGE, (vword_t)NULL);
 		break;
 	case KEY_SPACE:
-		noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+		noti_listbox_command(widget, COMMAND_CHANGE, (vword_t)NULL);
 		break;
 	case KEY_LEFT:
 		listbox_tabskip(widget,TABORDER_LEFT);
@@ -314,7 +314,7 @@ void hand_listbox_lbutton_up(res_win_t widget, const xpoint_t* pxp)
 			listbox_on_item_changed(widget, ilk);
 	}
 
-	noti_listbox_command(widget, COMMAND_CHANGE, (var_long)NULL);
+	noti_listbox_command(widget, COMMAND_CHANGE, (vword_t)NULL);
 }
 
 void hand_listbox_size(res_win_t widget, int code, const xsize_t* prs)

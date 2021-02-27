@@ -70,7 +70,6 @@ int map_calc_size(int nums, int bits)
 map_t map_alloc(int nums, int bits)
 {
 	map_context* pmm;
-	int n;
 
 	if (nums <= 0)
 		return NULL;
@@ -84,9 +83,7 @@ map_t map_alloc(int nums, int bits)
 
 	pmm->bits = bits;
 	pmm->nums = nums;
-	
-	n = map_calc_size(nums, bits);
-	pmm->data = xmem_alloc(n);
+	pmm->data = NULL;
 	
 	return (map_t)&(pmm->head);
 }
@@ -103,6 +100,20 @@ void map_free(map_t map)
 	xmem_free(pmm);
 }
 
+void map_reset(map_t map, int nums, int bits)
+{
+	map_context* pmm = TypePtrFromHead(map_context, map);
+
+	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
+
+	if (pmm->data)
+		xmem_free(pmm->data);
+
+	pmm->data = NULL;
+	pmm->nums = nums;
+	pmm->bits = bits;
+}
+
 map_t map_clone(matrix_t map)
 {
 	map_context* pmm = TypePtrFromHead(map_context, map);
@@ -113,25 +124,31 @@ map_t map_clone(matrix_t map)
 
 	pnew = (map_context*)map_alloc(pmm->nums, pmm->bits);
 	
-	n = map_calc_size(pmm->nums, pmm->bits);
-	pnew->data = xmem_alloc(n);
-	xmem_copy((void*)pnew->data, (void*)pmm->data, n);
+	if (pmm->data)
+	{
+		n = map_calc_size(pmm->nums, pmm->bits);
+		pnew->data = xmem_realloc(pnew->data, n);
+		xmem_copy((void*)pnew->data, (void*)pmm->data, n);
+	}
 
 	return (map_t)&(pnew->head);
 }
 
-void map_zero(map_t map)
+void map_copy(map_t dst, map_t src)
 {
-	map_context* pmm = TypePtrFromHead(map_context, map);
+	map_context* psrc = (map_context*)src;
+	map_context* pdst = (map_context*)dst;
 	int n;
 
-	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
+	XDL_ASSERT(psrc && psrc->head.tag == MEM_MAP && pdst && pdst->head.tag == MEM_MAP);
 
-	n = map_calc_size(pmm->nums, pmm->bits);
+	map_reset(dst, psrc->nums, psrc->bits);
 
-	if (pmm->data)
+	if (psrc->data)
 	{
-		xmem_zero((void*)pmm->data, n);
+		n = map_calc_size(psrc->nums, psrc->bits);
+		pdst->data = xmem_realloc(pdst->data, n);
+		xmem_copy(pdst->data, psrc->data, n);
 	}
 }
 
@@ -156,7 +173,7 @@ int map_bits(map_t map)
 	return pmm->bits;
 }
 
-void* map_data(map_t map)
+const void* map_data(map_t map)
 {
 	map_context* pmm = TypePtrFromHead(map_context, map);
 
@@ -190,16 +207,39 @@ void* map_detach(map_t map)
 	return d;
 }
 
+void map_zero(map_t map)
+{
+	map_context* pmm = TypePtrFromHead(map_context, map);
+	int n;
+
+	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
+
+	n = map_calc_size(pmm->nums, pmm->bits);
+
+	if (!pmm->data)
+	{
+		pmm->data = xmem_alloc(n);
+	}
+
+	xmem_zero((void*)pmm->data, n);
+}
+
 void map_set_bit(map_t map, int i, byte_t b)
 {
 	map_context* pmm = TypePtrFromHead(map_context, map);
 	dword_t* pd;
-	int rows, cols;
+	int n, rows, cols;
 	int row, col;
 	int j;
 	dword_t bit, msk;
 
 	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
+
+	if (!pmm->data)
+	{
+		n = map_calc_size(pmm->nums, pmm->bits);
+		pmm->data = xmem_alloc(n);
+	}
 
 	pd = (dword_t*)pmm->data;
 	cols = MAP_CALC_COLS(pmm->bits);
@@ -240,6 +280,11 @@ byte_t map_get_bit(map_t map, int i)
 
 	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
 
+	if (!pmm->data)
+	{
+		return (byte_t)0;
+	}
+
 	pd = (dword_t*)pmm->data;
 	cols = MAP_CALC_COLS(pmm->bits);
 	rows = map_calc_rows(pmm->nums, pmm->bits);
@@ -263,7 +308,7 @@ byte_t map_get_bit(map_t map, int i)
 	for (j = 0; j < col; j++)
 		msk >>= pmm->bits;
 
-	return (byte_t)msk;
+	return (byte_t)(msk & 0xFF);
 }
 
 int map_find_bit(map_t map, int i, byte_t b)
@@ -276,6 +321,11 @@ int map_find_bit(map_t map, int i, byte_t b)
 	dword_t fix, bit, msk;
 
 	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
+
+	if (!pmm->data)
+	{
+		return C_ERR;
+	}
 
 	pd = (dword_t*)pmm->data;
 	cols = MAP_CALC_COLS(pmm->bits);
@@ -333,6 +383,11 @@ int map_test_bit(map_t map, int i, byte_t b, int n)
 
 	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
 
+	if (!pmm->data)
+	{
+		return C_ERR;
+	}
+
 	pd = (dword_t*)pmm->data;
 	cols = MAP_CALC_COLS(pmm->bits);
 	rows = map_calc_rows(pmm->nums, pmm->bits);
@@ -389,16 +444,20 @@ void map_parse(map_t map, const tchar_t* str, int len)
 
 	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
 
-	pd = (dword_t*)pmm->data;
-	rows = map_calc_rows(pmm->nums, pmm->bits);
-
-	XDL_ASSERT(pd != NULL);
-
-	if (is_null(str) || !len)
-		return;
-
 	if (len < 0)
 		len = xslen(str);
+
+	if (!len)
+		return;
+
+	if (!pmm->data)
+	{
+		n = map_calc_size(pmm->nums, pmm->bits);
+		pmm->data = xmem_alloc(n);
+	}
+
+	pd = (dword_t*)pmm->data;
+	rows = map_calc_rows(pmm->nums, pmm->bits);
 
 	token = str;
 
@@ -440,10 +499,11 @@ int map_format(map_t map, tchar_t* buf, int max)
 
 	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
 
+	if (!pmm->data)
+		return 0;
+
 	pd = (dword_t*)pmm->data;
 	rows = map_calc_rows(pmm->nums, pmm->bits);
-
-	XDL_ASSERT(pd != NULL);
 
 	if (total + 1 > max)
 		return total;
@@ -487,141 +547,59 @@ int map_format(map_t map, tchar_t* buf, int max)
 	return total;
 }
 
-dword_t map_encode(map_t map, int encode, byte_t* buf, dword_t max)
+/*
+struct{
+	byte[1]: bits
+	byte[3]: nums
+	byte[]: data
+}map_dump
+*/
+dword_t map_encode(map_t map, byte_t* buf, dword_t max)
 {
+	map_context* pmm = TypePtrFromHead(map_context, map);
 	dword_t n = 0;
-	tchar_t* str;
-	int len;
+	
+	XDL_ASSERT(map != NULL && map->tag == MEM_MAP);
 
-	XDL_ASSERT(map != NULL);
-
-	len = map_format(map, NULL, MAX_LONG);
-	str = xsalloc(len + 1);
-	map_format(map, str, len);
-
-	switch (encode)
+	if (buf)
 	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = ucs_to_gb2312(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_gb2312(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = ucs_to_utf8(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf8(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = ucs_to_utf16lit(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf16lit(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = ucs_to_utf16big(str, len, ((buf) ? buf : NULL), max);
-#else
-		n = mbs_to_utf16big(str, len, ((buf) ? buf : NULL), max);
-#endif
-		break;
+		PUT_BYTE(buf, 0, (byte_t)(pmm->bits));
+		PUT_THREEBYTE_LOC(buf, 1, pmm->nums);
 	}
 
-	xsfree(str);
+	n = map_calc_size(pmm->nums, pmm->bits);
+	n = (n < max) ? n : max;
+	if (buf && pmm->data)
+	{
+		xmem_copy((void*)(buf + 4), (void*)pmm->data, n);
+	}
 
-	return (n);
+	return (n + 4);
 }
 
-void map_decode(map_t map, int encode, const byte_t* buf, dword_t len)
+dword_t map_decode(map_t map, const byte_t* buf)
 {
-	int n;
-	tchar_t* str;
+	map_context* pmm = TypePtrFromHead(map_context, map);
+	dword_t n = 0;
+	int bits, nums;
 
-	if (!buf || !len)
+	if (!buf)
 	{
-		if (map)
-		{
-			map_zero(map);
-		}
-		return;
+		return 0;
 	}
 
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = gb2312_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf8_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf16lit_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs(buf, len, NULL, MAX_LONG);
-#else
-		n = utf16big_to_mbs(buf, len, NULL, MAX_LONG);
-#endif
-		break;
-	}
+	bits = GET_BYTE(buf, 0);
+	nums = GET_THREEBYTE_LOC(buf, 1);
 
-	str = xsalloc(n + 1);
-
-	switch (encode)
-	{
-	case _GB2312:
-#ifdef _UNICODE
-		n = gb2312_to_ucs(buf, len, str, n);
-#else
-		n = gb2312_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF8:
-#ifdef _UNICODE
-		n = utf8_to_ucs(buf, len, str, n);
-#else
-		n = utf8_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF16_LIT:
-#ifdef _UNICODE
-		n = utf16lit_to_ucs(buf, len, str, n);
-#else
-		n = utf16lit_to_mbs(buf, len, str, n);
-#endif
-		break;
-	case _UTF16_BIG:
-#ifdef _UNICODE
-		n = utf16big_to_ucs(buf, len, str, n);
-#else
-		n = utf16big_to_mbs(buf, len, str, n);
-#endif
-		break;
-	}
-
+	n = map_calc_size(nums, bits);
 	if (map)
 	{
-		map_parse(map, str, n);
+		map_reset(map, nums, bits);
+		pmm->data = xmem_realloc(pmm->data, n);
+		xmem_copy((void*)pmm->data, (void*)(buf + 4), n);
 	}
 
-	xsfree(str);
+	return (n + 4);
 }
 
 #if defined(XDL_SUPPORT_TEST)
@@ -629,7 +607,7 @@ void test_map(void)
 {
 	int items = 128;
 	int b = 0x01;
-	int i, k, j, size, len;
+	int i, k, size, len;
 	map_t pvt;
 	tchar_t* buf;
 

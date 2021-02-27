@@ -197,9 +197,9 @@ EXP_API void previewdlg_redraw(res_win_t widget);
 */
 EXP_API res_win_t create_dialog(link_t_ptr ptr_dlg, res_win_t owner);
 
-EXP_API int sub_dialog_on_paint(res_win_t widget, visual_t rdc, const xrect_t* prt, uid_t sid, var_long delta);
+EXP_API int sub_dialog_on_paint(res_win_t widget, visual_t rdc, const xrect_t* prt, uid_t sid, vword_t delta);
 
-EXP_API int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, var_long delta);
+EXP_API int sub_dialog_on_size(res_win_t widget, int code, const xsize_t* pxs, uid_t sid, vword_t delta);
 
 #ifdef	__cplusplus
 }

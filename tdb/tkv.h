@@ -31,8 +31,6 @@ LICENSE.GPL3 for more details.
 #include "tdef.h"
 
 #define TKV_MASK_PERSIST		0x00000001
-#define TKV_MASK_UPDATED		0x00000002
-#define TKV_MASK_DELETED		0x00000004
 
 #ifdef	__cplusplus
 extern "C" {
@@ -42,20 +40,23 @@ EXP_API t_kv_t tkv_create(t_kb_t hdb);
 
 EXP_API void tkv_destroy(t_kv_t hkv);
 
-EXP_API void tkv_write(t_kv_t hkv, variant_t key, object_t val);
+EXP_API bool_t tkv_write(t_kv_t hkv, variant_t key, object_t val);
 
 EXP_API bool_t tkv_read(t_kv_t hkv, variant_t key, object_t val);
 
 EXP_API bool_t tkv_update(t_kv_t hkv, variant_t key, object_t val);
 
-EXP_API void tkv_attach(t_kv_t hkv, variant_t key, object_t val);
+EXP_API bool_t tkv_attach(t_kv_t hkv, variant_t key, object_t val);
 
 EXP_API object_t tkv_detach(t_kv_t hkv, variant_t key);
 
-EXP_API void tkv_delete(t_kv_t hkv, variant_t key);
+EXP_API bool_t tkv_delete(t_kv_t hkv, variant_t key);
 
-EXP_API void tkv_flush(t_kv_t hkv);
+EXP_API bool_t tkv_flush(t_kv_t hkv, t_kb_t hdb);
 
+#ifdef XDL_SUPPORT_TEST
+EXP_API void test_tkv();
+#endif
 
 #ifdef	__cplusplus
 }
